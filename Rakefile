@@ -18,7 +18,7 @@ Jeweler::Tasks.new do |gem|
   gem.homepage = "http://github.com/bbatsov/rubocop"
   gem.license = "MIT"
   gem.summary = %Q{Automatic Ruby code style checking tool.}
-  gem.description = %Q{TODO: longer description of your gem}
+  gem.description = %Q{Automatic Ruby code style checking tool. Aims to enforce the community-driven Ruby Style Guide.}
   gem.email = "bozhidar@batsov.com"
   gem.authors = ["Bozhidar Batsov"]
   # dependencies defined in Gemfile

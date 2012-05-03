@@ -4,5 +4,5 @@ $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
 
 require 'rubocop'
 
-cli = Rubocop::Cli.new(ARGV)
+cli = Rubocop::CLI.new
 exit cli.run
