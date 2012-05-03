@@ -15,7 +15,16 @@ module Rubocop
         end
       end.parse!
 
-      Rubocop.run(options, target_files)
+      cops = []
+      cops << Cop::LineLengthCop
+
+      files.each do |file|
+        cops.each do |cop_klass|
+          cop = cop_klass.new
+          cop.inspect(file)
+          cop.report
+        end
+      end
 
       return 0
     end
