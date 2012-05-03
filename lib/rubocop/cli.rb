@@ -18,7 +18,7 @@ module Rubocop
       cops = []
       cops << Cop::LineLengthCop
 
-      files.each do |file|
+      target_files.each do |file|
         cops.each do |cop_klass|
           cop = cop_klass.new
           cop.inspect(file)
