@@ -1,2 +1,5 @@
-require 'rubocop/cop'
+require 'cop/offence'
+require 'cop/cop'
+require 'cop/line_length_cop'
+
 require 'rubocop/cli'
