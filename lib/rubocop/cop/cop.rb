@@ -3,14 +3,35 @@ module Rubocop
     class Cop
       attr_accessor :offences
 
+      @all = []
+      @enabled = []
+      @config = {}
+
+      class << self
+        attr_accessor :all
+        attr_accessor :enabled
+        attr_accessor :config
+      end
+
+      def self.inherited(subclass)
+        puts "Registering cop #{subclass}"
+        all << subclass
+      end
+
+      def self.enabled
+        all.select(&:enabled?)
+      end
+
+      def self.enabled?
+        true
+      end
+
       def initialize
         @offences = []
       end
 
-      def report
-        @offences.each do |offence|
-          puts offence
-        end
+      def has_report?
+        !@offences.empty?
       end
 
       def add_offence(file, line_number, line, message)

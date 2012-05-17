@@ -4,6 +4,10 @@ module Rubocop
   # The CLI is a class responsible of handling all the command line interface
   # logic.
   class CLI
+    # Entry point for the application logic. Here we
+    # do the command line arguments processing and inspect
+    # the target files
+    # @return [Fixnum] UNIX exit code
     def run
       options = {}
 
@@ -15,20 +19,30 @@ module Rubocop
         end
       end.parse!
 
-      cops = []
-      cops << Cop::LineLengthCop
+      cops = Cop::Cop.all
 
       target_files.each do |file|
+        report = Report.create(file)
+        source = File.readlines(file)
+        tokens = Ripper.lex(source.join)
+        sexp = Ripper.sexp(source.join)
+
         cops.each do |cop_klass|
           cop = cop_klass.new
-          cop.inspect(file)
-          cop.report
+          cop.inspect(file, source, tokens, sexp)
+          report << cop if cop.has_report?
         end
+
+        report.display
       end
 
       return 0
     end
 
+    # Generate a list of target files by expanding globing patterns
+    # (if any). If ARGV is empty recursively finds all Ruby source
+    # files in the current directory
+    # @return [Array] array of filenames
     def target_files
       return Dir['**/*.rb'] if ARGV.empty?
 
