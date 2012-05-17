@@ -20,6 +20,7 @@ module Rubocop
       end.parse!
 
       cops = Cop::Cop.all
+      total_offences = 0
 
       target_files.each do |file|
         report = Report.create(file)
@@ -30,11 +31,14 @@ module Rubocop
         cops.each do |cop_klass|
           cop = cop_klass.new
           cop.inspect(file, source, tokens, sexp)
+          total_offences += cop.offences.count
           report << cop if cop.has_report?
         end
 
         report.display unless report.empty?
       end
+
+      puts "\n#{target_files.count} files inspected, #{total_offences} offences detected"
 
       return 0
     end
