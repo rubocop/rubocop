@@ -33,7 +33,7 @@ module Rubocop
           report << cop if cop.has_report?
         end
 
-        report.display
+        report.display unless report.empty?
       end
 
       return 0
