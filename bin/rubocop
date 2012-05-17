@@ -3,6 +3,12 @@
 $LOAD_PATH.unshift(File.dirname(__FILE__) + '/../lib')
 
 require 'rubocop'
+require 'benchmark'
 
 cli = Rubocop::CLI.new
-exit cli.run
+
+time = Benchmark.realtime do
+  cli.run
+end
+
+puts "Finished in #{time} seconds"
