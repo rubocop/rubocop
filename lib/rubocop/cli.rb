@@ -8,8 +8,8 @@ module Rubocop
     # do the command line arguments processing and inspect
     # the target files
     # @return [Fixnum] UNIX exit code
-    def run
-      options = {}
+    def run(args = ARGV)
+      options = { :mode => :default }
 
       OptionParser.new do |opts|
         opts.banner = "Usage: rubocop [options] [file1, file2, ...]"
@@ -17,13 +17,16 @@ module Rubocop
         opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
           options[:verbose] = v
         end
-      end.parse!
+        opts.on("-e", "--emacs", "Emacs style output") do
+          options[:mode] = :emacs_style
+        end
+      end.parse!(args)
 
       cops = Cop::Cop.all
       total_offences = 0
 
-      target_files.each do |file|
-        report = Report.create(file)
+      target_files(args).each do |file|
+        report = Report.create(file, options[:mode])
         source = File.readlines(file)
         tokens = Ripper.lex(source.join)
         sexp = Ripper.sexp(source.join)
@@ -38,20 +41,23 @@ module Rubocop
         report.display unless report.empty?
       end
 
-      puts "\n#{target_files.count} files inspected, #{total_offences} offences detected"
+      print "\n#{target_files(args).count} files inspected, "
+      puts "#{total_offences} offences detected"
 
-      return 0
+      return total_offences == 0 ? 0 : 1
     end
 
     # Generate a list of target files by expanding globing patterns
-    # (if any). If ARGV is empty recursively finds all Ruby source
+    # (if any). If args is empty recursively finds all Ruby source
     # files in the current directory
     # @return [Array] array of filenames
-    def target_files
-      return Dir['**/*.rb'] if ARGV.empty?
+    def target_files(args)
+      return Dir['**/*.rb'] if args.empty?
 
-      if glob = ARGV.detect { |arg| arg =~ /\*/ }
-        return Dir[glob]
+      if glob = args.detect { |arg| arg =~ /\*/ }
+        Dir[glob]
+      else
+        args
       end
     end
   end
