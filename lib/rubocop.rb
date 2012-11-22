@@ -8,5 +8,6 @@ require 'rubocop/cop/trailing_whitespace'
 
 require 'rubocop/report/report'
 require 'rubocop/report/plain_text'
+require 'rubocop/report/emacs_style'
 
 require 'rubocop/cli'
