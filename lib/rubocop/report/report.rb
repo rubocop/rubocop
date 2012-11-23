@@ -4,8 +4,11 @@ module Rubocop
     #
     # @param [String] the filename for the report
     # @return [Report] a report object
-    def create(file)
-      PlainText.new(file)
+    def create(file, output_mode = :default)
+      case output_mode
+      when :default     then PlainText.new(file)
+      when :emacs_style then EmacsStyle.new(file)
+      end
     end
 
     module_function :create

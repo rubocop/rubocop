@@ -8,8 +8,8 @@ module Rubocop
         report << entries.join("\n")
       end
 
-      def display
-        puts generate
+      def display(stream = $stdout)
+        stream.puts generate
       end
     end
   end
