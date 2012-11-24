@@ -25,7 +25,7 @@ module Rubocop
       cops = Cop::Cop.all
       total_offences = 0
 
-      target_files(args).each do |file|
+      target_files(args).reject { |f| File.directory?(f) }.each do |file|
         report = Report.create(file, options[:mode])
         source = File.readlines(file)
         tokens = Ripper.lex(source.join)
