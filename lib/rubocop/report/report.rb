@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 module Rubocop
   module Report
     # Creates a Report object, based on the current settings

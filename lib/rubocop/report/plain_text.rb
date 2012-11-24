@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 module Rubocop
   module Report
     # Plain text report, suitable for display in terminals.

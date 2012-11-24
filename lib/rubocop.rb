@@ -1,7 +1,10 @@
+# encoding: utf-8
+
 require 'ripper'
 
 require 'rubocop/cop/offence'
 require 'rubocop/cop/cop'
+require 'rubocop/cop/encoding'
 require 'rubocop/cop/line_length'
 require 'rubocop/cop/tab'
 require 'rubocop/cop/trailing_whitespace'
