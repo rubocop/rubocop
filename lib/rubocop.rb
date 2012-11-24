@@ -5,6 +5,8 @@ require 'rubocop/cop/cop'
 require 'rubocop/cop/line_length'
 require 'rubocop/cop/tab'
 require 'rubocop/cop/trailing_whitespace'
+require 'rubocop/cop/indentation'
+require 'rubocop/cop/empty_lines'
 
 require 'rubocop/report/report'
 require 'rubocop/report/plain_text'
