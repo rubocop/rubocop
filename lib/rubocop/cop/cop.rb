@@ -34,8 +34,30 @@ module Rubocop
         !@offences.empty?
       end
 
+      def inspect_source(file, source)
+        tokens = Ripper.lex(source.join("\n"))
+        sexp = Ripper.sexp(source.join("\n"))
+        inspect(file, source, tokens, sexp)
+      end
+      
       def add_offence(file, line_number, line, message)
         @offences << Offence.new(file, line_number, line, message)
+      end
+
+      private
+
+      def each_parent_of(sym, sexp)
+        parents = []
+        sexp.each { |elem|
+          if Array === elem
+            if elem[0] == sym
+              parents << sexp
+            else
+              each_parent_of(sym, elem) { |parent| parents << parent }
+            end
+          end
+        }
+        parents.uniq.each { |parent| yield parent }
       end
     end
   end

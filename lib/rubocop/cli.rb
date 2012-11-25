@@ -28,12 +28,10 @@ module Rubocop
       target_files(args).each do |file|
         report = Report.create(file, options[:mode])
         source = File.readlines(file)
-        tokens = Ripper.lex(source.join)
-        sexp = Ripper.sexp(source.join)
 
         cops.each do |cop_klass|
           cop = cop_klass.new
-          cop.inspect(file, source, tokens, sexp)
+          cop.inspect_source(file, source)
           total_offences += cop.offences.count
           report << cop if cop.has_report?
         end
