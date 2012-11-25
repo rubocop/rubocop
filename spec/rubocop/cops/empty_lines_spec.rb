@@ -22,6 +22,33 @@ module Rubocop
         empty_lines.offences.first.message.should == 'Use empty lines between defs.'
       end
 
+      it 'accepts the first def without leading empty line in a class' do
+        empty_lines.inspect_source "", ["class K",
+                                        "  def m",
+                                        "  end",
+                                        "end"]
+        empty_lines.offences.size.should == 0
+      end
+
+      it 'finds offences in inner classes' do
+        empty_lines.inspect_source "", ["class K",
+                                        "  def m",
+                                        "  end",
+                                        "  class J",
+                                        "    def n",
+                                        "    end",
+                                        "    def o",
+                                        "    end",
+                                        "  end",
+                                        "  # checks something",
+                                        "  def p",
+                                        "  end",
+                                        "end"]
+        empty_lines.offences.size.should == 2
+        empty_lines.offences.map(&:line).sort.should == ["    def o",
+                                                         "  def p"]
+      end
+
       it 'accepts a def that follows an empty line' do
         empty_lines.inspect_source "", ["  x = 0",
                                         "",
