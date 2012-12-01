@@ -19,7 +19,7 @@ module Rubocop
               line_index = name_pos[0] - 1
               (line_index - 1).downto(0).each { |ix|
                 case source[ix]
-                when /^#/
+                when /^[ \t]*(#|private\b|public\b|protected\b)/
                   nil  # Continue searching backwards
                 when /^[ \t]*$/
                   break # Empty line found, so we're ok.
