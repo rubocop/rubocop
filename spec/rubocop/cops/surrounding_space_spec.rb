@@ -1,0 +1,76 @@
+require 'spec_helper'
+
+module Rubocop
+  module Cop
+    describe SurroundingSpace do
+      let (:space) { SurroundingSpace.new }
+
+      it 'registers an offence for assignment without space on both sides' do
+        space.inspect_source "file.rb", ["x=0", "y= 0", "z =0"]
+        space.offences.size.should == 3
+        space.offences.first.message.should ==
+          "Surrounding space missing for operator '='."
+      end
+
+      it 'registers an offence for binary operators that could be unary' do
+        space.inspect_source "file.rb", ["a-3", "x&0xff", "z+0"]
+        space.offences.map(&:message).should ==
+          ["Surrounding space missing for operator '-'.",
+           "Surrounding space missing for operator '&'.",
+           "Surrounding space missing for operator '+'."]
+      end
+
+      # it "registers an offence for block argument commas" do
+      #   space.inspect_source "file.rb", ["each { |s,t| }"]
+      #   space.offences.map(&:messages).should ==
+      #     ["Space missing after comma."]
+      # end
+      
+      it "accepts parentheses in block parameter list" do
+        space.inspect_source("file.rb",
+                             ["list.inject(Tms.new) { |sum, (label, item)|",
+                              "}"])
+        space.offences.map(&:message).should == []
+      end
+      
+      it "accepts unary" do
+        space.inspect_source("file.rb",
+                             ["  def bm(label_width = 0, *labels, &blk)",
+                              "    benchmark(CAPTION, label_width, FORMAT,",
+                              "              *labels, &blk)",
+                              "  end",
+                              ""])
+        space.offences.map(&:message).should == []
+      end
+
+      it "accepts def of operator" do
+        space.inspect_source("file.rb", ['def +(other); end'])
+        space.offences.map(&:message).should == []
+      end
+      
+      it "accepts an assignment with spaces" do
+        space.inspect_source "file.rb", ["x = 0"]
+        space.offences.size.should == 0
+      end
+
+      it "accepts some operators that are exceptions and don't need spaces" do
+        space.inspect_source "file.rb", ["(1..3)",
+                                         "ActionController::Base",
+                                         "each { |s, t| }"]
+        space.offences.map(&:message).should == []
+      end
+
+      it "accepts an assignment followed by newline" do
+        space.inspect_source "file.rb", ["x =\n  0"]
+        space.offences.size.should == 0
+      end
+
+      it "accepts unary operators without space" do
+        space.inspect_source "file.rb", ["[].map(&:size)",
+                                         "-3",
+                                         "x = +2"]
+        space.offences.map(&:message).should == []
+      end
+    end
+  end
+end
