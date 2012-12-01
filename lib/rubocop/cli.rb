@@ -27,7 +27,14 @@ module Rubocop
 
       target_files(args).each do |file|
         report = Report.create(file, options[:mode])
-        source = File.readlines(file)
+        source = File.readlines(file).map { |line|
+          enc = line.encoding.name
+          # Get rid of invalid byte sequences
+          line.encode!('UTF-16', enc, :invalid => :replace, :replace => '')
+          line.encode!(enc, 'UTF-16')
+
+          line.chomp
+        }
 
         cops.each do |cop_klass|
           cop = cop_klass.new
@@ -50,10 +57,10 @@ module Rubocop
     # files in the current directory
     # @return [Array] array of filenames
     def target_files(args)
-      return Dir['**/*.rb'] if args.empty?
+      return Dir['**/*.rb'].reject { |name| name =~ /_flymake/ } if args.empty?
 
       if glob = args.detect { |arg| arg =~ /\*/ }
-        Dir[glob]
+        Dir[glob].reject { |name| name =~ /_flymake/ }
       else
         args
       end
