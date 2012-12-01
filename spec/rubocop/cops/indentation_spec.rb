@@ -3,29 +3,32 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe Indentation do
-      let (:indentation) { Indentation.new }
+      let (:ind) { Indentation.new }
 
       it "registers an offence for a when clause that's deeper than case" do
-        source = ['case x',
+        source = ['case a',
                   '    when 0 then return',
-                  '        case y',
+                  '        case b',
                   '         when 1 then return',
                   '        end',
                   'end']
-        indentation.inspect("file.rb", source, Ripper.lex(source.join("\n")),
-                            Ripper.sexp(source.join("\n")))
-        indentation.offences.size.should == 2
-        check_offence indentation.offences.first, 1, "Indent when as deep as case."
-        check_offence indentation.offences.last, 3, "Indent when as deep as case."
+        ind.inspect_source("file.rb", source)
+        ind.offences.map(&:message).should == ["Indent when as deep as case.",
+                                               "Indent when as deep as case."]
       end
 
       it "accepts a when clause that's equally indented with case" do
-        source = ['case x',
-                  'when 0 then return',
-                  'end']
-        indentation.inspect("file.rb", source, Ripper.lex(source.join("\n")),
-                            Ripper.sexp(source.join("\n")))
-        indentation.offences.size.should == 0
+        source = ['y = case x',
+                  '    when 0 then return',
+                  '      z = case w',
+                  '          when 0 then return',
+                  '          when 1 then break',
+                  '          end',
+                  '    when 1 then break',
+                  '    end',
+                  '']
+        ind.inspect_source("file.rb", source)
+        ind.offences.size.should == 0
       end
 
       def check_offence(offence, line_number, message)

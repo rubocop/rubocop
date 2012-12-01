@@ -10,7 +10,8 @@ module Rubocop
                                         "def m",
                                         "end"]
         empty_lines.offences.size.should == 1
-        empty_lines.offences.first.message.should == 'Use empty lines between defs.'
+        empty_lines.offences.first.message.should ==
+          'Use empty lines between defs.'
       end
 
       it 'registers an offence for a def that follows code and a comment' do
@@ -19,7 +20,8 @@ module Rubocop
                                         "  def m",
                                         "  end"]
         empty_lines.offences.size.should == 1
-        empty_lines.offences.first.message.should == 'Use empty lines between defs.'
+        empty_lines.offences.first.message.should ==
+          'Use empty lines between defs.'
       end
 
       it 'accepts the first def without leading empty line in a class' do
@@ -58,12 +60,17 @@ module Rubocop
       end
 
       it 'accepts a def that follows an empty line and then a comment' do
-        empty_lines.inspect_source "", ["x = 0",
+        empty_lines.inspect_source "", ["class A",
+                                        "  # calculates value",
+                                        "  def m",
+                                        "  end",
                                         "",
-                                        "# calculates value",
-                                        "# or height",
-                                        "def m",
-                                        "end"]
+                                        "  private",
+                                        "  # calculates size",
+                                        "  def n",
+                                        "  end",
+                                        "end",
+                                       ]
         empty_lines.offences.size.should == 0
       end
     end
