@@ -52,12 +52,19 @@ module Rubocop
           if Array === elem
             if elem[0] == sym
               parents << sexp
-            else
-              each_parent_of(sym, elem) { |parent| parents << parent }
+              elem = elem[1..-1]
             end
+            each_parent_of(sym, elem) { |parent| parents << parent }
           end
         }
         parents.uniq.each { |parent| yield parent }
+      end
+
+      def each(sym, sexp)
+        yield sexp if sexp[0] == sym
+        sexp.each { |elem|
+          each(sym, elem) { |s| yield s } if Array === elem
+        }
       end
     end
   end
