@@ -13,27 +13,24 @@ module Rubocop
                   '        end',
                   'end']
         ind.inspect_source("file.rb", source)
-        ind.offences.map(&:message).should == ["Indent when as deep as case.",
-                                               "Indent when as deep as case."]
+        ind.offences.size.should == 2
       end
 
       it "accepts a when clause that's equally indented with case" do
-        source = ['y = case x',
+        source = ['y = case a',
+                  '    when 0 then break',
                   '    when 0 then return',
-                  '      z = case w',
-                  '          when 0 then return',
+                  '      z = case b',
+                  '          when 1 then return',
                   '          when 1 then break',
                   '          end',
-                  '    when 1 then break',
                   '    end',
+                  'case c',
+                  'when 2 then encoding',
+                  'end',
                   '']
         ind.inspect_source("file.rb", source)
         ind.offences.size.should == 0
-      end
-
-      def check_offence(offence, line_number, message)
-        offence.message.should == message
-        offence.line_number.should == line_number
       end
     end
   end
