@@ -2,6 +2,7 @@ module Rubocop
   module Cop
     class SurroundingSpace < Cop
       ERROR_MESSAGE = 'Surrounding space missing '
+      ONLY_BINARY = %w(|| && = == === != += -= *= /= |= ||= &= &&= ** ~= !~ =>)
 
       def inspect(file, source, tokens, sexp)
         tokens.each_with_index { |tok, ix|
@@ -17,10 +18,11 @@ module Rubocop
       end
 
       def is_ok_without_spaces(tokens, ix, sexp)
+        text = tokens[ix].last
+        return false if ONLY_BINARY.include?(text)
         return true if token_is_part_of([:unary, :rest_param, :blockarg,
                                          :args_add_star, :args_add_block],
                                         tokens[ix], sexp)
-        text = tokens[ix].last
         return true if %w(.. ::).include?(text)
 
         prev = first_non_whitespace(tokens, ix, -1, -2)
