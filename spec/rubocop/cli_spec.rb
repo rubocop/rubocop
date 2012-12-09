@@ -17,7 +17,9 @@ module Rubocop
       end
 
       it 'checks a given correct file and returns 0' do
-        File.open('example.rb', 'w') { |f| f.puts 'x = 0' }
+        File.open('example.rb', 'w') { |f|
+          f.puts("# encoding: utf-8", "x = 0")
+        }
         begin
           cli.run(['example.rb']).should == 0
           $stdout.string.should == "\n1 files inspected, 0 offences detected\n"
@@ -27,11 +29,13 @@ module Rubocop
       end
 
       it 'checks a given file with faults and returns 1' do
-        File.open('example.rb', 'w') { |f| f.puts 'x = 0 ' }
+        File.open('example.rb', 'w') { |f|
+          f.puts("# encoding: utf-8", "x = 0 ")
+        }
         begin
           cli.run(['example.rb']).should == 1
           $stdout.string.should == ['== example.rb ==',
-                                    'C:  0: Trailing whitespace detected.',
+                                    'C:  1: Trailing whitespace detected.',
                                     '',
                                     '1 files inspected, 1 offences detected',
                                     ''].join("\n")
@@ -46,10 +50,12 @@ module Rubocop
         begin
           cli.run(['--emacs', 'example1.rb', 'example2.rb']).should == 1
           $stdout.string.should ==
-            ['example1.rb:1: C: Trailing whitespace detected.',
+            ['example1.rb:1: C: Missing encoding comment.',
+             'example1.rb:1: C: Trailing whitespace detected.',
+             'example2.rb:1: C: Missing encoding comment.',
              'example2.rb:1: C: Tab detected.',
              '',
-             '2 files inspected, 2 offences detected',
+             '2 files inspected, 4 offences detected',
              ''].join("\n")
         ensure
           File.delete 'example1.rb'
