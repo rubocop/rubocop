@@ -57,10 +57,14 @@ module Rubocop
     # files in the current directory
     # @return [Array] array of filenames
     def target_files(args)
-      return Dir['**/*.rb'].reject { |name| name =~ /_flymake/ } if args.empty?
+      raw_target_files(args).reject { |name| name =~ /_flymake/ }
+    end
+
+    def raw_target_files(args)
+      return Dir['**/*.rb'] if args.empty?
 
       if glob = args.detect { |arg| arg =~ /\*/ }
-        Dir[glob].reject { |name| name =~ /_flymake/ }
+        Dir[glob]
       else
         args
       end
