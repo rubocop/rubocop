@@ -35,7 +35,7 @@ module Rubocop
       end
 
       def next_when(sexp, case_ix, &block)
-        nxt = sexp.find { |s| Array === s && s[0] == :when } or return case_ix
+        nxt = sexp.grep(Array).find { |s| s[0] == :when } or return case_ix
         each_when(nxt, case_ix, &block)
       end
     end
