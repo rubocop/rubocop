@@ -35,9 +35,14 @@ module Rubocop
       end
 
       def inspect_source(file, source)
-        tokens = Ripper.lex(source.join("\n"))
-        sexp = Ripper.sexp(source.join("\n"))
-        inspect(file, source, tokens, sexp)
+        case method(:inspect).arity
+        when 2
+          inspect(file, source)
+        else
+          tokens = Ripper.lex(source.join("\n"))
+          sexp = Ripper.sexp(source.join("\n"))
+          inspect(file, source, tokens, sexp)
+        end
       end
       
       def add_offence(file, line_number, line, message)
