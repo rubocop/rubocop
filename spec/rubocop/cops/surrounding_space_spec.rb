@@ -20,12 +20,6 @@ module Rubocop
            "Surrounding space missing for operator '+'."]
       end
 
-      # it "registers an offence for block argument commas" do
-      #   space.inspect_source "file.rb", ["each { |s,t| }"]
-      #   space.offences.map(&:messages).should ==
-      #     ["Space missing after comma."]
-      # end
-      
       it "accepts parentheses in block parameter list" do
         space.inspect_source("file.rb",
                              ["list.inject(Tms.new) { |sum, (label, item)|",
@@ -33,7 +27,7 @@ module Rubocop
         space.offences.map(&:message).should == []
       end
       
-      it "accepts unary" do
+      it "accepts a unary" do
         space.inspect_source("file.rb",
                              ["  def bm(label_width = 0, *labels, &blk)",
                               "    benchmark(CAPTION, label_width, FORMAT,",

@@ -8,6 +8,7 @@ require 'rubocop/cop/trailing_whitespace'
 require 'rubocop/cop/indentation'
 require 'rubocop/cop/empty_lines'
 require 'rubocop/cop/surrounding_space'
+require 'rubocop/cop/space_after_comma_etc'
 
 require 'rubocop/report/report'
 require 'rubocop/report/plain_text'
