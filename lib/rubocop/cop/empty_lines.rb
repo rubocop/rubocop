@@ -5,31 +5,18 @@ module Rubocop
 
       def inspect(file, source, tokens, sexp)
         each_parent_of(:def, sexp) do |parent|
+          defs = parent.select { |child| child[0] == :def }
+          identifier_of_first_def = defs[0][1]
+          current_row_ix = identifier_of_first_def[-1][0] - 1
           # The first def doesn't need to have an empty line above it,
           # so we iterate starting at index 1.
-          parent[1..-1].each { |child|
-            if child[0] == :def
-              # The method name is a leaf in the sexp parse tree so it
-              # will have a position.
-              # Example: child[1] == [:@ident, "my_method", [3, 6]]
-              name_pos = child[1][-1]
-              # Any errors will be reported on the lines containing
-              # the method name. Normally the def keyword will be on
-              # the same line.
-              line_index = name_pos[0] - 1
-              (line_index - 1).downto(0).each { |ix|
-                case source[ix]
-                when /^[ \t]*(#|private\b|public\b|protected\b)/
-                  nil  # Continue searching backwards
-                when /^[ \t]*$/
-                  break # Empty line found, so we're ok.
-                else
-                  add_offence(:convention, line_index, source[line_index],
-                              ERROR_MESSAGE)
-                  break
-                end
-              }
+          defs[1..-1].each { |child|
+            next_row_ix = child[1][-1][0] - 1
+            if source[current_row_ix..next_row_ix].grep(/^[ \t]*$/).empty?
+              add_offence(:convention, next_row_ix, source[next_row_ix],
+                          ERROR_MESSAGE)
             end
+            current_row_ix = next_row_ix
           }
         end
       end
