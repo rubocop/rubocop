@@ -1,4 +1,5 @@
 require_relative 'grammar'
+require 'awesome_print'
 
 module Rubocop
   module Cop
@@ -10,7 +11,7 @@ module Rubocop
         tokens.each_with_index { |tok, ix|
           pos, name, text = tok
           if name == :on_op
-            unless is_surrounded_by_whitespace(*tokens[ix - 1, 3])
+            unless is_surrounded_by_whitespace(tokens[ix - 1, 3])
               unless is_ok_without_spaces(tokens, ix, sexp)
                 index = pos[0] - 1
                 add_offence(:convention, index, source[index],
@@ -22,11 +23,15 @@ module Rubocop
       end
 
       def is_ok_without_spaces(tokens, ix, sexp)
-        return true if token_is_part_of([:unary, :rest_param, :blockarg,
-                                         :block_var, :args_add_block],
-                                        tokens, ix, sexp)
+        if @table[ix]
+          grandparent, parent, child = @table[ix][-3..-1]
+          return true if [:unary, :symbol, :defs].include?(parent)
+          return true if [:rest_param, :blockarg, :block_var, :args_add_star,
+                          :args_add_block, :const_path_ref].include?(child)
+          return true if grandparent == :unary && parent == :vcall
+        end
         text = tokens[ix].last
-        return true if %w(.. ::).include?(text)
+        return true if %w(.. ... ::).include?(text)
 
         prev = first_non_whitespace(tokens, ix, -1, -2)
         return true if prev[1..-1] == [:on_kw, "def"]
@@ -42,18 +47,13 @@ module Rubocop
         end
       end
 
-      def is_surrounded_by_whitespace(left, _, right)
+      def is_surrounded_by_whitespace(nearby_tokens)
+        left, _, right = nearby_tokens
         is_whitespace(left) && is_whitespace(right)
       end
 
       def is_whitespace(token)
-        token[1] == :on_sp || token[1] == :on_ignored_nl
-      end
-
-      # Returns true if token belongs to any of the grammatical
-      # entities listed in symbols.
-      def token_is_part_of(symbols, tokens, ix, sexp)
-        symbols.find { |symbol| (@table[ix] || []).include?(symbol) }
+        [:on_sp, :on_ignored_nl, :on_nl].include?(token[1])
       end
     end
   end

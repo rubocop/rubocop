@@ -20,13 +20,49 @@ module Rubocop
            "Surrounding space missing for operator '+'."]
       end
 
+      it 'registers an offence for arguments to a method' do
+        space.inspect_source("file.rb", ["puts 1+2"])
+        space.offences.map(&:message).should ==
+          ["Surrounding space missing for operator '+'."]
+      end
+      
       it "accepts parentheses in block parameter list" do
         space.inspect_source("file.rb",
                              ["list.inject(Tms.new) { |sum, (label, item)|",
                               "}"])
         space.offences.map(&:message).should == []
       end
-      
+
+      it "accepts operator symbols" do
+        space.inspect_source("file.rb", ['func(:-)'])
+        space.offences.map(&:message).should == []
+      end
+
+      it "accepts ranges" do
+        space.inspect_source("file.rb", ['a, b = (1..2), (1...3)'])
+        space.offences.map(&:message).should == []
+      end
+
+      it "accepts scope operator" do
+        source = ['@io.class == Zlib::GzipWriter']
+        space.inspect_source("file.rb", source)
+        space.offences.map(&:message).should == []
+      end
+
+      it "accepts exclamation point negation" do
+        space.inspect_source("file.rb", ['x = !a&&!b'])
+        space.offences.map(&:message).should ==
+          ["Surrounding space missing for operator '&&'."]
+      end
+
+      it "accepts exclamation point definition" do
+        space.inspect_source("file.rb", ['  def !',
+                                         '    !__getobj__',
+                                         '  end'])
+        space.offences.should == []
+        space.offences.map(&:message).should == []
+      end
+
       it "accepts a unary" do
         space.inspect_source("file.rb",
                              ["  def bm(label_width = 0, *labels, &blk)",
@@ -34,6 +70,17 @@ module Rubocop
                               "              *labels, &blk)",
                               "  end",
                               ""])
+        space.offences.map(&:message).should == []
+      end
+
+      it "accepts splat operator" do
+        space.inspect_source("file.rb", ['return *list if options'])
+        space.offences.map(&:message).should == []
+      end
+
+      it "accepts square brackets as method name" do
+        space.inspect_source("file.rb", ['def Vector.[](*array)',
+                                         'end'])
         space.offences.map(&:message).should == []
       end
 

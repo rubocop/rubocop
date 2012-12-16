@@ -38,6 +38,7 @@ module Rubocop
             # position, which we search for and advance @ix.
             @ix = @index_by_pos[sexp[-1]]
             @table[@ix] = path + [sexp[0]]
+            @ix += 1
           when *@special.keys
             find(path, sexp, @special[sexp[0].to_s])
           when *%w'case when then break return0'
@@ -48,7 +49,10 @@ module Rubocop
             find(path, sexp, [:on_op, '|'])
           end
           path += [sexp[0]] unless Array === sexp[0]
-          sexp.each { |elem|
+          # Compensate for reverse order of if modifier
+          children = (sexp[0] == :if_mod) ? sexp.reverse : sexp
+
+          children.each { |elem|
             case elem
             when Array
               correlate(elem, path)
