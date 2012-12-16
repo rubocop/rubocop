@@ -6,9 +6,11 @@ module Rubocop
       def inspect(file, source, tokens, sexp)
         tokens.each_index { |ix|
           pos, name, text = tokens[ix]
-          kind = if    name == :on_comma                then 'comma'
-                 elsif name == :on_label || text == ':' then 'colon'
-                 elsif name == :on_semicolon            then 'semicolon'
+          kind = case name
+                 when :on_comma     then 'comma'
+                 when :on_label     then 'colon'
+                 when :on_op        then 'colon' if text == ':'
+                 when :on_semicolon then 'semicolon'
                  end
           if kind and not [:on_sp, :on_ignored_nl].include?(tokens[ix+1][1])
             index = pos[0] - 1

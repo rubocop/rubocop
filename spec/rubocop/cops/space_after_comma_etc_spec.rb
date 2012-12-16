@@ -22,7 +22,17 @@ module Rubocop
         space.offences.map(&:message).should ==
           ["Space missing after semicolon."]
       end
-end
+
+      it "allows the colons in symbols" do
+        space.inspect_source "file.rb", ["x = :a"]
+        space.offences.map(&:message).should == []
+      end
+
+      it "allows colons in strings" do
+        space.inspect_source("file.rb",
+                             ['str << ":"'])
+        space.offences.map(&:message).should == []
+      end
+    end
   end
 end
-      
