@@ -8,13 +8,13 @@ module Rubocop
         token_positions = tokens.map { |tok| tok[0] }
         @index_by_pos = Hash[*token_positions.each_with_index.to_a.flatten(1)]
         @special = {
-          'assign'         => [:on_op, '='],
-          'rest_param'     => [:on_op, '*'],
-          'blockarg'       => [:on_op, '&'],
-          'args_add_star'  => [:on_op, '*'],
-          'args_add_block' => [:on_op, '&'],
-          'dot2'           => [:on_op, '..'],
-          'const_path_ref' => [:on_op, '::'],
+          assign:         '=',
+          rest_param:     '*',
+          blockarg:       '&',
+          args_add_star:  '*',
+          args_add_block: '&',
+          dot2:           '..',
+          const_path_ref: '::',
         }
       end
 
@@ -32,7 +32,7 @@ module Rubocop
       def correlate(sexp, path = [])
         case sexp
         when Array
-          case sexp[0].to_s
+          case sexp[0]
           when /^@/
             # Leaves in the grammar have a corresponding token with a
             # position, which we search for and advance @ix.
@@ -40,30 +40,31 @@ module Rubocop
             @table[@ix] = path + [sexp[0]]
             @ix += 1
           when *@special.keys
-            find(path, sexp, @special[sexp[0].to_s])
-          when *%w'case when then break return0'
-            find(path, sexp, [:on_kw, sexp[0].to_s[%r'^[a-z]+']])
-          when *%w'block_var'
-            @ix = find(path, sexp, [:on_op, '|'])
-            @ix += 1
+            # Here we don't advance @ix because there may be other
+            # tokens inbetween the current one and the one we get from
+            # @special.
+            find(path, sexp, [:on_op, @special[sexp[0]]])
+          when :block_var # "{ |...|" or "do |...|"
+            @ix = find(path, sexp, [:on_op, '|']) + 1
             find(path, sexp, [:on_op, '|'])
           end
-          path += [sexp[0]] unless Array === sexp[0]
+          path += [sexp[0]] if Symbol === sexp[0]
           # Compensate for reverse order of if modifier
           children = (sexp[0] == :if_mod) ? sexp.reverse : sexp
 
           children.each { |elem|
             case elem
             when Array
-              correlate(elem, path)
+              correlate(elem, path) # Dive deeper
             when Symbol
               unless elem.to_s =~ /^@?[a-z_]+$/
+                # There's a trailing @ in some symbols in sexp,
+                # e.g. :-@, that don't appear in tokens. That's why we
+                # chomp it off.
                 find(path, [elem], [:on_op, elem.to_s.chomp('@')])
               end
             end
           }
-        when :"."
-          find(path, [sexp], [:on_period, sexp.to_s])
         end
         @table
       end
