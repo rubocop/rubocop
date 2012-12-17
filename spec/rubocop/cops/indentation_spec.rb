@@ -32,6 +32,19 @@ module Rubocop
         ind.inspect_source("file.rb", source)
         ind.offences.size.should == 0
       end
+
+      it "doesn't get confused by strings with case in them" do
+        source = ['a = "case"',
+                  'case x',
+                  'when 0',
+                  'end',
+                  '']
+        ind.inspect_source("file.rb", source)
+        ind.offences.map(&:message).should == []
+      end
+
+
+
     end
   end
 end
