@@ -28,7 +28,7 @@ module Rubocop
       #    7 => [:program, :assign, :@int],
       #    9 => [:program, :assign, :var_field, :@ident],
       #   11 => [:program, :assign],
-      #   12 => [:program, :assign, :@int] }      
+      #   12 => [:program, :assign, :@int] }
       def correlate(sexp, path = [])
         case sexp
         when Array

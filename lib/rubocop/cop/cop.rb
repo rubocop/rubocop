@@ -44,7 +44,7 @@ module Rubocop
           inspect(file, source, tokens, sexp)
         end
       end
-      
+
       def add_offence(file, line_number, line, message)
         @offences << Offence.new(file, line_number, line, message)
       end

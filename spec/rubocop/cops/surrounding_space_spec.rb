@@ -25,7 +25,7 @@ module Rubocop
         space.offences.map(&:message).should ==
           ["Surrounding space missing for operator '+'."]
       end
-      
+
       it "accepts parentheses in block parameter list" do
         space.inspect_source("file.rb",
                              ["list.inject(Tms.new) { |sum, (label, item)|",
@@ -88,7 +88,7 @@ module Rubocop
         space.inspect_source("file.rb", ['def +(other); end'])
         space.offences.map(&:message).should == []
       end
-      
+
       it "accepts an assignment with spaces" do
         space.inspect_source "file.rb", ["x = 0"]
         space.offences.size.should == 0

@@ -12,7 +12,7 @@ module Rubocop
                  when :on_op        then 'colon' if text == ':'
                  when :on_semicolon then 'semicolon'
                  end
-          if kind and not [:on_sp, :on_ignored_nl].include?(tokens[ix+1][1])
+          if kind and not [:on_sp, :on_ignored_nl].include?(tokens[ix + 1][1])
             index = pos[0] - 1
             add_offence(:convention, index, source[index],
                         ERROR_MESSAGE % kind)
