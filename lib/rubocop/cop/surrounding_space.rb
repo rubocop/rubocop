@@ -1,5 +1,4 @@
 require_relative 'grammar'
-require 'awesome_print'
 
 module Rubocop
   module Cop
