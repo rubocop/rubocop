@@ -26,7 +26,7 @@ module Rubocop
         tokens[ix][1..-1] == [:on_kw, keyword] &&
           tokens[ix - 1][1] != :on_symbeg
       end
-      
+
       # Does a depth first search for :when, yielding the index of the
       # corresponding :case for each one.
       def each_when(sexp, case_ix = -1, &block)
