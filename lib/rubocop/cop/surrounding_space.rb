@@ -22,7 +22,7 @@ module Rubocop
 
       def is_ok_without_spaces(grammar_path)
         grandparent, parent, child = grammar_path.values_at(-3, -2, -1)
-        return true if [:unary, :symbol, :defs, :def].include?(parent)
+        return true if [:unary, :symbol, :defs, :def, :call].include?(parent)
         return true if [:rest_param, :blockarg, :block_var, :args_add_star,
                         :args_add_block, :const_path_ref, :dot2,
                         :dot3].include?(child)

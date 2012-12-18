@@ -112,6 +112,11 @@ module Rubocop
                                          "x = +2"]
         space.offences.map(&:message).should == []
       end
+
+      it "accepts square brackets called with method call syntax" do
+        space.inspect_source("file.rb", ['subject.[](0)'])
+        space.offences.map(&:message).should == []
+      end
     end
   end
 end
