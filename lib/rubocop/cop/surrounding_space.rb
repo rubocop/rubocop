@@ -3,47 +3,31 @@ require_relative 'grammar'
 module Rubocop
   module Cop
     class SurroundingSpace < Cop
-      ERROR_MESSAGE = 'Surrounding space missing '
+      ERROR_MESSAGE = 'Surrounding space missing for operator'
 
       def inspect(file, source, tokens, sexp)
-        @table = Grammar.new(tokens).correlate(sexp)
-        tokens.each_with_index { |tok, ix|
-          pos, name, text = tok
+        Grammar.new(tokens).correlate(sexp).sort.each { |ix, grammar_path|
+          pos, name, text = tokens[ix]
           if name == :on_op
             unless is_surrounded_by_whitespace(tokens[ix - 1, 3])
-              unless is_ok_without_spaces(tokens, ix, sexp)
+              unless is_ok_without_spaces(grammar_path)
                 index = pos[0] - 1
                 add_offence(:convention, index, source[index],
-                            ERROR_MESSAGE + "for operator '" + text + "'.")
+                            ERROR_MESSAGE + " '#{text}'.")
               end
             end
           end
         }
       end
 
-      def is_ok_without_spaces(tokens, ix, sexp)
-        if @table[ix]
-          grandparent, parent, child = @table[ix][-3..-1]
-          return true if [:unary, :symbol, :defs].include?(parent)
-          return true if [:rest_param, :blockarg, :block_var, :args_add_star,
-                          :args_add_block, :const_path_ref].include?(child)
-          return true if grandparent == :unary && parent == :vcall
-        end
-        text = tokens[ix].last
-        return true if %w(.. ... ::).include?(text)
-
-        prev = first_non_whitespace(tokens, ix, -1, -2)
-        return true if prev[1..-1] == [:on_kw, "def"]
-        nxt = first_non_whitespace(tokens, ix, 1, 2)
-        return true if text == '&' && nxt[1] == :on_symbeg
-      end
-
-      def first_non_whitespace(tokens, ix, first_offset, second_offset)
-        if is_whitespace(tokens[ix + first_offset])
-          tokens[ix + second_offset]
-        else
-          tokens[ix + first_offset]
-        end
+      def is_ok_without_spaces(grammar_path)
+        grandparent, parent, child = grammar_path.values_at(-3, -2, -1)
+        return true if [:unary, :symbol, :defs, :def].include?(parent)
+        return true if [:rest_param, :blockarg, :block_var, :args_add_star,
+                        :args_add_block, :const_path_ref, :dot2,
+                        :dot3].include?(child)
+        return true if grandparent == :unary && parent == :vcall
+        false
       end
 
       def is_surrounded_by_whitespace(nearby_tokens)

@@ -14,6 +14,7 @@ module Rubocop
           args_add_star:  '*',
           args_add_block: '&',
           dot2:           '..',
+          dot3:           '...',
           const_path_ref: '::',
         }
       end
