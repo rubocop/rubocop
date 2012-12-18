@@ -43,8 +43,18 @@ module Rubocop
         ind.offences.map(&:message).should == []
       end
 
-
-
+      it "doesn't get confused by symbols named case or when" do
+        source = ['KEYWORDS = { :case => true, :when => true }',
+                  'case type',
+                  'when 0',
+                  '  ParameterNode',
+                  'when 1',
+                  '  MethodCallNode',
+                  'end',
+                  '']
+        ind.inspect_source("file.rb", source)
+        ind.offences.map(&:message).should == []
+      end
     end
   end
 end

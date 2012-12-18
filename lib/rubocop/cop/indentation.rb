@@ -4,8 +4,8 @@ module Rubocop
       ERROR_MESSAGE = "Indent when as deep as case."
 
       def inspect(file, source, tokens, sexp)
-        case_tokens = tokens.find_all { |t| t[1..-1] == [:on_kw, "case"] }
-        when_tokens = tokens.find_all { |t| t[1..-1] == [:on_kw, "when"] }
+        case_tokens = find_keywords(tokens, "case")
+        when_tokens = find_keywords(tokens, "when")
         each_when(sexp) { |case_ix|
           when_pos = when_tokens.shift[0]
           if when_pos[1] != case_tokens[case_ix][0][1]
@@ -15,6 +15,18 @@ module Rubocop
         }
       end
 
+      def find_keywords(tokens, keyword)
+        indexes = tokens.each_index.find_all { |ix|
+          keyword?(tokens, ix, keyword)
+        }
+        tokens.values_at(*indexes)
+      end
+
+      def keyword?(tokens, ix, keyword)
+        tokens[ix][1..-1] == [:on_kw, keyword] &&
+          tokens[ix - 1][1] != :on_symbeg
+      end
+      
       # Does a depth first search for :when, yielding the index of the
       # corresponding :case for each one.
       def each_when(sexp, case_ix = -1, &block)
