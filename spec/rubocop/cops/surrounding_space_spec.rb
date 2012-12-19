@@ -49,6 +49,12 @@ module Rubocop
         space.offences.map(&:message).should == []
       end
 
+      it 'accepts ::Kernel::raise' do
+        source = ['::Kernel::raise IllegalBlockError.new']
+        space.inspect_source('file.rb', source)
+        space.offences.map(&:message).should == []
+      end
+
       it "accepts exclamation point negation" do
         space.inspect_source("file.rb", ['x = !a&&!b'])
         space.offences.map(&:message).should ==

@@ -27,6 +27,7 @@ module Rubocop
                         :args_add_block, :const_path_ref, :dot2,
                         :dot3].include?(child)
         return true if grandparent == :unary && parent == :vcall
+        return true if parent == :command_call && child == :"::"
         false
       end
 
