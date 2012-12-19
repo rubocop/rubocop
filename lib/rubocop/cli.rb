@@ -29,13 +29,18 @@ module Rubocop
 
       target_files(args).reject { |f| File.directory?(f) }.each do |file|
         report = Report.create(file, options[:mode])
-        source = File.readlines(file)
-        tokens = Ripper.lex(source.join)
-        sexp = Ripper.sexp(source.join)
+        source = File.readlines(file).map { |line|
+          enc = line.encoding.name
+          # Get rid of invalid byte sequences
+          line.encode!('UTF-16', enc, :invalid => :replace, :replace => '')
+          line.encode!(enc, 'UTF-16')
+
+          line.chomp
+        }
 
         cops.each do |cop_klass|
           cop = cop_klass.new
-          cop.inspect(file, source, tokens, sexp)
+          cop.inspect_source(file, source)
           total_offences += cop.offences.count
           report << cop if cop.has_report?
         end
@@ -54,6 +59,10 @@ module Rubocop
     # files in the current directory
     # @return [Array] array of filenames
     def target_files(args)
+      raw_target_files(args).reject { |name| name =~ /_flymake/ }
+    end
+
+    def raw_target_files(args)
       return Dir['**/*.rb'] if args.empty?
 
       if glob = args.detect { |arg| arg =~ /\*/ }
