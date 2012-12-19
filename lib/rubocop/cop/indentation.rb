@@ -1,11 +1,11 @@
 module Rubocop
   module Cop
     class Indentation < Cop
-      ERROR_MESSAGE = "Indent when as deep as case."
+      ERROR_MESSAGE = 'Indent when as deep as case.'
 
       def inspect(file, source, tokens, sexp)
-        case_tokens = find_keywords(tokens, "case")
-        when_tokens = find_keywords(tokens, "when")
+        case_tokens = find_keywords(tokens, 'case')
+        when_tokens = find_keywords(tokens, 'when')
         each_when(sexp) { |case_ix|
           when_pos = when_tokens.shift[0]
           if when_pos[1] != case_tokens[case_ix][0][1]

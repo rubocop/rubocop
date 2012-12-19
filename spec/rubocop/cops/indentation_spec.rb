@@ -12,7 +12,7 @@ module Rubocop
                   '         when 1 then return',
                   '        end',
                   'end']
-        ind.inspect_source("file.rb", source)
+        ind.inspect_source('file.rb', source)
         ind.offences.size.should == 2
       end
 
@@ -29,7 +29,7 @@ module Rubocop
                   'when 2 then encoding',
                   'end',
                   '']
-        ind.inspect_source("file.rb", source)
+        ind.inspect_source('file.rb', source)
         ind.offences.size.should == 0
       end
 
@@ -39,7 +39,7 @@ module Rubocop
                   'when 0',
                   'end',
                   '']
-        ind.inspect_source("file.rb", source)
+        ind.inspect_source('file.rb', source)
         ind.offences.map(&:message).should == []
       end
 
@@ -52,7 +52,7 @@ module Rubocop
                   '  MethodCallNode',
                   'end',
                   '']
-        ind.inspect_source("file.rb", source)
+        ind.inspect_source('file.rb', source)
         ind.offences.map(&:message).should == []
       end
     end

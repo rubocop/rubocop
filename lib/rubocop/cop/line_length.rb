@@ -1,7 +1,7 @@
 module Rubocop
   module Cop
     class LineLength < Cop
-      ERROR_MESSAGE = "Line is too long. [%d/%d]"
+      ERROR_MESSAGE = 'Line is too long. [%d/%d]'
       MAX_LINE_LENGTH = 79
 
       def inspect(file, source)
