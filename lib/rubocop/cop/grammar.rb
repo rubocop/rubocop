@@ -7,16 +7,7 @@ module Rubocop
         @table = {}
         token_positions = tokens.map { |tok| tok[0] }
         @index_by_pos = Hash[*token_positions.each_with_index.to_a.flatten(1)]
-        @special = {
-          assign:         '=',
-          rest_param:     '*',
-          blockarg:       '&',
-          args_add_star:  '*',
-          args_add_block: '&',
-          dot2:           '..',
-          dot3:           '...',
-          const_path_ref: '::',
-        }
+        @special = { assign: '=' }
       end
 
       # Returns a hash mapping indexes in the token array to grammar
