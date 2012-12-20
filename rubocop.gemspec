@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "rubocop"
-  s.version = "0.0.0"
+  s.version = "0.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Bozhidar Batsov"]
-  s.date = "2012-05-03"
+  s.date = "2012-12-20"
   s.description = "Automatic Ruby code style checking tool. Aims to enforce the community-driven Ruby Style Guide."
   s.email = "bozhidar@batsov.com"
   s.executables = ["rubocop"]
@@ -34,16 +34,40 @@ Gem::Specification.new do |s|
     "lib/rubocop.rb",
     "lib/rubocop/cli.rb",
     "lib/rubocop/cop/cop.rb",
-    "lib/rubocop/cop/line_length_cop.rb",
+    "lib/rubocop/cop/empty_lines.rb",
+    "lib/rubocop/cop/encoding.rb",
+    "lib/rubocop/cop/grammar.rb",
+    "lib/rubocop/cop/indentation.rb",
+    "lib/rubocop/cop/line_length.rb",
     "lib/rubocop/cop/offence.rb",
+    "lib/rubocop/cop/space_after_comma_etc.rb",
+    "lib/rubocop/cop/surrounding_space.rb",
+    "lib/rubocop/cop/tab.rb",
+    "lib/rubocop/cop/trailing_whitespace.rb",
+    "lib/rubocop/report/emacs_style.rb",
+    "lib/rubocop/report/plain_text.rb",
+    "lib/rubocop/report/report.rb",
     "lib/rubocop/version.rb",
-    "spec/rubocop_spec.rb",
+    "rubocop.gemspec",
+    "spec/rubocop/cli_spec.rb",
+    "spec/rubocop/cops/cop_spec.rb",
+    "spec/rubocop/cops/empty_lines_spec.rb",
+    "spec/rubocop/cops/grammar_spec.rb",
+    "spec/rubocop/cops/indentation_spec.rb",
+    "spec/rubocop/cops/line_length_spec.rb",
+    "spec/rubocop/cops/offence_spec.rb",
+    "spec/rubocop/cops/space_after_comma_etc_spec.rb",
+    "spec/rubocop/cops/surrounding_space_spec.rb",
+    "spec/rubocop/cops/tab_spec.rb",
+    "spec/rubocop/cops/trailing_whitespace_spec.rb",
+    "spec/rubocop/reports/emacs_style_spec.rb",
+    "spec/rubocop/reports/report_spec.rb",
     "spec/spec_helper.rb"
   ]
   s.homepage = "http://github.com/bbatsov/rubocop"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.15"
+  s.rubygems_version = "1.8.23"
   s.summary = "Automatic Ruby code style checking tool."
 
   if s.respond_to? :specification_version then
@@ -52,6 +76,7 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<rspec>, ["~> 2.8.0"])
       s.add_development_dependency(%q<yard>, ["~> 0.7"])
+      s.add_development_dependency(%q<redcarpet>, [">= 0"])
       s.add_development_dependency(%q<cucumber>, [">= 0"])
       s.add_development_dependency(%q<bundler>, ["~> 1.1.0"])
       s.add_development_dependency(%q<jeweler>, ["~> 1.8.3"])
@@ -59,6 +84,7 @@ Gem::Specification.new do |s|
     else
       s.add_dependency(%q<rspec>, ["~> 2.8.0"])
       s.add_dependency(%q<yard>, ["~> 0.7"])
+      s.add_dependency(%q<redcarpet>, [">= 0"])
       s.add_dependency(%q<cucumber>, [">= 0"])
       s.add_dependency(%q<bundler>, ["~> 1.1.0"])
       s.add_dependency(%q<jeweler>, ["~> 1.8.3"])
@@ -67,6 +93,7 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<rspec>, ["~> 2.8.0"])
     s.add_dependency(%q<yard>, ["~> 0.7"])
+    s.add_dependency(%q<redcarpet>, [">= 0"])
     s.add_dependency(%q<cucumber>, [">= 0"])
     s.add_dependency(%q<bundler>, ["~> 1.1.0"])
     s.add_dependency(%q<jeweler>, ["~> 1.8.3"])

@@ -11,7 +11,7 @@ module Rubocop
     # the target files
     # @return [Fixnum] UNIX exit code
     def run(args = ARGV)
-      options = { :mode => :default }
+      options = { mode: :default }
 
       OptionParser.new do |opts|
         opts.banner = "Usage: rubocop [options] [file1, file2, ...]"
@@ -32,7 +32,7 @@ module Rubocop
         source = File.readlines(file).map { |line|
           enc = line.encoding.name
           # Get rid of invalid byte sequences
-          line.encode!('UTF-16', enc, :invalid => :replace, :replace => '')
+          line.encode!('UTF-16', enc, invalid: :replace, replace: '')
           line.encode!(enc, 'UTF-16')
 
           line.chomp
@@ -59,10 +59,6 @@ module Rubocop
     # files in the current directory
     # @return [Array] array of filenames
     def target_files(args)
-      raw_target_files(args).reject { |name| name =~ /_flymake/ }
-    end
-
-    def raw_target_files(args)
       return Dir['**/*.rb'] if args.empty?
 
       if glob = args.detect { |arg| arg =~ /\*/ }
