@@ -64,6 +64,11 @@ module Rubocop
           File.delete 'example2.rb'
         end
       end
+
+      it 'finds no violations when checking the rubocop source code' do
+        cli.run
+        $stdout.string.should =~ /files inspected, 0 offences detected\n/
+      end
     end
   end
 end
