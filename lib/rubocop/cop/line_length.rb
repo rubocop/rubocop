@@ -3,10 +3,10 @@
 module Rubocop
   module Cop
     class LineLength < Cop
-      ERROR_MESSAGE = "Line is too long. [%d/%d]"
-      MAX_LINE_LENGTH = 80
+      ERROR_MESSAGE = 'Line is too long. [%d/%d]'
+      MAX_LINE_LENGTH = 79
 
-      def inspect(file, source, tokens, sexp)
+      def inspect(file, source)
         source.each_with_index do |line, index|
           if line.length > MAX_LINE_LENGTH
             message = sprintf(ERROR_MESSAGE, line.length, MAX_LINE_LENGTH)
