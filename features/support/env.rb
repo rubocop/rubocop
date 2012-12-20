@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'bundler'
 begin
   Bundler.setup(:default, :development)
