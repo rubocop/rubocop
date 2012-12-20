@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/bbatsov/rubocop.png)](https://travis-ci.org/bbatsov/rubocop)
+
 # rubocop
 
 Ruby code style checker.
