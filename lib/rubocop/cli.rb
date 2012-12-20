@@ -9,7 +9,7 @@ module Rubocop
     # the target files
     # @return [Fixnum] UNIX exit code
     def run(args = ARGV)
-      options = { :mode => :default }
+      options = { mode: :default }
 
       OptionParser.new do |opts|
         opts.banner = "Usage: rubocop [options] [file1, file2, ...]"
@@ -30,7 +30,7 @@ module Rubocop
         source = File.readlines(file).map { |line|
           enc = line.encoding.name
           # Get rid of invalid byte sequences
-          line.encode!('UTF-16', enc, :invalid => :replace, :replace => '')
+          line.encode!('UTF-16', enc, invalid: :replace, replace: '')
           line.encode!(enc, 'UTF-16')
 
           line.chomp
