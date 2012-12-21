@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/bbatsov/rubocop.png)](https://travis-ci.org/bbatsov/rubocop)
+[![Build Status](https://travis-ci.org/bbatsov/rubocop.png?branch=master)](https://travis-ci.org/bbatsov/rubocop)
 
 # rubocop
 
