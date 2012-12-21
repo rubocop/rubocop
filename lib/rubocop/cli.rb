@@ -11,16 +11,16 @@ module Rubocop
     # the target files
     # @return [Fixnum] UNIX exit code
     def run(args = ARGV)
-      options = { mode: :default }
+      $options = { mode: :default }
 
       OptionParser.new do |opts|
         opts.banner = "Usage: rubocop [options] [file1, file2, ...]"
 
         opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
-          options[:verbose] = v
+          $options[:verbose] = v
         end
         opts.on("-e", "--emacs", "Emacs style output") do
-          options[:mode] = :emacs_style
+          $options[:mode] = :emacs_style
         end
       end.parse!(args)
 
@@ -28,7 +28,7 @@ module Rubocop
       total_offences = 0
 
       target_files(args).each do |file|
-        report = Report.create(file, options[:mode])
+        report = Report.create(file, $options[:mode])
         source = File.readlines(file).map do |line|
           enc = line.encoding.name
           # Get rid of invalid byte sequences
