@@ -27,16 +27,16 @@ module Rubocop
       cops = Cop::Cop.all
       total_offences = 0
 
-      target_files(args).reject { |f| File.directory?(f) }.each do |file|
+      target_files(args).each do |file|
         report = Report.create(file, options[:mode])
-        source = File.readlines(file).map { |line|
+        source = File.readlines(file).map do |line|
           enc = line.encoding.name
           # Get rid of invalid byte sequences
           line.encode!('UTF-16', enc, invalid: :replace, replace: '')
           line.encode!(enc, 'UTF-16')
 
           line.chomp
-        }
+        end
 
         cops.each do |cop_klass|
           cop = cop_klass.new
@@ -61,11 +61,19 @@ module Rubocop
     def target_files(args)
       return Dir['**/*.rb'] if args.empty?
 
-      if glob = args.detect { |arg| arg =~ /\*/ }
-        Dir[glob]
-      else
-        args
+      files = []
+
+      args.each do |target|
+        if File.directory?(target)
+          files << Dir["#{target}/**/*.rb"]
+        elsif target =~ /\*/
+          files << Dir[target]
+        else
+          files << target
+        end
       end
+
+      files.flatten
     end
   end
 end
