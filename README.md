@@ -2,7 +2,21 @@
 
 # rubocop
 
-Ruby code style checker.
+Ruby code style checker based on the [Ruby Style Guide](https://github.com/bbatsov/ruby-style-guide).
+
+## Basic Usage
+
+Running `rubocop` with no arguments will check all Ruby source files in the current folder:
+
+```bash
+$ rubocop
+```
+
+Alternatively you can `rubocop` a list of files and folders to check:
+
+```bash
+$ rubocop app spec lib/something.rb
+```
 
 ## Contributing to Rubocop
  
