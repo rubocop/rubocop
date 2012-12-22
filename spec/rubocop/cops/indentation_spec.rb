@@ -57,6 +57,27 @@ module Rubocop
         ind.inspect_source('file.rb', source)
         ind.offences.map(&:message).should == []
       end
+
+      it 'accepts correctly indented whens in complex combinations' do
+        source = ['each {',
+                  '  case state',
+                  '  when 0',
+                  '    case name',
+                  '    when :a',
+                  '    end',
+                  '  when 1',
+                  '    case name',
+                  '    when :b',
+                  '    end',
+                  '  end',
+                  '}',
+                  'case s',
+                  'when Array',
+                  'end',
+                  '']
+        ind.inspect_source('file.rb', source)
+        ind.offences.map(&:message).should == []
+      end
     end
   end
 end
