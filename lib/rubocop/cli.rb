@@ -25,6 +25,7 @@ module Rubocop
       end.parse!(args)
 
       cops = Cop::Cop.all
+      show_cops_on_duty(cops) if $options[:verbose]
       total_offences = 0
 
       target_files(args).each do |file|
@@ -52,6 +53,12 @@ module Rubocop
       puts "#{total_offences} offences detected"
 
       return total_offences == 0 ? 0 : 1
+    end
+
+    def show_cops_on_duty(cops)
+      puts "Reporting for duty:"
+      cops.each { |c| puts c }
+      puts "*******************"
     end
 
     # Generate a list of target files by expanding globing patterns
