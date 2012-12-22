@@ -30,6 +30,7 @@ module Rubocop
                         :dot3].include?(child)
         return true if grandparent == :unary && parent == :vcall
         return true if parent == :command_call && child == :'::'
+        return true if child == :**
         false
       end
 

@@ -114,6 +114,11 @@ module Rubocop
         space.offences.size.should == 0
       end
 
+      it 'accepts exponent operator without spaces' do
+        space.inspect_source('file.rb', ['x = a * b**2'])
+        space.offences.size.should == 0
+      end
+
       it 'accepts unary operators without space' do
         space.inspect_source('file.rb', ['[].map(&:size)',
                                          '-3',
