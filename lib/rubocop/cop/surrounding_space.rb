@@ -23,7 +23,7 @@ module Rubocop
             unless surrounded_by_whitespace?(tokens[ix - 1, 3])
               index = pos[0] - 1
               add_offence(:convention, index, source[index],
-                          ERROR_MESSAGE + "'#{text}'.")
+                          ERROR_MESSAGE + "'{'.")
             end
           when :on_rbrace
             unless whitespace?(tokens[ix - 1])
@@ -33,6 +33,34 @@ module Rubocop
             end
           end
         }
+        tokens.each_index { |ix|
+          pos, name, _ = tokens[ix]
+          offence_detected = case name
+                             when :on_lbracket, :on_lparen
+                               tokens[ix + 1][1] == :on_sp
+                             when :on_rbracket, :on_rparen
+                               prev = previous_non_space(tokens, ix)
+                               (prev && prev[0][0] == pos[0] &&
+                                tokens[ix - 1][1] == :on_sp)
+                             end
+          if offence_detected
+            index = pos[0] - 1
+            kind = case name
+                   when :on_lparen,   :on_rparen   then 'parentheses'
+                   when :on_lbracket, :on_rbracket then 'square brackets'
+                   end
+            add_offence(:convention, index, source[index],
+                        "Space inside #{kind} detected.")
+          end
+        }
+      end
+
+      def previous_non_space(tokens, ix)
+        (ix - 1).downto(0) { |i|
+          t = tokens[i]
+          return t unless whitespace?(t)
+        }
+        nil
       end
 
       def ok_without_spaces?(grammar_path)

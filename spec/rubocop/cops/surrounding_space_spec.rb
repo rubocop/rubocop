@@ -49,6 +49,29 @@ module Rubocop
           ["Surrounding space missing for operator '+'."]
       end
 
+      it 'registers an offence for an array literal with spaces inside' do
+        space.inspect_source('file.rb', ['a = [1, 2 ]',
+                                         'b = [ 1, 2]'])
+        space.offences.map(&:message).should ==
+          ['Space inside square brackets detected.',
+           'Space inside square brackets detected.']
+      end
+
+      it 'accepts space inside square brackets if on its own row' do
+        space.inspect_source('file.rb', ['a = [',
+                                         '     1, 2',
+                                         '    ]'])
+        space.offences.map(&:message).should == []
+      end
+
+      it 'registers an offence for spaces inside parens' do
+        space.inspect_source('file.rb', ['f( 3)',
+                                         'g(3 )'])
+        space.offences.map(&:message).should ==
+          ['Space inside parentheses detected.',
+           'Space inside parentheses detected.']
+      end
+
       it 'accepts parentheses in block parameter list' do
         space.inspect_source('file.rb',
                              ['list.inject(Tms.new) { |sum, (label, item)|',
