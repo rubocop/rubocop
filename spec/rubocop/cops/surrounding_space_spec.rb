@@ -22,6 +22,18 @@ module Rubocop
            "Surrounding space missing for operator '+'."]
       end
 
+      it 'registers an offence for left brace without spaces' do
+        space.inspect_source('file.rb', ['each{ puts }'])
+        space.offences.map(&:message).should ==
+          ["Surrounding space missing for '{'."]
+      end
+
+      it 'registers an offence for right brace without inner space' do
+        space.inspect_source('file.rb', ['each { puts}'])
+        space.offences.map(&:message).should ==
+          ["Space missing to the left of '}'."]
+      end
+
       it 'registers an offence for arguments to a method' do
         space.inspect_source('file.rb', ['puts 1+2'])
         space.offences.map(&:message).should ==

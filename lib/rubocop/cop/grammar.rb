@@ -5,11 +5,54 @@ module Rubocop
     class Grammar
       def initialize(tokens)
         @tokens_without_pos = tokens.map { |tok| tok[1..-1] }
+        process_embedded_expressions
         @ix = 0
         @table = {}
         token_positions = tokens.map { |tok| tok[0] }
         @index_by_pos = Hash[*token_positions.each_with_index.to_a.flatten(1)]
-        @special = { assign: '=' }
+        @special = {
+          assign:           [:on_op, '='],
+          method_add_block: [:on_lbrace, '{'],
+          brace_block:      [:on_rbrace, '}']
+        }
+      end
+
+      # The string "#{x}" will give the tokens
+      # [:on_tstring_beg, '"'], [:on_embexpr_beg, '#{'], [:on_ident, 'x'],
+      # [:on_rbrace, '}'], [:on_tstring_end, '"']
+      # which is not so good for us. We want to distinguish between a
+      # right brace that ends an embedded expression inside a string
+      # and an ordinary right brace. So we replace :on_rbrace with the
+      # made up :on_embexpr_end.
+      def process_embedded_expressions
+        state = :outside
+        brace_depth = 0
+        @tokens_without_pos.each_with_index { |(name, _), ix|
+          #p [state, brace_depth, name]
+          case state
+          when :outside
+            state = :inside_string if name == :on_tstring_beg
+          when :inside_string
+            case name
+            when :on_tstring_end
+              state = :outside
+            when :on_embexpr_beg
+              brace_depth = 1
+              state = :inside_expr
+            end
+          when :inside_expr
+            case name
+            when :on_lbrace
+              brace_depth += 1
+            when :on_rbrace
+              if brace_depth == 1
+                @tokens_without_pos[ix][0] = :on_embexpr_end
+                state = :inside_string
+              end
+              brace_depth -= 1
+            end
+          end
+        }
       end
 
       # Returns a hash mapping indexes in the token array to grammar
@@ -37,7 +80,7 @@ module Rubocop
             # Here we don't advance @ix because there may be other
             # tokens inbetween the current one and the one we get from
             # @special.
-            find(path, sexp, [:on_op, @special[sexp[0]]])
+            find(path, sexp, @special[sexp[0]])
           when :block_var # "{ |...|" or "do |...|"
             @ix = find(path, sexp, [:on_op, '|']) + 1
             find(path, sexp, [:on_op, '|'])

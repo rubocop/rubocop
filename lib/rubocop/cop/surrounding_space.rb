@@ -5,18 +5,31 @@ require_relative 'grammar'
 module Rubocop
   module Cop
     class SurroundingSpace < Cop
-      ERROR_MESSAGE = 'Surrounding space missing for operator'
+      ERROR_MESSAGE = 'Surrounding space missing for '
 
       def inspect(file, source, tokens, sexp)
         Grammar.new(tokens).correlate(sexp).sort.each { |ix, grammar_path|
           pos, name, text = tokens[ix]
-          if name == :on_op
+          case name
+          when :on_op
             unless surrounded_by_whitespace?(tokens[ix - 1, 3])
               unless ok_without_spaces?(grammar_path)
                 index = pos[0] - 1
                 add_offence(:convention, index, source[index],
-                            ERROR_MESSAGE + " '#{text}'.")
+                            ERROR_MESSAGE + "operator '#{text}'.")
               end
+            end
+          when :on_lbrace
+            unless surrounded_by_whitespace?(tokens[ix - 1, 3])
+              index = pos[0] - 1
+              add_offence(:convention, index, source[index],
+                          ERROR_MESSAGE + "'#{text}'.")
+            end
+          when :on_rbrace
+            unless whitespace?(tokens[ix - 1])
+              index = pos[0] - 1
+              add_offence(:convention, index, source[index],
+                          "Space missing to the left of '}'.")
             end
           end
         }
@@ -40,7 +53,7 @@ module Rubocop
       end
 
       def whitespace?(token)
-        [:on_sp, :on_ignored_nl, :on_nl].include?(token[1])
+        token.nil? || [:on_sp, :on_ignored_nl, :on_nl].include?(token[1])
       end
     end
   end
