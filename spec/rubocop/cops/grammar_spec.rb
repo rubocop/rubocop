@@ -41,7 +41,7 @@ module Rubocop
         grammar.correlate(Ripper.sexp(EXAMPLE)).should == {
           0  => method_block + [:call, :@int],                    # 3
           2  => method_block + [:call, :@ident],                  # times
-          4  => method_block,                                     # {
+          4  => brace_block,                                      # {
           6  => brace_block + [:block_var],                       # |
           7  => brace_block + [:block_var, :params, :@ident],     # i
           8  => brace_block + [:block_var],                       # |

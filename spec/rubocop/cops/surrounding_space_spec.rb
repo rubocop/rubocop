@@ -34,6 +34,15 @@ module Rubocop
           ["Space missing to the left of '}'."]
       end
 
+      it 'accepts an empty hash literal with no space inside' do
+        space.inspect_source('file.rb',
+                             ['view_hash.each do |view_key|',
+                              'end',
+                              '@views = {}',
+                              ''])
+        space.offences.map(&:message).should == []
+      end
+
       it 'registers an offence for arguments to a method' do
         space.inspect_source('file.rb', ['puts 1+2'])
         space.offences.map(&:message).should ==

@@ -11,9 +11,8 @@ module Rubocop
         token_positions = tokens.map { |tok| tok[0] }
         @index_by_pos = Hash[*token_positions.each_with_index.to_a.flatten(1)]
         @special = {
-          assign:           [:on_op, '='],
-          method_add_block: [:on_lbrace, '{'],
-          brace_block:      [:on_rbrace, '}']
+          assign:      [:on_op,     '='],
+          brace_block: [:on_lbrace, '{']
         }
       end
 
@@ -28,7 +27,6 @@ module Rubocop
         state = :outside
         brace_depth = 0
         @tokens_without_pos.each_with_index { |(name, _), ix|
-          #p [state, brace_depth, name]
           case state
           when :outside
             state = :inside_string if name == :on_tstring_beg
@@ -112,7 +110,18 @@ module Rubocop
         offset = @tokens_without_pos[@ix..-1].index(token_to_find) or return
         ix = @ix + offset
         @table[ix] = path + [sexp[0]]
+        add_matching_rbrace(ix) if token_to_find == [:on_lbrace, '{']
         ix
+      end
+
+      def add_matching_rbrace(ix)
+        brace_depth = 0
+        rbrace_offset = @tokens_without_pos[@ix..-1].index { |t|
+          brace_depth += 1 if t == [:on_lbrace, '{']
+          brace_depth -= 1 if t == [:on_rbrace, '}']
+          brace_depth == 0 && t == [:on_rbrace, '}']
+        }
+        @table[@ix + rbrace_offset] = @table[ix] if rbrace_offset
       end
     end
   end
