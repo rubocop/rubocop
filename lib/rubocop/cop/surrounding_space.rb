@@ -35,17 +35,19 @@ module Rubocop
         }
         tokens.each_index { |ix|
           pos, name, text = tokens[ix]
+          prev, nxt = tokens.values_at(ix - 1, ix + 1)
           offence_detected = case name
                              when :on_lbracket, :on_lparen
-                               tokens[ix + 1][1] == :on_sp
+                               nxt[1] == :on_sp
                              when :on_rbracket, :on_rparen
-                               prev = previous_non_space(tokens, ix)
-                               (prev && prev[0][0] == pos[0] &&
-                                tokens[ix - 1][1] == :on_sp)
+                               if prev[1] == :on_sp
+                                 prev_ns = previous_non_space(tokens, ix)
+                                 prev_ns && tokens_on_same_row?(prev_ns,
+                                                                tokens[ix])
+                               end
                              when :on_op
                                text == '**' &&
-                                 (whitespace?(tokens[ix - 1]) ||
-                                  whitespace?(tokens[ix + 1]))
+                                 (whitespace?(prev) || whitespace?(nxt))
                              end
           if offence_detected
             index = pos[0] - 1
@@ -61,6 +63,12 @@ module Rubocop
                         "Space #{kind} detected.")
           end
         }
+      end
+
+      private
+
+      def tokens_on_same_row?(t1, t2)
+        t1[0][0] == t2[0][0]
       end
 
       def previous_non_space(tokens, ix)
