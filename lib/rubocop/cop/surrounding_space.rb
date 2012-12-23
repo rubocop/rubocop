@@ -34,7 +34,7 @@ module Rubocop
           end
         }
         tokens.each_index { |ix|
-          pos, name, _ = tokens[ix]
+          pos, name, text = tokens[ix]
           offence_detected = case name
                              when :on_lbracket, :on_lparen
                                tokens[ix + 1][1] == :on_sp
@@ -42,15 +42,23 @@ module Rubocop
                                prev = previous_non_space(tokens, ix)
                                (prev && prev[0][0] == pos[0] &&
                                 tokens[ix - 1][1] == :on_sp)
+                             when :on_op
+                               text == '**' &&
+                                 (whitespace?(tokens[ix - 1]) ||
+                                  whitespace?(tokens[ix + 1]))
                              end
           if offence_detected
             index = pos[0] - 1
             kind = case name
-                   when :on_lparen,   :on_rparen   then 'parentheses'
-                   when :on_lbracket, :on_rbracket then 'square brackets'
+                   when :on_lparen, :on_rparen
+                     'inside parentheses'
+                   when :on_lbracket, :on_rbracket
+                     'inside square brackets'
+                   when :on_op
+                     "around operator #{text}"
                    end
             add_offence(:convention, index, source[index],
-                        "Space inside #{kind} detected.")
+                        "Space #{kind} detected.")
           end
         }
       end
@@ -64,14 +72,10 @@ module Rubocop
       end
 
       def ok_without_spaces?(grammar_path)
-        grandparent, parent, child = grammar_path.values_at(-3, -2, -1)
+        parent, child = grammar_path.values_at(-2, -1)
         return true if [:unary, :symbol, :defs, :def, :call].include?(parent)
-        return true if [:rest_param, :blockarg, :block_var, :args_add_star,
-                        :args_add_block, :const_path_ref, :dot2,
-                        :dot3].include?(child)
-        return true if grandparent == :unary && parent == :vcall
+        return true if [:**, :block_var].include?(child)
         return true if parent == :command_call && child == :'::'
-        return true if child == :**
         false
       end
 
