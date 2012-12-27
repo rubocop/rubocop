@@ -154,7 +154,13 @@ module Rubocop
         src = ['cond ? a : func(&b)']
         align.inspect_source('', src)
         align.offences.map(&:message).should == []
-        end
+      end
+
+      it 'can handle parentheses used with no parameters' do
+        src = ['func()']
+        align.inspect_source('', src)
+        align.offences.map(&:message).should == []
+      end
     end
   end
 end

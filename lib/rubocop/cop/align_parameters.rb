@@ -33,7 +33,7 @@ module Rubocop
         return nil if fcall[0] != :fcall
         return nil if fcall[1][0..1] == [:@ident, "lambda"]
         arg_paren = method_add_arg[2..-1][0]
-        return nil if arg_paren[0] != :arg_paren
+        return nil if arg_paren[0] != :arg_paren || arg_paren[1].nil?
         args_add_block = arg_paren[1]
         fail unless args_add_block[0] == :args_add_block
         args_add_block[1].empty? ? [args_add_block[2]] : args_add_block[1]
