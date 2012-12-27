@@ -124,7 +124,7 @@ module Rubocop
         align.offences.map(&:message).should == []
       end
 
-      it 'accepts this stuff' do
+      it 'can handle a call embedded in a string' do
         align.inspect_source('',
                              ['model("#{index(name)}", child)'])
         align.offences.map(&:message).should == []
@@ -138,17 +138,20 @@ module Rubocop
         align.offences.map(&:message).should == []
       end
 
-      it 'can do this stuff', if: false do
+      it 'can handle a call with a block inside another call' do
         src = ['new(table_name,',
-               "    row['name'],",
-               "    row['unique'] != 0,",
                '    exec_query("info(\'#{row[\'name\']}\')").map { |col|',
                "      col['name']",
                '    })']
-        puts src
         align.inspect_source('', src)
         align.offences.map(&:message).should == []
       end
+
+      it 'can handle a ternary condition with a block reference' do
+        src = ['cond ? a : func(&b)']
+        align.inspect_source('', src)
+        align.offences.map(&:message).should == []
+        end
     end
   end
 end
