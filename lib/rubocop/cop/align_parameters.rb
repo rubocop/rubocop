@@ -53,7 +53,11 @@ module Rubocop
       end
 
       def find_pos_in_sexp(sexp)
-        return sexp[2] if Array === sexp[2] && Fixnum === sexp[2][0]
+        if Array === sexp[2] && Fixnum === sexp[2][0]
+          # :@tstring_content can indicate a heredoc and indentation
+          # there is irrelevant.
+          return sexp[2] unless sexp[0] == :@tstring_content
+        end
         sexp.grep(Array).each do |s|
           pos = find_pos_in_sexp(s) and return pos
         end

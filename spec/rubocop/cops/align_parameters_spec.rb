@@ -107,6 +107,14 @@ module Rubocop
         align.offences.map(&:message).should == []
       end
 
+      it 'can handle heredoc strings' do
+        src = ['class_eval(<<-EOS, __FILE__, __LINE__ + 1)',
+               '  x = 1',
+               '  EOS']
+        align.inspect_source('', src)
+        align.offences.map(&:message).should == []
+      end
+
       it 'can handle a method call within a method call' do
         align.inspect_source('',
                              ['a(a1,',
