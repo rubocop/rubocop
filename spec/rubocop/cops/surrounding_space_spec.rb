@@ -180,6 +180,12 @@ module Rubocop
         space.inspect_source('file.rb', ['subject.[](0)'])
         space.offences.map(&:message).should == []
       end
+
+      it 'only reports a single space once' do
+        space.inspect_source('file.rb', ['[ ]'])
+        space.offences.map(&:message).should ==
+          ['Space inside square brackets detected.']
+      end
     end
   end
 end

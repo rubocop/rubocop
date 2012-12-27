@@ -43,7 +43,10 @@ module Rubocop
                                if prev[1] == :on_sp
                                  prev_ns = previous_non_space(tokens, ix)
                                  prev_ns && tokens_on_same_row?(prev_ns,
-                                                                tokens[ix])
+                                                                tokens[ix]) &&
+                                   # Avoid double repoting of [ ] and ( )
+                                   prev_ns[1] != :on_lbracket &&
+                                   prev_ns[1] != :on_lparen
                                end
                              when :on_op
                                text == '**' &&
