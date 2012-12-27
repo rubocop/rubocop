@@ -109,8 +109,11 @@ module Rubocop
 
       it 'can handle heredoc strings' do
         src = ['class_eval(<<-EOS, __FILE__, __LINE__ + 1)',
-               '  x = 1',
-               '  EOS']
+               '            def run_#{name}_callbacks(*args)',
+               '              a = 1',
+               '              return value',
+               '            end',
+               '            EOS']
         align.inspect_source('', src)
         align.offences.map(&:message).should == []
       end

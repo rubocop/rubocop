@@ -51,6 +51,10 @@ module Rubocop
       end
 
       def position_of(sexp)
+        # :string_literal can indicate a heredoc and indentation
+        # there is irrelevant.
+        return nil if sexp[0] == :string_literal
+
         pos = find_pos_in_sexp(sexp) or return nil # Nil means not found.
         ix = @tokens.index { |t| t[0] == pos }
         start_ix = ix.downto(0) do |i|
@@ -61,11 +65,7 @@ module Rubocop
       end
 
       def find_pos_in_sexp(sexp)
-        if Array === sexp[2] && Fixnum === sexp[2][0]
-          # :@tstring_content can indicate a heredoc and indentation
-          # there is irrelevant.
-          return sexp[2] unless sexp[0] == :@tstring_content
-        end
+        return sexp[2] if Array === sexp[2] && Fixnum === sexp[2][0]
         sexp.grep(Array).each do |s|
           pos = find_pos_in_sexp(s) and return pos
         end
