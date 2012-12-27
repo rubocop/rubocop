@@ -58,10 +58,17 @@ module Rubocop
            'than one line.']
       end
 
-      it 'can handle a string literal as first argument' do
+      it 'can handle a correctly aligned string literal as first argument' do
         align.inspect_source('',
-                             ['add_offence("",',
+                             ['add_offence("", x,',
                               '            a)'])
+        align.offences.map(&:message).should == []
+      end
+
+      it 'can handle a string literal as other argument' do
+        align.inspect_source('',
+                             ['add_offence(x,',
+                              '            "", a)'])
         align.offences.map(&:message).should == []
       end
 
@@ -84,15 +91,11 @@ module Rubocop
         align.offences.map(&:message).should == []
       end
 
-      it "registers an offence for braceless hashes when appropriate" do
-        # This way of aligning a hash that's the last parameter is
-        # arguably quite okay, but we choose to not allow it.
+      it "accepts braceless hashes" do
         align.inspect_source('',
                              ['run(collection, :entry_name => label,',
                               '                :paginator  => paginator)'])
-        align.offences.map(&:message).should ==
-          ['Align the parameters of a method call if they span more than ' +
-           'one line.']
+        align.offences.map(&:message).should == []
       end
 
       it 'accepts the first parameter being on a new row' do

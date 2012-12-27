@@ -8,77 +8,56 @@ module Rubocop
       ERROR_MESSAGE = 'Align the parameters of a method call if they span ' +
         'more than one line.'
 
-      MATCHING_PAREN = {
-        ')'   => '(',
-        '}'   => '{',
-        ']'   => '[',
-        'end' => 'do'
-      }
-
       def inspect(file, source, tokens, sexp)
+        @tokens = tokens
         each(:method_add_arg, sexp) do |s|
           next if s[1][0] != :fcall
           next if s[1][1][0..1] == [:@ident, "lambda"]
           next if s[2..-1][0][0] != :arg_paren
-          method_name_ix = tokens.map { |t| t[0] }.index(s[1][1][-1])
-          state = :waiting_for_lparen
-          @paren_stack = []
-          @inside_string = false
-          tokens[method_name_ix..-1].each_with_index do |t, i|
-            break if t[1] == :on_rparen && @paren_stack.size == 1
-            state = process_token(t, i, state, source)
+          fail unless s[2..-1][0][1][0] == :args_add_block
+          args = s[2..-1][0][1][1]
+          method_name_ix = @tokens.map { |t| t[0] }.index(s[1][1][-1])
+          @first_lparen_ix = method_name_ix +
+            @tokens[method_name_ix..-1].index { |t| t[1] == :on_lparen }
+          first_arg, rest_of_args = divide_args(args)
+          pos_of_1st_arg = position_of(first_arg) or next # give up
+          rest_of_args.each do |arg|
+            pos = position_of(arg) or next # give up
+            if pos[1] != pos_of_1st_arg[1]
+              index = pos[0] - 1
+              add_offence(:convention, index, source[index], ERROR_MESSAGE)
+            end
           end
         end
       end
 
-      def process_token(t, i, state, source)
-        case state
-        when :waiting_for_lparen
-          if t[1] == :on_lparen
-            state = :waiting_for_first_arg
-          end
-        when :waiting_for_first_arg
-          unless whitespace?(t)
-            @column_of_1st_arg = t[0][1]
-            state = :waiting_for_newline
-          end
-        when :waiting_for_newline
-          case t[1]
-          when :on_ignored_nl, :on_nl
-            state = :waiting_for_arg if @paren_stack == ['(']
-          end
-        when :waiting_for_arg
-          unless whitespace?(t)
-            if t[0][1] != @column_of_1st_arg
-              index = t[0][0] - 1
-              add_offence(:convention, index, source[index], ERROR_MESSAGE)
-            end
-            state = :waiting_for_newline
-          end
+      def divide_args(args)
+        if args[0] == :args_add_star
+          first_arg = args[1]
+          rest_of_args = args[2..-1]
+        else
+          first_arg = args[0]
+          rest_of_args = args[1..-1]
         end
+        [first_arg, rest_of_args]
+      end
 
-        @inside_string = true if ([:on_tstring_beg,
-                                   :on_regexp_beg].include?(t[1]) ||
-                                  t[1..2] == [:on_symbeg, ":\""])
-        @inside_string = false if [:on_tstring_end,
-                                   :on_regexp_end].include?(t[1])
-        unless @inside_string
-          case t[2]
-          when '(', '{', '[', 'do'
-            @paren_stack.push(t[2])
-          when ')', '}', ']'
-            popped = @paren_stack.pop
-            if popped != MATCHING_PAREN[t[2]]
-              fail "#{popped} != #{MATCHING_PAREN[t[2]]}"
-            end
-          when 'end'
-            # TODO: This is not foolproof. The 'end' can belong to
-            # something other than 'do'.
-            @paren_stack.pop if @paren_stack[-1] == 'do'
-          end
+      def position_of(sexp)
+        pos = find_pos_in_sexp(sexp) or return nil # not found
+        ix = @tokens.index { |t| t[0] == pos }
+        start_ix = ix.downto(0) do |i|
+          break i + 1 if @tokens[i][2] == "\n" || i == @first_lparen_ix
         end
+        offset = @tokens[start_ix..-1].index { |t| not whitespace?(t) }
+        @tokens[start_ix + offset][0]
+      end
 
-        state
+      def find_pos_in_sexp(sexp)
+        return sexp[2] if Array === sexp[2] && Fixnum === sexp[2][0]
+        sexp.grep(Array).each do |s|
+          pos = find_pos_in_sexp(s) and return pos
+        end
+        nil
       end
     end
   end
