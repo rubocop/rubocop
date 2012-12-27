@@ -94,10 +94,6 @@ module Rubocop
         left, _, right = nearby_tokens
         whitespace?(left) && whitespace?(right)
       end
-
-      def whitespace?(token)
-        token.nil? || [:on_sp, :on_ignored_nl, :on_nl].include?(token[1])
-      end
     end
   end
 end

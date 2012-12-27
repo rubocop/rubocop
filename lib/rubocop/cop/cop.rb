@@ -73,6 +73,10 @@ module Rubocop
           each(sym, elem) { |s| yield s } if Array === elem
         }
       end
+
+      def whitespace?(token)
+        [:on_sp, :on_ignored_nl, :on_nl].include?(token[1])
+      end
     end
   end
 end
