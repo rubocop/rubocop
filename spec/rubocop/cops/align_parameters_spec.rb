@@ -161,6 +161,14 @@ module Rubocop
         align.inspect_source('', src)
         align.offences.map(&:message).should == []
       end
+
+      it 'can handle a hash with a line break after the opening brace' do
+        src = ['tag(:input, {',
+               '  :value => value',
+               '})']
+        align.inspect_source('', src)
+        align.offences.map(&:message).should == []
+      end
     end
   end
 end

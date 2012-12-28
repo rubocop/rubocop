@@ -20,7 +20,7 @@ module Rubocop
           pos_of_1st_arg = position_of(first_arg) or next # Give up.
           rest_of_args.each do |arg|
             pos = position_of(arg) or next # Give up if no position found.
-            if pos[1] != pos_of_1st_arg[1]
+            if pos[0] != pos_of_1st_arg[0] && pos[1] != pos_of_1st_arg[1]
               index = pos[0] - 1
               add_offence(:convention, index, source[index], ERROR_MESSAGE)
             end
@@ -51,14 +51,16 @@ module Rubocop
       end
 
       def position_of(sexp)
-        # :string_literal can indicate a heredoc and indentation
-        # there is irrelevant.
+        # Indentation inside a string literal is irrelevant.
         return nil if sexp[0] == :string_literal
 
         pos = find_pos_in_sexp(sexp) or return nil # Nil means not found.
         ix = @tokens.index { |t| t[0] == pos }
+        newline_found = false
         start_ix = ix.downto(0) do |i|
-          break i + 1 if @tokens[i][2] == "\n" || i == @first_lparen_ix
+          text = @tokens[i][2]
+          break i + 1 if i == @first_lparen_ix || text == ',' && newline_found
+          newline_found = true if text == "\n"
         end
         offset = @tokens[start_ix..-1].index { |t| not whitespace?(t) }
         @tokens[start_ix + offset][0]
