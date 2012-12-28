@@ -162,10 +162,37 @@ module Rubocop
         align.offences.map(&:message).should == []
       end
 
-      it 'can handle a hash with a line break after the opening brace' do
+      it 'can handle a multiline hash as first parameter' do
+        src = ['assert_equal({',
+               '  :space_before => "",',
+               '}, state)']
+        align.inspect_source('', src)
+        align.offences.map(&:message).should == []
+      end
+
+      it 'can handle a multiline hash as second parameter' do
         src = ['tag(:input, {',
                '  :value => value',
                '})']
+        align.inspect_source('', src)
+        align.offences.map(&:message).should == []
+      end
+
+      it 'can handle method calls without parentheses' do
+        src = ['a(b c, d)']
+        align.inspect_source('', src)
+        align.offences.map(&:message).should == []
+      end
+
+      it 'can handle other method calls without parentheses' do
+        src = ['chars(Unicode.apply_mapping @wrapped_string, :uppercase)']
+        align.inspect_source('', src)
+        align.offences.map(&:message).should == []
+      end
+
+      it "doesn't check alignment if tabs are used to indent" do
+        src = ['a(b,',
+               "\tc)"]
         align.inspect_source('', src)
         align.offences.map(&:message).should == []
       end

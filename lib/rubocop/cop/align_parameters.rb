@@ -9,6 +9,7 @@ module Rubocop
         'more than one line.'
 
       def inspect(file, source, tokens, sexp)
+        @file = file
         @tokens = tokens
         each(:method_add_arg, sexp) do |method_add_arg|
           args = get_args(method_add_arg) or next
@@ -34,8 +35,15 @@ module Rubocop
         return nil if fcall[1][0..1] == [:@ident, "lambda"]
         arg_paren = method_add_arg[2..-1][0]
         return nil if arg_paren[0] != :arg_paren || arg_paren[1].nil?
+
+        # A command (call wihtout parentheses) as first parameter
+        # means there's only one parameter.
+        return nil if [:command, :command_call].include?(arg_paren[1][0][0])
+
         args_add_block = arg_paren[1]
-        fail unless args_add_block[0] == :args_add_block
+        unless args_add_block[0] == :args_add_block
+          fail "\n#{@file}: #{method_add_arg}"
+        end
         args_add_block[1].empty? ? [args_add_block[2]] : args_add_block[1]
       end
 
@@ -55,15 +63,8 @@ module Rubocop
         return nil if sexp[0] == :string_literal
 
         pos = find_pos_in_sexp(sexp) or return nil # Nil means not found.
-        ix = @tokens.index { |t| t[0] == pos }
-        newline_found = false
-        start_ix = ix.downto(0) do |i|
-          text = @tokens[i][2]
-          break i + 1 if i == @first_lparen_ix || text == ',' && newline_found
-          newline_found = true if text == "\n"
-        end
-        offset = @tokens[start_ix..-1].index { |t| not whitespace?(t) }
-        @tokens[start_ix + offset][0]
+        ix = find_first_non_whitespace_token(pos) or return nil
+        @tokens[ix][0]
       end
 
       def find_pos_in_sexp(sexp)
@@ -72,6 +73,31 @@ module Rubocop
           pos = find_pos_in_sexp(s) and return pos
         end
         nil
+      end
+
+      def find_first_non_whitespace_token(pos)
+        ix = @tokens.index { |t| t[0] == pos }
+        newline_found = false
+        start_ix = ix.downto(0) do |i|
+          case @tokens[i][2]
+          when '('
+            break i + 1 if i == @first_lparen_ix
+          when "\n"
+            newline_found = true
+          when /\t/
+            # Bail out if tabs are used. Too difficult to calculate column.
+            return nil
+          when ','
+            if newline_found
+              break i + 1
+            else
+              # Bail out if there's a preceding comma on the same line.
+              return nil
+            end
+          end
+        end
+        offset = @tokens[start_ix..-1].index { |t| not whitespace?(t) }
+        start_ix + offset
       end
     end
   end
