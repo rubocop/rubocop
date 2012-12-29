@@ -6,7 +6,7 @@ module Rubocop
       ERROR_MESSAGE = 'Space missing after %s.'
 
       def inspect(file, source, tokens, sexp)
-        tokens.each_index { |ix|
+        tokens.each_index do |ix|
           pos, name, text = tokens[ix]
           kind = case name
                  when :on_comma     then 'comma'
@@ -19,7 +19,7 @@ module Rubocop
             add_offence(:convention, index, source[index],
                         ERROR_MESSAGE % kind)
           end
-        }
+        end
       end
     end
   end

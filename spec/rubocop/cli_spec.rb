@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'spec_helper'
 
 module Rubocop
@@ -30,14 +32,16 @@ module Rubocop
       end
 
       it 'checks a given file with faults and returns 1' do
-        File.open('example.rb', 'w') { |f| f.puts 'x = 0 ' }
+        File.open('example.rb', 'w') do |f|
+          f.puts '# encoding: utf-8'
+          f.puts 'x = 0 '
+        end
         begin
           cli.run(['example.rb']).should == 1
           $stdout.string.should == ['== example.rb ==',
-                                    'C:  0: Missing encoding comment.',
-                                    'C:  0: Trailing whitespace detected.',
+                                    'C:  1: Trailing whitespace detected.',
                                     '',
-                                    '1 files inspected, 2 offences detected',
+                                    '1 files inspected, 1 offences detected',
                                     ''].join("\n")
         ensure
           File.delete 'example.rb'
@@ -61,6 +65,11 @@ module Rubocop
           File.delete 'example1.rb'
           File.delete 'example2.rb'
         end
+      end
+
+      it 'finds no violations when checking the rubocop source code' do
+        cli.run
+        $stdout.string.should =~ /files inspected, 0 offences detected\n/
       end
     end
   end

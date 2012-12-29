@@ -5,11 +5,52 @@ module Rubocop
     class Grammar
       def initialize(tokens)
         @tokens_without_pos = tokens.map { |tok| tok[1..-1] }
+        process_embedded_expressions
         @ix = 0
         @table = {}
         token_positions = tokens.map { |tok| tok[0] }
         @index_by_pos = Hash[*token_positions.each_with_index.to_a.flatten(1)]
-        @special = { assign: '=' }
+        @special = {
+          assign:      [:on_op,     '='],
+          brace_block: [:on_lbrace, '{']
+        }
+      end
+
+      # The string "#{x}" will give the tokens
+      # [:on_tstring_beg, '"'], [:on_embexpr_beg, '#{'], [:on_ident, 'x'],
+      # [:on_rbrace, '}'], [:on_tstring_end, '"']
+      # which is not so good for us. We want to distinguish between a
+      # right brace that ends an embedded expression inside a string
+      # and an ordinary right brace. So we replace :on_rbrace with the
+      # made up :on_embexpr_end.
+      def process_embedded_expressions
+        state = :outside
+        brace_depth = 0
+        @tokens_without_pos.each_with_index do |(name, _), ix|
+          case state
+          when :outside
+            state = :inside_string if name == :on_tstring_beg
+          when :inside_string
+            case name
+            when :on_tstring_end
+              state = :outside
+            when :on_embexpr_beg
+              brace_depth = 1
+              state = :inside_expr
+            end
+          when :inside_expr
+            case name
+            when :on_lbrace
+              brace_depth += 1
+            when :on_rbrace
+              if brace_depth == 1
+                @tokens_without_pos[ix][0] = :on_embexpr_end
+                state = :inside_string
+              end
+              brace_depth -= 1
+            end
+          end
+        end
       end
 
       # Returns a hash mapping indexes in the token array to grammar
@@ -37,7 +78,7 @@ module Rubocop
             # Here we don't advance @ix because there may be other
             # tokens inbetween the current one and the one we get from
             # @special.
-            find(path, sexp, [:on_op, @special[sexp[0]]])
+            find(path, sexp, @special[sexp[0]])
           when :block_var # "{ |...|" or "do |...|"
             @ix = find(path, sexp, [:on_op, '|']) + 1
             find(path, sexp, [:on_op, '|'])
@@ -46,7 +87,7 @@ module Rubocop
           # Compensate for reverse order of if modifier
           children = (sexp[0] == :if_mod) ? sexp.reverse : sexp
 
-          children.each { |elem|
+          children.each do |elem|
             case elem
             when Array
               correlate(elem, path) # Dive deeper
@@ -58,7 +99,7 @@ module Rubocop
                 find(path, [elem], [:on_op, elem.to_s.chomp('@')])
               end
             end
-          }
+          end
         end
         @table
       end
@@ -69,7 +110,18 @@ module Rubocop
         offset = @tokens_without_pos[@ix..-1].index(token_to_find) or return
         ix = @ix + offset
         @table[ix] = path + [sexp[0]]
+        add_matching_rbrace(ix) if token_to_find == [:on_lbrace, '{']
         ix
+      end
+
+      def add_matching_rbrace(ix)
+        brace_depth = 0
+        rbrace_offset = @tokens_without_pos[@ix..-1].index do |t|
+          brace_depth += 1 if t == [:on_lbrace, '{']
+          brace_depth -= 1 if t == [:on_rbrace, '}']
+          brace_depth == 0 && t == [:on_rbrace, '}']
+        end
+        @table[@ix + rbrace_offset] = @table[ix] if rbrace_offset
       end
     end
   end
