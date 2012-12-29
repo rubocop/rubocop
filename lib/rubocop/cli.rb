@@ -11,32 +11,33 @@ module Rubocop
     # the target files
     # @return [Fixnum] UNIX exit code
     def run(args = ARGV)
-      options = { mode: :default }
+      $options = { mode: :default }
 
       OptionParser.new do |opts|
         opts.banner = "Usage: rubocop [options] [file1, file2, ...]"
 
         opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
-          options[:verbose] = v
+          $options[:verbose] = v
         end
         opts.on("-e", "--emacs", "Emacs style output") do
-          options[:mode] = :emacs_style
+          $options[:mode] = :emacs_style
         end
       end.parse!(args)
 
       cops = Cop::Cop.all
+      show_cops_on_duty(cops) if $options[:verbose]
       total_offences = 0
 
-      target_files(args).reject { |f| File.directory?(f) }.each do |file|
-        report = Report.create(file, options[:mode])
-        source = File.readlines(file).map { |line|
+      target_files(args).each do |file|
+        report = Report.create(file, $options[:mode])
+        source = File.readlines(file).map do |line|
           enc = line.encoding.name
           # Get rid of invalid byte sequences
           line.encode!('UTF-16', enc, invalid: :replace, replace: '')
           line.encode!(enc, 'UTF-16')
 
           line.chomp
-        }
+        end
 
         cops.each do |cop_klass|
           cop = cop_klass.new
@@ -54,6 +55,12 @@ module Rubocop
       return total_offences == 0 ? 0 : 1
     end
 
+    def show_cops_on_duty(cops)
+      puts "Reporting for duty:"
+      cops.each { |c| puts c }
+      puts "*******************"
+    end
+
     # Generate a list of target files by expanding globing patterns
     # (if any). If args is empty recursively finds all Ruby source
     # files in the current directory
@@ -61,11 +68,19 @@ module Rubocop
     def target_files(args)
       return Dir['**/*.rb'] if args.empty?
 
-      if glob = args.detect { |arg| arg =~ /\*/ }
-        Dir[glob]
-      else
-        args
+      files = []
+
+      args.each do |target|
+        if File.directory?(target)
+          files << Dir["#{target}/**/*.rb"]
+        elsif target =~ /\*/
+          files << Dir[target]
+        else
+          files << target
+        end
       end
+
+      files.flatten
     end
   end
 end

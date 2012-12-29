@@ -17,9 +17,10 @@ module Rubocop
       end
 
       it 'checks a given correct file and returns 0' do
-        File.open('example.rb', 'w') { |f|
-          f.puts("# encoding: utf-8", "x = 0")
-        }
+        File.open('example.rb', 'w') do |f|
+          f.puts '# encoding: utf-8'
+          f.puts 'x = 0'
+        end
         begin
           cli.run(['example.rb']).should == 0
           $stdout.string.should == "\n1 files inspected, 0 offences detected\n"
@@ -29,9 +30,10 @@ module Rubocop
       end
 
       it 'checks a given file with faults and returns 1' do
-        File.open('example.rb', 'w') { |f|
-          f.puts("# encoding: utf-8", "x = 0 ")
-        }
+        File.open('example.rb', 'w') do |f|
+          f.puts '# encoding: utf-8'
+          f.puts 'x = 0 '
+        end
         begin
           cli.run(['example.rb']).should == 1
           $stdout.string.should == ['== example.rb ==',
