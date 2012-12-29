@@ -16,7 +16,6 @@ module Rubocop
       end
 
       def self.inherited(subclass)
-        puts "Registering cop #{subclass}"
         all << subclass
       end
 
