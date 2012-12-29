@@ -18,9 +18,9 @@ module Rubocop
       end
 
       def find_keywords(tokens, keyword)
-        indexes = tokens.each_index.find_all { |ix|
+        indexes = tokens.each_index.find_all do |ix|
           keyword?(tokens, ix, keyword)
-        }
+        end
         tokens.values_at(*indexes)
       end
 

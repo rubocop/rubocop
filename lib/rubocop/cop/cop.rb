@@ -54,7 +54,7 @@ module Rubocop
 
       def each_parent_of(sym, sexp)
         parents = []
-        sexp.each { |elem|
+        sexp.each do |elem|
           if Array === elem
             if elem[0] == sym
               parents << sexp
@@ -62,15 +62,15 @@ module Rubocop
             end
             each_parent_of(sym, elem) { |parent| parents << parent }
           end
-        }
+        end
         parents.uniq.each { |parent| yield parent }
       end
 
       def each(sym, sexp)
         yield sexp if sexp[0] == sym
-        sexp.each { |elem|
+        sexp.each do |elem|
           each(sym, elem) { |s| yield s } if Array === elem
-        }
+        end
       end
 
       def whitespace?(token)

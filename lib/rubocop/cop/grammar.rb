@@ -26,7 +26,7 @@ module Rubocop
       def process_embedded_expressions
         state = :outside
         brace_depth = 0
-        @tokens_without_pos.each_with_index { |(name, _), ix|
+        @tokens_without_pos.each_with_index do |(name, _), ix|
           case state
           when :outside
             state = :inside_string if name == :on_tstring_beg
@@ -50,7 +50,7 @@ module Rubocop
               brace_depth -= 1
             end
           end
-        }
+        end
       end
 
       # Returns a hash mapping indexes in the token array to grammar
@@ -87,7 +87,7 @@ module Rubocop
           # Compensate for reverse order of if modifier
           children = (sexp[0] == :if_mod) ? sexp.reverse : sexp
 
-          children.each { |elem|
+          children.each do |elem|
             case elem
             when Array
               correlate(elem, path) # Dive deeper
@@ -99,7 +99,7 @@ module Rubocop
                 find(path, [elem], [:on_op, elem.to_s.chomp('@')])
               end
             end
-          }
+          end
         end
         @table
       end
@@ -116,11 +116,11 @@ module Rubocop
 
       def add_matching_rbrace(ix)
         brace_depth = 0
-        rbrace_offset = @tokens_without_pos[@ix..-1].index { |t|
+        rbrace_offset = @tokens_without_pos[@ix..-1].index do |t|
           brace_depth += 1 if t == [:on_lbrace, '{']
           brace_depth -= 1 if t == [:on_rbrace, '}']
           brace_depth == 0 && t == [:on_rbrace, '}']
-        }
+        end
         @table[@ix + rbrace_offset] = @table[ix] if rbrace_offset
       end
     end

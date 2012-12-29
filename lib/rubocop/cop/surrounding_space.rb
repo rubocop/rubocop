@@ -8,7 +8,7 @@ module Rubocop
       ERROR_MESSAGE = 'Surrounding space missing for '
 
       def inspect(file, source, tokens, sexp)
-        Grammar.new(tokens).correlate(sexp).sort.each { |ix, grammar_path|
+        Grammar.new(tokens).correlate(sexp).sort.each do |ix, grammar_path|
           pos, name, text = tokens[ix]
           case name
           when :on_op
@@ -32,8 +32,8 @@ module Rubocop
                           "Space missing to the left of '}'.")
             end
           end
-        }
-        tokens.each_index { |ix|
+        end
+        tokens.each_index do |ix|
           pos, name, text = tokens[ix]
           prev, nxt = tokens.values_at(ix - 1, ix + 1)
           offence_detected = case name
@@ -65,7 +65,7 @@ module Rubocop
             add_offence(:convention, index, source[index],
                         "Space #{kind} detected.")
           end
-        }
+        end
       end
 
       private
@@ -75,10 +75,10 @@ module Rubocop
       end
 
       def previous_non_space(tokens, ix)
-        (ix - 1).downto(0) { |i|
+        (ix - 1).downto(0) do |i|
           t = tokens[i]
           return t unless whitespace?(t)
-        }
+        end
         nil
       end
 
