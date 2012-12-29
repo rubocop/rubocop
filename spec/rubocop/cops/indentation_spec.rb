@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 require 'spec_helper'
 
 module Rubocop
@@ -50,6 +52,29 @@ module Rubocop
                   '  ParameterNode',
                   'when 1',
                   '  MethodCallNode',
+                  'end',
+                  '']
+        ind.inspect_source('file.rb', source)
+        ind.offences.map(&:message).should == []
+      end
+
+      it 'accepts correctly indented whens in complex combinations' do
+        source = ['each {',
+                  '  case state',
+                  '  when 0',
+                  '    case name',
+                  '    when :a',
+                  '    end',
+                  '  when 1',
+                  '    loop {',
+                  '      case name',
+                  '      when :b',
+                  '      end',
+                  '    }',
+                  '  end',
+                  '}',
+                  'case s',
+                  'when Array',
                   'end',
                   '']
         ind.inspect_source('file.rb', source)

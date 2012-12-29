@@ -12,14 +12,14 @@ module Rubocop
           current_row_ix = identifier_of_first_def[-1][0] - 1
           # The first def doesn't need to have an empty line above it,
           # so we iterate starting at index 1.
-          defs[1..-1].each { |child|
+          defs[1..-1].each do |child|
             next_row_ix = child[1][-1][0] - 1
             if source[current_row_ix..next_row_ix].grep(/^[ \t]*$/).empty?
               add_offence(:convention, next_row_ix, source[next_row_ix],
                           ERROR_MESSAGE)
             end
             current_row_ix = next_row_ix
-          }
+          end
         end
       end
     end
