@@ -17,13 +17,13 @@ module Rubocop
           method_name_pos = method_add_arg[1][1][-1]
           method_name_ix = @tokens.map(&:pos).index(method_name_pos)
           @first_lparen_ix = method_name_ix +
-            @tokens[method_name_ix..-1].map(&:name).index(:on_lparen)
+            @tokens[method_name_ix..-1].map(&:type).index(:on_lparen)
           pos_of_1st_arg = position_of(first_arg) or next # Give up.
           rest_of_args.each do |arg|
             pos = position_of(arg) or next # Give up if no position found.
-            if pos.row != pos_of_1st_arg.row
+            if pos.lineno != pos_of_1st_arg.lineno
               if pos.column != pos_of_1st_arg.column
-                index = pos.row - 1
+                index = pos.lineno - 1
                 add_offence(:convention, index, source[index], ERROR_MESSAGE)
               end
             end

@@ -2,13 +2,13 @@
 
 module Rubocop
   module Cop
-    Position = Struct.new :row, :column
+    Position = Struct.new :lineno, :column
 
     class Token
-      attr_reader :pos, :name, :text
+      attr_reader :pos, :type, :text
 
-      def initialize(pos, name, text)
-        @pos, @name, @text = Position.new(*pos), name, text
+      def initialize(pos, type, text)
+        @pos, @type, @text = Position.new(*pos), type, text
       end
     end
 
@@ -61,7 +61,7 @@ module Rubocop
         @offences << Offence.new(file, line_number, line, message)
       end
 
-      # Does a recursive search and replaces each [row, column] array
+      # Does a recursive search and replaces each [lineno, column] array
       # in the sexp with a Position object.
       def self.make_position_objects(sexp)
         if sexp[0] =~ /^@/
@@ -95,7 +95,7 @@ module Rubocop
       end
 
       def whitespace?(token)
-        [:on_sp, :on_ignored_nl, :on_nl].include?(token.name)
+        [:on_sp, :on_ignored_nl, :on_nl].include?(token.type)
       end
     end
   end

@@ -8,15 +8,15 @@ module Rubocop
       def inspect(file, source, tokens, sexp)
         tokens.each_index do |ix|
           t = tokens[ix]
-          kind = case t.name
+          kind = case t.type
                  when :on_comma     then 'comma'
                  when :on_label     then 'colon'
                  when :on_op        then 'colon' if t.text == ':'
                  when :on_semicolon then 'semicolon'
                  end
           if kind and not [:on_sp,
-                           :on_ignored_nl].include?(tokens[ix + 1].name)
-            index = t.pos.row - 1
+                           :on_ignored_nl].include?(tokens[ix + 1].type)
+            index = t.pos.lineno - 1
             add_offence(:convention, index, source[index],
                         ERROR_MESSAGE % kind)
           end

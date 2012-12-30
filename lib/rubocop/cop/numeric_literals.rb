@@ -8,9 +8,9 @@ module Rubocop
 
       def inspect(file, source, tokens, sexp)
         tokens.each do |t|
-          if [:on_int, :on_float].include?(t.name) &&
+          if [:on_int, :on_float].include?(t.type) &&
               t.text.split('.').grep(/\d{6}/).any?
-            index = t.pos.row - 1
+            index = t.pos.lineno - 1
             add_offence(:convention, index, source[index], ERROR_MESSAGE)
           end
         end
