@@ -10,14 +10,23 @@ module Rubocop
 
       def inspect(file, source, tokens, sexp)
         each(:def, sexp) do |def_sexp|
+          pos = def_sexp[1][-1]
           case def_sexp[2][0]
           when :params
-            if def_sexp[2] != EMPTY_PARAMS
-              add(def_sexp, source, ERROR_MESSAGE[0])
-            end
+            add(pos, source, ERROR_MESSAGE[0]) if def_sexp[2] != EMPTY_PARAMS
           when :paren
             if def_sexp[2][1] == EMPTY_PARAMS
-              add(def_sexp, source, ERROR_MESSAGE[1])
+              method_name_ix = tokens.index { |t| t[0] == pos }
+              start = method_name_ix + 1
+              rparen_ix = start + tokens[start..-1].index { |t| t[2] == ')' }
+              first_body_token = tokens[(rparen_ix + 1)..-1].find do |t|
+                not whitespace?(t)
+              end
+              if first_body_token[0][0] > pos[0]
+                # Only report offence if there's a line break after
+                # the empty parens.
+                add(pos, source, ERROR_MESSAGE[1])
+              end
             end
           end
         end
@@ -25,8 +34,7 @@ module Rubocop
 
       private
 
-      def add(def_sexp, source, message)
-        pos = def_sexp[1][-1]
+      def add(pos, source, message)
         index = pos[0] - 1
         add_offence(:convention, index, source[index], message)
       end

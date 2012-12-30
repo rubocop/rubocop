@@ -37,6 +37,12 @@ module Rubocop
         def_par.inspect_source('', src)
         def_par.offences.map(&:message).should == []
       end
+
+      it 'accepts empty parentheses in one liners' do
+        src = ["def to_s() join '/' end"]
+        def_par.inspect_source('', src)
+        def_par.offences.map(&:message).should == []
+    end
     end
   end
 end
