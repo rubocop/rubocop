@@ -9,9 +9,9 @@ module Rubocop
         case_tokens = find_keywords(tokens, 'case')
         when_tokens = find_keywords(tokens, 'when')
         each_when(sexp) do |case_ix|
-          when_pos = when_tokens.shift[0]
-          if when_pos[1] != case_tokens[case_ix][0][1]
-            index = when_pos[0] - 1
+          when_pos = when_tokens.shift.pos
+          if when_pos.column != case_tokens[case_ix].pos.column
+            index = when_pos.row - 1
             add_offence(:convention, index, source[index], ERROR_MESSAGE)
           end
         end
@@ -25,8 +25,8 @@ module Rubocop
       end
 
       def keyword?(tokens, ix, keyword)
-        tokens[ix][1..-1] == [:on_kw, keyword] &&
-          tokens[ix - 1][1] != :on_symbeg
+        [tokens[ix].name, tokens[ix].text] == [:on_kw, keyword] &&
+          tokens[ix - 1].name != :on_symbeg
       end
 
       # Does a depth first search for :when, yielding the index of the

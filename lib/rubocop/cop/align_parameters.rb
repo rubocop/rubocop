@@ -15,15 +15,17 @@ module Rubocop
           args = get_args(method_add_arg) or next
           first_arg, rest_of_args = divide_args(args)
           method_name_pos = method_add_arg[1][1][-1]
-          method_name_ix = @tokens.index { |t| t[0] == method_name_pos }
+          method_name_ix = @tokens.map(&:pos).index(method_name_pos)
           @first_lparen_ix = method_name_ix +
-            @tokens[method_name_ix..-1].index { |t| t[1] == :on_lparen }
+            @tokens[method_name_ix..-1].map(&:name).index(:on_lparen)
           pos_of_1st_arg = position_of(first_arg) or next # Give up.
           rest_of_args.each do |arg|
             pos = position_of(arg) or next # Give up if no position found.
-            if pos[0] != pos_of_1st_arg[0] && pos[1] != pos_of_1st_arg[1]
-              index = pos[0] - 1
-              add_offence(:convention, index, source[index], ERROR_MESSAGE)
+            if pos.row != pos_of_1st_arg.row
+              if pos.column != pos_of_1st_arg.column
+                index = pos.row - 1
+                add_offence(:convention, index, source[index], ERROR_MESSAGE)
+              end
             end
           end
         end
@@ -64,11 +66,11 @@ module Rubocop
 
         pos = find_pos_in_sexp(sexp) or return nil # Nil means not found.
         ix = find_first_non_whitespace_token(pos) or return nil
-        @tokens[ix][0]
+        @tokens[ix].pos
       end
 
       def find_pos_in_sexp(sexp)
-        return sexp[2] if Array === sexp[2] && Fixnum === sexp[2][0]
+        return sexp[2] if Position === sexp[2]
         sexp.grep(Array).each do |s|
           pos = find_pos_in_sexp(s) and return pos
         end
@@ -76,10 +78,10 @@ module Rubocop
       end
 
       def find_first_non_whitespace_token(pos)
-        ix = @tokens.index { |t| t[0] == pos }
+        ix = @tokens.map(&:pos).index(pos)
         newline_found = false
         start_ix = ix.downto(0) do |i|
-          case @tokens[i][2]
+          case @tokens[i].text
           when '('
             break i + 1 if i == @first_lparen_ix
           when "\n"

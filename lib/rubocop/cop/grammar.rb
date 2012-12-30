@@ -4,11 +4,11 @@ module Rubocop
   module Cop
     class Grammar
       def initialize(tokens)
-        @tokens_without_pos = tokens.map { |tok| tok[1..-1] }
+        @tokens_without_pos = tokens.map { |t| [t.name, t.text] }
         process_embedded_expressions
         @ix = 0
         @table = {}
-        token_positions = tokens.map { |tok| tok[0] }
+        token_positions = tokens.map { |t| [t.pos.row, t.pos.column] }
         @index_by_pos = Hash[*token_positions.each_with_index.to_a.flatten(1)]
         @special = {
           assign:      [:on_op,     '='],
@@ -71,7 +71,8 @@ module Rubocop
           when /^@/
             # Leaves in the grammar have a corresponding token with a
             # position, which we search for and advance @ix.
-            @ix = @index_by_pos[sexp[-1]]
+            @ix = @index_by_pos[[sexp[-1].row, sexp[-1].column]]
+            fail "#{sexp}\n#{@index_by_pos}" unless @ix
             @table[@ix] = path + [sexp[0]]
             @ix += 1
           when *@special.keys

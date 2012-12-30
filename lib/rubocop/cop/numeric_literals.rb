@@ -7,10 +7,10 @@ module Rubocop
         'improve their readability.'
 
       def inspect(file, source, tokens, sexp)
-        tokens.each do |pos, name, text|
-          if [:on_int, :on_float].include?(name) &&
-              text.split('.').grep(/\d{6}/).any?
-            index = pos[0] - 1
+        tokens.each do |t|
+          if [:on_int, :on_float].include?(t.name) &&
+              t.text.split('.').grep(/\d{6}/).any?
+            index = t.pos.row - 1
             add_offence(:convention, index, source[index], ERROR_MESSAGE)
           end
         end
