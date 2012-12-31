@@ -8,7 +8,7 @@ module Rubocop
       let (:empty_lines) { EmptyLines.new }
 
       it 'finds offences in inner classes' do
-        empty_lines.inspect_source('', ['class K',
+        inspect_source(empty_lines, '', ['class K',
                                         '  def m',
                                         '  end',
                                         '  class J',
@@ -29,7 +29,7 @@ module Rubocop
       # Only one def, so rule about empty line *between* defs does not
       # apply.
       it 'accepts a def that follows a line with code' do
-        empty_lines.inspect_source('', ['x = 0',
+        inspect_source(empty_lines, '', ['x = 0',
                                         'def m',
                                         'end'])
         empty_lines.offences.size.should == 0
@@ -38,7 +38,7 @@ module Rubocop
       # Only one def, so rule about empty line *between* defs does not
       # apply.
       it 'accepts a def that follows code and a comment' do
-        empty_lines.inspect_source('', ['  x = 0',
+        inspect_source(empty_lines, '', ['  x = 0',
                                         '  # 123',
                                         '  def m',
                                         '  end'])
@@ -46,7 +46,7 @@ module Rubocop
       end
 
       it 'accepts the first def without leading empty line in a class' do
-        empty_lines.inspect_source('', ['class K',
+        inspect_source(empty_lines, '', ['class K',
                                         '  def m',
                                         '  end',
                                         'end'])
@@ -54,7 +54,7 @@ module Rubocop
       end
 
       it 'accepts a def that follows an empty line and then a comment' do
-        empty_lines.inspect_source('', ['class A',
+        inspect_source(empty_lines, '', ['class A',
                                         '  # calculates value',
                                         '  def m',
                                         '  end',
@@ -76,7 +76,7 @@ module Rubocop
                   '  end',
                   'end',
                  ]
-        empty_lines.inspect_source('', source)
+        inspect_source(empty_lines, '', source)
         empty_lines.offences.map(&:message).should == []
       end
     end
