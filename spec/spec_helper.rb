@@ -36,3 +36,9 @@ end
 RSpec.configure do |config|
   config.include(ExitCodeMatchers)
 end
+
+def inspect_source(cop, file, source)
+  tokens = Ripper.lex(source.join("\n"))
+  sexp = Ripper.sexp(source.join("\n"))
+  cop.inspect(file, source, tokens, sexp)
+end

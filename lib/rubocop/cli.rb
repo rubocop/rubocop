@@ -39,9 +39,12 @@ module Rubocop
           line.chomp
         end
 
+        tokens = Ripper.lex(source.join("\n"))
+        sexp = Ripper.sexp(source.join("\n"))
+
         cops.each do |cop_klass|
           cop = cop_klass.new
-          cop.inspect_source(file, source)
+          cop.inspect(file, source, tokens, sexp)
           total_offences += cop.offences.count
           report << cop if cop.has_report?
         end

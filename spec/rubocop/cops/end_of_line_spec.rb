@@ -8,7 +8,7 @@ module Rubocop
       let (:eol) { EndOfLine.new }
 
       it 'registers an offence for CR+LF' do
-        eol.inspect_source('file.rb', ["x=0\r", ''])
+        inspect_source(eol, 'file.rb', ["x=0\r", ''])
         eol.offences.map(&:message).should ==
           ['Carriage return character detected.']
       end
