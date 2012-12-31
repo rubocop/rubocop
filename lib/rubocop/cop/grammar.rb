@@ -113,7 +113,7 @@ module Rubocop
 
       def find(path, sexp, token_to_find)
         indices = @token_indexes[token_to_find] or return
-        ix = indices.find { |i| i >= @ix }
+        ix = indices.find { |i| i >= @ix } or return
         @table[ix] = path + [sexp[0]]
         add_matching_rbrace(ix) if token_to_find == [:on_lbrace, '{']
         ix
