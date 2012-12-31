@@ -6,6 +6,11 @@ module Rubocop
       def initialize(tokens)
         @tokens_without_pos = tokens.map { |tok| tok[1..-1] }
         process_embedded_expressions
+        @token_indexes = {}
+        @tokens_without_pos.each_with_index { |t, i|
+          @token_indexes[t] ||= []
+          @token_indexes[t] << i
+        }
         @ix = 0
         @table = {}
         token_positions = tokens.map { |tok| tok[0] }
@@ -107,8 +112,8 @@ module Rubocop
       private
 
       def find(path, sexp, token_to_find)
-        offset = @tokens_without_pos[@ix..-1].index(token_to_find) or return
-        ix = @ix + offset
+        indices = @token_indexes[token_to_find] or return
+        ix = indices.find { |i| i >= @ix }
         @table[ix] = path + [sexp[0]]
         add_matching_rbrace(ix) if token_to_find == [:on_lbrace, '{']
         ix

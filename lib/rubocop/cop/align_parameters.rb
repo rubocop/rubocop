@@ -11,11 +11,14 @@ module Rubocop
       def inspect(file, source, tokens, sexp)
         @file = file
         @tokens = tokens
+        @token_indexes = {}
+        @tokens.each_with_index { |t, ix| @token_indexes[t[0]] = ix }
+
         each(:method_add_arg, sexp) do |method_add_arg|
           args = get_args(method_add_arg) or next
           first_arg, rest_of_args = divide_args(args)
           method_name_pos = method_add_arg[1][1][-1]
-          method_name_ix = @tokens.index { |t| t[0] == method_name_pos }
+          method_name_ix = @token_indexes[method_name_pos]
           @first_lparen_ix = method_name_ix +
             @tokens[method_name_ix..-1].index { |t| t[1] == :on_lparen }
           pos_of_1st_arg = position_of(first_arg) or next # Give up.
@@ -76,7 +79,7 @@ module Rubocop
       end
 
       def find_first_non_whitespace_token(pos)
-        ix = @tokens.index { |t| t[0] == pos }
+        ix = @token_indexes[pos]
         newline_found = false
         start_ix = ix.downto(0) do |i|
           case @tokens[i][2]
