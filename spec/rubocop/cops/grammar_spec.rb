@@ -40,7 +40,7 @@ module Rubocop
            [[1, 30], :on_rbrace, "}"]]
 
         sexp = Ripper.sexp(EXAMPLE)
-        Cop.make_position_objects(sexp)
+        Position.make_position_objects(sexp)
         grammar.correlate(sexp).should == {
           0  => method_block + [:call, :@int],                    # 3
           2  => method_block + [:call, :@ident],                  # times

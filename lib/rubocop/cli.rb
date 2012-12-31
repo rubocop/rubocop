@@ -39,9 +39,11 @@ module Rubocop
           line.chomp
         end
 
+        tokens, sexp = CLI.rip_source(source)
+
         cops.each do |cop_klass|
           cop = cop_klass.new
-          cop.inspect_source(file, source)
+          cop.inspect(file, source, tokens, sexp)
           total_offences += cop.offences.count
           report << cop if cop.has_report?
         end
@@ -53,6 +55,13 @@ module Rubocop
       puts "#{total_offences} offences detected"
 
       return total_offences == 0 ? 0 : 1
+    end
+
+    def self.rip_source(source)
+      tokens = Ripper.lex(source.join("\n")).map { |t| Cop::Token.new(*t) }
+      sexp = Ripper.sexp(source.join("\n"))
+      Cop::Position.make_position_objects(sexp)
+      [tokens, sexp]
     end
 
     def show_cops_on_duty(cops)
