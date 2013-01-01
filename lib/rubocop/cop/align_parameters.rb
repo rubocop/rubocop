@@ -1,7 +1,5 @@
 # encoding: utf-8
 
-require_relative 'grammar'
-
 module Rubocop
   module Cop
     class AlignParameters < Cop
@@ -12,25 +10,26 @@ module Rubocop
         @file = file
         @tokens = tokens
         @token_indexes = {}
-        @tokens.each_with_index { |t, ix| @token_indexes[t[0]] = ix }
+        @tokens.each_with_index { |t, ix| @token_indexes[t.pos] = ix }
 
         each(:method_add_arg, sexp) do |method_add_arg|
           args = get_args(method_add_arg) or next
           first_arg, rest_of_args = divide_args(args)
-          method_name_pos = method_add_arg[1][1][-1]
-          method_name_ix = @token_indexes[method_name_pos]
-          @first_lparen_ix = method_name_ix +
-            @tokens[method_name_ix..-1].index { |t| t[1] == :on_lparen }
+          @first_lparen_ix = get_lparen_ix(method_add_arg)
           pos_of_1st_arg = position_of(first_arg) or next # Give up.
           rest_of_args.each do |arg|
             pos = position_of(arg) or next # Give up if no position found.
-            if pos[0] != pos_of_1st_arg[0] && pos[1] != pos_of_1st_arg[1]
-              index = pos[0] - 1
-              add_offence(:convention, index, source[index], ERROR_MESSAGE)
+            if pos.lineno != pos_of_1st_arg.lineno
+              if pos.column != pos_of_1st_arg.column
+                index = pos.lineno - 1
+                add_offence(:convention, index, source[index], ERROR_MESSAGE)
+              end
             end
           end
         end
       end
+
+      private
 
       def get_args(method_add_arg)
         fcall = method_add_arg[1]
@@ -61,17 +60,24 @@ module Rubocop
         [first_arg, rest_of_args]
       end
 
+      def get_lparen_ix(method_add_arg)
+        method_name_pos = method_add_arg[1][1][-1]
+        method_name_ix = @token_indexes[method_name_pos]
+        method_name_ix +
+          @tokens[method_name_ix..-1].map(&:type).index(:on_lparen)
+      end
+
       def position_of(sexp)
         # Indentation inside a string literal is irrelevant.
         return nil if sexp[0] == :string_literal
 
         pos = find_pos_in_sexp(sexp) or return nil # Nil means not found.
         ix = find_first_non_whitespace_token(pos) or return nil
-        @tokens[ix][0]
+        @tokens[ix].pos
       end
 
       def find_pos_in_sexp(sexp)
-        return sexp[2] if Array === sexp[2] && Fixnum === sexp[2][0]
+        return sexp[2] if Position === sexp[2]
         sexp.grep(Array).each do |s|
           pos = find_pos_in_sexp(s) and return pos
         end
@@ -82,7 +88,7 @@ module Rubocop
         ix = @token_indexes[pos]
         newline_found = false
         start_ix = ix.downto(0) do |i|
-          case @tokens[i][2]
+          case @tokens[i].text
           when '('
             break i + 1 if i == @first_lparen_ix
           when "\n"
