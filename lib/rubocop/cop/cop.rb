@@ -12,6 +12,10 @@ module Rubocop
           sexp.grep(Array).each { |s| make_position_objects(s) }
         end
       end
+
+      # The point of this class is to provide named attribute access.
+      # So we don't want backwards compatibility with array indexing.
+      undef_method :[]
     end
 
     class Token
