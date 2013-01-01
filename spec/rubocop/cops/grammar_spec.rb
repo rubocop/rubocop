@@ -6,7 +6,8 @@ module Rubocop
   module Cop
     describe Grammar do
       EXAMPLE = '3.times { |i| x = "#{y}#{z}}" }'
-      let (:grammar) { Grammar.new(Ripper.lex(EXAMPLE)) }
+      tokens = Ripper.lex(EXAMPLE).map { |t| Token.new(*t) }
+      let (:grammar) { Grammar.new(tokens) }
 
       it "correlates token indices to grammar paths" do
         method_block = [:program, :method_add_block]
@@ -38,7 +39,9 @@ module Rubocop
            [[1, 29], :on_sp, " "],
            [[1, 30], :on_rbrace, "}"]]
 
-        grammar.correlate(Ripper.sexp(EXAMPLE)).should == {
+        sexp = Ripper.sexp(EXAMPLE)
+        Position.make_position_objects(sexp)
+        grammar.correlate(sexp).should == {
           0  => method_block + [:call, :@int],                    # 3
           2  => method_block + [:call, :@ident],                  # times
           4  => brace_block,                                      # {

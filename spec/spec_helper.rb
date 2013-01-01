@@ -4,6 +4,7 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 require 'rspec'
 require 'rubocop'
+require 'rubocop/cli'
 
 # Requires supporting files with custom matchers and macros, etc,
 # in ./support/ and its subdirectories.
@@ -35,4 +36,9 @@ end
 
 RSpec.configure do |config|
   config.include(ExitCodeMatchers)
+end
+
+def inspect_source(cop, file, source)
+  tokens, sexp = Rubocop::CLI.rip_source(source)
+  cop.inspect(file, source, tokens, sexp)
 end
