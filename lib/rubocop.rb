@@ -17,6 +17,7 @@ require 'rubocop/cop/end_of_line'
 require 'rubocop/cop/numeric_literals'
 require 'rubocop/cop/align_parameters'
 require 'rubocop/cop/def_parentheses'
+require 'rubocop/cop/unnecessary_then'
 
 require 'rubocop/report/report'
 require 'rubocop/report/plain_text'
