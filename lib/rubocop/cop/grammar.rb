@@ -4,7 +4,7 @@ module Rubocop
   module Cop
     class Grammar
       def initialize(tokens)
-        @tokens_without_pos = tokens.map { |tok| tok[1..-1] }
+        @tokens_without_pos = tokens.map { |t| [t.type, t.text] }
         process_embedded_expressions
         @token_indexes = {}
         @tokens_without_pos.each_with_index { |t, i|
@@ -13,7 +13,7 @@ module Rubocop
         }
         @ix = 0
         @table = {}
-        token_positions = tokens.map { |tok| tok[0] }
+        token_positions = tokens.map { |t| [t.pos.lineno, t.pos.column] }
         @index_by_pos = Hash[*token_positions.each_with_index.to_a.flatten(1)]
         @special = {
           assign:      [:on_op,     '='],
@@ -31,12 +31,12 @@ module Rubocop
       def process_embedded_expressions
         state = :outside
         brace_depth = 0
-        @tokens_without_pos.each_with_index do |(name, _), ix|
+        @tokens_without_pos.each_with_index do |(type, _), ix|
           case state
           when :outside
-            state = :inside_string if name == :on_tstring_beg
+            state = :inside_string if type == :on_tstring_beg
           when :inside_string
-            case name
+            case type
             when :on_tstring_end
               state = :outside
             when :on_embexpr_beg
@@ -44,7 +44,7 @@ module Rubocop
               state = :inside_expr
             end
           when :inside_expr
-            case name
+            case type
             when :on_lbrace
               brace_depth += 1
             when :on_rbrace
@@ -76,7 +76,8 @@ module Rubocop
           when /^@/
             # Leaves in the grammar have a corresponding token with a
             # position, which we search for and advance @ix.
-            @ix = @index_by_pos[sexp[-1]]
+            @ix = @index_by_pos[[sexp[-1].lineno, sexp[-1].column]]
+            fail "#{sexp}\n#{@index_by_pos}" unless @ix
             @table[@ix] = path + [sexp[0]]
             @ix += 1
           when *@special.keys

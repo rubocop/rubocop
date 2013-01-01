@@ -9,58 +9,58 @@ module Rubocop
 
       def inspect(file, source, tokens, sexp)
         Grammar.new(tokens).correlate(sexp).sort.each do |ix, grammar_path|
-          pos, name, text = tokens[ix]
-          case name
+          t = tokens[ix]
+          case t.type
           when :on_op
             unless surrounded_by_whitespace?(tokens[ix - 1, 3])
               unless ok_without_spaces?(grammar_path)
-                index = pos[0] - 1
+                index = t.pos.lineno - 1
                 add_offence(:convention, index, source[index],
-                            ERROR_MESSAGE + "operator '#{text}'.")
+                            ERROR_MESSAGE + "operator '#{t.text}'.")
               end
             end
           when :on_lbrace
             unless surrounded_by_whitespace?(tokens[ix - 1, 3])
-              index = pos[0] - 1
+              index = t.pos.lineno - 1
               add_offence(:convention, index, source[index],
                           ERROR_MESSAGE + "'{'.")
             end
           when :on_rbrace
             unless whitespace?(tokens[ix - 1])
-              index = pos[0] - 1
+              index = t.pos.lineno - 1
               add_offence(:convention, index, source[index],
                           "Space missing to the left of '}'.")
             end
           end
         end
         tokens.each_index do |ix|
-          pos, name, text = tokens[ix]
+          t = tokens[ix]
           prev, nxt = tokens.values_at(ix - 1, ix + 1)
-          offence_detected = case name
+          offence_detected = case t.type
                              when :on_lbracket, :on_lparen
-                               nxt[1] == :on_sp
+                               nxt.type == :on_sp
                              when :on_rbracket, :on_rparen
-                               if prev[1] == :on_sp
+                               if prev.type == :on_sp
                                  prev_ns = previous_non_space(tokens, ix)
                                  prev_ns && tokens_on_same_row?(prev_ns,
                                                                 tokens[ix]) &&
                                    # Avoid double repoting of [ ] and ( )
-                                   prev_ns[1] != :on_lbracket &&
-                                   prev_ns[1] != :on_lparen
+                                   prev_ns.type != :on_lbracket &&
+                                   prev_ns.type != :on_lparen
                                end
                              when :on_op
-                               text == '**' &&
+                               t.text == '**' &&
                                  (whitespace?(prev) || whitespace?(nxt))
                              end
           if offence_detected
-            index = pos[0] - 1
-            kind = case name
+            index = t.pos.lineno - 1
+            kind = case t.type
                    when :on_lparen, :on_rparen
                      'inside parentheses'
                    when :on_lbracket, :on_rbracket
                      'inside square brackets'
                    when :on_op
-                     "around operator #{text}"
+                     "around operator #{t.text}"
                    end
             add_offence(:convention, index, source[index],
                         "Space #{kind} detected.")
@@ -71,7 +71,7 @@ module Rubocop
       private
 
       def tokens_on_same_row?(t1, t2)
-        t1[0][0] == t2[0][0]
+        t1.pos.lineno == t2.pos.lineno
       end
 
       def previous_non_space(tokens, ix)
