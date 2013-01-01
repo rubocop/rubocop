@@ -24,6 +24,10 @@ module Rubocop
       def initialize(pos, type, text)
         @pos, @type, @text = Position.new(*pos), type, text
       end
+
+      def to_s
+        "[[#{@pos.lineno}, #{@pos.column}], #@type, #{@text.inspect}]"
+      end
     end
 
     class Cop

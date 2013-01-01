@@ -27,6 +27,12 @@ module Rubocop
             end
           when :on_ignored_nl, :on_nl
             break
+          when :on_comment
+            break if t.text =~ /\n/
+          when :on_sp
+            nil
+          else
+            then_found = false
           end
         end
         then_found
