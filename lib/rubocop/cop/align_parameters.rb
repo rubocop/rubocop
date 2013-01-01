@@ -1,7 +1,5 @@
 # encoding: utf-8
 
-require_relative 'grammar'
-
 module Rubocop
   module Cop
     class AlignParameters < Cop
@@ -17,10 +15,7 @@ module Rubocop
         each(:method_add_arg, sexp) do |method_add_arg|
           args = get_args(method_add_arg) or next
           first_arg, rest_of_args = divide_args(args)
-          method_name_pos = method_add_arg[1][1][-1]
-          method_name_ix = @token_indexes[method_name_pos]
-          @first_lparen_ix = method_name_ix +
-            @tokens[method_name_ix..-1].map(&:type).index(:on_lparen)
+          @first_lparen_ix = get_lparen_ix(method_add_arg)
           pos_of_1st_arg = position_of(first_arg) or next # Give up.
           rest_of_args.each do |arg|
             pos = position_of(arg) or next # Give up if no position found.
@@ -33,6 +28,8 @@ module Rubocop
           end
         end
       end
+
+      private
 
       def get_args(method_add_arg)
         fcall = method_add_arg[1]
@@ -61,6 +58,13 @@ module Rubocop
           rest_of_args = args[1..-1]
         end
         [first_arg, rest_of_args]
+      end
+
+      def get_lparen_ix(method_add_arg)
+        method_name_pos = method_add_arg[1][1][-1]
+        method_name_ix = @token_indexes[method_name_pos]
+        method_name_ix +
+          @tokens[method_name_ix..-1].map(&:type).index(:on_lparen)
       end
 
       def position_of(sexp)
