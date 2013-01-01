@@ -10,40 +10,40 @@ module Rubocop
       # if
 
       it 'registers an offence for then in multiline if' do
-        un_then.inspect_source('', ['if cond then',
+        inspect_source(un_then, '', ['if cond then',
                                     'end'])
         un_then.offences.map(&:message).sort.should ==
           ['Never use then for multi-line if/unless.']
       end
 
       it 'accepts multiline if without then' do
-        un_then.inspect_source('', ['if cond',
+        inspect_source(un_then, '', ['if cond',
                                     'end'])
         un_then.offences.map(&:message).sort.should == []
       end
 
       it 'accepts one line if/then/ends' do
-        un_then.inspect_source('', ['if cond then run end'])
+        inspect_source(un_then, '', ['if cond then run end'])
         un_then.offences.map(&:message).sort.should == []
       end
 
       # unless
 
       it 'registers an offence for then in multiline unless' do
-        un_then.inspect_source('', ['unless cond then',
+        inspect_source(un_then, '', ['unless cond then',
                                     'end'])
         un_then.offences.map(&:message).sort.should ==
           ['Never use then for multi-line if/unless.']
       end
 
       it 'accepts multiline unless without then' do
-        un_then.inspect_source('', ['unless cond',
+        inspect_source(un_then, '', ['unless cond',
                                     'end'])
         un_then.offences.map(&:message).sort.should == []
       end
 
       it 'accepts one line unless/then/ends' do
-        un_then.inspect_source('', ['unless cond then run end'])
+        inspect_source(un_then, '', ['unless cond then run end'])
         un_then.offences.map(&:message).sort.should == []
       end
     end

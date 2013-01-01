@@ -16,13 +16,13 @@ module Rubocop
             add(pos, source, ERROR_MESSAGE[0]) if def_sexp[2] != EMPTY_PARAMS
           when :paren
             if def_sexp[2][1] == EMPTY_PARAMS
-              method_name_ix = tokens.index { |t| t[0] == pos }
+              method_name_ix = tokens.index { |t| t.pos == pos }
               start = method_name_ix + 1
-              rparen_ix = start + tokens[start..-1].index { |t| t[2] == ')' }
+              rparen_ix = start + tokens[start..-1].index { |t| t.text == ')' }
               first_body_token = tokens[(rparen_ix + 1)..-1].find do |t|
                 not whitespace?(t)
               end
-              if first_body_token[0][0] > pos[0]
+              if first_body_token.pos.lineno > pos.lineno
                 # Only report offence if there's a line break after
                 # the empty parens.
                 add(pos, source, ERROR_MESSAGE[1])
@@ -35,7 +35,7 @@ module Rubocop
       private
 
       def add(pos, source, message)
-        index = pos[0] - 1
+        index = pos.lineno - 1
         add_offence(:convention, index, source[index], message)
       end
     end

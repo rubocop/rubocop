@@ -7,9 +7,9 @@ module Rubocop
 
       def inspect(file, source, tokens, sexp)
         tokens.each_with_index do |t, ix|
-          if t[1] == :on_kw && ['if', 'unless'].include?(t[2])
+          if t.type == :on_kw && ['if', 'unless'].include?(t.text)
             if multiline_if_then?(tokens, ix + 1)
-              index = t[0][0] - 1
+              index = t.pos.lineno - 1
               add_offence(:convention, index, source[index], ERROR_MESSAGE)
             end
           end
@@ -17,22 +17,19 @@ module Rubocop
       end
 
       def multiline_if_then?(tokens, ix)
-        end_found = then_found = false
+        then_found = false
         tokens[ix..-1].each do |t|
-          case t[1]
+          case t.type
           when :on_kw
-            case t[2]
-            when 'then'
-              then_found = true
-            when 'end'
-              end_found = true
-              break
+            case t.text
+            when 'then' then then_found = true
+            when 'end'  then return false
             end
           when :on_ignored_nl, :on_nl
             break
           end
         end
-        then_found && !end_found
+        then_found
       end
     end
   end
