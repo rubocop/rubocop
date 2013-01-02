@@ -3,14 +3,13 @@
 module Rubocop
   module Cop
     class Offence
-      attr_accessor :severity, :line_number, :line, :message
+      attr_accessor :severity, :line_number, :message
 
       SEVERITIES = [:refactor, :convention, :warning, :error, :fatal]
 
-      def initialize(severity, line_number, line, message)
+      def initialize(severity, line_number, message)
         @severity = severity
         @line_number = line_number
-        @line = line
         @message = message
       end
 

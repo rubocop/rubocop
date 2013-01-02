@@ -22,8 +22,7 @@ module Rubocop
                                         '  end',
                                         'end'])
         empty_lines.offences.size.should == 2
-        empty_lines.offences.map(&:line).sort.should == ['    def o',
-                                                         '  def p']
+        empty_lines.offences.map(&:line_number).sort.should == [7, 11]
       end
 
       # Only one def, so rule about empty line *between* defs does not

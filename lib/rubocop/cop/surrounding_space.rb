@@ -14,21 +14,17 @@ module Rubocop
           when :on_op
             unless surrounded_by_whitespace?(tokens[ix - 1, 3])
               unless ok_without_spaces?(grammar_path)
-                index = t.pos.lineno - 1
-                add_offence(:convention, index, source[index],
+                add_offence(:convention, t.pos.lineno,
                             ERROR_MESSAGE + "operator '#{t.text}'.")
               end
             end
           when :on_lbrace
             unless surrounded_by_whitespace?(tokens[ix - 1, 3])
-              index = t.pos.lineno - 1
-              add_offence(:convention, index, source[index],
-                          ERROR_MESSAGE + "'{'.")
+              add_offence(:convention, t.pos.lineno, ERROR_MESSAGE + "'{'.")
             end
           when :on_rbrace
             unless whitespace?(tokens[ix - 1])
-              index = t.pos.lineno - 1
-              add_offence(:convention, index, source[index],
+              add_offence(:convention, t.pos.lineno,
                           "Space missing to the left of '}'.")
             end
           end
@@ -53,7 +49,6 @@ module Rubocop
                                  (whitespace?(prev) || whitespace?(nxt))
                              end
           if offence_detected
-            index = t.pos.lineno - 1
             kind = case t.type
                    when :on_lparen, :on_rparen
                      'inside parentheses'
@@ -62,8 +57,7 @@ module Rubocop
                    when :on_op
                      "around operator #{t.text}"
                    end
-            add_offence(:convention, index, source[index],
-                        "Space #{kind} detected.")
+            add_offence(:convention, t.pos.lineno, "Space #{kind} detected.")
           end
         end
       end

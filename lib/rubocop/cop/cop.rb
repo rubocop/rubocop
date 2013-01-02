@@ -24,6 +24,10 @@ module Rubocop
       def initialize(pos, type, text)
         @pos, @type, @text = Position.new(*pos), type, text
       end
+
+      def to_s
+        "[[#{@pos.lineno}, #{@pos.column}], #@type, #{@text.inspect}]"
+      end
     end
 
     class Cop
@@ -59,8 +63,8 @@ module Rubocop
         !@offences.empty?
       end
 
-      def add_offence(file, line_number, line, message)
-        @offences << Offence.new(file, line_number, line, message)
+      def add_offence(file, line_number, message)
+        @offences << Offence.new(file, line_number, message)
       end
 
       private

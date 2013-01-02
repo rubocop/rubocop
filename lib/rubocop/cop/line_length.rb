@@ -10,7 +10,7 @@ module Rubocop
         source.each_with_index do |line, index|
           if line.length > MAX_LINE_LENGTH
             message = sprintf(ERROR_MESSAGE, line.length, MAX_LINE_LENGTH)
-            add_offence(:convention, index, line, message)
+            add_offence(:convention, index + 1, message)
           end
         end
       end
