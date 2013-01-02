@@ -10,8 +10,7 @@ module Rubocop
         tokens.each do |t|
           if [:on_int, :on_float].include?(t.type) &&
               t.text.split('.').grep(/\d{6}/).any?
-            index = t.pos.lineno - 1
-            add_offence(:convention, index, source[index], ERROR_MESSAGE)
+            add_offence(:convention, t.pos.lineno, ERROR_MESSAGE)
           end
         end
       end

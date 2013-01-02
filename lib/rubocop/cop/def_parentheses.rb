@@ -13,7 +13,9 @@ module Rubocop
           pos = def_sexp[1][-1]
           case def_sexp[2][0]
           when :params
-            add(pos, source, ERROR_MESSAGE[0]) if def_sexp[2] != EMPTY_PARAMS
+            if def_sexp[2] != EMPTY_PARAMS
+              add_offence(:convention, pos.lineno, ERROR_MESSAGE[0])
+            end
           when :paren
             if def_sexp[2][1] == EMPTY_PARAMS
               method_name_ix = tokens.index { |t| t.pos == pos }
@@ -25,18 +27,11 @@ module Rubocop
               if first_body_token.pos.lineno > pos.lineno
                 # Only report offence if there's a line break after
                 # the empty parens.
-                add(pos, source, ERROR_MESSAGE[1])
+                add_offence(:convention, pos.lineno, ERROR_MESSAGE[1])
               end
             end
           end
         end
-      end
-
-      private
-
-      def add(pos, source, message)
-        index = pos.lineno - 1
-        add_offence(:convention, index, source[index], message)
       end
     end
   end

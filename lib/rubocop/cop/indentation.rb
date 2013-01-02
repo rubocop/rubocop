@@ -11,8 +11,7 @@ module Rubocop
         each_when(sexp) do |case_ix|
           when_pos = when_tokens.shift.pos
           if when_pos.column != case_tokens[case_ix].pos.column
-            index = when_pos.lineno - 1
-            add_offence(:convention, index, source[index], ERROR_MESSAGE)
+            add_offence(:convention, when_pos.lineno, ERROR_MESSAGE)
           end
         end
       end

@@ -17,7 +17,7 @@ module Rubocop
 
       it 'keeps track of offences' do
         cop = Cop::Cop.new
-        cop.add_offence(:convention, 0, 'line', 'message')
+        cop.add_offence(:convention, 1, 'message')
 
         report << cop
 

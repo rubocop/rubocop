@@ -10,8 +10,8 @@ module Rubocop
 
       it 'displays parsable text' do
         cop = Cop::Cop.new
-        cop.add_offence(:convention, 0, 'line', 'message 1')
-        cop.add_offence(:fatal,     10, 'line', 'message 2')
+        cop.add_offence(:convention, 1, 'message 1')
+        cop.add_offence(:fatal,     11, 'message 2')
 
         emacs_style << cop
 

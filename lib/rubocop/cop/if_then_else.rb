@@ -11,7 +11,6 @@ module Rubocop
       def inspect(file, source, tokens, sexp)
         tokens.each_with_index do |t, ix|
           if t.type == :on_kw && ['if', 'unless'].include?(t.text)
-            index = t.pos.lineno - 1
             error = case kind_of_if(tokens, ix + 1)
                     when :multiline_if_then then 0
                     when :one_liner         then 1
@@ -19,8 +18,7 @@ module Rubocop
                     else                         nil
                     end
             if error
-              add_offence(:convention, index, source[index],
-                          ERROR_MESSAGE[error])
+              add_offence(:convention, t.pos.lineno, ERROR_MESSAGE[error])
             end
           end
         end

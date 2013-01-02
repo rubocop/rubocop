@@ -63,8 +63,8 @@ module Rubocop
         !@offences.empty?
       end
 
-      def add_offence(file, line_number, line, message)
-        @offences << Offence.new(file, line_number, line, message)
+      def add_offence(file, line_number, message)
+        @offences << Offence.new(file, line_number, message)
       end
 
       private
