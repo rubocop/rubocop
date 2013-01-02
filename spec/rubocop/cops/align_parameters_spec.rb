@@ -38,7 +38,7 @@ module Rubocop
 
       it "doesn't get confused by a symbol argument" do
         inspect_source(align, '',
-                       ['add_offence(:convention, index, source[index],',
+                       ['add_offence(:convention, index,',
                         '            ERROR_MESSAGE % kind)'])
         align.offences.map(&:message).should == []
       end
@@ -54,7 +54,7 @@ module Rubocop
                         'func3(*a)',
                        ])
         align.offences.map(&:to_s).should ==
-          ['C:  4: Align the parameters of a method call if they span more ' +
+          ['C:  5: Align the parameters of a method call if they span more ' +
            'than one line.']
       end
 

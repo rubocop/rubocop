@@ -16,13 +16,13 @@ module Rubocop
       end
 
       it 'keeps track of offences' do
-        cop.add_offence('file', 0, 'line', 'message')
+        cop.add_offence('file', 1, 'message')
 
         cop.offences.size.should == 1
       end
 
       it 'will report registered offences' do
-        cop.add_offence('file', 0, 'line', 'message')
+        cop.add_offence('file', 1, 'message')
 
         cop.has_report?.should be_true
       end

@@ -16,6 +16,8 @@ require 'rubocop/cop/hash_syntax'
 require 'rubocop/cop/end_of_line'
 require 'rubocop/cop/numeric_literals'
 require 'rubocop/cop/align_parameters'
+require 'rubocop/cop/def_parentheses'
+require 'rubocop/cop/if_then_else'
 
 require 'rubocop/report/report'
 require 'rubocop/report/plain_text'

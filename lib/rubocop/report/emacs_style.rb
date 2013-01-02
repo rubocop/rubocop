@@ -7,7 +7,7 @@ module Rubocop
       # Generates a string representation of the report
       def generate
         report = entries.map do |e|
-          "#@filename:#{e.line_number + 1}: #{e.encode_severity}: #{e.message}"
+          "#@filename:#{e.line_number}: #{e.encode_severity}: #{e.message}"
         end
         report.join("\n")
       end

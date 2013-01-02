@@ -39,7 +39,7 @@ module Rubocop
         begin
           cli.run(['example.rb']).should == 1
           $stdout.string.should == ['== example.rb ==',
-                                    'C:  1: Trailing whitespace detected.',
+                                    'C:  2: Trailing whitespace detected.',
                                     '',
                                     '1 files inspected, 1 offences detected',
                                     ''].join("\n")

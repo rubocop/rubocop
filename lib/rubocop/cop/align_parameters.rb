@@ -21,8 +21,7 @@ module Rubocop
             pos = position_of(arg) or next # Give up if no position found.
             if pos.lineno != pos_of_1st_arg.lineno
               if pos.column != pos_of_1st_arg.column
-                index = pos.lineno - 1
-                add_offence(:convention, index, source[index], ERROR_MESSAGE)
+                add_offence(:convention, pos.lineno, ERROR_MESSAGE)
               end
             end
           end

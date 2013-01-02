@@ -16,8 +16,8 @@ module Rubocop
         end
         each(:assoc_new, sexp) do |assoc_new|
           if assoc_new[1][0] == :symbol_literal
-            index = assoc_new[1][1][1][-1].lineno - 1
-            add_offence(:convention, index, source[index], ERROR_MESSAGE)
+            add_offence(:convention, assoc_new[1][1][1][-1].lineno,
+                        ERROR_MESSAGE)
           end
         end
       end

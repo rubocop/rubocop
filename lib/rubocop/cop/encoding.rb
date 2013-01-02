@@ -9,7 +9,7 @@ module Rubocop
       def inspect(file, source, tokens, sexp)
         unless source[0] =~ /#.*coding: (UTF|utf)-8/
           message = sprintf(ERROR_MESSAGE)
-          add_offence(:convention, 0, 0, message)
+          add_offence(:convention, 1, message)
         end
       end
     end

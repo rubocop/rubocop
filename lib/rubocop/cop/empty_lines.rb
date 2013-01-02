@@ -15,8 +15,7 @@ module Rubocop
           defs[1..-1].each do |child|
             next_row_ix = child[1][-1].lineno - 1
             if source[current_row_ix..next_row_ix].grep(/^[ \t]*$/).empty?
-              add_offence(:convention, next_row_ix, source[next_row_ix],
-                          ERROR_MESSAGE)
+              add_offence(:convention, next_row_ix + 1, ERROR_MESSAGE)
             end
             current_row_ix = next_row_ix
           end

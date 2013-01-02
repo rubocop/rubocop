@@ -16,9 +16,7 @@ module Rubocop
                  end
           if kind and not [:on_sp,
                            :on_ignored_nl].include?(tokens[ix + 1].type)
-            index = t.pos.lineno - 1
-            add_offence(:convention, index, source[index],
-                        ERROR_MESSAGE % kind)
+            add_offence(:convention, t.pos.lineno, ERROR_MESSAGE % kind)
           end
         end
       end
