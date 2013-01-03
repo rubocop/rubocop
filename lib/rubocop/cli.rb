@@ -39,10 +39,11 @@ module Rubocop
           line.chomp
         end
 
-        tokens, sexp = CLI.rip_source(source)
+        tokens, sexp, correlations = CLI.rip_source(source)
 
         cops.each do |cop_klass|
           cop = cop_klass.new
+          cop.correlations = correlations
           cop.inspect(file, source, tokens, sexp)
           total_offences += cop.offences.count
           report << cop if cop.has_report?
@@ -61,7 +62,8 @@ module Rubocop
       tokens = Ripper.lex(source.join("\n")).map { |t| Cop::Token.new(*t) }
       sexp = Ripper.sexp(source.join("\n"))
       Cop::Position.make_position_objects(sexp)
-      [tokens, sexp]
+      correlations = Cop::Grammar.new(tokens).correlate(sexp)
+      [tokens, sexp, correlations]
     end
 
     def show_cops_on_duty(cops)

@@ -7,10 +7,10 @@ module Rubocop
         @tokens_without_pos = tokens.map { |t| [t.type, t.text] }
         process_embedded_expressions
         @token_indexes = {}
-        @tokens_without_pos.each_with_index { |t, i|
+        @tokens_without_pos.each_with_index do |t, i|
           @token_indexes[t] ||= []
           @token_indexes[t] << i
-        }
+        end
         @ix = 0
         @table = {}
         token_positions = tokens.map { |t| [t.pos.lineno, t.pos.column] }

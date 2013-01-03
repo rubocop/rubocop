@@ -39,6 +39,7 @@ RSpec.configure do |config|
 end
 
 def inspect_source(cop, file, source)
-  tokens, sexp = Rubocop::CLI.rip_source(source)
+  tokens, sexp, correlations = Rubocop::CLI.rip_source(source)
+  cop.correlations = correlations
   cop.inspect(file, source, tokens, sexp)
 end
