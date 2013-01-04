@@ -7,6 +7,8 @@ module Rubocop
                        'Prefer {...} over do...end for single-line blocks.']
 
       def inspect(file, source, tokens, sexp)
+        @file = file
+
         # The reverse_correlations maps grammar path object ids to
         # token indexes, so we can use it to find the corresponding }
         # for each {.
@@ -20,6 +22,10 @@ module Rubocop
             path = @correlations[ix] or next
             if path.last == :brace_block
               rbrace_ix = reverse_correlations[path.object_id] - [ix]
+              if rbrace_ix.empty?
+                fail "\n#@file:#{t.pos.lineno}:#{t.pos.column}: " +
+                  'Matching brace not found'
+              end
               if tokens[*rbrace_ix].pos.lineno > t.pos.lineno
                 add_offence(:convention, t.pos.lineno, ERROR_MESSAGE[0])
               end

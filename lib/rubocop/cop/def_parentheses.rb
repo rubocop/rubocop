@@ -4,7 +4,7 @@ module Rubocop
   module Cop
     class DefParentheses < Cop
       ERROR_MESSAGE = ['Use def with parentheses when there are arguments.',
-                       "Omit the parentheses in defs when the method " +
+                       'Omit the parentheses in defs when the method ' +
                        "doesn't accept any arguments."]
       EMPTY_PARAMS = [:params, nil, nil, nil, nil, nil]
 

@@ -33,7 +33,7 @@ module Rubocop
       def get_args(method_add_arg)
         fcall = method_add_arg[1]
         return nil if fcall[0] != :fcall
-        return nil if fcall[1][0..1] == [:@ident, "lambda"]
+        return nil if fcall[1][0..1] == [:@ident, 'lambda']
         arg_paren = method_add_arg[2..-1][0]
         return nil if arg_paren[0] != :arg_paren || arg_paren[1].nil?
 

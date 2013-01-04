@@ -14,7 +14,7 @@ module Rubocop
                                           'end',
                                           "if cond then\t",
                                           'end',
-                                          "if cond then  ",
+                                          'if cond then  ',
                                           'end',
                                           'if cond then # bad',
                                           'end'])

@@ -14,12 +14,12 @@ module Rubocop
       $options = { mode: :default }
 
       OptionParser.new do |opts|
-        opts.banner = "Usage: rubocop [options] [file1, file2, ...]"
+        opts.banner = 'Usage: rubocop [options] [file1, file2, ...]'
 
-        opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
+        opts.on('-v', '--[no-]verbose', 'Run verbosely') do |v|
           $options[:verbose] = v
         end
-        opts.on("-e", "--emacs", "Emacs style output") do
+        opts.on('-e', '--emacs', 'Emacs style output') do
           $options[:mode] = :emacs_style
         end
       end.parse!(args)
@@ -67,9 +67,9 @@ module Rubocop
     end
 
     def show_cops_on_duty(cops)
-      puts "Reporting for duty:"
+      puts 'Reporting for duty:'
       cops.each { |c| puts c }
-      puts "*******************"
+      puts '*******************'
     end
 
     # Generate a list of target files by expanding globing patterns
