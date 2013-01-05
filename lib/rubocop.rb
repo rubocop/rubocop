@@ -21,6 +21,7 @@ require 'rubocop/cop/if_then_else'
 require 'rubocop/cop/blocks'
 require 'rubocop/cop/parameter_lists'
 require 'rubocop/cop/string_literals'
+require 'rubocop/cop/ternary_operator'
 
 require 'rubocop/report/report'
 require 'rubocop/report/plain_text'
