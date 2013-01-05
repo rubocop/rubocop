@@ -7,10 +7,10 @@ module Rubocop
         @tokens_without_pos = tokens.map { |t| [t.type, t.text] }
         process_embedded_expressions
         @token_indexes = {}
-        @tokens_without_pos.each_with_index { |t, i|
+        @tokens_without_pos.each_with_index do |t, i|
           @token_indexes[t] ||= []
           @token_indexes[t] << i
-        }
+        end
         @ix = 0
         @table = {}
         token_positions = tokens.map { |t| [t.pos.lineno, t.pos.column] }
@@ -122,12 +122,12 @@ module Rubocop
 
       def add_matching_rbrace(ix)
         brace_depth = 0
-        rbrace_offset = @tokens_without_pos[@ix..-1].index do |t|
+        rbrace_offset = @tokens_without_pos[ix..-1].index do |t|
           brace_depth += 1 if t == [:on_lbrace, '{']
           brace_depth -= 1 if t == [:on_rbrace, '}']
           brace_depth == 0 && t == [:on_rbrace, '}']
         end
-        @table[@ix + rbrace_offset] = @table[ix] if rbrace_offset
+        @table[ix + rbrace_offset] = @table[ix] if rbrace_offset
       end
     end
   end

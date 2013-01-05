@@ -8,7 +8,7 @@ module Rubocop
       ERROR_MESSAGE = 'Surrounding space missing for '
 
       def inspect(file, source, tokens, sexp)
-        Grammar.new(tokens).correlate(sexp).sort.each do |ix, grammar_path|
+        @correlations.sort.each do |ix, grammar_path|
           t = tokens[ix]
           case t.type
           when :on_op

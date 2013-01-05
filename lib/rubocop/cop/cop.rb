@@ -32,6 +32,7 @@ module Rubocop
 
     class Cop
       attr_accessor :offences
+      attr_writer :correlations
 
       @all = []
       @enabled = []

@@ -17,7 +17,7 @@ module Rubocop
 
         s = StringIO.new
         emacs_style.display(s)
-        s.string.should == ["test:1: C: message 1",
+        s.string.should == ['test:1: C: message 1',
                             "test:11: F: message 2\n"].join("\n")
       end
     end
