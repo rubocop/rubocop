@@ -161,7 +161,7 @@ module Rubocop
       it 'registers an offences for exponent operator with spaces' do
         inspect_source(space, 'file.rb', ['x = a * b ** 2'])
         space.offences.map(&:message).should ==
-          ["Space around operator ** detected."]
+          ['Space around operator ** detected.']
       end
 
       it 'accepts exponent operator without spaces' do

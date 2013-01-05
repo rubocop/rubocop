@@ -21,7 +21,7 @@ module Rubocop
         inspect_source(def_par, '', src)
         def_par.offences.map(&:message).should ==
           ["Omit the parentheses in defs when the method doesn't accept any " +
-           "arguments."]
+           'arguments.']
       end
 
       it 'accepts def with arg and parens' do

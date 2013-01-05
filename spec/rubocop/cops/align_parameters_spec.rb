@@ -91,7 +91,7 @@ module Rubocop
         align.offences.map(&:message).should == []
       end
 
-      it "accepts braceless hashes" do
+      it 'accepts braceless hashes' do
         inspect_source(align, '',
                        ['run(collection, :entry_name => label,',
                         '                :paginator  => paginator)'])
