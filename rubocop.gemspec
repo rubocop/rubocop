@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "rubocop"
-  s.version = "0.1.0"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Bozhidar Batsov"]
-  s.date = "2012-12-20"
+  s.date = "2013-01-02"
   s.description = "Automatic Ruby code style checking tool. Aims to enforce the community-driven Ruby Style Guide."
   s.email = "bozhidar@batsov.com"
   s.executables = ["rubocop"]
@@ -19,8 +19,10 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     ".document",
+    ".rbenv-version",
     ".rspec",
     ".rvmrc",
+    ".travis.yml",
     "Gemfile",
     "Gemfile.lock",
     "LICENSE.txt",
@@ -33,12 +35,18 @@ Gem::Specification.new do |s|
     "features/support/env.rb",
     "lib/rubocop.rb",
     "lib/rubocop/cli.rb",
+    "lib/rubocop/cop/align_parameters.rb",
     "lib/rubocop/cop/cop.rb",
+    "lib/rubocop/cop/def_parentheses.rb",
     "lib/rubocop/cop/empty_lines.rb",
     "lib/rubocop/cop/encoding.rb",
+    "lib/rubocop/cop/end_of_line.rb",
     "lib/rubocop/cop/grammar.rb",
+    "lib/rubocop/cop/hash_syntax.rb",
+    "lib/rubocop/cop/if_then_else.rb",
     "lib/rubocop/cop/indentation.rb",
     "lib/rubocop/cop/line_length.rb",
+    "lib/rubocop/cop/numeric_literals.rb",
     "lib/rubocop/cop/offence.rb",
     "lib/rubocop/cop/space_after_comma_etc.rb",
     "lib/rubocop/cop/surrounding_space.rb",
@@ -50,11 +58,17 @@ Gem::Specification.new do |s|
     "lib/rubocop/version.rb",
     "rubocop.gemspec",
     "spec/rubocop/cli_spec.rb",
+    "spec/rubocop/cops/align_parameters_spec.rb",
     "spec/rubocop/cops/cop_spec.rb",
+    "spec/rubocop/cops/def_parentheses_spec.rb",
     "spec/rubocop/cops/empty_lines_spec.rb",
+    "spec/rubocop/cops/end_of_line_spec.rb",
     "spec/rubocop/cops/grammar_spec.rb",
+    "spec/rubocop/cops/hash_syntax_spec.rb",
+    "spec/rubocop/cops/if_then_else_spec.rb",
     "spec/rubocop/cops/indentation_spec.rb",
     "spec/rubocop/cops/line_length_spec.rb",
+    "spec/rubocop/cops/numeric_literals_spec.rb",
     "spec/rubocop/cops/offence_spec.rb",
     "spec/rubocop/cops/space_after_comma_etc_spec.rb",
     "spec/rubocop/cops/surrounding_space_spec.rb",
