@@ -31,7 +31,12 @@ module Rubocop
               end
             end
           when [:on_kw, 'do']
-            end_token_ix = ix + tokens[ix..-1].index { |t2| t2.text == 'end' }
+            end_offset = tokens[ix..-1].index { |t2| t2.text == 'end' }
+            unless end_offset
+              fail "\n#@file:#{t.pos.lineno}:#{t.pos.column}: " +
+                'Matching end not found'
+            end
+            end_token_ix = ix + end_offset
             if tokens[end_token_ix].pos.lineno == t.pos.lineno
               add_offence(:convention, t.pos.lineno, ERROR_MESSAGE[1])
             end
