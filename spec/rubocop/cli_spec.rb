@@ -14,7 +14,8 @@ module Rubocop
         lambda { cli.run ['--help'] }.should exit_with_code(0)
         message = ['Usage: rubocop [options] [file1, file2, ...]',
                    '    -v, --[no-]verbose               Run verbosely',
-                   '    -e, --emacs                      Emacs style output']
+                   '    -e, --emacs                      Emacs style output',
+                   '    -c, --config FILE                Configuration file']
         $stdout.string.should == (message * 2).join("\n") + "\n"
       end
 
@@ -67,9 +68,69 @@ module Rubocop
         end
       end
 
+      it 'can be configured with option to disable a certain error' do
+        File.open('example1.rb', 'w') { |f| f.puts 'x = 0 ' }
+        File.open('rubocop.yml', 'w') do |f|
+          f.puts('Encoding:',
+                 '  Enable: false',
+                 '',
+                 'Indentation:',
+                 '  Enable: false')
+        end
+        begin
+          return_code = cli.run(['-c', 'rubocop.yml', 'example1.rb'])
+          $stdout.string.should ==
+            ['== example1.rb ==',
+             'C:  1: Trailing whitespace detected.',
+             '',
+             '1 files inspected, 1 offences detected',
+             ''].join("\n")
+          return_code.should == 1
+        ensure
+          File.delete 'example1.rb'
+          File.delete 'rubocop.yml'
+        end
+      end
+
+      it 'can be configured with project config to disable a certain error' do
+        FileUtils.mkdir 'example_src'
+        File.open('example_src/example1.rb', 'w') { |f| f.puts 'x = 0 ' }
+        File.open('example_src/.rubocop.yml', 'w') do |f|
+          f.puts('Encoding:',
+                 '  Enable: false',
+                 '',
+                 'Indentation:',
+                 '  Enable: false')
+        end
+        begin
+          return_code = cli.run(['example_src/example1.rb'])
+          $stdout.string.should ==
+            ['== example_src/example1.rb ==',
+             'C:  1: Trailing whitespace detected.',
+             '',
+             '1 files inspected, 1 offences detected',
+             ''].join("\n")
+          return_code.should == 1
+        ensure
+          FileUtils.rm_rf 'example_src'
+        end
+      end
+
       it 'finds no violations when checking the rubocop source code' do
         cli.run
         $stdout.string.should =~ /files inspected, 0 offences detected\n/
+      end
+
+      it 'can process a file with an invalide UTF-8 byte sequence' do
+        File.open('example.rb', 'w') do |f|
+          f.puts '# encoding: utf-8'
+          f.puts "# \xf9\x29"
+        end
+        begin
+          cli.run(['--emacs', 'example.rb']).should == 0
+        ensure
+          File.delete 'example.rb'
+        end
       end
     end
   end

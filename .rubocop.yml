@@ -1,0 +1,83 @@
+# This is the default configuration file with all checking enabled. It is also
+# the configuration used to check the rubocop source code.
+
+Encoding:
+  Enabled: true
+
+LineLength:
+  Enabled: true
+
+Tab:
+  Enabled: true
+
+TrailingWhitespace:
+  Enabled: true
+
+Indentation:
+  Enabled: true
+
+EmptyLines:
+  Enabled: true
+
+SpaceAroundOperators:
+  Enabled: true
+
+SpaceAroundBraces:
+  Enabled: true
+
+SpaceInsideParens:
+  Enabled: true
+
+SpaceInsideBrackets:
+  Enabled: true
+
+SpaceAfterComma:
+  Enabled: true
+
+SpaceAfterSemicolon:
+  Enabled: true
+
+SpaceAfterColon:
+  Enabled: true
+
+HashSyntax:
+  Enabled: true
+
+EndOfLine:
+  Enabled: true
+
+NumericLiterals:
+  Enabled: true
+
+AlignParameters:
+  Enabled: true
+
+DefWithParentheses:
+  Enabled: true
+
+DefWithoutParentheses:
+  Enabled: true
+
+IfWithSemicolon:
+  Enabled: true
+
+MultilineIfThen:
+  Enabled: true
+
+OneLineConditional:
+  Enabled: true
+
+MultilineBlocks:
+  Enabled: true
+
+SingleLineBlocks:
+  Enabled: true
+
+ParameterLists:
+  Enabled: true
+
+StringLiterals:
+  Enabled: true
+
+TernaryOperator:
+  Enabled: true

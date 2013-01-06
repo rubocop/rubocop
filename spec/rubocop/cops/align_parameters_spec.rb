@@ -54,8 +54,8 @@ module Rubocop
                         'func3(*a)',
                        ])
         align.offences.map(&:to_s).should ==
-          ['C:  5: Align the parameters of a method call if they span more ' +
-           'than one line.']
+          ['C:  5: Align the parameters of a method call if they span ' +
+           'more than one line.']
       end
 
       it 'can handle a correctly aligned string literal as first argument' do

@@ -4,14 +4,13 @@ require 'spec_helper'
 
 module Rubocop
   module Cop
-    describe SurroundingSpace do
-      let (:space) { SurroundingSpace.new }
+    describe SpaceAroundOperators do
+      let (:space) { SpaceAroundOperators.new }
 
       it 'registers an offence for assignment without space on both sides' do
         inspect_source(space, 'file.rb', ['x=0', 'y= 0', 'z =0'])
-        space.offences.size.should == 3
-        space.offences.first.message.should ==
-          "Surrounding space missing for operator '='."
+        space.offences.map(&:message).should ==
+          ["Surrounding space missing for operator '='."] * 3
       end
 
       it 'registers an offence for binary operators that could be unary' do
@@ -22,61 +21,10 @@ module Rubocop
            "Surrounding space missing for operator '+'."]
       end
 
-      it 'registers an offence for left brace without spaces' do
-        inspect_source(space, 'file.rb', ['each{ puts }'])
-        space.offences.map(&:message).should ==
-          ["Surrounding space missing for '{'."]
-      end
-
-      it 'registers an offence for right brace without inner space' do
-        inspect_source(space, 'file.rb', ['each { puts}'])
-        space.offences.map(&:message).should ==
-          ["Space missing to the left of '}'."]
-      end
-
-      it 'accepts an empty hash literal with no space inside' do
-        inspect_source(space, 'file.rb',
-                       ['view_hash.each do |view_key|',
-                        'end',
-                        '@views = {}',
-                        ''])
-        space.offences.map(&:message).should == []
-      end
-
       it 'registers an offence for arguments to a method' do
         inspect_source(space, 'file.rb', ['puts 1+2'])
         space.offences.map(&:message).should ==
           ["Surrounding space missing for operator '+'."]
-      end
-
-      it 'registers an offence for an array literal with spaces inside' do
-        inspect_source(space, 'file.rb', ['a = [1, 2 ]',
-                                         'b = [ 1, 2]'])
-        space.offences.map(&:message).should ==
-          ['Space inside square brackets detected.',
-           'Space inside square brackets detected.']
-      end
-
-      it 'accepts space inside square brackets if on its own row' do
-        inspect_source(space, 'file.rb', ['a = [',
-                                         '     1, 2',
-                                         '    ]'])
-        space.offences.map(&:message).should == []
-      end
-
-      it 'registers an offence for spaces inside parens' do
-        inspect_source(space, 'file.rb', ['f( 3)',
-                                         'g(3 )'])
-        space.offences.map(&:message).should ==
-          ['Space inside parentheses detected.',
-           'Space inside parentheses detected.']
-      end
-
-      it 'accepts parentheses in block parameter list' do
-        inspect_source(space, 'file.rb',
-                       ['list.inject(Tms.new) { |sum, (label, item)|',
-                        '}'])
-        space.offences.map(&:message).should == []
       end
 
       it 'accepts operator symbols' do
@@ -130,12 +78,6 @@ module Rubocop
         space.offences.map(&:message).should == []
       end
 
-      it 'accepts square brackets as method name' do
-        inspect_source(space, 'file.rb', ['def Vector.[](*array)',
-                                         'end'])
-        space.offences.map(&:message).should == []
-      end
-
       it 'accepts def of operator' do
         inspect_source(space, 'file.rb', ['def +(other); end'])
         space.offences.map(&:message).should == []
@@ -174,17 +116,6 @@ module Rubocop
                                          '-3',
                                          'x = +2'])
         space.offences.map(&:message).should == []
-      end
-
-      it 'accepts square brackets called with method call syntax' do
-        inspect_source(space, 'file.rb', ['subject.[](0)'])
-        space.offences.map(&:message).should == []
-      end
-
-      it 'only reports a single space once' do
-        inspect_source(space, 'file.rb', ['[ ]'])
-        space.offences.map(&:message).should ==
-          ['Space inside square brackets detected.']
       end
     end
   end
