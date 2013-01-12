@@ -71,6 +71,18 @@ module Rubocop
         cli.run
         $stdout.string.should =~ /files inspected, 0 offences detected\n/
       end
+
+      it 'can process a file with an invalide UTF-8 byte sequence' do
+        File.open('example.rb', 'w') do |f|
+          f.puts '# encoding: utf-8'
+          f.puts "# \xf9\x29"
+        end
+        begin
+          cli.run(['--emacs', 'example.rb']).should == 0
+        ensure
+          File.delete 'example.rb'
+        end
+      end
     end
   end
 end
