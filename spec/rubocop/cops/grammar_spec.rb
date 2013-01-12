@@ -41,6 +41,8 @@ module Rubocop
 
         sexp = Ripper.sexp(EXAMPLE)
         Position.make_position_objects(sexp)
+
+        varref = (RUBY_VERSION == '1.9.2') ? :var_ref : :vcall
         grammar.correlate(sexp).should == {
           0  => method_block + [:call, :@int],                    # 3
           2  => method_block + [:call, :@ident],                  # times
@@ -51,9 +53,9 @@ module Rubocop
           10 => brace_block + [:assign, :var_field, :@ident],     # x
           12 => brace_block + [:assign],                          # =
           16 => brace_block + [:assign, :string_literal, :string_content,
-                               :string_embexpr, :vcall, :@ident], # y
+                               :string_embexpr, varref, :@ident], # y
           19 => brace_block + [:assign, :string_literal, :string_content,
-                               :string_embexpr, :vcall, :@ident], # z
+                               :string_embexpr, varref, :@ident], # z
           21 => brace_block + [:assign, :string_literal, :string_content,
                                :@tstring_content],                # }
           24 => brace_block,                                      # }

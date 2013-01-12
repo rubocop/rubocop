@@ -31,11 +31,7 @@ module Rubocop
       target_files(args).each do |file|
         report = Report.create(file, $options[:mode])
         source = File.readlines(file).map do |line|
-          enc = line.encoding.name
-          # Get rid of invalid byte sequences
-          line.encode!('UTF-16', enc, invalid: :replace, replace: '')
-          line.encode!(enc, 'UTF-16')
-
+          get_rid_of_invalid_byte_sequences(line)
           line.chomp
         end
 
@@ -56,6 +52,14 @@ module Rubocop
       puts "#{total_offences} offences detected"
 
       return total_offences == 0 ? 0 : 1
+    end
+
+    def get_rid_of_invalid_byte_sequences(line)
+      enc = line.encoding.name
+      # UTF-16 works better in this algorithm but is not supported in 1.9.2.
+      temporary_encoding = (RUBY_VERSION == '1.9.2') ? 'UTF-8' : 'UTF-16'
+      line.encode!(temporary_encoding, enc, invalid: :replace, replace: '')
+      line.encode!(enc, temporary_encoding)
     end
 
     def self.rip_source(source)
