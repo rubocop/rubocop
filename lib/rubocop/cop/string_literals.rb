@@ -14,7 +14,7 @@ module Rubocop
                     :double_quote if t.text == '"'
 
                   when [:double_quote, :on_tstring_content]
-                    :valid_double_quote if t.text =~ /'|\\[ntr]/
+                    :valid_double_quote if t.text =~ /'|\\[ntrx]/
 
                   when [:double_quote, :on_embexpr_beg]
                     :embedded_expression
