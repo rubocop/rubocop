@@ -48,14 +48,6 @@ module Rubocop
         all << subclass
       end
 
-      def self.enabled
-        all.select(&:enabled?)
-      end
-
-      def self.enabled?
-        true
-      end
-
       def initialize
         @offences = []
       end
@@ -65,7 +57,9 @@ module Rubocop
       end
 
       def add_offence(file, line_number, message)
-        @offences << Offence.new(file, line_number, message)
+        if self.class.enabled != false
+          @offences << Offence.new(file, line_number, message)
+        end
       end
 
       private

@@ -2,21 +2,13 @@
 
 module Rubocop
   module Cop
-    class IfThenElse < Cop
-      ERROR_MESSAGE = {
-        multiline_if_then:
-        'Never use then for multi-line if/unless.',
-        one_liner:
-        'Favor the ternary operator (?:) over if/then/else/end constructs.',
-        semicolon:
-        'Never use if x; Use the ternary operator instead.'
-      }
-
+    module IfThenElse
       def inspect(file, source, tokens, sexp)
         tokens.each_with_index do |t, ix|
           if t.type == :on_kw && ['if', 'unless'].include?(t.text)
-            error = ERROR_MESSAGE[kind_of_if(tokens, ix + 1)]
-            add_offence(:convention, t.pos.lineno, error) if error
+            if kind_of_if(tokens, ix + 1) == self.class
+              add_offence(:convention, t.pos.lineno, error_message)
+            end
           end
         end
       end
@@ -28,12 +20,12 @@ module Rubocop
           when :on_kw
             case t.text
             when 'then' then then_found = true
-            when 'end'  then return :one_liner
+            when 'end'  then return OneLineConditional
             end
           when :on_ignored_nl, :on_nl
             break
           when :on_semicolon
-            return :semicolon
+            return IfWithSemicolon
           when :on_comment
             break if t.text =~ /\n/
           when :on_sp
@@ -42,7 +34,28 @@ module Rubocop
             then_found = false
           end
         end
-        then_found ? :multiline_if_then : nil
+        then_found ? MultilineIfThen : nil
+      end
+    end
+
+    class IfWithSemicolon < Cop
+      include IfThenElse
+      def error_message
+        'Never use if x; Use the ternary operator instead.'
+      end
+    end
+
+    class MultilineIfThen < Cop
+      include IfThenElse
+      def error_message
+        'Never use then for multi-line if/unless.'
+      end
+    end
+
+    class OneLineConditional < Cop
+      include IfThenElse
+      def error_message
+        'Favor the ternary operator (?:) over if/then/else/end constructs.'
       end
     end
   end
