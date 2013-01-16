@@ -14,7 +14,8 @@ module Rubocop
         lambda { cli.run ['--help'] }.should exit_with_code(0)
         message = ['Usage: rubocop [options] [file1, file2, ...]',
                    '    -v, --[no-]verbose               Run verbosely',
-                   '    -e, --emacs                      Emacs style output']
+                   '    -e, --emacs                      Emacs style output',
+                   '    -c, --config FILE                Configuration file']
         $stdout.string.should == (message * 2).join("\n") + "\n"
       end
 
@@ -64,6 +65,54 @@ module Rubocop
         ensure
           File.delete 'example1.rb'
           File.delete 'example2.rb'
+        end
+      end
+
+      it 'can be configured with option to disable a certain error' do
+        File.open('example1.rb', 'w') { |f| f.puts 'x = 0 ' }
+        File.open('rubocop.yml', 'w') do |f|
+          f.puts('Encoding:',
+                 '  Enable: false',
+                 '',
+                 'Indentation:',
+                 '  Enable: false')
+        end
+        begin
+          return_code = cli.run(['-c', 'rubocop.yml', 'example1.rb'])
+          $stdout.string.should ==
+            ['== example1.rb ==',
+             'C:  1: Trailing whitespace detected.',
+             '',
+             '1 files inspected, 1 offences detected',
+             ''].join("\n")
+          return_code.should == 1
+        ensure
+          File.delete 'example1.rb'
+          File.delete 'rubocop.yml'
+        end
+      end
+
+      it 'can be configured with project config to disable a certain error' do
+        FileUtils.mkdir 'example_src'
+        File.open('example_src/example1.rb', 'w') { |f| f.puts 'x = 0 ' }
+        File.open('example_src/.rubocop.yml', 'w') do |f|
+          f.puts('Encoding:',
+                 '  Enable: false',
+                 '',
+                 'Indentation:',
+                 '  Enable: false')
+        end
+        begin
+          return_code = cli.run(['example_src/example1.rb'])
+          $stdout.string.should ==
+            ['== example_src/example1.rb ==',
+             'C:  1: Trailing whitespace detected.',
+             '',
+             '1 files inspected, 1 offences detected',
+             ''].join("\n")
+          return_code.should == 1
+        ensure
+          FileUtils.rm_rf 'example_src'
         end
       end
 

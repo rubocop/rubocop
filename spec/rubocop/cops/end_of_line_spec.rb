@@ -12,6 +12,12 @@ module Rubocop
         eol.offences.map(&:message).should ==
           ['Carriage return character detected.']
       end
+
+      it 'registers an offence for CR at end of file' do
+        inspect_source(eol, 'file.rb', ["x=0\r"])
+        eol.offences.map(&:message).should ==
+          ['Carriage return character detected.']
+      end
     end
   end
 end
