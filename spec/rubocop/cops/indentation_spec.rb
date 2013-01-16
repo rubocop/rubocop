@@ -15,7 +15,8 @@ module Rubocop
                   '        end',
                   'end']
         inspect_source(ind, 'file.rb', source)
-        ind.offences.size.should == 2
+        ind.offences.map(&:message).should ==
+          ['Indent when as deep as case.'] * 2
       end
 
       it "accepts a when clause that's equally indented with case" do
