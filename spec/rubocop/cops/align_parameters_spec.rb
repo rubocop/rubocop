@@ -60,14 +60,14 @@ module Rubocop
 
       it 'can handle a correctly aligned string literal as first argument' do
         inspect_source(align, '',
-                       ['add_offence("", x,',
+                       ['add_offence(:convention, x,',
                         '            a)'])
         align.offences.map(&:message).should == []
       end
 
       it 'can handle a string literal as other argument' do
         inspect_source(align, '',
-                       ['add_offence(x,',
+                       ['add_offence(:convention,',
                         '            "", a)'])
         align.offences.map(&:message).should == []
       end

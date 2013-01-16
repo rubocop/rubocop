@@ -56,9 +56,9 @@ module Rubocop
         !@offences.empty?
       end
 
-      def add_offence(file, line_number, message)
+      def add_offence(severity, line_number, message)
         if self.class.enabled != false
-          @offences << Offence.new(file, line_number, message)
+          @offences << Offence.new(severity, line_number, message)
         end
       end
 
