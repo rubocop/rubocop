@@ -72,10 +72,10 @@ module Rubocop
         File.open('example1.rb', 'w') { |f| f.puts 'x = 0 ' }
         File.open('rubocop.yml', 'w') do |f|
           f.puts('Encoding:',
-                 '  Enable: false',
+                 '  Enabled: false',
                  '',
                  'Indentation:',
-                 '  Enable: false')
+                 '  Enabled: false')
         end
         begin
           return_code = cli.run(['-c', 'rubocop.yml', 'example1.rb'])
@@ -97,10 +97,10 @@ module Rubocop
         File.open('example_src/example1.rb', 'w') { |f| f.puts 'x = 0 ' }
         File.open('example_src/.rubocop.yml', 'w') do |f|
           f.puts('Encoding:',
-                 '  Enable: false',
+                 '  Enabled: false',
                  '',
                  'Indentation:',
-                 '  Enable: false')
+                 '  Enabled: false')
         end
         begin
           return_code = cli.run(['example_src/example1.rb'])

@@ -47,7 +47,7 @@ module Rubocop
           cop.correlations = correlations
           config = $options[:config] || config_from_dotfile(File.dirname(file))
           cop_config = config[cop_klass.name.split('::').last] if config
-          cop_klass.enabled = cop_config.nil? || cop_config['Enable']
+          cop_klass.enabled = cop_config.nil? || cop_config['Enabled']
           cop.inspect(file, source, tokens, sexp)
           total_offences += cop.offences.count
           report << cop if cop.has_report?
