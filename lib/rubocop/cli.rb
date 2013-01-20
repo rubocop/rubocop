@@ -43,14 +43,15 @@ module Rubocop
         tokens, sexp, correlations = CLI.rip_source(source)
 
         cops.each do |cop_klass|
-          cop = cop_klass.new
-          cop.correlations = correlations
           config = $options[:config] || config_from_dotfile(File.dirname(file))
           cop_config = config[cop_klass.name.split('::').last] if config
-          cop_klass.enabled = cop_config.nil? || cop_config['Enabled']
-          cop.inspect(file, source, tokens, sexp)
-          total_offences += cop.offences.count
-          report << cop if cop.has_report?
+          if cop_config.nil? || cop_config['Enabled']
+            cop = cop_klass.new
+            cop.correlations = correlations
+            cop.inspect(file, source, tokens, sexp)
+            total_offences += cop.offences.count
+            report << cop if cop.has_report?
+          end
         end
 
         report.display unless report.empty?
