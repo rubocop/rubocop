@@ -35,12 +35,10 @@ module Rubocop
       attr_writer :correlations
 
       @all = []
-      @enabled = []
       @config = {}
 
       class << self
         attr_accessor :all
-        attr_accessor :enabled
         attr_accessor :config
       end
 
@@ -57,9 +55,7 @@ module Rubocop
       end
 
       def add_offence(severity, line_number, message)
-        if self.class.enabled != false
-          @offences << Offence.new(severity, line_number, message)
-        end
+        @offences << Offence.new(severity, line_number, message)
       end
 
       private
