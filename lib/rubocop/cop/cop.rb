@@ -86,6 +86,11 @@ module Rubocop
       def whitespace?(token)
         [:on_sp, :on_ignored_nl, :on_nl].include?(token.type)
       end
+
+      def all_positions(sexp)
+        return [sexp[2]] if sexp[0] =~ /^@/
+        sexp.grep(Array).inject([]) { |memo, s| memo + all_positions(s) }
+      end
     end
   end
 end
