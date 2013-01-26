@@ -84,3 +84,6 @@ MultilineTernaryOperator:
 
 NestedTernaryOperator:
   Enabled: true
+
+UnlessElse:
+  Enabled: true
