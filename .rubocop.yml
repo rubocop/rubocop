@@ -79,5 +79,11 @@ ParameterLists:
 StringLiterals:
   Enabled: true
 
-TernaryOperator:
+MultilineTernaryOperator:
+  Enabled: true
+
+NestedTernaryOperator:
+  Enabled: true
+
+UnlessElse:
   Enabled: true

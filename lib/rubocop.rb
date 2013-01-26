@@ -22,6 +22,7 @@ require 'rubocop/cop/blocks'
 require 'rubocop/cop/parameter_lists'
 require 'rubocop/cop/string_literals'
 require 'rubocop/cop/ternary_operator'
+require 'rubocop/cop/unless_else'
 
 require 'rubocop/report/report'
 require 'rubocop/report/plain_text'
