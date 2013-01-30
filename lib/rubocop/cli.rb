@@ -26,6 +26,9 @@ module Rubocop
         opts.on('-c FILE', '--config FILE', 'Configuration file') do |f|
           $options[:config] = YAML.load_file(f)
         end
+        opts.on('-s', '--silent', 'Silence summary') do |s|
+          $options[:silent] = s
+        end
       end.parse!(args)
 
       cops = Cop::Cop.all
@@ -57,8 +60,10 @@ module Rubocop
         report.display unless report.empty?
       end
 
-      print "\n#{target_files(args).count} files inspected, "
-      puts "#{total_offences} offences detected"
+      unless $options[:silent]
+        print "\n#{target_files(args).count} files inspected, "
+        puts "#{total_offences} offences detected"
+      end
 
       return total_offences == 0 ? 0 : 1
     end
