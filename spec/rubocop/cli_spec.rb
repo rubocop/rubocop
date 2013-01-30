@@ -15,7 +15,8 @@ module Rubocop
         message = ['Usage: rubocop [options] [file1, file2, ...]',
                    '    -v, --[no-]verbose               Run verbosely',
                    '    -e, --emacs                      Emacs style output',
-                   '    -c, --config FILE                Configuration file']
+                   '    -c, --config FILE                Configuration file',
+                   '    -s, --silent                     Silence summary']
         $stdout.string.should == (message * 2).join("\n") + "\n"
       end
 
@@ -61,6 +62,26 @@ module Rubocop
              'example2.rb:1: C: Tab detected.',
              '',
              '2 files inspected, 4 offences detected',
+             ''].join("\n")
+        ensure
+          File.delete 'example1.rb'
+          File.delete 'example2.rb'
+        end
+      end
+
+      it 'ommits summary when --silent passed' do
+        File.open('example1.rb', 'w') { |f| f.puts 'x = 0 ' }
+        File.open('example2.rb', 'w') { |f| f.puts "\tx = 0" }
+        begin
+          cli.run(['--emacs',
+                   '--silent',
+                   'example1.rb',
+                   'example2.rb']).should == 1
+          $stdout.string.should ==
+            ['example1.rb:1: C: Missing encoding comment.',
+             'example1.rb:1: C: Trailing whitespace detected.',
+             'example2.rb:1: C: Missing encoding comment.',
+             'example2.rb:1: C: Tab detected.',
              ''].join("\n")
         ensure
           File.delete 'example1.rb'
