@@ -24,6 +24,7 @@ require 'rubocop/cop/string_literals'
 require 'rubocop/cop/ternary_operator'
 require 'rubocop/cop/unless_else'
 require 'rubocop/cop/ampersands_pipes_vs_and_or'
+require 'rubocop/cop/when_then'
 
 require 'rubocop/report/report'
 require 'rubocop/report/plain_text'
