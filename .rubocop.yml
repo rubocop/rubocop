@@ -87,3 +87,15 @@ NestedTernaryOperator:
 
 UnlessElse:
   Enabled: true
+
+AmpersandsPipesVsAndOr:
+  Enabled: true
+
+WhenThen:
+  Enabled: true
+
+IfUnlessModifier:
+  Enabled: true
+
+WhileUntilModifier:
+  Enabled: true
