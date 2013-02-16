@@ -7,6 +7,9 @@ module Rubocop
         token_positions = tokens.map(&:pos)
         token_texts = tokens.map(&:text)
         each(kind, sexp) do |s|
+          # If it contains an else, it can't be written as a modifier.
+          next if s[3] && s[3][0] == :else
+
           sexp_positions = all_positions(s)
           ix = token_positions.index(sexp_positions.first)
           if_ix = token_texts[0..ix].rindex(kind.to_s) # index of if/unless/...

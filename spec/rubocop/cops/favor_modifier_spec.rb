@@ -43,6 +43,13 @@ module Rubocop
         if_until.offences.map(&:message).should == []
       end
 
+      it 'accepts if-else-end' do
+        inspect_source(if_until, 'file.rb',
+                       ['if args.last.is_a? Hash then args.pop else ' +
+                        'Hash.new end'])
+        if_until.offences.map(&:message).should == []
+      end
+
       it "accepts multiline unless that doesn't fit on one line" do
         check_too_long(while_until, 'unless')
       end
