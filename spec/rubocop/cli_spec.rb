@@ -137,6 +137,28 @@ module Rubocop
         end
       end
 
+      it 'can use an alternative max line length from a config file' do
+        FileUtils.mkdir 'example_src'
+        File.open('example_src/example1.rb', 'w') { |f| f.puts '#' * 90 }
+        File.open('example_src/.rubocop.yml', 'w') do |f|
+          f.puts('LineLength:',
+                 '  Enabled: true',
+                 '  Max: 100')
+        end
+        begin
+          return_code = cli.run(['example_src/example1.rb'])
+          $stdout.string.should ==
+            ['== example_src/example1.rb ==',
+             'C:  1: Missing encoding comment.',
+             '',
+             '1 files inspected, 1 offences detected',
+             ''].join("\n")
+          return_code.should == 1
+        ensure
+          FileUtils.rm_rf 'example_src'
+        end
+      end
+
       it 'finds no violations when checking the rubocop source code' do
         cli.run
         $stdout.string.should =~ /files inspected, 0 offences detected\n/

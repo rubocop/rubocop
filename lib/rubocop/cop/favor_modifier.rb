@@ -36,7 +36,7 @@ module Rubocop
           stop_ix = (end_ix - 1).downto(0).find do |ix|
             tokens[ix].text !~ /\s/
           end
-          if length(tokens, start_ix, stop_ix) <= LineLength::MAX_LINE_LENGTH
+          if length(tokens, start_ix, stop_ix) <= LineLength.max
             add_offence(:convention, token_positions[if_ix].lineno,
                         error_message)
           end

@@ -6,6 +6,7 @@ Encoding:
 
 LineLength:
   Enabled: true
+  Max: 79
 
 Tab:
   Enabled: true

@@ -44,11 +44,12 @@ module Rubocop
         end
 
         tokens, sexp, correlations = CLI.rip_source(source)
+        config = $options[:config] || config_from_dotfile(File.dirname(file))
 
         cops.each do |cop_klass|
-          config = $options[:config] || config_from_dotfile(File.dirname(file))
           cop_config = config[cop_klass.name.split('::').last] if config
           if cop_config.nil? || cop_config['Enabled']
+            cop_klass.config = cop_config
             cop = cop_klass.new
             cop.correlations = correlations
             cop.inspect(file, source, tokens, sexp)
