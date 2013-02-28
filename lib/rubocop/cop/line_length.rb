@@ -4,15 +4,19 @@ module Rubocop
   module Cop
     class LineLength < Cop
       ERROR_MESSAGE = 'Line is too long. [%d/%d]'
-      MAX_LINE_LENGTH = 79
 
       def inspect(file, source, tokens, sexp)
         source.each_with_index do |line, index|
-          if line.length > MAX_LINE_LENGTH
-            message = sprintf(ERROR_MESSAGE, line.length, MAX_LINE_LENGTH)
+          max = LineLength.max
+          if line.length > max
+            message = sprintf(ERROR_MESSAGE, line.length, max)
             add_offence(:convention, index + 1, message)
           end
         end
+      end
+
+      def self.max
+        LineLength.config ? LineLength.config['Max'] || 79 : 79
       end
     end
   end
