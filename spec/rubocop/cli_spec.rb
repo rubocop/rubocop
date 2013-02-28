@@ -153,6 +153,13 @@ module Rubocop
           File.delete 'example.rb'
         end
       end
+
+      it 'has configuration for all cops in .rubocop.yml' do
+        cop_names = Cop::Cop.all.map do |cop_class|
+          cop_class.name.split('::').last
+        end
+        YAML.load_file('.rubocop.yml').keys.sort.should == cop_names.sort
+      end
     end
   end
 end
