@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "rubocop"
-  s.version = "0.3.0"
+  s.version = "0.3.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Bozhidar Batsov"]
-  s.date = "2013-02-11"
+  s.date = "2013-02-28"
   s.description = "Automatic Ruby code style checking tool. Aims to enforce the community-driven Ruby Style Guide."
   s.email = "bozhidar@batsov.com"
   s.executables = ["rubocop"]
@@ -45,6 +45,7 @@ Gem::Specification.new do |s|
     "lib/rubocop/cop/empty_lines.rb",
     "lib/rubocop/cop/encoding.rb",
     "lib/rubocop/cop/end_of_line.rb",
+    "lib/rubocop/cop/favor_modifier.rb",
     "lib/rubocop/cop/grammar.rb",
     "lib/rubocop/cop/hash_syntax.rb",
     "lib/rubocop/cop/if_then_else.rb",
@@ -75,6 +76,7 @@ Gem::Specification.new do |s|
     "spec/rubocop/cops/empty_lines_spec.rb",
     "spec/rubocop/cops/encoding_spec.rb",
     "spec/rubocop/cops/end_of_line_spec.rb",
+    "spec/rubocop/cops/favor_modifier_spec.rb",
     "spec/rubocop/cops/grammar_spec.rb",
     "spec/rubocop/cops/hash_syntax_spec.rb",
     "spec/rubocop/cops/if_with_semicolon_spec.rb",
