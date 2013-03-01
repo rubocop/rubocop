@@ -109,3 +109,6 @@ FavorUntilOverNegatedWhile:
 
 SpaceAroundEqualsInParameterDefault:
   Enabled: true
+
+NewLambdaLiteral:
+  Enabled: true
