@@ -10,8 +10,8 @@ module Rubocop
       after(:each) { $stdout = STDOUT }
 
       it 'exits cleanly when -h is used' do
-        lambda { cli.run ['-h'] }.should exit_with_code(0)
-        lambda { cli.run ['--help'] }.should exit_with_code(0)
+        -> { cli.run ['-h'] }.should exit_with_code(0)
+        -> { cli.run ['--help'] }.should exit_with_code(0)
         message = ['Usage: rubocop [options] [file1, file2, ...]',
                    '    -v, --[no-]verbose               Run verbosely',
                    '    -e, --emacs                      Emacs style output',

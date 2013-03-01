@@ -100,3 +100,15 @@ IfUnlessModifier:
 
 WhileUntilModifier:
   Enabled: true
+
+FavorUnlessOverNegatedIf:
+  Enabled: true
+
+FavorUntilOverNegatedWhile:
+  Enabled: true
+
+SpaceAroundEqualsInParameterDefault:
+  Enabled: true
+
+NewLambdaLiteral:
+  Enabled: true
