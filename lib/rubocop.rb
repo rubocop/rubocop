@@ -26,6 +26,7 @@ require 'rubocop/cop/unless_else'
 require 'rubocop/cop/ampersands_pipes_vs_and_or'
 require 'rubocop/cop/when_then'
 require 'rubocop/cop/favor_modifier'
+require 'rubocop/cop/favor_unless_over_negated_if'
 
 require 'rubocop/report/report'
 require 'rubocop/report/plain_text'

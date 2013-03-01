@@ -100,3 +100,9 @@ IfUnlessModifier:
 
 WhileUntilModifier:
   Enabled: true
+
+FavorUnlessOverNegatedIf:
+  Enabled: true
+
+FavorUntilOverNegatedWhile:
+  Enabled: true
