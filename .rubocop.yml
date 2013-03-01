@@ -106,3 +106,6 @@ FavorUnlessOverNegatedIf:
 
 FavorUntilOverNegatedWhile:
   Enabled: true
+
+SpaceAroundEqualsInParameterDefault:
+  Enabled: true
