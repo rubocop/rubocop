@@ -13,6 +13,31 @@ module Rubocop
           ["Surrounding space missing for operator '='."] * 3
       end
 
+      it 'registers an offence in presence of modifier if statement' do
+        check_modifier('if')
+      end
+
+      it 'registers an offence in presence of modifier unless statement' do
+        check_modifier('unless')
+      end
+
+      it 'registers an offence in presence of modifier while statement' do
+        check_modifier('unless')
+      end
+
+      it 'registers an offence in presence of modifier until statement' do
+        check_modifier('unless')
+      end
+
+      def check_modifier(keyword)
+        src = ["a=1 #{keyword} condition",
+               'c=2']
+        inspect_source(space, 'file.rb', src)
+        space.offences.map(&:line_number).should == [1, 2]
+        space.offences.map(&:message).should ==
+          ["Surrounding space missing for operator '='."] * 2
+      end
+
       it 'registers an offence for binary operators that could be unary' do
         inspect_source(space, 'file.rb', ['a-3', 'x&0xff', 'z+0'])
         space.offences.map(&:message).should ==
