@@ -90,8 +90,9 @@ module Rubocop
             find(path, sexp, [:on_op, '|'])
           end
           path += [sexp[0]] if Symbol === sexp[0]
-          # Compensate for reverse order of if modifier
-          children = (sexp[0] == :if_mod) ? sexp.reverse : sexp
+          # Compensate for reverse order of if/unless/while/until modifier.
+          modifiers = [:if_mod, :unless_mod, :while_mod, :until_mod]
+          children = modifiers.include?(sexp[0]) ? sexp.reverse : sexp
 
           children.each do |elem|
             case elem

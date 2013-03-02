@@ -2,6 +2,7 @@
 
 require 'optparse'
 require 'yaml'
+require_relative 'cop/grammar'
 
 module Rubocop
   # The CLI is a class responsible of handling all the command line interface
