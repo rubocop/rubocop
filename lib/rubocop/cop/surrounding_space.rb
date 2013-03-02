@@ -91,49 +91,44 @@ module Rubocop
       end
     end
 
-    class SpaceInsideParens < Cop
+    module SpaceInside
       include SurroundingSpace
+
+      Paren = Struct.new :left, :right, :kind
+
       def check_extra(tokens, ix)
+        paren = get_paren
         prev, t, nxt = tokens.values_at(ix - 1, ix, ix + 1)
         offence_detected = case t.type
-                           when :on_lparen
+                           when paren.left
                              nxt.type == :on_sp
-                           when :on_rparen
+                           when paren.right
                              if prev.type == :on_sp
                                prev_ns = previous_non_space(tokens, ix)
                                prev_ns && tokens_on_same_row?(prev_ns,
                                                               tokens[ix]) &&
-                                 # Avoid double repoting of ( )
-                                 prev_ns.type != :on_lparen
+                                 # Avoid double reporting
+                                 prev_ns.type != paren.left
                              end
                            end
         if offence_detected
           add_offence(:convention, t.pos.lineno,
-                      'Space inside parentheses detected.')
+                      "Space inside #{paren.kind} detected.")
         end
       end
     end
 
+    class SpaceInsideParens < Cop
+      include SpaceInside
+      def get_paren
+        Paren.new(:on_lparen, :on_rparen, 'parentheses')
+      end
+    end
+
     class SpaceInsideBrackets < Cop
-      include SurroundingSpace
-      def check_extra(tokens, ix)
-        prev, t, nxt = tokens.values_at(ix - 1, ix, ix + 1)
-        offence_detected = case t.type
-                           when :on_lbracket
-                             nxt.type == :on_sp
-                           when :on_rbracket
-                             if prev.type == :on_sp
-                               prev_ns = previous_non_space(tokens, ix)
-                               prev_ns && tokens_on_same_row?(prev_ns,
-                                                              tokens[ix]) &&
-                                 # Avoid double repoting of [ ] and ( )
-                                 prev_ns.type != :on_lbracket
-                             end
-                           end
-        if offence_detected
-          add_offence(:convention, t.pos.lineno,
-                      'Space inside square brackets detected.')
-        end
+      include SpaceInside
+      def get_paren
+        Paren.new(:on_lbracket, :on_rbracket, 'square brackets')
       end
     end
 
