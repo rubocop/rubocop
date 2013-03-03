@@ -16,8 +16,7 @@ module Rubocop
     module_function :create
 
     class Report
-      attr_accessor :entries
-      attr_accessor :filename
+      attr_reader :filename
 
       # @param [String] the filename for this report
       def initialize(filename)
@@ -31,6 +30,10 @@ module Rubocop
         cop.offences.each do |entry|
           @entries << entry
         end
+      end
+
+      def entries
+        @entries.sort_by(&:line_number)
       end
 
       def empty?
