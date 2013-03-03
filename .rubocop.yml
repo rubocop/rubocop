@@ -115,3 +115,6 @@ NewLambdaLiteral:
 
 ParenthesesAroundCondition:
   Enabled: true
+
+MethodAndVariableSnakeCase:
+  Enabled: true
