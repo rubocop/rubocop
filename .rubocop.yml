@@ -118,3 +118,6 @@ ParenthesesAroundCondition:
 
 MethodAndVariableSnakeCase:
   Enabled: true
+
+ClassAndModuleCamelCase:
+  Enabled: true

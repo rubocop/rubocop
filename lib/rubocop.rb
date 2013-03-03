@@ -30,6 +30,7 @@ require 'rubocop/cop/favor_unless_over_negated_if'
 require 'rubocop/cop/new_lambda_literal'
 require 'rubocop/cop/parentheses_around_condition'
 require 'rubocop/cop/method_and_variable_snake_case'
+require 'rubocop/cop/class_and_module_camel_case'
 
 require 'rubocop/report/report'
 require 'rubocop/report/plain_text'
