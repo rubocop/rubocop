@@ -112,3 +112,6 @@ SpaceAroundEqualsInParameterDefault:
 
 NewLambdaLiteral:
   Enabled: true
+
+ParenthesesAroundCondition:
+  Enabled: true

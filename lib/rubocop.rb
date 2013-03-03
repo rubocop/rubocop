@@ -28,6 +28,7 @@ require 'rubocop/cop/when_then'
 require 'rubocop/cop/favor_modifier'
 require 'rubocop/cop/favor_unless_over_negated_if'
 require 'rubocop/cop/new_lambda_literal'
+require 'rubocop/cop/parentheses_around_condition'
 
 require 'rubocop/report/report'
 require 'rubocop/report/plain_text'
