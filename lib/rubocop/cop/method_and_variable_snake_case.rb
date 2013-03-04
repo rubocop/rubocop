@@ -4,7 +4,7 @@ module Rubocop
   module Cop
     class MethodAndVariableSnakeCase < Cop
       ERROR_MESSAGE = 'Use snake_case for methods and variables.'
-      CAMEL_CASE = /^@?[A-Za-z]*[A-Z][a-z][A-Za-z]*$/
+      SNAKE_CASE = /^@?[\da-z_]+[!?=]?$/
 
       def inspect(file, source, tokens, sexp)
         each(:def, sexp) { |s| check(s[1]) }
@@ -22,7 +22,7 @@ module Rubocop
       end
 
       def check(sexp)
-        if [:@ivar, :@ident].include?(sexp[0]) && sexp[1] =~ CAMEL_CASE
+        if [:@ivar, :@ident].include?(sexp[0]) && sexp[1] !~ SNAKE_CASE
           add_offence(:convention, sexp[2].lineno, ERROR_MESSAGE)
         end
       end
