@@ -1,3 +1,4 @@
+[![Gem Version](https://badge.fury.io/rb/rubocop.png)](http://badge.fury.io/rb/rubocop)
 [![Build Status](https://travis-ci.org/bbatsov/rubocop.png?branch=master)](https://travis-ci.org/bbatsov/rubocop)
 
 # rubocop
@@ -22,4 +23,3 @@ $ rubocop app spec lib/something.rb
 
 Copyright (c) 2012-2013 Bozhidar Batsov. See LICENSE.txt for
 further details.
-
