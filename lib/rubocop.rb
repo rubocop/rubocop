@@ -1,6 +1,11 @@
 # encoding: utf-8
 
 require 'ripper'
+require 'term/ansicolor'
+
+class String
+  include Term::ANSIColor
+end
 
 require 'rubocop/cop/offence'
 require 'rubocop/cop/cop'

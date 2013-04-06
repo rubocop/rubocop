@@ -27,7 +27,8 @@ module Rubocop
         end
         begin
           cli.run(['example.rb']).should == 0
-          $stdout.string.should == "\n1 files inspected, 0 offences detected\n"
+          $stdout.string.uncolored.should ==
+            "\n1 files inspected, 0 offences detected\n"
         ensure
           File.delete 'example.rb'
         end
@@ -40,11 +41,12 @@ module Rubocop
         end
         begin
           cli.run(['example.rb']).should == 1
-          $stdout.string.should == ['== example.rb ==',
-                                    'C:  2: Trailing whitespace detected.',
-                                    '',
-                                    '1 files inspected, 1 offences detected',
-                                    ''].join("\n")
+          $stdout.string.uncolored.should ==
+            ['== example.rb ==',
+             'C:  2: Trailing whitespace detected.',
+             '',
+             '1 files inspected, 1 offences detected',
+             ''].join("\n")
         ensure
           File.delete 'example.rb'
         end
@@ -55,7 +57,7 @@ module Rubocop
         File.open('example2.rb', 'w') { |f| f.puts "\tx = 0" }
         begin
           cli.run(['--emacs', 'example1.rb', 'example2.rb']).should == 1
-          $stdout.string.should ==
+          $stdout.string.uncolored.should ==
             ['example1.rb:1: C: Missing encoding comment.',
              'example1.rb:1: C: Trailing whitespace detected.',
              "example1.rb:1: C: Surrounding space missing for operator '='.",
@@ -102,7 +104,7 @@ module Rubocop
         end
         begin
           return_code = cli.run(['-c', 'rubocop.yml', 'example1.rb'])
-          $stdout.string.should ==
+          $stdout.string.uncolored.should ==
             ['== example1.rb ==',
              'C:  1: Trailing whitespace detected.',
              '',
@@ -127,7 +129,7 @@ module Rubocop
         end
         begin
           return_code = cli.run(['example_src/example1.rb'])
-          $stdout.string.should ==
+          $stdout.string.uncolored.should ==
             ['== example_src/example1.rb ==',
              'C:  1: Trailing whitespace detected.',
              '',
@@ -149,7 +151,7 @@ module Rubocop
         end
         begin
           return_code = cli.run(['example_src/example1.rb'])
-          $stdout.string.should ==
+          $stdout.string.uncolored.should ==
             ['== example_src/example1.rb ==',
              'C:  1: Missing encoding comment.',
              '',
@@ -163,7 +165,8 @@ module Rubocop
 
       it 'finds no violations when checking the rubocop source code' do
         cli.run
-        $stdout.string.should =~ /files inspected, 0 offences detected\n/
+        $stdout.string.uncolored.should =~
+          /files inspected, 0 offences detected\n/
       end
 
       it 'can process a file with an invalide UTF-8 byte sequence' do

@@ -65,6 +65,7 @@ module Rubocop
       unless $options[:silent]
         print "\n#{target_files(args).count} files inspected, "
         puts "#{total_offences} offences detected"
+          .send(total_offences.zero? ? :green : :red)
       end
 
       return total_offences == 0 ? 0 : 1

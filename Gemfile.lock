@@ -25,15 +25,17 @@ GEM
       multi_json (~> 1.0)
       simplecov-html (~> 0.7.1)
     simplecov-html (0.7.1)
+    term-ansicolor (1.1.4)
     yard (0.8.3)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
-  bundler (~> 1.2.0)
+  bundler (~> 1.3.0)
   jeweler (~> 1.8.3)
   rake (~> 10.0.0)
   rspec (~> 2.12.0)
   simplecov
+  term-ansicolor
   yard (~> 0.8.0)
