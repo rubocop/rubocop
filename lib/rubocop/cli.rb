@@ -18,8 +18,8 @@ module Rubocop
       OptionParser.new do |opts|
         opts.banner = 'Usage: rubocop [options] [file1, file2, ...]'
 
-        opts.on('-v', '--[no-]verbose', 'Run verbosely') do |v|
-          $options[:verbose] = v
+        opts.on('-d', '--[no-]debug', 'Display debug info') do |d|
+          $options[:debug] = d
         end
         opts.on('-e', '--emacs', 'Emacs style output') do
           $options[:mode] = :emacs_style
@@ -30,10 +30,14 @@ module Rubocop
         opts.on('-s', '--silent', 'Silence summary') do |s|
           $options[:silent] = s
         end
+        opts.on('-v', '--version', 'Display version') do
+          puts Rubocop::VERSION
+          exit(0)
+        end
       end.parse!(args)
 
       cops = Cop::Cop.all
-      show_cops_on_duty(cops) if $options[:verbose]
+      show_cops_on_duty(cops) if $options[:debug]
       total_offences = 0
       @configs = {}
 

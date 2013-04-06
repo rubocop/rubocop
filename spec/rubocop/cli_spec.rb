@@ -13,10 +13,11 @@ module Rubocop
         -> { cli.run ['-h'] }.should exit_with_code(0)
         -> { cli.run ['--help'] }.should exit_with_code(0)
         message = ['Usage: rubocop [options] [file1, file2, ...]',
-                   '    -v, --[no-]verbose               Run verbosely',
+                   '    -d, --[no-]debug                 Display debug info',
                    '    -e, --emacs                      Emacs style output',
                    '    -c, --config FILE                Configuration file',
-                   '    -s, --silent                     Silence summary']
+                   '    -s, --silent                     Silence summary',
+                   '    -v, --version                    Display version']
         $stdout.string.should == (message * 2).join("\n") + "\n"
       end
 

@@ -42,3 +42,4 @@ require 'rubocop/report/plain_text'
 require 'rubocop/report/emacs_style'
 
 require 'rubocop/cli'
+require 'rubocop/version'
