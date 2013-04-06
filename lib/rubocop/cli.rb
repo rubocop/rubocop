@@ -36,10 +36,14 @@ module Rubocop
         end
       end.parse!(args)
 
-      cops = Cop::Cop.all
-      show_cops_on_duty(cops) if $options[:debug]
       total_offences = 0
       @configs = {}
+
+      target_files = target_files(args)
+      config = $options[:config] || config_from_dotfile(target_files[0])
+
+      cops = cops_on_duty(config)
+      show_cops_on_duty(cops) if $options[:debug]
 
       target_files(args).each do |file|
         report = Report.create(file, $options[:mode])
@@ -49,18 +53,15 @@ module Rubocop
         end
 
         tokens, sexp, correlations = CLI.rip_source(source)
-        config = $options[:config] || config_from_dotfile(File.dirname(file))
 
         cops.each do |cop_klass|
           cop_config = config[cop_klass.name.split('::').last] if config
-          if cop_config.nil? || cop_config['Enabled']
-            cop_klass.config = cop_config
-            cop = cop_klass.new
-            cop.correlations = correlations
-            cop.inspect(file, source, tokens, sexp)
-            total_offences += cop.offences.count
-            report << cop if cop.has_report?
-          end
+          cop_klass.config = cop_config
+          cop = cop_klass.new
+          cop.correlations = correlations
+          cop.inspect(file, source, tokens, sexp)
+          total_offences += cop.offences.count
+          report << cop if cop.has_report?
         end
 
         report.display unless report.empty?
@@ -96,6 +97,7 @@ module Rubocop
     # directory where the inspected file is. If no .rubocop.yml is
     # found there, the user's home directory is checked.
     def config_from_dotfile(target_file_dir)
+      return unless target_file_dir
       # @configs is a cache that maps directories to
       # configurations. We search for .rubocop.yml only if we haven't
       # already found it for the given directory.
@@ -115,10 +117,23 @@ module Rubocop
       @configs[target_file_dir]
     end
 
+    def cops_on_duty(config)
+      cops_on_duty = []
+
+      Cop::Cop.all.each do |cop_klass|
+        cop_config = config[cop_klass.name.split('::').last] if config
+        if cop_config.nil? || cop_config['Enabled']
+          cops_on_duty << cop_klass
+        end
+      end
+
+      cops_on_duty
+    end
+
     def show_cops_on_duty(cops)
-      puts 'Reporting for duty:'
-      cops.each { |c| puts c }
-      puts '*******************'
+      puts '== Reporting for duty =='
+      cops.each { |c| puts " * ".yellow + c.to_s.green }
+      puts '========================'
     end
 
     # Generate a list of target files by expanding globing patterns
