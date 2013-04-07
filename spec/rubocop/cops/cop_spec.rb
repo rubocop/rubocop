@@ -8,23 +8,23 @@ module Rubocop
       let (:cop) { Cop.new }
 
       it 'initially has 0 offences' do
-        cop.offences.size.should == 0
+        expect(cop.offences).to be_empty
       end
 
       it 'initially has nothing to report' do
-        cop.has_report?.should be_false
+        expect(cop.has_report?).to be_false
       end
 
       it 'keeps track of offences' do
         cop.add_offence(:convention, 1, 'message')
 
-        cop.offences.size.should == 1
+        expect(cop.offences.size).to eq(1)
       end
 
       it 'will report registered offences' do
         cop.add_offence(:convention, 1, 'message')
 
-        cop.has_report?.should be_true
+        expect(cop.has_report?).to be_true
       end
     end
   end
