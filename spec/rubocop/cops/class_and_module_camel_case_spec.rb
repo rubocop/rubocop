@@ -15,8 +15,8 @@ module Rubocop
                         'module My_Module',
                         'end',
                        ])
-        camel_case.offences.map(&:message).should ==
-          ['Use CamelCase for classes and modules.'] * 2
+        expect(camel_case.offences.map(&:message)).to eq(
+          ['Use CamelCase for classes and modules.'] * 2)
       end
 
       it 'accepts CamelCase names' do
@@ -27,7 +27,7 @@ module Rubocop
                         'module Mine',
                         'end',
                        ])
-        camel_case.offences.map(&:message).should == []
+        expect(camel_case.offences.map(&:message)).to be_empty
       end
     end
   end

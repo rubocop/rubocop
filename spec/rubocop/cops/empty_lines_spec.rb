@@ -21,8 +21,8 @@ module Rubocop
                                         '  def p',
                                         '  end',
                                         'end'])
-        empty_lines.offences.size.should == 2
-        empty_lines.offences.map(&:line_number).sort.should == [7, 11]
+        expect(empty_lines.offences.size).to eq(2)
+        expect(empty_lines.offences.map(&:line_number).sort).to eq([7, 11])
       end
 
       # Only one def, so rule about empty line *between* defs does not
@@ -31,7 +31,7 @@ module Rubocop
         inspect_source(empty_lines, '', ['x = 0',
                                         'def m',
                                         'end'])
-        empty_lines.offences.size.should == 0
+        expect(empty_lines.offences).to be_empty
       end
 
       # Only one def, so rule about empty line *between* defs does not
@@ -41,7 +41,7 @@ module Rubocop
                                         '  # 123',
                                         '  def m',
                                         '  end'])
-        empty_lines.offences.size.should == 0
+        expect(empty_lines.offences).to be_empty
       end
 
       it 'accepts the first def without leading empty line in a class' do
@@ -49,7 +49,7 @@ module Rubocop
                                         '  def m',
                                         '  end',
                                         'end'])
-        empty_lines.offences.size.should == 0
+        expect(empty_lines.offences).to be_empty
       end
 
       it 'accepts a def that follows an empty line and then a comment' do
@@ -64,7 +64,7 @@ module Rubocop
                                         '  end',
                                         'end',
                                        ])
-        empty_lines.offences.size.should == 0
+        expect(empty_lines.offences).to be_empty
       end
 
       it 'accepts a def that is the first of a module' do
@@ -76,7 +76,7 @@ module Rubocop
                   'end',
                  ]
         inspect_source(empty_lines, '', source)
-        empty_lines.offences.map(&:message).should == []
+        expect(empty_lines.offences.map(&:message)).to be_empty
       end
     end
   end
