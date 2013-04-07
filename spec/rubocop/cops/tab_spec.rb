@@ -9,12 +9,12 @@ module Rubocop
 
       it 'registers an offence for a line indented with tab' do
         tab.inspect('file.rb', ["\tx = 0"], nil, nil)
-        tab.offences.size.should == 1
+        expect(tab.offences.size).to eq(1)
       end
 
       it 'accepts a line with tab in a string' do
         tab.inspect('file.rb', [%Q(x = "\t")], nil, nil)
-        tab.offences.size.should == 0
+        expect(tab.offences).to be_empty
       end
     end
   end
