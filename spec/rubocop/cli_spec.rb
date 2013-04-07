@@ -10,15 +10,21 @@ module Rubocop
       after(:each) { $stdout = STDOUT }
 
       it 'exits cleanly when -h is used' do
-        -> { cli.run ['-h'] }.should exit_with_code(0)
-        -> { cli.run ['--help'] }.should exit_with_code(0)
+        expect { cli.run ['-h'] }.to exit_with_code(0)
+        expect { cli.run ['--help'] }.to exit_with_code(0)
         message = ['Usage: rubocop [options] [file1, file2, ...]',
                    '    -d, --[no-]debug                 Display debug info',
                    '    -e, --emacs                      Emacs style output',
                    '    -c, --config FILE                Configuration file',
                    '    -s, --silent                     Silence summary',
                    '    -v, --version                    Display version']
-        $stdout.string.should == (message * 2).join("\n") + "\n"
+        expect($stdout.string).to eq((message * 2).join("\n") + "\n")
+      end
+
+      it 'exits cleanly when -v is used' do
+        expect { cli.run ['-v'] }.to exit_with_code(0)
+        expect { cli.run ['--version'] }.to exit_with_code(0)
+        expect($stdout.string).to eq((Rubocop::VERSION + "\n") * 2)
       end
 
       it 'checks a given correct file and returns 0' do
@@ -27,9 +33,9 @@ module Rubocop
           f.puts 'x = 0'
         end
         begin
-          cli.run(['example.rb']).should == 0
-          $stdout.string.uncolored.should ==
-            "\n1 files inspected, 0 offences detected\n"
+          expect(cli.run(['example.rb'])).to eq(0)
+          expect($stdout.string.uncolored)
+            .to eq("\n1 files inspected, 0 offences detected\n")
         ensure
           File.delete 'example.rb'
         end
@@ -41,13 +47,13 @@ module Rubocop
           f.puts 'x = 0 '
         end
         begin
-          cli.run(['example.rb']).should == 1
-          $stdout.string.uncolored.should ==
-            ['== example.rb ==',
-             'C:  2: Trailing whitespace detected.',
-             '',
-             '1 files inspected, 1 offences detected',
-             ''].join("\n")
+          expect(cli.run(['example.rb'])).to eq(1)
+          expect($stdout.string.uncolored)
+            .to eq ['== example.rb ==',
+                    'C:  2: Trailing whitespace detected.',
+                    '',
+                    '1 files inspected, 1 offences detected',
+                    ''].join("\n")
         ensure
           File.delete 'example.rb'
         end
@@ -57,8 +63,9 @@ module Rubocop
         File.open('example1.rb', 'w') { |f| f.puts 'x= 0 ', 'y ' }
         File.open('example2.rb', 'w') { |f| f.puts "\tx = 0" }
         begin
-          cli.run(['--emacs', 'example1.rb', 'example2.rb']).should == 1
-          $stdout.string.uncolored.should ==
+          expect(cli.run(['--emacs', 'example1.rb', 'example2.rb'])).to eq(1)
+          expect($stdout.string.uncolored)
+            .to eq(
             ['example1.rb:1: C: Missing encoding comment.',
              'example1.rb:1: C: Trailing whitespace detected.',
              "example1.rb:1: C: Surrounding space missing for operator '='.",
@@ -67,7 +74,7 @@ module Rubocop
              'example2.rb:1: C: Tab detected.',
              '',
              '2 files inspected, 6 offences detected',
-             ''].join("\n")
+             ''].join("\n"))
         ensure
           File.delete 'example1.rb'
           File.delete 'example2.rb'
@@ -78,16 +85,16 @@ module Rubocop
         File.open('example1.rb', 'w') { |f| f.puts 'x = 0 ' }
         File.open('example2.rb', 'w') { |f| f.puts "\tx = 0" }
         begin
-          cli.run(['--emacs',
-                   '--silent',
-                   'example1.rb',
-                   'example2.rb']).should == 1
-          $stdout.string.should ==
+          expect(cli.run(['--emacs',
+                          '--silent',
+                          'example1.rb',
+                          'example2.rb'])).to eq(1)
+          expect($stdout.string).to eq(
             ['example1.rb:1: C: Missing encoding comment.',
              'example1.rb:1: C: Trailing whitespace detected.',
              'example2.rb:1: C: Missing encoding comment.',
              'example2.rb:1: C: Tab detected.',
-             ''].join("\n")
+             ''].join("\n"))
         ensure
           File.delete 'example1.rb'
           File.delete 'example2.rb'
@@ -104,14 +111,13 @@ module Rubocop
                  '  Enabled: false')
         end
         begin
-          return_code = cli.run(['-c', 'rubocop.yml', 'example1.rb'])
-          $stdout.string.uncolored.should ==
+          expect(cli.run(['-c', 'rubocop.yml', 'example1.rb'])).to eq(1)
+          expect($stdout.string.uncolored).to eq(
             ['== example1.rb ==',
              'C:  1: Trailing whitespace detected.',
              '',
              '1 files inspected, 1 offences detected',
-             ''].join("\n")
-          return_code.should == 1
+             ''].join("\n"))
         ensure
           File.delete 'example1.rb'
           File.delete 'rubocop.yml'
@@ -129,14 +135,13 @@ module Rubocop
                  '  Enabled: false')
         end
         begin
-          return_code = cli.run(['example_src/example1.rb'])
-          $stdout.string.uncolored.should ==
+          expect(cli.run(['example_src/example1.rb'])).to eq(1)
+          expect($stdout.string.uncolored).to eq(
             ['== example_src/example1.rb ==',
              'C:  1: Trailing whitespace detected.',
              '',
              '1 files inspected, 1 offences detected',
-             ''].join("\n")
-          return_code.should == 1
+             ''].join("\n"))
         ensure
           FileUtils.rm_rf 'example_src'
         end
@@ -151,14 +156,13 @@ module Rubocop
                  '  Max: 100')
         end
         begin
-          return_code = cli.run(['example_src/example1.rb'])
-          $stdout.string.uncolored.should ==
+          expect(cli.run(['example_src/example1.rb'])).to eq(1)
+          expect($stdout.string.uncolored).to eq(
             ['== example_src/example1.rb ==',
              'C:  1: Missing encoding comment.',
              '',
              '1 files inspected, 1 offences detected',
-             ''].join("\n")
-          return_code.should == 1
+             ''].join("\n"))
         ensure
           FileUtils.rm_rf 'example_src'
         end
@@ -166,8 +170,9 @@ module Rubocop
 
       it 'finds no violations when checking the rubocop source code' do
         cli.run
-        $stdout.string.uncolored.should =~
+        expect($stdout.string.uncolored).to match(
           /files inspected, 0 offences detected\n/
+        )
       end
 
       it 'can process a file with an invalide UTF-8 byte sequence' do
@@ -176,7 +181,7 @@ module Rubocop
           f.puts "# \xf9\x29"
         end
         begin
-          cli.run(['--emacs', 'example.rb']).should == 0
+          expect(cli.run(['--emacs', 'example.rb'])).to eq(0)
         ensure
           File.delete 'example.rb'
         end
@@ -186,7 +191,7 @@ module Rubocop
         cop_names = Cop::Cop.all.map do |cop_class|
           cop_class.name.split('::').last
         end
-        YAML.load_file('.rubocop.yml').keys.sort.should == cop_names.sort
+        expect(YAML.load_file('.rubocop.yml').keys.sort).to eq(cop_names.sort)
       end
     end
   end
