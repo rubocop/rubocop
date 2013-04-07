@@ -10,15 +10,15 @@ module Rubocop
       it 'registers an offence when no encoding present' do
         inspect_source(encoding, 'file.rb', ['def foo() end'])
 
-        encoding.offences.map(&:message).should ==
-          ['Missing encoding comment.']
+        expect(encoding.offences.map(&:message)).to eq(
+          ['Missing encoding comment.'])
       end
 
       it 'accepts encoding on first line' do
         inspect_source(encoding, 'file.rb', ['# encoding: utf-8',
                                              'def foo() end'])
 
-        encoding.offences.should == []
+        expect(encoding.offences).to be_empty
       end
 
       it 'accepts encoding on second line when shebang present' do
@@ -26,15 +26,15 @@ module Rubocop
                                              '# encoding: utf-8',
                                              'def foo() end'])
 
-        encoding.offences.map(&:message).should == []
+        expect(encoding.offences.map(&:message)).to be_empty
       end
 
       it 'registers an offence when encoding is in the wrong place' do
         inspect_source(encoding, 'file.rb', ['def foo() end',
                                              '# encoding: utf-8'])
 
-        encoding.offences.map(&:message).should ==
-          ['Missing encoding comment.']
+        expect(encoding.offences.map(&:message)).to eq(
+          ['Missing encoding comment.'])
       end
     end
   end

@@ -8,11 +8,11 @@ module Rubocop
       let (:report) { Report.new('test') }
 
       it 'initially has 0 entries' do
-        report.entries.size.should == 0
+        expect(report.entries.size).to be_zero
       end
 
       it 'initially has nothing to report' do
-        report.empty?.should be_true
+        expect(report.empty?).to be_true
       end
 
       it 'keeps track of offences' do
@@ -21,8 +21,8 @@ module Rubocop
 
         report << cop
 
-        report.empty?.should be_false
-        report.entries.size.should == 1
+        expect(report.empty?).to be_false
+        expect(report.entries.size).to eq(1)
       end
     end
   end

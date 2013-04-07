@@ -9,13 +9,13 @@ module Rubocop
 
       it "registers an offence for a line that's 80 characters wide" do
         ll.inspect('file.rb', ['#' * 80], nil, nil)
-        ll.offences.size.should == 1
-        ll.offences.first.message.should == 'Line is too long. [80/79]'
+        expect(ll.offences.size).to eq(1)
+        expect(ll.offences.first.message).to eq('Line is too long. [80/79]')
       end
 
       it "accepts a line that's 79 characters wide" do
         ll.inspect('file.rb', ['#' * 79], nil, nil)
-        ll.offences.size.should == 0
+        expect(ll.offences.size).to be_zero
       end
     end
   end
