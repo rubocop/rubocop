@@ -4,7 +4,7 @@ require 'open3'
 
 module Rubocop
   module Cop
-    class LineLength < Cop
+    class Syntax < Cop
       def inspect(file, source, tokens, sexp)
         return unless File.exist?(file)
         _, _, stderr = Open3.popen3('ruby', '-w', '-c', file)

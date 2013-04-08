@@ -121,3 +121,6 @@ MethodAndVariableSnakeCase:
 
 ClassAndModuleCamelCase:
   Enabled: true
+
+Syntax:
+  Enabled: true
