@@ -10,8 +10,8 @@ module Rubocop
         _, _, stderr = Open3.popen3('ruby', '-w', '-c', file)
 
         stderr.each_line do |line|
-          line_no, warning = line.match(/.+:(\d+): (.+)/).captures
-          add_offence(:warning, line_no.to_i, warning) if line_no
+          line_no, warning = line.match(/.+:(\d+): warning: (.+)/).captures
+          add_offence(:warning, line_no.to_i, warning.capitalize) if line_no
         end
       end
     end
