@@ -31,6 +31,7 @@ module Rubocop
         File.open('example.rb', 'w') do |f|
           f.puts '# encoding: utf-8'
           f.puts 'x = 0'
+          f.puts 'puts x'
         end
         begin
           expect(cli.run(['example.rb'])).to eq(0)
@@ -45,6 +46,7 @@ module Rubocop
         File.open('example.rb', 'w') do |f|
           f.puts '# encoding: utf-8'
           f.puts 'x = 0 '
+          f.puts 'puts x'
         end
         begin
           expect(cli.run(['example.rb'])).to eq(1)
@@ -60,8 +62,8 @@ module Rubocop
       end
 
       it 'can report in emacs style' do
-        File.open('example1.rb', 'w') { |f| f.puts 'x= 0 ', 'y ' }
-        File.open('example2.rb', 'w') { |f| f.puts "\tx = 0" }
+        File.open('example1.rb', 'w') { |f| f.puts 'x= 0 ', 'y ', 'puts x' }
+        File.open('example2.rb', 'w') { |f| f.puts "\tx = 0", 'puts x' }
         begin
           expect(cli.run(['--emacs', 'example1.rb', 'example2.rb'])).to eq(1)
           expect($stdout.string.uncolored)
@@ -82,8 +84,8 @@ module Rubocop
       end
 
       it 'ommits summary when --silent passed' do
-        File.open('example1.rb', 'w') { |f| f.puts 'x = 0 ' }
-        File.open('example2.rb', 'w') { |f| f.puts "\tx = 0" }
+        File.open('example1.rb', 'w') { |f| f.puts 'puts 0 ' }
+        File.open('example2.rb', 'w') { |f| f.puts "\tputs 0" }
         begin
           expect(cli.run(['--emacs',
                           '--silent',
@@ -102,7 +104,7 @@ module Rubocop
       end
 
       it 'can be configured with option to disable a certain error' do
-        File.open('example1.rb', 'w') { |f| f.puts 'x = 0 ' }
+        File.open('example1.rb', 'w') { |f| f.puts 'puts 0 ' }
         File.open('rubocop.yml', 'w') do |f|
           f.puts('Encoding:',
                  '  Enabled: false',
@@ -126,7 +128,7 @@ module Rubocop
 
       it 'can be configured with project config to disable a certain error' do
         FileUtils.mkdir 'example_src'
-        File.open('example_src/example1.rb', 'w') { |f| f.puts 'x = 0 ' }
+        File.open('example_src/example1.rb', 'w') { |f| f.puts 'puts 0 ' }
         File.open('example_src/.rubocop.yml', 'w') do |f|
           f.puts('Encoding:',
                  '  Enabled: false',
