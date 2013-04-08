@@ -18,8 +18,6 @@ module Rubocop
       end
 
       def check(tokens, def_sexp)
-#puts tokens
-#puts def_sexp
         if def_sexp[2][0] == :paren && def_sexp[2][1] == EMPTY_PARAMS
           pos = def_sexp[1][-1]
           method_name_ix = tokens.index { |t| t.pos == pos }
