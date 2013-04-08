@@ -30,10 +30,10 @@ module Rubocop
            [[1, 18], :on_tstring_beg, '"'],
            [[1, 19], :on_embexpr_beg, '#{'], # 15
            [[1, 21], :on_ident, 'y'],
-           [[1, 22], :on_rbrace, '}'],
+           [[1, 22], :on_embexpr_end, '}'], # [[1, 22], :on_rbrace, '}'],
            [[1, 23], :on_embexpr_beg, '#{'],
            [[1, 25], :on_ident, 'z'],
-           [[1, 26], :on_rbrace, '}'], # 20
+           [[1, 26], :on_embexpr_end, '}'], # [[1, 26], :on_rbrace, '}'], # 20
            [[1, 27], :on_tstring_content, '}'],
            [[1, 28], :on_tstring_end, '"'],
            [[1, 29], :on_sp, ' '],
