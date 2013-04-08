@@ -14,8 +14,8 @@ module Rubocop
                         'end',
                         'some_method while !a_condition',
                        ])
-        fav_until.offences.map(&:message).should ==
-          ['Favor until over while for negative conditions.'] * 2
+        expect(fav_until.offences.map(&:message)).to eq(
+          ['Favor until over while for negative conditions.'] * 2)
       end
 
       it 'registers an offence for while with "not" condition' do
@@ -24,9 +24,9 @@ module Rubocop
                         '  some_method',
                         'end',
                         'some_method while not a_condition'])
-        fav_until.offences.map(&:message).should ==
-          ['Favor until over while for negative conditions.'] * 2
-        fav_until.offences.map(&:line_number).should == [1, 4]
+        expect(fav_until.offences.map(&:message)).to eq(
+          ['Favor until over while for negative conditions.'] * 2)
+        expect(fav_until.offences.map(&:line_number)).to eq([1, 4])
       end
 
       it 'accepts an while where only part of the contition is negated' do
@@ -38,7 +38,7 @@ module Rubocop
                         '  some_method',
                         'end',
                         'some_method while not a_condition or other_cond'])
-        fav_until.offences.map(&:message).should == []
+        expect(fav_until.offences.map(&:message)).to be_empty
       end
     end
   end

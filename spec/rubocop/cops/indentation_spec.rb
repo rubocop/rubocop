@@ -15,8 +15,8 @@ module Rubocop
                   '        end',
                   'end']
         inspect_source(ind, 'file.rb', source)
-        ind.offences.map(&:message).should ==
-          ['Indent when as deep as case.'] * 2
+        expect(ind.offences.map(&:message)).to eq(
+          ['Indent when as deep as case.'] * 2)
       end
 
       it "accepts a when clause that's equally indented with case" do
@@ -33,7 +33,7 @@ module Rubocop
                   'end',
                   '']
         inspect_source(ind, 'file.rb', source)
-        ind.offences.size.should == 0
+        expect(ind.offences).to be_empty
       end
 
       it "doesn't get confused by strings with case in them" do
@@ -43,7 +43,7 @@ module Rubocop
                   'end',
                   '']
         inspect_source(ind, 'file.rb', source)
-        ind.offences.map(&:message).should == []
+        expect(ind.offences.map(&:message)).to be_empty
       end
 
       it "doesn't get confused by symbols named case or when" do
@@ -56,7 +56,7 @@ module Rubocop
                   'end',
                   '']
         inspect_source(ind, 'file.rb', source)
-        ind.offences.map(&:message).should == []
+        expect(ind.offences.map(&:message)).to be_empty
       end
 
       it 'accepts correctly indented whens in complex combinations' do
@@ -79,7 +79,7 @@ module Rubocop
                   'end',
                   '']
         inspect_source(ind, 'file.rb', source)
-        ind.offences.map(&:message).should == []
+        expect(ind.offences.map(&:message)).to be_empty
       end
     end
   end

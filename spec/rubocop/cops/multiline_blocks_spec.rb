@@ -10,14 +10,14 @@ module Rubocop
       it 'registers an offence for a multiline block with braces' do
         inspect_source(blocks, '', ['each { |x|',
                                     '}'])
-        blocks.offences.map(&:message).should ==
-          ['Avoid using {...} for multi-line blocks.']
+        expect(blocks.offences.map(&:message)).to eq(
+          ['Avoid using {...} for multi-line blocks.'])
       end
 
       it 'accepts a multiline block with do-end' do
         inspect_source(blocks, '', ['each do |x|',
                                     'end'])
-        blocks.offences.map(&:message).should == []
+        expect(blocks.offences.map(&:message)).to be_empty
       end
     end
   end

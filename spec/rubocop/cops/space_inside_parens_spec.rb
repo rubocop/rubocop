@@ -10,16 +10,16 @@ module Rubocop
       it 'registers an offence for spaces inside parens' do
         inspect_source(space, 'file.rb', ['f( 3)',
                                          'g(3 )'])
-        space.offences.map(&:message).should ==
+        expect(space.offences.map(&:message)).to eq(
           ['Space inside parentheses detected.',
-           'Space inside parentheses detected.']
+           'Space inside parentheses detected.'])
       end
 
       it 'accepts parentheses in block parameter list' do
         inspect_source(space, 'file.rb',
                        ['list.inject(Tms.new) { |sum, (label, item)|',
                         '}'])
-        space.offences.map(&:message).should == []
+        expect(space.offences.map(&:message)).to be_empty
       end
 
     end

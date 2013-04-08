@@ -15,8 +15,8 @@ module Rubocop
                         '  @myAttribute = 3',
                         'end',
                        ])
-        snake_case.offences.map(&:message).should ==
-          ['Use snake_case for methods and variables.'] * 4
+        expect(snake_case.offences.map(&:message)).to eq(
+          ['Use snake_case for methods and variables.'] * 4)
       end
 
       it 'accepts snake case in names' do
@@ -27,20 +27,20 @@ module Rubocop
                         '  @my_attribute = 3',
                         'end',
                        ])
-        snake_case.offences.map(&:message).should == []
+        expect(snake_case.offences.map(&:message)).to be_empty
       end
 
       it 'registers an offence for mixed snake case and camel case' do
         inspect_source(snake_case, 'file.rb',
                        ['def visit_Arel_Nodes_SelectStatement',
                         'end'])
-        snake_case.offences.map(&:message).should ==
-          ['Use snake_case for methods and variables.']
+        expect(snake_case.offences.map(&:message)).to eq(
+          ['Use snake_case for methods and variables.'])
       end
 
       it 'accepts screaming snake case globals' do
         inspect_source(snake_case, 'file.rb', ['$MY_GLOBAL = 0'])
-        snake_case.offences.map(&:message).should == []
+        expect(snake_case.offences.map(&:message)).to be_empty
       end
     end
   end

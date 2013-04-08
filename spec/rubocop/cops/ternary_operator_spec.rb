@@ -10,14 +10,14 @@ module Rubocop
       it 'registers an offence for a multiline ternary operator expression' do
         inspect_source(op, 'file.rb', ['a = cond ?',
                                         '  b : c'])
-        op.offences.map(&:message).should ==
+        expect(op.offences.map(&:message)).to eq(
           ['Avoid multi-line ?: (the ternary operator); use if/unless ' +
-           'instead.']
+           'instead.'])
       end
 
       it 'accepts a single line ternary operator expression' do
         inspect_source(op, 'file.rb', ['a = cond ? b : c'])
-        op.offences.map(&:message).should == []
+        expect(op.offences.map(&:message)).to be_empty
       end
     end
 
@@ -26,9 +26,9 @@ module Rubocop
 
       it 'registers an offence for a nested ternary operator expression' do
         inspect_source(op, 'file.rb', ['a ? (b ? b1 : b2) : a2'])
-        op.offences.map(&:message).should ==
+        expect(op.offences.map(&:message)).to eq(
           ['Ternary operators must not be nested. Prefer if/else constructs ' +
-           'instead.']
+           'instead.'])
       end
 
       it 'accepts a non-nested ternary operator within an if' do
@@ -37,7 +37,7 @@ module Rubocop
                                        'else',
                                        '  d',
                                        'end'])
-        op.offences.map(&:message).should == []
+        expect(op.offences.map(&:message)).to be_empty
       end
     end
   end

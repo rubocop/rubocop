@@ -11,15 +11,15 @@ module Rubocop
         inspect_source(wt, 'file.rb', ['case a',
                                        'when b; c',
                                        'end'])
-        wt.offences.map(&:message).should ==
-          ['Never use "when x;". Use "when x then" instead.']
+        expect(wt.offences.map(&:message)).to eq(
+          ['Never use "when x;". Use "when x then" instead.'])
       end
 
       it 'accepts when x then' do
         inspect_source(wt, 'file.rb', ['case a',
                                        'when b then c',
                                        'end'])
-        wt.offences.map(&:message).should == []
+        expect(wt.offences.map(&:message)).to be_empty
       end
 
       it 'accepts ; separating statements in the body of when' do
@@ -31,7 +31,7 @@ module Rubocop
                                        'when f',
                                        '  g; h',
                                        'end'])
-        wt.offences.map(&:message).should == []
+        expect(wt.offences.map(&:message)).to be_empty
       end
     end
   end

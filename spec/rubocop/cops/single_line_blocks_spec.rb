@@ -9,13 +9,13 @@ module Rubocop
 
       it 'registers an offence for a single line block with do-end' do
         inspect_source(blocks, '', ['each do |x| end'])
-        blocks.offences.map(&:message).should ==
-          ['Prefer {...} over do...end for single-line blocks.']
+        expect(blocks.offences.map(&:message)).to eq(
+          ['Prefer {...} over do...end for single-line blocks.'])
       end
 
       it 'accepts a single line block with braces' do
         inspect_source(blocks, '', ['each { |x| }'])
-        blocks.offences.map(&:message).should == []
+        expect(blocks.offences.map(&:message)).to be_empty
       end
     end
   end

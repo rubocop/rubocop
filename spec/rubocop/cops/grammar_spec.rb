@@ -12,7 +12,7 @@ module Rubocop
       it 'correlates token indices to grammar paths' do
         method_block = [:program, :method_add_block]
         brace_block = method_block + [:brace_block]
-        Ripper.lex(EXAMPLE).should ==
+        expect(Ripper.lex(EXAMPLE)).to eq(
           [[[1, 0], :on_int, '3'],
            [[1, 1], :on_period, '.'],
            [[1, 2], :on_ident, 'times'],
@@ -37,13 +37,13 @@ module Rubocop
            [[1, 27], :on_tstring_content, '}'],
            [[1, 28], :on_tstring_end, '"'],
            [[1, 29], :on_sp, ' '],
-           [[1, 30], :on_rbrace, '}']]
+           [[1, 30], :on_rbrace, '}']])
 
         sexp = Ripper.sexp(EXAMPLE)
         Position.make_position_objects(sexp)
 
         varref = (RUBY_VERSION == '1.9.2') ? :var_ref : :vcall
-        grammar.correlate(sexp).should == {
+        expect(grammar.correlate(sexp)).to eq({
           0  => method_block + [:call, :@int],                    # 3
           2  => method_block + [:call, :@ident],                  # times
           4  => brace_block,                                      # {
@@ -59,7 +59,7 @@ module Rubocop
           21 => brace_block + [:assign, :string_literal, :string_content,
                                :@tstring_content],                # }
           24 => brace_block,                                      # }
-        }
+        })
       end
     end
   end

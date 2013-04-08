@@ -9,13 +9,13 @@ module Rubocop
 
       it 'registers an offence for default value assignment without space' do
         inspect_source(space, 'file.rb', ['def f(x, y=0, z=1)', 'end'])
-        space.offences.map(&:message).should ==
-          ['Surrounding space missing in default value assignment.'] * 2
+        expect(space.offences.map(&:message)).to eq(
+          ['Surrounding space missing in default value assignment.'] * 2)
       end
 
       it 'accepts default value assignment with space' do
         inspect_source(space, 'file.rb', ['def f(x, y = 0, z = 1)', 'end'])
-        space.offences.map(&:message).should == []
+        expect(space.offences.map(&:message)).to be_empty
       end
     end
   end

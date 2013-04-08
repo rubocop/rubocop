@@ -18,13 +18,13 @@ module Rubocop
                                  'end',
                                  'if cond then # bad',
                                  'end'])
-        mit.offences.map(&:line_number).should == [1, 3, 5, 7]
+        expect(mit.offences.map(&:line_number)).to eq([1, 3, 5, 7])
       end
 
       it 'accepts multiline if without then' do
         inspect_source(mit, '', ['if cond',
                                           'end'])
-        mit.offences.map(&:message).should == []
+        expect(mit.offences.map(&:message)).to be_empty
       end
 
       it 'accepts table style if/then/elsif/ends' do
@@ -34,7 +34,7 @@ module Rubocop
                         'elsif @io == $stderr then str << "$stderr"',
                         'else                      str << @io.class.to_s',
                         'end'])
-        mit.offences.map(&:message).should == []
+        expect(mit.offences.map(&:message)).to be_empty
       end
 
       # unless
@@ -42,14 +42,14 @@ module Rubocop
       it 'registers an offence for then in multiline unless' do
         inspect_source(mit, '', ['unless cond then',
                                  'end'])
-        mit.offences.map(&:message).should ==
-          ['Never use then for multi-line if/unless.']
+        expect(mit.offences.map(&:message)).to eq(
+          ['Never use then for multi-line if/unless.'])
       end
 
       it 'accepts multiline unless without then' do
         inspect_source(mit, '', ['unless cond',
                                  'end'])
-        mit.offences.map(&:message).should == []
+        expect(mit.offences.map(&:message)).to be_empty
       end
     end
   end

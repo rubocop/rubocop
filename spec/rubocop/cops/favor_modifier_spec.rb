@@ -14,9 +14,9 @@ module Rubocop
                        ['if a_condition_that_is_just_short_enough',
                         '  some_long_metod_name(followed_by_args)',
                         'end'])
-        if_until.offences.map(&:message).should ==
+        expect(if_until.offences.map(&:message)).to eq(
           ['Favor modifier if/unless usage when you have a single-line body.' +
-           ' Another good alternative is the usage of control flow and/or.']
+           ' Another good alternative is the usage of control flow and/or.'])
       end
 
       it "accepts multiline if that doesn't fit on one line" do
@@ -31,23 +31,23 @@ module Rubocop
         inspect_source(if_until, 'file.rb', ['unless a',
                                         '  b',
                                         'end'])
-        if_until.offences.map(&:message).should ==
+        expect(if_until.offences.map(&:message)).to eq(
           ['Favor modifier if/unless usage when you have a single-line body.' +
-           ' Another good alternative is the usage of control flow and/or.']
+           ' Another good alternative is the usage of control flow and/or.'])
       end
 
       it 'accepts code with EOL comment since user might want to keep it' do
         inspect_source(if_until, 'file.rb', ['unless a',
                                              '  b # A comment',
                                              'end'])
-        if_until.offences.map(&:message).should == []
+        expect(if_until.offences.map(&:message)).to be_empty
       end
 
       it 'accepts if-else-end' do
         inspect_source(if_until, 'file.rb',
                        ['if args.last.is_a? Hash then args.pop else ' +
                         'Hash.new end'])
-        if_until.offences.map(&:message).should == []
+        expect(if_until.offences.map(&:message)).to be_empty
       end
 
       it "accepts multiline unless that doesn't fit on one line" do
@@ -86,9 +86,9 @@ module Rubocop
         inspect_source(cop, 'file.rb', ["#{keyword} a",
                                         '  b',
                                         'end'])
-        cop.offences.map(&:message).should ==
+        expect(cop.offences.map(&:message)).to eq(
           ['Favor modifier while/until usage when you have a single-line ' +
-           'body.']
+           'body.'])
       end
 
       def check_too_long(cop, keyword)
@@ -96,7 +96,7 @@ module Rubocop
                        ["  #{keyword} a_lengthy_condition_that_goes_on_and_on",
                         '    some_long_metod_name(followed_by_args)',
                         '  end'])
-        cop.offences.map(&:message).should == []
+        expect(cop.offences.map(&:message)).to be_empty
       end
 
       def check_short_multiline(cop, keyword)
@@ -105,7 +105,7 @@ module Rubocop
                         "  require 'simplecov'",
                         '  SimpleCov.start',
                         'end'])
-        cop.offences.map(&:message).should == []
+        expect(cop.offences.map(&:message)).to be_empty
       end
     end
   end

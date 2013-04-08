@@ -13,16 +13,16 @@ module Rubocop
                                        'else',
                                        '  a = 0',
                                        'end'])
-        ue.offences.map(&:message).should ==
+        expect(ue.offences.map(&:message)).to eq(
           ['Never use unless with else. Rewrite these with the ' +
-           'positive case first.']
+           'positive case first.'])
       end
 
       it 'accepts an unless without else' do
         inspect_source(ue, 'file.rb', ['unless x',
                                        '  a = 1',
                                        'end'])
-        ue.offences.map(&:message).should == []
+        expect(ue.offences.map(&:message)).to be_empty
       end
     end
   end

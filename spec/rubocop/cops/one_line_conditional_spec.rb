@@ -9,8 +9,8 @@ module Rubocop
 
       it 'registers an offence for one line if/then/end' do
         inspect_source(olc, '', ['if cond then run else dont end'])
-        olc.offences.map(&:message).should ==
-          ['Favor the ternary operator (?:) over if/then/else/end constructs.']
+        expect(olc.offences.map(&:message)).to eq(
+          ['Favor the ternary operator (?:) over if/then/else/end constructs.'])
       end
     end
   end

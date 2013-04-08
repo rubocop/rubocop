@@ -9,14 +9,14 @@ module Rubocop
 
       it 'registers an offence for left brace without spaces' do
         inspect_source(space, 'file.rb', ['each{ puts }'])
-        space.offences.map(&:message).should ==
-          ["Surrounding space missing for '{'."]
+        expect(space.offences.map(&:message)).to eq(
+          ["Surrounding space missing for '{'."])
       end
 
       it 'registers an offence for right brace without inner space' do
         inspect_source(space, 'file.rb', ['each { puts}'])
-        space.offences.map(&:message).should ==
-          ["Space missing to the left of '}'."]
+        expect(space.offences.map(&:message)).to eq(
+          ["Space missing to the left of '}'."])
       end
 
       it 'accepts an empty hash literal with no space inside' do
@@ -25,7 +25,7 @@ module Rubocop
                         'end',
                         '@views = {}',
                         ''])
-        space.offences.map(&:message).should == []
+        expect(space.offences.map(&:message)).to be_empty
       end
     end
   end

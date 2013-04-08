@@ -14,9 +14,9 @@ module Rubocop
                         'end',
                         'some_method if !a_condition',
                        ])
-        fav_unless.offences.map(&:message).should ==
+        expect(fav_unless.offences.map(&:message)).to eq(
           ['Favor unless (or control flow or) over if for negative ' +
-           'conditions.'] * 2
+           'conditions.'] * 2)
       end
 
       it 'registers an offence for if with "not" condition' do
@@ -25,10 +25,10 @@ module Rubocop
                         '  some_method',
                         'end',
                         'some_method if not a_condition'])
-        fav_unless.offences.map(&:message).should ==
+        expect(fav_unless.offences.map(&:message)).to eq(
           ['Favor unless (or control flow or) over if for negative ' +
-           'conditions.'] * 2
-        fav_unless.offences.map(&:line_number).should == [1, 4]
+           'conditions.'] * 2)
+        expect(fav_unless.offences.map(&:line_number)).to eq([1, 4])
       end
 
       it 'accepts an if/else with negative condition' do
@@ -43,7 +43,7 @@ module Rubocop
                         'elsif other_condition',
                         '  something_else',
                         'end'])
-        fav_unless.offences.map(&:message).should == []
+        expect(fav_unless.offences.map(&:message)).to be_empty
       end
 
       it 'accepts an if where only part of the contition is negated' do
@@ -55,7 +55,7 @@ module Rubocop
                         '  some_method',
                         'end',
                         'some_method if not a_condition or another_condition'])
-        fav_unless.offences.map(&:message).should == []
+        expect(fav_unless.offences.map(&:message)).to be_empty
       end
     end
   end

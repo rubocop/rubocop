@@ -9,9 +9,9 @@ module Rubocop
 
       it 'registers an offence for double quotes when single quotes suffice' do
         inspect_source(sl, 'file.rb', ['s = "abc"'])
-        sl.offences.map(&:message).should ==
+        expect(sl.offences.map(&:message)).to eq(
           ["Prefer single-quoted strings when you don't need string " +
-           'interpolation or special symbols.']
+           'interpolation or special symbols.'])
       end
 
       it 'accepts double quotes when they are needed' do
@@ -19,13 +19,13 @@ module Rubocop
                'b = "#{encode_severity}:#{sprintf("%3d", line_number)}: #{m}"',
                'c = "\'"']
         inspect_source(sl, 'file.rb', src)
-        sl.offences.map(&:message).should == []
+        expect(sl.offences.map(&:message)).to be_empty
       end
 
       it 'can handle double quotes within embedded expression' do
         src = ['"#{"A"}"']
         inspect_source(sl, 'file.rb', src)
-        sl.offences.map(&:message).should == []
+        expect(sl.offences.map(&:message)).to be_empty
       end
     end
   end
