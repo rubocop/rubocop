@@ -6,8 +6,7 @@ module Rubocop
   module Cop
     class Syntax < Cop
       def inspect(file, source, tokens, sexp)
-        return unless File.exist?(file)
-        _, _, stderr = Open3.popen3('ruby', '-w', '-c', file)
+        _, stderr, _ = Open3.capture3('ruby -wc', stdin_data: source.join("\n"))
 
         stderr.each_line do |line|
           line_no, warning = line.match(/.+:(\d+): warning: (.+)/).captures
