@@ -15,7 +15,7 @@ module Rubocop
 
       it "accepts a line that's 79 characters wide" do
         ll.inspect('file.rb', ['#' * 79], nil, nil)
-        expect(ll.offences.size).to be_zero
+        expect(ll.offences).to be_empty
       end
     end
   end
