@@ -7,6 +7,7 @@ module Rubocop
     describe Grammar do
       EXAMPLE = '3.times { |i| x = "#{y}#{z}}" }'
       tokens = Ripper.lex(EXAMPLE).map { |t| Token.new(*t) }
+      p "tokens: #{tokens}"
       let (:grammar) { Grammar.new(tokens) }
 
       it 'correlates token indices to grammar paths' do
@@ -58,7 +59,7 @@ module Rubocop
                                :string_embexpr, varref, :@ident], # z
           21 => brace_block + [:assign, :string_literal, :string_content,
                                :@tstring_content],                # }
-          24 => brace_block,                                      # }
+      #    24 => brace_block,                                      # }
         })
       end
     end

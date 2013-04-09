@@ -3,7 +3,8 @@
 module Rubocop
   module Cop
     module DefParentheses
-      EMPTY_PARAMS = [:params, nil, nil, nil, nil, nil, nil, nil]
+      EMPTY_PARAMS = [:params, nil, nil, nil, nil, nil, nil, nil] if RUBY_VERSION >= "2.0.0"
+      EMPTY_PARAMS = [:params, nil, nil, nil, nil, nil] if RUBY_VERSION < "2.0.0"
 
       def inspect(file, source, tokens, sexp)
         each(:def, sexp) { |def_sexp| check(tokens, def_sexp) }
