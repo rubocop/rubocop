@@ -7,14 +7,12 @@ module Rubocop
     describe Grammar do
       EXAMPLE = '3.times { |i| x = "#{y}#{z}}" }'
       tokens = Ripper.lex(EXAMPLE).map { |t| Token.new(*t) }
-      p "tokens: #{tokens}"
       let (:grammar) { Grammar.new(tokens) }
 
       it 'correlates token indices to grammar paths' do
         method_block = [:program, :method_add_block]
         brace_block = method_block + [:brace_block]
-        expect(Ripper.lex(EXAMPLE)).to eq(
-          [[[1, 0], :on_int, '3'],
+        test_2_0 = [[[1, 0], :on_int, '3'],
            [[1, 1], :on_period, '.'],
            [[1, 2], :on_ident, 'times'],
            [[1, 7], :on_sp, ' '],
@@ -38,13 +36,14 @@ module Rubocop
            [[1, 27], :on_tstring_content, '}'],
            [[1, 28], :on_tstring_end, '"'],
            [[1, 29], :on_sp, ' '],
-           [[1, 30], :on_rbrace, '}']])
-
+           [[1, 30], :on_rbrace, '}']]
+        expect(Ripper.lex(EXAMPLE)).to eq(test_2_0) if RUBY_VERSION >= '2.0'
         sexp = Ripper.sexp(EXAMPLE)
         Position.make_position_objects(sexp)
 
         varref = (RUBY_VERSION == '1.9.2') ? :var_ref : :vcall
-        expect(grammar.correlate(sexp)).to eq({
+
+        test_2_0 = {
           0  => method_block + [:call, :@int],                    # 3
           2  => method_block + [:call, :@ident],                  # times
           4  => brace_block,                                      # {
@@ -59,8 +58,13 @@ module Rubocop
                                :string_embexpr, varref, :@ident], # z
           21 => brace_block + [:assign, :string_literal, :string_content,
                                :@tstring_content],                # }
-      #    24 => brace_block,                                      # }
-        })
+        }
+        if RUBY_VERSION >= '2.0'
+          expect(grammar.correlate(sexp)).to eq(test_2_0)
+        else
+          test_1_9 = (test_2_0[24] = brace_block)
+          expect(grammar.correlate(sexp)).to eq(test_1_9)
+        end
       end
     end
   end
