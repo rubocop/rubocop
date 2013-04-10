@@ -5,8 +5,8 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe FavorModifier do
-      let (:if_until) { IfUnlessModifier.new }
-      let (:while_until) { WhileUntilModifier.new }
+      let(:if_until) { IfUnlessModifier.new }
+      let(:while_until) { WhileUntilModifier.new }
 
       it 'registers an offence for multiline if that fits on one line' do
         # This if statement fits exactly on one line if written as a modifier.

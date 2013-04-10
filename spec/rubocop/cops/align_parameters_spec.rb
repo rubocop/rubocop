@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe AlignParameters do
-      let (:align) { AlignParameters.new }
+      let(:align) { AlignParameters.new }
 
       it 'registers an offence for parameters with single indent' do
         inspect_source(align, 'file.rb', ['function(a,',

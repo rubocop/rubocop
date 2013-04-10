@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe MultilineBlocks do
-      let (:blocks) { MultilineBlocks.new }
+      let(:blocks) { MultilineBlocks.new }
 
       it 'registers an offence for a multiline block with braces' do
         inspect_source(blocks, '', ['each { |x|',

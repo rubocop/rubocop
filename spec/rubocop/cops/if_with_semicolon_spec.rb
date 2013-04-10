@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe IfWithSemicolon do
-      let (:iws) { IfWithSemicolon.new }
+      let(:iws) { IfWithSemicolon.new }
 
       it 'registers an offence for one line if/;/end' do
         inspect_source(iws, '', ['if cond; run else dont end'])

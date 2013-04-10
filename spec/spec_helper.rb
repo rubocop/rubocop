@@ -40,6 +40,8 @@ module ExitCodeMatchers
 end
 
 RSpec.configure do |config|
+  config.filter_run_excluding ruby: ->(v) { !RUBY_VERSION.start_with?(v.to_s) }
+
   config.expect_with :rspec do |c|
     c.syntax = :expect # disables `should`
   end

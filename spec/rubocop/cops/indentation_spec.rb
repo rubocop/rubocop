@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe Indentation do
-      let (:ind) { Indentation.new }
+      let(:ind) { Indentation.new }
 
       it "registers an offence for a when clause that's deeper than case" do
         source = ['case a',

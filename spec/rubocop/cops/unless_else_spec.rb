@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe UnlessElse do
-      let (:ue) { UnlessElse.new }
+      let(:ue) { UnlessElse.new }
 
       it 'registers an offence for an unless with else' do
         inspect_source(ue, 'file.rb', ['unless x',

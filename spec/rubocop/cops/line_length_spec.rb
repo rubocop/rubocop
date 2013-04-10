@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe LineLength do
-      let (:ll) { LineLength.new }
+      let(:ll) { LineLength.new }
 
       it "registers an offence for a line that's 80 characters wide" do
         ll.inspect('file.rb', ['#' * 80], nil, nil)

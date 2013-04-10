@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe NewLambdaLiteral do
-      let (:lambda_literal) { NewLambdaLiteral.new }
+      let(:lambda_literal) { NewLambdaLiteral.new }
 
       it 'registers an offence for an old lambda call' do
         inspect_source(lambda_literal, 'file.rb', ['f = lambda { |x| x }'])

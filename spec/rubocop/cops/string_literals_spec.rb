@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe StringLiterals do
-      let (:sl) { StringLiterals.new }
+      let(:sl) { StringLiterals.new }
 
       it 'registers an offence for double quotes when single quotes suffice' do
         inspect_source(sl, 'file.rb', ['s = "abc"'])

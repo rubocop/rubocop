@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe SingleLineBlocks do
-      let (:blocks) { SingleLineBlocks.new }
+      let(:blocks) { SingleLineBlocks.new }
 
       it 'registers an offence for a single line block with do-end' do
         inspect_source(blocks, '', ['each do |x| end'])

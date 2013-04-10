@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe NumericLiterals do
-      let (:num) { NumericLiterals.new }
+      let(:num) { NumericLiterals.new }
 
       it 'registers an offence for a long integer without underscores' do
         inspect_source(num, 'file.rb', ['a = 123456'])

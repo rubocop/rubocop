@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe OneLineConditional do
-      let (:olc) { OneLineConditional.new }
+      let(:olc) { OneLineConditional.new }
 
       it 'registers an offence for one line if/then/end' do
         inspect_source(olc, '', ['if cond then run else dont end'])

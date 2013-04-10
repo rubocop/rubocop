@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe SpaceAroundOperators do
-      let (:space) { SpaceAroundOperators.new }
+      let(:space) { SpaceAroundOperators.new }
 
       it 'registers an offence for assignment without space on both sides' do
         inspect_source(space, 'file.rb', ['x=0', 'y= 0', 'z =0'])

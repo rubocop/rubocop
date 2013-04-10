@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe WhenThen do
-      let (:wt) { WhenThen.new }
+      let(:wt) { WhenThen.new }
 
       it 'registers an offence for when x;' do
         inspect_source(wt, 'file.rb', ['case a',

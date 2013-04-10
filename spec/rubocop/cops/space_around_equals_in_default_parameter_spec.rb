@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe SpaceAroundEqualsInParameterDefault do
-      let (:space) { SpaceAroundEqualsInParameterDefault.new }
+      let(:space) { SpaceAroundEqualsInParameterDefault.new }
 
       it 'registers an offence for default value assignment without space' do
         inspect_source(space, 'file.rb', ['def f(x, y=0, z=1)', 'end'])

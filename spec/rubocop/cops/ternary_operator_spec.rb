@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe MultilineTernaryOperator do
-      let (:op) { MultilineTernaryOperator.new }
+      let(:op) { MultilineTernaryOperator.new }
 
       it 'registers an offence for a multiline ternary operator expression' do
         inspect_source(op, 'file.rb', ['a = cond ?',
@@ -22,7 +22,7 @@ module Rubocop
     end
 
     describe NestedTernaryOperator do
-      let (:op) { NestedTernaryOperator.new }
+      let(:op) { NestedTernaryOperator.new }
 
       it 'registers an offence for a nested ternary operator expression' do
         inspect_source(op, 'file.rb', ['a ? (b ? b1 : b2) : a2'])

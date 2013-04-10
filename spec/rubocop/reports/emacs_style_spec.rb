@@ -6,7 +6,7 @@ require 'stringio'
 module Rubocop
   module Report
     describe EmacsStyle do
-      let (:emacs_style) { Rubocop::Report.create('test', :emacs_style) }
+      let(:emacs_style) { Rubocop::Report.create('test', :emacs_style) }
 
       it 'displays parsable text' do
         cop = Cop::Cop.new

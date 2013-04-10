@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe TrailingWhitespace do
-      let (:tws) { TrailingWhitespace.new }
+      let(:tws) { TrailingWhitespace.new }
 
       it 'registers an offence for a line ending with space' do
         source = ['x = 0 ']

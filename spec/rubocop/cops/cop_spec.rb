@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe Cop do
-      let (:cop) { Cop.new }
+      let(:cop) { Cop.new }
 
       it 'initially has 0 offences' do
         expect(cop.offences).to be_empty

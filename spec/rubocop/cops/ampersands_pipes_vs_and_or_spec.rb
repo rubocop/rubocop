@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe AmpersandsPipesVsAndOr do
-      let (:amp) { AmpersandsPipesVsAndOr.new }
+      let(:amp) { AmpersandsPipesVsAndOr.new }
 
       it 'registers an offence for AND used in condition of if statement' do
         check('if', 'and', '&&')

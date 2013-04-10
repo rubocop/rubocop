@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe DefWithoutParentheses do
-      let (:def_par) { DefWithoutParentheses.new }
+      let(:def_par) { DefWithoutParentheses.new }
 
       it 'reports an offence for def with parameters but no parens' do
         src = ['def func a, b',

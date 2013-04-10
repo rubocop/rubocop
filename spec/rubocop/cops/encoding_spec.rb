@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe Encoding do
-      let (:encoding) { Encoding.new }
+      let(:encoding) { Encoding.new }
 
       it 'registers an offence when no encoding present' do
         inspect_source(encoding, 'file.rb', ['def foo() end'])

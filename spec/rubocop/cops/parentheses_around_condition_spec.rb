@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe ParenthesesAroundCondition do
-      let (:pac) { ParenthesesAroundCondition.new }
+      let(:pac) { ParenthesesAroundCondition.new }
 
       it 'registers an offence for parentheses around condition' do
         inspect_source(pac, 'file.rb', ['if (x > 10)',
