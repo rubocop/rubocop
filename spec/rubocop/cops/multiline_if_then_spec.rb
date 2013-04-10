@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe MultilineIfThen do
-      let (:mit) { MultilineIfThen.new }
+      let(:mit) { MultilineIfThen.new }
 
       # if
 

@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe SpaceAfterColon do
-      let (:space) { SpaceAfterColon.new }
+      let(:space) { SpaceAfterColon.new }
 
       it 'registers an offence for colon without space after it' do
         inspect_source(space, 'file.rb', ['x = w ? {a:3}:4'])

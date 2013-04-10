@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe ClassAndModuleCamelCase do
-      let (:camel_case) { ClassAndModuleCamelCase.new }
+      let(:camel_case) { ClassAndModuleCamelCase.new }
 
       it 'registers an offence for underscore in class and module name' do
         inspect_source(camel_case, 'file.rb',

@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe Tab do
-      let (:tab) { Tab.new }
+      let(:tab) { Tab.new }
 
       it 'registers an offence for a line indented with tab' do
         tab.inspect('file.rb', ["\tx = 0"], nil, nil)

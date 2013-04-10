@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe EndOfLine do
-      let (:eol) { EndOfLine.new }
+      let(:eol) { EndOfLine.new }
 
       it 'registers an offence for CR+LF' do
         inspect_source(eol, 'file.rb', ["x=0\r", ''])

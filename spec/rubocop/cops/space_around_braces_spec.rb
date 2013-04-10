@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe SpaceAroundBraces do
-      let (:space) { SpaceAroundBraces.new }
+      let(:space) { SpaceAroundBraces.new }
 
       it 'registers an offence for left brace without spaces' do
         inspect_source(space, 'file.rb', ['each{ puts }'])

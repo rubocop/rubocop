@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe FavorUnlessOverNegatedIf do
-      let (:fav_unless) { FavorUnlessOverNegatedIf.new }
+      let(:fav_unless) { FavorUnlessOverNegatedIf.new }
 
       it 'registers an offence for if with exclamation point condition' do
         inspect_source(fav_unless, 'file.rb',

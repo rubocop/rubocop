@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe MethodAndVariableSnakeCase do
-      let (:snake_case) { MethodAndVariableSnakeCase.new }
+      let(:snake_case) { MethodAndVariableSnakeCase.new }
 
       it 'registers an offence for camel case in names' do
         inspect_source(snake_case, 'file.rb',

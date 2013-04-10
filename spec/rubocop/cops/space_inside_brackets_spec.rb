@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe SpaceInsideBrackets do
-      let (:space) { SpaceInsideBrackets.new }
+      let(:space) { SpaceInsideBrackets.new }
 
       it 'registers an offence for an array literal with spaces inside' do
         inspect_source(space, 'file.rb', ['a = [1, 2 ]',

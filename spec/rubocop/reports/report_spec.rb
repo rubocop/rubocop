@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Report
     describe Report do
-      let (:report) { Report.new('test') }
+      let(:report) { Report.new('test') }
 
       it 'initially has 0 entries' do
         expect(report.entries.size).to be_zero
