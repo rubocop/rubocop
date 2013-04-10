@@ -61,7 +61,7 @@ module Rubocop
         end
       end
 
-      it 'can report in emacs style' do
+      it 'can report in emacs style', ruby: 1.9 do
         File.open('example1.rb', 'w') { |f| f.puts 'x= 0 ', 'y ', 'puts x' }
         File.open('example2.rb', 'w') { |f| f.puts "\tx = 0", 'puts x' }
         begin
@@ -83,7 +83,27 @@ module Rubocop
         end
       end
 
-      it 'ommits summary when --silent passed' do
+      it 'can report in emacs style', ruby: 2.0 do
+        File.open('example1.rb', 'w') { |f| f.puts 'x= 0 ', 'y ', 'puts x' }
+        File.open('example2.rb', 'w') { |f| f.puts "\tx = 0", 'puts x' }
+        begin
+          expect(cli.run(['--emacs', 'example1.rb', 'example2.rb'])).to eq(1)
+          expect($stdout.string.uncolored)
+            .to eq(
+            ['example1.rb:1: C: Trailing whitespace detected.',
+             "example1.rb:1: C: Surrounding space missing for operator '='.",
+             'example1.rb:2: C: Trailing whitespace detected.',
+             'example2.rb:1: C: Tab detected.',
+             '',
+             '2 files inspected, 4 offences detected',
+             ''].join("\n"))
+        ensure
+          File.delete 'example1.rb'
+          File.delete 'example2.rb'
+        end
+      end
+
+      it 'ommits summary when --silent passed', ruby: 1.9 do
         File.open('example1.rb', 'w') { |f| f.puts 'puts 0 ' }
         File.open('example2.rb', 'w') { |f| f.puts "\tputs 0" }
         begin
@@ -95,6 +115,24 @@ module Rubocop
             ['example1.rb:1: C: Missing encoding comment.',
              'example1.rb:1: C: Trailing whitespace detected.',
              'example2.rb:1: C: Missing encoding comment.',
+             'example2.rb:1: C: Tab detected.',
+             ''].join("\n"))
+        ensure
+          File.delete 'example1.rb'
+          File.delete 'example2.rb'
+        end
+      end
+
+      it 'ommits summary when --silent passed', ruby: 2.0 do
+        File.open('example1.rb', 'w') { |f| f.puts 'puts 0 ' }
+        File.open('example2.rb', 'w') { |f| f.puts "\tputs 0" }
+        begin
+          expect(cli.run(['--emacs',
+                          '--silent',
+                          'example1.rb',
+                          'example2.rb'])).to eq(1)
+          expect($stdout.string).to eq(
+            ['example1.rb:1: C: Trailing whitespace detected.',
              'example2.rb:1: C: Tab detected.',
              ''].join("\n"))
         ensure
@@ -151,19 +189,19 @@ module Rubocop
 
       it 'can use an alternative max line length from a config file' do
         FileUtils.mkdir 'example_src'
-        File.open('example_src/example1.rb', 'w') { |f| f.puts '#' * 90 }
+        File.open('example_src/example1.rb', 'w') do |f|
+          f.puts '# encoding: utf-8'
+          f.puts '#' * 90
+        end
         File.open('example_src/.rubocop.yml', 'w') do |f|
           f.puts('LineLength:',
                  '  Enabled: true',
                  '  Max: 100')
         end
         begin
-          expect(cli.run(['example_src/example1.rb'])).to eq(1)
+          expect(cli.run(['example_src/example1.rb'])).to eq(0)
           expect($stdout.string.uncolored).to eq(
-            ['== example_src/example1.rb ==',
-             'C:  1: Missing encoding comment.',
-             '',
-             '1 files inspected, 1 offences detected',
+            ['', '1 files inspected, 0 offences detected',
              ''].join("\n"))
         ensure
           FileUtils.rm_rf 'example_src'
