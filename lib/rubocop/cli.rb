@@ -122,9 +122,7 @@ module Rubocop
 
       Cop::Cop.all.each do |cop_klass|
         cop_config = config[cop_klass.name.split('::').last] if config
-        if cop_config.nil? || cop_config['Enabled']
-          cops_on_duty << cop_klass
-        end
+        cops_on_duty << cop_klass if cop_config.nil? || cop_config['Enabled']
       end
 
       cops_on_duty
@@ -132,7 +130,7 @@ module Rubocop
 
     def show_cops_on_duty(cops)
       puts '== Reporting for duty =='
-      cops.each { |c| puts " * ".yellow + c.to_s.green }
+      cops.each { |c| puts ' * '.yellow + c.to_s.green }
       puts '========================'
     end
 
