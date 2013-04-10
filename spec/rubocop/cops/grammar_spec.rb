@@ -43,7 +43,7 @@ module Rubocop
 
         varref = (RUBY_VERSION == '1.9.2') ? :var_ref : :vcall
 
-        test_2_0 = {
+        test = {
           0  => method_block + [:call, :@int],                    # 3
           2  => method_block + [:call, :@ident],                  # times
           4  => brace_block,                                      # {
@@ -60,10 +60,10 @@ module Rubocop
                                :@tstring_content],                # }
         }
         if RUBY_VERSION >= '2.0'
-          expect(grammar.correlate(sexp)).to eq(test_2_0)
+          expect(grammar.correlate(sexp)).to eq(test)
         else
-          test_1_9 = (test_2_0[24] = brace_block)
-          expect(grammar.correlate(sexp)).to eq(test_1_9)
+          test = (test[24] = brace_block)
+          expect(grammar.correlate(sexp)).to eq(test)
         end
       end
     end
