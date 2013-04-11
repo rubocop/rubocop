@@ -215,7 +215,7 @@ module Rubocop
         )
       end
 
-      it 'can process a file with an invalide UTF-8 byte sequence' do
+      it 'can process a file with an invalid UTF-8 byte sequence' do
         File.open('example.rb', 'w') do |f|
           f.puts '# encoding: utf-8'
           f.puts "# \xf9\x29"
