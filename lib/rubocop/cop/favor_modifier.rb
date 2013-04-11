@@ -44,7 +44,7 @@ module Rubocop
       end
 
       def length(tokens, start_ix, stop_ix)
-        (start_ix..stop_ix).inject(0) do |acc, ix|
+        (start_ix..stop_ix).reduce(0) do |acc, ix|
           acc + if ix > start_ix && tokens[ix - 1].text =~ /\n/
                   0
                 else

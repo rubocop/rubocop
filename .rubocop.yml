@@ -124,3 +124,6 @@ ClassAndModuleCamelCase:
 
 Syntax:
   Enabled: true
+
+CollectionMethods:
+  Enabled: true
