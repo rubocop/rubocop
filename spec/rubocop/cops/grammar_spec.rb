@@ -9,11 +9,10 @@ module Rubocop
       tokens = Ripper.lex(EXAMPLE).map { |t| Token.new(*t) }
       let(:grammar) { Grammar.new(tokens) }
 
-      it 'correlates token indices to grammar paths' do
+      it 'correlates token indices to grammar paths', ruby: 2.0 do
         method_block = [:program, :method_add_block]
         brace_block = method_block + [:brace_block]
-        expect(Ripper.lex(EXAMPLE)).to eq(
-          [[[1, 0], :on_int, '3'],
+        test_2_0 = [[[1, 0], :on_int, '3'],
            [[1, 1], :on_period, '.'],
            [[1, 2], :on_ident, 'times'],
            [[1, 7], :on_sp, ' '],
@@ -30,20 +29,21 @@ module Rubocop
            [[1, 18], :on_tstring_beg, '"'],
            [[1, 19], :on_embexpr_beg, '#{'], # 15
            [[1, 21], :on_ident, 'y'],
-           [[1, 22], :on_rbrace, '}'],
+           [[1, 22], :on_embexpr_end, '}'], # [[1, 22], :on_rbrace, '}'],
            [[1, 23], :on_embexpr_beg, '#{'],
            [[1, 25], :on_ident, 'z'],
-           [[1, 26], :on_rbrace, '}'], # 20
+           [[1, 26], :on_embexpr_end, '}'], # [[1, 26], :on_rbrace, '}'], # 20
            [[1, 27], :on_tstring_content, '}'],
            [[1, 28], :on_tstring_end, '"'],
            [[1, 29], :on_sp, ' '],
-           [[1, 30], :on_rbrace, '}']])
-
+           [[1, 30], :on_rbrace, '}']]
+        expect(Ripper.lex(EXAMPLE)).to eq(test_2_0) if RUBY_VERSION >= '2.0'
         sexp = Ripper.sexp(EXAMPLE)
         Position.make_position_objects(sexp)
 
         varref = (RUBY_VERSION == '1.9.2') ? :var_ref : :vcall
-        expect(grammar.correlate(sexp)).to eq({
+
+        test = {
           0  => method_block + [:call, :@int],                    # 3
           2  => method_block + [:call, :@ident],                  # times
           4  => brace_block,                                      # {
@@ -58,8 +58,13 @@ module Rubocop
                                :string_embexpr, varref, :@ident], # z
           21 => brace_block + [:assign, :string_literal, :string_content,
                                :@tstring_content],                # }
-          24 => brace_block,                                      # }
-        })
+        }
+        if RUBY_VERSION >= '2.0'
+          expect(grammar.correlate(sexp)).to eq(test)
+        else
+          test = (test[24] = brace_block)
+          expect(grammar.correlate(sexp)).to eq(test)
+        end
       end
     end
   end
