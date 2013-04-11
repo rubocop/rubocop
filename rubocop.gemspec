@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "rubocop"
-  s.version = "0.3.2"
+  s.version = "0.4.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Bozhidar Batsov"]
-  s.date = "2013-04-06"
+  s.date = "2013-04-11"
   s.description = "Automatic Ruby code style checking tool. Aims to enforce the community-driven Ruby Style Guide."
   s.email = "bozhidar@batsov.com"
   s.executables = ["rubocop"]
@@ -30,15 +30,13 @@ Gem::Specification.new do |s|
     "Rakefile",
     "VERSION",
     "bin/rubocop",
-    "features/rubocop.feature",
-    "features/step_definitions/rubocop_steps.rb",
-    "features/support/env.rb",
     "lib/rubocop.rb",
     "lib/rubocop/cli.rb",
     "lib/rubocop/cop/align_parameters.rb",
     "lib/rubocop/cop/ampersands_pipes_vs_and_or.rb",
     "lib/rubocop/cop/blocks.rb",
     "lib/rubocop/cop/class_and_module_camel_case.rb",
+    "lib/rubocop/cop/collection_methods.rb",
     "lib/rubocop/cop/cop.rb",
     "lib/rubocop/cop/def_parentheses.rb",
     "lib/rubocop/cop/empty_lines.rb",
@@ -60,6 +58,7 @@ Gem::Specification.new do |s|
     "lib/rubocop/cop/space_after_comma_etc.rb",
     "lib/rubocop/cop/string_literals.rb",
     "lib/rubocop/cop/surrounding_space.rb",
+    "lib/rubocop/cop/syntax.rb",
     "lib/rubocop/cop/tab.rb",
     "lib/rubocop/cop/ternary_operator.rb",
     "lib/rubocop/cop/trailing_whitespace.rb",
@@ -74,6 +73,7 @@ Gem::Specification.new do |s|
     "spec/rubocop/cops/align_parameters_spec.rb",
     "spec/rubocop/cops/ampersands_pipes_vs_and_or_spec.rb",
     "spec/rubocop/cops/class_and_module_camel_case_spec.rb",
+    "spec/rubocop/cops/collection_methods_spec.rb",
     "spec/rubocop/cops/cop_spec.rb",
     "spec/rubocop/cops/def_with_parentheses_spec.rb",
     "spec/rubocop/cops/def_without_parentheses_spec.rb",
@@ -107,6 +107,7 @@ Gem::Specification.new do |s|
     "spec/rubocop/cops/space_inside_brackets_spec.rb",
     "spec/rubocop/cops/space_inside_parens_spec.rb",
     "spec/rubocop/cops/string_literals_spec.rb",
+    "spec/rubocop/cops/syntax_spec.rb",
     "spec/rubocop/cops/tab_spec.rb",
     "spec/rubocop/cops/ternary_operator_spec.rb",
     "spec/rubocop/cops/trailing_whitespace_spec.rb",
