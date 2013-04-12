@@ -58,13 +58,9 @@ module Rubocop
                                :string_embexpr, varref, :@ident], # z
           21 => brace_block + [:assign, :string_literal, :string_content,
                                :@tstring_content],                # }
+          24 => brace_block
         }
-        if RUBY_VERSION >= '2.0'
-          expect(grammar.correlate(sexp)).to eq(test)
-        else
-          test = (test[24] = brace_block)
-          expect(grammar.correlate(sexp)).to eq(test)
-        end
+        expect(grammar.correlate(sexp)).to eq(test)
       end
     end
   end
