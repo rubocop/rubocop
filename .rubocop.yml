@@ -166,3 +166,7 @@ Syntax:
 # Preferred collection methods.
 CollectionMethods:
   Enabled: true
+
+# Prefer each over for.
+AvoidFor:
+  Enabled: true
