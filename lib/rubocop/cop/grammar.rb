@@ -5,7 +5,7 @@ module Rubocop
     class Grammar
       def initialize(tokens)
         @tokens_without_pos = tokens.map { |t| [t.type, t.text] }
-        process_embedded_expressions
+        process_embedded_expressions if RUBY_VERSION < '2.0'
         @token_indexes = {}
         @tokens_without_pos.each_with_index do |t, i|
           @token_indexes[t] ||= []
@@ -21,7 +21,7 @@ module Rubocop
         }
       end
 
-      # The string "#{x}" will give the tokens
+      # In ruby 1.9.3 and below, the string "#{x}" will give the tokens
       # [:on_tstring_beg, '"'], [:on_embexpr_beg, '#{'], [:on_ident, 'x'],
       # [:on_rbrace, '}'], [:on_tstring_end, '"']
       # which is not so good for us. We want to distinguish between a
@@ -45,7 +45,7 @@ module Rubocop
             end
           when :inside_expr
             case type
-            when :on_lbrace
+            when :on_lbrace, :on_embexpr_end
               brace_depth += 1
             when :on_rbrace
               if brace_depth == 1
