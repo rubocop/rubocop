@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "rubocop"
-  s.version = "0.4.0"
+  s.version = "0.4.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Bozhidar Batsov"]
-  s.date = "2013-04-11"
+  s.date = "2013-04-13"
   s.description = "Automatic Ruby code style checking tool. Aims to enforce the community-driven Ruby Style Guide."
   s.email = "bozhidar@batsov.com"
   s.executables = ["rubocop"]
@@ -34,6 +34,9 @@ Gem::Specification.new do |s|
     "lib/rubocop/cli.rb",
     "lib/rubocop/cop/align_parameters.rb",
     "lib/rubocop/cop/ampersands_pipes_vs_and_or.rb",
+    "lib/rubocop/cop/avoid_for.rb",
+    "lib/rubocop/cop/avoid_perl_backrefs.rb",
+    "lib/rubocop/cop/avoid_perlisms.rb",
     "lib/rubocop/cop/blocks.rb",
     "lib/rubocop/cop/class_and_module_camel_case.rb",
     "lib/rubocop/cop/collection_methods.rb",
@@ -72,6 +75,9 @@ Gem::Specification.new do |s|
     "spec/rubocop/cli_spec.rb",
     "spec/rubocop/cops/align_parameters_spec.rb",
     "spec/rubocop/cops/ampersands_pipes_vs_and_or_spec.rb",
+    "spec/rubocop/cops/avoid_for_spec.rb",
+    "spec/rubocop/cops/avoid_perl_backrefs_spec.rb",
+    "spec/rubocop/cops/avoid_perlisms_spec.rb",
     "spec/rubocop/cops/class_and_module_camel_case_spec.rb",
     "spec/rubocop/cops/collection_methods_spec.rb",
     "spec/rubocop/cops/cop_spec.rb",
@@ -120,11 +126,11 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/bbatsov/rubocop"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.23"
+  s.rubygems_version = "2.0.3"
   s.summary = "Automatic Ruby code style checking tool."
 
   if s.respond_to? :specification_version then
-    s.specification_version = 3
+    s.specification_version = 4
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<term-ansicolor>, [">= 0"])
