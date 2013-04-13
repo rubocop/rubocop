@@ -15,6 +15,13 @@ module Rubocop
           ['Never use "when x;". Use "when x then" instead.'])
       end
 
+      it 'misses semicolon but does not crash when there are no tokens' do
+        inspect_source(wt, 'file.rb', ['case a',
+                                       'when []; {}',
+                                       'end'])
+        expect(wt.offences.map(&:message)).to eq([])
+      end
+
       it 'accepts when x then' do
         inspect_source(wt, 'file.rb', ['case a',
                                        'when b then c',
