@@ -10,8 +10,17 @@ module Rubocop
           Open3.capture3('ruby -wc', stdin_data: source.join("\n"))
 
         stderr.each_line do |line|
-          line_no, warning = line.match(/.+:(\d+): warning: (.+)/).captures
-          add_offence(:warning, line_no.to_i, warning.capitalize) if line_no
+          line_no, severity, message = process_line(line)
+          add_offence(severity, line_no, message)
+        end
+      end
+
+      def process_line(line)
+        line_no, message = line.match(/.+:(\d+): (.+)/).captures
+        if message.start_with?('warning: ')
+          [line_no.to_i, :warning, message.sub(/warning: /, '').capitalize]
+        else
+          [line_no.to_i, :error, message.capitalize]
         end
       end
     end
