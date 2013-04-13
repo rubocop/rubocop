@@ -9,7 +9,7 @@ module Rubocop
       tokens = Ripper.lex(EXAMPLE).map { |t| Token.new(*t) }
       let(:grammar) { Grammar.new(tokens) }
 
-      it 'correlates token indices to grammar paths', ruby: 2.0 do
+      it 'correlates token indices to grammar paths' do
         method_block = [:program, :method_add_block]
         brace_block = method_block + [:brace_block]
         test_2_0 = [[[1, 0], :on_int, '3'],

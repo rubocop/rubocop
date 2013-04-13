@@ -173,3 +173,15 @@ CollectionMethods:
 # Prefer each over for.
 AvoidFor:
   Enabled: true
+
+# Avoid Perl-style global variables.
+AvoidPerlisms:
+  Enabled: true
+
+# Avoid Perl-style regex back references.
+AvoidPerlBackrefs:
+  Enabled: true
+
+# Avoid the use of class variables.
+AvoidClassVars:
+  Enabled: true
