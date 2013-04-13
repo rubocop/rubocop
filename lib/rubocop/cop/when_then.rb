@@ -11,6 +11,9 @@ module Rubocop
           # when <value> <divider> <body>
           # where divider is either semicolon, then, or line break.
           last_pos_in_value = all_positions(s[1])[-1]
+
+          next unless last_pos_in_value # Give up if no positions found.
+
           start_index = tokens.index { |t| t.pos == last_pos_in_value }
           tokens[start_index..-1].each do |t|
             break if ['then', "\n"].include?(t.text)
