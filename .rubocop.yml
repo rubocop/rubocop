@@ -18,11 +18,11 @@ Tab:
 TrailingWhitespace:
   Enabled: true
 
-# Use two spaces per indentation level.
+# Indent when as deep as case.
 Indentation:
   Enabled: true
 
-# Use empty lines between defs and to break up a method into logical paragraphs.
+# Use empty lines between defs.
 EmptyLines:
   Enabled: true
 
@@ -78,12 +78,15 @@ DefWithParentheses:
 DefWithoutParentheses:
   Enabled: true
 
+# Never use if x; .... Use the ternary operator instead.
 IfWithSemicolon:
   Enabled: true
 
+# Never use then for multi-line if/unless.
 MultilineIfThen:
   Enabled: true
 
+# Favor the ternary operator(?:) over if/then/else/end constructs.
 OneLineConditional:
   Enabled: true
 
