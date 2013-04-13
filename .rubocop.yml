@@ -178,3 +178,7 @@ AvoidPerlisms:
 # Avoid Perl-style regex back references.
 AvoidPerlBackrefs:
   Enabled: true
+
+# Avoid the use of class variables.
+AvoidClassVars:
+  Enabled: true
