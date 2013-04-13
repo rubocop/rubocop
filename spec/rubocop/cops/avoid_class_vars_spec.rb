@@ -7,7 +7,7 @@ module Rubocop
     describe AvoidClassVars do
       let(:acv) { AvoidClassVars.new }
 
-      it 'registers an offence for $1' do
+      it 'registers an offence for class variables' do
         inspect_source(acv,
                        'file.rb',
                        ['class TestClass; @@test = 10; end'])
