@@ -36,14 +36,10 @@ module Rubocop
         end
       end.parse!(args)
 
+      cops = Cop::Cop.all
+      show_cops_on_duty(cops) if $options[:debug]
       total_offences = 0
       @configs = {}
-
-      target_files = target_files(args)
-      config = $options[:config] || config_from_dotfile(target_files[0])
-
-      cops = cops_on_duty(config)
-      show_cops_on_duty(cops) if $options[:debug]
 
       target_files(args).each do |file|
         report = Report.create(file, $options[:mode])
@@ -62,15 +58,18 @@ module Rubocop
           total_offences += syntax_cop.offences.count
         else
           tokens, sexp, correlations = CLI.rip_source(source)
+          config = $options[:config] || config_from_dotfile(File.dirname(file))
 
           cops.each do |cop_klass|
             cop_config = config[cop_klass.name.split('::').last] if config
-            cop_klass.config = cop_config
-            cop = cop_klass.new
-            cop.correlations = correlations
-            cop.inspect(file, source, tokens, sexp)
-            total_offences += cop.offences.count
-            report << cop if cop.has_report?
+            if cop_config.nil? || cop_config['Enabled']
+              cop_klass.config = cop_config
+              cop = cop_klass.new
+              cop.correlations = correlations
+              cop.inspect(file, source, tokens, sexp)
+              total_offences += cop.offences.count
+              report << cop if cop.has_report?
+            end
           end
         end
 
