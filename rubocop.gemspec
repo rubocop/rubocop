@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = "rubocop"
-  s.version = "0.4.3"
+  s.version = "0.4.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Bozhidar Batsov"]
@@ -62,6 +62,7 @@ Gem::Specification.new do |s|
     "lib/rubocop/cop/space_after_comma_etc.rb",
     "lib/rubocop/cop/string_literals.rb",
     "lib/rubocop/cop/surrounding_space.rb",
+    "lib/rubocop/cop/symbol_snake_case.rb",
     "lib/rubocop/cop/syntax.rb",
     "lib/rubocop/cop/tab.rb",
     "lib/rubocop/cop/ternary_operator.rb",
@@ -115,6 +116,7 @@ Gem::Specification.new do |s|
     "spec/rubocop/cops/space_inside_brackets_spec.rb",
     "spec/rubocop/cops/space_inside_parens_spec.rb",
     "spec/rubocop/cops/string_literals_spec.rb",
+    "spec/rubocop/cops/symbol_snake_case_spec.rb",
     "spec/rubocop/cops/syntax_spec.rb",
     "spec/rubocop/cops/tab_spec.rb",
     "spec/rubocop/cops/ternary_operator_spec.rb",
@@ -128,11 +130,11 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/bbatsov/rubocop"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.23"
+  s.rubygems_version = "2.0.3"
   s.summary = "Automatic Ruby code style checking tool."
 
   if s.respond_to? :specification_version then
-    s.specification_version = 3
+    s.specification_version = 4
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<term-ansicolor>, [">= 0"])
