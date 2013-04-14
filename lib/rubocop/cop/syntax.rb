@@ -10,8 +10,11 @@ module Rubocop
           Open3.capture3('ruby -wc', stdin_data: source.join("\n"))
 
         stderr.each_line do |line|
-          line_no, severity, message = process_line(line)
-          add_offence(severity, line_no, message)
+          # discard lines that are not containing relevant info
+          if line =~ /.+:(\d+): (.+)/
+            line_no, severity, message = process_line(line)
+            add_offence(severity, line_no, message)
+          end
         end
       end
 
