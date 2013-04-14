@@ -185,3 +185,7 @@ AvoidPerlBackrefs:
 # Avoid the use of class variables.
 AvoidClassVars:
   Enabled: true
+
+# Symbol literals should use snake_case.
+SymbolSnakeCase:
+  Enabled: true

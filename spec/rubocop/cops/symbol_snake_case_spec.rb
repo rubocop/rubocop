@@ -1,0 +1,36 @@
+# encoding: utf-8
+
+require 'spec_helper'
+
+module Rubocop
+  module Cop
+    describe SymbolSnakeCase do
+      let(:snake_case) { SymbolSnakeCase.new }
+
+      it 'registers an offence for camel case in names' do
+        inspect_source(snake_case, 'file.rb',
+                       ['test = :BadIdea'])
+        expect(snake_case.offences.map(&:message)).to eq(
+          ['Use snake_case for symbols.'])
+      end
+
+      it 'accepts snake case in names' do
+        inspect_source(snake_case, 'file.rb',
+                       ['test = :good_idea'])
+        expect(snake_case.offences.map(&:message)).to be_empty
+      end
+
+      it 'accepts snake case with a prefix @ in names' do
+        inspect_source(snake_case, 'file.rb',
+                       ['test = :@good_idea'])
+        expect(snake_case.offences.map(&:message)).to be_empty
+      end
+
+      it 'registers an offence for SCREAMING_SNAKE_CASE' do
+        inspect_source(snake_case, 'file.rb',
+                       ['test = :BAD_IDEA'])
+        expect(snake_case.offences.size).to eq(1)
+      end
+    end
+  end
+end
