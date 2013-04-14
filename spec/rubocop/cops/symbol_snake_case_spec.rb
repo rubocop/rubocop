@@ -26,6 +26,32 @@ module Rubocop
         expect(snake_case.offences.map(&:message)).to be_empty
       end
 
+      it 'accepts snake case with ? suffix' do
+        inspect_source(snake_case, 'file.rb',
+                       ['test = :good_idea?'])
+        expect(snake_case.offences.map(&:message)).to be_empty
+      end
+
+      it 'accepts snake case with ! suffix' do
+        inspect_source(snake_case, 'file.rb',
+                       ['test = :good_idea!'])
+        expect(snake_case.offences.map(&:message)).to be_empty
+      end
+
+      it 'accepts snake case with = suffix' do
+        inspect_source(snake_case, 'file.rb',
+                       ['test = :good_idea='])
+        expect(snake_case.offences.map(&:message)).to be_empty
+      end
+
+      it 'accepts special cases - !, [] and **' do
+        inspect_source(snake_case, 'file.rb',
+                       ['test = :**',
+                        'test = :!',
+                        'test = :[]'])
+        expect(snake_case.offences.map(&:message)).to be_empty
+      end
+
       it 'registers an offence for SCREAMING_SNAKE_CASE' do
         inspect_source(snake_case, 'file.rb',
                        ['test = :BAD_IDEA'])

@@ -10,6 +10,9 @@ module Rubocop
         each(:symbol_literal, sexp) do |s|
           symbol_ident = s[1][1][1]
 
+          # handle a couple of special cases
+          next if ['!', '[]', '**'].include?(symbol_ident)
+
           unless symbol_ident =~ SNAKE_CASE
             line_no = s[1][1][2].lineno
             add_offence(:convention,
