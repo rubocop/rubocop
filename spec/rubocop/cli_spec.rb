@@ -215,6 +215,26 @@ module Rubocop
         )
       end
 
+      it 'registers an offence for a syntax error' do
+        File.open('example.rb', 'w') do |f|
+          f.puts '# encoding: utf-8'
+          f.puts 'class Test'
+          f.puts 'en'
+        end
+        begin
+          expect(cli.run(['--emacs', 'example.rb'])).to eq(1)
+          unexpected_part = RUBY_VERSION >= '2.0' ? 'end-of-input' : '$end'
+          expect($stdout.string.uncolored).to eq(
+            ["example.rb:3: E: Syntax error, unexpected #{unexpected_part}, " +
+             'expecting keyword_end',
+             '',
+             '1 files inspected, 1 offences detected',
+             ''].join("\n"))
+        ensure
+          File.delete 'example.rb'
+        end
+      end
+
       it 'can process a file with an invalid UTF-8 byte sequence' do
         File.open('example.rb', 'w') do |f|
           f.puts '# encoding: utf-8'
