@@ -208,6 +208,32 @@ module Rubocop
         end
       end
 
+      it 'can have different config files in different directories' do
+        %w(src lib).each do |dir|
+          FileUtils.mkdir_p "example/#{dir}"
+          File.open("example/#{dir}/example1.rb", 'w') do |f|
+            f.puts '# encoding: utf-8'
+            f.puts '#' * 90
+          end
+        end
+        File.open('example/src/.rubocop.yml', 'w') do |f|
+          f.puts('LineLength:',
+                 '  Enabled: true',
+                 '  Max: 100')
+        end
+        begin
+          expect(cli.run(['example'])).to eq(1)
+          expect($stdout.string.uncolored).to eq(
+            ['== example/lib/example1.rb ==',
+             'C:  2: Line is too long. [90/79]',
+             '',
+             '2 files inspected, 1 offences detected',
+             ''].join("\n"))
+        ensure
+          FileUtils.rm_rf 'example'
+        end
+      end
+
       it 'finds no violations when checking the rubocop source code' do
         cli.run
         expect($stdout.string.uncolored).to match(
