@@ -145,16 +145,16 @@ module Rubocop
 
     # Generate a list of target files by expanding globing patterns
     # (if any). If args is empty recursively finds all Ruby source
-    # files in the current directory
+    # files under the current directory
     # @return [Array] array of filenames
     def target_files(args)
-      return Dir['**/*.rb'] if args.empty?
+      return ruby_files if args.empty?
 
       files = []
 
       args.each do |target|
         if File.directory?(target)
-          files << Dir["#{target}/**/*.rb"]
+          files << ruby_files(target)
         elsif target =~ /\*/
           files << Dir[target]
         else
@@ -163,6 +163,26 @@ module Rubocop
       end
 
       files.flatten
+    end
+
+    # Finds all Ruby source files under the current or other supplied
+    # directory.  A Ruby source file is defined as a file with the `.rb`
+    # extension or a file with no extension that has a ruby shebang line
+    # as its first line.
+    # @param root Root directory under which to search for ruby source files
+    # @return [Array] Array of filenames
+    def ruby_files(root = Dir.pwd)
+      files = Dir["#{root}/**/*"].reject { |file| FileTest.directory? file }
+
+      rb = []
+
+      rb << files.select { |file| File.extname(file) == '.rb' }
+      rb << files.select do |file|
+        File.extname(file) == '' &&
+        File.open(file) { |f| f.readline } =~ /#!.*ruby/
+      end
+
+      rb.flatten
     end
   end
 end
