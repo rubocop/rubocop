@@ -52,16 +52,26 @@ module Rubocop
           line.chomp
         end
 
-        tokens, sexp, correlations = CLI.rip_source(source)
+        syntax_cop = Rubocop::Cop::Syntax.new
+        syntax_cop.inspect(file, source, nil, nil)
 
-        cops.each do |cop_klass|
-          cop_config = config[cop_klass.name.split('::').last] if config
-          cop_klass.config = cop_config
-          cop = cop_klass.new
-          cop.correlations = correlations
-          cop.inspect(file, source, tokens, sexp)
-          total_offences += cop.offences.count
-          report << cop if cop.has_report?
+        if syntax_cop.offences.map(&:severity).include?(:error)
+          # In case of a syntax error we just report that error and do
+          # no more checking in the file.
+          report << syntax_cop
+          total_offences += syntax_cop.offences.count
+        else
+          tokens, sexp, correlations = CLI.rip_source(source)
+
+          cops.each do |cop_klass|
+            cop_config = config[cop_klass.name.split('::').last] if config
+            cop_klass.config = cop_config
+            cop = cop_klass.new
+            cop.correlations = correlations
+            cop.inspect(file, source, tokens, sexp)
+            total_offences += cop.offences.count
+            report << cop if cop.has_report?
+          end
         end
 
         report.display unless report.empty?
