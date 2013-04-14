@@ -76,6 +76,14 @@ analyzer a daunting task.
 RuboCop currently supports MRI 1.9 and MRI 2.0. Support for JRuby and
 Rubinius is not planned at this point.
 
+## Editor integration
+
+### Emacs
+
+[rubocop.el](https://github.com/bbatsov/rubocop-emacs) is a simple
+Emacs interface for RuboCop. It allows you to run RuboCop inside Emacs
+and quickly jump between problems in your code.
+
 ## Copyright
 
 Copyright (c) 2012-2013 Bozhidar Batsov. See [LICENSE.txt](LICENSE.txt) for
