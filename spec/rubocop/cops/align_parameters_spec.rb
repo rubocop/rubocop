@@ -9,7 +9,7 @@ module Rubocop
 
       it 'registers an offence for parameters with single indent' do
         inspect_source(align, 'file.rb', ['function(a,',
-                                         '  if b then c else d end)'])
+                                          '  if b then c else d end)'])
         expect(align.offences.map(&:message)).to eq(
           ['Align the parameters of a method call if they span more than ' +
            'one line.'])
@@ -17,7 +17,7 @@ module Rubocop
 
       it 'registers an offence for parameters with double indent' do
         inspect_source(align, 'file.rb', ['function(a,',
-                                         '    if b then c else d end)'])
+                                          '    if b then c else d end)'])
         expect(align.offences.map(&:message)).to eq(
           ['Align the parameters of a method call if they span more than ' +
            'one line.'])
@@ -25,9 +25,9 @@ module Rubocop
 
       it 'accepts correctly aligned parameters' do
         inspect_source(align, 'file.rb', ['function(a,',
-                                         '         0, 1,',
-                                         '         (x + y),',
-                                         '         if b then c else d end)'])
+                                          '         0, 1,',
+                                          '         (x + y),',
+                                          '         if b then c else d end)'])
         expect(align.offences.map(&:message)).to be_empty
       end
 
@@ -55,6 +55,15 @@ module Rubocop
                        ])
         expect(align.offences.map(&:to_s)).to eq(
           ['C:  5: Align the parameters of a method call if they span ' +
+           'more than one line.'])
+      end
+
+      it "doesn't get confused by extra comma at the end" do
+        inspect_source(align, '',
+                       ['func1(a,',
+                        '     b,)'])
+        expect(align.offences.map(&:to_s)).to eq(
+          ['C:  2: Align the parameters of a method call if they span ' +
            'more than one line.'])
       end
 

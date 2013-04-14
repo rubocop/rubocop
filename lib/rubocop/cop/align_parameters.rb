@@ -41,11 +41,12 @@ module Rubocop
         # means there's only one parameter.
         return nil if [:command, :command_call].include?(arg_paren[1][0][0])
 
-        args_add_block = arg_paren[1]
-        unless args_add_block[0] == :args_add_block
-          fail "\n#{@file}: #{method_add_arg}"
+        if arg_paren[1][0] == :args_add_block
+          args_add_block = arg_paren[1]
+          args_add_block[1].empty? ? [args_add_block[2]] : args_add_block[1]
+        else
+          arg_paren[1]
         end
-        args_add_block[1].empty? ? [args_add_block[2]] : args_add_block[1]
       end
 
       def divide_args(args)
