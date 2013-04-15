@@ -87,6 +87,11 @@ and quickly jump between problems in your code.
 [flycheck](https://github.com/lunaryorn/flycheck) > 0.9 also supports
 RuboCop and uses it by default when available.
 
+### Other Editors
+
+Here's one great opportunity to contribute to RuboCop - implement
+RuboCop integration for your favorite editor.
+
 ## Copyright
 
 Copyright (c) 2012-2013 Bozhidar Batsov. See [LICENSE.txt](LICENSE.txt) for
