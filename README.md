@@ -84,6 +84,9 @@ Rubinius is not planned at this point.
 Emacs interface for RuboCop. It allows you to run RuboCop inside Emacs
 and quickly jump between problems in your code.
 
+[flycheck](https://github.com/lunaryorn/flycheck) > 0.9 also supports
+RuboCop and uses it by default when available.
+
 ## Copyright
 
 Copyright (c) 2012-2013 Bozhidar Batsov. See [LICENSE.txt](LICENSE.txt) for
