@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+require 'fileutils'
 require 'spec_helper'
 
 module Rubocop
@@ -278,6 +279,26 @@ module Rubocop
           cop_class.name.split('::').last
         end
         expect(YAML.load_file('.rubocop.yml').keys.sort).to eq(cop_names.sort)
+      end
+
+      it 'finds a file with no .rb extension but has a shebang line' do
+        FileUtils::mkdir 'test'
+        File.open('test/example', 'w') do |f|
+          f.puts '#!/usr/bin/env ruby'
+          f.puts '# encoding: utf-8'
+          f.puts 'x = 0'
+          f.puts 'puts x'
+        end
+        begin
+          FileUtils::cd 'test' do
+            expect(cli.run([])).to eq(0)
+            expect($stdout.string.uncolored).to eq(
+              ['', '1 files inspected, 0 offences detected',
+               ''].join("\n"))
+          end
+        ensure
+          FileUtils::rm_rf 'test'
+        end
       end
     end
   end
