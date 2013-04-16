@@ -113,6 +113,10 @@ priority right now. Writing a new cop is a great way to dive into RuboCop!
 Of course, bug reports and suggestions for improvements are always
 welcome. GitHub pull requests are even better! :-)
 
+## Changelog
+
+RuboCop's changelog is available [here](CHANGELOG.md).
+
 ## Copyright
 
 Copyright (c) 2012-2013 Bozhidar Batsov. See [LICENSE.txt](LICENSE.txt) for
