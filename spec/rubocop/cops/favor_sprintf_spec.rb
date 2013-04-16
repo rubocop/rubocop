@@ -43,6 +43,8 @@ module Rubocop
                        ['puts x % Y'])
         expect(fs.offences).to be_empty
       end
+
+      it 'should work if the first operand contains embedded expressions'
     end
   end
 end
