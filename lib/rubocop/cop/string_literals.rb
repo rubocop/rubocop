@@ -19,11 +19,23 @@ module Rubocop
                   when [:double_quote, :on_embexpr_beg]
                     :embedded_expression
 
+                  when [:double_quote, :on_embvar]
+                    :embedded_variable
+
                   when [:double_quote, :on_tstring_end]
                     add_offence(:convention, t.pos.lineno, ERROR_MESSAGE)
                     :outside
 
                   when [:embedded_expression, :on_rbrace]
+                    :valid_double_quote
+
+                  when [:embedded_variable, :on_ivar]
+                    :valid_double_quote
+
+                  when [:embedded_variable, :on_cvar]
+                    :valid_double_quote
+
+                  when [:embedded_variable, :on_gvar]
                     :valid_double_quote
 
                   when [:valid_double_quote, :on_tstring_end]

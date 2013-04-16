@@ -17,7 +17,10 @@ module Rubocop
       it 'accepts double quotes when they are needed' do
         src = ['a = "\n"',
                'b = "#{encode_severity}:#{sprintf("%3d", line_number)}: #{m}"',
-               'c = "\'"']
+               'c = "\'"',
+               'd = "#@test"',
+               'e = "#$test"',
+               'f = "#@@test"']
         inspect_source(sl, 'file.rb', src)
         expect(sl.offences.map(&:message)).to be_empty
       end
