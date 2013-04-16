@@ -197,3 +197,7 @@ VariableInterpolation:
 # Don't use semicolons to terminate expressions.
 Semicolon:
   Enabled: true
+
+# Use sprintf instead of %
+FavorSprintf:
+  Enabled: true
