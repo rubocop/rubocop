@@ -29,7 +29,7 @@ module Rubocop
           if path.last == :brace_block
             rbrace_ix = @reverse_correlations[path.object_id] - [ix]
             if rbrace_ix.empty?
-              fail "\n#@file:#{t.pos.lineno}:#{t.pos.column}: " +
+              fail "\n#{@file}:#{t.pos.lineno}:#{t.pos.column}: " +
                 'Matching brace not found'
             end
             if tokens[*rbrace_ix].pos.lineno > t.pos.lineno
