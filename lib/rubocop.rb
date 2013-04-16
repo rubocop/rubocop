@@ -43,6 +43,7 @@ require 'rubocop/cop/avoid_perlisms'
 require 'rubocop/cop/avoid_perl_backrefs'
 require 'rubocop/cop/avoid_class_vars'
 require 'rubocop/cop/symbol_snake_case'
+require 'rubocop/cop/variable_interpolation'
 
 require 'rubocop/report/report'
 require 'rubocop/report/plain_text'
