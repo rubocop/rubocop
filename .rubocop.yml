@@ -193,3 +193,7 @@ SymbolSnakeCase:
 # Don't interpolate global, instance and class variables directly in strings.
 VariableInterpolation:
   Enabled: true
+
+# Don't use semicolons to terminate expressions.
+Semicolon:
+  Enabled: true
