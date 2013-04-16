@@ -26,7 +26,7 @@ module Rubocop
       end
 
       def to_s
-        "[[#{@pos.lineno}, #{@pos.column}], #@type, #{@text.inspect}]"
+        "[[#{@pos.lineno}, #{@pos.column}], #{@type}, #{@text.inspect}]"
       end
     end
 
