@@ -15,10 +15,12 @@ module Rubocop
           next unless matching?(operator, op1, op2)
 
           # FIXME implement reliable lineno extraction
+          # we either have some string literal
           if op1[0] == :string_literal
             lineno_struct = s[1][1][1][2]
             lineno = lineno_struct.lineno if lineno_struct.respond_to?(:lineno)
           else
+            # or some identifier
             lineno_struct = s[1][1][2]
             lineno = lineno_struct.lineno if lineno_struct.respond_to?(:lineno)
           end
