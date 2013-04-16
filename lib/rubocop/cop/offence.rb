@@ -14,7 +14,7 @@ module Rubocop
       end
 
       def to_s
-        "#{encode_severity}:%3d: #{message}" % [line_number]
+        sprintf("#{encode_severity}:%3d: #{message}", line_number)
       end
 
       def encode_severity

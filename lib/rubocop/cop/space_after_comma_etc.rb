@@ -9,7 +9,8 @@ module Rubocop
         tokens.each_index do |ix|
           t = tokens[ix]
           if kind(t) && !whitespace?(tokens[ix + 1])
-            add_offence(:convention, t.pos.lineno, ERROR_MESSAGE % kind(t))
+            add_offence(:convention, t.pos.lineno,
+                        sprintf(ERROR_MESSAGE, kind(t))
           end
         end
       end
