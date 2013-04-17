@@ -6,6 +6,8 @@
 
 ### Bugs fixed
 
+* [#62](https://github.com/bbatsov/rubocop/issues/62) - Config files in ancestor directories are ignored if another exists in home directory
+
 ## 0.5.0 (04/17/2013)
 
 ### New features
