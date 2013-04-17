@@ -201,3 +201,7 @@ Semicolon:
 # Use sprintf instead of %
 FavorSprintf:
   Enabled: true
+
+# Use alias_method instead of alias.
+Alias:
+  Enabled: true

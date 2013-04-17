@@ -46,6 +46,7 @@ require 'rubocop/cop/symbol_snake_case'
 require 'rubocop/cop/variable_interpolation'
 require 'rubocop/cop/semicolon'
 require 'rubocop/cop/favor_sprintf'
+require 'rubocop/cop/alias'
 
 require 'rubocop/report/report'
 require 'rubocop/report/plain_text'
