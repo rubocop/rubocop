@@ -18,6 +18,12 @@ module Rubocop
 
         expect(offence.to_s).to eq('C:  1: message')
       end
+
+      it 'does not blow up if a message contains %' do
+        offence = Offence.new(:convention, 1, 'message % test')
+
+        expect(offence.to_s).to eq('C:  1: message % test')
+      end
     end
   end
 end
