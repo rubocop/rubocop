@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 require 'fileutils'
+require 'tmpdir'
 require 'spec_helper'
 
 module Rubocop
@@ -232,6 +233,37 @@ module Rubocop
              ''].join("\n"))
         ensure
           FileUtils.rm_rf 'example'
+        end
+      end
+
+      it 'prefers a config file in ancestor directory to another in home' do
+        FileUtils.mkdir 'example_src'
+        File.open('example_src/example1.rb', 'w') do |f|
+          f.puts '# encoding: utf-8'
+          f.puts '#' * 90
+        end
+        File.open('example_src/.rubocop.yml', 'w') do |f|
+          f.puts('LineLength:',
+                 '  Enabled: true',
+                 '  Max: 100')
+        end
+        Dir.mktmpdir do |tmpdir|
+          @original_home = ENV['HOME']
+          ENV['HOME'] = tmpdir
+          File.open("#{Dir.home}/.rubocop.yml", 'w') do |f|
+            f.puts('LineLength:',
+                   '  Enabled: true',
+                   '  Max: 80')
+          end
+          begin
+            expect(cli.run(['example_src/example1.rb'])).to eq(0)
+            expect($stdout.string.uncolored).to eq(
+              ['', '1 files inspected, 0 offences detected',
+               ''].join("\n"))
+          ensure
+            FileUtils.rm_rf 'example_src'
+            ENV['HOME'] = @original_home
+          end
         end
       end
 
