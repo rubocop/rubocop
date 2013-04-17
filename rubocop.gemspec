@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = "rubocop"
-  s.version = "0.4.6"
+  s.version = "0.5.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Bozhidar Batsov"]
-  s.date = "2013-04-15"
+  s.date = "2013-04-17"
   s.description = "Automatic Ruby code style checking tool. Aims to enforce the community-driven Ruby Style Guide."
   s.email = "bozhidar@batsov.com"
   s.executables = ["rubocop"]
@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
     ".rspec",
     ".rubocop.yml",
     ".travis.yml",
+    "CHANGELOG.md",
     "CONTRIBUTING.md",
     "Gemfile",
     "Gemfile.lock",
@@ -32,6 +33,7 @@ Gem::Specification.new do |s|
     "bin/rubocop",
     "lib/rubocop.rb",
     "lib/rubocop/cli.rb",
+    "lib/rubocop/cop/alias.rb",
     "lib/rubocop/cop/align_parameters.rb",
     "lib/rubocop/cop/ampersands_pipes_vs_and_or.rb",
     "lib/rubocop/cop/avoid_class_vars.rb",
@@ -47,6 +49,7 @@ Gem::Specification.new do |s|
     "lib/rubocop/cop/encoding.rb",
     "lib/rubocop/cop/end_of_line.rb",
     "lib/rubocop/cop/favor_modifier.rb",
+    "lib/rubocop/cop/favor_sprintf.rb",
     "lib/rubocop/cop/favor_unless_over_negated_if.rb",
     "lib/rubocop/cop/grammar.rb",
     "lib/rubocop/cop/hash_syntax.rb",
@@ -59,6 +62,7 @@ Gem::Specification.new do |s|
     "lib/rubocop/cop/offence.rb",
     "lib/rubocop/cop/parameter_lists.rb",
     "lib/rubocop/cop/parentheses_around_condition.rb",
+    "lib/rubocop/cop/semicolon.rb",
     "lib/rubocop/cop/space_after_comma_etc.rb",
     "lib/rubocop/cop/string_literals.rb",
     "lib/rubocop/cop/surrounding_space.rb",
@@ -68,6 +72,7 @@ Gem::Specification.new do |s|
     "lib/rubocop/cop/ternary_operator.rb",
     "lib/rubocop/cop/trailing_whitespace.rb",
     "lib/rubocop/cop/unless_else.rb",
+    "lib/rubocop/cop/variable_interpolation.rb",
     "lib/rubocop/cop/when_then.rb",
     "lib/rubocop/report/emacs_style.rb",
     "lib/rubocop/report/plain_text.rb",
@@ -75,6 +80,7 @@ Gem::Specification.new do |s|
     "lib/rubocop/version.rb",
     "rubocop.gemspec",
     "spec/rubocop/cli_spec.rb",
+    "spec/rubocop/cops/alias_spec.rb",
     "spec/rubocop/cops/align_parameters_spec.rb",
     "spec/rubocop/cops/ampersands_pipes_vs_and_or_spec.rb",
     "spec/rubocop/cops/avoid_class_vars_spec.rb",
@@ -90,6 +96,7 @@ Gem::Specification.new do |s|
     "spec/rubocop/cops/encoding_spec.rb",
     "spec/rubocop/cops/end_of_line_spec.rb",
     "spec/rubocop/cops/favor_modifier_spec.rb",
+    "spec/rubocop/cops/favor_sprintf_spec.rb",
     "spec/rubocop/cops/favor_unless_over_negated_if_spec.rb",
     "spec/rubocop/cops/favor_until_over_negated_while_spec.rb",
     "spec/rubocop/cops/grammar_spec.rb",
@@ -106,6 +113,7 @@ Gem::Specification.new do |s|
     "spec/rubocop/cops/one_line_conditional_spec.rb",
     "spec/rubocop/cops/parameter_lists_spec.rb",
     "spec/rubocop/cops/parentheses_around_condition_spec.rb",
+    "spec/rubocop/cops/semicolon_spec.rb",
     "spec/rubocop/cops/single_line_blocks_spec.rb",
     "spec/rubocop/cops/space_after_colon_spec.rb",
     "spec/rubocop/cops/space_after_comma_spec.rb",
@@ -122,6 +130,7 @@ Gem::Specification.new do |s|
     "spec/rubocop/cops/ternary_operator_spec.rb",
     "spec/rubocop/cops/trailing_whitespace_spec.rb",
     "spec/rubocop/cops/unless_else_spec.rb",
+    "spec/rubocop/cops/variable_interpolation_spec.rb",
     "spec/rubocop/cops/when_then_spec.rb",
     "spec/rubocop/reports/emacs_style_spec.rb",
     "spec/rubocop/reports/report_spec.rb",
@@ -130,11 +139,11 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/bbatsov/rubocop"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.23"
+  s.rubygems_version = "2.0.3"
   s.summary = "Automatic Ruby code style checking tool."
 
   if s.respond_to? :specification_version then
-    s.specification_version = 3
+    s.specification_version = 4
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<term-ansicolor>, [">= 0"])
