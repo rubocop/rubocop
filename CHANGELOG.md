@@ -4,6 +4,12 @@
 
 ### New features
 
+### Bugs fixed
+
+## 0.5.0 (04/17/2013)
+
+### New features
+
 * New cop `FavorSprintf` that checks for usages of `String#%`
 * New cop `Semicolon` that checks for usages of `;` as expression separator
 * New cop `VariableInterpolation` that checks for variable interpolation in double quoted strings
