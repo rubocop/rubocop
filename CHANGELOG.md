@@ -13,3 +13,4 @@
 ### Bugs fixed
 
 * [#59](https://github.com/bbatsov/rubocop/issues/59) - Interpolated variables not enclosed in braces are not noticed
+* [#42][] - Received malformed format string ArgumentError from rubocop
