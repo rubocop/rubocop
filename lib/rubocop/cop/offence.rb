@@ -14,7 +14,9 @@ module Rubocop
       end
 
       def to_s
-        sprintf("#{encode_severity}:%3d: #{message}", line_number)
+        # we must be wary of messages containing % in them
+        sprintf("#{encode_severity}:%3d: #{message.gsub(/%/, '%%')}",
+                line_number)
       end
 
       def encode_severity
