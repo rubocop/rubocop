@@ -236,7 +236,7 @@ module Rubocop
       end
 
       it 'finds no violations when checking the rubocop source code' do
-        cli.run
+        cli.run([])
         expect($stdout.string.uncolored).to match(
           /files inspected, 0 offences detected\n/
         )
