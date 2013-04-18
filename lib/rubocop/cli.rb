@@ -116,7 +116,7 @@ module Rubocop
           path = File.join(dir, '.rubocop.yml')
           if File.exist?(path)
             @configs[target_file_dir] = YAML.load_file(path)
-            break
+            return @configs[target_file_dir]
           end
           dir = File.expand_path('..', dir)
         end
