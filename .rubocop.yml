@@ -209,3 +209,7 @@ Alias:
 # Avoid using rescue in its modifier form.
 RescueModifier:
   Enabled: true
+
+# Avoid the use of %q, %Q, %s and %x.
+PercentLiterals:
+  Enabled: true

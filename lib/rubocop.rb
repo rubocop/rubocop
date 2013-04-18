@@ -48,6 +48,7 @@ require 'rubocop/cop/semicolon'
 require 'rubocop/cop/favor_sprintf'
 require 'rubocop/cop/alias'
 require 'rubocop/cop/rescue_modifier'
+require 'rubocop/cop/percent_literals'
 
 require 'rubocop/report/report'
 require 'rubocop/report/plain_text'
