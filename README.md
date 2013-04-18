@@ -67,6 +67,30 @@ LineLength:
 It allows to enable/disable certain cops (checks) and to alter their
 behavior if they accept any parameters.
 
+One or more individual cops can be disabled locally in a section of a
+file by adding a comment such as
+
+```ruby
+# rubocop:disable LineLength, StringLiterals
+[...]
+# rubocop:enable LineLength, StringLiterals
+```
+
+You can also disable *all* cops with
+
+```ruby
+# rubocop:disable all
+[...]
+# rubocop:enable all
+```
+
+One or more cops can be disabled on a single line with an end-of-line
+comment.
+
+```ruby
+for x in (0..19) # rubocop:disable AvoidFor
+```
+
 ## Compatibility
 
 Unfortunately every major Ruby implementation has its own code
