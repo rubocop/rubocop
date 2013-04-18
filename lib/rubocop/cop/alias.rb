@@ -7,8 +7,11 @@ module Rubocop
 
       def inspect(file, source, tokens, sexp)
         each(:alias, sexp) do |s|
-          lineno = s[1][1][1][2].lineno
-
+          if s[1][1].count == 2
+            lineno = s[1][1][1][2].lineno
+          else
+            lineno = s[1][1][2].lineno
+          end
           add_offence(
             :convention,
             lineno,
