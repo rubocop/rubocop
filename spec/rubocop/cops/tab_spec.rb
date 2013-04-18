@@ -13,7 +13,7 @@ module Rubocop
       end
 
       it 'accepts a line with tab in a string' do
-        tab.inspect('file.rb', [%Q(x = "\t")], nil, nil)
+        tab.inspect('file.rb', ["(x = \"\t\")"], nil, nil)
         expect(tab.offences).to be_empty
       end
     end

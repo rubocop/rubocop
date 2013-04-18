@@ -189,3 +189,31 @@ AvoidClassVars:
 # Symbol literals should use snake_case.
 SymbolSnakeCase:
   Enabled: true
+
+# Don't interpolate global, instance and class variables directly in strings.
+VariableInterpolation:
+  Enabled: true
+
+# Don't use semicolons to terminate expressions.
+Semicolon:
+  Enabled: true
+
+# Use sprintf instead of %
+FavorSprintf:
+  Enabled: true
+
+# Use alias_method instead of alias.
+Alias:
+  Enabled: true
+
+# Avoid using rescue in its modifier form.
+RescueModifier:
+  Enabled: true
+
+# Avoid the use of %q, %Q, %s and %x.
+PercentLiterals:
+  Enabled: true
+
+# Prefer () as delimiters for all % literals.
+BraceAfterPercent:
+  Enabled: true

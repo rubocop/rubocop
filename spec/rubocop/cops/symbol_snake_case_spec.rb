@@ -17,39 +17,51 @@ module Rubocop
       it 'accepts snake case in names' do
         inspect_source(snake_case, 'file.rb',
                        ['test = :good_idea'])
-        expect(snake_case.offences.map(&:message)).to be_empty
+        expect(snake_case.offences).to be_empty
       end
 
       it 'accepts snake case with a prefix @ in names' do
         inspect_source(snake_case, 'file.rb',
                        ['test = :@good_idea'])
-        expect(snake_case.offences.map(&:message)).to be_empty
+        expect(snake_case.offences).to be_empty
       end
 
       it 'accepts snake case with ? suffix' do
         inspect_source(snake_case, 'file.rb',
                        ['test = :good_idea?'])
-        expect(snake_case.offences.map(&:message)).to be_empty
+        expect(snake_case.offences).to be_empty
       end
 
       it 'accepts snake case with ! suffix' do
         inspect_source(snake_case, 'file.rb',
                        ['test = :good_idea!'])
-        expect(snake_case.offences.map(&:message)).to be_empty
+        expect(snake_case.offences).to be_empty
       end
 
       it 'accepts snake case with = suffix' do
         inspect_source(snake_case, 'file.rb',
                        ['test = :good_idea='])
-        expect(snake_case.offences.map(&:message)).to be_empty
+        expect(snake_case.offences).to be_empty
       end
 
       it 'accepts special cases - !, [] and **' do
         inspect_source(snake_case, 'file.rb',
                        ['test = :**',
                         'test = :!',
-                        'test = :[]'])
-        expect(snake_case.offences.map(&:message)).to be_empty
+                        'test = :[]',
+                        'test = :[]='])
+        expect(snake_case.offences).to be_empty
+      end
+
+      it 'accepts special cases - ==, <=>, >, <, >=, <=' do
+        inspect_source(snake_case, 'file.rb',
+                       ['test = :==',
+                        'test = :<=>',
+                        'test = :>',
+                        'test = :<',
+                        'test = :>=',
+                        'test = :<='])
+        expect(snake_case.offences).to be_empty
       end
 
       it 'registers an offence for SCREAMING_SNAKE_CASE' do

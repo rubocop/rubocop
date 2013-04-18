@@ -26,7 +26,7 @@ module Rubocop
       end
 
       def to_s
-        "[[#{@pos.lineno}, #{@pos.column}], #@type, #{@text.inspect}]"
+        "[[#{@pos.lineno}, #{@pos.column}], #{@type}, #{@text.inspect}]"
       end
     end
 
@@ -83,6 +83,16 @@ module Rubocop
         sexp.each do |elem|
           each(sym, elem) { |s| yield s } if Array === elem
         end
+      end
+
+      def find_all(sym, sexp)
+        result = []
+        each(sym, sexp) { |s| result << s }
+        result
+      end
+
+      def find_first(sym, sexp)
+        find_all(sym, sexp).first
       end
 
       def whitespace?(token)

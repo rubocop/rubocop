@@ -84,6 +84,39 @@ Rubinius is not planned at this point.
 Emacs interface for RuboCop. It allows you to run RuboCop inside Emacs
 and quickly jump between problems in your code.
 
+[flycheck](https://github.com/lunaryorn/flycheck) > 0.9 also supports
+RuboCop and uses it by default when available.
+
+### Other Editors
+
+Here's one great opportunity to contribute to RuboCop - implement
+RuboCop integration for your favorite editor.
+
+## Contributors
+
+Here's a [list](https://github.com/bbatsov/rubocop/contributors) of
+all the people who have contributed to the development of RuboCop.
+
+I'm extremely grateful to each and every one of them!
+
+I'd like to single out [Jonas Arvidsson](https://github.com/jonas054)
+for his many excellent code contributions as well as valuable feedback
+and ideas!
+
+If you'd like to contribute to RuboCop, please take the time to go
+through our short
+[contribution guidelines](CONTRIBUTING.md).
+
+Converting more of the Ruby Style Guide into RuboCop cops is our top
+priority right now. Writing a new cop is a great way to dive into RuboCop!
+
+Of course, bug reports and suggestions for improvements are always
+welcome. GitHub pull requests are even better! :-)
+
+## Changelog
+
+RuboCop's changelog is available [here](CHANGELOG.md).
+
 ## Copyright
 
 Copyright (c) 2012-2013 Bozhidar Batsov. See [LICENSE.txt](LICENSE.txt) for

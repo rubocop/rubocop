@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'fileutils'
+require 'tmpdir'
 require 'spec_helper'
 
 module Rubocop
@@ -234,8 +236,41 @@ module Rubocop
         end
       end
 
+      it 'prefers a config file in ancestor directory to another in home' do
+        FileUtils.mkdir 'example_src'
+        File.open('example_src/example1.rb', 'w') do |f|
+          f.puts '# encoding: utf-8'
+          f.puts '#' * 90
+        end
+        File.open('example_src/.rubocop.yml', 'w') do |f|
+          f.puts('LineLength:',
+                 '  Enabled: true',
+                 '  Max: 100')
+        end
+        Dir.mktmpdir do |tmpdir|
+          @original_home = ENV['HOME']
+          ENV['HOME'] = tmpdir
+          File.open("#{Dir.home}/.rubocop.yml", 'w') do |f|
+            f.puts('LineLength:',
+                   '  Enabled: true',
+                   '  Max: 80')
+          end
+          begin
+            expect(cli.run(['example_src/example1.rb'])).to eq(0)
+            expect($stdout.string.uncolored).to eq(
+              ['', '1 files inspected, 0 offences detected',
+               ''].join("\n"))
+          ensure
+            FileUtils.rm_rf 'example_src'
+            ENV['HOME'] = @original_home
+          end
+        end
+      end
+
       it 'finds no violations when checking the rubocop source code' do
-        cli.run
+        # Need to pass an empty array explicitly
+        # so that the CLI does not refer arguments of `rspec`
+        cli.run([])
         expect($stdout.string.uncolored).to match(
           /files inspected, 0 offences detected\n/
         )
@@ -326,6 +361,28 @@ module Rubocop
              ''].join("\n"))
         ensure
           File.delete 'example.rb'
+        end
+      end
+
+      it 'finds a file with no .rb extension but has a shebang line' do
+        FileUtils::mkdir 'test'
+        File.open('test/example', 'w') do |f|
+          f.puts '#!/usr/bin/env ruby'
+          f.puts '# encoding: utf-8'
+          f.puts 'x = 0'
+          f.puts 'puts x'
+        end
+        begin
+          FileUtils::cd 'test' do
+            # Need to pass an empty array explicitly
+            # so that the CLI does not refer arguments of `rspec`
+            expect(cli.run([])).to eq(0)
+            expect($stdout.string.uncolored).to eq(
+              ['', '1 files inspected, 0 offences detected',
+               ''].join("\n"))
+          end
+        ensure
+          FileUtils::rm_rf 'test'
         end
       end
     end
