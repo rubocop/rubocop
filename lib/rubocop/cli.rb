@@ -59,13 +59,16 @@ module Rubocop
         else
           tokens, sexp, correlations = CLI.rip_source(source)
           config = $options[:config] || config_from_dotfile(File.dirname(file))
+          disabled_lines = disabled_lines_in(source)
 
           cops.each do |cop_klass|
-            cop_config = config[cop_klass.name.split('::').last] if config
+            cop_name = cop_klass.name.split('::').last
+            cop_config = config[cop_name] if config
             if cop_config.nil? || cop_config['Enabled']
               cop_klass.config = cop_config
               cop = cop_klass.new
               cop.correlations = correlations
+              cop.disabled_lines = disabled_lines[cop_name]
               cop.inspect(file, source, tokens, sexp)
               total_offences += cop.offences.count
               report << cop if cop.has_report?
@@ -83,6 +86,36 @@ module Rubocop
       end
 
       return total_offences == 0 ? 0 : 1
+    end
+
+    def disabled_lines_in(source)
+      disabled_lines = Hash.new([])
+      disabled_section = {}
+      regexp = '# rubocop : (%s)\b ((?:\w+,? )+)'.gsub(' ', '\s*')
+      section_regexp = '^\s*' + regexp % ['(?:dis|en)able']
+      single_line_regexp = '\S.*' + regexp % ['disable']
+
+      source.each_with_index do |line, ix|
+        each_mentioned_cop(/#{section_regexp}/, line) do |cop_name, kind|
+          disabled_section[cop_name] = (kind == 'disable')
+        end
+        disabled_section.keys.each do |cop_name|
+          disabled_lines[cop_name] += [ix + 1] if disabled_section[cop_name]
+        end
+
+        each_mentioned_cop(/#{single_line_regexp}/, line) do |cop_name, kind|
+          disabled_lines[cop_name] += [ix + 1] if kind == 'disable'
+        end
+      end
+      disabled_lines
+    end
+
+    def each_mentioned_cop(regexp, line)
+      match = line.match(regexp)
+      if match
+        kind, cops = match.captures
+        cops.split(/,\s*/).each { |cop_name| yield cop_name, kind }
+      end
     end
 
     def get_rid_of_invalid_byte_sequences(line)

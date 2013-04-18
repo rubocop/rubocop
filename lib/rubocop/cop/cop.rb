@@ -32,7 +32,7 @@ module Rubocop
 
     class Cop
       attr_accessor :offences
-      attr_writer :correlations
+      attr_writer :correlations, :disabled_lines
 
       @all = []
       @config = {}
@@ -55,7 +55,9 @@ module Rubocop
       end
 
       def add_offence(severity, line_number, message)
-        @offences << Offence.new(severity, line_number, message)
+        unless @disabled_lines && @disabled_lines.include?(line_number)
+          @offences << Offence.new(severity, line_number, message)
+        end
       end
 
       private

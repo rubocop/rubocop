@@ -279,6 +279,55 @@ module Rubocop
         end
         expect(YAML.load_file('.rubocop.yml').keys.sort).to eq(cop_names.sort)
       end
+
+      it 'can have configuration overridden in a code section' do
+        File.open('example.rb', 'w') do |f|
+          f.puts '# encoding: utf-8'
+          f.puts '# rubocop:disable LineLength,NumericLiterals,StringLiterals'
+          f.puts '#' * 90
+          f.puts 'x(123456)'
+          f.puts 'y("123")'
+          f.puts 'def func'
+          f.puts '  # rubocop: enable LineLength, StringLiterals'
+          f.puts '  ' + '#' * 93
+          f.puts '  x(123456)'
+          f.puts '  y("123")'
+          f.puts 'end'
+        end
+        begin
+          expect(cli.run(['--emacs', 'example.rb'])).to eq(1)
+          # 3 cops were disabled, then 2 were enabled again, so we
+          # should get 2 offences reported.
+          expect($stdout.string.uncolored).to eq(
+            ['example.rb:8: C: Line is too long. [95/79]',
+             "example.rb:10: C: Prefer single-quoted strings when you don't " +
+             'need string interpolation or special symbols.',
+             '',
+             '1 files inspected, 2 offences detected',
+             ''].join("\n"))
+        ensure
+          File.delete 'example.rb'
+        end
+      end
+
+      it 'can have configuration overridden on a single line' do
+        File.open('example.rb', 'w') do |f|
+          f.puts '# encoding: utf-8'
+          f.puts '#' * 90 + ' # rubocop:disable LineLength'
+          f.puts '#' * 95
+          f.puts 'y("123") # rubocop:disable LineLength,StringLiterals'
+        end
+        begin
+          expect(cli.run(['--emacs', 'example.rb'])).to eq(1)
+          expect($stdout.string.uncolored).to eq(
+            ['example.rb:3: C: Line is too long. [95/79]',
+             '',
+             '1 files inspected, 1 offences detected',
+             ''].join("\n"))
+        ensure
+          File.delete 'example.rb'
+        end
+      end
     end
   end
 end
