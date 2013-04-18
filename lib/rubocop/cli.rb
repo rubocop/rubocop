@@ -182,14 +182,21 @@ module Rubocop
         begin
           File.open(file) { |f| f.readline } =~ /#!.*ruby/
         rescue EOFError, ArgumentError => e
-          if $options[:debug]
-            STDERR.puts "Unprocessable file: #{file.inspect}, #{e.class}, #{e.message}"
-          end
+          log_error("Unprocessable file #{file.inspect}: ", e)
           false
         end
       end
 
       rb.flatten
+    end
+
+    private
+
+    def log_error(e, msg='')
+      if $options[:debug]
+        error_message = "#{e.class}, #{e.message}"
+        STDERR.puts "#{msg}\t#{error_message}"
+      end
     end
   end
 end
