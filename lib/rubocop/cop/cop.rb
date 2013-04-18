@@ -83,6 +83,16 @@ module Rubocop
         end
       end
 
+      def find_all(sym, sexp)
+        result = []
+        each(sym, sexp) { |s| result << s }
+        result
+      end
+
+      def find_first(sym, sexp)
+        find_all(sym, sexp).first
+      end
+
       def whitespace?(token)
         [:on_sp, :on_ignored_nl, :on_nl].include?(token.type)
       end
