@@ -5,14 +5,14 @@ module Rubocop
     class SymbolSnakeCase < Cop
       ERROR_MESSAGE = 'Use snake_case for symbols.'
       SNAKE_CASE = /^@?[\da-z_]+[!?=]?$/
-      OPERATORS = %w(! + - % * ** [] == <=> > < >= <=)
-
       def inspect(file, source, tokens, sexp)
         each(:symbol_literal, sexp) do |s|
-          symbol_ident = s[1][1][1]
+          symbol_type = s[1][1][0]
 
-          # handle a couple of special cases
-          next if OPERATORS.include?(symbol_ident)
+          # don't check operators
+          next if symbol_type == :@op
+
+          symbol_ident = s[1][1][1]
 
           unless symbol_ident =~ SNAKE_CASE
             line_no = s[1][1][2].lineno

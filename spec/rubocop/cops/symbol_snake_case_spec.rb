@@ -48,7 +48,8 @@ module Rubocop
         inspect_source(snake_case, 'file.rb',
                        ['test = :**',
                         'test = :!',
-                        'test = :[]'])
+                        'test = :[]',
+                        'test = :[]='])
         expect(snake_case.offences.map(&:message)).to be_empty
       end
 
