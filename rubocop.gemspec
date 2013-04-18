@@ -32,9 +32,9 @@ Gem::Specification.new do |s|
     "VERSION",
     "bin/rubocop",
     "rubocop.gemspec"] +
-    Dir['lib/**/*.rb'] +
-    Dir['spec/**/*.rb']
+    Dir['lib/**/*.rb']
 
+  s.test_files = Dir['spec/**/*.rb']
   s.homepage = "http://github.com/bbatsov/rubocop"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
