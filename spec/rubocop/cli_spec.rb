@@ -268,7 +268,9 @@ module Rubocop
       end
 
       it 'finds no violations when checking the rubocop source code' do
-        cli.run
+        # Need to pass an empty array explicitly
+        # so that the CLI does not refer arguments of `rspec`
+        cli.run([])
         expect($stdout.string.uncolored).to match(
           /files inspected, 0 offences detected\n/
         )
@@ -323,6 +325,8 @@ module Rubocop
         end
         begin
           FileUtils::cd 'test' do
+            # Need to pass an empty array explicitly
+            # so that the CLI does not refer arguments of `rspec`
             expect(cli.run([])).to eq(0)
             expect($stdout.string.uncolored).to eq(
               ['', '1 files inspected, 0 offences detected',
