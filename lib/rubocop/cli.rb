@@ -97,17 +97,31 @@ module Rubocop
 
       source.each_with_index do |line, ix|
         each_mentioned_cop(/#{section_regexp}/, line) do |cop_name, kind|
-          disabled_section[cop_name] = (kind == 'disable')
+          if cop_name == 'all'
+            each_cop_name { |c| disabled_section[c] = (kind == 'disable') }
+          else
+            disabled_section[cop_name] = (kind == 'disable')
+          end
         end
         disabled_section.keys.each do |cop_name|
           disabled_lines[cop_name] += [ix + 1] if disabled_section[cop_name]
         end
 
         each_mentioned_cop(/#{single_line_regexp}/, line) do |cop_name, kind|
-          disabled_lines[cop_name] += [ix + 1] if kind == 'disable'
+          if cop_name == 'all'
+            each_cop_name do |c|
+              disabled_lines[c] += [ix + 1] if kind == 'disable'
+            end
+          else
+            disabled_lines[cop_name] += [ix + 1] if kind == 'disable'
+          end
         end
       end
       disabled_lines
+    end
+
+    def each_cop_name
+      Cop::Cop.all.each { |cop_class| yield cop_class.name.split('::').last }
     end
 
     def each_mentioned_cop(regexp, line)
