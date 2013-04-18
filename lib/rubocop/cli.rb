@@ -179,7 +179,14 @@ module Rubocop
       rb << files.select { |file| File.extname(file) == '.rb' }
       rb << files.select do |file|
         File.extname(file) == '' &&
-        File.open(file) { |f| f.readline } =~ /#!.*ruby/
+        begin
+          File.open(file) { |f| f.readline } =~ /#!.*ruby/
+        rescue EOFError, ArgumentError => e
+          if $options[:debug]
+            STDERR.puts "Unprocessable file: #{file.inspect}, #{e.class}, #{e.message}"
+          end
+          false
+        end
       end
 
       rb.flatten
