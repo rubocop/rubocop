@@ -213,3 +213,7 @@ RescueModifier:
 # Avoid the use of %q, %Q, %s and %x.
 PercentLiterals:
   Enabled: true
+
+# Prefer () as delimiters for all % literals.
+BraceAfterPercent:
+  Enabled: true
