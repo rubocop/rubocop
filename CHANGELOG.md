@@ -4,6 +4,8 @@
 
 ### New features
 
+* New cop `RescueModifier` tracks uses of `rescue` in modifier form
+
 ### Bugs fixed
 
 * [#62](https://github.com/bbatsov/rubocop/issues/62) - Config files in ancestor directories are ignored if another exists in home directory
