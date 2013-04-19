@@ -225,3 +225,7 @@ EnsureReturn:
 # Don't suppress exception.
 HandleExceptions:
   Enabled: true
+
+# Use only ascii symbols in identifiers and comments.
+AsciiIdentifiersAndComments:
+  Enabled: true
