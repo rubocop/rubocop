@@ -10,6 +10,7 @@
 * Support for disabling cops locally in a file with rubocop:disable comments.
 * New cop `EnsureReturn` tracks usages of `return` in `ensure` blocks.
 * New cop `HandleExceptions` tracks suppressed exceptions
+* New cop `AsciiIdentifiersAndComments` tracks uses of non-ascii characters in identifiers and comments.
 
 ### Bugs fixed
 
