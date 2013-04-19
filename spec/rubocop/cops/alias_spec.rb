@@ -7,10 +7,19 @@ module Rubocop
     describe Alias do
       let(:a) { Alias.new }
 
-      it 'registers an offence for alias' do
+      it 'registers an offence for alias with symbol args' do
         inspect_source(a,
                        'file.rb',
                        ['alias :ala :bala'])
+        expect(a.offences.size).to eq(1)
+        expect(a.offences.map(&:message))
+          .to eq([Alias::ERROR_MESSAGE])
+      end
+
+      it 'registers an offence for alias with bareword args' do
+        inspect_source(a,
+                       'file.rb',
+                       ['alias ala bala'])
         expect(a.offences.size).to eq(1)
         expect(a.offences.map(&:message))
           .to eq([Alias::ERROR_MESSAGE])

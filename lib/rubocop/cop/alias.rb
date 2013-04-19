@@ -7,7 +7,13 @@ module Rubocop
 
       def inspect(file, source, tokens, sexp)
         each(:alias, sexp) do |s|
-          lineno = s[1][1][1][2].lineno
+          if s[1][1][0] == :symbol
+            # alias :full_name :name
+            lineno = s[1][1][1][2].lineno
+          else
+            # alias full_name name
+            lineno = s[1][1][2].lineno
+          end
 
           add_offence(
             :convention,
