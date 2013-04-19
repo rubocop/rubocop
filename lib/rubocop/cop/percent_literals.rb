@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class PercentLiterals < Cop
-      ERROR_MESSAGE = 'The use of %s is discouraged'
+      ERROR_MESSAGE = 'The use of %s is discouraged.'
       BAD_LITERALS = {
         on_tstring_beg: '%q',
         on_symbeg: '%s',

@@ -13,7 +13,7 @@ module Rubocop
                        ['puts %q(test)'])
         expect(pl.offences.size).to eq(1)
         expect(pl.offences.map(&:message))
-          .to eq(['The use of %q is discouraged'])
+          .to eq(['The use of %q is discouraged.'])
       end
 
       it 'registers an offence for %Q' do
@@ -22,7 +22,7 @@ module Rubocop
                        ['puts %Q(test)'])
         expect(pl.offences.size).to eq(1)
         expect(pl.offences.map(&:message))
-          .to eq(['The use of %Q is discouraged'])
+          .to eq(['The use of %Q is discouraged.'])
       end
 
       it 'registers an offence for %x' do
@@ -31,7 +31,7 @@ module Rubocop
                        ['puts %x(test)'])
         expect(pl.offences.size).to eq(1)
         expect(pl.offences.map(&:message))
-          .to eq(['The use of %x is discouraged'])
+          .to eq(['The use of %x is discouraged.'])
       end
 
       it 'registers an offence for %s' do
@@ -40,7 +40,7 @@ module Rubocop
                        ['puts %s(test)'])
         expect(pl.offences.size).to eq(1)
         expect(pl.offences.map(&:message))
-          .to eq(['The use of %s is discouraged'])
+          .to eq(['The use of %s is discouraged.'])
       end
     end
   end
