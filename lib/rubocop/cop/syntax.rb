@@ -6,14 +6,18 @@ module Rubocop
   module Cop
     class Syntax < Cop
       def inspect(file, source, tokens, sexp)
-        _, stderr, _ =
-          Open3.capture3('ruby -wc', stdin_data: source.join("\n"))
+        # TODO Investigate why Bundler is causing the
+        # interpreter to start extremely slow
+        unless defined? Bundler
+          _, stderr, _ =
+            Open3.capture3('ruby -wc', stdin_data: source.join("\n"))
 
-        stderr.each_line do |line|
-          # discard lines that are not containing relevant info
-          if line =~ /.+:(\d+): (.+)/
-            line_no, severity, message = process_line(line)
-            add_offence(severity, line_no, message)
+          stderr.each_line do |line|
+            # discard lines that are not containing relevant info
+            if line =~ /.+:(\d+): (.+)/
+              line_no, severity, message = process_line(line)
+              add_offence(severity, line_no, message)
+            end
           end
         end
       end
