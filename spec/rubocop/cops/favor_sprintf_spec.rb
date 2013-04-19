@@ -44,7 +44,14 @@ module Rubocop
         expect(fs.offences).to be_empty
       end
 
-      it 'should work if the first operand contains embedded expressions'
+      it 'works if the first operand contains embedded expressions' do
+        inspect_source(fs,
+                       'file.rb',
+                       ['puts "#{x * 5} %d #{@test}" % 10'])
+        expect(fs.offences.size).to eq(1)
+        expect(fs.offences.map(&:message))
+          .to eq([FavorSprintf::ERROR_MESSAGE])
+      end
     end
   end
 end
