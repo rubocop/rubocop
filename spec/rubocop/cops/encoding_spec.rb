@@ -11,7 +11,7 @@ module Rubocop
         inspect_source(encoding, 'file.rb', ['def foo() end'])
 
         expect(encoding.offences.map(&:message)).to eq(
-          ['Missing encoding comment.'])
+          ['Missing utf-8 encoding comment.'])
       end
 
       it 'accepts encoding on first line', ruby: 1.9 do
@@ -34,7 +34,7 @@ module Rubocop
                                              '# encoding: utf-8'])
 
         expect(encoding.offences.map(&:message)).to eq(
-          ['Missing encoding comment.'])
+          ['Missing utf-8 encoding comment.'])
       end
 
       it 'does not register an offence on Ruby 2.0', ruby: 2.0 do

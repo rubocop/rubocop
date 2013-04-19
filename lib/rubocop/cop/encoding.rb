@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class Encoding < Cop
-      ERROR_MESSAGE = 'Missing encoding comment.'
+      ERROR_MESSAGE = 'Missing utf-8 encoding comment.'
 
       def inspect(file, source, tokens, sexp)
         unless RUBY_VERSION >= '2.0.0'
