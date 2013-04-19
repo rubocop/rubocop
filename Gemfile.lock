@@ -2,17 +2,8 @@ GEM
   remote: http://rubygems.org/
   specs:
     diff-lcs (1.2.3)
-    git (1.2.5)
-    jeweler (1.8.4)
-      bundler (~> 1.0)
-      git (>= 1.2.5)
-      rake
-      rdoc
-    json (1.7.7)
     multi_json (1.7.2)
     rake (10.0.4)
-    rdoc (4.0.1)
-      json (~> 1.4)
     rspec (2.13.0)
       rspec-core (~> 2.13.0)
       rspec-expectations (~> 2.13.0)
@@ -33,7 +24,6 @@ PLATFORMS
 
 DEPENDENCIES
   bundler
-  jeweler
   rake
   rspec
   simplecov
