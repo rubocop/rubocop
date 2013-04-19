@@ -9,6 +9,7 @@
 * New cop `BraceAfterPercent` tracks uses of % literals with delimiters other than ()
 * Support for disabling cops locally in a file with rubocop:disable comments.
 * New cop `EnsureReturn` tracks usages of `return` in `ensure` blocks.
+* New cop `HandleExceptions` tracks suppressed exceptions
 
 ### Bugs fixed
 
