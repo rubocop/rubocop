@@ -217,3 +217,7 @@ PercentLiterals:
 # Prefer () as delimiters for all % literals.
 BraceAfterPercent:
   Enabled: true
+
+# Never use return in an ensure block.
+EnsureReturn:
+  Enabled: true
