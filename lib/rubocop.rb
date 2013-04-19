@@ -51,6 +51,7 @@ require 'rubocop/cop/rescue_modifier'
 require 'rubocop/cop/percent_literals'
 require 'rubocop/cop/brace_after_percent'
 require 'rubocop/cop/ensure_return'
+require 'rubocop/cop/handle_exceptions'
 
 require 'rubocop/report/report'
 require 'rubocop/report/plain_text'

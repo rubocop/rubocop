@@ -221,3 +221,7 @@ BraceAfterPercent:
 # Never use return in an ensure block.
 EnsureReturn:
   Enabled: true
+
+# Don't suppress exception.
+HandleExceptions:
+  Enabled: true
