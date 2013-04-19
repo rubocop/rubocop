@@ -15,6 +15,7 @@
 * [#65](https://github.com/bbatsov/rubocop/issues/65) - Suggests to convert symbols :==, :<=> and the like to snake_case
 * [#66](https://github.com/bbatsov/rubocop/issues/66) - Does not crash on unreadable or unparseable files
 * [#70](https://github.com/bbatsov/rubocop/issues/70) - Support `alias` with bareword arguments
+* [#64](https://github.com/bbatsov/rubocop/issues/64) - Performance issue with Bundler
 
 ## 0.5.0 (04/17/2013)
 
