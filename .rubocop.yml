@@ -10,6 +10,11 @@ LineLength:
   Enabled: true
   Max: 79
 
+# Avoid methods longer than 10 lines of code 
+MethodLength:
+  Enabled: true
+  Max: 65
+
 # No hard tabs.
 Tab:
   Enabled: true

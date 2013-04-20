@@ -56,6 +56,7 @@ require 'rubocop/cop/rescue_exception'
 require 'rubocop/cop/ascii_identifiers_and_comments'
 require 'rubocop/cop/hash_literal'
 require 'rubocop/cop/array_literal'
+require 'rubocop/cop/method_length'
 
 require 'rubocop/report/report'
 require 'rubocop/report/plain_text'
