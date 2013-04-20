@@ -58,6 +58,7 @@ require 'rubocop/cop/hash_literal'
 require 'rubocop/cop/array_literal'
 require 'rubocop/cop/method_length'
 require 'rubocop/cop/op_method'
+require 'rubocop/cop/reduce_arguments'
 
 require 'rubocop/report/report'
 require 'rubocop/report/plain_text'
