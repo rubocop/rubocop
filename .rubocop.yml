@@ -229,3 +229,7 @@ HandleExceptions:
 # Use only ascii symbols in identifiers and comments.
 AsciiIdentifiersAndComments:
   Enabled: true
+
+# Avoid rescuing the Exception class.
+RescueException:
+  Enabled: true
