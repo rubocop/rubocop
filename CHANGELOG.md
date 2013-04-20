@@ -23,6 +23,11 @@
 * [#70](https://github.com/bbatsov/rubocop/issues/70) - Support `alias` with bareword arguments
 * [#64](https://github.com/bbatsov/rubocop/issues/64) - Performance issue with Bundler
 
+### Misc
+
+* Dropped Jeweler for gem release management since it's no longer
+  actively maintained.
+
 ## 0.5.0 (04/17/2013)
 
 ### New features
