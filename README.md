@@ -3,6 +3,9 @@
 
 # RuboCop
 
+> Role models are important. <br/>
+> -- Officer Alex J. Murphy / RoboCop
+
 **RuboCop** is a Ruby code style checker based on the
 [Ruby Style Guide](https://github.com/bbatsov/ruby-style-guide).
 
