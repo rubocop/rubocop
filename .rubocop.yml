@@ -233,3 +233,11 @@ AsciiIdentifiersAndComments:
 # Avoid rescuing the Exception class.
 RescueException:
   Enabled: true
+
+# Prefer array literal to Array.new.
+ArrayLiteral:
+  Enabled: true
+
+# Prefer hash {} literail to Hash.new.
+HashLiteral:
+  Enabled: true
