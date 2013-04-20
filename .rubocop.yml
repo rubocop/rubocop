@@ -229,3 +229,7 @@ HandleExceptions:
 # Use only ascii symbols in identifiers and comments.
 AsciiIdentifiersAndComments:
   Enabled: true
+
+# Prefer %w to the literal array syntax when you need an array of strings.
+AvoidLiteralStringArray:
+  Enabled: true
