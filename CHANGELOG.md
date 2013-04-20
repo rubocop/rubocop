@@ -17,6 +17,7 @@
 * New cop `RescueException` tracks uses of rescuing the `Exception` class.
 * New cop `ArrayLiteral` tracks uses of Array.new.
 * New cop `HashLiteral` tracks uses of Hash.new.
+* New cop `OpMethod` tracks the argument name in operator methods.
 
 ### Bugs fixed
 

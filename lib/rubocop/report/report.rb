@@ -26,11 +26,13 @@ module Rubocop
 
       # Appends offences registered by cops to the report.
       # @param [Cop] a cop with something to report
+      # rubocop:disable OpMethod
       def <<(cop)
         cop.offences.each do |entry|
           @entries << entry
         end
       end
+      # rubocop:enable OpMethod
 
       def entries
         @entries.sort_by(&:line_number)

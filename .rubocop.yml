@@ -246,3 +246,7 @@ ArrayLiteral:
 # Prefer hash {} literail to Hash.new.
 HashLiteral:
   Enabled: true
+
+# When defining binary operators, name the argument other.
+OpMethod:
+  Enabled: true
