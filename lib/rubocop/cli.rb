@@ -80,12 +80,23 @@ module Rubocop
       end
 
       unless $options[:silent]
-        print "\n#{target_files(args).count} files inspected, "
-        puts "#{total_offences} offences detected"
-          .send(total_offences.zero? ? :green : :red)
+        display_summary(target_files(args).count, total_offences)
       end
 
       return total_offences == 0 ? 0 : 1
+    end
+
+    def display_summary(num_files, total_offences)
+      print "\n#{num_files} file#{num_files > 1 ? 's' : ''} inspected, "
+      offences_string = if total_offences.zero?
+                          'no offences'
+                        elsif total_offences == 1
+                          '1 offence'
+                        else
+                          "#{total_offences} offences"
+                        end
+      puts "#{offences_string} detected"
+        .send(total_offences.zero? ? :green : :red)
     end
 
     def disabled_lines_in(source)

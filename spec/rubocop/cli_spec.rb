@@ -38,7 +38,7 @@ module Rubocop
         begin
           expect(cli.run(['example.rb'])).to eq(0)
           expect($stdout.string.uncolored)
-            .to eq("\n1 files inspected, 0 offences detected\n")
+            .to eq("\n1 file inspected, no offences detected\n")
         ensure
           File.delete 'example.rb'
         end
@@ -56,7 +56,7 @@ module Rubocop
             .to eq ['== example.rb ==',
                     'C:  2: Trailing whitespace detected.',
                     '',
-                    '1 files inspected, 1 offences detected',
+                    '1 file inspected, 1 offence detected',
                     ''].join("\n")
         ensure
           File.delete 'example.rb'
@@ -158,7 +158,7 @@ module Rubocop
             ['== example1.rb ==',
              'C:  1: Trailing whitespace detected.',
              '',
-             '1 files inspected, 1 offences detected',
+             '1 file inspected, 1 offence detected',
              ''].join("\n"))
         ensure
           File.delete 'example1.rb'
@@ -182,7 +182,7 @@ module Rubocop
             ['== example_src/example1.rb ==',
              'C:  1: Trailing whitespace detected.',
              '',
-             '1 files inspected, 1 offences detected',
+             '1 file inspected, 1 offence detected',
              ''].join("\n"))
         ensure
           FileUtils.rm_rf 'example_src'
@@ -203,7 +203,7 @@ module Rubocop
         begin
           expect(cli.run(['example_src/example1.rb'])).to eq(0)
           expect($stdout.string.uncolored).to eq(
-            ['', '1 files inspected, 0 offences detected',
+            ['', '1 file inspected, no offences detected',
              ''].join("\n"))
         ensure
           FileUtils.rm_rf 'example_src'
@@ -229,7 +229,7 @@ module Rubocop
             ['== example/lib/example1.rb ==',
              'C:  2: Line is too long. [90/79]',
              '',
-             '2 files inspected, 1 offences detected',
+             '2 files inspected, 1 offence detected',
              ''].join("\n"))
         ensure
           FileUtils.rm_rf 'example'
@@ -258,7 +258,7 @@ module Rubocop
           begin
             expect(cli.run(['example_src/example1.rb'])).to eq(0)
             expect($stdout.string.uncolored).to eq(
-              ['', '1 files inspected, 0 offences detected',
+              ['', '1 file inspected, no offences detected',
                ''].join("\n"))
           ensure
             FileUtils.rm_rf 'example_src'
@@ -272,7 +272,7 @@ module Rubocop
         # so that the CLI does not refer arguments of `rspec`
         cli.run([])
         expect($stdout.string.uncolored).to match(
-          /files inspected, 0 offences detected\n/
+          /files inspected, no offences detected\n/
         )
       end
 
@@ -289,7 +289,7 @@ module Rubocop
             ["example.rb:3: E: Syntax error, unexpected #{unexpected_part}, " +
              'expecting keyword_end',
              '',
-             '1 files inspected, 1 offences detected',
+             '1 file inspected, 1 offence detected',
              ''].join("\n"))
         ensure
           File.delete 'example.rb'
@@ -338,7 +338,7 @@ module Rubocop
              "example.rb:10: C: Prefer single-quoted strings when you don't " +
              'need string interpolation or special symbols.',
              '',
-             '1 files inspected, 2 offences detected',
+             '1 file inspected, 2 offences detected',
              ''].join("\n"))
         ensure
           File.delete 'example.rb'
@@ -368,7 +368,7 @@ module Rubocop
              "example.rb:10: C: Prefer single-quoted strings when you don't " +
              'need string interpolation or special symbols.',
              '',
-             '1 files inspected, 2 offences detected',
+             '1 file inspected, 2 offences detected',
              ''].join("\n"))
         ensure
           File.delete 'example.rb'
@@ -384,7 +384,7 @@ module Rubocop
           expect(cli.run(['--emacs', 'example.rb'])).to eq(0)
           expect($stdout.string.uncolored).to eq(
             ['',
-             '1 files inspected, 0 offences detected',
+             '1 file inspected, no offences detected',
              ''].join("\n"))
         ensure
           File.delete 'example.rb'
@@ -403,7 +403,7 @@ module Rubocop
           expect($stdout.string.uncolored).to eq(
             ['example.rb:3: C: Line is too long. [95/79]',
              '',
-             '1 files inspected, 1 offences detected',
+             '1 file inspected, 1 offence detected',
              ''].join("\n"))
         ensure
           File.delete 'example.rb'
@@ -424,7 +424,7 @@ module Rubocop
             # so that the CLI does not refer arguments of `rspec`
             expect(cli.run([])).to eq(0)
             expect($stdout.string.uncolored).to eq(
-              ['', '1 files inspected, 0 offences detected',
+              ['', '1 file inspected, no offences detected',
                ''].join("\n"))
           end
         ensure

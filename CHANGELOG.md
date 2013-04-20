@@ -29,6 +29,7 @@
 
 * Dropped Jeweler for gem release management since it's no longer
   actively maintained.
+* Handle pluralization properly in the final summary.
 
 ## 0.5.0 (04/17/2013)
 
