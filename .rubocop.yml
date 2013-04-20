@@ -250,3 +250,7 @@ HashLiteral:
 # When defining binary operators, name the argument other.
 OpMethod:
   Enabled: true
+
+# Name reduce arguments |a, e| (accumulator, element)
+ReduceArguments:
+  Enabled: true

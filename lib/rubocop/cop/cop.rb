@@ -101,7 +101,7 @@ module Rubocop
 
       def all_positions(sexp)
         return [sexp[2]] if sexp[0] =~ /^@/
-        sexp.grep(Array).reduce([]) { |memo, s| memo + all_positions(s) }
+        sexp.grep(Array).reduce([]) { |a, e| a + all_positions(e) }
       end
     end
   end

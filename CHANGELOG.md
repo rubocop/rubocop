@@ -4,6 +4,7 @@
 
 ### New features
 
+* New cop `ReduceArguments` tracks argument names in reduce calls
 * New cop `MethodLength` tracks number of LOC (lines of code) in methods
 * New cop `RescueModifier` tracks uses of `rescue` in modifier form.
 * New cop `PercentLiterals` tracks uses of `%q`, `%Q`, `%s` and `%x`.
