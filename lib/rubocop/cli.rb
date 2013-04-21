@@ -15,10 +15,8 @@ module Rubocop
 
     def initialize
       @cops = Cop::Cop.all
-      @processed_file_count = 0
-      @total_offences = 0
       @errors = []
-      @options = { mode: :default }
+      @options = {}
       ConfigStore.prepare
     end
 
@@ -38,36 +36,42 @@ module Rubocop
         return 1
       end
 
-      target_files(args).each do |file|
+      target_files = target_files(args)
+      processed_files = []
+      any_failed = false
+
+      formatter.started(target_files)
+
+      target_files.each do |file|
         break if wants_to_quit?
 
         config = ConfigStore.for(file)
-        report = Report.create(file, @options[:mode])
 
         puts "Scanning #{file}" if @options[:debug]
+        formatter.file_started(file, {})
 
         syntax_cop = Rubocop::Cop::Syntax.new
         syntax_cop.debug = @options[:debug]
         syntax_cop.inspect_file(file)
 
-        if syntax_cop.offences.map(&:severity).include?(:error)
-          # In case of a syntax error we just report that error and do
-          # no more checking in the file.
-          report << syntax_cop
-          @total_offences += syntax_cop.offences.count
-        else
-          inspect_file(file, config, report)
-        end
+        offences = if syntax_cop.offences.map(&:severity).include?(:error)
+                     # In case of a syntax error we just report that error
+                     # and do no more checking in the file.
+                     syntax_cop.offences
+                   else
+                     inspect_file(file, config)
+                   end
 
-        @processed_file_count += 1
-        report.display unless report.empty?
+        any_failed = true unless offences.empty?
+        processed_files << file
+        formatter.file_finished(file, offences)
       end
 
-      unless @options[:silent]
-        display_summary(@processed_file_count, @total_offences, @errors)
-      end
+      formatter.finished(processed_files)
 
-      (@total_offences == 0) && !wants_to_quit ? 0 : 1
+      display_error_summary(@errors) unless @options[:silent]
+
+      !any_failed && !wants_to_quit ? 0 : 1
     end
 
     def validate_only_option
@@ -76,7 +80,7 @@ module Rubocop
       end
     end
 
-    def inspect_file(file, config, report)
+    def inspect_file(file, config)
       begin
         ast, comments, tokens, source = CLI.parse(file) do |source_buffer|
           source_buffer.read
@@ -84,12 +88,12 @@ module Rubocop
       rescue Parser::SyntaxError, Encoding::UndefinedConversionError,
         ArgumentError => e
         handle_error(e, "An error occurred while parsing #{file}.".color(:red))
-        return
+        return []
       end
 
       disabled_lines = disabled_lines_in(source)
 
-      @cops.each do |cop_class|
+      @cops.reduce([]) do |offences, cop_class|
         cop_name = cop_class.cop_name
         cop_class.config = config.for_cop(cop_name)
         if config.cop_enabled?(cop_name)
@@ -104,9 +108,9 @@ module Rubocop
                            " cop was inspecting #{file}.".color(:red))
             end
           end
-          @total_offences += cop.offences.count
-          report << cop if cop.has_report?
+          offences.concat(cop.offences)
         end
+        offences
       end
     end
 
@@ -135,7 +139,7 @@ module Rubocop
           @options[:debug] = d
         end
         opts.on('-e', '--emacs', 'Emacs style output') do
-          @options[:mode] = :emacs_style
+          @options[:formatter] = Formatter::EmacsStyleFormatter
         end
         opts.on('-c FILE', '--config FILE', 'Configuration file') do |f|
           @options[:config] = f
@@ -169,26 +173,13 @@ module Rubocop
       end
     end
 
-    def display_summary(num_files, total_offences, errors)
-      plural = num_files == 0 || num_files > 1 ? 's' : ''
-      print "\n#{num_files} file#{plural} inspected, "
-      offences_string = if total_offences.zero?
-                          'no offences'
-                        elsif total_offences == 1
-                          '1 offence'
-                        else
-                          "#{total_offences} offences"
-                        end
-      puts "#{offences_string} detected"
-        .color(total_offences.zero? ? :green : :red)
-
-      if errors.count > 0
-        plural = errors.count > 1 ? 's' : ''
-        puts "\n#{errors.count} error#{plural} occurred:".color(:red)
-        errors.each { |error| puts error }
-        puts 'Errors are usually caused by RuboCop bugs.'
-        puts 'Please, report your problems to RuboCop\'s issue tracker.'
-      end
+    def display_error_summary(errors)
+      return if errors.empty?
+      plural = errors.count > 1 ? 's' : ''
+      puts "\n#{errors.count} error#{plural} occurred:".color(:red)
+      errors.each { |error| puts error }
+      puts 'Errors are usually caused by RuboCop bugs.'
+      puts 'Please, report your problems to RuboCop\'s issue tracker.'
     end
 
     def disabled_lines_in(source)
@@ -310,6 +301,18 @@ module Rubocop
       if @options[:debug]
         error_message = "#{e.class}, #{e.message}"
         STDERR.puts "#{msg}\t#{error_message}"
+      end
+    end
+
+    def formatter
+      @formatter ||= begin
+        formatter_class = @options[:formatter] || Formatter::PlainTextFormatter
+        formatter = formatter_class.new($stdout)
+        if formatter.respond_to?(:reports_summary=)
+          # TODO: Consider dropping -s/--silent option
+          formatter.reports_summary = !@options[:silent]
+        end
+        formatter
       end
     end
   end

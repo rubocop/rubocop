@@ -79,9 +79,9 @@ require 'rubocop/cop/access_control'
 require 'rubocop/cop/loop'
 require 'rubocop/cop/block_nesting'
 
-require 'rubocop/report/report'
-require 'rubocop/report/plain_text'
-require 'rubocop/report/emacs_style'
+require 'rubocop/formatter/base_formatter'
+require 'rubocop/formatter/plain_text_formatter'
+require 'rubocop/formatter/emacs_style_formatter'
 
 require 'rubocop/config'
 require 'rubocop/config_store'

@@ -42,10 +42,6 @@ module Rubocop
         @debug = false
       end
 
-      def has_report?
-        !@offences.empty?
-      end
-
       def inspect(source, tokens, ast, comments)
         process(ast)
       end
