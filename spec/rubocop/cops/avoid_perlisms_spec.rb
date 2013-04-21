@@ -27,6 +27,18 @@ module Rubocop
         expect(ap.offences.map(&:message))
           .to eq(['Prefer $PROGRAM_NAME over $0.'])
       end
+
+      it 'registers an offence for $$' do
+        inspect_source(ap, 'file.rb', ['puts $$'])
+        expect(ap.offences.size).to eq(1)
+        expect(ap.offences.map(&:message))
+          .to eq(['Prefer $PID or $PROCESS_ID from English library over $$.'])
+      end
+
+      it 'does not register an offence for backrefs like $1' do
+        inspect_source(ap, 'file.rb', ['puts $1'])
+        expect(ap.offences).to be_empty
+      end
     end
   end
 end
