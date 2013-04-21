@@ -13,6 +13,7 @@ LineLength:
 # Avoid methods longer than 10 lines of code 
 MethodLength:
   Enabled: true
+  CountComments: false  # count full line comments?
   Max: 65
 
 # No hard tabs.

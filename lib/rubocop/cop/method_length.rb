@@ -8,7 +8,7 @@ module Rubocop
       def inspect(file, source, tokens, sexp)
         def_token_indices(tokens, source).each do |t_ix|
           def_lineno, end_lineno = def_and_end_lines(tokens, t_ix)
-          length = source[def_lineno..(end_lineno - 2)].reject(&:empty?).size
+          length = calculate_length(def_lineno, end_lineno, source)
 
           if length > MethodLength.max
             message = sprintf(ERROR_MESSAGE, length, MethodLength.max)
@@ -21,7 +21,24 @@ module Rubocop
         MethodLength.config ? MethodLength.config['Max'] || 10 : 10
       end
 
+      def self.count_comments?
+        if MethodLength.config
+          MethodLength.config['CountComments'] || false
+        else
+          false
+        end
+      end
+
       private
+
+      def calculate_length(def_lineno, end_lineno, source)
+        lines = source[def_lineno..(end_lineno - 2)].reject(&:empty?)
+        unless MethodLength.count_comments?
+          comment_line = /^\s*#/
+          lines = lines.reject { |l| l.match comment_line }
+        end
+        lines.size
+      end
 
       def def_token_indices(tokens, source)
         tokens.each_index.select do |ix|
