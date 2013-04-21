@@ -10,8 +10,6 @@ module Rubocop
           if s[1][0] == :@op && !%w([] []= <<).include?(s[1][1])
             param = s[2][1][1][0]
 
-            puts param.inspect
-
             unless param[1] == 'other'
               add_offence(:convention,
                           param[2].lineno,
