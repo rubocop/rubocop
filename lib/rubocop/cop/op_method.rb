@@ -3,11 +3,11 @@
 module Rubocop
   module Cop
     class OpMethod < Cop
-      ERROR_MESSAGE = 'When defining binary operators, name the arg other.'
+      ERROR_MESSAGE = 'When defining the %s operator, name its argument other.'
 
       def inspect(file, source, tokens, sexp)
         each(:def, sexp) do |s|
-          if s[1][0] == :@op
+          if s[1][0] == :@op && !%w([] []= <<).include?(s[1][1])
             param = s[2][1][1][0]
 
             puts param.inspect
@@ -15,7 +15,7 @@ module Rubocop
             unless param[1] == 'other'
               add_offence(:convention,
                           param[2].lineno,
-                          ERROR_MESSAGE)
+                          sprintf(ERROR_MESSAGE, s[1][1]))
             end
           end
         end
