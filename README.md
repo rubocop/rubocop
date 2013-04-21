@@ -26,7 +26,7 @@ in the current folder:
 $ rubocop
 ```
 
-Alternatively you can `rubocop` a list of files and folders to check:
+Alternatively you can pass `rubocop` a list of files and folders to check:
 
 ```bash
 $ rubocop app spec lib/something.rb
