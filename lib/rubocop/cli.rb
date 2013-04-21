@@ -42,6 +42,8 @@ module Rubocop
       @configs = {}
 
       target_files(args).each do |file|
+        puts "Scanning #{file}" if $options[:debug]
+
         report = Report.create(file, $options[:mode])
         source = File.readlines(file).map do |line|
           get_rid_of_invalid_byte_sequences(line)
