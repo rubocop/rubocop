@@ -3,14 +3,15 @@
 module Rubocop
   module Cop
     class Offence
-      attr_accessor :severity, :line_number, :message
+      attr_accessor :severity, :line_number, :message, :cop_name
 
       SEVERITIES = [:refactor, :convention, :warning, :error, :fatal]
 
-      def initialize(severity, line_number, message)
+      def initialize(severity, line_number, message, cop_name)
         @severity = severity
         @line_number = line_number
         @message = message
+        @cop_name = cop_name
       end
 
       def to_s
@@ -25,7 +26,7 @@ module Rubocop
 
       def ==(other)
         severity == other.severity && line_number == other.line_number &&
-          message == other.message
+          message == other.message && cop_name == other.cop_name
       end
 
       def explode

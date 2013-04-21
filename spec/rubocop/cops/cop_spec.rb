@@ -26,6 +26,12 @@ module Rubocop
 
         expect(cop.has_report?).to be_true
       end
+
+      it 'registers offence with its name' do
+        cop = AvoidFor.new
+        cop.add_offence(:convention, 1, 'message')
+        expect(cop.offences.first.cop_name).to eq('AvoidFor')
+      end
     end
   end
 end
