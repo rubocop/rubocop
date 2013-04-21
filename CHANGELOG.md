@@ -29,6 +29,7 @@
 * [#70](https://github.com/bbatsov/rubocop/issues/70) - Support `alias` with bareword arguments
 * [#64](https://github.com/bbatsov/rubocop/issues/64) - Performance issue with Bundler
 * [#75](https://github.com/bbatsov/rubocop/issues/75) - Make it clear that some global variables require the use of the English library
+* [#79](https://github.com/bbatsov/rubocop/issues/79) - Ternary operator missing whitespace detection
 
 ### Misc
 

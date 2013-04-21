@@ -16,8 +16,9 @@ module Rubocop
         token_positions = tokens.map { |t| [t.pos.lineno, t.pos.column] }
         @index_by_pos = Hash[*token_positions.each_with_index.to_a.flatten(1)]
         @special = {
-          assign:      [:on_op,     '='],
-          brace_block: [:on_lbrace, '{']
+          assign:      [[:on_op,     '=']],
+          brace_block: [[:on_lbrace, '{']],
+          ifop:        [[:on_op, '?'], [:on_op, ':']]
         }
       end
 
@@ -84,7 +85,9 @@ module Rubocop
             # Here we don't advance @ix because there may be other
             # tokens inbetween the current one and the one we get from
             # @special.
-            find(path, sexp, @special[sexp[0]])
+            @special[sexp[0]].each do |token_to_find|
+              find(path, sexp, token_to_find)
+            end
           when :block_var # "{ |...|" or "do |...|"
             @ix = find(path, sexp, [:on_op, '|']) + 1
             find(path, sexp, [:on_op, '|'])

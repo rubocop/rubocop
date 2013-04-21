@@ -13,6 +13,13 @@ module Rubocop
           ["Surrounding space missing for operator '='."] * 3)
       end
 
+      it 'registers an offence for ternary operator without space' do
+        inspect_source(space, 'file.rb', ['x == 0?1:2'])
+        expect(space.offences.map(&:message)).to eq(
+          ["Surrounding space missing for operator '?'.",
+           "Surrounding space missing for operator ':'."])
+      end
+
       it 'registers an offence in presence of modifier if statement' do
         check_modifier('if')
       end
