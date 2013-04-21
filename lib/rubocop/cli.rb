@@ -144,6 +144,9 @@ module Rubocop
         opts.on('--only COP', 'Run just one cop') do |s|
           @options[:only] = s
         end
+        opts.on('--require FILE', 'Require Ruby file') do |f|
+          require f
+        end
         opts.on('-s', '--silent', 'Silence summary') do |s|
           @options[:silent] = s
         end

@@ -20,6 +20,7 @@ module Rubocop
                  '    -e, --emacs                      Emacs style output',
                  '    -c, --config FILE                Configuration file',
                  '        --only COP                   Run just one cop',
+                 '        --require FILE               Require Ruby file',
                  '    -s, --silent                     Silence summary',
                  '    -n, --no-color                   Disable color output',
                  '    -v, --version                    Display version']
@@ -601,6 +602,24 @@ module Rubocop
       expect($stdout.string).to eq(
         ['', '0 files inspected, no offences detected',
          ''].join("\n"))
+    end
+
+    describe '--require option' do
+      let(:required_file_path) { './path/to/required_file.rb' }
+
+      before do
+        create_file('example.rb', '# encoding: utf-8')
+
+        create_file(required_file_path, [
+          '# encoding: utf-8',
+          "puts 'Hello from required file!'"
+        ])
+      end
+
+      it 'requires the passed path' do
+        cli.run(['--require', required_file_path, 'example.rb'])
+        expect($stdout.string).to start_with('Hello from required file!')
+      end
     end
 
     describe '#display_summary' do
