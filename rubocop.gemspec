@@ -22,7 +22,6 @@ Gem::Specification.new do |s|
     "CHANGELOG.md",
     "CONTRIBUTING.md",
     "Gemfile",
-    "Gemfile.lock",
     "LICENSE.txt",
     "README.md",
     "Rakefile",
