@@ -26,7 +26,7 @@ module Rubocop
       it 'exits cleanly when -v is used' do
         expect { cli.run ['-v'] }.to exit_with_code(0)
         expect { cli.run ['--version'] }.to exit_with_code(0)
-        expect($stdout.string).to eq((Rubocop::VERSION + "\n") * 2)
+        expect($stdout.string).to eq((Rubocop::Version::STRING + "\n") * 2)
       end
 
       it 'checks a given correct file and returns 0' do

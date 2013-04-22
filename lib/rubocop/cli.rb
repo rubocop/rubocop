@@ -31,7 +31,7 @@ module Rubocop
           $options[:silent] = s
         end
         opts.on('-v', '--version', 'Display version') do
-          puts Rubocop::VERSION
+          puts Rubocop::Version::STRING
           exit(0)
         end
       end.parse!(args)
