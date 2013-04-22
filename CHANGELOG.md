@@ -20,6 +20,7 @@
 * New cop `HashLiteral` tracks uses of Hash.new.
 * New cop `OpMethod` tracks the argument name in operator methods.
 * New cop `PercentR` tracks uses of %r literals with zero or one slash in the regexp.
+* New cop `FavorPercentR` tracks uses of // literals with more than one slash in the regexp.
 
 ### Bugs fixed
 
