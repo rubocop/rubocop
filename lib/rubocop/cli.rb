@@ -231,7 +231,7 @@ module Rubocop
         begin
           File.open(file) { |f| f.readline } =~ /#!.*ruby/
         rescue EOFError, ArgumentError => e
-          log_error("Unprocessable file #{file.inspect}: ", e)
+          log_error(e, "Unprocessable file #{file.inspect}: ")
           false
         end
       end
