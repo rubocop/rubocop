@@ -114,6 +114,11 @@ and quickly jump between problems in your code.
 [flycheck](https://github.com/lunaryorn/flycheck) > 0.9 also supports
 RuboCop and uses it by default when available.
 
+### Vim
+
+The [vim-rubocop](https://github.com/ngmy/vim-rubocop) plugin runs
+RuboCop and displays the results in Vim.
+
 ### Other Editors
 
 Here's one great opportunity to contribute to RuboCop - implement
