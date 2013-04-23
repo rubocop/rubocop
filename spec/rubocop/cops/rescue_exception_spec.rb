@@ -56,6 +56,18 @@ module Rubocop
                         'end'])
         expect(re.offences).to be_empty
       end
+
+      it 'does not register an offence for rescue with a module prefix' do
+        inspect_source(re,
+                       'file.rb',
+                       ['begin',
+                        '  something',
+                        '  return',
+                        'rescue Test::Exception => e',
+                        '  file.close',
+                        'end'])
+        expect(re.offences).to be_empty
+      end
     end
   end
 end
