@@ -8,11 +8,18 @@ module Rubocop
   # The CLI is a class responsible of handling all the command line interface
   # logic.
   class CLI
+    # If set true while running,
+    # RuboCop will abort processing and exit gracefully.
+    attr_accessor :wants_to_quit
+    alias_method :wants_to_quit?, :wants_to_quit
+
     # Entry point for the application logic. Here we
     # do the command line arguments processing and inspect
     # the target files
     # @return [Fixnum] UNIX exit code
     def run(args = ARGV)
+      trap_interrupt
+
       $options = { mode: :default }
 
       OptionParser.new do |opts|
@@ -38,10 +45,13 @@ module Rubocop
 
       cops = Cop::Cop.all
       show_cops_on_duty(cops) if $options[:debug]
+      processed_file_count = 0
       total_offences = 0
       @configs = {}
 
       target_files(args).each do |file|
+        break if wants_to_quit?
+
         puts "Scanning #{file}" if $options[:debug]
 
         report = Report.create(file, $options[:mode])
@@ -78,14 +88,24 @@ module Rubocop
           end
         end
 
+        processed_file_count += 1
         report.display unless report.empty?
       end
 
       unless $options[:silent]
-        display_summary(target_files(args).count, total_offences)
+        display_summary(processed_file_count, total_offences)
       end
 
-      return total_offences == 0 ? 0 : 1
+      (total_offences == 0) && !wants_to_quit ? 0 : 1
+    end
+
+    def trap_interrupt
+      Signal.trap('INT') do
+        exit!(1) if wants_to_quit?
+        self.wants_to_quit = true
+        STDERR.puts
+        STDERR.puts 'Exiting... Interrupt again to exit immediately.'
+      end
     end
 
     def display_summary(num_files, total_offences)
