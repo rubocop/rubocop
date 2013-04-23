@@ -124,6 +124,14 @@ RuboCop and displays the results in Vim.
 Here's one great opportunity to contribute to RuboCop - implement
 RuboCop integration for your favorite editor.
 
+## Guard integration
+
+If you're fond of [Guard](https://github.com/guard/guard) you might
+like
+[guard-rubocop](https://github.com/yujinakayama/guard-rubocop). It
+allows you to automatically check Ruby code style with RuboCop when
+files are modified.
+
 ## Contributors
 
 Here's a [list](https://github.com/bbatsov/rubocop/contributors) of
