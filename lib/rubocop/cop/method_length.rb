@@ -34,18 +34,21 @@ module Rubocop
       def calculate_length(def_lineno, end_lineno, source)
         lines = source[def_lineno..(end_lineno - 2)].reject(&:empty?)
         unless MethodLength.count_comments?
-          comment_line = /^\s*#/
-          lines = lines.reject { |l| l.match comment_line }
+          lines = lines.reject { |line| line =~ /^\s*#/ }
         end
         lines.size
       end
 
       def def_token_indices(tokens, source)
         tokens.each_index.select do |ix|
-          # Need to check if the previous character is a ':'
-          # to prevent matching ':def' symbols
-          [tokens[ix].type, tokens[ix].text] == [:on_kw, 'def'] &&
-            source[tokens[ix].pos.lineno - 1][tokens[ix].pos.column - 1] != ':'
+          t = tokens[ix]
+
+          # Need to check:
+          # 1. if the previous character is a ':' to prevent matching ':def'
+          # 2. if the method is a one line, which we will ignore
+          [t.type, t.text] == [:on_kw, 'def'] &&
+            source[t.pos.lineno - 1][t.pos.column - 1] != ':' &&
+            source[t.pos.lineno - 1] !~ /^\s*def.*(?:\(.*\)|;).*end\s*$/
         end
       end
 

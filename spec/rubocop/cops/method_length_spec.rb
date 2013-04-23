@@ -53,8 +53,20 @@ module Rubocop
         expect(method_length.offences).to be_empty
       end
 
-      it 'is not fooled by one-liner methods' do
+      it 'is not fooled by one-liner methods, syntax #1' do
         inspect_source(method_length, '', ['def one_line; 10 end',
+                                           'def self.m()',
+                                           '  a = 1',
+                                           '  a = 2',
+                                           '  a = 4',
+                                           '  a = 5',
+                                           '  a = 6',
+                                           'end'])
+        expect(method_length.offences).to be_empty
+      end
+
+      it 'is not fooled by one-liner methods, syntax #2' do
+        inspect_source(method_length, '', ['def one_line(test) 10 end',
                                            'def self.m()',
                                            '  a = 1',
                                            '  a = 2',
