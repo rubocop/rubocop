@@ -6,6 +6,10 @@
 
 ### Bugs fixed
 
+### Misc
+
+* [#88](https://github.com/bbatsov/rubocop/issues/88) Abort gracefully when interrupted with Ctrl-C
+
 ## 0.6.0 (04/23/2013)
 
 ### New features

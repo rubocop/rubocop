@@ -29,6 +29,74 @@ module Rubocop
         expect($stdout.string).to eq((Rubocop::Version::STRING + "\n") * 2)
       end
 
+      describe '#wants_to_quit?' do
+        it 'is initially false' do
+          expect(cli.wants_to_quit?).to be_false
+        end
+      end
+
+      context 'when interrupted with Ctrl-C' do
+        def execute_rubocop
+          project_root = File.expand_path('../..', File.dirname(__FILE__))
+          rubocop_command = File.join(project_root, 'bin', 'rubocop')
+
+          _, stdout, stderr, thread = Open3.popen3(rubocop_command, '--debug')
+
+          unless IO.select([stdout], nil, nil, 10)
+            fail 'rubocop took too long to start running'
+          end
+
+          yield stdout, stderr, thread.pid
+
+          thread.value.exitstatus
+        ensure
+          thread.terminate
+        end
+
+        def wait_for_output(output)
+          IO.select([output], nil, nil, 10)
+        end
+
+        it 'exits with status 1' do
+          exit_status = execute_rubocop do |stdout, stderr, pid|
+            Process.kill('INT', pid)
+          end
+          expect(exit_status).to eq(1)
+        end
+
+        it 'exits gracefully without dumping backtraces' do
+          execute_rubocop do |stdout, stderr, pid|
+            Process.kill('INT', pid)
+            wait_for_output(stderr)
+            expect(stderr.read).not_to match(/from .+:\d+:in /)
+          end
+        end
+
+        context 'with Ctrl-C once' do
+          it 'reports summary' do
+            execute_rubocop do |stdout, stderr, pid|
+              Process.kill('INT', pid)
+              wait_for_output(stdout)
+              output = stdout.read.uncolored
+              expect(output).to match(/files? inspected/)
+            end
+          end
+        end
+
+        context 'with Ctrl-C twice' do
+          it 'exits immediately without reporting summary' do
+            execute_rubocop do |stdout, stderr, pid|
+              Process.kill('INT', pid)
+              wait_for_output(stderr) # Wait for "Exiting...".
+              Process.kill('INT', pid)
+              wait_for_output(stdout)
+              output = stdout.read.uncolored
+              expect(output).not_to match(/files? inspected/)
+            end
+          end
+        end
+      end
+
       it 'checks a given correct file and returns 0' do
         File.open('example.rb', 'w') do |f|
           f.puts '# encoding: utf-8'
