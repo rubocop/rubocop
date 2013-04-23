@@ -4,6 +4,12 @@
 
 ### New features
 
+### Bugs fixed
+
+## 0.6.0 (04/23/2013)
+
+### New features
+
 * New cop `ReduceArguments` tracks argument names in reduce calls
 * New cop `MethodLength` tracks number of LOC (lines of code) in methods
 * New cop `RescueModifier` tracks uses of `rescue` in modifier form.
