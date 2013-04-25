@@ -12,6 +12,11 @@ module Rubocop
         expect(space.offences.map(&:message)).to eq(
           ['Space missing after semicolon.'])
       end
+
+      it 'does not crash if semicolon is the last character of the file' do
+        inspect_source(space, 'file.rb', ['x = 1;'])
+        expect(space.offences.map(&:message)).to be_empty
+      end
     end
   end
 end
