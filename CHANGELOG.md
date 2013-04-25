@@ -4,6 +4,8 @@
 
 ### New features
 
+* Split AsciiIdentifiersAndComments cop in two separate cops
+
 ### Bugs fixed
 
 * [#90](https://github.com/bbatsov/rubocop/issues/90) Two cops crash when scanning code using super

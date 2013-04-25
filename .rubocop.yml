@@ -232,8 +232,12 @@ EnsureReturn:
 HandleExceptions:
   Enabled: true
 
-# Use only ascii symbols in identifiers and comments.
-AsciiIdentifiersAndComments:
+# Use only ascii symbols in identifiers.
+AsciiIdentifiers:
+  Enabled: true
+
+# Use only ascii symbols in comments.
+AsciiComments:
   Enabled: true
 
 # Avoid rescuing the Exception class.
