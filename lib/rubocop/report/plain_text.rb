@@ -6,7 +6,7 @@ module Rubocop
     class PlainText < Report
       # Generates a string representation of the report
       def generate
-        report = "== #{filename} ==\n".yellow
+        report = Term::ANSIColor.yellow("== #{filename} ==\n")
         report << entries.join("\n")
       end
 
