@@ -22,31 +22,13 @@ module Rubocop
 
       $options = { mode: :default }
 
-      OptionParser.new do |opts|
-        opts.banner = 'Usage: rubocop [options] [file1, file2, ...]'
-
-        opts.on('-d', '--[no-]debug', 'Display debug info') do |d|
-          $options[:debug] = d
-        end
-        opts.on('-e', '--emacs', 'Emacs style output') do
-          $options[:mode] = :emacs_style
-        end
-        opts.on('-c FILE', '--config FILE', 'Configuration file') do |f|
-          $options[:config] = YAML.load_file(f)
-        end
-        opts.on('-s', '--silent', 'Silence summary') do |s|
-          $options[:silent] = s
-        end
-        opts.on('-v', '--version', 'Display version') do
-          puts Rubocop::Version::STRING
-          exit(0)
-        end
-      end.parse!(args)
+      parse_options(args)
 
       cops = Cop::Cop.all
       show_cops_on_duty(cops) if $options[:debug]
       processed_file_count = 0
       total_offences = 0
+      errors_count = 0
       @configs = {}
 
       target_files(args).each do |file|
@@ -81,7 +63,14 @@ module Rubocop
               cop = cop_klass.new
               cop.correlations = correlations
               cop.disabled_lines = disabled_lines[cop_name]
-              cop.inspect(file, source, tokens, sexp)
+              begin
+                cop.inspect(file, source, tokens, sexp)
+              rescue => e
+                errors_count += 1
+                warn "An error occurred while #{cop} was inspecting #{file}."
+                warn "To see the complete backtrace run rubocop -d."
+                puts e.backtrace if $options[:debug]
+              end
               total_offences += cop.offences.count
               report << cop if cop.has_report?
             end
@@ -93,10 +82,33 @@ module Rubocop
       end
 
       unless $options[:silent]
-        display_summary(processed_file_count, total_offences)
+        display_summary(processed_file_count, total_offences, errors_count)
       end
 
       (total_offences == 0) && !wants_to_quit ? 0 : 1
+    end
+
+    def parse_options(args)
+      OptionParser.new do |opts|
+        opts.banner = 'Usage: rubocop [options] [file1, file2, ...]'
+
+        opts.on('-d', '--[no-]debug', 'Display debug info') do |d|
+          $options[:debug] = d
+        end
+        opts.on('-e', '--emacs', 'Emacs style output') do
+          $options[:mode] = :emacs_style
+        end
+        opts.on('-c FILE', '--config FILE', 'Configuration file') do |f|
+          $options[:config] = YAML.load_file(f)
+        end
+        opts.on('-s', '--silent', 'Silence summary') do |s|
+          $options[:silent] = s
+        end
+        opts.on('-v', '--version', 'Display version') do
+          puts Rubocop::Version::STRING
+          exit(0)
+        end
+      end.parse!(args)
     end
 
     def trap_interrupt
@@ -108,7 +120,7 @@ module Rubocop
       end
     end
 
-    def display_summary(num_files, total_offences)
+    def display_summary(num_files, total_offences, errors_count)
       print "\n#{num_files} file#{num_files > 1 ? 's' : ''} inspected, "
       offences_string = if total_offences.zero?
                           'no offences'
@@ -119,6 +131,13 @@ module Rubocop
                         end
       puts "#{offences_string} detected"
         .send(total_offences.zero? ? :green : :red)
+
+      if errors_count > 0
+        plural = errors_count > 1 ? 's' : ''
+        puts "\n#{errors_count} error#{plural} occurred.".red
+        puts 'Errors are usually caused by RuboCop bugs.'
+        puts 'Please, report your problems to RuboCop\'s issue tracker.'
+      end
     end
 
     def disabled_lines_in(source)

@@ -11,6 +11,7 @@
 ### Misc
 
 * [#88](https://github.com/bbatsov/rubocop/issues/88) Abort gracefully when interrupted with Ctrl-C
+* No longer crashes on bugs within cops. Now problematic checks are skipped and a message is displayed.
 
 ## 0.6.0 (04/23/2013)
 
