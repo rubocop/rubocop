@@ -77,7 +77,7 @@ module Rubocop
             execute_rubocop do |stdout, stderr, pid|
               Process.kill('INT', pid)
               wait_for_output(stdout)
-              output = stdout.read.uncolored
+              output = Term::ANSIColor.uncolored(stdout.read)
               expect(output).to match(/files? inspected/)
             end
           end
@@ -90,7 +90,7 @@ module Rubocop
               wait_for_output(stderr) # Wait for "Exiting...".
               Process.kill('INT', pid)
               wait_for_output(stdout)
-              output = stdout.read.uncolored
+              output = Term::ANSIColor.uncolored(stdout.read)
               expect(output).not_to match(/files? inspected/)
             end
           end
@@ -105,7 +105,7 @@ module Rubocop
         end
         begin
           expect(cli.run(['example.rb'])).to eq(0)
-          expect($stdout.string.uncolored)
+          expect(Term::ANSIColor.uncolored($stdout.string))
             .to eq("\n1 file inspected, no offences detected\n")
         ensure
           File.delete 'example.rb'
@@ -120,7 +120,7 @@ module Rubocop
         end
         begin
           expect(cli.run(['example.rb'])).to eq(1)
-          expect($stdout.string.uncolored)
+          expect(Term::ANSIColor.uncolored($stdout.string))
             .to eq ['== example.rb ==',
                     'C:  2: Trailing whitespace detected.',
                     '',
@@ -136,7 +136,7 @@ module Rubocop
         File.open('example2.rb', 'w') { |f| f.puts "\tx = 0", 'puts x' }
         begin
           expect(cli.run(['--emacs', 'example1.rb', 'example2.rb'])).to eq(1)
-          expect($stdout.string.uncolored)
+          expect(Term::ANSIColor.uncolored($stdout.string))
             .to eq(
             ['example1.rb:1: C: Missing utf-8 encoding comment.',
              'example1.rb:1: C: Trailing whitespace detected.',
@@ -158,7 +158,7 @@ module Rubocop
         File.open('example2.rb', 'w') { |f| f.puts "\tx = 0", 'puts x' }
         begin
           expect(cli.run(['--emacs', 'example1.rb', 'example2.rb'])).to eq(1)
-          expect($stdout.string.uncolored)
+          expect(Term::ANSIColor.uncolored($stdout.string))
             .to eq(
             ['example1.rb:1: C: Trailing whitespace detected.',
              "example1.rb:1: C: Surrounding space missing for operator '='.",
@@ -222,7 +222,7 @@ module Rubocop
         end
         begin
           expect(cli.run(['-c', 'rubocop.yml', 'example1.rb'])).to eq(1)
-          expect($stdout.string.uncolored).to eq(
+          expect(Term::ANSIColor.uncolored($stdout.string)).to eq(
             ['== example1.rb ==',
              'C:  1: Trailing whitespace detected.',
              '',
@@ -246,7 +246,7 @@ module Rubocop
         end
         begin
           expect(cli.run(['example_src/example1.rb'])).to eq(1)
-          expect($stdout.string.uncolored).to eq(
+          expect(Term::ANSIColor.uncolored($stdout.string)).to eq(
             ['== example_src/example1.rb ==',
              'C:  1: Trailing whitespace detected.',
              '',
@@ -270,7 +270,7 @@ module Rubocop
         end
         begin
           expect(cli.run(['example_src/example1.rb'])).to eq(0)
-          expect($stdout.string.uncolored).to eq(
+          expect(Term::ANSIColor.uncolored($stdout.string)).to eq(
             ['', '1 file inspected, no offences detected',
              ''].join("\n"))
         ensure
@@ -293,7 +293,7 @@ module Rubocop
         end
         begin
           expect(cli.run(['example'])).to eq(1)
-          expect($stdout.string.uncolored).to eq(
+          expect(Term::ANSIColor.uncolored($stdout.string)).to eq(
             ['== example/lib/example1.rb ==',
              'C:  2: Line is too long. [90/79]',
              '',
@@ -325,7 +325,7 @@ module Rubocop
           end
           begin
             expect(cli.run(['example_src/example1.rb'])).to eq(0)
-            expect($stdout.string.uncolored).to eq(
+            expect(Term::ANSIColor.uncolored($stdout.string)).to eq(
               ['', '1 file inspected, no offences detected',
                ''].join("\n"))
           ensure
@@ -339,7 +339,7 @@ module Rubocop
         # Need to pass an empty array explicitly
         # so that the CLI does not refer arguments of `rspec`
         cli.run([])
-        expect($stdout.string.uncolored).to match(
+        expect(Term::ANSIColor.uncolored($stdout.string)).to match(
           /files inspected, no offences detected\n/
         )
       end
@@ -353,7 +353,7 @@ module Rubocop
         begin
           expect(cli.run(['--emacs', 'example.rb'])).to eq(1)
           unexpected_part = RUBY_VERSION >= '2.0' ? 'end-of-input' : '$end'
-          expect($stdout.string.uncolored).to eq(
+          expect(Term::ANSIColor.uncolored($stdout.string)).to eq(
             ["example.rb:3: E: Syntax error, unexpected #{unexpected_part}, " +
              'expecting keyword_end',
              '',
@@ -401,7 +401,7 @@ module Rubocop
           expect(cli.run(['--emacs', 'example.rb'])).to eq(1)
           # all cops were disabled, then 2 were enabled again, so we
           # should get 2 offences reported.
-          expect($stdout.string.uncolored).to eq(
+          expect(Term::ANSIColor.uncolored($stdout.string)).to eq(
             ['example.rb:8: C: Line is too long. [95/79]',
              "example.rb:10: C: Prefer single-quoted strings when you don't " +
              'need string interpolation or special symbols.',
@@ -431,7 +431,7 @@ module Rubocop
           expect(cli.run(['--emacs', 'example.rb'])).to eq(1)
           # 3 cops were disabled, then 2 were enabled again, so we
           # should get 2 offences reported.
-          expect($stdout.string.uncolored).to eq(
+          expect(Term::ANSIColor.uncolored($stdout.string)).to eq(
             ['example.rb:8: C: Line is too long. [95/79]',
              "example.rb:10: C: Prefer single-quoted strings when you don't " +
              'need string interpolation or special symbols.',
@@ -450,7 +450,7 @@ module Rubocop
         end
         begin
           expect(cli.run(['--emacs', 'example.rb'])).to eq(0)
-          expect($stdout.string.uncolored).to eq(
+          expect(Term::ANSIColor.uncolored($stdout.string)).to eq(
             ['',
              '1 file inspected, no offences detected',
              ''].join("\n"))
@@ -468,7 +468,7 @@ module Rubocop
         end
         begin
           expect(cli.run(['--emacs', 'example.rb'])).to eq(1)
-          expect($stdout.string.uncolored).to eq(
+          expect(Term::ANSIColor.uncolored($stdout.string)).to eq(
             ['example.rb:3: C: Line is too long. [95/79]',
              '',
              '1 file inspected, 1 offence detected',
@@ -491,7 +491,7 @@ module Rubocop
             # Need to pass an empty array explicitly
             # so that the CLI does not refer arguments of `rspec`
             expect(cli.run([])).to eq(0)
-            expect($stdout.string.uncolored).to eq(
+            expect(Term::ANSIColor.uncolored($stdout.string)).to eq(
               ['', '1 file inspected, no offences detected',
                ''].join("\n"))
           end

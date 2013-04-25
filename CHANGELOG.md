@@ -9,6 +9,7 @@
 ### Bugs fixed
 
 * [#90](https://github.com/bbatsov/rubocop/issues/90) Two cops crash when scanning code using super
+* [#97](https://github.com/bbatsov/rubocop/issues/97) Build fails
 
 ### Misc
 
