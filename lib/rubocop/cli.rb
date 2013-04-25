@@ -68,7 +68,7 @@ module Rubocop
               rescue => e
                 errors_count += 1
                 warn "An error occurred while #{cop} was inspecting #{file}."
-                warn "To see the complete backtrace run rubocop -d."
+                warn 'To see the complete backtrace run rubocop -d.'
                 puts e.backtrace if $options[:debug]
               end
               total_offences += cop.offences.count
@@ -129,8 +129,8 @@ module Rubocop
                         else
                           "#{total_offences} offences"
                         end
-      puts "#{offences_string} detected"
-        .send(total_offences.zero? ? :green : :red)
+      puts Term::ANSIColor.send(total_offences.zero? ? :green : :red,
+                                "#{offences_string} detected")
 
       if errors_count > 0
         plural = errors_count > 1 ? 's' : ''
@@ -227,7 +227,9 @@ module Rubocop
 
     def show_cops_on_duty(cops)
       puts '== Reporting for duty =='
-      cops.each { |c| puts ' * '.yellow + c.to_s.green }
+      cops.each do |c|
+        puts Term::ANSIColor.yellow(' * ') + Term::ANSIColor.green(c.to_s)
+      end
       puts '========================'
     end
 
