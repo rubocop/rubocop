@@ -499,6 +499,28 @@ module Rubocop
           FileUtils::rm_rf 'test'
         end
       end
+
+      describe '#display_summary' do
+        it 'handles pluralization correctly' do
+          cli.display_summary(1, 0, 0)
+          expect(Term::ANSIColor.uncolored($stdout.string)).to eq(
+            "\n1 file inspected, no offences detected\n")
+          $stdout = StringIO.new
+          cli.display_summary(1, 1, 0)
+          expect(Term::ANSIColor.uncolored($stdout.string)).to eq(
+            "\n1 file inspected, 1 offence detected\n")
+          $stdout = StringIO.new
+          cli.display_summary(2, 2, 0)
+          expect(Term::ANSIColor.uncolored($stdout.string)).to eq(
+            "\n2 files inspected, 2 offences detected\n")
+        end
+
+        it 'displays an error message when errors are present' do
+          cli.display_summary(1, 1, 1)
+          expect(Term::ANSIColor.uncolored($stdout.string.lines[-3])).to eq(
+            "1 error occurred.\n")
+        end
+      end
     end
   end
 end
