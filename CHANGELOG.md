@@ -11,6 +11,7 @@
 * [#90](https://github.com/bbatsov/rubocop/issues/90) Two cops crash when scanning code using super
 * [#93](https://github.com/bbatsov/rubocop/issues/93) Issue with whitespace?': undefined method
 * [#97](https://github.com/bbatsov/rubocop/issues/97) Build fails
+* [#100](https://github.com/bbatsov/rubocop/issues/100) OpMethod cop doesn't work if method arg is not in braces
 
 ### Misc
 

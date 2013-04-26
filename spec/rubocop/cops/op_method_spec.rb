@@ -18,6 +18,17 @@ module Rubocop
           .to eq([sprintf(OpMethod::ERROR_MESSAGE, '+')])
       end
 
+      it 'works properly even if the argument is not surrounded with braces' do
+        inspect_source(om,
+                       'file.rb',
+                       ['def + another',
+                        '  another',
+                        'end'])
+        expect(om.offences.size).to eq(1)
+        expect(om.offences.map(&:message))
+          .to eq([sprintf(OpMethod::ERROR_MESSAGE, '+')])
+      end
+
       it 'does not register an offence for arg named other' do
         inspect_source(om,
                        'file.rb',

@@ -8,7 +8,12 @@ module Rubocop
       def inspect(file, source, tokens, sexp)
         each(:def, sexp) do |s|
           if s[1][0] == :@op && !%w([] []= <<).include?(s[1][1])
-            param = s[2][1][1][0]
+            if s[2][0] == :paren
+              # param is surrounded by braces
+              param = s[2][1][1][0]
+            else
+              param = s[2][1][0]
+            end
 
             unless param[1] == 'other'
               add_offence(:convention,
