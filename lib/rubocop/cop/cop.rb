@@ -60,6 +60,10 @@ module Rubocop
         end
       end
 
+      def name
+        self.class.to_s.split('::')[-1]
+      end
+
       private
 
       def each_parent_of(sym, sexp)
