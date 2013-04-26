@@ -517,8 +517,8 @@ module Rubocop
 
         it 'displays an error message when errors are present' do
           cli.display_summary(1, 1, 1)
-          expect(Term::ANSIColor.uncolored($stdout.string.lines[-3])).to eq(
-            "1 error occurred.\n")
+          expect(Term::ANSIColor.uncolored($stdout.string.lines.to_a[-3]))
+            .to eq("1 error occurred.\n")
         end
       end
     end
