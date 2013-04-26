@@ -134,7 +134,7 @@ module Rubocop
 
       if errors_count > 0
         plural = errors_count > 1 ? 's' : ''
-        puts "\n#{errors_count} error#{plural} occurred.".red
+        puts Term::ANSIColor.red("\n#{errors_count} error#{plural} occurred.")
         puts 'Errors are usually caused by RuboCop bugs.'
         puts 'Please, report your problems to RuboCop\'s issue tracker.'
       end
