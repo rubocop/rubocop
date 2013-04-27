@@ -33,7 +33,7 @@ Gem::Specification.new do |s|
   s.rubygems_version = '1.8.23'
   s.summary = 'Automatic Ruby code style checking tool.'
 
-  s.add_runtime_dependency(%q<term-ansicolor>, '~> 1.1')
+  s.add_runtime_dependency(%q<rainbow>, '>= 1.1.4')
   s.add_development_dependency(%q<rake>, '~> 10.0')
   s.add_development_dependency(%q<rspec>, '~> 2.13')
   s.add_development_dependency(%q<yard>, '~> 0.8')

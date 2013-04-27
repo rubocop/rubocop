@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 require 'ripper'
-require 'term/ansicolor'
+require 'rainbow'
 
 require 'rubocop/cop/offence'
 require 'rubocop/cop/cop'

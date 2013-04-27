@@ -130,12 +130,12 @@ module Rubocop
                         else
                           "#{total_offences} offences"
                         end
-      puts Term::ANSIColor.send(total_offences.zero? ? :green : :red,
-                                "#{offences_string} detected")
+      puts "#{offences_string} detected"
+        .color(total_offences.zero? ? :green : :red)
 
       if errors_count > 0
         plural = errors_count > 1 ? 's' : ''
-        puts Term::ANSIColor.red("\n#{errors_count} error#{plural} occurred.")
+        puts "\n#{errors_count} error#{plural} occurred.".color(:red)
         puts 'Errors are usually caused by RuboCop bugs.'
         puts 'Please, report your problems to RuboCop\'s issue tracker.'
       end
@@ -229,7 +229,7 @@ module Rubocop
     def show_cops_on_duty(cops)
       puts '== Reporting for duty =='
       cops.each do |c|
-        puts Term::ANSIColor.yellow(' * ') + Term::ANSIColor.green(c.to_s)
+        puts ' * '.color(:yellow) + c.to_s.color(:green)
       end
       puts '========================'
     end
