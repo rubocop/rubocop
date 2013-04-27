@@ -15,7 +15,7 @@ module Rubocop
         expect { cli.run ['-h'] }.to exit_with_code(0)
         expect { cli.run ['--help'] }.to exit_with_code(0)
         message = ['Usage: rubocop [options] [file1, file2, ...]',
-                   '    -d, --[no-]debug                 Display debug info',
+                   '    -d, --debug                      Display debug info',
                    '    -e, --emacs                      Emacs style output',
                    '    -c, --config FILE                Configuration file',
                    '    -s, --silent                     Silence summary',

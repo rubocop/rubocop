@@ -93,7 +93,7 @@ module Rubocop
       OptionParser.new do |opts|
         opts.banner = 'Usage: rubocop [options] [file1, file2, ...]'
 
-        opts.on('-d', '--[no-]debug', 'Display debug info') do |d|
+        opts.on('-d', '--debug', 'Display debug info') do |d|
           $options[:debug] = d
         end
         opts.on('-e', '--emacs', 'Emacs style output') do
