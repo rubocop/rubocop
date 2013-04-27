@@ -19,6 +19,7 @@ module Rubocop
                    '    -e, --emacs                      Emacs style output',
                    '    -c, --config FILE                Configuration file',
                    '    -s, --silent                     Silence summary',
+                   '    -n, --no-color                   Disable color output',
                    '    -v, --version                    Display version']
         expect($stdout.string).to eq((message * 2).join("\n") + "\n")
       end
