@@ -105,6 +105,9 @@ module Rubocop
         opts.on('-s', '--silent', 'Silence summary') do |s|
           $options[:silent] = s
         end
+        opts.on('-n', '--no-color', 'Disable color output') do |s|
+          Sickill::Rainbow.enabled = false
+        end
         opts.on('-v', '--version', 'Display version') do
           puts Rubocop::Version::STRING
           exit(0)
