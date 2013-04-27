@@ -14,9 +14,22 @@ module Rubocop
           ['Use snake_case for symbols.'])
       end
 
+      it 'registers an offence for symbol used as hash label' do
+        inspect_source(snake_case, 'file.rb',
+                       ['{ ONE: 1, TWO: 2 }'])
+        expect(snake_case.offences.map(&:message)).to eq(
+          ['Use snake_case for symbols.'] * 2)
+      end
+
       it 'accepts snake case in names' do
         inspect_source(snake_case, 'file.rb',
                        ['test = :good_idea'])
+        expect(snake_case.offences).to be_empty
+      end
+
+      it 'accepts snake case in hash label names' do
+        inspect_source(snake_case, 'file.rb',
+                       ['{ one: 1, one_more_3: 2 }'])
         expect(snake_case.offences).to be_empty
       end
 

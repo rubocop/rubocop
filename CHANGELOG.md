@@ -12,6 +12,7 @@
 * [#93](https://github.com/bbatsov/rubocop/issues/93) Issue with whitespace?': undefined method
 * [#97](https://github.com/bbatsov/rubocop/issues/97) Build fails
 * [#100](https://github.com/bbatsov/rubocop/issues/100) OpMethod cop doesn't work if method arg is not in braces
+* SymbolSnakeCase now tracks Ruby 1.9 hash labels as well as regular symbols
 
 ### Misc
 
