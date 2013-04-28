@@ -203,6 +203,10 @@ VariableInterpolation:
 # Don't use semicolons to terminate expressions.
 Semicolon:
   Enabled: true
+  # For example; def area(height, width); height * width end
+  AllowAfterParameterListInOneLineMethods: false
+  # For example; def area(height, width) height * width; end
+  AllowBeforeEndInOneLineMethods: true
 
 # Use sprintf instead of %
 FavorSprintf:
