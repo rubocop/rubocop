@@ -212,6 +212,21 @@ module Rubocop
         end
       end
 
+      it 'shows cop names when --debug is passed', ruby: 2.0 do
+        File.open('example1.rb', 'w') { |f| f.puts "\tputs 0" }
+        begin
+          expect(cli.run(['--emacs',
+                          '--silent',
+                          '--debug',
+                          'example1.rb'])).to eq(1)
+          expect($stdout.string.lines[-1]).to eq(
+            ['example1.rb:1: C: Tab: Tab detected.',
+             ''].join("\n"))
+        ensure
+          File.delete 'example1.rb'
+        end
+      end
+
       it 'can be configured with option to disable a certain error' do
         File.open('example1.rb', 'w') { |f| f.puts 'puts 0 ' }
         File.open('rubocop.yml', 'w') do |f|
