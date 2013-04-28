@@ -4,6 +4,12 @@
 
 ### New features
 
+### Bugs fixed
+
+## 0.6.1 (04/28/2013)
+
+### New features
+
 * Split AsciiIdentifiersAndComments cop in two separate cops
 
 ### Bugs fixed
