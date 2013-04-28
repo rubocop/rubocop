@@ -9,7 +9,11 @@ Gem::Specification.new do |s|
   s.required_ruby_version = '>= 1.9.2'
   s.authors = ['Bozhidar Batsov']
   s.date = '2013-04-17'
-  s.description = 'Automatic Ruby code style checking tool. Aims to enforce the community-driven Ruby Style Guide.'
+  s.description = <<-EOF
+    Automatic Ruby code style checking tool.
+    Aims to enforce the community-driven Ruby Style Guide.
+  EOF
+
   s.email = 'bozhidar@batsov.com'
   s.executables = ['rubocop']
   s.extra_rdoc_files = ['LICENSE.txt', 'README.md']
@@ -33,10 +37,10 @@ Gem::Specification.new do |s|
   s.rubygems_version = '1.8.23'
   s.summary = 'Automatic Ruby code style checking tool.'
 
-  s.add_runtime_dependency(%q<rainbow>, '>= 1.1.4')
-  s.add_development_dependency(%q<rake>, '~> 10.0')
-  s.add_development_dependency(%q<rspec>, '~> 2.13')
-  s.add_development_dependency(%q<yard>, '~> 0.8')
-  s.add_development_dependency(%q<bundler>, '~> 1.3')
-  s.add_development_dependency(%q<simplecov>, '~> 0.7')
+  s.add_runtime_dependency('rainbow', '>= 1.1.4')
+  s.add_development_dependency('rake', '~> 10.0')
+  s.add_development_dependency('rspec', '~> 2.13')
+  s.add_development_dependency('yard', '~> 0.8')
+  s.add_development_dependency('bundler', '~> 1.3')
+  s.add_development_dependency('simplecov', '~> 0.7')
 end
