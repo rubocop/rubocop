@@ -20,6 +20,7 @@
 * No longer crashes on bugs within cops. Now problematic checks are skipped and a message is displayed.
 * Replaced Term::ANSIColor with Rainbow.
 * Add an option to disable colors in the output.
+* Cop names are now displayed alongside messages when `-d/--debug` is passed.
 
 ## 0.6.0 (04/23/2013)
 
