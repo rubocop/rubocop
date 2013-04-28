@@ -120,6 +120,9 @@ RuboCop and uses it by default when available.
 The [vim-rubocop](https://github.com/ngmy/vim-rubocop) plugin runs
 RuboCop and displays the results in Vim.
 
+There's also a RuboCop checker in
+[syntastic](https://github.com/scrooloose/syntastic).
+
 ### Other Editors
 
 Here's one great opportunity to contribute to RuboCop - implement
