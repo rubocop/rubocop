@@ -1,9 +1,9 @@
 # encoding: utf-8
 
-require 'coveralls'
-Coveralls.wear!
-
-if ENV['COVERAGE']
+if ENV['TRAVIS']
+  require 'coveralls'
+  Coveralls.wear!
+elsif ENV['COVERAGE']
   require 'simplecov'
   SimpleCov.start
 end
