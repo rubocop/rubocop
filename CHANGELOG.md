@@ -4,6 +4,8 @@
 
 ### New features
 
+* Relax semicolon rule for one line methods, classes and modules
+
 ### Bugs fixed
 
 ## 0.6.1 (04/28/2013)
