@@ -1,11 +1,17 @@
 # encoding: utf-8
 
-require 'coveralls'
-Coveralls.wear!
-
-if ENV['COVERAGE']
+if ENV['TRAVIS'] || ENV['COVERAGE']
   require 'simplecov'
-  SimpleCov.start
+
+  if ENV['TRAVIS']
+    require 'coveralls'
+    SimpleCov.formatter = Coveralls::SimpleCov::Formatter
+  end
+
+  SimpleCov.start do
+    add_filter '/spec/'
+    add_filter '/vendor/bundle/'
+  end
 end
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
