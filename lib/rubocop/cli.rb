@@ -286,7 +286,7 @@ module Rubocop
 
     private
 
-    def log_error(e, msg='')
+    def log_error(e, msg = '')
       if $options[:debug]
         error_message = "#{e.class}, #{e.message}"
         STDERR.puts "#{msg}\t#{error_message}"
