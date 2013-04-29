@@ -8,6 +8,8 @@
 
 ### Bugs fixed
 
+* [#101](https://github.com/bbatsov/rubocop/issues/101) SpaceAroundEqualsInParameterDefault doesn't work properly with empty string
+
 ## 0.6.1 (04/28/2013)
 
 ### New features

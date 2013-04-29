@@ -13,8 +13,18 @@ module Rubocop
           ['Surrounding space missing in default value assignment.'] * 2)
       end
 
+      it 'registers an offence for assignment of empty string without space' do
+        inspect_source(space, 'file.rb', ['def f(x, y="", z=1)', 'end'])
+        expect(space.offences.size).to eq(2)
+      end
+
+      it 'registers an offence for assignment of empty list without space' do
+        inspect_source(space, 'file.rb', ['def f(x, y=[])', 'end'])
+        expect(space.offences.size).to eq(1)
+      end
+
       it 'accepts default value assignment with space' do
-        inspect_source(space, 'file.rb', ['def f(x, y = 0, z = 1)', 'end'])
+        inspect_source(space, 'file.rb', ['def f(x, y = 0, z = {})', 'end'])
         expect(space.offences.map(&:message)).to be_empty
       end
     end

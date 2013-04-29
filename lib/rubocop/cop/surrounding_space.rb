@@ -126,14 +126,13 @@ module Rubocop
     class SpaceAroundEqualsInParameterDefault < Cop
       def inspect(file, source, tokens, sexp)
         each(:params, sexp) do |s|
-          (s[2] || []).each do |param, value|
-            value_pos = all_positions(value).first or next
-            if param[-1].lineno == value_pos.lineno
-              if value_pos.column - (param[-1].column + param[1].length) <= 2
-                add_offence(:convention, param[-1].lineno,
-                            'Surrounding space missing in default value ' +
-                            'assignment.')
-              end
+          (s[2] || []).each do |param, _|
+            param_pos = param.last
+            ix = tokens.index { |t| t.pos == param_pos }
+            unless whitespace?(tokens[ix + 1]) && whitespace?(tokens[ix + 3])
+              add_offence(:convention, param[-1].lineno,
+                          'Surrounding space missing in default value ' +
+                          'assignment.')
             end
           end
         end
