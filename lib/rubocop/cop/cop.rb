@@ -56,7 +56,7 @@ module Rubocop
 
       def add_offence(severity, line_number, message)
         unless @disabled_lines && @disabled_lines.include?(line_number)
-          message = $options[:debug] ? "#{name}: #{message}" : message
+          message = $options && $options[:debug] ? "#{name}: " : '' + message
           @offences << Offence.new(severity, line_number, message)
         end
       end
