@@ -58,6 +58,7 @@ require 'rubocop/cop/op_method'
 require 'rubocop/cop/reduce_arguments'
 require 'rubocop/cop/percent_r'
 require 'rubocop/cop/favor_percent_r'
+require 'rubocop/cop/class_methods'
 
 require 'rubocop/report/report'
 require 'rubocop/report/plain_text'
