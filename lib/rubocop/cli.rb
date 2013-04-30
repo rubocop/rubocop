@@ -70,7 +70,7 @@ module Rubocop
                 warn "An error occurred while #{cop.name} cop" +
                   " was inspecting #{file}."
                 warn 'To see the complete backtrace run rubocop -d.'
-                puts e.backtrace if $options[:debug]
+                puts e.message, e.backtrace if $options[:debug]
               end
               total_offences += cop.offences.count
               report << cop if cop.has_report?
