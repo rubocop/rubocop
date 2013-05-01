@@ -275,3 +275,8 @@ FavorPercentR:
 # Use self when defining module/class methods.
 ClassMethods:
   Enabled: true
+
+# Avoid single-line methods.
+SingleLineMethods:
+  Enabled: true
+  AllowIfMethodIsEmpty: true
