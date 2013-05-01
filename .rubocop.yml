@@ -248,6 +248,10 @@ AsciiIdentifiers:
 AsciiComments:
   Enabled: true
 
+# Do not use block comments.
+BlockComments:
+  Enabled: true
+
 # Avoid rescuing the Exception class.
 RescueException:
   Enabled: true
