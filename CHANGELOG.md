@@ -6,6 +6,7 @@
 
 * Relax semicolon rule for one line methods, classes and modules
 * New cop ClassMethods checks for uses for class/module names in definitions of class/module methods
+* New cop SingleLineMethods checks for methods implemented on a single line
 
 ### Bugs fixed
 
