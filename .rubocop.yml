@@ -208,8 +208,12 @@ Semicolon:
   # For example; def area(height, width) height * width; end
   AllowBeforeEndInOneLineMethods: true
 
-# Use sprintf instead of %
+# Use sprintf instead of String#%.
 FavorSprintf:
+  Enabled: true
+
+# Use Array#join instead of Array#*.
+FavorJoin:
   Enabled: true
 
 # Use alias_method instead of alias.
