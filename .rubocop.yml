@@ -29,7 +29,7 @@ CaseIndentation:
   Enabled: true
 
 # Use empty lines between defs.
-EmptyLines:
+EmptyLineBetweenDefs:
   Enabled: true
 
 # Use spaces around operators.

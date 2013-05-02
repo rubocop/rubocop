@@ -4,8 +4,8 @@ require 'spec_helper'
 
 module Rubocop
   module Cop
-    describe EmptyLines do
-      let(:empty_lines) { EmptyLines.new }
+    describe EmptyLineBetweenDefs do
+      let(:empty_lines) { EmptyLineBetweenDefs.new }
 
       it 'finds offences in inner classes' do
         inspect_source(empty_lines, '', ['class K',

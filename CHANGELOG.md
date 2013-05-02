@@ -19,6 +19,7 @@
 ### Misc
 
 * Renamed `Indentation` cop to `CaseIndentation` to avoid confusion
+* Renamed `EmptyLines` cop to `EmptyLineBetweenDefs` to avoid confusion
 
 ## 0.6.1 (04/28/2013)
 

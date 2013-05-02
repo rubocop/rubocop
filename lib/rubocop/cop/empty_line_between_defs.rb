@@ -2,7 +2,7 @@
 
 module Rubocop
   module Cop
-    class EmptyLines < Cop
+    class EmptyLineBetweenDefs < Cop
       ERROR_MESSAGE = 'Use empty lines between defs.'
 
       def inspect(file, source, tokens, sexp)
