@@ -14,6 +14,7 @@
 ### Bugs fixed
 
 * [#101](https://github.com/bbatsov/rubocop/issues/101) `SpaceAroundEqualsInParameterDefault` doesn't work properly with empty string
+* Fix `BraceAfterPercent` for %W, %i and %I and added more tests
 
 ### Misc
 
