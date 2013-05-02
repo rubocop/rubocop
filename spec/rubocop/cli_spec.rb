@@ -351,6 +351,36 @@ module Rubocop
         end
       end
 
+      it 'Can exclude directories relative to .rubocop.yml' do
+        %w(src etc/test etc/spec tmp/test tmp/spec).each do |dir|
+          FileUtils.mkdir_p "example/#{dir}"
+          File.open("example/#{dir}/example1.rb", 'w') do |f|
+            f.puts '# encoding: utf-8'
+            f.puts '#' * 90
+          end
+        end
+
+        File.open('example/.rubocop.yml', 'w') do |f|
+          f.puts('AllCops:',
+                 '  NoGoZone:',
+                 '    - src',
+                 '    - etc',
+                 '    - tmp/spec')
+        end
+
+        begin
+          expect(cli.run(['example'])).to eq(1)
+          expect($stdout.string).to eq(
+            ['== example/tmp/test/example1.rb ==',
+             'C:  2: Line is too long. [90/79]',
+             '',
+             '1 file inspected, 1 offence detected',
+             ''].join("\n"))
+        ensure
+          FileUtils.rm_rf 'example'
+        end
+      end
+
       it 'finds no violations when checking the rubocop source code' do
         # Need to pass an empty array explicitly
         # so that the CLI does not refer arguments of `rspec`
