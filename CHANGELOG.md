@@ -15,6 +15,10 @@
 
 * [#101](https://github.com/bbatsov/rubocop/issues/101) SpaceAroundEqualsInParameterDefault doesn't work properly with empty string
 
+### Misc
+
+* Renamed `Indentation` cop to `CaseIndentation` to avoid confusion
+
 ## 0.6.1 (04/28/2013)
 
 ### New features

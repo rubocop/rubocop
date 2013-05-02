@@ -2,7 +2,7 @@
 
 module Rubocop
   module Cop
-    class Indentation < Cop
+    class CaseIndentation < Cop
       ERROR_MESSAGE = 'Indent when as deep as case.'
 
       def inspect(file, source, tokens, sexp)

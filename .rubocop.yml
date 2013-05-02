@@ -25,7 +25,7 @@ TrailingWhitespace:
   Enabled: true
 
 # Indent when as deep as case.
-Indentation:
+CaseIndentation:
   Enabled: true
 
 # Use empty lines between defs.
