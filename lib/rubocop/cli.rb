@@ -206,7 +206,7 @@ module Rubocop
     end
 
     def no_go_zone?(file, config)
-      return false unless config.has_key?('AllCops')
+      return false unless config && config.has_key?('AllCops')
 
       file_dir = File.expand_path(File.dirname(file))
       no_go_zones = config['AllCops']['NoGoZone']
