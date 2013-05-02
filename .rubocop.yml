@@ -32,6 +32,10 @@ CaseIndentation:
 EmptyLineBetweenDefs:
   Enabled: true
 
+# Don't use several empty lines in a row.
+EmptyLines:
+  Enabled: true
+
 # Use spaces around operators.
 SpaceAroundOperators:
   Enabled: true

@@ -9,7 +9,8 @@
 * New cop `ClassMethods` checks for uses for class/module names in definitions of class/module methods
 * New cop `SingleLineMethods` checks for methods implemented on a single line
 * New cop `FavorJoin` checks for usages of `Array#*` with a string argument
-* New cop `BlockComments` checks tracks uses of block comments(`=begin/=end` comments)
+* New cop `BlockComments` tracks uses of block comments(`=begin/=end` comments)
+* New cop `EmptyLines` tracks consecutive blank lines
 
 ### Bugs fixed
 
