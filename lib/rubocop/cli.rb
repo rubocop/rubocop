@@ -34,8 +34,6 @@ module Rubocop
       target_files(args).each do |file|
         break if wants_to_quit?
 
-        puts "Scanning #{file}" if $options[:debug]
-
         report = Report.create(file, $options[:mode])
         source = File.readlines(file).map do |line|
           get_rid_of_invalid_byte_sequences(line)
@@ -45,6 +43,14 @@ module Rubocop
         syntax_cop = Rubocop::Cop::Syntax.new
         syntax_cop.inspect(file, source, nil, nil)
 
+        config = $options[:config] || config_from_dotfile(File.dirname(file))
+        if no_go_zone?(file, config)
+          puts "NoGoZone #{file}".color(:red) if $options[:debug]
+          next
+        end
+
+        puts "Scanning #{file}" if $options[:debug]
+
         if syntax_cop.offences.map(&:severity).include?(:error)
           # In case of a syntax error we just report that error and do
           # no more checking in the file.
@@ -52,7 +58,6 @@ module Rubocop
           total_offences += syntax_cop.offences.count
         else
           tokens, sexp, correlations = CLI.rip_source(source)
-          config = $options[:config] || config_from_dotfile(File.dirname(file))
           disabled_lines = disabled_lines_in(source)
 
           cops.each do |cop_klass|
@@ -193,6 +198,25 @@ module Rubocop
       [tokens, sexp, correlations]
     end
 
+    def expand_no_go_zones!(config, dir)
+      if config.has_key?('AllCops')
+        config['AllCops']['NoGoZone'].map! { |z| File.join(dir, z) }
+      end
+      config
+    end
+
+    def no_go_zone?(file, config)
+      return false unless config.has_key?('AllCops')
+
+      file_dir = File.expand_path(File.dirname(file))
+      no_go_zones = config['AllCops']['NoGoZone']
+
+      no_go_zones.each do |no_go_dir|
+        return true if file_dir.start_with?(no_go_dir)
+      end
+      false
+    end
+
     # Returns the configuration hash from .rubocop.yml searching
     # upwards in the directory structure starting at the given
     # directory where the inspected file is. If no .rubocop.yml is
@@ -208,12 +232,15 @@ module Rubocop
           path = File.join(dir, '.rubocop.yml')
           if File.exist?(path)
             @configs[target_file_dir] = YAML.load_file(path)
-            return @configs[target_file_dir]
+            return expand_no_go_zones!(@configs[target_file_dir], dir)
           end
           dir = File.expand_path('..', dir)
         end
         path = File.join(Dir.home, '.rubocop.yml')
-        @configs[target_file_dir] = YAML.load_file(path) if File.exist?(path)
+        if File.exists?(path)
+          @configs[target_file_dir] = YAML.load_file(path)
+          expand_no_go_zones!(@configs[target_file_dir], Dir.home)
+        end
       end
       @configs[target_file_dir]
     end

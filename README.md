@@ -71,6 +71,8 @@ LineLength:
 It allows to enable/disable certain cops (checks) and to alter their
 behavior if they accept any parameters.
 
+### Disabling Cops within Source Code
+
 One or more individual cops can be disabled locally in a section of a
 file by adding a comment such as
 
@@ -94,6 +96,23 @@ comment.
 ```ruby
 for x in (0..19) # rubocop:disable AvoidFor
 ```
+
+### Ignoring Directories
+
+Entire directories can be also be ignored through `.rubocop.yml`.  Here is an
+example that might be used for a Rails project:
+
+```ruby
+AllCops:
+  NoGoZone:
+    - db
+    - config
+    - script
+
+[...other configuration...]
+```
+
+Note: Directories are specified relative to the `.rubocop.yml` file.
 
 ## Compatibility
 
