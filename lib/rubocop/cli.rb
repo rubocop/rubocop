@@ -142,7 +142,8 @@ module Rubocop
     end
 
     def display_summary(num_files, total_offences, errors_count)
-      print "\n#{num_files} file#{num_files > 1 ? 's' : ''} inspected, "
+      plural = num_files == 0 || num_files > 1 ? 's' : ''
+      print "\n#{num_files} file#{plural} inspected, "
       offences_string = if total_offences.zero?
                           'no offences'
                         elsif total_offences == 1

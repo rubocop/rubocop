@@ -609,6 +609,10 @@ module Rubocop
 
     describe '#display_summary' do
       it 'handles pluralization correctly' do
+        cli.display_summary(0, 0, 0)
+        expect($stdout.string).to eq(
+          "\n0 files inspected, no offences detected\n")
+        $stdout = StringIO.new
         cli.display_summary(1, 0, 0)
         expect($stdout.string).to eq(
           "\n1 file inspected, no offences detected\n")
