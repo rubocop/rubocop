@@ -5,7 +5,7 @@ module Rubocop
     module IfThenElse
       def inspect(file, source, tokens, sexp)
         tokens.each_with_index do |t, ix|
-          if t.type == :on_kw && ['if', 'unless'].include?(t.text)
+          if t.type == :on_kw && %w(if unless).include?(t.text)
             if kind_of_if(tokens, ix + 1) == self.class
               add_offence(:convention, t.pos.lineno, error_message)
             end

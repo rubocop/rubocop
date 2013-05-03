@@ -9,7 +9,7 @@ module Rubocop
 
       it 'registers an offence for consecutive empty lines' do
         inspect_source(empty_lines, 'file.rb',
-                       ['test', '', '', '', 'top'])
+                       ['test = 5', '', '', '', 'top'])
         expect(empty_lines.offences.size).to eq(2)
       end
 

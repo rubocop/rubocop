@@ -292,3 +292,7 @@ ClassMethods:
 SingleLineMethods:
   Enabled: true
   AllowIfMethodIsEmpty: true
+
+# Use %w or %W for arrays of words.
+WordArray:
+  Enabled: true

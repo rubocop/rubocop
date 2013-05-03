@@ -11,6 +11,7 @@
 * New cop `FavorJoin` checks for usages of `Array#*` with a string argument
 * New cop `BlockComments` tracks uses of block comments(`=begin/=end` comments)
 * New cop `EmptyLines` tracks consecutive blank lines
+* New cop `WordArray` tracks arrays of words.
 
 ### Bugs fixed
 
