@@ -10,7 +10,7 @@ module Rubocop
 
       literals.each do |literal|
         # %i and %I are new in ruby 2.0
-        tag = literal.downcase == 'i' ? {ruby: 2.0} : {}
+        tag = literal.downcase == 'i' ? { ruby: 2.0 } : {}
 
         it "registers an offence for %#{literal}[", tag  do
           inspect_source(bap,
