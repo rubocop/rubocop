@@ -142,6 +142,11 @@ RuboCop and displays the results in Vim.
 There's also a RuboCop checker in
 [syntastic](https://github.com/scrooloose/syntastic).
 
+### Sublime Text 2
+
+If you're a ST2 user you might find
+[this plugin](https://gist.github.com/pderichs/5508200) useful.
+
 ### Other Editors
 
 Here's one great opportunity to contribute to RuboCop - implement
