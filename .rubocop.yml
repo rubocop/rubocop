@@ -3,8 +3,11 @@
 
 # Common configuration.
 AllCops:
-  # Directories that are not checked.
-  NoGoZone: []
+  # Include gemspec and Rakefile
+  Includes:
+    - '*.gemspec'
+    - 'Rakefile'
+  Excludes: []
 
 # Use UTF-8 as the source file encoding.
 Encoding:
@@ -15,7 +18,7 @@ LineLength:
   Enabled: true
   Max: 79
 
-# Avoid methods longer than 10 lines of code 
+# Avoid methods longer than 10 lines of code
 MethodLength:
   Enabled: true
   CountComments: false  # count full line comments?
