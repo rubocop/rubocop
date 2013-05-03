@@ -144,8 +144,9 @@ There's also a RuboCop checker in
 
 ### Sublime Text 2
 
-If you're a ST2 user you might find
-[this plugin](https://gist.github.com/pderichs/5508200) useful.
+If you're a ST2 user you might find the
+[Sublime RuboCop plugin](https://github.com/pderichs/sublime_rubocop)
+useful.
 
 ### Other Editors
 
