@@ -18,6 +18,7 @@ module Rubocop
         @special = {
           assign:      [[:on_op,     '=']],
           brace_block: [[:on_lbrace, '{']],
+          hash:        [[:on_lbrace, '{']],
           ifop:        [[:on_op, '?'], [:on_op, ':']]
         }
       end
