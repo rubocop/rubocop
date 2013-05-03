@@ -12,6 +12,7 @@
 * New cop `BlockComments` tracks uses of block comments(`=begin/=end` comments)
 * New cop `EmptyLines` tracks consecutive blank lines
 * New cop `WordArray` tracks arrays of words.
+* [#108](https://github.com/bbatsov/rubocop/issues/108) New cop `SpaceInsideHashLiteralBraces` checks for spaces inside hash literal braces - style is configurable
 
 ### Bugs fixed
 

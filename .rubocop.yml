@@ -296,3 +296,8 @@ SingleLineMethods:
 # Use %w or %W for arrays of words.
 WordArray:
   Enabled: true
+
+# Use spaces inside hash literal braces - or don't.
+SpaceInsideHashLiteralBraces:
+  Enabled: true
+  EnforcedStyleIsWithSpaces: true

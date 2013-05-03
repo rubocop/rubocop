@@ -66,6 +66,9 @@ module Rubocop
       end
 
       def check_missing_space(tokens, ix, grammar_path)
+        # Checked by SpaceInsideHashLiteralBraces and not here.
+        return if grammar_path.last == :hash
+
         t = tokens[ix]
         case t.type
         when :on_lbrace
@@ -120,6 +123,49 @@ module Rubocop
       include SpaceInside
       def get_paren
         Paren.new(:on_lbracket, :on_rbracket, 'square brackets')
+      end
+    end
+
+    class SpaceInsideHashLiteralBraces < Cop
+      include SurroundingSpace
+
+      def check_missing_space(tokens, ix, grammar_path)
+        if SpaceInsideHashLiteralBraces.enforced_style_is_with_spaces
+          check_space(tokens, ix, grammar_path, 'missing') do |t|
+            not whitespace?(t) || [:on_lbrace, :on_rbrace].include?(t.type)
+          end
+        end
+      end
+
+      def check_unwanted_space(tokens, ix)
+        unless SpaceInsideHashLiteralBraces.enforced_style_is_with_spaces
+          grammar_path = @correlations[ix] or return
+          check_space(tokens, ix, grammar_path, 'detected') do |t|
+            whitespace?(t)
+          end
+        end
+      end
+
+      def self.enforced_style_is_with_spaces
+        return true if SpaceInsideHashLiteralBraces.config.nil?
+        s = SpaceInsideHashLiteralBraces.config['EnforcedStyleIsWithSpaces']
+        s.nil? || s
+      end
+
+      private
+
+      def check_space(tokens, ix, grammar_path, word)
+        if grammar_path[-1] == :hash
+          is_offence = case tokens[ix].type
+                       when :on_lbrace then yield tokens[ix + 1]
+                       when :on_rbrace then yield tokens[ix - 1]
+                       else false
+                       end
+          if is_offence
+            add_offence(:convention, tokens[ix].pos.lineno,
+                        "Space inside hash literal braces #{word}.")
+          end
+        end
       end
     end
 
