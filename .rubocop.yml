@@ -297,6 +297,10 @@ SingleLineMethods:
 WordArray:
   Enabled: true
 
+# Use %i or %I for arrays of symbols.
+SymbolArray:
+  Enabled: false
+
 # Use spaces inside hash literal braces - or don't.
 SpaceInsideHashLiteralBraces:
   Enabled: true

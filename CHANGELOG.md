@@ -14,6 +14,7 @@
 * New cop `WordArray` tracks arrays of words.
 * [#108](https://github.com/bbatsov/rubocop/issues/108) New cop `SpaceInsideHashLiteralBraces` checks for spaces inside hash literal braces - style is configurable
 * New cop `LineContinuation` tracks uses of the line continuation character (`\`)
+* New cop `SymbolArray` tracks arrays of symbols.
 
 ### Bugs fixed
 
