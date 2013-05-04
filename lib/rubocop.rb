@@ -66,6 +66,7 @@ require 'rubocop/cop/class_methods'
 require 'rubocop/cop/single_line_methods'
 require 'rubocop/cop/word_array'
 require 'rubocop/cop/symbol_array'
+require 'rubocop/cop/trivial_accessors.rb'
 
 require 'rubocop/report/report'
 require 'rubocop/report/plain_text'
