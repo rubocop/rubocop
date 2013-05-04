@@ -18,7 +18,7 @@
 ### Bugs fixed
 
 * [#101](https://github.com/bbatsov/rubocop/issues/101) `SpaceAroundEqualsInParameterDefault` doesn't work properly with empty string
-* Fix `BraceAfterPercent` for %W, %i and %I and added more tests
+* Fix `BraceAfterPercent` for `%W`, `%i` and `%I` and added more tests
 
 ### Misc
 
@@ -29,21 +29,21 @@
 
 ### New features
 
-* Split AsciiIdentifiersAndComments cop in two separate cops
+* Split `AsciiIdentifiersAndComments` cop in two separate cops
 
 ### Bugs fixed
 
-* [#90](https://github.com/bbatsov/rubocop/issues/90) Two cops crash when scanning code using super
-* [#93](https://github.com/bbatsov/rubocop/issues/93) Issue with whitespace?': undefined method
+* [#90](https://github.com/bbatsov/rubocop/issues/90) Two cops crash when scanning code using `super`
+* [#93](https://github.com/bbatsov/rubocop/issues/93) Issue with `whitespace?': undefined method`
 * [#97](https://github.com/bbatsov/rubocop/issues/97) Build fails
-* [#100](https://github.com/bbatsov/rubocop/issues/100) OpMethod cop doesn't work if method arg is not in braces
-* SymbolSnakeCase now tracks Ruby 1.9 hash labels as well as regular symbols
+* [#100](https://github.com/bbatsov/rubocop/issues/100) `OpMethod` cop doesn't work if method arg is not in braces
+* `SymbolSnakeCase` now tracks Ruby 1.9 hash labels as well as regular symbols
 
 ### Misc
 
 * [#88](https://github.com/bbatsov/rubocop/issues/88) Abort gracefully when interrupted with Ctrl-C
 * No longer crashes on bugs within cops. Now problematic checks are skipped and a message is displayed.
-* Replaced Term::ANSIColor with Rainbow.
+* Replaced `Term::ANSIColor` with `Rainbow`.
 * Add an option to disable colors in the output.
 * Cop names are now displayed alongside messages when `-d/--debug` is passed.
 
@@ -72,7 +72,7 @@
 ### Bugs fixed
 
 * [#62](https://github.com/bbatsov/rubocop/issues/62) - Config files in ancestor directories are ignored if another exists in home directory
-* [#65](https://github.com/bbatsov/rubocop/issues/65) - Suggests to convert symbols :==, :<=> and the like to snake_case
+* [#65](https://github.com/bbatsov/rubocop/issues/65) - Suggests to convert symbols `:==`, `:<=>` and the like to snake_case
 * [#66](https://github.com/bbatsov/rubocop/issues/66) - Does not crash on unreadable or unparseable files
 * [#70](https://github.com/bbatsov/rubocop/issues/70) - Support `alias` with bareword arguments
 * [#64](https://github.com/bbatsov/rubocop/issues/64) - Performance issue with Bundler
