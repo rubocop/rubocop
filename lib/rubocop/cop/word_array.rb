@@ -23,11 +23,15 @@ module Rubocop
       end
 
       def complex_content?(arr_sexp)
+        non_empty_strings = 0
+
         each(:@tstring_content, arr_sexp) do |content|
-          return true unless content[1] =~ /\A[\w-]*\z/
+          non_empty_strings += 1
+          return true unless content[1] =~ /\A[\w-]+\z/
         end
 
-        false
+        # check for '' strings in the array
+        non_empty_strings == arr_sexp.size ? false : true
       end
     end
   end

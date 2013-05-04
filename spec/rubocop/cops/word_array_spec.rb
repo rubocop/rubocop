@@ -27,6 +27,13 @@ module Rubocop
                        ['["one space", "two", "three"]'])
         expect(wa.offences).to be_empty
       end
+
+      it 'does not register an offence for array with empty strings' do
+        inspect_source(wa,
+                       'file.rb',
+                       ['["", "two", "three"]'])
+        expect(wa.offences).to be_empty
+      end
     end
   end
 end
