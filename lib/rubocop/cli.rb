@@ -105,7 +105,7 @@ module Rubocop
           $options[:mode] = :emacs_style
         end
         opts.on('-c FILE', '--config FILE', 'Configuration file') do |f|
-          $options[:config] = YAML.load_file(f)
+          $options[:config] = load_config(f)
         end
         opts.on('-s', '--silent', 'Silence summary') do |s|
           $options[:silent] = s
@@ -231,18 +231,41 @@ module Rubocop
         while dir != '/'
           path = File.join(dir, '.rubocop.yml')
           if File.exist?(path)
-            @configs[target_file_dir] = YAML.load_file(path)
+            @configs[target_file_dir] = load_config(path)
             return expand_no_go_zones!(@configs[target_file_dir], dir)
           end
           dir = File.expand_path('..', dir)
         end
         path = File.join(Dir.home, '.rubocop.yml')
         if File.exists?(path)
-          @configs[target_file_dir] = YAML.load_file(path)
+          @configs[target_file_dir] = load_config(path)
           expand_no_go_zones!(@configs[target_file_dir], Dir.home)
         end
       end
       @configs[target_file_dir]
+    end
+
+    RUBOCOP_HOME_CONFIG = YAML.load_file(File.join(File.dirname(__FILE__),
+                                                   '../..',
+                                                   '.rubocop.yml'))
+
+    def load_config(path)
+      config = YAML.load_file(path)
+      valid_cop_names, invalid_cop_names = config.keys.partition do |key|
+        RUBOCOP_HOME_CONFIG.keys.include?(key)
+      end
+      invalid_cop_names.each do |name|
+        puts "Warning: unrecognized cop #{name} found in #{path}".color(:red)
+      end
+      valid_cop_names.each do |name|
+        config[name].keys.each do |param|
+          unless RUBOCOP_HOME_CONFIG[name].keys.include?(param)
+            puts(("Warning: unrecognized parameter #{name}:#{param} found " +
+                  "in #{path}").color(:red))
+          end
+        end
+      end
+      config
     end
 
     def cops_on_duty(config)

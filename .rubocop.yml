@@ -1,6 +1,11 @@
 # This is the default configuration file with all checking enabled. It is also
 # the configuration used to check the rubocop source code.
 
+# Common configuration.
+AllCops:
+  # Directories that are not checked.
+  NoGoZone: []
+
 # Use UTF-8 as the source file encoding.
 Encoding:
   Enabled: true
