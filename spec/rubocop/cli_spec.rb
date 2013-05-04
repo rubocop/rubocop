@@ -37,63 +37,68 @@ module Rubocop
       end
 
       context 'when interrupted with Ctrl-C' do
-        def execute_rubocop
-          project_root = File.expand_path('../..', File.dirname(__FILE__))
-          rubocop_command = File.join(project_root, 'bin', 'rubocop')
-
-          _, stdout, stderr, thread = Open3.popen3(rubocop_command, '--debug')
-
-          unless IO.select([stdout], nil, nil, 10)
-            fail 'rubocop took too long to start running'
+        before do
+          @interrupt_handlers = []
+          Signal.stub(:trap).with('INT') do |&block|
+            @interrupt_handlers << block
           end
 
-          yield stdout, stderr, thread.pid
-
-          thread.value.exitstatus
-        ensure
-          thread.terminate
+          $stderr = StringIO.new
         end
 
-        def wait_for_output(output)
-          IO.select([output], nil, nil, 10)
+        after do
+          $stderr = STDERR
+          @cli_thread.terminate if @cli_thread
+
+          # Workaround for not to break cop specs,
+          # since Cop#add_offence checks if $options[:debug].
+          $options = {}
+        end
+
+        def interrupt
+          @interrupt_handlers.each(&:call)
+        end
+
+        def cli_run_in_thread
+          @cli_thread = Thread.new do
+            cli.run(['--debug'])
+          end
+
+          # Wait for start.
+          loop { break unless $stdout.string.empty? }
+
+          @cli_thread
         end
 
         it 'exits with status 1' do
-          exit_status = execute_rubocop do |stdout, stderr, pid|
-            Process.kill('INT', pid)
-          end
-          expect(exit_status).to eq(1)
+          cli_thread = cli_run_in_thread
+          interrupt
+          expect(cli_thread.value).to eq(1)
         end
 
         it 'exits gracefully without dumping backtraces' do
-          execute_rubocop do |stdout, stderr, pid|
-            Process.kill('INT', pid)
-            wait_for_output(stderr)
-            expect(stderr.read).not_to match(/from .+:\d+:in /)
-          end
+          cli_thread = cli_run_in_thread
+          interrupt
+          cli_thread.join
+          expect($stderr.string).not_to match(/from .+:\d+:in /)
         end
 
         context 'with Ctrl-C once' do
           it 'reports summary' do
-            execute_rubocop do |stdout, stderr, pid|
-              Process.kill('INT', pid)
-              wait_for_output(stdout)
-              output = stdout.read
-              expect(output).to match(/files? inspected/)
-            end
+            cli_thread = cli_run_in_thread
+            interrupt
+            cli_thread.join
+            expect($stdout.string).to match(/files? inspected/)
           end
         end
 
         context 'with Ctrl-C twice' do
-          it 'exits immediately without reporting summary' do
-            execute_rubocop do |stdout, stderr, pid|
-              Process.kill('INT', pid)
-              wait_for_output(stderr) # Wait for "Exiting...".
-              Process.kill('INT', pid)
-              wait_for_output(stdout)
-              output = stdout.read
-              expect(output).not_to match(/files? inspected/)
-            end
+          it 'exits immediately' do
+            Object.any_instance.should_receive(:exit!).with(1)
+            cli_thread = cli_run_in_thread
+            interrupt
+            interrupt
+            cli_thread.join
           end
         end
       end
