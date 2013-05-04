@@ -301,3 +301,7 @@ WordArray:
 SpaceInsideHashLiteralBraces:
   Enabled: true
   EnforcedStyleIsWithSpaces: true
+
+# Avoid the use of line continuation (/).
+LineContinuation:
+  Enabled: true
