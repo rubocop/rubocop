@@ -99,7 +99,8 @@ for x in (0..19) # rubocop:disable AvoidFor
 
 ### Including/Excluding files
 
-Files and directories can be also be ignored through `.rubocop.yml`.
+Rubocop checks all files recursively within the directory it is run on.  However, it does not recognize some files as ruby files, and if you'd like it to check these you'll need to manually pass them in.  Files and directories can be also be ignored through `.rubocop.yml`.
+
 Here is an example that might be used for a Rails project:
 
 ```yaml
@@ -116,7 +117,7 @@ AllCops:
 # ...
 ```
 
-Note: Files are specified relative to the `.rubocop.yml` file.
+Note: Files and directories are specified relative to the `.rubocop.yml` file.
 
 ## Compatibility
 
