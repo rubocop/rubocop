@@ -90,8 +90,8 @@ module Rubocop
             cop.inspect(file, source, tokens, sexp)
           rescue => e
             @errors_count += 1
-            warn "An error occurred while #{cop.name} cop" +
-              " was inspecting #{file}."
+            warn "An error occurred while #{cop.name} cop".color(:yellow) +
+              " was inspecting #{file}.".color(:yellow)
             warn 'To see the complete backtrace run rubocop -d.'
             puts e.message, e.backtrace if $options[:debug]
           end
