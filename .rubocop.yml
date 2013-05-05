@@ -322,3 +322,7 @@ TrivialAccessors:
 # Comments should start with a space.
 LeadingCommentSpace:
   Enabled: true
+
+# Do not use :: for method invocation.
+SemicolonMethodCall:
+  Enabled: true
