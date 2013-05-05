@@ -16,6 +16,8 @@
 * New cop `LineContinuation` tracks uses of the line continuation character (`\`)
 * New cop `SymbolArray` tracks arrays of symbols.
 * Print warnings for unrecognized names in configuration files.
+* New cop `TrivialAccessors` tracks method definitions that could be automatically generated with `attr_*` methods.
+* New cop `LeadingCommentSpace` checks for missing space after `#` in comments.
 
 ### Bugs fixed
 

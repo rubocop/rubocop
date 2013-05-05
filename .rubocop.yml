@@ -315,6 +315,10 @@ SpaceInsideHashLiteralBraces:
 LineContinuation:
   Enabled: true
 
-# Prefer attr_accessors to trivial readers/writers
+# Prefer attr_* methods to trivial readers/writers.
 TrivialAccessors:
+  Enabled: true
+
+# Comments should start with a space.
+LeadingCommentSpace:
   Enabled: true
