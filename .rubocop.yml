@@ -19,7 +19,7 @@ LineLength:
 MethodLength:
   Enabled: true
   CountComments: false  # count full line comments?
-  Max: 65
+  Max: 30
 
 # No hard tabs.
 Tab:

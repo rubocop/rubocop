@@ -100,8 +100,7 @@ module Rubocop
 
           children.each do |elem|
             case elem
-            when Array
-              correlate(elem, path) # Dive deeper
+            when Array then correlate(elem, path) # Dive deeper
             when Symbol
               unless elem.to_s =~ /^@?[a-z_]+$/
                 # There's a trailing @ in some symbols in sexp,

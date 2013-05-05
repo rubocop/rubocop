@@ -13,6 +13,13 @@ module Rubocop
     attr_accessor :wants_to_quit
     alias_method :wants_to_quit?, :wants_to_quit
 
+    def initialize
+      @cops = Cop::Cop.all
+      @processed_file_count = 0
+      @total_offences = 0
+      @errors_count = 0
+    end
+
     # Entry point for the application logic. Here we
     # do the command line arguments processing and inspect
     # the target files
@@ -24,24 +31,15 @@ module Rubocop
 
       parse_options(args)
 
-      cops = Cop::Cop.all
-      show_cops_on_duty(cops) if $options[:debug]
-      processed_file_count = 0
-      total_offences = 0
-      errors_count = 0
+      show_cops_on_duty(@cops) if $options[:debug]
+
       @configs = {}
 
       target_files(args).each do |file|
         break if wants_to_quit?
 
         report = Report.create(file, $options[:mode])
-        source = File.readlines(file).map do |line|
-          get_rid_of_invalid_byte_sequences(line)
-          line.chomp
-        end
-
-        syntax_cop = Rubocop::Cop::Syntax.new
-        syntax_cop.inspect(file, source, nil, nil)
+        source = read_source(file)
 
         config = $options[:config] || config_from_dotfile(File.dirname(file))
         if no_go_zone?(file, config)
@@ -51,47 +49,61 @@ module Rubocop
 
         puts "Scanning #{file}" if $options[:debug]
 
+        syntax_cop = Rubocop::Cop::Syntax.new
+        syntax_cop.inspect(file, source, nil, nil)
+
         if syntax_cop.offences.map(&:severity).include?(:error)
           # In case of a syntax error we just report that error and do
           # no more checking in the file.
           report << syntax_cop
-          total_offences += syntax_cop.offences.count
+          @total_offences += syntax_cop.offences.count
         else
-          tokens, sexp, correlations = CLI.rip_source(source)
-          disabled_lines = disabled_lines_in(source)
-
-          cops.each do |cop_klass|
-            cop_name = cop_klass.name.split('::').last
-            cop_config = config[cop_name] if config
-            if cop_config.nil? || cop_config['Enabled']
-              cop_klass.config = cop_config
-              cop = cop_klass.new
-              cop.correlations = correlations
-              cop.disabled_lines = disabled_lines[cop_name]
-              begin
-                cop.inspect(file, source, tokens, sexp)
-              rescue => e
-                errors_count += 1
-                warn "An error occurred while #{cop.name} cop" +
-                  " was inspecting #{file}."
-                warn 'To see the complete backtrace run rubocop -d.'
-                puts e.message, e.backtrace if $options[:debug]
-              end
-              total_offences += cop.offences.count
-              report << cop if cop.has_report?
-            end
-          end
+          inspect_file(file, source, config, report)
         end
 
-        processed_file_count += 1
+        @processed_file_count += 1
         report.display unless report.empty?
       end
 
       unless $options[:silent]
-        display_summary(processed_file_count, total_offences, errors_count)
+        display_summary(@processed_file_count, @total_offences, @errors_count)
       end
 
-      (total_offences == 0) && !wants_to_quit ? 0 : 1
+      (@total_offences == 0) && !wants_to_quit ? 0 : 1
+    end
+
+    def read_source(file)
+      File.readlines(file).map do |line|
+        get_rid_of_invalid_byte_sequences(line)
+        line.chomp
+      end
+    end
+
+    def inspect_file(file, source, config, report)
+      tokens, sexp, correlations = CLI.rip_source(source)
+      disabled_lines = disabled_lines_in(source)
+
+      @cops.each do |cop_klass|
+        cop_name = cop_klass.name.split('::').last
+        cop_config = config[cop_name] if config
+        if cop_config.nil? || cop_config['Enabled']
+          cop_klass.config = cop_config
+          cop = cop_klass.new
+          cop.correlations = correlations
+          cop.disabled_lines = disabled_lines[cop_name]
+          begin
+            cop.inspect(file, source, tokens, sexp)
+          rescue => e
+            @errors_count += 1
+            warn "An error occurred while #{cop.name} cop" +
+              " was inspecting #{file}."
+            warn 'To see the complete backtrace run rubocop -d.'
+            puts e.message, e.backtrace if $options[:debug]
+          end
+          @total_offences += cop.offences.count
+          report << cop if cop.has_report?
+        end
+      end
     end
 
     def parse_options(args)
