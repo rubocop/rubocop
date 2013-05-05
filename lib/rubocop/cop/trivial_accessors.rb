@@ -26,28 +26,35 @@ module Rubocop
         end
       end
 
+      # looking for a trivial reader
       def is_trivial_reader(sexp, accessor_var)
-        # looking for a trivial reader
         if(sexp[1][0] == :@ident &&
            sexp[2][0] == :params &&
            sexp[3][0] == :bodystmt)
-          accessor_body = sexp[3][1][0][1][1]
-          accessor_body.slice!(0) if accessor_body[0] == '@'
-          accessor_var == accessor_body
+          if sexp[3][1][0][0] != :unary
+            accessor_body = sexp[3][1][0][1][1]
+            accessor_body.slice!(0) if accessor_body[0] == '@'
+            accessor_var == accessor_body
+          end
         end
       end
 
+      # looking for a trivial writer
       def is_trivial_writer(sexp, accessor_var)
-        # looking for a trivial writer
-        if(sexp[1][0] == :@ident &&
+        if(accessor_var[-1] == '=' &&
+           sexp[1][0] == :@ident &&
            sexp[2][0] == :paren &&
            sexp[2][1][0] == :params &&
            sexp[3][0] == :bodystmt)
-          accessor_var.chop! if accessor_var[-1] == '='
-          accessor_body = sexp[3][1][0][1][1][1]
-          accessor_body.slice!(0) if accessor_body[0] == '@'
-          body_purpose = sexp[3][1][0][2][0]
-          accessor_var == accessor_body && body_purpose != :binary
+          unless sexp[3][1][0][0] == :void_stmt
+            accessor_var.chop!
+            accessor_body = sexp[3][1][0][1][1][1]
+            accessor_body.slice!(0) if accessor_body[0] == '@'
+            unless sexp[3][1][0][0] == :vcall
+              body_purpose = sexp[3][1][0][2][0]
+              accessor_var == accessor_body && body_purpose == :var_ref
+            end
+          end
         end
       end
 
