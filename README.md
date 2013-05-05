@@ -59,7 +59,7 @@ it was started in and continue its way up to the home folder.
 
 The file has the following format:
 
-```yml
+```ruby
 Encoding:
   Enabled: true
 
@@ -97,22 +97,25 @@ comment.
 for x in (0..19) # rubocop:disable AvoidFor
 ```
 
-### Ignoring Directories
+### Including/Excluding files
 
-Entire directories can be also be ignored through `.rubocop.yml`.  Here is an
-example that might be used for a Rails project:
+Files and directories can be also be ignored through `.rubocop.yml`.
+Here is an example that might be used for a Rails project:
 
 ```ruby
 AllCops:
-  NoGoZone:
-    - db
-    - config
-    - script
+  Includes:
+    Rakefile
+    config.ru
+  Excludes:
+    - db/**
+    - config/**
+    - script/**
 
 [...other configuration...]
 ```
 
-Note: Directories are specified relative to the `.rubocop.yml` file.
+Note: Files are specified relative to the `.rubocop.yml` file.
 
 ## Compatibility
 
