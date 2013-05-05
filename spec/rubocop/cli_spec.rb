@@ -238,7 +238,7 @@ module Rubocop
           f.puts('Encoding:',
                  '  Enabled: false',
                  '',
-                 'Indentation:',
+                 'CaseIndentation:',
                  '  Enabled: false')
         end
         begin
@@ -262,7 +262,7 @@ module Rubocop
           f.puts('Encoding:',
                  '  Enabled: false',
                  '',
-                 'Indentation:',
+                 'CaseIndentation:',
                  '  Enabled: false')
         end
         begin
@@ -386,6 +386,62 @@ module Rubocop
         end
       end
 
+      it 'prints a warning for an unrecognized cop name in .rubocop.yml' do
+        FileUtils.mkdir_p 'example'
+        File.open('example/example1.rb', 'w') do |f|
+          f.puts '# encoding: utf-8'
+          f.puts '#' * 90
+        end
+
+        File.open('example/.rubocop.yml', 'w') do |f|
+          f.puts('LyneLenth:',
+                 '  Enabled: true',
+                 '  Max: 100')
+        end
+
+        begin
+          expect(cli.run(['example'])).to eq(1)
+          expect($stdout.string).to eq(
+            ['Warning: unrecognized cop LyneLenth found in example/' +
+             '.rubocop.yml',
+             '== example/example1.rb ==',
+             'C:  2: Line is too long. [90/79]',
+             '',
+             '1 file inspected, 1 offence detected',
+             ''].join("\n"))
+        ensure
+          FileUtils.rm_rf 'example'
+        end
+      end
+
+      it 'prints a warning for an unrecognized configuration parameter' do
+        FileUtils.mkdir_p 'example'
+        File.open('example/example1.rb', 'w') do |f|
+          f.puts '# encoding: utf-8'
+          f.puts '#' * 90
+        end
+
+        File.open('example/.rubocop.yml', 'w') do |f|
+          f.puts('LineLength:',
+                 '  Enabled: true',
+                 '  Min: 10')
+        end
+
+        begin
+          expect(cli.run(['example'])).to eq(1)
+          expect($stdout.string).to eq(
+            ['Warning: unrecognized parameter LineLength:Min found in ' +
+             'example/.rubocop.yml',
+             '== example/example1.rb ==',
+             'C:  2: Line is too long. [90/79]',
+             '',
+             '1 file inspected, 1 offence detected',
+             ''].join("\n"))
+        ensure
+          FileUtils.rm_rf 'example'
+        end
+      end
+
       it 'finds no violations when checking the rubocop source code' do
         # Need to pass an empty array explicitly
         # so that the CLI does not refer arguments of `rspec`
@@ -431,7 +487,8 @@ module Rubocop
         cop_names = Cop::Cop.all.map do |cop_class|
           cop_class.name.split('::').last
         end
-        expect(YAML.load_file('.rubocop.yml').keys.sort).to eq(cop_names.sort)
+        expect(YAML.load_file('.rubocop.yml').keys.sort)
+          .to eq((['AllCops'] + cop_names).sort)
       end
 
       it 'can have all cops disabled in a code section' do
