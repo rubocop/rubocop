@@ -102,7 +102,7 @@ for x in (0..19) # rubocop:disable AvoidFor
 Files and directories can be also be ignored through `.rubocop.yml`.
 Here is an example that might be used for a Rails project:
 
-```ruby
+```yaml
 AllCops:
   Includes:
     - Rakefile
@@ -112,7 +112,8 @@ AllCops:
     - config/**
     - script/**
 
-[...other configuration...]
+# other configuration
+# ...
 ```
 
 Note: Files are specified relative to the `.rubocop.yml` file.
