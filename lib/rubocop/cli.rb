@@ -1,5 +1,5 @@
 # encoding: utf-8
-
+require 'pathname'
 require 'optparse'
 require 'yaml'
 require_relative 'cop/grammar'
@@ -38,14 +38,9 @@ module Rubocop
       target_files(args).each do |file|
         break if wants_to_quit?
 
+        config = get_config(file)
         report = Report.create(file, $options[:mode])
         source = read_source(file)
-
-        config = $options[:config] || config_from_dotfile(File.dirname(file))
-        if no_go_zone?(file, config)
-          puts "NoGoZone #{file}".color(:red) if $options[:debug]
-          next
-        end
 
         puts "Scanning #{file}" if $options[:debug]
 
@@ -142,7 +137,8 @@ module Rubocop
     end
 
     def display_summary(num_files, total_offences, errors_count)
-      print "\n#{num_files} file#{num_files > 1 ? 's' : ''} inspected, "
+      plural = num_files == 0 || num_files > 1 ? 's' : ''
+      print "\n#{num_files} file#{plural} inspected, "
       offences_string = if total_offences.zero?
                           'no offences'
                         elsif total_offences == 1
@@ -210,25 +206,6 @@ module Rubocop
       [tokens, sexp, correlations]
     end
 
-    def expand_no_go_zones!(config, dir)
-      if config.has_key?('AllCops')
-        config['AllCops']['NoGoZone'].map! { |z| File.join(dir, z) }
-      end
-      config
-    end
-
-    def no_go_zone?(file, config)
-      return false unless config && config.has_key?('AllCops')
-
-      file_dir = File.expand_path(File.dirname(file))
-      no_go_zones = config['AllCops']['NoGoZone']
-
-      no_go_zones.each do |no_go_dir|
-        return true if file_dir.start_with?(no_go_dir)
-      end
-      false
-    end
-
     # Returns the configuration hash from .rubocop.yml searching
     # upwards in the directory structure starting at the given
     # directory where the inspected file is. If no .rubocop.yml is
@@ -244,14 +221,15 @@ module Rubocop
           path = File.join(dir, '.rubocop.yml')
           if File.exist?(path)
             @configs[target_file_dir] = load_config(path)
-            return expand_no_go_zones!(@configs[target_file_dir], dir)
+            @configs[target_file_dir]['ConfigDirectory'] = dir
+            return @configs[target_file_dir]
           end
           dir = File.expand_path('..', dir)
         end
         path = File.join(Dir.home, '.rubocop.yml')
         if File.exists?(path)
           @configs[target_file_dir] = load_config(path)
-          expand_no_go_zones!(@configs[target_file_dir], Dir.home)
+          @configs[target_file_dir]['ConfigDirectory'] = Dir.home
         end
       end
       @configs[target_file_dir]
@@ -310,21 +288,23 @@ module Rubocop
 
       args.each do |target|
         if File.directory?(target)
-          files << ruby_files(target)
+          files += ruby_files(target)
         elsif target =~ /\*/
-          files << Dir[target]
+          files += Dir[target]
         else
           files << target
         end
       end
 
-      files.flatten
+      files.uniq
     end
 
     # Finds all Ruby source files under the current or other supplied
     # directory.  A Ruby source file is defined as a file with the `.rb`
     # extension or a file with no extension that has a ruby shebang line
     # as its first line.
+    # It is possible to specify includes and excludes using the config file,
+    # so you can include other Ruby files like Rakefiles and gemspecs.
     # @param root Root directory under which to search for ruby source files
     # @return [Array] Array of filenames
     def ruby_files(root = Dir.pwd)
@@ -332,8 +312,8 @@ module Rubocop
 
       rb = []
 
-      rb << files.select { |file| File.extname(file) == '.rb' }
-      rb << files.select do |file|
+      rb += files.select { |file| File.extname(file) == '.rb' }
+      rb += files.select do |file|
         File.extname(file) == '' &&
         begin
           File.open(file) { |f| f.readline } =~ /#!.*ruby/
@@ -343,10 +323,61 @@ module Rubocop
         end
       end
 
-      rb.flatten
+      rb += files.select do |file|
+        config = get_config(file)
+        include_files(config).any? do |include_match|
+          rel_file = relative_to_config_path(file, config)
+          match_file(include_match, rel_file)
+        end
+      end
+
+      rb.reject do |file|
+        config = get_config(file)
+        exclude_files(config).any? do |exclude_match|
+          rel_file = relative_to_config_path(file, config)
+          match_file(exclude_match, rel_file)
+        end
+      end.uniq
     end
 
     private
+    def relative_to_config_path(file, config)
+     return file unless config && config['ConfigDirectory']
+     absolute_file = File.expand_path(file)
+     config_dir =  File.expand_path(config['ConfigDirectory'])
+     config_dir_path = Pathname.new(config_dir)
+     file_path = Pathname.new(absolute_file)
+     file_path.relative_path_from(config_dir_path).to_s
+    end
+
+    def match_file(match, file)
+     if match.is_a? String
+       File.basename(file) == match ||
+         File.fnmatch(match, file)
+     elsif match.is_a? Regexp
+       file =~ match
+     end
+    end
+
+    def include_files(config)
+     if config && config['AllCops'] && config['AllCops']['Includes']
+       config['AllCops']['Includes']
+     else
+       ['**/*.gemspec', '**/Rakefile']
+     end
+    end
+
+    def exclude_files(config)
+     if config && config['AllCops'] && config['AllCops']['Excludes']
+       config['AllCops']['Excludes']
+     else
+       []
+     end
+    end
+
+    def get_config(file)
+     $options[:config] || config_from_dotfile(File.dirname(file))
+    end
 
     def log_error(e, msg = '')
       if $options[:debug]
