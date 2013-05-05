@@ -105,8 +105,8 @@ Here is an example that might be used for a Rails project:
 ```ruby
 AllCops:
   Includes:
-    Rakefile
-    config.ru
+    - Rakefile
+    - config.ru
   Excludes:
     - db/**
     - config/**
