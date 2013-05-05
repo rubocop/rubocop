@@ -34,7 +34,7 @@ module Rubocop
                         '    do_something',
                         '  end',
                         'end'])
-        expect(cm.offences.size).to eq(0)
+        expect(cm.offences).to be_empty
       end
 
       it 'does not register an offence outside class/module bodies' do
@@ -42,7 +42,7 @@ module Rubocop
                        ['def self.some_method',
                         '  do_something',
                         'end'])
-        expect(cm.offences.size).to eq(0)
+        expect(cm.offences).to be_empty
       end
     end
   end

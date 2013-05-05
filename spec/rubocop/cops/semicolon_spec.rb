@@ -45,7 +45,7 @@ module Rubocop
         inspect_source(s,
                        'file.rb',
                        ['def foo(a) z(3); end'])
-        expect(s.offences.size).to eq(0)
+        expect(s.offences).to be_empty
       end
 
       it 'registers an offence for semicolon after params if so configured' do
@@ -66,7 +66,7 @@ module Rubocop
         inspect_source(s,
                        'file.rb',
                        ['def foo(a); z(3) end'])
-        expect(s.offences.size).to eq(0)
+        expect(s.offences).to be_empty
       end
 
       it 'accepts one line method definitions' do
@@ -76,7 +76,7 @@ module Rubocop
                         'def initialize(*_); end',
                         'def foo2() x(3); end',
                         'def foo3; x(3); end'])
-        expect(s.offences.size).to eq(0)
+        expect(s.offences).to be_empty
       end
 
       it 'accepts one line empty class definitions' do
@@ -84,14 +84,14 @@ module Rubocop
                        'file.rb',
                        ['  class Foo < Exception; end',
                         '  class Bar; end'])
-        expect(s.offences.size).to eq(0)
+        expect(s.offences).to be_empty
       end
 
       it 'accepts one line empty module definitions' do
         inspect_source(s,
                        'file.rb',
                        ['module Foo; end'])
-        expect(s.offences.size).to eq(0)
+        expect(s.offences).to be_empty
       end
 
       it 'registers an offence for semicolon at the end no matter what' do
