@@ -18,7 +18,7 @@
 * Print warnings for unrecognized names in configuration files.
 * New cop `TrivialAccessors` tracks method definitions that could be automatically generated with `attr_*` methods.
 * New cop `LeadingCommentSpace` checks for missing space after `#` in comments.
-* New cop `SemicolonMethodCall` tracks uses of `::` for method calls.
+* New cop `ColonMethodCall` tracks uses of `::` for method calls.
 
 ### Bugs fixed
 

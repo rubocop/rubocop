@@ -586,7 +586,7 @@ module Rubocop
     end
 
     it 'finds a file with no .rb extension but has a shebang line' do
-      FileUtils::mkdir 'test'
+      FileUtils.mkdir 'test'
       File.open('test/example', 'w') do |f|
         f.puts '#!/usr/bin/env ruby'
         f.puts '# encoding: utf-8'
@@ -594,7 +594,7 @@ module Rubocop
         f.puts 'puts x'
       end
       begin
-        FileUtils::cd 'test' do
+        FileUtils.cd 'test' do
           # Need to pass an empty array explicitly
           # so that the CLI does not refer arguments of `rspec`
           expect(cli.run([])).to eq(0)
@@ -603,12 +603,12 @@ module Rubocop
              ''].join("\n"))
         end
       ensure
-        FileUtils::rm_rf 'test'
+        FileUtils.rm_rf 'test'
       end
     end
 
    it 'finds included files' do
-     FileUtils::mkdir 'test'
+     FileUtils.mkdir 'test'
      File.open('test/example', 'w') do |f|
        f.puts '# encoding: utf-8'
        f.puts 'x = 0'
@@ -626,7 +626,7 @@ module Rubocop
               '    - !ruby/regexp /regexp$/')
      end
      begin
-       FileUtils::cd 'test' do
+       FileUtils.cd 'test' do
          # Need to pass an empty array explicitly
          # so that the CLI does not refer arguments of `rspec`
          expect(cli.run([])).to eq(0)
@@ -635,12 +635,12 @@ module Rubocop
             ''].join("\n"))
        end
      ensure
-       FileUtils::rm_rf 'test'
+       FileUtils.rm_rf 'test'
      end
    end
 
    it 'ignores excluded files' do
-     FileUtils::mkdir 'test'
+     FileUtils.mkdir 'test'
      File.open('test/example.rb', 'w') do |f|
        f.puts '# encoding: utf-8'
        f.puts 'x = 0'
@@ -666,7 +666,7 @@ module Rubocop
      end
 
      begin
-       FileUtils::cd 'test' do
+       FileUtils.cd 'test' do
          # Need to pass an empty array explicitly
          # so that the CLI does not refer arguments of `rspec`
          expect(cli.run([])).to eq(0)
@@ -675,7 +675,7 @@ module Rubocop
             ''].join("\n"))
        end
      ensure
-       FileUtils::rm_rf 'test'
+       FileUtils.rm_rf 'test'
      end
    end
 

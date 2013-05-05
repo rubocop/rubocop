@@ -327,5 +327,5 @@ LeadingCommentSpace:
   Enabled: true
 
 # Do not use :: for method invocation.
-SemicolonMethodCall:
+ColonMethodCall:
   Enabled: true
