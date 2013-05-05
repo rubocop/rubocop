@@ -59,7 +59,7 @@ it was started in and continue its way up to the home folder.
 
 The file has the following format:
 
-```ruby
+```yaml
 Encoding:
   Enabled: true
 
