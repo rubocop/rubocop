@@ -27,10 +27,27 @@ module Rubocop
                         '  def foo',
                         '    @foo',
                         '  end',
+                        '  def bar',
+                        '    !foo',
+                        '  end',
                         'end'])
         expect(trivial_accessors_finder.offences.size).to eq(1)
         expect(trivial_accessors_finder.offences
                  .map(&:line_number).sort).to eq([2])
+      end
+
+      it 'find trivial reader in a nested class' do
+        inspect_source(trivial_accessors_finder, '',
+                       ['class TrivialFoo',
+                        '  class Nested',
+                        '    def foo',
+                        '      @foo',
+                        '    end',
+                        '  end',
+                        'end'])
+        expect(trivial_accessors_finder.offences.size).to eq(1)
+        expect(trivial_accessors_finder.offences
+                 .map(&:line_number).sort).to eq([3])
       end
 
       it 'find trivial readers in a little less trivial class' do
@@ -72,9 +89,23 @@ module Rubocop
       it 'find trivial writer in a class' do
         inspect_source(trivial_accessors_finder, '',
                        ['class TrivialFoo',
-                        ' def foo=(val)',
-                        ' @foo = val',
-                        ' end',
+                        '  def foo=(val)',
+                        '    @foo = val',
+                        '  end',
+                        '  def void(no_value)',
+                        '  end',
+                        '  def inspect(sexp)',
+                        '    each(:def, sexp) do |item|',
+                        '      #do stuff',
+                        '    end',
+                        '  end',
+                        '  def if_method(foo)',
+                        '    if true',
+                        '      unless false',
+                        '        #do stuff',
+                        '      end',
+                        '    end',
+                        '  end',
                         'end'])
         expect(trivial_accessors_finder.offences.size).to eq(1)
         expect(trivial_accessors_finder.offences
@@ -126,6 +157,24 @@ module Rubocop
         expect(trivial_accessors_finder.offences.size).to eq(2)
         expect(trivial_accessors_finder.offences
                  .map(&:line_number).sort).to eq([5, 8])
+      end
+
+      it 'does not find trivial accessors with method calls' do
+        inspect_source(trivial_accessors_finder, '',
+                       ['class TrivialFoo',
+                        ' def foo_bar(foo)',
+                        '   foo_bar = foo + 42',
+                        ' end',
+                        ' def foo(value)',
+                        '   foo = []',
+                        '   # do stuff',
+                        '   foo',
+                        ' end',
+                        ' def bar',
+                        '   foo_method',
+                        ' end',
+                        'end'])
+        expect(trivial_accessors_finder.offences).to be_empty
       end
 
     end
