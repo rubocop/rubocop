@@ -309,3 +309,7 @@ SpaceInsideHashLiteralBraces:
 # Avoid the use of line continuation (/).
 LineContinuation:
   Enabled: true
+
+# Prefer attr_accessors to trivial readers/writers
+TrivialAccessors:
+  Enabled: true
