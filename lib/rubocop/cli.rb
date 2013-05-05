@@ -124,8 +124,8 @@ module Rubocop
       Signal.trap('INT') do
         exit!(1) if wants_to_quit?
         self.wants_to_quit = true
-        STDERR.puts
-        STDERR.puts 'Exiting... Interrupt again to exit immediately.'
+        $stderr.puts
+        $stderr.puts 'Exiting... Interrupt again to exit immediately.'
       end
     end
 
