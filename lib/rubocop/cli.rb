@@ -21,7 +21,7 @@ module Rubocop
       @total_offences = 0
       @errors_count = 0
       @options = { mode: :default }
-      @config_cache = {}
+      Configuration.prepare
     end
 
     # Entry point for the application logic. Here we
@@ -38,7 +38,7 @@ module Rubocop
       target_files(args).each do |file|
         break if wants_to_quit?
 
-        config = get_config(file)
+        config = Configuration.for(file)
         report = Report.create(file, @options[:mode])
         source = read_source(file)
 
@@ -81,8 +81,8 @@ module Rubocop
 
       @cops.each do |cop_klass|
         cop_name = cop_klass.cop_name
-        cop_config = config[cop_name] if config
-        if cop_config.nil? || cop_config['Enabled']
+        cop_config = config.for_cop(cop_name)
+        if config.cop_enabled?(cop_name)
           cop_klass.config = cop_config
           cop = cop_klass.new
           cop.debug = @options[:debug]
@@ -114,8 +114,8 @@ module Rubocop
           @options[:mode] = :emacs_style
         end
         opts.on('-c FILE', '--config FILE', 'Configuration file') do |f|
-          @options[:config] = Configuration.load_file(f)
-          with_validation_error_warning { @options[:config].validate! }
+          @options[:config] = f
+          Configuration.set_options_config(@options[:config])
         end
         opts.on('-s', '--silent', 'Silence summary') do |s|
           @options[:silent] = s
@@ -211,8 +211,7 @@ module Rubocop
       cops_on_duty = []
 
       Cop::Cop.all.each do |cop_klass|
-        cop_config = config[cop_klass.cop_name] if config
-        cops_on_duty << cop_klass if cop_config.nil? || cop_config['Enabled']
+        cops_on_duty << cop_klass if config.cop_enabled?(cop_klass.cop_name)
       end
 
       cops_on_duty
@@ -273,41 +272,17 @@ module Rubocop
       end
 
       rb += files.select do |file|
-        config = get_config(file)
+        config = Configuration.for(file)
         config.file_to_include?(file)
       end
 
       rb.reject do |file|
-        config = get_config(file)
+        config = Configuration.for(file)
         config.file_to_exclude?(file)
       end.uniq
     end
 
     private
-
-    def get_config(file)
-      return @options[:config] if @options[:config]
-
-      # @config_cache is a cache that maps directories to
-      # configurations. We search for .rubocop.yml only if we haven't
-      # already found it for the given directory.
-
-      dir = File.dirname(file)
-      return @config_cache[dir] if @config_cache[dir]
-
-      config = Configuration.configuration_for_path(dir)
-      if config
-        @config_cache[dir] = config
-        with_validation_error_warning { config.validate! }
-      end
-      config
-    end
-
-    def with_validation_error_warning
-      yield
-    rescue Configuration::ValidationError => e
-      puts "Warning: #{e.message}".color(:red)
-    end
 
     def log_error(e, msg = '')
       if @options[:debug]
