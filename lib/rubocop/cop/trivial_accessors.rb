@@ -26,13 +26,16 @@ module Rubocop
         end
       end
 
+      NON_TRIVIAL_BODYSTMT = [:void_stmt, :unary, :binary,
+                              :@float, :@int, :hash, :begin,
+                              :yield0]
+
       # looking for a trivial reader
       def is_trivial_reader(sexp, accessor_var)
         if (sexp[1][0] == :@ident &&
             sexp[2][0] == :params &&
             sexp[3][0] == :bodystmt)
-          if (sexp[3][1][0][0] != :unary &&
-              sexp[3][1][0][0] != :binary)
+          unless NON_TRIVIAL_BODYSTMT.include? sexp[3][1][0][0]
             accessor_body = sexp[3][1][0][1][1]
             accessor_body.slice!(0) if accessor_body[0] == '@'
             accessor_var == accessor_body
@@ -47,7 +50,7 @@ module Rubocop
             sexp[2][0] == :paren &&
             sexp[2][1][0] == :params &&
             sexp[3][0] == :bodystmt)
-          unless sexp[3][1][0][0] == :void_stmt
+          unless NON_TRIVIAL_BODYSTMT.include? sexp[3][1][0][0]
             accessor_var.chop!
             accessor_body = sexp[3][1][0][1][1][1]
             accessor_body.slice!(0) if accessor_body[0] == '@'
