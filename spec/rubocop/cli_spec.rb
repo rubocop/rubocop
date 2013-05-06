@@ -397,8 +397,8 @@ module Rubocop
       begin
         expect(cli.run(['example'])).to eq(1)
         expect($stdout.string).to eq(
-          ['Warning: unrecognized cop LyneLenth found in example/' +
-           '.rubocop.yml',
+          ['Warning: unrecognized cop LyneLenth found in ' +
+           File.expand_path('example/.rubocop.yml'),
            '== example/example1.rb ==',
            'C:  2: Line is too long. [90/79]',
            '',
@@ -426,7 +426,7 @@ module Rubocop
         expect(cli.run(['example'])).to eq(1)
         expect($stdout.string).to eq(
           ['Warning: unrecognized parameter LineLength:Min found in ' +
-           'example/.rubocop.yml',
+           File.expand_path('example/.rubocop.yml'),
            '== example/example1.rb ==',
            'C:  2: Line is too long. [90/79]',
            '',

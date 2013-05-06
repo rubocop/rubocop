@@ -21,6 +21,7 @@ module Rubocop
       @total_offences = 0
       @errors_count = 0
       @options = { mode: :default }
+      @config_cache = {}
     end
 
     # Entry point for the application logic. Here we
@@ -33,8 +34,6 @@ module Rubocop
       parse_options(args)
 
       show_cops_on_duty(@cops) if @options[:debug]
-
-      @configs = {}
 
       target_files(args).each do |file|
         break if wants_to_quit?
@@ -81,7 +80,7 @@ module Rubocop
       disabled_lines = disabled_lines_in(source)
 
       @cops.each do |cop_klass|
-        cop_name = cop_klass.name.split('::').last
+        cop_name = cop_klass.cop_name
         cop_config = config[cop_name] if config
         if cop_config.nil? || cop_config['Enabled']
           cop_klass.config = cop_config
@@ -115,7 +114,8 @@ module Rubocop
           @options[:mode] = :emacs_style
         end
         opts.on('-c FILE', '--config FILE', 'Configuration file') do |f|
-          @options[:config] = load_config(f)
+          @options[:config] = Configuration.load_file(f)
+          with_validation_error_warning { @options[:config].validate! }
         end
         opts.on('-s', '--silent', 'Silence summary') do |s|
           @options[:silent] = s
@@ -186,9 +186,7 @@ module Rubocop
       match = line.match(regexp)
       if match
         kind, cops = match.captures
-        if cops.include?('all')
-          cops = Cop::Cop.all.map { |c| c.name.split('::').last }.join(',')
-        end
+        cops = Cop::Cop.all.map(&:cop_name).join(',') if cops.include?('all')
         cops.split(/,\s*/).each { |cop_name| yield cop_name, kind }
       end
     end
@@ -209,63 +207,11 @@ module Rubocop
       [tokens, sexp, correlations]
     end
 
-    # Returns the configuration hash from .rubocop.yml searching
-    # upwards in the directory structure starting at the given
-    # directory where the inspected file is. If no .rubocop.yml is
-    # found there, the user's home directory is checked.
-    def config_from_dotfile(target_file_dir)
-      return unless target_file_dir
-      # @configs is a cache that maps directories to
-      # configurations. We search for .rubocop.yml only if we haven't
-      # already found it for the given directory.
-      unless @configs[target_file_dir]
-        dir = target_file_dir
-        while dir != '/'
-          path = File.join(dir, '.rubocop.yml')
-          if File.exist?(path)
-            @configs[target_file_dir] = load_config(path)
-            @configs[target_file_dir]['ConfigDirectory'] = dir
-            return @configs[target_file_dir]
-          end
-          dir = File.expand_path('..', dir)
-        end
-        path = File.join(Dir.home, '.rubocop.yml')
-        if File.exists?(path)
-          @configs[target_file_dir] = load_config(path)
-          @configs[target_file_dir]['ConfigDirectory'] = Dir.home
-        end
-      end
-      @configs[target_file_dir]
-    end
-
-    RUBOCOP_HOME_CONFIG = YAML.load_file(File.join(File.dirname(__FILE__),
-                                                   '../..',
-                                                   '.rubocop.yml'))
-
-    def load_config(path)
-      config = YAML.load_file(path)
-      valid_cop_names, invalid_cop_names = config.keys.partition do |key|
-        RUBOCOP_HOME_CONFIG.keys.include?(key)
-      end
-      invalid_cop_names.each do |name|
-        puts "Warning: unrecognized cop #{name} found in #{path}".color(:red)
-      end
-      valid_cop_names.each do |name|
-        config[name].keys.each do |param|
-          unless RUBOCOP_HOME_CONFIG[name].keys.include?(param)
-            puts(("Warning: unrecognized parameter #{name}:#{param} found " +
-                  "in #{path}").color(:red))
-          end
-        end
-      end
-      config
-    end
-
     def cops_on_duty(config)
       cops_on_duty = []
 
       Cop::Cop.all.each do |cop_klass|
-        cop_config = config[cop_klass.name.split('::').last] if config
+        cop_config = config[cop_klass.cop_name] if config
         cops_on_duty << cop_klass if cop_config.nil? || cop_config['Enabled']
       end
 
@@ -328,58 +274,39 @@ module Rubocop
 
       rb += files.select do |file|
         config = get_config(file)
-        include_files(config).any? do |include_match|
-          rel_file = relative_to_config_path(file, config)
-          match_file(include_match, rel_file)
-        end
+        config.file_to_include?(file)
       end
 
       rb.reject do |file|
         config = get_config(file)
-        exclude_files(config).any? do |exclude_match|
-          rel_file = relative_to_config_path(file, config)
-          match_file(exclude_match, rel_file)
-        end
+        config.file_to_exclude?(file)
       end.uniq
     end
 
     private
-    def relative_to_config_path(file, config)
-     return file unless config && config['ConfigDirectory']
-     absolute_file = File.expand_path(file)
-     config_dir =  File.expand_path(config['ConfigDirectory'])
-     config_dir_path = Pathname.new(config_dir)
-     file_path = Pathname.new(absolute_file)
-     file_path.relative_path_from(config_dir_path).to_s
-    end
-
-    def match_file(match, file)
-     if match.is_a? String
-       File.basename(file) == match ||
-         File.fnmatch(match, file)
-     elsif match.is_a? Regexp
-       file =~ match
-     end
-    end
-
-    def include_files(config)
-     if config && config['AllCops'] && config['AllCops']['Includes']
-       config['AllCops']['Includes']
-     else
-       ['**/*.gemspec', '**/Rakefile']
-     end
-    end
-
-    def exclude_files(config)
-     if config && config['AllCops'] && config['AllCops']['Excludes']
-       config['AllCops']['Excludes']
-     else
-       []
-     end
-    end
 
     def get_config(file)
-     @options[:config] || config_from_dotfile(File.dirname(file))
+      return @options[:config] if @options[:config]
+
+      # @config_cache is a cache that maps directories to
+      # configurations. We search for .rubocop.yml only if we haven't
+      # already found it for the given directory.
+
+      dir = File.dirname(file)
+      return @config_cache[dir] if @config_cache[dir]
+
+      config = Configuration.configuration_for_path(dir)
+      if config
+        @config_cache[dir] = config
+        with_validation_error_warning { config.validate! }
+      end
+      config
+    end
+
+    def with_validation_error_warning
+      yield
+    rescue Configuration::ValidationError => e
+      puts "Warning: #{e.message}".color(:red)
     end
 
     def log_error(e, msg = '')
