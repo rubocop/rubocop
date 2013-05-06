@@ -80,7 +80,7 @@ module Rubocop
       disabled_lines = disabled_lines_in(source)
 
       @cops.each do |cop_klass|
-        cop_name = cop_klass.name.split('::').last
+        cop_name = cop_klass.cop_name
         cop_config = config[cop_name] if config
         if cop_config.nil? || cop_config['Enabled']
           cop_klass.config = cop_config
@@ -186,9 +186,7 @@ module Rubocop
       match = line.match(regexp)
       if match
         kind, cops = match.captures
-        if cops.include?('all')
-          cops = Cop::Cop.all.map { |c| c.name.split('::').last }.join(',')
-        end
+        cops = Cop::Cop.all.map(&:cop_name).join(',') if cops.include?('all')
         cops.split(/,\s*/).each { |cop_name| yield cop_name, kind }
       end
     end
@@ -213,7 +211,7 @@ module Rubocop
       cops_on_duty = []
 
       Cop::Cop.all.each do |cop_klass|
-        cop_config = config[cop_klass.name.split('::').last] if config
+        cop_config = config[cop_klass.cop_name] if config
         cops_on_duty << cop_klass if cop_config.nil? || cop_config['Enabled']
       end
 

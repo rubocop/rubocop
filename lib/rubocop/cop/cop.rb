@@ -47,6 +47,10 @@ module Rubocop
         all << subclass
       end
 
+      def self.cop_name
+        name.to_s.split('::').last
+      end
+
       def initialize
         @offences = []
         @debug = false
@@ -64,7 +68,7 @@ module Rubocop
       end
 
       def name
-        self.class.to_s.split('::')[-1]
+        self.class.cop_name
       end
 
       private
