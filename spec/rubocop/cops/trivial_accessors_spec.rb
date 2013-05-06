@@ -88,6 +88,51 @@ module Rubocop
                  .map(&:line_number).sort).to eq([2, 8])
       end
 
+      it 'find trivials with less peculiar methods' do
+        inspect_source(trivial_accessors_finder, '',
+                       ['class NilStats',
+                        'def most_traded_pair',
+                        'end',
+                        'def win_ratio',
+                        'end',
+                        'def win_ratio_percentage',
+                        'end',
+                        'def pips_won',
+                        '  0.0',
+                        'end',
+                        'def gain_at(date)',
+                        '  1',
+                        'end',
+                        'def gain',
+                        '  0.0',
+                        'end',
+                        'def gain_percentage',
+                        '  0',
+                        'end',
+                        'def gain_breakdown(options = {})',
+                        '  []',
+                        'end',
+                        'def copy_to_all_ratio',
+                        '  nil',
+                        'end',
+                        'def trade_population',
+                        '  {}',
+                        'end',
+                        'def average_leverage',
+                        '  1',
+                        'end',
+                        'def average_trade_duration',
+                        '  0',
+                        'end',
+                        'def with_yield',
+                        '  yield',
+                        'rescue Error => e',
+                        '  #do stuff',
+                        'end',
+                        'end'])
+        expect(trivial_accessors_finder.offences).to be_empty
+      end
+
       it 'does not find a trivial reader' do
         inspect_source(trivial_accessors_finder, '',
                        ['def bar',
@@ -197,6 +242,19 @@ module Rubocop
         expect(trivial_accessors_finder.offences).to be_empty
       end
 
-    end
-  end
-end
+      it 'does not find trivial writer with exceptions' do
+        inspect_source(trivial_accessors_finder, '',
+                       [' def expiration_formatted=(value)',
+                        '   begin',
+                        '     @expiration = foo_stuff',
+                        '   rescue ArgumentError',
+                        '     @expiration = nil',
+                        '   end',
+                        '   self[:expiration] = @expiration',
+                        ' end'])
+        expect(trivial_accessors_finder.offences).to be_empty
+      end
+
+    end # describe TrivialAccessors
+  end # Cop
+end # Rubocop
