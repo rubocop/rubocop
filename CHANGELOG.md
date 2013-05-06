@@ -19,6 +19,7 @@
 * New cop `TrivialAccessors` tracks method definitions that could be automatically generated with `attr_*` methods.
 * New cop `LeadingCommentSpace` checks for missing space after `#` in comments.
 * New cop `ColonMethodCall` tracks uses of `::` for method calls.
+* New cop `AvoidGlobalVars` tracks uses of non built-in global variables.
 
 ### Bugs fixed
 

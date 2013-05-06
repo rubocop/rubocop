@@ -329,3 +329,7 @@ LeadingCommentSpace:
 # Do not use :: for method invocation.
 ColonMethodCall:
   Enabled: true
+
+# Do not introduce global variables.
+AvoidGlobalVars:
+  Enabled: true
