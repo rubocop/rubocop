@@ -23,10 +23,6 @@ require 'rubocop/cli'
 # disable colors in specs
 Sickill::Rainbow.enabled = false
 
-# Requires supporting files with custom matchers and macros, etc,
-# in ./support/ and its subdirectories.
-Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
-
 module ExitCodeMatchers
   RSpec::Matchers.define :exit_with_code do |code|
     actual = nil
@@ -53,6 +49,7 @@ end
 
 RSpec.configure do |config|
   config.filter_run_excluding ruby: ->(v) { !RUBY_VERSION.start_with?(v.to_s) }
+  config.treat_symbols_as_metadata_keys_with_true_values = true
 
   config.expect_with :rspec do |c|
     c.syntax = :expect # disables `should`
@@ -60,6 +57,10 @@ RSpec.configure do |config|
 
   config.include(ExitCodeMatchers)
 end
+
+# Requires supporting files with custom matchers and macros, etc,
+# in ./support/ and its subdirectories.
+Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
 def inspect_source(cop, file, source)
   tokens, sexp, correlations = Rubocop::CLI.rip_source(source)
