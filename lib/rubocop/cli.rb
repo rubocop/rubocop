@@ -21,6 +21,7 @@ module Rubocop
       @total_offences = 0
       @errors_count = 0
       @options = { mode: :default }
+      @config_cache = {}
     end
 
     # Entry point for the application logic. Here we
@@ -33,8 +34,6 @@ module Rubocop
       parse_options(args)
 
       show_cops_on_duty(@cops) if @options[:debug]
-
-      @configs = {}
 
       target_files(args).each do |file|
         break if wants_to_quit?
@@ -115,7 +114,7 @@ module Rubocop
           @options[:mode] = :emacs_style
         end
         opts.on('-c FILE', '--config FILE', 'Configuration file') do |f|
-          @options[:config] = load_config(f)
+          @options[:config] = Configuration.load_file(f)
         end
         opts.on('-s', '--silent', 'Silence summary') do |s|
           @options[:silent] = s
@@ -207,58 +206,6 @@ module Rubocop
       Cop::Position.make_position_objects(sexp)
       correlations = Cop::Grammar.new(tokens).correlate(sexp)
       [tokens, sexp, correlations]
-    end
-
-    # Returns the configuration hash from .rubocop.yml searching
-    # upwards in the directory structure starting at the given
-    # directory where the inspected file is. If no .rubocop.yml is
-    # found there, the user's home directory is checked.
-    def config_from_dotfile(target_file_dir)
-      return unless target_file_dir
-      # @configs is a cache that maps directories to
-      # configurations. We search for .rubocop.yml only if we haven't
-      # already found it for the given directory.
-      unless @configs[target_file_dir]
-        dir = target_file_dir
-        while dir != '/'
-          path = File.join(dir, '.rubocop.yml')
-          if File.exist?(path)
-            @configs[target_file_dir] = load_config(path)
-            @configs[target_file_dir]['ConfigDirectory'] = dir
-            return @configs[target_file_dir]
-          end
-          dir = File.expand_path('..', dir)
-        end
-        path = File.join(Dir.home, '.rubocop.yml')
-        if File.exists?(path)
-          @configs[target_file_dir] = load_config(path)
-          @configs[target_file_dir]['ConfigDirectory'] = Dir.home
-        end
-      end
-      @configs[target_file_dir]
-    end
-
-    RUBOCOP_HOME_CONFIG = YAML.load_file(File.join(File.dirname(__FILE__),
-                                                   '../..',
-                                                   '.rubocop.yml'))
-
-    def load_config(path)
-      config = YAML.load_file(path)
-      valid_cop_names, invalid_cop_names = config.keys.partition do |key|
-        RUBOCOP_HOME_CONFIG.keys.include?(key)
-      end
-      invalid_cop_names.each do |name|
-        puts "Warning: unrecognized cop #{name} found in #{path}".color(:red)
-      end
-      valid_cop_names.each do |name|
-        config[name].keys.each do |param|
-          unless RUBOCOP_HOME_CONFIG[name].keys.include?(param)
-            puts(("Warning: unrecognized parameter #{name}:#{param} found " +
-                  "in #{path}").color(:red))
-          end
-        end
-      end
-      config
     end
 
     def cops_on_duty(config)
@@ -379,7 +326,18 @@ module Rubocop
     end
 
     def get_config(file)
-     @options[:config] || config_from_dotfile(File.dirname(file))
+      return @options[:config] if @options[:config]
+
+      # @config_cache is a cache that maps directories to
+      # configurations. We search for .rubocop.yml only if we haven't
+      # already found it for the given directory.
+
+      dir = File.dirname(file)
+      return @config_cache[dir] if @config_cache[dir]
+
+      config = Configuration.configuration_for_path(dir)
+      @config_cache[dir] = config if config
+      config
     end
 
     def log_error(e, msg = '')
