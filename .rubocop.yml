@@ -72,6 +72,10 @@ SpaceAfterSemicolon:
 SpaceAfterColon:
   Enabled: true
 
+# Use spaces after if/elsif/unless/while/until/case/when.
+SpaceAfterControlKeyword:
+  Enabled: true
+
 # Prefer symbols instead of strings as hash keys.
 HashSyntax:
   Enabled: true

@@ -20,7 +20,7 @@ module Rubocop
       def find_trivial_accessors(sexp)
         lineno = sexp[1][2].lineno
         accessor_var = sexp[1][1]
-        if(is_trivial_reader(sexp, accessor_var) ||
+        if (is_trivial_reader(sexp, accessor_var) ||
             is_trivial_writer(sexp, accessor_var))
           add_offence(:convention, lineno, ERROR_MESSAGE)
         end
@@ -28,9 +28,9 @@ module Rubocop
 
       # looking for a trivial reader
       def is_trivial_reader(sexp, accessor_var)
-        if(sexp[1][0] == :@ident &&
-           sexp[2][0] == :params &&
-           sexp[3][0] == :bodystmt)
+        if (sexp[1][0] == :@ident &&
+            sexp[2][0] == :params &&
+            sexp[3][0] == :bodystmt)
           if sexp[3][1][0][0] != :unary
             accessor_body = sexp[3][1][0][1][1]
             accessor_body.slice!(0) if accessor_body[0] == '@'
@@ -41,11 +41,11 @@ module Rubocop
 
       # looking for a trivial writer
       def is_trivial_writer(sexp, accessor_var)
-        if(accessor_var[-1] == '=' &&
-           sexp[1][0] == :@ident &&
-           sexp[2][0] == :paren &&
-           sexp[2][1][0] == :params &&
-           sexp[3][0] == :bodystmt)
+        if (accessor_var[-1] == '=' &&
+            sexp[1][0] == :@ident &&
+            sexp[2][0] == :paren &&
+            sexp[2][1][0] == :params &&
+            sexp[3][0] == :bodystmt)
           unless sexp[3][1][0][0] == :void_stmt
             accessor_var.chop!
             accessor_body = sexp[3][1][0][1][1][1]
