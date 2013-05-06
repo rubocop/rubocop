@@ -14,6 +14,8 @@ module Rubocop
                                                    '..',
                                                    '..',
                                                    DOTFILE))
+    DEFAULT_PATTERNS_TO_INCLUDE = ['**/*.gemspec', '**/Rakefile']
+    DEFAULT_PATTERNS_TO_EXCLUDE = []
 
     attr_reader :loaded_path
 
@@ -68,32 +70,32 @@ module Rubocop
     end
 
     def file_to_include?(file)
-      include_files.any? do |include_match|
-        rel_file = relative_to_config_path(file)
-        match_file(include_match, rel_file)
+      relative_file_path = relative_path_to_loaded_dir(file)
+      patterns_to_include.any? do |pattern|
+        match_path?(pattern, relative_file_path)
       end
     end
 
     def file_to_exclude?(file)
-      exclude_files.any? do |include_match|
-        rel_file = relative_to_config_path(file)
-        match_file(include_match, rel_file)
+      relative_file_path = relative_path_to_loaded_dir(file)
+      patterns_to_exclude.any? do |pattern|
+        match_path?(pattern, relative_file_path)
       end
     end
 
-    def include_files
+    def patterns_to_include
       if @hash['AllCops'] && @hash['AllCops']['Includes']
         @hash['AllCops']['Includes']
       else
-        ['**/*.gemspec', '**/Rakefile']
+        DEFAULT_PATTERNS_TO_INCLUDE
       end
     end
 
-    def exclude_files
+    def patterns_to_exclude
       if @hash['AllCops'] && @hash['AllCops']['Excludes']
         @hash['AllCops']['Excludes']
       else
-        []
+        DEFAULT_PATTERNS_TO_EXCLUDE
       end
     end
 
@@ -109,21 +111,26 @@ module Rubocop
       dirs_to_search
     end
 
-    def relative_to_config_path(file)
+    def relative_path_to_loaded_dir(file)
       return file unless loaded_path
-      absolute_file = File.expand_path(file)
-      config_dir =  File.expand_path(File.dirname(loaded_path))
-      config_dir_path = Pathname.new(config_dir)
-      file_path = Pathname.new(absolute_file)
-      file_path.relative_path_from(config_dir_path).to_s
+      file_pathname = Pathname.new(File.expand_path(file))
+      file_pathname.relative_path_from(loaded_dir_pathname).to_s
     end
 
-    def match_file(match, file)
-      if match.is_a? String
-        File.basename(file) == match ||
-        File.fnmatch(match, file)
-      elsif match.is_a? Regexp
-        file =~ match
+    def loaded_dir_pathname
+      return nil unless loaded_path
+      @loaded_dir ||= begin
+        loaded_dir = File.expand_path(File.dirname(loaded_path))
+        Pathname.new(loaded_dir)
+      end
+    end
+
+    def match_path?(pattern, path)
+      case pattern
+      when String
+        File.basename(path) == pattern || File.fnmatch(pattern, path)
+      when Regexp
+        path =~ pattern
       end
     end
   end

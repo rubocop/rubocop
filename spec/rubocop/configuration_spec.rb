@@ -217,10 +217,10 @@ describe Rubocop::Configuration do
     end
   end
 
-  describe '#include_files' do
-    subject(:include_files) do
+  describe '#patterns_to_include' do
+    subject(:patterns_to_include) do
       configuration = Rubocop::Configuration.new(hash, loaded_path)
-      configuration.include_files
+      configuration.patterns_to_include
     end
 
     let(:hash) { {} }
@@ -236,21 +236,24 @@ describe Rubocop::Configuration do
       end
 
       it 'returns the Includes value' do
-        expect(include_files).to eq(['Gemfile', 'config/unicorn.rb.example'])
+        expect(patterns_to_include).to eq([
+          'Gemfile',
+          'config/unicorn.rb.example'
+        ])
       end
     end
 
     context 'when config file does not have AllCops => Includes key' do
       it 'returns "**/*.gemspec" and "**/Rakefile"' do
-        expect(include_files).to eq(['**/*.gemspec', '**/Rakefile'])
+        expect(patterns_to_include).to eq(['**/*.gemspec', '**/Rakefile'])
       end
     end
   end
 
-  describe '#exclude_files' do
-    subject(:exclude_files) do
+  describe '#patterns_to_exclude' do
+    subject(:patterns_to_exclude) do
       configuration = Rubocop::Configuration.new(hash, loaded_path)
-      configuration.exclude_files
+      configuration.patterns_to_exclude
     end
 
     let(:hash) { {} }
@@ -266,13 +269,13 @@ describe Rubocop::Configuration do
       end
 
       it 'returns the Excludes value' do
-        expect(exclude_files).to eq(['log/*'])
+        expect(patterns_to_exclude).to eq(['log/*'])
       end
     end
 
     context 'when config file does not have AllCops => Excludes key' do
       it 'returns an empty array' do
-        expect(exclude_files).to be_empty
+        expect(patterns_to_exclude).to be_empty
       end
     end
   end
