@@ -5,6 +5,8 @@ module Rubocop
     class AvoidGlobalVars < Cop
       ERROR_MESSAGE = 'Do not introduce global variables.'
 
+      # predefined global variables their English aliases
+      # http://www.zenspider.com/Languages/Ruby/QuickRef.html
       BUILT_IN_VARS = %w(
         $: $LOAD_PATH
         $" $LOADED_FEATURES
@@ -29,6 +31,8 @@ module Rubocop
         $' $POSTMATCH
         $+ $LAST_PAREN_MATCH
         $stdin $stdout $stderr
+        $DEBUG $FILENAME $VERBOSE
+        $-0 $-a $-d $-F $-i $-I $-l $-p $-v $-w
       )
 
       def inspect(file, source, tokens, sexp)
