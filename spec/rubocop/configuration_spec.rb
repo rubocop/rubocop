@@ -2,10 +2,14 @@
 
 require 'spec_helper'
 
-describe Rubocop::Configuration, :isolated_environment do
+describe Rubocop::Configuration do
   include FileHelper
 
-  describe '.configuration_for_path' do
+  subject(:configuration) { Rubocop::Configuration.new(hash, loaded_path) }
+  let(:hash) { {} }
+  let(:loaded_path) { 'example/.rubocop.yml' }
+
+  describe '.configuration_for_path', :isolated_environment do
     subject(:configuration_for_path) do
       Rubocop::Configuration.configuration_for_path(file_path)
     end
@@ -94,7 +98,7 @@ describe Rubocop::Configuration, :isolated_environment do
     end
   end
 
-  describe '.load_file' do
+  describe '.load_file', :isolated_environment do
     subject(:load_file) do
       Rubocop::Configuration.load_file(configuration_path)
     end
@@ -114,7 +118,7 @@ describe Rubocop::Configuration, :isolated_environment do
     end
   end
 
-  describe '#validate!' do
+  describe '#validate!', :isolated_environment do
     subject(:configuration) do
       Rubocop::Configuration.load_file(configuration_path)
     end
@@ -157,6 +161,118 @@ describe Rubocop::Configuration, :isolated_environment do
           expect(error.message).to
             start_with('unrecognized parameter LineLength:Min')
         end
+      end
+    end
+  end
+
+  describe '#file_to_include?' do
+    let(:hash) do
+      {
+        'AllCops' => {
+          'Includes' => ['Gemfile', 'config/unicorn.rb.example']
+        }
+      }
+    end
+
+    let(:loaded_path) { '/home/foo/project/.rubocop.yml' }
+
+    context 'when the passed path matches any of patterns to include' do
+      it 'returns true' do
+        file_path = '/home/foo/project/Gemfile'
+        expect(configuration.file_to_include?(file_path)).to be_true
+      end
+    end
+
+    context 'when the passed path does not match any of patterns to include' do
+      it 'returns false' do
+        file_path = '/home/foo/project/Gemfile.lock'
+        expect(configuration.file_to_include?(file_path)).to be_false
+      end
+    end
+  end
+
+  describe '#file_to_exclude?' do
+    let(:hash) do
+      {
+        'AllCops' => {
+          'Excludes' => ['log/*']
+        }
+      }
+    end
+
+    let(:loaded_path) { '/home/foo/project/.rubocop.yml' }
+
+    context 'when the passed path matches any of patterns to exclude' do
+      it 'returns true' do
+        file_path = '/home/foo/project/log/foo.rb'
+        expect(configuration.file_to_exclude?(file_path)).to be_true
+      end
+    end
+
+    context 'when the passed path does not match any of patterns to exclude' do
+      it 'returns false' do
+        file_path = '/home/foo/project/log_file.rb'
+        expect(configuration.file_to_exclude?(file_path)).to be_false
+      end
+    end
+  end
+
+  describe '#include_files' do
+    subject(:include_files) do
+      configuration = Rubocop::Configuration.new(hash, loaded_path)
+      configuration.include_files
+    end
+
+    let(:hash) { {} }
+    let(:loaded_path) { 'example/.rubocop.yml' }
+
+    context 'when config file has AllCops => Includes key' do
+      let(:hash) do
+        {
+          'AllCops' => {
+            'Includes' => ['Gemfile', 'config/unicorn.rb.example']
+          }
+        }
+      end
+
+      it 'returns the Includes value' do
+        expect(include_files).to eq(['Gemfile', 'config/unicorn.rb.example'])
+      end
+    end
+
+    context 'when config file does not have AllCops => Includes key' do
+      it 'returns "**/*.gemspec" and "**/Rakefile"' do
+        expect(include_files).to eq(['**/*.gemspec', '**/Rakefile'])
+      end
+    end
+  end
+
+  describe '#exclude_files' do
+    subject(:exclude_files) do
+      configuration = Rubocop::Configuration.new(hash, loaded_path)
+      configuration.exclude_files
+    end
+
+    let(:hash) { {} }
+    let(:loaded_path) { 'example/.rubocop.yml' }
+
+    context 'when config file has AllCops => Excludes key' do
+      let(:hash) do
+        {
+          'AllCops' => {
+            'Excludes' => ['log/*']
+          }
+        }
+      end
+
+      it 'returns the Excludes value' do
+        expect(exclude_files).to eq(['log/*'])
+      end
+    end
+
+    context 'when config file does not have AllCops => Excludes key' do
+      it 'returns an empty array' do
+        expect(exclude_files).to be_empty
       end
     end
   end

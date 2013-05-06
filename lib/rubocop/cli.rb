@@ -276,55 +276,16 @@ module Rubocop
 
       rb += files.select do |file|
         config = get_config(file)
-        include_files(config).any? do |include_match|
-          rel_file = relative_to_config_path(file, config)
-          match_file(include_match, rel_file)
-        end
+        config.file_to_include?(file)
       end
 
       rb.reject do |file|
         config = get_config(file)
-        exclude_files(config).any? do |exclude_match|
-          rel_file = relative_to_config_path(file, config)
-          match_file(exclude_match, rel_file)
-        end
+        config.file_to_exclude?(file)
       end.uniq
     end
 
     private
-    def relative_to_config_path(file, config)
-     return file unless config && config.loaded_path
-     absolute_file = File.expand_path(file)
-     config_dir =  File.expand_path(File.dirname(config.loaded_path))
-     config_dir_path = Pathname.new(config_dir)
-     file_path = Pathname.new(absolute_file)
-     file_path.relative_path_from(config_dir_path).to_s
-    end
-
-    def match_file(match, file)
-     if match.is_a? String
-       File.basename(file) == match ||
-         File.fnmatch(match, file)
-     elsif match.is_a? Regexp
-       file =~ match
-     end
-    end
-
-    def include_files(config)
-     if config && config['AllCops'] && config['AllCops']['Includes']
-       config['AllCops']['Includes']
-     else
-       ['**/*.gemspec', '**/Rakefile']
-     end
-    end
-
-    def exclude_files(config)
-     if config && config['AllCops'] && config['AllCops']['Excludes']
-       config['AllCops']['Excludes']
-     else
-       []
-     end
-    end
 
     def get_config(file)
       return @options[:config] if @options[:config]

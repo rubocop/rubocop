@@ -67,6 +67,36 @@ module Rubocop
       end
     end
 
+    def file_to_include?(file)
+      include_files.any? do |include_match|
+        rel_file = relative_to_config_path(file)
+        match_file(include_match, rel_file)
+      end
+    end
+
+    def file_to_exclude?(file)
+      exclude_files.any? do |include_match|
+        rel_file = relative_to_config_path(file)
+        match_file(include_match, rel_file)
+      end
+    end
+
+    def include_files
+      if @hash['AllCops'] && @hash['AllCops']['Includes']
+        @hash['AllCops']['Includes']
+      else
+        ['**/*.gemspec', '**/Rakefile']
+      end
+    end
+
+    def exclude_files
+      if @hash['AllCops'] && @hash['AllCops']['Excludes']
+        @hash['AllCops']['Excludes']
+      else
+        []
+      end
+    end
+
     private
 
     def self.dirs_to_search(target_dir)
@@ -77,6 +107,24 @@ module Rubocop
       end
       dirs_to_search << Dir.home
       dirs_to_search
+    end
+
+    def relative_to_config_path(file)
+      return file unless loaded_path
+      absolute_file = File.expand_path(file)
+      config_dir =  File.expand_path(File.dirname(loaded_path))
+      config_dir_path = Pathname.new(config_dir)
+      file_path = Pathname.new(absolute_file)
+      file_path.relative_path_from(config_dir_path).to_s
+    end
+
+    def match_file(match, file)
+      if match.is_a? String
+        File.basename(file) == match ||
+        File.fnmatch(match, file)
+      elsif match.is_a? Regexp
+        file =~ match
+      end
     end
   end
 end
