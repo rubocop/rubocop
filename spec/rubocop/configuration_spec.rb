@@ -113,4 +113,51 @@ describe Rubocop::Configuration, :isolated_environment do
       })
     end
   end
+
+  describe '#validate!' do
+    subject(:configuration) do
+      Rubocop::Configuration.load_file(configuration_path)
+    end
+
+    let(:configuration_path) { '.rubocop.yml' }
+
+    context 'when the configuration includes any unrecognized cop name' do
+      before do
+        create_file(configuration_path, [
+          'LyneLenth:',
+          '  Enabled: true',
+          '  Max: 100',
+          ''
+        ])
+      end
+
+      it 'raises validation error' do
+        expect do
+          configuration.validate!
+        end.to raise_error(Rubocop::Configuration::ValidationError) do |error|
+          expect(error.message).to start_with('unrecognized cop LyneLenth')
+        end
+      end
+    end
+
+    context 'when the configuration includes any unrecognized parameter' do
+      before do
+        create_file(configuration_path, [
+          'LineLength:',
+          '  Enabled: true',
+          '  Min: 10',
+          ''
+        ])
+      end
+
+      it 'raises validation error' do
+        expect do
+          configuration.validate!
+        end.to raise_error(Rubocop::Configuration::ValidationError) do |error|
+          expect(error.message).to
+            start_with('unrecognized parameter LineLength:Min')
+        end
+      end
+    end
+  end
 end

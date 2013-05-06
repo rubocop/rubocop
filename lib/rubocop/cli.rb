@@ -115,6 +115,7 @@ module Rubocop
         end
         opts.on('-c FILE', '--config FILE', 'Configuration file') do |f|
           @options[:config] = Configuration.load_file(f)
+          with_validation_error_warning { @options[:config].validate! }
         end
         opts.on('-s', '--silent', 'Silence summary') do |s|
           @options[:silent] = s
@@ -292,9 +293,9 @@ module Rubocop
 
     private
     def relative_to_config_path(file, config)
-     return file unless config && config['ConfigDirectory']
+     return file unless config && config.loaded_path
      absolute_file = File.expand_path(file)
-     config_dir =  File.expand_path(config['ConfigDirectory'])
+     config_dir =  File.expand_path(File.dirname(config.loaded_path))
      config_dir_path = Pathname.new(config_dir)
      file_path = Pathname.new(absolute_file)
      file_path.relative_path_from(config_dir_path).to_s
@@ -336,8 +337,17 @@ module Rubocop
       return @config_cache[dir] if @config_cache[dir]
 
       config = Configuration.configuration_for_path(dir)
-      @config_cache[dir] = config if config
+      if config
+        @config_cache[dir] = config
+        with_validation_error_warning { config.validate! }
+      end
       config
+    end
+
+    def with_validation_error_warning
+      yield
+    rescue Configuration::ValidationError => e
+      puts "Warning: #{e.message}".color(:red)
     end
 
     def log_error(e, msg = '')

@@ -1,55 +1,82 @@
 # encoding: utf-8
 
+require 'delegate'
 require 'yaml'
+require 'pathname'
 
 module Rubocop
-  class Configuration
-    RUBOCOP_HOME_CONFIG = YAML.load_file(File.join(File.dirname(__FILE__),
-                                                   '../..',
-                                                   '.rubocop.yml'))
+  class Configuration < DelegateClass(Hash)
+    class ValidationError < StandardError
+    end
 
-    # Returns the configuration hash from .rubocop.yml searching
+    DOTFILE = '.rubocop.yml'
+    RUBOCOP_HOME_CONFIG = YAML.load_file(File.join(File.dirname(__FILE__),
+                                                   '..',
+                                                   '..',
+                                                   DOTFILE))
+
+    attr_reader :loaded_path
+
+    # Returns the configuration instance from .rubocop.yml searching
     # upwards in the directory structure starting at the given
     # directory where the inspected file is. If no .rubocop.yml is
     # found there, the user's home directory is checked.
-    def self.configuration_for_path(target_file_dir)
-      return unless target_file_dir
-      dir = target_file_dir
-      while dir != '/'
-        path = File.join(dir, '.rubocop.yml')
-        if File.exist?(path)
-          config = load_file(path)
-          config['ConfigDirectory'] = dir
+    def self.configuration_for_path(target_dir)
+      return nil unless target_dir
+
+      dirs_to_search(target_dir).each do |dir|
+        config_file = File.join(dir, DOTFILE)
+        if File.exist?(config_file)
+          config = load_file(config_file)
           return config
         end
-        dir = File.expand_path('..', dir)
       end
-      path = File.join(Dir.home, '.rubocop.yml')
-      if File.exists?(path)
-        config = load_file(path)
-        config['ConfigDirectory'] = Dir.home
-        return config
-      end
+
       nil
     end
 
     def self.load_file(path)
-      config = YAML.load_file(path)
-      valid_cop_names, invalid_cop_names = config.keys.partition do |key|
-        RUBOCOP_HOME_CONFIG.keys.include?(key)
+      hash = YAML.load_file(path)
+      new(hash, path)
+    end
+
+    def initialize(hash, loaded_path)
+      super(hash)
+      @hash = hash
+      @loaded_path = loaded_path
+    end
+
+    def validate!
+      valid_cop_names, invalid_cop_names = @hash.keys.partition do |key|
+        RUBOCOP_HOME_CONFIG.has_key?(key)
       end
+
       invalid_cop_names.each do |name|
-        puts "Warning: unrecognized cop #{name} found in #{path}".color(:red)
+        fail ValidationError,
+             "unrecognized cop #{name} found in #{loaded_path}"
       end
+
       valid_cop_names.each do |name|
-        config[name].keys.each do |param|
-          unless RUBOCOP_HOME_CONFIG[name].keys.include?(param)
-            puts(("Warning: unrecognized parameter #{name}:#{param} found " +
-                  "in #{path}").color(:red))
+        @hash[name].each_key do |param|
+          unless RUBOCOP_HOME_CONFIG[name].has_key?(param)
+            fail ValidationError,
+                 "unrecognized parameter #{name}:#{param} found " +
+                 "in #{loaded_path}"
           end
         end
       end
-      config
+    end
+
+    private
+
+    def self.dirs_to_search(target_dir)
+      dirs_to_search = []
+      target_dir_pathname = Pathname.new(File.expand_path(target_dir))
+      target_dir_pathname.ascend do |dir_pathname|
+        dirs_to_search << dir_pathname.to_s
+      end
+      dirs_to_search << Dir.home
+      dirs_to_search
     end
   end
 end
