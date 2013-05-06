@@ -31,7 +31,8 @@ module Rubocop
         if (sexp[1][0] == :@ident &&
             sexp[2][0] == :params &&
             sexp[3][0] == :bodystmt)
-          if sexp[3][1][0][0] != :unary
+          if (sexp[3][1][0][0] != :unary &&
+              sexp[3][1][0][0] != :binary)
             accessor_body = sexp[3][1][0][1][1]
             accessor_body.slice!(0) if accessor_body[0] == '@'
             accessor_var == accessor_body
