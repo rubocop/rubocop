@@ -14,7 +14,7 @@ if RUBY_ENGINE == 'ruby' && RUBY_VERSION >= '1.9.2'
     result = cli.run
   end
 
-  puts "Finished in #{time} seconds" if $options[:debug]
+  puts "Finished in #{time} seconds" if cli.options[:debug]
   exit result
 else
   puts 'RuboCop supports only MRI 1.9.2+'

@@ -48,10 +48,6 @@ module Rubocop
       after do
         $stderr = STDERR
         @cli_thread.terminate if @cli_thread
-
-        # Workaround for not to break cop specs,
-        # since Cop#add_offence checks if $options[:debug].
-        $options = {}
       end
 
       def interrupt

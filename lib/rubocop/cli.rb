@@ -11,6 +11,8 @@ module Rubocop
     # If set true while running,
     # RuboCop will abort processing and exit gracefully.
     attr_accessor :wants_to_quit
+    attr_accessor :options
+
     alias_method :wants_to_quit?, :wants_to_quit
 
     def initialize
@@ -18,6 +20,7 @@ module Rubocop
       @processed_file_count = 0
       @total_offences = 0
       @errors_count = 0
+      @options = { mode: :default }
     end
 
     # Entry point for the application logic. Here we
@@ -27,11 +30,9 @@ module Rubocop
     def run(args = ARGV)
       trap_interrupt
 
-      $options = { mode: :default }
-
       parse_options(args)
 
-      show_cops_on_duty(@cops) if $options[:debug]
+      show_cops_on_duty(@cops) if @options[:debug]
 
       @configs = {}
 
@@ -39,12 +40,13 @@ module Rubocop
         break if wants_to_quit?
 
         config = get_config(file)
-        report = Report.create(file, $options[:mode])
+        report = Report.create(file, @options[:mode])
         source = read_source(file)
 
-        puts "Scanning #{file}" if $options[:debug]
+        puts "Scanning #{file}" if @options[:debug]
 
         syntax_cop = Rubocop::Cop::Syntax.new
+        syntax_cop.debug = @options[:debug]
         syntax_cop.inspect(file, source, nil, nil)
 
         if syntax_cop.offences.map(&:severity).include?(:error)
@@ -60,7 +62,7 @@ module Rubocop
         report.display unless report.empty?
       end
 
-      unless $options[:silent]
+      unless @options[:silent]
         display_summary(@processed_file_count, @total_offences, @errors_count)
       end
 
@@ -84,6 +86,7 @@ module Rubocop
         if cop_config.nil? || cop_config['Enabled']
           cop_klass.config = cop_config
           cop = cop_klass.new
+          cop.debug = @options[:debug]
           cop.correlations = correlations
           cop.disabled_lines = disabled_lines[cop_name]
           begin
@@ -93,7 +96,7 @@ module Rubocop
             warn "An error occurred while #{cop.name} cop".color(:yellow) +
               " was inspecting #{file}.".color(:yellow)
             warn 'To see the complete backtrace run rubocop -d.'
-            puts e.message, e.backtrace if $options[:debug]
+            puts e.message, e.backtrace if @options[:debug]
           end
           @total_offences += cop.offences.count
           report << cop if cop.has_report?
@@ -106,16 +109,16 @@ module Rubocop
         opts.banner = 'Usage: rubocop [options] [file1, file2, ...]'
 
         opts.on('-d', '--debug', 'Display debug info') do |d|
-          $options[:debug] = d
+          @options[:debug] = d
         end
         opts.on('-e', '--emacs', 'Emacs style output') do
-          $options[:mode] = :emacs_style
+          @options[:mode] = :emacs_style
         end
         opts.on('-c FILE', '--config FILE', 'Configuration file') do |f|
-          $options[:config] = load_config(f)
+          @options[:config] = load_config(f)
         end
         opts.on('-s', '--silent', 'Silence summary') do |s|
-          $options[:silent] = s
+          @options[:silent] = s
         end
         opts.on('-n', '--no-color', 'Disable color output') do |s|
           Sickill::Rainbow.enabled = false
@@ -376,11 +379,11 @@ module Rubocop
     end
 
     def get_config(file)
-     $options[:config] || config_from_dotfile(File.dirname(file))
+     @options[:config] || config_from_dotfile(File.dirname(file))
     end
 
     def log_error(e, msg = '')
-      if $options[:debug]
+      if @options[:debug]
         error_message = "#{e.class}, #{e.message}"
         STDERR.puts "#{msg}\t#{error_message}"
       end

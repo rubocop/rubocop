@@ -32,6 +32,7 @@ module Rubocop
 
     class Cop
       attr_accessor :offences
+      attr_accessor :debug
       attr_writer :correlations, :disabled_lines
 
       @all = []
@@ -48,6 +49,7 @@ module Rubocop
 
       def initialize
         @offences = []
+        @debug = false
       end
 
       def has_report?
@@ -56,7 +58,7 @@ module Rubocop
 
       def add_offence(severity, line_number, message)
         unless @disabled_lines && @disabled_lines.include?(line_number)
-          message = $options[:debug] ? "#{name}: #{message}" : message
+          message = debug ? "#{name}: #{message}" : message
           @offences << Offence.new(severity, line_number, message)
         end
       end
