@@ -13,6 +13,15 @@ module Rubocop
                                                    '..',
                                                    '..',
                                                    DOTFILE))
+
+    # Probably we should find a better way.
+    # https://github.com/bbatsov/rubocop/issues/137
+    DEFAULT_CONFIGURATION = {
+      'SymbolArray' => {
+        'Enabled' => false
+      }
+    }.freeze
+
     DEFAULT_PATTERNS_TO_INCLUDE = ['**/*.gemspec', '**/Rakefile']
     DEFAULT_PATTERNS_TO_EXCLUDE = []
 
@@ -87,9 +96,9 @@ module Rubocop
     end
 
     def initialize(hash = {}, loaded_path = nil)
-      super(hash)
-      @hash = hash
+      @hash = DEFAULT_CONFIGURATION.merge(hash)
       @loaded_path = loaded_path
+      super(@hash)
     end
 
     def for_cop(cop)
