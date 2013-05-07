@@ -3,9 +3,8 @@
 module Rubocop
   module Cop
     class TrivialAccessors < Cop
-      ERROR_MESSAGE = <<-SUGGESTION
-Prefer the attr family of functions to define trivial accessors or mutators.
-      SUGGESTION
+      READER_MESSAGE = 'Use attr_reader to define trivial reader methods.'
+      WRITER_MESSAGE = 'Use attr_writer to define trivial writer methods.'
 
       def inspect(file, source, token, sexp)
         each(:def, sexp) do |def_block|
@@ -20,9 +19,10 @@ Prefer the attr family of functions to define trivial accessors or mutators.
       def find_trivial_accessors(sexp)
         lineno = sexp[1][2].lineno
         accessor_var = sexp[1][1]
-        if (is_trivial_reader(sexp, accessor_var) ||
-            is_trivial_writer(sexp, accessor_var))
-          add_offence(:convention, lineno, ERROR_MESSAGE)
+        if trivial_reader?(sexp, accessor_var)
+          add_offence(:convention, lineno, READER_MESSAGE)
+        elsif trivial_writer?(sexp, accessor_var)
+          add_offence(:convention, lineno, WRITER_MESSAGE)
         end
       end
 
@@ -31,7 +31,7 @@ Prefer the attr family of functions to define trivial accessors or mutators.
                               :yield0]
 
       # looking for a trivial reader
-      def is_trivial_reader(sexp, accessor_var)
+      def trivial_reader?(sexp, accessor_var)
         if (sexp[1][0] == :@ident &&
             sexp[2][0] == :params &&
             sexp[3][0] == :bodystmt)
@@ -44,7 +44,7 @@ Prefer the attr family of functions to define trivial accessors or mutators.
       end
 
       # looking for a trivial writer
-      def is_trivial_writer(sexp, accessor_var)
+      def trivial_writer?(sexp, accessor_var)
         if (accessor_var[-1] == '=' &&
             sexp[1][0] == :@ident &&
             sexp[2][0] == :paren &&
