@@ -31,6 +31,13 @@ module Rubocop
                        ['alias_method :ala, :bala'])
         expect(a.offences).to be_empty
       end
+
+      it 'does not register an offence for :alias' do
+        inspect_source(a,
+                       'file.rb',
+                       ['[:alias, :ala, :bala]'])
+        expect(a.offences).to be_empty
+      end
     end
   end
 end
