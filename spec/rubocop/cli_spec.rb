@@ -490,69 +490,69 @@ module Rubocop
       end
     end
 
-   it 'finds included files' do
-     FileUtils.mkdir 'test'
-     File.open('test/example', 'w') do |f|
-       f.puts '# encoding: utf-8'
-       f.puts 'x = 0'
-       f.puts 'puts x'
-     end
-     File.open('test/regexp', 'w') do |f|
-       f.puts '# encoding: utf-8'
-       f.puts 'x = 0'
-       f.puts 'puts x'
-     end
-     File.open('test/.rubocop.yml', 'w') do |f|
-       f.puts('AllCops:',
-              '  Includes:',
-              '    - example',
-              '    - !ruby/regexp /regexp$/')
-     end
-     FileUtils.cd 'test' do
-       # Need to pass an empty array explicitly
-       # so that the CLI does not refer arguments of `rspec`
-       expect(cli.run([])).to eq(0)
-       expect($stdout.string).to eq(
-         ['', '2 files inspected, no offences detected',
-          ''].join("\n"))
-     end
-   end
+    it 'finds included files' do
+      FileUtils.mkdir 'test'
+      File.open('test/example', 'w') do |f|
+        f.puts '# encoding: utf-8'
+        f.puts 'x = 0'
+        f.puts 'puts x'
+      end
+      File.open('test/regexp', 'w') do |f|
+        f.puts '# encoding: utf-8'
+        f.puts 'x = 0'
+        f.puts 'puts x'
+      end
+      File.open('test/.rubocop.yml', 'w') do |f|
+        f.puts('AllCops:',
+               '  Includes:',
+               '    - example',
+               '    - !ruby/regexp /regexp$/')
+      end
+      FileUtils.cd 'test' do
+        # Need to pass an empty array explicitly
+        # so that the CLI does not refer arguments of `rspec`
+        expect(cli.run([])).to eq(0)
+        expect($stdout.string).to eq(
+          ['', '2 files inspected, no offences detected',
+           ''].join("\n"))
+      end
+    end
 
-   it 'ignores excluded files' do
-     FileUtils.mkdir 'test'
-     File.open('test/example.rb', 'w') do |f|
-       f.puts '# encoding: utf-8'
-       f.puts 'x = 0'
-       f.puts 'puts x'
-     end
-     File.open('test/regexp.rb', 'w') do |f|
-       f.puts '# encoding: utf-8'
-       f.puts 'x = 0'
-       f.puts 'puts x'
-     end
-     File.open('test/exclude_glob.rb', 'w') do |f|
-       f.puts '#!/usr/bin/env ruby'
-       f.puts '# encoding: utf-8'
-       f.puts 'x = 0'
-       f.puts 'puts x'
-     end
-     File.open('test/.rubocop.yml', 'w') do |f|
-       f.puts('AllCops:',
-              '  Excludes:',
-              '    - example.rb',
-              '    - !ruby/regexp /regexp.rb$/',
-              '    - "exclude_*"')
-     end
+    it 'ignores excluded files' do
+      FileUtils.mkdir 'test'
+      File.open('test/example.rb', 'w') do |f|
+        f.puts '# encoding: utf-8'
+        f.puts 'x = 0'
+        f.puts 'puts x'
+      end
+      File.open('test/regexp.rb', 'w') do |f|
+        f.puts '# encoding: utf-8'
+        f.puts 'x = 0'
+        f.puts 'puts x'
+      end
+      File.open('test/exclude_glob.rb', 'w') do |f|
+        f.puts '#!/usr/bin/env ruby'
+        f.puts '# encoding: utf-8'
+        f.puts 'x = 0'
+        f.puts 'puts x'
+      end
+      File.open('test/.rubocop.yml', 'w') do |f|
+        f.puts('AllCops:',
+               '  Excludes:',
+               '    - example.rb',
+               '    - !ruby/regexp /regexp.rb$/',
+               '    - "exclude_*"')
+      end
 
-     FileUtils.cd 'test' do
-       # Need to pass an empty array explicitly
-       # so that the CLI does not refer arguments of `rspec`
-       expect(cli.run([])).to eq(0)
-       expect($stdout.string).to eq(
-         ['', '0 files inspected, no offences detected',
-          ''].join("\n"))
-     end
-   end
+      FileUtils.cd 'test' do
+        # Need to pass an empty array explicitly
+        # so that the CLI does not refer arguments of `rspec`
+        expect(cli.run([])).to eq(0)
+        expect($stdout.string).to eq(
+          ['', '0 files inspected, no offences detected',
+           ''].join("\n"))
+      end
+    end
 
     describe '#display_summary' do
       it 'handles pluralization correctly' do
