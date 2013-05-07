@@ -6,8 +6,7 @@ require 'pathname'
 
 module Rubocop
   class Configuration < DelegateClass(Hash)
-    class ValidationError < StandardError
-    end
+    class ValidationError < StandardError; end
 
     DOTFILE = '.rubocop.yml'
     RUBOCOP_HOME_CONFIG = YAML.load_file(File.join(File.dirname(__FILE__),
@@ -19,27 +18,72 @@ module Rubocop
 
     attr_reader :loaded_path
 
-    # Returns the configuration instance from .rubocop.yml searching
-    # upwards in the directory structure starting at the given
-    # directory where the inspected file is. If no .rubocop.yml is
-    # found there, the user's home directory is checked.
-    def self.configuration_for_path(target_dir)
-      return nil unless target_dir
+    class << self
+      # @config_cache is a cache that maps directories to
+      # configurations. We search for .rubocop.yml only if we haven't
+      # already found it for the given directory.
+      attr_accessor :config_cache
 
-      dirs_to_search(target_dir).each do |dir|
-        config_file = File.join(dir, DOTFILE)
-        if File.exist?(config_file)
-          config = load_file(config_file)
-          return config
-        end
+      def prepare
+        @options_config = nil
+        @config_cache = {}
       end
 
-      nil
-    end
+      def set_options_config(options_config)
+        @options_config = load_file(options_config)
+        @options_config.warn_unless_valid
+      end
 
-    def self.load_file(path)
-      hash = YAML.load_file(path)
-      new(hash, path)
+      def for(file)
+        dir = File.dirname(file)
+
+        return @options_config if @options_config
+        return @config_cache[dir] if @config_cache[dir]
+
+        config = configuration_for_path(dir)
+        if config
+          @config_cache[dir] = config
+          config.warn_unless_valid
+        end
+        config or {}
+      end
+
+      # TODO: This should be private method
+      def load_file(path)
+        hash = YAML.load_file(path)
+        new(hash, path)
+      end
+
+      # TODO: This should be private method
+      # Returns the configuration instance from .rubocop.yml searching
+      # upwards in the directory structure starting at the given
+      # directory where the inspected file is. If no .rubocop.yml is
+      # found there, the user's home directory is checked.
+      def configuration_for_path(target_dir)
+        return nil unless target_dir
+
+        dirs_to_search(target_dir).each do |dir|
+          config_file = File.join(dir, DOTFILE)
+          if File.exist?(config_file)
+            config = load_file(config_file)
+            return config
+          end
+        end
+
+        nil
+      end
+
+      private
+
+      def dirs_to_search(target_dir)
+        dirs_to_search = []
+        target_dir_pathname = Pathname.new(File.expand_path(target_dir))
+        target_dir_pathname.ascend do |dir_pathname|
+          dirs_to_search << dir_pathname.to_s
+        end
+        dirs_to_search << Dir.home
+        dirs_to_search
+      end
     end
 
     def initialize(hash, loaded_path)
@@ -48,6 +92,21 @@ module Rubocop
       @loaded_path = loaded_path
     end
 
+    def for_cop(cop)
+      self[cop]
+    end
+
+    def cop_enabled?(cop)
+      self[cop].nil? || self[cop]['Enabled']
+    end
+
+    def warn_unless_valid
+      validate!
+    rescue Configuration::ValidationError => e
+      puts "Warning: #{e.message}".color(:red)
+    end
+
+    # TODO: This should be a private method
     def validate!
       valid_cop_names, invalid_cop_names = @hash.keys.partition do |key|
         RUBOCOP_HOME_CONFIG.has_key?(key)
@@ -100,16 +159,6 @@ module Rubocop
     end
 
     private
-
-    def self.dirs_to_search(target_dir)
-      dirs_to_search = []
-      target_dir_pathname = Pathname.new(File.expand_path(target_dir))
-      target_dir_pathname.ascend do |dir_pathname|
-        dirs_to_search << dir_pathname.to_s
-      end
-      dirs_to_search << Dir.home
-      dirs_to_search
-    end
 
     def relative_path_to_loaded_dir(file)
       return file unless loaded_path
