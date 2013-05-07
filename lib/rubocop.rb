@@ -2,6 +2,7 @@
 
 require 'ripper'
 require 'rainbow'
+require 'English'
 
 require 'rubocop/cop/offence'
 require 'rubocop/cop/cop'

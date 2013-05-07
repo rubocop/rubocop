@@ -67,10 +67,7 @@ module Rubocop
     end
 
     def read_source(file)
-      File.readlines(file).map do |line|
-        get_rid_of_invalid_byte_sequences(line)
-        line.chomp
-      end
+      get_rid_of_invalid_byte_sequences(File.read(file)).split($RS)
     end
 
     def inspect_file(file, source, config, report)
@@ -189,12 +186,13 @@ module Rubocop
       end
     end
 
-    def get_rid_of_invalid_byte_sequences(line)
-      enc = line.encoding.name
+    def get_rid_of_invalid_byte_sequences(source)
+      source_encoding = source.encoding.name
       # UTF-16 works better in this algorithm but is not supported in 1.9.2.
       temporary_encoding = (RUBY_VERSION == '1.9.2') ? 'UTF-8' : 'UTF-16'
-      line.encode!(temporary_encoding, enc, invalid: :replace, replace: '')
-      line.encode!(enc, temporary_encoding)
+      source.encode!(temporary_encoding, source_encoding,
+                     invalid: :replace, replace: '')
+      source.encode!(source_encoding, temporary_encoding)
     end
 
     def self.rip_source(source)
