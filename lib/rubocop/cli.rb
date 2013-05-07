@@ -33,8 +33,6 @@ module Rubocop
 
       parse_options(args)
 
-      show_cops_on_duty(@cops) if @options[:debug]
-
       target_files(args).each do |file|
         break if wants_to_quit?
 
@@ -205,24 +203,6 @@ module Rubocop
       Cop::Position.make_position_objects(sexp)
       correlations = Cop::Grammar.new(tokens).correlate(sexp)
       [tokens, sexp, correlations]
-    end
-
-    def cops_on_duty(config)
-      cops_on_duty = []
-
-      Cop::Cop.all.each do |cop_klass|
-        cops_on_duty << cop_klass if config.cop_enabled?(cop_klass.cop_name)
-      end
-
-      cops_on_duty
-    end
-
-    def show_cops_on_duty(cops)
-      puts '== Reporting for duty =='
-      cops.each do |c|
-        puts ' * '.color(:yellow) + c.to_s.color(:green)
-      end
-      puts '========================'
     end
 
     # Generate a list of target files by expanding globing patterns
