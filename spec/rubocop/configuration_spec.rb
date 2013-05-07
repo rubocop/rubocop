@@ -30,7 +30,6 @@ describe Rubocop::Configuration do
           create_file('~/.rubocop.yml', [
             'Encoding:',
             '  Enabled: true',
-            ''
           ])
         end
 
@@ -58,7 +57,6 @@ describe Rubocop::Configuration do
         create_file('.rubocop.yml', [
           'Encoding:',
           '  Enabled: true',
-          ''
         ])
       end
 
@@ -79,13 +77,11 @@ describe Rubocop::Configuration do
         create_file('.rubocop.yml', [
           'Encoding:',
           '  Enabled: true',
-          ''
         ])
 
         create_file('dir/.rubocop.yml', [
           'Encoding:',
           '  Enabled: false',
-          ''
         ])
       end
 
@@ -109,7 +105,6 @@ describe Rubocop::Configuration do
       create_file(configuration_path, [
         'Encoding:',
         '  Enabled: true',
-        ''
       ])
       configuration = load_file
       expect(configuration['Encoding']).to eq({
@@ -131,7 +126,6 @@ describe Rubocop::Configuration do
           'LyneLenth:',
           '  Enabled: true',
           '  Max: 100',
-          ''
         ])
       end
 
@@ -150,7 +144,6 @@ describe Rubocop::Configuration do
           'LineLength:',
           '  Enabled: true',
           '  Min: 10',
-          ''
         ])
       end
 

@@ -12,9 +12,9 @@ module FileHelper
     File.open(file_path, 'w') do |file|
       case content
       when String
-        file.write content
+        file.puts content
       when Array
-        file.write content.join("\n")
+        file.puts content.join("\n")
       end
     end
   end
