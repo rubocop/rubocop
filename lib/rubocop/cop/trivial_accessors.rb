@@ -4,7 +4,7 @@ module Rubocop
   module Cop
     class TrivialAccessors < Cop
       ERROR_MESSAGE = <<-SUGGESTION
-'Prefer the attr family of functions to define trivial accessors or mutators.'
+Prefer the attr family of functions to define trivial accessors or mutators.
       SUGGESTION
 
       def inspect(file, source, token, sexp)
