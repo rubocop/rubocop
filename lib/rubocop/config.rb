@@ -5,7 +5,7 @@ require 'yaml'
 require 'pathname'
 
 module Rubocop
-  class Configuration < DelegateClass(Hash)
+  class Config < DelegateClass(Hash)
     class ValidationError < StandardError; end
 
     DOTFILE = '.rubocop.yml'
@@ -28,42 +28,13 @@ module Rubocop
     attr_reader :loaded_path
 
     class << self
-      # @config_cache is a cache that maps directories to
-      # configurations. We search for .rubocop.yml only if we haven't
-      # already found it for the given directory.
-      attr_accessor :config_cache
-
-      def prepare
-        @options_config = nil
-        @config_cache = {}
-      end
-
-      def set_options_config(options_config)
-        @options_config = load_file(options_config)
-        @options_config.warn_unless_valid
-      end
-
-      def for(file)
-        dir = File.dirname(file)
-
-        return @options_config if @options_config
-        return @config_cache[dir] if @config_cache[dir]
-
-        config = configuration_for_path(dir)
-        if config
-          @config_cache[dir] = config
-          config.warn_unless_valid
-        end
-        config or new
-      end
-
-      # TODO: This should be private method
       def load_file(path)
         hash = YAML.load_file(path)
-        new(hash, path)
+        config = new(hash, path)
+        config.warn_unless_valid
+        config
       end
 
-      # TODO: This should be private method
       # Returns the configuration instance from .rubocop.yml searching
       # upwards in the directory structure starting at the given
       # directory where the inspected file is. If no .rubocop.yml is
@@ -111,7 +82,7 @@ module Rubocop
 
     def warn_unless_valid
       validate!
-    rescue Configuration::ValidationError => e
+    rescue Config::ValidationError => e
       puts "Warning: #{e.message}".color(:red)
     end
 

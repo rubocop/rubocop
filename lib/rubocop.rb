@@ -79,6 +79,7 @@ require 'rubocop/report/report'
 require 'rubocop/report/plain_text'
 require 'rubocop/report/emacs_style'
 
-require 'rubocop/configuration'
+require 'rubocop/config'
+require 'rubocop/config_store'
 require 'rubocop/cli'
 require 'rubocop/version'
