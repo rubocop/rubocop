@@ -8,25 +8,19 @@ module Rubocop
       KEYWORDS = %w(if elsif case when while until unless)
 
       def inspect(file, source, tokens, sexp)
-        tokens.each_with_index do |t, ix|
-          symbol = symbeg?(tokens, ix - 1)
-          if !symbol && t.type == :on_kw && KEYWORDS.include?(t.text)
+        # we need to keep track of the previous token to
+        # avoid confusing symbols like :if with real keywords
+        prev = Token.new(0, :init, '')
+
+        tokens.each_cons(2) do |t1, t2|
+          if prev.type != :on_symbeg && t1.type == :on_kw &&
+              KEYWORDS.include?(t1.text) && t2.type != :on_sp
             add_offence(:convention,
-                        t.pos.lineno,
-                        ERROR_MESSAGE) unless next_token_sp?(tokens, ix + 1)
+                        t1.pos.lineno,
+                        ERROR_MESSAGE)
           end
-        end
-      end
 
-      def next_token_sp?(tokens, index)
-        tokens[index] && tokens[index].type == :on_sp
-      end
-
-      def symbeg?(tokens, index)
-        if index > 0 && tokens[index].type == :on_symbeg
-          true
-        else
-          false
+          prev = t1
         end
       end
     end
