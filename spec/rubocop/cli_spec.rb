@@ -5,7 +5,7 @@ require 'tmpdir'
 require 'spec_helper'
 
 module Rubocop
-  describe CLI do
+  describe CLI, :isolated_environment do
     let(:cli) { CLI.new }
     before(:each) { $stdout = StringIO.new }
     after(:each) { $stdout = STDOUT }
@@ -43,6 +43,8 @@ module Rubocop
         end
 
         $stderr = StringIO.new
+
+        create_file('example.rb', '# encoding: utf-8')
       end
 
       after do
@@ -104,13 +106,9 @@ module Rubocop
         f.puts 'x = 0'
         f.puts 'puts x'
       end
-      begin
-        expect(cli.run(['example.rb'])).to eq(0)
-        expect($stdout.string)
-          .to eq("\n1 file inspected, no offences detected\n")
-      ensure
-        File.delete 'example.rb'
-      end
+      expect(cli.run(['example.rb'])).to eq(0)
+      expect($stdout.string)
+        .to eq("\n1 file inspected, no offences detected\n")
     end
 
     it 'checks a given file with faults and returns 1' do
@@ -119,112 +117,84 @@ module Rubocop
         f.puts 'x = 0 '
         f.puts 'puts x'
       end
-      begin
-        expect(cli.run(['example.rb'])).to eq(1)
-        expect($stdout.string)
-          .to eq ['== example.rb ==',
-                  'C:  2: Trailing whitespace detected.',
-                  '',
-                  '1 file inspected, 1 offence detected',
-                  ''].join("\n")
-      ensure
-        File.delete 'example.rb'
-      end
+      expect(cli.run(['example.rb'])).to eq(1)
+      expect($stdout.string)
+        .to eq ['== example.rb ==',
+                'C:  2: Trailing whitespace detected.',
+                '',
+                '1 file inspected, 1 offence detected',
+                ''].join("\n")
     end
 
     it 'can report in emacs style', ruby: 1.9 do
       File.open('example1.rb', 'w') { |f| f.puts 'x= 0 ', 'y ', 'puts x' }
       File.open('example2.rb', 'w') { |f| f.puts "\tx = 0", 'puts x' }
-      begin
-        expect(cli.run(['--emacs', 'example1.rb', 'example2.rb'])).to eq(1)
-        expect($stdout.string)
-          .to eq(
-          ['example1.rb:1: C: Missing utf-8 encoding comment.',
-           'example1.rb:1: C: Trailing whitespace detected.',
-           "example1.rb:1: C: Surrounding space missing for operator '='.",
-           'example1.rb:2: C: Trailing whitespace detected.',
-           'example2.rb:1: C: Missing utf-8 encoding comment.',
-           'example2.rb:1: C: Tab detected.',
-           '',
-           '2 files inspected, 6 offences detected',
-           ''].join("\n"))
-      ensure
-        File.delete 'example1.rb'
-        File.delete 'example2.rb'
-      end
+      expect(cli.run(['--emacs', 'example1.rb', 'example2.rb'])).to eq(1)
+      expect($stdout.string)
+        .to eq(
+        ['example1.rb:1: C: Missing utf-8 encoding comment.',
+         'example1.rb:1: C: Trailing whitespace detected.',
+         "example1.rb:1: C: Surrounding space missing for operator '='.",
+         'example1.rb:2: C: Trailing whitespace detected.',
+         'example2.rb:1: C: Missing utf-8 encoding comment.',
+         'example2.rb:1: C: Tab detected.',
+         '',
+         '2 files inspected, 6 offences detected',
+         ''].join("\n"))
     end
 
     it 'can report in emacs style', ruby: 2.0 do
       File.open('example1.rb', 'w') { |f| f.puts 'x= 0 ', 'y ', 'puts x' }
       File.open('example2.rb', 'w') { |f| f.puts "\tx = 0", 'puts x' }
-      begin
-        expect(cli.run(['--emacs', 'example1.rb', 'example2.rb'])).to eq(1)
-        expect($stdout.string)
-          .to eq(
-          ['example1.rb:1: C: Trailing whitespace detected.',
-           "example1.rb:1: C: Surrounding space missing for operator '='.",
-           'example1.rb:2: C: Trailing whitespace detected.',
-           'example2.rb:1: C: Tab detected.',
-           '',
-           '2 files inspected, 4 offences detected',
-           ''].join("\n"))
-      ensure
-        File.delete 'example1.rb'
-        File.delete 'example2.rb'
-      end
+      expect(cli.run(['--emacs', 'example1.rb', 'example2.rb'])).to eq(1)
+      expect($stdout.string)
+        .to eq(
+        ['example1.rb:1: C: Trailing whitespace detected.',
+         "example1.rb:1: C: Surrounding space missing for operator '='.",
+         'example1.rb:2: C: Trailing whitespace detected.',
+         'example2.rb:1: C: Tab detected.',
+         '',
+         '2 files inspected, 4 offences detected',
+         ''].join("\n"))
     end
 
     it 'ommits summary when --silent passed', ruby: 1.9 do
       File.open('example1.rb', 'w') { |f| f.puts 'puts 0 ' }
       File.open('example2.rb', 'w') { |f| f.puts "\tputs 0" }
-      begin
-        expect(cli.run(['--emacs',
-                        '--silent',
-                        'example1.rb',
-                        'example2.rb'])).to eq(1)
-        expect($stdout.string).to eq(
-          ['example1.rb:1: C: Missing utf-8 encoding comment.',
-           'example1.rb:1: C: Trailing whitespace detected.',
-           'example2.rb:1: C: Missing utf-8 encoding comment.',
-           'example2.rb:1: C: Tab detected.',
-           ''].join("\n"))
-      ensure
-        File.delete 'example1.rb'
-        File.delete 'example2.rb'
-      end
+      expect(cli.run(['--emacs',
+                      '--silent',
+                      'example1.rb',
+                      'example2.rb'])).to eq(1)
+      expect($stdout.string).to eq(
+        ['example1.rb:1: C: Missing utf-8 encoding comment.',
+         'example1.rb:1: C: Trailing whitespace detected.',
+         'example2.rb:1: C: Missing utf-8 encoding comment.',
+         'example2.rb:1: C: Tab detected.',
+         ''].join("\n"))
     end
 
     it 'ommits summary when --silent passed', ruby: 2.0 do
       File.open('example1.rb', 'w') { |f| f.puts 'puts 0 ' }
       File.open('example2.rb', 'w') { |f| f.puts "\tputs 0" }
-      begin
-        expect(cli.run(['--emacs',
-                        '--silent',
-                        'example1.rb',
-                        'example2.rb'])).to eq(1)
-        expect($stdout.string).to eq(
-          ['example1.rb:1: C: Trailing whitespace detected.',
-           'example2.rb:1: C: Tab detected.',
-           ''].join("\n"))
-      ensure
-        File.delete 'example1.rb'
-        File.delete 'example2.rb'
-      end
+      expect(cli.run(['--emacs',
+                      '--silent',
+                      'example1.rb',
+                      'example2.rb'])).to eq(1)
+      expect($stdout.string).to eq(
+        ['example1.rb:1: C: Trailing whitespace detected.',
+         'example2.rb:1: C: Tab detected.',
+         ''].join("\n"))
     end
 
     it 'shows cop names when --debug is passed', ruby: 2.0 do
       File.open('example1.rb', 'w') { |f| f.puts "\tputs 0" }
-      begin
-        expect(cli.run(['--emacs',
-                        '--silent',
-                        '--debug',
-                        'example1.rb'])).to eq(1)
-        expect($stdout.string.lines[-1]).to eq(
-          ['example1.rb:1: C: Tab: Tab detected.',
-           ''].join("\n"))
-      ensure
-        File.delete 'example1.rb'
-      end
+      expect(cli.run(['--emacs',
+                      '--silent',
+                      '--debug',
+                      'example1.rb'])).to eq(1)
+      expect($stdout.string.lines[-1]).to eq(
+        ['example1.rb:1: C: Tab: Tab detected.',
+         ''].join("\n"))
     end
 
     it 'can be configured with option to disable a certain error' do
@@ -236,18 +206,13 @@ module Rubocop
                'CaseIndentation:',
                '  Enabled: false')
       end
-      begin
-        expect(cli.run(['-c', 'rubocop.yml', 'example1.rb'])).to eq(1)
-        expect($stdout.string).to eq(
-          ['== example1.rb ==',
-           'C:  1: Trailing whitespace detected.',
-           '',
-           '1 file inspected, 1 offence detected',
-           ''].join("\n"))
-      ensure
-        File.delete 'example1.rb'
-        File.delete 'rubocop.yml'
-      end
+      expect(cli.run(['-c', 'rubocop.yml', 'example1.rb'])).to eq(1)
+      expect($stdout.string).to eq(
+        ['== example1.rb ==',
+         'C:  1: Trailing whitespace detected.',
+         '',
+         '1 file inspected, 1 offence detected',
+         ''].join("\n"))
     end
 
     it 'can be configured with project config to disable a certain error' do
@@ -260,17 +225,13 @@ module Rubocop
                'CaseIndentation:',
                '  Enabled: false')
       end
-      begin
-        expect(cli.run(['example_src/example1.rb'])).to eq(1)
-        expect($stdout.string).to eq(
-          ['== example_src/example1.rb ==',
-           'C:  1: Trailing whitespace detected.',
-           '',
-           '1 file inspected, 1 offence detected',
-           ''].join("\n"))
-      ensure
-        FileUtils.rm_rf 'example_src'
-      end
+      expect(cli.run(['example_src/example1.rb'])).to eq(1)
+      expect($stdout.string).to eq(
+        ['== example_src/example1.rb ==',
+         'C:  1: Trailing whitespace detected.',
+         '',
+         '1 file inspected, 1 offence detected',
+         ''].join("\n"))
     end
 
     it 'can use an alternative max line length from a config file' do
@@ -284,14 +245,10 @@ module Rubocop
                '  Enabled: true',
                '  Max: 100')
       end
-      begin
-        expect(cli.run(['example_src/example1.rb'])).to eq(0)
-        expect($stdout.string).to eq(
-          ['', '1 file inspected, no offences detected',
-           ''].join("\n"))
-      ensure
-        FileUtils.rm_rf 'example_src'
-      end
+      expect(cli.run(['example_src/example1.rb'])).to eq(0)
+      expect($stdout.string).to eq(
+        ['', '1 file inspected, no offences detected',
+         ''].join("\n"))
     end
 
     it 'can have different config files in different directories' do
@@ -307,17 +264,13 @@ module Rubocop
                '  Enabled: true',
                '  Max: 100')
       end
-      begin
-        expect(cli.run(['example'])).to eq(1)
-        expect($stdout.string).to eq(
-          ['== example/lib/example1.rb ==',
-           'C:  2: Line is too long. [90/79]',
-           '',
-           '2 files inspected, 1 offence detected',
-           ''].join("\n"))
-      ensure
-        FileUtils.rm_rf 'example'
-      end
+      expect(cli.run(['example'])).to eq(1)
+      expect($stdout.string).to eq(
+        ['== example/lib/example1.rb ==',
+         'C:  2: Line is too long. [90/79]',
+         '',
+         '2 files inspected, 1 offence detected',
+         ''].join("\n"))
     end
 
     it 'prefers a config file in ancestor directory to another in home' do
@@ -331,27 +284,18 @@ module Rubocop
                '  Enabled: true',
                '  Max: 100')
       end
-      Dir.mktmpdir do |tmpdir|
-        @original_home = ENV['HOME']
-        ENV['HOME'] = tmpdir
-        File.open("#{Dir.home}/.rubocop.yml", 'w') do |f|
-          f.puts('LineLength:',
-                 '  Enabled: true',
-                 '  Max: 80')
-        end
-        begin
-          expect(cli.run(['example_src/example1.rb'])).to eq(0)
-          expect($stdout.string).to eq(
-            ['', '1 file inspected, no offences detected',
-             ''].join("\n"))
-        ensure
-          FileUtils.rm_rf 'example_src'
-          ENV['HOME'] = @original_home
-        end
+      File.open("#{Dir.home}/.rubocop.yml", 'w') do |f|
+        f.puts('LineLength:',
+               '  Enabled: true',
+               '  Max: 80')
       end
+      expect(cli.run(['example_src/example1.rb'])).to eq(0)
+      expect($stdout.string).to eq(
+        ['', '1 file inspected, no offences detected',
+         ''].join("\n"))
     end
 
-    it 'Can exclude directories relative to .rubocop.yml' do
+    it 'can exclude directories relative to .rubocop.yml' do
       %w(src etc/test etc/spec tmp/test tmp/spec).each do |dir|
         FileUtils.mkdir_p "example/#{dir}"
         File.open("example/#{dir}/example1.rb", 'w') do |f|
@@ -368,17 +312,13 @@ module Rubocop
                '    - tmp/spec/**')
       end
 
-      begin
-        expect(cli.run(['example'])).to eq(1)
-        expect($stdout.string).to eq(
-          ['== example/tmp/test/example1.rb ==',
-           'C:  2: Line is too long. [90/79]',
-           '',
-           '1 file inspected, 1 offence detected',
-           ''].join("\n"))
-      ensure
-        FileUtils.rm_rf 'example'
-      end
+      expect(cli.run(['example'])).to eq(1)
+      expect($stdout.string).to eq(
+        ['== example/tmp/test/example1.rb ==',
+         'C:  2: Line is too long. [90/79]',
+         '',
+         '1 file inspected, 1 offence detected',
+         ''].join("\n"))
     end
 
     it 'prints a warning for an unrecognized cop name in .rubocop.yml' do
@@ -394,19 +334,15 @@ module Rubocop
                '  Max: 100')
       end
 
-      begin
-        expect(cli.run(['example'])).to eq(1)
-        expect($stdout.string).to eq(
-          ['Warning: unrecognized cop LyneLenth found in ' +
-           File.expand_path('example/.rubocop.yml'),
-           '== example/example1.rb ==',
-           'C:  2: Line is too long. [90/79]',
-           '',
-           '1 file inspected, 1 offence detected',
-           ''].join("\n"))
-      ensure
-        FileUtils.rm_rf 'example'
-      end
+      expect(cli.run(['example'])).to eq(1)
+      expect($stdout.string).to eq(
+        ['Warning: unrecognized cop LyneLenth found in ' +
+         File.expand_path('example/.rubocop.yml'),
+         '== example/example1.rb ==',
+         'C:  2: Line is too long. [90/79]',
+         '',
+         '1 file inspected, 1 offence detected',
+         ''].join("\n"))
     end
 
     it 'prints a warning for an unrecognized configuration parameter' do
@@ -422,19 +358,15 @@ module Rubocop
                '  Min: 10')
       end
 
-      begin
-        expect(cli.run(['example'])).to eq(1)
-        expect($stdout.string).to eq(
-          ['Warning: unrecognized parameter LineLength:Min found in ' +
-           File.expand_path('example/.rubocop.yml'),
-           '== example/example1.rb ==',
-           'C:  2: Line is too long. [90/79]',
-           '',
-           '1 file inspected, 1 offence detected',
-           ''].join("\n"))
-      ensure
-        FileUtils.rm_rf 'example'
-      end
+      expect(cli.run(['example'])).to eq(1)
+      expect($stdout.string).to eq(
+        ['Warning: unrecognized parameter LineLength:Min found in ' +
+         File.expand_path('example/.rubocop.yml'),
+         '== example/example1.rb ==',
+         'C:  2: Line is too long. [90/79]',
+         '',
+         '1 file inspected, 1 offence detected',
+         ''].join("\n"))
     end
 
     it 'registers an offence for a syntax error' do
@@ -443,18 +375,14 @@ module Rubocop
         f.puts 'class Test'
         f.puts 'en'
       end
-      begin
-        expect(cli.run(['--emacs', 'example.rb'])).to eq(1)
-        unexpected_part = RUBY_VERSION >= '2.0' ? 'end-of-input' : '$end'
-        expect($stdout.string).to eq(
-          ["example.rb:3: E: Syntax error, unexpected #{unexpected_part}, " +
-           'expecting keyword_end',
-           '',
-           '1 file inspected, 1 offence detected',
-           ''].join("\n"))
-      ensure
-        File.delete 'example.rb'
-      end
+      expect(cli.run(['--emacs', 'example.rb'])).to eq(1)
+      unexpected_part = RUBY_VERSION >= '2.0' ? 'end-of-input' : '$end'
+      expect($stdout.string).to eq(
+        ["example.rb:3: E: Syntax error, unexpected #{unexpected_part}, " +
+         'expecting keyword_end',
+         '',
+         '1 file inspected, 1 offence detected',
+         ''].join("\n"))
     end
 
     it 'can process a file with an invalid UTF-8 byte sequence' do
@@ -462,11 +390,7 @@ module Rubocop
         f.puts '# encoding: utf-8'
         f.puts "# \xf9\x29"
       end
-      begin
-        expect(cli.run(['--emacs', 'example.rb'])).to eq(0)
-      ensure
-        File.delete 'example.rb'
-      end
+      expect(cli.run(['--emacs', 'example.rb'])).to eq(0)
     end
 
     it 'can have all cops disabled in a code section' do
@@ -483,20 +407,16 @@ module Rubocop
         f.puts '  y("123")'
         f.puts 'end'
       end
-      begin
-        expect(cli.run(['--emacs', 'example.rb'])).to eq(1)
-        # all cops were disabled, then 2 were enabled again, so we
-        # should get 2 offences reported.
-        expect($stdout.string).to eq(
-          ['example.rb:8: C: Line is too long. [95/79]',
-           "example.rb:10: C: Prefer single-quoted strings when you don't " +
-           'need string interpolation or special symbols.',
-           '',
-           '1 file inspected, 2 offences detected',
-           ''].join("\n"))
-      ensure
-        File.delete 'example.rb'
-      end
+      expect(cli.run(['--emacs', 'example.rb'])).to eq(1)
+      # all cops were disabled, then 2 were enabled again, so we
+      # should get 2 offences reported.
+      expect($stdout.string).to eq(
+        ['example.rb:8: C: Line is too long. [95/79]',
+         "example.rb:10: C: Prefer single-quoted strings when you don't " +
+         'need string interpolation or special symbols.',
+         '',
+         '1 file inspected, 2 offences detected',
+         ''].join("\n"))
     end
 
     it 'can have selected cops disabled in a code section' do
@@ -513,20 +433,16 @@ module Rubocop
         f.puts '  y("123")'
         f.puts 'end'
       end
-      begin
-        expect(cli.run(['--emacs', 'example.rb'])).to eq(1)
-        # 3 cops were disabled, then 2 were enabled again, so we
-        # should get 2 offences reported.
-        expect($stdout.string).to eq(
-          ['example.rb:8: C: Line is too long. [95/79]',
-           "example.rb:10: C: Prefer single-quoted strings when you don't " +
-           'need string interpolation or special symbols.',
-           '',
-           '1 file inspected, 2 offences detected',
-           ''].join("\n"))
-      ensure
-        File.delete 'example.rb'
-      end
+      expect(cli.run(['--emacs', 'example.rb'])).to eq(1)
+      # 3 cops were disabled, then 2 were enabled again, so we
+      # should get 2 offences reported.
+      expect($stdout.string).to eq(
+        ['example.rb:8: C: Line is too long. [95/79]',
+         "example.rb:10: C: Prefer single-quoted strings when you don't " +
+         'need string interpolation or special symbols.',
+         '',
+         '1 file inspected, 2 offences detected',
+         ''].join("\n"))
     end
 
     it 'can have all cops disabled on a single line' do
@@ -534,15 +450,11 @@ module Rubocop
         f.puts '# encoding: utf-8'
         f.puts 'y("123", 123456) # rubocop:disable all'
       end
-      begin
-        expect(cli.run(['--emacs', 'example.rb'])).to eq(0)
-        expect($stdout.string).to eq(
-          ['',
-           '1 file inspected, no offences detected',
-           ''].join("\n"))
-      ensure
-        File.delete 'example.rb'
-      end
+      expect(cli.run(['--emacs', 'example.rb'])).to eq(0)
+      expect($stdout.string).to eq(
+        ['',
+         '1 file inspected, no offences detected',
+         ''].join("\n"))
     end
 
     it 'can have selected cops disabled on a single line' do
@@ -552,16 +464,12 @@ module Rubocop
         f.puts '#' * 95
         f.puts 'y("123") # rubocop:disable LineLength,StringLiterals'
       end
-      begin
-        expect(cli.run(['--emacs', 'example.rb'])).to eq(1)
-        expect($stdout.string).to eq(
-          ['example.rb:3: C: Line is too long. [95/79]',
-           '',
-           '1 file inspected, 1 offence detected',
-           ''].join("\n"))
-      ensure
-        File.delete 'example.rb'
-      end
+      expect(cli.run(['--emacs', 'example.rb'])).to eq(1)
+      expect($stdout.string).to eq(
+        ['example.rb:3: C: Line is too long. [95/79]',
+         '',
+         '1 file inspected, 1 offence detected',
+         ''].join("\n"))
     end
 
     it 'finds a file with no .rb extension but has a shebang line' do
@@ -572,17 +480,13 @@ module Rubocop
         f.puts 'x = 0'
         f.puts 'puts x'
       end
-      begin
-        FileUtils.cd 'test' do
-          # Need to pass an empty array explicitly
-          # so that the CLI does not refer arguments of `rspec`
-          expect(cli.run([])).to eq(0)
-          expect($stdout.string).to eq(
-            ['', '1 file inspected, no offences detected',
-             ''].join("\n"))
-        end
-      ensure
-        FileUtils.rm_rf 'test'
+      FileUtils.cd 'test' do
+        # Need to pass an empty array explicitly
+        # so that the CLI does not refer arguments of `rspec`
+        expect(cli.run([])).to eq(0)
+        expect($stdout.string).to eq(
+          ['', '1 file inspected, no offences detected',
+           ''].join("\n"))
       end
     end
 
@@ -604,17 +508,13 @@ module Rubocop
               '    - example',
               '    - !ruby/regexp /regexp$/')
      end
-     begin
-       FileUtils.cd 'test' do
-         # Need to pass an empty array explicitly
-         # so that the CLI does not refer arguments of `rspec`
-         expect(cli.run([])).to eq(0)
-         expect($stdout.string).to eq(
-           ['', '2 files inspected, no offences detected',
-            ''].join("\n"))
-       end
-     ensure
-       FileUtils.rm_rf 'test'
+     FileUtils.cd 'test' do
+       # Need to pass an empty array explicitly
+       # so that the CLI does not refer arguments of `rspec`
+       expect(cli.run([])).to eq(0)
+       expect($stdout.string).to eq(
+         ['', '2 files inspected, no offences detected',
+          ''].join("\n"))
      end
    end
 
@@ -644,17 +544,13 @@ module Rubocop
               '    - "exclude_*"')
      end
 
-     begin
-       FileUtils.cd 'test' do
-         # Need to pass an empty array explicitly
-         # so that the CLI does not refer arguments of `rspec`
-         expect(cli.run([])).to eq(0)
-         expect($stdout.string).to eq(
-           ['', '0 files inspected, no offences detected',
-            ''].join("\n"))
-       end
-     ensure
-       FileUtils.rm_rf 'test'
+     FileUtils.cd 'test' do
+       # Need to pass an empty array explicitly
+       # so that the CLI does not refer arguments of `rspec`
+       expect(cli.run([])).to eq(0)
+       expect($stdout.string).to eq(
+         ['', '0 files inspected, no offences detected',
+          ''].join("\n"))
      end
    end
 
