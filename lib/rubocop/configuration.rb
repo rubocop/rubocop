@@ -45,7 +45,13 @@ module Rubocop
           @config_cache[dir] = config
           config.warn_unless_valid
         end
-        config or {}
+        config or default_config
+      end
+
+      # if no config file if found we fallback to the one
+      # bundled with RuboCop itself
+      def default_config
+        configuration_for_path(File.dirname(__FILE__))
       end
 
       # TODO: This should be private method
