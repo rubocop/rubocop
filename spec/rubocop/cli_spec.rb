@@ -437,15 +437,6 @@ module Rubocop
       end
     end
 
-    it 'finds no violations when checking the rubocop source code' do
-      # Need to pass an empty array explicitly
-      # so that the CLI does not refer arguments of `rspec`
-      cli.run([])
-      expect($stdout.string).to match(
-        /files inspected, no offences detected\n/
-      )
-    end
-
     it 'registers an offence for a syntax error' do
       File.open('example.rb', 'w') do |f|
         f.puts '# encoding: utf-8'
@@ -476,14 +467,6 @@ module Rubocop
       ensure
         File.delete 'example.rb'
       end
-    end
-
-    it 'has configuration for all cops in .rubocop.yml' do
-      cop_names = Cop::Cop.all.map do |cop_class|
-        cop_class.name.split('::').last
-      end
-      expect(YAML.load_file('.rubocop.yml').keys.sort)
-        .to eq((['AllCops'] + cop_names).sort)
     end
 
     it 'can have all cops disabled in a code section' do
