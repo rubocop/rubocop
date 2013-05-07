@@ -28,12 +28,12 @@ module Rubocop
 
       NON_TRIVIAL_BODYSTMT = [:void_stmt, :unary, :binary,
                               :@float, :@int, :hash, :begin,
-                              :yield0]
+                              :yield0, :zsuper, :array]
 
       # looking for a trivial reader
       def trivial_reader?(sexp, accessor_var)
         if (sexp[1][0] == :@ident &&
-            sexp[2][0] == :params &&
+            (sexp[2][0] == :params || empty_params?(sexp[2][0]))
             sexp[3][0] == :bodystmt)
           unless NON_TRIVIAL_BODYSTMT.include? sexp[3][1][0][0]
             accessor_body = sexp[3][1][0][1][1]
@@ -43,12 +43,18 @@ module Rubocop
         end
       end
 
+      # detect "def foo() or "
+      # "[:paren, [:params, nil, nil, nil, nil, nil, nil, nil]]"
+      def empty_params?(sexp)
+        sexp[0] == :paren && sexp[1] == :params &&
+          sexp[1][1..-1] == nil
+      end
+
       # looking for a trivial writer
       def trivial_writer?(sexp, accessor_var)
         if (accessor_var[-1] == '=' &&
             sexp[1][0] == :@ident &&
-            sexp[2][0] == :paren &&
-            sexp[2][1][0] == :params &&
+            with_braces?(sexp[2]) &&
             sexp[3][0] == :bodystmt)
           unless NON_TRIVIAL_BODYSTMT.include? sexp[3][1][0][0]
             accessor_var.chop!
@@ -60,6 +66,12 @@ module Rubocop
             end
           end
         end
+      end
+
+      # detect "def name= name"
+      def with_braces?(sexp)
+        (sexp[0] == :paren && sexp[1][0] == :params) ||
+          sexp[0] == :params
       end
 
     end # TrivialAccessors

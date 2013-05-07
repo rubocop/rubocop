@@ -82,10 +82,49 @@ module Rubocop
                         '      # do stuff',
                         '    end',
                         '  end',
+                        '  def regex',
+                        '    %r{\A#{visit node}\Z}',
+                        '  end',
+                        '  def array',
+                        '    [foo, bar].join',
+                        '  end',
+                        '  def string',
+                        '    "string"',
+                        '  end',
+                        '  def class',
+                        '    Foo.class',
+                        '  end',
+                        ' def with_return',
+                        '   return foo',
+                        ' end',
+                        ' def captures',
+                        '   (length - 1).times.map { |i| self[i + 1] }',
+                        ' end',
+                        ' def foo val',
+                        '   super',
+                        '   @val',
+                        ' end',
                         'end'])
         expect(trivial_accessors_finder.offences.size).to eq(2)
         expect(trivial_accessors_finder.offences
                  .map(&:line_number).sort).to eq([2, 8])
+      end
+
+      it 'find trivial accessors whit or without braces' do
+        inspect_source(trivial_accessors_finder, '',
+                       ['class Test',
+                        '  # trivial reader with braces',
+                        '  def name()',
+                        '    @name',
+                        '  end',
+                        '  # trivial writer without braces',
+                        '  def name= name',
+                        '    @name = name',
+                        '  end',
+                        'end'])
+        expect(trivial_accessors_finder.offences.size).to eq(2)
+        expect(trivial_accessors_finder.offences
+                 .map(&:line_number).sort).to eq([3, 7])
       end
 
       it 'find trivials with less peculiar methods' do

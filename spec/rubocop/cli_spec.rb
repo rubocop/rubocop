@@ -6,6 +6,8 @@ require 'spec_helper'
 
 module Rubocop
   describe CLI, :isolated_environment do
+    include FileHelper
+
     let(:cli) { CLI.new }
     before(:each) { $stdout = StringIO.new }
     after(:each) { $stdout = STDOUT }
@@ -101,22 +103,22 @@ module Rubocop
     end
 
     it 'checks a given correct file and returns 0' do
-      File.open('example.rb', 'w') do |f|
-        f.puts '# encoding: utf-8'
-        f.puts 'x = 0'
-        f.puts 'puts x'
-      end
+      create_file('example.rb', [
+        '# encoding: utf-8',
+        'x = 0',
+        'puts x'
+      ])
       expect(cli.run(['example.rb'])).to eq(0)
       expect($stdout.string)
         .to eq("\n1 file inspected, no offences detected\n")
     end
 
     it 'checks a given file with faults and returns 1' do
-      File.open('example.rb', 'w') do |f|
-        f.puts '# encoding: utf-8'
-        f.puts 'x = 0 '
-        f.puts 'puts x'
-      end
+      create_file('example.rb', [
+        '# encoding: utf-8',
+        'x = 0 ',
+        'puts x'
+      ])
       expect(cli.run(['example.rb'])).to eq(1)
       expect($stdout.string)
         .to eq ['== example.rb ==',
@@ -127,8 +129,15 @@ module Rubocop
     end
 
     it 'can report in emacs style', ruby: 1.9 do
-      File.open('example1.rb', 'w') { |f| f.puts 'x= 0 ', 'y ', 'puts x' }
-      File.open('example2.rb', 'w') { |f| f.puts "\tx = 0", 'puts x' }
+      create_file('example1.rb', [
+        'x= 0 ',
+        'y ',
+        'puts x'
+      ])
+      create_file('example2.rb', [
+        "\tx = 0",
+        'puts x'
+      ])
       expect(cli.run(['--emacs', 'example1.rb', 'example2.rb'])).to eq(1)
       expect($stdout.string)
         .to eq(
@@ -144,8 +153,15 @@ module Rubocop
     end
 
     it 'can report in emacs style', ruby: 2.0 do
-      File.open('example1.rb', 'w') { |f| f.puts 'x= 0 ', 'y ', 'puts x' }
-      File.open('example2.rb', 'w') { |f| f.puts "\tx = 0", 'puts x' }
+      create_file('example1.rb', [
+        'x= 0 ',
+        'y ',
+        'puts x'
+      ])
+      create_file('example2.rb', [
+        "\tx = 0",
+        'puts x'
+      ])
       expect(cli.run(['--emacs', 'example1.rb', 'example2.rb'])).to eq(1)
       expect($stdout.string)
         .to eq(
@@ -159,8 +175,8 @@ module Rubocop
     end
 
     it 'ommits summary when --silent passed', ruby: 1.9 do
-      File.open('example1.rb', 'w') { |f| f.puts 'puts 0 ' }
-      File.open('example2.rb', 'w') { |f| f.puts "\tputs 0" }
+      create_file('example1.rb', 'puts 0 ')
+      create_file('example2.rb', "\tputs 0")
       expect(cli.run(['--emacs',
                       '--silent',
                       'example1.rb',
@@ -174,8 +190,8 @@ module Rubocop
     end
 
     it 'ommits summary when --silent passed', ruby: 2.0 do
-      File.open('example1.rb', 'w') { |f| f.puts 'puts 0 ' }
-      File.open('example2.rb', 'w') { |f| f.puts "\tputs 0" }
+      create_file('example1.rb', 'puts 0 ')
+      create_file('example2.rb', "\tputs 0")
       expect(cli.run(['--emacs',
                       '--silent',
                       'example1.rb',
@@ -187,7 +203,7 @@ module Rubocop
     end
 
     it 'shows cop names when --debug is passed', ruby: 2.0 do
-      File.open('example1.rb', 'w') { |f| f.puts "\tputs 0" }
+      create_file('example1.rb', "\tputs 0")
       expect(cli.run(['--emacs',
                       '--silent',
                       '--debug',
@@ -198,14 +214,14 @@ module Rubocop
     end
 
     it 'can be configured with option to disable a certain error' do
-      File.open('example1.rb', 'w') { |f| f.puts 'puts 0 ' }
-      File.open('rubocop.yml', 'w') do |f|
-        f.puts('Encoding:',
-               '  Enabled: false',
-               '',
-               'CaseIndentation:',
-               '  Enabled: false')
-      end
+      create_file('example1.rb', 'puts 0 ')
+      create_file('rubocop.yml', [
+        'Encoding:',
+        '  Enabled: false',
+        '',
+        'CaseIndentation:',
+        '  Enabled: false'
+      ])
       expect(cli.run(['-c', 'rubocop.yml', 'example1.rb'])).to eq(1)
       expect($stdout.string).to eq(
         ['== example1.rb ==',
@@ -216,15 +232,14 @@ module Rubocop
     end
 
     it 'can be configured with project config to disable a certain error' do
-      FileUtils.mkdir 'example_src'
-      File.open('example_src/example1.rb', 'w') { |f| f.puts 'puts 0 ' }
-      File.open('example_src/.rubocop.yml', 'w') do |f|
-        f.puts('Encoding:',
-               '  Enabled: false',
-               '',
-               'CaseIndentation:',
-               '  Enabled: false')
-      end
+      create_file('example_src/example1.rb', 'puts 0 ')
+      create_file('example_src/.rubocop.yml', [
+        'Encoding:',
+        '  Enabled: false',
+        '',
+        'CaseIndentation:',
+        '  Enabled: false'
+      ])
       expect(cli.run(['example_src/example1.rb'])).to eq(1)
       expect($stdout.string).to eq(
         ['== example_src/example1.rb ==',
@@ -235,16 +250,15 @@ module Rubocop
     end
 
     it 'can use an alternative max line length from a config file' do
-      FileUtils.mkdir 'example_src'
-      File.open('example_src/example1.rb', 'w') do |f|
-        f.puts '# encoding: utf-8'
-        f.puts '#' * 90
-      end
-      File.open('example_src/.rubocop.yml', 'w') do |f|
-        f.puts('LineLength:',
-               '  Enabled: true',
-               '  Max: 100')
-      end
+      create_file('example_src/example1.rb', [
+        '# encoding: utf-8',
+        '#' * 90
+      ])
+      create_file('example_src/.rubocop.yml', [
+        'LineLength:',
+        '  Enabled: true',
+        '  Max: 100'
+      ])
       expect(cli.run(['example_src/example1.rb'])).to eq(0)
       expect($stdout.string).to eq(
         ['', '1 file inspected, no offences detected',
@@ -253,17 +267,16 @@ module Rubocop
 
     it 'can have different config files in different directories' do
       %w(src lib).each do |dir|
-        FileUtils.mkdir_p "example/#{dir}"
-        File.open("example/#{dir}/example1.rb", 'w') do |f|
-          f.puts '# encoding: utf-8'
-          f.puts '#' * 90
-        end
+        create_file("example/#{dir}/example1.rb", [
+          '# encoding: utf-8',
+          '#' * 90
+        ])
       end
-      File.open('example/src/.rubocop.yml', 'w') do |f|
-        f.puts('LineLength:',
-               '  Enabled: true',
-               '  Max: 100')
-      end
+      create_file('example/src/.rubocop.yml', [
+        'LineLength:',
+        '  Enabled: true',
+        '  Max: 100'
+      ])
       expect(cli.run(['example'])).to eq(1)
       expect($stdout.string).to eq(
         ['== example/lib/example1.rb ==',
@@ -274,21 +287,20 @@ module Rubocop
     end
 
     it 'prefers a config file in ancestor directory to another in home' do
-      FileUtils.mkdir 'example_src'
-      File.open('example_src/example1.rb', 'w') do |f|
-        f.puts '# encoding: utf-8'
-        f.puts '#' * 90
-      end
-      File.open('example_src/.rubocop.yml', 'w') do |f|
-        f.puts('LineLength:',
-               '  Enabled: true',
-               '  Max: 100')
-      end
-      File.open("#{Dir.home}/.rubocop.yml", 'w') do |f|
-        f.puts('LineLength:',
-               '  Enabled: true',
-               '  Max: 80')
-      end
+      create_file('example_src/example1.rb', [
+        '# encoding: utf-8',
+        '#' * 90
+      ])
+      create_file('example_src/.rubocop.yml', [
+        'LineLength:',
+        '  Enabled: true',
+        '  Max: 100'
+      ])
+      create_file("#{Dir.home}/.rubocop.yml", [
+        'LineLength:',
+        '  Enabled: true',
+        '  Max: 80'
+      ])
       expect(cli.run(['example_src/example1.rb'])).to eq(0)
       expect($stdout.string).to eq(
         ['', '1 file inspected, no offences detected',
@@ -297,20 +309,19 @@ module Rubocop
 
     it 'can exclude directories relative to .rubocop.yml' do
       %w(src etc/test etc/spec tmp/test tmp/spec).each do |dir|
-        FileUtils.mkdir_p "example/#{dir}"
-        File.open("example/#{dir}/example1.rb", 'w') do |f|
-          f.puts '# encoding: utf-8'
-          f.puts '#' * 90
-        end
+        create_file("example/#{dir}/example1.rb", [
+          '# encoding: utf-8',
+          '#' * 90
+        ])
       end
 
-      File.open('example/.rubocop.yml', 'w') do |f|
-        f.puts('AllCops:',
-               '  Excludes:',
-               '    - src/**',
-               '    - etc/**',
-               '    - tmp/spec/**')
-      end
+      create_file('example/.rubocop.yml', [
+        'AllCops:',
+        '  Excludes:',
+        '    - src/**',
+        '    - etc/**',
+        '    - tmp/spec/**'
+      ])
 
       expect(cli.run(['example'])).to eq(1)
       expect($stdout.string).to eq(
@@ -322,17 +333,16 @@ module Rubocop
     end
 
     it 'prints a warning for an unrecognized cop name in .rubocop.yml' do
-      FileUtils.mkdir_p 'example'
-      File.open('example/example1.rb', 'w') do |f|
-        f.puts '# encoding: utf-8'
-        f.puts '#' * 90
-      end
+      create_file('example/example1.rb', [
+        '# encoding: utf-8',
+        '#' * 90
+      ])
 
-      File.open('example/.rubocop.yml', 'w') do |f|
-        f.puts('LyneLenth:',
-               '  Enabled: true',
-               '  Max: 100')
-      end
+      create_file('example/.rubocop.yml', [
+        'LyneLenth:',
+        '  Enabled: true',
+        '  Max: 100'
+      ])
 
       expect(cli.run(['example'])).to eq(1)
       expect($stdout.string).to eq(
@@ -346,17 +356,16 @@ module Rubocop
     end
 
     it 'prints a warning for an unrecognized configuration parameter' do
-      FileUtils.mkdir_p 'example'
-      File.open('example/example1.rb', 'w') do |f|
-        f.puts '# encoding: utf-8'
-        f.puts '#' * 90
-      end
+      create_file('example/example1.rb', [
+        '# encoding: utf-8',
+        '#' * 90
+      ])
 
-      File.open('example/.rubocop.yml', 'w') do |f|
-        f.puts('LineLength:',
-               '  Enabled: true',
-               '  Min: 10')
-      end
+      create_file('example/.rubocop.yml', [
+        'LineLength:',
+        '  Enabled: true',
+        '  Min: 10'
+      ])
 
       expect(cli.run(['example'])).to eq(1)
       expect($stdout.string).to eq(
@@ -370,11 +379,11 @@ module Rubocop
     end
 
     it 'registers an offence for a syntax error' do
-      File.open('example.rb', 'w') do |f|
-        f.puts '# encoding: utf-8'
-        f.puts 'class Test'
-        f.puts 'en'
-      end
+      create_file('example.rb', [
+        '# encoding: utf-8',
+        'class Test',
+        'en'
+      ])
       expect(cli.run(['--emacs', 'example.rb'])).to eq(1)
       unexpected_part = RUBY_VERSION >= '2.0' ? 'end-of-input' : '$end'
       expect($stdout.string).to eq(
@@ -386,27 +395,27 @@ module Rubocop
     end
 
     it 'can process a file with an invalid UTF-8 byte sequence' do
-      File.open('example.rb', 'w') do |f|
-        f.puts '# encoding: utf-8'
-        f.puts "# \xf9\x29"
-      end
+      create_file('example.rb', [
+        '# encoding: utf-8',
+        "# \xf9\x29"
+      ])
       expect(cli.run(['--emacs', 'example.rb'])).to eq(0)
     end
 
     it 'can have all cops disabled in a code section' do
-      File.open('example.rb', 'w') do |f|
-        f.puts '# encoding: utf-8'
-        f.puts '# rubocop:disable all'
-        f.puts '#' * 90
-        f.puts 'x(123456)'
-        f.puts 'y("123")'
-        f.puts 'def func'
-        f.puts '  # rubocop: enable LineLength, StringLiterals'
-        f.puts '  ' + '#' * 93
-        f.puts '  x(123456)'
-        f.puts '  y("123")'
-        f.puts 'end'
-      end
+      create_file('example.rb', [
+        '# encoding: utf-8',
+        '# rubocop:disable all',
+        '#' * 90,
+        'x(123456)',
+        'y("123")',
+        'def func',
+        '  # rubocop: enable LineLength, StringLiterals',
+        '  ' + '#' * 93,
+        '  x(123456)',
+        '  y("123")',
+        'end'
+      ])
       expect(cli.run(['--emacs', 'example.rb'])).to eq(1)
       # all cops were disabled, then 2 were enabled again, so we
       # should get 2 offences reported.
@@ -420,19 +429,19 @@ module Rubocop
     end
 
     it 'can have selected cops disabled in a code section' do
-      File.open('example.rb', 'w') do |f|
-        f.puts '# encoding: utf-8'
-        f.puts '# rubocop:disable LineLength,NumericLiterals,StringLiterals'
-        f.puts '#' * 90
-        f.puts 'x(123456)'
-        f.puts 'y("123")'
-        f.puts 'def func'
-        f.puts '  # rubocop: enable LineLength, StringLiterals'
-        f.puts '  ' + '#' * 93
-        f.puts '  x(123456)'
-        f.puts '  y("123")'
-        f.puts 'end'
-      end
+      create_file('example.rb', [
+        '# encoding: utf-8',
+        '# rubocop:disable LineLength,NumericLiterals,StringLiterals',
+        '#' * 90,
+        'x(123456)',
+        'y("123")',
+        'def func',
+        '  # rubocop: enable LineLength, StringLiterals',
+        '  ' + '#' * 93,
+        '  x(123456)',
+        '  y("123")',
+        'end'
+      ])
       expect(cli.run(['--emacs', 'example.rb'])).to eq(1)
       # 3 cops were disabled, then 2 were enabled again, so we
       # should get 2 offences reported.
@@ -446,10 +455,10 @@ module Rubocop
     end
 
     it 'can have all cops disabled on a single line' do
-      File.open('example.rb', 'w') do |f|
-        f.puts '# encoding: utf-8'
-        f.puts 'y("123", 123456) # rubocop:disable all'
-      end
+      create_file('example.rb', [
+        '# encoding: utf-8',
+        'y("123", 123456) # rubocop:disable all'
+      ])
       expect(cli.run(['--emacs', 'example.rb'])).to eq(0)
       expect($stdout.string).to eq(
         ['',
@@ -458,12 +467,12 @@ module Rubocop
     end
 
     it 'can have selected cops disabled on a single line' do
-      File.open('example.rb', 'w') do |f|
-        f.puts '# encoding: utf-8'
-        f.puts '#' * 90 + ' # rubocop:disable LineLength'
-        f.puts '#' * 95
-        f.puts 'y("123") # rubocop:disable LineLength,StringLiterals'
-      end
+      create_file('example.rb', [
+        '# encoding: utf-8',
+        '#' * 90 + ' # rubocop:disable LineLength',
+        '#' * 95,
+        'y("123") # rubocop:disable LineLength,StringLiterals'
+      ])
       expect(cli.run(['--emacs', 'example.rb'])).to eq(1)
       expect($stdout.string).to eq(
         ['example.rb:3: C: Line is too long. [95/79]',
@@ -473,12 +482,12 @@ module Rubocop
     end
 
     it 'finds a file with no .rb extension but has a shebang line' do
-      File.open('example', 'w') do |f|
-        f.puts '#!/usr/bin/env ruby'
-        f.puts '# encoding: utf-8'
-        f.puts 'x = 0'
-        f.puts 'puts x'
-      end
+      create_file('example', [
+        '#!/usr/bin/env ruby',
+        '# encoding: utf-8',
+        'x = 0',
+        'puts x'
+      ])
       # Need to pass an empty array explicitly
       # so that the CLI does not refer arguments of `rspec`
       expect(cli.run([])).to eq(0)
@@ -488,22 +497,22 @@ module Rubocop
     end
 
     it 'finds included files' do
-      File.open('example', 'w') do |f|
-        f.puts '# encoding: utf-8'
-        f.puts 'x = 0'
-        f.puts 'puts x'
-      end
-      File.open('regexp', 'w') do |f|
-        f.puts '# encoding: utf-8'
-        f.puts 'x = 0'
-        f.puts 'puts x'
-      end
-      File.open('.rubocop.yml', 'w') do |f|
-        f.puts('AllCops:',
-               '  Includes:',
-               '    - example',
-               '    - !ruby/regexp /regexp$/')
-      end
+      create_file('example', [
+        '# encoding: utf-8',
+        'x = 0',
+        'puts x'
+      ])
+      create_file('regexp', [
+        '# encoding: utf-8',
+        'x = 0',
+        'puts x'
+      ])
+      create_file('.rubocop.yml', [
+        'AllCops:',
+        '  Includes:',
+        '    - example',
+        '    - !ruby/regexp /regexp$/'
+      ])
       # Need to pass an empty array explicitly
       # so that the CLI does not refer arguments of `rspec`
       expect(cli.run([])).to eq(0)
@@ -513,29 +522,29 @@ module Rubocop
     end
 
     it 'ignores excluded files' do
-      File.open('example.rb', 'w') do |f|
-        f.puts '# encoding: utf-8'
-        f.puts 'x = 0'
-        f.puts 'puts x'
-      end
-      File.open('regexp.rb', 'w') do |f|
-        f.puts '# encoding: utf-8'
-        f.puts 'x = 0'
-        f.puts 'puts x'
-      end
-      File.open('exclude_glob.rb', 'w') do |f|
-        f.puts '#!/usr/bin/env ruby'
-        f.puts '# encoding: utf-8'
-        f.puts 'x = 0'
-        f.puts 'puts x'
-      end
-      File.open('.rubocop.yml', 'w') do |f|
-        f.puts('AllCops:',
-               '  Excludes:',
-               '    - example.rb',
-               '    - !ruby/regexp /regexp.rb$/',
-               '    - "exclude_*"')
-      end
+      create_file('example.rb', [
+        '# encoding: utf-8',
+        'x = 0',
+        'puts x'
+      ])
+      create_file('regexp.rb', [
+        '# encoding: utf-8',
+        'x = 0',
+        'puts x'
+      ])
+      create_file('exclude_glob.rb', [
+        '#!/usr/bin/env ruby',
+        '# encoding: utf-8',
+        'x = 0',
+        'puts x'
+      ])
+      create_file('.rubocop.yml', [
+        'AllCops:',
+        '  Excludes:',
+        '    - example.rb',
+        '    - !ruby/regexp /regexp.rb$/',
+        '    - "exclude_*"'
+      ])
       # Need to pass an empty array explicitly
       # so that the CLI does not refer arguments of `rspec`
       expect(cli.run([])).to eq(0)
