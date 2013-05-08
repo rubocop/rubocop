@@ -341,3 +341,7 @@ ColonMethodCall:
 # Do not introduce global variables.
 AvoidGlobalVars:
   Enabled: true
+
+# The use of eval represents a serious security risk.
+Eval:
+  Enabled: true
