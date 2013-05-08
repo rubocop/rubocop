@@ -45,7 +45,7 @@ module Rubocop
           @config_cache[dir] = config
           config.warn_unless_valid
         end
-        config or {}
+        config or new
       end
 
       # TODO: This should be private method
@@ -86,7 +86,7 @@ module Rubocop
       end
     end
 
-    def initialize(hash, loaded_path)
+    def initialize(hash = {}, loaded_path = nil)
       super(hash)
       @hash = hash
       @loaded_path = loaded_path
@@ -114,7 +114,7 @@ module Rubocop
 
       invalid_cop_names.each do |name|
         fail ValidationError,
-             "unrecognized cop #{name} found in #{loaded_path}"
+             "unrecognized cop #{name} found in #{loaded_path || self}"
       end
 
       valid_cop_names.each do |name|
@@ -122,7 +122,7 @@ module Rubocop
           unless RUBOCOP_HOME_CONFIG[name].has_key?(param)
             fail ValidationError,
                  "unrecognized parameter #{name}:#{param} found " +
-                 "in #{loaded_path}"
+                 "in #{loaded_path || self}"
           end
         end
       end
