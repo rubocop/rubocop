@@ -13,6 +13,15 @@ module Rubocop
                                                    '..',
                                                    '..',
                                                    DOTFILE))
+
+    # Probably we should find a better way.
+    # https://github.com/bbatsov/rubocop/issues/137
+    DEFAULT_CONFIGURATION = {
+      'SymbolArray' => {
+        'Enabled' => false
+      }
+    }.freeze
+
     DEFAULT_PATTERNS_TO_INCLUDE = ['**/*.gemspec', '**/Rakefile']
     DEFAULT_PATTERNS_TO_EXCLUDE = []
 
@@ -45,13 +54,7 @@ module Rubocop
           @config_cache[dir] = config
           config.warn_unless_valid
         end
-        config or default_config
-      end
-
-      # if no config file if found we fallback to the one
-      # bundled with RuboCop itself
-      def default_config
-        configuration_for_path(File.dirname(__FILE__))
+        config or new
       end
 
       # TODO: This should be private method
@@ -92,10 +95,10 @@ module Rubocop
       end
     end
 
-    def initialize(hash, loaded_path)
-      super(hash)
-      @hash = hash
+    def initialize(hash = {}, loaded_path = nil)
+      @hash = DEFAULT_CONFIGURATION.merge(hash)
       @loaded_path = loaded_path
+      super(@hash)
     end
 
     def for_cop(cop)
@@ -120,7 +123,7 @@ module Rubocop
 
       invalid_cop_names.each do |name|
         fail ValidationError,
-             "unrecognized cop #{name} found in #{loaded_path}"
+             "unrecognized cop #{name} found in #{loaded_path || self}"
       end
 
       valid_cop_names.each do |name|
@@ -128,7 +131,7 @@ module Rubocop
           unless RUBOCOP_HOME_CONFIG[name].has_key?(param)
             fail ValidationError,
                  "unrecognized parameter #{name}:#{param} found " +
-                 "in #{loaded_path}"
+                 "in #{loaded_path || self}"
           end
         end
       end
