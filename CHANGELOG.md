@@ -22,6 +22,7 @@
 * New cop `AvoidGlobalVars` tracks uses of non built-in global variables.
 * New cop `SpaceAfterControlKeyword` tracks missing spaces after `if/elsif/case/when/until/unless/while`.
 * New cop `Not` tracks uses of the `not` keyword.
+* New cop `Eval` tracks uses of the `eval` function.
 
 ### Bugs fixed
 

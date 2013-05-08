@@ -73,6 +73,7 @@ require 'rubocop/cop/trivial_accessors'
 require 'rubocop/cop/leading_comment_space'
 require 'rubocop/cop/colon_method_call'
 require 'rubocop/cop/not'
+require 'rubocop/cop/eval'
 
 require 'rubocop/report/report'
 require 'rubocop/report/plain_text'
