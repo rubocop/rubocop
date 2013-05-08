@@ -13,7 +13,7 @@ module Rubocop
       private
 
       def previous_non_space(tokens, ix)
-        tokens[0...ix].reverse.find { |t| not whitespace?(t) }
+        tokens[0...ix].reverse.find { |t| !whitespace?(t) }
       end
 
       def ok_without_spaces?(grammar_path)
@@ -132,7 +132,7 @@ module Rubocop
       def check_missing_space(tokens, ix, grammar_path)
         if SpaceInsideHashLiteralBraces.enforced_style_is_with_spaces
           check_space(tokens, ix, grammar_path, 'missing') do |t|
-            not whitespace?(t) || [:on_lbrace, :on_rbrace].include?(t.type)
+            !(whitespace?(t) || [:on_lbrace, :on_rbrace].include?(t.type))
           end
         end
       end

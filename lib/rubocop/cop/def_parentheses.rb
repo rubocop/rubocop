@@ -27,7 +27,7 @@ module Rubocop
           start = method_name_ix + 1
           rparen_ix = start + tokens[start..-1].index { |t| t.text == ')' }
           first_body_token = tokens[(rparen_ix + 1)..-1].find do |t|
-            not whitespace?(t)
+            !whitespace?(t)
           end
           if first_body_token.pos.lineno > pos.lineno
             # Only report offence if there's a line break after

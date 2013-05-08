@@ -11,7 +11,7 @@ module Rubocop
           # If at least one of the keys in the hash is neither a symbol (:a)
           # nor a label (a:), we can't require the new syntax.
           return if keys.find do |key|
-            not [:symbol_literal, :@label].include?(key)
+            ![:symbol_literal, :@label].include?(key)
           end
         end
         each(:assoc_new, sexp) do |assoc_new|
