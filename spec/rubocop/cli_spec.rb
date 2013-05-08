@@ -19,6 +19,7 @@ module Rubocop
                  '    -d, --debug                      Display debug info',
                  '    -e, --emacs                      Emacs style output',
                  '    -c, --config FILE                Configuration file',
+                 '        --only COP                   Run just one cop',
                  '    -s, --silent                     Silence summary',
                  '    -n, --no-color                   Disable color output',
                  '    -v, --version                    Display version']
@@ -172,6 +173,26 @@ module Rubocop
          '',
          '2 files inspected, 4 offences detected',
          ''].join("\n"))
+    end
+
+    it 'runs just one cop if --only is passed' do
+      create_file('example.rb', [
+        'x= 0 ',
+        'y '
+      ])
+      expect(cli.run(['--only', 'TrailingWhitespace', 'example.rb'])).to eq(1)
+      expect($stdout.string)
+        .to eq(['== example.rb ==',
+                'C:  1: Trailing whitespace detected.',
+                'C:  2: Trailing whitespace detected.',
+                '',
+                '1 file inspected, 2 offences detected',
+                ''].join("\n"))
+    end
+
+    it 'exits with error if an incorrect cop name is passed to --only' do
+      expect(cli.run(['--only', '123'])).to eq(1)
+      expect($stdout.string).to eq("Unrecognized cop name: 123.\n")
     end
 
     it 'ommits summary when --silent passed', ruby: 1.9 do
