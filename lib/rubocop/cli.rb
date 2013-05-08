@@ -33,6 +33,13 @@ module Rubocop
 
       parse_options(args)
 
+      begin
+        handle_only_option if @options[:only]
+      rescue ArgumentError => e
+        puts e.message
+        return 1
+      end
+
       target_files(args).each do |file|
         break if wants_to_quit?
 
@@ -64,6 +71,13 @@ module Rubocop
       end
 
       (@total_offences == 0) && !wants_to_quit ? 0 : 1
+    end
+
+    def handle_only_option
+      @cops = @cops.select { |c| c.cop_name == @options[:only] }
+      if @cops.empty?
+        fail ArgumentError, "Unrecognized cop name: #{@options[:only]}."
+      end
     end
 
     def read_source(file)
@@ -111,6 +125,9 @@ module Rubocop
         opts.on('-c FILE', '--config FILE', 'Configuration file') do |f|
           @options[:config] = f
           Configuration.set_options_config(@options[:config])
+        end
+        opts.on('--only COP', 'Run just one cop') do |s|
+          @options[:only] = s
         end
         opts.on('-s', '--silent', 'Silence summary') do |s|
           @options[:silent] = s
