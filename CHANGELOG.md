@@ -21,11 +21,13 @@
 * New cop `ColonMethodCall` tracks uses of `::` for method calls.
 * New cop `AvoidGlobalVars` tracks uses of non built-in global variables.
 * New cop `SpaceAfterControlKeyword` tracks missing spaces after `if/elsif/case/when/until/unless/while`.
+* New cop `Not` tracks uses of the `not` keyword.
 
 ### Bugs fixed
 
 * [#101](https://github.com/bbatsov/rubocop/issues/101) `SpaceAroundEqualsInParameterDefault` doesn't work properly with empty string
 * Fix `BraceAfterPercent` for `%W`, `%i` and `%I` and added more tests
+* Fix a false positive in the `Alias` cop. `:alias` is no longer treated as keyword
 
 ### Misc
 

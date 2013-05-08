@@ -105,7 +105,7 @@ module Rubocop
             end
           end
         end
-        offset = @tokens[start_ix..-1].index { |t| not whitespace?(t) }
+        offset = @tokens[start_ix..-1].index { |t| !whitespace?(t) }
         start_ix + offset
       end
     end

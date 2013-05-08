@@ -236,6 +236,10 @@ FavorJoin:
 Alias:
   Enabled: true
 
+# Use ! instead of not.
+Not:
+  Enabled: true
+
 # Avoid using rescue in its modifier form.
 RescueModifier:
   Enabled: true
