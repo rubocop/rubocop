@@ -8,7 +8,7 @@ module Rubocop
 
       def inspect(file, source, tokens, sexp)
         each(:unless, sexp) do |unless_sexp|
-          if unless_sexp.compact.find { |s| s[0] == :else }
+          if unless_sexp.compact.any? { |s| s[0] == :else }
             add_offence(:convention, all_positions(unless_sexp).first.lineno,
                         ERROR_MESSAGE)
           end
