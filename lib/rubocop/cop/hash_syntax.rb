@@ -10,7 +10,7 @@ module Rubocop
           keys = assoclist_from_args[1].map { |assoc_new| assoc_new[1][0] }
           # If at least one of the keys in the hash is neither a symbol (:a)
           # nor a label (a:), we can't require the new syntax.
-          return if keys.find do |key|
+          return if keys.any? do |key|
             ![:symbol_literal, :@label].include?(key)
           end
         end
