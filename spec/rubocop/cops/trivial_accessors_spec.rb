@@ -110,21 +110,30 @@ module Rubocop
                  .map(&:line_number).sort).to eq([2, 8])
       end
 
-      it 'find trivial accessors whit or without braces' do
+      it 'find trivial reader with braces' do
         inspect_source(trivial_accessors_finder, '',
                        ['class Test',
                         '  # trivial reader with braces',
                         '  def name()',
                         '    @name',
                         '  end',
+                        'end'])
+        expect(trivial_accessors_finder.offences.size).to eq(1)
+        expect(trivial_accessors_finder.offences
+                 .map(&:line_number).sort).to eq([3])
+      end
+
+      it 'find trivial writer without braces' do
+        inspect_source(trivial_accessors_finder, '',
+                       ['class Test',
                         '  # trivial writer without braces',
                         '  def name= name',
                         '    @name = name',
                         '  end',
                         'end'])
-        expect(trivial_accessors_finder.offences.size).to eq(2)
+        expect(trivial_accessors_finder.offences.size).to eq(1)
         expect(trivial_accessors_finder.offences
-                 .map(&:line_number).sort).to eq([3, 7])
+                 .map(&:line_number).sort).to eq([3])
       end
 
       it 'find trivials with less peculiar methods' do
@@ -134,7 +143,7 @@ module Rubocop
                         'end',
                         'def win_ratio',
                         'end',
-                        'def win_ratio_percentage',
+                        'def win_ratio_percentage()',
                         'end',
                         'def pips_won',
                         '  0.0',
@@ -142,8 +151,8 @@ module Rubocop
                         'def gain_at(date)',
                         '  1',
                         'end',
-                        'def gain',
-                        '  0.0',
+                        'def gain= value',
+                        '  @value = 0.1',
                         'end',
                         'def gain_percentage',
                         '  0',
@@ -160,9 +169,6 @@ module Rubocop
                         'def average_leverage',
                         '  1',
                         'end',
-                        'def average_trade_duration',
-                        '  0',
-                        'end',
                         'def with_yield',
                         '  yield',
                         'rescue Error => e',
@@ -170,6 +176,17 @@ module Rubocop
                         'end',
                         'end'])
         expect(trivial_accessors_finder.offences).to be_empty
+      end
+
+      it 'find oneliner trivials' do
+        inspect_source(trivial_accessors_finder, '',
+                       ['class Oneliner',
+                        '  def foo; @foo; end',
+                        '  def foo= foo; @foo = foo; end',
+                        'end'])
+        expect(trivial_accessors_finder.offences.size).to eq(2)
+        expect(trivial_accessors_finder.offences
+                 .map(&:line_number).sort).to eq([2, 3])
       end
 
       it 'does not find a trivial reader' do
