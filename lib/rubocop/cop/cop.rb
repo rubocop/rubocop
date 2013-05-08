@@ -114,6 +114,24 @@ module Rubocop
         return [sexp[2]] if sexp[0] =~ /^@/
         sexp.grep(Array).reduce([]) { |a, e| a + all_positions(e) }
       end
+
+      def keywords(tokens)
+        # we need to keep track of the previous token to avoid
+        # interpreting :some_keyword as the keyword some_keyword
+        prev = Token.new(0, :init, '')
+        keywords = []
+
+        tokens.each do |t|
+          keywords << t if prev.type != :on_symbeg && t.type == :on_kw
+          prev = t
+        end
+
+        keywords
+      end
+
+      def each_keyword(keyword, tokens)
+        keywords(tokens).select { |t| t.text == keyword }.each { |t| yield t }
+      end
     end
   end
 end
