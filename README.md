@@ -46,6 +46,7 @@ Command flag       | Description
 `-e/--emacs`       | Output the results in Emacs format
 `-c/--config`      | Run with specified config file
 `-s/--silent`      | Suppress the final summary
+`--only`           | Run only the specified cop
 
 ## Configuration
 
