@@ -16,7 +16,14 @@ module Rubocop
           .to eq([ArrayLiteral::ERROR_MESSAGE])
       end
 
-      it 'registers an offence for Array.new'
+      it 'registers an offence for Array.new' do
+        inspect_source(a,
+                       'file.rb',
+                       ['test = Array.new'])
+        expect(a.offences.size).to eq(1)
+        expect(a.offences.map(&:message))
+          .to eq([ArrayLiteral::ERROR_MESSAGE])
+      end
 
       it 'does not register an offence for Array.new(3)' do
         inspect_source(a,

@@ -30,6 +30,8 @@
 * [#101](https://github.com/bbatsov/rubocop/issues/101) `SpaceAroundEqualsInParameterDefault` doesn't work properly with empty string
 * Fix `BraceAfterPercent` for `%W`, `%i` and `%I` and added more tests
 * Fix a false positive in the `Alias` cop. `:alias` is no longer treated as keyword
+* `ArrayLiteral` now properly detects `Array.new`
+* `HashLiteral` now properly detects `Hash.new`
 
 ### Misc
 

@@ -16,7 +16,14 @@ module Rubocop
           .to eq([HashLiteral::ERROR_MESSAGE])
       end
 
-      it 'registers an offence for Hash.new'
+      it 'registers an offence for Hash.new' do
+        inspect_source(a,
+                       'file.rb',
+                       ['test = Hash.new'])
+        expect(a.offences.size).to eq(1)
+        expect(a.offences.map(&:message))
+          .to eq([HashLiteral::ERROR_MESSAGE])
+      end
 
       it 'does not register an offence for Hash.new(3)' do
         inspect_source(a,

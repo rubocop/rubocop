@@ -22,6 +22,15 @@ module Rubocop
       def encode_severity
         @severity.to_s[0].upcase
       end
+
+      def ==(other)
+        severity == other.severity and line_number == other.line_number and
+          message == other.message
+      end
+
+      def explode
+        [severity, line_number, message]
+      end
     end
   end
 end

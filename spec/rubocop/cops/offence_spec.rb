@@ -24,6 +24,13 @@ module Rubocop
 
         expect(offence.to_s).to eq('C:  1: message % test')
       end
+
+      it 'redefines == to compare offences based on their contents' do
+        o1 = Offence.new(:test, 1, 'message')
+        o2 = Offence.new(:test, 1, 'message')
+
+        expect(o1 == o2).to be_true
+      end
     end
   end
 end
