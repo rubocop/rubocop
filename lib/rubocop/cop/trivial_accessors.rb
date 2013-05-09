@@ -42,7 +42,9 @@ module Rubocop
 
       # looking for a trivial writer method
       def trivial_writer?(sexp, accessor_var)
-        if accessor_var[-1] == '=' && writer_shape?(sexp)
+        if accessor_var[-1] == '=' &&
+           writer_shape?(sexp) &&
+           has_only_one_assignment?(sexp)
           accessor_var.chop!
           accessor_body = sexp[3][1][0][1][1][1]
           accessor_body.slice!(0) if accessor_body[0] == '@'
@@ -85,6 +87,15 @@ module Rubocop
       def with_braces?(sexp)
         (sexp[0] == :paren && sexp[1][0] == :params) ||
           sexp[0] == :params
+      end
+
+      # return true if the sexp has only one assignment in the body
+      # false otherwise (maybe one or more function calls).
+      # why [3..-1]? because:
+      # [:bodystmt, [[:assign, [:var_field, [:var_ref ...] and no :vcall
+      # thus [:bodystmt, :assign, :var_ref, nil, nil, nil ...]
+      def has_only_one_assignment?(sexp)
+        sexp[3][1][1] == nil
       end
 
     end # TrivialAccessors

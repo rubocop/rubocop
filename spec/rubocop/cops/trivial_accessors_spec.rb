@@ -136,6 +136,18 @@ module Rubocop
                  .map(&:line_number).sort).to eq([3])
       end
 
+      it 'does not find trivial writer with function calls' do
+        inspect_source(trivial_accessors_finder, '',
+                       ['class TrivialTest',
+                        ' def test=(val)',
+                        '   @test = val',
+                        '   some_function_call',
+                        '   or_more_of_them',
+                        ' end',
+                        'end'])
+        expect(trivial_accessors_finder.offences).to be_empty
+      end
+
       it 'find trivials with less peculiar methods' do
         inspect_source(trivial_accessors_finder, '',
                        ['class NilStats',
