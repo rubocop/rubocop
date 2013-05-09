@@ -6,7 +6,7 @@ describe 'RuboCop Project' do
   describe '.rubocop.yml' do
     it 'has configuration for all cops' do
       cop_names = Rubocop::Cop::Cop.all.map(&:cop_name)
-      expect(YAML.load_file('.rubocop.yml').keys.sort)
+      expect(Rubocop::Config.load_file('.rubocop.yml').keys.sort)
         .to eq((['AllCops'] + cop_names).sort)
     end
   end

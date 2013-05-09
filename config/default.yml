@@ -1,0 +1,38 @@
+# This is the default configuration file. Enabling and disabling is configured
+# in separate files. This file adds all other parameters apart from Enabled.
+
+inherit_from:
+  - enabled.yml
+  - disabled.yml
+
+# Common configuration.
+AllCops:
+  # Include gemspec and Rakefile
+  Includes:
+    - '**/*.gemspec'
+    - '**/Rakefile'
+  Excludes: []
+
+# Limit lines to 79 characters.
+LineLength:
+  Max: 79
+
+# Avoid methods longer than 10 lines of code
+MethodLength:
+  CountComments: false  # count full line comments?
+  Max: 10
+
+# Don't use semicolons to terminate expressions.
+Semicolon:
+  # For example; def area(height, width); height * width end
+  AllowAfterParameterListInOneLineMethods: false
+  # For example; def area(height, width) height * width; end
+  AllowBeforeEndInOneLineMethods: true
+
+# Avoid single-line methods.
+SingleLineMethods:
+  AllowIfMethodIsEmpty: true
+
+# Use spaces inside hash literal braces - or don't.
+SpaceInsideHashLiteralBraces:
+  EnforcedStyleIsWithSpaces: true
