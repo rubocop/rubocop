@@ -119,10 +119,14 @@ module Rubocop
         # we need to keep track of the previous token to avoid
         # interpreting :some_keyword as the keyword some_keyword
         prev = Token.new(0, :init, '')
+        # same goes for defs so we need to track those as well
         keywords = []
 
         tokens.each do |t|
           keywords << t if prev.type != :on_symbeg && t.type == :on_kw
+          # def with name that's a kw confuses Ripper.lex
+          penultimate = keywords[-2]
+          keywords.pop if penultimate && penultimate.text == 'def'
           prev = t
         end
 
