@@ -6,6 +6,7 @@ module Rubocop
   module Cop
     describe SingleLineMethods do
       let(:slm) { SingleLineMethods.new }
+      before { SingleLineMethods.config = { 'AllowIfMethodIsEmpty' => true } }
 
       it 'registers an offence for a single-line method' do
         inspect_source(slm, '',
@@ -29,12 +30,6 @@ module Rubocop
         inspect_source(slm, '', ['def no_op; end',
                                  'def self.resource_class=(klass); end',
                                  'def @table.columns; end'])
-        expect(slm.offences).to be_empty
-      end
-
-      it 'accepts a single-line empty method by default' do
-        SingleLineMethods.config = {}
-        inspect_source(slm, '', ['def no_op; end'])
         expect(slm.offences).to be_empty
       end
 

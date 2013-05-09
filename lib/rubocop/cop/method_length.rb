@@ -10,22 +10,11 @@ module Rubocop
           def_lineno, end_lineno = def_and_end_lines(tokens, t_ix)
           length = calculate_length(def_lineno, end_lineno, source)
 
-          if length > MethodLength.max
-            message = sprintf(ERROR_MESSAGE, length, MethodLength.max)
+          max = MethodLength.config['Max']
+          if length > max
+            message = sprintf(ERROR_MESSAGE, length, max)
             add_offence(:convention, def_lineno, message)
           end
-        end
-      end
-
-      def self.max
-        MethodLength.config ? MethodLength.config['Max'] || 10 : 10
-      end
-
-      def self.count_comments?
-        if MethodLength.config
-          MethodLength.config['CountComments'] || false
-        else
-          false
         end
       end
 
@@ -33,7 +22,7 @@ module Rubocop
 
       def calculate_length(def_lineno, end_lineno, source)
         lines = source[def_lineno..(end_lineno - 2)].reject(&:empty?)
-        unless MethodLength.count_comments?
+        unless MethodLength.config['CountComments']
           lines = lines.reject { |line| line =~ /^\s*#/ }
         end
         lines.size

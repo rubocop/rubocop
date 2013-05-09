@@ -130,7 +130,7 @@ module Rubocop
       include SurroundingSpace
 
       def check_missing_space(tokens, ix, grammar_path)
-        if SpaceInsideHashLiteralBraces.enforced_style_is_with_spaces
+        if self.class.config['EnforcedStyleIsWithSpaces']
           check_space(tokens, ix, grammar_path, 'missing') do |t|
             !(whitespace?(t) || [:on_lbrace, :on_rbrace].include?(t.type))
           end
@@ -138,18 +138,12 @@ module Rubocop
       end
 
       def check_unwanted_space(tokens, ix)
-        unless SpaceInsideHashLiteralBraces.enforced_style_is_with_spaces
+        unless self.class.config['EnforcedStyleIsWithSpaces']
           grammar_path = @correlations[ix] or return
           check_space(tokens, ix, grammar_path, 'detected') do |t|
             whitespace?(t)
           end
         end
-      end
-
-      def self.enforced_style_is_with_spaces
-        return true if SpaceInsideHashLiteralBraces.config.nil?
-        s = SpaceInsideHashLiteralBraces.config['EnforcedStyleIsWithSpaces']
-        s.nil? || s
       end
 
       private

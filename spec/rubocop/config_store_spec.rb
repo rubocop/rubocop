@@ -9,6 +9,7 @@ module Rubocop
       Config.stub(:configuration_for_path) { nil }
       Config.stub(:configuration_for_path).with('valid') { :config }
       Config.stub(:load_file) { |arg| "#{arg}_loaded" }
+      Config.stub(:merge_with_default) { |config, file| config }
       Config.stub(:default_config) { :default_config }
     end
 

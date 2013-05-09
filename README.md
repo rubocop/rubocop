@@ -56,11 +56,13 @@ configuration file. The file can be placed either in your home folder
 or in some project folder.
 
 RuboCop will start looking for the configuration file in the directory
-it was started in and continue its way up to the home folder.
+where the inspected file is and continue its way up to the root folder.
 
 The file has the following format:
 
 ```yaml
+inherit_from: ../.rubocop.yml
+
 Encoding:
   Enabled: true
 
@@ -71,6 +73,32 @@ LineLength:
 
 It allows to enable/disable certain cops (checks) and to alter their
 behavior if they accept any parameters.
+
+The optional `inherit_from` directive is used to include configuration
+from one or more files. This makes it possible to have the common
+project settings in the `.rubocop.yml` file at the project root, and
+then only the deviations from those rules in the subdirectories. The
+included files can be given with absolute paths or paths relative to
+the file where they are referenced. The settings after an
+`inherit_from` directive override any settings in the included
+file(s). When multiple files are included, the first file in the list
+has the lowest precedence and the last one has the highest. The format
+for multiple inclusion is:
+
+```yaml
+inherit_from:
+  - ../.rubocop.yml
+  - ../conf/.rubocop.yml
+```
+
+### Defaults
+
+The file `config/default.yml` under the RuboCop home directory
+contains the default settings that all configurations inherit
+from. Project and personal `.rubocop.yml` files need only make
+settings that are different from the default ones. If there is no
+`.rubocop.yml` file in the project or home direcotry,
+`config/default.yml` will be used.
 
 ### Disabling Cops within Source Code
 

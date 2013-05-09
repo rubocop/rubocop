@@ -6,10 +6,7 @@ module Rubocop
   module Cop
     describe MethodLength do
       let(:method_length) { MethodLength.new }
-      before do
-        MethodLength.stub(:max).and_return(5)
-        MethodLength.stub(:count_comments?).and_return(false)
-      end
+      before { MethodLength.config = { 'Max' => 5, 'CountComments' => false } }
 
       it 'rejects a method with more than 5 lines' do
         inspect_source(method_length, '', ['def m()',
@@ -133,7 +130,7 @@ module Rubocop
       end
 
       it 'has the option of counting commented lines' do
-        MethodLength.stub(:count_comments?).and_return(true)
+        MethodLength.config['CountComments'] = true
         inspect_source(method_length, '', ['def m()',
                                            '  a = 1',
                                            '  #a = 2',

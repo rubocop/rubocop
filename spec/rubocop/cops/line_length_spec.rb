@@ -6,6 +6,7 @@ module Rubocop
   module Cop
     describe LineLength do
       let(:ll) { LineLength.new }
+      before { LineLength.config = { 'Max' => 79 } }
 
       it "registers an offence for a line that's 80 characters wide" do
         ll.inspect('file.rb', ['#' * 80], nil, nil)
