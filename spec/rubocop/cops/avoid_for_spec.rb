@@ -11,11 +11,18 @@ module Rubocop
         inspect_source(af,
                        'file.rb',
                        ['for n in [1, 2, 3] do',
-                        'puts n',
+                        '  puts n',
                         'end'])
         expect(af.offences.size).to eq(1)
         expect(af.offences.map(&:message))
           .to eq([AvoidFor::ERROR_MESSAGE])
+      end
+
+      it 'does not register an offence for :for' do
+        inspect_source(af,
+                       'file.rb',
+                       ['[:for, :ala, :bala]'])
+        expect(af.offences).to be_empty
       end
     end
   end

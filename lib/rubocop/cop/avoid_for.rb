@@ -6,10 +6,8 @@ module Rubocop
       ERROR_MESSAGE = 'Prefer *each* over *for*.'
 
       def inspect(file, source, tokens, sexp)
-        each(:for, sexp) do |s|
-          add_offence(:convention,
-                      s[1][1][2].lineno,
-                      ERROR_MESSAGE)
+        each_keyword('for', tokens) do |t|
+          add_offence(:convention, t.pos.lineno, ERROR_MESSAGE)
         end
       end
     end
