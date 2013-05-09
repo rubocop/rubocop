@@ -2,6 +2,8 @@
 
 require 'spec_helper'
 
+DEFAULT_CONFIG = Rubocop::Config.load_file('config/default.yml')
+
 describe Rubocop::Config do
   include FileHelper
 
@@ -40,13 +42,33 @@ describe Rubocop::Config do
           expect(configuration['Encoding']).to eq({
             'Enabled' => true
           })
+          expect(configuration.loaded_path).to match(/home\/.rubocop.yml$/)
         end
       end
 
       context 'and no config file exists in home directory' do
-        it 'returns nil' do
-          expect(configuration_for_path).to be_nil
+        it 'falls back to the provided default file' do
+          expect(configuration_for_path.loaded_path).to end_with(
+            'config/default.yml')
         end
+      end
+    end
+
+    context 'with any config file' do
+      let(:file_path) { 'dir/example.rb' }
+
+      before do
+        create_file(file_path, '')
+
+        create_file('.rubocop.yml', [
+          'Encoding:',
+          '  Enabled: false',
+        ])
+      end
+
+      it 'returns a configuration inheriting from default.yml' do
+        expect(configuration_for_path)
+          .to eq(DEFAULT_CONFIG.merge('Encoding' => { 'Enabled' => false }))
       end
     end
 
@@ -94,6 +116,87 @@ describe Rubocop::Config do
         })
       end
     end
+
+    context 'when a file inherits from a parent and grandparent file' do
+      let(:file_path) { 'dir/subdir/example.rb' }
+
+      before do
+        create_file(file_path, '')
+
+        create_file('.rubocop.yml',
+                    ['LineLength:',
+                     '  Enabled: false',
+                     '  Max: 77'])
+
+        create_file('dir/.rubocop.yml',
+                    ['inherit_from: ../.rubocop.yml',
+                     '',
+                     'MethodLength:',
+                     '  Enabled: true',
+                     '  CountComments: false',
+                     '  Max: 10'
+                    ])
+
+        create_file('dir/subdir/.rubocop.yml',
+                    ['inherit_from: ../.rubocop.yml',
+                     '',
+                     'LineLength:',
+                     '  Enabled: true',
+                     '',
+                     'MethodLength:',
+                     '  Max: 5'
+                    ])
+      end
+
+      it 'returns the ancestor configuration plus local overrides' do
+        expect(configuration_for_path)
+          .to eq(DEFAULT_CONFIG.merge('LineLength' => {
+                                        'Enabled' => true,
+                                        'Max' => 77
+                                      },
+                                      'MethodLength' => {
+                                        'Enabled' => true,
+                                        'CountComments' => false,
+                                        'Max' => 5
+                                      }))
+      end
+    end
+
+    context 'when a file inherits from two configurations' do
+      let(:file_path) { 'example.rb' }
+
+      before do
+        create_file(file_path, '')
+
+        create_file('normal.yml',
+                    ['MethodLength:',
+                     '  Enabled: false',
+                     '  CountComments: true',
+                     '  Max: 79'])
+
+        create_file('special.yml',
+                    ['MethodLength:',
+                     '  Enabled: false',
+                     '  Max: 200'])
+
+        create_file('.rubocop.yml',
+                    ['inherit_from:',
+                     '  - normal.yml',
+                     '  - special.yml',
+                     '',
+                     'MethodLength:',
+                     '  Enabled: true'
+                    ])
+      end
+
+      it 'returns values from the last one when possible' do
+        expect(configuration_for_path['MethodLength'])
+          .to eq('Enabled' => true,       # overridden in .rubocop.yml
+                 'CountComments' => true, # only defined in normal.yml
+                 'Max' => 200             # special.yml takes precedence
+                 )
+      end
+    end
   end
 
   describe '.load_file', :isolated_environment do
@@ -112,6 +215,29 @@ describe Rubocop::Config do
       expect(configuration['Encoding']).to eq({
         'Enabled' => true
       })
+    end
+  end
+
+  describe '.merge' do
+    subject(:merge) { Rubocop::Config.merge(base, derived) }
+
+    let(:base) do
+      {
+        'AllCops' => {
+          'Includes' => ['**/*.gemspec', '**/Rakefile'],
+          'Excludes' => []
+        }
+      }
+    end
+    let(:derived) do
+      { 'AllCops' => { 'Excludes' => ['example.rb', 'exclude_*'] } }
+    end
+
+    it 'returns a recursive merge of its two arguments' do
+      expect(merge).to eq('AllCops' => {
+                            'Includes' => ['**/*.gemspec', '**/Rakefile'],
+                            'Excludes' => ['example.rb', 'exclude_*']
+                          })
     end
   end
 
@@ -243,12 +369,6 @@ describe Rubocop::Config do
         ])
       end
     end
-
-    context 'when config file does not have AllCops => Includes key' do
-      it 'returns "**/*.gemspec" and "**/Rakefile"' do
-        expect(patterns_to_include).to eq(['**/*.gemspec', '**/Rakefile'])
-      end
-    end
   end
 
   describe '#patterns_to_exclude' do
@@ -271,12 +391,6 @@ describe Rubocop::Config do
 
       it 'returns the Excludes value' do
         expect(patterns_to_exclude).to eq(['log/*'])
-      end
-    end
-
-    context 'when config file does not have AllCops => Excludes key' do
-      it 'returns an empty array' do
-        expect(patterns_to_exclude).to be_empty
       end
     end
   end

@@ -16,7 +16,7 @@ module Rubocop
       end
 
       def self.max
-        LineLength.config ? LineLength.config['Max'] || 79 : 79
+        LineLength.config['Max']
       end
     end
   end

@@ -6,9 +6,13 @@ module Rubocop
   module Cop
     describe SpaceInsideHashLiteralBraces do
       let(:sihlb) { SpaceInsideHashLiteralBraces.new }
+      before do
+        SpaceInsideHashLiteralBraces.config = {
+          'EnforcedStyleIsWithSpaces' => true
+        }
+      end
 
       it 'registers an offence for hashes with no spaces by default' do
-        SpaceInsideHashLiteralBraces.config = {}
         inspect_source(sihlb, '',
                        ['h = {a: 1, b: 2}',
                         'h = {a => 1 }'])
@@ -17,9 +21,6 @@ module Rubocop
       end
 
       it 'registers an offence for hashes with no spaces if so configured' do
-        SpaceInsideHashLiteralBraces.config = {
-          'EnforcedStyleIsWithSpaces' => true
-        }
         inspect_source(sihlb, '',
                        ['h = {a: 1, b: 2}',
                         'h = {a => 1 }'])
@@ -28,9 +29,8 @@ module Rubocop
       end
 
       it 'registers an offence for hashes with spaces if so configured' do
-        SpaceInsideHashLiteralBraces.config = {
-          'EnforcedStyleIsWithSpaces' => false
-        }
+        SpaceInsideHashLiteralBraces.config['EnforcedStyleIsWithSpaces'] =
+          false
         inspect_source(sihlb, '',
                        ['h = { a: 1, b: 2 }'])
         expect(sihlb.offences.map(&:message)).to eq(
@@ -38,7 +38,6 @@ module Rubocop
       end
 
       it 'accepts hashes with spaces by default' do
-        SpaceInsideHashLiteralBraces.config = nil
         inspect_source(sihlb, '',
                        ['h = { a: 1, b: 2 }',
                         'h = { a => 1 }'])
@@ -46,9 +45,8 @@ module Rubocop
       end
 
       it 'accepts hashes with no spaces if so configured' do
-        SpaceInsideHashLiteralBraces.config = {
-          'EnforcedStyleIsWithSpaces' => false
-        }
+        SpaceInsideHashLiteralBraces.config['EnforcedStyleIsWithSpaces'] =
+          false
         inspect_source(sihlb, '',
                        ['h = {a: 1, b: 2}',
                         'h = {a => 1}'])
@@ -61,17 +59,13 @@ module Rubocop
       end
 
       it 'accepts empty hashes without spaces if configured false' do
-        SpaceInsideHashLiteralBraces.config = {
-          'EnforcedStyleIsWithSpaces' => false
-        }
+        SpaceInsideHashLiteralBraces.config['EnforcedStyleIsWithSpaces'] =
+          false
         inspect_source(sihlb, '', ['h = {}'])
         expect(sihlb.offences).to be_empty
       end
 
       it 'accepts empty hashes without spaces even if configured true' do
-        SpaceInsideHashLiteralBraces.config = {
-          'EnforcedStyleIsWithSpaces' => true
-        }
         inspect_source(sihlb, '', ['h = {}'])
         expect(sihlb.offences).to be_empty
       end

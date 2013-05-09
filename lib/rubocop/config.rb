@@ -9,30 +9,65 @@ module Rubocop
     class ValidationError < StandardError; end
 
     DOTFILE = '.rubocop.yml'
-    RUBOCOP_HOME_CONFIG = YAML.load_file(File.join(File.dirname(__FILE__),
-                                                   '..',
-                                                   '..',
-                                                   DOTFILE))
-
-    # Probably we should find a better way.
-    # https://github.com/bbatsov/rubocop/issues/137
-    DEFAULT_CONFIGURATION = {
-      'SymbolArray' => {
-        'Enabled' => false
-      }
-    }.freeze
-
-    DEFAULT_PATTERNS_TO_INCLUDE = ['**/*.gemspec', '**/Rakefile']
-    DEFAULT_PATTERNS_TO_EXCLUDE = []
+    RUBOCOP_HOME = File.realpath(File.join(File.dirname(__FILE__), '..', '..'))
+    DEFAULT_FILE = File.join(RUBOCOP_HOME, 'config', 'default.yml')
 
     attr_reader :loaded_path
 
     class << self
+      def rubocop_home_config
+        configuration_for_path(File.dirname(__FILE__))
+      end
+
       def load_file(path)
         hash = YAML.load_file(path)
-        config = new(hash, path)
+
+        base_configs(path, hash['inherit_from']).reverse.each do |base_config|
+          base_config.each do |key, value|
+            if value.is_a?(Hash)
+              hash[key] = hash.has_key?(key) ? merge(value, hash[key]) : value
+            end
+          end
+        end
+
+        hash.delete('inherit_from')
+        config = new(hash, File.realpath(path))
         config.warn_unless_valid
         config
+      end
+
+      # Return a recursive merge of two hashes. That is, a normal hash
+      # merge, with the addition that any value that is a hash, and
+      # occurs in both arguments, will also be merged. And so on.
+      def merge(base_hash, derived_hash)
+        result = {}
+        base_hash.each do |key, value|
+          result[key] = if derived_hash.has_key?(key)
+                          if value.is_a?(Hash)
+                            merge(value, derived_hash[key])
+                          else
+                            derived_hash[key]
+                          end
+                        else
+                          base_hash[key]
+                        end
+        end
+        derived_hash.each do |key, value|
+          result[key] = value unless base_hash.has_key?(key)
+        end
+        result
+      end
+
+      def base_configs(path, inherit_from)
+        base_files = case inherit_from
+                     when nil then []
+                     when String then [inherit_from]
+                     when Array then inherit_from
+                     end
+        base_files.map do |f|
+          f = File.join(File.dirname(path), f) unless f.start_with?('/')
+          load_file(f)
+        end
       end
 
       # Returns the configuration instance from .rubocop.yml searching
@@ -42,15 +77,21 @@ module Rubocop
       def configuration_for_path(target_dir)
         return nil unless target_dir
 
-        dirs_to_search(target_dir).each do |dir|
-          config_file = File.join(dir, DOTFILE)
-          if File.exist?(config_file)
-            config = load_file(config_file)
-            return config
-          end
+        possible_config_files = dirs_to_search(target_dir).map do |dir|
+          File.join(dir, DOTFILE)
         end
 
-        nil
+        found_file = possible_config_files.find do |config_file|
+          File.exist?(config_file)
+        end
+        config_file = found_file || DEFAULT_FILE
+        config = load_file(config_file)
+        merge_with_default(config, config_file)
+      end
+
+      def merge_with_default(config, config_file)
+        default_config = load_file(DEFAULT_FILE)
+        new(merge(default_config, config), config_file)
       end
 
       private
@@ -67,7 +108,7 @@ module Rubocop
     end
 
     def initialize(hash = {}, loaded_path = nil)
-      @hash = DEFAULT_CONFIGURATION.merge(hash)
+      @hash = hash
       @loaded_path = loaded_path
       super(@hash)
     end
@@ -88,8 +129,13 @@ module Rubocop
 
     # TODO: This should be a private method
     def validate!
+      # Don't validate RuboCop's own files. Avoids inifinite recursion.
+      return if @loaded_path.start_with?(RUBOCOP_HOME)
+
+      home_config = Config.rubocop_home_config
+
       valid_cop_names, invalid_cop_names = @hash.keys.partition do |key|
-        RUBOCOP_HOME_CONFIG.has_key?(key)
+        home_config.has_key?(key)
       end
 
       invalid_cop_names.each do |name|
@@ -99,7 +145,7 @@ module Rubocop
 
       valid_cop_names.each do |name|
         @hash[name].each_key do |param|
-          unless RUBOCOP_HOME_CONFIG[name].has_key?(param)
+          unless home_config[name].has_key?(param)
             fail ValidationError,
                  "unrecognized parameter #{name}:#{param} found " +
                  "in #{loaded_path || self}"
@@ -123,19 +169,11 @@ module Rubocop
     end
 
     def patterns_to_include
-      if @hash['AllCops'] && @hash['AllCops']['Includes']
-        @hash['AllCops']['Includes']
-      else
-        DEFAULT_PATTERNS_TO_INCLUDE
-      end
+      @hash['AllCops']['Includes']
     end
 
     def patterns_to_exclude
-      if @hash['AllCops'] && @hash['AllCops']['Excludes']
-        @hash['AllCops']['Excludes']
-      else
-        DEFAULT_PATTERNS_TO_EXCLUDE
-      end
+      @hash['AllCops']['Excludes']
     end
 
     private

@@ -16,7 +16,9 @@ module Rubocop
     end
 
     def set_options_config(options_config)
-      @options_config = Config.load_file(options_config)
+      loaded_config = Config.load_file(options_config)
+      @options_config = Config.merge_with_default(loaded_config,
+                                                  options_config)
     end
 
     def for(file)

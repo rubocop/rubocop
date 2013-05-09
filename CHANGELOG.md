@@ -7,6 +7,7 @@
 * Added ability to include or exclude files/directories through `.rubocop.yml`
 * Added option --only for running a single cop.
 * Relax semicolon rule for one line methods, classes and modules
+* Configuration files, such as `.rubocop.yml`, can now include configuration from other files through the `inherit_from` directive. All configuration files implicitly inherit from `config/default.yml`.
 * New cop `ClassMethods` checks for uses for class/module names in definitions of class/module methods
 * New cop `SingleLineMethods` checks for methods implemented on a single line
 * New cop `FavorJoin` checks for usages of `Array#*` with a string argument

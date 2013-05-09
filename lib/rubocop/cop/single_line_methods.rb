@@ -6,7 +6,7 @@ module Rubocop
       ERROR_MESSAGE = 'Avoid single-line methods.'
 
       def inspect(file, source, tokens, sexp)
-        if SingleLineMethods.allow_if_method_is_empty
+        if SingleLineMethods.config['AllowIfMethodIsEmpty']
           is_empty = empty_methods(sexp)
         end
 
@@ -25,19 +25,14 @@ module Rubocop
           if [token.type, token.text] == [:on_kw, 'def']
             lineno_of_def = token.pos.lineno
             name_pos = tokens[ix..-1].find { |t| t.type == :on_ident }.pos
-            possible_offence = if SingleLineMethods.allow_if_method_is_empty
-                                 !is_empty[name_pos]
-                               else
-                                 true
-                               end
+            possible_offence =
+              if SingleLineMethods.config['AllowIfMethodIsEmpty']
+                !is_empty[name_pos]
+              else
+                true
+              end
           end
         end
-      end
-
-      def self.allow_if_method_is_empty
-        return true if SingleLineMethods.config.nil?
-        allow = SingleLineMethods.config['AllowIfMethodIsEmpty']
-        allow.nil? || allow
       end
 
       private

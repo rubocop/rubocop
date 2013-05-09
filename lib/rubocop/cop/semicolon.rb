@@ -69,8 +69,7 @@ module Rubocop
           :right_after_param_list if token.type == :on_rparen
         when :right_after_param_list
           if token.type == :on_semicolon
-            unless Semicolon.allowed('AfterParameterListInOneLineMethods',
-                                     true)
+            unless Semicolon.config['AllowAfterParameterListInOneLineMethods']
               add_offence(:convention, token.pos.lineno, ERROR_MESSAGE)
             end
           end
@@ -79,17 +78,11 @@ module Rubocop
           :semicolon_used if token.type == :on_semicolon
         when :semicolon_used
           if token.text != 'end' ||
-              !Semicolon.allowed('BeforeEndInOneLineMethods', true)
+              !Semicolon.config['AllowBeforeEndInOneLineMethods']
             add_offence(:convention, token.pos.lineno, ERROR_MESSAGE)
           end
           :method_body
         end
-      end
-
-      def self.allowed(option_name, default_value)
-        return default_value if Semicolon.config.nil?
-        value = Semicolon.config['Allow' + option_name]
-        value.nil? ? default_value : value
       end
     end
   end

@@ -1,0 +1,325 @@
+# These are all the cops that are enabled in the default configuration.
+
+# Use UTF-8 as the source file encoding.
+Encoding:
+  Enabled: true
+
+# Limit lines to 80 characters.
+LineLength:
+  Enabled: true
+
+# Avoid methods longer than 10 lines of code
+MethodLength:
+  Enabled: true
+
+# No hard tabs.
+Tab:
+  Enabled: true
+
+# Avoid trailing whitespace.
+TrailingWhitespace:
+  Enabled: true
+
+# Indent when as deep as case.
+CaseIndentation:
+  Enabled: true
+
+# Use empty lines between defs.
+EmptyLineBetweenDefs:
+  Enabled: true
+
+# Don't use several empty lines in a row.
+EmptyLines:
+  Enabled: true
+
+# Use spaces around operators.
+SpaceAroundOperators:
+  Enabled: true
+
+# Use spaces around { and before }.
+SpaceAroundBraces:
+  Enabled: true
+
+# No spaces after ( or before ).
+SpaceInsideParens:
+  Enabled: true
+
+# No spaces after [ or before ].
+SpaceInsideBrackets:
+  Enabled: true
+
+# Use spaces after commas.
+SpaceAfterComma:
+  Enabled: true
+
+# Use spaces after semicolons.
+SpaceAfterSemicolon:
+  Enabled: true
+
+# Use spaces after colons.
+SpaceAfterColon:
+  Enabled: true
+
+# Use spaces after if/elsif/unless/while/until/case/when.
+SpaceAfterControlKeyword:
+  Enabled: true
+
+# Prefer symbols instead of strings as hash keys.
+HashSyntax:
+  Enabled: true
+
+# Use Unix-style line endings.
+EndOfLine:
+  Enabled: true
+
+# Add underscores to large numeric literals to improve their readability.
+NumericLiterals:
+  Enabled: true
+
+# Align the parameters of a method call if they span more than one line.
+AlignParameters:
+  Enabled: true
+
+# Use def with parentheses when there are arguments.
+DefWithParentheses:
+  Enabled: true
+
+# Omit the parentheses when the method doesn't accept any arguments.
+DefWithoutParentheses:
+  Enabled: true
+
+# Never use if x; .... Use the ternary operator instead.
+IfWithSemicolon:
+  Enabled: true
+
+# Never use then for multi-line if/unless.
+MultilineIfThen:
+  Enabled: true
+
+# Favor the ternary operator(?:) over if/then/else/end constructs.
+OneLineConditional:
+  Enabled: true
+
+# Avoid using {...} for multi-line blocks (multiline chaining is always ugly).
+MultilineBlocks:
+  Enabled: true
+
+# Prefer {...} over do...end for single-line blocks.
+SingleLineBlocks:
+  Enabled: true
+
+# Avoid parameter lists longer than three or four parameters.
+ParameterLists:
+  Enabled: true
+
+# Prefer ' strings when you don't need string interpolation or special symbols.
+StringLiterals:
+  Enabled: true
+
+# Avoid multi-line ?: (the ternary operator); use if/unless instead.
+MultilineTernaryOperator:
+  Enabled: true
+
+# Use one expression per branch in a ternary operator.
+NestedTernaryOperator:
+  Enabled: true
+
+# Never use unless with else. Rewrite these with the positive case first.
+UnlessElse:
+  Enabled: true
+
+# Use &&/|| for boolean expressions, and/or for control flow.
+AmpersandsPipesVsAndOr:
+  Enabled: true
+
+# Use when x then ... for one-line cases.
+WhenThen:
+  Enabled: true
+
+# Favor modifier if/unless usage when you have a single-line body.
+IfUnlessModifier:
+  Enabled: true
+
+# Favor modifier while/until usage when you have a single-line body.
+WhileUntilModifier:
+  Enabled: true
+
+# Favor unless over if for negative conditions (or control flow or).
+FavorUnlessOverNegatedIf:
+  Enabled: true
+
+# Favor until over while for negative conditions.
+FavorUntilOverNegatedWhile:
+  Enabled: true
+
+# Use spaces around the = operator when assigning default values in def params.
+SpaceAroundEqualsInParameterDefault:
+  Enabled: true
+
+# Use the new lambda literal syntax.
+NewLambdaLiteral:
+  Enabled: true
+
+# Don't use parentheses around the condition of an if/unless/while.
+ParenthesesAroundCondition:
+  Enabled: true
+
+# Use snake_case for symbols, methods and variables.
+MethodAndVariableSnakeCase:
+  Enabled: true
+
+# Use CamelCase for classes and modules.
+ClassAndModuleCamelCase:
+  Enabled: true
+
+# Causes Ruby to check the syntax of the script and exit without executing.
+Syntax:
+  Enabled: true
+
+# Preferred collection methods.
+CollectionMethods:
+  Enabled: true
+
+# Prefer each over for.
+AvoidFor:
+  Enabled: true
+
+# Avoid Perl-style global variables.
+AvoidPerlisms:
+  Enabled: true
+
+# Avoid Perl-style regex back references.
+AvoidPerlBackrefs:
+  Enabled: true
+
+# Avoid the use of class variables.
+AvoidClassVars:
+  Enabled: true
+
+# Symbol literals should use snake_case.
+SymbolSnakeCase:
+  Enabled: true
+
+# Don't interpolate global, instance and class variables directly in strings.
+VariableInterpolation:
+  Enabled: true
+
+# Don't use semicolons to terminate expressions.
+Semicolon:
+  Enabled: true
+
+# Use sprintf instead of String#%.
+FavorSprintf:
+  Enabled: true
+
+# Use Array#join instead of Array#*.
+FavorJoin:
+  Enabled: true
+
+# Use alias_method instead of alias.
+Alias:
+  Enabled: true
+
+# Use ! instead of not.
+Not:
+  Enabled: true
+
+# Avoid using rescue in its modifier form.
+RescueModifier:
+  Enabled: true
+
+# Avoid the use of %q, %Q, %s and %x.
+PercentLiterals:
+  Enabled: true
+
+# Prefer () as delimiters for all % literals.
+BraceAfterPercent:
+  Enabled: true
+
+# Never use return in an ensure block.
+EnsureReturn:
+  Enabled: true
+
+# Don't suppress exception.
+HandleExceptions:
+  Enabled: true
+
+# Use only ascii symbols in identifiers.
+AsciiIdentifiers:
+  Enabled: true
+
+# Use only ascii symbols in comments.
+AsciiComments:
+  Enabled: true
+
+# Do not use block comments.
+BlockComments:
+  Enabled: true
+
+# Avoid rescuing the Exception class.
+RescueException:
+  Enabled: true
+
+# Prefer array literal to Array.new.
+ArrayLiteral:
+  Enabled: true
+
+# Prefer hash {} literail to Hash.new.
+HashLiteral:
+  Enabled: true
+
+# When defining binary operators, name the argument other.
+OpMethod:
+  Enabled: true
+
+# Name reduce arguments |a, e| (accumulator, element)
+ReduceArguments:
+  Enabled: true
+
+# Use %r only for regular expressions matching more than one '/' character.
+PercentR:
+  Enabled: true
+
+# Use %r for regular expressions matching more than one '/' character.
+FavorPercentR:
+  Enabled: true
+
+# Use self when defining module/class methods.
+ClassMethods:
+  Enabled: true
+
+# Avoid single-line methods.
+SingleLineMethods:
+  Enabled: true
+
+# Use %w or %W for arrays of words.
+WordArray:
+  Enabled: true
+
+# Use spaces inside hash literal braces - or don't.
+SpaceInsideHashLiteralBraces:
+  Enabled: true
+
+# Avoid the use of line continuation (/).
+LineContinuation:
+  Enabled: true
+
+# Prefer attr_* methods to trivial readers/writers.
+TrivialAccessors:
+  Enabled: true
+
+# Comments should start with a space.
+LeadingCommentSpace:
+  Enabled: true
+
+# Do not use :: for method invocation.
+ColonMethodCall:
+  Enabled: true
+
+# Do not introduce global variables.
+AvoidGlobalVars:
+  Enabled: true
+
+# The use of eval represents a serious security risk.
+Eval:
+  Enabled: true
