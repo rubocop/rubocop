@@ -2,18 +2,18 @@
 
 require 'spec_helper'
 
-describe Rubocop::Configuration do
+describe Rubocop::Config do
   include FileHelper
 
-  subject(:configuration) { Rubocop::Configuration.new(hash, loaded_path) }
+  subject(:configuration) { Rubocop::Config.new(hash, loaded_path) }
   let(:hash) { {} }
   let(:loaded_path) { 'example/.rubocop.yml' }
 
-  before { Rubocop::Configuration.prepare }
+  before { Rubocop::ConfigStore.prepare }
 
   describe '.configuration_for_path', :isolated_environment do
     subject(:configuration_for_path) do
-      Rubocop::Configuration.configuration_for_path(file_path)
+      Rubocop::Config.configuration_for_path(file_path)
     end
 
     context 'when the passed path is nil' do
@@ -98,7 +98,7 @@ describe Rubocop::Configuration do
 
   describe '.load_file', :isolated_environment do
     subject(:load_file) do
-      Rubocop::Configuration.load_file(configuration_path)
+      Rubocop::Config.load_file(configuration_path)
     end
 
     let(:configuration_path) { '.rubocop.yml' }
@@ -116,8 +116,14 @@ describe Rubocop::Configuration do
   end
 
   describe '#validate!', :isolated_environment do
+    # TODO: Because Config.load_file now outputs the validation warning,
+    #       it is inserting text into the rspec test output here.
+    #       The next 2 lines should be removed eventually.
+    before(:each) { $stdout = StringIO.new }
+    after(:each) { $stdout = STDOUT }
+
     subject(:configuration) do
-      Rubocop::Configuration.load_file(configuration_path)
+      Rubocop::Config.load_file(configuration_path)
     end
 
     let(:configuration_path) { '.rubocop.yml' }
@@ -134,7 +140,7 @@ describe Rubocop::Configuration do
       it 'raises validation error' do
         expect do
           configuration.validate!
-        end.to raise_error(Rubocop::Configuration::ValidationError) do |error|
+        end.to raise_error(Rubocop::Config::ValidationError) do |error|
           expect(error.message).to start_with('unrecognized cop LyneLenth')
         end
       end
@@ -152,7 +158,7 @@ describe Rubocop::Configuration do
       it 'raises validation error' do
         expect do
           configuration.validate!
-        end.to raise_error(Rubocop::Configuration::ValidationError) do |error|
+        end.to raise_error(Rubocop::Config::ValidationError) do |error|
           expect(error.message).to
             start_with('unrecognized parameter LineLength:Min')
         end
@@ -214,7 +220,7 @@ describe Rubocop::Configuration do
 
   describe '#patterns_to_include' do
     subject(:patterns_to_include) do
-      configuration = Rubocop::Configuration.new(hash, loaded_path)
+      configuration = Rubocop::Config.new(hash, loaded_path)
       configuration.patterns_to_include
     end
 
@@ -247,7 +253,7 @@ describe Rubocop::Configuration do
 
   describe '#patterns_to_exclude' do
     subject(:patterns_to_exclude) do
-      configuration = Rubocop::Configuration.new(hash, loaded_path)
+      configuration = Rubocop::Config.new(hash, loaded_path)
       configuration.patterns_to_exclude
     end
 
@@ -282,7 +288,7 @@ describe Rubocop::Configuration do
 
     context 'when no config file exists for the target file' do
       it 'is disabled' do
-        configuration = Rubocop::Configuration.for('example.rb')
+        configuration = Rubocop::ConfigStore.for('example.rb')
         expect(configuration.cop_enabled?('SymbolArray')).to be_false
       end
     end
@@ -293,7 +299,7 @@ describe Rubocop::Configuration do
           'LineLength:',
           '  Max: 79'
         ])
-        configuration = Rubocop::Configuration.for('example.rb')
+        configuration = Rubocop::ConfigStore.for('example.rb')
         expect(configuration.cop_enabled?('SymbolArray')).to be_false
       end
     end
@@ -304,7 +310,7 @@ describe Rubocop::Configuration do
           'SymbolArray:',
           '  Enabled: true'
         ])
-        configuration = Rubocop::Configuration.for('example.rb')
+        configuration = Rubocop::ConfigStore.for('example.rb')
         expect(configuration.cop_enabled?('SymbolArray')).to be_true
       end
     end

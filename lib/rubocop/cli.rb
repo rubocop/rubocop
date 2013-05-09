@@ -1,7 +1,6 @@
 # encoding: utf-8
 require 'pathname'
 require 'optparse'
-require 'yaml'
 require_relative 'cop/grammar'
 
 module Rubocop
@@ -21,7 +20,7 @@ module Rubocop
       @total_offences = 0
       @errors_count = 0
       @options = { mode: :default }
-      Configuration.prepare
+      ConfigStore.prepare
     end
 
     # Entry point for the application logic. Here we
@@ -43,7 +42,7 @@ module Rubocop
       target_files(args).each do |file|
         break if wants_to_quit?
 
-        config = Configuration.for(file)
+        config = ConfigStore.for(file)
         report = Report.create(file, @options[:mode])
         source = read_source(file)
 
@@ -124,7 +123,7 @@ module Rubocop
         end
         opts.on('-c FILE', '--config FILE', 'Configuration file') do |f|
           @options[:config] = f
-          Configuration.set_options_config(@options[:config])
+          ConfigStore.set_options_config(@options[:config])
         end
         opts.on('--only COP', 'Run just one cop') do |s|
           @options[:only] = s
@@ -267,12 +266,12 @@ module Rubocop
       end
 
       rb += files.select do |file|
-        config = Configuration.for(file)
+        config = ConfigStore.for(file)
         config.file_to_include?(file)
       end
 
       rb.reject do |file|
-        config = Configuration.for(file)
+        config = ConfigStore.for(file)
         config.file_to_exclude?(file)
       end.uniq
     end
