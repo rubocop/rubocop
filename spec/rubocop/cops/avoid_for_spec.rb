@@ -24,6 +24,13 @@ module Rubocop
                        ['[:for, :ala, :bala]'])
         expect(af.offences).to be_empty
       end
+
+      it 'does not register an offence for def for' do
+        inspect_source(af,
+                       'file.rb',
+                       ['def for; end'])
+        expect(af.offences).to be_empty
+      end
     end
   end
 end
