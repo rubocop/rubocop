@@ -39,6 +39,12 @@ module Rubocop
                                  'end'])
         expect(slm.offences).to be_empty
       end
+
+      it 'does not crash on an method with a capitalized name' do
+        inspect_source(slm, '', ['def NoSnakeCase',
+                                 'end'])
+        expect(slm.offences).to be_empty
+      end
     end
   end
 end
