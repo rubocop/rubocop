@@ -221,6 +221,12 @@ priority right now. Writing a new cop is a great way to dive into RuboCop!
 Of course, bug reports and suggestions for improvements are always
 welcome. GitHub pull requests are even better! :-)
 
+## Mailing List
+
+If you're interested in everything regarding RuboCop's development,
+consider joining its
+[Google Group](https://groups.google.com/forum/?fromgroups#!forum/rubocop).
+
 ## Changelog
 
 RuboCop's changelog is available [here](CHANGELOG.md).
