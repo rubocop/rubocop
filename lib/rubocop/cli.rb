@@ -18,7 +18,7 @@ module Rubocop
       @cops = Cop::Cop.all
       @processed_file_count = 0
       @total_offences = 0
-      @errors_count = 0
+      @errors = []
       @options = { mode: :default }
       ConfigStore.prepare
     end
@@ -66,7 +66,7 @@ module Rubocop
       end
 
       unless @options[:silent]
-        display_summary(@processed_file_count, @total_offences, @errors_count)
+        display_summary(@processed_file_count, @total_offences, @errors)
       end
 
       (@total_offences == 0) && !wants_to_quit ? 0 : 1
@@ -99,11 +99,15 @@ module Rubocop
           begin
             cop.inspect(file, source, tokens, sexp)
           rescue => e
-            @errors_count += 1
-            warn "An error occurred while #{cop.name} cop".color(:yellow) +
-              " was inspecting #{file}.".color(:yellow)
-            warn 'To see the complete backtrace run rubocop -d.'
-            puts e.message, e.backtrace if @options[:debug]
+            message = "An error occurred while #{cop.name} cop".color(:red) +
+              " was inspecting #{file}.".color(:red)
+            @errors << message
+            warn message
+            if @options[:debug]
+              puts e.message, e.backtrace
+            else
+              warn 'To see the complete backtrace run rubocop -d.'
+            end
           end
           @total_offences += cop.offences.count
           report << cop if cop.has_report?
@@ -150,7 +154,7 @@ module Rubocop
       end
     end
 
-    def display_summary(num_files, total_offences, errors_count)
+    def display_summary(num_files, total_offences, errors)
       plural = num_files == 0 || num_files > 1 ? 's' : ''
       print "\n#{num_files} file#{plural} inspected, "
       offences_string = if total_offences.zero?
@@ -163,9 +167,10 @@ module Rubocop
       puts "#{offences_string} detected"
         .color(total_offences.zero? ? :green : :red)
 
-      if errors_count > 0
-        plural = errors_count > 1 ? 's' : ''
-        puts "\n#{errors_count} error#{plural} occurred.".color(:red)
+      if errors.count > 0
+        plural = errors.count > 1 ? 's' : ''
+        puts "\n#{errors.count} error#{plural} occurred:".color(:red)
+        errors.each { |error| puts error }
         puts 'Errors are usually caused by RuboCop bugs.'
         puts 'Please, report your problems to RuboCop\'s issue tracker.'
       end
