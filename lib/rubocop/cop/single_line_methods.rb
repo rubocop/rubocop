@@ -24,10 +24,12 @@ module Rubocop
 
           if [token.type, token.text] == [:on_kw, 'def']
             lineno_of_def = token.pos.lineno
-            name_pos = tokens[ix..-1].find { |t| t.type == :on_ident }.pos
+            name_token = tokens[ix..-1].find do |t|
+              [:on_ident, :on_const].include?(t.type)
+            end
             possible_offence =
               if SingleLineMethods.config['AllowIfMethodIsEmpty']
-                !is_empty[name_pos]
+                !is_empty[name_token.pos]
               else
                 true
               end

@@ -70,7 +70,7 @@ module Rubocop
 
       # return true if the sexp has the common shape of an accessor
       def accessor_shape?(sexp)
-        sexp[1][0] == :@ident &&
+        [:@ident, :@const].include?(sexp[1][0]) &&
         sexp[3][0] == :bodystmt &&
         !NON_TRIVIAL_BODYSTMT.include?(sexp[3][1][0][0])
       end
