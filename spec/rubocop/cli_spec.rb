@@ -576,27 +576,28 @@ module Rubocop
 
     describe '#display_summary' do
       it 'handles pluralization correctly' do
-        cli.display_summary(0, 0, 0)
+        cli.display_summary(0, 0, [])
         expect($stdout.string).to eq(
           "\n0 files inspected, no offences detected\n")
         $stdout = StringIO.new
-        cli.display_summary(1, 0, 0)
+        cli.display_summary(1, 0, [])
         expect($stdout.string).to eq(
           "\n1 file inspected, no offences detected\n")
         $stdout = StringIO.new
-        cli.display_summary(1, 1, 0)
+        cli.display_summary(1, 1, [])
         expect($stdout.string).to eq(
           "\n1 file inspected, 1 offence detected\n")
         $stdout = StringIO.new
-        cli.display_summary(2, 2, 0)
+        cli.display_summary(2, 2, [])
         expect($stdout.string).to eq(
           "\n2 files inspected, 2 offences detected\n")
       end
 
       it 'displays an error message when errors are present' do
-        cli.display_summary(1, 1, 1)
-        expect($stdout.string.lines.to_a[-3])
-          .to eq("1 error occurred.\n")
+        msg = 'An error occurred while Encoding cop was inspecting file.rb.'
+        cli.display_summary(1, 1, [msg])
+        expect($stdout.string.lines.to_a[-4..-3])
+          .to eq(["1 error occurred:\n", "#{msg}\n"])
       end
     end
   end
