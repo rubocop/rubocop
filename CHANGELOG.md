@@ -33,6 +33,7 @@
 * Fix a false positive in the `Alias` cop. `:alias` is no longer treated as keyword
 * `ArrayLiteral` now properly detects `Array.new`
 * `HashLiteral` now properly detects `Hash.new`
+* `VariableInterpolation` now detects regexp back references and doesn't crash.
 
 ### Misc
 
