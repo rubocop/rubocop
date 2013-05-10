@@ -235,7 +235,7 @@ module Rubocop
 
       args.each do |target|
         if File.directory?(target)
-          files += ruby_files(target)
+          files += ruby_files(target.chomp(File::SEPARATOR))
         elsif target =~ /\*/
           files += Dir[target]
         else
