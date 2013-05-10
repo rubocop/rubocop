@@ -34,6 +34,7 @@
 * `ArrayLiteral` now properly detects `Array.new`
 * `HashLiteral` now properly detects `Hash.new`
 * `VariableInterpolation` now detects regexp back references and doesn't crash.
+* Don't generate pathnames like some/project//some.rb
 
 ### Misc
 
