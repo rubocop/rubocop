@@ -4,6 +4,12 @@
 
 ### New features
 
+### Bugs fixed
+
+## 0.7.0 (05/11/2013)
+
+### New features
+
 * Added ability to include or exclude files/directories through `.rubocop.yml`
 * Added option --only for running a single cop.
 * Relax semicolon rule for one line methods, classes and modules
@@ -35,7 +41,7 @@
 * `HashLiteral` now properly detects `Hash.new`
 * `VariableInterpolation` now detects regexp back references and doesn't crash.
 * Don't generate pathnames like some/project//some.rb
-* [#151](https://github.com/bbatsov/rubocop/issues/151) Don't print the unrecognized cop warning several times for the same `.rubocop.yml` 
+* [#151](https://github.com/bbatsov/rubocop/issues/151) Don't print the unrecognized cop warning several times for the same `.rubocop.yml`
 
 ### Misc
 
