@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 $LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
 require 'rubocop/version'
+require 'English'
 
 Gem::Specification.new do |s|
   s.name = 'rubocop'
@@ -15,22 +16,10 @@ Gem::Specification.new do |s|
   EOF
 
   s.email = 'bozhidar@batsov.com'
-  s.executables = ['rubocop']
+  s.files = `git ls-files`.split($RS)
+  s.test_files = s.files.grep(/^spec\//)
+  s.executables = s.files.grep(/^bin\//) { |f| File.basename(f) }
   s.extra_rdoc_files = ['LICENSE.txt', 'README.md']
-  s.files = ['.document',
-             '.rspec',
-             '.rubocop.yml',
-             '.travis.yml',
-             'CHANGELOG.md',
-             'CONTRIBUTING.md',
-             'Gemfile',
-             'LICENSE.txt',
-             'README.md',
-             'Rakefile',
-             'bin/rubocop',
-             'rubocop.gemspec'] + Dir['lib/**/*.rb']
-
-  s.test_files = Dir['spec/**/*.rb']
   s.homepage = 'http://github.com/bbatsov/rubocop'
   s.licenses = ['MIT']
   s.require_paths = ['lib']
