@@ -6,6 +6,11 @@ module Rubocop
   # The CLI is a class responsible of handling all the command line interface
   # logic.
   class CLI
+    BUILTIN_FORMATTERS_FOR_KEYS = {
+      'plain' => Formatter::PlainTextFormatter,
+      'emacs' => Formatter::EmacsStyleFormatter
+    }
+
     # If set true while running,
     # RuboCop will abort processing and exit gracefully.
     attr_accessor :wants_to_quit
@@ -131,6 +136,7 @@ module Rubocop
       end
     end
 
+    # rubocop:disable MethodLength
     def parse_options(args)
       OptionParser.new do |opts|
         opts.banner = 'Usage: rubocop [options] [file1, file2, ...]'
@@ -139,7 +145,7 @@ module Rubocop
           @options[:debug] = d
         end
         opts.on('-e', '--emacs', 'Emacs style output') do
-          @options[:formatter] = Formatter::EmacsStyleFormatter
+          @options[:formatter] = 'emacs'
         end
         opts.on('-c FILE', '--config FILE', 'Configuration file') do |f|
           @options[:config] = f
@@ -147,6 +153,12 @@ module Rubocop
         end
         opts.on('--only COP', 'Run just one cop') do |s|
           @options[:only] = s
+        end
+        opts.on('-f', '--format FORMATTER',
+                'Choose a formatter',
+                '  [p]lain (default)',
+                '  [e]macs') do |key|
+          @options[:formatter] = key
         end
         opts.on('--require FILE', 'Require Ruby file') do |f|
           require f
@@ -163,6 +175,7 @@ module Rubocop
         end
       end.parse!(args)
     end
+    # rubocop:enable MethodLength
 
     def trap_interrupt
       Signal.trap('INT') do
@@ -306,14 +319,32 @@ module Rubocop
 
     def formatter
       @formatter ||= begin
-        formatter_class = @options[:formatter] || Formatter::PlainTextFormatter
+        key = @options[:formatter] || 'plain'
+        formatter_class = builtin_formatter_class(key)
         formatter = formatter_class.new($stdout)
         if formatter.respond_to?(:reports_summary=)
           # TODO: Consider dropping -s/--silent option
           formatter.reports_summary = !@options[:silent]
         end
         formatter
+      rescue => error
+        warn error.message
+        exit(1)
       end
+    end
+
+    def builtin_formatter_class(specified_key)
+      matching_keys = BUILTIN_FORMATTERS_FOR_KEYS.keys.select do |key|
+        key.start_with?(specified_key)
+      end
+
+      if matching_keys.empty?
+        fail %(No formatter for "#{specified_key}")
+      elsif matching_keys.size > 1
+        fail %(Cannot determine formatter for "#{specified_key}")
+      end
+
+      BUILTIN_FORMATTERS_FOR_KEYS[matching_keys.first]
     end
   end
 end

@@ -5,6 +5,7 @@
 ### New features
 
 * New cop `BlockNesting` checks for excessive block nesting
+* Added `-f`/`--format` option to specify formatter.
 * Added `--require` option to inject external Ruby code into RuboCop.
 
 ### Changes

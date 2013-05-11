@@ -9,8 +9,16 @@ module Rubocop
     include FileHelper
 
     let(:cli) { CLI.new }
-    before(:each) { $stdout = StringIO.new }
-    after(:each) { $stdout = STDOUT }
+
+    before(:each) do
+      $stdout = StringIO.new
+      $stderr = StringIO.new
+    end
+
+    after(:each) do
+      $stdout = STDOUT
+      $stderr = STDERR
+    end
 
     it 'exits cleanly when -h is used' do
       expect { cli.run ['-h'] }.to exit_with_code(0)
@@ -20,6 +28,9 @@ module Rubocop
                  '    -e, --emacs                      Emacs style output',
                  '    -c, --config FILE                Configuration file',
                  '        --only COP                   Run just one cop',
+                 '    -f, --format FORMATTER           Choose a formatter',
+                 '                                       [p]lain (default)',
+                 '                                       [e]macs',
                  '        --require FILE               Require Ruby file',
                  '    -s, --silent                     Silence summary',
                  '    -n, --no-color                   Disable color output',
@@ -46,13 +57,10 @@ module Rubocop
           @interrupt_handlers << block
         end
 
-        $stderr = StringIO.new
-
         create_file('example.rb', '# encoding: utf-8')
       end
 
       after do
-        $stderr = STDERR
         @cli_thread.terminate if @cli_thread
       end
 
@@ -619,6 +627,44 @@ module Rubocop
       it 'requires the passed path' do
         cli.run(['--require', required_file_path, 'example.rb'])
         expect($stdout.string).to start_with('Hello from required file!')
+      end
+    end
+
+    describe '-f/--format option' do
+      let(:target_file) { 'example.rb' }
+
+      before do
+        create_file(target_file, [
+          '# encoding: utf-8',
+          '#' * 90
+        ])
+      end
+
+      context 'when plain format is specified' do
+        it 'outputs with plain format' do
+          cli.run(['--format', 'plain', 'example.rb'])
+          expect($stdout.string).to include([
+            "== #{target_file} ==",
+            'C:  2: Line is too long. [90/79]'
+          ].join("\n"))
+        end
+      end
+
+      context 'when emacs format is specified' do
+        it 'outputs with emacs format' do
+          cli.run(['--format', 'emacs', 'example.rb'])
+          expect($stdout.string)
+            .to include("#{target_file}:2: C: Line is too long. [90/79]")
+        end
+      end
+
+      context 'when unknown format name is specified' do
+        it 'aborts with error message' do
+          expect { cli.run(['--format', 'unknown', 'example.rb']) }
+            .to exit_with_code(1)
+          expect($stderr.string)
+            .to include('No formatter for "unknown"')
+        end
       end
     end
 

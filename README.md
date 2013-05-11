@@ -45,6 +45,7 @@ Command flag       | Description
 `-d/--debug`       | Displays some extra debug output
 `-e/--emacs`       | Output the results in Emacs format
 `-c/--config`      | Run with specified config file
+`f/--format`       | Choose a formatter
 `--require`        | Require Ruby file
 `-s/--silent`      | Suppress the final summary
 `--only`           | Run only the specified cop
