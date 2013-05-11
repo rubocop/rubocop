@@ -106,7 +106,7 @@ module Rubocop
 
       it 'properly counts lines when method ends with block' do
         inspect_source(method_length, '', ['def m()',
-                                           '  do',
+                                           '  something do',
                                            '    a = 2',
                                            '    a = 3',
                                            '    a = 4',

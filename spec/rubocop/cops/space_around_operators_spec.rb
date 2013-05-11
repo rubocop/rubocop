@@ -128,7 +128,7 @@ module Rubocop
       end
 
       it 'accepts an assignment followed by newline' do
-        inspect_source(space, 'file.rb', ['x =\n  0'])
+        inspect_source(space, 'file.rb', ['x =', '0'])
         expect(space.offences).to be_empty
       end
 

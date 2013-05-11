@@ -45,7 +45,8 @@ module Rubocop
       it 'does not register an offence for #! on first line' do
         inspect_source(lcs,
                        'file.rb',
-                       ['#!/usr/bin/ruby'])
+                       ['#!/usr/bin/ruby',
+                        'test'])
         expect(lcs.offences).to be_empty
       end
 
