@@ -33,9 +33,10 @@ module Rubocop
       def index_of_first_token_on_line(ix, lineno)
         # Index of last token on the previous line
         prev_line_ix =
-          @tokens[0...ix].rindex { |t| t.pos.lineno < lineno } || 0
+          @tokens[0...ix].rindex { |t| t.pos.lineno < lineno } || -1
+        first = prev_line_ix + 1
         # Index of first non-whitespace token on the current line.
-        prev_line_ix + @tokens[prev_line_ix..ix].index { |t| !whitespace?(t) }
+        first + @tokens[first..ix].index { |t| !whitespace?(t) }
       end
 
       def handle_exceptions_to_the_rule(token_1_ix)
