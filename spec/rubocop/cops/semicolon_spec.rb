@@ -81,8 +81,20 @@ module Rubocop
       it 'accepts one line empty class definitions' do
         inspect_source(s,
                        'file.rb',
-                       ['  class Foo < Exception; end',
-                        '  class Bar; end'])
+                       ['# Prefer a single-line format for class ...',
+                        'class Foo < Exception; end',
+                        '',
+                        'class Bar; end'])
+        expect(s.offences).to be_empty
+      end
+
+      it 'accepts one line empty method definitions' do
+        inspect_source(s,
+                       'file.rb',
+                       ['# One exception to the rule are empty-body methods',
+                        'def no_op; end',
+                        '',
+                        'def foo; end'])
         expect(s.offences).to be_empty
       end
 
