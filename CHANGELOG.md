@@ -7,6 +7,7 @@
 ### Bugs fixed
 
 * [#155](https://github.com/bbatsov/rubocop/issues/155) 'Do not use semicolons to terminate expressions.' is not implemented correctly
+* `OpMethod` now handles definition of unary operators without crashing.
 
 ## 0.7.1 (05/11/2013)
 
