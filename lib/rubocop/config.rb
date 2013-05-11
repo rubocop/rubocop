@@ -15,10 +15,6 @@ module Rubocop
     attr_reader :loaded_path
 
     class << self
-      def rubocop_home_config
-        configuration_for_path(File.dirname(__FILE__))
-      end
-
       def load_file(path)
         hash = YAML.load_file(path)
 
@@ -70,13 +66,12 @@ module Rubocop
         end
       end
 
-      # Returns the configuration instance from .rubocop.yml searching
-      # upwards in the directory structure starting at the given
-      # directory where the inspected file is. If no .rubocop.yml is
-      # found there, the user's home directory is checked.
-      def configuration_for_path(target_dir)
-        return nil unless target_dir
-
+      # Returns the path of .rubocop.yml searching upwards in the
+      # directory structure starting at the given directory where the
+      # inspected file is. If no .rubocop.yml is found there, the
+      # user's home directory is checked. If there's no .rubocop.yml
+      # there either, the path to the default file is returned.
+      def configuration_file_for(target_dir)
         possible_config_files = dirs_to_search(target_dir).map do |dir|
           File.join(dir, DOTFILE)
         end
@@ -84,7 +79,10 @@ module Rubocop
         found_file = possible_config_files.find do |config_file|
           File.exist?(config_file)
         end
-        config_file = found_file || DEFAULT_FILE
+        found_file || DEFAULT_FILE
+      end
+
+      def configuration_from_file(config_file)
         config = load_file(config_file)
         merge_with_default(config, config_file)
       end
@@ -132,10 +130,10 @@ module Rubocop
       # Don't validate RuboCop's own files. Avoids inifinite recursion.
       return if @loaded_path.start_with?(RUBOCOP_HOME)
 
-      home_config = Config.rubocop_home_config
+      default_config = Config.load_file(DEFAULT_FILE)
 
       valid_cop_names, invalid_cop_names = @hash.keys.partition do |key|
-        home_config.has_key?(key)
+        default_config.has_key?(key)
       end
 
       invalid_cop_names.each do |name|
@@ -145,7 +143,7 @@ module Rubocop
 
       valid_cop_names.each do |name|
         @hash[name].each_key do |param|
-          unless home_config[name].has_key?(param)
+          unless default_config[name].has_key?(param)
             fail ValidationError,
                  "unrecognized parameter #{name}:#{param} found " +
                  "in #{loaded_path || self}"

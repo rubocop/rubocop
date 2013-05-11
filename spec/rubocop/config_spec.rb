@@ -13,115 +13,82 @@ describe Rubocop::Config do
 
   before { Rubocop::ConfigStore.prepare }
 
-  describe '.configuration_for_path', :isolated_environment do
-    subject(:configuration_for_path) do
-      Rubocop::Config.configuration_for_path(file_path)
-    end
-
-    context 'when the passed path is nil' do
-      let(:file_path) { nil }
-      it 'returns nil' do
-        expect(configuration_for_path).to be_nil
-      end
+  describe '.configuration_file_for', :isolated_environment do
+    subject(:configuration_file_for) do
+      Rubocop::Config.configuration_file_for(dir_path)
     end
 
     context 'when no config file exists in ancestor directories' do
-      let(:file_path) { 'dir/example.rb' }
-      before { create_file(file_path, '') }
+      let(:dir_path) { 'dir' }
+      before { create_file('dir/example.rb', '') }
 
       context 'but a config file exists in home directory' do
-        before do
-          create_file('~/.rubocop.yml', [
-            'Encoding:',
-            '  Enabled: true',
-          ])
-        end
+        before { create_file('~/.rubocop.yml', '') }
 
-        it 'returns a configuration loaded from the file in home directory' do
-          configuration = configuration_for_path
-          expect(configuration['Encoding']).to eq({
-            'Enabled' => true
-          })
-          expect(configuration.loaded_path).to match(/home\/.rubocop.yml$/)
+        it 'returns the path to the file in home directory' do
+          expect(configuration_file_for).to end_with('home/.rubocop.yml')
         end
       end
 
       context 'and no config file exists in home directory' do
         it 'falls back to the provided default file' do
-          expect(configuration_for_path.loaded_path).to end_with(
-            'config/default.yml')
+          expect(configuration_file_for).to end_with('config/default.yml')
         end
       end
     end
 
-    context 'with any config file' do
-      let(:file_path) { 'dir/example.rb' }
+    context 'when a config file exists in the parent directory' do
+      let(:dir_path) { 'dir' }
 
       before do
-        create_file(file_path, '')
-
-        create_file('.rubocop.yml', [
-          'Encoding:',
-          '  Enabled: false',
-        ])
+        create_file('dir/example.rb', '')
+        create_file('.rubocop.yml', '')
       end
 
-      it 'returns a configuration inheriting from default.yml' do
-        expect(configuration_for_path)
-          .to eq(DEFAULT_CONFIG.merge('Encoding' => { 'Enabled' => false }))
-      end
-    end
-
-    context 'when a config file exists in ancestor directories' do
-      let(:file_path) { 'dir/example.rb' }
-
-      before do
-        create_file(file_path, '')
-
-        create_file('.rubocop.yml', [
-          'Encoding:',
-          '  Enabled: true',
-        ])
-      end
-
-      it 'returns a configuration loaded from the file' do
-        configuration = configuration_for_path
-        expect(configuration['Encoding']).to eq({
-          'Enabled' => true
-        })
+      it 'returns the path to that configuration file' do
+        expect(configuration_file_for).to end_with('work/.rubocop.yml')
       end
     end
 
     context 'when multiple config files exist in ancestor directories' do
-      let(:file_path) { 'dir/example.rb' }
+      let(:dir_path) { 'dir' }
 
       before do
-        create_file(file_path, '')
-
-        create_file('.rubocop.yml', [
-          'Encoding:',
-          '  Enabled: true',
-        ])
-
-        create_file('dir/.rubocop.yml', [
-          'Encoding:',
-          '  Enabled: false',
-        ])
+        create_file('dir/example.rb', '')
+        create_file('dir/.rubocop.yml', '')
+        create_file('.rubocop.yml', '')
       end
 
       it 'prefers closer config file' do
-        configuration = configuration_for_path
-        expect(configuration['Encoding']).to eq({
-          'Enabled' => false
-        })
+        expect(configuration_file_for).to end_with('dir/.rubocop.yml')
+      end
+    end
+  end
+
+  describe '.configuration_from_file', :isolated_environment do
+    subject(:configuration_from_file) do
+      Rubocop::Config.configuration_from_file(file_path)
+    end
+
+    context 'with any config file' do
+      let(:file_path) { '.rubocop.yml' }
+
+      before do
+        create_file(file_path, ['Encoding:',
+                                '  Enabled: false'])
+      end
+
+      it 'returns a configuration inheriting from default.yml' do
+        expect(configuration_from_file)
+          .to eq(DEFAULT_CONFIG.merge('Encoding' => { 'Enabled' => false }))
       end
     end
 
     context 'when a file inherits from a parent and grandparent file' do
-      let(:file_path) { 'dir/subdir/example.rb' }
+      let(:file_path) { 'dir/subdir/.rubocop.yml' }
 
       before do
-        create_file(file_path, '')
+        create_file('dir/subdir/example.rb', '')
 
         create_file('.rubocop.yml',
                     ['LineLength:',
@@ -137,7 +104,7 @@ describe Rubocop::Config do
                      '  Max: 10'
                     ])
 
-        create_file('dir/subdir/.rubocop.yml',
+        create_file(file_path,
                     ['inherit_from: ../.rubocop.yml',
                      '',
                      'LineLength:',
@@ -149,7 +116,7 @@ describe Rubocop::Config do
       end
 
       it 'returns the ancestor configuration plus local overrides' do
-        expect(configuration_for_path)
+        expect(configuration_from_file)
           .to eq(DEFAULT_CONFIG.merge('LineLength' => {
                                         'Enabled' => true,
                                         'Max' => 77
@@ -163,10 +130,10 @@ describe Rubocop::Config do
     end
 
     context 'when a file inherits from two configurations' do
-      let(:file_path) { 'example.rb' }
+      let(:file_path) { '.rubocop.yml' }
 
       before do
-        create_file(file_path, '')
+        create_file('example.rb', '')
 
         create_file('normal.yml',
                     ['MethodLength:',
@@ -179,7 +146,7 @@ describe Rubocop::Config do
                      '  Enabled: false',
                      '  Max: 200'])
 
-        create_file('.rubocop.yml',
+        create_file(file_path,
                     ['inherit_from:',
                      '  - normal.yml',
                      '  - special.yml',
@@ -190,7 +157,7 @@ describe Rubocop::Config do
       end
 
       it 'returns values from the last one when possible' do
-        expect(configuration_for_path['MethodLength'])
+        expect(configuration_from_file['MethodLength'])
           .to eq('Enabled' => true,       # overridden in .rubocop.yml
                  'CountComments' => true, # only defined in normal.yml
                  'Max' => 200             # special.yml takes precedence
