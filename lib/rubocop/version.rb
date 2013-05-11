@@ -2,6 +2,6 @@
 
 module Rubocop
   module Version
-    STRING = '0.7.0'
+    STRING = '0.7.1'
   end
 end

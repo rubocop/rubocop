@@ -6,6 +6,12 @@
 
 ### Bugs fixed
 
+## 0.7.1 (05/11/2013)
+
+### Bugs fixed
+
+* Added missing files to the gemspec
+
 ## 0.7.0 (05/11/2013)
 
 ### New features
