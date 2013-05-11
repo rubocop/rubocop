@@ -35,6 +35,7 @@
 * `HashLiteral` now properly detects `Hash.new`
 * `VariableInterpolation` now detects regexp back references and doesn't crash.
 * Don't generate pathnames like some/project//some.rb
+* [#151](https://github.com/bbatsov/rubocop/issues/151) Don't print the unrecognized cop warning several times for the same `.rubocop.yml` 
 
 ### Misc
 
