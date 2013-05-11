@@ -5,12 +5,16 @@ module Rubocop
     class ClassMethods < Cop
       ERROR_MESSAGE = 'Prefer self over class/module for class/module methods.'
 
+      def self.portable?
+        true
+      end
+
       def inspect(file, source, tokens, sexp)
         # defs nodes correspond to class & module methods
-        each(:defs, sexp) do |s|
-          if s[1][0] == :var_ref && s[1][1][0] == :@const
+        on_node(:defs, sexp) do |s|
+          if s.children.first.type == :const
             add_offence(:convention,
-                        s[1][1][2].lineno,
+                        s.source_map.line,
                         ERROR_MESSAGE)
           end
         end

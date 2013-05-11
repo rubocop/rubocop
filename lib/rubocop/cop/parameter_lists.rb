@@ -5,10 +5,14 @@ module Rubocop
     class ParameterLists < Cop
       ERROR_MESSAGE = 'Avoid parameter lists longer than four parameters.'
 
+      def self.portable?
+        true
+      end
+
       def inspect(file, source, tokens, sexp)
-        each(:params, sexp) do |params|
-          if params[1] && params[1].size > 4
-            add_offence(:convention, params[1][0][-1].lineno, ERROR_MESSAGE)
+        on_node(:args, sexp) do |s|
+          if s.children.size > 4
+            add_offence(:convention, s.src.line, ERROR_MESSAGE)
           end
         end
       end

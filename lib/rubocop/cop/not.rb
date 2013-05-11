@@ -5,9 +5,15 @@ module Rubocop
     class Not < Cop
       ERROR_MESSAGE = 'Use ! instead of not.'
 
+      def self.portable?
+        true
+      end
+
       def inspect(file, source, tokens, sexp)
-        each_keyword('not', tokens) do |t|
-          add_offence(:convention, t.pos.lineno, ERROR_MESSAGE)
+        on_node(:send, sexp) do |s|
+          if s.to_a[1] == :! && s.src.selector.to_source == 'not'
+            add_offence(:convention, s.src.line, ERROR_MESSAGE)
+          end
         end
       end
     end

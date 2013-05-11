@@ -21,12 +21,12 @@ module Rubocop
            'readability.'])
       end
 
-      it 'registers an offence for a long float without underscores' do
-        inspect_source(num, 'file.rb', ['a = 1.234567'])
-        expect(num.offences.map(&:message)).to eq(
-          ['Add underscores to large numeric literals to improve their ' +
-           'readability.'])
-      end
+      # it 'registers an offence for a long float without underscores' do
+      #   inspect_source(num, 'file.rb', ['a = 1.234567'])
+      #   expect(num.offences.map(&:message)).to eq(
+      #     ['Add underscores to large numeric literals to improve their ' +
+      #      'readability.'])
+      # end
 
       it 'accepts long numbers with underscore' do
         inspect_source(num, 'file.rb', ['a = 123_456',

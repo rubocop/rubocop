@@ -35,12 +35,18 @@ module Rubocop
         $-0 $-a $-d $-F $-i $-I $-l $-p $-v $-w
       )
 
+      def self.portable?
+        true
+      end
+
       def inspect(file, source, tokens, sexp)
-        each(:@gvar, sexp) do |s|
-          global_var = s[1]
+        on_node([:gvar, :gvasgn], sexp) do |s|
+          global_var = s.source_map.name.to_source
 
           unless BUILT_IN_VARS.include?(global_var)
-            add_offence(:convention, s[2].lineno, ERROR_MESSAGE)
+            add_offence(:convention,
+                        s.source_map.name.line,
+                        ERROR_MESSAGE)
           end
         end
       end
