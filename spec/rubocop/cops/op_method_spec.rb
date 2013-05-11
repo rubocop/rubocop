@@ -64,6 +64,22 @@ module Rubocop
                         'end'])
         expect(om.offences).to be_empty
       end
+
+      it 'does not register an offence for non binary operators' do
+        inspect_source(om,
+                       'file.rb',
+                       ['def -@', # Unary minus
+                        'end',
+                        '',
+                        # This + is not a unary operator. It can only be
+                        # called with dot notation.
+                        'def +',
+                        'end',
+                        '',
+                        'def *(a, b)', # Quite strange, but legal ruby.
+                        'end'])
+        expect(om.offences).to be_empty
+      end
     end
   end
 end
