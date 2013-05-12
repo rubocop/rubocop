@@ -14,7 +14,7 @@ module Rubocop
 
       def check_for_symbols(sexp)
         each(:symbol_literal, sexp) do |s|
-          symbol_type = s[1][1][0]
+          symbol_type = s[1][0] == :symbol ? s[1][1][0] : s[1][0]
 
           # don't check operators
           next if symbol_type == :@op
