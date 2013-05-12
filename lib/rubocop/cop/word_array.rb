@@ -10,7 +10,7 @@ module Rubocop
           array_elems = s[1]
 
           # no need to check empty arrays
-          return unless array_elems && array_elems.size > 1
+          next unless array_elems && array_elems.size > 1
 
           string_array = array_elems.all? { |e| e[0] == :string_literal }
 
