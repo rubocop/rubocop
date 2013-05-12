@@ -29,9 +29,9 @@ module Rubocop
         inspect_source(rm,
                        'file.rb',
                        ['begin',
-                        'test',
+                        '  test',
                         'rescue',
-                        'handle',
+                        '  handle',
                         'end'])
         expect(rm.offences).to be_empty
       end

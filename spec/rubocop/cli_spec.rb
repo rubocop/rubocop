@@ -191,7 +191,7 @@ module Rubocop
     end
 
     it 'exits with error if an incorrect cop name is passed to --only' do
-      expect(cli.run(['--only', '123'])).to eq(1)
+      expect(cli.run(%w(--only 123))).to eq(1)
       expect($stdout.string).to eq("Unrecognized cop name: 123.\n")
     end
 
