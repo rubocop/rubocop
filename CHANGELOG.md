@@ -8,6 +8,7 @@
 
 * [#155](https://github.com/bbatsov/rubocop/issues/155) 'Do not use semicolons to terminate expressions.' is not implemented correctly
 * `OpMethod` now handles definition of unary operators without crashing.
+* `SymbolSnakeCase` now handles aliasing of operators without crashing.
 * [#159](https://github.com/bbatsov/rubocop/issues/159) AvoidFor cop misses many violations
 
 ## 0.7.1 (05/11/2013)
