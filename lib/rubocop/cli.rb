@@ -73,6 +73,7 @@ module Rubocop
       end
 
       formatter.finished(processed_files)
+      formatter.output.close if formatter.output.is_a?(File)
 
       display_error_summary(@errors) unless @options[:silent]
 
@@ -158,6 +159,13 @@ module Rubocop
                 '  [p]lain (default)',
                 '  [e]macs') do |key|
           @options[:formatter] = key
+        end
+        opts.on('-o', '--out FILE',
+                'Write output to a file instead of STDOUT.',
+                '  This option applies to the previously',
+                '  specified --format, or the default',
+                '  format if no format is specified.') do |path|
+          @options[:out] = path
         end
         opts.on('--require FILE', 'Require Ruby file') do |f|
           require f
@@ -332,7 +340,9 @@ module Rubocop
       @formatter ||= begin
         key = @options[:formatter] || 'plain'
         formatter_class = builtin_formatter_class(key)
-        formatter = formatter_class.new($stdout)
+        output = @options[:out] ? File.open(@options[:out], 'w') : $stdout
+
+        formatter = formatter_class.new(output)
         if formatter.respond_to?(:reports_summary=)
           # TODO: Consider dropping -s/--silent option
           formatter.reports_summary = !@options[:silent]

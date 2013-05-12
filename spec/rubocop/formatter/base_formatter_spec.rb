@@ -46,6 +46,7 @@ module Rubocop
           subject(:formatter) do
             formatter = double('formatter')
             def formatter.method_missing(method_name, *args)
+              return if method_name == :output
               puts method_name
             end
             formatter

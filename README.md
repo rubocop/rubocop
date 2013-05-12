@@ -46,6 +46,7 @@ Command flag       | Description
 `-e/--emacs`       | Output the results in Emacs format
 `-c/--config`      | Run with specified config file
 `f/--format`       | Choose a formatter
+`o/--out`          | Write output to a file instead of STDOUT
 `--require`        | Require Ruby file
 `-s/--silent`      | Suppress the final summary
 `--only`           | Run only the specified cop

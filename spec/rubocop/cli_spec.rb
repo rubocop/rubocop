@@ -30,6 +30,10 @@ module Rubocop
                  '    -f, --format FORMATTER           Choose a formatter',
                  '                                       [p]lain (default)',
                  '                                       [e]macs',
+                 '    -o, --out FILE                   Write output to a file instead of STDOUT.',
+                 '                                       This option applies to the previously',
+                 '                                       specified --format, or the default',
+                 '                                       format if no format is specified.',
                  '        --require FILE               Require Ruby file',
                  '    -s, --silent                     Silence summary',
                  '    -n, --no-color                   Disable color output',
@@ -679,6 +683,17 @@ module Rubocop
           expect(cli.run(['--emacs'])).to eq(1)
           expect($stderr.string).to include('invalid option: --emacs')
         end
+      end
+    end
+
+    describe '-o/--out option' do
+      it 'redirects output to the specified file' do
+        create_file('example.rb', [
+          '# encoding: utf-8',
+          '#' * 90
+        ])
+        cli.run(['--out', 'output.txt', 'example.rb'])
+        expect(File.read('output.txt')).to include('Line is too long.')
       end
     end
 
