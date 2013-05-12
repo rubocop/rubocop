@@ -82,7 +82,7 @@ module Rubocop
                        ['alias + add'])
         expect(snake_case.offences).to be_empty
       end
-      
+
       it 'registers an offence for SCREAMING_SNAKE_CASE' do
         inspect_source(snake_case, 'file.rb',
                        ['test = :BAD_IDEA'])
