@@ -68,6 +68,18 @@ module Rubocop
                         'end'])
         expect(re.offences).to be_empty
       end
+
+      it 'does not crash when the splat operator is used in a rescue' do
+        inspect_source(re,
+                       'file.rb',
+                       ['ERRORS = [Exception]',
+                        'begin',
+                        '  a = 3 / 0',
+                        'rescue *ERRORS',
+                        '  puts e',
+                        'end'])
+        expect(re.offences).to be_empty
+      end
     end
   end
 end

@@ -30,6 +30,9 @@ module Rubocop
         elsif s[1][0][0] == :const_path_ref
           # rescue Module::Class
           false
+        elsif s[1][0] == :mrhs_add_star
+          # rescue *ERRORS
+          false
         else
           true
         end
