@@ -5,37 +5,26 @@ module Rubocop
     class RescueException < Cop
       ERROR_MESSAGE = 'Avoid rescuing the Exception class.'
 
+      def self.portable?
+        true
+      end
+
       def inspect(file, source, tokens, sexp)
-        each(:rescue, sexp) do |s|
-          # TODO Improve handling of rescue One, Two => e
-          if valid_case?(s)
-            target_class = s[1][0][1][1]
-
-            lineno = s[1][0][1][2].lineno
-
+        on_node(:resbody, sexp) do |s|
+          rescue_args = s.children.first.children
+          if rescue_args.any? { |s| targets_exception?(s) }
             add_offence(:warning,
-                        lineno,
-                        ERROR_MESSAGE) if target_class == 'Exception'
+                        s.src.line,
+                        ERROR_MESSAGE)
           end
         end
       end
 
-      def valid_case?(s)
-        if s[1].nil?
-          # rescue with no args
-          false
-        elsif s[1][0] == :mrhs_new_from_args
-          # rescue One, Two => e
-          false
-        elsif s[1][0][0] == :const_path_ref
-          # rescue Module::Class
-          false
-        elsif s[1][0] == :mrhs_add_star
-          # rescue *ERRORS
-          false
-        else
-          true
-        end
+      def targets_exception?(rescue_arg_sexp)
+        return false unless rescue_arg_sexp.type == :const
+        children = rescue_arg_sexp.children
+        return false unless children[0].nil? || children[0].type == :cbase
+        children[1] == :Exception
       end
     end
   end
