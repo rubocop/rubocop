@@ -30,24 +30,11 @@ module Rubocop
 
       def complex_content?(arr_sexp)
         arr_sexp.each do |s|
-          str_content = strip_quotes(s.src.expression.to_source)
+          str_content = Util.strip_quotes(s.src.expression.to_source)
           return true unless str_content =~ /\A[\w-]+\z/
         end
 
         false
-      end
-
-      def strip_quotes(str)
-        if str[0] == '"' || str[0] == "'"
-          str[0] = ''
-          str[-1] = ''
-        else
-          # we're dealing with %q or %Q
-          str[0, 3] = ''
-          str[-1] = ''
-        end
-
-        str
       end
     end
   end
