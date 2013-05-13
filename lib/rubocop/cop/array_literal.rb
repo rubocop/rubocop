@@ -5,56 +5,24 @@ module Rubocop
     class ArrayLiteral < Cop
       ERROR_MESSAGE = 'Use array literal [] instead of Array.new.'
 
-      def inspect(file, source, tokens, sexp)
-        offences = preliminary_scan(sexp)
-
-        # find Array.new()
-        each(:method_add_arg, sexp) do |s|
-          next if s[1][0] != :call
-
-          receiver = s[1][1][1]
-          method_name = s[1][3][1]
-
-          if receiver && receiver[1] == 'Array' &&
-              method_name == 'new' && s[2] == [:arg_paren, nil]
-            offences.delete(Offence.new(:convention,
-                                        receiver[2].lineno,
-                                        ERROR_MESSAGE))
-            add_offence(:convention,
-                        receiver[2].lineno,
-                        ERROR_MESSAGE)
-          end
-
-          # check for false positives
-          if receiver && receiver[1] == 'Array' &&
-              method_name == 'new' && s[2] != [:arg_paren, nil]
-            offences.delete(Offence.new(:convention,
-                                        receiver[2].lineno,
-                                        ERROR_MESSAGE))
-          end
-        end
-
-        offences.each { |o| add_offence(*o.explode) }
+      def self.portable?
+        true
       end
 
-      def preliminary_scan(sexp)
-        offences = []
+      def inspect(file, source, tokens, sexp)
+        on_node(:send, sexp, :block) do |s|
+          children = s.children
 
-        # find Array.new
-        # there will be some false positives here, which
-        # we'll eliminate later on
-        each(:call, sexp) do |s|
-          receiver = s[1][1]
-
-          if receiver && receiver[1] == 'Array' &&
-              s[3][1] == 'new'
-            offences << Offence.new(:convention,
-                                    receiver[2].lineno,
-                                    ERROR_MESSAGE)
+          # We're interested in the following AST:
+          # (send
+          #   (const nil :Array) :new)
+          if children.size == 2 && children[0].type == :const &&
+              children[0].to_a[1].to_s == 'Array' && children[1] == :new
+            add_offence(:convention,
+                        s.src.line,
+                        ERROR_MESSAGE)
           end
         end
-
-        offences
       end
     end
   end
