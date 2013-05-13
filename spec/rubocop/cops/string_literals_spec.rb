@@ -25,6 +25,15 @@ module Rubocop
         expect(sl.offences.map(&:message)).to be_empty
       end
 
+      it 'accepts double quotes with some other special symbols' do
+        pending
+        # "Substitutions in double-quoted strings"
+        # http://www.ruby-doc.org/docs/ProgrammingRuby/html/language.html
+        src = ['g = "\xf9"']
+        inspect_source(sl, 'file.rb', src)
+        expect(sl.offences.map(&:message)).to be_empty
+      end
+
       it 'can handle double quotes within embedded expression' do
         # This seems to be a Parser bug
         pending do
