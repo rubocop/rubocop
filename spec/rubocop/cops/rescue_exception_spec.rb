@@ -59,6 +59,30 @@ module Rubocop
           .to eq([RescueException::ERROR_MESSAGE])
       end
 
+      it 'does not register an offence for rescue with no class' do
+        inspect_source(re,
+                       'file.rb',
+                       ['begin',
+                        '  something',
+                        '  return',
+                        'rescue',
+                        '  file.close',
+                        'end'])
+        expect(re.offences).to be_empty
+      end
+
+      it 'does not register an offence for rescue with no class and => e' do
+        inspect_source(re,
+                       'file.rb',
+                       ['begin',
+                        '  something',
+                        '  return',
+                        'rescue => e',
+                        '  file.close',
+                        'end'])
+        expect(re.offences).to be_empty
+      end
+
       it 'does not register an offence for rescue with other class' do
         inspect_source(re,
                        'file.rb',
