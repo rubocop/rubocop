@@ -20,6 +20,32 @@ module Rubocop
           .to eq([RescueException::ERROR_MESSAGE])
       end
 
+      it 'registers an offence for rescue with ::Exception' do
+        inspect_source(re,
+                       'file.rb',
+                       ['begin',
+                        '  something',
+                        'rescue ::Exception',
+                        '  #do nothing',
+                        'end'])
+        expect(re.offences.size).to eq(1)
+        expect(re.offences.map(&:message))
+          .to eq([RescueException::ERROR_MESSAGE])
+      end
+
+      it 'registers an offence for rescue with StandardError, Exception' do
+        inspect_source(re,
+                       'file.rb',
+                       ['begin',
+                        '  something',
+                        'rescue StandardError, Exception',
+                        '  #do nothing',
+                        'end'])
+        expect(re.offences.size).to eq(1)
+        expect(re.offences.map(&:message))
+          .to eq([RescueException::ERROR_MESSAGE])
+      end
+
       it 'registers an offence for rescue with Exception => e' do
         inspect_source(re,
                        'file.rb',
