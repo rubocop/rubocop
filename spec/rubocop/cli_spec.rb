@@ -418,7 +418,7 @@ module Rubocop
     it 'can process a file with an invalid UTF-8 byte sequence' do
       create_file('example.rb', [
         '# encoding: utf-8',
-        "# \xf9\x29"
+        "# #{'f9'.hex.chr}#{'29'.hex.chr}"
       ])
       expect(cli.run(['--emacs', 'example.rb'])).to eq(0)
     end
