@@ -676,6 +676,15 @@ Usage: rubocop [options] [file1, file2, ...]
             .to include('No formatter for "unknown"')
         end
       end
+
+      it 'can be used multiple times' do
+        cli.run(['--format', 'plain', '--format', 'emacs', 'example.rb'])
+        expect($stdout.string).to include([
+          "== #{target_file} ==",
+          'C:  2: Line is too long. [90/79]',
+          "#{target_file}:2: C: Line is too long. [90/79]"
+        ].join("\n"))
+      end
     end
 
     unless Rubocop::Version::STRING.start_with?('0')
@@ -689,13 +698,41 @@ Usage: rubocop [options] [file1, file2, ...]
     end
 
     describe '-o/--out option' do
-      it 'redirects output to the specified file' do
-        create_file('example.rb', [
+      let(:target_file) { 'example.rb' }
+
+      before do
+        create_file(target_file, [
           '# encoding: utf-8',
           '#' * 90
         ])
-        cli.run(['--out', 'output.txt', 'example.rb'])
+      end
+
+      it 'redirects output to the specified file' do
+        cli.run(['--out', 'output.txt', target_file])
         expect(File.read('output.txt')).to include('Line is too long.')
+      end
+
+      it 'is applied to the previously specified formatter' do
+        cli.run([
+          '--format', 'plain',
+          '--format', 'emacs', '--out', 'emacs_output.txt',
+          target_file
+        ])
+
+        expect($stdout.string).to eq([
+          "== #{target_file} ==",
+          'C:  2: Line is too long. [90/79]',
+          '',
+          '1 file inspected, 1 offence detected',
+          ''
+        ].join("\n"))
+
+        expect(File.read('emacs_output.txt')).to eq([
+          "#{target_file}:2: C: Line is too long. [90/79]",
+          '',
+          '1 file inspected, 1 offence detected',
+          ''
+        ].join("\n"))
       end
     end
 

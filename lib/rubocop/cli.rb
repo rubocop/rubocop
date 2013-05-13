@@ -43,13 +43,13 @@ module Rubocop
       processed_files = []
       any_failed = false
 
-      formatter.started(target_files)
+      invoke_formatters(:started, target_files)
 
       target_files.each do |file|
         break if wants_to_quit?
 
         puts "Scanning #{file}" if @options[:debug]
-        formatter.file_started(file, {})
+        invoke_formatters(:file_started, file, {})
 
         syntax_cop = setup_cop(Rubocop::Cop::Syntax)
         syntax_cop.inspect_file(file)
@@ -64,11 +64,11 @@ module Rubocop
 
         any_failed = true unless offences.empty?
         processed_files << file
-        formatter.file_finished(file, offences)
+        invoke_formatters(:file_finished, file, offences)
       end
 
-      formatter.finished(processed_files)
-      formatter.output.close if formatter.output.is_a?(File)
+      invoke_formatters(:finished, processed_files)
+      close_output_files
 
       display_error_summary(@errors) unless @options[:silent]
 
@@ -154,14 +154,16 @@ module Rubocop
                 'Choose a formatter.',
                 '  [p]lain (default)',
                 '  [e]macs') do |key|
-          @options[:formatter] = key
+          @options[:formatters] ||= []
+          @options[:formatters] << [key]
         end
         opts.on('-o', '--out FILE',
                 'Write output to a file instead of STDOUT.',
                 '  This option applies to the previously',
                 '  specified --format, or the default',
                 '  format if no format is specified.') do |path|
-          @options[:out] = path
+          @options[:formatters] ||= [['plain']]
+          @options[:formatters].last << path
         end
         opts.on('--require FILE', 'Require Ruby file.') do |f|
           require f
@@ -332,22 +334,38 @@ module Rubocop
       end
     end
 
-    def formatter
-      @formatter ||= begin
-        key = @options[:formatter] || 'plain'
-        formatter_class = builtin_formatter_class(key)
-        output = @options[:out] ? File.open(@options[:out], 'w') : $stdout
+    def invoke_formatters(method, *args)
+      formatters.each { |f| f.send(method, *args) }
+    end
 
-        formatter = formatter_class.new(output)
-        if formatter.respond_to?(:reports_summary=)
-          # TODO: Consider dropping -s/--silent option
-          formatter.reports_summary = !@options[:silent]
+    def close_output_files
+      formatters.each do |formatter|
+        formatter.output.close if formatter.output.is_a?(File)
+      end
+    end
+
+    def formatters
+      @formatters ||= begin
+        pairs = @options[:formatters] || [['plain']]
+        pairs.map do |formatter_key, output_path|
+          create_formatter(formatter_key, output_path)
         end
-        formatter
       rescue => error
         warn error.message
         exit(1)
       end
+    end
+
+    def create_formatter(formatter_key, output_path = nil)
+      formatter_class = builtin_formatter_class(formatter_key)
+      output = output_path ? File.open(output_path, 'w') : $stdout
+
+      formatter = formatter_class.new(output)
+      if formatter.respond_to?(:reports_summary=)
+        # TODO: Consider dropping -s/--silent option
+        formatter.reports_summary = !@options[:silent]
+      end
+      formatter
     end
 
     def builtin_formatter_class(specified_key)
