@@ -5,20 +5,26 @@ module Rubocop
     class SymbolArray < Cop
       ERROR_MESSAGE = 'Use %i or %I for array of symbols.'
 
+      def self.portable?
+        true
+      end
+
       def inspect(file, source, tokens, sexp)
         # %i and %I were introduced in Ruby 2.0
         unless RUBY_VERSION < '2.0.0'
-          each(:array, sexp) do |s|
-            array_elems = s[1]
+          on_node(:array, sexp) do |s|
+            next unless s.src.begin && s.src.begin.to_source == '['
+
+            array_elems = s.children
 
             # no need to check empty arrays
             next unless array_elems && array_elems.size > 1
 
-            symbol_array = array_elems.all? { |e| e[0] == :symbol_literal }
+            symbol_array = array_elems.all? { |e| e.type == :sym }
 
             if symbol_array
               add_offence(:convention,
-                          all_positions(s).first.lineno,
+                          s.src.line,
                           ERROR_MESSAGE)
             end
           end

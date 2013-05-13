@@ -3,18 +3,30 @@
 module Rubocop
   module Cop
     class VariableInterpolation < Cop
-      def inspect(file, source, tokens, sexp)
-        each(:string_dvar, sexp) do |s|
-          interpolation = s[1][0] == :@backref ? s[1] : s[1][1]
-          var = interpolation[1]
-          lineno = interpolation[2].lineno
+      def self.portable?
+        true
+      end
 
-          add_offence(
-            :convention,
-            lineno,
-            "Replace interpolated var #{var} with expression \#{#{var}}."
-          )
+      def inspect(file, source, tokens, sexp)
+        on_node(:dstr, sexp) do |s|
+          var_nodes(s.children).each do |v|
+            var = (v.type == :nth_ref ? '$' : '') + v.to_a[0].to_s
+
+            if s.src.expression.to_source.include?("##{var}")
+              add_offence(
+                :convention,
+                v.src.line,
+                "Replace interpolated var #{var} with expression \#{#{var}}."
+             )
+            end
+          end
         end
+      end
+
+      private
+
+      def var_nodes(nodes)
+        nodes.select { |n| [:ivar, :cvar, :gvar, :nth_ref].include?(n.type) }
       end
     end
   end

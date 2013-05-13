@@ -31,6 +31,13 @@ module Rubocop
                        ['eval = something'])
         expect(a.offences).to be_empty
       end
+
+      it 'does not register an offence for eval as method' do
+        inspect_source(a,
+                       'file.rb',
+                       ['something.eval'])
+        expect(a.offences).to be_empty
+      end
     end
   end
 end

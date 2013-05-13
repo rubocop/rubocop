@@ -5,6 +5,10 @@ module Rubocop
     class Encoding < Cop
       ERROR_MESSAGE = 'Missing utf-8 encoding comment.'
 
+      def self.portable?
+        true
+      end
+
       def inspect(file, source, tokens, sexp)
         unless RUBY_VERSION >= '2.0.0'
           expected_line = 0
