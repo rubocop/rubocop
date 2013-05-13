@@ -100,10 +100,12 @@ module Rubocop
         end
       end
 
-      def on_node(syms, sexp)
+      def on_node(syms, sexp, excludes = [])
         yield sexp if Array(syms).include?(sexp.type)
         sexp.children.each do |elem|
-          on_node(syms, elem) { |s| yield s } if Parser::AST::Node === elem
+          if Parser::AST::Node === elem && !Array(excludes).include?(elem.type)
+            on_node(syms, elem, excludes) { |s| yield s }
+          end
         end
       end
 
