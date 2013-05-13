@@ -1,13 +1,15 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 
-if RUBY_ENGINE == 'ruby' && RUBY_VERSION >= '1.9.2'
+if RUBY_VERSION >= '1.9.2'
   $LOAD_PATH.unshift(File.dirname(File.realpath(__FILE__)) + '/../lib')
 
   require 'rubocop'
   require 'benchmark'
 
   cli = Rubocop::CLI.new
+  cli.portable_mode = !(RUBY_ENGINE == 'ruby')
+  puts cli.portable_mode
   result = 0
 
   time = Benchmark.realtime do
@@ -17,6 +19,6 @@ if RUBY_ENGINE == 'ruby' && RUBY_VERSION >= '1.9.2'
   puts "Finished in #{time} seconds" if cli.options[:debug]
   exit result
 else
-  puts 'RuboCop supports only MRI 1.9.2+'
+  puts 'RuboCop supports only Ruby 1.9.2+'
   exit(-1)
 end

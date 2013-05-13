@@ -3,10 +3,14 @@
 module Rubocop
   module Cop
     class AvoidPerlBackrefs < Cop
+      def self.portable?
+        true
+      end
+
       def inspect(file, source, tokens, sexp)
-        each(:@backref, sexp) do |s|
-          backref = s[1]
-          lineno = s[2].lineno
+        on_node(:nth_ref, sexp) do |s|
+          backref = s.source_map.expression.to_source
+          lineno = s.source_map.expression.line
 
           add_offence(
             :convention,

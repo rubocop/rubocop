@@ -60,6 +60,10 @@ module Rubocop
         !@offences.empty?
       end
 
+      def self.portable?
+        false
+      end
+
       def add_offence(severity, line_number, message)
         unless @disabled_lines && @disabled_lines.include?(line_number)
           message = debug ? "#{name}: #{message}" : message
@@ -96,6 +100,13 @@ module Rubocop
         end
       end
 
+      def on_node(syms, sexp)
+        yield sexp if Array(syms).include?(sexp.type)
+        sexp.children.each do |elem|
+          on_node(syms, elem) { |s| yield s } if Parser::AST::Node === elem
+        end
+      end
+
       def find_all(sym, sexp)
         result = []
         each(sym, sexp) { |s| result << s }
@@ -113,28 +124,6 @@ module Rubocop
       def all_positions(sexp)
         return [sexp[2]] if sexp[0] =~ /^@/
         sexp.grep(Array).reduce([]) { |a, e| a + all_positions(e) }
-      end
-
-      def keywords(tokens)
-        # We need to keep track of the previous token to avoid
-        # interpreting :some_keyword as the keyword some_keyword.
-        prev = Token.new(0, :init, '')
-        # Same goes for defs so we need to track those as well.
-        keywords = []
-
-        tokens.reject { |t| whitespace?(t) }.each do |t|
-          if prev.type != :on_symbeg && t.type == :on_kw &&
-              [prev.type, prev.text] != [:on_kw, 'def']
-            keywords << t
-          end
-          prev = t
-        end
-
-        keywords
-      end
-
-      def each_keyword(keyword, tokens)
-        keywords(tokens).select { |t| t.text == keyword }.each { |t| yield t }
       end
     end
   end

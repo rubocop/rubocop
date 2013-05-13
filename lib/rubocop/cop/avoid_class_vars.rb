@@ -3,10 +3,14 @@
 module Rubocop
   module Cop
     class AvoidClassVars < Cop
+      def self.portable?
+        true
+      end
+
       def inspect(file, source, tokens, sexp)
-        each(:@cvar, sexp) do |s|
-          class_var = s[1]
-          lineno = s[2].lineno
+        on_node(:cvdecl, sexp) do |s|
+          class_var = s.source_map.name.to_source
+          lineno = s.source_map.name.line
 
           add_offence(
             :convention,

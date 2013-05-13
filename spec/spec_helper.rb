@@ -63,7 +63,8 @@ end
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
 def inspect_source(cop, file, source)
-  tokens, sexp, correlations = Rubocop::CLI.rip_source(source)
+  tokens, sexp, correlations, psexp =
+    Rubocop::CLI.rip_source(source.join("\n"))
   cop.correlations = correlations
-  cop.inspect(file, source, tokens, sexp)
+  cop.inspect(file, source, tokens, cop.class.portable? ? psexp : sexp)
 end

@@ -5,9 +5,15 @@ module Rubocop
     class AvoidFor < Cop
       ERROR_MESSAGE = 'Prefer *each* over *for*.'
 
+      def self.portable?
+        true
+      end
+
       def inspect(file, source, tokens, sexp)
-        each_keyword('for', tokens) do |t|
-          add_offence(:convention, t.pos.lineno, ERROR_MESSAGE)
+        on_node(:for, sexp) do |s|
+          add_offence(:convention,
+                      s.source_map.keyword.line,
+                      ERROR_MESSAGE)
         end
       end
     end

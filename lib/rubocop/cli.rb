@@ -11,6 +11,7 @@ module Rubocop
     # RuboCop will abort processing and exit gracefully.
     attr_accessor :wants_to_quit
     attr_accessor :options
+    attr_accessor :portable_mode
 
     alias_method :wants_to_quit?, :wants_to_quit
 
@@ -20,6 +21,7 @@ module Rubocop
       @total_offences = 0
       @errors = []
       @options = { mode: :default }
+      @portable_mode = false
       ConfigStore.prepare
     end
 
@@ -84,8 +86,10 @@ module Rubocop
     end
 
     def inspect_file(file, source, config, report)
-      tokens, sexp, correlations = CLI.rip_source(source)
+      tokens, sexp, correlations, psexp = CLI.rip_source(source.join("\n"))
       disabled_lines = disabled_lines_in(source)
+
+      @cops = @cops.select(&:portable?) if @portable_mode
 
       @cops.each do |cop_klass|
         cop_name = cop_klass.cop_name
@@ -97,7 +101,8 @@ module Rubocop
           cop.correlations = correlations
           cop.disabled_lines = disabled_lines[cop_name]
           begin
-            cop.inspect(file, source, tokens, sexp)
+            cop.inspect(file, source, tokens,
+                        cop_klass.portable? ? psexp : sexp)
           rescue => e
             message = "An error occurred while #{cop.name} cop".color(:red) +
               " was inspecting #{file}.".color(:red)
@@ -208,20 +213,28 @@ module Rubocop
     end
 
     def get_rid_of_invalid_byte_sequences(source)
+      # TODO does not work on JRUBY
       source_encoding = source.encoding.name
       # UTF-16 works better in this algorithm but is not supported in 1.9.2.
       temporary_encoding = (RUBY_VERSION == '1.9.2') ? 'UTF-8' : 'UTF-16'
       source.encode!(temporary_encoding, source_encoding,
                      invalid: :replace, replace: '')
       source.encode!(source_encoding, temporary_encoding)
+
+      source
     end
 
     def self.rip_source(source)
-      tokens = Ripper.lex(source.join("\n")).map { |t| Cop::Token.new(*t) }
-      sexp = Ripper.sexp(source.join("\n"))
-      Cop::Position.make_position_objects(sexp)
-      correlations = Cop::Grammar.new(tokens).correlate(sexp)
-      [tokens, sexp, correlations]
+      unless @portable_mode
+        tokens = Ripper.lex(source).map { |t| Cop::Token.new(*t) }
+        sexp = Ripper.sexp(source)
+        Cop::Position.make_position_objects(sexp)
+        correlations = Cop::Grammar.new(tokens).correlate(sexp)
+      end
+
+      parser = RUBY_VERSION.start_with?('2') ? Parser::Ruby20 : Parser::Ruby19
+      psexp = parser.parse(source)
+      [tokens, sexp, correlations, psexp]
     end
 
     # Generate a list of target files by expanding globing patterns

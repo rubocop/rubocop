@@ -6,11 +6,15 @@ module Rubocop
       ERROR_MESSAGE = 'Add underscores to large numeric literals to ' +
         'improve their readability.'
 
+      def self.portable?
+        true
+      end
+
       def inspect(file, source, tokens, sexp)
-        tokens.each do |t|
-          if [:on_int, :on_float].include?(t.type) &&
-              t.text.split('.').grep(/\d{6}/).any?
-            add_offence(:convention, t.pos.lineno, ERROR_MESSAGE)
+        on_node([:int, :float], sexp) do |s|
+          if s.to_a[0] > 10000 &&
+              s.src.expression.to_source.split('.').grep(/\d{6}/).any?
+            add_offence(:convention, s.src.expression.line, ERROR_MESSAGE)
           end
         end
       end
