@@ -6,41 +6,19 @@ module Rubocop
       ERROR_MESSAGE = "Prefer single-quoted strings when you don't need " +
         'string interpolation or special symbols.'
 
+      def self.portable?
+        true
+      end
+
       def inspect(file, source, tokens, sexp)
-        state = :outside
-        tokens.each do |t|
-          state = case [state, t.type]
-                  when [:outside, :on_tstring_beg]
-                    :double_quote if t.text == '"'
+        on_node(:str, sexp, :dstr) do |s|
+          text = s.to_a[0]
 
-                  when [:double_quote, :on_tstring_content]
-                    :valid_double_quote if t.text =~ /'|\\[ntrx]/
-
-                  when [:double_quote, :on_embexpr_beg]
-                    :embedded_expression
-
-                  when [:double_quote, :on_embvar]
-                    :embedded_variable
-
-                  when [:double_quote, :on_tstring_end]
-                    add_offence(:convention, t.pos.lineno, ERROR_MESSAGE)
-                    :outside
-
-                  when [:embedded_expression, :on_rbrace]
-                    :valid_double_quote
-
-                  when [:embedded_variable, :on_ivar]
-                    :valid_double_quote
-
-                  when [:embedded_variable, :on_cvar]
-                    :valid_double_quote
-
-                  when [:embedded_variable, :on_gvar]
-                    :valid_double_quote
-
-                  when [:valid_double_quote, :on_tstring_end]
-                    :outside
-            end || state
+          if text !~ /['\n\t\r]/ && s.src.expression.to_source[0] == '"'
+            add_offence(:convention,
+                        s.src.line,
+                        ERROR_MESSAGE)
+          end
         end
       end
     end
