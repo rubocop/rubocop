@@ -11,8 +11,9 @@ module Rubocop
 
       def inspect(file, source, tokens, sexp)
         on_node(:resbody, sexp) do |s|
+          next unless s.children.first
           rescue_args = s.children.first.children
-          if rescue_args.any? { |s| targets_exception?(s) }
+          if rescue_args.any? { |a| targets_exception?(a) }
             add_offence(:warning,
                         s.src.line,
                         ERROR_MESSAGE)
@@ -24,7 +25,7 @@ module Rubocop
         return false unless rescue_arg_sexp.type == :const
         children = rescue_arg_sexp.children
         return false unless children[0].nil? || children[0].type == :cbase
-        children[1] == :Exception
+        children[1].to_s == 'Exception'
       end
     end
   end
