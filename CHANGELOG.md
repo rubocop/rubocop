@@ -4,6 +4,8 @@
 
 ### New features
 
+## 0.7.2 (05/13/2013)
+
 ### Bugs fixed
 
 * [#155](https://github.com/bbatsov/rubocop/issues/155) 'Do not use semicolons to terminate expressions.' is not implemented correctly
