@@ -9,7 +9,6 @@ if RUBY_VERSION >= '1.9.2'
 
   cli = Rubocop::CLI.new
   cli.portable_mode = !(RUBY_ENGINE == 'ruby')
-  puts cli.portable_mode
   result = 0
 
   time = Benchmark.realtime do
