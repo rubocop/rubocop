@@ -7,16 +7,42 @@ module Rubocop
     describe MethodAndVariableSnakeCase do
       let(:snake_case) { MethodAndVariableSnakeCase.new }
 
-      it 'registers an offence for camel case in names' do
+      it 'registers an offence for camel case in instance method name' do
         inspect_source(snake_case, 'file.rb',
                        ['def myMethod',
-                        '  myLocal = 1',
-                        '  self.mySetter = 2',
-                        '  @myAttribute = 3',
+                        '  # ...',
                         'end',
                        ])
         expect(snake_case.offences.map(&:message)).to eq(
-          ['Use snake_case for methods and variables.'] * 4)
+          ['Use snake_case for methods and variables.'])
+      end
+
+      it 'registers an offence for camel case in singleton method name' do
+        inspect_source(snake_case, 'file.rb',
+                       ['def self.myMethod',
+                        '  # ...',
+                        'end',
+                       ])
+        expect(snake_case.offences.map(&:message)).to eq(
+          ['Use snake_case for methods and variables.'])
+      end
+
+      it 'registers an offence for camel case in local variable name' do
+        inspect_source(snake_case, 'file.rb', ['myLocal = 1'])
+        expect(snake_case.offences.map(&:message)).to eq(
+          ['Use snake_case for methods and variables.'])
+      end
+
+      it 'registers an offence for camel case in instance variable name' do
+        inspect_source(snake_case, 'file.rb', ['@myAttribute = 3'])
+        expect(snake_case.offences.map(&:message)).to eq(
+          ['Use snake_case for methods and variables.'])
+      end
+
+      it 'registers an offence for camel case in setter name' do
+        inspect_source(snake_case, 'file.rb', ['self.mySetter = 2'])
+        expect(snake_case.offences.map(&:message)).to eq(
+          ['Use snake_case for methods and variables.'])
       end
 
       it 'registers an offence for capitalized camel case' do
