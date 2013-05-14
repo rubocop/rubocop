@@ -196,10 +196,6 @@ AvoidPerlBackrefs:
 AvoidClassVars:
   Enabled: true
 
-# Symbol literals should use snake_case.
-SymbolSnakeCase:
-  Enabled: true
-
 # Don't interpolate global, instance and class variables directly in strings.
 VariableInterpolation:
   Enabled: true

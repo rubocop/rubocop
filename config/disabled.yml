@@ -3,3 +3,7 @@
 # Use %i or %I for arrays of symbols.
 SymbolArray:
   Enabled: false
+
+# Symbol literals should use snake_case.
+SymbolSnakeCase:
+  Enabled: false
