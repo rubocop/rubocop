@@ -9,8 +9,8 @@ module Rubocop
 
       def inspect(file, source, tokens, sexp)
         on_node(:nth_ref, sexp) do |s|
-          backref = s.source_map.expression.to_source
-          lineno = s.source_map.expression.line
+          backref = s.src.expression.to_source
+          lineno = s.src.expression.line
 
           add_offence(
             :convention,

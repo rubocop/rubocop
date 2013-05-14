@@ -11,8 +11,8 @@ module Rubocop
 
       def inspect(file, source, tokens, sexp)
         on_node([:def, :defs], sexp) do |s|
-          def_start = s.source_map.keyword.line
-          def_end = s.source_map.end.line
+          def_start = s.src.keyword.line
+          def_end = s.src.end.line
           length = calculate_length(def_start, def_end, source)
 
           max = MethodLength.config['Max']

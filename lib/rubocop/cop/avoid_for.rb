@@ -12,7 +12,7 @@ module Rubocop
       def inspect(file, source, tokens, sexp)
         on_node(:for, sexp) do |s|
           add_offence(:convention,
-                      s.source_map.keyword.line,
+                      s.src.keyword.line,
                       ERROR_MESSAGE)
         end
       end

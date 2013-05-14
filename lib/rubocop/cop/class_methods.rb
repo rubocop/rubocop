@@ -14,7 +14,7 @@ module Rubocop
         on_node(:defs, sexp) do |s|
           if s.children.first.type == :const
             add_offence(:convention,
-                        s.source_map.line,
+                        s.src.line,
                         ERROR_MESSAGE)
           end
         end

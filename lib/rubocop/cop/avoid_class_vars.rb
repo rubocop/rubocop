@@ -9,8 +9,8 @@ module Rubocop
 
       def inspect(file, source, tokens, sexp)
         on_node(:cvdecl, sexp) do |s|
-          class_var = s.source_map.name.to_source
-          lineno = s.source_map.name.line
+          class_var = s.src.name.to_source
+          lineno = s.src.name.line
 
           add_offence(
             :convention,

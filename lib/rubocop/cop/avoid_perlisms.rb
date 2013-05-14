@@ -34,12 +34,12 @@ module Rubocop
 
       def inspect(file, source, tokens, sexp)
         on_node(:gvar, sexp) do |s|
-          global_var = s.source_map.name.to_source
+          global_var = s.src.name.to_source
 
           if PREFERRED_VARS[global_var]
             add_offence(
               :convention,
-              s.source_map.line,
+              s.src.line,
               "Prefer #{PREFERRED_VARS[global_var]} over #{global_var}."
             )
           end
