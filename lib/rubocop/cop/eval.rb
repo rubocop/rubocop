@@ -11,9 +11,9 @@ module Rubocop
 
       def inspect(file, source, tokens, sexp)
         on_node(:send, sexp) do |s|
-          sa = s.to_a
+          receiver, method_name = *s
 
-          if sa[0].nil? && sa[1] == :eval
+          if receiver.nil? && method_name == :eval
             add_offence(:security,
                         s.src.line,
                         ERROR_MESSAGE)

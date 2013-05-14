@@ -11,7 +11,9 @@ module Rubocop
 
       def inspect(file, source, tokens, sexp)
         on_node(:send, sexp) do |s|
-          if s.to_a[1] == :! && s.src.selector.to_source == 'not'
+          _, method_name = *s
+
+          if method_name == :! && s.src.selector.to_source == 'not'
             add_offence(:convention, s.src.line, ERROR_MESSAGE)
           end
         end
