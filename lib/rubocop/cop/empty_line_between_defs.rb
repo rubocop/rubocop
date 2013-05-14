@@ -5,20 +5,24 @@ module Rubocop
     class EmptyLineBetweenDefs < Cop
       ERROR_MESSAGE = 'Use empty lines between defs.'
 
+      def self.portable?
+        true
+      end
+
       def inspect(file, source, tokens, sexp)
-        each_parent_of(:def, sexp) do |parent|
-          defs = parent.select { |child| child[0] == :def }
-          identifier_of_first_def = defs[0][1]
-          current_row_ix = identifier_of_first_def[-1].lineno - 1
-          # The first def doesn't need to have an empty line above it,
-          # so we iterate starting at index 1.
-          defs[1..-1].each do |child|
-            next_row_ix = child[1][-1].lineno - 1
-            if source[current_row_ix..next_row_ix].grep(/^[ \t]*$/).empty?
-              add_offence(:convention, next_row_ix + 1, ERROR_MESSAGE)
-            end
-            current_row_ix = next_row_ix
+        prev_def_end = nil
+
+        on_node(:def, sexp) do |s|
+          def_start = s.src.keyword.line
+          def_end = s.src.end.line
+
+          if prev_def_end && (def_start - prev_def_end) < 2
+            add_offence(:convention,
+                        def_start,
+                        ERROR_MESSAGE)
           end
+
+          prev_def_end = def_end
         end
       end
     end

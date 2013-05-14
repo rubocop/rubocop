@@ -79,22 +79,6 @@ module Rubocop
 
       private
 
-      def each_parent_of(sym, sexp)
-        parents = []
-        sexp.each do |elem|
-          if Array === elem
-            if elem[0] == sym
-              parents << sexp unless parents.include?(sexp)
-              elem = elem[1..-1]
-            end
-            each_parent_of(sym, elem) do |parent|
-              parents << parent unless parents.include?(parent)
-            end
-          end
-        end
-        parents.each { |parent| yield parent }
-      end
-
       def each(sym, sexp)
         yield sexp if sexp[0] == sym
         sexp.each do |elem|
