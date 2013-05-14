@@ -27,8 +27,13 @@ module Rubocop
         stderr.each_line do |line|
           # discard lines that are not containing relevant info
           if line =~ /.+:(\d+): (.+)/
-            line_no, severity, message = process_line(line)
-            add_offence(severity, line_no, message)
+            # Assignment to unused variables beginning with underscore
+            # is reported by Ruby 1.9, but not 2.0. Make 1.9 behave
+            # like 2.0.
+            unless line =~ /assigned but unused variable - _\w+/
+              line_no, severity, message = process_line(line)
+              add_offence(severity, line_no, message)
+            end
           end
         end
       end
