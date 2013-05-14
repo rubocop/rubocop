@@ -232,8 +232,7 @@ module Rubocop
         correlations = Cop::Grammar.new(tokens).correlate(sexp)
       end
 
-      parser = RUBY_VERSION.start_with?('2') ? Parser::Ruby20 : Parser::Ruby19
-      psexp = parser.parse(source)
+      psexp = Parser::CurrentRuby.parse(source)
       [tokens, sexp, correlations, psexp]
     end
 

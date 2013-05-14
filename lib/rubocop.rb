@@ -3,8 +3,7 @@
 require 'ripper' if RUBY_ENGINE == 'ruby'
 require 'rainbow'
 require 'English'
-require 'parser/ruby20' if RUBY_VERSION.start_with?('2.0')
-require 'parser/ruby19' if RUBY_VERSION.start_with?('1.9')
+require 'parser/current'
 
 require 'rubocop/cop/util'
 require 'rubocop/cop/offence'
