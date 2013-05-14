@@ -5,19 +5,18 @@ module Rubocop
     class HashLiteral < Cop
       ERROR_MESSAGE = 'Use hash literal {} instead of Hash.new.'
 
+      # We're interested in the following AST:
+      # (send
+      #   (const nil :Hash) :new)
+      TARGET = s(:send, s(:const, nil, :Hash), :new)
+
       def self.portable?
         true
       end
 
       def inspect(file, source, tokens, sexp)
         on_node(:send, sexp, :block) do |s|
-          children = s.children
-
-          # We're interested in the following AST:
-          # (send
-          #   (const nil :Hash) :new)
-          if children.size == 2 && children[0] && children[0].type == :const &&
-              children[0].to_a[1].to_s == 'Hash' && children[1] == :new
+          if s == TARGET
             add_offence(:convention,
                         s.src.line,
                         ERROR_MESSAGE)

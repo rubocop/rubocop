@@ -31,6 +31,8 @@ module Rubocop
     end
 
     class Cop
+      extend AST::Sexp
+
       attr_accessor :offences
       attr_accessor :debug
       attr_writer :correlations, :disabled_lines

@@ -4,6 +4,7 @@ require 'ripper' if RUBY_ENGINE == 'ruby'
 require 'rainbow'
 require 'English'
 require 'parser/current'
+require 'ast/sexp'
 
 require 'rubocop/cop/util'
 require 'rubocop/cop/offence'
