@@ -11,10 +11,12 @@ module Rubocop
       end
 
       def inspect(file, source, tokens, sexp)
+        full_source = source.join($RS)
         on_node(:str, sexp, :dstr) do |s|
           text = s.to_a[0]
 
-          if text !~ /['\n\t\r]/ && s.src.expression.to_source[0] == '"'
+          if text !~ /['\n\t\r]/ &&
+              full_source[s.src.expression.begin_pos][0] == '"'
             add_offence(:convention,
                         s.src.line,
                         ERROR_MESSAGE)
