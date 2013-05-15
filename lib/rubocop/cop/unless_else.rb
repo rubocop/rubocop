@@ -6,10 +6,14 @@ module Rubocop
       ERROR_MESSAGE = 'Never use unless with else. Rewrite these with the ' +
         'positive case first.'
 
+      def self.portable?
+        true
+      end
+
       def inspect(file, source, tokens, sexp)
-        each(:unless, sexp) do |unless_sexp|
-          if unless_sexp.compact.any? { |s| s[0] == :else }
-            add_offence(:convention, all_positions(unless_sexp).first.lineno,
+        on_node(:if, sexp) do |s|
+          if s.src.keyword.to_source == 'unless' && s.src.else
+            add_offence(:convention, s.src.line,
                         ERROR_MESSAGE)
           end
         end
