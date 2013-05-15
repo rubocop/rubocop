@@ -5,21 +5,14 @@ module Rubocop
     class WhenThen < Cop
       ERROR_MESSAGE = 'Never use "when x;". Use "when x then" instead.'
 
+      def self.portable?
+        true
+      end
+
       def inspect(file, source, tokens, sexp)
-        each(:when, sexp) do |s|
-          # The grammar is:
-          # when <value> <divider> <body>
-          # where divider is either semicolon, then, or line break.
-          last_pos_in_value = all_positions(s[1])[-1]
-
-          next unless last_pos_in_value # Give up if no positions found.
-
-          start_index = tokens.index { |t| t.pos == last_pos_in_value }
-          tokens[start_index..-1].each do |t|
-            break if ['then', "\n"].include?(t.text)
-            if t.type == :on_semicolon
-              add_offence(:convention, t.pos.lineno, ERROR_MESSAGE)
-            end
+        on_node(:when, sexp) do |s|
+          if s.src.begin && s.src.begin.to_source == ';'
+            add_offence(:convention, s.src.line, ERROR_MESSAGE)
           end
         end
       end
