@@ -13,10 +13,8 @@ module Rubocop
 
       def inspect(file, source, tokens, sexp)
         on_node(:block, sexp) do |node|
-          block_size = node.src.end.line - node.src.begin.line
-
           # we care only for single line blocks
-          next unless block_size == 0
+          next unless Util.block_length(node) == 0
 
           method_node, args_node, _body_node = *node
           receiver, method_name, _method_args = *method_node
