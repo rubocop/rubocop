@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Misc
+
+* Reworked `SymbolSnakeCase` into `SymbolName`, which has an option `AllowCamelCase` enabled by default.
+
 ### New features
 
 ## 0.7.2 (05/13/2013)
