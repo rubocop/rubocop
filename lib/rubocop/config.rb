@@ -87,9 +87,12 @@ module Rubocop
         merge_with_default(config, config_file)
       end
 
+      def default_configuration
+        @default_configuration ||= load_file(DEFAULT_FILE)
+      end
+
       def merge_with_default(config, config_file)
-        default_config = load_file(DEFAULT_FILE)
-        new(merge(default_config, config), config_file)
+        new(merge(default_configuration, config), config_file)
       end
 
       private
@@ -130,7 +133,7 @@ module Rubocop
       # Don't validate RuboCop's own files. Avoids inifinite recursion.
       return if @loaded_path.start_with?(RUBOCOP_HOME)
 
-      default_config = Config.load_file(DEFAULT_FILE)
+      default_config = self.class.default_configuration
 
       valid_cop_names, invalid_cop_names = @hash.keys.partition do |key|
         default_config.has_key?(key)

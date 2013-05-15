@@ -36,3 +36,7 @@ SingleLineMethods:
 # Use spaces inside hash literal braces - or don't.
 SpaceInsideHashLiteralBraces:
   EnforcedStyleIsWithSpaces: true
+
+# Symbol literals should use snake_case.
+SymbolName:
+  AllowCamelCase: true

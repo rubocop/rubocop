@@ -7,16 +7,42 @@ module Rubocop
     describe SymbolName do
       let(:symbol_name) { SymbolName.new }
 
-      it 'registers an offence for camel case in names' do
-        inspect_source(symbol_name, 'file.rb',
-                       ['test = :BadIdea'])
-        expect(symbol_name.offences.map(&:message)).to eq(
-          ['Use snake_case for symbols.'])
+      before do
+        SymbolName.config = Config.default_configuration.for_cop('SymbolName')
+      end
+
+      context 'when AllowCamelCase is true' do
+        before do
+          SymbolName.config = {
+            'AllowCamelCase' => true
+          }
+        end
+
+        it 'does not register an offence for camel case in names' do
+          inspect_source(symbol_name, 'file.rb',
+                         ['test = :BadIdea'])
+          expect(symbol_name.offences).to be_empty
+        end
+      end
+
+      context 'when AllowCamelCase is false' do
+        before do
+          SymbolName.config = {
+            'AllowCamelCase' => false
+          }
+        end
+
+        it 'registers an offence for camel case in names' do
+          inspect_source(symbol_name, 'file.rb',
+                         ['test = :BadIdea'])
+          expect(symbol_name.offences.map(&:message)).to eq(
+            ['Use snake_case for symbols.'])
+        end
       end
 
       it 'registers an offence for symbol used as hash label' do
         inspect_source(symbol_name, 'file.rb',
-                       ['{ ONE: 1, TWO: 2 }'])
+                       ['{ KEY_ONE: 1, KEY_TWO: 2 }'])
         expect(symbol_name.offences.map(&:message)).to eq(
           ['Use snake_case for symbols.'] * 2)
       end

@@ -396,4 +396,14 @@ describe Rubocop::Config do
       end
     end
   end
+
+  describe 'configuration for SymbolName' do
+    describe 'AllowCamelCase' do
+      it 'is enabled by default' do
+        default_config = Rubocop::Config.default_configuration
+        symbol_name_config = default_config.for_cop('SymbolName')
+        expect(symbol_name_config['AllowCamelCase']).to be_true
+      end
+    end
+  end
 end
