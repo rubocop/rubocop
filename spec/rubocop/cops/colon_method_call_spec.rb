@@ -42,6 +42,19 @@ module Rubocop
         expect(smc.offences).to be_empty
       end
 
+      it 'does not register an offence for nested class' do
+        inspect_source(smc,
+                       'file.rb',
+                       ['Tip::Top.some_method'])
+        expect(smc.offences).to be_empty
+      end
+
+      it 'does not register an offence for op methods' do
+        inspect_source(smc,
+                       'file.rb',
+                       ['Tip::Top.some_method[3]'])
+        expect(smc.offences).to be_empty
+      end
     end
   end
 end
