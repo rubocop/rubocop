@@ -5,19 +5,24 @@ module Rubocop
     class HashSyntax < Cop
       ERROR_MESSAGE = 'Ruby 1.8 hash syntax detected'
 
+      def self.portable?
+        true
+      end
+
       def inspect(file, source, tokens, sexp)
-        each(:assoclist_from_args, sexp) do |assoclist_from_args|
-          keys = assoclist_from_args[1].map { |assoc_new| assoc_new[1][0] }
-          # If at least one of the keys in the hash is neither a symbol (:a)
-          # nor a label (a:), we can't require the new syntax.
-          return if keys.any? do |key|
-            ![:symbol_literal, :@label].include?(key)
-          end
-        end
-        each(:assoc_new, sexp) do |assoc_new|
-          if assoc_new[1][0] == :symbol_literal
-            add_offence(:convention, assoc_new[1][1][1][-1].lineno,
-                        ERROR_MESSAGE)
+        on_node(:hash, sexp) do |node|
+          pairs = *node
+
+          sym_indices = pairs.all? { |p| p.children.first.type == :sym }
+
+          if sym_indices
+            pairs.each do |pair|
+              if pair.src.operator && pair.src.operator.to_source == '=>'
+                add_offence(:convention,
+                            pair.src.line,
+                            ERROR_MESSAGE)
+              end
+            end
           end
         end
       end
