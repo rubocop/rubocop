@@ -11,7 +11,7 @@ module Rubocop
 
       def inspect(file, source, tokens, sexp)
         on_node(:send, sexp) do |s|
-          if s.src.expression.to_source.include?('::')
+          if s.src.expression.to_source =~ /::[a-z].*/
             add_offence(:convention,
                         s.src.line,
                         ERROR_MESSAGE)
