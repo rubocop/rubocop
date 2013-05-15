@@ -34,6 +34,11 @@ module Rubocop
         expect(cm.offences.map(&:message))
           .to eq(['Prefer select over find_all.'])
       end
+
+      it 'ignores find_all without an explicit receiver' do
+        inspect_source(cm, 'file.rb', ['find_all { |e| e + 1 }'])
+        expect(cm.offences).to be_empty
+      end
     end
   end
 end
