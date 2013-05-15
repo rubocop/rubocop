@@ -12,10 +12,13 @@ module Rubocop
 
       def inspect(file, source, tokens, sexp)
         on_node(:if, sexp) do |s|
-          next unless s.src.respond_to?(:keyword)
+          src = s.src
 
-          if s.src.keyword.to_source == 'unless' && s.src.else
-            add_offence(:convention, s.src.line,
+          # discard ternary ops and modifier if/unless nodes
+          next unless src.respond_to?(:keyword) && src.respond_to?(:else)
+
+          if src.keyword.to_source == 'unless' && src.else
+            add_offence(:convention, src.line,
                         ERROR_MESSAGE)
           end
         end
