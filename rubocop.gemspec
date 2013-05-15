@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
   s.rubygems_version = '1.8.23'
   s.summary = 'Automatic Ruby code style checking tool.'
 
+  s.add_runtime_dependency('parallel', '~> 0.6.5')
   s.add_runtime_dependency('rainbow', '>= 1.1.4')
   s.add_runtime_dependency('parser', '~> 1.3.3')
   s.add_development_dependency('rake', '~> 10.0')

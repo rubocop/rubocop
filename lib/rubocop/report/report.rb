@@ -17,11 +17,13 @@ module Rubocop
 
     class Report
       attr_reader :filename
+      attr_reader :errors
 
       # @param [String] the filename for this report
       def initialize(filename)
         @filename = filename
         @entries = []
+        @errors = []
       end
 
       # Appends offences registered by cops to the report.
