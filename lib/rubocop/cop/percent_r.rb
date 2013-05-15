@@ -6,11 +6,15 @@ module Rubocop
       ERROR_MESSAGE = 'Use %r only for regular expressions matching more ' +
         "than one '/' character."
 
+      def self.portable?
+        true
+      end
+
       def inspect(file, source, tokens, sexp)
-        tokens.each_cons(2) do |t1, t2|
-          if t1.type == :on_regexp_beg && t1.text =~ /^%r/ &&
-              t2.text !~ %r(/.*/)
-            add_offence(:convention, t1.pos.lineno, ERROR_MESSAGE)
+        on_node(:regexp, sexp) do |node|
+          if node.src.begin.to_source != '/' &&
+              node.src.expression.to_source[1...-1] !~ %r(/.*/)
+            add_offence(:convention, node.src.line, ERROR_MESSAGE)
           end
         end
       end
