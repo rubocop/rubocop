@@ -16,7 +16,10 @@ module Rubocop
 
       def inspect(file, source, tokens, sexp)
         on_node(:send, sexp) do |node|
-          _receiver, method_name, *_args = *node
+          receiver, method_name, *_args = *node
+
+          # a simple(but flawed way) to reduce false positives
+          next unless receiver
 
           if PREFERRED_METHODS[method_name]
             add_offence(
