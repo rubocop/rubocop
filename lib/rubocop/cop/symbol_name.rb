@@ -2,7 +2,7 @@
 
 module Rubocop
   module Cop
-    class SymbolSnakeCase < Cop
+    class SymbolName < Cop
       ERROR_MESSAGE = 'Use snake_case for symbols.'
       SNAKE_CASE = /^[\da-z_]+[!?=]?$/
 

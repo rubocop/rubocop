@@ -319,3 +319,7 @@ AvoidGlobalVars:
 # The use of eval represents a serious security risk.
 Eval:
   Enabled: true
+
+# Symbol literals should use snake_case.
+SymbolName:
+  Enabled: true
