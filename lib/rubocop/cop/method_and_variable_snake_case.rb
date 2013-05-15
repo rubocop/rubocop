@@ -18,18 +18,16 @@ module Rubocop
 
       def inspect(file, source, tokens, node)
         on_node([:def, :defs, :lvasgn, :ivasgn, :send], node) do |n|
-          name = begin
-            case n.type
-            when :def
-              name_of_instance_method(n)
-            when :defs
-              name_of_singleton_method(n)
-            when :lvasgn, :ivasgn
-              name_of_variable(n)
-            when :send
-              name_of_setter(n)
-            end
-          end
+          name = case n.type
+                 when :def
+                   name_of_instance_method(n)
+                 when :defs
+                   name_of_singleton_method(n)
+                 when :lvasgn, :ivasgn
+                   name_of_variable(n)
+                 when :send
+                   name_of_setter(n)
+                 end
 
           next unless name
           next if name =~ SNAKE_CASE || OPERATOR_METHODS.include?(name)
@@ -51,10 +49,8 @@ module Rubocop
       end
 
       def name_of_setter(send_node)
-        return nil unless send_node.children.first
-        method_receiver = send_node.children.first.type
-        return nil unless method_receiver == :self
-        method_name = send_node.children[1]
+        receiver, method_name = *send_node
+        return nil unless receiver && receiver.type == :self
         return nil unless method_name.to_s.end_with?('=')
         method_name
       end
