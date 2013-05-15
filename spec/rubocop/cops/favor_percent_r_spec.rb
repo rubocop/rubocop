@@ -16,7 +16,7 @@ module Rubocop
 
       it 'accepts // with only one slash in regexp' do
         inspect_source(fpr, 'file.rb', ['x =~ /\/home/',
-                                        'y =~ /\//)'])
+                                        'y =~ /\//'])
         expect(fpr.offences.map(&:message)).to be_empty
       end
 
