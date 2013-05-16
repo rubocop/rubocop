@@ -13,7 +13,7 @@ module Rubocop
       def inspect(file, source, tokens, sexp)
         on_node(:regexp, sexp) do |node|
           if node.src.begin.to_source != '/' &&
-              node.src.expression.to_source[1...-1] !~ %r(/.*/)
+              node.src.expression.to_source[1...-1].scan(/\//).size <= 1
             add_offence(:convention, node.src.line, ERROR_MESSAGE)
           end
         end
