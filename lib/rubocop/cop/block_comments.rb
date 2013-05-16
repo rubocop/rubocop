@@ -5,11 +5,13 @@ module Rubocop
     class BlockComments < Cop
       ERROR_MESSAGE = 'Do not use block comments.'
 
+      def self.portable?
+        true
+      end
+
       def inspect(file, source, tokens, sexp)
-        tokens.each do |t|
-          if t.type == :on_embdoc_beg
-            add_offence(:convention, t.pos.lineno, ERROR_MESSAGE)
-          end
+        source.each_with_index do |line, ix|
+          add_offence(:convention, ix, ERROR_MESSAGE) if line =~ /\A=begin\b/
         end
       end
     end

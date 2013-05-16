@@ -5,12 +5,13 @@ module Rubocop
     class LineContinuation < Cop
       ERROR_MESSAGE = 'Avoid the use of the line continuation character(/).'
 
+      def self.portable?
+        true
+      end
+
       def inspect(file, source, tokens, sexp)
-        tokens.each_index do |ix|
-          t = tokens[ix]
-          if t.type == :on_sp && t.text == "\\\n"
-            add_offence(:convention, t.pos.lineno, ERROR_MESSAGE)
-          end
+        source.each_with_index do |line, index|
+          add_offence(:convention, index, ERROR_MESSAGE) if line =~ /.*\\\z/
         end
       end
     end
