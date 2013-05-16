@@ -86,7 +86,14 @@ module Rubocop
     end
 
     def inspect_file(file, source, config, report)
-      tokens, sexp, correlations, psexp = CLI.rip_source(source.join("\n"))
+      begin
+        tokens, sexp, correlations, psexp = CLI.rip_source(source.join("\n"))
+      rescue Parser::SyntaxError, Encoding::UndefinedConversionError,
+          ArgumentError => e
+        handle_error(e, "An error occurred while parsing #{file}.".color(:red))
+        return
+      end
+
       disabled_lines = disabled_lines_in(source)
 
       @cops = @cops.select(&:portable?) if @portable_mode
@@ -104,19 +111,23 @@ module Rubocop
             cop.inspect(file, source, tokens,
                         cop_klass.portable? ? psexp : sexp)
           rescue => e
-            message = "An error occurred while #{cop.name} cop".color(:red) +
-              " was inspecting #{file}.".color(:red)
-            @errors << message
-            warn message
-            if @options[:debug]
-              puts e.message, e.backtrace
-            else
-              warn 'To see the complete backtrace run rubocop -d.'
-            end
+            handle_error(e,
+                         "An error occurred while #{cop.name}".color(:red) +
+                         " cop was inspecting #{file}.".color(:red))
           end
           @total_offences += cop.offences.count
           report << cop if cop.has_report?
         end
+      end
+    end
+
+    def handle_error(e, message)
+      @errors << message
+      warn message
+      if @options[:debug]
+        puts e.message, e.backtrace
+      else
+        warn 'To see the complete backtrace run rubocop -d.'
       end
     end
 
