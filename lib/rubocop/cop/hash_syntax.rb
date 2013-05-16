@@ -13,7 +13,7 @@ module Rubocop
         on_node(:hash, sexp) do |node|
           pairs = *node
 
-          sym_indices = pairs.all? { |p| p.children.first.type == :sym }
+          sym_indices = pairs.all? { |p| word_symbol_pair?(p) }
 
           if sym_indices
             pairs.each do |pair|
@@ -24,6 +24,20 @@ module Rubocop
               end
             end
           end
+        end
+      end
+
+      private
+
+      def word_symbol_pair?(pair)
+        key, _value = *pair
+
+        if key.type == :sym
+          sym_name = key.to_a[0]
+
+          sym_name =~ /\A\w+\z/
+        else
+          false
         end
       end
     end

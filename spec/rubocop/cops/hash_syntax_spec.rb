@@ -30,6 +30,11 @@ module Rubocop
         expect(hash_syntax.offences.map(&:message)).to be_empty
       end
 
+      it 'accepts hash rockets when keys special symbols in them' do
+        inspect_source(hash_syntax, '', ['x = { :"t o" => 0, :"\xab" => 1 }'])
+        expect(hash_syntax.offences.map(&:message)).to be_empty
+      end
+
       it 'accepts new syntax in a hash literal' do
         inspect_source(hash_syntax, '', ['x = { a: 0, b: 1 }'])
         expect(hash_syntax.offences.map(&:message)).to be_empty
