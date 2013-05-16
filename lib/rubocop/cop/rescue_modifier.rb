@@ -5,14 +5,15 @@ module Rubocop
     class RescueModifier < Cop
       ERROR_MESSAGE = 'Avoid using rescue in its modifier form.'
 
-      def inspect(file, source, tokens, sexp)
-        each(:rescue_mod, sexp) do |s|
-          ident = find_first(:@ident, s)
-          lineno = ident ? ident[2].lineno : nil
+      def self.portable?
+        true
+      end
 
+      def inspect(file, source, tokens, sexp)
+        on_node(:rescue, sexp, :begin) do |s|
           add_offence(:convention,
-                      lineno,
-                      ERROR_MESSAGE) if lineno
+                      s.src.line,
+                      ERROR_MESSAGE)
         end
       end
     end
