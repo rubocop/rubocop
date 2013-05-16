@@ -33,14 +33,6 @@ module Rubocop
         inspect_source(s,
                        'file.rb',
                        ['def foo(a) x(1); y(2); z(3); end'])
-        expect(s.offences.size).to eq(2)
-      end
-
-      it 'registers an offence for semicolon before end if so configured' do
-        Semicolon.config['AllowBeforeEndInOneLineMethods'] = false
-        inspect_source(s,
-                       'file.rb',
-                       ['def foo(a) z(3); end'])
         expect(s.offences.size).to eq(1)
       end
 
@@ -51,16 +43,7 @@ module Rubocop
         expect(s.offences).to be_empty
       end
 
-      it 'registers an offence for semicolon after params if so configured' do
-        inspect_source(s,
-                       'file.rb',
-                       ['def foo(a); y(2); z(3) end',
-                        'def bar(a) y(2); z(3) end'])
-        expect(s.offences.size).to eq(3)
-      end
-
       it 'accepts semicolon after params if so configured' do
-        Semicolon.config['AllowAfterParameterListInOneLineMethods'] = true
         inspect_source(s,
                        'file.rb',
                        ['def foo(a); z(3) end'])
@@ -68,7 +51,6 @@ module Rubocop
       end
 
       it 'accepts one line method definitions' do
-        Semicolon.config['AllowAfterParameterListInOneLineMethods'] = true
         inspect_source(s,
                        'file.rb',
                        ['def foo1; x(3) end',
