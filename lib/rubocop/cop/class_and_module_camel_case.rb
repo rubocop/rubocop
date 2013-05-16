@@ -13,9 +13,7 @@ module Rubocop
         on_node([:class, :module], sexp) do |s|
           name = s.src.name.to_source
 
-          if name.split('::').any? { |part| part =~ /_/ }
-            add_offence(:convention, s.src.line, ERROR_MESSAGE)
-          end
+          add_offence(:convention, s.src.line, ERROR_MESSAGE) if name =~ /_/
         end
       end
     end
