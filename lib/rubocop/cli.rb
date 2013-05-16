@@ -1,6 +1,7 @@
 # encoding: utf-8
 require 'pathname'
 require 'optparse'
+require 'parallel'
 require_relative 'cop/grammar'
 
 module Rubocop
@@ -12,15 +13,15 @@ module Rubocop
     attr_accessor :wants_to_quit
     attr_accessor :options
     attr_accessor :portable_mode
+    attr_reader :reports
 
     alias_method :wants_to_quit?, :wants_to_quit
 
     def initialize
       @cops = Cop::Cop.all
-      @processed_file_count = 0
-      @total_offences = 0
+      @reports = []
       @errors = []
-      @options = { mode: :default }
+      @options = { mode: :default, parallel: Parallel.processor_count }
       @portable_mode = false
       ConfigStore.prepare
     end
@@ -36,42 +37,55 @@ module Rubocop
 
       begin
         handle_only_option if @options[:only]
-      rescue ArgumentError => e
-        puts e.message
+      rescue ArgumentError => ex
+        puts ex.message
         return 1
       end
 
-      target_files(args).each do |file|
+      @reports = Parallel.map(target_files(args),
+                              in_processes: @options[:parallel]) do |file|
         break if wants_to_quit?
 
-        config = ConfigStore.for(file)
-        report = Report.create(file, @options[:mode])
-        source = read_source(file)
-
-        puts "Scanning #{file}" if @options[:debug]
-
-        syntax_cop = Rubocop::Cop::Syntax.new
-        syntax_cop.debug = @options[:debug]
-        syntax_cop.inspect(file, source, nil, nil)
-
-        if syntax_cop.offences.map(&:severity).include?(:error)
-          # In case of a syntax error we just report that error and do
-          # no more checking in the file.
-          report << syntax_cop
-          @total_offences += syntax_cop.offences.count
-        else
-          inspect_file(file, source, config, report)
-        end
-
-        @processed_file_count += 1
-        report.display unless report.empty?
+        generate_report(file)
       end
 
-      unless @options[:silent]
-        display_summary(@processed_file_count, @total_offences, @errors)
+      display_reports
+
+      display_summary unless @options[:silent]
+
+      ((total_offences == 0) && !wants_to_quit) ? 0 : 1
+    end
+
+    def generate_report(file)
+      config = ConfigStore.for(file)
+      report = Report.create(file, @options[:mode])
+      source = read_source(file)
+
+      puts "Scanning #{file}" if @options[:debug]
+
+      syntax_cop = Rubocop::Cop::Syntax.new
+      syntax_cop.debug = @options[:debug]
+      syntax_cop.inspect(file, source, nil, nil)
+
+      if syntax_cop.offences.map(&:severity).include?(:error)
+        # In case of a syntax error we just report that error and do
+        # no more checking in the file.
+        report << syntax_cop
+      else
+        inspect_file(file, source, config, report)
       end
 
-      (@total_offences == 0) && !wants_to_quit ? 0 : 1
+      report
+    end
+
+    def errors
+      reports.reduce([]) { |a, e| a + e.errors }
+    end
+
+    def total_offences
+      reports.reduce(0) do |a, e|
+        a + e.entries.length
+      end.to_i
     end
 
     def handle_only_option
@@ -106,7 +120,7 @@ module Rubocop
           rescue => e
             message = "An error occurred while #{cop.name} cop".color(:red) +
               " was inspecting #{file}.".color(:red)
-            @errors << message
+            report.errors << message unless report.nil?
             warn message
             if @options[:debug]
               puts e.message, e.backtrace
@@ -114,7 +128,6 @@ module Rubocop
               warn 'To see the complete backtrace run rubocop -d.'
             end
           end
-          @total_offences += cop.offences.count
           report << cop if cop.has_report?
         end
       end
@@ -143,6 +156,9 @@ module Rubocop
         opts.on('-n', '--no-color', 'Disable color output') do |s|
           Sickill::Rainbow.enabled = false
         end
+        opts.on('--no-parallel', 'Disable parallelism') do |s|
+          @options[:parallel] = 0
+        end
         opts.on('-v', '--version', 'Display version') do
           puts Rubocop::Version::STRING
           exit(0)
@@ -153,13 +169,14 @@ module Rubocop
     def trap_interrupt
       Signal.trap('INT') do
         exit!(1) if wants_to_quit?
-        self.wants_to_quit = true
+        @wants_to_quit = true
         $stderr.puts
         $stderr.puts 'Exiting... Interrupt again to exit immediately.'
       end
     end
 
-    def display_summary(num_files, total_offences, errors)
+    def display_summary
+      num_files = reports.length
       plural = num_files == 0 || num_files > 1 ? 's' : ''
       print "\n#{num_files} file#{plural} inspected, "
       offences_string = if total_offences.zero?
@@ -169,6 +186,7 @@ module Rubocop
                         else
                           "#{total_offences} offences"
                         end
+
       puts "#{offences_string} detected"
         .color(total_offences.zero? ? :green : :red)
 
@@ -178,6 +196,12 @@ module Rubocop
         errors.each { |error| puts error }
         puts 'Errors are usually caused by RuboCop bugs.'
         puts 'Please, report your problems to RuboCop\'s issue tracker.'
+      end
+    end
+
+    def display_reports
+      reports.each do |report|
+        report.display unless report.empty?
       end
     end
 
