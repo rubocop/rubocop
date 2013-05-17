@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module Rubocop
   module Cop
-    describe LeadingCommentSpace do
+    describe LeadingCommentSpace, broken: true do
       let(:lcs) { LeadingCommentSpace.new }
 
       it 'registers an offence for comment without leading space' do

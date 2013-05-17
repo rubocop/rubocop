@@ -6,12 +6,7 @@ module Rubocop
       ERROR_MESSAGE = 'Use only ascii symbols in comments.'
 
       def inspect(file, source, tokens, sexp)
-        tokens.each do |t|
-          if t.type == :on_comment &&
-              t.text =~ /[^\x00-\x7f]/
-            add_offence(:convention, t.pos.lineno, ERROR_MESSAGE)
-          end
-        end
+        # TODO implemented when Parser starts tracking comments
       end
     end
   end

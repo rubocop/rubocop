@@ -49,6 +49,7 @@ end
 
 RSpec.configure do |config|
   config.filter_run_excluding ruby: ->(v) { !RUBY_VERSION.start_with?(v.to_s) }
+  config.filter_run_excluding broken: true
   config.treat_symbols_as_metadata_keys_with_true_values = true
 
   config.expect_with :rspec do |c|
