@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class AvoidGlobalVars < Cop
-      ERROR_MESSAGE = 'Do not introduce global variables.'
+      MSG = 'Do not introduce global variables.'
 
       # predefined global variables their English aliases
       # http://www.zenspider.com/Languages/Ruby/QuickRef.html
@@ -46,7 +46,7 @@ module Rubocop
           unless BUILT_IN_VARS.include?(global_var)
             add_offence(:convention,
                         s.src.name.line,
-                        ERROR_MESSAGE)
+                        MSG)
           end
         end
       end

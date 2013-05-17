@@ -15,7 +15,7 @@ module Rubocop
                         'end'])
         expect(om.offences.size).to eq(1)
         expect(om.offences.map(&:message))
-          .to eq([sprintf(OpMethod::ERROR_MESSAGE, '+')])
+          .to eq([sprintf(OpMethod::MSG, '+')])
       end
 
       it 'works properly even if the argument is not surrounded with braces' do
@@ -26,7 +26,7 @@ module Rubocop
                         'end'])
         expect(om.offences.size).to eq(1)
         expect(om.offences.map(&:message))
-          .to eq([sprintf(OpMethod::ERROR_MESSAGE, '+')])
+          .to eq([sprintf(OpMethod::MSG, '+')])
       end
 
       it 'does not register an offence for arg named other' do

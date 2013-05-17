@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class SingleLineMethods < Cop
-      ERROR_MESSAGE = 'Avoid single-line method definitions.'
+      MSG = 'Avoid single-line method definitions.'
 
       def self.portable?
         true
@@ -25,7 +25,7 @@ module Rubocop
           if start_line == end_line && !(allow_empty && empty_body)
             add_offence(:convention,
                         start_line,
-                        ERROR_MESSAGE)
+                        MSG)
           end
         end
       end

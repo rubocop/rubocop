@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class AsciiComments < Cop
-      ERROR_MESSAGE = 'Use only ascii symbols in comments.'
+      MSG = 'Use only ascii symbols in comments.'
 
       def inspect(file, source, sexp)
         # TODO implemented when Parser starts tracking comments

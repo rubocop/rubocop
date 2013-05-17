@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class EnsureReturn < Cop
-      ERROR_MESSAGE = 'Never return from an ensure block.'
+      MSG = 'Never return from an ensure block.'
 
       def self.portable?
         true
@@ -16,7 +16,7 @@ module Rubocop
           on_node(:return, ensure_body) do |e|
             add_offence(:warning,
                         e.src.line,
-                        ERROR_MESSAGE)
+                        MSG)
           end
         end
       end

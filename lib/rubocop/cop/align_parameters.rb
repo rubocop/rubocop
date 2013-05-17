@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class AlignParameters < Cop
-      ERROR_MESSAGE = 'Align the parameters of a method call if they span ' +
+      MSG = 'Align the parameters of a method call if they span ' +
         'more than one line.'
 
       def self.portable?
@@ -29,7 +29,7 @@ module Rubocop
                 cur_arg_col != first_arg_col
               add_offence(:convetion,
                           cur_arg_line,
-                          ERROR_MESSAGE)
+                          MSG)
             end
 
             prev_arg_col = cur_arg_col

@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class SymbolName < Cop
-      ERROR_MESSAGE = 'Use snake_case for symbols.'
+      MSG = 'Use snake_case for symbols.'
       SNAKE_CASE = /^[\da-z_]+[!?=]?$/
       CAMEL_CASE = /^[A-Z][A-Za-z\d]*$/
 
@@ -23,7 +23,7 @@ module Rubocop
           next if allow_camel_case? && sym_name =~ CAMEL_CASE
           add_offence(:convention,
                       s.source_map.line,
-                      ERROR_MESSAGE)
+                      MSG)
         end
       end
     end

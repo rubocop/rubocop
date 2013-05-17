@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class Eval < Cop
-      ERROR_MESSAGE = 'The use of eval is a serious security risk.'
+      MSG = 'The use of eval is a serious security risk.'
 
       def self.portable?
         true
@@ -16,7 +16,7 @@ module Rubocop
           if receiver.nil? && method_name == :eval
             add_offence(:security,
                         s.src.line,
-                        ERROR_MESSAGE)
+                        MSG)
           end
         end
       end

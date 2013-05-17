@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class MethodLength < Cop
-      ERROR_MESSAGE = 'Method has too many lines. [%d/%d]'
+      MSG = 'Method has too many lines. [%d/%d]'
 
       def self.portable?
         true
@@ -17,7 +17,7 @@ module Rubocop
 
           max = MethodLength.config['Max']
           if length > max
-            message = sprintf(ERROR_MESSAGE, length, max)
+            message = sprintf(MSG, length, max)
             add_offence(:convention, def_start, message)
           end
         end

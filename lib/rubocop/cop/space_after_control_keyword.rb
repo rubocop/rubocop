@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class SpaceAfterControlKeyword < Cop
-      ERROR_MESSAGE = 'Use space after control keywords.'
+      MSG = 'Use space after control keywords.'
 
       KEYWORDS = %w(if elsif case when while until unless)
 

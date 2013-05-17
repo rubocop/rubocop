@@ -13,7 +13,7 @@ module Rubocop
                        ['eval(something)'])
         expect(a.offences.size).to eq(1)
         expect(a.offences.map(&:message))
-          .to eq([Eval::ERROR_MESSAGE])
+          .to eq([Eval::MSG])
       end
 
       it 'registers an offence for eval as command' do
@@ -22,7 +22,7 @@ module Rubocop
                        ['eval something'])
         expect(a.offences.size).to eq(1)
         expect(a.offences.map(&:message))
-          .to eq([Eval::ERROR_MESSAGE])
+          .to eq([Eval::MSG])
       end
 
       it 'does not register an offence for eval as variable' do

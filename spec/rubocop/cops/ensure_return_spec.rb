@@ -18,7 +18,7 @@ module Rubocop
                         'end'])
         expect(er.offences.size).to eq(1)
         expect(er.offences.map(&:message))
-          .to eq([EnsureReturn::ERROR_MESSAGE])
+          .to eq([EnsureReturn::MSG])
       end
 
       it 'does not register an offence for return outside ensure' do

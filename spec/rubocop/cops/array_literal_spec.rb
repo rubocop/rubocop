@@ -13,7 +13,7 @@ module Rubocop
                        ['test = Array.new()'])
         expect(a.offences.size).to eq(1)
         expect(a.offences.map(&:message))
-          .to eq([ArrayLiteral::ERROR_MESSAGE])
+          .to eq([ArrayLiteral::MSG])
       end
 
       it 'registers an offence for Array.new' do
@@ -22,7 +22,7 @@ module Rubocop
                        ['test = Array.new'])
         expect(a.offences.size).to eq(1)
         expect(a.offences.map(&:message))
-          .to eq([ArrayLiteral::ERROR_MESSAGE])
+          .to eq([ArrayLiteral::MSG])
       end
 
       it 'does not register an offence for Array.new(3)' do

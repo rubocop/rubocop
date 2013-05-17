@@ -13,7 +13,7 @@ module Rubocop
                        ['test = Hash.new()'])
         expect(a.offences.size).to eq(1)
         expect(a.offences.map(&:message))
-          .to eq([HashLiteral::ERROR_MESSAGE])
+          .to eq([HashLiteral::MSG])
       end
 
       it 'registers an offence for Hash.new' do
@@ -22,7 +22,7 @@ module Rubocop
                        ['test = Hash.new'])
         expect(a.offences.size).to eq(1)
         expect(a.offences.map(&:message))
-          .to eq([HashLiteral::ERROR_MESSAGE])
+          .to eq([HashLiteral::MSG])
       end
 
       it 'does not register an offence for Hash.new(3)' do

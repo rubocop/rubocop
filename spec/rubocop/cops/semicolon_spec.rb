@@ -18,7 +18,7 @@ module Rubocop
                        'file.rb',
                        ['puts "this is a test";'])
         expect(s.offences.size).to eq(1)
-        expect(s.offences.map(&:message)).to eq([Semicolon::ERROR_MESSAGE])
+        expect(s.offences.map(&:message)).to eq([Semicolon::MSG])
       end
 
       it 'registers an offence for several expressions' do
@@ -26,7 +26,7 @@ module Rubocop
                        'file.rb',
                        ['puts "this is a test"; puts "So is this"'])
         expect(s.offences.size).to eq(1)
-        expect(s.offences.map(&:message)).to eq([Semicolon::ERROR_MESSAGE])
+        expect(s.offences.map(&:message)).to eq([Semicolon::MSG])
       end
 
       it 'registers an offence for one line method with two statements' do

@@ -13,7 +13,7 @@ module Rubocop
                        ['method rescue handle'])
         expect(rm.offences.size).to eq(1)
         expect(rm.offences.map(&:message))
-          .to eq([RescueModifier::ERROR_MESSAGE])
+          .to eq([RescueModifier::MSG])
       end
 
       it 'handles more complex expression with modifier rescue' do
@@ -22,7 +22,7 @@ module Rubocop
                        ['method1 or method2 rescue handle'])
         expect(rm.offences.size).to eq(1)
         expect(rm.offences.map(&:message))
-          .to eq([RescueModifier::ERROR_MESSAGE])
+          .to eq([RescueModifier::MSG])
       end
 
       it 'does not register an offence for normal rescue' do

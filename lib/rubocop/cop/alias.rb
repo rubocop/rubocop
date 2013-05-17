@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class Alias < Cop
-      ERROR_MESSAGE = 'Use alias_method instead of alias.'
+      MSG = 'Use alias_method instead of alias.'
 
       def self.portable?
         true
@@ -13,7 +13,7 @@ module Rubocop
         on_node(:alias, sexp) do |s|
           add_offence(:convention,
                       s.src.keyword.line,
-                      ERROR_MESSAGE)
+                      MSG)
         end
       end
     end

@@ -17,7 +17,7 @@ module Rubocop
                         'end'])
         expect(af.offences.size).to eq(1)
         expect(af.offences.map(&:message))
-          .to eq([AvoidFor::ERROR_MESSAGE])
+          .to eq([AvoidFor::MSG])
       end
 
       it 'does not register an offence for :for' do

@@ -11,7 +11,7 @@ module Rubocop
         inspect_source(apr, 'file.rb', ['x =~ %r(/home)',
                                         'y =~ %r(etc)'])
         expect(apr.offences.map(&:message))
-          .to eq([PercentR::ERROR_MESSAGE] * 2)
+          .to eq([PercentR::MSG] * 2)
       end
 
       it 'accepts %r with at least two slashes in regexp' do

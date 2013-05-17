@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class MethodAndVariableSnakeCase < Cop
-      ERROR_MESSAGE = 'Use snake_case for methods and variables.'
+      MSG = 'Use snake_case for methods and variables.'
       SNAKE_CASE = /^@?[\da-z_]+[!?=]?$/
 
       # http://phrogz.net/programmingruby/language.html#table_18.4
@@ -32,7 +32,7 @@ module Rubocop
           next unless name
           next if name =~ SNAKE_CASE || OPERATOR_METHODS.include?(name)
 
-          add_offence(:convention, n.source_map.line, ERROR_MESSAGE)
+          add_offence(:convention, n.source_map.line, MSG)
         end
       end
 

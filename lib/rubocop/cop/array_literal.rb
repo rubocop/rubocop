@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class ArrayLiteral < Cop
-      ERROR_MESSAGE = 'Use array literal [] instead of Array.new.'
+      MSG = 'Use array literal [] instead of Array.new.'
 
       # We're interested in the following AST:
       # (send
@@ -19,7 +19,7 @@ module Rubocop
           if s == TARGET
             add_offence(:convention,
                         s.src.line,
-                        ERROR_MESSAGE)
+                        MSG)
           end
         end
       end

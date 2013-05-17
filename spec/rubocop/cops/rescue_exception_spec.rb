@@ -17,7 +17,7 @@ module Rubocop
                         'end'])
         expect(re.offences.size).to eq(1)
         expect(re.offences.map(&:message))
-          .to eq([RescueException::ERROR_MESSAGE])
+          .to eq([RescueException::MSG])
       end
 
       it 'registers an offence for rescue with ::Exception' do
@@ -30,7 +30,7 @@ module Rubocop
                         'end'])
         expect(re.offences.size).to eq(1)
         expect(re.offences.map(&:message))
-          .to eq([RescueException::ERROR_MESSAGE])
+          .to eq([RescueException::MSG])
       end
 
       it 'registers an offence for rescue with StandardError, Exception' do
@@ -43,7 +43,7 @@ module Rubocop
                         'end'])
         expect(re.offences.size).to eq(1)
         expect(re.offences.map(&:message))
-          .to eq([RescueException::ERROR_MESSAGE])
+          .to eq([RescueException::MSG])
       end
 
       it 'registers an offence for rescue with Exception => e' do
@@ -56,7 +56,7 @@ module Rubocop
                         'end'])
         expect(re.offences.size).to eq(1)
         expect(re.offences.map(&:message))
-          .to eq([RescueException::ERROR_MESSAGE])
+          .to eq([RescueException::MSG])
       end
 
       it 'does not register an offence for rescue with no class' do

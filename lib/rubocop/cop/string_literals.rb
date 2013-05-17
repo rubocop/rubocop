@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class StringLiterals < Cop
-      ERROR_MESSAGE = "Prefer single-quoted strings when you don't need " +
+      MSG = "Prefer single-quoted strings when you don't need " +
         'string interpolation or special symbols.'
 
       def self.portable?
@@ -17,7 +17,7 @@ module Rubocop
           if text !~ /['\n\t\r]/ && s.src.expression.to_source[0] == '"'
             add_offence(:convention,
                         s.src.line,
-                        ERROR_MESSAGE)
+                        MSG)
           end
         end
       end

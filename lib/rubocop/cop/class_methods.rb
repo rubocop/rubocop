@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class ClassMethods < Cop
-      ERROR_MESSAGE = 'Prefer self over class/module for class/module methods.'
+      MSG = 'Prefer self over class/module for class/module methods.'
 
       def self.portable?
         true
@@ -15,7 +15,7 @@ module Rubocop
           if s.children.first.type == :const
             add_offence(:convention,
                         s.src.line,
-                        ERROR_MESSAGE)
+                        MSG)
           end
         end
       end

@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class BlockComments < Cop
-      ERROR_MESSAGE = 'Do not use block comments.'
+      MSG = 'Do not use block comments.'
 
       def self.portable?
         true
@@ -11,7 +11,7 @@ module Rubocop
 
       def inspect(file, source, sexp)
         source.each_with_index do |line, ix|
-          add_offence(:convention, ix, ERROR_MESSAGE) if line =~ /\A=begin\b/
+          add_offence(:convention, ix, MSG) if line =~ /\A=begin\b/
         end
       end
     end

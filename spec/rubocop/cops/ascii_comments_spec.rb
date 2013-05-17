@@ -13,7 +13,7 @@ module Rubocop
                        ['# 这是什么？'])
         expect(ascii.offences.size).to eq(1)
         expect(ascii.offences.map(&:message))
-          .to eq([AsciiComments::ERROR_MESSAGE])
+          .to eq([AsciiComments::MSG])
       end
 
       it 'accepts comments with only ascii chars' do

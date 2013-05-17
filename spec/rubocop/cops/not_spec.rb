@@ -13,7 +13,7 @@ module Rubocop
                        ['not test'])
         expect(a.offences.size).to eq(1)
         expect(a.offences.map(&:message))
-          .to eq([Not::ERROR_MESSAGE])
+          .to eq([Not::MSG])
       end
 
       it 'does not register an offence for !' do

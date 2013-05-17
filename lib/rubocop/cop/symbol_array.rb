@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class SymbolArray < Cop
-      ERROR_MESSAGE = 'Use %i or %I for array of symbols.'
+      MSG = 'Use %i or %I for array of symbols.'
 
       def self.portable?
         true
@@ -25,7 +25,7 @@ module Rubocop
             if symbol_array
               add_offence(:convention,
                           s.src.line,
-                          ERROR_MESSAGE)
+                          MSG)
             end
           end
         end

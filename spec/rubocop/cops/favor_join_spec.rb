@@ -13,7 +13,7 @@ module Rubocop
                        ['%w(one two three) * ", "'])
         expect(fj.offences.size).to eq(1)
         expect(fj.offences.map(&:message))
-          .to eq([FavorJoin::ERROR_MESSAGE])
+          .to eq([FavorJoin::MSG])
       end
 
       it 'does not register an offence for numbers' do

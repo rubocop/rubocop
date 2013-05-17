@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class FavorJoin < Cop
-      ERROR_MESSAGE = 'Favor Array#join over Array#*.'
+      MSG = 'Favor Array#join over Array#*.'
 
       def self.portable?
         true
@@ -17,7 +17,7 @@ module Rubocop
               method_name == :* && arg_nodes[0].type == :str
             add_offence(:convention,
                         s.src.expression.line,
-                        ERROR_MESSAGE)
+                        MSG)
           end
         end
       end

@@ -13,7 +13,7 @@ module Rubocop
                        ['puts "%d" % 10'])
         expect(fs.offences.size).to eq(1)
         expect(fs.offences.map(&:message))
-          .to eq([FavorSprintf::ERROR_MESSAGE])
+          .to eq([FavorSprintf::MSG])
       end
 
       it 'registers an offence for something followed by an array' do
@@ -22,7 +22,7 @@ module Rubocop
                        ['puts x % [10, 11]'])
         expect(fs.offences.size).to eq(1)
         expect(fs.offences.map(&:message))
-          .to eq([FavorSprintf::ERROR_MESSAGE])
+          .to eq([FavorSprintf::MSG])
       end
 
       it 'does not register an offence for numbers' do
@@ -50,7 +50,7 @@ module Rubocop
                        ['puts "#{x * 5} %d #{@test}" % 10'])
         expect(fs.offences.size).to eq(1)
         expect(fs.offences.map(&:message))
-          .to eq([FavorSprintf::ERROR_MESSAGE])
+          .to eq([FavorSprintf::MSG])
       end
     end
   end

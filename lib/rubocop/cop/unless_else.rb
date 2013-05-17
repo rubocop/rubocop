@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class UnlessElse < Cop
-      ERROR_MESSAGE = 'Never use unless with else. Rewrite these with the ' +
+      MSG = 'Never use unless with else. Rewrite these with the ' +
         'positive case first.'
 
       def self.portable?
@@ -19,7 +19,7 @@ module Rubocop
 
           if src.keyword.to_source == 'unless' && src.else
             add_offence(:convention, src.line,
-                        ERROR_MESSAGE)
+                        MSG)
           end
         end
       end

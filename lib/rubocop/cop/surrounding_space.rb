@@ -10,7 +10,7 @@ module Rubocop
 
     class SpaceAroundOperators < Cop
       include SurroundingSpace
-      ERROR_MESSAGE = 'Surrounding space missing for operator '
+      MSG = 'Surrounding space missing for operator '
     end
 
     class SpaceAroundBraces < Cop

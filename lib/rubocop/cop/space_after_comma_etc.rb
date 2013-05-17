@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     module SpaceAfterCommaEtc
-      ERROR_MESSAGE = 'Space missing after %s.'
+      MSG = 'Space missing after %s.'
 
       def inspect(file, source, sexp)
         # TODO

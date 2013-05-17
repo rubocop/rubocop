@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class Tab < Cop
-      ERROR_MESSAGE = 'Tab detected.'
+      MSG = 'Tab detected.'
 
       def self.portable?
         true
@@ -11,7 +11,7 @@ module Rubocop
 
       def inspect(file, source, sexp)
         source.each_with_index do |line, index|
-          add_offence(:convention, index + 1, ERROR_MESSAGE) if line =~ /^ *\t/
+          add_offence(:convention, index + 1, MSG) if line =~ /^ *\t/
         end
       end
     end

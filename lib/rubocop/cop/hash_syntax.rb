@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class HashSyntax < Cop
-      ERROR_MESSAGE = 'Ruby 1.8 hash syntax detected'
+      MSG = 'Ruby 1.8 hash syntax detected'
 
       def self.portable?
         true
@@ -20,7 +20,7 @@ module Rubocop
               if pair.src.operator && pair.src.operator.to_source == '=>'
                 add_offence(:convention,
                             pair.src.line,
-                            ERROR_MESSAGE)
+                            MSG)
               end
             end
           end

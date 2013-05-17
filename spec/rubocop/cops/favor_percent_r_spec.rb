@@ -11,7 +11,7 @@ module Rubocop
         inspect_source(fpr, 'file.rb', ['x =~ /home\/\//',
                                         'y =~ /etc\/top\//'])
         expect(fpr.offences.map(&:message))
-          .to eq([FavorPercentR::ERROR_MESSAGE] * 2)
+          .to eq([FavorPercentR::MSG] * 2)
       end
 
       it 'accepts // with only one slash in regexp' do

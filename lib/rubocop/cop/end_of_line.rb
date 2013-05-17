@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class EndOfLine < Cop
-      ERROR_MESSAGE = 'Carriage return character detected.'
+      MSG = 'Carriage return character detected.'
 
       def self.portable?
         true
@@ -11,7 +11,7 @@ module Rubocop
 
       def inspect(file, source, sexp)
         source.each_with_index do |line, index|
-          add_offence(:convention, index + 1, ERROR_MESSAGE) if line =~ /\r$/
+          add_offence(:convention, index + 1, MSG) if line =~ /\r$/
         end
       end
     end

@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class Not < Cop
-      ERROR_MESSAGE = 'Use ! instead of not.'
+      MSG = 'Use ! instead of not.'
 
       def self.portable?
         true
@@ -14,7 +14,7 @@ module Rubocop
           _, method_name = *s
 
           if method_name == :! && s.src.selector.to_source == 'not'
-            add_offence(:convention, s.src.line, ERROR_MESSAGE)
+            add_offence(:convention, s.src.line, MSG)
           end
         end
       end

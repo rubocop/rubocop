@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class ReduceArguments < Cop
-      ERROR_MESSAGE = 'Name reduce arguments |a, e| (accumulator, element)'
+      MSG = 'Name reduce arguments |a, e| (accumulator, element)'
 
       ARGS_NODE = s(:args, s(:arg, :a), s(:arg, :e))
 
@@ -24,7 +24,7 @@ module Rubocop
           next unless [:reduce, :inject].include?(method_name)
 
           unless args_node == ARGS_NODE
-            add_offence(:convention, node.src.line, ERROR_MESSAGE)
+            add_offence(:convention, node.src.line, MSG)
           end
         end
       end

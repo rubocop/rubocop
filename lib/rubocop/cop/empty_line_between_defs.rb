@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class EmptyLineBetweenDefs < Cop
-      ERROR_MESSAGE = 'Use empty lines between defs.'
+      MSG = 'Use empty lines between defs.'
 
       def self.portable?
         true
@@ -19,7 +19,7 @@ module Rubocop
           if prev_def_end && (def_start - prev_def_end) < 2
             add_offence(:convention,
                         def_start,
-                        ERROR_MESSAGE)
+                        MSG)
           end
 
           prev_def_end = def_end

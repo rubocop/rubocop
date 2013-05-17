@@ -41,7 +41,7 @@ module Rubocop
       it "doesn't get confused by a symbol argument" do
         inspect_source(align, '',
                        ['add_offence(:convention, index,',
-                        '            ERROR_MESSAGE % kind)'])
+                        '            MSG % kind)'])
         expect(align.offences).to be_empty
       end
 

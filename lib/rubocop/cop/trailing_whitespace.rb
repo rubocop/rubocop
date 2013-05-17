@@ -3,12 +3,12 @@
 module Rubocop
   module Cop
     class TrailingWhitespace < Cop
-      ERROR_MESSAGE = 'Trailing whitespace detected.'
+      MSG = 'Trailing whitespace detected.'
 
       def inspect(file, source, sexp)
         source.each_with_index do |line, index|
           if line =~ /.*[ \t]+$/
-            add_offence(:convention, index + 1, ERROR_MESSAGE)
+            add_offence(:convention, index + 1, MSG)
           end
         end
       end

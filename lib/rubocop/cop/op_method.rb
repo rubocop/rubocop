@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class OpMethod < Cop
-      ERROR_MESSAGE = 'When defining the %s operator, name its argument other.'
+      MSG = 'When defining the %s operator, name its argument other.'
 
       BLACKLISTED = [:+@, :-@, :[], :[]=, :<<]
 
@@ -21,7 +21,7 @@ module Rubocop
             args.children.size == 1 && args != TARGET_ARGS
             add_offence(:convention,
                         s.src.line,
-                        sprintf(ERROR_MESSAGE, name))
+                        sprintf(MSG, name))
           end
         end
       end

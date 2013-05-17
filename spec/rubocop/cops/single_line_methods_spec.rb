@@ -14,7 +14,7 @@ module Rubocop
                         'def link_to(name, url); {:name => name}; end',
                         'def @table.columns; super; end'])
         expect(slm.offences.map(&:message)).to eq(
-          [SingleLineMethods::ERROR_MESSAGE] * 3)
+          [SingleLineMethods::MSG] * 3)
       end
 
       it 'registers an offence for an empty method if so configured' do

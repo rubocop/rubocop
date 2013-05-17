@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class CaseIndentation < Cop
-      ERROR_MESSAGE = 'Indent when as deep as case.'
+      MSG = 'Indent when as deep as case.'
 
       def self.portable?
         true
@@ -17,7 +17,7 @@ module Rubocop
           whens.each do |when_node|
             pos = when_node.src.keyword
             if pos.column != case_column
-              add_offence(:convention, pos.line, ERROR_MESSAGE)
+              add_offence(:convention, pos.line, MSG)
             end
           end
         end

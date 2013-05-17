@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class LeadingCommentSpace < Cop
-      ERROR_MESSAGE = 'Missing space after #.'
+      MSG = 'Missing space after #.'
 
       def inspect(file, source, sexp)
         # TODO implemented when Parser starts tracking comments

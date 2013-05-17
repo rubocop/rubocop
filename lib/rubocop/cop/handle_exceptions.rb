@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class HandleExceptions < Cop
-      ERROR_MESSAGE = 'Do not suppress exceptions.'
+      MSG = 'Do not suppress exceptions.'
 
       def self.portable?
         true
@@ -15,7 +15,7 @@ module Rubocop
 
           add_offence(:warning,
                       node.src.line,
-                      ERROR_MESSAGE) if body_node.type == :nil
+                      MSG) if body_node.type == :nil
         end
       end
     end

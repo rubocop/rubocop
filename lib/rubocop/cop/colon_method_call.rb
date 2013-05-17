@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class ColonMethodCall < Cop
-      ERROR_MESSAGE = 'Do not use :: for method invocation.'
+      MSG = 'Do not use :: for method invocation.'
 
       def self.portable?
         true
@@ -19,7 +19,7 @@ module Rubocop
           if s.src.expression.to_source =~ /::#{method_name}/
             add_offence(:convention,
                         s.src.line,
-                        ERROR_MESSAGE)
+                        MSG)
           end
         end
       end

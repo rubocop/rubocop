@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class RescueException < Cop
-      ERROR_MESSAGE = 'Avoid rescuing the Exception class.'
+      MSG = 'Avoid rescuing the Exception class.'
 
       def self.portable?
         true
@@ -16,7 +16,7 @@ module Rubocop
           if rescue_args.any? { |a| targets_exception?(a) }
             add_offence(:warning,
                         n.source_map.line,
-                        ERROR_MESSAGE)
+                        MSG)
           end
         end
       end

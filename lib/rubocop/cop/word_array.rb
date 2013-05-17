@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class WordArray < Cop
-      ERROR_MESSAGE = 'Use %w or %W for array of words.'
+      MSG = 'Use %w or %W for array of words.'
 
       def self.portable?
         true
@@ -23,7 +23,7 @@ module Rubocop
           if string_array && !complex_content?(array_elems)
             add_offence(:convention,
                         s.src.line,
-                        ERROR_MESSAGE)
+                        MSG)
           end
         end
       end
