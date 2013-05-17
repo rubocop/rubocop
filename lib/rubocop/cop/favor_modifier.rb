@@ -29,7 +29,7 @@ module Rubocop
           # line of the if/unless, i.e. the index of if/unless itself,
           # or of the indentation space.
           start_ix = if_ix.downto(0).find do |block_ix|
-            block_ix == 0 || tokens[block_ix - 1].text =~ /\n/
+            block_ix == 0 or tokens[block_ix - 1].text =~ /\n/
           end
           # The stop index is the index of the token just before
           # 'end', not counting whitespace tokens.

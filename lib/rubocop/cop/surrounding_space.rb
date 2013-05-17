@@ -20,12 +20,12 @@ module Rubocop
         parent, child = grammar_path.values_at(-2, -1)
         return true if [:unary, :symbol, :defs, :def, :call].include?(parent)
         return true if [:**, :block_var].include?(child)
-        parent == :command_call && child == :'::'
+        parent == :command_call and child == :'::'
       end
 
       def surrounded_by_whitespace?(nearby_tokens)
         left, _, right = nearby_tokens
-        whitespace?(left) && whitespace?(right)
+        whitespace?(left) and whitespace?(right)
       end
 
       # Default implementation for classes that don't need it.
@@ -99,8 +99,9 @@ module Rubocop
                            when paren.right
                              if prev.type == :on_sp
                                prev_ns = previous_non_space(tokens, ix)
-                               prev_ns &&
-                                 prev_ns.pos.lineno == tokens[ix].pos.lineno &&
+                               prev_ns and
+                                 prev_ns.pos.lineno ==
+                                 tokens[ix].pos.lineno and
                                  # Avoid double reporting
                                  prev_ns.type != paren.left
                              end
@@ -132,7 +133,7 @@ module Rubocop
       def check_missing_space(tokens, ix, grammar_path)
         if self.class.config['EnforcedStyleIsWithSpaces']
           check_space(tokens, ix, grammar_path, 'missing') do |t|
-            !(whitespace?(t) || [:on_lbrace, :on_rbrace].include?(t.type))
+            !(whitespace?(t) or [:on_lbrace, :on_rbrace].include?(t.type))
           end
         end
       end
@@ -166,7 +167,7 @@ module Rubocop
     class SpaceAroundEqualsInParameterDefault < Cop
       def inspect(file, source, tokens, sexp)
         each(:params, sexp) do |s|
-          (s[2] || []).each do |param, _|
+          (s[2] or []).each do |param, _|
             param_pos = param.last
             ix = tokens.index { |t| t.pos == param_pos }
             unless whitespace?(tokens[ix + 1]) && whitespace?(tokens[ix + 3])

@@ -129,7 +129,7 @@ module Rubocop
         rbrace_offset = @tokens_without_pos[ix..-1].index do |t|
           brace_depth += 1 if t == [:on_lbrace, '{']
           brace_depth -= 1 if t == [:on_rbrace, '}']
-          brace_depth == 0 && t == [:on_rbrace, '}']
+          brace_depth == 0 and t == [:on_rbrace, '}']
         end
         @table[ix + rbrace_offset] = @table[ix] if rbrace_offset
       end

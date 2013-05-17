@@ -284,7 +284,7 @@ module Rubocop
 
       rb += files.select { |file| File.extname(file) == '.rb' }
       rb += files.select do |file|
-        File.extname(file) == '' &&
+        File.extname(file) == '' and
         begin
           File.open(file) { |f| f.readline } =~ /#!.*ruby/
         rescue EOFError, ArgumentError => e

@@ -48,8 +48,6 @@ module Rubocop
                                         'end'])
         # Just one offence should be registered. The good_operator
         # should be accepted.
-        expect(amp.offences.map(&:message)).to eq(
-          ['Use &&/|| for boolean expressions, and/or for control flow.'])
         expect(amp.offences[0].line_number).to eq(1)
       end
     end
