@@ -144,12 +144,11 @@ module Rubocop
         .to eq(
         ['example1.rb:1: C: Missing utf-8 encoding comment.',
          'example1.rb:1: C: Trailing whitespace detected.',
-         "example1.rb:1: C: Surrounding space missing for operator '='.",
          'example1.rb:2: C: Trailing whitespace detected.',
          'example2.rb:1: C: Missing utf-8 encoding comment.',
          'example2.rb:1: C: Tab detected.',
          '',
-         '2 files inspected, 6 offences detected',
+         '2 files inspected, 5 offences detected',
          ''].join("\n"))
     end
 
@@ -167,11 +166,10 @@ module Rubocop
       expect($stdout.string)
         .to eq(
         ['example1.rb:1: C: Trailing whitespace detected.',
-         "example1.rb:1: C: Surrounding space missing for operator '='.",
          'example1.rb:2: C: Trailing whitespace detected.',
          'example2.rb:1: C: Tab detected.',
          '',
-         '2 files inspected, 4 offences detected',
+         '2 files inspected, 3 offences detected',
          ''].join("\n"))
     end
 

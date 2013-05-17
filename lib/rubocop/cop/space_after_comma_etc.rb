@@ -6,12 +6,7 @@ module Rubocop
       ERROR_MESSAGE = 'Space missing after %s.'
 
       def inspect(file, source, tokens, sexp)
-        tokens.each_cons(2) do |t1, t2|
-          if kind(t1) && !whitespace?(t2)
-            add_offence(:convention, t1.pos.lineno,
-                        sprintf(ERROR_MESSAGE, kind(t1)))
-          end
-        end
+        # TODO
       end
     end
 

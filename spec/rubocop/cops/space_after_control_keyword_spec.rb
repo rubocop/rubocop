@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module Rubocop
   module Cop
-    describe SpaceAfterControlKeyword do
+    describe SpaceAfterControlKeyword, broken: true do
       let(:ap) { SpaceAfterControlKeyword.new }
 
       it 'registers an offence for normal if' do

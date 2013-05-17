@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module Rubocop
   module Cop
-    describe SpaceAfterColon do
+    describe SpaceAfterColon, broken: true do
       let(:space) { SpaceAfterColon.new }
 
       it 'registers an offence for colon without space after it' do

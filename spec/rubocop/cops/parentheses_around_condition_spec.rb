@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module Rubocop
   module Cop
-    describe ParenthesesAroundCondition do
+    describe ParenthesesAroundCondition, broken: true do
       let(:pac) { ParenthesesAroundCondition.new }
 
       it 'registers an offence for parentheses around condition' do

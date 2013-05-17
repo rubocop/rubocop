@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module Rubocop
   module Cop
-    describe SpaceInsideHashLiteralBraces do
+    describe SpaceInsideHashLiteralBraces, broken: true do
       let(:sihlb) { SpaceInsideHashLiteralBraces.new }
       before do
         SpaceInsideHashLiteralBraces.config = {

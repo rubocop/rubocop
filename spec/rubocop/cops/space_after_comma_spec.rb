@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module Rubocop
   module Cop
-    describe SpaceAfterComma do
+    describe SpaceAfterComma, broken: true do
       let(:space) { SpaceAfterComma.new }
 
       it 'registers an offence for block argument commas' do

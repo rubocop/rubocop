@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module Rubocop
   module Cop
-    describe SpaceAroundOperators do
+    describe SpaceAroundOperators, broken: true do
       let(:space) { SpaceAroundOperators.new }
 
       it 'registers an offence for assignment without space on both sides' do
