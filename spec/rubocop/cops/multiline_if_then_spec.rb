@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module Rubocop
   module Cop
-    describe MultilineIfThen do
+    describe MultilineIfThen, broken: true do
       let(:mit) { MultilineIfThen.new }
 
       # if

@@ -11,7 +11,7 @@ describe 'RuboCop Project' do
     end
   end
 
-  describe 'source codes' do
+  describe 'source codes', broken: true do
     before { $stdout = StringIO.new }
     after  { $stdout = STDOUT }
 

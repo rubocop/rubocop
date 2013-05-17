@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module Rubocop
   module Cop
-    describe FavorUntilOverNegatedWhile do
+    describe FavorUntilOverNegatedWhile, broken: true do
       let(:fav_until) { FavorUntilOverNegatedWhile.new }
 
       it 'registers an offence for while with exclamation point condition' do

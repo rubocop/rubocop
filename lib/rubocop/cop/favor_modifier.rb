@@ -3,53 +3,36 @@
 module Rubocop
   module Cop
     module FavorModifier
-      def check(kind, tokens, sexp)
-        token_positions = tokens.map(&:pos)
-        token_texts = tokens.map(&:text)
-        each(kind, sexp) do |s|
-          # If it contains an else, it can't be written as a modifier.
-          next if s[3] && s[3][0] == :else
+      # TODO extremely ugly solution that needs lots of polish
+      def check(sexp)
+        # discard if/then/else
+        return false if sexp.src.respond_to?(:else) && sexp.src.else
 
-          sexp_positions = all_positions(s)
-          ix = token_positions.index(sexp_positions.first)
-          if_ix = token_texts[0..ix].rindex(kind.to_s) # index of if/unless/...
-          ix = token_positions.index(sexp_positions.last)
-          end_ix = ix + token_texts[ix..-1].index('end')
+        if %w(if while).include?(sexp.src.keyword.to_source)
+          cond, body = *sexp
+        else
+          cond, _else, body = *sexp
+        end
 
-          # If there's a comment anywhere between
-          # if/unless/while/until and end, we don't report. It's
-          # possible that the comment will be less clear if put above
-          # a one liner rather than inside.
-          next if tokens[if_ix...end_ix].map(&:type).include?(:on_comment)
+        if length(sexp) > 3
+          false
+        else
+          cond_length = sexp.src.keyword.size + cond.src.expression.size + 1
+          body_length = body_length(body)
 
-          if token_positions[end_ix].lineno - token_positions[if_ix].lineno > 2
-            next # not a single-line body
-          end
-          # The start ix is the index of the leftmost token on the
-          # line of the if/unless, i.e. the index of if/unless itself,
-          # or of the indentation space.
-          start_ix = if_ix.downto(0).find do |block_ix|
-            block_ix == 0 or tokens[block_ix - 1].text =~ /\n/
-          end
-          # The stop index is the index of the token just before
-          # 'end', not counting whitespace tokens.
-          stop_ix = (end_ix - 1).downto(0).find do |block_ix|
-            tokens[block_ix].text !~ /\s/
-          end
-          if length(tokens, start_ix, stop_ix) <= LineLength.max
-            add_offence(:convention, token_positions[if_ix].lineno,
-                        error_message)
-          end
+          (cond_length + body_length) <= LineLength.max
         end
       end
 
-      def length(tokens, start_ix, stop_ix)
-        (start_ix..stop_ix).reduce(0) do |acc, ix|
-          acc + if ix > start_ix && tokens[ix - 1].text =~ /\n/
-                  0
-                else
-                  tokens[ix].text.length
-                end
+      def length(sexp)
+        sexp.src.expression.to_source.split("\n").size
+      end
+
+      def body_length(body)
+        if body
+          body.src.expression.column + body.src.expression.size
+        else
+          0
         end
       end
     end
@@ -57,25 +40,41 @@ module Rubocop
     class IfUnlessModifier < Cop
       include FavorModifier
 
+      def self.portable?
+        true
+      end
+
       def error_message
         'Favor modifier if/unless usage when you have a single-line body. ' +
           'Another good alternative is the usage of control flow and/or.'
       end
 
       def inspect(file, source, tokens, sexp)
-        [:if, :unless].each { |kind| check(kind, tokens, sexp) }
+        on_node(:if, sexp) do |node|
+          # discard ternary ops and modifier if/unless nodes
+          next unless node.src.respond_to?(:keyword) &&
+            node.src.respond_to?(:else)
+
+          add_offence(:convention, node.src.line, error_message) if check(node)
+        end
       end
     end
 
     class WhileUntilModifier < Cop
       include FavorModifier
 
+      def self.portable?
+        true
+      end
+
       def error_message
         'Favor modifier while/until usage when you have a single-line body.'
       end
 
       def inspect(file, source, tokens, sexp)
-        [:while, :until].each { |kind| check(kind, tokens, sexp) }
+        on_node([:while, :until], sexp) do |node|
+          add_offence(:convention, node.src.line, error_message) if check(node)
+        end
       end
     end
   end
