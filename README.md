@@ -155,12 +155,8 @@ Note: Files and directories are specified relative to the `.rubocop.yml` file.
 
 ## Compatibility
 
-Unfortunately every major Ruby implementation has its own code
-analysis tooling, which makes the development of a portable code
-analyzer a daunting task.
-
-RuboCop currently supports MRI 1.9 and MRI 2.0. Support for JRuby and
-Rubinius is not planned at this point.
+RuboCop supported only MRI 1.9 & MRI 2.0 prior to version 0.8. After
+RuboCop 0.8, JRuby and Rubinius in 1.9 modes are also supported.
 
 ## Editor integration
 

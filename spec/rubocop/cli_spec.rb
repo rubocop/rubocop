@@ -398,6 +398,7 @@ module Rubocop
     end
 
     it 'registers an offence for a syntax error' do
+      pending
       create_file('example.rb', [
         '# encoding: utf-8',
         'class Test',

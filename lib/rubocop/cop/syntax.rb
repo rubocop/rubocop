@@ -10,6 +10,8 @@ module Rubocop
       end
 
       def inspect(file, source, sexp)
+        return unless RUBY_ENGINE == 'ruby'
+
         stderr = nil
 
         # it's extremely important to run the syntax check in a
