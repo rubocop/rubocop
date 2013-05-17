@@ -9,7 +9,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, tokens, sexp)
+      def inspect(file, source, sexp)
         on_node(:send, sexp) do |s|
           receiver_node, method_name, *arg_nodes = *s
 

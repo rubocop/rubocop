@@ -10,7 +10,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, tokens, sexp)
+      def inspect(file, source, sexp)
         on_node(:if, sexp) do |s|
           src = s.src
 

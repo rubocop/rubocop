@@ -9,7 +9,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, tokens, sexp)
+      def inspect(file, source, sexp)
         # defs nodes correspond to class & module methods
         on_node(:defs, sexp) do |s|
           if s.children.first.type == :const

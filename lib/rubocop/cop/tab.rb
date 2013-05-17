@@ -9,7 +9,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, tokens, sexp)
+      def inspect(file, source, sexp)
         source.each_with_index do |line, index|
           add_offence(:convention, index + 1, ERROR_MESSAGE) if line =~ /^ *\t/
         end

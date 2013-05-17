@@ -9,7 +9,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, tokens, sexp)
+      def inspect(file, source, sexp)
         on_node(:array, sexp) do |s|
           next unless s.src.begin && s.src.begin.to_source == '['
 

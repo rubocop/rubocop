@@ -16,7 +16,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, tokens, node)
+      def inspect(file, source, node)
         on_node([:def, :defs, :lvasgn, :ivasgn, :send], node) do |n|
           name = case n.type
                  when :def

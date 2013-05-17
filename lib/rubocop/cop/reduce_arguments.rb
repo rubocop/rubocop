@@ -11,7 +11,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, tokens, sexp)
+      def inspect(file, source, sexp)
         on_node(:block, sexp) do |node|
           # we care only for single line blocks
           next unless Util.block_length(node) == 0

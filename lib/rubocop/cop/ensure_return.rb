@@ -9,7 +9,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, tokens, sexp)
+      def inspect(file, source, sexp)
         on_node(:ensure, sexp) do |ensure_node|
           _body, ensure_body = *ensure_node
 

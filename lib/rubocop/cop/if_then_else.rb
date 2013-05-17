@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     module IfThenElse
-      def inspect(file, source, tokens, sexp)
+      def inspect(file, source, sexp)
         # TODO
       end
     end

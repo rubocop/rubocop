@@ -7,7 +7,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, tokens, sexp)
+      def inspect(file, source, sexp)
         on_node(:dstr, sexp) do |s|
           var_nodes(s.children).each do |v|
             var = (v.type == :nth_ref ? '$' : '') + v.to_a[0].to_s

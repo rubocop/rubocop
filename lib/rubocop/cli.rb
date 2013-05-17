@@ -1,8 +1,6 @@
 # encoding: utf-8
 require 'pathname'
 require 'optparse'
-require_relative 'cop/grammar'
-
 module Rubocop
   # The CLI is a class responsible of handling all the command line interface
   # logic.
@@ -11,7 +9,6 @@ module Rubocop
     # RuboCop will abort processing and exit gracefully.
     attr_accessor :wants_to_quit
     attr_accessor :options
-    attr_accessor :portable_mode
 
     alias_method :wants_to_quit?, :wants_to_quit
 
@@ -21,7 +18,6 @@ module Rubocop
       @total_offences = 0
       @errors = []
       @options = { mode: :default }
-      @portable_mode = false
       ConfigStore.prepare
     end
 
@@ -52,7 +48,7 @@ module Rubocop
 
         syntax_cop = Rubocop::Cop::Syntax.new
         syntax_cop.debug = @options[:debug]
-        syntax_cop.inspect(file, source, nil, nil)
+        syntax_cop.inspect(file, source, nil)
 
         if syntax_cop.offences.map(&:severity).include?(:error)
           # In case of a syntax error we just report that error and do
@@ -82,12 +78,12 @@ module Rubocop
     end
 
     def read_source(file)
-      get_rid_of_invalid_byte_sequences(File.read(file)).split($RS)
+      File.read(file).split($RS)
     end
 
     def inspect_file(file, source, config, report)
       begin
-        tokens, sexp, correlations, psexp = CLI.rip_source(source.join("\n"))
+        ast = Parser::CurrentRuby.parse(source.join("\n"))
       rescue Parser::SyntaxError, Encoding::UndefinedConversionError,
           ArgumentError => e
         handle_error(e, "An error occurred while parsing #{file}.".color(:red))
@@ -96,8 +92,6 @@ module Rubocop
 
       disabled_lines = disabled_lines_in(source)
 
-      @cops = @cops.select(&:portable?) if @portable_mode
-
       @cops.each do |cop_klass|
         cop_name = cop_klass.cop_name
         cop_config = config.for_cop(cop_name)
@@ -105,11 +99,9 @@ module Rubocop
           cop_klass.config = cop_config
           cop = cop_klass.new
           cop.debug = @options[:debug]
-          cop.correlations = correlations
           cop.disabled_lines = disabled_lines[cop_name]
           begin
-            cop.inspect(file, source, tokens,
-                        cop_klass.portable? ? psexp : sexp)
+            cop.inspect(file, source, ast)
           rescue => e
             handle_error(e,
                          "An error occurred while #{cop.name}".color(:red) +
@@ -221,30 +213,6 @@ module Rubocop
         cops = Cop::Cop.all.map(&:cop_name).join(',') if cops.include?('all')
         cops.split(/,\s*/).each { |cop_name| yield cop_name, kind }
       end
-    end
-
-    def get_rid_of_invalid_byte_sequences(source)
-      # TODO does not work on JRUBY
-      source_encoding = source.encoding.name
-      # UTF-16 works better in this algorithm but is not supported in 1.9.2.
-      temporary_encoding = (RUBY_VERSION == '1.9.2') ? 'UTF-8' : 'UTF-16'
-      source.encode!(temporary_encoding, source_encoding,
-                     invalid: :replace, replace: '')
-      source.encode!(source_encoding, temporary_encoding)
-
-      source
-    end
-
-    def self.rip_source(source)
-      unless @portable_mode
-        tokens = Ripper.lex(source).map { |t| Cop::Token.new(*t) }
-        sexp = Ripper.sexp(source)
-        Cop::Position.make_position_objects(sexp)
-        correlations = Cop::Grammar.new(tokens).correlate(sexp)
-      end
-
-      psexp = Parser::CurrentRuby.parse(source)
-      [tokens, sexp, correlations, psexp]
     end
 
     # Generate a list of target files by expanding globing patterns

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module Rubocop
   module Cop
-    describe PercentLiterals do
+    describe PercentLiterals, broken: true do
       let(:pl) { PercentLiterals.new }
 
       it 'registers an offence for %q' do

@@ -1,6 +1,5 @@
 # encoding: utf-8
 
-require 'ripper' if RUBY_ENGINE == 'ruby'
 require 'rainbow'
 require 'English'
 require 'parser/current'

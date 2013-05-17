@@ -5,7 +5,7 @@ module Rubocop
     module SpaceAfterCommaEtc
       ERROR_MESSAGE = 'Space missing after %s.'
 
-      def inspect(file, source, tokens, sexp)
+      def inspect(file, source, sexp)
         # TODO
       end
     end

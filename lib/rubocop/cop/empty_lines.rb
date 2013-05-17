@@ -9,7 +9,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, tokens, sexp)
+      def inspect(file, source, sexp)
         source.each_with_index do |line, ix|
           if ix > 0 && line.empty? && source[ix - 1].empty?
             add_offence(:convention, ix, ERROR_MESSAGE)

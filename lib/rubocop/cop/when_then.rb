@@ -9,7 +9,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, tokens, sexp)
+      def inspect(file, source, sexp)
         on_node(:when, sexp) do |s|
           if s.src.begin && s.src.begin.to_source == ';'
             add_offence(:convention, s.src.line, ERROR_MESSAGE)

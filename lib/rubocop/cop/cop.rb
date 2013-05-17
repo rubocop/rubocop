@@ -2,40 +2,12 @@
 
 module Rubocop
   module Cop
-    class Position < Struct.new :lineno, :column
-      # Does a recursive search and replaces each [lineno, column] array
-      # in the sexp with a Position object.
-      def self.make_position_objects(sexp)
-        if sexp[0] =~ /^@/
-          sexp[2] = Position.new(*sexp[2])
-        else
-          sexp.grep(Array).each { |s| make_position_objects(s) }
-        end
-      end
-
-      # The point of this class is to provide named attribute access.
-      # So we don't want backwards compatibility with array indexing.
-      undef_method :[]
-    end
-
-    class Token
-      attr_reader :pos, :type, :text
-
-      def initialize(pos, type, text)
-        @pos, @type, @text = Position.new(*pos), type, text
-      end
-
-      def to_s
-        "[[#{@pos.lineno}, #{@pos.column}], #{@type}, #{@text.inspect}]"
-      end
-    end
-
     class Cop
       extend AST::Sexp
 
       attr_accessor :offences
       attr_accessor :debug
-      attr_writer :correlations, :disabled_lines
+      attr_writer :disabled_lines
 
       @all = []
       @config = {}
@@ -62,10 +34,6 @@ module Rubocop
         !@offences.empty?
       end
 
-      def self.portable?
-        false
-      end
-
       def add_offence(severity, line_number, message)
         unless @disabled_lines && @disabled_lines.include?(line_number)
           message = debug ? "#{name}: #{message}" : message
@@ -79,13 +47,6 @@ module Rubocop
 
       private
 
-      def each(sym, sexp)
-        yield sexp if sexp[0] == sym
-        sexp.each do |elem|
-          each(sym, elem) { |s| yield s } if Array === elem
-        end
-      end
-
       def on_node(syms, sexp, excludes = [])
         yield sexp if Array(syms).include?(sexp.type)
 
@@ -96,25 +57,6 @@ module Rubocop
             on_node(syms, elem, excludes) { |s| yield s }
           end
         end
-      end
-
-      def find_all(sym, sexp)
-        result = []
-        each(sym, sexp) { |s| result << s }
-        result
-      end
-
-      def find_first(sym, sexp)
-        find_all(sym, sexp).first
-      end
-
-      def whitespace?(token)
-        [:on_sp, :on_ignored_nl, :on_nl].include?(token.type)
-      end
-
-      def all_positions(sexp)
-        return [sexp[2]] if sexp[0] =~ /^@/
-        sexp.grep(Array).reduce([]) { |a, e| a + all_positions(e) }
       end
     end
   end

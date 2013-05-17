@@ -9,7 +9,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, tokens, sexp)
+      def inspect(file, source, sexp)
         on_node(:resbody, sexp) do |node|
           _exc_list_node, _exc_var_node, body_node = *node
 

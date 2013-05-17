@@ -49,7 +49,7 @@ module Rubocop
           'Another good alternative is the usage of control flow and/or.'
       end
 
-      def inspect(file, source, tokens, sexp)
+      def inspect(file, source, sexp)
         on_node(:if, sexp) do |node|
           # discard ternary ops and modifier if/unless nodes
           next unless node.src.respond_to?(:keyword) &&
@@ -71,7 +71,7 @@ module Rubocop
         'Favor modifier while/until usage when you have a single-line body.'
       end
 
-      def inspect(file, source, tokens, sexp)
+      def inspect(file, source, sexp)
         on_node([:while, :until], sexp) do |node|
           add_offence(:convention, node.src.line, error_message) if check(node)
         end
