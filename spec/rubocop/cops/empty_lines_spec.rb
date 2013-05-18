@@ -13,15 +13,14 @@ module Rubocop
         expect(empty_lines.offences.size).to eq(2)
       end
 
-      # TODO Fix this
-      # it 'does not register an offence for empty lines in a string' do
-      #   inspect_source(empty_lines, 'file.rb', ['result = "test
-      #
-      #
-      #
-      #                                            string"'])
-      #   expect(empty_lines.offences).to be_empty
-      # end
+      it 'does not register an offence for empty lines in a string' do
+        inspect_source(empty_lines, 'file.rb', ['result = "test
+
+
+
+                                                 string"'])
+        expect(empty_lines.offences).to be_empty
+      end
     end
   end
 end
