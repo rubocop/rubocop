@@ -7,15 +7,22 @@ module Rubocop
       LINE_OFFSET = 2
 
       def inspect(file, source, tokens, sexp)
-        prev_line = tokens.first.pos.lineno
+        return if tokens.empty?
+
+        prev_line = 1
 
         tokens.each do |token|
           cur_line = token.pos.lineno
           line_diff = cur_line - prev_line
 
           if line_diff > LINE_OFFSET
-            ((prev_line + LINE_OFFSET)...cur_line).each do |line|
-              add_offence(:convention, line, MSG)
+            # we need to be wary of comments since they
+            # don't show up in the tokens
+            ((prev_line + 1)...cur_line).each do |line|
+              # we check if the prev and current lines are empty
+              if source[line - 2].empty? && source[line - 1].empty?
+                add_offence(:convention, line, MSG)
+              end
             end
           end
 

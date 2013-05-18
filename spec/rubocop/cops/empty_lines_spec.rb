@@ -13,6 +13,18 @@ module Rubocop
         expect(empty_lines.offences.size).to eq(2)
       end
 
+      it 'works when there are no tokens' do
+        inspect_source(empty_lines, 'file.rb',
+                       ['#comment'])
+        expect(empty_lines.offences).to be_empty
+      end
+
+      it 'handles comments' do
+        inspect_source(empty_lines, 'file.rb',
+                       ['test', '', '#comment', 'top'])
+        expect(empty_lines.offences).to be_empty
+      end
+
       it 'does not register an offence for empty lines in a string' do
         inspect_source(empty_lines, 'file.rb', ['result = "test
 
