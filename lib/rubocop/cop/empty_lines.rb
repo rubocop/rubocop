@@ -12,7 +12,6 @@ module Rubocop
         tokens.each do |token|
           cur_line = token.pos.lineno
           line_diff = cur_line - prev_line
-          puts line_diff
 
           if line_diff > LINE_OFFSET
             ((prev_line + LINE_OFFSET)...cur_line).each do |line|
