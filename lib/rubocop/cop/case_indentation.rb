@@ -9,7 +9,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, sexp)
+      def inspect(file, source, tokens, sexp)
         on_node(:case, sexp) do |case_node|
           _condition, *whens, _else = *case_node
 

@@ -9,7 +9,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, sexp)
+      def inspect(file, source, tokens, sexp)
         on_node(:alias, sexp) do |s|
           add_offence(:convention,
                       s.src.keyword.line,

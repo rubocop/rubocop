@@ -6,7 +6,7 @@ module Rubocop
       MSG = "Don't use parentheses around the condition of an " +
         'if/unless/while/until, unless the condition contains an assignment.'
 
-      def inspect(file, source, sexp)
+      def inspect(file, source, tokens, sexp)
         # TODO
       end
     end

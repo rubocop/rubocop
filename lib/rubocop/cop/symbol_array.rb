@@ -9,7 +9,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, sexp)
+      def inspect(file, source, tokens, sexp)
         # %i and %I were introduced in Ruby 2.0
         unless RUBY_VERSION < '2.0.0'
           on_node(:array, sexp) do |s|

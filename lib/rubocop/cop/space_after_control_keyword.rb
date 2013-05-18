@@ -7,7 +7,7 @@ module Rubocop
 
       KEYWORDS = %w(if elsif case when while until unless)
 
-      def inspect(file, source, sexp)
+      def inspect(file, source, tokens, sexp)
         # TODO
       end
     end

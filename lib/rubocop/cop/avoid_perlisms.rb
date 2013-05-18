@@ -32,7 +32,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, sexp)
+      def inspect(file, source, tokens, sexp)
         on_node(:gvar, sexp) do |s|
           global_var = s.src.name.to_source
 
