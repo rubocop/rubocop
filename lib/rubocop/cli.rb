@@ -110,7 +110,6 @@ module Rubocop
 
       @cops.each do |cop_class|
         cop_name = cop_class.cop_name
-        cop_config = config.for_cop(cop_name)
         if config.cop_enabled?(cop_name)
           cop = setup_cop(cop_class,
                           config.for_cop(cop_name),
