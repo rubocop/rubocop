@@ -10,11 +10,11 @@ module Rubocop
       #   (const nil :Array) :new)
       TARGET = s(:send, s(:const, nil, :Array), :new)
 
-      def inspect(file, source, tokens, sexp)
-        on_node(:send, sexp, :block) do |s|
-          if s == TARGET
+      def inspect(file, source, tokens, ast)
+        on_node(:send, ast, :block) do |node|
+          if node == TARGET
             add_offence(:convention,
-                        s.src.line,
+                        node.src.line,
                         MSG)
           end
         end

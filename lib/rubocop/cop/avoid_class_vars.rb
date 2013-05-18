@@ -3,15 +3,16 @@
 module Rubocop
   module Cop
     class AvoidClassVars < Cop
-      def inspect(file, source, tokens, sexp)
-        on_node(:cvdecl, sexp) do |s|
-          class_var = s.src.name.to_source
-          lineno = s.src.name.line
+      MSG = 'Replace class var %s with a class instance var.'
+
+      def inspect(file, source, tokens, ast)
+        on_node(:cvdecl, ast) do |node|
+          class_var = node.src.name.to_source
 
           add_offence(
             :convention,
-            lineno,
-            "Replace class var #{class_var} with a class instance var."
+            node.src.name.line,
+            sprintf(MSG, class_var)
           )
         end
       end
