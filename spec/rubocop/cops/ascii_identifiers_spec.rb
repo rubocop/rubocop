@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module Rubocop
   module Cop
-    describe AsciiIdentifiers, broken: true do
+    describe AsciiIdentifiers do
       let(:ascii) { AsciiIdentifiers.new }
 
       it 'registers an offence for a variable name with non-ascii chars' do
