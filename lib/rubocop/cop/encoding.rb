@@ -9,7 +9,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, sexp)
+      def inspect(file, source, tokens, sexp)
         unless RUBY_VERSION >= '2.0.0'
           expected_line = 0
           expected_line += 1 if source[expected_line] =~ /^#!/

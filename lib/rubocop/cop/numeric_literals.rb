@@ -10,7 +10,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, sexp)
+      def inspect(file, source, tokens, sexp)
         on_node([:int, :float], sexp) do |s|
           if s.to_a[0] > 10000 &&
               s.src.expression.to_source.split('.').grep(/\d{6}/).any?

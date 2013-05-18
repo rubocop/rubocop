@@ -9,7 +9,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, sexp)
+      def inspect(file, source, tokens, sexp)
         on_node(:args, sexp) do |s|
           if s.children.size > 4
             add_offence(:convention, s.src.line, MSG)

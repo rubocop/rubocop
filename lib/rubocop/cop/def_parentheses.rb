@@ -12,7 +12,7 @@ module Rubocop
           'arguments.'
       end
 
-      def inspect(file, source, sexp)
+      def inspect(file, source, tokens, sexp)
         on_node(:def, sexp) do |s|
           start_line = s.src.keyword.line
           end_line = s.src.end.line
@@ -36,7 +36,7 @@ module Rubocop
         'Use def with parentheses when there are arguments.'
       end
 
-      def inspect(file, source, sexp)
+      def inspect(file, source, tokens, sexp)
         on_node(:def, sexp) do |s|
           _, args = *s
           if args.children.size > 0 && args.src.begin.nil?

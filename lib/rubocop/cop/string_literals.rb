@@ -10,7 +10,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, sexp)
+      def inspect(file, source, tokens, sexp)
         on_node(:str, sexp, :dstr) do |s|
           text = s.to_a[0]
 

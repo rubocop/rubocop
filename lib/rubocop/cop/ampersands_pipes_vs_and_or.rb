@@ -10,7 +10,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, sexp)
+      def inspect(file, source, tokens, sexp)
         on_node([:if, :while, :until], sexp) do |node|
           cond, body = *node
 

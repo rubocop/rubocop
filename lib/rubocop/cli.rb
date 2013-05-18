@@ -1,6 +1,22 @@
 # encoding: utf-8
 require 'pathname'
 require 'optparse'
+
+class Parser::Lexer
+  alias_method :old_advance, :advance
+
+  # Patched advance method that stores all tokens.
+  def advance
+    token = old_advance
+    type, info = *token
+    if type
+      text, range = *info
+      Rubocop::CLI.add_token(range, type, text)
+    end
+    token
+  end
+end
+
 module Rubocop
   # The CLI is a class responsible of handling all the command line interface
   # logic.
@@ -48,7 +64,7 @@ module Rubocop
 
         syntax_cop = Rubocop::Cop::Syntax.new
         syntax_cop.debug = @options[:debug]
-        syntax_cop.inspect(file, source, nil)
+        syntax_cop.inspect(file, source, nil, nil)
 
         if syntax_cop.offences.map(&:severity).include?(:error)
           # In case of a syntax error we just report that error and do
@@ -83,7 +99,7 @@ module Rubocop
 
     def inspect_file(file, source, config, report)
       begin
-        ast = Parser::CurrentRuby.parse(source.join("\n"))
+        ast, tokens = CLI.rip_source(source.join("\n"))
       rescue Parser::SyntaxError, Encoding::UndefinedConversionError,
           ArgumentError => e
         handle_error(e, "An error occurred while parsing #{file}.".color(:red))
@@ -92,16 +108,15 @@ module Rubocop
 
       disabled_lines = disabled_lines_in(source)
 
-      @cops.each do |cop_klass|
-        cop_name = cop_klass.cop_name
+      @cops.each do |cop_class|
+        cop_name = cop_class.cop_name
         cop_config = config.for_cop(cop_name)
         if config.cop_enabled?(cop_name)
-          cop_klass.config = cop_config
-          cop = cop_klass.new
-          cop.debug = @options[:debug]
-          cop.disabled_lines = disabled_lines[cop_name]
+          cop = setup_cop(cop_class,
+                          config.for_cop(cop_name),
+                          disabled_lines)
           begin
-            cop.inspect(file, source, ast)
+            cop.inspect(file, source, tokens, ast)
           rescue => e
             handle_error(e,
                          "An error occurred while #{cop.name}".color(:red) +
@@ -111,6 +126,14 @@ module Rubocop
           report << cop if cop.has_report?
         end
       end
+    end
+
+    def setup_cop(cop_class, cop_config, disabled_lines)
+      cop_class.config = cop_config
+      cop = cop_class.new
+      cop.debug = @options[:debug]
+      cop.disabled_lines = disabled_lines[cop_class.cop_name]
+      cop
     end
 
     def handle_error(e, message)
@@ -213,6 +236,19 @@ module Rubocop
         cops = Cop::Cop.all.map(&:cop_name).join(',') if cops.include?('all')
         cops.split(/,\s*/).each { |cop_name| yield cop_name, kind }
       end
+    end
+
+    # This method is called by our modified version of
+    # Parser::Lexer#advance for each token.
+    def self.add_token(range, type, text)
+      pos = Rubocop::Cop::Position.new(range.line, range.column)
+      @parser_tokens << Rubocop::Cop::Token.new(pos, type, text)
+    end
+
+    def self.rip_source(source)
+      @parser_tokens = []
+      ast = Parser::CurrentRuby.parse(source)
+      [ast, @parser_tokens]
     end
 
     # Generate a list of target files by expanding globing patterns

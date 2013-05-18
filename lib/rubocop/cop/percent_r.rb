@@ -10,7 +10,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, sexp)
+      def inspect(file, source, tokens, sexp)
         on_node(:regexp, sexp) do |node|
           if node.src.begin.to_source != '/' &&
               node.src.expression.to_source[1...-1].scan(/\//).size <= 1
