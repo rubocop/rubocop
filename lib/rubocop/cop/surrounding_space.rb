@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     module SurroundingSpace
-      def inspect(file, source, sexp)
+      def inspect(file, source, tokens, sexp)
         # TODO
       end
     end
@@ -34,7 +34,7 @@ module Rubocop
     end
 
     class SpaceAroundEqualsInParameterDefault < Cop
-      def inspect(file, source, sexp)
+      def inspect(file, source, tokens, sexp)
         # TODO
       end
     end

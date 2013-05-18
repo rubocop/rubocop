@@ -5,7 +5,7 @@ module Rubocop
     class AsciiIdentifiers < Cop
       MSG = 'Use only ascii symbols in identifiers.'
 
-      def inspect(file, source, sexp)
+      def inspect(file, source, tokens, sexp)
         # TODO implement with Parser
       end
     end

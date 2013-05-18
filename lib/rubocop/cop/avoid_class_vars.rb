@@ -7,7 +7,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, sexp)
+      def inspect(file, source, tokens, sexp)
         on_node(:cvdecl, sexp) do |s|
           class_var = s.src.name.to_source
           lineno = s.src.name.line

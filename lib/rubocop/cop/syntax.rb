@@ -9,7 +9,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, sexp)
+      def inspect(file, source, tokens, sexp)
         return unless RUBY_ENGINE == 'ruby'
 
         stderr = nil

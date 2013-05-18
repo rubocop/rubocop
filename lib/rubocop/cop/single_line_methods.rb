@@ -9,7 +9,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, sexp)
+      def inspect(file, source, tokens, sexp)
         allow_empty = SingleLineMethods.config['AllowIfMethodIsEmpty']
 
         on_node([:def, :defs], sexp) do |s|

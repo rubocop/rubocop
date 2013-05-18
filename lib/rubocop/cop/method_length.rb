@@ -9,7 +9,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, sexp)
+      def inspect(file, source, tokens, sexp)
         on_node([:def, :defs], sexp) do |s|
           def_start = s.src.keyword.line
           def_end = s.src.end.line

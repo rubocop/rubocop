@@ -7,7 +7,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, sexp)
+      def inspect(file, source, tokens, sexp)
         on_node(:nth_ref, sexp) do |s|
           backref = s.src.expression.to_source
           lineno = s.src.expression.line

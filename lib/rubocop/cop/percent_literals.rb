@@ -10,7 +10,7 @@ module Rubocop
         on_backtick: '%x'
       }
 
-      def inspect(file, source, sexp)
+      def inspect(file, source, tokens, sexp)
         # TODO
       end
     end

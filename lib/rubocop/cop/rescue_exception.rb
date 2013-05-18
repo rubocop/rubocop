@@ -9,7 +9,7 @@ module Rubocop
         true
       end
 
-      def inspect(file, source, node)
+      def inspect(file, source, tokens, node)
         on_node(:resbody, node) do |n|
           next unless n.children.first
           rescue_args = n.children.first.children
