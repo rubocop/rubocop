@@ -5,10 +5,6 @@ module Rubocop
     class SymbolArray < Cop
       MSG = 'Use %i or %I for array of symbols.'
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         # %i and %I were introduced in Ruby 2.0
         unless RUBY_VERSION < '2.0.0'

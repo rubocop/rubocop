@@ -12,10 +12,6 @@ module Rubocop
         + - * / % ** ~ +@ -@ [] []= ` ! != !~
       ).map(&:to_sym)
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, node)
         on_node([:def, :defs, :lvasgn, :ivasgn, :send], node) do |n|
           name = case n.type

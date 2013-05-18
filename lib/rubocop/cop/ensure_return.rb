@@ -5,10 +5,6 @@ module Rubocop
     class EnsureReturn < Cop
       MSG = 'Never return from an ensure block.'
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node(:ensure, sexp) do |ensure_node|
           _body, ensure_body = *ensure_node

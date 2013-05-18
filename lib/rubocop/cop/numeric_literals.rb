@@ -6,10 +6,6 @@ module Rubocop
       MSG = 'Add underscores to large numeric literals to ' +
         'improve their readability.'
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node([:int, :float], sexp) do |s|
           if s.to_a[0] > 10000 &&

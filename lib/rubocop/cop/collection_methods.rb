@@ -10,10 +10,6 @@ module Rubocop
         find_all: 'select'
       }
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node(:send, sexp) do |node|
           receiver, method_name, *_args = *node

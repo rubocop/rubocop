@@ -5,10 +5,6 @@ module Rubocop
     class ClassMethods < Cop
       MSG = 'Prefer self over class/module for class/module methods.'
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         # defs nodes correspond to class & module methods
         on_node(:defs, sexp) do |s|

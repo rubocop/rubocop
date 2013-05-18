@@ -6,10 +6,6 @@ module Rubocop
       MSG = 'Never use unless with else. Rewrite these with the ' +
         'positive case first.'
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node(:if, sexp) do |s|
           src = s.src

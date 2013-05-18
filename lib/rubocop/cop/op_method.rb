@@ -9,10 +9,6 @@ module Rubocop
 
       TARGET_ARGS = s(:args, s(:arg, :other))
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node(:def, sexp) do |s|
           name, args, _body = *s

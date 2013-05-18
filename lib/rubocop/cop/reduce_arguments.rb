@@ -7,10 +7,6 @@ module Rubocop
 
       ARGS_NODE = s(:args, s(:arg, :a), s(:arg, :e))
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node(:block, sexp) do |node|
           # we care only for single line blocks

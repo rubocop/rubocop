@@ -6,10 +6,6 @@ module Rubocop
       MSG = "Prefer single-quoted strings when you don't need " +
         'string interpolation or special symbols.'
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node(:str, sexp, :dstr) do |s|
           text = s.to_a[0]

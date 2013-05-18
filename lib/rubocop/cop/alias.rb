@@ -5,14 +5,10 @@ module Rubocop
     class Alias < Cop
       MSG = 'Use alias_method instead of alias.'
 
-      def self.portable?
-        true
-      end
-
-      def inspect(file, source, tokens, sexp)
-        on_node(:alias, sexp) do |s|
+      def inspect(file, source, tokens, ast)
+        on_node(:alias, ast) do |node|
           add_offence(:convention,
-                      s.src.keyword.line,
+                      node.src.keyword.line,
                       MSG)
         end
       end

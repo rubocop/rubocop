@@ -10,10 +10,6 @@ module Rubocop
       #   (const nil :Hash) :new)
       TARGET = s(:send, s(:const, nil, :Hash), :new)
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node(:send, sexp, :block) do |s|
           if s == TARGET

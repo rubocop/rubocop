@@ -35,10 +35,6 @@ module Rubocop
         $-0 $-a $-d $-F $-i $-I $-l $-p $-v $-w
       )
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node([:gvar, :gvasgn], sexp) do |s|
           global_var = s.src.name.to_source

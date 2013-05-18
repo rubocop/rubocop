@@ -7,10 +7,6 @@ module Rubocop
       SNAKE_CASE = /^[\da-z_]+[!?=]?$/
       CAMEL_CASE = /^[A-Z][A-Za-z\d]*$/
 
-      def self.portable?
-        true
-      end
-
       def allow_camel_case?
         self.class.config['AllowCamelCase']
       end

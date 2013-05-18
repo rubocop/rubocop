@@ -5,10 +5,6 @@ module Rubocop
     class LineLength < Cop
       MSG = 'Line is too long. [%d/%d]'
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         source.each_with_index do |line, index|
           max = LineLength.max

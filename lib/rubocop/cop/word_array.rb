@@ -5,10 +5,6 @@ module Rubocop
     class WordArray < Cop
       MSG = 'Use %w or %W for array of words.'
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node(:array, sexp) do |s|
           next unless s.src.begin && s.src.begin.to_source == '['

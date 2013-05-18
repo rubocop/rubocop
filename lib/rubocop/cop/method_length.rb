@@ -5,10 +5,6 @@ module Rubocop
     class MethodLength < Cop
       MSG = 'Method has too many lines. [%d/%d]'
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node([:def, :defs], sexp) do |s|
           def_start = s.src.keyword.line

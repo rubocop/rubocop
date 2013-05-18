@@ -6,10 +6,6 @@ module Rubocop
       READER_MESSAGE = 'Use attr_reader to define trivial reader methods.'
       WRITER_MESSAGE = 'Use attr_writer to define trivial writer methods.'
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node(:def, sexp) do |s|
           _, args, body = *s

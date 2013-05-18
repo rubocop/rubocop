@@ -6,10 +6,6 @@ module Rubocop
       MSG = 'Align the parameters of a method call if they span ' +
         'more than one line.'
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node(:send, sexp) do |node|
           _receiver, method, *args = *node

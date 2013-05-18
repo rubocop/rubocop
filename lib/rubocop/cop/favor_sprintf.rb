@@ -5,10 +5,6 @@ module Rubocop
     class FavorSprintf < Cop
       MSG = 'Favor sprintf over String#%.'
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node(:send, sexp) do |s|
           receiver_node, method_name, *arg_nodes = *s

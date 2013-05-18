@@ -40,10 +40,6 @@ module Rubocop
     class IfUnlessModifier < Cop
       include FavorModifier
 
-      def self.portable?
-        true
-      end
-
       def error_message
         'Favor modifier if/unless usage when you have a single-line body. ' +
           'Another good alternative is the usage of control flow and/or.'
@@ -62,10 +58,6 @@ module Rubocop
 
     class WhileUntilModifier < Cop
       include FavorModifier
-
-      def self.portable?
-        true
-      end
 
       def error_message
         'Favor modifier while/until usage when you have a single-line body.'

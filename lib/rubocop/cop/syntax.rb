@@ -5,10 +5,6 @@ require 'open3'
 module Rubocop
   module Cop
     class Syntax < Cop
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         return unless RUBY_ENGINE == 'ruby'
 

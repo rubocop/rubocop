@@ -5,10 +5,6 @@ module Rubocop
     class RescueException < Cop
       MSG = 'Avoid rescuing the Exception class.'
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, node)
         on_node(:resbody, node) do |n|
           next unless n.children.first

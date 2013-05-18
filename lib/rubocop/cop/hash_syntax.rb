@@ -5,10 +5,6 @@ module Rubocop
     class HashSyntax < Cop
       MSG = 'Ruby 1.8 hash syntax detected'
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node(:hash, sexp) do |node|
           pairs = *node

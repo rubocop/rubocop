@@ -5,10 +5,6 @@ module Rubocop
     class ColonMethodCall < Cop
       MSG = 'Do not use :: for method invocation.'
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node(:send, sexp) do |s|
           receiver, method_name, *_args = *s

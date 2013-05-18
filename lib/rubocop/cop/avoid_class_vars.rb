@@ -3,10 +3,6 @@
 module Rubocop
   module Cop
     class AvoidClassVars < Cop
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node(:cvdecl, sexp) do |s|
           class_var = s.src.name.to_source

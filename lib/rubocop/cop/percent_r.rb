@@ -6,10 +6,6 @@ module Rubocop
       MSG = 'Use %r only for regular expressions matching more ' +
         "than one '/' character."
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node(:regexp, sexp) do |node|
           if node.src.begin.to_source != '/' &&

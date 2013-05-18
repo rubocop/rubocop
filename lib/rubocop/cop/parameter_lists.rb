@@ -5,10 +5,6 @@ module Rubocop
     class ParameterLists < Cop
       MSG = 'Avoid parameter lists longer than four parameters.'
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node(:args, sexp) do |s|
           if s.children.size > 4

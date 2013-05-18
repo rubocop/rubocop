@@ -3,10 +3,6 @@
 module Rubocop
   module Cop
     class VariableInterpolation < Cop
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node(:dstr, sexp) do |s|
           var_nodes(s.children).each do |v|

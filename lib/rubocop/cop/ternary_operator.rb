@@ -3,10 +3,6 @@
 module Rubocop
   module Cop
     class MultilineTernaryOperator < Cop
-      def self.portable?
-        true
-      end
-
       def error_message
         'Avoid multi-line ?: (the ternary operator); use if/unless instead.'
       end
@@ -27,10 +23,6 @@ module Rubocop
     end
 
     class NestedTernaryOperator < Cop
-      def self.portable?
-        true
-      end
-
       def error_message
         'Ternary operators must not be nested. Prefer if/else constructs ' +
           'instead.'

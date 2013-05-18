@@ -5,10 +5,6 @@ module Rubocop
     class AvoidFor < Cop
       MSG = 'Prefer *each* over *for*.'
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node(:for, sexp) do |s|
           add_offence(:convention,

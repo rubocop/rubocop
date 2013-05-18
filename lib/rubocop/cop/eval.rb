@@ -5,10 +5,6 @@ module Rubocop
     class Eval < Cop
       MSG = 'The use of eval is a serious security risk.'
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node(:send, sexp) do |s|
           receiver, method_name = *s

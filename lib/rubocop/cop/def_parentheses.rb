@@ -3,10 +3,6 @@
 module Rubocop
   module Cop
     class DefWithParentheses < Cop
-      def self.portable?
-        true
-      end
-
       def error_message
         "Omit the parentheses in defs when the method doesn't accept any " +
           'arguments.'
@@ -28,10 +24,6 @@ module Rubocop
     end
 
     class DefWithoutParentheses < Cop
-      def self.portable?
-        true
-      end
-
       def error_message
         'Use def with parentheses when there are arguments.'
       end

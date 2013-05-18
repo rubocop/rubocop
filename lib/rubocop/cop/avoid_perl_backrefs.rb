@@ -3,10 +3,6 @@
 module Rubocop
   module Cop
     class AvoidPerlBackrefs < Cop
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node(:nth_ref, sexp) do |s|
           backref = s.src.expression.to_source

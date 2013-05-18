@@ -28,10 +28,6 @@ module Rubocop
         '$+' => '$LAST_PAREN_MATCH from English library'
       }
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node(:gvar, sexp) do |s|
           global_var = s.src.name.to_source

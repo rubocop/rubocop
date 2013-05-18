@@ -5,10 +5,6 @@ module Rubocop
     class CaseIndentation < Cop
       MSG = 'Indent when as deep as case.'
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node(:case, sexp) do |case_node|
           _condition, *whens, _else = *case_node

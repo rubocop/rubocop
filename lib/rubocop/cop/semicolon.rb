@@ -5,10 +5,6 @@ module Rubocop
     class Semicolon < Cop
       MSG = 'Do not use semicolons to terminate expressions.'
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node(:begin, sexp) do |s|
           exprs = s.children

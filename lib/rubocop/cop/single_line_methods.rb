@@ -5,10 +5,6 @@ module Rubocop
     class SingleLineMethods < Cop
       MSG = 'Avoid single-line method definitions.'
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         allow_empty = SingleLineMethods.config['AllowIfMethodIsEmpty']
 

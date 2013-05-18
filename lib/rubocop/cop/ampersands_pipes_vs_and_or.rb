@@ -6,10 +6,6 @@ module Rubocop
       COND_MSG = 'Use &&/|| for conditional expressions.'
       FLOW_MSG = 'Use and/or for flow on control.'
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node([:if, :while, :until], sexp) do |node|
           cond, body = *node

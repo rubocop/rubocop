@@ -5,10 +5,6 @@ module Rubocop
     class Not < Cop
       MSG = 'Use ! instead of not.'
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         on_node(:send, sexp) do |s|
           _, method_name = *s

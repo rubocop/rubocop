@@ -5,10 +5,6 @@ module Rubocop
     class EmptyLineBetweenDefs < Cop
       MSG = 'Use empty lines between defs.'
 
-      def self.portable?
-        true
-      end
-
       def inspect(file, source, tokens, sexp)
         prev_def_end = nil
 
