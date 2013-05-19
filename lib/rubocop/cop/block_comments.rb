@@ -5,7 +5,7 @@ module Rubocop
     class BlockComments < Cop
       MSG = 'Do not use block comments.'
 
-      def inspect(file, source, tokens, sexp)
+      def inspect(file, source, tokens, ast)
         source.each_with_index do |line, ix|
           add_offence(:convention, ix, MSG) if line =~ /\A=begin\b/
         end

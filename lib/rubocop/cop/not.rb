@@ -5,8 +5,8 @@ module Rubocop
     class Not < Cop
       MSG = 'Use ! instead of not.'
 
-      def inspect(file, source, tokens, sexp)
-        on_node(:send, sexp) do |s|
+      def inspect(file, source, tokens, ast)
+        on_node(:send, ast) do |s|
           _, method_name = *s
 
           if method_name == :! && s.src.selector.to_source == 'not'

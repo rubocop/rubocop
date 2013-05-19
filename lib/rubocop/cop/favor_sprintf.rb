@@ -5,8 +5,8 @@ module Rubocop
     class FavorSprintf < Cop
       MSG = 'Favor sprintf over String#%.'
 
-      def inspect(file, source, tokens, sexp)
-        on_node(:send, sexp) do |s|
+      def inspect(file, source, tokens, ast)
+        on_node(:send, ast) do |s|
           receiver_node, method_name, *arg_nodes = *s
 
           if method_name == :% &&

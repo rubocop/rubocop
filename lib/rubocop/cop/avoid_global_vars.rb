@@ -35,13 +35,13 @@ module Rubocop
         $-0 $-a $-d $-F $-i $-I $-l $-p $-v $-w
       )
 
-      def inspect(file, source, tokens, sexp)
-        on_node([:gvar, :gvasgn], sexp) do |s|
-          global_var = s.src.name.to_source
+      def inspect(file, source, tokens, ast)
+        on_node([:gvar, :gvasgn], ast) do |node|
+          global_var = node.src.name.to_source
 
           unless BUILT_IN_VARS.include?(global_var)
             add_offence(:convention,
-                        s.src.name.line,
+                        node.src.name.line,
                         MSG)
           end
         end

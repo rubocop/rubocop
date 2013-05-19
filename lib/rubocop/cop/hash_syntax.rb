@@ -5,8 +5,8 @@ module Rubocop
     class HashSyntax < Cop
       MSG = 'Ruby 1.8 hash syntax detected'
 
-      def inspect(file, source, tokens, sexp)
-        on_node(:hash, sexp) do |node|
+      def inspect(file, source, tokens, ast)
+        on_node(:hash, ast) do |node|
           pairs = *node
 
           sym_indices = pairs.all? { |p| word_symbol_pair?(p) }

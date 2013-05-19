@@ -10,8 +10,8 @@ module Rubocop
         find_all: 'select'
       }
 
-      def inspect(file, source, tokens, sexp)
-        on_node(:send, sexp) do |node|
+      def inspect(file, source, tokens, ast)
+        on_node(:send, ast) do |node|
           receiver, method_name, *_args = *node
 
           # a simple(but flawed way) to reduce false positives

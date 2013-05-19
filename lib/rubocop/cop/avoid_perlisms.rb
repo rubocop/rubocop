@@ -28,14 +28,14 @@ module Rubocop
         '$+' => '$LAST_PAREN_MATCH from English library'
       }
 
-      def inspect(file, source, tokens, sexp)
-        on_node(:gvar, sexp) do |s|
-          global_var = s.src.name.to_source
+      def inspect(file, source, tokens, ast)
+        on_node(:gvar, ast) do |node|
+          global_var = node.src.name.to_source
 
           if PREFERRED_VARS[global_var]
             add_offence(
               :convention,
-              s.src.line,
+              node.src.line,
               "Prefer #{PREFERRED_VARS[global_var]} over #{global_var}."
             )
           end

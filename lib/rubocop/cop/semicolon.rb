@@ -5,8 +5,8 @@ module Rubocop
     class Semicolon < Cop
       MSG = 'Do not use semicolons to terminate expressions.'
 
-      def inspect(file, source, tokens, sexp)
-        on_node(:begin, sexp) do |s|
+      def inspect(file, source, tokens, ast)
+        on_node(:begin, ast) do |s|
           exprs = s.children
 
           next if exprs.size < 2

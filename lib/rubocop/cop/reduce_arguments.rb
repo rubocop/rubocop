@@ -7,8 +7,8 @@ module Rubocop
 
       ARGS_NODE = s(:args, s(:arg, :a), s(:arg, :e))
 
-      def inspect(file, source, tokens, sexp)
-        on_node(:block, sexp) do |node|
+      def inspect(file, source, tokens, ast)
+        on_node(:block, ast) do |node|
           # we care only for single line blocks
           next unless Util.block_length(node) == 0
 

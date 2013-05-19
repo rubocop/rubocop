@@ -5,10 +5,10 @@ module Rubocop
     class SingleLineMethods < Cop
       MSG = 'Avoid single-line method definitions.'
 
-      def inspect(file, source, tokens, sexp)
+      def inspect(file, source, tokens, ast)
         allow_empty = SingleLineMethods.config['AllowIfMethodIsEmpty']
 
-        on_node([:def, :defs], sexp) do |s|
+        on_node([:def, :defs], ast) do |s|
           start_line = s.src.keyword.line
           end_line = s.src.end.line
 

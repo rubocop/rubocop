@@ -9,8 +9,8 @@ module Rubocop
 
       TARGET_ARGS = s(:args, s(:arg, :other))
 
-      def inspect(file, source, tokens, sexp)
-        on_node(:def, sexp) do |s|
+      def inspect(file, source, tokens, ast)
+        on_node(:def, ast) do |s|
           name, args, _body = *s
 
           if name !~ /\A\w/ && !BLACKLISTED.include?(name) &&

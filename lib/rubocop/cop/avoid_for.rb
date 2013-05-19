@@ -5,10 +5,10 @@ module Rubocop
     class AvoidFor < Cop
       MSG = 'Prefer *each* over *for*.'
 
-      def inspect(file, source, tokens, sexp)
-        on_node(:for, sexp) do |s|
+      def inspect(file, source, tokens, ast)
+        on_node(:for, ast) do |node|
           add_offence(:convention,
-                      s.src.keyword.line,
+                      node.src.keyword.line,
                       MSG)
         end
       end

@@ -5,8 +5,8 @@ module Rubocop
     class EnsureReturn < Cop
       MSG = 'Never return from an ensure block.'
 
-      def inspect(file, source, tokens, sexp)
-        on_node(:ensure, sexp) do |ensure_node|
+      def inspect(file, source, tokens, ast)
+        on_node(:ensure, ast) do |ensure_node|
           _body, ensure_body = *ensure_node
 
           on_node(:return, ensure_body) do |e|

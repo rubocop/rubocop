@@ -12,7 +12,7 @@ module Rubocop
         'Favor unless (or control flow or) over if for negative conditions.'
       end
 
-      def inspect(file, source, tokens, sexp)
+      def inspect(file, source, tokens, ast)
         #TODO
       end
     end
@@ -24,7 +24,7 @@ module Rubocop
         'Favor until over while for negative conditions.'
       end
 
-      def inspect(file, source, tokens, sexp)
+      def inspect(file, source, tokens, ast)
         #TODO
       end
     end

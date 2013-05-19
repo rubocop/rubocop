@@ -5,8 +5,8 @@ module Rubocop
     class WordArray < Cop
       MSG = 'Use %w or %W for array of words.'
 
-      def inspect(file, source, tokens, sexp)
-        on_node(:array, sexp) do |s|
+      def inspect(file, source, tokens, ast)
+        on_node(:array, ast) do |s|
           next unless s.src.begin && s.src.begin.to_source == '['
 
           array_elems = s.children

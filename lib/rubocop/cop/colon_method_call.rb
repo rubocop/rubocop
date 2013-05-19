@@ -5,8 +5,8 @@ module Rubocop
     class ColonMethodCall < Cop
       MSG = 'Do not use :: for method invocation.'
 
-      def inspect(file, source, tokens, sexp)
-        on_node(:send, sexp) do |s|
+      def inspect(file, source, tokens, ast)
+        on_node(:send, ast) do |s|
           receiver, method_name, *_args = *s
 
           # discard methods with nil receivers and op methods(like [])

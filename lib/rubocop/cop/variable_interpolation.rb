@@ -3,8 +3,8 @@
 module Rubocop
   module Cop
     class VariableInterpolation < Cop
-      def inspect(file, source, tokens, sexp)
-        on_node(:dstr, sexp) do |s|
+      def inspect(file, source, tokens, ast)
+        on_node(:dstr, ast) do |s|
           var_nodes(s.children).each do |v|
             var = (v.type == :nth_ref ? '$' : '') + v.to_a[0].to_s
 

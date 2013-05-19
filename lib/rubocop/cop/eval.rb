@@ -5,8 +5,8 @@ module Rubocop
     class Eval < Cop
       MSG = 'The use of eval is a serious security risk.'
 
-      def inspect(file, source, tokens, sexp)
-        on_node(:send, sexp) do |s|
+      def inspect(file, source, tokens, ast)
+        on_node(:send, ast) do |s|
           receiver, method_name = *s
 
           if receiver.nil? && method_name == :eval

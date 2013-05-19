@@ -5,8 +5,8 @@ module Rubocop
     class ParameterLists < Cop
       MSG = 'Avoid parameter lists longer than four parameters.'
 
-      def inspect(file, source, tokens, sexp)
-        on_node(:args, sexp) do |s|
+      def inspect(file, source, tokens, ast)
+        on_node(:args, ast) do |s|
           if s.children.size > 4
             add_offence(:convention, s.src.line, MSG)
           end

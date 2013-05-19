@@ -5,8 +5,8 @@ module Rubocop
     class HandleExceptions < Cop
       MSG = 'Do not suppress exceptions.'
 
-      def inspect(file, source, tokens, sexp)
-        on_node(:resbody, sexp) do |node|
+      def inspect(file, source, tokens, ast)
+        on_node(:resbody, ast) do |node|
           _exc_list_node, _exc_var_node, body_node = *node
 
           add_offence(:warning,

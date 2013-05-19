@@ -6,8 +6,8 @@ module Rubocop
       MSG = 'Never use unless with else. Rewrite these with the ' +
         'positive case first.'
 
-      def inspect(file, source, tokens, sexp)
-        on_node(:if, sexp) do |s|
+      def inspect(file, source, tokens, ast)
+        on_node(:if, ast) do |s|
           src = s.src
 
           # discard ternary ops and modifier if/unless nodes

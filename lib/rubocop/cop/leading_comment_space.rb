@@ -5,7 +5,7 @@ module Rubocop
     class LeadingCommentSpace < Cop
       MSG = 'Missing space after #.'
 
-      def inspect(file, source, tokens, sexp)
+      def inspect(file, source, tokens, ast)
         # TODO implemented when Parser starts tracking comments
       end
     end

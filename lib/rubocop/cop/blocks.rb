@@ -5,8 +5,8 @@ module Rubocop
     class MultilineBlocks < Cop
       MSG = 'Avoid using {...} for multi-line blocks.'
 
-      def inspect(file, source, tokens, sexp)
-        on_node(:block, sexp) do |s|
+      def inspect(file, source, tokens, ast)
+        on_node(:block, ast) do |s|
           if Util.block_length(s) > 0 && s.src.begin.to_source == '{'
             add_offence(:convention, s.src.line, MSG)
           end
@@ -17,8 +17,8 @@ module Rubocop
     class SingleLineBlocks < Cop
       MSG = 'Prefer {...} over do...end for single-line blocks.'
 
-      def inspect(file, source, tokens, sexp)
-        on_node(:block, sexp) do |s|
+      def inspect(file, source, tokens, ast)
+        on_node(:block, ast) do |s|
           if Util.block_length(s) == 0 && s.src.begin.to_source != '{'
             add_offence(:convention, s.src.line, MSG)
           end
