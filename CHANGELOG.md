@@ -5,10 +5,11 @@
 ### Misc
 
 * Reworked `SymbolSnakeCase` into `SymbolName`, which has an option `AllowCamelCase` enabled by default.
+* Migrated from `Ripper` to the portable [Parser](https://github.com/whitequark/parser).
 
 ### New features
 
-* New cop `ConstantName` checks for constant which are not using SCREAMING_SNAKE_CASE.
+* New cop `ConstantName` checks for constant which are not using `SCREAMING_SNAKE_CASE`.
 
 ## 0.7.2 (05/13/2013)
 
