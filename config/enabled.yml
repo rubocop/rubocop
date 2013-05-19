@@ -252,12 +252,8 @@ BlockComments:
 RescueException:
   Enabled: true
 
-# Prefer array literal to Array.new.
-ArrayLiteral:
-  Enabled: true
-
-# Prefer hash {} literail to Hash.new.
-HashLiteral:
+# Prefer literals to Array.new/Hash.new/String.new.
+EmptyLiteral:
   Enabled: true
 
 # When defining binary operators, name the argument other.
