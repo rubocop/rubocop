@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     class LineContinuation < Cop
-      MSG = 'Avoid the use of the line continuation character(/).'
+      MSG = 'Avoid the use of the line continuation character(\).'
 
       def inspect(file, source, tokens, ast)
         source.each_with_index do |line, index|
