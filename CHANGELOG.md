@@ -8,6 +8,8 @@
 
 ### New features
 
+* New cop `ConstantName` checks for constant which are not using SCREAMING_SNAKE_CASE.
+
 ## 0.7.2 (05/13/2013)
 
 ### Bugs fixed

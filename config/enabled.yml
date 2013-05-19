@@ -315,3 +315,7 @@ Eval:
 # Symbol literals should use snake_case.
 SymbolName:
   Enabled: true
+
+# Constants should use SCREAMING_SNAKE_CASE.
+ConstantName:
+  Enabled: true
