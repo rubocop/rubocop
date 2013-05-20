@@ -10,7 +10,8 @@
 ### New features
 
 * New cop `ConstantName` checks for constant which are not using `SCREAMING_SNAKE_CASE`.
-* New cop `AccessControl` check private/protected indentation and surrounding blank lines.
+* New cop `AccessControl` checks private/protected indentation and surrounding blank lines.
+* New cop `Loop` checks for `begin/end/while(until)` and suggests the use of `Kernel#loop`.
 
 ## 0.7.2 (05/13/2013)
 
