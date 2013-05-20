@@ -7,7 +7,17 @@ module Rubocop
         'if/unless/while/until, unless the condition contains an assignment.'
 
       def inspect(file, source, tokens, ast)
-        # TODO
+        on_node([:if, :while, :until], ast) do |node|
+          cond, _body = *node
+
+          cond_source = cond.src.expression.to_source
+
+          if cond_source.start_with?('(') && cond_source.end_with?(')')
+            add_offence(:convetion,
+                        cond.src.line,
+                        MSG)
+          end
+        end
       end
     end
   end
