@@ -319,3 +319,7 @@ SymbolName:
 # Constants should use SCREAMING_SNAKE_CASE.
 ConstantName:
   Enabled: true
+
+# Indent private/protected as deep as defs and keep blank lines around them.
+AccessControl:
+  Enabled: true
