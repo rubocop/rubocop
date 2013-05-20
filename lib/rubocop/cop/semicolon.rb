@@ -6,8 +6,8 @@ module Rubocop
       MSG = 'Do not use semicolons to terminate expressions.'
 
       def inspect(file, source, tokens, ast)
-        on_node(:begin, ast) do |s|
-          exprs = s.children
+        on_node(:begin, ast) do |node|
+          exprs = node.children
 
           next if exprs.size < 2
 
@@ -17,9 +17,7 @@ module Rubocop
 
           # every line with more than 1 expression on it is an offence
           lines.each do |line, expr_on_line|
-            if expr_on_line.size > 1
-              add_offence(:convention, line, MSG)
-            end
+            add_offence(:convention, line, MSG) if expr_on_line.size > 1
           end
         end
 
