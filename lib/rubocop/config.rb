@@ -79,7 +79,7 @@ module Rubocop
         found_file = possible_config_files.find do |config_file|
           File.exist?(config_file)
         end
-        found_file or DEFAULT_FILE
+        found_file || DEFAULT_FILE
       end
 
       def configuration_from_file(config_file)
@@ -119,7 +119,7 @@ module Rubocop
     end
 
     def cop_enabled?(cop)
-      self[cop].nil? or self[cop]['Enabled']
+      self[cop].nil? || self[cop]['Enabled']
     end
 
     def warn_unless_valid
@@ -141,7 +141,7 @@ module Rubocop
 
       invalid_cop_names.each do |name|
         fail ValidationError,
-             "unrecognized cop #{name} found in #{loaded_path or self}"
+             "unrecognized cop #{name} found in #{loaded_path || self}"
       end
 
       valid_cop_names.each do |name|
@@ -196,7 +196,7 @@ module Rubocop
     def match_path?(pattern, path)
       case pattern
       when String
-        (File.basename(path) == pattern) or File.fnmatch(pattern, path)
+        File.basename(path) == pattern || File.fnmatch(pattern, path)
       when Regexp
         path =~ pattern
       end

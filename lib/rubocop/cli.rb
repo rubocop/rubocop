@@ -101,7 +101,7 @@ module Rubocop
       begin
         ast, tokens = CLI.rip_source(source.join("\n"))
       rescue Parser::SyntaxError, Encoding::UndefinedConversionError,
-          ArgumentError => e
+        ArgumentError => e
         handle_error(e, "An error occurred while parsing #{file}.".color(:red))
         return
       end
@@ -287,12 +287,13 @@ module Rubocop
 
       rb += files.select { |file| File.extname(file) == '.rb' }
       rb += files.select do |file|
-        File.extname(file) == '' and
-        begin
-          File.open(file) { |f| f.readline } =~ /#!.*ruby/
-        rescue EOFError, ArgumentError => e
-          log_error(e, "Unprocessable file #{file.inspect}: ")
-          false
+        if File.extname(file) == ''
+          begin
+            File.open(file) { |f| f.readline } =~ /#!.*ruby/
+          rescue EOFError, ArgumentError => e
+            log_error(e, "Unprocessable file #{file.inspect}: ")
+            false
+          end
         end
       end
 

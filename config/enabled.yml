@@ -128,8 +128,8 @@ NestedTernaryOperator:
 UnlessElse:
   Enabled: true
 
-# Use &&/|| for boolean expressions, and/or for control flow.
-AmpersandsPipesVsAndOr:
+# Use &&/|| instead of and/or.
+AndOr:
   Enabled: true
 
 # Use when x then ... for one-line cases.

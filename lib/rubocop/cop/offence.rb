@@ -24,7 +24,7 @@ module Rubocop
       end
 
       def ==(other)
-        severity == other.severity and line_number == other.line_number and
+        severity == other.severity && line_number == other.line_number &&
           message == other.message
       end
 
