@@ -6,11 +6,14 @@ module Rubocop
       MSG = 'Use ! instead of not.'
 
       def inspect(file, source, tokens, ast)
-        on_node(:send, ast) do |s|
-          _, method_name = *s
+        on_node(:send, ast) do |node|
+          _receiver, method_name, *args = *node
 
-          if method_name == :! && s.src.selector.to_source == 'not'
-            add_offence(:convention, s.src.line, MSG)
+          # not does not take any arguments
+          next unless args.empty?
+
+          if method_name == :! && node.src.selector.to_source == 'not'
+            add_offence(:convention, node.src.line, MSG)
           end
         end
       end
