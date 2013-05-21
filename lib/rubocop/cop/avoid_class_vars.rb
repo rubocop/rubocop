@@ -10,7 +10,7 @@ module Rubocop
       end
 
       def on_cvdecl(node)
-        class_var = node.src.name.to_source
+        class_var, = *node
 
         add_offence(:convention,
                     node.src.name.line,
