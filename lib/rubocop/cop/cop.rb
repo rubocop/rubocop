@@ -30,7 +30,7 @@ module Rubocop
       end
     end
 
-    class Cop
+    class Cop < Parser::AST::Processor
       extend AST::Sexp
 
       attr_accessor :offences
