@@ -6,11 +6,13 @@ module Rubocop
       MSG = 'Prefer *each* over *for*.'
 
       def inspect(file, source, tokens, ast)
-        on_node(:for, ast) do |node|
-          add_offence(:convention,
-                      node.src.keyword.line,
-                      MSG)
-        end
+        process(ast)
+      end
+
+      def on_for(node)
+        add_offence(:convention,
+                    node.src.keyword.line,
+                    MSG)
       end
     end
   end
