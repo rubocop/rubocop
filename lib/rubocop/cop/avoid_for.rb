@@ -13,6 +13,8 @@ module Rubocop
         add_offence(:convention,
                     node.src.keyword.line,
                     MSG)
+
+        super
       end
     end
   end
