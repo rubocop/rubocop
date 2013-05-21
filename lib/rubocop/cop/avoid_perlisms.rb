@@ -29,17 +29,22 @@ module Rubocop
       }
 
       def inspect(file, source, tokens, ast)
-        on_node(:gvar, ast) do |node|
-          global_var = node.src.name.to_source
+        process(ast)
+      end
 
-          if PREFERRED_VARS[global_var]
-            add_offence(
-              :convention,
-              node.src.line,
-              "Prefer #{PREFERRED_VARS[global_var]} over #{global_var}."
-            )
-          end
+      def on_gvar(node)
+        global_var, = *node
+        global_var = global_var.to_s
+
+        if PREFERRED_VARS[global_var]
+          add_offence(
+            :convention,
+            node.src.line,
+            "Prefer #{PREFERRED_VARS[global_var]} over #{global_var}."
+          )
         end
+
+        super
       end
     end
   end
