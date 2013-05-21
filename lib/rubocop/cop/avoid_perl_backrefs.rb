@@ -4,15 +4,17 @@ module Rubocop
   module Cop
     class AvoidPerlBackrefs < Cop
       def inspect(file, source, tokens, ast)
-        on_node(:nth_ref, ast) do |node|
-          backref = node.src.expression.to_source
+        process(ast)
+      end
 
-          add_offence(
-            :convention,
-            node.src.line,
-            "Prefer the use of MatchData over #{backref}."
-          )
-        end
+      def on_nth_ref(node)
+        backref, = *node
+
+        add_offence(:convention,
+                    node.src.line,
+                    "Prefer the use of MatchData over $#{backref}.")
+
+        super
       end
     end
   end
