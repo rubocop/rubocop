@@ -6,15 +6,17 @@ module Rubocop
       MSG = 'Replace class var %s with a class instance var.'
 
       def inspect(file, source, tokens, ast)
-        on_node(:cvdecl, ast) do |node|
-          class_var = node.src.name.to_source
+        process(ast)
+      end
 
-          add_offence(
-            :convention,
-            node.src.name.line,
-            sprintf(MSG, class_var)
-          )
-        end
+      def on_cvdecl(node)
+        class_var = node.src.name.to_source
+
+        add_offence(:convention,
+                    node.src.name.line,
+                    sprintf(MSG, class_var))
+
+        super
       end
     end
   end
