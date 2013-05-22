@@ -6,9 +6,9 @@ module Rubocop
       MSG = 'Method has too many lines. [%d/%d]'
 
       def inspect(file, source, tokens, ast)
-        on_node([:def, :defs], ast) do |s|
-          def_start = s.src.keyword.line
-          def_end = s.src.end.line
+        on_node([:def, :defs], ast) do |node|
+          def_start = node.src.keyword.line
+          def_end = node.src.end.line
           length = calculate_length(def_start, def_end, source)
 
           max = MethodLength.config['Max']
