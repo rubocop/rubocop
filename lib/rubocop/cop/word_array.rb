@@ -5,24 +5,24 @@ module Rubocop
     class WordArray < Cop
       MSG = 'Use %w or %W for array of words.'
 
-      def inspect(file, source, tokens, ast)
-        on_node(:array, ast) do |s|
-          next unless s.src.begin && s.src.begin.to_source == '['
+      def on_array(node)
+        return unless node.src.begin && node.src.begin.to_source == '['
 
-          array_elems = s.children
+        array_elems = node.children
 
-          # no need to check empty arrays
-          next unless array_elems && array_elems.size > 1
+        # no need to check empty arrays
+        return unless array_elems && array_elems.size > 1
 
-          string_array = array_elems.all? { |e| e.type == :str }
+        string_array = array_elems.all? { |e| e.type == :str }
 
-          if string_array && !complex_content?(array_elems)
-            add_offence(:convention,
-                        s.src.line,
-                        MSG)
-          end
+        if string_array && !complex_content?(array_elems)
+          add_offence(:convention, node.src.line, MSG)
         end
+
+        super
       end
+
+      private
 
       def complex_content?(arr_sexp)
         arr_sexp.each do |s|
