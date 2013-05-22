@@ -5,12 +5,24 @@ module Rubocop
     class ClassAndModuleCamelCase < Cop
       MSG = 'Use CamelCase for classes and modules.'
 
-      def inspect(file, source, tokens, ast)
-        on_node([:class, :module], ast) do |s|
-          name = s.src.name.to_source
+      def on_class(node)
+        check_name(node)
 
-          add_offence(:convention, s.src.line, MSG) if name =~ /_/
-        end
+        super
+      end
+
+      def on_module(node)
+        check_name(node)
+
+        super
+      end
+
+      private
+
+      def check_name(node)
+        name = node.src.name.to_source
+
+        add_offence(:convention, node.src.line, MSG) if name =~ /_/
       end
     end
   end
