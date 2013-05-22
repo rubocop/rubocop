@@ -28,10 +28,6 @@ module Rubocop
         '$+' => '$LAST_PAREN_MATCH from English library'
       }
 
-      def inspect(file, source, tokens, ast)
-        process(ast)
-      end
-
       def on_gvar(node)
         global_var, = *node
         global_var = global_var.to_s

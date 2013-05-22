@@ -62,6 +62,10 @@ module Rubocop
         !@offences.empty?
       end
 
+      def inspect(file, source, tokens, ast)
+        process(ast)
+      end
+
       def add_offence(severity, line_number, message)
         unless @disabled_lines && @disabled_lines.include?(line_number)
           message = debug ? "#{name}: #{message}" : message

@@ -5,10 +5,6 @@ module Rubocop
     class AvoidClassVars < Cop
       MSG = 'Replace class var %s with a class instance var.'
 
-      def inspect(file, source, tokens, ast)
-        process(ast)
-      end
-
       def on_cvdecl(node)
         class_var, = *node
 

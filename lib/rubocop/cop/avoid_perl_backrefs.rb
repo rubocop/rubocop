@@ -3,10 +3,6 @@
 module Rubocop
   module Cop
     class AvoidPerlBackrefs < Cop
-      def inspect(file, source, tokens, ast)
-        process(ast)
-      end
-
       def on_nth_ref(node)
         backref, = *node
 
