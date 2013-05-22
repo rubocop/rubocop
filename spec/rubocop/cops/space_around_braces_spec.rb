@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module Rubocop
   module Cop
-    describe SpaceAroundBraces, broken: true do
+    describe SpaceAroundBraces do
       let(:space) { SpaceAroundBraces.new }
 
       it 'registers an offence for left brace without spaces' do
@@ -25,6 +25,21 @@ module Rubocop
                         'end',
                         '@views = {}',
                         ''])
+        expect(space.offences.map(&:message)).to be_empty
+      end
+
+      it 'accepts string interpolation braces with no space inside' do
+        inspect_source(space, 'file.rb',
+                       ['"A=#{a}"',
+                        ':"#{b}"',
+                        '/#{c}/',
+                        '`#{d}`',
+                        'sprintf("#{message.gsub(/%/, \'%%\')}", line)'])
+        expect(space.offences.map(&:message)).to be_empty
+      end
+
+      it 'accepts braces around a hash literal argument' do
+        inspect_source(space, 'file.rb', ["new({'user' => user_params})"])
         expect(space.offences.map(&:message)).to be_empty
       end
     end

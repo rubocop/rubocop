@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module Rubocop
   module Cop
-    describe SpaceAroundOperators, broken: true do
+    describe SpaceAroundOperators do
       let(:space) { SpaceAroundOperators.new }
 
       it 'registers an offence for assignment without space on both sides' do
@@ -101,6 +101,12 @@ module Rubocop
                         '    benchmark(CAPTION, label_width, FORMAT,',
                         '              *labels, &blk)',
                         '  end',
+                        '',
+                        '  def each &block',
+                        '  end',
+                        '',
+                        '  def each *args',
+                        '  end',
                         ''])
         expect(space.offences.map(&:message)).to be_empty
       end
@@ -111,8 +117,16 @@ module Rubocop
       end
 
       it 'accepts def of operator' do
-        inspect_source(space, 'file.rb', ['def +(other); end'])
+        inspect_source(space, 'file.rb', ['def +(other); end',
+                                          'def self.===(other); end'])
         expect(space.offences.map(&:message)).to be_empty
+      end
+
+      it 'accepts an operator at the end of a line' do
+        inspect_source(space, 'file.rb',
+                       ["['Favor unless over if for negative ' +",
+                        " 'conditions.'] * 2"])
+        expect(space.offences.map(&:message)).to eq([])
       end
 
       it 'accepts an assignment with spaces' do
@@ -120,11 +134,37 @@ module Rubocop
         expect(space.offences).to be_empty
       end
 
+      it 'registers an offence for operators without spaces' do
+        inspect_source(space, 'file.rb',
+                       ['x+= a+b-c*d/e%f^g|h&i||j',
+                        'y -=k&&l'])
+        expect(space.offences.map(&:message))
+          .to eq(["Surrounding space missing for operator '+='.",
+                  "Surrounding space missing for operator '+'.",
+                  "Surrounding space missing for operator '-'.",
+                  "Surrounding space missing for operator '*'.",
+                  "Surrounding space missing for operator '/'.",
+                  "Surrounding space missing for operator '%'.",
+                  "Surrounding space missing for operator '^'.",
+                  "Surrounding space missing for operator '|'.",
+                  "Surrounding space missing for operator '&'.",
+                  "Surrounding space missing for operator '||'.",
+                  "Surrounding space missing for operator '-='.",
+                  "Surrounding space missing for operator '&&'."])
+      end
+
+      it 'accepts operators with spaces' do
+        inspect_source(space, 'file.rb',
+                       ['x += a + b - c * d / e % f ^ g | h & i || j',
+                        'y -= k && l'])
+        expect(space.offences.map(&:message)).to eq([])
+      end
+
       it "accepts some operators that are exceptions and don't need spaces" do
         inspect_source(space, 'file.rb', ['(1..3)',
                                          'ActionController::Base',
                                          'each { |s, t| }'])
-        expect(space.offences.map(&:message)).to be_empty
+        expect(space.offences.map(&:message)).to eq([])
       end
 
       it 'accepts an assignment followed by newline' do
@@ -145,8 +185,23 @@ module Rubocop
 
       it 'accepts unary operators without space' do
         inspect_source(space, 'file.rb', ['[].map(&:size)',
-                                         '-3',
-                                         'x = +2'])
+                                          '-3',
+                                          'x = +2'])
+        expect(space.offences.map(&:message)).to eq([])
+      end
+
+      it 'accepts argument default values without space' do
+        # These are handled by SpaceAroundEqualsInParameterDefault,
+        # so SpaceAroundOperators leaves them alone.
+        inspect_source(space, 'file.rb',
+                       ['def init(name=nil)',
+                        'end'])
+        expect(space.offences.map(&:message)).to be_empty
+      end
+
+      it 'accepts the construct class <<self with no space after <<' do
+        inspect_source(space, 'file.rb', ['class <<self',
+                                          'end'])
         expect(space.offences.map(&:message)).to be_empty
       end
     end

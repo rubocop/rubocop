@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module Rubocop
   module Cop
-    describe SpaceInsideParens, broken: true do
+    describe SpaceInsideParens do
       let(:space) { SpaceInsideParens.new }
 
       it 'registers an offence for spaces inside parens' do
@@ -22,6 +22,10 @@ module Rubocop
         expect(space.offences.map(&:message)).to be_empty
       end
 
+      it 'accepts parentheses with no spaces' do
+        inspect_source(space, 'file.rb', ['split("\n")'])
+        expect(space.offences.map(&:message)).to be_empty
+      end
     end
   end
 end

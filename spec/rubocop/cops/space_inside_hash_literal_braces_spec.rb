@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module Rubocop
   module Cop
-    describe SpaceInsideHashLiteralBraces, broken: true do
+    describe SpaceInsideHashLiteralBraces do
       let(:sihlb) { SpaceInsideHashLiteralBraces.new }
       before do
         SpaceInsideHashLiteralBraces.config = {
@@ -14,7 +14,7 @@ module Rubocop
 
       it 'registers an offence for hashes with no spaces by default' do
         inspect_source(sihlb, '',
-                       ['h = {a: 1, b: 2}',
+                       ['h = {a: 1, b: :two}',
                         'h = {a => 1 }'])
         expect(sihlb.offences.map(&:message)).to eq(
           ['Space inside hash literal braces missing.'] * 3)
@@ -67,6 +67,11 @@ module Rubocop
 
       it 'accepts empty hashes without spaces even if configured true' do
         inspect_source(sihlb, '', ['h = {}'])
+        expect(sihlb.offences).to be_empty
+      end
+
+      it 'accepts hash literals with no braces' do
+        inspect_source(sihlb, '', ['x(a: b.c)'])
         expect(sihlb.offences).to be_empty
       end
     end

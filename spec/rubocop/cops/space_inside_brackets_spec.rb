@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module Rubocop
   module Cop
-    describe SpaceInsideBrackets, broken: true do
+    describe SpaceInsideBrackets do
       let(:space) { SpaceInsideBrackets.new }
 
       it 'registers an offence for an array literal with spaces inside' do
@@ -13,6 +13,12 @@ module Rubocop
         expect(space.offences.map(&:message)).to eq(
           ['Space inside square brackets detected.',
            'Space inside square brackets detected.'])
+      end
+
+      it 'accepts space inside strings within square brackets' do
+        inspect_source(space, 'file.rb', ["['Encoding:',",
+                                          " '  Enabled: false']"])
+        expect(space.offences.map(&:message)).to be_empty
       end
 
       it 'accepts space inside square brackets if on its own row' do
