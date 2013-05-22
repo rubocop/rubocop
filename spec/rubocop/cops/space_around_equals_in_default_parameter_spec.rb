@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module Rubocop
   module Cop
-    describe SpaceAroundEqualsInParameterDefault, broken: true do
+    describe SpaceAroundEqualsInParameterDefault do
       let(:space) { SpaceAroundEqualsInParameterDefault.new }
 
       it 'registers an offence for default value assignment without space' do
