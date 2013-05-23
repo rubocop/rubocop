@@ -3,14 +3,16 @@
 module Rubocop
   module Cop
     class NewLambdaLiteral < Cop
-      MSG = 'The new lambda literal syntax is preferred in Ruby 1.9.'
+      MSG = 'Use the new lambda literal syntax ->(params) {...}.'
 
-      def inspect(file, source, tokens, ast)
-        on_node(:send, ast) do |s|
-          if s.to_a == [nil, :lambda] && s.src.selector.to_source != '->'
-            add_offence(:convention, s.src.line, MSG)
-          end
+      TARGET = s(:send, nil, :lambda)
+
+      def on_send(node)
+        if node == TARGET && node.src.selector.to_source != '->'
+          add_offence(:convention, node.src.line, MSG)
         end
+
+        super
       end
     end
   end
