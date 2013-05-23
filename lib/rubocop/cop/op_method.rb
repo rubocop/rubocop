@@ -9,17 +9,17 @@ module Rubocop
 
       TARGET_ARGS = s(:args, s(:arg, :other))
 
-      def inspect(file, source, tokens, ast)
-        on_node(:def, ast) do |s|
-          name, args, _body = *s
+      def on_def(node)
+        name, args, _body = *node
 
-          if name !~ /\A\w/ && !BLACKLISTED.include?(name) &&
+        if name !~ /\A\w/ && !BLACKLISTED.include?(name) &&
             args.children.size == 1 && args != TARGET_ARGS
-            add_offence(:convention,
-                        s.src.line,
-                        sprintf(MSG, name))
-          end
+          add_offence(:convention,
+                      node.src.line,
+                      sprintf(MSG, name))
         end
+
+        super
       end
     end
   end
