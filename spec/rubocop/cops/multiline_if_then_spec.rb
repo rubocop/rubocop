@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module Rubocop
   module Cop
-    describe MultilineIfThen, broken: true do
+    describe MultilineIfThen do
       let(:mit) { MultilineIfThen.new }
 
       # if
@@ -23,7 +23,7 @@ module Rubocop
 
       it 'accepts multiline if without then' do
         inspect_source(mit, '', ['if cond',
-                                          'end'])
+                                 'end'])
         expect(mit.offences.map(&:message)).to be_empty
       end
 
