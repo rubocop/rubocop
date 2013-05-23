@@ -3,20 +3,20 @@
 module Rubocop
   module Cop
     class VariableInterpolation < Cop
-      def inspect(file, source, tokens, ast)
-        on_node(:dstr, ast) do |s|
-          var_nodes(s.children).each do |v|
-            var = (v.type == :nth_ref ? '$' : '') + v.to_a[0].to_s
+      MSG = 'Replace interpolated var %s with expression #{%s}.'
 
-            if s.src.expression.to_source.include?("##{var}")
-              add_offence(
-                :convention,
-                v.src.line,
-                "Replace interpolated var #{var} with expression \#{#{var}}."
-             )
-            end
+      def on_dstr(node)
+        var_nodes(node.children).each do |v|
+          var = (v.type == :nth_ref ? '$' : '') + v.to_a[0].to_s
+
+          if node.src.expression.to_source.include?("##{var}")
+            add_offence(:convention,
+                        v.src.line,
+                        sprintf(MSG, var, var))
           end
         end
+
+        super
       end
 
       private
