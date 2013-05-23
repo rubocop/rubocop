@@ -5,32 +5,41 @@ module Rubocop
     class MethodLength < Cop
       MSG = 'Method has too many lines. [%d/%d]'
 
-      def inspect(file, source, tokens, ast)
-        on_node([:def, :defs], ast) do |node|
-          def_start = node.src.keyword.line
-          def_end = node.src.end.line
-          length = calculate_length(def_start, def_end, source)
+      def on_def(node)
+        check(node)
 
-          max = MethodLength.config['Max']
-          if length > max
-            message = sprintf(MSG, length, max)
-            add_offence(:convention, def_start, message)
-          end
-        end
+        super
+      end
+
+      def on_defs(node)
+        check(node)
+
+        super
       end
 
       private
 
-      def calculate_length(def_start, def_end, source)
-        # first we check for single line methods
-        return 1 if def_start == def_end
+      def check(node)
+        method_length = calculate_length(node.src.expression.to_source)
 
-        # we start counting after def and before end
-        lines = source[def_start..(def_end - 2)].reject(&:empty?)
+        max = MethodLength.config['Max']
+        if method_length > max
+          message = sprintf(MSG, method_length, max)
+          add_offence(:convention, node.src.keyword.line, message)
+        end
+      end
+
+      def calculate_length(source)
+        lines = source.lines[1...-1]
+
+        return 0 unless lines
+
+        lines.map!(&:strip).reject!(&:empty?)
 
         unless MethodLength.config['CountComments']
-          lines = lines.reject { |line| line =~ /^\s*#/ }
+          lines.reject! { |line| line =~ /^\s*#/ }
         end
+
         lines.size
       end
     end
