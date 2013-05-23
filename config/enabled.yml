@@ -224,10 +224,6 @@ Not:
 RescueModifier:
   Enabled: true
 
-# Avoid the use of %q, %Q, %s and %x.
-PercentLiterals:
-  Enabled: true
-
 # Never use return in an ensure block.
 EnsureReturn:
   Enabled: true
