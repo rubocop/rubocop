@@ -30,7 +30,7 @@ module Rubocop
       end
 
       def calculate_length(source)
-        lines = source.lines[1...-1]
+        lines = source.lines.to_a[1...-1]
 
         return 0 unless lines
 
