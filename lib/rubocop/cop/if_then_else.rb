@@ -3,9 +3,20 @@
 module Rubocop
   module Cop
     module IfThenElse
-      def inspect(file, source, tokens, ast)
-        on_node([:if, :unless], ast) do |if_node|
-          lineno = offending_line(if_node)
+      def on_if(node)
+        check(node)
+        super
+      end
+
+      def on_unless(node)
+        check(node)
+        super
+      end
+
+      def check(node)
+        # We won't check modifier or ternary conditionals.
+        if node.src.expression.to_source =~ /\A(if|unless)\b/
+          lineno = offending_line(node)
           add_offence(:convention, lineno, error_message) if lineno
         end
       end
@@ -14,9 +25,9 @@ module Rubocop
     class IfWithSemicolon < Cop
       include IfThenElse
 
-      def offending_line(if_node)
-        if if_node.src.begin && if_node.src.begin.to_source == ';'
-          if_node.src.begin.line
+      def offending_line(node)
+        if node.src.begin && node.src.begin.to_source == ';'
+          node.src.begin.line
         end
       end
 
@@ -28,9 +39,9 @@ module Rubocop
     class MultilineIfThen < Cop
       include IfThenElse
 
-      def offending_line(if_node)
-        if if_node.src.expression.to_source =~ /\bthen\s*(#.*)?\s*$/
-          if_node.src.begin.line
+      def offending_line(node)
+        if node.src.expression.to_source =~ /\bthen\s*(#.*)?\s*$/
+          node.src.begin.line
         end
       end
 
@@ -42,8 +53,8 @@ module Rubocop
     class OneLineConditional < Cop
       include IfThenElse
 
-      def offending_line(if_node)
-        if_node.src.begin.line unless if_node.src.expression.to_source =~ /\n/
+      def offending_line(node)
+        node.src.expression.line unless node.src.expression.to_source =~ /\n/
       end
 
       def error_message
