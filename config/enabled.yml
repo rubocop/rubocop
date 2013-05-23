@@ -101,11 +101,8 @@ OneLineConditional:
   Enabled: true
 
 # Avoid using {...} for multi-line blocks (multiline chaining is always ugly).
-MultilineBlocks:
-  Enabled: true
-
 # Prefer {...} over do...end for single-line blocks.
-SingleLineBlocks:
+Blocks:
   Enabled: true
 
 # Avoid parameter lists longer than three or four parameters.
