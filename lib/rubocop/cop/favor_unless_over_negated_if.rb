@@ -8,8 +8,9 @@ module Rubocop
         on_node(keyword, ast) do |if_node|
           condition, _body, rest = *if_node
 
-          # Look at contents if there's a parenthesis around condition.
-          condition, _ = *condition while condition.type == :begin
+          # Look at last expression of contents if there's a
+          # parenthesis around condition.
+          *_, condition = *condition while condition.type == :begin
 
           if condition.type == :send
             object, method = *condition
