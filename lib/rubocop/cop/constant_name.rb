@@ -16,6 +16,8 @@ module Rubocop
                       node.src.line,
                       MSG)
         end
+
+        super
       end
     end
   end
