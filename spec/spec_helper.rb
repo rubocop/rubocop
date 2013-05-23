@@ -67,3 +67,9 @@ def inspect_source(cop, file, source)
   ast, tokens = Rubocop::CLI.rip_source(source.join("\n"))
   cop.inspect(file, source, tokens, ast)
 end
+
+class Rubocop::Cop::Cop
+  def messages
+    offences.map(&:message)
+  end
+end
