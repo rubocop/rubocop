@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module Rubocop
   module Cop
-    describe OneLineConditional, broken: true do
+    describe OneLineConditional do
       let(:olc) { OneLineConditional.new }
 
       it 'registers an offence for one line if/then/end' do

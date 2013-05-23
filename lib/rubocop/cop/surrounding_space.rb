@@ -17,19 +17,21 @@ module Rubocop
       end
 
       def index_of_first_token(node, tokens)
-        @tok_table ||= build_tok_table(tokens)
+        @token_table ||= build_token_table(tokens)
         b = node.src.expression.begin
-        @tok_table[[b.line, b.column]]
+        @token_table[[b.line, b.column]]
       end
 
       def index_of_last_token(node, tokens)
-        @tok_table ||= build_tok_table(tokens)
+        @token_table ||= build_token_table(tokens)
         e = node.src.expression.end
-        ix = @tok_table[[e.line, e.column]]
-        (ix || tokens.size) - 1
+        (0...e.column).to_a.reverse.find do |c|
+          ix = @token_table[[e.line, c]]
+          return ix if ix
+        end
       end
 
-      def build_tok_table(tokens)
+      def build_token_table(tokens)
         table = {}
         tokens.each_with_index do |t, ix|
           table[[t.pos.lineno, t.pos.column]] = ix
