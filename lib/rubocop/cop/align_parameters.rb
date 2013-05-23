@@ -6,16 +6,13 @@ module Rubocop
       MSG = 'Align the parameters of a method call if they span ' +
         'more than one line.'
 
-      def inspect(file, source, tokens, ast)
-        on_node(:send, ast) do |node|
-          _receiver, method, *args = *node
+      def on_send(node)
+        _receiver, method, *args = *node
 
-          next if method == :[]=
-          next unless args.size > 1
-
+        if method != :[]= && args.size > 1
           first_arg_col = args.first.src.expression.column
           prev_arg_line = args.first.src.expression.line
-          prev_arg_col = args.first.src.expression.column
+          prev_arg_col = first_arg_col
 
           args.each do |arg|
             cur_arg_line = arg.src.expression.line
@@ -32,6 +29,8 @@ module Rubocop
             prev_arg_line = cur_arg_line
           end
         end
+
+        super
       end
     end
   end
