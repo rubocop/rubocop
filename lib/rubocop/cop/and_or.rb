@@ -16,6 +16,8 @@ module Rubocop
                       node.src.operator.line,
                       sprintf(MSG, OPS[op], op))
         end
+
+        super
       end
 
       alias_method :on_or, :on_and
