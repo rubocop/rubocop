@@ -15,6 +15,8 @@ module Rubocop
         elsif block_length == 0 && block_begin != '{'
           add_offence(:convention, node.src.line, SINGLE_LINE_MSG)
         end
+
+        super
       end
     end
   end
