@@ -3,17 +3,22 @@
 module Rubocop
   module Cop
     class AndOr < Cop
-      MSG = 'Use &&/|| instead of and/or.'
+      MSG = 'Use %s instead of %s.'
 
-      def inspect(file, source, tokens, ast)
-        on_node([:and, :or], ast) do |node|
-          if node.src.operator.to_source == node.type.to_s
-            add_offence(:convention,
-                        node.src.operator.line,
-                        MSG)
-          end
+      OPS = { 'and' => '&&', 'or' => '||' }
+
+      def on_and(node)
+        op = node.src.operator.to_source
+        op_type = node.type.to_s
+
+        if op == op_type
+          add_offence(:convention,
+                      node.src.operator.line,
+                      sprintf(MSG, OPS[op], op))
         end
       end
+
+      alias_method :on_or, :on_and
     end
   end
 end
