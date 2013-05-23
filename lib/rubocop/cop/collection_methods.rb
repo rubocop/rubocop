@@ -3,6 +3,8 @@
 module Rubocop
   module Cop
     class CollectionMethods < Cop
+      MSG = 'Prefer %s over %s.'
+
       PREFERRED_METHODS = {
         collect: 'map',
         inject: 'reduce',
@@ -10,20 +12,16 @@ module Rubocop
         find_all: 'select'
       }
 
-      def inspect(file, source, tokens, ast)
-        on_node(:send, ast) do |node|
-          receiver, method_name, *_args = *node
+      def on_send(node)
+        receiver, method_name, *_args = *node
 
-          # a simple(but flawed way) to reduce false positives
-          next unless receiver
-
-          if PREFERRED_METHODS[method_name]
-            add_offence(
-              :convention,
-              node.src.line,
-              "Prefer #{PREFERRED_METHODS[method_name]} over #{method_name}."
-            )
-          end
+        # a simple(but flawed way) to reduce false positives
+        if receiver && PREFERRED_METHODS[method_name]
+          add_offence(
+            :convention,
+            node.src.line,
+            sprintf(MSG, PREFERRED_METHODS[method_name], method_name)
+          )
         end
       end
     end
