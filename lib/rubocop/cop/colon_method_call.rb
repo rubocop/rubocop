@@ -5,19 +5,15 @@ module Rubocop
     class ColonMethodCall < Cop
       MSG = 'Do not use :: for method invocation.'
 
-      def inspect(file, source, tokens, ast)
-        on_node(:send, ast) do |s|
-          receiver, method_name, *_args = *s
+      def on_send(node)
+        receiver, _method_name, *_args = *node
 
-          # discard methods with nil receivers and op methods(like [])
-          next unless receiver && method_name =~ /\w/
-
-          if s.src.expression.to_source =~ /::#{method_name}/
-            add_offence(:convention,
-                        s.src.line,
-                        MSG)
-          end
+        # discard methods with nil receivers and op methods(like [])
+        if receiver && node.src.dot && node.src.dot.to_source == '::'
+          add_offence(:convention, node.src.line, MSG)
         end
+
+        super
       end
     end
   end
