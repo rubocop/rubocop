@@ -3,20 +3,18 @@
 module Rubocop
   module Cop
     module FavorOtherKeywordOverNegation
-      def inspect(file, source, tokens, ast)
-        keyword, msg = specifics
-        on_node(keyword, ast) do |if_node|
-          condition, _body, rest = *if_node
+      def check(node)
+        condition, _body, _rest = *node
 
-          # Look at contents if there's a parenthesis around condition.
-          condition, _ = *condition while condition.type == :begin
+        # Look at last expression of contents if there's a parenthesis
+        # around condition.
+        *_, condition = *condition while condition.type == :begin
 
-          if condition.type == :send
-            object, method = *condition
-            if method == :! && !(if_node.src.respond_to?(:else) &&
-                                 if_node.src.else)
-              add_offence(:convention, if_node.src.expression.line, msg)
-            end
+        if condition.type == :send
+          _object, method = *condition
+          if method == :! && !(node.src.respond_to?(:else) && node.src.else)
+            add_offence(:convention, node.src.expression.line,
+                        error_message)
           end
         end
       end
@@ -25,17 +23,26 @@ module Rubocop
     class FavorUnlessOverNegatedIf < Cop
       include FavorOtherKeywordOverNegation
 
-      def specifics
-        [:if,
-         'Favor unless (or control flow or) over if for negative conditions.']
+      def on_if(node)
+        check(node)
+        super
+      end
+
+      def error_message
+        'Favor unless (or control flow or) over if for negative conditions.'
       end
     end
 
     class FavorUntilOverNegatedWhile < Cop
       include FavorOtherKeywordOverNegation
 
-      def specifics
-        [:while, 'Favor until over while for negative conditions.']
+      def on_while(node)
+        check(node)
+        super
+      end
+
+      def error_message
+        'Favor until over while for negative conditions.'
       end
     end
   end
