@@ -5,22 +5,22 @@ module Rubocop
     class HashSyntax < Cop
       MSG = 'Ruby 1.8 hash syntax detected'
 
-      def inspect(file, source, tokens, ast)
-        on_node(:hash, ast) do |node|
-          pairs = *node
+      def on_hash(node)
+        pairs = *node
 
-          sym_indices = pairs.all? { |p| word_symbol_pair?(p) }
+        sym_indices = pairs.all? { |p| word_symbol_pair?(p) }
 
-          if sym_indices
-            pairs.each do |pair|
-              if pair.src.operator && pair.src.operator.to_source == '=>'
-                add_offence(:convention,
-                            pair.src.line,
-                            MSG)
-              end
+        if sym_indices
+          pairs.each do |pair|
+            if pair.src.operator && pair.src.operator.to_source == '=>'
+              add_offence(:convention,
+                          pair.src.line,
+                          MSG)
             end
           end
         end
+
+        super
       end
 
       private

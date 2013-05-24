@@ -5,16 +5,16 @@ module Rubocop
     class FavorSprintf < Cop
       MSG = 'Favor sprintf over String#%.'
 
-      def inspect(file, source, tokens, ast)
-        on_node(:send, ast) do |s|
-          receiver_node, method_name, *arg_nodes = *s
+      def on_send(node)
+        receiver_node, method_name, *arg_nodes = *node
 
-          if method_name == :% &&
-              ([:str, :dstr].include?(receiver_node.type) ||
-               arg_nodes[0].type == :array)
-            add_offence(:convention, s.src.expression.line, MSG)
-          end
+        if method_name == :% &&
+            ([:str, :dstr].include?(receiver_node.type) ||
+             arg_nodes[0].type == :array)
+          add_offence(:convention, node.src.expression.line, MSG)
         end
+
+        super
       end
     end
   end

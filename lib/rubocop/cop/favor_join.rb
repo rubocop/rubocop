@@ -5,17 +5,17 @@ module Rubocop
     class FavorJoin < Cop
       MSG = 'Favor Array#join over Array#*.'
 
-      def inspect(file, source, tokens, ast)
-        on_node(:send, ast) do |s|
-          receiver_node, method_name, *arg_nodes = *s
+      def on_send(node)
+        receiver_node, method_name, *arg_nodes = *node
 
-          if receiver_node && receiver_node.type == :array &&
-              method_name == :* && arg_nodes[0].type == :str
-            add_offence(:convention,
-                        s.src.expression.line,
-                        MSG)
-          end
+        if receiver_node && receiver_node.type == :array &&
+            method_name == :* && arg_nodes[0].type == :str
+          add_offence(:convention,
+                      node.src.expression.line,
+                      MSG)
         end
+
+        super
       end
     end
   end
