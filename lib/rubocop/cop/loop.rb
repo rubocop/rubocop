@@ -7,10 +7,14 @@ module Rubocop
 
       def on_while(node)
         check(node)
+
+        super
       end
 
       def on_until(node)
         check(node)
+
+        super
       end
 
       private
