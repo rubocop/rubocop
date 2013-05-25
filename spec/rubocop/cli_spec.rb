@@ -176,17 +176,22 @@ module Rubocop
     end
 
     it 'runs just one cop if --only is passed' do
-      create_file('example.rb', [
-        'x= 0 ',
-        'y '
-      ])
-      expect(cli.run(['--only', 'TrailingWhitespace', 'example.rb'])).to eq(1)
+      create_file('example.rb', ['if x== 0 ',
+                                 "\ty",
+                                 'end'])
+      # IfUnlessModifier depends on the configuration of LineLength.
+      # That configuration might have been set by other spec examples
+      # so we reset it to emulate a start from scratch.
+      Cop::LineLength.config = nil
+
+      expect(cli.run(['--only', 'IfUnlessModifier', 'example.rb'])).to eq(1)
       expect($stdout.string)
         .to eq(['== example.rb ==',
-                'C:  1: Trailing whitespace detected.',
-                'C:  2: Trailing whitespace detected.',
+                'C:  1: Favor modifier if/unless usage when you have a ' +
+                'single-line body. Another good alternative is the usage of ' +
+                'control flow and/or.',
                 '',
-                '1 file inspected, 2 offences detected',
+                '1 file inspected, 1 offence detected',
                 ''].join("\n"))
     end
 
