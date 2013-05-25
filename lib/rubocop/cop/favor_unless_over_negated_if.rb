@@ -12,8 +12,8 @@ module Rubocop
 
         if condition.type == :send
           _object, method = *condition
-          if method == :! && !(node.src.respond_to?(:else) && node.src.else)
-            add_offence(:convention, node.src.expression.line,
+          if method == :! && !(node.loc.respond_to?(:else) && node.loc.else)
+            add_offence(:convention, node.loc.expression.line,
                         error_message)
           end
         end

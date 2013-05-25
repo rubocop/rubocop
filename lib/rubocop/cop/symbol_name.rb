@@ -18,7 +18,7 @@ module Rubocop
           next if sym_name =~ SNAKE_CASE
           next if allow_camel_case? && sym_name =~ CAMEL_CASE
           add_offence(:convention,
-                      node.src.line,
+                      node.loc.line,
                       MSG)
         end
       end

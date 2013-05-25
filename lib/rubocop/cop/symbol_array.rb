@@ -9,7 +9,7 @@ module Rubocop
         # %i and %I were introduced in Ruby 2.0
         unless RUBY_VERSION < '2.0.0'
           on_node(:array, ast) do |s|
-            next unless s.src.begin && s.src.begin.to_source == '['
+            next unless s.loc.begin && s.loc.begin.source == '['
 
             array_elems = s.children
 
@@ -20,7 +20,7 @@ module Rubocop
 
             if symbol_array
               add_offence(:convention,
-                          s.src.line,
+                          s.loc.line,
                           MSG)
             end
           end

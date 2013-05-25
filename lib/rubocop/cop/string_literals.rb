@@ -10,9 +10,9 @@ module Rubocop
         on_node(:str, ast, :dstr) do |s|
           text = s.to_a[0]
 
-          if text !~ /['\n\t\r]/ && s.src.expression.to_source[0] == '"'
+          if text !~ /['\n\t\r]/ && s.loc.expression.source[0] == '"'
             add_offence(:convention,
-                        s.src.line,
+                        s.loc.line,
                         MSG)
           end
         end

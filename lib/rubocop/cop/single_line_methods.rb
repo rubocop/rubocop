@@ -24,8 +24,8 @@ module Rubocop
       private
 
       def check(node)
-        start_line = node.src.keyword.line
-        end_line = node.src.end.line
+        start_line = node.loc.keyword.line
+        end_line = node.loc.end.line
 
         if node.type == :def
           empty_body = node.children[2].type == :nil

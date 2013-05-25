@@ -10,14 +10,14 @@ module Rubocop
 
       def inspect(file, source, tokens, ast)
         on_node(:def, ast) do |s|
-          start_line = s.src.keyword.line
-          end_line = s.src.end.line
+          start_line = s.loc.keyword.line
+          end_line = s.loc.end.line
 
           next if start_line == end_line
 
           _, args = *s
-          if args.children == [] && args.src.begin
-            add_offence(:convention, s.src.line, error_message)
+          if args.children == [] && args.loc.begin
+            add_offence(:convention, s.loc.line, error_message)
           end
         end
       end
@@ -31,8 +31,8 @@ module Rubocop
       def inspect(file, source, tokens, ast)
         on_node(:def, ast) do |s|
           _, args = *s
-          if args.children.size > 0 && args.src.begin.nil?
-            add_offence(:convention, s.src.line, error_message)
+          if args.children.size > 0 && args.loc.begin.nil?
+            add_offence(:convention, s.loc.line, error_message)
           end
         end
       end

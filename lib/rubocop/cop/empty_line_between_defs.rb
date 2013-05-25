@@ -9,8 +9,8 @@ module Rubocop
         prev_def_end = nil
 
         on_node(:def, ast) do |s|
-          def_start = s.src.keyword.line
-          def_end = s.src.end.line
+          def_start = s.loc.keyword.line
+          def_end = s.loc.end.line
 
           if prev_def_end && (def_start - prev_def_end) < 2
             add_offence(:convention,

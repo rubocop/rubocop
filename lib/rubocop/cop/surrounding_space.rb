@@ -18,13 +18,13 @@ module Rubocop
 
       def index_of_first_token(node, tokens)
         @token_table ||= build_token_table(tokens)
-        b = node.src.expression.begin
+        b = node.loc.expression.begin
         @token_table[[b.line, b.column]]
       end
 
       def index_of_last_token(node, tokens)
         @token_table ||= build_token_table(tokens)
-        e = node.src.expression.end
+        e = node.loc.expression.end
         (0...e.column).to_a.reverse.find do |c|
           ix = @token_table[[e.line, c]]
           return ix if ix
@@ -89,11 +89,11 @@ module Rubocop
         #        ^ ^
         on_node(:block, sexp) do |b|
           on_node(:args, b) do |a|
-            if a.src.begin
-              positions_not_to_check << Position.new(a.src.begin.line,
-                                                     a.src.begin.column)
-              positions_not_to_check << Position.new(a.src.end.line,
-                                                     a.src.end.column)
+            if a.loc.begin
+              positions_not_to_check << Position.new(a.loc.begin.line,
+                                                     a.loc.begin.column)
+              positions_not_to_check << Position.new(a.loc.end.line,
+                                                     a.loc.end.column)
             end
           end
         end

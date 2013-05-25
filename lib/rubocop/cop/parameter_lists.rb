@@ -8,7 +8,7 @@ module Rubocop
       def on_args(node)
         args_count = node.children.size
 
-        add_offence(:convention, node.src.line, MSG) if args_count > 4
+        add_offence(:convention, node.loc.line, MSG) if args_count > 4
 
         super
       end

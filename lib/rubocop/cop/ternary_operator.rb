@@ -9,7 +9,7 @@ module Rubocop
 
       def inspect(file, source, tokens, ast)
         on_node(:if, ast) do |s|
-          src = s.src
+          src = s.loc
 
           # discard non-ternary ops
           next unless src.respond_to?(:question)
@@ -30,7 +30,7 @@ module Rubocop
 
       def inspect(file, source, tokens, ast)
         on_node(:if, ast) do |s|
-          src = s.src
+          src = s.loc
 
           # discard non-ternary ops
           next unless src.respond_to?(:question)
@@ -38,8 +38,8 @@ module Rubocop
           s.children.each do |child|
             on_node(:if, child) do |c|
               add_offence(:convention,
-                          c.src.line,
-                          error_message) if c.src.respond_to?(:question)
+                          c.loc.line,
+                          error_message) if c.loc.respond_to?(:question)
             end
           end
         end

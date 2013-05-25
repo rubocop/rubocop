@@ -6,7 +6,7 @@ module Rubocop
       MSG = 'Use %w or %W for array of words.'
 
       def on_array(node)
-        return unless node.src.begin && node.src.begin.to_source == '['
+        return unless node.loc.begin && node.loc.begin.source == '['
 
         array_elems = node.children
 
@@ -16,7 +16,7 @@ module Rubocop
         string_array = array_elems.all? { |e| e.type == :str }
 
         if string_array && !complex_content?(array_elems)
-          add_offence(:convention, node.src.line, MSG)
+          add_offence(:convention, node.loc.line, MSG)
         end
 
         super
@@ -26,7 +26,7 @@ module Rubocop
 
       def complex_content?(arr_sexp)
         arr_sexp.each do |s|
-          str_content = Util.strip_quotes(s.src.expression.to_source)
+          str_content = Util.strip_quotes(s.loc.expression.source)
           return true unless str_content =~ /\A[\w-]+\z/
         end
 

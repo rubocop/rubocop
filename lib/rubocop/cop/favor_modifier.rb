@@ -6,9 +6,9 @@ module Rubocop
       # TODO extremely ugly solution that needs lots of polish
       def check(sexp)
         # discard if/then/else
-        return false if sexp.src.respond_to?(:else) && sexp.src.else
+        return false if sexp.loc.respond_to?(:else) && sexp.loc.else
 
-        if %w(if while).include?(sexp.src.keyword.to_source)
+        if %w(if while).include?(sexp.loc.keyword.source)
           cond, body = *sexp
         else
           cond, _else, body = *sexp
@@ -17,7 +17,7 @@ module Rubocop
         if length(sexp) > 3
           false
         else
-          cond_length = sexp.src.keyword.size + cond.src.expression.size + 1
+          cond_length = sexp.loc.keyword.size + cond.loc.expression.size + 1
           body_length = body_length(body)
 
           (cond_length + body_length) <= LineLength.max
@@ -25,12 +25,12 @@ module Rubocop
       end
 
       def length(sexp)
-        sexp.src.expression.to_source.split("\n").size
+        sexp.loc.expression.source.split("\n").size
       end
 
       def body_length(body)
         if body
-          body.src.expression.column + body.src.expression.size
+          body.loc.expression.column + body.loc.expression.size
         else
           0
         end
@@ -48,10 +48,10 @@ module Rubocop
       def inspect(file, source, tokens, ast)
         on_node(:if, ast) do |node|
           # discard ternary ops and modifier if/unless nodes
-          next unless node.src.respond_to?(:keyword) &&
-            node.src.respond_to?(:else)
+          next unless node.loc.respond_to?(:keyword) &&
+            node.loc.respond_to?(:else)
 
-          add_offence(:convention, node.src.line, error_message) if check(node)
+          add_offence(:convention, node.loc.line, error_message) if check(node)
         end
       end
     end
@@ -65,7 +65,7 @@ module Rubocop
 
       def inspect(file, source, tokens, ast)
         on_node([:while, :until], ast) do |node|
-          add_offence(:convention, node.src.line, error_message) if check(node)
+          add_offence(:convention, node.loc.line, error_message) if check(node)
         end
       end
     end

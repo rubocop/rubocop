@@ -8,9 +8,9 @@ module Rubocop
 
       def inspect(file, source, tokens, ast)
         on_node(:regexp, ast) do |node|
-          if node.src.begin.to_source != '/' &&
-              node.src.expression.to_source[1...-1].scan(/\//).size <= 1
-            add_offence(:convention, node.src.line, MSG)
+          if node.loc.begin.source != '/' &&
+              node.loc.expression.source[1...-1].scan(/\//).size <= 1
+            add_offence(:convention, node.loc.line, MSG)
           end
         end
       end

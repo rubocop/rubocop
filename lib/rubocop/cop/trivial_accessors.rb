@@ -12,11 +12,11 @@ module Rubocop
 
           if body.type == :ivar
             add_offence(:convention,
-                        s.src.keyword.line,
+                        s.loc.keyword.line,
                         READER_MESSAGE)
           elsif args.children.size == 1 && body.type == :ivasgn
             add_offence(:convention,
-                        s.src.keyword.line,
+                        s.loc.keyword.line,
                         WRITER_MESSAGE)
           end
         end

@@ -8,7 +8,7 @@ module Rubocop
       def inspect(file, source, tokens, ast)
         on_node(:rescue, ast, :begin) do |s|
           add_offence(:convention,
-                      s.src.line,
+                      s.loc.line,
                       MSG)
         end
       end

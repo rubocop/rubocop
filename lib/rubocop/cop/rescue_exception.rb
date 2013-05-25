@@ -11,7 +11,7 @@ module Rubocop
           rescue_args = n.children.first.children
           if rescue_args.any? { |a| targets_exception?(a) }
             add_offence(:warning,
-                        n.source_map.line,
+                        n.location.line,
                         MSG)
           end
         end

@@ -5,13 +5,9 @@ module Rubocop
     class AvoidClassVars < Cop
       MSG = 'Replace class var %s with a class instance var.'
 
-      def on_cvdecl(node)
+      def on_cvasgn(node)
         class_var, = *node
-
-        add_offence(:convention,
-                    node.src.name.line,
-                    sprintf(MSG, class_var))
-
+        add_offence(:convention, node.loc.name.line, sprintf(MSG, class_var))
         super
       end
     end
