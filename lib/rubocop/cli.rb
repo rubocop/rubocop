@@ -47,7 +47,7 @@ module Rubocop
       parse_options(args)
 
       begin
-        handle_only_option if @options[:only]
+        validate_only_option if @options[:only]
       rescue ArgumentError => e
         puts e.message
         return 1
@@ -86,9 +86,8 @@ module Rubocop
       (@total_offences == 0) && !wants_to_quit ? 0 : 1
     end
 
-    def handle_only_option
-      @cops = @cops.select { |c| c.cop_name == @options[:only] }
-      if @cops.empty?
+    def validate_only_option
+      if @cops.none? { |c| c.cop_name == @options[:only] }
         fail ArgumentError, "Unrecognized cop name: #{@options[:only]}."
       end
     end
@@ -114,12 +113,14 @@ module Rubocop
           cop = setup_cop(cop_class,
                           config.for_cop(cop_name),
                           disabled_lines)
-          begin
-            cop.inspect(file, source, tokens, ast)
-          rescue => e
-            handle_error(e,
-                         "An error occurred while #{cop.name}".color(:red) +
-                         " cop was inspecting #{file}.".color(:red))
+          if !@options[:only] || @options[:only] == cop_name
+            begin
+              cop.inspect(file, source, tokens, ast)
+            rescue => e
+              handle_error(e,
+                           "An error occurred while #{cop.name}".color(:red) +
+                           " cop was inspecting #{file}.".color(:red))
+            end
           end
           @total_offences += cop.offences.count
           report << cop if cop.has_report?
