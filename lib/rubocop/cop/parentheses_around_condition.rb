@@ -6,15 +6,15 @@ module Rubocop
       MSG = "Don't use parentheses around the condition of an " +
         'if/unless/while/until, unless the condition contains an assignment.'
 
-      def inspect(file, source, tokens, ast)
+      def inspect(file, source, tokens, ast, comments)
         on_node([:if, :while, :until], ast) do |node|
           cond, _body = *node
 
-          cond_source = cond.src.expression.to_source
+          cond_source = cond.loc.expression.source
 
           if cond_source.start_with?('(') && cond_source.end_with?(')')
             add_offence(:convetion,
-                        cond.src.line,
+                        cond.loc.line,
                         MSG)
           end
         end

@@ -8,12 +8,12 @@ module Rubocop
       KEYWORDS = %w(if case when while until)
 
       def on_keyword(node)
-        return if node.src.is_a?(Parser::Source::Map::Ternary)
+        return if node.loc.is_a?(Parser::Source::Map::Ternary)
 
-        exp = node.src.expression
-        kw = node.src.keyword
+        exp = node.loc.expression
+        kw = node.loc.keyword
         kw_offset = kw.begin_pos - exp.begin_pos
-        if exp.to_source[kw_offset..-1].start_with?(kw.to_source + '(')
+        if exp.source[kw_offset..-1].start_with?(kw.source + '(')
           add_offence(:convention, kw.line, MSG)
         end
       end

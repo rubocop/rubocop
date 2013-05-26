@@ -12,7 +12,7 @@ module Rubocop
         + - * / % ** ~ +@ -@ [] []= ` ! != !~
       ).map(&:to_sym)
 
-      def inspect(file, source, tokens, node)
+      def inspect(file, source, tokens, node, comments)
         on_node([:def, :defs, :lvasgn, :ivasgn, :send], node) do |n|
           name = case n.type
                  when :def
@@ -28,7 +28,7 @@ module Rubocop
           next unless name
           next if name =~ SNAKE_CASE || OPERATOR_METHODS.include?(name)
 
-          add_offence(:convention, n.source_map.line, MSG)
+          add_offence(:convention, n.location.line, MSG)
         end
       end
 

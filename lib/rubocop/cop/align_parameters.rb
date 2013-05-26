@@ -10,13 +10,13 @@ module Rubocop
         _receiver, method, *args = *node
 
         if method != :[]= && args.size > 1
-          first_arg_col = args.first.src.expression.column
-          prev_arg_line = args.first.src.expression.line
+          first_arg_col = args.first.loc.expression.column
+          prev_arg_line = args.first.loc.expression.line
           prev_arg_col = first_arg_col
 
           args.each do |arg|
-            cur_arg_line = arg.src.expression.line
-            cur_arg_col = arg.src.expression.column
+            cur_arg_line = arg.loc.expression.line
+            cur_arg_col = arg.loc.expression.column
 
             if cur_arg_line != prev_arg_line &&
                 cur_arg_col != first_arg_col

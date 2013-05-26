@@ -6,8 +6,8 @@ module Rubocop
       MSG = 'Never use "when x;". Use "when x then" instead.'
 
       def on_when(node)
-        if node.src.begin && node.src.begin.to_source == ';'
-          add_offence(:convention, node.src.line, MSG)
+        if node.loc.begin && node.loc.begin.source == ';'
+          add_offence(:convention, node.loc.line, MSG)
         end
 
         super

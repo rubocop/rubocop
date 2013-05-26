@@ -9,7 +9,7 @@ module Rubocop
         receiver, method_name, = *node
 
         if receiver.nil? && method_name == :eval
-          add_offence(:security, node.src.line, MSG)
+          add_offence(:security, node.loc.line, MSG)
         end
 
         super
