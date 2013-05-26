@@ -11,7 +11,7 @@ module Rubocop
         self.class.config['AllowCamelCase']
       end
 
-      def inspect(file, source, tokens, ast)
+      def inspect(file, source, tokens, ast, comments)
         on_node(:sym, ast) do |node|
           sym_name = node.to_a[0]
           next unless sym_name =~ /^[a-zA-Z]/

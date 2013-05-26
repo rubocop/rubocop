@@ -6,7 +6,7 @@ module Rubocop
       MSG = 'Extra blank line detected.'
       LINE_OFFSET = 2
 
-      def inspect(file, source, tokens, ast)
+      def inspect(file, source, tokens, ast, comments)
         return if tokens.empty?
 
         prev_line = 1

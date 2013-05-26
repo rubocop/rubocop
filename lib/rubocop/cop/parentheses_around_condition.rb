@@ -6,7 +6,7 @@ module Rubocop
       MSG = "Don't use parentheses around the condition of an " +
         'if/unless/while/until, unless the condition contains an assignment.'
 
-      def inspect(file, source, tokens, ast)
+      def inspect(file, source, tokens, ast, comments)
         on_node([:if, :while, :until], ast) do |node|
           cond, _body = *node
 

@@ -5,7 +5,7 @@ module Rubocop
     class RescueException < Cop
       MSG = 'Avoid rescuing the Exception class.'
 
-      def inspect(file, source, tokens, node)
+      def inspect(file, source, tokens, node, comments)
         on_node(:resbody, node) do |n|
           next unless n.children.first
           rescue_args = n.children.first.children

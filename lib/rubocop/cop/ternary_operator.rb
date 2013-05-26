@@ -7,7 +7,7 @@ module Rubocop
         'Avoid multi-line ?: (the ternary operator); use if/unless instead.'
       end
 
-      def inspect(file, source, tokens, ast)
+      def inspect(file, source, tokens, ast, comments)
         on_node(:if, ast) do |s|
           src = s.loc
 
@@ -28,7 +28,7 @@ module Rubocop
           'instead.'
       end
 
-      def inspect(file, source, tokens, ast)
+      def inspect(file, source, tokens, ast, comments)
         on_node(:if, ast) do |s|
           src = s.loc
 

@@ -5,7 +5,7 @@ module Rubocop
     class SymbolArray < Cop
       MSG = 'Use %i or %I for array of symbols.'
 
-      def inspect(file, source, tokens, ast)
+      def inspect(file, source, tokens, ast, comments)
         # %i and %I were introduced in Ruby 2.0
         unless RUBY_VERSION < '2.0.0'
           on_node(:array, ast) do |s|

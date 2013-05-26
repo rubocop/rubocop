@@ -6,7 +6,7 @@ module Rubocop
       MSG = 'Use %r only for regular expressions matching more ' +
         "than one '/' character."
 
-      def inspect(file, source, tokens, ast)
+      def inspect(file, source, tokens, ast, comments)
         on_node(:regexp, ast) do |node|
           if node.loc.begin.source != '/' &&
               node.loc.expression.source[1...-1].scan(/\//).size <= 1

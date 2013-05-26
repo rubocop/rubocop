@@ -5,7 +5,7 @@ module Rubocop
     class EmptyLineBetweenDefs < Cop
       MSG = 'Use empty lines between defs.'
 
-      def inspect(file, source, tokens, ast)
+      def inspect(file, source, tokens, ast, comments)
         prev_def_end = nil
 
         on_node(:def, ast) do |s|

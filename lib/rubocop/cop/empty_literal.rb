@@ -25,7 +25,7 @@ module Rubocop
       #   (const nil :String) :new)
       STR_NODE = s(:send, s(:const, nil, :String), :new)
 
-      def inspect(file, source, tokens, ast)
+      def inspect(file, source, tokens, ast, comments)
         on_node(:send, ast, :block) do |node|
           if node == ARRAY_NODE
             add_offence(:convention,

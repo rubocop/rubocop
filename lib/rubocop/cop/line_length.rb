@@ -5,7 +5,7 @@ module Rubocop
     class LineLength < Cop
       MSG = 'Line is too long. [%d/%d]'
 
-      def inspect(file, source, tokens, ast)
+      def inspect(file, source, tokens, ast, comments)
         source.each_with_index do |line, index|
           max = LineLength.max
           if line.length > max
