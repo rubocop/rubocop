@@ -8,12 +8,12 @@ module Rubocop
 
       def on_block(node)
         block_length = Util.block_length(node)
-        block_begin = node.src.begin.to_source
+        block_begin = node.loc.begin.source
 
         if block_length > 0 && block_begin == '{'
-          add_offence(:convention, node.src.line, MULTI_LINE_MSG)
+          add_offence(:convention, node.loc.line, MULTI_LINE_MSG)
         elsif block_length == 0 && block_begin != '{'
-          add_offence(:convention, node.src.line, SINGLE_LINE_MSG)
+          add_offence(:convention, node.loc.line, SINGLE_LINE_MSG)
         end
 
         super

@@ -12,9 +12,9 @@ module Rubocop
 
         if sym_indices
           pairs.each do |pair|
-            if pair.src.operator && pair.src.operator.to_source == '=>'
+            if pair.loc.operator && pair.loc.operator.source == '=>'
               add_offence(:convention,
-                          pair.src.line,
+                          pair.loc.line,
                           MSG)
             end
           end

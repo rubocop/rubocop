@@ -25,19 +25,19 @@ module Rubocop
       #   (const nil :String) :new)
       STR_NODE = s(:send, s(:const, nil, :String), :new)
 
-      def inspect(file, source, tokens, ast)
+      def inspect(file, source, tokens, ast, comments)
         on_node(:send, ast, :block) do |node|
           if node == ARRAY_NODE
             add_offence(:convention,
-                        node.src.line,
+                        node.loc.line,
                         ARR_MSG)
           elsif node == HASH_NODE
             add_offence(:convention,
-                        node.src.line,
+                        node.loc.line,
                         HASH_MSG)
           elsif node == STR_NODE
             add_offence(:convention,
-                        node.src.line,
+                        node.loc.line,
                         STR_MSG)
           end
         end

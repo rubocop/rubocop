@@ -8,8 +8,8 @@ module Rubocop
       TARGET = s(:send, nil, :lambda)
 
       def on_send(node)
-        if node == TARGET && node.src.selector.to_source != '->'
-          add_offence(:convention, node.src.line, MSG)
+        if node == TARGET && node.loc.selector.source != '->'
+          add_offence(:convention, node.loc.line, MSG)
         end
 
         super

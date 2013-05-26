@@ -9,9 +9,9 @@ module Rubocop
         var_nodes(node.children).each do |v|
           var = (v.type == :nth_ref ? '$' : '') + v.to_a[0].to_s
 
-          if node.src.expression.to_source.include?("##{var}")
+          if node.loc.expression.source.include?("##{var}")
             add_offence(:convention,
-                        v.src.line,
+                        v.loc.line,
                         sprintf(MSG, var, var))
           end
         end

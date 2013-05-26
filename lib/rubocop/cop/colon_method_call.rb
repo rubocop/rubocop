@@ -9,8 +9,8 @@ module Rubocop
         receiver, _method_name, *_args = *node
 
         # discard methods with nil receivers and op methods(like [])
-        if receiver && node.src.dot && node.src.dot.to_source == '::'
-          add_offence(:convention, node.src.line, MSG)
+        if receiver && node.loc.dot && node.loc.dot.source == '::'
+          add_offence(:convention, node.loc.line, MSG)
         end
 
         super

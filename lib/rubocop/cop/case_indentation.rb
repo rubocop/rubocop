@@ -8,10 +8,10 @@ module Rubocop
       def on_case(case_node)
         _condition, *whens, _else = *case_node
 
-        case_column = case_node.source_map.keyword.column
+        case_column = case_node.location.keyword.column
 
         whens.each do |when_node|
-          pos = when_node.src.keyword
+          pos = when_node.loc.keyword
           add_offence(:convention, pos.line, MSG) if pos.column != case_column
         end
 

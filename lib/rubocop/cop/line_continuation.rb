@@ -5,7 +5,7 @@ module Rubocop
     class LineContinuation < Cop
       MSG = 'Avoid the use of the line continuation character(\).'
 
-      def inspect(file, source, tokens, ast)
+      def inspect(file, source, tokens, ast, comments)
         source.each_with_index do |line, index|
           add_offence(:convention, index, MSG) if line =~ /.*\\\z/
         end

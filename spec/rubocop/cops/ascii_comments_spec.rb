@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module Rubocop
   module Cop
-    describe AsciiComments, broken: true do
+    describe AsciiComments do
       let(:ascii) { AsciiComments.new }
 
       it 'registers an offence for a comment with non-ascii chars' do

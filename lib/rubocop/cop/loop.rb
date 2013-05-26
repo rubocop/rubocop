@@ -24,8 +24,8 @@ module Rubocop
         type = node.type.to_s
 
         if body.type == :begin &&
-            !node.src.expression.to_source.start_with?(type)
-          add_offence(:warning, node.src.keyword.line, MSG)
+            !node.loc.expression.source.start_with?(type)
+          add_offence(:warning, node.loc.keyword.line, MSG)
         end
       end
     end

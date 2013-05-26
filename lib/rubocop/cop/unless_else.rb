@@ -6,14 +6,14 @@ module Rubocop
       MSG = 'Never use unless with else. Rewrite these with the ' +
         'positive case first.'
 
-      def inspect(file, source, tokens, ast)
+      def inspect(file, source, tokens, ast, comments)
         on_node(:if, ast) do |s|
-          src = s.src
+          src = s.loc
 
           # discard ternary ops and modifier if/unless nodes
           next unless src.respond_to?(:keyword) && src.respond_to?(:else)
 
-          if src.keyword.to_source == 'unless' && src.else
+          if src.keyword.source == 'unless' && src.else
             add_offence(:convention, src.line,
                         MSG)
           end

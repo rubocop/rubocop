@@ -35,7 +35,7 @@ module Rubocop
         if PREFERRED_VARS[global_var]
           add_offence(
             :convention,
-            node.src.line,
+            node.loc.line,
             "Prefer #{PREFERRED_VARS[global_var]} over #{global_var}."
           )
         end

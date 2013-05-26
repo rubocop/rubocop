@@ -19,7 +19,7 @@ module Rubocop
       end
 
       def block_length(block_node)
-        block_node.src.end.line - block_node.src.begin.line
+        block_node.loc.end.line - block_node.loc.begin.line
       end
     end
   end

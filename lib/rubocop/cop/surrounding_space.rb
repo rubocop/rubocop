@@ -18,13 +18,13 @@ module Rubocop
 
       def index_of_first_token(node, tokens)
         @token_table ||= build_token_table(tokens)
-        b = node.src.expression.begin
+        b = node.loc.expression.begin
         @token_table[[b.line, b.column]]
       end
 
       def index_of_last_token(node, tokens)
         @token_table ||= build_token_table(tokens)
-        e = node.src.expression.end
+        e = node.loc.expression.end
         (0...e.column).to_a.reverse.find do |c|
           ix = @token_table[[e.line, c]]
           return ix if ix
@@ -51,7 +51,7 @@ module Rubocop
          :tNMATCH, :tEQ,      :tNEQ,   :tGT,    :tRSHFT, :tGEQ,   :tLT,
          :tLSHFT,  :tLEQ,     :tASSOC, :tEQQ,   :tCMP,   :tOP_ASGN]
 
-      def inspect(file, source, tokens, sexp)
+      def inspect(file, source, tokens, sexp, comments)
         @source = source
         positions_not_to_check = get_positions_not_to_check(tokens, sexp)
 
@@ -89,11 +89,11 @@ module Rubocop
         #        ^ ^
         on_node(:block, sexp) do |b|
           on_node(:args, b) do |a|
-            if a.src.begin
-              positions_not_to_check << Position.new(a.src.begin.line,
-                                                     a.src.begin.column)
-              positions_not_to_check << Position.new(a.src.end.line,
-                                                     a.src.end.column)
+            if a.loc.begin
+              positions_not_to_check << Position.new(a.loc.begin.line,
+                                                     a.loc.begin.column)
+              positions_not_to_check << Position.new(a.loc.end.line,
+                                                     a.loc.end.column)
             end
           end
         end
@@ -167,7 +167,7 @@ module Rubocop
       MSG_LEFT = "Surrounding space missing for '{'."
       MSG_RIGHT = "Space missing to the left of '}'."
 
-      def inspect(file, source, tokens, sexp)
+      def inspect(file, source, tokens, sexp, comments)
         @source = source
         positions_not_to_check = get_positions_not_to_check(tokens, sexp)
         tokens.each_cons(2) do |t1, t2|
@@ -213,7 +213,7 @@ module Rubocop
       include SurroundingSpace
       MSG = 'Space inside %s detected.'
 
-      def inspect(file, source, tokens, sexp)
+      def inspect(file, source, tokens, sexp, comments)
         @source = source
         left, right, kind = specifics
         tokens.each_cons(2) do |t1, t2|
@@ -246,7 +246,7 @@ module Rubocop
       include SurroundingSpace
       MSG = 'Space inside hash literal braces %s.'
 
-      def inspect(file, source, tokens, sexp)
+      def inspect(file, source, tokens, sexp, comments)
         @source = source
         on_node(:hash, sexp) do |hash|
           b_ix = index_of_first_token(hash, tokens)
@@ -274,7 +274,7 @@ module Rubocop
       include SurroundingSpace
       MSG = 'Surrounding space missing in default value assignment.'
 
-      def inspect(file, source, tokens, sexp)
+      def inspect(file, source, tokens, sexp, comments)
         @source = source
         on_node(:optarg, sexp) do |optarg|
           arg, equals, value = tokens[index_of_first_token(optarg, tokens), 3]

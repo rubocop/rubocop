@@ -64,7 +64,7 @@ module Rubocop
 
         syntax_cop = Rubocop::Cop::Syntax.new
         syntax_cop.debug = @options[:debug]
-        syntax_cop.inspect(file, source, nil, nil)
+        syntax_cop.inspect(file, source, nil, nil, nil)
 
         if syntax_cop.offences.map(&:severity).include?(:error)
           # In case of a syntax error we just report that error and do
@@ -98,7 +98,7 @@ module Rubocop
 
     def inspect_file(file, source, config, report)
       begin
-        ast, tokens = CLI.rip_source(source.join("\n"))
+        ast, comments, tokens = CLI.rip_source(source.join("\n"))
       rescue Parser::SyntaxError, Encoding::UndefinedConversionError,
         ArgumentError => e
         handle_error(e, "An error occurred while parsing #{file}.".color(:red))
@@ -115,7 +115,7 @@ module Rubocop
                           disabled_lines)
           if !@options[:only] || @options[:only] == cop_name
             begin
-              cop.inspect(file, source, tokens, ast)
+              cop.inspect(file, source, tokens, ast, comments)
             rescue => e
               handle_error(e,
                            "An error occurred while #{cop.name}".color(:red) +
@@ -247,8 +247,24 @@ module Rubocop
 
     def self.rip_source(source)
       @parser_tokens = []
-      ast = Parser::CurrentRuby.parse(source)
-      [ast, @parser_tokens]
+      ast, comments = parse(source)
+      [ast, comments, @parser_tokens]
+    end
+
+    def self.parse(string)
+      parser = Parser::CurrentRuby.new
+
+      parser.diagnostics.all_errors_are_fatal = true
+      parser.diagnostics.ignore_warnings      = true
+
+      parser.diagnostics.consumer = lambda do |diagnostic|
+        $stderr.puts(diagnostic.render)
+      end
+
+      source_buffer = Parser::Source::Buffer.new('(string)', 1)
+      source_buffer.source = string
+
+      parser.parse_with_comments(source_buffer)
     end
 
     # Generate a list of target files by expanding globing patterns

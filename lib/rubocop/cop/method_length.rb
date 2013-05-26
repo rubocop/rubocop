@@ -20,12 +20,12 @@ module Rubocop
       private
 
       def check(node)
-        method_length = calculate_length(node.src.expression.to_source)
+        method_length = calculate_length(node.loc.expression.source)
 
         max = MethodLength.config['Max']
         if method_length > max
           message = sprintf(MSG, method_length, max)
-          add_offence(:convention, node.src.keyword.line, message)
+          add_offence(:convention, node.loc.keyword.line, message)
         end
       end
 
