@@ -5,7 +5,7 @@ module Rubocop
     class Semicolon < Cop
       MSG = 'Do not use semicolons to terminate expressions.'
 
-      def inspect(file, source, tokens, ast, comments)
+      def inspect(source, tokens, ast, comments)
         on_node(:begin, ast) do |node|
           exprs = node.children
 

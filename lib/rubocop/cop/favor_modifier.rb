@@ -62,7 +62,7 @@ module Rubocop
       MSG =
         'Favor modifier while/until usage when you have a single-line body.'
 
-      def inspect(file, source, tokens, ast, comments)
+      def inspect(source, tokens, ast, comments)
         on_node([:while, :until], ast) do |node|
           add_offence(:convention, node.loc.line, MSG) if check(node)
         end
