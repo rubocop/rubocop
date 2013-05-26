@@ -64,7 +64,7 @@ module Rubocop
 
         syntax_cop = Rubocop::Cop::Syntax.new
         syntax_cop.debug = @options[:debug]
-        syntax_cop.inspect(file, source, nil, nil, nil)
+        syntax_cop.inspect(source, nil, nil, nil)
 
         if syntax_cop.offences.map(&:severity).include?(:error)
           # In case of a syntax error we just report that error and do
@@ -115,7 +115,7 @@ module Rubocop
                           disabled_lines)
           if !@options[:only] || @options[:only] == cop_name
             begin
-              cop.inspect(file, source, tokens, ast, comments)
+              cop.inspect(source, tokens, ast, comments)
             rescue => e
               handle_error(e,
                            "An error occurred while #{cop.name}".color(:red) +
