@@ -3,46 +3,40 @@
 module Rubocop
   module Cop
     class MultilineTernaryOperator < Cop
-      def error_message
+      MSG =
         'Avoid multi-line ?: (the ternary operator); use if/unless instead.'
-      end
 
-      def inspect(file, source, tokens, ast, comments)
-        on_node(:if, ast) do |s|
-          src = s.loc
+      def on_if(node)
+        loc = node.loc
 
-          # discard non-ternary ops
-          next unless src.respond_to?(:question)
+        # discard non-ternary ops
+        return unless loc.respond_to?(:question)
 
-          if src.line != src.colon.line
-            add_offence(:convention, src.line,
-                        error_message)
-          end
-        end
+        add_offence(:convention, loc.line, MSG) if loc.line != loc.colon.line
+
+        super
       end
     end
 
     class NestedTernaryOperator < Cop
-      def error_message
-        'Ternary operators must not be nested. Prefer if/else constructs ' +
-          'instead.'
-      end
+      MSG = 'Ternary operators must not be nested. Prefer if/else ' +
+          'constructs instead.'
 
-      def inspect(file, source, tokens, ast, comments)
-        on_node(:if, ast) do |s|
-          src = s.loc
+      def on_if(node)
+        loc = node.loc
 
-          # discard non-ternary ops
-          next unless src.respond_to?(:question)
+        # discard non-ternary ops
+        return unless loc.respond_to?(:question)
 
-          s.children.each do |child|
-            on_node(:if, child) do |c|
-              add_offence(:convention,
-                          c.loc.line,
-                          error_message) if c.loc.respond_to?(:question)
+        node.children.each do |child|
+          on_node(:if, child) do |c|
+            if c.loc.respond_to?(:question)
+              add_offence(:convention, c.loc.line, MSG)
             end
           end
         end
+
+        super
       end
     end
   end

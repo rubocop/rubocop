@@ -3,25 +3,23 @@
 module Rubocop
   module Cop
     class TrivialAccessors < Cop
-      READER_MESSAGE = 'Use attr_reader to define trivial reader methods.'
-      WRITER_MESSAGE = 'Use attr_writer to define trivial writer methods.'
+      MSG = 'Use attr_%s to define trivial %s methods.'
 
-      def inspect(file, source, tokens, ast, comments)
-        on_node(:def, ast) do |s|
-          _, args, body = *s
+      def on_def(node)
+        _, args, body = *node
 
-          if body.type == :ivar
-            add_offence(:convention,
-                        s.loc.keyword.line,
-                        READER_MESSAGE)
-          elsif args.children.size == 1 && body.type == :ivasgn
-            add_offence(:convention,
-                        s.loc.keyword.line,
-                        WRITER_MESSAGE)
-          end
+        kind = if body.type == :ivar
+                 'reader'
+               elsif args.children.size == 1 && body.type == :ivasgn
+                 'writer'
+               end
+        if kind
+          add_offence(:convention, node.loc.keyword.line,
+                      sprintf(MSG, kind, kind))
         end
-      end
 
+        super
+      end
     end
   end
 end
