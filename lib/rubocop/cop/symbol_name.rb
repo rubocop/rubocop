@@ -11,16 +11,12 @@ module Rubocop
         self.class.config['AllowCamelCase']
       end
 
-      def inspect(file, source, tokens, ast, comments)
-        on_node(:sym, ast) do |node|
-          sym_name = node.to_a[0]
-          next unless sym_name =~ /^[a-zA-Z]/
-          next if sym_name =~ SNAKE_CASE
-          next if allow_camel_case? && sym_name =~ CAMEL_CASE
-          add_offence(:convention,
-                      node.loc.line,
-                      MSG)
-        end
+      def on_sym(node)
+        sym_name = node.to_a[0]
+        return unless sym_name =~ /^[a-zA-Z]/
+        return if sym_name =~ SNAKE_CASE
+        return if allow_camel_case? && sym_name =~ CAMEL_CASE
+        add_offence(:convention, node.loc.line, MSG)
       end
     end
   end

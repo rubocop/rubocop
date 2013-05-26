@@ -3,38 +3,35 @@
 module Rubocop
   module Cop
     class DefWithParentheses < Cop
-      def error_message
-        "Omit the parentheses in defs when the method doesn't accept any " +
-          'arguments.'
-      end
+      MSG = "Omit the parentheses in defs when the method doesn't accept " +
+          'any arguments.'
 
-      def inspect(file, source, tokens, ast, comments)
-        on_node(:def, ast) do |s|
-          start_line = s.loc.keyword.line
-          end_line = s.loc.end.line
+      def on_def(node)
+        start_line = node.loc.keyword.line
+        end_line = node.loc.end.line
 
-          next if start_line == end_line
+        return if start_line == end_line
 
-          _, args = *s
-          if args.children == [] && args.loc.begin
-            add_offence(:convention, s.loc.line, error_message)
-          end
+        _, args = *node
+        if args.children == [] && args.loc.begin
+          add_offence(:convention, node.loc.line, MSG)
         end
+
+        super
       end
     end
 
     class DefWithoutParentheses < Cop
-      def error_message
-        'Use def with parentheses when there are arguments.'
-      end
+      MSG = 'Use def with parentheses when there are arguments.'
 
-      def inspect(file, source, tokens, ast, comments)
-        on_node(:def, ast) do |s|
-          _, args = *s
-          if args.children.size > 0 && args.loc.begin.nil?
-            add_offence(:convention, s.loc.line, error_message)
-          end
+      def on_def(node)
+        _, args = *node
+
+        if args.children.size > 0 && args.loc.begin.nil?
+          add_offence(:convention, node.loc.line, MSG)
         end
+
+        super
       end
     end
   end
