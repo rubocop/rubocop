@@ -77,6 +77,7 @@ require 'rubocop/cop/not'
 require 'rubocop/cop/eval'
 require 'rubocop/cop/access_control'
 require 'rubocop/cop/loop'
+require 'rubocop/cop/block_nesting'
 
 require 'rubocop/report/report'
 require 'rubocop/report/plain_text'
