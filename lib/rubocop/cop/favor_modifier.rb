@@ -42,7 +42,7 @@ module Rubocop
 
       def error_message
         'Favor modifier if/unless usage when you have a single-line body. ' +
-          'Another good alternative is the usage of control flow and/or.'
+          'Another good alternative is the usage of control flow &&/||.'
       end
 
       def on_if(node)
