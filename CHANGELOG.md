@@ -4,6 +4,8 @@
 
 ### New features
 
+* New cop `BlockNesting` checks for excessive block nesting
+
 ### Changes
 
 ### Bug fixes
