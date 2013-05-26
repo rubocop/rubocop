@@ -62,7 +62,7 @@ module Rubocop
         !@offences.empty?
       end
 
-      def inspect(file, source, tokens, ast, comments)
+      def inspect(source, tokens, ast, comments)
         process(ast)
         comments.each { |c| on_comment(c) }
       end

@@ -9,7 +9,7 @@ module Rubocop
       PRIVATE_NODE = s(:send, nil, :private)
       PROTECTED_NODE = s(:send, nil, :protected)
 
-      def inspect(file, source, tokens, ast, comments)
+      def inspect(source, tokens, ast, comments)
         on_node([:class, :module, :sclass], ast) do |class_node|
           class_start_col = class_node.loc.expression.column
 
