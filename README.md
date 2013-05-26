@@ -97,7 +97,7 @@ The file `config/default.yml` under the RuboCop home directory
 contains the default settings that all configurations inherit
 from. Project and personal `.rubocop.yml` files need only make
 settings that are different from the default ones. If there is no
-`.rubocop.yml` file in the project or home direcotry,
+`.rubocop.yml` file in the project or home directory,
 `config/default.yml` will be used.
 
 ### Disabling Cops within Source Code
@@ -132,7 +132,7 @@ RuboCop checks all files recursively within the directory it is run
 on.  However, it does not recognize some files as Ruby(only files
 ending with `.rb` or extensionless files with a `#!.*ruby` declaration
 are automatically detected) files, and if you'd like it to check these
-you'll need to manually pass them in.  Files and directories can be
+you'll need to manually pass them in.  Files and directories can
 also be ignored through `.rubocop.yml`.
 
 Here is an example that might be used for a Rails project:
