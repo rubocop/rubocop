@@ -189,7 +189,7 @@ module Rubocop
         .to eq(['== example.rb ==',
                 'C:  1: Favor modifier if/unless usage when you have a ' +
                 'single-line body. Another good alternative is the usage of ' +
-                'control flow and/or.',
+                'control flow &&/||.',
                 '',
                 '1 file inspected, 1 offence detected',
                 ''].join("\n"))
