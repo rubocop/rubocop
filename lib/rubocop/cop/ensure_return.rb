@@ -5,16 +5,14 @@ module Rubocop
     class EnsureReturn < Cop
       MSG = 'Never return from an ensure block.'
 
-      def inspect(file, source, tokens, ast, comments)
-        on_node(:ensure, ast) do |ensure_node|
-          _body, ensure_body = *ensure_node
+      def on_ensure(node)
+        _body, ensure_body = *node
 
-          on_node(:return, ensure_body) do |e|
-            add_offence(:warning,
-                        e.loc.line,
-                        MSG)
-          end
+        on_node(:return, ensure_body) do |e|
+          add_offence(:warning, e.loc.line, MSG)
         end
+
+        super
       end
     end
   end
