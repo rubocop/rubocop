@@ -22,6 +22,10 @@ MethodLength:
   CountComments: false  # count full line comments?
   Max: 10
 
+# Avoid parameter lists longer than four parameters.
+ParameterLists:
+  Max: 4
+
 # Don't use semicolons to terminate expressions.
 Semicolon:
   # For example; def area(height, width); height * width end
