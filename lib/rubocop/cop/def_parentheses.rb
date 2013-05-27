@@ -19,6 +19,20 @@ module Rubocop
 
         super
       end
+
+      def on_defs(node)
+        start_line = node.loc.keyword.line
+        end_line = node.loc.end.line
+
+        return if start_line == end_line
+
+        _, _, args = *node
+        if args.children == [] && args.loc.begin
+          add_offence(:convention, node.loc.line, MSG)
+        end
+
+        super
+      end
     end
 
     class DefWithoutParentheses < Cop
@@ -26,6 +40,16 @@ module Rubocop
 
       def on_def(node)
         _, args = *node
+
+        if args.children.size > 0 && args.loc.begin.nil?
+          add_offence(:convention, node.loc.line, MSG)
+        end
+
+        super
+      end
+
+      def on_defs(node)
+        _, _, args = *node
 
         if args.children.size > 0 && args.loc.begin.nil?
           add_offence(:convention, node.loc.line, MSG)

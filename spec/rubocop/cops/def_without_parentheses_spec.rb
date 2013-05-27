@@ -11,15 +11,21 @@ module Rubocop
         src = ['def func a, b',
                'end']
         inspect_source(def_par, '', src)
-        expect(def_par.offences.map(&:message)).to eq(
-          ['Use def with parentheses when there are arguments.'])
+        expect(def_par.offences.size).to eq(1)
+      end
+
+      it 'reports an offence for class def with parameters but no parens' do
+        src = ['def Test.func a, b',
+               'end']
+        inspect_source(def_par, '', src)
+        expect(def_par.offences.size).to eq(1)
       end
 
       it 'accepts def with no args and no parens' do
         src = ['def func',
                'end']
         inspect_source(def_par, '', src)
-        expect(def_par.offences.map(&:message)).to be_empty
+        expect(def_par.offences).to be_empty
       end
     end
   end
