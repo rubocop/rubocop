@@ -123,13 +123,13 @@ module Rubocop
     end
 
     def warn_unless_valid
-      validate!
+      validate
     rescue Config::ValidationError => e
       puts "Warning: #{e.message}".color(:red)
     end
 
     # TODO: This should be a private method
-    def validate!
+    def validate
       # Don't validate RuboCop's own files. Avoids inifinite recursion.
       return if @loaded_path.start_with?(RUBOCOP_HOME)
 
