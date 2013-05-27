@@ -64,12 +64,10 @@ end
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
 def inspect_source(cop, source)
-  Dir.mktmpdir do |tmpdir|
-    path = File.join(tmpdir, 'file.rb')
-    File.open(path, 'w') { |f| f.write(source.join("\n")) }
-    ast, comments, tokens, _ = Rubocop::CLI.rip_source(path)
-    cop.inspect(source, tokens, ast, comments)
+  ast, comments, tokens, _ = Rubocop::CLI.parse('(string)') do |source_buffer|
+    source_buffer.source = source.join($RS)
   end
+  cop.inspect(source, tokens, ast, comments)
 end
 
 class Rubocop::Cop::Cop
