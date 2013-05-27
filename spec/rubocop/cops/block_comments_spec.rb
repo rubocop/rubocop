@@ -14,8 +14,6 @@ module Rubocop
                         'comment',
                         '=end'])
         expect(block.offences.size).to eq(1)
-        expect(block.offences.map(&:message))
-          .to eq([BlockComments::MSG])
       end
 
       it 'accepts regular comments' do
