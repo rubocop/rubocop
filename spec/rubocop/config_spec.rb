@@ -208,7 +208,7 @@ describe Rubocop::Config do
     end
   end
 
-  describe '#validate!', :isolated_environment do
+  describe '#validate', :isolated_environment do
     # TODO: Because Config.load_file now outputs the validation warning,
     #       it is inserting text into the rspec test output here.
     #       The next 2 lines should be removed eventually.
@@ -232,7 +232,7 @@ describe Rubocop::Config do
 
       it 'raises validation error' do
         expect do
-          configuration.validate!
+          configuration.validate
         end.to raise_error(Rubocop::Config::ValidationError) do |error|
           expect(error.message).to start_with('unrecognized cop LyneLenth')
         end
@@ -250,7 +250,7 @@ describe Rubocop::Config do
 
       it 'raises validation error' do
         expect do
-          configuration.validate!
+          configuration.validate
         end.to raise_error(Rubocop::Config::ValidationError) do |error|
           expect(error.message).to
             start_with('unrecognized parameter LineLength:Min')
