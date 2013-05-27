@@ -64,7 +64,7 @@ end
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
 def inspect_source(cop, file, source)
-  ast, comments, tokens = Rubocop::CLI.rip_source(source.join("\n"))
+  ast, comments, tokens = Rubocop::CLI.rip_source(file, source.join("\n"))
   cop.inspect(source, tokens, ast, comments)
 end
 

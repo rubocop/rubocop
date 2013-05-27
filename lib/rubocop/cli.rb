@@ -83,7 +83,7 @@ module Rubocop
 
     def inspect_file(file, source, config, report)
       begin
-        ast, comments, tokens = CLI.rip_source(source.join("\n"))
+        ast, comments, tokens = CLI.rip_source(file, source.join("\n"))
       rescue Parser::SyntaxError, Encoding::UndefinedConversionError,
         ArgumentError => e
         handle_error(e, "An error occurred while parsing #{file}.".color(:red))
@@ -223,8 +223,8 @@ module Rubocop
       end
     end
 
-    def self.rip_source(source)
-      ast, _comments, tokens = parse(source)
+    def self.rip_source(file, source)
+      ast, _comments, tokens = parse(file, source)
 
       tokens = tokens.map do |t|
         type, details = *t
@@ -238,7 +238,7 @@ module Rubocop
       [ast, comments, tokens]
     end
 
-    def self.parse(string)
+    def self.parse(file, string)
       parser = Parser::CurrentRuby.new
 
       parser.diagnostics.all_errors_are_fatal = true
@@ -248,7 +248,7 @@ module Rubocop
         $stderr.puts(diagnostic.render)
       end
 
-      source_buffer = Parser::Source::Buffer.new('(string)', 1)
+      source_buffer = Parser::Source::Buffer.new(file, 1)
       source_buffer.source = string
 
       parser.tokenize(source_buffer)
