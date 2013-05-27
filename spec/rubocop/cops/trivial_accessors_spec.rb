@@ -268,7 +268,6 @@ module Rubocop
       end
 
       it 'does not find a trivial writer' do
-        pending
         inspect_source(trivial_accessors_finder, '',
                        ['def bar=(value)',
                         ' @bar = value + 42',

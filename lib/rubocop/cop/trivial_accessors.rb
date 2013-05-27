@@ -10,7 +10,8 @@ module Rubocop
 
         kind = if body.type == :ivar
                  'reader'
-               elsif args.children.size == 1 && body.type == :ivasgn
+               elsif args.children.size == 1 && body.type == :ivasgn &&
+                   body.children[1].type == :lvar
                  'writer'
                end
         if kind
