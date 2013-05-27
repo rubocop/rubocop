@@ -12,7 +12,7 @@ module Rubocop
         prev_line = 1
 
         tokens.each do |token|
-          cur_line = token.pos.lineno
+          cur_line = token.pos.line
           line_diff = cur_line - prev_line
 
           if line_diff > LINE_OFFSET

@@ -9,9 +9,9 @@ module Rubocop
 
       def inspect(source, tokens, ast, comments)
         tokens.each_cons(2) do |t1, t2|
-          if kind(t1) && t1.pos.lineno == t2.pos.lineno &&
+          if kind(t1) && t1.pos.line == t2.pos.line &&
               t2.pos.column == t1.pos.column + offset(t1)
-            add_offence(:convention, t1.pos.lineno, sprintf(MSG, kind(t1)))
+            add_offence(:convention, t1.pos.line, sprintf(MSG, kind(t1)))
           end
         end
       end

@@ -9,42 +9,36 @@ module Rubocop
 
       it 'registers an offence for arrays of single quoted strings' do
         inspect_source(wa,
-                       'file.rb',
                        ["['one', 'two', 'three']"])
         expect(wa.offences.size).to eq(1)
       end
 
       it 'registers an offence for arrays of double quoted strings' do
         inspect_source(wa,
-                       'file.rb',
                        ['["one", "two", "three"]'])
         expect(wa.offences.size).to eq(1)
       end
 
       it 'does not register an offence for array of non-words' do
         inspect_source(wa,
-                       'file.rb',
                        ['["one space", "two", "three"]'])
         expect(wa.offences).to be_empty
       end
 
       it 'does not register an offence for array starting with %w' do
         inspect_source(wa,
-                       'file.rb',
                        ['%w(one two three)'])
         expect(wa.offences).to be_empty
       end
 
       it 'does not register an offence for array with one element' do
         inspect_source(wa,
-                       'file.rb',
                        ['["three"]'])
         expect(wa.offences).to be_empty
       end
 
       it 'does not register an offence for array with empty strings' do
         inspect_source(wa,
-                       'file.rb',
                        ['["", "two", "three"]'])
         expect(wa.offences).to be_empty
       end

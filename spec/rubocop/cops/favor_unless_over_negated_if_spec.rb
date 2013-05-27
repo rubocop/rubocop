@@ -8,7 +8,7 @@ module Rubocop
       let(:fav_unless) { FavorUnlessOverNegatedIf.new }
 
       it 'registers an offence for if with exclamation point condition' do
-        inspect_source(fav_unless, 'file.rb',
+        inspect_source(fav_unless,
                        ['if !a_condition',
                         '  some_method',
                         'end',
@@ -20,7 +20,7 @@ module Rubocop
       end
 
       it 'registers an offence for if with "not" condition' do
-        inspect_source(fav_unless, 'file.rb',
+        inspect_source(fav_unless,
                        ['if not a_condition',
                         '  some_method',
                         'end',
@@ -32,7 +32,7 @@ module Rubocop
       end
 
       it 'accepts an if/else with negative condition' do
-        inspect_source(fav_unless, 'file.rb',
+        inspect_source(fav_unless,
                        ['if !a_condition',
                         '  some_method',
                         'else',
@@ -47,7 +47,7 @@ module Rubocop
       end
 
       it 'accepts an if where only part of the contition is negated' do
-        inspect_source(fav_unless, 'file.rb',
+        inspect_source(fav_unless,
                        ['if !a_condition && another_condition',
                         '  some_method',
                         'end',

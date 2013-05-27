@@ -9,7 +9,6 @@ module Rubocop
 
       it 'registers an offence for return in ensure' do
         inspect_source(er,
-                       'file.rb',
                        ['begin',
                         '  something',
                         'ensure',
@@ -23,7 +22,6 @@ module Rubocop
 
       it 'does not register an offence for return outside ensure' do
         inspect_source(er,
-                       'file.rb',
                        ['begin',
                         '  something',
                         '  return',

@@ -2,21 +2,6 @@
 require 'pathname'
 require 'optparse'
 
-class Parser::Lexer
-  alias_method :old_advance, :advance
-
-  # Patched advance method that stores all tokens.
-  def advance
-    token = old_advance
-    type, info = *token
-    if type
-      text, range = *info
-      Rubocop::CLI.add_token(range, type, text)
-    end
-    token
-  end
-end
-
 module Rubocop
   # The CLI is a class responsible of handling all the command line interface
   # logic.
@@ -58,13 +43,12 @@ module Rubocop
 
         config = ConfigStore.for(file)
         report = Report.create(file, @options[:mode])
-        source = read_source(file)
 
         puts "Scanning #{file}" if @options[:debug]
 
         syntax_cop = Rubocop::Cop::Syntax.new
         syntax_cop.debug = @options[:debug]
-        syntax_cop.inspect(source, nil, nil, nil)
+        syntax_cop.inspect_file(file)
 
         if syntax_cop.offences.map(&:severity).include?(:error)
           # In case of a syntax error we just report that error and do
@@ -72,7 +56,7 @@ module Rubocop
           report << syntax_cop
           @total_offences += syntax_cop.offences.count
         else
-          inspect_file(file, source, config, report)
+          inspect_file(file, config, report)
         end
 
         @processed_file_count += 1
@@ -92,13 +76,11 @@ module Rubocop
       end
     end
 
-    def read_source(file)
-      File.read(file).split($RS)
-    end
-
-    def inspect_file(file, source, config, report)
+    def inspect_file(file, config, report)
       begin
-        ast, comments, tokens = CLI.rip_source(source.join("\n"))
+        ast, comments, tokens, source = CLI.parse(file) do |source_buffer|
+          source_buffer.read
+        end
       rescue Parser::SyntaxError, Encoding::UndefinedConversionError,
         ArgumentError => e
         handle_error(e, "An error occurred while parsing #{file}.".color(:red))
@@ -238,20 +220,7 @@ module Rubocop
       end
     end
 
-    # This method is called by our modified version of
-    # Parser::Lexer#advance for each token.
-    def self.add_token(range, type, text)
-      pos = Rubocop::Cop::Position.new(range.line, range.column)
-      @parser_tokens << Rubocop::Cop::Token.new(pos, type, text)
-    end
-
-    def self.rip_source(source)
-      @parser_tokens = []
-      ast, comments = parse(source)
-      [ast, comments, @parser_tokens]
-    end
-
-    def self.parse(string)
+    def self.parse(file)
       parser = Parser::CurrentRuby.new
 
       parser.diagnostics.all_errors_are_fatal = true
@@ -261,10 +230,18 @@ module Rubocop
         $stderr.puts(diagnostic.render)
       end
 
-      source_buffer = Parser::Source::Buffer.new('(string)', 1)
-      source_buffer.source = string
+      source_buffer = Parser::Source::Buffer.new(file, 1)
+      yield source_buffer
 
-      parser.parse_with_comments(source_buffer)
+      ast, comments, tokens = parser.tokenize(source_buffer)
+
+      tokens = tokens.map do |t|
+        type, details = *t
+        text, range = *details
+        Rubocop::Cop::Token.new(range, type, text)
+      end
+
+      [ast, comments, tokens, source_buffer.source.split($RS)]
     end
 
     # Generate a list of target files by expanding globing patterns

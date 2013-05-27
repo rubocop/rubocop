@@ -9,7 +9,6 @@ module Rubocop
 
       it 'registers an offence for not' do
         inspect_source(a,
-                       'file.rb',
                        ['not test'])
         expect(a.offences.size).to eq(1)
         expect(a.offences.map(&:message))
@@ -18,14 +17,12 @@ module Rubocop
 
       it 'does not register an offence for !' do
         inspect_source(a,
-                       'file.rb',
                        ['!test'])
         expect(a.offences).to be_empty
       end
 
       it 'does not register an offence for :not' do
         inspect_source(a,
-                       'file.rb',
                        ['[:not, :if, :else]'])
         expect(a.offences).to be_empty
       end

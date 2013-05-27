@@ -8,7 +8,7 @@ module Rubocop
       let(:snake_case) { MethodAndVariableSnakeCase.new }
 
       it 'registers an offence for camel case in instance method name' do
-        inspect_source(snake_case, 'file.rb',
+        inspect_source(snake_case,
                        ['def myMethod',
                         '  # ...',
                         'end',
@@ -18,7 +18,7 @@ module Rubocop
       end
 
       it 'registers an offence for camel case in singleton method name' do
-        inspect_source(snake_case, 'file.rb',
+        inspect_source(snake_case,
                        ['def self.myMethod',
                         '  # ...',
                         'end',
@@ -28,25 +28,25 @@ module Rubocop
       end
 
       it 'registers an offence for camel case in local variable name' do
-        inspect_source(snake_case, 'file.rb', ['myLocal = 1'])
+        inspect_source(snake_case, ['myLocal = 1'])
         expect(snake_case.offences.map(&:message)).to eq(
           ['Use snake_case for methods and variables.'])
       end
 
       it 'registers an offence for camel case in instance variable name' do
-        inspect_source(snake_case, 'file.rb', ['@myAttribute = 3'])
+        inspect_source(snake_case, ['@myAttribute = 3'])
         expect(snake_case.offences.map(&:message)).to eq(
           ['Use snake_case for methods and variables.'])
       end
 
       it 'registers an offence for camel case in setter name' do
-        inspect_source(snake_case, 'file.rb', ['self.mySetter = 2'])
+        inspect_source(snake_case, ['self.mySetter = 2'])
         expect(snake_case.offences.map(&:message)).to eq(
           ['Use snake_case for methods and variables.'])
       end
 
       it 'registers an offence for capitalized camel case' do
-        inspect_source(snake_case, 'file.rb',
+        inspect_source(snake_case,
                        ['def MyMethod',
                         'end',
                        ])
@@ -55,7 +55,7 @@ module Rubocop
       end
 
       it 'accepts snake case in names' do
-        inspect_source(snake_case, 'file.rb',
+        inspect_source(snake_case,
                        ['def my_method',
                         '  my_local_html = 1',
                         '  self.my_setter = 2',
@@ -66,7 +66,7 @@ module Rubocop
       end
 
       it 'registers an offence for mixed snake case and camel case' do
-        inspect_source(snake_case, 'file.rb',
+        inspect_source(snake_case,
                        ['def visit_Arel_Nodes_SelectStatement',
                         'end'])
         expect(snake_case.offences.map(&:message)).to eq(
@@ -74,17 +74,17 @@ module Rubocop
       end
 
       it 'accepts screaming snake case globals' do
-        inspect_source(snake_case, 'file.rb', ['$MY_GLOBAL = 0'])
+        inspect_source(snake_case, ['$MY_GLOBAL = 0'])
         expect(snake_case.offences.map(&:message)).to be_empty
       end
 
       it 'accepts screaming snake case constants' do
-        inspect_source(snake_case, 'file.rb', ['MY_CONSTANT = 0'])
+        inspect_source(snake_case, ['MY_CONSTANT = 0'])
         expect(snake_case.offences.map(&:message)).to be_empty
       end
 
       it 'accepts assigning to camel case constant' do
-        inspect_source(snake_case, 'file.rb',
+        inspect_source(snake_case,
                        ['Paren = Struct.new :left, :right, :kind'])
         expect(snake_case.offences.map(&:message)).to be_empty
       end

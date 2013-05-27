@@ -9,7 +9,6 @@ module Rubocop
 
       it 'registers an offence for misaligned private' do
         inspect_source(a,
-                       'file.rb',
                        ['class Test',
                          '',
                          'private',
@@ -23,7 +22,6 @@ module Rubocop
 
       it 'registers an offence for misaligned private in module' do
         inspect_source(a,
-                       'file.rb',
                        ['module Test',
                         '',
                         'private',
@@ -37,7 +35,6 @@ module Rubocop
 
       it 'registers an offence for misaligned private in singleton class' do
         inspect_source(a,
-                       'file.rb',
                        ['class << self',
                          '',
                          'private',
@@ -51,7 +48,6 @@ module Rubocop
 
       it 'registers an offence for misaligned protected' do
         inspect_source(a,
-                       'file.rb',
                        ['class Test',
                         '',
                         'protected',
@@ -65,7 +61,6 @@ module Rubocop
 
       it 'accepts properly indented private' do
         inspect_source(a,
-                       'file.rb',
                        ['class Test',
                         '',
                         '  private',
@@ -77,7 +72,6 @@ module Rubocop
 
       it 'accepts properly indented protected' do
         inspect_source(a,
-                       'file.rb',
                        ['class Test',
                         '',
                         '  protected',
@@ -89,7 +83,6 @@ module Rubocop
 
       it 'handles properly nested classes' do
         inspect_source(a,
-                       'file.rb',
                        ['class Test',
                         '',
                         '  class Nested',
@@ -110,7 +103,6 @@ module Rubocop
 
       it 'requires blank line before private/protected' do
         inspect_source(a,
-                       'file.rb',
                        ['class Test',
                         '  protected',
                         '',
@@ -123,7 +115,6 @@ module Rubocop
 
       it 'requires blank line after private/protected' do
         inspect_source(a,
-                       'file.rb',
                        ['class Test',
                         '',
                         '  protected',

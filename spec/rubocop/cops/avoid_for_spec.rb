@@ -9,7 +9,6 @@ module Rubocop
 
       it 'registers an offence for for' do
         inspect_source(af,
-                       'file.rb',
                        ['def func',
                         '  for n in [1, 2, 3] do',
                         '    puts n',
@@ -22,14 +21,12 @@ module Rubocop
 
       it 'does not register an offence for :for' do
         inspect_source(af,
-                       'file.rb',
                        ['[:for, :ala, :bala]'])
         expect(af.offences).to be_empty
       end
 
       it 'does not register an offence for def for' do
         inspect_source(af,
-                       'file.rb',
                        ['def for; end'])
         expect(af.offences).to be_empty
       end

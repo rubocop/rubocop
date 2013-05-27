@@ -9,7 +9,6 @@ module Rubocop
 
       it 'registers an offence for arg not named other' do
         inspect_source(om,
-                       'file.rb',
                        ['def +(another)',
                         '  another',
                         'end'])
@@ -20,7 +19,6 @@ module Rubocop
 
       it 'works properly even if the argument is not surrounded with braces' do
         inspect_source(om,
-                       'file.rb',
                        ['def + another',
                         '  another',
                         'end'])
@@ -31,7 +29,6 @@ module Rubocop
 
       it 'does not register an offence for arg named other' do
         inspect_source(om,
-                       'file.rb',
                        ['def +(other)',
                         '  other',
                         'end'])
@@ -40,7 +37,6 @@ module Rubocop
 
       it 'does not register an offence for []' do
         inspect_source(om,
-                       'file.rb',
                        ['def [](index)',
                         '  other',
                         'end'])
@@ -49,7 +45,6 @@ module Rubocop
 
       it 'does not register an offence for []=' do
         inspect_source(om,
-                       'file.rb',
                        ['def []=(index, value)',
                         '  other',
                         'end'])
@@ -58,7 +53,6 @@ module Rubocop
 
       it 'does not register an offence for <<' do
         inspect_source(om,
-                       'file.rb',
                        ['def <<(cop)',
                         '  other',
                         'end'])
@@ -67,7 +61,6 @@ module Rubocop
 
       it 'does not register an offence for non binary operators' do
         inspect_source(om,
-                       'file.rb',
                        ['def -@', # Unary minus
                         'end',
                         '',

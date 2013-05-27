@@ -5,7 +5,7 @@ require 'open3'
 module Rubocop
   module Cop
     class Syntax < Cop
-      def inspect(source, tokens, ast, comments)
+      def inspect_file(file)
         # Starting JRuby processes would be extremely slow
         # We need to check if rbx returns nice warning messages
         return unless RUBY_ENGINE == 'ruby'
@@ -16,12 +16,10 @@ module Rubocop
         # clean environment - otherwise it will be extremely slow
         if defined? Bundler
           Bundler.with_clean_env do
-            _, stderr, _ =
-              Open3.capture3('ruby -wc', stdin_data: source.join("\n"))
+            _, stderr, _ = Open3.capture3("ruby -wc #{file}")
           end
         else
-          _, stderr, _ =
-            Open3.capture3('ruby -wc', stdin_data: source.join("\n"))
+          _, stderr, _ = Open3.capture3("ruby -wc #{file}")
         end
 
         stderr.each_line do |line|
