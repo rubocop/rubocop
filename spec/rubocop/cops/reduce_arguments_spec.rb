@@ -8,7 +8,7 @@ module Rubocop
       let(:reduce_arguments) { ReduceArguments.new }
 
       it 'find wrong argument names in calls with different syntax' do
-        inspect_source(reduce_arguments, '',
+        inspect_source(reduce_arguments,
                        ['def m',
                         '  [0, 1].reduce { |c, d| c + d }',
                         '  [0, 1].reduce{ |c, d| c + d }',
@@ -23,7 +23,7 @@ module Rubocop
       end
 
       it 'allows calls with proper argument names' do
-        inspect_source(reduce_arguments, '',
+        inspect_source(reduce_arguments,
                        ['def m',
                         '  [0, 1].reduce { |a, e| a + e }',
                         '  [0, 1].reduce{ |a, e| a + e }',
@@ -36,7 +36,7 @@ module Rubocop
       end
 
       it 'ignores do..end blocks' do
-        inspect_source(reduce_arguments, '',
+        inspect_source(reduce_arguments,
                        ['def m',
                         '  [0, 1].reduce do |c, d|',
                         '    c + d',
@@ -46,7 +46,7 @@ module Rubocop
       end
 
       it 'ignores :reduce symbols' do
-        inspect_source(reduce_arguments, '',
+        inspect_source(reduce_arguments,
                        ['def m',
                         '  call_method(:reduce) { |a, b| a + b}',
                         'end'])

@@ -8,19 +8,19 @@ module Rubocop
       let(:space) { SpaceAroundBraces.new }
 
       it 'registers an offence for left brace without spaces' do
-        inspect_source(space, 'file.rb', ['each{ puts }'])
+        inspect_source(space, ['each{ puts }'])
         expect(space.offences.map(&:message)).to eq(
           ["Surrounding space missing for '{'."])
       end
 
       it 'registers an offence for right brace without inner space' do
-        inspect_source(space, 'file.rb', ['each { puts}'])
+        inspect_source(space, ['each { puts}'])
         expect(space.offences.map(&:message)).to eq(
           ["Space missing to the left of '}'."])
       end
 
       it 'accepts an empty hash literal with no space inside' do
-        inspect_source(space, 'file.rb',
+        inspect_source(space,
                        ['view_hash.each do |view_key|',
                         'end',
                         '@views = {}',
@@ -29,7 +29,7 @@ module Rubocop
       end
 
       it 'accepts string interpolation braces with no space inside' do
-        inspect_source(space, 'file.rb',
+        inspect_source(space,
                        ['"A=#{a}"',
                         ':"#{b}"',
                         '/#{c}/',
@@ -39,7 +39,7 @@ module Rubocop
       end
 
       it 'accepts braces around a hash literal argument' do
-        inspect_source(space, 'file.rb', ["new({'user' => user_params})"])
+        inspect_source(space, ["new({'user' => user_params})"])
         expect(space.offences.map(&:message)).to be_empty
       end
     end

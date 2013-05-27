@@ -12,7 +12,7 @@ module Rubocop
       end
 
       it 'finds trivial reader' do
-        inspect_source(trivial_accessors_finder, '',
+        inspect_source(trivial_accessors_finder,
                        ['def foo',
                         '  @foo',
                         'end',
@@ -26,7 +26,7 @@ module Rubocop
       end
 
       it 'finds trivial reader in a class' do
-        inspect_source(trivial_accessors_finder, '',
+        inspect_source(trivial_accessors_finder,
                        ['class TrivialFoo',
                         '  def foo',
                         '    @foo',
@@ -41,7 +41,7 @@ module Rubocop
       end
 
       it 'finds trivial reader in a nested class' do
-        inspect_source(trivial_accessors_finder, '',
+        inspect_source(trivial_accessors_finder,
                        ['class TrivialFoo',
                         '  class Nested',
                         '    def foo',
@@ -55,7 +55,7 @@ module Rubocop
       end
 
       it 'finds trivial readers in a little less trivial class' do
-        inspect_source(trivial_accessors_finder, '',
+        inspect_source(trivial_accessors_finder,
                        ['class TrivialFoo',
                         '  def foo',
                         '    @foo',
@@ -115,7 +115,7 @@ module Rubocop
       end
 
       it 'finds trivial reader with braces' do
-        inspect_source(trivial_accessors_finder, '',
+        inspect_source(trivial_accessors_finder,
                        ['class Test',
                         '  # trivial reader with braces',
                         '  def name()',
@@ -128,7 +128,7 @@ module Rubocop
       end
 
       it 'finds trivial writer without braces' do
-        inspect_source(trivial_accessors_finder, '',
+        inspect_source(trivial_accessors_finder,
                        ['class Test',
                         '  # trivial writer without braces',
                         '  def name= name',
@@ -141,7 +141,7 @@ module Rubocop
       end
 
       it 'does not find trivial writer with function calls' do
-        inspect_source(trivial_accessors_finder, '',
+        inspect_source(trivial_accessors_finder,
                        ['class TrivialTest',
                         ' def test=(val)',
                         '   @test = val',
@@ -153,7 +153,7 @@ module Rubocop
       end
 
       it 'finds trivials with less peculiar methods' do
-        inspect_source(trivial_accessors_finder, '',
+        inspect_source(trivial_accessors_finder,
                        ['class NilStats',
                         'def most_traded_pair',
                         'end',
@@ -192,7 +192,7 @@ module Rubocop
       end
 
       it 'finds oneliner trivials' do
-        inspect_source(trivial_accessors_finder, '',
+        inspect_source(trivial_accessors_finder,
                        ['class Oneliner',
                         '  def foo; @foo; end',
                         '  def foo= foo; @foo = foo; end',
@@ -203,7 +203,7 @@ module Rubocop
       end
 
       it 'does not find a trivial reader' do
-        inspect_source(trivial_accessors_finder, '',
+        inspect_source(trivial_accessors_finder,
                        ['def bar',
                         '  @bar + foo',
                         'end'])
@@ -211,7 +211,7 @@ module Rubocop
       end
 
       it 'finds trivial writer' do
-        inspect_source(trivial_accessors_finder, '',
+        inspect_source(trivial_accessors_finder,
                        ['def foo=(val)',
                         ' @foo = val',
                         'end'])
@@ -221,7 +221,7 @@ module Rubocop
       end
 
       it 'finds trivial writer in a class' do
-        inspect_source(trivial_accessors_finder, '',
+        inspect_source(trivial_accessors_finder,
                        ['class TrivialFoo',
                         '  def foo=(val)',
                         '    @foo = val',
@@ -247,7 +247,7 @@ module Rubocop
       end
 
       it 'finds trivial accessors in a little less trivial class' do
-        inspect_source(trivial_accessors_finder, '',
+        inspect_source(trivial_accessors_finder,
                        ['class TrivialFoo',
                         ' def foo',
                         ' @foo',
@@ -268,7 +268,7 @@ module Rubocop
       end
 
       it 'does not find a trivial writer' do
-        inspect_source(trivial_accessors_finder, '',
+        inspect_source(trivial_accessors_finder,
                        ['def bar=(value)',
                         ' @bar = value + 42',
                         'end'])
@@ -276,7 +276,7 @@ module Rubocop
       end
 
       it 'finds trivial writers in a little less trivial class' do
-        inspect_source(trivial_accessors_finder, '',
+        inspect_source(trivial_accessors_finder,
                        ['class TrivialFoo',
                         ' def foo_bar=(foo, bar)',
                         ' @foo_bar = foo + bar',
@@ -294,7 +294,7 @@ module Rubocop
       end
 
       it 'does not find trivial accessors with method calls' do
-        inspect_source(trivial_accessors_finder, '',
+        inspect_source(trivial_accessors_finder,
                        ['class TrivialFoo',
                         ' def foo_bar(foo)',
                         '   foo_bar = foo + 42',
@@ -312,7 +312,7 @@ module Rubocop
       end
 
       it 'does not find trivial writer with exceptions' do
-        inspect_source(trivial_accessors_finder, '',
+        inspect_source(trivial_accessors_finder,
                        [' def expiration_formatted=(value)',
                         '   begin',
                         '     @expiration = foo_stuff',

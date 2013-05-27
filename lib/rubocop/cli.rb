@@ -43,13 +43,12 @@ module Rubocop
 
         config = ConfigStore.for(file)
         report = Report.create(file, @options[:mode])
-        source = read_source(file)
 
         puts "Scanning #{file}" if @options[:debug]
 
         syntax_cop = Rubocop::Cop::Syntax.new
         syntax_cop.debug = @options[:debug]
-        syntax_cop.inspect(source, nil, nil, nil)
+        syntax_cop.inspect_file(file)
 
         if syntax_cop.offences.map(&:severity).include?(:error)
           # In case of a syntax error we just report that error and do
@@ -57,7 +56,7 @@ module Rubocop
           report << syntax_cop
           @total_offences += syntax_cop.offences.count
         else
-          inspect_file(file, source, config, report)
+          inspect_file(file, config, report)
         end
 
         @processed_file_count += 1
@@ -77,13 +76,9 @@ module Rubocop
       end
     end
 
-    def read_source(file)
-      File.read(file).split($RS)
-    end
-
-    def inspect_file(file, source, config, report)
+    def inspect_file(file, config, report)
       begin
-        ast, comments, tokens = CLI.rip_source(file, source.join("\n"))
+        ast, comments, tokens, source = CLI.rip_source(file)
       rescue Parser::SyntaxError, Encoding::UndefinedConversionError,
         ArgumentError => e
         handle_error(e, "An error occurred while parsing #{file}.".color(:red))
@@ -223,8 +218,8 @@ module Rubocop
       end
     end
 
-    def self.rip_source(file, source)
-      ast, _comments, tokens = parse(file, source)
+    def self.rip_source(file)
+      ast, _comments, tokens, source = parse(file)
 
       tokens = tokens.map do |t|
         type, details = *t
@@ -235,10 +230,10 @@ module Rubocop
 
       comments = tokens.select { |t| t.type == :tCOMMENT }
 
-      [ast, comments, tokens]
+      [ast, comments, tokens, source]
     end
 
-    def self.parse(file, string)
+    def self.parse(file)
       parser = Parser::CurrentRuby.new
 
       parser.diagnostics.all_errors_are_fatal = true
@@ -249,9 +244,10 @@ module Rubocop
       end
 
       source_buffer = Parser::Source::Buffer.new(file, 1)
-      source_buffer.source = string
+      source_buffer.read
 
-      parser.tokenize(source_buffer)
+      ast, comments, tokens = parser.tokenize(source_buffer)
+      [ast, comments, tokens, source_buffer.source.split($RS)]
     end
 
     # Generate a list of target files by expanding globing patterns

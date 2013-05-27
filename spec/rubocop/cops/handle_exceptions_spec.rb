@@ -9,7 +9,6 @@ module Rubocop
 
       it 'registers an offence for empty rescue block' do
         inspect_source(he,
-                       'file.rb',
                        ['begin',
                         '  something',
                         'rescue',
@@ -22,7 +21,6 @@ module Rubocop
 
       it 'does not register an offence for rescue with body' do
         inspect_source(he,
-                       'file.rb',
                        ['begin',
                         '  something',
                         '  return',

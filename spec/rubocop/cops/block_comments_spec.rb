@@ -9,7 +9,6 @@ module Rubocop
 
       it 'registers an offence for block comments' do
         inspect_source(block,
-                       'file.rb',
                        ['=begin',
                         'comment',
                         '=end'])
@@ -18,7 +17,6 @@ module Rubocop
 
       it 'accepts regular comments' do
         inspect_source(block,
-                       'file.rb',
                        ['# comment'])
         expect(block.offences).to be_empty
       end

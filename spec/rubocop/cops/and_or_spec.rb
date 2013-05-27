@@ -9,7 +9,6 @@ module Rubocop
 
       it 'registers an offence for OR' do
         inspect_source(amp,
-                       'file.rb',
                        ['test if a or b'])
         expect(amp.offences.size).to eq(1)
         expect(amp.messages).to eq(['Use || instead of or.'])
@@ -17,7 +16,6 @@ module Rubocop
 
       it 'registers an offence for AND' do
         inspect_source(amp,
-                       'file.rb',
                        ['test if a and b'])
         expect(amp.offences.size).to eq(1)
         expect(amp.messages).to eq(['Use && instead of and.'])
@@ -25,14 +23,12 @@ module Rubocop
 
       it 'accepts ||' do
         inspect_source(amp,
-                       'file.rb',
                        ['test if a || b'])
         expect(amp.offences).to be_empty
       end
 
       it 'accepts &&' do
         inspect_source(amp,
-                       'file.rb',
                        ['test if a && b'])
         expect(amp.offences).to be_empty
       end

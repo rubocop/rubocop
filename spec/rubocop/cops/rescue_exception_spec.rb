@@ -9,7 +9,6 @@ module Rubocop
 
       it 'registers an offence for rescue from Exception' do
         inspect_source(re,
-                       'file.rb',
                        ['begin',
                         '  something',
                         'rescue Exception',
@@ -22,7 +21,6 @@ module Rubocop
 
       it 'registers an offence for rescue with ::Exception' do
         inspect_source(re,
-                       'file.rb',
                        ['begin',
                         '  something',
                         'rescue ::Exception',
@@ -35,7 +33,6 @@ module Rubocop
 
       it 'registers an offence for rescue with StandardError, Exception' do
         inspect_source(re,
-                       'file.rb',
                        ['begin',
                         '  something',
                         'rescue StandardError, Exception',
@@ -48,7 +45,6 @@ module Rubocop
 
       it 'registers an offence for rescue with Exception => e' do
         inspect_source(re,
-                       'file.rb',
                        ['begin',
                         '  something',
                         'rescue Exception => e',
@@ -61,7 +57,6 @@ module Rubocop
 
       it 'does not register an offence for rescue with no class' do
         inspect_source(re,
-                       'file.rb',
                        ['begin',
                         '  something',
                         '  return',
@@ -73,7 +68,6 @@ module Rubocop
 
       it 'does not register an offence for rescue with no class and => e' do
         inspect_source(re,
-                       'file.rb',
                        ['begin',
                         '  something',
                         '  return',
@@ -85,7 +79,6 @@ module Rubocop
 
       it 'does not register an offence for rescue with other class' do
         inspect_source(re,
-                       'file.rb',
                        ['begin',
                         '  something',
                         '  return',
@@ -97,7 +90,6 @@ module Rubocop
 
       it 'does not register an offence for rescue with other classes' do
         inspect_source(re,
-                       'file.rb',
                        ['begin',
                         '  something',
                         '  return',
@@ -109,7 +101,6 @@ module Rubocop
 
       it 'does not register an offence for rescue with a module prefix' do
         inspect_source(re,
-                       'file.rb',
                        ['begin',
                         '  something',
                         '  return',
@@ -121,7 +112,6 @@ module Rubocop
 
       it 'does not crash when the splat operator is used in a rescue' do
         inspect_source(re,
-                       'file.rb',
                        ['ERRORS = [Exception]',
                         'begin',
                         '  a = 3 / 0',

@@ -9,7 +9,12 @@ module Rubocop
 
       if RUBY_ENGINE == 'ruby'
         it 'registers an offence for unused variables', ruby: 2.0 do
-          sc.inspect(['x = 5', 'puts 10'], nil, nil, nil)
+          source = "x = 5\nputs 10"
+          Dir.mktmpdir do |tmpdir|
+            path = File.join(tmpdir, 'file.rb')
+            File.open(path, 'w') { |f| f.write(source) }
+            sc.inspect_file(path)
+          end
           expect(sc.offences.size).to eq(1)
           expect(sc.offences.first.message)
             .to eq('Assigned but unused variable - x')

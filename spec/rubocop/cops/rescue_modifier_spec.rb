@@ -9,7 +9,6 @@ module Rubocop
 
       it 'registers an offence for modifier rescue' do
         inspect_source(rm,
-                       'file.rb',
                        ['method rescue handle'])
         expect(rm.offences.size).to eq(1)
         expect(rm.offences.map(&:message))
@@ -18,7 +17,6 @@ module Rubocop
 
       it 'handles more complex expression with modifier rescue' do
         inspect_source(rm,
-                       'file.rb',
                        ['method1 or method2 rescue handle'])
         expect(rm.offences.size).to eq(1)
         expect(rm.offences.map(&:message))
@@ -27,7 +25,6 @@ module Rubocop
 
       it 'does not register an offence for normal rescue' do
         inspect_source(rm,
-                       'file.rb',
                        ['begin',
                         '  test',
                         'rescue',

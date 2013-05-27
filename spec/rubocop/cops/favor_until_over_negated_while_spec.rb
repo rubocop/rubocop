@@ -8,7 +8,7 @@ module Rubocop
       let(:fav_until) { FavorUntilOverNegatedWhile.new }
 
       it 'registers an offence for while with exclamation point condition' do
-        inspect_source(fav_until, 'file.rb',
+        inspect_source(fav_until,
                        ['while !a_condition',
                         '  some_method',
                         'end',
@@ -19,7 +19,7 @@ module Rubocop
       end
 
       it 'registers an offence for while with "not" condition' do
-        inspect_source(fav_until, 'file.rb',
+        inspect_source(fav_until,
                        ['while (not a_condition)',
                         '  some_method',
                         'end',
@@ -30,7 +30,7 @@ module Rubocop
       end
 
       it 'accepts an while where only part of the contition is negated' do
-        inspect_source(fav_until, 'file.rb',
+        inspect_source(fav_until,
                        ['while !a_condition && another_condition',
                         '  some_method',
                         'end',

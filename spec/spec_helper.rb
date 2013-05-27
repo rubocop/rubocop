@@ -63,9 +63,13 @@ end
 # in ./support/ and its subdirectories.
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
-def inspect_source(cop, file, source)
-  ast, comments, tokens = Rubocop::CLI.rip_source(file, source.join("\n"))
-  cop.inspect(source, tokens, ast, comments)
+def inspect_source(cop, source)
+  Dir.mktmpdir do |tmpdir|
+    path = File.join(tmpdir, 'file.rb')
+    File.open(path, 'w') { |f| f.write(source.join("\n")) }
+    ast, comments, tokens, _ = Rubocop::CLI.rip_source(path)
+    cop.inspect(source, tokens, ast, comments)
+  end
 end
 
 class Rubocop::Cop::Cop

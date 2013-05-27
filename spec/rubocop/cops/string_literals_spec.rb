@@ -8,7 +8,7 @@ module Rubocop
       let(:sl) { StringLiterals.new }
 
       it 'registers an offence for double quotes when single quotes suffice' do
-        inspect_source(sl, 'file.rb', ['s = "abc"'])
+        inspect_source(sl, ['s = "abc"'])
         expect(sl.offences.map(&:message)).to eq(
           ["Prefer single-quoted strings when you don't need string " +
            'interpolation or special symbols.'])
@@ -21,7 +21,7 @@ module Rubocop
                'd = "#@test"',
                'e = "#$test"',
                'f = "#@@test"']
-        inspect_source(sl, 'file.rb', src)
+        inspect_source(sl, src)
         expect(sl.offences.map(&:message)).to be_empty
       end
 
@@ -30,7 +30,7 @@ module Rubocop
         # "Substitutions in double-quoted strings"
         # http://www.ruby-doc.org/docs/ProgrammingRuby/html/language.html
         src = ['g = "\xf9"']
-        inspect_source(sl, 'file.rb', src)
+        inspect_source(sl, src)
         expect(sl.offences.map(&:message)).to be_empty
       end
 
@@ -38,7 +38,7 @@ module Rubocop
         # This seems to be a Parser bug
         pending do
           src = ['"#{"A"}"']
-          inspect_source(sl, 'file.rb', src)
+          inspect_source(sl, src)
           expect(sl.offences.map(&:message)).to be_empty
         end
       end
