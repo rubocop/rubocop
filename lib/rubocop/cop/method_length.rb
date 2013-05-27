@@ -17,14 +17,21 @@ module Rubocop
         super
       end
 
+      def max_length
+        MethodLength.config['Max']
+      end
+
+      def count_comments?
+        MethodLength.config['CountComments']
+      end
+
       private
 
       def check(node)
         method_length = calculate_length(node.loc.expression.source)
 
-        max = MethodLength.config['Max']
-        if method_length > max
-          message = sprintf(MSG, method_length, max)
+        if method_length > max_length
+          message = sprintf(MSG, method_length, max_length)
           add_offence(:convention, node.loc.keyword.line, message)
         end
       end
@@ -36,9 +43,7 @@ module Rubocop
 
         lines.map!(&:strip).reject!(&:empty?)
 
-        unless MethodLength.config['CountComments']
-          lines.reject! { |line| line =~ /^\s*#/ }
-        end
+        lines.reject! { |line| line =~ /^\s*#/ } unless count_comments?
 
         lines.size
       end
