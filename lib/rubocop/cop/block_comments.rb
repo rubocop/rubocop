@@ -7,7 +7,7 @@ module Rubocop
 
       def on_comment(comment)
         if comment.text.start_with?('=begin')
-          add_offence(:convention, comment.pos.lineno, MSG)
+          add_offence(:convention, comment.pos.line, MSG)
         end
       end
     end

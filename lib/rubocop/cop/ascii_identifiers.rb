@@ -10,7 +10,7 @@ module Rubocop
       def inspect(source, tokens, ast, comments)
         tokens.each do |t|
           if t.type == :tIDENTIFIER && t.text =~ /[^\x00-\x7f]/
-            add_offence(:convention, t.pos.lineno, MSG)
+            add_offence(:convention, t.pos.line, MSG)
           end
         end
       end

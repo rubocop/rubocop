@@ -224,8 +224,7 @@ module Rubocop
       tokens = tokens.map do |t|
         type, details = *t
         text, range = *details
-        pos = Rubocop::Cop::Position.new(range.line, range.column)
-        Rubocop::Cop::Token.new(pos, type, text)
+        Rubocop::Cop::Token.new(range, type, text)
       end
 
       comments = tokens.select { |t| t.type == :tCOMMENT }

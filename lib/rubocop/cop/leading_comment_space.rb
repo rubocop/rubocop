@@ -7,8 +7,8 @@ module Rubocop
 
       def on_comment(c)
         if c.text =~ /^#+[^#\s]/
-          unless c.text.start_with?('#!') && c.pos.lineno == 1
-            add_offence(:convention, c.pos.lineno, MSG)
+          unless c.text.start_with?('#!') && c.pos.line == 1
+            add_offence(:convention, c.pos.line, MSG)
           end
         end
       end
