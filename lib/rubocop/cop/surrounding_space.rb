@@ -7,13 +7,13 @@ module Rubocop
     module SurroundingSpace
       def space_between?(t1, t2)
         char_preceding_2nd_token =
-          @source[t2.pos.lineno - 1][t2.pos.column - 1]
+          @source[t2.pos.line - 1][t2.pos.column - 1]
         if char_preceding_2nd_token == '+' && t1.type != :tPLUS
           # Special case. A unary plus is not present in the tokens.
           char_preceding_2nd_token =
-            @source[t2.pos.lineno - 1][t2.pos.column - 2]
+            @source[t2.pos.line - 1][t2.pos.column - 2]
         end
-        t2.pos.lineno > t1.pos.lineno || char_preceding_2nd_token == ' '
+        t2.pos.line > t1.pos.line || char_preceding_2nd_token == ' '
       end
 
       def index_of_first_token(node, tokens)
@@ -34,7 +34,7 @@ module Rubocop
       def build_token_table(tokens)
         table = {}
         tokens.each_with_index do |t, ix|
-          table[[t.pos.lineno, t.pos.column]] = ix
+          table[[t.pos.line, t.pos.column]] = ix
         end
         table
       end
@@ -62,7 +62,7 @@ module Rubocop
           case token.type
           when :tPOW
             if has_space?(token_before, token, token_after)
-              add_offence(:convention, token.pos.lineno, MSG_DETECTED)
+              add_offence(:convention, token.pos.line, MSG_DETECTED)
             end
           when *BINARY_OPERATORS
             check_missing_space(token_before, token, token_after)
@@ -89,12 +89,7 @@ module Rubocop
         #        ^ ^
         on_node(:block, sexp) do |b|
           on_node(:args, b) do |a|
-            if a.loc.begin
-              positions_not_to_check << Position.new(a.loc.begin.line,
-                                                     a.loc.begin.column)
-              positions_not_to_check << Position.new(a.loc.end.line,
-                                                     a.loc.end.column)
-            end
+            positions_not_to_check << a.loc.begin << a.loc.end if a.loc.begin
           end
         end
       end
@@ -152,7 +147,7 @@ module Rubocop
       def check_missing_space(token_before, token, token_after)
         unless has_space?(token_before, token, token_after)
           text = token.text.to_s + (token.type == :tOP_ASGN ? '=' : '')
-          add_offence(:convention, token.pos.lineno, MSG_MISSING % text)
+          add_offence(:convention, token.pos.line, MSG_MISSING % text)
         end
       end
 
@@ -204,7 +199,7 @@ module Rubocop
 
       def check(t1, t2, msg)
         unless space_between?(t1, t2)
-          add_offence(:convention, t1.pos.lineno, msg)
+          add_offence(:convention, t1.pos.line, msg)
         end
       end
     end
@@ -218,8 +213,8 @@ module Rubocop
         left, right, kind = specifics
         tokens.each_cons(2) do |t1, t2|
           if t1.type == left || t2.type == right
-            if t2.pos.lineno == t1.pos.lineno && space_between?(t1, t2)
-              add_offence(:convention, t1.pos.lineno, MSG % kind)
+            if t2.pos.line == t1.pos.line && space_between?(t1, t2)
+              add_offence(:convention, t1.pos.line, MSG % kind)
             end
           end
         end
@@ -266,7 +261,7 @@ module Rubocop
                            else
                              [has_space, 'detected']
                            end
-        add_offence(:convention, t1.pos.lineno, MSG % word) if is_offence
+        add_offence(:convention, t1.pos.line, MSG % word) if is_offence
       end
     end
 
@@ -279,7 +274,7 @@ module Rubocop
         on_node(:optarg, sexp) do |optarg|
           arg, equals, value = tokens[index_of_first_token(optarg, tokens), 3]
           unless space_between?(arg, equals) && space_between?(equals, value)
-            add_offence(:convention, equals.pos.lineno, MSG)
+            add_offence(:convention, equals.pos.line, MSG)
           end
         end
       end

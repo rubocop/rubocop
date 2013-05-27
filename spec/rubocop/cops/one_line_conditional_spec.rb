@@ -8,7 +8,7 @@ module Rubocop
       let(:olc) { OneLineConditional.new }
 
       it 'registers an offence for one line if/then/end' do
-        inspect_source(olc, '', ['if cond then run else dont end'])
+        inspect_source(olc, ['if cond then run else dont end'])
         expect(olc.offences.map(&:message)).to eq([olc.error_message])
       end
     end

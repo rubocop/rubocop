@@ -9,8 +9,8 @@ module Rubocop
 
       it 'registers an offence for a comment with non-ascii chars' do
         inspect_source(ascii,
-                       'file.rb',
-                       ['# 这是什么？'])
+                       ['# encoding: utf-8',
+                        '# 这是什么？'])
         expect(ascii.offences.size).to eq(1)
         expect(ascii.offences.map(&:message))
           .to eq([AsciiComments::MSG])
@@ -18,7 +18,6 @@ module Rubocop
 
       it 'accepts comments with only ascii chars' do
         inspect_source(ascii,
-                       'file.rb',
                        ['# AZaz1@$%~,;*_`|'])
         expect(ascii.offences).to be_empty
       end

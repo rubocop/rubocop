@@ -8,7 +8,7 @@ module Rubocop
       let(:cm) { ClassMethods.new }
 
       it 'registers an offence for methods using a class name' do
-        inspect_source(cm, 'file.rb',
+        inspect_source(cm,
                        ['class Test',
                         '  def Test.some_method',
                         '    do_something',
@@ -18,7 +18,7 @@ module Rubocop
       end
 
       it 'registers an offence for methods using a module name' do
-        inspect_source(cm, 'file.rb',
+        inspect_source(cm,
                        ['module Test',
                         '  def Test.some_method',
                         '    do_something',
@@ -28,7 +28,7 @@ module Rubocop
       end
 
       it 'does not register an offence for methods using self' do
-        inspect_source(cm, 'file.rb',
+        inspect_source(cm,
                        ['module Test',
                         '  def self.some_method',
                         '    do_something',
@@ -38,7 +38,7 @@ module Rubocop
       end
 
       it 'does not register an offence outside class/module bodies' do
-        inspect_source(cm, 'file.rb',
+        inspect_source(cm,
                        ['def self.some_method',
                         '  do_something',
                         'end'])

@@ -8,7 +8,7 @@ module Rubocop
       let(:camel_case) { ClassAndModuleCamelCase.new }
 
       it 'registers an offence for underscore in class and module name' do
-        inspect_source(camel_case, 'file.rb',
+        inspect_source(camel_case,
                        ['class My_Class',
                         'end',
                         '',
@@ -19,7 +19,7 @@ module Rubocop
       end
 
       it 'is not fooled by qualified names' do
-        inspect_source(camel_case, 'file.rb',
+        inspect_source(camel_case,
                        ['class Top::My_Class',
                         'end',
                         '',
@@ -30,7 +30,7 @@ module Rubocop
       end
 
       it 'accepts CamelCase names' do
-        inspect_source(camel_case, 'file.rb',
+        inspect_source(camel_case,
                        ['class MyClass',
                         'end',
                         '',

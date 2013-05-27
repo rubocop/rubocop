@@ -14,7 +14,7 @@ module Rubocop
                   '         when 1 then return',
                   '        end',
                   'end']
-        inspect_source(ind, 'file.rb', source)
+        inspect_source(ind, source)
         expect(ind.offences.map(&:message)).to eq(
           ['Indent when as deep as case.'] * 2)
       end
@@ -32,7 +32,7 @@ module Rubocop
                   'when 2 then encoding',
                   'end',
                   '']
-        inspect_source(ind, 'file.rb', source)
+        inspect_source(ind, source)
         expect(ind.offences).to be_empty
       end
 
@@ -42,7 +42,7 @@ module Rubocop
                   'when 0',
                   'end',
                   '']
-        inspect_source(ind, 'file.rb', source)
+        inspect_source(ind, source)
         expect(ind.offences.map(&:message)).to be_empty
       end
 
@@ -55,7 +55,7 @@ module Rubocop
                   '  MethodCallNode',
                   'end',
                   '']
-        inspect_source(ind, 'file.rb', source)
+        inspect_source(ind, source)
         expect(ind.offences.map(&:message)).to be_empty
       end
 
@@ -78,7 +78,7 @@ module Rubocop
                   'when Array',
                   'end',
                   '']
-        inspect_source(ind, 'file.rb', source)
+        inspect_source(ind, source)
         expect(ind.offences.map(&:message)).to be_empty
       end
     end

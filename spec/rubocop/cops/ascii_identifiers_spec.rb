@@ -9,8 +9,8 @@ module Rubocop
 
       it 'registers an offence for a variable name with non-ascii chars' do
         inspect_source(ascii,
-                       'file.rb',
-                       ['älg = 1'])
+                       ['# encoding: utf-8',
+                        'älg = 1'])
         expect(ascii.offences.size).to eq(1)
         expect(ascii.offences.map(&:message))
           .to eq([AsciiIdentifiers::MSG])
@@ -18,7 +18,6 @@ module Rubocop
 
       it 'accepts identifiers with only ascii chars' do
         inspect_source(ascii,
-                       'file.rb',
                        ['x.empty?'])
         expect(ascii.offences).to be_empty
       end

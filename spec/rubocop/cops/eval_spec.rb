@@ -9,7 +9,6 @@ module Rubocop
 
       it 'registers an offence for eval as function' do
         inspect_source(a,
-                       'file.rb',
                        ['eval(something)'])
         expect(a.offences.size).to eq(1)
         expect(a.offences.map(&:message))
@@ -18,7 +17,6 @@ module Rubocop
 
       it 'registers an offence for eval as command' do
         inspect_source(a,
-                       'file.rb',
                        ['eval something'])
         expect(a.offences.size).to eq(1)
         expect(a.offences.map(&:message))
@@ -27,14 +25,12 @@ module Rubocop
 
       it 'does not register an offence for eval as variable' do
         inspect_source(a,
-                       'file.rb',
                        ['eval = something'])
         expect(a.offences).to be_empty
       end
 
       it 'does not register an offence for eval as method' do
         inspect_source(a,
-                       'file.rb',
                        ['something.eval'])
         expect(a.offences).to be_empty
       end

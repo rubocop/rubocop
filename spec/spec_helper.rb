@@ -63,8 +63,10 @@ end
 # in ./support/ and its subdirectories.
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
-def inspect_source(cop, file, source)
-  ast, comments, tokens = Rubocop::CLI.rip_source(source.join("\n"))
+def inspect_source(cop, source)
+  ast, comments, tokens, _ = Rubocop::CLI.parse('(string)') do |source_buffer|
+    source_buffer.source = source.join($RS)
+  end
   cop.inspect(source, tokens, ast, comments)
 end
 
