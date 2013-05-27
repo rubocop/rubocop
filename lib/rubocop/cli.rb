@@ -219,15 +219,13 @@ module Rubocop
     end
 
     def self.rip_source(file)
-      ast, _comments, tokens, source = parse(file)
+      ast, comments, tokens, source = parse(file)
 
       tokens = tokens.map do |t|
         type, details = *t
         text, range = *details
         Rubocop::Cop::Token.new(range, type, text)
       end
-
-      comments = tokens.select { |t| t.type == :tCOMMENT }
 
       [ast, comments, tokens, source]
     end
