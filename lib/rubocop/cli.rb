@@ -2,21 +2,6 @@
 require 'pathname'
 require 'optparse'
 
-class Parser::Lexer
-  alias_method :old_advance, :advance
-
-  # Patched advance method that stores all tokens.
-  def advance
-    token = old_advance
-    type, info = *token
-    if type
-      text, range = *info
-      Rubocop::CLI.add_token(range, type, text)
-    end
-    token
-  end
-end
-
 module Rubocop
   # The CLI is a class responsible of handling all the command line interface
   # logic.
@@ -238,17 +223,19 @@ module Rubocop
       end
     end
 
-    # This method is called by our modified version of
-    # Parser::Lexer#advance for each token.
-    def self.add_token(range, type, text)
-      pos = Rubocop::Cop::Position.new(range.line, range.column)
-      @parser_tokens << Rubocop::Cop::Token.new(pos, type, text)
-    end
-
     def self.rip_source(source)
-      @parser_tokens = []
-      ast, comments = parse(source)
-      [ast, comments, @parser_tokens]
+      ast, _comments, tokens = parse(source)
+
+      tokens = tokens.map do |t|
+        type, details = *t
+        text, range = *details
+        pos = Rubocop::Cop::Position.new(range.line, range.column)
+        Rubocop::Cop::Token.new(pos, type, text)
+      end
+
+      comments = tokens.select { |t| t.type == :tCOMMENT }
+
+      [ast, comments, tokens]
     end
 
     def self.parse(string)
@@ -264,7 +251,7 @@ module Rubocop
       source_buffer = Parser::Source::Buffer.new('(string)', 1)
       source_buffer.source = string
 
-      parser.parse_with_comments(source_buffer)
+      parser.tokenize(source_buffer)
     end
 
     # Generate a list of target files by expanding globing patterns
