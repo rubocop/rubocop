@@ -2,8 +2,18 @@
 
 ## master (unreleased)
 
-### Misc
+### New features
 
+### Changes
+
+### Bugs fixed
+
+## 0.8.0 (05/28/2012)
+
+### Changes
+
+* Folded `ArrayLiteral` and `HashLiteral` into `EmptyLiteral` cop
+* The maximum number of params `ParameterLists` accepts in now configurable
 * Reworked `SymbolSnakeCase` into `SymbolName`, which has an option `AllowCamelCase` enabled by default.
 * Migrated from `Ripper` to the portable [Parser](https://github.com/whitequark/parser).
 
