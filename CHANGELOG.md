@@ -12,6 +12,8 @@
 
 ### Bugs fixed
 
+* [#210](https://github.com/bbatsov/rubocop/issues/210) - fix a false positive for double quotes in regexp literals
+
 ## 0.8.0 (05/28/2012)
 
 ### Changes

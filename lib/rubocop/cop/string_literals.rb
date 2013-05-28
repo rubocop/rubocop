@@ -7,13 +7,11 @@ module Rubocop
         'string interpolation or special symbols.'
 
       def inspect(source, tokens, ast, comments)
-        on_node(:str, ast, :dstr) do |s|
-          text = s.to_a[0]
+        on_node(:str, ast, [:dstr, :regexp]) do |node|
+          text, = *node
 
-          if text !~ /['\n\t\r]/ && s.loc.expression.source[0] == '"'
-            add_offence(:convention,
-                        s.loc.line,
-                        MSG)
+          if text !~ /['\n\t\r]/ && node.loc.begin.source == '"'
+            add_offence(:convention, node.loc.line, MSG)
           end
         end
       end
