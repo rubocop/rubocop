@@ -6,6 +6,10 @@
 
 ### Changes
 
+* Renamed `NewLambdaLiteral` to `Lambda`.
+* Aligned the `Lambda` cop more closely to the style guide - it now
+  allows the use of `lambda` for multi-line blocks.
+
 ### Bugs fixed
 
 ## 0.8.0 (05/28/2012)
