@@ -324,6 +324,14 @@ module Rubocop
         expect(trivial_accessors_finder.offences).to be_empty
       end
 
-    end # describe TrivialAccessors
-  end # Cop
-end # Rubocop
+      it 'accepts an initialize method looking like a writer' do
+        inspect_source(trivial_accessors_finder,
+                       [' def initialize(value)',
+                        '   @top = value',
+                        ' end'])
+        expect(trivial_accessors_finder.offences).to be_empty
+      end
+
+    end
+  end
+end

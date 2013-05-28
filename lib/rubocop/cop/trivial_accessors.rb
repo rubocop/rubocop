@@ -6,12 +6,12 @@ module Rubocop
       MSG = 'Use attr_%s to define trivial %s methods.'
 
       def on_def(node)
-        _, args, body = *node
+        method_name, args, body = *node
 
         kind = if body.type == :ivar
                  'reader'
                elsif args.children.size == 1 && body.type == :ivasgn &&
-                   body.children[1].type == :lvar
+                   body.children[1].type == :lvar && method_name != :initialize
                  'writer'
                end
         if kind

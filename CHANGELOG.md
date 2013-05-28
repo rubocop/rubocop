@@ -15,6 +15,7 @@
 ### Bugs fixed
 
 * [#210](https://github.com/bbatsov/rubocop/issues/210) - fix a false positive for double quotes in regexp literals
+* [#211](https://github.com/bbatsov/rubocop/issues/211) - fix a false positive for `initialize` method looking like a trivial writer
 
 ## 0.8.0 (05/28/2012)
 
