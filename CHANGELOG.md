@@ -4,6 +4,8 @@
 
 ### New features
 
+* New cop `Proc` tracks uses of `Proc.new`
+
 ### Changes
 
 * Renamed `NewLambdaLiteral` to `Lambda`.
