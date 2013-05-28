@@ -153,8 +153,8 @@ FavorUntilOverNegatedWhile:
 SpaceAroundEqualsInParameterDefault:
   Enabled: true
 
-# Use the new lambda literal syntax.
-NewLambdaLiteral:
+# Use the new lambda literal syntax for single-line blocks.
+Lambda:
   Enabled: true
 
 # Don't use parentheses around the condition of an if/unless/while.
