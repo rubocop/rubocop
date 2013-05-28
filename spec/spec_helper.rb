@@ -32,7 +32,7 @@ module ExitCodeMatchers
       rescue SystemExit => e
         actual = e.status
       end
-      actual and actual == code
+      actual && actual == code
     end
     failure_message_for_should do |block|
       "expected block to call exit(#{code}) but exit" +
