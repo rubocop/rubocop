@@ -157,6 +157,10 @@ SpaceAroundEqualsInParameterDefault:
 Lambda:
   Enabled: true
 
+# Use proc instead of Proc.new.
+Proc:
+  Enabled: true
+
 # Don't use parentheses around the condition of an if/unless/while.
 ParenthesesAroundCondition:
   Enabled: true
