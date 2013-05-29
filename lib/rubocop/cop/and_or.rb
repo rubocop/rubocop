@@ -8,6 +8,20 @@ module Rubocop
       OPS = { 'and' => '&&', 'or' => '||' }
 
       def on_and(node)
+        process_logical_op(node)
+
+        super
+      end
+
+      def on_or(node)
+        process_logical_op(node)
+
+        super
+      end
+
+      private
+
+      def process_logical_op(node)
         op = node.loc.operator.source
         op_type = node.type.to_s
 
@@ -16,11 +30,7 @@ module Rubocop
                       node.loc.operator.line,
                       sprintf(MSG, OPS[op], op))
         end
-
-        super
       end
-
-      alias_method :on_or, :on_and
     end
   end
 end
