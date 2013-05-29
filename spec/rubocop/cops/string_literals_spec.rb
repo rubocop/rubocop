@@ -46,7 +46,8 @@ module Rubocop
         end
       end
 
-      it 'can handle a typical main call condition' do
+      it 'can handle a built-in constant parsed as string' do
+        # Parser will produce str nodes for constants such as __FILE__.
         src = ['if __FILE__ == $PROGRAM_NAME',
                'end']
         inspect_source(sl, src)
