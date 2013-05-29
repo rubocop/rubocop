@@ -8,10 +8,10 @@ module Rubocop
         # discard if/then/else
         return false if sexp.loc.respond_to?(:else) && sexp.loc.else
 
-        if %w(if while).include?(sexp.loc.keyword.source)
-          cond, body = *sexp
-        else
-          cond, _else, body = *sexp
+        case sexp.loc.keyword.source
+        when 'if'     then cond, body, _else = *sexp
+        when 'unless' then cond, _else, body = *sexp
+        else               cond, body = *sexp
         end
 
         if length(sexp) > 3
@@ -20,7 +20,7 @@ module Rubocop
           cond_length = sexp.loc.keyword.size + cond.loc.expression.size + 1
           body_length = body_length(body)
 
-          (cond_length + body_length) <= LineLength.max
+          body_length > 0 && (cond_length + body_length) <= LineLength.max
         end
       end
 
@@ -29,7 +29,7 @@ module Rubocop
       end
 
       def body_length(body)
-        if body
+        if body && body.loc.expression
           body.loc.expression.column + body.loc.expression.size
         else
           0

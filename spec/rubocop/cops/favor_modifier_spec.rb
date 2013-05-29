@@ -4,52 +4,53 @@ require 'spec_helper'
 
 module Rubocop
   module Cop
-    describe FavorModifier, broken: true do
-      let(:if_until) { IfUnlessModifier.new }
+    describe FavorModifier do
+      let(:if_unless) { IfUnlessModifier.new }
       let(:while_until) { WhileUntilModifier.new }
       before { LineLength.config = { 'Max' => 79 } }
 
-      it 'registers an offence for multiline if that fits on one line' do
+      it 'registers an offence for multiline if that fits on one line',
+          broken: true do
         # This if statement fits exactly on one line if written as a modifier.
-        inspect_source(if_until,
+        inspect_source(if_unless,
                        ['if a_condition_that_is_just_short_enough',
                         '  some_long_metod_name(followed_by_args)',
                         'end'])
-        expect(if_until.offences.map(&:message)).to eq(
+        expect(if_unless.offences.map(&:message)).to eq(
           ['Favor modifier if/unless usage when you have a single-line body.' +
-           ' Another good alternative is the usage of control flow and/or.'])
+           ' Another good alternative is the usage of control flow &&/||.'])
       end
 
       it "accepts multiline if that doesn't fit on one line" do
-        check_too_long(if_until, 'if')
+        check_too_long(if_unless, 'if')
       end
 
       it 'accepts multiline if whose body is more than one line' do
-        check_short_multiline(if_until, 'if')
+        check_short_multiline(if_unless, 'if')
       end
 
       it 'registers an offence for multiline unless that fits on one line' do
-        inspect_source(if_until, ['unless a',
+        inspect_source(if_unless, ['unless a',
                                   '  b',
                                   'end'])
-        expect(if_until.offences.map(&:message)).to eq(
+        expect(if_unless.offences.map(&:message)).to eq(
           ['Favor modifier if/unless usage when you have a single-line body.' +
-           ' Another good alternative is the usage of control flow and/or.'])
+           ' Another good alternative is the usage of control flow &&/||.'])
       end
 
       it 'accepts code with EOL comment since user might want to keep it' do
         pending
-        inspect_source(if_until, ['unless a',
+        inspect_source(if_unless, ['unless a',
                                   '  b # A comment',
                                   'end'])
-        expect(if_until.offences.map(&:message)).to be_empty
+        expect(if_unless.offences.map(&:message)).to be_empty
       end
 
       it 'accepts if-else-end' do
-        inspect_source(if_until,
+        inspect_source(if_unless,
                        ['if args.last.is_a? Hash then args.pop else ' +
                         'Hash.new end'])
-        expect(if_until.offences.map(&:message)).to be_empty
+        expect(if_unless.offences.map(&:message)).to be_empty
       end
 
       it "accepts multiline unless that doesn't fit on one line" do
@@ -82,6 +83,19 @@ module Rubocop
 
       it 'accepts multiline until whose body is more than one line' do
         check_short_multiline(while_until, 'until')
+      end
+
+      it 'accepts an empty condition' do
+        check_empty(if_unless, 'if')
+        check_empty(if_unless, 'unless')
+        check_empty(while_until, 'while')
+        check_empty(while_until, 'until')
+      end
+
+      def check_empty(cop, keyword)
+        inspect_source(cop, ["#{keyword} cond",
+                             'end'])
+        expect(cop.offences).to be_empty
       end
 
       def check_really_short(cop, keyword)
