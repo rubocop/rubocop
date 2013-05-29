@@ -25,23 +25,25 @@ module Rubocop
       #   (const nil :String) :new)
       STR_NODE = s(:send, s(:const, nil, :String), :new)
 
-      def inspect(source, tokens, ast, comments)
-        on_node(:send, ast, :block) do |node|
-          if node == ARRAY_NODE
-            add_offence(:convention,
-                        node.loc.line,
-                        ARR_MSG)
-          elsif node == HASH_NODE
-            add_offence(:convention,
-                        node.loc.line,
-                        HASH_MSG)
-          elsif node == STR_NODE
-            add_offence(:convention,
-                        node.loc.line,
-                        STR_MSG)
-          end
+      def on_send(node)
+        case node
+        when ARRAY_NODE
+          add_offence(:convention,
+                      node.loc.line,
+                      ARR_MSG)
+        when HASH_NODE
+          add_offence(:convention,
+                      node.loc.line,
+                      HASH_MSG)
+        when STR_NODE
+          add_offence(:convention,
+                      node.loc.line,
+                      STR_MSG)
         end
       end
+
+      # TODO Check block contents as well
+      alias_method :on_block, :ignore_node
     end
   end
 end
