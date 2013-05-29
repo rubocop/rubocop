@@ -91,9 +91,9 @@ module Rubocop
 
       @cops.each do |cop_class|
         cop_name = cop_class.cop_name
+        cop_class.config = config.for_cop(cop_name)
         if config.cop_enabled?(cop_name)
           cop = setup_cop(cop_class,
-                          config.for_cop(cop_name),
                           disabled_lines)
           if !@options[:only] || @options[:only] == cop_name
             begin
@@ -110,8 +110,7 @@ module Rubocop
       end
     end
 
-    def setup_cop(cop_class, cop_config, disabled_lines)
-      cop_class.config = cop_config
+    def setup_cop(cop_class, disabled_lines)
       cop = cop_class.new
       cop.debug = @options[:debug]
       cop.disabled_lines = disabled_lines[cop_class.cop_name]
