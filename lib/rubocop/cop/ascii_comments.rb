@@ -5,8 +5,12 @@ module Rubocop
     class AsciiComments < Cop
       MSG = 'Use only ascii symbols in comments.'
 
-      def on_comment(c)
-        add_offence(:convention, c.loc.line, MSG) if c.text =~ /[^\x00-\x7f]/
+      def inspect(source, tokens, ast, comments)
+        comments.each do |comment|
+          if comment.text =~ /[^\x00-\x7f]/
+            add_offence(:convention, comment.loc.line, MSG)
+          end
+        end
       end
     end
   end
