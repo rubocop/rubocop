@@ -54,6 +54,9 @@ module Rubocop
       def on_comment(comment)
       end
 
+      def ignore_node(node)
+      end
+
       def add_offence(severity, line_number, message)
         unless @disabled_lines && @disabled_lines.include?(line_number)
           message = debug ? "#{name}: #{message}" : message
