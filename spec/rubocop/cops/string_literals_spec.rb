@@ -45,6 +45,13 @@ module Rubocop
           expect(sl.offences).to be_empty
         end
       end
+
+      it 'can handle a typical main call condition' do
+        src = ['if __FILE__ == $PROGRAM_NAME',
+               'end']
+        inspect_source(sl, src)
+        expect(sl.offences).to be_empty
+      end
     end
   end
 end

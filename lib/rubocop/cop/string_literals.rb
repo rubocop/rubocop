@@ -8,8 +8,9 @@ module Rubocop
 
       def on_str(node)
         text, = *node
+        exp = node.loc.expression
 
-        if text !~ /['\n\t\r]/ && node.loc.begin.source == '"'
+        if text !~ /['\n\t\r]/ && exp.source[0] == '"'
           add_offence(:convention, node.loc.line, MSG)
         end
       end
