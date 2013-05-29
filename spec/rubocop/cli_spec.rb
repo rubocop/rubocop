@@ -257,6 +257,28 @@ module Rubocop
          ''].join("\n"))
     end
 
+    it 'works when a cop that others depend on is disabled' do
+      create_file('example1.rb', ['if a',
+                                  '  b',
+                                  'end'])
+      create_file('rubocop.yml', [
+        'Encoding:',
+        '  Enabled: false',
+        '',
+        'LineLength:',
+        '  Enabled: false'
+      ])
+      result = cli.run(['-c', 'rubocop.yml', 'example1.rb'])
+      expect($stdout.string).to eq(
+        ['== example1.rb ==',
+         'C:  1: Favor modifier if/unless usage when you have a single-line ' +
+         'body. Another good alternative is the usage of control flow &&/||.',
+         '',
+         '1 file inspected, 1 offence detected',
+         ''].join("\n"))
+      expect(result).to eq(1)
+    end
+
     it 'can be configured with project config to disable a certain error' do
       create_file('example_src/example1.rb', 'puts 0 ')
       create_file('example_src/.rubocop.yml', [
