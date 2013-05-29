@@ -45,6 +45,14 @@ module Rubocop
           expect(sl.offences).to be_empty
         end
       end
+
+      it 'can handle a built-in constant parsed as string' do
+        # Parser will produce str nodes for constants such as __FILE__.
+        src = ['if __FILE__ == $PROGRAM_NAME',
+               'end']
+        inspect_source(sl, src)
+        expect(sl.offences).to be_empty
+      end
     end
   end
 end
