@@ -9,6 +9,10 @@ module Rubocop
       def on_str(node)
         text, = *node
 
+        # Constants like __FILE__ and __DIR__ are created as strings,
+        # but don't respond to begin.
+        return unless node.loc.respond_to?(:begin)
+
         if text !~ /['\n\t\r]/ && node.loc.begin.source == '"'
           add_offence(:convention, node.loc.line, MSG)
         end
