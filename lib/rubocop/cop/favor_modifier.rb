@@ -7,6 +7,8 @@ module Rubocop
       def check(sexp)
         # discard if/then/else
         return false if sexp.loc.respond_to?(:else) && sexp.loc.else
+        # discard modifier while/until
+        return false if [:while, :until].include?(sexp.type) && !sexp.loc.end
 
         case sexp.loc.keyword.source
         when 'if'     then cond, body, _else = *sexp

@@ -92,6 +92,16 @@ module Rubocop
         check_empty(while_until, 'until')
       end
 
+      it 'accepts modifier while' do
+        inspect_source(while_until, ['ala while bala'])
+        expect(while_until.offences).to be_empty
+      end
+
+      it 'accepts modifier until' do
+        inspect_source(while_until, ['ala until bala'])
+        expect(while_until.offences).to be_empty
+      end
+
       def check_empty(cop, keyword)
         inspect_source(cop, ["#{keyword} cond",
                              'end'])
