@@ -5,13 +5,11 @@ module Rubocop
     class RescueModifier < Cop
       MSG = 'Avoid using rescue in its modifier form.'
 
-      def inspect(source, tokens, ast, comments)
-        on_node(:rescue, ast, :begin) do |s|
-          add_offence(:convention,
-                      s.loc.line,
-                      MSG)
-        end
+      def on_rescue(node)
+        add_offence(:convention, node.loc.line, MSG)
       end
+
+      alias_method :on_begin, :ignore_node
     end
   end
 end
