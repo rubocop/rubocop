@@ -8,6 +8,8 @@
 
 ### Bug fixes
 
+* Correct calculation of whether a modifier version of a conditional statement will fit.
+
 ## 0.8.1 (05/30/2013)
 
 ### New features
