@@ -9,8 +9,7 @@ module Rubocop
       let(:while_until) { WhileUntilModifier.new }
       before { LineLength.config = { 'Max' => 79 } }
 
-      it 'registers an offence for multiline if that fits on one line',
-          broken: true do
+      it 'registers an offence for multiline if that fits on one line' do
         # This if statement fits exactly on one line if written as a modifier.
         inspect_source(if_unless,
                        ['if a_condition_that_is_just_short_enough',
