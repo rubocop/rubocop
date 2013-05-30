@@ -74,6 +74,13 @@ module Rubocop
         inspect_source(sihlb, ['x(a: b.c)'])
         expect(sihlb.offences).to be_empty
       end
+
+      it 'can handle interpolation in a braceless hash literal' do
+        # A tricky special case where the closing brace of the
+        # interpolation risks getting confused for a hash literal brace.
+        inspect_source(sihlb, ['f(get: "#{x}")'])
+        expect(sihlb.offences).to be_empty
+      end
     end
   end
 end
