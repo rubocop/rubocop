@@ -18,6 +18,7 @@
 * [#211](https://github.com/bbatsov/rubocop/issues/211) - fix a false positive for `initialize` method looking like a trivial writer
 * [#215](https://github.com/bbatsov/rubocop/issues/215) - Fixed a lot of modifier if/unless/while/until issues
 * [#213](https://github.com/bbatsov/rubocop/issues/213) - Make sure even disabled cops get their configuration set
+* [#214](https://github.com/bbatsov/rubocop/issues/214) - Fix SpaceInsideHashLiteralBraces to handle string interpolation right
 
 ## 0.8.0 (05/28/2012)
 
