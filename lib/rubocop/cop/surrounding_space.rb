@@ -246,8 +246,10 @@ module Rubocop
         on_node(:hash, sexp) do |hash|
           b_ix = index_of_first_token(hash, tokens)
           e_ix = index_of_last_token(hash, tokens)
-          check(tokens[b_ix], tokens[b_ix + 1])
-          check(tokens[e_ix - 1], tokens[e_ix])
+          if tokens[b_ix].type == :tLBRACE # Hash literal with braces?
+            check(tokens[b_ix], tokens[b_ix + 1])
+            check(tokens[e_ix - 1], tokens[e_ix])
+          end
         end
       end
 
