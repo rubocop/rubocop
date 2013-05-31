@@ -78,9 +78,7 @@ module Rubocop
 
     def inspect_file(file, config, report)
       begin
-        ast, comments, tokens, source = CLI.parse(file) do |source_buffer|
-          source_buffer.read
-        end
+        ast, comments, tokens, source = CLI.parse(file, IO.read(file))
       rescue Parser::SyntaxError, Encoding::UndefinedConversionError,
         ArgumentError => e
         handle_error(e, "An error occurred while parsing #{file}.".color(:red))
@@ -219,7 +217,7 @@ module Rubocop
       end
     end
 
-    def self.parse(file)
+    def self.parse(file, source)
       parser = Parser::CurrentRuby.new
 
       parser.diagnostics.all_errors_are_fatal = true
@@ -230,7 +228,7 @@ module Rubocop
       end
 
       source_buffer = Parser::Source::Buffer.new(file, 1)
-      yield source_buffer
+      source_buffer.source = get_rid_of_invalid_byte_sequences(source)
 
       ast, comments, tokens = parser.tokenize(source_buffer)
 
@@ -241,6 +239,25 @@ module Rubocop
       end
 
       [ast, comments, tokens, source_buffer.source.split($RS)]
+    end
+
+    def self.get_rid_of_invalid_byte_sequences(source)
+      if RUBY_ENGINE == 'jruby'
+        begin
+          source =~ /x/ # Will raise ArgumentError for illegal byte sequences.
+        rescue ArgumentError
+          # Brute force solution. Discard non-7-bit ASCII characters.
+          source = source.bytes.map { |b| b > 0x7f ? '_'.ord : b }.pack('c*')
+        end
+      else
+        # UTF-16 works better in this algorithm but is not supported in 1.9.2.
+        temporary_encoding = (RUBY_VERSION == '1.9.2') ? 'UTF-8' : 'UTF-16'
+        source_encoding = source.encoding.name
+        source.encode!(temporary_encoding, source_encoding,
+                       invalid: :replace, replace: '')
+        source.encode!(source_encoding, temporary_encoding)
+      end
+      source
     end
 
     # Generate a list of target files by expanding globing patterns
