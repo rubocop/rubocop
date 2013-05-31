@@ -444,7 +444,6 @@ module Rubocop
     end
 
     it 'can process a file with an invalid UTF-8 byte sequence' do
-      pending
       create_file('example.rb', [
         '# encoding: utf-8',
         "# #{'f9'.hex.chr}#{'29'.hex.chr}"

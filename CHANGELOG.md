@@ -9,6 +9,7 @@
 ### Bug fixes
 
 * Correct calculation of whether a modifier version of a conditional statement will fit.
+* [#219](https://github.com/bbatsov/rubocop/issues/219) - Reintroduce old solution for invalid byte sequences
 
 ## 0.8.1 (05/30/2013)
 
