@@ -10,6 +10,8 @@
 
 ### Changes
 
+* Deprecated `-e`/`--emacs` option. (Use `--format emacs` instead)
+
 ### Bug fixes
 
 * Correct calculation of whether a modifier version of a conditional statement will fit.

@@ -25,7 +25,6 @@ module Rubocop
       expect { cli.run ['--help'] }.to exit_with_code(0)
       message = ['Usage: rubocop [options] [file1, file2, ...]',
                  '    -d, --debug                      Display debug info',
-                 '    -e, --emacs                      Emacs style output',
                  '    -c, --config FILE                Configuration file',
                  '        --only COP                   Run just one cop',
                  '    -f, --format FORMATTER           Choose a formatter',
@@ -148,7 +147,8 @@ module Rubocop
         "\tx = 0",
         'puts x'
       ])
-      expect(cli.run(['--emacs', 'example1.rb', 'example2.rb'])).to eq(1)
+      expect(cli.run(['--format', 'emacs', 'example1.rb', 'example2.rb']))
+        .to eq(1)
       expect($stdout.string)
         .to eq(
         ['example1.rb:1: C: Missing utf-8 encoding comment.',
@@ -172,7 +172,8 @@ module Rubocop
         "\tx = 0",
         'puts x'
       ])
-      expect(cli.run(['--emacs', 'example1.rb', 'example2.rb'])).to eq(1)
+      expect(cli.run(['--format', 'emacs', 'example1.rb', 'example2.rb']))
+        .to eq(1)
       expect($stdout.string)
         .to eq(
         ['example1.rb:1: C: Trailing whitespace detected.',
@@ -212,7 +213,8 @@ module Rubocop
     it 'ommits summary when --silent passed', ruby: 1.9 do
       create_file('example1.rb', 'puts 0 ')
       create_file('example2.rb', "\tputs 0")
-      expect(cli.run(['--emacs',
+      expect(cli.run(['--format',
+                      'emacs',
                       '--silent',
                       'example1.rb',
                       'example2.rb'])).to eq(1)
@@ -227,7 +229,8 @@ module Rubocop
     it 'ommits summary when --silent passed', ruby: 2.0 do
       create_file('example1.rb', 'puts 0 ')
       create_file('example2.rb', "\tputs 0")
-      expect(cli.run(['--emacs',
+      expect(cli.run(['--format',
+                      'emacs',
                       '--silent',
                       'example1.rb',
                       'example2.rb'])).to eq(1)
@@ -239,7 +242,8 @@ module Rubocop
 
     it 'shows cop names when --debug is passed', ruby: 2.0 do
       create_file('example1.rb', "\tputs 0")
-      expect(cli.run(['--emacs',
+      expect(cli.run(['--format',
+                      'emacs',
                       '--silent',
                       '--debug',
                       'example1.rb'])).to eq(1)
@@ -442,7 +446,7 @@ module Rubocop
         'class Test',
         'en'
       ])
-      expect(cli.run(['--emacs', 'example.rb'])).to eq(1)
+      expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       unexpected_part = RUBY_VERSION >= '2.0' ? 'end-of-input' : '$end'
       expect($stdout.string).to eq(
         ["example.rb:3: E: Syntax error, unexpected #{unexpected_part}, " +
@@ -458,7 +462,7 @@ module Rubocop
         '# encoding: utf-8',
         "# #{'f9'.hex.chr}#{'29'.hex.chr}"
       ])
-      expect(cli.run(['--emacs', 'example.rb'])).to eq(0)
+      expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(0)
     end
 
     it 'can have all cops disabled in a code section' do
@@ -475,7 +479,7 @@ module Rubocop
         '  y("123")',
         'end'
       ])
-      expect(cli.run(['--emacs', 'example.rb'])).to eq(1)
+      expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       # all cops were disabled, then 2 were enabled again, so we
       # should get 2 offences reported.
       expect($stdout.string).to eq(
@@ -501,7 +505,7 @@ module Rubocop
         '  y("123")',
         'end'
       ])
-      expect(cli.run(['--emacs', 'example.rb'])).to eq(1)
+      expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       # 3 cops were disabled, then 2 were enabled again, so we
       # should get 2 offences reported.
       expect($stdout.string).to eq(
@@ -518,7 +522,7 @@ module Rubocop
         '# encoding: utf-8',
         'y("123", 123456) # rubocop:disable all'
       ])
-      expect(cli.run(['--emacs', 'example.rb'])).to eq(0)
+      expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(0)
       expect($stdout.string).to eq(
         ['',
          '1 file inspected, no offences detected',
@@ -532,7 +536,7 @@ module Rubocop
         '#' * 95,
         'y("123") # rubocop:disable LineLength,StringLiterals'
       ])
-      expect(cli.run(['--emacs', 'example.rb'])).to eq(1)
+      expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       expect($stdout.string).to eq(
         ['example.rb:3: C: Line is too long. [95/79]',
          '',
@@ -664,6 +668,16 @@ module Rubocop
             .to exit_with_code(1)
           expect($stderr.string)
             .to include('No formatter for "unknown"')
+        end
+      end
+    end
+
+    unless Rubocop::Version::STRING.start_with?('0')
+      describe '-e/--emacs option' do
+        it 'is dropped in RuboCop 1.0.0' do
+          # This spec can be removed once the option is dropped.
+          expect(cli.run(['--emacs'])).to eq(1)
+          expect($stderr.string).to include('invalid option: --emacs')
         end
       end
     end

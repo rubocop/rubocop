@@ -138,14 +138,13 @@ module Rubocop
 
     # rubocop:disable MethodLength
     def parse_options(args)
+      convert_deprecated_options!(args)
+
       OptionParser.new do |opts|
         opts.banner = 'Usage: rubocop [options] [file1, file2, ...]'
 
         opts.on('-d', '--debug', 'Display debug info') do |d|
           @options[:debug] = d
-        end
-        opts.on('-e', '--emacs', 'Emacs style output') do
-          @options[:formatter] = 'emacs'
         end
         opts.on('-c FILE', '--config FILE', 'Configuration file') do |f|
           @options[:config] = f
@@ -176,6 +175,18 @@ module Rubocop
       end.parse!(args)
     end
     # rubocop:enable MethodLength
+
+    def convert_deprecated_options!(args)
+      args.map! do |arg|
+        case arg
+        when '-e', '--emacs'
+          deprecate("#{arg} option", '--format emacs', '1.0.0')
+          %w(--format emacs)
+        else
+          arg
+        end
+      end.flatten!
+    end
 
     def trap_interrupt
       Signal.trap('INT') do
@@ -345,6 +356,14 @@ module Rubocop
       end
 
       BUILTIN_FORMATTERS_FOR_KEYS[matching_keys.first]
+    end
+
+    def deprecate(subject, alternative = nil, version = nil)
+      message =  "#{subject} is deprecated"
+      message << " and will be removed in RuboCop #{version}" if version
+      message << '.'
+      message << " Please use #{alternative} instead." if alternative
+      warn message
     end
   end
 end
