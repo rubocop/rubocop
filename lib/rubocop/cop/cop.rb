@@ -42,10 +42,6 @@ module Rubocop
         @debug = false
       end
 
-      def has_report?
-        !@offences.empty?
-      end
-
       def inspect(source, tokens, ast, comments)
         process(ast)
       end
@@ -56,7 +52,7 @@ module Rubocop
       def add_offence(severity, line_number, message)
         unless @disabled_lines && @disabled_lines.include?(line_number)
           message = debug ? "#{name}: #{message}" : message
-          @offences << Offence.new(severity, line_number, message)
+          @offences << Offence.new(severity, line_number, message, name)
         end
       end
 

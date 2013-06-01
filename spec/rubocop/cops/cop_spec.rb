@@ -11,10 +11,6 @@ module Rubocop
         expect(cop.offences).to be_empty
       end
 
-      it 'initially has nothing to report' do
-        expect(cop.has_report?).to be_false
-      end
-
       it 'keeps track of offences' do
         cop.add_offence(:convention, 1, 'message')
 
@@ -24,7 +20,13 @@ module Rubocop
       it 'will report registered offences' do
         cop.add_offence(:convention, 1, 'message')
 
-        expect(cop.has_report?).to be_true
+        expect(cop.offences).not_to be_empty
+      end
+
+      it 'registers offence with its name' do
+        cop = AvoidFor.new
+        cop.add_offence(:convention, 1, 'message')
+        expect(cop.offences.first.cop_name).to eq('AvoidFor')
       end
     end
   end
