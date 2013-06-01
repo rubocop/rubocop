@@ -23,22 +23,24 @@ module Rubocop
     it 'exits cleanly when -h is used' do
       expect { cli.run ['-h'] }.to exit_with_code(0)
       expect { cli.run ['--help'] }.to exit_with_code(0)
-      message = ['Usage: rubocop [options] [file1, file2, ...]',
-                 '    -d, --debug                      Display debug info',
-                 '    -c, --config FILE                Configuration file',
-                 '        --only COP                   Run just one cop',
-                 '    -f, --format FORMATTER           Choose a formatter',
-                 '                                       [p]lain (default)',
-                 '                                       [e]macs',
-                 '    -o, --out FILE                   Write output to a file instead of STDOUT.',
-                 '                                       This option applies to the previously',
-                 '                                       specified --format, or the default',
-                 '                                       format if no format is specified.',
-                 '        --require FILE               Require Ruby file',
-                 '    -s, --silent                     Silence summary',
-                 '    -n, --no-color                   Disable color output',
-                 '    -v, --version                    Display version']
-      expect($stdout.string).to eq((message * 2).join("\n") + "\n")
+      message = <<-END
+Usage: rubocop [options] [file1, file2, ...]
+    -d, --debug                      Display debug info.
+    -c, --config FILE                Specify configuration file.
+        --only COP                   Run just one cop.
+    -f, --format FORMATTER           Choose a formatter.
+                                       [p]lain (default)
+                                       [e]macs
+    -o, --out FILE                   Write output to a file instead of STDOUT.
+                                       This option applies to the previously
+                                       specified --format, or the default
+                                       format if no format is specified.
+        --require FILE               Require Ruby file.
+    -s, --silent                     Silence summary.
+    -n, --no-color                   Disable color output.
+    -v, --version                    Display version.
+      END
+      expect($stdout.string).to eq(message * 2)
     end
 
     it 'exits cleanly when -v is used' do
@@ -211,7 +213,7 @@ module Rubocop
 
     it 'exits with error if an incorrect cop name is passed to --only' do
       expect(cli.run(%w(--only 123))).to eq(1)
-      expect($stdout.string).to eq("Unrecognized cop name: 123.\n")
+      expect($stderr.string).to eq("Unrecognized cop name: 123.\n")
     end
 
     it 'ommits summary when --silent passed', ruby: 1.9 do

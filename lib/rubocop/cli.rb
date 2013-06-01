@@ -32,12 +32,10 @@ module Rubocop
     def run(args = ARGV)
       trap_interrupt
 
-      parse_options(args)
-
       begin
-        validate_only_option if @options[:only]
-      rescue ArgumentError => e
-        puts e.message
+        parse_options(args)
+      rescue => e
+        $stderr.puts e.message
         return 1
       end
 
@@ -50,13 +48,10 @@ module Rubocop
       target_files.each do |file|
         break if wants_to_quit?
 
-        config = ConfigStore.for(file)
-
         puts "Scanning #{file}" if @options[:debug]
         formatter.file_started(file, {})
 
-        syntax_cop = Rubocop::Cop::Syntax.new
-        syntax_cop.debug = @options[:debug]
+        syntax_cop = setup_cop(Rubocop::Cop::Syntax)
         syntax_cop.inspect_file(file)
 
         offences = if syntax_cop.offences.map(&:severity).include?(:error)
@@ -64,7 +59,7 @@ module Rubocop
                      # and do no more checking in the file.
                      syntax_cop.offences
                    else
-                     inspect_file(file, config)
+                     inspect_file(file)
                    end
 
         any_failed = true unless offences.empty?
@@ -86,7 +81,7 @@ module Rubocop
       end
     end
 
-    def inspect_file(file, config)
+    def inspect_file(file)
       begin
         ast, comments, tokens, source = CLI.parse(file) do |source_buffer|
           source_buffer.read
@@ -97,14 +92,14 @@ module Rubocop
         return []
       end
 
+      config = ConfigStore.for(file)
       disabled_lines = disabled_lines_in(source)
 
       @cops.reduce([]) do |offences, cop_class|
         cop_name = cop_class.cop_name
         cop_class.config = config.for_cop(cop_name)
         if config.cop_enabled?(cop_name)
-          cop = setup_cop(cop_class,
-                          disabled_lines)
+          cop = setup_cop(cop_class, disabled_lines)
           if !@options[:only] || @options[:only] == cop_name
             begin
               cop.inspect(source, tokens, ast, comments)
@@ -120,10 +115,10 @@ module Rubocop
       end
     end
 
-    def setup_cop(cop_class, disabled_lines)
+    def setup_cop(cop_class, disabled_lines = nil)
       cop = cop_class.new
       cop.debug = @options[:debug]
-      cop.disabled_lines = disabled_lines[cop_class.cop_name]
+      cop.disabled_lines = disabled_lines[cop_class.cop_name] if disabled_lines
       cop
     end
 
@@ -144,18 +139,19 @@ module Rubocop
       OptionParser.new do |opts|
         opts.banner = 'Usage: rubocop [options] [file1, file2, ...]'
 
-        opts.on('-d', '--debug', 'Display debug info') do |d|
+        opts.on('-d', '--debug', 'Display debug info.') do |d|
           @options[:debug] = d
         end
-        opts.on('-c FILE', '--config FILE', 'Configuration file') do |f|
+        opts.on('-c', '--config FILE', 'Specify configuration file.') do |f|
           @options[:config] = f
           ConfigStore.set_options_config(@options[:config])
         end
-        opts.on('--only COP', 'Run just one cop') do |s|
+        opts.on('--only COP', 'Run just one cop.') do |s|
           @options[:only] = s
+          validate_only_option
         end
         opts.on('-f', '--format FORMATTER',
-                'Choose a formatter',
+                'Choose a formatter.',
                 '  [p]lain (default)',
                 '  [e]macs') do |key|
           @options[:formatter] = key
@@ -167,16 +163,16 @@ module Rubocop
                 '  format if no format is specified.') do |path|
           @options[:out] = path
         end
-        opts.on('--require FILE', 'Require Ruby file') do |f|
+        opts.on('--require FILE', 'Require Ruby file.') do |f|
           require f
         end
-        opts.on('-s', '--silent', 'Silence summary') do |s|
+        opts.on('-s', '--silent', 'Silence summary.') do |s|
           @options[:silent] = s
         end
-        opts.on('-n', '--no-color', 'Disable color output') do |s|
+        opts.on('-n', '--no-color', 'Disable color output.') do |s|
           Sickill::Rainbow.enabled = false
         end
-        opts.on('-v', '--version', 'Display version') do
+        opts.on('-v', '--version', 'Display version.') do
           puts Rubocop::Version::STRING
           exit(0)
         end
