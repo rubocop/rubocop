@@ -9,21 +9,43 @@ module Rubocop
     include FileHelper
 
     let(:cli) { CLI.new }
-    before(:each) { $stdout = StringIO.new }
-    after(:each) { $stdout = STDOUT }
+
+    before(:each) do
+      $stdout = StringIO.new
+      $stderr = StringIO.new
+    end
+
+    after(:each) do
+      $stdout = STDOUT
+      $stderr = STDERR
+    end
+
+    def abs(path)
+      File.expand_path(path)
+    end
 
     it 'exits cleanly when -h is used' do
       expect { cli.run ['-h'] }.to exit_with_code(0)
       expect { cli.run ['--help'] }.to exit_with_code(0)
-      message = ['Usage: rubocop [options] [file1, file2, ...]',
-                 '    -d, --debug                      Display debug info',
-                 '    -e, --emacs                      Emacs style output',
-                 '    -c, --config FILE                Configuration file',
-                 '        --only COP                   Run just one cop',
-                 '    -s, --silent                     Silence summary',
-                 '    -n, --no-color                   Disable color output',
-                 '    -v, --version                    Display version']
-      expect($stdout.string).to eq((message * 2).join("\n") + "\n")
+      message = <<-END
+Usage: rubocop [options] [file1, file2, ...]
+    -d, --debug                      Display debug info.
+    -c, --config FILE                Specify configuration file.
+        --only COP                   Run just one cop.
+    -f, --format FORMATTER           Choose a formatter.
+                                       [p]lain (default)
+                                       [e]macs
+                                       custom formatter class name
+    -o, --out FILE                   Write output to a file instead of STDOUT.
+                                       This option applies to the previously
+                                       specified --format, or the default
+                                       format if no format is specified.
+        --require FILE               Require Ruby file.
+    -s, --silent                     Silence summary.
+    -n, --no-color                   Disable color output.
+    -v, --version                    Display version.
+      END
+      expect($stdout.string).to eq(message * 2)
     end
 
     it 'exits cleanly when -v is used' do
@@ -45,13 +67,10 @@ module Rubocop
           @interrupt_handlers << block
         end
 
-        $stderr = StringIO.new
-
         create_file('example.rb', '# encoding: utf-8')
       end
 
       after do
-        $stderr = STDERR
         @cli_thread.terminate if @cli_thread
       end
 
@@ -122,7 +141,7 @@ module Rubocop
       ])
       expect(cli.run(['example.rb'])).to eq(1)
       expect($stdout.string)
-        .to eq ['== example.rb ==',
+        .to eq ["== #{abs('example.rb')} ==",
                 'C:  2: Trailing whitespace detected.',
                 '',
                 '1 file inspected, 1 offence detected',
@@ -139,15 +158,17 @@ module Rubocop
         "\tx = 0",
         'puts x'
       ])
-      expect(cli.run(['--emacs', 'example1.rb', 'example2.rb'])).to eq(1)
+      expect(cli.run(['--format', 'emacs', 'example1.rb', 'example2.rb']))
+        .to eq(1)
       expect($stdout.string)
         .to eq(
-        ['example1.rb:1: C: Missing utf-8 encoding comment.',
-         'example1.rb:1: C: Trailing whitespace detected.',
-         "example1.rb:1: C: Surrounding space missing for operator '='.",
-         'example1.rb:2: C: Trailing whitespace detected.',
-         'example2.rb:1: C: Missing utf-8 encoding comment.',
-         'example2.rb:1: C: Tab detected.',
+        ["#{abs('example1.rb')}:1: C: Missing utf-8 encoding comment.",
+         "#{abs('example1.rb')}:1: C: Trailing whitespace detected.",
+         "#{abs('example1.rb')}:1: C: Surrounding space missing" +
+         " for operator '='.",
+         "#{abs('example1.rb')}:2: C: Trailing whitespace detected.",
+         "#{abs('example2.rb')}:1: C: Missing utf-8 encoding comment.",
+         "#{abs('example2.rb')}:1: C: Tab detected.",
          '',
          '2 files inspected, 6 offences detected',
          ''].join("\n"))
@@ -163,13 +184,15 @@ module Rubocop
         "\tx = 0",
         'puts x'
       ])
-      expect(cli.run(['--emacs', 'example1.rb', 'example2.rb'])).to eq(1)
+      expect(cli.run(['--format', 'emacs', 'example1.rb', 'example2.rb']))
+        .to eq(1)
       expect($stdout.string)
         .to eq(
-        ['example1.rb:1: C: Trailing whitespace detected.',
-         "example1.rb:1: C: Surrounding space missing for operator '='.",
-         'example1.rb:2: C: Trailing whitespace detected.',
-         'example2.rb:1: C: Tab detected.',
+        ["#{abs('example1.rb')}:1: C: Trailing whitespace detected.",
+         "#{abs('example1.rb')}:1: C: Surrounding space missing" +
+         " for operator '='.",
+         "#{abs('example1.rb')}:2: C: Trailing whitespace detected.",
+         "#{abs('example2.rb')}:1: C: Tab detected.",
          '',
          '2 files inspected, 4 offences detected',
          ''].join("\n"))
@@ -186,7 +209,7 @@ module Rubocop
 
       expect(cli.run(['--only', 'IfUnlessModifier', 'example.rb'])).to eq(1)
       expect($stdout.string)
-        .to eq(['== example.rb ==',
+        .to eq(["== #{abs('example.rb')} ==",
                 'C:  1: Favor modifier if/unless usage when you have a ' +
                 'single-line body. Another good alternative is the usage of ' +
                 'control flow &&/||.',
@@ -197,45 +220,48 @@ module Rubocop
 
     it 'exits with error if an incorrect cop name is passed to --only' do
       expect(cli.run(%w(--only 123))).to eq(1)
-      expect($stdout.string).to eq("Unrecognized cop name: 123.\n")
+      expect($stderr.string).to eq("Unrecognized cop name: 123.\n")
     end
 
     it 'ommits summary when --silent passed', ruby: 1.9 do
       create_file('example1.rb', 'puts 0 ')
       create_file('example2.rb', "\tputs 0")
-      expect(cli.run(['--emacs',
+      expect(cli.run(['--format',
+                      'emacs',
                       '--silent',
                       'example1.rb',
                       'example2.rb'])).to eq(1)
       expect($stdout.string).to eq(
-        ['example1.rb:1: C: Missing utf-8 encoding comment.',
-         'example1.rb:1: C: Trailing whitespace detected.',
-         'example2.rb:1: C: Missing utf-8 encoding comment.',
-         'example2.rb:1: C: Tab detected.',
+        ["#{abs('example1.rb')}:1: C: Missing utf-8 encoding comment.",
+         "#{abs('example1.rb')}:1: C: Trailing whitespace detected.",
+         "#{abs('example2.rb')}:1: C: Missing utf-8 encoding comment.",
+         "#{abs('example2.rb')}:1: C: Tab detected.",
          ''].join("\n"))
     end
 
     it 'ommits summary when --silent passed', ruby: 2.0 do
       create_file('example1.rb', 'puts 0 ')
       create_file('example2.rb', "\tputs 0")
-      expect(cli.run(['--emacs',
+      expect(cli.run(['--format',
+                      'emacs',
                       '--silent',
                       'example1.rb',
                       'example2.rb'])).to eq(1)
       expect($stdout.string).to eq(
-        ['example1.rb:1: C: Trailing whitespace detected.',
-         'example2.rb:1: C: Tab detected.',
+        ["#{abs('example1.rb')}:1: C: Trailing whitespace detected.",
+         "#{abs('example2.rb')}:1: C: Tab detected.",
          ''].join("\n"))
     end
 
     it 'shows cop names when --debug is passed', ruby: 2.0 do
       create_file('example1.rb', "\tputs 0")
-      expect(cli.run(['--emacs',
+      expect(cli.run(['--format',
+                      'emacs',
                       '--silent',
                       '--debug',
                       'example1.rb'])).to eq(1)
       expect($stdout.string.lines[-1]).to eq(
-        ['example1.rb:1: C: Tab: Tab detected.',
+        ["#{abs('example1.rb')}:1: C: Tab: Tab detected.",
          ''].join("\n"))
     end
 
@@ -250,7 +276,7 @@ module Rubocop
       ])
       expect(cli.run(['-c', 'rubocop.yml', 'example1.rb'])).to eq(1)
       expect($stdout.string).to eq(
-        ['== example1.rb ==',
+        ["== #{abs('example1.rb')} ==",
          'C:  1: Trailing whitespace detected.',
          '',
          '1 file inspected, 1 offence detected',
@@ -270,7 +296,7 @@ module Rubocop
       ])
       result = cli.run(['-c', 'rubocop.yml', 'example1.rb'])
       expect($stdout.string).to eq(
-        ['== example1.rb ==',
+        ["== #{abs('example1.rb')} ==",
          'C:  1: Favor modifier if/unless usage when you have a single-line ' +
          'body. Another good alternative is the usage of control flow &&/||.',
          '',
@@ -290,7 +316,7 @@ module Rubocop
       ])
       expect(cli.run(['example_src/example1.rb'])).to eq(1)
       expect($stdout.string).to eq(
-        ['== example_src/example1.rb ==',
+        ["== #{abs('example_src/example1.rb')} ==",
          'C:  1: Trailing whitespace detected.',
          '',
          '1 file inspected, 1 offence detected',
@@ -327,7 +353,7 @@ module Rubocop
       ])
       expect(cli.run(['example'])).to eq(1)
       expect($stdout.string).to eq(
-        ['== example/lib/example1.rb ==',
+        ["== #{abs('example/lib/example1.rb')} ==",
          'C:  2: Line is too long. [90/79]',
          '',
          '2 files inspected, 1 offence detected',
@@ -373,7 +399,7 @@ module Rubocop
 
       expect(cli.run(['example'])).to eq(1)
       expect($stdout.string).to eq(
-        ['== example/tmp/test/example1.rb ==',
+        ["== #{abs('example/tmp/test/example1.rb')} ==",
          'C:  2: Line is too long. [90/79]',
          '',
          '1 file inspected, 1 offence detected',
@@ -396,7 +422,7 @@ module Rubocop
       expect($stdout.string).to eq(
         ['Warning: unrecognized cop LyneLenth found in ' +
          File.expand_path('example/.rubocop.yml'),
-         '== example/example1.rb ==',
+         "== #{abs('example/example1.rb')} ==",
          'C:  2: Line is too long. [90/79]',
          '',
          '1 file inspected, 1 offence detected',
@@ -419,7 +445,7 @@ module Rubocop
       expect($stdout.string).to eq(
         ['Warning: unrecognized parameter LineLength:Min found in ' +
          File.expand_path('example/.rubocop.yml'),
-         '== example/example1.rb ==',
+         "== #{abs('example/example1.rb')} ==",
          'C:  2: Line is too long. [90/79]',
          '',
          '1 file inspected, 1 offence detected',
@@ -433,7 +459,7 @@ module Rubocop
         'class Test',
         'en'
       ])
-      expect(cli.run(['--emacs', 'example.rb'])).to eq(1)
+      expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       unexpected_part = RUBY_VERSION >= '2.0' ? 'end-of-input' : '$end'
       expect($stdout.string).to eq(
         ["example.rb:3: E: Syntax error, unexpected #{unexpected_part}, " +
@@ -449,7 +475,7 @@ module Rubocop
         '# encoding: utf-8',
         "# #{'f9'.hex.chr}#{'29'.hex.chr}"
       ])
-      expect(cli.run(['--emacs', 'example.rb'])).to eq(0)
+      expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(0)
     end
 
     it 'can have all cops disabled in a code section' do
@@ -466,13 +492,13 @@ module Rubocop
         '  y("123")',
         'end'
       ])
-      expect(cli.run(['--emacs', 'example.rb'])).to eq(1)
+      expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       # all cops were disabled, then 2 were enabled again, so we
       # should get 2 offences reported.
       expect($stdout.string).to eq(
-        ['example.rb:8: C: Line is too long. [95/79]',
-         "example.rb:10: C: Prefer single-quoted strings when you don't " +
-         'need string interpolation or special symbols.',
+        ["#{abs('example.rb')}:8: C: Line is too long. [95/79]",
+         "#{abs('example.rb')}:10: C: Prefer single-quoted strings when you " +
+         "don't need string interpolation or special symbols.",
          '',
          '1 file inspected, 2 offences detected',
          ''].join("\n"))
@@ -492,13 +518,13 @@ module Rubocop
         '  y("123")',
         'end'
       ])
-      expect(cli.run(['--emacs', 'example.rb'])).to eq(1)
+      expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       # 3 cops were disabled, then 2 were enabled again, so we
       # should get 2 offences reported.
       expect($stdout.string).to eq(
-        ['example.rb:8: C: Line is too long. [95/79]',
-         "example.rb:10: C: Prefer single-quoted strings when you don't " +
-         'need string interpolation or special symbols.',
+        ["#{abs('example.rb')}:8: C: Line is too long. [95/79]",
+         "#{abs('example.rb')}:10: C: Prefer single-quoted strings when you " +
+         "don't need string interpolation or special symbols.",
          '',
          '1 file inspected, 2 offences detected',
          ''].join("\n"))
@@ -509,7 +535,7 @@ module Rubocop
         '# encoding: utf-8',
         'y("123", 123456) # rubocop:disable all'
       ])
-      expect(cli.run(['--emacs', 'example.rb'])).to eq(0)
+      expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(0)
       expect($stdout.string).to eq(
         ['',
          '1 file inspected, no offences detected',
@@ -523,9 +549,9 @@ module Rubocop
         '#' * 95,
         'y("123") # rubocop:disable LineLength,StringLiterals'
       ])
-      expect(cli.run(['--emacs', 'example.rb'])).to eq(1)
+      expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       expect($stdout.string).to eq(
-        ['example.rb:3: C: Line is too long. [95/79]',
+        ["#{abs('example.rb')}:3: C: Line is too long. [95/79]",
          '',
          '1 file inspected, 1 offence detected',
          ''].join("\n"))
@@ -603,30 +629,197 @@ module Rubocop
          ''].join("\n"))
     end
 
-    describe '#display_summary' do
-      it 'handles pluralization correctly' do
-        cli.display_summary(0, 0, [])
-        expect($stdout.string).to eq(
-          "\n0 files inspected, no offences detected\n")
-        $stdout = StringIO.new
-        cli.display_summary(1, 0, [])
-        expect($stdout.string).to eq(
-          "\n1 file inspected, no offences detected\n")
-        $stdout = StringIO.new
-        cli.display_summary(1, 1, [])
-        expect($stdout.string).to eq(
-          "\n1 file inspected, 1 offence detected\n")
-        $stdout = StringIO.new
-        cli.display_summary(2, 2, [])
-        expect($stdout.string).to eq(
-          "\n2 files inspected, 2 offences detected\n")
+    describe '--require option' do
+      let(:required_file_path) { './path/to/required_file.rb' }
+
+      before do
+        create_file('example.rb', '# encoding: utf-8')
+
+        create_file(required_file_path, [
+          '# encoding: utf-8',
+          "puts 'Hello from required file!'"
+        ])
       end
 
+      it 'requires the passed path' do
+        cli.run(['--require', required_file_path, 'example.rb'])
+        expect($stdout.string).to start_with('Hello from required file!')
+      end
+    end
+
+    describe '-f/--format option' do
+      let(:target_file) { File.expand_path('example.rb') }
+
+      before do
+        create_file(target_file, [
+          '# encoding: utf-8',
+          '#' * 90
+        ])
+      end
+
+      describe 'builtin formatters' do
+        context 'when plain format is specified' do
+          it 'outputs with plain format' do
+            cli.run(['--format', 'plain', 'example.rb'])
+            expect($stdout.string).to include([
+              "== #{target_file} ==",
+              'C:  2: Line is too long. [90/79]'
+            ].join("\n"))
+          end
+        end
+
+        context 'when emacs format is specified' do
+          it 'outputs with emacs format' do
+            cli.run(['--format', 'emacs', 'example.rb'])
+            expect($stdout.string)
+              .to include("#{target_file}:2: C: Line is too long. [90/79]")
+          end
+        end
+
+        context 'when unknown format name is specified' do
+          it 'aborts with error message' do
+            expect { cli.run(['--format', 'unknown', 'example.rb']) }
+              .to exit_with_code(1)
+            expect($stderr.string)
+              .to include('No formatter for "unknown"')
+          end
+        end
+      end
+
+      describe 'custom formatter' do
+        context 'when a class name is specified' do
+          it 'uses the class as a formatter' do
+            module ::MyTool
+              class RubocopFormatter < Rubocop::Formatter::BaseFormatter
+                def started(all_files)
+                  output.puts "started: #{all_files.join(',')}"
+                end
+
+                def file_started(file, options)
+                  output.puts "file_started: #{file}"
+                end
+
+                def file_finished(file, offences)
+                  output.puts "file_finished: #{file}"
+                end
+
+                def finished(processed_files)
+                  output.puts "finished: #{processed_files.join(',')}"
+                end
+              end
+            end
+
+            cli.run(['--format', 'MyTool::RubocopFormatter', 'example.rb'])
+            expect($stdout.string).to eq([
+              "started: #{target_file}",
+              "file_started: #{target_file}",
+              "file_finished: #{target_file}",
+              "finished: #{target_file}",
+              ''
+            ].join("\n"))
+          end
+        end
+
+        context 'when unknown class name is specified' do
+          it 'aborts with error message' do
+            expect { cli.run(['--format', 'UnknownFormatter', 'example.rb']) }
+              .to exit_with_code(1)
+            expect($stderr.string)
+              .to include('uninitialized constant UnknownFormatter')
+          end
+        end
+      end
+
+      it 'can be used multiple times' do
+        cli.run(['--format', 'plain', '--format', 'emacs', 'example.rb'])
+        expect($stdout.string).to include([
+          "== #{target_file} ==",
+          'C:  2: Line is too long. [90/79]',
+          "#{target_file}:2: C: Line is too long. [90/79]"
+        ].join("\n"))
+      end
+    end
+
+    unless Rubocop::Version::STRING.start_with?('0')
+      describe '-e/--emacs option' do
+        it 'is dropped in RuboCop 1.0.0' do
+          # This spec can be removed once the option is dropped.
+          expect(cli.run(['--emacs'])).to eq(1)
+          expect($stderr.string).to include('invalid option: --emacs')
+        end
+      end
+    end
+
+    describe '-o/--out option' do
+      let(:target_file) { File.expand_path('example.rb') }
+
+      before do
+        create_file(target_file, [
+          '# encoding: utf-8',
+          '#' * 90
+        ])
+      end
+
+      it 'redirects output to the specified file' do
+        cli.run(['--out', 'output.txt', target_file])
+        expect(File.read('output.txt')).to include('Line is too long.')
+      end
+
+      it 'is applied to the previously specified formatter' do
+        cli.run([
+          '--format', 'plain',
+          '--format', 'emacs', '--out', 'emacs_output.txt',
+          target_file
+        ])
+
+        expect($stdout.string).to eq([
+          "== #{target_file} ==",
+          'C:  2: Line is too long. [90/79]',
+          '',
+          '1 file inspected, 1 offence detected',
+          ''
+        ].join("\n"))
+
+        expect(File.read('emacs_output.txt')).to eq([
+          "#{target_file}:2: C: Line is too long. [90/79]",
+          '',
+          '1 file inspected, 1 offence detected',
+          ''
+        ].join("\n"))
+      end
+    end
+
+    describe '#display_error_summary' do
       it 'displays an error message when errors are present' do
         msg = 'An error occurred while Encoding cop was inspecting file.rb.'
-        cli.display_summary(1, 1, [msg])
+        cli.display_error_summary([msg])
         expect($stdout.string.lines.to_a[-4..-3])
           .to eq(["1 error occurred:\n", "#{msg}\n"])
+      end
+    end
+
+    describe '#custom_formatter_class' do
+      def custom_formatter_class(string)
+        cli.send(:custom_formatter_class, string)
+      end
+
+      it 'returns constant represented by the passed string' do
+        expect(custom_formatter_class('Rubocop')).to eq(Rubocop)
+      end
+
+      it 'can handle namespaced constant name' do
+        expect(custom_formatter_class('Rubocop::CLI')).to eq(Rubocop::CLI)
+      end
+
+      it 'can handle top level namespaced constant name' do
+        expect(custom_formatter_class('::Rubocop::CLI')).to eq(Rubocop::CLI)
+      end
+
+      context 'when non-existent constant name is passed' do
+        it 'raises error' do
+          expect { custom_formatter_class('Rubocop::NonExistentClass') }
+            .to raise_error(NameError)
+        end
       end
     end
   end

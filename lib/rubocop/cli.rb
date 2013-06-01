@@ -6,6 +6,11 @@ module Rubocop
   # The CLI is a class responsible of handling all the command line interface
   # logic.
   class CLI
+    BUILTIN_FORMATTERS_FOR_KEYS = {
+      'plain' => Formatter::PlainTextFormatter,
+      'emacs' => Formatter::EmacsStyleFormatter
+    }
+
     # If set true while running,
     # RuboCop will abort processing and exit gracefully.
     attr_accessor :wants_to_quit
@@ -15,10 +20,8 @@ module Rubocop
 
     def initialize
       @cops = Cop::Cop.all
-      @processed_file_count = 0
-      @total_offences = 0
       @errors = []
-      @options = { mode: :default }
+      @options = {}
       ConfigStore.prepare
     end
 
@@ -29,45 +32,47 @@ module Rubocop
     def run(args = ARGV)
       trap_interrupt
 
-      parse_options(args)
-
       begin
-        validate_only_option if @options[:only]
-      rescue ArgumentError => e
-        puts e.message
+        parse_options(args)
+      rescue => e
+        $stderr.puts e.message
         return 1
       end
 
-      target_files(args).each do |file|
+      target_files = target_files(args)
+      processed_files = []
+      any_failed = false
+
+      invoke_formatters(:started, target_files)
+
+      target_files.each do |file|
         break if wants_to_quit?
 
-        config = ConfigStore.for(file)
-        report = Report.create(file, @options[:mode])
-
         puts "Scanning #{file}" if @options[:debug]
+        invoke_formatters(:file_started, file, {})
 
-        syntax_cop = Rubocop::Cop::Syntax.new
-        syntax_cop.debug = @options[:debug]
+        syntax_cop = setup_cop(Rubocop::Cop::Syntax)
         syntax_cop.inspect_file(file)
 
-        if syntax_cop.offences.map(&:severity).include?(:error)
-          # In case of a syntax error we just report that error and do
-          # no more checking in the file.
-          report << syntax_cop
-          @total_offences += syntax_cop.offences.count
-        else
-          inspect_file(file, config, report)
-        end
+        offences = if syntax_cop.offences.map(&:severity).include?(:error)
+                     # In case of a syntax error we just report that error
+                     # and do no more checking in the file.
+                     syntax_cop.offences
+                   else
+                     inspect_file(file)
+                   end
 
-        @processed_file_count += 1
-        report.display unless report.empty?
+        any_failed = true unless offences.empty?
+        processed_files << file
+        invoke_formatters(:file_finished, file, offences)
       end
 
-      unless @options[:silent]
-        display_summary(@processed_file_count, @total_offences, @errors)
-      end
+      invoke_formatters(:finished, processed_files)
+      close_output_files
 
-      (@total_offences == 0) && !wants_to_quit ? 0 : 1
+      display_error_summary(@errors) unless @options[:silent]
+
+      !any_failed && !wants_to_quit ? 0 : 1
     end
 
     def validate_only_option
@@ -76,7 +81,7 @@ module Rubocop
       end
     end
 
-    def inspect_file(file, config, report)
+    def inspect_file(file)
       begin
         ast, comments, tokens, source = CLI.parse(file) do |source_buffer|
           source_buffer.read
@@ -84,17 +89,17 @@ module Rubocop
       rescue Parser::SyntaxError, Encoding::UndefinedConversionError,
         ArgumentError => e
         handle_error(e, "An error occurred while parsing #{file}.".color(:red))
-        return
+        return []
       end
 
+      config = ConfigStore.for(file)
       disabled_lines = disabled_lines_in(source)
 
-      @cops.each do |cop_class|
+      @cops.reduce([]) do |offences, cop_class|
         cop_name = cop_class.cop_name
         cop_class.config = config.for_cop(cop_name)
         if config.cop_enabled?(cop_name)
-          cop = setup_cop(cop_class,
-                          disabled_lines)
+          cop = setup_cop(cop_class, disabled_lines)
           if !@options[:only] || @options[:only] == cop_name
             begin
               cop.inspect(source, tokens, ast, comments)
@@ -104,16 +109,16 @@ module Rubocop
                            " cop was inspecting #{file}.".color(:red))
             end
           end
-          @total_offences += cop.offences.count
-          report << cop if cop.has_report?
+          offences.concat(cop.offences)
         end
+        offences
       end
     end
 
-    def setup_cop(cop_class, disabled_lines)
+    def setup_cop(cop_class, disabled_lines = nil)
       cop = cop_class.new
       cop.debug = @options[:debug]
-      cop.disabled_lines = disabled_lines[cop_class.cop_name]
+      cop.disabled_lines = disabled_lines[cop_class.cop_name] if disabled_lines
       cop
     end
 
@@ -127,34 +132,67 @@ module Rubocop
       end
     end
 
+    # rubocop:disable MethodLength
     def parse_options(args)
+      convert_deprecated_options!(args)
+
       OptionParser.new do |opts|
         opts.banner = 'Usage: rubocop [options] [file1, file2, ...]'
 
-        opts.on('-d', '--debug', 'Display debug info') do |d|
+        opts.on('-d', '--debug', 'Display debug info.') do |d|
           @options[:debug] = d
         end
-        opts.on('-e', '--emacs', 'Emacs style output') do
-          @options[:mode] = :emacs_style
-        end
-        opts.on('-c FILE', '--config FILE', 'Configuration file') do |f|
+        opts.on('-c', '--config FILE', 'Specify configuration file.') do |f|
           @options[:config] = f
           ConfigStore.set_options_config(@options[:config])
         end
-        opts.on('--only COP', 'Run just one cop') do |s|
+        opts.on('--only COP', 'Run just one cop.') do |s|
           @options[:only] = s
+          validate_only_option
         end
-        opts.on('-s', '--silent', 'Silence summary') do |s|
+        opts.on('-f', '--format FORMATTER',
+                'Choose a formatter.',
+                '  [p]lain (default)',
+                '  [e]macs',
+                '  custom formatter class name') do |key|
+          @options[:formatters] ||= []
+          @options[:formatters] << [key]
+        end
+        opts.on('-o', '--out FILE',
+                'Write output to a file instead of STDOUT.',
+                '  This option applies to the previously',
+                '  specified --format, or the default',
+                '  format if no format is specified.') do |path|
+          @options[:formatters] ||= [['plain']]
+          @options[:formatters].last << path
+        end
+        opts.on('--require FILE', 'Require Ruby file.') do |f|
+          require f
+        end
+        opts.on('-s', '--silent', 'Silence summary.') do |s|
           @options[:silent] = s
         end
-        opts.on('-n', '--no-color', 'Disable color output') do |s|
+        opts.on('-n', '--no-color', 'Disable color output.') do |s|
           Sickill::Rainbow.enabled = false
         end
-        opts.on('-v', '--version', 'Display version') do
+        opts.on('-v', '--version', 'Display version.') do
           puts Rubocop::Version::STRING
           exit(0)
         end
       end.parse!(args)
+    end
+    # rubocop:enable MethodLength
+
+    def convert_deprecated_options!(args)
+      args.map! do |arg|
+        case arg
+        when '-e', '--emacs'
+          deprecate("#{arg} option", '--format emacs', '1.0.0')
+          %w(--format emacs)
+        else
+          arg
+        end
+      end.flatten!
     end
 
     def trap_interrupt
@@ -166,26 +204,13 @@ module Rubocop
       end
     end
 
-    def display_summary(num_files, total_offences, errors)
-      plural = num_files == 0 || num_files > 1 ? 's' : ''
-      print "\n#{num_files} file#{plural} inspected, "
-      offences_string = if total_offences.zero?
-                          'no offences'
-                        elsif total_offences == 1
-                          '1 offence'
-                        else
-                          "#{total_offences} offences"
-                        end
-      puts "#{offences_string} detected"
-        .color(total_offences.zero? ? :green : :red)
-
-      if errors.count > 0
-        plural = errors.count > 1 ? 's' : ''
-        puts "\n#{errors.count} error#{plural} occurred:".color(:red)
-        errors.each { |error| puts error }
-        puts 'Errors are usually caused by RuboCop bugs.'
-        puts 'Please, report your problems to RuboCop\'s issue tracker.'
-      end
+    def display_error_summary(errors)
+      return if errors.empty?
+      plural = errors.count > 1 ? 's' : ''
+      puts "\n#{errors.count} error#{plural} occurred:".color(:red)
+      errors.each { |error| puts error }
+      puts 'Errors are usually caused by RuboCop bugs.'
+      puts 'Please, report your problems to RuboCop\'s issue tracker.'
     end
 
     def disabled_lines_in(source)
@@ -262,7 +287,7 @@ module Rubocop
         end
       end
 
-      files.uniq
+      files.map { |f| File.expand_path(f) }.uniq
     end
 
     # Finds all Ruby source files under the current or other supplied
@@ -308,6 +333,75 @@ module Rubocop
         error_message = "#{e.class}, #{e.message}"
         STDERR.puts "#{msg}\t#{error_message}"
       end
+    end
+
+    def invoke_formatters(method, *args)
+      formatters.each { |f| f.send(method, *args) }
+    end
+
+    def close_output_files
+      formatters.each do |formatter|
+        formatter.output.close if formatter.output.is_a?(File)
+      end
+    end
+
+    def formatters
+      @formatters ||= begin
+        pairs = @options[:formatters] || [['plain']]
+        pairs.map do |formatter_key, output_path|
+          create_formatter(formatter_key, output_path)
+        end
+      rescue => error
+        warn error.message
+        exit(1)
+      end
+    end
+
+    def create_formatter(formatter_key, output_path = nil)
+      formatter_class = if formatter_key =~ /\A[A-Z]/
+                          custom_formatter_class(formatter_key)
+                        else
+                          builtin_formatter_class(formatter_key)
+                        end
+
+      output = output_path ? File.open(output_path, 'w') : $stdout
+
+      formatter = formatter_class.new(output)
+      if formatter.respond_to?(:reports_summary=)
+        # TODO: Consider dropping -s/--silent option
+        formatter.reports_summary = !@options[:silent]
+      end
+      formatter
+    end
+
+    def builtin_formatter_class(specified_key)
+      matching_keys = BUILTIN_FORMATTERS_FOR_KEYS.keys.select do |key|
+        key.start_with?(specified_key)
+      end
+
+      if matching_keys.empty?
+        fail %(No formatter for "#{specified_key}")
+      elsif matching_keys.size > 1
+        fail %(Cannot determine formatter for "#{specified_key}")
+      end
+
+      BUILTIN_FORMATTERS_FOR_KEYS[matching_keys.first]
+    end
+
+    def custom_formatter_class(specified_class_name)
+      constants = specified_class_name.split('::')
+      constants.shift if constants.first.empty?
+      constants.reduce(Object) do |namespace, constant|
+        namespace.const_get(constant, false)
+      end
+    end
+
+    def deprecate(subject, alternative = nil, version = nil)
+      message =  "#{subject} is deprecated"
+      message << " and will be removed in RuboCop #{version}" if version
+      message << '.'
+      message << " Please use #{alternative} instead." if alternative
+      warn message
     end
   end
 end
