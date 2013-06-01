@@ -44,3 +44,7 @@ SpaceInsideHashLiteralBraces:
 # Symbol literals should use snake_case.
 SymbolName:
   AllowCamelCase: true
+
+# Avoid more than `Max` levels of nesting.
+BlockNesting:
+  Max: 3
