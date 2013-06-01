@@ -4,7 +4,7 @@ module Rubocop
   module Cop
     class ParenthesesAroundCondition < Cop
       MSG = "Don't use parentheses around the condition of an " +
-        'if/unless/while/until, unless the condition contains an assignment.'
+        'if/unless/while/until'
 
       def on_if(node)
         process_control_op(node)
