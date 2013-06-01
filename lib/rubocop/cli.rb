@@ -287,7 +287,7 @@ module Rubocop
         end
       end
 
-      files.uniq
+      files.map { |f| File.expand_path(f) }.uniq
     end
 
     # Finds all Ruby source files under the current or other supplied
