@@ -156,6 +156,37 @@ AllCops:
 
 Note: Files and directories are specified relative to the `.rubocop.yml` file.
 
+## Custom Formatters
+
+You can customize RuboCop's output format with custom formatter.
+
+### Creating Custom Formatter
+
+To implement a custom formatter, you need to subclass
+`Rubocop::Formatter::BaseFormatter` and override some methods,
+or implement all formatter API methods by duck typing.
+
+Please see the documents below for more formatter API details.
+
+* [Rubocop::Formatter::BaseFormatter](http://rubydoc.info/gems/rubocop/Rubocop/Formatter/BaseFormatter)
+* [Rubocop::Cop::Offence](http://rubydoc.info/gems/rubocop/Rubocop/Cop/Offence)
+
+### Using Custom Formatter in Command Line
+
+You can tell RuboCop to use your custom formatter with a combination of
+`--format` and `--require` option.
+For example, when you have defined `MyCustomFormatter` in
+`./path/to/my_custom_formatter.rb`, you would type this command:
+
+```bash
+$ rubocop --require ./path/to/my_custom_formatter --format MyCustomFormatter
+```
+
+Note: The path passed to `--require` is directly passed to `Kernel.require`.
+If your custom formatter file is not in `$LOAD_PATH`,
+you need to specify the path as relative path prefixed with `./` explicitly,
+or absolute path.
+
 ## Compatibility
 
 RuboCop supported only MRI 1.9 & MRI 2.0 prior to version 0.8. After

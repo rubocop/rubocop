@@ -153,7 +153,8 @@ module Rubocop
         opts.on('-f', '--format FORMATTER',
                 'Choose a formatter.',
                 '  [p]lain (default)',
-                '  [e]macs') do |key|
+                '  [e]macs',
+                '  custom formatter class name') do |key|
           @options[:formatters] ||= []
           @options[:formatters] << [key]
         end
@@ -357,7 +358,12 @@ module Rubocop
     end
 
     def create_formatter(formatter_key, output_path = nil)
-      formatter_class = builtin_formatter_class(formatter_key)
+      formatter_class = if formatter_key =~ /\A[A-Z]/
+                          custom_formatter_class(formatter_key)
+                        else
+                          builtin_formatter_class(formatter_key)
+                        end
+
       output = output_path ? File.open(output_path, 'w') : $stdout
 
       formatter = formatter_class.new(output)
@@ -380,6 +386,14 @@ module Rubocop
       end
 
       BUILTIN_FORMATTERS_FOR_KEYS[matching_keys.first]
+    end
+
+    def custom_formatter_class(specified_class_name)
+      constants = specified_class_name.split('::')
+      constants.shift if constants.first.empty?
+      constants.reduce(Object) do |namespace, constant|
+        namespace.const_get(constant, false)
+      end
     end
 
     def deprecate(subject, alternative = nil, version = nil)

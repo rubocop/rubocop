@@ -31,6 +31,7 @@ Usage: rubocop [options] [file1, file2, ...]
     -f, --format FORMATTER           Choose a formatter.
                                        [p]lain (default)
                                        [e]macs
+                                       custom formatter class name
     -o, --out FILE                   Write output to a file instead of STDOUT.
                                        This option applies to the previously
                                        specified --format, or the default
@@ -650,30 +651,76 @@ Usage: rubocop [options] [file1, file2, ...]
         ])
       end
 
-      context 'when plain format is specified' do
-        it 'outputs with plain format' do
-          cli.run(['--format', 'plain', 'example.rb'])
-          expect($stdout.string).to include([
-            "== #{target_file} ==",
-            'C:  2: Line is too long. [90/79]'
-          ].join("\n"))
+      describe 'builtin formatters' do
+        context 'when plain format is specified' do
+          it 'outputs with plain format' do
+            cli.run(['--format', 'plain', 'example.rb'])
+            expect($stdout.string).to include([
+              "== #{target_file} ==",
+              'C:  2: Line is too long. [90/79]'
+            ].join("\n"))
+          end
+        end
+
+        context 'when emacs format is specified' do
+          it 'outputs with emacs format' do
+            cli.run(['--format', 'emacs', 'example.rb'])
+            expect($stdout.string)
+              .to include("#{target_file}:2: C: Line is too long. [90/79]")
+          end
+        end
+
+        context 'when unknown format name is specified' do
+          it 'aborts with error message' do
+            expect { cli.run(['--format', 'unknown', 'example.rb']) }
+              .to exit_with_code(1)
+            expect($stderr.string)
+              .to include('No formatter for "unknown"')
+          end
         end
       end
 
-      context 'when emacs format is specified' do
-        it 'outputs with emacs format' do
-          cli.run(['--format', 'emacs', 'example.rb'])
-          expect($stdout.string)
-            .to include("#{target_file}:2: C: Line is too long. [90/79]")
-        end
-      end
+      describe 'custom formatter' do
+        context 'when a class name is specified' do
+          it 'uses the class as a formatter' do
+            module ::MyTool
+              class RubocopFormatter < Rubocop::Formatter::BaseFormatter
+                def started(all_files)
+                  output.puts "started: #{all_files.join(',')}"
+                end
 
-      context 'when unknown format name is specified' do
-        it 'aborts with error message' do
-          expect { cli.run(['--format', 'unknown', 'example.rb']) }
-            .to exit_with_code(1)
-          expect($stderr.string)
-            .to include('No formatter for "unknown"')
+                def file_started(file, options)
+                  output.puts "file_started: #{file}"
+                end
+
+                def file_finished(file, offences)
+                  output.puts "file_finished: #{file}"
+                end
+
+                def finished(processed_files)
+                  output.puts "finished: #{processed_files.join(',')}"
+                end
+              end
+            end
+
+            cli.run(['--format', 'MyTool::RubocopFormatter', 'example.rb'])
+            expect($stdout.string).to eq([
+              "started: #{target_file}",
+              "file_started: #{target_file}",
+              "file_finished: #{target_file}",
+              "finished: #{target_file}",
+              ''
+            ].join("\n"))
+          end
+        end
+
+        context 'when unknown class name is specified' do
+          it 'aborts with error message' do
+            expect { cli.run(['--format', 'UnknownFormatter', 'example.rb']) }
+              .to exit_with_code(1)
+            expect($stderr.string)
+              .to include('uninitialized constant UnknownFormatter')
+          end
         end
       end
 
@@ -742,6 +789,31 @@ Usage: rubocop [options] [file1, file2, ...]
         cli.display_error_summary([msg])
         expect($stdout.string.lines.to_a[-4..-3])
           .to eq(["1 error occurred:\n", "#{msg}\n"])
+      end
+    end
+
+    describe '#custom_formatter_class' do
+      def custom_formatter_class(string)
+        cli.send(:custom_formatter_class, string)
+      end
+
+      it 'returns constant represented by the passed string' do
+        expect(custom_formatter_class('Rubocop')).to eq(Rubocop)
+      end
+
+      it 'can handle namespaced constant name' do
+        expect(custom_formatter_class('Rubocop::CLI')).to eq(Rubocop::CLI)
+      end
+
+      it 'can handle top level namespaced constant name' do
+        expect(custom_formatter_class('::Rubocop::CLI')).to eq(Rubocop::CLI)
+      end
+
+      context 'when non-existent constant name is passed' do
+        it 'raises error' do
+          expect { custom_formatter_class('Rubocop::NonExistentClass') }
+            .to raise_error(NameError)
+        end
       end
     end
   end
