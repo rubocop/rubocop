@@ -72,7 +72,7 @@ module Rubocop
         return if Array(excludes).include?(sexp.type)
 
         sexp.children.each do |elem|
-          if Parser::AST::Node === elem
+          if elem.is_a?(Parser::AST::Node)
             on_node(syms, elem, excludes) { |s| yield s }
           end
         end
