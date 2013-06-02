@@ -328,3 +328,7 @@ Loop:
 # Avoid excessive block nesting
 BlockNesting:
   Enabled: true
+
+# Avoid explicit use of the case equality operator(===).
+CaseEquality:
+  Enabled: true

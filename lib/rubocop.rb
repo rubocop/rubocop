@@ -78,6 +78,7 @@ require 'rubocop/cop/eval'
 require 'rubocop/cop/access_control'
 require 'rubocop/cop/loop'
 require 'rubocop/cop/block_nesting'
+require 'rubocop/cop/case_equality'
 
 require 'rubocop/formatter/base_formatter'
 require 'rubocop/formatter/plain_text_formatter'
