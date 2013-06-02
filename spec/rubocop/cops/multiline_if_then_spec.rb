@@ -16,15 +16,18 @@ module Rubocop
                              'end',
                              'if cond then  ',
                              'end',
+                             'if cond',
+                             'then',
+                             'end',
                              'if cond then # bad',
                              'end'])
-        expect(mit.offences.map(&:line_number)).to eq([1, 3, 5, 7])
+        expect(mit.offences.map(&:line_number)).to eq([1, 3, 5, 7, 10])
       end
 
       it 'accepts multiline if without then' do
         inspect_source(mit, ['if cond',
                              'end'])
-        expect(mit.offences.map(&:message)).to be_empty
+        expect(mit.offences).to be_empty
       end
 
       it 'accepts table style if/then/elsif/ends' do
@@ -34,7 +37,27 @@ module Rubocop
                         'elsif @io == $stderr then str << "$stderr"',
                         'else                      str << @io.class.to_s',
                         'end'])
-        expect(mit.offences.map(&:message)).to be_empty
+        expect(mit.offences).to be_empty
+      end
+
+      it 'does not get confused by a then in a when' do
+        inspect_source(mit,
+                       ['if a',
+                        '  case b',
+                        '  when c then',
+                        '  end',
+                        'end'])
+        expect(mit.offences).to be_empty
+      end
+
+      it 'does not get confused by a commented-out then' do
+        inspect_source(mit,
+                       ['if a # then',
+                        '  b',
+                        'end',
+                        'if c # then',
+                        'end'])
+        expect(mit.offences).to be_empty
       end
 
       # unless
@@ -49,7 +72,7 @@ module Rubocop
       it 'accepts multiline unless without then' do
         inspect_source(mit, ['unless cond',
                              'end'])
-        expect(mit.offences.map(&:message)).to be_empty
+        expect(mit.offences).to be_empty
       end
     end
   end
