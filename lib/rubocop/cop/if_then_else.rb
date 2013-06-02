@@ -40,8 +40,18 @@ module Rubocop
       include IfThenElse
 
       def offending_line(node)
-        if node.loc.expression.source =~ /\bthen\s*(#.*)?\s*$/
-          node.loc.begin.line
+        condition, body = *node
+        next_thing = if body && body.loc.expression
+                       body.loc.expression.begin
+                     else
+                       node.loc.end # No body, use "end".
+                     end
+        right_after_cond =
+          Parser::Source::Range.new(next_thing.source_buffer,
+                                    condition.loc.expression.end.end_pos,
+                                    next_thing.begin_pos)
+        if right_after_cond.source =~ /\A\s*then\s*(#.*)?\s*\n/
+          node.loc.expression.begin.line
         end
       end
 
