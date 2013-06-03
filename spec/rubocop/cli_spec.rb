@@ -35,6 +35,7 @@ Usage: rubocop [options] [file1, file2, ...]
     -f, --format FORMATTER           Choose a formatter.
                                        [p]lain (default)
                                        [e]macs
+                                       progress
                                        custom formatter class name
     -o, --out FILE                   Write output to a file instead of STDOUT.
                                        This option applies to the previously

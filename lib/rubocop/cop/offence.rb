@@ -67,6 +67,12 @@ module Rubocop
         @severity.to_s[0].upcase
       end
 
+      # @api private
+      def severity_level
+        index = SEVERITIES.index(severity)
+        index ? index + 1 : 0 # TODO: Eval cop has unknown severity :security
+      end
+
       # @api public
       #
       # @return [Boolean]
