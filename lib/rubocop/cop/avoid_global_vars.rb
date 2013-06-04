@@ -52,7 +52,7 @@ module Rubocop
 
         unless BUILT_IN_VARS.include?(global_var.to_s)
           add_offence(:convention,
-                      node.loc.name.line,
+                      node.loc.name,
                       MSG)
         end
       end

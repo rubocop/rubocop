@@ -12,7 +12,7 @@ module Rubocop
         # discard non-ternary ops
         return unless loc.respond_to?(:question)
 
-        add_offence(:convention, loc.line, MSG) if loc.line != loc.colon.line
+        add_offence(:convention, loc, MSG) if loc.line != loc.colon.line
 
         super
       end
@@ -31,7 +31,7 @@ module Rubocop
         node.children.each do |child|
           on_node(:if, child) do |c|
             if c.loc.respond_to?(:question)
-              add_offence(:convention, c.loc.line, MSG)
+              add_offence(:convention, c.loc, MSG)
             end
           end
         end

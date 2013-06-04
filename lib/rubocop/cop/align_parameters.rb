@@ -21,7 +21,7 @@ module Rubocop
             if cur_arg_line != prev_arg_line &&
                 cur_arg_col != first_arg_col
               add_offence(:convetion,
-                          cur_arg_line,
+                          arg.loc,
                           MSG)
             end
 

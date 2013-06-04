@@ -13,7 +13,7 @@ module Rubocop
         return unless loc.respond_to?(:keyword) && loc.respond_to?(:else)
 
         if loc.keyword.source == 'unless' && loc.else
-          add_offence(:convention, loc.line, MSG)
+          add_offence(:convention, loc, MSG)
         end
 
         super

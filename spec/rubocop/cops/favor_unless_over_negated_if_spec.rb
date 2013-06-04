@@ -28,7 +28,7 @@ module Rubocop
         expect(fav_unless.offences.map(&:message)).to eq(
           ['Favor unless (or control flow or) over if for negative ' +
            'conditions.'] * 2)
-        expect(fav_unless.offences.map(&:line_number)).to eq([1, 4])
+        expect(fav_unless.offences.map(&:line)).to eq([1, 4])
       end
 
       it 'accepts an if/else with negative condition' do

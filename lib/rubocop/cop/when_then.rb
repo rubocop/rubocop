@@ -7,7 +7,7 @@ module Rubocop
 
       def on_when(node)
         if node.loc.begin && node.loc.begin.source == ';'
-          add_offence(:convention, node.loc.line, MSG)
+          add_offence(:convention, node.loc, MSG)
         end
 
         super

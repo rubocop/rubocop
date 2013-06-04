@@ -36,7 +36,7 @@ module Rubocop
                         '  unless(c)',
                         '  end',
                         'end'])
-        expect(ap.offences.map(&:line_number)).to eq([1, 2, 3])
+        expect(ap.offences.map(&:line)).to eq([1, 2, 3])
       end
 
       it 'registers an offence for case and when' do
@@ -44,7 +44,7 @@ module Rubocop
                        ['case(a)',
                         'when(0) then 1',
                         'end'])
-        expect(ap.offences.map(&:line_number)).to eq([1, 2])
+        expect(ap.offences.map(&:line)).to eq([1, 2])
       end
 
       it 'registers an offence for case and when' do
@@ -52,7 +52,7 @@ module Rubocop
                        ['case(a)',
                         'when(0) then 1',
                         'end'])
-        expect(ap.offences.map(&:line_number)).to eq([1, 2])
+        expect(ap.offences.map(&:line)).to eq([1, 2])
       end
 
       it 'registers an offence for while and until' do
@@ -60,7 +60,7 @@ module Rubocop
                        ['while(a)',
                         '  b until(c)',
                         'end'])
-        expect(ap.offences.map(&:line_number)).to eq([1, 2])
+        expect(ap.offences.map(&:line)).to eq([1, 2])
       end
     end
   end

@@ -27,7 +27,7 @@ module Rubocop
 
         if op == op_type
           add_offence(:convention,
-                      node.loc.operator.line,
+                      node.loc.operator,
                       sprintf(MSG, OPS[op], op))
         end
       end

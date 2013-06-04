@@ -5,12 +5,12 @@ module Rubocop
     class EmptyLineBetweenDefs < Cop
       MSG = 'Use empty lines between defs.'
 
-      def on_def(s)
-        def_start = s.loc.keyword.line
-        def_end = s.loc.end.line
+      def on_def(node)
+        def_start = node.loc.keyword.line
+        def_end = node.loc.end.line
 
         if @prev_def_end && (def_start - @prev_def_end) < 2
-          add_offence(:convention, def_start, MSG)
+          add_offence(:convention, node.loc, MSG)
         end
 
         @prev_def_end = def_end

@@ -18,7 +18,7 @@ module Rubocop
                                        '  a = 6',
                                        'end'])
         expect(method_length.offences.size).to eq(1)
-        expect(method_length.offences.map(&:line_number).sort).to eq([1])
+        expect(method_length.offences.map(&:line).sort).to eq([1])
       end
 
       it 'accepts a method with less than 5 lines' do
@@ -84,7 +84,7 @@ module Rubocop
                                        '  a = 6',
                                        'end'])
         expect(method_length.offences.size).to eq(1)
-        expect(method_length.offences.map(&:line_number).sort).to eq([1])
+        expect(method_length.offences.map(&:line).sort).to eq([1])
       end
 
       it 'checks class methods, syntax #2' do
@@ -101,7 +101,7 @@ module Rubocop
                                        '  end',
                                        'end'])
         expect(method_length.offences.size).to eq(1)
-        expect(method_length.offences.map(&:line_number).sort).to eq([3])
+        expect(method_length.offences.map(&:line).sort).to eq([3])
       end
 
       it 'properly counts lines when method ends with block' do
@@ -114,7 +114,7 @@ module Rubocop
                                        '  end',
                                        'end'])
         expect(method_length.offences.size).to eq(1)
-        expect(method_length.offences.map(&:line_number).sort).to eq([1])
+        expect(method_length.offences.map(&:line).sort).to eq([1])
       end
 
       it 'does not count commented lines by default' do
@@ -140,7 +140,7 @@ module Rubocop
                                        '  a = 6',
                                        'end'])
         expect(method_length.offences.size).to eq(1)
-        expect(method_length.offences.map(&:line_number).sort).to eq([1])
+        expect(method_length.offences.map(&:line).sort).to eq([1])
       end
     end
   end

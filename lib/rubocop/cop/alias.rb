@@ -7,7 +7,7 @@ module Rubocop
 
       def on_alias(node)
         add_offence(:convention,
-                    node.loc.keyword.line,
+                    node.loc.keyword,
                     MSG)
 
         super

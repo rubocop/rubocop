@@ -9,7 +9,7 @@ module Rubocop
         _body, ensure_body = *node
 
         on_node(:return, ensure_body) do |e|
-          add_offence(:warning, e.loc.line, MSG)
+          add_offence(:warning, e.loc, MSG)
         end
 
         super

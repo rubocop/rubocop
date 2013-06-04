@@ -22,7 +22,7 @@ module Rubocop
                                      '  end',
                                      'end'])
         expect(empty_lines.offences.size).to eq(1)
-        expect(empty_lines.offences.map(&:line_number).sort).to eq([7])
+        expect(empty_lines.offences.map(&:line).sort).to eq([7])
       end
 
       # Only one def, so rule about empty line *between* defs does not

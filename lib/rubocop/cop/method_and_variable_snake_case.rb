@@ -28,7 +28,7 @@ module Rubocop
           next unless name
           next if name =~ SNAKE_CASE || OPERATOR_METHODS.include?(name)
 
-          add_offence(:convention, n.location.line, MSG)
+          add_offence(:convention, n.location, MSG)
         end
       end
 

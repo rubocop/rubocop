@@ -9,7 +9,7 @@ module Rubocop
       def on_regexp(node)
         if node.loc.begin.source == '/' &&
             node.loc.expression.source[1...-1].scan(/\//).size > 1
-          add_offence(:convention, node.loc.line, MSG)
+          add_offence(:convention, node.loc, MSG)
         end
 
         super

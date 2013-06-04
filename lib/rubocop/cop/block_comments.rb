@@ -8,7 +8,7 @@ module Rubocop
       def inspect(source, tokens, ast, comments)
         comments.each do |comment|
           if comment.text.start_with?('=begin')
-            add_offence(:convention, comment.loc.line, MSG)
+            add_offence(:convention, comment.loc, MSG)
           end
         end
       end

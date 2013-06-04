@@ -26,7 +26,7 @@ module Rubocop
                         'some_method while not a_condition'])
         expect(fav_until.offences.map(&:message)).to eq(
           ['Favor until over while for negative conditions.'] * 2)
-        expect(fav_until.offences.map(&:line_number)).to eq([1, 4])
+        expect(fav_until.offences.map(&:line)).to eq([1, 4])
       end
 
       it 'accepts an while where only part of the contition is negated' do

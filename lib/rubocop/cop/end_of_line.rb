@@ -7,7 +7,9 @@ module Rubocop
 
       def inspect(source, tokens, ast, comments)
         source.each_with_index do |line, index|
-          add_offence(:convention, index + 1, MSG) if line =~ /\r$/
+          if line =~ /\r$/
+            add_offence(:convention, Location.new(index + 1, line.length), MSG)
+          end
         end
       end
     end

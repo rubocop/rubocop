@@ -142,7 +142,7 @@ Usage: rubocop [options] [file1, file2, ...]
       expect(cli.run(['example.rb'])).to eq(1)
       expect($stdout.string)
         .to eq ["== #{abs('example.rb')} ==",
-                'C:  2: Trailing whitespace detected.',
+                'C:  2:  5: Trailing whitespace detected.',
                 '',
                 '1 file inspected, 1 offence detected',
                 ''].join("\n")
@@ -162,13 +162,13 @@ Usage: rubocop [options] [file1, file2, ...]
         .to eq(1)
       expect($stdout.string)
         .to eq(
-        ["#{abs('example1.rb')}:1: C: Missing utf-8 encoding comment.",
-         "#{abs('example1.rb')}:1: C: Trailing whitespace detected.",
-         "#{abs('example1.rb')}:1: C: Surrounding space missing" +
+        ["#{abs('example1.rb')}:1:0: C: Missing utf-8 encoding comment.",
+         "#{abs('example1.rb')}:1:4: C: Trailing whitespace detected.",
+         "#{abs('example1.rb')}:1:1: C: Surrounding space missing" +
          " for operator '='.",
-         "#{abs('example1.rb')}:2: C: Trailing whitespace detected.",
-         "#{abs('example2.rb')}:1: C: Missing utf-8 encoding comment.",
-         "#{abs('example2.rb')}:1: C: Tab detected.",
+         "#{abs('example1.rb')}:2:1: C: Trailing whitespace detected.",
+         "#{abs('example2.rb')}:1:0: C: Missing utf-8 encoding comment.",
+         "#{abs('example2.rb')}:1:0: C: Tab detected.",
          '',
          '2 files inspected, 6 offences detected',
          ''].join("\n"))
@@ -188,11 +188,11 @@ Usage: rubocop [options] [file1, file2, ...]
         .to eq(1)
       expect($stdout.string)
         .to eq(
-        ["#{abs('example1.rb')}:1: C: Trailing whitespace detected.",
-         "#{abs('example1.rb')}:1: C: Surrounding space missing" +
+        ["#{abs('example1.rb')}:1:4: C: Trailing whitespace detected.",
+         "#{abs('example1.rb')}:1:1: C: Surrounding space missing" +
          " for operator '='.",
-         "#{abs('example1.rb')}:2: C: Trailing whitespace detected.",
-         "#{abs('example2.rb')}:1: C: Tab detected.",
+         "#{abs('example1.rb')}:2:1: C: Trailing whitespace detected.",
+         "#{abs('example2.rb')}:1:0: C: Tab detected.",
          '',
          '2 files inspected, 4 offences detected',
          ''].join("\n"))
@@ -210,7 +210,7 @@ Usage: rubocop [options] [file1, file2, ...]
       expect(cli.run(['--only', 'IfUnlessModifier', 'example.rb'])).to eq(1)
       expect($stdout.string)
         .to eq(["== #{abs('example.rb')} ==",
-                'C:  1: Favor modifier if/unless usage when you have a ' +
+                'C:  1:  0: Favor modifier if/unless usage when you have a ' +
                 'single-line body. Another good alternative is the usage of ' +
                 'control flow &&/||.',
                 '',
@@ -232,10 +232,10 @@ Usage: rubocop [options] [file1, file2, ...]
                       'example1.rb',
                       'example2.rb'])).to eq(1)
       expect($stdout.string).to eq(
-        ["#{abs('example1.rb')}:1: C: Missing utf-8 encoding comment.",
-         "#{abs('example1.rb')}:1: C: Trailing whitespace detected.",
-         "#{abs('example2.rb')}:1: C: Missing utf-8 encoding comment.",
-         "#{abs('example2.rb')}:1: C: Tab detected.",
+        ["#{abs('example1.rb')}:1:0: C: Missing utf-8 encoding comment.",
+         "#{abs('example1.rb')}:1:6: C: Trailing whitespace detected.",
+         "#{abs('example2.rb')}:1:0: C: Missing utf-8 encoding comment.",
+         "#{abs('example2.rb')}:1:0: C: Tab detected.",
          ''].join("\n"))
     end
 
@@ -248,8 +248,8 @@ Usage: rubocop [options] [file1, file2, ...]
                       'example1.rb',
                       'example2.rb'])).to eq(1)
       expect($stdout.string).to eq(
-        ["#{abs('example1.rb')}:1: C: Trailing whitespace detected.",
-         "#{abs('example2.rb')}:1: C: Tab detected.",
+        ["#{abs('example1.rb')}:1:6: C: Trailing whitespace detected.",
+         "#{abs('example2.rb')}:1:0: C: Tab detected.",
          ''].join("\n"))
     end
 
@@ -261,7 +261,7 @@ Usage: rubocop [options] [file1, file2, ...]
                       '--debug',
                       'example1.rb'])).to eq(1)
       expect($stdout.string.lines[-1]).to eq(
-        ["#{abs('example1.rb')}:1: C: Tab: Tab detected.",
+        ["#{abs('example1.rb')}:1:0: C: Tab: Tab detected.",
          ''].join("\n"))
     end
 
@@ -277,7 +277,7 @@ Usage: rubocop [options] [file1, file2, ...]
       expect(cli.run(['-c', 'rubocop.yml', 'example1.rb'])).to eq(1)
       expect($stdout.string).to eq(
         ["== #{abs('example1.rb')} ==",
-         'C:  1: Trailing whitespace detected.',
+         'C:  1:  6: Trailing whitespace detected.',
          '',
          '1 file inspected, 1 offence detected',
          ''].join("\n"))
@@ -297,7 +297,7 @@ Usage: rubocop [options] [file1, file2, ...]
       result = cli.run(['-c', 'rubocop.yml', 'example1.rb'])
       expect($stdout.string).to eq(
         ["== #{abs('example1.rb')} ==",
-         'C:  1: Favor modifier if/unless usage when you have a single-line ' +
+         'C:  1:  0: Favor modifier if/unless usage when you have a single-line ' +
          'body. Another good alternative is the usage of control flow &&/||.',
          '',
          '1 file inspected, 1 offence detected',
@@ -317,7 +317,7 @@ Usage: rubocop [options] [file1, file2, ...]
       expect(cli.run(['example_src/example1.rb'])).to eq(1)
       expect($stdout.string).to eq(
         ["== #{abs('example_src/example1.rb')} ==",
-         'C:  1: Trailing whitespace detected.',
+         'C:  1:  6: Trailing whitespace detected.',
          '',
          '1 file inspected, 1 offence detected',
          ''].join("\n"))
@@ -354,7 +354,7 @@ Usage: rubocop [options] [file1, file2, ...]
       expect(cli.run(['example'])).to eq(1)
       expect($stdout.string).to eq(
         ["== #{abs('example/lib/example1.rb')} ==",
-         'C:  2: Line is too long. [90/79]',
+         'C:  2: 79: Line is too long. [90/79]',
          '',
          '2 files inspected, 1 offence detected',
          ''].join("\n"))
@@ -400,7 +400,7 @@ Usage: rubocop [options] [file1, file2, ...]
       expect(cli.run(['example'])).to eq(1)
       expect($stdout.string).to eq(
         ["== #{abs('example/tmp/test/example1.rb')} ==",
-         'C:  2: Line is too long. [90/79]',
+         'C:  2: 79: Line is too long. [90/79]',
          '',
          '1 file inspected, 1 offence detected',
          ''].join("\n"))
@@ -423,7 +423,7 @@ Usage: rubocop [options] [file1, file2, ...]
         ['Warning: unrecognized cop LyneLenth found in ' +
          File.expand_path('example/.rubocop.yml'),
          "== #{abs('example/example1.rb')} ==",
-         'C:  2: Line is too long. [90/79]',
+         'C:  2: 79: Line is too long. [90/79]',
          '',
          '1 file inspected, 1 offence detected',
          ''].join("\n"))
@@ -446,7 +446,7 @@ Usage: rubocop [options] [file1, file2, ...]
         ['Warning: unrecognized parameter LineLength:Min found in ' +
          File.expand_path('example/.rubocop.yml'),
          "== #{abs('example/example1.rb')} ==",
-         'C:  2: Line is too long. [90/79]',
+         'C:  2: 79: Line is too long. [90/79]',
          '',
          '1 file inspected, 1 offence detected',
          ''].join("\n"))
@@ -462,7 +462,7 @@ Usage: rubocop [options] [file1, file2, ...]
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       unexpected_part = RUBY_VERSION >= '2.0' ? 'end-of-input' : '$end'
       expect($stdout.string).to eq(
-        ["example.rb:3: E: Syntax error, unexpected #{unexpected_part}, " +
+        ["example.rb:3:0:E: Syntax error, unexpected #{unexpected_part}, " +
          'expecting keyword_end',
          '',
          '1 file inspected, 1 offence detected',
@@ -496,8 +496,8 @@ Usage: rubocop [options] [file1, file2, ...]
       # all cops were disabled, then 2 were enabled again, so we
       # should get 2 offences reported.
       expect($stdout.string).to eq(
-        ["#{abs('example.rb')}:8: C: Line is too long. [95/79]",
-         "#{abs('example.rb')}:10: C: Prefer single-quoted strings when you " +
+        ["#{abs('example.rb')}:8:79: C: Line is too long. [95/79]",
+         "#{abs('example.rb')}:10:4: C: Prefer single-quoted strings when you " +
          "don't need string interpolation or special symbols.",
          '',
          '1 file inspected, 2 offences detected',
@@ -522,8 +522,8 @@ Usage: rubocop [options] [file1, file2, ...]
       # 3 cops were disabled, then 2 were enabled again, so we
       # should get 2 offences reported.
       expect($stdout.string).to eq(
-        ["#{abs('example.rb')}:8: C: Line is too long. [95/79]",
-         "#{abs('example.rb')}:10: C: Prefer single-quoted strings when you " +
+        ["#{abs('example.rb')}:8:79: C: Line is too long. [95/79]",
+         "#{abs('example.rb')}:10:4: C: Prefer single-quoted strings when you " +
          "don't need string interpolation or special symbols.",
          '',
          '1 file inspected, 2 offences detected',
@@ -551,7 +551,7 @@ Usage: rubocop [options] [file1, file2, ...]
       ])
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       expect($stdout.string).to eq(
-        ["#{abs('example.rb')}:3: C: Line is too long. [95/79]",
+        ["#{abs('example.rb')}:3:79: C: Line is too long. [95/79]",
          '',
          '1 file inspected, 1 offence detected',
          ''].join("\n"))
@@ -663,7 +663,7 @@ Usage: rubocop [options] [file1, file2, ...]
             cli.run(['--format', 'plain', 'example.rb'])
             expect($stdout.string).to include([
               "== #{target_file} ==",
-              'C:  2: Line is too long. [90/79]'
+              'C:  2: 79: Line is too long. [90/79]'
             ].join("\n"))
           end
         end
@@ -672,7 +672,7 @@ Usage: rubocop [options] [file1, file2, ...]
           it 'outputs with emacs format' do
             cli.run(['--format', 'emacs', 'example.rb'])
             expect($stdout.string)
-              .to include("#{target_file}:2: C: Line is too long. [90/79]")
+              .to include("#{target_file}:2:79: C: Line is too long. [90/79]")
           end
         end
 
@@ -734,8 +734,8 @@ Usage: rubocop [options] [file1, file2, ...]
         cli.run(['--format', 'plain', '--format', 'emacs', 'example.rb'])
         expect($stdout.string).to include([
           "== #{target_file} ==",
-          'C:  2: Line is too long. [90/79]',
-          "#{target_file}:2: C: Line is too long. [90/79]"
+          'C:  2: 79: Line is too long. [90/79]',
+          "#{target_file}:2:79: C: Line is too long. [90/79]"
         ].join("\n"))
       end
     end
@@ -774,14 +774,14 @@ Usage: rubocop [options] [file1, file2, ...]
 
         expect($stdout.string).to eq([
           "== #{target_file} ==",
-          'C:  2: Line is too long. [90/79]',
+          'C:  2: 79: Line is too long. [90/79]',
           '',
           '1 file inspected, 1 offence detected',
           ''
         ].join("\n"))
 
         expect(File.read('emacs_output.txt')).to eq([
-          "#{target_file}:2: C: Line is too long. [90/79]",
+          "#{target_file}:2:79: C: Line is too long. [90/79]",
           '',
           '1 file inspected, 1 offence detected',
           ''

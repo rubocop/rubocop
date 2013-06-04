@@ -11,7 +11,7 @@ module Rubocop
 
         if value > 10000 &&
             node.loc.expression.source.split('.').grep(/\d{6}/).any?
-          add_offence(:convention, node.loc.expression.line, MSG)
+          add_offence(:convention, node.loc, MSG)
         end
       end
 

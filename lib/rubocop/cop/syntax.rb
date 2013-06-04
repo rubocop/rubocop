@@ -30,7 +30,7 @@ module Rubocop
             # like 2.0.
             unless line =~ /assigned but unused variable - _\w+/
               line_no, severity, message = process_line(line)
-              add_offence(severity, line_no, message)
+              add_offence(severity, Location.new(line_no, 0), message)
             end
           end
         end

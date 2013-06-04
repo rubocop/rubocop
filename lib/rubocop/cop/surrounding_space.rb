@@ -62,7 +62,7 @@ module Rubocop
           case token.type
           when :tPOW
             if has_space?(token_before, token, token_after)
-              add_offence(:convention, token.pos.line, MSG_DETECTED)
+              add_offence(:convention, token.pos, MSG_DETECTED)
             end
           when *BINARY_OPERATORS
             check_missing_space(token_before, token, token_after)
@@ -147,7 +147,7 @@ module Rubocop
       def check_missing_space(token_before, token, token_after)
         unless has_space?(token_before, token, token_after)
           text = token.text.to_s + (token.type == :tOP_ASGN ? '=' : '')
-          add_offence(:convention, token.pos.line, MSG_MISSING % text)
+          add_offence(:convention, token.pos, MSG_MISSING % text)
         end
       end
 
@@ -199,7 +199,7 @@ module Rubocop
 
       def check(t1, t2, msg)
         unless space_between?(t1, t2)
-          add_offence(:convention, t1.pos.line, msg)
+          add_offence(:convention, t1.pos, msg)
         end
       end
     end
@@ -214,7 +214,7 @@ module Rubocop
         tokens.each_cons(2) do |t1, t2|
           if t1.type == left || t2.type == right
             if t2.pos.line == t1.pos.line && space_between?(t1, t2)
-              add_offence(:convention, t1.pos.line, MSG % kind)
+              add_offence(:convention, t1.pos, MSG % kind)
             end
           end
         end
@@ -263,7 +263,7 @@ module Rubocop
                            else
                              [has_space, 'detected']
                            end
-        add_offence(:convention, t1.pos.line, MSG % word) if is_offence
+        add_offence(:convention, t1.pos, sprintf(MSG, word)) if is_offence
       end
     end
 
@@ -276,7 +276,7 @@ module Rubocop
         on_node(:optarg, sexp) do |optarg|
           arg, equals, value = tokens[index_of_first_token(optarg, tokens), 3]
           unless space_between?(arg, equals) && space_between?(equals, value)
-            add_offence(:convention, equals.pos.line, MSG)
+            add_offence(:convention, equals.pos, MSG)
           end
         end
       end

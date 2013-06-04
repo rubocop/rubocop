@@ -54,7 +54,7 @@ module Rubocop
         return unless node.loc.respond_to?(:keyword) &&
           node.loc.respond_to?(:else)
 
-        add_offence(:convention, node.loc.line, error_message) if check(node)
+        add_offence(:convention, node.loc, error_message) if check(node)
 
         super
       end
@@ -68,7 +68,7 @@ module Rubocop
 
       def inspect(source, tokens, ast, comments)
         on_node([:while, :until], ast) do |node|
-          add_offence(:convention, node.loc.line, MSG) if check(node)
+          add_offence(:convention, node.loc, MSG) if check(node)
         end
       end
     end

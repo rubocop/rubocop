@@ -14,6 +14,15 @@ module Rubocop
       end
     end
 
+    class Location
+      attr_reader :line, :column
+
+      def initialize(line, column)
+        @line = line
+        @column = column
+      end
+    end
+
     class Cop < Parser::AST::Processor
       extend AST::Sexp
 
@@ -49,10 +58,10 @@ module Rubocop
       def ignore_node(node)
       end
 
-      def add_offence(severity, line_number, message)
-        unless @disabled_lines && @disabled_lines.include?(line_number)
+      def add_offence(severity, location, message)
+        unless @disabled_lines && @disabled_lines.include?(location.line)
           message = debug ? "#{name}: #{message}" : message
-          @offences << Offence.new(severity, line_number, message, name)
+          @offences << Offence.new(severity, location, message, name)
         end
       end
 

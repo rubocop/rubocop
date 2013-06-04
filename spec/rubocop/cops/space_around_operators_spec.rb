@@ -40,7 +40,7 @@ module Rubocop
         src = ["a=1 #{keyword} condition",
                'c=2']
         inspect_source(space, src)
-        expect(space.offences.map(&:line_number)).to eq([1, 2])
+        expect(space.offences.map(&:line)).to eq([1, 2])
         expect(space.offences.map(&:message)).to eq(
           ["Surrounding space missing for operator '='."] * 2)
       end

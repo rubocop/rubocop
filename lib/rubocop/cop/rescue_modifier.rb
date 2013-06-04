@@ -6,7 +6,7 @@ module Rubocop
       MSG = 'Avoid using rescue in its modifier form.'
 
       def on_rescue(node)
-        add_offence(:convention, node.loc.line, MSG)
+        add_offence(:convention, node.loc, MSG)
       end
 
       alias_method :on_begin, :ignore_node

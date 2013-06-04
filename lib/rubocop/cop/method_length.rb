@@ -32,7 +32,7 @@ module Rubocop
 
         if method_length > max_length
           message = sprintf(MSG, method_length, max_length)
-          add_offence(:convention, node.loc.keyword.line, message)
+          add_offence(:convention, node.loc.keyword, message)
         end
       end
 

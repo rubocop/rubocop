@@ -19,7 +19,7 @@ module Rubocop
                         'end'])
         expect(reduce_arguments.offences.size).to eq(6)
         expect(reduce_arguments.offences
-                               .map(&:line_number).sort).to eq((2..7).to_a)
+                               .map(&:line).sort).to eq((2..7).to_a)
       end
 
       it 'allows calls with proper argument names' do

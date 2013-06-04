@@ -9,7 +9,7 @@ module Rubocop
         return unless node.children.first
         rescue_args = node.children.first.children
         if rescue_args.any? { |a| targets_exception?(a) }
-          add_offence(:warning, node.location.line, MSG)
+          add_offence(:warning, node.location, MSG)
         end
 
         super

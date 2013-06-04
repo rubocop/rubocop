@@ -9,7 +9,7 @@ module Rubocop
         args_count = node.children.size
 
         if args_count > max_params
-          add_offence(:convention, node.loc.line, sprintf(MSG, max_params))
+          add_offence(:convention, node.loc, sprintf(MSG, max_params))
         end
 
         super

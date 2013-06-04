@@ -7,7 +7,7 @@ module Rubocop
 
       def on_for(node)
         add_offence(:convention,
-                    node.loc.keyword.line,
+                    node.loc.keyword,
                     MSG)
 
         super

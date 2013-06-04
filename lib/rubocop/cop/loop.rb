@@ -25,7 +25,7 @@ module Rubocop
 
         if body.type == :begin &&
             !node.loc.expression.source.start_with?(type)
-          add_offence(:warning, node.loc.keyword.line, MSG)
+          add_offence(:warning, node.loc.keyword, MSG)
         end
       end
     end

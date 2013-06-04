@@ -17,13 +17,17 @@ module Rubocop
 
           # every line with more than 1 expression on it is an offence
           lines.each do |line, expr_on_line|
-            add_offence(:convention, line, MSG) if expr_on_line.size > 1
+            if expr_on_line.size > 1
+              add_offence(:convention, Location.new(line, 0), MSG)
+            end
           end
         end
 
         # not pretty reliable, but the best we can do for now
         source.each_with_index do |line, index|
-          add_offence(:convention, index, MSG) if line =~ /;\s*\z/
+          if line =~ /;\s*\z/
+            add_offence(:convention, Location.new(index, line.length), MSG)
+          end
         end
       end
     end

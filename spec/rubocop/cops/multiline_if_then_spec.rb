@@ -21,7 +21,7 @@ module Rubocop
                              'end',
                              'if cond then # bad',
                              'end'])
-        expect(mit.offences.map(&:line_number)).to eq([1, 3, 5, 7, 10])
+        expect(mit.offences.map(&:line)).to eq([1, 3, 5, 7, 10])
       end
 
       it 'accepts multiline if without then' do

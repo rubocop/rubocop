@@ -22,14 +22,14 @@ module Rubocop
 
                 if send_start_col - 2 != class_start_col
                   add_offence(:convention,
-                              send_node.loc.line,
+                              send_node.loc,
                               INDENT_MSG)
                 end
 
                 send_line = send_node.loc.line
 
                 unless source[send_line].empty? && source[send_line - 2].empty?
-                  add_offence(:convention, send_line, BLANK_MSG)
+                  add_offence(:convention, send_node.loc, BLANK_MSG)
                 end
               end
             end

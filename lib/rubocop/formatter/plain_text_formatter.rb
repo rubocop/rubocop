@@ -13,7 +13,7 @@ module Rubocop
       def file_finished(file, offences)
         return if offences.empty?
         @total_offence_count += offences.count
-        offences.sort_by!(&:line_number)
+        offences.sort_by!(&:line)
         report_file(file, offences)
       end
 

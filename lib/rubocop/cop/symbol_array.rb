@@ -20,7 +20,7 @@ module Rubocop
 
             if symbol_array
               add_offence(:convention,
-                          s.loc.line,
+                          s.loc,
                           MSG)
             end
           end

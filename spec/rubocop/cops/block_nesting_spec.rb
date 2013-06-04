@@ -139,7 +139,7 @@ module Rubocop
 
       def expect_nesting_offences(source, lines)
         inspect_source(block_nesting, source)
-        expect(block_nesting.offences.map(&:line_number)).to eq(lines)
+        expect(block_nesting.offences.map(&:line)).to eq(lines)
         expect(block_nesting.messages).to eq(
           ['Avoid more than 2 levels of block nesting.'] * lines.length)
       end

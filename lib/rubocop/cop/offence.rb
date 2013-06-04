@@ -14,12 +14,11 @@ module Rubocop
       #   any of `:refactor`, `:convention`, `:warning`, `:error` or `:fatal`.
       attr_reader :severity
 
-      # @!attribute [r] line_number
+      # @!attribute [r] location
       #
       # @return [Integer]
-      #   the line which the violation is detected.
-      #   first line is `1`.
-      attr_reader :line_number
+      #   the location where the violation is detected.
+      attr_reader :location
 
       # @!attribute [r] message
       #
@@ -41,18 +40,26 @@ module Rubocop
       attr_reader :cop_name
 
       # @api private
-      def initialize(severity, line_number, message, cop_name)
+      def initialize(severity, location, message, cop_name)
         @severity = severity
-        @line_number = line_number
+        @location = location
         @message = message
         @cop_name = cop_name
+      end
+
+      def line
+        @location.line
+      end
+
+      def column
+        @location.column
       end
 
       # @api private
       def to_s
         # we must be wary of messages containing % in them
-        sprintf("#{encode_severity}:%3d: #{message.gsub(/%/, '%%')}",
-                line_number)
+        sprintf("#{encode_severity}:%3d:%3d: #{message.gsub(/%/, '%%')}",
+                line, column)
       end
 
       # @api private
@@ -65,13 +72,14 @@ module Rubocop
       # @return [Boolean]
       #   returns `true` if two offences contain same attributes
       def ==(other)
-        severity == other.severity && line_number == other.line_number &&
-          message == other.message && cop_name == other.cop_name
+        severity == other.severity && line == other.line &&
+          column == other.column && message == other.message &&
+          cop_name == other.cop_name
       end
 
       # @api private
       def explode
-        [severity, line_number, message]
+        [severity, line, column, message]
       end
     end
   end

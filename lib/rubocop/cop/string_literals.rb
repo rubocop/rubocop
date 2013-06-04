@@ -14,7 +14,7 @@ module Rubocop
         return unless node.loc.respond_to?(:begin)
 
         if text !~ /['\n\t\r]/ && node.loc.begin.source == '"'
-          add_offence(:convention, node.loc.line, MSG)
+          add_offence(:convention, node.loc, MSG)
         end
       end
 

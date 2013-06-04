@@ -22,7 +22,7 @@ module Rubocop
                         'end'])
         expect(trivial_accessors_finder.offences.size).to eq(2)
         expect(trivial_accessors_finder.offences
-                 .map(&:line_number).sort).to eq([1, 5])
+                 .map(&:line).sort).to eq([1, 5])
       end
 
       it 'finds trivial reader in a class' do
@@ -37,7 +37,7 @@ module Rubocop
                         'end'])
         expect(trivial_accessors_finder.offences.size).to eq(1)
         expect(trivial_accessors_finder.offences
-                 .map(&:line_number).sort).to eq([2])
+                 .map(&:line).sort).to eq([2])
       end
 
       it 'finds trivial reader in a nested class' do
@@ -51,7 +51,7 @@ module Rubocop
                         'end'])
         expect(trivial_accessors_finder.offences.size).to eq(1)
         expect(trivial_accessors_finder.offences
-                 .map(&:line_number).sort).to eq([3])
+                 .map(&:line).sort).to eq([3])
       end
 
       it 'finds trivial readers in a little less trivial class' do
@@ -111,7 +111,7 @@ module Rubocop
                         'end'])
         expect(trivial_accessors_finder.offences.size).to eq(2)
         expect(trivial_accessors_finder.offences
-                 .map(&:line_number).sort).to eq([2, 8])
+                 .map(&:line).sort).to eq([2, 8])
       end
 
       it 'finds trivial reader with braces' do
@@ -124,7 +124,7 @@ module Rubocop
                         'end'])
         expect(trivial_accessors_finder.offences.size).to eq(1)
         expect(trivial_accessors_finder.offences
-                 .map(&:line_number).sort).to eq([3])
+                 .map(&:line).sort).to eq([3])
       end
 
       it 'finds trivial writer without braces' do
@@ -137,7 +137,7 @@ module Rubocop
                         'end'])
         expect(trivial_accessors_finder.offences.size).to eq(1)
         expect(trivial_accessors_finder.offences
-                 .map(&:line_number).sort).to eq([3])
+                 .map(&:line).sort).to eq([3])
       end
 
       it 'does not find trivial writer with function calls' do
@@ -199,7 +199,7 @@ module Rubocop
                         'end'])
         expect(trivial_accessors_finder.offences.size).to eq(2)
         expect(trivial_accessors_finder.offences
-                 .map(&:line_number).sort).to eq([2, 3])
+                 .map(&:line).sort).to eq([2, 3])
       end
 
       it 'does not find a trivial reader' do
@@ -217,7 +217,7 @@ module Rubocop
                         'end'])
         expect(trivial_accessors_finder.offences.size).to eq(1)
         expect(trivial_accessors_finder.offences
-                 .map(&:line_number).sort).to eq([1])
+                 .map(&:line).sort).to eq([1])
       end
 
       it 'finds trivial writer in a class' do
@@ -243,7 +243,7 @@ module Rubocop
                         'end'])
         expect(trivial_accessors_finder.offences.size).to eq(1)
         expect(trivial_accessors_finder.offences
-                 .map(&:line_number).sort).to eq([2])
+                 .map(&:line).sort).to eq([2])
       end
 
       it 'finds trivial accessors in a little less trivial class' do
@@ -264,7 +264,7 @@ module Rubocop
                         'end'])
         expect(trivial_accessors_finder.offences.size).to eq(3)
         expect(trivial_accessors_finder.offences
-                 .map(&:line_number).sort).to eq([2, 8, 11])
+                 .map(&:line).sort).to eq([2, 8, 11])
       end
 
       it 'does not find a trivial writer' do
@@ -290,7 +290,7 @@ module Rubocop
                         'end'])
         expect(trivial_accessors_finder.offences.size).to eq(2)
         expect(trivial_accessors_finder.offences
-                 .map(&:line_number).sort).to eq([5, 8])
+                 .map(&:line).sort).to eq([5, 8])
       end
 
       it 'does not find trivial accessors with method calls' do
