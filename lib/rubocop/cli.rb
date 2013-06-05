@@ -59,7 +59,7 @@ module Rubocop
                      # and do no more checking in the file.
                      syntax_cop.offences
                    else
-                     inspect_file(file)
+                     inspect_file(file, syntax_cop)
                    end
 
         any_failed = true unless offences.empty?
@@ -81,7 +81,7 @@ module Rubocop
       end
     end
 
-    def inspect_file(file)
+    def inspect_file(file, syntax_cop)
       begin
         ast, comments, tokens, source = CLI.parse(file) do |source_buffer|
           source_buffer.read
@@ -111,6 +111,8 @@ module Rubocop
           end
           offences.concat(cop.offences)
         end
+        offences.concat(syntax_cop.offences)
+        syntax_cop.offences.clear
         offences
       end
     end

@@ -469,6 +469,22 @@ Usage: rubocop [options] [file1, file2, ...]
          ''].join("\n"))
     end
 
+    it 'registers an offence for syntax warning and usual cop warning' do
+      create_file('example.rb', [
+        '# encoding: utf-8',
+        '1 + 2;'
+      ])
+      expect(cli.run(['example.rb'])).to eq(1)
+      expect($stdout.string).to eq(
+        [
+        "== #{abs('example.rb')} ==",
+         'C:  1:  6: Do not use semicolons to terminate expressions.',
+         'W:  2:  0: Possibly useless use of + in void context',
+         '',
+         '1 file inspected, 2 offences detected',
+         ''].join("\n"))
+    end
+
     it 'can process a file with an invalid UTF-8 byte sequence' do
       pending
       create_file('example.rb', [
