@@ -18,7 +18,7 @@ module Rubocop
             '#' * 90
           ])
 
-          create_file('4_offences.rb', [
+          create_file('6_offences.rb', [
             '# encoding: utf-8',
             'camelCaseVariable = 1',
             '1 + 2;',
@@ -72,7 +72,7 @@ module Rubocop
           it 'receives all file paths' do
             expected_paths = [
               '1_offence.rb',
-              '4_offences.rb',
+              '6_offences.rb',
               'no_offence.rb'
             ].map { |path| File.expand_path(path) }.sort
 
@@ -123,7 +123,7 @@ module Rubocop
               .with(File.expand_path('1_offence.rb'), anything)
 
             formatter.should_receive(method_name)
-              .with(File.expand_path('4_offences.rb'), anything)
+              .with(File.expand_path('6_offences.rb'), anything)
 
             formatter.should_receive(method_name)
               .with(File.expand_path('no_offence.rb'), anything)
@@ -151,8 +151,8 @@ module Rubocop
               case File.basename(file)
               when '1_offence.rb'
                 expect(offences).to have(1).item
-              when '4_offences.rb'
-                expect(offences).to have(4).items
+              when '6_offences.rb'
+                expect(offences).to have(6).items
               when 'no_offence.rb'
                 expect(offences).to be_empty
               else

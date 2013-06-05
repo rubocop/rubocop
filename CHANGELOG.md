@@ -19,6 +19,7 @@
 
 * Correct calculation of whether a modifier version of a conditional statement will fit.
 * Fix an error in `MultilineIfThen` cop that occurred in some special cases.
+* Fix missing syntax warning.
 
 ## 0.8.1 (05/30/2013)
 

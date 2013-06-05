@@ -5,6 +5,7 @@ require 'open3'
 module Rubocop
   module Cop
     class Syntax < Cop
+
       def inspect_file(file)
         # Starting JRuby processes would be extremely slow
         # We need to check if rbx returns nice warning messages
