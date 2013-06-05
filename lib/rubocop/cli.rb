@@ -50,14 +50,14 @@ module Rubocop
         syntax_cop.debug = @options[:debug]
         syntax_cop.inspect_file(file)
 
-        if syntax_cop.offences.map(&:severity).include?(:error)
-          # In case of a syntax error we just report that error and do
-          # no more checking in the file.
-          report << syntax_cop
-          @total_offences += syntax_cop.offences.count
-        else
+        # In case of a syntax error we just report that error and do
+        # no more checking in the file.
+        unless syntax_cop.offences.map(&:severity).include?(:error)
           inspect_file(file, config, report)
         end
+
+        report << syntax_cop
+        @total_offences += syntax_cop.offences.count
 
         @processed_file_count += 1
         report.display unless report.empty?
