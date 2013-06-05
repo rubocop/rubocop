@@ -47,6 +47,7 @@ module Rubocop
       def on_if(node)
         # discard ternary ops, if/else and modifier if/unless nodes
         return if ternary_op?(node)
+        return if modifier_if?(node)
         return if elsif?(node)
         return if if_else?(node)
 
@@ -56,7 +57,11 @@ module Rubocop
       end
 
       def ternary_op?(node)
-        node.respond_to?(:question)
+        node.loc.respond_to?(:question)
+      end
+
+      def modifier_if?(node)
+        node.loc.end.nil?
       end
 
       def elsif?(node)
