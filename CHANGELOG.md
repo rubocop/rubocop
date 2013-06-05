@@ -19,6 +19,8 @@
 
 * Correct calculation of whether a modifier version of a conditional statement will fit.
 * Fix an error in `MultilineIfThen` cop that occurred in some special cases.
+* [#231](https://github.com/bbatsov/rubocop/issues/231) - fix a false positive for modifier if
+* [#233](https://github.com/bbatsov/rubocop/issues/233) - report syntax cop offences
 
 ## 0.8.1 (05/30/2013)
 
