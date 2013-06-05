@@ -20,9 +20,9 @@ module Rubocop
 
           create_file('4_offences.rb', [
             '# encoding: utf-8',
-            'camelCaseVariable = 1',
-            '1 + 2;',
-            '3 + 4;',
+            'puts x ',
+            'test;',
+            'top;',
             '#' * 90
           ])
 
