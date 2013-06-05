@@ -51,16 +51,7 @@ module Rubocop
         puts "Scanning #{file}" if @options[:debug]
         invoke_formatters(:file_started, file, {})
 
-        syntax_cop = setup_cop(Rubocop::Cop::Syntax)
-        syntax_cop.inspect_file(file)
-
-        offences = if syntax_cop.offences.map(&:severity).include?(:error)
-                     # In case of a syntax error we just report that error
-                     # and do no more checking in the file.
-                     syntax_cop.offences
-                   else
-                     inspect_file(file).concat(syntax_cop.offences)
-                   end
+        offences = inspect_file(file)
 
         any_failed = true unless offences.empty?
         processed_files << file
@@ -83,19 +74,21 @@ module Rubocop
 
     def inspect_file(file)
       begin
-        ast, comments, tokens, source = CLI.parse(file) do |source_buffer|
-          source_buffer.read
-        end
-      rescue Parser::SyntaxError, Encoding::UndefinedConversionError,
-        ArgumentError => e
+        ast, comments, tokens, source, syntax_offences =
+          CLI.parse(file) { |source_buffer| source_buffer.read }
+      rescue Encoding::UndefinedConversionError, ArgumentError => e
         handle_error(e, "An error occurred while parsing #{file}.".color(:red))
         return []
       end
 
+      # If we got an AST from Parser, it means we can
+      # continue. Otherwise, return only the syntax offences.
+      return syntax_offences unless ast
+
       config = ConfigStore.for(file)
       disabled_lines = disabled_lines_in(source)
 
-      @cops.reduce([]) do |offences, cop_class|
+      @cops.reduce(syntax_offences) do |offences, cop_class|
         cop_name = cop_class.cop_name
         cop_class.config = config.for_cop(cop_name)
         if config.cop_enabled?(cop_name)
@@ -247,25 +240,39 @@ module Rubocop
     def self.parse(file)
       parser = Parser::CurrentRuby.new
 
-      parser.diagnostics.all_errors_are_fatal = true
+      # On JRuby and Rubinius, there's a risk that we hang in
+      # tokenize() if we don't set the all errors as fatal flag.
+      parser.diagnostics.all_errors_are_fatal = RUBY_ENGINE != 'ruby'
       parser.diagnostics.ignore_warnings      = true
 
+      diagnostics = []
       parser.diagnostics.consumer = lambda do |diagnostic|
-        $stderr.puts(diagnostic.render)
+        diagnostics << diagnostic
       end
 
       source_buffer = Parser::Source::Buffer.new(file, 1)
       yield source_buffer
 
-      ast, comments, tokens = parser.tokenize(source_buffer)
-
-      tokens = tokens.map do |t|
-        type, details = *t
-        text, range = *details
-        Rubocop::Cop::Token.new(range, type, text)
+      begin
+        ast, comments, tokens = parser.tokenize(source_buffer)
+      rescue Parser::SyntaxError # rubocop:disable HandleExceptions
+        # All errors are in diagnostics. No need to handle exception.
       end
 
-      [ast, comments, tokens, source_buffer.source.split($RS)]
+      if tokens
+        tokens = tokens.map do |t|
+          type, details = *t
+          text, range = *details
+          Rubocop::Cop::Token.new(range, type, text)
+        end
+      end
+
+      syntax_offences = diagnostics.map do |d|
+        Cop::Offence.new(:error, d.location, "Syntax error, #{d.message}",
+                         'Syntax')
+      end
+
+      [ast, comments, tokens, source_buffer.source.split($RS), syntax_offences]
     end
 
     # Generate a list of target files by expanding globing patterns
