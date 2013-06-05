@@ -4,7 +4,6 @@
 
 ### New features
 
-* New cop `BlockNesting` checks for excessive block nesting
 * New cop `CaseEquality` checks for explicit use of `===`
 * Introduced formatter feature, enables custom formatted output and multiple outputs.
 * Added `-f`/`--format` option to specify formatter.
@@ -14,6 +13,12 @@
 ### Changes
 
 * Deprecated `-e`/`--emacs` option. (Use `--format emacs` instead)
+
+## 0.8.2 (06/05/2013)
+
+### New features
+
+* New cop `BlockNesting` checks for excessive block nesting
 
 ### Bug fixes
 
