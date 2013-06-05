@@ -59,7 +59,7 @@ module Rubocop
                      # and do no more checking in the file.
                      syntax_cop.offences
                    else
-                     inspect_file(file)
+                     inspect_file(file).concat(syntax_cop.offences)
                    end
 
         any_failed = true unless offences.empty?
