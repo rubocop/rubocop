@@ -5,11 +5,6 @@ module Rubocop
     module FavorModifier
       # TODO extremely ugly solution that needs lots of polish
       def check(sexp)
-        # discard if/then/else
-        return false if sexp.loc.respond_to?(:else) && sexp.loc.else
-        # discard modifier while/until
-        return false if [:while, :until].include?(sexp.type) && !sexp.loc.end
-
         case sexp.loc.keyword.source
         when 'if'     then cond, body, _else = *sexp
         when 'unless' then cond, _else, body = *sexp
@@ -29,7 +24,7 @@ module Rubocop
       end
 
       def length(sexp)
-        sexp.loc.expression.source.split("\n").size
+        sexp.loc.expression.source.lines.to_a.size
       end
 
       def body_length(body)
@@ -50,13 +45,26 @@ module Rubocop
       end
 
       def on_if(node)
-        # discard ternary ops and modifier if/unless nodes
-        return unless node.loc.respond_to?(:keyword) &&
-          node.loc.respond_to?(:else)
+        # discard ternary ops, if/else and modifier if/unless nodes
+        return if ternary_op?(node)
+        return if elsif?(node)
+        return if if_else?(node)
 
         add_offence(:convention, node.loc.line, error_message) if check(node)
 
         super
+      end
+
+      def ternary_op?(node)
+        node.respond_to?(:question)
+      end
+
+      def elsif?(node)
+        node.loc.keyword.source == 'elsif'
+      end
+
+      def if_else?(node)
+        node.loc.respond_to?(:else) && node.loc.else
       end
     end
 
@@ -68,6 +76,9 @@ module Rubocop
 
       def inspect(source, tokens, ast, comments)
         on_node([:while, :until], ast) do |node|
+          # discard modifier while/until
+          next unless node.loc.end
+
           add_offence(:convention, node.loc.line, MSG) if check(node)
         end
       end

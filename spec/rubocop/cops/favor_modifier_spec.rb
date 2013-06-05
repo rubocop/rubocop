@@ -91,6 +91,15 @@ module Rubocop
         check_empty(while_until, 'until')
       end
 
+      it 'accepts if/elsif' do
+        inspect_source(if_unless, ['if test',
+                                   '  something',
+                                   'elsif test2',
+                                   '  something_else',
+                                   'end'])
+        expect(if_unless.offences).to be_empty
+      end
+
       it 'accepts modifier while' do
         inspect_source(while_until, ['ala while bala'])
         expect(while_until.offences).to be_empty
