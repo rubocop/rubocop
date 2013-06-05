@@ -60,65 +60,55 @@ Usage: rubocop [options] [file1, file2, ...]
       end
     end
 
-    context 'when interrupted with Ctrl-C' do
+    describe '#trap_interrupt' do
       before do
         @interrupt_handlers = []
         Signal.stub(:trap).with('INT') do |&block|
           @interrupt_handlers << block
         end
-
-        create_file('example.rb', '# encoding: utf-8')
-      end
-
-      after do
-        @cli_thread.terminate if @cli_thread
       end
 
       def interrupt
         @interrupt_handlers.each(&:call)
       end
 
-      def cli_run_in_thread
-        @cli_thread = Thread.new do
-          cli.run(['--debug'])
-        end
-
-        # Wait for start.
-        loop { break unless $stdout.string.empty? }
-
-        @cli_thread
+      it 'adds a handler for SIGINT' do
+        expect(@interrupt_handlers).to be_empty
+        cli.trap_interrupt
+        expect(@interrupt_handlers).to have(1).item
       end
 
-      it 'exits with status 1' do
-        cli_thread = cli_run_in_thread
-        interrupt
-        expect(cli_thread.value).to eq(1)
-      end
-
-      it 'exits gracefully without dumping backtraces' do
-        cli_thread = cli_run_in_thread
-        interrupt
-        cli_thread.join
-        expect($stderr.string).not_to match(/from .+:\d+:in /)
-      end
-
-      context 'with Ctrl-C once' do
-        it 'reports summary' do
-          cli_thread = cli_run_in_thread
+      context 'with SIGINT once' do
+        it 'sets #wants_to_quit? to true' do
+          cli.trap_interrupt
+          expect(cli.wants_to_quit?).to be_false
           interrupt
-          cli_thread.join
-          expect($stdout.string).to match(/files? inspected/)
+          expect(cli.wants_to_quit?).to be_true
+        end
+
+        it 'does not exit immediately' do
+          Object.any_instance.should_not_receive(:exit)
+          Object.any_instance.should_not_receive(:exit!)
+          cli.trap_interrupt
+          interrupt
         end
       end
 
-      context 'with Ctrl-C twice' do
+      context 'with SIGINT twice' do
         it 'exits immediately' do
           Object.any_instance.should_receive(:exit!).with(1)
-          cli_thread = cli_run_in_thread
+          cli.trap_interrupt
           interrupt
           interrupt
-          cli_thread.join
         end
+      end
+    end
+
+    context 'when #wants_to_quit? is true' do
+      it 'returns 1' do
+        create_file('example.rb', '# encoding: utf-8')
+        cli.wants_to_quit = true
+        expect(cli.run(['example.rb'])).to eq(1)
       end
     end
 
