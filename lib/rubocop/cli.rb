@@ -3,6 +3,20 @@ require 'pathname'
 require 'optparse'
 
 module Rubocop
+  class SyntaxError < StandardError
+    attr_reader :offences
+
+    def initialize(diagnostics)
+      errors = diagnostics.select { |d| d.level == :error }
+      @offences = errors.map do |error|
+        Cop::Offence.new(:error, error.location,
+                         "Syntax error, #{error.message}", 'Syntax')
+      end
+
+      super
+    end
+  end
+
   # The CLI is a class responsible of handling all the command line interface
   # logic.
   class CLI
@@ -51,16 +65,7 @@ module Rubocop
         puts "Scanning #{file}" if @options[:debug]
         invoke_formatters(:file_started, file, {})
 
-        syntax_cop = setup_cop(Rubocop::Cop::Syntax)
-        syntax_cop.inspect_file(file)
-
-        offences = if syntax_cop.offences.map(&:severity).include?(:error)
-                     # In case of a syntax error we just report that error
-                     # and do no more checking in the file.
-                     syntax_cop.offences
-                   else
-                     inspect_file(file).concat(syntax_cop.offences)
-                   end
+        offences = inspect_file(file)
 
         any_failed = true unless offences.empty?
         processed_files << file
@@ -86,8 +91,9 @@ module Rubocop
         ast, comments, tokens, source = CLI.parse(file) do |source_buffer|
           source_buffer.read
         end
-      rescue Parser::SyntaxError, Encoding::UndefinedConversionError,
-        ArgumentError => e
+      rescue Rubocop::SyntaxError => e
+        return e.offences
+      rescue Encoding::UndefinedConversionError, ArgumentError => e
         handle_error(e, "An error occurred while parsing #{file}.".color(:red))
         return []
       end
@@ -250,14 +256,19 @@ module Rubocop
       parser.diagnostics.all_errors_are_fatal = true
       parser.diagnostics.ignore_warnings      = true
 
+      diagnostics = []
       parser.diagnostics.consumer = lambda do |diagnostic|
-        $stderr.puts(diagnostic.render)
+        diagnostics << diagnostic
       end
 
       source_buffer = Parser::Source::Buffer.new(file, 1)
       yield source_buffer
 
-      ast, comments, tokens = parser.tokenize(source_buffer)
+      begin
+        ast, comments, tokens = parser.tokenize(source_buffer)
+      rescue Parser::SyntaxError
+        raise Rubocop::SyntaxError, diagnostics
+      end
 
       tokens = tokens.map do |t|
         type, details = *t
