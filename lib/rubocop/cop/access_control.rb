@@ -28,7 +28,8 @@ module Rubocop
 
                 send_line = send_node.loc.line
 
-                unless source[send_line].empty? && source[send_line - 2].empty?
+                unless source[send_line].chomp.empty? &&
+                    source[send_line - 2].chomp.empty?
                   add_offence(:convention, send_node.loc, BLANK_MSG)
                 end
               end
