@@ -18,7 +18,8 @@ module Rubocop
                'c = "\'"',
                'd = "#@test"',
                'e = "#$test"',
-               'f = "#@@test"']
+               'f = "#@@test"',
+               'g = "\e"']
         inspect_source(sl, src)
         expect(sl.offences).to be_empty
       end
