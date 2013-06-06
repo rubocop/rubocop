@@ -14,12 +14,19 @@ module Rubocop
         if length(sexp) > 3
           false
         else
-          indentation = sexp.loc.keyword.column
-          cond_length = sexp.loc.keyword.size + cond.loc.expression.size + 1
           body_length = body_length(body)
 
-          body_length > 0 &&
-            (indentation + cond_length + body_length) <= LineLength.max
+          if body_length == 0
+            false
+          else
+            indentation = sexp.loc.keyword.column
+            kw_length = sexp.loc.keyword.size
+            cond_length = cond.loc.expression.size
+            space = 1
+            total = indentation + body_length + space + kw_length + space +
+              cond_length
+            total <= LineLength.max
+          end
         end
       end
 
