@@ -124,6 +124,17 @@ module Rubocop
         expect(a.offences.map(&:message))
           .to eq([AccessControl::BLANK_MSG])
       end
+
+      it 'recognizes blank lines with DOS style line endings' do
+        inspect_source(a,
+                       ["class Test\r",
+                        "\r",
+                        "  protected\r",
+                        "\r",
+                        "  def test; end\r",
+                        "end\r"])
+        expect(a.offences.size).to eq(0)
+      end
     end
   end
 end
