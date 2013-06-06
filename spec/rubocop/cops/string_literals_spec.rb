@@ -18,7 +18,8 @@ module Rubocop
                'c = "\'"',
                'd = "#@test"',
                'e = "#$test"',
-               'f = "#@@test"']
+               'f = "#@@test"',
+               'g = "\e"']
         inspect_source(sl, src)
         expect(sl.offences).to be_empty
       end
@@ -29,7 +30,7 @@ module Rubocop
       end
 
       it 'accepts double quotes with some other special symbols' do
-        pending
+        #pending
         # "Substitutions in double-quoted strings"
         # http://www.ruby-doc.org/docs/ProgrammingRuby/html/language.html
         src = ['g = "\xf9"']

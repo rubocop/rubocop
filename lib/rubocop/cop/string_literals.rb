@@ -13,7 +13,7 @@ module Rubocop
         # but don't respond to begin.
         return unless node.loc.respond_to?(:begin)
 
-        if text !~ /['\n\t\r]/ && node.loc.begin.source == '"'
+        if text.inspect !~ /['\\]/ && node.loc.begin.source == '"'
           add_offence(:convention, node.loc, MSG)
         end
       end
