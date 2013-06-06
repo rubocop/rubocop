@@ -443,20 +443,46 @@ Usage: rubocop [options] [file1, file2, ...]
     end
 
     it 'registers an offence for a syntax error' do
-      pending
       create_file('example.rb', [
         '# encoding: utf-8',
         'class Test',
         'en'
       ])
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
-      unexpected_part = RUBY_VERSION >= '2.0' ? 'end-of-input' : '$end'
-      expect($stdout.string).to eq(
-        ["example.rb:3:0:E: Syntax error, unexpected #{unexpected_part}, " +
-         'expecting keyword_end',
-         '',
-         '1 file inspected, 1 offence detected',
-         ''].join("\n"))
+      expect($stdout.string)
+        .to eq(["#{abs('example.rb')}:3:2: E: Syntax error, unexpected " +
+                "token $end",
+                '',
+                '1 file inspected, 1 offence detected',
+                ''].join("\n"))
+    end
+
+    it 'can report other errors together with syntax errors in some cases' do
+      create_file('example.rb', [
+        '',
+        'class Test >',
+        '  x=0',
+                                 'end',
+                                 ''
+      ])
+      expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
+
+      expected =
+        ["#{abs('example.rb')}:2:11: E: Syntax error, unexpected token tGT"]
+      if RUBY_ENGINE == 'ruby'
+        if RUBY_VERSION < '2'
+          expected.unshift("#{abs('example.rb')}:1:0: C: Missing utf-8 " +
+                           'encoding comment.')
+        end
+        expected.push("#{abs('example.rb')}:3:3: C: Surrounding space " +
+                      "missing for operator '='.")
+      end
+      expected.concat(['',
+                       "1 file inspected, #{expected.size} " +
+                       "offence#{'s' unless expected.size == 1} detected",
+                       ''])
+
+      expect($stdout.string).to eq(expected.join("\n"))
     end
 
     it 'can process a file with an invalid UTF-8 byte sequence' do

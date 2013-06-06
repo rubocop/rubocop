@@ -173,10 +173,6 @@ MethodAndVariableSnakeCase:
 ClassAndModuleCamelCase:
   Enabled: true
 
-# Causes Ruby to check the syntax of the script and exit without executing.
-Syntax:
-  Enabled: true
-
 # Preferred collection methods.
 CollectionMethods:
   Enabled: true
