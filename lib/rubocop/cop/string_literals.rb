@@ -13,7 +13,9 @@ module Rubocop
         # but don't respond to begin.
         return unless node.loc.respond_to?(:begin)
 
-        if text !~ /['\n\t\r]/ && node.loc.begin.source == '"'
+        # regex matches IF there is a ' or there is a \\ in the string that is
+        # not preceeded/followed by another \\ (e.g. `"\\x34"`) but not `"\\\\"`
+        if text.inspect !~ /('|([^\\]|\A)\\([^\\]|\Z))/ && node.loc.begin.source == '"'
           add_offence(:convention, node.loc, MSG)
         end
       end
