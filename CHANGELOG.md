@@ -19,6 +19,7 @@
 * [#239](https://github.com/bbatsov/rubocop/issues/239) - fixed double quotes false positives
 * [#233](https://github.com/bbatsov/rubocop/issues/233) - report syntax cop offences
 * Fix off-by-one error in favor_modifier.
+* [#229](https://github.com/bbatsov/rubocop/issues/229) - recognize a line with CR+LF as a blank line in AccessControl cop.
 
 ## 0.8.2 (06/05/2013)
 
