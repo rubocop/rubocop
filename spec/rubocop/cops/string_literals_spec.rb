@@ -8,8 +8,8 @@ module Rubocop
       let(:sl) { StringLiterals.new }
 
       it 'registers an offence for double quotes when single quotes suffice' do
-        inspect_source(sl, ['s = "abc"'])
-        expect(sl.offences.size).to eq(1)
+        inspect_source(sl, ['s = "abc"', 'x = "a\\\\b"', 'y ="\\\\b"', 'z = "a\\\\"'])
+        expect(sl.offences.size).to eq(4)
       end
 
       it 'accepts double quotes when they are needed' do
@@ -18,7 +18,8 @@ module Rubocop
                'c = "\'"',
                'd = "#@test"',
                'e = "#$test"',
-               'f = "#@@test"']
+                'f = "\e"',
+               'g = "#@@test"']
         inspect_source(sl, src)
         expect(sl.offences).to be_empty
       end
@@ -29,7 +30,6 @@ module Rubocop
       end
 
       it 'accepts double quotes with some other special symbols' do
-        pending
         # "Substitutions in double-quoted strings"
         # http://www.ruby-doc.org/docs/ProgrammingRuby/html/language.html
         src = ['g = "\xf9"']
