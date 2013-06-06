@@ -14,6 +14,11 @@
 
 * Deprecated `-e`/`--emacs` option. (Use `--format emacs` instead)
 
+### Bugs fixed
+
+* [#239](https://github.com/bbatsov/rubocop/issues/239) - fixed double quotes false positives
+* [#233](https://github.com/bbatsov/rubocop/issues/233) - report syntax cop offences
+
 ## 0.8.2 (06/05/2013)
 
 ### New features
@@ -25,7 +30,6 @@
 * Correct calculation of whether a modifier version of a conditional statement will fit.
 * Fix an error in `MultilineIfThen` cop that occurred in some special cases.
 * [#231](https://github.com/bbatsov/rubocop/issues/231) - fix a false positive for modifier if
-* [#233](https://github.com/bbatsov/rubocop/issues/233) - report syntax cop offences
 
 ## 0.8.1 (05/30/2013)
 
