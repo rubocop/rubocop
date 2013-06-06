@@ -11,10 +11,14 @@ module Rubocop
 
       it 'registers an offence for multiline if that fits on one line' do
         # This if statement fits exactly on one line if written as a modifier.
+        condition = 'a' * 38
+        body = 'b' * 35
+        expect("  #{body} if #{condition}".length).to eq(79)
+
         inspect_source(if_unless,
-                       ['if a_condition_that_is_just_short_enough',
-                        '  some_long_metod_name(followed_by_args)',
-                        'end'])
+                       ["  if #{condition}",
+                        "    #{body}",
+                        '  end'])
         expect(if_unless.offences.map(&:message)).to eq(
           ['Favor modifier if/unless usage when you have a single-line body.' +
            ' Another good alternative is the usage of control flow &&/||.'])
@@ -126,11 +130,17 @@ module Rubocop
       end
 
       def check_too_long(cop, keyword)
+        # This statement is one character too long to fit.
+        condition = 'a' * (40 - keyword.length)
+        body = 'b' * 36
+        expect("  #{body} #{keyword} #{condition}".length).to eq(80)
+
         inspect_source(cop,
-                       ["  #{keyword} a_lengthy_condition_that_goes_on_and_on",
-                        '    some_long_metod_name(followed_by_args)',
+                       ["  #{keyword} #{condition}",
+                        "    #{body}",
                         '  end'])
-        expect(cop.offences.map(&:message)).to be_empty
+
+        expect(cop.offences).to be_empty
       end
 
       def check_short_multiline(cop, keyword)
