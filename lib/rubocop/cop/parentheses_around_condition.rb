@@ -32,7 +32,7 @@ module Rubocop
         cond_source = cond.loc.expression.source
 
         if cond_source.start_with?('(') && cond_source.end_with?(')')
-          add_offence(:convetion, cond.loc, MSG)
+          add_offence(:convention, cond.loc, MSG)
         end
       end
     end

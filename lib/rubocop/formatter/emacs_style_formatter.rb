@@ -2,7 +2,7 @@
 
 module Rubocop
   module Formatter
-    class EmacsStyleFormatter < PlainTextFormatter
+    class EmacsStyleFormatter < SimpleTextFormatter
       def report_file(file, offences)
         offences.each do |o|
           output.printf("%s:%d:%d: %s: %s\n",

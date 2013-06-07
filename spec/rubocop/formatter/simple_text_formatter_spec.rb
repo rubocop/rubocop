@@ -5,8 +5,8 @@ require 'stringio'
 
 module Rubocop
   module Formatter
-    describe PlainTextFormatter do
-      subject(:formatter) { PlainTextFormatter.new(output) }
+    describe SimpleTextFormatter do
+      subject(:formatter) { SimpleTextFormatter.new(output) }
       let(:output) { StringIO.new }
 
       describe '#report_summary' do
