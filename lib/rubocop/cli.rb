@@ -7,7 +7,7 @@ module Rubocop
   # logic.
   class CLI
     BUILTIN_FORMATTERS_FOR_KEYS = {
-      'plain'    => Formatter::PlainTextFormatter,
+      'simple'   => Formatter::SimpleTextFormatter,
       'emacs'    => Formatter::EmacsStyleFormatter,
       'progress' => Formatter::ProgressFormatter
     }
@@ -149,9 +149,9 @@ module Rubocop
         end
         opts.on('-f', '--format FORMATTER',
                 'Choose a formatter.',
-                '  [p]lain (default)',
+                '  [s]imple (default)',
                 '  [e]macs',
-                '  progress',
+                '  [p]rogress',
                 '  custom formatter class name') do |key|
           @options[:formatters] ||= []
           @options[:formatters] << [key]
@@ -161,7 +161,7 @@ module Rubocop
                 '  This option applies to the previously',
                 '  specified --format, or the default',
                 '  format if no format is specified.') do |path|
-          @options[:formatters] ||= [['plain']]
+          @options[:formatters] ||= [['simple']]
           @options[:formatters].last << path
         end
         opts.on('-r', '--require FILE', 'Require Ruby file.') do |f|
@@ -368,7 +368,7 @@ module Rubocop
 
     def formatters
       @formatters ||= begin
-        pairs = @options[:formatters] || [['plain']]
+        pairs = @options[:formatters] || [['simple']]
         pairs.map do |formatter_key, output_path|
           create_formatter(formatter_key, output_path)
         end

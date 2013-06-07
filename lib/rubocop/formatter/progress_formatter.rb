@@ -2,7 +2,7 @@
 
 module Rubocop
   module Formatter
-    class ProgressFormatter < PlainTextFormatter
+    class ProgressFormatter < SimpleTextFormatter
       COLOR_FOR_SEVERITY = {
           refactor: :yellow,
         convention: :yellow,

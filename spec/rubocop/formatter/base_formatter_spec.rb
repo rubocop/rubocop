@@ -30,7 +30,7 @@ module Rubocop
             '# encoding: utf-8'
           ])
 
-          PlainTextFormatter.stub(:new).and_return(formatter)
+          SimpleTextFormatter.stub(:new).and_return(formatter)
           $stdout = StringIO.new
         end
 
