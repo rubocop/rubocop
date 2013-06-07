@@ -329,6 +329,12 @@ BlockNesting:
 CaseEquality:
   Enabled: true
 
+## Warnings
+
+# Don't use assignment in conditions.
+AssignmentInCondition:
+  Enabled: true
+
 ## Rails
 
 # Use sexy validations.

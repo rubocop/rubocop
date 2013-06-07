@@ -11,6 +11,7 @@
 * Added `-r/--require` option to inject external Ruby code into RuboCop.
 * Added `-V/--verbose-version` option that displays Parser version and Ruby version as well.
 * Added `-R/--rails` option that enables extra Rails-specific cops.
+* New cop `AssignmentInCondition` checks for assignment in conditions.
 
 ### Changes
 

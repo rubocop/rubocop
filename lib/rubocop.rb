@@ -78,6 +78,7 @@ require 'rubocop/cop/access_control'
 require 'rubocop/cop/loop'
 require 'rubocop/cop/block_nesting'
 require 'rubocop/cop/case_equality'
+require 'rubocop/cop/assignment_in_condition'
 
 require 'rubocop/cop/rails/validation'
 
