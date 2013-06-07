@@ -32,7 +32,8 @@ module Rubocop
       it 'accepts double quotes with some other special symbols' do
         # "Substitutions in double-quoted strings"
         # http://www.ruby-doc.org/docs/ProgrammingRuby/html/language.html
-        src = ['g = "\xf9"']
+        src = ['g = "\xf9"',
+               'copyright = "\u00A9"']
         inspect_source(sl, src)
         expect(sl.offences).to be_empty
       end
