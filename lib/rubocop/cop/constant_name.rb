@@ -9,12 +9,10 @@ module Rubocop
       def on_casgn(node)
         _scope, const_name, value = *node
 
-        # we cannot know the result of method calls line
+        # We cannot know the result of method calls line
         # NewClass = something_that_returns_a_class
-        if value.type != :send && const_name !~ SNAKE_CASE
-          add_offence(:convention,
-                      node.loc.line,
-                      MSG)
+        unless value && value.type == :send
+          add_offence(:convention, node.loc, MSG) if const_name !~ SNAKE_CASE
         end
 
         super
