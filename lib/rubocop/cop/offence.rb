@@ -69,8 +69,7 @@ module Rubocop
 
       # @api private
       def severity_level
-        index = SEVERITIES.index(severity)
-        index ? index + 1 : 0 # TODO: Eval cop has unknown severity :security
+        SEVERITIES.index(severity) + 1
       end
 
       # @api public
