@@ -30,10 +30,18 @@ module Rubocop
       end
 
       it 'redefines == to compare offences based on their contents' do
-        o1 = Offence.new(:test, Location.new(1, 0), 'message', 'CopName')
-        o2 = Offence.new(:test, Location.new(1, 0), 'message', 'CopName')
+        o1 = Offence.new(:convention, Location.new(1, 0), 'message', 'CopName')
+        o2 = Offence.new(:convention, Location.new(1, 0), 'message', 'CopName')
 
         expect(o1 == o2).to be_true
+      end
+
+      context 'when unknown severity is passed' do
+        it 'raises error' do
+          expect do
+            Offence.new(:foobar, Location.new(1, 0), 'message', 'CopName')
+          end.to raise_error(ArgumentError)
+        end
       end
 
       describe '#severity_level' do
