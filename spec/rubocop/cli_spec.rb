@@ -44,6 +44,7 @@ Usage: rubocop [options] [file1, file2, ...]
     -s, --silent                     Silence summary.
     -n, --no-color                   Disable color output.
     -v, --version                    Display version.
+    -V, --verbose-version            Display verbose version.
       END
       expect($stdout.string).to eq(message * 2)
     end
@@ -809,7 +810,7 @@ Usage: rubocop [options] [file1, file2, ...]
       it 'displays an error message when errors are present' do
         msg = 'An error occurred while Encoding cop was inspecting file.rb.'
         cli.display_error_summary([msg])
-        expect($stdout.string.lines.to_a[-4..-3])
+        expect($stdout.string.lines.to_a[-6..-5])
           .to eq(["1 error occurred:\n", "#{msg}\n"])
       end
     end

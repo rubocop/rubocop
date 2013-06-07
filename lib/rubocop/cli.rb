@@ -169,7 +169,11 @@ module Rubocop
           Sickill::Rainbow.enabled = false
         end
         opts.on('-v', '--version', 'Display version.') do
-          puts Rubocop::Version::STRING
+          puts Rubocop::Version.version(false)
+          exit(0)
+        end
+        opts.on('-V', '--verbose-version', 'Display verbose version.') do
+          puts Rubocop::Version.version(true)
           exit(0)
         end
       end.parse!(args)
@@ -204,6 +208,8 @@ module Rubocop
       errors.each { |error| puts error }
       puts 'Errors are usually caused by RuboCop bugs.'
       puts 'Please, report your problems to RuboCop\'s issue tracker.'
+      puts 'Mention the following information in the issue report:'
+      puts Rubocop::Version.version(true)
     end
 
     def disabled_lines_in(source)

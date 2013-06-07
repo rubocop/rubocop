@@ -9,6 +9,7 @@
 * Added `-f`/`--format` option to specify formatter.
 * Added `-o`/`--out` option to specify output file for each formatter.
 * Added `--require` option to inject external Ruby code into RuboCop.
+* Added `-V/--verbose-version` option that displays Parser version and Ruby version as well.
 
 ### Changes
 
