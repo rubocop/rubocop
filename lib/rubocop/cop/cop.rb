@@ -46,6 +46,10 @@ module Rubocop
         name.to_s.split('::').last
       end
 
+      def self.rails?
+        false
+      end
+
       def initialize
         @offences = []
         @debug = false

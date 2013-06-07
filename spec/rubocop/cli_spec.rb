@@ -41,6 +41,7 @@ Usage: rubocop [options] [file1, file2, ...]
                                        specified --format, or the default
                                        format if no format is specified.
         --require FILE               Require Ruby file.
+    -R, --rails                      Run extra Rails cops.
     -s, --silent                     Silence summary.
     -n, --no-color                   Disable color output.
     -v, --version                    Display version.

@@ -88,6 +88,9 @@ module Rubocop
       config = ConfigStore.for(file)
       disabled_lines = disabled_lines_in(source)
 
+      # filter out Rails cops unless requested
+      @cops.reject! { |cop_klass| cop_klass.rails? } unless @options[:rails]
+
       @cops.reduce(syntax_offences) do |offences, cop_class|
         cop_name = cop_class.cop_name
         cop_class.config = config.for_cop(cop_name)
@@ -161,6 +164,9 @@ module Rubocop
         end
         opts.on('--require FILE', 'Require Ruby file.') do |f|
           require f
+        end
+        opts.on('-R', '--rails', 'Run extra Rails cops.') do |r|
+          @options[:rails] = r
         end
         opts.on('-s', '--silent', 'Silence summary.') do |s|
           @options[:silent] = s

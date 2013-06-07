@@ -79,6 +79,8 @@ require 'rubocop/cop/loop'
 require 'rubocop/cop/block_nesting'
 require 'rubocop/cop/case_equality'
 
+require 'rubocop/cop/rails/validation'
+
 require 'rubocop/formatter/base_formatter'
 require 'rubocop/formatter/plain_text_formatter'
 require 'rubocop/formatter/emacs_style_formatter'

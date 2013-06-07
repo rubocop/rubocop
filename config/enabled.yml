@@ -328,3 +328,9 @@ BlockNesting:
 # Avoid explicit use of the case equality operator(===).
 CaseEquality:
   Enabled: true
+
+## Rails
+
+# Use sexy validations.
+Validation:
+  Enabled: true

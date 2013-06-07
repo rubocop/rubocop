@@ -49,6 +49,7 @@ Command flag          | Description
 `f/--format`          | Choose a formatter
 `o/--out`             | Write output to a file instead of STDOUT
 `--require`           | Require Ruby file
+`-R/--rails`          | Run extra Rails cops
 `-s/--silent`         | Suppress the final summary
 `--only`              | Run only the specified cop
 
