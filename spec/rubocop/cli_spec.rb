@@ -40,7 +40,7 @@ Usage: rubocop [options] [file1, file2, ...]
                                        This option applies to the previously
                                        specified --format, or the default
                                        format if no format is specified.
-        --require FILE               Require Ruby file.
+    -r, --require FILE               Require Ruby file.
     -R, --rails                      Run extra Rails cops.
     -s, --silent                     Silence summary.
     -n, --no-color                   Disable color output.

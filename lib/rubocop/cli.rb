@@ -162,7 +162,7 @@ module Rubocop
           @options[:formatters] ||= [['plain']]
           @options[:formatters].last << path
         end
-        opts.on('--require FILE', 'Require Ruby file.') do |f|
+        opts.on('-r', '--require FILE', 'Require Ruby file.') do |f|
           require f
         end
         opts.on('-R', '--rails', 'Run extra Rails cops.') do |r|

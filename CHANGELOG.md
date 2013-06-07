@@ -8,7 +8,7 @@
 * Introduced formatter feature, enables custom formatted output and multiple outputs.
 * Added `-f`/`--format` option to specify formatter.
 * Added `-o`/`--out` option to specify output file for each formatter.
-* Added `--require` option to inject external Ruby code into RuboCop.
+* Added `-r/--require` option to inject external Ruby code into RuboCop.
 * Added `-V/--verbose-version` option that displays Parser version and Ruby version as well.
 * Added `-R/--rails` option that enables extra Rails-specific cops.
 
