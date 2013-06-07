@@ -2,7 +2,7 @@
 
 module Rubocop
   module Formatter
-    class PlainTextFormatter < BaseFormatter
+    class SimpleTextFormatter < BaseFormatter
       attr_accessor :reports_summary
       alias_method :reports_summary?, :reports_summary
 

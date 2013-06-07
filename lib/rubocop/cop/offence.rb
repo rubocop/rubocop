@@ -41,6 +41,9 @@ module Rubocop
 
       # @api private
       def initialize(severity, location, message, cop_name)
+        unless SEVERITIES.include?(severity)
+          fail ArgumentError, "Unknown severity: #{severity}"
+        end
         @severity = severity
         @location = location
         @message = message
@@ -65,6 +68,11 @@ module Rubocop
       # @api private
       def encode_severity
         @severity.to_s[0].upcase
+      end
+
+      # @api private
+      def severity_level
+        SEVERITIES.index(severity) + 1
       end
 
       # @api public

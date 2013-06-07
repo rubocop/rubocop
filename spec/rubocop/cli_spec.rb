@@ -33,8 +33,9 @@ Usage: rubocop [options] [file1, file2, ...]
     -c, --config FILE                Specify configuration file.
         --only COP                   Run just one cop.
     -f, --format FORMATTER           Choose a formatter.
-                                       [p]lain (default)
+                                       [s]imple (default)
                                        [e]macs
+                                       [p]rogress
                                        custom formatter class name
     -o, --out FILE                   Write output to a file instead of STDOUT.
                                        This option applies to the previously
@@ -676,9 +677,9 @@ Usage: rubocop [options] [file1, file2, ...]
       end
 
       describe 'builtin formatters' do
-        context 'when plain format is specified' do
-          it 'outputs with plain format' do
-            cli.run(['--format', 'plain', 'example.rb'])
+        context 'when simple format is specified' do
+          it 'outputs with simple format' do
+            cli.run(['--format', 'simple', 'example.rb'])
             expect($stdout.string).to include([
               "== #{target_file} ==",
               'C:  2: 79: Line is too long. [90/79]'
@@ -749,7 +750,7 @@ Usage: rubocop [options] [file1, file2, ...]
       end
 
       it 'can be used multiple times' do
-        cli.run(['--format', 'plain', '--format', 'emacs', 'example.rb'])
+        cli.run(['--format', 'simple', '--format', 'emacs', 'example.rb'])
         expect($stdout.string).to include([
           "== #{target_file} ==",
           'C:  2: 79: Line is too long. [90/79]',
@@ -785,7 +786,7 @@ Usage: rubocop [options] [file1, file2, ...]
 
       it 'is applied to the previously specified formatter' do
         cli.run([
-          '--format', 'plain',
+          '--format', 'simple',
           '--format', 'emacs', '--out', 'emacs_output.txt',
           target_file
         ])

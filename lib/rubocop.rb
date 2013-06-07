@@ -84,8 +84,9 @@ require 'rubocop/cop/end_alignment'
 require 'rubocop/cop/rails/validation'
 
 require 'rubocop/formatter/base_formatter'
-require 'rubocop/formatter/plain_text_formatter'
+require 'rubocop/formatter/simple_text_formatter'
 require 'rubocop/formatter/emacs_style_formatter'
+require 'rubocop/formatter/progress_formatter'
 
 require 'rubocop/config'
 require 'rubocop/config_store'
