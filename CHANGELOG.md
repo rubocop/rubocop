@@ -20,6 +20,7 @@
 * [#233](https://github.com/bbatsov/rubocop/issues/233) - report syntax cop offences
 * Fix off-by-one error in favor_modifier.
 * [#229](https://github.com/bbatsov/rubocop/issues/229) - recognize a line with CR+LF as a blank line in AccessControl cop.
+* [#235](https://github.com/bbatsov/rubocop/issues/235) - handle multiple constant assignment in ConstantName cop
 
 ## 0.8.2 (06/05/2013)
 

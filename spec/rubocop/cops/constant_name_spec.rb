@@ -13,6 +13,12 @@ module Rubocop
         expect(const.offences.size).to eq(1)
       end
 
+      it 'registers offences for camel case in multiple const assignment' do
+        inspect_source(const,
+                       ['TopCase, Test2, TEST_3 = 5, 6, 7'])
+        expect(const.offences.size).to eq(2)
+      end
+
       it 'registers an offence for snake case in const name' do
         inspect_source(const,
                        ['TOP_test = 5'])
@@ -22,6 +28,12 @@ module Rubocop
       it 'allows screaming snake case in const name' do
         inspect_source(const,
                        ['TOP_TEST = 5'])
+        expect(const.offences).to be_empty
+      end
+
+      it 'allows screaming snake case in multiple const assignment' do
+        inspect_source(const,
+                       ['TOP_TEST, TEST_2 = 5, 6'])
         expect(const.offences).to be_empty
       end
 
