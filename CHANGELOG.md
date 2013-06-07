@@ -12,6 +12,7 @@
 * Added `-V/--verbose-version` option that displays Parser version and Ruby version as well.
 * Added `-R/--rails` option that enables extra Rails-specific cops.
 * New cop `AssignmentInCondition` checks for assignment in conditions.
+* New cop `EndAlignment` tracks misaligned `end` keywords.
 
 ### Changes
 
