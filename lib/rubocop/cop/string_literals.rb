@@ -7,15 +7,14 @@ module Rubocop
         'string interpolation or special symbols.'
 
       def on_str(node)
-        text, = *node
-
         # Constants like __FILE__ and __DIR__ are created as strings,
         # but don't respond to begin.
         return unless node.loc.respond_to?(:begin)
 
         # regex matches IF there is a ' or there is a \\ in the string that is
         # not preceeded/followed by another \\ (e.g. `"\\x34"`) but not `"\\\\"`
-        if text.inspect !~ /('|([^\\]|\A)\\([^\\]|\Z))/ && node.loc.begin.source == '"'
+        if node.loc.expression.source !~ /('|([^\\]|\A)\\([^\\]|\Z))/ &&
+            node.loc.begin.source == '"'
           add_offence(:convention, node.loc, MSG)
         end
       end
