@@ -339,6 +339,10 @@ AssignmentInCondition:
 EndAlignment:
   Enabled: true
 
+# Possible use of operator in void context.
+VoidOp:
+  Enabled: true
+
 ## Rails
 
 # Use sexy validations.

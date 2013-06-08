@@ -14,6 +14,7 @@
 * Added `-R/--rails` option that enables extra Rails-specific cops.
 * New cop `AssignmentInCondition` checks for assignment in conditions.
 * New cop `EndAlignment` tracks misaligned `end` keywords.
+* New cop `VoidOps` tracks uses of operators in possibly void context.
 
 ### Changes
 

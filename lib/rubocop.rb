@@ -80,6 +80,7 @@ require 'rubocop/cop/block_nesting'
 require 'rubocop/cop/case_equality'
 require 'rubocop/cop/assignment_in_condition'
 require 'rubocop/cop/end_alignment'
+require 'rubocop/cop/void_op'
 
 require 'rubocop/cop/rails/validation'
 
