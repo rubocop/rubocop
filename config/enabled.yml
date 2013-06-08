@@ -339,8 +339,8 @@ AssignmentInCondition:
 EndAlignment:
   Enabled: true
 
-# Possible use of operator in void context.
-VoidOp:
+# Possible use of operator/literal/variable in void context.
+Void:
   Enabled: true
 
 ## Rails
