@@ -2,9 +2,27 @@
 
 module Rubocop
   module Cop
+    # A Location represents a place where the violation is detected in a file.
     class Location
-      attr_reader :line, :column
+      # @api public
+      #
+      # @!attribute [r] line
+      #
+      # @return [Integer]
+      #   the line number.
+      #   first line is `1`.
+      attr_reader :line
 
+      # @api public
+      #
+      # @!attribute [r] column
+      #
+      # @return [Integer]
+      #   the column number.
+      #   beginning of line is `0`.
+      attr_reader :column
+
+      # @api private
       def initialize(line, column)
         @line = line
         @column = column
@@ -29,8 +47,10 @@ module Rubocop
       #
       # @!attribute [r] location
       #
-      # @return [Integer]
+      # @return [Rubocop::Cop::Location]
       #   the location where the violation is detected.
+      #
+      # @see Rubocop::Cop::Location
       attr_reader :location
 
       # @api public
