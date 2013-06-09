@@ -34,8 +34,9 @@ Usage: rubocop [options] [file1, file2, ...]
         --only COP                   Run just one cop.
     -f, --format FORMATTER           Choose a formatter.
                                        [s]imple (default)
-                                       [e]macs
                                        [p]rogress
+                                       [e]macs
+                                       [j]son
                                        custom formatter class name
     -o, --out FILE                   Write output to a file instead of STDOUT.
                                        This option applies to the previously

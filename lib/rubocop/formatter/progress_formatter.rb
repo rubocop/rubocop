@@ -11,10 +11,10 @@ module Rubocop
              fatal: :red
       }
 
-      def started(all_files)
+      def started(target_files)
         super
         @offences_for_files = {}
-        output.puts "Inspecting #{all_files.count} files"
+        output.puts "Inspecting #{target_files.count} files"
       end
 
       def file_finished(file, offences)
@@ -23,7 +23,7 @@ module Rubocop
         report_file_as_mark(file, offences)
       end
 
-      def finished(processed_files)
+      def finished(inspected_files)
         output.puts
 
         return unless reports_summary?
@@ -36,7 +36,7 @@ module Rubocop
           report_file(file, offences.sort_by(&:line))
         end
 
-        report_summary(processed_files.count, @total_offence_count)
+        report_summary(inspected_files.count, @total_offence_count)
       end
 
       def report_file_as_mark(file, offences)

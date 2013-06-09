@@ -8,8 +8,9 @@ module Rubocop
   class CLI
     BUILTIN_FORMATTERS_FOR_KEYS = {
       'simple'   => Formatter::SimpleTextFormatter,
+      'progress' => Formatter::ProgressFormatter,
       'emacs'    => Formatter::EmacsStyleFormatter,
-      'progress' => Formatter::ProgressFormatter
+      'json'     => Formatter::JSONFormatter
     }
 
     # If set true while running,
@@ -41,7 +42,7 @@ module Rubocop
       end
 
       target_files = target_files(args)
-      processed_files = []
+      inspected_files = []
       any_failed = false
 
       invoke_formatters(:started, target_files)
@@ -55,11 +56,11 @@ module Rubocop
         offences = inspect_file(file)
 
         any_failed = true unless offences.empty?
-        processed_files << file
+        inspected_files << file
         invoke_formatters(:file_finished, file, offences)
       end
 
-      invoke_formatters(:finished, processed_files)
+      invoke_formatters(:finished, inspected_files)
       close_output_files
 
       display_error_summary(@errors) unless @options[:silent]
@@ -150,8 +151,9 @@ module Rubocop
         opts.on('-f', '--format FORMATTER',
                 'Choose a formatter.',
                 '  [s]imple (default)',
-                '  [e]macs',
                 '  [p]rogress',
+                '  [e]macs',
+                '  [j]son',
                 '  custom formatter class name') do |key|
           @options[:formatters] ||= []
           @options[:formatters] << [key]

@@ -6,7 +6,7 @@ module Rubocop
       attr_accessor :reports_summary
       alias_method :reports_summary?, :reports_summary
 
-      def started(all_files)
+      def started(target_files)
         @total_offence_count = 0
       end
 
@@ -17,9 +17,9 @@ module Rubocop
         report_file(file, offences)
       end
 
-      def finished(processed_files)
+      def finished(inspected_files)
         if reports_summary?
-          report_summary(processed_files.count, @total_offence_count)
+          report_summary(inspected_files.count, @total_offence_count)
         end
       end
 
