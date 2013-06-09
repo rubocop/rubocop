@@ -455,7 +455,7 @@ Usage: rubocop [options] [file1, file2, ...]
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       expect($stdout.string)
         .to eq(["#{abs('example.rb')}:3:2: E: Syntax error, unexpected " +
-                "token $end",
+                'token $end',
                 '',
                 '1 file inspected, 1 offence detected',
                 ''].join("\n"))
@@ -517,8 +517,8 @@ Usage: rubocop [options] [file1, file2, ...]
       # should get 2 offences reported.
       expect($stdout.string).to eq(
         ["#{abs('example.rb')}:8:79: C: Line is too long. [95/79]",
-         "#{abs('example.rb')}:10:4: C: Prefer single-quoted strings when you " +
-         "don't need string interpolation or special symbols.",
+         "#{abs('example.rb')}:10:4: C: Prefer single-quoted strings when " +
+         "you don't need string interpolation or special symbols.",
          '',
          '1 file inspected, 2 offences detected',
          ''].join("\n"))
@@ -543,8 +543,8 @@ Usage: rubocop [options] [file1, file2, ...]
       # should get 2 offences reported.
       expect($stdout.string).to eq(
         ["#{abs('example.rb')}:8:79: C: Line is too long. [95/79]",
-         "#{abs('example.rb')}:10:4: C: Prefer single-quoted strings when you " +
-         "don't need string interpolation or special symbols.",
+         "#{abs('example.rb')}:10:4: C: Prefer single-quoted strings when " +
+         "you don't need string interpolation or special symbols.",
          '',
          '1 file inspected, 2 offences detected',
          ''].join("\n"))

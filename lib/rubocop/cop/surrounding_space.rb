@@ -198,9 +198,7 @@ module Rubocop
       end
 
       def check(t1, t2, msg)
-        unless space_between?(t1, t2)
-          add_offence(:convention, t1.pos, msg)
-        end
+        add_offence(:convention, t1.pos, msg) unless space_between?(t1, t2)
       end
     end
 

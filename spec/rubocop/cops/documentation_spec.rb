@@ -53,7 +53,6 @@ module Rubocop
         expect(documentation.offences).to be_empty
       end
 
-
       it 'accepts namespace module without documentation' do
         inspect_source(documentation,
                        ['module Test',

@@ -12,7 +12,7 @@ module Rubocop
         return unless node.loc.respond_to?(:begin)
 
         # regex matches IF there is a ' or there is a \\ in the string that is
-        # not preceeded/followed by another \\ (e.g. `"\\x34"`) but not `"\\\\"`
+        # not preceeded/followed by another \\ (e.g. "\\x34") but not "\\\\"
         if node.loc.expression.source !~ /('|([^\\]|\A)\\([^\\]|\Z))/ &&
             node.loc.begin.source == '"'
           add_offence(:convention, node.loc, MSG)

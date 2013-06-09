@@ -8,7 +8,10 @@ module Rubocop
       let(:sl) { StringLiterals.new }
 
       it 'registers an offence for double quotes when single quotes suffice' do
-        inspect_source(sl, ['s = "abc"', 'x = "a\\\\b"', 'y ="\\\\b"', 'z = "a\\\\"'])
+        inspect_source(sl, ['s = "abc"',
+                            'x = "a\\\\b"',
+                            'y ="\\\\b"',
+                            'z = "a\\\\"'])
         expect(sl.offences.size).to eq(4)
       end
 
