@@ -16,6 +16,7 @@
 * New cop `EndAlignment` tracks misaligned `end` keywords.
 * New cop `Void` tracks uses of literals/variables/operators in possibly void context.
 * New cop `Documentation` checks for top level class/module doc comments.
+* New cop `UnreachableCode` tracks unreachable code segments.
 
 ### Changes
 
