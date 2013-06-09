@@ -29,7 +29,7 @@ module Rubocop
     #
     # ## Method Invocation Order
     #
-    # For example, when RuboCop processes 2 files,
+    # For example, when RuboCop inspects 2 files,
     # the invocation order should be like this:
     #
     # * `#initialize`
@@ -61,18 +61,18 @@ module Rubocop
 
       # @api public
       #
-      # Invoked once before any files are processed.
+      # Invoked once before any files are inspected.
       #
-      # @param all_files [Array(String)]
-      #   all file paths to be processed
+      # @param target_files [Array(String)]
+      #   all target file paths to be inspected
       #
       # @return [void]
-      def started(all_files)
+      def started(target_files)
       end
 
       # @api public
       #
-      # Invoked at the beginning of processing each files.
+      # Invoked at the beginning of inspecting each files.
       #
       # @param file [String]
       #   the file path
@@ -86,7 +86,7 @@ module Rubocop
 
       # @api public
       #
-      # Invoked at the end of processing each files.
+      # Invoked at the end of inspecting each files.
       #
       # @param file [String]
       #   the file path
@@ -102,13 +102,15 @@ module Rubocop
 
       # @api public
       #
-      # Invoked after all files are processed, or interrupted by user.
+      # Invoked after all files are inspected, or interrupted by user.
       #
-      # @param processed_files [Array(String)]
-      #   the processed file paths
+      # @param inspected_files [Array(String)]
+      #   the inspected file paths.
+      #   This would be same as `target_files` passed to `#started`
+      #   unless RuboCop is interrupted by user.
       #
       # @return [void]
-      def finished(processed_files)
+      def finished(inspected_files)
       end
     end
   end
