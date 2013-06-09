@@ -8,8 +8,9 @@ module Rubocop
   class CLI
     BUILTIN_FORMATTERS_FOR_KEYS = {
       'simple'   => Formatter::SimpleTextFormatter,
+      'progress' => Formatter::ProgressFormatter,
       'emacs'    => Formatter::EmacsStyleFormatter,
-      'progress' => Formatter::ProgressFormatter
+      'json'     => Formatter::JSONFormatter
     }
 
     # If set true while running,
@@ -150,8 +151,9 @@ module Rubocop
         opts.on('-f', '--format FORMATTER',
                 'Choose a formatter.',
                 '  [s]imple (default)',
-                '  [e]macs',
                 '  [p]rogress',
+                '  [e]macs',
+                '  [j]son',
                 '  custom formatter class name') do |key|
           @options[:formatters] ||= []
           @options[:formatters] << [key]

@@ -7,6 +7,7 @@
 * New cop `CaseEquality` checks for explicit use of `===`
 * Introduced formatter feature, enables custom formatted output and multiple outputs.
 * Added progress formatter. (`--format progress`)
+* Added JSON formatter. (`--format json`)
 * Added `-f`/`--format` option to specify formatter.
 * Added `-o`/`--out` option to specify output file for each formatter.
 * Added `-r/--require` option to inject external Ruby code into RuboCop.
