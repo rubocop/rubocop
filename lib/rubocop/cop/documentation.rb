@@ -10,6 +10,8 @@ module Rubocop
       MSG = 'Missing top level class/module documentation comment.'
 
       def inspect(source, tokens, ast, comments)
+        return
+
         ast_with_comments = Parser::Source::Comment.associate(ast, comments)
 
         check_classes(ast, ast_with_comments)
