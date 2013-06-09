@@ -158,11 +158,60 @@ AllCops:
 
 Note: Files and directories are specified relative to the `.rubocop.yml` file.
 
-## Custom Formatters
+## Formatters
+
+### JSON Formatter
+
+You can get RuboCop's inspection result in JSON format by passing `--format json` option in command line.
+The JSON structure is like the following example:
+
+```javascript
+{
+  "metadata": {
+    "rubocop_version": "0.9.0",
+    "ruby_engine": "ruby",
+    "ruby_version": "2.0.0",
+    "ruby_patchlevel": "195",
+    "ruby_platform": "x86_64-darwin12.3.0"
+  },
+  "files": [{
+      "path": "lib/foo.rb",
+      "offences": []
+    }, {
+      "path": "lib/bar.rb",
+      "offences": [{
+          "severity": "convention",
+          "message": "Line is too long. [81/79]",
+          "cop_name": "LineLength",
+          "location": {
+            "line": 546,
+            "column": 79
+          }
+        }, {
+          "severity": "warning",
+          "message": "Unreachable code detected.",
+          "cop_name": "UnreachableCode",
+          "location": {
+            "line": 15,
+            "column": 8
+          }
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "offence_count": 2,
+    "target_file_count": 2,
+    "inspected_file_count": 2
+  }
+}
+```
+
+### Custom Formatters
 
 You can customize RuboCop's output format with custom formatter.
 
-### Creating Custom Formatter
+#### Creating Custom Formatter
 
 To implement a custom formatter, you need to subclass
 `Rubocop::Formatter::BaseFormatter` and override some methods,
@@ -173,7 +222,7 @@ Please see the documents below for more formatter API details.
 * [Rubocop::Formatter::BaseFormatter](http://rubydoc.info/gems/rubocop/Rubocop/Formatter/BaseFormatter)
 * [Rubocop::Cop::Offence](http://rubydoc.info/gems/rubocop/Rubocop/Cop/Offence)
 
-### Using Custom Formatter in Command Line
+#### Using Custom Formatter in Command Line
 
 You can tell RuboCop to use your custom formatter with a combination of
 `--format` and `--require` option.

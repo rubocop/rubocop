@@ -90,6 +90,7 @@ require 'rubocop/formatter/base_formatter'
 require 'rubocop/formatter/simple_text_formatter'
 require 'rubocop/formatter/emacs_style_formatter'
 require 'rubocop/formatter/progress_formatter'
+require 'rubocop/formatter/json_formatter'
 
 require 'rubocop/config'
 require 'rubocop/config_store'
