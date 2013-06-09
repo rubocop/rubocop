@@ -86,6 +86,15 @@ module Rubocop
           end
         end
       end
+
+      def command?(name, node)
+        return unless node.type == :send
+
+        receiver, method_name, _args = *node
+
+        # commands have no explicit receiver
+        !receiver && method_name == name
+      end
     end
   end
 end

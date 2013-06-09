@@ -7,30 +7,60 @@ module Rubocop
     describe UnreachableCode do
       let(:uc) { UnreachableCode.new }
 
-      it 'registers an offence for return before other statements' do
-        inspect_source(uc,
-                       ['foo = 5',
-                        'return',
-                        'bar'
-                       ])
-        expect(uc.offences.size).to eq(1)
+      UnreachableCode::NODE_TYPES.each do |t|
+        it "registers an offence for #{t} before other statements" do
+          inspect_source(uc,
+                         ['foo = 5',
+                          "#{t}",
+                          'bar'
+                         ])
+          expect(uc.offences.size).to eq(1)
+        end
+
+        it "accepts code with conditional #{t}" do
+          inspect_source(uc,
+                         ['foo = 5',
+                          "#{t} if test",
+                          'bar'
+                         ])
+          expect(uc.offences).to be_empty
+        end
+
+        it "accepts #{t} as the final expression" do
+          inspect_source(uc,
+                         ['foo = 5',
+                          "#{t} if test"
+                         ])
+          expect(uc.offences).to be_empty
+        end
       end
 
-      it 'accepts code with conditional return' do
-        inspect_source(uc,
-                       ['foo = 5',
-                        'return if test',
-                        'bar'
-                       ])
-        expect(uc.offences).to be_empty
-      end
+      UnreachableCode::FLOW_COMMANDS.each do |t|
+        it "registers an offence for #{t} before other statements" do
+          inspect_source(uc,
+                         ['foo = 5',
+                          "#{t} something",
+                          'bar'
+                         ])
+          expect(uc.offences.size).to eq(1)
+        end
 
-      it 'accepts return as the final expression' do
-        inspect_source(uc,
-                       ['foo = 5',
-                        'return if test'
-                       ])
-        expect(uc.offences).to be_empty
+        it "accepts code with conditional #{t}" do
+          inspect_source(uc,
+                         ['foo = 5',
+                          "#{t} something if test",
+                          'bar'
+                         ])
+          expect(uc.offences).to be_empty
+        end
+
+        it "accepts #{t} as the final expression" do
+          inspect_source(uc,
+                         ['foo = 5',
+                          "#{t} something if test"
+                         ])
+          expect(uc.offences).to be_empty
+        end
       end
     end
   end
