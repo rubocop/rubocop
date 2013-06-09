@@ -7,6 +7,8 @@ module Rubocop
       # @api private
       SEVERITIES = [:refactor, :convention, :warning, :error, :fatal]
 
+      # @api public
+      #
       # @!attribute [r] severity
       #
       # @return [Symbol]
@@ -14,12 +16,16 @@ module Rubocop
       #   any of `:refactor`, `:convention`, `:warning`, `:error` or `:fatal`.
       attr_reader :severity
 
+      # @api public
+      #
       # @!attribute [r] location
       #
       # @return [Integer]
       #   the location where the violation is detected.
       attr_reader :location
 
+      # @api public
+      #
       # @!attribute [r] message
       #
       # @return [String]
@@ -29,6 +35,8 @@ module Rubocop
       #   'Line is too long. [90/79]'
       attr_reader :message
 
+      # @api public
+      #
       # @!attribute [r] cop_name
       #
       # @return [String]
@@ -50,10 +58,12 @@ module Rubocop
         @cop_name = cop_name
       end
 
+      # @api private
       def line
         @location.line
       end
 
+      # @api private
       def column
         @location.column
       end
