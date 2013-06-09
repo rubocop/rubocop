@@ -8,16 +8,22 @@ module Rubocop
     let(:formatter) { Formatter::ProgressFormatter.new(output) }
     let(:output) { StringIO.new }
 
+    let(:files) do
+      %w(lib/rubocop.rb spec/spec_helper.rb bin/rubocop).map do |path|
+        File.expand_path(path)
+      end
+    end
+
     describe '#file_finished' do
       before do
-        formatter.started(['/path/to/file'])
-        formatter.file_started('/path/to/file', {})
+        formatter.started(files)
+        formatter.file_started(files.first, {})
       end
 
       shared_examples 'calls #report_file_as_mark' do
         it 'calls #report_as_with_mark' do
           formatter.should_receive(:report_file_as_mark)
-          formatter.file_finished('/path/to/file', offences)
+          formatter.file_finished(files.first, offences)
         end
       end
 
@@ -34,7 +40,7 @@ module Rubocop
 
     describe '#report_file_as_mark' do
       before do
-        formatter.report_file_as_mark('path/to/file', offences)
+        formatter.report_file_as_mark(files.first, offences)
       end
 
       def offence_with_severity(severity)
@@ -80,8 +86,6 @@ module Rubocop
     end
 
     describe '#finished' do
-      let(:files) { %w(file1.rb file2.rb file3.rb) }
-
       before do
         formatter.reports_summary = true
 
@@ -103,10 +107,10 @@ module Rubocop
       it 'reports all detected offences for all failed files' do
         formatter.finished(files)
         expect(output.string).to include([
-          '== file1.rb ==',
+          '== lib/rubocop.rb ==',
           'C:  2:  2: foo',
           '',
-          '== file3.rb ==',
+          '== bin/rubocop ==',
           'E:  5:  1: bar',
           'C:  6:  0: foo'
         ].join("\n"))

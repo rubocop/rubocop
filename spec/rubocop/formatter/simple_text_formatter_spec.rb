@@ -2,12 +2,39 @@
 
 require 'spec_helper'
 require 'stringio'
+require 'tempfile'
 
 module Rubocop
   module Formatter
     describe SimpleTextFormatter do
       subject(:formatter) { SimpleTextFormatter.new(output) }
       let(:output) { StringIO.new }
+
+      describe '#report_file' do
+        before do
+          formatter.report_file(file, [])
+        end
+
+        context 'the file is under the current working directory' do
+          let(:file) { File.expand_path('spec/spec_helper.rb') }
+
+          it 'prints as relative path' do
+            expect(output.string).to include('== spec/spec_helper.rb ==')
+          end
+        end
+
+        context 'the file is outside of the current working directory' do
+          let(:file) do
+            tempfile = Tempfile.new('')
+            tempfile.close
+            File.expand_path(tempfile.path)
+          end
+
+          it 'prints as absolute path' do
+            expect(output.string).to include("== #{file} ==")
+          end
+        end
+      end
 
       describe '#report_summary' do
         context 'when no files inspected' do
