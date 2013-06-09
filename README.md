@@ -39,19 +39,18 @@ For more details check the available command-line options:
 $ rubocop -h
 ```
 
-Command flag          | Description
-----------------------|------------------------------------------------------------
-`-v/--version`        | Displays the current version and exits
-`-V/--verbose-version | Displays the current version plus the version of Parser and Ruby
-`-d/--debug`          | Displays some extra debug output
-`-e/--emacs`          | Output the results in Emacs format
-`-c/--config`         | Run with specified config file
-`f/--format`          | Choose a formatter
-`o/--out`             | Write output to a file instead of STDOUT
-`--require`           | Require Ruby file
-`-R/--rails`          | Run extra Rails cops
-`-s/--silent`         | Suppress the final summary
-`--only`              | Run only the specified cop
+Command flag           | Description
+-----------------------|------------------------------------------------------------
+`-v/--version`         | Displays the current version and exits
+`-V/--verbose-version` | Displays the current version plus the version of Parser and Ruby
+`-d/--debug`           | Displays some extra debug output
+`-c/--config`          | Run with specified config file
+`-f/--format`          | Choose a formatter
+`-o/--out`             | Write output to a file instead of STDOUT
+`-r/--require`         | Require Ruby file
+`-R/--rails`           | Run extra Rails cops
+`-s/--silent`          | Suppress the final summary
+`--only`               | Run only the specified cop
 
 ## Configuration
 
