@@ -2,6 +2,15 @@
 
 module Rubocop
   module Cop
+    class Location
+      attr_reader :line, :column
+
+      def initialize(line, column)
+        @line = line
+        @column = column
+      end
+    end
+
     # An Offence represents a style violation detected by RuboCop.
     class Offence
       # @api private
