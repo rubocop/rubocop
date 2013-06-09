@@ -15,6 +15,7 @@
 * New cop `AssignmentInCondition` checks for assignment in conditions.
 * New cop `EndAlignment` tracks misaligned `end` keywords.
 * New cop `Void` tracks uses of literals/variables/operators in possibly void context.
+* New cop `Documentation` checks for top level class/module doc comments.
 
 ### Changes
 

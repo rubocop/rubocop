@@ -329,6 +329,10 @@ BlockNesting:
 CaseEquality:
   Enabled: true
 
+# Document classes and non-namespace modules.
+Documentation:
+  Enabled: true
+
 ## Warnings
 
 # Don't use assignment in conditions.

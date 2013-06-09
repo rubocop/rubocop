@@ -81,6 +81,7 @@ require 'rubocop/cop/case_equality'
 require 'rubocop/cop/assignment_in_condition'
 require 'rubocop/cop/end_alignment'
 require 'rubocop/cop/void'
+require 'rubocop/cop/documentation'
 
 require 'rubocop/cop/rails/validation'
 
