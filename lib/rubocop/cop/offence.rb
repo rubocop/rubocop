@@ -31,6 +31,8 @@ module Rubocop
 
     # An Offence represents a style violation detected by RuboCop.
     class Offence
+      include Comparable
+
       # @api private
       SEVERITIES = [:refactor, :convention, :warning, :error, :fatal]
 
@@ -122,6 +124,14 @@ module Rubocop
         severity == other.severity && line == other.line &&
           column == other.column && message == other.message &&
           cop_name == other.cop_name
+      end
+
+      def <=>(other)
+        if line != other.line
+          line <=> other.line
+        else
+          column <=> other.line
+        end
       end
 
       # @api private

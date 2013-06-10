@@ -33,7 +33,7 @@ module Rubocop
 
         @offences_for_files.each do |file, offences|
           output.puts
-          report_file(file, offences.sort_by(&:line))
+          report_file(file, offences.sort)
         end
 
         report_summary(inspected_files.count, @total_offence_count)
