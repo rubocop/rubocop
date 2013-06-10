@@ -157,9 +157,9 @@ Usage: rubocop [options] [file1, file2, ...]
       expect($stdout.string)
         .to eq(
         ["#{abs('example1.rb')}:1:0: C: Missing utf-8 encoding comment.",
-         "#{abs('example1.rb')}:1:4: C: Trailing whitespace detected.",
          "#{abs('example1.rb')}:1:1: C: Surrounding space missing" +
          " for operator '='.",
+         "#{abs('example1.rb')}:1:4: C: Trailing whitespace detected.",
          "#{abs('example1.rb')}:2:1: C: Trailing whitespace detected.",
          "#{abs('example2.rb')}:1:0: C: Missing utf-8 encoding comment.",
          "#{abs('example2.rb')}:1:0: C: Tab detected.",
