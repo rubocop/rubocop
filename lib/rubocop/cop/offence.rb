@@ -2,11 +2,40 @@
 
 module Rubocop
   module Cop
+    # A Location represents a place where the violation is detected in a file.
+    class Location
+      # @api public
+      #
+      # @!attribute [r] line
+      #
+      # @return [Integer]
+      #   the line number.
+      #   first line is `1`.
+      attr_reader :line
+
+      # @api public
+      #
+      # @!attribute [r] column
+      #
+      # @return [Integer]
+      #   the column number.
+      #   beginning of line is `0`.
+      attr_reader :column
+
+      # @api private
+      def initialize(line, column)
+        @line = line
+        @column = column
+      end
+    end
+
     # An Offence represents a style violation detected by RuboCop.
     class Offence
       # @api private
       SEVERITIES = [:refactor, :convention, :warning, :error, :fatal]
 
+      # @api public
+      #
       # @!attribute [r] severity
       #
       # @return [Symbol]
@@ -14,12 +43,18 @@ module Rubocop
       #   any of `:refactor`, `:convention`, `:warning`, `:error` or `:fatal`.
       attr_reader :severity
 
+      # @api public
+      #
       # @!attribute [r] location
       #
-      # @return [Integer]
+      # @return [Rubocop::Cop::Location]
       #   the location where the violation is detected.
+      #
+      # @see Rubocop::Cop::Location
       attr_reader :location
 
+      # @api public
+      #
       # @!attribute [r] message
       #
       # @return [String]
@@ -29,6 +64,8 @@ module Rubocop
       #   'Line is too long. [90/79]'
       attr_reader :message
 
+      # @api public
+      #
       # @!attribute [r] cop_name
       #
       # @return [String]
@@ -50,10 +87,12 @@ module Rubocop
         @cop_name = cop_name
       end
 
+      # @api private
       def line
         @location.line
       end
 
+      # @api private
       def column
         @location.column
       end
