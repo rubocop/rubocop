@@ -259,7 +259,7 @@ module Rubocop
       # On JRuby and Rubinius, there's a risk that we hang in
       # tokenize() if we don't set the all errors as fatal flag.
       parser.diagnostics.all_errors_are_fatal = RUBY_ENGINE != 'ruby'
-      parser.diagnostics.ignore_warnings      = true
+      parser.diagnostics.ignore_warnings      = false
 
       diagnostics = []
       parser.diagnostics.consumer = lambda do |diagnostic|
