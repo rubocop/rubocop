@@ -284,7 +284,7 @@ module Rubocop
       end
 
       syntax_offences = diagnostics.map do |d|
-        Cop::Offence.new(:error, d.location, "Syntax error, #{d.message}",
+        Cop::Offence.new(d.level, d.location, "#{d.message}",
                          'Syntax')
       end
 

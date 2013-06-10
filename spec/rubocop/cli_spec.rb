@@ -454,8 +454,22 @@ Usage: rubocop [options] [file1, file2, ...]
       ])
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       expect($stdout.string)
-        .to eq(["#{abs('example.rb')}:3:2: E: Syntax error, unexpected " +
+        .to eq(["#{abs('example.rb')}:3:2: E: unexpected " +
                 'token $end',
+                '',
+                '1 file inspected, 1 offence detected',
+                ''].join("\n"))
+    end
+
+    it 'registers an offence for Parser warnings' do
+      create_file('example.rb', [
+                                 '# encoding: utf-8',
+                                 'puts *test'
+                                ])
+      expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
+      expect($stdout.string)
+        .to eq(["#{abs('example.rb')}:2:5: W: " +
+                "`*' interpreted as argument prefix",
                 '',
                 '1 file inspected, 1 offence detected',
                 ''].join("\n"))
@@ -472,7 +486,7 @@ Usage: rubocop [options] [file1, file2, ...]
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
 
       expected =
-        ["#{abs('example.rb')}:2:11: E: Syntax error, unexpected token tGT"]
+        ["#{abs('example.rb')}:2:11: E: unexpected token tGT"]
       if RUBY_ENGINE == 'ruby'
         if RUBY_VERSION < '2'
           expected.unshift("#{abs('example.rb')}:1:0: C: Missing utf-8 " +
