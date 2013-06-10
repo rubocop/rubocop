@@ -43,6 +43,8 @@ module Rubocop
     class BaseFormatter
       # rubocop:enable LineLength
 
+      # @api public
+      #
       # @!attribute [r] output
       #
       # @return [IO]

@@ -14,15 +14,6 @@ module Rubocop
       end
     end
 
-    class Location
-      attr_reader :line, :column
-
-      def initialize(line, column)
-        @line = line
-        @column = column
-      end
-    end
-
     class Cop < Parser::AST::Processor
       extend AST::Sexp
 
