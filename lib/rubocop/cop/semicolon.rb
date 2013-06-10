@@ -23,10 +23,9 @@ module Rubocop
           end
         end
 
-        # not pretty reliable, but the best we can do for now
-        source.each_with_index do |line, index|
-          if line =~ /;\s*\z/
-            add_offence(:convention, Location.new(index, line.length), MSG)
+        tokens.group_by { |t| t.pos.line }.each do |line, line_tokens|
+          if line_tokens.last.type == :tSEMI
+            add_offence(:convention, line_tokens.last.pos, MSG)
           end
         end
       end

@@ -17,14 +17,12 @@ module Rubocop
         inspect_source(s,
                        ['puts "this is a test";'])
         expect(s.offences.size).to eq(1)
-        expect(s.offences.map(&:message)).to eq([Semicolon::MSG])
       end
 
       it 'registers an offence for several expressions' do
         inspect_source(s,
                        ['puts "this is a test"; puts "So is this"'])
         expect(s.offences.size).to eq(1)
-        expect(s.offences.map(&:message)).to eq([Semicolon::MSG])
       end
 
       it 'registers an offence for one line method with two statements' do
@@ -82,6 +80,13 @@ module Rubocop
         inspect_source(s,
                        ['module Foo; end;'])
         expect(s.offences.size).to eq(1)
+      end
+
+      it 'accept semicolons inside strings' do
+        inspect_source(s,
+                       ['string = ";',
+                        'multi-line string"'])
+        expect(s.offences).to be_empty
       end
     end
   end
