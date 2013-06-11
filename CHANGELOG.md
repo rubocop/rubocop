@@ -22,6 +22,7 @@
 ### Changes
 
 * Deprecated `-e`/`--emacs` option. (Use `--format emacs` instead)
+* The default output formatter (`--format simple`) now prints relative file paths if the paths are under the current working directory.
 
 ### Bugs fixed
 

@@ -23,7 +23,7 @@ module Rubocop
       end
 
       def report_file(file, offences)
-        output.puts "== #{file} ==".color(:yellow)
+        output.puts "== #{smart_path(file)} ==".color(:yellow)
         output.puts offences.join("\n")
       end
 
@@ -43,6 +43,16 @@ module Rubocop
 
         output.puts
         output.puts summary
+      end
+
+      protected
+
+      def smart_path(path)
+        if path.start_with?(Dir.pwd)
+          Pathname.new(path).relative_path_from(Pathname.getwd).to_s
+        else
+          path
+        end
       end
     end
   end
