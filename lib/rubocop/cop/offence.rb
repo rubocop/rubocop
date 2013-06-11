@@ -79,24 +79,22 @@ module Rubocop
       attr_reader :cop_name
 
       # @api private
+      attr_reader :line
+
+      # @api private
+      attr_reader :column
+
+      # @api private
       def initialize(severity, location, message, cop_name)
         unless SEVERITIES.include?(severity)
           fail ArgumentError, "Unknown severity: #{severity}"
         end
         @severity = severity
         @location = location
+        @line = location.line
+        @column = location.column
         @message = message
         @cop_name = cop_name
-      end
-
-      # @api private
-      def line
-        @location.line
-      end
-
-      # @api private
-      def column
-        @location.column
       end
 
       # @api private
