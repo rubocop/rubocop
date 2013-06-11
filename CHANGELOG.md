@@ -31,6 +31,7 @@
 * [#229](https://github.com/bbatsov/rubocop/issues/229) - recognize a line with CR+LF as a blank line in AccessControl cop.
 * [#235](https://github.com/bbatsov/rubocop/issues/235) - handle multiple constant assignment in ConstantName cop
 * [#246](https://github.com/bbatsov/rubocop/issues/246) - correct handling of unicode escapes within double quotes
+* Fix crashes in Blocks, CaseEquality, CaseIndentation, ClassAndModuleCamelCase, ClassMethods, CollectionMethods, and ColonMethodCall.
 
 ## 0.8.2 (06/05/2013)
 

@@ -46,7 +46,8 @@ module Rubocop
 
       describe '#severity_level' do
         subject(:severity_level) do
-          Offence.new(severity, 1, 'message', 'CopName').severity_level
+          Offence.new(severity, Location.new(1, 0), 'message',
+                      'CopName').severity_level
         end
 
         context 'when severity is :refactor' do

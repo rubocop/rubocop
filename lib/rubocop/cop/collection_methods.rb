@@ -19,7 +19,7 @@ module Rubocop
         if receiver && PREFERRED_METHODS[method_name]
           add_offence(
             :convention,
-            node.loc.line,
+            node.loc,
             sprintf(MSG, PREFERRED_METHODS[method_name], method_name)
           )
         end

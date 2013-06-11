@@ -38,7 +38,8 @@ module Rubocop
       end
 
       def offence_with_severity(severity)
-        Cop::Offence.new(severity, 1, 'message', 'CopName')
+        Cop::Offence.new(severity, Cop::Location.new(1, 0), 'message',
+                         'CopName')
       end
 
       context 'when no offences are detected' do
