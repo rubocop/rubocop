@@ -328,7 +328,7 @@ module Rubocop
 
       rb += files.select { |file| File.extname(file) == '.rb' }
       rb += files.select do |file|
-        if File.extname(file) == ''
+        if File.extname(file) == '' && !excluded_file?(file)
           begin
             File.open(file) { |f| f.readline } =~ /#!.*ruby/
           rescue EOFError, ArgumentError => e
@@ -343,10 +343,7 @@ module Rubocop
         config.file_to_include?(file)
       end
 
-      rb.reject do |file|
-        config = ConfigStore.for(file)
-        config.file_to_exclude?(file)
-      end.uniq
+      rb.reject { |file| excluded_file?(file) }.uniq
     end
 
     private
@@ -425,6 +422,10 @@ module Rubocop
       message << '.'
       message << " Please use #{alternative} instead." if alternative
       warn message
+    end
+
+    def excluded_file?(file)
+      ConfigStore.for(file).file_to_exclude?(file)
     end
   end
 end

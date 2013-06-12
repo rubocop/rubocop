@@ -664,6 +664,27 @@ Usage: rubocop [options] [file1, file2, ...]
          ''].join("\n"))
     end
 
+    it 'does not read files in excluded list' do
+      %w(rb.rb non-rb.ext without-ext).each do |filename|
+        create_file("example/ignored/#{filename}", [
+            '# encoding: utf-8',
+            '#' * 90
+        ])
+      end
+
+      create_file('example/.rubocop.yml', [
+          'AllCops:',
+          '  Excludes:',
+          '    - ignored/**',
+      ])
+      File.should_not_receive(:open).with(%r(/ignored/))
+      File.stub(:open).and_call_original
+      expect(cli.run(['example'])).to eq(0)
+      expect($stdout.string).to eq(
+        ['', '0 files inspected, no offences detected',
+         ''].join("\n"))
+    end
+
     describe '--require option' do
       let(:required_file_path) { './path/to/required_file.rb' }
 
