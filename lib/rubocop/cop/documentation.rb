@@ -9,6 +9,9 @@ module Rubocop
     class Documentation < Cop
       MSG = 'Missing top level class/module documentation comment.'
 
+      # TODO: This cop is disabled for now due to a Parser bug.
+      # https://github.com/bbatsov/rubocop/commit/b5461be
+      # rubocop:disable UnreachableCode
       def inspect(source, tokens, ast, comments)
         return
 
@@ -17,6 +20,7 @@ module Rubocop
         check_classes(ast, ast_with_comments)
         check_modules(ast, ast_with_comments)
       end
+      # rubocop:enable UnreachableCode
 
       private
 

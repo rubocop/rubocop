@@ -24,7 +24,7 @@ module Rubocop
         end
 
         tokens.group_by { |t| t.pos.line }.each do |line, line_tokens|
-          if line_tokens.last.type == :tSEMI
+          if line_tokens.last.type == :tSEMI # rubocop:disable SymbolName
             add_offence(:convention, line_tokens.last.pos, MSG)
           end
         end
