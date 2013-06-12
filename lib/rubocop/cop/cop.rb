@@ -41,7 +41,8 @@ module Rubocop
         false
       end
 
-      def initialize
+      def initialize(source = [])
+        @source = source
         @offences = []
         @debug = false
       end
@@ -56,7 +57,8 @@ module Rubocop
       def add_offence(severity, location, message)
         unless @disabled_lines && @disabled_lines.include?(location.line)
           message = debug ? "#{name}: #{message}" : message
-          @offences << Offence.new(severity, location, message, name)
+          @offences << Offence.new(Diagnostic.new(severity, location, message),
+                                   name, @source)
         end
       end
 

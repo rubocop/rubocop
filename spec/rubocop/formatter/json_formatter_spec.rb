@@ -97,7 +97,9 @@ module Rubocop
       subject(:hash) { formatter.hash_for_offence(offence) }
 
       let(:offence) do
-        Cop::Offence.new(:convention, location, 'This is message', 'CopName')
+        Cop::Offence.new(Cop::Diagnostic.new(:convention, location,
+                                             'This is message'),
+                         'CopName', ['a'])
       end
 
       let(:location) { Cop::Location.new(3, 5) }

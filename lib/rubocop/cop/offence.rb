@@ -29,6 +29,45 @@ module Rubocop
       end
     end
 
+    # A Diagnostic represents an error or violation detected by Parser
+    # or by RuboCop.
+    class Diagnostic
+      # @api public
+      #
+      # @!attribute [r] level
+      #
+      # @return [Symbol]
+      #   same as the `severity` attribute of `Offence`.
+      #
+      # @see Rubocop::Cop::Offence
+      attr_reader :level
+
+      # @api public
+      #
+      # @!attribute [r] location
+      #
+      # @return [Rubocop::Cop::Location]
+      #   the location where the violation is detected.
+      #
+      # @see Rubocop::Cop::Location
+      attr_reader :location
+
+      # @api public
+      #
+      # @!attribute [r] message
+      #
+      # @return [String]
+      #   the message of the diagnostic.
+      attr_reader :message
+
+      # @api private
+      def initialize(level, location, message)
+        @level = level
+        @location = location
+        @message = message
+      end
+    end
+
     # An Offence represents a style violation detected by RuboCop.
     class Offence
       include Comparable
@@ -84,17 +123,20 @@ module Rubocop
       # @api private
       attr_reader :column
 
+      attr_reader :source_line
+
       # @api private
-      def initialize(severity, location, message, cop_name)
-        unless SEVERITIES.include?(severity)
+      def initialize(diagnostic, cop_name, source)
+        unless SEVERITIES.include?(diagnostic.level)
           fail ArgumentError, "Unknown severity: #{severity}"
         end
-        @severity = severity
-        @location = location
-        @line = location.line
-        @column = location.column
-        @message = message
+        @severity = diagnostic.level
+        @location = diagnostic.location
+        @line = diagnostic.location.line
+        @column = diagnostic.location.column
+        @message = diagnostic.message
         @cop_name = cop_name
+        @source_line = source[location.line - 1]
       end
 
       # @api private

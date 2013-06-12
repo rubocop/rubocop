@@ -10,7 +10,8 @@ module Rubocop
       'simple'   => Formatter::SimpleTextFormatter,
       'progress' => Formatter::ProgressFormatter,
       'emacs'    => Formatter::EmacsStyleFormatter,
-      'json'     => Formatter::JSONFormatter
+      'json'     => Formatter::JSONFormatter,
+      'details'  => Formatter::DetailsFormatter
     }
 
     # If set true while running,
@@ -97,7 +98,7 @@ module Rubocop
         cop_name = cop_class.cop_name
         cop_class.config = config.for_cop(cop_name)
         if config.cop_enabled?(cop_name)
-          cop = setup_cop(cop_class, disabled_lines)
+          cop = setup_cop(cop_class, source, disabled_lines)
           if !@options[:only] || @options[:only] == cop_name
             begin
               cop.inspect(source, tokens, ast, comments)
@@ -113,8 +114,8 @@ module Rubocop
       end
     end
 
-    def setup_cop(cop_class, disabled_lines = nil)
-      cop = cop_class.new
+    def setup_cop(cop_class, source, disabled_lines = nil)
+      cop = cop_class.new(source)
       cop.debug = @options[:debug]
       cop.disabled_lines = disabled_lines[cop_class.cop_name] if disabled_lines
       cop
@@ -151,6 +152,7 @@ module Rubocop
         opts.on('-f', '--format FORMATTER',
                 'Choose a formatter.',
                 '  [s]imple (default)',
+                '  [d]etails',
                 '  [p]rogress',
                 '  [e]macs',
                 '  [j]son',
@@ -283,12 +285,12 @@ module Rubocop
         end
       end
 
+      source = source_buffer.source.split($RS)
       syntax_offences = diagnostics.map do |d|
-        Cop::Offence.new(d.level, d.location, "#{d.message}",
-                         'Syntax')
+        Cop::Offence.new(d, 'Syntax', source)
       end
 
-      [ast, comments, tokens, source_buffer.source.split($RS), syntax_offences]
+      [ast, comments, tokens, source, syntax_offences]
     end
 
     # Generate a list of target files by expanding globing patterns
