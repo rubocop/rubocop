@@ -25,20 +25,20 @@ module Rubocop
         super
       end
 
-      # def on_block(node)
-      #   start_loc = node.loc.expression
-      #   end_loc = node.loc.end
+# def on_block(node)
+#   start_loc = node.loc.expression
+#   end_loc = node.loc.end
 
-      #   if start_loc.line != end_loc.line && start_loc.column != end_loc.column
-      #     add_offence(:warning,
-      #                 end_loc,
-      #                 sprintf(MSG, end_loc.line, end_loc.column,
-      #                         start_loc.source.lines.to_a.first.chomp,
-      #                         start_loc.line, start_loc.column))
-      #   end
+#   if start_loc.line != end_loc.line && start_loc.column != end_loc.column
+#     add_offence(:warning,
+#                 end_loc,
+#                 sprintf(MSG, end_loc.line, end_loc.column,
+#                         start_loc.source.lines.to_a.first.chomp,
+#                         start_loc.line, start_loc.column))
+#   end
 
-      #   super
-      # end
+#   super
+# end
 
       def on_if(node)
         check(node) if node.loc.respond_to?(:end)

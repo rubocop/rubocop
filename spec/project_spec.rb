@@ -11,17 +11,14 @@ describe 'RuboCop Project' do
     end
   end
 
-  describe 'source codes', broken: true do
+  describe 'source codes' do
     before { $stdout = StringIO.new }
     after  { $stdout = STDOUT }
 
     it 'has no violations' do
       # Need to pass an empty array explicitly
       # so that the CLI does not refer arguments of `rspec`
-      Rubocop::CLI.new.run([])
-      expect($stdout.string).to match(
-        /files inspected, no offences detected\n/
-      )
+      expect(Rubocop::CLI.new.run([])).to eq(0)
     end
   end
 end

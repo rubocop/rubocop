@@ -291,8 +291,9 @@ Usage: rubocop [options] [file1, file2, ...]
       result = cli.run(['-c', 'rubocop.yml', 'example1.rb'])
       expect($stdout.string).to eq(
         ['== example1.rb ==',
-         'C:  1:  0: Favor modifier if/unless usage when you have a single-line ' +
-         'body. Another good alternative is the usage of control flow &&/||.',
+         'C:  1:  0: Favor modifier if/unless usage when you have a ' +
+         'single-line body. Another good alternative is the usage of ' +
+         'control flow &&/||.',
          '',
          '1 file inspected, 1 offence detected',
          ''].join("\n"))
@@ -705,8 +706,8 @@ Usage: rubocop [options] [file1, file2, ...]
         context 'when emacs format is specified' do
           it 'outputs with emacs format' do
             cli.run(['--format', 'emacs', 'example.rb'])
-            expect($stdout.string)
-              .to include("#{abs(target_file)}:2:79: C: Line is too long. [90/79]")
+            expect($stdout.string).to include(
+              "#{abs(target_file)}:2:79: C: Line is too long. [90/79]")
           end
         end
 

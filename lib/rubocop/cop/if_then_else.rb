@@ -26,9 +26,7 @@ module Rubocop
       include IfThenElse
 
       def offending_line(node)
-        if node.loc.begin && node.loc.begin.source == ';'
-          node.loc.begin.line
-        end
+        node.loc.begin.line if node.loc.begin && node.loc.begin.source == ';'
       end
 
       def error_message
