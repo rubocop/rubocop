@@ -134,6 +134,11 @@ module Rubocop
         expect(space.offences).to be_empty
       end
 
+      it 'accepts an operator called with method syntax' do
+        inspect_source(space, ['Date.today.+(1).to_s'])
+        expect(space.offences).to be_empty
+      end
+
       it 'registers an offence for operators without spaces' do
         inspect_source(space,
                        ['x+= a+b-c*d/e%f^g|h&i||j',
