@@ -57,6 +57,7 @@ module Rubocop
 
         tokens.each_cons(3) do |token_before, token, token_after|
           next if token_before.type == :kDEF # TODO: remove?
+          next if token_before.type == :tDOT # Called as method.
           next if positions_not_to_check.include?(token.pos)
 
           case token.type
