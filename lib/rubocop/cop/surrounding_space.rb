@@ -256,6 +256,7 @@ module Rubocop
         types = [t1, t2].map(&:type)
         braces = [:tLBRACE, :tRCURLY]
         return if types == braces || (braces - types).size == 2
+        return if t1.pos.line < t2.pos.line # No offence if line break inside.
         has_space = space_between?(t1, t2)
         is_offence, word = if self.class.config['EnforcedStyleIsWithSpaces']
                              [!has_space, 'missing']
