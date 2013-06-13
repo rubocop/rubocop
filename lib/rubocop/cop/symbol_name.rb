@@ -16,7 +16,7 @@ module Rubocop
         return unless sym_name =~ /^[a-zA-Z]/
         return if sym_name =~ SNAKE_CASE
         return if allow_camel_case? && sym_name =~ CAMEL_CASE
-        add_offence(:convention, node.loc, MSG)
+        add_offence(:convention, node.loc.expression, MSG)
       end
     end
   end

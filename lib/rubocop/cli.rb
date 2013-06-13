@@ -10,7 +10,8 @@ module Rubocop
       'simple'   => Formatter::SimpleTextFormatter,
       'progress' => Formatter::ProgressFormatter,
       'emacs'    => Formatter::EmacsStyleFormatter,
-      'json'     => Formatter::JSONFormatter
+      'json'     => Formatter::JSONFormatter,
+      'details'  => Formatter::DetailsFormatter
     }
 
     # If set true while running,
@@ -151,6 +152,7 @@ module Rubocop
         opts.on('-f', '--format FORMATTER',
                 'Choose a formatter.',
                 '  [s]imple (default)',
+                '  [d]etails',
                 '  [p]rogress',
                 '  [e]macs',
                 '  [j]son',

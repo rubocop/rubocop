@@ -16,7 +16,7 @@ module Rubocop
         if NESTING_BLOCKS.include?(node.type)
           current_level += 1
           if current_level == max + 1
-            add_offence(:convention, node.location, message(max))
+            add_offence(:convention, node.location.expression, message(max))
             return
           end
         end

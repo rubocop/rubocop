@@ -20,9 +20,7 @@ module Rubocop
 
             if cur_arg_line != prev_arg_line &&
                 cur_arg_col != first_arg_col
-              add_offence(:convention,
-                          arg.loc,
-                          MSG)
+              add_offence(:convention, arg.loc.expression, MSG)
             end
 
             prev_arg_col = cur_arg_col

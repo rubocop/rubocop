@@ -35,7 +35,7 @@ module Rubocop
 
         if start_line == end_line && !(allow_empty? && empty_body)
           add_offence(:convention,
-                      node.loc,
+                      node.loc.expression,
                       MSG)
         end
       end

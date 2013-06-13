@@ -31,7 +31,7 @@ module Rubocop
 
 #   if start_loc.line != end_loc.line && start_loc.column != end_loc.column
 #     add_offence(:warning,
-#                 end_loc,
+#                 end_loc.expression,
 #                 sprintf(MSG, end_loc.line, end_loc.column,
 #                         start_loc.source.lines.to_a.first.chomp,
 #                         start_loc.line, start_loc.column))
