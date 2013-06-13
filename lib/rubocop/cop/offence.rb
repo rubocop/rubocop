@@ -36,10 +36,6 @@ module Rubocop
         @column = column
         @source_line = source[line - 1]
       end
-
-      def expression
-        self
-      end
     end
 
     # An Offence represents a style violation detected by RuboCop.

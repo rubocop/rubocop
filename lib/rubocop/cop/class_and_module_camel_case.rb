@@ -22,7 +22,7 @@ module Rubocop
       def check_name(node)
         name = node.loc.name.source
 
-        add_offence(:convention, node.loc, MSG) if name =~ /_/
+        add_offence(:convention, node.loc.expression, MSG) if name =~ /_/
       end
     end
   end

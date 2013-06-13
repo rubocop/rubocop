@@ -15,7 +15,7 @@ module Rubocop
         # not preceeded/followed by another \\ (e.g. "\\x34") but not "\\\\"
         if node.loc.expression.source !~ /('|([^\\]|\A)\\([^\\]|\Z))/ &&
             node.loc.begin.source == '"'
-          add_offence(:convention, node.loc, MSG)
+          add_offence(:convention, node.loc.expression, MSG)
         end
       end
 

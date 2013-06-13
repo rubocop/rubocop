@@ -11,7 +11,7 @@ module Rubocop
 
           if node.loc.expression.source.include?("##{var}")
             add_offence(:convention,
-                        v.loc,
+                        v.loc.expression,
                         sprintf(MSG, var, var))
           end
         end

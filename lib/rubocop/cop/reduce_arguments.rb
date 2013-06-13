@@ -18,7 +18,9 @@ module Rubocop
         return unless receiver
         return unless [:reduce, :inject].include?(method_name)
 
-        add_offence(:convention, node.loc, MSG) unless args_node == ARGS_NODE
+        unless args_node == ARGS_NODE
+          add_offence(:convention, node.loc.expression, MSG)
+        end
 
         super
       end
