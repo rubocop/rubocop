@@ -16,7 +16,7 @@ module Rubocop
         string_array = array_elems.all? { |e| e.type == :str }
 
         if string_array && !complex_content?(array_elems)
-          add_offence(:convention, node.loc, MSG)
+          add_offence(:convention, node.loc.expression, MSG)
         end
 
         super

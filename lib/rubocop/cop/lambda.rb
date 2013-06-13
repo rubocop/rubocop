@@ -20,9 +20,9 @@ module Rubocop
           lambda_length = lambda_length(node)
 
           if selector != '->' && lambda_length == 0
-            add_offence(:convention, block_method.loc, SINGLE_MSG)
+            add_offence(:convention, block_method.loc.expression, SINGLE_MSG)
           elsif selector == '->' && lambda_length > 0
-            add_offence(:convention, block_method.loc, MULTI_MSG)
+            add_offence(:convention, block_method.loc.expression, MULTI_MSG)
           end
         end
 

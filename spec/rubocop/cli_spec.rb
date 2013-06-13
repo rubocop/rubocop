@@ -34,6 +34,7 @@ Usage: rubocop [options] [file1, file2, ...]
         --only COP                   Run just one cop.
     -f, --format FORMATTER           Choose a formatter.
                                        [s]imple (default)
+                                       [d]etails
                                        [p]rogress
                                        [e]macs
                                        [j]son
@@ -190,6 +191,41 @@ Usage: rubocop [options] [file1, file2, ...]
          '',
          '2 files inspected, 4 offences detected',
          ''].join("\n"))
+    end
+
+    it 'can report with detailed information' do
+      create_file('example1.rb', ['# encoding: utf-8',
+                                  'x= 0 ',
+                                  'y ',
+                                  'puts x'])
+      create_file('example2.rb', ['# encoding: utf-8',
+                                  "\tx = 0",
+                                  'puts x'])
+      expect(cli.run(['--format', 'details', 'example1.rb', 'example2.rb']))
+        .to eq(1)
+      expect($stdout.string)
+        .to eq(["== #{abs('example1.rb')} ==",
+                'example1.rb:2:1: C: Surrounding space missing for operator ' +
+                "'='.",
+                'x= 0 ',
+                ' ^',
+                '',
+                'example1.rb:2:4: C: Trailing whitespace detected.',
+                'x= 0 ',
+                '    ^',
+                '',
+                'example1.rb:3:1: C: Trailing whitespace detected.',
+                'y ',
+                ' ^',
+                '',
+                "== #{abs('example2.rb')} ==",
+                'example2.rb:2:0: C: Tab detected.',
+                "\tx = 0",
+                '^',
+                '',
+                '',
+                '2 files inspected, 4 offences detected',
+                ''].join("\n"))
     end
 
     it 'runs just one cop if --only is passed' do

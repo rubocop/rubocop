@@ -11,7 +11,7 @@ module Rubocop
         if method_name == :% &&
             ([:str, :dstr].include?(receiver_node.type) ||
              arg_nodes[0].type == :array)
-          add_offence(:convention, node.loc, MSG)
+          add_offence(:convention, node.loc.expression, MSG)
         end
 
         super

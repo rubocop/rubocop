@@ -18,7 +18,7 @@ module Rubocop
           # every line with more than 1 expression on it is an offence
           lines.each do |line, expr_on_line|
             if expr_on_line.size > 1
-              add_offence(:convention, Location.new(line, 0), MSG)
+              add_offence(:convention, Location.new(line, 0, source), MSG)
             end
           end
         end

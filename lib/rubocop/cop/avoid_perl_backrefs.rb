@@ -7,7 +7,7 @@ module Rubocop
         backref, = *node
 
         add_offence(:convention,
-                    node.loc,
+                    node.loc.expression,
                     "Prefer the use of MatchData over $#{backref}.")
 
         super

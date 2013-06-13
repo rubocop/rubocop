@@ -14,7 +14,7 @@ module Rubocop
           pairs.each do |pair|
             if pair.loc.operator && pair.loc.operator.source == '=>'
               add_offence(:convention,
-                          pair.loc,
+                          pair.loc.expression,
                           MSG)
             end
           end

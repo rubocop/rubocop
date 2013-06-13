@@ -12,7 +12,9 @@ module Rubocop
         # We cannot know the result of method calls line
         # NewClass = something_that_returns_a_class
         unless value && value.type == :send
-          add_offence(:convention, node.loc, MSG) if const_name !~ SNAKE_CASE
+          if const_name !~ SNAKE_CASE
+            add_offence(:convention, node.loc.expression, MSG)
+          end
         end
 
         super

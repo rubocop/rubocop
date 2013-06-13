@@ -16,7 +16,7 @@ module Rubocop
         block_method, = *node
 
         if block_method == TARGET
-          add_offence(:convention, block_method.loc, MSG)
+          add_offence(:convention, block_method.loc.expression, MSG)
         end
 
         super

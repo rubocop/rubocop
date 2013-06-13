@@ -29,15 +29,15 @@ module Rubocop
         case node
         when ARRAY_NODE
           add_offence(:convention,
-                      node.loc,
+                      node.loc.expression,
                       ARR_MSG)
         when HASH_NODE
           add_offence(:convention,
-                      node.loc,
+                      node.loc.expression,
                       HASH_MSG)
         when STR_NODE
           add_offence(:convention,
-                      node.loc,
+                      node.loc.expression,
                       STR_MSG)
         end
       end

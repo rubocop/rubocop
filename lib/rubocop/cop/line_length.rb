@@ -11,7 +11,7 @@ module Rubocop
           if line.length > max
             message = sprintf(MSG, line.length, max)
             add_offence(:convention,
-                        Location.new(index + 1, LineLength.max),
+                        Location.new(index + 1, LineLength.max, source),
                         message)
           end
         end

@@ -100,7 +100,7 @@ module Rubocop
         Cop::Offence.new(:convention, location, 'This is message', 'CopName')
       end
 
-      let(:location) { Cop::Location.new(3, 5) }
+      let(:location) { Cop::Location.new(3, 5, ['a']) }
 
       it 'sets Offence#severity value for :severity key' do
         expect(hash[:severity]).to eq(:convention)
@@ -127,7 +127,7 @@ module Rubocop
 
     describe '#hash_for_location' do
       subject(:hash) { formatter.hash_for_location(location) }
-      let(:location) { Cop::Location.new(3, 5) }
+      let(:location) { Cop::Location.new(3, 5, ['a']) }
 
       it 'sets Location#line value for :line key' do
         expect(hash[:line]).to eq(3)

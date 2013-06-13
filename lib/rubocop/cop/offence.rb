@@ -22,10 +22,19 @@ module Rubocop
       #   beginning of line is `0`.
       attr_reader :column
 
+      # @api public
+      #
+      # @!attribute [r] source_line
+      #
+      # @return [String]
+      #   the source code line where the offence occurred.
+      attr_reader :source_line
+
       # @api private
-      def initialize(line, column)
+      def initialize(line, column, source)
         @line = line
         @column = column
+        @source_line = source[line - 1]
       end
     end
 

@@ -58,7 +58,9 @@ module Rubocop
         return if elsif?(node)
         return if if_else?(node)
 
-        add_offence(:convention, node.loc, error_message) if check(node)
+        if check(node)
+          add_offence(:convention, node.loc.expression, error_message)
+        end
 
         super
       end
@@ -91,7 +93,7 @@ module Rubocop
           # discard modifier while/until
           next unless node.loc.end
 
-          add_offence(:convention, node.loc, MSG) if check(node)
+          add_offence(:convention, node.loc.expression, MSG) if check(node)
         end
       end
     end

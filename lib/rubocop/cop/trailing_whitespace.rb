@@ -9,7 +9,7 @@ module Rubocop
         source.each_with_index do |line, index|
           if line =~ /.*[ \t]+$/
             add_offence(:convention,
-                        Location.new(index + 1, line.rstrip.length),
+                        Location.new(index + 1, line.rstrip.length, source),
                         MSG)
           end
         end

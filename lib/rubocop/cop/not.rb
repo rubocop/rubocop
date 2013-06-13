@@ -11,7 +11,7 @@ module Rubocop
         # not does not take any arguments
         if args.empty? && method_name == :! &&
             node.loc.selector.source == 'not'
-          add_offence(:convention, node.loc, MSG)
+          add_offence(:convention, node.loc.expression, MSG)
         end
 
         super

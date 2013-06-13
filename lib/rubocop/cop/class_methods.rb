@@ -8,7 +8,9 @@ module Rubocop
       def on_defs(node)
         definee, _name, _args, _body = *node
 
-        add_offence(:convention, node.loc, MSG) if definee.type == :const
+        if definee.type == :const
+          add_offence(:convention, node.loc.expression, MSG)
+        end
       end
     end
   end
