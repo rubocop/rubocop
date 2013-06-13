@@ -70,6 +70,12 @@ module Rubocop
                        ])
         expect(cond_asgn.offences).to be_empty
       end
+
+      it 'accepts ||= in condition' do
+        inspect_source(cond_asgn,
+                       ['raise StandardError unless foo ||= bar'])
+        expect(cond_asgn.offences).to be_empty
+      end
     end
   end
 end
