@@ -819,8 +819,7 @@ Usage: rubocop [options] [file1, file2, ...]
           it 'aborts with error message' do
             expect { cli.run(['--format', 'UnknownFormatter', 'example.rb']) }
               .to exit_with_code(1)
-            expect($stderr.string)
-              .to include('uninitialized constant UnknownFormatter')
+            expect($stderr.string).to include('UnknownFormatter')
           end
         end
       end
