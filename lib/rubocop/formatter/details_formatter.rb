@@ -9,7 +9,11 @@ module Rubocop
           output.printf("%s:%d:%d: %s: %s\n",
                         File.basename(file), o.line, o.column,
                         o.encode_severity, o.message)
-          output.puts(o.source_line)
+          if o.location.respond_to?(:expression)
+            output.puts(o.location.expression.source_line)
+          else
+            output.puts(o.location.source_line)
+          end
           output.puts(' ' * o.location.column + '^', '')
         end
       end

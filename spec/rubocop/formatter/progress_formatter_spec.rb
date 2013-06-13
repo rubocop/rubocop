@@ -44,9 +44,8 @@ module Rubocop
       end
 
       def offence_with_severity(severity)
-        Cop::Offence.new(Cop::Diagnostic.new(severity, Cop::Location.new(1, 0),
-                                             'message'),
-                         'CopName', ['a'])
+        Cop::Offence.new(severity, Cop::Location.new(1, 0, ['a']), 'message',
+                         'CopName')
       end
 
       context 'when no offences are detected' do
@@ -94,23 +93,21 @@ module Rubocop
         formatter.started(files)
         formatter.file_started(files[0], {})
         formatter.file_finished(files[0],
-                                [Cop::Offence.new(Cop::Diagnostic.
-                                                  new(:convention,
-                                                      Cop::Location.new(2, 2),
-                                                      'foo'),
-                                                  'Cop', ['a'])
+                                [Cop::Offence.new(:convention,
+                                                  Cop::Location.new(2, 2,
+                                                                    ['a']),
+                                                  'foo',
+                                                  'Cop')
         ])
         formatter.file_started(files[1], {})
         formatter.file_finished(files[1], [
         ])
         formatter.file_started(files[2], {})
         formatter.file_finished(files[2], [
-          Cop::Offence.new(Cop::Diagnostic.new(:convention,
-                                               Cop::Location.new(6, 0), 'foo'),
-                           'Cop', ['a']),
-          Cop::Offence.new(Cop::Diagnostic.new(:error, Cop::Location.new(5, 1),
-                                               'bar'),
-                           'Cop', ['a'])
+          Cop::Offence.new(:convention, Cop::Location.new(6, 0, ['a']), 'foo',
+                           'Cop'),
+          Cop::Offence.new(:error, Cop::Location.new(5, 1, ['a']), 'bar',
+                           'Cop')
         ])
       end
 

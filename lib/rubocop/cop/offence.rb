@@ -22,49 +22,23 @@ module Rubocop
       #   beginning of line is `0`.
       attr_reader :column
 
-      # @api private
-      def initialize(line, column)
-        @line = line
-        @column = column
-      end
-    end
-
-    # A Diagnostic represents an error or violation detected by Parser
-    # or by RuboCop.
-    class Diagnostic
       # @api public
       #
-      # @!attribute [r] level
-      #
-      # @return [Symbol]
-      #   same as the `severity` attribute of `Offence`.
-      #
-      # @see Rubocop::Cop::Offence
-      attr_reader :level
-
-      # @api public
-      #
-      # @!attribute [r] location
-      #
-      # @return [Rubocop::Cop::Location]
-      #   the location where the violation is detected.
-      #
-      # @see Rubocop::Cop::Location
-      attr_reader :location
-
-      # @api public
-      #
-      # @!attribute [r] message
+      # @!attribute [r] source_line
       #
       # @return [String]
-      #   the message of the diagnostic.
-      attr_reader :message
+      #   the source code line where the offence occurred.
+      attr_reader :source_line
 
       # @api private
-      def initialize(level, location, message)
-        @level = level
-        @location = location
-        @message = message
+      def initialize(line, column, source)
+        @line = line
+        @column = column
+        @source_line = source[line - 1]
+      end
+
+      def expression
+        self
       end
     end
 
@@ -123,20 +97,17 @@ module Rubocop
       # @api private
       attr_reader :column
 
-      attr_reader :source_line
-
       # @api private
-      def initialize(diagnostic, cop_name, source)
-        unless SEVERITIES.include?(diagnostic.level)
+      def initialize(severity, location, message, cop_name)
+        unless SEVERITIES.include?(severity)
           fail ArgumentError, "Unknown severity: #{severity}"
         end
-        @severity = diagnostic.level
-        @location = diagnostic.location
-        @line = diagnostic.location.line
-        @column = diagnostic.location.column
-        @message = diagnostic.message
+        @severity = severity
+        @location = location
+        @line = location.line
+        @column = location.column
+        @message = message
         @cop_name = cop_name
-        @source_line = source[location.line - 1]
       end
 
       # @api private

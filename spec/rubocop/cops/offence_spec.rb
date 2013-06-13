@@ -6,9 +6,8 @@ module Rubocop
   module Cop
     describe Offence do
       it 'has a few required attributes' do
-        offence = Offence.new(Diagnostic.new(:convention, Location.new(1, 0),
-                                             'message'),
-                              'CopName', ['a'])
+        offence = Offence.new(:convention, Location.new(1, 0, ['a']),
+                              'message', 'CopName')
 
         expect(offence.severity).to eq(:convention)
         expect(offence.line).to eq(1)
@@ -17,28 +16,24 @@ module Rubocop
       end
 
       it 'overrides #to_s' do
-        offence = Offence.new(Diagnostic.new(:convention, Location.new(1, 0),
-                                             'message'),
-                              'CopName', ['a'])
+        offence = Offence.new(:convention, Location.new(1, 0, ['a']),
+                              'message', 'CopName')
 
         expect(offence.to_s).to eq('C:  1:  0: message')
       end
 
       it 'does not blow up if a message contains %' do
-        offence = Offence.new(Diagnostic.new(:convention, Location.new(1, 0),
-                                             'message % test'),
-                              'CopName', ['a'])
+        offence = Offence.new(:convention, Location.new(1, 0, ['a']),
+                              'message % test', 'CopName')
 
         expect(offence.to_s).to eq('C:  1:  0: message % test')
       end
 
       it 'redefines == to compare offences based on their contents' do
-        o1 = Offence.new(Diagnostic.new(:convention, Location.new(1, 0),
-                                        'message'),
-                         'CopName', ['a'])
-        o2 = Offence.new(Diagnostic.new(:convention, Location.new(1, 0),
-                                        'message'),
-                         'CopName', ['a'])
+        o1 = Offence.new(:convention, Location.new(1, 0, ['a']), 'message',
+                         'CopName')
+        o2 = Offence.new(:convention, Location.new(1, 0, ['a']), 'message',
+                         'CopName')
 
         expect(o1 == o2).to be_true
       end
@@ -46,16 +41,16 @@ module Rubocop
       context 'when unknown severity is passed' do
         it 'raises error' do
           expect do
-            Offence.new(Diagnostic.new(:foobar, Location.new(1, 0), 'message'),
-                        'CopName', ['a'])
+            Offence.new(:foobar, Location.new(1, 0, ['a']), 'message',
+                        'CopName')
           end.to raise_error(ArgumentError)
         end
       end
 
       describe '#severity_level' do
         subject(:severity_level) do
-          Offence.new(Diagnostic.new(severity, Location.new(1, 0), 'message'),
-                      'CopName', ['a']).severity_level
+          Offence.new(severity, Location.new(1, 0, ['a']), 'message',
+                      'CopName').severity_level
         end
 
         context 'when severity is :refactor' do

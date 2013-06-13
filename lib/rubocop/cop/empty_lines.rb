@@ -21,7 +21,7 @@ module Rubocop
             ((prev_line + 1)...cur_line).each do |line|
               # we check if the prev and current lines are empty
               if source[line - 2].empty? && source[line - 1].empty?
-                add_offence(:convention, Location.new(line, 0), MSG)
+                add_offence(:convention, Location.new(line, 0, source), MSG)
               end
             end
           end
