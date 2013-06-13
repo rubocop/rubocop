@@ -2,28 +2,30 @@
 
 module Rubocop
   module Cop
-    class UnreachableCode < Cop
-      MSG = 'Unreachable code detected.'
+    module Lint
+      class UnreachableCode < Cop
+        MSG = 'Unreachable code detected.'
 
-      NODE_TYPES = [:return, :next, :break, :retry, :redo]
-      FLOW_COMMANDS = [:throw, :raise, :fail]
+        NODE_TYPES = [:return, :next, :break, :retry, :redo]
+        FLOW_COMMANDS = [:throw, :raise, :fail]
 
-      def on_begin(node)
-        expressions = *node
+        def on_begin(node)
+          expressions = *node
 
-        expressions.each_cons(2) do |e1, e2|
-          if NODE_TYPES.include?(e1.type) || flow_command?(e1)
-            add_offence(:warning, e2.loc.expression, MSG)
+          expressions.each_cons(2) do |e1, e2|
+            if NODE_TYPES.include?(e1.type) || flow_command?(e1)
+              add_offence(:warning, e2.loc.expression, MSG)
+            end
           end
+
+          super
         end
 
-        super
-      end
+        private
 
-      private
-
-      def flow_command?(node)
-        FLOW_COMMANDS.any? { |c| command?(c, node) }
+        def flow_command?(node)
+          FLOW_COMMANDS.any? { |c| command?(c, node) }
+        end
       end
     end
   end
