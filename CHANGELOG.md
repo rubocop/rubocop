@@ -19,6 +19,7 @@
 * New cop `Void` tracks uses of literals/variables/operators in possibly void context.
 * New cop `Documentation` checks for top level class/module doc comments.
 * New cop `UnreachableCode` tracks unreachable code segments.
+* New cop `MethodInvocationParentheses` tracks unwanted braces in method invocations.
 
 ### Changes
 
