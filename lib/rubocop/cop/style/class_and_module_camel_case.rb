@@ -2,27 +2,29 @@
 
 module Rubocop
   module Cop
-    class ClassAndModuleCamelCase < Cop
-      MSG = 'Use CamelCase for classes and modules.'
+    module Style
+      class ClassAndModuleCamelCase < Cop
+        MSG = 'Use CamelCase for classes and modules.'
 
-      def on_class(node)
-        check_name(node)
+        def on_class(node)
+          check_name(node)
 
-        super
-      end
+          super
+        end
 
-      def on_module(node)
-        check_name(node)
+        def on_module(node)
+          check_name(node)
 
-        super
-      end
+          super
+        end
 
-      private
+        private
 
-      def check_name(node)
-        name = node.loc.name.source
+        def check_name(node)
+          name = node.loc.name.source
 
-        add_offence(:convention, node.loc.expression, MSG) if name =~ /_/
+          add_offence(:convention, node.loc.expression, MSG) if name =~ /_/
+        end
       end
     end
   end

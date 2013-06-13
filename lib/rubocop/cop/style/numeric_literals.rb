@@ -2,20 +2,22 @@
 
 module Rubocop
   module Cop
-    class NumericLiterals < Cop
-      MSG = 'Add underscores to large numeric literals to ' +
-        'improve their readability.'
+    module Style
+      class NumericLiterals < Cop
+        MSG = 'Add underscores to large numeric literals to ' +
+          'improve their readability.'
 
-      def on_int(node)
-        value, = *node
+        def on_int(node)
+          value, = *node
 
-        if value > 10000 &&
-            node.loc.expression.source.split('.').grep(/\d{6}/).any?
-          add_offence(:convention, node.loc.expression, MSG)
+          if value > 10000 &&
+              node.loc.expression.source.split('.').grep(/\d{6}/).any?
+            add_offence(:convention, node.loc.expression, MSG)
+          end
         end
-      end
 
-      alias_method :on_float, :on_int
+        alias_method :on_float, :on_int
+      end
     end
   end
 end

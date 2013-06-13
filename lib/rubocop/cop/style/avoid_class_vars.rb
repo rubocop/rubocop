@@ -2,13 +2,15 @@
 
 module Rubocop
   module Cop
-    class AvoidClassVars < Cop
-      MSG = 'Replace class var %s with a class instance var.'
+    module Style
+      class AvoidClassVars < Cop
+        MSG = 'Replace class var %s with a class instance var.'
 
-      def on_cvasgn(node)
-        class_var, = *node
-        add_offence(:convention, node.loc.name, sprintf(MSG, class_var))
-        super
+        def on_cvasgn(node)
+          class_var, = *node
+          add_offence(:convention, node.loc.name, sprintf(MSG, class_var))
+          super
+        end
       end
     end
   end

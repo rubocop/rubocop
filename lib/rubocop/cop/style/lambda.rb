@@ -2,40 +2,42 @@
 
 module Rubocop
   module Cop
-    class Lambda < Cop
-      SINGLE_MSG = 'Use the new lambda literal syntax ->(params) {...}.'
-      MULTI_MSG = 'Use the lambda method for multi-line lambdas.'
+    module Style
+      class Lambda < Cop
+        SINGLE_MSG = 'Use the new lambda literal syntax ->(params) {...}.'
+        MULTI_MSG = 'Use the lambda method for multi-line lambdas.'
 
-      TARGET = s(:send, nil, :lambda)
+        TARGET = s(:send, nil, :lambda)
 
-      def on_block(node)
-        # We're looking for
-        # (block
-        #   (send nil :lambda)
-        #   ...)
-        block_method, = *node
+        def on_block(node)
+          # We're looking for
+          # (block
+          #   (send nil :lambda)
+          #   ...)
+          block_method, = *node
 
-        if block_method == TARGET
-          selector = block_method.loc.selector.source
-          lambda_length = lambda_length(node)
+          if block_method == TARGET
+            selector = block_method.loc.selector.source
+            lambda_length = lambda_length(node)
 
-          if selector != '->' && lambda_length == 0
-            add_offence(:convention, block_method.loc.expression, SINGLE_MSG)
-          elsif selector == '->' && lambda_length > 0
-            add_offence(:convention, block_method.loc.expression, MULTI_MSG)
+            if selector != '->' && lambda_length == 0
+              add_offence(:convention, block_method.loc.expression, SINGLE_MSG)
+            elsif selector == '->' && lambda_length > 0
+              add_offence(:convention, block_method.loc.expression, MULTI_MSG)
+            end
           end
+
+          super
         end
 
-        super
-      end
+        private
 
-      private
+        def lambda_length(block_node)
+          start_line = block_node.loc.begin.line
+          end_line = block_node.loc.end.line
 
-      def lambda_length(block_node)
-        start_line = block_node.loc.begin.line
-        end_line = block_node.loc.end.line
-
-        end_line - start_line
+          end_line - start_line
+        end
       end
     end
   end

@@ -2,14 +2,16 @@
 
 module Rubocop
   module Cop
-    class ClassMethods < Cop
-      MSG = 'Prefer self over class/module for class/module methods.'
+    module Style
+      class ClassMethods < Cop
+        MSG = 'Prefer self over class/module for class/module methods.'
 
-      def on_defs(node)
-        definee, _name, _args, _body = *node
+        def on_defs(node)
+          definee, _name, _args, _body = *node
 
-        if definee.type == :const
-          add_offence(:convention, node.loc.expression, MSG)
+          if definee.type == :const
+            add_offence(:convention, node.loc.expression, MSG)
+          end
         end
       end
     end

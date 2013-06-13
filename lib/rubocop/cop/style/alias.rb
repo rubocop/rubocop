@@ -2,15 +2,17 @@
 
 module Rubocop
   module Cop
-    class Alias < Cop
-      MSG = 'Use alias_method instead of alias.'
+    module Style
+      class Alias < Cop
+        MSG = 'Use alias_method instead of alias.'
 
-      def on_alias(node)
-        add_offence(:convention,
-                    node.loc.keyword,
-                    MSG)
+        def on_alias(node)
+          add_offence(:convention,
+                      node.loc.keyword,
+                      MSG)
 
-        super
+          super
+        end
       end
     end
   end
