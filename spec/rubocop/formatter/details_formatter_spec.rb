@@ -44,21 +44,22 @@ module Rubocop
       end
 
       describe '#report_file' do
-        it 'displays parsable text' do
+        it 'displays text containing the offending source line' do
           cop = Cop::Cop.new
-          cop.add_offence(:convention, Cop::Location.new(1, 0, ['b'] * 11),
+          source = ('a'..'z').to_a
+          cop.add_offence(:convention, Cop::Location.new(1, 0, source),
                           'message 1')
-          cop.add_offence(:fatal, Cop::Location.new(11, 0, ['b'] * 11),
+          cop.add_offence(:fatal, Cop::Location.new(11, 0, source),
                           'message 2')
 
           formatter.report_file('test', cop.offences)
           expect(output.string).to eq ['== test ==',
                                        'test:1:0: C: message 1',
-                                       'b',
+                                       'a',
                                        '^',
                                        '',
                                        'test:11:0: F: message 2',
-                                       'b',
+                                       'k',
                                        '^',
                                        '',
                                        ''].join("\n")
