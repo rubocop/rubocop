@@ -53,6 +53,17 @@ module Rubocop
         expect(sihlb.offences.map(&:message)).to be_empty
       end
 
+      it 'accepts multiline hashes even if configured for no space' do
+        SpaceInsideHashLiteralBraces.config['EnforcedStyleIsWithSpaces'] =
+          false
+        inspect_source(sihlb,
+                       ['h = {',
+                        '      a: 1,',
+                        '      b: 2,',
+                        '}'])
+        expect(sihlb.offences).to be_empty
+      end
+
       it 'accepts empty hashes without spaces by default' do
         inspect_source(sihlb, ['h = {}'])
         expect(sihlb.offences).to be_empty
