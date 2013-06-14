@@ -235,7 +235,7 @@ Usage: rubocop [options] [file1, file2, ...]
       # IfUnlessModifier depends on the configuration of LineLength.
       # That configuration might have been set by other spec examples
       # so we reset it to emulate a start from scratch.
-      Cop::LineLength.config = nil
+      Cop::Style::LineLength.config = nil
 
       expect(cli.run(['--only', 'IfUnlessModifier', 'example.rb'])).to eq(1)
       expect($stdout.string)

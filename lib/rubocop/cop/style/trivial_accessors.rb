@@ -11,8 +11,10 @@ module Rubocop
 
           kind = if body.type == :ivar
                    'reader'
-                 elsif args.children.size == 1 && body.type == :ivasgn &&
-                     body.children[1].type == :lvar && method_name != :initialize
+                 elsif args.children.size == 1 &&
+                       body.type == :ivasgn &&
+                       body.children[1].type == :lvar &&
+                       method_name != :initialize
                    'writer'
                  end
           if kind

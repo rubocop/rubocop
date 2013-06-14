@@ -4,12 +4,14 @@ require 'spec_helper'
 
 module Rubocop
   module Cop
-    describe CaseEquality do
-      let(:ce) { CaseEquality.new }
+    module Style
+      describe CaseEquality do
+        let(:ce) { CaseEquality.new }
 
-      it 'registers an offence for ===' do
-        inspect_source(ce, ['Array === var'])
-        expect(ce.offences.size).to eq(1)
+        it 'registers an offence for ===' do
+          inspect_source(ce, ['Array === var'])
+          expect(ce.offences.size).to eq(1)
+        end
       end
     end
   end

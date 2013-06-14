@@ -39,7 +39,9 @@ module Rubocop
           on_node(:module, ast) do |node|
             _name, *body = *node
 
-            non_namespace = body.any? { |n| ![:class, :module].include?(n.type) }
+            non_namespace = body.any? do |n|
+              ![:class, :module].include?(n.type)
+            end
 
             if non_namespace && ast_with_comments[node].empty?
               add_offence(:convention, node.loc.keyword, MSG)

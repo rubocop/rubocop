@@ -4,7 +4,8 @@ module Rubocop
   module Cop
     module Lint
       class Loop < Cop
-        MSG = 'Use Kernel#loop with break rather than begin/end/until(or while).'
+        MSG = 'Use Kernel#loop with break rather than ' +
+              'begin/end/until(or while).'
 
         def on_while(node)
           check(node)

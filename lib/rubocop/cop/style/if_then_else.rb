@@ -17,8 +17,9 @@ module Rubocop
         def check(node)
           # We won't check modifier or ternary conditionals.
           if node.loc.expression.source =~ /\A(if|unless)\b/
-            line = offending_line(node)
-            add_offence(:convention, node.loc.expression, error_message) if line
+            if offending_line(node)
+              add_offence(:convention, node.loc.expression, error_message)
+            end
           end
         end
       end

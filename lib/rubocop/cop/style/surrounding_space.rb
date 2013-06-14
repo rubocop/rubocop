@@ -106,7 +106,9 @@ module Rubocop
           end
         end
 
-        def do_not_check_class_lshift_self(tokens, sexp, positions_not_to_check)
+        def do_not_check_class_lshift_self(tokens,
+                                           sexp,
+                                           positions_not_to_check)
           # class <<self
           #       ^
           on_node(:sclass, sexp) do |sclass|
@@ -126,8 +128,8 @@ module Rubocop
             # def each *args
             #          ^
             on_node([:blockarg, :restarg], def_node) do |arg_node|
-              positions_not_to_check << tokens[index_of_first_token(arg_node,
-                                                                    tokens)].pos
+              positions_not_to_check <<
+                tokens[index_of_first_token(arg_node, tokens)].pos
             end
             positions_not_to_check <<
               tokens[index_of_first_token(def_node, tokens) + 1].pos
@@ -257,7 +259,8 @@ module Rubocop
           types = [t1, t2].map(&:type)
           braces = [:tLBRACE, :tRCURLY]
           return if types == braces || (braces - types).size == 2
-          return if t1.pos.line < t2.pos.line # No offence if line break inside.
+          # No offence if line break inside.
+          return if t1.pos.line < t2.pos.line
           has_space = space_between?(t1, t2)
           is_offence, word = if self.class.config['EnforcedStyleIsWithSpaces']
                                [!has_space, 'missing']
@@ -275,7 +278,8 @@ module Rubocop
         def inspect(source, tokens, sexp, comments)
           @source = source
           on_node(:optarg, sexp) do |optarg|
-            arg, equals, value = tokens[index_of_first_token(optarg, tokens), 3]
+            index = index_of_first_token(optarg, tokens)
+            arg, equals, value = tokens[index, 3]
             unless space_between?(arg, equals) && space_between?(equals, value)
               add_offence(:convention, equals.pos, MSG)
             end
