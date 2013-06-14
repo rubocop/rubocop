@@ -22,9 +22,9 @@ MethodLength:
   CountComments: false  # count full line comments?
   Max: 10
 
-# Avoid parameter lists longer than four parameters.
+# Avoid parameter lists longer than five parameters.
 ParameterLists:
-  Max: 4
+  Max: 5
 
 # Don't use semicolons to terminate expressions.
 Semicolon:

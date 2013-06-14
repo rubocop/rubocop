@@ -7,7 +7,7 @@ module Rubocop
     module SpaceAfterCommaEtc
       MSG = 'Space missing after %s.'
 
-      def inspect(source, tokens, ast, comments)
+      def inspect(source_buffer, source, tokens, ast, comments)
         tokens.each_cons(2) do |t1, t2|
           if kind(t1) && t1.pos.line == t2.pos.line &&
               t2.pos.column == t1.pos.column + offset(t1)

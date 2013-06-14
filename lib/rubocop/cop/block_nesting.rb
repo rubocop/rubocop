@@ -5,7 +5,7 @@ module Rubocop
     class BlockNesting < Cop
       NESTING_BLOCKS = [:case, :if, :while, :until, :for, :resbody]
 
-      def inspect(source, tokens, ast, comments)
+      def inspect(source_buffer, source, tokens, ast, comments)
         max = BlockNesting.config['Max']
         check_nesting_level(ast, max, 0)
       end

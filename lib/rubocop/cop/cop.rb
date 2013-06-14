@@ -14,11 +14,12 @@ module Rubocop
       end
     end
 
-    class Cop < Parser::AST::Processor
+    class Cop < Parser::Rewriter
       extend AST::Sexp
 
       attr_accessor :offences
       attr_accessor :debug
+      attr_accessor :autocorrect
       attr_writer :disabled_lines
 
       @all = []
@@ -46,8 +47,20 @@ module Rubocop
         @debug = false
       end
 
-      def inspect(source, tokens, ast, comments)
-        process(ast)
+      def inspect(source_buffer, source, tokens, ast, comments)
+        if autocorrect
+          filename = source.instance_variable_get(:@name)
+          File.open(filename, 'w') { |f| f.write(rewrite(source, ast)) }
+        else
+          process(ast)
+        end
+      end
+
+      def do_autocorrect(node)
+        autocorrect_action(node) if autocorrect
+      end
+
+      def autocorrect_action(node)
       end
 
       def ignore_node(node)

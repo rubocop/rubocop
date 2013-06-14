@@ -16,11 +16,17 @@ module Rubocop
         if node.loc.expression.source !~ /('|([^\\]|\A)\\([^\\]|\Z))/ &&
             node.loc.begin.source == '"'
           add_offence(:convention, node.loc.expression, MSG)
+          do_autocorrect(node)
         end
       end
 
       alias_method :on_dstr, :ignore_node
       alias_method :on_regexp, :ignore_node
+
+      def autocorrect_action(node)
+        replace(node.loc.begin, "'")
+        replace(node.loc.end, "'")
+      end
     end
   end
 end

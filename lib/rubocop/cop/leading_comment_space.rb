@@ -5,7 +5,7 @@ module Rubocop
     class LeadingCommentSpace < Cop
       MSG = 'Missing space after #.'
 
-      def inspect(source, tokens, ast, comments)
+      def inspect(source_buffer, source, tokens, ast, comments)
         comments.each do |comment|
           if comment.text =~ /^#+[^#\s]/
             unless comment.text.start_with?('#!') && comment.loc.line == 1
