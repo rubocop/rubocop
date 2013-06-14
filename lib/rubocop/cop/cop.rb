@@ -45,12 +45,18 @@ module Rubocop
       def initialize
         @offences = []
         @debug = false
+        @autocorrect = false
       end
 
       def inspect(source_buffer, source, tokens, ast, comments)
         if autocorrect
-          filename = source.instance_variable_get(:@name)
-          File.open(filename, 'w') { |f| f.write(rewrite(source, ast)) }
+          filename = source_buffer.instance_variable_get(:@name)
+          new_source = rewrite(source_buffer, ast)
+          unless new_source == source_buffer.source
+            File.open(filename, 'w') { |f| f.write(new_source) }
+            source_buffer.instance_variable_set(:@source, nil)
+            source_buffer.read
+          end
         else
           process(ast)
         end
