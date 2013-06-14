@@ -701,7 +701,9 @@ Usage: rubocop [options] [file1, file2, ...]
          ''].join("\n"))
     end
 
-    it 'does not read files in excluded list' do
+    # With rubinius 2.0.0.rc1 + rspec 2.13.1,
+    # File.stub(:open).and_call_original causes SystemStackError.
+    it 'does not read files in excluded list', broken: :rbx do
       %w(rb.rb non-rb.ext without-ext).each do |filename|
         create_file("example/ignored/#{filename}", [
             '# encoding: utf-8',
