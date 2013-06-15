@@ -133,12 +133,19 @@ module Rubocop
           cop_name == other.cop_name
       end
 
+      # @api public
+      #
+      # Returns `-1`, `0` or `+1`
+      # if this offence is less than, equal to, or greater than `other`.
+      #
+      # @return [Integer]
+      #   comparison result
       def <=>(other)
-        if line != other.line
-          line <=> other.line
-        else
-          column <=> other.line
+        [:line, :column, :cop_name, :message].each do |attribute|
+          result = send(attribute) <=> other.send(attribute)
+          return result unless result == 0
         end
+        0
       end
 
       # @api private
