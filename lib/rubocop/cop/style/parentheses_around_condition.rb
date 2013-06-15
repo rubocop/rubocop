@@ -30,9 +30,7 @@ module Rubocop
         def process_control_op(node)
           cond, _body = *node
 
-          cond_source = cond.loc.expression.source
-
-          if cond_source.start_with?('(') && cond_source.end_with?(')')
+          if cond.type == :begin
             add_offence(:convention, cond.loc.expression, MSG)
           end
         end

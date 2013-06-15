@@ -48,15 +48,11 @@ module Rubocop
           expect(pac.offences).to be_empty
         end
 
-        # Parentheses are sometimes used to help the editor make nice
-        # indentation of conditions spanning several lines.
-        # it 'accepts parentheses around multiline conditions' do
-        #   inspect_source(pac, ['if (@lex_state != EXPR_BEG &&',
-        #                        '    @lex_state != EXPR_FNAME &&',
-        #                        '    trans[1])',
-        #                        'end'])
-        #   expect(pac.offences.map(&:message)).to be_empty
-        # end
+        it 'is not confused by unbalanced parentheses' do
+          inspect_source(pac, ['if (a + b).c()',
+                               'end'])
+          expect(pac.offences).to be_empty
+        end
       end
     end
   end

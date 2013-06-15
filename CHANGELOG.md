@@ -36,6 +36,7 @@
 * Fix crashes in Blocks, CaseEquality, CaseIndentation, ClassAndModuleCamelCase, ClassMethods, CollectionMethods, and ColonMethodCall.
 * [#263](https://github.com/bbatsov/rubocop/issues/263) - do not check for space around operators called with method syntax
 * [#271](https://github.com/bbatsov/rubocop/issues/271) - always allow line breaks inside hash literal braces
+* [#270](https://github.com/bbatsov/rubocop/issues/270) - fixed a false positive in ParenthesesAroundCondition
 
 ## 0.8.2 (06/05/2013)
 
