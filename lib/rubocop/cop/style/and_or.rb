@@ -30,7 +30,13 @@ module Rubocop
             add_offence(:convention,
                         node.loc.operator,
                         sprintf(MSG, OPS[op], op))
+            do_autocorrect(node)
           end
+        end
+
+        def autocorrect_action(node)
+          replacement = (node.type == :and ? '&&' : '||')
+          replace(node.loc.operator, replacement)
         end
       end
     end
