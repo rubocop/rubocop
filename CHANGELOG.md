@@ -25,6 +25,7 @@
 
 * Deprecated `-e`/`--emacs` option. (Use `--format emacs` instead)
 * The default output formatter (`--format simple`) now prints relative file paths if the paths are under the current working directory.
+* Migrate all cops to new namespaces. `Rubocop::Cop::Lint` is for cops that emit warnings. `Rubocop::Cop::Style` is for cops that do not belong in other namespaces.
 
 ### Bugs fixed
 
