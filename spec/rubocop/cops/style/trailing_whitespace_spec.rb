@@ -10,17 +10,17 @@ module Rubocop
 
         it 'registers an offence for a line ending with space' do
           source = ['x = 0 ']
-          tws.inspect(source, nil, nil, nil)
+          inspect_source(tws, source)
           expect(tws.offences.size).to eq(1)
         end
 
         it 'registers an offence for a line ending with tab' do
-          tws.inspect(["x = 0\t"], nil, nil, nil)
+          inspect_source(tws, ["x = 0\t"])
           expect(tws.offences.size).to eq(1)
         end
 
         it 'accepts a line without trailing whitespace' do
-          tws.inspect(["x = 0\n"], nil, nil, nil)
+          inspect_source(tws, ["x = 0\n"])
           expect(tws.offences).to be_empty
         end
       end

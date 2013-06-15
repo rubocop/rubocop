@@ -13,7 +13,7 @@ module Rubocop
         # TODO: This cop is disabled for now due to a Parser bug.
         # https://github.com/bbatsov/rubocop/commit/b5461be
         # rubocop:disable UnreachableCode
-        def inspect(source, tokens, ast, comments)
+        def inspect(source_buffer, source, tokens, ast, comments)
           return
 
           ast_with_comments = Parser::Source::Comment.associate(ast, comments)

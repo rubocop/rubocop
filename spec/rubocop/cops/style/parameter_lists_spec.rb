@@ -7,6 +7,7 @@ module Rubocop
     module Style
       describe ParameterLists do
         let(:list) { ParameterLists.new }
+        before { ParameterLists.config = { 'Max' => 4 } }
 
         it 'registers an offence for a method def with 5 parameters' do
           inspect_source(list, ['def meth(a, b, c, d, e)',

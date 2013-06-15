@@ -49,6 +49,7 @@ Command flag           | Description
 `-o/--out`             | Write output to a file instead of STDOUT
 `-r/--require`         | Require Ruby file
 `-R/--rails`           | Run extra Rails cops
+`-a/--auto-correct`    | Auto-correct certain offences.
 `-s/--silent`          | Suppress the final summary
 `--only`               | Run only the specified cop
 

@@ -77,8 +77,9 @@ module Rubocop
 
     def inspect_file(file)
       begin
-        ast, comments, tokens, source, syntax_offences =
+        ast, comments, tokens, source_buffer, source, syntax_offences =
           CLI.parse(file) { |source_buffer| source_buffer.read }
+
       rescue Encoding::UndefinedConversionError, ArgumentError => e
         handle_error(e, "An error occurred while parsing #{file}.".color(:red))
         return []
@@ -101,7 +102,7 @@ module Rubocop
           cop = setup_cop(cop_class, disabled_lines)
           if !@options[:only] || @options[:only] == cop_name
             begin
-              cop.inspect(source, tokens, ast, comments)
+              cop.inspect(source_buffer, source, tokens, ast, comments)
             rescue => e
               handle_error(e,
                            "An error occurred while #{cop.name}".color(:red) +
@@ -117,6 +118,7 @@ module Rubocop
     def setup_cop(cop_class, disabled_lines = nil)
       cop = cop_class.new
       cop.debug = @options[:debug]
+      cop.autocorrect = @options[:autocorrect]
       cop.disabled_lines = disabled_lines[cop_class.cop_name] if disabled_lines
       cop
     end
@@ -173,6 +175,9 @@ module Rubocop
         end
         opts.on('-R', '--rails', 'Run extra Rails cops.') do |r|
           @options[:rails] = r
+        end
+        opts.on('-a', '--auto-correct', 'Auto-correct offences.') do |a|
+          @options[:autocorrect] = a
         end
         opts.on('-s', '--silent', 'Silence summary.') do |s|
           @options[:silent] = s
@@ -290,7 +295,9 @@ module Rubocop
                          'Syntax')
       end
 
-      [ast, comments, tokens, source_buffer.source.split($RS), syntax_offences]
+      source = source_buffer.source.split($RS)
+
+      [ast, comments, tokens, source_buffer, source, syntax_offences]
     end
 
     # Generate a list of target files by expanding globing patterns
