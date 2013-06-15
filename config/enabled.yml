@@ -333,6 +333,10 @@ CaseEquality:
 Documentation:
   Enabled: true
 
+# Do not use parentheses for method calls with no arguments.
+MethodInvocationParentheses:
+  Enabled: true
+
 ## Warnings
 
 # Don't use assignment in conditions.
