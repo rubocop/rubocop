@@ -24,7 +24,7 @@ module Rubocop
       end
 
       it 'registers offence with its name' do
-        cop = AvoidFor.new
+        cop = Style::AvoidFor.new
         cop.add_offence(:convention, Location.new(1, 0, ['a']), 'message')
         expect(cop.offences.first.cop_name).to eq('AvoidFor')
       end
