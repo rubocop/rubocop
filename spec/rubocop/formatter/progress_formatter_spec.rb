@@ -88,48 +88,67 @@ module Rubocop
 
     describe '#finished' do
       before do
-        formatter.reports_summary = true
-
         formatter.started(files)
-        formatter.file_started(files[0], {})
-        formatter.file_finished(files[0],
-                                [Cop::Offence.new(:convention,
-                                                  Cop::Location.new(2, 2,
-                                                                    ['a']),
-                                                  'foo',
-                                                  'Cop')
-        ])
-        formatter.file_started(files[1], {})
-        formatter.file_finished(files[1], [
-        ])
-        formatter.file_started(files[2], {})
-        formatter.file_finished(files[2], [
-          Cop::Offence.new(:convention, Cop::Location.new(6, 0, ['a']), 'foo',
-                           'Cop'),
-          Cop::Offence.new(:error, Cop::Location.new(5, 1, ['a']), 'bar',
-                           'Cop')
-        ])
       end
 
-      it 'reports all detected offences for all failed files' do
-        formatter.finished(files)
-        expect(output.string).to include([
-          '== lib/rubocop.rb ==',
-          'C:  2:  2: foo',
-          '',
-          '== bin/rubocop ==',
-          'E:  5:  1: bar',
-          'C:  6:  0: foo'
-        ].join("\n"))
+      context 'when #reports_summary? is true' do
+        before { formatter.reports_summary = true }
+
+        context 'when any offences are detected' do
+          before do
+            formatter.file_started(files[0], {})
+            formatter.file_finished(files[0], [
+              Cop::Offence.new(:convention, Cop::Location.new(2, 2, ['a']),
+                               'foo', 'Cop')
+            ])
+            formatter.file_started(files[1], {})
+            formatter.file_finished(files[1], [
+            ])
+            formatter.file_started(files[2], {})
+            formatter.file_finished(files[2], [
+              Cop::Offence.new(:convention, Cop::Location.new(6, 0, ['a']),
+                               'foo', 'Cop'),
+              Cop::Offence.new(:error, Cop::Location.new(5, 1, ['a']),
+                               'bar', 'Cop')
+            ])
+          end
+
+          it 'reports all detected offences for all failed files' do
+            formatter.finished(files)
+            expect(output.string).to include([
+              '== lib/rubocop.rb ==',
+              'C:  2:  2: foo',
+              '',
+              '== bin/rubocop ==',
+              'E:  5:  1: bar',
+              'C:  6:  0: foo'
+            ].join("\n"))
+          end
+        end
+
+        context 'when no offences are detected' do
+          before do
+            files.each do |file|
+              formatter.file_started(file, {})
+              formatter.file_finished(file, [])
+            end
+          end
+
+          it 'does not report offences' do
+            formatter.finished(files)
+            expect(output.string).not_to include('Offences:')
+          end
+        end
+
+        it 'calls #report_summary' do
+          formatter.should_receive(:report_summary)
+          formatter.finished(files)
+        end
       end
 
-      it 'calls #report_summary' do
-        formatter.should_receive(:report_summary)
-        formatter.finished(files)
-      end
-
-      context 'when #report_summary? is false' do
+      context 'when #reports_summary? is false' do
         before { formatter.reports_summary = false }
+
         it 'reports nothing' do
           output.string = ''
           formatter.finished(files)
