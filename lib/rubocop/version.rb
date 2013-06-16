@@ -2,7 +2,7 @@
 
 module Rubocop
   module Version
-    STRING = '0.8.1'
+    STRING = '0.8.2'
 
     MSG = '%s (using Parser %s, running on %s %s %s)'
 
