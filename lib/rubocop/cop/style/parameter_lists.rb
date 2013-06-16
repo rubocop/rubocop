@@ -1,0 +1,26 @@
+# encoding: utf-8
+
+module Rubocop
+  module Cop
+    module Style
+      class ParameterLists < Cop
+        MSG = 'Avoid parameter lists longer than %d parameters.'
+
+        def on_args(node)
+          args_count = node.children.size
+
+          if args_count > max_params
+            add_offence(:convention, node.loc.expression,
+                        sprintf(MSG, max_params))
+          end
+
+          super
+        end
+
+        def max_params
+          ParameterLists.config['Max']
+        end
+      end
+    end
+  end
+end
