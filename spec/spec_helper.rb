@@ -1,5 +1,17 @@
 # encoding: utf-8
 
+if ENV['TRAVIS'] && RUBY_ENGINE == 'jruby'
+  # Force JRuby not to select working directory
+  # as temporary directory on Travis CI.
+  # https://github.com/jruby/jruby/issues/405
+  require 'fileutils'
+  tmp_dir = ENV['TMPDIR'] || ENV['TMP'] || ENV['TEMP'] ||
+            Etc.systmpdir || '/tmp'
+  non_world_writable_tmp_dir = File.join(tmp_dir, 'rubocop')
+  FileUtils.makedirs(non_world_writable_tmp_dir, mode: 0700)
+  ENV['TMPDIR'] = non_world_writable_tmp_dir
+end
+
 if ENV['TRAVIS'] || ENV['COVERAGE']
   require 'simplecov'
 
@@ -49,7 +61,9 @@ end
 
 RSpec.configure do |config|
   config.filter_run_excluding ruby: ->(v) { !RUBY_VERSION.start_with?(v.to_s) }
-  config.filter_run_excluding broken: true
+  config.filter_run_excluding broken: (lambda do |v|
+    v.is_a?(Symbol) ? RUBY_ENGINE == v.to_s : v
+  end)
   config.treat_symbols_as_metadata_keys_with_true_values = true
 
   config.expect_with :rspec do |c|
