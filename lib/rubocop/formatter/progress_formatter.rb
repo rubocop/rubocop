@@ -28,12 +28,14 @@ module Rubocop
 
         return unless reports_summary?
 
-        output.puts
-        output.puts 'Offences:'
-
-        @offences_for_files.each do |file, offences|
+        unless @offences_for_files.empty?
           output.puts
-          report_file(file, offences.sort)
+          output.puts 'Offences:'
+
+          @offences_for_files.each do |file, offences|
+            output.puts
+            report_file(file, offences.sort)
+          end
         end
 
         report_summary(inspected_files.count, @total_offence_count)
