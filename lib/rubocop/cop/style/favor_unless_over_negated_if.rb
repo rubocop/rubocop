@@ -9,7 +9,7 @@ module Rubocop
 
           # Look at last expression of contents if there's a parenthesis
           # around condition.
-          *_, condition = *condition while condition.type == :begin
+          condition = condition.children.last while condition.type == :begin
 
           if condition.type == :send
             _object, method = *condition

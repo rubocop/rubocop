@@ -67,6 +67,46 @@ module Rubocop
           end
         end
       end
+
+      describe '#<=>' do
+        def offence(hash = {})
+          attrs = {
+             sev: :convention,
+            line: 5,
+             col: 5,
+             mes: 'message',
+             cop: 'CopName'
+          }.merge(hash)
+
+          Offence.new(
+            attrs[:sev],
+            Location.new(attrs[:line], attrs[:col], []),
+            attrs[:mes],
+            attrs[:cop]
+          )
+        end
+
+        [
+          [{                           }, {                           }, 0],
+
+          [{ line: 6                   }, { line: 5                   }, 1],
+
+          [{ line: 5, col: 6           }, { line: 5, col: 5           }, 1],
+          [{ line: 6, col: 4           }, { line: 5, col: 5           }, 1],
+
+          [{                  cop: 'B' }, {                  cop: 'A' }, 1],
+          [{ line: 6,         cop: 'A' }, { line: 5,         cop: 'B' }, 1],
+          [{          col: 6, cop: 'A' }, {          col: 5, cop: 'B' }, 1],
+        ].each do |one, other, expectation|
+          context "when receiver has #{one} and other has #{other}" do
+            it "returns #{expectation}" do
+              an_offence = offence(one)
+              other_offence = offence(other)
+              expect(an_offence <=> other_offence).to eq(expectation)
+            end
+          end
+        end
+      end
     end
   end
 end
