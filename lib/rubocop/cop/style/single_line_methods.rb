@@ -29,9 +29,9 @@ module Rubocop
           end_line = node.loc.end.line
 
           if node.type == :def
-            empty_body = node.children[2].type == :nil
+            empty_body = node.children[2].nil?
           else
-            empty_body = node.children[3].type == :nil
+            empty_body = node.children[3].nil?
           end
 
           if start_line == end_line && !(allow_empty? && empty_body)

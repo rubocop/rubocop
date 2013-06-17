@@ -9,11 +9,11 @@ module Rubocop
         def on_def(node)
           method_name, args, body = *node
 
-          kind = if body.type == :ivar
+          kind = if body && body.type == :ivar
                    'reader'
                  elsif args.children.size == 1 &&
-                       body.type == :ivasgn &&
-                       body.children[1].type == :lvar &&
+                       body && body.type == :ivasgn &&
+                       body.children[1] && body.children[1].type == :lvar &&
                        method_name != :initialize
                    'writer'
                  end
