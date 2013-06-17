@@ -290,8 +290,8 @@ all the people who have contributed to the development of RuboCop.
 I'm extremely grateful to each and every one of them!
 
 I'd like to single out [Jonas Arvidsson](https://github.com/jonas054)
-for his many excellent code contributions as well as valuable feedback
-and ideas!
+and [Yuji Nakayama](https://github.com/yujinakayama) for their many
+excellent code contributions as well as valuable feedback and ideas!
 
 If you'd like to contribute to RuboCop, please take the time to go
 through our short
