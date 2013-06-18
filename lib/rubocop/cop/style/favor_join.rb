@@ -12,7 +12,7 @@ module Rubocop
           if receiver_node && receiver_node.type == :array &&
               method_name == :* && arg_nodes[0].type == :str
             add_offence(:convention,
-                        node.loc.expression,
+                        node.loc.selector,
                         MSG)
           end
 

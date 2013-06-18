@@ -10,7 +10,7 @@ module Rubocop
           _receiver, method_name, *_args = *node
 
           if method_name == :===
-              add_offence(:convention, node.loc.expression, MSG)
+            add_offence(:convention, node.loc.selector, MSG)
           end
 
           super

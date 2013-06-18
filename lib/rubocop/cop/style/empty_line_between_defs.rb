@@ -11,7 +11,7 @@ module Rubocop
           def_end = node.loc.end.line
 
           if @prev_def_end && (def_start - @prev_def_end) < 2
-            add_offence(:convention, node.loc.expression, MSG)
+            add_offence(:convention, node.loc.keyword, MSG)
           end
 
           @prev_def_end = def_end

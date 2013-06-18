@@ -10,7 +10,7 @@ module Rubocop
           receiver, method_name, = *node
 
           if receiver.nil? && method_name == :eval
-            add_offence(:warning, node.loc.expression, MSG)
+            add_offence(:warning, node.loc.selector, MSG)
           end
 
           super

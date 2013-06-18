@@ -10,7 +10,7 @@ module Rubocop
           definee, _name, _args, _body = *node
 
           if definee.type == :const
-            add_offence(:convention, node.loc.expression, MSG)
+            add_offence(:convention, definee.loc.name, MSG)
           end
         end
       end

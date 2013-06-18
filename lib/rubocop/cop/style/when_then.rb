@@ -8,7 +8,7 @@ module Rubocop
 
         def on_when(node)
           if node.loc.begin && node.loc.begin.is?(';')
-            add_offence(:convention, node.loc.expression, MSG)
+            add_offence(:convention, node.loc.begin, MSG)
             do_autocorrect(node)
           end
 

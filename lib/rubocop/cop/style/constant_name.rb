@@ -14,7 +14,7 @@ module Rubocop
           # NewClass = something_that_returns_a_class
           unless value && value.type == :send
             if const_name !~ SNAKE_CASE
-              add_offence(:convention, node.loc.expression, MSG)
+              add_offence(:convention, node.loc.name, MSG)
             end
           end
 
