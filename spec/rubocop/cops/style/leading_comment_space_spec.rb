@@ -50,6 +50,15 @@ module Rubocop
                          ['test', '#!/usr/bin/ruby'])
           expect(lcs.offences.size).to eq(1)
         end
+
+        it 'accepts rdoc syntax' do
+          inspect_source(lcs,
+                         ['#++',
+                          '#--',
+                          '#:nodoc:'])
+
+          expect(lcs.offences).to be_empty
+        end
       end
     end
   end

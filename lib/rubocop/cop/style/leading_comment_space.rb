@@ -8,7 +8,7 @@ module Rubocop
 
         def inspect(source_buffer, source, tokens, ast, comments)
           comments.each do |comment|
-            if comment.text =~ /^#+[^#\s]/
+            if comment.text =~ /^#+[^#\s:+-]/
               unless comment.text.start_with?('#!') && comment.loc.line == 1
                 add_offence(:convention, comment.loc, MSG)
               end
