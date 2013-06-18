@@ -15,7 +15,9 @@ module Rubocop
 
         def check_nesting_level(node, max, current_level)
           if NESTING_BLOCKS.include?(node.type)
-            current_level += 1
+            unless node.loc.keyword && node.loc.keyword.is?('elsif')
+              current_level += 1
+            end
             if current_level == max + 1
               add_offence(:convention, node.location.expression, message(max))
               return

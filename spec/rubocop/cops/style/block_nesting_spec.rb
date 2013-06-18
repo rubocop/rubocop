@@ -138,6 +138,15 @@ module Rubocop
           expect_nesting_offences(source, [5])
         end
 
+        it 'accepts if/elsif' do
+          source = ['if a',
+                    'elsif b',
+                    'elsif c',
+                    'elsif d',
+                    'end']
+          expect_nesting_offences(source, [])
+        end
+
         def expect_nesting_offences(source, lines)
           inspect_source(block_nesting, source)
           expect(block_nesting.offences.map(&:line)).to eq(lines)
