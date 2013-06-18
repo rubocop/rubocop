@@ -10,7 +10,8 @@ module Rubocop
 
         OPS = %w(* / % + - == === != < > <= >= <=>)
         VARS = [:ivar, :lvar, :cvar, :const]
-        LITERALS = [:str, :dstr, :int, :float, :array, :hash, :regexp]
+        LITERALS = [:str, :dstr, :int, :float, :array,
+                    :hash, :regexp, :nil, :true, :false]
 
         def on_begin(node)
           expressions = *node
