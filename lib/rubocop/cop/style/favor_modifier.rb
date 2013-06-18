@@ -75,7 +75,7 @@ module Rubocop
         end
 
         def elsif?(node)
-          node.loc.keyword.source == 'elsif'
+          node.loc.keyword.is?('elsif')
         end
 
         def if_else?(node)

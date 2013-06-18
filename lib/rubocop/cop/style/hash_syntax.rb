@@ -13,7 +13,7 @@ module Rubocop
 
           if sym_indices
             pairs.each do |pair|
-              if pair.loc.operator && pair.loc.operator.source == '=>'
+              if pair.loc.operator && pair.loc.operator.is?('=>')
                 add_offence(:convention,
                             pair.loc.expression,
                             MSG)

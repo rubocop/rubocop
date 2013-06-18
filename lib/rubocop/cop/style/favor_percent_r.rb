@@ -8,7 +8,7 @@ module Rubocop
           "than one '/' character."
 
         def on_regexp(node)
-          if node.loc.begin.source == '/' &&
+          if node.loc.begin.is?('/') &&
               node.loc.expression.source[1...-1].scan(/\//).size > 1
             add_offence(:convention, node.loc.expression, MSG)
           end

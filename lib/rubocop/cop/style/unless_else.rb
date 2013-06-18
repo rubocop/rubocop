@@ -13,7 +13,7 @@ module Rubocop
           # discard ternary ops and modifier if/unless nodes
           return unless loc.respond_to?(:keyword) && loc.respond_to?(:else)
 
-          if loc.keyword.source == 'unless' && loc.else
+          if loc.keyword.is?('unless') && loc.else
             add_offence(:convention, loc.expression, MSG)
           end
 

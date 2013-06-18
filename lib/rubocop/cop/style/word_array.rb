@@ -7,7 +7,7 @@ module Rubocop
         MSG = 'Use %w or %W for array of words.'
 
         def on_array(node)
-          return unless node.loc.begin && node.loc.begin.source == '['
+          return unless node.loc.begin && node.loc.begin.is?('[')
 
           array_elems = node.children
 

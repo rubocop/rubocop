@@ -9,7 +9,7 @@ module Rubocop
         def on_array(node)
           # %i and %I were introduced in Ruby 2.0
           unless RUBY_VERSION < '2.0.0'
-            return unless node.loc.begin && node.loc.begin.source == '['
+            return unless node.loc.begin && node.loc.begin.is?('[')
 
             array_elems = node.children
 
