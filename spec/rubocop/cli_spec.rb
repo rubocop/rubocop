@@ -32,7 +32,9 @@ Usage: rubocop [options] [file1, file2, ...]
     -d, --debug                      Display debug info.
     -c, --config FILE                Specify configuration file.
         --only COP                   Run just one cop.
-    -f, --format FORMATTER           Choose a formatter.
+    -f, --format FORMATTER           Choose an output formatter. This option
+                                     can be specified multiple times to enable
+                                     multiple formatters at the same time.
                                        [s]imple (default)
                                        [d]etails
                                        [p]rogress
@@ -40,9 +42,9 @@ Usage: rubocop [options] [file1, file2, ...]
                                        [j]son
                                        custom formatter class name
     -o, --out FILE                   Write output to a file instead of STDOUT.
-                                       This option applies to the previously
-                                       specified --format, or the default
-                                       format if no format is specified.
+                                     This option applies to the previously
+                                     specified --format, or the default format
+                                     if no format is specified.
     -r, --require FILE               Require Ruby file.
     -R, --rails                      Run extra Rails cops.
     -a, --auto-correct               Auto-correct offences.

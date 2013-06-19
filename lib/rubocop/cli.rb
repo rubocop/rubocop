@@ -152,7 +152,9 @@ module Rubocop
           validate_only_option
         end
         opts.on('-f', '--format FORMATTER',
-                'Choose a formatter.',
+                'Choose an output formatter. This option',
+                'can be specified multiple times to enable',
+                'multiple formatters at the same time.',
                 '  [s]imple (default)',
                 '  [d]etails',
                 '  [p]rogress',
@@ -164,9 +166,9 @@ module Rubocop
         end
         opts.on('-o', '--out FILE',
                 'Write output to a file instead of STDOUT.',
-                '  This option applies to the previously',
-                '  specified --format, or the default',
-                '  format if no format is specified.') do |path|
+                'This option applies to the previously',
+                'specified --format, or the default format',
+                'if no format is specified.') do |path|
           @options[:formatters] ||= [['simple']]
           @options[:formatters].last << path
         end
