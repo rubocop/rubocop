@@ -3,6 +3,8 @@
 module Rubocop
   module Cop
     module Style
+      # This cop checks whether method definitions are
+      # separated by empty lines.
       class EmptyLineBetweenDefs < Cop
         MSG = 'Use empty lines between defs.'
 

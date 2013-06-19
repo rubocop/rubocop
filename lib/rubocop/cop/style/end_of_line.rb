@@ -3,6 +3,7 @@
 module Rubocop
   module Cop
     module Style
+      # This cop checks for Windows-style line endings in the source code.
       class EndOfLine < Cop
         MSG = 'Carriage return character detected.'
 

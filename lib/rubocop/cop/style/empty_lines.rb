@@ -3,6 +3,7 @@
 module Rubocop
   module Cop
     module Style
+      # This cops checks for two or more consecutive blank lines.
       class EmptyLines < Cop
         MSG = 'Extra blank line detected.'
         LINE_OFFSET = 2

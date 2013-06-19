@@ -3,6 +3,8 @@
 module Rubocop
   module Cop
     module Style
+      # This cop checks for the use of a method, the result of which
+      # would be a literal, like an empty array, hash or string.
       class EmptyLiteral < Cop
         ARR_MSG = 'Use array literal [] instead of Array.new.'
         HASH_MSG = 'Use hash literal {} instead of Hash.new.'
