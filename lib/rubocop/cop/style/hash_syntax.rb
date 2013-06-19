@@ -3,6 +3,10 @@
 module Rubocop
   module Cop
     module Style
+      # This cop checks for uses of the Ruby 1.8 hash literal syntax,
+      # when the 1.9 syntax is applicable as well.
+      #
+      # A separate offence is registered for each problematic pair.
       class HashSyntax < Cop
         MSG = 'Ruby 1.8 hash syntax detected'
 
@@ -15,7 +19,7 @@ module Rubocop
             pairs.each do |pair|
               if pair.loc.operator && pair.loc.operator.is?('=>')
                 add_offence(:convention,
-                            pair.loc.expression,
+                            pair.loc.operator,
                             MSG)
               end
             end

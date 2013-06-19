@@ -3,6 +3,7 @@
 module Rubocop
   module Cop
     module Style
+      # Some common code shared between the two cops.
       module FavorOtherKeywordOverNegation
         def check(node)
           condition, _body, _rest = *node
@@ -20,6 +21,8 @@ module Rubocop
         end
       end
 
+      # Checks for uses of if with a negated condition. Only ifs
+      # without else are considered.
       class FavorUnlessOverNegatedIf < Cop
         include FavorOtherKeywordOverNegation
 
@@ -33,6 +36,7 @@ module Rubocop
         end
       end
 
+      # Checks for uses of while with a negated condition.
       class FavorUntilOverNegatedWhile < Cop
         include FavorOtherKeywordOverNegation
 
