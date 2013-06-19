@@ -3,6 +3,8 @@
 module Rubocop
   module Cop
     module Style
+      # This cop checks for array literals made up of word-like
+      # strings, that are not using the %w() syntax.
       class WordArray < Cop
         MSG = 'Use %w or %W for array of words.'
 

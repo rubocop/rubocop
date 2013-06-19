@@ -3,6 +3,7 @@
 module Rubocop
   module Cop
     module Style
+      # This cop checks for variable interpolation (like "#@ivar").
       class VariableInterpolation < Cop
         MSG = 'Replace interpolated var %s with expression #{%s}.'
 

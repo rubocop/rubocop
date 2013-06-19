@@ -3,6 +3,7 @@
 module Rubocop
   module Cop
     module Style
+      # This cop looks for trailing whitespace in the source code.
       class TrailingWhitespace < Cop
         MSG = 'Trailing whitespace detected.'
 

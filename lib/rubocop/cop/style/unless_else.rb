@@ -3,6 +3,7 @@
 module Rubocop
   module Cop
     module Style
+      # This cop looks for *unless* expressions with *else* clauses.
       class UnlessElse < Cop
         MSG = 'Never use unless with else. Rewrite these with the ' +
           'positive case first.'

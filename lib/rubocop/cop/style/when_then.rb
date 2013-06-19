@@ -3,6 +3,7 @@
 module Rubocop
   module Cop
     module Style
+      # This cop checks for *when;* uses in *case* expressions.
       class WhenThen < Cop
         MSG = 'Never use "when x;". Use "when x then" instead.'
 
