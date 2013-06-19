@@ -10,18 +10,12 @@ module Rubocop
       class Documentation < Cop
         MSG = 'Missing top level class/module documentation comment.'
 
-        # TODO: This cop is disabled for now due to a Parser bug.
-        # https://github.com/bbatsov/rubocop/commit/b5461be
-        # rubocop:disable UnreachableCode
         def inspect(source_buffer, source, tokens, ast, comments)
-          return
-
           ast_with_comments = Parser::Source::Comment.associate(ast, comments)
 
           check_classes(ast, ast_with_comments)
           check_modules(ast, ast_with_comments)
         end
-        # rubocop:enable UnreachableCode
 
         private
 
@@ -29,7 +23,7 @@ module Rubocop
           on_node(:class, ast) do |node|
             _name, _superclass, body = *node
 
-            if body.type != nil && ast_with_comments[node].empty?
+            if body != nil && ast_with_comments[node].empty?
               add_offence(:convention, node.loc.keyword, MSG)
             end
           end
@@ -37,13 +31,19 @@ module Rubocop
 
         def check_modules(ast, ast_with_comments)
           on_node(:module, ast) do |node|
-            _name, *body = *node
+            _name, body = *node
 
-            non_namespace = body.any? do |n|
-              ![:class, :module].include?(n.type)
+            if body.type == :begin
+              namespace = body.children.all? do |n|
+                [:class, :module].include?(n.type)
+              end
+            elsif body.type == :class || body.type == :module
+              namespace = true
+            else
+              namespace = false
             end
 
-            if non_namespace && ast_with_comments[node].empty?
+            if !namespace && ast_with_comments[node].empty?
               add_offence(:convention, node.loc.keyword, MSG)
             end
           end

@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     module Style
-      describe Documentation, broken: true do
+      describe Documentation do
         let(:documentation) { Documentation.new }
 
         it 'registers an offence for non-empty class' do
