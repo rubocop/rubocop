@@ -3,6 +3,7 @@
 module Rubocop
   module Cop
     module Style
+      # This cop checks for tabs inside the source code.
       class Tab < Cop
         MSG = 'Tab detected.'
 

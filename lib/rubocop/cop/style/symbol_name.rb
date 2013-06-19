@@ -3,6 +3,8 @@
 module Rubocop
   module Cop
     module Style
+      # This cop checks whether symbol names are snake_case.
+      # There's also an option to accept CamelCase symbol names as well.
       class SymbolName < Cop
         MSG = 'Use snake_case for symbols.'
         SNAKE_CASE = /^[\da-z_]+[!?=]?$/

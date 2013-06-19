@@ -3,6 +3,10 @@
 module Rubocop
   module Cop
     module Style
+      # This cop checks for array literals made up of symbols
+      # that are not using the %i() syntax.
+      #
+      # This check makes sense only on Ruby 2.0+.
       class SymbolArray < Cop
         MSG = 'Use %i or %I for array of symbols.'
 

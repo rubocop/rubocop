@@ -3,6 +3,7 @@
 module Rubocop
   module Cop
     module Style
+      # This cop checks for multi-line ternary op expressions.
       class MultilineTernaryOperator < Cop
         MSG =
           'Avoid multi-line ?: (the ternary operator); use if/unless instead.'
@@ -21,6 +22,7 @@ module Rubocop
         end
       end
 
+      # This cop checks for nested ternary op expressions.
       class NestedTernaryOperator < Cop
         MSG = 'Ternary operators must not be nested. Prefer if/else ' +
             'constructs instead.'
