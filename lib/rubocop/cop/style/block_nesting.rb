@@ -20,7 +20,8 @@ module Rubocop
 
         def check_nesting_level(node, max, current_level)
           if NESTING_BLOCKS.include?(node.type)
-            unless node.loc.keyword && node.loc.keyword.is?('elsif')
+            unless node.loc.respond_to?(:keyword) &&
+                node.loc.keyword.is?('elsif')
               current_level += 1
             end
             if current_level == max + 1
