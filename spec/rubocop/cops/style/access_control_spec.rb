@@ -18,7 +18,7 @@ module Rubocop
                            'end'])
           expect(a.offences.size).to eq(1)
           expect(a.offences.map(&:message))
-            .to eq([AccessControl::INDENT_MSG])
+            .to eq([format(AccessControl::INDENT_MSG, 'private')])
         end
 
         it 'registers an offence for misaligned private in module' do
@@ -31,7 +31,7 @@ module Rubocop
                           'end'])
           expect(a.offences.size).to eq(1)
           expect(a.offences.map(&:message))
-            .to eq([AccessControl::INDENT_MSG])
+            .to eq([format(AccessControl::INDENT_MSG, 'private')])
         end
 
         it 'registers an offence for misaligned private in singleton class' do
@@ -44,7 +44,7 @@ module Rubocop
                            'end'])
           expect(a.offences.size).to eq(1)
           expect(a.offences.map(&:message))
-            .to eq([AccessControl::INDENT_MSG])
+            .to eq([format(AccessControl::INDENT_MSG, 'private')])
         end
 
         it 'registers an offence for misaligned protected' do
@@ -57,7 +57,7 @@ module Rubocop
                           'end'])
           expect(a.offences.size).to eq(1)
           expect(a.offences.map(&:message))
-            .to eq([AccessControl::INDENT_MSG])
+            .to eq([format(AccessControl::INDENT_MSG, 'protected')])
         end
 
         it 'accepts properly indented private' do
@@ -99,7 +99,7 @@ module Rubocop
                           'end'])
           expect(a.offences.size).to eq(1)
           expect(a.offences.map(&:message))
-            .to eq([AccessControl::INDENT_MSG])
+            .to eq([format(AccessControl::INDENT_MSG, 'private')])
         end
 
         it 'requires blank line before private/protected' do
@@ -111,7 +111,7 @@ module Rubocop
                           'end'])
           expect(a.offences.size).to eq(1)
           expect(a.offences.map(&:message))
-            .to eq([AccessControl::BLANK_MSG])
+            .to eq([format(AccessControl::BLANK_MSG, 'protected')])
         end
 
         it 'requires blank line after private/protected' do
@@ -123,7 +123,7 @@ module Rubocop
                           'end'])
           expect(a.offences.size).to eq(1)
           expect(a.offences.map(&:message))
-            .to eq([AccessControl::BLANK_MSG])
+            .to eq([format(AccessControl::BLANK_MSG, 'protected')])
         end
 
         it 'recognizes blank lines with DOS style line endings' do
