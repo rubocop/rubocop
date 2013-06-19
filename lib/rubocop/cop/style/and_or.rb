@@ -3,6 +3,7 @@
 module Rubocop
   module Cop
     module Style
+      # This cop checks for uses of *and* and *or*.
       class AndOr < Cop
         MSG = 'Use %s instead of %s.'
 

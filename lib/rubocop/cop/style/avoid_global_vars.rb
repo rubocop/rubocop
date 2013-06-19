@@ -3,6 +3,8 @@
 module Rubocop
   module Cop
     module Style
+      # This cops looks for uses of global variables.
+      # It does not report offences for built-in global variables.
       class AvoidGlobalVars < Cop
         MSG = 'Do not introduce global variables.'
 

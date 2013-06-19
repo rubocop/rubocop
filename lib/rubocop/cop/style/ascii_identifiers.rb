@@ -5,6 +5,7 @@
 module Rubocop
   module Cop
     module Style
+      # This cop checks for non-ascii characters in indentifier names.
       class AsciiIdentifiers < Cop
         MSG = 'Use only ascii symbols in identifiers.'
 

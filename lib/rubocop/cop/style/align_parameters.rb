@@ -3,6 +3,8 @@
 module Rubocop
   module Cop
     module Style
+      # Here we check if the parameters on a multi-line method call are
+      # aligned.
       class AlignParameters < Cop
         MSG = 'Align the parameters of a method call if they span ' +
           'more than one line.'

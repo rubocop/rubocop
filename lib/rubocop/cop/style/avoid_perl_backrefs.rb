@@ -3,6 +3,8 @@
 module Rubocop
   module Cop
     module Style
+      # This cop looks for uses of Perl-style regexp match
+      # backreferences like $1, $2, etc.
       class AvoidPerlBackrefs < Cop
         def on_nth_ref(node)
           backref, = *node
