@@ -3,6 +3,8 @@
 module Rubocop
   module Cop
     module Style
+      # This cop checks for methods invoked via the :: operator instead
+      # of the . operator (like FileUtils::rmdir instead of FileUtils.rmdir).
       class ColonMethodCall < Cop
         MSG = 'Do not use :: for method invocation.'
 

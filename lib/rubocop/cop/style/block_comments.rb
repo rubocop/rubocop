@@ -3,6 +3,7 @@
 module Rubocop
   module Cop
     module Style
+      # This cop looks for uses of block comments (=begin...=end).
       class BlockComments < Cop
         MSG = 'Do not use block comments.'
 

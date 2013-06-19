@@ -3,6 +3,10 @@
 module Rubocop
   module Cop
     module Style
+      # This cop checks whether the *when*s of a *case* expression
+      # are indented as deep as its *case* keyword.
+      #
+      # It will register a separate offence for each misaligned *when*.
       class CaseIndentation < Cop
         MSG = 'Indent when as deep as case.'
 

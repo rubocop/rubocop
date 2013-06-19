@@ -3,6 +3,11 @@
 module Rubocop
   module Cop
     module Style
+      # This cop checks whether constant names are written using
+      # SCREAMING_SNAKE_CASE.
+      #
+      # To avoid false positives, it ignores cases in which we cannot know
+      # for certain the type of value that would be assigned to a constant.
       class ConstantName < Cop
         MSG = 'Use SCREAMING_SNAKE_CASE for constants.'
         SNAKE_CASE = /^[\dA-Z_]+$/

@@ -3,6 +3,11 @@
 module Rubocop
   module Cop
     module Style
+      # This cop checks for excessive nesting of conditional and looping
+      # constructs. Despite the cop's name, blocks are not considered as a
+      # extra level of nesting.
+      #
+      # The maximum level of nesting allowed is configurable.
       class BlockNesting < Cop
         NESTING_BLOCKS = [:case, :if, :while, :until, :for, :resbody]
 
