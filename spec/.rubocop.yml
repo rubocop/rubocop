@@ -1,0 +1,5 @@
+inherit_from: ../.rubocop.yml
+
+# The documentation check doesn't make sense for test code
+Documentation:
+  Enabled: false
