@@ -8,7 +8,9 @@ module Rubocop
       describe ParenthesesAroundCondition do
         let(:pac) { ParenthesesAroundCondition.new }
 
-        it 'registers an offence for parentheses around condition' do
+        # This is broken with Parser 2.0.0.beta6, would be fixed with beta7.
+        # https://github.com/whitequark/parser/commit/8b066bf
+        it 'registers an offence for parentheses around condition', :broken do
           inspect_source(pac, ['if (x > 10)',
                                'elsif (x < 3)',
                                'end',

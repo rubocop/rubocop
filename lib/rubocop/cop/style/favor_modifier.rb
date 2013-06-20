@@ -90,6 +90,7 @@ module Rubocop
           'Favor modifier while/until usage when you have a single-line body.'
 
         def inspect(source_buffer, source, tokens, ast, comments)
+          return unless ast
           on_node([:while, :until], ast) do |node|
             # discard modifier while/until
             next unless node.loc.end

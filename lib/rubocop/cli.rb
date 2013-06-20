@@ -85,9 +85,10 @@ module Rubocop
         return []
       end
 
-      # If we got an AST from Parser, it means we can
-      # continue. Otherwise, return only the syntax offences.
-      return syntax_offences unless ast
+      # If we got any syntax errors, return only the syntax offences.
+      # Parser may return nil for AST even though there are no syntax errors.
+      # e.g. sources which contain only comments
+      return syntax_offences unless syntax_offences.empty?
 
       config = ConfigStore.for(file)
       disabled_lines = disabled_lines_in(source)

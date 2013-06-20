@@ -15,6 +15,7 @@ module Rubocop
         PUBLIC_NODE = s(:send, nil, :public)
 
         def inspect(source_buffer, source, tokens, ast, comments)
+          return unless ast
           on_node([:class, :module, :sclass], ast) do |class_node|
             class_start_col = class_node.loc.expression.column
 
