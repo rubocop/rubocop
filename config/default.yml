@@ -48,3 +48,10 @@ SymbolName:
 # Avoid more than `Max` levels of nesting.
 BlockNesting:
   Max: 3
+
+# Use %r for regular expressions matching more than `MaxSlashes` '/'
+# characters.
+# Use %r only for regular expressions matching more than `MaxSlashes` '/'
+# character.
+RegexpLiteral:
+  MaxSlashes: 1
