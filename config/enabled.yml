@@ -257,8 +257,10 @@ OpMethod:
 ReduceArguments:
   Enabled: true
 
-# Use %r only for regular expressions matching more than one '/' character.
-# Use %r for regular expressions matching more than one '/' character.
+# Use %r for regular expressions matching more than `MaxSlashes` '/'
+# characters.
+# Use %r only for regular expressions matching more than `MaxSlashes` '/'
+# character.
 RegexpLiteral:
   Enabled: true
 

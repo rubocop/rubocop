@@ -3,20 +3,35 @@
 module Rubocop
   module Cop
     module Style
+      # This cop checks for regexp literals and reports offences based
+      # on how many escaped slashes there are in the regexp and on the
+      # value of the configuration parameter MaxSlashes.
       class RegexpLiteral < Cop
-        MSG = 'Use %%r %sfor regular expressions matching more ' +
-          "than one '/' character."
-
         def on_regexp(node)
           slashes = node.loc.expression.source[1...-1].scan(/\//).size
+          max = RegexpLiteral.max_slashes
           msg = if node.loc.begin.is?('/')
-                  sprintf(MSG, '') if slashes > 1
+                  error_message('') if slashes > max
                 else
-                  sprintf(MSG, 'only ') if slashes <= 1
+                  error_message('only ') if slashes <= max
                 end
           add_offence(:convention, node.loc.expression, msg) if msg
 
           super
+        end
+
+        def self.max_slashes
+          RegexpLiteral.config['MaxSlashes']
+        end
+
+        private
+
+        def error_message(word)
+          sprintf('Use %%r %sfor regular expressions matching more ' +
+                  "than %d '/' character%s.",
+                  word,
+                  RegexpLiteral.max_slashes,
+                  RegexpLiteral.max_slashes == 1 ? '' : 's')
         end
       end
     end
