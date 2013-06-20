@@ -25,6 +25,7 @@ MethodLength:
 # Avoid parameter lists longer than five parameters.
 ParameterLists:
   Max: 5
+  CountKeywordArgs: true
 
 # Don't use semicolons to terminate expressions.
 Semicolon:

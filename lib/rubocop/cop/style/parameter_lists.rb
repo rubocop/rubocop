@@ -7,9 +7,7 @@ module Rubocop
         MSG = 'Avoid parameter lists longer than %d parameters.'
 
         def on_args(node)
-          args_count = node.children.size
-
-          if args_count > max_params
+          if args_count(node) > max_params
             add_offence(:convention, node.loc.expression,
                         sprintf(MSG, max_params))
           end
@@ -17,8 +15,22 @@ module Rubocop
           super
         end
 
+        private
+
+        def args_count(node)
+          if count_keyword_args?
+            node.children.size
+          else
+            node.children.reject { |a| a.type == :kwoptarg }.size
+          end
+        end
+
         def max_params
           ParameterLists.config['Max']
+        end
+
+        def count_keyword_args?
+          ParameterLists.config['CountKeywordArgs']
         end
       end
     end
