@@ -258,11 +258,8 @@ ReduceArguments:
   Enabled: true
 
 # Use %r only for regular expressions matching more than one '/' character.
-PercentR:
-  Enabled: true
-
 # Use %r for regular expressions matching more than one '/' character.
-FavorPercentR:
+RegexpLiteral:
   Enabled: true
 
 # Use self when defining module/class methods.
