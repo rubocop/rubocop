@@ -44,12 +44,9 @@ module Rubocop
         end
 
         it 'can handle double quotes within embedded expression' do
-          # This seems to be a Parser bug
-          pending do
-            src = ['"#{"A"}"']
-            inspect_source(sl, src)
-            expect(sl.offences).to be_empty
-          end
+          src = ['"#{"A"}"']
+          inspect_source(sl, src)
+          expect(sl.offences).to be_empty
         end
 
         it 'can handle a built-in constant parsed as string' do
