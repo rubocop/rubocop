@@ -8,7 +8,7 @@ module Rubocop
       # check and so are namespace modules - modules that have nothing in
       # their bodies except classes or other other modules.
       class Documentation < Cop
-        MSG = 'Missing top level class/module documentation comment.'
+        MSG = 'Missing top-level %s documentation comment.'
 
         def inspect(source_buffer, source, tokens, ast, comments)
           ast_with_comments = Parser::Source::Comment.associate(ast, comments)
@@ -24,7 +24,7 @@ module Rubocop
             _name, _superclass, body = *node
 
             if body != nil && ast_with_comments[node].empty?
-              add_offence(:convention, node.loc.keyword, MSG)
+              add_offence(:convention, node.loc.keyword, format(MSG, 'class'))
             end
           end
         end
@@ -44,7 +44,7 @@ module Rubocop
             end
 
             if !namespace && ast_with_comments[node].empty?
-              add_offence(:convention, node.loc.keyword, MSG)
+              add_offence(:convention, node.loc.keyword, format(MSG, 'module'))
             end
           end
         end
