@@ -3,6 +3,9 @@
 module Rubocop
   module Cop
     module Style
+      # This cop checks for uses of the pre 1.9 lambda syntax for one-line
+      # anonymous functions and uses of the 1.9 lambda syntax for multi-line
+      # anonymous functions.
       class Lambda < Cop
         SINGLE_MSG = 'Use the new lambda literal syntax ->(params) {...}.'
         MULTI_MSG = 'Use the lambda method for multi-line lambdas.'

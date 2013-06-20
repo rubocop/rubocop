@@ -3,6 +3,9 @@
 module Rubocop
   module Cop
     module Style
+      # This cop makes sure that all methods and variables use
+      # snake_case for their names. Some special arrangements have to be
+      # made for operator methods.
       class MethodAndVariableSnakeCase < Cop
         MSG = 'Use snake_case for methods and variables.'
         SNAKE_CASE = /^@?[\da-z_]+[!?=]?$/

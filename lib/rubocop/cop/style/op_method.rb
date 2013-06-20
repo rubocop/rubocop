@@ -2,8 +2,10 @@
 
 module Rubocop
   module Cop
+    # This cop makes sure that certain operator methods have their sole
+    # parameter named *other*.
     class OpMethod < Cop
-      MSG = 'When defining the %s operator, name its argument other.'
+      MSG = 'When defining the %s operator, name its argument *other*.'
 
       BLACKLISTED = [:+@, :-@, :[], :[]=, :<<]
 

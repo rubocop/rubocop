@@ -3,6 +3,8 @@
 module Rubocop
   module Cop
     module Style
+      # This cop checks for big numeric literals without _ between groups
+      # of digits in them.
       class NumericLiterals < Cop
         MSG = 'Add underscores to large numeric literals to ' +
           'improve their readability.'

@@ -3,6 +3,8 @@
 module Rubocop
   module Cop
     module Style
+      # This cop checks the length of lines in the source code.
+      # The maximum length is configurable.
       class LineLength < Cop
         MSG = 'Line is too long. [%d/%d]'
 

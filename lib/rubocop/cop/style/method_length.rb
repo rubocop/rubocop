@@ -3,6 +3,9 @@
 module Rubocop
   module Cop
     module Style
+      # This cop checks if the length a method exceeds some maximum value.
+      # Comment lines can optionally be ignored.
+      # The maximum allowed length is configurable.
       class MethodLength < Cop
         MSG = 'Method has too many lines. [%d/%d]'
 
