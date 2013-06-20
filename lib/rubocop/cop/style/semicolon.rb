@@ -7,6 +7,8 @@ module Rubocop
         MSG = 'Do not use semicolons to terminate expressions.'
 
         def inspect(source_buffer, source, tokens, ast, comments)
+          return unless ast
+
           on_node(:begin, ast) do |node|
             exprs = node.children
 
