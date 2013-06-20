@@ -515,34 +515,6 @@ Usage: rubocop [options] [file1, file2, ...]
                 ''].join("\n"))
     end
 
-    it 'can report other errors together with syntax errors in some cases' do
-      create_file('example.rb', [
-        '',
-        'class Test >',
-        '  x=0',
-                                 'end',
-                                 ''
-      ])
-      expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
-
-      expected =
-        ["#{abs('example.rb')}:2:11: E: unexpected token tGT"]
-      if RUBY_ENGINE == 'ruby'
-        if RUBY_VERSION < '2'
-          expected.unshift("#{abs('example.rb')}:1:0: C: Missing utf-8 " +
-                           'encoding comment.')
-        end
-        expected.push("#{abs('example.rb')}:3:3: C: Surrounding space " +
-                      "missing for operator '='.")
-      end
-      expected.concat(['',
-                       "1 file inspected, #{expected.size} " +
-                       "offence#{'s' unless expected.size == 1} detected",
-                       ''])
-
-      expect($stdout.string).to eq(expected.join("\n"))
-    end
-
     it 'can process a file with an invalid UTF-8 byte sequence' do
       pending
       create_file('example.rb', [
