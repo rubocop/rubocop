@@ -2,6 +2,7 @@
 
 module Rubocop
   module Cop
+    # A basic wrapper around Parser's tokens.
     class Token
       attr_reader :pos, :type, :text
 
@@ -14,6 +15,11 @@ module Rubocop
       end
     end
 
+    # A scaffold for concrete cops.
+    #
+    # The Cop class is meant to be extended.
+    #
+    # Cops track offences and can autocorrect them of the fly.
     class Cop < Parser::Rewriter
       extend AST::Sexp
 

@@ -2,6 +2,7 @@
 
 module Rubocop
   module Cop
+    # This module contains a collection of useful utility methods.
     module Util
       module_function
 

@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 module Rubocop
+  # This module holds the RuboCop version information.
   module Version
     STRING = '0.8.2'
 

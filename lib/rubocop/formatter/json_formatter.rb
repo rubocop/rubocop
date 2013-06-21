@@ -5,6 +5,7 @@ require 'pathname'
 
 module Rubocop
   module Formatter
+    # This formatter formats the report data in JSON format.
     class JSONFormatter < BaseFormatter
       attr_reader :output_hash
 

@@ -2,6 +2,9 @@
 
 module Rubocop
   module Formatter
+    # A basic formatter that displays only files with offences.
+    # Offences are displayed at compact form - just the
+    # location of the problem and the associated message.
     class SimpleTextFormatter < BaseFormatter
       attr_accessor :reports_summary
       alias_method :reports_summary?, :reports_summary

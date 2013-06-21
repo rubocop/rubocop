@@ -2,6 +2,9 @@
 
 module Rubocop
   module Formatter
+    # This formatter display dots for files with no offences and
+    # letters for files with problems in the them. In the end it
+    # appends the regular report data in the simple text format.
     class ProgressFormatter < SimpleTextFormatter
       COLOR_FOR_SEVERITY = {
           refactor: :yellow,
