@@ -27,7 +27,7 @@ module Rubocop
         def check(node)
           condition, = *node
 
-          on_node(ASGN_NODES , condition) do |asgn_node|
+          on_node(ASGN_NODES, condition) do |asgn_node|
             # assignment nodes from shorthand ops like ||= don't have operator
             if asgn_node.loc.operator
               add_offence(:warning, asgn_node.loc.operator, MSG)
