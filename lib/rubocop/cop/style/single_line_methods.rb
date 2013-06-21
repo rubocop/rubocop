@@ -3,6 +3,8 @@
 module Rubocop
   module Cop
     module Style
+      # This cop checks for single-line method definitions.
+      # It can optionally accept single-line methods with no body.
       class SingleLineMethods < Cop
         MSG = 'Avoid single-line method definitions.'
 

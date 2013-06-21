@@ -3,6 +3,10 @@
 module Rubocop
   module Cop
     module Style
+      # This cop checks for methods with too many parameters.
+      # The maximum number of parameters in configurable.
+      # On Ruby 2.0+ keyword arguments can optionally
+      # be excluded from the total count.
       class ParameterLists < Cop
         MSG = 'Avoid parameter lists longer than %d parameters.'
 

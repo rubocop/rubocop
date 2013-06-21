@@ -3,6 +3,8 @@
 module Rubocop
   module Cop
     module Style
+      # This cops checks for uses of Proc.new where Kernel#proc
+      # would be more appropriate.
       class Proc < Cop
         MSG = 'Use proc instead of Proc.new.'
 

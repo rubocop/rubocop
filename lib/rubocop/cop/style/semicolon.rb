@@ -3,6 +3,8 @@
 module Rubocop
   module Cop
     module Style
+      # This cop checks for multiple expressions placed on the same line.
+      # It also checks for lines terminated with a semicolon.
       class Semicolon < Cop
         MSG = 'Do not use semicolons to terminate expressions.'
 

@@ -3,6 +3,8 @@
 module Rubocop
   module Cop
     module Style
+      # This cop checks for the presence of superfluous parentheses around the
+      # condition of if/while/until.
       class ParenthesesAroundCondition < Cop
         MSG = "Don't use parentheses around the condition of an " +
           'if/unless/while/until'

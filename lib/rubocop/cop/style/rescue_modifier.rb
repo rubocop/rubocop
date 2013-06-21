@@ -3,6 +3,7 @@
 module Rubocop
   module Cop
     module Style
+      # This cop checks for uses of rescue in its modifier form.
       class RescueModifier < Cop
         MSG = 'Avoid using rescue in its modifier form.'
 
