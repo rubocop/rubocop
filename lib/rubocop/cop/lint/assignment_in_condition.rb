@@ -3,10 +3,10 @@
 module Rubocop
   module Cop
     module Lint
-      ASGN_NODES = [:lvasgn, :ivasgn, :cvasgn, :gvasgn, :casgn]
-      MSG = 'Assignment in condition detected. You probably wanted to use ==.'
-
       class AssignmentInCondition < Cop
+        ASGN_NODES = [:lvasgn, :ivasgn, :cvasgn, :gvasgn, :casgn]
+        MSG = 'Assignment in condition - you probably meant to use ==.'
+
         def on_if(node)
           check(node)
           super
