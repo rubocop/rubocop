@@ -3,6 +3,9 @@
 module Rubocop
   module Cop
     module Lint
+      # This cop checks for unreachable code.
+      # The check are based on the presence of flow of control
+      # statement in non-final position in *begin*(implicit) blocks.
       class UnreachableCode < Cop
         MSG = 'Unreachable code detected.'
 

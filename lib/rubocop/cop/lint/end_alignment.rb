@@ -3,6 +3,10 @@
 module Rubocop
   module Cop
     module Lint
+      # This cop checks whether the end keywords are aligned properly.
+      #
+      # The cop should be made configurable since when assignment is factored
+      # in, two alignment schemes generally make sense.
       class EndAlignment < Cop
         MSG = 'end at %d, %d is not aligned with %s at %d, %d'
 

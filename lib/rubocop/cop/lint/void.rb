@@ -3,6 +3,8 @@
 module Rubocop
   module Cop
     module Lint
+      # This cop checks for operators, variables and literals used
+      # in void context.
       class Void < Cop
         OP_MSG = 'Operator %s used in void context.'
         VAR_MSG = 'Variable %s used in void context.'

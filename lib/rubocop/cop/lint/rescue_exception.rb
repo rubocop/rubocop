@@ -3,6 +3,7 @@
 module Rubocop
   module Cop
     module Lint
+      # This cop checks for *rescue* blocks targeting the Exception class.
       class RescueException < Cop
         MSG = 'Avoid rescuing the Exception class.'
 

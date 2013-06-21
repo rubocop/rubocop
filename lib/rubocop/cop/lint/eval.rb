@@ -3,6 +3,7 @@
 module Rubocop
   module Cop
     module Lint
+      # This cop checks for the use of *Kernel#eval*.
       class Eval < Cop
         MSG = 'The use of eval is a serious security risk.'
 

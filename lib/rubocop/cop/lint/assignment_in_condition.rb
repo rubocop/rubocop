@@ -3,6 +3,8 @@
 module Rubocop
   module Cop
     module Lint
+      # This cop checks for assignments in the conditions of
+      # if/while/until.
       class AssignmentInCondition < Cop
         ASGN_NODES = [:lvasgn, :ivasgn, :cvasgn, :gvasgn, :casgn]
         MSG = 'Assignment in condition - you probably meant to use ==.'

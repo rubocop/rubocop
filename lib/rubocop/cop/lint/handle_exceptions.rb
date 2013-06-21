@@ -3,6 +3,7 @@
 module Rubocop
   module Cop
     module Lint
+      # This cop checks for *rescue* blocks with no body.
       class HandleExceptions < Cop
         MSG = 'Do not suppress exceptions.'
 

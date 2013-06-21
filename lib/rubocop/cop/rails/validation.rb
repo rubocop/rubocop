@@ -3,6 +3,7 @@
 module Rubocop
   module Cop
     module Rails
+      # This cop checks for the use of old-style attribute validation macros.
       class Validation < Cop
         MSG = 'Use the new "sexy" validations (validates ...).'
 

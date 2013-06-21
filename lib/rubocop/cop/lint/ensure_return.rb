@@ -3,6 +3,7 @@
 module Rubocop
   module Cop
     module Lint
+      # This cop checks for *return* from an *ensure* block.
       class EnsureReturn < Cop
         MSG = 'Never return from an ensure block.'
 
