@@ -334,7 +334,7 @@ module Rubocop
     # @param root Root directory under which to search for ruby source files
     # @return [Array] Array of filenames
     def ruby_files(root = Dir.pwd)
-      files = Dir["#{root}/**/*"].reject { |file| FileTest.directory? file }
+      files = Dir["#{root}/**/*"].select { |file| FileTest.file?(file) }
 
       rb = []
 
