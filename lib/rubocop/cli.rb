@@ -6,13 +6,7 @@ module Rubocop
   # The CLI is a class responsible of handling all the command line interface
   # logic.
   class CLI
-    BUILTIN_FORMATTERS_FOR_KEYS = {
-      'simple'   => Formatter::SimpleTextFormatter,
-      'progress' => Formatter::ProgressFormatter,
-      'emacs'    => Formatter::EmacsStyleFormatter,
-      'json'     => Formatter::JSONFormatter,
-      'details'  => Formatter::DetailsFormatter
-    }
+    DEFAULT_FORMATTER = 'simple'
 
     # If set true while running,
     # RuboCop will abort processing and exit gracefully.
@@ -46,23 +40,23 @@ module Rubocop
       inspected_files = []
       any_failed = false
 
-      invoke_formatters(:started, target_files)
+      formatter_set.started(target_files)
 
       target_files.each do |file|
         break if wants_to_quit?
 
         puts "Scanning #{file}" if @options[:debug]
-        invoke_formatters(:file_started, file, {})
+        formatter_set.file_started(file, {})
 
         offences = inspect_file(file)
 
         any_failed = true unless offences.empty?
         inspected_files << file
-        invoke_formatters(:file_finished, file, offences)
+        formatter_set.file_finished(file, offences)
       end
 
-      invoke_formatters(:finished, inspected_files)
-      close_output_files
+      formatter_set.finished(inspected_files)
+      formatter_set.close_output_files
 
       display_error_summary(@errors) unless @options[:silent]
 
@@ -177,7 +171,7 @@ module Rubocop
                 'This option applies to the previously',
                 'specified --format, or the default format',
                 'if no format is specified.') do |path|
-          @options[:formatters] ||= [['simple']]
+          @options[:formatters] ||= [[DEFAULT_FORMATTER]]
           @options[:formatters].last << path
         end
         opts.on('-r', '--require FILE', 'Require Ruby file.') do |f|
@@ -374,64 +368,17 @@ module Rubocop
       end
     end
 
-    def invoke_formatters(method, *args)
-      formatters.each { |f| f.send(method, *args) }
-    end
-
-    def close_output_files
-      formatters.each do |formatter|
-        formatter.output.close if formatter.output.is_a?(File)
-      end
-    end
-
-    def formatters
-      @formatters ||= begin
-        pairs = @options[:formatters] || [['simple']]
-        pairs.map do |formatter_key, output_path|
-          create_formatter(formatter_key, output_path)
+    def formatter_set
+      @formatter_set ||= begin
+        set = Formatter::FormatterSet.new(!@options[:silent])
+        pairs = @options[:formatters] || [[DEFAULT_FORMATTER]]
+        pairs.each do |formatter_key, output_path|
+          set.add_formatter(formatter_key, output_path)
         end
+        set
       rescue => error
         warn error.message
         exit(1)
-      end
-    end
-
-    def create_formatter(formatter_key, output_path = nil)
-      formatter_class = if formatter_key =~ /\A[A-Z]/
-                          custom_formatter_class(formatter_key)
-                        else
-                          builtin_formatter_class(formatter_key)
-                        end
-
-      output = output_path ? File.open(output_path, 'w') : $stdout
-
-      formatter = formatter_class.new(output)
-      if formatter.respond_to?(:reports_summary=)
-        # TODO: Consider dropping -s/--silent option
-        formatter.reports_summary = !@options[:silent]
-      end
-      formatter
-    end
-
-    def builtin_formatter_class(specified_key)
-      matching_keys = BUILTIN_FORMATTERS_FOR_KEYS.keys.select do |key|
-        key.start_with?(specified_key)
-      end
-
-      if matching_keys.empty?
-        fail %(No formatter for "#{specified_key}")
-      elsif matching_keys.size > 1
-        fail %(Cannot determine formatter for "#{specified_key}")
-      end
-
-      BUILTIN_FORMATTERS_FOR_KEYS[matching_keys.first]
-    end
-
-    def custom_formatter_class(specified_class_name)
-      constants = specified_class_name.split('::')
-      constants.shift if constants.first.empty?
-      constants.reduce(Object) do |namespace, constant|
-        namespace.const_get(constant, false)
       end
     end
 

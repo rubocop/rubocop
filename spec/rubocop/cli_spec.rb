@@ -866,30 +866,5 @@ Usage: rubocop [options] [file1, file2, ...]
           .to eq(["1 error occurred:\n", "#{msg}\n"])
       end
     end
-
-    describe '#custom_formatter_class' do
-      def custom_formatter_class(string)
-        cli.send(:custom_formatter_class, string)
-      end
-
-      it 'returns constant represented by the passed string' do
-        expect(custom_formatter_class('Rubocop')).to eq(Rubocop)
-      end
-
-      it 'can handle namespaced constant name' do
-        expect(custom_formatter_class('Rubocop::CLI')).to eq(Rubocop::CLI)
-      end
-
-      it 'can handle top level namespaced constant name' do
-        expect(custom_formatter_class('::Rubocop::CLI')).to eq(Rubocop::CLI)
-      end
-
-      context 'when non-existent constant name is passed' do
-        it 'raises error' do
-          expect { custom_formatter_class('Rubocop::NonExistentClass') }
-            .to raise_error(NameError)
-        end
-      end
-    end
   end
 end
