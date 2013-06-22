@@ -20,6 +20,7 @@
 * New cop `Documentation` checks for top level class/module doc comments.
 * New cop `UnreachableCode` tracks unreachable code segments.
 * New cop `MethodInvocationParentheses` tracks unwanted braces in method invocations.
+* New cop `UnusedLocalVariable` tracks unused local variables for each scope.
 * Add support for auto-correction of some offences with `-a`/`--auto-correct`.
 
 ### Changes

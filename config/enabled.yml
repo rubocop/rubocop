@@ -354,6 +354,10 @@ Void:
 UnreachableCode:
   Enabled: true
 
+# Unused local variable.
+UnusedLocalVariable:
+  Enabled: true
+
 ## Rails
 
 # Use sexy validations.
