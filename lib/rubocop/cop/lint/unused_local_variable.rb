@@ -119,7 +119,7 @@ module Rubocop
           (VARIABLE_ASSIGNMENT_TYPES + ARGUMENT_DECLARATION_TYPES).freeze
         VARIABLE_USE_TYPES = [:lvar].freeze
         TYPES_TO_ACCEPT_UNUSED = ARGUMENT_DECLARATION_TYPES
-        SCOPE_TYPES = [:module, :class, :def, :block].freeze
+        SCOPE_TYPES = [:module, :class, :sclass, :def, :block].freeze
 
         MSG = 'Assigned but unused variable - %s'
 
@@ -144,6 +144,8 @@ module Rubocop
               # Avoid processing method argument nodes of outer scope
               # in current block scope.
               # See #process_node.
+              throw :skip_children
+            elsif scope_node.type == :sclass && index == 0
               throw :skip_children
             end
 
@@ -202,10 +204,32 @@ module Rubocop
             # So the nodes of the method argument need to be processed
             # in current scope before dive into the block scope.
             send_node = node.children.first
-            NodeScanner.scan_nodes_in_scope(send_node) do |node|
-              process_node(node)
+            NodeScanner.scan_nodes_in_scope(send_node) do |n|
+              process_node(n)
             end
             # Now go into the block scope.
+            detect_unused_variables_in_scope(node)
+          when :sclass
+            # Same thing.
+            #
+            # Ruby:
+            #   instance = Object.new
+            #   class << instance
+            #     foo = 1
+            #   end
+            #
+            # AST:
+            #   (begin
+            #     (lvasgn :instance
+            #       (send
+            #         (const nil :Object) :new))
+            #     (sclass
+            #       (lvar :instance)
+            #       (begin
+            #         (lvasgn :foo
+            #           (int 1))
+            variable_node = node.children.first
+            process_node(variable_node)
             detect_unused_variables_in_scope(node)
           when *SCOPE_TYPES
             detect_unused_variables_in_scope(node)
