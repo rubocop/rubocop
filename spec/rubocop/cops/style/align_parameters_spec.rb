@@ -57,7 +57,7 @@ module Rubocop
                           'func3(*a)',
                          ])
           expect(align.offences.map(&:to_s)).to eq(
-            ['C:  5:  5: Align the parameters of a method call if they span ' +
+            ['C:  5:  6: Align the parameters of a method call if they span ' +
              'more than one line.'])
         end
 
@@ -66,7 +66,7 @@ module Rubocop
                          ['func1(a,',
                           '     b,)'])
           expect(align.offences.map(&:to_s)).to eq(
-            ['C:  2:  5: Align the parameters of a method call if they span ' +
+            ['C:  2:  6: Align the parameters of a method call if they span ' +
              'more than one line.'])
         end
 

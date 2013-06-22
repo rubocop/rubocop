@@ -19,14 +19,14 @@ module Rubocop
         offence = Offence.new(:convention, Location.new(1, 0, ['a']),
                               'message', 'CopName')
 
-        expect(offence.to_s).to eq('C:  1:  0: message')
+        expect(offence.to_s).to eq('C:  1:  1: message')
       end
 
       it 'does not blow up if a message contains %' do
         offence = Offence.new(:convention, Location.new(1, 0, ['a']),
                               'message % test', 'CopName')
 
-        expect(offence.to_s).to eq('C:  1:  0: message % test')
+        expect(offence.to_s).to eq('C:  1:  1: message % test')
       end
 
       it 'redefines == to compare offences based on their contents' do

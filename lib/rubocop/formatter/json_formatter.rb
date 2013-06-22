@@ -61,7 +61,7 @@ module Rubocop
       def hash_for_location(location)
         {
             line: location.line,
-          column: location.column
+          column: location.column + 1
         }
       end
 

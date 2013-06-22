@@ -8,7 +8,8 @@ module Rubocop
       def report_file(file, offences)
         offences.each do |o|
           output.printf("%s:%d:%d: %s: %s\n",
-                        file, o.line, o.column, o.encode_severity, o.message)
+                        file, o.line, o.column + 1, o.encode_severity,
+                        o.message)
         end
       end
     end
