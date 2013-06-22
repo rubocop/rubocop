@@ -3,10 +3,10 @@
 require 'spec_helper'
 
 describe 'RuboCop Project' do
-  describe '.rubocop.yml' do
+  describe 'default configuration file' do
     it 'has configuration for all cops' do
       cop_names = Rubocop::Cop::Cop.all.map(&:cop_name)
-      expect(Rubocop::Config.load_file('.rubocop.yml').keys.sort)
+      expect(Rubocop::Config.load_file('config/default.yml').keys.sort)
         .to eq((['AllCops'] + cop_names).sort)
     end
   end
