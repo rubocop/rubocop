@@ -83,6 +83,7 @@ require 'rubocop/cop/lint/void'
 require 'rubocop/cop/style/documentation'
 require 'rubocop/cop/lint/unreachable_code'
 require 'rubocop/cop/style/method_invocation_parentheses'
+require 'rubocop/cop/lint/unused_local_variable'
 
 require 'rubocop/cop/rails/validation'
 
