@@ -84,6 +84,67 @@ describe Rubocop::Config do
       end
     end
 
+    context 'when multiple config files exist in ancestor directories' do
+      let(:file_path) { 'dir/.rubocop.yml' }
+
+      before do
+        create_file('.rubocop.yml',
+                    ['AllCops:',
+                     '  Excludes:',
+                     '    - vendor/**',
+                    ])
+
+        create_file(file_path,
+                    ['AllCops:',
+                     '  Excludes: []',
+                    ])
+      end
+
+      it 'gets AllCops/Exclude from the highest directory level' do
+        excludes = configuration_from_file['AllCops']['Excludes']
+        expect(excludes).to eq(['../vendor/**'])
+      end
+    end
+
+    context 'when a file inherits from a parent file' do
+      let(:file_path) { 'dir/.rubocop.yml' }
+
+      before do
+        create_file('.rubocop.yml',
+                    ['AllCops:',
+                     '  Excludes:',
+                     '    - vendor/**',
+                     '    - !ruby/regexp /[A-Z]/',
+                    ])
+
+        create_file(file_path, ['inherit_from: ../.rubocop.yml'])
+      end
+
+      it 'gets AllCops/Exclude relative to its own directory' do
+        excludes = configuration_from_file['AllCops']['Excludes']
+        expect(excludes).to eq(['../vendor/**', /[A-Z]/])
+      end
+    end
+
+    context 'when a file inherits from a sibling file' do
+      let(:file_path) { 'dir/.rubocop.yml' }
+
+      before do
+        create_file('src/.rubocop.yml',
+                    ['AllCops:',
+                     '  Excludes:',
+                     '    - vendor/**',
+                    ])
+
+        create_file(file_path, ['inherit_from: ../src/.rubocop.yml'])
+      end
+
+      it 'gets AllCops/Exclude relative to its own directory' do
+        excludes = configuration_from_file['AllCops']['Excludes']
+        expect(excludes).to eq(['../src/vendor/**'])
+      end
+    end
+
     context 'when a file inherits from a parent and grandparent file' do
       let(:file_path) { 'dir/subdir/.rubocop.yml' }
 
