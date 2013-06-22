@@ -63,6 +63,61 @@ module Rubocop
           include_examples 'mimics MRI 2.0'
         end
 
+        context 'when a variable is assigned and unreferenced ' +
+                'in a singleton method defined with self keyword' do
+          let(:source) do
+            [
+              'class SomeClass',
+              '  foo = 1',
+              '  puts foo',
+              '  def self.some_method',
+              '    foo = 2',
+              '    bar = 3',
+              '    puts bar',
+              '  end',
+              'end'
+            ]
+          end
+
+          it 'registers an offence' do
+            inspect_source(cop, source)
+            expect(cop.offences).to have(1).item
+            expect(cop.offences.first.message)
+              .to include('unused variable - foo')
+            expect(cop.offences.first.line).to eq(5)
+          end
+
+          include_examples 'mimics MRI 2.0'
+        end
+
+        context 'when a variable is assigned and unreferenced ' +
+                'in a singleton method defined with variable name' do
+          let(:source) do
+            [
+              '1.times do',
+              '  foo = 1',
+              '  puts foo',
+              '  instance = Object.new',
+              '  def instance.some_method',
+              '    foo = 2',
+              '    bar = 3',
+              '    puts bar',
+              '  end',
+              'end'
+            ]
+          end
+
+          it 'registers an offence' do
+            inspect_source(cop, source)
+            expect(cop.offences).to have(1).item
+            expect(cop.offences.first.message)
+              .to include('unused variable - foo')
+            expect(cop.offences.first.line).to eq(6)
+          end
+
+          include_examples 'mimics MRI 2.0'
+        end
+
         context 'when a variable is assigned and unreferenced in a class' do
           let(:source) do
             [

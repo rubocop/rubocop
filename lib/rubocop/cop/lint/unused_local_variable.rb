@@ -119,7 +119,7 @@ module Rubocop
           (VARIABLE_ASSIGNMENT_TYPES + ARGUMENT_DECLARATION_TYPES).freeze
         VARIABLE_USE_TYPES = [:lvar].freeze
         TYPES_TO_ACCEPT_UNUSED = ARGUMENT_DECLARATION_TYPES
-        SCOPE_TYPES = [:module, :class, :sclass, :def, :block].freeze
+        SCOPE_TYPES = [:module, :class, :sclass, :def, :defs, :block].freeze
 
         MSG = 'Assigned but unused variable - %s'
 
@@ -145,7 +145,7 @@ module Rubocop
               # in current block scope.
               # See #process_node.
               throw :skip_children
-            elsif scope_node.type == :sclass && index == 0
+            elsif [:sclass, :defs].include?(scope_node.type) && index == 0
               throw :skip_children
             end
 
@@ -209,7 +209,7 @@ module Rubocop
             end
             # Now go into the block scope.
             detect_unused_variables_in_scope(node)
-          when :sclass
+          when :sclass, :defs
             # Same thing.
             #
             # Ruby:
