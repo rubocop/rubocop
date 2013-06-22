@@ -203,8 +203,7 @@ module Rubocop
             #
             # So the nodes of the method argument need to be processed
             # in current scope before dive into the block scope.
-            send_node = node.children.first
-            NodeScanner.scan_nodes_in_scope(send_node) do |n|
+            NodeScanner.scan_nodes_in_scope(node.children.first) do |n|
               process_node(n)
             end
             # Now go into the block scope.
@@ -228,8 +227,7 @@ module Rubocop
             #       (begin
             #         (lvasgn :foo
             #           (int 1))
-            variable_node = node.children.first
-            process_node(variable_node)
+            process_node(node.children.first)
             detect_unused_variables_in_scope(node)
           when *SCOPE_TYPES
             detect_unused_variables_in_scope(node)

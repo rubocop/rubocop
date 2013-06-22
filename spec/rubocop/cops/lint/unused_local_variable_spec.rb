@@ -212,12 +212,14 @@ module Rubocop
             expect(cop.offences).to have(1).item
             expect(cop.offences.first.message)
               .to include('unused variable - foo')
+            expect(cop.offences.first.line).to eq(1)
           end
 
           include_examples 'mimics MRI 2.0'
         end
 
-        context 'when a variable is assigned multiple times but unreferenced' do
+        context 'when a variable is assigned multiple times ' +
+                'but unreferenced' do
           let(:source) do
             [
               'def some_method',
@@ -266,7 +268,8 @@ module Rubocop
           include_examples 'mimics MRI 2.0'
         end
 
-        context 'when a variable is assigned in begin and referenced outside' do
+        context 'when a variable is assigned in begin ' +
+                'and referenced outside' do
           let(:source) do
             [
               'def some_method',
@@ -300,6 +303,7 @@ module Rubocop
             expect(cop.offences).to have(1).item
             expect(cop.offences.first.message)
               .to include('unused variable - foo')
+            expect(cop.offences.first.line).to eq(2)
           end
 
           include_examples 'mimics MRI 2.0', 'unused variable'
@@ -416,6 +420,7 @@ module Rubocop
             expect(cop.offences).to have(1).item
             expect(cop.offences.first.message)
               .to include('unused variable - foo')
+            expect(cop.offences.first.line).to eq(1)
           end
 
           include_examples 'mimics MRI 2.0'
@@ -450,6 +455,7 @@ module Rubocop
               expect(cop.offences).to have(1).item
               expect(cop.offences.first.message)
                 .to include('unused variable - foo')
+              expect(cop.offences.first.line).to eq(1)
             end
 
             include_examples 'mimics MRI 2.0'
