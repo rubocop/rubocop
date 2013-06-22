@@ -156,7 +156,11 @@ AllCops:
 # ...
 ```
 
-Note: Files and directories are specified relative to the `.rubocop.yml` file.
+Note: Files and directories are specified relative to the
+`.rubocop.yml` file. The `Excludes` parameter is special. It is valid
+for the directory tree starting where it is defined. It is not
+shadowed by the setting of `Excludes` in other `.rubocop.yml` files in
+subdirectories.
 
 ## Formatters
 
