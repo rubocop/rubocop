@@ -113,12 +113,14 @@ module Rubocop
         VARIABLE_ASSIGNMENT_TYPES = [:lvasgn].freeze
         ARGUMENT_DECLARATION_TYPES = [
           :arg, :optarg, :restarg, :blockarg,
-          :kwarg, :kwoptarg, :kwsplatarg
+          :kwarg, :kwoptarg, :kwsplatarg,
+          :shadowarg
         ].freeze
         VARIABLE_DECLARATION_TYPES =
           (VARIABLE_ASSIGNMENT_TYPES + ARGUMENT_DECLARATION_TYPES).freeze
         VARIABLE_USE_TYPES = [:lvar].freeze
-        TYPES_TO_ACCEPT_UNUSED = ARGUMENT_DECLARATION_TYPES
+        TYPES_TO_ACCEPT_UNUSED =
+          (ARGUMENT_DECLARATION_TYPES - [:shadowarg]).freeze
         SCOPE_TYPES = [:module, :class, :sclass, :def, :defs, :block].freeze
 
         MSG = 'Assigned but unused variable - %s'

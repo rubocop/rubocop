@@ -268,6 +268,38 @@ module Rubocop
           include_examples 'mimics MRI 2.0'
         end
 
+        context 'when a block local variable is declared but not assigned' do
+          let(:source) do
+            [
+              '1.times do |i; foo|',
+              'end'
+            ]
+          end
+
+          it 'registers an offence' do
+            inspect_source(cop, source)
+            expect(cop.offences).to have(1).item
+            expect(cop.offences.first.message)
+              .to include('unused variable - foo')
+            expect(cop.offences.first.line).to eq(1)
+          end
+
+          include_examples 'mimics MRI 2.0'
+        end
+
+        context 'when a block local variable is assigned and unreferenced' do
+          let(:source) do
+            [
+              '1.times do |i; foo|',
+              '  foo = 2',
+              'end'
+            ]
+          end
+
+          include_examples 'accepts'
+          include_examples 'mimics MRI 2.0'
+        end
+
         context 'when a variable is assigned in begin ' +
                 'and referenced outside' do
           let(:source) do
