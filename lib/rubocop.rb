@@ -6,6 +6,7 @@ require 'parser/current'
 require 'ast/sexp'
 
 require 'rubocop/cop/util'
+require 'rubocop/cop/variable_inspector'
 require 'rubocop/cop/offence'
 require 'rubocop/cop/cop'
 require 'rubocop/cop/style/encoding'
