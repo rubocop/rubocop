@@ -129,13 +129,15 @@ module Rubocop
         end
 
         def initialize
-          @node_index = 0
+          @node_index = -1
         end
 
         def scan_nodes_in_scope(origin_node, &block)
           origin_node.children.each do |child|
             next unless child.is_a?(Parser::AST::Node)
+
             node = child
+            @node_index += 1
 
             catch(:skip_children) do
               yield node, @node_index
@@ -145,8 +147,6 @@ module Rubocop
                 scan_nodes_in_scope(node, &block)
               end
             end
-
-            @node_index += 1
           end
         end
       end
