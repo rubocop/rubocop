@@ -16,20 +16,41 @@ module Rubocop
 
     class << self
       def load_file(path)
+        path = File.absolute_path(path)
         hash = YAML.load_file(path)
 
         base_configs(path, hash['inherit_from']).reverse.each do |base_config|
           base_config.each do |key, value|
             if value.is_a?(Hash)
+              if key == 'AllCops' && value['Excludes']
+                correct_relative_excludes(value, base_config, path)
+              end
               hash[key] = hash.has_key?(key) ? merge(value, hash[key]) : value
             end
           end
         end
 
         hash.delete('inherit_from')
-        config = new(hash, File.realpath(path))
+        config = new(hash, path)
         config.warn_unless_valid
         config
+      end
+
+      def correct_relative_excludes(all_cops, base_config, path)
+        all_cops['Excludes'].map! do |exclude_elem|
+          if exclude_elem.is_a?(String) && exclude_elem =~ %r([^/].*/)
+            rel_path = relative_path(base_config.loaded_path,
+                                     File.dirname(path))
+            rel_path.to_s.sub(/#{DOTFILE}$/, '') + exclude_elem
+          else
+            exclude_elem
+          end
+        end
+      end
+
+      def relative_path(path, base)
+        path_name = Pathname.new(File.expand_path(path))
+        path_name.relative_path_from(Pathname.new(base)).to_s
       end
 
       # Return a recursive merge of two hashes. That is, a normal hash
@@ -72,19 +93,32 @@ module Rubocop
       # user's home directory is checked. If there's no .rubocop.yml
       # there either, the path to the default file is returned.
       def configuration_file_for(target_dir)
-        possible_config_files = dirs_to_search(target_dir).map do |dir|
-          File.join(dir, DOTFILE)
-        end
-
-        found_file = possible_config_files.find do |config_file|
-          File.exist?(config_file)
-        end
-        found_file || DEFAULT_FILE
+        config_files_in_path(target_dir).first || DEFAULT_FILE
       end
 
       def configuration_from_file(config_file)
         config = load_file(config_file)
+        found_files = config_files_in_path(config_file)
+        if found_files.any? && found_files.last != config_file
+          add_excludes_from_higher_level(config, load_file(found_files.last))
+        end
         merge_with_default(config, config_file)
+      end
+
+      def add_excludes_from_higher_level(config, highest_config)
+        if highest_config['AllCops'] && highest_config['AllCops']['Excludes']
+          config['AllCops'] ||= {}
+          config['AllCops']['Excludes'] ||= []
+          highest_config['AllCops']['Excludes'].each do |path|
+            unless path.is_a?(Regexp) || path.start_with?('/')
+              diff_in_level = config.loaded_path.count('/') -
+                highest_config.loaded_path.count('/')
+              path = '../' * diff_in_level + path
+            end
+            config['AllCops']['Excludes'] << path
+          end
+          config['AllCops']['Excludes'].uniq!
+        end
       end
 
       def default_configuration
@@ -96,6 +130,13 @@ module Rubocop
       end
 
       private
+
+      def config_files_in_path(target)
+        possible_config_files = dirs_to_search(target).map do |dir|
+          File.join(dir, DOTFILE)
+        end
+        possible_config_files.select { |config_file| File.exist?(config_file) }
+      end
 
       def dirs_to_search(target_dir)
         dirs_to_search = []
@@ -181,8 +222,7 @@ module Rubocop
 
     def relative_path_to_loaded_dir(file)
       return file unless loaded_path
-      file_pathname = Pathname.new(File.expand_path(file))
-      file_pathname.relative_path_from(loaded_dir_pathname).to_s
+      Config.relative_path(file, loaded_dir_pathname)
     end
 
     def loaded_dir_pathname
