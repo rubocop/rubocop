@@ -113,8 +113,11 @@ module Rubocop
 
         describe '#find_variable_entry' do
           before do
+            variable_table.push_scope(s(:class))
+            variable_table.add_variable_entry(s(:lvasgn, :baz))
+
             variable_table.push_scope(s(:def))
-            variable_table.add_variable_entry(s(:lvasgn, :foo))
+            variable_table.add_variable_entry(s(:lvasgn, :bar))
           end
 
           context 'when current scope is block' do
@@ -125,44 +128,70 @@ module Rubocop
             context 'when a variable with the target name exists ' +
                     'in current scope' do
               before do
-                variable_table.add_variable_entry(s(:lvasgn, :bar))
-              end
-
-              it 'returns the current scope variable entry' do
-                found_entry = variable_table.find_variable_entry(:bar)
-                expect(found_entry.name).to eq(:bar)
-              end
-            end
-
-            context 'when a variable with the target name does not exist ' +
-                    'in current scope but exists in outer scope' do
-              it 'returns the outer scope variable entry' do
-                found_entry = variable_table.find_variable_entry(:foo)
-                expect(found_entry.name).to equal(:foo)
-              end
-            end
-
-            context 'when a variable with the target name exists ' +
-                    'in current scope and also in outer scope' do
-              before do
                 variable_table.add_variable_entry(s(:lvasgn, :foo))
               end
 
-              it 'returns the current scope variable entry' do
-                found_entry = variable_table.find_variable_entry(:foo)
-                expect(found_entry.name).to equal(:foo)
-                expect(variable_table.current_scope.variable_entries)
-                  .to have_value(found_entry)
-                expect(variable_table.scope_stack[-2].variable_entries)
-                  .not_to have_value(found_entry)
+              context 'and does not exist in outer scope' do
+                it 'returns the current scope variable entry' do
+                  found_entry = variable_table.find_variable_entry(:foo)
+                  expect(found_entry.name).to eq(:foo)
+                end
+              end
+
+              context 'and also exists in outer scope' do
+                before do
+                  variable_table.add_variable_entry(s(:lvasgn, :bar))
+                end
+
+                it 'returns the current scope variable entry' do
+                  found_entry = variable_table.find_variable_entry(:bar)
+                  expect(found_entry.name).to equal(:bar)
+                  expect(variable_table.current_scope.variable_entries)
+                    .to have_value(found_entry)
+                  expect(variable_table.scope_stack[-2].variable_entries)
+                    .not_to have_value(found_entry)
+                end
               end
             end
 
             context 'when a variable with the target name does not exist ' +
-                    'in all scopes' do
-              it 'returns nil' do
-                found_entry = variable_table.find_variable_entry(:baz)
-                expect(found_entry).to be_nil
+                    'in current scope' do
+              context 'but exists in the direct outer scope' do
+                it 'returns the direct outer scope variable entry' do
+                  found_entry = variable_table.find_variable_entry(:bar)
+                  expect(found_entry.name).to equal(:bar)
+                end
+              end
+
+              context 'but exists in a indirect outer scope' do
+                context 'when the direct outer scope is block' do
+                  before do
+                    variable_table.pop_scope
+                    variable_table.pop_scope
+
+                    variable_table.push_scope(s(:block))
+                    variable_table.push_scope(s(:block))
+                  end
+
+                  it 'returns the indirect outer scope variable entry' do
+                    found_entry = variable_table.find_variable_entry(:baz)
+                    expect(found_entry.name).to equal(:baz)
+                  end
+                end
+
+                context 'when the direct outer scope is not block' do
+                  it 'returns nil' do
+                    found_entry = variable_table.find_variable_entry(:baz)
+                    expect(found_entry).to be_nil
+                  end
+                end
+              end
+
+              context 'and does not exist in all outer scopes' do
+                it 'returns nil' do
+                  found_entry = variable_table.find_variable_entry(:non)
+                  expect(found_entry).to be_nil
+                end
               end
             end
           end
@@ -175,44 +204,42 @@ module Rubocop
             context 'when a variable with the target name exists ' +
                     'in current scope' do
               before do
-                variable_table.add_variable_entry(s(:lvasgn, :bar))
-              end
-
-              it 'returns the current scope variable entry' do
-                found_entry = variable_table.find_variable_entry(:bar)
-                expect(found_entry.name).to eq(:bar)
-              end
-            end
-
-            context 'when a variable with the target name does not exist ' +
-                    'in current scope but exists in outer scope' do
-              it 'returns nil' do
-                found_entry = variable_table.find_variable_entry(:foo)
-                expect(found_entry).to be_nil
-              end
-            end
-
-            context 'when a variable with the target name exists ' +
-                    'in current scope and also in outer scope' do
-              before do
                 variable_table.add_variable_entry(s(:lvasgn, :foo))
               end
 
-              it 'returns the current scope variable entry' do
-                found_entry = variable_table.find_variable_entry(:foo)
-                expect(found_entry.name).to equal(:foo)
-                expect(variable_table.current_scope.variable_entries)
-                  .to have_value(found_entry)
-                expect(variable_table.scope_stack[-2].variable_entries)
-                  .not_to have_value(found_entry)
+              context 'and does not exist in outer scope' do
+                it 'returns the current scope variable entry' do
+                  found_entry = variable_table.find_variable_entry(:foo)
+                  expect(found_entry.name).to eq(:foo)
+                end
+              end
+
+              context 'and also exists in outer scope' do
+                it 'returns the current scope variable entry' do
+                  found_entry = variable_table.find_variable_entry(:foo)
+                  expect(found_entry.name).to equal(:foo)
+                  expect(variable_table.current_scope.variable_entries)
+                    .to have_value(found_entry)
+                  expect(variable_table.scope_stack[-2].variable_entries)
+                    .not_to have_value(found_entry)
+                end
               end
             end
 
             context 'when a variable with the target name does not exist ' +
-                    'in all scopes' do
-              it 'returns nil' do
-                found_entry = variable_table.find_variable_entry(:baz)
-                expect(found_entry).to be_nil
+                    'in current scope' do
+              context 'but exists in the direct outer scope' do
+                it 'returns nil' do
+                  found_entry = variable_table.find_variable_entry(:bar)
+                  expect(found_entry).to be_nil
+                end
+              end
+
+              context 'and does not exist in all outer scopes' do
+                it 'returns nil' do
+                  found_entry = variable_table.find_variable_entry(:non)
+                  expect(found_entry).to be_nil
+                end
               end
             end
           end

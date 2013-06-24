@@ -109,16 +109,13 @@ module Rubocop
         end
 
         def find_variable_entry(variable_name)
-          # Block allows referencing outer scope variables.
-          if current_scope.node.type == :block
-            scope_stack.reverse_each do |scope|
-              entry = scope.variable_entries[variable_name]
-              return entry if entry
-            end
-            nil
-          else
-            current_scope.variable_entries[variable_name]
+          scope_stack.reverse_each do |scope|
+            entry = scope.variable_entries[variable_name]
+            return entry if entry
+            # Only block scope allows referencing outer scope variables.
+            return nil unless scope.node.type == :block
           end
+          nil
         end
       end
 
