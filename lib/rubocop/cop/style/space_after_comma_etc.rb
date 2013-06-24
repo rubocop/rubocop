@@ -5,6 +5,8 @@
 module Rubocop
   module Cop
     module Style
+      # Common functionality for cops checking for missing space after
+      # punctuation.
       module SpaceAfterCommaEtc
         MSG = 'Space missing after %s.'
 
@@ -24,6 +26,7 @@ module Rubocop
         end
       end
 
+      # Checks for comma (,) not follwed by some kind of space.
       class SpaceAfterComma < Cop
         include SpaceAfterCommaEtc
 
@@ -32,6 +35,7 @@ module Rubocop
         end
       end
 
+      # Checks for semicolon (;) not follwed by some kind of space.
       class SpaceAfterSemicolon < Cop
         include SpaceAfterCommaEtc
 
@@ -40,6 +44,7 @@ module Rubocop
         end
       end
 
+      # Checks for colon (:) not follwed by some kind of space.
       class SpaceAfterColon < Cop
         include SpaceAfterCommaEtc
 

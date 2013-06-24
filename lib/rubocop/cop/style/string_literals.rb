@@ -3,6 +3,7 @@
 module Rubocop
   module Cop
     module Style
+      # Checks for uses of double quotes where single quotes would do.
       class StringLiterals < Cop
         MSG = "Prefer single-quoted strings when you don't need " +
           'string interpolation or special symbols.'

@@ -3,6 +3,7 @@
 module Rubocop
   module Cop
     module Style
+      # Common functionality for modifier cops.
       module FavorModifier
         # TODO extremely ugly solution that needs lots of polish
         def check(sexp)
@@ -44,6 +45,8 @@ module Rubocop
         end
       end
 
+      # Checks for if and unless statements that would fit on one line
+      # if written as a modifier if/unless.
       class IfUnlessModifier < Cop
         include FavorModifier
 
@@ -83,6 +86,8 @@ module Rubocop
         end
       end
 
+      # Checks for while and until statements that would fit on one line
+      # if written as a modifier while/until.
       class WhileUntilModifier < Cop
         include FavorModifier
 

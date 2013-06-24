@@ -3,6 +3,7 @@
 module Rubocop
   module Cop
     module Style
+      # Common functionality for cops checking if and unless statements.
       module IfThenElse
         def on_if(node)
           check(node)
@@ -24,6 +25,7 @@ module Rubocop
         end
       end
 
+      # Checks for uses of semicolon in if statements.
       class IfWithSemicolon < Cop
         include IfThenElse
 
@@ -36,6 +38,7 @@ module Rubocop
         end
       end
 
+      # Checks for uses of then multi-line if statements.
       class MultilineIfThen < Cop
         include IfThenElse
 
@@ -60,6 +63,7 @@ module Rubocop
         end
       end
 
+      # Checks for uses of if/then/else/end on a single line.
       class OneLineConditional < Cop
         include IfThenElse
 

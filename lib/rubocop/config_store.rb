@@ -1,6 +1,8 @@
 # encoding: utf-8
 
 module Rubocop
+  # Handles chaching of configurations and association of inspected
+  # ruby files to configurations.
   module ConfigStore
     module_function
 
