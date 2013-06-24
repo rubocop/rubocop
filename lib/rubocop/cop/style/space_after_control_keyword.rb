@@ -3,6 +3,7 @@
 module Rubocop
   module Cop
     module Style
+      # Checks for various control keywords missing a space after them.
       class SpaceAfterControlKeyword < Cop
         MSG = 'Use space after control keywords.'
         # elsif and unless are handled by on_if.

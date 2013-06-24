@@ -5,6 +5,11 @@ require 'yaml'
 require 'pathname'
 
 module Rubocop
+  # This class represents the configuration of the RuboCop application
+  # and all its cops. A Config is associated with a YAML configuration
+  # file from which it was read. Several different Configs can be used
+  # during a run of the rubocop program, if files in several
+  # directories are inspected.
   class Config < DelegateClass(Hash)
     class ValidationError < StandardError; end
 
