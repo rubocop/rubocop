@@ -2,6 +2,9 @@
 
 module Rubocop
   module Cop
+    # This module provides a way to track local variables and scopes of Ruby.
+    # This is intended to be used as mix-in, and the user class may override
+    # some of hook methods.
     module VariableInspector
       VARIABLE_ASSIGNMENT_TYPES = [:lvasgn].freeze
       ARGUMENT_DECLARATION_TYPES = [
@@ -14,6 +17,9 @@ module Rubocop
       VARIABLE_USE_TYPES = [:lvar].freeze
       SCOPE_TYPES = [:module, :class, :sclass, :def, :defs, :block].freeze
 
+      # A VariableEntry represents existance of a local variable.
+      # This holds a variable declaration node,
+      # and some states of the variable.
       class VariableEntry
         attr_reader :node
         attr_accessor :used
@@ -34,6 +40,9 @@ module Rubocop
         end
       end
 
+      # A Scope represents a context of local variable visibility.
+      # This is a place where local variables belong to.
+      # A scope instance holds a scope node and variable entries.
       class Scope
         attr_reader :node, :variable_entries
 
@@ -49,6 +58,11 @@ module Rubocop
         end
       end
 
+      # A VariableTable manages the lifetime of all scopes and local variables
+      # in a program.
+      # This holds scopes as stack structure, and provides a way to add local
+      # variables to current scope and find local variables by considering
+      # variable visibility of the current scope.
       class VariableTable
         def initialize(hook_receiver = nil)
           @hook_receiver = hook_receiver
@@ -108,6 +122,7 @@ module Rubocop
         end
       end
 
+      # This provides a way to scan all nodes only in current scope.
       class NodeScanner
         def self.scan_nodes_in_scope(origin_node, &block)
           new.scan_nodes_in_scope(origin_node, &block)
