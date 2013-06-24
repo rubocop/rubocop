@@ -5,6 +5,7 @@
 module Rubocop
   module Cop
     module Style
+      # Common functionality for checking surrounding space.
       module SurroundingSpace
         def space_between?(t1, t2)
           char_preceding_2nd_token =
@@ -41,6 +42,8 @@ module Rubocop
         end
       end
 
+      # Checks that operators have space around them, except for **
+      # which should not have surrounding space.
       class SpaceAroundOperators < Cop
         include SurroundingSpace
         MSG_MISSING = "Surrounding space missing for operator '%s'."
@@ -163,6 +166,7 @@ module Rubocop
         end
       end
 
+      # Checks that block braces have surrounding space.
       class SpaceAroundBraces < Cop
         include SurroundingSpace
         MSG_LEFT = "Surrounding space missing for '{'."
@@ -209,6 +213,8 @@ module Rubocop
         end
       end
 
+      # Common functionality for checking for spaces inside various
+      # kinds of parentheses.
       module SpaceInside
         include SurroundingSpace
         MSG = 'Space inside %s detected.'
@@ -226,6 +232,7 @@ module Rubocop
         end
       end
 
+      # Checks for spaces inside ordinary round parentheses.
       class SpaceInsideParens < Cop
         include SpaceInside
 
@@ -234,6 +241,7 @@ module Rubocop
         end
       end
 
+      # Checks for spaces inside square brackets.
       class SpaceInsideBrackets < Cop
         include SpaceInside
 
@@ -242,6 +250,8 @@ module Rubocop
         end
       end
 
+      # Checks that braces used for hash literals have or don't have
+      # surrounding space depending on configuration.
       class SpaceInsideHashLiteralBraces < Cop
         include SurroundingSpace
         MSG = 'Space inside hash literal braces %s.'
@@ -275,6 +285,8 @@ module Rubocop
         end
       end
 
+      # Checks that the equals signs in parameter default assignments
+      # have surrounding space.
       class SpaceAroundEqualsInParameterDefault < Cop
         include SurroundingSpace
         MSG = 'Surrounding space missing in default value assignment.'

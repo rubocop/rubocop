@@ -3,6 +3,8 @@
 module Rubocop
   module Cop
     module Style
+      # Check for uses of braces or do/end around single line or
+      # multi-line blocks.
       class Blocks < Cop
         MULTI_LINE_MSG = 'Avoid using {...} for multi-line blocks.'
         SINGLE_LINE_MSG = 'Prefer {...} over do...end for single-line blocks.'
