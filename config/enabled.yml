@@ -358,6 +358,11 @@ UnreachableCode:
 UnusedLocalVariable:
   Enabled: true
 
+# Do not use the same name as outer local variable
+# for block arguments or block local variables.
+ShadowingOuterLocalVariable:
+  Enabled: true
+
 ## Rails
 
 # Use sexy validations.

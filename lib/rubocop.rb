@@ -6,6 +6,7 @@ require 'parser/current'
 require 'ast/sexp'
 
 require 'rubocop/cop/util'
+require 'rubocop/cop/variable_inspector'
 require 'rubocop/cop/offence'
 require 'rubocop/cop/cop'
 require 'rubocop/cop/style/encoding'
@@ -84,6 +85,7 @@ require 'rubocop/cop/style/documentation'
 require 'rubocop/cop/lint/unreachable_code'
 require 'rubocop/cop/style/method_invocation_parentheses'
 require 'rubocop/cop/lint/unused_local_variable'
+require 'rubocop/cop/lint/shadowing_outer_local_variable'
 
 require 'rubocop/cop/rails/validation'
 

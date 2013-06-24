@@ -73,10 +73,6 @@ RSpec.configure do |config|
   config.include(ExitCodeMatchers)
 end
 
-# Requires supporting files with custom matchers and macros, etc,
-# in ./support/ and its subdirectories.
-Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
-
 def inspect_source(cop, source)
   ast, comments, tokens, src_buffer, _ = Rubocop::CLI.parse('(string)') do |sb|
     sb.source = source.join($RS)
@@ -89,3 +85,7 @@ class Rubocop::Cop::Cop
     offences.map(&:message)
   end
 end
+
+# Requires supporting files with custom matchers and macros, etc,
+# in ./support/ and its subdirectories.
+Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
