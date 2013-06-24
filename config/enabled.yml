@@ -336,6 +336,10 @@ Documentation:
 MethodInvocationParentheses:
   Enabled: true
 
+# Checks for redundant do after while or until.
+WhileUntilDo:
+  Enabled: true
+
 ## Warnings
 
 # Don't use assignment in conditions.

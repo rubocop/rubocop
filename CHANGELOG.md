@@ -22,6 +22,7 @@
 * New cop `MethodInvocationParentheses` tracks unwanted braces in method invocations.
 * New cop `UnusedLocalVariable` tracks unused local variables for each scope.
 * New cop `ShadowingOuterLocalVariable` tracks use of the same name as outer local variables for block arguments or block local variables.
+* New cop `WhileUntilDo` tracks uses of `do` with multi-line `while/until`.
 * Add support for auto-correction of some offences with `-a`/`--auto-correct`.
 
 ### Changes
