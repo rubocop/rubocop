@@ -189,7 +189,7 @@ The JSON structure is like the following example:
           "cop_name": "LineLength",
           "location": {
             "line": 546,
-            "column": 79
+            "column": 80
           }
         }, {
           "severity": "warning",
@@ -197,7 +197,7 @@ The JSON structure is like the following example:
           "cop_name": "UnreachableCode",
           "location": {
             "line": 15,
-            "column": 8
+            "column": 9
           }
         }
       ]

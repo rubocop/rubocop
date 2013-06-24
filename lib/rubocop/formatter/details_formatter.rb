@@ -10,7 +10,7 @@ module Rubocop
         output.puts "== #{file} ==".color(:yellow)
         offences.each do |o|
           output.printf("%s:%d:%d: %s: %s\n",
-                        File.basename(file), o.line, o.column,
+                        File.basename(file), o.line, o.real_column,
                         o.encode_severity, o.message)
           output.puts(o.location.source_line)
           output.puts(' ' * o.location.column + '^', '')

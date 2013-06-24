@@ -36,6 +36,15 @@ module Rubocop
         @column = column
         @source_line = source[line - 1]
       end
+
+      # @api private
+      #
+      # Internally we use column number that start at 0, but when
+      # outputting column numbers, we want them to start at 1. One
+      # reason is that editors, such as Emacs, expect this.
+      def real_column
+        column + 1
+      end
     end
 
     # An Offence represents a style violation detected by RuboCop.
@@ -110,7 +119,7 @@ module Rubocop
       def to_s
         # we must be wary of messages containing % in them
         sprintf("#{encode_severity}:%3d:%3d: #{message.gsub(/%/, '%%')}",
-                line, column)
+                line, real_column)
       end
 
       # @api private
@@ -121,6 +130,15 @@ module Rubocop
       # @api private
       def severity_level
         SEVERITIES.index(severity) + 1
+      end
+
+      # @api private
+      #
+      # Internally we use column number that start at 0, but when
+      # outputting column numbers, we want them to start at 1. One
+      # reason is that editors, such as Emacs, expect this.
+      def real_column
+        column + 1
       end
 
       # @api public
