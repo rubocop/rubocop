@@ -1,3 +1,4 @@
+# encoding: utf-8
 
 # `cop` and `source` must be declared with #let.
 
