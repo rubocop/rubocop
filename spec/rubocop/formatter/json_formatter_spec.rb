@@ -134,7 +134,7 @@ module Rubocop
       end
 
       it 'sets Location#column value for :column key' do
-        expect(hash[:column]).to eq(5)
+        expect(hash[:column]).to eq(6)
       end
     end
   end

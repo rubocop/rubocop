@@ -117,11 +117,11 @@ module Rubocop
             formatter.finished(files)
             expect(output.string).to include([
               '== lib/rubocop.rb ==',
-              'C:  2:  2: foo',
+              'C:  2:  3: foo',
               '',
               '== bin/rubocop ==',
-              'E:  5:  1: bar',
-              'C:  6:  0: foo'
+              'E:  5:  2: bar',
+              'C:  6:  1: foo'
             ].join("\n"))
           end
         end

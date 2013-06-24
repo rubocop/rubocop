@@ -54,11 +54,11 @@ module Rubocop
 
           formatter.report_file('test', cop.offences)
           expect(output.string).to eq ['== test ==',
-                                       'test:1:0: C: message 1',
+                                       'test:1:1: C: message 1',
                                        'a',
                                        '^',
                                        '',
-                                       'test:11:0: F: message 2',
+                                       'test:11:1: F: message 2',
                                        'k',
                                        '^',
                                        '',

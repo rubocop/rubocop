@@ -17,8 +17,8 @@ module Rubocop
           cop.add_offence(:fatal, Cop::Location.new(11, 0, ['a']), 'message 2')
 
           formatter.report_file('test', cop.offences)
-          expect(output.string).to eq ['test:1:0: C: message 1',
-                                       "test:11:0: F: message 2\n"].join("\n")
+          expect(output.string).to eq ['test:1:1: C: message 1',
+                                       "test:11:1: F: message 2\n"].join("\n")
         end
       end
     end
