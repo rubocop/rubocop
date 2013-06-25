@@ -20,9 +20,21 @@ module Rubocop
           expect(wa.offences.size).to eq(1)
         end
 
+        it 'registers an offence for arrays with character constants' do
+          inspect_source(wa,
+                         ['["one", ?\n]'])
+          expect(wa.offences.size).to eq(1)
+        end
+
         it 'does not register an offence for array of non-words' do
           inspect_source(wa,
                          ['["one space", "two", "three"]'])
+          expect(wa.offences).to be_empty
+        end
+
+        it 'does not register an offence for array containing non-string' do
+          inspect_source(wa,
+                         ['["one", "two", 3]'])
           expect(wa.offences).to be_empty
         end
 
