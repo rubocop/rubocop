@@ -340,6 +340,10 @@ MethodInvocationParentheses:
 WhileUntilDo:
   Enabled: true
 
+# Checks for uses of character literals.
+CharacterLiteral:
+  Enabled: true
+
 ## Warnings
 
 # Don't use assignment in conditions.
