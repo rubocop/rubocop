@@ -370,7 +370,7 @@ module Rubocop
     def log_error(e, msg = '')
       if @options[:debug]
         error_message = "#{e.class}, #{e.message}"
-        STDERR.puts "#{msg}\t#{error_message}"
+        warn "#{msg}\t#{error_message}"
       end
     end
 
