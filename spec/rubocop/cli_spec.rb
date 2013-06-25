@@ -232,13 +232,20 @@ Usage: rubocop [options] [file1, file2, ...]
     end
 
     it 'runs just one cop if --only is passed' do
-      create_file('example.rb', ['#' * 90,
-                                 "\ty"])
+      create_file('example.rb', ['if x== 0 ',
+                                 "\ty",
+                                 'end'])
+      # IfUnlessModifier depends on the configuration of LineLength.
+      # That configuration might have been set by other spec examples
+      # so we reset it to emulate a start from scratch.
+      Cop::Style::LineLength.config = nil
 
-      expect(cli.run(['--only', 'LineLength', 'example.rb'])).to eq(1)
+      expect(cli.run(['--only', 'IfUnlessModifier', 'example.rb'])).to eq(1)
       expect($stdout.string)
         .to eq(['== example.rb ==',
-                'C:  1: 80: Line is too long. [90/79]',
+                'C:  1:  1: Favor modifier if/unless usage when you have a ' +
+                'single-line body. Another good alternative is the usage of ' +
+                'control flow &&/||.',
                 '',
                 '1 file inspected, 1 offence detected',
                 ''].join("\n"))
