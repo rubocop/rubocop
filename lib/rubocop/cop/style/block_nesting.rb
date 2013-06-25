@@ -9,7 +9,8 @@ module Rubocop
       #
       # The maximum level of nesting allowed is configurable.
       class BlockNesting < Cop
-        NESTING_BLOCKS = [:case, :if, :while, :until, :for, :resbody]
+        NESTING_BLOCKS = [:case, :if, :while, :while_post, :until, :until_post,
+                          :for, :resbody]
 
         def inspect(source_buffer, source, tokens, ast, comments)
           return unless ast
