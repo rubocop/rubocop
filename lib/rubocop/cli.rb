@@ -96,9 +96,10 @@ module Rubocop
       # filter out Rails cops unless requested
       @cops.reject! { |cop_klass| cop_klass.rails? } unless @options[:rails]
 
+      set_config_for_all_cops(config)
+
       @cops.reduce(syntax_offences) do |offences, cop_class|
         cop_name = cop_class.cop_name
-        cop_class.config = config.for_cop(cop_name)
         if config.cop_enabled?(cop_name)
           cop = setup_cop(cop_class, disabled_lines)
           if !@options[:only] || @options[:only] == cop_name
@@ -113,6 +114,12 @@ module Rubocop
           offences.concat(cop.offences)
         end
         offences
+      end
+    end
+
+    def set_config_for_all_cops(config)
+      @cops.each do |cop_class|
+        cop_class.config = config.for_cop(cop_class.cop_name)
       end
     end
 
