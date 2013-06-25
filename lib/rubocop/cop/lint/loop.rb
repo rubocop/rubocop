@@ -8,28 +8,20 @@ module Rubocop
         MSG = 'Use Kernel#loop with break rather than ' +
               'begin/end/until(or while).'
 
-        def on_while(node)
-          check(node)
-
+        def on_while_post(node)
+          register_offence(node)
           super
         end
 
-        def on_until(node)
-          check(node)
-
+        def on_until_post(node)
+          register_offence(node)
           super
         end
 
         private
 
-        def check(node)
-          _cond, body = *node
-          type = node.type.to_s
-
-          if body.type == :begin &&
-              !node.loc.expression.source.start_with?(type)
-            add_offence(:warning, node.loc.keyword, MSG)
-          end
+        def register_offence(node)
+          add_offence(:warning, node.loc.keyword, MSG)
         end
       end
     end

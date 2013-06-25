@@ -33,6 +33,26 @@ module Rubocop
                           'end'])
           expect(rm.offences).to be_empty
         end
+
+        it 'accepts rescue with implicit begin in instance method' do
+          inspect_source(rm,
+                         ['def some_method',
+                          '  test',
+                          'rescue',
+                          '  handle',
+                          'end'])
+          expect(rm.offences).to be_empty
+        end
+
+        it 'accepts rescue with implicit begin in singleton method' do
+          inspect_source(rm,
+                         ['def self.some_method',
+                          '  test',
+                          'rescue',
+                          '  handle',
+                          'end'])
+          expect(rm.offences).to be_empty
+        end
       end
     end
   end
