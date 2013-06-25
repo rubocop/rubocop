@@ -29,8 +29,11 @@ module Rubocop
 
         def complex_content?(arr_sexp)
           arr_sexp.each do |s|
-            str_content = Util.strip_quotes(s.loc.expression.source)
-            return true unless str_content =~ /\A[\w-]+\z/
+            source = s.loc.expression.source
+            unless source.start_with?('?') # %W(\r \n) can replace [?\r, ?\n]
+              str_content = Util.strip_quotes(source)
+              return true unless str_content =~ /\A[\w-]+\z/
+            end
           end
 
           false
