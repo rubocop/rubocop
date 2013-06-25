@@ -371,6 +371,10 @@ UnusedLocalVariable:
 ShadowingOuterLocalVariable:
   Enabled: true
 
+# END blocks should not be placed inside method definitions.
+EndInMethod:
+  Enabled: true
+
 ## Rails
 
 # Use sexy validations.

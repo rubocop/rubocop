@@ -24,6 +24,7 @@
 * New cop `ShadowingOuterLocalVariable` tracks use of the same name as outer local variables for block arguments or block local variables.
 * New cop `WhileUntilDo` tracks uses of `do` with multi-line `while/until`.
 * New cop `CharacterLiteral` tracks uses of character literals (`?x`).
+* New cop `EndInMethod` tracks uses of `END` in method definitions.
 * Add support for auto-correction of some offences with `-a`/`--auto-correct`.
 
 ### Changes

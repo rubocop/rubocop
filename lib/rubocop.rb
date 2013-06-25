@@ -12,6 +12,7 @@ require 'rubocop/cop/cop'
 
 require 'rubocop/cop/lint/assignment_in_condition'
 require 'rubocop/cop/lint/end_alignment'
+require 'rubocop/cop/lint/end_in_method'
 require 'rubocop/cop/lint/ensure_return'
 require 'rubocop/cop/lint/eval'
 require 'rubocop/cop/lint/handle_exceptions'
