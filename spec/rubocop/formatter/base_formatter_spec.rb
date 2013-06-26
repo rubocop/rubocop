@@ -82,6 +82,17 @@ module Rubocop
 
             run
           end
+
+          describe 'the passed files paths' do
+            it 'is frozen' do
+              formatter.should_receive(method_name) do |all_files|
+                all_files.each do |path|
+                  expect(path).to be_frozen
+                end
+              end
+              run
+            end
+          end
         end
 
         describe '#started' do
@@ -129,6 +140,15 @@ module Rubocop
               .with(File.expand_path('no_offence.rb'), anything)
 
             run
+          end
+
+          describe 'the passed path' do
+            it 'is frozen' do
+              formatter.should_receive(method_name).exactly(3).times do |path|
+                expect(path).to be_frozen
+              end
+              run
+            end
           end
         end
 

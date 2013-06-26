@@ -101,6 +101,7 @@ require 'rubocop/formatter/emacs_style_formatter'
 require 'rubocop/formatter/progress_formatter'
 require 'rubocop/formatter/json_formatter'
 require 'rubocop/formatter/details_formatter'
+require 'rubocop/formatter/formatter_set'
 
 require 'rubocop/config'
 require 'rubocop/config_store'

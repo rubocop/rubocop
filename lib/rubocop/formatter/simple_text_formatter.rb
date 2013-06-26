@@ -16,7 +16,7 @@ module Rubocop
       def file_finished(file, offences)
         return if offences.empty?
         @total_offence_count += offences.count
-        report_file(file, offences.sort)
+        report_file(file, offences)
       end
 
       def finished(inspected_files)

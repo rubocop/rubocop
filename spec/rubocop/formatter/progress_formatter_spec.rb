@@ -106,10 +106,10 @@ module Rubocop
             ])
             formatter.file_started(files[2], {})
             formatter.file_finished(files[2], [
-              Cop::Offence.new(:convention, Cop::Location.new(6, 0, ['a']),
-                               'foo', 'Cop'),
               Cop::Offence.new(:error, Cop::Location.new(5, 1, ['a']),
-                               'bar', 'Cop')
+                               'bar', 'Cop'),
+              Cop::Offence.new(:convention, Cop::Location.new(6, 0, ['a']),
+                               'foo', 'Cop')
             ])
           end
 
