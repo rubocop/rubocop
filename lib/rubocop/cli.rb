@@ -37,6 +37,7 @@ module Rubocop
       end
 
       target_files = target_files(args)
+      target_files.each(&:freeze).freeze
       inspected_files = []
       any_failed = false
 
@@ -52,10 +53,10 @@ module Rubocop
 
         any_failed = true unless offences.empty?
         inspected_files << file
-        formatter_set.file_finished(file, offences)
+        formatter_set.file_finished(file, offences.freeze)
       end
 
-      formatter_set.finished(inspected_files)
+      formatter_set.finished(inspected_files.freeze)
       formatter_set.close_output_files
 
       display_error_summary(@errors) unless @options[:silent]

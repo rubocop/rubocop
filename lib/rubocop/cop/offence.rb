@@ -32,9 +32,10 @@ module Rubocop
 
       # @api private
       def initialize(line, column, source)
-        @line = line
-        @column = column
-        @source_line = source[line - 1]
+        @line = line.freeze
+        @column = column.freeze
+        @source_line = source[line - 1].freeze
+        freeze
       end
 
       # @api private
@@ -107,12 +108,13 @@ module Rubocop
         unless SEVERITIES.include?(severity)
           fail ArgumentError, "Unknown severity: #{severity}"
         end
-        @severity = severity
-        @location = location
-        @line = location.line
-        @column = location.column
-        @message = message
-        @cop_name = cop_name
+        @severity = severity.freeze
+        @location = location.freeze
+        @line = location.line.freeze
+        @column = location.column.freeze
+        @message = message.freeze
+        @cop_name = cop_name.freeze
+        freeze
       end
 
       # @api private
