@@ -12,7 +12,8 @@ module Rubocop
           # but don't respond to begin.
           return unless node.loc.respond_to?(:begin)
 
-          if node.loc.begin.is?('?')
+          # we don't register an offence for things like ?\C-\M-d
+          if node.loc.begin.is?('?') && node.loc.expression.source.size < 4
             add_offence(:convention, node.loc.expression, MSG)
             do_autocorrect(node)
           end
@@ -22,9 +23,13 @@ module Rubocop
         alias_method :on_regexp, :ignore_node
 
         def autocorrect_action(node)
-          string = node.loc.expression.source[1]
+          string = node.loc.expression.source[1..-1]
 
-          replace(node.loc.expression, "'#{string}'")
+          if string.length == 1 # normal character
+            replace(node.loc.expression, "'#{string}'")
+          elsif string.length == 2 # special character like \n
+            replace(node.loc.expression, %Q("#{string}"))
+          end
         end
       end
     end
