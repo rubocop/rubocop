@@ -8,7 +8,7 @@ module Rubocop
         MSG = 'Do not use the character literal - use string literal instead.'
 
         def on_str(node)
-          # Constants like __FILE__ and __DIR__ are created as strings,
+          # Constants like __FILE__ are handled as strings,
           # but don't respond to begin.
           return unless node.loc.respond_to?(:begin)
 
