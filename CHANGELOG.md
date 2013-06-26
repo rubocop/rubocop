@@ -25,6 +25,7 @@
 * New cop `WhileUntilDo` tracks uses of `do` with multi-line `while/until`.
 * New cop `CharacterLiteral` tracks uses of character literals (`?x`).
 * New cop `EndInMethod` tracks uses of `END` in method definitions.
+* New cop `LiteralInCondition` tracks uses of literals in the conditions of `if/while/until`.
 * Add support for auto-correction of some offences with `-a`/`--auto-correct`.
 
 ### Changes

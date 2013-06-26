@@ -375,6 +375,10 @@ ShadowingOuterLocalVariable:
 EndInMethod:
   Enabled: true
 
+# Checks of literals used in conditions.
+LiteralInCondition:
+  Enabled: true
+
 ## Rails
 
 # Use sexy validations.
