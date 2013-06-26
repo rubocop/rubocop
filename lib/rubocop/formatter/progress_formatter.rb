@@ -37,7 +37,7 @@ module Rubocop
 
           @offences_for_files.each do |file, offences|
             output.puts
-            report_file(file, offences.sort)
+            report_file(file, offences)
           end
         end
 

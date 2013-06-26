@@ -109,7 +109,7 @@ module Rubocop
           offences.concat(cop.offences)
         end
         offences
-      end
+      end.sort
     end
 
     def set_config_for_all_cops(config)
