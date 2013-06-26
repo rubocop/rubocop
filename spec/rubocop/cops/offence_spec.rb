@@ -4,11 +4,29 @@ require 'spec_helper'
 
 module Rubocop
   module Cop
-    describe Offence do
-      it 'has a few required attributes' do
-        offence = Offence.new(:convention, Location.new(1, 0, ['a']),
-                              'message', 'CopName')
+    describe Location do
+      subject(:location) { Location.new(1, 0, ['a']) }
 
+      it 'is frozen' do
+        expect(location).to be_frozen
+      end
+
+      [:line, :column, :source_line].each do |a|
+        describe "##{a}" do
+          it 'is frozen' do
+            expect(location.send(a)).to be_frozen
+          end
+        end
+      end
+    end
+
+    describe Offence do
+      subject(:offence) do
+        Offence.new(:convention, Location.new(1, 0, ['a']),
+                    'message', 'CopName')
+      end
+
+      it 'has a few required attributes' do
         expect(offence.severity).to eq(:convention)
         expect(offence.line).to eq(1)
         expect(offence.message).to eq('message')
@@ -16,9 +34,6 @@ module Rubocop
       end
 
       it 'overrides #to_s' do
-        offence = Offence.new(:convention, Location.new(1, 0, ['a']),
-                              'message', 'CopName')
-
         expect(offence.to_s).to eq('C:  1:  1: message')
       end
 
@@ -36,6 +51,18 @@ module Rubocop
                          'CopName')
 
         expect(o1 == o2).to be_true
+      end
+
+      it 'is frozen' do
+        expect(offence).to be_frozen
+      end
+
+      [:severity, :location, :line, :column, :message, :cop_name].each do |a|
+        describe "##{a}" do
+          it 'is frozen' do
+            expect(offence.send(a)).to be_frozen
+          end
+        end
       end
 
       context 'when unknown severity is passed' do
