@@ -46,11 +46,10 @@ module Rubocop
         end
 
         it 'accepts code with EOL comment since user might want to keep it' do
-          pending
           inspect_source(if_unless, ['unless a',
-                                    '  b # A comment',
-                                    'end'])
-          expect(if_unless.offences.map(&:message)).to be_empty
+                                     '  b # A comment',
+                                     'end'])
+          expect(if_unless.offences).to be_empty
         end
 
         it 'accepts if-else-end' do

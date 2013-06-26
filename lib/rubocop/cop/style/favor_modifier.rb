@@ -6,7 +6,7 @@ module Rubocop
       # Common functionality for modifier cops.
       module FavorModifier
         # TODO extremely ugly solution that needs lots of polish
-        def check(sexp)
+        def check(sexp, comments)
           case sexp.loc.keyword.source
           when 'if'     then cond, body, _else = *sexp
           when 'unless' then cond, _else, body = *sexp
@@ -27,7 +27,7 @@ module Rubocop
               space = 1
               total = indentation + body_length + space + kw_length + space +
                 cond_length
-              total <= LineLength.max
+              total <= LineLength.max && !body_has_comment?(body, comments)
             end
           end
         end
@@ -43,6 +43,12 @@ module Rubocop
             0
           end
         end
+
+        def body_has_comment?(body, comments)
+          comment_lines = comments.map(&:location).map(&:line)
+          body_line = body.loc.expression.line
+          comment_lines.include?(body_line)
+        end
       end
 
       # Checks for if and unless statements that would fit on one line
@@ -55,18 +61,19 @@ module Rubocop
             'Another good alternative is the usage of control flow &&/||.'
         end
 
-        def on_if(node)
-          # discard ternary ops, if/else and modifier if/unless nodes
-          return if ternary_op?(node)
-          return if modifier_if?(node)
-          return if elsif?(node)
-          return if if_else?(node)
+        def inspect(source_buffer, source, tokens, ast, comments)
+          return unless ast
+          on_node(:if, ast) do |node|
+            # discard ternary ops, if/else and modifier if/unless nodes
+            return if ternary_op?(node)
+            return if modifier_if?(node)
+            return if elsif?(node)
+            return if if_else?(node)
 
-          if check(node)
-            add_offence(:convention, node.loc.expression, error_message)
+            if check(node, comments)
+              add_offence(:convention, node.loc.expression, error_message)
+            end
           end
-
-          super
         end
 
         def ternary_op?(node)
@@ -100,7 +107,9 @@ module Rubocop
             # discard modifier while/until
             next unless node.loc.end
 
-            add_offence(:convention, node.loc.expression, MSG) if check(node)
+            if check(node, comments)
+              add_offence(:convention, node.loc.expression, MSG)
+            end
           end
         end
       end
