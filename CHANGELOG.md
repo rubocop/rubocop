@@ -27,6 +27,7 @@
 * New cop `EndInMethod` tracks uses of `END` in method definitions.
 * New cop `LiteralInCondition` tracks uses of literals in the conditions of `if/while/until`.
 * New cop `BeginBlock` tracks uses of `BEGIN` blocks.
+* New cop `EndBlock` tracks uses of `END` blocks.
 * Add support for auto-correction of some offences with `-a`/`--auto-correct`.
 
 ### Changes

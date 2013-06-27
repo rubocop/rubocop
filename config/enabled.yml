@@ -348,6 +348,10 @@ CharacterLiteral:
 BeginBlock:
   Enabled: true
 
+# Avoid the use of END blocks.
+EndBlock:
+  Enabled: true
+
 ## Warnings
 
 # Don't use assignment in conditions.
