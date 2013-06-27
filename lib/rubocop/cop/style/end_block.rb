@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     module Style
-      # This cop checks for BEGIN blocks.
+      # This cop checks for END blocks.
       class EndBlock < Cop
         MSG = 'Avoid the use of END blocks. Use `Kernel#at_exit` instead.'
 
