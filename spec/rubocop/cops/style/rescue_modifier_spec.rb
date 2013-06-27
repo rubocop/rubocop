@@ -81,7 +81,7 @@ module Rubocop
                             'end'])
             expect(rm.offences).to be_empty
           end
-  
+
           it 'handles modifier rescue in body of implicit begin' do
             inspect_source(rm,
                            ['def some_method',
@@ -104,7 +104,7 @@ module Rubocop
                             'end'])
             expect(rm.offences).to be_empty
           end
-  
+
           it 'handles modifier rescue in body of implicit begin' do
             inspect_source(rm,
                            ['def self.some_method',
