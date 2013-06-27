@@ -166,11 +166,6 @@ module Rubocop
         end
         0
       end
-
-      # @api private
-      def explode
-        [severity, line, column, message]
-      end
     end
   end
 end
