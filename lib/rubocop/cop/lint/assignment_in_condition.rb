@@ -29,12 +29,24 @@ module Rubocop
         def check(node)
           condition, = *node
 
-          on_node(ASGN_NODES, condition) do |asgn_node|
+          on_node([:begin, *ASGN_NODES], condition) do |asgn_node|
+            # skip safe assignment nodes if safe assignment is allowed
+            return if safe_assignment_allowed? && safe_assignment?(asgn_node)
+
             # assignment nodes from shorthand ops like ||= don't have operator
-            if asgn_node.loc.operator
+            if asgn_node.type != :begin && asgn_node.loc.operator
               add_offence(:warning, asgn_node.loc.operator, MSG)
             end
           end
+        end
+
+        def safe_assignment?(node)
+          node.type == :begin && node.children.size == 1 &&
+            ASGN_NODES.include?(node.children[0].type)
+        end
+
+        def safe_assignment_allowed?
+          AssignmentInCondition.config['AllowSafeAssignment']
         end
       end
     end
