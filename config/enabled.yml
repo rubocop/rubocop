@@ -344,6 +344,10 @@ WhileUntilDo:
 CharacterLiteral:
   Enabled: true
 
+# Avoid the use of BEGIN blocks.
+BeginBlock:
+  Enabled: true
+
 ## Warnings
 
 # Don't use assignment in conditions.
