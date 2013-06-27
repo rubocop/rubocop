@@ -24,6 +24,17 @@ module Rubocop
             .to eq([RescueModifier::MSG])
         end
 
+        it 'handles modifier rescue in normal rescue' do
+          inspect_source(rm,
+                         ['begin',
+                          '  test rescue modifier_handle',
+                          'rescue',
+                          '  normal_handle',
+                          'end'])
+          expect(rm.offences.size).to eq(1)
+          expect(rm.offences.first.line).to eq(2)
+        end
+
         it 'does not register an offence for normal rescue' do
           inspect_source(rm,
                          ['begin',
@@ -34,24 +45,76 @@ module Rubocop
           expect(rm.offences).to be_empty
         end
 
-        it 'accepts rescue with implicit begin in instance method' do
+        it 'does not register an offence for normal rescue with ensure' do
           inspect_source(rm,
-                         ['def some_method',
+                         ['begin',
                           '  test',
                           'rescue',
                           '  handle',
+                          'ensure',
+                          '  cleanup',
                           'end'])
           expect(rm.offences).to be_empty
         end
 
-        it 'accepts rescue with implicit begin in singleton method' do
+        it 'does not register an offence for nested normal rescue' do
           inspect_source(rm,
-                         ['def self.some_method',
-                          '  test',
+                         ['begin',
+                          '  begin',
+                          '    test',
+                          '  rescue',
+                          '    handle_inner',
+                          '  end',
                           'rescue',
-                          '  handle',
+                          '  handle_outer',
                           'end'])
           expect(rm.offences).to be_empty
+        end
+
+        context 'when an instance method has implicit begin' do
+          it 'accepts normal rescue' do
+            inspect_source(rm,
+                           ['def some_method',
+                            '  test',
+                            'rescue',
+                            '  handle',
+                            'end'])
+            expect(rm.offences).to be_empty
+          end
+  
+          it 'handles modifier rescue in body of implicit begin' do
+            inspect_source(rm,
+                           ['def some_method',
+                            '  test rescue modifier_handle',
+                            'rescue',
+                            '  normal_handle',
+                            'end'])
+            expect(rm.offences.size).to eq(1)
+            expect(rm.offences.first.line).to eq(2)
+          end
+        end
+
+        context 'when a singleton method has implicit begin' do
+          it 'accepts normal rescue' do
+            inspect_source(rm,
+                           ['def self.some_method',
+                            '  test',
+                            'rescue',
+                            '  handle',
+                            'end'])
+            expect(rm.offences).to be_empty
+          end
+  
+          it 'handles modifier rescue in body of implicit begin' do
+            inspect_source(rm,
+                           ['def self.some_method',
+                            '  test rescue modifier_handle',
+                            'rescue',
+                            '  normal_handle',
+                            'end'])
+            expect(rm.offences.size).to eq(1)
+            expect(rm.offences.first.line).to eq(2)
+          end
         end
       end
     end
