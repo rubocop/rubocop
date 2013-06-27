@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     module Lint
-      # This cop checks END blocks in method definitions.
+      # This cop checks for END blocks in method definitions.
       class EndInMethod < Cop
         MSG = 'END found in method definition. Use `at_exit` instead.'
 
