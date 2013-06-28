@@ -392,6 +392,10 @@ LiteralInCondition:
 DotPosition:
   Enabled: true
 
+# Checks for uses of Module#attr.
+Attr:
+  Enabled: true
+
 ## Rails
 
 # Use sexy validations.

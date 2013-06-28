@@ -29,6 +29,7 @@
 * New cop `BeginBlock` tracks uses of `BEGIN` blocks.
 * New cop `EndBlock` tracks uses of `END` blocks.
 * New cop `DotPosition` tracks the dot position in multi-line method calls.
+* New cop `Attr` tracks uses of `Module#attr`.
 * Add support for auto-correction of some offences with `-a`/`--auto-correct`.
 
 ### Changes
