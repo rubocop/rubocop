@@ -57,6 +57,12 @@
 * Fix crashes in WordArray on arrays of character literals such as `[?\r, ?\n]`
 * Fix crashes in Documentation on empty modules
 
+## 0.8.3 (18/06/2013)
+
+### Bug fixes
+
+* Lock Parser dependency to version 2.0.0.beta5.
+
 ## 0.8.2 (06/05/2013)
 
 ### New features
