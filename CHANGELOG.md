@@ -53,6 +53,7 @@
 * [#288](https://github.com/bbatsov/rubocop/issues/288) - get config parameter AllCops/Excludes from highest config file in path
 * [#276](https://github.com/bbatsov/rubocop/issues/276) - let columns start at 1 instead of 0 in all output of column numbers
 * Fix crashes in WordArray on arrays of character literals such as `[?\r, ?\n]`
+* Fix crashes in Documentation on empty modules
 
 ## 0.8.2 (06/05/2013)
 
