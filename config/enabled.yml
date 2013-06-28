@@ -388,6 +388,10 @@ EndInMethod:
 LiteralInCondition:
   Enabled: true
 
+# Checks the position of the dot in multi-line method calls.
+DotPosition:
+  Enabled: true
+
 ## Rails
 
 # Use sexy validations.

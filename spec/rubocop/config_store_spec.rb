@@ -47,8 +47,8 @@ module Rubocop
           Config.should_receive(:configuration_file_for).once.with('dir/' +
                                                                    'subdir')
           # The stub returns the same config path for dir and dir/subdir.
-          Config.should_receive(:configuration_from_file).once.
-            with('dir/.rubocop.yml')
+          Config.should_receive(:configuration_from_file).once
+            .with('dir/.rubocop.yml')
 
           ConfigStore.for('dir/file2')
           ConfigStore.for('dir/file2')
