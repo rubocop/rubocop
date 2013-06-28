@@ -21,7 +21,7 @@ module Rubocop
 
         def check(node)
           on_node(:postexe, node) do |end_node|
-            add_offence(:warning, end_node.loc.expression, MSG)
+            add_offence(:warning, end_node.loc.keyword, MSG)
           end
         end
       end
