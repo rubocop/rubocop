@@ -26,6 +26,16 @@ module Rubocop
           expect(documentation.offences.size).to eq(1)
         end
 
+        it 'registers an offence for empty module without documentation' do
+          # Because why would you have an empty module? It requires some
+          # explanation.
+          inspect_source(documentation,
+                         ['module Test',
+                          'end'
+                         ])
+          expect(documentation.offences.size).to eq(1)
+        end
+
         it 'accepts non-empty class with documentation' do
           inspect_source(documentation,
                          ['# class comment',
