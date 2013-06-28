@@ -7,7 +7,7 @@ module Rubocop
     # relevant source code.
     class DetailsFormatter < SimpleTextFormatter
       def report_file(file, offences)
-        output.puts "== #{file} ==".color(:yellow)
+        output.puts "== #{smart_path(file)} ==".color(:yellow)
         offences.each do |o|
           output.printf("%s:%d:%d: %s: %s\n",
                         File.basename(file), o.line, o.real_column,

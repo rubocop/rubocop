@@ -207,7 +207,7 @@ Usage: rubocop [options] [file1, file2, ...]
       expect(cli.run(['--format', 'details', 'example1.rb', 'example2.rb']))
         .to eq(1)
       expect($stdout.string)
-        .to eq(["== #{abs('example1.rb')} ==",
+        .to eq(['== example1.rb ==',
                 'example1.rb:2:2: C: Surrounding space missing for operator ' +
                 "'='.",
                 'x= 0 ',
@@ -221,7 +221,7 @@ Usage: rubocop [options] [file1, file2, ...]
                 'y ',
                 ' ^',
                 '',
-                "== #{abs('example2.rb')} ==",
+                '== example2.rb ==',
                 'example2.rb:2:1: C: Tab detected.',
                 "\tx = 0",
                 '^',
