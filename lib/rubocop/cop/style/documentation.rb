@@ -35,7 +35,9 @@ module Rubocop
           on_node(:module, ast) do |node|
             _name, body = *node
 
-            if body.type == :begin
+            if body.nil?
+              namespace = false
+            elsif body.type == :begin
               namespace = body.children.all? do |n|
                 [:class, :module].include?(n.type)
               end
