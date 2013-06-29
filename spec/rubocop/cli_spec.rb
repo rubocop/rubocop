@@ -36,7 +36,7 @@ Usage: rubocop [options] [file1, file2, ...]
                                      can be specified multiple times to enable
                                      multiple formatters at the same time.
                                        [s]imple (default)
-                                       [d]etails
+                                       [c]lang
                                        [p]rogress
                                        [e]macs
                                        [j]son
@@ -196,7 +196,7 @@ Usage: rubocop [options] [file1, file2, ...]
          ''].join("\n"))
     end
 
-    it 'can report with detailed information' do
+    it 'can report in clang style' do
       create_file('example1.rb', ['# encoding: utf-8',
                                   'x= 0 ',
                                   'y ',
@@ -204,7 +204,7 @@ Usage: rubocop [options] [file1, file2, ...]
       create_file('example2.rb', ['# encoding: utf-8',
                                   "\tx = 0",
                                   'puts x'])
-      expect(cli.run(['--format', 'details', 'example1.rb', 'example2.rb']))
+      expect(cli.run(['--format', 'clang', 'example1.rb', 'example2.rb']))
         .to eq(1)
       expect($stdout.string)
         .to eq(['== example1.rb ==',

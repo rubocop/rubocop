@@ -8,7 +8,7 @@ module Rubocop
     class FormatterSet < Array
       BUILTIN_FORMATTERS_FOR_KEYS = {
         'simple'   => SimpleTextFormatter,
-        'details'  => DetailsFormatter,
+        'clang'    => ClangStyleFormatter,
         'progress' => ProgressFormatter,
         'emacs'    => EmacsStyleFormatter,
         'json'     => JSONFormatter

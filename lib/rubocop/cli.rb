@@ -159,7 +159,7 @@ module Rubocop
                 'can be specified multiple times to enable',
                 'multiple formatters at the same time.',
                 '  [s]imple (default)',
-                '  [d]etails',
+                '  [c]lang',
                 '  [p]rogress',
                 '  [e]macs',
                 '  [j]son',
