@@ -4,8 +4,8 @@ module Rubocop
   module Formatter
     # This formatter display dots for files with no offences and
     # letters for files with problems in the them. In the end it
-    # appends the regular report data in the simple text format.
-    class ProgressFormatter < SimpleTextFormatter
+    # appends the regular report data in the clang style format.
+    class ProgressFormatter < ClangStyleFormatter
       COLOR_FOR_SEVERITY = {
           refactor: :yellow,
         convention: :yellow,
@@ -34,9 +34,9 @@ module Rubocop
         unless @offences_for_files.empty?
           output.puts
           output.puts 'Offences:'
+          output.puts
 
           @offences_for_files.each do |file, offences|
-            output.puts
             report_file(file, offences)
           end
         end
