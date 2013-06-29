@@ -5,8 +5,23 @@ module Rubocop
     module Lint
       # This cop checks whether the end keywords are aligned properly.
       #
-      # The cop should be made configurable since when assignment is factored
-      # in, two alignment schemes generally make sense.
+      # There are two ways to align the end of a block.
+      # Set BlockAlignSchema to StartOfAssignment if you want to
+      # align the end to the beginning of assignment expression.
+      # This is the default behavior.
+      # @example
+      #
+      #   variable = lambda do |i|
+      #     i
+      #   end
+      #
+      # Set BlockAlignSchema to StartOfBlockCommand if you want to
+      # align the end to the beginning of the expression that called the block.
+      # @example
+      #
+      #   variable = lambda do |i|
+      #                i
+      #              end
       class EndAlignment < Cop
         MSG = 'end at %d, %d is not aligned with %s at %d, %d'
 
@@ -64,8 +79,10 @@ module Rubocop
         end
 
         def on_lvasgn(node)
-          _, children = *node
-          process_block_assignment(node, children)
+          if align_with_start_of_assignment?
+            _, children = *node
+            process_block_assignment(node, children)
+          end
           super
         end
 
@@ -76,28 +93,36 @@ module Rubocop
         alias_method :on_or_asgn,  :on_lvasgn
 
         def on_casgn(node)
-          _, _, children = *node
-          process_block_assignment(node, children)
+          if align_with_start_of_assignment?
+            _, _, children = *node
+            process_block_assignment(node, children)
+          end
           super
         end
 
         def on_op_asgn(node)
-          variable, _op, args = *node
-          process_block_assignment(variable, args)
+          if align_with_start_of_assignment?
+            variable, _op, args = *node
+            process_block_assignment(variable, args)
+          end
           super
         end
 
         def on_send(node)
-          receiver, method, args = *node
-          if attribute_writer?(method)
-            process_block_assignment(receiver, args)
+          if align_with_start_of_assignment?
+            receiver, method, args = *node
+            if attribute_writer?(method)
+              process_block_assignment(receiver, args)
+            end
           end
           super
         end
 
         def on_masgn(node)
-          variables, args = *node
-          process_block_assignment(variables, args)
+          if align_with_start_of_assignment?
+            variables, args = *node
+            process_block_assignment(variables, args)
+          end
           super
         end
 
@@ -144,6 +169,10 @@ module Rubocop
 
         def attribute_writer?(method)
           method.to_s[-1] == '='
+        end
+
+        def align_with_start_of_assignment?
+          EndAlignment.config['BlockAlignSchema'] == 'StartOfAssignment'
         end
       end
     end
