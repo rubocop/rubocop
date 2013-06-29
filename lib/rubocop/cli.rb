@@ -6,7 +6,7 @@ module Rubocop
   # The CLI is a class responsible of handling all the command line interface
   # logic.
   class CLI
-    DEFAULT_FORMATTER = 'simple'
+    DEFAULT_FORMATTER = 'progress'
 
     # If set true while running,
     # RuboCop will abort processing and exit gracefully.
@@ -158,9 +158,9 @@ module Rubocop
                 'Choose an output formatter. This option',
                 'can be specified multiple times to enable',
                 'multiple formatters at the same time.',
-                '  [s]imple (default)',
-                '  [d]etails',
-                '  [p]rogress',
+                '  [p]rogress (default)',
+                '  [s]imple',
+                '  [c]lang',
                 '  [e]macs',
                 '  [j]son',
                 '  custom formatter class name') do |key|

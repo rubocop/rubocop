@@ -35,9 +35,9 @@ Usage: rubocop [options] [file1, file2, ...]
     -f, --format FORMATTER           Choose an output formatter. This option
                                      can be specified multiple times to enable
                                      multiple formatters at the same time.
-                                       [s]imple (default)
-                                       [d]etails
-                                       [p]rogress
+                                       [p]rogress (default)
+                                       [s]imple
+                                       [c]lang
                                        [e]macs
                                        [j]son
                                        custom formatter class name
@@ -126,7 +126,7 @@ Usage: rubocop [options] [file1, file2, ...]
         'x = 0',
         'puts x'
       ])
-      expect(cli.run(['example.rb'])).to eq(0)
+      expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(0)
       expect($stdout.string)
         .to eq("\n1 file inspected, no offences detected\n")
     end
@@ -137,7 +137,7 @@ Usage: rubocop [options] [file1, file2, ...]
         'x = 0 ',
         'puts x'
       ])
-      expect(cli.run(['example.rb'])).to eq(1)
+      expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(1)
       expect($stdout.string)
         .to eq ['== example.rb ==',
                 'C:  2:  6: Trailing whitespace detected.',
@@ -196,7 +196,7 @@ Usage: rubocop [options] [file1, file2, ...]
          ''].join("\n"))
     end
 
-    it 'can report with detailed information' do
+    it 'can report in clang style' do
       create_file('example1.rb', ['# encoding: utf-8',
                                   'x= 0 ',
                                   'y ',
@@ -204,7 +204,7 @@ Usage: rubocop [options] [file1, file2, ...]
       create_file('example2.rb', ['# encoding: utf-8',
                                   "\tx = 0",
                                   'puts x'])
-      expect(cli.run(['--format', 'details', 'example1.rb', 'example2.rb']))
+      expect(cli.run(['--format', 'clang', 'example1.rb', 'example2.rb']))
         .to eq(1)
       expect($stdout.string)
         .to eq(['== example1.rb ==',
@@ -240,7 +240,8 @@ Usage: rubocop [options] [file1, file2, ...]
       # so we reset it to emulate a start from scratch.
       Cop::Style::LineLength.config = nil
 
-      expect(cli.run(['--only', 'IfUnlessModifier', 'example.rb'])).to eq(1)
+      expect(cli.run(['--format', 'simple',
+                      '--only', 'IfUnlessModifier', 'example.rb'])).to eq(1)
       expect($stdout.string)
         .to eq(['== example.rb ==',
                 'C:  1:  1: Favor modifier if/unless usage when you have a ' +
@@ -307,7 +308,8 @@ Usage: rubocop [options] [file1, file2, ...]
         'CaseIndentation:',
         '  Enabled: false'
       ])
-      expect(cli.run(['-c', 'rubocop.yml', 'example1.rb'])).to eq(1)
+      expect(cli.run(['--format', 'simple',
+                      '-c', 'rubocop.yml', 'example1.rb'])).to eq(1)
       expect($stdout.string).to eq(
         ['== example1.rb ==',
          'C:  1:  7: Trailing whitespace detected.',
@@ -327,7 +329,8 @@ Usage: rubocop [options] [file1, file2, ...]
         'LineLength:',
         '  Enabled: false'
       ])
-      result = cli.run(['-c', 'rubocop.yml', 'example1.rb'])
+      result = cli.run(['--format', 'simple',
+                        '-c', 'rubocop.yml', 'example1.rb'])
       expect($stdout.string).to eq(
         ['== example1.rb ==',
          'C:  1:  1: Favor modifier if/unless usage when you have a ' +
@@ -348,7 +351,8 @@ Usage: rubocop [options] [file1, file2, ...]
         'CaseIndentation:',
         '  Enabled: false'
       ])
-      expect(cli.run(['example_src/example1.rb'])).to eq(1)
+      expect(cli.run(['--format', 'simple',
+                      'example_src/example1.rb'])).to eq(1)
       expect($stdout.string).to eq(
         ['== example_src/example1.rb ==',
          'C:  1:  7: Trailing whitespace detected.',
@@ -367,7 +371,8 @@ Usage: rubocop [options] [file1, file2, ...]
         '  Enabled: true',
         '  Max: 100'
       ])
-      expect(cli.run(['example_src/example1.rb'])).to eq(0)
+      expect(cli.run(['--format', 'simple',
+                      'example_src/example1.rb'])).to eq(0)
       expect($stdout.string).to eq(
         ['', '1 file inspected, no offences detected',
          ''].join("\n"))
@@ -385,7 +390,7 @@ Usage: rubocop [options] [file1, file2, ...]
         '  Enabled: true',
         '  Max: 100'
       ])
-      expect(cli.run(['example'])).to eq(1)
+      expect(cli.run(%w(--format simple example))).to eq(1)
       expect($stdout.string).to eq(
         ['== example/lib/example1.rb ==',
          'C:  2: 80: Line is too long. [90/79]',
@@ -409,7 +414,8 @@ Usage: rubocop [options] [file1, file2, ...]
         '  Enabled: true',
         '  Max: 80'
       ])
-      expect(cli.run(['example_src/example1.rb'])).to eq(0)
+      expect(cli.run(['--format', 'simple',
+                      'example_src/example1.rb'])).to eq(0)
       expect($stdout.string).to eq(
         ['', '1 file inspected, no offences detected',
          ''].join("\n"))
@@ -431,7 +437,7 @@ Usage: rubocop [options] [file1, file2, ...]
         '    - tmp/spec/**'
       ])
 
-      expect(cli.run(['example'])).to eq(1)
+      expect(cli.run(%w(--format simple example))).to eq(1)
       expect($stdout.string).to eq(
         ['== example/tmp/test/example1.rb ==',
          'C:  2: 80: Line is too long. [90/79]',
@@ -452,7 +458,7 @@ Usage: rubocop [options] [file1, file2, ...]
         '  Max: 100'
       ])
 
-      expect(cli.run(['example'])).to eq(1)
+      expect(cli.run(%w(--format simple example))).to eq(1)
       expect($stdout.string).to eq(
         ['Warning: unrecognized cop LyneLenth found in ' +
          File.expand_path('example/.rubocop.yml'),
@@ -475,7 +481,7 @@ Usage: rubocop [options] [file1, file2, ...]
         '  Min: 10'
       ])
 
-      expect(cli.run(['example'])).to eq(1)
+      expect(cli.run(%w(--format simple example))).to eq(1)
       expect($stdout.string).to eq(
         ['Warning: unrecognized parameter LineLength:Min found in ' +
          File.expand_path('example/.rubocop.yml'),
@@ -609,9 +615,7 @@ Usage: rubocop [options] [file1, file2, ...]
         'x = 0',
         'puts x'
       ])
-      # Need to pass an empty array explicitly
-      # so that the CLI does not refer arguments of `rspec`
-      expect(cli.run([])).to eq(0)
+      expect(cli.run(%w(--format simple))).to eq(0)
       expect($stdout.string).to eq(
         ['', '1 file inspected, no offences detected',
          ''].join("\n"))
@@ -634,9 +638,7 @@ Usage: rubocop [options] [file1, file2, ...]
         '    - example',
         '    - !ruby/regexp /regexp$/'
       ])
-      # Need to pass an empty array explicitly
-      # so that the CLI does not refer arguments of `rspec`
-      expect(cli.run([])).to eq(0)
+      expect(cli.run(%w(--format simple))).to eq(0)
       expect($stdout.string).to eq(
         ['', '2 files inspected, no offences detected',
          ''].join("\n"))
@@ -666,9 +668,7 @@ Usage: rubocop [options] [file1, file2, ...]
         '    - !ruby/regexp /regexp.rb$/',
         '    - "exclude_*"'
       ])
-      # Need to pass an empty array explicitly
-      # so that the CLI does not refer arguments of `rspec`
-      expect(cli.run([])).to eq(0)
+      expect(cli.run(%w(--format simple))).to eq(0)
       expect($stdout.string).to eq(
         ['', '0 files inspected, no offences detected',
          ''].join("\n"))
@@ -691,7 +691,7 @@ Usage: rubocop [options] [file1, file2, ...]
       ])
       File.should_not_receive(:open).with(%r(/ignored/))
       File.stub(:open).and_call_original
-      expect(cli.run(['example'])).to eq(0)
+      expect(cli.run(%w(--format simple example))).to eq(0)
       expect($stdout.string).to eq(
         ['', '0 files inspected, no offences detected',
          ''].join("\n"))

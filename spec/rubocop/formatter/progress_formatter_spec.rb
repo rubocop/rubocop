@@ -96,32 +96,59 @@ module Rubocop
 
         context 'when any offences are detected' do
           before do
+            source = 9.times.map do |index|
+              "This is line #{index + 1}."
+            end
+
             formatter.file_started(files[0], {})
             formatter.file_finished(files[0], [
-              Cop::Offence.new(:convention, Cop::Location.new(2, 2, ['a']),
-                               'foo', 'Cop')
+              Cop::Offence.new(
+                :convention,
+                Cop::Location.new(2, 2, source),
+                'foo',
+                'Cop'
+              )
             ])
+
             formatter.file_started(files[1], {})
             formatter.file_finished(files[1], [
             ])
+
             formatter.file_started(files[2], {})
             formatter.file_finished(files[2], [
-              Cop::Offence.new(:error, Cop::Location.new(5, 1, ['a']),
-                               'bar', 'Cop'),
-              Cop::Offence.new(:convention, Cop::Location.new(6, 0, ['a']),
-                               'foo', 'Cop')
+              Cop::Offence.new(
+                :error,
+                Cop::Location.new(5, 1, source),
+                'bar',
+                'Cop'
+              ),
+              Cop::Offence.new(
+                :convention,
+                Cop::Location.new(6, 0, source),
+                'foo',
+                'Cop'
+              )
             ])
           end
 
           it 'reports all detected offences for all failed files' do
             formatter.finished(files)
             expect(output.string).to include([
+              'Offences:',
+              '',
               '== lib/rubocop.rb ==',
-              'C:  2:  3: foo',
+              'rubocop.rb:2:3: C: foo',
+              'This is line 2.',
+              '  ^',
               '',
               '== bin/rubocop ==',
-              'E:  5:  2: bar',
-              'C:  6:  1: foo'
+              'rubocop:5:2: E: bar',
+              'This is line 5.',
+              ' ^',
+              '',
+              'rubocop:6:1: C: foo',
+              'This is line 6.',
+              '^'
             ].join("\n"))
           end
         end

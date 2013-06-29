@@ -5,7 +5,7 @@ module Rubocop
     # This formatter formats report data in clang style.
     # The precise location of the problem is shown together with the
     # relevant source code.
-    class DetailsFormatter < SimpleTextFormatter
+    class ClangStyleFormatter < SimpleTextFormatter
       def report_file(file, offences)
         output.puts "== #{smart_path(file)} ==".color(:yellow)
         offences.each do |o|

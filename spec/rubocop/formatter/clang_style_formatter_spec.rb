@@ -5,8 +5,8 @@ require 'stringio'
 
 module Rubocop
   module Formatter
-    describe DetailsFormatter do
-      subject(:formatter) { DetailsFormatter.new(output) }
+    describe ClangStyleFormatter do
+      subject(:formatter) { ClangStyleFormatter.new(output) }
       let(:output) { StringIO.new }
 
       describe '#report_summary' do
