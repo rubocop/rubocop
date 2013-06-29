@@ -46,6 +46,11 @@ module Rubocop
       def real_column
         column + 1
       end
+
+      # @api private
+      def column_range
+        (@column..@column)
+      end
     end
 
     # An Offence represents a style violation detected by RuboCop.

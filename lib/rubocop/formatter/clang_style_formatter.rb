@@ -13,7 +13,9 @@ module Rubocop
                         File.basename(file), o.line, o.real_column,
                         o.encode_severity, o.message)
           output.puts(o.location.source_line)
-          output.puts(' ' * o.location.column + '^', '')
+          output.puts(' ' * o.location.column +
+                      '^' * o.location.column_range.count,
+                      '')
         end
       end
     end
