@@ -60,10 +60,11 @@ module ExitCodeMatchers
 end
 
 RSpec.configure do |config|
-  config.filter_run_excluding ruby: ->(v) { !RUBY_VERSION.start_with?(v.to_s) }
-  config.filter_run_excluding broken: (lambda do |v|
+  broken_filter = lambda do |v|
     v.is_a?(Symbol) ? RUBY_ENGINE == v.to_s : v
-  end)
+  end
+  config.filter_run_excluding ruby: ->(v) { !RUBY_VERSION.start_with?(v.to_s) }
+  config.filter_run_excluding broken: broken_filter
   config.treat_symbols_as_metadata_keys_with_true_values = true
 
   config.expect_with :rspec do |c|
