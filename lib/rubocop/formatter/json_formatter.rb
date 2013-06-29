@@ -54,14 +54,15 @@ module Rubocop
           severity: offence.severity,
            message: offence.message,
           cop_name: offence.cop_name,
-          location: hash_for_location(offence.location)
+          location: hash_for_location(offence)
         }
       end
 
-      def hash_for_location(location)
+      # TODO: Consider better solution for Location#real_column.
+      def hash_for_location(offence)
         {
-            line: location.line,
-          column: location.real_column
+            line: offence.line,
+          column: offence.real_column
         }
       end
 
