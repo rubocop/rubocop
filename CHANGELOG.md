@@ -6,7 +6,7 @@
 
 * New cop `CaseEquality` checks for explicit use of `===`
 * Introduced formatter feature, enables custom formatted output and multiple outputs.
-* Added progress formatter. (`--format progress`)
+* Added progress formatter and now it's the default. (`--format progress`)
 * Added JSON formatter. (`--format json`)
 * Added clang style formatter showing the offending source code. (`--format clang`)
 * Added `-f`/`--format` option to specify formatter.
@@ -35,7 +35,8 @@
 ### Changes
 
 * Deprecated `-e`/`--emacs` option. (Use `--format emacs` instead)
-* The default output formatter (`--format simple`) now prints relative file paths if the paths are under the current working directory.
+* Made `progress` formatter the default.
+* Most formatters (`progress`, `simple` and `clang`) now print relative file paths if the paths are under the current working directory.
 * Migrate all cops to new namespaces. `Rubocop::Cop::Lint` is for cops that emit warnings. `Rubocop::Cop::Style` is for cops that do not belong in other namespaces.
 * Merge `FavorPercentR` and `PercentR` into one cop called `RegexpLiteral`, and add configuration parameter `MaxSlashes`.
 * Add `CountKeywordArgs` configuration option to `ParameterLists` cop.

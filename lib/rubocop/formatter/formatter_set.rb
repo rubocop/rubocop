@@ -7,9 +7,9 @@ module Rubocop
     # which invoke same method of each formatters.
     class FormatterSet < Array
       BUILTIN_FORMATTERS_FOR_KEYS = {
+        'progress' => ProgressFormatter,
         'simple'   => SimpleTextFormatter,
         'clang'    => ClangStyleFormatter,
-        'progress' => ProgressFormatter,
         'emacs'    => EmacsStyleFormatter,
         'json'     => JSONFormatter
       }
