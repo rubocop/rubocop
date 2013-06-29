@@ -4,7 +4,6 @@
 
 ### New features
 
-* New cop `CaseEquality` checks for explicit use of `===`
 * Introduced formatter feature, enables custom formatted output and multiple outputs.
 * Added progress formatter and now it's the default. (`--format progress`)
 * Added JSON formatter. (`--format json`)
@@ -14,6 +13,8 @@
 * Added `-r/--require` option to inject external Ruby code into RuboCop.
 * Added `-V/--verbose-version` option that displays Parser version and Ruby version as well.
 * Added `-R/--rails` option that enables extra Rails-specific cops.
+* Added support for auto-correction of some offences with `-a`/`--auto-correct`.
+* New cop `CaseEquality` checks for explicit use of `===`
 * New cop `AssignmentInCondition` checks for assignment in conditions.
 * New cop `EndAlignment` tracks misaligned `end` keywords.
 * New cop `Void` tracks uses of literals/variables/operators in possibly void context.
@@ -30,7 +31,6 @@
 * New cop `EndBlock` tracks uses of `END` blocks.
 * New cop `DotPosition` tracks the dot position in multi-line method calls.
 * New cop `Attr` tracks uses of `Module#attr`.
-* Add support for auto-correction of some offences with `-a`/`--auto-correct`.
 
 ### Changes
 
