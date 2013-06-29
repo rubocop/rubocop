@@ -17,7 +17,8 @@ module Rubocop
       def started(target_files)
         super
         @offences_for_files = {}
-        output.puts "Inspecting #{target_files.count} files"
+        file_phrase = target_files.count == 1 ? 'file' : 'files'
+        output.puts "Inspecting #{target_files.count} #{file_phrase}"
       end
 
       def file_finished(file, offences)
