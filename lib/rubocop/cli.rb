@@ -93,7 +93,7 @@ module Rubocop
 
       set_config_for_all_cops(config)
 
-      @cops.reduce(syntax_offences) do |offences, cop_class|
+      @cops.reduce([]) do |offences, cop_class|
         cop_name = cop_class.cop_name
         if config.cop_enabled?(cop_name)
           cop = setup_cop(cop_class, disabled_lines)
