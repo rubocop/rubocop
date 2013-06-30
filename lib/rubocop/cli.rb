@@ -36,6 +36,9 @@ module Rubocop
         return 1
       end
 
+      # filter out Rails cops unless requested
+      @cops.reject! { |cop_klass| cop_klass.rails? } unless @options[:rails]
+
       target_files = target_files(args)
       target_files.each(&:freeze).freeze
       inspected_files = []
@@ -88,12 +91,9 @@ module Rubocop
       config = ConfigStore.for(file)
       disabled_lines = disabled_lines_in(source)
 
-      # filter out Rails cops unless requested
-      @cops.reject! { |cop_klass| cop_klass.rails? } unless @options[:rails]
-
       set_config_for_all_cops(config)
 
-      @cops.reduce(syntax_offences) do |offences, cop_class|
+      @cops.reduce([]) do |offences, cop_class|
         cop_name = cop_class.cop_name
         if config.cop_enabled?(cop_name)
           cop = setup_cop(cop_class, disabled_lines)
