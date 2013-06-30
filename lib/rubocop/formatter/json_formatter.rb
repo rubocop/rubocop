@@ -58,7 +58,7 @@ module Rubocop
         }
       end
 
-      # TODO: Consider better solution for Location#real_column.
+      # TODO: Consider better solution for Offence#real_column.
       def hash_for_location(offence)
         {
             line: offence.line,

@@ -11,7 +11,9 @@ module Rubocop
           source.each_with_index do |line, index|
             if line =~ /.*[ \t]+$/
               add_offence(:convention,
-                          Location.new(index + 1, line.rstrip.length, source),
+                          source_range(source_buffer, source[0...index],
+                                       line.rstrip.length,
+                                       line.length - line.rstrip.length),
                           MSG)
             end
           end

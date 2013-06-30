@@ -8,7 +8,7 @@ module Rubocop
         MSG = 'Extra blank line detected.'
         LINE_OFFSET = 2
 
-        def inspect(source_beffer, source, tokens, ast, comments)
+        def inspect(source_buffer, source, tokens, ast, comments)
           return if tokens.empty?
 
           prev_line = 1
@@ -23,7 +23,10 @@ module Rubocop
               ((prev_line + 1)...cur_line).each do |line|
                 # we check if the prev and current lines are empty
                 if source[line - 2].empty? && source[line - 1].empty?
-                  add_offence(:convention, Location.new(line, 0, source), MSG)
+                  add_offence(:convention,
+                              source_range(source_buffer,
+                                           source[0...(line - 1)], 0, 1),
+                              MSG)
                 end
               end
             end
