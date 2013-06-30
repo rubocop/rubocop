@@ -9,8 +9,13 @@ module Rubocop
 
         def inspect(source_buffer, source, tokens, ast, comments)
           source.each_with_index do |line, index|
-            if line =~ /^ *\t/
-              add_offence(:convention, Location.new(index + 1, 0, source), MSG)
+            match = line.match(/^( *)\t/)
+            if match
+              spaces = match.captures[0]
+              add_offence(:convention,
+                          source_range(source_buffer, source[0...index],
+                                       spaces.length, 8),
+                          MSG)
             end
           end
         end

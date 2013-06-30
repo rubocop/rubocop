@@ -199,6 +199,7 @@ Usage: rubocop [options] [file1, file2, ...]
     it 'can report in clang style' do
       create_file('example1.rb', ['# encoding: utf-8',
                                   'x= 0 ',
+                                  '#' * 85,
                                   'y ',
                                   'puts x'])
       create_file('example2.rb', ['# encoding: utf-8',
@@ -217,7 +218,13 @@ Usage: rubocop [options] [file1, file2, ...]
                 'x= 0 ',
                 '    ^',
                 '',
-                'example1.rb:3:2: C: Trailing whitespace detected.',
+                'example1.rb:3:80: C: Line is too long. [85/79]',
+                '###########################################################' +
+                '##########################',
+                '                                                           ' +
+                '                    ^^^^^^',
+                '',
+                'example1.rb:4:2: C: Trailing whitespace detected.',
                 'y ',
                 ' ^',
                 '',
@@ -227,7 +234,7 @@ Usage: rubocop [options] [file1, file2, ...]
                 '^',
                 '',
                 '',
-                '2 files inspected, 4 offences detected',
+                '2 files inspected, 5 offences detected',
                 ''].join("\n"))
     end
 

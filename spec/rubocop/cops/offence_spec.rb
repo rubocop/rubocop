@@ -4,26 +4,14 @@ require 'spec_helper'
 
 module Rubocop
   module Cop
-    describe Location do
-      subject(:location) { Location.new(1, 0, ['a']) }
-
-      it 'is frozen' do
-        expect(location).to be_frozen
-      end
-
-      [:line, :column, :source_line].each do |a|
-        describe "##{a}" do
-          it 'is frozen' do
-            expect(location.send(a)).to be_frozen
-          end
-        end
-      end
-    end
-
     describe Offence do
+      let(:location) do
+        source_buffer = Parser::Source::Buffer.new('test', 1)
+        source_buffer.source = "a\n"
+        Parser::Source::Range.new(source_buffer, 0, 1)
+      end
       subject(:offence) do
-        Offence.new(:convention, Location.new(1, 0, ['a']),
-                    'message', 'CopName')
+        Offence.new(:convention, location, 'message', 'CopName')
       end
 
       it 'has a few required attributes' do
@@ -38,17 +26,15 @@ module Rubocop
       end
 
       it 'does not blow up if a message contains %' do
-        offence = Offence.new(:convention, Location.new(1, 0, ['a']),
-                              'message % test', 'CopName')
+        offence = Offence.new(:convention, location, 'message % test',
+                              'CopName')
 
         expect(offence.to_s).to eq('C:  1:  1: message % test')
       end
 
       it 'redefines == to compare offences based on their contents' do
-        o1 = Offence.new(:convention, Location.new(1, 0, ['a']), 'message',
-                         'CopName')
-        o2 = Offence.new(:convention, Location.new(1, 0, ['a']), 'message',
-                         'CopName')
+        o1 = Offence.new(:convention, location, 'message', 'CopName')
+        o2 = Offence.new(:convention, location, 'message', 'CopName')
 
         expect(o1 == o2).to be_true
       end
@@ -68,16 +54,14 @@ module Rubocop
       context 'when unknown severity is passed' do
         it 'raises error' do
           expect do
-            Offence.new(:foobar, Location.new(1, 0, ['a']), 'message',
-                        'CopName')
+            Offence.new(:foobar, location, 'message', 'CopName')
           end.to raise_error(ArgumentError)
         end
       end
 
       describe '#severity_level' do
         subject(:severity_level) do
-          Offence.new(severity, Location.new(1, 0, ['a']), 'message',
-                      'CopName').severity_level
+          Offence.new(severity, location, 'message', 'CopName').severity_level
         end
 
         context 'when severity is :refactor' do
@@ -107,10 +91,20 @@ module Rubocop
 
           Offence.new(
             attrs[:sev],
-            Location.new(attrs[:line], attrs[:col], []),
+            location(attrs[:line], attrs[:col],
+                     %w(aaaaaa bbbbbb cccccc dddddd eeeeee ffffff)),
             attrs[:mes],
             attrs[:cop]
           )
+        end
+
+        def location(line, column, source)
+          source_buffer = Parser::Source::Buffer.new('test', 1)
+          source_buffer.source = source.join("\n")
+          begin_pos = source[0...(line - 1)].reduce(0) do |a, e|
+                        a + e.length + "\n".length
+                      end + column
+          Parser::Source::Range.new(source_buffer, begin_pos, begin_pos + 1)
         end
 
         [

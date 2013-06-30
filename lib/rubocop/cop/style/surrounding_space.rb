@@ -209,7 +209,10 @@ module Rubocop
         end
 
         def check(t1, t2, msg)
-          add_offence(:convention, t1.pos, msg) unless space_between?(t1, t2)
+          unless space_between?(t1, t2)
+            brace_token = msg == MSG_LEFT ? t1 : t2
+            add_offence(:convention, brace_token.pos, msg)
+          end
         end
       end
 
@@ -225,7 +228,10 @@ module Rubocop
           tokens.each_cons(2) do |t1, t2|
             if t1.type == left || t2.type == right
               if t2.pos.line == t1.pos.line && space_between?(t1, t2)
-                add_offence(:convention, t1.pos, MSG % kind)
+                space_range = Parser::Source::Range.new(source_buffer,
+                                                        t1.pos.end_pos,
+                                                        t2.pos.begin_pos)
+                add_offence(:convention, space_range, MSG % kind)
               end
             end
           end

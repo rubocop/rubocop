@@ -14,15 +14,21 @@ module MRISyntaxChecker
       source_lines = source.each_line.to_a
     end
 
+    source_buffer = Parser::Source::Buffer.new('test', 1)
+    source_buffer.source = source
+
     offences = []
 
     check_syntax(source).each_line do |line|
       line_number, severity, message = process_line(line)
       next unless line_number
       next if grep_message && !message.include?(grep_message)
+      begin_pos = source_lines[0...(line_number - 1)].reduce(0) do |a, e|
+        a + e.length + "\n".length
+      end
       offences << Rubocop::Cop::Offence.new(
         severity,
-        Rubocop::Cop::Location.new(line_number, 0, source_lines),
+        Parser::Source::Range.new(source_buffer, begin_pos, begin_pos + 1),
         message.capitalize,
         fake_cop_name
       )
