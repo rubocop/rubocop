@@ -111,6 +111,16 @@ module Rubocop
         # commands have no explicit receiver
         !receiver && method_name == name
       end
+
+      def source_range(source_buffer, preceding_lines, begin_column,
+                       column_count)
+        newline_length = 1
+        begin_pos = preceding_lines.reduce(0) do |a, e|
+                      a + e.length + newline_length
+                    end + begin_column
+        Parser::Source::Range.new(source_buffer, begin_pos,
+                                  begin_pos + column_count)
+      end
     end
   end
 end

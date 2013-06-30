@@ -8,6 +8,14 @@ module Rubocop
     subject(:formatter) { Formatter::JSONFormatter.new(output) }
     let(:output) { StringIO.new }
     let(:files) { %w(/path/to/file1 /path/to/file2) }
+    let(:location) do
+      source_buffer = Parser::Source::Buffer.new('test', 1)
+      source_buffer.source = %w(a b cdefghi).join("\n")
+      Parser::Source::Range.new(source_buffer, 9, 10)
+    end
+    let(:offence) do
+      Cop::Offence.new(:convention, location, 'This is message', 'CopName')
+    end
 
     describe '#started' do
       let(:summary) { formatter.output_hash[:summary] }
@@ -96,12 +104,6 @@ module Rubocop
     describe '#hash_for_offence' do
       subject(:hash) { formatter.hash_for_offence(offence) }
 
-      let(:offence) do
-        Cop::Offence.new(:convention, location, 'This is message', 'CopName')
-      end
-
-      let(:location) { Cop::Location.new(3, 5, ['a']) }
-
       it 'sets Offence#severity value for :severity key' do
         expect(hash[:severity]).to eq(:convention)
       end
@@ -126,14 +128,13 @@ module Rubocop
     end
 
     describe '#hash_for_location' do
-      subject(:hash) { formatter.hash_for_location(location) }
-      let(:location) { Cop::Location.new(3, 5, ['a']) }
+      subject(:hash) { formatter.hash_for_location(offence) }
 
-      it 'sets Location#line value for :line key' do
+      it 'sets line value for :line key' do
         expect(hash[:line]).to eq(3)
       end
 
-      it 'sets Location#column value for :column key' do
+      it 'sets column value for :column key' do
         expect(hash[:column]).to eq(6)
       end
     end

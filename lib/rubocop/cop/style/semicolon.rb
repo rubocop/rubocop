@@ -23,14 +23,25 @@ module Rubocop
             # every line with more than 1 expression on it is an offence
             lines.each do |line, expr_on_line|
               if expr_on_line.size > 1
-                add_offence(:convention, Location.new(line, 0, source), MSG)
+                # TODO: Find the correct position of the semicolon. We don't
+                # know if the first semicolon on the line is a separator of
+                # expressions. It's just a guess.
+                column = source[line - 1].index(';')
+                add_offence(:convention,
+                            source_range(source_buffer, source[0...(line - 1)],
+                                         column, 1),
+                            MSG)
               end
             end
           end
 
           tokens.group_by { |t| t.pos.line }.each do |line, line_tokens|
             if line_tokens.last.type == :tSEMI # rubocop:disable SymbolName
-              add_offence(:convention, line_tokens.last.pos, MSG)
+              column = line_tokens.last.pos.column
+              add_offence(:convention,
+                          source_range(source_buffer, source[0...(line - 1)],
+                                       column, 1),
+                          MSG)
             end
           end
         end

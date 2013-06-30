@@ -44,7 +44,11 @@ module Rubocop
       end
 
       def offence_with_severity(severity)
-        Cop::Offence.new(severity, Cop::Location.new(1, 0, ['a']), 'message',
+        source_buffer = Parser::Source::Buffer.new('test', 1)
+        source_buffer.source = "a\n"
+        Cop::Offence.new(severity,
+                         Parser::Source::Range.new(source_buffer, 0, 1),
+                         'message',
                          'CopName')
       end
 
@@ -96,15 +100,20 @@ module Rubocop
 
         context 'when any offences are detected' do
           before do
+            source_buffer = Parser::Source::Buffer.new('test', 1)
             source = 9.times.map do |index|
               "This is line #{index + 1}."
             end
+            source_buffer.source = source.join("\n")
+            line_length = source[0].length + "\n".length
 
             formatter.file_started(files[0], {})
             formatter.file_finished(files[0], [
               Cop::Offence.new(
                 :convention,
-                Cop::Location.new(2, 2, source),
+                Parser::Source::Range.new(source_buffer,
+                                          line_length + 2,
+                                          line_length + 3),
                 'foo',
                 'Cop'
               )
@@ -118,13 +127,17 @@ module Rubocop
             formatter.file_finished(files[2], [
               Cop::Offence.new(
                 :error,
-                Cop::Location.new(5, 1, source),
+                Parser::Source::Range.new(source_buffer,
+                                          4 * line_length + 1,
+                                          4 * line_length + 2),
                 'bar',
                 'Cop'
               ),
               Cop::Offence.new(
                 :convention,
-                Cop::Location.new(6, 0, source),
+                Parser::Source::Range.new(source_buffer,
+                                          5 * line_length,
+                                          5 * line_length + 1),
                 'foo',
                 'Cop'
               )

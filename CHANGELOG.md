@@ -40,6 +40,7 @@
 * Migrate all cops to new namespaces. `Rubocop::Cop::Lint` is for cops that emit warnings. `Rubocop::Cop::Style` is for cops that do not belong in other namespaces.
 * Merge `FavorPercentR` and `PercentR` into one cop called `RegexpLiteral`, and add configuration parameter `MaxSlashes`.
 * Add `CountKeywordArgs` configuration option to `ParameterLists` cop.
+* The `clang` formatter now marks a whole range rather than just the starting position, to indicate more clearly where the problem is.
 
 ### Bugs fixed
 

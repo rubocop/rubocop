@@ -2,52 +2,6 @@
 
 module Rubocop
   module Cop
-    # A Location represents a place where the violation is detected in a file.
-    class Location
-      # @api public
-      #
-      # @!attribute [r] line
-      #
-      # @return [Integer]
-      #   the line number.
-      #   first line is `1`.
-      attr_reader :line
-
-      # @api public
-      #
-      # @!attribute [r] column
-      #
-      # @return [Integer]
-      #   the column number.
-      #   beginning of line is `0`.
-      attr_reader :column
-
-      # @api public
-      #
-      # @!attribute [r] source_line
-      #
-      # @return [String]
-      #   the source code line where the offence occurred.
-      attr_reader :source_line
-
-      # @api private
-      def initialize(line, column, source)
-        @line = line.freeze
-        @column = column.freeze
-        @source_line = source[line - 1].freeze
-        freeze
-      end
-
-      # @api private
-      #
-      # Internally we use column number that start at 0, but when
-      # outputting column numbers, we want them to start at 1. One
-      # reason is that editors, such as Emacs, expect this.
-      def real_column
-        column + 1
-      end
-    end
-
     # An Offence represents a style violation detected by RuboCop.
     class Offence
       include Comparable

@@ -15,7 +15,11 @@ module Rubocop
             expected_line = 0
             expected_line += 1 if source[expected_line] =~ /^#!/
             unless source[expected_line] =~ /#.*coding: (UTF|utf)-8/
-              add_offence(:convention, Location.new(1, 0, source), MSG)
+              add_offence(:convention,
+                          source_range(source_buffer,
+                                       source[0...expected_line],
+                                       0, 1),
+                          MSG)
             end
           end
         end
