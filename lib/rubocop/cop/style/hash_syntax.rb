@@ -19,7 +19,7 @@ module Rubocop
             pairs.each do |pair|
               if pair.loc.operator && pair.loc.operator.is?('=>')
                 add_offence(:convention,
-                            pair.loc.operator,
+                            pair.loc.expression.begin.join(pair.loc.operator),
                             MSG)
               end
             end
