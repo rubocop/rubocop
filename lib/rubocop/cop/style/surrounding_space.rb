@@ -231,7 +231,7 @@ module Rubocop
                 space_range = Parser::Source::Range.new(source_buffer,
                                                         t1.pos.end_pos,
                                                         t2.pos.begin_pos)
-                add_offence(:convention, space_range, MSG % kind)
+                add_offence(:convention, space_range, format(MSG, kind))
               end
             end
           end
