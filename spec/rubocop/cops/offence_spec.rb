@@ -102,8 +102,8 @@ module Rubocop
           source_buffer = Parser::Source::Buffer.new('test', 1)
           source_buffer.source = source.join("\n")
           begin_pos = source[0...(line - 1)].reduce(0) do |a, e|
-                        a + e.length + "\n".length
-                      end + column
+            a + e.length + "\n".length
+          end + column
           Parser::Source::Range.new(source_buffer, begin_pos, begin_pos + 1)
         end
 
