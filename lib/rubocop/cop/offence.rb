@@ -22,10 +22,10 @@ module Rubocop
       #
       # @!attribute [r] location
       #
-      # @return [Rubocop::Cop::Location]
+      # @return [Parser::Source::Range]
       #   the location where the violation is detected.
       #
-      # @see Rubocop::Cop::Location
+      # @see http://rubydoc.info/github/whitequark/parser/Parser/Source/Range Parser::Source::Range
       attr_reader :location
 
       # @api public

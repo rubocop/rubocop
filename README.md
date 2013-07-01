@@ -225,7 +225,7 @@ Please see the documents below for more formatter API details.
 
 * [Rubocop::Formatter::BaseFormatter](http://rubydoc.info/gems/rubocop/Rubocop/Formatter/BaseFormatter)
 * [Rubocop::Cop::Offence](http://rubydoc.info/gems/rubocop/Rubocop/Cop/Offence)
-* [Rubocop::Cop::Location](http://rubydoc.info/gems/rubocop/Rubocop/Cop/Location)
+* [Parser::Source::Range](http://rubydoc.info/github/whitequark/parser/Parser/Source/Range)
 
 #### Using Custom Formatter in Command Line
 
