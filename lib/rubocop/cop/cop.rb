@@ -116,8 +116,8 @@ module Rubocop
                        column_count)
         newline_length = 1
         begin_pos = preceding_lines.reduce(0) do |a, e|
-                      a + e.length + newline_length
-                    end + begin_column
+          a + e.length + newline_length
+        end + begin_column
         Parser::Source::Range.new(source_buffer, begin_pos,
                                   begin_pos + column_count)
       end

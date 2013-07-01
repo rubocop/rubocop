@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bugs fixed
+
+* [#318](https://github.com/bbatsov/rubocop/issues/318) - correct some special cases of block end alignment
+
 ## 0.9.0 (01/07/2013)
 
 ### New features

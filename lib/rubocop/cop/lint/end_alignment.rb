@@ -78,6 +78,17 @@ module Rubocop
           super
         end
 
+        def on_and(node)
+          _left, right = *node
+          if right.type == :block
+            check_block_alignment(node.loc.expression, right.loc)
+            @inspected_blocks << right
+          end
+          super
+        end
+
+        alias_method :on_or, :on_and
+
         def on_lvasgn(node)
           if align_with_start_of_assignment?
             _, children = *node
@@ -129,15 +140,26 @@ module Rubocop
         private
 
         def process_block_assignment(begin_node, block_node)
-          if block_node && block_node.type == :block
-            @inspected_blocks << block_node
-            check_block_alignment(begin_node.loc.expression, block_node.loc)
+          if block_node
+            while block_node.type == :send
+              receiver, _method, args = *block_node
+              if receiver && [:block, :send].include?(receiver.type)
+                block_node = receiver
+              elsif args && [:block, :send].include?(args.type)
+                block_node = args
+              else
+                break
+              end
+            end
+            if block_node.type == :block
+              @inspected_blocks << block_node
+              check_block_alignment(begin_node.loc.expression, block_node.loc)
+            end
           end
         end
 
         def check_block_alignment(start_loc, block_loc)
           end_loc = block_loc.end
-
           if block_loc.begin.line != end_loc.line &&
                start_loc.column != end_loc.column
             add_offence(:warning,
