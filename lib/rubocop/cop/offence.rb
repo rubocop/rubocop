@@ -84,6 +84,16 @@ module Rubocop
       end
 
       # @api private
+      def clang_severity
+        case @severity
+        when :fatal then 'F'.color(:red)
+        when :error then 'E'.color(:red)
+        when :warning then 'W'.color(:magenta)
+        when :convention then 'C'.color(:yellow)
+        end
+      end
+
+      # @api private
       def severity_level
         SEVERITIES.index(severity) + 1
       end

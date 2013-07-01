@@ -208,31 +208,24 @@ Usage: rubocop [options] [file1, file2, ...]
       expect(cli.run(['--format', 'clang', 'example1.rb', 'example2.rb']))
         .to eq(1)
       expect($stdout.string)
-        .to eq(['== example1.rb ==',
-                'example1.rb:2:2: C: Surrounding space missing for operator ' +
+        .to eq(['example1.rb:2:2: C: Surrounding space missing for operator ' +
                 "'='.",
                 'x= 0 ',
                 ' ^',
-                '',
                 'example1.rb:2:5: C: Trailing whitespace detected.',
                 'x= 0 ',
                 '    ^',
-                '',
                 'example1.rb:3:80: C: Line is too long. [85/79]',
                 '###########################################################' +
                 '##########################',
                 '                                                           ' +
                 '                    ^^^^^^',
-                '',
                 'example1.rb:4:2: C: Trailing whitespace detected.',
                 'y ',
                 ' ^',
-                '',
-                '== example2.rb ==',
                 'example2.rb:2:1: C: Tab detected.',
                 "\tx = 0",
                 '^',
-                '',
                 '',
                 '2 files inspected, 5 offences detected',
                 ''].join("\n"))
