@@ -77,6 +77,19 @@ module Rubocop
           expect(cop.offences.size).to eq(1)
         end
 
+        context 'when the block is a logical operand' do
+          it 'accepts a correctly aligned block end' do
+            inspect_source(cop,
+                           ['(value.is_a? Array) && value.all? do |subvalue|',
+                            '  type_check_value(subvalue, array_type)',
+                            'end',
+                            'a || b do',
+                            'end',
+                           ])
+            expect(cop.offences).to be_empty
+          end
+        end
+
         context 'with BlockAlignSchema set to StartOfAssignment' do
           before do
             EndAlignment.config = { 'BlockAlignSchema' => 'StartOfAssignment' }
@@ -88,6 +101,17 @@ module Rubocop
                             'end'
                            ])
             expect(cop.offences).to be_empty
+          end
+
+          context 'and the block is an operand' do
+            it 'accepts end aligned with a variable' do
+              inspect_source(cop,
+                             ['b = 1 + preceding_line.reduce(0) do |a, e|',
+                              '  a + e.length + newline_length',
+                              'end + 1'
+                             ])
+              expect(cop.offences).to be_empty
+            end
           end
 
           it 'registers an offence for mismatched block end with a variable' do
@@ -260,6 +284,17 @@ module Rubocop
                             '           end'
                            ])
             expect(cop.offences).to be_empty
+          end
+
+          context 'and the block is an operand' do
+            it 'accepts end aligned with a variable' do
+              inspect_source(cop,
+                             ['b = 1 + preceding_line.reduce(0) do |a, e|',
+                              '          a + e',
+                              '        end + 1'
+                             ])
+              expect(cop.offences).to be_empty
+            end
           end
 
           it 'registers an offence for mismatched block end with the method that invokes the block' do
