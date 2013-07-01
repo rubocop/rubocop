@@ -25,7 +25,8 @@ module Rubocop
       # @return [Parser::Source::Range]
       #   the location where the violation is detected.
       #
-      # @see http://rubydoc.info/github/whitequark/parser/Parser/Source/Range Parser::Source::Range
+      # @see http://rubydoc.info/github/whitequark/parser/Parser/Source/Range
+      #   Parser::Source::Range
       attr_reader :location
 
       # @api public
