@@ -10,7 +10,6 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.required_ruby_version = '>= 1.9.2'
   s.authors = ['Bozhidar Batsov']
-  s.date = '2013-04-17'
   s.description = <<-EOF
     Automatic Ruby code style checking tool.
     Aims to enforce the community-driven Ruby Style Guide.
