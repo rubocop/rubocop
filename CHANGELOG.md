@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.9.0 (01/07/2013)
+
 ### New features
 
 * Introduced formatter feature, enables custom formatted output and multiple outputs.
