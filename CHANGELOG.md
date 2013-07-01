@@ -20,7 +20,7 @@
 * New cop `Void` tracks uses of literals/variables/operators in possibly void context.
 * New cop `Documentation` checks for top level class/module doc comments.
 * New cop `UnreachableCode` tracks unreachable code segments.
-* New cop `MethodInvocationParentheses` tracks unwanted braces in method invocations.
+* New cop `MethodCallParentheses` tracks unwanted braces in method calls.
 * New cop `UnusedLocalVariable` tracks unused local variables for each scope.
 * New cop `ShadowingOuterLocalVariable` tracks use of the same name as outer local variables for block arguments or block local variables.
 * New cop `WhileUntilDo` tracks uses of `do` with multi-line `while/until`.

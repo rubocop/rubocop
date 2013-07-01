@@ -292,7 +292,7 @@ TrivialAccessors:
 LeadingCommentSpace:
   Enabled: true
 
-# Do not use :: for method invocation.
+# Do not use :: for method call.
 ColonMethodCall:
   Enabled: true
 
@@ -333,7 +333,7 @@ Documentation:
   Enabled: true
 
 # Do not use parentheses for method calls with no arguments.
-MethodInvocationParentheses:
+MethodCallParentheses:
   Enabled: true
 
 # Checks for redundant do after while or until.
