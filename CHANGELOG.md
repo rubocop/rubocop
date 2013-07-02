@@ -5,6 +5,7 @@
 ### Bugs fixed
 
 * [#318](https://github.com/bbatsov/rubocop/issues/318) - correct some special cases of block end alignment
+* [#317](https://github.com/bbatsov/rubocop/issues/317) - fix a false positive in `LiteralInCondition`
 
 ## 0.9.0 (01/07/2013)
 

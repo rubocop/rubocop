@@ -17,12 +17,19 @@ module Rubocop
                            ])
             expect(cop.offences.size).to eq(1)
           end
-        end
 
-        %w(1 2.0 [1] {}).each do |lit|
           it "accepts literal #{lit} if it's not an and/or operand" do
             inspect_source(cop,
                            ["if test(#{lit})",
+                            '  top',
+                            'end'
+                           ])
+            expect(cop.offences).to be_empty
+          end
+
+          it "accepts literal #{lit} in non-toplevel and/or" do
+            inspect_source(cop,
+                           ["if (a || #{lit}).something",
                             '  top',
                             'end'
                            ])
