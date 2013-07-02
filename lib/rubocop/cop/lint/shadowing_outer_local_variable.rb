@@ -20,6 +20,7 @@ module Rubocop
           # Only block scope can reference outer local variables.
           return unless variable_table.current_scope.node.type == :block
           return unless ARGUMENT_DECLARATION_TYPES.include?(entry.node.type)
+          return if entry.name.to_s.start_with?('_')
 
           outer_local_variable = variable_table.find_variable_entry(entry.name)
           return unless outer_local_variable
