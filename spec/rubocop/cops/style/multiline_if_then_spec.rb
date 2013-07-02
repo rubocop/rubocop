@@ -75,6 +75,22 @@ module Rubocop
                                'end'])
           expect(mit.offences).to be_empty
         end
+
+        it 'does not get confused by a postfix unless' do
+          inspect_source(mit,
+                         ['two unless one',
+                         ])
+          expect(mit.offences).to be_empty
+        end
+
+        it 'does not get confused by a nested postfix unless' do
+          inspect_source(mit,
+                         ['if two',
+                          '  puts 1',
+                          'end unless two'
+                         ])
+          expect(mit.offences).to be_empty
+        end
       end
     end
   end

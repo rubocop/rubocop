@@ -24,57 +24,6 @@ module Rubocop
           end
         end
       end
-
-      # Checks for uses of semicolon in if statements.
-      class IfWithSemicolon < Cop
-        include IfThenElse
-
-        def offending_line(node)
-          node.loc.begin.line if node.loc.begin && node.loc.begin.is?(';')
-        end
-
-        def error_message
-          'Never use if x; Use the ternary operator instead.'
-        end
-      end
-
-      # Checks for uses of then multi-line if statements.
-      class MultilineIfThen < Cop
-        include IfThenElse
-
-        def offending_line(node)
-          condition, body = *node
-          next_thing = if body && body.loc.expression
-                         body.loc.expression.begin
-                       else
-                         node.loc.end # No body, use "end".
-                       end
-          right_after_cond =
-            Parser::Source::Range.new(next_thing.source_buffer,
-                                      condition.loc.expression.end.end_pos,
-                                      next_thing.begin_pos)
-          if right_after_cond.source =~ /\A\s*then\s*(#.*)?\s*\n/
-            node.loc.expression.begin.line
-          end
-        end
-
-        def error_message
-          'Never use then for multi-line if/unless.'
-        end
-      end
-
-      # Checks for uses of if/then/else/end on a single line.
-      class OneLineConditional < Cop
-        include IfThenElse
-
-        def offending_line(node)
-          node.loc.expression.line unless node.loc.expression.source =~ /\n/
-        end
-
-        def error_message
-          'Favor the ternary operator (?:) over if/then/else/end constructs.'
-        end
-      end
     end
   end
 end
