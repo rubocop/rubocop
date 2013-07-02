@@ -9,7 +9,7 @@ module Rubocop
       VARIABLE_ASSIGNMENT_TYPES = [:lvasgn].freeze
       ARGUMENT_DECLARATION_TYPES = [
         :arg, :optarg, :restarg, :blockarg,
-        :kwarg, :kwoptarg, :kwsplatarg,
+        :kwarg, :kwoptarg, :kwrestarg,
         :shadowarg
       ].freeze
       VARIABLE_DECLARATION_TYPES =

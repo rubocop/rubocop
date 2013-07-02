@@ -387,6 +387,19 @@ module Rubocop
           include_examples 'mimics MRI 2.0'
         end
 
+        context 'when a keyword splat method argument is used' do
+          let(:source) do
+            [
+              'def some_method(name: value, **rest_keywords)',
+              '  p rest_keywords',
+              'end'
+            ]
+          end
+
+          include_examples 'accepts'
+          include_examples 'mimics MRI 2.0'
+        end
+
         context 'when a keyword splat method argument is not used' do
           let(:source) do
             [
