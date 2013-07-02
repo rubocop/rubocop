@@ -8,6 +8,7 @@
 * [#317](https://github.com/bbatsov/rubocop/issues/317) - fix a false positive in `LiteralInCondition`
 * [#321](https://github.com/bbatsov/rubocop/issues/321) - Ignore variables whose name start with `_` in `ShadowingOuterLocalVariable`
 * [#322](https://github.com/bbatsov/rubocop/issues/322) - Fix exception of `UnusedLocalVariable` and `ShadowingOuterLocalVariable` when inspecting keyword splat argument
+* [#316](https://github.com/bbatsov/rubocop/issues/316) - Correct nested postfix unless in `MultilineIfThen`
 
 ## 0.9.0 (01/07/2013)
 
