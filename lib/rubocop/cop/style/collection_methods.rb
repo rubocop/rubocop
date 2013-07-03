@@ -19,11 +19,30 @@ module Rubocop
           find_all: 'select'
         }
 
-        def on_send(node)
-          receiver, method_name, *_args = *node
+        def on_block(node)
+          method, _args, _body = *node
 
-          # a simple(but flawed way) to reduce false positives
-          if receiver && PREFERRED_METHODS[method_name]
+          check_method_node(method)
+
+          super
+        end
+
+        def on_send(node)
+          _receiver, _method_name, *args = *node
+
+          if args.size == 1 && args.first.type == :block_pass
+            check_method_node(node)
+          end
+
+          super
+        end
+
+        private
+
+        def check_method_node(node)
+          _receiver, method_name, *_args = *node
+
+          if PREFERRED_METHODS[method_name]
             add_offence(
               :convention,
               node.loc.selector,
