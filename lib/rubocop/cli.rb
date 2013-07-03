@@ -37,7 +37,10 @@ module Rubocop
       end
 
       # filter out Rails cops unless requested
-      @cops.reject! { |cop_klass| cop_klass.rails? } unless @options[:rails]
+      @cops.reject!(&:rails?) unless @options[:rails]
+
+      # filter out style cops when --lint is passed
+      @cops.select!(&:lint?) if @options[:lint]
 
       target_files = target_files(args)
       target_files.each(&:freeze).freeze
@@ -180,6 +183,9 @@ module Rubocop
         end
         opts.on('-R', '--rails', 'Run extra Rails cops.') do |r|
           @options[:rails] = r
+        end
+        opts.on('-l', '--lint', 'Run only lint cops.') do |l|
+          @options[:lint] = l
         end
         opts.on('-a', '--auto-correct', 'Auto-correct offences.') do |a|
           @options[:autocorrect] = a

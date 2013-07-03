@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* Added `-l/--lint` option to allow doing only linting with no style checks (similar to running `ruby -wc`).
+
 ### Changes
 
 * Removed the `BlockAlignSchema` configuration option from `EndAlignment`. We now support only the default alignment schema - `StartOfAssignment`.

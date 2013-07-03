@@ -47,6 +47,7 @@ Usage: rubocop [options] [file1, file2, ...]
                                      if no format is specified.
     -r, --require FILE               Require Ruby file.
     -R, --rails                      Run extra Rails cops.
+    -l, --lint                       Run only lint cops.
     -a, --auto-correct               Auto-correct offences.
     -s, --silent                     Silence summary.
     -n, --no-color                   Disable color output.
@@ -252,8 +253,30 @@ Usage: rubocop [options] [file1, file2, ...]
                 ''].join("\n"))
     end
 
+    it 'runs only lint cops if --lint is passed' do
+      # FIXME state seems to be leaking here
+      pending
+      create_file('example.rb', ['if 0 ',
+                                 "\ty",
+                                 'end'])
+      # IfUnlessModifier depends on the configuration of LineLength.
+      # That configuration might have been set by other spec examples
+      # so we reset it to emulate a start from scratch.
+      Cop::Style::LineLength.config = nil
+
+      expect(cli.run(['--format', 'simple', '--lint', 'example.rb'])).to eq(1)
+      expect($stdout.string)
+        .to eq(['== example.rb ==',
+                'W:  1:  4: Literal 0 appeared in a condition.',
+                '',
+                '1 file inspected, 1 offence detected',
+                ''].join("\n"))
+
+    end
+
     it 'exits with error if an incorrect cop name is passed to --only' do
       expect(cli.run(%w(--only 123))).to eq(1)
+
       expect($stderr.string).to eq("Unrecognized cop name: 123.\n")
     end
 
