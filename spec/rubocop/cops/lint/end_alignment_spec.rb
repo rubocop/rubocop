@@ -186,20 +186,63 @@ module Rubocop
             expect(cop.offences.size).to eq(1)
           end
 
-          it 'accepts end aligned with an attribute writer method' do
+          it 'accepts end aligned with a method call' do
             inspect_source(cop,
-                           ['parser.child.consumer = lambda do |token|',
+                           ['parser.childs << lambda do |token|',
                             '  token << 1',
                             'end'
                            ])
             expect(cop.offences).to be_empty
           end
 
-          it 'registers an offence for mismatched block end with an attribute writer method' do
+          it 'registers an offence for mismatched block end with a method call' do
             inspect_source(cop,
-                           ['parser.child.consumer = lambda do |token|',
+                           ['parser.childs << lambda do |token|',
                             '  token << 1',
                             '  end'
+                           ])
+            expect(cop.offences.size).to eq(1)
+          end
+
+          it 'accepts end aligned with a method call with arguments' do
+            inspect_source(cop,
+                           ['@h[:f] = f.each_pair.map do |f, v|',
+                            '  v = 1',
+                            'end'
+                           ])
+            expect(cop.offences).to be_empty
+          end
+
+          it 'registers an offence for mismatched end with a method call with arguments' do
+            inspect_source(cop,
+                           ['@h[:f] = f.each_pair.map do |f, v|',
+                            '  v = 1',
+                            '  end'
+                           ])
+            expect(cop.offences.size).to eq(1)
+          end
+
+          it 'does not raise an error for nested block in a method call' do
+            inspect_source(cop,
+                           ['expect(arr.all? { |o| o.valid? })'
+                           ])
+            expect(cop.offences).to be_empty
+          end
+
+          it 'accepts end aligned with the outermost method in the method chain that calls the block' do
+            inspect_source(cop,
+                           ['expect(arr.all? do |o|',
+                            '  o.valid?',
+                            'end)'
+                           ])
+            expect(cop.offences).to be_empty
+          end
+
+          it 'registers an offence for mismatched end aligned with the outermost method in the method chain that calls the block' do
+            inspect_source(cop,
+                           ['expect(arr.all? do |o|',
+                            '  o.valid?',
+                            '  end)'
                            ])
             expect(cop.offences.size).to eq(1)
           end
@@ -369,20 +412,56 @@ module Rubocop
             expect(cop.offences.size).to eq(1)
           end
 
-          it 'accepts end aligned with the method when return value is assigned to attribute writer method' do
+          it 'accepts end aligned with a method call' do
             inspect_source(cop,
-                           ['parser.child.consumer = lambda do |token|',
-                            '                          token << 1',
-                            '                        end'
+                           ['parser.childs << lambda do |token|',
+                            '                   token << 1',
+                            '                 end'
                            ])
             expect(cop.offences).to be_empty
           end
 
-          it 'registers an offence for mismatched block end when return value is assigned to attribute writer method' do
+          it 'registers an offence for mismatched block end with a method call' do
             inspect_source(cop,
-                           ['parser.child.consumer = lambda do |token|',
+                           ['parser.childs << lambda do |token|',
                             '  token << 1',
                             'end'
+                           ])
+            expect(cop.offences.size).to eq(1)
+          end
+
+          it 'accepts end aligned with a method call with arguments' do
+            inspect_source(cop,
+                           ['@h[:f] = f.each_pair.map do |f, v|',
+                            '           v = 1',
+                            '         end'
+                           ])
+            expect(cop.offences).to be_empty
+          end
+
+          it 'registers an offence for mismatched end with a method call with arguments' do
+            inspect_source(cop,
+                           ['@h[:f] = f.each_pair.map do |f, v|',
+                            '  v = 1',
+                            'end'
+                           ])
+            expect(cop.offences.size).to eq(1)
+          end
+
+          it 'accepts end aligned with the outermost method in the method chain that calls the block' do
+            inspect_source(cop,
+                           ['expect(arr.all? do |o|',
+                            '         o.valid?',
+                            '       end)'
+                           ])
+            expect(cop.offences).to be_empty
+          end
+
+          it 'registers an offence for mismatched end aligned with the outermost method in the method chain that calls the block' do
+            inspect_source(cop,
+                           ['expect(arr.all? do |o|',
+                            '  o.valid?',
+                            'end)'
                            ])
             expect(cop.offences.size).to eq(1)
           end

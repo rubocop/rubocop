@@ -79,6 +79,8 @@ module Rubocop
         end
 
         def on_and(node)
+          return if already_processed_node?(node)
+
           _left, right = *node
           if right.type == :block
             check_block_alignment(node.loc.expression, right.loc)
@@ -121,10 +123,8 @@ module Rubocop
 
         def on_send(node)
           if align_with_start_of_assignment?
-            receiver, method, args = *node
-            if attribute_writer?(method)
-              process_block_assignment(receiver, args)
-            end
+            _receiver, _method, *args = *node
+            process_block_assignment(node, args.last)
           end
           super
         end
@@ -140,21 +140,22 @@ module Rubocop
         private
 
         def process_block_assignment(begin_node, block_node)
-          if block_node
-            while block_node.type == :send
-              receiver, _method, args = *block_node
-              if receiver && [:block, :send].include?(receiver.type)
-                block_node = receiver
-              elsif args && [:block, :send].include?(args.type)
-                block_node = args
-              else
-                break
-              end
+          return unless block_node
+          return if already_processed_node?(block_node)
+
+          while block_node.type == :send
+            receiver, _method, args = *block_node
+            if receiver && [:block, :send].include?(receiver.type)
+              block_node = receiver
+            elsif args && [:block, :send].include?(args.type)
+              block_node = args
+            else
+              break
             end
-            if block_node.type == :block
-              @inspected_blocks << block_node
-              check_block_alignment(begin_node.loc.expression, block_node.loc)
-            end
+          end
+          if block_node.type == :block
+            @inspected_blocks << block_node
+            check_block_alignment(begin_node.loc.expression, block_node.loc)
           end
         end
 
