@@ -2,25 +2,27 @@
 
 module Rubocop
   module Cop
-    # This cop makes sure that certain operator methods have their sole
-    # parameter named *other*.
-    class OpMethod < Cop
-      MSG = 'When defining the %s operator, name its argument *other*.'
+    module Style
+      # This cop makes sure that certain operator methods have their sole
+      # parameter named *other*.
+      class OpMethod < Cop
+        MSG = 'When defining the %s operator, name its argument *other*.'
 
-      BLACKLISTED = [:+@, :-@, :[], :[]=, :<<]
+        BLACKLISTED = [:+@, :-@, :[], :[]=, :<<]
 
-      TARGET_ARGS = s(:args, s(:arg, :other))
+        TARGET_ARGS = s(:args, s(:arg, :other))
 
-      def on_def(node)
-        name, args, _body = *node
+        def on_def(node)
+          name, args, _body = *node
 
-        if name !~ /\A\w/ && !BLACKLISTED.include?(name) &&
-            args.children.size == 1 && args != TARGET_ARGS
-          add_offence(:convention, args.children[0].loc.expression,
-                      sprintf(MSG, name))
+          if name !~ /\A\w/ && !BLACKLISTED.include?(name) &&
+              args.children.size == 1 && args != TARGET_ARGS
+            add_offence(:convention, args.children[0].loc.expression,
+                        sprintf(MSG, name))
+          end
+
+          super
         end
-
-        super
       end
     end
   end
