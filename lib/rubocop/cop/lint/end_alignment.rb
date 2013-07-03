@@ -140,6 +140,10 @@ module Rubocop
             end
           end
           if block_node.type == :block
+            # Align with the expression that is on the same line
+            # where the block is defined
+            return if block_is_on_next_line?(begin_node, block_node)
+
             @inspected_blocks << block_node
             check_block_alignment(begin_node.loc.expression, block_node.loc)
           end
@@ -174,6 +178,10 @@ module Rubocop
 
         def already_processed_node?(node)
           @inspected_blocks.include?(node)
+        end
+
+        def block_is_on_next_line?(begin_node, block_node)
+          begin_node.loc.line != block_node.loc.line
         end
       end
     end

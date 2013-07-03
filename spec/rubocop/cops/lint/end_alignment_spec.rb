@@ -113,6 +113,28 @@ module Rubocop
           expect(cop.offences.size).to eq(1)
         end
 
+        context 'when the block is defined on the next line' do
+          it 'accepts end aligned with the block expression' do
+            inspect_source(cop,
+                           ['variable =',
+                            '  a_long_method_that_dont_fit_on_the_line do |v|',
+                            '    v.foo',
+                            '  end'
+                           ])
+            expect(cop.offences).to be_empty
+          end
+
+          it 'registers an offences for mismatched end alignment' do
+            inspect_source(cop,
+                           ['variable =',
+                            '  a_long_method_that_dont_fit_on_the_line do |v|',
+                            '    v.foo',
+                            'end'
+                           ])
+            expect(cop.offences.size).to eq(1)
+          end
+        end
+
         it 'accepts end aligned with an instance variable' do
           inspect_source(cop,
                          ['@variable = test do |ala|',
