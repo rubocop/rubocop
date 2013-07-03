@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* Removed the `BlockAlignSchema` configuration option from `EndAlignment`. We now support only the default alignment schema - `StartOfAssignment`.
+
 ### Bugs fixed
 
 * [#318](https://github.com/bbatsov/rubocop/issues/318) - correct some special cases of block end alignment

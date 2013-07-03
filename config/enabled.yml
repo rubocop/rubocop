@@ -362,7 +362,6 @@ AssignmentInCondition:
 # Align ends correctly.
 EndAlignment:
   Enabled: true
-  BlockAlignSchema: StartOfAssignment
 
 # Possible use of operator/literal/variable in void context.
 Void:
