@@ -44,8 +44,20 @@ module Rubocop
         name.to_s.split('::').last
       end
 
+      def self.cop_type
+        name.to_s.split('::')[-2].downcase.to_sym
+      end
+
+      def self.style?
+        cop_type == :style
+      end
+
+      def self.lint?
+        cop_type == :lint
+      end
+
       def self.rails?
-        false
+        cop_type == :rails
       end
 
       def initialize

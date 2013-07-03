@@ -17,10 +17,6 @@ module Rubocop
                      :validates_presence_of,
                      :validates_size_of]
 
-        def self.rails?
-          true
-        end
-
         def on_send(node)
           receiver, method_name, *_args = *node
 
