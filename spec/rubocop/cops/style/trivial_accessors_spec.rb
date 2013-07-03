@@ -332,6 +332,14 @@ module Rubocop
                           ' end'])
           expect(trivial_accessors_finder.offences).to be_empty
         end
+
+        it 'ignores trivial accessors that ends with a question mark' do
+          inspect_source(trivial_accessors_finder,
+                         [' def foo?',
+                          '   @foo',
+                          ' end'])
+          expect(trivial_accessors_finder.offences).to be_empty
+        end
       end
     end
   end

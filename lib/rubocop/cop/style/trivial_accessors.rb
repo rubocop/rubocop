@@ -11,7 +11,7 @@ module Rubocop
         def on_def(node)
           method_name, args, body = *node
 
-          kind = if body && body.type == :ivar
+          kind = if body && body.type == :ivar && method_name[-1] != '?'
                    'reader'
                  elsif args.children.size == 1 &&
                        body && body.type == :ivasgn &&
