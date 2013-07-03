@@ -190,10 +190,6 @@ module Rubocop
           @inspected_blocks.include?(node)
         end
 
-        def attribute_writer?(method)
-          method.to_s[-1] == '='
-        end
-
         def align_with_start_of_assignment?
           EndAlignment.config['BlockAlignSchema'] == 'StartOfAssignment'
         end
