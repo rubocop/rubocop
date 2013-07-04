@@ -31,6 +31,17 @@ module Rubocop
                           'end'])
           expect(er.offences).to be_empty
         end
+
+        it 'does not check when ensure block has no body' do
+          expect do
+            inspect_source(er,
+                           ['begin',
+                            '  something',
+                            'ensure',
+                            'end'])
+          end.to_not raise_exception
+
+        end
       end
     end
   end
