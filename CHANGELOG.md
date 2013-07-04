@@ -19,6 +19,7 @@
 * [#316](https://github.com/bbatsov/rubocop/issues/316) - Correct nested postfix unless in `MultilineIfThen`
 * [#327](https://github.com/bbatsov/rubocop/issues/327) - Fix false offences for block expression that span on two lines in `EndAlignment`
 * [#332](https://github.com/bbatsov/rubocop/issues/332) - Fix exception of `UnusedLocalVariable` and `ShadowingOuterLocalVariable` when inspecting named captures
+* [#333](https://github.com/bbatsov/rubocop/issues/333) - Fix a case that `EnsureReturn` throws an exception when ensure has no body
 
 ## 0.9.0 (01/07/2013)
 
