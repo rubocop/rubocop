@@ -6,7 +6,7 @@ module Rubocop
     # This is intended to be used as mix-in, and the user class may override
     # some of hook methods.
     module VariableInspector
-      VARIABLE_ASSIGNMENT_TYPES = [:lvasgn].freeze
+      VARIABLE_ASSIGNMENT_TYPES = [:lvasgn, :match_with_lvasgn].freeze
       ARGUMENT_DECLARATION_TYPES = [
         :arg, :optarg, :restarg, :blockarg,
         :kwarg, :kwoptarg, :kwrestarg,
@@ -25,18 +25,19 @@ module Rubocop
         attr_accessor :used
         alias_method :used?, :used
 
-        def initialize(node)
+        def initialize(node, name = nil)
           unless VARIABLE_DECLARATION_TYPES.include?(node.type)
             fail ArgumentError,
                  "Node type must be any of #{VARIABLE_DECLARATION_TYPES}, " +
                  "passed #{node.type}"
           end
           @node = node
+          @name = name.to_sym if name
           @used = false
         end
 
         def name
-          @node.children.first
+          @name || @node.children.first
         end
       end
 
@@ -100,8 +101,8 @@ module Rubocop
           scope_stack.count
         end
 
-        def add_variable_entry(variable_declaration_node)
-          entry = VariableEntry.new(variable_declaration_node)
+        def add_variable_entry(variable_declaration_node, name = nil)
+          entry = VariableEntry.new(variable_declaration_node, name)
           invoke_hook(:before_declaring_variable, entry)
           current_scope.variable_entries[entry.name] = entry
           invoke_hook(:after_declaring_variable, entry)
@@ -188,14 +189,11 @@ module Rubocop
         case node.type
         when *ARGUMENT_DECLARATION_TYPES
           variable_table.add_variable_entry(node)
-        when *VARIABLE_ASSIGNMENT_TYPES
+        when :lvasgn
           variable_name = node.children.first
-          variable_entry = variable_table.find_variable_entry(variable_name)
-          if variable_entry
-            variable_entry.used = true
-          else
-            variable_table.add_variable_entry(node)
-          end
+          process_variable_assignment(node, variable_name)
+        when :match_with_lvasgn
+          process_named_captures(node)
         when *VARIABLE_USE_TYPES
           variable_name = node.children.first
           variable_entry = variable_table.find_variable_entry(variable_name)
@@ -253,6 +251,27 @@ module Rubocop
           inspect_variables_in_scope(node)
         when *SCOPE_TYPES
           inspect_variables_in_scope(node)
+        end
+      end
+
+      def process_variable_assignment(node, name)
+        entry = variable_table.find_variable_entry(name)
+        if entry
+          entry.used = true
+        else
+          variable_table.add_variable_entry(node, name)
+        end
+      end
+
+      def process_named_captures(match_with_lvasgn_node)
+        regexp_string = match_with_lvasgn_node.children[0]
+                                              .children[0]
+                                              .children[0]
+        regexp = Regexp.new(regexp_string)
+        variable_names = regexp.named_captures.keys
+
+        variable_names.each do |name|
+          process_variable_assignment(match_with_lvasgn_node, name)
         end
       end
 
