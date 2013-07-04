@@ -18,6 +18,7 @@
 * [#322](https://github.com/bbatsov/rubocop/issues/322) - Fix exception of `UnusedLocalVariable` and `ShadowingOuterLocalVariable` when inspecting keyword splat argument
 * [#316](https://github.com/bbatsov/rubocop/issues/316) - Correct nested postfix unless in `MultilineIfThen`
 * [#327](https://github.com/bbatsov/rubocop/issues/327) - Fix false offences for block expression that span on two lines in `EndAlignment`
+* [#332](https://github.com/bbatsov/rubocop/issues/332) - Fix exception of `UnusedLocalVariable` and `ShadowingOuterLocalVariable` when inspecting named captures
 
 ## 0.9.0 (01/07/2013)
 

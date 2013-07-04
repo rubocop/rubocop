@@ -271,6 +271,61 @@ module Rubocop
           include_examples 'mimics MRI 2.0'
         end
 
+        context 'when a named capture is unreferenced in top level' do
+          let(:source) do
+            [
+              "/(?<foo>\w+)/ =~ 'FOO'",
+            ]
+          end
+
+          it 'registers an offence' do
+            inspect_source(cop, source)
+            expect(cop.offences).to have(1).item
+            expect(cop.offences.first.message)
+              .to include('unused variable - foo')
+            expect(cop.offences.first.line).to eq(1)
+          end
+
+          include_examples 'mimics MRI 2.0'
+        end
+
+        context 'when a named capture is unreferenced ' +
+                'in other than top level' do
+          let(:source) do
+            [
+              'def some_method',
+              "  /(?<foo>\w+)/ =~ 'FOO'",
+              'end'
+            ]
+          end
+
+          it 'registers an offence' do
+            inspect_source(cop, source)
+            expect(cop.offences).to have(1).item
+            expect(cop.offences.first.message)
+              .to include('unused variable - foo')
+            expect(cop.offences.first.line).to eq(2)
+          end
+
+          # MRI 2.0 accepts this case, but I have no idea why it does so
+          # and there's no convincing reason to conform to this behavior,
+          # so RuboCop does not mimic MRI in this case.
+        end
+
+        context 'when a named capture is referenced' do
+          let(:source) do
+            [
+              'def some_method',
+              "  /(?<foo>\w+)/ =~ 'bar'",
+              '  puts foo',
+              'end'
+            ]
+          end
+
+          include_examples 'accepts'
+          include_examples 'mimics MRI 2.0'
+        end
+
         context 'when a variable is assigned in begin ' +
                 'and referenced outside' do
           let(:source) do
