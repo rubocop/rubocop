@@ -56,3 +56,10 @@ BlockNesting:
 # character.
 RegexpLiteral:
   MaxSlashes: 1
+
+# Allow trivial attribute accessors when they end in a question
+# mark ('?').
+# An alternate way of doing this is to use `alias_method` to add
+# an alias ending with a question mark for the accessor.
+TrivialAccessors:
+  AllowPredicates: false

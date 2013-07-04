@@ -9,6 +9,7 @@ module Rubocop
         let(:trivial_accessors_finder) { TrivialAccessors.new }
 
         before :each do
+          described_class.config = { 'AllowPredicates' => false }
           trivial_accessors_finder.offences.clear
         end
 
@@ -331,6 +332,20 @@ module Rubocop
                           '   @top = value',
                           ' end'])
           expect(trivial_accessors_finder.offences).to be_empty
+        end
+
+        context 'with predicates allowed' do
+          before do
+            described_class.config['AllowPredicates'] = true
+          end
+
+          it 'ignores accessors ending with a question mark' do
+            inspect_source(trivial_accessors_finder,
+                           [' def foo?',
+                            '   @foo',
+                            ' end'])
+            expect(trivial_accessors_finder.offences).to be_empty
+          end
         end
       end
     end
