@@ -62,6 +62,13 @@ module Rubocop
           if LITERALS.include?(cond.type)
             add_offence(:warning, cond.loc.expression,
                         format(MSG, cond.loc.expression.source))
+          elsif cond.type == :send
+            receiver, method_name, *_args = *cond
+
+            if method_name == :! && LITERALS.include?(receiver.type)
+              add_offence(:warning, receiver.loc.expression,
+                          format(MSG, receiver.loc.expression.source))
+            end
           elsif [:and, :or].include?(cond.type)
             # alternatively we have to consider a logical node with a
             # literal argument

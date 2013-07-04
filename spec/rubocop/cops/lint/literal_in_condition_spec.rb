@@ -9,9 +9,18 @@ module Rubocop
         let(:cop) { LiteralInCondition.new }
 
         %w(1 2.0 [1] {}).each do |lit|
-          it "registers an offence for literal #{lit} in condition" do
+          it "registers an offence for literal #{lit} in &&" do
             inspect_source(cop,
                            ["if x && #{lit}",
+                            '  top',
+                            'end'
+                           ])
+            expect(cop.offences.size).to eq(1)
+          end
+
+          it "registers an offence for literal #{lit} in !" do
+            inspect_source(cop,
+                           ["if !#{lit}",
                             '  top',
                             'end'
                            ])
