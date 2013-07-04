@@ -32,12 +32,15 @@ module Rubocop
       @config = {}
 
       class << self
-        attr_accessor :all
         attr_accessor :config
       end
 
+      def self.all
+        @all.clone
+      end
+
       def self.inherited(subclass)
-        all << subclass
+        @all << subclass
       end
 
       def self.cop_name
