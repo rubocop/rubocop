@@ -17,7 +17,7 @@
 * [#321](https://github.com/bbatsov/rubocop/issues/321) - Ignore variables whose name start with `_` in `ShadowingOuterLocalVariable`
 * [#322](https://github.com/bbatsov/rubocop/issues/322) - Fix exception of `UnusedLocalVariable` and `ShadowingOuterLocalVariable` when inspecting keyword splat argument
 * [#316](https://github.com/bbatsov/rubocop/issues/316) - Correct nested postfix unless in `MultilineIfThen`
-* [#327](https://github.com/bbatsov/rubocop/issues/327) - Fix false offences for block expression that spawn on two lines in `EndAlignment`
+* [#327](https://github.com/bbatsov/rubocop/issues/327) - Fix false offences for block expression that span on two lines in `EndAlignment`
 
 ## 0.9.0 (01/07/2013)
 
