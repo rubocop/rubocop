@@ -56,3 +56,11 @@ BlockNesting:
 # character.
 RegexpLiteral:
   MaxSlashes: 1
+
+# Align with the style guide.
+CollectionMethods:
+  PreferredMethods:
+    collect: 'map'
+    inject: 'reduce'
+    detect: 'find'
+    find_all: 'select'

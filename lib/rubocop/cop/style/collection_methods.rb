@@ -12,12 +12,9 @@ module Rubocop
       class CollectionMethods < Cop
         MSG = 'Prefer %s over %s.'
 
-        PREFERRED_METHODS = {
-          collect: 'map',
-          inject: 'reduce',
-          detect: 'find',
-          find_all: 'select'
-        }
+        def self.preferred_methods
+          Util.symbolize_keys(config['PreferredMethods'])
+        end
 
         def on_block(node)
           method, _args, _body = *node
@@ -42,11 +39,13 @@ module Rubocop
         def check_method_node(node)
           _receiver, method_name, *_args = *node
 
-          if PREFERRED_METHODS[method_name]
+          if self.class.preferred_methods[method_name]
             add_offence(
               :convention,
               node.loc.selector,
-              sprintf(MSG, PREFERRED_METHODS[method_name], method_name)
+              sprintf(MSG,
+                      self.class.preferred_methods[method_name],
+                      method_name)
             )
           end
         end

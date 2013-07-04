@@ -9,6 +9,7 @@
 ### Changes
 
 * Removed the `BlockAlignSchema` configuration option from `EndAlignment`. We now support only the default alignment schema - `StartOfAssignment`.
+* Made the preferred collection methods in `CollectionMethods` configurable.
 
 ### Bugs fixed
 
