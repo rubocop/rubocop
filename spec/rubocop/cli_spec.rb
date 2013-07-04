@@ -254,8 +254,6 @@ Usage: rubocop [options] [file1, file2, ...]
     end
 
     it 'runs only lint cops if --lint is passed' do
-      # FIXME state seems to be leaking here
-      pending
       create_file('example.rb', ['if 0 ',
                                  "\ty",
                                  'end'])
