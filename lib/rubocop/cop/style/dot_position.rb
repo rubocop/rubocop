@@ -10,14 +10,24 @@ module Rubocop
         def on_send(node)
           return unless node.loc.dot
 
-          dot_line = node.loc.dot.line
-          selector_line = node.loc.selector.line
-
-          if dot_line != selector_line
+          unless proper_dot_position?(node)
             add_offence(:convention, node.loc.dot, MSG)
           end
 
           super
+        end
+
+        private
+
+        def proper_dot_position?(node)
+          dot_line = node.loc.dot.line
+          selector_line = node.loc.selector.line
+
+          case DotPosition.config['Style'].downcase
+          when 'leading' then dot_line == selector_line
+          when 'trailing' then dot_line != selector_line
+          else fail 'Unknown dot position style selected.'
+          end
         end
       end
     end

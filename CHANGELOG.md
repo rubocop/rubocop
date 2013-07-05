@@ -10,6 +10,7 @@
 
 * Removed the `BlockAlignSchema` configuration option from `EndAlignment`. We now support only the default alignment schema - `StartOfAssignment`.
 * Made the preferred collection methods in `CollectionMethods` configurable.
+* Made the `DotPosition` cop configurable - now both `leading` and `trailing` styles are supported.
 
 ### Bugs fixed
 

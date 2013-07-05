@@ -64,3 +64,7 @@ CollectionMethods:
     inject: 'reduce'
     detect: 'find'
     find_all: 'select'
+
+# Muli-line method chaining should be done with leading dots.
+DotPosition:
+  Style: 'leading'
