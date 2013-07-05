@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.9.1 (05/07/2013)
+
 ### New features
 
 * Added `-l/--lint` option to allow doing only linting with no style checks (similar to running `ruby -wc`).
