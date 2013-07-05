@@ -43,6 +43,13 @@ module Rubocop
 
           expect(encoding.offences).to be_empty
         end
+
+        it 'accepts encoding inserted by magic_encoding gem', ruby: 1.9 do
+          inspect_source(encoding, ['# -*- encoding : utf-8 -*-',
+                                    'def foo() end'])
+
+          expect(encoding.offences.map(&:message)).to be_empty
+        end
       end
     end
   end
