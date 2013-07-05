@@ -58,28 +58,53 @@ module Rubocop
         def check_for_literal(node)
           cond, = *node
 
-          # if the code node is literal we obviously have a problem
-          if LITERALS.include?(cond.type)
+          # if the cond node is literal we obviously have a problem
+          if literal?(cond)
             add_offence(:warning, cond.loc.expression,
                         format(MSG, cond.loc.expression.source))
-          elsif cond.type == :send
-            receiver, method_name, *_args = *cond
-
-            if method_name == :! && LITERALS.include?(receiver.type)
-              add_offence(:warning, receiver.loc.expression,
-                          format(MSG, receiver.loc.expression.source))
-            end
-          elsif [:and, :or].include?(cond.type)
+          else
             # alternatively we have to consider a logical node with a
             # literal argument
-            *operands = *cond
-            operands.each do |op|
-              if LITERALS.include?(op.type)
-                add_offence(:warning, op.loc.expression,
-                            format(MSG, op.loc.expression.source))
+            check_node(cond)
+          end
+        end
 
-              end
+        def not?(node)
+          return false unless node && node.type == :send
+
+          _receiver, method_name, *_args = *node
+
+          method_name == :!
+        end
+
+        def literal?(node)
+          LITERALS.include?(node.type)
+        end
+
+        def check_node(node)
+          return unless node
+
+          if not?(node)
+            receiver, = *node
+
+            handle_node(receiver)
+          elsif [:and, :or].include?(node.type)
+            *operands = *node
+            operands.each do |op|
+              handle_node(op)
             end
+          elsif node.type == :begin && node.children.size == 1
+            child_node = node.children.first
+            handle_node(child_node)
+          end
+        end
+
+        def handle_node(node)
+          if literal?(node)
+            add_offence(:warning, node.loc.expression,
+                        format(MSG, node.loc.expression.source))
+          elsif [:send, :and, :or, :begin].include?(node.type)
+            check_node(node)
           end
         end
       end

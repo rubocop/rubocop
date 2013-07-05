@@ -18,9 +18,27 @@ module Rubocop
             expect(cop.offences.size).to eq(1)
           end
 
+          it "registers an offence for literal #{lit} in complex cond" do
+            inspect_source(cop,
+                           ["if x && !(a && #{lit}) && y && z",
+                            '  top',
+                            'end'
+                           ])
+            expect(cop.offences.size).to eq(1)
+          end
+
           it "registers an offence for literal #{lit} in !" do
             inspect_source(cop,
                            ["if !#{lit}",
+                            '  top',
+                            'end'
+                           ])
+            expect(cop.offences.size).to eq(1)
+          end
+
+          it "registers an offence for literal #{lit} in complex !" do
+            inspect_source(cop,
+                           ["if !(x && (y && #{lit}))",
                             '  top',
                             'end'
                            ])
