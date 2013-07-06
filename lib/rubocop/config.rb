@@ -25,11 +25,11 @@ module Rubocop
         hash = YAML.load_file(path)
 
         base_configs(path, hash['inherit_from']).reverse.each do |base_config|
+          if File.basename(base_config.loaded_path) == DOTFILE
+            make_excludes_absolute(base_config)
+          end
           base_config.each do |key, value|
             if value.is_a?(Hash)
-              if key == 'AllCops' && value['Excludes']
-                correct_relative_excludes(value, base_config, path)
-              end
               hash[key] = hash.has_key?(key) ? merge(value, hash[key]) : value
             end
           end
@@ -41,14 +41,14 @@ module Rubocop
         config
       end
 
-      def correct_relative_excludes(all_cops, base_config, path)
-        all_cops['Excludes'].map! do |exclude_elem|
-          if exclude_elem.is_a?(String) && exclude_elem =~ %r([^/].*/)
-            rel_path = relative_path(base_config.loaded_path,
-                                     File.dirname(path))
-            rel_path.to_s.sub(/#{DOTFILE}$/, '') + exclude_elem
-          else
-            exclude_elem
+      def make_excludes_absolute(config)
+        if config['AllCops'] && config['AllCops']['Excludes']
+          config['AllCops']['Excludes'].map! do |exclude_elem|
+            if exclude_elem.is_a?(String) && !exclude_elem.start_with?('/')
+              File.join(File.dirname(config.loaded_path), exclude_elem)
+            else
+              exclude_elem
+            end
           end
         end
       end
@@ -107,6 +107,7 @@ module Rubocop
         if found_files.any? && found_files.last != config_file
           add_excludes_from_higher_level(config, load_file(found_files.last))
         end
+        make_excludes_absolute(config)
         merge_with_default(config, config_file)
       end
 
@@ -116,9 +117,7 @@ module Rubocop
           config['AllCops']['Excludes'] ||= []
           highest_config['AllCops']['Excludes'].each do |path|
             unless path.is_a?(Regexp) || path.start_with?('/')
-              diff_in_level = config.loaded_path.count('/') -
-                highest_config.loaded_path.count('/')
-              path = '../' * diff_in_level + path
+              path = File.join(File.dirname(highest_config.loaded_path), path)
             end
             config['AllCops']['Excludes'] << path
           end
@@ -209,10 +208,8 @@ module Rubocop
     end
 
     def file_to_exclude?(file)
-      relative_file_path = relative_path_to_loaded_dir(file)
-      patterns_to_exclude.any? do |pattern|
-        match_path?(pattern, relative_file_path)
-      end
+      file = File.join(Dir.pwd, file) unless file.start_with?('/')
+      patterns_to_exclude.any? { |pattern| match_path?(pattern, file) }
     end
 
     def patterns_to_include
