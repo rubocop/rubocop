@@ -467,6 +467,56 @@ Usage: rubocop [options] [file1, file2, ...]
          ''].join("\n"))
     end
 
+    it 'can exclude a typical vendor directory' do
+      create_file('vendor/bundle/ruby/1.9.1/gems/parser-2.0.0/.rubocop.yml',
+                  ['AllCops:',
+                   '  Excludes:',
+                   '    - lib/parser/lexer.rb'])
+
+      create_file('vendor/bundle/ruby/1.9.1/gems/parser-2.0.0/lib/ex.rb',
+                  ['# encoding: utf-8',
+                   '#' * 90])
+
+      create_file('.rubocop.yml',
+                  ['AllCops:',
+                   '  Excludes:',
+                   '    - vendor/**'])
+
+      cli.run(%w(--format simple))
+      expect($stdout.string).to eq(
+        ['',
+         '0 files inspected, no offences detected',
+         ''].join("\n"))
+    end
+
+    # Relative exclude paths in .rubocop.yml files are relative to that file,
+    # but in configuration files with other names they will be relative to
+    # whatever file inherits from them.
+    it 'can exclude a vendor directory indirectly' do
+      create_file('vendor/bundle/ruby/1.9.1/gems/parser-2.0.0/.rubocop.yml',
+                  ['AllCops:',
+                   '  Excludes:',
+                   '    - lib/parser/lexer.rb'])
+
+      create_file('vendor/bundle/ruby/1.9.1/gems/parser-2.0.0/lib/ex.rb',
+                  ['# encoding: utf-8',
+                   '#' * 90])
+
+      create_file('.rubocop.yml',
+                  ['inherit_from: config/default.yml'])
+
+      create_file('config/default.yml',
+                  ['AllCops:',
+                   '  Excludes:',
+                   '    - vendor/**'])
+
+      cli.run(%w(--format simple))
+      expect($stdout.string).to eq(
+        ['',
+         '0 files inspected, no offences detected',
+         ''].join("\n"))
+    end
+
     it 'prints a warning for an unrecognized cop name in .rubocop.yml' do
       create_file('example/example1.rb', [
         '# encoding: utf-8',

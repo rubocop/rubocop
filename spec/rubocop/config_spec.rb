@@ -100,9 +100,9 @@ describe Rubocop::Config do
                     ])
       end
 
-      it 'gets AllCops/Exclude from the highest directory level' do
+      it 'gets AllCops/Excludes from the highest directory level' do
         excludes = configuration_from_file['AllCops']['Excludes']
-        expect(excludes).to eq(['../vendor/**'])
+        expect(excludes).to eq([File.expand_path('vendor/**')])
       end
     end
 
@@ -120,9 +120,9 @@ describe Rubocop::Config do
         create_file(file_path, ['inherit_from: ../.rubocop.yml'])
       end
 
-      it 'gets AllCops/Exclude relative to its own directory' do
+      it 'gets an absolute AllCops/Excludes' do
         excludes = configuration_from_file['AllCops']['Excludes']
-        expect(excludes).to eq(['../vendor/**', /[A-Z]/])
+        expect(excludes).to eq([File.expand_path('vendor/**'), /[A-Z]/])
       end
     end
 
@@ -139,9 +139,9 @@ describe Rubocop::Config do
         create_file(file_path, ['inherit_from: ../src/.rubocop.yml'])
       end
 
-      it 'gets AllCops/Exclude relative to its own directory' do
+      it 'gets an absolute AllCops/Exclude' do
         excludes = configuration_from_file['AllCops']['Excludes']
-        expect(excludes).to eq(['../src/vendor/**'])
+        expect(excludes).to eq([File.expand_path('src/vendor/**')])
       end
     end
 
@@ -350,7 +350,7 @@ describe Rubocop::Config do
     let(:hash) do
       {
         'AllCops' => {
-          'Excludes' => ['log/*']
+          'Excludes' => ['/home/foo/project/log/*']
         }
       }
     end
