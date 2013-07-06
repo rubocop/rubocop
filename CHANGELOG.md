@@ -2,6 +2,14 @@
 
 ## master (unreleased)
 
+### New features
+
+### Changes
+
+### Bugs fixed
+
+* [#288](https://github.com/bbatsov/rubocop/issues/288) - work with absolute Excludes paths internally (2nd fix for this issue)
+
 ## 0.9.1 (05/07/2013)
 
 ### New features
