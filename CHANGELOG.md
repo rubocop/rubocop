@@ -6,9 +6,12 @@
 
 ### Changes
 
+* `TrivialAccessors` now has an `ExactNameMatch` config option (related to [#308](https://github.com/bbatsov/rubocop/issues/308)).
+
 ### Bugs fixed
 
 * [#288](https://github.com/bbatsov/rubocop/issues/288) - work with absolute Excludes paths internally (2nd fix for this issue)
+* `TrivialAccessors` now detects class attributes as well as instance attributes
 
 ## 0.9.1 (05/07/2013)
 

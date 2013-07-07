@@ -68,3 +68,7 @@ CollectionMethods:
 # Muli-line method chaining should be done with leading dots.
 DotPosition:
   Style: 'leading'
+
+# TrivialAccessors doesn't require exact name matches.
+TrivialAccessors:
+  ExactNameMatch: false

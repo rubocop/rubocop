@@ -6,14 +6,11 @@ module Rubocop
   module Cop
     module Style
       describe TrivialAccessors do
-        let(:trivial_accessors_finder) { TrivialAccessors.new }
-
-        before :each do
-          trivial_accessors_finder.offences.clear
-        end
+        TrivialAccessors.config = { 'ExactNameMatch' => false }
+        let(:cop) { TrivialAccessors.new }
 
         it 'finds trivial reader' do
-          inspect_source(trivial_accessors_finder,
+          inspect_source(cop,
                          ['def foo',
                           '  @foo',
                           'end',
@@ -21,13 +18,13 @@ module Rubocop
                           'def Foo',
                           '  @Foo',
                           'end'])
-          expect(trivial_accessors_finder.offences.size).to eq(2)
-          expect(trivial_accessors_finder.offences
+          expect(cop.offences.size).to eq(2)
+          expect(cop.offences
                    .map(&:line).sort).to eq([1, 5])
         end
 
         it 'finds trivial reader in a class' do
-          inspect_source(trivial_accessors_finder,
+          inspect_source(cop,
                          ['class TrivialFoo',
                           '  def foo',
                           '    @foo',
@@ -36,13 +33,28 @@ module Rubocop
                           '    !foo',
                           '  end',
                           'end'])
-          expect(trivial_accessors_finder.offences.size).to eq(1)
-          expect(trivial_accessors_finder.offences
+          expect(cop.offences.size).to eq(1)
+          expect(cop.offences
+                   .map(&:line).sort).to eq([2])
+        end
+
+        it 'finds trivial reader in a class method' do
+          inspect_source(cop,
+                         ['class TrivialFoo',
+                          '  def self.foo',
+                          '    @foo',
+                          '  end',
+                          '  def bar',
+                          '    !foo',
+                          '  end',
+                          'end'])
+          expect(cop.offences.size).to eq(1)
+          expect(cop.offences
                    .map(&:line).sort).to eq([2])
         end
 
         it 'finds trivial reader in a nested class' do
-          inspect_source(trivial_accessors_finder,
+          inspect_source(cop,
                          ['class TrivialFoo',
                           '  class Nested',
                           '    def foo',
@@ -50,13 +62,13 @@ module Rubocop
                           '    end',
                           '  end',
                           'end'])
-          expect(trivial_accessors_finder.offences.size).to eq(1)
-          expect(trivial_accessors_finder.offences
+          expect(cop.offences.size).to eq(1)
+          expect(cop.offences
                    .map(&:line).sort).to eq([3])
         end
 
         it 'finds trivial readers in a little less trivial class' do
-          inspect_source(trivial_accessors_finder,
+          inspect_source(cop,
                          ['class TrivialFoo',
                           '  def foo',
                           '    @foo',
@@ -110,39 +122,39 @@ module Rubocop
                           '   @val',
                           ' end',
                           'end'])
-          expect(trivial_accessors_finder.offences.size).to eq(2)
-          expect(trivial_accessors_finder.offences
+          expect(cop.offences.size).to eq(2)
+          expect(cop.offences
                    .map(&:line).sort).to eq([2, 8])
         end
 
         it 'finds trivial reader with braces' do
-          inspect_source(trivial_accessors_finder,
+          inspect_source(cop,
                          ['class Test',
                           '  # trivial reader with braces',
                           '  def name()',
                           '    @name',
                           '  end',
                           'end'])
-          expect(trivial_accessors_finder.offences.size).to eq(1)
-          expect(trivial_accessors_finder.offences
+          expect(cop.offences.size).to eq(1)
+          expect(cop.offences
                    .map(&:line).sort).to eq([3])
         end
 
         it 'finds trivial writer without braces' do
-          inspect_source(trivial_accessors_finder,
+          inspect_source(cop,
                          ['class Test',
                           '  # trivial writer without braces',
                           '  def name= name',
                           '    @name = name',
                           '  end',
                           'end'])
-          expect(trivial_accessors_finder.offences.size).to eq(1)
-          expect(trivial_accessors_finder.offences
+          expect(cop.offences.size).to eq(1)
+          expect(cop.offences
                    .map(&:line).sort).to eq([3])
         end
 
         it 'does not find trivial writer with function calls' do
-          inspect_source(trivial_accessors_finder,
+          inspect_source(cop,
                          ['class TrivialTest',
                           ' def test=(val)',
                           '   @test = val',
@@ -150,11 +162,11 @@ module Rubocop
                           '   or_more_of_them',
                           ' end',
                           'end'])
-          expect(trivial_accessors_finder.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
 
         it 'finds trivials with less peculiar methods' do
-          inspect_source(trivial_accessors_finder,
+          inspect_source(cop,
                          ['class NilStats',
                           'def most_traded_pair',
                           'end',
@@ -189,40 +201,40 @@ module Rubocop
                           '  #do stuff',
                           'end',
                           'end'])
-          expect(trivial_accessors_finder.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
 
         it 'finds oneliner trivials' do
-          inspect_source(trivial_accessors_finder,
+          inspect_source(cop,
                          ['class Oneliner',
                           '  def foo; @foo; end',
                           '  def foo= foo; @foo = foo; end',
                           'end'])
-          expect(trivial_accessors_finder.offences.size).to eq(2)
-          expect(trivial_accessors_finder.offences
+          expect(cop.offences.size).to eq(2)
+          expect(cop.offences
                    .map(&:line).sort).to eq([2, 3])
         end
 
         it 'does not find a trivial reader' do
-          inspect_source(trivial_accessors_finder,
+          inspect_source(cop,
                          ['def bar',
                           '  @bar + foo',
                           'end'])
-          expect(trivial_accessors_finder.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
 
         it 'finds trivial writer' do
-          inspect_source(trivial_accessors_finder,
+          inspect_source(cop,
                          ['def foo=(val)',
                           ' @foo = val',
                           'end'])
-          expect(trivial_accessors_finder.offences.size).to eq(1)
-          expect(trivial_accessors_finder.offences
+          expect(cop.offences.size).to eq(1)
+          expect(cop.offences
                    .map(&:line).sort).to eq([1])
         end
 
         it 'finds trivial writer in a class' do
-          inspect_source(trivial_accessors_finder,
+          inspect_source(cop,
                          ['class TrivialFoo',
                           '  def foo=(val)',
                           '    @foo = val',
@@ -242,13 +254,13 @@ module Rubocop
                           '    end',
                           '  end',
                           'end'])
-          expect(trivial_accessors_finder.offences.size).to eq(1)
-          expect(trivial_accessors_finder.offences
+          expect(cop.offences.size).to eq(1)
+          expect(cop.offences
                    .map(&:line).sort).to eq([2])
         end
 
         it 'finds trivial accessors in a little less trivial class' do
-          inspect_source(trivial_accessors_finder,
+          inspect_source(cop,
                          ['class TrivialFoo',
                           ' def foo',
                           ' @foo',
@@ -263,21 +275,21 @@ module Rubocop
                           ' @bar = bar_value',
                           ' end',
                           'end'])
-          expect(trivial_accessors_finder.offences.size).to eq(3)
-          expect(trivial_accessors_finder.offences
+          expect(cop.offences.size).to eq(3)
+          expect(cop.offences
                    .map(&:line).sort).to eq([2, 8, 11])
         end
 
         it 'does not find a trivial writer' do
-          inspect_source(trivial_accessors_finder,
+          inspect_source(cop,
                          ['def bar=(value)',
                           ' @bar = value + 42',
                           'end'])
-          expect(trivial_accessors_finder.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
 
         it 'finds trivial writers in a little less trivial class' do
-          inspect_source(trivial_accessors_finder,
+          inspect_source(cop,
                          ['class TrivialFoo',
                           ' def foo_bar=(foo, bar)',
                           ' @foo_bar = foo + bar',
@@ -289,13 +301,13 @@ module Rubocop
                           ' @bar = bar_value',
                           ' end',
                           'end'])
-          expect(trivial_accessors_finder.offences.size).to eq(2)
-          expect(trivial_accessors_finder.offences
+          expect(cop.offences.size).to eq(2)
+          expect(cop.offences
                    .map(&:line).sort).to eq([5, 8])
         end
 
         it 'does not find trivial accessors with method calls' do
-          inspect_source(trivial_accessors_finder,
+          inspect_source(cop,
                          ['class TrivialFoo',
                           ' def foo_bar(foo)',
                           '   foo_bar = foo + 42',
@@ -309,11 +321,11 @@ module Rubocop
                           '   foo_method',
                           ' end',
                           'end'])
-          expect(trivial_accessors_finder.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
 
         it 'does not find trivial writer with exceptions' do
-          inspect_source(trivial_accessors_finder,
+          inspect_source(cop,
                          [' def expiration_formatted=(value)',
                           '   begin',
                           '     @expiration = foo_stuff',
@@ -322,15 +334,49 @@ module Rubocop
                           '   end',
                           '   self[:expiration] = @expiration',
                           ' end'])
-          expect(trivial_accessors_finder.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
 
         it 'accepts an initialize method looking like a writer' do
-          inspect_source(trivial_accessors_finder,
+          inspect_source(cop,
                          [' def initialize(value)',
                           '   @top = value',
                           ' end'])
-          expect(trivial_accessors_finder.offences).to be_empty
+          expect(cop.offences).to be_empty
+        end
+
+        context 'exact name match required' do
+          TrivialAccessors.config['ExactNameMatch'] = true
+
+          it 'finds only 1 trivial reader' do
+            inspect_source(cop,
+                           ['def foo',
+                            '  @foo',
+                            'end',
+                            '',
+                            'def bar',
+                            '  @barr',
+                            'end'])
+            expect(cop.offences.size).to eq(1)
+            expect(cop.offences
+                     .map(&:line).sort).to eq([1])
+          end
+
+          it 'finds only 1 trivial writer' do
+            inspect_source(cop,
+                           ['def foo=(foo)',
+                            '  @foo = foo',
+                            'end',
+                            '',
+                            'def bar=(bar)',
+                            '  @barr = bar',
+                            'end'])
+            expect(cop.offences.size).to eq(1)
+            expect(cop.offences
+                     .map(&:line).sort).to eq([1])
+          end
+
+
         end
       end
     end
