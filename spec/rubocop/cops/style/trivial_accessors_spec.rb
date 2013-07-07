@@ -346,7 +346,7 @@ module Rubocop
         end
 
         context 'exact name match required' do
-          TrivialAccessors.config['ExactNameMatch'] = true
+          before { TrivialAccessors.config['ExactNameMatch'] = true }
 
           it 'finds only 1 trivial reader' do
             inspect_source(cop,
@@ -375,8 +375,6 @@ module Rubocop
             expect(cop.offences
                      .map(&:line).sort).to eq([1])
           end
-
-
         end
       end
     end
