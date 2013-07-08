@@ -4,6 +4,8 @@
 
 ### New features
 
+* New cop `RedundantReturn` tracks redundant `return`s in method bodies
+
 ### Changes
 
 * `TrivialAccessors` now has an `ExactNameMatch` config option (related to [#308](https://github.com/bbatsov/rubocop/issues/308)).

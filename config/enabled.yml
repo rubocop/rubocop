@@ -352,6 +352,10 @@ BeginBlock:
 EndBlock:
   Enabled: true
 
+# Don't use return where it's not required.
+RedundantReturn:
+  Enabled: true
+
 ## Warnings
 
 # Don't use assignment in conditions.
