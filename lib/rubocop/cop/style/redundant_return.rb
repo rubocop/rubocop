@@ -25,11 +25,6 @@ module Rubocop
       class RedundantReturn < Cop
         MSG = 'Redundant `return` detected.'
 
-        def on_begin(node)
-
-          super
-        end
-
         def on_def(node)
           _method_name, _args, body = *node
 
