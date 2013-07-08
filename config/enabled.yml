@@ -356,6 +356,10 @@ EndBlock:
 RedundantReturn:
   Enabled: true
 
+# Don't use begin blocks when they are not needed.
+RedundantBegin:
+  Enabled: true
+
 ## Warnings
 
 # Don't use assignment in conditions.

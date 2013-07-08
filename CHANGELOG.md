@@ -5,6 +5,7 @@
 ### New features
 
 * New cop `RedundantReturn` tracks redundant `return`s in method bodies
+* New cop `RedundantBegin` tracks redundant `begin` blocks in method definitions.
 
 ### Changes
 
