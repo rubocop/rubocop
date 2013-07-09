@@ -94,6 +94,24 @@ module Rubocop
           expect(cop.offences).to be_empty
         end
 
+        context 'when there is an assignment chain' do
+          it 'registers an offence for an end aligned with the 2nd variable' do
+            inspect_source(cop,
+                           ['a = b = c = test do |ala|',
+                            '    end'
+                           ])
+            expect(cop.offences.size).to eq(1)
+          end
+
+          it 'accepts end aligned with the first variable' do
+            inspect_source(cop,
+                           ['a = b = c = test do |ala|',
+                            'end'
+                           ])
+            expect(cop.offences).to be_empty
+          end
+        end
+        
         context 'and the block is an operand' do
           it 'accepts end aligned with a variable' do
             inspect_source(cop,
