@@ -3,10 +3,8 @@
 module Rubocop
   # Handles chaching of configurations and association of inspected
   # ruby files to configurations.
-  module ConfigStore
-    module_function
-
-    def prepare
+  class ConfigStore
+    def initialize
       # @options_config stores a config that is specified in the command line.
       # This takes precedence over configs located in any directories
       @options_config = nil
