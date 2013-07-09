@@ -111,7 +111,7 @@ module Rubocop
             expect(cop.offences).to be_empty
           end
         end
-        
+
         context 'and the block is an operand' do
           it 'accepts end aligned with a variable' do
             inspect_source(cop,
@@ -260,20 +260,20 @@ module Rubocop
           expect(cop.offences).to be_empty
         end
 
-        it 'accepts end aligned with the outermost method in the method chain that calls the block' do
+        it 'accepts end aligned with the block when the block is a method argument' do
           inspect_source(cop,
                          ['expect(arr.all? do |o|',
-                         '  o.valid?',
-                         'end)'
+                          '         o.valid?',
+                          '       end)'
                          ])
           expect(cop.offences).to be_empty
         end
 
-        it 'registers an offence for mismatched end aligned with the outermost method in the method chain that calls the block' do
+        it 'registers an offence for mismatched end not aligned with the block that is an argument' do
           inspect_source(cop,
                          ['expect(arr.all? do |o|',
-                         '  o.valid?',
-                         '  end)'
+                          '  o.valid?',
+                          '  end)'
                          ])
           expect(cop.offences.size).to eq(1)
         end
@@ -334,6 +334,14 @@ module Rubocop
                          '  [1, 2]',
                          'end'
                          ])
+          expect(cop.offences).to be_empty
+        end
+
+        it 'accepts end aligned with a call chain left hand side' do
+          inspect_source(cop,
+                         ['parser.diagnostics.consumer = lambda do |diagnostic|',
+                          '  diagnostics << diagnostic',
+                          'end'])
           expect(cop.offences).to be_empty
         end
 

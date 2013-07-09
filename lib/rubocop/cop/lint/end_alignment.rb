@@ -146,6 +146,13 @@ module Rubocop
           end
 
           if block_node.type == :block
+            # If the block is an argument in a function call, align end with
+            # the block itself, and not with the function.
+            if begin_node.type == :send
+              _receiver, method, *_args = *begin_node
+              begin_node = block_node if method.to_s =~ /^\w+$/
+            end
+
             # Align with the expression that is on the same line
             # where the block is defined
             return if block_is_on_next_line?(begin_node, block_node)
