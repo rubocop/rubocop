@@ -10,16 +10,12 @@ module Rubocop
       #
       # We allow uses of `self` with operators because it would be awkward
       # otherwise.
-      #
-      # Inside a class_eval block, self has a different meaning, so any use of
-      # self is allowed there.
       class RedundantSelf < Cop
         MSG = 'Redundant `self` detected.'
 
         def inspect(source_buffer, source, tokens, ast, comments)
           @allowed_send_nodes = []
           @local_variables = []
-          @inside_class_eval = false
           super
         end
 
@@ -57,21 +53,6 @@ module Rubocop
           super
         end
 
-        # The class_eval special case
-
-        def on_block(node)
-          method, _args, _body = *node
-          if method.type == :send
-            receiver, _method_name, _args = *node
-            if receiver && receiver.type == :send
-              _, method_name, _ = *receiver
-              @inside_class_eval = true if method_name == :class_eval
-            end
-          end
-          super
-          @inside_class_eval = false if method_name == :class_eval
-        end
-
         # Detect offences
 
         def on_send(node)
@@ -79,8 +60,7 @@ module Rubocop
           if receiver && receiver.type == :self
             unless operator?(method_name) || keyword?(method_name) ||
                 @allowed_send_nodes.include?(node) ||
-                @local_variables.include?(method_name) ||
-                @inside_class_eval
+                @local_variables.include?(method_name)
               add_offence(:convention, receiver.loc.expression, MSG)
             end
           end

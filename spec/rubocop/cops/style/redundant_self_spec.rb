@@ -70,17 +70,6 @@ module Rubocop
           inspect_source(cop, src)
           expect(cop.offences).to be_empty
         end
-
-        it 'accepts a self receiver inside a class_eval block' do
-          src = ['def hello',
-                 '  Klass.class_eval do',
-                 '    a = self.b',
-                 '  end',
-                 '  self.c', # But outside class_eval we still get an offence.
-                 'end']
-          inspect_source(cop, src)
-          expect(cop.offences.map(&:line)).to eq([5])
-        end
       end
     end
   end
