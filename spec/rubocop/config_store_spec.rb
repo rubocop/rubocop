@@ -4,7 +4,8 @@ require 'spec_helper'
 
 module Rubocop
   describe ConfigStore do
-    before(:each) { ConfigStore.prepare }
+    subject(:config_store) { ConfigStore.new }
+
     before do
       Config.stub(:configuration_file_for) do |arg|
         # File tree:
@@ -19,26 +20,10 @@ module Rubocop
       Config.stub(:merge_with_default) { |config, file| "merged #{config}" }
     end
 
-    describe '.prepare' do
-      it 'resets @options_config' do
-        ConfigStore.set_options_config(:options_config)
-        ConfigStore.prepare
-        Config.should_receive(:configuration_file_for)
-        ConfigStore.for('file1')
-      end
-
-      it 'resets @config_cache' do
-        ConfigStore.for('file1')
-        ConfigStore.prepare
-        Config.should_receive(:configuration_file_for)
-        ConfigStore.for('file1')
-      end
-    end
-
     describe '.for' do
       it 'always uses config specified in command line' do
-        ConfigStore.set_options_config(:options_config)
-        expect(ConfigStore.for('file1')).to eq('merged options_config loaded')
+        config_store.set_options_config(:options_config)
+        expect(config_store.for('file1')).to eq('merged options_config loaded')
       end
 
       context 'when no config specified in command line' do
@@ -50,15 +35,15 @@ module Rubocop
           Config.should_receive(:configuration_from_file).once
             .with('dir/.rubocop.yml')
 
-          ConfigStore.for('dir/file2')
-          ConfigStore.for('dir/file2')
-          ConfigStore.for('dir/subdir/file3')
+          config_store.for('dir/file2')
+          config_store.for('dir/file2')
+          config_store.for('dir/subdir/file3')
         end
 
         it 'searches for config path if not available in cache' do
           Config.should_receive(:configuration_file_for).once
           Config.should_receive(:configuration_from_file).once
-          ConfigStore.for('file1')
+          config_store.for('file1')
         end
       end
     end

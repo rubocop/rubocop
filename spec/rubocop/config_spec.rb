@@ -11,8 +11,6 @@ describe Rubocop::Config do
   let(:hash) { {} }
   let(:loaded_path) { 'example/.rubocop.yml' }
 
-  before { Rubocop::ConfigStore.prepare }
-
   describe '.configuration_file_for', :isolated_environment do
     subject(:configuration_file_for) do
       Rubocop::Config.configuration_file_for(dir_path)
@@ -424,14 +422,14 @@ describe Rubocop::Config do
   end
 
   describe 'configuration for SymbolArray', :isolated_environment do
-    before do
-      create_file('example.rb', '# encoding: utf-8')
+    let(:config) do
+      config_path = Rubocop::Config.configuration_file_for('.')
+      Rubocop::Config.configuration_from_file(config_path)
     end
 
     context 'when no config file exists for the target file' do
       it 'is disabled' do
-        configuration = Rubocop::ConfigStore.for('example.rb')
-        expect(configuration.cop_enabled?('SymbolArray')).to be_false
+        expect(config.cop_enabled?('SymbolArray')).to be_false
       end
     end
 
@@ -441,8 +439,7 @@ describe Rubocop::Config do
           'LineLength:',
           '  Max: 79'
         ])
-        configuration = Rubocop::ConfigStore.for('example.rb')
-        expect(configuration.cop_enabled?('SymbolArray')).to be_false
+        expect(config.cop_enabled?('SymbolArray')).to be_false
       end
     end
 
@@ -452,8 +449,7 @@ describe Rubocop::Config do
           'SymbolArray:',
           '  Enabled: true'
         ])
-        configuration = Rubocop::ConfigStore.for('example.rb')
-        expect(configuration.cop_enabled?('SymbolArray')).to be_true
+        expect(config.cop_enabled?('SymbolArray')).to be_true
       end
     end
   end

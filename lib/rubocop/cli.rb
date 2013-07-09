@@ -19,7 +19,7 @@ module Rubocop
       @cops = Cop::Cop.all
       @errors = []
       @options = {}
-      ConfigStore.prepare
+      @config_store = ConfigStore.new
     end
 
     # Entry point for the application logic. Here we
@@ -91,7 +91,7 @@ module Rubocop
       # e.g. sources which contain only comments
       return syntax_offences unless syntax_offences.empty?
 
-      config = ConfigStore.for(file)
+      config = @config_store.for(file)
       disabled_lines = disabled_lines_in(source)
 
       set_config_for_all_cops(config)
@@ -151,7 +151,7 @@ module Rubocop
         end
         opts.on('-c', '--config FILE', 'Specify configuration file.') do |f|
           @options[:config] = f
-          ConfigStore.set_options_config(@options[:config])
+          @config_store.set_options_config(@options[:config])
         end
         opts.on('--only COP', 'Run just one cop.') do |s|
           @options[:only] = s
@@ -359,7 +359,7 @@ module Rubocop
       end
 
       rb += files.select do |file|
-        config = ConfigStore.for(file)
+        config = @config_store.for(file)
         config.file_to_include?(file)
       end
 
@@ -398,7 +398,7 @@ module Rubocop
     end
 
     def excluded_file?(file)
-      ConfigStore.for(file).file_to_exclude?(file)
+      @config_store.for(file).file_to_exclude?(file)
     end
   end
 end
