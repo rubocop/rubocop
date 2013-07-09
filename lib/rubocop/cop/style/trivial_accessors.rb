@@ -43,10 +43,20 @@ module Rubocop
           TrivialAccessors.config['ExactNameMatch']
         end
 
+        def allow_predicates?
+          TrivialAccessors.config['AllowPredicates']
+        end
+
+        def predicate?(method_name)
+          method_name[-1] == '?'
+        end
+
         def trivial_reader?(method_name, args, body)
           return false unless args.children.size == 0
 
           return false unless body && body.type == :ivar
+
+          return false if allow_predicates? && predicate?(method_name)
 
           exact_name_match? ? names_match?(method_name, body) : true
         end

@@ -69,6 +69,7 @@ CollectionMethods:
 DotPosition:
   Style: 'leading'
 
-# TrivialAccessors doesn't require exact name matches.
+# TrivialAccessors doesn't require exact name matches and doesn't allow predicated methods by default.
 TrivialAccessors:
   ExactNameMatch: false
+  AllowPredicates: false

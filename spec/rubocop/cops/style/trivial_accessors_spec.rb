@@ -376,6 +376,20 @@ module Rubocop
                      .map(&:line).sort).to eq([1])
           end
         end
+
+        context 'with predicates allowed' do
+          before do
+            described_class.config['AllowPredicates'] = true
+          end
+
+          it 'ignores accessors ending with a question mark' do
+            inspect_source(cop,
+                           [' def foo?',
+                            '   @foo',
+                            ' end'])
+            expect(cop.offences).to be_empty
+          end
+        end
       end
     end
   end
