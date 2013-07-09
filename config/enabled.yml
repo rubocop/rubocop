@@ -360,6 +360,10 @@ RedundantReturn:
 RedundantBegin:
   Enabled: true
 
+# Don't use self where it's not needed.
+RedundantSelf:
+  Enabled: true
+
 ## Warnings
 
 # Don't use assignment in conditions.
