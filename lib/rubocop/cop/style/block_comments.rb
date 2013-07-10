@@ -7,7 +7,7 @@ module Rubocop
       class BlockComments < Cop
         MSG = 'Do not use block comments.'
 
-        def inspect(source_buffer, source, tokens, ast, comments)
+        def source_callback(source_buffer, source, tokens, ast, comments)
           comments.each do |comment|
             if comment.text.start_with?('=begin')
               add_offence(:convention, comment.loc, MSG)

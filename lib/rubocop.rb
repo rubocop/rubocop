@@ -10,6 +10,7 @@ require 'rubocop/cop/util'
 require 'rubocop/cop/variable_inspector'
 require 'rubocop/cop/offence'
 require 'rubocop/cop/cop'
+require 'rubocop/cop/commissioner'
 
 require 'rubocop/cop/lint/assignment_in_condition'
 require 'rubocop/cop/lint/empty_ensure'

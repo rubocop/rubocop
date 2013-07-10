@@ -12,7 +12,7 @@ module Rubocop
 
         MSG = 'Shadowing outer local variable - %s'
 
-        def inspect(source_buffer, source, tokens, ast, comments)
+        def source_callback(source_buffer, source, tokens, ast, comments)
           inspect_variables(ast)
         end
 

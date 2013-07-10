@@ -16,7 +16,7 @@ module Rubocop
           + - * / % ** ~ +@ -@ [] []= ` ! != !~
         ).map(&:to_sym)
 
-        def inspect(source_buffer, source, tokens, node, comments)
+        def source_callback(source_buffer, source, tokens, node, comments)
           return unless node
           on_node([:def, :defs, :lvasgn, :ivasgn, :send], node) do |n|
             name = case n.type

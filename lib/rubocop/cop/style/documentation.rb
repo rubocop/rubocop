@@ -10,7 +10,7 @@ module Rubocop
       class Documentation < Cop
         MSG = 'Missing top-level %s documentation comment.'
 
-        def inspect(source_buffer, source, tokens, ast, comments)
+        def source_callback(source_buffer, source, tokens, ast, comments)
           return unless ast
 
           ast_with_comments = Parser::Source::Comment.associate(ast, comments)

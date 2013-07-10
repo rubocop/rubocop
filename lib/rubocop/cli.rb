@@ -65,6 +65,7 @@ module Rubocop
       formatter_set.finished(inspected_files.freeze)
       formatter_set.close_output_files
 
+      # Handle errors from Commissioner
       display_error_summary(@errors) unless @options[:silent]
 
       !any_failed && !wants_to_quit ? 0 : 1
@@ -96,23 +97,35 @@ module Rubocop
 
       set_config_for_all_cops(config)
 
-      @cops.reduce([]) do |offences, cop_class|
+      cops = []
+      options = {
+        only: @options[:only],
+        debug: @options[:debug]
+      }
+      @cops.each do |cop_class|
         cop_name = cop_class.cop_name
         if config.cop_enabled?(cop_name)
-          cop = setup_cop(cop_class, disabled_lines)
           if !@options[:only] || @options[:only] == cop_name
-            begin
-              cop.inspect(source_buffer, source, tokens, ast, comments)
-            rescue => e
-              handle_error(e,
-                           "An error occurred while #{cop.name}".color(:red) +
-                           " cop was inspecting #{file}.".color(:red))
-            end
+            cop = setup_cop(cop_class, disabled_lines)
+            cops << cop
           end
-          offences.concat(cop.offences)
         end
-        offences
-      end.sort
+      end
+      commissioner = Cop::Commissioner.new(cops, options)
+      offences =
+        commissioner.inspect(source_buffer, source, tokens, ast, comments)
+      process_commissioner_errors(file, commissioner.errors)
+      offences.sort
+    end
+
+    def process_commissioner_errors(file, file_errors)
+      file_errors.each do |cop, errors|
+        errors.each do |e|
+          handle_error(e,
+                       "An error occurred while #{cop.name}".color(:red) +
+                       " cop was inspecting #{file}.".color(:red))
+        end
+      end
     end
 
     def set_config_for_all_cops(config)

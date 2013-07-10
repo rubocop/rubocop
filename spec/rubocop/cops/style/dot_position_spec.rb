@@ -54,9 +54,8 @@ module Rubocop
           before { DotPosition.config = { 'Style' => 'test' } }
 
           it 'raises an exception' do
-            expect do
-              inspect_source(cop, ['something.top'])
-            end.to raise_error(RuntimeError)
+            commissioner = inspect_source(cop, ['something.top'])
+            expect(commissioner.errors[cop][0]).to be_instance_of(RuntimeError)
           end
         end
       end

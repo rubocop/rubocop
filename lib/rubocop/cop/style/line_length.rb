@@ -8,7 +8,7 @@ module Rubocop
       class LineLength < Cop
         MSG = 'Line is too long. [%d/%d]'
 
-        def inspect(source_buffer, source, tokens, ast, comments)
+        def source_callback(source_buffer, source, tokens, ast, comments)
           source.each_with_index do |line, index|
             max = LineLength.max
             if line.length > max
