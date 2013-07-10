@@ -10,9 +10,11 @@ module Rubocop
         def on_ensure(node)
           _body, ensure_body = *node
 
+          return unless ensure_body
+
           on_node(:return, ensure_body) do |e|
             add_offence(:warning, e.loc.expression, MSG)
-          end if ensure_body
+          end
 
           super
         end
