@@ -32,7 +32,7 @@ module Rubocop
           context 'when begin node is passed' do
             it 'accepts that as pseudo scope for top level scope' do
               node = s(:begin)
-              expect { Scope.new(node) }.not_to raise_error(ArgumentError)
+              expect { Scope.new(node) }.not_to raise_error
             end
           end
         end
