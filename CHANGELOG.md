@@ -7,6 +7,7 @@
 * New cop `RedundantReturn` tracks redundant `return`s in method bodies
 * New cop `RedundantBegin` tracks redundant `begin` blocks in method definitions.
 * New cop `RedundantSelf` tracks redundant uses of `self`.
+* New cop `EmptyEnsure` tracks empty `ensure` blocks.
 
 ### Changes
 

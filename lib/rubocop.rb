@@ -11,6 +11,7 @@ require 'rubocop/cop/offence'
 require 'rubocop/cop/cop'
 
 require 'rubocop/cop/lint/assignment_in_condition'
+require 'rubocop/cop/lint/empty_ensure'
 require 'rubocop/cop/lint/end_alignment'
 require 'rubocop/cop/lint/end_in_method'
 require 'rubocop/cop/lint/ensure_return'

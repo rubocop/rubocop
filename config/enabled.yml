@@ -364,7 +364,15 @@ RedundantBegin:
 RedundantSelf:
   Enabled: true
 
-## Warnings
+# Checks the position of the dot in multi-line method calls.
+DotPosition:
+  Enabled: true
+
+# Checks for uses of Module#attr.
+Attr:
+  Enabled: true
+
+#################### Lint ################################
 
 # Don't use assignment in conditions.
 AssignmentInCondition:
@@ -400,15 +408,11 @@ EndInMethod:
 LiteralInCondition:
   Enabled: true
 
-# Checks the position of the dot in multi-line method calls.
-DotPosition:
+# Checks for empty ensure block.
+EmptyEnsure:
   Enabled: true
 
-# Checks for uses of Module#attr.
-Attr:
-  Enabled: true
-
-## Rails
+##################### Rails ##################################
 
 # Use sexy validations.
 Validation:
