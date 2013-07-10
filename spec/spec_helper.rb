@@ -78,7 +78,7 @@ def inspect_source(cop, source)
   ast, comments, tokens, src_buffer, _ = Rubocop::CLI.parse('(string)') do |sb|
     sb.source = source.join($RS)
   end
-  commissioner = Rubocop::Cop::Commissioner.new([cop])
+  commissioner = Rubocop::Cop::Commissioner.new([cop], raise_error: true)
   commissioner.inspect(src_buffer, source, tokens, ast, comments)
   commissioner
 end

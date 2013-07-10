@@ -30,7 +30,9 @@ module Rubocop
           class_eval <<-EOS
             def #{callback}(node)
               @cops.each do |cop|
-                delegate_to(cop, :#{callback}, node)
+                if cop.respond_to?(:#{callback})
+                  delegate_to(cop, :#{callback}, node)
+                end
               end
             end
           EOS
@@ -60,12 +62,14 @@ module Rubocop
         end
       end
 
-      # TODO: Handle file variable
       def delegate_to(cop, callback, node)
         cop.send callback, node
       rescue => e
-        @errors[cop] << e
-        @cops.delete(cop)
+        if @options[:raise_error]
+          fail e
+        else
+          @errors[cop] << e
+        end
       end
     end
   end
