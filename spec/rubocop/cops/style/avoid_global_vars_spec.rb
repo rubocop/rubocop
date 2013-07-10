@@ -6,27 +6,23 @@ module Rubocop
   module Cop
     module Style
       describe AvoidGlobalVars do
-        let(:ap) { AvoidGlobalVars.new }
+        let(:cop) { AvoidGlobalVars.new }
 
         it 'registers an offence for $custom' do
-          inspect_source(ap, ['puts $custom'])
-          expect(ap.offences.size).to eq(1)
+          inspect_source(cop, ['puts $custom'])
+          expect(cop.offences).to have(1).item
         end
 
-        it 'does not register an offence for $"' do
-          inspect_source(ap, ['puts $"'])
-
-          expect(ap.offences).to be_empty
-        end
-
-        it 'does not register an offence for $ORS' do
-          inspect_source(ap, ['puts $0'])
-          expect(ap.offences).to be_empty
+        AvoidGlobalVars::BUILT_IN_VARS.each do |var|
+          it "does not register an offence for built-in variable #{var}" do
+            inspect_source(cop, ["puts #{var}"])
+            expect(cop.offences).to be_empty
+          end
         end
 
         it 'does not register an offence for backrefs like $1' do
-          inspect_source(ap, ['puts $1'])
-          expect(ap.offences).to be_empty
+          inspect_source(cop, ['puts $1'])
+          expect(cop.offences).to be_empty
         end
       end
     end

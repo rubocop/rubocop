@@ -18,6 +18,7 @@
 * [#288](https://github.com/bbatsov/rubocop/issues/288) - work with absolute Excludes paths internally (2nd fix for this issue)
 * `TrivialAccessors` now detects class attributes as well as instance attributes
 * [#338](https://github.com/bbatsov/rubocop/issues/338) - fix end alignment of blocks in chained assignments
+* [#345](https://github.com/bbatsov/rubocop/issues/345) - add `$SAFE` to the list of built-in global variables
 
 ## 0.9.1 (05/07/2013)
 

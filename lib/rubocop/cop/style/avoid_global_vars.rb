@@ -34,7 +34,7 @@ module Rubocop
           $' $POSTMATCH
           $+ $LAST_PAREN_MATCH
           $stdin $stdout $stderr
-          $DEBUG $FILENAME $VERBOSE
+          $DEBUG $FILENAME $VERBOSE $SAFE
           $-0 $-a $-d $-F $-i $-I $-l $-p $-v $-w
         )
 
