@@ -19,8 +19,6 @@ module Rubocop
           add_offence(:convention,
                       node.loc.keyword,
                       MSG)
-
-          super
         end
       end
     end

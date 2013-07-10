@@ -12,7 +12,6 @@ module Rubocop
         def on_cvasgn(node)
           class_var, = *node
           add_offence(:convention, node.loc.name, sprintf(MSG, class_var))
-          super
         end
       end
     end

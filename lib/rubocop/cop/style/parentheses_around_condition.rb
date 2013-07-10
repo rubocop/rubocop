@@ -11,20 +11,14 @@ module Rubocop
 
         def on_if(node)
           process_control_op(node)
-
-          super
         end
 
         def on_while(node)
           process_control_op(node)
-
-          super
         end
 
         def on_until(node)
           process_control_op(node)
-
-          super
         end
 
         private

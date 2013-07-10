@@ -23,7 +23,6 @@ module Rubocop
         KEYWORDS.each do |keyword|
           define_method(:"on_#{keyword}") do |node|
             on_keyword(node)
-            super(node)
           end
         end
       end

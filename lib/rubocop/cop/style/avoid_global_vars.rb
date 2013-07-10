@@ -40,14 +40,10 @@ module Rubocop
 
         def on_gvar(node)
           check(node)
-
-          super
         end
 
         def on_gvasgn(node)
           check(node)
-
-          super
         end
 
         def check(node)

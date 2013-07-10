@@ -20,7 +20,7 @@ module Rubocop
     # The Cop class is meant to be extended.
     #
     # Cops track offences and can autocorrect them of the fly.
-    class Cop < Parser::Rewriter
+    class Cop
       extend AST::Sexp
 
       attr_accessor :offences
@@ -67,6 +67,7 @@ module Rubocop
         @offences = []
         @debug = false
         @autocorrect = false
+        @ignored_nodes = []
       end
 
       def inspect(source_buffer, source, tokens, ast, comments)
@@ -90,9 +91,6 @@ module Rubocop
       def autocorrect_action(node)
       end
 
-      def ignore_node(node)
-      end
-
       def add_offence(severity, location, message)
         unless @disabled_lines && @disabled_lines.include?(location.line)
           message = debug ? "#{name}: #{message}" : message
@@ -104,7 +102,27 @@ module Rubocop
         self.class.cop_name
       end
 
+      def ignore_node(node)
+        @ignored_nodes << node
+      end
+
       private
+
+      def part_of_ignored_node?(node)
+        expression = node.loc.expression
+        @ignored_nodes.each do |ignored_node|
+          if ignored_node.loc.expression.begin_pos <= expression.begin_pos &&
+            ignored_node.loc.expression.end_pos >= expression.end_pos
+            return true
+          end
+        end
+
+        false
+      end
+
+      def ignored_node?(node)
+        @ignored_nodes.include?(node)
+      end
 
       def on_node(syms, sexp, excludes = [])
         yield sexp if Array(syms).include?(sexp.type)

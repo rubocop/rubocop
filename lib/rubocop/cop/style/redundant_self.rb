@@ -30,7 +30,6 @@ module Rubocop
         def on_or_asgn(node)
           lhs, _rhs = *node
           allow_self(lhs)
-          super
         end
 
         alias_method :on_and_asgn, :on_or_asgn
@@ -38,25 +37,21 @@ module Rubocop
         def on_op_asgn(node)
           lhs, _op, _rhs = *node
           allow_self(lhs)
-          super
         end
 
         # Using self.x to distinguish from local variable x
 
         def on_def(node)
           @local_variables = []
-          super
         end
 
         def on_defs(node)
           @local_variables = []
-          super
         end
 
         def on_lvasgn(node)
           lhs, _rhs = *node
           @local_variables << lhs
-          super
         end
 
         # Detect offences
@@ -70,7 +65,6 @@ module Rubocop
               add_offence(:convention, receiver.loc.expression, MSG)
             end
           end
-          super
         end
 
         private

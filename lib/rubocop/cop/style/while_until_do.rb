@@ -7,14 +7,10 @@ module Rubocop
       class WhileUntilDo < Cop
         def on_while(node)
           handle(node)
-
-          super
         end
 
         def on_until(node)
           handle(node)
-
-          super
         end
 
         def handle(node)

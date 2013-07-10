@@ -9,12 +9,10 @@ module Rubocop
 
         def on_def(node)
           check(node)
-          super
         end
 
         def on_defs(node)
           check(node)
-          super
         end
 
         private

@@ -41,8 +41,6 @@ module Rubocop
               "Prefer #{PREFERRED_VARS[global_var]} over #{global_var}."
             )
           end
-
-          super
         end
       end
     end

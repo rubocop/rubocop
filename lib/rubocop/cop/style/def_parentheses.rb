@@ -20,8 +20,6 @@ module Rubocop
           if args.children == [] && args.loc.begin
             add_offence(:convention, args.loc.begin, MSG)
           end
-
-          super
         end
 
         def on_defs(node)
@@ -34,8 +32,6 @@ module Rubocop
           if args.children == [] && args.loc.begin
             add_offence(:convention, args.loc.begin, MSG)
           end
-
-          super
         end
       end
 
@@ -51,8 +47,6 @@ module Rubocop
           if args.children.size > 0 && args.loc.begin.nil?
             add_offence(:convention, args.loc.expression, MSG)
           end
-
-          super
         end
 
         def on_defs(node)
@@ -61,8 +55,6 @@ module Rubocop
           if args.children.size > 0 && args.loc.begin.nil?
             add_offence(:convention, args.loc.expression, MSG)
           end
-
-          super
         end
       end
     end

@@ -15,8 +15,6 @@ module Rubocop
               node.loc.selector.is?('not')
             add_offence(:convention, node.loc.selector, MSG)
           end
-
-          super
         end
       end
     end

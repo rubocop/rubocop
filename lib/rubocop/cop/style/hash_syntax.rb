@@ -24,8 +24,6 @@ module Rubocop
               end
             end
           end
-
-          super
         end
 
         private

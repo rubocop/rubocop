@@ -29,8 +29,6 @@ module Rubocop
               add_offence(:convention, block_method.loc.expression, MULTI_MSG)
             end
           end
-
-          super
         end
 
         private

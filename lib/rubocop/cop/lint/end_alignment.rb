@@ -33,37 +33,30 @@ module Rubocop
 
         def on_def(node)
           check(node)
-          super
         end
 
         def on_defs(node)
           check(node)
-          super
         end
 
         def on_class(node)
           check(node)
-          super
         end
 
         def on_module(node)
           check(node)
-          super
         end
 
         def on_if(node)
           check(node) if node.loc.respond_to?(:end)
-          super
         end
 
         def on_while(node)
           check(node)
-          super
         end
 
         def on_until(node)
           check(node)
-          super
         end
 
         # Block related alignments
@@ -71,7 +64,6 @@ module Rubocop
         def on_block(node)
           return if already_processed_node?(node)
           check_block_alignment(node.loc.expression, node.loc)
-          super
         end
 
         def on_and(node)
@@ -82,7 +74,6 @@ module Rubocop
             check_block_alignment(node.loc.expression, right.loc)
             @inspected_blocks << right
           end
-          super
         end
 
         alias_method :on_or, :on_and
@@ -90,7 +81,6 @@ module Rubocop
         def on_lvasgn(node)
           _, children = *node
           process_block_assignment(node, children)
-          super
         end
 
         alias_method :on_ivasgn,   :on_lvasgn
@@ -102,25 +92,21 @@ module Rubocop
         def on_casgn(node)
           _, _, children = *node
           process_block_assignment(node, children)
-          super
         end
 
         def on_op_asgn(node)
           variable, _op, args = *node
           process_block_assignment(variable, args)
-          super
         end
 
         def on_send(node)
           _receiver, _method, *args = *node
           process_block_assignment(node, args.last)
-          super
         end
 
         def on_masgn(node)
           variables, args = *node
           process_block_assignment(variables, args)
-          super
         end
 
         private

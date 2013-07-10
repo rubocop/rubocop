@@ -17,8 +17,6 @@ module Rubocop
           end
 
           @prev_def_end = def_end
-
-          super
         end
       end
     end
