@@ -58,15 +58,15 @@ module Rubocop
         path_name.relative_path_from(Pathname.new(base)).to_s
       end
 
-      # Return a recursive merge of two hashes. That is, a normal hash
-      # merge, with the addition that any value that is a hash, and
-      # occurs in both arguments, will also be merged. And so on.
+      # Return an extended merge of two hashes. That is, a normal hash merge,
+      # with the addition that any value that is a hash, and occurs in both
+      # arguments (i.e., cop names), will also be merged.
       def merge(base_hash, derived_hash)
         result = {}
         base_hash.each do |key, value|
           result[key] = if derived_hash.has_key?(key)
                           if value.is_a?(Hash)
-                            merge(value, derived_hash[key])
+                            value.merge(derived_hash[key])
                           else
                             derived_hash[key]
                           end
