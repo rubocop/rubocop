@@ -19,8 +19,8 @@ module Rubocop
       create_file('dir2/ruby3.rb',   '# encoding: utf-8')
     end
 
-    describe '#target_files' do
-      let(:found_files) { target_finder.target_files(args) }
+    describe '#find' do
+      let(:found_files) { target_finder.find(args) }
       let(:found_basenames) { found_files.map { |f| File.basename(f) } }
       let(:args) { [] }
 
@@ -85,8 +85,8 @@ module Rubocop
       end
     end
 
-    describe '#ruby_files' do
-      let(:found_files) { target_finder.ruby_files(base_dir) }
+    describe '#target_files_in_dir' do
+      let(:found_files) { target_finder.target_files_in_dir(base_dir) }
       let(:found_basenames) { found_files.map { |f| File.basename(f) } }
       let(:base_dir) { '.' }
 

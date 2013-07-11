@@ -12,19 +12,19 @@ module Rubocop
     # Generate a list of target files by expanding globing patterns
     # (if any). If args is empty recursively finds all Ruby source
     # files under the current directory
-    # @return [Array] array of filenames
-    def target_files(args)
-      return ruby_files if args.empty?
+    # @return [Array] array of file paths
+    def find(args)
+      return target_files_in_dir if args.empty?
 
       files = []
 
-      args.each do |target|
-        if File.directory?(target)
-          files += ruby_files(target.chomp(File::SEPARATOR))
-        elsif target =~ /\*/
-          files += Dir[target]
+      args.uniq.each do |arg|
+        if File.directory?(arg)
+          files += target_files_in_dir(arg.chomp(File::SEPARATOR))
+        elsif arg.include?('*')
+          files += Dir[arg]
         else
-          files << target
+          files << arg
         end
       end
 
@@ -39,40 +39,29 @@ module Rubocop
     # so you can include other Ruby files like Rakefiles and gemspecs.
     # @param root Root directory under which to search for ruby source files
     # @return [Array] Array of filenames
-    def ruby_files(root = Dir.pwd)
-      files = Dir["#{root}/**/*"].select { |file| FileTest.file?(file) }
+    def target_files_in_dir(base_dir = Dir.pwd)
+      files = Dir["#{base_dir}/**/*"].select { |path| FileTest.file?(path) }
 
-      rb = []
-
-      rb += files.select { |file| File.extname(file) == '.rb' }
-      rb += files.select do |file|
-        if File.extname(file) == '' && !excluded_file?(file)
-          begin
-            File.open(file) { |f| f.readline } =~ /#!.*ruby/
-          rescue EOFError, ArgumentError => e
-            log_error(e, "Unprocessable file #{file.inspect}: ")
-            false
-          end
-        end
-      end
-
-      rb += files.select do |file|
+      target_files = files.select do |file|
         config = @config_store.for(file)
+        next false if config.file_to_exclude?(file)
+        next true if File.extname(file) == '.rb'
+        next true if ruby_executable?(file)
         config.file_to_include?(file)
       end
 
-      rb.reject { |file| excluded_file?(file) }.uniq
+      target_files.uniq
     end
 
-    def log_error(e, msg = '')
+    def ruby_executable?(file)
+      return false unless File.extname(file).empty?
+      first_line = File.open(file) { |f| f.readline }
+      first_line =~ /#!.*ruby/
+    rescue EOFError, ArgumentError => e
       if @debug
-        error_message = "#{e.class}, #{e.message}"
-        warn "#{msg}\t#{error_message}"
+        warn "Unprocessable file #{file}: #{e.class}, #{e.message}"
       end
-    end
-
-    def excluded_file?(file)
-      @config_store.for(file).file_to_exclude?(file)
+      false
     end
   end
 end

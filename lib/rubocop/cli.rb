@@ -42,7 +42,7 @@ module Rubocop
       # filter out style cops when --lint is passed
       @cops.select!(&:lint?) if @options[:lint]
 
-      target_files = target_finder.target_files(args)
+      target_files = target_finder.find(args)
       target_files.each(&:freeze).freeze
       inspected_files = []
       any_failed = false
