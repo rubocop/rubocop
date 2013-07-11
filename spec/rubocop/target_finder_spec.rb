@@ -1,0 +1,180 @@
+# encoding: utf-8
+
+require 'spec_helper'
+
+module Rubocop
+  describe TargetFinder, :isolated_environment do
+    include FileHelper
+
+    subject(:target_finder) { TargetFinder.new(config_store, debug) }
+    let(:config_store) { ConfigStore.new }
+    let(:debug) { false }
+
+    before do
+      create_file('dir1/ruby1.rb',   '# encoding: utf-8')
+      create_file('dir1/ruby2.rb',   '# encoding: utf-8')
+      create_file('dir1/file.txt',   '# encoding: utf-8')
+      create_file('dir1/file',       '# encoding: utf-8')
+      create_file('dir1/executable', '#!/usr/bin/env ruby')
+      create_file('dir2/ruby3.rb',   '# encoding: utf-8')
+    end
+
+    describe '#target_files' do
+      let(:found_files) { target_finder.target_files(args) }
+      let(:found_basenames) { found_files.map { |f| File.basename(f) } }
+      let(:args) { [] }
+
+      it 'returns absolute paths' do
+        expect(found_files).not_to be_empty
+        found_files.each do |file|
+          expect(file).to start_with('/')
+        end
+      end
+
+      context 'when no argument is passed' do
+        let(:args) { [] }
+
+        it 'finds files under the current directory' do
+          Dir.chdir('dir1') do
+            expect(found_files).not_to be_empty
+            found_files.each do |file|
+              expect(file).to include('/dir1/')
+              expect(file).not_to include('/dir2/')
+            end
+          end
+        end
+      end
+
+      context 'when a directory path is passed' do
+        let(:args) { ['../dir2'] }
+
+        it 'finds files under the specified directory' do
+          Dir.chdir('dir1') do
+            expect(found_files).not_to be_empty
+            found_files.each do |file|
+              expect(file).to include('/dir2/')
+              expect(file).not_to include('/dir1/')
+            end
+          end
+        end
+      end
+
+      context 'when a file is passed' do
+        let(:args) { ['dir2/file'] }
+
+        it 'picks the file' do
+          expect(found_basenames).to eq(['file'])
+        end
+      end
+
+      context 'when a pattern is passed' do
+        let(:args) { ['dir1/*2.rb'] }
+
+        it 'finds files which match the pattern' do
+          expect(found_basenames).to eq(['ruby2.rb'])
+        end
+      end
+
+      context 'when same paths are passed' do
+        let(:args) { %w(dir1 dir1) }
+
+        it 'does not return duplicated file paths' do
+          count = found_basenames.count { |f| f == 'ruby1.rb' }
+          expect(count).to eq(1)
+        end
+      end
+    end
+
+    describe '#ruby_files' do
+      let(:found_files) { target_finder.ruby_files(base_dir) }
+      let(:found_basenames) { found_files.map { |f| File.basename(f) } }
+      let(:base_dir) { '.' }
+
+      it 'picks files with extension .rb' do
+        rb_file_count = found_files.count { |f| f.end_with?('.rb') }
+        expect(rb_file_count).to eq(3)
+      end
+
+      it 'picks ruby executable files with no extension' do
+        expect(found_basenames).to include('executable')
+      end
+
+      it 'does not pick files with no extension and no ruby shebang' do
+        expect(found_basenames).not_to include('file')
+      end
+
+      it 'picks ruby executable files with no extension' do
+        expect(found_basenames).to include('executable')
+      end
+
+      it 'does not pick directories' do
+        found_basenames = found_files.map { |f| File.basename(f) }
+        expect(found_basenames).not_to include('dir1')
+      end
+
+      it 'picks files specified to be included in config' do
+        config = double('config')
+        config.stub(:file_to_include?) do |file|
+          File.basename(file) == 'file'
+        end
+        config.stub(:file_to_exclude?).and_return(false)
+        config_store.stub(:for).and_return(config)
+
+        expect(found_basenames).to include('file')
+      end
+
+      it 'does not pick files specified to be excluded in config' do
+        config = double('config').as_null_object
+        config.stub(:file_to_include?).and_return(false)
+        config.stub(:file_to_exclude?) do |file|
+          File.basename(file) == 'ruby2.rb'
+        end
+        config_store.stub(:for).and_return(config)
+
+        expect(found_basenames).not_to include('ruby2.rb')
+      end
+
+      it 'does not return duplicated paths' do
+        config = double('config').as_null_object
+        config.stub(:file_to_include?).and_return(true)
+        config.stub(:file_to_exclude?).and_return(false)
+        config_store.stub(:for).and_return(config)
+
+        count = found_basenames.count { |f| f == 'ruby1.rb' }
+        expect(count).to eq(1)
+      end
+
+      context 'when an exception is raised while reading file' do
+        around do |example|
+          File.any_instance.stub(:readline).and_raise(EOFError)
+
+          original_stderr = $stderr
+          $stderr = StringIO.new
+          begin
+            example.run
+          ensure
+            $stderr = original_stderr
+          end
+        end
+
+        context 'and debug mode is enabled' do
+          let(:debug) { true }
+
+          it 'outputs error message' do
+            found_files
+            expect($stderr.string).to include('Unprocessable file')
+          end
+        end
+
+        context 'and debug mode is disabled' do
+          let(:debug) { false }
+
+          it 'outputs nothing' do
+            found_files
+            expect($stderr.string).to be_empty
+          end
+        end
+      end
+    end
+  end
+end

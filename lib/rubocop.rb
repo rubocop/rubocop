@@ -117,5 +117,6 @@ require 'rubocop/formatter/formatter_set'
 
 require 'rubocop/config'
 require 'rubocop/config_store'
+require 'rubocop/target_finder'
 require 'rubocop/cli'
 require 'rubocop/version'
