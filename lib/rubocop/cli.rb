@@ -65,7 +65,6 @@ module Rubocop
       formatter_set.finished(inspected_files.freeze)
       formatter_set.close_output_files
 
-      # Handle errors from Commissioner
       display_error_summary(@errors) unless @options[:silent]
 
       !any_failed && !wants_to_quit ? 0 : 1
@@ -98,10 +97,6 @@ module Rubocop
       set_config_for_all_cops(config)
 
       cops = []
-      options = {
-        only: @options[:only],
-        debug: @options[:debug]
-      }
       @cops.each do |cop_class|
         cop_name = cop_class.cop_name
         if config.cop_enabled?(cop_name)
@@ -111,7 +106,7 @@ module Rubocop
           end
         end
       end
-      commissioner = Cop::Commissioner.new(cops, options)
+      commissioner = Cop::Commissioner.new(cops)
       offences =
         commissioner.inspect(source_buffer, source, tokens, ast, comments)
       process_commissioner_errors(file, commissioner.errors)
