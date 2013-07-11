@@ -47,7 +47,7 @@ module Rubocop
           end
         end
 
-        # TODO Check block contents as well
+        # TODO: Check block contents as well.
         alias_method :on_block, :ignore_node
       end
     end

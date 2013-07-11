@@ -8,6 +8,7 @@
 * New cop `RedundantBegin` tracks redundant `begin` blocks in method definitions.
 * New cop `RedundantSelf` tracks redundant uses of `self`.
 * New cop `EmptyEnsure` tracks empty `ensure` blocks.
+* New cop `CommentAnnotation` tracks formatting of annotation comments such as TODO.
 
 ### Changes
 

@@ -412,6 +412,10 @@ LiteralInCondition:
 EmptyEnsure:
   Enabled: true
 
+# Checks formatting of special comments (TODO, FIXME, OPTIMIZE, HACK, REVIEW).
+CommentAnnotation:
+  Enabled: true
+
 ##################### Rails ##################################
 
 # Use sexy validations.

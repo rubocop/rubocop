@@ -8,8 +8,8 @@ module Rubocop
       class Alias < Cop
         MSG = 'Use alias_method instead of alias.'
 
-        # TODO make this check context aware - alias_method is not
-        # available outside of classes/modules.
+        # TODO: Make this check context aware - alias_method is not
+        #   available outside of classes/modules.
         def on_alias(node)
           # alias_method can't be used with global variables
           new, old = *node
