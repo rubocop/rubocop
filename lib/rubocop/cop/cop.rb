@@ -20,6 +20,20 @@ module Rubocop
     # The Cop class is meant to be extended.
     #
     # Cops track offences and can autocorrect them of the fly.
+    #
+    # A commissioner object is responsible for traversing the AST and invoking
+    # the specific callbacks on each cop.
+    # If a cop needs to do its own processing of the AST or depends on
+    # something else it should define the #investigate method and do
+    # the processing there.
+    #
+    # @example
+    #
+    # class CustomCop < Cop
+    #   def investigate(source_buffer, source, tokens, ast, comments)
+    #     # Do custom processing
+    #   end
+    # end
     class Cop
       extend AST::Sexp
 
