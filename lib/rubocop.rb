@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+require 'backports/2.0.0/array/bsearch'
 require 'rainbow'
 require 'English'
 require 'parser/current'
