@@ -61,7 +61,7 @@ module Rubocop
             'Another good alternative is the usage of control flow &&/||.'
         end
 
-        def source_callback(source_buffer, source, tokens, ast, comments)
+        def investigate(source_buffer, source, tokens, ast, comments)
           return unless ast
           on_node(:if, ast) do |node|
             # discard ternary ops, if/else and modifier if/unless nodes
@@ -101,7 +101,7 @@ module Rubocop
         MSG =
           'Favor modifier while/until usage when you have a single-line body.'
 
-        def source_callback(source_buffer, source, tokens, ast, comments)
+        def investigate(source_buffer, source, tokens, ast, comments)
           return unless ast
           on_node([:while, :until], ast) do |node|
             # discard modifier while/until

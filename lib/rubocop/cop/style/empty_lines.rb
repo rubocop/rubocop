@@ -8,7 +8,7 @@ module Rubocop
         MSG = 'Extra blank line detected.'
         LINE_OFFSET = 2
 
-        def source_callback(source_buffer, source, tokens, ast, comments)
+        def investigate(source_buffer, source, tokens, ast, comments)
           return if tokens.empty?
 
           prev_line = 1

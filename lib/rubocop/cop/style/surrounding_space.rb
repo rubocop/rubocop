@@ -55,7 +55,7 @@ module Rubocop
            :tNMATCH, :tEQ,      :tNEQ,   :tGT,    :tRSHFT, :tGEQ,   :tLT,
            :tLSHFT,  :tLEQ,     :tASSOC, :tEQQ,   :tCMP,   :tOP_ASGN]
 
-        def source_callback(source_buffer, source, tokens, sexp, comments)
+        def investigate(source_buffer, source, tokens, sexp, comments)
           return unless sexp
 
           @source = source
@@ -172,7 +172,7 @@ module Rubocop
         MSG_LEFT = "Surrounding space missing for '{'."
         MSG_RIGHT = "Space missing to the left of '}'."
 
-        def source_callback(source_buffer, source, tokens, sexp, comments)
+        def investigate(source_buffer, source, tokens, sexp, comments)
           return unless sexp
           @source = source
           positions_not_to_check = get_positions_not_to_check(tokens, sexp)
@@ -222,7 +222,7 @@ module Rubocop
         include SurroundingSpace
         MSG = 'Space inside %s detected.'
 
-        def source_callback(source_buffer, source, tokens, sexp, comments)
+        def investigate(source_buffer, source, tokens, sexp, comments)
           @source = source
           left, right, kind = specifics
           tokens.each_cons(2) do |t1, t2|
@@ -262,7 +262,7 @@ module Rubocop
         include SurroundingSpace
         MSG = 'Space inside hash literal braces %s.'
 
-        def source_callback(source_buffer, source, tokens, sexp, comments)
+        def investigate(source_buffer, source, tokens, sexp, comments)
           return unless sexp
           @source = source
           on_node(:hash, sexp) do |hash|
@@ -297,7 +297,7 @@ module Rubocop
         include SurroundingSpace
         MSG = 'Surrounding space missing in default value assignment.'
 
-        def source_callback(source_buffer, source, tokens, sexp, comments)
+        def investigate(source_buffer, source, tokens, sexp, comments)
           return unless sexp
           @source = source
           on_node(:optarg, sexp) do |optarg|

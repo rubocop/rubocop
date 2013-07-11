@@ -8,7 +8,7 @@ module Rubocop
       class Semicolon < Cop
         MSG = 'Do not use semicolons to terminate expressions.'
 
-        def source_callback(source_buffer, source, tokens, ast, comments)
+        def investigate(source_buffer, source, tokens, ast, comments)
           return unless ast
 
           on_node(:begin, ast) do |node|

@@ -7,7 +7,7 @@ module Rubocop
       class Tab < Cop
         MSG = 'Tab detected.'
 
-        def source_callback(source_buffer, source, tokens, ast, comments)
+        def investigate(source_buffer, source, tokens, ast, comments)
           source.each_with_index do |line, index|
             match = line.match(/^( *)\t/)
             if match

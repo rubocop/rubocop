@@ -51,7 +51,7 @@ module Rubocop
       def investigate(source_buffer, source, tokens, ast, comments)
         reset_errors
         process(ast) if ast
-        process_source(source_buffer, source, tokens, ast, comments)
+        invoke_cops_callback(source_buffer, source, tokens, ast, comments)
         @cops.reduce([]) do |offences, cop|
           offences.concat(cop.offences)
           offences
@@ -64,10 +64,14 @@ module Rubocop
         @errors = Hash.new { |hash, k| hash[k] = [] }
       end
 
-      def process_source(source_buffer, source, tokens, ast, comments)
+      # There are cops that require their own custom processing.
+      # If they define the #investigate method all input parameters passed
+      # to the commissioner will be passed to the cop too in order to do
+      # its own processing.
+      def invoke_cops_callback(source_buffer, source, tokens, ast, comments)
         @cops.each do |cop|
-          if cop.respond_to?(:source_callback)
-            cop.source_callback(source_buffer, source, tokens, ast, comments)
+          if cop.respond_to?(:investigate)
+            cop.investigate(source_buffer, source, tokens, ast, comments)
           end
         end
       end
