@@ -10,12 +10,10 @@ module Rubocop
 
         def on_while_post(node)
           register_offence(node)
-          super
         end
 
         def on_until_post(node)
           register_offence(node)
-          super
         end
 
         private

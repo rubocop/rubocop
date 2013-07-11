@@ -13,8 +13,6 @@ module Rubocop
           if method_name == :===
             add_offence(:convention, node.loc.selector, MSG)
           end
-
-          super
         end
       end
     end

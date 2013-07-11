@@ -13,8 +13,6 @@ module Rubocop
           if args.empty? && node.loc.begin
             add_offence(:convention, node.loc.begin, MSG)
           end
-
-          super
         end
       end
     end

@@ -13,8 +13,6 @@ module Rubocop
           unless proper_dot_position?(node)
             add_offence(:convention, node.loc.dot, MSG)
           end
-
-          super
         end
 
         private

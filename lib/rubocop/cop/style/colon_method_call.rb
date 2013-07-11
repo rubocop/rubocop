@@ -16,8 +16,6 @@ module Rubocop
             add_offence(:convention, node.loc.dot, MSG)
             do_autocorrect(node)
           end
-
-          super
         end
 
         def autocorrect_action(node)

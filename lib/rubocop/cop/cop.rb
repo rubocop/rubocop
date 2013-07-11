@@ -20,7 +20,21 @@ module Rubocop
     # The Cop class is meant to be extended.
     #
     # Cops track offences and can autocorrect them of the fly.
-    class Cop < Parser::Rewriter
+    #
+    # A commissioner object is responsible for traversing the AST and invoking
+    # the specific callbacks on each cop.
+    # If a cop needs to do its own processing of the AST or depends on
+    # something else it should define the #investigate method and do
+    # the processing there.
+    #
+    # @example
+    #
+    # class CustomCop < Cop
+    #   def investigate(source_buffer, source, tokens, ast, comments)
+    #     # Do custom processing
+    #   end
+    # end
+    class Cop
       extend AST::Sexp
 
       attr_accessor :offences
@@ -67,20 +81,7 @@ module Rubocop
         @offences = []
         @debug = false
         @autocorrect = false
-      end
-
-      def inspect(source_buffer, source, tokens, ast, comments)
-        if autocorrect
-          filename = source_buffer.instance_variable_get(:@name)
-          new_source = rewrite(source_buffer, ast)
-          unless new_source == source_buffer.source
-            File.open(filename, 'w') { |f| f.write(new_source) }
-            source_buffer.instance_variable_set(:@source, nil)
-            source_buffer.read
-          end
-        else
-          process(ast)
-        end
+        @ignored_nodes = []
       end
 
       def do_autocorrect(node)
@@ -88,9 +89,6 @@ module Rubocop
       end
 
       def autocorrect_action(node)
-      end
-
-      def ignore_node(node)
       end
 
       def add_offence(severity, location, message)
@@ -104,7 +102,27 @@ module Rubocop
         self.class.cop_name
       end
 
+      def ignore_node(node)
+        @ignored_nodes << node
+      end
+
       private
+
+      def part_of_ignored_node?(node)
+        expression = node.loc.expression
+        @ignored_nodes.each do |ignored_node|
+          if ignored_node.loc.expression.begin_pos <= expression.begin_pos &&
+            ignored_node.loc.expression.end_pos >= expression.end_pos
+            return true
+          end
+        end
+
+        false
+      end
+
+      def ignored_node?(node)
+        @ignored_nodes.include?(node)
+      end
 
       def on_node(syms, sexp, excludes = [])
         yield sexp if Array(syms).include?(sexp.type)

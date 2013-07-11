@@ -21,8 +21,6 @@ module Rubocop
           if block_method == TARGET
             add_offence(:convention, block_method.loc.expression, MSG)
           end
-
-          super
         end
       end
     end

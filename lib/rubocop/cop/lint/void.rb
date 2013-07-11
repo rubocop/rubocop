@@ -23,8 +23,6 @@ module Rubocop
             check_for_literal(expr)
             check_for_var(expr)
           end
-
-          super
         end
 
         private

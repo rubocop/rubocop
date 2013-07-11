@@ -17,8 +17,6 @@ module Rubocop
                           sprintf(MSG, var, var))
             end
           end
-
-          super
         end
 
         private

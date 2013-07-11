@@ -13,7 +13,7 @@ module Rubocop
         TYPES_TO_ACCEPT_UNUSED =
           (ARGUMENT_DECLARATION_TYPES - [:shadowarg]).freeze
 
-        def inspect(source_buffer, source, tokens, ast, comments)
+        def investigate(source_buffer, source, tokens, ast, comments)
           inspect_variables(ast)
         end
 

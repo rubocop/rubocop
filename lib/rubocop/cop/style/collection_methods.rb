@@ -20,8 +20,6 @@ module Rubocop
           method, _args, _body = *node
 
           check_method_node(method)
-
-          super
         end
 
         def on_send(node)
@@ -30,8 +28,6 @@ module Rubocop
           if args.size == 1 && args.first.type == :block_pass
             check_method_node(node)
           end
-
-          super
         end
 
         private

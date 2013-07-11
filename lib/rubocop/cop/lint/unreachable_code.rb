@@ -20,8 +20,6 @@ module Rubocop
               add_offence(:warning, e2.loc.expression, MSG)
             end
           end
-
-          super
         end
 
         private

@@ -25,8 +25,6 @@ module Rubocop
           unless args_node == ARGS_NODE
             add_offence(:convention, node.loc.expression, MSG)
           end
-
-          super
         end
       end
     end

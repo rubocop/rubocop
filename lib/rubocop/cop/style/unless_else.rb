@@ -17,8 +17,6 @@ module Rubocop
           if loc.keyword.is?('unless') && loc.else
             add_offence(:convention, loc.expression, MSG)
           end
-
-          super
         end
       end
     end

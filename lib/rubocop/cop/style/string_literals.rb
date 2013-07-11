@@ -12,6 +12,7 @@ module Rubocop
           # Constants like __FILE__ are handled as strings,
           # but don't respond to begin.
           return unless node.loc.respond_to?(:begin)
+          return if part_of_ignored_node?(node)
 
           # regex matches IF there is a ' or there is a \\ in the string that
           # is not preceeded/followed by another \\ (e.g. "\\x34") but not

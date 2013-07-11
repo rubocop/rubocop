@@ -11,14 +11,10 @@ module Rubocop
 
         def on_and(node)
           process_logical_op(node)
-
-          super
         end
 
         def on_or(node)
           process_logical_op(node)
-
-          super
         end
 
         private

@@ -28,7 +28,6 @@ module Rubocop
 
         def on_if(node)
           check(node)
-          super
         end
 
         def error_message
@@ -42,7 +41,6 @@ module Rubocop
 
         def on_while(node)
           check(node)
-          super
         end
 
         def error_message
