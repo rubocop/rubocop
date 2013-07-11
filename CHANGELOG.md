@@ -22,6 +22,10 @@
 * [#345](https://github.com/bbatsov/rubocop/issues/345) - add `$SAFE` to the list of built-in global variables
 * [#340](https://github.com/bbatsov/rubocop/issues/340) - override config parameters rather than merging them
 
+### Misc
+
+* Improved performance on Ruby 1.9 by about 20%
+
 ## 0.9.1 (05/07/2013)
 
 ### New features
