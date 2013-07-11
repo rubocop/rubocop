@@ -108,7 +108,7 @@ module Rubocop
       end
       commissioner = Cop::Commissioner.new(cops)
       offences =
-        commissioner.inspect(source_buffer, source, tokens, ast, comments)
+        commissioner.investigate(source_buffer, source, tokens, ast, comments)
       process_commissioner_errors(file, commissioner.errors)
       offences.sort
     end

@@ -48,7 +48,7 @@ module Rubocop
         EOS
       end
 
-      def inspect(source_buffer, source, tokens, ast, comments)
+      def investigate(source_buffer, source, tokens, ast, comments)
         reset_errors
         process(ast) if ast
         process_source(source_buffer, source, tokens, ast, comments)
