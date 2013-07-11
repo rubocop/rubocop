@@ -339,6 +339,26 @@ Usage: rubocop [options] [file1, file2, ...]
          ''].join("\n"))
     end
 
+    it 'can be configured to override a parameter that is a hash' do
+      create_file('example1.rb',
+                  ['# encoding: utf-8',
+                   'arr.find_all { |e| e > 0 }.collect { |e| -e }'])
+      # We only care about select over find_all. All other preferred methods
+      # appearing in the default config are gone when we override
+      # PreferredMethods. We get no report about collect.
+      create_file('rubocop.yml',
+                  ['CollectionMethods:',
+                   '  PreferredMethods:',
+                   '    find_all: select'])
+      cli.run(['--format', 'simple', '-c', 'rubocop.yml', 'example1.rb'])
+      expect($stdout.string).to eq(
+        ['== example1.rb ==',
+         'C:  2:  5: Prefer select over find_all.',
+         '',
+         '1 file inspected, 1 offence detected',
+         ''].join("\n"))
+    end
+
     it 'works when a cop that others depend on is disabled' do
       create_file('example1.rb', ['if a',
                                   '  b',
