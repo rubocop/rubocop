@@ -22,6 +22,11 @@ module Rubocop
           inspect_source(cop, ['x = ?\C-\M-d'])
           expect(cop.offences).to be_empty
         end
+
+        it 'accepts ? in a %w literal' do
+          inspect_source(cop, ['%w{? A}'])
+          expect(cop.offences).to be_empty
+        end
       end
     end
   end

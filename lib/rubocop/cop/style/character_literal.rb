@@ -13,7 +13,8 @@ module Rubocop
           return unless node.loc.respond_to?(:begin)
 
           # we don't register an offence for things like ?\C-\M-d
-          if node.loc.begin.is?('?') && node.loc.expression.source.size < 4
+          if node.loc.begin.is?('?') &&
+              node.loc.expression.source.size.between?(2, 3)
             add_offence(:convention, node.loc.expression, MSG)
             do_autocorrect(node)
           end
