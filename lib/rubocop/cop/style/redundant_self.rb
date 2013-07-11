@@ -19,12 +19,6 @@ module Rubocop
           @local_variables = []
         end
 
-        def inspect(source_buffer, source, tokens, ast, comments)
-          @allowed_send_nodes = []
-          @local_variables = []
-          super
-        end
-
         # Assignment of self.x
 
         def on_or_asgn(node)

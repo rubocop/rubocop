@@ -26,11 +26,6 @@ module Rubocop
           @inspected_blocks = []
         end
 
-        def inspect(source_buffer, source, tokens, ast, comments)
-          @inspected_blocks = []
-          super
-        end
-
         def on_def(node)
           check(node)
         end

@@ -70,20 +70,6 @@ module Rubocop
         @ignored_nodes = []
       end
 
-      def inspect(source_buffer, source, tokens, ast, comments)
-        if autocorrect
-          filename = source_buffer.instance_variable_get(:@name)
-          new_source = rewrite(source_buffer, ast)
-          unless new_source == source_buffer.source
-            File.open(filename, 'w') { |f| f.write(new_source) }
-            source_buffer.instance_variable_set(:@source, nil)
-            source_buffer.read
-          end
-        else
-          process(ast)
-        end
-      end
-
       def do_autocorrect(node)
         autocorrect_action(node) if autocorrect
       end
