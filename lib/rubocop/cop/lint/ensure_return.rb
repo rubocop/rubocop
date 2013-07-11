@@ -15,8 +15,6 @@ module Rubocop
           on_node(:return, ensure_body) do |e|
             add_offence(:warning, e.loc.expression, MSG)
           end
-
-          super
         end
       end
     end

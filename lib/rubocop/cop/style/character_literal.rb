@@ -11,6 +11,7 @@ module Rubocop
           # Constants like __FILE__ are handled as strings,
           # but don't respond to begin.
           return unless node.loc.respond_to?(:begin)
+          return if part_of_ignored_node?(node)
 
           # we don't register an offence for things like ?\C-\M-d
           if node.loc.begin.is?('?') &&

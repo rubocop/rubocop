@@ -21,8 +21,6 @@ module Rubocop
           if string_array && !complex_content?(array_elems)
             add_offence(:convention, node.loc.expression, MSG)
           end
-
-          super
         end
 
         private

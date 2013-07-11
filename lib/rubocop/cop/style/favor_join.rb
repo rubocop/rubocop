@@ -20,8 +20,6 @@ module Rubocop
                         node.loc.selector,
                         MSG)
           end
-
-          super
         end
       end
     end

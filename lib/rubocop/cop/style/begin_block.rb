@@ -9,8 +9,6 @@ module Rubocop
 
         def on_preexe(node)
           add_offence(:convention, node.loc.keyword, MSG)
-
-          super
         end
       end
     end

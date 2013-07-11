@@ -13,8 +13,6 @@ module Rubocop
           if rescue_args.any? { |a| targets_exception?(a) }
             add_offence(:warning, node.location.expression, MSG)
           end
-
-          super
         end
 
         def targets_exception?(rescue_arg_node)

@@ -7,12 +7,10 @@ module Rubocop
       module IfThenElse
         def on_if(node)
           check(node)
-          super
         end
 
         def on_unless(node)
           check(node)
-          super
         end
 
         def check(node)

@@ -20,8 +20,6 @@ module Rubocop
             add_offence(:convention, args.children[0].loc.expression,
                         sprintf(MSG, name))
           end
-
-          super
         end
       end
     end

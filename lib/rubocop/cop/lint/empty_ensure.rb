@@ -11,8 +11,6 @@ module Rubocop
           _body, ensure_body = *node
 
           add_offence(:warning, node.loc.keyword, MSG) unless ensure_body
-
-          super
         end
       end
     end

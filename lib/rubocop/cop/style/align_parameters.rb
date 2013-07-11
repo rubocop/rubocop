@@ -30,8 +30,6 @@ module Rubocop
               prev_arg_line = cur_arg_line
             end
           end
-
-          super
         end
       end
     end

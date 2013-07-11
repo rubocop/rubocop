@@ -19,8 +19,6 @@ module Rubocop
                arg_nodes[0].type == :array)
             add_offence(:convention, node.loc.selector, MSG)
           end
-
-          super
         end
       end
     end

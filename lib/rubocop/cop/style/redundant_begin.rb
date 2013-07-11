@@ -24,16 +24,12 @@ module Rubocop
           _method_name, _args, body = *node
 
           check(body)
-
-          super
         end
 
         def on_defs(node)
           _scope, _method_name, _args, body = *node
 
           check(body)
-
-          super
         end
 
         private

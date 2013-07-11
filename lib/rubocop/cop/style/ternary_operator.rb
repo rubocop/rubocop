@@ -17,8 +17,6 @@ module Rubocop
           if loc.line != loc.colon.line
             add_offence(:convention, loc.expression, MSG)
           end
-
-          super
         end
       end
 
@@ -40,8 +38,6 @@ module Rubocop
               end
             end
           end
-
-          super
         end
       end
     end

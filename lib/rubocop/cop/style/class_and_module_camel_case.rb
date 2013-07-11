@@ -10,14 +10,10 @@ module Rubocop
 
         def on_class(node)
           check_name(node)
-
-          super
         end
 
         def on_module(node)
           check_name(node)
-
-          super
         end
 
         private

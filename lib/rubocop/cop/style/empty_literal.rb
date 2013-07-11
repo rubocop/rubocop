@@ -29,6 +29,8 @@ module Rubocop
         STR_NODE = s(:send, s(:const, nil, :String), :new)
 
         def on_send(node)
+          return if part_of_ignored_node?(node)
+
           case node
           when ARRAY_NODE
             add_offence(:convention,

@@ -25,32 +25,22 @@ module Rubocop
 
         def on_if(node)
           check_for_literal(node)
-
-          super
         end
 
         def on_while(node)
           check_for_literal(node)
-
-          super
         end
 
         def on_while_post(node)
           check_for_literal(node)
-
-          super
         end
 
         def on_until(node)
           check_for_literal(node)
-
-          super
         end
 
         def on_until_post(node)
           check_for_literal(node)
-
-          super
         end
 
         private

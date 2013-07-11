@@ -15,8 +15,6 @@ module Rubocop
             add_offence(:convention, node.loc.expression,
                         sprintf(MSG, max_params))
           end
-
-          super
         end
 
         private

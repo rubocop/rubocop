@@ -11,8 +11,6 @@ module Rubocop
           if command?(:attr, node)
             add_offence(:convention, node.loc.selector, MSG)
           end
-
-          super
         end
       end
     end
