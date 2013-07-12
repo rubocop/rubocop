@@ -287,6 +287,30 @@ like
 allows you to automatically check Ruby code style with RuboCop when
 files are modified.
 
+
+## Rake integration
+
+To use RuboCop in your `Rakefile` add the following:
+
+```ruby
+require 'rubocop/rake_task'
+
+Rubocop::RakeTask.new
+```
+
+The above will use default values
+
+```ruby
+require 'rubocop/rake_task'
+
+desc 'Run RuboCop on the lib directory'
+Rubocop::RakeTask.new(:rubocop) do |task|
+  task.patterns = ['lib/**/*.rb']
+  # don't abort rake on failure
+  task.fail_on_error = false
+end
+```
+
 ## Contributors
 
 Here's a [list](https://github.com/bbatsov/rubocop/contributors) of
