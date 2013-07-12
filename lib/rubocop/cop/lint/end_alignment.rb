@@ -108,7 +108,6 @@ module Rubocop
 
         def process_block_assignment(begin_node, block_node)
           return unless block_node
-          return if already_processed_node?(block_node)
 
           while [:send, :lvasgn].include?(block_node.type)
             if block_node.type == :send
@@ -126,6 +125,8 @@ module Rubocop
             end
           end
 
+          return if already_processed_node?(block_node)
+
           if block_node.type == :block
             # If the block is an argument in a function call, align end with
             # the block itself, and not with the function.
@@ -137,7 +138,6 @@ module Rubocop
             # Align with the expression that is on the same line
             # where the block is defined
             return if block_is_on_next_line?(begin_node, block_node)
-            return if already_processed_node?(block_node)
 
             @inspected_blocks << block_node
             check_block_alignment(begin_node.loc.expression, block_node.loc)
