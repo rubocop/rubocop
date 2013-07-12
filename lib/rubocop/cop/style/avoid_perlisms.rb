@@ -28,11 +28,11 @@ module Rubocop
           '$`' => '$PREMATCH from English library',
           '$\'' => '$POSTMATCH from English library',
           '$+' => '$LAST_PAREN_MATCH from English library'
-        }
+        }.symbolize_keys
 
         def on_gvar(node)
           global_var, = *node
-          global_var = global_var.to_s
+          global_var = global_var
 
           if PREFERRED_VARS[global_var]
             add_offence(

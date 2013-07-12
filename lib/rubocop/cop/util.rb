@@ -22,10 +22,6 @@ module Rubocop
       def block_length(block_node)
         block_node.loc.end.line - block_node.loc.begin.line
       end
-
-      def symbolize_keys(hash)
-        Hash[hash.map { |(k, v)| [k.to_sym, v] }] if hash
-      end
     end
   end
 end

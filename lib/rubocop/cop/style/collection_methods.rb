@@ -13,7 +13,9 @@ module Rubocop
         MSG = 'Prefer %s over %s.'
 
         def self.preferred_methods
-          Util.symbolize_keys(config['PreferredMethods'])
+          if config['PreferredMethods']
+            config['PreferredMethods'].symbolize_keys
+          end
         end
 
         def on_block(node)

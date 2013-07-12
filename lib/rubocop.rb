@@ -5,6 +5,7 @@ require 'rainbow'
 require 'English'
 require 'parser/current'
 require 'ast/sexp'
+require 'powerpack'
 
 require 'rubocop/cop/util'
 require 'rubocop/cop/variable_inspector'

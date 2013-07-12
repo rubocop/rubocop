@@ -36,7 +36,7 @@ module Rubocop
           $stdin $stdout $stderr
           $DEBUG $FILENAME $VERBOSE $SAFE
           $-0 $-a $-d $-F $-i $-I $-l $-p $-v $-w
-        )
+        ).map(&:to_sym)
 
         def on_gvar(node)
           check(node)
@@ -49,7 +49,7 @@ module Rubocop
         def check(node)
           global_var, = *node
 
-          unless BUILT_IN_VARS.include?(global_var.to_s)
+          unless BUILT_IN_VARS.include?(global_var)
             add_offence(:convention,
                         node.loc.name,
                         MSG)
