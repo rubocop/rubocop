@@ -8,7 +8,7 @@ module Rubocop
       class ClassMethods < Cop
         MSG = 'Prefer self over class/module for class/module methods.'
 
-        # TODO - check if we're in a class/module
+        # TODO: Check if we're in a class/module
         def on_defs(node)
           definee, _name, _args, _body = *node
 

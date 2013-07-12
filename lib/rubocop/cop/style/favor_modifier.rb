@@ -5,7 +5,7 @@ module Rubocop
     module Style
       # Common functionality for modifier cops.
       module FavorModifier
-        # TODO extremely ugly solution that needs lots of polish
+        # TODO: Extremely ugly solution that needs lots of polish.
         def check(sexp, comments)
           case sexp.loc.keyword.source
           when 'if'     then cond, body, _else = *sexp
