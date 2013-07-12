@@ -50,8 +50,8 @@ module Rubocop
 
       def investigate(source_buffer, source, tokens, ast, comments)
         reset_errors
-        process(ast) if ast
         invoke_cops_callback(source_buffer, source, tokens, ast, comments)
+        process(ast) if ast
         @cops.reduce([]) do |offences, cop|
           offences.concat(cop.offences)
           offences
