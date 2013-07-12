@@ -21,9 +21,8 @@ module Rubocop
       class EndAlignment < Cop
         MSG = 'end at %d, %d is not aligned with %s at %d, %d'
 
-        def initialize
-          super
-          @inspected_blocks = []
+        def investigate(source_buffer, source, tokens, ast, comments)
+          @lines = source
         end
 
         def on_def(node)
@@ -57,104 +56,24 @@ module Rubocop
         # Block related alignments
 
         def on_block(node)
-          return if already_processed_node?(node)
-          check_block_alignment(node.loc.expression, node.loc)
-        end
+          block_loc = node.loc
 
-        def on_and(node)
-          return if already_processed_node?(node)
+          line_pos = block_loc.begin.line - 1
+          line = @lines[line_pos]
+          start_loc = line =~ /\S/
 
-          _left, right = *node
-          if right.type == :block
-            check_block_alignment(node.loc.expression, right.loc)
-            @inspected_blocks << right
-          end
-        end
-
-        alias_method :on_or, :on_and
-
-        def on_lvasgn(node)
-          _, children = *node
-          process_block_assignment(node, children)
-        end
-
-        alias_method :on_ivasgn,   :on_lvasgn
-        alias_method :on_cvasgn,   :on_lvasgn
-        alias_method :on_gvasgn,   :on_lvasgn
-        alias_method :on_and_asgn, :on_lvasgn
-        alias_method :on_or_asgn,  :on_lvasgn
-
-        def on_casgn(node)
-          _, _, children = *node
-          process_block_assignment(node, children)
-        end
-
-        def on_op_asgn(node)
-          variable, _op, args = *node
-          process_block_assignment(variable, args)
-        end
-
-        def on_send(node)
-          _receiver, _method, *args = *node
-          process_block_assignment(node, args.last)
-        end
-
-        def on_masgn(node)
-          variables, args = *node
-          process_block_assignment(variables, args)
-        end
-
-        private
-
-        def process_block_assignment(begin_node, block_node)
-          return unless block_node
-          return if already_processed_node?(block_node)
-
-          while [:send, :lvasgn].include?(block_node.type)
-            if block_node.type == :send
-              receiver, _method, args = *block_node
-              if receiver && [:block, :send].include?(receiver.type)
-                block_node = receiver
-              elsif args && [:block, :send].include?(args.type)
-                block_node = args
-              else
-                break
-              end
-            elsif block_node.type == :lvasgn
-              _variable, value = *block_node
-              block_node = value
-            end
-          end
-
-          if block_node.type == :block
-            # If the block is an argument in a function call, align end with
-            # the block itself, and not with the function.
-            if begin_node.type == :send
-              _receiver, method, *_args = *begin_node
-              begin_node = block_node if method.to_s =~ /^\w+$/
-            end
-
-            # Align with the expression that is on the same line
-            # where the block is defined
-            return if block_is_on_next_line?(begin_node, block_node)
-            return if already_processed_node?(block_node)
-
-            @inspected_blocks << block_node
-            check_block_alignment(begin_node.loc.expression, block_node.loc)
-          end
-        end
-
-        def check_block_alignment(start_loc, block_loc)
           end_loc = block_loc.end
           if block_loc.begin.line != end_loc.line &&
-               start_loc.column != end_loc.column
+               start_loc != end_loc.column
             add_offence(:warning,
                         end_loc,
                         sprintf(MSG, end_loc.line, end_loc.column,
-                                start_loc.source.lines.to_a.first.chomp,
-                                start_loc.line, start_loc.column))
+                                line,
+                                line_pos, start_loc))
           end
         end
+
+        private
 
         def check(node)
           # discard modifier forms of if/while/until
@@ -169,14 +88,6 @@ module Rubocop
                         sprintf(MSG, end_loc.line, end_loc.column,
                                 kw_loc.source, kw_loc.line, kw_loc.column))
           end
-        end
-
-        def already_processed_node?(node)
-          @inspected_blocks.include?(node)
-        end
-
-        def block_is_on_next_line?(begin_node, block_node)
-          begin_node.loc.line != block_node.loc.line
         end
       end
     end
