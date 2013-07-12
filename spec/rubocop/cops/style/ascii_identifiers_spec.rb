@@ -22,6 +22,20 @@ module Rubocop
                          ['x.empty?'])
           expect(ascii.offences).to be_empty
         end
+
+        it 'does not get confused by a byte order mark' do
+          bom = "\xef\xbb\xbf"
+          inspect_source(ascii,
+                         [bom + '# encoding: utf-8',
+                          "puts 'foo'"])
+          expect(ascii.offences).to be_empty
+        end
+
+        it 'does not get confused by an empty file' do
+          inspect_source(ascii,
+                         [''])
+          expect(ascii.offences).to be_empty
+        end
       end
     end
   end
