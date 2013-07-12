@@ -14,6 +14,9 @@
 
 * `TrivialAccessors` now has an `ExactNameMatch` config option (related to [#308](https://github.com/bbatsov/rubocop/issues/308)).
 * `TrivialAccessors` now has an `ExcludePredicates` config option (related to [#326](https://github.com/bbatsov/rubocop/issues/326)).
+* Cops don't inherit from `Parser::AST::Rewriter` anymore. All 3rd party Cops should remove the call to `super` in their
+  callbacks. If you implement your own processing you need to define the `#investigate` method instead of `#inspect`. Refer to
+  the documentation of `Cop::Commissioner` and `Cop::Cop` classes for more information.
 
 ### Bugs fixed
 
