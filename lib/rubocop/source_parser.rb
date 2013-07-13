@@ -52,35 +52,55 @@ module Rubocop
       end
     end
 
+    COMMENT_DIRECTIVE_REGEXP = Regexp.new(
+      '^.*?(\S)?.*# rubocop : ((?:dis|en)able)\b ((?:\w+,? )+)'
+        .gsub(' ', '\s*')
+    )
+
     def disabled_lines_in(source)
-      disabled_lines = Hash.new([])
-      disabled_section = {}
-      regexp = '# rubocop : (%s)\b ((?:\w+,? )+)'.gsub(' ', '\s*')
-      section_regexp = '^\s*' + sprintf(regexp, '(?:dis|en)able')
-      single_line_regexp = '\S.*' + sprintf(regexp, 'disable')
+      disabled_lines = {}
+      current_disabled_cops = {}
 
-      source.each_with_index do |line, ix|
-        each_mentioned_cop(/#{section_regexp}/, line) do |cop_name, kind|
-          disabled_section[cop_name] = (kind == 'disable')
-        end
-        disabled_section.keys.each do |cop_name|
-          disabled_lines[cop_name] += [ix + 1] if disabled_section[cop_name]
+      source.each_with_index do |line, index|
+        line_number = index + 1
+
+        each_mentioned_cop(line) do |cop_name, disabled, single_line|
+          if single_line
+            next unless disabled
+            disabled_lines[cop_name] ||= []
+            disabled_lines[cop_name] << line_number
+          else
+            current_disabled_cops[cop_name] = disabled
+          end
         end
 
-        each_mentioned_cop(/#{single_line_regexp}/, line) do |cop_name, kind|
-          disabled_lines[cop_name] += [ix + 1] if kind == 'disable'
+        current_disabled_cops.each do |cop_name, disabled|
+          next unless disabled
+          disabled_lines[cop_name] ||= []
+          disabled_lines[cop_name] << line_number
         end
       end
+
       disabled_lines
     end
 
-    def each_mentioned_cop(regexp, line)
-      match = line.match(regexp)
-      if match
-        kind, cops = match.captures
-        cops = Cop::Cop.all.map(&:cop_name).join(',') if cops.include?('all')
-        cops.split(/,\s*/).each { |cop_name| yield cop_name, kind }
+    def each_mentioned_cop(line)
+      match = line.match(COMMENT_DIRECTIVE_REGEXP)
+
+      return unless match
+
+      non_whitespace_before_comment, switch, cops_string = match.captures
+
+      if cops_string.include?('all')
+        cop_names = Cop::Cop.all.map(&:cop_name)
+      else
+        cop_names = cops_string.split(/,\s*/)
       end
+
+      disabled = (switch == 'disable')
+      single_line = !non_whitespace_before_comment.nil?
+
+      cop_names.each { |cop_name| yield cop_name, disabled, single_line }
     end
   end
 end
