@@ -153,6 +153,40 @@ module Rubocop
           end
         end
 
+        context 'when the method part is a call chain that spans several lines' do
+          it 'accepts end aligned with first character of line where do is' do
+            src = ['def foo(bar)',
+                   '  bar.get_stuffs',
+                   '      .reject do |stuff| ',
+                   '        stuff.with_a_very_long_expression_that_doesnt_fit_the_line',
+                   '      end.select do |stuff|',
+                   '        stuff.another_very_long_expression_that_doesnt_fit_the_line',
+                   '      end',
+                   '      .select do |stuff|',
+                   '        stuff.another_very_long_expression_that_doesnt_fit_the_line',
+                   '      end',
+                   'end']
+            inspect_source(cop, src)
+            expect(cop.offences.map(&:message)).to eq([])
+          end
+
+          it 'registers offences for misaligned ends' do
+            src = ['def foo(bar)',
+                   '  bar.get_stuffs',
+                   '      .reject do |stuff| ',
+                   '        stuff.with_a_very_long_expression_that_doesnt_fit_the_line',
+                   '        end.select do |stuff|',
+                   '        stuff.another_very_long_expression_that_doesnt_fit_the_line',
+                   '    end',
+                   '      .select do |stuff|',
+                   '        stuff.another_very_long_expression_that_doesnt_fit_the_line',
+                   '        end',
+                   'end']
+            inspect_source(cop, src)
+            expect(cop.offences).to have(3).items
+          end
+        end
+
         it 'accepts end aligned with an instance variable' do
           inspect_source(cop,
                          ['@variable = test do |ala|',
