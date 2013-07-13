@@ -36,14 +36,9 @@ module Rubocop
         end
       end
 
-      syntax_offences = diagnostics.map do |d|
-        Cop::Offence.new(d.level, d.location, "#{d.message}",
-                         'Syntax')
-      end
-
       source = source_buffer.source.split($RS)
 
-      [ast, comments, tokens, source_buffer, source, syntax_offences]
+      [ast, comments, tokens, source_buffer, source, diagnostics]
     end
 
     def disabled_lines_in(source)

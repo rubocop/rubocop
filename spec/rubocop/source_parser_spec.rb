@@ -66,9 +66,9 @@ module Rubocop
 
       context 'when the source is valid' do
         it 'returns empty array as sixth return value' do
-          syntax_offences = return_values[5]
-          expect(syntax_offences).to be_a(Array)
-          expect(syntax_offences).to be_empty
+          diagnostics = return_values[5]
+          expect(diagnostics).to be_a(Array)
+          expect(diagnostics).to be_empty
         end
       end
 
@@ -87,10 +87,10 @@ module Rubocop
           ]
         end
 
-        it 'returns an array of syntax offences as sixth return value' do
-          syntax_offences = return_values[5]
-          expect(syntax_offences).to be_a(Array)
-          expect(syntax_offences.first).to be_a(Cop::Offence)
+        it 'returns an array of diagnostics as sixth return value' do
+          diagnostics = return_values[5]
+          expect(diagnostics).to be_a(Array)
+          expect(diagnostics.first).to be_a(Parser::Diagnostic)
         end
       end
     end
