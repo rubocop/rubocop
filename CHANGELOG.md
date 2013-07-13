@@ -27,6 +27,7 @@
 * [#340](https://github.com/bbatsov/rubocop/issues/340) - override config parameters rather than merging them
 * [#349](https://github.com/bbatsov/rubocop/issues/349) - fix false positive for `CharacterLiteral` (`%w(?)`)
 * [#346](https://github.com/bbatsov/rubocop/issues/346) - support method chains for block end alignment checks
+* [#350](https://github.com/bbatsov/rubocop/issues/350) - support line breaks between variables on left hand side for block end alignment checks
 
 ### Misc
 

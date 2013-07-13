@@ -187,6 +187,26 @@ module Rubocop
           end
         end
 
+        context 'when variables of a mass assignment spans several lines' do
+          it 'accepts end aligned with the variables' do
+            src = ['e,',
+                   'f = [5, 6].map do |i|',
+                   '  i - 5',
+                   'end']
+            inspect_source(cop, src)
+            expect(cop.offences.map(&:message)).to eq([])
+          end
+
+          it 'registers an offence for end aligned with the block' do
+            src = ['e,',
+                   'f = [5, 6].map do |i|',
+                   '  i - 5',
+                   '    end']
+            inspect_source(cop, src)
+            expect(cop.offences).to have(1).item
+          end
+        end
+
         it 'accepts end aligned with an instance variable' do
           inspect_source(cop,
                          ['@variable = test do |ala|',

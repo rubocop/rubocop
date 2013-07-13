@@ -138,7 +138,10 @@ module Rubocop
 
             # Align with the expression that is on the same line
             # where the block is defined
-            return if block_is_on_next_line?(begin_node, block_node)
+            if begin_node.type != :mlhs && block_is_on_next_line?(begin_node,
+                                                                  block_node)
+              return
+            end
             return if already_processed_node?(block_node)
 
             @inspected_blocks << block_node
