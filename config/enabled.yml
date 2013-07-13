@@ -383,6 +383,10 @@ AssignmentInCondition:
 EndAlignment:
   Enabled: true
 
+# Align block ends correctly.
+BlockAlignment:
+  Enabled: true
+
 # Possible use of operator/literal/variable in void context.
 Void:
   Enabled: true

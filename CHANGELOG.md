@@ -17,6 +17,7 @@
 * Cops don't inherit from `Parser::AST::Rewriter` anymore. All 3rd party Cops should remove the call to `super` in their
   callbacks. If you implement your own processing you need to define the `#investigate` method instead of `#inspect`. Refer to
   the documentation of `Cop::Commissioner` and `Cop::Cop` classes for more information.
+* `EndAlignment` cop split into `EndAlignment` and `BlockAlignment` cops.
 
 ### Bugs fixed
 
