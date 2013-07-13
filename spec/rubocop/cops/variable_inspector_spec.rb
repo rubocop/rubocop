@@ -260,7 +260,7 @@ module Rubocop
         end
 
         let(:ast) do
-          ast, *_ = Rubocop::CLI.parse('(string)') do |sb|
+          ast, *_ = Rubocop::SourceParser.parse('(string)') do |sb|
             sb.source = source
           end
           ast
