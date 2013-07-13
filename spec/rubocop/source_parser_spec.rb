@@ -6,7 +6,7 @@ module Rubocop
   describe SourceParser, :isolated_environment do
     include FileHelper
 
-    describe '.parse' do
+    describe '.parse_file' do
       let(:file) { 'example.rb' }
 
       let(:source) do
@@ -33,7 +33,7 @@ module Rubocop
       end
 
       let (:return_values) do
-        SourceParser.parse(file) { |buffer| buffer.read }
+        SourceParser.parse_file(file)
       end
 
       it 'returns the root node of AST as first return value' do

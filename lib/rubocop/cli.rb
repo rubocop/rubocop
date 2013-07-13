@@ -79,7 +79,7 @@ module Rubocop
     def inspect_file(file)
       begin
         ast, comments, tokens, source_buffer, source, diagnostics =
-          SourceParser.parse(file) { |sb| sb.read }
+          SourceParser.parse_file(file)
 
       rescue Encoding::UndefinedConversionError, ArgumentError => e
         handle_error(e, "An error occurred while parsing #{file}.".color(:red))

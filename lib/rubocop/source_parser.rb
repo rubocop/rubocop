@@ -6,21 +6,16 @@ module Rubocop
   module SourceParser
     module_function
 
-    def parse(file)
-      parser = Parser::CurrentRuby.new
+    def parse(string, name = '(string)')
+      source_buffer = Parser::Source::Buffer.new(name, 1)
+      source_buffer.source = string
 
-      # On JRuby and Rubinius, there's a risk that we hang in
-      # tokenize() if we don't set the all errors as fatal flag.
-      parser.diagnostics.all_errors_are_fatal = RUBY_ENGINE != 'ruby'
-      parser.diagnostics.ignore_warnings      = false
-
+      parser = create_parser
+      source = string.split($RS)
       diagnostics = []
       parser.diagnostics.consumer = lambda do |diagnostic|
         diagnostics << diagnostic
       end
-
-      source_buffer = Parser::Source::Buffer.new(file, 1)
-      yield source_buffer
 
       begin
         ast, comments, tokens = parser.tokenize(source_buffer)
@@ -28,17 +23,33 @@ module Rubocop
         # All errors are in diagnostics. No need to handle exception.
       end
 
-      if tokens
-        tokens = tokens.map do |t|
-          type, details = *t
-          text, range = *details
-          Rubocop::Cop::Token.new(range, type, text)
-        end
-      end
-
-      source = source_buffer.source.split($RS)
+      tokens = repack_tokens(tokens)
 
       [ast, comments, tokens, source_buffer, source, diagnostics]
+    end
+
+    def parse_file(path)
+      parse(File.read(path), path)
+    end
+
+    def create_parser
+      parser = Parser::CurrentRuby.new
+
+      # On JRuby and Rubinius, there's a risk that we hang in
+      # tokenize() if we don't set the all errors as fatal flag.
+      parser.diagnostics.all_errors_are_fatal = RUBY_ENGINE != 'ruby'
+      parser.diagnostics.ignore_warnings      = false
+
+      parser
+    end
+
+    def repack_tokens(parser_tokens)
+      return nil unless parser_tokens
+      parser_tokens.map do |t|
+        type, details = *t
+        text, range = *details
+        Cop::Token.new(range, type, text)
+      end
     end
 
     def disabled_lines_in(source)
