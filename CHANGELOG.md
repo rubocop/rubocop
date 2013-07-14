@@ -17,6 +17,7 @@
 * Cops don't inherit from `Parser::AST::Rewriter` anymore. All 3rd party Cops should remove the call to `super` in their
   callbacks. If you implement your own processing you need to define the `#investigate` method instead of `#inspect`. Refer to
   the documentation of `Cop::Commissioner` and `Cop::Cop` classes for more information.
+* `EndAlignment` cop split into `EndAlignment` and `BlockAlignment` cops.
 
 ### Bugs fixed
 
@@ -26,6 +27,8 @@
 * [#345](https://github.com/bbatsov/rubocop/issues/345) - add `$SAFE` to the list of built-in global variables
 * [#340](https://github.com/bbatsov/rubocop/issues/340) - override config parameters rather than merging them
 * [#349](https://github.com/bbatsov/rubocop/issues/349) - fix false positive for `CharacterLiteral` (`%w(?)`)
+* [#346](https://github.com/bbatsov/rubocop/issues/346) - support method chains for block end alignment checks
+* [#350](https://github.com/bbatsov/rubocop/issues/350) - support line breaks between variables on left hand side for block end alignment checks
 
 ### Misc
 
