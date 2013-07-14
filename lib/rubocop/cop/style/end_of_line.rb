@@ -7,11 +7,12 @@ module Rubocop
       class EndOfLine < Cop
         MSG = 'Carriage return character detected.'
 
-        def investigate(source_buffer, source, tokens, ast, comments)
-          source.each_with_index do |line, index|
+        def investigate(processed_source)
+          processed_source.lines.each_with_index do |line, index|
             if line =~ /\r$/
               add_offence(:convention,
-                          source_range(source_buffer, source[0...index],
+                          source_range(processed_source.buffer,
+                                       processed_source[0...index],
                                        line.length - 1, 1),
                           MSG)
             end

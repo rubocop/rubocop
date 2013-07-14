@@ -8,13 +8,14 @@ module Rubocop
       class LineLength < Cop
         MSG = 'Line is too long. [%d/%d]'
 
-        def investigate(source_buffer, source, tokens, ast, comments)
-          source.each_with_index do |line, index|
+        def investigate(processed_source)
+          processed_source.lines.each_with_index do |line, index|
             max = LineLength.max
             if line.length > max
               message = sprintf(MSG, line.length, max)
               add_offence(:convention,
-                          source_range(source_buffer, source[0...index], max,
+                          source_range(processed_source.buffer,
+                                       processed_source[0...index], max,
                                        line.length - max),
                           message)
             end

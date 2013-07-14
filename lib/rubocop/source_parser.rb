@@ -11,7 +11,6 @@ module Rubocop
       source_buffer.source = string
 
       parser = create_parser
-      source = string.split($RS)
       diagnostics = []
       parser.diagnostics.consumer = lambda do |diagnostic|
         diagnostics << diagnostic
@@ -25,7 +24,7 @@ module Rubocop
 
       tokens = repack_tokens(tokens)
 
-      [ast, comments, tokens, source_buffer, source, diagnostics]
+      ProcessedSource.new(ast, comments, tokens, source_buffer, diagnostics)
     end
 
     def parse_file(path)

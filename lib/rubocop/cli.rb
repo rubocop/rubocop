@@ -78,9 +78,7 @@ module Rubocop
 
     def inspect_file(file)
       begin
-        ast, comments, tokens, source_buffer, source, diagnostics =
-          SourceParser.parse_file(file)
-
+        processed_source = SourceParser.parse_file(file)
       rescue Encoding::UndefinedConversionError, ArgumentError => e
         handle_error(e, "An error occurred while parsing #{file}.".color(:red))
         return []
@@ -89,12 +87,14 @@ module Rubocop
       # If we got any syntax errors, return only the syntax offences.
       # Parser may return nil for AST even though there are no syntax errors.
       # e.g. sources which contain only comments
-      unless diagnostics.empty?
-        return diagnostics.map { |d| Cop::Offence.from_diagnostic(d) }
+      unless processed_source.diagnostics.empty?
+        return processed_source.diagnostics.map do |diagnostic|
+                 Cop::Offence.from_diagnostic(diagnostic)
+               end
       end
 
       config = @config_store.for(file)
-      disabled_lines = SourceParser.disabled_lines_in(source)
+      disabled_lines = SourceParser.disabled_lines_in(processed_source.lines)
 
       set_config_for_all_cops(config)
 
@@ -109,8 +109,7 @@ module Rubocop
         end
       end
       commissioner = Cop::Commissioner.new(cops)
-      offences =
-        commissioner.investigate(source_buffer, source, tokens, ast, comments)
+      offences = commissioner.investigate(processed_source)
       process_commissioner_errors(file, commissioner.errors)
       offences.sort
     end

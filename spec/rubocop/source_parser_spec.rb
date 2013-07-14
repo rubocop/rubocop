@@ -25,72 +25,61 @@ module Rubocop
         create_file(file, source)
       end
 
-      it 'yields a source buffer to the passed block' do
-        SourceParser.parse(file) do |buffer|
-          expect(buffer).to be_a(Parser::Source::Buffer)
-          buffer.read
-        end
-      end
-
-      let (:return_values) do
+      let (:processed_source) do
         SourceParser.parse_file(file)
       end
 
-      it 'returns the root node of AST as first return value' do
-        node = return_values[0]
-        expect(node).to be_a(Parser::AST::Node)
+      it 'returns ProcessedSource' do
+        expect(processed_source).to be_a(ProcessedSource)
       end
 
-      it 'returns an array of comments as second return value' do
-        comments = return_values[1]
-        expect(comments).to be_a(Array)
-        expect(comments.first).to be_a(Parser::Source::Comment)
-      end
-
-      it 'returns an array of tokens as third return value' do
-        tokens = return_values[2]
-        expect(tokens).to be_a(Array)
-        expect(tokens.first).to be_a(Cop::Token)
-      end
-
-      it 'returns the source buffer as fourth return value' do
-        source_buffer = return_values[3]
-        expect(source_buffer).to be_a(Parser::Source::Buffer)
-      end
-
-      it 'returns an array of source lines as fifth return value' do
-        source_lines = return_values[4]
-        expect(source_lines).to be_a(Array)
-        expect(source_lines.first).to eq('# encoding: utf-8')
-      end
-
-      context 'when the source is valid' do
-        it 'returns empty array as sixth return value' do
-          diagnostics = return_values[5]
-          expect(diagnostics).to be_a(Array)
-          expect(diagnostics).to be_empty
-        end
-      end
-
-      context 'when the source has invalid syntax' do
-        let(:source) do
-          [
-            '# encoding: utf-8',
-            '',
-            'def some_method',
-            "  puts 'foo'",
-            'end',
-            '',
-            'some_method',
-            '',
-            '?invalid_syntax'
-          ]
+      describe 'the returned processed source' do
+        it 'has the root node of AST' do
+          expect(processed_source.ast).to be_a(Parser::AST::Node)
         end
 
-        it 'returns an array of diagnostics as sixth return value' do
-          diagnostics = return_values[5]
-          expect(diagnostics).to be_a(Array)
-          expect(diagnostics.first).to be_a(Parser::Diagnostic)
+        it 'has an array of comments' do
+          expect(processed_source.comments).to be_a(Array)
+          expect(processed_source.comments.first)
+            .to be_a(Parser::Source::Comment)
+        end
+
+        it 'has an array of tokens' do
+          expect(processed_source.tokens).to be_a(Array)
+          expect(processed_source.tokens.first).to be_a(Cop::Token)
+        end
+
+        it 'has a source buffer' do
+          expect(processed_source.buffer).to be_a(Parser::Source::Buffer)
+        end
+
+        context 'when the source is valid' do
+          it 'does not have diagnostics' do
+            expect(processed_source.diagnostics).to be_a(Array)
+            expect(processed_source.diagnostics).to be_empty
+          end
+        end
+
+        context 'when the source has invalid syntax' do
+          let(:source) do
+            [
+              '# encoding: utf-8',
+              '',
+              'def some_method',
+              "  puts 'foo'",
+              'end',
+              '',
+              'some_method',
+              '',
+              '?invalid_syntax'
+            ]
+          end
+
+          it 'has an array of diagnostics' do
+            expect(processed_source.diagnostics).to be_a(Array)
+            expect(processed_source.diagnostics.first)
+              .to be_a(Parser::Diagnostic)
+          end
         end
       end
     end
