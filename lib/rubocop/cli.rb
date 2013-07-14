@@ -89,7 +89,9 @@ module Rubocop
       # If we got any syntax errors, return only the syntax offences.
       # Parser may return nil for AST even though there are no syntax errors.
       # e.g. sources which contain only comments
-      return syntax_offences(diagnostics) unless diagnostics.empty?
+      unless diagnostics.empty?
+        return diagnostics.map { |d| Cop::Offence.from_diagnostic(d) }
+      end
 
       config = @config_store.for(file)
       disabled_lines = SourceParser.disabled_lines_in(source)
@@ -111,13 +113,6 @@ module Rubocop
         commissioner.investigate(source_buffer, source, tokens, ast, comments)
       process_commissioner_errors(file, commissioner.errors)
       offences.sort
-    end
-
-    def syntax_offences(diagnostics)
-      diagnostics.map do |d|
-        Cop::Offence.new(d.level, d.location, "#{d.message}",
-                         'Syntax')
-      end
     end
 
     def process_commissioner_errors(file, file_errors)
