@@ -99,10 +99,10 @@ module Rubocop
 
           it 'does not accepts = in condition surrounded with braces' do
             inspect_source(cop,
-                           ['if (test == 10)',
+                           ['if (test = 10)',
                            'end'
                            ])
-            expect(cop.offences).to be_empty
+            expect(cop.offences.size).to eq(1)
           end
         end
       end
