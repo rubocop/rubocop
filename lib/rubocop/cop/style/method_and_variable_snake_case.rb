@@ -16,9 +16,10 @@ module Rubocop
           + - * / % ** ~ +@ -@ [] []= ` ! != !~
         ).map(&:to_sym)
 
-        def investigate(source_buffer, source, tokens, node, comments)
-          return unless node
-          on_node([:def, :defs, :lvasgn, :ivasgn, :send], node) do |n|
+        def investigate(processed_source)
+          ast = processed_source.ast
+          return unless ast
+          on_node([:def, :defs, :lvasgn, :ivasgn, :send], ast) do |n|
             name = case n.type
                    when :def
                      name_of_instance_method(n)

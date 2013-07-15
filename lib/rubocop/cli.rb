@@ -78,9 +78,7 @@ module Rubocop
 
     def inspect_file(file)
       begin
-        ast, comments, tokens, source_buffer, source, diagnostics =
-          SourceParser.parse_file(file)
-
+        processed_source = SourceParser.parse_file(file)
       rescue Encoding::UndefinedConversionError, ArgumentError => e
         handle_error(e, "An error occurred while parsing #{file}.".color(:red))
         return []
@@ -89,35 +87,28 @@ module Rubocop
       # If we got any syntax errors, return only the syntax offences.
       # Parser may return nil for AST even though there are no syntax errors.
       # e.g. sources which contain only comments
-      return syntax_offences(diagnostics) unless diagnostics.empty?
+      unless processed_source.diagnostics.empty?
+        return processed_source.diagnostics.map do |diagnostic|
+                 Cop::Offence.from_diagnostic(diagnostic)
+               end
+      end
 
       config = @config_store.for(file)
-      disabled_lines = SourceParser.disabled_lines_in(source)
 
       set_config_for_all_cops(config)
 
       cops = []
       @cops.each do |cop_class|
         cop_name = cop_class.cop_name
-        if config.cop_enabled?(cop_name)
-          if !@options[:only] || @options[:only] == cop_name
-            cop = setup_cop(cop_class, disabled_lines)
-            cops << cop
-          end
-        end
+        next unless config.cop_enabled?(cop_name)
+        next unless !@options[:only] || @options[:only] == cop_name
+        cop = setup_cop(cop_class, processed_source.disabled_lines_for_cops)
+        cops << cop
       end
       commissioner = Cop::Commissioner.new(cops)
-      offences =
-        commissioner.investigate(source_buffer, source, tokens, ast, comments)
+      offences = commissioner.investigate(processed_source)
       process_commissioner_errors(file, commissioner.errors)
       offences.sort
-    end
-
-    def syntax_offences(diagnostics)
-      diagnostics.map do |d|
-        Cop::Offence.new(d.level, d.location, "#{d.message}",
-                         'Syntax')
-      end
     end
 
     def process_commissioner_errors(file, file_errors)
@@ -136,11 +127,13 @@ module Rubocop
       end
     end
 
-    def setup_cop(cop_class, disabled_lines = nil)
+    def setup_cop(cop_class, disabled_lines_for_cops = nil)
       cop = cop_class.new
       cop.debug = @options[:debug]
       cop.autocorrect = @options[:autocorrect]
-      cop.disabled_lines = disabled_lines[cop_class.cop_name] if disabled_lines
+      if disabled_lines_for_cops
+        cop.disabled_lines = disabled_lines_for_cops[cop_class.cop_name]
+      end
       cop
     end
 

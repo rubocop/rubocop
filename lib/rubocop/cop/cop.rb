@@ -30,7 +30,7 @@ module Rubocop
     # @example
     #
     # class CustomCop < Cop
-    #   def investigate(source_buffer, source, tokens, ast, comments)
+    #   def investigate(processed_source)
     #     # Do custom processing
     #   end
     # end

@@ -8,10 +8,10 @@ module Rubocop
       class Semicolon < Cop
         MSG = 'Do not use semicolons to terminate expressions.'
 
-        def investigate(source_buffer, source, tokens, ast, comments)
-          return unless ast
+        def investigate(processed_source)
+          return unless processed_source.ast
 
-          on_node(:begin, ast) do |node|
+          on_node(:begin, processed_source.ast) do |node|
             exprs = node.children
 
             next if exprs.size < 2
@@ -26,20 +26,26 @@ module Rubocop
                 # TODO: Find the correct position of the semicolon. We don't
                 # know if the first semicolon on the line is a separator of
                 # expressions. It's just a guess.
-                column = source[line - 1].index(';')
+                column = processed_source[line - 1].index(';')
                 add_offence(:convention,
-                            source_range(source_buffer, source[0...(line - 1)],
+                            source_range(processed_source.buffer,
+                                         processed_source[0...(line - 1)],
                                          column, 1),
                             MSG)
               end
             end
           end
 
-          tokens.group_by { |t| t.pos.line }.each do |line, line_tokens|
-            if line_tokens.last.type == :tSEMI # rubocop:disable SymbolName
-              column = line_tokens.last.pos.column
+          tokens_for_lines = processed_source.tokens.group_by do |token|
+            token.pos.line
+          end
+
+          tokens_for_lines.each do |line, tokens|
+            if tokens.last.type == :tSEMI # rubocop:disable SymbolName
+              column = tokens.last.pos.column
               add_offence(:convention,
-                          source_range(source_buffer, source[0...(line - 1)],
+                          source_range(processed_source.buffer,
+                                       processed_source[0...(line - 1)],
                                        column, 1),
                           MSG)
             end

@@ -9,36 +9,36 @@ module Rubocop
       module SurroundingSpace
         def space_between?(t1, t2)
           char_preceding_2nd_token =
-            @source[t2.pos.line - 1][t2.pos.column - 1]
+            @processed_source[t2.pos.line - 1][t2.pos.column - 1]
           if char_preceding_2nd_token == '+' && t1.type != :tPLUS
             # Special case. A unary plus is not present in the tokens.
             char_preceding_2nd_token =
-              @source[t2.pos.line - 1][t2.pos.column - 2]
+              @processed_source[t2.pos.line - 1][t2.pos.column - 2]
           end
           t2.pos.line > t1.pos.line || char_preceding_2nd_token == ' '
         end
 
-        def index_of_first_token(node, tokens)
-          @token_table ||= build_token_table(tokens)
+        def index_of_first_token(node)
           b = node.loc.expression.begin
-          @token_table[[b.line, b.column]]
+          token_table[[b.line, b.column]]
         end
 
-        def index_of_last_token(node, tokens)
-          @token_table ||= build_token_table(tokens)
+        def index_of_last_token(node)
           e = node.loc.expression.end
           (0...e.column).to_a.reverse.find do |c|
-            ix = @token_table[[e.line, c]]
+            ix = token_table[[e.line, c]]
             return ix if ix
           end
         end
 
-        def build_token_table(tokens)
-          table = {}
-          tokens.each_with_index do |t, ix|
-            table[[t.pos.line, t.pos.column]] = ix
+        def token_table
+          @token_table ||= begin
+            table = {}
+            @processed_source.tokens.each_with_index do |t, ix|
+              table[[t.pos.line, t.pos.column]] = ix
+            end
+            table
           end
-          table
         end
       end
 
@@ -55,12 +55,10 @@ module Rubocop
            :tNMATCH, :tEQ,      :tNEQ,   :tGT,    :tRSHFT, :tGEQ,   :tLT,
            :tLSHFT,  :tLEQ,     :tASSOC, :tEQQ,   :tCMP,   :tOP_ASGN]
 
-        def investigate(source_buffer, source, tokens, sexp, comments)
-          return unless sexp
-
-          @source = source
-          positions_not_to_check = get_positions_not_to_check(tokens, sexp)
-
+        def investigate(processed_source)
+          return unless processed_source.ast
+          @processed_source = processed_source
+          tokens = processed_source.tokens
           tokens.each_cons(3) do |token_before, token, token_after|
             next if token_before.type == :kDEF # TODO: remove?
             next if token_before.type == :tDOT # Called as method.
@@ -80,77 +78,87 @@ module Rubocop
         # Returns an array of positions marking the tokens that this cop
         # should not check, either because the token is not an operator
         # or because another cop does the check.
-        def get_positions_not_to_check(tokens, sexp)
-          positions_not_to_check = []
-          do_not_check_block_arg_pipes(sexp, positions_not_to_check)
-          do_not_check_param_default(tokens, sexp, positions_not_to_check)
-          do_not_check_class_lshift_self(tokens, sexp, positions_not_to_check)
-          do_not_check_def_things(tokens, sexp, positions_not_to_check)
-          do_not_check_singleton_operator_defs(tokens, sexp,
-                                               positions_not_to_check)
-          positions_not_to_check
+        def positions_not_to_check
+          @positions_not_to_check ||= begin
+            positions = []
+            positions.concat(do_not_check_block_arg_pipes)
+            positions.concat(do_not_check_param_default)
+            positions.concat(do_not_check_class_lshift_self)
+            positions.concat(do_not_check_def_things)
+            positions.concat(do_not_check_singleton_operator_defs)
+            positions
+          end
         end
 
-        def do_not_check_block_arg_pipes(sexp, positions_not_to_check)
+        def do_not_check_block_arg_pipes
           # each { |a| }
           #        ^ ^
-          on_node(:block, sexp) do |b|
+          positions = []
+          on_node(:block, @processed_source.ast) do |b|
             on_node(:args, b) do |a|
-              positions_not_to_check << a.loc.begin << a.loc.end if a.loc.begin
+              positions << a.loc.begin << a.loc.end if a.loc.begin
             end
           end
+          positions
         end
 
-        def do_not_check_param_default(tokens, sexp, positions_not_to_check)
+        def do_not_check_param_default
           # func(a, b=nil)
           #          ^
-          on_node(:optarg, sexp) do |optarg|
-            _arg, equals, _value = tokens[index_of_first_token(optarg, tokens),
+          positions = []
+          tokens = @processed_source.tokens
+          on_node(:optarg, @processed_source.ast) do |optarg|
+            _arg, equals, _value = tokens[index_of_first_token(optarg),
                                           3]
-            positions_not_to_check << equals.pos
+            positions << equals.pos
           end
+          positions
         end
 
-        def do_not_check_class_lshift_self(tokens,
-                                           sexp,
-                                           positions_not_to_check)
+        def do_not_check_class_lshift_self
           # class <<self
           #       ^
-          on_node(:sclass, sexp) do |sclass|
-            ix = index_of_first_token(sclass, tokens)
+          positions = []
+          tokens = @processed_source.tokens
+          on_node(:sclass, @processed_source.ast) do |sclass|
+            ix = index_of_first_token(sclass)
             if tokens[ix, 2].map(&:type) == [:kCLASS, :tLSHFT]
-              positions_not_to_check << tokens[ix + 1].pos
+              positions << tokens[ix + 1].pos
             end
           end
+          positions
         end
 
-        def do_not_check_def_things(tokens, sexp, positions_not_to_check)
+        def do_not_check_def_things
           # def +(other)
           #     ^
-          on_node(:def, sexp) do |def_node|
+          positions = []
+          tokens = @processed_source.tokens
+          on_node(:def, @processed_source.ast) do |def_node|
             # def each &block
             #          ^
             # def each *args
             #          ^
             on_node([:blockarg, :restarg], def_node) do |arg_node|
-              positions_not_to_check <<
-                tokens[index_of_first_token(arg_node, tokens)].pos
+              positions << tokens[index_of_first_token(arg_node)].pos
             end
-            positions_not_to_check <<
-              tokens[index_of_first_token(def_node, tokens) + 1].pos
+            positions << tokens[index_of_first_token(def_node) + 1].pos
           end
+          positions
         end
 
-        def do_not_check_singleton_operator_defs(tokens, sexp,
-                                                 positions_not_to_check)
+        def do_not_check_singleton_operator_defs
           # def self.===(other)
           #          ^
-          on_node(:defs, sexp) do |defs_node|
+          positions = []
+          tokens = @processed_source.tokens
+          on_node(:defs, @processed_source.ast) do |defs_node|
             _receiver, name, _args = *defs_node
-            ix = index_of_first_token(defs_node, tokens)
+            ix = index_of_first_token(defs_node)
             name_token = tokens[ix..-1].find { |t| t.text == name.to_s }
-            positions_not_to_check << name_token.pos
+            positions << name_token.pos
           end
+          positions
         end
 
         def check_missing_space(token_before, token, token_after)
@@ -172,11 +180,11 @@ module Rubocop
         MSG_LEFT = "Surrounding space missing for '{'."
         MSG_RIGHT = "Space missing to the left of '}'."
 
-        def investigate(source_buffer, source, tokens, sexp, comments)
-          return unless sexp
-          @source = source
-          positions_not_to_check = get_positions_not_to_check(tokens, sexp)
-          tokens.each_cons(2) do |t1, t2|
+        def investigate(processed_source)
+          return unless processed_source.ast
+          @processed_source = processed_source
+
+          processed_source.tokens.each_cons(2) do |t1, t2|
             next if ([t1.pos, t2.pos] - positions_not_to_check).size < 2
 
             type1, type2 = t1.type, t2.type
@@ -187,25 +195,30 @@ module Rubocop
           end
         end
 
-        def get_positions_not_to_check(tokens, sexp)
-          positions_not_to_check = []
+        def positions_not_to_check
+          @positions_not_to_check ||= begin
+            positions = []
+            ast = @processed_source.ast
+            tokens = @processed_source.tokens
 
-          on_node(:hash, sexp) do |hash|
-            b_ix = index_of_first_token(hash, tokens)
-            e_ix = index_of_last_token(hash, tokens)
-            positions_not_to_check << tokens[b_ix].pos << tokens[e_ix].pos
-          end
-
-          # TODO: Check braces inside string/symbol/regexp/xstr interpolation.
-          on_node([:dstr, :dsym, :regexp, :xstr], sexp) do |s|
-            b_ix = index_of_first_token(s, tokens)
-            e_ix = index_of_last_token(s, tokens)
-            tokens[b_ix..e_ix].each do |t|
-              positions_not_to_check << t.pos if t.type == :tRCURLY
+            on_node(:hash, ast) do |hash|
+              b_ix = index_of_first_token(hash)
+              e_ix = index_of_last_token(hash)
+              positions << tokens[b_ix].pos << tokens[e_ix].pos
             end
-          end
 
-          positions_not_to_check
+            # TODO: Check braces inside string/symbol/regexp/xstr
+            #   interpolation.
+            on_node([:dstr, :dsym, :regexp, :xstr], ast) do |s|
+              b_ix = index_of_first_token(s)
+              e_ix = index_of_last_token(s)
+              tokens[b_ix..e_ix].each do |t|
+                positions << t.pos if t.type == :tRCURLY
+              end
+            end
+
+            positions
+          end
         end
 
         def check(t1, t2, msg)
@@ -222,16 +235,16 @@ module Rubocop
         include SurroundingSpace
         MSG = 'Space inside %s detected.'
 
-        def investigate(source_buffer, source, tokens, sexp, comments)
-          @source = source
+        def investigate(processed_source)
+          @processed_source = processed_source
           left, right, kind = specifics
-          tokens.each_cons(2) do |t1, t2|
+          processed_source.tokens.each_cons(2) do |t1, t2|
             if t1.type == left || t2.type == right
               if t2.pos.line == t1.pos.line && space_between?(t1, t2)
-                space_range = Parser::Source::Range.new(source_buffer,
-                                                        t1.pos.end_pos,
-                                                        t2.pos.begin_pos)
-                add_offence(:convention, space_range, format(MSG, kind))
+                range = Parser::Source::Range.new(processed_source.buffer,
+                                                  t1.pos.end_pos,
+                                                  t2.pos.begin_pos)
+                add_offence(:convention, range, format(MSG, kind))
               end
             end
           end
@@ -262,12 +275,14 @@ module Rubocop
         include SurroundingSpace
         MSG = 'Space inside hash literal braces %s.'
 
-        def investigate(source_buffer, source, tokens, sexp, comments)
-          return unless sexp
-          @source = source
-          on_node(:hash, sexp) do |hash|
-            b_ix = index_of_first_token(hash, tokens)
-            e_ix = index_of_last_token(hash, tokens)
+        def investigate(processed_source)
+          return unless processed_source.ast
+          @processed_source = processed_source
+          tokens = processed_source.tokens
+
+          on_node(:hash, processed_source.ast) do |hash|
+            b_ix = index_of_first_token(hash)
+            e_ix = index_of_last_token(hash)
             if tokens[b_ix].type == :tLBRACE # Hash literal with braces?
               check(tokens[b_ix], tokens[b_ix + 1])
               check(tokens[e_ix - 1], tokens[e_ix])
@@ -297,12 +312,12 @@ module Rubocop
         include SurroundingSpace
         MSG = 'Surrounding space missing in default value assignment.'
 
-        def investigate(source_buffer, source, tokens, sexp, comments)
-          return unless sexp
-          @source = source
-          on_node(:optarg, sexp) do |optarg|
-            index = index_of_first_token(optarg, tokens)
-            arg, equals, value = tokens[index, 3]
+        def investigate(processed_source)
+          return unless processed_source.ast
+          @processed_source = processed_source
+          on_node(:optarg, processed_source.ast) do |optarg|
+            index = index_of_first_token(optarg)
+            arg, equals, value = processed_source.tokens[index, 3]
             unless space_between?(arg, equals) && space_between?(equals, value)
               add_offence(:convention, equals.pos, MSG)
             end

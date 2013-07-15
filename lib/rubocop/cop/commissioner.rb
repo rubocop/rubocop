@@ -48,10 +48,10 @@ module Rubocop
         EOS
       end
 
-      def investigate(source_buffer, source, tokens, ast, comments)
+      def investigate(processed_source)
         reset_errors
-        invoke_cops_callback(source_buffer, source, tokens, ast, comments)
-        process(ast) if ast
+        invoke_cops_callback(processed_source)
+        process(processed_source.ast) if processed_source.ast
         @cops.reduce([]) do |offences, cop|
           offences.concat(cop.offences)
           offences
@@ -68,10 +68,10 @@ module Rubocop
       # If they define the #investigate method all input parameters passed
       # to the commissioner will be passed to the cop too in order to do
       # its own processing.
-      def invoke_cops_callback(source_buffer, source, tokens, ast, comments)
+      def invoke_cops_callback(processed_source)
         @cops.each do |cop|
           if cop.respond_to?(:investigate)
-            cop.investigate(source_buffer, source, tokens, ast, comments)
+            cop.investigate(processed_source)
           end
         end
       end

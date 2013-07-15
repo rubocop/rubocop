@@ -7,11 +7,12 @@ module Rubocop
       class TrailingWhitespace < Cop
         MSG = 'Trailing whitespace detected.'
 
-        def investigate(source_buffer, source, tokens, ast, comments)
-          source.each_with_index do |line, index|
+        def investigate(processed_source)
+          processed_source.lines.each_with_index do |line, index|
             if line =~ /.*[ \t]+$/
               add_offence(:convention,
-                          source_range(source_buffer, source[0...index],
+                          source_range(processed_source.buffer,
+                                       processed_source[0...index],
                                        line.rstrip.length,
                                        line.length - line.rstrip.length),
                           MSG)

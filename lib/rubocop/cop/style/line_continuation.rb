@@ -10,11 +10,12 @@ module Rubocop
       class LineContinuation < Cop
         MSG = 'Avoid the use of the line continuation character(\).'
 
-        def investigate(source_buffer, source, tokens, ast, comments)
-          source.each_with_index do |line, index|
+        def investigate(processed_source)
+          processed_source.lines.each_with_index do |line, index|
             if line =~ /.*\\\z/
               add_offence(:convention,
-                          source_range(source_buffer, source[0...index],
+                          source_range(processed_source.buffer,
+                                       processed_source[0...index],
                                        line.length - 1, 1),
                           MSG)
             end
