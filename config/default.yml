@@ -73,3 +73,11 @@ DotPosition:
 TrivialAccessors:
   ExactNameMatch: false
   AllowPredicates: false
+
+# Allow safe assignment in conditions.
+AssignmentInCondition:
+  AllowSafeAssignment: true
+
+# Allow safe assignment in conditions.
+ParenthesesAroundCondition:
+  AllowSafeAssignment: true

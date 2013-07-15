@@ -6,6 +6,7 @@ module Rubocop
       # This cop checks for the presence of superfluous parentheses around the
       # condition of if/while/until.
       class ParenthesesAroundCondition < Cop
+        ASGN_NODES = [:lvasgn, :ivasgn, :cvasgn, :gvasgn, :casgn]
         MSG = "Don't use parentheses around the condition of an " +
           'if/unless/while/until'
 
@@ -27,8 +28,19 @@ module Rubocop
           cond, _body = *node
 
           if cond.type == :begin
+            # allow safe assignment
+            return if safe_assignment?(cond) && safe_assignment_allowed?
+
             add_offence(:convention, cond.loc.expression, MSG)
           end
+        end
+
+        def safe_assignment?(node)
+          node.children.size == 1 && ASGN_NODES.include?(node.children[0].type)
+        end
+
+        def safe_assignment_allowed?
+          ParenthesesAroundCondition.config['AllowSafeAssignment']
         end
       end
     end

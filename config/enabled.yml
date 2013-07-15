@@ -377,7 +377,6 @@ Attr:
 # Don't use assignment in conditions.
 AssignmentInCondition:
   Enabled: true
-  AllowSafeAssignment: true
 
 # Align ends correctly.
 EndAlignment:
