@@ -40,7 +40,7 @@ module Rubocop
 
       tokens = repack_tokens(tokens)
 
-      ProcessedSource.new(ast, comments, tokens, source_buffer, diagnostics)
+      ProcessedSource.new(source_buffer, ast, comments, tokens, diagnostics)
     end
 
     def create_parser

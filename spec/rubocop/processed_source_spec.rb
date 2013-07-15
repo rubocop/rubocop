@@ -6,10 +6,10 @@ module Rubocop
   describe ProcessedSource do
     subject(:processed_source) do
       ProcessedSource.new(
+        buffer,
         double('ast'),
         double('comments'),
         double('tokens'),
-        buffer,
         double('diagnostics')
       )
     end
