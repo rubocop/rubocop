@@ -84,7 +84,7 @@ module Rubocop
       end
     end
 
-    describe '.disabled_lines_in' do
+    describe '.cop_disabled_lines_in' do
       let(:source) do
         [
           '# encoding: utf-8',
@@ -105,7 +105,7 @@ module Rubocop
         ]
       end
 
-      let(:disabled_lines) { SourceParser.disabled_lines_in(source) }
+      let(:disabled_lines) { SourceParser.cop_disabled_lines_in(source) }
 
       it 'has keys for disabled cops' do
         expect(disabled_lines).to have_key('MethodLength')

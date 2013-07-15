@@ -94,19 +94,16 @@ module Rubocop
       end
 
       config = @config_store.for(file)
-      disabled_lines = SourceParser.disabled_lines_in(processed_source.lines)
 
       set_config_for_all_cops(config)
 
       cops = []
       @cops.each do |cop_class|
         cop_name = cop_class.cop_name
-        if config.cop_enabled?(cop_name)
-          if !@options[:only] || @options[:only] == cop_name
-            cop = setup_cop(cop_class, disabled_lines)
-            cops << cop
-          end
-        end
+        next unless config.cop_enabled?(cop_name)
+        next unless !@options[:only] || @options[:only] == cop_name
+        cop = setup_cop(cop_class, processed_source.disabled_lines_for_cops)
+        cops << cop
       end
       commissioner = Cop::Commissioner.new(cops)
       offences = commissioner.investigate(processed_source)
@@ -130,11 +127,13 @@ module Rubocop
       end
     end
 
-    def setup_cop(cop_class, disabled_lines = nil)
+    def setup_cop(cop_class, disabled_lines_for_cops = nil)
       cop = cop_class.new
       cop.debug = @options[:debug]
       cop.autocorrect = @options[:autocorrect]
-      cop.disabled_lines = disabled_lines[cop_class.cop_name] if disabled_lines
+      if disabled_lines_for_cops
+        cop.disabled_lines = disabled_lines_for_cops[cop_class.cop_name]
+      end
       cop
     end
 
