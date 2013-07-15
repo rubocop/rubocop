@@ -46,8 +46,10 @@ module Rubocop
     def create_parser
       parser = Parser::CurrentRuby.new
 
-      # On JRuby and Rubinius, there's a risk that we hang in
-      # tokenize() if we don't set the all errors as fatal flag.
+      # On JRuby and Rubinius, there's a risk that we hang in tokenize() if we
+      # don't set the all errors as fatal flag. The problem is caused by a bug
+      # in Racc that is discussed in issue #93 of the whitequark/parser project
+      # on GitHub.
       parser.diagnostics.all_errors_are_fatal = RUBY_ENGINE != 'ruby'
       parser.diagnostics.ignore_warnings      = false
 
