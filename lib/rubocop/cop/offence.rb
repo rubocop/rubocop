@@ -9,6 +9,15 @@ module Rubocop
       # @api private
       SEVERITIES = [:refactor, :convention, :warning, :error, :fatal]
 
+      def self.from_diagnostic(diagnostic)
+        new(
+          diagnostic.level,
+          diagnostic.location,
+          diagnostic.message,
+          'Syntax'
+        )
+      end
+
       # @api public
       #
       # @!attribute [r] severity

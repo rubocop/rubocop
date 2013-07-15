@@ -10,8 +10,8 @@ module Rubocop
           'colon and a space, then a note describing the problem.'
         KEYWORDS = %w(TODO FIXME OPTIMIZE HACK REVIEW)
 
-        def investigate(source_buffer, source, tokens, ast, comments)
-          comments.each do |comment|
+        def investigate(processed_source)
+          processed_source.comments.each do |comment|
             match = comment.text.match(/^(# ?)([A-Za-z]+)(\s*:)?(\s+)?(\S+)?/)
             if match
               margin, first_word, colon, space, note = *match.captures
@@ -19,7 +19,8 @@ module Rubocop
                   !correct_annotation?(first_word, colon, space, note)
                 start = comment.loc.begin_pos + margin.length
                 length = first_word.length + (colon || '').length
-                range = Parser::Source::Range.new(source_buffer, start,
+                range = Parser::Source::Range.new(processed_source.buffer,
+                                                  start,
                                                   start + length)
                 add_offence(:convention, range, MSG)
               end

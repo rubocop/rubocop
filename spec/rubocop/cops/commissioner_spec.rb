@@ -11,9 +11,9 @@ module Rubocop
           cop = double(Cop, offences: [1])
           commissioner = Commissioner.new([cop])
           source = []
-          ast, comments, tokens, src_buffer, _ = parse_source(source)
+          processed_source = parse_source(source)
 
-          expect(commissioner.investigate(src_buffer, source, tokens, ast, comments)).to eq [1]
+          expect(commissioner.investigate(processed_source)).to eq [1]
         end
 
         it 'traverses the AST and invoke cops specific callbacks' do
@@ -22,20 +22,20 @@ module Rubocop
 
           commissioner = Commissioner.new([cop])
           source = ['def method', '1', 'end']
-          ast, comments, tokens, src_buffer, _ = parse_source(source)
+          processed_source = parse_source(source)
 
-          commissioner.investigate(src_buffer, source, tokens, ast, comments)
+          commissioner.investigate(processed_source)
         end
 
         it 'passes the input params to all cops that implement their own #investigate method' do
           source = []
-          ast, comments, tokens, src_buffer, _ = parse_source(source)
+          processed_source = parse_source(source)
           cop = double(Cop, offences: [])
-          cop.should_receive(:investigate).with(src_buffer, source, tokens, ast, comments)
+          cop.should_receive(:investigate).with(processed_source)
 
           commissioner = Commissioner.new([cop])
 
-          commissioner.investigate(src_buffer, source, tokens, ast, comments)
+          commissioner.investigate(processed_source)
         end
 
         it 'stores all errors raised by the cops' do
@@ -44,9 +44,9 @@ module Rubocop
 
           commissioner = Commissioner.new([cop])
           source = ['def method', '1', 'end']
-          ast, comments, tokens, src_buffer, _ = parse_source(source)
+          processed_source = parse_source(source)
 
-          commissioner.investigate(src_buffer, source, tokens, ast, comments)
+          commissioner.investigate(processed_source)
 
           expect(commissioner.errors[cop]).to have(1).item
           expect(commissioner.errors[cop][0]).to be_instance_of(RuntimeError)
@@ -59,10 +59,10 @@ module Rubocop
 
           commissioner = Commissioner.new([cop], raise_error: true)
           source = ['def method', '1', 'end']
-          ast, comments, tokens, src_buffer, _ = parse_source(source)
+          processed_source = parse_source(source)
 
           expect do
-            commissioner.investigate(src_buffer, source, tokens, ast, comments)
+            commissioner.investigate(processed_source)
           end.to raise_error(RuntimeError)
           end
         end

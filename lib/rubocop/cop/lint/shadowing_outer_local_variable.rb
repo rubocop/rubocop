@@ -12,8 +12,8 @@ module Rubocop
 
         MSG = 'Shadowing outer local variable - %s'
 
-        def investigate(source_buffer, source, tokens, ast, comments)
-          inspect_variables(ast)
+        def investigate(processed_source)
+          inspect_variables(processed_source.ast)
         end
 
         def before_declaring_variable(entry)

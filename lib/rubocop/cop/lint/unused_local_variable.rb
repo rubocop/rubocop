@@ -13,8 +13,8 @@ module Rubocop
         TYPES_TO_ACCEPT_UNUSED =
           (ARGUMENT_DECLARATION_TYPES - [:shadowarg]).freeze
 
-        def investigate(source_buffer, source, tokens, ast, comments)
-          inspect_variables(ast)
+        def investigate(processed_source)
+          inspect_variables(processed_source.ast)
         end
 
         def after_leaving_scope(scope)

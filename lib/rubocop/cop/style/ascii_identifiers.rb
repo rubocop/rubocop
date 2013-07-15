@@ -9,8 +9,8 @@ module Rubocop
       class AsciiIdentifiers < Cop
         MSG = 'Use only ascii symbols in identifiers.'
 
-        def investigate(source_buffer, source, tokens, ast, comments)
-          tokens.each do |t|
+        def investigate(processed_source)
+          processed_source.tokens.each do |t|
             if t.type == :tIDENTIFIER && t.text =~ /[^\x00-\x7f]/
               add_offence(:convention, t.pos, MSG)
             end

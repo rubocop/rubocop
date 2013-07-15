@@ -75,9 +75,9 @@ RSpec.configure do |config|
 end
 
 def inspect_source(cop, source)
-  ast, comments, tokens, src_buffer, _ = parse_source(source)
+  processed_source = parse_source(source)
   commissioner = Rubocop::Cop::Commissioner.new([cop], raise_error: true)
-  commissioner.investigate(src_buffer, source, tokens, ast, comments)
+  commissioner.investigate(processed_source)
   commissioner
 end
 

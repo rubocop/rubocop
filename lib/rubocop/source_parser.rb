@@ -4,14 +4,29 @@ module Rubocop
   # SourceParser provides a way to parse Ruby source with Parser gem
   # and also parses comment directives which disable arbitrary cops.
   module SourceParser
+    COMMENT_DIRECTIVE_REGEXP = Regexp.new(
+      '^.*?(\S)?.*# rubocop : ((?:dis|en)able)\b ((?:\w+,? )+)'
+        .gsub(' ', '\s*')
+    )
+
     module_function
 
     def parse(string, name = '(string)')
+      processed_source = parse_with_parser(string, name)
+      processed_source.disabled_lines_for_cops =
+        cop_disabled_lines_in(processed_source.lines)
+      processed_source
+    end
+
+    def parse_file(path)
+      parse(File.read(path), path)
+    end
+
+    def parse_with_parser(string, name)
       source_buffer = Parser::Source::Buffer.new(name, 1)
       source_buffer.source = string
 
       parser = create_parser
-      source = string.split($RS)
       diagnostics = []
       parser.diagnostics.consumer = lambda do |diagnostic|
         diagnostics << diagnostic
@@ -25,11 +40,7 @@ module Rubocop
 
       tokens = repack_tokens(tokens)
 
-      [ast, comments, tokens, source_buffer, source, diagnostics]
-    end
-
-    def parse_file(path)
-      parse(File.read(path), path)
+      ProcessedSource.new(ast, comments, tokens, source_buffer, diagnostics)
     end
 
     def create_parser
@@ -52,23 +63,18 @@ module Rubocop
       end
     end
 
-    COMMENT_DIRECTIVE_REGEXP = Regexp.new(
-      '^.*?(\S)?.*# rubocop : ((?:dis|en)able)\b ((?:\w+,? )+)'
-        .gsub(' ', '\s*')
-    )
-
-    def disabled_lines_in(source)
-      disabled_lines = {}
+    def cop_disabled_lines_in(source_lines)
+      disabled_lines_for_cops = {}
       current_disabled_cops = {}
 
-      source.each_with_index do |line, index|
+      source_lines.each_with_index do |line, index|
         line_number = index + 1
 
         each_mentioned_cop(line) do |cop_name, disabled, single_line|
           if single_line
             next unless disabled
-            disabled_lines[cop_name] ||= []
-            disabled_lines[cop_name] << line_number
+            disabled_lines_for_cops[cop_name] ||= []
+            disabled_lines_for_cops[cop_name] << line_number
           else
             current_disabled_cops[cop_name] = disabled
           end
@@ -76,12 +82,12 @@ module Rubocop
 
         current_disabled_cops.each do |cop_name, disabled|
           next unless disabled
-          disabled_lines[cop_name] ||= []
-          disabled_lines[cop_name] << line_number
+          disabled_lines_for_cops[cop_name] ||= []
+          disabled_lines_for_cops[cop_name] << line_number
         end
       end
 
-      disabled_lines
+      disabled_lines_for_cops
     end
 
     def each_mentioned_cop(line)

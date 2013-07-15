@@ -260,8 +260,8 @@ module Rubocop
         end
 
         let(:ast) do
-          ast, *_ = Rubocop::SourceParser.parse(source)
-          ast
+          processed_source = Rubocop::SourceParser.parse(source)
+          processed_source.ast
         end
 
         # (class

@@ -10,14 +10,15 @@ module Rubocop
       class Encoding < Cop
         MSG = 'Missing utf-8 encoding comment.'
 
-        def investigate(source_buffer, source, tokens, ast, comments)
+        def investigate(processed_source)
           unless RUBY_VERSION >= '2.0.0'
-            expected_line = 0
-            expected_line += 1 if source[expected_line] =~ /^#!/
-            unless source[expected_line] =~ /#.*coding\s?: (UTF|utf)-8/
+            line_number = 0
+            line_number += 1 if processed_source[line_number] =~ /^#!/
+            line = processed_source[line_number]
+            unless line =~ /#.*coding\s?: (UTF|utf)-8/
               add_offence(:convention,
-                          source_range(source_buffer,
-                                       source[0...expected_line],
+                          source_range(processed_source.buffer,
+                                       processed_source[0...line_number],
                                        0, 1),
                           MSG)
             end

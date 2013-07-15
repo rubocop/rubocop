@@ -14,7 +14,8 @@ module Rubocop
         PROTECTED_NODE = s(:send, nil, :protected)
         PUBLIC_NODE = s(:send, nil, :public)
 
-        def investigate(source_buffer, source, tokens, ast, comments)
+        def investigate(processed_source)
+          ast = processed_source.ast
           return unless ast
           on_node([:class, :module, :sclass], ast) do |class_node|
             class_start_col = class_node.loc.expression.column
@@ -35,8 +36,8 @@ module Rubocop
 
                   send_line = send_node.loc.line
 
-                  unless source[send_line].chomp.empty? &&
-                      source[send_line - 2].chomp.empty?
+                  unless processed_source[send_line].chomp.empty? &&
+                      processed_source[send_line - 2].chomp.empty?
                     add_offence(:convention,
                                 send_node.loc.expression,
                                 format(BLANK_MSG, selector))
