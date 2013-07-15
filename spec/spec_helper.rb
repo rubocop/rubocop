@@ -82,9 +82,8 @@ def inspect_source(cop, source)
 end
 
 def parse_source(source)
-  Rubocop::CLI.parse('(string)') do |sb|
-    sb.source = source.join($RS)
-  end
+  source = source.join($RS) if source.is_a?(Array)
+  Rubocop::SourceParser.parse(source)
 end
 
 class Rubocop::Cop::Cop

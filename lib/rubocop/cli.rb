@@ -78,8 +78,8 @@ module Rubocop
 
     def inspect_file(file)
       begin
-        ast, comments, tokens, source_buffer, source, syntax_offences =
-          CLI.parse(file) { |sb| sb.read }
+        ast, comments, tokens, source_buffer, source, diagnostics =
+          SourceParser.parse_file(file)
 
       rescue Encoding::UndefinedConversionError, ArgumentError => e
         handle_error(e, "An error occurred while parsing #{file}.".color(:red))
@@ -89,10 +89,10 @@ module Rubocop
       # If we got any syntax errors, return only the syntax offences.
       # Parser may return nil for AST even though there are no syntax errors.
       # e.g. sources which contain only comments
-      return syntax_offences unless syntax_offences.empty?
+      return syntax_offences(diagnostics) unless diagnostics.empty?
 
       config = @config_store.for(file)
-      disabled_lines = disabled_lines_in(source)
+      disabled_lines = SourceParser.disabled_lines_in(source)
 
       set_config_for_all_cops(config)
 
@@ -111,6 +111,13 @@ module Rubocop
         commissioner.investigate(source_buffer, source, tokens, ast, comments)
       process_commissioner_errors(file, commissioner.errors)
       offences.sort
+    end
+
+    def syntax_offences(diagnostics)
+      diagnostics.map do |d|
+        Cop::Offence.new(d.level, d.location, "#{d.message}",
+                         'Syntax')
+      end
     end
 
     def process_commissioner_errors(file, file_errors)
@@ -246,77 +253,6 @@ module Rubocop
       puts 'Please, report your problems to RuboCop\'s issue tracker.'
       puts 'Mention the following information in the issue report:'
       puts Rubocop::Version.version(true)
-    end
-
-    def disabled_lines_in(source)
-      disabled_lines = Hash.new([])
-      disabled_section = {}
-      regexp = '# rubocop : (%s)\b ((?:\w+,? )+)'.gsub(' ', '\s*')
-      section_regexp = '^\s*' + sprintf(regexp, '(?:dis|en)able')
-      single_line_regexp = '\S.*' + sprintf(regexp, 'disable')
-
-      source.each_with_index do |line, ix|
-        each_mentioned_cop(/#{section_regexp}/, line) do |cop_name, kind|
-          disabled_section[cop_name] = (kind == 'disable')
-        end
-        disabled_section.keys.each do |cop_name|
-          disabled_lines[cop_name] += [ix + 1] if disabled_section[cop_name]
-        end
-
-        each_mentioned_cop(/#{single_line_regexp}/, line) do |cop_name, kind|
-          disabled_lines[cop_name] += [ix + 1] if kind == 'disable'
-        end
-      end
-      disabled_lines
-    end
-
-    def each_mentioned_cop(regexp, line)
-      match = line.match(regexp)
-      if match
-        kind, cops = match.captures
-        cops = Cop::Cop.all.map(&:cop_name).join(',') if cops.include?('all')
-        cops.split(/,\s*/).each { |cop_name| yield cop_name, kind }
-      end
-    end
-
-    def self.parse(file)
-      parser = Parser::CurrentRuby.new
-
-      # On JRuby and Rubinius, there's a risk that we hang in
-      # tokenize() if we don't set the all errors as fatal flag.
-      parser.diagnostics.all_errors_are_fatal = RUBY_ENGINE != 'ruby'
-      parser.diagnostics.ignore_warnings      = false
-
-      diagnostics = []
-      parser.diagnostics.consumer = lambda do |diagnostic|
-        diagnostics << diagnostic
-      end
-
-      source_buffer = Parser::Source::Buffer.new(file, 1)
-      yield source_buffer
-
-      begin
-        ast, comments, tokens = parser.tokenize(source_buffer)
-      rescue Parser::SyntaxError # rubocop:disable HandleExceptions
-        # All errors are in diagnostics. No need to handle exception.
-      end
-
-      if tokens
-        tokens = tokens.map do |t|
-          type, details = *t
-          text, range = *details
-          Rubocop::Cop::Token.new(range, type, text)
-        end
-      end
-
-      syntax_offences = diagnostics.map do |d|
-        Cop::Offence.new(d.level, d.location, "#{d.message}",
-                         'Syntax')
-      end
-
-      source = source_buffer.source.split($RS)
-
-      [ast, comments, tokens, source_buffer, source, syntax_offences]
     end
 
     private
