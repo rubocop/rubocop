@@ -4,6 +4,11 @@ module Rubocop
   # SourceParser provides a way to parse Ruby source with Parser gem
   # and also parses comment directives which disable arbitrary cops.
   module SourceParser
+    COMMENT_DIRECTIVE_REGEXP = Regexp.new(
+      '^.*?(\S)?.*# rubocop : ((?:dis|en)able)\b ((?:\w+,? )+)'
+        .gsub(' ', '\s*')
+    )
+
     module_function
 
     def parse(string, name = '(string)')
@@ -57,11 +62,6 @@ module Rubocop
         Cop::Token.new(range, type, text)
       end
     end
-
-    COMMENT_DIRECTIVE_REGEXP = Regexp.new(
-      '^.*?(\S)?.*# rubocop : ((?:dis|en)able)\b ((?:\w+,? )+)'
-        .gsub(' ', '\s*')
-    )
 
     def cop_disabled_lines_in(source_lines)
       disabled_lines_for_cops = {}
