@@ -11,7 +11,8 @@ module Rubocop
         'simple'   => SimpleTextFormatter,
         'clang'    => ClangStyleFormatter,
         'emacs'    => EmacsStyleFormatter,
-        'json'     => JSONFormatter
+        'json'     => JSONFormatter,
+        'files'    => FileListFormatter
       }
 
       FORMATTER_APIS = [:started, :file_started, :file_finished, :finished]

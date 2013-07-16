@@ -10,6 +10,7 @@
 * New cop `EmptyEnsure` tracks empty `ensure` blocks.
 * New cop `CommentAnnotation` tracks formatting of annotation comments such as TODO.
 * Added custom rake task.
+* New formatter `FileListFormatter` outputs just a list of files with offences in them (related to [#357](https://github.com/bbatsov/rubocop/issues/357)).
 
 ### Changes
 

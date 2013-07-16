@@ -165,6 +165,16 @@ subdirectories.
 
 ## Formatters
 
+### File List Formmater
+
+Sometimes you might want to just open all files with offences in your
+favorite editor. This formatter outputs just the names of the files
+with offences in them and makes it possible to do something like:
+
+```
+rubocop --format files | xargs vim
+```
+
 ### JSON Formatter
 
 You can get RuboCop's inspection result in JSON format by passing `--format json` option in command line.
