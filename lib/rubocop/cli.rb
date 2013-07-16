@@ -174,6 +174,7 @@ module Rubocop
                 '  [c]lang',
                 '  [e]macs',
                 '  [j]son',
+                '  [f]iles',
                 '  custom formatter class name') do |key|
           @options[:formatters] ||= []
           @options[:formatters] << [key]

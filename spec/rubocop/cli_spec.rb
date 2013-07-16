@@ -24,10 +24,19 @@ module Rubocop
       File.expand_path(path)
     end
 
-    it 'exits cleanly when -h is used' do
-      expect { cli.run ['-h'] }.to exit_with_code(0)
-      expect { cli.run ['--help'] }.to exit_with_code(0)
-      message = <<-END
+    describe '-h/--help option' do
+      it 'exits cleanly' do
+        expect { cli.run ['-h'] }.to exit_with_code(0)
+        expect { cli.run ['--help'] }.to exit_with_code(0)
+      end
+
+      it 'shows help text' do
+        begin
+          cli.run(['--help'])
+        rescue SystemExit # rubocop:disable HandleExceptions
+        end
+
+        expected_help = <<-END
 Usage: rubocop [options] [file1, file2, ...]
     -d, --debug                      Display debug info.
     -c, --config FILE                Specify configuration file.
@@ -40,6 +49,7 @@ Usage: rubocop [options] [file1, file2, ...]
                                        [c]lang
                                        [e]macs
                                        [j]son
+                                       [f]iles
                                        custom formatter class name
     -o, --out FILE                   Write output to a file instead of STDOUT.
                                      This option applies to the previously
@@ -53,8 +63,33 @@ Usage: rubocop [options] [file1, file2, ...]
     -n, --no-color                   Disable color output.
     -v, --version                    Display version.
     -V, --verbose-version            Display verbose version.
-      END
-      expect($stdout.string).to eq(message * 2)
+        END
+
+        expect($stdout.string).to eq(expected_help)
+      end
+
+      it 'lists all builtin formatters' do
+        begin
+          cli.run(['--help'])
+        rescue SystemExit # rubocop:disable HandleExceptions
+        end
+
+        option_sections = $stdout.string.lines.slice_before(/^\s*-/)
+
+        format_section = option_sections.find do |lines|
+          lines.first =~ /^\s*-f/
+        end
+
+        formatter_keys = format_section.reduce([]) do |keys, line|
+          next keys unless /^[ ]{39}(?<key>\[[a-z\]]+)/ =~ line
+          keys << key.gsub(/\[|\]/, '')
+        end.sort
+
+        expected_formatter_keys =
+          Formatter::FormatterSet::BUILTIN_FORMATTERS_FOR_KEYS.keys.sort
+
+        expect(formatter_keys).to eq(expected_formatter_keys)
+      end
     end
 
     it 'exits cleanly when -v is used' do
