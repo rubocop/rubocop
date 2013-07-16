@@ -76,9 +76,7 @@ end
 
 def inspect_source(cop, source)
   processed_source = parse_source(source)
-  commissioner = Rubocop::Cop::Commissioner.new([cop], raise_error: true)
-  commissioner.investigate(processed_source)
-  commissioner
+  _investigate(cop, processed_source)
 end
 
 def parse_source(source)
@@ -87,13 +85,20 @@ def parse_source(source)
 end
 
 def autocorrect_source(cop, source)
-  processed_source = parse_source(source)
   cop.autocorrect = true
-  cop.do_autocorrect(processed_source.ast)
+  processed_source = parse_source(source)
+
+  _investigate(cop, processed_source)
 
   corrector =
     Rubocop::Cop::Corrector.new(processed_source.buffer, cop.corrections)
   corrector.rewrite
+end
+
+def _investigate(cop, processed_source)
+  commissioner = Rubocop::Cop::Commissioner.new([cop], raise_error: true)
+  commissioner.investigate(processed_source)
+  commissioner
 end
 
 class Rubocop::Cop::Cop

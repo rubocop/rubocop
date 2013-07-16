@@ -25,12 +25,14 @@ module Rubocop
         alias_method :on_regexp, :ignore_node
 
         def autocorrect_action(node)
-          string = node.loc.expression.source[1..-1]
+          @corrections << lambda do |corrector|
+            string = node.loc.expression.source[1..-1]
 
-          if string.length == 1 # normal character
-            replace(node.loc.expression, "'#{string}'")
-          elsif string.length == 2 # special character like \n
-            replace(node.loc.expression, %Q("#{string}"))
+            if string.length == 1 # normal character
+              corrector.replace(node.loc.expression, "'#{string}'")
+            elsif string.length == 2 # special character like \n
+              corrector.replace(node.loc.expression, %Q("#{string}"))
+            end
           end
         end
       end

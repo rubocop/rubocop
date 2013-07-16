@@ -34,14 +34,14 @@ module Rubocop
           expect(cop.offences).to be_empty
         end
 
-        it 'auto-correct "and" with &&' do
+        it 'auto-corrects "and" with &&' do
           new_source = autocorrect_source(cop, 'true and false')
-          expect(new_source).to eq 'true && false'
+          expect(new_source).to eq('true && false')
         end
 
-        it 'auto-correct "or" with ||' do
+        it 'auto-corrects "or" with ||' do
           new_source = autocorrect_source(cop, 'true or false')
-          expect(new_source).to eq 'true || false'
+          expect(new_source).to eq('true || false')
         end
       end
     end
