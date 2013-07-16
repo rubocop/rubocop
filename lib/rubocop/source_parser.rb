@@ -61,7 +61,7 @@ module Rubocop
       parser_tokens.map do |t|
         type, details = *t
         text, range = *details
-        Cop::Token.new(range, type, text)
+        Token.new(range, type, text)
       end
     end
 
