@@ -6,32 +6,42 @@ module Rubocop
   module Cop
     module Style
       describe AndOr do
-        let(:amp) { AndOr.new }
+        let(:cop) { AndOr.new }
 
         it 'registers an offence for OR' do
-          inspect_source(amp,
+          inspect_source(cop,
                          ['test if a or b'])
-          expect(amp.offences.size).to eq(1)
-          expect(amp.messages).to eq(['Use || instead of or.'])
+          expect(cop.offences.size).to eq(1)
+          expect(cop.messages).to eq(['Use || instead of or.'])
         end
 
         it 'registers an offence for AND' do
-          inspect_source(amp,
+          inspect_source(cop,
                          ['test if a and b'])
-          expect(amp.offences.size).to eq(1)
-          expect(amp.messages).to eq(['Use && instead of and.'])
+          expect(cop.offences.size).to eq(1)
+          expect(cop.messages).to eq(['Use && instead of and.'])
         end
 
         it 'accepts ||' do
-          inspect_source(amp,
+          inspect_source(cop,
                          ['test if a || b'])
-          expect(amp.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
 
         it 'accepts &&' do
-          inspect_source(amp,
+          inspect_source(cop,
                          ['test if a && b'])
-          expect(amp.offences).to be_empty
+          expect(cop.offences).to be_empty
+        end
+
+        it 'auto-correct "and" with &&' do
+          new_source = autocorrect_source(cop, 'true and false')
+          expect(new_source).to eq 'true && false'
+        end
+
+        it 'auto-correct "or" with ||' do
+          new_source = autocorrect_source(cop, 'true or false')
+          expect(new_source).to eq 'true || false'
         end
       end
     end

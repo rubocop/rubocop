@@ -86,6 +86,16 @@ def parse_source(source)
   Rubocop::SourceParser.parse(source)
 end
 
+def autocorrect_source(cop, source)
+  processed_source = parse_source(source)
+  cop.autocorrect = true
+  cop.do_autocorrect(processed_source.ast)
+
+  corrector =
+    Rubocop::Cop::Corrector.new(processed_source.buffer, cop.corrections)
+  corrector.rewrite
+end
+
 class Rubocop::Cop::Cop
   def messages
     offences.map(&:message)

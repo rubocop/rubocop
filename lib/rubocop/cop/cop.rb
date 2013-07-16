@@ -87,6 +87,7 @@ module Rubocop
       end
 
       def do_autocorrect(node)
+        autocorrect_action(node) if autocorrect
       end
 
       def autocorrect_action(node)
