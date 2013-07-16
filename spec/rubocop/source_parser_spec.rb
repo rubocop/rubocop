@@ -46,7 +46,7 @@ module Rubocop
 
         it 'has an array of tokens' do
           expect(processed_source.tokens).to be_a(Array)
-          expect(processed_source.tokens.first).to be_a(Cop::Token)
+          expect(processed_source.tokens.first).to be_a(Token)
         end
 
         it 'has a source buffer' do
