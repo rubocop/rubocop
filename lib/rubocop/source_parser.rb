@@ -38,7 +38,7 @@ module Rubocop
         # All errors are in diagnostics. No need to handle exception.
       end
 
-      tokens = repack_tokens(tokens)
+      tokens = tokens.map { |t| Token.from_parser_token(t) } if tokens
 
       ProcessedSource.new(source_buffer, ast, comments, tokens, diagnostics)
     end
@@ -54,15 +54,6 @@ module Rubocop
       parser.diagnostics.ignore_warnings      = false
 
       parser
-    end
-
-    def repack_tokens(parser_tokens)
-      return nil unless parser_tokens
-      parser_tokens.map do |t|
-        type, details = *t
-        text, range = *details
-        Token.new(range, type, text)
-      end
     end
 
     def cop_disabled_lines_in(source_lines)
