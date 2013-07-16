@@ -81,8 +81,9 @@ Usage: rubocop [options] [file1, file2, ...]
         end
 
         formatter_keys = format_section.reduce([]) do |keys, line|
-          next keys unless /^[ ]{39}(?<key>\[[a-z\]]+)/ =~ line
-          keys << key.gsub(/\[|\]/, '')
+          match = line.match(/^[ ]{39}(\[[a-z\]]+)/)
+          next keys unless match
+          keys << match.captures.first.gsub(/\[|\]/, '')
         end.sort
 
         expected_formatter_keys =
