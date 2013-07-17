@@ -25,11 +25,11 @@ module Rubocop
 
           correction = lambda do |corrector|
             node = processed_source.ast
-            corrector.insert_before(node.loc.operator, 'and false ')
+            corrector.insert_before(node.loc.operator, ';nil ')
           end
 
           corrector = Corrector.new(processed_source.buffer, [correction])
-          expect(corrector.rewrite).to eq 'true and false and false'
+          expect(corrector.rewrite).to eq 'true ;nil and false'
         end
 
         it 'allows insertion after a source range' do
@@ -38,11 +38,11 @@ module Rubocop
 
           correction = lambda do |corrector|
             node = processed_source.ast
-            corrector.insert_after(node.loc.operator, ' false;')
+            corrector.insert_after(node.loc.operator, ' nil;')
           end
 
           corrector = Corrector.new(processed_source.buffer, [correction])
-          expect(corrector.rewrite).to eq 'true and false; false'
+          expect(corrector.rewrite).to eq 'true and nil; false'
         end
 
         it 'allows replacement of a range' do
