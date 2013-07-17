@@ -15,7 +15,8 @@ module Rubocop
                      :validates_length_of,
                      :validates_numericality_of,
                      :validates_presence_of,
-                     :validates_size_of]
+                     :validates_size_of,
+                     :validates_uniqueness_of]
 
         def on_send(node)
           receiver, method_name, *_args = *node
