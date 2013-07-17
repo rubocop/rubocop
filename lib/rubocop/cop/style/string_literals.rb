@@ -28,8 +28,10 @@ module Rubocop
         alias_method :on_regexp, :ignore_node
 
         def autocorrect_action(node)
-          replace(node.loc.begin, "'")
-          replace(node.loc.end, "'")
+          @corrections << lambda do |corrector|
+            corrector.replace(node.loc.begin, "'")
+            corrector.replace(node.loc.end, "'")
+          end
         end
       end
     end

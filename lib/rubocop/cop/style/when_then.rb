@@ -15,7 +15,9 @@ module Rubocop
         end
 
         def autocorrect_action(node)
-          replace(node.loc.begin, ' then')
+          @corrections << lambda do |corrector|
+            corrector.replace(node.loc.begin, ' then')
+          end
         end
       end
     end
