@@ -49,11 +49,6 @@ module Rubocop
                          ['Tip::Top.some_method[3]'])
           expect(cop.offences).to be_empty
         end
-
-        it 'auto-corrects "::" with "."' do
-          new_source = autocorrect_source(cop, 'test::method')
-          expect(new_source).to eq('test.method')
-        end
       end
     end
   end

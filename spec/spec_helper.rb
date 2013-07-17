@@ -84,15 +84,16 @@ def parse_source(source)
   Rubocop::SourceParser.parse(source)
 end
 
-def autocorrect_source(cop, source)
+def autocorrect_source(cop, correction, source)
   cop.autocorrect = true
   processed_source = parse_source(source)
 
   _investigate(cop, processed_source)
+  corrections = { cop.name => correction }
 
   corrector =
-    Rubocop::Cop::Corrector.new(processed_source.buffer, cop.corrections)
-  corrector.rewrite
+    Rubocop::Cop::Corrector.new(processed_source.buffer, corrections)
+  corrector.rewrite(cop.offences)
 end
 
 def _investigate(cop, processed_source)

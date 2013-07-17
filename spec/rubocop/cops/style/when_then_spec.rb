@@ -34,13 +34,6 @@ module Rubocop
                               'end'])
           expect(cop.offences.map(&:message)).to be_empty
         end
-
-        it 'auto-corrects "when x;" with "when x then"' do
-          new_source = autocorrect_source(cop, ['case a',
-                                                'when b; c',
-                                                'end'])
-          expect(new_source).to eq("case a\nwhen b then c\nend")
-        end
       end
     end
   end

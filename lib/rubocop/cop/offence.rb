@@ -67,8 +67,11 @@ module Rubocop
       # @api private
       attr_reader :column
 
+      # TODO: Decide api
+      attr_reader :node
+
       # @api private
-      def initialize(severity, location, message, cop_name)
+      def initialize(severity, location, message, cop_name, options = {})
         unless SEVERITIES.include?(severity)
           fail ArgumentError, "Unknown severity: #{severity}"
         end
@@ -78,6 +81,7 @@ module Rubocop
         @column = location.column.freeze
         @message = message.freeze
         @cop_name = cop_name.freeze
+        @node = options[:node]
         freeze
       end
 

@@ -26,15 +26,7 @@ module Rubocop
           if op == op_type
             add_offence(:convention,
                         node.loc.operator,
-                        sprintf(MSG, OPS[op], op))
-            do_autocorrect(node)
-          end
-        end
-
-        def autocorrect_action(node)
-          @corrections << lambda do |corrector|
-            replacement = (node.type == :and ? '&&' : '||')
-            corrector.replace(node.loc.operator, replacement)
+                        sprintf(MSG, OPS[op], op), node: node)
           end
         end
       end

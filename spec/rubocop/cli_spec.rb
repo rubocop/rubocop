@@ -993,5 +993,20 @@ Usage: rubocop [options] [file1, file2, ...]
           .to eq(["1 error occurred:\n", "#{msg}\n"])
       end
     end
+
+    describe '-a/--auto-correct option' do
+      let(:target_file) { 'example.rb' }
+
+      before do
+        create_file(target_file, [
+          'true and false'
+        ])
+      end
+
+      it 'auto-corrects the offences found in the file' do
+        cli.run(['--only', 'AndOr', '-a', target_file])
+        expect(File.read(target_file)).to eq("true && false\n")
+      end
+    end
   end
 end

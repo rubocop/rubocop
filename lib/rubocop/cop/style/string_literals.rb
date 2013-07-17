@@ -19,20 +19,12 @@ module Rubocop
           # "\\\\"
           if node.loc.expression.source !~ /('|([^\\]|\A)\\([^\\]|\Z))/ &&
               node.loc.begin.is?('"')
-            add_offence(:convention, node.loc.expression, MSG)
-            do_autocorrect(node)
+            add_offence(:convention, node.loc.expression, MSG, node: node)
           end
         end
 
         alias_method :on_dstr, :ignore_node
         alias_method :on_regexp, :ignore_node
-
-        def autocorrect_action(node)
-          @corrections << lambda do |corrector|
-            corrector.replace(node.loc.begin, "'")
-            corrector.replace(node.loc.end, "'")
-          end
-        end
       end
     end
   end

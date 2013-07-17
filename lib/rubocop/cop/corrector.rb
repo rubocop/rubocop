@@ -41,9 +41,14 @@ module Rubocop
       #
       # @return [String]
       # TODO: Handle conflict exceptions raised from the Source::Rewriter
-      def rewrite
-        @corrections.each do |correction|
-          correction.call(self)
+      def rewrite(offences)
+        offences.each do |offence|
+          next unless offence.node
+
+          correction = find_correction_for(offence)
+          if correction
+            correction.call(self, offence.node)
+          end
         end
 
         @source_rewriter.process
@@ -78,6 +83,12 @@ module Rubocop
       # @param [String] content
       def replace(range, content)
         @source_rewriter.replace(range, content)
+      end
+
+      private
+
+      def find_correction_for(offence)
+        @corrections[offence.cop_name]
       end
     end
   end
