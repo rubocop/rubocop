@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.10.0 (17/07/2013)
+
 ### New features
 
 * New cop `RedundantReturn` tracks redundant `return`s in method bodies
@@ -36,6 +38,7 @@
 ### Misc
 
 * Improved performance on Ruby 1.9 by about 20%
+* Improved overall performance by about 35%
 
 ## 0.9.1 (05/07/2013)
 
