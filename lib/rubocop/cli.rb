@@ -16,7 +16,6 @@ module Rubocop
     alias_method :wants_to_quit?, :wants_to_quit
 
     def initialize
-      @cops = Cop::Cop.all
       @errors = []
       @options = {}
       @config_store = ConfigStore.new
@@ -32,12 +31,6 @@ module Rubocop
       parse_options(args)
 
       Config.debug = @options[:debug]
-
-      # filter out Rails cops unless requested
-      @cops.reject!(&:rails?) unless @options[:rails]
-
-      # filter out style cops when --lint is passed
-      @cops.select!(&:lint?) if @options[:lint]
 
       target_files = target_finder.find(args)
       target_files.each(&:freeze).freeze
@@ -70,8 +63,26 @@ module Rubocop
       return 1
     end
 
+    def mobilized_cop_classes
+      @mobilized_cop_classes ||= begin
+        cop_classes = Cop::Cop.all
+
+        if @options[:only]
+          cop_classes.select! { |c| c.cop_name == @options[:only] }
+        else
+          # filter out Rails cops unless requested
+          cop_classes.reject!(&:rails?) unless @options[:rails]
+
+          # filter out style cops when --lint is passed
+          cop_classes.select!(&:lint?) if @options[:lint]
+        end
+
+        cop_classes
+      end
+    end
+
     def validate_only_option
-      if @cops.none? { |c| c.cop_name == @options[:only] }
+      if Cop::Cop.all.none? { |c| c.cop_name == @options[:only] }
         fail ArgumentError, "Unrecognized cop name: #{@options[:only]}."
       end
     end
@@ -84,10 +95,11 @@ module Rubocop
     end
 
     def print_available_cops
-      puts "Available cops (#{@cops.length}) + config for #{Dir.pwd.to_s}: "
+      cops = Cop::Cop.all
+      puts "Available cops (#{cops.length}) + config for #{Dir.pwd.to_s}: "
       dirconf = @config_store.for(Dir.pwd.to_s)
-      @cops.types.sort!.each do |type|
-        coptypes = @cops.with_type(type).sort_by!(&:cop_name)
+      cops.types.sort!.each do |type|
+        coptypes = cops.with_type(type).sort_by!(&:cop_name)
         puts "Type '#{type.to_s.capitalize}' (#{coptypes.size}):"
         coptypes.each do |cop|
           name = cop.cop_name
@@ -149,17 +161,16 @@ module Rubocop
     end
 
     def set_config_for_all_cops(config)
-      @cops.each do |cop_class|
+      Cop::Cop.all.each do |cop_class|
         cop_class.config = config.for_cop(cop_class.cop_name)
       end
     end
 
     def create_cops(config, processed_source)
       cops = []
-      @cops.each do |cop_class|
+      mobilized_cop_classes.each do |cop_class|
         cop_name = cop_class.cop_name
         next unless config.cop_enabled?(cop_name)
-        next unless !@options[:only] || @options[:only] == cop_name
         cop = setup_cop(cop_class, processed_source.disabled_lines_for_cops)
         cops << cop
       end
