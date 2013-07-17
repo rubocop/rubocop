@@ -10,15 +10,4 @@ describe 'RuboCop Project' do
         .to eq((['AllCops'] + cop_names).sort)
     end
   end
-
-  describe 'source codes' do
-    before { $stdout = StringIO.new }
-    after  { $stdout = STDOUT }
-
-    it 'has no violations' do
-      # Need to pass an empty array explicitly
-      # so that the CLI does not refer arguments of `rspec`
-      expect(Rubocop::CLI.new.run([])).to eq(0)
-    end
-  end
 end
