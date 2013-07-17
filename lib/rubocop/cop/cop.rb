@@ -28,6 +28,7 @@ module Rubocop
       attr_accessor :debug
       attr_accessor :autocorrect
       attr_writer :disabled_lines
+      attr_reader :corrections
 
       @all = []
       @config = {}
@@ -69,6 +70,7 @@ module Rubocop
         @debug = false
         @autocorrect = false
         @ignored_nodes = []
+        @corrections = []
       end
 
       def do_autocorrect(node)

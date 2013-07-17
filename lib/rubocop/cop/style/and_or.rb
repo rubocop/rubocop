@@ -32,8 +32,10 @@ module Rubocop
         end
 
         def autocorrect_action(node)
-          replacement = (node.type == :and ? '&&' : '||')
-          replace(node.loc.operator, replacement)
+          @corrections << lambda do |corrector|
+            replacement = (node.type == :and ? '&&' : '||')
+            corrector.replace(node.loc.operator, replacement)
+          end
         end
       end
     end
