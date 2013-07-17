@@ -4,4 +4,6 @@ rvm:
   - 2.0.0
   - jruby-19mode
   - rbx-19mode
-script: bundle exec rspec
+script:
+  - bundle exec rspec
+  - bundle exec rubocop
