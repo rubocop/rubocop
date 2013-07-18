@@ -2,6 +2,11 @@
 
 ## master (unreleased)
 
+### Bugs fixed
+
+* [#373](https://github.com/bbatsov/rubocop/issues/373) - allow braces around
+  multi-line blocks if `do`-`end` would change the meaning of the code
+
 ## 0.10.0 (17/07/2013)
 
 ### New features
