@@ -271,6 +271,42 @@ module Rubocop
           include_examples 'mimics MRI 2.0'
         end
 
+        context 'when a variable is assigned in loop body ' +
+                'and referenced in post while condition' do
+          let(:source) do
+            [
+              'begin',
+              '  if foo',
+              '    foo += 1',
+              '  else',
+              '    foo = 1',
+              '  end',
+              'end while foo < 10'
+            ]
+          end
+
+          include_examples 'accepts'
+          include_examples 'mimics MRI 2.0'
+        end
+
+        context 'when a variable is assigned in loop body ' +
+                'and referenced in post until condition' do
+          let(:source) do
+            [
+              'begin',
+              '  if foo',
+              '    foo += 1',
+              '  else',
+              '    foo = 1',
+              '  end',
+              'end until foo > 10'
+            ]
+          end
+
+          include_examples 'accepts'
+          include_examples 'mimics MRI 2.0'
+        end
+
         context 'when a named capture is unreferenced in top level' do
           let(:source) do
             [

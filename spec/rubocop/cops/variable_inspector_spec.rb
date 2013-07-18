@@ -435,6 +435,78 @@ module Rubocop
               ])
             end
           end
+
+          context 'when scanning around post while loop' do
+            let(:source) do
+              <<-END
+                begin
+                  foo = 1
+                end while foo > 10
+                puts foo
+              END
+            end
+
+            # (begin
+            #   (while-post
+            #     (send
+            #       (lvar :foo) :>
+            #       (int 10))
+            #     (kwbegin
+            #       (lvasgn :foo
+            #         (int 1))))
+            #   (send nil :puts
+            #     (lvar :foo)))
+
+            it 'scans loop body nodes first then condition nodes' do
+              expect(trace).to eq([
+                'while_post',
+                'kwbegin',
+                'lvasgn :foo',
+                'int 1',
+                'send',
+                'lvar :foo',
+                'int 10',
+                'send nil :puts',
+                'lvar :foo'
+              ])
+            end
+          end
+
+          context 'when scanning around post until loop' do
+            let(:source) do
+              <<-END
+                begin
+                  foo = 1
+                end until foo < 10
+                puts foo
+              END
+            end
+
+            # (begin
+            #   (until-post
+            #     (send
+            #       (lvar :foo) :<
+            #       (int 10))
+            #     (kwbegin
+            #       (lvasgn :foo
+            #         (int 1))))
+            #   (send nil :puts
+            #     (lvar :foo)))
+
+            it 'scans loop body nodes first then condition nodes' do
+              expect(trace).to eq([
+                'until_post',
+                'kwbegin',
+                'lvasgn :foo',
+                'int 1',
+                'send',
+                'lvar :foo',
+                'int 10',
+                'send nil :puts',
+                'lvar :foo'
+              ])
+            end
+          end
         end
       end
 

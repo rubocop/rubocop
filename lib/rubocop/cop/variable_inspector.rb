@@ -123,6 +123,7 @@ module Rubocop
       # This provides a way to scan all nodes only in current scope.
       class NodeScanner
         TWISTED_SCOPE_NODE_TYPES = [:block, :sclass, :defs].freeze
+        POST_CONDITION_LOOP_NODE_TYPES = [:while_post, :until_post].freeze
 
         def self.scan_nodes_in_scope(origin_node, &block)
           instance = new(block)
@@ -147,12 +148,34 @@ module Rubocop
 
             @callback.call(node)
 
-            handle_scope_border(node)
+            scan_children(node)
           end
         end
 
-        def handle_scope_border(node)
+        def scan_children(node)
           case node.type
+          when *POST_CONDITION_LOOP_NODE_TYPES
+            # Loop body nodes need to be scanned first.
+            #
+            # Ruby:
+            #   begin
+            #     foo = 1
+            #   end while foo > 10
+            #   puts foo
+            #
+            # AST:
+            #   (begin
+            #     (while-post
+            #       (send
+            #         (lvar :foo) :>
+            #         (int 10))
+            #       (kwbegin
+            #         (lvasgn :foo
+            #           (int 1))))
+            #     (send nil :puts
+            #       (lvar :foo)))
+            scan_nodes_in_scope(node.children[1], true)
+            scan_nodes_in_scope(node.children[0], true)
           when *TWISTED_SCOPE_NODE_TYPES
             # The variable foo belongs to the top level scope,
             # but in AST, it's under the block node.
