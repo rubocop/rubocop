@@ -122,29 +122,82 @@ module Rubocop
 
       # This provides a way to scan all nodes only in current scope.
       class NodeScanner
+        TWISTED_SCOPE_NODE_TYPES = [:block, :sclass, :defs].freeze
+
         def self.scan_nodes_in_scope(origin_node, &block)
-          new.scan_nodes_in_scope(origin_node, &block)
+          instance = new(block)
+          instance.scan_nodes_in_scope(origin_node)
         end
 
-        def initialize
-          @node_index = -1
+        def initialize(callback)
+          @callback = callback
         end
 
-        def scan_nodes_in_scope(origin_node, &block)
-          origin_node.children.each do |child|
+        def scan_nodes_in_scope(origin_node, yield_origin_node = false)
+          @callback.call(origin_node) if yield_origin_node
+
+          origin_node.children.each_with_index do |child, index|
             next unless child.is_a?(Parser::AST::Node)
-
             node = child
-            @node_index += 1
 
-            catch(:skip_children) do
-              yield node, @node_index
-
-              # Do not go into inner scope.
-              unless SCOPE_TYPES.include?(node.type)
-                scan_nodes_in_scope(node, &block)
-              end
+            if index == 0 &&
+               TWISTED_SCOPE_NODE_TYPES.include?(origin_node.type)
+              next
             end
+
+            @callback.call(node)
+
+            handle_scope_border(node)
+          end
+        end
+
+        def handle_scope_border(node)
+          case node.type
+          when *TWISTED_SCOPE_NODE_TYPES
+            # The variable foo belongs to the top level scope,
+            # but in AST, it's under the block node.
+            #
+            # Ruby:
+            #   some_method(foo = 1) do
+            #   end
+            #   puts foo
+            #
+            # AST:
+            #   (begin
+            #     (block
+            #       (send nil :some_method
+            #         (lvasgn :foo
+            #           (int 1)))
+            #       (args) nil)
+            #     (send nil :puts
+            #       (lvar :foo)))
+            #
+            # So the the method argument nodes need to be processed
+            # in current scope.
+            #
+            # Same thing.
+            #
+            # Ruby:
+            #   instance = Object.new
+            #   class << instance
+            #     foo = 1
+            #   end
+            #
+            # AST:
+            #   (begin
+            #     (lvasgn :instance
+            #       (send
+            #         (const nil :Object) :new))
+            #     (sclass
+            #       (lvar :instance)
+            #       (begin
+            #         (lvasgn :foo
+            #           (int 1))
+            scan_nodes_in_scope(node.children.first, true)
+          when *SCOPE_TYPES
+            # Do not go into inner scope.
+          else
+            scan_nodes_in_scope(node)
           end
         end
       end
@@ -169,16 +222,8 @@ module Rubocop
       def inspect_variables_in_scope(scope_node)
         variable_table.push_scope(scope_node)
 
-        NodeScanner.scan_nodes_in_scope(scope_node) do |node, index|
-          if scope_node.type == :block && index == 0 && node.type == :send
-            # Avoid processing method argument nodes of outer scope
-            # in current block scope.
-            # See #process_node.
-            throw :skip_children
-          elsif [:sclass, :defs].include?(scope_node.type) && index == 0
-            throw :skip_children
-          end
-
+        NodeScanner.scan_nodes_in_scope(scope_node) do |node|
+          # puts "scope:#{variable_table.current_scope_level} node:#{node}"
           process_node(node)
         end
 
@@ -202,53 +247,6 @@ module Rubocop
                  "at #{node.loc.expression}, #{node.inspect}"
           end
           variable_entry.used = true
-        when :block
-          # The variable foo belongs to the top level scope,
-          # but in AST, it's under the block node.
-          #
-          # Ruby:
-          #   some_method(foo = 1) do
-          #   end
-          #   puts foo
-          #
-          # AST:
-          #   (begin
-          #     (block
-          #       (send nil :some_method
-          #         (lvasgn :foo
-          #           (int 1)))
-          #       (args) nil)
-          #     (send nil :puts
-          #       (lvar :foo)))
-          #
-          # So the nodes of the method argument need to be processed
-          # in current scope before dive into the block scope.
-          NodeScanner.scan_nodes_in_scope(node.children.first) do |n|
-            process_node(n)
-          end
-          # Now go into the block scope.
-          inspect_variables_in_scope(node)
-        when :sclass, :defs
-          # Same thing.
-          #
-          # Ruby:
-          #   instance = Object.new
-          #   class << instance
-          #     foo = 1
-          #   end
-          #
-          # AST:
-          #   (begin
-          #     (lvasgn :instance
-          #       (send
-          #         (const nil :Object) :new))
-          #     (sclass
-          #       (lvar :instance)
-          #       (begin
-          #         (lvasgn :foo
-          #           (int 1))
-          process_node(node.children.first)
-          inspect_variables_in_scope(node)
         when *SCOPE_TYPES
           inspect_variables_in_scope(node)
         end
