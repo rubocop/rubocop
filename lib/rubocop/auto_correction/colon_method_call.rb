@@ -6,7 +6,7 @@ module Rubocop
     # Cop::Style::ColonMethodCall cop.
     # Replaces "test::method" with "test.method"
     class ColonMethodCall
-      Registry.register 'ColonMethodCall', self
+      Registry.register 'ColonMethodCall', new
 
       def call(corrector, node)
         corrector.replace(node.loc.dot, '.')

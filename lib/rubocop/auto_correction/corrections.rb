@@ -11,15 +11,12 @@ module Rubocop
         @corrections = {}
       end
 
-      def register(cop_name, correction_class)
-        @corrections[cop_name] = correction_class
+      def register(cop_name, correction)
+        @corrections[cop_name] = correction
       end
 
       def all
-        @corrections.reduce({}) do |hash, (cop_name, correction_class)|
-          hash[cop_name] = correction_class.new
-          hash
-        end
+        @corrections
       end
     end
 

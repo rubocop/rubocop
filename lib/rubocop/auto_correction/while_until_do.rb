@@ -6,7 +6,7 @@ module Rubocop
     # Cop::Style::WhileUntilDo cop.
     # Removes "do" from multiline while/until statements.
     class WhileUntilDo
-      Registry.register 'WhileUntilDo', self
+      Registry.register 'WhileUntilDo', new
 
       def call(corrector, node)
         corrector.remove(node.loc.begin)

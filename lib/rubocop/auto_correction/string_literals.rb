@@ -6,7 +6,7 @@ module Rubocop
     # Cop::Style::StringLiterals cop.
     # Replaces occurrence of " with ' where possible.
     class StringLiterals
-      Registry.register 'StringLiterals', self
+      Registry.register 'StringLiterals', new
 
       def call(corrector, node)
         corrector.replace(node.loc.begin, "'")

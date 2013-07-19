@@ -6,7 +6,7 @@ module Rubocop
     # Cop::Style::WhenThen cop.
     # Removes the occurrence of "when b; c" with "when b then c".
     class WhenThen
-      Registry.register 'WhenThen', self
+      Registry.register 'WhenThen', new
 
       def call(corrector, node)
         corrector.replace(node.loc.begin, ' then')

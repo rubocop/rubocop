@@ -6,7 +6,7 @@ module Rubocop
     # Cop::Style::CharacterLiteral cop.
     # Replaces "?x" with 'x' and "?\n" with "\n"
     class CharacterLiteral
-      Registry.register 'CharacterLiteral', self
+      Registry.register 'CharacterLiteral', new
 
       def call(corrector, node)
         string = node.loc.expression.source[1..-1]
