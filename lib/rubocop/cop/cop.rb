@@ -16,11 +16,11 @@ module Rubocop
     #
     # @example
     #
-    # class CustomCop < Cop
-    #   def investigate(processed_source)
-    #     # Do custom processing
+    #   class CustomCop < Cop
+    #     def investigate(processed_source)
+    #       # Do custom processing
+    #     end
     #   end
-    # end
     class Cop
       extend AST::Sexp
 

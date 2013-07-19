@@ -9,14 +9,14 @@ module Rubocop
       #
       # @example
       #
-      # def test
-      #   begin
-      #     ala
-      #     bala
-      #   rescue StandardError => e
-      #     something
+      #   def test
+      #     begin
+      #       ala
+      #       bala
+      #     rescue StandardError => e
+      #       something
+      #     end
       #   end
-      # end
       class RedundantBegin < Cop
         MSG = 'Redundant `begin` block detected.'
 

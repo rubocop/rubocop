@@ -8,15 +8,15 @@ module Rubocop
       # This is considered bad practice:
       # @example
       #
-      # if cond then
-      # end
+      #   if cond then
+      #   end
       #
       # While if statements can contain `then` on the same line:
       # @example
       #
-      # if cond then a
-      # elsif cond then b
-      # end
+      #   if cond then a
+      #   elsif cond then b
+      #   end
       class MultilineIfThen < Cop
         include IfThenElse
 
