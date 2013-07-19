@@ -2,6 +2,9 @@
 
 ## master (unreleased)
 
+### Bugs fixed
+* [#374](https://github.com/bbatsov/rubocop/issues/374) - Fixed error at post condition loop (`begin-end-while`, `begin-end-until`) in `UnusedLocalVariable` and `ShadowingOuterLocalVariable`
+
 ## 0.10.0 (17/07/2013)
 
 ### New features
