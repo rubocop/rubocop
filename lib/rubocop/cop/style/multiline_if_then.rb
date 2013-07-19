@@ -5,14 +5,12 @@ module Rubocop
     module Style
       # Checks for uses of the `then` keyword in multi-line if statements.
       #
-      # This is considered bad practice:
-      # @example
+      # @example This is considered bad practice:
       #
       #   if cond then
       #   end
       #
-      # While if statements can contain `then` on the same line:
-      # @example
+      # @example If statements can contain `then` on the same line:
       #
       #   if cond then a
       #   elsif cond then b

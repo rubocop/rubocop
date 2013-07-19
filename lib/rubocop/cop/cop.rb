@@ -11,7 +11,7 @@ module Rubocop
     # A commissioner object is responsible for traversing the AST and invoking
     # the specific callbacks on each cop.
     # If a cop needs to do its own processing of the AST or depends on
-    # something else it should define the #investigate method and do
+    # something else it should define the `#investigate` method and do
     # the processing there.
     #
     # @example

@@ -37,7 +37,7 @@ module Rubocop
     # as its first line.
     # It is possible to specify includes and excludes using the config file,
     # so you can include other Ruby files like Rakefiles and gemspecs.
-    # @param root Root directory under which to search for ruby source files
+    # @param base_dir Root directory under which to search for ruby source files
     # @return [Array] Array of filenames
     def target_files_in_dir(base_dir = Dir.pwd)
       files = Dir["#{base_dir}/**/*"].select { |path| FileTest.file?(path) }

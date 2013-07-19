@@ -5,8 +5,6 @@ module Rubocop
     module Style
       # This cop checks for redundant `return` expressions.
       #
-      # Currently it checks for code like this:
-      #
       # @example
       #
       #   def test
