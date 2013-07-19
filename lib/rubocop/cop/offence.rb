@@ -61,14 +61,20 @@ module Rubocop
       #   'LineLength'
       attr_reader :cop_name
 
+      # @api public
+      #
+      # @!attribute [r] node
+      #
+      # @return [AST::Node] if there is AST::Node associated
+      #   with the offence. This is the node where the offence was found.
+      # @return [Nil] if there is no node.
+      attr_reader :node
+
       # @api private
       attr_reader :line
 
       # @api private
       attr_reader :column
-
-      # TODO: Decide api
-      attr_reader :node
 
       # @api private
       def initialize(severity, location, message, cop_name, options = {})
