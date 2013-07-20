@@ -16,13 +16,16 @@ module Rubocop
     DOTFILE = '.rubocop.yml'
     RUBOCOP_HOME = File.realpath(File.join(File.dirname(__FILE__), '..', '..'))
     DEFAULT_FILE = File.join(RUBOCOP_HOME, 'config', 'default.yml')
+    AUTO_GENERATED_FILE = 'rubocop-todo.yml'
 
     attr_reader :loaded_path
+    attr_accessor :contains_auto_generated_config
 
     class << self
       def load_file(path)
         path = File.absolute_path(path)
         hash = YAML.load_file(path)
+        contains_auto_generated_config = false
 
         base_configs(path, hash['inherit_from']).reverse.each do |base_config|
           if File.basename(base_config.loaded_path) == DOTFILE
@@ -33,11 +36,15 @@ module Rubocop
               hash[key] = hash.has_key?(key) ? merge(value, hash[key]) : value
             end
           end
+          if base_config.loaded_path.include?(AUTO_GENERATED_FILE)
+            contains_auto_generated_config = true
+          end
         end
 
         hash.delete('inherit_from')
         config = new(hash, path)
         config.warn_unless_valid
+        config.contains_auto_generated_config = contains_auto_generated_config
         config
       end
 
@@ -130,7 +137,10 @@ module Rubocop
       end
 
       def merge_with_default(config, config_file)
-        new(merge(default_configuration, config), config_file)
+        result = new(merge(default_configuration, config), config_file)
+        result.contains_auto_generated_config =
+          config.contains_auto_generated_config
+        result
       end
 
       private

@@ -2,6 +2,12 @@
 
 ## master (unreleased)
 
+### New features
+
+* New option --auto-gen-config outputs RuboCop configuration that disables all
+  cops that detect any offences (for
+  [#369](https://github.com/bbatsov/rubocop/issues/369)).
+
 ### Bugs fixed
 
 * [#374](https://github.com/bbatsov/rubocop/issues/374) - Fixed error at post condition loop (`begin-end-while`, `begin-end-until`) in `UnusedLocalVariable` and `ShadowingOuterLocalVariable`

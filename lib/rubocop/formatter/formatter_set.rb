@@ -12,8 +12,10 @@ module Rubocop
         'clang'    => ClangStyleFormatter,
         'emacs'    => EmacsStyleFormatter,
         'json'     => JSONFormatter,
-        'files'    => FileListFormatter
+        'files'    => FileListFormatter,
+        'disabled' => DisabledConfigFormatter
       }
+      HIDDEN_FORMATTERS = %w(disabled)
 
       FORMATTER_APIS = [:started, :file_started, :file_finished, :finished]
 

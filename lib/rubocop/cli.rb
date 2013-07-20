@@ -29,12 +29,7 @@ module Rubocop
     def run(args = ARGV)
       trap_interrupt
 
-      begin
-        parse_options(args)
-      rescue => e
-        $stderr.puts e.message
-        return 1
-      end
+      return 1 if any_errors? { parse_options(args) }
 
       # filter out Rails cops unless requested
       @cops.reject!(&:rails?) unless @options[:rails]
@@ -55,7 +50,8 @@ module Rubocop
         puts "Scanning #{file}" if @options[:debug]
         formatter_set.file_started(file, {})
 
-        offences = inspect_file(file)
+        offences = nil
+        return 1 if any_errors? { offences = inspect_file(file) }
 
         any_failed = true unless offences.empty?
         inspected_files << file
@@ -70,9 +66,24 @@ module Rubocop
       !any_failed && !wants_to_quit ? 0 : 1
     end
 
+    def any_errors?
+      yield
+      false
+    rescue => e
+      $stderr.puts e.message
+      true
+    end
+
     def validate_only_option
       if @cops.none? { |c| c.cop_name == @options[:only] }
         fail ArgumentError, "Unrecognized cop name: #{@options[:only]}."
+      end
+    end
+
+    def validate_auto_gen_config_option(args)
+      if args.any?
+        fail ArgumentError,
+             '--auto-gen-config can not be combined with any other arguments.'
       end
     end
 
@@ -94,7 +105,10 @@ module Rubocop
       end
 
       config = @config_store.for(file)
-
+      if @options[:auto_gen_config] && config.contains_auto_generated_config
+        fail "Remove #{Config::AUTO_GENERATED_FILE} from the current " +
+          'configuration before generating it again.'
+      end
       set_config_for_all_cops(config)
 
       cops = []
@@ -165,6 +179,14 @@ module Rubocop
         opts.on('--only COP', 'Run just one cop.') do |s|
           @options[:only] = s
           validate_only_option
+        end
+        opts.on('--auto-gen-config',
+                'Generate a configuration file acting as a',
+                'TODO list.') do
+          @options[:auto_gen_config] = true
+          @options[:formatters] ||= []
+          @options[:formatters] << ['disabled', Config::AUTO_GENERATED_FILE]
+          validate_auto_gen_config_option(args)
         end
         opts.on('-f', '--format FORMATTER',
                 'Choose an output formatter. This option',
