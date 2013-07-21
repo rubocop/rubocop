@@ -52,7 +52,9 @@ module Rubocop
 
         it 'accepts a self receiver for methods named like ruby keywords' do
           src = ['a = self.class',
-                 'self.for(deps, [], true)'
+                 'self.for(deps, [], true)',
+                 'self.and(other)',
+                 'self.or(other)'
                 ]
           inspect_source(cop, src)
           expect(cop.offences).to be_empty

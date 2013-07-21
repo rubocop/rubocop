@@ -68,7 +68,7 @@ module Rubocop
         end
 
         def keyword?(method_name)
-          [:class, :for].include?(method_name)
+          [:class, :for, :and, :or].include?(method_name)
         end
 
         def allow_self(node)
