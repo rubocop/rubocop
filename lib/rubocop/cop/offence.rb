@@ -61,6 +61,15 @@ module Rubocop
       #   'LineLength'
       attr_reader :cop_name
 
+      # @api public
+      #
+      # @!attribute [r] node
+      #
+      # @return [AST::Node] if there is AST::Node associated
+      #   with the offence. This is the node where the offence was found.
+      # @return [Nil] if there is no node.
+      attr_reader :node
+
       # @api private
       attr_reader :line
 
@@ -68,7 +77,7 @@ module Rubocop
       attr_reader :column
 
       # @api private
-      def initialize(severity, location, message, cop_name)
+      def initialize(severity, location, message, cop_name, options = {})
         unless SEVERITIES.include?(severity)
           fail ArgumentError, "Unknown severity: #{severity}"
         end
@@ -78,6 +87,7 @@ module Rubocop
         @column = location.column.freeze
         @message = message.freeze
         @cop_name = cop_name.freeze
+        @node = options[:node]
         freeze
       end
 

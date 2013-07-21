@@ -108,7 +108,7 @@ module Rubocop
       commissioner = Cop::Commissioner.new(cops)
       offences = commissioner.investigate(processed_source)
       process_commissioner_errors(file, commissioner.errors)
-      autocorrect(processed_source.buffer, cops)
+      autocorrect(processed_source.buffer, offences)
       offences.sort
     end
 
@@ -250,16 +250,11 @@ module Rubocop
       puts Rubocop::Version.version(true)
     end
 
-    def autocorrect(buffer, cops)
+    def autocorrect(buffer, offences)
       return unless @options[:autocorrect]
 
-      corrections = cops.reduce([]) do |array, cop|
-        array.concat(cop.corrections)
-        array
-      end
-
-      corrector = Cop::Corrector.new(buffer, corrections)
-      new_source = corrector.rewrite
+      corrector = Cop::Corrector.new(buffer, AutoCorrection::Registry.all)
+      new_source = corrector.rewrite(offences)
 
       unless new_source == buffer.source
         filename = buffer.instance_variable_get(:@name)

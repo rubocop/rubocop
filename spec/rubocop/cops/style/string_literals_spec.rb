@@ -56,11 +56,6 @@ module Rubocop
           inspect_source(cop, src)
           expect(cop.offences).to be_empty
         end
-
-        it 'auto-corrects " with \'' do
-          new_source = autocorrect_source(cop, 's = "abc"')
-          expect(new_source).to eq("s = 'abc'")
-        end
       end
     end
   end

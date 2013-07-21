@@ -13,14 +13,7 @@ module Rubocop
 
           # discard methods with nil receivers and op methods(like [])
           if receiver && node.loc.dot && node.loc.dot.is?('::')
-            add_offence(:convention, node.loc.dot, MSG)
-            do_autocorrect(node)
-          end
-        end
-
-        def autocorrect_action(node)
-          @corrections << lambda do |corrector|
-            corrector.replace(node.loc.dot, '.')
+            add_offence(:convention, node.loc.dot, MSG, node: node)
           end
         end
       end

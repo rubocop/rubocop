@@ -9,14 +9,7 @@ module Rubocop
 
         def on_when(node)
           if node.loc.begin && node.loc.begin.is?(';')
-            add_offence(:convention, node.loc.begin, MSG)
-            do_autocorrect(node)
-          end
-        end
-
-        def autocorrect_action(node)
-          @corrections << lambda do |corrector|
-            corrector.replace(node.loc.begin, ' then')
+            add_offence(:convention, node.loc.begin, MSG, node: node)
           end
         end
       end

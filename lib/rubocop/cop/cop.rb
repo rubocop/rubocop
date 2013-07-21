@@ -28,7 +28,6 @@ module Rubocop
       attr_accessor :debug
       attr_accessor :autocorrect
       attr_writer :disabled_lines
-      attr_reader :corrections
 
       @all = []
       @config = {}
@@ -70,20 +69,12 @@ module Rubocop
         @debug = false
         @autocorrect = false
         @ignored_nodes = []
-        @corrections = []
       end
 
-      def do_autocorrect(node)
-        autocorrect_action(node) if autocorrect
-      end
-
-      def autocorrect_action(node)
-      end
-
-      def add_offence(severity, location, message)
+      def add_offence(severity, location, message, options = {})
         unless @disabled_lines && @disabled_lines.include?(location.line)
           message = debug ? "#{name}: #{message}" : message
-          @offences << Offence.new(severity, location, message, name)
+          @offences << Offence.new(severity, location, message, name, options)
         end
       end
 

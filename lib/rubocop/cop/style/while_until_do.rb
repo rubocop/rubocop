@@ -20,8 +20,8 @@ module Rubocop
             if node.loc.begin && node.loc.begin.is?('do')
               add_offence(:convention,
                           node.loc.begin,
-                          error_message(node.type))
-              do_autocorrect(node)
+                          error_message(node.type),
+                          node: node)
             end
           end
         end
@@ -30,12 +30,6 @@ module Rubocop
 
         def error_message(node_type)
           format('Never use `do` with multi-line `%s`.', node_type)
-        end
-
-        def autocorrect_action(node)
-          @corrections << lambda do |corrector|
-            corrector.remove(node.loc.begin)
-          end
         end
       end
     end

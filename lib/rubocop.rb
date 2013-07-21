@@ -112,6 +112,15 @@ require 'rubocop/cop/style/word_array'
 
 require 'rubocop/cop/rails/validation'
 
+require 'rubocop/auto_correction/corrections'
+
+require 'rubocop/auto_correction/and_or'
+require 'rubocop/auto_correction/character_literal'
+require 'rubocop/auto_correction/colon_method_call'
+require 'rubocop/auto_correction/string_literals'
+require 'rubocop/auto_correction/when_then'
+require 'rubocop/auto_correction/while_until_do'
+
 require 'rubocop/formatter/base_formatter'
 require 'rubocop/formatter/simple_text_formatter'
 require 'rubocop/formatter/emacs_style_formatter'
