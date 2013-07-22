@@ -13,18 +13,11 @@ module Rubocop
           _receiver, method_name, *args = *node
           if args.any?
             block = get_block(args.last)
-            if block
-              method_name_regexp = Regexp.escape(method_name)
-              args_regexp = args
-                .map { |arg| Regexp.escape(arg.loc.expression.source) }
-                .join('\s*,\s*')
-              if node.loc.expression.source =~
-                  /#{method_name_regexp}\s+#{args_regexp}/
-                # If there are no parentheses around the arguments, then braces
-                # and do-end have different meaning due to how they bind, so we
-                # allow either.
-                ignore_node(block)
-              end
+            if block && !has_parentheses?(node) && !operator?(method_name)
+              # If there are no parentheses around the arguments, then braces
+              # and do-end have different meaning due to how they bind, so we
+              # allow either.
+              ignore_node(block)
             end
           end
         end
@@ -52,6 +45,14 @@ module Rubocop
             receiver, _method_name, *_args = *node
             get_block(receiver) if receiver
           end
+        end
+
+        def has_parentheses?(send_node)
+          send_node.loc.begin
+        end
+
+        def operator?(method_name)
+          method_name =~ /^\W/
         end
       end
     end
