@@ -372,6 +372,10 @@ DotPosition:
 Attr:
   Enabled: true
 
+# Checks for classes with class methods but no instance methods.
+AvoidClassesWithoutInstances:
+  Enabled: true
+
 #################### Lint ################################
 
 # Don't use assignment in conditions.

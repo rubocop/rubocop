@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* New cop `AvoidClassesWithoutInstances` tracks classes with class methods but no instance methods
+
 ### Bugs fixed
 
 * [#374](https://github.com/bbatsov/rubocop/issues/374) - Fixed error at post condition loop (`begin-end-while`, `begin-end-until`) in `UnusedLocalVariable` and `ShadowingOuterLocalVariable`
