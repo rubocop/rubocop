@@ -33,6 +33,34 @@ Alternatively you can pass `rubocop` a list of files and folders to check:
 $ rubocop app spec lib/something.rb
 ```
 
+Here's RuboCop in action. Consider the following Ruby source code:
+
+```ruby
+def badName
+  if something
+    test
+    end
+end
+```
+
+Running RuboCop on it (assuming it's in a file named `test.rb`) would produce the following report:
+
+```
+Offences:
+
+test.rb:1:1: C: Use snake_case for methods and variables.
+def badName
+^^^
+test.rb:2:3: C: Favor modifier if/unless usage when you have a single-line body. Another good alternative is the usage of control flow &&/||.
+  if something
+  ^^^^^
+test.rb:4:5: W: end at 4, 4 is not aligned with if at 2, 2
+    end
+    ^^^
+
+1 file inspected, 3 offences detected
+```
+
 For more details check the available command-line options:
 
 ```bash
