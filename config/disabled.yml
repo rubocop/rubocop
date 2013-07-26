@@ -1,5 +1,5 @@
 # These are all the cops that are disabled in the default configuration.
 
-# Use %i or %I for arrays of symbols.
 SymbolArray:
+  Description: 'Use %i or %I for arrays of symbols.'
   Enabled: false

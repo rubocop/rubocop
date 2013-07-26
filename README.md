@@ -82,6 +82,7 @@ Command flag           | Description
 `-s/--silent`          | Suppress the final summary
 `--only`               | Run only the specified cop
 `--auto-gen-config`    | Generate a configuration file acting as a TODO list
+`--show-cops`          | Shows available cops and their configuration
 
 ## Configuration
 

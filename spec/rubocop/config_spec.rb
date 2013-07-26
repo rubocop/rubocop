@@ -75,10 +75,11 @@ describe Rubocop::Config do
         create_file(file_path, ['Encoding:',
                                 '  Enabled: false'])
       end
-
       it 'returns a configuration inheriting from default.yml' do
+        config = DEFAULT_CONFIG['Encoding'].dup
+        config['Enabled'] = false
         expect(configuration_from_file)
-          .to eq(DEFAULT_CONFIG.merge('Encoding' => { 'Enabled' => false }))
+          .to eql(DEFAULT_CONFIG.merge('Encoding' => config))
       end
     end
 
@@ -175,16 +176,21 @@ describe Rubocop::Config do
       end
 
       it 'returns the ancestor configuration plus local overrides' do
-        expect(configuration_from_file)
-          .to eq(DEFAULT_CONFIG.merge('LineLength' => {
-                                        'Enabled' => true,
-                                        'Max' => 77
-                                      },
-                                      'MethodLength' => {
-                                        'Enabled' => true,
-                                        'CountComments' => false,
-                                        'Max' => 5
-                                      }))
+        config = DEFAULT_CONFIG
+                   .merge('LineLength' => {
+                          'Description' =>
+                             DEFAULT_CONFIG['LineLength']['Description'],
+                          'Enabled' => true,
+                          'Max' => 77
+                          },
+                          'MethodLength' => {
+                            'Description' =>
+                               DEFAULT_CONFIG['MethodLength']['Description'],
+                            'Enabled' => true,
+                            'CountComments' => false,
+                            'Max' => 5
+                          })
+        expect(configuration_from_file).to eq(config)
       end
     end
 
@@ -216,11 +222,11 @@ describe Rubocop::Config do
       end
 
       it 'returns values from the last one when possible' do
-        expect(configuration_from_file['MethodLength'])
-          .to eq('Enabled' => true,       # overridden in .rubocop.yml
-                 'CountComments' => true, # only defined in normal.yml
-                 'Max' => 200             # special.yml takes precedence
-                 )
+        expected = { 'Enabled' => true,        # overridden in .rubocop.yml
+                     'CountComments' => true,  # only defined in normal.yml
+                     'Max' => 200 }            # special.yml takes precedence
+        expect(configuration_from_file['MethodLength'].to_set)
+          .to be_superset(expected.to_set)
       end
     end
   end
