@@ -22,6 +22,7 @@ module Rubocop
             it 'accepts zero or one slash in regexp' do
               inspect_source(rl, ['x =~ /\/home/',
                                   'y =~ /\//',
+                                  'w =~ /\//m',
                                   'z =~ /a/'])
               expect(rl.offences).to be_empty
             end
