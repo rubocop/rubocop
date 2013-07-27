@@ -8,6 +8,7 @@
 * [#373](https://github.com/bbatsov/rubocop/issues/373) and [#376](https://github.com/bbatsov/rubocop/issues/376) - allow braces around multi-line blocks if `do`-`end` would change the meaning of the code
 * `RedundantSelf` now allows `self.` followed by any ruby keyword
 * [#391](https://github.com/bbatsov/rubocop/issues/391) - Fix bug in counting slashes in a regexp.
+* [#394](https://github.com/bbatsov/rubocop/issues/394) - `DotPosition` cop handles correctly code like `l.(1)`
 
 ## 0.10.0 (17/07/2013)
 

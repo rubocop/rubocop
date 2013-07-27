@@ -19,7 +19,13 @@ module Rubocop
 
         def proper_dot_position?(node)
           dot_line = node.loc.dot.line
-          selector_line = node.loc.selector.line
+
+          if node.loc.selector
+            selector_line = node.loc.selector.line
+          else
+            # l.(1) has no selector, so we use the opening parenthesis instead
+            selector_line = node.loc.begin.line
+          end
 
           case DotPosition.config['Style'].downcase
           when 'leading' then dot_line == selector_line

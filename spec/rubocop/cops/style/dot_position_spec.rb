@@ -27,6 +27,11 @@ module Rubocop
             inspect_source(cop, ['puts something'])
             expect(cop.offences).to be_empty
           end
+
+          it 'does not err on method call without a method name' do
+            inspect_source(cop, ['l.', '(1)'])
+            expect(cop.offences.size).to eq(1)
+          end
         end
 
         context 'Trailing dots style' do
@@ -47,6 +52,11 @@ module Rubocop
           it 'does not err on method call with no dots' do
             inspect_source(cop, ['puts something'])
             expect(cop.offences).to be_empty
+          end
+
+          it 'does not err on method call without a method name' do
+            inspect_source(cop, ['l', '.(1)'])
+            expect(cop.offences.size).to eq(1)
           end
         end
 
