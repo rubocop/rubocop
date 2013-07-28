@@ -78,9 +78,10 @@ Command flag           | Description
 `-r/--require`         | Require Ruby file
 `-R/--rails`           | Run extra Rails cops
 `-l/--lint`            | Run only lint cops
-`-a/--auto-correct`    | Auto-correct certain offences.
+`-a/--auto-correct`    | Auto-correct certain offences
 `-s/--silent`          | Suppress the final summary
 `--only`               | Run only the specified cop
+--auto-gen-config      | Generate a configuration file acting as a TODO list
 
 ## Configuration
 
@@ -190,6 +191,15 @@ Note: Files and directories are specified relative to the
 for the directory tree starting where it is defined. It is not
 shadowed by the setting of `Excludes` in other `.rubocop.yml` files in
 subdirectories.
+
+### Automatically Generated Configuration
+
+If you have a code base with an overwhelming amount of offences, it can be a
+good idea to use `rubocop --auto_gen_config` and add an `inherit_from:
+rubocop-todo.yml` in your `.rubocop.yml`. The generated file `rubocop-todo.yml`
+contains configuration to disable all cops that currently detect an offence in
+the code. Then you can start removing the entries in the generated file one by
+one as you work through all the offences in the code.
 
 ## Formatters
 
