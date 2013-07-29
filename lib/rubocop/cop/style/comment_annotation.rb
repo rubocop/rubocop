@@ -8,7 +8,6 @@ module Rubocop
       class CommentAnnotation < Cop
         MSG = 'Annotation keywords shall be all upper case, followed by a ' +
           'colon and a space, then a note describing the problem.'
-        KEYWORDS = %w(TODO FIXME OPTIMIZE HACK REVIEW)
 
         def investigate(processed_source)
           processed_source.comments.each do |comment|
@@ -28,6 +27,10 @@ module Rubocop
           end
         end
 
+        def self.keywords
+          CommentAnnotation.config['Keywords']
+        end
+
         private
 
         def annotation?(first_word, colon, space, note)
@@ -36,7 +39,7 @@ module Rubocop
         end
 
         def keyword_appearance?(first_word, colon, space)
-          KEYWORDS.include?(first_word.upcase) && (colon || space)
+          keyword?(first_word.upcase) && (colon || space)
         end
 
         def just_first_word_of_sentence?(first_word, colon, space, note)
@@ -44,8 +47,11 @@ module Rubocop
         end
 
         def correct_annotation?(first_word, colon, space, note)
-          KEYWORDS.include?(first_word) &&
-            (colon && space && note || !colon && !note)
+          keyword?(first_word) && (colon && space && note || !colon && !note)
+        end
+
+        def keyword?(word)
+          CommentAnnotation.keywords.include?(word)
         end
       end
     end

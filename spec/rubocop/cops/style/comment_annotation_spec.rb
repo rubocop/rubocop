@@ -6,10 +6,23 @@ module Rubocop
   module Cop
     module Style
       describe CommentAnnotation do
+        before do
+          CommentAnnotation.config = {
+            'Keywords' => %w(TODO FIXME OPTIMIZE HACK REVIEW)
+          }
+        end
         let(:cop) { CommentAnnotation.new }
 
         it 'registers an offence for a missing colon' do
           inspect_source(cop, ['# TODO make better'])
+          expect(cop.offences).to have(1).item
+        end
+
+        it 'registers an offence for a missing colon after configured word' do
+          CommentAnnotation.config = {
+            'Keywords' => %w(ISSUE)
+          }
+          inspect_source(cop, ['# ISSUE wrong order'])
           expect(cop.offences).to have(1).item
         end
 
@@ -61,6 +74,14 @@ module Rubocop
           inspect_source(cop,
                          ["# Optimize if you want. I wouldn't recommend it.",
                           '# Hack is a fun game.'])
+          expect(cop.offences).to be_empty
+        end
+
+        it 'accepts a word without colon if not in the configuration' do
+          CommentAnnotation.config = {
+            'Keywords' => %w(FIXME OPTIMIZE HACK REVIEW)
+          }
+          inspect_source(cop, ['# TODO make better'])
           expect(cop.offences).to be_empty
         end
       end

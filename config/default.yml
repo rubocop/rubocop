@@ -81,3 +81,12 @@ AssignmentInCondition:
 # Allow safe assignment in conditions.
 ParenthesesAroundCondition:
   AllowSafeAssignment: true
+
+# Checks formatting of special comments
+CommentAnnotation:
+  Keywords:
+    - TODO
+    - FIXME
+    - OPTIMIZE
+    - HACK
+    - REVIEW

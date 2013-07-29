@@ -7,6 +7,7 @@
 * New option --auto-gen-config outputs RuboCop configuration that disables all
   cops that detect any offences (for
   [#369](https://github.com/bbatsov/rubocop/issues/369)).
+* The list of annotation keywords recognized by the `CommentAnnotation` cop is now configurable.
 
 ### Bugs fixed
 
