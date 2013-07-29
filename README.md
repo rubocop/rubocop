@@ -81,7 +81,7 @@ Command flag           | Description
 `-a/--auto-correct`    | Auto-correct certain offences
 `-s/--silent`          | Suppress the final summary
 `--only`               | Run only the specified cop
---auto-gen-config      | Generate a configuration file acting as a TODO list
+`--auto-gen-config`    | Generate a configuration file acting as a TODO list
 
 ## Configuration
 
