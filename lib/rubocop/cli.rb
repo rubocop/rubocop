@@ -178,9 +178,10 @@ module Rubocop
                 'Generate a configuration file acting as a',
                 'TODO list.') do
           @options[:auto_gen_config] = true
-          @options[:formatters] ||= []
-          @options[:formatters] << 
+          @options[:formatters] = [
+            [DEFAULT_FORMATTER],
             [Formatter::DisabledConfigFormatter, Config::AUTO_GENERATED_FILE]
+          ]
           validate_auto_gen_config_option(args)
         end
         opts.on('-f', '--format FORMATTER',
