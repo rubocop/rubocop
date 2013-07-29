@@ -12,10 +12,8 @@ module Rubocop
         'clang'    => ClangStyleFormatter,
         'emacs'    => EmacsStyleFormatter,
         'json'     => JSONFormatter,
-        'files'    => FileListFormatter,
-        'disabled' => DisabledConfigFormatter
+        'files'    => FileListFormatter
       }
-      HIDDEN_FORMATTERS = %w(disabled)
 
       FORMATTER_APIS = [:started, :file_started, :file_finished, :finished]
 
@@ -29,11 +27,14 @@ module Rubocop
         end
       end
 
-      def add_formatter(formatter_key, output_path = nil)
-        formatter_class = if formatter_key =~ /\A[A-Z]/
-                            custom_formatter_class(formatter_key)
+      def add_formatter(formatter_type, output_path = nil)
+        formatter_class = case formatter_type
+                          when Class
+                            formatter_type
+                          when /\A[A-Z]/
+                            custom_formatter_class(formatter_type)
                           else
-                            builtin_formatter_class(formatter_key)
+                            builtin_formatter_class(formatter_type)
                           end
 
         output = output_path ? File.open(output_path, 'w') : $stdout
