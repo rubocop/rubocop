@@ -29,7 +29,7 @@ module Rubocop
     def run(args = ARGV)
       trap_interrupt
 
-      return 1 if any_errors? { parse_options(args) }
+      parse_options(args)
 
       # filter out Rails cops unless requested
       @cops.reject!(&:rails?) unless @options[:rails]
@@ -50,8 +50,7 @@ module Rubocop
         puts "Scanning #{file}" if @options[:debug]
         formatter_set.file_started(file, {})
 
-        offences = nil
-        return 1 if any_errors? { offences = inspect_file(file) }
+        offences = inspect_file(file)
 
         any_failed = true unless offences.empty?
         inspected_files << file
@@ -64,14 +63,9 @@ module Rubocop
       display_error_summary(@errors) unless @options[:silent]
 
       !any_failed && !wants_to_quit ? 0 : 1
-    end
-
-    def any_errors?
-      yield
-      false
     rescue => e
       $stderr.puts e.message
-      true
+      return 1
     end
 
     def validate_only_option
@@ -184,8 +178,10 @@ module Rubocop
                 'Generate a configuration file acting as a',
                 'TODO list.') do
           @options[:auto_gen_config] = true
-          @options[:formatters] ||= []
-          @options[:formatters] << ['disabled', Config::AUTO_GENERATED_FILE]
+          @options[:formatters] = [
+            [DEFAULT_FORMATTER],
+            [Formatter::DisabledConfigFormatter, Config::AUTO_GENERATED_FILE]
+          ]
           validate_auto_gen_config_option(args)
         end
         opts.on('-f', '--format FORMATTER',
