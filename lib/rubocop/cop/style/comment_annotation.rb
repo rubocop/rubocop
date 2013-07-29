@@ -31,7 +31,16 @@ module Rubocop
         private
 
         def annotation?(first_word, colon, space, note)
-          KEYWORDS.include?(first_word.upcase) && (colon || space || !note)
+          keyword_appearance?(first_word, colon, space) &&
+            !just_first_word_of_sentence?(first_word, colon, space, note)
+        end
+
+        def keyword_appearance?(first_word, colon, space)
+          KEYWORDS.include?(first_word.upcase) && (colon || space)
+        end
+
+        def just_first_word_of_sentence?(first_word, colon, space, note)
+          first_word == first_word.capitalize && !colon && space && note
         end
 
         def correct_annotation?(first_word, colon, space, note)

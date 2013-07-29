@@ -56,6 +56,13 @@ module Rubocop
           inspect_source(cop, ['# Todo.destroy(1)'])
           expect(cop.offences).to be_empty
         end
+
+        it 'accepts a keyword that is just the beginning of a sentence' do
+          inspect_source(cop,
+                         ["# Optimize if you want. I wouldn't recommend it.",
+                          '# Hack is a fun game.'])
+          expect(cop.offences).to be_empty
+        end
       end
     end
   end
