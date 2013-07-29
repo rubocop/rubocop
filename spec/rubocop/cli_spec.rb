@@ -89,8 +89,7 @@ Usage: rubocop [options] [file1, file2, ...]
         end.sort
 
         expected_formatter_keys =
-          (Formatter::FormatterSet::BUILTIN_FORMATTERS_FOR_KEYS.keys -
-           Formatter::FormatterSet::HIDDEN_FORMATTERS).sort
+          Formatter::FormatterSet::BUILTIN_FORMATTERS_FOR_KEYS.keys.sort
 
         expect(formatter_keys).to eq(expected_formatter_keys)
       end
