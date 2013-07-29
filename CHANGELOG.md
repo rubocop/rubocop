@@ -7,6 +7,7 @@
 * New option --auto-gen-config outputs RuboCop configuration that disables all
   cops that detect any offences (for
   [#369](https://github.com/bbatsov/rubocop/issues/369)).
+* The list of annotation keywords recognized by the `CommentAnnotation` cop is now configurable.
 
 ### Bugs fixed
 
@@ -15,6 +16,7 @@
 * `RedundantSelf` now allows `self.` followed by any ruby keyword
 * [#391](https://github.com/bbatsov/rubocop/issues/391) - Fix bug in counting slashes in a regexp.
 * [#394](https://github.com/bbatsov/rubocop/issues/394) - `DotPosition` cop handles correctly code like `l.(1)`
+* [#390](https://github.com/bbatsov/rubocop/issues/390) - `CommentAnnotation` cop allows keywords (e.g. Review, Optimize) if they just begin a sentence.
 
 ## 0.10.0 (17/07/2013)
 
