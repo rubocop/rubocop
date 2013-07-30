@@ -31,8 +31,13 @@ module Rubocop
           expect(hash_syntax.offences.map(&:message)).to be_empty
         end
 
-        it 'accepts hash rockets when keys special symbols in them' do
-          inspect_source(hash_syntax, ['x = { :"t o" => 0, :"\tab" => 1 }'])
+        it 'accepts hash rockets when keys have whitespaces in them' do
+          inspect_source(hash_syntax, ['x = { :"t o" => 0 }'])
+          expect(hash_syntax.offences.map(&:message)).to be_empty
+        end
+
+        it 'accepts hash rockets when keys have special symbols in them' do
+          inspect_source(hash_syntax, ['x = { :"\tab" => 1 }'])
           expect(hash_syntax.offences.map(&:message)).to be_empty
         end
 
