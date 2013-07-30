@@ -75,6 +75,12 @@ module Rubocop
           expect(cop.offences).to be_empty
         end
 
+        it 'accepts = in a block that is called in a condition' do
+          inspect_source(cop,
+                         ['return 1 if any_errors? { o = inspect(file) }'])
+          expect(cop.offences).to be_empty
+        end
+
         it 'accepts ||= in condition' do
           inspect_source(cop,
                          ['raise StandardError unless foo ||= bar'])
