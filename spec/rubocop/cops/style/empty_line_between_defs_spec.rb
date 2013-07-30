@@ -79,6 +79,18 @@ module Rubocop
           inspect_source(empty_lines, source)
           expect(empty_lines.offences.map(&:message)).to be_empty
         end
+
+        it 'accepts a nested def' do
+          source = ['def mock_model(*attributes)',
+                    '  Class.new do',
+                    '    def initialize(attrs)',
+                    '    end',
+                    '  end',
+                    'end',
+                   ]
+          inspect_source(empty_lines, source)
+          expect(empty_lines.offences.map(&:message)).to be_empty
+        end
       end
     end
   end

@@ -12,7 +12,7 @@ module Rubocop
           def_start = node.loc.keyword.line
           def_end = node.loc.end.line
 
-          if @prev_def_end && (def_start - @prev_def_end) < 2
+          if @prev_def_end && (def_start - @prev_def_end) == 1
             add_offence(:convention, node.loc.keyword, MSG)
           end
 
