@@ -17,6 +17,7 @@
 * [#391](https://github.com/bbatsov/rubocop/issues/391) - Fix bug in counting slashes in a regexp.
 * [#394](https://github.com/bbatsov/rubocop/issues/394) - `DotPosition` cop handles correctly code like `l.(1)`
 * [#390](https://github.com/bbatsov/rubocop/issues/390) - `CommentAnnotation` cop allows keywords (e.g. Review, Optimize) if they just begin a sentence.
+* [#400](https://github.com/bbatsov/rubocop/issues/400) - Fix bug concerning nested defs in `EmptyLineBetweenDefs` cop.
 
 ## 0.10.0 (17/07/2013)
 
