@@ -32,7 +32,7 @@ module Rubocop
         end
 
         it 'accepts hash rockets when keys special symbols in them' do
-          inspect_source(hash_syntax, ['x = { :"t o" => 0, :"\xab" => 1 }'])
+          inspect_source(hash_syntax, ['x = { :"t o" => 0, :"\tab" => 1 }'])
           expect(hash_syntax.offences.map(&:message)).to be_empty
         end
 
