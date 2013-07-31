@@ -27,6 +27,24 @@ module Rubocop
              ' &&/||.'])
         end
 
+        it 'registers an offence for short multiline if near an else etc' do
+           inspect_source(if_unless,
+                          ['if x',
+                           '  y',
+                           'elsif x1',
+                           '  y1',
+                           'else',
+                           '  z',
+                           'end',
+                           'n = a ? 0 : 1',
+                           'm = 3 if m0',
+                           '',
+                           'if a',
+                           '  b',
+                           'end'])
+          expect(if_unless.offences).to have(1).item
+        end
+
         it "accepts multiline if that doesn't fit on one line" do
           check_too_long(if_unless, 'if')
         end

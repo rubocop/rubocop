@@ -19,6 +19,7 @@
 * [#390](https://github.com/bbatsov/rubocop/issues/390) - `CommentAnnotation` cop allows keywords (e.g. Review, Optimize) if they just begin a sentence.
 * [#400](https://github.com/bbatsov/rubocop/issues/400) - Fix bug concerning nested defs in `EmptyLineBetweenDefs` cop.
 * [#399](https://github.com/bbatsov/rubocop/issues/399) - Allow assignment inside blocks in `AssignmentInCondition` cop.
+* Fix bug in favor_modifier.rb regarding missed offences after else etc.
 
 ## 0.10.0 (17/07/2013)
 
