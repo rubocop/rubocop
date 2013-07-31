@@ -65,10 +65,10 @@ module Rubocop
           return unless processed_source.ast
           on_node(:if, processed_source.ast) do |node|
             # discard ternary ops, if/else and modifier if/unless nodes
-            return if ternary_op?(node)
-            return if modifier_if?(node)
-            return if elsif?(node)
-            return if if_else?(node)
+            next if ternary_op?(node)
+            next if modifier_if?(node)
+            next if elsif?(node)
+            next if if_else?(node)
 
             if check(node, processed_source.comments)
               add_offence(:convention, node.loc.expression, error_message)
