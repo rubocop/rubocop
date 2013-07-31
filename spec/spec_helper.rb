@@ -12,22 +12,24 @@ if ENV['TRAVIS'] && RUBY_ENGINE == 'jruby'
   ENV['TMPDIR'] = non_world_writable_tmp_dir
 end
 
-if ENV['TRAVIS'] || ENV['COVERAGE']
-  require 'simplecov'
+# Temporary disable the coverage report until Coveralls fix
+# their API or we find a way to not break the TRAVIS build
+# when Coveralls report error.
+# SimpleCov raises similar IOError - stream closed when ran
+# on Rubinius.
+# if ENV['TRAVIS'] || ENV['COVERAGE']
+  # require 'simplecov'
 
-  # Temporary disable the coverage report until Coveralls fix
-  # their API or we find a way to not break the TRAVIS build
-  # when Coveralls report error.
   # if ENV['TRAVIS']
   #   require 'coveralls'
   #   SimpleCov.formatter = Coveralls::SimpleCov::Formatter
   # end
 
-  SimpleCov.start do
-    add_filter '/spec/'
-    add_filter '/vendor/bundle/'
-  end
-end
+  # SimpleCov.start do
+    # add_filter '/spec/'
+    # add_filter '/vendor/bundle/'
+  # end
+# end
 
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
