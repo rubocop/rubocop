@@ -59,9 +59,7 @@ module Rubocop
       first_line = File.open(file) { |f| f.readline }
       first_line =~ /#!.*ruby/
     rescue EOFError, ArgumentError => e
-      if @debug
-        warn "Unprocessable file #{file}: #{e.class}, #{e.message}"
-      end
+      warn "Unprocessable file #{file}: #{e.class}, #{e.message}" if @debug
       false
     end
   end

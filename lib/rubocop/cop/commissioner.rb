@@ -70,9 +70,7 @@ module Rubocop
       # its own processing.
       def invoke_cops_callback(processed_source)
         @cops.each do |cop|
-          if cop.respond_to?(:investigate)
-            cop.investigate(processed_source)
-          end
+          cop.investigate(processed_source) if cop.respond_to?(:investigate)
         end
       end
 
