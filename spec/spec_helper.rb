@@ -15,10 +15,13 @@ end
 if ENV['TRAVIS'] || ENV['COVERAGE']
   require 'simplecov'
 
-  if ENV['TRAVIS']
-    require 'coveralls'
-    SimpleCov.formatter = Coveralls::SimpleCov::Formatter
-  end
+  # Temporary disable the coverage report until Coveralls fix
+  # their API or we find a way to not break the TRAVIS build
+  # when Coveralls report error.
+  # if ENV['TRAVIS']
+  #   require 'coveralls'
+  #   SimpleCov.formatter = Coveralls::SimpleCov::Formatter
+  # end
 
   SimpleCov.start do
     add_filter '/spec/'
