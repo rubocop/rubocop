@@ -21,9 +21,7 @@ module Rubocop
 
         def on_block(node)
           return if already_processed_node?(node)
-          method, = *node
-          start_node = method.loc.expression.source =~ /\n/ ? method : node
-          check_block_alignment(start_node.loc.expression, node.loc)
+          check_block_alignment(node, node)
         end
 
         def on_and(node)
@@ -31,7 +29,7 @@ module Rubocop
 
           _left, right = *node
           if right.type == :block
-            check_block_alignment(node.loc.expression, right.loc)
+            check_block_alignment(node, right)
             @inspected_blocks << right
           end
         end
@@ -93,7 +91,7 @@ module Rubocop
           return if already_processed_node?(block_node)
 
           @inspected_blocks << block_node
-          check_block_alignment(begin_node.loc.expression, block_node.loc)
+          check_block_alignment(begin_node, block_node)
         end
 
         def find_block_node(node)
@@ -117,24 +115,16 @@ module Rubocop
           end
         end
 
-        def check_block_alignment(start_loc, block_loc)
-          match = start_loc.source.match(/\n(\s*)((end)?\.\S+)\Z/)
-          if match
-            start_line = start_loc.line + start_loc.source.count("\n")
-            start_column = match.captures[0].length
-            start_source = match.captures[1]
-          else
-            start_line = start_loc.line
-            start_column = start_loc.column
-            start_source = start_loc.source.lines.to_a.first.chomp
-          end
-          end_loc = block_loc.end
-          if block_loc.begin.line != end_loc.line &&
-              start_column != end_loc.column
+        def check_block_alignment(start_node, block_node)
+          start_loc = start_node.loc.expression
+          end_loc = block_node.loc.end
+          if block_node.loc.begin.line != end_loc.line &&
+              start_loc.column != end_loc.column
             add_offence(:warning,
                         end_loc,
                         sprintf(MSG, end_loc.line, end_loc.column,
-                                start_source, start_line, start_column))
+                                start_loc.source.lines.to_a.first.chomp,
+                                start_loc.line, start_loc.column))
           end
         end
 

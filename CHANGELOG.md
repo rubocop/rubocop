@@ -20,6 +20,7 @@
 * [#400](https://github.com/bbatsov/rubocop/issues/400) - Fix bug concerning nested defs in `EmptyLineBetweenDefs` cop.
 * [#399](https://github.com/bbatsov/rubocop/issues/399) - Allow assignment inside blocks in `AssignmentInCondition` cop.
 * Fix bug in favor_modifier.rb regarding missed offences after else etc.
+* [#393](https://github.com/bbatsov/rubocop/issues/393) - Retract support for multiline chaining of blocks (which fixed [#346](https://github.com/bbatsov/rubocop/issues/346)), thus rejecting issue 346.
 
 ## 0.10.0 (17/07/2013)
 
