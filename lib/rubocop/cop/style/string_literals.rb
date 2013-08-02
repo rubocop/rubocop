@@ -18,7 +18,7 @@ module Rubocop
           # is not preceeded/followed by another \\ (e.g. "\\x34") but not
           # "\\\\"
           if node.loc.expression.source !~ /('|([^\\]|\A)\\([^\\]|\Z))/ &&
-              node.loc.begin.is?('"')
+              node.loc.begin && node.loc.begin.is?('"')
             add_offence(:convention, node.loc.expression, MSG)
             do_autocorrect(node)
           end

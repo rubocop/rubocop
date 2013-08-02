@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
   s.summary = 'Automatic Ruby code style checking tool.'
 
   s.add_runtime_dependency('rainbow', '>= 1.1.4')
-  s.add_runtime_dependency('parser', '2.0.0.pre3')
+  s.add_runtime_dependency('parser', '2.0.0.pre6')
   s.add_runtime_dependency('backports', '~> 3.3.3')
   s.add_runtime_dependency('powerpack', '0.0.1')
   s.add_development_dependency('rake', '~> 10.1')

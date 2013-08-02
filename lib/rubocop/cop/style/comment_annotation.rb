@@ -16,7 +16,7 @@ module Rubocop
               margin, first_word, colon, space, note = *match.captures
               if annotation?(first_word, colon, space, note) &&
                   !correct_annotation?(first_word, colon, space, note)
-                start = comment.loc.begin_pos + margin.length
+                start = comment.loc.expression.begin_pos + margin.length
                 length = first_word.length + (colon || '').length
                 range = Parser::Source::Range.new(processed_source.buffer,
                                                   start,
