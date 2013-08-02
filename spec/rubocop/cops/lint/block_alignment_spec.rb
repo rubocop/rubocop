@@ -98,7 +98,7 @@ module Rubocop
         end
 
         context 'when the method part is a call chain that spans several lines' do
-          it 'accepts end aligned with first character of line where do is' do
+          it 'registers offences for pretty multiline chaining' do
             src = ['def foo(bar)',
                    '  bar.get_stuffs',
                    '      .reject do |stuff| ',
@@ -111,7 +111,10 @@ module Rubocop
                    '      end',
                    'end']
             inspect_source(cop, src)
-            expect(cop.offences.map(&:message)).to eq([])
+            expect(cop.offences.map(&:message))
+              .to eq(['end at 10, 6 is not aligned with bar.get_stuffs at 2, 2',
+                      'end at 7, 6 is not aligned with bar.get_stuffs at 2, 2',
+                      'end at 5, 6 is not aligned with bar.get_stuffs at 2, 2'])
           end
 
           it 'registers offences for misaligned ends' do
@@ -128,6 +131,15 @@ module Rubocop
                    'end']
             inspect_source(cop, src)
             expect(cop.offences).to have(3).items
+          end
+
+          it 'accepts end indented as the start of the block' do
+            src = ['my_object.chaining_this_very_long_method(with_a_parameter)',
+                   '    .and_one_with_a_block do',
+                   '  do_something',
+                   'end']
+            inspect_source(cop, src)
+            expect(cop.offences).to be_empty
           end
         end
 
