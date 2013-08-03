@@ -43,6 +43,18 @@ module Rubocop
           new_source = autocorrect_source(cop, 'true or false')
           expect(new_source).to eq('true || false')
         end
+
+        it 'leaves *or* as is if auto-correction changes the meaning' do
+          src = "teststring.include? 'a' or teststring.include? 'b'"
+          new_source = autocorrect_source(cop, src)
+          expect(new_source).to eq(src)
+        end
+
+        it 'leaves *and* as is if auto-correction changes the meaning' do
+          src = 'x = a + b and return x'
+          new_source = autocorrect_source(cop, src)
+          expect(new_source).to eq(src)
+        end
       end
     end
   end
