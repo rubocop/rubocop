@@ -4,7 +4,7 @@
 Encoding:
   Enabled: true
 
-# Limit lines to 80 characters.
+# Limit lines to 79 characters.
 LineLength:
   Enabled: true
 
@@ -64,7 +64,8 @@ SpaceAfterColon:
 SpaceAfterControlKeyword:
   Enabled: true
 
-# Prefer symbols instead of strings as hash keys.
+# Prefer Ruby 1.9 hash syntax { a: 1, b: 2 } over 1.8 syntax
+# { :a => 1, :b => 2 }.
 HashSyntax:
   Enabled: true
 
@@ -316,7 +317,8 @@ ConstantName:
 AccessControl:
   Enabled: true
 
-# Use Kernel#loop with break rather than begin/end/until or begin/end/while for post-loop tests.
+# Use Kernel#loop with break rather than begin/end/until or begin/end/while for
+# post-loop tests.
 Loop:
   Enabled: true
 
