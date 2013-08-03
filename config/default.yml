@@ -65,11 +65,12 @@ CollectionMethods:
     detect: 'find'
     find_all: 'select'
 
-# Muli-line method chaining should be done with leading dots.
+# Multi-line method chaining should be done with leading dots.
 DotPosition:
   Style: 'leading'
 
-# TrivialAccessors doesn't require exact name matches and doesn't allow predicated methods by default.
+# TrivialAccessors doesn't require exact name matches and doesn't allow
+# predicated methods by default.
 TrivialAccessors:
   ExactNameMatch: false
   AllowPredicates: false
