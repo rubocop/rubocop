@@ -105,6 +105,19 @@ module Rubocop
           expect(symbol_name.offences).to be_empty
         end
 
+        it 'accepts non snake case arguments to private_constant' do
+          inspect_source(symbol_name,
+                         ['private_constant :NORMAL_MODE, :ADMIN_MODE'])
+          expect(symbol_name.offences).to be_empty
+        end
+
+        it 'registers an offence for non snake case symbol near ' +
+            'private_constant' do
+          inspect_source(symbol_name,
+                         ['private_constant f(:ADMIN_MODE)'])
+          expect(symbol_name.offences.size).to eq(1)
+        end
+
         it 'can handle an alias of and operator without crashing' do
           inspect_source(symbol_name,
                          ['alias + add'])
