@@ -14,7 +14,18 @@ module Rubocop
           self.class.config['AllowCamelCase']
         end
 
+        def on_send(node)
+          receiver, method_name, *args = *node
+          # Arguments to Module#private_constant are symbols referring to
+          # existing constants, so they will start with an upper case letter.
+          # We ignore these symbols.
+          if receiver.nil? && method_name == :private_constant
+            args.each { |a| ignore_node(a) }
+          end
+        end
+
         def on_sym(node)
+          return if ignored_node?(node)
           sym_name = node.to_a[0]
           return unless sym_name =~ /^[a-zA-Z]/
           return if sym_name =~ SNAKE_CASE
