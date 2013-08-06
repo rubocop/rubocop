@@ -22,6 +22,7 @@
 * Fix bug in favor_modifier.rb regarding missed offences after else etc.
 * [#393](https://github.com/bbatsov/rubocop/issues/393) - Retract support for multiline chaining of blocks (which fixed [#346](https://github.com/bbatsov/rubocop/issues/346)), thus rejecting issue 346.
 * [#389](https://github.com/bbatsov/rubocop/issues/389) - Ignore symbols that are arguments to Module#private_constant in `SymbolName` cop.
+* [#387](https://github.com/bbatsov/rubocop/issues/387) - Do autocorrect in `AndOr` cop only if it does not change the meaning of the code.
 
 ## 0.10.0 (17/07/2013)
 
