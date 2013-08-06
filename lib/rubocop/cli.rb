@@ -31,6 +31,8 @@ module Rubocop
 
       parse_options(args)
 
+      Config.debug = @options[:debug]
+
       # filter out Rails cops unless requested
       @cops.reject!(&:rails?) unless @options[:rails]
 
