@@ -13,6 +13,7 @@ module Rubocop
     before(:each) do
       $stdout = StringIO.new
       $stderr = StringIO.new
+      Config.debug = false
     end
 
     after(:each) do
@@ -414,6 +415,22 @@ Usage: rubocop [options] [file1, file2, ...]
         ["#{abs('example1.rb')}:1:7: C: Trailing whitespace detected.",
          "#{abs('example2.rb')}:1:1: C: Tab detected.",
          ''].join("\n"))
+    end
+
+    it 'shows config files when --debug is passed', ruby: 2.0 do
+      create_file('example1.rb', "\tputs 0")
+      expect(cli.run(['--debug', 'example1.rb'])).to eq(1)
+      home = File.dirname(File.dirname(File.dirname(__FILE__)))
+      expect($stdout.string.lines[2, 7].map(&:chomp).join("\n"))
+        .to eq(["For #{abs('')}:" +
+                " configuration from #{home}/config/default.yml",
+                "Inheriting configuration from #{home}/config/enabled.yml",
+                "Inheriting configuration from #{home}/config/disabled.yml",
+                "AllCops/Excludes configuration from #{home}/.rubocop.yml",
+                "Inheriting configuration from #{home}/config/default.yml",
+                "Inheriting configuration from #{home}/config/enabled.yml",
+                "Inheriting configuration from #{home}/config/disabled.yml"
+               ].join("\n"))
     end
 
     it 'shows cop names when --debug is passed', ruby: 2.0 do

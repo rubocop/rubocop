@@ -8,6 +8,7 @@
   cops that detect any offences (for
   [#369](https://github.com/bbatsov/rubocop/issues/369)).
 * The list of annotation keywords recognized by the `CommentAnnotation` cop is now configurable.
+* Configuration file names are printed as they are loaded in `--debug` mode.
 
 ### Bugs fixed
 
