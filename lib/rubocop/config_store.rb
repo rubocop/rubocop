@@ -31,7 +31,10 @@ module Rubocop
       dir = File.dirname(file)
       @path_cache[dir] ||= Config.configuration_file_for(dir)
       path = @path_cache[dir]
-      @object_cache[path] ||= Config.configuration_from_file(path)
+      @object_cache[path] ||= begin
+                                print "For #{dir}: " if Config.debug?
+                                Config.configuration_from_file(path)
+                              end
     end
   end
 end

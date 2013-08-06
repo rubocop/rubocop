@@ -22,9 +22,13 @@ module Rubocop
     attr_accessor :contains_auto_generated_config
 
     class << self
+      attr_accessor :debug
+      alias_method :debug?, :debug
+
       def load_file(path)
         path = File.absolute_path(path)
         hash = YAML.load_file(path)
+        puts "configuration from #{path}" if debug?
         contains_auto_generated_config = false
 
         base_configs(path, hash['inherit_from']).reverse.each do |base_config|
@@ -95,6 +99,7 @@ module Rubocop
                      end
         base_files.map do |f|
           f = File.join(File.dirname(path), f) unless f.start_with?('/')
+          print 'Inheriting ' if debug?
           load_file(f)
         end
       end
@@ -112,6 +117,7 @@ module Rubocop
         config = load_file(config_file)
         found_files = config_files_in_path(config_file)
         if found_files.any? && found_files.last != config_file
+          print 'AllCops/Excludes ' if debug?
           add_excludes_from_higher_level(config, load_file(found_files.last))
         end
         make_excludes_absolute(config)
@@ -133,7 +139,10 @@ module Rubocop
       end
 
       def default_configuration
-        @default_configuration ||= load_file(DEFAULT_FILE)
+        @default_configuration ||= begin
+                                     print 'Default ' if debug?
+                                     load_file(DEFAULT_FILE)
+                                   end
       end
 
       def merge_with_default(config, config_file)
