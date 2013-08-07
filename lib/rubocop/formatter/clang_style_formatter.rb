@@ -11,9 +11,14 @@ module Rubocop
           output.printf("%s:%d:%d: %s: %s\n",
                         smart_path(file).color(:cyan), o.line, o.real_column,
                         o.clang_severity, o.message)
-          output.puts(o.location.source_line)
-          output.puts(' ' * o.location.column +
-                      '^' * o.location.column_range.count)
+
+          source_line = o.location.source_line
+
+          unless source_line.strip.empty?
+            output.puts(source_line)
+            output.puts(' ' * o.location.column +
+                        '^' * o.location.column_range.count)
+          end
         end
       end
     end
