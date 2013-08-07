@@ -193,6 +193,15 @@ module Rubocop
           inspect_source(align, src)
           expect(align.offences).to be_empty
         end
+
+        it 'auto-corrects alignment' do
+          new_source = autocorrect_source(align, ['func(a,',
+                                                  '       b,',
+                                                  'c)'])
+          expect(new_source.split("\n")).to eq(['func(a,',
+                                                '     b,',
+                                                '     c)'])
+        end
       end
     end
   end
