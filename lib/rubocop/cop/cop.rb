@@ -73,11 +73,11 @@ module Rubocop
         @corrections = []
       end
 
-      def do_autocorrect(node)
-        autocorrect_action(node) if autocorrect
+      def do_autocorrect(node, *args)
+        autocorrect_action(node, *args) if autocorrect
       end
 
-      def autocorrect_action(node)
+      def autocorrect_action(node, *args)
       end
 
       def add_offence(severity, location, message)
