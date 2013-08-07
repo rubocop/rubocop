@@ -12,22 +12,32 @@ module Rubocop
         def on_send(node)
           _receiver, method, *args = *node
 
-          if method != :[]= && args.size > 1
-            first_arg_col = args.first.loc.expression.column
-            prev_arg_line = args.first.loc.expression.line
-            prev_arg_col = first_arg_col
+          return if method == :[]=
+          return if args.size <= 1
 
-            args.each do |arg|
-              cur_arg_line = arg.loc.expression.line
-              cur_arg_col = arg.loc.expression.column
+          first_arg_column = args.first.loc.expression.column
 
-              if cur_arg_line != prev_arg_line &&
-                  cur_arg_col != first_arg_col
-                add_offence(:convention, arg.loc.expression, MSG)
-              end
+          args.each_cons(2) do |prev, current|
+            current_pos = current.loc.expression
 
-              prev_arg_col = cur_arg_col
-              prev_arg_line = cur_arg_line
+            if current_pos.line > prev.loc.expression.line &&
+                current_pos.column != first_arg_column
+              add_offence(:convention, current_pos, MSG)
+              do_autocorrect(current, first_arg_column - current_pos.column)
+            end
+          end
+        end
+
+        def autocorrect_action(node, column_delta)
+          @corrections << lambda do |corrector|
+            expr = node.loc.expression
+            if column_delta > 0
+              corrector.replace(expr, ' ' * column_delta + expr.source)
+            else
+              range = Parser::Source::Range.new(expr.source_buffer,
+                                                expr.begin_pos + column_delta,
+                                                expr.end_pos)
+              corrector.replace(range, expr.source)
             end
           end
         end
