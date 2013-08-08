@@ -11,6 +11,7 @@
 * Configuration file names are printed as they are loaded in `--debug` mode.
 * Auto-correct support added in `AlignParameters` cop.
 * New cop `UselessComparison` checks for comparisons of the same arguments.
+* New cop `UselessAssignment` checks for useless assignments to local variables.
 
 ### Bugs fixed
 

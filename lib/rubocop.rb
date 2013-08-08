@@ -28,6 +28,7 @@ require 'rubocop/cop/lint/rescue_exception'
 require 'rubocop/cop/lint/shadowing_outer_local_variable'
 require 'rubocop/cop/lint/unreachable_code'
 require 'rubocop/cop/lint/unused_local_variable'
+require 'rubocop/cop/lint/useless_assignment'
 require 'rubocop/cop/lint/useless_comparison'
 require 'rubocop/cop/lint/void'
 
