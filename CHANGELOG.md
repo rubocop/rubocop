@@ -10,6 +10,7 @@
 * The list of annotation keywords recognized by the `CommentAnnotation` cop is now configurable.
 * Configuration file names are printed as they are loaded in `--debug` mode.
 * Auto-correct support added in `AlignParameters` cop.
+* New cop `UselessComparison` checks for comparisons of the same arguments.
 
 ### Bugs fixed
 

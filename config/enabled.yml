@@ -421,6 +421,10 @@ EmptyEnsure:
 CommentAnnotation:
   Enabled: true
 
+# Checks for comparison of something with itself.
+UselessComparison:
+  Enabled: true
+
 ##################### Rails ##################################
 
 # Use sexy validations.
