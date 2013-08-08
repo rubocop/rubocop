@@ -14,7 +14,7 @@ module Rubocop
                           '  something',
                           'ensure',
                           'end'])
-          expect(cop.offences).to have(1).item
+          expect(cop.offences.size).to eq(1)
         end
 
         it 'does not register an offence for non-empty ensure' do

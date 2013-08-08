@@ -15,7 +15,7 @@ module Rubocop
 
         it 'registers an offence for a missing colon' do
           inspect_source(cop, ['# TODO make better'])
-          expect(cop.offences).to have(1).item
+          expect(cop.offences.size).to eq(1)
         end
 
         it 'registers an offence for a missing colon after configured word' do
@@ -23,7 +23,7 @@ module Rubocop
             'Keywords' => %w(ISSUE)
           }
           inspect_source(cop, ['# ISSUE wrong order'])
-          expect(cop.offences).to have(1).item
+          expect(cop.offences.size).to eq(1)
         end
 
         context 'when used with the clang formatter' do
@@ -42,17 +42,17 @@ module Rubocop
 
         it 'registers an offence for lower case' do
           inspect_source(cop, ['# fixme: does not work'])
-          expect(cop.offences).to have(1).item
+          expect(cop.offences.size).to eq(1)
         end
 
         it 'registers an offence for capitalized annotation keyword' do
           inspect_source(cop, ['# Optimize: does not work'])
-          expect(cop.offences).to have(1).item
+          expect(cop.offences.size).to eq(1)
         end
 
         it 'registers an offence for upper case with colon but no note' do
           inspect_source(cop, ['# HACK:'])
-          expect(cop.offences).to have(1).item
+          expect(cop.offences.size).to eq(1)
         end
 
         it 'accepts upper case keyword with colon, space and note' do

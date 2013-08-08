@@ -42,7 +42,7 @@ module Rubocop
                            'if a',
                            '  b',
                            'end'])
-          expect(if_unless.offences).to have(1).item
+          expect(if_unless.offences.size).to eq(1)
         end
 
         it "accepts multiline if that doesn't fit on one line" do

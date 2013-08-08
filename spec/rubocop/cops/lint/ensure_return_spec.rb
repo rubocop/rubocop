@@ -16,7 +16,7 @@ module Rubocop
                           '  file.close',
                           '  return',
                           'end'])
-          expect(cop.offences).to have(1).item
+          expect(cop.offences.size).to eq(1)
         end
 
         it 'does not register an offence for return outside ensure' do

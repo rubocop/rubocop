@@ -57,7 +57,7 @@ module Rubocop
                    '  # ...',
                    '})']
             inspect_source(cop, src)
-            expect(cop.offences).to have(2).items
+            expect(cop.offences.size).to eq(2)
           end
 
           it 'can handle special method names such as []= and done?' do

@@ -48,7 +48,7 @@ module Rubocop
 
           commissioner.investigate(processed_source)
 
-          expect(commissioner.errors[cop]).to have(1).item
+          expect(commissioner.errors[cop].size).to eq(1)
           expect(commissioner.errors[cop][0]).to be_instance_of(RuntimeError)
         end
 

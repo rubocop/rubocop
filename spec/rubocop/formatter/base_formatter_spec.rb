@@ -120,7 +120,7 @@ module Rubocop
               end
 
               formatter.should_receive(:finished) do |processed_files|
-                expect(processed_files).to have(2).items
+                expect(processed_files.size).to eq(2)
               end
 
               run
@@ -170,9 +170,9 @@ module Rubocop
             .exactly(3).times do |file, offences|
               case File.basename(file)
               when '1_offence.rb'
-                expect(offences).to have(1).item
+                expect(offences.size).to eq(1)
               when '4_offences.rb'
-                expect(offences).to have(4).items
+                expect(offences.size).to eq(4)
               when 'no_offence.rb'
                 expect(offences).to be_empty
               else

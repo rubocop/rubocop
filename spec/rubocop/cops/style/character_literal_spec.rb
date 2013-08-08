@@ -10,12 +10,12 @@ module Rubocop
 
         it 'registers an offence for character literals' do
           inspect_source(cop, ['x = ?x'])
-          expect(cop.offences).to have(1).item
+          expect(cop.offences.size).to eq(1)
         end
 
         it 'registers an offence for literals like \n' do
           inspect_source(cop, ['x = ?\n'])
-          expect(cop.offences).to have(1).item
+          expect(cop.offences.size).to eq(1)
         end
 
         it 'accepts literals like ?\C-\M-d' do

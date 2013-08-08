@@ -123,7 +123,7 @@ Usage: rubocop [options] [file1, file2, ...]
       it 'adds a handler for SIGINT' do
         expect(@interrupt_handlers).to be_empty
         cli.trap_interrupt
-        expect(@interrupt_handlers).to have(1).item
+        expect(@interrupt_handlers.size).to eq(1)
       end
 
       context 'with SIGINT once' do

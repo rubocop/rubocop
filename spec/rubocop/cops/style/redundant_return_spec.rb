@@ -13,7 +13,7 @@ module Rubocop
                  '  return something',
                  'end']
           inspect_source(cop, src)
-          expect(cop.offences).to have(1).item
+          expect(cop.offences.size).to eq(1)
         end
 
         it 'reports an offence for defs with only a return' do
@@ -21,7 +21,7 @@ module Rubocop
                  '  return something',
                  'end']
           inspect_source(cop, src)
-          expect(cop.offences).to have(1).item
+          expect(cop.offences.size).to eq(1)
         end
 
         it 'reports an offence for def ending with return' do
@@ -31,7 +31,7 @@ module Rubocop
                  '  return something',
                  'end']
           inspect_source(cop, src)
-          expect(cop.offences).to have(1).item
+          expect(cop.offences.size).to eq(1)
         end
 
         it 'reports an offence for defs ending with return' do
@@ -41,7 +41,7 @@ module Rubocop
                  '  return something',
                  'end']
           inspect_source(cop, src)
-          expect(cop.offences).to have(1).item
+          expect(cop.offences.size).to eq(1)
         end
 
         it 'accepts return in a non-final position' do

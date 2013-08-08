@@ -11,7 +11,7 @@ module Rubocop
         it 'reports an offence a self receiver on an rvalue' do
           src = ['a = self.b']
           inspect_source(cop, src)
-          expect(cop.offences).to have(1).item
+          expect(cop.offences.size).to eq(1)
         end
 
         it 'accepts a self receiver on an lvalue of an assignment' do

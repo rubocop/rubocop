@@ -17,7 +17,7 @@ module Rubocop
                  '  end',
                  'end']
           inspect_source(cop, src)
-          expect(cop.offences).to have(1).item
+          expect(cop.offences.size).to eq(1)
         end
 
         it 'reports an offence for defs with redundant begin block' do
@@ -29,7 +29,7 @@ module Rubocop
                  '  end',
                  'end']
           inspect_source(cop, src)
-          expect(cop.offences).to have(1).item
+          expect(cop.offences.size).to eq(1)
         end
 
         it 'accepts a def with required begin block' do

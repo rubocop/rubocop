@@ -23,7 +23,7 @@ module Rubocop
 
           it 'registers an offence' do
             inspect_source(cop, source)
-            expect(cop.offences).to have(1).item
+            expect(cop.offences.size).to eq(1)
             expect(cop.offences.first.message)
               .to include('Shadowing outer local variable - foo')
             expect(cop.offences.first.line).to eq(4)
@@ -47,7 +47,7 @@ module Rubocop
 
           it 'registers an offence' do
             inspect_source(cop, source)
-            expect(cop.offences).to have(1).item
+            expect(cop.offences.size).to eq(1)
             expect(cop.offences.first.message)
               .to include('Shadowing outer local variable - foo')
             expect(cop.offences.first.line).to eq(4)
@@ -73,7 +73,7 @@ module Rubocop
 
           it 'registers an offence' do
             inspect_source(cop, source)
-            expect(cop.offences).to have(1).item
+            expect(cop.offences.size).to eq(1)
             expect(cop.offences.first.message)
               .to include('Shadowing outer local variable - foo')
             expect(cop.offences.first.line).to eq(4)
@@ -98,7 +98,7 @@ module Rubocop
 
           it 'registers an offence' do
             inspect_source(cop, source)
-            expect(cop.offences).to have(1).item
+            expect(cop.offences.size).to eq(1)
             expect(cop.offences.first.message)
               .to include('Shadowing outer local variable - foo')
             expect(cop.offences.first.line).to eq(4)

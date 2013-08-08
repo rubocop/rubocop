@@ -33,7 +33,7 @@ module Rubocop
       describe 'add_formatter' do
         it 'adds a formatter to itself' do
           formatter_set.add_formatter('simple')
-          expect(formatter_set).to have(1).item
+          expect(formatter_set.size).to eq(1)
         end
 
         it 'adds a formatter with specified formatter type' do

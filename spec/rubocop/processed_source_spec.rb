@@ -35,7 +35,7 @@ module Rubocop
       end
 
       it 'has same number of elements as line count' do
-        expect(processed_source.lines).to have(4).items
+        expect(processed_source.lines.size).to eq(4)
       end
 
       it 'contains lines as string without linefeed' do

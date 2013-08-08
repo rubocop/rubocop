@@ -10,7 +10,7 @@ module Rubocop
 
         it 'registers an offence for $custom' do
           inspect_source(cop, ['puts $custom'])
-          expect(cop.offences).to have(1).item
+          expect(cop.offences.size).to eq(1)
         end
 
         AvoidGlobalVars::BUILT_IN_VARS.each do |var|

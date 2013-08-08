@@ -130,7 +130,7 @@ module Rubocop
                    '        end',
                    'end']
             inspect_source(cop, src)
-            expect(cop.offences).to have(3).items
+            expect(cop.offences.size).to eq(3)
           end
 
           it 'accepts end indented as the start of the block' do
@@ -159,7 +159,7 @@ module Rubocop
                    '  i - 5',
                    '    end']
             inspect_source(cop, src)
-            expect(cop.offences).to have(1).item
+            expect(cop.offences.size).to eq(1)
           end
         end
 
