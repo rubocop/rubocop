@@ -195,7 +195,7 @@ subdirectories.
 ### Automatically Generated Configuration
 
 If you have a code base with an overwhelming amount of offences, it can be a
-good idea to use `rubocop --auto_gen_config` and add an `inherit_from:
+good idea to use `rubocop --auto-gen-config` and add an `inherit_from:
 rubocop-todo.yml` in your `.rubocop.yml`. The generated file `rubocop-todo.yml`
 contains configuration to disable all cops that currently detect an offence in
 the code. Then you can start removing the entries in the generated file one by
