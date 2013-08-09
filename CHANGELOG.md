@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.11.0 (09/08/2013)
+
 ### New features
 
 * [#421](https://github.com/bbatsov/rubocop/issues/421) - `
