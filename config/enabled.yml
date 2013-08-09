@@ -378,6 +378,10 @@ Attr:
 SignalException:
   Enabled: true
 
+# Checks for usage of `extend self` in modules.
+ModuleFunction:
+  Enabled: true
+
 #################### Lint ################################
 
 # Don't use assignment in conditions.
