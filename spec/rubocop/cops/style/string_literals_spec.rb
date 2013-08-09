@@ -48,9 +48,8 @@ module Rubocop
           expect(cop.offences).to be_empty
         end
 
-        it 'accepts \\\n in a string' do
-          pending
-          inspect_source(cop, ['"foo \\\n bar"'])
+        it 'accepts \\\\\n in a string' do # this would be: "\\\n"
+          inspect_source(cop, ['"foo \\\\\n bar"'])
           expect(cop.offences).to be_empty
         end
 
