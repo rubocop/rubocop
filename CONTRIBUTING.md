@@ -14,3 +14,5 @@
   you want to have your own version, or is otherwise necessary, that
   is fine, but please isolate to its own commit so I can cherry-pick
   around it.
+* Squash your commits.
+* Create a pull-request.
