@@ -374,6 +374,10 @@ DotPosition:
 Attr:
   Enabled: true
 
+# Checks for proper usage of fail and raise.
+SignalException:
+  Enabled: true
+
 #################### Lint ################################
 
 # Don't use assignment in conditions.

@@ -78,7 +78,7 @@ module Rubocop
         cop.send callback, node
       rescue => e
         if @options[:raise_error]
-          fail e
+          raise e
         else
           @errors[cop] << e
         end

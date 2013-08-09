@@ -12,6 +12,7 @@
 * Auto-correct support added in `AlignParameters` cop.
 * New cop `UselessComparison` checks for comparisons of the same arguments.
 * New cop `UselessAssignment` checks for useless assignments to local variables.
+* New cop `SignalException` checks for proper usage of `fail` and `raise`.
 
 ### Bugs fixed
 
