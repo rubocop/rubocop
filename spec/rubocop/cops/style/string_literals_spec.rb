@@ -43,6 +43,17 @@ module Rubocop
           expect(cop.offences).to be_empty
         end
 
+        it 'accepts " in a %w' do
+          inspect_source(cop, ['%w(")'])
+          expect(cop.offences).to be_empty
+        end
+
+        it 'accepts \\\n in a string' do
+          pending
+          inspect_source(cop, ['"foo \\\n bar"'])
+          expect(cop.offences).to be_empty
+        end
+
         it 'can handle double quotes within embedded expression' do
           src = ['"#{"A"}"']
           inspect_source(cop, src)
