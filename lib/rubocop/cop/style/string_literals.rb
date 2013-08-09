@@ -17,7 +17,7 @@ module Rubocop
           # regex matches IF there is a ' or there is a \\ in the string that
           # is not preceeded/followed by another \\ (e.g. "\\x34") but not
           # "\\\\"
-          if node.loc.expression.source !~ /('|([^\\]|\A)\\([^\\]|\Z))/ &&
+          if node.loc.expression.source !~ /' | (?<! \\) \\{2}* \\ (?! \\)/x &&
               node.loc.begin && node.loc.begin.is?('"')
             add_offence(:convention, node.loc.expression, MSG)
             do_autocorrect(node)
