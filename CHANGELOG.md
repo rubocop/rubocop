@@ -4,6 +4,9 @@
 
 ### New features
 
+* [#421](https://github.com/bbatsov/rubocop/issues/421) - `
+  TrivialAccessors` now ignores methods on user-configurable
+  whitelist (such as `to_s` and `to_hash`)
 * New option `--auto-gen-config` outputs RuboCop configuration that disables all
   cops that detect any offences (for
   [#369](https://github.com/bbatsov/rubocop/issues/369)).

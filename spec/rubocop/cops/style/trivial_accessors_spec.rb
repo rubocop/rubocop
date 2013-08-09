@@ -6,8 +6,10 @@ module Rubocop
   module Cop
     module Style
       describe TrivialAccessors do
-        TrivialAccessors.config = { 'ExactNameMatch' => false }
-        let(:cop) { TrivialAccessors.new }
+        subject(:cop) { described_class.new }
+        before do
+          described_class.config = {}
+        end
 
         it 'finds trivial reader' do
           inspect_source(cop,
@@ -346,7 +348,7 @@ module Rubocop
         end
 
         context 'exact name match required' do
-          before { TrivialAccessors.config['ExactNameMatch'] = true }
+          before { described_class.config['ExactNameMatch'] = true }
 
           it 'finds only 1 trivial reader' do
             inspect_source(cop,
@@ -386,6 +388,29 @@ module Rubocop
             inspect_source(cop,
                            [' def foo?',
                             '   @foo',
+                            ' end'])
+            expect(cop.offences).to be_empty
+          end
+        end
+
+        context 'with whitelist defined' do
+          before do
+            described_class.config = {
+              'Whitelist' => ['to_foo', 'bar=']
+            }
+          end
+
+          it 'ignores accessors in the whitelist' do
+            inspect_source(cop,
+                           [' def to_foo',
+                            '   @foo',
+                            ' end'])
+            expect(cop.offences).to be_empty
+          end
+          it 'ignores writers in the whitelist' do
+            inspect_source(cop,
+                           [' def bar=(bar)',
+                            '   @bar = bar',
                             ' end'])
             expect(cop.offences).to be_empty
           end
