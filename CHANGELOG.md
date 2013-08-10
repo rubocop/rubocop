@@ -2,6 +2,12 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#425](https://github.com/bbatsov/rubocop/issues/425) - `
+  ColonMethodCalls` now allows
+  constructor methods (like `Nokogiri::HTML()` to be called with double colon.
+
 ### Bugs fixed
 
 * [#427](https://github.com/bbatsov/rubocop/issues/427) - FavorUnlessOverNegatedIf triggered when using elsifs
