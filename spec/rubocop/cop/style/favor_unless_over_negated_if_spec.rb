@@ -6,34 +6,34 @@ module Rubocop
   module Cop
     module Style
       describe FavorUnlessOverNegatedIf do
-        let(:fav_unless) { FavorUnlessOverNegatedIf.new }
+        let(:cop) { described_class.new }
 
         it 'registers an offence for if with exclamation point condition' do
-          inspect_source(fav_unless,
+          inspect_source(cop,
                          ['if !a_condition',
                           '  some_method',
                           'end',
                           'some_method if !a_condition',
                          ])
-          expect(fav_unless.offences.map(&:message)).to eq(
+          expect(cop.messages).to eq(
             ['Favor unless (or control flow or) over if for negative ' +
              'conditions.'] * 2)
         end
 
         it 'registers an offence for if with "not" condition' do
-          inspect_source(fav_unless,
+          inspect_source(cop,
                          ['if not a_condition',
                           '  some_method',
                           'end',
                           'some_method if not a_condition'])
-          expect(fav_unless.offences.map(&:message)).to eq(
+          expect(cop.messages).to eq(
             ['Favor unless (or control flow or) over if for negative ' +
              'conditions.'] * 2)
-          expect(fav_unless.offences.map(&:line)).to eq([1, 4])
+          expect(cop.offences.map(&:line)).to eq([1, 4])
         end
 
         it 'accepts an if/else with negative condition' do
-          inspect_source(fav_unless,
+          inspect_source(cop,
                          ['if !a_condition',
                           '  some_method',
                           'else',
@@ -44,11 +44,11 @@ module Rubocop
                           'elsif other_condition',
                           '  something_else',
                           'end'])
-          expect(fav_unless.offences.map(&:message)).to be_empty
+          expect(cop.offences).to be_empty
         end
 
         it 'accepts an if where only part of the contition is negated' do
-          inspect_source(fav_unless,
+          inspect_source(cop,
                          ['if !condition && another_condition',
                           '  some_method',
                           'end',
@@ -56,7 +56,20 @@ module Rubocop
                           '  some_method',
                           'end',
                           'some_method if not condition or another_condition'])
-          expect(fav_unless.offences.map(&:message)).to be_empty
+          expect(cop.offences).to be_empty
+        end
+
+        it 'is not confused by negated elsif' do
+          inspect_source(cop,
+                         ['if test.is_a?(String)',
+                          '  3',
+                          'elsif test.is_a?(Array)',
+                          '  2',
+                          'elsif !test.nil?',
+                          '  1',
+                          'end'])
+
+          expect(cop.offences).to be_empty
         end
       end
     end

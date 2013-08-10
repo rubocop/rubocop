@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bugs fixed
+
+* [#427](https://github.com/bbatsov/rubocop/issues/427) - FavorUnlessOverNegatedIf triggered when using elsifs
+
 ## 0.11.0 (09/08/2013)
 
 ### New features
