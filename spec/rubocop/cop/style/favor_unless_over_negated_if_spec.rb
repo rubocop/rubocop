@@ -71,6 +71,11 @@ module Rubocop
 
           expect(cop.offences).to be_empty
         end
+
+        it 'does not blow up for ternary ops' do
+          inspect_source(cop, 'a ? b : c')
+          expect(cop.offences).to be_empty
+        end
       end
     end
   end
