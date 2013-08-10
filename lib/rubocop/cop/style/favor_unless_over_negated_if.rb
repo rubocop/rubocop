@@ -27,7 +27,8 @@ module Rubocop
         include FavorOtherKeywordOverNegation
 
         def on_if(node)
-          return if node.loc.keyword.is?('elsif')
+          return if node.loc.respond_to?(:keyword) &&
+            node.loc.keyword.is?('elsif')
 
           check(node)
         end
