@@ -6,7 +6,10 @@ module Rubocop
   module Cop
     module Style
       describe ColonMethodCall do
-        let(:cop) { ColonMethodCall.new }
+        subject(:cop) { described_class.new }
+        before do
+          described_class.config = {}
+        end
 
         it 'registers an offence for instance method call' do
           inspect_source(cop,
@@ -47,6 +50,12 @@ module Rubocop
         it 'does not register an offence for op methods' do
           inspect_source(cop,
                          ['Tip::Top.some_method[3]'])
+          expect(cop.offences).to be_empty
+        end
+
+        it 'does not register an offence when for constructor methods' do
+          inspect_source(cop,
+                         ['Tip::Top(some_arg)'])
           expect(cop.offences).to be_empty
         end
 

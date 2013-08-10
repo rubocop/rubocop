@@ -12,10 +12,15 @@ module Rubocop
           receiver, _method_name, *_args = *node
 
           # discard methods with nil receivers and op methods(like [])
-          if receiver && node.loc.dot && node.loc.dot.is?('::')
-            add_offence(:convention, node.loc.dot, MSG)
-            do_autocorrect(node)
-          end
+          return unless receiver && node.loc.dot && node.loc.dot.is?('::')
+          return if allowed_name(_method_name.to_s)
+
+          add_offence(:convention, node.loc.dot, MSG)
+          do_autocorrect(node)
+        end
+
+        def allowed_name(method_name)
+          method_name.match(/^[A-Z]/)
         end
 
         def autocorrect_action(node)
