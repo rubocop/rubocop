@@ -12,6 +12,8 @@
 
 * [#427](https://github.com/bbatsov/rubocop/issues/427) - FavorUnlessOverNegatedIf triggered when using elsifs
 * [#429](https://github.com/bbatsov/rubocop/issues/429) - Fix `LeadingCommentSpace` offence reporting
+* Fixed `AsciiComments` offence reporting
+* Fixed `BlockComments` offence reporting
 
 ## 0.11.0 (09/08/2013)
 
