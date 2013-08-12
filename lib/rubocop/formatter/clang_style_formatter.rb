@@ -14,7 +14,7 @@ module Rubocop
 
           source_line = o.location.source_line
 
-          unless source_line.strip.empty?
+          unless source_line.blank?
             output.puts(source_line)
             output.puts(' ' * o.location.column +
                         '^' * o.location.column_range.count)
