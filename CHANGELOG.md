@@ -4,6 +4,12 @@
 
 ### New features
 
+### Bugs fixed
+
+### 0.11.1 (12/08/2013)
+
+### Changes
+
 * [#425](https://github.com/bbatsov/rubocop/issues/425) - `
   ColonMethodCalls` now allows
   constructor methods (like `Nokogiri::HTML()` to be called with double colon.
