@@ -17,7 +17,11 @@ module Rubocop
         def investigate(processed_source)
           ast = processed_source.ast
           return unless ast
-          on_node([:class, :module, :sclass], ast) do |class_node|
+          on_node([:class, :module, :sclass, :block], ast) do |class_node|
+            if class_node.type == :block && !class_constructor?(class_node)
+              next
+            end
+
             class_start_col = class_node.loc.expression.column
 
             # we'll have to walk all class children nodes
@@ -49,6 +53,13 @@ module Rubocop
         end
 
         private
+
+        def class_constructor?(block_node)
+          send_node = block_node.children.first
+          receiver_node, method_name, *_ = *send_node
+          return false unless method_name == :new
+          %w(Class Module).include?(Util.const_name(receiver_node))
+        end
 
         def modifier_node?(node)
           [PRIVATE_NODE, PROTECTED_NODE, PUBLIC_NODE].include?(node)
