@@ -6,6 +6,8 @@
 
 ### Bugs fixed
 
+* [#432](https://github.com/bbatsov/rubocop/issues/432) - Fix false positive for constant assignments when rhs is a method call with block in `ConstantName`
+
 ## 0.11.1 (12/08/2013)
 
 ### Changes

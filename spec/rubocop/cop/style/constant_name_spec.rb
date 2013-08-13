@@ -44,6 +44,15 @@ module Rubocop
           expect(const.offences).to be_empty
         end
 
+        it 'does not check names if rhs is a method call with block' do
+          inspect_source(const,
+                         ['AnythingGoes = test do',
+                          '  do_something',
+                          'end'
+                          ])
+          expect(const.offences).to be_empty
+        end
+
         it 'checks qualified const names' do
           inspect_source(const,
                          ['::AnythingGoes = 30',
