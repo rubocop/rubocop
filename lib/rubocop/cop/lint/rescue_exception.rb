@@ -16,10 +16,7 @@ module Rubocop
         end
 
         def targets_exception?(rescue_arg_node)
-          return false unless rescue_arg_node.type == :const
-          namespace, klass_name = *rescue_arg_node
-          return false unless namespace.nil? || namespace.type == :cbase
-          klass_name == :Exception
+          Util.const_name(rescue_arg_node) == 'Exception'
         end
       end
     end
