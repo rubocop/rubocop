@@ -22,6 +22,23 @@ module Rubocop
       def block_length(block_node)
         block_node.loc.end.line - block_node.loc.begin.line
       end
+
+      def const_name(node)
+        return nil if node.nil? || node.type != :const
+
+        const_names = []
+        const_node = node
+
+        loop do
+          namespace_node, name = *const_node
+          const_names << name
+          break unless namespace_node
+          break if namespace_node.type == :cbase
+          const_node = namespace_node
+        end
+
+        const_names.reverse.join('::')
+      end
     end
   end
 end

@@ -47,6 +47,34 @@ module Rubocop
             .to eq([format(AccessControl::INDENT_MSG, 'private')])
         end
 
+        it 'registers an offence for misaligned private in class ' +
+           'defined with Class.new' do
+          inspect_source(a,
+                         ['Test = Class.new do',
+                          '',
+                          'private',
+                          '',
+                          '  def test; end',
+                          'end'])
+          expect(a.offences.size).to eq(1)
+          expect(a.offences.map(&:message))
+            .to eq([format(AccessControl::INDENT_MSG, 'private')])
+        end
+
+        it 'registers an offence for misaligned private in module ' +
+           'defined with Module.new' do
+          inspect_source(a,
+                         ['Test = Module.new do',
+                          '',
+                          'private',
+                          '',
+                          '  def test; end',
+                          'end'])
+          expect(a.offences.size).to eq(1)
+          expect(a.offences.map(&:message))
+            .to eq([format(AccessControl::INDENT_MSG, 'private')])
+        end
+
         it 'registers an offence for misaligned protected' do
           inspect_source(a,
                          ['class Test',
