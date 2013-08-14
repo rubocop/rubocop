@@ -1,444 +1,484 @@
 # These are all the cops that are enabled in the default configuration.
 
-# Use UTF-8 as the source file encoding.
 Encoding:
+  Description: 'Use UTF-8 as the source file encoding.'
   Enabled: true
 
-# Limit lines to 79 characters.
 LineLength:
+  Description: 'Limit lines to 79 characters.'
   Enabled: true
 
-# Avoid methods longer than 10 lines of code
 MethodLength:
+  Description: 'Avoid methods longer than 10 lines of code.'
   Enabled: true
 
-# No hard tabs.
 Tab:
+  Description: 'No hard tabs.'
   Enabled: true
 
-# Avoid trailing whitespace.
 TrailingWhitespace:
+  Description: 'Avoid trailing whitespace.'
   Enabled: true
 
-# Indent when as deep as case.
 CaseIndentation:
+  Description: 'Indent when as deep as case.'
   Enabled: true
 
-# Use empty lines between defs.
 EmptyLineBetweenDefs:
+  Description: 'Use empty lines between defs.'
   Enabled: true
 
-# Don't use several empty lines in a row.
 EmptyLines:
+  Description: "Don't use several empty lines in a row."
   Enabled: true
 
-# Use spaces around operators.
 SpaceAroundOperators:
+  Description: 'Use spaces around operators.'
   Enabled: true
 
-# Use spaces around { and before }.
 SpaceAroundBraces:
+  Description: 'Use spaces around { and before }.'
   Enabled: true
 
-# No spaces after ( or before ).
 SpaceInsideParens:
+  Description: 'No spaces after ( or before ).'
   Enabled: true
 
-# No spaces after [ or before ].
 SpaceInsideBrackets:
+  Description: 'No spaces after [ or before ].'
   Enabled: true
 
-# Use spaces after commas.
 SpaceAfterComma:
+  Description: 'Use spaces after commas.'
   Enabled: true
 
-# Use spaces after semicolons.
 SpaceAfterSemicolon:
+  Description: 'Use spaces after semicolons.'
   Enabled: true
 
-# Use spaces after colons.
 SpaceAfterColon:
+  Description: 'Use spaces after colons.'
   Enabled: true
 
-# Use spaces after if/elsif/unless/while/until/case/when.
 SpaceAfterControlKeyword:
+  Description: 'Use spaces after if/elsif/unless/while/until/case/when.'
   Enabled: true
 
-# Prefer Ruby 1.9 hash syntax { a: 1, b: 2 } over 1.8 syntax
-# { :a => 1, :b => 2 }.
 HashSyntax:
+  Description: >
+                 Prefer Ruby 1.9 hash syntax { a: 1, b: 2 } over 1.8 syntax
+                 { :a => 1, :b => 2 }.
   Enabled: true
 
-# Use Unix-style line endings.
 EndOfLine:
+  Description: 'Use Unix-style line endings.'
   Enabled: true
 
-# Add underscores to large numeric literals to improve their readability.
 NumericLiterals:
+  Description: >
+                 Add underscores to large numeric literals to improve their
+                 readability.
   Enabled: true
 
-# Align the parameters of a method call if they span more than one line.
 AlignParameters:
+  Description: >
+                 Align the parameters of a method call if they span more
+                 than one line.
   Enabled: true
 
-# Use def with parentheses when there are arguments.
 DefWithParentheses:
+  Description: 'Use def with parentheses when there are arguments.'
   Enabled: true
 
-# Omit the parentheses when the method doesn't accept any arguments.
 DefWithoutParentheses:
+  Description: >
+                 Omit the parentheses when the method doesn't accept
+                 any arguments.
   Enabled: true
 
-# Never use if x; .... Use the ternary operator instead.
 IfWithSemicolon:
+  Description: 'Never use if x; .... Use the ternary operator instead.'
   Enabled: true
 
-# Never use then for multi-line if/unless.
 MultilineIfThen:
+  Description: 'Never use then for multi-line if/unless.'
   Enabled: true
 
-# Favor the ternary operator(?:) over if/then/else/end constructs.
 OneLineConditional:
+  Description: >
+                 Favor the ternary operator(?:) over
+                 if/then/else/end constructs.
   Enabled: true
 
-# Avoid using {...} for multi-line blocks (multiline chaining is always ugly).
-# Prefer {...} over do...end for single-line blocks.
 Blocks:
+  Description: >
+                Avoid using {...} for multi-line blocks (multiline chaining is
+                always ugly).
+                Prefer {...} over do...end for single-line blocks.
   Enabled: true
 
-# Avoid parameter lists longer than three or four parameters.
+
 ParameterLists:
+  Description: Avoid parameter lists longer than three or four parameters.
   Enabled: true
 
-# Prefer ' strings when you don't need string interpolation or special symbols.
 StringLiterals:
+  Description: >
+                 Prefer ' strings when you don't need string interpolation or
+                 special symbols.
   Enabled: true
 
-# Avoid multi-line ?: (the ternary operator); use if/unless instead.
+
 MultilineTernaryOperator:
+  Description: >
+                 Avoid multi-line ?: (the ternary operator);
+                 use if/unless instead.
   Enabled: true
 
-# Use one expression per branch in a ternary operator.
 NestedTernaryOperator:
+  Description: 'Use one expression per branch in a ternary operator.'
   Enabled: true
 
-# Never use unless with else. Rewrite these with the positive case first.
 UnlessElse:
+  Description: >
+                 Never use unless with else. Rewrite these with the positive
+                 case first.
   Enabled: true
 
-# Use &&/|| instead of and/or.
 AndOr:
+  Description: 'Use &&/|| instead of and/or.'
   Enabled: true
 
-# Use when x then ... for one-line cases.
 WhenThen:
+  Description: 'Use when x then ... for one-line cases.'
   Enabled: true
 
-# Favor modifier if/unless usage when you have a single-line body.
 IfUnlessModifier:
+  Description: >
+                 Favor modifier if/unless usage when you have a
+                 single-line body.
   Enabled: true
 
-# Favor modifier while/until usage when you have a single-line body.
 WhileUntilModifier:
+  Description: >
+                 Favor modifier while/until usage when you have a
+                 single-line body.
   Enabled: true
 
-# Favor unless over if for negative conditions (or control flow or).
+
 FavorUnlessOverNegatedIf:
+  Description: >
+                 Favor unless over if for negative conditions
+                 (or control flow or).
   Enabled: true
 
-# Favor until over while for negative conditions.
 FavorUntilOverNegatedWhile:
+  Description: 'Favor until over while for negative conditions.'
   Enabled: true
 
-# Use spaces around the = operator when assigning default values in def params.
 SpaceAroundEqualsInParameterDefault:
+  Description: >
+                 Use spaces around the = operator when assigning default
+                 values in def params.
   Enabled: true
 
-# Use the new lambda literal syntax for single-line blocks.
 Lambda:
+  Description: 'Use the new lambda literal syntax for single-line blocks.'
   Enabled: true
 
-# Use proc instead of Proc.new.
 Proc:
+  Description: 'Use proc instead of Proc.new.'
   Enabled: true
 
-# Don't use parentheses around the condition of an if/unless/while.
 ParenthesesAroundCondition:
+  Description: >
+                 Don't use parentheses around the condition of an
+                 if/unless/while.
   Enabled: true
 
-# Use snake_case for symbols, methods and variables.
 MethodAndVariableSnakeCase:
+  Description: 'Use snake_case for symbols, methods and variables.'
   Enabled: true
 
-# Use CamelCase for classes and modules.
 ClassAndModuleCamelCase:
+  Description: 'Use CamelCase for classes and modules.'
   Enabled: true
 
-# Preferred collection methods.
 CollectionMethods:
+  Description: 'Preferred collection methods.'
   Enabled: true
 
-# Prefer each over for.
 AvoidFor:
+  Description: 'Prefer each over for.'
   Enabled: true
 
-# Avoid Perl-style global variables.
 AvoidPerlisms:
+  Description: 'Avoid Perl-style global variables.'
   Enabled: true
 
-# Avoid Perl-style regex back references.
 AvoidPerlBackrefs:
+  Description: 'Avoid Perl-style regex back references.'
   Enabled: true
 
-# Avoid the use of class variables.
 AvoidClassVars:
+  Description: 'Avoid the use of class variables.'
   Enabled: true
 
-# Don't interpolate global, instance and class variables directly in strings.
 VariableInterpolation:
+  Description: >
+                 Don't interpolate global, instance and class variables
+                 directly in strings.
   Enabled: true
 
-# Don't use semicolons to terminate expressions.
 Semicolon:
+  Desription: "Don't use semicolons to terminate expressions."
   Enabled: true
 
-# Use sprintf instead of String#%.
 FavorSprintf:
+  Description: 'Use sprintf instead of String#%.'
   Enabled: true
 
-# Use Array#join instead of Array#*.
 FavorJoin:
+  Description: 'Use Array#join instead of Array#*.'
   Enabled: true
 
-# Use alias_method instead of alias.
 Alias:
+  Description: 'Use alias_method instead of alias.'
   Enabled: true
 
-# Use ! instead of not.
 Not:
+  Description: 'Use ! instead of not.'
   Enabled: true
 
-# Avoid using rescue in its modifier form.
 RescueModifier:
+  Description: 'Avoid using rescue in its modifier form.'
   Enabled: true
 
-# Never use return in an ensure block.
 EnsureReturn:
+  Description: 'Never use return in an ensure block.'
   Enabled: true
 
-# Don't suppress exception.
 HandleExceptions:
+  Description: "Don't suppress exception."
   Enabled: true
 
-# Use only ascii symbols in identifiers.
 AsciiIdentifiers:
+  Description: 'Use only ascii symbols in identifiers.'
   Enabled: true
 
-# Use only ascii symbols in comments.
 AsciiComments:
+  Description: 'Use only ascii symbols in comments.'
   Enabled: true
 
-# Do not use block comments.
 BlockComments:
+  Description: 'Do not use block comments.'
   Enabled: true
 
-# Avoid rescuing the Exception class.
 RescueException:
+  Description: 'Avoid rescuing the Exception class.'
   Enabled: true
 
-# Prefer literals to Array.new/Hash.new/String.new.
 EmptyLiteral:
+  Description: 'Prefer literals to Array.new/Hash.new/String.new.'
   Enabled: true
 
-# When defining binary operators, name the argument other.
 OpMethod:
+  Description: 'When defining binary operators, name the argument other.'
   Enabled: true
 
-# Name reduce arguments |a, e| (accumulator, element)
 ReduceArguments:
+  Description: 'Name reduce arguments |a, e| (accumulator, element)'
   Enabled: true
 
-# Use %r for regular expressions matching more than `MaxSlashes` '/'
-# characters.
-# Use %r only for regular expressions matching more than `MaxSlashes` '/'
-# character.
 RegexpLiteral:
+  Description: >
+                 Use %r for regular expressions matching more than
+                 `MaxSlashes` '/' characters.
+                 Use %r only for regular expressions matching more than
+                 `MaxSlashes` '/' character.
   Enabled: true
 
-# Use self when defining module/class methods.
 ClassMethods:
+  Description: 'Use self when defining module/class methods.'
   Enabled: true
 
-# Avoid single-line methods.
 SingleLineMethods:
+  Description: 'Avoid single-line methods.'
   Enabled: true
 
-# Use %w or %W for arrays of words.
 WordArray:
+  Description: 'Use %w or %W for arrays of words.'
   Enabled: true
 
-# Use spaces inside hash literal braces - or don't.
 SpaceInsideHashLiteralBraces:
+  Description: "Use spaces inside hash literal braces - or don't."
   Enabled: true
 
-# Avoid the use of line continuation (/).
 LineContinuation:
+  Description: 'Avoid the use of line continuation (/).'
   Enabled: true
 
-# Prefer attr_* methods to trivial readers/writers.
 TrivialAccessors:
+  Description: 'Prefer attr_* methods to trivial readers/writers.'
   Enabled: true
 
-# Comments should start with a space.
 LeadingCommentSpace:
+  Description: 'Comments should start with a space.'
   Enabled: true
 
-# Do not use :: for method call.
 ColonMethodCall:
+  Description: 'Do not use :: for method call.'
   Enabled: true
 
-# Do not introduce global variables.
 AvoidGlobalVars:
+  Description: 'Do not introduce global variables.'
   Enabled: true
 
-# The use of eval represents a serious security risk.
 Eval:
+  Description: 'The use of eval represents a serious security risk.'
   Enabled: true
 
-# Symbol literals should use snake_case.
 SymbolName:
+  Description: 'Symbol literals should use snake_case.'
   Enabled: true
 
-# Constants should use SCREAMING_SNAKE_CASE.
 ConstantName:
+  Description: 'Constants should use SCREAMING_SNAKE_CASE.'
   Enabled: true
 
-# Indent private/protected as deep as defs and keep blank lines around them.
 AccessControl:
+  Description: >
+                  Indent private/protected as deep as defs and keep blank
+                  lines around them.
   Enabled: true
 
-# Use Kernel#loop with break rather than begin/end/until or begin/end/while for
-# post-loop tests.
 Loop:
+  Description: >
+                 Use Kernel#loop with break rather than begin/end/until or
+                 begin/end/while for post-loop tests.
   Enabled: true
 
-# Avoid excessive block nesting
 BlockNesting:
+  Description: 'Avoid excessive block nesting'
   Enabled: true
 
-# Avoid explicit use of the case equality operator(===).
 CaseEquality:
+  Description: 'Avoid explicit use of the case equality operator(===).'
   Enabled: true
 
-# Document classes and non-namespace modules.
 Documentation:
+  Description: 'Document classes and non-namespace modules.'
   Enabled: true
 
-# Do not use parentheses for method calls with no arguments.
 MethodCallParentheses:
+  Description: 'Do not use parentheses for method calls with no arguments.'
   Enabled: true
 
-# Checks for redundant do after while or until.
 WhileUntilDo:
+  Description: 'Checks for redundant do after while or until.'
   Enabled: true
 
-# Checks for uses of character literals.
 CharacterLiteral:
+  Description: 'Checks for uses of character literals.'
   Enabled: true
 
-# Avoid the use of BEGIN blocks.
 BeginBlock:
+  Description: 'Avoid the use of BEGIN blocks.'
   Enabled: true
 
-# Avoid the use of END blocks.
 EndBlock:
+  Description: 'Avoid the use of END blocks.'
   Enabled: true
 
-# Don't use return where it's not required.
 RedundantReturn:
+  Description: "Don't use return where it's not required."
   Enabled: true
 
-# Don't use begin blocks when they are not needed.
 RedundantBegin:
+  Description: "Don't use begin blocks when they are not needed."
   Enabled: true
 
-# Don't use self where it's not needed.
 RedundantSelf:
+  Description: "Don't use self where it's not needed."
   Enabled: true
 
-# Checks the position of the dot in multi-line method calls.
 DotPosition:
+  Description: 'Checks the position of the dot in multi-line method calls.'
   Enabled: true
 
-# Checks for uses of Module#attr.
 Attr:
+  Description: 'Checks for uses of Module#attr.'
   Enabled: true
 
-# Checks for proper usage of fail and raise.
 SignalException:
+  Description: 'Checks for proper usage of fail and raise.'
   Enabled: true
 
-# Checks for usage of `extend self` in modules.
 ModuleFunction:
+  Description: 'Checks for usage of `extend self` in modules.'
   Enabled: true
 
 #################### Lint ################################
+### Warnings
 
-# Don't use assignment in conditions.
 AssignmentInCondition:
+  Description: "Don't use assignment in conditions."
   Enabled: true
 
-# Align ends correctly.
 EndAlignment:
+  Description: 'Align ends correctly.'
   Enabled: true
 
-# Align block ends correctly.
 BlockAlignment:
+  Description: 'Align block ends correctly.'
   Enabled: true
 
-# Possible use of operator/literal/variable in void context.
 Void:
+  Description: 'Possible use of operator/literal/variable in void context.'
   Enabled: true
 
-# Unreachable code.
 UnreachableCode:
+  Description: 'Unreachable code.'
   Enabled: true
 
-# Unused local variable.
 UnusedLocalVariable:
+  Description: 'Unused local variable.'
   Enabled: true
 
-# Do not use the same name as outer local variable
-# for block arguments or block local variables.
 ShadowingOuterLocalVariable:
+  Description: >
+                 Do not use the same name as outer local variable
+                 for block arguments or block local variables.
   Enabled: true
 
-# END blocks should not be placed inside method definitions.
 EndInMethod:
+  Description: 'END blocks should not be placed inside method definitions.'
   Enabled: true
 
-# Checks of literals used in conditions.
 LiteralInCondition:
+  Description: 'Checks of literals used in conditions.'
   Enabled: true
 
-# Checks for empty ensure block.
 EmptyEnsure:
+  Description: 'Checks for empty ensure block.'
   Enabled: true
 
-# Checks formatting of special comments (TODO, FIXME, OPTIMIZE, HACK, REVIEW).
 CommentAnnotation:
+  Description: >
+                 Checks formatting of special comments
+                 (TODO, FIXME, OPTIMIZE, HACK, REVIEW).
   Enabled: true
 
-# Checks for useless assignment to a local variable.
 UselessAssignment:
+  Description: 'Checks for useless assignment to a local variable.'
   Enabled: true
 
-# Checks for comparison of something with itself.
 UselessComparison:
+  Description: 'Checks for comparison of something with itself.'
   Enabled: true
 
 ##################### Rails ##################################
 
-# Use sexy validations.
 Validation:
+  Description: 'Use sexy validations.'
   Enabled: true

@@ -13,48 +13,49 @@ AllCops:
     - '**/Rakefile'
   Excludes: []
 
-# Limit lines to 79 characters.
 LineLength:
+  Description: 'Limit lines to 79 characters.'
   Max: 79
 
-# Avoid methods longer than 10 lines of code
 MethodLength:
+  Description: 'Avoid methods longer than 10 lines of code.'
   CountComments: false  # count full line comments?
   Max: 10
 
-# Avoid parameter lists longer than five parameters.
 ParameterLists:
+  Description: 'Avoid parameter lists longer than five parameters.'
   Max: 5
   CountKeywordArgs: true
 
-# Don't use semicolons to terminate expressions.
 Semicolon:
+  Description: "Don't use semicolons to terminate expressions."
   # For example; def area(height, width); height * width end
   AllowAfterParameterListInOneLineMethods: false
   # For example; def area(height, width) height * width; end
   AllowBeforeEndInOneLineMethods: true
 
-# Avoid single-line methods.
 SingleLineMethods:
+  Description: 'Avoid single-line methods.'
   AllowIfMethodIsEmpty: true
 
-# Use spaces inside hash literal braces - or don't.
 SpaceInsideHashLiteralBraces:
+  Description: "Use spaces inside hash literal braces - or don't."
   EnforcedStyleIsWithSpaces: true
 
-# Symbol literals should use snake_case.
 SymbolName:
+  Description: 'Symbol literals should use snake_case.'
   AllowCamelCase: true
 
-# Avoid more than `Max` levels of nesting.
 BlockNesting:
+  Description: 'Avoid more than `Max` levels of nesting.'
   Max: 3
 
-# Use %r for regular expressions matching more than `MaxSlashes` '/'
-# characters.
-# Use %r only for regular expressions matching more than `MaxSlashes` '/'
-# character.
 RegexpLiteral:
+  Description: >
+                 Use %r for regular expressions matching more than
+                 `MaxSlashes` '/' characters.
+                 Use %r only for regular expressions matching more than
+                 `MaxSlashes` '/' character.
   MaxSlashes: 1
 
 # Align with the style guide.
