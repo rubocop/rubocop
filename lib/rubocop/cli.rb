@@ -83,6 +83,27 @@ module Rubocop
       end
     end
 
+    def print_available_cops
+      puts "Available cops (#{@cops.length}) + config for #{Dir.pwd.to_s}: "
+      dirconf = @config_store.for(Dir.pwd.to_s)
+      @cops.types.sort!.each do |type|
+        coptypes = @cops.with_type(type).sort_by!(&:cop_name)
+        puts "Type '#{type.to_s.capitalize}' (#{coptypes.size}):"
+        coptypes.each do |cop|
+          name = cop.cop_name
+          puts " - #{name}"
+          cnf = dirconf.for_cop(name).dup
+          print_conf_option('Description',
+                            cnf.delete('Description') { 'None' })
+          cnf.each { |k, v| print_conf_option(k, v) }
+        end
+      end
+    end
+
+    def print_conf_option(option, value)
+      puts  "    - #{option}: #{value}"
+    end
+
     def inspect_file(file)
       begin
         processed_source = SourceParser.parse_file(file)
@@ -185,6 +206,12 @@ module Rubocop
             [Formatter::DisabledConfigFormatter, Config::AUTO_GENERATED_FILE]
           ]
           validate_auto_gen_config_option(args)
+        end
+        opts.on('--show-cops',
+                'Shows cops and their config for the',
+                'current directory.') do
+          print_available_cops
+          exit(0)
         end
         opts.on('-f', '--format FORMATTER',
                 'Choose an output formatter. This option',

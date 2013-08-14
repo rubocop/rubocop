@@ -2,6 +2,34 @@
 
 module Rubocop
   module Cop
+    # A basic wrapper around Parser's tokens.
+    class Token
+      attr_reader :pos, :type, :text
+
+      def initialize(pos, type, text)
+        @pos, @type, @text = pos, type, text
+      end
+
+      def to_s
+        "[[#{@pos.line}, #{@pos.column}], #{@type}, #{@text.inspect}]"
+      end
+    end
+
+    # Store for all cops with helper functions
+    class CopStore < ::Array
+
+      # @return [Array<String>] list of types for current cops.
+      def types
+        @types = map(&:cop_type).uniq! unless defined? @types
+        @types
+      end
+
+      # @return [Array<Cop>] Cops for that specific type.
+      def with_type(type)
+        select { |c| c.cop_type == type }
+      end
+    end
+
     # A scaffold for concrete cops.
     #
     # The Cop class is meant to be extended.
@@ -30,7 +58,7 @@ module Rubocop
       attr_writer :disabled_lines
       attr_reader :corrections
 
-      @all = []
+      @all = CopStore.new
       @config = {}
 
       class << self
@@ -59,6 +87,17 @@ module Rubocop
 
       def self.lint?
         cop_type == :lint
+      end
+
+      # Extracts the first line out of the description
+      def self.short_description
+        desc = full_description
+        desc ? desc.lines.first.strip : ''
+      end
+
+      # Gets the full description of the cop or nil if no description is set.
+      def self.full_description
+        config['Description']
       end
 
       def self.rails?
