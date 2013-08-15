@@ -23,7 +23,7 @@ module Rubocop
           next_thing = if body && body.loc.expression
                          body.loc.expression.begin
                        elsif else_clause && else_clause.loc.expression
-                        else_clause.loc.expression.begin
+                         else_clause.loc.expression.begin
                        else
                          node.loc.end # No body, use "end".
                        end

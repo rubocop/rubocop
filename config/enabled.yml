@@ -422,6 +422,10 @@ NilComparison:
   Description: 'Prefer x.nil? to x == nil.'
   Enabled: true
 
+IndentationWidth:
+  Description: 'Use 2 spaces for indentation.'
+  Enabled: true
+
 #################### Lint ################################
 ### Warnings
 

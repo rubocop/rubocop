@@ -6,6 +6,7 @@
 
 * [#395] Added `--show-cops` option to show available cops.
 * New cop `NilComparison` keeps track of comparisons like `== nil`
+* New cop `IndentationWidth` checks for files using indentation that is not two spaces.
 
 ### Bugs fixed
 

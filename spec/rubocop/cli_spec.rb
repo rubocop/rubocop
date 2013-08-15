@@ -245,8 +245,10 @@ Usage: rubocop [options] [file1, file2, ...]
                                   'y ',
                                   'puts x'])
       create_file('example2.rb', ['# encoding: utf-8',
-                                  "\tx = 0",
-                                  'puts x'])
+                                  "\tx",
+                                  'def a',
+                                  '   puts',
+                                  'end'])
       expect(cli.run(['--format', 'clang', 'example1.rb', 'example2.rb']))
         .to eq(1)
       expect($stdout.string)
@@ -266,10 +268,13 @@ Usage: rubocop [options] [file1, file2, ...]
                 'y ',
                 ' ^',
                 'example2.rb:2:1: C: Tab detected.',
-                "\tx = 0",
-                '^',
+                "\tx",
+                '^^^^^',
+                'example2.rb:4:1: C: Use 2 (not 3) spaces for indentation.',
+                '   puts',
+                '^^^',
                 '',
-                '2 files inspected, 5 offences detected',
+                '2 files inspected, 6 offences detected',
                 ''].join("\n"))
     end
 

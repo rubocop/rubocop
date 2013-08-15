@@ -54,16 +54,16 @@ module Rubocop
 
         context 'when passed :raise_error option' do
           it 're-raises the exception received while processing' do
-          cop = double(Cop, offences: [])
-          cop.stub(:on_def) { raise RuntimeError }
+            cop = double(Cop, offences: [])
+            cop.stub(:on_def) { raise RuntimeError }
 
-          commissioner = Commissioner.new([cop], raise_error: true)
-          source = ['def method', '1', 'end']
-          processed_source = parse_source(source)
+            commissioner = Commissioner.new([cop], raise_error: true)
+            source = ['def method', '1', 'end']
+            processed_source = parse_source(source)
 
-          expect do
-            commissioner.investigate(processed_source)
-          end.to raise_error(RuntimeError)
+            expect do
+              commissioner.investigate(processed_source)
+            end.to raise_error(RuntimeError)
           end
         end
       end
