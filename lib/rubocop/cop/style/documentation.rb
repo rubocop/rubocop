@@ -29,7 +29,7 @@ module Rubocop
           on_node(:class, ast) do |node|
             _name, _superclass, body = *node
 
-            if body != nil && ast_with_comments[node].empty?
+            if body && ast_with_comments[node].empty?
               add_offence(:convention, node.loc.keyword, format(MSG, 'class'))
             end
           end

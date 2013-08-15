@@ -418,6 +418,10 @@ ModuleFunction:
   Description: 'Checks for usage of `extend self` in modules.'
   Enabled: true
 
+NilComparison:
+  Description: 'Prefer x.nil? to x == nil.'
+  Enabled: true
+
 #################### Lint ################################
 ### Warnings
 
