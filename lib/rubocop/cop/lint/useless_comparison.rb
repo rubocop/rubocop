@@ -17,11 +17,9 @@ module Rubocop
           op = node.loc.selector.source
 
           if OPS.include?(op)
-            receiver, _method, selector = *node
+            receiver, _method, args = *node
 
-            if receiver == selector
-              add_offence(:warning, node.loc.selector, MSG)
-            end
+            add_offence(:warning, node.loc.selector, MSG) if receiver == args
           end
         end
       end
