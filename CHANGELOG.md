@@ -6,6 +6,7 @@
 
 * [#395] Added `--show-cops` option to show available cops.
 * New cop `NilComparison` keeps track of comparisons like `== nil`
+* New cop `EvenOdd` keeps track of occasions where `Fixnum#even?` or `Fixnum#odd?` should have been used (like `x % 2 == 0`)
 * New cop `IndentationWidth` checks for files using indentation that is not two spaces.
 
 ### Bugs fixed

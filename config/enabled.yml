@@ -426,6 +426,10 @@ IndentationWidth:
   Description: 'Use 2 spaces for indentation.'
   Enabled: true
 
+EvenOdd:
+  Description: 'Favor the use of Fixnum#even? && Fixnum#odd?'
+  Enabled: true
+
 #################### Lint ################################
 ### Warnings
 
