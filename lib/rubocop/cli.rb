@@ -223,6 +223,7 @@ module Rubocop
                 '  [e]macs',
                 '  [j]son',
                 '  [f]iles',
+                '  [cop]count',
                 '  custom formatter class name') do |key|
           @options[:formatters] ||= []
           @options[:formatters] << [key]
