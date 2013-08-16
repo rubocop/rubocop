@@ -38,6 +38,12 @@ module Rubocop
 
         def div_by_2?(node)
           return unless node
+
+          # check for scenarios like (x % 2) == 0
+          if node.type == :begin && node.children.size == 1
+            node = node.children.first
+          end
+
           return unless node.type == :send
 
           _receiver, method, args = *node
