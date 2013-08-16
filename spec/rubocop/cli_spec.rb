@@ -55,6 +55,7 @@ Usage: rubocop [options] [file1, file2, ...]
                                        [e]macs
                                        [j]son
                                        [f]iles
+                                       [cop]count
                                        custom formatter class name
     -o, --out FILE                   Write output to a file instead of STDOUT.
                                      This option applies to the previously

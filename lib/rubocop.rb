@@ -127,6 +127,7 @@ require 'rubocop/formatter/clang_style_formatter'
 require 'rubocop/formatter/progress_formatter'
 require 'rubocop/formatter/json_formatter'
 require 'rubocop/formatter/file_list_formatter'
+require 'rubocop/formatter/cop_count_formatter'
 require 'rubocop/formatter/formatter_set'
 
 require 'rubocop/config'
