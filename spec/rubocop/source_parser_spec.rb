@@ -25,7 +25,7 @@ module Rubocop
         create_file(file, source)
       end
 
-      let (:processed_source) do
+      let(:processed_source) do
         SourceParser.parse_file(file)
       end
 

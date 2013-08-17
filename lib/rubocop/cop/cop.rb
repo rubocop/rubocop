@@ -39,6 +39,13 @@ module Rubocop
     class Cop
       extend AST::Sexp
 
+      # http://phrogz.net/programmingruby/language.html#table_18.4
+      # Backtick is added last just to help editors parse this code.
+      OPERATOR_METHODS = %w(
+          | ^ & <=> == === =~ > >= < <= << >>
+          + - * / % ** ~ +@ -@ [] []= ! != !~
+        ).map(&:to_sym) + [:'`']
+
       attr_accessor :offences
       attr_accessor :debug
       attr_accessor :autocorrect
