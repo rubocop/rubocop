@@ -9,6 +9,7 @@
 * New cop `NilComparison` keeps track of comparisons like `== nil`
 * New cop `EvenOdd` keeps track of occasions where `Fixnum#even?` or `Fixnum#odd?` should have been used (like `x % 2 == 0`)
 * New cop `IndentationWidth` checks for files using indentation that is not two spaces.
+* New cop `SpaceAfterMethodName` keeps track of method definitions with a space between the method name and the opening parenthesis.
 
 ### Bugs fixed
 

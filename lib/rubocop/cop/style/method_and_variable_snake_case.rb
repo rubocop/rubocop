@@ -10,12 +10,6 @@ module Rubocop
         MSG = 'Use snake_case for methods and variables.'
         SNAKE_CASE = /^@?[\da-z_]+[!?=]?$/
 
-        # http://phrogz.net/programmingruby/language.html#table_18.4
-        OPERATOR_METHODS = %w(
-          | ^ & <=> == === =~ > >= < <= << >>
-          + - * / % ** ~ +@ -@ [] []= ` ! != !~
-        ).map(&:to_sym)
-
         def investigate(processed_source)
           ast = processed_source.ast
           return unless ast

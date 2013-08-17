@@ -430,6 +430,12 @@ EvenOdd:
   Description: 'Favor the use of Fixnum#even? && Fixnum#odd?'
   Enabled: true
 
+SpaceAfterMethodName:
+  Description: >
+                 Never put a space between a method name and the opening
+                 parenthesis.
+  Enabled: true
+
 #################### Lint ################################
 ### Warnings
 
