@@ -315,16 +315,16 @@ The JSON structure is like the following example:
 }
 ```
 
-### CopCount Formmater
+### OffenceCount Formatter
 
 Sometimes when first applying RuboCop to a codebase, it's nice to be able to
 see where most of your style cleanup is going to be spent.
 
-With this in mind, you can use the cop count formatter to outline the offended
+With this in mind, you can use the offence count formatter to outline the offended
 cops and the number of offences found for each by running:
 
 ```
-rubocop --format copcount
+rubocop --format offences
 
 (87)  Documentation
 (12)  DotPosition

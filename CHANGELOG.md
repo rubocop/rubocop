@@ -4,7 +4,7 @@
 
 ### New features
 
-* [#439](https://github.com/bbatsov/rubocop/issues/439) Added formatter 'CopCount' which outputs a summary list of cops and their offence count
+* [#439](https://github.com/bbatsov/rubocop/issues/439) Added formatter 'OffenceCount' which outputs a summary list of cops and their offence count
 * [#395](https://github.com/bbatsov/rubocop/issues/395) Added `--show-cops` option to show available cops.
 * New cop `NilComparison` keeps track of comparisons like `== nil`
 * New cop `EvenOdd` keeps track of occasions where `Fixnum#even?` or `Fixnum#odd?` should have been used (like `x % 2 == 0`)
