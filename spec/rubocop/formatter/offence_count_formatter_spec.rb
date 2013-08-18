@@ -6,8 +6,8 @@ require 'tempfile'
 
 module Rubocop
   module Formatter
-    describe SimpleTextFormatter do
-      subject(:formatter) { Formatter::CopCountFormatter.new(output) }
+    describe OffenceCountFormatter do
+      subject(:formatter) { Formatter::OffenceCountFormatter.new(output) }
       let(:output) { StringIO.new }
 
       let(:files) do
@@ -23,15 +23,15 @@ module Rubocop
 
         context 'when no offences are detected' do
           let(:offences) { [] }
-          it 'shouldn\'t add to cop_offences' do
-            expect { finish }.to_not change { formatter.cop_offences }
+          it 'shouldn\'t add to offence_counts' do
+            expect { finish }.to_not change { formatter.offence_counts }
           end
         end
 
         context 'when any offences are detected' do
           let(:offences) { [double('offence', cop_name: 'OffendedCop')] }
-          it 'should increment the count for the cop in cop_offences' do
-            expect { finish }.to change { formatter.cop_offences }
+          it 'should increment the count for the cop in offence_counts' do
+            expect { finish }.to change { formatter.offence_counts }
           end
         end
       end
@@ -42,7 +42,7 @@ module Rubocop
           it 'shows the cop and the offence count' do
             formatter.report_summary(1, cop_counts)
             expect(output.string).to include(
-              "\n(1)  OffendedCop")
+              "\n1  OffendedCop")
           end
         end
       end
