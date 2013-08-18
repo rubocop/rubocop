@@ -6,7 +6,7 @@ require 'tempfile'
 
 module Rubocop
   module Formatter
-    describe SimpleTextFormatter do
+    describe OffenceCountFormatter do
       subject(:formatter) { Formatter::OffenceCountFormatter.new(output) }
       let(:output) { StringIO.new }
 
@@ -42,7 +42,7 @@ module Rubocop
           it 'shows the cop and the offence count' do
             formatter.report_summary(1, cop_counts)
             expect(output.string).to include(
-              "\n(1)  OffendedCop")
+              "\n1  OffendedCop")
           end
         end
       end
