@@ -148,6 +148,7 @@ module Rubocop
           expect(cop.offences.map(&:message)).to eq(
             ['Favor modifier while/until usage when you have a single-line ' +
              'body.'])
+          expect(cop.offences.map { |o| o.location.source }).to eq([keyword])
         end
 
         def check_too_long(cop, keyword)

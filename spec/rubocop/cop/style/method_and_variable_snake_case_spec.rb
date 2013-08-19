@@ -16,6 +16,8 @@ module Rubocop
                          ])
           expect(snake_case.offences.map(&:message)).to eq(
             ['Use snake_case for methods and variables.'])
+          expect(snake_case.offences.map { |o| o.location.source })
+            .to eq(['myMethod'])
         end
 
         it 'registers an offence for camel case in singleton method name' do
@@ -26,24 +28,32 @@ module Rubocop
                          ])
           expect(snake_case.offences.map(&:message)).to eq(
             ['Use snake_case for methods and variables.'])
+          expect(snake_case.offences.map { |o| o.location.source })
+            .to eq(['myMethod'])
         end
 
         it 'registers an offence for camel case in local variable name' do
           inspect_source(snake_case, ['myLocal = 1'])
           expect(snake_case.offences.map(&:message)).to eq(
             ['Use snake_case for methods and variables.'])
+          expect(snake_case.offences.map { |o| o.location.source })
+            .to eq(['myLocal'])
         end
 
         it 'registers an offence for camel case in instance variable name' do
           inspect_source(snake_case, ['@myAttribute = 3'])
           expect(snake_case.offences.map(&:message)).to eq(
             ['Use snake_case for methods and variables.'])
+          expect(snake_case.offences.map { |o| o.location.source })
+            .to eq(['@myAttribute'])
         end
 
         it 'registers an offence for camel case in setter name' do
           inspect_source(snake_case, ['self.mySetter = 2'])
           expect(snake_case.offences.map(&:message)).to eq(
             ['Use snake_case for methods and variables.'])
+          expect(snake_case.offences.map { |o| o.location.source })
+            .to eq(['mySetter'])
         end
 
         it 'registers an offence for capitalized camel case' do
@@ -53,6 +63,8 @@ module Rubocop
                          ])
           expect(snake_case.offences.map(&:message)).to eq(
             ['Use snake_case for methods and variables.'])
+          expect(snake_case.offences.map { |o| o.location.source })
+            .to eq(['MyMethod'])
         end
 
         it 'accepts snake case in names' do
@@ -72,6 +84,8 @@ module Rubocop
                           'end'])
           expect(snake_case.offences.map(&:message)).to eq(
             ['Use snake_case for methods and variables.'])
+          expect(snake_case.offences.map { |o| o.location.source })
+            .to eq(['visit_Arel_Nodes_SelectStatement'])
         end
 
         it 'accepts screaming snake case globals' do

@@ -14,41 +14,59 @@ module Rubocop
           ast = processed_source.ast
           return unless ast
           on_node([:def, :defs, :lvasgn, :ivasgn, :send], ast) do |n|
-            name = case n.type
-                   when :def
-                     name_of_instance_method(n)
-                   when :defs
-                     name_of_singleton_method(n)
-                   when :lvasgn, :ivasgn
-                     name_of_variable(n)
-                   when :send
-                     name_of_setter(n)
-                   end
+            range = case n.type
+                    when :def             then name_of_instance_method(n)
+                    when :defs            then name_of_singleton_method(n)
+                    when :lvasgn, :ivasgn then name_of_variable(n)
+                    when :send            then name_of_setter(n)
+                    end
 
-            next unless name
+            next unless range
+            name = range.source.to_sym
             next if name =~ SNAKE_CASE || OPERATOR_METHODS.include?(name)
 
-            add_offence(:convention, n.location.expression, MSG)
+            add_offence(:convention, range, MSG)
           end
         end
 
         def name_of_instance_method(def_node)
-          def_node.children.first
+          expr = def_node.loc.expression
+          space, method_name =
+            /^def(\s+)([^\n(]+)/.match(expr.source).captures
+          begin_pos = expr.begin_pos + 'def'.length + space.length
+          Parser::Source::Range.new(expr.source_buffer, begin_pos,
+                                    begin_pos + method_name.length)
         end
 
         def name_of_singleton_method(defs_node)
-          defs_node.children[1]
+          scope, method_name, _args, _body = *defs_node
+          after_dot(defs_node, method_name.length,
+                    "def\s+" + Regexp.escape(scope.loc.expression.source))
         end
 
         def name_of_variable(vasgn_node)
-          vasgn_node.children.first
+          expr = vasgn_node.loc.expression
+          name = vasgn_node.children.first
+          Parser::Source::Range.new(expr.source_buffer, expr.begin_pos,
+                                    expr.begin_pos + name.length)
         end
 
         def name_of_setter(send_node)
           receiver, method_name = *send_node
           return nil unless receiver && receiver.type == :self
           return nil unless method_name.to_s.end_with?('=')
-          method_name
+          after_dot(send_node, method_name.length - '='.length,
+                    Regexp.escape(receiver.loc.expression.source))
+        end
+
+        # Returns a range containing the method name after the given regexp and
+        # a dot.
+        def after_dot(node, method_name_length, regexp)
+          expr = node.loc.expression
+          offset = /\A#{regexp}\s*\.\s*/.match(expr.source)[0].length
+          begin_pos = expr.begin_pos + offset
+          Parser::Source::Range.new(expr.source_buffer, begin_pos,
+                                    begin_pos + method_name_length)
         end
       end
     end
