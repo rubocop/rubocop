@@ -11,6 +11,7 @@
 * New cop `IndentationWidth` checks for files using indentation that is not two spaces.
 * New cop `SpaceAfterMethodName` keeps track of method definitions with a space between the method name and the opening parenthesis.
 * New cop `ParenthesesAsGroupedExpression` keeps track of method calls with a space before the opening parenthesis.
+* New Rails cop `HasAndBelongsToMany` checks for uses of `has_and_belongs_to_many`.
 
 ### Bugs fixed
 

@@ -503,6 +503,10 @@ ParenthesesAsGroupedExpression:
 
 ##################### Rails ##################################
 
+HasAndBelongsToMany:
+  Description: Prefer has_many :through to has_and_belongs_to_many.
+  Enabled: true
+
 Validation:
   Description: 'Use sexy validations.'
   Enabled: true
