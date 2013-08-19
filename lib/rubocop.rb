@@ -120,6 +120,7 @@ require 'rubocop/cop/style/while_until_do'
 require 'rubocop/cop/style/word_array'
 
 require 'rubocop/cop/rails/has_and_belongs_to_many'
+require 'rubocop/cop/rails/read_attribute'
 require 'rubocop/cop/rails/validation'
 
 require 'rubocop/formatter/base_formatter'

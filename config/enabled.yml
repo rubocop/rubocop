@@ -507,6 +507,10 @@ HasAndBelongsToMany:
   Description: Prefer has_many :through to has_and_belongs_to_many.
   Enabled: true
 
+ReadAttribute:
+  Description: Prefer self[:attribute] over read_attribute(:attribute).
+  Enabled: true
+
 Validation:
   Description: 'Use sexy validations.'
   Enabled: true
