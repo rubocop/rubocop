@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     module Rails
-      # This cop checks for the use of old-style attribute validation macros.
+      # This cop checks for the use of the has_and_belongs_to_many macro.
       class HasAndBelongsToMany < Cop
         MSG = 'Prefer has_many :through to has_and_belongs_to_many.'
 
