@@ -6,20 +6,20 @@ module Rubocop
   module Cop
     module Rails
       describe Validation do
-        let(:val) { Validation.new }
+        let(:cop) { described_class.new }
 
         Validation::BLACKLIST.each do |validation|
           it "registers an offence for #{validation}" do
-            inspect_source(val,
+            inspect_source(cop,
                            ["#{validation} :name"])
-            expect(val.offences.size).to eq(1)
+            expect(cop.offences.size).to eq(1)
           end
         end
 
         it 'accepts sexy validations' do
-          inspect_source(val,
+          inspect_source(cop,
                          ['validates :name'])
-          expect(val.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
       end
     end
