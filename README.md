@@ -48,12 +48,12 @@ Running RuboCop on it (assuming it's in a file named `test.rb`) would produce th
 ```
 Offences:
 
-test.rb:1:1: C: Use snake_case for methods and variables.
+test.rb:1:5: C: Use snake_case for methods and variables.
 def badName
-^^^
+    ^^^^^^^
 test.rb:2:3: C: Favor modifier if/unless usage when you have a single-line body. Another good alternative is the usage of control flow &&/||.
   if something
-  ^^^^^
+  ^^
 test.rb:4:5: W: end at 4, 4 is not aligned with if at 2, 2
     end
     ^^^
