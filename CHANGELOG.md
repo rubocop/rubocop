@@ -19,6 +19,7 @@
 * [#432](https://github.com/bbatsov/rubocop/issues/432) - Fix false positive for constant assignments when rhs is a method call with block in `ConstantName`
 * [#434](https://github.com/bbatsov/rubocop/issues/434) - Support classes and modules defined with `Class.new`/`Module.new` in `AccessControl`
 * Fix which ranges are highlighted in reports from IfUnlessModifier, WhileUntilModifier, and MethodAndVariableSnakeCase cop.
+* [#438](https://github.com/bbatsov/rubocop/issues/438) - Accept setting attribute on method argument in `UselessAssignment`
 
 ## 0.11.1 (12/08/2013)
 
