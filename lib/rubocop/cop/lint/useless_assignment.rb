@@ -20,20 +20,20 @@ module Rubocop
         MSG = 'Useless assignment to local variable %s.'
 
         def on_def(node)
-          _name, _args, body = *node
+          _name, args, body = *node
 
-          check_for_useless_assignment(body)
+          check_for_useless_assignment(body, args)
         end
 
         def on_defs(node)
-          _target, _name, _args, body = *node
+          _target, _name, args, body = *node
 
-          check_for_useless_assignment(body)
+          check_for_useless_assignment(body, args)
         end
 
         private
 
-        def check_for_useless_assignment(body)
+        def check_for_useless_assignment(body, args)
           return unless body
 
           if body.type == :begin
@@ -43,19 +43,47 @@ module Rubocop
           end
 
           last_expr = expression.is_a?(Array) ? expression.last : expression
+          return unless last_expr
 
-          if last_expr && last_expr.type == :lvasgn
+          case last_expr.type
+          when :lvasgn
             var_name, = *last_expr
             add_offence(:warning, last_expr.loc.name, MSG.format(var_name))
-          elsif last_expr && last_expr.type == :send
+          when :send
             receiver, method, _args = *last_expr
+            return unless receiver
+            return unless receiver.type == :lvar
+            return unless method =~ /\w=$/
 
-            if receiver && receiver.type == :lvar && method =~ /\w=$/
-              add_offence(:warning,
-                          receiver.loc.name,
-                          MSG.format(receiver.loc.name.source))
+            var_name, = *receiver
+            return if contains_object_passed_as_argument?(var_name, body, args)
+
+            add_offence(:warning,
+                        receiver.loc.name,
+                        MSG.format(receiver.loc.name.source))
+          end
+        end
+
+        def contains_object_passed_as_argument?(lvar_name, body, args)
+          variable_table = {}
+
+          args.children.each do |arg_node|
+            arg_name, = *arg_node
+            variable_table[arg_name] = true
+          end
+
+          on_node([:lvasgn, :ivasgn, :cvasgn, :gvasgn], body) do |asgn_node|
+            lhs_var_name, rhs_node = *asgn_node
+
+            if [:lvar, :ivar, :cvar, :gvar].include?(rhs_node.type)
+              rhs_var_name, = *rhs_node
+              variable_table[lhs_var_name] = variable_table[rhs_var_name]
+            else
+              variable_table[lhs_var_name] = false
             end
           end
+
+          variable_table[lvar_name]
         end
       end
     end
