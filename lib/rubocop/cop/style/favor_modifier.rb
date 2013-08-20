@@ -71,7 +71,7 @@ module Rubocop
             next if if_else?(node)
 
             if check(node, processed_source.comments)
-              add_offence(:convention, node.loc.expression, error_message)
+              add_offence(:convention, node.loc.keyword, error_message)
             end
           end
         end
@@ -108,7 +108,7 @@ module Rubocop
             next unless node.loc.end
 
             if check(node, processed_source.comments)
-              add_offence(:convention, node.loc.expression, MSG)
+              add_offence(:convention, node.loc.keyword, MSG)
             end
           end
         end

@@ -250,7 +250,14 @@ Usage: rubocop [options] [file1, file2, ...]
                                   'def a',
                                   '   puts',
                                   'end'])
-      expect(cli.run(['--format', 'clang', 'example1.rb', 'example2.rb']))
+      create_file('example3.rb', ['# encoding: utf-8',
+                                  'def badName',
+                                  '  if something',
+                                  '    test',
+                                  '    end',
+                                  'end'])
+      expect(cli.run(['--format', 'clang', 'example1.rb', 'example2.rb',
+                      'example3.rb']))
         .to eq(1)
       expect($stdout.string)
         .to eq(['example1.rb:2:2: C: Surrounding space missing for operator ' +
@@ -274,8 +281,21 @@ Usage: rubocop [options] [file1, file2, ...]
                 'example2.rb:4:1: C: Use 2 (not 3) spaces for indentation.',
                 '   puts',
                 '^^^',
+                'example3.rb:2:5: C: Use snake_case for methods and ' +
+                'variables.',
+                'def badName',
+                '    ^^^^^^^',
+                'example3.rb:3:3: C: Favor modifier if/unless usage when ' +
+                'you have a single-line body. Another good alternative is ' +
+                'the usage of control flow &&/||.',
+                '  if something',
+                '  ^^',
+                'example3.rb:5:5: W: end at 5, 4 is not aligned with if at ' +
+                '3, 2',
+                '    end',
+                '    ^^^',
                 '',
-                '2 files inspected, 6 offences detected',
+                '3 files inspected, 9 offences detected',
                 ''].join("\n"))
     end
 
