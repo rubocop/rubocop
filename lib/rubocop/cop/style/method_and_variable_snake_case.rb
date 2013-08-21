@@ -31,8 +31,9 @@ module Rubocop
 
         def name_of_instance_method(def_node)
           expr = def_node.loc.expression
-          space, method_name =
-            /^def(\s+)([^\n(]+)/.match(expr.source).captures
+          match = /^def(\s+)([\w]+[!?=]?\b)/.match(expr.source)
+          return unless match
+          space, method_name = match.captures
           begin_pos = expr.begin_pos + 'def'.length + space.length
           Parser::Source::Range.new(expr.source_buffer, begin_pos,
                                     begin_pos + method_name.length)
@@ -53,8 +54,8 @@ module Rubocop
 
         def name_of_setter(send_node)
           receiver, method_name = *send_node
-          return nil unless receiver && receiver.type == :self
-          return nil unless method_name.to_s.end_with?('=')
+          return unless receiver && receiver.type == :self
+          return unless method_name.to_s.end_with?('=')
           after_dot(send_node, method_name.length - '='.length,
                     Regexp.escape(receiver.loc.expression.source))
         end
@@ -63,7 +64,9 @@ module Rubocop
         # a dot.
         def after_dot(node, method_name_length, regexp)
           expr = node.loc.expression
-          offset = /\A#{regexp}\s*\.\s*/.match(expr.source)[0].length
+          match = /\A#{regexp}\s*\.\s*/.match(expr.source)
+          return unless match
+          offset = match[0].length
           begin_pos = expr.begin_pos + offset
           Parser::Source::Range.new(expr.source_buffer, begin_pos,
                                     begin_pos + method_name_length)
