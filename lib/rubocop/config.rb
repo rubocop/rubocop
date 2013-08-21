@@ -37,7 +37,7 @@ module Rubocop
           end
           base_config.each do |key, value|
             if value.is_a?(Hash)
-              hash[key] = hash.has_key?(key) ? merge(value, hash[key]) : value
+              hash[key] = hash.key?(key) ? merge(value, hash[key]) : value
             end
           end
           if base_config.loaded_path.include?(AUTO_GENERATED_FILE)
@@ -75,7 +75,7 @@ module Rubocop
       def merge(base_hash, derived_hash)
         result = {}
         base_hash.each do |key, value|
-          result[key] = if derived_hash.has_key?(key)
+          result[key] = if derived_hash.key?(key)
                           if value.is_a?(Hash)
                             value.merge(derived_hash[key])
                           else
@@ -86,7 +86,7 @@ module Rubocop
                         end
         end
         derived_hash.each do |key, value|
-          result[key] = value unless base_hash.has_key?(key)
+          result[key] = value unless base_hash.key?(key)
         end
         result
       end
@@ -200,7 +200,7 @@ module Rubocop
       default_config = self.class.default_configuration
 
       valid_cop_names, invalid_cop_names = @hash.keys.partition do |key|
-        default_config.has_key?(key)
+        default_config.key?(key)
       end
 
       invalid_cop_names.each do |name|
@@ -210,7 +210,7 @@ module Rubocop
 
       valid_cop_names.each do |name|
         @hash[name].each_key do |param|
-          unless default_config[name].has_key?(param)
+          unless default_config[name].key?(param)
             fail ValidationError,
                  "unrecognized parameter #{name}:#{param} found " +
                  "in #{loaded_path || self}"

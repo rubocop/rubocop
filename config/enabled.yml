@@ -436,6 +436,10 @@ SpaceAfterMethodName:
                  parenthesis.
   Enabled: true
 
+HashMethods:
+  Description: Checks for use of deprecated Hash methods.
+  Enabled: true
+
 #################### Lint ################################
 ### Warnings
 
