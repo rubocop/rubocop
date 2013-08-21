@@ -80,6 +80,23 @@ module Rubocop
           inspect_source(cop, 'Paren = Struct.new :left, :right, :kind')
           expect(cop.offences).to be_empty
         end
+
+        it 'accepts one line methods' do
+          inspect_source(cop, "def body; '' end")
+          expect(cop.offences).to be_empty
+        end
+
+        it 'accepts operator definitions' do
+          inspect_source(cop, ['def +(other)',
+                               '  # ...',
+                               'end'])
+          expect(cop.offences).to be_empty
+        end
+
+        it 'accepts assignment with indexing of self' do
+          inspect_source(cop, 'self[:a] = b')
+          expect(cop.offences).to be_empty
+        end
       end
     end
   end
