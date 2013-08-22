@@ -9,8 +9,9 @@ module Rubocop
     #
     # /some/file
     # /some/other/file
-    class FileListFormatter < SimpleTextFormatter
-      def report_file(file, offences)
+    class FileListFormatter < BaseFormatter
+      def file_finished(file, offences)
+        return if offences.empty?
         output.printf("%s\n", file)
       end
     end

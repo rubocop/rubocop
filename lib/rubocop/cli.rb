@@ -62,7 +62,7 @@ module Rubocop
       formatter_set.finished(inspected_files.freeze)
       formatter_set.close_output_files
 
-      display_error_summary(@errors) unless @options[:silent]
+      display_error_summary(@errors)
 
       !any_failed && !wants_to_quit ? 0 : 1
     rescue => e
@@ -181,7 +181,8 @@ module Rubocop
 
     # rubocop:disable MethodLength
     def parse_options(args)
-      convert_deprecated_options!(args)
+      ignore_dropped_options(args)
+      convert_deprecated_options(args)
 
       OptionParser.new do |opts|
         opts.banner = 'Usage: rubocop [options] [file1, file2, ...]'
@@ -248,9 +249,6 @@ module Rubocop
         opts.on('-a', '--auto-correct', 'Auto-correct offences.') do |a|
           @options[:autocorrect] = a
         end
-        opts.on('-s', '--silent', 'Silence summary.') do |s|
-          @options[:silent] = s
-        end
         opts.on('-n', '--no-color', 'Disable color output.') do |s|
           Sickill::Rainbow.enabled = false
         end
@@ -266,7 +264,17 @@ module Rubocop
     end
     # rubocop:enable MethodLength
 
-    def convert_deprecated_options!(args)
+    def ignore_dropped_options(args)
+      # Currently we don't make -s/--silent option raise error
+      # since those are mostly used by external tools.
+      rejected = args.reject! { |a| %w(-s --silent).include?(a) }
+      if rejected
+        warn '-s/--silent options is dropped. ' +
+             '`emacs` and `files` formatters no longer display summary.'
+      end
+    end
+
+    def convert_deprecated_options(args)
       args.map! do |arg|
         case arg
         when '-e', '--emacs'
@@ -323,7 +331,7 @@ module Rubocop
 
     def formatter_set
       @formatter_set ||= begin
-        set = Formatter::FormatterSet.new(!@options[:silent])
+        set = Formatter::FormatterSet.new
         pairs = @options[:formatters] || [[DEFAULT_FORMATTER]]
         pairs.each do |formatter_key, output_path|
           set.add_formatter(formatter_key, output_path)

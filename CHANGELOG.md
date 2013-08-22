@@ -20,6 +20,10 @@
 * `EmptyLiteral` cop does auto-correction
 * `MethodCallParentheses` cop does auto-correction
 
+### Changes
+
+* Dropped `-s`/`--silent` option. Now `progress`/`simple`/`clang` formatters always report summary and `emacs`/`files` formatters no longer report.
+
 ### Bugs fixed
 
 * [#432](https://github.com/bbatsov/rubocop/issues/432) - Fix false positive for constant assignments when rhs is a method call with block in `ConstantName`
