@@ -43,6 +43,11 @@ module Rubocop
             inspect_source(cop, ["[1, 2, 3].#{method}"])
             expect(cop.offences).to be_empty
           end
+
+          it 'auto-corrects to preferred method' do
+            new_source = autocorrect_source(cop, 'some.collect(&:test)')
+            expect(new_source).to eq('some.map(&:test)')
+          end
         end
       end
     end

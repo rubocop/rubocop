@@ -15,6 +15,7 @@
 * New Rails cop `HasAndBelongsToMany` checks for uses of `has_and_belongs_to_many`.
 * New Rails cop `ReadAttribute` tracks uses of `read_attribute`.
 * `Attr` cop does autocorrection
+* `CollectionMethods` cop does autocorrection
 
 ### Bugs fixed
 

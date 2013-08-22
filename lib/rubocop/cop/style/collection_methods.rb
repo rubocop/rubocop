@@ -32,6 +32,13 @@ module Rubocop
           end
         end
 
+        def autocorrect_action(node)
+          @corrections << lambda do |corrector|
+            corrector.replace(node.loc.selector,
+                              preferred_method(node.loc.selector.source))
+          end
+        end
+
         private
 
         def check_method_node(node)
@@ -42,10 +49,15 @@ module Rubocop
               :convention,
               node.loc.selector,
               sprintf(MSG,
-                      self.class.preferred_methods[method_name],
+                      preferred_method(method_name),
                       method_name)
             )
+            do_autocorrect(node)
           end
+        end
+
+        def preferred_method(method)
+          self.class.preferred_methods[method.to_sym]
         end
       end
     end
