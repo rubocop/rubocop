@@ -10,6 +10,13 @@ module Rubocop
         def on_send(node)
           if command?(:attr, node)
             add_offence(:convention, node.loc.selector, MSG)
+            do_autocorrect(node)
+          end
+        end
+
+        def autocorrect_action(node)
+          @corrections << lambda do |corrector|
+            corrector.replace(node.loc.selector, 'attr_reader')
           end
         end
       end
