@@ -19,6 +19,8 @@
 * `SignalException` cop does auto-correction
 * `EmptyLiteral` cop does auto-correction
 * `MethodCallParentheses` cop does auto-correction
+* `DefWithParentheses` cop does auto-correction
+* `DefWithoutParentheses` cop does auto-correction
 
 ### Bugs fixed
 
