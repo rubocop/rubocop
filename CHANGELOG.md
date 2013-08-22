@@ -18,6 +18,7 @@
 * `CollectionMethods` cop does auto-correction
 * `SignalException` cop does auto-correction
 * `EmptyLiteral` cop does auto-correction
+* `MethodCallParentheses` cop does auto-correction
 
 ### Bugs fixed
 

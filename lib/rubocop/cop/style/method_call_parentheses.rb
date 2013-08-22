@@ -12,6 +12,14 @@ module Rubocop
 
           if args.empty? && node.loc.begin
             add_offence(:convention, node.loc.begin, MSG)
+            do_autocorrect(node)
+          end
+        end
+
+        def autocorrect_action(node)
+          @corrections << lambda do |corrector|
+            corrector.remove(node.loc.begin)
+            corrector.remove(node.loc.end)
           end
         end
       end
