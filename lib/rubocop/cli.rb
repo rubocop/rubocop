@@ -298,12 +298,12 @@ module Rubocop
     def display_error_summary(errors)
       return if errors.empty?
       plural = errors.count > 1 ? 's' : ''
-      puts "\n#{errors.count} error#{plural} occurred:".color(:red)
-      errors.each { |error| puts error }
-      puts 'Errors are usually caused by RuboCop bugs.'
-      puts 'Please, report your problems to RuboCop\'s issue tracker.'
-      puts 'Mention the following information in the issue report:'
-      puts Rubocop::Version.version(true)
+      warn "\n#{errors.count} error#{plural} occurred:".color(:red)
+      errors.each { |error| warn error }
+      warn 'Errors are usually caused by RuboCop bugs.'
+      warn 'Please, report your problems to RuboCop\'s issue tracker.'
+      warn 'Mention the following information in the issue report:'
+      warn Rubocop::Version.version(true)
     end
 
     def autocorrect(buffer, cops)

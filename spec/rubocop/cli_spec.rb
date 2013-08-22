@@ -1137,10 +1137,10 @@ Usage: rubocop [options] [file1, file2, ...]
     end
 
     describe '#display_error_summary' do
-      it 'displays an error message when errors are present' do
+      it 'displays an error message to stderr when errors are present' do
         msg = 'An error occurred while Encoding cop was inspecting file.rb.'
         cli.display_error_summary([msg])
-        expect($stdout.string.lines.to_a[-6..-5])
+        expect($stderr.string.lines.to_a[-6..-5])
           .to eq(["1 error occurred:\n", "#{msg}\n"])
       end
     end
