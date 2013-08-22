@@ -18,6 +18,14 @@ module Rubocop
                         node.loc.selector,
                         MSG.format(method_name,
                                    proper_method_name(method_name)))
+            do_autocorrect(node)
+          end
+        end
+
+        def autocorrect_action(node)
+          @corrections << lambda do |corrector|
+            corrector.replace(node.loc.selector,
+                              proper_method_name(node.loc.selector.source))
           end
         end
 

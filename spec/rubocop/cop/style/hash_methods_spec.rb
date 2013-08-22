@@ -35,6 +35,16 @@ module Rubocop
                          ['o.has_value?'])
           expect(cop.offences).to be_empty
         end
+
+        it 'auto-corrects has_key? with key?' do
+          new_source = autocorrect_source(cop, 'hash.has_key?(:test)')
+          expect(new_source).to eq('hash.key?(:test)')
+        end
+
+        it 'auto-corrects has_value? with value?' do
+          new_source = autocorrect_source(cop, 'hash.has_value?(value)')
+          expect(new_source).to eq('hash.value?(value)')
+        end
       end
     end
   end
