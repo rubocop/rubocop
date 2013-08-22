@@ -9,7 +9,7 @@ module Rubocop
       let(:formatter) { EmacsStyleFormatter.new(output) }
       let(:output) { StringIO.new }
 
-      describe '#report_file' do
+      describe '#file_finished' do
         it 'displays parsable text' do
           cop = Cop::Cop.new
           source_buffer = Parser::Source::Buffer.new('test', 1)
@@ -22,9 +22,16 @@ module Rubocop
                           Parser::Source::Range.new(source_buffer, 9, 10),
                           'message 2')
 
-          formatter.report_file('test', cop.offences)
+          formatter.file_finished('test', cop.offences)
           expect(output.string).to eq ['test:1:1: C: message 1',
                                        "test:3:6: F: message 2\n"].join("\n")
+        end
+      end
+
+      describe '#finished' do
+        it 'does not report summary' do
+          formatter.finished(['/path/to/file'])
+          expect(output.string).to be_empty
         end
       end
     end

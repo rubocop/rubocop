@@ -65,7 +65,6 @@ Usage: rubocop [options] [file1, file2, ...]
     -R, --rails                      Run extra Rails cops.
     -l, --lint                       Run only lint cops.
     -a, --auto-correct               Auto-correct offences.
-    -s, --silent                     Silence summary.
     -n, --no-color                   Disable color output.
     -v, --version                    Display version.
     -V, --verbose-version            Display verbose version.
@@ -210,8 +209,6 @@ Usage: rubocop [options] [file1, file2, ...]
          "#{abs('example1.rb')}:2:2: C: Trailing whitespace detected.",
          "#{abs('example2.rb')}:1:1: C: Missing utf-8 encoding comment.",
          "#{abs('example2.rb')}:1:1: C: Tab detected.",
-         '',
-         '2 files inspected, 6 offences detected',
          ''].join("\n"))
     end
 
@@ -234,8 +231,6 @@ Usage: rubocop [options] [file1, file2, ...]
          "#{abs('example1.rb')}:1:5: C: Trailing whitespace detected.",
          "#{abs('example1.rb')}:2:2: C: Trailing whitespace detected.",
          "#{abs('example2.rb')}:1:1: C: Tab detected.",
-         '',
-         '2 files inspected, 4 offences detected',
          ''].join("\n"))
     end
 
@@ -491,36 +486,6 @@ Usage: rubocop [options] [file1, file2, ...]
       end
     end
 
-    it 'ommits summary when --silent passed', ruby: 1.9 do
-      create_file('example1.rb', 'puts 0 ')
-      create_file('example2.rb', "\tputs 0")
-      expect(cli.run(['--format',
-                      'emacs',
-                      '--silent',
-                      'example1.rb',
-                      'example2.rb'])).to eq(1)
-      expect($stdout.string).to eq(
-        ["#{abs('example1.rb')}:1:1: C: Missing utf-8 encoding comment.",
-         "#{abs('example1.rb')}:1:7: C: Trailing whitespace detected.",
-         "#{abs('example2.rb')}:1:1: C: Missing utf-8 encoding comment.",
-         "#{abs('example2.rb')}:1:1: C: Tab detected.",
-         ''].join("\n"))
-    end
-
-    it 'ommits summary when --silent passed', ruby: 2.0 do
-      create_file('example1.rb', 'puts 0 ')
-      create_file('example2.rb', "\tputs 0")
-      expect(cli.run(['--format',
-                      'emacs',
-                      '--silent',
-                      'example1.rb',
-                      'example2.rb'])).to eq(1)
-      expect($stdout.string).to eq(
-        ["#{abs('example1.rb')}:1:7: C: Trailing whitespace detected.",
-         "#{abs('example2.rb')}:1:1: C: Tab detected.",
-         ''].join("\n"))
-    end
-
     it 'shows config files when --debug is passed', ruby: 2.0 do
       create_file('example1.rb', "\tputs 0")
       expect(cli.run(['--debug', 'example1.rb'])).to eq(1)
@@ -541,7 +506,6 @@ Usage: rubocop [options] [file1, file2, ...]
       create_file('example1.rb', "\tputs 0")
       expect(cli.run(['--format',
                       'emacs',
-                      '--silent',
                       '--debug',
                       'example1.rb'])).to eq(1)
       expect($stdout.string.lines[-1]).to eq(
@@ -822,8 +786,6 @@ Usage: rubocop [options] [file1, file2, ...]
       expect($stdout.string)
         .to eq(["#{abs('example.rb')}:3:3: E: unexpected " +
                 'token $end',
-                '',
-                '1 file inspected, 1 offence detected',
                 ''].join("\n"))
     end
 
@@ -836,8 +798,6 @@ Usage: rubocop [options] [file1, file2, ...]
       expect($stdout.string)
         .to eq(["#{abs('example.rb')}:2:6: W: " +
                 "`*' interpreted as argument prefix",
-                '',
-                '1 file inspected, 1 offence detected',
                 ''].join("\n"))
     end
 
@@ -870,8 +830,6 @@ Usage: rubocop [options] [file1, file2, ...]
         ["#{abs('example.rb')}:8:80: C: Line is too long. [95/79]",
          "#{abs('example.rb')}:10:5: C: Prefer single-quoted strings when " +
          "you don't need string interpolation or special symbols.",
-         '',
-         '1 file inspected, 2 offences detected',
          ''].join("\n"))
     end
 
@@ -896,8 +854,6 @@ Usage: rubocop [options] [file1, file2, ...]
         ["#{abs('example.rb')}:8:80: C: Line is too long. [95/79]",
          "#{abs('example.rb')}:10:5: C: Prefer single-quoted strings when " +
          "you don't need string interpolation or special symbols.",
-         '',
-         '1 file inspected, 2 offences detected',
          ''].join("\n"))
     end
 
@@ -907,10 +863,7 @@ Usage: rubocop [options] [file1, file2, ...]
         'y("123", 123456) # rubocop:disable all'
       ])
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(0)
-      expect($stdout.string).to eq(
-        ['',
-         '1 file inspected, no offences detected',
-         ''].join("\n"))
+      expect($stdout.string).to be_empty
     end
 
     it 'can have selected cops disabled on a single line' do
@@ -923,8 +876,6 @@ Usage: rubocop [options] [file1, file2, ...]
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       expect($stdout.string).to eq(
         ["#{abs('example.rb')}:3:80: C: Line is too long. [95/79]",
-         '',
-         '1 file inspected, 1 offence detected',
          ''].join("\n"))
     end
 
@@ -1137,6 +1088,15 @@ Usage: rubocop [options] [file1, file2, ...]
           expect($stderr.string).to include('invalid option: --emacs')
         end
       end
+
+      describe '-s/--silent option' do
+        it 'raises error in RuboCop 1.0.0' do
+          # This spec can be removed
+          # once CLI#ignore_dropped_options is removed.
+          expect(cli.run(['--silent'])).to eq(1)
+          expect($stderr.string).to include('invalid option: --silent')
+        end
+      end
     end
 
     describe '-o/--out option' do
@@ -1171,18 +1131,16 @@ Usage: rubocop [options] [file1, file2, ...]
 
         expect(File.read('emacs_output.txt')).to eq([
           "#{abs(target_file)}:2:80: C: Line is too long. [90/79]",
-          '',
-          '1 file inspected, 1 offence detected',
           ''
         ].join("\n"))
       end
     end
 
     describe '#display_error_summary' do
-      it 'displays an error message when errors are present' do
+      it 'displays an error message to stderr when errors are present' do
         msg = 'An error occurred while Encoding cop was inspecting file.rb.'
         cli.display_error_summary([msg])
-        expect($stdout.string.lines.to_a[-6..-5])
+        expect($stderr.string.lines.to_a[-6..-5])
           .to eq(["1 error occurred:\n", "#{msg}\n"])
       end
     end

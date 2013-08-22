@@ -95,101 +95,87 @@ module Rubocop
         formatter.started(files)
       end
 
-      context 'when #reports_summary? is true' do
-        before { formatter.reports_summary = true }
-
-        context 'when any offences are detected' do
-          before do
-            source_buffer = Parser::Source::Buffer.new('test', 1)
-            source = 9.times.map do |index|
-              "This is line #{index + 1}."
-            end
-            source_buffer.source = source.join("\n")
-            line_length = source[0].length + "\n".length
-
-            formatter.file_started(files[0], {})
-            formatter.file_finished(files[0], [
-              Cop::Offence.new(
-                :convention,
-                Parser::Source::Range.new(source_buffer,
-                                          line_length + 2,
-                                          line_length + 3),
-                'foo',
-                'Cop'
-              )
-            ])
-
-            formatter.file_started(files[1], {})
-            formatter.file_finished(files[1], [
-            ])
-
-            formatter.file_started(files[2], {})
-            formatter.file_finished(files[2], [
-              Cop::Offence.new(
-                :error,
-                Parser::Source::Range.new(source_buffer,
-                                          4 * line_length + 1,
-                                          4 * line_length + 2),
-                'bar',
-                'Cop'
-              ),
-              Cop::Offence.new(
-                :convention,
-                Parser::Source::Range.new(source_buffer,
-                                          5 * line_length,
-                                          5 * line_length + 1),
-                'foo',
-                'Cop'
-              )
-            ])
+      context 'when any offences are detected' do
+        before do
+          source_buffer = Parser::Source::Buffer.new('test', 1)
+          source = 9.times.map do |index|
+            "This is line #{index + 1}."
           end
+          source_buffer.source = source.join("\n")
+          line_length = source[0].length + "\n".length
 
-          it 'reports all detected offences for all failed files' do
-            formatter.finished(files)
-            expect(output.string).to include([
-              'Offences:',
-              '',
-              'lib/rubocop.rb:2:3: C: foo',
-              'This is line 2.',
-              '  ^',
-              'bin/rubocop:5:2: E: bar',
-              'This is line 5.',
-              ' ^',
-              'bin/rubocop:6:1: C: foo',
-              'This is line 6.',
-              '^'
-            ].join("\n"))
-          end
+          formatter.file_started(files[0], {})
+          formatter.file_finished(files[0], [
+            Cop::Offence.new(
+              :convention,
+              Parser::Source::Range.new(source_buffer,
+                                        line_length + 2,
+                                        line_length + 3),
+              'foo',
+              'Cop'
+            )
+          ])
+
+          formatter.file_started(files[1], {})
+          formatter.file_finished(files[1], [
+          ])
+
+          formatter.file_started(files[2], {})
+          formatter.file_finished(files[2], [
+            Cop::Offence.new(
+              :error,
+              Parser::Source::Range.new(source_buffer,
+                                        4 * line_length + 1,
+                                        4 * line_length + 2),
+              'bar',
+              'Cop'
+            ),
+            Cop::Offence.new(
+              :convention,
+              Parser::Source::Range.new(source_buffer,
+                                        5 * line_length,
+                                        5 * line_length + 1),
+              'foo',
+              'Cop'
+            )
+          ])
         end
 
-        context 'when no offences are detected' do
-          before do
-            files.each do |file|
-              formatter.file_started(file, {})
-              formatter.file_finished(file, [])
-            end
-          end
-
-          it 'does not report offences' do
-            formatter.finished(files)
-            expect(output.string).not_to include('Offences:')
-          end
-        end
-
-        it 'calls #report_summary' do
-          formatter.should_receive(:report_summary)
+        it 'reports all detected offences for all failed files' do
           formatter.finished(files)
+          expect(output.string).to include([
+            'Offences:',
+            '',
+            'lib/rubocop.rb:2:3: C: foo',
+            'This is line 2.',
+            '  ^',
+            'bin/rubocop:5:2: E: bar',
+            'This is line 5.',
+            ' ^',
+            'bin/rubocop:6:1: C: foo',
+            'This is line 6.',
+            '^'
+          ].join("\n"))
         end
       end
 
-      context 'when #reports_summary? is false' do
-        before { formatter.reports_summary = false }
-
-        it 'reports nothing' do
-          output.string = ''
-          formatter.finished(files)
-          expect(output.string).to eq("\n")
+      context 'when no offences are detected' do
+        before do
+          files.each do |file|
+            formatter.file_started(file, {})
+            formatter.file_finished(file, [])
+          end
         end
+
+        it 'does not report offences' do
+          formatter.finished(files)
+          expect(output.string).not_to include('Offences:')
+        end
+      end
+
+      it 'calls #report_summary' do
+        formatter.should_receive(:report_summary)
+        formatter.finished(files)
       end
     end
   end
