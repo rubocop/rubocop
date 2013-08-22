@@ -36,19 +36,33 @@ module Rubocop
             add_offence(:convention,
                         node.loc.expression,
                         ARR_MSG)
+            do_autocorrect(node)
           when HASH_NODE
             add_offence(:convention,
                         node.loc.expression,
                         HASH_MSG)
+            do_autocorrect(node)
           when STR_NODE
             add_offence(:convention,
                         node.loc.expression,
                         STR_MSG)
+            do_autocorrect(node)
           end
         end
 
         # TODO: Check block contents as well.
         alias_method :on_block, :ignore_node
+
+        def autocorrect_action(node)
+          @corrections << lambda do |corrector|
+            name = case node
+                   when ARRAY_NODE then '[]'
+                   when HASH_NODE then '{}'
+                   when STR_NODE then "''"
+                   end
+            corrector.replace(node.loc.expression, name)
+          end
+        end
       end
     end
   end

@@ -17,6 +17,7 @@
 * `Attr` cop does auto-correction
 * `CollectionMethods` cop does auto-correction
 * `SignalException` cop does auto-correction
+* `EmptyLiteral` cop does auto-correction
 
 ### Bugs fixed
 
