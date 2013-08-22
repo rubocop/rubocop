@@ -14,8 +14,9 @@
 * New cop `HashMethods` keeps track of uses of deprecated `Hash` methods.
 * New Rails cop `HasAndBelongsToMany` checks for uses of `has_and_belongs_to_many`.
 * New Rails cop `ReadAttribute` tracks uses of `read_attribute`.
-* `Attr` cop does autocorrection
-* `CollectionMethods` cop does autocorrection
+* `Attr` cop does auto-correction
+* `CollectionMethods` cop does auto-correction
+* `SignalException` cop does auto-correction
 
 ### Bugs fixed
 

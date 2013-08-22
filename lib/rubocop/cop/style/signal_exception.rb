@@ -15,12 +15,22 @@ module Rubocop
           check_for_fail(rescue_node)
         end
 
+        def autocorrect_action(node)
+          @corrections << lambda do |corrector|
+            name = command?(:raise, node) ? 'fail' : 'raise'
+            corrector.replace(node.loc.selector, name)
+          end
+        end
+
+        private
+
         def check_for_raise(node)
           return unless node
 
           on_node(:send, node, :rescue) do |send_node|
             if command?(:raise, send_node)
               add_offence(:convention, send_node.loc.selector, FAIL_MSG)
+              do_autocorrect(send_node)
             end
           end
         end
@@ -31,6 +41,7 @@ module Rubocop
           on_node(:send, node, :rescue) do |send_node|
             if command?(:fail, send_node)
               add_offence(:convention, send_node.loc.selector, RAISE_MSG)
+              do_autocorrect(send_node)
             end
           end
         end

@@ -68,6 +68,34 @@ module Rubocop
           expect(cop.messages).to eq([SignalException::FAIL_MSG] * 2 +
                                      [SignalException::RAISE_MSG])
         end
+
+        it 'auto-corrects raise to fail when appropriate' do
+          new_source = autocorrect_source(cop,
+                                          ['begin',
+                                           '  raise',
+                                           'rescue Exception',
+                                           '  raise',
+                                           'end'])
+          expect(new_source).to eq(['begin',
+                                    '  fail',
+                                    'rescue Exception',
+                                    '  raise',
+                                    'end'].join("\n"))
+        end
+
+        it 'auto-corrects fail to raise when appropriate' do
+          new_source = autocorrect_source(cop,
+                                          ['begin',
+                                           '  fail',
+                                           'rescue Exception',
+                                           '  fail',
+                                           'end'])
+          expect(new_source).to eq(['begin',
+                                    '  fail',
+                                    'rescue Exception',
+                                    '  raise',
+                                    'end'].join("\n"))
+        end
       end
     end
   end
