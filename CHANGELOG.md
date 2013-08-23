@@ -25,6 +25,7 @@
 ### Changes
 
 * Dropped `-s`/`--silent` option. Now `progress`/`simple`/`clang` formatters always report summary and `emacs`/`files` formatters no longer report.
+* Dropped the `LineContinuation` cop
 
 ### Bugs fixed
 

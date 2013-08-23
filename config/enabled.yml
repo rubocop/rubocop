@@ -314,10 +314,6 @@ SpaceInsideHashLiteralBraces:
   Description: "Use spaces inside hash literal braces - or don't."
   Enabled: true
 
-LineContinuation:
-  Description: 'Avoid the use of line continuation (/).'
-  Enabled: true
-
 TrivialAccessors:
   Description: 'Prefer attr_* methods to trivial readers/writers.'
   Enabled: true
