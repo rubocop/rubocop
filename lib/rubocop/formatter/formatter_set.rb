@@ -18,10 +18,6 @@ module Rubocop
 
       FORMATTER_APIS = [:started, :file_started, :file_finished, :finished]
 
-      def initialize(report_summary = true)
-        @reports_summary = report_summary
-      end
-
       FORMATTER_APIS.each do |method_name|
         define_method(method_name) do |*args|
           each { |f| f.send(method_name, *args) }
@@ -40,12 +36,7 @@ module Rubocop
 
         output = output_path ? File.open(output_path, 'w') : $stdout
 
-        formatter = formatter_class.new(output)
-        if formatter.respond_to?(:reports_summary=)
-          # TODO: Consider dropping -s/--silent option
-          formatter.reports_summary = @reports_summary
-        end
-        self << formatter
+        self << formatter_class.new(output)
       end
 
       def close_output_files

@@ -9,7 +9,7 @@ module Rubocop
       let(:formatter) { FileListFormatter.new(output) }
       let(:output) { StringIO.new }
 
-      describe '#report_file' do
+      describe '#file_finished' do
         it 'displays parsable text' do
           cop = Cop::Cop.new
           source_buffer = Parser::Source::Buffer.new('test', 1)
@@ -22,8 +22,8 @@ module Rubocop
                           Parser::Source::Range.new(source_buffer, 9, 10),
                           'message 2')
 
-          formatter.report_file('test', cop.offences)
-          formatter.report_file('test_2', cop.offences)
+          formatter.file_finished('test', cop.offences)
+          formatter.file_finished('test_2', cop.offences)
           expect(output.string).to eq ['test',
                                        "test_2\n"].join("\n")
         end

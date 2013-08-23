@@ -30,8 +30,6 @@ module Rubocop
       def finished(inspected_files)
         output.puts
 
-        return unless reports_summary?
-
         unless @offences_for_files.empty?
           output.puts
           output.puts 'Offences:'

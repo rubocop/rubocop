@@ -6,9 +6,6 @@ module Rubocop
     # Offences are displayed at compact form - just the
     # location of the problem and the associated message.
     class SimpleTextFormatter < BaseFormatter
-      attr_accessor :reports_summary
-      alias_method :reports_summary?, :reports_summary
-
       def started(target_files)
         @total_offence_count = 0
       end
@@ -20,9 +17,7 @@ module Rubocop
       end
 
       def finished(inspected_files)
-        if reports_summary?
-          report_summary(inspected_files.count, @total_offence_count)
-        end
+        report_summary(inspected_files.count, @total_offence_count)
       end
 
       def report_file(file, offences)
