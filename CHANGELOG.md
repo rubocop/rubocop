@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.12.0 (23/08/2013)
+
 ### New features
 
 * [#439](https://github.com/bbatsov/rubocop/issues/439) Added formatter 'OffenceCount' which outputs a summary list of cops and their offence count
