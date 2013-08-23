@@ -79,7 +79,6 @@ Command flag           | Description
 `-R/--rails`           | Run extra Rails cops
 `-l/--lint`            | Run only lint cops
 `-a/--auto-correct`    | Auto-correct certain offences *Note:* Experimental - use with caution
-`-s/--silent`          | Suppress the final summary
 `--only`               | Run only the specified cop
 `--auto-gen-config`    | Generate a configuration file acting as a TODO list
 `--show-cops`          | Shows available cops and their configuration
