@@ -318,7 +318,7 @@ module Rubocop
       new_source = corrector.rewrite
 
       unless new_source == buffer.source
-        filename = buffer.instance_variable_get(:@name)
+        filename = buffer.name
         File.open(filename, 'w') { |f| f.write(new_source) }
       end
     end
