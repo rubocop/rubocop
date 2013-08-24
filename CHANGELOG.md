@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bugs fixed
+
+* [#449](https://github.com/bbatsov/rubocop/issues/449) - Remove whitespaces between condition and `do` with `WhileUntilDo` auto-correction
+
 ## 0.12.0 (23/08/2013)
 
 ### New features

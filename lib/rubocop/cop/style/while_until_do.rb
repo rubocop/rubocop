@@ -34,7 +34,11 @@ module Rubocop
 
         def autocorrect_action(node)
           @corrections << lambda do |corrector|
-            corrector.remove(node.loc.begin)
+            condition_node, = *node
+            end_of_condition_range = condition_node.loc.expression.end
+            do_range = node.loc.begin
+            whitespaces_and_do_range = end_of_condition_range.join(do_range)
+            corrector.remove(whitespaces_and_do_range)
           end
         end
       end
