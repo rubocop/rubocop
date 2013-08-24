@@ -45,13 +45,13 @@ module Rubocop
         it 'auto-corrects the usage of "do" in multiline while' do
           new_source = autocorrect_source(cop, ['while cond do',
                                                 'end'])
-          expect(new_source).to eq("while cond \nend")
+          expect(new_source).to eq("while cond\nend")
         end
 
         it 'auto-corrects the usage of "do" in multiline until' do
           new_source = autocorrect_source(cop, ['until cond do',
                                                 'end'])
-          expect(new_source).to eq("until cond \nend")
+          expect(new_source).to eq("until cond\nend")
         end
       end
     end
