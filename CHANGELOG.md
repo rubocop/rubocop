@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* New configuration parameter `AllowAdjacentOneLineDefs` for `EmptyLineBetweenDefs`.
+
 ### Changes
 
 * [#447](https://github.com/bbatsov/rubocop/issues/447) - `BlockAlignment` cop now allows `end` to be aligned with the start of the line containing `do`.

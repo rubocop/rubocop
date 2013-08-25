@@ -111,3 +111,9 @@ CommentAnnotation:
     - OPTIMIZE
     - HACK
     - REVIEW
+
+# Use empty lines between defs.
+EmptyLineBetweenDefs:
+  # If true, this parameter means that single line method definitions don't
+  # need an empty line between them.
+  AllowAdjacentOneLineDefs: false
