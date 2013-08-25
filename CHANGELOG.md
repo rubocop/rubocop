@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#447](https://github.com/bbatsov/rubocop/issues/447) - `BlockAlignment` cop now allows `end` to be aligned with the start of the line containing `do`.
+
 ### Bugs fixed
 
 * [#449](https://github.com/bbatsov/rubocop/issues/449) - Remove whitespaces between condition and `do` with `WhileUntilDo` auto-correction
