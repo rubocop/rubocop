@@ -9,6 +9,7 @@
 ### Bugs fixed
 
 * [#449](https://github.com/bbatsov/rubocop/issues/449) - Remove whitespaces between condition and `do` with `WhileUntilDo` auto-correction
+* Continue with file inspection after parser warnings. Give up only on syntax errors.
 
 ## 0.12.0 (23/08/2013)
 
