@@ -12,7 +12,7 @@ module Rubocop
       #     i
       #   end
       class BlockAlignment < Cop
-        MSG = 'end at %d, %d is not aligned with %s at %d, %d'
+        MSG = 'end at %d, %d is not aligned with %s at %d, %d%s'
 
         def initialize
           super
@@ -118,13 +118,31 @@ module Rubocop
         def check_block_alignment(start_node, block_node)
           start_loc = start_node.loc.expression
           end_loc = block_node.loc.end
-          if block_node.loc.begin.line != end_loc.line &&
-              start_loc.column != end_loc.column
-            add_offence(:warning,
-                        end_loc,
-                        sprintf(MSG, end_loc.line, end_loc.column,
-                                start_loc.source.lines.to_a.first.chomp,
-                                start_loc.line, start_loc.column))
+          do_loc = block_node.loc.begin # Actually it's either do or {.
+          return if do_loc.line == end_loc.line # One-liner, not interesting.
+          if start_loc.column != end_loc.column
+            # We've found that "end" is not aligned with the start node (which
+            # can be a block, a variable assignment, etc). But we also allow
+            # the "end" to be aligned with the start of the line where the "do"
+            # is, which is a style some people use in multi-line chains of
+            # blocks.
+            match = /\S.*/.match(do_loc.source_line)
+            indentation_of_do_line = match.begin(0)
+            if end_loc.column != indentation_of_do_line
+              alt_start_msg = if start_loc.line == do_loc.line &&
+                                  start_loc.column == indentation_of_do_line
+                                ''
+                              else
+                                " or #{match[0]} at #{do_loc.line}, " +
+                                  "#{indentation_of_do_line}"
+                              end
+              add_offence(:warning,
+                          end_loc,
+                          sprintf(MSG, end_loc.line, end_loc.column,
+                                  start_loc.source.lines.to_a.first.chomp,
+                                  start_loc.line, start_loc.column,
+                                  alt_start_msg))
+            end
           end
         end
 
