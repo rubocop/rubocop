@@ -792,12 +792,16 @@ Usage: rubocop [options] [file1, file2, ...]
     it 'registers an offence for Parser warnings' do
       create_file('example.rb', [
                                  '# encoding: utf-8',
-                                 'puts *test'
+                                 'puts *test',
+                                 'if a then b else c end'
                                 ])
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       expect($stdout.string)
         .to eq(["#{abs('example.rb')}:2:6: W: " +
                 "`*' interpreted as argument prefix",
+                "#{abs('example.rb')}:3:1: C: " +
+                'Favor the ternary operator (?:) over if/then/else/end ' +
+                'constructs.',
                 ''].join("\n"))
     end
 
