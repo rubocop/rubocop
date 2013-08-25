@@ -9,14 +9,29 @@ module Rubocop
         MSG = 'Use empty lines between defs.'
 
         def on_def(node)
-          def_start = node.loc.keyword.line
-          def_end = node.loc.end.line
-
-          if @prev_def_end && (def_start - @prev_def_end) == 1
-            add_offence(:convention, node.loc.keyword, MSG)
+          if @prev_def_end && (def_start(node) - @prev_def_end) == 1
+            unless @prev_was_single_line && singe_line_def?(node) &&
+                EmptyLineBetweenDefs.config['AllowAdjacentOneLineDefs']
+              add_offence(:convention, node.loc.keyword, MSG)
+            end
           end
 
-          @prev_def_end = def_end
+          @prev_def_end = def_end(node)
+          @prev_was_single_line = singe_line_def?(node)
+        end
+
+        private
+
+        def singe_line_def?(node)
+          def_start(node) == def_end(node)
+        end
+
+        def def_start(node)
+          node.loc.keyword.line
+        end
+
+        def def_end(node)
+          node.loc.end.line
         end
       end
     end

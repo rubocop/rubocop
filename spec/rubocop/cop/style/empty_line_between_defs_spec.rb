@@ -7,6 +7,9 @@ module Rubocop
     module Style
       describe EmptyLineBetweenDefs do
         let(:empty_lines) { EmptyLineBetweenDefs.new }
+        before do
+          EmptyLineBetweenDefs.config = { 'AllowAdjacentOneLineDefs' => false }
+        end
 
         it 'finds offences in inner classes' do
           inspect_source(empty_lines, ['class K',
@@ -90,6 +93,40 @@ module Rubocop
                    ]
           inspect_source(empty_lines, source)
           expect(empty_lines.offences.map(&:message)).to be_empty
+        end
+
+        describe 'AllowAdjacentOneLineDefs config parameter' do
+          it 'registers an offence for adjacent one-liners by default' do
+            source = ['def a; end',
+                      'def b; end']
+            inspect_source(empty_lines, source)
+            expect(empty_lines.offences).to have(1).item
+          end
+
+          it 'accepts adjacent one-liners if so configured' do
+            EmptyLineBetweenDefs.config = {
+              'AllowAdjacentOneLineDefs' => true
+            }
+            source = ['def a; end',
+                      'def b; end']
+            inspect_source(empty_lines, source)
+            expect(empty_lines.offences).to be_empty
+          end
+
+          it 'registers an offence for adjacent defs if some are multi-line' do
+            EmptyLineBetweenDefs.config = {
+              'AllowAdjacentOneLineDefs' => true
+            }
+            source = ['def a; end',
+                      'def b; end',
+                      'def c', # Not a one-liner, so this is an offence.
+                      'end',
+                      # Also an offence since previous was multi-line:
+                      'def d; end'
+                     ]
+            inspect_source(empty_lines, source)
+            expect(empty_lines.offences.map(&:line)).to eq([3, 5])
+          end
         end
       end
     end
