@@ -112,13 +112,15 @@ module Rubocop
         return []
       end
 
+      offences = processed_source.diagnostics.map do |diagnostic|
+        Cop::Offence.from_diagnostic(diagnostic)
+      end
+
       # If we got any syntax errors, return only the syntax offences.
       # Parser may return nil for AST even though there are no syntax errors.
       # e.g. sources which contain only comments
-      unless processed_source.diagnostics.empty?
-        return processed_source.diagnostics.map do |diagnostic|
-                 Cop::Offence.from_diagnostic(diagnostic)
-               end
+      if offences.any? { |o| [:error, :fatal].include?(o.severity) }
+        return offences
       end
 
       config = @config_store.for(file)
@@ -128,16 +130,9 @@ module Rubocop
       end
       set_config_for_all_cops(config)
 
-      cops = []
-      @cops.each do |cop_class|
-        cop_name = cop_class.cop_name
-        next unless config.cop_enabled?(cop_name)
-        next unless !@options[:only] || @options[:only] == cop_name
-        cop = setup_cop(cop_class, processed_source.disabled_lines_for_cops)
-        cops << cop
-      end
+      cops = create_cops(config, processed_source)
       commissioner = Cop::Commissioner.new(cops)
-      offences = commissioner.investigate(processed_source)
+      offences += commissioner.investigate(processed_source)
       process_commissioner_errors(file, commissioner.errors)
       autocorrect(processed_source.buffer, cops)
       offences.sort
@@ -157,6 +152,18 @@ module Rubocop
       @cops.each do |cop_class|
         cop_class.config = config.for_cop(cop_class.cop_name)
       end
+    end
+
+    def create_cops(config, processed_source)
+      cops = []
+      @cops.each do |cop_class|
+        cop_name = cop_class.cop_name
+        next unless config.cop_enabled?(cop_name)
+        next unless !@options[:only] || @options[:only] == cop_name
+        cop = setup_cop(cop_class, processed_source.disabled_lines_for_cops)
+        cops << cop
+      end
+      cops
     end
 
     def setup_cop(cop_class, disabled_lines_for_cops = nil)
