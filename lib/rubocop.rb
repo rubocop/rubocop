@@ -13,6 +13,7 @@ require 'rubocop/cop/offence'
 require 'rubocop/cop/cop'
 require 'rubocop/cop/commissioner'
 require 'rubocop/cop/corrector'
+require 'rubocop/cop/team'
 
 require 'rubocop/cop/lint/assignment_in_condition'
 require 'rubocop/cop/lint/block_alignment'
