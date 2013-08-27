@@ -14,6 +14,13 @@ module Rubocop
           expect(ap.offences.map(&:message))
             .to eq(['Prefer the use of MatchData over $1.'])
         end
+
+        it 'permits $1 when used in a block given to String#gsub' do
+          inspect_source(ap, ["'12345 hello'.gsub(/(\d+).*/) { ($1.to_i + 1).to_s }"])
+          expect(ap.offences.size).to eq(0)
+          expect(ap.offences.map(&:message))
+            .to eq([])
+        end
       end
     end
   end
