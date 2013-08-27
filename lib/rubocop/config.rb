@@ -31,7 +31,7 @@ module Rubocop
         puts "configuration from #{path}" if debug?
         contains_auto_generated_config = false
 
-        base_configs(path, hash['inherit_from']).reverse.each do |base_config|
+        base_configs(path, hash['inherit_from']).reverse_each do |base_config|
           if File.basename(base_config.loaded_path) == DOTFILE
             make_excludes_absolute(base_config)
           end
