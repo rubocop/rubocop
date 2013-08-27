@@ -18,7 +18,7 @@ module Rubocop
         def on_begin(node)
           expressions = *node
 
-          expressions[0...-1].each do |expr|
+          expressions.drop_last(1).each do |expr|
             check_for_void_op(expr)
             check_for_literal(expr)
             check_for_var(expr)
