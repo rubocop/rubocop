@@ -14,7 +14,7 @@ module Rubocop
       class BlockAlignment < Cop
         MSG = 'end at %d, %d is not aligned with %s at %d, %d%s'
 
-        def initialize
+        def initialize(config = nil, options = nil)
           super
           @inspected_blocks = []
         end

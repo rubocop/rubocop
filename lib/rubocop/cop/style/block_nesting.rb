@@ -14,7 +14,7 @@ module Rubocop
 
         def investigate(processed_source)
           return unless processed_source.ast
-          max = BlockNesting.config['Max']
+          max = cop_config['Max']
           check_nesting_level(processed_source.ast, max, 0)
         end
 

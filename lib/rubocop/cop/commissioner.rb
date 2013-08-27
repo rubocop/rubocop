@@ -50,6 +50,7 @@ module Rubocop
 
       def investigate(processed_source)
         reset_errors
+        prepare(processed_source)
         invoke_cops_callback(processed_source)
         process(processed_source.ast) if processed_source.ast
         @cops.reduce([]) do |offences, cop|
@@ -62,6 +63,11 @@ module Rubocop
 
       def reset_errors
         @errors = Hash.new { |hash, k| hash[k] = [] }
+      end
+
+      # TODO: Bad design.
+      def prepare(processed_source)
+        @cops.each { |cop| cop.processed_source = processed_source }
       end
 
       # There are cops that require their own custom processing.

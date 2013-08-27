@@ -5,11 +5,9 @@ require 'spec_helper'
 module Rubocop
   module Cop
     module Style
-      describe MethodLength do
-        subject(:method_length) { MethodLength.new }
-        before do
-          MethodLength.config = { 'Max' => 5, 'CountComments' => false }
-        end
+      describe MethodLength, :config do
+        subject(:method_length) { MethodLength.new(config) }
+        let(:cop_config) { { 'Max' => 5, 'CountComments' => false } }
 
         it 'rejects a method with more than 5 lines' do
           inspect_source(method_length, ['def m()',
@@ -132,18 +130,21 @@ module Rubocop
           expect(method_length.offences).to be_empty
         end
 
-        it 'has the option of counting commented lines' do
-          MethodLength.config['CountComments'] = true
-          inspect_source(method_length, ['def m()',
-                                         '  a = 1',
-                                         '  #a = 2',
-                                         '  a = 3',
-                                         '  #a = 4',
-                                         '  a = 5',
-                                         '  a = 6',
-                                         'end'])
-          expect(method_length.offences.size).to eq(1)
-          expect(method_length.offences.map(&:line).sort).to eq([1])
+        context 'when CountComments is enabled' do
+          before { cop_config['CountComments'] = true }
+
+          it 'also counts commented lines' do
+            inspect_source(method_length, ['def m()',
+                                           '  a = 1',
+                                           '  #a = 2',
+                                           '  a = 3',
+                                           '  #a = 4',
+                                           '  a = 5',
+                                           '  a = 6',
+                                           'end'])
+            expect(method_length.offences.size).to eq(1)
+            expect(method_length.offences.map(&:line).sort).to eq([1])
+          end
         end
       end
     end

@@ -5,11 +5,9 @@ require 'spec_helper'
 module Rubocop
   module Cop
     module Style
-      describe TrivialAccessors do
-        subject(:cop) { described_class.new }
-        before do
-          described_class.config = {}
-        end
+      describe TrivialAccessors, :config do
+        subject(:cop) { described_class.new(config) }
+        let(:cop_config) { {} }
 
         it 'finds trivial reader' do
           inspect_source(cop,
@@ -348,7 +346,7 @@ module Rubocop
         end
 
         context 'exact name match required' do
-          before { described_class.config['ExactNameMatch'] = true }
+          let(:cop_config) { { 'ExactNameMatch' => true } }
 
           it 'finds only 1 trivial reader' do
             inspect_source(cop,
@@ -380,9 +378,7 @@ module Rubocop
         end
 
         context 'with predicates allowed' do
-          before do
-            described_class.config['AllowPredicates'] = true
-          end
+          let(:cop_config) { { 'AllowPredicates' => true } }
 
           it 'ignores accessors ending with a question mark' do
             inspect_source(cop,
@@ -394,11 +390,7 @@ module Rubocop
         end
 
         context 'with whitelist defined' do
-          before do
-            described_class.config = {
-              'Whitelist' => ['to_foo', 'bar=']
-            }
-          end
+          let(:cop_config) { { 'Whitelist' => ['to_foo', 'bar='] } }
 
           it 'ignores accessors in the whitelist' do
             inspect_source(cop,

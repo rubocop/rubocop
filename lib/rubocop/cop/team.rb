@@ -41,9 +41,6 @@ module Rubocop
           return offences
         end
 
-        set_config_for_all_cops
-
-        cops = create_cops(processed_source)
         commissioner = Commissioner.new(cops)
         offences += commissioner.investigate(processed_source)
         process_commissioner_errors(file, commissioner.errors)
@@ -51,34 +48,17 @@ module Rubocop
         offences.sort
       end
 
+      def cops
+        @cops ||= begin
+          @cop_classes.reduce([]) do |instances, cop_class|
+            cop_name = cop_class.cop_name
+            next instances unless @config.cop_enabled?(cop_name)
+            instances << cop_class.new(@config, @options)
+          end
+        end
+      end
+
       private
-
-      def set_config_for_all_cops
-        Cop.all.each do |cop_class|
-          cop_class.config = @config.for_cop(cop_class.cop_name)
-        end
-      end
-
-      def create_cops(processed_source)
-        cops = []
-        @cop_classes.each do |cop_class|
-          cop_name = cop_class.cop_name
-          next unless @config.cop_enabled?(cop_name)
-          cop = setup_cop(cop_class, processed_source.disabled_lines_for_cops)
-          cops << cop
-        end
-        cops
-      end
-
-      def setup_cop(cop_class, disabled_lines_for_cops = nil)
-        cop = cop_class.new
-        cop.debug = debug?
-        cop.autocorrect = autocorrect?
-        if disabled_lines_for_cops
-          cop.disabled_lines = disabled_lines_for_cops[cop_class.cop_name]
-        end
-        cop
-      end
 
       def autocorrect(buffer, cops)
         return unless autocorrect?

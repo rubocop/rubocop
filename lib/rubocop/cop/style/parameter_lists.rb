@@ -28,11 +28,11 @@ module Rubocop
         end
 
         def max_params
-          ParameterLists.config['Max']
+          cop_config['Max']
         end
 
         def count_keyword_args?
-          ParameterLists.config['CountKeywordArgs']
+          cop_config['CountKeywordArgs']
         end
       end
     end

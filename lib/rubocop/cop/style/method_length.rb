@@ -18,11 +18,11 @@ module Rubocop
         end
 
         def max_length
-          MethodLength.config['Max']
+          cop_config['Max']
         end
 
         def count_comments?
-          MethodLength.config['CountComments']
+          cop_config['CountComments']
         end
 
         private

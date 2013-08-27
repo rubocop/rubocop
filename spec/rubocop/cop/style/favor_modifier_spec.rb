@@ -6,9 +6,12 @@ module Rubocop
   module Cop
     module Style
       describe FavorModifier do
-        let(:if_unless) { IfUnlessModifier.new }
-        let(:while_until) { WhileUntilModifier.new }
-        before { LineLength.config = { 'Max' => 79 } }
+        let(:if_unless) { IfUnlessModifier.new(config) }
+        let(:while_until) { WhileUntilModifier.new(config) }
+        let(:config) do
+          hash = { 'LineLength' => { 'Max' => 79 } }
+          Rubocop::Config.new(hash)
+        end
 
         it 'registers an offence for multiline if that fits on one line' do
           # This if statement fits exactly on one line if written as a

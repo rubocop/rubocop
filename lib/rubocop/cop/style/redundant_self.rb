@@ -13,7 +13,7 @@ module Rubocop
       class RedundantSelf < Cop
         MSG = 'Redundant `self` detected.'
 
-        def initialize
+        def initialize(config = nil, options = nil)
           super
           @allowed_send_nodes = []
           @local_variables = []
