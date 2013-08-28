@@ -436,6 +436,10 @@ HashMethods:
   Description: Checks for use of deprecated Hash methods.
   Enabled: true
 
+MultilineBlockChain:
+  Description: Avoid multi-line chains of blocks.
+  Enabled: true
+
 #################### Lint ################################
 ### Warnings
 
