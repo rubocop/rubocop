@@ -7,9 +7,6 @@ module Rubocop
     module Style
       describe MultilineBlockChain do
         let(:cop) { described_class.new }
-        let(:highlights) do
-          cop.offences.sort_by(&:line).map { |o| o.location.source }
-        end
 
         context 'with multi-line block chaining' do
           it 'registers an offence for a simple case' do
@@ -19,7 +16,7 @@ module Rubocop
                                  '  d',
                                  'end'])
             expect(cop.offences).to have(1).item
-            expect(highlights).to eq(['end.c'])
+            expect(cop.highlights).to eq(['end.c'])
           end
 
           it 'registers an offence for a slightly more complicated case' do
@@ -29,7 +26,7 @@ module Rubocop
                                  '  d',
                                  'end'])
             expect(cop.offences).to have(1).item
-            expect(highlights).to eq(['end.c1.c2'])
+            expect(cop.highlights).to eq(['end.c1.c2'])
           end
 
           it 'registers two offences for a chain of three blocks' do
@@ -41,7 +38,7 @@ module Rubocop
                                  '  f',
                                  'end'])
             expect(cop.offences).to have(2).item
-            expect(highlights).to eq(['end.c', 'end.e'])
+            expect(cop.highlights).to eq(['end.c', 'end.e'])
           end
 
           it 'registers an offence for a chain where the second block is ' +
@@ -50,7 +47,7 @@ module Rubocop
                                  '  t.alive?',
                                  '}.map { |thread| thread.object_id }'])
             expect(cop.offences).to have(1).item
-            expect(highlights).to eq(['}.map'])
+            expect(cop.highlights).to eq(['}.map'])
           end
 
           it 'accepts a chain where the first block is single-line' do

@@ -7,14 +7,13 @@ module Rubocop
     module Style
       describe MethodAndVariableSnakeCase do
         let(:cop) { described_class.new }
-        let(:highlights) { cop.offences.map { |o| o.location.source } }
 
         it 'registers an offence for camel case in instance method name' do
           inspect_source(cop, ['def myMethod',
                                '  # ...',
                                'end'])
           expect(cop.offences).to have(1).item
-          expect(highlights).to eq(['myMethod'])
+          expect(cop.highlights).to eq(['myMethod'])
         end
 
         it 'registers an offence for camel case in singleton method name' do
@@ -22,32 +21,32 @@ module Rubocop
                                '  # ...',
                                'end'])
           expect(cop.offences).to have(1).item
-          expect(highlights).to eq(['myMethod'])
+          expect(cop.highlights).to eq(['myMethod'])
         end
 
         it 'registers an offence for camel case in local variable name' do
           inspect_source(cop, 'myLocal = 1')
           expect(cop.offences).to have(1).item
-          expect(highlights).to eq(['myLocal'])
+          expect(cop.highlights).to eq(['myLocal'])
         end
 
         it 'registers an offence for camel case in instance variable name' do
           inspect_source(cop, '@myAttribute = 3')
           expect(cop.offences).to have(1).item
-          expect(highlights).to eq(['@myAttribute'])
+          expect(cop.highlights).to eq(['@myAttribute'])
         end
 
         it 'registers an offence for camel case in setter name' do
           inspect_source(cop, 'self.mySetter = 2')
           expect(cop.offences).to have(1).item
-          expect(highlights).to eq(['mySetter'])
+          expect(cop.highlights).to eq(['mySetter'])
         end
 
         it 'registers an offence for capitalized camel case' do
           inspect_source(cop, ['def MyMethod',
                                'end'])
           expect(cop.offences).to have(1).item
-          expect(highlights).to eq(['MyMethod'])
+          expect(cop.highlights).to eq(['MyMethod'])
         end
 
         it 'accepts snake case in names' do
@@ -63,7 +62,7 @@ module Rubocop
           inspect_source(cop, ['def visit_Arel_Nodes_SelectStatement',
                                'end'])
           expect(cop.offences).to have(1).item
-          expect(highlights).to eq(['visit_Arel_Nodes_SelectStatement'])
+          expect(cop.highlights).to eq(['visit_Arel_Nodes_SelectStatement'])
         end
 
         it 'accepts screaming snake case globals' do
