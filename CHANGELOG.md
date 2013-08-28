@@ -14,6 +14,7 @@
 
 * [#449](https://github.com/bbatsov/rubocop/issues/449) - Remove whitespaces between condition and `do` with `WhileUntilDo` auto-correction
 * Continue with file inspection after parser warnings. Give up only on syntax errors.
+* Don’t trigger the HashSyntax cop on digit-starting keys.
 
 ## 0.12.0 (23/08/2013)
 
