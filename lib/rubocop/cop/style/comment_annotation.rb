@@ -6,8 +6,8 @@ module Rubocop
       # This cop checks that comment annotation keywords are written according
       # to guidelines.
       class CommentAnnotation < Cop
-        MSG = 'Annotation keywords shall be all upper case, followed by a ' +
-          'colon and a space, then a note describing the problem.'
+        MSG = 'Annotation keywords should be all upper case, followed by a ' \
+              'colon and a space, then a note describing the problem.'
 
         def investigate(processed_source)
           processed_source.comments.each do |comment|
