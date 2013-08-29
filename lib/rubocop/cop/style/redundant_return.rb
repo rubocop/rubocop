@@ -41,13 +41,13 @@ module Rubocop
           return unless node
 
           if node.type == :return
-            add_offence(:convention, node.loc.keyword, MSG)
+            convention(node, :keyword, MSG)
           elsif node.type == :begin
             expressions = *node
             last_expr = expressions.last
 
             if last_expr && last_expr.type == :return
-              add_offence(:convention, last_expr.loc.keyword, MSG)
+              convention(last_expr, :keyword, MSG)
             end
           end
         end

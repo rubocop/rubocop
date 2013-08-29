@@ -33,20 +33,11 @@ module Rubocop
 
           case node
           when ARRAY_NODE
-            add_offence(:convention,
-                        node.loc.expression,
-                        ARR_MSG)
-            do_autocorrect(node)
+            convention(node, :expression, ARR_MSG)
           when HASH_NODE
-            add_offence(:convention,
-                        node.loc.expression,
-                        HASH_MSG)
-            do_autocorrect(node)
+            convention(node, :expression, HASH_MSG)
           when STR_NODE
-            add_offence(:convention,
-                        node.loc.expression,
-                        STR_MSG)
-            do_autocorrect(node)
+            convention(node, :expression, STR_MSG)
           end
         end
 

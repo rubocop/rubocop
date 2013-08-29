@@ -29,8 +29,7 @@ module Rubocop
 
           on_node(:send, node, :rescue) do |send_node|
             if command?(:raise, send_node)
-              add_offence(:convention, send_node.loc.selector, FAIL_MSG)
-              do_autocorrect(send_node)
+              convention(send_node, :selector, FAIL_MSG)
             end
           end
         end
@@ -40,8 +39,7 @@ module Rubocop
 
           on_node(:send, node, :rescue) do |send_node|
             if command?(:fail, send_node)
-              add_offence(:convention, send_node.loc.selector, RAISE_MSG)
-              do_autocorrect(send_node)
+              convention(send_node, :selector, RAISE_MSG)
             end
           end
         end

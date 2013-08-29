@@ -22,7 +22,7 @@ module Rubocop
           receiver, method_name, *_args = *node
 
           if receiver.nil? && BLACKLIST.include?(method_name)
-            add_offence(:convention, node.loc.selector, MSG)
+            convention(node, :selector, MSG)
           end
         end
       end

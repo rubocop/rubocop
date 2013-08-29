@@ -17,8 +17,8 @@ module Rubocop
 
           if name !~ /\A\w/ && !BLACKLISTED.include?(name) &&
               args.children.size == 1 && args != TARGET_ARGS
-            add_offence(:convention, args.children[0].loc.expression,
-                        sprintf(MSG, name))
+            convention(args.children[0], :expression,
+                       sprintf(MSG, name))
           end
         end
       end

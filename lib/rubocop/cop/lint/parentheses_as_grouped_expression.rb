@@ -37,7 +37,7 @@ module Rubocop
                 Parser::Source::Range.new(expr.source_buffer,
                                           expr.begin_pos - space_length,
                                           expr.begin_pos)
-              add_offence(:warning, space_range, MSG)
+              warning(nil, space_range, MSG)
             end
           end
         end

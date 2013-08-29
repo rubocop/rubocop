@@ -18,9 +18,7 @@ module Rubocop
           #   ...)
           block_method, = *node
 
-          if block_method == TARGET
-            add_offence(:convention, block_method.loc.expression, MSG)
-          end
+          convention(block_method, :expression, MSG) if block_method == TARGET
         end
       end
     end

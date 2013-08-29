@@ -10,12 +10,12 @@ module Rubocop
         def investigate(processed_source)
           processed_source.lines.each_with_index do |line, index|
             if line =~ /.*[ \t]+$/
-              add_offence(:convention,
-                          source_range(processed_source.buffer,
-                                       processed_source[0...index],
-                                       line.rstrip.length,
-                                       line.length - line.rstrip.length),
-                          MSG)
+              convention(nil,
+                         source_range(processed_source.buffer,
+                                      processed_source[0...index],
+                                      line.rstrip.length,
+                                      line.length - line.rstrip.length),
+                         MSG)
             end
           end
         end

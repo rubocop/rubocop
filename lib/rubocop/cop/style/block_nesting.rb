@@ -27,7 +27,7 @@ module Rubocop
               current_level += 1
             end
             if current_level == max + 1
-              add_offence(:convention, node.location.expression, message(max))
+              convention(node, :expression, message(max))
               return
             end
           end

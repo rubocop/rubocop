@@ -33,9 +33,7 @@ module Rubocop
           end
 
           if start_line == end_line && !(allow_empty? && empty_body)
-            add_offence(:convention,
-                        node.loc.expression,
-                        MSG)
+            convention(node, :expression, MSG)
           end
         end
       end

@@ -136,12 +136,12 @@ module Rubocop
                                 " or #{match[0]} at #{do_loc.line}, " +
                                   "#{indentation_of_do_line}"
                               end
-              add_offence(:warning,
-                          end_loc,
-                          sprintf(MSG, end_loc.line, end_loc.column,
-                                  start_loc.source.lines.to_a.first.chomp,
-                                  start_loc.line, start_loc.column,
-                                  alt_start_msg))
+              warning(nil,
+                      end_loc,
+                      sprintf(MSG, end_loc.line, end_loc.column,
+                              start_loc.source.lines.to_a.first.chomp,
+                              start_loc.line, start_loc.column,
+                              alt_start_msg))
             end
           end
         end

@@ -14,9 +14,7 @@ module Rubocop
           # discard non-ternary ops
           return unless loc.respond_to?(:question)
 
-          if loc.line != loc.colon.line
-            add_offence(:convention, loc.expression, MSG)
-          end
+          convention(node, :expression, MSG) if loc.line != loc.colon.line
         end
       end
 
@@ -33,9 +31,7 @@ module Rubocop
 
           node.children.each do |child|
             on_node(:if, child) do |c|
-              if c.loc.respond_to?(:question)
-                add_offence(:convention, c.loc.expression, MSG)
-              end
+              convention(c, :expression, MSG) if c.loc.respond_to?(:question)
             end
           end
         end

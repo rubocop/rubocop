@@ -136,10 +136,10 @@ module Rubocop
                                    [expr.begin_pos,
                                     expr.begin_pos - indentation]
                                  end
-            add_offence(:convention,
-                        Parser::Source::Range.new(expr.source_buffer,
-                                                  begin_pos, end_pos),
-                        sprintf(MSG, indentation))
+            convention(nil,
+                       Parser::Source::Range.new(expr.source_buffer,
+                                                 begin_pos, end_pos),
+                       sprintf(MSG, indentation))
           end
         end
       end

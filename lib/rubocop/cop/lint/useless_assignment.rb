@@ -48,7 +48,7 @@ module Rubocop
           case last_expr.type
           when :lvasgn
             var_name, = *last_expr
-            add_offence(:warning, last_expr.loc.name, MSG.format(var_name))
+            warning(last_expr, :name, MSG.format(var_name))
           when :send
             receiver, method, _args = *last_expr
             return unless receiver
@@ -58,9 +58,9 @@ module Rubocop
             var_name, = *receiver
             return if contains_object_passed_as_argument?(var_name, body, args)
 
-            add_offence(:warning,
-                        receiver.loc.name,
-                        MSG.format(receiver.loc.name.source))
+            warning(receiver,
+                    :name,
+                    MSG.format(receiver.loc.name.source))
           end
         end
 

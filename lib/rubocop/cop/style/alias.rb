@@ -16,9 +16,7 @@ module Rubocop
 
           return if new.type == :gvar && old.type == :gvar
 
-          add_offence(:convention,
-                      node.loc.keyword,
-                      MSG)
+          convention(node, :keyword, MSG)
         end
       end
     end

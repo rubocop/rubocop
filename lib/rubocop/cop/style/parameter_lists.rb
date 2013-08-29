@@ -12,8 +12,8 @@ module Rubocop
 
         def on_args(node)
           if args_count(node) > max_params
-            add_offence(:convention, node.loc.expression,
-                        sprintf(MSG, max_params))
+            convention(node, :expression,
+                       sprintf(MSG, max_params))
           end
         end
 

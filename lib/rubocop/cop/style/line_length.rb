@@ -13,11 +13,11 @@ module Rubocop
             max = LineLength.max
             if line.length > max
               message = sprintf(MSG, line.length, max)
-              add_offence(:convention,
-                          source_range(processed_source.buffer,
-                                       processed_source[0...index], max,
-                                       line.length - max),
-                          message)
+              convention(nil,
+                         source_range(processed_source.buffer,
+                                      processed_source[0...index], max,
+                                      line.length - max),
+                         message)
             end
           end
         end

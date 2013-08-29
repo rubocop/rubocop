@@ -25,7 +25,7 @@ module Rubocop
             name = range.source.to_sym
             next if name =~ SNAKE_CASE || OPERATOR_METHODS.include?(name)
 
-            add_offence(:convention, range, MSG)
+            convention(n, range, MSG)
           end
         end
 

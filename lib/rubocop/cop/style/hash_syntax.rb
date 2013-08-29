@@ -18,9 +18,9 @@ module Rubocop
           if sym_indices
             pairs.each do |pair|
               if pair.loc.operator && pair.loc.operator.is?('=>')
-                add_offence(:convention,
-                            pair.loc.expression.begin.join(pair.loc.operator),
-                            MSG)
+                convention(nil,
+                           pair.loc.expression.begin.join(pair.loc.operator),
+                           MSG)
               end
             end
           end

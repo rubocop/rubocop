@@ -15,10 +15,10 @@ module Rubocop
           source_buffer = Parser::Source::Buffer.new('test', 1)
           source_buffer.source = %w(a b cdefghi).join("\n")
 
-          cop.add_offence(:convention,
+          cop.add_offence(:convention, nil,
                           Parser::Source::Range.new(source_buffer, 0, 1),
                           'message 1')
-          cop.add_offence(:fatal,
+          cop.add_offence(:fatal, nil,
                           Parser::Source::Range.new(source_buffer, 9, 10),
                           'message 2')
 

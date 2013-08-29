@@ -10,7 +10,7 @@ module Rubocop
         def on_rescue(node)
           return if ignored_node?(node)
 
-          add_offence(:convention, node.loc.expression, MSG)
+          convention(node, :expression, MSG)
         end
 
         def on_kwbegin(node)

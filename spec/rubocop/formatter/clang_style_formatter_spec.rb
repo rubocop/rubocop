@@ -48,10 +48,10 @@ module Rubocop
           cop = Cop::Cop.new
           source_buffer = Parser::Source::Buffer.new('test', 1)
           source_buffer.source = ('aa'..'az').to_a.join($RS)
-          cop.add_offence(:convention,
+          cop.add_offence(:convention, nil,
                           Parser::Source::Range.new(source_buffer, 0, 2),
                           'message 1')
-          cop.add_offence(:fatal,
+          cop.add_offence(:fatal, nil,
                           Parser::Source::Range.new(source_buffer, 30, 32),
                           'message 2')
 
@@ -69,10 +69,10 @@ module Rubocop
           cop = Cop::Cop.new
           source_buffer = Parser::Source::Buffer.new('test', 1)
           source_buffer.source = (['     ', 'yaba']).to_a.join($RS)
-          cop.add_offence(:convention,
+          cop.add_offence(:convention, nil,
                           Parser::Source::Range.new(source_buffer, 0, 2),
                           'message 1')
-          cop.add_offence(:fatal,
+          cop.add_offence(:fatal, nil,
                           Parser::Source::Range.new(source_buffer, 6, 4),
                           'message 2')
 

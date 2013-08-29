@@ -10,9 +10,7 @@ module Rubocop
         def on_send(node)
           _receiver, method_name, *_args = *node
 
-          if method_name == :===
-            add_offence(:convention, node.loc.selector, MSG)
-          end
+          convention(node, :selector, MSG) if method_name == :===
         end
       end
     end

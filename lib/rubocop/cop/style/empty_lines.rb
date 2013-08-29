@@ -28,7 +28,7 @@ module Rubocop
                                        processed_source[0...(line - 1)],
                                        0,
                                        1)
-                  add_offence(:convention, range, MSG)
+                  convention(nil, range, MSG)
                 end
               end
             end

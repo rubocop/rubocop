@@ -8,7 +8,7 @@ module Rubocop
         MSG = 'Prefer *each* over *for*.'
 
         def on_for(node)
-          add_offence(:convention, node.loc.keyword, MSG)
+          convention(node, :keyword, MSG)
         end
       end
     end

@@ -33,18 +33,16 @@ module Rubocop
                   selector = send_node.loc.selector.source
 
                   if send_start_col - 2 != class_start_col
-                    add_offence(:convention,
-                                send_node.loc.expression,
-                                format(INDENT_MSG, selector))
+                    convention(send_node, :expression,
+                               format(INDENT_MSG, selector))
                   end
 
                   send_line = send_node.loc.line
 
                   unless processed_source[send_line].chomp.empty? &&
                       processed_source[send_line - 2].chomp.empty?
-                    add_offence(:convention,
-                                send_node.loc.expression,
-                                format(BLANK_MSG, selector))
+                    convention(send_node, :expression,
+                               format(BLANK_MSG, selector))
                   end
                 end
               end

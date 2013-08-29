@@ -45,14 +45,12 @@ module Rubocop
           _receiver, method_name, *_args = *node
 
           if self.class.preferred_methods[method_name]
-            add_offence(
-              :convention,
-              node.loc.selector,
+            convention(
+              node, :selector,
               sprintf(MSG,
                       preferred_method(method_name),
                       method_name)
             )
-            do_autocorrect(node)
           end
         end
 

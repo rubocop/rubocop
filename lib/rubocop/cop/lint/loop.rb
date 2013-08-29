@@ -19,7 +19,7 @@ module Rubocop
         private
 
         def register_offence(node)
-          add_offence(:warning, node.loc.keyword, MSG)
+          warning(node, :keyword, MSG)
         end
       end
     end

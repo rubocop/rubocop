@@ -14,11 +14,9 @@ module Rubocop
           _receiver, method_name, *args = *node
 
           if args.size == 1 && DEPRECATED_METHODS.include?(method_name)
-            add_offence(:convention,
-                        node.loc.selector,
-                        MSG.format(method_name,
-                                   proper_method_name(method_name)))
-            do_autocorrect(node)
+            convention(node, :selector,
+                       MSG.format(method_name,
+                                  proper_method_name(method_name)))
           end
         end
 

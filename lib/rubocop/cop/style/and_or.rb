@@ -24,10 +24,9 @@ module Rubocop
           op_type = node.type.to_s
 
           if op == op_type
-            add_offence(:convention,
-                        node.loc.operator,
-                        sprintf(MSG, OPS[op], op))
-            do_autocorrect(node)
+            convention(node,
+                       :operator,
+                       sprintf(MSG, OPS[op], op))
           end
         end
 

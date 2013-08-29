@@ -50,8 +50,7 @@ module Rubocop
 
           # if the cond node is literal we obviously have a problem
           if literal?(cond)
-            add_offence(:warning, cond.loc.expression,
-                        format(MSG, cond.loc.expression.source))
+            warning(cond, :expression, format(MSG, cond.loc.expression.source))
           else
             # alternatively we have to consider a logical node with a
             # literal argument
@@ -91,8 +90,8 @@ module Rubocop
 
         def handle_node(node)
           if literal?(node)
-            add_offence(:warning, node.loc.expression,
-                        format(MSG, node.loc.expression.source))
+            warning(node, :expression,
+                    format(MSG, node.loc.expression.source))
           elsif [:send, :and, :or, :begin].include?(node.type)
             check_node(node)
           end

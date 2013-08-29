@@ -28,9 +28,9 @@ module Rubocop
           return unless div_by_2?(receiver)
 
           if args == ZERO
-            add_offence(:convention, node.loc.expression, MSG_EVEN)
+            convention(node, :expression, MSG_EVEN)
           elsif args == ONE
-            add_offence(:convention, node.loc.expression, MSG_ODD)
+            convention(node, :expression, MSG_ODD)
           end
         end
 

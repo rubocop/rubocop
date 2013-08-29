@@ -50,9 +50,7 @@ module Rubocop
           global_var, = *node
 
           unless BUILT_IN_VARS.include?(global_var)
-            add_offence(:convention,
-                        node.loc.name,
-                        MSG)
+            convention(node, :name, MSG)
           end
         end
       end

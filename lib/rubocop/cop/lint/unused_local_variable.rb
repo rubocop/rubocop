@@ -23,7 +23,7 @@ module Rubocop
             next if TYPES_TO_ACCEPT_UNUSED.include?(entry.node.type)
             next if entry.name.to_s.start_with?('_')
             message = sprintf(MSG, entry.name)
-            add_offence(:warning, entry.node.loc.expression, message)
+            warning(entry.node, :expression, message)
           end
         end
       end

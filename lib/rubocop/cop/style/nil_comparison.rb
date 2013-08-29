@@ -27,9 +27,7 @@ module Rubocop
           if OPS.include?(op)
             _receiver, _method, args = *node
 
-            if args == NIL_NODE
-              add_offence(:convention, node.loc.selector, MSG)
-            end
+            convention(node, :selector, MSG) if args == NIL_NODE
           end
         end
       end

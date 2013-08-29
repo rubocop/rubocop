@@ -67,7 +67,7 @@ module Rubocop
             case token.type
             when :tPOW
               if has_space?(token_before, token, token_after)
-                add_offence(:convention, token.pos, MSG_DETECTED)
+                convention(nil, token.pos, MSG_DETECTED)
               end
             when *BINARY_OPERATORS
               check_missing_space(token_before, token, token_after)
@@ -164,7 +164,7 @@ module Rubocop
         def check_missing_space(token_before, token, token_after)
           unless has_space?(token_before, token, token_after)
             text = token.text.to_s + (token.type == :tOP_ASGN ? '=' : '')
-            add_offence(:convention, token.pos, MSG_MISSING % text)
+            convention(nil, token.pos, MSG_MISSING.format(text))
           end
         end
 
@@ -224,7 +224,7 @@ module Rubocop
         def check(t1, t2, msg)
           unless space_between?(t1, t2)
             brace_token = msg == MSG_LEFT ? t1 : t2
-            add_offence(:convention, brace_token.pos, msg)
+            convention(nil, brace_token.pos, msg)
           end
         end
       end
@@ -244,7 +244,7 @@ module Rubocop
                 range = Parser::Source::Range.new(processed_source.buffer,
                                                   t1.pos.end_pos,
                                                   t2.pos.begin_pos)
-                add_offence(:convention, range, format(MSG, kind))
+                convention(nil, range, format(MSG, kind))
               end
             end
           end
@@ -302,7 +302,7 @@ module Rubocop
                              else
                                [has_space, 'detected']
                              end
-          add_offence(:convention, t1.pos, sprintf(MSG, word)) if is_offence
+          convention(nil, t1.pos, sprintf(MSG, word)) if is_offence
         end
       end
 
@@ -319,7 +319,7 @@ module Rubocop
             index = index_of_first_token(optarg)
             arg, equals, value = processed_source.tokens[index, 3]
             unless space_between?(arg, equals) && space_between?(equals, value)
-              add_offence(:convention, equals.pos, MSG)
+              convention(nil, equals.pos, MSG)
             end
           end
         end

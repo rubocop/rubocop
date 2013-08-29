@@ -30,7 +30,7 @@ module Rubocop
             _name, _superclass, body = *node
 
             if body && ast_with_comments[node].empty?
-              add_offence(:convention, node.loc.keyword, format(MSG, 'class'))
+              convention(node, :keyword, format(MSG, 'class'))
             end
           end
         end
@@ -52,7 +52,7 @@ module Rubocop
             end
 
             if !namespace && ast_with_comments[node].empty?
-              add_offence(:convention, node.loc.keyword, format(MSG, 'module'))
+              convention(node, :keyword, format(MSG, 'module'))
             end
           end
         end

@@ -19,7 +19,7 @@ module Rubocop
           if OPS.include?(op)
             receiver, _method, args = *node
 
-            add_offence(:warning, node.loc.selector, MSG) if receiver == args
+            warning(node, :selector, MSG) if receiver == args
           end
         end
       end

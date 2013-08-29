@@ -21,7 +21,7 @@ module Rubocop
                 range = Parser::Source::Range.new(processed_source.buffer,
                                                   start,
                                                   start + length)
-                add_offence(:convention, range, MSG)
+                convention(nil, range, MSG)
               end
             end
           end

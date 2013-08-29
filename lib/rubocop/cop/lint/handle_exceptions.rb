@@ -10,7 +10,7 @@ module Rubocop
         def on_resbody(node)
           _exc_list_node, _exc_var_node, body_node = *node
 
-          add_offence(:warning, node.loc.expression, MSG) unless body_node
+          warning(node, :expression, MSG) unless body_node
         end
       end
     end

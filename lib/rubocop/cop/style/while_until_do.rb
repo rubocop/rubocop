@@ -18,10 +18,8 @@ module Rubocop
 
           if length > 1
             if node.loc.begin && node.loc.begin.is?('do')
-              add_offence(:convention,
-                          node.loc.begin,
-                          error_message(node.type))
-              do_autocorrect(node)
+              convention(node, :begin,
+                         error_message(node.type))
             end
           end
         end

@@ -12,11 +12,11 @@ module Rubocop
             match = line.match(/^( *)\t/)
             if match
               spaces = match.captures[0]
-              add_offence(:convention,
-                          source_range(processed_source.buffer,
-                                       processed_source[0...index],
-                                       spaces.length, 8),
-                          MSG)
+              convention(nil,
+                         source_range(processed_source.buffer,
+                                      processed_source[0...index],
+                                      spaces.length, 8),
+                         MSG)
             end
           end
         end

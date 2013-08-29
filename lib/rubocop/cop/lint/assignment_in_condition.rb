@@ -35,7 +35,7 @@ module Rubocop
 
             # assignment nodes from shorthand ops like ||= don't have operator
             if asgn_node.type != :begin && asgn_node.loc.operator
-              add_offence(:warning, asgn_node.loc.operator, MSG)
+              warning(asgn_node, :operator, MSG)
             end
           end
         end

@@ -12,7 +12,7 @@ module Rubocop
         def investigate(processed_source)
           processed_source.tokens.each do |t|
             if t.type == :tIDENTIFIER && t.text =~ /[^\x00-\x7f]/
-              add_offence(:convention, t.pos, MSG)
+              convention(nil, t.pos, MSG)
             end
           end
         end

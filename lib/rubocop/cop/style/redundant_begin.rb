@@ -37,7 +37,7 @@ module Rubocop
         def check(node)
           return unless node && node.type == :kwbegin
 
-          add_offence(:convention, node.loc.begin, MSG)
+          convention(node, :begin, MSG)
         end
       end
     end

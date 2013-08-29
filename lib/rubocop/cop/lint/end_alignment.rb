@@ -53,10 +53,10 @@ module Rubocop
           end_loc = node.loc.end
 
           if kw_loc.line != end_loc.line && kw_loc.column != end_loc.column
-            add_offence(:warning,
-                        end_loc,
-                        sprintf(MSG, end_loc.line, end_loc.column,
-                                kw_loc.source, kw_loc.line, kw_loc.column))
+            warning(nil,
+                    end_loc,
+                    sprintf(MSG, end_loc.line, end_loc.column,
+                            kw_loc.source, kw_loc.line, kw_loc.column))
           end
         end
       end

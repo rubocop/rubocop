@@ -10,7 +10,7 @@ module Rubocop
         def on_ensure(node)
           _body, ensure_body = *node
 
-          add_offence(:warning, node.loc.keyword, MSG) unless ensure_body
+          warning(node, :keyword, MSG) unless ensure_body
         end
       end
     end

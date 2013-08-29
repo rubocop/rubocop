@@ -8,7 +8,7 @@ module Rubocop
         MSG = 'Avoid the use of BEGIN blocks.'
 
         def on_preexe(node)
-          add_offence(:convention, node.loc.keyword, MSG)
+          convention(node, :keyword, MSG)
         end
       end
     end

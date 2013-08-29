@@ -9,9 +9,8 @@ module Rubocop
         def on_nth_ref(node)
           backref, = *node
 
-          add_offence(:convention,
-                      node.loc.expression,
-                      "Prefer the use of MatchData over $#{backref}.")
+          convention(node, :expression,
+                     "Prefer the use of MatchData over $#{backref}.")
         end
       end
     end

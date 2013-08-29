@@ -18,8 +18,7 @@ module Rubocop
 
           _, args = *node
           if args.children == [] && args.loc.begin
-            add_offence(:convention, args.loc.begin, MSG)
-            do_autocorrect(args)
+            convention(args, :begin, MSG)
           end
         end
 
@@ -31,8 +30,7 @@ module Rubocop
 
           _, _, args = *node
           if args.children == [] && args.loc.begin
-            add_offence(:convention, args.loc.begin, MSG)
-            do_autocorrect(args)
+            convention(args, :begin, MSG)
           end
         end
 
@@ -54,8 +52,7 @@ module Rubocop
           _, args = *node
 
           if args.children.size > 0 && args.loc.begin.nil?
-            add_offence(:convention, args.loc.expression, MSG)
-            do_autocorrect(args)
+            convention(args, :expression, MSG)
           end
         end
 
@@ -63,8 +60,7 @@ module Rubocop
           _, _, args = *node
 
           if args.children.size > 0 && args.loc.begin.nil?
-            add_offence(:convention, args.loc.expression, MSG)
-            do_autocorrect(args)
+            convention(args, :expression, MSG)
           end
         end
 

@@ -23,7 +23,7 @@ module Rubocop
           if body && body.type == :begin
             body.children.each do |body_node|
               if body_node == TARGET_NODE
-                add_offence(:convention, body_node.loc.expression, MSG)
+                convention(body_node, :expression, MSG)
               end
             end
           end

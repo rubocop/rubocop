@@ -10,11 +10,11 @@ module Rubocop
         def investigate(processed_source)
           processed_source.lines.each_with_index do |line, index|
             if line =~ /\r$/
-              add_offence(:convention,
-                          source_range(processed_source.buffer,
-                                       processed_source[0...index],
-                                       line.length - 1, 1),
-                          MSG)
+              convention(nil,
+                         source_range(processed_source.buffer,
+                                      processed_source[0...index],
+                                      line.length - 1, 1),
+                         MSG)
             end
           end
         end

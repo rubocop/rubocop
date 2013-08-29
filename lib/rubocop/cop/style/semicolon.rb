@@ -27,11 +27,11 @@ module Rubocop
                 # know if the first semicolon on the line is a separator of
                 # expressions. It's just a guess.
                 column = processed_source[line - 1].index(';')
-                add_offence(:convention,
-                            source_range(processed_source.buffer,
-                                         processed_source[0...(line - 1)],
-                                         column, 1),
-                            MSG)
+                convention(nil,
+                           source_range(processed_source.buffer,
+                                        processed_source[0...(line - 1)],
+                                        column, 1),
+                           MSG)
               end
             end
           end
@@ -43,11 +43,11 @@ module Rubocop
           tokens_for_lines.each do |line, tokens|
             if tokens.last.type == :tSEMI # rubocop:disable SymbolName
               column = tokens.last.pos.column
-              add_offence(:convention,
-                          source_range(processed_source.buffer,
-                                       processed_source[0...(line - 1)],
-                                       column, 1),
-                          MSG)
+              convention(nil,
+                         source_range(processed_source.buffer,
+                                      processed_source[0...(line - 1)],
+                                      column, 1),
+                         MSG)
             end
           end
         end

@@ -32,22 +32,20 @@ module Rubocop
 
           op = node.loc.selector.source
 
-          if OPS.include?(op)
-            add_offence(:warning, node.loc.selector, sprintf(OP_MSG, op))
-          end
+          warning(node, :selector, sprintf(OP_MSG, op)) if OPS.include?(op)
         end
 
         def check_for_var(node)
           if VARS.include?(node.type)
-            add_offence(:warning, node.loc.name,
-                        sprintf(VAR_MSG, node.loc.name.source))
+            warning(node, :name,
+                    sprintf(VAR_MSG, node.loc.name.source))
           end
         end
 
         def check_for_literal(node)
           if LITERALS.include?(node.type)
-            add_offence(:warning, node.loc.expression,
-                        sprintf(LIT_MSG, node.loc.expression.source))
+            warning(node, :expression,
+                    sprintf(LIT_MSG, node.loc.expression.source))
           end
         end
       end

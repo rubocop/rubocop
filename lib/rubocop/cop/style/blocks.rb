@@ -29,9 +29,9 @@ module Rubocop
           block_begin = node.loc.begin.source
 
           if block_length > 0 && block_begin == '{'
-            add_offence(:convention, node.loc.begin, MULTI_LINE_MSG)
+            convention(node, :begin, MULTI_LINE_MSG)
           elsif block_length == 0 && block_begin != '{'
-            add_offence(:convention, node.loc.begin, SINGLE_LINE_MSG)
+            convention(node, :begin, SINGLE_LINE_MSG)
           end
         end
 
