@@ -57,7 +57,15 @@ module Rubocop
                 @allowed_send_nodes.include?(node) ||
                 @local_variables.include?(method_name)
               add_offence(:convention, receiver.loc.expression, MSG)
+              do_autocorrect(node)
             end
+          end
+        end
+
+        def autocorrect_action(node)
+          @corrections << lambda do |corrector|
+            corrector.replace(node.loc.expression,
+                              node.loc.expression.source.gsub(/self\./, ''))
           end
         end
 

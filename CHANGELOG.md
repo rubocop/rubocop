@@ -5,6 +5,7 @@
 ### New features
 
 * New configuration parameter `AllowAdjacentOneLineDefs` for `EmptyLineBetweenDefs`.
+* `RedundantSelf` cop does auto-correction
 
 ### Changes
 
