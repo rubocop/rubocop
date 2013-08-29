@@ -110,6 +110,10 @@ class Rubocop::Cop::Cop
   def messages
     offences.map(&:message)
   end
+
+  def highlights
+    offences.sort_by(&:line).map { |o| o.location.source }
+  end
 end
 
 # Requires supporting files with custom matchers and macros, etc,
