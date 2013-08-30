@@ -42,6 +42,35 @@ module Rubocop
           end
         end
 
+        context 'when AllowDots is true' do
+          before do
+            SymbolName.config = {
+              'AllowDots' => true
+            }
+          end
+
+          it 'does not register an offence for dots in names' do
+            inspect_source(symbol_name,
+                           ['test = :"bad.idea"'])
+            expect(symbol_name.offences).to be_empty
+          end
+        end
+
+        context 'when AllowDots is false' do
+          before do
+            SymbolName.config = {
+              'AllowDots' => false
+            }
+          end
+
+          it 'registers an offence for dots in names' do
+            inspect_source(symbol_name,
+                           ['test = :"bad.idea"'])
+            expect(symbol_name.offences.map(&:message)).to eq(
+              ['Use snake_case for symbols.'])
+          end
+        end
+
         it 'registers an offence for symbol used as hash label' do
           inspect_source(symbol_name,
                          ['{ KEY_ONE: 1, KEY_TWO: 2 }'])
