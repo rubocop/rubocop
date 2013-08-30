@@ -319,7 +319,7 @@ module Rubocop
             index = index_of_first_token(optarg)
             arg, equals, value = processed_source.tokens[index, 3]
             unless space_between?(arg, equals) && space_between?(equals, value)
-              convention(nil, equals.pos, MSG)
+              convention(nil, equals.pos)
             end
           end
         end

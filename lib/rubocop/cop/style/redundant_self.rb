@@ -56,7 +56,7 @@ module Rubocop
             unless operator?(method_name) || keyword?(method_name) ||
                 @allowed_send_nodes.include?(node) ||
                 @local_variables.include?(method_name)
-              convention(node, :expression, MSG)
+              convention(node, :expression)
             end
           end
         end

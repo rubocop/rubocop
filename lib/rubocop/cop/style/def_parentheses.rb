@@ -18,7 +18,7 @@ module Rubocop
 
           _, args = *node
           if args.children == [] && args.loc.begin
-            convention(args, :begin, MSG)
+            convention(args, :begin)
           end
         end
 
@@ -30,7 +30,7 @@ module Rubocop
 
           _, _, args = *node
           if args.children == [] && args.loc.begin
-            convention(args, :begin, MSG)
+            convention(args, :begin)
           end
         end
 
@@ -52,7 +52,7 @@ module Rubocop
           _, args = *node
 
           if args.children.size > 0 && args.loc.begin.nil?
-            convention(args, :expression, MSG)
+            convention(args, :expression)
           end
         end
 
@@ -60,7 +60,7 @@ module Rubocop
           _, _, args = *node
 
           if args.children.size > 0 && args.loc.begin.nil?
-            convention(args, :expression, MSG)
+            convention(args, :expression)
           end
         end
 

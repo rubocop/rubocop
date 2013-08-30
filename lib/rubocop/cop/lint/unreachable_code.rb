@@ -17,7 +17,7 @@ module Rubocop
 
           expressions.each_cons(2) do |e1, e2|
             if NODE_TYPES.include?(e1.type) || flow_command?(e1)
-              warning(e2, :expression, MSG)
+              warning(e2, :expression)
             end
           end
         end

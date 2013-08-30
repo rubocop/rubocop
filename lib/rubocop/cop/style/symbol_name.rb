@@ -30,7 +30,7 @@ module Rubocop
           return unless sym_name =~ /^[a-zA-Z]/
           return if sym_name =~ SNAKE_CASE
           return if allow_camel_case? && sym_name =~ CAMEL_CASE
-          convention(node, :expression, MSG)
+          convention(node, :expression)
         end
       end
     end

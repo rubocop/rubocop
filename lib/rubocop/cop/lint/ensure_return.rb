@@ -13,7 +13,7 @@ module Rubocop
           return unless ensure_body
 
           on_node(:return, ensure_body) do |e|
-            warning(e, :expression, MSG)
+            warning(e, :expression)
           end
         end
       end

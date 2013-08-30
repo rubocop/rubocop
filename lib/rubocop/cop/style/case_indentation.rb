@@ -17,7 +17,7 @@ module Rubocop
 
           whens.each do |when_node|
             pos = when_node.loc.keyword
-            convention(when_node, pos, MSG) if pos.column != case_column
+            convention(when_node, pos) if pos.column != case_column
           end
         end
       end

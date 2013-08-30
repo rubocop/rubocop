@@ -11,7 +11,7 @@ module Rubocop
         def investigate(processed_source)
           processed_source.comments.each do |comment|
             if comment.text =~ /[^\x00-\x7f]/
-              convention(comment, :expression, MSG)
+              convention(comment, :expression)
             end
           end
         end

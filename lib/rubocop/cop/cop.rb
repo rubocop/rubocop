@@ -109,21 +109,26 @@ module Rubocop
       def autocorrect_action(node, *args)
       end
 
-      def add_offence(severity, node, loc, message)
+      def message(node = nil)
+        self.class::MSG
+      end
+
+      def add_offence(severity, node, loc, message = nil)
         location = loc.is_a?(Symbol) ? node.loc.send(loc) : loc
 
         unless @disabled_lines && @disabled_lines.include?(location.line)
+          message = message ? message : message(node)
           message = debug ? "#{name}: #{message}" : message
           @offences << Offence.new(severity, location, message, name)
           autocorrect_action(node) if autocorrect
         end
       end
 
-      def convention(node, location, message)
+      def convention(node, location, message = nil)
         add_offence(:convention, node, location, message)
       end
 
-      def warning(node, location, message)
+      def warning(node, location, message = nil)
         add_offence(:warning, node, location, message)
       end
 

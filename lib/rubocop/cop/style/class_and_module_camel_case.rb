@@ -21,7 +21,7 @@ module Rubocop
         def check_name(node)
           name = node.loc.name.source
 
-          convention(node, :name, MSG) if name =~ /_/
+          convention(node, :name) if name =~ /_/
         end
       end
     end

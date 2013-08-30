@@ -22,7 +22,7 @@ module Rubocop
 
             symbol_array = array_elems.all? { |e| e.type == :sym }
 
-            convention(node, :expression, MSG) if symbol_array
+            convention(node, :expression) if symbol_array
           end
         end
       end

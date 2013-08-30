@@ -27,7 +27,7 @@ module Rubocop
           if OPS.include?(op)
             _receiver, _method, args = *node
 
-            convention(node, :selector, MSG) if args == NIL_NODE
+            convention(node, :selector) if args == NIL_NODE
           end
         end
       end

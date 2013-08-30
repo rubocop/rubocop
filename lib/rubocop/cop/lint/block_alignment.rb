@@ -146,6 +146,9 @@ module Rubocop
           end
         end
 
+        def message
+        end
+
         def already_processed_node?(node)
           @inspected_blocks.include?(node)
         end

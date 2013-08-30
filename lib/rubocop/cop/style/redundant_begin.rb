@@ -37,7 +37,7 @@ module Rubocop
         def check(node)
           return unless node && node.type == :kwbegin
 
-          convention(node, :begin, MSG)
+          convention(node, :begin)
         end
       end
     end

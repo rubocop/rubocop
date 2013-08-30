@@ -16,7 +16,7 @@ module Rubocop
 
           if receiver_node && receiver_node.type == :array &&
               method_name == :* && arg_nodes[0].type == :str
-            convention(node, :selector, MSG)
+            convention(node, :selector)
           end
         end
       end

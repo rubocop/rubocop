@@ -9,7 +9,7 @@ module Rubocop
 
         def on_when(node)
           if node.loc.begin && node.loc.begin.is?(';')
-            convention(node, :begin, MSG)
+            convention(node, :begin)
           end
         end
 

@@ -19,7 +19,7 @@ module Rubocop
           string_array = array_elems.all? { |e| e.type == :str }
 
           if string_array && !complex_content?(array_elems)
-            convention(node, :expression, MSG)
+            convention(node, :expression)
           end
         end
 

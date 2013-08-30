@@ -8,7 +8,7 @@ module Rubocop
         MSG = 'Avoid the use of END blocks. Use `Kernel#at_exit` instead.'
 
         def on_postexe(node)
-          convention(node, :keyword, MSG)
+          convention(node, :keyword)
         end
       end
     end

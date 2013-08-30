@@ -8,7 +8,7 @@ module Rubocop
         MSG = 'Do not use `attr`. Use `attr_reader` instead.'
 
         def on_send(node)
-          convention(node, :selector, MSG) if command?(:attr, node)
+          convention(node, :selector) if command?(:attr, node)
         end
 
         def autocorrect_action(node)

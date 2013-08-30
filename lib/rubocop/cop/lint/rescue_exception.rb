@@ -11,7 +11,7 @@ module Rubocop
           return unless node.children.first
           rescue_args = node.children.first.children
           if rescue_args.any? { |a| targets_exception?(a) }
-            warning(node, :expression, MSG)
+            warning(node, :expression)
           end
         end
 

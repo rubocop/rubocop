@@ -108,7 +108,7 @@ module Rubocop
             next unless node.loc.end
 
             if check(node, processed_source.comments)
-              convention(node, :keyword, MSG)
+              convention(node, :keyword)
             end
           end
         end

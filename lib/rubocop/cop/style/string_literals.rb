@@ -19,7 +19,7 @@ module Rubocop
           # "\\\\"
           if node.loc.expression.source !~ /' | (?<! \\) \\{2}* \\ (?! \\)/x &&
               node.loc.begin && node.loc.begin.is?('"')
-            convention(node, :expression, MSG)
+            convention(node, :expression)
           end
         end
 

@@ -16,7 +16,7 @@ module Rubocop
 
           return if new.type == :gvar && old.type == :gvar
 
-          convention(node, :keyword, MSG)
+          convention(node, :keyword)
         end
       end
     end

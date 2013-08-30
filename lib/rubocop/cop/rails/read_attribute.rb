@@ -19,7 +19,7 @@ module Rubocop
           receiver, method_name, *_args = *node
 
           if receiver.nil? && method_name == :read_attribute
-            convention(node, :selector, MSG)
+            convention(node, :selector)
           end
         end
       end

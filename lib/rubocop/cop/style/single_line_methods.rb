@@ -33,7 +33,7 @@ module Rubocop
           end
 
           if start_line == end_line && !(allow_empty? && empty_body)
-            convention(node, :expression, MSG)
+            convention(node, :expression)
           end
         end
       end

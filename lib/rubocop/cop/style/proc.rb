@@ -18,7 +18,7 @@ module Rubocop
           #   ...)
           block_method, = *node
 
-          convention(block_method, :expression, MSG) if block_method == TARGET
+          convention(block_method, :expression) if block_method == TARGET
         end
       end
     end

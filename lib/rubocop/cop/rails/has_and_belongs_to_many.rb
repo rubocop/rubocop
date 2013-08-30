@@ -11,7 +11,7 @@ module Rubocop
           receiver, method_name, *_args = *node
 
           if receiver.nil? && method_name == :has_and_belongs_to_many
-            convention(node, :selector, MSG)
+            convention(node, :selector)
           end
         end
       end

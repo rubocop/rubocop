@@ -19,7 +19,7 @@ module Rubocop
 
         def check(node)
           on_node(:postexe, node) do |end_node|
-            warning(end_node, :keyword, MSG)
+            warning(end_node, :keyword)
           end
         end
       end

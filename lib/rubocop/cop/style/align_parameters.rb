@@ -22,7 +22,7 @@ module Rubocop
 
             if current_pos.line > prev.loc.expression.line &&
                 current_pos.column != first_arg_column
-              convention(nil, current_pos, MSG)
+              convention(nil, current_pos)
               # do_autocorrect(current, first_arg_column - current_pos.column)
             end
           end

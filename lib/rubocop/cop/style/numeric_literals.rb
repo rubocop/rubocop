@@ -14,7 +14,7 @@ module Rubocop
 
           if value > 10000 &&
               node.loc.expression.source.split('.').grep(/\d{6}/).any?
-            convention(node, :expression, MSG)
+            convention(node, :expression)
           end
         end
 

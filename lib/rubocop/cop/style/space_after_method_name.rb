@@ -25,7 +25,7 @@ module Rubocop
                                                             expr.begin_pos - 1,
                                                             expr.begin_pos)
           if pos_before_left_paren.source =~ /\s/
-            convention(nil, pos_before_left_paren, MSG)
+            convention(nil, pos_before_left_paren)
           end
         end
       end

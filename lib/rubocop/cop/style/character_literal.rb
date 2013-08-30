@@ -16,7 +16,7 @@ module Rubocop
           # we don't register an offence for things like ?\C-\M-d
           if node.loc.begin.is?('?') &&
               node.loc.expression.source.size.between?(2, 3)
-            convention(node, :expression, MSG)
+            convention(node, :expression)
           end
         end
 

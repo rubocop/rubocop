@@ -10,7 +10,7 @@ module Rubocop
         def on_send(node)
           return unless node.loc.dot
 
-          convention(node, :dot, MSG) unless proper_dot_position?(node)
+          convention(node, :dot) unless proper_dot_position?(node)
         end
 
         private

@@ -15,7 +15,7 @@ module Rubocop
           return unless loc.respond_to?(:keyword) && loc.respond_to?(:else)
 
           if loc.keyword.is?('unless') && loc.else
-            convention(node, :expression, MSG)
+            convention(node, :expression)
           end
         end
       end

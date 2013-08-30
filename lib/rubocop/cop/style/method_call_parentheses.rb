@@ -10,7 +10,7 @@ module Rubocop
         def on_send(node)
           _receiver, _method_name, *args = *node
 
-          convention(node, :begin, MSG) if args.empty? && node.loc.begin
+          convention(node, :begin) if args.empty? && node.loc.begin
         end
 
         def autocorrect_action(node)

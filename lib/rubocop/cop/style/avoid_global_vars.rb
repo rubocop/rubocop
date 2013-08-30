@@ -50,7 +50,7 @@ module Rubocop
           global_var, = *node
 
           unless BUILT_IN_VARS.include?(global_var)
-            convention(node, :name, MSG)
+            convention(node, :name)
           end
         end
       end
