@@ -22,9 +22,7 @@ module Rubocop
 
           if body && body.type == :begin
             body.children.each do |body_node|
-              if body_node == TARGET_NODE
-                convention(body_node, :expression)
-              end
+              convention(body_node, :expression) if body_node == TARGET_NODE
             end
           end
         end

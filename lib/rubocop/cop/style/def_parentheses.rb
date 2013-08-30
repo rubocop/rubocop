@@ -17,9 +17,7 @@ module Rubocop
           return if start_line == end_line
 
           _, args = *node
-          if args.children == [] && args.loc.begin
-            convention(args, :begin)
-          end
+          convention(args, :begin) if args.children == [] && args.loc.begin
         end
 
         def on_defs(node)
@@ -29,9 +27,7 @@ module Rubocop
           return if start_line == end_line
 
           _, _, args = *node
-          if args.children == [] && args.loc.begin
-            convention(args, :begin)
-          end
+          convention(args, :begin) if args.children == [] && args.loc.begin
         end
 
         def autocorrect_action(node)

@@ -49,9 +49,7 @@ module Rubocop
         def check(node)
           global_var, = *node
 
-          unless BUILT_IN_VARS.include?(global_var)
-            convention(node, :name)
-          end
+          convention(node, :name) unless BUILT_IN_VARS.include?(global_var)
         end
       end
     end

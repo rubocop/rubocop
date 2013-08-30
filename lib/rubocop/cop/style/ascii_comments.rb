@@ -10,9 +10,7 @@ module Rubocop
 
         def investigate(processed_source)
           processed_source.comments.each do |comment|
-            if comment.text =~ /[^\x00-\x7f]/
-              convention(comment, :expression)
-            end
+            convention(comment, :expression) if comment.text =~ /[^\x00-\x7f]/
           end
         end
       end

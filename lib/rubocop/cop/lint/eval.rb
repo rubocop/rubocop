@@ -10,9 +10,7 @@ module Rubocop
         def on_send(node)
           receiver, method_name, = *node
 
-          if receiver.nil? && method_name == :eval
-            warning(node, :selector)
-          end
+          warning(node, :selector) if receiver.nil? && method_name == :eval
         end
       end
     end
