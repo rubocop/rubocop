@@ -106,7 +106,7 @@ module Rubocop
         @corrections = []
       end
 
-      def autocorrect_action(node, *args)
+      def autocorrect_action(node)
       end
 
       def message(node = nil)
