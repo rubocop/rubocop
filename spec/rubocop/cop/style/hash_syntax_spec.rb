@@ -41,6 +41,17 @@ module Rubocop
           expect(hash_syntax.offences.map(&:message)).to be_empty
         end
 
+        it 'accepts hash rockets when keys start with a digit' do
+          inspect_source(hash_syntax, ['x = { :"1" => 1 }'])
+          expect(hash_syntax.offences.map(&:message)).to be_empty
+        end
+
+        it 'registers offence when keys start with an uppercase letter' do
+          inspect_source(hash_syntax, ['x = { :A => 0 }'])
+          expect(hash_syntax.offences.map(&:message)).to eq(
+            ['Ruby 1.8 hash syntax detected'])
+        end
+
         it 'accepts new syntax in a hash literal' do
           inspect_source(hash_syntax, ['x = { a: 0, b: 1 }'])
           expect(hash_syntax.offences.map(&:message)).to be_empty

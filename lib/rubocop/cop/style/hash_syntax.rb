@@ -34,7 +34,7 @@ module Rubocop
           if key.type == :sym
             sym_name = key.to_a[0]
 
-            sym_name =~ /\A\w+\z/
+            sym_name =~ /\A[A-Za-z_]\w*\z/
           else
             false
           end
