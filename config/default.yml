@@ -117,3 +117,24 @@ EmptyLineBetweenDefs:
   # If true, this parameter means that single line method definitions don't
   # need an empty line between them.
   AllowAdjacentOneLineDefs: false
+
+# Align the keys of a hash literal if they span more than one line.
+AlignHash:
+  # Valid values are:
+  #
+  # key - left alignment of keys
+  #   a: 0
+  #   bb: 1
+  #   'ccc' => 2
+  #   'dddd' => 3
+  # separator - alignment of colons or hash rockets, keys are right aligned
+  #         a: 0
+  #        bb: 1
+  #    'ccc' => 2
+  #   'dddd' => 3
+  # table - left alignment of keys, hash rockets, and values
+  #   a:        0
+  #   bb:       1
+  #   'ccc'  => 2
+  #   'dddd' => 3
+  EnforcedStyle: key

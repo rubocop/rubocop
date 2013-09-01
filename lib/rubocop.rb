@@ -41,6 +41,7 @@ require 'rubocop/cop/lint/void'
 
 require 'rubocop/cop/style/access_control'
 require 'rubocop/cop/style/alias'
+require 'rubocop/cop/style/align_hash'
 require 'rubocop/cop/style/align_parameters'
 require 'rubocop/cop/style/and_or'
 require 'rubocop/cop/style/ascii_comments'
