@@ -5,6 +5,8 @@ module Rubocop
     module Style
       # This cop looks for uses of Perl-style global variables.
       class AvoidPerlisms < Cop
+        MSG = 'Prefer %s over %s.'
+
         PREFERRED_VARS = {
           '$:' => '$LOAD_PATH',
           '$"' => '$LOADED_FEATURES',
@@ -32,13 +34,21 @@ module Rubocop
 
         def on_gvar(node)
           global_var, = *node
-          global_var = global_var
 
-          if PREFERRED_VARS[global_var]
-            convention(
-              node, :expression,
-              "Prefer #{PREFERRED_VARS[global_var]} over #{global_var}."
-            )
+          convention(node, :expression) if PREFERRED_VARS[global_var]
+        end
+
+        def message(node)
+          global_var, = *node
+          MSG.format(PREFERRED_VARS[global_var], global_var)
+        end
+
+        def autocorrect_action(node)
+          @corrections << lambda do |corrector|
+            global_var, = *node
+
+            corrector.replace(node.loc.expression,
+                              PREFERRED_VARS[global_var])
           end
         end
       end
