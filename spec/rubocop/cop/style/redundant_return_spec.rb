@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe RedundantReturn do
-        let(:cop) { RedundantReturn.new }
+        let(:cop) { described_class.new }
 
         it 'reports an offence for def with only a return' do
           src = ['def func',
@@ -57,6 +57,21 @@ module Rubocop
                  'end']
           inspect_source(cop, src)
           expect(cop.offences).to be_empty
+        end
+
+        it 'auto-corrects by removing redundant returns' do
+          src = ['def func',
+                 '  one',
+                 '  two',
+                 '  return something',
+                 'end'].join("\n")
+          result_src = ['def func',
+                        '  one',
+                        '  two',
+                        '  something',
+                        'end'].join("\n")
+          new_source = autocorrect_source(cop, src)
+          expect(new_source).to eq(result_src)
         end
       end
     end

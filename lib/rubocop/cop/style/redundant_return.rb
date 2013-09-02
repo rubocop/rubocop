@@ -37,6 +37,13 @@ module Rubocop
 
         private
 
+        def autocorrect_action(node)
+          @corrections << lambda do |corrector|
+            corrector.replace(node.loc.expression,
+                              node.loc.expression.source.sub('return ', ''))
+          end
+        end
+
         def check(node)
           return unless node
 

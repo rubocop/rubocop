@@ -9,6 +9,7 @@
 * New cop `MultilineBlockChain` keeps track of chained blocks spanning multiple lines.
 * `AvoidPerlBackrefs` cop does auto-correction.
 * `AvoidPerlisms` cop does auto-correction.
+* `RedundantReturn` cop does auto-correction.
 
 ### Changes
 
