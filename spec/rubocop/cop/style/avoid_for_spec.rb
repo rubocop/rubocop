@@ -16,7 +16,7 @@ module Rubocop
                           '  end',
                           'end'])
           expect(af.offences.size).to eq(1)
-          expect(af.offences.map(&:message))
+          expect(af.messages)
             .to eq([AvoidFor::MSG])
         end
 

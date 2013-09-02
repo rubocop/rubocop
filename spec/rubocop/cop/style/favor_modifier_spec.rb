@@ -21,7 +21,7 @@ module Rubocop
                          ["  if #{condition}",
                           "    #{body}",
                           '  end'])
-          expect(if_unless.offences.map(&:message)).to eq(
+          expect(if_unless.messages).to eq(
             ['Favor modifier if/unless usage when you have a single-line' +
              ' body. Another good alternative is the usage of control flow' +
              ' &&/||.'])
@@ -57,7 +57,7 @@ module Rubocop
           inspect_source(if_unless, ['unless a',
                                     '  b',
                                     'end'])
-          expect(if_unless.offences.map(&:message)).to eq(
+          expect(if_unless.messages).to eq(
             ['Favor modifier if/unless usage when you have a single-line' +
              ' body. Another good alternative is the usage of control flow' +
              ' &&/||.'])
@@ -74,7 +74,7 @@ module Rubocop
           inspect_source(if_unless,
                          ['if args.last.is_a? Hash then args.pop else ' +
                           'Hash.new end'])
-          expect(if_unless.offences.map(&:message)).to be_empty
+          expect(if_unless.messages).to be_empty
         end
 
         it "accepts multiline unless that doesn't fit on one line" do
@@ -145,7 +145,7 @@ module Rubocop
           inspect_source(cop, ["#{keyword} a",
                                '  b',
                                'end'])
-          expect(cop.offences.map(&:message)).to eq(
+          expect(cop.messages).to eq(
             ['Favor modifier while/until usage when you have a single-line ' +
              'body.'])
           expect(cop.offences.map { |o| o.location.source }).to eq([keyword])
@@ -171,7 +171,7 @@ module Rubocop
                           "  require 'simplecov'",
                           '  SimpleCov.start',
                           'end'])
-          expect(cop.offences.map(&:message)).to be_empty
+          expect(cop.messages).to be_empty
         end
       end
     end

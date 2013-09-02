@@ -14,7 +14,7 @@ module Rubocop
                               'else',
                               '  a = 0',
                               'end'])
-          expect(ue.offences.map(&:message)).to eq(
+          expect(ue.messages).to eq(
             ['Never use unless with else. Rewrite these with the ' +
              'positive case first.'])
         end
@@ -23,7 +23,7 @@ module Rubocop
           inspect_source(ue, ['unless x',
                               '  a = 1',
                               'end'])
-          expect(ue.offences.map(&:message)).to be_empty
+          expect(ue.messages).to be_empty
         end
       end
     end

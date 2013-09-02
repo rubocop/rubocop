@@ -13,7 +13,7 @@ module Rubocop
                          ['# encoding: utf-8',
                           'älg = 1'])
           expect(ascii.offences.size).to eq(1)
-          expect(ascii.offences.map(&:message))
+          expect(ascii.messages)
             .to eq([AsciiIdentifiers::MSG])
         end
 

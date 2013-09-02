@@ -12,7 +12,7 @@ module Rubocop
           inspect_source(acv,
                          ['class TestClass; @@test = 10; end'])
           expect(acv.offences.size).to eq(1)
-          expect(acv.offences.map(&:message))
+          expect(acv.messages)
             .to eq(['Replace class var @@test with a class instance var.'])
         end
 

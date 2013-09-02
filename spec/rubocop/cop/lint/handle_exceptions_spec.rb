@@ -16,7 +16,7 @@ module Rubocop
                           '  #do nothing',
                           'end'])
           expect(he.offences.size).to eq(1)
-          expect(he.offences.map(&:message))
+          expect(he.messages)
             .to eq([HandleExceptions::MSG])
         end
 

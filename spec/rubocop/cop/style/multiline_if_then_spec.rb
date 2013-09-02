@@ -66,7 +66,7 @@ module Rubocop
         it 'registers an offence for then in multiline unless' do
           inspect_source(mit, ['unless cond then',
                                'end'])
-          expect(mit.offences.map(&:message)).to eq(
+          expect(mit.messages).to eq(
             ['Never use then for multi-line if/unless.'])
         end
 

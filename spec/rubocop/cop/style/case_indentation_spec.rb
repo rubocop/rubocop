@@ -16,7 +16,7 @@ module Rubocop
                     '        end',
                     'end']
           inspect_source(ind, source)
-          expect(ind.offences.map(&:message)).to eq(
+          expect(ind.messages).to eq(
             ['Indent when as deep as case.'] * 2)
         end
 
@@ -44,7 +44,7 @@ module Rubocop
                     'end',
                     '']
           inspect_source(ind, source)
-          expect(ind.offences.map(&:message)).to be_empty
+          expect(ind.messages).to be_empty
         end
 
         it "doesn't get confused by symbols named case or when" do
@@ -57,7 +57,7 @@ module Rubocop
                     'end',
                     '']
           inspect_source(ind, source)
-          expect(ind.offences.map(&:message)).to be_empty
+          expect(ind.messages).to be_empty
         end
 
         it 'accepts correctly indented whens in complex combinations' do
@@ -80,7 +80,7 @@ module Rubocop
                     'end',
                     '']
           inspect_source(ind, source)
-          expect(ind.offences.map(&:message)).to be_empty
+          expect(ind.messages).to be_empty
         end
       end
     end

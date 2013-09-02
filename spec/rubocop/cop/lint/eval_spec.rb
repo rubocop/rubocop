@@ -12,7 +12,7 @@ module Rubocop
           inspect_source(a,
                          ['eval(something)'])
           expect(a.offences.size).to eq(1)
-          expect(a.offences.map(&:message))
+          expect(a.messages)
             .to eq([Eval::MSG])
         end
 
@@ -20,7 +20,7 @@ module Rubocop
           inspect_source(a,
                          ['eval something'])
           expect(a.offences.size).to eq(1)
-          expect(a.offences.map(&:message))
+          expect(a.messages)
             .to eq([Eval::MSG])
         end
 

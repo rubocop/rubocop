@@ -80,7 +80,7 @@ module Rubocop
                     'end',
                    ]
           inspect_source(empty_lines, source)
-          expect(empty_lines.offences.map(&:message)).to be_empty
+          expect(empty_lines.messages).to be_empty
         end
 
         it 'accepts a nested def' do
@@ -92,7 +92,7 @@ module Rubocop
                     'end',
                    ]
           inspect_source(empty_lines, source)
-          expect(empty_lines.offences.map(&:message)).to be_empty
+          expect(empty_lines.messages).to be_empty
         end
 
         describe 'AllowAdjacentOneLineDefs config parameter' do

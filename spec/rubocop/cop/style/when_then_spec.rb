@@ -12,7 +12,7 @@ module Rubocop
           inspect_source(cop, ['case a',
                               'when b; c',
                               'end'])
-          expect(cop.offences.map(&:message)).to eq(
+          expect(cop.messages).to eq(
             ['Never use "when x;". Use "when x then" instead.'])
         end
 
@@ -20,7 +20,7 @@ module Rubocop
           inspect_source(cop, ['case a',
                               'when b then c',
                               'end'])
-          expect(cop.offences.map(&:message)).to be_empty
+          expect(cop.messages).to be_empty
         end
 
         it 'accepts ; separating statements in the body of when' do
@@ -32,7 +32,7 @@ module Rubocop
                               'when f',
                               '  g; h',
                               'end'])
-          expect(cop.offences.map(&:message)).to be_empty
+          expect(cop.messages).to be_empty
         end
 
         it 'auto-corrects "when x;" with "when x then"' do

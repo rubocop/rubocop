@@ -14,7 +14,7 @@ module Rubocop
             it 'registers an offence for two slashes in regexp' do
               inspect_source(rl, ['x =~ /home\/\//',
                                   'y =~ /etc\/top\//'])
-              expect(rl.offences.map(&:message))
+              expect(rl.messages)
                 .to eq(['Use %r for regular expressions matching more ' +
                         "than 1 '/' character."] * 2)
             end
@@ -33,7 +33,7 @@ module Rubocop
 
             it 'registers an offence for one slash in regexp' do
               inspect_source(rl, ['x =~ /home\//'])
-              expect(rl.offences.map(&:message))
+              expect(rl.messages)
                 .to eq(['Use %r for regular expressions matching more ' +
                         "than 0 '/' characters."])
             end
@@ -50,7 +50,7 @@ module Rubocop
             it 'registers an offence for zero or one slash in regexp' do
               inspect_source(rl, ['x =~ %r(/home)',
                                   'y =~ %r(etc)'])
-              expect(rl.offences.map(&:message))
+              expect(rl.messages)
                 .to eq(['Use %r only for regular expressions matching more ' +
                         "than 1 '/' character."] * 2)
             end
@@ -67,7 +67,7 @@ module Rubocop
 
             it 'registers an offence for zero slashes in regexp' do
               inspect_source(rl, ['y =~ %r(etc)'])
-              expect(rl.offences.map(&:message))
+              expect(rl.messages)
                 .to eq(['Use %r only for regular expressions matching more ' +
                         "than 0 '/' characters."])
             end

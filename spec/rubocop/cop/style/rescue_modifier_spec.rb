@@ -12,7 +12,7 @@ module Rubocop
           inspect_source(rm,
                          ['method rescue handle'])
           expect(rm.offences.size).to eq(1)
-          expect(rm.offences.map(&:message))
+          expect(rm.messages)
             .to eq([RescueModifier::MSG])
         end
 
@@ -20,7 +20,7 @@ module Rubocop
           inspect_source(rm,
                          ['method1 or method2 rescue handle'])
           expect(rm.offences.size).to eq(1)
-          expect(rm.offences.map(&:message))
+          expect(rm.messages)
             .to eq([RescueModifier::MSG])
         end
 

@@ -16,7 +16,7 @@ module Rubocop
                           '  #do nothing',
                           'end'])
           expect(re.offences.size).to eq(1)
-          expect(re.offences.map(&:message))
+          expect(re.messages)
             .to eq([RescueException::MSG])
         end
 
@@ -28,7 +28,7 @@ module Rubocop
                           '  #do nothing',
                           'end'])
           expect(re.offences.size).to eq(1)
-          expect(re.offences.map(&:message))
+          expect(re.messages)
             .to eq([RescueException::MSG])
         end
 
@@ -40,7 +40,7 @@ module Rubocop
                           '  #do nothing',
                           'end'])
           expect(re.offences.size).to eq(1)
-          expect(re.offences.map(&:message))
+          expect(re.messages)
             .to eq([RescueException::MSG])
         end
 
@@ -52,7 +52,7 @@ module Rubocop
                           '  #do nothing',
                           'end'])
           expect(re.offences.size).to eq(1)
-          expect(re.offences.map(&:message))
+          expect(re.messages)
             .to eq([RescueException::MSG])
         end
 

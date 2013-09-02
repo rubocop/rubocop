@@ -15,7 +15,7 @@ module Rubocop
                           'end',
                           'some_method while !a_condition',
                          ])
-          expect(fav_until.offences.map(&:message)).to eq(
+          expect(fav_until.messages).to eq(
             ['Favor until over while for negative conditions.'] * 2)
         end
 
@@ -25,7 +25,7 @@ module Rubocop
                           '  some_method',
                           'end',
                           'some_method while not a_condition'])
-          expect(fav_until.offences.map(&:message)).to eq(
+          expect(fav_until.messages).to eq(
             ['Favor until over while for negative conditions.'] * 2)
           expect(fav_until.offences.map(&:line)).to eq([1, 4])
         end
@@ -39,7 +39,7 @@ module Rubocop
                           '  some_method',
                           'end',
                           'some_method while not a_condition or other_cond'])
-          expect(fav_until.offences.map(&:message)).to be_empty
+          expect(fav_until.messages).to be_empty
         end
       end
     end

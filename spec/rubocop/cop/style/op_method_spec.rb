@@ -14,7 +14,7 @@ module Rubocop
                           '  another',
                           'end'])
           expect(om.offences.size).to eq(1)
-          expect(om.offences.map(&:message))
+          expect(om.messages)
             .to eq([sprintf(OpMethod::MSG, '+')])
         end
 
@@ -24,7 +24,7 @@ module Rubocop
                           '  another',
                           'end'])
           expect(om.offences.size).to eq(1)
-          expect(om.offences.map(&:message))
+          expect(om.messages)
             .to eq([sprintf(OpMethod::MSG, '+')])
         end
 

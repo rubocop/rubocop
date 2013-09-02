@@ -12,7 +12,7 @@ module Rubocop
           inspect_source(fs,
                          ['puts "%d" % 10'])
           expect(fs.offences.size).to eq(1)
-          expect(fs.offences.map(&:message))
+          expect(fs.messages)
             .to eq([FavorSprintf::MSG])
         end
 
@@ -20,7 +20,7 @@ module Rubocop
           inspect_source(fs,
                          ['puts x % [10, 11]'])
           expect(fs.offences.size).to eq(1)
-          expect(fs.offences.map(&:message))
+          expect(fs.messages)
             .to eq([FavorSprintf::MSG])
         end
 
@@ -44,7 +44,7 @@ module Rubocop
           inspect_source(fs,
                          ['puts "#{x * 5} %d #{@test}" % 10'])
           expect(fs.offences.size).to eq(1)
-          expect(fs.offences.map(&:message))
+          expect(fs.messages)
             .to eq([FavorSprintf::MSG])
         end
       end

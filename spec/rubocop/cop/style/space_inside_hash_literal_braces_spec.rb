@@ -17,7 +17,7 @@ module Rubocop
           inspect_source(sihlb,
                          ['h = {a: 1, b: :two}',
                           'h = {a => 1 }'])
-          expect(sihlb.offences.map(&:message)).to eq(
+          expect(sihlb.messages).to eq(
             ['Space inside hash literal braces missing.'] * 3)
         end
 
@@ -25,7 +25,7 @@ module Rubocop
           inspect_source(sihlb,
                          ['h = {a: 1, b: 2}',
                           'h = {a => 1 }'])
-          expect(sihlb.offences.map(&:message)).to eq(
+          expect(sihlb.messages).to eq(
             ['Space inside hash literal braces missing.'] * 3)
         end
 
@@ -34,7 +34,7 @@ module Rubocop
             false
           inspect_source(sihlb,
                          ['h = { a: 1, b: 2 }'])
-          expect(sihlb.offences.map(&:message)).to eq(
+          expect(sihlb.messages).to eq(
             ['Space inside hash literal braces detected.'] * 2)
         end
 
@@ -42,7 +42,7 @@ module Rubocop
           inspect_source(sihlb,
                          ['h = { a: 1, b: 2 }',
                           'h = { a => 1 }'])
-          expect(sihlb.offences.map(&:message)).to be_empty
+          expect(sihlb.messages).to be_empty
         end
 
         it 'accepts hashes with no spaces if so configured' do
@@ -51,7 +51,7 @@ module Rubocop
           inspect_source(sihlb,
                          ['h = {a: 1, b: 2}',
                           'h = {a => 1}'])
-          expect(sihlb.offences.map(&:message)).to be_empty
+          expect(sihlb.messages).to be_empty
         end
 
         it 'accepts multiline hashes even if configured for no space' do

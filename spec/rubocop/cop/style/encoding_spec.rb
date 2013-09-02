@@ -11,7 +11,7 @@ module Rubocop
         it 'registers an offence when no encoding present', ruby: 1.9 do
           inspect_source(encoding, ['def foo() end'])
 
-          expect(encoding.offences.map(&:message)).to eq(
+          expect(encoding.messages).to eq(
             ['Missing utf-8 encoding comment.'])
         end
 
@@ -27,14 +27,14 @@ module Rubocop
                                     '# encoding: utf-8',
                                     'def foo() end'])
 
-          expect(encoding.offences.map(&:message)).to be_empty
+          expect(encoding.messages).to be_empty
         end
 
         it 'books an offence when encoding is in the wrong place', ruby: 1.9 do
           inspect_source(encoding, ['def foo() end',
                                     '# encoding: utf-8'])
 
-          expect(encoding.offences.map(&:message)).to eq(
+          expect(encoding.messages).to eq(
             ['Missing utf-8 encoding comment.'])
         end
 
@@ -48,7 +48,7 @@ module Rubocop
           inspect_source(encoding, ['# -*- encoding : utf-8 -*-',
                                     'def foo() end'])
 
-          expect(encoding.offences.map(&:message)).to be_empty
+          expect(encoding.messages).to be_empty
         end
       end
     end

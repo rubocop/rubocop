@@ -10,7 +10,7 @@ module Rubocop
 
         it 'registers an offence for default value assignment without space' do
           inspect_source(space, ['def f(x, y=0, z=1)', 'end'])
-          expect(space.offences.map(&:message)).to eq(
+          expect(space.messages).to eq(
             ['Surrounding space missing in default value assignment.'] * 2)
         end
 
@@ -26,7 +26,7 @@ module Rubocop
 
         it 'accepts default value assignment with space' do
           inspect_source(space, ['def f(x, y = 0, z = {})', 'end'])
-          expect(space.offences.map(&:message)).to be_empty
+          expect(space.messages).to be_empty
         end
       end
     end

@@ -11,7 +11,7 @@ module Rubocop
         it 'registers an offence for spaces inside parens' do
           inspect_source(space, ['f( 3)',
                                  'g(3 )'])
-          expect(space.offences.map(&:message)).to eq(
+          expect(space.messages).to eq(
             ['Space inside parentheses detected.',
              'Space inside parentheses detected.'])
         end
@@ -20,12 +20,12 @@ module Rubocop
           inspect_source(space,
                          ['list.inject(Tms.new) { |sum, (label, item)|',
                           '}'])
-          expect(space.offences.map(&:message)).to be_empty
+          expect(space.messages).to be_empty
         end
 
         it 'accepts parentheses with no spaces' do
           inspect_source(space, ['split("\n")'])
-          expect(space.offences.map(&:message)).to be_empty
+          expect(space.messages).to be_empty
         end
       end
     end

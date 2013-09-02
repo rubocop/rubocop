@@ -37,7 +37,7 @@ module Rubocop
           it 'registers an offence for camel case in names' do
             inspect_source(symbol_name,
                            ['test = :BadIdea'])
-            expect(symbol_name.offences.map(&:message)).to eq(
+            expect(symbol_name.messages).to eq(
               ['Use snake_case for symbols.'])
           end
         end
@@ -45,7 +45,7 @@ module Rubocop
         it 'registers an offence for symbol used as hash label' do
           inspect_source(symbol_name,
                          ['{ KEY_ONE: 1, KEY_TWO: 2 }'])
-          expect(symbol_name.offences.map(&:message)).to eq(
+          expect(symbol_name.messages).to eq(
             ['Use snake_case for symbols.'] * 2)
         end
 

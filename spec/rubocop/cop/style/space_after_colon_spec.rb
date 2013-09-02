@@ -10,18 +10,18 @@ module Rubocop
 
         it 'registers an offence for colon without space after it' do
           inspect_source(space, ['x = w ? {a:3}:4'])
-          expect(space.offences.map(&:message)).to eq(
+          expect(space.messages).to eq(
             ['Space missing after colon.'] * 2)
         end
 
         it 'allows the colons in symbols' do
           inspect_source(space, ['x = :a'])
-          expect(space.offences.map(&:message)).to be_empty
+          expect(space.messages).to be_empty
         end
 
         it 'allows colons in strings' do
           inspect_source(space, ["str << ':'"])
-          expect(space.offences.map(&:message)).to be_empty
+          expect(space.messages).to be_empty
         end
       end
     end

@@ -12,7 +12,7 @@ module Rubocop
           inspect_source(vi,
                          ['puts "this is a #$test"'])
           expect(vi.offences.size).to eq(1)
-          expect(vi.offences.map(&:message))
+          expect(vi.messages)
             .to eq(['Replace interpolated var $test' +
               ' with expression #{$test}.'])
         end
@@ -21,7 +21,7 @@ module Rubocop
           inspect_source(vi,
                          ['puts "this is a #$1"'])
           expect(vi.offences.size).to eq(1)
-          expect(vi.offences.map(&:message))
+          expect(vi.messages)
             .to eq(['Replace interpolated var $1 with expression #{$1}.'])
         end
 
@@ -29,7 +29,7 @@ module Rubocop
           inspect_source(vi,
                          ['puts "this is a #@test"'])
           expect(vi.offences.size).to eq(1)
-          expect(vi.offences.map(&:message))
+          expect(vi.messages)
             .to eq(['Replace interpolated var @test' +
               ' with expression #{@test}.'])
         end
@@ -38,7 +38,7 @@ module Rubocop
           inspect_source(vi,
                          ['puts "this is a #@@t"'])
           expect(vi.offences.size).to eq(1)
-          expect(vi.offences.map(&:message))
+          expect(vi.messages)
             .to eq(['Replace interpolated var @@t with expression #{@@t}.'])
         end
 

@@ -13,7 +13,7 @@ module Rubocop
             inspect_source(cop,
                            ['test = Array.new()'])
             expect(cop.offences.size).to eq(1)
-            expect(cop.offences.map(&:message))
+            expect(cop.messages)
               .to eq([EmptyLiteral::ARR_MSG])
           end
 
@@ -21,7 +21,7 @@ module Rubocop
             inspect_source(cop,
                            ['test = Array.new'])
             expect(cop.offences.size).to eq(1)
-            expect(cop.offences.map(&:message))
+            expect(cop.messages)
               .to eq([EmptyLiteral::ARR_MSG])
           end
 
@@ -42,7 +42,7 @@ module Rubocop
             inspect_source(cop,
                            ['test = Hash.new()'])
             expect(cop.offences.size).to eq(1)
-            expect(cop.offences.map(&:message))
+            expect(cop.messages)
               .to eq([EmptyLiteral::HASH_MSG])
           end
 
@@ -50,7 +50,7 @@ module Rubocop
             inspect_source(cop,
                            ['test = Hash.new'])
             expect(cop.offences.size).to eq(1)
-            expect(cop.offences.map(&:message))
+            expect(cop.messages)
               .to eq([EmptyLiteral::HASH_MSG])
           end
 
@@ -77,7 +77,7 @@ module Rubocop
             inspect_source(cop,
                            ['test = String.new()'])
             expect(cop.offences.size).to eq(1)
-            expect(cop.offences.map(&:message))
+            expect(cop.messages)
               .to eq([EmptyLiteral::STR_MSG])
           end
 
@@ -85,7 +85,7 @@ module Rubocop
             inspect_source(cop,
                            ['test = String.new'])
             expect(cop.offences.size).to eq(1)
-            expect(cop.offences.map(&:message))
+            expect(cop.messages)
               .to eq([EmptyLiteral::STR_MSG])
           end
 

@@ -14,7 +14,7 @@ module Rubocop
                            ['if cond',
                             ' func',
                             'end'])
-            expect(cop.offences.map(&:message))
+            expect(cop.messages)
               .to eq(['Use 2 (not 1) spaces for indentation.'])
           end
 
@@ -25,7 +25,7 @@ module Rubocop
                             'else',
                             ' func2',
                             'end'])
-            expect(cop.offences.map(&:message))
+            expect(cop.messages)
               .to eq(['Use 2 (not 1) spaces for indentation.'])
           end
 
@@ -38,7 +38,7 @@ module Rubocop
                             'else',
                             '  c',
                             'end'])
-            expect(cop.offences.map(&:message))
+            expect(cop.messages)
               .to eq(['Use 2 (not 1) spaces for indentation.'])
           end
 
@@ -49,7 +49,7 @@ module Rubocop
                             'else',
                             '     x ? y : z',
                             'end'])
-            expect(cop.offences.map(&:message))
+            expect(cop.messages)
               .to eq(['Use 2 (not 5) spaces for indentation.'])
           end
 
@@ -60,7 +60,7 @@ module Rubocop
                             'else',
                             '   x if y',
                             'end'])
-            expect(cop.offences.map(&:message))
+            expect(cop.messages)
               .to eq(['Use 2 (not 3) spaces for indentation.'])
           end
 
@@ -128,7 +128,7 @@ module Rubocop
                            ['unless cond',
                             ' func',
                             'end'])
-            expect(cop.offences.map(&:message))
+            expect(cop.messages)
               .to eq(['Use 2 (not 1) spaces for indentation.'])
           end
 
@@ -148,7 +148,7 @@ module Rubocop
                             'when b',
                             ' c',
                             'end'])
-            expect(cop.offences.map(&:message))
+            expect(cop.messages)
               .to eq(['Use 2 (not 1) spaces for indentation.'])
           end
 
@@ -162,7 +162,7 @@ module Rubocop
                             'else',
                             '   f',
                             'end'])
-            expect(cop.offences.map(&:message))
+            expect(cop.messages)
               .to eq(['Use 2 (not 3) spaces for indentation.'])
           end
 
@@ -227,7 +227,7 @@ module Rubocop
                            ['while cond',
                             ' func',
                             'end'])
-            expect(cop.offences.map(&:message))
+            expect(cop.messages)
               .to eq(['Use 2 (not 1) spaces for indentation.'])
           end
 
@@ -237,7 +237,7 @@ module Rubocop
                             ' func1',
                             '   func2',
                             'end while cond'])
-            expect(cop.offences.map(&:message))
+            expect(cop.messages)
               .to eq(['Use 2 (not 1) spaces for indentation.',
                       'Use 2 (not 3) spaces for indentation.'])
           end
@@ -247,7 +247,7 @@ module Rubocop
                            ['until cond',
                             ' func',
                             'end'])
-            expect(cop.offences.map(&:message))
+            expect(cop.messages)
               .to eq(['Use 2 (not 1) spaces for indentation.'])
           end
 
@@ -265,7 +265,7 @@ module Rubocop
                            ['for var in 1..10',
                             ' func',
                             'end'])
-            expect(cop.offences.map(&:message))
+            expect(cop.messages)
               .to eq(['Use 2 (not 1) spaces for indentation.'])
           end
 
@@ -284,7 +284,7 @@ module Rubocop
                             '    func1',
                             '     func2', # No offence registered for this.
                             'end'])
-            expect(cop.offences.map(&:message))
+            expect(cop.messages)
               .to eq(['Use 2 (not 4) spaces for indentation.'])
           end
 
@@ -293,7 +293,7 @@ module Rubocop
                            ['def self.test',
                             '   func',
                             'end'])
-            expect(cop.offences.map(&:message))
+            expect(cop.messages)
               .to eq(['Use 2 (not 3) spaces for indentation.'])
           end
 
@@ -319,7 +319,7 @@ module Rubocop
                             '    def func',
                             '    end',
                             'end'])
-            expect(cop.offences.map(&:message))
+            expect(cop.messages)
               .to eq(['Use 2 (not 4) spaces for indentation.'])
           end
 
@@ -338,7 +338,7 @@ module Rubocop
                             '    def func',
                             '    end',
                             'end'])
-            expect(cop.offences.map(&:message))
+            expect(cop.messages)
               .to eq(['Use 2 (not 4) spaces for indentation.'])
           end
 
@@ -356,7 +356,7 @@ module Rubocop
                            ['a = func do',
                             ' b',
                             'end'])
-            expect(cop.offences.map(&:message))
+            expect(cop.messages)
               .to eq(['Use 2 (not 1) spaces for indentation.'])
           end
 
@@ -365,7 +365,7 @@ module Rubocop
                            ['func {',
                             '   b',
                             '}'])
-            expect(cop.offences.map(&:message))
+            expect(cop.messages)
               .to eq(['Use 2 (not 3) spaces for indentation.'])
           end
 

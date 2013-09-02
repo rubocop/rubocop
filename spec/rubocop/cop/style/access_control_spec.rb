@@ -17,7 +17,7 @@ module Rubocop
                            '  def test; end',
                            'end'])
           expect(a.offences.size).to eq(1)
-          expect(a.offences.map(&:message))
+          expect(a.messages)
             .to eq([format(AccessControl::INDENT_MSG, 'private')])
         end
 
@@ -30,7 +30,7 @@ module Rubocop
                           '  def test; end',
                           'end'])
           expect(a.offences.size).to eq(1)
-          expect(a.offences.map(&:message))
+          expect(a.messages)
             .to eq([format(AccessControl::INDENT_MSG, 'private')])
         end
 
@@ -43,7 +43,7 @@ module Rubocop
                            '  def test; end',
                            'end'])
           expect(a.offences.size).to eq(1)
-          expect(a.offences.map(&:message))
+          expect(a.messages)
             .to eq([format(AccessControl::INDENT_MSG, 'private')])
         end
 
@@ -57,7 +57,7 @@ module Rubocop
                           '  def test; end',
                           'end'])
           expect(a.offences.size).to eq(1)
-          expect(a.offences.map(&:message))
+          expect(a.messages)
             .to eq([format(AccessControl::INDENT_MSG, 'private')])
         end
 
@@ -71,7 +71,7 @@ module Rubocop
                           '  def test; end',
                           'end'])
           expect(a.offences.size).to eq(1)
-          expect(a.offences.map(&:message))
+          expect(a.messages)
             .to eq([format(AccessControl::INDENT_MSG, 'private')])
         end
 
@@ -84,7 +84,7 @@ module Rubocop
                           '  def test; end',
                           'end'])
           expect(a.offences.size).to eq(1)
-          expect(a.offences.map(&:message))
+          expect(a.messages)
             .to eq([format(AccessControl::INDENT_MSG, 'protected')])
         end
 
@@ -126,7 +126,7 @@ module Rubocop
                           '  def test; end',
                           'end'])
           expect(a.offences.size).to eq(1)
-          expect(a.offences.map(&:message))
+          expect(a.messages)
             .to eq([format(AccessControl::INDENT_MSG, 'private')])
         end
 
@@ -138,7 +138,7 @@ module Rubocop
                           '  def test; end',
                           'end'])
           expect(a.offences.size).to eq(1)
-          expect(a.offences.map(&:message))
+          expect(a.messages)
             .to eq([format(AccessControl::BLANK_MSG, 'protected')])
         end
 
@@ -150,7 +150,7 @@ module Rubocop
                           '  def test; end',
                           'end'])
           expect(a.offences.size).to eq(1)
-          expect(a.offences.map(&:message))
+          expect(a.messages)
             .to eq([format(AccessControl::BLANK_MSG, 'protected')])
         end
 

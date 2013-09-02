@@ -11,13 +11,13 @@ module Rubocop
         it 'registers an offence for CR+LF' do
           pending 'Fails after upgdate to parser-2.0.0.pre3.'
           inspect_source(eol, ["x=0\r", ''])
-          expect(eol.offences.map(&:message)).to eq(
+          expect(eol.messages).to eq(
             ['Carriage return character detected.'])
         end
 
         it 'registers an offence for CR at end of file' do
           inspect_source(eol, ["x=0\r"])
-          expect(eol.offences.map(&:message)).to eq(
+          expect(eol.messages).to eq(
             ['Carriage return character detected.'])
         end
       end

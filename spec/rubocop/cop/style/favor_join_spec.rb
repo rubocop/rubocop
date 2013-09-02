@@ -12,7 +12,7 @@ module Rubocop
           inspect_source(fj,
                          ['%w(one two three) * ", "'])
           expect(fj.offences.size).to eq(1)
-          expect(fj.offences.map(&:message))
+          expect(fj.messages)
             .to eq([FavorJoin::MSG])
         end
 

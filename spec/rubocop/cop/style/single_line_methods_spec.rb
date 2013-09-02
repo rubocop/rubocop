@@ -16,7 +16,7 @@ module Rubocop
                          ['def some_method; body end',
                           'def link_to(name, url); {:name => name}; end',
                           'def @table.columns; super; end'])
-          expect(slm.offences.map(&:message)).to eq(
+          expect(slm.messages).to eq(
             [SingleLineMethods::MSG] * 3)
         end
 
