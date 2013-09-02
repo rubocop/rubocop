@@ -41,7 +41,7 @@ module Rubocop
 
           return 0 unless lines
 
-          lines.map!(&:strip).reject!(&:empty?)
+          lines.reject!(&:blank?)
 
           lines.reject! { |line| line =~ /^\s*#/ } unless count_comments?
 
