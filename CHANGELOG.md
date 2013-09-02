@@ -5,8 +5,8 @@
 ### New features
 
 * New configuration parameter `AllowAdjacentOneLineDefs` for `EmptyLineBetweenDefs`.
-* `RedundantSelf` cop does auto-correction
 * New cop `MultilineBlockChain` keeps track of chained blocks spanning multiple lines.
+* `RedundantSelf` cop does auto-correction
 * `AvoidPerlBackrefs` cop does auto-correction.
 * `AvoidPerlisms` cop does auto-correction.
 * `RedundantReturn` cop does auto-correction.
