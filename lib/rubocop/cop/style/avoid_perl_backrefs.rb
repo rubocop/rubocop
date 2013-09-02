@@ -6,11 +6,19 @@ module Rubocop
       # This cop looks for uses of Perl-style regexp match
       # backreferences like $1, $2, etc.
       class AvoidPerlBackrefs < Cop
-        def on_nth_ref(node)
-          backref, = *node
+        MSG = 'Avoid the use of Perl-style backrefs.'
 
-          convention(node, :expression,
-                     "Prefer the use of MatchData over $#{backref}.")
+        def on_nth_ref(node)
+          convention(node, :expression)
+        end
+
+        def autocorrect_action(node)
+          @corrections << lambda do |corrector|
+            backref, = *node
+
+            corrector.replace(node.loc.expression,
+                              "Regexp.last_match[#{backref}]")
+          end
         end
       end
     end
