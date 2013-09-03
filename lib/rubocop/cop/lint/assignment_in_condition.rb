@@ -46,7 +46,7 @@ module Rubocop
         end
 
         def safe_assignment_allowed?
-          AssignmentInCondition.config['AllowSafeAssignment']
+          cop_config['AllowSafeAssignment']
         end
       end
     end

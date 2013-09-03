@@ -7,9 +7,6 @@ module Rubocop
     module Style
       describe ColonMethodCall do
         subject(:cop) { described_class.new }
-        before do
-          described_class.config = {}
-        end
 
         it 'registers an offence for instance method call' do
           inspect_source(cop,

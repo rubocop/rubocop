@@ -9,7 +9,7 @@ module Rubocop
         MSG = 'Avoid single-line method definitions.'
 
         def allow_empty?
-          SingleLineMethods.config['AllowIfMethodIsEmpty']
+          cop_config['AllowIfMethodIsEmpty']
         end
 
         def on_def(node)

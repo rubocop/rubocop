@@ -5,9 +5,9 @@ require 'spec_helper'
 module Rubocop
   module Cop
     module Style
-      describe RegexpLiteral do
-        subject(:rl) { RegexpLiteral.new }
-        before { RegexpLiteral.config = { 'MaxSlashes' => 1 } }
+      describe RegexpLiteral, :config do
+        subject(:rl) { RegexpLiteral.new(config) }
+        let(:cop_config) { { 'MaxSlashes' => 1 } }
 
         context 'when a regexp uses // delimiters' do
           context 'when MaxSlashes is 1' do
@@ -29,7 +29,7 @@ module Rubocop
           end
 
           context 'when MaxSlashes is 0' do
-            before { RegexpLiteral.config = { 'MaxSlashes' => 0 } }
+            let(:cop_config) { { 'MaxSlashes' => 0 } }
 
             it 'registers an offence for one slash in regexp' do
               inspect_source(rl, ['x =~ /home\//'])
@@ -40,6 +40,18 @@ module Rubocop
 
             it 'accepts zero slashes in regexp' do
               inspect_source(rl, ['z =~ /a/'])
+              expect(rl.offences).to be_empty
+            end
+
+            it 'registers an offence for zero slashes in regexp' do
+              inspect_source(rl, ['y =~ %r(etc)'])
+              expect(rl.messages)
+                .to eq(['Use %r only for regular expressions matching more ' +
+                        "than 0 '/' characters."])
+            end
+
+            it 'accepts regexp with one slash' do
+              inspect_source(rl, ['x =~ %r(/home)'])
               expect(rl.offences).to be_empty
             end
           end
@@ -58,22 +70,6 @@ module Rubocop
             it 'accepts regexp with two or more slashes' do
               inspect_source(rl, ['x =~ %r(/home/)',
                                   'y =~ %r(/////)'])
-              expect(rl.offences).to be_empty
-            end
-          end
-
-          context 'when MaxSlashes is 0' do
-            before { RegexpLiteral.config = { 'MaxSlashes' => 0 } }
-
-            it 'registers an offence for zero slashes in regexp' do
-              inspect_source(rl, ['y =~ %r(etc)'])
-              expect(rl.messages)
-                .to eq(['Use %r only for regular expressions matching more ' +
-                        "than 0 '/' characters."])
-            end
-
-            it 'accepts regexp with one slash' do
-              inspect_source(rl, ['x =~ %r(/home)'])
               expect(rl.offences).to be_empty
             end
           end

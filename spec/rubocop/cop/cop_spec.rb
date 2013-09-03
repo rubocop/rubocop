@@ -34,24 +34,6 @@ module Rubocop
         expect(cop.offences.first.cop_name).to eq('AvoidFor')
       end
 
-      describe 'description' do
-        let(:short_desc) { 'abc' }
-        let(:long_desc) { short_desc + "\n" + short_desc + 'def' }
-        before { Cop.config['Description'] = long_desc }
-        context '#full_description' do
-          it 'contains whole text' do
-            expect(Cop.full_description).to eq(long_desc)
-            expect(Cop.full_description.lines.to_a.size).to be > 1
-          end
-        end
-        context '#short_description' do
-          it 'contains first line' do
-            expect(Cop.short_description).to eq(short_desc)
-            expect(Cop.short_description.lines.to_a.size).to eq(1)
-          end
-        end
-      end
-
       context 'with no submodule' do
         subject(:cop) { Cop }
         it('has right name') { expect(cop.cop_name).to eq('Cop') }

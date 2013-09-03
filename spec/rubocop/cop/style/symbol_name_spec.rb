@@ -5,20 +5,12 @@ require 'spec_helper'
 module Rubocop
   module Cop
     module Style
-      describe SymbolName do
-        subject(:symbol_name) { SymbolName.new }
-
-        before do
-          SymbolName.config =
-            Config.default_configuration.for_cop('SymbolName')
-        end
+      describe SymbolName, :config do
+        subject(:symbol_name) { SymbolName.new(config) }
+        let(:cop_config) { { 'AllowCamelCase' => true } }
 
         context 'when AllowCamelCase is true' do
-          before do
-            SymbolName.config = {
-              'AllowCamelCase' => true
-            }
-          end
+          let(:cop_config) { { 'AllowCamelCase' => true } }
 
           it 'does not register an offence for camel case in names' do
             inspect_source(symbol_name,
@@ -28,11 +20,7 @@ module Rubocop
         end
 
         context 'when AllowCamelCase is false' do
-          before do
-            SymbolName.config = {
-              'AllowCamelCase' => false
-            }
-          end
+          let(:cop_config) { { 'AllowCamelCase' => false } }
 
           it 'registers an offence for camel case in names' do
             inspect_source(symbol_name,
@@ -43,11 +31,7 @@ module Rubocop
         end
 
         context 'when AllowDots is true' do
-          before do
-            SymbolName.config = {
-              'AllowDots' => true
-            }
-          end
+          let(:cop_config) { { 'AllowDots' => true } }
 
           it 'does not register an offence for dots in names' do
             inspect_source(symbol_name,
@@ -57,11 +41,7 @@ module Rubocop
         end
 
         context 'when AllowDots is false' do
-          before do
-            SymbolName.config = {
-              'AllowDots' => false
-            }
-          end
+          let(:cop_config) { { 'AllowDots' => false } }
 
           it 'registers an offence for dots in names' do
             inspect_source(symbol_name,

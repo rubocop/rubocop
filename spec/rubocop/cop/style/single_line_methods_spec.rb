@@ -5,11 +5,9 @@ require 'spec_helper'
 module Rubocop
   module Cop
     module Style
-      describe SingleLineMethods do
-        subject(:slm) { SingleLineMethods.new }
-        before do
-          SingleLineMethods.config = { 'AllowIfMethodIsEmpty' => true }
-        end
+      describe SingleLineMethods, :config do
+        subject(:slm) { SingleLineMethods.new(config) }
+        let(:cop_config) { { 'AllowIfMethodIsEmpty' => true } }
 
         it 'registers an offence for a single-line method' do
           inspect_source(slm,
@@ -20,20 +18,26 @@ module Rubocop
             [SingleLineMethods::MSG] * 3)
         end
 
-        it 'registers an offence for an empty method if so configured' do
-          SingleLineMethods.config = { 'AllowIfMethodIsEmpty' => false }
-          inspect_source(slm, ['def no_op; end',
-                               'def self.resource_class=(klass); end',
-                               'def @table.columns; end'])
-          expect(slm.offences.size).to eq(3)
+        context 'when AllowIfMethodIsEmpty is disabled' do
+          let(:cop_config) { { 'AllowIfMethodIsEmpty' => false } }
+
+          it 'registers an offence for an empty method' do
+            inspect_source(slm, ['def no_op; end',
+                                 'def self.resource_class=(klass); end',
+                                 'def @table.columns; end'])
+            expect(slm.offences.size).to eq(3)
+          end
         end
 
-        it 'accepts a single-line empty method if so configured' do
-          SingleLineMethods.config = { 'AllowIfMethodIsEmpty' => true }
-          inspect_source(slm, ['def no_op; end',
-                               'def self.resource_class=(klass); end',
-                               'def @table.columns; end'])
-          expect(slm.offences).to be_empty
+        context 'when AllowIfMethodIsEmpty is enabled' do
+          let(:cop_config) { { 'AllowIfMethodIsEmpty' => true } }
+
+          it 'accepts a single-line empty method' do
+            inspect_source(slm, ['def no_op; end',
+                                 'def self.resource_class=(klass); end',
+                                 'def @table.columns; end'])
+            expect(slm.offences).to be_empty
+          end
         end
 
         it 'accepts a multi-line method' do

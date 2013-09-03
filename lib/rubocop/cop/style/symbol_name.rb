@@ -13,11 +13,11 @@ module Rubocop
         CAMEL_CASE = /^[A-Z][A-Za-z\d]*$/
 
         def allow_camel_case?
-          self.class.config['AllowCamelCase']
+          cop_config['AllowCamelCase']
         end
 
         def allow_dots?
-          self.class.config['AllowDots']
+          cop_config['AllowDots']
         end
 
         def on_send(node)

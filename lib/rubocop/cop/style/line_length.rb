@@ -10,7 +10,6 @@ module Rubocop
 
         def investigate(processed_source)
           processed_source.lines.each_with_index do |line, index|
-            max = LineLength.max
             if line.length > max
               message = sprintf(MSG, line.length, max)
               convention(nil,
@@ -22,8 +21,8 @@ module Rubocop
           end
         end
 
-        def self.max
-          LineLength.config['Max']
+        def max
+          cop_config['Max']
         end
       end
     end

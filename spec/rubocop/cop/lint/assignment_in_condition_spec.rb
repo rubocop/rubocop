@@ -5,11 +5,9 @@ require 'spec_helper'
 module Rubocop
   module Cop
     module Lint
-      describe AssignmentInCondition do
-        subject(:cop) { AssignmentInCondition.new }
-        before do
-          AssignmentInCondition.config = { 'AllowSafeAssignment' => true }
-        end
+      describe AssignmentInCondition, :config do
+        subject(:cop) { AssignmentInCondition.new(config) }
+        let(:cop_config) { { 'AllowSafeAssignment' => true } }
 
         it 'registers an offence for lvar assignment in condition' do
           inspect_source(cop,
@@ -99,9 +97,7 @@ module Rubocop
         end
 
         context 'safe assignment is not allowed' do
-          before do
-            AssignmentInCondition.config['AllowSafeAssignment'] = false
-          end
+          let(:cop_config) { { 'AllowSafeAssignment' => false } }
 
           it 'does not accepts = in condition surrounded with braces' do
             inspect_source(cop,

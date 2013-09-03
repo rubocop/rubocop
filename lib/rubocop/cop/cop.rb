@@ -46,18 +46,10 @@ module Rubocop
           + - * / % ** ~ +@ -@ [] []= ! != !~
         ).map(&:to_sym) + [:'`']
 
-      attr_accessor :offences
-      attr_accessor :debug
-      attr_accessor :autocorrect
-      attr_writer :disabled_lines
-      attr_reader :corrections
+      attr_reader :config, :offences, :corrections
+      attr_accessor :processed_source # TODO: Bad design.
 
       @all = CopStore.new
-      @config = {}
-
-      class << self
-        attr_accessor :config
-      end
 
       def self.all
         @all.clone
@@ -83,27 +75,29 @@ module Rubocop
         cop_type == :lint
       end
 
-      # Extracts the first line out of the description
-      def self.short_description
-        desc = full_description
-        desc ? desc.lines.first.strip : ''
-      end
-
-      # Gets the full description of the cop or nil if no description is set.
-      def self.full_description
-        config['Description']
-      end
-
       def self.rails?
         cop_type == :rails
       end
 
-      def initialize
+      def initialize(config = nil, options = nil)
+        @config = config || Config.new
+        @options = options || { autocorrect: false, debug: false }
+
         @offences = []
-        @debug = false
-        @autocorrect = false
-        @ignored_nodes = []
         @corrections = []
+        @ignored_nodes = []
+      end
+
+      def cop_config
+        @config.for_cop(name)
+      end
+
+      def autocorrect?
+        @options[:autocorrect]
+      end
+
+      def debug?
+        @options[:debug]
       end
 
       def autocorrect_action(node)
@@ -116,11 +110,11 @@ module Rubocop
       def add_offence(severity, node, loc, message = nil)
         location = loc.is_a?(Symbol) ? node.loc.send(loc) : loc
 
-        unless @disabled_lines && @disabled_lines.include?(location.line)
+        unless disabled_line?(location.line)
           message = message ? message : message(node)
-          message = debug ? "#{name}: #{message}" : message
+          message = debug? ? "#{name}: #{message}" : message
           @offences << Offence.new(severity, location, message, name)
-          autocorrect_action(node) if autocorrect
+          autocorrect_action(node) if autocorrect?
         end
       end
 
@@ -141,6 +135,13 @@ module Rubocop
       end
 
       private
+
+      def disabled_line?(line_number)
+        return false unless @processed_source
+        disabled_lines = @processed_source.disabled_lines_for_cops[name]
+        return false unless disabled_lines
+        disabled_lines.include?(line_number)
+      end
 
       def part_of_ignored_node?(node)
         expression = node.loc.expression

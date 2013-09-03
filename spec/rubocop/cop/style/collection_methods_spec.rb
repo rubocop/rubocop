@@ -5,8 +5,8 @@ require 'spec_helper'
 module Rubocop
   module Cop
     module Style
-      describe CollectionMethods do
-        CollectionMethods.config = {
+      describe CollectionMethods, :config do
+        cop_config = {
           'PreferredMethods' => {
             'collect' => 'map',
             'inject' => 'reduce',
@@ -15,13 +15,13 @@ module Rubocop
           }
         }
 
-        subject(:cop) { CollectionMethods.new }
+        subject(:cop) { CollectionMethods.new(config) }
+        let(:cop_config) { cop_config }
 
-        CollectionMethods.preferred_methods.keys.each do |method|
+        cop_config['PreferredMethods'].each do |method, preferred_method|
           it "registers an offence for #{method} with block" do
             inspect_source(cop, ["[1, 2, 3].#{method} { |e| e + 1 }"])
             expect(cop.offences.size).to eq(1)
-            preferred_method = CollectionMethods.preferred_methods[method]
             expect(cop.messages)
               .to eq(["Prefer #{preferred_method} over #{method}."])
           end
@@ -29,7 +29,6 @@ module Rubocop
           it "registers an offence for #{method} with proc param" do
             inspect_source(cop, ["[1, 2, 3].#{method}(&:test)"])
             expect(cop.offences.size).to eq(1)
-            preferred_method = CollectionMethods.preferred_methods[method]
             expect(cop.messages)
               .to eq(["Prefer #{preferred_method} over #{method}."])
           end

@@ -7,8 +7,8 @@ module Rubocop
     module Style
       describe Semicolon do
         subject(:s) { Semicolon.new }
-        before do
-          Semicolon.config = {
+        let(:cop_config) do
+          {
             'AllowAfterParameterListInOneLineMethods' => false,
             'AllowBeforeEndInOneLineMethods' => true
           }

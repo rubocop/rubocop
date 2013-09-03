@@ -40,7 +40,7 @@ module Rubocop
         end
 
         def safe_assignment_allowed?
-          ParenthesesAroundCondition.config['AllowSafeAssignment']
+          cop_config['AllowSafeAssignment']
         end
       end
     end

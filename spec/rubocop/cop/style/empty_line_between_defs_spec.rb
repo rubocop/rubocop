@@ -5,11 +5,9 @@ require 'spec_helper'
 module Rubocop
   module Cop
     module Style
-      describe EmptyLineBetweenDefs do
-        subject(:empty_lines) { EmptyLineBetweenDefs.new }
-        before do
-          EmptyLineBetweenDefs.config = { 'AllowAdjacentOneLineDefs' => false }
-        end
+      describe EmptyLineBetweenDefs, :config do
+        subject(:empty_lines) { EmptyLineBetweenDefs.new(config) }
+        let(:cop_config) { { 'AllowAdjacentOneLineDefs' => false } }
 
         it 'finds offences in inner classes' do
           inspect_source(empty_lines, ['class K',
@@ -95,18 +93,17 @@ module Rubocop
           expect(empty_lines.messages).to be_empty
         end
 
-        describe 'AllowAdjacentOneLineDefs config parameter' do
-          it 'registers an offence for adjacent one-liners by default' do
-            source = ['def a; end',
-                      'def b; end']
-            inspect_source(empty_lines, source)
-            expect(empty_lines.offences).to have(1).item
-          end
+        it 'registers an offence for adjacent one-liners by default' do
+          source = ['def a; end',
+                    'def b; end']
+          inspect_source(empty_lines, source)
+          expect(empty_lines.offences).to have(1).item
+        end
 
-          it 'accepts adjacent one-liners if so configured' do
-            EmptyLineBetweenDefs.config = {
-              'AllowAdjacentOneLineDefs' => true
-            }
+        context 'when AllowAdjacentOneLineDefs is enabled' do
+          let(:cop_config) { { 'AllowAdjacentOneLineDefs' => true } }
+
+          it 'accepts adjacent one-liners' do
             source = ['def a; end',
                       'def b; end']
             inspect_source(empty_lines, source)
@@ -114,9 +111,6 @@ module Rubocop
           end
 
           it 'registers an offence for adjacent defs if some are multi-line' do
-            EmptyLineBetweenDefs.config = {
-              'AllowAdjacentOneLineDefs' => true
-            }
             source = ['def a; end',
                       'def b; end',
                       'def c', # Not a one-liner, so this is an offence.
