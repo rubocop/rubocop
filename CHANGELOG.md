@@ -14,6 +14,7 @@
 ### Changes
 
 * [#447](https://github.com/bbatsov/rubocop/issues/447) - `BlockAlignment` cop now allows `end` to be aligned with the start of the line containing `do`.
+* `SymbolName` now has an `AllowDots` config option to allow symbols like `:'whatever.submit_button'`.
 
 ### Bugs fixed
 
