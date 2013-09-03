@@ -369,9 +369,6 @@ Usage: rubocop [options] [file1, file2, ...]
                                  "\ty",
                                  'end'])
       # IfUnlessModifier depends on the configuration of LineLength.
-      # That configuration might have been set by other spec examples
-      # so we reset it to emulate a start from scratch.
-      Cop::Style::LineLength.config = nil
 
       expect(cli.run(['--format', 'simple',
                       '--only', 'IfUnlessModifier', 'example.rb'])).to eq(1)
@@ -390,9 +387,6 @@ Usage: rubocop [options] [file1, file2, ...]
                                  "\ty",
                                  'end'])
       # IfUnlessModifier depends on the configuration of LineLength.
-      # That configuration might have been set by other spec examples
-      # so we reset it to emulate a start from scratch.
-      Cop::Style::LineLength.config = nil
 
       expect(cli.run(['--format', 'simple', '--lint', 'example.rb'])).to eq(1)
       expect($stdout.string)
@@ -410,45 +404,51 @@ Usage: rubocop [options] [file1, file2, ...]
       expect($stderr.string).to eq("Unrecognized cop name: 123.\n")
     end
 
-    context '--show-cops' do
+    describe '--show-cops option' do
       let(:cops) { Cop::Cop.all }
+
       let(:global_conf) do
         config_path = Rubocop::Config.configuration_file_for(Dir.pwd.to_s)
         Rubocop::Config.configuration_from_file(config_path)
       end
+
+      let(:stdout) { $stdout.string }
+
       before do
-        cops.each do |cop_class|
-          cop_class.config = global_conf.for_cop(cop_class.cop_name)
-        end
+        expect { cli.run ['--show-cops'] }.to exit_with_code(0)
       end
 
-      subject do
-        expect { cli.run ['--show-cops'] }.to exit_with_code(0)
-        @stdout = $stdout.string
+      # Extracts the first line out of the description
+      def short_description_of_cop(cop_name)
+        desc = full_description_of_cop(cop_name)
+        desc ? desc.lines.first.strip : ''
       end
+
+      # Gets the full description of the cop or nil if no description is set.
+      def full_description_of_cop(cop_name)
+        cop_config = global_conf.for_cop(cop_name)
+        cop_config['Description']
+      end
+
       it 'prints all available cops and their description' do
-        subject
         cops.each do |cop|
-          expect(@stdout).to include cop.cop_name
-          expect(@stdout).to include cop.short_description
+          expect(stdout).to include cop.cop_name
+          expect(stdout).to include short_description_of_cop(cop.cop_name)
         end
       end
 
       it 'prints all types' do
-        subject
         cops
           .types
-          .dup
-          .map!(&:to_s)
-          .map!(&:capitalize)
-          .each { |type| expect(@stdout).to include(type) }
+          .map(&:to_s)
+          .map(&:capitalize)
+          .each { |type| expect(stdout).to include(type) }
       end
 
       it 'prints all cops in their right type listing' do
-        subject
-        lines = @stdout.lines
+        lines = stdout.lines
         lines.slice_before(/Type /).each do |slice|
-          types = cops.types.dup.map!(&:to_s).map!(&:capitalize)
+          types = cops.types.map(&:to_s).map(&:capitalize)
           current = types.delete(slice.shift[/Type '(?<c>[^'']+)'/, 'c'])
           # all cops in their type listing
           cops.with_type(current).each do |cop|
@@ -465,14 +465,13 @@ Usage: rubocop [options] [file1, file2, ...]
       end
 
       it 'prints the current configuration' do
-        subject
-        out = @stdout.lines.to_a
+        out = stdout.lines.to_a
         cops.each do |cop|
           conf = global_conf[cop.cop_name].dup
           confstrt = out.find_index { |i| i.include?("- #{cop.cop_name}") } + 1
           c = out[confstrt, conf.keys.size].to_s
           conf.delete('Description')
-          expect(c).to include(cop.short_description)
+          expect(c).to include(short_description_of_cop(cop.cop_name))
           conf.each do |k, v|
             # ugly hack to get hash/array content tested
             if v.kind_of?(Hash) || v.kind_of?(Array)
@@ -480,7 +479,6 @@ Usage: rubocop [options] [file1, file2, ...]
             else
               expect(c).to include "#{k}: #{v}"
             end
-
           end
         end
       end

@@ -27,9 +27,13 @@ module Rubocop
               space = 1
               total = indentation + body_length + space + kw_length + space +
                 cond_length
-              total <= LineLength.max && !body_has_comment?(body, comments)
+              total <= max_line_length && !body_has_comment?(body, comments)
             end
           end
+        end
+
+        def max_line_length
+          config.for_cop('LineLength')['Max']
         end
 
         def length(sexp)

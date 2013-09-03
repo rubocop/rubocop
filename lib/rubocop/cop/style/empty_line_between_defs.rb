@@ -11,7 +11,7 @@ module Rubocop
         def on_def(node)
           if @prev_def_end && (def_start(node) - @prev_def_end) == 1
             unless @prev_was_single_line && singe_line_def?(node) &&
-                EmptyLineBetweenDefs.config['AllowAdjacentOneLineDefs']
+                cop_config['AllowAdjacentOneLineDefs']
               convention(node, :keyword)
             end
           end

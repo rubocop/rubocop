@@ -297,7 +297,7 @@ module Rubocop
           # No offence if line break inside.
           return if t1.pos.line < t2.pos.line
           has_space = space_between?(t1, t2)
-          is_offence, word = if self.class.config['EnforcedStyleIsWithSpaces']
+          is_offence, word = if cop_config['EnforcedStyleIsWithSpaces']
                                [!has_space, 'missing']
                              else
                                [has_space, 'detected']

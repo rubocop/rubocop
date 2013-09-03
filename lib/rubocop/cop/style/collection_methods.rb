@@ -12,9 +12,9 @@ module Rubocop
       class CollectionMethods < Cop
         MSG = 'Prefer %s over %s.'
 
-        def self.preferred_methods
-          if config['PreferredMethods']
-            config['PreferredMethods'].symbolize_keys
+        def preferred_methods
+          if cop_config['PreferredMethods']
+            cop_config['PreferredMethods'].symbolize_keys
           end
         end
 
@@ -44,7 +44,7 @@ module Rubocop
         def check_method_node(node)
           _receiver, method_name, *_args = *node
 
-          if self.class.preferred_methods[method_name]
+          if preferred_methods[method_name]
             convention(
               node, :selector,
               sprintf(MSG,
@@ -55,7 +55,7 @@ module Rubocop
         end
 
         def preferred_method(method)
-          self.class.preferred_methods[method.to_sym]
+          preferred_methods[method.to_sym]
         end
       end
     end

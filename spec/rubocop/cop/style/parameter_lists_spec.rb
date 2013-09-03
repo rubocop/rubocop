@@ -5,10 +5,10 @@ require 'spec_helper'
 module Rubocop
   module Cop
     module Style
-      describe ParameterLists do
-        subject(:list) { ParameterLists.new }
-        before do
-          ParameterLists.config = {
+      describe ParameterLists, :config do
+        subject(:list) { ParameterLists.new(config) }
+        let(:cop_config) do
+          {
             'Max' => 4,
             'CountKeywordArgs' => true
           }
@@ -35,7 +35,7 @@ module Rubocop
         end
 
         context 'When CountKeywordArgs is false' do
-          before { ParameterLists.config['CountKeywordArgs'] = false }
+          before { cop_config['CountKeywordArgs'] = false }
 
           it 'it does not count keyword arguments', ruby: 2.0 do
             inspect_source(list, ['def meth(a, b, c, d: 1, e: 2)',

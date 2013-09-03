@@ -5,11 +5,11 @@ require 'spec_helper'
 module Rubocop
   module Cop
     module Style
-      describe DotPosition do
-        subject(:cop) { DotPosition.new }
+      describe DotPosition, :config do
+        subject(:cop) { DotPosition.new(config) }
 
         context 'Leading dots style' do
-          before { DotPosition.config = { 'Style' => 'Leading' } }
+          let(:cop_config) { { 'Style' => 'Leading' } }
 
           it 'registers an offence for trailing dot in multi-line call' do
             inspect_source(cop, ['something.',
@@ -35,7 +35,7 @@ module Rubocop
         end
 
         context 'Trailing dots style' do
-          before { DotPosition.config = { 'Style' => 'Trailing' } }
+          let(:cop_config) { { 'Style' => 'Trailing' } }
 
           it 'registers an offence for leading dot in multi-line call' do
             inspect_source(cop, ['something',
@@ -61,7 +61,7 @@ module Rubocop
         end
 
         context 'Unknown style' do
-          before { DotPosition.config = { 'Style' => 'test' } }
+          let(:cop_config) { { 'Style' => 'test' } }
 
           it 'raises an exception' do
             expect do

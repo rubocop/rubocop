@@ -90,7 +90,7 @@ def parse_source(source)
 end
 
 def autocorrect_source(cop, source)
-  cop.autocorrect = true
+  cop.instance_variable_get(:@options)[:autocorrect] = true
   processed_source = parse_source(source)
 
   _investigate(cop, processed_source)

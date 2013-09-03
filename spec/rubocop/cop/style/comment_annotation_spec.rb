@@ -5,25 +5,24 @@ require 'spec_helper'
 module Rubocop
   module Cop
     module Style
-      describe CommentAnnotation do
-        before do
-          CommentAnnotation.config = {
-            'Keywords' => %w(TODO FIXME OPTIMIZE HACK REVIEW)
-          }
+      describe CommentAnnotation, :config do
+        subject(:cop) { CommentAnnotation.new(config) }
+        let(:cop_config) do
+          { 'Keywords' => %w(TODO FIXME OPTIMIZE HACK REVIEW) }
         end
-        subject(:cop) { CommentAnnotation.new }
 
         it 'registers an offence for a missing colon' do
           inspect_source(cop, ['# TODO make better'])
           expect(cop.offences.size).to eq(1)
         end
 
-        it 'registers an offence for a missing colon after configured word' do
-          CommentAnnotation.config = {
-            'Keywords' => %w(ISSUE)
-          }
-          inspect_source(cop, ['# ISSUE wrong order'])
-          expect(cop.offences.size).to eq(1)
+        context 'with configured keyword' do
+          let(:cop_config) { { 'Keywords' => %w(ISSUE) } }
+
+          it 'registers an offence for a missing colon after the word' do
+            inspect_source(cop, ['# ISSUE wrong order'])
+            expect(cop.offences.size).to eq(1)
+          end
         end
 
         context 'when used with the clang formatter' do
@@ -77,12 +76,15 @@ module Rubocop
           expect(cop.offences).to be_empty
         end
 
-        it 'accepts a word without colon if not in the configuration' do
-          CommentAnnotation.config = {
-            'Keywords' => %w(FIXME OPTIMIZE HACK REVIEW)
-          }
-          inspect_source(cop, ['# TODO make better'])
-          expect(cop.offences).to be_empty
+        context 'when a keyword is not in the configuration' do
+          let(:cop_config) do
+            { 'Keywords' => %w(FIXME OPTIMIZE HACK REVIEW) }
+          end
+
+          it 'accepts the word without colon' do
+            inspect_source(cop, ['# TODO make better'])
+            expect(cop.offences).to be_empty
+          end
         end
       end
     end

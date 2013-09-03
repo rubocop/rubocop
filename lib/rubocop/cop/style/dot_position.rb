@@ -25,7 +25,7 @@ module Rubocop
             selector_line = node.loc.begin.line
           end
 
-          case DotPosition.config['Style'].downcase
+          case cop_config['Style'].downcase
           when 'leading' then dot_line == selector_line
           when 'trailing' then dot_line != selector_line
           else fail 'Unknown dot position style selected.'

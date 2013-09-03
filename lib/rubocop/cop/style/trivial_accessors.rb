@@ -36,15 +36,15 @@ module Rubocop
         end
 
         def exact_name_match?
-          TrivialAccessors.config['ExactNameMatch']
+          cop_config['ExactNameMatch']
         end
 
         def allow_predicates?
-          TrivialAccessors.config['AllowPredicates']
+          cop_config['AllowPredicates']
         end
 
         def whitelist
-          whitelist = TrivialAccessors.config['Whitelist']
+          whitelist = cop_config['Whitelist']
           Array(whitelist).map(&:to_sym) + [:initialize]
         end
 

@@ -27,8 +27,8 @@ module Rubocop
           end
         end
 
-        def self.keywords
-          CommentAnnotation.config['Keywords']
+        def keywords
+          cop_config['Keywords']
         end
 
         private
@@ -51,7 +51,7 @@ module Rubocop
         end
 
         def keyword?(word)
-          CommentAnnotation.keywords.include?(word)
+          keywords.include?(word)
         end
       end
     end

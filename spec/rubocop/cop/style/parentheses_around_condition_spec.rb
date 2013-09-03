@@ -5,11 +5,9 @@ require 'spec_helper'
 module Rubocop
   module Cop
     module Style
-      describe ParenthesesAroundCondition do
-        subject(:cop) { ParenthesesAroundCondition.new }
-        before do
-          ParenthesesAroundCondition.config = { 'AllowSafeAssignment' => true }
-        end
+      describe ParenthesesAroundCondition, :config do
+        subject(:cop) { ParenthesesAroundCondition.new(config) }
+        let(:cop_config) { { 'AllowSafeAssignment' => true } }
 
         it 'registers an offence for parentheses around condition' do
           inspect_source(cop, ['if (x > 10)',
@@ -69,9 +67,7 @@ module Rubocop
         end
 
         context 'safe assignment is not allowed' do
-          before do
-            ParenthesesAroundCondition.config['AllowSafeAssignment'] = false
-          end
+          let(:cop_config) { { 'AllowSafeAssignment' => false } }
 
           it 'does not accepts = in condition surrounded with braces' do
             inspect_source(cop,

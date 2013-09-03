@@ -7,8 +7,11 @@ module Rubocop
   module Cop
     describe Commissioner do
       describe '#investigate' do
+        let(:cop) { double(Cop, offences: []).as_null_object }
+
         it 'returns all offences found by the cops' do
-          cop = double(Cop, offences: [1])
+          cop.stub(:offences).and_return([1])
+
           commissioner = Commissioner.new([cop])
           source = []
           processed_source = parse_source(source)
@@ -17,7 +20,6 @@ module Rubocop
         end
 
         it 'traverses the AST and invoke cops specific callbacks' do
-          cop = double(Cop, offences: [])
           cop.should_receive(:on_def)
 
           commissioner = Commissioner.new([cop])
@@ -30,7 +32,6 @@ module Rubocop
         it 'passes the input params to all cops that implement their own #investigate method' do
           source = []
           processed_source = parse_source(source)
-          cop = double(Cop, offences: [])
           cop.should_receive(:investigate).with(processed_source)
 
           commissioner = Commissioner.new([cop])
@@ -39,7 +40,6 @@ module Rubocop
         end
 
         it 'stores all errors raised by the cops' do
-          cop = double(Cop, offences: [])
           cop.stub(:on_def) { raise RuntimeError }
 
           commissioner = Commissioner.new([cop])
@@ -54,7 +54,6 @@ module Rubocop
 
         context 'when passed :raise_error option' do
           it 're-raises the exception received while processing' do
-            cop = double(Cop, offences: [])
             cop.stub(:on_def) { raise RuntimeError }
 
             commissioner = Commissioner.new([cop], raise_error: true)

@@ -16,7 +16,6 @@ module Rubocop
     alias_method :wants_to_quit?, :wants_to_quit
 
     def initialize
-      @cops = Cop::Cop.all
       @errors = []
       @options = {}
       @config_store = ConfigStore.new
@@ -32,12 +31,6 @@ module Rubocop
       parse_options(args)
 
       Config.debug = @options[:debug]
-
-      # filter out Rails cops unless requested
-      @cops.reject!(&:rails?) unless @options[:rails]
-
-      # filter out style cops when --lint is passed
-      @cops.select!(&:lint?) if @options[:lint]
 
       target_files = target_finder.find(args)
       target_files.each(&:freeze).freeze
@@ -70,8 +63,34 @@ module Rubocop
       return 1
     end
 
+    def mobilized_cop_classes
+      @mobilized_cop_classes ||= begin
+        cop_classes = Cop::Cop.all
+
+        if @options[:only]
+          cop_classes.select! { |c| c.cop_name == @options[:only] }
+        else
+          # filter out Rails cops unless requested
+          cop_classes.reject!(&:rails?) unless @options[:rails]
+
+          # filter out style cops when --lint is passed
+          cop_classes.select!(&:lint?) if @options[:lint]
+        end
+
+        cop_classes
+      end
+    end
+
+    def inspect_file(file)
+      config = @config_store.for(file)
+      team = Cop::Team.new(mobilized_cop_classes, config, @options)
+      offences = team.inspect_file(file)
+      @errors.concat(team.errors)
+      offences
+    end
+
     def validate_only_option
-      if @cops.none? { |c| c.cop_name == @options[:only] }
+      if Cop::Cop.all.none? { |c| c.cop_name == @options[:only] }
         fail ArgumentError, "Unrecognized cop name: #{@options[:only]}."
       end
     end
@@ -81,13 +100,22 @@ module Rubocop
         fail ArgumentError,
              '--auto-gen-config can not be combined with any other arguments.'
       end
+
+      target_finder.find(args).each do |file|
+        config = @config_store.for(file)
+        if @options[:auto_gen_config] && config.contains_auto_generated_config
+          fail "Remove #{Config::AUTO_GENERATED_FILE} from the current " +
+            'configuration before generating it again.'
+        end
+      end
     end
 
     def print_available_cops
-      puts "Available cops (#{@cops.length}) + config for #{Dir.pwd.to_s}: "
+      cops = Cop::Cop.all
+      puts "Available cops (#{cops.length}) + config for #{Dir.pwd.to_s}: "
       dirconf = @config_store.for(Dir.pwd.to_s)
-      @cops.types.sort!.each do |type|
-        coptypes = @cops.with_type(type).sort_by!(&:cop_name)
+      cops.types.sort!.each do |type|
+        coptypes = cops.with_type(type).sort_by!(&:cop_name)
         puts "Type '#{type.to_s.capitalize}' (#{coptypes.size}):"
         coptypes.each do |cop|
           name = cop.cop_name
@@ -102,88 +130,6 @@ module Rubocop
 
     def print_conf_option(option, value)
       puts  "    - #{option}: #{value}"
-    end
-
-    def inspect_file(file)
-      begin
-        processed_source = SourceParser.parse_file(file)
-      rescue Encoding::UndefinedConversionError, ArgumentError => e
-        handle_error(e, "An error occurred while parsing #{file}.".color(:red))
-        return []
-      end
-
-      offences = processed_source.diagnostics.map do |diagnostic|
-        Cop::Offence.from_diagnostic(diagnostic)
-      end
-
-      # If we got any syntax errors, return only the syntax offences.
-      # Parser may return nil for AST even though there are no syntax errors.
-      # e.g. sources which contain only comments
-      if offences.any? { |o| [:error, :fatal].include?(o.severity) }
-        return offences
-      end
-
-      config = @config_store.for(file)
-      if @options[:auto_gen_config] && config.contains_auto_generated_config
-        fail "Remove #{Config::AUTO_GENERATED_FILE} from the current " +
-          'configuration before generating it again.'
-      end
-      set_config_for_all_cops(config)
-
-      cops = create_cops(config, processed_source)
-      commissioner = Cop::Commissioner.new(cops)
-      offences += commissioner.investigate(processed_source)
-      process_commissioner_errors(file, commissioner.errors)
-      autocorrect(processed_source.buffer, cops)
-      offences.sort
-    end
-
-    def process_commissioner_errors(file, file_errors)
-      file_errors.each do |cop, errors|
-        errors.each do |e|
-          handle_error(e,
-                       "An error occurred while #{cop.name}".color(:red) +
-                       " cop was inspecting #{file}.".color(:red))
-        end
-      end
-    end
-
-    def set_config_for_all_cops(config)
-      @cops.each do |cop_class|
-        cop_class.config = config.for_cop(cop_class.cop_name)
-      end
-    end
-
-    def create_cops(config, processed_source)
-      cops = []
-      @cops.each do |cop_class|
-        cop_name = cop_class.cop_name
-        next unless config.cop_enabled?(cop_name)
-        next unless !@options[:only] || @options[:only] == cop_name
-        cop = setup_cop(cop_class, processed_source.disabled_lines_for_cops)
-        cops << cop
-      end
-      cops
-    end
-
-    def setup_cop(cop_class, disabled_lines_for_cops = nil)
-      cop = cop_class.new
-      cop.debug = @options[:debug]
-      cop.autocorrect = @options[:autocorrect]
-      if disabled_lines_for_cops
-        cop.disabled_lines = disabled_lines_for_cops[cop_class.cop_name]
-      end
-      cop
-    end
-
-    def handle_error(e, message)
-      @errors << message
-      warn message
-      if @options[:debug]
-        puts e.message, e.backtrace
-      else
-        warn 'To see the complete backtrace run rubocop -d.'
-      end
     end
 
     # rubocop:disable MethodLength
@@ -311,23 +257,6 @@ module Rubocop
       warn 'Please, report your problems to RuboCop\'s issue tracker.'
       warn 'Mention the following information in the issue report:'
       warn Rubocop::Version.version(true)
-    end
-
-    def autocorrect(buffer, cops)
-      return unless @options[:autocorrect]
-
-      corrections = cops.reduce([]) do |array, cop|
-        array.concat(cop.corrections)
-        array
-      end
-
-      corrector = Cop::Corrector.new(buffer, corrections)
-      new_source = corrector.rewrite
-
-      unless new_source == buffer.source
-        filename = buffer.name
-        File.open(filename, 'w') { |f| f.write(new_source) }
-      end
     end
 
     private

@@ -9,18 +9,17 @@ module Rubocop
       class RegexpLiteral < Cop
         def on_regexp(node)
           slashes = node.loc.expression.source.count('/')
-          max = RegexpLiteral.max_slashes
           msg = if node.loc.begin.is?('/')
                   slashes -= 2 # subtract delimiters
-                  error_message('') if slashes > max
+                  error_message('') if slashes > max_slashes
                 else
-                  error_message('only ') if slashes <= max
+                  error_message('only ') if slashes <= max_slashes
                 end
           convention(node, :expression, msg) if msg
         end
 
-        def self.max_slashes
-          RegexpLiteral.config['MaxSlashes']
+        def max_slashes
+          cop_config['MaxSlashes']
         end
 
         private
@@ -29,8 +28,8 @@ module Rubocop
           sprintf('Use %%r %sfor regular expressions matching more ' +
                   "than %d '/' character%s.",
                   word,
-                  RegexpLiteral.max_slashes,
-                  RegexpLiteral.max_slashes == 1 ? '' : 's')
+                  max_slashes,
+                  max_slashes == 1 ? '' : 's')
         end
       end
     end

@@ -5,9 +5,9 @@ require 'spec_helper'
 module Rubocop
   module Cop
     module Style
-      describe BlockNesting do
-        subject(:block_nesting) { BlockNesting.new }
-        before { BlockNesting.config = { 'Max' => 2 } }
+      describe BlockNesting, :config do
+        subject(:block_nesting) { BlockNesting.new(config) }
+        let(:cop_config) { { 'Max' => 2 } }
 
         it 'accepts `Max` levels of nesting' do
           source = ['if a',
