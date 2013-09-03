@@ -5,9 +5,9 @@ module Rubocop
     module Style
       # This cop checks whether the block arguments of a single-line
       # reduce(inject) call are named *a*(for accumulator) and *e*
-      # (for element)
+      # (for element).
       class ReduceArguments < Cop
-        MSG = 'Name reduce arguments |a, e| (accumulator, element).'
+        MSG = 'Name reduce block arguments |a, e| (accumulator, element).'
 
         ARGS_NODE = s(:args, s(:arg, :a), s(:arg, :e))
 
@@ -22,7 +22,7 @@ module Rubocop
           return unless receiver
           return unless [:reduce, :inject].include?(method_name)
 
-          convention(node, :expression) unless args_node == ARGS_NODE
+          convention(args_node, :expression) unless args_node == ARGS_NODE
         end
       end
     end
