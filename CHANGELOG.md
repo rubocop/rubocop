@@ -10,6 +10,7 @@
 * `AvoidPerlBackrefs` cop does auto-correction.
 * `AvoidPerlisms` cop does auto-correction.
 * `RedundantReturn` cop does auto-correction.
+* `Blocks` cop does auto-correction.
 
 ### Changes
 

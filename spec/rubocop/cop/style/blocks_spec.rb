@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe Blocks do
-        subject(:cop) { Blocks.new }
+        subject(:cop) { described_class.new }
 
         it 'accepts a multiline block with do-end' do
           inspect_source(cop, ['each do |x|',
@@ -22,6 +22,11 @@ module Rubocop
         it 'accepts a single line block with braces' do
           inspect_source(cop, ['each { |x| }'])
           expect(cop.offences).to be_empty
+        end
+
+        it 'auto-corrects do and end for single line blocks to { and }' do
+          new_source = autocorrect_source(cop, 'block do |x| end')
+          expect(new_source).to eq('block { |x| }')
         end
 
         context 'when there are braces around a multi-line block' do
@@ -70,6 +75,25 @@ module Rubocop
                    '}']
             inspect_source(cop, src)
             expect(cop.messages).to eq([Blocks::MULTI_LINE_MSG])
+          end
+
+          it 'auto-corrects do and end for single line blocks to { and }' do
+            source = <<-END.strip_indent
+              each { |x|
+                some_method
+                other_method
+              }
+            END
+
+            expected_source = <<-END.strip_indent
+              each do |x|
+                some_method
+                other_method
+              end
+            END
+
+            new_source = autocorrect_source(cop, source)
+            expect(new_source).to eq(expected_source)
           end
         end
       end

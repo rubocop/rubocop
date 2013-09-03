@@ -35,6 +35,18 @@ module Rubocop
           end
         end
 
+        def autocorrect_action(node)
+          @corrections << lambda do |corrector|
+            if node.loc.begin.is?('{')
+              corrector.replace(node.loc.begin, 'do')
+              corrector.replace(node.loc.end, 'end')
+            else
+              corrector.replace(node.loc.begin, '{')
+              corrector.replace(node.loc.end, '}')
+            end
+          end
+        end
+
         private
 
         def get_block(node)
