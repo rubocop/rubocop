@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe AvoidGlobalVars do
-        let(:cop) { AvoidGlobalVars.new }
+        subject(:cop) { AvoidGlobalVars.new }
 
         it 'registers an offence for $custom' do
           inspect_source(cop, ['puts $custom'])

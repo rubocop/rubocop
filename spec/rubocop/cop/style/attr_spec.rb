@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe Attr do
-        let(:cop) { described_class.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence attr' do
           inspect_source(cop, ['class SomeClass',

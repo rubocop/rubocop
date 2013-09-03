@@ -6,7 +6,7 @@ require 'stringio'
 module Rubocop
   module Formatter
     describe EmacsStyleFormatter do
-      let(:formatter) { EmacsStyleFormatter.new(output) }
+      subject(:formatter) { EmacsStyleFormatter.new(output) }
       let(:output) { StringIO.new }
 
       describe '#file_finished' do

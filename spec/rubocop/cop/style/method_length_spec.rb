@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe MethodLength do
-        let(:method_length) { MethodLength.new }
+        subject(:method_length) { MethodLength.new }
         before do
           MethodLength.config = { 'Max' => 5, 'CountComments' => false }
         end

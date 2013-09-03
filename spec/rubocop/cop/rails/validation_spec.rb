@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Rails
       describe Validation do
-        let(:cop) { described_class.new }
+        subject(:cop) { described_class.new }
 
         Validation::BLACKLIST.each do |validation|
           it "registers an offence for #{validation}" do

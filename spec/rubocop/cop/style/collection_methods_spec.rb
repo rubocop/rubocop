@@ -15,7 +15,7 @@ module Rubocop
           }
         }
 
-        let(:cop) { CollectionMethods.new }
+        subject(:cop) { CollectionMethods.new }
 
         CollectionMethods.preferred_methods.keys.each do |method|
           it "registers an offence for #{method} with block" do

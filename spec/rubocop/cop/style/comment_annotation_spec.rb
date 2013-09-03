@@ -11,7 +11,7 @@ module Rubocop
             'Keywords' => %w(TODO FIXME OPTIMIZE HACK REVIEW)
           }
         end
-        let(:cop) { CommentAnnotation.new }
+        subject(:cop) { CommentAnnotation.new }
 
         it 'registers an offence for a missing colon' do
           inspect_source(cop, ['# TODO make better'])

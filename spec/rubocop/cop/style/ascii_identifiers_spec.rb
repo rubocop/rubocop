@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe AsciiIdentifiers do
-        let(:ascii) { AsciiIdentifiers.new }
+        subject(:ascii) { AsciiIdentifiers.new }
 
         it 'registers an offence for a variable name with non-ascii chars' do
           inspect_source(ascii,

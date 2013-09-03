@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Lint
       describe RescueException do
-        let(:re) { RescueException.new }
+        subject(:re) { RescueException.new }
 
         it 'registers an offence for rescue from Exception' do
           inspect_source(re,

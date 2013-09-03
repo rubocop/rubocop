@@ -7,7 +7,7 @@ require 'ostruct'
 module Rubocop
   module Formatter
     describe DisabledConfigFormatter do
-      let(:formatter) { DisabledConfigFormatter.new(output) }
+      subject(:formatter) { DisabledConfigFormatter.new(output) }
       let(:output) do
         o = StringIO.new
         def o.path

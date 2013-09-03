@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe FavorSprintf do
-        let(:fs) { FavorSprintf.new }
+        subject(:fs) { FavorSprintf.new }
 
         it 'registers an offence for a string followed by something' do
           inspect_source(fs,

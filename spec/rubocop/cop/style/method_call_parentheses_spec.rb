@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe MethodCallParentheses do
-        let(:cop) { described_class.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for parens in method call without args' do
           inspect_source(cop, ['top.test()'])

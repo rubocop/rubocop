@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe ParenthesesAroundCondition do
-        let(:cop) { ParenthesesAroundCondition.new }
+        subject(:cop) { ParenthesesAroundCondition.new }
         before do
           ParenthesesAroundCondition.config = { 'AllowSafeAssignment' => true }
         end

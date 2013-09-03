@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe Proc do
-        let(:proc) { Proc.new }
+        subject(:proc) { Proc.new }
 
         it 'registers an offence for a Proc.new call' do
           inspect_source(proc, ['f = Proc.new { |x| puts x }'])

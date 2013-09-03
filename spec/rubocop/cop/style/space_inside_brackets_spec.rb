@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe SpaceInsideBrackets do
-        let(:space) { SpaceInsideBrackets.new }
+        subject(:space) { SpaceInsideBrackets.new }
 
         it 'registers an offence for an array literal with spaces inside' do
           inspect_source(space, ['a = [1, 2 ]',

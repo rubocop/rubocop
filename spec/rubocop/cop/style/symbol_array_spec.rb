@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe SymbolArray do
-        let(:sa) { SymbolArray.new }
+        subject(:sa) { SymbolArray.new }
 
         it 'registers an offence for arrays of symbols', { ruby: 2.0 } do
           inspect_source(sa,

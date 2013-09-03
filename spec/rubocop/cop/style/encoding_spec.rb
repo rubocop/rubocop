@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe Encoding do
-        let(:encoding) { Encoding.new }
+        subject(:encoding) { Encoding.new }
 
         it 'registers an offence when no encoding present', ruby: 1.9 do
           inspect_source(encoding, ['def foo() end'])

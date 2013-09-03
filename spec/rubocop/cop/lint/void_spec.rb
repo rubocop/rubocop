@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Lint
       describe Void do
-        let(:void_op) { Void.new }
+        subject(:void_op) { Void.new }
 
         Void::OPS.each do |op|
           it "registers an offence for void op #{op} if not on last line" do

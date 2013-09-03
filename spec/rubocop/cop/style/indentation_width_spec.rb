@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe IndentationWidth do
-        let(:cop) { described_class.new }
+        subject(:cop) { described_class.new }
 
         context 'with if statement' do
           it 'registers an offence for bad indentation of an if body' do

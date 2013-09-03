@@ -7,7 +7,7 @@ module Rubocop
   module Cop
     module Lint
       describe BlockAlignment do
-        let(:cop) { BlockAlignment.new }
+        subject(:cop) { BlockAlignment.new }
 
         it 'registers an offence for mismatched block end' do
           inspect_source(cop,

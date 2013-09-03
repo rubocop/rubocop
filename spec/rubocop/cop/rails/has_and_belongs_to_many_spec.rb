@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Rails
       describe HasAndBelongsToMany do
-        let(:cop) { described_class.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for has_and_belongs_to_many' do
           inspect_source(cop,

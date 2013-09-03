@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe MultilineBlockChain do
-        let(:cop) { described_class.new }
+        subject(:cop) { described_class.new }
 
         context 'with multi-line block chaining' do
           it 'registers an offence for a simple case' do

@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe BeginBlock do
-        let(:cop) { BeginBlock.new }
+        subject(:cop) { BeginBlock.new }
 
         it 'reports an offence for a BEGIN block' do
           src = ['BEGIN { test }']

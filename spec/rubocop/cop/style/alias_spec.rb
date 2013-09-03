@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe Alias do
-        let(:a) { Alias.new }
+        subject(:a) { Alias.new }
 
         it 'registers an offence for alias with symbol args' do
           inspect_source(a,

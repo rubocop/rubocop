@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe Blocks do
-        let(:cop) { Blocks.new }
+        subject(:cop) { Blocks.new }
 
         it 'accepts a multiline block with do-end' do
           inspect_source(cop, ['each do |x|',

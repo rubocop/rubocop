@@ -8,7 +8,7 @@ module Rubocop
   describe CLI, :isolated_environment do
     include FileHelper
 
-    let(:cli) { CLI.new }
+    subject(:cli) { CLI.new }
 
     before(:each) do
       $stdout = StringIO.new

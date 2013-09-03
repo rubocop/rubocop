@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe EmptyLiteral do
-        let(:cop) { described_class.new }
+        subject(:cop) { described_class.new }
 
         describe 'Empty Array' do
           it 'registers an offence for Array.new()' do

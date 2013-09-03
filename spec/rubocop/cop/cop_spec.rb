@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe Cop do
-      let(:cop) { Cop.new }
+      subject(:cop) { Cop.new }
       let(:location) do
         source_buffer = Parser::Source::Buffer.new('test', 1)
         source_buffer.source = "a\n"

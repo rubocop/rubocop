@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe ModuleFunction do
-        let(:cop) { described_class.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for extend self in module' do
           inspect_source(cop,

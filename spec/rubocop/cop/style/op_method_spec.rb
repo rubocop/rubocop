@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe OpMethod do
-        let(:om) { OpMethod.new }
+        subject(:om) { OpMethod.new }
 
         it 'registers an offence for arg not named other' do
           inspect_source(om,

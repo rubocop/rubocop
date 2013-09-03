@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Lint
       describe EmptyEnsure do
-        let(:cop) { EmptyEnsure.new }
+        subject(:cop) { EmptyEnsure.new }
 
         it 'registers an offence for empty ensure' do
           inspect_source(cop,

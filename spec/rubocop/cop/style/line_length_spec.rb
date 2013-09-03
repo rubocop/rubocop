@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe LineLength do
-        let(:ll) { LineLength.new }
+        subject(:ll) { LineLength.new }
         before { LineLength.config = { 'Max' => 79 } }
 
         it "registers an offence for a line that's 80 characters wide" do

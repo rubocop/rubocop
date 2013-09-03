@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe Not do
-        let(:a) { Not.new }
+        subject(:a) { Not.new }
 
         it 'registers an offence for not' do
           inspect_source(a, ['not test'])

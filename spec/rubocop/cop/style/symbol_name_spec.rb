@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe SymbolName do
-        let(:symbol_name) { SymbolName.new }
+        subject(:symbol_name) { SymbolName.new }
 
         before do
           SymbolName.config =

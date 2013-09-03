@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe TrailingWhitespace do
-        let(:tws) { TrailingWhitespace.new }
+        subject(:tws) { TrailingWhitespace.new }
 
         it 'registers an offence for a line ending with space' do
           source = ['x = 0 ']

@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe AvoidPerlBackrefs do
-        let(:cop) { described_class.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for $1' do
           inspect_source(cop, ['puts $1'])

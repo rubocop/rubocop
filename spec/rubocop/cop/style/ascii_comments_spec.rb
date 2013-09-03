@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe AsciiComments do
-        let(:ascii) { AsciiComments.new }
+        subject(:ascii) { AsciiComments.new }
 
         it 'registers an offence for a comment with non-ascii chars' do
           inspect_source(ascii,

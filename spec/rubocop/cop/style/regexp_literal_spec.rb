@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe RegexpLiteral do
-        let(:rl) { RegexpLiteral.new }
+        subject(:rl) { RegexpLiteral.new }
         before { RegexpLiteral.config = { 'MaxSlashes' => 1 } }
 
         context 'when a regexp uses // delimiters' do

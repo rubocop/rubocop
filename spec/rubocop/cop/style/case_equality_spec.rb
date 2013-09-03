@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe CaseEquality do
-        let(:ce) { CaseEquality.new }
+        subject(:ce) { CaseEquality.new }
 
         it 'registers an offence for ===' do
           inspect_source(ce, ['Array === var'])

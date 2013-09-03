@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Lint
       describe AssignmentInCondition do
-        let(:cop) { AssignmentInCondition.new }
+        subject(:cop) { AssignmentInCondition.new }
         before do
           AssignmentInCondition.config = { 'AllowSafeAssignment' => true }
         end

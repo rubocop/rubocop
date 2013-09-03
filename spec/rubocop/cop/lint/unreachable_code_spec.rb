@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Lint
       describe UnreachableCode do
-        let(:uc) { UnreachableCode.new }
+        subject(:uc) { UnreachableCode.new }
 
         UnreachableCode::NODE_TYPES.each do |t|
           it "registers an offence for #{t} before other statements" do

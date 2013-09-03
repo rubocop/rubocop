@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe StringLiterals do
-        let(:cop) { StringLiterals.new }
+        subject(:cop) { StringLiterals.new }
 
         it 'registers offence for double quotes when single quotes suffice' do
           inspect_source(cop, ['s = "abc"',

@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe ReduceArguments do
-        let(:cop) { described_class.new }
+        subject(:cop) { described_class.new }
 
         it 'find wrong argument names in calls with different syntax' do
           inspect_source(cop,

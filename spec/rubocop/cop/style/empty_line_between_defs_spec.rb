@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe EmptyLineBetweenDefs do
-        let(:empty_lines) { EmptyLineBetweenDefs.new }
+        subject(:empty_lines) { EmptyLineBetweenDefs.new }
         before do
           EmptyLineBetweenDefs.config = { 'AllowAdjacentOneLineDefs' => false }
         end

@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe MultilineIfThen do
-        let(:mit) { MultilineIfThen.new }
+        subject(:mit) { MultilineIfThen.new }
 
         # if
 

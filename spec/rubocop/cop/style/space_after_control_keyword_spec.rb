@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe SpaceAfterControlKeyword do
-        let(:ap) { SpaceAfterControlKeyword.new }
+        subject(:ap) { SpaceAfterControlKeyword.new }
 
         it 'registers an offence for normal if' do
           inspect_source(ap,

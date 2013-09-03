@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Lint
       describe EndInMethod do
-        let(:cop) { EndInMethod.new }
+        subject(:cop) { EndInMethod.new }
 
         it 'reports an offence for def with an END inside' do
           src = ['def test',

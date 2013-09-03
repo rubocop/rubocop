@@ -5,7 +5,7 @@ require 'stringio'
 
 module Rubocop
   describe Formatter::ProgressFormatter do
-    let(:formatter) { Formatter::ProgressFormatter.new(output) }
+    subject(:formatter) { Formatter::ProgressFormatter.new(output) }
     let(:output) { StringIO.new }
 
     let(:files) do

@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe AvoidFor do
-        let(:af) { AvoidFor.new }
+        subject(:af) { AvoidFor.new }
 
         it 'registers an offence for for' do
           inspect_source(af,

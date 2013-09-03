@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe EmptyLines do
-        let(:empty_lines) { EmptyLines.new }
+        subject(:empty_lines) { EmptyLines.new }
 
         it 'registers an offence for consecutive empty lines' do
           inspect_source(empty_lines,

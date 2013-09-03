@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe Tab do
-        let(:tab) { Tab.new }
+        subject(:tab) { Tab.new }
 
         it 'registers an offence for a line indented with tab' do
           inspect_source(tab, ["\tx = 0"])

@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe WordArray do
-        let(:wa) { WordArray.new }
+        subject(:wa) { WordArray.new }
 
         it 'registers an offence for arrays of single quoted strings' do
           inspect_source(wa,

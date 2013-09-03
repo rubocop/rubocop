@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe DefWithoutParentheses do
-        let(:cop) { described_class.new }
+        subject(:cop) { described_class.new }
 
         it 'reports an offence for def with parameters but no parens' do
           src = ['def func a, b',

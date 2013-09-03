@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe SpaceAfterSemicolon do
-        let(:space) { SpaceAfterSemicolon.new }
+        subject(:space) { SpaceAfterSemicolon.new }
 
         it 'registers an offence for semicolon without space after it' do
           inspect_source(space, ['x = 1;y = 2'])

@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe NumericLiterals do
-        let(:num) { NumericLiterals.new }
+        subject(:num) { NumericLiterals.new }
 
         it 'registers an offence for a long integer without underscores' do
           inspect_source(num, ['a = 123456'])

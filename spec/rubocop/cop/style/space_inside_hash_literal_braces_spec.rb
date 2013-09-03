@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe SpaceInsideHashLiteralBraces do
-        let(:sihlb) { SpaceInsideHashLiteralBraces.new }
+        subject(:sihlb) { SpaceInsideHashLiteralBraces.new }
         before do
           SpaceInsideHashLiteralBraces.config = {
             'EnforcedStyleIsWithSpaces' => true

@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe UnlessElse do
-        let(:ue) { UnlessElse.new }
+        subject(:ue) { UnlessElse.new }
 
         it 'registers an offence for an unless with else' do
           inspect_source(ue, ['unless x',

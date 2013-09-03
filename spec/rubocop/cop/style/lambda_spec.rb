@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe Lambda do
-        let(:lambda) { Lambda.new }
+        subject(:lambda) { Lambda.new }
 
         it 'registers an offence for an old single-line lambda call' do
           inspect_source(lambda, ['f = lambda { |x| x }'])

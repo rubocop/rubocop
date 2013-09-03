@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe AvoidClassVars do
-        let(:acv) { AvoidClassVars.new }
+        subject(:acv) { AvoidClassVars.new }
 
         it 'registers an offence for class variable declaration' do
           inspect_source(acv,

@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Lint
       describe HandleExceptions do
-        let(:he) { HandleExceptions.new }
+        subject(:he) { HandleExceptions.new }
 
         it 'registers an offence for empty rescue block' do
           inspect_source(he,

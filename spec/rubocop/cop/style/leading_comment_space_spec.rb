@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe LeadingCommentSpace do
-        let(:lcs) { LeadingCommentSpace.new }
+        subject(:lcs) { LeadingCommentSpace.new }
 
         it 'registers an offence for comment without leading space' do
           inspect_source(lcs,

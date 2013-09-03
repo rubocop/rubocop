@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe ClassMethods do
-        let(:cm) { ClassMethods.new }
+        subject(:cm) { ClassMethods.new }
 
         it 'registers an offence for methods using a class name' do
           inspect_source(cm,

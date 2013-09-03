@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe SpaceAroundBraces do
-        let(:space) { SpaceAroundBraces.new }
+        subject(:space) { SpaceAroundBraces.new }
 
         it 'registers an offence for left brace without spaces' do
           inspect_source(space, ['each{ puts }'])

@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe SpaceAfterMethodName do
-        let(:cop) { SpaceAfterMethodName.new }
+        subject(:cop) { SpaceAfterMethodName.new }
 
         it 'registers an offence for def with space before the parenthesis' do
           inspect_source(cop,

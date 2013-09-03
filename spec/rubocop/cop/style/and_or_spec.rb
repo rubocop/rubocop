@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe AndOr do
-        let(:cop) { AndOr.new }
+        subject(:cop) { AndOr.new }
 
         it 'registers an offence for OR' do
           inspect_source(cop,

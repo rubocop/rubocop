@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe SingleLineMethods do
-        let(:slm) { SingleLineMethods.new }
+        subject(:slm) { SingleLineMethods.new }
         before do
           SingleLineMethods.config = { 'AllowIfMethodIsEmpty' => true }
         end

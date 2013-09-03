@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe HashSyntax do
-        let(:hash_syntax) { HashSyntax.new }
+        subject(:hash_syntax) { HashSyntax.new }
 
         it 'registers offence for hash rocket syntax when new is possible' do
           inspect_source(hash_syntax, ['x = { :a => 0 }'])

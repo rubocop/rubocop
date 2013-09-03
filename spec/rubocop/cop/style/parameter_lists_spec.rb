@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe ParameterLists do
-        let(:list) { ParameterLists.new }
+        subject(:list) { ParameterLists.new }
         before do
           ParameterLists.config = {
             'Max' => 4,

@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe AlignParameters do
-        let(:align) { AlignParameters.new }
+        subject(:align) { AlignParameters.new }
 
         it 'registers an offence for parameters with single indent' do
           inspect_source(align, ['function(a,',

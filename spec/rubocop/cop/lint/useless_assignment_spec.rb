@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Lint
       describe UselessAssignment do
-        let(:cop) { UselessAssignment.new }
+        subject(:cop) { UselessAssignment.new }
 
         it 'registers an offence for def ending with lvar assignment' do
           inspect_source(cop,

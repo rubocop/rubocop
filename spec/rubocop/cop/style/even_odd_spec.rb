@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe EvenOdd do
-        let(:cop) { described_class.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for x % 2 == 0' do
           inspect_source(cop,

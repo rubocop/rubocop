@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Lint
       describe ParenthesesAsGroupedExpression do
-        let(:cop) { ParenthesesAsGroupedExpression.new }
+        subject(:cop) { ParenthesesAsGroupedExpression.new }
 
         it 'registers an offence for method call with space before the ' +
           'parenthesis' do

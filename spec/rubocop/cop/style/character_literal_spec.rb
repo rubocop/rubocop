@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe CharacterLiteral do
-        let(:cop) { CharacterLiteral.new }
+        subject(:cop) { CharacterLiteral.new }
 
         it 'registers an offence for character literals' do
           inspect_source(cop, ['x = ?x'])

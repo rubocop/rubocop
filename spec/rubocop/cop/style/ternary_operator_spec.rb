@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe MultilineTernaryOperator do
-        let(:op) { MultilineTernaryOperator.new }
+        subject(:op) { MultilineTernaryOperator.new }
 
         it 'registers offence for a multiline ternary operator expression' do
           inspect_source(op, ['a = cond ?',
@@ -21,7 +21,7 @@ module Rubocop
       end
 
       describe NestedTernaryOperator do
-        let(:op) { NestedTernaryOperator.new }
+        subject(:op) { NestedTernaryOperator.new }
 
         it 'registers an offence for a nested ternary operator expression' do
           inspect_source(op, ['a ? (b ? b1 : b2) : a2'])
