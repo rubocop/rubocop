@@ -89,7 +89,7 @@ module Rubocop
       end
 
       def cop_config
-        @config.for_cop(name)
+        @config.for_cop(self)
       end
 
       def autocorrect?
@@ -126,9 +126,11 @@ module Rubocop
         add_offence(:warning, node, location, message)
       end
 
-      def name
+      def cop_name
         self.class.cop_name
       end
+
+      alias_method :name, :cop_name
 
       def ignore_node(node)
         @ignored_nodes << node

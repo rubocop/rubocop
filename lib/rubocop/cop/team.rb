@@ -51,8 +51,7 @@ module Rubocop
       def cops
         @cops ||= begin
           @cop_classes.reduce([]) do |instances, cop_class|
-            cop_name = cop_class.cop_name
-            next instances unless @config.cop_enabled?(cop_name)
+            next instances unless @config.cop_enabled?(cop_class)
             instances << cop_class.new(@config, @options)
           end
         end

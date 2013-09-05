@@ -179,11 +179,12 @@ module Rubocop
     end
 
     def for_cop(cop)
+      cop = cop.cop_name if cop.respond_to?(:cop_name)
       self[cop]
     end
 
     def cop_enabled?(cop)
-      self[cop].nil? || self[cop]['Enabled']
+      for_cop(cop).nil? || for_cop(cop)['Enabled']
     end
 
     def warn_unless_valid

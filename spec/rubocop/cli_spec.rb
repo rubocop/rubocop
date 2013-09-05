@@ -419,21 +419,21 @@ Usage: rubocop [options] [file1, file2, ...]
       end
 
       # Extracts the first line out of the description
-      def short_description_of_cop(cop_name)
-        desc = full_description_of_cop(cop_name)
+      def short_description_of_cop(cop)
+        desc = full_description_of_cop(cop)
         desc ? desc.lines.first.strip : ''
       end
 
       # Gets the full description of the cop or nil if no description is set.
-      def full_description_of_cop(cop_name)
-        cop_config = global_conf.for_cop(cop_name)
+      def full_description_of_cop(cop)
+        cop_config = global_conf.for_cop(cop)
         cop_config['Description']
       end
 
       it 'prints all available cops and their description' do
         cops.each do |cop|
           expect(stdout).to include cop.cop_name
-          expect(stdout).to include short_description_of_cop(cop.cop_name)
+          expect(stdout).to include short_description_of_cop(cop)
         end
       end
 
@@ -471,7 +471,7 @@ Usage: rubocop [options] [file1, file2, ...]
           confstrt = out.find_index { |i| i.include?("- #{cop.cop_name}") } + 1
           c = out[confstrt, conf.keys.size].to_s
           conf.delete('Description')
-          expect(c).to include(short_description_of_cop(cop.cop_name))
+          expect(c).to include(short_description_of_cop(cop))
           conf.each do |k, v|
             # ugly hack to get hash/array content tested
             if v.kind_of?(Hash) || v.kind_of?(Array)

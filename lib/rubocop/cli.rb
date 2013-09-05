@@ -118,9 +118,8 @@ module Rubocop
         coptypes = cops.with_type(type).sort_by!(&:cop_name)
         puts "Type '#{type.to_s.capitalize}' (#{coptypes.size}):"
         coptypes.each do |cop|
-          name = cop.cop_name
-          puts " - #{name}"
-          cnf = dirconf.for_cop(name).dup
+          puts " - #{cop.cop_name}"
+          cnf = dirconf.for_cop(cop).dup
           print_conf_option('Description',
                             cnf.delete('Description') { 'None' })
           cnf.each { |k, v| print_conf_option(k, v) }
