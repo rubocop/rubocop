@@ -45,22 +45,68 @@ module Rubocop
           scope_stack.count
         end
 
-        def add_variable(variable_declaration_node, name = nil)
-          variable = Variable.new(variable_declaration_node, name)
+        def declare_variable(name, node)
+          variable = Variable.new(name, node, current_scope)
           invoke_hook(:before_declaring_variable, variable)
           current_scope.variables[variable.name] = variable
           invoke_hook(:after_declaring_variable, variable)
           variable
         end
 
-        def find_variable(variable_name)
+        def assign_to_variable(name, node)
+          variable = find_variable(name)
+
+          unless variable
+            fail "Assigning to undeclared local variable \"#{name}\" " +
+                 "at #{node.loc.expression}, #{node.inspect}"
+          end
+
+          variable.assign(node)
+          mark_variable_as_captured_by_block_if_so(variable)
+        end
+
+        def reference_variable(name)
+          variable = find_variable(name)
+
+          unless variable
+            fail "Referencing undeclared local variable \"#{name}\""
+          end
+
+          variable.reference!
+          mark_variable_as_captured_by_block_if_so(variable)
+        end
+
+        def find_variable(name)
+          name = name.to_sym
+
           scope_stack.reverse_each do |scope|
-            variable = scope.variables[variable_name]
+            variable = scope.variables[name]
             return variable if variable
             # Only block scope allows referencing outer scope variables.
             return nil unless scope.node.type == :block
           end
+
           nil
+        end
+
+        def variable_exist?(name)
+          !find_variable(name).nil?
+        end
+
+        def accessible_variables
+          scope_stack.reverse_each.reduce([]) do |variables, scope|
+            variables.concat(scope.variables.values)
+            break variables unless scope.node.type == :block
+            variables
+          end
+        end
+
+        private
+
+        def mark_variable_as_captured_by_block_if_so(variable)
+          return unless current_scope.node.type == :block
+          return if variable.scope == current_scope
+          variable.capture_with_block!
         end
       end
     end

@@ -52,7 +52,7 @@ module Rubocop
           end
         end
 
-        describe '#add_variable' do
+        describe '#declare_variable' do
           before do
             2.times do
               node = s(:def)
@@ -62,29 +62,29 @@ module Rubocop
 
           it 'adds variable to current scope with its name as key' do
             node = s(:lvasgn, :foo)
-            variable_table.add_variable(node)
+            variable_table.declare_variable(:foo, node)
             expect(variable_table.current_scope.variables)
               .to have_key(:foo)
             expect(variable_table.scope_stack[-2].variables)
               .to be_empty
             variable = variable_table.current_scope.variables[:foo]
-            expect(variable.node).to equal(node)
+            expect(variable.declaration_node).to equal(node)
           end
 
           it 'returns the added variable' do
             node = s(:lvasgn, :foo)
-            variable = variable_table.add_variable(node)
-            expect(variable.node).to equal(node)
+            variable = variable_table.declare_variable(:foo, node)
+            expect(variable.declaration_node).to equal(node)
           end
         end
 
         describe '#find_variable' do
           before do
             variable_table.push_scope(s(:class))
-            variable_table.add_variable(s(:lvasgn, :baz))
+            variable_table.declare_variable(:baz, s(:lvasgn, :baz))
 
             variable_table.push_scope(s(:def))
-            variable_table.add_variable(s(:lvasgn, :bar))
+            variable_table.declare_variable(:bar, s(:lvasgn, :bar))
           end
 
           context 'when current scope is block' do
@@ -95,7 +95,7 @@ module Rubocop
             context 'when a variable with the target name exists ' +
                     'in current scope' do
               before do
-                variable_table.add_variable(s(:lvasgn, :foo))
+                variable_table.declare_variable(:foo, s(:lvasgn, :foo))
               end
 
               context 'and does not exist in outer scope' do
@@ -107,7 +107,7 @@ module Rubocop
 
               context 'and also exists in outer scope' do
                 before do
-                  variable_table.add_variable(s(:lvasgn, :bar))
+                  variable_table.declare_variable(:bar, s(:lvasgn, :bar))
                 end
 
                 it 'returns the current scope variable' do
@@ -171,7 +171,7 @@ module Rubocop
             context 'when a variable with the target name exists ' +
                     'in current scope' do
               before do
-                variable_table.add_variable(s(:lvasgn, :foo))
+                variable_table.declare_variable(:foo, s(:lvasgn, :foo))
               end
 
               context 'and does not exist in outer scope' do
@@ -207,6 +207,64 @@ module Rubocop
                   found_variable = variable_table.find_variable(:non)
                   expect(found_variable).to be_nil
                 end
+              end
+            end
+          end
+        end
+
+        describe '#accessible_variables' do
+          let(:accessible_variable_names) do
+            variable_table.accessible_variables.map(&:name)
+          end
+
+          before do
+            variable_table.push_scope(s(:class))
+          end
+
+          context 'when there are no variables' do
+            it 'returns empty array' do
+              expect(variable_table.accessible_variables).to be_empty
+            end
+          end
+
+          context 'when the current scope has some variables' do
+            before do
+              variable_table.declare_variable(:foo, s(:lvasgn, :foo))
+              variable_table.declare_variable(:bar, s(:lvasgn, :bar))
+            end
+
+            it 'returns all the variables' do
+              expect(accessible_variable_names).to match_array([:foo, :bar])
+            end
+          end
+
+          context 'when the direct outer scope has some variables' do
+            before do
+              variable_table.declare_variable(:foo, s(:lvasgn, :foo))
+            end
+
+            context 'and the current scope is block' do
+              before do
+                variable_table.push_scope(s(:block))
+                variable_table.declare_variable(:bar, s(:lvasgn, :bar))
+                variable_table.declare_variable(:baz, s(:lvasgn, :baz))
+              end
+
+              it 'returns the current and direct outer scope variables' do
+                expect(accessible_variable_names)
+                  .to match_array([:foo, :bar, :baz])
+              end
+            end
+
+            context 'and the current scope is not block' do
+              before do
+                variable_table.push_scope(s(:def))
+                variable_table.declare_variable(:bar, s(:lvasgn, :bar))
+                variable_table.declare_variable(:baz, s(:lvasgn, :baz))
+              end
+
+              it 'returns only the current scope variables' do
+                expect(accessible_variable_names).to match_array([:bar, :baz])
               end
             end
           end

@@ -17,16 +17,13 @@ module Rubocop
         end
 
         def before_declaring_variable(variable)
-          # Only block scope can reference outer local variables.
-          return unless variable_table.current_scope.node.type == :block
-          return unless ARGUMENT_DECLARATION_TYPES.include?(variable.node.type)
           return if variable.name.to_s.start_with?('_')
 
           outer_local_variable = variable_table.find_variable(variable.name)
           return unless outer_local_variable
 
           message = sprintf(MSG, variable.name)
-          warning(variable.node, :expression, message)
+          warning(variable.declaration_node, :expression, message)
         end
       end
     end

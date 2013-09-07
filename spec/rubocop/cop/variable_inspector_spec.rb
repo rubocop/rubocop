@@ -21,19 +21,6 @@ module Rubocop
         context 'when processing lvar node' do
           let(:node) { s(:lvar, :foo) }
 
-          context 'when the variable is already declared' do
-            before do
-              inspector.variable_table.add_variable(s(:lvasgn, :foo))
-            end
-
-            it 'marks the variable as used' do
-              variable = inspector.variable_table.find_variable(:foo)
-              expect(variable).not_to be_used
-              inspector.process_node(node)
-              expect(variable).to be_used
-            end
-          end
-
           context 'when the variable is not yet declared' do
             it 'raises error' do
               expect { inspector.process_node(node) }.to raise_error

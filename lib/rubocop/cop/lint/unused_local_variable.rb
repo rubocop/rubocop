@@ -10,21 +10,33 @@ module Rubocop
         include VariableInspector
 
         MSG = 'Assigned but unused variable - %s'
-        TYPES_TO_ACCEPT_UNUSED =
-          (ARGUMENT_DECLARATION_TYPES - [:shadowarg]).freeze
 
         def investigate(processed_source)
           inspect_variables(processed_source.ast)
         end
 
         def after_leaving_scope(scope)
-          scope.variables.each_value do |entry|
-            next if entry.used?
-            next if TYPES_TO_ACCEPT_UNUSED.include?(entry.node.type)
-            next if entry.name.to_s.start_with?('_')
-            message = sprintf(MSG, entry.name)
-            warning(entry.node, :expression, message)
+          scope.variables.each_value do |variable|
+            check_for_unused_assignments(variable)
+            check_for_unused_block_local_variable(variable)
           end
+        end
+
+        def check_for_unused_assignments(variable)
+          return if variable.name.to_s.start_with?('_')
+
+          variable.assignments.each do |assignment|
+            next if assignment.used?
+            message = sprintf(MSG, variable.name)
+            warning(assignment.node, :expression, message)
+          end
+        end
+
+        def check_for_unused_block_local_variable(variable)
+          return unless variable.block_local_variable?
+          return unless variable.assignments.empty?
+          message = sprintf(MSG, variable.name)
+          warning(variable.declaration_node, :expression, message)
         end
       end
     end

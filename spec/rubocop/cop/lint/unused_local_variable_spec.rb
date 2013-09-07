@@ -202,18 +202,78 @@ module Rubocop
             ]
           end
 
-          include_examples 'accepts'
-          include_examples 'mimics MRI 2.0'
+          it 'registers offences for each asignment' do
+            inspect_source(cop, source)
+            expect(cop.offences.size).to eq(2)
+
+            expect(cop.offences[0].message)
+              .to include('unused variable - foo')
+            expect(cop.offences[0].line).to eq(2)
+
+            expect(cop.offences[1].message)
+              .to include('unused variable - foo')
+            expect(cop.offences[1].line).to eq(4)
+          end
+        end
+
+        context 'when a referenced variable is reassigned ' +
+                'but not re-referenced' do
+          let(:source) do
+            [
+              'def some_method',
+              '  foo = 1',
+              '  puts foo',
+              '  foo = 3',
+              'end'
+            ]
+          end
+
+          it 'registers an offence for the non-re-referenced assignment' do
+            inspect_source(cop, source)
+            expect(cop.offences.size).to eq(1)
+            expect(cop.offences.first.message)
+              .to include('unused variable - foo')
+            expect(cop.offences.first.line).to eq(4)
+          end
+        end
+
+        context 'when an unreferenced variable is reassigned ' +
+                'and re-referenced' do
+          let(:source) do
+            [
+              'def some_method',
+              '  foo = 1',
+              '  foo = 3',
+              '  puts foo',
+              'end'
+            ]
+          end
+
+          it 'registers an offence for the unreferenced assignment' do
+            inspect_source(cop, source)
+            expect(cop.offences.size).to eq(1)
+            expect(cop.offences.first.message)
+              .to include('unused variable - foo')
+            expect(cop.offences.first.line).to eq(2)
+          end
         end
 
         context 'when an unreferenced variable is reassigned in a block' do
           let(:source) do
             [
-              'def some_method',
-              '  foo = 1',
-              '  1.times do',
-              '    foo = 2',
+              'def const_name(node)',
+              '  const_names = []',
+              '  const_node = node',
+              '',
+              '  loop do',
+              '    namespace_node, name = *const_node',
+              '    const_names << name',
+              '    break unless namespace_node',
+              '    break if namespace_node.type == :cbase',
+              '    const_node = namespace_node',
               '  end',
+              '',
+              "  const_names.reverse.join('::')",
               'end'
             ]
           end
@@ -222,7 +282,7 @@ module Rubocop
           include_examples 'mimics MRI 2.0'
         end
 
-        context 'when a referenced variable in reassigned in a block' do
+        context 'when a referenced variable is reassigned in a block' do
           let(:source) do
             [
               'def some_method',
@@ -247,7 +307,7 @@ module Rubocop
             ]
           end
 
-          it 'registers an offence' do
+          it 'registers an offence for the declaration' do
             inspect_source(cop, source)
             expect(cop.offences.size).to eq(1)
             expect(cop.offences.first.message)
@@ -267,6 +327,392 @@ module Rubocop
             ]
           end
 
+          it 'registers offences for the assignment' do
+            inspect_source(cop, source)
+            expect(cop.offences.size).to eq(1)
+
+            expect(cop.offences.first.message)
+              .to include('unused variable - foo')
+            expect(cop.offences.first.line).to eq(2)
+          end
+        end
+
+        context 'when a variable is assigned in loop body and unreferenced' do
+          let(:source) do
+            [
+              'def some_method',
+              '  while true',
+              '    foo = 1',
+              '  end',
+              'end'
+            ]
+          end
+
+          it 'registers an offence' do
+            inspect_source(cop, source)
+            expect(cop.offences.size).to eq(1)
+            expect(cop.offences.first.message)
+              .to include('unused variable - foo')
+            expect(cop.offences.first.line).to eq(3)
+          end
+
+          include_examples 'mimics MRI 2.0'
+        end
+
+        context 'when a variable is reassigned at the end of loop body ' +
+                'and would be referenced in next iteration' do
+          let(:source) do
+            [
+              'def some_method',
+              '  total = 0',
+              '  foo = 0',
+              '',
+              '  while total < 100',
+              '    total += foo',
+              '    foo += 1',
+              '  end',
+              '',
+              '  total',
+              'end'
+            ]
+          end
+
+          include_examples 'accepts'
+          include_examples 'mimics MRI 2.0'
+        end
+
+        context 'when a variable is reassigned at the end of loop body ' +
+                'and would be referenced in loop condition' do
+          let(:source) do
+            [
+              'def some_method',
+              '  total = 0',
+              '  foo = 0',
+              '',
+              '  while foo < 100',
+              '    total += 1',
+              '    foo += 1',
+              '  end',
+              '',
+              '  total',
+              'end'
+            ]
+          end
+
+          include_examples 'accepts'
+          include_examples 'mimics MRI 2.0'
+        end
+
+        context "when a variable is reassigned in loop body but won't " +
+                'be referenced either next iteration or loop condition' do
+          let(:source) do
+            [
+              'def some_method',
+              '  total = 0',
+              '  foo = 0',
+              '',
+              '  while total < 100',
+              '    total += 1',
+              '    foo += 1',
+              '  end',
+              '',
+              '  total',
+              'end'
+            ]
+          end
+
+          it 'registers an offence' do
+            inspect_source(cop, source)
+            expect(cop.offences.size).to eq(1)
+            expect(cop.offences.first.message)
+              .to include('unused variable - foo')
+            expect(cop.offences.first.line).to eq(7)
+          end
+        end
+
+        context 'when a referenced variable is reassigned ' +
+                'but not re-referenced in a method defined in loop' do
+          let(:source) do
+            [
+              'while true',
+              '  def some_method',
+              '    foo = 1',
+              '    puts foo',
+              '    foo = 3',
+              '  end',
+              'end'
+            ]
+          end
+
+          it 'registers an offence' do
+            inspect_source(cop, source)
+            expect(cop.offences.size).to eq(1)
+            expect(cop.offences.first.message)
+              .to include('unused variable - foo')
+            expect(cop.offences.first.line).to eq(5)
+          end
+        end
+
+        context 'when a variable that has same name as outer scope variable ' +
+                'is not referenced in a method defined in loop' do
+          let(:source) do
+            [
+              'foo = 1',
+              '',
+              'while foo < 100',
+              '  foo += 1',
+              '  def some_method',
+              '    foo = 1',
+              '  end',
+              'end'
+            ]
+          end
+
+          it 'registers an offence' do
+            inspect_source(cop, source)
+            expect(cop.offences.size).to eq(1)
+            expect(cop.offences.first.message)
+              .to include('unused variable - foo')
+            expect(cop.offences.first.line).to eq(6)
+          end
+        end
+
+        context 'when a variable is assigned in single branch if ' +
+                'and unreferenced' do
+          let(:source) do
+            [
+              'def some_method(flag)',
+              '  if flag',
+              '    foo = 1',
+              '  end',
+              'end'
+            ]
+          end
+
+          it 'registers an offence' do
+            inspect_source(cop, source)
+            expect(cop.offences.size).to eq(1)
+            expect(cop.offences.first.message)
+              .to include('unused variable - foo')
+            expect(cop.offences.first.line).to eq(3)
+          end
+
+          include_examples 'mimics MRI 2.0'
+        end
+
+        context 'when a unreferenced variable is reassigned in same branch ' +
+                'and referenced after the branching' do
+          let(:source) do
+            [
+              'def some_method(flag)',
+              '  if flag',
+              '    foo = 1',
+              '    foo = 2',
+              '  end',
+              '',
+              '  foo',
+              'end'
+            ]
+          end
+
+          it 'registers an offence for the unreferenced assignment' do
+            inspect_source(cop, source)
+            expect(cop.offences.size).to eq(1)
+            expect(cop.offences.first.message)
+              .to include('unused variable - foo')
+            expect(cop.offences.first.line).to eq(3)
+          end
+        end
+
+        context 'when a variable is reassigned in single branch if ' +
+                'and referenced after the branching' do
+          let(:source) do
+            [
+              'def some_method(flag)',
+              '  foo = 1',
+              '',
+              '  if flag',
+              '    foo = 2',
+              '  end',
+              '',
+              '  foo',
+              'end'
+            ]
+          end
+
+          include_examples 'accepts'
+          include_examples 'mimics MRI 2.0'
+        end
+
+        context 'when a variable is assigned in each branch of if ' +
+                'and referenced after the branching' do
+          let(:source) do
+            [
+              'def some_method(flag)',
+              '  if flag',
+              '    foo = 2',
+              '  else',
+              '    foo = 3',
+              '  end',
+              '',
+              '  foo',
+              'end'
+            ]
+          end
+
+          include_examples 'accepts'
+          include_examples 'mimics MRI 2.0'
+        end
+
+        context 'when a variable is assigned on each side of && ' +
+                'and referenced after the &&' do
+          let(:source) do
+            [
+              'def some_method',
+              '  (foo = do_something_returns_object_or_nil) && (foo = 1)',
+              '  foo',
+              'end'
+            ]
+          end
+
+          include_examples 'accepts'
+          include_examples 'mimics MRI 2.0'
+        end
+
+        context 'when a unreferenced variable is reassigned ' +
+                'on the left side of && and referenced after the &&' do
+          let(:source) do
+            [
+              'def some_method',
+              '  foo = 1',
+              '  (foo = do_something_returns_object_or_nil) && do_something',
+              '  foo',
+              'end'
+            ]
+          end
+
+          it 'registers an offence for the unreferenced assignment' do
+            inspect_source(cop, source)
+            expect(cop.offences.size).to eq(1)
+            expect(cop.offences.first.message)
+              .to include('unused variable - foo')
+            expect(cop.offences.first.line).to eq(2)
+          end
+        end
+
+        context 'when a unreferenced variable is reassigned ' +
+                'on the right side of && and referenced after the &&' do
+          let(:source) do
+            [
+              'def some_method',
+              '  foo = 1',
+              '  do_something_returns_object_or_nil && foo = 2',
+              '  foo',
+              'end'
+            ]
+          end
+
+          include_examples 'accepts'
+          include_examples 'mimics MRI 2.0'
+        end
+
+        context 'when a variable is reassigned ' +
+                'while referencing itself in rhs and referenced' do
+          let(:source) do
+            [
+              'def some_method',
+              '  foo = [1, 2]',
+              '  foo = foo.map { |i| i + 1 }',
+              '  puts foo',
+              'end'
+            ]
+          end
+
+          include_examples 'accepts'
+          include_examples 'mimics MRI 2.0'
+        end
+
+        context 'when a variable is reassigned ' +
+                'with binary operator assignment and referenced' do
+          let(:source) do
+            [
+              'def some_method',
+              '  foo = 1',
+              '  foo += 1',
+              '  foo',
+              'end'
+            ]
+          end
+
+          include_examples 'accepts'
+          include_examples 'mimics MRI 2.0'
+        end
+
+        context 'when a variable is reassigned ' +
+                'with logical operator assignment and referenced' do
+          let(:source) do
+            [
+              'def some_method',
+              '  foo = do_something_returns_object_or_nil',
+              '  foo ||= 1',
+              '  foo',
+              'end'
+            ]
+          end
+
+          include_examples 'accepts'
+          include_examples 'mimics MRI 2.0'
+        end
+
+        context 'when a variable is reassigned with binary operator ' +
+                 'assignment while assigning to itself in rhs ' +
+                 'then referenced' do
+          let(:source) do
+            [
+              'def some_method',
+              '  foo = 1',
+              '  foo += foo = 2',
+              '  foo',
+              'end'
+            ]
+          end
+
+          it 'registers an offence for the assignment in rhs' do
+            inspect_source(cop, source)
+            expect(cop.offences.size).to eq(1)
+            expect(cop.offences.first.message)
+              .to include('unused variable - foo')
+            expect(cop.offences.first.line).to eq(3)
+            expect(cop.offences.first.column).to eq(9)
+          end
+        end
+
+        context 'when a variable is assigned first with ||= and referenced' do
+          let(:source) do
+            [
+              'def some_method',
+              '  foo ||= 1',
+              '  foo',
+              'end'
+            ]
+          end
+
+          include_examples 'accepts'
+          include_examples 'mimics MRI 2.0'
+        end
+
+        context 'when a variable is reassigned with multiple assignment ' +
+                'while referencing itself in rhs and referenced' do
+          let(:source) do
+            [
+              'def some_method',
+              '  foo = 1',
+              '  foo, bar = do_something(foo)',
+              '  puts foo, bar',
+              'end'
+            ]
+          end
+
           include_examples 'accepts'
           include_examples 'mimics MRI 2.0'
         end
@@ -276,12 +722,9 @@ module Rubocop
           let(:source) do
             [
               'begin',
-              '  if foo',
-              '    foo += 1',
-              '  else',
-              '    foo = 1',
-              '  end',
-              'end while foo < 10'
+              '  a = (a || 0) + 1',
+              '  puts a',
+              'end while a <= 2'
             ]
           end
 
@@ -294,17 +737,313 @@ module Rubocop
           let(:source) do
             [
               'begin',
-              '  if foo',
-              '    foo += 1',
-              '  else',
-              '    foo = 1',
-              '  end',
-              'end until foo > 10'
+              '  a = (a || 0) + 1',
+              '  puts a',
+              'end until a > 2'
             ]
           end
 
           include_examples 'accepts'
           include_examples 'mimics MRI 2.0'
+        end
+
+        context 'when a variable is assigned ' +
+                'in main body of begin with rescue but unreferenced' do
+          let(:source) do
+            [
+              'begin',
+              '  do_something',
+              '  foo = true',
+              'rescue',
+              '  do_anything',
+              'end'
+            ]
+          end
+
+          it 'registers an offence' do
+            inspect_source(cop, source)
+            expect(cop.offences.size).to eq(1)
+            expect(cop.offences.first.message)
+              .to include('unused variable - foo')
+            expect(cop.offences.first.line).to eq(3)
+          end
+
+          include_examples 'mimics MRI 2.0'
+        end
+
+        context 'when a variable is assigned in main body of begin, rescue ' +
+                'and else then referenced after the begin' do
+          let(:source) do
+            [
+              'begin',
+              '  do_something',
+              '  foo = :in_begin',
+              'rescue FirstError',
+              '  foo = :in_first_rescue',
+              'rescue SecondError',
+              '  foo = :in_second_rescue',
+              'else',
+              '  foo = :in_else',
+              'end',
+              '',
+              'puts foo'
+            ]
+          end
+
+          include_examples 'accepts'
+          include_examples 'mimics MRI 2.0'
+        end
+
+        context 'when a variable is reassigned multiple times ' +
+                'in main body of begin then referenced after the begin' do
+          let(:source) do
+            [
+              'begin',
+              '  status = :initial',
+              '  connect_sometimes_fails!',
+              '  status = :connected',
+              '  fetch_sometimes_fails!',
+              '  status = :fetched',
+              'rescue',
+              '  do_something',
+              'end',
+              '',
+              'puts status'
+            ]
+          end
+
+          include_examples 'accepts'
+          include_examples 'mimics MRI 2.0'
+        end
+
+        context 'when a variable is reassigned multiple times ' +
+                'in main body of begin then referenced in rescue' do
+          let(:source) do
+            [
+              'begin',
+              '  status = :initial',
+              '  connect_sometimes_fails!',
+              '  status = :connected',
+              '  fetch_sometimes_fails!',
+              '  status = :fetched',
+              'rescue',
+              '  puts status',
+              'end'
+            ]
+          end
+
+          include_examples 'accepts'
+          include_examples 'mimics MRI 2.0'
+        end
+
+        context 'when a variable is reassigned multiple times ' +
+                'in main body of begin then referenced in ensure' do
+          let(:source) do
+            [
+              'begin',
+              '  status = :initial',
+              '  connect_sometimes_fails!',
+              '  status = :connected',
+              '  fetch_sometimes_fails!',
+              '  status = :fetched',
+              'ensure',
+              '  puts status',
+              'end'
+            ]
+          end
+
+          include_examples 'accepts'
+          include_examples 'mimics MRI 2.0'
+        end
+
+        context 'when a variable is reassigned multiple times in rescue ' +
+                'and referenced after the begin' do
+          let(:source) do
+            [
+              'foo = false',
+              '',
+              'begin',
+              '  do_something',
+              'rescue',
+              '  foo = true',
+              '  foo = true',
+              'end',
+              '',
+              'puts foo'
+            ]
+          end
+
+          it 'registers an offence' do
+            inspect_source(cop, source)
+            expect(cop.offences.size).to eq(1)
+            expect(cop.offences.first.message)
+              .to include('unused variable - foo')
+            expect(cop.offences.first.line).to eq(6)
+          end
+        end
+
+        context 'when a variable is reassigned multiple times ' +
+                'in rescue with ensure then referenced after the begin' do
+          let(:source) do
+            [
+              'foo = false',
+              '',
+              'begin',
+              '  do_something',
+              'rescue',
+              '  foo = true',
+              '  foo = true',
+              'ensure',
+              '  do_anything',
+              'end',
+              '',
+              'puts foo'
+            ]
+          end
+
+          it 'registers an offence' do
+            inspect_source(cop, source)
+            expect(cop.offences.size).to eq(1)
+            expect(cop.offences.first.message)
+              .to include('unused variable - foo')
+            expect(cop.offences.first.line).to eq(6)
+          end
+        end
+
+        context 'when a variable is reassigned multiple times ' +
+                'in ensure with rescue then referenced after the begin' do
+          let(:source) do
+            [
+              'begin',
+              '  do_something',
+              'rescue',
+              '  do_anything',
+              'ensure',
+              '  foo = true',
+              '  foo = true',
+              'end',
+              '',
+              'puts foo'
+            ]
+          end
+
+          it 'registers an offence' do
+            inspect_source(cop, source)
+            expect(cop.offences.size).to eq(1)
+            expect(cop.offences.first.message)
+              .to include('unused variable - foo')
+            expect(cop.offences.first.line).to eq(6)
+          end
+        end
+
+        context 'when a variable is assigned at the end of rescue ' +
+                'and would be referenced with retry' do
+          let(:source) do
+            [
+              'retried = false',
+              '',
+              'begin',
+              '  do_something',
+              'rescue',
+              '  fail if retried',
+              '  retried = true',
+              '  retry',
+              'end'
+            ]
+          end
+
+          include_examples 'accepts'
+          include_examples 'mimics MRI 2.0'
+        end
+
+        context 'when a variable is assigned ' +
+                'in main body of begin, rescue and else ' +
+                'and reassigned in ensure then referenced after the begin' do
+          let(:source) do
+            [
+              'begin',
+              '  do_something',
+              '  foo = :in_begin',
+              'rescue FirstError',
+              '  foo = :in_first_rescue',
+              'rescue SecondError',
+              '  foo = :in_second_rescue',
+              'else',
+              '  foo = :in_else',
+              'ensure',
+              '  foo = :in_ensure',
+              'end',
+              '',
+              'puts foo'
+            ]
+          end
+
+          it 'registers offences for each assignment before ensure' do
+            inspect_source(cop, source)
+            expect(cop.offences.size).to eq(4)
+
+            expect(cop.offences[0].line).to eq(3)
+            expect(cop.offences[1].line).to eq(5)
+            expect(cop.offences[2].line).to eq(7)
+            expect(cop.offences[3].line).to eq(9)
+          end
+        end
+
+        context 'when a method argument is reassigned ' +
+                'and zero arity super is called' do
+          let(:source) do
+            [
+              'def some_method(foo)',
+              '  foo = 1',
+              '  super',
+              'end'
+            ]
+          end
+
+          include_examples 'accepts'
+          include_examples 'mimics MRI 2.0'
+        end
+
+        context 'when a local variable is unreferenced ' +
+                'and zero arity super is called' do
+          let(:source) do
+            [
+              'def some_method(bar)',
+              '  foo = 1',
+              '  super',
+              'end'
+            ]
+          end
+
+          it 'registers an offence' do
+            inspect_source(cop, source)
+            expect(cop.offences.size).to eq(1)
+            expect(cop.offences.first.message)
+              .to include('unused variable - foo')
+            expect(cop.offences.first.line).to eq(2)
+          end
+
+          include_examples 'mimics MRI 2.0'
+        end
+
+        context 'when a method argument is reassigned ' +
+                'but not passed to super' do
+          let(:source) do
+            [
+              'def some_method(foo, bar)',
+              '  foo = 1',
+              '  super(bar)',
+              'end'
+            ]
+          end
+
+          it 'registers an offence' do
+            inspect_source(cop, source)
+            expect(cop.offences.size).to eq(1)
+            expect(cop.offences.first.message)
+              .to include('unused variable - foo')
+            expect(cop.offences.first.line).to eq(2)
+          end
         end
 
         context 'when a named capture is unreferenced in top level' do
@@ -352,14 +1091,30 @@ module Rubocop
           let(:source) do
             [
               'def some_method',
-              "  /(?<foo>\w+)/ =~ 'bar'",
+              "  /(?<foo>\w+)(?<bar>\s+)/ =~ 'FOO'",
               '  puts foo',
+              '  puts bar',
               'end'
             ]
           end
 
           include_examples 'accepts'
           include_examples 'mimics MRI 2.0'
+        end
+
+        context 'when a variable is referenced ' +
+                'in rhs of named capture expression' do
+          let(:source) do
+            [
+              'def some_method',
+              "  foo = 'some string'",
+              "  /(?<foo>\w+)/ =~ foo",
+              '  puts foo',
+              'end'
+            ]
+          end
+
+          include_examples 'accepts'
         end
 
         context 'when a variable is assigned in begin ' +

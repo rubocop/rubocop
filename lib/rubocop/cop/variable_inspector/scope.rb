@@ -19,6 +19,41 @@ module Rubocop
           @node = node
           @variables = {}
         end
+
+        def ==(other)
+          @node.equal?(other.node)
+        end
+
+        def ancestors_of_node(target_node)
+          ASTScanner.scan(@node) do |scanning_node, ancestor_nodes|
+            return ancestor_nodes[1..-1] if scanning_node.equal?(target_node)
+          end
+
+          fail "Node #{target_node} is not found in scope #{@node}"
+        end
+
+        # This class provides a ways to scan AST with tracking ancestor nodes.
+        class ASTScanner
+          def self.scan(node, &block)
+            new.scan(node, &block)
+          end
+
+          def initialize
+            @ancestor_nodes = []
+          end
+
+          def scan(node, &block)
+            @ancestor_nodes.push(node)
+
+            node.children.each do |child|
+              next unless child.is_a?(Parser::AST::Node)
+              yield child, @ancestor_nodes
+              scan(child, &block)
+            end
+
+            @ancestor_nodes.pop
+          end
+        end
       end
     end
   end
