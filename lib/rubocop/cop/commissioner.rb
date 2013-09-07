@@ -38,8 +38,9 @@ module Rubocop
         class_eval <<-EOS
           def #{callback}(node)
             @cops.each do |cop|
-              if cop.respond_to?(:#{callback})
-                delegate_to(cop, :#{callback}, node)
+              next unless cop.respond_to?(:#{callback})
+              with_cop_error_handling(cop) do
+                cop.send(:#{callback}, node)
               end
             end
 
@@ -76,12 +77,15 @@ module Rubocop
       # its own processing.
       def invoke_cops_callback(processed_source)
         @cops.each do |cop|
-          cop.investigate(processed_source) if cop.respond_to?(:investigate)
+          next unless cop.respond_to?(:investigate)
+          with_cop_error_handling(cop) do
+            cop.investigate(processed_source)
+          end
         end
       end
 
-      def delegate_to(cop, callback, node)
-        cop.send callback, node
+      def with_cop_error_handling(cop)
+        yield
       rescue => e
         if @options[:raise_error]
           raise e
