@@ -39,8 +39,8 @@ module Rubocop
 
       ZERO_ARITY_SUPER_TYPE = :zsuper
 
-      TWISTED_SCOPE_TYPES = [:block, :sclass, :defs].freeze
-      SCOPE_TYPES = (TWISTED_SCOPE_TYPES + [:module, :class, :def]).freeze
+      TWISTED_SCOPE_TYPES = [:block, :class, :sclass, :defs].freeze
+      SCOPE_TYPES = (TWISTED_SCOPE_TYPES + [:module, :def]).freeze
 
       def variable_table
         @variable_table ||= VariableTable.new(self)
@@ -253,8 +253,14 @@ module Rubocop
       def process_scope(node)
         if TWISTED_SCOPE_TYPES.include?(node.type)
           # See the comment at the end of file for this behavior.
-          process_node(node.children.first)
-          scanned_nodes << node.children.first
+          twisted_nodes = [node.children[0]]
+          twisted_nodes << node.children[1] if node.type == :class
+          twisted_nodes.compact!
+
+          twisted_nodes.each do |twisted_node|
+            process_node(twisted_node)
+            scanned_nodes << twisted_node
+          end
         end
 
         inspect_variables_in_scope(node)

@@ -115,6 +115,34 @@ module Rubocop
           include_examples 'mimics MRI 2.0'
         end
 
+        context 'when a variable is assigned and unreferenced in a class ' +
+                'subclassing another class stored in local variable' do
+          let(:source) do
+            [
+              '1.times do',
+              '  foo = 1',
+              '  puts foo',
+              '  array_class = Array',
+              '  class SomeClass < array_class',
+              '    foo = 2',
+              '    bar = 3',
+              '    puts bar',
+              '  end',
+              'end'
+            ]
+          end
+
+          it 'registers an offence' do
+            inspect_source(cop, source)
+            expect(cop.offences.size).to eq(1)
+            expect(cop.offences.first.message)
+              .to include('unused variable - foo')
+            expect(cop.offences.first.line).to eq(6)
+          end
+
+          include_examples 'mimics MRI 2.0'
+        end
+
         context 'when a variable is assigned and unreferenced ' +
                 'in a singleton class' do
           let(:source) do
