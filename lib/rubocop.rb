@@ -8,12 +8,17 @@ require 'ast/sexp'
 require 'powerpack'
 
 require 'rubocop/cop/util'
-require 'rubocop/cop/variable_inspector'
 require 'rubocop/cop/offence'
 require 'rubocop/cop/cop'
 require 'rubocop/cop/commissioner'
 require 'rubocop/cop/corrector'
 require 'rubocop/cop/team'
+
+require 'rubocop/cop/variable_inspector'
+require 'rubocop/cop/variable_inspector/variable'
+require 'rubocop/cop/variable_inspector/scope'
+require 'rubocop/cop/variable_inspector/variable_table'
+require 'rubocop/cop/variable_inspector/node_scanner'
 
 require 'rubocop/cop/lint/assignment_in_condition'
 require 'rubocop/cop/lint/block_alignment'

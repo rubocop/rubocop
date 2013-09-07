@@ -12,218 +12,8 @@ module Rubocop
         :kwarg, :kwoptarg, :kwrestarg,
         :shadowarg
       ].freeze
-      VARIABLE_DECLARATION_TYPES =
-        (VARIABLE_ASSIGNMENT_TYPES + ARGUMENT_DECLARATION_TYPES).freeze
       VARIABLE_USE_TYPES = [:lvar].freeze
       SCOPE_TYPES = [:module, :class, :sclass, :def, :defs, :block].freeze
-
-      # A VariableEntry represents existance of a local variable.
-      # This holds a variable declaration node,
-      # and some states of the variable.
-      class VariableEntry
-        attr_reader :node
-        attr_accessor :used
-        alias_method :used?, :used
-
-        def initialize(node, name = nil)
-          unless VARIABLE_DECLARATION_TYPES.include?(node.type)
-            fail ArgumentError,
-                 "Node type must be any of #{VARIABLE_DECLARATION_TYPES}, " +
-                 "passed #{node.type}"
-          end
-          @node = node
-          @name = name.to_sym if name
-          @used = false
-        end
-
-        def name
-          @name || @node.children.first
-        end
-      end
-
-      # A Scope represents a context of local variable visibility.
-      # This is a place where local variables belong to.
-      # A scope instance holds a scope node and variable entries.
-      class Scope
-        attr_reader :node, :variable_entries
-
-        def initialize(node)
-          # Accept begin node for top level scope.
-          unless SCOPE_TYPES.include?(node.type) || node.type == :begin
-            fail ArgumentError,
-                 "Node type must be any of #{SCOPE_TYPES}, " +
-                 "passed #{node.type}"
-          end
-          @node = node
-          @variable_entries = {}
-        end
-      end
-
-      # A VariableTable manages the lifetime of all scopes and local variables
-      # in a program.
-      # This holds scopes as stack structure, and provides a way to add local
-      # variables to current scope and find local variables by considering
-      # variable visibility of the current scope.
-      class VariableTable
-        def initialize(hook_receiver = nil)
-          @hook_receiver = hook_receiver
-        end
-
-        def invoke_hook(hook_name, *args)
-          @hook_receiver.send(hook_name, *args) if @hook_receiver
-        end
-
-        def scope_stack
-          @scope_stack ||= []
-        end
-
-        def push_scope(scope_node)
-          scope = Scope.new(scope_node)
-          invoke_hook(:before_entering_scope, scope)
-          scope_stack.push(scope)
-          invoke_hook(:after_entering_scope, scope)
-          scope
-        end
-
-        def pop_scope
-          scope = current_scope
-          invoke_hook(:before_leaving_scope, scope)
-          scope_stack.pop
-          invoke_hook(:after_leaving_scope, scope)
-          scope
-        end
-
-        def current_scope
-          scope_stack.last
-        end
-
-        def current_scope_level
-          scope_stack.count
-        end
-
-        def add_variable_entry(variable_declaration_node, name = nil)
-          entry = VariableEntry.new(variable_declaration_node, name)
-          invoke_hook(:before_declaring_variable, entry)
-          current_scope.variable_entries[entry.name] = entry
-          invoke_hook(:after_declaring_variable, entry)
-          entry
-        end
-
-        def find_variable_entry(variable_name)
-          scope_stack.reverse_each do |scope|
-            entry = scope.variable_entries[variable_name]
-            return entry if entry
-            # Only block scope allows referencing outer scope variables.
-            return nil unless scope.node.type == :block
-          end
-          nil
-        end
-      end
-
-      # This provides a way to scan all nodes only in current scope.
-      class NodeScanner
-        TWISTED_SCOPE_NODE_TYPES = [:block, :sclass, :defs].freeze
-        POST_CONDITION_LOOP_NODE_TYPES = [:while_post, :until_post].freeze
-
-        def self.scan_nodes_in_scope(origin_node, &block)
-          instance = new(block)
-          instance.scan_nodes_in_scope(origin_node)
-        end
-
-        def initialize(callback)
-          @callback = callback
-        end
-
-        def scan_nodes_in_scope(origin_node, yield_origin_node = false)
-          @callback.call(origin_node) if yield_origin_node
-
-          origin_node.children.each_with_index do |child, index|
-            next unless child.is_a?(Parser::AST::Node)
-            node = child
-
-            if index == 0 &&
-               TWISTED_SCOPE_NODE_TYPES.include?(origin_node.type)
-              next
-            end
-
-            @callback.call(node)
-
-            scan_children(node)
-          end
-        end
-
-        def scan_children(node)
-          case node.type
-          when *POST_CONDITION_LOOP_NODE_TYPES
-            # Loop body nodes need to be scanned first.
-            #
-            # Ruby:
-            #   begin
-            #     foo = 1
-            #   end while foo > 10
-            #   puts foo
-            #
-            # AST:
-            #   (begin
-            #     (while-post
-            #       (send
-            #         (lvar :foo) :>
-            #         (int 10))
-            #       (kwbegin
-            #         (lvasgn :foo
-            #           (int 1))))
-            #     (send nil :puts
-            #       (lvar :foo)))
-            scan_nodes_in_scope(node.children[1], true)
-            scan_nodes_in_scope(node.children[0], true)
-          when *TWISTED_SCOPE_NODE_TYPES
-            # The variable foo belongs to the top level scope,
-            # but in AST, it's under the block node.
-            #
-            # Ruby:
-            #   some_method(foo = 1) do
-            #   end
-            #   puts foo
-            #
-            # AST:
-            #   (begin
-            #     (block
-            #       (send nil :some_method
-            #         (lvasgn :foo
-            #           (int 1)))
-            #       (args) nil)
-            #     (send nil :puts
-            #       (lvar :foo)))
-            #
-            # So the the method argument nodes need to be processed
-            # in current scope.
-            #
-            # Same thing.
-            #
-            # Ruby:
-            #   instance = Object.new
-            #   class << instance
-            #     foo = 1
-            #   end
-            #
-            # AST:
-            #   (begin
-            #     (lvasgn :instance
-            #       (send
-            #         (const nil :Object) :new))
-            #     (sclass
-            #       (lvar :instance)
-            #       (begin
-            #         (lvasgn :foo
-            #           (int 1))
-            scan_nodes_in_scope(node.children.first, true)
-          when *SCOPE_TYPES
-            # Do not go into inner scope.
-          else
-            scan_nodes_in_scope(node)
-          end
-        end
-      end
 
       def variable_table
         @variable_table ||= VariableTable.new(self)
@@ -256,7 +46,7 @@ module Rubocop
       def process_node(node)
         case node.type
         when *ARGUMENT_DECLARATION_TYPES
-          variable_table.add_variable_entry(node)
+          variable_table.add_variable(node)
         when :lvasgn
           variable_name = node.children.first
           process_variable_assignment(node, variable_name)
@@ -264,23 +54,23 @@ module Rubocop
           process_named_captures(node)
         when *VARIABLE_USE_TYPES
           variable_name = node.children.first
-          variable_entry = variable_table.find_variable_entry(variable_name)
-          unless variable_entry
+          variable = variable_table.find_variable(variable_name)
+          unless variable
             fail "Using undeclared local variable \"#{variable_name}\" " +
                  "at #{node.loc.expression}, #{node.inspect}"
           end
-          variable_entry.used = true
+          variable.used = true
         when *SCOPE_TYPES
           inspect_variables_in_scope(node)
         end
       end
 
       def process_variable_assignment(node, name)
-        entry = variable_table.find_variable_entry(name)
-        if entry
-          entry.used = true
+        variable = variable_table.find_variable(name)
+        if variable
+          variable.used = true
         else
-          variable_table.add_variable_entry(node, name)
+          variable_table.add_variable(node, name)
         end
       end
 
@@ -310,10 +100,10 @@ module Rubocop
       def after_leaving_scope(scope)
       end
 
-      def before_declaring_variable(variable_entry)
+      def before_declaring_variable(variable)
       end
 
-      def after_declaring_variable(variable_entry)
+      def after_declaring_variable(variable)
       end
     end
   end

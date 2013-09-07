@@ -18,7 +18,7 @@ module Rubocop
         end
 
         def after_leaving_scope(scope)
-          scope.variable_entries.each_value do |entry|
+          scope.variables.each_value do |entry|
             next if entry.used?
             next if TYPES_TO_ACCEPT_UNUSED.include?(entry.node.type)
             next if entry.name.to_s.start_with?('_')
