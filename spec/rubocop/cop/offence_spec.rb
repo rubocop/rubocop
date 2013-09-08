@@ -110,11 +110,11 @@ module Rubocop
       describe '#<=>' do
         def offence(hash = {})
           attrs = {
-             sev: :convention,
+            sev:  :convention,
             line: 5,
-             col: 5,
-             mes: 'message',
-             cop: 'CopName'
+            col:  5,
+            mes:  'message',
+            cop:  'CopName'
           }.merge(hash)
 
           Offence.new(
