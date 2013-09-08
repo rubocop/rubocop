@@ -3,87 +3,46 @@
 module Rubocop
   module Cop
     module Lint
-      # This cop checks for useless assignment as the final expression
-      # of a function definition.
+      # This cop checks for every useless assignment to local variable in every
+      # scope.
+      # The basic idea for this cop was from the warning of `ruby -cw`:
       #
-      # @example
+      #   assigned but unused variable - foo
       #
-      #  def something
-      #    x = 5
-      #  end
-      #
-      #  def something
-      #    x = Something.new
-      #    x.attr = 5
-      #  end
+      # Currently this cop has advanced logic that detects unreferenced
+      # reassignments and properly handles varied cases such as branch, loop,
+      # rescue, ensure, etc.
       class UselessAssignment < Cop
-        MSG = 'Useless assignment to local variable %s.'
+        include VariableInspector
 
-        def on_def(node)
-          _name, args, body = *node
+        MSG = 'Useless assignment to variable - %s'
 
-          check_for_useless_assignment(body, args)
+        def investigate(processed_source)
+          inspect_variables(processed_source.ast)
         end
 
-        def on_defs(node)
-          _target, _name, args, body = *node
-
-          check_for_useless_assignment(body, args)
-        end
-
-        private
-
-        def check_for_useless_assignment(body, args)
-          return unless body
-
-          if body.type == :begin
-            expression = body.children
-          else
-            expression = body
-          end
-
-          last_expr = expression.is_a?(Array) ? expression.last : expression
-          return unless last_expr
-
-          case last_expr.type
-          when :lvasgn
-            var_name, = *last_expr
-            warning(last_expr, :name, MSG.format(var_name))
-          when :send
-            receiver, method, _args = *last_expr
-            return unless receiver
-            return unless receiver.type == :lvar
-            return unless method =~ /\w=$/
-
-            var_name, = *receiver
-            return if contains_object_passed_as_argument?(var_name, body, args)
-
-            warning(receiver,
-                    :name,
-                    MSG.format(receiver.loc.name.source))
+        def after_leaving_scope(scope)
+          scope.variables.each_value do |variable|
+            check_for_unused_assignments(variable)
+            check_for_unused_block_local_variable(variable)
           end
         end
 
-        def contains_object_passed_as_argument?(lvar_name, body, args)
-          variable_table = {}
+        def check_for_unused_assignments(variable)
+          return if variable.name.to_s.start_with?('_')
 
-          args.children.each do |arg_node|
-            arg_name, = *arg_node
-            variable_table[arg_name] = true
+          variable.assignments.each do |assignment|
+            next if assignment.used?
+            message = sprintf(MSG, variable.name)
+            warning(assignment.node, :expression, message)
           end
+        end
 
-          on_node([:lvasgn, :ivasgn, :cvasgn, :gvasgn], body) do |asgn_node|
-            lhs_var_name, rhs_node = *asgn_node
-
-            if [:lvar, :ivar, :cvar, :gvar].include?(rhs_node.type)
-              rhs_var_name, = *rhs_node
-              variable_table[lhs_var_name] = variable_table[rhs_var_name]
-            else
-              variable_table[lhs_var_name] = false
-            end
-          end
-
-          variable_table[lvar_name]
+        def check_for_unused_block_local_variable(variable)
+          return unless variable.block_local_variable?
+          return unless variable.assignments.empty?
+          message = sprintf(MSG, variable.name)
+          warning(variable.declaration_node, :expression, message)
         end
       end
     end

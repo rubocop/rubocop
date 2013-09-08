@@ -463,10 +463,6 @@ UnreachableCode:
   Description: 'Unreachable code.'
   Enabled: true
 
-UnusedLocalVariable:
-  Description: 'Unused local variable.'
-  Enabled: true
-
 ShadowingOuterLocalVariable:
   Description: >
                  Do not use the same name as outer local variable
@@ -493,6 +489,10 @@ CommentAnnotation:
 
 UselessAssignment:
   Description: 'Checks for useless assignment to a local variable.'
+  Enabled: true
+
+UselessSetterCall:
+  Description: 'Checks for useless setter call to a local variable.'
   Enabled: true
 
 UselessComparison:
