@@ -50,6 +50,12 @@ module Rubocop
 
           expect(encoding.messages).to be_empty
         end
+
+        it 'accepts vim-style encoding comments', ruby: 1.9 do
+          inspect_source(encoding, ['# vim:fileencoding=utf-8',
+                                    'def foo() end'])
+          expect(encoding.messages).to be_empty
+        end
       end
     end
   end
