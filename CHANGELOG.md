@@ -16,12 +16,16 @@
 
 * [#447](https://github.com/bbatsov/rubocop/issues/447) - `BlockAlignment` cop now allows `end` to be aligned with the start of the line containing `do`.
 * `SymbolName` now has an `AllowDots` config option to allow symbols like `:'whatever.submit_button'`.
+* [#469](https://github.com/bbatsov/rubocop/issues/469) - Extracted useless setter call tracking part of `UselessAssignment` cop to `UselessSetterCall`.
+* [#469](https://github.com/bbatsov/rubocop/issues/469) - Merged `UnusedLocalVariable` cop into `UselessAssignment`.
+* [#458](https://github.com/bbatsov/rubocop/issues/458) - The merged `UselessAssignment` cop now has advanced logic that tracks not only assignment at the end of the method but also every assignment in every scope.
 
 ### Bugs fixed
 
 * [#449](https://github.com/bbatsov/rubocop/issues/449) - Remove whitespaces between condition and `do` with `WhileUntilDo` auto-correction
 * Continue with file inspection after parser warnings. Give up only on syntax errors.
 * Don’t trigger the HashSyntax cop on digit-starting keys.
+* Fix crashes while inspecting class definition subclassing another class stored in a local variable in `UselessAssignment` (formerly of `UnusedLocalVariable`) and `ShadowingOuterLocalVariable` (like `clazz = Array; class SomeClass < clazz; end`).
 
 ## 0.12.0 (23/08/2013)
 
