@@ -36,6 +36,11 @@ module Rubocop
 
             message = sprintf(MSG, variable.name)
 
+            if assignment.multiple_assignment?
+              message << ". Use _ or _#{variable.name} as a variable name " +
+                         "to indicate that it won't be used."
+            end
+
             location = if assignment.regexp_named_capture?
                          assignment.node.children.first.loc.expression
                        else

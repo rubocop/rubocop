@@ -763,8 +763,11 @@ module Rubocop
           it 'registers an offence' do
             inspect_source(cop, source)
             expect(cop.offences.size).to eq(1)
-            expect(cop.offences.first.message)
-              .to eq('Useless assignment to variable - bar')
+            expect(cop.offences.first.message).to eq(
+              'Useless assignment to variable - bar. ' +
+              'Use _ or _bar as a variable name ' +
+              "to indicate that it won't be used."
+            )
             expect(cop.offences.first.line).to eq(2)
             expect(cop.highlights).to eq(['bar'])
           end
