@@ -8,11 +8,11 @@ module Rubocop
     class FormatterSet < Array
       BUILTIN_FORMATTERS_FOR_KEYS = {
         'progress' => ProgressFormatter,
-        'simple'   => SimpleTextFormatter,
-        'clang'    => ClangStyleFormatter,
-        'emacs'    => EmacsStyleFormatter,
-        'json'     => JSONFormatter,
-        'files'    => FileListFormatter,
+          'simple' => SimpleTextFormatter,
+           'clang' => ClangStyleFormatter,
+           'emacs' => EmacsStyleFormatter,
+            'json' => JSONFormatter,
+           'files' => FileListFormatter,
         'offences' => OffenceCountFormatter
       }
 

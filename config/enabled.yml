@@ -440,6 +440,12 @@ MultilineBlockChain:
   Description: Avoid multi-line chains of blocks.
   Enabled: true
 
+AlignHash:
+  Description: >
+                 Align the elements of a hash literal if they span more than
+                 one line.
+  Enabled: true
+
 #################### Lint ################################
 ### Warnings
 
