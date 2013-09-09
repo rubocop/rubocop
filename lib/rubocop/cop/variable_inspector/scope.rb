@@ -24,6 +24,16 @@ module Rubocop
           @node.equal?(other.node)
         end
 
+        def body_node
+          child_index = case @node.type
+                        when :module, :sclass, :begin then 1
+                        when :def, :class, :block     then 2
+                        when :defs                    then 3
+                        end
+
+          @node.children[child_index]
+        end
+
         def ancestors_of_node(target_node)
           ASTScanner.scan(@node) do |scanning_node, ancestor_nodes|
             return ancestor_nodes[1..-1] if scanning_node.equal?(target_node)

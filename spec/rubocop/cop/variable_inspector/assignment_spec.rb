@@ -758,6 +758,136 @@ module Rubocop
             end
           end
         end
+
+        describe '#meta_assignment_node' do
+          context 'when it is += operator assignment' do
+            let(:source) do
+              <<-END
+                def some_method
+                  foo += 1
+                end
+              END
+            end
+
+            it 'returns op_asgn node' do
+              expect(assignment.meta_assignment_node.type).to eq(:op_asgn)
+            end
+          end
+
+          context 'when it is ||= operator assignment' do
+            let(:source) do
+              <<-END
+                def some_method
+                  foo ||= 1
+                end
+              END
+            end
+
+            it 'returns or_asgn node' do
+              expect(assignment.meta_assignment_node.type).to eq(:or_asgn)
+            end
+          end
+
+          context 'when it is &&= operator assignment' do
+            let(:source) do
+              <<-END
+                def some_method
+                  foo &&= 1
+                end
+              END
+            end
+
+            it 'returns and_asgn node' do
+              expect(assignment.meta_assignment_node.type).to eq(:and_asgn)
+            end
+          end
+
+          context 'when it is multiple assignment' do
+            let(:source) do
+              <<-END
+                def some_method
+                  foo, bar = [1, 2]
+                end
+              END
+            end
+
+            it 'returns masgn node' do
+              expect(assignment.meta_assignment_node.type).to eq(:masgn)
+            end
+          end
+        end
+
+        describe '#operator' do
+          context 'when it is normal assignment' do
+            let(:source) do
+              <<-END
+                def some_method
+                  foo = 1
+                end
+              END
+            end
+
+            it 'returns =' do
+              expect(assignment.operator).to eq('=')
+            end
+          end
+
+          context 'when it is += operator assignment' do
+            let(:source) do
+              <<-END
+                def some_method
+                  foo += 1
+                end
+              END
+            end
+
+            it 'returns +=' do
+              expect(assignment.operator).to eq('+=')
+            end
+          end
+
+          context 'when it is ||= operator assignment' do
+            let(:source) do
+              <<-END
+                def some_method
+                  foo ||= 1
+                end
+              END
+            end
+
+            it 'returns ||=' do
+              expect(assignment.operator).to eq('||=')
+            end
+          end
+
+          context 'when it is &&= operator assignment' do
+            let(:source) do
+              <<-END
+                def some_method
+                  foo &&= 1
+                end
+              END
+            end
+
+            it 'returns &&=' do
+              expect(assignment.operator).to eq('&&=')
+            end
+          end
+
+          context 'when it is multiple assignment' do
+            let(:source) do
+              <<-END
+                def some_method
+                  foo, bar = [1, 2]
+                end
+              END
+            end
+
+            it 'returns =' do
+              expect(assignment.operator).to eq('=')
+            end
+          end
+        end
       end
     end
   end
