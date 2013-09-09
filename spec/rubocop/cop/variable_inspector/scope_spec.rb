@@ -25,12 +25,24 @@ module Rubocop
           end
         end
 
-        describe '#ancestors_of_node' do
-          let(:ast) do
-            processed_source = Rubocop::SourceParser.parse(source)
-            processed_source.ast
-          end
+        let(:ast) do
+          processed_source = Rubocop::SourceParser.parse(source)
+          processed_source.ast
+        end
 
+        let(:scope_node_type) { :def }
+
+        let(:scope_node) do
+          found_node = scan_node(ast, include_origin_node: true) do |node|
+            break node if node.type == scope_node_type
+          end
+          fail 'No scope node found!' unless found_node
+          found_node
+        end
+
+        subject(:scope) { Scope.new(scope_node) }
+
+        describe '#ancestors_of_node' do
           let(:source) do
             <<-END
               puts 1
@@ -52,14 +64,6 @@ module Rubocop
             END
           end
 
-          let(:scope_node) do
-            found_node = scan_node(ast) do |node|
-              break node if node.type == :def
-            end
-            fail 'No scope node found!' unless found_node
-            found_node
-          end
-
           let(:target_node) do
             found_node = scan_node(ast) do |node|
               next unless node.type == :send
@@ -70,12 +74,115 @@ module Rubocop
             found_node
           end
 
-          let(:scope) { Scope.new(scope_node) }
-
           it 'returns nodes in between the scope node and the passed node' do
             ancestor_nodes = scope.ancestors_of_node(target_node)
             ancestor_types = ancestor_nodes.map(&:type)
             expect(ancestor_types).to eq([:begin, :if, :while, :begin])
+          end
+        end
+
+        describe '#body_node' do
+          shared_examples 'returns the body node' do
+            it 'returns the body node' do
+              expect(scope.body_node.children[1]).to eq(:this_is_target)
+            end
+          end
+
+          context 'when the scope is instance method' do
+            let(:source) do
+              <<-END
+                def some_method
+                  this_is_target
+                end
+              END
+            end
+
+            let(:scope_node_type) { :def }
+
+            include_examples 'returns the body node'
+          end
+
+          context 'when the scope is singleton method' do
+            let(:source) do
+              <<-END
+                def self.some_method
+                  this_is_target
+                end
+              END
+            end
+
+            let(:scope_node_type) { :defs }
+
+            include_examples 'returns the body node'
+          end
+
+          context 'when the scope is module' do
+            let(:source) do
+              <<-END
+                module SomeModule
+                  this_is_target
+                end
+              END
+            end
+
+            let(:scope_node_type) { :module }
+
+            include_examples 'returns the body node'
+          end
+
+          context 'when the scope is class' do
+            let(:source) do
+              <<-END
+                class SomeClass
+                  this_is_target
+                end
+              END
+            end
+
+            let(:scope_node_type) { :class }
+
+            include_examples 'returns the body node'
+          end
+
+          context 'when the scope is singleton class' do
+            let(:source) do
+              <<-END
+                class << self
+                  this_is_target
+                end
+              END
+            end
+
+            let(:scope_node_type) { :sclass }
+
+            include_examples 'returns the body node'
+          end
+
+          context 'when the scope is block' do
+            let(:source) do
+              <<-END
+                1.times do
+                  this_is_target
+                end
+              END
+            end
+
+            let(:scope_node_type) { :block }
+
+            include_examples 'returns the body node'
+          end
+
+          context 'when the scope is top level' do
+            let(:source) do
+              <<-END
+                foo = 1
+                this_is_target
+              END
+            end
+
+            let(:scope_node_type) { :begin }
+
+            include_examples 'returns the body node'
           end
         end
       end
