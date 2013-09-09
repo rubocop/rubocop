@@ -43,6 +43,10 @@ module Rubocop
           @variable.captured_by_block? || @referenced
         end
 
+        def regexp_named_capture?
+          @node.type == REGEXP_NAMED_CAPTURE_TYPE
+        end
+
         def inside_of_branch?
           !branch_point_node.nil?
         end

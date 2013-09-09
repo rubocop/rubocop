@@ -33,8 +33,16 @@ module Rubocop
 
           variable.assignments.each do |assignment|
             next if assignment.used?
+
             message = sprintf(MSG, variable.name)
-            warning(assignment.node, :expression, message)
+
+            location = if assignment.regexp_named_capture?
+                         assignment.node.children.first.loc.expression
+                       else
+                         assignment.node.loc.name
+                       end
+
+            warning(nil, location, message)
           end
         end
 

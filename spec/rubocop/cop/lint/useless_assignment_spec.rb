@@ -29,6 +29,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(5)
+            expect(cop.highlights).to eq(['foo'])
           end
 
           include_examples 'mimics MRI 2.0'
@@ -56,6 +57,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(5)
+            expect(cop.highlights).to eq(['foo'])
           end
 
           include_examples 'mimics MRI 2.0'
@@ -84,6 +86,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(6)
+            expect(cop.highlights).to eq(['foo'])
           end
 
           include_examples 'mimics MRI 2.0'
@@ -110,6 +113,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(5)
+            expect(cop.highlights).to eq(['foo'])
           end
 
           include_examples 'mimics MRI 2.0'
@@ -138,6 +142,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(6)
+            expect(cop.highlights).to eq(['foo'])
           end
 
           include_examples 'mimics MRI 2.0'
@@ -166,6 +171,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(6)
+            expect(cop.highlights).to eq(['foo'])
           end
 
           include_examples 'mimics MRI 2.0'
@@ -192,6 +198,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(5)
+            expect(cop.highlights).to eq(['foo'])
           end
 
           include_examples 'mimics MRI 2.0'
@@ -212,6 +219,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(1)
+            expect(cop.highlights).to eq(['foo'])
           end
 
           include_examples 'mimics MRI 2.0'
@@ -241,6 +249,8 @@ module Rubocop
             expect(cop.offences[1].message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences[1].line).to eq(4)
+
+            expect(cop.highlights).to eq(%w(foo foo))
           end
         end
 
@@ -262,6 +272,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(4)
+            expect(cop.highlights).to eq(['foo'])
           end
         end
 
@@ -283,6 +294,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(2)
+            expect(cop.highlights).to eq(['foo'])
           end
         end
 
@@ -341,6 +353,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(1)
+            expect(cop.highlights).to eq(['foo'])
           end
 
           include_examples 'mimics MRI 2.0'
@@ -358,10 +371,10 @@ module Rubocop
           it 'registers offences for the assignment' do
             inspect_source(cop, source)
             expect(cop.offences.size).to eq(1)
-
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(2)
+            expect(cop.highlights).to eq(['foo'])
           end
         end
 
@@ -382,6 +395,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(3)
+            expect(cop.highlights).to eq(['foo'])
           end
 
           include_examples 'mimics MRI 2.0'
@@ -455,6 +469,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(7)
+            expect(cop.highlights).to eq(['foo'])
           end
         end
 
@@ -478,6 +493,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(5)
+            expect(cop.highlights).to eq(['foo'])
           end
         end
 
@@ -502,6 +518,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(6)
+            expect(cop.highlights).to eq(['foo'])
           end
         end
 
@@ -523,6 +540,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(3)
+            expect(cop.highlights).to eq(['foo'])
           end
 
           include_examples 'mimics MRI 2.0'
@@ -549,6 +567,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(3)
+            expect(cop.highlights).to eq(['foo'])
           end
         end
 
@@ -625,6 +644,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(2)
+            expect(cop.highlights).to eq(['foo'])
           end
         end
 
@@ -711,7 +731,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(3)
-            expect(cop.offences.first.column).to eq(9)
+            expect(cop.highlights).to eq(['foo'])
           end
         end
 
@@ -726,6 +746,29 @@ module Rubocop
           end
 
           include_examples 'accepts'
+          include_examples 'mimics MRI 2.0'
+        end
+
+        context 'when a variable is assigned with multiple assignment ' +
+                'and unreferenced' do
+          let(:source) do
+            [
+              'def some_method',
+              '  foo, bar = do_something',
+              '  puts foo',
+              'end'
+            ]
+          end
+
+          it 'registers an offence' do
+            inspect_source(cop, source)
+            expect(cop.offences.size).to eq(1)
+            expect(cop.offences.first.message)
+              .to eq('Useless assignment to variable - bar')
+            expect(cop.offences.first.line).to eq(2)
+            expect(cop.highlights).to eq(['bar'])
+          end
+
           include_examples 'mimics MRI 2.0'
         end
 
@@ -794,6 +837,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(3)
+            expect(cop.highlights).to eq(['foo'])
           end
 
           include_examples 'mimics MRI 2.0'
@@ -907,6 +951,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(6)
+            expect(cop.highlights).to eq(['foo'])
           end
         end
 
@@ -935,6 +980,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(6)
+            expect(cop.highlights).to eq(['foo'])
           end
         end
 
@@ -961,6 +1007,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(6)
+            expect(cop.highlights).to eq(['foo'])
           end
         end
 
@@ -1049,6 +1096,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(2)
+            expect(cop.highlights).to eq(['foo'])
           end
 
           include_examples 'mimics MRI 2.0'
@@ -1071,6 +1119,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(2)
+            expect(cop.highlights).to eq(['foo'])
           end
         end
 
@@ -1108,6 +1157,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(2)
+            expect(cop.highlights).to eq(["/(?<foo>\w+)/"])
           end
 
           # MRI 2.0 accepts this case, but I have no idea why it does so
@@ -1181,6 +1231,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(2)
+            expect(cop.highlights).to eq(['foo'])
           end
 
           include_examples 'mimics MRI 2.0', 'unused variable'
@@ -1311,6 +1362,7 @@ module Rubocop
             expect(cop.offences.first.message)
               .to eq('Useless assignment to variable - foo')
             expect(cop.offences.first.line).to eq(1)
+            expect(cop.highlights).to eq(['foo'])
           end
 
           include_examples 'mimics MRI 2.0'
@@ -1346,6 +1398,7 @@ module Rubocop
               expect(cop.offences.first.message)
                 .to eq('Useless assignment to variable - foo')
               expect(cop.offences.first.line).to eq(1)
+              expect(cop.highlights).to eq(['foo'])
             end
 
             include_examples 'mimics MRI 2.0'
