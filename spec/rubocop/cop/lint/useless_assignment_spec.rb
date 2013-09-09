@@ -749,6 +749,50 @@ module Rubocop
           include_examples 'mimics MRI 2.0'
         end
 
+        context 'when a variable is assigned with ||= ' +
+                'at the last expression of the scope' do
+          let(:source) do
+            [
+              'def some_method',
+              '  foo = do_something_returns_object_or_nil',
+              '  foo ||= 1',
+              'end'
+            ]
+          end
+
+          it 'registers an offence' do
+            inspect_source(cop, source)
+            expect(cop.offences.size).to eq(1)
+            expect(cop.offences.first.message).to eq(
+              'Useless assignment to variable - foo. Use just operator ||.'
+            )
+            expect(cop.offences.first.line).to eq(3)
+            expect(cop.highlights).to eq(['foo'])
+          end
+        end
+
+        context 'when a variable is assigned with ||= ' +
+                'before the last expression of the scope' do
+          let(:source) do
+            [
+              'def some_method',
+              '  foo = do_something_returns_object_or_nil',
+              '  foo ||= 1',
+              '  some_return_value',
+              'end'
+            ]
+          end
+
+          it 'registers an offence' do
+            inspect_source(cop, source)
+            expect(cop.offences.size).to eq(1)
+            expect(cop.offences.first.message)
+              .to eq('Useless assignment to variable - foo')
+            expect(cop.offences.first.line).to eq(3)
+            expect(cop.highlights).to eq(['foo'])
+          end
+        end
+
         context 'when a variable is assigned with multiple assignment ' +
                 'and unreferenced' do
           let(:source) do

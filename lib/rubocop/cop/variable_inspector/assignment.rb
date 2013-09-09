@@ -18,7 +18,7 @@ module Rubocop
 
         REFERENCE_PENETRABLE_BRANCH_TYPES = %w(rescue_main ensure_main).freeze
 
-        attr_reader :node, :referenced
+        attr_reader :node, :variable, :referenced
         alias_method :referenced?, :referenced
 
         def initialize(node, variable)
@@ -57,6 +57,11 @@ module Rubocop
         def multiple_assignment?
           return false unless meta_assignment_node
           meta_assignment_node.type == MULTIPLE_ASSIGNMENT_TYPE
+        end
+
+        def operator
+          assignment_node = meta_assignment_node || @node
+          assignment_node.loc.operator.source
         end
 
         def meta_assignment_node

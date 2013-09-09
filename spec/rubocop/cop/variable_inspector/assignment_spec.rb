@@ -816,6 +816,78 @@ module Rubocop
             end
           end
         end
+
+        describe '#operator' do
+          context 'when it is normal assignment' do
+            let(:source) do
+              <<-END
+                def some_method
+                  foo = 1
+                end
+              END
+            end
+
+            it 'returns =' do
+              expect(assignment.operator).to eq('=')
+            end
+          end
+
+          context 'when it is += operator assignment' do
+            let(:source) do
+              <<-END
+                def some_method
+                  foo += 1
+                end
+              END
+            end
+
+            it 'returns +=' do
+              expect(assignment.operator).to eq('+=')
+            end
+          end
+
+          context 'when it is ||= operator assignment' do
+            let(:source) do
+              <<-END
+                def some_method
+                  foo ||= 1
+                end
+              END
+            end
+
+            it 'returns ||=' do
+              expect(assignment.operator).to eq('||=')
+            end
+          end
+
+          context 'when it is &&= operator assignment' do
+            let(:source) do
+              <<-END
+                def some_method
+                  foo &&= 1
+                end
+              END
+            end
+
+            it 'returns &&=' do
+              expect(assignment.operator).to eq('&&=')
+            end
+          end
+
+          context 'when it is multiple assignment' do
+            let(:source) do
+              <<-END
+                def some_method
+                  foo, bar = [1, 2]
+                end
+              END
+            end
+
+            it 'returns =' do
+              expect(assignment.operator).to eq('=')
+            end
+          end
+        end
       end
     end
   end

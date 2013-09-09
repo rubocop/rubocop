@@ -34,12 +34,7 @@ module Rubocop
           variable.assignments.each do |assignment|
             next if assignment.used?
 
-            message = sprintf(MSG, variable.name)
-
-            if assignment.multiple_assignment?
-              message << ". Use _ or _#{variable.name} as a variable name " +
-                         "to indicate that it won't be used."
-            end
+            message = message_for_useless_assignment(assignment)
 
             location = if assignment.regexp_named_capture?
                          assignment.node.children.first.loc.expression
@@ -48,6 +43,36 @@ module Rubocop
                        end
 
             warning(nil, location, message)
+          end
+        end
+
+        def message_for_useless_assignment(assignment)
+          variable = assignment.variable
+
+          message = sprintf(MSG, variable.name)
+
+          if assignment.multiple_assignment?
+            message << ". Use _ or _#{variable.name} as a variable name " +
+                       "to indicate that it won't be used."
+          elsif assignment.operator_assignment?
+            return_value_node = return_value_node_of_scope(variable.scope)
+            if assignment.meta_assignment_node.equal?(return_value_node)
+              non_assignment_operator = assignment.operator.sub(/=$/, '')
+              message << ". Use just operator #{non_assignment_operator}."
+            end
+          end
+
+          message
+        end
+
+        # TODO: More precise handling (rescue, ensure, nested begin, etc.)
+        def return_value_node_of_scope(scope)
+          body_node = scope.body_node
+
+          if body_node.type == :begin
+            body_node.children.last
+          else
+            body_node
           end
         end
 
