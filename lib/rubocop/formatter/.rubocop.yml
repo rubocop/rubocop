@@ -1,0 +1,4 @@
+inherit_from: ../../../.rubocop.yml
+
+AlignHash:
+  EnforcedStyle: separator

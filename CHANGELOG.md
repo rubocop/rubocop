@@ -11,6 +11,7 @@
 * `AvoidPerlisms` cop does auto-correction.
 * `RedundantReturn` cop does auto-correction.
 * `Blocks` cop does auto-correction.
+* New cop `AlignHash` keeps track of bad alignment in multi-line hash literals.
 
 ### Changes
 
