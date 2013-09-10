@@ -45,7 +45,13 @@ module Rubocop
         puts "Scanning #{file}" if @options[:debug]
         formatter_set.file_started(file, {})
 
-        offences = inspect_file(file)
+        # optional $file:10:20 which means inspect file
+        # from lines 10 to 20 (inclusive)
+        from, to = nil, nil
+        file.match(/^([^:]+):(\d+):(\d+)/) do |match|
+          file, from, to = match[1], match[2].to_i, match[3].to_i
+        end
+        offences = inspect_file(file, from, to)
 
         any_failed = true unless offences.empty?
         inspected_files << file
@@ -81,10 +87,10 @@ module Rubocop
       end
     end
 
-    def inspect_file(file)
+    def inspect_file(file, from = nil, to = nil)
       config = @config_store.for(file)
       team = Cop::Team.new(mobilized_cop_classes, config, @options)
-      offences = team.inspect_file(file)
+      offences = team.inspect_file(file, from, to)
       @errors.concat(team.errors)
       offences
     end
@@ -137,7 +143,7 @@ module Rubocop
       convert_deprecated_options(args)
 
       OptionParser.new do |opts|
-        opts.banner = 'Usage: rubocop [options] [file1, file2, ...]'
+        opts.banner = 'Usage: rubocop [options] [file1, file2:from:to, ...]'
 
         opts.on('-d', '--debug', 'Display debug info.') do |d|
           @options[:debug] = d

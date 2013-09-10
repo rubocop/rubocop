@@ -81,6 +81,16 @@ module Rubocop
               .to be_a(Parser::Diagnostic)
           end
         end
+
+        context 'when the from and to lines are specified' do
+          let(:processed_source) do
+            SourceParser.parse_file(file, 2, 4)
+          end
+
+          it 'only parses the specified lines' do
+            expect(processed_source.lines).to eq(source[2..4])
+          end
+        end
       end
     end
 

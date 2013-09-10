@@ -12,6 +12,7 @@
 * `RedundantReturn` cop does auto-correction.
 * `Blocks` cop does auto-correction.
 * New cop `AlignHash` keeps track of bad alignment in multi-line hash literals.
+* New option to specify which line numbers to parse, e.g. `rubocop some/file:10:30 will parse lines 10 through 30 (inclusive)
 
 ### Changes
 
