@@ -29,6 +29,7 @@
 * Continue with file inspection after parser warnings. Give up only on syntax errors.
 * Don’t trigger the HashSyntax cop on digit-starting keys.
 * Fix crashes while inspecting class definition subclassing another class stored in a local variable in `UselessAssignment` (formerly of `UnusedLocalVariable`) and `ShadowingOuterLocalVariable` (like `clazz = Array; class SomeClass < clazz; end`).
+* [#463](https://github.com/bbatsov/rubocop/issues/463) - Do not warn if using destructuring in second `reduce` argument (`ReduceArguments`)
 
 ## 0.12.0 (23/08/2013)
 

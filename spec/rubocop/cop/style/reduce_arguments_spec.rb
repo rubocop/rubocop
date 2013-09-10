@@ -52,6 +52,14 @@ module Rubocop
                           'end'])
           expect(cop.offences).to be_empty
         end
+
+        it 'does not report when destructuring is used' do
+          inspect_source(cop,
+                         ['def m',
+                          '  test.reduce { |a, (id, _)| a + id}',
+                          'end'])
+          expect(cop.offences).to be_empty
+        end
       end
     end
   end

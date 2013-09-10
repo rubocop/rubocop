@@ -22,6 +22,10 @@ module Rubocop
           return unless receiver
           return unless [:reduce, :inject].include?(method_name)
 
+          # discard second argument destructuring
+          _, element_node = *args_node
+          return unless element_node.type == :arg
+
           convention(args_node, :expression) unless args_node == ARGS_NODE
         end
       end
