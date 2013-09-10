@@ -18,8 +18,14 @@ module Rubocop
       processed_source
     end
 
-    def parse_file(path)
-      parse(File.read(path), path)
+    def parse_file(path, from = nil, to = nil)
+      to_parse = nil
+      if !from.nil? && !to.nil?
+        to_parse = File.readlines(path)[from..to].join
+      else
+        to_parse = File.read(path)
+      end
+      parse(to_parse, path)
     end
 
     def parse_with_parser(string, name)

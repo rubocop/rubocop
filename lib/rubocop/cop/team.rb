@@ -21,9 +21,9 @@ module Rubocop
         @options[:debug]
       end
 
-      def inspect_file(file)
+      def inspect_file(file, from = nil, to = nil)
         begin
-          processed_source = SourceParser.parse_file(file)
+          processed_source = SourceParser.parse_file(file, from, to)
         rescue Encoding::UndefinedConversionError, ArgumentError => e
           handle_error(e,
                        "An error occurred while parsing #{file}.".color(:red))

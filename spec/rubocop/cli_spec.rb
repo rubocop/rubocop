@@ -38,7 +38,7 @@ module Rubocop
         end
 
         expected_help = <<-END
-Usage: rubocop [options] [file1, file2, ...]
+Usage: rubocop [options] [file1, file2:from:to, ...]
     -d, --debug                      Display debug info.
     -c, --config FILE                Specify configuration file.
         --only COP                   Run just one cop.
