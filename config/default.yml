@@ -58,6 +58,10 @@ RegexpLiteral:
                  `MaxSlashes` '/' character.
   MaxSlashes: 1
 
+# Built-in global variables are allowed by default.
+AvoidGlobalVars:
+  AllowedVariables: []
+
 # Align with the style guide.
 CollectionMethods:
   PreferredMethods:

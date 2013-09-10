@@ -5,12 +5,22 @@ require 'spec_helper'
 module Rubocop
   module Cop
     module Style
-      describe AvoidGlobalVars do
-        subject(:cop) { AvoidGlobalVars.new }
+      describe AvoidGlobalVars, :config do
+        cop_config = {
+          'AllowedVariables' => ['$allowed']
+        }
+
+        subject(:cop) { described_class.new(config) }
+        let(:cop_config) { cop_config }
 
         it 'registers an offence for $custom' do
           inspect_source(cop, ['puts $custom'])
           expect(cop.offences.size).to eq(1)
+        end
+
+        it 'allows user whitelisted variables' do
+          inspect_source(cop, ['puts $allowed'])
+          expect(cop.offences).to be_empty
         end
 
         AvoidGlobalVars::BUILT_IN_VARS.each do |var|
