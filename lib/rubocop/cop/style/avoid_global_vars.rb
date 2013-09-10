@@ -47,7 +47,7 @@ module Rubocop
           if cop_config['AllowedVariables']
             cop_config['AllowedVariables'].map(&:to_sym)
           else
-            {}
+            []
           end
         end
 
