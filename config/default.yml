@@ -122,23 +122,29 @@ EmptyLineBetweenDefs:
   # need an empty line between them.
   AllowAdjacentOneLineDefs: false
 
-# Align the keys of a hash literal if they span more than one line.
+# Align the elements of a hash literal if they span more than one line.
 AlignHash:
-  # Valid values are:
+  # Alignment of entries using hash rocket as separator. Valid values are:
+  #
+  # key - left alignment of keys
+  #   'a' => 2
+  #   'bb' => 3
+  # separator - alignment of hash rockets, keys are right aligned
+  #    'a' => 2
+  #   'bb' => 3
+  # table - left alignment of keys, hash rockets, and values
+  #   'a'  => 2
+  #   'bb' => 3
+  EnforcedHashRocketStyle: key
+  # Alignment of entries using colon as separator. Valid values are:
   #
   # key - left alignment of keys
   #   a: 0
   #   bb: 1
-  #   'ccc' => 2
-  #   'dddd' => 3
-  # separator - alignment of colons or hash rockets, keys are right aligned
-  #         a: 0
-  #        bb: 1
-  #    'ccc' => 2
-  #   'dddd' => 3
-  # table - left alignment of keys, hash rockets, and values
-  #   a:        0
-  #   bb:       1
-  #   'ccc'  => 2
-  #   'dddd' => 3
-  EnforcedStyle: key
+  # separator - alignment of colons, keys are right aligned
+  #    a: 0
+  #   bb: 1
+  # table - left alignment of keys and values
+  #   a:  0
+  #   bb: 1
+  EnforcedColonStyle: key

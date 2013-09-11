@@ -13,8 +13,8 @@ module Rubocop
         super
         @output_hash = {
           metadata: metadata_hash,
-             files: [],
-           summary: { offence_count: 0 }
+          files:    [],
+          summary:  { offence_count: 0 }
         }
       end
 
@@ -35,16 +35,16 @@ module Rubocop
       def metadata_hash
         {
           rubocop_version: Rubocop::Version::STRING,
-              ruby_engine: RUBY_ENGINE,
-             ruby_version: RUBY_VERSION,
+          ruby_engine:     RUBY_ENGINE,
+          ruby_version:    RUBY_VERSION,
           ruby_patchlevel: RUBY_PATCHLEVEL.to_s,
-            ruby_platform: RUBY_PLATFORM
+          ruby_platform:   RUBY_PLATFORM
         }
       end
 
       def hash_for_file(file, offences)
         {
-              path: relative_path(file),
+          path:     relative_path(file),
           offences: offences.map { |o| hash_for_offence(o) }
         }
       end
@@ -52,7 +52,7 @@ module Rubocop
       def hash_for_offence(offence)
         {
           severity: offence.severity,
-           message: offence.message,
+          message:  offence.message,
           cop_name: offence.cop_name,
           location: hash_for_location(offence)
         }
@@ -61,7 +61,7 @@ module Rubocop
       # TODO: Consider better solution for Offence#real_column.
       def hash_for_location(offence)
         {
-            line: offence.line,
+          line:   offence.line,
           column: offence.real_column
         }
       end

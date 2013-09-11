@@ -12,7 +12,8 @@ module Rubocop
         def on_hash(node)
           first_pair = node.children.first
 
-          if enforced_style == 'table'
+          if [cop_config['EnforcedHashRocketStyle'],
+              cop_config['EnforcedColonStyle']].include?('table')
             key_widths = node.children.map do |pair|
               key, _value = *pair
               key.loc.expression.source.length
@@ -46,11 +47,11 @@ module Rubocop
             range = Parser::Source::Range.new(expr.source_buffer, b,
                                               expr.end_pos)
             source = ' ' * [key_delta, 0].max +
-              if enforced_style == 'key'
+              if enforced_style(node) == 'key'
                 expr.source
               else
                 key_source = key.loc.expression.source
-                padded_separator = case enforced_style
+                padded_separator = case enforced_style(node)
                                    when 'separator'
                                      spaced_separator(node)
                                    when 'table'
@@ -75,8 +76,9 @@ module Rubocop
         end
 
         def deltas(first_pair, prev_pair, current_pair, max_key_width)
+          enforced_style = enforced_style(current_pair)
           unless %w(key separator table).include?(enforced_style)
-            fail "Unknown EnforcedStyle: #{enforced_style}"
+            fail "Unknown #{config_parameter(current_pair)}: #{enforced_style}"
           end
 
           return {} if current_pair.loc.line == prev_pair.loc.line
@@ -114,7 +116,7 @@ module Rubocop
 
         def value_delta(first_pair, current_pair, max_key_width)
           key, value = *current_pair
-          correct_value_column = if enforced_style == 'table'
+          correct_value_column = if enforced_style(current_pair) == 'table'
                                    key.loc.column +
                                      spaced_separator(current_pair).length +
                                      max_key_width
@@ -129,8 +131,13 @@ module Rubocop
           node.loc.operator.is?('=>') ? ' => ' : ': '
         end
 
-        def enforced_style
-          cop_config['EnforcedStyle']
+        def enforced_style(node)
+          cop_config[config_parameter(node)]
+        end
+
+        def config_parameter(node)
+          separator = node.loc.operator.is?('=>') ? 'HashRocket' : 'Colon'
+          "Enforced#{separator}Style"
         end
       end
     end
