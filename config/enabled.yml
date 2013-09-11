@@ -446,6 +446,10 @@ AlignHash:
                  one line.
   Enabled: true
 
+SpaceBeforeModifierKeyword:
+  Description: Put a space before the modifier keyword.
+  Enabled: true
+
 #################### Lint ################################
 ### Warnings
 
