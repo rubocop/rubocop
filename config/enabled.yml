@@ -212,7 +212,7 @@ AvoidFor:
   Description: 'Prefer each over for.'
   Enabled: true
 
-AvoidPerlisms:
+SpecialGlobalVars:
   Description: 'Avoid Perl-style global variables.'
   Enabled: true
 

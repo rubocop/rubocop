@@ -4,7 +4,7 @@ module Rubocop
   module Cop
     module Style
       # This cop looks for uses of Perl-style global variables.
-      class AvoidPerlisms < Cop
+      class SpecialGlobalVars < Cop
         MSG = 'Prefer %s over %s.'
 
         PREFERRED_VARS = {

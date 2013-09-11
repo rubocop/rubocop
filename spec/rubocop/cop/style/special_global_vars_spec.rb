@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     module Style
-      describe AvoidPerlisms do
+      describe SpecialGlobalVars do
         subject(:cop) { described_class.new }
 
         it 'registers an offence for $:' do

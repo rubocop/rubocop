@@ -23,6 +23,7 @@
 * [#466](https://github.com/bbatsov/rubocop/issues/466) - Allow built-in JRuby global vars in `AvoidGlobalVars`
 * Added a config option `AllowedVariables` to `AvoidGlobalVars` to allow users to whitelist certain global variables
 * Renamed `AvoidGlobalVars` to `GlobalVars`
+* Renamed `AvoidPerlisms` to `SpecialGlobalVars`
 
 ### Bugs fixed
 
