@@ -5,7 +5,7 @@ module Rubocop
     module Style
       # This cop looks for uses of Perl-style regexp match
       # backreferences like $1, $2, etc.
-      class AvoidPerlBackrefs < Cop
+      class PerlBackrefs < Cop
         MSG = 'Avoid the use of Perl-style backrefs.'
 
         def on_nth_ref(node)

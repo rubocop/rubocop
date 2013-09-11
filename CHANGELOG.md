@@ -26,6 +26,7 @@
 * Renamed `AvoidPerlisms` to `SpecialGlobalVars`
 * Renamed `AvoidFor` to `For`
 * Renamed `AvoidClassVars` to `ClassVars`
+* Renamed `AvoidPerlBackrefs` to `PerlBackrefs`
 
 ### Bugs fixed
 

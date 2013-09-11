@@ -216,7 +216,7 @@ SpecialGlobalVars:
   Description: 'Avoid Perl-style global variables.'
   Enabled: true
 
-AvoidPerlBackrefs:
+PerlBackrefs:
   Description: 'Avoid Perl-style regex back references.'
   Enabled: true
 
