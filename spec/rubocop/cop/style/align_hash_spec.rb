@@ -11,23 +11,27 @@ module Rubocop
 
         context 'with default configuration' do
           it 'registers an offence for misaligned hash keys' do
-            inspect_source(cop, ['hash = {',
+            inspect_source(cop, ['hash1 = {',
                                  '  a: 0,',
-                                 '   bb: 1,',
-                                 " 'ccc' => 2,",
-                                 "  'dddd'  =>  2", # correctly aligned
+                                 '   bb: 1',
+                                 '}',
+                                 'hash2 = {',
+                                 "  'ccc' => 2,",
+                                 " 'dddd'  =>  2",
                                  '}'])
             expect(cop.messages).to eq(['Align the elements of a hash ' +
                                         'literal if they span more than ' +
                                         'one line.'] * 2)
             expect(cop.highlights).to eq(['bb: 1',
-                                          "'ccc' => 2"])
+                                          "'dddd'  =>  2"])
           end
 
           it 'accepts aligned hash keys' do
-            inspect_source(cop, ['hash = {',
+            inspect_source(cop, ['hash1 = {',
                                  '  a: 0,',
                                  '  bb: 1,',
+                                 '}',
+                                 'hash2 = {',
                                  "  'ccc' => 2,",
                                  "  'dddd'  =>  2",
                                  '}'])
@@ -97,20 +101,30 @@ module Rubocop
           let(:cop_config) { { 'EnforcedStyle' => 'table' } }
 
           it 'accepts aligned hash keys' do
-            inspect_source(cop, ['hash = {',
+            inspect_source(cop, ['hash1 = {',
                                  "  'a'   => 0,",
                                  "  'bbb' => 1",
-                                 '}'])
+                                 '}',
+                                 'hash2 = {',
+                                 '  a:   0,',
+                                 '  bbb: 1',
+                                 '}',
+                                ])
             expect(cop.offences).to be_empty
           end
 
           it 'registers an offence for misaligned hash values' do
-            inspect_source(cop, ['hash = {',
+            inspect_source(cop, ['hash1 = {',
                                  "  'a'   =>  0,",
                                  "  'bbb' => 1",
-                                 '}'])
-            expect(cop.offences).to have(1).item
-            expect(cop.highlights).to eq(["'a'   =>  0"])
+                                 '}',
+                                 'hash2 = {',
+                                 '  a:   0,',
+                                 '  bbb:1',
+                                 '}',
+                                ])
+            expect(cop.highlights).to eq(["'a'   =>  0",
+                                          'bbb:1'])
           end
 
           it 'registers an offence for misaligned hash rockets' do
