@@ -37,7 +37,8 @@ module Rubocop
           @assignments.any?(&:referenced?)
         end
 
-        def reference!
+        def reference!(node)
+          reference = Reference.new(node, @scope)
           consumed_branch_ids = Set.new
 
           @assignments.reverse_each do |assignment|
@@ -46,6 +47,8 @@ module Rubocop
             assignment.reference!
 
             if assignment.inside_of_branch?
+              break if assignment.branch_id == reference.branch_id
+
               unless assignment.reference_penetrable?
                 consumed_branch_ids << assignment.branch_id
               end

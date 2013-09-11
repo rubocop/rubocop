@@ -193,7 +193,7 @@ module Rubocop
         # So, at operator assignment node, we need to reference the variable
         # before processing rhs nodes.
 
-        variable_table.reference_variable(name)
+        variable_table.reference_variable(name, node)
         process_node(rhs_node)
         variable_table.assign_to_variable(name, asgn_node)
 
@@ -209,7 +209,7 @@ module Rubocop
 
       def process_variable_referencing(node)
         name = node.children.first
-        variable_table.reference_variable(name)
+        variable_table.reference_variable(name, node)
       end
 
       def process_loop(node)
@@ -246,7 +246,7 @@ module Rubocop
       def process_zero_arity_super(node)
         variable_table.accessible_variables.each do |variable|
           next unless variable.method_argument?
-          variable.reference!
+          variable.reference!(node)
         end
       end
 

@@ -611,6 +611,56 @@ module Rubocop
           include_examples 'mimics MRI 2.0'
         end
 
+        context 'when a variable is reassigned in single branch if ' +
+                'and referenced in the branch' do
+          let(:source) do
+            [
+              'def some_method(flag)',
+              '  foo = 1',
+              '',
+              '  if flag',
+              '    foo = 2',
+              '    puts foo',
+              '  end',
+              'end'
+            ]
+          end
+
+          it 'registers an offence for the unreferenced assignment' do
+            inspect_source(cop, source)
+            expect(cop.offences.size).to eq(1)
+            expect(cop.offences.first.message)
+              .to eq('Useless assignment to variable - foo')
+            expect(cop.offences.first.line).to eq(2)
+            expect(cop.highlights).to eq(['foo'])
+          end
+        end
+
+        context 'when a variable is assigned in each branch of if ' +
+                'and referenced in the else branch' do
+          let(:source) do
+            [
+              'def some_method(flag)',
+              '  if flag',
+              '    foo = 2',
+              '  else',
+              '    foo = 3',
+              '    puts foo',
+              '  end',
+              'end'
+            ]
+          end
+
+          it 'registers an offence for the assignment in the if branch' do
+            inspect_source(cop, source)
+            expect(cop.offences.size).to eq(1)
+            expect(cop.offences.first.message)
+              .to eq('Useless assignment to variable - foo')
+            expect(cop.offences.first.line).to eq(3)
+            expect(cop.highlights).to eq(['foo'])
+          end
+        end
+
         context 'when a variable is assigned on each side of && ' +
                 'and referenced after the &&' do
           let(:source) do

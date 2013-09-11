@@ -1,0 +1,162 @@
+# encoding: utf-8
+
+module Rubocop
+  module Cop
+    module VariableInspector
+      # This module provides a way to locate the conditional branch the node is
+      # in. This is intended to be used as mix-in.
+      module Locatable
+        BRANCH_TYPES = [:if, :case].freeze
+        CONDITION_INDEX_OF_BRANCH_NODE = 0
+
+        LOGICAL_OPERATOR_TYPES = [:and, :or].freeze
+        LEFT_SIDE_INDEX_OF_LOGICAL_OPERATOR_NODE = 0
+
+        ENSURE_TYPE = :ensure
+        ENSURE_INDEX_OF_ENSURE_NODE = 1
+
+        def node
+          fail '#node must be declared!'
+        end
+
+        def scope
+          fail '#scope must be declared!'
+        end
+
+        def inside_of_branch?
+          !branch_point_node.nil?
+        end
+
+        def branch_id
+          return nil unless inside_of_branch?
+          @branch_id ||= [branch_point_node.object_id, branch_type].join('_')
+        end
+
+        def branch_type
+          return nil unless inside_of_branch?
+          @branch_type ||= [branch_point_node.type, branch_body_name].join('_')
+        end
+
+        # Inner if, case, rescue, or ensure node.
+        def branch_point_node
+          if instance_variable_defined?(:@branch_point_node)
+            return @branch_point_node
+          end
+
+          set_branch_point_and_body_nodes!
+          @branch_point_node
+        end
+
+        # A child node of #branch_point_node this assignment belongs.
+        def branch_body_node
+          if instance_variable_defined?(:@branch_body_node)
+            return @branch_body_node
+          end
+
+          set_branch_point_and_body_nodes!
+          @branch_body_node
+        end
+
+        def ancestor_nodes_in_scope
+          @ancestor_nodes_in_scope ||= scope.ancestors_of_node(@node)
+        end
+
+        private
+
+        def branch_body_name
+          case branch_point_node.type
+          when :if
+            if_body_name
+          when :case
+            case_body_name
+          when *LOGICAL_OPERATOR_TYPES
+            logical_operator_body_name
+          when RESCUE_TYPE
+            rescue_body_name
+          when ENSURE_TYPE
+            ensure_body_name
+          else
+            fail InvalidBranchBodyError
+          end
+        rescue InvalidBranchBodyError
+          raise InvalidBranchBodyError,
+                "Invalid body index #{body_index} of #{branch_point_node.type}"
+        end
+
+        def if_body_name
+          case body_index
+          when 1 then 'true'
+          when 2 then 'false'
+          else fail InvalidBranchBodyError
+          end
+        end
+
+        def case_body_name
+          if branch_body_node.type == :when
+            "when#{body_index - 1}"
+          else
+            'else'
+          end
+        end
+
+        def logical_operator_body_name
+          case body_index
+          when 1 then 'right'
+          else fail InvalidBranchBodyError
+          end
+        end
+
+        def rescue_body_name
+          if body_index == 0
+            'main'
+          elsif branch_body_node.type == :resbody
+            "rescue#{body_index - 1}"
+          else
+            'else'
+          end
+        end
+
+        def ensure_body_name
+          case body_index
+          when 0 then 'main'
+          else fail InvalidBranchBodyError
+          end
+        end
+
+        def body_index
+          branch_point_node.children.index(branch_body_node)
+        end
+
+        def set_branch_point_and_body_nodes!
+          ancestors_and_self_nodes = ancestor_nodes_in_scope + [@node]
+
+          ancestors_and_self_nodes.reverse.each_cons(2) do |child, parent|
+            next unless branch?(parent, child)
+            @branch_point_node = parent
+            @branch_body_node = child
+            break
+          end
+        end
+
+        def branch?(parent_node, child_node)
+          child_index = parent_node.children.index(child_node)
+
+          case parent_node.type
+          when *BRANCH_TYPES
+            child_index != CONDITION_INDEX_OF_BRANCH_NODE
+          when *LOGICAL_OPERATOR_TYPES
+            child_index != LEFT_SIDE_INDEX_OF_LOGICAL_OPERATOR_NODE
+          when RESCUE_TYPE
+            true
+          when ENSURE_TYPE
+            child_index != ENSURE_INDEX_OF_ENSURE_NODE
+          else
+            false
+          end
+        end
+
+        class InvalidBranchBodyError < StandardError; end
+      end
+    end
+  end
+end
