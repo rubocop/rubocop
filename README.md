@@ -7,8 +7,14 @@
 > Role models are important. <br/>
 > -- Officer Alex J. Murphy / RoboCop
 
-**RuboCop** is a Ruby code style checker based on the
+**RuboCop** is a Ruby static code analyzer. Out of the box it will
+enforce many of the guidelines outlined in the community
 [Ruby Style Guide](https://github.com/bbatsov/ruby-style-guide).
+
+Most aspects of its behavior can be tweaked via various configuration options.
+
+Apart from reporting problems in your code, RuboCop can also
+automatically fix some of the problems for you.
 
 ## Installation
 
@@ -83,6 +89,41 @@ Command flag           | Description
 `--auto-gen-config`    | Generate a configuration file acting as a TODO list
 `--show-cops`          | Shows available cops and their configuration
 
+### Cops
+
+In RuboCop lingo the various checks performed on the code are called cops. There are several cop departments.
+
+#### Style
+
+Most of the cops in RuboCop are so called style cops that check for
+stylistics problems in your code. Almost all of the them are based on
+the Ruby Style Guide. Many of the style cops have configurations
+options allowing them to support different popular coding
+conventions.
+
+#### Lint
+
+Lint cops check for possible errors and very bad practices in your
+code. RuboCop implements in a portable way all built-in MRI lint
+checks (`ruby -wc`) and adds a lot of extra lint checks of its
+own. You can run only the lint cops like this:
+
+```
+$ rubocop -l
+```
+
+Disabling any of the lint cops in generally a bad idea.
+
+#### Rails
+
+Rails cops are specific to the Ruby on Rails framework. Unlike style
+and lint cops they are not used by default and you have to request them
+specifically:
+
+```
+$ rubocop -R
+```
+
 ## Configuration
 
 The behavior of RuboCop can be controlled via the
@@ -128,12 +169,13 @@ inherit_from:
 
 ### Defaults
 
-The file `config/default.yml` under the RuboCop home directory
-contains the default settings that all configurations inherit
-from. Project and personal `.rubocop.yml` files need only make
-settings that are different from the default ones. If there is no
-`.rubocop.yml` file in the project or home directory,
-`config/default.yml` will be used.
+The file
+[config/default.yml]([.rubocop.yml](https://github.com/bbatsov/rubocop/blob/master/config/.default.yml))
+under the RuboCop home directory contains the default settings that
+all configurations inherit from. Project and personal `.rubocop.yml`
+files need only make settings that are different from the default
+ones. If there is no `.rubocop.yml` file in the project or home
+directory, `config/default.yml` will be used.
 
 ### Disabling Cops within Source Code
 
