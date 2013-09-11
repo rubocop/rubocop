@@ -59,7 +59,7 @@ RegexpLiteral:
   MaxSlashes: 1
 
 # Built-in global variables are allowed by default.
-AvoidGlobalVars:
+GlobalVars:
   AllowedVariables: []
 
 # Align with the style guide.

@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     module Style
-      describe AvoidGlobalVars, :config do
+      describe GlobalVars, :config do
         cop_config = {
           'AllowedVariables' => ['$allowed']
         }
@@ -23,7 +23,7 @@ module Rubocop
           expect(cop.offences).to be_empty
         end
 
-        AvoidGlobalVars::BUILT_IN_VARS.each do |var|
+        described_class::BUILT_IN_VARS.each do |var|
           it "does not register an offence for built-in variable #{var}" do
             inspect_source(cop, ["puts #{var}"])
             expect(cop.offences).to be_empty

@@ -326,7 +326,7 @@ ColonMethodCall:
   Description: 'Do not use :: for method call.'
   Enabled: true
 
-AvoidGlobalVars:
+GlobalVars:
   Description: 'Do not introduce global variables.'
   Enabled: true
 

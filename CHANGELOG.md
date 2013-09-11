@@ -22,6 +22,7 @@
 * [#458](https://github.com/bbatsov/rubocop/issues/458) - The merged `UselessAssignment` cop now has advanced logic that tracks not only assignment at the end of the method but also every assignment in every scope.
 * [#466](https://github.com/bbatsov/rubocop/issues/466) - Allow built-in JRuby global vars in `AvoidGlobalVars`
 * Added a config option `AllowedVariables` to `AvoidGlobalVars` to allow users to whitelist certain global variables
+* Renamed `AvoidGlobalVars` to `GlobalVars`
 
 ### Bugs fixed
 

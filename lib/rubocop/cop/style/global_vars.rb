@@ -9,7 +9,7 @@ module Rubocop
       # users can allow additional variables via the AllowedVariables option.
       #
       # Note that backreferences like $1, $2, etc are not global variables.
-      class AvoidGlobalVars < Cop
+      class GlobalVars < Cop
         MSG = 'Do not introduce global variables.'
 
         # predefined global variables their English aliases
