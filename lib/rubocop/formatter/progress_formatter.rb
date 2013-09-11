@@ -7,11 +7,11 @@ module Rubocop
     # appends the regular report data in the clang style format.
     class ProgressFormatter < ClangStyleFormatter
       COLOR_FOR_SEVERITY = {
-          refactor: :yellow,
+        refactor:   :yellow,
         convention: :yellow,
-           warning: :magenta,
-             error: :red,
-             fatal: :red
+        warning:    :magenta,
+        error:      :red,
+        fatal:      :red
       }
 
       def started(target_files)
