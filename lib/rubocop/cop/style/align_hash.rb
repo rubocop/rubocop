@@ -92,8 +92,16 @@ module Rubocop
                    else
                      key_end_column(first_pair) - key_end_column(current_pair)
                    end,
-              separator: (first_pair.loc.operator.column -
-                          current_pair.loc.operator.column),
+              separator: if current_pair.loc.operator.is?(':') &&
+                             enforced_style == 'table'
+                           # Colon follows directly after key
+                           (key_end_column(current_pair) -
+                            current_pair.loc.operator.column)
+                         else
+                           # Aligned separator
+                           (first_pair.loc.operator.column -
+                            current_pair.loc.operator.column)
+                         end,
               value: value_delta(first_pair, current_pair, max_key_width)
             }
           end
