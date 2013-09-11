@@ -25,6 +25,7 @@
 * Renamed `AvoidGlobalVars` to `GlobalVars`
 * Renamed `AvoidPerlisms` to `SpecialGlobalVars`
 * Renamed `AvoidFor` to `For`
+* Renamed `AvoidClassVars` to `ClassVars`
 
 ### Bugs fixed
 

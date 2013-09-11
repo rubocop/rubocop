@@ -220,7 +220,7 @@ AvoidPerlBackrefs:
   Description: 'Avoid Perl-style regex back references.'
   Enabled: true
 
-AvoidClassVars:
+ClassVars:
   Description: 'Avoid the use of class variables.'
   Enabled: true
 
