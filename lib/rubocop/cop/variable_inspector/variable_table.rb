@@ -65,14 +65,15 @@ module Rubocop
           mark_variable_as_captured_by_block_if_so(variable)
         end
 
-        def reference_variable(name)
+        def reference_variable(name, node)
           variable = find_variable(name)
 
           unless variable
-            fail "Referencing undeclared local variable \"#{name}\""
+            fail "Referencing undeclared local variable \"#{name}\" " +
+                 "at #{node.loc.expression}, #{node.inspect}"
           end
 
-          variable.reference!
+          variable.reference!(node)
           mark_variable_as_captured_by_block_if_so(variable)
         end
 

@@ -15,8 +15,10 @@ require 'rubocop/cop/corrector'
 require 'rubocop/cop/team'
 
 require 'rubocop/cop/variable_inspector'
+require 'rubocop/cop/variable_inspector/locatable'
 require 'rubocop/cop/variable_inspector/variable'
 require 'rubocop/cop/variable_inspector/assignment'
+require 'rubocop/cop/variable_inspector/reference'
 require 'rubocop/cop/variable_inspector/scope'
 require 'rubocop/cop/variable_inspector/variable_table'
 
