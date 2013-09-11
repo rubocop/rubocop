@@ -7,7 +7,12 @@ module Rubocop
     module Style
       describe AlignHash, :config do
         subject(:cop) { described_class.new(config) }
-        let(:cop_config) { { 'EnforcedStyle' => 'key' } }
+        let(:cop_config) do
+          {
+            'EnforcedHashRocketStyle' => 'key',
+            'EnforcedColonStyle' => 'key'
+          }
+        end
 
         context 'with default configuration' do
           it 'registers an offence for misaligned hash keys' do
@@ -98,7 +103,12 @@ module Rubocop
         end
 
         context 'with table alignment configuration' do
-          let(:cop_config) { { 'EnforcedStyle' => 'table' } }
+          let(:cop_config) do
+            {
+              'EnforcedHashRocketStyle' => 'table',
+              'EnforcedColonStyle' => 'table'
+            }
+          end
 
           it 'accepts aligned hash keys' do
             inspect_source(cop, ['hash1 = {',
@@ -152,7 +162,12 @@ module Rubocop
         end
 
         context 'with invalid configuration' do
-          let(:cop_config) { { 'EnforcedStyle' => 'junk' } }
+          let(:cop_config) do
+            {
+              'EnforcedHashRocketStyle' => 'junk',
+              'EnforcedColonStyle' => 'junk'
+            }
+          end
           it 'fails' do
             src = ['hash = {',
                    '  a: 0,',
@@ -163,7 +178,12 @@ module Rubocop
         end
 
         context 'with separator alignment configuration' do
-          let(:cop_config) { { 'EnforcedStyle' => 'separator' } }
+          let(:cop_config) do
+            {
+              'EnforcedHashRocketStyle' => 'separator',
+              'EnforcedColonStyle' => 'separator'
+            }
+          end
 
           it 'accepts aligned hash keys' do
             inspect_source(cop, ['hash1 = {',
@@ -206,6 +226,39 @@ module Rubocop
                                       'hash2 = { a => 0,',
                                       '         bb => 1,',
                                       '        ccc => 2 }'].join("\n"))
+          end
+        end
+
+        context 'with different settings for => and :' do
+          let(:cop_config) do
+            {
+              'EnforcedHashRocketStyle' => 'key',
+              'EnforcedColonStyle' => 'separator'
+            }
+          end
+
+          it 'registers offences for misaligned entries' do
+            inspect_source(cop, ['hash1 = {',
+                                 '  a:   0,',
+                                 '  bbb: 1',
+                                 '}',
+                                 'hash2 = {',
+                                 "    'a' => 0,",
+                                 "  'bbb' => 1",
+                                 '}'])
+            expect(cop.highlights).to eq(['bbb: 1', "'bbb' => 1"])
+          end
+
+          it 'accepts aligned entries' do
+            inspect_source(cop, ['hash1 = {',
+                                 '    a: 0,',
+                                 '  bbb: 1',
+                                 '}',
+                                 'hash2 = {',
+                                 "  'a' => 0,",
+                                 "  'bbb' => 1",
+                                 '}'])
+            expect(cop.offences).to be_empty
           end
         end
       end
