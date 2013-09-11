@@ -12,6 +12,7 @@
 * `RedundantReturn` cop does auto-correction.
 * `Blocks` cop does auto-correction.
 * New cop `AlignHash` keeps track of bad alignment in multi-line hash literals.
+* New cop `SpaceBeforeModifierKeyword` keeps track of missing space before a modifier keyword (`if`, `unless`, `while`, `until`).
 
 ### Changes
 
