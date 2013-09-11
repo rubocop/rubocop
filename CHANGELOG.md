@@ -24,6 +24,7 @@
 * Added a config option `AllowedVariables` to `AvoidGlobalVars` to allow users to whitelist certain global variables
 * Renamed `AvoidGlobalVars` to `GlobalVars`
 * Renamed `AvoidPerlisms` to `SpecialGlobalVars`
+* Renamed `AvoidFor` to `For`
 
 ### Bugs fixed
 

@@ -29,9 +29,9 @@ module Rubocop
       end
 
       it 'registers offence with its name' do
-        cop = Style::AvoidFor.new
+        cop = Style::For.new
         cop.convention(nil, location, 'message')
-        expect(cop.offences.first.cop_name).to eq('AvoidFor')
+        expect(cop.offences.first.cop_name).to eq('For')
       end
 
       context 'with no submodule' do
@@ -41,8 +41,8 @@ module Rubocop
       end
 
       context 'with style cops' do
-        subject(:cop) { Style::AvoidFor }
-        it('has right name') { expect(cop.cop_name).to eq('AvoidFor') }
+        subject(:cop) { Style::For }
+        it('has right name') { expect(cop.cop_name).to eq('For') }
         it('has right type') { expect(cop.cop_type).to eq(:style) }
       end
 

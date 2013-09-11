@@ -208,7 +208,7 @@ CollectionMethods:
   Description: 'Preferred collection methods.'
   Enabled: true
 
-AvoidFor:
+For:
   Description: 'Prefer each over for.'
   Enabled: true
 
