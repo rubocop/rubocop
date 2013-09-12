@@ -8,7 +8,7 @@ module Rubocop
         MSG = 'Source files should end with a newline(\n).'
 
         def investigate(processed_source)
-          final_line = processed_source.raw_lines.last
+          final_line = processed_source.raw_lines.to_a.last
 
           unless final_line.end_with?("\n")
             convention(nil,
