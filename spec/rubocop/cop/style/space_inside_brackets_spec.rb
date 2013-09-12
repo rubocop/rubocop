@@ -10,7 +10,7 @@ module Rubocop
 
         it 'registers an offence for an array literal with spaces inside' do
           inspect_source(space, ['a = [1, 2 ]',
-                                           'b = [ 1, 2]'])
+                                 'b = [ 1, 2]'])
           expect(space.messages).to eq(
             ['Space inside square brackets detected.',
              'Space inside square brackets detected.'])
@@ -31,7 +31,7 @@ module Rubocop
 
         it 'accepts square brackets as method name' do
           inspect_source(space, ['def Vector.[](*array)',
-                                           'end'])
+                                 'end'])
           expect(space.messages).to be_empty
         end
 

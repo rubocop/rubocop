@@ -22,7 +22,7 @@ module Rubocop
 
         it 'accepts multiline []= method call' do
           inspect_source(align, ['Test.config["something"] =',
-                                            ' true'])
+                                 ' true'])
           expect(align.offences).to be_empty
         end
 

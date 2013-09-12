@@ -10,9 +10,9 @@ module Rubocop
 
         it 'registers offence for double quotes when single quotes suffice' do
           inspect_source(cop, ['s = "abc"',
-                              'x = "a\\\\b"',
-                              'y ="\\\\b"',
-                              'z = "a\\\\"'])
+                               'x = "a\\\\b"',
+                               'y ="\\\\b"',
+                               'z = "a\\\\"'])
           expect(cop.offences.size).to eq(4)
         end
 
@@ -23,7 +23,7 @@ module Rubocop
                  'c = "\'"',
                  'd = "#@test"',
                  'e = "#$test"',
-                  'f = "\e"',
+                 'f = "\e"',
                  'g = "#@@test"']
           inspect_source(cop, src)
           expect(cop.offences).to be_empty

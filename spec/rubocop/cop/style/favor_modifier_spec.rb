@@ -58,8 +58,8 @@ module Rubocop
 
         it 'registers an offence for multiline unless that fits on one line' do
           inspect_source(if_unless, ['unless a',
-                                    '  b',
-                                    'end'])
+                                     '  b',
+                                     'end'])
           expect(if_unless.messages).to eq(
             ['Favor modifier if/unless usage when you have a single-line' +
              ' body. Another good alternative is the usage of control flow' +

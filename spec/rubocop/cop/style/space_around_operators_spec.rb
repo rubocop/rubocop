@@ -191,8 +191,8 @@ module Rubocop
 
         it 'accepts unary operators without space' do
           inspect_source(space, ['[].map(&:size)',
-                                            '-3',
-                                            'x = +2'])
+                                 '-3',
+                                 'x = +2'])
           expect(space.messages).to eq([])
         end
 
