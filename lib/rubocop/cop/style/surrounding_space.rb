@@ -223,7 +223,7 @@ module Rubocop
 
         def check(t1, t2, msg)
           unless space_between?(t1, t2)
-            brace_token = msg == MSG_LEFT ? t1 : t2
+            brace_token = t1.text == '{' ? t1 : t2
             convention(nil, brace_token.pos, msg)
           end
         end
@@ -302,7 +302,8 @@ module Rubocop
                              else
                                [has_space, 'detected']
                              end
-          convention(nil, t1.pos, sprintf(MSG, word)) if is_offence
+          brace_token = t1.text == '{' ? t1 : t2
+          convention(nil, brace_token.pos, sprintf(MSG, word)) if is_offence
         end
       end
 
