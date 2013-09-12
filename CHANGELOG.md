@@ -11,10 +11,11 @@
 * `AvoidPerlisms` cop does auto-correction.
 * `RedundantReturn` cop does auto-correction.
 * `Blocks` cop does auto-correction.
-* New cop `TrailingBlankLines`
+* New cop `TrailingBlankLines` keeps track of extra blanks lines at the end of source file.
 * New cop `AlignHash` keeps track of bad alignment in multi-line hash literals.
 * New cop `AlignArray` keeps track of bad alignment in multi-line array literals.
 * New cop `SpaceBeforeModifierKeyword` keeps track of missing space before a modifier keyword (`if`, `unless`, `while`, `until`).
+* New cop `FinalNewline` keeps tracks of the required final newline in a source file.
 * Highlightling corrected in `SpaceInsideHashLiteralBraces` and `SpaceAroundBraces` cops.
 
 ### Changes

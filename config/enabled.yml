@@ -24,6 +24,10 @@ TrailingBlankLines:
   Description: 'Checks for superflous trailing blank lines.'
   Enabled: true
 
+FinalNewline:
+  Description: 'Checks for a final newline in a source file.'
+  Enabled: true
+
 CaseIndentation:
   Description: 'Indent when as deep as case.'
   Enabled: true

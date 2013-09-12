@@ -17,11 +17,32 @@ module Rubocop
     end
 
     def lines
-      @lines ||= @buffer.source.lines.map(&:chomp)
+      if @lines
+        @lines
+      else
+        init_lines
+        @lines
+      end
+    end
+
+    def raw_lines
+      if @raw_lines
+        @raw_lines
+      else
+        init_lines
+        @raw_lines
+      end
     end
 
     def [](*args)
       lines[*args]
+    end
+
+    private
+
+    def init_lines
+      @raw_lines = @buffer.source.lines
+      @lines = @raw_lines.map(&:chomp)
     end
   end
 end

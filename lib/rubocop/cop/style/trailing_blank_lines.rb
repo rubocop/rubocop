@@ -4,7 +4,6 @@ module Rubocop
   module Cop
     module Style
       # This cop looks for trailing blank lines in the source code.
-      # It also enforces the presence of a final newline in each source file.
       class TrailingBlankLines < Cop
         MSG = '%d trailing blank lines detected.'
 
