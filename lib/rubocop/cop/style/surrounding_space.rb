@@ -175,7 +175,7 @@ module Rubocop
       end
 
       # Checks that block braces have surrounding space.
-      class SpaceAroundBraces < Cop
+      class SpaceAroundBlockBraces < Cop
         include SurroundingSpace
         MSG_LEFT = "Surrounding space missing for '{'."
         MSG_RIGHT = "Space missing to the left of '}'."
@@ -188,8 +188,6 @@ module Rubocop
             next if ([t1.pos, t2.pos] - positions_not_to_check).size < 2
 
             type1, type2 = t1.type, t2.type
-            # :tLBRACE in hash literals, :tLCURLY otherwise.
-            next if [:tLCURLY, :tLBRACE].include?(type1) && type2 == :tRCURLY
             check(t1, t2, MSG_LEFT) if type1 == :tLCURLY || type2 == :tLCURLY
             check(t1, t2, MSG_RIGHT) if type2 == :tRCURLY
           end

@@ -6,6 +6,7 @@
 
 * `HashSyntax` cop does auto-correction.
 * Allow calls to self to fix name clash with argument [#484](https://github.com/bbatsov/rubocop/pull/484)
+* Renamed `SpaceAroundBraces` to `SpaceAroundBlockBraces`.
 
 ### Bugs fixed
 
