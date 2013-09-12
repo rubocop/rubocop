@@ -446,6 +446,12 @@ AlignHash:
                  one line.
   Enabled: true
 
+AlignArray:
+  Description: >
+                 Align the elements of an array literal if they span more than
+                 one line.
+  Enabled: true
+
 SpaceBeforeModifierKeyword:
   Description: Put a space before the modifier keyword.
   Enabled: true
