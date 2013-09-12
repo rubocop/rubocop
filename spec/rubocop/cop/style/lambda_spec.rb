@@ -16,22 +16,22 @@ module Rubocop
 
         it 'accepts the new lambda literal with single-line body' do
           inspect_source(lambda, ['lambda = ->(x) { x }',
-                                     'lambda.(1)'])
+                                  'lambda.(1)'])
           expect(lambda.offences).to be_empty
         end
 
         it 'registers an offence for a new multi-line lambda call' do
           inspect_source(lambda, ['f = ->(x) do',
-                                          '  x',
-                                          'end'])
+                                  '  x',
+                                  'end'])
           expect(lambda.offences.size).to eq(1)
           expect(lambda.messages).to eq([Lambda::MULTI_MSG])
         end
 
         it 'accepts the old lambda syntax with multi-line body' do
           inspect_source(lambda, ['l = lambda do |x|',
-                                          '  x',
-                                          'end'])
+                                  '  x',
+                                  'end'])
           expect(lambda.offences).to be_empty
         end
 

@@ -10,28 +10,28 @@ module Rubocop
 
         it 'registers an offence for when x;' do
           inspect_source(cop, ['case a',
-                              'when b; c',
-                              'end'])
+                               'when b; c',
+                               'end'])
           expect(cop.messages).to eq(
             ['Never use "when x;". Use "when x then" instead.'])
         end
 
         it 'accepts when x then' do
           inspect_source(cop, ['case a',
-                              'when b then c',
-                              'end'])
+                               'when b then c',
+                               'end'])
           expect(cop.messages).to be_empty
         end
 
         it 'accepts ; separating statements in the body of when' do
           inspect_source(cop, ['case a',
-                              'when b then c; d',
-                              'end',
-                              '',
-                              'case e',
-                              'when f',
-                              '  g; h',
-                              'end'])
+                               'when b then c; d',
+                               'end',
+                               '',
+                               'case e',
+                               'when f',
+                               '  g; h',
+                               'end'])
           expect(cop.messages).to be_empty
         end
 

@@ -102,7 +102,7 @@ module Rubocop
           it 'does not accepts = in condition surrounded with braces' do
             inspect_source(cop,
                            ['if (test = 10)',
-                           'end'
+                            'end'
                            ])
             expect(cop.offences.size).to eq(1)
           end
