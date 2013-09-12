@@ -14,8 +14,7 @@ module Rubocop
                          source_range(processed_source.buffer,
                                       processed_source[0...index],
                                       line.rstrip.length,
-                                      line.length - line.rstrip.length),
-                         MSG)
+                                      line.length - line.rstrip.length))
             end
           end
         end

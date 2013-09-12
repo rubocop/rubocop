@@ -6,22 +6,22 @@ module Rubocop
   module Cop
     module Style
       describe TrailingWhitespace do
-        subject(:tws) { TrailingWhitespace.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for a line ending with space' do
           source = ['x = 0 ']
-          inspect_source(tws, source)
-          expect(tws.offences.size).to eq(1)
+          inspect_source(cop, source)
+          expect(cop.offences.size).to eq(1)
         end
 
         it 'registers an offence for a line ending with tab' do
-          inspect_source(tws, ["x = 0\t"])
-          expect(tws.offences.size).to eq(1)
+          inspect_source(cop, ["x = 0\t"])
+          expect(cop.offences.size).to eq(1)
         end
 
         it 'accepts a line without trailing whitespace' do
-          inspect_source(tws, ["x = 0\n"])
-          expect(tws.offences).to be_empty
+          inspect_source(cop, ["x = 0\n"])
+          expect(cop.offences).to be_empty
         end
       end
     end

@@ -20,6 +20,10 @@ TrailingWhitespace:
   Description: 'Avoid trailing whitespace.'
   Enabled: true
 
+TrailingBlankLines:
+  Description: 'Checks for superflous trailing blank lines.'
+  Enabled: true
+
 CaseIndentation:
   Description: 'Indent when as deep as case.'
   Enabled: true

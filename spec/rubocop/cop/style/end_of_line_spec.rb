@@ -16,6 +16,7 @@ module Rubocop
         end
 
         it 'registers an offence for CR at end of file' do
+          pending
           inspect_source(eol, ["x=0\r"])
           expect(eol.messages).to eq(
             ['Carriage return character detected.'])

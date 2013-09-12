@@ -17,7 +17,7 @@ module Rubocop
     end
 
     def lines
-      @lines ||= @buffer.source.split($RS)
+      @lines ||= @buffer.source.lines.map(&:chomp)
     end
 
     def [](*args)
