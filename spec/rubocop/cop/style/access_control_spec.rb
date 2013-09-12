@@ -11,11 +11,11 @@ module Rubocop
         it 'registers an offence for misaligned private' do
           inspect_source(a,
                          ['class Test',
-                           '',
-                           'private',
-                           '',
-                           '  def test; end',
-                           'end'])
+                          '',
+                          'private',
+                          '',
+                          '  def test; end',
+                          'end'])
           expect(a.offences.size).to eq(1)
           expect(a.messages)
             .to eq([format(AccessControl::INDENT_MSG, 'private')])
@@ -37,11 +37,11 @@ module Rubocop
         it 'registers an offence for misaligned private in singleton class' do
           inspect_source(a,
                          ['class << self',
-                           '',
-                           'private',
-                           '',
-                           '  def test; end',
-                           'end'])
+                          '',
+                          'private',
+                          '',
+                          '  def test; end',
+                          'end'])
           expect(a.offences.size).to eq(1)
           expect(a.messages)
             .to eq([format(AccessControl::INDENT_MSG, 'private')])
