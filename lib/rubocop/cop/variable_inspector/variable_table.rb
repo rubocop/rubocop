@@ -68,10 +68,24 @@ module Rubocop
         def reference_variable(name, node)
           variable = find_variable(name)
 
-          unless variable
-            fail "Referencing undeclared local variable \"#{name}\" " +
-                 "at #{node.loc.expression}, #{node.inspect}"
-          end
+          # In this code:
+          #
+          #   foo = 1 unless foo
+          #
+          #   (if
+          #     (lvar :foo) nil
+          #     (lvasgn :foo
+          #       (int 1)))
+          #
+          # Parser knows whether the foo is a variable or method invocation.
+          # This means that if a :lvar node is shown in AST, the variable is
+          # assumed to be already declared, even if we haven't seen any :lvasgn
+          # or :arg node before the :lvar node.
+          #
+          # We don't invoke #declare_variable here otherwise
+          # Variable#declaration_node will be :lvar node, that is actually not.
+          # So just skip.
+          return unless variable
 
           variable.reference!(node)
           mark_variable_as_captured_by_block_if_so(variable)

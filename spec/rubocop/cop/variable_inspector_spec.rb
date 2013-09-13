@@ -22,8 +22,8 @@ module Rubocop
           let(:node) { s(:lvar, :foo) }
 
           context 'when the variable is not yet declared' do
-            it 'raises error' do
-              expect { inspector.process_node(node) }.to raise_error
+            it 'does not raise error' do
+              expect { inspector.process_node(node) }.not_to raise_error
             end
           end
         end

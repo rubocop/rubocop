@@ -661,6 +661,43 @@ module Rubocop
           end
         end
 
+        context 'when a variable is assigned in branch of modifier if ' +
+                'that references the variable in its conditional clause' +
+                'and referenced after the branching' do
+          let(:source) do
+            [
+              'def some_method(flag)',
+              '  foo = 1 unless foo',
+              '  puts foo',
+              'end'
+            ]
+          end
+
+          include_examples 'accepts'
+          include_examples 'mimics MRI 2.0'
+        end
+
+        context 'when a variable is assigned in branch of modifier if ' +
+                'that references the variable in its conditional clause' +
+                'and unreferenced' do
+          let(:source) do
+            [
+              'def some_method(flag)',
+              '  foo = 1 unless foo',
+              'end'
+            ]
+          end
+
+          it 'registers an offence' do
+            inspect_source(cop, source)
+            expect(cop.offences.size).to eq(1)
+            expect(cop.offences.first.message)
+              .to eq('Useless assignment to variable - foo')
+            expect(cop.offences.first.line).to eq(2)
+            expect(cop.highlights).to eq(['foo'])
+          end
+        end
+
         context 'when a variable is assigned on each side of && ' +
                 'and referenced after the &&' do
           let(:source) do
