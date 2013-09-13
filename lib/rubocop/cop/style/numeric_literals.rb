@@ -6,19 +6,39 @@ module Rubocop
       # This cop checks for big numeric literals without _ between groups
       # of digits in them.
       class NumericLiterals < Cop
-        MSG = 'Add underscores to large numeric literals to ' +
-          'improve their readability.'
+        MSG = 'Separate every 3 digits in the integer portion of a number' \
+          'with underscores(_).'
+
+        def min_digits
+          cop_config['MinDigits']
+        end
+
+        def enough_digits?(number)
+          number.to_s.size >= min_digits
+        end
 
         def on_int(node)
+          check(node)
+        end
+
+        def on_fload(node)
+          check(node)
+        end
+
+        def check(node)
           value, = *node
 
-          if value > 10000 &&
-              node.loc.expression.source.split('.').grep(/\d{6}/).any?
-            convention(node, :expression)
+          if enough_digits?(value)
+            int = integer_part(node)
+            if int =~ /\d{4}/ || int =~ /_\d{1,2}_/
+              convention(node, :expression)
+            end
           end
         end
 
-        alias_method :on_float, :on_int
+        def integer_part(node)
+          node.loc.expression.source.split('.').first
+        end
       end
     end
   end

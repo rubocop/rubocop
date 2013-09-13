@@ -32,6 +32,7 @@
 * Renamed `AvoidFor` to `For`
 * Renamed `AvoidClassVars` to `ClassVars`
 * Renamed `AvoidPerlBackrefs` to `PerlBackrefs`
+* `NumericLiterals` now accepts a config param `MinDigits` - the minimal number of digits in the integer portion of number for the cop to check it.
 
 ### Bugs fixed
 

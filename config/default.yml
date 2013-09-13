@@ -50,6 +50,9 @@ BlockNesting:
   Description: 'Avoid more than `Max` levels of nesting.'
   Max: 3
 
+NumericLiterals:
+  MinDigits: 5
+
 RegexpLiteral:
   Description: >
                  Use %r for regular expressions matching more than

@@ -5,45 +5,35 @@ require 'spec_helper'
 module Rubocop
   module Cop
     module Style
-      describe NumericLiterals do
-        subject(:num) { NumericLiterals.new }
+      describe NumericLiterals, :config do
+        subject(:cop) { described_class.new(config) }
+        let(:cop_config) { { 'MinDigits' => 5 } }
 
         it 'registers an offence for a long integer without underscores' do
-          inspect_source(num, ['a = 123456'])
-          expect(num.messages).to eq(
-            ['Add underscores to large numeric literals to improve their ' +
-             'readability.'])
+          inspect_source(cop, ['a = 123456'])
+          expect(cop.offences.size).to eq(1)
         end
 
-        it 'registers an offence for an integer with not enough underscores' do
-          inspect_source(num, ['a = 123456_789000'])
-          expect(num.messages).to eq(
-            ['Add underscores to large numeric literals to improve their ' +
-             'readability.'])
+        it 'registers an offence for an integer with misplaced' do
+          inspect_source(cop, ['a = 123_456_78_90_00'])
+          expect(cop.offences.size).to eq(1)
         end
-
-        # it 'registers an offence for a long float without underscores' do
-        #   inspect_source(num, ['a = 1.234567'])
-        #   expect(num.messages).to eq(
-        #     ['Add underscores to large numeric literals to improve their ' +
-        #      'readability.'])
-        # end
 
         it 'accepts long numbers with underscore' do
-          inspect_source(num, ['a = 123_456',
-                               'b = 1.234_56'])
-          expect(num.messages).to be_empty
+          inspect_source(cop, ['a = 123_456',
+                               'b = 123_456.55'])
+          expect(cop.messages).to be_empty
         end
 
         it 'accepts a short integer without underscore' do
-          inspect_source(num, ['a = 123'])
-          expect(num.messages).to be_empty
+          inspect_source(cop, ['a = 123'])
+          expect(cop.messages).to be_empty
         end
 
         it 'accepts short numbers without underscore' do
-          inspect_source(num, ['a = 123',
+          inspect_source(cop, ['a = 123',
                                'b = 123.456'])
-          expect(num.messages).to be_empty
+          expect(cop.messages).to be_empty
         end
       end
     end
