@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.13.0 (13/09/2013)
+
 ### New features
 
 * New configuration parameter `AllowAdjacentOneLineDefs` for `EmptyLineBetweenDefs`.
