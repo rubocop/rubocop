@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bugs fixed
+
+* Fix crash on empty input file in `FinalNewline`.
+
 ## 0.13.0 (13/09/2013)
 
 ### New features
