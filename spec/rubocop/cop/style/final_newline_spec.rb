@@ -19,6 +19,12 @@ module Rubocop
           inspect_source(cop, source)
           expect(cop.offences).to be_empty
         end
+
+        it 'accepts an empty file' do
+          source = ['']
+          inspect_source(cop, source)
+          expect(cop.offences).to be_empty
+        end
       end
     end
   end
