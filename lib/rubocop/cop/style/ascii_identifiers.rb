@@ -11,7 +11,7 @@ module Rubocop
 
         def investigate(processed_source)
           processed_source.tokens.each do |t|
-            if t.type == :tIDENTIFIER && t.text =~ /[^\x00-\x7f]/
+            if t.type == :tIDENTIFIER && !t.text.ascii_only?
               convention(nil, t.pos)
             end
           end
