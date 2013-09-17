@@ -5,23 +5,15 @@ module Rubocop
     module Style
       # Checks for uses of the character literal ?x.
       class CharacterLiteral < Cop
+        include StringHelp
+
         MSG = 'Do not use the character literal - use string literal instead.'
 
-        def on_str(node)
-          # Constants like __FILE__ are handled as strings,
-          # but don't respond to begin.
-          return unless node.loc.respond_to?(:begin) && node.loc.begin
-          return if part_of_ignored_node?(node)
-
+        def offence?(node)
           # we don't register an offence for things like ?\C-\M-d
-          if node.loc.begin.is?('?') &&
-              node.loc.expression.source.size.between?(2, 3)
-            convention(node, :expression)
-          end
+          node.loc.begin.is?('?') &&
+            node.loc.expression.source.size.between?(2, 3)
         end
-
-        alias_method :on_dstr, :ignore_node
-        alias_method :on_regexp, :ignore_node
 
         def autocorrect_action(node)
           @corrections << lambda do |corrector|
