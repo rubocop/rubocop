@@ -41,6 +41,8 @@ require 'rubocop/cop/lint/useless_comparison'
 require 'rubocop/cop/lint/useless_setter_call'
 require 'rubocop/cop/lint/void'
 
+require 'rubocop/cop/style/autocorrect_alignment'
+require 'rubocop/cop/style/string_help'
 require 'rubocop/cop/style/access_control'
 require 'rubocop/cop/style/alias'
 require 'rubocop/cop/style/align_array'
