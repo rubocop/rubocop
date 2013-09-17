@@ -127,7 +127,7 @@ Blocks:
 
 
 ParameterLists:
-  Description: Avoid parameter lists longer than three or four parameters.
+  Description: 'Avoid parameter lists longer than three or four parameters.'
   Enabled: true
 
 StringLiterals:
@@ -239,7 +239,7 @@ VariableInterpolation:
   Enabled: true
 
 Semicolon:
-  Desription: "Don't use semicolons to terminate expressions."
+  Description: "Don't use semicolons to terminate expressions."
   Enabled: true
 
 FavorSprintf:
@@ -441,11 +441,11 @@ SpaceAfterMethodName:
   Enabled: true
 
 HashMethods:
-  Description: Checks for use of deprecated Hash methods.
+  Description: 'Checks for use of deprecated Hash methods.'
   Enabled: true
 
 MultilineBlockChain:
-  Description: Avoid multi-line chains of blocks.
+  Description: 'Avoid multi-line chains of blocks.'
   Enabled: true
 
 AlignHash:
@@ -461,7 +461,7 @@ AlignArray:
   Enabled: true
 
 SpaceBeforeModifierKeyword:
-  Description: Put a space before the modifier keyword.
+  Description: 'Put a space before the modifier keyword.'
   Enabled: true
 
 #################### Lint ################################
@@ -532,11 +532,11 @@ ParenthesesAsGroupedExpression:
 ##################### Rails ##################################
 
 HasAndBelongsToMany:
-  Description: Prefer has_many :through to has_and_belongs_to_many.
+  Description: 'Prefer has_many :through to has_and_belongs_to_many.'
   Enabled: true
 
 ReadAttribute:
-  Description: Prefer self[:attribute] over read_attribute(:attribute).
+  Description: 'Prefer self[:attribute] over read_attribute(:attribute).'
   Enabled: true
 
 Validation:
