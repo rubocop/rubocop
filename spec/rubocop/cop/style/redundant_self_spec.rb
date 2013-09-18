@@ -92,6 +92,24 @@ module Rubocop
           expect(cop.offences).to be_empty
         end
 
+        it 'accepts a self receiver used to distinguish from blockarg' do
+          src = ['def requested_specs(&groups)',
+                 '  some_method(self.groups)',
+                 'end',
+                ]
+          inspect_source(cop, src)
+          expect(cop.offences).to be_empty
+        end
+
+        it 'accepts a self receiver used to distinguish from argument' do
+          src = ['def requested_specs(groups)',
+                 '  some_method(self.groups)',
+                 'end',
+                ]
+          inspect_source(cop, src)
+          expect(cop.offences).to be_empty
+        end
+
         it 'accepts a self receiver used to distinguish from local variable' do
           src = ['def requested_specs',
                  '  @requested_specs ||= begin',
