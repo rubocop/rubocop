@@ -174,11 +174,14 @@ module Rubocop
         end
       end
 
-      # Checks that block braces have surrounding space.
+      # Checks that block braces have surrounding space. For blocks taking
+      # parameters, it check that the left brace has or doesn't have trailing
+      # space depending on configuration.
       class SpaceAroundBlockBraces < Cop
         include SurroundingSpace
         MSG_LEFT = "Surrounding space missing for '{'."
         MSG_RIGHT = "Space missing to the left of '}'."
+        MSG_PIPE = 'Space between { and | detected.'
 
         def investigate(processed_source)
           return unless processed_source.ast
@@ -188,7 +191,14 @@ module Rubocop
             next if ([t1.pos, t2.pos] - positions_not_to_check).size < 2
 
             type1, type2 = t1.type, t2.type
-            check(t1, t2, MSG_LEFT) if type1 == :tLCURLY || type2 == :tLCURLY
+            check(t1, t2, MSG_LEFT) if type2 == :tLCURLY
+            if type1 == :tLCURLY
+              if type2 == :tPIPE && cop_config['NoSpaceBeforeBlockParameters']
+                check_pipe(t1, t2, MSG_PIPE)
+              else
+                check(t1, t2, MSG_LEFT)
+              end
+            end
             check(t1, t2, MSG_RIGHT) if type2 == :tRCURLY
           end
         end
@@ -224,6 +234,10 @@ module Rubocop
             brace_token = t1.text == '{' ? t1 : t2
             convention(nil, brace_token.pos, msg)
           end
+        end
+
+        def check_pipe(t1, t2, msg)
+          convention(nil, t1.pos, msg) if space_between?(t1, t2)
         end
       end
 
