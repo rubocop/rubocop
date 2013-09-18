@@ -10,6 +10,7 @@
 ### Bugs fixed
 
 * Fix crash on empty input file in `FinalNewline`.
+* [#485](https://github.com/bbatsov/rubocop/issues/485) - Fix crash on multiple-assignment and op-assignment in `UselessSetterCall`.
 
 ## 0.13.0 (13/09/2013)
 
