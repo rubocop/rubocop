@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* `HashSyntax` cop does auto-correction.
+
 ### Bugs fixed
 
 * Fix crash on empty input file in `FinalNewline`.

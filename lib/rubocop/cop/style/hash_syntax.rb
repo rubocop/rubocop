@@ -18,11 +18,18 @@ module Rubocop
           if sym_indices
             pairs.each do |pair|
               if pair.loc.operator && pair.loc.operator.is?('=>')
-                convention(nil,
-                           pair.loc.expression.begin.join(pair.loc.operator),
-                           MSG)
+                convention(pair,
+                           pair.loc.expression.begin.join(pair.loc.operator))
               end
             end
+          end
+        end
+
+        def autocorrect_action(node)
+          @corrections << lambda do |corrector|
+            replacement = node.loc.expression.source[1..-1]
+              .sub(/\s*=>\s*/, ': ')
+            corrector.replace(node.loc.expression, replacement)
           end
         end
 
