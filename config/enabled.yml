@@ -194,6 +194,10 @@ Lambda:
   Description: 'Use the new lambda literal syntax for single-line blocks.'
   Enabled: true
 
+LambdaCall:
+  Description: 'Use lambda.call(...) instead of lambda.(...).'
+  Enabled: true
+
 Proc:
   Description: 'Use proc instead of Proc.new.'
   Enabled: true
