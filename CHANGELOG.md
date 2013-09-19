@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.13.1 (19/09/2013)
+
 ### New features
 
 * `HashSyntax` cop does auto-correction.
