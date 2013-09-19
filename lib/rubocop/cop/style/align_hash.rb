@@ -120,6 +120,8 @@ module Rubocop
                                    key.loc.column +
                                      spaced_separator(current_pair).length +
                                      max_key_width
+                                 elsif first_pair.nil? # Only one pair?
+                                   value.loc.column
                                  else
                                    _key1, value1 = *first_pair
                                    value1.loc.column

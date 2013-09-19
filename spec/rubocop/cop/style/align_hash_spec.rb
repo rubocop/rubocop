@@ -161,6 +161,20 @@ module Rubocop
           end
         end
 
+        context 'with table+separator alignment configuration' do
+          let(:cop_config) do
+            {
+              'EnforcedHashRocketStyle' => 'table',
+              'EnforcedColonStyle' => 'separator'
+            }
+          end
+
+          it 'accepts a single method argument entry with colon' do
+            inspect_source(cop, ['merge(parent: nil)'])
+            expect(cop.offences).to be_empty
+          end
+        end
+
         context 'with invalid configuration' do
           let(:cop_config) do
             {
