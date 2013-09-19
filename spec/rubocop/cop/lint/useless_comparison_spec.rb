@@ -25,6 +25,11 @@ module Rubocop
             expect(cop.offences.size).to eq(2)
           end
         end
+
+        it 'works with lambda.()' do
+          inspect_source(cop, ['a.(x) > a.(x)'])
+          expect(cop.offences.size).to eq(1)
+        end
       end
     end
   end

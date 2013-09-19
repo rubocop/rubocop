@@ -13,6 +13,7 @@
 
 * Fix crash on empty input file in `FinalNewline`.
 * [#485](https://github.com/bbatsov/rubocop/issues/485) - Fix crash on multiple-assignment and op-assignment in `UselessSetterCall`.
+* [#497](https://github.com/bbatsov/rubocop/issues/497) - Fix crash in `UselessComparison` and `NilComparison`
 
 ## 0.13.0 (13/09/2013)
 

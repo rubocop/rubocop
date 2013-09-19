@@ -14,6 +14,8 @@ module Rubocop
         OPS = %w(== === != < > <= >= <=>)
 
         def on_send(node)
+          # lambda.() does not have a selector
+          return unless node.loc.selector
           op = node.loc.selector.source
 
           if OPS.include?(op)
