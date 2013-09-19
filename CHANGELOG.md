@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bugs fixed
+
+* [#496](https://github.com/bbatsov/rubocop/issues/496) - Fix corner case crash in `AlignHash` cop: single key/value pair when configuration is `table` for '=>' and `separator` for `:`.
+
 ## 0.13.1 (19/09/2013)
 
 ### New features
