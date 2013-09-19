@@ -22,6 +22,10 @@ MethodLength:
   CountComments: false  # count full line comments?
   Max: 10
 
+SpaceAroundBlockBraces:
+  Description: 'Use spaces around { and before } in blocks.'
+  NoSpaceBeforeBlockParameters: false
+
 ParameterLists:
   Description: 'Avoid parameter lists longer than five parameters.'
   Max: 5
