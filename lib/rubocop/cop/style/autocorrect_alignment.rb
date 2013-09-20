@@ -7,7 +7,7 @@ module Rubocop
       # the left or to the right, amount being determined by the instance
       # variable @column_delta.
       module AutocorrectAlignment
-        def autocorrect_action(node)
+        def autocorrect(node)
           # We can't use the instance variable inside the lambda. That would
           # just give each lambda the same reference and they would all get
           # the last value of @column_delta. A local variable fixes the

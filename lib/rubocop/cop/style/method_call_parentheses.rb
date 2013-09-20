@@ -13,7 +13,7 @@ module Rubocop
           convention(node, :begin) if args.empty? && node.loc.begin
         end
 
-        def autocorrect_action(node)
+        def autocorrect(node)
           @corrections << lambda do |corrector|
             corrector.remove(node.loc.begin)
             corrector.remove(node.loc.end)

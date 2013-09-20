@@ -44,7 +44,7 @@ module Rubocop
         # TODO: Check block contents as well.
         alias_method :on_block, :ignore_node
 
-        def autocorrect_action(node)
+        def autocorrect(node)
           @corrections << lambda do |corrector|
             name = case node
                    when ARRAY_NODE then '[]'

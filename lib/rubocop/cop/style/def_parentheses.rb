@@ -30,7 +30,7 @@ module Rubocop
           convention(args, :begin) if args.children == [] && args.loc.begin
         end
 
-        def autocorrect_action(node)
+        def autocorrect(node)
           @corrections << lambda do |corrector|
             corrector.remove(node.loc.begin)
             corrector.remove(node.loc.end)
@@ -60,7 +60,7 @@ module Rubocop
           end
         end
 
-        def autocorrect_action(node)
+        def autocorrect(node)
           @corrections << lambda do |corrector|
             corrector.insert_before(node.loc.expression, '(')
             corrector.insert_after(node.loc.expression, ')')

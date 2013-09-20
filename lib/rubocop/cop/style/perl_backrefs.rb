@@ -12,7 +12,7 @@ module Rubocop
           convention(node, :expression)
         end
 
-        def autocorrect_action(node)
+        def autocorrect(node)
           @corrections << lambda do |corrector|
             backref, = *node
 

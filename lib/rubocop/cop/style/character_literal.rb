@@ -15,7 +15,7 @@ module Rubocop
             node.loc.expression.source.size.between?(2, 3)
         end
 
-        def autocorrect_action(node)
+        def autocorrect(node)
           @corrections << lambda do |corrector|
             string = node.loc.expression.source[1..-1]
 

@@ -43,7 +43,7 @@ module Rubocop
           MSG.format(PREFERRED_VARS[global_var], global_var)
         end
 
-        def autocorrect_action(node)
+        def autocorrect(node)
           @corrections << lambda do |corrector|
             global_var, = *node
 

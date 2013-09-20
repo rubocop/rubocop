@@ -31,7 +31,7 @@ module Rubocop
           end
         end
 
-        def autocorrect_action(node)
+        def autocorrect(node)
           # We can't use the instance variable inside the lambda. That would
           # just give each lambda the same reference and they would all get the
           # last value of each. Some local variables fix the problem.

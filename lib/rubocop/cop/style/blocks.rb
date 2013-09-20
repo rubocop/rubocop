@@ -35,7 +35,7 @@ module Rubocop
           end
         end
 
-        def autocorrect_action(node)
+        def autocorrect(node)
           @corrections << lambda do |corrector|
             if node.loc.begin.is?('{')
               corrector.replace(node.loc.begin, 'do')

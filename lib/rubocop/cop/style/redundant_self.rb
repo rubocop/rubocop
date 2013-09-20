@@ -101,7 +101,7 @@ module Rubocop
           end
         end
 
-        def autocorrect_action(node)
+        def autocorrect(node)
           @corrections << lambda do |corrector|
             corrector.replace(node.loc.expression,
                               node.loc.expression.source.gsub(/self\./, ''))

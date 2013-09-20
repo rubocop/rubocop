@@ -11,7 +11,7 @@ module Rubocop
           convention(node, :begin) if node.loc.begin && node.loc.begin.is?(';')
         end
 
-        def autocorrect_action(node)
+        def autocorrect(node)
           @corrections << lambda do |corrector|
             corrector.replace(node.loc.begin, ' then')
           end

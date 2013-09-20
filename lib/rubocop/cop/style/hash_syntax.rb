@@ -25,7 +25,7 @@ module Rubocop
           end
         end
 
-        def autocorrect_action(node)
+        def autocorrect(node)
           @corrections << lambda do |corrector|
             replacement = node.loc.expression.source[1..-1]
               .sub(/\s*=>\s*/, ': ')

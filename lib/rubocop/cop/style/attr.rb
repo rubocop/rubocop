@@ -11,7 +11,7 @@ module Rubocop
           convention(node, :selector) if command?(:attr, node)
         end
 
-        def autocorrect_action(node)
+        def autocorrect(node)
           @corrections << lambda do |corrector|
             corrector.replace(node.loc.selector, 'attr_reader')
           end

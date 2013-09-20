@@ -15,7 +15,7 @@ module Rubocop
           check_for_fail(rescue_node)
         end
 
-        def autocorrect_action(node)
+        def autocorrect(node)
           @corrections << lambda do |corrector|
             name = command?(:raise, node) ? 'fail' : 'raise'
             corrector.replace(node.loc.selector, name)

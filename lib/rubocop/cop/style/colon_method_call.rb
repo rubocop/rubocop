@@ -22,7 +22,7 @@ module Rubocop
           method_name.match(/^[A-Z]/)
         end
 
-        def autocorrect_action(node)
+        def autocorrect(node)
           @corrections << lambda do |corrector|
             corrector.replace(node.loc.dot, '.')
           end

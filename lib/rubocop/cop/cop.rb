@@ -100,7 +100,7 @@ module Rubocop
         @options[:debug]
       end
 
-      def autocorrect_action(node)
+      def autocorrect(node)
       end
 
       def message(node = nil)
@@ -114,7 +114,7 @@ module Rubocop
           message = message ? message : message(node)
           message = debug? ? "#{name}: #{message}" : message
           @offences << Offence.new(severity, location, message, name)
-          autocorrect_action(node) if autocorrect?
+          autocorrect(node) if autocorrect?
         end
       end
 

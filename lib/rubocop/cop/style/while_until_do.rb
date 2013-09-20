@@ -30,7 +30,7 @@ module Rubocop
           format('Never use `do` with multi-line `%s`.', node_type)
         end
 
-        def autocorrect_action(node)
+        def autocorrect(node)
           @corrections << lambda do |corrector|
             condition_node, = *node
             end_of_condition_range = condition_node.loc.expression.end
