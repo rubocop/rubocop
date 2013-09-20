@@ -30,6 +30,10 @@ module Rubocop
 
           if enough_digits?(value)
             int = integer_part(node)
+
+            # TODO: handle non-decimal literals as well
+            return if int.start_with?('0')
+
             if int =~ /\d{4}/ || int =~ /_\d{1,2}_/
               convention(node, :expression)
             end
