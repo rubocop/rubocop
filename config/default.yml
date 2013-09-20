@@ -14,55 +14,41 @@ AllCops:
   Excludes: []
 
 LineLength:
-  Description: 'Limit lines to 79 characters.'
   Max: 79
 
 MethodLength:
-  Description: 'Avoid methods longer than 10 lines of code.'
   CountComments: false  # count full line comments?
   Max: 10
 
 SpaceAroundBlockBraces:
-  Description: 'Use spaces around { and before } in blocks.'
   NoSpaceBeforeBlockParameters: false
 
 ParameterLists:
-  Description: 'Avoid parameter lists longer than five parameters.'
   Max: 5
   CountKeywordArgs: true
 
 Semicolon:
-  Description: "Don't use semicolons to terminate expressions."
   # For example; def area(height, width); height * width end
   AllowAfterParameterListInOneLineMethods: false
   # For example; def area(height, width) height * width; end
   AllowBeforeEndInOneLineMethods: true
 
 SingleLineMethods:
-  Description: 'Avoid single-line methods.'
   AllowIfMethodIsEmpty: true
 
 SpaceInsideHashLiteralBraces:
-  Description: "Use spaces inside hash literal braces - or don't."
   EnforcedStyleIsWithSpaces: true
 
 SymbolName:
-  Description: 'Symbol literals should use snake_case.'
   AllowCamelCase: true
 
 BlockNesting:
-  Description: 'Avoid more than `Max` levels of nesting.'
   Max: 3
 
 NumericLiterals:
   MinDigits: 5
 
 RegexpLiteral:
-  Description: >
-                 Use %r for regular expressions matching more than
-                 `MaxSlashes` '/' characters.
-                 Use %r only for regular expressions matching more than
-                 `MaxSlashes` '/' character.
   MaxSlashes: 1
 
 # Built-in global variables are allowed by default.
