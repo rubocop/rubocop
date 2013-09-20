@@ -100,11 +100,12 @@ module Rubocop
         @options[:debug]
       end
 
-      def autocorrect(node)
-      end
-
       def message(node = nil)
         self.class::MSG
+      end
+
+      def support_autocorrect?
+        respond_to?(:autocorrect, true)
       end
 
       def add_offence(severity, node, loc, message = nil)
@@ -114,7 +115,7 @@ module Rubocop
           message = message ? message : message(node)
           message = debug? ? "#{name}: #{message}" : message
           @offences << Offence.new(severity, location, message, name)
-          autocorrect(node) if autocorrect?
+          autocorrect(node) if autocorrect? && support_autocorrect?
         end
       end
 
