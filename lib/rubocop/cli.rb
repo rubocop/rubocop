@@ -123,6 +123,8 @@ module Rubocop
           print_conf_option('Description',
                             cnf.delete('Description') { 'None' })
           cnf.each { |k, v| print_conf_option(k, v) }
+          print_conf_option('SupportsAutoCorrection',
+                            cop.new.support_autocorrect?.to_s)
         end
       end
     end
