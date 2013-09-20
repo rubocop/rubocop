@@ -141,3 +141,7 @@ AlignHash:
   #   a:  0
   #   bb: 1
   EnforcedColonStyle: key
+
+# Avoid multi-line chains of blocks.
+MultilineBlockChain:
+  AllowMethodCalledOnBlock: true
