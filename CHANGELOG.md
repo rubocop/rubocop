@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#491](https://github.com/bbatsov/rubocop/issues/491) - New cop `MethodCalledOnDoEndBlock` keep track of methods called on `do`...`end` blocks.
+
 ### Bugs fixed
 
 * [#496](https://github.com/bbatsov/rubocop/issues/496) - Fix corner case crash in `AlignHash` cop: single key/value pair when configuration is `table` for '=>' and `separator` for `:`.
