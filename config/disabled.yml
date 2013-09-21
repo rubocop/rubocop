@@ -3,3 +3,7 @@
 SymbolArray:
   Description: 'Use %i or %I for arrays of symbols.'
   Enabled: false
+
+MethodCalledOnDoEndBlock:
+  Description: 'Forbid use of method calls at the end of do ... end blocks'
+  Enabled: false
