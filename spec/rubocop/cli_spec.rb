@@ -775,6 +775,43 @@ Usage: rubocop [options] [file1, file2, ...]
         .to eq(['', '1 file inspected, no offences detected', ''].join("\n"))
     end
 
+    describe 'enabling/disabling rails cops' do
+      it 'by default does not run rails cops' do
+        create_file('example1.rb', ['# encoding: utf-8',
+                                    'read_attribute(:test)'])
+        expect(cli.run(['--format', 'simple', 'example1.rb'])).to eq(0)
+      end
+
+      it 'with -R given runs rails cops' do
+        create_file('example1.rb', ['# encoding: utf-8',
+                                    'read_attribute(:test)'])
+        expect(cli.run(['--format', 'simple', '-R', 'example1.rb'])).to eq(1)
+        expect($stdout.string).to include('Prefer self[:attribute]')
+      end
+
+      it 'with configation option true runs rails cops' do
+        create_file('example1.rb', ['# encoding: utf-8',
+                                    'read_attribute(:test)'])
+        create_file('.rubocop.yml', [
+                                     'AllCops:',
+                                     '  RunRailsCops: true',
+                                    ])
+        expect(cli.run(['--format', 'simple', 'example1.rb'])).to eq(1)
+        expect($stdout.string).to include('Prefer self[:attribute]')
+      end
+
+      it 'with configation option false but -R given runs rails cops' do
+        create_file('example1.rb', ['# encoding: utf-8',
+                                    'read_attribute(:test)'])
+        create_file('.rubocop.yml', [
+                                     'AllCops:',
+                                     '  RunRailsCops: false',
+                                    ])
+        expect(cli.run(['--format', 'simple', '-R', 'example1.rb'])).to eq(1)
+        expect($stdout.string).to include('Prefer self[:attribute]')
+      end
+    end
+
     describe 'configuration from file' do
       it 'finds included files' do
         create_file('example', [

@@ -4,7 +4,8 @@
 
 ### New features
 
-* [#491](https://github.com/bbatsov/rubocop/issues/491) - New cop `MethodCalledOnDoEndBlock` keep track of methods called on `do`...`end` blocks.
+* [#491](https://github.com/bbatsov/rubocop/issues/491) - New cop `MethodCalledOnDoEndBlock` keeps track of methods called on `do`...`end` blocks.
+* [#456](https://github.com/bbatsov/rubocop/issues/456) - New configuration parameter `AllCops`/`RunRailsCops` can be set to `true` for a project, removing the need to give the `-R`/`--rails` option with every invocation of `rubocop`.
 
 ### Bugs fixed
 
