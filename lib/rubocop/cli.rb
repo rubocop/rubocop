@@ -63,7 +63,7 @@ module Rubocop
       return 1
     end
 
-    def mobilized_cop_classes
+    def mobilized_cop_classes(config)
       @mobilized_cop_classes ||= begin
         cop_classes = Cop::Cop.all
 
@@ -71,7 +71,7 @@ module Rubocop
           cop_classes.select! { |c| c.cop_name == @options[:only] }
         else
           # filter out Rails cops unless requested
-          cop_classes.reject!(&:rails?) unless @options[:rails]
+          cop_classes.reject!(&:rails?) unless run_rails_cops?(config)
 
           # filter out style cops when --lint is passed
           cop_classes.select!(&:lint?) if @options[:lint]
@@ -83,7 +83,7 @@ module Rubocop
 
     def inspect_file(file)
       config = @config_store.for(file)
-      team = Cop::Team.new(mobilized_cop_classes, config, @options)
+      team = Cop::Team.new(mobilized_cop_classes(config), config, @options)
       offences = team.inspect_file(file)
       @errors.concat(team.errors)
       offences
@@ -261,6 +261,10 @@ module Rubocop
     end
 
     private
+
+    def run_rails_cops?(config)
+      @options[:rails] || config['AllCops']['RunRailsCops']
+    end
 
     def target_finder
       @target_finder ||= TargetFinder.new(@config_store, @options[:debug])
