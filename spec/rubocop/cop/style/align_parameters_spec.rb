@@ -198,9 +198,37 @@ module Rubocop
           new_source = autocorrect_source(align, ['func(a,',
                                                   '       b,',
                                                   'c)'])
-          expect(new_source.split("\n")).to eq(['func(a,',
-                                                '     b,',
-                                                '     c)'])
+          expect(new_source).to eq(['func(a,',
+                                    '     b,',
+                                    '     c)'].join("\n"))
+        end
+
+        it 'auto-corrects each line of a multi-line parameter to the right' do
+          new_source =
+            autocorrect_source(align,
+                               ['create :transaction, :closed,',
+                                '      account:          account,',
+                                '      open_price:       1.29,',
+                                '      close_price:      1.30'])
+          expect(new_source)
+            .to eq(['create :transaction, :closed,',
+                    '       account:          account,',
+                    '       open_price:       1.29,',
+                    '       close_price:      1.30'].join("\n"))
+        end
+
+        it 'auto-corrects each line of a multi-line parameter to the left' do
+          new_source =
+            autocorrect_source(align,
+                               ['create :transaction, :closed,',
+                                '         account:          account,',
+                                '         open_price:       1.29,',
+                                '         close_price:      1.30'])
+          expect(new_source)
+            .to eq(['create :transaction, :closed,',
+                    '       account:          account,',
+                    '       open_price:       1.29,',
+                    '       close_price:      1.30'].join("\n"))
         end
       end
     end
