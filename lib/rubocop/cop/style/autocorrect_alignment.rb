@@ -17,12 +17,24 @@ module Rubocop
           @corrections << lambda do |corrector|
             expr = node.loc.expression
             if column_delta > 0
-              corrector.replace(expr, ' ' * column_delta + expr.source)
+              corrector.replace(expr,
+                                expr.source.gsub(/^/, ' ' * column_delta))
             else
-              range = Parser::Source::Range.new(expr.source_buffer,
-                                                expr.begin_pos + column_delta,
-                                                expr.end_pos)
-              corrector.replace(range, expr.source)
+              offset = 0
+              expr.source.each_line do |line|
+                b = expr.begin_pos + offset
+                if offset == 0
+                  range = Parser::Source::Range.new(expr.source_buffer,
+                                                    b + column_delta,
+                                                    b + line.length)
+                  corrector.replace(range, line)
+                else
+                  range = Parser::Source::Range.new(expr.source_buffer,
+                                                    b, b + line.length)
+                  corrector.replace(range, line[-column_delta..-1])
+                end
+                offset += line.length
+              end
             end
           end
         end
