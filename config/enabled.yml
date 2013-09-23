@@ -208,8 +208,12 @@ ParenthesesAroundCondition:
                  if/unless/while.
   Enabled: true
 
-MethodAndVariableSnakeCase:
-  Description: 'Use snake_case for symbols, methods and variables.'
+MethodName:
+  Description: 'Use the configured style when naming methods.'
+  Enabled: true
+
+VariableName:
+  Description: 'Use the configured style when naming variables.'
   Enabled: true
 
 ClassAndModuleCamelCase:

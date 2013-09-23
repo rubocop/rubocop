@@ -144,3 +144,11 @@ AlignHash:
   #   a:  0
   #   bb: 1
   EnforcedColonStyle: key
+
+MethodName:
+  # Valid values are: snake_case, camelCase
+  EnforcedStyle: snake_case
+
+VariableName:
+  # Valid values are: snake_case, camelCase
+  EnforcedStyle: snake_case

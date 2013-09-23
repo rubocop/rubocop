@@ -423,8 +423,7 @@ Usage: rubocop [options] [file1, file2, ...]
                         'indentation.',
                         '   puts',
                         '^^^',
-                        'example3.rb:2:5: C: Use snake_case for methods and ' +
-                        'variables.',
+                        'example3.rb:2:5: C: Use snake_case for methods.',
                         'def badName',
                         '    ^^^^^^^',
                         'example3.rb:3:3: C: Favor modifier if/unless usage ' +
