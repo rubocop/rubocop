@@ -72,7 +72,7 @@ module Rubocop
       describe '#report_summary' do
         context 'when no files inspected' do
           it 'handles pluralization correctly' do
-            formatter.report_summary(0, 0)
+            formatter.report_summary(0, 0, 0)
             expect(output.string).to eq(
               "\n0 files inspected, no offences detected\n")
           end
@@ -80,7 +80,7 @@ module Rubocop
 
         context 'when a file inspected and no offences detected' do
           it 'handles pluralization correctly' do
-            formatter.report_summary(1, 0)
+            formatter.report_summary(1, 0, 0)
             expect(output.string).to eq(
               "\n1 file inspected, no offences detected\n")
           end
@@ -88,7 +88,7 @@ module Rubocop
 
         context 'when a offence detected' do
           it 'handles pluralization correctly' do
-            formatter.report_summary(1, 1)
+            formatter.report_summary(1, 1, 0)
             expect(output.string).to eq(
               "\n1 file inspected, 1 offence detected\n")
           end
@@ -96,9 +96,25 @@ module Rubocop
 
         context 'when 2 offences detected' do
           it 'handles pluralization correctly' do
-            formatter.report_summary(2, 2)
+            formatter.report_summary(2, 2, 0)
             expect(output.string).to eq(
               "\n2 files inspected, 2 offences detected\n")
+          end
+        end
+
+        context 'when an offence is corrected' do
+          it 'prints about correction' do
+            formatter.report_summary(1, 1, 1)
+            expect(output.string).to eq(
+              "\n1 file inspected, 1 offence detected, 1 offence corrected\n")
+          end
+        end
+
+        context 'when 2 offences are corrected' do
+          it 'handles pluralization correctly' do
+            formatter.report_summary(1, 1, 2)
+            expect(output.string).to eq(
+              "\n1 file inspected, 1 offence detected, 2 offences corrected\n")
           end
         end
       end

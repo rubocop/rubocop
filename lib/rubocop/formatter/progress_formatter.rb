@@ -14,8 +14,11 @@ module Rubocop
       end
 
       def file_finished(file, offences)
-        @total_offence_count += offences.count
-        @offences_for_files[file] = offences unless offences.empty?
+        unless offences.empty?
+          count_stats(offences)
+          @offences_for_files[file] = offences
+        end
+
         report_file_as_mark(file, offences)
       end
 
@@ -32,7 +35,9 @@ module Rubocop
           end
         end
 
-        report_summary(inspected_files.count, @total_offence_count)
+        report_summary(inspected_files.count,
+                       @total_offence_count,
+                       @total_correction_count)
       end
 
       def report_file_as_mark(file, offences)

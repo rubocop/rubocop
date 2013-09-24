@@ -16,16 +16,19 @@ module Rubocop
 
       def started(target_files)
         @total_offence_count = 0
+        @total_correction_count = 0
       end
 
       def file_finished(file, offences)
         return if offences.empty?
-        @total_offence_count += offences.count
+        count_stats(offences)
         report_file(file, offences)
       end
 
       def finished(inspected_files)
-        report_summary(inspected_files.count, @total_offence_count)
+        report_summary(inspected_files.count,
+                       @total_offence_count,
+                       @total_correction_count)
       end
 
       def report_file(file, offences)
@@ -38,25 +41,32 @@ module Rubocop
         end
       end
 
-      def report_summary(file_count, offence_count)
-        summary = ''
+      def report_summary(file_count, offence_count, correction_count)
+        summary = pluralize(file_count, 'file')
+        summary << ' inspected, '
 
-        plural = file_count == 0 || file_count > 1 ? 's' : ''
-        summary << "#{file_count} file#{plural} inspected, "
+        offences_text = pluralize(offence_count, 'offence', no_for_zero: true)
+        offences_text << ' detected'
+        summary << offences_text.color(offence_count.zero? ? :green : :red)
 
-        offences_string = case offence_count
-                          when 0 then 'no offences'
-                          when 1 then '1 offence'
-                          else "#{offence_count} offences"
-                          end
-        summary << "#{offences_string} detected"
-          .color(offence_count.zero? ? :green : :red)
+        if correction_count > 0
+          summary << ', '
+          correction_text = pluralize(correction_count, 'offence')
+          correction_text << ' corrected'
+          color = correction_count == offence_count ? :green : :cyan
+          summary << correction_text.color(color)
+        end
 
         output.puts
         output.puts summary
       end
 
       private
+
+      def count_stats(offences)
+        @total_offence_count += offences.count
+        @total_correction_count += offences.select(&:corrected?).count
+      end
 
       def smart_path(path)
         if path.start_with?(Dir.pwd)
@@ -74,6 +84,21 @@ module Rubocop
       def message(offence)
         message = offence.corrected? ? '[Corrected] '.color(:green) : ''
         message << offence.message
+      end
+
+      def pluralize(number, thing, options = {})
+        text = ''
+
+        if number == 0 && options[:no_for_zero]
+          text = 'no'
+        else
+          text << number.to_s
+        end
+
+        text << " #{thing}"
+        text << 's' unless number == 1
+
+        text
       end
     end
   end
