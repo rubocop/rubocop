@@ -3,7 +3,10 @@
 module Rubocop
   module Cop
     module Style
-      # Checks for uses of double quotes where single quotes would do.
+      # Classes that include this module just implement functions to determine
+      # what is an offence and how to do auto-correction. They get help with
+      # adding offences for the faulty string nodes, and with filtering out
+      # nodes.
       module StringHelp
         def on_str(node)
           # Constants like __FILE__ are handled as strings,
