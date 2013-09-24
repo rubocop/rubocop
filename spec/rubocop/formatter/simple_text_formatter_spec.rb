@@ -12,8 +12,23 @@ module Rubocop
 
       describe '#report_file' do
         before do
-          formatter.report_file(file, [])
+          formatter.report_file(file, [offence])
         end
+
+        let(:file) { '/path/to/file' }
+
+        let(:offence) do
+          Cop::Offence.new(:convention, location,
+                           'This is a message.', 'CopName', corrected)
+        end
+
+        let(:location) do
+          source_buffer = Parser::Source::Buffer.new('test', 1)
+          source_buffer.source = "a\n"
+          Parser::Source::Range.new(source_buffer, 0, 1)
+        end
+
+        let(:corrected) { false }
 
         context 'the file is under the current working directory' do
           let(:file) { File.expand_path('spec/spec_helper.rb') }
@@ -32,6 +47,24 @@ module Rubocop
 
           it 'prints as absolute path' do
             expect(output.string).to include("== #{file} ==")
+          end
+        end
+
+        context 'when the offence is not corrected' do
+          let(:corrected) { false }
+
+          it 'prints message as-is' do
+            expect(output.string)
+              .to include(': This is a message.')
+          end
+        end
+
+        context 'when the offence is automatically corrected' do
+          let(:corrected) { true }
+
+          it 'prints [Corrected] along with message' do
+            expect(output.string)
+              .to include(': [Corrected] This is a message.')
           end
         end
       end

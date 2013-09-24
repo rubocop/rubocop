@@ -34,7 +34,7 @@ module Rubocop
         offences.each do |o|
           output.printf("%s:%3d:%3d: %s\n",
                         colored_severity_code(o),
-                        o.line, o.real_column, o.message)
+                        o.line, o.real_column, message(o))
         end
       end
 
@@ -69,6 +69,11 @@ module Rubocop
       def colored_severity_code(offence)
         color = COLOR_FOR_SEVERITY[offence.severity]
         offence.severity_code.color(color)
+      end
+
+      def message(offence)
+        message = offence.corrected? ? '[Corrected] '.color(:green) : ''
+        message << offence.message
       end
     end
   end

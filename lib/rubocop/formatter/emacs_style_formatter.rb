@@ -7,9 +7,12 @@ module Rubocop
     class EmacsStyleFormatter < BaseFormatter
       def file_finished(file, offences)
         offences.each do |o|
+          message = o.corrected? ? '[Corrected] ' : ''
+          message << o.message
+
           output.printf("%s:%d:%d: %s: %s\n",
                         file, o.line, o.real_column, o.severity_code,
-                        o.message)
+                        message)
         end
       end
     end
