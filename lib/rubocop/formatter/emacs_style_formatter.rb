@@ -8,7 +8,7 @@ module Rubocop
       def file_finished(file, offences)
         offences.each do |o|
           output.printf("%s:%d:%d: %s: %s\n",
-                        file, o.line, o.real_column, o.encode_severity,
+                        file, o.line, o.real_column, o.severity_code,
                         o.message)
         end
       end

@@ -82,24 +82,15 @@ module Rubocop
       end
 
       # @api private
+      # This is just for debugging purpose.
       def to_s
-        sprintf("#{encode_severity}:%3d:%3d: %s",
-                line, real_column, message)
+        sprintf('%s:%3d:%3d: %s',
+                severity_code, line, real_column, message)
       end
 
       # @api private
-      def encode_severity
+      def severity_code
         @severity.to_s[0].upcase
-      end
-
-      # @api private
-      def clang_severity
-        case @severity
-        when :fatal then 'F'.color(:red)
-        when :error then 'E'.color(:red)
-        when :warning then 'W'.color(:magenta)
-        when :convention then 'C'.color(:yellow)
-        end
       end
 
       # @api private

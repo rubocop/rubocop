@@ -6,6 +6,14 @@ module Rubocop
     # Offences are displayed at compact form - just the
     # location of the problem and the associated message.
     class SimpleTextFormatter < BaseFormatter
+      COLOR_FOR_SEVERITY = {
+        refactor:   :yellow,
+        convention: :yellow,
+        warning:    :magenta,
+        error:      :red,
+        fatal:      :red
+      }.freeze
+
       def started(target_files)
         @total_offence_count = 0
       end
@@ -22,7 +30,12 @@ module Rubocop
 
       def report_file(file, offences)
         output.puts "== #{smart_path(file)} ==".color(:yellow)
-        output.puts offences.join("\n")
+
+        offences.each do |o|
+          output.printf("%s:%3d:%3d: %s\n",
+                        colored_severity_code(o),
+                        o.line, o.real_column, o.message)
+        end
       end
 
       def report_summary(file_count, offence_count)
@@ -43,7 +56,7 @@ module Rubocop
         output.puts summary
       end
 
-      protected
+      private
 
       def smart_path(path)
         if path.start_with?(Dir.pwd)
@@ -51,6 +64,11 @@ module Rubocop
         else
           path
         end
+      end
+
+      def colored_severity_code(offence)
+        color = COLOR_FOR_SEVERITY[offence.severity]
+        offence.severity_code.color(color)
       end
     end
   end

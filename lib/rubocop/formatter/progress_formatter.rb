@@ -6,14 +6,6 @@ module Rubocop
     # letters for files with problems in the them. In the end it
     # appends the regular report data in the clang style format.
     class ProgressFormatter < ClangStyleFormatter
-      COLOR_FOR_SEVERITY = {
-        refactor:   :yellow,
-        convention: :yellow,
-        warning:    :magenta,
-        error:      :red,
-        fatal:      :red
-      }
-
       def started(target_files)
         super
         @offences_for_files = {}
@@ -50,8 +42,7 @@ module Rubocop
                  highest_offence = offences.max do |a, b|
                    a.severity_level <=> b.severity_level
                  end
-                 color = COLOR_FOR_SEVERITY[highest_offence.severity]
-                 highest_offence.encode_severity.color(color)
+                 colored_severity_code(highest_offence)
                end
 
         output.write mark
