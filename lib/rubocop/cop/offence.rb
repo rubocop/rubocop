@@ -61,6 +61,15 @@ module Rubocop
       #   'LineLength'
       attr_reader :cop_name
 
+      # @api public
+      #
+      # @!attribute [r] corrected
+      #
+      # @return [Boolean]
+      #   whether this offence is automatically corrected.
+      attr_reader :corrected
+      alias_method :corrected?, :corrected
+
       # @api private
       attr_reader :line
 
@@ -68,7 +77,7 @@ module Rubocop
       attr_reader :column
 
       # @api private
-      def initialize(severity, location, message, cop_name)
+      def initialize(severity, location, message, cop_name, corrected = false)
         unless SEVERITIES.include?(severity)
           fail ArgumentError, "Unknown severity: #{severity}"
         end
@@ -78,6 +87,7 @@ module Rubocop
         @column = location.column.freeze
         @message = message.freeze
         @cop_name = cop_name.freeze
+        @corrected = corrected.freeze
         freeze
       end
 
