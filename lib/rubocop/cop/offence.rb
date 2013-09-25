@@ -61,6 +61,15 @@ module Rubocop
       #   'LineLength'
       attr_reader :cop_name
 
+      # @api public
+      #
+      # @!attribute [r] corrected
+      #
+      # @return [Boolean]
+      #   whether this offence is automatically corrected.
+      attr_reader :corrected
+      alias_method :corrected?, :corrected
+
       # @api private
       attr_reader :line
 
@@ -68,7 +77,7 @@ module Rubocop
       attr_reader :column
 
       # @api private
-      def initialize(severity, location, message, cop_name)
+      def initialize(severity, location, message, cop_name, corrected = false)
         unless SEVERITIES.include?(severity)
           fail ArgumentError, "Unknown severity: #{severity}"
         end
@@ -78,28 +87,20 @@ module Rubocop
         @column = location.column.freeze
         @message = message.freeze
         @cop_name = cop_name.freeze
+        @corrected = corrected.freeze
         freeze
       end
 
       # @api private
+      # This is just for debugging purpose.
       def to_s
-        sprintf("#{encode_severity}:%3d:%3d: %s",
-                line, real_column, message)
+        sprintf('%s:%3d:%3d: %s',
+                severity_code, line, real_column, message)
       end
 
       # @api private
-      def encode_severity
+      def severity_code
         @severity.to_s[0].upcase
-      end
-
-      # @api private
-      def clang_severity
-        case @severity
-        when :fatal then 'F'.color(:red)
-        when :error then 'E'.color(:red)
-        when :warning then 'W'.color(:magenta)
-        when :convention then 'C'.color(:yellow)
-        end
       end
 
       # @api private

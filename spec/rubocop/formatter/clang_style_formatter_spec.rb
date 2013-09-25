@@ -9,40 +9,6 @@ module Rubocop
       subject(:formatter) { ClangStyleFormatter.new(output) }
       let(:output) { StringIO.new }
 
-      describe '#report_summary' do
-        context 'when no files inspected' do
-          it 'handles pluralization correctly' do
-            formatter.report_summary(0, 0)
-            expect(output.string).to eq(
-              "\n0 files inspected, no offences detected\n")
-          end
-        end
-
-        context 'when a file inspected and no offences detected' do
-          it 'handles pluralization correctly' do
-            formatter.report_summary(1, 0)
-            expect(output.string).to eq(
-              "\n1 file inspected, no offences detected\n")
-          end
-        end
-
-        context 'when a offence detected' do
-          it 'handles pluralization correctly' do
-            formatter.report_summary(1, 1)
-            expect(output.string).to eq(
-              "\n1 file inspected, 1 offence detected\n")
-          end
-        end
-
-        context 'when 2 offences detected' do
-          it 'handles pluralization correctly' do
-            formatter.report_summary(2, 2)
-            expect(output.string).to eq(
-              "\n2 files inspected, 2 offences detected\n")
-          end
-        end
-      end
-
       describe '#report_file' do
         it 'displays text containing the offending source line' do
           cop = Cop::Cop.new
@@ -82,6 +48,39 @@ module Rubocop
                                        'yaba',
                                        '^^^^',
                                        ''].join("\n")
+        end
+
+        let(:file) { '/path/to/file' }
+
+        let(:offence) do
+          Cop::Offence.new(:convention, location,
+                           'This is a message.', 'CopName', corrected)
+        end
+
+        let(:location) do
+          source_buffer = Parser::Source::Buffer.new('test', 1)
+          source_buffer.source = "a\n"
+          Parser::Source::Range.new(source_buffer, 0, 1)
+        end
+
+        context 'when the offence is not corrected' do
+          let(:corrected) { false }
+
+          it 'prints message as-is' do
+            formatter.report_file(file, [offence])
+            expect(output.string)
+              .to include(': This is a message.')
+          end
+        end
+
+        context 'when the offence is automatically corrected' do
+          let(:corrected) { true }
+
+          it 'prints [Corrected] along with message' do
+            formatter.report_file(file, [offence])
+            expect(output.string)
+              .to include(': [Corrected] This is a message.')
+          end
         end
       end
     end

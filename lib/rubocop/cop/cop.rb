@@ -93,7 +93,7 @@ module Rubocop
       end
 
       def autocorrect?
-        @options[:autocorrect]
+        @options[:autocorrect] && support_autocorrect?
       end
 
       def debug?
@@ -111,12 +111,14 @@ module Rubocop
       def add_offence(severity, node, loc, message = nil)
         location = loc.is_a?(Symbol) ? node.loc.send(loc) : loc
 
-        unless disabled_line?(location.line)
-          message = message ? message : message(node)
-          message = debug? ? "#{name}: #{message}" : message
-          @offences << Offence.new(severity, location, message, name)
-          autocorrect(node) if autocorrect? && support_autocorrect?
-        end
+        return if disabled_line?(location.line)
+
+        message = message ? message : message(node)
+        message = debug? ? "#{name}: #{message}" : message
+        @offences <<
+          Offence.new(severity, location, message, name, autocorrect?)
+
+        autocorrect(node) if autocorrect?
       end
 
       def convention(node, location, message = nil)
