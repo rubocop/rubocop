@@ -14,7 +14,8 @@ module Rubocop
       Parser::Source::Range.new(source_buffer, 9, 10)
     end
     let(:offence) do
-      Cop::Offence.new(:convention, location, 'This is message', 'CopName')
+      Cop::Offence.new(:convention, location,
+                       'This is message', 'CopName', true)
     end
 
     describe '#started' do
@@ -114,6 +115,10 @@ module Rubocop
 
       it 'sets Offence#cop_name value for :cop_name key' do
         expect(hash[:cop_name]).to eq('CopName')
+      end
+
+      it 'sets Offence#corrected? value for :corrected key' do
+        expect(hash[:corrected]).to be_true
       end
 
       before do

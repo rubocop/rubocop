@@ -54,6 +54,7 @@ module Rubocop
           severity: offence.severity,
           message:  offence.message,
           cop_name: offence.cop_name,
+          corrected: offence.corrected?,
           location: hash_for_location(offence)
         }
       end

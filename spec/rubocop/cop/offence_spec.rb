@@ -11,7 +11,7 @@ module Rubocop
         Parser::Source::Range.new(source_buffer, 0, 1)
       end
       subject(:offence) do
-        Offence.new(:convention, location, 'message', 'CopName')
+        Offence.new(:convention, location, 'message', 'CopName', true)
       end
 
       it 'has a few required attributes' do
@@ -19,6 +19,7 @@ module Rubocop
         expect(offence.line).to eq(1)
         expect(offence.message).to eq('message')
         expect(offence.cop_name).to eq('CopName')
+        expect(offence.corrected?).to be_true
       end
 
       it 'overrides #to_s' do

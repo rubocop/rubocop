@@ -332,6 +332,7 @@ The JSON structure is like the following example:
           "severity": "convention",
           "message": "Line is too long. [81/79]",
           "cop_name": "LineLength",
+          "corrected": true,
           "location": {
             "line": 546,
             "column": 80
@@ -340,6 +341,7 @@ The JSON structure is like the following example:
           "severity": "warning",
           "message": "Unreachable code detected.",
           "cop_name": "UnreachableCode",
+          "corrected": false,
           "location": {
             "line": 15,
             "column": 9
