@@ -907,6 +907,33 @@ Usage: rubocop [options] [file1, file2, ...]
                   ''].join("\n"))
       end
 
+      it 'can disable Syntax offences with warning severity' do
+        pending
+        # `-' interpreted as argument prefix
+        create_file('example.rb', 'puts -1')
+        create_file('.rubocop.yml', [
+                                     'Encoding:',
+                                     '  Enabled: false',
+                                     '',
+                                     'Syntax:',
+                                     '  Enabled: false'
+                                    ])
+        expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(0)
+      end
+
+      it 'cannot disable Syntax offences with fatal/error severity' do
+        create_file('example.rb', 'class Test')
+        create_file('.rubocop.yml', [
+                                     'Encoding:',
+                                     '  Enabled: false',
+                                     '',
+                                     'Syntax:',
+                                     '  Enabled: false'
+                                    ])
+        expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
+        expect($stdout.string).to include('unexpected token $end')
+      end
+
       it 'can be configured to override a parameter that is a hash' do
         create_file('example1.rb',
                     ['# encoding: utf-8',
