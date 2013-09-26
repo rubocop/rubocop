@@ -38,6 +38,10 @@ module Rubocop
       lines[*args]
     end
 
+    def valid_syntax?
+      @diagnostics.none? { |d| [:error, :fatal].include?(d.level) }
+    end
+
     private
 
     def init_lines

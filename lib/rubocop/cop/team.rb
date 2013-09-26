@@ -30,19 +30,16 @@ module Rubocop
           return []
         end
 
-        offences = processed_source.diagnostics.map do |diagnostic|
-          Offence.from_diagnostic(diagnostic)
-        end
-
         # If we got any syntax errors, return only the syntax offences.
         # Parser may return nil for AST even though there are no syntax errors.
         # e.g. sources which contain only comments
-        if offences.any? { |o| [:error, :fatal].include?(o.severity) }
-          return offences
+        unless processed_source.valid_syntax?
+          diagnostics = processed_source.diagnostics
+          return Lint::Syntax.offences_from_diagnostics(diagnostics)
         end
 
         commissioner = Commissioner.new(cops)
-        offences += commissioner.investigate(processed_source)
+        offences = commissioner.investigate(processed_source)
         process_commissioner_errors(file, commissioner.errors)
         autocorrect(processed_source.buffer, cops)
         offences.sort

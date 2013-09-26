@@ -16,6 +16,7 @@
 * [#496](https://github.com/bbatsov/rubocop/issues/496) - Fix corner case crash in `AlignHash` cop: single key/value pair when configuration is `table` for '=>' and `separator` for `:`.
 * [#502](https://github.com/bbatsov/rubocop/issues/502) - Don't check non-decimal literals with `NumericLiterals`
 * [#448](https://github.com/bbatsov/rubocop/issues/448) - Fix auto-correction of parameters spanning more than one line in `AlignParameters` cop.
+* [#493](https://github.com/bbatsov/rubocop/issues/493) - Support disabling `Syntax` offences with `warning` severity
 
 ## 0.13.1 (19/09/2013)
 

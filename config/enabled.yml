@@ -475,6 +475,10 @@ SpaceBeforeModifierKeyword:
 #################### Lint ################################
 ### Warnings
 
+Syntax:
+  Description: 'Reports several basic syntax warnings and invalid syntaxes.'
+  Enabled: true
+
 AssignmentInCondition:
   Description: "Don't use assignment in conditions."
   Enabled: true
