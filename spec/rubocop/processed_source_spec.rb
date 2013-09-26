@@ -10,9 +10,11 @@ module Rubocop
         double('ast'),
         double('comments'),
         double('tokens'),
-        double('diagnostics')
+        diagnostics
       )
     end
+
+    let(:diagnostics) { double('diagnostics') }
 
     let(:source) do
       [
@@ -60,6 +62,49 @@ module Rubocop
       context 'when start index and length are passed' do
         it 'returns the array of lines' do
           expect(processed_source[2, 2]).to eq(%w(end some_method))
+        end
+      end
+    end
+
+    describe 'valid_syntax?' do
+      let(:diagnostics) do
+        [Parser::Diagnostic.new(level, 'message', double('location'))]
+      end
+
+      context 'when the source has diagnostic with error level' do
+        let(:level) { :error }
+
+        it 'returns false' do
+          expect(processed_source.valid_syntax?).to be_false
+        end
+      end
+
+      context 'when the source has diagnostic with error level' do
+        let(:level) { :fatal }
+
+        it 'returns false' do
+          expect(processed_source.valid_syntax?).to be_false
+        end
+      end
+
+      context 'when the source has diagnostic with error level' do
+        let(:level) { :warning }
+
+        it 'returns false' do
+          expect(processed_source.valid_syntax?).to be_true
+        end
+      end
+
+      context 'when the source has diagnostics with error and warning level' do
+        let(:diagnostics) do
+          [
+            Parser::Diagnostic.new(:error, 'message', double('location')),
+            Parser::Diagnostic.new(:warning, 'message', double('location'))
+          ]
+        end
+
+        it 'returns false' do
+          expect(processed_source.valid_syntax?).to be_false
         end
       end
     end
