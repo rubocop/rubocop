@@ -17,24 +17,18 @@ module Rubocop
           return if method == :[]=
           return if args.size <= 1
 
-          first_arg_column = args.first.loc.expression.column
-
           args.each_cons(2) do |prev, current|
-            current_pos = current.loc.expression
-
-            if current_pos.line > prev.loc.expression.line &&
-                current_pos.column != first_arg_column &&
-                start_of_line?(current_pos)
-              @column_delta = first_arg_column - current_pos.column
-              convention(current, current_pos)
+            if current.loc.line > prev.loc.line && start_of_line?(current.loc)
+              @column_delta = args.first.loc.column - current.loc.column
+              convention(current, current.loc) if @column_delta != 0
             end
           end
         end
 
         private
 
-        def start_of_line?(pos)
-          pos.source_line[0...pos.column] =~ /^\s*$/
+        def start_of_line?(loc)
+          loc.expression.source_line[0...loc.column] =~ /^\s*$/
         end
       end
     end
