@@ -12,6 +12,7 @@ module Rubocop
           inspect_source(align, ['function(a,',
                                  '  if b then c else d end)'])
           expect(align.offences.size).to eq(1)
+          expect(align.highlights).to eq(['if b then c else d end'])
         end
 
         it 'registers an offence for parameters with double indent' do
@@ -59,6 +60,7 @@ module Rubocop
           expect(align.offences.map(&:to_s)).to eq(
             ['C:  5:  6: Align the parameters of a method call if they span ' +
              'more than one line.'])
+          expect(align.highlights).to eq(['*b'])
         end
 
         it "doesn't get confused by extra comma at the end" do
@@ -68,6 +70,7 @@ module Rubocop
           expect(align.offences.map(&:to_s)).to eq(
             ['C:  2:  6: Align the parameters of a method call if they span ' +
              'more than one line.'])
+          expect(align.highlights).to eq(['b'])
         end
 
         it 'can handle a correctly aligned string literal as first argument' do
