@@ -10,6 +10,7 @@
 * [#501](https://github.com/bbatsov/rubocop/issues/501) - `simple`/`clang`/`progress`/`emacs` formatters now print `[Corrected]` along with offence message when the offence is automatically corrected.
 * [#501](https://github.com/bbatsov/rubocop/issues/501) - `simple`/`clang`/`progress` formatters now print count of auto-corrected offences in the final summary.
 * [#501](https://github.com/bbatsov/rubocop/issues/501) - `json` formatter now outputs `corrected` key with boolean value in offence objects whether the offence is automatically corrected.
+* New cop `ClassLength` checks for overly long class definitions
 
 ### Bugs fixed
 

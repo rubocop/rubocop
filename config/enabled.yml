@@ -12,6 +12,10 @@ MethodLength:
   Description: 'Avoid methods longer than 10 lines of code.'
   Enabled: true
 
+ClassLength:
+  Description: 'Avoid classes longer than 100 lines of code.'
+  Enabled: true
+
 Tab:
   Description: 'No hard tabs.'
   Enabled: true

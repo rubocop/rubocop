@@ -23,6 +23,10 @@ MethodLength:
   CountComments: false  # count full line comments?
   Max: 10
 
+ClassLength:
+  CountComments: false  # count full line comments?
+  Max: 100
+
 SpaceAroundBlockBraces:
   NoSpaceBeforeBlockParameters: false
 

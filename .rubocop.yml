@@ -5,3 +5,6 @@ inherit_from: config/default.yml
 # Avoid methods longer than 30 lines of code
 MethodLength:
   Max: 30
+
+ClassLength:
+  Max: 250
