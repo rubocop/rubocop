@@ -31,22 +31,24 @@ module Rubocop
         end
 
         def autocorrect(node)
-          correction = lambda do |corrector|
-            replacement = (node.type == :and ? '&&' : '||')
-            corrector.replace(node.loc.operator, replacement)
-          end
-
-          new_source = rewrite_node(node, correction)
+          c = correction(node)
+          new_source = rewrite_node(node, c)
 
           # Make the correction only if it doesn't change the AST.
-          if node == SourceParser.parse(new_source).ast
-            @corrections << correction
-          end
+          @corrections << c if node == SourceParser.parse(new_source).ast
         end
 
         def rewrite_node(node, correction)
           processed_source = SourceParser.parse(node.loc.expression.source)
-          Corrector.new(processed_source.buffer, [correction]).rewrite
+          c = correction(processed_source.ast)
+          Corrector.new(processed_source.buffer, [c]).rewrite
+        end
+
+        def correction(node)
+          lambda do |corrector|
+            replacement = (node.type == :and ? '&&' : '||')
+            corrector.replace(node.loc.operator, replacement)
+          end
         end
       end
     end
