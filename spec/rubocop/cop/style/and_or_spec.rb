@@ -40,8 +40,10 @@ module Rubocop
         end
 
         it 'auto-corrects "or" with ||' do
-          new_source = autocorrect_source(cop, 'true or false')
-          expect(new_source).to eq('true || false')
+          new_source = autocorrect_source(cop, ['x = 12345',
+                                                'true or false'])
+          expect(new_source).to eq(['x = 12345',
+                                    'true || false'].join("\n"))
         end
 
         it 'leaves *or* as is if auto-correction changes the meaning' do
