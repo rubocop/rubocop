@@ -230,6 +230,13 @@ module Rubocop
                     '       open_price:       1.29,',
                     '       close_price:      1.30'].join("\n"))
         end
+
+        it 'auto-corrects only parameters that begin a line' do
+          original_source = ['foo(:bar, {',
+                             '    whiz: 2, bang: 3 }, option: 3)']
+          new_source = autocorrect_source(align, original_source)
+          expect(new_source).to eq(original_source.join("\n"))
+        end
       end
     end
   end

@@ -23,11 +23,18 @@ module Rubocop
             current_pos = current.loc.expression
 
             if current_pos.line > prev.loc.expression.line &&
-                current_pos.column != first_arg_column
+                current_pos.column != first_arg_column &&
+                start_of_line?(current_pos)
               @column_delta = first_arg_column - current_pos.column
               convention(current, current_pos)
             end
           end
+        end
+
+        private
+
+        def start_of_line?(pos)
+          pos.source_line[0...pos.column] =~ /^\s*$/
         end
       end
     end
