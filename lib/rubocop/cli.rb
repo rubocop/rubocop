@@ -64,7 +64,8 @@ module Rubocop
     end
 
     def mobilized_cop_classes(config)
-      @mobilized_cop_classes ||= begin
+      @mobilized_cop_classes ||= {}
+      @mobilized_cop_classes[config.object_id] ||= begin
         cop_classes = Cop::Cop.all
 
         if @options[:only]
