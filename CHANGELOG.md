@@ -17,6 +17,7 @@
 * [#502](https://github.com/bbatsov/rubocop/issues/502) - Don't check non-decimal literals with `NumericLiterals`
 * [#448](https://github.com/bbatsov/rubocop/issues/448) - Fix auto-correction of parameters spanning more than one line in `AlignParameters` cop.
 * [#493](https://github.com/bbatsov/rubocop/issues/493) - Support disabling `Syntax` offences with `warning` severity
+* Fix bug appearing when there were different values for the `AllCops`/`RunRailsCops` configuration parameter in different directories.
 
 ## 0.13.1 (19/09/2013)
 
