@@ -17,17 +17,7 @@ module Rubocop
           return if method == :[]=
           return if args.size <= 1
 
-          first_arg_column = args.first.loc.expression.column
-
-          args.each_cons(2) do |prev, current|
-            current_pos = current.loc.expression
-
-            if current_pos.line > prev.loc.expression.line &&
-                current_pos.column != first_arg_column
-              @column_delta = first_arg_column - current_pos.column
-              convention(current, current_pos)
-            end
-          end
+          check_alignment(args)
         end
       end
     end

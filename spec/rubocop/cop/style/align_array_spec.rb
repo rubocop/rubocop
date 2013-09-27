@@ -56,6 +56,13 @@ module Rubocop
                                     '  d',
                                     ']'].join("\n"))
         end
+
+        it 'auto-corrects only elements that begin a line' do
+          original_source = ['array = [:bar, {',
+                             '         whiz: 2, bang: 3 }, option: 3]']
+          new_source = autocorrect_source(cop, original_source)
+          expect(new_source).to eq(original_source.join("\n"))
+        end
       end
     end
   end
