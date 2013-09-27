@@ -15,13 +15,17 @@ module Rubocop
           first_element = node.children.first
 
           node.children.each_cons(2) do |prev, current|
-            if current.loc.line != prev.loc.line
+            if current.loc.line > prev.loc.line && start_of_line?(current.loc)
               @column_delta = first_element.loc.column - current.loc.column
-              if current.loc.column != first_element.loc.column
-                convention(current, :expression)
-              end
+              convention(current, :expression) if @column_delta != 0
             end
           end
+        end
+
+        private
+
+        def start_of_line?(loc)
+          loc.expression.source_line[0...loc.column] =~ /^\s*$/
         end
       end
     end
