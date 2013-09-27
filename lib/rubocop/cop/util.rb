@@ -23,6 +23,18 @@ module Rubocop
         block_node.loc.end.line - block_node.loc.begin.line
       end
 
+      def source_length(source, count_comments = nil)
+        lines = source.lines.to_a[1...-1]
+
+        return 0 unless lines
+
+        lines.reject!(&:blank?)
+
+        lines.reject! { |line| line =~ /^\s*#/ } unless count_comments
+
+        lines.size
+      end
+
       def const_name(node)
         return nil if node.nil? || node.type != :const
 
