@@ -73,6 +73,17 @@ module Rubocop
           new_source = autocorrect_source(cop, src)
           expect(new_source).to eq(result_src)
         end
+
+        it 'auto-corrects by making implicit arrays explicit' do
+          src = ['def func',
+                 '  return  1, 2',
+                 'end'].join("\n")
+          result_src = ['def func',
+                        '  [1, 2]', # Just 1, 2 is not valid Ruby.
+                        'end'].join("\n")
+          new_source = autocorrect_source(cop, src)
+          expect(new_source).to eq(result_src)
+        end
       end
     end
   end

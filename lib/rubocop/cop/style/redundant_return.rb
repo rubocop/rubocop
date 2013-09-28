@@ -39,8 +39,10 @@ module Rubocop
 
         def autocorrect(node)
           @corrections << lambda do |corrector|
-            corrector.replace(node.loc.expression,
-                              node.loc.expression.source.sub('return ', ''))
+            expr = node.loc.expression
+            replacement = expr.source.sub(/return\s*/, '')
+            replacement = "[#{replacement}]" if node.children.size > 1
+            corrector.replace(expr, replacement)
           end
         end
 
