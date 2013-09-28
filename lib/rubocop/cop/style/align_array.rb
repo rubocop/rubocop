@@ -12,16 +12,7 @@ module Rubocop
           'than one line.'
 
         def on_array(node)
-          first_element = node.children.first
-
-          node.children.each_cons(2) do |prev, current|
-            if current.loc.line != prev.loc.line
-              @column_delta = first_element.loc.column - current.loc.column
-              if current.loc.column != first_element.loc.column
-                convention(current, :expression)
-              end
-            end
-          end
+          check_alignment(node.children)
         end
       end
     end
