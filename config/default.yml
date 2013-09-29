@@ -156,3 +156,7 @@ MethodName:
 VariableName:
   # Valid values are: snake_case, camelCase
   EnforcedStyle: snake_case
+
+HashSyntax:
+  # Valid values are: ruby19, hash_rockets
+  EnforcedStyle: ruby19

@@ -12,6 +12,10 @@
 * [#501](https://github.com/bbatsov/rubocop/issues/501) - `json` formatter now outputs `corrected` key with boolean value in offence objects whether the offence is automatically corrected.
 * New cop `ClassLength` checks for overly long class definitions
 
+### Changes
+
+* `HashSyntax` cop is now configurable and can enforce the use of the classic hash rockets syntax
+
 ### Bugs fixed
 
 * [#496](https://github.com/bbatsov/rubocop/issues/496) - Fix corner case crash in `AlignHash` cop: single key/value pair when configuration is `table` for '=>' and `separator` for `:`.
