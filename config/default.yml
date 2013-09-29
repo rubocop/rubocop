@@ -160,3 +160,8 @@ VariableName:
 HashSyntax:
   # Valid values are: ruby19, hash_rockets
   EnforcedStyle: ruby19
+
+StringLiterals:
+  # Valid values (denoting the preferred quote delimiters) are:
+  # single_quotes, double_quotes
+  EnforcedStyle: single_quotes
