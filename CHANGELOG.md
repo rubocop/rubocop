@@ -6,7 +6,6 @@
 
 * [#491](https://github.com/bbatsov/rubocop/issues/491) - New cop `MethodCalledOnDoEndBlock` keeps track of methods called on `do`...`end` blocks.
 * [#456](https://github.com/bbatsov/rubocop/issues/456) - New configuration parameter `AllCops`/`RunRailsCops` can be set to `true` for a project, removing the need to give the `-R`/`--rails` option with every invocation of `rubocop`.
-* Cop `MethodAndVariableSnakeCase` replaced by `MethodName` and `VariableName`, both having the configuration parameter `EnforcedStyle` with values `snake_case` (default) and `camelCase`.
 * [#501](https://github.com/bbatsov/rubocop/issues/501) - `simple`/`clang`/`progress`/`emacs` formatters now print `[Corrected]` along with offence message when the offence is automatically corrected.
 * [#501](https://github.com/bbatsov/rubocop/issues/501) - `simple`/`clang`/`progress` formatters now print count of auto-corrected offences in the final summary.
 * [#501](https://github.com/bbatsov/rubocop/issues/501) - `json` formatter now outputs `corrected` key with boolean value in offence objects whether the offence is automatically corrected.
@@ -14,6 +13,7 @@
 
 ### Changes
 
+* Cop `MethodAndVariableSnakeCase` replaced by `MethodName` and `VariableName`, both having the configuration parameter `EnforcedStyle` with values `snake_case` (default) and `camelCase`.
 * `HashSyntax` cop is now configurable and can enforce the use of the classic hash rockets syntax
 
 ### Bugs fixed
