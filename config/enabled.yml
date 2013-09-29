@@ -129,17 +129,13 @@ Blocks:
                 Prefer {...} over do...end for single-line blocks.
   Enabled: true
 
-
 ParameterLists:
   Description: 'Avoid parameter lists longer than three or four parameters.'
   Enabled: true
 
 StringLiterals:
-  Description: >
-                 Prefer ' strings when you don't need string interpolation or
-                 special symbols.
+  Description: 'Checks if uses of quotes match the configured preference.'
   Enabled: true
-
 
 MultilineTernaryOperator:
   Description: >
