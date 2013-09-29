@@ -14,7 +14,8 @@
 ### Changes
 
 * Cop `MethodAndVariableSnakeCase` replaced by `MethodName` and `VariableName`, both having the configuration parameter `EnforcedStyle` with values `snake_case` (default) and `camelCase`.
-* `HashSyntax` cop is now configurable and can enforce the use of the classic hash rockets syntax
+* [#519](https://github.com/bbatsov/rubocop/issues/519) - `HashSyntax` cop is now configurable and can enforce the use of the classic hash rockets syntax
+* [#520](https://github.com/bbatsov/rubocop/issues/520) - `StringLiterals` cop is now configurable and can enforce either single-quoted or double-quoted strings.
 
 ### Bugs fixed
 
