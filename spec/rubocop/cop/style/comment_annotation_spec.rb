@@ -32,7 +32,7 @@ module Rubocop
           it 'marks the annotation keyword' do
             inspect_source(cop, ['# TODO:make better'])
             formatter.report_file('t', cop.offences)
-            expect(output.string).to eq(["t:1:3: C: #{CommentAnnotation::MSG}",
+            expect(output.string).to eq(["t:1:3: C: #{described_class::MSG}",
                                          '# TODO:make better',
                                          '  ^^^^^',
                                          ''].join("\n"))

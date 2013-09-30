@@ -14,7 +14,7 @@ module Rubocop
                           '# 这是什么？'])
           expect(ascii.offences.size).to eq(1)
           expect(ascii.messages)
-            .to eq([AsciiComments::MSG])
+            .to eq(['Use only ascii symbols in comments.'])
         end
 
         it 'accepts comments with only ascii chars' do

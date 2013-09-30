@@ -14,7 +14,7 @@ module Rubocop
                           'älg = 1'])
           expect(ascii.offences.size).to eq(1)
           expect(ascii.messages)
-            .to eq([AsciiIdentifiers::MSG])
+            .to eq(['Use only ascii symbols in identifiers.'])
         end
 
         it 'accepts identifiers with only ascii chars' do

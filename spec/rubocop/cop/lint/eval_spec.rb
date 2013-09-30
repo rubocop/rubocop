@@ -13,7 +13,7 @@ module Rubocop
                          ['eval(something)'])
           expect(a.offences.size).to eq(1)
           expect(a.messages)
-            .to eq([Eval::MSG])
+            .to eq(['The use of eval is a serious security risk.'])
         end
 
         it 'registers an offence for eval as command' do
@@ -21,7 +21,7 @@ module Rubocop
                          ['eval something'])
           expect(a.offences.size).to eq(1)
           expect(a.messages)
-            .to eq([Eval::MSG])
+            .to eq(['The use of eval is a serious security risk.'])
         end
 
         it 'does not register an offence for eval as variable' do

@@ -14,7 +14,7 @@ module Rubocop
                            ['test = Array.new()'])
             expect(cop.offences.size).to eq(1)
             expect(cop.messages)
-              .to eq([EmptyLiteral::ARR_MSG])
+              .to eq(['Use array literal [] instead of Array.new.'])
           end
 
           it 'registers an offence for Array.new' do
@@ -22,7 +22,7 @@ module Rubocop
                            ['test = Array.new'])
             expect(cop.offences.size).to eq(1)
             expect(cop.messages)
-              .to eq([EmptyLiteral::ARR_MSG])
+              .to eq(['Use array literal [] instead of Array.new.'])
           end
 
           it 'does not register an offence for Array.new(3)' do
@@ -43,7 +43,7 @@ module Rubocop
                            ['test = Hash.new()'])
             expect(cop.offences.size).to eq(1)
             expect(cop.messages)
-              .to eq([EmptyLiteral::HASH_MSG])
+              .to eq(['Use hash literal {} instead of Hash.new.'])
           end
 
           it 'registers an offence for Hash.new' do
@@ -51,7 +51,7 @@ module Rubocop
                            ['test = Hash.new'])
             expect(cop.offences.size).to eq(1)
             expect(cop.messages)
-              .to eq([EmptyLiteral::HASH_MSG])
+              .to eq(['Use hash literal {} instead of Hash.new.'])
           end
 
           it 'does not register an offence for Hash.new(3)' do
@@ -78,7 +78,7 @@ module Rubocop
                            ['test = String.new()'])
             expect(cop.offences.size).to eq(1)
             expect(cop.messages)
-              .to eq([EmptyLiteral::STR_MSG])
+              .to eq(["Use string literal '' instead of String.new."])
           end
 
           it 'registers an offence for String.new' do
@@ -86,7 +86,7 @@ module Rubocop
                            ['test = String.new'])
             expect(cop.offences.size).to eq(1)
             expect(cop.messages)
-              .to eq([EmptyLiteral::STR_MSG])
+              .to eq(["Use string literal '' instead of String.new."])
           end
 
           it 'does not register an offence for String.new("top")' do

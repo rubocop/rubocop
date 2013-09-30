@@ -15,7 +15,7 @@ module Rubocop
                           'def link_to(name, url); {:name => name}; end',
                           'def @table.columns; super; end'])
           expect(slm.messages).to eq(
-            [SingleLineMethods::MSG] * 3)
+            ['Avoid single-line method definitions.'] * 3)
         end
 
         context 'when AllowIfMethodIsEmpty is disabled' do

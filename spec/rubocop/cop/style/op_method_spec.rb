@@ -15,7 +15,7 @@ module Rubocop
                           'end'])
           expect(om.offences.size).to eq(1)
           expect(om.messages)
-            .to eq([sprintf(OpMethod::MSG, '+')])
+            .to eq(['When defining the + operator, name its argument *other*.'])
         end
 
         it 'works properly even if the argument not surrounded with braces' do
@@ -25,7 +25,7 @@ module Rubocop
                           'end'])
           expect(om.offences.size).to eq(1)
           expect(om.messages)
-            .to eq([sprintf(OpMethod::MSG, '+')])
+            .to eq(['When defining the + operator, name its argument *other*.'])
         end
 
         it 'does not register an offence for arg named other' do

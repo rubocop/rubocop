@@ -11,7 +11,8 @@ module Rubocop
         it 'registers an offence for an old single-line lambda call' do
           inspect_source(lambda, ['f = lambda { |x| x }'])
           expect(lambda.offences.size).to eq(1)
-          expect(lambda.messages).to eq([Lambda::SINGLE_MSG])
+          expect(lambda.messages)
+            .to eq(['Use the new lambda literal syntax ->(params) {...}.'])
         end
 
         it 'accepts the new lambda literal with single-line body' do
@@ -25,7 +26,8 @@ module Rubocop
                                   '  x',
                                   'end'])
           expect(lambda.offences.size).to eq(1)
-          expect(lambda.messages).to eq([Lambda::MULTI_MSG])
+          expect(lambda.messages)
+            .to eq(['Use the lambda method for multi-line lambdas.'])
         end
 
         it 'accepts the old lambda syntax with multi-line body' do

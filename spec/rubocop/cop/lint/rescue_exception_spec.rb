@@ -17,7 +17,7 @@ module Rubocop
                           'end'])
           expect(re.offences.size).to eq(1)
           expect(re.messages)
-            .to eq([RescueException::MSG])
+            .to eq(['Avoid rescuing the Exception class.'])
         end
 
         it 'registers an offence for rescue with ::Exception' do
@@ -29,7 +29,7 @@ module Rubocop
                           'end'])
           expect(re.offences.size).to eq(1)
           expect(re.messages)
-            .to eq([RescueException::MSG])
+            .to eq(['Avoid rescuing the Exception class.'])
         end
 
         it 'registers an offence for rescue with StandardError, Exception' do
@@ -41,7 +41,7 @@ module Rubocop
                           'end'])
           expect(re.offences.size).to eq(1)
           expect(re.messages)
-            .to eq([RescueException::MSG])
+            .to eq(['Avoid rescuing the Exception class.'])
         end
 
         it 'registers an offence for rescue with Exception => e' do
@@ -53,7 +53,7 @@ module Rubocop
                           'end'])
           expect(re.offences.size).to eq(1)
           expect(re.messages)
-            .to eq([RescueException::MSG])
+            .to eq(['Avoid rescuing the Exception class.'])
         end
 
         it 'does not register an offence for rescue with no class' do

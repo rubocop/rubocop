@@ -13,7 +13,7 @@ module Rubocop
                          ['alias :ala :bala'])
           expect(a.offences.size).to eq(1)
           expect(a.messages)
-            .to eq([Alias::MSG])
+            .to eq(['Use alias_method instead of alias.'])
         end
 
         it 'registers an offence for alias with bareword args' do
@@ -21,7 +21,7 @@ module Rubocop
                          ['alias ala bala'])
           expect(a.offences.size).to eq(1)
           expect(a.messages)
-            .to eq([Alias::MSG])
+            .to eq(['Use alias_method instead of alias.'])
         end
 
         it 'does not register an offence for alias_method' do

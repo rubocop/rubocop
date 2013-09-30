@@ -16,7 +16,8 @@ module Rubocop
 
         it 'registers an offence for a single line block with do-end' do
           inspect_source(cop, ['each do |x| end'])
-          expect(cop.messages).to eq([Blocks::SINGLE_LINE_MSG])
+          expect(cop.messages)
+            .to eq(['Prefer {...} over do...end for single-line blocks.'])
         end
 
         it 'accepts a single line block with braces' do
@@ -33,7 +34,8 @@ module Rubocop
           it 'registers an offence in the simple case' do
             inspect_source(cop, ['each { |x|',
                                  '}'])
-            expect(cop.messages).to eq([Blocks::MULTI_LINE_MSG])
+            expect(cop.messages)
+              .to eq(['Avoid using {...} for multi-line blocks.'])
           end
 
           it 'accepts braces if do-end would change the meaning' do
@@ -74,7 +76,8 @@ module Rubocop
                    '  e.nil?',
                    '}']
             inspect_source(cop, src)
-            expect(cop.messages).to eq([Blocks::MULTI_LINE_MSG])
+            expect(cop.messages)
+              .to eq(['Avoid using {...} for multi-line blocks.'])
           end
 
           it 'auto-corrects do and end for single line blocks to { and }' do

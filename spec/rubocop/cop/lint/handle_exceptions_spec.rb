@@ -17,7 +17,7 @@ module Rubocop
                           'end'])
           expect(he.offences.size).to eq(1)
           expect(he.messages)
-            .to eq([HandleExceptions::MSG])
+            .to eq(['Do not suppress exceptions.'])
         end
 
         it 'does not register an offence for rescue with body' do

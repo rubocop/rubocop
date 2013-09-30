@@ -18,7 +18,7 @@ module Rubocop
                           'end'])
           expect(a.offences.size).to eq(1)
           expect(a.messages)
-            .to eq([format(AccessControl::INDENT_MSG, 'private')])
+            .to eq(['Indent private as deep as method definitions.'])
         end
 
         it 'registers an offence for misaligned private in module' do
@@ -31,7 +31,7 @@ module Rubocop
                           'end'])
           expect(a.offences.size).to eq(1)
           expect(a.messages)
-            .to eq([format(AccessControl::INDENT_MSG, 'private')])
+            .to eq(['Indent private as deep as method definitions.'])
         end
 
         it 'registers an offence for misaligned private in singleton class' do
@@ -44,7 +44,7 @@ module Rubocop
                           'end'])
           expect(a.offences.size).to eq(1)
           expect(a.messages)
-            .to eq([format(AccessControl::INDENT_MSG, 'private')])
+            .to eq(['Indent private as deep as method definitions.'])
         end
 
         it 'registers an offence for misaligned private in class ' +
@@ -58,7 +58,7 @@ module Rubocop
                           'end'])
           expect(a.offences.size).to eq(1)
           expect(a.messages)
-            .to eq([format(AccessControl::INDENT_MSG, 'private')])
+            .to eq(['Indent private as deep as method definitions.'])
         end
 
         it 'registers an offence for misaligned private in module ' +
@@ -72,7 +72,7 @@ module Rubocop
                           'end'])
           expect(a.offences.size).to eq(1)
           expect(a.messages)
-            .to eq([format(AccessControl::INDENT_MSG, 'private')])
+            .to eq(['Indent private as deep as method definitions.'])
         end
 
         it 'registers an offence for misaligned protected' do
@@ -85,7 +85,7 @@ module Rubocop
                           'end'])
           expect(a.offences.size).to eq(1)
           expect(a.messages)
-            .to eq([format(AccessControl::INDENT_MSG, 'protected')])
+            .to eq(['Indent protected as deep as method definitions.'])
         end
 
         it 'accepts properly indented private' do
@@ -127,7 +127,7 @@ module Rubocop
                           'end'])
           expect(a.offences.size).to eq(1)
           expect(a.messages)
-            .to eq([format(AccessControl::INDENT_MSG, 'private')])
+            .to eq(['Indent private as deep as method definitions.'])
         end
 
         it 'requires blank line before private/protected' do
@@ -139,7 +139,7 @@ module Rubocop
                           'end'])
           expect(a.offences.size).to eq(1)
           expect(a.messages)
-            .to eq([format(AccessControl::BLANK_MSG, 'protected')])
+            .to eq(['Keep a blank line before and after protected.'])
         end
 
         it 'requires blank line after private/protected' do
@@ -151,7 +151,7 @@ module Rubocop
                           'end'])
           expect(a.offences.size).to eq(1)
           expect(a.messages)
-            .to eq([format(AccessControl::BLANK_MSG, 'protected')])
+            .to eq(['Keep a blank line before and after protected.'])
         end
 
         it 'recognizes blank lines with DOS style line endings' do

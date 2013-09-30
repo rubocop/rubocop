@@ -16,7 +16,8 @@ module Rubocop
                           '  #do nothing',
                           'end'])
           expect(cop.offences.size).to eq(1)
-          expect(cop.messages).to eq([SignalException::FAIL_MSG])
+          expect(cop.messages)
+            .to eq(['Use `fail` instead of `raise` to signal exceptions.'])
         end
 
         it 'registers an offence for raise in def body' do
@@ -27,7 +28,8 @@ module Rubocop
                           '  #do nothing',
                           'end'])
           expect(cop.offences.size).to eq(1)
-          expect(cop.messages).to eq([SignalException::FAIL_MSG])
+          expect(cop.messages)
+            .to eq(['Use `fail` instead of `raise` to signal exceptions.'])
         end
 
         it 'registers an offence for fail in rescue section' do
@@ -38,7 +40,8 @@ module Rubocop
                           '  fail',
                           'end'])
           expect(cop.offences.size).to eq(1)
-          expect(cop.messages).to eq([SignalException::RAISE_MSG])
+          expect(cop.messages)
+            .to eq(['Use `raise` instead of `fail` to rethrow exceptions.'])
         end
 
         it 'registers an offence for fail def rescue section' do
@@ -49,7 +52,8 @@ module Rubocop
                           '  fail',
                           'end'])
           expect(cop.offences.size).to eq(1)
-          expect(cop.messages).to eq([SignalException::RAISE_MSG])
+          expect(cop.messages)
+            .to eq(['Use `raise` instead of `fail` to rethrow exceptions.'])
         end
 
         it 'is not confused by nested begin/rescue' do
@@ -65,8 +69,9 @@ module Rubocop
                           '  #do nothing',
                           'end'])
           expect(cop.offences.size).to eq(3)
-          expect(cop.messages).to eq([SignalException::FAIL_MSG] * 2 +
-                                     [SignalException::RAISE_MSG])
+          expect(cop.messages)
+            .to eq(['Use `fail` instead of `raise` to signal exceptions.'] * 2 +
+                   ['Use `raise` instead of `fail` to rethrow exceptions.'])
         end
 
         it 'auto-corrects raise to fail when appropriate' do
