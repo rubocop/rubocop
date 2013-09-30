@@ -6,58 +6,58 @@ module Rubocop
   module Cop
     module Style
       describe LeadingCommentSpace do
-        subject(:lcs) { LeadingCommentSpace.new }
+        subject(:cop) { LeadingCommentSpace.new }
 
         it 'registers an offence for comment without leading space' do
-          inspect_source(lcs,
+          inspect_source(cop,
                          ['#missing space'])
-          expect(lcs.offences.size).to eq(1)
+          expect(cop.offences.size).to eq(1)
         end
 
         it 'does not register an offence for # followed by no text' do
-          inspect_source(lcs,
+          inspect_source(cop,
                          ['#'])
-          expect(lcs.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
 
         it 'does not register an offence for more than one space' do
-          inspect_source(lcs,
+          inspect_source(cop,
                          ['#   heavily indented'])
-          expect(lcs.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
 
         it 'does not register an offence for more than one #' do
-          inspect_source(lcs,
+          inspect_source(cop,
                          ['###### heavily indented'])
-          expect(lcs.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
 
         it 'does not register an offence for only #s' do
-          inspect_source(lcs,
+          inspect_source(cop,
                          ['######'])
-          expect(lcs.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
 
         it 'does not register an offence for #! on first line' do
-          inspect_source(lcs,
+          inspect_source(cop,
                          ['#!/usr/bin/ruby',
                           'test'])
-          expect(lcs.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
 
         it 'registers an offence for #! after the first line' do
-          inspect_source(lcs,
+          inspect_source(cop,
                          ['test', '#!/usr/bin/ruby'])
-          expect(lcs.offences.size).to eq(1)
+          expect(cop.offences.size).to eq(1)
         end
 
         it 'accepts rdoc syntax' do
-          inspect_source(lcs,
+          inspect_source(cop,
                          ['#++',
                           '#--',
                           '#:nodoc:'])
 
-          expect(lcs.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
       end
     end

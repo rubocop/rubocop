@@ -6,23 +6,23 @@ module Rubocop
   module Cop
     module Style
       describe SpaceAfterComma do
-        subject(:space) { SpaceAfterComma.new }
+        subject(:cop) { SpaceAfterComma.new }
 
         it 'registers an offence for block argument commas without space' do
-          inspect_source(space, ['each { |s,t| }'])
-          expect(space.messages).to eq(
+          inspect_source(cop, ['each { |s,t| }'])
+          expect(cop.messages).to eq(
             ['Space missing after comma.'])
         end
 
         it 'registers an offence for array index commas without space' do
-          inspect_source(space, ['formats[0,1]'])
-          expect(space.messages).to eq(
+          inspect_source(cop, ['formats[0,1]'])
+          expect(cop.messages).to eq(
             ['Space missing after comma.'])
         end
 
         it 'registers an offence for method call arg commas without space' do
-          inspect_source(space, ['a(1,2)'])
-          expect(space.messages).to eq(
+          inspect_source(cop, ['a(1,2)'])
+          expect(cop.messages).to eq(
             ['Space missing after comma.'])
         end
       end

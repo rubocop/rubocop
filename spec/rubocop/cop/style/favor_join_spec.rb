@@ -6,30 +6,30 @@ module Rubocop
   module Cop
     module Style
       describe FavorJoin do
-        subject(:fj) { FavorJoin.new }
+        subject(:cop) { FavorJoin.new }
 
         it 'registers an offence for an array followed by string' do
-          inspect_source(fj,
+          inspect_source(cop,
                          ['%w(one two three) * ", "'])
-          expect(fj.offences.size).to eq(1)
-          expect(fj.messages)
+          expect(cop.offences.size).to eq(1)
+          expect(cop.messages)
             .to eq(['Favor Array#join over Array#*.'])
         end
 
         it 'does not register an offence for numbers' do
-          inspect_source(fj,
+          inspect_source(cop,
                          ['%w(one two three) * 4'])
-          expect(fj.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
 
         it 'does not register an offence for ambiguous cases' do
-          inspect_source(fj,
+          inspect_source(cop,
                          ['test * ", "'])
-          expect(fj.offences).to be_empty
+          expect(cop.offences).to be_empty
 
-          inspect_source(fj,
+          inspect_source(cop,
                          ['%w(one two three) * test'])
-          expect(fj.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
       end
     end

@@ -6,72 +6,72 @@ module Rubocop
   module Cop
     module Style
       describe Documentation do
-        subject(:documentation) { Documentation.new }
+        subject(:cop) { Documentation.new }
 
         it 'registers an offence for non-empty class' do
-          inspect_source(documentation,
+          inspect_source(cop,
                          ['class My_Class',
                           '  TEST = 20',
                           'end'
                          ])
-          expect(documentation.offences.size).to eq(1)
+          expect(cop.offences.size).to eq(1)
         end
 
         it 'registers an offence for non-namespace' do
-          inspect_source(documentation,
+          inspect_source(cop,
                          ['module My_Class',
                           '  TEST = 20',
                           'end'
                          ])
-          expect(documentation.offences.size).to eq(1)
+          expect(cop.offences.size).to eq(1)
         end
 
         it 'registers an offence for empty module without documentation' do
           # Because why would you have an empty module? It requires some
           # explanation.
-          inspect_source(documentation,
+          inspect_source(cop,
                          ['module Test',
                           'end'
                          ])
-          expect(documentation.offences.size).to eq(1)
+          expect(cop.offences.size).to eq(1)
         end
 
         it 'accepts non-empty class with documentation' do
-          inspect_source(documentation,
+          inspect_source(cop,
                          ['# class comment',
                           'class My_Class',
                           '  TEST = 20',
                           'end'
                          ])
-          expect(documentation.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
 
         it 'accepts non-empty module with documentation' do
-          inspect_source(documentation,
+          inspect_source(cop,
                          ['# class comment',
                           'module My_Class',
                           '  TEST = 20',
                           'end'
                          ])
-          expect(documentation.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
 
         it 'accepts empty class without documentation' do
-          inspect_source(documentation,
+          inspect_source(cop,
                          ['class My_Class',
                           'end'
                          ])
-          expect(documentation.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
 
         it 'accepts namespace module without documentation' do
-          inspect_source(documentation,
+          inspect_source(cop,
                          ['module Test',
                           '  class A; end',
                           '  class B; end',
                           'end'
                          ])
-          expect(documentation.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
       end
     end

@@ -6,54 +6,54 @@ module Rubocop
   module Cop
     module Style
       describe WordArray do
-        subject(:wa) { WordArray.new }
+        subject(:cop) { WordArray.new }
 
         it 'registers an offence for arrays of single quoted strings' do
-          inspect_source(wa,
+          inspect_source(cop,
                          ["['one', 'two', 'three']"])
-          expect(wa.offences.size).to eq(1)
+          expect(cop.offences.size).to eq(1)
         end
 
         it 'registers an offence for arrays of double quoted strings' do
-          inspect_source(wa,
+          inspect_source(cop,
                          ['["one", "two", "three"]'])
-          expect(wa.offences.size).to eq(1)
+          expect(cop.offences.size).to eq(1)
         end
 
         it 'registers an offence for arrays with character constants' do
-          inspect_source(wa,
+          inspect_source(cop,
                          ['["one", ?\n]'])
-          expect(wa.offences.size).to eq(1)
+          expect(cop.offences.size).to eq(1)
         end
 
         it 'does not register an offence for array of non-words' do
-          inspect_source(wa,
+          inspect_source(cop,
                          ['["one space", "two", "three"]'])
-          expect(wa.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
 
         it 'does not register an offence for array containing non-string' do
-          inspect_source(wa,
+          inspect_source(cop,
                          ['["one", "two", 3]'])
-          expect(wa.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
 
         it 'does not register an offence for array starting with %w' do
-          inspect_source(wa,
+          inspect_source(cop,
                          ['%w(one two three)'])
-          expect(wa.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
 
         it 'does not register an offence for array with one element' do
-          inspect_source(wa,
+          inspect_source(cop,
                          ['["three"]'])
-          expect(wa.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
 
         it 'does not register an offence for array with empty strings' do
-          inspect_source(wa,
+          inspect_source(cop,
                          ['["", "two", "three"]'])
-          expect(wa.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
       end
     end

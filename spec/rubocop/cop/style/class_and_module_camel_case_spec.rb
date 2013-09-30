@@ -6,39 +6,39 @@ module Rubocop
   module Cop
     module Style
       describe ClassAndModuleCamelCase do
-        subject(:camel_case) { ClassAndModuleCamelCase.new }
+        subject(:cop) { ClassAndModuleCamelCase.new }
 
         it 'registers an offence for underscore in class and module name' do
-          inspect_source(camel_case,
+          inspect_source(cop,
                          ['class My_Class',
                           'end',
                           '',
                           'module My_Module',
                           'end',
                          ])
-          expect(camel_case.offences.size).to eq(2)
+          expect(cop.offences.size).to eq(2)
         end
 
         it 'is not fooled by qualified names' do
-          inspect_source(camel_case,
+          inspect_source(cop,
                          ['class Top::My_Class',
                           'end',
                           '',
                           'module My_Module::Ala',
                           'end',
                          ])
-          expect(camel_case.offences.size).to eq(2)
+          expect(cop.offences.size).to eq(2)
         end
 
         it 'accepts CamelCase names' do
-          inspect_source(camel_case,
+          inspect_source(cop,
                          ['class MyClass',
                           'end',
                           '',
                           'module Mine',
                           'end',
                          ])
-          expect(camel_case.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
       end
     end

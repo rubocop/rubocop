@@ -6,33 +6,33 @@ module Rubocop
   module Cop
     module Style
       describe EmptyLines do
-        subject(:empty_lines) { EmptyLines.new }
+        subject(:cop) { EmptyLines.new }
 
         it 'registers an offence for consecutive empty lines' do
-          inspect_source(empty_lines,
+          inspect_source(cop,
                          ['test = 5', '', '', '', 'top'])
-          expect(empty_lines.offences.size).to eq(2)
+          expect(cop.offences.size).to eq(2)
         end
 
         it 'works when there are no tokens' do
-          inspect_source(empty_lines,
+          inspect_source(cop,
                          ['#comment'])
-          expect(empty_lines.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
 
         it 'handles comments' do
-          inspect_source(empty_lines,
+          inspect_source(cop,
                          ['test', '', '#comment', 'top'])
-          expect(empty_lines.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
 
         it 'does not register an offence for empty lines in a string' do
-          inspect_source(empty_lines, ['result = "test
+          inspect_source(cop, ['result = "test
 
 
 
                                         string"'])
-          expect(empty_lines.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
       end
     end

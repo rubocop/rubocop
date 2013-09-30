@@ -6,21 +6,21 @@ module Rubocop
   module Cop
     module Style
       describe AsciiComments do
-        subject(:ascii) { AsciiComments.new }
+        subject(:cop) { AsciiComments.new }
 
         it 'registers an offence for a comment with non-ascii chars' do
-          inspect_source(ascii,
+          inspect_source(cop,
                          ['# encoding: utf-8',
                           '# 这是什么？'])
-          expect(ascii.offences.size).to eq(1)
-          expect(ascii.messages)
+          expect(cop.offences.size).to eq(1)
+          expect(cop.messages)
             .to eq(['Use only ascii symbols in comments.'])
         end
 
         it 'accepts comments with only ascii chars' do
-          inspect_source(ascii,
+          inspect_source(cop,
                          ['# AZaz1@$%~,;*_`|'])
-          expect(ascii.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
       end
     end

@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe BlockNesting, :config do
-        subject(:block_nesting) { BlockNesting.new(config) }
+        subject(:cop) { BlockNesting.new(config) }
         let(:cop_config) { { 'Max' => 2 } }
 
         it 'accepts `Max` levels of nesting' do
@@ -148,9 +148,9 @@ module Rubocop
         end
 
         def expect_nesting_offences(source, lines)
-          inspect_source(block_nesting, source)
-          expect(block_nesting.offences.map(&:line)).to eq(lines)
-          expect(block_nesting.messages).to eq(
+          inspect_source(cop, source)
+          expect(cop.offences.map(&:line)).to eq(lines)
+          expect(cop.messages).to eq(
             ['Avoid more than 2 levels of block nesting.'] * lines.length)
         end
       end

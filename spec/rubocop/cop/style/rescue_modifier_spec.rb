@@ -6,47 +6,47 @@ module Rubocop
   module Cop
     module Style
       describe RescueModifier do
-        subject(:rm) { RescueModifier.new }
+        subject(:cop) { RescueModifier.new }
 
         it 'registers an offence for modifier rescue' do
-          inspect_source(rm,
+          inspect_source(cop,
                          ['method rescue handle'])
-          expect(rm.offences.size).to eq(1)
-          expect(rm.messages)
+          expect(cop.offences.size).to eq(1)
+          expect(cop.messages)
             .to eq(['Avoid using rescue in its modifier form.'])
         end
 
         it 'handles more complex expression with modifier rescue' do
-          inspect_source(rm,
+          inspect_source(cop,
                          ['method1 or method2 rescue handle'])
-          expect(rm.offences.size).to eq(1)
-          expect(rm.messages)
+          expect(cop.offences.size).to eq(1)
+          expect(cop.messages)
             .to eq(['Avoid using rescue in its modifier form.'])
         end
 
         it 'handles modifier rescue in normal rescue' do
-          inspect_source(rm,
+          inspect_source(cop,
                          ['begin',
                           '  test rescue modifier_handle',
                           'rescue',
                           '  normal_handle',
                           'end'])
-          expect(rm.offences.size).to eq(1)
-          expect(rm.offences.first.line).to eq(2)
+          expect(cop.offences.size).to eq(1)
+          expect(cop.offences.first.line).to eq(2)
         end
 
         it 'does not register an offence for normal rescue' do
-          inspect_source(rm,
+          inspect_source(cop,
                          ['begin',
                           '  test',
                           'rescue',
                           '  handle',
                           'end'])
-          expect(rm.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
 
         it 'does not register an offence for normal rescue with ensure' do
-          inspect_source(rm,
+          inspect_source(cop,
                          ['begin',
                           '  test',
                           'rescue',
@@ -54,11 +54,11 @@ module Rubocop
                           'ensure',
                           '  cleanup',
                           'end'])
-          expect(rm.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
 
         it 'does not register an offence for nested normal rescue' do
-          inspect_source(rm,
+          inspect_source(cop,
                          ['begin',
                           '  begin',
                           '    test',
@@ -68,52 +68,52 @@ module Rubocop
                           'rescue',
                           '  handle_outer',
                           'end'])
-          expect(rm.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
 
         context 'when an instance method has implicit begin' do
           it 'accepts normal rescue' do
-            inspect_source(rm,
+            inspect_source(cop,
                            ['def some_method',
                             '  test',
                             'rescue',
                             '  handle',
                             'end'])
-            expect(rm.offences).to be_empty
+            expect(cop.offences).to be_empty
           end
 
           it 'handles modifier rescue in body of implicit begin' do
-            inspect_source(rm,
+            inspect_source(cop,
                            ['def some_method',
                             '  test rescue modifier_handle',
                             'rescue',
                             '  normal_handle',
                             'end'])
-            expect(rm.offences.size).to eq(1)
-            expect(rm.offences.first.line).to eq(2)
+            expect(cop.offences.size).to eq(1)
+            expect(cop.offences.first.line).to eq(2)
           end
         end
 
         context 'when a singleton method has implicit begin' do
           it 'accepts normal rescue' do
-            inspect_source(rm,
+            inspect_source(cop,
                            ['def self.some_method',
                             '  test',
                             'rescue',
                             '  handle',
                             'end'])
-            expect(rm.offences).to be_empty
+            expect(cop.offences).to be_empty
           end
 
           it 'handles modifier rescue in body of implicit begin' do
-            inspect_source(rm,
+            inspect_source(cop,
                            ['def self.some_method',
                             '  test rescue modifier_handle',
                             'rescue',
                             '  normal_handle',
                             'end'])
-            expect(rm.offences.size).to eq(1)
-            expect(rm.offences.first.line).to eq(2)
+            expect(cop.offences.size).to eq(1)
+            expect(cop.offences.first.line).to eq(2)
           end
         end
       end

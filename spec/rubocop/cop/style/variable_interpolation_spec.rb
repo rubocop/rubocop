@@ -6,46 +6,46 @@ module Rubocop
   module Cop
     module Style
       describe VariableInterpolation do
-        subject(:vi) { VariableInterpolation.new }
+        subject(:cop) { VariableInterpolation.new }
 
         it 'registers an offence for interpolated global variables' do
-          inspect_source(vi,
+          inspect_source(cop,
                          ['puts "this is a #$test"'])
-          expect(vi.offences.size).to eq(1)
-          expect(vi.messages)
+          expect(cop.offences.size).to eq(1)
+          expect(cop.messages)
             .to eq(['Replace interpolated var $test' +
               ' with expression #{$test}.'])
         end
 
         it 'registers an offence for interpolated regexp back references' do
-          inspect_source(vi,
+          inspect_source(cop,
                          ['puts "this is a #$1"'])
-          expect(vi.offences.size).to eq(1)
-          expect(vi.messages)
+          expect(cop.offences.size).to eq(1)
+          expect(cop.messages)
             .to eq(['Replace interpolated var $1 with expression #{$1}.'])
         end
 
         it 'registers an offence for interpolated instance variables' do
-          inspect_source(vi,
+          inspect_source(cop,
                          ['puts "this is a #@test"'])
-          expect(vi.offences.size).to eq(1)
-          expect(vi.messages)
+          expect(cop.offences.size).to eq(1)
+          expect(cop.messages)
             .to eq(['Replace interpolated var @test' +
               ' with expression #{@test}.'])
         end
 
         it 'registers an offence for interpolated class variables' do
-          inspect_source(vi,
+          inspect_source(cop,
                          ['puts "this is a #@@t"'])
-          expect(vi.offences.size).to eq(1)
-          expect(vi.messages)
+          expect(cop.offences.size).to eq(1)
+          expect(cop.messages)
             .to eq(['Replace interpolated var @@t with expression #{@@t}.'])
         end
 
         it 'does not register an offence for variables in expressions' do
-          inspect_source(vi,
+          inspect_source(cop,
                          ['puts "this is a #{@test} #{@@t} #{$t} #{$1}"'])
-          expect(vi.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
       end
     end

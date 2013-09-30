@@ -6,20 +6,20 @@ module Rubocop
   module Cop
     module Style
       describe BlockComments do
-        subject(:block) { BlockComments.new }
+        subject(:cop) { BlockComments.new }
 
         it 'registers an offence for block comments' do
-          inspect_source(block,
+          inspect_source(cop,
                          ['=begin',
                           'comment',
                           '=end'])
-          expect(block.offences.size).to eq(1)
+          expect(cop.offences.size).to eq(1)
         end
 
         it 'accepts regular comments' do
-          inspect_source(block,
+          inspect_source(cop,
                          ['# comment'])
-          expect(block.offences).to be_empty
+          expect(cop.offences).to be_empty
         end
       end
     end

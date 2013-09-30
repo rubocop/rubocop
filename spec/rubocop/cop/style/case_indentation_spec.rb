@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe CaseIndentation do
-        subject(:ind) { CaseIndentation.new }
+        subject(:cop) { CaseIndentation.new }
 
         it "registers an offence for a when clause that's deeper than case" do
           source = ['case a',
@@ -15,8 +15,8 @@ module Rubocop
                     '         when 1 then return',
                     '        end',
                     'end']
-          inspect_source(ind, source)
-          expect(ind.messages).to eq(
+          inspect_source(cop, source)
+          expect(cop.messages).to eq(
             ['Indent when as deep as case.'] * 2)
         end
 
@@ -33,8 +33,8 @@ module Rubocop
                     'when 2 then encoding',
                     'end',
                     '']
-          inspect_source(ind, source)
-          expect(ind.offences).to be_empty
+          inspect_source(cop, source)
+          expect(cop.offences).to be_empty
         end
 
         it "doesn't get confused by strings with case in them" do
@@ -43,8 +43,8 @@ module Rubocop
                     'when 0',
                     'end',
                     '']
-          inspect_source(ind, source)
-          expect(ind.messages).to be_empty
+          inspect_source(cop, source)
+          expect(cop.messages).to be_empty
         end
 
         it "doesn't get confused by symbols named case or when" do
@@ -56,8 +56,8 @@ module Rubocop
                     '  MethodCallNode',
                     'end',
                     '']
-          inspect_source(ind, source)
-          expect(ind.messages).to be_empty
+          inspect_source(cop, source)
+          expect(cop.messages).to be_empty
         end
 
         it 'accepts correctly indented whens in complex combinations' do
@@ -79,8 +79,8 @@ module Rubocop
                     'when Array',
                     'end',
                     '']
-          inspect_source(ind, source)
-          expect(ind.messages).to be_empty
+          inspect_source(cop, source)
+          expect(cop.messages).to be_empty
         end
       end
     end
