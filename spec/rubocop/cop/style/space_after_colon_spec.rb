@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe SpaceAfterColon do
-        subject(:cop) { SpaceAfterColon.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for colon without space after it' do
           inspect_source(cop, ['x = w ? {a:3}:4'])

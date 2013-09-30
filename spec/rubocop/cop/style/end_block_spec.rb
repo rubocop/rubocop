@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe EndBlock do
-        subject(:cop) { EndBlock.new }
+        subject(:cop) { described_class.new }
 
         it 'reports an offence for an END block' do
           src = ['END { test }']

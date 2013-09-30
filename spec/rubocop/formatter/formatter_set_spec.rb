@@ -6,7 +6,7 @@ require 'tempfile'
 module Rubocop
   module Formatter
     describe FormatterSet do
-      subject(:formatter_set) { FormatterSet.new }
+      subject(:formatter_set) { described_class.new }
 
       it 'responds to all formatter API methods' do
         [:started, :file_started, :file_finished, :finished].each do |method|
@@ -88,7 +88,7 @@ module Rubocop
 
       describe '#builtin_formatter_class' do
         def builtin_formatter_class(string)
-          FormatterSet.new.send(:builtin_formatter_class, string)
+          described_class.new.send(:builtin_formatter_class, string)
         end
 
         it 'returns class which matches passed alias name exactly' do
@@ -105,7 +105,7 @@ module Rubocop
 
       describe '#custom_formatter_class' do
         def custom_formatter_class(string)
-          FormatterSet.new.send(:custom_formatter_class, string)
+          described_class.new.send(:custom_formatter_class, string)
         end
 
         it 'returns constant represented by the passed string' do

@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe Cop do
-      subject(:cop) { Cop.new }
+      subject(:cop) { described_class.new }
       let(:location) do
         source_buffer = Parser::Source::Buffer.new('test', 1)
         source_buffer.source = "a\n"
@@ -35,7 +35,7 @@ module Rubocop
       end
 
       context 'with no submodule' do
-        subject(:cop) { Cop }
+        subject(:cop) { described_class }
         it('has right name') { expect(cop.cop_name).to eq('Cop') }
         it('has right type') { expect(cop.cop_type).to eq(:cop) }
       end
@@ -60,7 +60,7 @@ module Rubocop
 
       describe 'CopStore' do
         context '#types' do
-          subject { Rubocop::Cop::Cop.all.types }
+          subject { described_class.all.types }
           it('has types') { expect(subject.length).not_to eq(0) }
           it { should include :lint }
           it do
@@ -74,23 +74,23 @@ module Rubocop
           end
         end
         context '#with_type' do
-          let(:types) { Rubocop::Cop::Cop.all.types }
+          let(:types) { described_class.all.types }
           it 'has at least one cop per type' do
             types.each do |c|
-              expect(Rubocop::Cop::Cop.all.with_type(c).length).to be > 0
+              expect(described_class.all.with_type(c).length).to be > 0
             end
           end
 
           it 'has each cop in exactly one type' do
             sum = 0
             types.each do |c|
-              sum = sum + Rubocop::Cop::Cop.all.with_type(c).length
+              sum = sum + described_class.all.with_type(c).length
             end
-            expect(sum).to be Rubocop::Cop::Cop.all.length
+            expect(sum).to be described_class.all.length
           end
 
           it 'returns 0 for an invalid type' do
-            expect(Rubocop::Cop::Cop.all.with_type('x').length).to be 0
+            expect(described_class.all.with_type('x').length).to be 0
           end
         end
       end

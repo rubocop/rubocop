@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe SpaceAroundEqualsInParameterDefault do
-        subject(:cop) { SpaceAroundEqualsInParameterDefault.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for default value assignment without space' do
           inspect_source(cop, ['def f(x, y=0, z=1)', 'end'])

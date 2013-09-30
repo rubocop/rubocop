@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe WhileUntilDo do
-        subject(:cop) { WhileUntilDo.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for do in multiline while' do
           inspect_source(cop, ['while cond do',

@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe SpaceAroundBlockBraces, :config do
-        subject(:cop) { SpaceAroundBlockBraces.new(config) }
+        subject(:cop) { described_class.new(config) }
         let(:cop_config) { { 'NoSpaceBeforeBlockParameters' => false } }
 
         it 'accepts braces surrounded by spaces' do

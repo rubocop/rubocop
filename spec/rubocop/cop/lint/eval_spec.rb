@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Lint
       describe Eval do
-        subject(:cop) { Eval.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for eval as function' do
           inspect_source(cop,

@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe RedundantBegin do
-        subject(:cop) { RedundantBegin.new }
+        subject(:cop) { described_class.new }
 
         it 'reports an offence for def with redundant begin block' do
           src = ['def func',

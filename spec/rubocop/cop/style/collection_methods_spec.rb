@@ -15,7 +15,7 @@ module Rubocop
           }
         }
 
-        subject(:cop) { CollectionMethods.new(config) }
+        subject(:cop) { described_class.new(config) }
         let(:cop_config) { cop_config }
 
         cop_config['PreferredMethods'].each do |method, preferred_method|

@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe RedundantSelf do
-        subject(:cop) { RedundantSelf.new }
+        subject(:cop) { described_class.new }
 
         it 'reports an offence a self receiver on an rvalue' do
           src = ['a = self.b']

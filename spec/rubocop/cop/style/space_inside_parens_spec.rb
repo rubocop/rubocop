@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe SpaceInsideParens do
-        subject(:cop) { SpaceInsideParens.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for spaces inside parens' do
           inspect_source(cop, ['f( 3)',

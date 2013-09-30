@@ -6,7 +6,7 @@ require 'stringio'
 module Rubocop
   module Formatter
     describe FileListFormatter do
-      subject(:formatter) { FileListFormatter.new(output) }
+      subject(:formatter) { described_class.new(output) }
       let(:output) { StringIO.new }
 
       describe '#file_finished' do

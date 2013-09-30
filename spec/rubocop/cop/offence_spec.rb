@@ -11,7 +11,7 @@ module Rubocop
         Parser::Source::Range.new(source_buffer, 0, 1)
       end
       subject(:offence) do
-        Offence.new(:convention, location, 'message', 'CopName', true)
+        described_class.new(:convention, location, 'message', 'CopName', true)
       end
 
       it 'has a few required attributes' do
@@ -27,15 +27,15 @@ module Rubocop
       end
 
       it 'does not blow up if a message contains %' do
-        offence = Offence.new(:convention, location, 'message % test',
-                              'CopName')
+        offence = described_class.new(:convention, location, 'message % test',
+                                      'CopName')
 
         expect(offence.to_s).to eq('C:  1:  1: message % test')
       end
 
       it 'redefines == to compare offences based on their contents' do
-        o1 = Offence.new(:convention, location, 'message', 'CopName')
-        o2 = Offence.new(:convention, location, 'message', 'CopName')
+        o1 = described_class.new(:convention, location, 'message', 'CopName')
+        o2 = described_class.new(:convention, location, 'message', 'CopName')
 
         expect(o1 == o2).to be_true
       end
@@ -55,14 +55,15 @@ module Rubocop
       context 'when unknown severity is passed' do
         it 'raises error' do
           expect do
-            Offence.new(:foobar, location, 'message', 'CopName')
+            described_class.new(:foobar, location, 'message', 'CopName')
           end.to raise_error(ArgumentError)
         end
       end
 
       describe '#severity_level' do
         subject(:severity_level) do
-          Offence.new(severity, location, 'message', 'CopName').severity_level
+          described_class.new(severity, location, 'message', 'CopName')
+            .severity_level
         end
 
         context 'when severity is :refactor' do
@@ -90,7 +91,7 @@ module Rubocop
             cop:  'CopName'
           }.merge(hash)
 
-          Offence.new(
+          described_class.new(
             attrs[:sev],
             location(attrs[:line], attrs[:col],
                      %w(aaaaaa bbbbbb cccccc dddddd eeeeee ffffff)),

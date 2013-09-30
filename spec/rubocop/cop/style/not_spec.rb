@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe Not do
-        subject(:cop) { Not.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for not' do
           inspect_source(cop, ['not test'])

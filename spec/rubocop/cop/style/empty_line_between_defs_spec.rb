@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe EmptyLineBetweenDefs, :config do
-        subject(:cop) { EmptyLineBetweenDefs.new(config) }
+        subject(:cop) { described_class.new(config) }
         let(:cop_config) { { 'AllowAdjacentOneLineDefs' => false } }
 
         it 'finds offences in inner classes' do

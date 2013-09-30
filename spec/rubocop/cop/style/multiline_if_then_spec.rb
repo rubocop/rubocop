@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe MultilineIfThen do
-        subject(:cop) { MultilineIfThen.new }
+        subject(:cop) { described_class.new }
 
         # if
 

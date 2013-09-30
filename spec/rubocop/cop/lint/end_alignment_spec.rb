@@ -7,7 +7,7 @@ module Rubocop
   module Cop
     module Lint
       describe EndAlignment do
-        subject(:cop) { EndAlignment.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for mismatched class end' do
           inspect_source(cop,

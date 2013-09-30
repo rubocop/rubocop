@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Lint
       describe UselessAssignment do
-        subject(:cop) { UselessAssignment.new }
+        subject(:cop) { described_class.new }
 
         context 'when a variable is assigned and unreferenced in a method' do
           let(:source) do

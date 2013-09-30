@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe SpaceAfterComma do
-        subject(:cop) { SpaceAfterComma.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for block argument commas without space' do
           inspect_source(cop, ['each { |s,t| }'])

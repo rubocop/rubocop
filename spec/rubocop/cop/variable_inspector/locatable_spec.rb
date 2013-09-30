@@ -10,7 +10,7 @@ module Rubocop
         include AST::Sexp
 
         class LocatableObject
-          include Locatable
+          include Rubocop::Cop::VariableInspector::Locatable
 
           attr_reader :node, :scope
 

@@ -47,7 +47,7 @@ module Rubocop
         let(:name) { lvasgn_node.children.first }
         let(:scope) { Scope.new(def_node) }
         let(:variable) { Variable.new(name, lvasgn_node, scope) }
-        let(:assignment) { Assignment.new(lvasgn_node, variable) }
+        let(:assignment) { described_class.new(lvasgn_node, variable) }
 
         describe '.new' do
           let(:variable) { double('variable') }
@@ -55,14 +55,14 @@ module Rubocop
           context 'when an assignment node is passed' do
             it 'does not raise error' do
               node = s(:lvasgn, :foo)
-              expect { Assignment.new(node, variable) }.not_to raise_error
+              expect { described_class.new(node, variable) }.not_to raise_error
             end
           end
 
           context 'when an argument declaration node is passed' do
             it 'raises error' do
               node = s(:arg, :foo)
-              expect { Assignment.new(node, variable) }
+              expect { described_class.new(node, variable) }
                 .to raise_error(ArgumentError)
             end
           end
@@ -70,7 +70,7 @@ module Rubocop
           context 'when any other type node is passed' do
             it 'raises error' do
               node = s(:def)
-              expect { Assignment.new(node, variable) }
+              expect { described_class.new(node, variable) }
                 .to raise_error(ArgumentError)
             end
           end

@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   describe Token do
     describe '.from_parser_token' do
-      subject(:token) { Token.from_parser_token(parser_token) }
+      subject(:token) { described_class.from_parser_token(parser_token) }
       let(:parser_token) { [type, [text, range]] }
       let(:type) { :kDEF } # rubocop:disable SymbolName
       let(:text) { 'def' }

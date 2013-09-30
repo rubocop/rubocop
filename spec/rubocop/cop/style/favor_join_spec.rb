@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe FavorJoin do
-        subject(:cop) { FavorJoin.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for an array followed by string' do
           inspect_source(cop,

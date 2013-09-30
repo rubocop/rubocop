@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe BlockNesting, :config do
-        subject(:cop) { BlockNesting.new(config) }
+        subject(:cop) { described_class.new(config) }
         let(:cop_config) { { 'Max' => 2 } }
 
         it 'accepts `Max` levels of nesting' do

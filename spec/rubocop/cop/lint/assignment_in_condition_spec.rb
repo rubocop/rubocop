@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Lint
       describe AssignmentInCondition, :config do
-        subject(:cop) { AssignmentInCondition.new(config) }
+        subject(:cop) { described_class.new(config) }
         let(:cop_config) { { 'AllowSafeAssignment' => true } }
 
         it 'registers an offence for lvar assignment in condition' do

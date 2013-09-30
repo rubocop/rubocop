@@ -6,9 +6,9 @@ module Rubocop
   module Cop
     module Lint
       describe UselessComparison do
-        subject(:cop) { UselessComparison.new }
+        subject(:cop) { described_class.new }
 
-        UselessComparison::OPS.each do |op|
+        described_class::OPS.each do |op|
           it "registers an offence for a simple comparison with #{op}" do
             inspect_source(cop,
                            ["5 #{op} 5",

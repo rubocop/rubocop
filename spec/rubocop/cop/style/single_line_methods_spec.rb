@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe SingleLineMethods, :config do
-        subject(:cop) { SingleLineMethods.new(config) }
+        subject(:cop) { described_class.new(config) }
         let(:cop_config) { { 'AllowIfMethodIsEmpty' => true } }
 
         it 'registers an offence for a single-line method' do

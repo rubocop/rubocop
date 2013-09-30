@@ -6,7 +6,7 @@ module Rubocop
   describe TargetFinder, :isolated_environment do
     include FileHelper
 
-    subject(:target_finder) { TargetFinder.new(config_store, debug) }
+    subject(:target_finder) { described_class.new(config_store, debug) }
     let(:config_store) { ConfigStore.new }
     let(:debug) { false }
 

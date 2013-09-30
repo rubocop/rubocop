@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Lint
       describe EnsureReturn do
-        subject(:cop) { EnsureReturn.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for return in ensure' do
           inspect_source(cop,

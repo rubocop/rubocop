@@ -8,7 +8,7 @@ module Rubocop
       describe Validation do
         subject(:cop) { described_class.new }
 
-        Validation::BLACKLIST.each do |validation|
+        described_class::BLACKLIST.each do |validation|
           it "registers an offence for #{validation}" do
             inspect_source(cop,
                            ["#{validation} :name"])

@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe ParenthesesAroundCondition, :config do
-        subject(:cop) { ParenthesesAroundCondition.new(config) }
+        subject(:cop) { described_class.new(config) }
         let(:cop_config) { { 'AllowSafeAssignment' => true } }
 
         it 'registers an offence for parentheses around condition' do

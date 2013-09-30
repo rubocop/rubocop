@@ -6,11 +6,11 @@ module Rubocop
   module Cop
     module Style
       describe OneLineConditional do
-        subject(:olc) { OneLineConditional.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for one line if/then/end' do
-          inspect_source(olc, ['if cond then run else dont end'])
-          expect(olc.messages).to eq([olc.error_message])
+          inspect_source(cop, ['if cond then run else dont end'])
+          expect(cop.messages).to eq([cop.error_message])
         end
       end
     end

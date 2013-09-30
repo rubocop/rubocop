@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   describe ProcessedSource do
     subject(:processed_source) do
-      ProcessedSource.new(
+      described_class.new(
         buffer,
         double('ast'),
         double('comments'),

@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe IfWithSemicolon do
-        subject(:cop) { IfWithSemicolon.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for one line if/;/end' do
           inspect_source(cop, ['if cond; run else dont end'])

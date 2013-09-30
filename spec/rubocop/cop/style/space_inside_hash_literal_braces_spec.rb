@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe SpaceInsideHashLiteralBraces, :config do
-        subject(:cop) { SpaceInsideHashLiteralBraces.new(config) }
+        subject(:cop) { described_class.new(config) }
         let(:cop_config) { { 'EnforcedStyleIsWithSpaces' => true } }
 
         it 'registers an offence for hashes with no spaces if so configured' do

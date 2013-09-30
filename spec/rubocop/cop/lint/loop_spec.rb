@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Lint
       describe Loop do
-        subject(:cop) { Loop.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for begin/end/while' do
           inspect_source(cop, ['begin something; top; end while test'])

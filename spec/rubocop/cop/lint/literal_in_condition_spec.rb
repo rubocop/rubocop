@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Lint
       describe LiteralInCondition do
-        subject(:cop) { LiteralInCondition.new }
+        subject(:cop) { described_class.new }
 
         %w(1 2.0 [1] {}).each do |lit|
           it "registers an offence for literal #{lit} in &&" do

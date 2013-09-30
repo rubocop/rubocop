@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe RegexpLiteral, :config do
-        subject(:cop) { RegexpLiteral.new(config) }
+        subject(:cop) { described_class.new(config) }
         let(:cop_config) { { 'MaxSlashes' => 1 } }
 
         context 'when a regexp uses // delimiters' do

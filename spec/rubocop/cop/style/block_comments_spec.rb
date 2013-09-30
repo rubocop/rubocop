@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe BlockComments do
-        subject(:cop) { BlockComments.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for block comments' do
           inspect_source(cop,

@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe CommentAnnotation, :config do
-        subject(:cop) { CommentAnnotation.new(config) }
+        subject(:cop) { described_class.new(config) }
         let(:cop_config) do
           { 'Keywords' => %w(TODO FIXME OPTIMIZE HACK REVIEW) }
         end

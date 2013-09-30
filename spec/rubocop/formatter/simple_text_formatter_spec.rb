@@ -7,7 +7,7 @@ require 'tempfile'
 module Rubocop
   module Formatter
     describe SimpleTextFormatter do
-      subject(:formatter) { SimpleTextFormatter.new(output) }
+      subject(:formatter) { described_class.new(output) }
       let(:output) { StringIO.new }
 
       describe '#report_file' do

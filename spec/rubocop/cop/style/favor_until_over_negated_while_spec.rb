@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe FavorUntilOverNegatedWhile do
-        subject(:cop) { FavorUntilOverNegatedWhile.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for while with exclamation point condition' do
           inspect_source(cop,

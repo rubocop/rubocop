@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Lint
       describe RescueException do
-        subject(:cop) { RescueException.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for rescue from Exception' do
           inspect_source(cop,

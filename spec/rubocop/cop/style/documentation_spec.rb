@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe Documentation do
-        subject(:cop) { Documentation.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for non-empty class' do
           inspect_source(cop,

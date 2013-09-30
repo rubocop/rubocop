@@ -14,7 +14,7 @@ module Rubocop
               name = :foo
               declaration_node = s(:def)
               scope = Scope.new(s(:class))
-              expect { Variable.new(name, declaration_node, scope) }
+              expect { described_class.new(name, declaration_node, scope) }
                 .to raise_error(ArgumentError)
             end
           end
@@ -24,7 +24,7 @@ module Rubocop
           let(:name) { :foo }
           let(:declaration_node) { s(:arg, name) }
           let(:scope) { double('scope') }
-          let(:variable) { Variable.new(name, declaration_node, scope) }
+          let(:variable) { described_class.new(name, declaration_node, scope) }
 
           subject { variable.referenced? }
 

@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe VariableInterpolation do
-        subject(:cop) { VariableInterpolation.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for interpolated global variables' do
           inspect_source(cop,

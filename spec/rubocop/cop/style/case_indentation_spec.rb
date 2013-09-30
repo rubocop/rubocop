@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe CaseIndentation do
-        subject(:cop) { CaseIndentation.new }
+        subject(:cop) { described_class.new }
 
         it "registers an offence for a when clause that's deeper than case" do
           source = ['case a',

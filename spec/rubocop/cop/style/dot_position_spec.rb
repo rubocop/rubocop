@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe DotPosition, :config do
-        subject(:cop) { DotPosition.new(config) }
+        subject(:cop) { described_class.new(config) }
 
         context 'Leading dots style' do
           let(:cop_config) { { 'Style' => 'Leading' } }

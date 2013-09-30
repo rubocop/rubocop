@@ -7,13 +7,13 @@ DEFAULT_CONFIG = Rubocop::Config.load_file('config/default.yml')
 describe Rubocop::Config do
   include FileHelper
 
-  subject(:configuration) { Rubocop::Config.new(hash, loaded_path) }
+  subject(:configuration) { described_class.new(hash, loaded_path) }
   let(:hash) { {} }
   let(:loaded_path) { 'example/.rubocop.yml' }
 
   describe '.configuration_file_for', :isolated_environment do
     subject(:configuration_file_for) do
-      Rubocop::Config.configuration_file_for(dir_path)
+      described_class.configuration_file_for(dir_path)
     end
 
     context 'when no config file exists in ancestor directories' do
@@ -65,7 +65,7 @@ describe Rubocop::Config do
 
   describe '.configuration_from_file', :isolated_environment do
     subject(:configuration_from_file) do
-      Rubocop::Config.configuration_from_file(file_path)
+      described_class.configuration_from_file(file_path)
     end
 
     context 'with any config file' do
@@ -233,7 +233,7 @@ describe Rubocop::Config do
 
   describe '.load_file', :isolated_environment do
     subject(:load_file) do
-      Rubocop::Config.load_file(configuration_path)
+      described_class.load_file(configuration_path)
     end
 
     let(:configuration_path) { '.rubocop.yml' }
@@ -251,7 +251,7 @@ describe Rubocop::Config do
   end
 
   describe '.merge' do
-    subject(:merge) { Rubocop::Config.merge(base, derived) }
+    subject(:merge) { described_class.merge(base, derived) }
 
     let(:base) do
       {
@@ -281,7 +281,7 @@ describe Rubocop::Config do
     after(:each) { $stdout = STDOUT }
 
     subject(:configuration) do
-      Rubocop::Config.load_file(configuration_path)
+      described_class.load_file(configuration_path)
     end
 
     let(:configuration_path) { '.rubocop.yml' }
@@ -296,7 +296,7 @@ describe Rubocop::Config do
       end
 
       it 'raises validation error' do
-        e = Rubocop::Config::ValidationError
+        e = described_class::ValidationError
         expect { configuration.validate }.to raise_error(e) do |error|
           expect(error.message).to start_with('unrecognized cop LyneLenth')
         end
@@ -313,7 +313,7 @@ describe Rubocop::Config do
       end
 
       it 'raises validation error' do
-        e = Rubocop::Config::ValidationError
+        e = described_class::ValidationError
         expect { configuration.validate }.to raise_error(e) do |error|
           expect(error.message).to
             start_with('unrecognized parameter LineLength:Min')
@@ -376,7 +376,7 @@ describe Rubocop::Config do
 
   describe '#patterns_to_include' do
     subject(:patterns_to_include) do
-      configuration = Rubocop::Config.new(hash, loaded_path)
+      configuration = described_class.new(hash, loaded_path)
       configuration.patterns_to_include
     end
 
@@ -403,7 +403,7 @@ describe Rubocop::Config do
 
   describe '#patterns_to_exclude' do
     subject(:patterns_to_exclude) do
-      configuration = Rubocop::Config.new(hash, loaded_path)
+      configuration = described_class.new(hash, loaded_path)
       configuration.patterns_to_exclude
     end
 
@@ -427,8 +427,8 @@ describe Rubocop::Config do
 
   describe 'configuration for SymbolArray', :isolated_environment do
     let(:config) do
-      config_path = Rubocop::Config.configuration_file_for('.')
-      Rubocop::Config.configuration_from_file(config_path)
+      config_path = described_class.configuration_file_for('.')
+      described_class.configuration_from_file(config_path)
     end
 
     context 'when no config file exists for the target file' do
@@ -461,7 +461,7 @@ describe Rubocop::Config do
   describe 'configuration for SymbolName' do
     describe 'AllowCamelCase' do
       it 'is enabled by default' do
-        default_config = Rubocop::Config.default_configuration
+        default_config = described_class.default_configuration
         symbol_name_config = default_config.for_cop('SymbolName')
         expect(symbol_name_config['AllowCamelCase']).to be_true
       end

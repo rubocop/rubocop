@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe ConstantName do
-        subject(:cop) { ConstantName.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for camel case in const name' do
           inspect_source(cop,

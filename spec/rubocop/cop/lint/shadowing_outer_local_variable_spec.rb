@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Lint
       describe ShadowingOuterLocalVariable do
-        subject(:cop) { ShadowingOuterLocalVariable.new }
+        subject(:cop) { described_class.new }
 
         context 'when a block argument has same name ' +
                 'as an outer scope variable' do

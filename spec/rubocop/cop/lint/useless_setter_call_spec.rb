@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Lint
       describe UselessSetterCall do
-        subject(:cop) { UselessSetterCall.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for def ending with lvar attr assignment' do
           inspect_source(cop,

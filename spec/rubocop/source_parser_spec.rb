@@ -26,7 +26,7 @@ module Rubocop
       end
 
       let(:processed_source) do
-        SourceParser.parse_file(file)
+        described_class.parse_file(file)
       end
 
       it 'returns ProcessedSource' do
@@ -105,7 +105,7 @@ module Rubocop
         ]
       end
 
-      let(:disabled_lines) { SourceParser.cop_disabled_lines_in(source) }
+      let(:disabled_lines) { described_class.cop_disabled_lines_in(source) }
 
       it 'has keys for disabled cops' do
         expect(disabled_lines).to have_key('MethodLength')

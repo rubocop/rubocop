@@ -6,9 +6,9 @@ module Rubocop
   module Cop
     module Lint
       describe Void do
-        subject(:cop) { Void.new }
+        subject(:cop) { described_class.new }
 
-        Void::OPS.each do |op|
+        described_class::OPS.each do |op|
           it "registers an offence for void op #{op} if not on last line" do
             inspect_source(cop,
                            ["a #{op} b",
@@ -19,7 +19,7 @@ module Rubocop
           end
         end
 
-        Void::OPS.each do |op|
+        described_class::OPS.each do |op|
           it "accepts void op #{op} if on last line" do
             inspect_source(cop,
                            ['something',
@@ -29,7 +29,7 @@ module Rubocop
           end
         end
 
-        Void::OPS.each do |op|
+        described_class::OPS.each do |op|
           it "accepts void op #{op} by itself without a begin block" do
             inspect_source(cop, ["a #{op} b"])
             expect(cop.offences).to be_empty

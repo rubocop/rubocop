@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe ParameterLists, :config do
-        subject(:cop) { ParameterLists.new(config) }
+        subject(:cop) { described_class.new(config) }
         let(:cop_config) do
           {
             'Max' => 4,

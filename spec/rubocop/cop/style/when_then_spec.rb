@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe WhenThen do
-        subject(:cop) { WhenThen.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for when x;' do
           inspect_source(cop, ['case a',

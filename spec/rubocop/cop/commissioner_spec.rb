@@ -12,7 +12,7 @@ module Rubocop
         it 'returns all offences found by the cops' do
           cop.stub(:offences).and_return([1])
 
-          commissioner = Commissioner.new([cop])
+          commissioner = described_class.new([cop])
           source = []
           processed_source = parse_source(source)
 
@@ -22,7 +22,7 @@ module Rubocop
         it 'traverses the AST and invoke cops specific callbacks' do
           cop.should_receive(:on_def)
 
-          commissioner = Commissioner.new([cop])
+          commissioner = described_class.new([cop])
           source = ['def method', '1', 'end']
           processed_source = parse_source(source)
 
@@ -34,7 +34,7 @@ module Rubocop
           processed_source = parse_source(source)
           cop.should_receive(:investigate).with(processed_source)
 
-          commissioner = Commissioner.new([cop])
+          commissioner = described_class.new([cop])
 
           commissioner.investigate(processed_source)
         end
@@ -42,7 +42,7 @@ module Rubocop
         it 'stores all errors raised by the cops' do
           cop.stub(:on_def) { raise RuntimeError }
 
-          commissioner = Commissioner.new([cop])
+          commissioner = described_class.new([cop])
           source = ['def method', '1', 'end']
           processed_source = parse_source(source)
 
@@ -56,7 +56,7 @@ module Rubocop
           it 're-raises the exception received while processing' do
             cop.stub(:on_def) { raise RuntimeError }
 
-            commissioner = Commissioner.new([cop], raise_error: true)
+            commissioner = described_class.new([cop], raise_error: true)
             source = ['def method', '1', 'end']
             processed_source = parse_source(source)
 

@@ -5,7 +5,7 @@ require 'spec_helper'
 module Rubocop
   module Cop
     describe Team do
-      subject(:team) { Team.new(cop_classes, config, options) }
+      subject(:team) { described_class.new(cop_classes, config, options) }
       let(:cop_classes) { Cop.all }
       let(:config) { Config.default_configuration }
       let(:options) { nil }
@@ -14,7 +14,7 @@ module Rubocop
         subject { team.autocorrect? }
 
         context 'when the option argument of .new is omitted' do
-          subject { Team.new(cop_classes, config).autocorrect? }
+          subject { described_class.new(cop_classes, config).autocorrect? }
           it { should be_false }
         end
 
@@ -28,7 +28,7 @@ module Rubocop
         subject { team.debug? }
 
         context 'when the option argument of .new is omitted' do
-          subject { Team.new(cop_classes, config).debug? }
+          subject { described_class.new(cop_classes, config).debug? }
           it { should be_false }
         end
 

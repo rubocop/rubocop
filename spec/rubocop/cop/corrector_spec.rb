@@ -15,7 +15,7 @@ module Rubocop
             corrector.remove(node.loc.operator)
           end
 
-          corrector = Corrector.new(processed_source.buffer, [correction])
+          corrector = described_class.new(processed_source.buffer, [correction])
           expect(corrector.rewrite).to eq 'true  false'
         end
 
@@ -28,7 +28,7 @@ module Rubocop
             corrector.insert_before(node.loc.operator, ';nil ')
           end
 
-          corrector = Corrector.new(processed_source.buffer, [correction])
+          corrector = described_class.new(processed_source.buffer, [correction])
           expect(corrector.rewrite).to eq 'true ;nil and false'
         end
 
@@ -41,7 +41,7 @@ module Rubocop
             corrector.insert_after(node.loc.operator, ' nil;')
           end
 
-          corrector = Corrector.new(processed_source.buffer, [correction])
+          corrector = described_class.new(processed_source.buffer, [correction])
           expect(corrector.rewrite).to eq 'true and nil; false'
         end
 
@@ -54,7 +54,7 @@ module Rubocop
             corrector.replace(node.loc.operator, 'or')
           end
 
-          corrector = Corrector.new(processed_source.buffer, [correction])
+          corrector = described_class.new(processed_source.buffer, [correction])
           expect(corrector.rewrite).to eq 'true or false'
         end
       end

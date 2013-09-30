@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe ClassAndModuleCamelCase do
-        subject(:cop) { ClassAndModuleCamelCase.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for underscore in class and module name' do
           inspect_source(cop,

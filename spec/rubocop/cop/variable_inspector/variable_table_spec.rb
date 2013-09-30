@@ -8,7 +8,7 @@ module Rubocop
       describe VariableTable do
         include AST::Sexp
 
-        subject(:variable_table) { VariableTable.new }
+        subject(:variable_table) { described_class.new }
 
         describe '#push_scope' do
           it 'returns pushed scope object' do

@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe Semicolon do
-        subject(:cop) { Semicolon.new }
+        subject(:cop) { described_class.new }
         let(:cop_config) do
           {
             'AllowAfterParameterListInOneLineMethods' => false,

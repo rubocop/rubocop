@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe SymbolName, :config do
-        subject(:cop) { SymbolName.new(config) }
+        subject(:cop) { described_class.new(config) }
         let(:cop_config) { { 'AllowCamelCase' => true } }
 
         context 'when AllowCamelCase is true' do

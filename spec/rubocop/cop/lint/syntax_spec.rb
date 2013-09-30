@@ -7,7 +7,7 @@ module Rubocop
     module Lint
       describe Syntax do
         describe '.offences_from_diagnostic' do
-          subject(:offence) { Syntax.offence_from_diagnostic(diagnostic) }
+          subject(:offence) { described_class.offence_from_diagnostic(diagnostic) }
           let(:diagnostic) { Parser::Diagnostic.new(level, message, location) }
           let(:level) { :warning }
           let(:message) { 'This is a message' }

@@ -13,14 +13,14 @@ module Rubocop
           context 'when non scope node is passed' do
             it 'raises error' do
               node = s(:lvasgn)
-              expect { Scope.new(node) }.to raise_error(ArgumentError)
+              expect { described_class.new(node) }.to raise_error(ArgumentError)
             end
           end
 
           context 'when begin node is passed' do
             it 'accepts that as pseudo scope for top level scope' do
               node = s(:begin)
-              expect { Scope.new(node) }.not_to raise_error
+              expect { described_class.new(node) }.not_to raise_error
             end
           end
         end
@@ -40,7 +40,7 @@ module Rubocop
           found_node
         end
 
-        subject(:scope) { Scope.new(scope_node) }
+        subject(:scope) { described_class.new(scope_node) }
 
         describe '#ancestors_of_node' do
           let(:source) do

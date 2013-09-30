@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe AccessControl do
-        subject(:cop) { AccessControl.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for misaligned private' do
           inspect_source(cop,

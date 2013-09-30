@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe RescueModifier do
-        subject(:cop) { RescueModifier.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for modifier rescue' do
           inspect_source(cop,

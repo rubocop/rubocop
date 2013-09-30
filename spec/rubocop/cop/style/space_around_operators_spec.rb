@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe SpaceAroundOperators do
-        subject(:cop) { SpaceAroundOperators.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for assignment without space on both sides' do
           inspect_source(cop, ['x=0', 'y= 0', 'z =0'])

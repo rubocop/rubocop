@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module Rubocop
   describe ConfigStore do
-    subject(:config_store) { ConfigStore.new }
+    subject(:config_store) { described_class.new }
 
     before do
       Config.stub(:configuration_file_for) do |arg|

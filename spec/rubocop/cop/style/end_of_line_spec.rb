@@ -6,7 +6,7 @@ module Rubocop
   module Cop
     module Style
       describe EndOfLine do
-        subject(:cop) { EndOfLine.new }
+        subject(:cop) { described_class.new }
 
         it 'registers an offence for CR+LF' do
           pending 'Fails after upgdate to parser-2.0.0.pre3.'

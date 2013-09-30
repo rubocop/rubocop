@@ -8,7 +8,7 @@ module Rubocop
   describe CLI, :isolated_environment do
     include FileHelper
 
-    subject(:cli) { CLI.new }
+    subject(:cli) { described_class.new }
 
     before(:each) do
       $stdout = StringIO.new
@@ -761,7 +761,7 @@ Usage: rubocop [options] [file1, file2, ...]
                   ''].join("\n"))
       end
     end
-    
+
     it 'finds a file with no .rb extension but has a shebang line' do
       create_file('example', [
                               '#!/usr/bin/env ruby',

@@ -8,7 +8,7 @@ module Rubocop
       include AST::Sexp
 
       class ExampleInspector
-        include VariableInspector
+        include Rubocop::Cop::VariableInspector
       end
 
       subject(:inspector) { ExampleInspector.new }
