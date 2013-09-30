@@ -2,17 +2,11 @@
 
 require 'spec_helper'
 
-module Rubocop
-  module Cop
-    module Style
-      describe CaseEquality do
-        subject(:ce) { CaseEquality.new }
+describe Rubocop::Cop::Style::CaseEquality do
+  subject(:cop) { described_class.new }
 
-        it 'registers an offence for ===' do
-          inspect_source(ce, ['Array === var'])
-          expect(ce.offences.size).to eq(1)
-        end
-      end
-    end
+  it 'registers an offence for ===' do
+    inspect_source(cop, ['Array === var'])
+    expect(cop.offences.size).to eq(1)
   end
 end

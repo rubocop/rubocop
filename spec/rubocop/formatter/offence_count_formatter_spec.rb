@@ -7,7 +7,7 @@ require 'tempfile'
 module Rubocop
   module Formatter
     describe OffenceCountFormatter do
-      subject(:formatter) { Formatter::OffenceCountFormatter.new(output) }
+      subject(:formatter) { described_class.new(output) }
       let(:output) { StringIO.new }
 
       let(:files) do
