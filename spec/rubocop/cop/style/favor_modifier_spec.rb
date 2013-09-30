@@ -7,7 +7,7 @@ module Rubocop
     module Style
       describe FavorModifier do
         describe IfUnlessModifier do
-          let(:if_unless) { IfUnlessModifier.new(config) }
+          subject(:if_unless) { IfUnlessModifier.new(config) }
           let(:config) do
             hash = { 'LineLength' => { 'Max' => 79 } }
             Rubocop::Config.new(hash)
@@ -96,7 +96,7 @@ module Rubocop
         end
 
         describe WhileUntilModifier do
-          let(:while_until) { WhileUntilModifier.new(config) }
+          subject(:while_until) { WhileUntilModifier.new(config) }
           let(:config) do
             hash = { 'LineLength' => { 'Max' => 79 } }
             Rubocop::Config.new(hash)
