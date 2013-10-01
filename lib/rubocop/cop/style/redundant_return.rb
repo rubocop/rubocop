@@ -50,15 +50,22 @@ module Rubocop
           return unless node
 
           if node.type == :return
-            convention(node, :keyword)
+            check_return_node(node)
           elsif node.type == :begin
             expressions = *node
             last_expr = expressions.last
 
             if last_expr && last_expr.type == :return
-              convention(last_expr, :keyword)
+              check_return_node(last_expr)
             end
           end
+        end
+
+        def check_return_node(node)
+          return if cop_config['AllowMultipleReturnValues'] &&
+            node.children.size > 1
+
+          convention(node, :keyword)
         end
       end
     end
