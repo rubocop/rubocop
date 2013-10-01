@@ -24,13 +24,17 @@ module Rubocop
         def on_send(node)
           receiver, method, args = *node
 
-          return unless method == :==
+          return unless [:==, :!=].include?(method)
           return unless div_by_2?(receiver)
 
           if args == ZERO
-            convention(node, :expression, MSG_EVEN)
+            convention(node,
+                       :expression,
+                       method == :== ? MSG_EVEN : MSG_ODD)
           elsif args == ONE
-            convention(node, :expression, MSG_ODD)
+            convention(node,
+                       :expression,
+                       method == :== ? MSG_ODD : MSG_EVEN)
           end
         end
 
