@@ -11,6 +11,13 @@ module Rubocop
         def investigate(processed_source)
           return unless processed_source.ast
 
+          check_for_expr_separator(processed_source)
+          check_for_line_terminator(processed_source)
+        end
+
+        private
+
+        def check_for_expr_separator(processed_source)
           on_node(:begin, processed_source.ast) do |node|
             exprs = node.children
 
@@ -30,12 +37,13 @@ module Rubocop
                 convention(nil,
                            source_range(processed_source.buffer,
                                         processed_source[0...(line - 1)],
-                                        column, 1),
-                           MSG)
+                                        column, 1))
               end
             end
           end
+        end
 
+        def check_for_line_terminator(processed_source)
           tokens_for_lines = processed_source.tokens.group_by do |token|
             token.pos.line
           end
@@ -46,8 +54,7 @@ module Rubocop
               convention(nil,
                          source_range(processed_source.buffer,
                                       processed_source[0...(line - 1)],
-                                      column, 1),
-                         MSG)
+                                      column, 1))
             end
           end
         end
