@@ -2,24 +2,18 @@
 
 require 'spec_helper'
 
-module Rubocop
-  module Cop
-    module Style
-      describe IfWithSemicolon do
-        subject(:iws) { IfWithSemicolon.new }
+describe Rubocop::Cop::Style::IfWithSemicolon do
+  subject(:cop) { described_class.new }
 
-        it 'registers an offence for one line if/;/end' do
-          inspect_source(iws, ['if cond; run else dont end'])
-          expect(iws.messages).to eq(
-            ['Never use if x; Use the ternary operator instead.'])
-        end
+  it 'registers an offence for one line if/;/end' do
+    inspect_source(cop, ['if cond; run else dont end'])
+    expect(cop.messages).to eq(
+      ['Never use if x; Use the ternary operator instead.'])
+  end
 
-        it 'can handle modifier conditionals' do
-          inspect_source(iws, ['class Hash',
-                               'end if RUBY_VERSION < "1.8.7"'])
-          expect(iws.messages).to be_empty
-        end
-      end
-    end
+  it 'can handle modifier conditionals' do
+    inspect_source(cop, ['class Hash',
+                         'end if RUBY_VERSION < "1.8.7"'])
+    expect(cop.messages).to be_empty
   end
 end

@@ -2,78 +2,72 @@
 
 require 'spec_helper'
 
-module Rubocop
-  module Cop
-    module Style
-      describe RegexpLiteral, :config do
-        subject(:rl) { RegexpLiteral.new(config) }
-        let(:cop_config) { { 'MaxSlashes' => 1 } }
+describe Rubocop::Cop::Style::RegexpLiteral, :config do
+  subject(:cop) { described_class.new(config) }
+  let(:cop_config) { { 'MaxSlashes' => 1 } }
 
-        context 'when a regexp uses // delimiters' do
-          context 'when MaxSlashes is 1' do
-            it 'registers an offence for two slashes in regexp' do
-              inspect_source(rl, ['x =~ /home\/\//',
-                                  'y =~ /etc\/top\//'])
-              expect(rl.messages)
-                .to eq(['Use %r for regular expressions matching more ' +
-                        "than 1 '/' character."] * 2)
-            end
+  context 'when a regexp uses // delimiters' do
+    context 'when MaxSlashes is 1' do
+      it 'registers an offence for two slashes in regexp' do
+        inspect_source(cop, ['x =~ /home\/\//',
+                             'y =~ /etc\/top\//'])
+        expect(cop.messages)
+          .to eq(['Use %r for regular expressions matching more ' +
+                  "than 1 '/' character."] * 2)
+      end
 
-            it 'accepts zero or one slash in regexp' do
-              inspect_source(rl, ['x =~ /\/home/',
-                                  'y =~ /\//',
-                                  'w =~ /\//m',
-                                  'z =~ /a/'])
-              expect(rl.offences).to be_empty
-            end
-          end
+      it 'accepts zero or one slash in regexp' do
+        inspect_source(cop, ['x =~ /\/home/',
+                             'y =~ /\//',
+                             'w =~ /\//m',
+                             'z =~ /a/'])
+        expect(cop.offences).to be_empty
+      end
+    end
 
-          context 'when MaxSlashes is 0' do
-            let(:cop_config) { { 'MaxSlashes' => 0 } }
+    context 'when MaxSlashes is 0' do
+      let(:cop_config) { { 'MaxSlashes' => 0 } }
 
-            it 'registers an offence for one slash in regexp' do
-              inspect_source(rl, ['x =~ /home\//'])
-              expect(rl.messages)
-                .to eq(['Use %r for regular expressions matching more ' +
-                        "than 0 '/' characters."])
-            end
+      it 'registers an offence for one slash in regexp' do
+        inspect_source(cop, ['x =~ /home\//'])
+        expect(cop.messages)
+          .to eq(['Use %r for regular expressions matching more ' +
+                  "than 0 '/' characters."])
+      end
 
-            it 'accepts zero slashes in regexp' do
-              inspect_source(rl, ['z =~ /a/'])
-              expect(rl.offences).to be_empty
-            end
+      it 'accepts zero slashes in regexp' do
+        inspect_source(cop, ['z =~ /a/'])
+        expect(cop.offences).to be_empty
+      end
 
-            it 'registers an offence for zero slashes in regexp' do
-              inspect_source(rl, ['y =~ %r(etc)'])
-              expect(rl.messages)
-                .to eq(['Use %r only for regular expressions matching more ' +
-                        "than 0 '/' characters."])
-            end
+      it 'registers an offence for zero slashes in regexp' do
+        inspect_source(cop, ['y =~ %r(etc)'])
+        expect(cop.messages)
+          .to eq(['Use %r only for regular expressions matching more ' +
+                  "than 0 '/' characters."])
+      end
 
-            it 'accepts regexp with one slash' do
-              inspect_source(rl, ['x =~ %r(/home)'])
-              expect(rl.offences).to be_empty
-            end
-          end
-        end
+      it 'accepts regexp with one slash' do
+        inspect_source(cop, ['x =~ %r(/home)'])
+        expect(cop.offences).to be_empty
+      end
+    end
+  end
 
-        context 'when a regexp uses %r delimiters' do
-          context 'when MaxSlashes is 1' do
-            it 'registers an offence for zero or one slash in regexp' do
-              inspect_source(rl, ['x =~ %r(/home)',
-                                  'y =~ %r(etc)'])
-              expect(rl.messages)
-                .to eq(['Use %r only for regular expressions matching more ' +
-                        "than 1 '/' character."] * 2)
-            end
+  context 'when a regexp uses %r delimiters' do
+    context 'when MaxSlashes is 1' do
+      it 'registers an offence for zero or one slash in regexp' do
+        inspect_source(cop, ['x =~ %r(/home)',
+                             'y =~ %r(etc)'])
+        expect(cop.messages)
+          .to eq(['Use %r only for regular expressions matching more ' +
+                  "than 1 '/' character."] * 2)
+      end
 
-            it 'accepts regexp with two or more slashes' do
-              inspect_source(rl, ['x =~ %r(/home/)',
-                                  'y =~ %r(/////)'])
-              expect(rl.offences).to be_empty
-            end
-          end
-        end
+      it 'accepts regexp with two or more slashes' do
+        inspect_source(cop, ['x =~ %r(/home/)',
+                             'y =~ %r(/////)'])
+        expect(cop.offences).to be_empty
       end
     end
   end

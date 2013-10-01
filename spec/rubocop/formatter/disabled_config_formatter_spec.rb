@@ -7,7 +7,7 @@ require 'ostruct'
 module Rubocop
   module Formatter
     describe DisabledConfigFormatter do
-      subject(:formatter) { DisabledConfigFormatter.new(output) }
+      subject(:formatter) { described_class.new(output) }
       let(:output) do
         o = StringIO.new
         def o.path
@@ -26,7 +26,7 @@ module Rubocop
         it 'displays YAML configuration disabling all cops with offences' do
           formatter.file_finished('test.rb', offences)
           formatter.finished(['test.rb'])
-          expect(output.string).to eq(DisabledConfigFormatter::HEADING +
+          expect(output.string).to eq(described_class::HEADING +
                                       ['',
                                        '',
                                        'Cop1:',
