@@ -169,3 +169,7 @@ StringLiterals:
 RedundantReturn:
   # When true allows code like `return x, y`.
   AllowMultipleReturnValues: false
+
+Semicolon:
+  # Allow ; to separate several expressions on the same line.
+  AllowAsExpressionSeparator: false

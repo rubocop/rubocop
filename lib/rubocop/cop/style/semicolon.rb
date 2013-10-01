@@ -11,7 +11,9 @@ module Rubocop
         def investigate(processed_source)
           return unless processed_source.ast
 
-          check_for_expr_separator(processed_source)
+          unless cop_config['AllowAsExpressionSeparator']
+            check_for_expr_separator(processed_source)
+          end
           check_for_line_terminator(processed_source)
         end
 

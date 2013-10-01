@@ -17,6 +17,7 @@
 * [#519](https://github.com/bbatsov/rubocop/issues/519) - `HashSyntax` cop is now configurable and can enforce the use of the classic hash rockets syntax
 * [#520](https://github.com/bbatsov/rubocop/issues/520) - `StringLiterals` cop is now configurable and can enforce either single-quoted or double-quoted strings.
 * [#528](https://github.com/bbatsov/rubocop/issues/528) - Added a config option to `RedundantReturn` to allow a `return` with multiple values.
+* [#524](https://github.com/bbatsov/rubocop/issues/524) - Added a config option to `Semicolon` to allow the use of `;` as an expression separator.
 
 ### Bugs fixed
 

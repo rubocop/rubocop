@@ -1,15 +1,10 @@
-# encoding: utf-8
+ # encoding: utf-8
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::Semicolon do
-  subject(:cop) { described_class.new }
-  let(:cop_config) do
-    {
-      'AllowAfterParameterListInOneLineMethods' => false,
-      'AllowBeforeEndInOneLineMethods' => true
-    }
-  end
+describe Rubocop::Cop::Style::Semicolon, :config do
+  subject(:cop) { described_class.new(config) }
+  let(:cop_config) { { 'AllowAsExpressionSeparator' => false } }
 
   it 'registers an offence for a single expression' do
     inspect_source(cop,
@@ -86,4 +81,20 @@ describe Rubocop::Cop::Style::Semicolon do
                     'multi-line string"'])
     expect(cop.offences).to be_empty
   end
+
+   context 'when AllowAsExpressionSeparator is true' do
+     let(:cop_config) { { 'AllowAsExpressionSeparator' => true } }
+
+     it 'accepts several expressions' do
+       inspect_source(cop,
+                      ['puts "this is a test"; puts "So is this"'])
+       expect(cop.offences).to be_empty
+     end
+
+     it 'accepts one line method with two statements' do
+       inspect_source(cop,
+                      ['def foo(a) x(1); y(2); z(3); end'])
+       expect(cop.offences).to be_empty
+     end
+   end
 end
