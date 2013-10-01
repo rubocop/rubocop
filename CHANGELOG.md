@@ -30,6 +30,7 @@
 * [#515](https://github.com/bbatsov/rubocop/issues/515) - Fix bug causing AlignParameters and AlignArray auto-correction to destroy code.
 * [#516](https://github.com/bbatsov/rubocop/issues/516) - Fix bug causing RedundantReturn auto-correction to produce invalid code.
 * [#527](https://github.com/bbatsov/rubocop/issues/527) - Handle `!=` expressions in `EvenOdd` cop
+* `SignalException` cop now finds `raise` calls anywhere, not only in `begin` sections.
 
 ## 0.13.1 (19/09/2013)
 

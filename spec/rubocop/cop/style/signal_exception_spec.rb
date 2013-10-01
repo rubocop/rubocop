@@ -41,7 +41,17 @@ describe Rubocop::Cop::Style::SignalException do
       .to eq(['Use `raise` instead of `fail` to rethrow exceptions.'])
   end
 
-  it 'registers an offence for fail def rescue section' do
+  it 'accepts raise in rescue section' do
+    inspect_source(cop,
+                   ['begin',
+                    '  fail',
+                    'rescue Exception',
+                    '  raise RuntimeError',
+                    'end'])
+    expect(cop.offences).to be_empty
+  end
+
+  it 'registers an offence for fail in def rescue section' do
     inspect_source(cop,
                    ['def test',
                     '  fail',
@@ -51,6 +61,37 @@ describe Rubocop::Cop::Style::SignalException do
     expect(cop.offences.size).to eq(1)
     expect(cop.messages)
       .to eq(['Use `raise` instead of `fail` to rethrow exceptions.'])
+  end
+
+  it 'accepts raise in def rescue section' do
+    inspect_source(cop,
+                   ['def test',
+                    '  fail',
+                    'rescue Exception',
+                    '  raise',
+                    'end'])
+    expect(cop.offences).to be_empty
+  end
+
+  it 'registers an offence for raise not in a begin/rescue/end' do
+    inspect_source(cop,
+                   ["case cop_config['EnforcedStyle']",
+                    "when 'single_quotes' then true",
+                    "when 'double_quotes' then false",
+                    "else raise 'Unknown StringLiterals style'",
+                    'end'])
+    expect(cop.offences.size).to eq(1)
+    expect(cop.messages)
+      .to eq(['Use `fail` instead of `raise` to signal exceptions.'])
+  end
+
+  it 'registers one offence for each raise' do
+    inspect_source(cop,
+                   ['cop.stub(:on_def) { raise RuntimeError }',
+                    'cop.stub(:on_def) { raise RuntimeError }'])
+    expect(cop.offences.size).to eq(2)
+    expect(cop.messages)
+      .to eq(['Use `fail` instead of `raise` to signal exceptions.'] * 2)
   end
 
   it 'is not confused by nested begin/rescue' do
