@@ -173,3 +173,7 @@ RedundantReturn:
 Semicolon:
   # Allow ; to separate several expressions on the same line.
   AllowAsExpressionSeparator: false
+
+SignalException:
+  # Valid values are: semantic, only_raise and only_fail
+  EnforcedStyle: semantic

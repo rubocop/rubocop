@@ -9,15 +9,24 @@ module Rubocop
         RAISE_MSG = 'Use `raise` instead of `fail` to rethrow exceptions.'
 
         def on_rescue(node)
-          begin_node, rescue_node = *node
+          if style == :semantic
+            begin_node, rescue_node = *node
 
-          check_for(:raise, begin_node)
-          check_for(:fail, rescue_node)
-          allow(:raise, rescue_node)
+            check_for(:raise, begin_node)
+            check_for(:fail, rescue_node)
+            allow(:raise, rescue_node)
+          end
         end
 
         def on_send(node)
-          check_for(:raise, node) unless ignored_node?(node)
+          case style
+          when :semantic
+            check_for(:raise, node) unless ignored_node?(node)
+          when :raise
+            check_for(:raise, node)
+          when :fail
+            check_for(:fail, node)
+          end
         end
 
         def autocorrect(node)
@@ -29,13 +38,40 @@ module Rubocop
 
         private
 
+        def style
+          case cop_config['EnforcedStyle']
+          when 'only_raise' then :raise
+          when 'only_fail' then :fail
+          when 'semantic' then :semantic
+          else fail 'Unknown style selected!'
+          end
+        end
+
+        def message(method_name)
+          case style
+          when :semantic
+            method_name == :fail ? RAISE_MSG : FAIL_MSG
+          when :raise
+            'Always use `raise` to signal exceptions.'
+          when :fail
+            'Always use `fail` to signal exceptions.'
+          end
+        end
+
         def check_for(method_name, node)
           return unless node
 
-          each_command(method_name, node) do |send_node|
-            msg = method_name == :fail ? RAISE_MSG : FAIL_MSG
-            convention(send_node, :selector, msg)
-            ignore_node(send_node)
+          if style == :semantic
+            each_command(method_name, node) do |send_node|
+              convention(send_node, :selector, message(method_name))
+              ignore_node(send_node)
+            end
+          else
+            _receiver, selector, _args = *node
+
+            if [:raise, :fail].include?(selector) && selector != method_name
+              convention(node, :selector, message(method_name))
+            end
           end
         end
 
