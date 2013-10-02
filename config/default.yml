@@ -90,6 +90,10 @@ HashSyntax:
   # Valid values are: ruby19, hash_rockets
   EnforcedStyle: ruby19
 
+LambdaCall:
+  # Valid values are: call, braces
+  EnforcedStyle: call
+
 LineLength:
   Max: 79
 
