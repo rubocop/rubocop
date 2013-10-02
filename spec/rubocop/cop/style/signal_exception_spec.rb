@@ -182,6 +182,21 @@ describe Rubocop::Cop::Style::SignalException, :config do
       expect(cop.messages)
         .to eq(['Always use `raise` to signal exceptions.'])
     end
+
+    it 'auto-corrects fail to raise always' do
+      new_source = autocorrect_source(cop,
+                                      ['begin',
+                                       '  fail',
+                                       'rescue Exception',
+                                       '  fail',
+                                       'end'])
+      expect(new_source).to eq(['begin',
+                                '  raise',
+                                'rescue Exception',
+                                '  raise',
+                                'end'].join("\n"))
+    end
+
   end
 
   context 'when enforced style is `fail`' do
@@ -221,6 +236,20 @@ describe Rubocop::Cop::Style::SignalException, :config do
       expect(cop.offences.size).to eq(1)
       expect(cop.messages)
         .to eq(['Always use `fail` to signal exceptions.'])
+    end
+
+    it 'auto-corrects raise to fail always' do
+      new_source = autocorrect_source(cop,
+                                      ['begin',
+                                       '  raise',
+                                       'rescue Exception',
+                                       '  raise',
+                                       'end'])
+      expect(new_source).to eq(['begin',
+                                '  fail',
+                                'rescue Exception',
+                                '  fail',
+                                'end'].join("\n"))
     end
   end
 end

@@ -31,7 +31,13 @@ module Rubocop
 
         def autocorrect(node)
           @corrections << lambda do |corrector|
-            name = command?(:raise, node) ? 'fail' : 'raise'
+            name =
+              case style
+              when :semantic then command?(:raise, node) ? 'fail' : 'raise'
+              when :raise then 'raise'
+              when :fail then 'fail'
+              end
+
             corrector.replace(node.loc.selector, name)
           end
         end
