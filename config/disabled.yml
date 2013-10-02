@@ -1,9 +1,9 @@
 # These are all the cops that are disabled in the default configuration.
 
-SymbolArray:
-  Description: 'Use %i or %I for arrays of symbols.'
-  Enabled: false
-
 MethodCalledOnDoEndBlock:
   Description: 'Avoid chaining a method call on a do...end block.'
+  Enabled: false
+
+SymbolArray:
+  Description: 'Use %i or %I for arrays of symbols.'
   Enabled: false
