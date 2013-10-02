@@ -16,111 +16,9 @@ AllCops:
   # directory .rubocop.yml files, or by giving the -R/--rails option.
   RunRailsCops: false
 
-LineLength:
-  Max: 79
-
-MethodLength:
-  CountComments: false  # count full line comments?
-  Max: 10
-
-ClassLength:
-  CountComments: false  # count full line comments?
-  Max: 100
-
-SpaceAroundBlockBraces:
-  NoSpaceBeforeBlockParameters: false
-
-ParameterLists:
-  Max: 5
-  CountKeywordArgs: true
-
-Semicolon:
-  # For example; def area(height, width); height * width end
-  AllowAfterParameterListInOneLineMethods: false
-  # For example; def area(height, width) height * width; end
-  AllowBeforeEndInOneLineMethods: true
-
-SingleLineMethods:
-  AllowIfMethodIsEmpty: true
-
-SpaceInsideHashLiteralBraces:
-  EnforcedStyleIsWithSpaces: true
-
-SymbolName:
-  AllowCamelCase: true
-
-BlockNesting:
-  Max: 3
-
-NumericLiterals:
-  MinDigits: 5
-
-RegexpLiteral:
-  MaxSlashes: 1
-
-# Built-in global variables are allowed by default.
-GlobalVars:
-  AllowedVariables: []
-
-# Align with the style guide.
-CollectionMethods:
-  PreferredMethods:
-    collect: 'map'
-    collect!: 'map!'
-    inject: 'reduce'
-    detect: 'find'
-    find_all: 'select'
-
-# Multi-line method chaining should be done with leading dots.
-DotPosition:
-  Style: 'leading'
-
-# TrivialAccessors doesn't require exact name matches and doesn't allow
-# predicated methods by default.
-TrivialAccessors:
-  ExactNameMatch: false
-  AllowPredicates: false
-  Whitelist:
-    - to_ary
-    - to_a
-    - to_c
-    - to_enum
-    - to_h
-    - to_hash
-    - to_i
-    - to_int
-    - to_io
-    - to_open
-    - to_path
-    - to_proc
-    - to_r
-    - to_regexp
-    - to_str
-    - to_s
-    - to_sym
-
 # Allow safe assignment in conditions.
 AssignmentInCondition:
   AllowSafeAssignment: true
-
-# Allow safe assignment in conditions.
-ParenthesesAroundCondition:
-  AllowSafeAssignment: true
-
-# Checks formatting of special comments
-CommentAnnotation:
-  Keywords:
-    - TODO
-    - FIXME
-    - OPTIMIZE
-    - HACK
-    - REVIEW
-
-# Use empty lines between defs.
-EmptyLineBetweenDefs:
-  # If true, this parameter means that single line method definitions don't
-  # need an empty line between them.
-  AllowAdjacentOneLineDefs: false
 
 # Align the elements of a hash literal if they span more than one line.
 AlignHash:
@@ -149,26 +47,77 @@ AlignHash:
   #   bb: 1
   EnforcedColonStyle: key
 
-MethodName:
-  # Valid values are: snake_case, camelCase
-  EnforcedStyle: snake_case
+BlockNesting:
+  Max: 3
 
-VariableName:
-  # Valid values are: snake_case, camelCase
-  EnforcedStyle: snake_case
+ClassLength:
+  CountComments: false  # count full line comments?
+  Max: 100
+
+# Align with the style guide.
+CollectionMethods:
+  PreferredMethods:
+    collect: 'map'
+    collect!: 'map!'
+    inject: 'reduce'
+    detect: 'find'
+    find_all: 'select'
+
+# Checks formatting of special comments
+CommentAnnotation:
+  Keywords:
+    - TODO
+    - FIXME
+    - OPTIMIZE
+    - HACK
+    - REVIEW
+
+# Multi-line method chaining should be done with leading dots.
+DotPosition:
+  Style: 'leading'
+
+# Use empty lines between defs.
+EmptyLineBetweenDefs:
+  # If true, this parameter means that single line method definitions don't
+  # need an empty line between them.
+  AllowAdjacentOneLineDefs: false
+
+# Built-in global variables are allowed by default.
+GlobalVars:
+  AllowedVariables: []
 
 HashSyntax:
   # Valid values are: ruby19, hash_rockets
   EnforcedStyle: ruby19
 
-StringLiterals:
-  # Valid values (denoting the preferred quote delimiters) are:
-  # single_quotes, double_quotes
-  EnforcedStyle: single_quotes
+LineLength:
+  Max: 79
+
+MethodLength:
+  CountComments: false  # count full line comments?
+  Max: 10
+
+MethodName:
+  # Valid values are: snake_case, camelCase
+  EnforcedStyle: snake_case
+
+NumericLiterals:
+  MinDigits: 5
+
+ParameterLists:
+  Max: 5
+  CountKeywordArgs: true
+
+# Allow safe assignment in conditions.
+ParenthesesAroundCondition:
+  AllowSafeAssignment: true
 
 RedundantReturn:
   # When true allows code like `return x, y`.
   AllowMultipleReturnValues: false
+
+RegexpLiteral:
+  MaxSlashes: 1
 
 Semicolon:
   # Allow ; to separate several expressions on the same line.
@@ -177,3 +126,48 @@ Semicolon:
 SignalException:
   # Valid values are: semantic, only_raise and only_fail
   EnforcedStyle: semantic
+
+SingleLineMethods:
+  AllowIfMethodIsEmpty: true
+
+StringLiterals:
+  # Valid values (denoting the preferred quote delimiters) are:
+  # single_quotes, double_quotes
+  EnforcedStyle: single_quotes
+
+SpaceAroundBlockBraces:
+  NoSpaceBeforeBlockParameters: false
+
+SpaceInsideHashLiteralBraces:
+  EnforcedStyleIsWithSpaces: true
+
+SymbolName:
+  AllowCamelCase: true
+
+# TrivialAccessors doesn't require exact name matches and doesn't allow
+# predicated methods by default.
+TrivialAccessors:
+  ExactNameMatch: false
+  AllowPredicates: false
+  Whitelist:
+    - to_ary
+    - to_a
+    - to_c
+    - to_enum
+    - to_h
+    - to_hash
+    - to_i
+    - to_int
+    - to_io
+    - to_open
+    - to_path
+    - to_proc
+    - to_r
+    - to_regexp
+    - to_str
+    - to_s
+    - to_sym
+
+VariableName:
+  # Valid values are: snake_case, camelCase
+  EnforcedStyle: snake_case
