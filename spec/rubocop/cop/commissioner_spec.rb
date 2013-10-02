@@ -38,7 +38,7 @@ describe Rubocop::Cop::Commissioner do
     end
 
     it 'stores all errors raised by the cops' do
-      cop.stub(:on_def) { raise RuntimeError }
+      cop.stub(:on_def) { fail RuntimeError }
 
       commissioner = described_class.new([cop])
       source = ['def method', '1', 'end']
@@ -52,7 +52,7 @@ describe Rubocop::Cop::Commissioner do
 
     context 'when passed :raise_error option' do
       it 're-raises the exception received while processing' do
-        cop.stub(:on_def) { raise RuntimeError }
+        cop.stub(:on_def) { fail RuntimeError }
 
         commissioner = described_class.new([cop], raise_error: true)
         source = ['def method', '1', 'end']

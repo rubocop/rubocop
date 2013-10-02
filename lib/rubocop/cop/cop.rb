@@ -161,7 +161,7 @@ module Rubocop
       end
 
       def ignored_node?(node)
-        @ignored_nodes.include?(node)
+        @ignored_nodes.any? { |n| n.eql?(node) } # Same object found in array?
       end
 
       def on_node(syms, sexp, excludes = [])

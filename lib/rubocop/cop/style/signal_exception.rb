@@ -11,8 +11,13 @@ module Rubocop
         def on_rescue(node)
           begin_node, rescue_node = *node
 
-          check_for_raise(begin_node)
-          check_for_fail(rescue_node)
+          check_for(:raise, begin_node)
+          check_for(:fail, rescue_node)
+          allow(:raise, rescue_node)
+        end
+
+        def on_send(node)
+          check_for(:raise, node) unless ignored_node?(node)
         end
 
         def autocorrect(node)
@@ -24,23 +29,25 @@ module Rubocop
 
         private
 
-        def check_for_raise(node)
+        def check_for(method_name, node)
           return unless node
 
-          on_node(:send, node, :rescue) do |send_node|
-            if command?(:raise, send_node)
-              convention(send_node, :selector, FAIL_MSG)
-            end
+          each_command(method_name, node) do |send_node|
+            msg = method_name == :fail ? RAISE_MSG : FAIL_MSG
+            convention(send_node, :selector, msg)
+            ignore_node(send_node)
           end
         end
 
-        def check_for_fail(node)
-          return unless node
+        def allow(method_name, node)
+          each_command(method_name, node) do |send_node|
+            ignore_node(send_node)
+          end
+        end
 
+        def each_command(method_name, node)
           on_node(:send, node, :rescue) do |send_node|
-            if command?(:fail, send_node)
-              convention(send_node, :selector, RAISE_MSG)
-            end
+            yield send_node if command?(method_name, send_node)
           end
         end
       end
