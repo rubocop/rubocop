@@ -16,10 +16,6 @@ AllCops:
   # directory .rubocop.yml files, or by giving the -R/--rails option.
   RunRailsCops: false
 
-# Allow safe assignment in conditions.
-AssignmentInCondition:
-  AllowSafeAssignment: true
-
 # Align the elements of a hash literal if they span more than one line.
 AlignHash:
   # Alignment of entries using hash rocket as separator. Valid values are:
@@ -46,6 +42,10 @@ AlignHash:
   #   a:  0
   #   bb: 1
   EnforcedColonStyle: key
+
+# Allow safe assignment in conditions.
+AssignmentInCondition:
+  AllowSafeAssignment: true
 
 BlockNesting:
   Max: 3
