@@ -20,6 +20,8 @@
 * [#524](https://github.com/bbatsov/rubocop/issues/524) - Added a config option to `Semicolon` to allow the use of `;` as an expression separator.
 * [#525](https://github.com/bbatsov/rubocop/issues/525) - `SignalException` cop is now configurable and can enforce the semantic rule or an exclusive use of `raise` or `fail`.
 * `LambdaCall` is now configurable and enforce either `Proc#call` or `Proc#()`.
+* [#529](https://github.com/bbatsov/rubocop/issues/529) - Added config option `EnforcedStyle` to `SpaceAroundBraces`.
+* [#529](https://github.com/bbatsov/rubocop/issues/529) - Changed config option `NoSpaceBeforeBlockParameters` to `SpaceBeforeBlockParameters`.
 
 ### Bugs fixed
 
