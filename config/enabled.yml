@@ -491,6 +491,10 @@ CommentAnnotation:
                  (TODO, FIXME, OPTIMIZE, HACK, REVIEW).
   Enabled: true
 
+Debugger:
+  Description: 'Check for debugger calls.'
+  Enabled: true
+
 EmptyEnsure:
   Description: 'Checks for empty ensure block.'
   Enabled: true
