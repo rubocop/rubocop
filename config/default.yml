@@ -140,7 +140,10 @@ StringLiterals:
   EnforcedStyle: single_quotes
 
 SpaceAroundBlockBraces:
-  NoSpaceBeforeBlockParameters: false
+  # Valid values are: space_inside_braces, no_space_inside_braces
+  EnforcedStyle: space_inside_braces
+  # Space between { and |. Overrides EnforcedStyle if there is a conflict.
+  SpaceBeforeBlockParameters: true
 
 SpaceInsideHashLiteralBraces:
   EnforcedStyleIsWithSpaces: true
