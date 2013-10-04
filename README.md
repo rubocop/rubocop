@@ -11,7 +11,8 @@
 enforce many of the guidelines outlined in the community
 [Ruby Style Guide](https://github.com/bbatsov/ruby-style-guide).
 
-Most aspects of its behavior can be tweaked via various configuration options.
+Most aspects of its behavior can be tweaked via various
+[configuration options](https://github.com/bbatsov/rubocop/blob/master/config/.default.yml).
 
 Apart from reporting problems in your code, RuboCop can also
 automatically fix some of the problems for you.
@@ -170,7 +171,7 @@ inherit_from:
 ### Defaults
 
 The file
-[config/default.yml]([.rubocop.yml](https://github.com/bbatsov/rubocop/blob/master/config/.default.yml))
+[config/default.yml](https://github.com/bbatsov/rubocop/blob/master/config/.default.yml)
 under the RuboCop home directory contains the default settings that
 all configurations inherit from. Project and personal `.rubocop.yml`
 files need only make settings that are different from the default
