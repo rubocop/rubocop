@@ -25,6 +25,7 @@ require 'rubocop/cop/variable_inspector/variable_table'
 
 require 'rubocop/cop/lint/assignment_in_condition'
 require 'rubocop/cop/lint/block_alignment'
+require 'rubocop/cop/lint/debugger'
 require 'rubocop/cop/lint/empty_ensure'
 require 'rubocop/cop/lint/end_alignment'
 require 'rubocop/cop/lint/end_in_method'
