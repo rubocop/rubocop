@@ -15,6 +15,11 @@ module Rubocop
       def with_type(type)
         select { |c| c.cop_type == type }
       end
+
+      # @return [Array<Cop>] Cops not for a specific type.
+      def without_type(type)
+        reject { |c| c.cop_type == type }
+      end
     end
 
     # A scaffold for concrete cops.
@@ -53,6 +58,10 @@ module Rubocop
 
       def self.all
         @all.clone
+      end
+
+      def self.non_rails
+        @all.without_type(:rails)
       end
 
       def self.inherited(subclass)
