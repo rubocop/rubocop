@@ -28,13 +28,13 @@ $ gem install rubocop
 ## Basic Usage
 
 Running `rubocop` with no arguments will check all Ruby source files
-in the current folder:
+in the current directory:
 
 ```bash
 $ rubocop
 ```
 
-Alternatively you can pass `rubocop` a list of files and folders to check:
+Alternatively you can pass `rubocop` a list of files and directories to check:
 
 ```bash
 $ rubocop app spec lib/something.rb
@@ -129,11 +129,12 @@ $ rubocop -R
 
 The behavior of RuboCop can be controlled via the
 [.rubocop.yml](https://github.com/bbatsov/rubocop/blob/master/.rubocop.yml)
-configuration file. The file can be placed either in your home folder
-or in some project folder.
+configuration file. It makes it possible to enable/disable certain cops
+(checks) and to alter their behavior if they accept any parameters. The file
+can be placed either in your home directory or in some project directory.
 
 RuboCop will start looking for the configuration file in the directory
-where the inspected file is and continue its way up to the root folder.
+where the inspected file is and continue its way up to the root directory.
 
 The file has the following format:
 
@@ -141,26 +142,24 @@ The file has the following format:
 inherit_from: ../.rubocop.yml
 
 Encoding:
-  Enabled: true
+  Enabled: false
 
 LineLength:
-  Enabled: true
-  Max: 79
+  Max: 99
 ```
 
-It allows to enable/disable certain cops (checks) and to alter their
-behavior if they accept any parameters.
+### Inheritance
 
 The optional `inherit_from` directive is used to include configuration
 from one or more files. This makes it possible to have the common
 project settings in the `.rubocop.yml` file at the project root, and
 then only the deviations from those rules in the subdirectories. The
-included files can be given with absolute paths or paths relative to
-the file where they are referenced. The settings after an
-`inherit_from` directive override any settings in the included
-file(s). When multiple files are included, the first file in the list
-has the lowest precedence and the last one has the highest. The format
-for multiple inclusion is:
+files can be given with absolute paths or paths relative to the file
+where they are referenced. The settings after an `inherit_from`
+directive override any settings in the file(s) inherited from. When
+multiple files are included, the first file in the list has the lowest
+precedence and the last one has the highest. The format for multiple
+inheritance is:
 
 ```yaml
 inherit_from:
@@ -178,7 +177,50 @@ files need only make settings that are different from the default
 ones. If there is no `.rubocop.yml` file in the project or home
 directory, `config/default.yml` will be used.
 
-### Disabling Cops within Source Code
+### Including/Excluding files
+
+RuboCop checks all files recursively within the directory it is run
+on.  However, it only recognizes files ending with `.rb` or
+extensionless files with a `#!.*ruby` declaration as Ruby files. If
+you'd like it to check other files you'll need to manually pass them
+in, or to add entries for them under `AllCops`/`Includes`.  Files and
+directories can also be ignored through `AllCops`/`Excludes`.
+
+Here is an example that might be used for a Rails project:
+
+```yaml
+AllCops:
+  Includes:
+    - Rakefile
+    - config.ru
+  Excludes:
+    - db/**
+    - config/**
+    - script/**
+
+# other configuration
+# ...
+```
+
+Files and directories are specified relative to the `.rubocop.yml` file.
+
+**Note**: The `Excludes` parameter is special. It is valid for the
+directory tree starting where it is defined. It is not shadowed by the
+setting of `Excludes` in other `.rubocop.yml` files in
+subdirectories. This is different from all other parameters, who
+follow RuboCop's general principle that configuration for an inspected
+file is taken from the nearest `.rubocop.yml`, searching upwards.
+
+### Automatically Generated Configuration
+
+If you have a code base with an overwhelming amount of offences, it can be a
+good idea to use `rubocop --auto-gen-config` and add an `inherit_from:
+rubocop-todo.yml` in your `.rubocop.yml`. The generated file `rubocop-todo.yml`
+contains configuration to disable all cops that currently detect an offence in
+the code. Then you can start removing the entries in the generated file one by
+one as you work through all the offences in the code.
+
+## Disabling Cops within Source Code
 
 One or more individual cops can be disabled locally in a section of a
 file by adding a comment such as
@@ -203,46 +245,6 @@ comment.
 ```ruby
 for x in (0..19) # rubocop:disable AvoidFor
 ```
-
-### Including/Excluding files
-
-RuboCop checks all files recursively within the directory it is run
-on.  However, it does not recognize some files as Ruby(only files
-ending with `.rb` or extensionless files with a `#!.*ruby` declaration
-are automatically detected) files, and if you'd like it to check these
-you'll need to manually pass them in.  Files and directories can
-also be ignored through `.rubocop.yml`.
-
-Here is an example that might be used for a Rails project:
-
-```yaml
-AllCops:
-  Includes:
-    - Rakefile
-    - config.ru
-  Excludes:
-    - db/**
-    - config/**
-    - script/**
-
-# other configuration
-# ...
-```
-
-Note: Files and directories are specified relative to the
-`.rubocop.yml` file. The `Excludes` parameter is special. It is valid
-for the directory tree starting where it is defined. It is not
-shadowed by the setting of `Excludes` in other `.rubocop.yml` files in
-subdirectories.
-
-### Automatically Generated Configuration
-
-If you have a code base with an overwhelming amount of offences, it can be a
-good idea to use `rubocop --auto-gen-config` and add an `inherit_from:
-rubocop-todo.yml` in your `.rubocop.yml`. The generated file `rubocop-todo.yml`
-contains configuration to disable all cops that currently detect an offence in
-the code. Then you can start removing the entries in the generated file one by
-one as you work through all the offences in the code.
 
 ## Formatters
 
