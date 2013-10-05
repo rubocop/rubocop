@@ -37,12 +37,20 @@ module Rubocop
 
         def autocorrect(node)
           @corrections << lambda do |corrector|
-            if node.loc.begin.is?('{')
-              corrector.replace(node.loc.begin, 'do')
-              corrector.replace(node.loc.end, 'end')
+            b, e = node.loc.begin, node.loc.end
+            if b.is?('{')
+              # If the left brace is immediately preceded by a word character,
+              # then we need a space before `do` to get valid Ruby code.
+              padding = if b.source_buffer.source[b.begin_pos - 1, 1] =~ /\w/
+                          ' '
+                        else
+                          ''
+                        end
+              corrector.replace(b, padding + 'do')
+              corrector.replace(e, 'end')
             else
-              corrector.replace(node.loc.begin, '{')
-              corrector.replace(node.loc.end, '}')
+              corrector.replace(b, '{')
+              corrector.replace(e, '}')
             end
           end
         end
