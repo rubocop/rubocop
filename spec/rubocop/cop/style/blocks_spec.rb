@@ -77,9 +77,9 @@ describe Rubocop::Cop::Style::Blocks do
         .to eq(['Avoid using {...} for multi-line blocks.'])
     end
 
-    it 'auto-corrects do and end for single line blocks to { and }' do
+    it 'auto-corrects { and } to do and end' do
       source = <<-END.strip_indent
-        each { |x|
+        each{ |x|
           some_method
           other_method
         }
