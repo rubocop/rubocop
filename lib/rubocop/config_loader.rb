@@ -67,31 +67,18 @@ module Rubocop
       # with the addition that any value that is a hash, and occurs in both
       # arguments (i.e., cop names), will also be merged.
       def merge(base_hash, derived_hash)
-        result = {}
-        base_hash.each do |key, value|
-          result[key] = if derived_hash.key?(key)
-                          if value.is_a?(Hash)
-                            value.merge(derived_hash[key])
-                          else
-                            derived_hash[key]
-                          end
-                        else
-                          base_hash[key]
-                        end
-        end
-        derived_hash.each do |key, value|
-          result[key] = value unless base_hash.key?(key)
+        result = base_hash.merge(derived_hash)
+        keys_appearing_in_both = base_hash.keys & derived_hash.keys
+        keys_appearing_in_both.each do |key|
+          if base_hash[key].is_a?(Hash)
+            result[key] = base_hash[key].merge(derived_hash[key])
+          end
         end
         result
       end
 
       def base_configs(path, inherit_from)
-        base_files = case inherit_from
-                     when nil then []
-                     when String then [inherit_from]
-                     when Array then inherit_from
-                     end
-        base_files.map do |f|
+        Array(inherit_from).map do |f|
           f = File.join(File.dirname(path), f) unless f.start_with?('/')
           print 'Inheriting ' if debug?
           load_file(f)
