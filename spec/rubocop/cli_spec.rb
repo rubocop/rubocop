@@ -418,7 +418,7 @@ Usage: rubocop [options] [file1, file2, ...]
                       ' ^',
                       'example2.rb:2:1: C: Tab detected.',
                       "\tx",
-                      '^^^^^',
+                      '^',
                       'example2.rb:4:1: C: Use 2 (not 3) spaces for ' +
                       'indentation.',
                       '   puts',
