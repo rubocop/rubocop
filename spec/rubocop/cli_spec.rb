@@ -418,7 +418,7 @@ Usage: rubocop [options] [file1, file2, ...]
                       ' ^',
                       'example2.rb:2:1: C: Tab detected.',
                       "\tx",
-                      '^^^^^',
+                      '^',
                       'example2.rb:4:1: C: Use 2 (not 3) spaces for ' +
                       'indentation.',
                       '   puts',
@@ -658,7 +658,7 @@ Usage: rubocop [options] [file1, file2, ...]
                               ])
     expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
     expect($stdout.string)
-      .to eq(["#{abs('example.rb')}:3:3: E: unexpected " +
+      .to eq(["#{abs('example.rb')}:4:1: E: unexpected " +
               'token $end',
               ''].join("\n"))
   end

@@ -23,6 +23,7 @@
 * `LambdaCall` is now configurable and enforce either `Proc#call` or `Proc#()`.
 * [#529](https://github.com/bbatsov/rubocop/issues/529) - Added config option `EnforcedStyle` to `SpaceAroundBraces`.
 * [#529](https://github.com/bbatsov/rubocop/issues/529) - Changed config option `NoSpaceBeforeBlockParameters` to `SpaceBeforeBlockParameters`.
+* Support Parser 2.0.0 (non-beta)
 
 ### Bugs fixed
 

@@ -15,7 +15,7 @@ module Rubocop
               convention(nil,
                          source_range(processed_source.buffer,
                                       processed_source[0...index],
-                                      spaces.length, 8),
+                                      spaces.length, 1),
                          MSG)
             end
           end
