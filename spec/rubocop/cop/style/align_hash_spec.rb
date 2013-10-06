@@ -107,6 +107,17 @@ describe Rubocop::Cop::Style::AlignHash, :config do
       }
     end
 
+    it 'accepts single line hash' do
+      inspect_source(cop, 'func(a: 0, bb: 1)')
+      expect(cop.offences).to be_empty
+    end
+
+    it 'accepts several pairs per line' do
+      inspect_source(cop, ['func(a:   1, bb:   2',
+                           '     ccc: 3, dddd: 4)'])
+      expect(cop.offences).to be_empty
+    end
+
     it 'accepts aligned hash keys' do
       inspect_source(cop, ['hash1 = {',
                            "  'a'   => 0,",
