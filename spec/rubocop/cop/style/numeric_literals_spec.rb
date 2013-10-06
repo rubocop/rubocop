@@ -35,7 +35,7 @@ describe Rubocop::Cop::Style::NumericLiterals, :config do
 
   it 'ignores non-decimal literals' do
     inspect_source(cop, ['a = 0b1010101010101',
-                         'b = 01919191919191',
+                         'b = 01717171717171',
                          'c = 0xab11111111bb'])
     expect(cop.offences).to be_empty
   end
