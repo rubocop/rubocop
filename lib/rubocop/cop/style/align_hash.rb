@@ -14,12 +14,22 @@ module Rubocop
 
           if [cop_config['EnforcedHashRocketStyle'],
               cop_config['EnforcedColonStyle']].include?('table')
+
+            lines_of_the_children = node.children.map do |pair|
+              key, _value = *pair
+              key.loc.line
+            end
+            on_the_same_line = lines_of_the_children.uniq.size == 1
+            return if on_the_same_line
+
             key_widths = node.children.map do |pair|
               key, _value = *pair
               key.loc.expression.source.length
             end
             @max_key_width = key_widths.max
-            if first_pair && value_delta(nil, first_pair, @max_key_width) != 0
+            if first_pair && !on_the_same_line &&
+              value_delta(nil, first_pair, @max_key_width) != 0
+
               @column_deltas = {}
               convention(first_pair, :expression)
             end
