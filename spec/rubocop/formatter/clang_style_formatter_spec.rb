@@ -39,7 +39,7 @@ module Rubocop
                           Parser::Source::Range.new(source_buffer, 0, 2),
                           'message 1')
           cop.add_offence(:fatal, nil,
-                          Parser::Source::Range.new(source_buffer, 6, 4),
+                          Parser::Source::Range.new(source_buffer, 6, 10),
                           'message 2')
 
           formatter.report_file('test', cop.offences)
