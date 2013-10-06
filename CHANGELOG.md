@@ -27,6 +27,7 @@
 
 ### Bugs fixed
 
+* [#514](https://github.com/bbatsov/rubocop/issues/514) - Fix alignment of the hash containing different key lengths in one line
 * [#496](https://github.com/bbatsov/rubocop/issues/496) - Fix corner case crash in `AlignHash` cop: single key/value pair when configuration is `table` for '=>' and `separator` for `:`.
 * [#502](https://github.com/bbatsov/rubocop/issues/502) - Don't check non-decimal literals with `NumericLiterals`
 * [#448](https://github.com/bbatsov/rubocop/issues/448) - Fix auto-correction of parameters spanning more than one line in `AlignParameters` cop.
