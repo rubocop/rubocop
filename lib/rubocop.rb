@@ -6,8 +6,6 @@ require 'parser/current'
 require 'ast/sexp'
 require 'powerpack'
 
-require 'rubocop/backports/bsearch'
-
 require 'rubocop/cop/util'
 require 'rubocop/cop/offence'
 require 'rubocop/cop/cop'
