@@ -38,7 +38,7 @@ module Rubocop
           @options[:formatters] = [
                                    [DEFAULT_FORMATTER],
                                    [Formatter::DisabledConfigFormatter,
-                                    Config::AUTO_GENERATED_FILE]
+                                    ConfigLoader::AUTO_GENERATED_FILE]
                                   ]
           validate_auto_gen_config_option(args)
         end
@@ -148,8 +148,8 @@ module Rubocop
       target_finder.find(args).each do |file|
         config = @config_store.for(file)
         if @options[:auto_gen_config] && config.contains_auto_generated_config
-          fail "Remove #{Config::AUTO_GENERATED_FILE} from the current " +
-            'configuration before generating it again.'
+          fail "Remove #{ConfigLoader::AUTO_GENERATED_FILE} from the " +
+            'current configuration before generating it again.'
         end
       end
     end

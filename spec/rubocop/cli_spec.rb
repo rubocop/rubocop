@@ -12,7 +12,7 @@ describe Rubocop::CLI, :isolated_environment do
   before(:each) do
     $stdout = StringIO.new
     $stderr = StringIO.new
-    Rubocop::Config.debug = false
+    Rubocop::ConfigLoader.debug = false
   end
 
   after(:each) do

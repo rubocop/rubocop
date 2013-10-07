@@ -26,7 +26,7 @@ module Rubocop
 
       @options, target_files = Options.new(@config_store).parse(args)
 
-      Config.debug = @options[:debug]
+      ConfigLoader.debug = @options[:debug]
 
       target_files.each(&:freeze).freeze
       inspected_files = []
