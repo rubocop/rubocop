@@ -313,6 +313,10 @@ Proc:
   Description: 'Use proc instead of Proc.new.'
   Enabled: true
 
+RaiseArgs:
+  Description: 'Checks the arguments passed to raise/fail.'
+  Enabled: true
+
 ReduceArguments:
   Description: 'Name reduce arguments |a, e| (accumulator, element)'
   Enabled: true

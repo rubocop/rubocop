@@ -116,6 +116,12 @@ ParameterLists:
 ParenthesesAroundCondition:
   AllowSafeAssignment: true
 
+RaiseArgs:
+  # Valid values are: compact and exploded
+  # exploded: raise Exception, msg
+  # compact: raise Exception.new(msg)
+  EnforcedStyle: exploded
+
 RedundantReturn:
   # When true allows code like `return x, y`.
   AllowMultipleReturnValues: false

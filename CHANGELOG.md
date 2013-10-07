@@ -12,6 +12,7 @@
 * New cop `ClassLength` checks for overly long class definitions
 * New cop `Debugger` checks for forgotten calls to debugger or pry
 * New cop `RedundantException` checks for code like `raise RuntimeError, message`
+* [#526](https://github.com/bbatsov/rubocop/issues/526) - New cop `RaiseArgs` checks the args passed to `raise/fail`.
 
 ### Changes
 
