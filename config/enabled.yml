@@ -321,6 +321,10 @@ RedundantBegin:
   Description: "Don't use begin blocks when they are not needed."
   Enabled: true
 
+RedundantException:
+  Description: "Checks for an obsolete RuntimeException argument in raise/fail."
+  Enabled: true
+
 RedundantSelf:
   Description: "Don't use self where it's not needed."
   Enabled: true
