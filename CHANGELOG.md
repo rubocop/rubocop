@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.14.0 (07/10/2013)
+
 ### New features
 
 * [#491](https://github.com/bbatsov/rubocop/issues/491) - New cop `MethodCalledOnDoEndBlock` keeps track of methods called on `do`...`end` blocks.
