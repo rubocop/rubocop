@@ -11,6 +11,7 @@
 * [#501](https://github.com/bbatsov/rubocop/issues/501) - `json` formatter now outputs `corrected` key with boolean value in offence objects whether the offence is automatically corrected.
 * New cop `ClassLength` checks for overly long class definitions
 * New cop `Debugger` checks for forgotten calls to debugger or pry
+* New cop `RedundantException` checks for code like `raise RuntimeError, message`
 
 ### Changes
 
