@@ -3,6 +3,19 @@
 require 'spec_helper'
 
 describe Rubocop::Cop::Style::AlignHash, :config do
+  shared_examples 'not on separate lines' do
+    it 'accepts single line hash' do
+      inspect_source(cop, 'func(a: 0, bb: 1)')
+      expect(cop.offences).to be_empty
+    end
+
+    it 'accepts several pairs per line' do
+      inspect_source(cop, ['func(a: 1, bb: 2,',
+                           '     ccc: 3, dddd: 4)'])
+      expect(cop.offences).to be_empty
+    end
+  end
+
   subject(:cop) { described_class.new(config) }
   let(:cop_config) do
     {
@@ -88,16 +101,7 @@ describe Rubocop::Cop::Style::AlignHash, :config do
     end
   end
 
-  it 'accepts single line hash' do
-    inspect_source(cop, 'hash = { a: 0, b: 1 }')
-    expect(cop.offences).to be_empty
-  end
-
-  it 'accepts several pairs per line' do
-    inspect_source(cop, ['hash = { a: 0, b: 1,',
-                         '         c: 2, d: 3 }'])
-    expect(cop.offences).to be_empty
-  end
+  include_examples 'not on separate lines'
 
   context 'with table alignment configuration' do
     let(:cop_config) do
@@ -107,16 +111,7 @@ describe Rubocop::Cop::Style::AlignHash, :config do
       }
     end
 
-    it 'accepts single line hash' do
-      inspect_source(cop, 'func(a: 0, bb: 1)')
-      expect(cop.offences).to be_empty
-    end
-
-    it 'accepts several pairs per line' do
-      inspect_source(cop, ['func(a:   1, bb:   2',
-                           '     ccc: 3, dddd: 4)'])
-      expect(cop.offences).to be_empty
-    end
+    include_examples 'not on separate lines'
 
     it 'accepts aligned hash keys' do
       inspect_source(cop, ['hash1 = {',
@@ -234,6 +229,8 @@ describe Rubocop::Cop::Style::AlignHash, :config do
                            '}'])
       expect(cop.offences).to have(1).item
     end
+
+    include_examples 'not on separate lines'
 
     it 'auto-corrects alignment' do
       new_source = autocorrect_source(cop, ['hash1 = { a: 0,',

@@ -209,13 +209,6 @@ describe Rubocop::Cop::Style::IndentationWidth do
                       'end'])
       expect(cop.offences).to be_empty
     end
-
-    it 'accepts an empty case' do
-      inspect_source(cop,
-                     ['case a',
-                      'end'])
-      expect(cop.offences).to be_empty
-    end
   end
 
   context 'with while/until' do
