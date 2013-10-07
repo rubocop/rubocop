@@ -12,24 +12,20 @@ module Rubocop
         def on_hash(node)
           first_pair = node.children.first
 
-          if [cop_config['EnforcedHashRocketStyle'],
-              cop_config['EnforcedColonStyle']].include?('table')
+          styles = [cop_config['EnforcedHashRocketStyle'],
+                    cop_config['EnforcedColonStyle']]
 
-            lines_of_the_children = node.children.map do |pair|
-              key, _value = *pair
-              key.loc.line
-            end
-            on_the_same_line = lines_of_the_children.uniq.size == 1
-            return if on_the_same_line
+          if styles.include?('table') || styles.include?('separator')
+            return if any_pairs_on_the_same_line?(node)
+          end
 
+          if styles.include?('table')
             key_widths = node.children.map do |pair|
               key, _value = *pair
               key.loc.expression.source.length
             end
             @max_key_width = key_widths.max
-            if first_pair && !on_the_same_line &&
-              value_delta(nil, first_pair, @max_key_width) != 0
-
+            if first_pair && value_delta(nil, first_pair, @max_key_width) != 0
               @column_deltas = {}
               convention(first_pair, :expression)
             end
@@ -39,6 +35,14 @@ module Rubocop
             @column_deltas = deltas(first_pair, prev, current, @max_key_width)
             convention(current, :expression) unless good_alignment?
           end
+        end
+
+        def any_pairs_on_the_same_line?(node)
+          lines_of_the_children = node.children.map do |pair|
+            key, _value = *pair
+            key.loc.line
+          end
+          lines_of_the_children.uniq.size < lines_of_the_children.size
         end
 
         def autocorrect(node)

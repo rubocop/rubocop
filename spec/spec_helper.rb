@@ -81,6 +81,7 @@ end
 
 def inspect_source(cop, source)
   processed_source = parse_source(source)
+  fail 'Error parsing example code' unless processed_source.valid_syntax?
   _investigate(cop, processed_source)
 end
 
@@ -92,7 +93,6 @@ end
 def autocorrect_source(cop, source)
   cop.instance_variable_get(:@options)[:autocorrect] = true
   processed_source = parse_source(source)
-
   _investigate(cop, processed_source)
 
   corrector =
