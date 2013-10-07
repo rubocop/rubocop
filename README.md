@@ -302,7 +302,7 @@ W:  4:  5: end at 4, 4 is not aligned with if at 2, 2
 1 file inspected, 3 offences detected
 ```
 
-### File List Formmater
+### File List Formatter
 
 Sometimes you might want to just open all files with offences in your
 favorite editor. This formatter outputs just the names of the files
