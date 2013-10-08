@@ -19,41 +19,39 @@ module Rubocop
             processed_source.comments
           )
 
-          check_classes(ast, ast_with_comments)
-          check_modules(ast, ast_with_comments)
+          check(ast, ast_with_comments)
         end
 
         private
 
-        def check_classes(ast, ast_with_comments)
-          on_node(:class, ast) do |node|
-            _name, _superclass, body = *node
-
-            if body && ast_with_comments[node].empty?
-              convention(node, :keyword, format(MSG, 'class'))
+        def check(ast, ast_with_comments)
+          on_node([:class, :module], ast) do |node|
+            case node.type
+            when :class
+              _name, _superclass, body = *node
+            when :module
+              _name, body = *node
             end
+
+            next if node.type == :class && !body
+            next if namespace?(body)
+            next unless ast_with_comments[node].empty?
+            convention(node, :keyword, format(MSG, node.type.to_s))
           end
         end
 
-        def check_modules(ast, ast_with_comments)
-          on_node(:module, ast) do |node|
-            _name, body = *node
+        def namespace?(body_node)
+          return false unless body_node
 
-            if body.nil?
-              namespace = false
-            elsif body.type == :begin
-              namespace = body.children.all? do |n|
-                [:class, :module].include?(n.type)
-              end
-            elsif body.type == :class || body.type == :module
-              namespace = true
-            else
-              namespace = false
+          case body_node.type
+          when :begin
+            body_node.children.all? do |node|
+              [:class, :module].include?(node.type)
             end
-
-            if !namespace && ast_with_comments[node].empty?
-              convention(node, :keyword, format(MSG, 'module'))
-            end
+          when :class, :module
+            true
+          else
+            false
           end
         end
       end
