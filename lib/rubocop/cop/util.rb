@@ -30,9 +30,26 @@ module Rubocop
 
         lines.reject!(&:blank?)
 
-        lines.reject! { |line| line =~ /^\s*#/ } unless count_comments
+        lines.reject! { |line| comment_line?(line) } unless count_comments
 
         lines.size
+      end
+
+      def comment_line?(line_source)
+        line_source =~ /^\s*#/
+      end
+
+      def line_range(arg)
+        source_range = case arg
+                       when Parser::Source::Range
+                         arg
+                       when Parser::AST::Node
+                         arg.loc.expression
+                       else
+                         fail ArgumentError, "Invalid argument #{arg}"
+                       end
+
+        source_range.begin.line..source_range.end.line
       end
 
       def const_name(node)

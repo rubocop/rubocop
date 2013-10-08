@@ -5,6 +5,7 @@
 ### Bugs fixed
 
 * Fix bug concerning table and separator alignment of multi-line hash with multiple keys on the same line.
+* Fix a bug where `ClassLength` counted lines of inner classes/modules
 
 ## 0.14.0 (07/10/2013)
 
