@@ -70,4 +70,14 @@ describe Rubocop::Cop::Style::Documentation do
                    ])
     expect(cop.offences).to be_empty
   end
+
+  it 'accepts namespace class without documentation' do
+    inspect_source(cop,
+                   ['class Test',
+                    '  class A; end',
+                    '  class B; end',
+                    'end'
+                   ])
+    expect(cop.offences).to be_empty
+  end
 end
