@@ -116,8 +116,9 @@ Usage: rubocop [options] [file1, file2, ...]
       let(:cops) { Rubocop::Cop::Cop.all }
 
       let(:global_conf) do
-        config_path = Rubocop::Config.configuration_file_for(Dir.pwd.to_s)
-        Rubocop::Config.configuration_from_file(config_path)
+        config_path =
+          Rubocop::ConfigLoader.configuration_file_for(Dir.pwd.to_s)
+        Rubocop::ConfigLoader.configuration_from_file(config_path)
       end
 
       let(:stdout) { $stdout.string }
