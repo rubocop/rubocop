@@ -142,6 +142,7 @@ require 'rubocop/cop/style/variable_name'
 require 'rubocop/cop/style/when_then'
 require 'rubocop/cop/style/while_until_do'
 require 'rubocop/cop/style/word_array'
+require 'rubocop/cop/style/braces_around_hash_parameters'
 
 require 'rubocop/cop/rails/has_and_belongs_to_many'
 require 'rubocop/cop/rails/read_attribute'

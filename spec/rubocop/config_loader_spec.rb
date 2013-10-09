@@ -240,9 +240,9 @@ describe Rubocop::ConfigLoader do
         '  Enabled: true',
       ])
       configuration = load_file
-      expect(configuration['Encoding']).to eq({
+      expect(configuration['Encoding']).to eq(
         'Enabled' => true
-      })
+      )
     end
   end
 
