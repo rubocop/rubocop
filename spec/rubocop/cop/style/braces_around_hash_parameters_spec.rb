@@ -7,13 +7,10 @@ describe Rubocop::Cop::Style::BracesAroundHashParameters, :config do
 
   context 'no_braces' do
     let(:cop_config) do
-      {
-        'EnforcedStyle' => 'no_braces'
-      }
+      { 'EnforcedStyle' => 'no_braces' }
     end
 
     describe 'accepts' do
-
       it 'one non-hash parameter' do
         inspect_source(cop, ['where(2)'])
         expect(cop.messages).to be_empty
@@ -79,15 +76,13 @@ describe Rubocop::Cop::Style::BracesAroundHashParameters, :config do
         expect(cop.messages).to be_empty
         expect(cop.highlights).to be_empty
       end
-
     end
 
     describe 'registers an offence for' do
-
       it 'one object method hash parameter with braces' do
         inspect_source(cop, ['x.func({ y: "z" })'])
         expect(cop.messages).to eq([
-          'Unnecessary braces around a hash parameter.'
+          'Redundant curly braces around a hash parameter.'
         ])
         expect(cop.highlights).to eq(['{ y: "z" }'])
       end
@@ -95,7 +90,7 @@ describe Rubocop::Cop::Style::BracesAroundHashParameters, :config do
       it 'one hash parameter with braces' do
         inspect_source(cop, ['where({ x: 1 })'])
         expect(cop.messages).to eq([
-          'Unnecessary braces around a hash parameter.'
+          'Redundant curly braces around a hash parameter.'
         ])
         expect(cop.highlights).to eq(['{ x: 1 }'])
       end
@@ -103,7 +98,7 @@ describe Rubocop::Cop::Style::BracesAroundHashParameters, :config do
       it 'one hash parameter with braces and separators' do
         inspect_source(cop, ["where(  \n { x: 1 }   )"])
         expect(cop.messages).to eq([
-          'Unnecessary braces around a hash parameter.'
+          'Redundant curly braces around a hash parameter.'
         ])
         expect(cop.highlights).to eq(['{ x: 1 }'])
       end
@@ -111,24 +106,19 @@ describe Rubocop::Cop::Style::BracesAroundHashParameters, :config do
       it 'one hash parameter with braces and multiple keys' do
         inspect_source(cop, ['where({ x: 1, foo: "bar" })'])
         expect(cop.messages).to eq([
-          'Unnecessary braces around a hash parameter.'
+          'Redundant curly braces around a hash parameter.'
         ])
         expect(cop.highlights).to eq(['{ x: 1, foo: "bar" }'])
       end
-
     end
-
   end
 
   context 'braces' do
     let(:cop_config) do
-      {
-        'EnforcedStyle' => 'braces'
-      }
+      { 'EnforcedStyle' => 'braces' }
     end
 
     describe 'accepts' do
-
       it 'an empty hash parameter' do
         inspect_source(cop, ['where({})'])
         expect(cop.messages).to be_empty
@@ -172,15 +162,13 @@ describe Rubocop::Cop::Style::BracesAroundHashParameters, :config do
         expect(cop.messages).to be_empty
         expect(cop.highlights).to be_empty
       end
-
     end
 
     describe 'registers an offence for' do
-
       it 'one hash parameter without braces' do
         inspect_source(cop, ['where(x: "y")'])
         expect(cop.messages).to eq([
-          'Missing braces around a hash parameter.'
+          'Missing curly braces around a hash parameter.'
         ])
         expect(cop.highlights).to eq(['x: "y"'])
       end
@@ -188,7 +176,7 @@ describe Rubocop::Cop::Style::BracesAroundHashParameters, :config do
       it 'one hash parameter with multiple keys and without braces' do
         inspect_source(cop, ['where(x: "y", foo: "bar")'])
         expect(cop.messages).to eq([
-          'Missing braces around a hash parameter.'
+          'Missing curly braces around a hash parameter.'
         ])
         expect(cop.highlights).to eq(['x: "y", foo: "bar"'])
       end
@@ -196,12 +184,10 @@ describe Rubocop::Cop::Style::BracesAroundHashParameters, :config do
       it 'one hash parameter without braces with one hash value' do
         inspect_source(cop, ['where(x: { "y" => "z" })'])
         expect(cop.messages).to eq([
-          'Missing braces around a hash parameter.'
+          'Missing curly braces around a hash parameter.'
         ])
         expect(cop.highlights).to eq(['x: { "y" => "z" }'])
       end
-
     end
-
   end
 end

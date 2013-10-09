@@ -5,23 +5,29 @@ module Rubocop
     module Style
       # This cop checks for braces in method calls with hash parameters.
       class BracesAroundHashParameters < Cop
-
         def on_send(node)
-          _, method_name, *args = *node
-          return unless args.length == 1
+          _receiver, method_name, *args = *node
+
+          return unless args.size == 1
+          # discard attr writer methods.
           return if method_name.to_s.end_with?('=')
+          # discard operator methods
           return if OPERATOR_METHODS.include?(method_name)
+
+          # we care only for the first argument
           arg = args.first
           return unless arg && arg.type == :hash && arg.children.any?
-          has_braces = !! arg.loc.begin
+
+          has_braces = !arg.loc.begin.nil?
+
           if style == :no_braces && has_braces
             convention(arg,
                        :expression,
-                       'Unnecessary braces around a hash parameter.')
-          elsif style == :braces && ! has_braces
+                       'Redundant curly braces around a hash parameter.')
+          elsif style == :braces && !has_braces
             convention(arg,
                        :expression,
-                       'Missing braces around a hash parameter.')
+                       'Missing curly braces around a hash parameter.')
           end
         end
 
