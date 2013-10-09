@@ -37,6 +37,11 @@ describe Rubocop::Cop::Style::RaiseArgs, :config do
       expect(cop.offences.size).to eq(1)
     end
 
+    it 'accepts exception constructor with more than 1 argument' do
+      inspect_source(cop, ['raise RuntimeError.new(a1, a2, a3)'])
+      expect(cop.offences).to be_empty
+    end
+
     it 'accepts a raise with 3 args' do
       inspect_source(cop, ['raise RuntimeError, msg, caller'])
       expect(cop.offences).to be_empty

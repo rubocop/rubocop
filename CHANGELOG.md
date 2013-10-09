@@ -12,6 +12,7 @@
 * Fix a bug where `ClassLength` counted lines of inner classes/modules
 * Fix a false positive for namespace class in `Documentation`
 * Fix "Parser::Source::Range spans more than one line" bug in clang formatter
+* [#552](https://github.com/bbatsov/rubocop/pull/552) - `RaiseArgs` allows exception constructor calls with more than one 1 argument.
 
 ## 0.14.0 (07/10/2013)
 

@@ -34,7 +34,12 @@ module Rubocop
           arg, = *args
 
           if arg.type == :send && arg.loc.selector.is?('new')
-            convention(node, :expression, message(selector))
+            _receiver, _selector, *constructor_args = *arg
+
+            # Allow code like `raise Ex.new(arg1, arg2)`.
+            unless constructor_args.size > 1
+              convention(node, :expression, message(selector))
+            end
           end
         end
 
