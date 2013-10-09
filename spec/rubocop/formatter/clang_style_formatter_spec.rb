@@ -50,6 +50,19 @@ module Rubocop
                                        ''].join("\n")
         end
 
+        it 'does not display offending source line if it is multiline' do
+          cop = Cop::Cop.new
+          source_buffer = Parser::Source::Buffer.new('test', 1)
+          source_buffer.source = %w(foobar bazbop).to_a.join($RS)
+          cop.add_offence(:convention, nil,
+                          Parser::Source::Range.new(source_buffer, 5, 10),
+                          'message 1')
+
+          formatter.report_file('test', cop.offences)
+          expect(output.string).to eq ['test:1:6: C: message 1',
+                                       ''].join("\n")
+        end
+
         let(:file) { '/path/to/file' }
 
         let(:offence) do
