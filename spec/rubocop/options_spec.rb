@@ -5,8 +5,7 @@ require 'spec_helper'
 describe Rubocop::Options, :isolated_environment do
   include FileHelper
 
-  subject(:options) { described_class.new(config_store) }
-  let(:config_store) { Rubocop::ConfigStore.new }
+  subject(:options) { described_class.new }
 
   before(:each) do
     $stdout = StringIO.new
@@ -97,100 +96,10 @@ Usage: rubocop [options] [file1, file2, ...]
       end
     end
 
-    describe '--version' do
-      it 'exits cleanly' do
-        expect { options.parse ['-v'] }.to exit_with_code(0)
-        expect { options.parse ['--version'] }.to exit_with_code(0)
-        expect($stdout.string).to eq((Rubocop::Version::STRING + "\n") * 2)
-      end
-    end
-
     describe '--only' do
       it 'exits with error if an incorrect cop name is passed' do
         expect { options.parse(%w(--only 123)) }
           .to raise_error(ArgumentError, /Unrecognized cop name: 123./)
-      end
-    end
-
-    describe '--show-cops' do
-      let(:cops) { Rubocop::Cop::Cop.all }
-
-      let(:global_conf) do
-        config_path =
-          Rubocop::ConfigLoader.configuration_file_for(Dir.pwd.to_s)
-        Rubocop::ConfigLoader.configuration_from_file(config_path)
-      end
-
-      let(:stdout) { $stdout.string }
-
-      before do
-        expect { options.parse ['--show-cops'] }.to exit_with_code(0)
-      end
-
-      # Extracts the first line out of the description
-      def short_description_of_cop(cop)
-        desc = full_description_of_cop(cop)
-        desc ? desc.lines.first.strip : ''
-      end
-
-      # Gets the full description of the cop or nil if no description is set.
-      def full_description_of_cop(cop)
-        cop_config = global_conf.for_cop(cop)
-        cop_config['Description']
-      end
-
-      it 'prints all available cops and their description' do
-        cops.each do |cop|
-          expect(stdout).to include cop.cop_name
-          expect(stdout).to include short_description_of_cop(cop)
-        end
-      end
-
-      it 'prints all types' do
-        cops
-          .types
-          .map(&:to_s)
-          .map(&:capitalize)
-          .each { |type| expect(stdout).to include(type) }
-      end
-
-      it 'prints all cops in their right type listing' do
-        lines = stdout.lines
-        lines.slice_before(/Type /).each do |slice|
-          types = cops.types.map(&:to_s).map(&:capitalize)
-          current = types.delete(slice.shift[/Type '(?<c>[^'']+)'/, 'c'])
-          # all cops in their type listing
-          cops.with_type(current).each do |cop|
-            expect(slice.any? { |l| l.include? cop.cop_name }).to be_true
-          end
-
-          # no cop in wrong type listing
-          types.each do |type|
-            cops.with_type(type).each do |cop|
-              expect(slice.any? { |l| l.include? cop.cop_name }).to be_false
-            end
-          end
-        end
-      end
-
-      it 'prints the current configuration' do
-        out = stdout.lines.to_a
-        cops.each do |cop|
-          conf = global_conf[cop.cop_name].dup
-          confstrt =
-            out.find_index { |i| i.include?("- #{cop.cop_name}") } + 1
-          c = out[confstrt, conf.keys.size].to_s
-          conf.delete('Description')
-          expect(c).to include(short_description_of_cop(cop))
-          conf.each do |k, v|
-            # ugly hack to get hash/array content tested
-            if v.kind_of?(Hash) || v.kind_of?(Array)
-              expect(c).to include "#{k}: #{v.to_s.dump[2, -2]}"
-            else
-              expect(c).to include "#{k}: #{v}"
-            end
-          end
-        end
       end
     end
 

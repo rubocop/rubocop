@@ -91,7 +91,7 @@ module Rubocop
 
       def initialize(config = nil, options = nil)
         @config = config || Config.new
-        @options = options || { autocorrect: false, debug: false }
+        @options = options || { auto_correct: false, debug: false }
 
         @offences = []
         @corrections = []
@@ -103,7 +103,7 @@ module Rubocop
       end
 
       def autocorrect?
-        @options[:autocorrect] && support_autocorrect?
+        @options[:auto_correct] && support_autocorrect?
       end
 
       def debug?

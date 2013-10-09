@@ -24,9 +24,10 @@ module Rubocop
     def run(args = ARGV)
       trap_interrupt
 
-      @options, target_files = Options.new(@config_store).parse(args)
+      @options, remaining_args = Options.new.parse(args)
+      target_files = target_finder.find(remaining_args)
 
-      ConfigLoader.debug = @options[:debug]
+      act_on_options(remaining_args)
 
       any_failed = process_files(target_files)
 
@@ -85,6 +86,33 @@ module Rubocop
       any_failed
     end
 
+    def act_on_options(args)
+      if @options[:show_cops]
+        print_available_cops
+        exit(0)
+      end
+
+      @config_store.set_options_config(@options[:config]) if @options[:config]
+
+      Sickill::Rainbow.enabled = false if @options[:no_color]
+
+      puts Rubocop::Version.version(false) if @options[:version]
+      puts Rubocop::Version.version(true) if @options[:verbose_version]
+      exit(0) if @options[:version] || @options[:verbose_version]
+
+      ConfigLoader.debug = @options[:debug]
+
+      if @options[:auto_gen_config]
+        target_finder.find(args).each do |file|
+          config = @config_store.for(file)
+          if config.contains_auto_generated_config
+            fail "Remove #{ConfigLoader::AUTO_GENERATED_FILE} from the " +
+              'current configuration before generating it again.'
+          end
+        end
+      end
+    end
+
     def mobilized_cop_classes(config)
       @mobilized_cop_classes ||= {}
       @mobilized_cop_classes[config.object_id] ||= begin
@@ -110,6 +138,33 @@ module Rubocop
       offences = team.inspect_file(file)
       @errors.concat(team.errors)
       offences
+    end
+
+    def print_available_cops
+      cops = Cop::Cop.all
+      puts "Available cops (#{cops.length}) + config for #{Dir.pwd.to_s}: "
+      dirconf = @config_store.for(Dir.pwd.to_s)
+      cops.types.sort!.each do |type|
+        coptypes = cops.with_type(type).sort_by!(&:cop_name)
+        puts "Type '#{type.to_s.capitalize}' (#{coptypes.size}):"
+        coptypes.each do |cop|
+          puts " - #{cop.cop_name}"
+          cnf = dirconf.for_cop(cop).dup
+          print_conf_option('Description',
+                            cnf.delete('Description') { 'None' })
+          cnf.each { |k, v| print_conf_option(k, v) }
+          print_conf_option('SupportsAutoCorrection',
+                            cop.new.support_autocorrect?.to_s)
+        end
+      end
+    end
+
+    def print_conf_option(option, value)
+      puts  "    - #{option}: #{value}"
+    end
+
+    def target_finder
+      @target_finder ||= TargetFinder.new(@config_store, @options[:debug])
     end
 
     def run_rails_cops?(config)

@@ -25,6 +25,14 @@ describe Rubocop::CLI, :isolated_environment do
   end
 
   describe 'option' do
+    describe '--version' do
+      it 'exits cleanly' do
+        expect { cli.run ['-v'] }.to exit_with_code(0)
+        expect { cli.run ['--version'] }.to exit_with_code(0)
+        expect($stdout.string).to eq((Rubocop::Version::STRING + "\n") * 2)
+      end
+    end
+
     describe '--auto-gen-config' do
       it 'exits with error if asked to re-generate a todo list that is in ' +
         'use' do
@@ -168,6 +176,88 @@ describe Rubocop::CLI, :isolated_environment do
         expect($stdout.string.lines[-1])
           .to eq(["#{abs('example1.rb')}:1:1: C: Tab: Tab detected.",
                   ''].join("\n"))
+      end
+    end
+
+    describe '--show-cops' do
+      let(:cops) { Rubocop::Cop::Cop.all }
+
+      let(:global_conf) do
+        config_path =
+          Rubocop::ConfigLoader.configuration_file_for(Dir.pwd.to_s)
+        Rubocop::ConfigLoader.configuration_from_file(config_path)
+      end
+
+      let(:stdout) { $stdout.string }
+
+      before do
+        expect { cli.run ['--show-cops'] }.to exit_with_code(0)
+      end
+
+      # Extracts the first line out of the description
+      def short_description_of_cop(cop)
+        desc = full_description_of_cop(cop)
+        desc ? desc.lines.first.strip : ''
+      end
+
+      # Gets the full description of the cop or nil if no description is set.
+      def full_description_of_cop(cop)
+        cop_config = global_conf.for_cop(cop)
+        cop_config['Description']
+      end
+
+      it 'prints all available cops and their description' do
+        cops.each do |cop|
+          expect(stdout).to include cop.cop_name
+          expect(stdout).to include short_description_of_cop(cop)
+        end
+      end
+
+      it 'prints all types' do
+        cops
+          .types
+          .map(&:to_s)
+          .map(&:capitalize)
+          .each { |type| expect(stdout).to include(type) }
+      end
+
+      it 'prints all cops in their right type listing' do
+        lines = stdout.lines
+        lines.slice_before(/Type /).each do |slice|
+          types = cops.types.map(&:to_s).map(&:capitalize)
+          current = types.delete(slice.shift[/Type '(?<c>[^'']+)'/, 'c'])
+          # all cops in their type listing
+          cops.with_type(current).each do |cop|
+            expect(slice.any? { |l| l.include? cop.cop_name }).to be_true
+          end
+
+          # no cop in wrong type listing
+          types.each do |type|
+            cops.with_type(type).each do |cop|
+              expect(slice.any? { |l| l.include? cop.cop_name }).to be_false
+            end
+          end
+        end
+      end
+
+      it 'prints the current configuration' do
+        out = stdout.lines.to_a
+        cops.each do |cop|
+          conf = global_conf[cop.cop_name].dup
+          confstrt =
+            out.find_index { |i| i.include?("- #{cop.cop_name}") } + 1
+          c = out[confstrt, conf.keys.size].to_s
+          conf.delete('Description')
+          expect(c).to include(short_description_of_cop(cop))
+          conf.each do |k, v|
+            # ugly hack to get hash/array content tested
+            if v.kind_of?(Hash) || v.kind_of?(Array)
+              expect(c).to include "#{k}: #{v.to_s.dump[2, -2]}"
+            else
+              expect(c).to include "#{k}: #{v}"
+            end
+          end
+        end
       end
     end
 
