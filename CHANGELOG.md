@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#551](https://github.com/bbatsov/rubocop/pull/551) - New cop `BracesAroundHashParameters` checks for braces in function calls with hash parameters.
+
 ### Bugs fixed
 
 * Fix bug concerning table and separator alignment of multi-line hash with multiple keys on the same line.

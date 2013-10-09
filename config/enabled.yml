@@ -482,6 +482,10 @@ WhileUntilDo:
   Description: 'Checks for redundant do after while or until.'
   Enabled: true
 
+BracesAroundHashParameters:
+  Description: 'Enforce braces style inside hash parameters.'
+  Enabled: true
+
 #################### Lint ################################
 ### Warnings
 

@@ -184,3 +184,7 @@ TrivialAccessors:
 VariableName:
   # Valid values are: snake_case, camelCase
   EnforcedStyle: snake_case
+
+BracesAroundHashParameters:
+  # Valid values are: braces, no_braces
+  EnforcedStyle: no_braces
