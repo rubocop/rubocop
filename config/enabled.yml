@@ -384,8 +384,16 @@ SpaceInsideBrackets:
   Description: 'No spaces after [ or before ].'
   Enabled: true
 
+SpaceAfterColon:
+  Description: 'Use spaces after colons.'
+  Enabled: true
+
 SpaceAfterComma:
   Description: 'Use spaces after commas.'
+  Enabled: true
+
+SpaceAfterControlKeyword:
+  Description: 'Use spaces after if/elsif/unless/while/until/case/when.'
   Enabled: true
 
 SpaceAfterMethodName:
@@ -400,14 +408,6 @@ SpaceAfterNot:
 
 SpaceAfterSemicolon:
   Description: 'Use spaces after semicolons.'
-  Enabled: true
-
-SpaceAfterColon:
-  Description: 'Use spaces after colons.'
-  Enabled: true
-
-SpaceAfterControlKeyword:
-  Description: 'Use spaces after if/elsif/unless/while/until/case/when.'
   Enabled: true
 
 SpaceAroundEqualsInParameterDefault:
