@@ -31,36 +31,49 @@ module Rubocop
                                        ''].join("\n")
         end
 
-        it 'does not display offending source line if it is blank' do
-          cop = Cop::Cop.new
-          source_buffer = Parser::Source::Buffer.new('test', 1)
-          source_buffer.source = (['     ', 'yaba']).to_a.join($RS)
-          cop.add_offence(:convention, nil,
-                          Parser::Source::Range.new(source_buffer, 0, 2),
-                          'message 1')
-          cop.add_offence(:fatal, nil,
-                          Parser::Source::Range.new(source_buffer, 6, 10),
-                          'message 2')
+        context 'when the source line is blank' do
+          it 'does not display offending source line' do
+            cop = Cop::Cop.new
+            source_buffer = Parser::Source::Buffer.new('test', 1)
+            source_buffer.source = (['     ', 'yaba']).to_a.join($RS)
+            cop.add_offence(:convention, nil,
+                            Parser::Source::Range.new(source_buffer, 0, 2),
+                            'message 1')
+            cop.add_offence(:fatal, nil,
+                            Parser::Source::Range.new(source_buffer, 6, 10),
+                            'message 2')
 
-          formatter.report_file('test', cop.offences)
-          expect(output.string).to eq ['test:1:1: C: message 1',
-                                       'test:2:1: F: message 2',
-                                       'yaba',
-                                       '^^^^',
-                                       ''].join("\n")
+            formatter.report_file('test', cop.offences)
+            expect(output.string).to eq ['test:1:1: C: message 1',
+                                         'test:2:1: F: message 2',
+                                         'yaba',
+                                         '^^^^',
+                                         ''].join("\n")
+          end
         end
 
-        it 'does not display offending source line if it is multiline' do
-          cop = Cop::Cop.new
-          source_buffer = Parser::Source::Buffer.new('test', 1)
-          source_buffer.source = %w(foobar bazbop).to_a.join($RS)
-          cop.add_offence(:convention, nil,
-                          Parser::Source::Range.new(source_buffer, 5, 10),
-                          'message 1')
+        context 'when the offending source spans multiple lines' do
+          it 'displays the first line' do
+            source = ['do_something([this,',
+                      '              is,',
+                      '              target])'].join($RS)
 
-          formatter.report_file('test', cop.offences)
-          expect(output.string).to eq ['test:1:6: C: message 1',
-                                       ''].join("\n")
+            source_buffer = Parser::Source::Buffer.new('test', 1)
+            source_buffer.source = source
+
+            location = Parser::Source::Range.new(source_buffer,
+                                                 source.index('['),
+                                                 source.index(']') + 1)
+
+            cop = Cop::Cop.new
+            cop.add_offence(:convention, nil, location, 'message 1')
+
+            formatter.report_file('test', cop.offences)
+            expect(output.string).to eq ['test:1:14: C: message 1',
+                                         'do_something([this,',
+                                         '             ^^^^^^',
+                                         ''].join("\n")
+          end
         end
 
         let(:file) { '/path/to/file' }
