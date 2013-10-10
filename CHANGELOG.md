@@ -5,6 +5,7 @@
 ### New features
 
 * [#551](https://github.com/bbatsov/rubocop/pull/551) - New cop `BracesAroundHashParameters` checks for braces in function calls with hash parameters.
+* New cop `SpaceAfterNot` tracks redundant space after the `!` operator.
 
 ### Bugs fixed
 

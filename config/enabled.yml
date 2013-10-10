@@ -394,6 +394,10 @@ SpaceAfterMethodName:
                  parenthesis.
   Enabled: true
 
+SpaceAfterNot:
+  Description: Tracks redundant space after the ! operator.
+  Enabled: true
+
 SpaceAfterSemicolon:
   Description: 'Use spaces after semicolons.'
   Enabled: true
