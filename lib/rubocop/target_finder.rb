@@ -42,13 +42,13 @@ module Rubocop
     # @return [Array] Array of filenames
     def target_files_in_dir(base_dir = Dir.pwd)
       files = Dir["#{base_dir}/**/*"].select { |path| FileTest.file?(path) }
+      base_dir_config = @config_store.for("#{base_dir}/foobar.rb")
 
       target_files = files.select do |file|
-        config = @config_store.for(file)
-        next false if config.file_to_exclude?(file)
+        next false if base_dir_config.file_to_exclude?(file)
         next true if File.extname(file) == '.rb'
         next true if ruby_executable?(file)
-        config.file_to_include?(file)
+        @config_store.for(file).file_to_include?(file)
       end
 
       target_files.uniq
