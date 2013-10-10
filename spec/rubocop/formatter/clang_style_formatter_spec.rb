@@ -53,16 +53,25 @@ module Rubocop
         end
 
         context 'when the offending source spans multiple lines' do
-          it 'does not display the source line' do
-            cop = Cop::Cop.new
+          it 'displays the first line' do
+            source = ['do_something([this,',
+                      '              is,',
+                      '              target])'].join($RS)
+
             source_buffer = Parser::Source::Buffer.new('test', 1)
-            source_buffer.source = %w(foobar bazbop).to_a.join($RS)
-            cop.add_offence(:convention, nil,
-                            Parser::Source::Range.new(source_buffer, 5, 10),
-                            'message 1')
+            source_buffer.source = source
+
+            location = Parser::Source::Range.new(source_buffer,
+                                                 source.index('['),
+                                                 source.index(']') + 1)
+
+            cop = Cop::Cop.new
+            cop.add_offence(:convention, nil, location, 'message 1')
 
             formatter.report_file('test', cop.offences)
-            expect(output.string).to eq ['test:1:6: C: message 1',
+            expect(output.string).to eq ['test:1:14: C: message 1',
+                                         'do_something([this,',
+                                         '             ^^^^^^',
                                          ''].join("\n")
           end
         end
