@@ -10,13 +10,17 @@ module Rubocop
         def investigate(processed_source)
           processed_source.lines.each_with_index do |line, index|
             if line =~ /.*[ \t]+$/
-              convention(nil,
-                         source_range(processed_source.buffer,
-                                      processed_source[0...index],
-                                      line.rstrip.length,
-                                      line.length - line.rstrip.length))
+              range = source_range(processed_source.buffer,
+                                   processed_source[0...index],
+                                   line.rstrip.length,
+                                   line.length - line.rstrip.length)
+              convention(range, range)
             end
           end
+        end
+
+        def autocorrect(range)
+          @corrections << ->(corrector) { corrector.remove(range) }
         end
       end
     end

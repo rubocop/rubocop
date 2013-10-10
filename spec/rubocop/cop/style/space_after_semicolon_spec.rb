@@ -15,4 +15,9 @@ describe Rubocop::Cop::Style::SpaceAfterSemicolon do
     inspect_source(cop, ['x = 1;'])
     expect(cop.messages).to be_empty
   end
+
+  it 'auto-corrects missing space' do
+    new_source = autocorrect_source(cop, 'x = 1;y = 2')
+    expect(new_source).to eq('x = 1; y = 2')
+  end
 end

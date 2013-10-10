@@ -15,4 +15,9 @@ describe Rubocop::Cop::Style::TrailingBlankLines do
     expect(cop.offences.size).to eq(1)
     expect(cop.messages).to eq(['3 trailing blank lines detected.'])
   end
+
+  it 'auto-corrects unwanted blank lines' do
+    new_source = autocorrect_source(cop, ['x = 0', '', '', '', ''])
+    expect(new_source).to eq(['x = 0', ''].join("\n"))
+  end
 end

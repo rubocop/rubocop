@@ -27,9 +27,10 @@ module Rubocop
             next if positions_not_to_check.include?(token.pos)
 
             case token.type
-            when :tPOW
-              if has_space?(token_before, token, token_after)
-                convention(nil, token.pos, MSG_DETECTED)
+            when :tPOW, :tDSTAR
+              if space_on_any_side?(token_before, token, token_after)
+                convention(token_with_surrounding_space(token), token.pos,
+                           MSG_DETECTED)
               end
             when *BINARY_OPERATORS
               check_missing_space(token_before, token, token_after)
@@ -124,15 +125,43 @@ module Rubocop
         end
 
         def check_missing_space(token_before, token, token_after)
-          unless has_space?(token_before, token, token_after)
+          unless space_on_both_sides?(token_before, token, token_after)
             text = token.text.to_s + (token.type == :tOP_ASGN ? '=' : '')
-            convention(nil, token.pos, MSG_MISSING.format(text))
+            convention(token_with_surrounding_space(token), token.pos,
+                       MSG_MISSING.format(text))
           end
         end
 
-        def has_space?(token_before, token, token_after)
+        def token_with_surrounding_space(token)
+          src = @processed_source.buffer.source
+          begin_pos = token.pos.begin_pos
+          begin_pos -= 1 while src[begin_pos - 1] =~ /[ \t]/
+          end_pos = token.pos.end_pos
+          end_pos += 1 while src[end_pos] =~ /[ \t]/
+          Parser::Source::Range.new(@processed_source.buffer, begin_pos,
+                                    end_pos)
+        end
+
+        def space_on_both_sides?(token_before, token, token_after)
           space_between?(token_before, token) && space_between?(token,
                                                                 token_after)
+        end
+
+        def space_on_any_side?(token_before, token, token_after)
+          space_between?(token_before, token) || space_between?(token,
+                                                                token_after)
+        end
+
+        def autocorrect(range)
+          @corrections << lambda do |corrector|
+            case range.source
+            when /\*\*/
+              corrector.replace(range, '**')
+            else
+              corrector.insert_before(range, ' ') unless range.source =~ /^\s/
+              corrector.insert_after(range, ' ') unless range.source =~ /\s$/
+            end
+          end
         end
       end
     end

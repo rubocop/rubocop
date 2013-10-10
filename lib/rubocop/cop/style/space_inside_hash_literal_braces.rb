@@ -39,7 +39,42 @@ module Rubocop
                                [has_space, 'detected']
                              end
           brace_token = t1.text == '{' ? t1 : t2
-          convention(nil, brace_token.pos, sprintf(MSG, word)) if is_offence
+          range = brace_token.pos
+          convention(range, range, sprintf(MSG, word)) if is_offence
+        end
+
+        def autocorrect(range)
+          if cop_config['EnforcedStyleIsWithSpaces']
+            replacement = case range.source
+                          when '{' then '{ '
+                          when '}' then ' }'
+                          end
+          else
+            replacement = range.source
+            range = case range.source
+                    when '{' then range_with_space_to_the_right(range)
+                    when '}' then range_with_space_to_the_left(range)
+                    end
+          end
+          @corrections << lambda do |corrector|
+            corrector.replace(range, replacement)
+          end
+        end
+
+        def range_with_space_to_the_right(range)
+          src = @processed_source.buffer.source
+          end_pos = range.end_pos
+          end_pos += 1 while src[end_pos] =~ /[ \t]/
+          Parser::Source::Range.new(@processed_source.buffer, range.begin_pos,
+                                    end_pos)
+        end
+
+        def range_with_space_to_the_left(range)
+          src = @processed_source.buffer.source
+          begin_pos = range.begin_pos
+          begin_pos -= 1 while src[begin_pos - 1] =~ /[ \t]/
+          Parser::Source::Range.new(@processed_source.buffer, begin_pos,
+                                    range.end_pos)
         end
       end
     end

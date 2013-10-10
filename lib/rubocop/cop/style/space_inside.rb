@@ -20,10 +20,14 @@ module Rubocop
                 range = Parser::Source::Range.new(processed_source.buffer,
                                                   t1.pos.end_pos,
                                                   t2.pos.begin_pos)
-                convention(nil, range, format(MSG, kind))
+                convention(range, range, format(MSG, kind))
               end
             end
           end
+        end
+
+        def autocorrect(range)
+          @corrections << ->(corrector) { corrector.remove(range) }
         end
       end
     end

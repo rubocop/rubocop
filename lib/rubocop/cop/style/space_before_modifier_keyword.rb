@@ -28,6 +28,12 @@ module Rubocop
         def elsif?(node)
           node.loc.keyword.is?('elsif')
         end
+
+        def autocorrect(node)
+          @corrections << lambda do |corrector|
+            corrector.insert_before(node.loc.keyword, ' ')
+          end
+        end
       end
     end
   end

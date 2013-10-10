@@ -42,4 +42,11 @@ describe Rubocop::Cop::Style::SpaceInsideBrackets do
     expect(cop.messages).to eq(
       ['Space inside square brackets detected.'])
   end
+
+  it 'auto-corrects unwanted space' do
+    new_source = autocorrect_source(cop, ['a = [1, 2 ]',
+                                          'b = [ 1, 2]'])
+    expect(new_source).to eq(['a = [1, 2]',
+                              'b = [1, 2]'].join("\n"))
+  end
 end

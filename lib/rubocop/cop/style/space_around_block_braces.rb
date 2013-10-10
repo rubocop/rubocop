@@ -69,9 +69,9 @@ module Rubocop
         def check_space_inside_braces(t1, t2)
           unless space_between?(t1, t2)
             if t1.text == '{'
-              convention(nil, t1.pos, 'Space missing inside {.')
+              convention(t1.pos, t1.pos, 'Space missing inside {.')
             elsif t2.text == '}'
-              convention(nil, t2.pos, 'Space missing inside }.')
+              convention(t2.pos, t2.pos, 'Space missing inside }.')
             end
           end
         end
@@ -80,9 +80,11 @@ module Rubocop
           if t1.text == '{' || t2.text == '}'
             if space_between?(t1, t2)
               if t1.text == '{'
-                convention(nil, space_range(t1), 'Space inside { detected.')
+                s = space_range(t1)
+                convention(s, s, 'Space inside { detected.')
               elsif t2.text == '}'
-                convention(nil, space_range(t2), 'Space inside } detected.')
+                s = space_range(t2)
+                convention(s, s, 'Space inside } detected.')
               end
             end
           end
@@ -90,17 +92,18 @@ module Rubocop
 
         def check_space_outside_left_brace(t1, t2)
           if t2.text == '{' && !space_between?(t1, t2)
-            convention(nil, t2.pos, 'Space missing to the left of {.')
+            convention(t1.pos, t2.pos, 'Space missing to the left of {.')
           end
         end
 
         def check_pipe(t1, t2)
           if cop_config['SpaceBeforeBlockParameters']
             unless space_between?(t1, t2)
-              convention(nil, t1.pos, 'Space between { and | missing.')
+              convention(t2.pos, t1.pos, 'Space between { and | missing.')
             end
           elsif space_between?(t1, t2)
-            convention(nil, space_range(t1), 'Space between { and | detected.')
+            s = space_range(t1)
+            convention(s, s, 'Space between { and | detected.')
           end
         end
 
@@ -116,6 +119,16 @@ module Rubocop
             b -= 1 while src[b - 1] =~ /\s/
           end
           Parser::Source::Range.new(@processed_source.buffer, b, e)
+        end
+
+        def autocorrect(range)
+          @corrections << lambda do |corrector|
+            case range.source
+            when '}', '|' then corrector.insert_before(range, ' ')
+            when ' '      then corrector.remove(range)
+            else               corrector.insert_after(range, ' ')
+            end
+          end
         end
       end
     end

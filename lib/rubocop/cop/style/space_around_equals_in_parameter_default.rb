@@ -16,8 +16,15 @@ module Rubocop
             index = index_of_first_token(optarg)
             arg, equals, value = processed_source.tokens[index, 3]
             unless space_between?(arg, equals) && space_between?(equals, value)
-              convention(nil, equals.pos)
+              convention(equals.pos, equals.pos)
             end
+          end
+        end
+
+        def autocorrect(range)
+          @corrections << lambda do |corrector|
+            corrector.insert_before(range, ' ')
+            corrector.insert_after(range, ' ')
           end
         end
       end

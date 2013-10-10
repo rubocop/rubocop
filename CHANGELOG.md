@@ -5,6 +5,22 @@
 ### New features
 
 * New cop `Output` checks for calls to print, puts, etc. in Rails. ([@daviddavis][])
+* `LeadingCommentSpace` cop does auto-correction. ([@jonas054][])
+* `SpaceAfterControlKeyword` cop does auto-correction. ([@jonas054][])
+* `SpaceAfterColon` cop does auto-correction. ([@jonas054][])
+* `SpaceAfterComma` cop does auto-correction. ([@jonas054][])
+* `SpaceAfterSemicolon` cop does auto-correction. ([@jonas054][])
+* `SpaceAfterMethodName` cop does auto-correction. ([@jonas054][])
+* `SpaceAroundBlockBraces` cop does auto-correction. ([@jonas054][])
+* `SpaceAroundEqualsInParameterDefault` cop does auto-correction. ([@jonas054][])
+* `SpaceAroundOperators` cop does auto-correction. ([@jonas054][])
+* `SpaceBeforeModifierKeyword` cop does auto-correction. ([@jonas054][])
+* `SpaceInsideHashLiteralBraces` cop does auto-correction. ([@jonas054][])
+* `SpaceInsideBrackets` cop does auto-correction. ([@jonas054][])
+* `SpaceInsideParens` cop does auto-correction. ([@jonas054][])
+* `TrailingWhitespace` cop does auto-correction. ([@jonas054][])
+* `TrailingBlankLines` cop does auto-correction. ([@jonas054][])
+* `FinalNewline` cop does auto-correction. ([@jonas054][])
 
 ### Changes
 

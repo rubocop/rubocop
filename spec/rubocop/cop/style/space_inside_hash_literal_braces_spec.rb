@@ -15,6 +15,13 @@ describe Rubocop::Cop::Style::SpaceInsideHashLiteralBraces, :config do
     expect(cop.highlights).to eq(['{', '}', '{'])
   end
 
+  it 'auto-corrects missing space' do
+    new_source = autocorrect_source(cop, ['h = {a: 1, b: 2}',
+                                          'h = {a => 1 }'])
+    expect(new_source).to eq(['h = { a: 1, b: 2 }',
+                              'h = { a => 1 }'].join("\n"))
+  end
+
   context 'when EnforcedStyleIsWithSpaces is disabled' do
     let(:cop_config) { { 'EnforcedStyleIsWithSpaces' => false } }
 
@@ -24,6 +31,13 @@ describe Rubocop::Cop::Style::SpaceInsideHashLiteralBraces, :config do
       expect(cop.messages).to eq(
         ['Space inside hash literal braces detected.'] * 2)
       expect(cop.highlights).to eq(['{', '}'])
+    end
+
+    it 'auto-corrects unwanted space' do
+      new_source = autocorrect_source(cop, ['h = { a: 1, b: 2 }',
+                                            'h = {a => 1 }'])
+      expect(new_source).to eq(['h = {a: 1, b: 2}',
+                                'h = {a => 1}'].join("\n"))
     end
 
     it 'accepts hashes with no spaces' do

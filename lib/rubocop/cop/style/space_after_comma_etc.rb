@@ -14,7 +14,7 @@ module Rubocop
           processed_source.tokens.each_cons(2) do |t1, t2|
             if kind(t1) && t1.pos.line == t2.pos.line &&
                 t2.pos.column == t1.pos.column + offset(t1)
-              convention(nil, t1.pos, sprintf(MSG, kind(t1)))
+              convention(t1, t1.pos, sprintf(MSG, kind(t1)))
             end
           end
         end
@@ -23,6 +23,12 @@ module Rubocop
         # token where a space should be, is 1.
         def offset(token)
           1
+        end
+
+        def autocorrect(token)
+          @corrections << lambda do |corrector|
+            corrector.insert_after(token.pos, ' ')
+          end
         end
       end
 

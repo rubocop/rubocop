@@ -24,4 +24,11 @@ describe Rubocop::Cop::Style::SpaceInsideParens do
     inspect_source(cop, ['split("\n")'])
     expect(cop.messages).to be_empty
   end
+
+  it 'auto-corrects unwanted space' do
+    new_source = autocorrect_source(cop, ['f( 3)',
+                                          'g(3 )'])
+    expect(new_source).to eq(['f(3)',
+                              'g(3)'].join("\n"))
+  end
 end

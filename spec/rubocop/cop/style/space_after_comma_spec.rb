@@ -22,4 +22,9 @@ describe Rubocop::Cop::Style::SpaceAfterComma do
     expect(cop.messages).to eq(
       ['Space missing after comma.'])
   end
+
+  it 'auto-corrects missing space' do
+    new_source = autocorrect_source(cop, 'each { |s,t| a(1,formats[0,1])}')
+    expect(new_source).to eq('each { |s, t| a(1, formats[0, 1])}')
+  end
 end

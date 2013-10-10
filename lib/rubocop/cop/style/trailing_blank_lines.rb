@@ -19,12 +19,15 @@ module Rubocop
           end
 
           if blank_lines > 0
-            convention(nil,
-                       source_range(processed_source.buffer,
-                                    processed_source[0...-blank_lines],
-                                    0, 1),
-                       format(MSG, blank_lines))
+            range = source_range(processed_source.buffer,
+                                 processed_source[0...-blank_lines],
+                                 0, blank_lines + 1)
+            convention(range, range, format(MSG, blank_lines))
           end
+        end
+
+        def autocorrect(range)
+          @corrections << ->(corrector) { corrector.remove(range) }
         end
       end
     end

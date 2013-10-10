@@ -11,10 +11,16 @@ module Rubocop
           final_line = processed_source.raw_lines.to_a.last
 
           unless final_line.nil? || final_line.end_with?("\n")
-            convention(nil,
-                       source_range(processed_source.buffer,
-                                    processed_source[0...-1],
-                                    final_line.length - 1, 1))
+            range = source_range(processed_source.buffer,
+                                 processed_source[0...-1],
+                                 final_line.length - 1, 1)
+            convention(range, range)
+          end
+        end
+
+        def autocorrect(range)
+          @corrections << lambda do |corrector|
+            corrector.insert_after(range, "\n")
           end
         end
       end

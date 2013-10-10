@@ -25,4 +25,9 @@ describe Rubocop::Cop::Style::SpaceAroundEqualsInParameterDefault do
     inspect_source(cop, ['def f(x, y = 0, z = {})', 'end'])
     expect(cop.messages).to be_empty
   end
+
+  it 'auto-corrects missing space' do
+    new_source = autocorrect_source(cop, ['def f(x, y=0, z=1)', 'end'])
+    expect(new_source).to eq(['def f(x, y = 0, z = 1)', 'end'].join("\n"))
+  end
 end

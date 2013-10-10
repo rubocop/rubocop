@@ -56,4 +56,9 @@ describe Rubocop::Cop::Style::LeadingCommentSpace do
 
     expect(cop.offences).to be_empty
   end
+
+  it 'auto-corrects missing space' do
+    new_source = autocorrect_source(cop, '#comment')
+    expect(new_source).to eq('# comment')
+  end
 end

@@ -20,4 +20,11 @@ describe Rubocop::Cop::Style::TrailingWhitespace do
     inspect_source(cop, ["x = 0\n"])
     expect(cop.offences).to be_empty
   end
+
+  it 'auto-corrects unwanted space' do
+    new_source = autocorrect_source(cop, ['x = 0 ',
+                                          "x = 0\t"])
+    expect(new_source).to eq(['x = 0',
+                              'x = 0'].join("\n"))
+  end
 end
