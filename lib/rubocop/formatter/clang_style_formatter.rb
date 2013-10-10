@@ -12,19 +12,23 @@ module Rubocop
                         smart_path(file).color(:cyan), o.line, o.real_column,
                         colored_severity_code(o), message(o))
 
-          location = o.location
-          source_line = location.source_line
+          source_line = o.location.source_line
 
-          # FIXME: Per the discussion below, we should not have to guard
-          # against Parser::Source::Range#column_range raising an error
-          # on multiline source ranges here -- followup needed.
-          # https://github.com/bbatsov/rubocop/pull/549#issuecomment-25955658
-          if !source_line.blank? && location.begin.line == location.end.line
+          unless source_line.blank?
             output.puts(source_line)
-            output.puts(' ' * o.location.column +
-                        '^' * o.location.column_range.count)
+            output.puts(highlight_line(o.location))
           end
         end
+      end
+
+      def highlight_line(location)
+        column_length = if location.begin.line == location.end.line
+                          location.column_range.count
+                        else
+                          location.source_line.length - location.column
+                        end
+
+        ' ' * location.column + '^' * column_length
       end
     end
   end
