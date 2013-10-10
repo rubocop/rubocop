@@ -78,7 +78,7 @@ describe Rubocop::ProcessedSource do
       end
     end
 
-    context 'when the source has diagnostic with error level' do
+    context 'when the source has diagnostic with fatal level' do
       let(:level) { :fatal }
 
       it 'returns false' do
@@ -86,10 +86,10 @@ describe Rubocop::ProcessedSource do
       end
     end
 
-    context 'when the source has diagnostic with error level' do
+    context 'when the source has diagnostic with warning level' do
       let(:level) { :warning }
 
-      it 'returns false' do
+      it 'returns true' do
         expect(processed_source.valid_syntax?).to be_true
       end
     end
