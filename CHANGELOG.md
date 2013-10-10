@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.14.1 (10/10/2013)
+
 ### New features
 
 * [#551](https://github.com/bbatsov/rubocop/pull/551) - New cop `BracesAroundHashParameters` checks for braces in function calls with hash parameters.
