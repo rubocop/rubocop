@@ -22,10 +22,10 @@ module Rubocop
         def check(node)
           int = integer_part(node)
 
-          if int.size >= min_digits
-            # TODO: handle non-decimal literals as well
-            return if int.start_with?('0')
+          # TODO: handle non-decimal literals as well
+          return if int.start_with?('0')
 
+          if int.size >= min_digits
             if int =~ /\d{4}/ || int =~ /_\d{1,2}_/
               convention(node, :expression)
             end
