@@ -64,7 +64,7 @@ describe Rubocop::Cop::Style::HashSyntax, :config do
     end
   end
 
-  context 'configured to enforce ruby19 style' do
+  context 'configured to enforce hash rockets style' do
     let(:cop_config) { { 'EnforcedStyle' => 'hash_rockets' } }
 
     it 'registers offence for Ruby 1.9 style' do
