@@ -27,6 +27,11 @@ describe Rubocop::Cop::Style::NumericLiterals, :config do
     expect(cop.messages).to be_empty
   end
 
+  it 'does not count a leading minus sign as a digit' do
+    inspect_source(cop, ['a = -1230'])
+    expect(cop.messages).to be_empty
+  end
+
   it 'accepts short numbers without underscore' do
     inspect_source(cop, ['a = 123',
                          'b = 123.456'])

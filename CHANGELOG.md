@@ -6,6 +6,10 @@
 
 * [#557](https://github.com/bbatsov/rubocop/pull/557) - Configuration files for excluded files are no longer loaded.
 
+### Bugs fixed
+
+* [#561](https://github.com/bbatsov/rubocop/pull/561) - Handle properly negative literals in `NumericLiterals` cop.
+
 ## 0.14.1 (10/10/2013)
 
 ### New features

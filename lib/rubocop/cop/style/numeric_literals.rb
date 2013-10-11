@@ -9,14 +9,6 @@ module Rubocop
         MSG = 'Separate every 3 digits in the integer portion of a number' \
           'with underscores(_).'
 
-        def min_digits
-          cop_config['MinDigits']
-        end
-
-        def enough_digits?(number)
-          number.to_s.size >= min_digits
-        end
-
         def on_int(node)
           check(node)
         end
@@ -25,12 +17,12 @@ module Rubocop
           check(node)
         end
 
+        private
+
         def check(node)
-          value, = *node
+          int = integer_part(node)
 
-          if enough_digits?(value)
-            int = integer_part(node)
-
+          if int.size >= min_digits
             # TODO: handle non-decimal literals as well
             return if int.start_with?('0')
 
@@ -41,7 +33,11 @@ module Rubocop
         end
 
         def integer_part(node)
-          node.loc.expression.source.split('.').first
+          node.loc.expression.source.sub(/^[+-]/, '').split('.').first
+        end
+
+        def min_digits
+          cop_config['MinDigits']
         end
       end
     end
