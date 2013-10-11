@@ -927,6 +927,31 @@ describe Rubocop::CLI, :isolated_environment do
                 ''].join("\n"))
     end
 
+    # Being immune to bad configuration files in excluded directories has
+    # become important due to a bug in rubygems
+    # (https://github.com/rubygems/rubygems/issues/680) that makes
+    # installations of, for example, rubocop lack their .rubocop.yml in the
+    # root directory.
+    it 'can exclude a vendor directory with an erroneous config file' do
+      create_file('vendor/bundle/ruby/1.9.1/gems/parser-2.0.0/.rubocop.yml',
+                  ['inherit_from: non_existent.yml'])
+
+      create_file('vendor/bundle/ruby/1.9.1/gems/parser-2.0.0/lib/ex.rb',
+                  ['# encoding: utf-8',
+                   '#' * 90])
+
+      create_file('.rubocop.yml',
+                  ['AllCops:',
+                   '  Excludes:',
+                   '    - vendor/**'])
+
+      cli.run(%w(--format simple))
+      expect($stderr.string).to eq('')
+      expect($stdout.string)
+        .to eq(['', '0 files inspected, no offences detected',
+                ''].join("\n"))
+    end
+
     # Relative exclude paths in .rubocop.yml files are relative to that file,
     # but in configuration files with other names they will be relative to
     # whatever file inherits from them.

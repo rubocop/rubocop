@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#557](https://github.com/bbatsov/rubocop/pull/557) - Configuration files for excluded files are no longer loaded.
+
 ## 0.14.1 (10/10/2013)
 
 ### New features
