@@ -26,43 +26,33 @@ module Rubocop
 
           sym_indices = pairs.all? { |p| word_symbol_pair?(p) }
 
-          if sym_indices
-            pairs.each do |pair|
-              if pair.loc.operator && pair.loc.operator.is?('=>')
-                convention(pair,
-                           pair.loc.expression.begin.join(pair.loc.operator),
-                           MSG_19)
-              end
-            end
-          end
+          check(pairs, '=>', MSG_19) if sym_indices
         end
 
         def hash_rockets_check(node)
           pairs = *node
 
-          pairs.each do |pair|
-            if pair.loc.operator && pair.loc.operator.is?(':')
-              convention(pair,
-                         pair.loc.expression.begin.join(pair.loc.operator),
-                         MSG_HASH_ROCKETS)
-            end
-          end
+          check(pairs, ':', MSG_HASH_ROCKETS)
         end
 
         def autocorrect(node)
           @corrections << lambda do |corrector|
-            if cop_config['EnforcedStyle'] == 'ruby19'
-              replacement = node.loc.expression.source[1..-1]
-                .sub(/\s*=>\s*/, ': ')
-            else
-              replacement = ':' + node.loc.expression.source
-                .sub(/:\s*/, ' => ')
-            end
-            corrector.replace(node.loc.expression, replacement)
+            expr = node.loc.expression
+            corrector.replace(expr, replacement(expr.source))
           end
         end
 
         private
+
+        def check(pairs, delim, msg)
+          pairs.each do |pair|
+            if pair.loc.operator && pair.loc.operator.is?(delim)
+              convention(pair,
+                         pair.loc.expression.begin.join(pair.loc.operator),
+                         msg)
+            end
+          end
+        end
 
         def word_symbol_pair?(pair)
           key, _value = *pair
@@ -73,6 +63,14 @@ module Rubocop
             sym_name =~ /\A[A-Za-z_]\w*\z/
           else
             false
+          end
+        end
+
+        def replacement(source)
+          if cop_config['EnforcedStyle'] == 'ruby19'
+            source[1..-1].sub(/\s*=>\s*/, ': ')
+          else
+            ':' + source.sub(/:\s*/, ' => ')
           end
         end
       end
