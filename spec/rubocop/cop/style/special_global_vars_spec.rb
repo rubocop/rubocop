@@ -30,8 +30,13 @@ describe Rubocop::Cop::Style::SpecialGlobalVars do
     inspect_source(cop, ['puts $$'])
     expect(cop.offences.size).to eq(1)
     expect(cop.messages)
-      .to eq(['Prefer $PID or $PROCESS_ID from English library' +
-        ' over $$.'])
+      .to eq(['Prefer $PROCESS_ID or $PID from the English library over $$.'])
+  end
+
+  it 'is clear about variables from the English library vs those not' do
+    inspect_source(cop, ['puts $*'])
+    expect(cop.messages)
+      .to eq(['Prefer $ARGV from the English library, or ARGV over $*.'])
   end
 
   it 'does not register an offence for backrefs like $1' do
@@ -42,5 +47,10 @@ describe Rubocop::Cop::Style::SpecialGlobalVars do
   it 'auto-corrects $: to $LOAD_PATH' do
     new_source = autocorrect_source(cop, '$:')
     expect(new_source).to eq('$LOAD_PATH')
+  end
+
+  it 'auto-corrects $/ to $INPUT_RECORD_SEPARATOR' do
+    new_source = autocorrect_source(cop, '$/')
+    expect(new_source).to eq('$INPUT_RECORD_SEPARATOR')
   end
 end
