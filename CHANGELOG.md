@@ -9,6 +9,7 @@
 ### Bugs fixed
 
 * [#561](https://github.com/bbatsov/rubocop/pull/561) - Handle properly negative literals in `NumericLiterals` cop.
+* [#567](https://github.com/bbatsov/rubocop/pull/567) - Register an offence when the last hash parameter has braces in `BracesAroundHashParameters` cop.
 
 ## 0.14.1 (10/10/2013)
 

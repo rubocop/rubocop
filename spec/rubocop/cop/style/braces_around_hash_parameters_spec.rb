@@ -71,14 +71,17 @@ describe Rubocop::Cop::Style::BracesAroundHashParameters, :config do
         expect(cop.highlights).to be_empty
       end
 
-      it 'one non-hash parameter followed by a hash parameter with braces' do
-        inspect_source(cop, ['where(1, { y: 2 })'])
-        expect(cop.messages).to be_empty
-        expect(cop.highlights).to be_empty
-      end
     end
 
     describe 'registers an offence for' do
+      it 'one non-hash parameter followed by a hash parameter with braces' do
+        inspect_source(cop, ['where(1, { y: 2 })'])
+        expect(cop.messages).to eq([
+          'Redundant curly braces around a hash parameter.'
+        ])
+        expect(cop.highlights).to eq(['{ y: 2 }'])
+      end
+
       it 'one object method hash parameter with braces' do
         inspect_source(cop, ['x.func({ y: "z" })'])
         expect(cop.messages).to eq([
