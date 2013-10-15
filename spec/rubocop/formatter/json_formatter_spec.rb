@@ -76,7 +76,7 @@ module Rubocop
       it 'outputs #output_hash as JSON' do
         formatter.finished(files)
         json = output.string
-        restored_hash = JSON.parse(json, { symbolize_names: true })
+        restored_hash = JSON.parse(json, symbolize_names: true)
         expect(restored_hash).to eq(formatter.output_hash)
       end
     end
