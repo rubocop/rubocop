@@ -11,6 +11,7 @@
 * [#561](https://github.com/bbatsov/rubocop/pull/561): Handle properly negative literals in `NumericLiterals` cop. ([@bbatsov](https://github.com/bbatsov))
 * [#567](https://github.com/bbatsov/rubocop/pull/567): Register an offence when the last hash parameter has braces in `BracesAroundHashParameters` cop. ([@dblock](https://github.com/dblock))
 * `StringLiterals` cop no longer reports errors for character literals such as ?/. That should be done only by the `CharacterLiterals` cop. ([@jonas054](https://github.com/jonas054))
+* Made auto-correct much less likely to crash due to conflicting corrections ("clobbering"). ([@jonas054](https://github.com/jonas054))
 
 ## 0.14.1 (10/10/2013)
 
