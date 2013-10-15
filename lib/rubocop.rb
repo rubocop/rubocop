@@ -146,6 +146,7 @@ require 'rubocop/cop/style/word_array'
 require 'rubocop/cop/style/braces_around_hash_parameters'
 
 require 'rubocop/cop/rails/has_and_belongs_to_many'
+require 'rubocop/cop/rails/output'
 require 'rubocop/cop/rails/read_attribute'
 require 'rubocop/cop/rails/validation'
 

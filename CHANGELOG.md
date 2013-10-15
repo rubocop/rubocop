@@ -5,6 +5,7 @@
 ### Changes
 
 * [#557](https://github.com/bbatsov/rubocop/pull/557): Configuration files for excluded files are no longer loaded. ([@jonas054](https://github.com/jonas054))
+* New cop `Output` checks for calls to print, puts, etc. in Rails
 
 ### Bugs fixed
 
