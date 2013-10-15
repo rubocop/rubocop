@@ -194,6 +194,17 @@ module Rubocop
         Parser::Source::Range.new(source_buffer, begin_pos,
                                   begin_pos + column_count)
       end
+
+      def range_with_surrounding_space(range, side = :both)
+        src = @processed_source.buffer.source
+        go_left = side == :left || side == :both
+        go_right = side == :right || side == :both
+        begin_pos = range.begin_pos
+        begin_pos -= 1 while go_left && src[begin_pos - 1] =~ /[ \t]/
+        end_pos = range.end_pos
+        end_pos += 1 while go_right && src[end_pos] =~ /[ \t]/
+        Parser::Source::Range.new(@processed_source.buffer, begin_pos, end_pos)
+      end
     end
   end
 end

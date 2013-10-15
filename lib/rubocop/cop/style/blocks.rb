@@ -41,12 +41,10 @@ module Rubocop
             if b.is?('{')
               # If the left brace is immediately preceded by a word character,
               # then we need a space before `do` to get valid Ruby code.
-              padding = if b.source_buffer.source[b.begin_pos - 1, 1] =~ /\w/
-                          ' '
-                        else
-                          ''
-                        end
-              corrector.replace(b, padding + 'do')
+              if b.source_buffer.source[b.begin_pos - 1, 1] =~ /\w/
+                corrector.insert_before(b, ' ')
+              end
+              corrector.replace(b, 'do')
               corrector.replace(e, 'end')
             else
               corrector.replace(b, '{')

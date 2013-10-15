@@ -54,6 +54,18 @@ describe Rubocop::Cop::Style::AlignArray do
                               ']'].join("\n"))
   end
 
+  it 'auto-corrects array within array' do
+    original_source = ['[:l1,',
+                       '  [:l2,',
+                       '    [:l3,',
+                       '      [:l4]]]]']
+    new_source = autocorrect_source(cop, original_source)
+    expect(new_source).to eq(['[:l1,',
+                              ' [:l2,',
+                              '  [:l3,',
+                              '   [:l4]]]]'].join("\n"))
+  end
+
   it 'auto-corrects only elements that begin a line' do
     original_source = ['array = [:bar, {',
                        '         whiz: 2, bang: 3 }, option: 3]']

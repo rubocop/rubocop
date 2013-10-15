@@ -69,8 +69,10 @@ module Rubocop
 
           if style == :semantic
             each_command(method_name, node) do |send_node|
-              convention(send_node, :selector, message(method_name))
-              ignore_node(send_node)
+              unless ignored_node?(send_node)
+                convention(send_node, :selector, message(method_name))
+                ignore_node(send_node)
+              end
             end
           else
             _receiver, selector, _args = *node
