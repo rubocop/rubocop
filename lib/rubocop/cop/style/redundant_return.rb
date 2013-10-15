@@ -39,10 +39,13 @@ module Rubocop
 
         def autocorrect(node)
           @corrections << lambda do |corrector|
-            expr = node.loc.expression
-            replacement = expr.source.sub(/return\s*/, '')
-            replacement = "[#{replacement}]" if node.children.size > 1
-            corrector.replace(expr, replacement)
+            if node.children.size > 1
+              kids = node.children.map { |child| child.loc.expression }
+              corrector.insert_before(kids.first, '[')
+              corrector.insert_after(kids.last, ']')
+            end
+            return_kw = range_with_surrounding_space(node.loc.keyword, :right)
+            corrector.remove(return_kw)
           end
         end
 

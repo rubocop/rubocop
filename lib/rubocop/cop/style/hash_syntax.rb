@@ -37,8 +37,15 @@ module Rubocop
 
         def autocorrect(node)
           @corrections << lambda do |corrector|
-            expr = node.loc.expression
-            corrector.replace(expr, replacement(expr.source))
+            key = node.children.first.loc.expression
+            if cop_config['EnforcedStyle'] == 'ruby19'
+              corrector.insert_after(key, ' ')
+              corrector.replace(key, key.source.sub(/^:(.*)/, '\1:'))
+            else
+              corrector.insert_after(key, ' => ')
+              corrector.insert_before(key, ':')
+            end
+            corrector.remove(range_with_surrounding_space(node.loc.operator))
           end
         end
 
@@ -63,14 +70,6 @@ module Rubocop
             sym_name =~ /\A[A-Za-z_]\w*\z/
           else
             false
-          end
-        end
-
-        def replacement(source)
-          if cop_config['EnforcedStyle'] == 'ruby19'
-            source[1..-1].sub(/\s*=>\s*/, ': ')
-          else
-            ':' + source.sub(/:\s*/, ' => ')
           end
         end
       end

@@ -29,26 +29,46 @@ module Rubocop
 
           @corrections << lambda do |corrector|
             expr = node.loc.expression
-            if column_delta > 0
-              corrector.replace(expr,
-                                expr.source.gsub(/^/, ' ' * column_delta))
-            else
-              offset = 0
-              expr.source.each_line do |line|
-                b = expr.begin_pos + offset
-                if offset == 0
-                  range = Parser::Source::Range.new(expr.source_buffer,
-                                                    b + column_delta,
-                                                    b + line.length)
-                  corrector.replace(range, line)
-                else
-                  range = Parser::Source::Range.new(expr.source_buffer,
-                                                    b, b + line.length)
-                  corrector.replace(range, line[-column_delta..-1])
-                end
-                offset += line.length
+            each_line(expr) do |line_begin_pos, line|
+              starts_with_space =
+                expr.source_buffer.source[line_begin_pos] =~ / /
+              pos_to_remove = if column_delta > 0 || starts_with_space
+                                line_begin_pos
+                              else
+                                line_begin_pos - column_delta.abs
+                              end
+              range = Parser::Source::Range.new(expr.source_buffer,
+                                                pos_to_remove,
+                                                pos_to_remove +
+                                                column_delta.abs)
+              if column_delta > 0
+                corrector.insert_before(range, ' ' * column_delta)
+              else
+                remove(range, corrector)
               end
             end
+          end
+        end
+
+        def remove(range, corrector)
+          original_stderr = $stderr
+          $stderr = StringIO.new # Avoid error messages on console
+          corrector.remove(range)
+        rescue RuntimeError
+          range = Parser::Source::Range.new(range.source_buffer,
+                                            range.begin_pos + 1,
+                                            range.end_pos + 1)
+          retry if range.source =~ /^ +$/
+        ensure
+          $stderr = original_stderr
+        end
+
+        def each_line(expr)
+          offset = 0
+          expr.source.each_line do |line|
+            line_begin_pos = expr.begin_pos + offset
+            yield line_begin_pos, line
+            offset += line.length
           end
         end
       end

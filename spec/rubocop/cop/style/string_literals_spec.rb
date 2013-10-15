@@ -84,6 +84,12 @@ describe Rubocop::Cop::Style::StringLiterals, :config do
       expect(cop.offences).to be_empty
     end
 
+    it 'can handle character literals' do
+      src = 'a = ?/'
+      inspect_source(cop, src)
+      expect(cop.offences).to be_empty
+    end
+
     it 'auto-corrects " with \'' do
       new_source = autocorrect_source(cop, 's = "abc"')
       expect(new_source).to eq("s = 'abc'")

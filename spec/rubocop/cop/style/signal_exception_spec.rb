@@ -66,6 +66,17 @@ describe Rubocop::Cop::Style::SignalException, :config do
         .to eq(['Use `raise` instead of `fail` to rethrow exceptions.'])
     end
 
+    it 'registers only offence for one raise that should be fail' do
+      # This is a special case that has caused double reporting.
+      inspect_source(cop,
+                     ['map do',
+                      "  raise 'I'",
+                      'end.flatten.compact'])
+      expect(cop.offences.size).to eq(1)
+      expect(cop.messages)
+        .to eq(['Use `fail` instead of `raise` to signal exceptions.'])
+    end
+
     it 'accepts raise in def rescue section' do
       inspect_source(cop,
                      ['def test',
