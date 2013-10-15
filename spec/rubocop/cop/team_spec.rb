@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe Rubocop::Cop::Team do
   subject(:team) { described_class.new(cop_classes, config, options) }
-  let(:cop_classes) { Rubocop::Cop::Cop.all }
+  let(:cop_classes) { Rubocop::Cop::Cop.non_rails }
   let(:config) { Rubocop::ConfigLoader.default_configuration }
   let(:options) { nil }
 
