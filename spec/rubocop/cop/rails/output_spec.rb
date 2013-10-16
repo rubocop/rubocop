@@ -33,7 +33,7 @@ describe Rubocop::Cop::Rails::Output, :config do
   it 'should ignore certain files' do
     source = ['print 1']
     processed_source = parse_source(source)
-    processed_source.buffer.stub(:name).and_return("/var/lib/test.rake")
+    processed_source.buffer.stub(:name).and_return('/var/lib/test.rake')
     _investigate(cop, processed_source)
     expect(cop.offences).to be_empty
   end
