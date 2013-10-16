@@ -67,7 +67,7 @@ module Rubocop
         end
 
         def looks_like_trivial_writer?(args, body)
-          args.children.size == 1 &&
+          args.children.size == 1 && args.children[0].type != :restarg &&
             body && body.type == :ivasgn &&
             body.children[1] && body.children[1].type == :lvar
         end

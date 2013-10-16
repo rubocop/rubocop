@@ -201,6 +201,14 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
     expect(cop.offences).to be_empty
   end
 
+  it 'treats splats as non-trivial' do
+    inspect_source(cop,
+                   [' def splatomatic(*values)',
+                    '   @splatomatic = values',
+                    ' end'])
+    expect(cop.offences).to be_empty
+  end
+
   it 'finds oneliner trivials' do
     inspect_source(cop,
                    ['class Oneliner',
