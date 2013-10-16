@@ -24,10 +24,10 @@ task :coverage do
   Rake::Task['spec'].execute
 end
 
-desc 'Run RuboCop over its self'
-Rubocop::RakeTask.new(:inception)
+desc 'Run RuboCop over itself'
+Rubocop::RakeTask.new(:internal_investigation)
 
-task default: [:spec, :inception]
+task default: [:spec, :internal_investigation]
 
 require 'yard'
 YARD::Rake::YardocTask.new
