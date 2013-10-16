@@ -81,6 +81,11 @@ describe Rubocop::Cop::Style::SpaceAroundOperators do
     expect(new_source).to eq('puts 1 + 2')
   end
 
+  it 'accepts operator surrounded by tabs' do
+    inspect_source(cop, ["a\t+\tb"])
+    expect(cop.messages).to be_empty
+  end
+
   it 'accepts operator symbols' do
     inspect_source(cop, ['func(:-)'])
     expect(cop.messages).to be_empty

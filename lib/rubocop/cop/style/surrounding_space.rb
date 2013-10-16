@@ -15,7 +15,7 @@ module Rubocop
             char_preceding_2nd_token =
               @processed_source[t2.pos.line - 1][t2.pos.column - 2]
           end
-          t2.pos.line > t1.pos.line || char_preceding_2nd_token == ' '
+          t2.pos.line > t1.pos.line || char_preceding_2nd_token =~ /[ \t]/
         end
 
         def index_of_first_token(node)
