@@ -1,6 +1,5 @@
 # encoding: utf-8
 
-require 'rubocop'
 require 'rake'
 require 'rake/tasklib'
 
@@ -32,6 +31,10 @@ module Rubocop
     end
 
     def run_task(verbose)
+      # We lazy-load rubocop so that the task doesn't dramatically impact the
+      # load time of your Rakefile.
+      require 'rubocop'
+
       cli = CLI.new
       puts 'Running RuboCop...' if verbose
       result = cli.run(patterns)

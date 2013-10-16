@@ -13,6 +13,7 @@ end
 require 'rake'
 require 'rspec/core'
 require 'rspec/core/rake_task'
+require 'rubocop/rake_task'
 RSpec::Core::RakeTask.new(:spec) do |spec|
   spec.pattern = FileList['spec/**/*_spec.rb']
 end
@@ -23,7 +24,10 @@ task :coverage do
   Rake::Task['spec'].execute
 end
 
-task default: :spec
+desc 'Run RuboCop over its self'
+Rubocop::RakeTask.new(:inception)
+
+task default: [:spec, :inception]
 
 require 'yard'
 YARD::Rake::YardocTask.new

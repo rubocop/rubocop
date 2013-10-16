@@ -8,6 +8,7 @@
 * New cop `Output` checks for calls to print, puts, etc. in Rails
 * [#565](https://github.com/bbatsov/rubocop/pull/565) - `$GLOBAL_VAR from English library` should no longer be inserted when autocorrecting short-form global variables like `$!`.
 * [#566](https://github.com/bbatsov/rubocop/pull/566) - Methods that just assign a splat to an ivar are no longer considered trivial writers.
+* [#571](https://github.com/bbatsov/rubocop/pull/571): The default rake task now runs RuboCop over its self!
 
 ### Bugs fixed
 
