@@ -7,6 +7,7 @@
 * [#557](https://github.com/bbatsov/rubocop/pull/557): Configuration files for excluded files are no longer loaded. ([@jonas054](https://github.com/jonas054))
 * New cop `Output` checks for calls to print, puts, etc. in Rails
 * [#566](https://github.com/bbatsov/rubocop/pull/566) - Methods that just assign a splat to an ivar are no longer considered trivial writers.
+* [#571](https://github.com/bbatsov/rubocop/pull/571): The default rake task now runs RuboCop over its self!
 
 ### Bugs fixed
 
