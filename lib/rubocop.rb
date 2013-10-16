@@ -2,6 +2,7 @@
 
 require 'rainbow'
 require 'English'
+require 'set'
 require 'parser/current'
 require 'ast/sexp'
 require 'powerpack'
