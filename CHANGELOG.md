@@ -2,35 +2,38 @@
 
 ## master (unreleased)
 
+### New features
+
+* New cop `Output` checks for calls to print, puts, etc. in Rails. ([@daviddavis][])
+
 ### Changes
 
-* [#557](https://github.com/bbatsov/rubocop/pull/557): Configuration files for excluded files are no longer loaded. ([@jonas054](https://github.com/jonas054))
-* New cop `Output` checks for calls to print, puts, etc. in Rails
-* [#565](https://github.com/bbatsov/rubocop/pull/565) - `$GLOBAL_VAR from English library` should no longer be inserted when autocorrecting short-form global variables like `$!`.
-* [#566](https://github.com/bbatsov/rubocop/pull/566) - Methods that just assign a splat to an ivar are no longer considered trivial writers.
-* [#571](https://github.com/bbatsov/rubocop/pull/571): The default rake task now runs RuboCop over its self!
+* [#557](https://github.com/bbatsov/rubocop/pull/557): Configuration files for excluded files are no longer loaded. ([@jonas054][])
+* [#571](https://github.com/bbatsov/rubocop/pull/571): The default rake task now runs RuboCop over its self! ([@nevir][])
 
 ### Bugs fixed
 
-* [#561](https://github.com/bbatsov/rubocop/pull/561): Handle properly negative literals in `NumericLiterals` cop. ([@bbatsov](https://github.com/bbatsov))
-* [#567](https://github.com/bbatsov/rubocop/pull/567): Register an offence when the last hash parameter has braces in `BracesAroundHashParameters` cop. ([@dblock](https://github.com/dblock))
-* `StringLiterals` cop no longer reports errors for character literals such as ?/. That should be done only by the `CharacterLiterals` cop. ([@jonas054](https://github.com/jonas054))
-* Made auto-correct much less likely to crash due to conflicting corrections ("clobbering"). ([@jonas054](https://github.com/jonas054))
+* [#561](https://github.com/bbatsov/rubocop/pull/561): Handle properly negative literals in `NumericLiterals` cop. ([@bbatsov][])
+* [#567](https://github.com/bbatsov/rubocop/pull/567): Register an offence when the last hash parameter has braces in `BracesAroundHashParameters` cop. ([@dblock][])
+* `StringLiterals` cop no longer reports errors for character literals such as ?/. That should be done only by the `CharacterLiterals` cop. ([@jonas054][])
+* Made auto-correct much less likely to crash due to conflicting corrections ("clobbering"). ([@jonas054][])
+* [#565](https://github.com/bbatsov/rubocop/pull/565): `$GLOBAL_VAR from English library` should no longer be inserted when autocorrecting short-form global variables like `$!`. ([@nevir][])
+* [#566](https://github.com/bbatsov/rubocop/pull/566): Methods that just assign a splat to an ivar are no longer considered trivial writers. ([@nevir][])
 
 ## 0.14.1 (10/10/2013)
 
 ### New features
 
-* [#551](https://github.com/bbatsov/rubocop/pull/551): New cop `BracesAroundHashParameters` checks for braces in function calls with hash parameters. ([@dblock](https://github.com/dblock))
+* [#551](https://github.com/bbatsov/rubocop/pull/551): New cop `BracesAroundHashParameters` checks for braces in function calls with hash parameters. ([@dblock][])
 * New cop `SpaceAfterNot` tracks redundant space after the `!` operator. ([@bbatsov](https://github.com/bbatsov))
 
 ### Bugs fixed
 
-* Fix bug concerning table and separator alignment of multi-line hash with multiple keys on the same line. ([@jonas054](https://github.com/jonas054))
-* [#550](https://github.com/bbatsov/rubocop/pull/550): Fix a bug where `ClassLength` counted lines of inner classes/modules. ([@yujinakayama](https://github.com/yujinakayama))
-* [#550](https://github.com/bbatsov/rubocop/pull/550): Fix a false positive for namespace class in `Documentation`. ([@yujinakayama](https://github.com/yujinakayama))
-* [#556](https://github.com/bbatsov/rubocop/pull/556): Fix "Parser::Source::Range spans more than one line" bug in clang formatter. ([@yujinakayama](https://github.com/yujinakayama))
-* [#552](https://github.com/bbatsov/rubocop/pull/552): `RaiseArgs` allows exception constructor calls with more than one 1 argument. ([@famished-tiger](https://github.com/famished-tiger))
+* Fix bug concerning table and separator alignment of multi-line hash with multiple keys on the same line. ([@jonas054][])
+* [#550](https://github.com/bbatsov/rubocop/pull/550): Fix a bug where `ClassLength` counted lines of inner classes/modules. ([@yujinakayama][])
+* [#550](https://github.com/bbatsov/rubocop/pull/550): Fix a false positive for namespace class in `Documentation`. ([@yujinakayama][])
+* [#556](https://github.com/bbatsov/rubocop/pull/556): Fix "Parser::Source::Range spans more than one line" bug in clang formatter. ([@yujinakayama][])
+* [#552](https://github.com/bbatsov/rubocop/pull/552): `RaiseArgs` allows exception constructor calls with more than one 1 argument. ([@bbatsov][])
 
 ## 0.14.0 (07/10/2013)
 
@@ -510,3 +513,10 @@
 
 * [#59](https://github.com/bbatsov/rubocop/issues/59): Interpolated variables not enclosed in braces are not noticed.
 * [#42](https://github.com/bbatsov/rubocop/issues/42): Received malformed format string ArgumentError from rubocop.
+
+[@bbatsov]: https://github.com/bbatsov
+[@jonas054]: https://github.com/jonas054
+[@yujinakayama]: https://github.com/yujinakayama
+[@dblock]: https://github.com/dblock
+[@nevir]: https://github.com/nevir
+[@daviddavis]: https://github.com/daviddavis
