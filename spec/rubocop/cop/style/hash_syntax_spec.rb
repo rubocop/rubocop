@@ -6,7 +6,10 @@ describe Rubocop::Cop::Style::HashSyntax, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'configured to enforce ruby19 style' do
-    let(:cop_config) { { 'EnforcedStyle' => 'ruby19' } }
+    let(:config) do
+      Rubocop::Config.new('HashSyntax' => { 'EnforcedStyle' => 'ruby19' },
+                          'SpaceAroundOperators' => { 'Enabled' => true })
+    end
 
     it 'registers offence for hash rocket syntax when new is possible' do
       inspect_source(cop, ['x = { :a => 0 }'])
@@ -61,6 +64,23 @@ describe Rubocop::Cop::Style::HashSyntax, :config do
     it 'auto-corrects old to new style' do
       new_source = autocorrect_source(cop, '{ :a => 1, :b   =>  2}')
       expect(new_source).to eq('{ a: 1, b: 2}')
+    end
+
+    it 'does not auto-correct if it interferes with SpaceAroundOperators' do
+      new_source = autocorrect_source(cop, '{ :a=>1, :b=>2 }')
+      expect(new_source).to eq('{ :a=>1, :b=>2 }')
+    end
+
+    context 'with SpaceAroundOperators disabled' do
+      let(:config) do
+        Rubocop::Config.new('HashSyntax' => { 'EnforcedStyle' => 'ruby19' },
+                            'SpaceAroundOperators' => { 'Enabled' => false })
+      end
+
+      it 'auto-corrects even if there is no space around =>' do
+        new_source = autocorrect_source(cop, '{ :a=>1, :b=>2 }')
+        expect(new_source).to eq('{ a: 1, b: 2 }')
+      end
     end
   end
 

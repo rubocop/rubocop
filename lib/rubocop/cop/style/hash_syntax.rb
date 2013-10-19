@@ -36,8 +36,18 @@ module Rubocop
         end
 
         def autocorrect(node)
+          key = node.children.first.loc.expression
+          op = node.loc.operator
+          if cop_config['EnforcedStyle'] == 'ruby19' &&
+              !space_before_operator?(op, key) &&
+              config.for_cop('SpaceAroundOperators')['Enabled']
+            # Don't do the correction if there is no space before '=>'. The
+            # combined corrections of this cop and SpaceAroundOperators could
+            # produce code with illegal syntax.
+            fail CorrectionNotPossible
+          end
+
           @corrections << lambda do |corrector|
-            key = node.children.first.loc.expression
             if cop_config['EnforcedStyle'] == 'ruby19'
               corrector.insert_after(key, ' ')
               corrector.replace(key, key.source.sub(/^:(.*)/, '\1:'))
@@ -45,11 +55,15 @@ module Rubocop
               corrector.insert_after(key, ' => ')
               corrector.insert_before(key, ':')
             end
-            corrector.remove(range_with_surrounding_space(node.loc.operator))
+            corrector.remove(range_with_surrounding_space(op))
           end
         end
 
         private
+
+        def space_before_operator?(op, key)
+          op.begin_pos - key.begin_pos - key.source.length > 0
+        end
 
         def check(pairs, delim, msg)
           pairs.each do |pair|

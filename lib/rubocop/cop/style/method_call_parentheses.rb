@@ -14,6 +14,13 @@ module Rubocop
         end
 
         def autocorrect(node)
+          # Bail out if the call is going to be auto-corrected by EmptyLiteral.
+          if config.for_cop('EmptyLiteral')['Enabled'] &&
+              [EmptyLiteral::HASH_NODE,
+               EmptyLiteral::ARRAY_NODE,
+               EmptyLiteral::STR_NODE].include?(node)
+            fail CorrectionNotPossible
+          end
           @corrections << lambda do |corrector|
             corrector.remove(node.loc.begin)
             corrector.remove(node.loc.end)

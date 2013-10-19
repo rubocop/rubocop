@@ -2,6 +2,8 @@
 
 module Rubocop
   module Cop
+    class CorrectionNotPossible < Exception; end
+
     # Store for all cops with helper functions
     class CopStore < ::Array
 
@@ -124,10 +126,14 @@ module Rubocop
 
         message = message ? message : message(node)
         message = debug? ? "#{name}: #{message}" : message
-        @offences <<
-          Offence.new(severity, location, message, name, autocorrect?)
 
-        autocorrect(node) if autocorrect?
+        corrected = begin
+                      autocorrect(node) if autocorrect?
+                      autocorrect?
+                    rescue CorrectionNotPossible
+                      false
+                    end
+        @offences << Offence.new(severity, location, message, name, corrected)
       end
 
       def convention(node, location, message = nil)
