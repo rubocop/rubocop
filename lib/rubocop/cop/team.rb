@@ -25,9 +25,9 @@ module Rubocop
         begin
           processed_source = SourceParser.parse_file(file)
         rescue Encoding::UndefinedConversionError, ArgumentError => e
-          handle_error(e,
-                       "An error occurred while parsing #{file}.".color(:red))
-          return []
+          range = Struct.new(:line, :column, :source_line).new(1, 0, '')
+          return [Offence.new(:fatal, range, e.message.capitalize + '.',
+                              'Parser')]
         end
 
         # If we got any syntax errors, return only the syntax offences.
