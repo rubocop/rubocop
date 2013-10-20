@@ -164,6 +164,10 @@ SpaceInsideHashLiteralBraces:
 SymbolName:
   AllowCamelCase: true
 
+Syntax:
+  EnforceArgumentPrefixParentheses: true
+  OtherDiagnostics: true
+
 # TrivialAccessors doesn't require exact name matches and doesn't allow
 # predicated methods by default.
 TrivialAccessors:

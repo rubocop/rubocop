@@ -5,6 +5,7 @@
 ### New features
 
 * New cop `Output` checks for calls to print, puts, etc. in Rails. ([@daviddavis][])
+* [#581](https://github.com/bbatsov/rubocop/pull/581): The `Syntax` cop now categorizes 'interpreted as argument prefix' warnings.  You can disable them by configuring it with `EnforceArgumentPrefixParentheses: false`.
 
 ### Changes
 
