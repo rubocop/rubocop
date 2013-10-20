@@ -498,7 +498,10 @@ describe Rubocop::CLI, :isolated_environment do
                                '# encoding: utf-8',
                                "# #{'f9'.hex.chr}#{'29'.hex.chr}"
                               ])
-    expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(0)
+    expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
+    expect($stdout.string)
+      .to eq(["#{abs('example.rb')}:1:1: F: Invalid byte sequence in utf-8.",
+              ''].join("\n"))
   end
 
   describe 'rubocop:disable comment' do
