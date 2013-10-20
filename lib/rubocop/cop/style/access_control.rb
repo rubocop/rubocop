@@ -7,7 +7,7 @@ module Rubocop
       # Modifiers should be indented as deeps are method definitions and
       # surrounded by blank lines.
       class AccessControl < Cop
-        INDENT_MSG = 'Indent %s as deep as method definitions.'
+        INDENT_MSG = 'Indent %s as deep as %s definitions.'
         BLANK_MSG = 'Keep a blank line before and after %s.'
 
         PRIVATE_NODE = s(:send, nil, :private)
@@ -32,9 +32,11 @@ module Rubocop
                   send_start_col = send_node.loc.expression.column
                   selector = send_node.loc.selector.source
 
-                  if send_start_col - 2 != class_start_col
+                  if send_start_col != class_start_col + expected_indent_offset
                     convention(send_node, :expression,
-                               format(INDENT_MSG, selector))
+                               format(INDENT_MSG,
+                                      selector,
+                                      cop_config['IndentDepth']))
                   end
 
                   send_line = send_node.loc.line
@@ -57,6 +59,14 @@ module Rubocop
           receiver_node, method_name, *_ = *send_node
           return false unless method_name == :new
           %w(Class Module).include?(Util.const_name(receiver_node))
+        end
+
+        def expected_indent_offset
+          case cop_config['IndentDepth'].downcase
+          when 'class' then 0
+          when 'method' then 2
+          else fail 'Unknown IndentDepth specified'
+          end
         end
 
         def modifier_node?(node)
