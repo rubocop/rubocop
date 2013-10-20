@@ -52,4 +52,19 @@ describe Rubocop::Cop::Style::SpaceAfterMethodName do
                     'end'])
     expect(cop.offences).to be_empty
   end
+
+  it 'auto-corrects unwanted space' do
+    new_source = autocorrect_source(cop, ['def func (x)',
+                                          '  a',
+                                          'end',
+                                          'def self.func (x)',
+                                          '  a',
+                                          'end'])
+    expect(new_source).to eq(['def func(x)',
+                              '  a',
+                              'end',
+                              'def self.func(x)',
+                              '  a',
+                              'end'].join("\n"))
+  end
 end

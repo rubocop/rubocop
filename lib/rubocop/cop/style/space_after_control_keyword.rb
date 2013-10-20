@@ -25,6 +25,12 @@ module Rubocop
             on_keyword(node)
           end
         end
+
+        def autocorrect(node)
+          @corrections << lambda do |corrector|
+            corrector.insert_after(node.loc.keyword, ' ')
+          end
+        end
       end
     end
   end

@@ -22,4 +22,9 @@ describe Rubocop::Cop::Style::FinalNewline do
     inspect_source(cop, source)
     expect(cop.offences).to be_empty
   end
+
+  it 'auto-corrects missing newline' do
+    new_source = autocorrect_source(cop, ['x = 0'])
+    expect(new_source).to eq(['x = 0', ''].join("\n"))
+  end
 end

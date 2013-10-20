@@ -44,4 +44,27 @@ describe Rubocop::Cop::Style::SpaceBeforeModifierKeyword do
     inspect_source(cop, 'a ? b : c')
     expect(cop.offences).to be_empty
   end
+
+  it 'auto-corrects missing space' do
+    new_source = autocorrect_source(cop, ['(a = 3)if a == 2',
+                                          'a = "test"if a == 2',
+                                          'a = 42unless a == 2',
+                                          'a = [1,2,3]unless a == 2',
+                                          'a = {:a => "b"}if a == 2',
+                                          '(a = 3)while b',
+                                          'a = "test"until b',
+                                          'a = 42while b',
+                                          'a = [1,2,3]until b',
+                                          'a = {:a => "b"}while b'])
+    expect(new_source).to eq(['(a = 3) if a == 2',
+                              'a = "test" if a == 2',
+                              'a = 42 unless a == 2',
+                              'a = [1,2,3] unless a == 2',
+                              'a = {:a => "b"} if a == 2',
+                              '(a = 3) while b',
+                              'a = "test" until b',
+                              'a = 42 while b',
+                              'a = [1,2,3] until b',
+                              'a = {:a => "b"} while b'].join("\n"))
+  end
 end

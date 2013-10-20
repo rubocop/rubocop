@@ -11,11 +11,21 @@ describe Rubocop::Cop::Style::SpaceAroundOperators do
       ["Surrounding space missing for operator '='."] * 3)
   end
 
+  it 'auto-corrects assignment without space on both sides' do
+    new_source = autocorrect_source(cop, ['x=0', 'y= 0', 'z =0'])
+    expect(new_source).to eq(['x = 0', 'y = 0', 'z = 0'].join("\n"))
+  end
+
   it 'registers an offence for ternary operator without space' do
     inspect_source(cop, ['x == 0?1:2'])
     expect(cop.messages).to eq(
       ["Surrounding space missing for operator '?'.",
        "Surrounding space missing for operator ':'."])
+  end
+
+  it 'auto-corrects a ternary operator without space' do
+    new_source = autocorrect_source(cop, 'x == 0?1:2')
+    expect(new_source).to eq('x == 0 ? 1 : 2')
   end
 
   it 'registers an offence in presence of modifier if statement' do
@@ -41,6 +51,10 @@ describe Rubocop::Cop::Style::SpaceAroundOperators do
     expect(cop.offences.map(&:line)).to eq([1, 2])
     expect(cop.messages).to eq(
       ["Surrounding space missing for operator '='."] * 2)
+
+    new_source = autocorrect_source(cop, src)
+    expect(new_source)
+      .to eq(src.map { |line| line.sub(/=/, ' = ') }.join("\n"))
   end
 
   it 'registers an offence for binary operators that could be unary' do
@@ -51,10 +65,25 @@ describe Rubocop::Cop::Style::SpaceAroundOperators do
        "Surrounding space missing for operator '+'."])
   end
 
+  it 'auto-corrects missing space in binary operators that could be unary' do
+    new_source = autocorrect_source(cop, ['a-3', 'x&0xff', 'z+0'])
+    expect(new_source).to eq(['a - 3', 'x & 0xff', 'z + 0'].join("\n"))
+  end
+
   it 'registers an offence for arguments to a method' do
     inspect_source(cop, ['puts 1+2'])
     expect(cop.messages).to eq(
       ["Surrounding space missing for operator '+'."])
+  end
+
+  it 'auto-corrects missing space in arguments to a method' do
+    new_source = autocorrect_source(cop, 'puts 1+2')
+    expect(new_source).to eq('puts 1 + 2')
+  end
+
+  it 'accepts operator surrounded by tabs' do
+    inspect_source(cop, ["a\t+\tb"])
+    expect(cop.messages).to be_empty
   end
 
   it 'accepts operator symbols' do
@@ -156,6 +185,13 @@ describe Rubocop::Cop::Style::SpaceAroundOperators do
               "Surrounding space missing for operator '&&'."])
   end
 
+  it 'auto-corrects missing space' do
+    new_source = autocorrect_source(cop, ['x+= a+b-c*d/e%f^g|h&i||j',
+                                          'y -=k&&l'])
+    expect(new_source).to eq(['x += a + b - c * d / e % f ^ g | h & i || j',
+                              'y -= k && l'].join("\n"))
+  end
+
   it 'accepts operators with spaces' do
     inspect_source(cop,
                    ['x += a + b - c * d / e % f ^ g | h & i || j',
@@ -179,6 +215,13 @@ describe Rubocop::Cop::Style::SpaceAroundOperators do
     inspect_source(cop, ['x = a * b ** 2'])
     expect(cop.messages).to eq(
       ['Space around operator ** detected.'])
+  end
+
+  it 'auto-corrects unwanted space around **' do
+    new_source = autocorrect_source(cop, ['x = a * b ** 2',
+                                          'y = a * b** 2'])
+    expect(new_source).to eq(['x = a * b**2',
+                              'y = a * b**2'].join("\n"))
   end
 
   it 'accepts exponent operator without spaces' do

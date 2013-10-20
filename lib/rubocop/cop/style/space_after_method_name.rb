@@ -25,7 +25,13 @@ module Rubocop
                                                             expr.begin_pos - 1,
                                                             expr.begin_pos)
           if pos_before_left_paren.source =~ /\s/
-            convention(nil, pos_before_left_paren)
+            convention(pos_before_left_paren, pos_before_left_paren)
+          end
+        end
+
+        def autocorrect(pos_before_left_paren)
+          @corrections << lambda do |corrector|
+            corrector.remove(pos_before_left_paren)
           end
         end
       end

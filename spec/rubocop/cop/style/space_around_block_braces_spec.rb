@@ -35,6 +35,11 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces, :config do
     expect(cop.highlights).to eq(['}'])
   end
 
+  it 'auto-corrects missing space' do
+    new_source = autocorrect_source(cop, 'each { puts}')
+    expect(new_source).to eq('each { puts }')
+  end
+
   context 'with passed in parameters' do
     it 'accepts left brace with inner space' do
       inspect_source(cop, ['each { |x| puts }'])
@@ -46,6 +51,11 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces, :config do
       inspect_source(cop, ['each {|x| puts }'])
       expect(cop.messages).to eq(['Space between { and | missing.'])
       expect(cop.highlights).to eq(['{'])
+    end
+
+    it 'auto-corrects missing space' do
+      new_source = autocorrect_source(cop, 'each{|x| puts }')
+      expect(new_source).to eq('each { |x| puts }')
     end
 
     context 'and space before block parameters not allowed' do
@@ -60,6 +70,11 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces, :config do
         inspect_source(cop, ['each { |x| puts }'])
         expect(cop.messages).to eq(['Space between { and | detected.'])
         expect(cop.highlights).to eq([' '])
+      end
+
+      it 'auto-corrects unwanted space' do
+        new_source = autocorrect_source(cop, 'each { |x| puts }')
+        expect(new_source).to eq('each {|x| puts }')
       end
 
       it 'accepts left brace without inner space' do
@@ -102,6 +117,11 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces, :config do
       expect(cop.highlights).to eq(['{'])
     end
 
+    it 'auto-corrects missing space' do
+      new_source = autocorrect_source(cop, 'each{ puts }')
+      expect(new_source).to eq('each {puts}')
+    end
+
     context 'with passed in parameters' do
       context 'and space before block parameters allowed' do
         it 'accepts left brace with inner space' do
@@ -114,6 +134,11 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces, :config do
           inspect_source(cop, ['each {|x| puts}'])
           expect(cop.messages).to eq(['Space between { and | missing.'])
           expect(cop.highlights).to eq(['{'])
+        end
+
+        it 'auto-corrects missing space' do
+          new_source = autocorrect_source(cop, 'each {|x| puts}')
+          expect(new_source).to eq('each { |x| puts}')
         end
       end
 
@@ -129,6 +154,11 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces, :config do
           inspect_source(cop, ['each { |x| puts}'])
           expect(cop.messages).to eq(['Space between { and | detected.'])
           expect(cop.highlights).to eq([' '])
+        end
+
+        it 'auto-corrects unwanted space' do
+          new_source = autocorrect_source(cop, 'each { |x| puts}')
+          expect(new_source).to eq('each {|x| puts}')
         end
       end
     end
