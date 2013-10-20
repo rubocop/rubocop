@@ -30,4 +30,28 @@ describe Rubocop::Cop::Lint::Syntax do
       expect(offence.cop_name).to eq('Syntax')
     end
   end
+
+  describe 'enforced categories', :config do
+    subject(:cop) { described_class.new(config) }
+    let(:cop_config) { { category => true, 'OtherDiagnostics' => false } }
+
+    describe 'parentheses around calls with argument prefix' do
+      let(:category) { 'EnforceArgumentPrefixParentheses' }
+
+      it 'should categorize "`*\' interpreted as argument prefix" warnings' do
+        inspect_source(cop, ['foo *bar'])
+        expect(cop.offences.size).to eq(1)
+      end
+
+      it 'should categorize "`&\' interpreted as argument prefix" warnings' do
+        inspect_source(cop, ['foo &bar'])
+        expect(cop.offences.size).to eq(1)
+      end
+
+      it 'should not complain when parentheses exist' do
+        inspect_source(cop, ['foo(*bar)', 'foo(&bar)'])
+        expect(cop.offences.size).to eq(0)
+      end
+    end
+  end
 end
