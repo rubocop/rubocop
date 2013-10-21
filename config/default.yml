@@ -16,9 +16,10 @@ AllCops:
   # directory .rubocop.yml files, or by giving the -R/--rails option.
   RunRailsCops: false
 
-# Indent private/protected as deep as method definitions
-AccessControl:
-  IndentDepth: method
+# Indent private/protected/public as deep as method definitions
+AccessModifierIndentation:
+  # supported styles are "indent" and "outdent"
+  EnforcedStyle: indent
 
 # Align the elements of a hash literal if they span more than one line.
 AlignHash:

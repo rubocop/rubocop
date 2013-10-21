@@ -6,9 +6,8 @@ module Rubocop
       # A couple of checks related to the use method visibility modifiers.
       # Modifiers should be indented as deeps are method definitions and
       # surrounded by blank lines.
-      class AccessControl < Cop
-        INDENT_MSG = 'Indent %s as deep as %s definitions.'
-        BLANK_MSG = 'Keep a blank line before and after %s.'
+      class AccessModifierIndentation < Cop
+        MSG = '%s access modifiers like %s.'
 
         PRIVATE_NODE = s(:send, nil, :private)
         PROTECTED_NODE = s(:send, nil, :protected)
@@ -30,21 +29,9 @@ module Rubocop
               on_node(:send, node, [:class, :module, :sclass]) do |send_node|
                 if modifier_node?(send_node)
                   send_start_col = send_node.loc.expression.column
-                  selector = send_node.loc.selector.source
 
                   if send_start_col != class_start_col + expected_indent_offset
-                    convention(send_node, :expression,
-                               format(INDENT_MSG,
-                                      selector,
-                                      cop_config['IndentDepth']))
-                  end
-
-                  send_line = send_node.loc.line
-
-                  unless processed_source[send_line].chomp.empty? &&
-                      processed_source[send_line - 2].chomp.empty?
-                    convention(send_node, :expression,
-                               format(BLANK_MSG, selector))
+                    convention(send_node, :expression)
                   end
                 end
               end
@@ -54,6 +41,12 @@ module Rubocop
 
         private
 
+        def message(node)
+          format(MSG,
+                 cop_config['EnforcedStyle'].capitalize,
+                 node.loc.selector.source)
+        end
+
         def class_constructor?(block_node)
           send_node = block_node.children.first
           receiver_node, method_name, *_ = *send_node
@@ -62,10 +55,10 @@ module Rubocop
         end
 
         def expected_indent_offset
-          case cop_config['IndentDepth'].downcase
-          when 'class' then 0
-          when 'method' then 2
-          else fail 'Unknown IndentDepth specified'
+          case cop_config['EnforcedStyle'].downcase
+          when 'outdent' then 0
+          when 'indent' then 2
+          else fail 'Unknown EnforcedStyle specified'
           end
         end
 

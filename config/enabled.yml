@@ -1,9 +1,7 @@
 # These are all the cops that are enabled in the default configuration.
 
-AccessControl:
-  Description: >
-                  Check indentation of private/protected visibility modifiers
-                  and ensure there are blank lines before and after.
+AccessModifierIndentation:
+  Description: Check indentation of private/protected visibility modifiers.
   Enabled: true
 
 Alias:
@@ -123,6 +121,10 @@ DotPosition:
 
 EmptyLines:
   Description: "Don't use several empty lines in a row."
+  Enabled: true
+
+EmptyLinesAroundAccessModifier:
+  Description: "Keep blank lines around access modifiers."
   Enabled: true
 
 EmptyLineBetweenDefs:
