@@ -2,8 +2,8 @@
 
 AccessControl:
   Description: >
-                  Indent private/protected as deep as defs and keep blank
-                  lines around them.
+                  Check indentation of private/protected visibility modifiers
+                  and ensure there are blank lines before and after.
   Enabled: true
 
 Alias:
