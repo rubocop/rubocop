@@ -6,49 +6,178 @@ module Rubocop
       # Here we check if the keys, separators, and values of a multi-line hash
       # literal are aligned.
       class AlignHash < Cop
-        MSG = 'Align the elements of a hash literal if they span more than ' +
-          'one line.'
-
-        def on_hash(node)
-          first_pair = node.children.first
-
-          styles = [cop_config['EnforcedHashRocketStyle'],
-                    cop_config['EnforcedColonStyle']]
-
-          if styles.include?('table') || styles.include?('separator')
-            return if any_pairs_on_the_same_line?(node)
+        # Handles calculation of deltas (deviations from correct alignment)
+        # when the enforced style is 'key'.
+        class KeyAlignment
+          def checkable_layout(_node)
+            true
           end
 
-          if styles.include?('table')
+          def deltas_for_first_pair(*_)
+            {} # The first pair is always considered correct.
+          end
+
+          def deltas(first_pair, prev_pair, current_pair)
+            if current_pair.loc.line == prev_pair.loc.line
+              {}
+            else
+              { key: first_pair.loc.column - current_pair.loc.column }
+            end
+          end
+        end
+
+        # Common functionality for the styles where not only keys, but also
+        # values are aligned.
+        class AlignmentOfValues
+          def checkable_layout(node)
+            !any_pairs_on_the_same_line?(node) && all_have_same_sparator?(node)
+          end
+
+          def deltas(first_pair, prev_pair, current_pair)
+            key_delta = key_delta(first_pair, current_pair)
+            current_separator = current_pair.loc.operator
+            separator_delta = separator_delta(first_pair, current_separator,
+                                              key_delta)
+            value_delta = value_delta(first_pair, current_pair) -
+              key_delta - separator_delta
+
+            { key: key_delta, separator: separator_delta, value: value_delta }
+          end
+
+          private
+
+          def any_pairs_on_the_same_line?(node)
+            lines_of_the_children = node.children.map do |pair|
+              key, _value = *pair
+              key.loc.line
+            end
+            lines_of_the_children.uniq.size < lines_of_the_children.size
+          end
+
+          def all_have_same_sparator?(node)
+            first_separator = node.children.first.loc.operator.source
+            node.children[1..-1].all? do |pair|
+              pair.loc.operator.is?(first_separator)
+            end
+          end
+        end
+
+        # Handles calculation of deltas when the enforced style is 'table'.
+        class TableAlignment < AlignmentOfValues
+          # The table style is the only one where the first key-value pair can
+          # be considered to have bad alignment.
+          def deltas_for_first_pair(first_pair, node)
             key_widths = node.children.map do |pair|
               key, _value = *pair
               key.loc.expression.source.length
             end
             @max_key_width = key_widths.max
-            if first_pair
-              separator_delta = separator_delta(first_pair,
-                                                first_pair.loc.operator, 0,
-                                                enforced_style(first_pair))
-              @column_deltas = {
-                separator: separator_delta,
-                value:     value_delta(nil, first_pair) - separator_delta
-              }
-              convention(first_pair, :expression) unless good_alignment?
+
+            separator_delta = separator_delta(first_pair,
+                                              first_pair.loc.operator, 0)
+            {
+              separator: separator_delta,
+              value:     value_delta(first_pair, first_pair) - separator_delta
+            }
+          end
+
+          private
+
+          def key_delta(first_pair, current_pair)
+            first_pair.loc.column - current_pair.loc.column
+          end
+
+          def separator_delta(first_pair, current_separator, key_delta)
+            if current_separator.is?(':')
+              0 # Colon follows directly after key
+            else
+              first_pair.loc.column + @max_key_width + 1 -
+                current_separator.column - key_delta
             end
           end
 
+          def value_delta(first_pair, current_pair)
+            first_key, _ = *first_pair
+            _, current_value = *current_pair
+            correct_value_column = first_key.loc.column +
+              spaced_separator(current_pair).length + @max_key_width
+            correct_value_column - current_value.loc.column
+          end
+
+          def spaced_separator(node)
+            node.loc.operator.is?('=>') ? ' => ' : ': '
+          end
+        end
+
+        # Handles calculation of deltas when the enforced style is 'separator'.
+        class SeparatorAlignment < AlignmentOfValues
+          def deltas_for_first_pair(first_pair, node)
+            {} # The first pair is always considered correct.
+          end
+
+          private
+
+          def key_delta(first_pair, current_pair)
+            key_end_column(first_pair) - key_end_column(current_pair)
+          end
+
+          def key_end_column(pair)
+            key, _value = *pair
+            key.loc.column + key.loc.expression.source.length
+          end
+
+          def separator_delta(first_pair, current_separator, key_delta)
+            if current_separator.is?(':')
+              0 # Colon follows directly after key
+            else
+              first_pair.loc.operator.column - current_separator.column -
+                key_delta
+            end
+          end
+
+          def value_delta(first_pair, current_pair)
+            _, first_value = *first_pair
+            _, current_value = *current_pair
+            first_value.loc.column - current_value.loc.column
+          end
+        end
+
+        MSG = 'Align the elements of a hash literal if they span more than ' +
+          'one line.'
+
+        def on_hash(node)
+          return if node.children.empty?
+
+          @alignment_for_hash_rockets ||=
+            new_alignment('EnforcedHashRocketStyle')
+          @alignment_for_colons ||= new_alignment('EnforcedColonStyle')
+
+          first_pair = node.children.first
+
+          unless @alignment_for_hash_rockets.checkable_layout(node) &&
+              @alignment_for_colons.checkable_layout(node)
+            return
+          end
+
+          @column_deltas = alignment_for(first_pair)
+            .deltas_for_first_pair(first_pair, node)
+          convention(first_pair, :expression) unless good_alignment?
+
           node.children.each_cons(2) do |prev, current|
-            @column_deltas = deltas(first_pair, prev, current)
+            @column_deltas = alignment_for(current).deltas(first_pair, prev,
+                                                           current)
             convention(current, :expression) unless good_alignment?
           end
         end
 
-        def any_pairs_on_the_same_line?(node)
-          lines_of_the_children = node.children.map do |pair|
-            key, _value = *pair
-            key.loc.line
+        private
+
+        def alignment_for(pair)
+          if pair.loc.operator.is?('=>')
+            @alignment_for_hash_rockets
+          else
+            @alignment_for_colons
           end
-          lines_of_the_children.uniq.size < lines_of_the_children.size
         end
 
         def autocorrect(node)
@@ -68,7 +197,14 @@ module Rubocop
           end
         end
 
-        private
+        def new_alignment(key)
+          case cop_config[key]
+          when 'key'       then KeyAlignment.new
+          when 'table'     then TableAlignment.new
+          when 'separator' then SeparatorAlignment.new
+          else fail "Unknown #{key}: #{cop_config[key]}"
+          end
+        end
 
         def adjust(corrector, delta, range)
           if delta > 0
@@ -83,84 +219,6 @@ module Rubocop
 
         def good_alignment?
           @column_deltas.values.compact.none? { |v| v != 0 }
-        end
-
-        def deltas(first_pair, prev_pair, current_pair)
-          enforced_style = enforced_style(current_pair)
-          unless %w(key separator table).include?(enforced_style)
-            fail "Unknown #{config_parameter(current_pair)}: #{enforced_style}"
-          end
-
-          return {} if current_pair.loc.line == prev_pair.loc.line
-
-          key_left_alignment_delta = (first_pair.loc.column -
-                                      current_pair.loc.column)
-          if enforced_style == 'key'
-            { key: key_left_alignment_delta }
-          else
-            key_delta = if enforced_style == 'table'
-                          key_left_alignment_delta
-                        else
-                          (key_end_column(first_pair) -
-                           key_end_column(current_pair))
-                        end
-            current_separator = current_pair.loc.operator
-            separator_delta = separator_delta(first_pair, current_separator,
-                                              key_delta, enforced_style)
-            value_delta = value_delta(first_pair, current_pair) -
-              key_delta - separator_delta
-
-            { key: key_delta, separator: separator_delta, value: value_delta }
-          end
-        end
-
-        def separator_delta(first_pair, current_separator, key_delta,
-                            enforced_style)
-          if current_separator.is?(':')
-            0 # Colon follows directly after key
-          elsif enforced_style == 'table'
-            first_pair.loc.expression.column + @max_key_width + 1 -
-              current_separator.column - key_delta
-          else
-            # separator
-            first_pair.loc.operator.column - current_separator.column -
-              key_delta
-          end
-        end
-
-        def key_end_column(pair)
-          key, _value = *pair
-          key.loc.column + key.loc.expression.source.length
-        end
-
-        def value_delta(first_pair, current_pair)
-          key, value = *current_pair
-          if first_pair.nil?
-            k, v = key, value
-          else
-            k, v = *first_pair
-          end
-          correct_value_column =
-            if enforced_style(current_pair) == 'table'
-              k.loc.column + spaced_separator(current_pair).length +
-                @max_key_width
-            else
-              v.loc.column
-            end
-          correct_value_column - value.loc.column
-        end
-
-        def spaced_separator(node)
-          node.loc.operator.is?('=>') ? ' => ' : ': '
-        end
-
-        def enforced_style(node)
-          cop_config[config_parameter(node)]
-        end
-
-        def config_parameter(node)
-          separator = node.loc.operator.is?('=>') ? 'HashRocket' : 'Colon'
-          "Enforced#{separator}Style"
         end
       end
     end

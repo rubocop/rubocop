@@ -80,6 +80,11 @@ describe Rubocop::Cop::Style::AlignHash, :config do
                              '     b: 1)'])
         expect(cop.offences).to be_empty
       end
+
+      it 'accepts an empty hash' do
+        inspect_source(cop, 'h = {}')
+        expect(cop.offences).to be_empty
+      end
     end
 
     it 'auto-corrects alignment' do
@@ -123,6 +128,11 @@ describe Rubocop::Cop::Style::AlignHash, :config do
                            '  bbb: 1',
                            '}',
                           ])
+      expect(cop.offences).to be_empty
+    end
+
+    it 'accepts an empty hash' do
+      inspect_source(cop, 'h = {}')
       expect(cop.offences).to be_empty
     end
 
@@ -211,6 +221,11 @@ describe Rubocop::Cop::Style::AlignHash, :config do
                            "    'a' => 0,",
                            "  'bbb' => 1",
                            '}'])
+      expect(cop.offences).to be_empty
+    end
+
+    it 'accepts an empty hash' do
+      inspect_source(cop, 'h = {}')
       expect(cop.offences).to be_empty
     end
 
