@@ -119,7 +119,7 @@ module Rubocop
               if mrhs_node.type == :array && rhs_node
                 process_assignment(lhs_variable_name, rhs_node)
               else
-                table[lhs_variable_name] = false
+                @table[lhs_variable_name] = false
               end
             end
 

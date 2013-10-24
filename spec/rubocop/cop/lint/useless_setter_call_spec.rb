@@ -84,6 +84,19 @@ describe Rubocop::Cop::Lint::UselessSetterCall do
     end
   end
 
+  context 'when a lvar does not have any object passed as argument ' +
+          'with multiple-assignment at the end of the method' do
+    it 'registers an offence' do
+      inspect_source(cop,
+                     ['def test(some_arg)',
+                      '  _first, some_lvar, _third  = do_something',
+                      '  some_lvar.attr = 5',
+                      'end'
+                     ])
+      expect(cop.offences.size).to eq(1)
+    end
+  end
+
   context 'when a lvar possibly has an object passed as argument ' +
           'by logical-operator-assignment at the end of the method' do
     it 'accepts the lvar attr assignment' do
