@@ -32,7 +32,6 @@ module Rubocop
             convention(node, :keyword,
                        sprintf(MSG, kind, kind))
           end
-
         end
 
         def exact_name_match?

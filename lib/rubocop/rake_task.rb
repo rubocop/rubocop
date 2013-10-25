@@ -9,7 +9,6 @@ module Rubocop
   # require 'rubocop/rake_task'
   # Rubocop::RakeTask.new
   class RakeTask < Rake::TaskLib
-
     attr_accessor :name
     attr_accessor :verbose
     attr_accessor :fail_on_error

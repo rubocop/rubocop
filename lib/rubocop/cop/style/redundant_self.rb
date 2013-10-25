@@ -134,7 +134,6 @@ module Rubocop
             @allowed_send_nodes << node if receiver && receiver.type == :self
           end
         end
-
       end
     end
   end

@@ -10,7 +10,6 @@ module Rubocop
     # (26)  LineLength
     # (3)   OneLineConditional
     class OffenceCountFormatter < BaseFormatter
-
       attr_reader :offence_counts
 
       def started(target_files)

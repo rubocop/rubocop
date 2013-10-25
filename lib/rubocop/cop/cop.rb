@@ -6,7 +6,6 @@ module Rubocop
 
     # Store for all cops with helper functions
     class CopStore < ::Array
-
       # @return [Array<String>] list of types for current cops.
       def types
         @types = map(&:cop_type).uniq! unless defined? @types
