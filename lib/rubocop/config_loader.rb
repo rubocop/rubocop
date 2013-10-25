@@ -79,10 +79,16 @@ module Rubocop
 
       def base_configs(path, inherit_from)
         Array(inherit_from).map do |f|
-          f = File.join(File.dirname(path), f) unless f.start_with?('/')
+          f = expand_inherit_from_path(path, f)
           print 'Inheriting ' if debug?
           load_file(f)
         end
+      end
+
+      def expand_inherit_from_path(current_config_path, inherit_from)
+        return inherit_from if inherit_from.start_with?('/')
+        return File.expand_path(inherit_from) if inherit_from.start_with?('~/')
+        File.join(File.dirname(current_config_path), inherit_from)
       end
 
       # Returns the path of .rubocop.yml searching upwards in the

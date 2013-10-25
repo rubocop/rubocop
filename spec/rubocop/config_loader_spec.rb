@@ -227,6 +227,30 @@ describe Rubocop::ConfigLoader do
     end
   end
 
+  describe '.expand_inherit_from_path', :isolated_environment do
+    let(:current_config_path) { '/some/absolute/path/.rubocop.yml' }
+
+    subject do
+      described_class.expand_inherit_from_path(current_config_path,
+                                               inherit_from)
+    end
+
+    context 'when path is relative' do
+      let(:inherit_from) { '../../other.yml' }
+      it { should eq('/some/absolute/path/../../other.yml') }
+    end
+
+    context 'when path is absolute' do
+      let(:inherit_from) { '/absolute/other.yml' }
+      it { should eq('/absolute/other.yml') }
+    end
+
+    context 'when path contains a leading ~ to indicate the home directory' do
+      let(:inherit_from) { '~/home.yml' }
+      it { should eq("#{ENV['HOME']}/home.yml") }
+    end
+  end
+
   describe '.load_file', :isolated_environment do
     subject(:load_file) do
       described_class.load_file(configuration_path)
