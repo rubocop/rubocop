@@ -5,6 +5,7 @@
 ### New features
 
 * New cop `Output` checks for calls to print, puts, etc. in Rails. ([@daviddavis][])
+* New cop `EmptyLinesAroundBody` checks for empty lines around the bodies of class, method and module definitions. ([@bbatsov][])
 * `LeadingCommentSpace` cop does auto-correction. ([@jonas054][])
 * `SpaceAfterControlKeyword` cop does auto-correction. ([@jonas054][])
 * `SpaceAfterColon` cop does auto-correction. ([@jonas054][])

@@ -127,6 +127,10 @@ EmptyLinesAroundAccessModifier:
   Description: "Keep blank lines around access modifiers."
   Enabled: true
 
+EmptyLinesAroundBody:
+  Description: "Keeps track of blank lines around expression bodies."
+  Enabled: true
+
 EmptyLineBetweenDefs:
   Description: 'Use empty lines between defs.'
   Enabled: true
