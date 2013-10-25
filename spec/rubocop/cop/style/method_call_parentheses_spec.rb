@@ -12,6 +12,11 @@ describe Rubocop::Cop::Style::MethodCallParentheses, :config do
     inspect_source(cop, ['top.test()'])
   end
 
+  it 'accepts parentheses for methods starting with an upcase letter' do
+    inspect_source(cop, ['Test()'])
+    expect(cop.offences).to be_empty
+  end
+
   it 'it accepts no parens in method call without args' do
     inspect_source(cop, ['top.test'])
   end

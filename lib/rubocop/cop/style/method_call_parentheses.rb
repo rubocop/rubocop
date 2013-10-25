@@ -8,7 +8,10 @@ module Rubocop
         MSG = 'Do not use parentheses for method calls with no arguments.'
 
         def on_send(node)
-          _receiver, _method_name, *args = *node
+          _receiver, method_name, *args = *node
+
+          # methods starting with a capital letter should be skipped
+          return if method_name =~ /\A[A-Z]/
 
           convention(node, :begin) if args.empty? && node.loc.begin
         end
