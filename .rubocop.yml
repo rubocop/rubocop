@@ -3,7 +3,7 @@
 inherit_from: config/default.yml
 
 MethodLength:
-  Max: 24
+  Max: 22
 
 ClassLength:
   Max: 160
