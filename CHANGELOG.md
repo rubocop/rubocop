@@ -26,7 +26,7 @@
 ### Changes
 
 * [#557](https://github.com/bbatsov/rubocop/pull/557): Configuration files for excluded files are no longer loaded. ([@jonas054][])
-* [#571](https://github.com/bbatsov/rubocop/pull/571): The default rake task now runs RuboCop over its self! ([@nevir][])
+* [#571](https://github.com/bbatsov/rubocop/pull/571): The default rake task now runs RuboCop over itself! ([@nevir][])
 * Encoding errors are reported as fatal offences rather than printed with red text. ([@jonas054][])
 * `AccessControl` cop is now configurable with the `EnforcedStyle` option. ([@sds][])
 * Split `AccessControl` cop to `AccessModifierIndentation` and `EmptyLinesAroundAccessModifier`. ([@bbatsov][])
