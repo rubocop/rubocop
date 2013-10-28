@@ -129,20 +129,23 @@ module Rubocop
             match = /\S.*/.match(do_loc.source_line)
             indentation_of_do_line = match.begin(0)
             if end_loc.column != indentation_of_do_line
-              alt_start_msg = if start_loc.line == do_loc.line &&
-                                  start_loc.column == indentation_of_do_line
-                                ''
-                              else
-                                " or #{match[0]} at #{do_loc.line}, " +
-                                  "#{indentation_of_do_line}"
-                              end
               warning(nil,
                       end_loc,
                       sprintf(MSG, end_loc.line, end_loc.column,
                               start_loc.source.lines.to_a.first.chomp,
                               start_loc.line, start_loc.column,
-                              alt_start_msg))
+                              alt_start_msg(match, start_loc, do_loc,
+                                            indentation_of_do_line)))
             end
+          end
+        end
+
+        def alt_start_msg(match, start_loc, do_loc, indentation_of_do_line)
+          if start_loc.line == do_loc.line &&
+              start_loc.column == indentation_of_do_line
+            ''
+          else
+            " or #{match[0]} at #{do_loc.line}, #{indentation_of_do_line}"
           end
         end
 

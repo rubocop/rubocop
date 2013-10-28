@@ -28,6 +28,39 @@ module Rubocop
 
       ConfigLoader.debug = @options[:debug]
 
+      any_failed = process_files(target_files)
+
+      display_error_summary(@errors)
+
+      !any_failed && !wants_to_quit ? 0 : 1
+    rescue => e
+      $stderr.puts e.message
+      return 1
+    end
+
+    def trap_interrupt
+      Signal.trap('INT') do
+        exit!(1) if wants_to_quit?
+        self.wants_to_quit = true
+        $stderr.puts
+        $stderr.puts 'Exiting... Interrupt again to exit immediately.'
+      end
+    end
+
+    def display_error_summary(errors)
+      return if errors.empty?
+      plural = errors.count > 1 ? 's' : ''
+      warn "\n#{errors.count} error#{plural} occurred:".color(:red)
+      errors.each { |error| warn error }
+      warn 'Errors are usually caused by RuboCop bugs.'
+      warn 'Please, report your problems to RuboCop\'s issue tracker.'
+      warn 'Mention the following information in the issue report:'
+      warn Rubocop::Version.version(true)
+    end
+
+    private
+
+    def process_files(target_files)
       target_files.each(&:freeze).freeze
       inspected_files = []
       any_failed = false
@@ -49,13 +82,7 @@ module Rubocop
 
       formatter_set.finished(inspected_files.freeze)
       formatter_set.close_output_files
-
-      display_error_summary(@errors)
-
-      !any_failed && !wants_to_quit ? 0 : 1
-    rescue => e
-      $stderr.puts e.message
-      return 1
+      any_failed
     end
 
     def mobilized_cop_classes(config)
@@ -84,28 +111,6 @@ module Rubocop
       @errors.concat(team.errors)
       offences
     end
-
-    def trap_interrupt
-      Signal.trap('INT') do
-        exit!(1) if wants_to_quit?
-        self.wants_to_quit = true
-        $stderr.puts
-        $stderr.puts 'Exiting... Interrupt again to exit immediately.'
-      end
-    end
-
-    def display_error_summary(errors)
-      return if errors.empty?
-      plural = errors.count > 1 ? 's' : ''
-      warn "\n#{errors.count} error#{plural} occurred:".color(:red)
-      errors.each { |error| warn error }
-      warn 'Errors are usually caused by RuboCop bugs.'
-      warn 'Please, report your problems to RuboCop\'s issue tracker.'
-      warn 'Mention the following information in the issue report:'
-      warn Rubocop::Version.version(true)
-    end
-
-    private
 
     def run_rails_cops?(config)
       @options[:rails] || config['AllCops']['RunRailsCops']
