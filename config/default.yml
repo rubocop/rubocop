@@ -77,6 +77,10 @@ CommentAnnotation:
     - HACK
     - REVIEW
 
+# Avoid complex methods.
+CyclomaticComplexity:
+  Max: 6
+
 # Multi-line method chaining should be done with leading dots.
 DotPosition:
   Style: 'leading'

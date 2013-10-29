@@ -45,6 +45,7 @@ require 'rubocop/cop/lint/void'
 
 require 'rubocop/cop/style/autocorrect_alignment'
 require 'rubocop/cop/style/configurable_naming'
+require 'rubocop/cop/style/cyclomatic_complexity'
 require 'rubocop/cop/style/string_help'
 require 'rubocop/cop/style/access_modifier_indentation'
 require 'rubocop/cop/style/alias'

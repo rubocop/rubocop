@@ -22,6 +22,7 @@
 * `TrailingWhitespace` cop does auto-correction. ([@jonas054][])
 * `TrailingBlankLines` cop does auto-correction. ([@jonas054][])
 * `FinalNewline` cop does auto-correction. ([@jonas054][])
+* New cop `CyclomaticComplexity` checks the cyclomatic complexity of methods against a configurable max value. ([@jonas054][])
 
 ### Changes
 
