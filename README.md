@@ -451,7 +451,7 @@ useful.
 
 ### Brackets
 The [brackets-rubocop](https://github.com/smockle/brackets-rubocop)
-extension displays Rubocop results in Brackets.
+extension displays RuboCop results in Brackets.
 It can be installed via the extension manager in Brackets.
 
 ### Other Editors
