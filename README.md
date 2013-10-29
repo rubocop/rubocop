@@ -449,6 +449,11 @@ If you're a ST2 user you might find the
 [Sublime RuboCop plugin](https://github.com/pderichs/sublime_rubocop)
 useful.
 
+### Brackets
+The [brackets-rubocop](https://github.com/smockle/brackets-rubocop)
+extension displays RuboCop results in Brackets.
+It can be installed via the extension manager in Brackets.
+
 ### Other Editors
 
 Here's one great opportunity to contribute to RuboCop - implement
