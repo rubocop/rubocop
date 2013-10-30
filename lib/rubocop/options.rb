@@ -11,7 +11,6 @@ module Rubocop
       @options = {}
     end
 
-    # rubocop:disable MethodLength
     def parse(args)
       ignore_dropped_options(args)
       convert_deprecated_options(args)
@@ -19,68 +18,74 @@ module Rubocop
       OptionParser.new do |opts|
         opts.banner = 'Usage: rubocop [options] [file1, file2, ...]'
 
-        option(opts, '-d', '--debug', 'Display debug info.')
-        option(opts, '-c', '--config FILE', 'Specify configuration file.')
-
         option(opts, '--only COP', 'Run just one cop.') do
           validate_only_option
         end
 
-        option(opts, '--auto-gen-config',
-               'Generate a configuration file acting as a',
-               'TODO list.') do
-          validate_auto_gen_config_option(args)
-          @options[:formatters] = [[DEFAULT_FORMATTER],
-                                   [Formatter::DisabledConfigFormatter,
-                                    ConfigLoader::AUTO_GENERATED_FILE]]
-        end
+        option(opts, '-c', '--config FILE', 'Specify configuration file.')
 
-        option(opts, '--show-cops',
-               'Shows cops and their config for the',
-               'current directory.')
-
-        option(opts, '-f', '--format FORMATTER',
-               'Choose an output formatter. This option',
-               'can be specified multiple times to enable',
-               'multiple formatters at the same time.',
-               '  [p]rogress (default)',
-               '  [s]imple',
-               '  [c]lang',
-               '  [e]macs',
-               '  [j]son',
-               '  [f]iles',
-               '  [o]ffences',
-               '  custom formatter class name') do |key|
-          @options[:formatters] ||= []
-          @options[:formatters] << [key]
-        end
-
-        option(opts, '-o', '--out FILE',
-               'Write output to a file instead of STDOUT.',
-               'This option applies to the previously',
-               'specified --format, or the default format',
-               'if no format is specified.') do |path|
-          @options[:formatters] ||= [[DEFAULT_FORMATTER]]
-          @options[:formatters].last << path
-        end
+        add_formatting_options(opts, args)
 
         option(opts, '-r', '--require FILE', 'Require Ruby file.') do |f|
           require f
         end
 
-        option(opts, '-R', '--rails', 'Run extra Rails cops.')
-        option(opts, '-l', '--lint', 'Run only lint cops.')
-        option(opts, '-a', '--auto-correct', 'Auto-correct offences.')
-        option(opts, '-n', '--no-color', 'Disable color output.')
-        option(opts, '-v', '--version', 'Display version.')
-        option(opts, '-V', '--verbose-version', 'Display verbose version.')
+        add_boolean_flags(opts)
       end.parse!(args)
 
       [@options, args]
     end
-    # rubocop:enable MethodLength
 
     private
+
+    FORMAT_HELP = ['Choose an output formatter. This option',
+                   'can be specified multiple times to enable',
+                   'multiple formatters at the same time.',
+                   '  [p]rogress (default)',
+                   '  [s]imple',
+                   '  [c]lang',
+                   '  [e]macs',
+                   '  [j]son',
+                   '  [f]iles',
+                   '  [o]ffences',
+                   '  custom formatter class name']
+
+    def add_formatting_options(opts, args)
+      option(opts, '--auto-gen-config',
+             'Generate a configuration file acting as a', 'TODO list.') do
+        validate_auto_gen_config_option(args)
+        @options[:formatters] = [[DEFAULT_FORMATTER],
+                                 [Formatter::DisabledConfigFormatter,
+                                  ConfigLoader::AUTO_GENERATED_FILE]]
+      end
+
+      option(opts, '-f', '--format FORMATTER', *FORMAT_HELP) do |key|
+        @options[:formatters] ||= []
+        @options[:formatters] << [key]
+      end
+
+      option(opts, '-o', '--out FILE',
+             'Write output to a file instead of STDOUT.',
+             'This option applies to the previously',
+             'specified --format, or the default format',
+             'if no format is specified.') do |path|
+        @options[:formatters] ||= [[DEFAULT_FORMATTER]]
+        @options[:formatters].last << path
+      end
+    end
+
+    def add_boolean_flags(opts)
+      option(opts, '--show-cops',
+             'Shows cops and their config for the',
+             'current directory.')
+      option(opts, '-d', '--debug', 'Display debug info.')
+      option(opts, '-R', '--rails', 'Run extra Rails cops.')
+      option(opts, '-l', '--lint', 'Run only lint cops.')
+      option(opts, '-a', '--auto-correct', 'Auto-correct offences.')
+      option(opts, '-n', '--no-color', 'Disable color output.')
+      option(opts, '-v', '--version', 'Display version.')
+      option(opts, '-V', '--verbose-version', 'Display verbose version.')
+    end
 
     # Sets a value in the @options hash, based on the given long option and its
     # value, in addition to calling the block if a block is given.

@@ -36,13 +36,10 @@ describe Rubocop::Options, :isolated_environment do
 
         expected_help = <<-END
 Usage: rubocop [options] [file1, file2, ...]
-    -d, --debug                      Display debug info.
-    -c, --config FILE                Specify configuration file.
         --only COP                   Run just one cop.
+    -c, --config FILE                Specify configuration file.
         --auto-gen-config            Generate a configuration file acting as a
                                      TODO list.
-        --show-cops                  Shows cops and their config for the
-                                     current directory.
     -f, --format FORMATTER           Choose an output formatter. This option
                                      can be specified multiple times to enable
                                      multiple formatters at the same time.
@@ -59,6 +56,9 @@ Usage: rubocop [options] [file1, file2, ...]
                                      specified --format, or the default format
                                      if no format is specified.
     -r, --require FILE               Require Ruby file.
+        --show-cops                  Shows cops and their config for the
+                                     current directory.
+    -d, --debug                      Display debug info.
     -R, --rails                      Run extra Rails cops.
     -l, --lint                       Run only lint cops.
     -a, --auto-correct               Auto-correct offences.
