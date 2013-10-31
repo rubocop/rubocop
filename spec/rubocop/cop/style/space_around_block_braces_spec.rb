@@ -11,6 +11,44 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces, :config do
     }
   end
 
+  context 'with space inside empty braces not allowed' do
+    let(:cop_config) { { 'EnforcedStyleForEmptyBraces' => 'no_space' } }
+
+    it 'accepts empty braces with no space inside' do
+      inspect_source(cop, ['each {}'])
+      expect(cop.messages).to be_empty
+    end
+
+    it 'registers an offence for empty braces with space inside' do
+      inspect_source(cop, ['each { }'])
+      expect(cop.messages).to eq(['Space inside empty braces detected.'])
+    end
+
+    it 'auto-corrects unwanted space' do
+      new_source = autocorrect_source(cop, 'each { }')
+      expect(new_source).to eq('each {}')
+    end
+  end
+
+  context 'with space inside empty braces allowed' do
+    let(:cop_config) { { 'EnforcedStyleForEmptyBraces' => 'space' } }
+
+    it 'accepts empty braces with space inside' do
+      inspect_source(cop, ['each { }'])
+      expect(cop.messages).to be_empty
+    end
+
+    it 'registers an offence for empty braces with no space inside' do
+      inspect_source(cop, ['each {}'])
+      expect(cop.messages).to eq(['Space missing inside empty braces.'])
+    end
+
+    it 'auto-corrects missing space' do
+      new_source = autocorrect_source(cop, 'each {}')
+      expect(new_source).to eq('each { }')
+    end
+  end
+
   it 'accepts braces surrounded by spaces' do
     inspect_source(cop, ['each { puts }'])
     expect(cop.messages).to be_empty

@@ -58,36 +58,49 @@ module Rubocop
         end
 
         def check(t1, t2)
-          if cop_config['EnforcedStyle'] == 'space_inside_braces'
+          if t2.text == '{'
+            check_space_outside_left_brace(t1, t2)
+          elsif t1.text == '{' && t2.text == '}'
+            check_empty_braces(t1, t2)
+          elsif cop_config['EnforcedStyle'] == 'space_inside_braces'
             check_space_inside_braces(t1, t2)
           else
             check_no_space_inside_braces(t1, t2)
           end
-          check_space_outside_left_brace(t1, t2)
+        end
+
+        def check_empty_braces(t1, t2)
+          if cop_config['EnforcedStyleForEmptyBraces'] == 'space'
+            check_space_inside_braces(t1, t2)
+          else
+            check_no_space_inside_braces(t1, t2)
+          end
         end
 
         def check_space_inside_braces(t1, t2)
           unless space_between?(t1, t2)
-            if t1.text == '{'
-              convention(t1.pos, t1.pos, 'Space missing inside {.')
-            elsif t2.text == '}'
-              convention(t2.pos, t2.pos, 'Space missing inside }.')
-            end
+            token, what = problem_details(t1, t2)
+            convention(token.pos, token.pos, "Space missing inside #{what}.")
           end
         end
 
         def check_no_space_inside_braces(t1, t2)
-          if t1.text == '{' || t2.text == '}'
-            if space_between?(t1, t2)
-              if t1.text == '{'
-                s = space_range(t1)
-                convention(s, s, 'Space inside { detected.')
-              elsif t2.text == '}'
-                s = space_range(t2)
-                convention(s, s, 'Space inside } detected.')
-              end
-            end
+          if space_between?(t1, t2)
+            token, what = problem_details(t1, t2)
+            s = space_range(token)
+            convention(s, s, "Space inside #{what} detected.")
           end
+        end
+
+        def problem_details(t1, t2)
+          if t1.text == '{'
+            token = t1
+            what = t2.text == '}' ? 'empty braces' : '{'
+          else
+            token = t2
+            what = '}'
+          end
+          [token, what]
         end
 
         def check_space_outside_left_brace(t1, t2)
