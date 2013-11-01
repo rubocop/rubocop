@@ -13,8 +13,8 @@ describe Rubocop::Config do
     # TODO: Because Config.load_file now outputs the validation warning,
     #       it is inserting text into the rspec test output here.
     #       The next 2 lines should be removed eventually.
-    before(:each) { $stdout = StringIO.new }
-    after(:each) { $stdout = STDOUT }
+    before(:each) { $stderr = StringIO.new }
+    after(:each) { $stderr = STDERR }
 
     subject(:configuration) do
       Rubocop::ConfigLoader.load_file(configuration_path)
