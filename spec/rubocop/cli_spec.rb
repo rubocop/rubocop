@@ -995,14 +995,10 @@ describe Rubocop::CLI, :isolated_environment do
                                           ])
 
       expect(cli.run(%w(--format simple example))).to eq(1)
-      expect($stdout.string)
+      expect($stderr.string)
         .to eq(
                ['Warning: unrecognized cop LyneLenth found in ' +
-                File.expand_path('example/.rubocop.yml'),
-                '== example/example1.rb ==',
-                'C:  2: 80: Line is too long. [90/79]',
-                '',
-                '1 file inspected, 1 offence detected',
+                abs('example/.rubocop.yml'),
                 ''].join("\n"))
     end
 
@@ -1019,14 +1015,10 @@ describe Rubocop::CLI, :isolated_environment do
                                           ])
 
       expect(cli.run(%w(--format simple example))).to eq(1)
-      expect($stdout.string)
+      expect($stderr.string)
         .to eq(
                ['Warning: unrecognized parameter LineLength:Min found in ' +
-                File.expand_path('example/.rubocop.yml'),
-                '== example/example1.rb ==',
-                'C:  2: 80: Line is too long. [90/79]',
-                '',
-                '1 file inspected, 1 offence detected',
+                abs('example/.rubocop.yml'),
                 ''].join("\n"))
     end
   end

@@ -33,7 +33,7 @@ module Rubocop
     def warn_unless_valid
       validate
     rescue Config::ValidationError => e
-      puts "Warning: #{e.message}".color(:red)
+      warn "Warning: #{e.message}".color(:red)
     end
 
     # TODO: This should be a private method
