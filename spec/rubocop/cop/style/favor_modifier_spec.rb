@@ -89,6 +89,14 @@ describe Rubocop::Cop::Style::IfUnlessModifier do
                          'end'])
     expect(cop.offences).to be_empty
   end
+
+  it 'accepts if with regexp' do
+    pending 'This causes an exception'
+    inspect_source(cop, ['if //',
+                         '  something # A comment',
+                         'end'])
+    expect(cop.offences).to be_empty
+  end
 end
 
 describe Rubocop::Cop::Style::WhileUntilModifier do
