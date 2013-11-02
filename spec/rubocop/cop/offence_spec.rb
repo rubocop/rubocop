@@ -107,6 +107,8 @@ describe Rubocop::Cop::Offence do
       Parser::Source::Range.new(source_buffer, begin_pos, begin_pos + 1)
     end
 
+    # We want a nice table layout, so we allow space inside empty hashes.
+    # rubocop:disable SpaceInsideHashLiteralBraces
     [
       [{                           }, {                           }, 0],
 

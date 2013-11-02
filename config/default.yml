@@ -164,11 +164,15 @@ StringLiterals:
 SpaceAroundBlockBraces:
   # Valid values are: space_inside_braces, no_space_inside_braces
   EnforcedStyle: space_inside_braces
+  # Valid values are: space, no_space
+  EnforcedStyleForEmptyBraces: no_space
   # Space between { and |. Overrides EnforcedStyle if there is a conflict.
   SpaceBeforeBlockParameters: true
 
 SpaceInsideHashLiteralBraces:
-  EnforcedStyleIsWithSpaces: true
+  # Valid values (for both parameters) are: space, no_space
+  EnforcedStyle: space
+  EnforcedStyleForEmptyBraces: no_space
 
 SymbolName:
   AllowCamelCase: true
