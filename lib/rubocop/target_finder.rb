@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 module Rubocop
-  # This class finds target files to inspect by scanning directory tree
+  # This class finds target files to inspect by scanning the directory tree
   # and picking ruby files.
   class TargetFinder
     def initialize(config_store, debug = false)
