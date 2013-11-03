@@ -55,6 +55,10 @@ AssignmentInCondition:
 BlockNesting:
   Max: 3
 
+BracesAroundHashParameters:
+  # Valid values are: braces, no_braces
+  EnforcedStyle: no_braces
+
 ClassLength:
   CountComments: false  # count full line comments?
   Max: 100
@@ -205,6 +209,5 @@ VariableName:
   # Valid values are: snake_case, camelCase
   EnforcedStyle: snake_case
 
-BracesAroundHashParameters:
-  # Valid values are: braces, no_braces
-  EnforcedStyle: no_braces
+WordArray:
+  MinSize: 0
