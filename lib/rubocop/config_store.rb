@@ -1,7 +1,7 @@
 # encoding: utf-8
 
 module Rubocop
-  # Handles chaching of configurations and association of inspected
+  # Handles caching of configurations and association of inspected
   # ruby files to configurations.
   class ConfigStore
     def initialize
