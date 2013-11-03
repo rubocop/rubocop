@@ -8,13 +8,17 @@ module Rubocop
         MSG = 'Carriage return character detected.'
 
         def investigate(processed_source)
-          processed_source.lines.each_with_index do |line, index|
+          original_source = IO.read(processed_source.buffer.name)
+          original_source.lines.each_with_index do |line, index|
             if line =~ /\r$/
               convention(nil,
                          source_range(processed_source.buffer,
                                       processed_source[0...index],
-                                      line.length - 1, 1),
+                                      0, line.length),
                          MSG)
+              # Usually there will be carriage return characters on all or none
+              # of the lines in a file, so we report only one offence.
+              break
             end
           end
         end

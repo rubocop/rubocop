@@ -79,15 +79,25 @@ RSpec.configure do |config|
   config.include(ExitCodeMatchers)
 end
 
-def inspect_source(cop, source)
-  processed_source = parse_source(source)
+def inspect_source_file(cop, source)
+  Tempfile.open('tmp') { |f| inspect_source(cop, source, f) }
+end
+
+def inspect_source(cop, source, file = nil)
+  processed_source = parse_source(source, file)
   fail 'Error parsing example code' unless processed_source.valid_syntax?
   _investigate(cop, processed_source)
 end
 
-def parse_source(source)
+def parse_source(source, file = nil)
   source = source.join($RS) if source.is_a?(Array)
-  Rubocop::SourceParser.parse(source)
+  if file
+    file.write(source)
+    file.rewind
+    Rubocop::SourceParser.parse(source, file.path)
+  else
+    Rubocop::SourceParser.parse(source)
+  end
 end
 
 def autocorrect_source(cop, source)
