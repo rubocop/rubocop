@@ -45,6 +45,7 @@
 * [#585](https://github.com/bbatsov/rubocop/pull/585): `MethodCallParentheses` should allow methods starting with uppercase letter. ([@bbatsov][])
 * [#574](https://github.com/bbatsov/rubocop/issues/574): Fix error on multiple-assignment with non-array right hand side in `UselessSetterCall`. ([@yujinakayama][])
 * [#576](https://github.com/bbatsov/rubocop/issues/576): Output config validation warning to STDERR so that it won't be mixed up with formatter's output. ([@yujinakayama][])
+* [#599](https://github.com/bbatsov/rubocop/pull/599): `EndOfLine` cop is operational again. ([@jonas054][])
 
 ## 0.14.1 (10/10/2013)
 
