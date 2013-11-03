@@ -9,8 +9,8 @@ module Rubocop
       @debug = debug
     end
 
-    # Generate a list of target files by expanding globing patterns
-    # (if any). If args is empty recursively finds all Ruby source
+    # Generate a list of target files by expanding globbing patterns
+    # (if any). If args is empty, recursively find all Ruby source
     # files under the current directory
     # @return [Array] array of file paths
     def find(args)
