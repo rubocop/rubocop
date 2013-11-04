@@ -9,12 +9,12 @@ module Rubocop
       def initialize(cop_classes, config, options = nil)
         @cop_classes = cop_classes
         @config = config
-        @options = options || { autocorrect: false, debug: false }
+        @options = options || { auto_correct: false, debug: false }
         @errors = []
       end
 
       def autocorrect?
-        @options[:autocorrect]
+        @options[:auto_correct]
       end
 
       def debug?

@@ -16,8 +16,8 @@ describe Rubocop::Cop::Team do
       it { should be_false }
     end
 
-    context 'when { autocorrect: true } is passed to .new' do
-      let(:options) { { autocorrect: true } }
+    context 'when { auto_correct: true } is passed to .new' do
+      let(:options) { { auto_correct: true } }
       it { should be_true }
     end
   end
@@ -91,7 +91,7 @@ describe Rubocop::Cop::Team do
     end
 
     context 'when autocorrection is enabled' do
-      let(:options) { { autocorrect: true } }
+      let(:options) { { auto_correct: true } }
 
       before do
         create_file(file_path, [
