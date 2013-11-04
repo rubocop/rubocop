@@ -18,7 +18,8 @@ module Rubocop
 
           string_array = array_elems.all? { |e| e.type == :str }
 
-          if string_array && !complex_content?(array_elems)
+          if string_array && !complex_content?(array_elems) &&
+            array_elems.size > min_size
             convention(node, :expression)
           end
         end
@@ -35,6 +36,10 @@ module Rubocop
           end
 
           false
+        end
+
+        def min_size
+          cop_config['MinSize']
         end
       end
     end

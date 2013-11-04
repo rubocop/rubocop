@@ -24,6 +24,7 @@
 * `FinalNewline` cop does auto-correction. ([@jonas054][])
 * New cop `CyclomaticComplexity` checks the cyclomatic complexity of methods against a configurable max value. ([@jonas054][])
 * [#594](https://github.com/bbatsov/rubocop/pull/594): New parameter `EnforcedStyleForEmptyBraces` with values `space` and `no_space` (default) added to `SpaceAroundBlockBraces`. ([@jonas054][])
+* [#603](https://github.com/bbatsov/rubocop/pull/603): New parameter `MinSize` added to `WordArray` to allow small string arrays, retaining the default (0). ([@claco][])
 
 ### Changes
 

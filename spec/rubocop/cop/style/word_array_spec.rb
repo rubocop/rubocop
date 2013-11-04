@@ -2,8 +2,9 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::WordArray do
-  subject(:cop) { described_class.new }
+describe Rubocop::Cop::Style::WordArray, :config do
+  subject(:cop) { described_class.new(config) }
+  let(:cop_config) { { 'MinSize' => 0 } }
 
   it 'registers an offence for arrays of single quoted strings' do
     inspect_source(cop,
@@ -50,6 +51,14 @@ describe Rubocop::Cop::Style::WordArray do
   it 'does not register an offence for array with empty strings' do
     inspect_source(cop,
                    ['["", "two", "three"]'])
+    expect(cop.offences).to be_empty
+  end
+
+  it 'does not register an offence for array with allowed number of strings' do
+    cop_config['MinSize'] = 3
+
+    inspect_source(cop,
+                   ['["one", "two", "three"]'])
     expect(cop.offences).to be_empty
   end
 end
