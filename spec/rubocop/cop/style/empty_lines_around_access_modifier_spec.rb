@@ -8,6 +8,7 @@ describe Rubocop::Cop::Style::EmptyLinesAroundAccessModifier do
   it 'requires blank line before private/protected' do
     inspect_source(cop,
                    ['class Test',
+                    '  something',
                     '  protected',
                     '',
                     '  def test; end',
@@ -20,6 +21,7 @@ describe Rubocop::Cop::Style::EmptyLinesAroundAccessModifier do
   it 'requires blank line after private/protected' do
     inspect_source(cop,
                    ['class Test',
+                    '  something',
                     '',
                     '  protected',
                     '  def test; end',
@@ -27,6 +29,16 @@ describe Rubocop::Cop::Style::EmptyLinesAroundAccessModifier do
     expect(cop.offences.size).to eq(1)
     expect(cop.messages)
       .to eq(['Keep a blank line before and after protected.'])
+  end
+
+  it 'accepts missing blank line when at the beginning of class/module' do
+    inspect_source(cop,
+                   ['class Test',
+                    '  protected',
+                    '',
+                    '  def test; end',
+                    'end'])
+    expect(cop.offences).to be_empty
   end
 
   it 'recognizes blank lines with DOS style line endings' do
