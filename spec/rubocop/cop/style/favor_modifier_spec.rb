@@ -90,12 +90,38 @@ describe Rubocop::Cop::Style::IfUnlessModifier do
     expect(cop.offences).to be_empty
   end
 
-  it 'accepts if with regexp' do
-    pending 'This causes an exception'
-    inspect_source(cop, ['if //',
-                         '  something # A comment',
-                         'end'])
-    expect(cop.offences).to be_empty
+  context 'with implicit match conditional' do
+    let(:source) do
+      [
+        "  if #{conditional}",
+        "    #{body}",
+        '  end'
+      ]
+    end
+
+    let(:body) { 'b' * 35 }
+
+    context 'when a multiline if fits on one line' do
+      let(:conditional) { "/#{'a' * 36}/" }
+
+      it 'registers an offence' do
+        expect("  #{body} if #{conditional}".length).to eq(79)
+
+        inspect_source(cop, source)
+        expect(cop.offences.size).to eq(1)
+      end
+    end
+
+    context "when a multiline if doesn't fit on one line" do
+      let(:conditional) { "/#{'a' * 37}/" }
+
+      it 'accepts' do
+        expect("  #{body} if #{conditional}".length).to eq(80)
+
+        inspect_source(cop, source)
+        expect(cop.offences).to be_empty
+      end
+    end
   end
 end
 
