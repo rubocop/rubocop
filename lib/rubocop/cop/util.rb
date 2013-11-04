@@ -62,6 +62,7 @@ module Rubocop
           namespace_node, name = *const_node
           const_names << name
           break unless namespace_node
+          break unless namespace_node.is_a?(Parser::AST::Node)
           break if namespace_node.type == :cbase
           const_node = namespace_node
         end
