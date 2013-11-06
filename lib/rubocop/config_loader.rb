@@ -25,15 +25,7 @@ module Rubocop
         puts "configuration from #{path}" if debug?
         contains_auto_generated_config = false
 
-        base_configs(path, hash['inherit_from']).reverse_each do |base_config|
-          if File.basename(base_config.loaded_path) == DOTFILE
-            make_excludes_absolute(base_config)
-          end
-          base_config.each do |key, value|
-            if value.is_a?(Hash)
-              hash[key] = hash.key?(key) ? merge(value, hash[key]) : value
-            end
-          end
+        resolve_inheritance(path, hash) do |base_config|
           if base_config.loaded_path.include?(AUTO_GENERATED_FILE)
             contains_auto_generated_config = true
           end
@@ -134,6 +126,20 @@ module Rubocop
       end
 
       private
+
+      def resolve_inheritance(path, hash)
+        base_configs(path, hash['inherit_from']).reverse_each do |base_config|
+          if File.basename(base_config.loaded_path) == DOTFILE
+            make_excludes_absolute(base_config)
+          end
+          base_config.each do |key, value|
+            if value.is_a?(Hash)
+              hash[key] = hash.key?(key) ? merge(value, hash[key]) : value
+            end
+          end
+          yield base_config
+        end
+      end
 
       def config_files_in_path(target)
         possible_config_files = dirs_to_search(target).map do |dir|

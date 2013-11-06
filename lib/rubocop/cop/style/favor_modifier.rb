@@ -13,23 +13,19 @@ module Rubocop
           else               cond, body = *sexp
           end
 
-          if length(sexp) > 3
-            false
-          else
-            body_length = body_length(body)
+          return false if length(sexp) > 3
 
-            if body_length == 0
-              false
-            else
-              indentation = sexp.loc.keyword.column
-              kw_length = sexp.loc.keyword.size
-              cond_length = conditional_length(cond)
-              space = 1
-              total = indentation + body_length + space + kw_length + space +
-                cond_length
-              total <= max_line_length && !body_has_comment?(body, comments)
-            end
-          end
+          body_length = body_length(body)
+
+          return false if body_length == 0
+
+          indentation = sexp.loc.keyword.column
+          kw_length = sexp.loc.keyword.size
+          cond_length = conditional_length(cond)
+          space = 1
+          total = indentation + body_length + space + kw_length + space +
+            cond_length
+          total <= max_line_length && !body_has_comment?(body, comments)
         end
 
         def max_line_length
