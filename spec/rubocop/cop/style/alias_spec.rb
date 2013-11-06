@@ -38,4 +38,12 @@ describe Rubocop::Cop::Style::Alias do
                    ['alias $ala $bala'])
     expect(cop.offences).to be_empty
   end
+
+  it 'accepts alias in an instance_exec block' do
+    inspect_source(cop,
+                   ['cli.instance_exec do',
+                    '  alias :old_trap_interrupt :trap_interrupt',
+                    'end'])
+    expect(cop.offences).to be_empty
+  end
 end
