@@ -19,12 +19,22 @@ module Rubocop
           string_array = array_elems.all? { |e| e.type == :str }
 
           if string_array && !complex_content?(array_elems) &&
-            array_elems.size > min_size
+            array_elems.size > min_size && !comments_in_array?(node)
             convention(node, :expression)
           end
         end
 
         private
+
+        def comments_in_array?(node)
+          comments = processed_source.comments
+
+          array_range = node.loc.expression.to_a
+
+          comments.any? do |comment|
+            !(comment.loc.expression.to_a & array_range).empty?
+          end
+        end
 
         def complex_content?(arr_sexp)
           arr_sexp.each do |s|

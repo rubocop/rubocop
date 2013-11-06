@@ -61,4 +61,26 @@ describe Rubocop::Cop::Style::WordArray, :config do
                    ['["one", "two", "three"]'])
     expect(cop.offences).to be_empty
   end
+
+  it 'does not register an offence for an array with comments in it' do
+    inspect_source(cop,
+                   ['[',
+                    '"foo", # comment here',
+                    '"bar", # this thing was done because of a bug',
+                    '"baz" # do not delete this line',
+                    ']'])
+
+    expect(cop.offences).to be_empty
+  end
+
+  it 'registers an offence for an array with comments outside of it' do
+    inspect_source(cop,
+                   ['[',
+                    '"foo",',
+                    '"bar",',
+                    '"baz"',
+                    '] # test'])
+
+    expect(cop.offences.size).to eq(1)
+  end
 end
