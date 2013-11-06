@@ -51,6 +51,11 @@ describe Rubocop::Cop::Style::RegexpLiteral, :config do
         inspect_source(cop, ['x =~ %r(/home)'])
         expect(cop.offences).to be_empty
       end
+      
+      it 'ignores slashes do not belong regexp' do
+        inspect_source(cop, ['x =~ /\s{#{x[/\s+/].length}}/'])
+        expect(cop.offences).to be_empty
+      end
     end
   end
 
