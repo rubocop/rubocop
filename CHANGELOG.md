@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.15.0 (06/11/2013)
+
 ### New features
 
 * New cop `Output` checks for calls to print, puts, etc. in Rails. ([@daviddavis][])
