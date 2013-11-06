@@ -121,6 +121,20 @@ describe Rubocop::ConfigLoader do
       end
     end
 
+    context 'when a file inherits from an empty parent file' do
+      let(:file_path) { 'dir/.rubocop.yml' }
+
+      before do
+        create_file('.rubocop.yml', [''])
+
+        create_file(file_path, ['inherit_from: ../.rubocop.yml'])
+      end
+
+      it 'does not fail to load' do
+        expect { configuration_from_file }.not_to raise_error
+      end
+    end
+
     context 'when a file inherits from a sibling file' do
       let(:file_path) { 'dir/.rubocop.yml' }
 
