@@ -21,7 +21,7 @@ module Rubocop
 
       def load_file(path)
         path = File.absolute_path(path)
-        hash = YAML.load_file(path)
+        hash = YAML.load_file(path) || {}
         puts "configuration from #{path}" if debug?
         contains_auto_generated_config = false
 
