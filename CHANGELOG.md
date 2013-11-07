@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bugs Fixed
+
+* [#611](https://github.com/bbatsov/rubocop/pull/611): Fix crash when loading an empty config file ([@sinisterchipmunk][])
+
 ## 0.15.0 (06/11/2013)
 
 ### New features
