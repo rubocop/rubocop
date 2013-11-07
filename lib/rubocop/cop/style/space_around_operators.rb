@@ -97,11 +97,15 @@ module Rubocop
           #     ^
           positions = []
           tokens = @processed_source.tokens
-          on_node(:def, @processed_source.ast) do |def_node|
+          on_node([:def, :defs], @processed_source.ast) do |def_node|
             # def each &block
             #          ^
             # def each *args
             #          ^
+            # def self.each &block
+            #               ^
+            # def self.each *args
+            #               ^
             on_node([:blockarg, :restarg], def_node) do |arg_node|
               positions << tokens[index_of_first_token(arg_node)].pos
             end
