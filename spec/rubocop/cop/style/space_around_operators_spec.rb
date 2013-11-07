@@ -132,6 +132,9 @@ describe Rubocop::Cop::Style::SpaceAroundOperators do
                     '  def each &block',
                     '  end',
                     '',
+                    '  def self.search *args',
+                    '  end',
+                    '',
                     '  def each *args',
                     '  end',
                     ''])
