@@ -3,7 +3,24 @@
 module Rubocop
   module Cop
     module Style
-      # This cops checks for two or more consecutive blank lines.
+      # This cops checks redundant blanks lines around the bodies of classes,
+      # modules & methods.
+      #
+      # @example
+      #
+      #   class Test
+      #
+      #      def something
+      #        ...
+      #      end
+      #
+      #   end
+      #
+      #   def something(arg)
+      #
+      #     ...
+      #   end
+      #
       class EmptyLinesAroundBody < Cop
         MSG_BEG = 'Extra blank line detected at body beginning.'
         MSG_END = 'Extra blank line detected at body end.'
