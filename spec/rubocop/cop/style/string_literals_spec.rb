@@ -33,6 +33,15 @@ describe Rubocop::Cop::Style::StringLiterals, :config do
       expect(cop.offences).to be_empty
     end
 
+    it 'accepts heredocs' do
+      inspect_source(cop,
+                     ['execute <<-SQL',
+                      '  SELECT name from users',
+                      'SQL'])
+
+      expect(cop.offences).to be_empty
+    end
+
     it 'accepts double quotes when they are needed' do
       src = ['a = "\n"',
              'b = "#{encode_severity}:' +
@@ -116,6 +125,15 @@ describe Rubocop::Cop::Style::StringLiterals, :config do
 
     it 'accepts %q and %Q quotes' do
       inspect_source(cop, ['a = %q(x) + %Q[x]'])
+      expect(cop.offences).to be_empty
+    end
+
+    it 'accepts heredocs' do
+      inspect_source(cop,
+                     ['execute <<-SQL',
+                      '  SELECT name from users',
+                      'SQL'])
+
       expect(cop.offences).to be_empty
     end
 

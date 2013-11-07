@@ -9,6 +9,8 @@
 
 ### Bugs fixed
 
+* Handle properly heredocs in `StringLiterals` cop.
+
 ## 0.15.0 (06/11/2013)
 
 ### New features
