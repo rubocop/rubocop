@@ -31,6 +31,18 @@ module Rubocop
           end
         end
 
+        def autocorrect(node)
+          @corrections << lambda do |corrector|
+            if style == :no_braces
+              corrector.remove(node.loc.begin)
+              corrector.remove(node.loc.end)
+            elsif style == :braces
+              corrector.insert_before(node.loc.expression, '{')
+              corrector.insert_after(node.loc.expression, '}')
+            end
+          end
+        end
+
         private
 
         def style
