@@ -42,6 +42,13 @@ module Rubocop
         def safe_assignment_allowed?
           cop_config['AllowSafeAssignment']
         end
+
+        def autocorrect(node)
+          @corrections << lambda do |corrector|
+            corrector.remove(node.loc.begin)
+            corrector.remove(node.loc.end)
+          end
+        end
       end
     end
   end

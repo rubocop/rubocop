@@ -24,6 +24,37 @@ describe Rubocop::Cop::Style::ParenthesesAroundCondition, :config do
     expect(cop.offences.size).to eq(9)
   end
 
+  it 'auto-corrects parentheses around condition' do
+    corrected = autocorrect_source(cop, ['if (x > 10)',
+                                         'elsif (x < 3)',
+                                         'end',
+                                         'unless (x > 10)',
+                                         'end',
+                                         'while (x > 10)',
+                                         'end',
+                                         'until (x > 10)',
+                                         'end',
+                                         'x += 1 if (x < 10)',
+                                         'x += 1 unless (x < 10)',
+                                         'x += 1 while (x < 10)',
+                                         'x += 1 until (x < 10)',
+                                        ])
+    expect(corrected).to eq ['if x > 10',
+                             'elsif x < 3',
+                             'end',
+                             'unless x > 10',
+                             'end',
+                             'while x > 10',
+                             'end',
+                             'until x > 10',
+                             'end',
+                             'x += 1 if x < 10',
+                             'x += 1 unless x < 10',
+                             'x += 1 while x < 10',
+                             'x += 1 until x < 10',
+                            ].join("\n")
+  end
+
   it 'accepts condition without parentheses' do
     inspect_source(cop, ['if x > 10',
                          'end',
@@ -41,7 +72,7 @@ describe Rubocop::Cop::Style::ParenthesesAroundCondition, :config do
     expect(cop.offences).to be_empty
   end
 
-  it 'is not confused by leading brace in subexpression' do
+  it 'is not confused by leading parenthesis in subexpression' do
     inspect_source(cop, ['(a > b) && other ? one : two'])
     expect(cop.offences).to be_empty
   end
@@ -53,7 +84,7 @@ describe Rubocop::Cop::Style::ParenthesesAroundCondition, :config do
   end
 
   context 'safe assignment is allowed' do
-    it 'accepts = in condition surrounded with braces' do
+    it 'accepts = in condition surrounded with parentheses' do
       inspect_source(cop,
                      ['if (test = 10)',
                       'end'
@@ -66,7 +97,7 @@ describe Rubocop::Cop::Style::ParenthesesAroundCondition, :config do
   context 'safe assignment is not allowed' do
     let(:cop_config) { { 'AllowSafeAssignment' => false } }
 
-    it 'does not accepts = in condition surrounded with braces' do
+    it 'does not accept = in condition surrounded with parentheses' do
       inspect_source(cop,
                      ['if (test = 10)',
                       'end'
