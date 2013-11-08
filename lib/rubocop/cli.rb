@@ -25,6 +25,9 @@ module Rubocop
       trap_interrupt
 
       @options, remaining_args = Options.new.parse(args)
+
+      act_on_preemptive_options(remaining_args)
+
       target_files = target_finder.find(remaining_args)
 
       act_on_options(remaining_args)
@@ -86,19 +89,25 @@ module Rubocop
       any_failed
     end
 
-    def act_on_options(args)
+    def act_on_preemptive_options(args)
       if @options[:show_cops]
         print_available_cops
         exit(0)
       end
+      if @options[:version]
+        puts Rubocop::Version.version(false)
+        exit(0)
+      end
+      if @options[:verbose_version]
+        puts Rubocop::Version.version(true)
+        exit(0)
+      end
+    end
 
+    def act_on_options(args)
       @config_store.set_options_config(@options[:config]) if @options[:config]
 
       Sickill::Rainbow.enabled = false if @options[:no_color]
-
-      puts Rubocop::Version.version(false) if @options[:version]
-      puts Rubocop::Version.version(true) if @options[:verbose_version]
-      exit(0) if @options[:version] || @options[:verbose_version]
 
       ConfigLoader.debug = @options[:debug]
 
