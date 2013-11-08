@@ -44,6 +44,7 @@ module Rubocop
     #   end
     class Cop
       extend AST::Sexp
+      include Util
 
       # http://phrogz.net/programmingruby/language.html#table_18.4
       # Backtick is added last just to help editors parse this code.
@@ -188,15 +189,6 @@ module Rubocop
             on_node(syms, elem, excludes) { |s| yield s }
           end
         end
-      end
-
-      def command?(name, node)
-        return unless node.type == :send
-
-        receiver, method_name, _args = *node
-
-        # commands have no explicit receiver
-        !receiver && method_name == name
       end
 
       def source_range(source_buffer, preceding_lines, begin_column,

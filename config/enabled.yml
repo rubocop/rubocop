@@ -575,6 +575,10 @@ Void:
 
 ##################### Rails ##################################
 
+DefaultScope:
+  Description: 'Checks if the argument passed to default_scope is a block.'
+  Enabled: true
+
 HasAndBelongsToMany:
   Description: 'Prefer has_many :through to has_and_belongs_to_many.'
   Enabled: true

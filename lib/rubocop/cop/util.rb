@@ -4,6 +4,10 @@ module Rubocop
   module Cop
     # This module contains a collection of useful utility methods.
     module Util
+      extend AST::Sexp
+
+      PROC_NEW_NODE = s(:send, s(:const, nil, :Proc), :new)
+
       module_function
 
       def strip_quotes(str)
@@ -68,6 +72,35 @@ module Rubocop
         end
 
         const_names.reverse.join('::')
+      end
+
+      def command?(name, node)
+        return unless node.type == :send
+
+        receiver, method_name, _args = *node
+
+        # commands have no explicit receiver
+        !receiver && method_name == name
+      end
+
+      def lambda?(node)
+        fail 'Not a block node' unless node.type == :block
+
+        send_node, _block_args, _block_body = *node
+
+        command?(:lambda, send_node)
+      end
+
+      def proc?(node)
+        fail 'Not a block node' unless node.type == :block
+
+        send_node, _block_args, _block_body = *node
+
+        command?(:proc, send_node) || send_node == PROC_NEW_NODE
+      end
+
+      def lambda_or_proc?(node)
+        lambda?(node) || proc?(node)
       end
     end
   end
