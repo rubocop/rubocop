@@ -55,8 +55,9 @@ module Rubocop
         invoke_cops_callback(processed_source)
         process(processed_source.ast) if processed_source.ast
         @cops.reduce([]) do |offences, cop|
+          filename = processed_source.buffer.name
           # ignore files that are of no interest to the cop in question
-          if cop.include_file?(processed_source.buffer.name)
+          if cop.relevant_file?(filename)
             offences.concat(cop.offences)
             offences
           else
@@ -84,8 +85,10 @@ module Rubocop
         @cops.each do |cop|
           next unless cop.respond_to?(:investigate)
 
+          filename = processed_source.buffer.name
+
           # ignore files that are of no interest to the cop in question
-          next unless cop.include_file?(processed_source.buffer.name)
+          next unless cop.relevant_file?(filename)
 
           with_cop_error_handling(cop) do
             cop.investigate(processed_source)

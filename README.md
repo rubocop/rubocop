@@ -216,12 +216,22 @@ file is taken from the nearest `.rubocop.yml`, searching upwards.
 Cops can be run only on specific sets of files when that's needed (for
 instance you might want to run some Rails model checks only on files,
 which paths match `app/models/*.rb`). All cops support the
-`IncludePaths` param.
+`Include` param.
 
 ```yaml
 DefaultScope:
-  IncludePaths:
+  Include:
     - app/models
+```
+
+Cops can also exclude only specific sets of files when that's needed (for
+instance you might want to run some cop only on a specific file). All cops support the
+`Exclude` param.
+
+```yaml
+DefaultScope:
+  Exclude:
+    - app/models/problematic.rb
 ```
 
 ### Automatically Generated Configuration

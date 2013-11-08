@@ -155,7 +155,7 @@ module Rubocop
       end
 
       def include_paths
-        cop_config && cop_config['IncludePaths']
+        cop_config && cop_config['Include']
       end
 
       def include_file?(file)
@@ -164,6 +164,22 @@ module Rubocop
         include_paths.any? do |regex|
           processed_source.buffer.name =~ /#{regex}/
         end
+      end
+
+      def exclude_paths
+        cop_config && cop_config['Exclude']
+      end
+
+      def exclude_file?(file)
+        return false unless exclude_paths
+
+        exclude_paths.any? do |regex|
+          processed_source.buffer.name =~ /#{regex}/
+        end
+      end
+
+      def relevant_file?(file)
+        include_file?(file) && !exclude_file?(file)
       end
 
       private
