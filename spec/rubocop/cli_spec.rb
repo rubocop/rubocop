@@ -774,14 +774,14 @@ describe Rubocop::CLI, :isolated_environment do
                                       'x = 0',
                                       'puts x'
                                      ])
-      create_file('.rubocop.yml', [
-                                   'AllCops:',
-                                   '  Excludes:',
-                                   '    - example.rb',
-                                   '    - !ruby/regexp /regexp.rb$/',
-                                   '    - "exclude_*"'
-                                  ])
-      expect(cli.run(%w(--format simple))).to eq(0)
+      create_file('rubocop.yml', [
+                                  'AllCops:',
+                                  '  Excludes:',
+                                  '    - example.rb',
+                                  '    - !ruby/regexp /regexp.rb$/',
+                                  '    - "**/exclude_*"'
+                                 ])
+      expect(cli.run(%w(--format simple --config rubocop.yml))).to eq(0)
       expect($stdout.string)
         .to eq(['', '0 files inspected, no offences detected',
                 ''].join("\n"))

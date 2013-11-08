@@ -14,6 +14,7 @@
 
 * Handle properly heredocs in `StringLiterals` cop. ([@bbatsov][])
 * Fix `SpaceAroundOperators` to not report missing space around operator for `def self.method *args`. ([@jonas054][])
+* [#620](https://github.com/bbatsov/rubocop/issues/620): Make sure `AllCops`/`Excludes` from `-c`/`--config` option are considered. ([@jonas054][])
 
 ## 0.15.0 (06/11/2013)
 
