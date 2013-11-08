@@ -1114,6 +1114,24 @@ describe Rubocop::CLI, :isolated_environment do
                 abs('example/.rubocop.yml'),
                 ''].join("\n"))
     end
+
+    it 'works when a configuration file passed by -c specifies Excludes' do
+      create_file('example/example1.rb', [
+                                          '# encoding: utf-8',
+                                          '#' * 90
+                                         ])
+
+      create_file('rubocop.yml', [
+                                           'AllCops:',
+                                           '  Excludes:',
+                                           '    - !ruby/regexp /example1\.rb$/'
+                                          ])
+
+      cli.run(%w(--format simple -c rubocop.yml))
+      expect($stdout.string)
+        .to eq(['', '0 files inspected, no offences detected',
+                ''].join("\n"))
+    end
   end
 
   describe '#display_error_summary' do
