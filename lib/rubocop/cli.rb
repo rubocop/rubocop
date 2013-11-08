@@ -25,9 +25,9 @@ module Rubocop
       trap_interrupt
 
       @options, remaining_args = Options.new.parse(args)
-      target_files = target_finder.find(remaining_args)
 
       act_on_options(remaining_args)
+      target_files = target_finder.find(remaining_args)
 
       any_failed = process_files(target_files)
 
