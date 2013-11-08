@@ -154,6 +154,18 @@ module Rubocop
         @ignored_nodes << node
       end
 
+      def include_paths
+        cop_config && cop_config['IncludePaths']
+      end
+
+      def include_file?(file)
+        return true unless include_paths
+
+        include_paths.any? do |regex|
+          processed_source.buffer.name =~ /#{regex}/
+        end
+      end
+
       private
 
       def disabled_line?(line_number)

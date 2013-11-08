@@ -211,3 +211,22 @@ VariableName:
 
 WordArray:
   MinSize: 0
+
+##################### Rails ##################################
+
+DefaultScope:
+  IncludePaths:
+    - app/models
+
+HasAndBelongsToMany:
+  IncludePaths:
+    - app/models
+
+ReadAttribute:
+  IncludePaths:
+    - app/models
+
+Validation:
+  IncludePaths:
+    - app/models
+

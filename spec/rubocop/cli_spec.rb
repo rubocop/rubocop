@@ -683,34 +683,36 @@ describe Rubocop::CLI, :isolated_environment do
 
   describe 'enabling/disabling rails cops' do
     it 'by default does not run rails cops' do
-      create_file('example1.rb', ['# encoding: utf-8',
-                                  'read_attribute(:test)'])
-      expect(cli.run(['--format', 'simple', 'example1.rb'])).to eq(0)
+      create_file('app/models/example1.rb', ['# encoding: utf-8',
+                                             'read_attribute(:test)'])
+      expect(cli.run(['--format', 'simple', 'app/models/example1.rb']))
+        .to eq(0)
     end
 
     it 'with -R given runs rails cops' do
-      create_file('example1.rb', ['# encoding: utf-8',
-                                  'read_attribute(:test)'])
-      expect(cli.run(['--format', 'simple', '-R', 'example1.rb'])).to eq(1)
+      create_file('app/models/example1.rb', ['# encoding: utf-8',
+                                             'read_attribute(:test)'])
+      expect(cli.run(['--format', 'simple', '-R', 'app/models/example1.rb']))
+        .to eq(1)
       expect($stdout.string).to include('Prefer self[:attribute]')
     end
 
     it 'with configation option true in one dir runs rails cops there' do
-      create_file('dir1/example1.rb', ['# encoding: utf-8',
-                                       'read_attribute(:test)'])
+      create_file('dir1/app/models/example1.rb', ['# encoding: utf-8',
+                                                 'read_attribute(:test)'])
       create_file('dir1/.rubocop.yml', [
                                         'AllCops:',
                                         '  RunRailsCops: true',
                                        ])
-      create_file('dir2/example2.rb', ['# encoding: utf-8',
-                                       'read_attribute(:test)'])
+      create_file('dir2/app/models/example2.rb', ['# encoding: utf-8',
+                                                  'read_attribute(:test)'])
       create_file('dir2/.rubocop.yml', [
                                         'AllCops:',
                                         '  RunRailsCops: false',
                                        ])
       expect(cli.run(['--format', 'simple', 'dir1', 'dir2'])).to eq(1)
       expect($stdout.string)
-        .to eq(['== dir1/example1.rb ==',
+        .to eq(['== dir1/app/models/example1.rb ==',
                 'C:  2:  1: Prefer self[:attribute] over read_attribute' +
                 '(:attribute).',
                 '',
@@ -719,13 +721,14 @@ describe Rubocop::CLI, :isolated_environment do
     end
 
     it 'with configation option false but -R given runs rails cops' do
-      create_file('example1.rb', ['# encoding: utf-8',
-                                  'read_attribute(:test)'])
+      create_file('app/models/example1.rb', ['# encoding: utf-8',
+                                             'read_attribute(:test)'])
       create_file('.rubocop.yml', [
                                    'AllCops:',
                                    '  RunRailsCops: false',
                                   ])
-      expect(cli.run(['--format', 'simple', '-R', 'example1.rb'])).to eq(1)
+      expect(cli.run(['--format', 'simple', '-R', 'app/models/example1.rb']))
+        .to eq(1)
       expect($stdout.string).to include('Prefer self[:attribute]')
     end
   end

@@ -213,6 +213,17 @@ subdirectories. This is different from all other parameters, who
 follow RuboCop's general principle that configuration for an inspected
 file is taken from the nearest `.rubocop.yml`, searching upwards.
 
+Cops can be run only on specific sets of files when that's needed (for
+instance you might want to run some Rails model checks only on files,
+which paths match `app/models/*.rb`). All cops support the
+`IncludePaths` param.
+
+```yaml
+DefaultScope:
+  IncludePaths:
+    - app/models
+```
+
 ### Automatically Generated Configuration
 
 If you have a code base with an overwhelming amount of offences, it can be a
