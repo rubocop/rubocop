@@ -102,6 +102,39 @@ module Rubocop
       def lambda_or_proc?(node)
         lambda?(node) || proc?(node)
       end
+
+      def on_node(syms, sexp, excludes = [])
+        yield sexp if Array(syms).include?(sexp.type)
+
+        return if Array(excludes).include?(sexp.type)
+
+        sexp.children.each do |elem|
+          if elem.is_a?(Parser::AST::Node)
+            on_node(syms, elem, excludes) { |s| yield s }
+          end
+        end
+      end
+
+      def source_range(source_buffer, preceding_lines, begin_column,
+                       column_count)
+        newline_length = 1
+        begin_pos = preceding_lines.reduce(0) do |a, e|
+          a + e.length + newline_length
+        end + begin_column
+        Parser::Source::Range.new(source_buffer, begin_pos,
+                                  begin_pos + column_count)
+      end
+
+      def range_with_surrounding_space(range, side = :both)
+        src = @processed_source.buffer.source
+        go_left = side == :left || side == :both
+        go_right = side == :right || side == :both
+        begin_pos = range.begin_pos
+        begin_pos -= 1 while go_left && src[begin_pos - 1] =~ /[ \t]/
+        end_pos = range.end_pos
+        end_pos += 1 while go_right && src[end_pos] =~ /[ \t]/
+        Parser::Source::Range.new(@processed_source.buffer, begin_pos, end_pos)
+      end
     end
   end
 end
