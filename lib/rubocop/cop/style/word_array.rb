@@ -6,19 +6,13 @@ module Rubocop
       # This cop checks for array literals made up of word-like
       # strings, that are not using the %w() syntax.
       class WordArray < Cop
+        include ArraySyntax
+
         MSG = 'Use %w or %W for array of words.'
 
         def on_array(node)
-          return unless node.loc.begin && node.loc.begin.is?('[')
-
           array_elems = node.children
-
-          # no need to check empty arrays
-          return unless array_elems && array_elems.size > 1
-
-          string_array = array_elems.all? { |e| e.type == :str }
-
-          if string_array && !complex_content?(array_elems) &&
+          if array_of?(:str, node) && !complex_content?(array_elems) &&
             array_elems.size > min_size && !comments_in_array?(node)
             convention(node, :expression)
           end
