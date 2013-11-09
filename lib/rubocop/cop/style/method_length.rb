@@ -8,27 +8,20 @@ module Rubocop
       # The maximum allowed length is configurable.
       class MethodLength < Cop
         include CheckMethods
-
-        MSG = 'Method has too many lines. [%d/%d]'
-
-        def max_length
-          cop_config['Max']
-        end
-
-        def count_comments?
-          cop_config['CountComments']
-        end
+        include CodeLength
 
         private
 
-        def check(node, *_)
-          method_length = Util.source_length(node.loc.expression.source,
-                                             count_comments?)
+        def message
+          'Method has too many lines. [%d/%d]'
+        end
 
-          if method_length > max_length
-            message = sprintf(MSG, method_length, max_length)
-            convention(node, :keyword, message)
-          end
+        def code_length(node)
+          lines = node.loc.expression.source.lines.to_a[1..-2] || []
+
+          lines.reject! { |line| irrelevant_line(line) }
+
+          lines.size
         end
       end
     end
