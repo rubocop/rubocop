@@ -9,8 +9,8 @@ module Rubocop
     # ## Creating Custom Formatter
     #
     # You can create a custom formatter by subclassing
-    # `Rubocop::Formatter::BaseFormatter` and override some methods,
-    # or implement all the methods by duck typing.
+    # `Rubocop::Formatter::BaseFormatter` and overriding some methods,
+    # or by implementing all the methods by duck typing.
     #
     # ## Using Custom Formatter in Command Line
     #

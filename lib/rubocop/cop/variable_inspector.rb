@@ -4,7 +4,7 @@ module Rubocop
   module Cop
     # This module provides a way to track local variables and scopes of Ruby.
     # This is intended to be used as mix-in, and the user class may override
-    # some of hook methods.
+    # some of the hook methods.
     module VariableInspector
       VARIABLE_ASSIGNMENT_TYPE = :lvasgn
       REGEXP_NAMED_CAPTURE_TYPE = :match_with_lvasgn
@@ -50,7 +50,7 @@ module Rubocop
       def inspect_variables(root_node)
         return unless root_node
 
-        # Wrap with begin node if it's standalone node.
+        # Wrap with begin node if it's a standalone node.
         unless root_node.type == :begin
           root_node = Parser::AST::Node.new(:begin, [root_node])
         end
