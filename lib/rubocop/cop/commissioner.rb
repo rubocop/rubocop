@@ -78,7 +78,7 @@ module Rubocop
       end
 
       # There are cops that require their own custom processing.
-      # If they define the #investigate method all input parameters passed
+      # If they define the #investigate method, all input parameters passed
       # to the commissioner will be passed to the cop too in order to do
       # its own processing.
       def invoke_cops_callback(processed_source)
