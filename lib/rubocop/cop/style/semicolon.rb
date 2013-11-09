@@ -10,20 +10,16 @@ module Rubocop
 
         def investigate(processed_source)
           return unless processed_source.ast
+          @processed_source = processed_source
 
-          unless cop_config['AllowAsExpressionSeparator']
-            check_for_expr_separator(processed_source)
-          end
-          check_for_line_terminator(processed_source)
+          check_for_line_terminator
         end
 
-        private
-
-        def check_for_expr_separator(processed_source)
-          on_node(:begin, processed_source.ast) do |node|
+        def on_begin(node)
+          unless cop_config['AllowAsExpressionSeparator']
             exprs = node.children
 
-            next if exprs.size < 2
+            return if exprs.size < 2
 
             # create a map matching lines to the number of expressions on them
             exprs_lines = exprs.map { |e| e.loc.expression.line }
@@ -35,30 +31,32 @@ module Rubocop
                 # TODO: Find the correct position of the semicolon. We don't
                 # know if the first semicolon on the line is a separator of
                 # expressions. It's just a guess.
-                column = processed_source[line - 1].index(';')
-                convention(nil,
-                           source_range(processed_source.buffer,
-                                        processed_source[0...(line - 1)],
-                                        column, 1))
+                column = @processed_source[line - 1].index(';')
+                convention_on(line, column)
               end
             end
           end
         end
 
-        def check_for_line_terminator(processed_source)
-          tokens_for_lines = processed_source.tokens.group_by do |token|
+        private
+
+        def check_for_line_terminator
+          tokens_for_lines = @processed_source.tokens.group_by do |token|
             token.pos.line
           end
 
           tokens_for_lines.each do |line, tokens|
             if tokens.last.type == :tSEMI # rubocop:disable SymbolName
-              column = tokens.last.pos.column
-              convention(nil,
-                         source_range(processed_source.buffer,
-                                      processed_source[0...(line - 1)],
-                                      column, 1))
+              convention_on(line, tokens.last.pos.column)
             end
           end
+        end
+
+        def convention_on(line, column)
+          convention(nil,
+                     source_range(@processed_source.buffer,
+                                  @processed_source[0...(line - 1)], column,
+                                  1))
         end
       end
     end
