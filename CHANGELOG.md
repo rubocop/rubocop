@@ -14,6 +14,7 @@
 
 * Handle properly heredocs in `StringLiterals` cop. ([@bbatsov][])
 * Fix `SpaceAroundOperators` to not report missing space around operator for `def self.method *args`. ([@jonas054][])
+* Properly handle ['AllCops']['Includes'] and ['AllCops']['Excludes'] when passing config via -c. ([@fancyremarker][])
 
 ## 0.15.0 (06/11/2013)
 
