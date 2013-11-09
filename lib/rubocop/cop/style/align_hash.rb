@@ -46,6 +46,14 @@ module Rubocop
 
           private
 
+          def separator_delta(first_pair, current_separator, key_delta)
+            if current_separator.is?(':')
+              0 # Colon follows directly after key
+            else
+              hash_rocket_delta(first_pair, current_separator) - key_delta
+            end
+          end
+
           def any_pairs_on_the_same_line?(node)
             lines_of_the_children = node.children.map do |pair|
               key, _value = *pair
@@ -87,13 +95,9 @@ module Rubocop
             first_pair.loc.column - current_pair.loc.column
           end
 
-          def separator_delta(first_pair, current_separator, key_delta)
-            if current_separator.is?(':')
-              0 # Colon follows directly after key
-            else
-              first_pair.loc.column + @max_key_width + 1 -
-                current_separator.column - key_delta
-            end
+          def hash_rocket_delta(first_pair, current_separator)
+            first_pair.loc.column + @max_key_width + 1 -
+              current_separator.column
           end
 
           def value_delta(first_pair, current_pair)
@@ -126,13 +130,8 @@ module Rubocop
             key.loc.column + key.loc.expression.source.length
           end
 
-          def separator_delta(first_pair, current_separator, key_delta)
-            if current_separator.is?(':')
-              0 # Colon follows directly after key
-            else
-              first_pair.loc.operator.column - current_separator.column -
-                key_delta
-            end
+          def hash_rocket_delta(first_pair, current_separator)
+            first_pair.loc.operator.column - current_separator.column
           end
 
           def value_delta(first_pair, current_pair)
