@@ -14,23 +14,15 @@ module Rubocop
       # and ||/or is shorthand for a sequence of ifs, so they also add one.
       # Loops can be said to have an exit condition, so they add one.
       class CyclomaticComplexity < Cop
+        include CheckMethods
+
         MSG = 'Cyclomatic complexity for %s is too high. [%d/%d]'
         DECISION_POINT_NODES = [:if, :while, :until, :for, :rescue, :when,
                                 :and, :or]
 
-        def on_def(node)
-          method_name, _args, _body = *node
-          check(node, method_name)
-        end
-
-        def on_defs(node)
-          _scope, method_name, _args, _body = *node
-          check(node, method_name)
-        end
-
         private
 
-        def check(node, method_name)
+        def check(node, method_name, *_)
           complexity = 1
           on_node(DECISION_POINT_NODES, node) { complexity += 1 }
 

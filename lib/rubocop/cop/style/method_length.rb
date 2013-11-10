@@ -7,15 +7,9 @@ module Rubocop
       # Comment lines can optionally be ignored.
       # The maximum allowed length is configurable.
       class MethodLength < Cop
+        include CheckMethods
+
         MSG = 'Method has too many lines. [%d/%d]'
-
-        def on_def(node)
-          check(node)
-        end
-
-        def on_defs(node)
-          check(node)
-        end
 
         def max_length
           cop_config['Max']
@@ -27,7 +21,7 @@ module Rubocop
 
         private
 
-        def check(node)
+        def check(node, *_)
           method_length = Util.source_length(node.loc.expression.source,
                                              count_comments?)
 

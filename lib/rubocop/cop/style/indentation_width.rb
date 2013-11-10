@@ -13,6 +13,8 @@ module Rubocop
       #  end
       # end
       class IndentationWidth < Cop
+        include CheckMethods
+
         CORRECT_INDENTATION = 2
         MSG = "Use #{CORRECT_INDENTATION} (not %d) spaces for indentation."
 
@@ -37,13 +39,7 @@ module Rubocop
           members.each { |m| check_indentation(node.loc.keyword, m) }
         end
 
-        def on_def(node)
-          _method_name, _args, body = *node
-          check_indentation(node.loc.keyword, body)
-        end
-
-        def on_defs(node)
-          _scope, _method_name, _args, body = *node
+        def check(node, _method_name, _args, body)
           check_indentation(node.loc.keyword, body)
         end
 

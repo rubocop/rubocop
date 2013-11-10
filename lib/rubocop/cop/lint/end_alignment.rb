@@ -13,15 +13,9 @@ module Rubocop
       #   variable = if true
       #              end
       class EndAlignment < Cop
+        include CheckMethods
+
         MSG = 'end at %d, %d is not aligned with %s at %d, %d'
-
-        def on_def(node)
-          check(node)
-        end
-
-        def on_defs(node)
-          check(node)
-        end
 
         def on_class(node)
           check(node)
@@ -45,7 +39,7 @@ module Rubocop
 
         private
 
-        def check(node)
+        def check(node, *_)
           # discard modifier forms of if/while/until
           return unless node.loc.end
 

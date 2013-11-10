@@ -22,6 +22,8 @@ require 'rubocop/cop/variable_inspector/reference'
 require 'rubocop/cop/variable_inspector/scope'
 require 'rubocop/cop/variable_inspector/variable_table'
 
+require 'rubocop/cop/check_methods'
+
 require 'rubocop/cop/lint/assignment_in_condition'
 require 'rubocop/cop/lint/block_alignment'
 require 'rubocop/cop/lint/debugger'

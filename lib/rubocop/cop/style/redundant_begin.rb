@@ -18,26 +18,16 @@ module Rubocop
       #     end
       #   end
       class RedundantBegin < Cop
+        include CheckMethods
+
         MSG = 'Redundant `begin` block detected.'
-
-        def on_def(node)
-          _method_name, _args, body = *node
-
-          check(body)
-        end
-
-        def on_defs(node)
-          _scope, _method_name, _args, body = *node
-
-          check(body)
-        end
 
         private
 
-        def check(node)
-          return unless node && node.type == :kwbegin
+        def check(_node, _method_name, _args, body)
+          return unless body && body.type == :kwbegin
 
-          convention(node, :begin)
+          convention(body, :begin)
         end
       end
     end

@@ -13,24 +13,14 @@ module Rubocop
       #    x.attr = 5
       #  end
       class UselessSetterCall < Cop
+        include CheckMethods
+
         MSG = 'Useless setter call to local variable %s.'
         ASSIGNMENT_TYPES = [:lvasgn, :ivasgn, :cvasgn, :gvasgn].freeze
 
-        def on_def(node)
-          _name, args, body = *node
-
-          check_for_useless_assignment(body, args)
-        end
-
-        def on_defs(node)
-          _target, _name, args, body = *node
-
-          check_for_useless_assignment(body, args)
-        end
-
         private
 
-        def check_for_useless_assignment(body, args)
+        def check(_node, _method_name, args, body)
           return unless body
 
           if body.type == :begin
