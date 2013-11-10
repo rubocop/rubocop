@@ -7,26 +7,17 @@ module Rubocop
       # that does not take any arguments. Both instance and
       # class/singleton methods are checked.
       class DefWithParentheses < Cop
+        include CheckMethods
+
         MSG = "Omit the parentheses in defs when the method doesn't accept " +
             'any arguments.'
 
-        def on_def(node)
+        def check(node, _method_name, args, _body)
           start_line = node.loc.keyword.line
           end_line = node.loc.end.line
 
           return if start_line == end_line
 
-          _, args = *node
-          convention(args, :begin) if args.children == [] && args.loc.begin
-        end
-
-        def on_defs(node)
-          start_line = node.loc.keyword.line
-          end_line = node.loc.end.line
-
-          return if start_line == end_line
-
-          _, _, args = *node
           convention(args, :begin) if args.children == [] && args.loc.begin
         end
 
@@ -42,19 +33,11 @@ module Rubocop
       # method, that takes arguments. Both instance and
       # class/singleton methods are checked.
       class DefWithoutParentheses < Cop
+        include CheckMethods
+
         MSG = 'Use def with parentheses when there are arguments.'
 
-        def on_def(node)
-          _, args = *node
-
-          if args.children.size > 0 && args.loc.begin.nil?
-            convention(args, :expression)
-          end
-        end
-
-        def on_defs(node)
-          _, _, args = *node
-
+        def check(_node, _method_name, args, _body)
           if args.children.size > 0 && args.loc.begin.nil?
             convention(args, :expression)
           end

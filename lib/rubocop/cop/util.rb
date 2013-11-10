@@ -27,18 +27,6 @@ module Rubocop
         block_node.loc.end.line - block_node.loc.begin.line
       end
 
-      def source_length(source, count_comments = nil)
-        lines = source.lines.to_a[1...-1]
-
-        return 0 unless lines
-
-        lines.reject!(&:blank?)
-
-        lines.reject! { |line| comment_line?(line) } unless count_comments
-
-        lines.size
-      end
-
       def comment_line?(line_source)
         line_source =~ /^\s*#/
       end

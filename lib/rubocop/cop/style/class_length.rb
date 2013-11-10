@@ -7,40 +7,28 @@ module Rubocop
       # Comment lines can optionally be ignored.
       # The maximum allowed length is configurable.
       class ClassLength < Cop
-        include Util
-
-        MSG = 'Class definition is too long. [%d/%d]'
+        include CodeLength
 
         def on_class(node)
           check(node)
         end
 
-        def max_length
-          cop_config['Max']
-        end
-
-        def count_comments?
-          cop_config['CountComments']
-        end
-
         private
 
-        def check(node)
+        def message
+          'Class definition is too long. [%d/%d]'
+        end
+
+        def code_length(node)
           class_body_line_numbers = line_range(node).to_a[1...-1]
 
           target_line_numbers = class_body_line_numbers -
                                   line_numbers_of_inner_classes(node)
 
-          class_length = target_line_numbers.reduce(0) do |length, line_number|
+          target_line_numbers.reduce(0) do |length, line_number|
             source_line = processed_source[line_number]
-            next length if source_line.blank?
-            next length if !count_comments? && comment_line?(source_line)
+            next length if irrelevant_line(source_line)
             length + 1
-          end
-
-          if class_length > max_length
-            message = sprintf(MSG, class_length, max_length)
-            convention(node, :keyword, message)
           end
         end
 

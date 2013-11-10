@@ -5,20 +5,12 @@ module Rubocop
     module Style
       # Checks for space between a method name and a left parenthesis.
       class SpaceAfterMethodName < Cop
+        include CheckMethods
+
         MSG = 'Never put a space between a method name and the opening ' +
           'parenthesis.'
 
-        def on_def(node)
-          _method_name, args, _body = *node
-          check(args)
-        end
-
-        def on_defs(node)
-          _scope, _method_name, args, _body = *node
-          check(args)
-        end
-
-        def check(args)
+        def check(_node, _method_name, args, body)
           return unless args.loc.begin && args.loc.begin.is?('(')
           expr = args.loc.expression
           pos_before_left_paren = Parser::Source::Range.new(expr.source_buffer,
