@@ -29,6 +29,11 @@ describe Rubocop::Cop::Style::DotPosition, :config do
       inspect_source(cop, ['l.', '(1)'])
       expect(cop.offences.size).to eq(1)
     end
+
+    it 'does not err on method call on same line' do
+      inspect_source(cop, ['something.method_name'])
+      expect(cop.offences).to be_empty
+    end
   end
 
   context 'Trailing dots style' do
