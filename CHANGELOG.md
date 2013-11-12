@@ -6,6 +6,7 @@
 
 * [#612](https://github.com/bbatsov/rubocop/pull/612): `BracesAroundHashParameters` cop does auto-correction. ([@dblock][])
 * [#614](https://github.com/bbatsov/rubocop/pull/614): `ParenthesesAroundCondition` cop does auto-correction. ([@dblock][])
+* [#624](https://github.com/bbatsov/rubocop/pull/624): `EmptyLines` cop does auto-correction. ([@dblock][])
 * New Rails cop `DefaultScope` ensures `default_scope` is called properly with a block argument. ([@bbatsov][])
 * All cops now support the `Include` param, which specifies the files on which they should operate. ([@bbatsov][])
 * All cops now support the `Exclude` param, which specifies the files on which they should not operate. ([@bbatsov][])

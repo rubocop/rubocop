@@ -28,13 +28,17 @@ module Rubocop
                                        processed_source[0...(line - 1)],
                                        0,
                                        1)
-                  convention(nil, range)
+                  convention(range, range)
                 end
               end
             end
 
             prev_line = cur_line
           end
+        end
+
+        def autocorrect(range)
+          @corrections << ->(corrector) { corrector.remove(range) }
         end
       end
     end
