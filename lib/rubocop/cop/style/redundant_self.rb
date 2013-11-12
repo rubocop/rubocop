@@ -94,6 +94,7 @@ module Rubocop
           receiver, method_name, *_args = *node
           if receiver && receiver.type == :self
             unless operator?(method_name) || keyword?(method_name) ||
+                constant_name?(method_name) ||
                 @allowed_send_nodes.include?(node) ||
                 @local_variables.include?(method_name)
               convention(node, :expression)
@@ -126,6 +127,10 @@ module Rubocop
            :next, :nil, :not, :or, :redo, :rescue, :retry, :return, :self,
            :super, :then, :true, :undef, :unless, :until, :when, :while,
            :yield].include?(method_name)
+        end
+
+        def constant_name?(method_name)
+          method_name.match(/^[A-Z]/)
         end
 
         def allow_self(node)
