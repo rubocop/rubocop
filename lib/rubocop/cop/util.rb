@@ -121,6 +121,7 @@ module Rubocop
         begin_pos -= 1 while go_left && src[begin_pos - 1] =~ /[ \t]/
         end_pos = range.end_pos
         end_pos += 1 while go_right && src[end_pos] =~ /[ \t]/
+        end_pos += 1 if go_right && src[end_pos] == "\n"
         Parser::Source::Range.new(@processed_source.buffer, begin_pos, end_pos)
       end
     end
