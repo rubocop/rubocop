@@ -131,12 +131,12 @@ describe Rubocop::Cop::Lint::BlockAlignment do
              'end']
       inspect_source(cop, src)
       expect(cop.messages)
-        .to eq(['end at 10, 8 is not aligned with bar.get_stuffs at 2, 2 or' +
-                ' .select do |stuff| at 8, 6',
+        .to eq(['end at 5, 8 is not aligned with bar.get_stuffs at 2, 2 or' +
+                ' .reject do |stuff| at 3, 6',
                 'end at 7, 4 is not aligned with bar.get_stuffs at 2, 2 or' +
                 ' end.select do |stuff| at 5, 8',
-                'end at 5, 8 is not aligned with bar.get_stuffs at 2, 2 or' +
-                ' .reject do |stuff| at 3, 6'])
+                'end at 10, 8 is not aligned with bar.get_stuffs at 2, 2 or' +
+                ' .select do |stuff| at 8, 6'])
     end
 
     # Example from issue 393 of bbatsov/rubocop on github:
