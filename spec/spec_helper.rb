@@ -113,11 +113,11 @@ end
 
 class Rubocop::Cop::Cop
   def messages
-    offences.map(&:message)
+    offences.sort.map(&:message)
   end
 
   def highlights
-    offences.sort_by(&:line).map { |o| o.location.source }
+    offences.sort.map { |o| o.location.source }
   end
 end
 

@@ -232,10 +232,28 @@ describe Rubocop::Cop::Style::SpaceAroundOperators do
     expect(cop.offences).to be_empty
   end
 
+  it 'registers an offence for a setter call without spaces' do
+    inspect_source(cop, ['x.y=2'])
+    expect(cop.messages).to eq(
+      ["Surrounding space missing for operator '='."])
+  end
+
+  it 'registers an offence for a hash rocket without spaces' do
+    inspect_source(cop, ['{ 1=>2, a: b }'])
+    expect(cop.messages).to eq(
+      ["Surrounding space missing for operator '=>'."])
+  end
+
   it 'accepts unary operators without space' do
     inspect_source(cop, ['[].map(&:size)',
                          '-3',
+                         'arr.collect { |e| -e }',
                          'x = +2'])
+    expect(cop.messages).to eq([])
+  end
+
+  it 'accepts [] without space' do
+    inspect_source(cop, ['files[2]'])
     expect(cop.messages).to eq([])
   end
 
@@ -252,5 +270,55 @@ describe Rubocop::Cop::Style::SpaceAroundOperators do
     inspect_source(cop, ['class <<self',
                          'end'])
     expect(cop.messages).to be_empty
+  end
+
+  it 'registers an offence for match operators without space' do
+    inspect_source(cop, ['x=~/abc/', 'y !~/abc/'])
+    expect(cop.messages)
+      .to eq(["Surrounding space missing for operator '=~'.",
+              "Surrounding space missing for operator '!~'."])
+  end
+
+  it 'registers an offence for various assignments without space' do
+    inspect_source(cop, ['x||=0', 'y&&=0', 'z*=2',
+                         '@a=0', 'a,b=0', 'A=0', 'x[3]=0', '$A=0'])
+    expect(cop.messages)
+      .to eq(["Surrounding space missing for operator '||='.",
+              "Surrounding space missing for operator '&&='.",
+              "Surrounding space missing for operator '*='.",
+              "Surrounding space missing for operator '='.",
+              "Surrounding space missing for operator '='.",
+              "Surrounding space missing for operator '='.",
+              "Surrounding space missing for operator '='.",
+              "Surrounding space missing for operator '='."])
+  end
+
+  it 'registers an offence for equality operators without space' do
+    inspect_source(cop, ['x==0', 'y!=0', 'Hash===z'])
+    expect(cop.messages)
+      .to eq(["Surrounding space missing for operator '=='.",
+              "Surrounding space missing for operator '!='.",
+              "Surrounding space missing for operator '==='."])
+  end
+
+  it 'registers an offence for - without space with negative lhs operand' do
+    inspect_source(cop, ['-1-arg'])
+    expect(cop.messages)
+      .to eq(["Surrounding space missing for operator '-'."])
+  end
+
+  it 'registers an offence for inheritance < without space' do
+    inspect_source(cop, ['class ShowSourceTestClass<ShowSourceTestSuperClass',
+                         'end'])
+    expect(cop.messages)
+      .to eq(["Surrounding space missing for operator '<'."])
+  end
+
+  it 'registers an offence for hash rocket without space at rescue' do
+    inspect_source(cop, ['begin',
+                         'rescue Exception=>e',
+                         'end'])
+    expect(cop.messages)
+      .to eq(["Surrounding space missing for operator '=>'."])
   end
 end
