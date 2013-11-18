@@ -8,9 +8,10 @@ module Rubocop
       # value of the configuration parameter MaxSlashes.
       class RegexpLiteral < Cop
         def on_regexp(node)
-          slashes = node.loc.expression.source.count('/')
+          string_parts = node.children.select { |child| child.type == :str }
+          total_string = string_parts.map { |s| s.loc.expression.source }.join
+          slashes = total_string.count('/')
           msg = if node.loc.begin.is?('/')
-                  slashes -= 2 # subtract delimiters
                   error_message('') if slashes > max_slashes
                 else
                   error_message('only ') if slashes <= max_slashes
