@@ -4,7 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/bbatsov/rubocop/badge.png?branch=master)](https://coveralls.io/r/bbatsov/rubocop)
 [![Code Climate](https://codeclimate.com/github/bbatsov/rubocop.png)](https://codeclimate.com/github/bbatsov/rubocop)
 
-![Rubocop logo](rubocop_logo_128x128.png)
+![Rubocop logo](rubocop_logo_512x512.png)
 
 # RuboCop
 
