@@ -9,6 +9,8 @@
 > Role models are important. <br/>
 > -- Officer Alex J. Murphy / RoboCop
 
+![Rubocop logo](rubocop_logo_128x128.png)
+
 **RuboCop** is a Ruby static code analyzer. Out of the box it will
 enforce many of the guidelines outlined in the community
 [Ruby Style Guide](https://github.com/bbatsov/ruby-style-guide).
