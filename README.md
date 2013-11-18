@@ -4,12 +4,12 @@
 [![Coverage Status](https://coveralls.io/repos/bbatsov/rubocop/badge.png?branch=master)](https://coveralls.io/r/bbatsov/rubocop)
 [![Code Climate](https://codeclimate.com/github/bbatsov/rubocop.png)](https://codeclimate.com/github/bbatsov/rubocop)
 
+![Rubocop logo](rubocop_logo_128x128.png)
+
 # RuboCop
 
 > Role models are important. <br/>
 > -- Officer Alex J. Murphy / RoboCop
-
-![Rubocop logo](rubocop_logo_128x128.png)
 
 **RuboCop** is a Ruby static code analyzer. Out of the box it will
 enforce many of the guidelines outlined in the community
