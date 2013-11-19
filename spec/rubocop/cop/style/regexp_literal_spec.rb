@@ -52,6 +52,11 @@ describe Rubocop::Cop::Style::RegexpLiteral, :config do
         expect(cop.offences).to be_empty
       end
     end
+
+    it 'ignores slashes do not belong regexp' do
+      inspect_source(cop, ['x =~ /\s{#{x[/\s+/].length}}/'])
+      expect(cop.offences).to be_empty
+    end
   end
 
   context 'when a regexp uses %r delimiters' do
