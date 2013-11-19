@@ -32,10 +32,9 @@ describe Rubocop::Config do
       end
 
       it 'raises validation error' do
-        e = described_class::ValidationError
-        expect { configuration.validate }.to raise_error(e) do |error|
-          expect(error.message).to start_with('unrecognized cop LyneLenth')
-        end
+        expect { configuration.validate }
+          .to raise_error(described_class::ValidationError,
+                          /^unrecognized cop LyneLenth/)
       end
     end
 
@@ -49,11 +48,9 @@ describe Rubocop::Config do
       end
 
       it 'raises validation error' do
-        e = described_class::ValidationError
-        expect { configuration.validate }.to raise_error(e) do |error|
-          expect(error.message).to
-            start_with('unrecognized parameter LineLength:Min')
-        end
+        expect { configuration.validate }
+          .to raise_error(described_class::ValidationError,
+                          /^unrecognized parameter LineLength:Min/)
       end
     end
   end

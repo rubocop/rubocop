@@ -16,10 +16,14 @@ module Rubocop
         include CheckMethods
 
         CORRECT_INDENTATION = 2
-        MSG = "Use #{CORRECT_INDENTATION} (not %d) spaces for indentation."
+
+        def on_begin(node)
+          check_consistent(node)
+        end
 
         def on_kwbegin(node)
-          node.children.each { |c| check_indentation(node.loc.end, c) }
+          check_indentation(node.loc.end, node.children.first)
+          check_consistent(node)
         end
 
         def on_block(node)
@@ -50,7 +54,9 @@ module Rubocop
 
         def on_while(node)
           _condition, body = *node
-          check_indentation(node.loc.keyword, body)
+          if node.loc.keyword.begin_pos == node.loc.expression.begin_pos
+            check_indentation(node.loc.keyword, body)
+          end
         end
 
         alias_method :on_until, :on_while
@@ -135,7 +141,23 @@ module Rubocop
             convention(nil,
                        Parser::Source::Range.new(expr.source_buffer,
                                                  begin_pos, end_pos),
-                       sprintf(MSG, indentation))
+                       sprintf("Use #{CORRECT_INDENTATION} (not %d) spaces " +
+                               'for indentation.', indentation))
+          end
+        end
+
+        def check_consistent(node)
+          node.children.map(&:loc).each_cons(2) do |child1, child2|
+            if child2.line > child1.line && child2.column != child1.column
+              expr = child2.expression
+              indentation = expr.source_line =~ /\S/
+              end_pos = expr.begin_pos
+              begin_pos = end_pos - indentation
+              convention(nil,
+                         Parser::Source::Range.new(expr.source_buffer,
+                                                   begin_pos, end_pos),
+                         'Inconsistent indentation detected.')
+            end
           end
         end
       end
