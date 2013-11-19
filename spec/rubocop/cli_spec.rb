@@ -95,6 +95,9 @@ describe Rubocop::CLI, :isolated_environment do
                   '# one by one as the offences are removed from the code ' +
                   'base.',
                   '',
+                  'IndentationWidth:',
+                  '  Enabled: false',
+                  '',
                   'LineLength:',
                   '  Enabled: false',
                   '',
@@ -323,6 +326,10 @@ describe Rubocop::CLI, :isolated_environment do
                       'example2.rb:2:1: C: Tab detected.',
                       "\tx",
                       '^',
+                      'example2.rb:3:1: C: Inconsistent indentation ' +
+                      'detected.',
+                      'def a',
+                      '',
                       'example2.rb:4:1: C: Use 2 (not 3) spaces for ' +
                       'indentation.',
                       '   puts',
@@ -340,7 +347,7 @@ describe Rubocop::CLI, :isolated_environment do
                       '    end',
                       '    ^^^',
                       '',
-                      '3 files inspected, 9 offences detected',
+                      '3 files inspected, 10 offences detected',
                       ''].join("\n"))
           end
         end
@@ -362,6 +369,8 @@ describe Rubocop::CLI, :isolated_environment do
                "#{abs('example1.rb')}:2:5: C: Trailing whitespace detected.",
                "#{abs('example1.rb')}:3:2: C: Trailing whitespace detected.",
                "#{abs('example2.rb')}:2:1: C: Tab detected.",
+               "#{abs('example2.rb')}:3:1: C: Inconsistent indentation " +
+               'detected.',
                ''].join("\n")
             expect($stdout.string).to eq(expected_output)
           end

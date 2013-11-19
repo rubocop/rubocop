@@ -1,4 +1,4 @@
- # encoding: utf-8
+# encoding: utf-8
 
 require 'spec_helper'
 
@@ -82,19 +82,19 @@ describe Rubocop::Cop::Style::Semicolon, :config do
     expect(cop.offences).to be_empty
   end
 
-   context 'when AllowAsExpressionSeparator is true' do
-     let(:cop_config) { { 'AllowAsExpressionSeparator' => true } }
+  context 'when AllowAsExpressionSeparator is true' do
+    let(:cop_config) { { 'AllowAsExpressionSeparator' => true } }
 
-     it 'accepts several expressions' do
-       inspect_source(cop,
-                      ['puts "this is a test"; puts "So is this"'])
-       expect(cop.offences).to be_empty
-     end
+    it 'accepts several expressions' do
+      inspect_source(cop,
+                     ['puts "this is a test"; puts "So is this"'])
+      expect(cop.offences).to be_empty
+    end
 
-     it 'accepts one line method with two statements' do
-       inspect_source(cop,
-                      ['def foo(a) x(1); y(2); z(3); end'])
-       expect(cop.offences).to be_empty
-     end
-   end
+    it 'accepts one line method with two statements' do
+      inspect_source(cop,
+                     ['def foo(a) x(1); y(2); z(3); end'])
+      expect(cop.offences).to be_empty
+    end
+  end
 end
