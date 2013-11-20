@@ -33,6 +33,22 @@ describe Rubocop::CLI, :isolated_environment do
       end
     end
 
+    describe '--auto-correct' do
+      it 'can correct two problems with blocks' do
+        # {} should be do..end and space is missing.
+        create_file('example.rb', ['# encoding: utf-8',
+                                   '(1..10).each{ |i|',
+                                   '  puts i',
+                                   '}'])
+        expect(cli.run(['--auto-correct'])).to eq(1)
+        expect(IO.read('example.rb'))
+          .to eq(['# encoding: utf-8',
+                  '(1..10).each do |i|',
+                  '  puts i',
+                  'end'].join("\n") + "\n")
+      end
+    end
+
     describe '--auto-gen-config' do
       it 'exits with error if asked to re-generate a todo list that is in ' +
         'use' do

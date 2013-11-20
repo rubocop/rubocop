@@ -26,6 +26,7 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces do
     it 'registers an offence for empty braces with space inside' do
       inspect_source(cop, ['each { }'])
       expect(cop.messages).to eq(['Space inside empty braces detected.'])
+      expect(cop.highlights).to eq([' '])
     end
 
     it 'auto-corrects unwanted space' do
@@ -45,6 +46,7 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces do
     it 'registers an offence for empty braces with no space inside' do
       inspect_source(cop, ['each {}'])
       expect(cop.messages).to eq(['Space missing inside empty braces.'])
+      expect(cop.highlights).to eq(['{}'])
     end
 
     it 'auto-corrects missing space' do
@@ -98,6 +100,28 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces do
     it 'auto-corrects missing space' do
       new_source = autocorrect_source(cop, 'each{|x| puts }')
       expect(new_source).to eq('each { |x| puts }')
+    end
+
+    context 'and Blocks cop enabled' do
+      let(:config) do
+        Rubocop::Config.new('Blocks'                 => { 'Enabled' => true },
+                            'SpaceAroundBlockBraces' => cop_config)
+      end
+
+      it 'does auto-correction for single-line blocks' do
+        new_source = autocorrect_source(cop, 'each{|x| puts}')
+        expect(new_source).to eq('each { |x| puts }')
+      end
+
+      it 'does not do auto-correction for multi-line blocks' do
+        # {} will be changed to do..end by the Blocks cop, and then this cop is
+        # not relevant anymore.
+        old_source = ['each{|x|',
+                      '  puts',
+                      '}']
+        new_source = autocorrect_source(cop, old_source)
+        expect(new_source).to eq(old_source.join("\n"))
+      end
     end
 
     context 'and space before block parameters not allowed' do
