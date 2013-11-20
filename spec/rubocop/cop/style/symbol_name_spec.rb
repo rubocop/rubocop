@@ -91,6 +91,12 @@ describe Rubocop::Cop::Style::SymbolName, :config do
     expect(cop.offences).to be_empty
   end
 
+  it 'accepts snake case string delimited by :' do
+    inspect_source(cop,
+                   ['test = :"good_idea:one"'])
+    expect(cop.offences).to be_empty
+  end
+
   it 'accepts special cases - !, [] and **' do
     inspect_source(cop,
                    ['test = :**',
