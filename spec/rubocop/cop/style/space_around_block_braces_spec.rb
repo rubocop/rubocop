@@ -2,8 +2,12 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::SpaceAroundBlockBraces, :config do
+describe Rubocop::Cop::Style::SpaceAroundBlockBraces do
   subject(:cop) { described_class.new(config) }
+  let(:config) do
+    Rubocop::Config.new('Blocks' => { 'Enabled' => false },
+                        'SpaceAroundBlockBraces' => cop_config)
+  end
   let(:cop_config) do
     {
       'EnforcedStyle' => 'space_inside_braces',
@@ -64,7 +68,7 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces, :config do
   it 'registers an offence for left brace without inner space' do
     inspect_source(cop, ['each {puts }'])
     expect(cop.messages).to eq(['Space missing inside {.'])
-    expect(cop.highlights).to eq(['{'])
+    expect(cop.highlights).to eq(['p'])
   end
 
   it 'registers an offence for right brace without inner space' do
@@ -74,7 +78,7 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces, :config do
   end
 
   it 'auto-corrects missing space' do
-    new_source = autocorrect_source(cop, 'each { puts}')
+    new_source = autocorrect_source(cop, 'each {puts}')
     expect(new_source).to eq('each { puts }')
   end
 
@@ -88,7 +92,7 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces, :config do
     it 'registers an offence for left brace without inner space' do
       inspect_source(cop, ['each {|x| puts }'])
       expect(cop.messages).to eq(['Space between { and | missing.'])
-      expect(cop.highlights).to eq(['{'])
+      expect(cop.highlights).to eq(['{|'])
     end
 
     it 'auto-corrects missing space' do
@@ -171,7 +175,7 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces, :config do
         it 'registers an offence for left brace without inner space' do
           inspect_source(cop, ['each {|x| puts}'])
           expect(cop.messages).to eq(['Space between { and | missing.'])
-          expect(cop.highlights).to eq(['{'])
+          expect(cop.highlights).to eq(['{|'])
         end
 
         it 'auto-corrects missing space' do

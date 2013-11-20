@@ -1,145 +1,157 @@
 # encoding: utf-8
 
-# rubocop:disable SymbolName
-
 module Rubocop
   module Cop
     module Style
       # Checks that block braces have or don't have surrounding space depending
       # on configuration. For blocks taking parameters, it checks that the left
       # brace has or doesn't have trailing space depending on configuration.
+      # Also checks that the left brace is preceded by a space and this is not
+      # configurable.
       class SpaceAroundBlockBraces < Cop
         include SurroundingSpace
 
-        def investigate(processed_source)
-          return unless processed_source.ast
-          @processed_source = processed_source
+        def on_block(node)
+          return if node.loc.begin.is?('do') # No braces.
 
-          processed_source.tokens.each_cons(2) do |t1, t2|
-            next if ([t1.pos, t2.pos] - positions_not_to_check).size < 2
+          left_brace, right_brace = node.loc.begin, node.loc.end
+          sb = node.loc.expression.source_buffer
 
-            type1, type2 = t1.type, t2.type
-            if [:tLCURLY, :tRCURLY].include?(type2)
-              check(t1, t2)
-            elsif type1 == :tLCURLY
-              if type2 == :tPIPE
-                check_pipe(t1, t2)
-              else
-                check(t1, t2)
+          if range_with_surrounding_space(left_brace).source.start_with?('{')
+            no_space_before_left_brace(left_brace, sb)
+          end
+
+          if left_brace.end_pos == right_brace.begin_pos
+            no_space_inside_empty_braces(left_brace, right_brace, sb)
+          else
+            range = Parser::Source::Range.new(sb, left_brace.end_pos,
+                                              right_brace.begin_pos)
+            inner = range.source
+            if inner =~ /^[ \t]*$/
+              space_inside_empty_braces(range)
+            else
+              braces_with_contents_inside(node, inner)
+            end
+          end
+        end
+
+        private
+
+        def braces_with_contents_inside(node, inner)
+          _method, args, _body = *node
+          left_brace, right_brace = node.loc.begin, node.loc.end
+          pipe = args.loc.begin
+          sb = node.loc.expression.source_buffer
+
+          if inner =~ /^\S/
+            no_space_inside_left_brace(left_brace, pipe, sb)
+          else
+            space_inside_left_brace(left_brace, pipe, sb)
+          end
+
+          if inner =~ /\S$/
+            no_space_inside_right_brace(right_brace)
+          else
+            space_inside_right_brace(right_brace, sb)
+          end
+        end
+
+        def no_space_before_left_brace(left_brace, sb)
+          convention(left_brace, left_brace, 'Space missing to the left of {.')
+        end
+
+        def no_space_inside_empty_braces(left_brace, right_brace, sb)
+          if style_for_empty_braces == :space
+            range = Parser::Source::Range.new(sb, left_brace.begin_pos,
+                                              right_brace.end_pos)
+            convention(range, range, 'Space missing inside empty braces.')
+          end
+        end
+
+        def space_inside_empty_braces(range)
+          if style_for_empty_braces == :no_space
+            convention(range, range, 'Space inside empty braces detected.')
+          end
+        end
+
+        def no_space_inside_left_brace(left_brace, pipe, sb)
+          if pipe
+            if left_brace.end_pos == pipe.begin_pos
+              if style_for_block_parameters == :space
+                range = Parser::Source::Range.new(sb, left_brace.begin_pos,
+                                                  pipe.end_pos)
+                convention(range, range, 'Space between { and | missing.')
               end
             end
+          elsif style == :space_inside_braces
+            # We indicate the position after the left brace. Otherwise it's
+            # difficult to distinguish between space missing to the left and to
+            # the right of the brace in autocorrect.
+            range = Parser::Source::Range.new(sb, left_brace.end_pos,
+                                              left_brace.end_pos + 1)
+            convention(range, range, 'Space missing inside {.')
           end
         end
 
-        def positions_not_to_check
-          @positions_not_to_check ||= begin
-            positions = []
-            ast = @processed_source.ast
-            tokens = @processed_source.tokens
-
-            on_node(:hash, ast) do |hash|
-              b_ix = index_of_first_token(hash)
-              e_ix = index_of_last_token(hash)
-              positions << tokens[b_ix].pos << tokens[e_ix].pos
+        def space_inside_left_brace(left_brace, pipe, sb)
+          if pipe
+            if style_for_block_parameters == :no_space
+              range = Parser::Source::Range.new(sb, left_brace.end_pos,
+                                                pipe.begin_pos)
+              convention(range, range, 'Space between { and | detected.')
             end
-
-            # TODO: Check braces inside string/symbol/regexp/xstr
-            #   interpolation.
-            on_node([:dstr, :dsym, :regexp, :xstr], ast) do |s|
-              b_ix = index_of_first_token(s)
-              e_ix = index_of_last_token(s)
-              tokens[b_ix..e_ix].each do |t|
-                positions << t.pos if t.type == :tRCURLY
-              end
-            end
-
-            positions
+          elsif style == :no_space_inside_braces
+            brace_with_space = range_with_surrounding_space(left_brace, :right)
+            range = Parser::Source::Range.new(sb,
+                                              brace_with_space.begin_pos + 1,
+                                              brace_with_space.end_pos)
+            convention(range, range, 'Space inside { detected.')
           end
         end
 
-        def check(t1, t2)
-          if t2.text == '{'
-            check_space_outside_left_brace(t1, t2)
-          elsif t1.text == '{' && t2.text == '}'
-            check_empty_braces(t1, t2)
-          elsif cop_config['EnforcedStyle'] == 'space_inside_braces'
-            check_space_inside_braces(t1, t2)
-          else
-            check_no_space_inside_braces(t1, t2)
+        def no_space_inside_right_brace(right_brace)
+          if style == :space_inside_braces
+            convention(right_brace, right_brace, 'Space missing inside }.')
           end
         end
 
-        def check_empty_braces(t1, t2)
-          if cop_config['EnforcedStyleForEmptyBraces'] == 'space'
-            check_space_inside_braces(t1, t2)
-          else
-            check_no_space_inside_braces(t1, t2)
+        def space_inside_right_brace(right_brace, sb)
+          if style == :no_space_inside_braces
+            brace_with_space = range_with_surrounding_space(right_brace, :left)
+            range = Parser::Source::Range.new(sb,
+                                              brace_with_space.begin_pos,
+                                              brace_with_space.end_pos - 1)
+            convention(range, range, 'Space inside } detected.')
           end
         end
 
-        def check_space_inside_braces(t1, t2)
-          unless space_between?(t1, t2)
-            token, what = problem_details(t1, t2)
-            convention(token.pos, token.pos, "Space missing inside #{what}.")
+        def style
+          case cop_config['EnforcedStyle']
+          when 'space_inside_braces'    then :space_inside_braces
+          when 'no_space_inside_braces' then :no_space_inside_braces
+          else fail 'Unknown EnforcedStyle selected!'
           end
         end
 
-        def check_no_space_inside_braces(t1, t2)
-          if space_between?(t1, t2)
-            token, what = problem_details(t1, t2)
-            s = space_range(token)
-            convention(s, s, "Space inside #{what} detected.")
+        def style_for_empty_braces
+          case cop_config['EnforcedStyleForEmptyBraces']
+          when 'space'    then :space
+          when 'no_space' then :no_space
+          else fail 'Unknown EnforcedStyleForEmptyBraces selected!'
           end
         end
 
-        def problem_details(t1, t2)
-          if t1.text == '{'
-            token = t1
-            what = t2.text == '}' ? 'empty braces' : '{'
-          else
-            token = t2
-            what = '}'
-          end
-          [token, what]
-        end
-
-        def check_space_outside_left_brace(t1, t2)
-          if t2.text == '{' && !space_between?(t1, t2)
-            convention(t1.pos, t2.pos, 'Space missing to the left of {.')
-          end
-        end
-
-        def check_pipe(t1, t2)
-          if cop_config['SpaceBeforeBlockParameters']
-            unless space_between?(t1, t2)
-              convention(t2.pos, t1.pos, 'Space between { and | missing.')
-            end
-          elsif space_between?(t1, t2)
-            s = space_range(t1)
-            convention(s, s, 'Space between { and | detected.')
-          end
-        end
-
-        def space_range(token)
-          src = @processed_source.buffer.source
-          if token.text == '{'
-            b = token.pos.begin_pos + 1
-            e = b + 1
-            e += 1 while src[e] =~ /\s/
-          else
-            e = token.pos.begin_pos
-            b = e - 1
-            b -= 1 while src[b - 1] =~ /\s/
-          end
-          Parser::Source::Range.new(@processed_source.buffer, b, e)
+        def style_for_block_parameters
+          cop_config['SpaceBeforeBlockParameters'] ? :space : :no_space
         end
 
         def autocorrect(range)
           @corrections << lambda do |corrector|
             case range.source
-            when '}', '|' then corrector.insert_before(range, ' ')
-            when ' '      then corrector.remove(range)
-            else               corrector.insert_after(range, ' ')
+            when /\s/ then corrector.remove(range)
+            when '{}' then corrector.replace(range, '{ }')
+            when '{|' then corrector.replace(range, '{ |')
+            else           corrector.insert_before(range, ' ')
             end
           end
         end
