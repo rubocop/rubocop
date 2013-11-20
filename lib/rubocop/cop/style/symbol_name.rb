@@ -8,7 +8,7 @@ module Rubocop
       # There's also an option to accept symbol names with dots as well.
       class SymbolName < Cop
         MSG = 'Use snake_case for symbols.'
-        SNAKE_CASE = /^[\da-z_]+[!?=]?$/
+        SNAKE_CASE = /^[\d:a-z_]+[!?=]?$/
         SNAKE_CASE_WITH_DOTS = /^[\da-z_\.]+[!?=]?$/
         CAMEL_CASE = /^[A-Z][A-Za-z\d]*$/
 
