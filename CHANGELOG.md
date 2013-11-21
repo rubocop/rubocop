@@ -24,6 +24,7 @@
 * [#611](https://github.com/bbatsov/rubocop/pull/611): Fix crash when loading an empty config file ([@sinisterchipmunk][])
 * Fix `DotPosition` cop with `trailing` style for method calls on same line. ([@vonTronje][])
 * [#627](https://github.com/bbatsov/rubocop/pull/627): Fix counting of slashes in complicated regexps in `RegexpLiteral` cop. ([@jonas054][])
+* [#638](https://github.com/bbatsov/rubocop/issues/638): Fix bug in auto-correct that changes `each{ |x|` to `each d o |x|`. ([@jonas054][])
 
 ## 0.15.0 (06/11/2013)
 
