@@ -12,6 +12,10 @@
 * All cops now support the `Exclude` param, which specifies the files on which they should not operate. ([@bbatsov][])
 * [#631](https://github.com/bbatsov/rubocop/issues/631): `IndentationWidth` cop now detects inconsistent indentation between lines that should have the same indentation. ([@jonas054][])
 
+### Changes
+
+* Removed `SymbolNames` as it was generating way too many false positives. ([@bbatsov][])
+
 ### Bugs fixed
 
 * Handle properly heredocs in `StringLiterals` cop. ([@bbatsov][])

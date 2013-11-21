@@ -316,12 +316,12 @@ describe Rubocop::ConfigLoader do
     end
   end
 
-  describe 'configuration for SymbolName' do
-    describe 'AllowCamelCase' do
+  describe 'configuration for AssignmentInCondition' do
+    describe 'AllowSafeAssignment' do
       it 'is enabled by default' do
         default_config = described_class.default_configuration
-        symbol_name_config = default_config.for_cop('SymbolName')
-        expect(symbol_name_config['AllowCamelCase']).to be_true
+        symbol_name_config = default_config.for_cop('AssignmentInCondition')
+        expect(symbol_name_config['AllowSafeAssignment']).to be_true
       end
     end
   end

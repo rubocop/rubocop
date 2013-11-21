@@ -442,10 +442,6 @@ StringLiterals:
   Description: 'Checks if uses of quotes match the configured preference.'
   Enabled: true
 
-SymbolName:
-  Description: 'Symbol literals should use snake_case.'
-  Enabled: true
-
 Tab:
   Description: 'No hard tabs.'
   Enabled: true

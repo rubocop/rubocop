@@ -1,7 +1,5 @@
 # encoding: utf-8
 
-# rubocop:disable SymbolName
-
 module Rubocop
   module Cop
     module Style

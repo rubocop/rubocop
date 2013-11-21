@@ -6,7 +6,7 @@ describe Rubocop::Token do
   describe '.from_parser_token' do
     subject(:token) { described_class.from_parser_token(parser_token) }
     let(:parser_token) { [type, [text, range]] }
-    let(:type) { :kDEF } # rubocop:disable SymbolName
+    let(:type) { :kDEF }
     let(:text) { 'def' }
     let(:range) { double('range') }
 

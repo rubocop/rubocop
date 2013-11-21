@@ -178,9 +178,6 @@ SpaceInsideHashLiteralBraces:
   EnforcedStyle: space
   EnforcedStyleForEmptyBraces: no_space
 
-SymbolName:
-  AllowCamelCase: true
-
 # TrivialAccessors doesn't require exact name matches and doesn't allow
 # predicated methods by default.
 TrivialAccessors:

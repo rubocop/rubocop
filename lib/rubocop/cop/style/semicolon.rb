@@ -46,7 +46,7 @@ module Rubocop
           end
 
           tokens_for_lines.each do |line, tokens|
-            if tokens.last.type == :tSEMI # rubocop:disable SymbolName
+            if tokens.last.type == :tSEMI
               convention_on(line, tokens.last.pos.column)
             end
           end
