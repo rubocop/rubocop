@@ -3,10 +3,10 @@
 inherit_from: config/default.yml
 
 MethodLength:
-  Max: 22
+  Max: 20
 
 ClassLength:
   Max: 140
 
 CyclomaticComplexity:
-  Max: 12
+  Max: 10
