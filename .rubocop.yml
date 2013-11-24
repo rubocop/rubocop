@@ -6,7 +6,7 @@ MethodLength:
   Max: 20
 
 ClassLength:
-  Max: 140
+  Max: 125
 
 CyclomaticComplexity:
   Max: 10
