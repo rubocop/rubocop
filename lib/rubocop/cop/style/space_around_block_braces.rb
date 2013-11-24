@@ -42,11 +42,13 @@ module Rubocop
             range = Parser::Source::Range.new(sb, left_brace.end_pos,
                                               right_brace.begin_pos)
             inner = range.source
-            if inner =~ /^[ \t]*$/
-              space(style_for_empty_braces, sb, range.begin_pos, range.end_pos,
-                    'Space inside empty braces detected.')
-            else
-              braces_with_contents_inside(node, inner)
+            unless inner =~ /\n/
+              if inner =~ /\S/
+                braces_with_contents_inside(node, inner)
+              else
+                space(style_for_empty_braces, sb, range.begin_pos,
+                      range.end_pos, 'Space inside empty braces detected.')
+              end
             end
           end
         end
