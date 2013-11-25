@@ -50,6 +50,12 @@ describe Rubocop::Cop::Style::ConstantName do
     expect(cop.offences).to be_empty
   end
 
+  it 'does not check if rhs is another constant' do
+    inspect_source(cop,
+                   ['Parser::CurrentRuby = Parser::Ruby20'])
+    expect(cop.offences).to be_empty
+  end
+
   it 'checks qualified const names' do
     inspect_source(cop,
                    ['::AnythingGoes = 30',

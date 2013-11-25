@@ -15,9 +15,11 @@ module Rubocop
         def on_casgn(node)
           _scope, const_name, value = *node
 
-          # We cannot know the result of method calls line
+          # We cannot know the result of method calls like
           # NewClass = something_that_returns_a_class
-          unless value && [:send, :block].include?(value.type)
+          # It's also ok to assign a class constant another class constant
+          # SomeClass = SomeOtherClass
+          unless value && [:send, :block, :const].include?(value.type)
             convention(node, :name) if const_name !~ SNAKE_CASE
           end
         end
