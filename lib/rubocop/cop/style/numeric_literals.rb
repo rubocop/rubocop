@@ -6,7 +6,7 @@ module Rubocop
       # This cop checks for big numeric literals without _ between groups
       # of digits in them.
       class NumericLiterals < Cop
-        MSG = 'Separate every 3 digits in the integer portion of a number' \
+        MSG = 'Separate every 3 digits in the integer portion of a number ' \
           'with underscores(_).'
 
         def on_int(node)
