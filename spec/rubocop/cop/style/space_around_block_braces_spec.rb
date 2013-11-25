@@ -23,6 +23,12 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces do
       expect(cop.messages).to be_empty
     end
 
+    it 'accepts empty braces with line break inside' do
+      inspect_source(cop, ['  each {',
+                           '  }'])
+      expect(cop.messages).to be_empty
+    end
+
     it 'registers an offence for empty braces with space inside' do
       inspect_source(cop, ['each { }'])
       expect(cop.messages).to eq(['Space inside empty braces detected.'])
@@ -32,6 +38,16 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces do
     it 'auto-corrects unwanted space' do
       new_source = autocorrect_source(cop, 'each { }')
       expect(new_source).to eq('each {}')
+    end
+
+    it 'does not auto-correct when braces are not empty' do
+      old_source = <<-END
+        a {
+          b
+        }
+      END
+      new_source = autocorrect_source(cop, old_source)
+      expect(new_source).to eq(old_source)
     end
   end
 
