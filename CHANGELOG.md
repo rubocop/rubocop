@@ -11,6 +11,7 @@
 * All cops now support the `Include` param, which specifies the files on which they should operate. ([@bbatsov][])
 * All cops now support the `Exclude` param, which specifies the files on which they should not operate. ([@bbatsov][])
 * [#631](https://github.com/bbatsov/rubocop/issues/631): `IndentationWidth` cop now detects inconsistent indentation between lines that should have the same indentation. ([@jonas054][])
+* [#649](https://github.com/bbatsov/rubocop/pull/649): `EmptyLinesAroundBody` cop does auto-correction. ([@dblock][])
 
 ### Changes
 

@@ -39,6 +39,10 @@ module Rubocop
           check(node)
         end
 
+        def autocorrect(range)
+          @corrections << ->(corrector) { corrector.remove(range) }
+        end
+
         private
 
         def check(node, *_)
@@ -56,7 +60,7 @@ module Rubocop
                                  processed_source[0...start_line],
                                  0,
                                  1)
-            convention(nil, range, MSG_BEG)
+            convention(range, range, MSG_BEG)
           end
 
           if processed_source.lines[end_line - 2].blank?
@@ -64,7 +68,7 @@ module Rubocop
                                  processed_source[0...(end_line - 2)],
                                  0,
                                  1)
-            convention(nil, range, MSG_END)
+            convention(range, range, MSG_END)
           end
         end
       end
