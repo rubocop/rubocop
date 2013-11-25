@@ -3,6 +3,8 @@
 require 'rake'
 require 'rake/tasklib'
 
+require 'rubocop/options'
+
 module Rubocop
   # Provides a custom rake task.
   #
@@ -13,6 +15,7 @@ module Rubocop
     attr_accessor :verbose
     attr_accessor :fail_on_error
     attr_accessor :patterns
+    attr_accessor :formatters
 
     def initialize(*args, &task_block)
       setup_ivars(args)
@@ -36,7 +39,7 @@ module Rubocop
 
       cli = CLI.new
       puts 'Running RuboCop...' if verbose
-      result = cli.run(patterns)
+      result = cli.run([formatters.map { |f| ['-f', f] }, patterns])
       abort('RuboCop failed!') if fail_on_error unless result == 0
     end
 
@@ -47,6 +50,7 @@ module Rubocop
       @verbose = true
       @fail_on_error = true
       @patterns = []
+      @formatters = [Rubocop::Options::DEFAULT_FORMATTER]
     end
   end
 end
