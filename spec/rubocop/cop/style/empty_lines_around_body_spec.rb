@@ -14,6 +14,17 @@ describe Rubocop::Cop::Style::EmptyLinesAroundBody do
     expect(cop.offences.size).to eq(1)
   end
 
+  it 'autocorrects method body starting with a blank' do
+    corrected = autocorrect_source(cop,
+                                   ['def some_method',
+                                    '',
+                                    '  do_something',
+                                    'end'])
+    expect(corrected).to eq ['def some_method',
+                             '  do_something',
+                             'end'].join("\n")
+  end
+
   it 'registers an offence for class method body starting with a blank' do
     inspect_source(cop,
                    ['def Test.some_method',
@@ -21,6 +32,17 @@ describe Rubocop::Cop::Style::EmptyLinesAroundBody do
                     '  do_something',
                     'end'])
     expect(cop.offences.size).to eq(1)
+  end
+
+  it 'autocorrects class method body starting with a blank' do
+    corrected = autocorrect_source(cop,
+                                   ['def Test.some_method',
+                                    '',
+                                    '  do_something',
+                                    'end'])
+    expect(corrected).to eq ['def Test.some_method',
+                             '  do_something',
+                             'end'].join("\n")
   end
 
   it 'registers an offence for method body ending with a blank' do
