@@ -3,7 +3,7 @@ rvm:
   - 1.9.3
   - 2.0.0
   - jruby-19mode
-  - rbx
+  - rbx-2.1.1
 script:
   - bundle exec rspec
   - bundle exec rubocop
