@@ -12,6 +12,7 @@
 * All cops now support the `Exclude` param, which specifies the files on which they should not operate. ([@bbatsov][])
 * [#631](https://github.com/bbatsov/rubocop/issues/631): `IndentationWidth` cop now detects inconsistent indentation between lines that should have the same indentation. ([@jonas054][])
 * [#649](https://github.com/bbatsov/rubocop/pull/649): `EmptyLinesAroundBody` cop does auto-correction. ([@dblock][])
+* Rake task now support setting formatters. ([@pmenglund])
 
 ### Changes
 
@@ -590,3 +591,4 @@
 [@sinisterchipmunk]: https://github.com/sinisterchipmunk
 [@vonTronje]: https://github.com/vonTronje
 [@agrimm]: https://github.com/agrimm
+[@pmenglund]: https://github.com/pmenglund
