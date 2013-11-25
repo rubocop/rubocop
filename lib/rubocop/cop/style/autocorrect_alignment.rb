@@ -30,17 +30,7 @@ module Rubocop
           @corrections << lambda do |corrector|
             expr = node.loc.expression
             each_line(expr) do |line_begin_pos, line|
-              starts_with_space =
-                expr.source_buffer.source[line_begin_pos] =~ / /
-              pos_to_remove = if column_delta > 0 || starts_with_space
-                                line_begin_pos
-                              else
-                                line_begin_pos - column_delta.abs
-                              end
-              range = Parser::Source::Range.new(expr.source_buffer,
-                                                pos_to_remove,
-                                                pos_to_remove +
-                                                column_delta.abs)
+              range = calculate_range(expr, line_begin_pos, column_delta)
               if column_delta > 0
                 corrector.insert_before(range, ' ' * column_delta)
               else
@@ -48,6 +38,17 @@ module Rubocop
               end
             end
           end
+        end
+
+        def calculate_range(expr, line_begin_pos, column_delta)
+          starts_with_space = expr.source_buffer.source[line_begin_pos] =~ / /
+          pos_to_remove = if column_delta > 0 || starts_with_space
+                            line_begin_pos
+                          else
+                            line_begin_pos - column_delta.abs
+                          end
+          Parser::Source::Range.new(expr.source_buffer, pos_to_remove,
+                                    pos_to_remove + column_delta.abs)
         end
 
         def remove(range, corrector)

@@ -22,17 +22,22 @@ module Rubocop
             return
           end
 
-          check(node)
-        end
-
-        def check(node)
           left_brace, right_brace = node.loc.begin, node.loc.end
 
+          check_outside(left_brace)
+          check_inside(node, left_brace, right_brace)
+        end
+
+        private
+
+        def check_outside(left_brace)
           if range_with_surrounding_space(left_brace).source.start_with?('{')
             convention(left_brace, left_brace,
                        'Space missing to the left of {.')
           end
+        end
 
+        def check_inside(node, left_brace, right_brace)
           sb = node.loc.expression.source_buffer
 
           if left_brace.end_pos == right_brace.begin_pos
@@ -52,8 +57,6 @@ module Rubocop
             end
           end
         end
-
-        private
 
         def braces_with_contents_inside(node, inner)
           _method, args, _body = *node

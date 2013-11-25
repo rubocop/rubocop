@@ -84,6 +84,7 @@ module Rubocop
         throw :skip_children
       end
 
+      # rubocop:disable MethodLength, CyclomaticComplexity
       def dispatch_node(node)
         case node.type
         when *DECLARATION_TYPES
@@ -108,6 +109,7 @@ module Rubocop
           process_scope(node)
         end
       end
+      # rubocop:enable MethodLength, CyclomaticComplexity
 
       def process_variable_declaration(node)
         # restarg would have no name:

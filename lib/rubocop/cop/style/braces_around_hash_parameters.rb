@@ -8,23 +8,20 @@ module Rubocop
         def on_send(node)
           _receiver, method_name, *args = *node
 
-          # discard attr writer methods.
+          # Discard attr writer methods.
           return if method_name.to_s.end_with?('=')
-          # discard operator methods
+          # Discard operator methods.
           return if OPERATOR_METHODS.include?(method_name)
 
-          # we care only for the first argument
+          # We care only for the last argument.
           arg = args.last
-          return unless arg && arg.type == :hash && arg.children.any?
+          return unless non_empty_hash?(arg)
 
-          has_braces = !arg.loc.begin.nil?
-          all_hashes = args.length > 1 && args.all? { |a| a.type == :hash }
-
-          if style == :no_braces && has_braces && !all_hashes
+          if style == :no_braces && has_braces?(arg) && !all_hashes?(args)
             convention(arg,
                        :expression,
                        'Redundant curly braces around a hash parameter.')
-          elsif style == :braces && !has_braces
+          elsif style == :braces && !has_braces?(arg)
             convention(arg,
                        :expression,
                        'Missing curly braces around a hash parameter.')
@@ -44,6 +41,18 @@ module Rubocop
         end
 
         private
+
+        def non_empty_hash?(arg)
+          arg && arg.type == :hash && arg.children.any?
+        end
+
+        def has_braces?(arg)
+          !arg.loc.begin.nil?
+        end
+
+        def all_hashes?(args)
+          args.length > 1 && args.all? { |a| a.type == :hash }
+        end
 
         def style
           case cop_config['EnforcedStyle']
