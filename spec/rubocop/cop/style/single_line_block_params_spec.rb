@@ -2,8 +2,14 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::ReduceArguments do
-  subject(:cop) { described_class.new }
+describe Rubocop::Cop::Style::SingleLineBlockParams, :config do
+  subject(:cop) { described_class.new(config) }
+  let(:cop_config) do
+    { 'Methods' =>
+      [{ 'reduce' => %w(a e) },
+       { 'test' => %w(x y) }]
+    }
+  end
 
   it 'find wrong argument names in calls with different syntax' do
     inspect_source(cop,
@@ -14,9 +20,10 @@ describe Rubocop::Cop::Style::ReduceArguments do
                     '  [0, 1].reduce(5){ |c, d| c + d }',
                     '  [0, 1].reduce (5) { |c, d| c + d }',
                     '  [0, 1].reduce(5) { |c, d| c + d }',
+                    '  ala.test { |x, z| bala }',
                     'end'])
-    expect(cop.offences.size).to eq(6)
-    expect(cop.offences.map(&:line).sort).to eq((2..7).to_a)
+    expect(cop.offences.size).to eq(7)
+    expect(cop.offences.map(&:line).sort).to eq((2..8).to_a)
   end
 
   it 'allows calls with proper argument names' do
@@ -28,6 +35,7 @@ describe Rubocop::Cop::Style::ReduceArguments do
                     '  [0, 1].reduce(5){ |a, e| a + e }',
                     '  [0, 1].reduce (5) { |a, e| a + e }',
                     '  [0, 1].reduce(5) { |a, e| a + e }',
+                    '  ala.test { |x, y| bala }',
                     'end'])
     expect(cop.offences).to be_empty
   end

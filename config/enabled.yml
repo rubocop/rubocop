@@ -327,10 +327,6 @@ RaiseArgs:
   Description: 'Checks the arguments passed to raise/fail.'
   Enabled: true
 
-ReduceArguments:
-  Description: 'Name reduce arguments |a, e| (accumulator, element)'
-  Enabled: true
-
 RedundantBegin:
   Description: "Don't use begin blocks when they are not needed."
   Enabled: true
@@ -369,6 +365,10 @@ Semicolon:
 
 SignalException:
   Description: 'Checks for proper usage of fail and raise.'
+  Enabled: true
+
+SingleLineBlockParams:
+  Description: 'Enforces the names of some block params.'
   Enabled: true
 
 SingleLineMethods:

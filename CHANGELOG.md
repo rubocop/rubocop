@@ -16,6 +16,7 @@
 ### Changes
 
 * Removed `SymbolNames` as it was generating way too many false positives. ([@bbatsov][])
+* Renamed `ReduceArguments` to `SingleLineBlockParams` and made it configurable. ([@bbatsov][])
 
 ### Bugs fixed
 

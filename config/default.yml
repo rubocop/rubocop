@@ -157,6 +157,15 @@ SignalException:
   # Valid values are: semantic, only_raise and only_fail
   EnforcedStyle: semantic
 
+SingleLineBlockParams:
+  Methods:
+    - reduce: 
+        - a
+        - e
+    - inject:
+        - a
+        - e
+
 SingleLineMethods:
   AllowIfMethodIsEmpty: true
 
