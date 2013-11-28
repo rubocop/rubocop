@@ -17,6 +17,7 @@ module Rubocop
 
     class << self
       attr_accessor :debug
+      attr_writer :root_level # The upwards search is stopped at this level.
       alias_method :debug?, :debug
 
       def load_file(path)
@@ -152,6 +153,7 @@ module Rubocop
         dirs_to_search = []
         target_dir_pathname = Pathname.new(File.expand_path(target_dir))
         target_dir_pathname.ascend do |dir_pathname|
+          break if dir_pathname.to_s == @root_level
           dirs_to_search << dir_pathname.to_s
         end
         dirs_to_search << Dir.home

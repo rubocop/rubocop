@@ -8,6 +8,9 @@ shared_context 'isolated environment', :isolated_environment do
     Dir.mktmpdir do |tmpdir|
       original_home = ENV['HOME']
 
+      # Make upwards search for .rubocop.yml files stop at this directory.
+      Rubocop::ConfigLoader.root_level = tmpdir
+
       begin
         virtual_home = File.expand_path(File.join(tmpdir, 'home'))
         Dir.mkdir(virtual_home)
