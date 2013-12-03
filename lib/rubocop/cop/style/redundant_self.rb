@@ -75,8 +75,8 @@ module Rubocop
           @local_variables = []
         end
 
-        def on_arg(node)
-          on_argument(node)
+        def on_args(node)
+          node.children.each { |arg| on_argument(arg) }
         end
 
         def on_blockarg(node)
