@@ -80,4 +80,16 @@ describe Rubocop::Cop::Style::Documentation do
                    ])
     expect(cop.offences).to be_empty
   end
+
+  it 'does not raise an error for an implicit match conditional' do
+    pending
+    expect do
+      inspect_source(cop,
+                     ['class Test',
+                      '  if //',
+                      '  end',
+                      'end'
+                     ])
+    end.to_not raise_error
+  end
 end
