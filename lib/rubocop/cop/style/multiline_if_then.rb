@@ -29,11 +29,21 @@ module Rubocop
                        end
           right_after_cond =
             Parser::Source::Range.new(next_thing.source_buffer,
-                                      condition.loc.expression.end.end_pos,
+                                      end_position(condition),
                                       next_thing.begin_pos)
           if right_after_cond.source =~ /\A\s*then\s*(#.*)?\s*\n/
             node.loc.expression.begin.line
           end
+        end
+
+        def end_position(conditional_node)
+          node = if conditional_node.type == :match_current_line
+                   conditional_node.children.first
+                 else
+                   conditional_node
+                 end
+
+          node.loc.expression.end.end_pos
         end
 
         def error_message

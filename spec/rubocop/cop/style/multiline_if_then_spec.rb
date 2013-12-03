@@ -58,6 +58,14 @@ describe Rubocop::Cop::Style::MultilineIfThen do
     expect(cop.offences).to be_empty
   end
 
+  it 'does not raise an error for an implicit match if' do
+    expect do
+      inspect_source(cop,
+                     ['if //',
+                      'end'])
+    end.not_to raise_error
+  end
+
   # unless
 
   it 'registers an offence for then in multiline unless' do
@@ -87,5 +95,13 @@ describe Rubocop::Cop::Style::MultilineIfThen do
                     'end unless two'
                    ])
     expect(cop.offences).to be_empty
+  end
+
+  it 'does not raise an error for an implicit match unless' do
+    expect do
+      inspect_source(cop,
+                     ['unless //',
+                      'end'])
+    end.not_to raise_error
   end
 end
