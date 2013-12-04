@@ -10,7 +10,6 @@ module Rubocop
 
         def on_block(node)
           method, _args, body = *node
-
           _receiver, method_name = *method
 
           # using alias is the only option in certain scenarios
@@ -29,6 +28,19 @@ module Rubocop
           return if new.type == :gvar && old.type == :gvar
 
           convention(node, :keyword)
+        end
+
+        def autocorrect(node)
+          @corrections << lambda do |corrector|
+            # replace alias with alias_method
+            corrector.replace(node.loc.keyword, 'alias_method')
+            # insert a comma
+            new, old = *node
+            corrector.insert_after(new.loc.expression, ',')
+            # convert bareword arguments to symbols
+            corrector.replace(new.loc.expression, ":#{new.children.first}")
+            corrector.replace(old.loc.expression, ":#{old.children.first}")
+          end
         end
       end
     end
