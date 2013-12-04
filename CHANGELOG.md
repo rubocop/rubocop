@@ -23,7 +23,7 @@
 
 * Handle properly heredocs in `StringLiterals` cop. ([@bbatsov][])
 * Fix `SpaceAroundOperators` to not report missing space around operator for `def self.method *args`. ([@jonas054][])
-* Properly handle `['AllCops']['Includes']` and `['AllCops']['Excludes']` when passing config via `-c`. ([@fancyremarker][])
+* Properly handle `['AllCops']['Includes']` and `['AllCops']['Excludes']` when passing config via `-c`. ([@fancyremarker][], [@codez][])
 * [#611](https://github.com/bbatsov/rubocop/pull/611): Fix crash when loading an empty config file ([@sinisterchipmunk][])
 * Fix `DotPosition` cop with `trailing` style for method calls on same line. ([@vonTronje][])
 * [#627](https://github.com/bbatsov/rubocop/pull/627): Fix counting of slashes in complicated regexps in `RegexpLiteral` cop. ([@jonas054][])
@@ -594,3 +594,4 @@
 [@agrimm]: https://github.com/agrimm
 [@pmenglund]: https://github.com/pmenglund
 [@chulkilee]: https://github.com/chulkilee
+[@codez]: https://github.com/codez
