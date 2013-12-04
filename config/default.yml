@@ -59,6 +59,12 @@ BracesAroundHashParameters:
   # Valid values are: braces, no_braces
   EnforcedStyle: no_braces
 
+# Indentation of `when`.
+CaseIndentation:
+  # Valid values are: case, end
+  IndentWhenRelativeTo: case
+  IndentOneStep: false
+
 ClassLength:
   CountComments: false  # count full line comments?
   Max: 100

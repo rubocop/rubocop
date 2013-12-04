@@ -66,7 +66,7 @@ CaseEquality:
   Enabled: true
 
 CaseIndentation:
-  Description: 'Indent when as deep as case.'
+  Description: 'Indentation of when in a case/when/[else/]end.'
   Enabled: true
 
 CharacterLiteral:
