@@ -7,6 +7,9 @@ describe 'isolated environment', :isolated_environment do
 
   let(:cli) { Rubocop::CLI.new }
 
+  before(:each) { $stdout = StringIO.new }
+  after(:each) { $stdout = STDOUT }
+
   # Configuration files above the work directory shall not disturb the
   # tests. This is especially important on Windows where the temporary
   # directory is under the user's home directory. On any platform we don't want
