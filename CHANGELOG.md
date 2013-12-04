@@ -31,6 +31,7 @@
 * [#418](https://github.com/bbatsov/rubocop/issues/418): Stop searching for configuration files above the work directory of the isolated environment when running specs. ([@jonas054][])
 * Fix error on implicit match conditionals (e.g. `if /pattern/; end`) in `MultilineIfThen`. ([@agrimm][])
 * [#651](https://github.com/bbatsov/rubocop/issues/651): Handle properly method arguments in `RedundantSelf`. ([@bbatsov][])
+* [#628](https://github.com/bbatsov/rubocop/issues/628): Allow `self.Foo` in `RedundantSelf` cop. ([@chulkilee][])
 
 ## 0.15.0 (06/11/2013)
 
@@ -592,3 +593,4 @@
 [@vonTronje]: https://github.com/vonTronje
 [@agrimm]: https://github.com/agrimm
 [@pmenglund]: https://github.com/pmenglund
+[@chulkilee]: https://github.com/chulkilee

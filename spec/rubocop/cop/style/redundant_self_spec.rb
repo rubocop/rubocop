@@ -129,6 +129,12 @@ describe Rubocop::Cop::Style::RedundantSelf do
     expect(cop.offences).to be_empty
   end
 
+  it 'accepts a self receiver used to distinguish from constant' do
+    src = ['self.Foo']
+    inspect_source(cop, src)
+    expect(cop.offences).to be_empty
+  end
+
   it 'auto-corrects by removing redundant self' do
     new_source = autocorrect_source(cop, ['self.x'])
     expect(new_source).to eq('x')
