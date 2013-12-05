@@ -14,6 +14,7 @@
 * [#649](https://github.com/bbatsov/rubocop/pull/649): `EmptyLinesAroundBody` cop does auto-correction. ([@dblock][])
 * [#657](https://github.com/bbatsov/rubocop/pull/657): `Alias` cop does auto-correction. ([@dblock][])
 * Rake task now support setting formatters. ([@pmenglund][])
+* [#653](https://github.com/bbatsov/rubocop/issues/653): `CaseIndentation` cop is now configurable with parameters `IndentWhenRelativeTo` and `IndentOneStep`. ([@jonas054][])
 
 ### Changes
 
