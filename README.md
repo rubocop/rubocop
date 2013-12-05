@@ -234,6 +234,13 @@ DefaultScope:
     - app/models/problematic.rb
 ```
 
+Specific cops can be disabled by setting `Enabled` to `false` for that specific cop.
+
+```yaml
+LineLength:
+  Enabled: false
+```
+
 ### Automatically Generated Configuration
 
 If you have a code base with an overwhelming amount of offences, it can be a
