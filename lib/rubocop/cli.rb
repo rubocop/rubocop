@@ -56,6 +56,8 @@ module Rubocop
         exit(0)
       end
 
+      ConfigLoader.debug = @options[:debug]
+
       @config_store.set_options_config(@options[:config]) if @options[:config]
 
       Sickill::Rainbow.enabled = false if @options[:no_color]
@@ -63,8 +65,6 @@ module Rubocop
       puts Rubocop::Version.version(false) if @options[:version]
       puts Rubocop::Version.version(true) if @options[:verbose_version]
       exit(0) if @options[:version] || @options[:verbose_version]
-
-      ConfigLoader.debug = @options[:debug]
 
       if @options[:auto_gen_config]
         target_finder.find(args).each do |file|
