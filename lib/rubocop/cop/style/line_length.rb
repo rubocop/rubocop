@@ -12,11 +12,11 @@ module Rubocop
           processed_source.lines.each_with_index do |line, index|
             if line.length > max
               message = sprintf(MSG, line.length, max)
-              convention(nil,
-                         source_range(processed_source.buffer,
-                                      processed_source[0...index], max,
-                                      line.length - max),
-                         message)
+              add_offence(nil,
+                          source_range(processed_source.buffer,
+                                       processed_source[0...index], max,
+                                       line.length - max),
+                          message)
             end
           end
         end

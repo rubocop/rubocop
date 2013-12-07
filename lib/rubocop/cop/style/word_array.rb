@@ -14,7 +14,7 @@ module Rubocop
           array_elems = node.children
           if array_of?(:str, node) && !complex_content?(array_elems) &&
             array_elems.size > min_size && !comments_in_array?(node)
-            convention(node, :expression)
+            add_offence(node, :expression)
           end
         end
 

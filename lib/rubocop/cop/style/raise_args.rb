@@ -23,7 +23,7 @@ module Rubocop
 
           return unless args.size > 1
 
-          convention(node, :expression, message(selector))
+          add_offence(node, :expression, message(selector))
         end
 
         def check_exploded(node)
@@ -38,7 +38,7 @@ module Rubocop
 
             # Allow code like `raise Ex.new(arg1, arg2)`.
             unless constructor_args.size > 1
-              convention(node, :expression, message(selector))
+              add_offence(node, :expression, message(selector))
             end
           end
         end

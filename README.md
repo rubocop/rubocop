@@ -241,6 +241,13 @@ LineLength:
   Enabled: false
 ```
 
+Cops can customize their severity level. All cops support the `Severity` param.
+
+```yaml
+CyclomaticComplexity:
+  Severity: warning
+```
+
 ### Automatically Generated Configuration
 
 If you have a code base with an overwhelming amount of offences, it can be a

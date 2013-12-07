@@ -24,9 +24,9 @@ module Rubocop
           op_type = node.type.to_s
 
           if op == op_type
-            convention(node,
-                       :operator,
-                       sprintf(MSG, OPS[op], op))
+            add_offence(node,
+                        :operator,
+                        sprintf(MSG, OPS[op], op))
           end
         end
 

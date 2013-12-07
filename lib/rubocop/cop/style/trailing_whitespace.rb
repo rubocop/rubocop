@@ -14,7 +14,7 @@ module Rubocop
                                    processed_source[0...index],
                                    line.rstrip.length,
                                    line.length - line.rstrip.length)
-              convention(range, range)
+              add_offence(range, range)
             end
           end
         end

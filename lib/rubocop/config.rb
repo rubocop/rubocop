@@ -12,6 +12,8 @@ module Rubocop
   class Config < DelegateClass(Hash)
     class ValidationError < StandardError; end
 
+    COMMON_PARAMS = %w(Severity)
+
     attr_reader :loaded_path
     attr_accessor :contains_auto_generated_config
 
@@ -54,7 +56,8 @@ module Rubocop
 
       valid_cop_names.each do |name|
         @hash[name].each_key do |param|
-          unless default_config[name].key?(param)
+          unless COMMON_PARAMS.include?(param) ||
+                 default_config[name].key?(param)
             fail ValidationError,
                  "unrecognized parameter #{name}:#{param} found " +
                  "in #{loaded_path || self}"

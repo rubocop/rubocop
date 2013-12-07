@@ -45,7 +45,7 @@ module Rubocop
         def on_gvar(node)
           global_var, = *node
 
-          convention(node, :expression) if PREFERRED_VARS[global_var]
+          add_offence(node, :expression) if PREFERRED_VARS[global_var]
         end
 
         def message(node)

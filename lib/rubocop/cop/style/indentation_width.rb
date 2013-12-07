@@ -138,11 +138,11 @@ module Rubocop
                                    [expr.begin_pos,
                                     expr.begin_pos - indentation]
                                  end
-            convention(nil,
-                       Parser::Source::Range.new(expr.source_buffer,
-                                                 begin_pos, end_pos),
-                       sprintf("Use #{CORRECT_INDENTATION} (not %d) spaces " +
-                               'for indentation.', indentation))
+            add_offence(nil,
+                        Parser::Source::Range.new(expr.source_buffer,
+                                                  begin_pos, end_pos),
+                        sprintf("Use #{CORRECT_INDENTATION} (not %d) spaces " +
+                                'for indentation.', indentation))
           end
         end
 
@@ -153,10 +153,10 @@ module Rubocop
               indentation = expr.source_line =~ /\S/
               end_pos = expr.begin_pos
               begin_pos = end_pos - indentation
-              convention(nil,
-                         Parser::Source::Range.new(expr.source_buffer,
-                                                   begin_pos, end_pos),
-                         'Inconsistent indentation detected.')
+              add_offence(nil,
+                          Parser::Source::Range.new(expr.source_buffer,
+                                                    begin_pos, end_pos),
+                          'Inconsistent indentation detected.')
             end
           end
         end

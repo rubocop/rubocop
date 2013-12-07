@@ -24,7 +24,7 @@ module Rubocop
             range = source_range(processed_source.buffer,
                                  processed_source[0...-blank_lines],
                                  0, range_size)
-            convention(range, range, format(MSG, blank_lines))
+            add_offence(range, range, format(MSG, blank_lines))
           end
         end
 

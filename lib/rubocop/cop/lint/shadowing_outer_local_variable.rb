@@ -23,7 +23,7 @@ module Rubocop
           return unless outer_local_variable
 
           message = sprintf(MSG, variable.name)
-          warning(variable.declaration_node, :expression, message)
+          add_offence(variable.declaration_node, :expression, message)
         end
       end
     end

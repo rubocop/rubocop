@@ -16,7 +16,7 @@ module Rubocop
             index = index_of_first_token(optarg)
             arg, equals, value = processed_source.tokens[index, 3]
             unless space_between?(arg, equals) && space_between?(equals, value)
-              convention(equals.pos, equals.pos)
+              add_offence(equals.pos, equals.pos)
             end
           end
         end

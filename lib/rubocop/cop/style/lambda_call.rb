@@ -21,9 +21,9 @@ module Rubocop
 
           if style == :call && node.loc.selector.nil?
             # lambda.() does not have a selector
-            convention(node, :expression)
+            add_offence(node, :expression)
           elsif style == :braces && node.loc.selector
-            convention(node, :expression)
+            add_offence(node, :expression)
           end
         end
 

@@ -16,7 +16,7 @@ module Rubocop
           kw = node.loc.keyword
           kw_offset = kw.begin_pos - exp.begin_pos
           if exp.source[kw_offset..-1].start_with?(kw.source + '(')
-            convention(node, kw)
+            add_offence(node, kw)
           end
         end
 

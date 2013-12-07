@@ -129,13 +129,13 @@ module Rubocop
             match = /\S.*/.match(do_loc.source_line)
             indentation_of_do_line = match.begin(0)
             if end_loc.column != indentation_of_do_line
-              warning(nil,
-                      end_loc,
-                      sprintf(MSG, end_loc.line, end_loc.column,
-                              start_loc.source.lines.to_a.first.chomp,
-                              start_loc.line, start_loc.column,
-                              alt_start_msg(match, start_loc, do_loc,
-                                            indentation_of_do_line)))
+              add_offence(nil,
+                          end_loc,
+                          sprintf(MSG, end_loc.line, end_loc.column,
+                                  start_loc.source.lines.to_a.first.chomp,
+                                  start_loc.line, start_loc.column,
+                                  alt_start_msg(match, start_loc, do_loc,
+                                                indentation_of_do_line)))
             end
           end
         end

@@ -119,10 +119,12 @@ module Rubocop
         respond_to?(:autocorrect, true)
       end
 
-      def add_offence(severity, node, loc, message = nil)
+      def add_offence(node, loc, message = nil, severity = nil)
         location = loc.is_a?(Symbol) ? node.loc.send(loc) : loc
 
         return if disabled_line?(location.line)
+
+        severity = custom_severity || severity || default_severity
 
         message = message ? message : message(node)
         message = debug? ? "#{name}: #{message}" : message
@@ -134,14 +136,6 @@ module Rubocop
                       false
                     end
         @offences << Offence.new(severity, location, message, name, corrected)
-      end
-
-      def convention(node, location, message = nil)
-        add_offence(:convention, node, location, message)
-      end
-
-      def warning(node, location, message = nil)
-        add_offence(:warning, node, location, message)
       end
 
       def cop_name
@@ -205,6 +199,23 @@ module Rubocop
 
       def ignored_node?(node)
         @ignored_nodes.any? { |n| n.eql?(node) } # Same object found in array?
+      end
+
+      def default_severity
+        self.class.lint? ? :warning : :convention
+      end
+
+      def custom_severity
+        severity = cop_config && cop_config['Severity']
+        if severity
+          if Offence::SEVERITIES.include?(severity.to_sym)
+            severity.to_sym
+          else
+            warn "Warning: Invalid severity '#{severity}'. " +
+                 "Valid severities are #{Offence::SEVERITIES.join(', ')}."
+                 .color(:red)
+          end
+        end
       end
     end
   end

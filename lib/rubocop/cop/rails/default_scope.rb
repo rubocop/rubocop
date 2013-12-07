@@ -25,7 +25,7 @@ module Rubocop
 
           first_arg = args[0]
 
-          convention(first_arg, :expression) if lambda_or_proc?(first_arg)
+          add_offence(first_arg, :expression) if lambda_or_proc?(first_arg)
         end
       end
     end

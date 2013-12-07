@@ -25,7 +25,7 @@ module Rubocop
 
         def investigate(processed_source)
           processed_source.diagnostics.each do |d|
-            add_offence(d.level, nil, d.location, d.message)
+            add_offence(nil, d.location, d.message, d.level)
           end
         end
       end

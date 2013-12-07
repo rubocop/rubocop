@@ -60,7 +60,7 @@ module Rubocop
                                  processed_source[0...start_line],
                                  0,
                                  1)
-            convention(range, range, MSG_BEG)
+            add_offence(range, range, MSG_BEG)
           end
 
           if processed_source.lines[end_line - 2].blank?
@@ -68,7 +68,7 @@ module Rubocop
                                  processed_source[0...(end_line - 2)],
                                  0,
                                  1)
-            convention(range, range, MSG_END)
+            add_offence(range, range, MSG_END)
           end
         end
       end

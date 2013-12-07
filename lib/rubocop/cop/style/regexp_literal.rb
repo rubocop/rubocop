@@ -16,7 +16,7 @@ module Rubocop
                 else
                   error_message('only ') if slashes <= max_slashes
                 end
-          convention(node, :expression, msg) if msg
+          add_offence(node, :expression, msg) if msg
         end
 
         def max_slashes

@@ -23,7 +23,7 @@ module Rubocop
           empty_body = body.nil?
 
           if start_line == end_line && !(allow_empty? && empty_body)
-            convention(node, :expression)
+            add_offence(node, :expression)
           end
         end
       end

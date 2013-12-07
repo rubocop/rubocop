@@ -10,7 +10,7 @@ module Rubocop
         MSG = 'Replace class var %s with a class instance var.'
 
         def on_cvasgn(node)
-          convention(node, :name)
+          add_offence(node, :name)
         end
 
         def message(node)

@@ -19,8 +19,8 @@ module Rubocop
                    'writer'
                  end
           if kind
-            convention(node, :keyword,
-                       sprintf(MSG, kind, kind))
+            add_offence(node, :keyword,
+                        sprintf(MSG, kind, kind))
           end
         end
 

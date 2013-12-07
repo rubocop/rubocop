@@ -21,7 +21,7 @@ module Rubocop
 
           if node.loc.expression.source =~ /^!\s+\w+/
             # TODO: Improve source range to highlight the redundant whitespace.
-            convention(node, :selector)
+            add_offence(node, :selector)
           end
         end
 

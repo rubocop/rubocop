@@ -11,11 +11,11 @@ module Rubocop
           original_source = IO.read(processed_source.buffer.name)
           original_source.lines.each_with_index do |line, index|
             if line =~ /\r$/
-              convention(nil,
-                         source_range(processed_source.buffer,
-                                      processed_source[0...index],
-                                      0, line.length),
-                         MSG)
+              add_offence(nil,
+                          source_range(processed_source.buffer,
+                                       processed_source[0...index],
+                                       0, line.length),
+                          MSG)
               # Usually there will be carriage return characters on all or none
               # of the lines in a file, so we report only one offence.
               break
