@@ -101,6 +101,11 @@ EmptyLineBetweenDefs:
   # need an empty line between them.
   AllowAdjacentOneLineDefs: false
 
+# Checks use of for or each in multiline loops.
+For:
+  # Valid values are: for, each
+  EnforcedStyle: each
+
 # Built-in global variables are allowed by default.
 GlobalVars:
   AllowedVariables: []
