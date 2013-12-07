@@ -124,6 +124,8 @@ module Rubocop
 
         return if disabled_line?(location.line)
 
+        severity = custom_severity || severity
+
         message = message ? message : message(node)
         message = debug? ? "#{name}: #{message}" : message
 
@@ -205,6 +207,19 @@ module Rubocop
 
       def ignored_node?(node)
         @ignored_nodes.any? { |n| n.eql?(node) } # Same object found in array?
+      end
+
+      def custom_severity
+        severity = cop_config && cop_config['Severity']
+        if severity
+          if Offence::SEVERITIES.include?(severity.to_sym)
+            severity.to_sym
+          else
+            warn "Warning: Invalid custom severity '#{severity}'. " +
+                 "Valid severities are #{Offence::SEVERITIES.join(', ')}."
+                 .color(:red)
+          end
+        end
       end
     end
   end

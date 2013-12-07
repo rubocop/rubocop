@@ -1175,5 +1175,44 @@ describe Rubocop::CLI, :isolated_environment do
         .to eq(['', '0 files inspected, no offences detected',
                 ''].join("\n"))
     end
+
+    it 'works when a configuration file specifies a Severity' do
+      create_file('example/example1.rb', [
+                                          '# encoding: utf-8',
+                                          '#' * 90
+                                         ])
+
+      create_file('rubocop.yml', [
+                                  'LineLength:',
+                                  '  Severity: error',
+                                 ])
+
+      cli.run(%w(--format simple -c rubocop.yml))
+      expect($stdout.string)
+        .to eq(['== example/example1.rb ==',
+                'E:  2: 80: Line is too long. [90/79]',
+                '',
+                '1 file inspected, 1 offence detected',
+                ''].join("\n"))
+      expect($stderr.string).to eq('')
+    end
+
+    it 'fails when a configuration file specifies an invalid Severity' do
+      create_file('example/example1.rb', [
+                                          '# encoding: utf-8',
+                                          '#' * 90
+                                         ])
+
+      create_file('rubocop.yml', [
+                                  'LineLength:',
+                                  '  Severity: superbad',
+                                 ])
+
+      cli.run(%w(--format simple -c rubocop.yml))
+      expect($stderr.string)
+        .to eq("Warning: Invalid custom severity 'superbad'. " +
+               'Valid severities are refactor, convention, ' +
+               "warning, error, fatal.\n")
+    end
   end
 end

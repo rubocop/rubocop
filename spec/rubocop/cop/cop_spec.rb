@@ -26,6 +26,25 @@ describe Rubocop::Cop::Cop do
     expect(cop.offences).not_to be_empty
   end
 
+  it 'will set default severity' do
+    cop.convention(nil, location, 'message')
+
+    expect(cop.offences.first.severity).to eq(:convention)
+  end
+
+  it 'will set custom severity if present' do
+    cop.config[cop.name] = { 'Severity' => 'warning' }
+    cop.convention(nil, location, 'message')
+
+    expect(cop.offences.first.severity).to eq(:warning)
+  end
+
+  it 'will warn if custom severity is invalid' do
+    cop.config[cop.name] = { 'Severity' => 'superbad' }
+    cop.should_receive(:warn)
+    cop.convention(nil, location, 'message')
+  end
+
   it 'registers offence with its name' do
     cop = Rubocop::Cop::Style::For.new
     cop.convention(nil, location, 'message')
