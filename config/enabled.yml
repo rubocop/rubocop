@@ -190,7 +190,7 @@ FinalNewline:
   Enabled: true
 
 For:
-  Description: 'Prefer each over for.'
+  Description: 'Checks use of for or each in multiline loops.'
   Enabled: true
 
 GlobalVars:
