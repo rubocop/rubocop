@@ -15,7 +15,7 @@ module Rubocop
           return unless receiver && node.loc.dot && node.loc.dot.is?('::')
           return if allowed_name(_method_name.to_s)
 
-          convention(node, :dot)
+          add_offence(node, :dot)
         end
 
         def allowed_name(method_name)

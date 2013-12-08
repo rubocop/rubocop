@@ -1210,7 +1210,7 @@ describe Rubocop::CLI, :isolated_environment do
 
       cli.run(%w(--format simple -c rubocop.yml))
       expect($stderr.string)
-        .to eq("Warning: Invalid custom severity 'superbad'. " +
+        .to eq("Warning: Invalid severity 'superbad'. " +
                'Valid severities are refactor, convention, ' +
                "warning, error, fatal.\n")
     end

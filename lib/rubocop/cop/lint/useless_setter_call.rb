@@ -38,9 +38,9 @@ module Rubocop
           var_name, = *receiver
           return if tracker.contain_object_passed_as_argument?(var_name)
 
-          warning(receiver,
-                  :name,
-                  MSG.format(receiver.loc.name.source))
+          add_offence(receiver,
+                      :name,
+                      MSG.format(receiver.loc.name.source))
         end
 
         def setter_call_to_local_variable?(node)

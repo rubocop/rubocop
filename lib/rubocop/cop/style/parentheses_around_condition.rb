@@ -31,7 +31,7 @@ module Rubocop
             # allow safe assignment
             return if safe_assignment?(cond) && safe_assignment_allowed?
 
-            convention(cond, :expression)
+            add_offence(cond, :expression)
           end
         end
 

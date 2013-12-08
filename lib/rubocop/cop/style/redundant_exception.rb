@@ -24,7 +24,7 @@ module Rubocop
 
           first_arg, = *args
 
-          convention(first_arg, :expression) if first_arg == TARGET_NODE
+          add_offence(first_arg, :expression) if first_arg == TARGET_NODE
         end
       end
     end

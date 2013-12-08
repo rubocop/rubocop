@@ -12,7 +12,7 @@ module Rubocop
             var = (v.type == :nth_ref ? '$' : '') + v.to_a[0].to_s
 
             if node.loc.expression.source.include?("##{var}")
-              convention(v, :expression, sprintf(MSG, var, var))
+              add_offence(v, :expression, sprintf(MSG, var, var))
             end
           end
         end

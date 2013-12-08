@@ -11,7 +11,7 @@ module Rubocop
           items.each_cons(2) do |prev, current|
             if current.loc.line > prev.loc.line && start_of_line?(current.loc)
               @column_delta = items.first.loc.column - current.loc.column
-              convention(current, :expression) if @column_delta != 0
+              add_offence(current, :expression) if @column_delta != 0
             end
           end
         end

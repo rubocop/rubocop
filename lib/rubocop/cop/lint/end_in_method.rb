@@ -13,7 +13,7 @@ module Rubocop
 
         def check(node, *_)
           on_node(:postexe, node) do |end_node|
-            warning(end_node, :keyword)
+            add_offence(end_node, :keyword)
           end
         end
       end

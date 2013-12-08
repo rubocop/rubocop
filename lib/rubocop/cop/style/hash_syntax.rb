@@ -68,9 +68,9 @@ module Rubocop
         def check(pairs, delim, msg)
           pairs.each do |pair|
             if pair.loc.operator && pair.loc.operator.is?(delim)
-              convention(pair,
-                         pair.loc.expression.begin.join(pair.loc.operator),
-                         msg)
+              add_offence(pair,
+                          pair.loc.expression.begin.join(pair.loc.operator),
+                          msg)
             end
           end
         end

@@ -14,7 +14,7 @@ module Rubocop
           return unless node.loc.respond_to?(:begin) && node.loc.begin
           return if part_of_ignored_node?(node)
 
-          convention(node, :expression) if offence?(node)
+          add_offence(node, :expression) if offence?(node)
         end
 
         def on_dstr(node)

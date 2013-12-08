@@ -97,7 +97,7 @@ module Rubocop
                 constant_name?(method_name) ||
                 @allowed_send_nodes.include?(node) ||
                 @local_variables.include?(method_name)
-              convention(node, :expression)
+              add_offence(node, :expression)
             end
           end
         end

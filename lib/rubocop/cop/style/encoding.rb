@@ -16,11 +16,11 @@ module Rubocop
             line_number += 1 if processed_source[line_number] =~ /^#!/
             line = processed_source[line_number]
             unless line =~ /#.*coding\s?[:=]\s?(UTF|utf)-8/
-              convention(nil,
-                         source_range(processed_source.buffer,
-                                      processed_source[0...line_number],
-                                      0, 1),
-                         MSG)
+              add_offence(nil,
+                          source_range(processed_source.buffer,
+                                       processed_source[0...line_number],
+                                       0, 1),
+                          MSG)
             end
           end
         end

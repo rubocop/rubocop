@@ -27,7 +27,7 @@ module Rubocop
 
           if int.size >= min_digits
             if int =~ /\d{4}/ || int =~ /_\d{1,2}_/
-              convention(node, :expression)
+              add_offence(node, :expression)
             end
           end
         end

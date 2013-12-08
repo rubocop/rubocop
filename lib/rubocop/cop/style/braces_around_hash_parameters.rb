@@ -18,13 +18,13 @@ module Rubocop
           return unless non_empty_hash?(arg)
 
           if style == :no_braces && has_braces?(arg) && !all_hashes?(args)
-            convention(arg,
-                       :expression,
-                       'Redundant curly braces around a hash parameter.')
+            add_offence(arg,
+                        :expression,
+                        'Redundant curly braces around a hash parameter.')
           elsif style == :braces && !has_braces?(arg)
-            convention(arg,
-                       :expression,
-                       'Missing curly braces around a hash parameter.')
+            add_offence(arg,
+                        :expression,
+                        'Missing curly braces around a hash parameter.')
           end
         end
 

@@ -14,7 +14,7 @@ module Rubocop
 
           name = range.source.to_sym
           unless matches_config?(name) || Cop::OPERATOR_METHODS.include?(name)
-            convention(node, range, message(cop_config['EnforcedStyle']))
+            add_offence(node, range, message(cop_config['EnforcedStyle']))
           end
         end
 

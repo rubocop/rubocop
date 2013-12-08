@@ -25,7 +25,7 @@ module Rubocop
                                      else
                                        "as deep as #{base}."
                                      end
-              convention(when_node, pos, msg)
+              add_offence(when_node, pos, msg)
             end
           end
         end

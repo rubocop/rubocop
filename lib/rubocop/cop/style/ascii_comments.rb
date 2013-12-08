@@ -10,7 +10,7 @@ module Rubocop
 
         def investigate(processed_source)
           processed_source.comments.each do |comment|
-            convention(comment, :expression) unless comment.text.ascii_only?
+            add_offence(comment, :expression) unless comment.text.ascii_only?
           end
         end
       end

@@ -32,8 +32,8 @@ module Rubocop
 
         def check_outside(left_brace)
           if range_with_surrounding_space(left_brace).source.start_with?('{')
-            convention(left_brace, left_brace,
-                       'Space missing to the left of {.')
+            add_offence(left_brace, left_brace,
+                        'Space missing to the left of {.')
           end
         end
 
@@ -120,7 +120,7 @@ module Rubocop
 
         def offence(sb, begin_pos, end_pos, msg)
           range = Parser::Source::Range.new(sb, begin_pos, end_pos)
-          convention(range, range, msg)
+          add_offence(range, range, msg)
         end
 
         def style

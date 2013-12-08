@@ -26,7 +26,7 @@ module Rubocop
           return true unless args.all? { |n| n.type == :arg }
 
           unless args_match?(method_name, args)
-            convention(args_node, :expression, message(method_name))
+            add_offence(args_node, :expression, message(method_name))
           end
         end
 

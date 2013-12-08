@@ -27,7 +27,7 @@ module Rubocop
 
           return if new.type == :gvar && old.type == :gvar
 
-          convention(node, :keyword)
+          add_offence(node, :keyword)
         end
 
         def autocorrect(node)

@@ -10,7 +10,7 @@ module Rubocop
         def investigate(processed_source)
           processed_source.tokens.each do |t|
             if t.type == :tIDENTIFIER && !t.text.ascii_only?
-              convention(nil, t.pos)
+              add_offence(nil, t.pos)
             end
           end
         end

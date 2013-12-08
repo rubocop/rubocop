@@ -66,7 +66,7 @@ module Rubocop
         def check(node)
           global_var, = *node
 
-          convention(node, :name) unless allowed_var?(global_var)
+          add_offence(node, :name) unless allowed_var?(global_var)
         end
       end
     end

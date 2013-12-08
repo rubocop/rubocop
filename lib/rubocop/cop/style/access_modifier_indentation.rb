@@ -31,7 +31,7 @@ module Rubocop
                   send_start_col = send_node.loc.expression.column
 
                   if send_start_col != class_start_col + expected_indent_offset
-                    convention(send_node, :expression)
+                    add_offence(send_node, :expression)
                   end
                 end
               end

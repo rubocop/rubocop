@@ -14,7 +14,7 @@ module Rubocop
           processed_source.comments.each do |comment|
             if comment.text =~ /^#+[^#\s:+-]/
               unless comment.text.start_with?('#!') && comment.loc.line == 1
-                convention(comment, :expression)
+                add_offence(comment, :expression)
               end
             end
           end

@@ -38,7 +38,7 @@ describe Rubocop::Cop::Style::AlignParameters do
   end
 
   it "doesn't get confused by a symbol argument" do
-    inspect_source(cop, ['add_offence(:convention, index,',
+    inspect_source(cop, ['add_offence(index,',
                          '            MSG % kind)'])
     expect(cop.offences).to be_empty
   end
@@ -68,13 +68,13 @@ describe Rubocop::Cop::Style::AlignParameters do
   end
 
   it 'can handle a correctly aligned string literal as first argument' do
-    inspect_source(cop, ['add_offence(:convention, x,',
+    inspect_source(cop, ['add_offence(x,',
                          '            a)'])
     expect(cop.offences).to be_empty
   end
 
   it 'can handle a string literal as other argument' do
-    inspect_source(cop, ['add_offence(:convention,',
+    inspect_source(cop, ['add_offence(',
                          '            "", a)'])
     expect(cop.offences).to be_empty
   end

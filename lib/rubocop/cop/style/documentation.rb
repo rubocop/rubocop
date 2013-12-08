@@ -36,7 +36,7 @@ module Rubocop
             next if node.type == :class && !body
             next if namespace?(body)
             next unless ast_with_comments[node].empty?
-            convention(node, :keyword, format(MSG, node.type.to_s))
+            add_offence(node, :keyword, format(MSG, node.type.to_s))
           end
         end
 

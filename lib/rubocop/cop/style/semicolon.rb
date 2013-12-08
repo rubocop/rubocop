@@ -53,10 +53,10 @@ module Rubocop
         end
 
         def convention_on(line, column)
-          convention(nil,
-                     source_range(@processed_source.buffer,
-                                  @processed_source[0...(line - 1)], column,
-                                  1))
+          add_offence(nil,
+                      source_range(@processed_source.buffer,
+                                   @processed_source[0...(line - 1)], column,
+                                   1))
         end
       end
     end
