@@ -5,8 +5,11 @@ module Rubocop
     module Lint
       # This cop checks whether the end keywords are aligned properly.
       #
-      # For keywords (if, def, etc.) the end is aligned with the start
-      # of the keyword.
+      # Two modes are supported through the AlignWith configuration
+      # parameter. If it's set to `keyword` (which is the default), the `end`
+      # shall be aligned with the start of the keyword (if, def, etc.). If it's
+      # set to `variable` the `end` shall be aligned with the left-hand-side of
+      # the variable assignment, if there is one.
       #
       # @example
       #
@@ -37,20 +40,89 @@ module Rubocop
           check(node)
         end
 
+        def on_lvasgn(node)
+          _lhs, rhs = *node
+          check_assignment(node, rhs)
+        end
+
+        def on_ivasgn(node)
+          _lhs, rhs = *node
+          check_assignment(node, rhs)
+        end
+
+        def on_gvasgn(node)
+          _lhs, rhs = *node
+          check_assignment(node, rhs)
+        end
+
+        def on_or_asgn(node)
+          _lhs, rhs = *node
+          check_assignment(node, rhs)
+        end
+
+        def on_and_asgn(node)
+          _lhs, rhs = *node
+          check_assignment(node, rhs)
+        end
+
+        def on_casgn(node)
+          _scope, _lhs, rhs = *node
+          check_assignment(node, rhs)
+        end
+
+        def on_op_asgn(node)
+          _lhs, _op, rhs = *node
+          check_assignment(node, rhs)
+        end
+
         private
 
+        def check_assignment(node, rhs)
+          return unless rhs
+
+          case rhs.type
+          when :if, :while, :until
+            return if rhs.loc.respond_to?(:question) # ternary
+
+            offset = if alignment == :variable
+                       rhs.loc.keyword.column - node.loc.expression.column
+                     else
+                       0
+                     end
+            expr = node.loc.expression
+            range = Parser::Source::Range.new(expr.source_buffer,
+                                              expr.begin_pos,
+                                              rhs.loc.keyword.end_pos)
+            check_offset(rhs, range.source, offset)
+            ignore_node(rhs) # Don't check again.
+          end
+        end
+
         def check(node, *_)
-          # discard modifier forms of if/while/until
-          return unless node.loc.end
+          check_offset(node, node.loc.keyword.source, 0)
+        end
+
+        def check_offset(node, alignment_base, offset)
+          return if ignored_node?(node)
+
+          end_loc = node.loc.end
+          return unless end_loc # Discard modifier forms of if/while/until.
 
           kw_loc = node.loc.keyword
-          end_loc = node.loc.end
 
-          if kw_loc.line != end_loc.line && kw_loc.column != end_loc.column
-            add_offence(nil,
-                        end_loc,
+          if kw_loc.line != end_loc.line &&
+              kw_loc.column != end_loc.column + offset
+            add_offence(nil, end_loc,
                         sprintf(MSG, end_loc.line, end_loc.column,
-                                kw_loc.source, kw_loc.line, kw_loc.column))
+                                alignment_base, kw_loc.line, kw_loc.column))
+          end
+        end
+
+        def alignment
+          a = cop_config['AlignWith']
+          case a
+          when 'keyword', 'variable' then a.to_sym
+          else fail "Unknown AlignWith: #{a}"
           end
         end
       end

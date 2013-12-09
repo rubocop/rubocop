@@ -101,6 +101,16 @@ EmptyLineBetweenDefs:
   # need an empty line between them.
   AllowAdjacentOneLineDefs: false
 
+# Align ends correctly.
+EndAlignment:
+  # Valid valued are: keyword, variable
+  # The value `keyword` means that `end` should be aligned with the matching
+  # keyword (if, while, etc.).
+  # The value `variable` means that in assignments, `end` should be aligned
+  # with the start of the variable on the left hand side of `=`. In all other
+  # situations, `end` should still be aligned with the keyword.
+  AlignWith: keyword
+
 # Checks use of for or each in multiline loops.
 For:
   # Valid values are: for, each
