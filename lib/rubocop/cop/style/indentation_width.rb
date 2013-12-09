@@ -14,6 +14,7 @@ module Rubocop
       # end
       class IndentationWidth < Cop
         include CheckMethods
+        include CheckAssignment
 
         CORRECT_INDENTATION = 2
 
@@ -76,41 +77,6 @@ module Rubocop
               check_indentation(latest_when.loc.keyword, b)
             end
           end
-        end
-
-        def on_lvasgn(node)
-          _lhs, rhs = *node
-          check_assignment(node, rhs)
-        end
-
-        def on_ivasgn(node)
-          _lhs, rhs = *node
-          check_assignment(node, rhs)
-        end
-
-        def on_gvasgn(node)
-          _lhs, rhs = *node
-          check_assignment(node, rhs)
-        end
-
-        def on_or_asgn(node)
-          _lhs, rhs = *node
-          check_assignment(node, rhs)
-        end
-
-        def on_and_asgn(node)
-          _lhs, rhs = *node
-          check_assignment(node, rhs)
-        end
-
-        def on_casgn(node)
-          _scope, _lhs, rhs = *node
-          check_assignment(node, rhs)
-        end
-
-        def on_op_asgn(node)
-          _lhs, _op, rhs = *node
-          check_assignment(node, rhs)
         end
 
         def on_if(node, offset = 0)

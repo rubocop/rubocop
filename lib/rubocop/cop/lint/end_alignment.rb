@@ -17,6 +17,7 @@ module Rubocop
       #              end
       class EndAlignment < Cop
         include CheckMethods
+        include CheckAssignment
 
         MSG = 'end at %d, %d is not aligned with %s at %d, %d'
 
@@ -38,41 +39,6 @@ module Rubocop
 
         def on_until(node)
           check(node)
-        end
-
-        def on_lvasgn(node)
-          _lhs, rhs = *node
-          check_assignment(node, rhs)
-        end
-
-        def on_ivasgn(node)
-          _lhs, rhs = *node
-          check_assignment(node, rhs)
-        end
-
-        def on_gvasgn(node)
-          _lhs, rhs = *node
-          check_assignment(node, rhs)
-        end
-
-        def on_or_asgn(node)
-          _lhs, rhs = *node
-          check_assignment(node, rhs)
-        end
-
-        def on_and_asgn(node)
-          _lhs, rhs = *node
-          check_assignment(node, rhs)
-        end
-
-        def on_casgn(node)
-          _scope, _lhs, rhs = *node
-          check_assignment(node, rhs)
-        end
-
-        def on_op_asgn(node)
-          _lhs, _op, rhs = *node
-          check_assignment(node, rhs)
         end
 
         private
