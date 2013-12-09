@@ -15,6 +15,7 @@ module Rubocop
       class IndentationWidth < Cop
         include CheckMethods
         include CheckAssignment
+        include IfNode
 
         CORRECT_INDENTATION = 2
 
@@ -116,19 +117,6 @@ module Rubocop
           end
         end
 
-        def modifier_if?(node)
-          node.loc.end.nil?
-        end
-
-        def ternary_op?(node)
-          node.loc.respond_to?(:question)
-        end
-
-        def elsif?(node)
-          node.loc.respond_to?(:keyword) && node.loc.keyword &&
-            node.loc.keyword.is?('elsif')
-        end
-
         def check_indentation(base_loc, body_node, offset = 0)
           return unless body_node
           return if body_node.loc.line == base_loc.line
@@ -138,22 +126,22 @@ module Rubocop
           return unless body_node.loc.column == first_char_pos_on_line
 
           indentation = body_node.loc.column - base_loc.column
-          if indentation != CORRECT_INDENTATION &&
-              indentation + offset != CORRECT_INDENTATION
-            expr = body_node.loc.expression
-            begin_pos, end_pos = if indentation >= 0
-                                   [expr.begin_pos - indentation,
-                                    expr.begin_pos]
-                                 else
-                                   [expr.begin_pos,
-                                    expr.begin_pos - indentation]
-                                 end
-            add_offence(nil,
-                        Parser::Source::Range.new(expr.source_buffer,
-                                                  begin_pos, end_pos),
-                        sprintf("Use #{CORRECT_INDENTATION} (not %d) spaces " +
-                                'for indentation.', indentation))
-          end
+          return if indentation == CORRECT_INDENTATION ||
+              indentation + offset == CORRECT_INDENTATION
+
+          expr = body_node.loc.expression
+          begin_pos, end_pos = if indentation >= 0
+                                 [expr.begin_pos - indentation,
+                                  expr.begin_pos]
+                               else
+                                 [expr.begin_pos,
+                                  expr.begin_pos - indentation]
+                               end
+          add_offence(nil,
+                      Parser::Source::Range.new(expr.source_buffer,
+                                                begin_pos, end_pos),
+                      sprintf("Use #{CORRECT_INDENTATION} (not %d) spaces " +
+                              'for indentation.', indentation))
         end
 
         def check_consistent(node)

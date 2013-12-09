@@ -5,6 +5,8 @@ module Rubocop
     module Style
       # Common functionality for modifier cops.
       module FavorModifier
+        include IfNode
+
         # TODO: Extremely ugly solution that needs lots of polish.
         def check(sexp, comments)
           case sexp.loc.keyword.source
@@ -84,22 +86,6 @@ module Rubocop
               add_offence(node, :keyword, error_message)
             end
           end
-        end
-
-        def ternary_op?(node)
-          node.loc.respond_to?(:question)
-        end
-
-        def modifier_if?(node)
-          node.loc.end.nil?
-        end
-
-        def elsif?(node)
-          node.loc.keyword.is?('elsif')
-        end
-
-        def if_else?(node)
-          node.loc.respond_to?(:else) && node.loc.else
         end
       end
 

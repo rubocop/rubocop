@@ -7,7 +7,7 @@ describe Rubocop::Cop::Lint::EndAlignment, :config do
   let(:cop_config) { {} }
   let(:cop_config) { { 'AlignWith' => 'keyword' } }
 
-  shared_examples "misaligned" do |alignment_base, arg, end_kw, name|
+  shared_examples 'misaligned' do |alignment_base, arg, end_kw, name|
     name ||= alignment_base
     it "registers an offence for mismatched #{name} ... end" do
       inspect_source(cop, ["#{alignment_base} #{arg}",
@@ -19,7 +19,7 @@ describe Rubocop::Cop::Lint::EndAlignment, :config do
     end
   end
 
-  shared_examples "aligned" do |alignment_base, arg, end_kw, name|
+  shared_examples 'aligned' do |alignment_base, arg, end_kw, name|
     name ||= alignment_base
     it "accepts matching #{name} ... end" do
       inspect_source(cop, ["#{alignment_base} #{arg}",
