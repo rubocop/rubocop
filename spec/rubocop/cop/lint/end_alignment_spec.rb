@@ -1,64 +1,93 @@
 # encoding: utf-8
-# rubocop:disable LineLength
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::EndAlignment do
-  subject(:cop) { described_class.new }
+describe Rubocop::Cop::Lint::EndAlignment, :config do
+  subject(:cop) { described_class.new(config) }
+  let(:cop_config) { {} }
+  let(:cop_config) { { 'AlignWith' => 'keyword' } }
 
-  it 'registers an offence for mismatched class end' do
-    inspect_source(cop,
-                   ['class Test',
-                    '  end'
-                   ])
-    expect(cop.offences.size).to eq(1)
+  shared_examples 'misaligned' do |alignment_base, arg, end_kw, name|
+    name ||= alignment_base
+    it "registers an offence for mismatched #{name} ... end" do
+      inspect_source(cop, ["#{alignment_base} #{arg}",
+                           end_kw])
+      expect(cop.offences.size).to eq(1)
+      expect(cop.messages.first)
+        .to match(/end at 2, \d is not aligned with #{alignment_base} at 1,/)
+      expect(cop.highlights.first).to eq('end')
+    end
   end
 
-  it 'registers an offence for mismatched module end' do
-    inspect_source(cop,
-                   ['module Test',
-                    '  end'
-                   ])
-    expect(cop.offences.size).to eq(1)
+  shared_examples 'aligned' do |alignment_base, arg, end_kw, name|
+    name ||= alignment_base
+    it "accepts matching #{name} ... end" do
+      inspect_source(cop, ["#{alignment_base} #{arg}",
+                           end_kw])
+      expect(cop.offences).to be_empty
+    end
   end
 
-  it 'registers an offence for mismatched def end' do
-    inspect_source(cop,
-                   ['def test',
-                    '  end'
-                   ])
-    expect(cop.offences.size).to eq(1)
+  include_examples 'misaligned', 'class',  'Test',      '  end'
+  include_examples 'misaligned', 'module', 'Test',      '  end'
+  include_examples 'misaligned', 'def',    'test',      '  end'
+  include_examples 'misaligned', 'def',    'Test.test', '  end', 'defs'
+  include_examples 'misaligned', 'if',     'test',      '  end'
+  include_examples 'misaligned', 'unless', 'test',      '  end'
+  include_examples 'misaligned', 'while',  'test',      '  end'
+  include_examples 'misaligned', 'until',  'test',      '  end'
+
+  include_examples 'aligned', 'class',  'Test',      'end'
+  include_examples 'aligned', 'module', 'Test',      'end'
+  include_examples 'aligned', 'def',    'test',      'end'
+  include_examples 'aligned', 'def',    'Test.test', 'end', 'defs'
+  include_examples 'aligned', 'if',     'test',      'end'
+  include_examples 'aligned', 'unless', 'test',      'end'
+  include_examples 'aligned', 'while',  'test',      'end'
+  include_examples 'aligned', 'until',  'test',      'end'
+
+  it 'can handle ternary if' do
+    inspect_source(cop, 'a = cond ? x : y')
+    expect(cop.offences).to be_empty
   end
 
-  it 'registers an offence for mismatched defs end' do
-    inspect_source(cop,
-                   ['def Test.test',
-                    '  end'
-                   ])
-    expect(cop.offences.size).to eq(1)
+  it 'can handle modifier if' do
+    inspect_source(cop, 'a = x if cond')
+    expect(cop.offences).to be_empty
   end
 
-  it 'registers an offence for mismatched if end' do
-    inspect_source(cop,
-                   ['if test',
-                    '  end'
-                   ])
-    expect(cop.offences.size).to eq(1)
-  end
+  context 'regarding assignment' do
+    context 'when AlignWith is keyword' do
+      include_examples 'misaligned', 'var = if',     'test', 'end'
+      include_examples 'misaligned', 'var = unless', 'test', 'end'
+      include_examples 'misaligned', 'var = while',  'test', 'end'
+      include_examples 'misaligned', 'var = until',  'test', 'end'
 
-  it 'registers an offence for mismatched while end' do
-    inspect_source(cop,
-                   ['while test',
-                    '  end'
-                   ])
-    expect(cop.offences.size).to eq(1)
-  end
+      include_examples 'aligned', 'var = if',     'test', '      end'
+      include_examples 'aligned', 'var = unless', 'test', '      end'
+      include_examples 'aligned', 'var = while',  'test', '      end'
+      include_examples 'aligned', 'var = until',  'test', '      end'
+    end
 
-  it 'registers an offence for mismatched until end' do
-    inspect_source(cop,
-                   ['until test',
-                    '  end'
-                   ])
-    expect(cop.offences.size).to eq(1)
+    context 'when AlignWith is variable' do
+      let(:cop_config) { { 'AlignWith' => 'variable' } }
+
+      include_examples 'aligned', 'var = if',     'test', 'end'
+      include_examples 'aligned', 'var = unless', 'test', 'end'
+      include_examples 'aligned', 'var = while',  'test', 'end'
+      include_examples 'aligned', 'var = until',  'test', 'end'
+
+      include_examples 'misaligned', 'var = if',     'test', '      end'
+      include_examples 'misaligned', 'var = unless', 'test', '      end'
+      include_examples 'misaligned', 'var = while',  'test', '      end'
+      include_examples 'misaligned', 'var = until',  'test', '      end'
+
+      include_examples 'aligned', '@var = if',  'test', 'end'
+      include_examples 'aligned', '$var = if',  'test', 'end'
+      include_examples 'aligned', 'CNST = if',  'test', 'end'
+      include_examples 'aligned', 'var ||= if', 'test', 'end'
+      include_examples 'aligned', 'var &&= if', 'test', 'end'
+      include_examples 'aligned', 'var += if',  'test', 'end'
+    end
   end
 end

@@ -112,6 +112,72 @@ describe Rubocop::Cop::Style::IndentationWidth do
       expect(cop.offences).to be_empty
     end
 
+    it 'accepts an if in assignment with end aligned with variable' do
+      inspect_source(cop,
+                     ['var = if a',
+                      '  0',
+                      'end',
+                      '@var = if a',
+                      '  0',
+                      'end',
+                      '$var = if a',
+                      '  0',
+                      'end',
+                      'var ||= if a',
+                      '  0',
+                      'end',
+                      'var &&= if a',
+                      '  0',
+                      'end',
+                      'var -= if a',
+                      '  0',
+                      'end',
+                      'VAR = if a',
+                      '  0',
+                      'end'])
+      expect(cop.offences).to be_empty
+    end
+
+    it 'accepts an if/else in assignment with end aligned with variable' do
+      inspect_source(cop,
+                     ['var = if a',
+                      '  0',
+                      'else',
+                      '  1',
+                      'end'])
+      expect(cop.offences).to be_empty
+    end
+
+    it 'accepts an if in assignment with end aligned with if' do
+      inspect_source(cop,
+                     ['var = if a',
+                      '        0',
+                      '      end'])
+      expect(cop.offences).to be_empty
+    end
+
+    it 'accepts an if/else in assignment with end aligned with if' do
+      inspect_source(cop,
+                     ['var = if a',
+                      '        0',
+                      '      else',
+                      '        1',
+                      '      end'])
+      expect(cop.offences).to be_empty
+    end
+
+    it 'accepts an if/else in assignment on next line with end aligned ' +
+      'with if' do
+      inspect_source(cop,
+                     ['var =',
+                      '  if a',
+                      '    0',
+                      '  else',
+                      '    1',
+                      '  end'])
+      expect(cop.offences).to be_empty
+    end
+
     it 'accepts an if/else branches with rescue clauses' do
       # Because of how the rescue clauses come out of Parser, these are
       # special and need to be tested.
