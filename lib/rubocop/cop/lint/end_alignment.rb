@@ -44,6 +44,14 @@ module Rubocop
         private
 
         def check_assignment(node, rhs)
+          # If there are method calls chained to the right hand side of the
+          # assignment, we let rhs be the receiver of those method calls before
+          # we check if it's an if/unless/while/until.
+          while rhs && rhs.type == :send
+            receiver, _method_name, _args = *rhs
+            rhs = receiver
+          end
+
           return unless rhs
 
           case rhs.type

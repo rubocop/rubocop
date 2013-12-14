@@ -97,6 +97,14 @@ module Rubocop
         private
 
         def check_assignment(node, rhs)
+          # If there are method calls chained to the right hand side of the
+          # assignment, we let rhs be the receiver of those method calls before
+          # we check its indentation.
+          while rhs && rhs.type == :send
+            receiver, _method_name, _args = *rhs
+            rhs = receiver
+          end
+
           if rhs && rhs.type == :if
             on_if(rhs, rhs.loc.column - node.loc.column)
             ignore_node(rhs)
