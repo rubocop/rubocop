@@ -76,13 +76,13 @@ describe Rubocop::Cop::Lint::EndAlignment, :config do
       include_examples 'aligned', 'var = unless', 'test', 'end'
       include_examples 'aligned', 'var = while',  'test', 'end'
       include_examples 'aligned', 'var = until',  'test', 'end'
-      include_examples 'aligned', 'var = until',  'test', 'end.join("")'
+      include_examples 'aligned', 'var = until',  'test', 'end.abc.join("")'
 
       include_examples 'misaligned', 'var = if',     'test', '      end'
       include_examples 'misaligned', 'var = unless', 'test', '      end'
       include_examples 'misaligned', 'var = while',  'test', '      end'
       include_examples 'misaligned', 'var = until',  'test', '      end'
-      include_examples 'misaligned', 'var = until',  'test', '      end.join("")'
+      include_examples 'misaligned', 'var = until',  'test', '      end.join'
 
       include_examples 'aligned', '@var = if',  'test', 'end'
       include_examples 'aligned', '$var = if',  'test', 'end'
