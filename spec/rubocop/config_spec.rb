@@ -53,6 +53,25 @@ describe Rubocop::Config do
                           /^unrecognized parameter LineLength:Min/)
       end
     end
+
+    context 'when the configuration includes any common parameter' do
+      # Common parameters are parameters that are not in the default
+      # configuration, but are nonetheless allowed for any cop.
+      before do
+        create_file(configuration_path, [
+          'LineLength:',
+          '  Exclude:',
+          '    - lib/file.rb',
+          '  Include:',
+          '    - lib/file.xyz',
+          '  Severity: warning',
+        ])
+      end
+
+      it 'does not raise validation error' do
+        expect { configuration.validate }.to_not raise_error
+      end
+    end
   end
 
   describe '#file_to_include?' do
