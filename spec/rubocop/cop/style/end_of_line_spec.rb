@@ -27,4 +27,21 @@ describe Rubocop::Cop::Style::EndOfLine do
       expect(cop.messages.size).to eq(1)
     end
   end
+
+  context 'when the default external encoding is US_ASCII' do
+    before(:each) do
+      @orig_encoding = Encoding.default_external
+      Encoding.default_external = Encoding::US_ASCII
+    end
+    after(:each) { Encoding.default_external = @orig_encoding }
+
+    it 'does not crash on UTF-8 encoded non-ascii characters' do
+      inspect_source_file(cop,
+                          ['# encoding: UTF-8',
+                           'class Epd::ReportsController < EpdAreaController',
+                           "  'terecht bij uw ROM-coördinator.'",
+                           'end'].join("\n"))
+      expect(cop.offences).to be_empty
+    end
+  end
 end

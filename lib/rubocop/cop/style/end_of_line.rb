@@ -8,11 +8,13 @@ module Rubocop
         MSG = 'Carriage return character detected.'
 
         def investigate(processed_source)
-          original_source = IO.read(processed_source.buffer.name)
+          buffer = processed_source.buffer
+          original_source = IO.read(buffer.name,
+                                    encoding: buffer.source.encoding)
           original_source.lines.each_with_index do |line, index|
             if line =~ /\r$/
               add_offence(nil,
-                          source_range(processed_source.buffer,
+                          source_range(buffer,
                                        processed_source[0...index],
                                        0, line.length),
                           MSG)
