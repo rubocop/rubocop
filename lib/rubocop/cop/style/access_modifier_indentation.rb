@@ -27,7 +27,7 @@ module Rubocop
             # except other class/module nodes
             class_node.children.compact.each do |node|
               on_node(:send, node, [:class, :module, :sclass]) do |send_node|
-                if modifier_node?(send_node)
+                if self.class.modifier_node?(send_node)
                   send_start_col = send_node.loc.expression.column
 
                   if send_start_col != class_start_col + expected_indent_offset
@@ -37,6 +37,10 @@ module Rubocop
               end
             end
           end
+        end
+
+        def self.modifier_node?(node)
+          [PRIVATE_NODE, PROTECTED_NODE, PUBLIC_NODE].include?(node)
         end
 
         private
@@ -60,10 +64,6 @@ module Rubocop
           when 'indent' then 2
           else fail 'Unknown EnforcedStyle specified'
           end
-        end
-
-        def modifier_node?(node)
-          [PRIVATE_NODE, PROTECTED_NODE, PUBLIC_NODE].include?(node)
         end
       end
     end
