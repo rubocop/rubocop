@@ -421,6 +421,50 @@ describe Rubocop::Cop::Style::IndentationWidth do
                       'end'])
       expect(cop.offences).to be_empty
     end
+
+    it 'accepts indented public, protected, and private' do
+      inspect_source(cop,
+                     ['class Test',
+                      '  public',
+                      '',
+                      '  def e',
+                      '  end',
+                      '',
+                      '  protected',
+                      '',
+                      '  def f',
+                      '  end',
+                      '',
+                      '  private',
+                      '',
+                      '  def g',
+                      '  end',
+                      'end'])
+      expect(cop.offences).to be_empty
+    end
+
+    it 'registers an offence for bad indentation of def but not for ' +
+      'outdented public, protected, and private' do
+      inspect_source(cop,
+                     ['class Test',
+                      'public',
+                      '',
+                      '  def e',
+                      '  end',
+                      '',
+                      'protected',
+                      '',
+                      '  def f',
+                      '  end',
+                      '',
+                      'private',
+                      '',
+                      ' def g',
+                      ' end',
+                      'end'])
+      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
+      expect(cop.highlights).to eq([' '])
+    end
   end
 
   context 'with module' do

@@ -128,6 +128,8 @@ module Rubocop
         def check_indentation(base_loc, body_node, offset = 0)
           return unless body_node
           return if body_node.loc.line == base_loc.line
+          return if starts_with_access_modifier?(body_node)
+
           # Don't check indentation if the line doesn't start with the body.
           # For example lines like "else do_something".
           first_char_pos_on_line = body_node.loc.expression.source_line =~ /\S/
@@ -138,13 +140,13 @@ module Rubocop
               indentation + offset == CORRECT_INDENTATION
 
           expr = body_node.loc.expression
-          begin_pos, end_pos = if indentation >= 0
-                                 [expr.begin_pos - indentation,
-                                  expr.begin_pos]
-                               else
-                                 [expr.begin_pos,
-                                  expr.begin_pos - indentation]
-                               end
+          begin_pos, end_pos =
+            if indentation >= 0
+              [expr.begin_pos - indentation, expr.begin_pos]
+            else
+              [expr.begin_pos, expr.begin_pos - indentation]
+            end
+
           add_offence(nil,
                       Parser::Source::Range.new(expr.source_buffer,
                                                 begin_pos, end_pos),
@@ -152,8 +154,19 @@ module Rubocop
                               'for indentation.', indentation))
         end
 
+        def starts_with_access_modifier?(body_node)
+          body_node.type == :begin &&
+            AccessModifierIndentation.modifier_node?(body_node.children.first)
+        end
+
         def check_consistent(node)
-          node.children.map(&:loc).each_cons(2) do |child1, child2|
+          children_to_check = node.children.reject do |child|
+            # Don't check nodes that have special indentation and will be
+            # checked by the AccessModifierIndentation cop.
+            AccessModifierIndentation.modifier_node?(child)
+          end
+
+          children_to_check.map(&:loc).each_cons(2) do |child1, child2|
             if child2.line > child1.line && child2.column != child1.column
               expr = child2.expression
               indentation = expr.source_line =~ /\S/
