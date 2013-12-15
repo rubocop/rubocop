@@ -12,7 +12,7 @@ module Rubocop
   class Config < DelegateClass(Hash)
     class ValidationError < StandardError; end
 
-    COMMON_PARAMS = %w(Severity)
+    COMMON_PARAMS = %w(Exclude Include Severity)
 
     attr_reader :loaded_path
     attr_accessor :contains_auto_generated_config
