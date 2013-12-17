@@ -17,6 +17,7 @@
 * [#653](https://github.com/bbatsov/rubocop/issues/653): `CaseIndentation` cop is now configurable with parameters `IndentWhenRelativeTo` and `IndentOneStep`. ([@jonas054][])
 * [#654](https://github.com/bbatsov/rubocop/pull/654): `For` cop is now configurable to enforce either `each` (default) or `for`. ([@jonas054][])
 * Allow to overwrite the severity of a cop with the new `Severity` param. ([@codez][])
+* New cop `FlipFlop` checks for flip flops. ([@agrimm][])
 
 ### Changes
 

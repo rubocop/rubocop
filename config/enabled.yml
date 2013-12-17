@@ -189,6 +189,10 @@ FinalNewline:
   Description: 'Checks for a final newline in a source file.'
   Enabled: true
 
+FlipFlop:
+  Description: 'Checks for flip flops'
+  Enabled: true
+
 For:
   Description: 'Checks use of for or each in multiline loops.'
   Enabled: true
