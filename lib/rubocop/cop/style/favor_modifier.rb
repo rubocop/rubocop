@@ -21,6 +21,10 @@ module Rubocop
 
           return false if body_length == 0
 
+          on_node([:lvasgn], sexp) do |node|
+            return false
+          end
+
           indentation = sexp.loc.keyword.column
           kw_length = sexp.loc.keyword.size
           cond_length = conditional_length(cond)
