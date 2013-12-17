@@ -28,28 +28,6 @@ module Rubocop
           end
         end
       end
-
-      # This cop checks for missing parentheses in the definition of a
-      # method, that takes arguments. Both instance and
-      # class/singleton methods are checked.
-      class DefWithoutParentheses < Cop
-        include CheckMethods
-
-        MSG = 'Use def with parentheses when there are arguments.'
-
-        def check(_node, _method_name, args, _body)
-          if args.children.size > 0 && args.loc.begin.nil?
-            add_offence(args, :expression)
-          end
-        end
-
-        def autocorrect(node)
-          @corrections << lambda do |corrector|
-            corrector.insert_before(node.loc.expression, '(')
-            corrector.insert_after(node.loc.expression, ')')
-          end
-        end
-      end
     end
   end
 end
