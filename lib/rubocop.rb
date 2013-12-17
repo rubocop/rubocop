@@ -11,6 +11,7 @@ require 'rubocop/version'
 
 require 'rubocop/cop/util'
 require 'rubocop/cop/offence'
+require 'rubocop/cop/ignored_node'
 require 'rubocop/cop/cop'
 require 'rubocop/cop/commissioner'
 require 'rubocop/cop/corrector'
