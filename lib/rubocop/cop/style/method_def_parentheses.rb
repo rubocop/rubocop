@@ -8,12 +8,12 @@ module Rubocop
       class MethodDefParentheses < Cop
         include CheckMethods
 
-        def check(_node, _method_name, args, _body)
+        def check(node, _method_name, args, _body)
           if style == :require_parentheses &&
               has_arguments?(args) &&
               !has_parentheses?(args)
-            add_offence(args,
-                        :expression,
+            add_offence(node,
+                        args.loc.expression,
                         'Use def with parentheses when there are parameters.')
           elsif style == :require_no_parentheses && has_parentheses?(args)
             add_offence(args,
@@ -25,8 +25,10 @@ module Rubocop
         def autocorrect(node)
           @corrections << lambda do |corrector|
             if style == :require_parentheses
-              corrector.insert_before(node.loc.expression, '(')
-              corrector.insert_after(node.loc.expression, ')')
+              corrector.insert_after(node.children[1].loc.expression, ')')
+              expression = node.loc.expression
+              replacement = expression.source.sub(/(def\s+\S+)\s+/, '\1(')
+              corrector.replace(expression, replacement)
             elsif style == :require_no_parentheses
               corrector.replace(node.loc.begin, ' ')
               corrector.remove(node.loc.end)
