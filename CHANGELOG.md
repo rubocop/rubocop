@@ -38,6 +38,7 @@
 * [#651](https://github.com/bbatsov/rubocop/issues/651): Handle properly method arguments in `RedundantSelf`. ([@bbatsov][])
 * [#628](https://github.com/bbatsov/rubocop/issues/628): Allow `self.Foo` in `RedundantSelf` cop. ([@chulkilee][])
 * [#668](https://github.com/bbatsov/rubocop/issues/668): Fix crash in `EndOfLine` that occurs when default encoding is `US_ASCII` and an inspected file has non-ascii characters. ([@jonas054][])
+* [#664](https://github.com/bbatsov/rubocop/issues/664): Accept oneline while when condition has local variable assignment ([@emou][])
 
 ## 0.15.0 (06/11/2013)
 
@@ -601,3 +602,4 @@
 [@pmenglund]: https://github.com/pmenglund
 [@chulkilee]: https://github.com/chulkilee
 [@codez]: https://github.com/codez
+[@emou]: https://github.com/emou

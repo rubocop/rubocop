@@ -152,6 +152,14 @@ describe Rubocop::Cop::Style::WhileUntilModifier do
     check_short_multiline(cop, 'while')
   end
 
+  it 'accepts oneline while when condition has local variable assignment' do
+    inspect_source(cop, ['lines = %w{first second third}',
+                         'while (line = lines.shift)',
+                         '  puts line',
+                         'end'])
+    expect(cop.offences).to be_empty
+  end
+
   it 'registers an offence for multiline until that fits on one line' do
     check_really_short(cop, 'until')
   end
