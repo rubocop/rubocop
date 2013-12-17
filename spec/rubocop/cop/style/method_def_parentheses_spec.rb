@@ -31,7 +31,12 @@ describe Rubocop::Cop::Style::MethodDefParentheses, :config do
 
     it 'auto-adds required parens' do
       new_source = autocorrect_source(cop, 'def test param; end')
-      expect(new_source).to eq('def test (param); end')
+      expect(new_source).to eq('def test(param); end')
+    end
+
+    it 'auto-adds required parens to argument lists on multiple lines' do
+      new_source = autocorrect_source(cop, ['def test one,', 'two', 'end'])
+      expect(new_source).to eq("def test(one,\ntwo)\nend")
     end
   end
 
