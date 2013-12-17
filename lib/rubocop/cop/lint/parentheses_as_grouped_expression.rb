@@ -14,10 +14,8 @@ module Rubocop
 
         def on_send(node)
           _receiver, method_name, args = *node
-          if OPERATOR_METHODS.include?(method_name) ||
-              method_name.to_s.end_with?('=')
-            return
-          end
+          return if operator?(method_name) || method_name.to_s.end_with?('=')
+
           if args && args.loc.expression.source.start_with?('(')
             space_length = spaces_before_left_parenthesis(node)
             if space_length > 0
