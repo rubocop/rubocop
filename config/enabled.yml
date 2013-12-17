@@ -109,12 +109,6 @@ DefWithParentheses:
   Description: 'Use def with parentheses when there are arguments.'
   Enabled: true
 
-DefWithoutParentheses:
-  Description: >
-                 Omit the parentheses when the method doesn't accept
-                 any arguments.
-  Enabled: true
-
 Documentation:
   Description: 'Document classes and non-namespace modules.'
   Enabled: true
@@ -253,6 +247,12 @@ Loop:
 
 MethodCallParentheses:
   Description: 'Do not use parentheses for method calls with no arguments.'
+  Enabled: true
+
+MethodDefParentheses:
+  Description: >
+                 Checks if the method definitions have or don't have
+                 parentheses.
   Enabled: true
 
 MethodLength:

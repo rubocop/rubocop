@@ -131,6 +131,10 @@ LambdaCall:
 LineLength:
   Max: 79
 
+MethodDefParentheses:
+  # Valid values are: require_parentheses, require_no_parentheses
+  EnforcedStyle: require_parentheses
+
 MethodLength:
   CountComments: false  # count full line comments?
   Max: 10
