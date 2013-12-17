@@ -14,7 +14,7 @@ module Rubocop
         return unless range
 
         name = range.source.to_sym
-        return if Cop::OPERATOR_METHODS.include?(name)
+        return if operator?(name)
 
         if matches_config?(name)
           correct_style_detected

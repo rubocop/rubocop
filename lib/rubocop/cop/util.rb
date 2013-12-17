@@ -11,7 +11,18 @@ module Rubocop
       SHORTHAND_ASGN_NODES = [:op_asgn, :or_asgn, :and_asgn]
       ASGN_NODES = EQUALS_ASGN_NODES + SHORTHAND_ASGN_NODES
 
+      # http://phrogz.net/programmingruby/language.html#table_18.4
+      # Backtick is added last just to help editors parse this code.
+      OPERATOR_METHODS = %w(
+          | ^ & <=> == === =~ > >= < <= << >>
+          + - * / % ** ~ +@ -@ [] []= ! != !~
+        ).map(&:to_sym) + [:'`']
+
       module_function
+
+      def operator?(symbol)
+        OPERATOR_METHODS.include?(symbol)
+      end
 
       def strip_quotes(str)
         if str[0] == '"' || str[0] == "'"

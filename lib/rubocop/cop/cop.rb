@@ -46,13 +46,6 @@ module Rubocop
       extend AST::Sexp
       include Util
 
-      # http://phrogz.net/programmingruby/language.html#table_18.4
-      # Backtick is added last just to help editors parse this code.
-      OPERATOR_METHODS = %w(
-          | ^ & <=> == === =~ > >= < <= << >>
-          + - * / % ** ~ +@ -@ [] []= ! != !~
-        ).map(&:to_sym) + [:'`']
-
       attr_reader :config, :offences, :corrections
       attr_accessor :processed_source # TODO: Bad design.
 
