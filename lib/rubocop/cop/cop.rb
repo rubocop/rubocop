@@ -45,6 +45,7 @@ module Rubocop
     class Cop
       extend AST::Sexp
       include Util
+      include IgnoredNode
 
       attr_reader :config, :offences, :corrections
       attr_accessor :processed_source # TODO: Bad design.
@@ -89,7 +90,6 @@ module Rubocop
 
         @offences = []
         @corrections = []
-        @ignored_nodes = []
       end
 
       def cop_config
@@ -151,10 +151,6 @@ module Rubocop
 
       alias_method :name, :cop_name
 
-      def ignore_node(node)
-        @ignored_nodes << node
-      end
-
       def include_paths
         cop_config && cop_config['Include']
       end
@@ -200,22 +196,6 @@ module Rubocop
         disabled_lines = @processed_source.disabled_lines_for_cops[name]
         return false unless disabled_lines
         disabled_lines.include?(line_number)
-      end
-
-      def part_of_ignored_node?(node)
-        expression = node.loc.expression
-        @ignored_nodes.each do |ignored_node|
-          if ignored_node.loc.expression.begin_pos <= expression.begin_pos &&
-            ignored_node.loc.expression.end_pos >= expression.end_pos
-            return true
-          end
-        end
-
-        false
-      end
-
-      def ignored_node?(node)
-        @ignored_nodes.any? { |n| n.eql?(node) } # Same object found in array?
       end
 
       def default_severity
