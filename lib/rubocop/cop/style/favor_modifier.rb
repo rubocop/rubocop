@@ -21,7 +21,7 @@ module Rubocop
 
           return false if body_length == 0
 
-          on_node([:lvasgn], sexp) do |node|
+          on_node(:lvasgn, cond) do
             return false
           end
 

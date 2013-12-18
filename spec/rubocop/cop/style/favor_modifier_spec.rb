@@ -160,6 +160,13 @@ describe Rubocop::Cop::Style::WhileUntilModifier do
     expect(cop.offences).to be_empty
   end
 
+  it 'registers an offence for oneline while when assignment is in body' do
+    inspect_source(cop, ['while true',
+                         '  x = 0',
+                         'end'])
+    expect(cop.offences.size).to eq(1)
+  end
+
   it 'registers an offence for multiline until that fits on one line' do
     check_really_short(cop, 'until')
   end
