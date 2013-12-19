@@ -16,6 +16,7 @@
 * Rake task now support setting formatters. ([@pmenglund][])
 * [#653](https://github.com/bbatsov/rubocop/issues/653): `CaseIndentation` cop is now configurable with parameters `IndentWhenRelativeTo` and `IndentOneStep`. ([@jonas054][])
 * [#654](https://github.com/bbatsov/rubocop/pull/654): `For` cop is now configurable to enforce either `each` (default) or `for`. ([@jonas054][])
+* [#661](https://github.com/bbatsov/rubocop/issue/661): `EndAlignment` cop is now configurable for alignment with `keyword` (default) or `variable`. ([@jonas054][])
 * Allow to overwrite the severity of a cop with the new `Severity` param. ([@codez][])
 * New cop `FlipFlop` checks for flip flops. ([@agrimm][])
 * [#577](https://github.com/bbatsov/rubocop/issues/577): Introduced `MethodDefParentheses` to allow for for requiring either parentheses or no parentheses in method definitions. Replaces `DefWithoutParentheses`. ([@skanev][])

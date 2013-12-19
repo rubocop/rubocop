@@ -159,6 +159,17 @@ describe Rubocop::Cop::Style::IndentationWidth do
       expect(cop.offences).to be_empty
     end
 
+    it 'accepts an if/else in assignment with end aligned with variable ' +
+      'and chaining with a block after the end' do
+      inspect_source(cop,
+                     ['var = if a',
+                      '  0',
+                      'else',
+                      '  1',
+                      'end.abc.tap {}'])
+      expect(cop.offences).to be_empty
+    end
+
     it 'accepts an if in assignment with end aligned with if' do
       inspect_source(cop,
                      ['var = if a',

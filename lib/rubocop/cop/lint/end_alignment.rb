@@ -47,10 +47,7 @@ module Rubocop
           # If there are method calls chained to the right hand side of the
           # assignment, we let rhs be the receiver of those method calls before
           # we check if it's an if/unless/while/until.
-          while rhs && rhs.type == :send
-            receiver, _method_name, _args = *rhs
-            rhs = receiver
-          end
+          rhs = first_part_of_call_chain(rhs)
 
           return unless rhs
 
