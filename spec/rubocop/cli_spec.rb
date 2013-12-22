@@ -88,6 +88,7 @@ describe Rubocop::CLI, :isolated_environment do
       it 'can generate a todo list' do
         create_file('example1.rb', ['# encoding: utf-8',
                                     'x= 0 ',
+                                    '#' * 90,
                                     '#' * 85,
                                     'y ',
                                     'puts x'])
@@ -115,7 +116,7 @@ describe Rubocop::CLI, :isolated_environment do
                   '  Enabled: false',
                   '',
                   'LineLength:',
-                  '  Enabled: false',
+                  '  Max: 90',
                   '',
                   'SpaceAroundOperators:',
                   '  Enabled: false',

@@ -12,7 +12,11 @@ shared_context 'config', :config do
       fail '`cop_config` must be declared with #let'
     end
 
-    hash = { described_class.cop_name => cop_config }
+    cop_name = described_class.cop_name
+    hash = {
+      cop_name =>
+      Rubocop::ConfigLoader.default_configuration[cop_name].merge(cop_config)
+    }
     Rubocop::Config.new(hash)
   end
 end

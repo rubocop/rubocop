@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-DEFAULT_CONFIG = Rubocop::ConfigLoader.load_file('config/default.yml')
-
 describe Rubocop::ConfigLoader do
   include FileHelper
+
+  let(:default_config) { Rubocop::ConfigLoader.default_configuration }
 
   describe '.configuration_file_for', :isolated_environment do
     subject(:configuration_file_for) do
@@ -72,10 +72,10 @@ describe Rubocop::ConfigLoader do
                                 '  Enabled: false'])
       end
       it 'returns a configuration inheriting from default.yml' do
-        config = DEFAULT_CONFIG['Encoding'].dup
+        config = default_config['Encoding'].dup
         config['Enabled'] = false
         expect(configuration_from_file)
-          .to eql(DEFAULT_CONFIG.merge('Encoding' => config))
+          .to eql(default_config.merge('Encoding' => config))
       end
     end
 
@@ -186,16 +186,16 @@ describe Rubocop::ConfigLoader do
       end
 
       it 'returns the ancestor configuration plus local overrides' do
-        config = DEFAULT_CONFIG
+        config = default_config
                    .merge('LineLength' => {
                           'Description' =>
-                             DEFAULT_CONFIG['LineLength']['Description'],
+                             default_config['LineLength']['Description'],
                           'Enabled' => true,
                           'Max' => 77
                           },
                           'MethodLength' => {
                             'Description' =>
-                               DEFAULT_CONFIG['MethodLength']['Description'],
+                               default_config['MethodLength']['Description'],
                             'Enabled' => true,
                             'CountComments' => false,
                             'Max' => 5

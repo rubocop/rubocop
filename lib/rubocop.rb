@@ -58,6 +58,8 @@ require 'rubocop/cop/lint/useless_setter_call'
 require 'rubocop/cop/lint/void'
 
 require 'rubocop/cop/style/autocorrect_alignment'
+require 'rubocop/cop/style/configurable_enforced_style'
+require 'rubocop/cop/style/configurable_max'
 require 'rubocop/cop/style/configurable_naming'
 require 'rubocop/cop/style/cyclomatic_complexity'
 require 'rubocop/cop/style/string_help'

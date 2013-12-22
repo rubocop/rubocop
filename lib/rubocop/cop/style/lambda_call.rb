@@ -13,6 +13,8 @@ module Rubocop
       #  # good
       #  lambda.call(x, y)
       class LambdaCall < Cop
+        include ConfigurableEnforcedStyle
+
         def on_send(node)
           _receiver, selector, = *node
 
@@ -46,16 +48,6 @@ module Rubocop
             'Prefer the use of `lambda.call(...)` over `lambda.(...)`.'
           else
             'Prefer the use of `lambda.(...)` over `lambda.call(...)`.'
-          end
-        end
-
-        private
-
-        def style
-          case cop_config['EnforcedStyle']
-          when 'call' then :call
-          when 'braces' then :braces
-          else fail 'Unknown style selected!'
           end
         end
       end

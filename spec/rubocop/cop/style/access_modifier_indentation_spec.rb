@@ -19,19 +19,53 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
       expect(cop.offences.size).to eq(1)
       expect(cop.messages)
         .to eq(['Indent access modifiers like private.'])
+      expect(cop.config_to_allow_offences).to eq('EnforcedStyle' => 'outdent')
     end
 
     it 'registers an offence for misaligned private in module' do
       inspect_source(cop,
                      ['module Test',
                       '',
+                      ' private',
+                      '',
+                      '  def test; end',
+                      'end'])
+      expect(cop.offences.size).to eq(1)
+      expect(cop.messages).to eq(['Indent access modifiers like private.'])
+      # Not aligned according to `indent` or `outdent` style:
+      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
+    end
+
+    it 'registers an offence for correct + opposite alignment' do
+      inspect_source(cop,
+                     ['module Test',
+                      '',
+                      '  public',
+                      '',
                       'private',
                       '',
                       '  def test; end',
                       'end'])
       expect(cop.offences.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Indent access modifiers like private.'])
+      expect(cop.messages).to eq(['Indent access modifiers like private.'])
+      # No EnforcedStyle can allow both aligments:
+      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
+    end
+
+    it 'registers an offence for opposite + correct alignment' do
+      inspect_source(cop,
+                     ['module Test',
+                      '',
+                      'public',
+                      '',
+                      '  private',
+                      '',
+                      '  def test; end',
+                      'end'])
+      expect(cop.offences.size).to eq(1)
+      expect(cop.messages).to eq(['Indent access modifiers like public.'])
+      # No EnforcedStyle can allow both aligments:
+      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
     end
 
     it 'registers an offence for misaligned private in singleton class' do
@@ -146,6 +180,7 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       'end'])
       expect(cop.offences.size).to eq(1)
       expect(cop.messages).to eq([indent_msg])
+      expect(cop.config_to_allow_offences).to eq('EnforcedStyle' => 'indent')
     end
 
     it 'registers offence for private indented to method depth in a module' do

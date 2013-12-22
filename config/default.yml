@@ -18,8 +18,10 @@ AllCops:
 
 # Indent private/protected/public as deep as method definitions
 AccessModifierIndentation:
-  # supported styles are "indent" and "outdent"
   EnforcedStyle: indent
+  SupportedStyles:
+    - outdent
+    - indent
 
 # Align the elements of a hash literal if they span more than one line.
 AlignHash:
@@ -56,8 +58,10 @@ BlockNesting:
   Max: 3
 
 BracesAroundHashParameters:
-  # Valid values are: braces, no_braces
   EnforcedStyle: no_braces
+  SupportedStyles:
+    - braces
+    - no_braces
 
 # Indentation of `when`.
 CaseIndentation:
@@ -113,35 +117,45 @@ EndAlignment:
 
 # Checks use of for or each in multiline loops.
 For:
-  # Valid values are: for, each
   EnforcedStyle: each
+  SupportedStyles:
+    - for
+    - each
 
 # Built-in global variables are allowed by default.
 GlobalVars:
   AllowedVariables: []
 
 HashSyntax:
-  # Valid values are: ruby19, hash_rockets
   EnforcedStyle: ruby19
+  SupportedStyles:
+    - ruby19
+    - hash_rockets
 
 LambdaCall:
-  # Valid values are: call, braces
   EnforcedStyle: call
+  SupportedStyles:
+    - call
+    - braces
 
 LineLength:
   Max: 79
 
 MethodDefParentheses:
-  # Valid values are: require_parentheses, require_no_parentheses
   EnforcedStyle: require_parentheses
+  SupportedStyles:
+    - require_parentheses
+    - require_no_parentheses
 
 MethodLength:
   CountComments: false  # count full line comments?
   Max: 10
 
 MethodName:
-  # Valid values are: snake_case, camelCase
   EnforcedStyle: snake_case
+  SupportedStyles:
+    - snake_case
+    - camelCase
 
 NumericLiterals:
   MinDigits: 5
@@ -162,10 +176,11 @@ ParenthesesAroundCondition:
   AllowSafeAssignment: true
 
 RaiseArgs:
-  # Valid values are: compact and exploded
-  # exploded: raise Exception, msg
-  # compact: raise Exception.new(msg)
   EnforcedStyle: exploded
+  SupportedStyles:
+    - compact # raise Exception.new(msg)
+    - exploded # raise Exception, msg
+
 
 RedundantReturn:
   # When true allows code like `return x, y`.
@@ -179,8 +194,12 @@ Semicolon:
   AllowAsExpressionSeparator: false
 
 SignalException:
-  # Valid values are: semantic, only_raise and only_fail
   EnforcedStyle: semantic
+  SupportedStyles:
+    - only_raise
+    - only_fail
+    - semantic
+
 
 SingleLineBlockParams:
   Methods:
@@ -195,22 +214,28 @@ SingleLineMethods:
   AllowIfMethodIsEmpty: true
 
 StringLiterals:
-  # Valid values (denoting the preferred quote delimiters) are:
-  # single_quotes, double_quotes
   EnforcedStyle: single_quotes
+  SupportedStyles:
+    - single_quotes
+    - double_quotes
 
 SpaceAroundBlockBraces:
-  # Valid values are: space_inside_braces, no_space_inside_braces
   EnforcedStyle: space_inside_braces
+  SupportedStyles:
+    - space_inside_braces
+    - no_space_inside_braces
   # Valid values are: space, no_space
   EnforcedStyleForEmptyBraces: no_space
   # Space between { and |. Overrides EnforcedStyle if there is a conflict.
   SpaceBeforeBlockParameters: true
 
 SpaceInsideHashLiteralBraces:
-  # Valid values (for both parameters) are: space, no_space
   EnforcedStyle: space
   EnforcedStyleForEmptyBraces: no_space
+  SupportedStyles:
+    - space
+    - no_space
+
 
 # TrivialAccessors doesn't require exact name matches and doesn't allow
 # predicated methods by default.
@@ -237,8 +262,10 @@ TrivialAccessors:
     - to_sym
 
 VariableName:
-  # Valid values are: snake_case, camelCase
   EnforcedStyle: snake_case
+  SupportedStyles:
+    - snake_case
+    - camelCase
 
 WordArray:
   MinSize: 0

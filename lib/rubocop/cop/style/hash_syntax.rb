@@ -10,15 +10,13 @@ module Rubocop
       #
       # A separate offence is registered for each problematic pair.
       class HashSyntax < Cop
+        include ConfigurableEnforcedStyle
+
         MSG_19 = 'Use the new Ruby 1.9 hash syntax.'
         MSG_HASH_ROCKETS = 'Always use hash rockets in hashes.'
 
         def on_hash(node)
-          case cop_config['EnforcedStyle']
-          when 'ruby19' then ruby19_check(node)
-          when 'hash_rockets' then hash_rockets_check(node)
-          else fail 'Unknown HashSyntax style'
-          end
+          style == :ruby19 ? ruby19_check(node) : hash_rockets_check(node)
         end
 
         def ruby19_check(node)
@@ -38,8 +36,7 @@ module Rubocop
         def autocorrect(node)
           key = node.children.first.loc.expression
           op = node.loc.operator
-          if cop_config['EnforcedStyle'] == 'ruby19' &&
-              !space_before_operator?(op, key) &&
+          if style == :ruby19 && !space_before_operator?(op, key) &&
               config.for_cop('SpaceAroundOperators')['Enabled']
             # Don't do the correction if there is no space before '=>'. The
             # combined corrections of this cop and SpaceAroundOperators could
@@ -48,7 +45,7 @@ module Rubocop
           end
 
           @corrections << lambda do |corrector|
-            if cop_config['EnforcedStyle'] == 'ruby19'
+            if style == :ruby19
               corrector.insert_after(key, ' ')
               corrector.replace(key, key.source.sub(/^:(.*)/, '\1:'))
             else

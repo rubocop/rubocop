@@ -35,6 +35,7 @@ describe Rubocop::Cop::Style::CyclomaticComplexity, :config do
       expect(cop.messages)
         .to eq(['Cyclomatic complexity for method_name is too high. [2/1]'])
       expect(cop.highlights).to eq(['def'])
+      expect(cop.config_to_allow_offences).to eq('Max' => 2)
     end
 
     it 'registers an offence for an unless modifier' do

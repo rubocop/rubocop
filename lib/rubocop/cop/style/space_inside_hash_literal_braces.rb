@@ -7,6 +7,8 @@ module Rubocop
       # surrounding space depending on configuration.
       class SpaceInsideHashLiteralBraces < Cop
         include SurroundingSpace
+        include ConfigurableEnforcedStyle
+
         MSG = 'Space inside %s.'
 
         def investigate(processed_source)
@@ -33,7 +35,7 @@ module Rubocop
           expect_space = if is_empty_braces
                            cop_config['EnforcedStyleForEmptyBraces'] == 'space'
                          else
-                           cop_config['EnforcedStyle'] == 'space'
+                           style == :space
                          end
           if offence?(t1, t2, expect_space)
             brace = (t1.text == '{' ? t1 : t2).pos

@@ -7,6 +7,7 @@ module Rubocop
       # definitions. Both instance and class/singleton methods are checked.
       class MethodDefParentheses < Cop
         include CheckMethods
+        include ConfigurableEnforcedStyle
 
         def check(node, _method_name, args, _body)
           if style == :require_parentheses &&
@@ -44,14 +45,6 @@ module Rubocop
 
         def has_parentheses?(args)
           args.loc.begin
-        end
-
-        def style
-          case cop_config['EnforcedStyle']
-          when 'require_parentheses' then :require_parentheses
-          when 'require_no_parentheses' then :require_no_parentheses
-          else fail 'Unknown style selected!'
-          end
         end
       end
     end

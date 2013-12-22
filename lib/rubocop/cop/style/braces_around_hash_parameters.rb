@@ -5,6 +5,8 @@ module Rubocop
     module Style
       # This cop checks for braces in method calls with hash parameters.
       class BracesAroundHashParameters < Cop
+        include ConfigurableEnforcedStyle
+
         def on_send(node)
           _receiver, method_name, *args = *node
 
@@ -15,16 +17,29 @@ module Rubocop
 
           # We care only for the last argument.
           arg = args.last
-          return unless non_empty_hash?(arg)
 
-          if style == :no_braces && has_braces?(arg) && !all_hashes?(args)
-            add_offence(arg,
-                        :expression,
-                        'Redundant curly braces around a hash parameter.')
-          elsif style == :braces && !has_braces?(arg)
-            add_offence(arg,
-                        :expression,
-                        'Missing curly braces around a hash parameter.')
+          check(arg, args) if non_empty_hash?(arg)
+        end
+
+        private
+
+        def check(arg, args)
+          if style == :no_braces
+            if !has_braces?(arg) || all_hashes?(args)
+              correct_style_detected
+            else
+              add_offence(arg, :expression,
+                          'Redundant curly braces around a hash parameter.') do
+                opposite_style_detected
+              end
+            end
+          elsif has_braces?(arg)
+            correct_style_detected
+          else
+            add_offence(arg, :expression,
+                        'Missing curly braces around a hash parameter.') do
+              opposite_style_detected
+            end
           end
         end
 
@@ -40,8 +55,6 @@ module Rubocop
           end
         end
 
-        private
-
         def non_empty_hash?(arg)
           arg && arg.type == :hash && arg.children.any?
         end
@@ -52,14 +65,6 @@ module Rubocop
 
         def all_hashes?(args)
           args.length > 1 && args.all? { |a| a.type == :hash }
-        end
-
-        def style
-          case cop_config['EnforcedStyle']
-          when 'braces' then :braces
-          when 'no_braces' then :no_braces
-          else fail 'Unknown style selected!'
-          end
         end
       end
     end

@@ -6,6 +6,8 @@ module Rubocop
       # This cop checks the length of lines in the source code.
       # The maximum length is configurable.
       class LineLength < Cop
+        include ConfigurableMax
+
         MSG = 'Line is too long. [%d/%d]'
 
         def investigate(processed_source)
@@ -16,7 +18,9 @@ module Rubocop
                           source_range(processed_source.buffer,
                                        processed_source[0...index], max,
                                        line.length - max),
-                          message)
+                          message) do
+                self.max = line.length
+              end
             end
           end
         end
