@@ -5,6 +5,8 @@ module Rubocop
     module Style
       # This cop checks for uses of `fail` and `raise`.
       class SignalException < Cop
+        include ConfigurableEnforcedStyle
+
         FAIL_MSG = 'Use `fail` instead of `raise` to signal exceptions.'
         RAISE_MSG = 'Use `raise` instead of `fail` to rethrow exceptions.'
 
@@ -22,9 +24,9 @@ module Rubocop
           case style
           when :semantic
             check_for(:raise, node) unless ignored_node?(node)
-          when :raise
+          when :only_raise
             check_for(:raise, node)
-          when :fail
+          when :only_fail
             check_for(:fail, node)
           end
         end
@@ -34,8 +36,8 @@ module Rubocop
             name =
               case style
               when :semantic then command?(:raise, node) ? 'fail' : 'raise'
-              when :raise then 'raise'
-              when :fail then 'fail'
+              when :only_raise then 'raise'
+              when :only_fail then 'fail'
               end
 
             corrector.replace(node.loc.selector, name)
@@ -44,22 +46,13 @@ module Rubocop
 
         private
 
-        def style
-          case cop_config['EnforcedStyle']
-          when 'only_raise' then :raise
-          when 'only_fail' then :fail
-          when 'semantic' then :semantic
-          else fail 'Unknown style selected!'
-          end
-        end
-
         def message(method_name)
           case style
           when :semantic
             method_name == :fail ? RAISE_MSG : FAIL_MSG
-          when :raise
+          when :only_raise
             'Always use `raise` to signal exceptions.'
-          when :fail
+          when :only_fail
             'Always use `fail` to signal exceptions.'
           end
         end

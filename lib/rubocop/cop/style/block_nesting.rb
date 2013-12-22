@@ -9,6 +9,8 @@ module Rubocop
       #
       # The maximum level of nesting allowed is configurable.
       class BlockNesting < Cop
+        include ConfigurableMax
+
         NESTING_BLOCKS = [:case, :if, :while, :while_post, :until, :until_post,
                           :for, :resbody]
 
@@ -27,7 +29,9 @@ module Rubocop
               current_level += 1
             end
             if current_level == max + 1
-              add_offence(node, :expression, message(max))
+              add_offence(node, :expression, message(max)) do
+                self.max = current_level
+              end
               return
             end
           end

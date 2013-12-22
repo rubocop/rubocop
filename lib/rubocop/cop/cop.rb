@@ -136,6 +136,16 @@ module Rubocop
                       false
                     end
         @offences << Offence.new(severity, location, message, name, corrected)
+        yield if block_given?
+      end
+
+      def config_to_allow_offences
+        Formatter::DisabledConfigFormatter.config_to_allow_offences[cop_name]
+      end
+
+      def config_to_allow_offences=(hash)
+        Formatter::DisabledConfigFormatter.config_to_allow_offences[cop_name] =
+          hash
       end
 
       def cop_name

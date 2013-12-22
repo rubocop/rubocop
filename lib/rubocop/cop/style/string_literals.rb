@@ -5,12 +5,13 @@ module Rubocop
     module Style
       # Checks if uses of quotes match the configured preference.
       class StringLiterals < Cop
+        include ConfigurableEnforcedStyle
         include StringHelp
 
         private
 
         def message(node)
-          if single_quotes_preferred?
+          if style == :single_quotes
             "Prefer single-quoted strings when you don't need string " +
               'interpolation or special symbols.'
           else
@@ -22,7 +23,7 @@ module Rubocop
         def offence?(node)
           src = node.loc.expression.source
           return false if src =~ /^(%q|\?|<<-)/i
-          src !~ if single_quotes_preferred?
+          src !~ if style == :single_quotes
                    # regex matches IF there is a ' or there is a \\ in the
                    # string that is not preceeded/followed by another \\
                    # (e.g. "\\x34") but not "\\\\"
@@ -30,14 +31,6 @@ module Rubocop
                  else
                    /" | \\/x
                  end
-        end
-
-        def single_quotes_preferred?
-          case cop_config['EnforcedStyle']
-          when 'single_quotes' then true
-          when 'double_quotes' then false
-          else fail 'Unknown StringLiterals style'
-          end
         end
 
         def autocorrect(node)

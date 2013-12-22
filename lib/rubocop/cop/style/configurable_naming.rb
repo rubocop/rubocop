@@ -6,6 +6,8 @@ module Rubocop
       # This module provides functionality for checking if names match the
       # configured EnforcedStyle.
       module ConfigurableNaming
+        include ConfigurableEnforcedStyle
+
         SNAKE_CASE = /^@?[\da-z_]+[!?=]?$/
         CAMEL_CASE = /^@?[a-z][\da-zA-Z]+[!?=]?$/
 
@@ -14,20 +16,12 @@ module Rubocop
 
           name = range.source.to_sym
           unless matches_config?(name) || Cop::OPERATOR_METHODS.include?(name)
-            add_offence(node, range, message(cop_config['EnforcedStyle']))
+            add_offence(node, range, message(style))
           end
         end
 
         def matches_config?(name)
-          case cop_config['EnforcedStyle']
-          when 'snake_case'
-            name =~ SNAKE_CASE
-          when 'camelCase'
-            name =~ CAMEL_CASE
-          else
-            fail 'Illegal value for EnforcedStyle. Must be snake_case or ' +
-              'camelCase.'
-          end
+          name =~ (style == :snake_case ? SNAKE_CASE : CAMEL_CASE)
         end
 
         # Returns a range containing the method name after the given regexp and

@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Rubocop::Cop::Style::SpaceAroundBlockBraces do
+  SUPPORTED_STYLES = %w(space_inside_braces no_space_inside_braces)
+
   subject(:cop) { described_class.new(config) }
   let(:config) do
     Rubocop::Config.new('Blocks' => { 'Enabled' => false },
@@ -11,6 +13,7 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces do
   let(:cop_config) do
     {
       'EnforcedStyle' => 'space_inside_braces',
+      'SupportedStyles' => SUPPORTED_STYLES,
       'SpaceBeforeBlockParameters' => true
     }
   end
@@ -143,7 +146,8 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces do
     context 'and space before block parameters not allowed' do
       let(:cop_config) do
         {
-          'EnforcedStyle' => 'space_inside_braces',
+          'EnforcedStyle'              => 'space_inside_braces',
+          'SupportedStyles'            => SUPPORTED_STYLES,
           'SpaceBeforeBlockParameters' => false
         }
       end
@@ -170,7 +174,8 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces do
   context 'configured with no_space_inside_braces' do
     let(:cop_config) do
       {
-        'EnforcedStyle' => 'no_space_inside_braces',
+        'EnforcedStyle'              => 'no_space_inside_braces',
+        'SupportedStyles'            => SUPPORTED_STYLES,
         'SpaceBeforeBlockParameters' => true
       }
     end
@@ -227,7 +232,8 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces do
       context 'and space before block parameters not allowed' do
         let(:cop_config) do
           {
-            'EnforcedStyle' => 'no_space_inside_braces',
+            'EnforcedStyle'              => 'no_space_inside_braces',
+            'SupportedStyles'            => SUPPORTED_STYLES,
             'SpaceBeforeBlockParameters' => false
           }
         end

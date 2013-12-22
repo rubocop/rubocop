@@ -15,6 +15,7 @@ module Rubocop
       # Loops can be said to have an exit condition, so they add one.
       class CyclomaticComplexity < Cop
         include CheckMethods
+        include ConfigurableMax
 
         MSG = 'Cyclomatic complexity for %s is too high. [%d/%d]'
         DECISION_POINT_NODES = [:if, :while, :until, :for, :rescue, :when,
@@ -29,7 +30,9 @@ module Rubocop
           max = cop_config['Max']
           if complexity > max
             add_offence(node, :keyword,
-                        sprintf(MSG, method_name, complexity, max))
+                        sprintf(MSG, method_name, complexity, max)) do
+              self.max = complexity
+            end
           end
         end
       end

@@ -7,7 +7,10 @@ describe Rubocop::Cop::Style::HashSyntax, :config do
 
   context 'configured to enforce ruby19 style' do
     let(:config) do
-      Rubocop::Config.new('HashSyntax' => { 'EnforcedStyle' => 'ruby19' },
+      Rubocop::Config.new('HashSyntax' => {
+                            'EnforcedStyle'   => 'ruby19',
+                            'SupportedStyles' => %w(ruby19 hash_rockets)
+                          },
                           'SpaceAroundOperators' => { 'Enabled' => true })
     end
 
@@ -73,7 +76,10 @@ describe Rubocop::Cop::Style::HashSyntax, :config do
 
     context 'with SpaceAroundOperators disabled' do
       let(:config) do
-        Rubocop::Config.new('HashSyntax' => { 'EnforcedStyle' => 'ruby19' },
+        Rubocop::Config.new('HashSyntax' => {
+                              'EnforcedStyle'   => 'ruby19',
+                              'SupportedStyles' => %w(ruby19 hash_rockets)
+                            },
                             'SpaceAroundOperators' => { 'Enabled' => false })
       end
 

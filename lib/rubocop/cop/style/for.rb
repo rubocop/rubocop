@@ -8,36 +8,37 @@ module Rubocop
       # parameter. An *each* call with a block on a single line is always
       # allowed, however.
       class For < Cop
+        include ConfigurableEnforcedStyle
+
         def on_for(node)
           if style == :each
-            add_offence(node, :keyword, 'Prefer *each* over *for*.')
+            add_offence(node, :keyword, 'Prefer *each* over *for*.') do
+              opposite_style_detected
+            end
+          else
+            correct_style_detected
           end
         end
 
         def on_block(node)
-          return if style == :each
           return if block_length(node) == 0
 
           method, _args, _body = *node
-          if method.type == :send
-            _receiver, method_name, *args = *method
-            if method_name == :each && args.empty?
-              end_pos = method.loc.expression.end_pos
-              range = Parser::Source::Range.new(processed_source.buffer,
-                                                end_pos - 'each'.length,
-                                                end_pos)
-              add_offence(range, range, 'Prefer *for* over *each*.')
+          return unless method.type == :send
+
+          _receiver, method_name, *args = *method
+          return unless method_name == :each && args.empty?
+
+          if style == :for
+            end_pos = method.loc.expression.end_pos
+            range = Parser::Source::Range.new(processed_source.buffer,
+                                              end_pos - 'each'.length,
+                                              end_pos)
+            add_offence(range, range, 'Prefer *for* over *each*.') do
+              opposite_style_detected
             end
-          end
-        end
-
-        private
-
-        def style
-          s = cop_config['EnforcedStyle']
-          case s
-          when 'for', 'each' then s.to_sym
-          else fail "Unknown EnforcedStyle: #{s}"
+          else
+            correct_style_detected
           end
         end
       end

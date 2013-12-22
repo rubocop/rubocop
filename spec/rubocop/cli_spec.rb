@@ -88,6 +88,7 @@ describe Rubocop::CLI, :isolated_environment do
       it 'can generate a todo list' do
         create_file('example1.rb', ['# encoding: utf-8',
                                     'x= 0 ',
+                                    '#' * 90,
                                     '#' * 85,
                                     'y ',
                                     'puts x'])
@@ -115,7 +116,7 @@ describe Rubocop::CLI, :isolated_environment do
                   '  Enabled: false',
                   '',
                   'LineLength:',
-                  '  Enabled: false',
+                  '  Max: 90',
                   '',
                   'SpaceAroundOperators:',
                   '  Enabled: false',
@@ -173,16 +174,14 @@ describe Rubocop::CLI, :isolated_environment do
         create_file('example1.rb', "\tputs 0")
         expect(cli.run(['--debug', 'example1.rb'])).to eq(1)
         home = File.dirname(File.dirname(File.dirname(__FILE__)))
-        expect($stdout.string.lines[2, 7].map(&:chomp).join("\n"))
+        expect($stdout.string.lines[2, 5].map(&:chomp).join("\n"))
           .to eq(["For #{abs('')}:" +
                   " configuration from #{home}/config/default.yml",
                   "Inheriting configuration from #{home}/config/enabled.yml",
                   "Inheriting configuration from #{home}/config/" +
                   'disabled.yml',
                   "AllCops/Excludes configuration from #{home}/.rubocop.yml",
-                  "Inheriting configuration from #{home}/config/default.yml",
-                  "Inheriting configuration from #{home}/config/enabled.yml",
-                  "Inheriting configuration from #{home}/config/disabled.yml"
+                  "Inheriting configuration from #{home}/rubocop-todo.yml"
                  ].join("\n"))
       end
 

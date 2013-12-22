@@ -5,6 +5,8 @@ module Rubocop
     module Style
       # This cop checks the args passed to `fail` and `raise`.
       class RaiseArgs < Cop
+        include ConfigurableEnforcedStyle
+
         def on_send(node)
           return unless command?(:raise, node) || command?(:fail, node)
 
@@ -40,14 +42,6 @@ module Rubocop
             unless constructor_args.size > 1
               add_offence(node, :expression, message(selector))
             end
-          end
-        end
-
-        def style
-          case cop_config['EnforcedStyle']
-          when 'compact' then :compact
-          when 'exploded' then :exploded
-          else fail 'Unknown style selected!'
           end
         end
 

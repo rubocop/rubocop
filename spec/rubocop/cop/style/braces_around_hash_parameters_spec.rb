@@ -80,6 +80,25 @@ describe Rubocop::Cop::Style::BracesAroundHashParameters, :config do
           'Redundant curly braces around a hash parameter.'
         ])
         expect(cop.highlights).to eq(['{ y: 2 }'])
+        expect(cop.config_to_allow_offences).to eq('EnforcedStyle' => 'braces')
+      end
+
+      it 'correct + opposite style' do
+        inspect_source(cop, ['where(1, y: 2)',
+                             'where(1, { y: 2 })'])
+        expect(cop.messages).to eq([
+          'Redundant curly braces around a hash parameter.'
+        ])
+        expect(cop.config_to_allow_offences).to eq('Enabled' => false)
+      end
+
+      it 'opposite + correct style' do
+        inspect_source(cop, ['where(1, { y: 2 })',
+                             'where(1, y: 2)'])
+        expect(cop.messages).to eq([
+          'Redundant curly braces around a hash parameter.'
+        ])
+        expect(cop.config_to_allow_offences).to eq('Enabled' => false)
       end
 
       it 'one object method hash parameter with braces' do
@@ -201,6 +220,26 @@ describe Rubocop::Cop::Style::BracesAroundHashParameters, :config do
           'Missing curly braces around a hash parameter.'
         ])
         expect(cop.highlights).to eq(['x: "y"'])
+        expect(cop.config_to_allow_offences).to eq('EnforcedStyle' =>
+                                                   'no_braces')
+      end
+
+      it 'opposite + correct style' do
+        inspect_source(cop, ['where(y: 2)',
+                             'where({ y: 2 })'])
+        expect(cop.messages).to eq([
+          'Missing curly braces around a hash parameter.'
+        ])
+        expect(cop.config_to_allow_offences).to eq('Enabled' => false)
+      end
+
+      it 'correct + opposite style' do
+        inspect_source(cop, ['where({ y: 2 })',
+                             'where(y: 2)'])
+        expect(cop.messages).to eq([
+          'Missing curly braces around a hash parameter.'
+        ])
+        expect(cop.config_to_allow_offences).to eq('Enabled' => false)
       end
 
       it 'one hash parameter with multiple keys and without braces' do

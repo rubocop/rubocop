@@ -144,10 +144,13 @@ describe Rubocop::Cop::Style::BlockNesting, :config do
     expect_nesting_offences(source, [])
   end
 
-  def expect_nesting_offences(source, lines)
+  def expect_nesting_offences(source, lines, used_nesting_level = 3)
     inspect_source(cop, source)
     expect(cop.offences.map(&:line)).to eq(lines)
     expect(cop.messages).to eq(
       ['Avoid more than 2 levels of block nesting.'] * lines.length)
+    if cop.offences.size > 0
+      expect(cop.config_to_allow_offences['Max']).to eq(used_nesting_level)
+    end
   end
 end

@@ -7,6 +7,8 @@ module Rubocop
       # Modifiers should be indented as deeps are method definitions and
       # surrounded by blank lines.
       class AccessModifierIndentation < Cop
+        include ConfigurableEnforcedStyle
+
         MSG = '%s access modifiers like %s.'
 
         PRIVATE_NODE = s(:send, nil, :private)
@@ -28,11 +30,7 @@ module Rubocop
             class_node.children.compact.each do |node|
               on_node(:send, node, [:class, :module, :sclass]) do |send_node|
                 if self.class.modifier_node?(send_node)
-                  send_start_col = send_node.loc.expression.column
-
-                  if send_start_col != class_start_col + expected_indent_offset
-                    add_offence(send_node, :expression)
-                  end
+                  check(send_node, class_start_col)
                 end
               end
             end
@@ -45,10 +43,25 @@ module Rubocop
 
         private
 
+        def check(send_node, class_start_col)
+          access_modifier_start_col = send_node.loc.expression.column
+          offset = access_modifier_start_col - class_start_col
+
+          if offset == expected_indent_offset
+            correct_style_detected
+          else
+            add_offence(send_node, :expression) do
+              if offset == unexpected_indent_offset
+                opposite_style_detected
+              else
+                unrecognized_style_detected
+              end
+            end
+          end
+        end
+
         def message(node)
-          format(MSG,
-                 cop_config['EnforcedStyle'].capitalize,
-                 node.loc.selector.source)
+          format(MSG, style.capitalize, node.loc.selector.source)
         end
 
         def class_constructor?(block_node)
@@ -59,11 +72,13 @@ module Rubocop
         end
 
         def expected_indent_offset
-          case cop_config['EnforcedStyle'].downcase
-          when 'outdent' then 0
-          when 'indent' then 2
-          else fail 'Unknown EnforcedStyle specified'
-          end
+          style == :outdent ? 0 : IndentationWidth::CORRECT_INDENTATION
+        end
+
+        # An offset that is not expected, but correct if the configuration is
+        # changed.
+        def unexpected_indent_offset
+          IndentationWidth::CORRECT_INDENTATION - expected_indent_offset
         end
       end
     end

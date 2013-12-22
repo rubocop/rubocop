@@ -20,6 +20,7 @@
 * Allow to overwrite the severity of a cop with the new `Severity` param. ([@codez][])
 * New cop `FlipFlop` checks for flip flops. ([@agrimm][])
 * [#577](https://github.com/bbatsov/rubocop/issues/577): Introduced `MethodDefParentheses` to allow for for requiring either parentheses or no parentheses in method definitions. Replaces `DefWithoutParentheses`. ([@skanev][])
+* [#693](https://github.com/bbatsov/rubocop/pull/693): Generation of parameter values (i.e., not only `Enabled: false`) in `rubocop-todo.yml` by the `--auto-gen-config` option is now supported for some cops. ([@jonas054][])
 
 ### Changes
 

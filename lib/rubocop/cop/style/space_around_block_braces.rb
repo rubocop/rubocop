@@ -9,6 +9,7 @@ module Rubocop
       # Also checks that the left brace is preceded by a space and this is not
       # configurable.
       class SpaceAroundBlockBraces < Cop
+        include ConfigurableEnforcedStyle
         include SurroundingSpace
 
         def on_block(node)
@@ -71,8 +72,8 @@ module Rubocop
           end
 
           if inner =~ /\S$/
-            no_space(style, sb, right_brace.begin_pos, right_brace.end_pos,
-                     'Space missing inside }.')
+            no_space(style_for_inside_braces, sb, right_brace.begin_pos,
+                     right_brace.end_pos, 'Space missing inside }.')
           else
             space_inside_right_brace(right_brace, sb)
           end
@@ -88,8 +89,8 @@ module Rubocop
             # We indicate the position after the left brace. Otherwise it's
             # difficult to distinguish between space missing to the left and to
             # the right of the brace in autocorrect.
-            no_space(style, sb, left_brace.end_pos, left_brace.end_pos + 1,
-                     'Space missing inside {.')
+            no_space(style_for_inside_braces, sb, left_brace.end_pos,
+                     left_brace.end_pos + 1, 'Space missing inside {.')
           end
         end
 
@@ -99,14 +100,14 @@ module Rubocop
                   pipe.begin_pos, 'Space between { and | detected.')
           else
             brace_with_space = range_with_surrounding_space(left_brace, :right)
-            space(style, sb, brace_with_space.begin_pos + 1,
+            space(style_for_inside_braces, sb, brace_with_space.begin_pos + 1,
                   brace_with_space.end_pos, 'Space inside { detected.')
           end
         end
 
         def space_inside_right_brace(right_brace, sb)
           brace_with_space = range_with_surrounding_space(right_brace, :left)
-          space(style, sb, brace_with_space.begin_pos,
+          space(style_for_inside_braces, sb, brace_with_space.begin_pos,
                 brace_with_space.end_pos - 1, 'Space inside } detected.')
         end
 
@@ -123,12 +124,12 @@ module Rubocop
           add_offence(range, range, msg)
         end
 
-        def style
-          case cop_config['EnforcedStyle']
-          when 'space_inside_braces'    then :space
-          when 'no_space_inside_braces' then :no_space
-          else fail 'Unknown EnforcedStyle selected!'
-          end
+        def available_styles
+          %w(space_inside_braces no_space_inside_braces)
+        end
+
+        def style_for_inside_braces
+          style == :space_inside_braces ? :space : :no_space
         end
 
         def style_for_empty_braces

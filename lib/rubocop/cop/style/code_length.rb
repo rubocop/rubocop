@@ -5,6 +5,8 @@ module Rubocop
     module Style
       # Common functionality for checking length of code segments.
       module CodeLength
+        include ConfigurableMax
+
         def max_length
           cop_config['Max']
         end
@@ -16,7 +18,10 @@ module Rubocop
         def check(node, *_)
           length = code_length(node)
           if length > max_length
-            add_offence(node, :keyword, sprintf(message, length, max_length))
+            add_offence(node, :keyword, sprintf(message, length,
+                                                max_length)) do
+              self.max = length
+            end
           end
         end
 

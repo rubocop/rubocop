@@ -17,6 +17,21 @@ describe Rubocop::Cop::Style::For, :config do
                       'end'])
       expect(cop.messages).to eq(['Prefer *each* over *for*.'])
       expect(cop.highlights).to eq(['for'])
+      expect(cop.config_to_allow_offences).to eq('EnforcedStyle' => 'for')
+    end
+
+    it 'registers an offence for opposite + correct style' do
+      inspect_source(cop,
+                     ['def func',
+                      '  for n in [1, 2, 3] do',
+                      '    puts n',
+                      '  end',
+                      '  [1, 2, 3].each do |n|',
+                      '    puts n',
+                      '  end',
+                      'end'])
+      expect(cop.messages).to eq(['Prefer *each* over *for*.'])
+      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
     end
 
     it 'accepts multiline each' do
@@ -62,6 +77,21 @@ describe Rubocop::Cop::Style::For, :config do
                       'end'])
       expect(cop.messages).to eq(['Prefer *for* over *each*.'])
       expect(cop.highlights).to eq(['each'])
+      expect(cop.config_to_allow_offences).to eq('EnforcedStyle' => 'each')
+    end
+
+    it 'registers an offence for correct + opposite style' do
+      inspect_source(cop,
+                     ['def func',
+                      '  for n in [1, 2, 3] do',
+                      '    puts n',
+                      '  end',
+                      '  [1, 2, 3].each do |n|',
+                      '    puts n',
+                      '  end',
+                      'end'])
+      expect(cop.messages).to eq(['Prefer *for* over *each*.'])
+      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
     end
 
     it 'accepts single line each' do
