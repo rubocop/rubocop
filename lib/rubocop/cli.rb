@@ -58,7 +58,7 @@ module Rubocop
 
       ConfigLoader.debug = @options[:debug]
 
-      @config_store.set_options_config(@options[:config]) if @options[:config]
+      @config_store.options_config = @options[:config] if @options[:config]
 
       Sickill::Rainbow.enabled = false if @options[:no_color]
 
