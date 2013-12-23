@@ -25,7 +25,7 @@ module Rubocop
 
         def check(arg, args)
           if style == :no_braces
-            if !has_braces?(arg) || all_hashes?(args)
+            if !braces?(arg) || all_hashes?(args)
               correct_style_detected
             else
               add_offence(arg, :expression,
@@ -33,7 +33,7 @@ module Rubocop
                 opposite_style_detected
               end
             end
-          elsif has_braces?(arg)
+          elsif braces?(arg)
             correct_style_detected
           else
             add_offence(arg, :expression,
@@ -59,7 +59,7 @@ module Rubocop
           arg && arg.type == :hash && arg.children.any?
         end
 
-        def has_braces?(arg)
+        def braces?(arg)
           !arg.loc.begin.nil?
         end
 

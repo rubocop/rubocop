@@ -13,7 +13,7 @@ module Rubocop
           _receiver, method_name, *args = *node
           if args.any?
             block = get_block(args.last)
-            if block && !has_parentheses?(node) && !operator?(method_name)
+            if block && !parentheses?(node) && !operator?(method_name)
               # If there are no parentheses around the arguments, then braces
               # and do-end have different meaning due to how they bind, so we
               # allow either.
@@ -65,7 +65,7 @@ module Rubocop
           end
         end
 
-        def has_parentheses?(send_node)
+        def parentheses?(send_node)
           send_node.loc.begin
         end
 

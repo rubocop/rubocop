@@ -175,6 +175,12 @@ ParameterLists:
 ParenthesesAroundCondition:
   AllowSafeAssignment: true
 
+PredicateName:
+  NamePrefixBlacklist:
+    - is_
+    - has_
+    - have_
+
 RaiseArgs:
   EnforcedStyle: exploded
   SupportedStyles:

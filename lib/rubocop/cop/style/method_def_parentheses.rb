@@ -11,12 +11,12 @@ module Rubocop
 
         def check(node, _method_name, args, _body)
           if style == :require_parentheses &&
-              has_arguments?(args) &&
-              !has_parentheses?(args)
+              arguments?(args) &&
+              !parentheses?(args)
             add_offence(node,
                         args.loc.expression,
                         'Use def with parentheses when there are parameters.')
-          elsif style == :require_no_parentheses && has_parentheses?(args)
+          elsif style == :require_no_parentheses && parentheses?(args)
             add_offence(args,
                         :expression,
                         'Use def without parentheses.')
@@ -39,11 +39,11 @@ module Rubocop
 
         private
 
-        def has_arguments?(args)
+        def arguments?(args)
           args.children.size > 0
         end
 
-        def has_parentheses?(args)
+        def parentheses?(args)
           args.loc.begin
         end
       end

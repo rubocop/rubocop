@@ -327,6 +327,10 @@ PerlBackrefs:
   Description: 'Avoid Perl-style regex back references.'
   Enabled: true
 
+PredicateName:
+  Description: 'Check the names of predicate methods.'
+  Enabled: true
+
 Proc:
   Description: 'Use proc instead of Proc.new.'
   Enabled: true
