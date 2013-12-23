@@ -4,6 +4,10 @@ AccessModifierIndentation:
   Description: Check indentation of private/protected visibility modifiers.
   Enabled: true
 
+AccessorMethodName:
+  Description: Check the naming of accessor methods for get_/set_.
+  Enabled: true
+
 Alias:
   Description: 'Use alias_method instead of alias.'
   Enabled: true
