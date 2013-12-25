@@ -66,8 +66,12 @@ describe Rubocop::ProcessedSource do
   end
 
   describe 'valid_syntax?' do
+    def create_diagnostics(level)
+      Parser::Diagnostic.new(level, :odd_hash, [], double('location'))
+    end
+
     let(:diagnostics) do
-      [Parser::Diagnostic.new(level, 'message', double('location'))]
+      [create_diagnostics(level)]
     end
 
     context 'when the source has diagnostic with error level' do
@@ -97,8 +101,8 @@ describe Rubocop::ProcessedSource do
     context 'when the source has diagnostics with error and warning level' do
       let(:diagnostics) do
         [
-          Parser::Diagnostic.new(:error, 'message', double('location')),
-          Parser::Diagnostic.new(:warning, 'message', double('location'))
+          create_diagnostics(:error),
+          create_diagnostics(:warning)
         ]
       end
 
