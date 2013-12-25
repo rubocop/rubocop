@@ -1,20 +1,9 @@
 # encoding: utf-8
 
-# Try to load the latest parser and fall back to the latest supported version,
-# if parser does not yet support the current Ruby version.
-# This should only be problem when using development Ruby builds.
-begin
-  require 'parser/current'
-rescue NotImplementedError => error
-  warn "Falling back to Ruby 2.0: #{error.message}"
-
-  require 'parser/ruby20'
-  Parser::CurrentRuby = Parser::Ruby20
-end
-
 require 'rainbow'
 require 'English'
 require 'set'
+require 'parser/current'
 require 'ast/sexp'
 require 'powerpack'
 
