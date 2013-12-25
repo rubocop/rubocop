@@ -456,8 +456,14 @@ or absolute path.
 
 ## Compatibility
 
-RuboCop supported only MRI 1.9 & MRI 2.0 prior to version 0.8. After
-RuboCop 0.8, JRuby and Rubinius in 1.9 modes are also supported.
+RuboCop supports the following Ruby implementations:
+
+* MRI 1.9.2 ([until June 2014](https://www.ruby-lang.org/en/news/2013/12/17/maintenance-of-1-8-7-and-1-9-2/))
+* MRI 1.9.3
+* MRI 2.0
+* MRI 2.1
+* JRuby in 1.9 mode
+* Rubinius 2.0+
 
 ## Editor integration
 
