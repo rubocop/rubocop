@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.16.0 (25/12/2013)
+
 ### New features
 
 * [#612](https://github.com/bbatsov/rubocop/pull/612): `BracesAroundHashParameters` cop does auto-correction. ([@dblock][])
