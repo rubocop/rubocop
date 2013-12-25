@@ -5,9 +5,10 @@ require 'spec_helper'
 describe Rubocop::Cop::Lint::Syntax do
   describe '.offences_from_diagnostic' do
     subject(:offence) { described_class.offence_from_diagnostic(diagnostic) }
-    let(:diagnostic) { Parser::Diagnostic.new(level, message, location) }
+    let(:diagnostic) { Parser::Diagnostic.new(level, reason, args, location) }
     let(:level) { :warning }
-    let(:message) { 'This is a message' }
+    let(:reason) { :odd_hash }
+    let(:args) { [] }
     let(:location) { double('location').as_null_object }
 
     it 'returns an offence' do
@@ -19,7 +20,7 @@ describe Rubocop::Cop::Lint::Syntax do
     end
 
     it "sets diagnostic's message to offence's message" do
-      expect(offence.message).to eq(message)
+      expect(offence.message).to eq('odd number of entries for a hash')
     end
 
     it "sets diagnostic's location to offence's location" do
