@@ -6,6 +6,11 @@ module Rubocop
       # This cop checks for big numeric literals without _ between groups
       # of digits in them.
       class NumericLiterals < Cop
+        # The parameter is called MinDigits (meaning the minimum number of
+        # digits for which an offence can be registered), but essentially it's
+        # a Max parameter (the maximum number of something that's allowed).
+        include ConfigurableMax
+
         MSG = 'Separate every 3 digits in the integer portion of a number ' \
           'with underscores(_).'
 
@@ -19,6 +24,10 @@ module Rubocop
 
         private
 
+        def parameter_name
+          'MinDigits'
+        end
+
         def check(node)
           int = integer_part(node)
 
@@ -26,8 +35,13 @@ module Rubocop
           return if int.start_with?('0')
 
           if int.size >= min_digits
-            if int =~ /\d{4}/ || int =~ /_\d{1,2}_/
-              add_offence(node, :expression)
+            case int
+            when /^\d+$/
+              add_offence(node, :expression) { self.max = int.size }
+            when /\d{4}/, /_\d{1,2}_/
+              add_offence(node, :expression) do
+                self.config_to_allow_offences = { 'Enabled' => false }
+              end
             end
           end
         end
