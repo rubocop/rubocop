@@ -18,6 +18,7 @@ module Rubocop
       class EndAlignment < Cop
         include CheckMethods
         include CheckAssignment
+        include ConfigurableEnforcedStyle
 
         MSG = 'end at %d, %d is not aligned with %s at %d, %d'
 
@@ -55,7 +56,7 @@ module Rubocop
           when :if, :while, :until
             return if rhs.loc.respond_to?(:question) # ternary
 
-            offset = if alignment == :variable
+            offset = if style == :variable
                        rhs.loc.keyword.column - node.loc.expression.column
                      else
                        0
@@ -85,16 +86,16 @@ module Rubocop
               kw_loc.column != end_loc.column + offset
             add_offence(nil, end_loc,
                         sprintf(MSG, end_loc.line, end_loc.column,
-                                alignment_base, kw_loc.line, kw_loc.column))
+                                alignment_base, kw_loc.line, kw_loc.column)) do
+              opposite_style_detected
+            end
+          else
+            correct_style_detected
           end
         end
 
-        def alignment
-          a = cop_config['AlignWith']
-          case a
-          when 'keyword', 'variable' then a.to_sym
-          else fail "Unknown AlignWith: #{a}"
-          end
+        def parameter_name
+          'AlignWith'
         end
       end
     end

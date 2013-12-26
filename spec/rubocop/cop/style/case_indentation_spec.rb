@@ -2,8 +2,13 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::CaseIndentation, :config do
+describe Rubocop::Cop::Style::CaseIndentation do
   subject(:cop) { described_class.new(config) }
+  let(:config) do
+    merged = Rubocop::ConfigLoader
+      .default_configuration['CaseIndentation'].merge(cop_config)
+    Rubocop::Config.new('CaseIndentation' => merged)
+  end
 
   context 'with IndentWhenRelativeTo: case' do
     context 'with IndentOneStep: false' do
@@ -23,6 +28,19 @@ describe Rubocop::Cop::Style::CaseIndentation, :config do
           expect(cop.offences).to be_empty
         end
 
+        it 'registers on offence for an assignment indented as end' do
+          source = ['output = case variable',
+                    "when 'value1'",
+                    "  'output1'",
+                    'else',
+                    "  'output2'",
+                    'end']
+          inspect_source(cop, source)
+          expect(cop.messages).to eq(['Indent when as deep as case.'])
+          expect(cop.config_to_allow_offences).to eq('IndentWhenRelativeTo' =>
+                                                     'end')
+        end
+
         it 'registers on offence for an assignment indented some other way' do
           source = ['output = case variable',
                     "  when 'value1'",
@@ -32,6 +50,25 @@ describe Rubocop::Cop::Style::CaseIndentation, :config do
                     'end']
           inspect_source(cop, source)
           expect(cop.messages).to eq(['Indent when as deep as case.'])
+          expect(cop.config_to_allow_offences).to eq('Enabled' => false)
+        end
+
+        it 'registers on offence for correct + opposite' do
+          source = ['output = case variable',
+                    "         when 'value1'",
+                    "           'output1'",
+                    '         else',
+                    "           'output2'",
+                    '         end',
+                    'output = case variable',
+                    "when 'value1'",
+                    "  'output1'",
+                    'else',
+                    "  'output2'",
+                    'end']
+          inspect_source(cop, source)
+          expect(cop.messages).to eq(['Indent when as deep as case.'])
+          expect(cop.config_to_allow_offences).to eq('Enabled' => false)
         end
       end
 
@@ -222,7 +259,7 @@ describe Rubocop::Cop::Style::CaseIndentation, :config do
           expect(cop.offences).to be_empty
         end
 
-        it 'registers on offence for an assignment indented some other way' do
+        it 'registers on offence for an assignment indented as case' do
           source = ['output = case variable',
                     "         when 'value1'",
                     "           'output1'",
@@ -231,6 +268,20 @@ describe Rubocop::Cop::Style::CaseIndentation, :config do
                     '         end']
           inspect_source(cop, source)
           expect(cop.messages).to eq(['Indent when one step more than end.'])
+          expect(cop.config_to_allow_offences).to eq('IndentWhenRelativeTo' =>
+                                                     'case')
+        end
+
+        it 'registers on offence for an assignment indented some other way' do
+          source = ['output = case variable',
+                    "       when 'value1'",
+                    "         'output1'",
+                    '       else',
+                    "         'output2'",
+                    '       end']
+          inspect_source(cop, source)
+          expect(cop.messages).to eq(['Indent when one step more than end.'])
+          expect(cop.config_to_allow_offences).to eq('Enabled' => false)
         end
       end
     end

@@ -6,6 +6,9 @@ describe Rubocop::Cop::Lint::EndAlignment, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) { {} }
   let(:cop_config) { { 'AlignWith' => 'keyword' } }
+  let(:opposite) do
+    cop_config['AlignWith'] == 'keyword' ? 'variable' : 'keyword'
+  end
 
   shared_examples 'misaligned' do |alignment_base, arg, end_kw, name|
     name ||= alignment_base
@@ -16,6 +19,7 @@ describe Rubocop::Cop::Lint::EndAlignment, :config do
       expect(cop.messages.first)
         .to match(/end at 2, \d is not aligned with #{alignment_base} at 1,/)
       expect(cop.highlights.first).to eq('end')
+      expect(cop.config_to_allow_offences).to eq('AlignWith' => opposite)
     end
   end
 
@@ -54,6 +58,20 @@ describe Rubocop::Cop::Lint::EndAlignment, :config do
   it 'can handle modifier if' do
     inspect_source(cop, 'a = x if cond')
     expect(cop.offences).to be_empty
+  end
+
+  it 'registers an offence for correct + opposite' do
+    inspect_source(cop, ['x = if a',
+                         '      a1',
+                         '    end',
+                         'y = if b',
+                         '  b1',
+                         'end'])
+    expect(cop.offences.size).to eq(1)
+    expect(cop.messages.first)
+      .to eq('end at 6, 0 is not aligned with y = if at 4, 4')
+    expect(cop.highlights.first).to eq('end')
+    expect(cop.config_to_allow_offences).to eq('Enabled' => false)
   end
 
   context 'regarding assignment' do
