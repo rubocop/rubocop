@@ -2,6 +2,9 @@
 
 ## master (unreleased)
 
+### New features
+
+* New cop `ConditionPosition` checks for misplaced conditions in expressions like `if/unless/when/until`.
 * [#694](https://github.com/bbatsov/rubocop/issues/694): Support Ruby 1.9.2 until June 2014. ([@yujinakayama][])
 
 ## 0.16.0 (25/12/2013)

@@ -525,6 +525,10 @@ CommentAnnotation:
                  (TODO, FIXME, OPTIMIZE, HACK, REVIEW).
   Enabled: true
 
+ConditionPosition:
+  Description: 'Checks for condition placed in a confusing position relative to the keyword.'
+  Enabled: true
+
 Debugger:
   Description: 'Check for debugger calls.'
   Enabled: true
