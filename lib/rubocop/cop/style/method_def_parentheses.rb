@@ -10,16 +10,23 @@ module Rubocop
         include ConfigurableEnforcedStyle
 
         def check(node, _method_name, args, _body)
-          if style == :require_parentheses &&
-              arguments?(args) &&
-              !parentheses?(args)
-            add_offence(node,
-                        args.loc.expression,
-                        'Use def with parentheses when there are parameters.')
-          elsif style == :require_no_parentheses && parentheses?(args)
-            add_offence(args,
-                        :expression,
-                        'Use def without parentheses.')
+          if style == :require_parentheses
+            if arguments?(args) && !parentheses?(args)
+              add_offence(node,
+                          args.loc.expression,
+                          'Use def with parentheses when there are ' \
+                          'parameters.') do
+                opposite_style_detected
+              end
+            else
+              correct_style_detected
+            end
+          elsif parentheses?(args)
+            add_offence(args, :expression, 'Use def without parentheses.') do
+              opposite_style_detected
+            end
+          else
+            correct_style_detected
           end
         end
 

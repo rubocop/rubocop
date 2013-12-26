@@ -11,6 +11,17 @@ describe Rubocop::Cop::Style::RaiseArgs, :config do
     it 'reports an offence for a raise with 2 args' do
       inspect_source(cop, ['raise RuntimeError, msg'])
       expect(cop.offences.size).to eq(1)
+      expect(cop.config_to_allow_offences).to eq('EnforcedStyle' => 'exploded')
+    end
+
+    it 'reports an offence for correct + opposite' do
+      inspect_source(cop, ['if a',
+                           '  raise RuntimeError, msg',
+                           'else',
+                           '  raise Ex.new(msg)',
+                           'end'])
+      expect(cop.offences.size).to eq(1)
+      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
     end
 
     it 'reports an offence for a raise with 3 args' do
@@ -35,6 +46,17 @@ describe Rubocop::Cop::Style::RaiseArgs, :config do
     it 'reports an offence for a raise with exception object' do
       inspect_source(cop, ['raise Ex.new(msg)'])
       expect(cop.offences.size).to eq(1)
+      expect(cop.config_to_allow_offences).to eq('EnforcedStyle' => 'compact')
+    end
+
+    it 'reports an offence for opposite + correct' do
+      inspect_source(cop, ['if a',
+                           '  raise RuntimeError, msg',
+                           'else',
+                           '  raise Ex.new(msg)',
+                           'end'])
+      expect(cop.offences.size).to eq(1)
+      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
     end
 
     it 'accepts exception constructor with more than 1 argument' do

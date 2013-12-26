@@ -34,6 +34,15 @@ describe Rubocop::Cop::Style::VariableName, :config do
       inspect_source(cop, 'myLocal = 1')
       expect(cop.offences).to have(1).item
       expect(cop.highlights).to eq(['myLocal'])
+      expect(cop.config_to_allow_offences).to eq('EnforcedStyle' =>
+                                                 'camelCase')
+    end
+
+    it 'registers an offence for correct + opposite' do
+      inspect_source(cop, ['my_local = 1',
+                           'myLocal = 1'])
+      expect(cop.highlights).to eq(['myLocal'])
+      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
     end
 
     it 'registers an offence for camel case in instance variable name' do
@@ -53,6 +62,21 @@ describe Rubocop::Cop::Style::VariableName, :config do
 
   context 'when configured for camelCase' do
     let(:cop_config) { { 'EnforcedStyle' => 'camelCase' } }
+
+    it 'registers an offence for snake case in local variable name' do
+      inspect_source(cop, 'my_local = 1')
+      expect(cop.offences).to have(1).item
+      expect(cop.highlights).to eq(['my_local'])
+      expect(cop.config_to_allow_offences).to eq('EnforcedStyle' =>
+                                                 'snake_case')
+    end
+
+    it 'registers an offence for opposite + correct' do
+      inspect_source(cop, ['my_local = 1',
+                           'myLocal = 1'])
+      expect(cop.highlights).to eq(['my_local'])
+      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
+    end
 
     it 'accepts camel case in local variable name' do
       inspect_source(cop, 'myLocal = 1')

@@ -67,7 +67,11 @@ module Rubocop
             if pair.loc.operator && pair.loc.operator.is?(delim)
               add_offence(pair,
                           pair.loc.expression.begin.join(pair.loc.operator),
-                          msg)
+                          msg) do
+                opposite_style_detected
+              end
+            else
+              correct_style_detected
             end
           end
         end

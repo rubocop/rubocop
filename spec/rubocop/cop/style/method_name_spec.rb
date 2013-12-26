@@ -44,6 +44,17 @@ describe Rubocop::Cop::Style::MethodName, :config do
                            'end'])
       expect(cop.offences).to have(1).item
       expect(cop.highlights).to eq(['myMethod'])
+      expect(cop.config_to_allow_offences).to eq('EnforcedStyle' =>
+                                                 'camelCase')
+    end
+
+    it 'registers an offence for opposite + correct' do
+      inspect_source(cop, ['def my_method',
+                           'end',
+                           'def myMethod',
+                           'end'])
+      expect(cop.highlights).to eq(['myMethod'])
+      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
     end
 
     it 'registers an offence for camel case in singleton method name' do
@@ -86,6 +97,17 @@ describe Rubocop::Cop::Style::MethodName, :config do
                            'end'])
       expect(cop.offences).to have(1).item
       expect(cop.highlights).to eq(['my_method'])
+      expect(cop.config_to_allow_offences).to eq('EnforcedStyle' =>
+                                                 'snake_case')
+    end
+
+    it 'registers an offence for correct + opposite' do
+      inspect_source(cop, ['def my_method',
+                           'end',
+                           'def myMethod',
+                           'end'])
+      expect(cop.highlights).to eq(['my_method'])
+      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
     end
 
     include_examples 'always accepted'

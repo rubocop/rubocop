@@ -21,6 +21,17 @@ describe Rubocop::Cop::Style::StringLiterals, :config do
       expect(cop.messages)
         .to eq(["Prefer single-quoted strings when you don't need " +
                 'string interpolation or special symbols.'] * 4)
+      expect(cop.config_to_allow_offences).to eq('EnforcedStyle' =>
+                                                 'double_quotes')
+    end
+
+    it 'registers offence for correct + opposite' do
+      inspect_source(cop, ['s = "abc"',
+                           "x = 'abc'"])
+      expect(cop.messages)
+        .to eq(["Prefer single-quoted strings when you don't need " +
+                'string interpolation or special symbols.'])
+      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
     end
 
     it 'accepts single quotes' do
@@ -116,6 +127,18 @@ describe Rubocop::Cop::Style::StringLiterals, :config do
         .to eq(['Prefer double-quoted strings unless you need ' +
                 'single quotes to avoid extra backslashes for ' +
                 'escaping.'])
+      expect(cop.config_to_allow_offences).to eq('EnforcedStyle' =>
+                                                 'single_quotes')
+    end
+
+    it 'registers offence for opposite + correct' do
+      inspect_source(cop, ['s = "abc"',
+                           "x = 'abc'"])
+      expect(cop.messages)
+        .to eq(['Prefer double-quoted strings unless you need ' +
+                'single quotes to avoid extra backslashes for ' +
+                'escaping.'])
+      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
     end
 
     it 'accepts double quotes' do

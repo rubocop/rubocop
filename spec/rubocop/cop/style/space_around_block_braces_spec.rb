@@ -7,8 +7,10 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces do
 
   subject(:cop) { described_class.new(config) }
   let(:config) do
+    merged = Rubocop::ConfigLoader
+      .default_configuration['SpaceAroundBlockBraces'].merge(cop_config)
     Rubocop::Config.new('Blocks' => { 'Enabled' => false },
-                        'SpaceAroundBlockBraces' => cop_config)
+                        'SpaceAroundBlockBraces' => merged)
   end
   let(:cop_config) do
     {
@@ -96,6 +98,16 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces do
     inspect_source(cop, ['each { puts}'])
     expect(cop.messages).to eq(['Space missing inside }.'])
     expect(cop.highlights).to eq(['}'])
+    expect(cop.config_to_allow_offences).to eq('Enabled' => false)
+  end
+
+  it 'registers offences for both braces without inner space' do
+    inspect_source(cop, ['each {puts}'])
+    expect(cop.messages).to eq(['Space missing inside {.',
+                                'Space missing inside }.'])
+    expect(cop.highlights).to eq(['p', '}'])
+    expect(cop.config_to_allow_offences).to eq('EnforcedStyle' =>
+                                               'no_space_inside_braces')
   end
 
   it 'auto-corrects missing space' do
@@ -190,12 +202,22 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces do
       inspect_source(cop, ['each { puts}'])
       expect(cop.messages).to eq(['Space inside { detected.'])
       expect(cop.highlights).to eq([' '])
+      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
     end
 
     it 'registers an offence for right brace with inner space' do
       inspect_source(cop, ['each {puts  }'])
       expect(cop.messages).to eq(['Space inside } detected.'])
       expect(cop.highlights).to eq(['  '])
+    end
+
+    it 'registers offences for both braces with inner space' do
+      inspect_source(cop, ['each { puts  }'])
+      expect(cop.messages).to eq(['Space inside { detected.',
+                                  'Space inside } detected.'])
+      expect(cop.highlights).to eq([' ', '  '])
+      expect(cop.config_to_allow_offences).to eq('EnforcedStyle' =>
+                                                 'space_inside_braces')
     end
 
     it 'registers an offence for left brace without outer space' do

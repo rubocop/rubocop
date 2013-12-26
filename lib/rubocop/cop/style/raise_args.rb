@@ -23,25 +23,33 @@ module Rubocop
         def check_compact(node)
           _receiver, selector, *args = *node
 
-          return unless args.size > 1
-
-          add_offence(node, :expression, message(selector))
+          if args.size > 1
+            add_offence(node, :expression, message(selector)) do
+              opposite_style_detected
+            end
+          else
+            correct_style_detected
+          end
         end
 
         def check_exploded(node)
           _receiver, selector, *args = *node
 
-          return unless args.size == 1
+          if args.size == 1
+            arg, = *args
 
-          arg, = *args
+            if arg.type == :send && arg.loc.selector.is?('new')
+              _receiver, _selector, *constructor_args = *arg
 
-          if arg.type == :send && arg.loc.selector.is?('new')
-            _receiver, _selector, *constructor_args = *arg
-
-            # Allow code like `raise Ex.new(arg1, arg2)`.
-            unless constructor_args.size > 1
-              add_offence(node, :expression, message(selector))
+              # Allow code like `raise Ex.new(arg1, arg2)`.
+              if constructor_args.size <= 1
+                add_offence(node, :expression, message(selector)) do
+                  opposite_style_detected
+                end
+              end
             end
+          else
+            correct_style_detected
           end
         end
 

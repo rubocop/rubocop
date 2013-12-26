@@ -12,6 +12,15 @@ describe Rubocop::Cop::Style::LambdaCall, :config do
       inspect_source(cop,
                      ['x.(a, b)'])
       expect(cop.offences.size).to eq(1)
+      expect(cop.config_to_allow_offences).to eq('EnforcedStyle' => 'braces')
+    end
+
+    it 'registers an offence for correct + opposite' do
+      inspect_source(cop,
+                     ['x.call(a, b)',
+                      'x.(a, b)'])
+      expect(cop.offences.size).to eq(1)
+      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
     end
 
     it 'accepts x.call()' do
@@ -32,6 +41,15 @@ describe Rubocop::Cop::Style::LambdaCall, :config do
       inspect_source(cop,
                      ['x.call(a, b)'])
       expect(cop.offences.size).to eq(1)
+      expect(cop.config_to_allow_offences).to eq('EnforcedStyle' => 'call')
+    end
+
+    it 'registers an offence for opposite + correct' do
+      inspect_source(cop,
+                     ['x.call(a, b)',
+                      'x.(a, b)'])
+      expect(cop.offences.size).to eq(1)
+      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
     end
 
     it 'accepts x.()' do
