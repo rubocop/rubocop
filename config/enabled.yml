@@ -533,6 +533,10 @@ Debugger:
   Description: 'Check for debugger calls.'
   Enabled: true
 
+ElseLayout:
+  Description: 'Check for odd code arrangement in an else block.'
+  Enabled: true
+
 EmptyEnsure:
   Description: 'Checks for empty ensure block.'
   Enabled: true
