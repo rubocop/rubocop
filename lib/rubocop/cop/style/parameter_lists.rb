@@ -8,12 +8,16 @@ module Rubocop
       # On Ruby 2.0+ keyword arguments can optionally
       # be excluded from the total count.
       class ParameterLists < Cop
+        include ConfigurableMax
+
         MSG = 'Avoid parameter lists longer than %d parameters.'
 
         def on_args(node)
-          if args_count(node) > max_params
-            add_offence(node, :expression,
-                        sprintf(MSG, max_params))
+          count = args_count(node)
+          if count > max_params
+            add_offence(node, :expression, sprintf(MSG, max_params)) do
+              self.max = count
+            end
           end
         end
 

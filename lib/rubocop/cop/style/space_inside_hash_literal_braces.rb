@@ -40,8 +40,12 @@ module Rubocop
           if offence?(t1, t2, expect_space)
             brace = (t1.text == '{' ? t1 : t2).pos
             range = expect_space ? brace : space_range(brace)
-            add_offence(range, range,
-                        message(brace, is_empty_braces, expect_space))
+            add_offence(range, range, message(brace, is_empty_braces,
+                                              expect_space)) do
+              opposite_style_detected
+            end
+          else
+            correct_style_detected
           end
         end
 

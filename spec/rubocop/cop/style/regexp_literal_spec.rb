@@ -14,6 +14,7 @@ describe Rubocop::Cop::Style::RegexpLiteral, :config do
         expect(cop.messages)
           .to eq(['Use %r for regular expressions matching more ' +
                   "than 1 '/' character."] * 2)
+        expect(cop.config_to_allow_offences).to eq('MaxSlashes' => 2)
       end
 
       it 'accepts zero or one slash in regexp' do
@@ -33,6 +34,7 @@ describe Rubocop::Cop::Style::RegexpLiteral, :config do
         expect(cop.messages)
           .to eq(['Use %r for regular expressions matching more ' +
                   "than 0 '/' characters."])
+        expect(cop.config_to_allow_offences).to eq('MaxSlashes' => 1)
       end
 
       it 'accepts zero slashes in regexp' do
@@ -45,6 +47,7 @@ describe Rubocop::Cop::Style::RegexpLiteral, :config do
         expect(cop.messages)
           .to eq(['Use %r only for regular expressions matching more ' +
                   "than 0 '/' characters."])
+        expect(cop.config_to_allow_offences).to eq('MaxSlashes' => 1)
       end
 
       it 'accepts regexp with one slash' do
@@ -67,6 +70,7 @@ describe Rubocop::Cop::Style::RegexpLiteral, :config do
         expect(cop.messages)
           .to eq(['Use %r only for regular expressions matching more ' +
                   "than 1 '/' character."] * 2)
+        expect(cop.config_to_allow_offences).to eq('MaxSlashes' => 2)
       end
 
       it 'accepts regexp with two or more slashes' do

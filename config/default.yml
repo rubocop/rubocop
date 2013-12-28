@@ -65,8 +65,10 @@ BracesAroundHashParameters:
 
 # Indentation of `when`.
 CaseIndentation:
-  # Valid values are: case, end
   IndentWhenRelativeTo: case
+  SupportedStyles:
+    - case
+    - end
   IndentOneStep: false
 
 ClassLength:
@@ -97,7 +99,10 @@ CyclomaticComplexity:
 
 # Multi-line method chaining should be done with leading dots.
 DotPosition:
-  Style: 'leading'
+  Style: leading
+  SupportedStyles:
+    - leading
+    - trailing
 
 # Use empty lines between defs.
 EmptyLineBetweenDefs:
@@ -107,13 +112,15 @@ EmptyLineBetweenDefs:
 
 # Align ends correctly.
 EndAlignment:
-  # Valid valued are: keyword, variable
   # The value `keyword` means that `end` should be aligned with the matching
   # keyword (if, while, etc.).
   # The value `variable` means that in assignments, `end` should be aligned
   # with the start of the variable on the left hand side of `=`. In all other
   # situations, `end` should still be aligned with the keyword.
   AlignWith: keyword
+  SupportedStyles:
+    - keyword
+    - variable
 
 # Checks use of for or each in multiline loops.
 For:

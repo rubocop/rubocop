@@ -15,6 +15,7 @@ describe Rubocop::Cop::Style::ParameterLists, :config do
     inspect_source(cop, ['def meth(a, b, c, d, e)',
                          'end'])
     expect(cop.offences.size).to eq(1)
+    expect(cop.config_to_allow_offences).to eq('Max' => 5)
   end
 
   it 'accepts a method def with 4 parameters' do

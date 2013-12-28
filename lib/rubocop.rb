@@ -24,6 +24,7 @@ require 'rubocop/cop/variable_inspector/variable_table'
 
 require 'rubocop/cop/check_assignment'
 require 'rubocop/cop/check_methods'
+require 'rubocop/cop/configurable_enforced_style'
 
 require 'rubocop/cop/lint/assignment_in_condition'
 require 'rubocop/cop/lint/block_alignment'
@@ -49,7 +50,6 @@ require 'rubocop/cop/lint/useless_setter_call'
 require 'rubocop/cop/lint/void'
 
 require 'rubocop/cop/style/autocorrect_alignment'
-require 'rubocop/cop/style/configurable_enforced_style'
 require 'rubocop/cop/style/configurable_max'
 require 'rubocop/cop/style/configurable_naming'
 require 'rubocop/cop/style/cyclomatic_complexity'

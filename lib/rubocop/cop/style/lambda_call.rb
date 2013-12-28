@@ -21,12 +21,19 @@ module Rubocop
           # we care only about `call` methods
           return unless selector == :call
 
-          if style == :call && node.loc.selector.nil?
-            # lambda.() does not have a selector
-            add_offence(node, :expression)
-          elsif style == :braces && node.loc.selector
-            add_offence(node, :expression)
+          if offence?(node)
+            add_offence(node, :expression) { opposite_style_detected }
+          else
+            correct_style_detected
           end
+        end
+
+        private
+
+        def offence?(node)
+          # lambda.() does not have a selector
+          style == :call && node.loc.selector.nil? ||
+            style == :braces && node.loc.selector
         end
 
         def autocorrect(node)

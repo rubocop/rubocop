@@ -112,16 +112,24 @@ module Rubocop
         end
 
         def no_space(specific_style, sb, begin_pos, end_pos, msg)
-          offence(sb, begin_pos, end_pos, msg) if specific_style == :space
+          if specific_style == :space
+            offence(sb, begin_pos, end_pos, msg)
+          else
+            correct_style_detected
+          end
         end
 
         def space(specific_style, sb, begin_pos, end_pos, msg)
-          offence(sb, begin_pos, end_pos, msg) if specific_style == :no_space
+          if specific_style == :no_space
+            offence(sb, begin_pos, end_pos, msg)
+          else
+            correct_style_detected
+          end
         end
 
         def offence(sb, begin_pos, end_pos, msg)
           range = Parser::Source::Range.new(sb, begin_pos, end_pos)
-          add_offence(range, range, msg)
+          add_offence(range, range, msg) { opposite_style_detected }
         end
 
         def available_styles

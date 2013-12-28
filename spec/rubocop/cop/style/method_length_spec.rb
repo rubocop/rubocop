@@ -17,6 +17,7 @@ describe Rubocop::Cop::Style::MethodLength, :config do
                          'end'])
     expect(cop.offences.size).to eq(1)
     expect(cop.offences.map(&:line).sort).to eq([1])
+    expect(cop.config_to_allow_offences).to eq('Max' => 6)
   end
 
   it 'accepts a method with less than 5 lines' do

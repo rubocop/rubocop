@@ -15,8 +15,14 @@ module Rubocop
           return unless range
 
           name = range.source.to_sym
-          unless matches_config?(name) || Cop::OPERATOR_METHODS.include?(name)
-            add_offence(node, range, message(style))
+          return if Cop::OPERATOR_METHODS.include?(name)
+
+          if matches_config?(name)
+            correct_style_detected
+          else
+            add_offence(node, range, message(style)) do
+              opposite_style_detected
+            end
           end
         end
 

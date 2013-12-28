@@ -9,11 +9,13 @@ describe Rubocop::Cop::Style::NumericLiterals, :config do
   it 'registers an offence for a long integer without underscores' do
     inspect_source(cop, ['a = 123456'])
     expect(cop.offences.size).to eq(1)
+    expect(cop.config_to_allow_offences).to eq('MinDigits' => 6)
   end
 
-  it 'registers an offence for an integer with misplaced' do
+  it 'registers an offence for an integer with misplaced underscore' do
     inspect_source(cop, ['a = 123_456_78_90_00'])
     expect(cop.offences.size).to eq(1)
+    expect(cop.config_to_allow_offences).to eq('Enabled' => false)
   end
 
   it 'accepts long numbers with underscore' do

@@ -17,11 +17,14 @@ describe Rubocop::Cop::Style::HashSyntax, :config do
     it 'registers offence for hash rocket syntax when new is possible' do
       inspect_source(cop, ['x = { :a => 0 }'])
       expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+      expect(cop.config_to_allow_offences)
+        .to eq('EnforcedStyle' => 'hash_rockets')
     end
 
     it 'registers an offence for mixed syntax when new is possible' do
       inspect_source(cop, ['x = { :a => 0, b: 1 }'])
       expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
     end
 
     it 'registers an offence for hash rockets in method calls' do
@@ -96,11 +99,13 @@ describe Rubocop::Cop::Style::HashSyntax, :config do
     it 'registers offence for Ruby 1.9 style' do
       inspect_source(cop, ['x = { a: 0 }'])
       expect(cop.messages).to eq(['Always use hash rockets in hashes.'])
+      expect(cop.config_to_allow_offences).to eq('EnforcedStyle' => 'ruby19')
     end
 
     it 'registers an offence for mixed syntax' do
       inspect_source(cop, ['x = { :a => 0, b: 1 }'])
       expect(cop.messages).to eq(['Always use hash rockets in hashes.'])
+      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
     end
 
     it 'registers an offence for 1.9 style in method calls' do
