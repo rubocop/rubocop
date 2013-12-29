@@ -33,7 +33,7 @@ require 'rubocop'
 require 'rubocop/cli'
 
 # disable colors in specs
-Sickill::Rainbow.enabled = false
+Rainbow.enabled = false
 
 module ExitCodeMatchers
   RSpec::Matchers.define :exit_with_code do |code|
