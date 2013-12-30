@@ -24,7 +24,7 @@ module Rubocop
 
         it 'invokes same method of all containing formatters' do
           formatter_set.each do |formatter|
-            formatter.should_receive(:started).with(files)
+            expect(formatter).to receive(:started).with(files)
           end
           formatter_set.started(files)
         end

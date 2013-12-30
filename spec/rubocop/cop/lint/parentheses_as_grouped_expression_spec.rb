@@ -8,18 +8,18 @@ describe Rubocop::Cop::Lint::ParenthesesAsGroupedExpression do
   it 'registers an offence for method call with space before the ' +
     'parenthesis' do
     inspect_source(cop, ['a.func (x)'])
-    expect(cop.offences).to have(1).item
+    expect(cop.offences.size).to eq(1)
   end
 
   it 'registers an offence for predicate method call with space ' +
     'before the parenthesis' do
     inspect_source(cop, ['is? (x)'])
-    expect(cop.offences).to have(1).item
+    expect(cop.offences.size).to eq(1)
   end
 
   it 'registers an offence for math expression' do
     inspect_source(cop, ['puts (2 + 3) * 4'])
-    expect(cop.offences).to have(1).item
+    expect(cop.offences.size).to eq(1)
   end
 
   it 'accepts a method call without arguments' do

@@ -113,31 +113,31 @@ describe Rubocop::TargetFinder, :isolated_environment do
 
     it 'picks files specified to be included in config' do
       config = double('config')
-      config.stub(:file_to_include?) do |file|
+      allow(config).to receive(:file_to_include?) do |file|
         File.basename(file) == 'file'
       end
-      config.stub(:file_to_exclude?).and_return(false)
-      config_store.stub(:for).and_return(config)
+      allow(config).to receive(:file_to_exclude?).and_return(false)
+      allow(config_store).to receive(:for).and_return(config)
 
       expect(found_basenames).to include('file')
     end
 
     it 'does not pick files specified to be excluded in config' do
       config = double('config').as_null_object
-      config.stub(:file_to_include?).and_return(false)
-      config.stub(:file_to_exclude?) do |file|
+      allow(config).to receive(:file_to_include?).and_return(false)
+      allow(config).to receive(:file_to_exclude?) do |file|
         File.basename(file) == 'ruby2.rb'
       end
-      config_store.stub(:for).and_return(config)
+      allow(config_store).to receive(:for).and_return(config)
 
       expect(found_basenames).not_to include('ruby2.rb')
     end
 
     it 'does not return duplicated paths' do
       config = double('config').as_null_object
-      config.stub(:file_to_include?).and_return(true)
-      config.stub(:file_to_exclude?).and_return(false)
-      config_store.stub(:for).and_return(config)
+      allow(config).to receive(:file_to_include?).and_return(true)
+      allow(config).to receive(:file_to_exclude?).and_return(false)
+      allow(config_store).to receive(:for).and_return(config)
 
       count = found_basenames.count { |f| f == 'ruby1.rb' }
       expect(count).to eq(1)
@@ -145,8 +145,6 @@ describe Rubocop::TargetFinder, :isolated_environment do
 
     context 'when an exception is raised while reading file' do
       around do |example|
-        File.any_instance.stub(:readline).and_raise(EOFError)
-
         original_stderr = $stderr
         $stderr = StringIO.new
         begin
@@ -154,6 +152,10 @@ describe Rubocop::TargetFinder, :isolated_environment do
         ensure
           $stderr = original_stderr
         end
+      end
+
+      before do
+        allow_any_instance_of(File).to receive(:readline).and_raise(EOFError)
       end
 
       context 'and debug mode is enabled' do
