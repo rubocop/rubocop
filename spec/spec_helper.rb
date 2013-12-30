@@ -71,6 +71,10 @@ RSpec.configure do |config|
     c.syntax = :expect # disables `should`
   end
 
+  config.mock_with :rspec do |c|
+    c.syntax = :expect # disables `should_receive` and `stub`
+  end
+
   config.include(ExitCodeMatchers)
 end
 
