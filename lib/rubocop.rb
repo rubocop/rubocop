@@ -24,6 +24,7 @@ require 'rubocop/cop/variable_inspector/reference'
 require 'rubocop/cop/variable_inspector/scope'
 require 'rubocop/cop/variable_inspector/variable_table'
 
+require 'rubocop/cop/safe_assignment'
 require 'rubocop/cop/check_assignment'
 require 'rubocop/cop/check_methods'
 require 'rubocop/cop/configurable_enforced_style'

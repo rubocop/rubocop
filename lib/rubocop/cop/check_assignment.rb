@@ -4,29 +4,12 @@ module Rubocop
   module Cop
     # Common functionality for checking assignment nodes.
     module CheckAssignment
-      def on_lvasgn(node)
-        _lhs, rhs = *node
-        check_assignment(node, rhs)
-      end
-
-      def on_ivasgn(node)
-        _lhs, rhs = *node
-        check_assignment(node, rhs)
-      end
-
-      def on_gvasgn(node)
-        _lhs, rhs = *node
-        check_assignment(node, rhs)
-      end
-
-      def on_or_asgn(node)
-        _lhs, rhs = *node
-        check_assignment(node, rhs)
-      end
-
-      def on_and_asgn(node)
-        _lhs, rhs = *node
-        check_assignment(node, rhs)
+      TYPES = Util::ASGN_NODES - [:casgn, :op_asgn]
+      TYPES.each do |type|
+        define_method("on_#{type}") do |node|
+          _lhs, rhs = *node
+          check_assignment(node, rhs)
+        end
       end
 
       def on_casgn(node)
