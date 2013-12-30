@@ -144,7 +144,8 @@ module Rubocop
 
           describe 'the passed path' do
             it 'is frozen' do
-              expect(formatter).to receive(method_name).exactly(3).times do |path|
+              expect(formatter)
+                .to receive(method_name).exactly(3).times do |path|
                 expect(path).to be_frozen
               end
               run

@@ -122,7 +122,8 @@ module Rubocop
       end
 
       before do
-        allow(formatter).to receive(:hash_for_location).and_return(location_hash)
+        allow(formatter)
+          .to receive(:hash_for_location).and_return(location_hash)
       end
 
       let(:location_hash) { { line: 1, column: 2 } }

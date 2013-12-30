@@ -14,11 +14,12 @@ describe Rubocop::ConfigStore do
       # dir/subdir/file3
       (arg =~ /dir/ ? 'dir' : '.') + '/.rubocop.yml'
     end
-    allow(Rubocop::ConfigLoader).to receive(:configuration_from_file) { |arg| arg }
-    allow(Rubocop::ConfigLoader).to receive(:load_file) { |arg| "#{arg} loaded" }
-    allow(Rubocop::ConfigLoader).to receive(:merge_with_default) do |config, file|
-      "merged #{config}"
-    end
+    allow(Rubocop::ConfigLoader)
+      .to receive(:configuration_from_file) { |arg| arg }
+    allow(Rubocop::ConfigLoader)
+      .to receive(:load_file) { |arg| "#{arg} loaded" }
+    allow(Rubocop::ConfigLoader)
+      .to receive(:merge_with_default) { |config, file| "merged #{config}" }
   end
 
   describe '.for' do
