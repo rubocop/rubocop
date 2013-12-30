@@ -16,6 +16,7 @@ module Rubocop
       #   elsif cond then b
       #   end
       class MultilineIfThen < Cop
+        include IfNode
         include IfThenElse
 
         def offending_line(node)
@@ -37,13 +38,7 @@ module Rubocop
         end
 
         def end_position(conditional_node)
-          node = if conditional_node.type == :match_current_line
-                   conditional_node.children.first
-                 else
-                   conditional_node
-                 end
-
-          node.loc.expression.end.end_pos
+          conditional_location(conditional_node).expression.end.end_pos
         end
 
         def error_message

@@ -43,13 +43,7 @@ module Rubocop
         end
 
         def conditional_length(conditional_node)
-          node = if conditional_node.type == :match_current_line
-                   conditional_node.children.first
-                 else
-                   conditional_node
-                 end
-
-          node.loc.expression.size
+          conditional_location(conditional_node).expression.size
         end
 
         def body_length(body)
