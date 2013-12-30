@@ -31,7 +31,7 @@ module Rubocop
     describe '#file_finished' do
       before do
         count = 0
-        formatter.stub(:hash_for_file) do
+        allow(formatter).to receive(:hash_for_file) do
           count += 1
         end
       end
@@ -92,7 +92,7 @@ module Rubocop
 
       before do
         count = 0
-        formatter.stub(:hash_for_offence) do
+        allow(formatter).to receive(:hash_for_offence) do
           count += 1
         end
       end
@@ -122,7 +122,7 @@ module Rubocop
       end
 
       before do
-        formatter.stub(:hash_for_location).and_return(location_hash)
+        allow(formatter).to receive(:hash_for_location).and_return(location_hash)
       end
 
       let(:location_hash) { { line: 1, column: 2 } }

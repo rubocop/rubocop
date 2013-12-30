@@ -12,7 +12,7 @@ describe Rubocop::Cop::Style::MultilineBlockChain do
                            'end.c do',
                            '  d',
                            'end'])
-      expect(cop.offences).to have(1).item
+      expect(cop.offences.size).to eq(1)
       expect(cop.highlights).to eq(['end.c'])
     end
 
@@ -22,7 +22,7 @@ describe Rubocop::Cop::Style::MultilineBlockChain do
                            'end.c1.c2 do',
                            '  d',
                            'end'])
-      expect(cop.offences).to have(1).item
+      expect(cop.offences.size).to eq(1)
       expect(cop.highlights).to eq(['end.c1.c2'])
     end
 
@@ -34,7 +34,7 @@ describe Rubocop::Cop::Style::MultilineBlockChain do
                            'end.e do',
                            '  f',
                            'end'])
-      expect(cop.offences).to have(2).item
+      expect(cop.offences.size).to eq(2)
       expect(cop.highlights).to eq(['end.c', 'end.e'])
     end
 
@@ -43,7 +43,7 @@ describe Rubocop::Cop::Style::MultilineBlockChain do
       inspect_source(cop, ['Thread.list.find_all { |t|',
                            '  t.alive?',
                            '}.map { |thread| thread.object_id }'])
-      expect(cop.offences).to have(1).item
+      expect(cop.offences.size).to eq(1)
       expect(cop.highlights).to eq(['}.map'])
     end
 

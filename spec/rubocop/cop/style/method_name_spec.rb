@@ -9,14 +9,14 @@ describe Rubocop::Cop::Style::MethodName, :config do
     it 'registers an offence for mixed snake case and camel case' do
       inspect_source(cop, ['def visit_Arel_Nodes_SelectStatement',
                            'end'])
-      expect(cop.offences).to have(1).item
+      expect(cop.offences.size).to eq(1)
       expect(cop.highlights).to eq(['visit_Arel_Nodes_SelectStatement'])
     end
 
     it 'registers an offence for capitalized camel case' do
       inspect_source(cop, ['def MyMethod',
                            'end'])
-      expect(cop.offences).to have(1).item
+      expect(cop.offences.size).to eq(1)
       expect(cop.highlights).to eq(['MyMethod'])
     end
   end
@@ -42,7 +42,7 @@ describe Rubocop::Cop::Style::MethodName, :config do
       inspect_source(cop, ['def myMethod',
                            '  # ...',
                            'end'])
-      expect(cop.offences).to have(1).item
+      expect(cop.offences.size).to eq(1)
       expect(cop.highlights).to eq(['myMethod'])
       expect(cop.config_to_allow_offences).to eq('EnforcedStyle' =>
                                                  'camelCase')
@@ -61,7 +61,7 @@ describe Rubocop::Cop::Style::MethodName, :config do
       inspect_source(cop, ['def self.myMethod',
                            '  # ...',
                            'end'])
-      expect(cop.offences).to have(1).item
+      expect(cop.offences.size).to eq(1)
       expect(cop.highlights).to eq(['myMethod'])
     end
 
@@ -95,7 +95,7 @@ describe Rubocop::Cop::Style::MethodName, :config do
     it 'registers an offence for snake case in names' do
       inspect_source(cop, ['def my_method',
                            'end'])
-      expect(cop.offences).to have(1).item
+      expect(cop.offences.size).to eq(1)
       expect(cop.highlights).to eq(['my_method'])
       expect(cop.config_to_allow_offences).to eq('EnforcedStyle' =>
                                                  'snake_case')

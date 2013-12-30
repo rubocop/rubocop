@@ -10,7 +10,7 @@ describe Rubocop::Cop::Style::SpaceAfterMethodName do
                    ['def func (x)',
                     '  a',
                     'end'])
-    expect(cop.offences).to have(1).item
+    expect(cop.offences.size).to eq(1)
   end
 
   it 'registers an offence for defs with space before the parenthesis' do
@@ -18,7 +18,7 @@ describe Rubocop::Cop::Style::SpaceAfterMethodName do
                    ['def self.func (x)',
                     '  a',
                     'end'])
-    expect(cop.offences).to have(1).item
+    expect(cop.offences.size).to eq(1)
   end
 
   it 'accepts a def without arguments' do

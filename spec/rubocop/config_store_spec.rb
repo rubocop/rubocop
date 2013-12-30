@@ -6,7 +6,7 @@ describe Rubocop::ConfigStore do
   subject(:config_store) { described_class.new }
 
   before do
-    Rubocop::ConfigLoader.stub(:configuration_file_for) do |arg|
+    allow(Rubocop::ConfigLoader).to receive(:configuration_file_for) do |arg|
       # File tree:
       # file1
       # dir/.rubocop.yml
@@ -14,9 +14,9 @@ describe Rubocop::ConfigStore do
       # dir/subdir/file3
       (arg =~ /dir/ ? 'dir' : '.') + '/.rubocop.yml'
     end
-    Rubocop::ConfigLoader.stub(:configuration_from_file) { |arg| arg }
-    Rubocop::ConfigLoader.stub(:load_file) { |arg| "#{arg} loaded" }
-    Rubocop::ConfigLoader.stub(:merge_with_default) do |config, file|
+    allow(Rubocop::ConfigLoader).to receive(:configuration_from_file) { |arg| arg }
+    allow(Rubocop::ConfigLoader).to receive(:load_file) { |arg| "#{arg} loaded" }
+    allow(Rubocop::ConfigLoader).to receive(:merge_with_default) do |config, file|
       "merged #{config}"
     end
   end
@@ -29,12 +29,12 @@ describe Rubocop::ConfigStore do
 
     context 'when no config specified in command line' do
       it 'gets config path and config from cache if available' do
-        Rubocop::ConfigLoader.should_receive(:configuration_file_for).once
+        expect(Rubocop::ConfigLoader).to receive(:configuration_file_for).once
           .with('dir')
-        Rubocop::ConfigLoader.should_receive(:configuration_file_for).once
+        expect(Rubocop::ConfigLoader).to receive(:configuration_file_for).once
           .with('dir/subdir')
         # The stub returns the same config path for dir and dir/subdir.
-        Rubocop::ConfigLoader.should_receive(:configuration_from_file).once
+        expect(Rubocop::ConfigLoader).to receive(:configuration_from_file).once
           .with('dir/.rubocop.yml')
 
         config_store.for('dir/file2')
@@ -43,8 +43,8 @@ describe Rubocop::ConfigStore do
       end
 
       it 'searches for config path if not available in cache' do
-        Rubocop::ConfigLoader.should_receive(:configuration_file_for).once
-        Rubocop::ConfigLoader.should_receive(:configuration_from_file).once
+        expect(Rubocop::ConfigLoader).to receive(:configuration_file_for).once
+        expect(Rubocop::ConfigLoader).to receive(:configuration_from_file).once
         config_store.for('file1')
       end
     end

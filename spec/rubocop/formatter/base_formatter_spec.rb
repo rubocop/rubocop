@@ -30,7 +30,7 @@ module Rubocop
             '# encoding: utf-8'
           ])
 
-          SimpleTextFormatter.stub(:new).and_return(formatter)
+          allow(SimpleTextFormatter).to receive(:new).and_return(formatter)
           $stdout = StringIO.new
         end
 
@@ -76,7 +76,7 @@ module Rubocop
               'no_offence.rb'
             ].map { |path| File.expand_path(path) }.sort
 
-            formatter.should_receive(method_name) do |all_files|
+            expect(formatter).to receive(method_name) do |all_files|
               expect(all_files.sort).to eq(expected_paths)
             end
 
@@ -85,7 +85,7 @@ module Rubocop
 
           describe 'the passed files paths' do
             it 'is frozen' do
-              formatter.should_receive(method_name) do |all_files|
+              expect(formatter).to receive(method_name) do |all_files|
                 all_files.each do |path|
                   expect(path).to be_frozen
                 end
@@ -115,11 +115,11 @@ module Rubocop
                 end
               end
 
-              cli.stub(:wants_to_quit?) do
+              allow(cli).to receive(:wants_to_quit?) do
                 formatter.processed_file_count == 2
               end
 
-              formatter.should_receive(:finished) do |processed_files|
+              expect(formatter).to receive(:finished) do |processed_files|
                 expect(processed_files.size).to eq(2)
               end
 
@@ -130,13 +130,13 @@ module Rubocop
 
         shared_examples 'receives a file path' do |method_name|
           it 'receives a file path' do
-            formatter.should_receive(method_name)
+            expect(formatter).to receive(method_name)
               .with(File.expand_path('1_offence.rb'), anything)
 
-            formatter.should_receive(method_name)
+            expect(formatter).to receive(method_name)
               .with(File.expand_path('4_offences.rb'), anything)
 
-            formatter.should_receive(method_name)
+            expect(formatter).to receive(method_name)
               .with(File.expand_path('no_offence.rb'), anything)
 
             run
@@ -144,7 +144,7 @@ module Rubocop
 
           describe 'the passed path' do
             it 'is frozen' do
-              formatter.should_receive(method_name).exactly(3).times do |path|
+              expect(formatter).to receive(method_name).exactly(3).times do |path|
                 expect(path).to be_frozen
               end
               run
@@ -156,7 +156,7 @@ module Rubocop
           include_examples 'receives a file path', :file_started
 
           it 'receives file specific information hash' do
-            formatter.should_receive(:file_started)
+            expect(formatter).to receive(:file_started)
               .with(anything, an_instance_of(Hash)).exactly(3).times
             run
           end
@@ -166,7 +166,7 @@ module Rubocop
           include_examples 'receives a file path', :file_finished
 
           it 'receives an array of detected offences for the file' do
-            formatter.should_receive(:file_finished)
+            expect(formatter).to receive(:file_finished)
             .exactly(3).times do |file, offences|
               case File.basename(file)
               when '1_offence.rb'
