@@ -104,8 +104,10 @@ describe Rubocop::Cop::Lint::EndAlignment, :config do
       include_examples 'misaligned', 'var = until',  'test', '      end.join'
 
       include_examples 'aligned', '@var = if',  'test', 'end'
+      include_examples 'aligned', '@@var = if', 'test', 'end'
       include_examples 'aligned', '$var = if',  'test', 'end'
       include_examples 'aligned', 'CNST = if',  'test', 'end'
+      include_examples 'aligned', 'a, b = if',  'test', 'end'
       include_examples 'aligned', 'var ||= if', 'test', 'end'
       include_examples 'aligned', 'var &&= if', 'test', 'end'
       include_examples 'aligned', 'var += if',  'test', 'end'

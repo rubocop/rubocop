@@ -15,6 +15,10 @@
 * [#498](https://github.com/bbatsov/rubocop/issues/498): Disable terminal ANSI escape sequences when a formatter's output is not a TTY. ([@yujinakayama][])
 * [#703](https://github.com/bbatsov/rubocop/issues/703): BracesAroundHashParameters auto-correction broken with trailing comma. ([@jonas054][])
 
+### Bugs fixed
+
+* [#709](https://github.com/bbatsov/rubocop/issues/709): When `EndAlignment` has configuration `AlignWith: variable`, it now handles `@@a = if ...` and `a, b = if ...`. ([@jonas054][])
+
 ## 0.16.0 (25/12/2013)
 
 ### New features
