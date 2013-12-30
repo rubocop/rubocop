@@ -9,7 +9,7 @@ module Rubocop
       def report_file(file, offences)
         offences.each do |o|
           output.printf("%s:%d:%d: %s: %s\n",
-                        smart_path(file).color(:cyan), o.line, o.real_column,
+                        cyan(smart_path(file)), o.line, o.real_column,
                         colored_severity_code(o), message(o))
 
           source_line = o.location.source_line
