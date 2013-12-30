@@ -18,6 +18,7 @@
 ### Bugs fixed
 
 * [#709](https://github.com/bbatsov/rubocop/issues/709): When `EndAlignment` has configuration `AlignWith: variable`, it now handles `@@a = if ...` and `a, b = if ...`. ([@jonas054][])
+* `SpaceAroundOperators` now reports an offence for `@@a=0`. ([@jonas054][])
 
 ## 0.16.0 (25/12/2013)
 
