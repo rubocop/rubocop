@@ -42,7 +42,7 @@ module Rubocop
 
       def report_file_as_mark(file, offences)
         mark = if offences.empty?
-                 '.'.color(:green)
+                 green('.')
                else
                  highest_offence = offences.max do |a, b|
                    a.severity_level <=> b.severity_level
