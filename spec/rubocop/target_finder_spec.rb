@@ -145,8 +145,6 @@ describe Rubocop::TargetFinder, :isolated_environment do
 
     context 'when an exception is raised while reading file' do
       around do |example|
-        File.any_instance.stub(:readline).and_raise(EOFError)
-
         original_stderr = $stderr
         $stderr = StringIO.new
         begin
@@ -154,6 +152,10 @@ describe Rubocop::TargetFinder, :isolated_environment do
         ensure
           $stderr = original_stderr
         end
+      end
+
+      before do
+        File.any_instance.stub(:readline).and_raise(EOFError)
       end
 
       context 'and debug mode is enabled' do
