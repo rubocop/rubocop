@@ -13,6 +13,18 @@ describe Rubocop::Cop::Style::MethodDefParentheses, :config do
              'end']
       inspect_source(cop, src)
       expect(cop.offences.size).to eq(1)
+      expect(cop.config_to_allow_offences).to eq('EnforcedStyle' =>
+                                                 'require_no_parentheses')
+    end
+
+    it 'reports an offence for correct + opposite' do
+      src = ['def func(a, b)',
+             'end',
+             'def func a, b',
+             'end']
+      inspect_source(cop, src)
+      expect(cop.offences.size).to eq(1)
+      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
     end
 
     it 'reports an offence for class def with parameters but no parens' do
@@ -48,6 +60,18 @@ describe Rubocop::Cop::Style::MethodDefParentheses, :config do
              'end']
       inspect_source(cop, src)
       expect(cop.offences.size).to eq(1)
+      expect(cop.config_to_allow_offences).to eq('EnforcedStyle' =>
+                                                 'require_parentheses')
+    end
+
+    it 'reports an offence for opposite + correct' do
+      src = ['def func(a, b)',
+             'end',
+             'def func a, b',
+             'end']
+      inspect_source(cop, src)
+      expect(cop.offences.size).to eq(1)
+      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
     end
 
     it 'reports an offence for class def with parameters with parens' do

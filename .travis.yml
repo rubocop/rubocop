@@ -3,9 +3,10 @@ rvm:
   - 1.9.2
   - 1.9.3
   - 2.0.0
-  - 2.1.0-rc1
+  - 2.1.0
   - jruby-19mode
   - rbx-2.1.1
+before_install: gem update --remote bundler
 script:
   - bundle exec rspec
   - bundle exec rubocop

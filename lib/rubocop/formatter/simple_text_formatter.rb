@@ -1,11 +1,15 @@
 # encoding: utf-8
 
+require 'rubocop/formatter/colorizable'
+
 module Rubocop
   module Formatter
     # A basic formatter that displays only files with offences.
     # Offences are displayed at compact form - just the
     # location of the problem and the associated message.
     class SimpleTextFormatter < BaseFormatter
+      include Colorizable
+
       COLOR_FOR_SEVERITY = {
         refactor:   :yellow,
         convention: :yellow,
@@ -32,7 +36,7 @@ module Rubocop
       end
 
       def report_file(file, offences)
-        output.puts "== #{smart_path(file)} ==".color(:yellow)
+        output.puts yellow("== #{smart_path(file)} ==")
 
         offences.each do |o|
           output.printf("%s:%3d:%3d: %s\n",
@@ -47,14 +51,14 @@ module Rubocop
 
         offences_text = pluralize(offence_count, 'offence', no_for_zero: true)
         offences_text << ' detected'
-        summary << offences_text.color(offence_count.zero? ? :green : :red)
+        summary << colorize(offences_text, offence_count.zero? ? :green : :red)
 
         if correction_count > 0
           summary << ', '
           correction_text = pluralize(correction_count, 'offence')
           correction_text << ' corrected'
           color = correction_count == offence_count ? :green : :cyan
-          summary << correction_text.color(color)
+          summary << colorize(correction_text, color)
         end
 
         output.puts
@@ -78,11 +82,11 @@ module Rubocop
 
       def colored_severity_code(offence)
         color = COLOR_FOR_SEVERITY[offence.severity]
-        offence.severity_code.color(color)
+        colorize(offence.severity_code, color)
       end
 
       def message(offence)
-        message = offence.corrected? ? '[Corrected] '.color(:green) : ''
+        message = offence.corrected? ? green('[Corrected] ') : ''
         message << offence.message
       end
 

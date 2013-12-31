@@ -5,15 +5,33 @@ module Rubocop
     module Style
       # This cop checks the . position in multi-line method calls.
       class DotPosition < Cop
-        MSG = 'Place the . on the next line, together with the method name.'
+        include ConfigurableEnforcedStyle
 
         def on_send(node)
           return unless node.loc.dot
 
-          add_offence(node, :dot) unless proper_dot_position?(node)
+          if proper_dot_position?(node)
+            correct_style_detected
+          else
+            add_offence(node, :dot) { opposite_style_detected }
+          end
         end
 
         private
+
+        def message(node)
+          'Place the . on the ' +
+            case style
+            when :leading
+              'next line, together with the method name.'
+            when :trailing
+              'previous line, together with the method call receiver.'
+            end
+        end
+
+        def parameter_name
+          'Style'
+        end
 
         def proper_dot_position?(node)
           dot_line = node.loc.dot.line
@@ -25,10 +43,9 @@ module Rubocop
             selector_line = node.loc.begin.line
           end
 
-          case cop_config['Style'].downcase
-          when 'leading' then dot_line == selector_line
-          when 'trailing' then dot_line != selector_line || same_line?(node)
-          else fail 'Unknown dot position style selected.'
+          case style
+          when :leading then dot_line == selector_line
+          when :trailing then dot_line != selector_line || same_line?(node)
           end
         end
 

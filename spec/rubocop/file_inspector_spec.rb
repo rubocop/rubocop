@@ -16,7 +16,7 @@ describe Rubocop::FileInspector do
     $stdout = StringIO.new
     $stderr = StringIO.new
 
-    inspector.stub(:inspect_file) do
+    allow(inspector).to receive(:inspect_file) do
       inspector.errors = errors
       offences
     end

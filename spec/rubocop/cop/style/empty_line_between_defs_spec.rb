@@ -99,7 +99,7 @@ describe Rubocop::Cop::Style::EmptyLineBetweenDefs, :config do
     source = ['def a; end',
               'def b; end']
     inspect_source(cop, source)
-    expect(cop.offences).to have(1).item
+    expect(cop.offences.size).to eq(1)
   end
 
   context 'when AllowAdjacentOneLineDefs is enabled' do

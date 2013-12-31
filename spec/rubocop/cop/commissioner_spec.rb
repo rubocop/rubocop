@@ -8,7 +8,7 @@ describe Rubocop::Cop::Commissioner do
     let(:cop) { double(Rubocop::Cop, offences: []).as_null_object }
 
     it 'returns all offences found by the cops' do
-      cop.stub(:offences).and_return([1])
+      allow(cop).to receive(:offences).and_return([1])
 
       commissioner = described_class.new([cop])
       source = []
@@ -18,7 +18,7 @@ describe Rubocop::Cop::Commissioner do
     end
 
     it 'traverses the AST and invoke cops specific callbacks' do
-      cop.should_receive(:on_def)
+      expect(cop).to receive(:on_def)
 
       commissioner = described_class.new([cop])
       source = ['def method', '1', 'end']
@@ -30,7 +30,7 @@ describe Rubocop::Cop::Commissioner do
     it 'passes the input params to all cops that implement their own #investigate method' do
       source = []
       processed_source = parse_source(source)
-      cop.should_receive(:investigate).with(processed_source)
+      expect(cop).to receive(:investigate).with(processed_source)
 
       commissioner = described_class.new([cop])
 
@@ -38,7 +38,7 @@ describe Rubocop::Cop::Commissioner do
     end
 
     it 'stores all errors raised by the cops' do
-      cop.stub(:on_def) { fail RuntimeError }
+      allow(cop).to receive(:on_def) { fail RuntimeError }
 
       commissioner = described_class.new([cop])
       source = ['def method', '1', 'end']
@@ -52,7 +52,7 @@ describe Rubocop::Cop::Commissioner do
 
     context 'when passed :raise_error option' do
       it 're-raises the exception received while processing' do
-        cop.stub(:on_def) { fail RuntimeError }
+        allow(cop).to receive(:on_def) { fail RuntimeError }
 
         commissioner = described_class.new([cop], raise_error: true)
         source = ['def method', '1', 'end']

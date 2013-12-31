@@ -511,7 +511,7 @@ describe Rubocop::CLI, :isolated_environment do
   describe '#trap_interrupt' do
     before do
       @interrupt_handlers = []
-      Signal.stub(:trap).with('INT') do |&block|
+      allow(Signal).to receive(:trap).with('INT') do |&block|
         @interrupt_handlers << block
       end
     end
@@ -535,8 +535,8 @@ describe Rubocop::CLI, :isolated_environment do
       end
 
       it 'does not exit immediately' do
-        Object.any_instance.should_not_receive(:exit)
-        Object.any_instance.should_not_receive(:exit!)
+        expect_any_instance_of(Object).not_to receive(:exit)
+        expect_any_instance_of(Object).not_to receive(:exit!)
         cli.trap_interrupt
         interrupt
       end
@@ -544,7 +544,7 @@ describe Rubocop::CLI, :isolated_environment do
 
     context 'with SIGINT twice' do
       it 'exits immediately' do
-        Object.any_instance.should_receive(:exit!).with(1)
+        expect_any_instance_of(Object).to receive(:exit!).with(1)
         cli.trap_interrupt
         interrupt
         interrupt
@@ -826,8 +826,8 @@ describe Rubocop::CLI, :isolated_environment do
                                            '  Excludes:',
                                            '    - ignored/**',
                                           ])
-      File.should_not_receive(:open).with(%r(/ignored/))
-      File.stub(:open).and_call_original
+      expect(File).not_to receive(:open).with(%r(/ignored/))
+      allow(File).to receive(:open).and_call_original
       expect(cli.run(%w(--format simple example))).to eq(0)
       expect($stdout.string)
         .to eq(['', '0 files inspected, no offences detected',

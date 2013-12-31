@@ -8,8 +8,12 @@ module Rubocop
       module ConfigurableMax
         def max=(value)
           cfg = self.config_to_allow_offences ||= {}
-          value = [cfg['Max'], value].max if cfg['Max']
-          cfg['Max'] = value
+          value = [cfg[parameter_name], value].max if cfg[parameter_name]
+          cfg[parameter_name] = value
+        end
+
+        def parameter_name
+          'Max'
         end
       end
     end

@@ -26,6 +26,16 @@ module Rubocop
             end
           end
         end
+
+        # Dummy implementation of method in ConfigurableEnforcedStyle that is
+        # called from StringHelp.
+        def opposite_style_detected
+        end
+
+        # Dummy implementation of method in ConfigurableEnforcedStyle that is
+        # called from StringHelp.
+        def correct_style_detected
+        end
       end
     end
   end

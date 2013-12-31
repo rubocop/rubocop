@@ -10,6 +10,7 @@ describe Rubocop::Cop::Style::WordArray, :config do
     inspect_source(cop,
                    ["['one', 'two', 'three']"])
     expect(cop.offences.size).to eq(1)
+    expect(cop.config_to_allow_offences).to eq('MinSize' => 3)
   end
 
   it 'registers an offence for arrays of double quoted strings' do

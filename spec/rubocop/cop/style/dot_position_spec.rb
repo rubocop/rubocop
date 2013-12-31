@@ -6,12 +6,23 @@ describe Rubocop::Cop::Style::DotPosition, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'Leading dots style' do
-    let(:cop_config) { { 'Style' => 'Leading' } }
+    let(:cop_config) { { 'Style' => 'leading' } }
 
     it 'registers an offence for trailing dot in multi-line call' do
       inspect_source(cop, ['something.',
                            '  method_name'])
       expect(cop.offences.size).to eq(1)
+      expect(cop.highlights).to eq(['.'])
+      expect(cop.config_to_allow_offences).to eq('Style' => 'trailing')
+    end
+
+    it 'registers an offence for correct + opposite' do
+      inspect_source(cop, ['something',
+                           '  .method_name',
+                           'something.',
+                           '  method_name'])
+      expect(cop.offences.size).to eq(1)
+      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
     end
 
     it 'accepts leading do in multi-line method call' do
@@ -37,12 +48,16 @@ describe Rubocop::Cop::Style::DotPosition, :config do
   end
 
   context 'Trailing dots style' do
-    let(:cop_config) { { 'Style' => 'Trailing' } }
+    let(:cop_config) { { 'Style' => 'trailing' } }
 
     it 'registers an offence for leading dot in multi-line call' do
       inspect_source(cop, ['something',
                            '  .method_name'])
-      expect(cop.offences.size).to eq(1)
+      expect(cop.messages)
+        .to eq(['Place the . on the previous line, together with the method ' +
+                'call receiver.'])
+      expect(cop.highlights).to eq(['.'])
+      expect(cop.config_to_allow_offences).to eq('Style' => 'leading')
     end
 
     it 'accepts trailing dot in multi-line method call' do

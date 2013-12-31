@@ -58,7 +58,7 @@ describe Rubocop::Cop::Style::AlignHash, :config do
                            "    'a' => 0,",
                            "  'bbb' => 1",
                            '}'])
-      expect(cop.offences).to have(1).item
+      expect(cop.offences.size).to eq(1)
       expect(cop.highlights).to eq(["'bbb' => 1"])
     end
 
@@ -66,13 +66,13 @@ describe Rubocop::Cop::Style::AlignHash, :config do
       it 'registers an offence for misaligned hash keys' do
         inspect_source(cop, ['func(a: 0,',
                              '  b: 1)'])
-        expect(cop.offences).to have(1).item
+        expect(cop.offences.size).to eq(1)
       end
 
       it 'registers an offence for right alignment of keys' do
         inspect_source(cop, ['func(a: 0,',
                              '   bbb: 1)'])
-        expect(cop.offences).to have(1).item
+        expect(cop.offences.size).to eq(1)
       end
 
       it 'accepts aligned hash keys' do
@@ -155,7 +155,7 @@ describe Rubocop::Cop::Style::AlignHash, :config do
                            "  'a'   => 0,",
                            "  'bbb'  => 1",
                            '}'])
-      expect(cop.offences).to have(1).item
+      expect(cop.offences.size).to eq(1)
     end
 
     it 'auto-corrects alignment' do
@@ -234,7 +234,7 @@ describe Rubocop::Cop::Style::AlignHash, :config do
                            "    'a' =>  0,",
                            "  'bbb' => 1",
                            '}'])
-      expect(cop.offences).to have(1).item
+      expect(cop.offences.size).to eq(1)
     end
 
     it 'registers an offence for misaligned hash rockets' do
@@ -242,7 +242,7 @@ describe Rubocop::Cop::Style::AlignHash, :config do
                            "    'a'  => 0,",
                            "  'bbb' =>  1",
                            '}'])
-      expect(cop.offences).to have(1).item
+      expect(cop.offences.size).to eq(1)
     end
 
     include_examples 'not on separate lines'

@@ -22,7 +22,7 @@ module Rubocop
 
       shared_examples 'calls #report_file_as_mark' do
         it 'calls #report_as_with_mark' do
-          formatter.should_receive(:report_file_as_mark)
+          expect(formatter).to receive(:report_file_as_mark)
           formatter.file_finished(files.first, offences)
         end
       end
@@ -174,7 +174,7 @@ module Rubocop
       end
 
       it 'calls #report_summary' do
-        formatter.should_receive(:report_summary)
+        expect(formatter).to receive(:report_summary)
         formatter.finished(files)
       end
     end
