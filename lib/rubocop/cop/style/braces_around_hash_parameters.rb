@@ -48,10 +48,25 @@ module Rubocop
             if style == :no_braces
               corrector.remove(node.loc.begin)
               corrector.remove(node.loc.end)
+              remove_trailing_comma(node, corrector)
             elsif style == :braces
               corrector.insert_before(node.loc.expression, '{')
               corrector.insert_after(node.loc.expression, '}')
             end
+          end
+        end
+
+        def remove_trailing_comma(node, corrector)
+          sb = node.loc.end.source_buffer
+          pos_after_last_pair = node.children.last.loc.expression.end_pos
+          range_after_last_pair =
+            Parser::Source::Range.new(sb, pos_after_last_pair,
+                                      node.loc.end.begin_pos)
+          trailing_comma_offset = range_after_last_pair.source =~ /,/
+          if trailing_comma_offset
+            comma_begin = pos_after_last_pair + trailing_comma_offset
+            corrector.remove(Parser::Source::Range.new(sb, comma_begin,
+                                                       comma_begin + 1))
           end
         end
 
