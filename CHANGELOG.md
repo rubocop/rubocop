@@ -626,3 +626,4 @@
 [@emou]: https://github.com/emou
 [@skanev]: http://github.com/skanev
 [@claco]: http://github.com/claco
+[@rifraf]: http://github.com/rifraf
