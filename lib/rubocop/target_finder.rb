@@ -41,8 +41,10 @@ module Rubocop
     #   ruby source files
     # @return [Array] Array of filenames
     def target_files_in_dir(base_dir = Dir.pwd)
-      # Support Windows: Change backslashes from command-line to forward slashes
-      base_dir.gsub!(File::ALT_SEPARATOR, File::SEPARATOR) if File::ALT_SEPARATOR
+      # Support Windows: Backslashes from command-line -> forward slashes
+      if File::ALT_SEPARATOR
+        base_dir.gsub!(File::ALT_SEPARATOR, File::SEPARATOR) 
+      end
       files = Dir["#{base_dir}/**/*"].select { |path| FileTest.file?(path) }
       base_dir_config = @config_store.for("#{base_dir}/foobar.rb")
 
