@@ -11,6 +11,7 @@
 ### Bugs fixed
 
 * [#498](https://github.com/bbatsov/rubocop/issues/498): Disable terminal ANSI escape sequences when a formatter's output is not a TTY. ([@yujinakayama][])
+* [#703](https://github.com/bbatsov/rubocop/issues/703): BracesAroundHashParameters auto-correction broken with trailing comma. ([@jonas054][])
 
 ## 0.16.0 (25/12/2013)
 
