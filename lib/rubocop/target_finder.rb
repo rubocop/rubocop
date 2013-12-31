@@ -43,7 +43,7 @@ module Rubocop
     def target_files_in_dir(base_dir = Dir.pwd)
       # Support Windows: Backslashes from command-line -> forward slashes
       if File::ALT_SEPARATOR
-        base_dir.gsub!(File::ALT_SEPARATOR, File::SEPARATOR) 
+        base_dir.gsub!(File::ALT_SEPARATOR, File::SEPARATOR)
       end
       files = Dir["#{base_dir}/**/*"].select { |path| FileTest.file?(path) }
       base_dir_config = @config_store.for("#{base_dir}/foobar.rb")
