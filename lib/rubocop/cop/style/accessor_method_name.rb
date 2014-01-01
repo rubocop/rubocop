@@ -18,23 +18,15 @@ module Rubocop
       #   # good
       #   def attribute ...
       class AccessorMethodName < Cop
-        def on_def(node)
-          method_name, args, _body = *node
-          check(node, method_name.to_s, args)
-        end
-
-        def on_defs(node)
-          _scope, method_name, args, _body = *node
-          check(node, method_name.to_s, args)
-        end
+        include CheckMethods
 
         private
 
-        def check(node, method_name, args)
-          if bad_reader_name?(method_name, args)
+        def check(node, method_name, args, _body)
+          if bad_reader_name?(method_name.to_s, args)
             add_offence(node, :name,
                         'Do not prefix reader method names with get_.')
-          elsif bad_writer_name?(method_name, args)
+          elsif bad_writer_name?(method_name.to_s, args)
             add_offence(node, :name,
                         'Do not prefix writer method names with set_.')
           end

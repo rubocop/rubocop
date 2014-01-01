@@ -281,11 +281,12 @@ describe Rubocop::Cop::Style::SpaceAroundOperators do
 
   it 'registers an offence for various assignments without space' do
     inspect_source(cop, ['x||=0', 'y&&=0', 'z*=2',
-                         '@a=0', 'a,b=0', 'A=0', 'x[3]=0', '$A=0'])
+                         '@a=0', '@@a=0', 'a,b=0', 'A=0', 'x[3]=0', '$A=0'])
     expect(cop.messages)
       .to eq(["Surrounding space missing for operator '||='.",
               "Surrounding space missing for operator '&&='.",
               "Surrounding space missing for operator '*='.",
+              "Surrounding space missing for operator '='.",
               "Surrounding space missing for operator '='.",
               "Surrounding space missing for operator '='.",
               "Surrounding space missing for operator '='.",

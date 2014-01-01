@@ -7,6 +7,9 @@ module Rubocop
       extend AST::Sexp
 
       PROC_NEW_NODE = s(:send, s(:const, nil, :Proc), :new)
+      EQUALS_ASGN_NODES = [:lvasgn, :ivasgn, :cvasgn, :gvasgn, :casgn, :masgn]
+      SHORTHAND_ASGN_NODES = [:op_asgn, :or_asgn, :and_asgn]
+      ASGN_NODES = EQUALS_ASGN_NODES + SHORTHAND_ASGN_NODES
 
       module_function
 

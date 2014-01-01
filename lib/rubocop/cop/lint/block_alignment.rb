@@ -12,6 +12,8 @@ module Rubocop
       #     i
       #   end
       class BlockAlignment < Cop
+        include CheckAssignment
+
         MSG = 'end at %d, %d is not aligned with %s at %d, %d%s'
 
         def initialize(config = nil, options = nil)
@@ -36,40 +38,24 @@ module Rubocop
 
         alias_method :on_or, :on_and
 
-        def on_lvasgn(node)
-          _, children = *node
-          process_block_assignment(node, children)
-        end
-
-        alias_method :on_ivasgn,   :on_lvasgn
-        alias_method :on_cvasgn,   :on_lvasgn
-        alias_method :on_gvasgn,   :on_lvasgn
-        alias_method :on_and_asgn, :on_lvasgn
-        alias_method :on_or_asgn,  :on_lvasgn
-
-        def on_casgn(node)
-          _, _, children = *node
-          process_block_assignment(node, children)
-        end
-
         def on_op_asgn(node)
           variable, _op, args = *node
-          process_block_assignment(variable, args)
+          check_assignment(variable, args)
         end
 
         def on_send(node)
           _receiver, _method, *args = *node
-          process_block_assignment(node, args.last)
+          check_assignment(node, args.last)
         end
 
         def on_masgn(node)
           variables, args = *node
-          process_block_assignment(variables, args)
+          check_assignment(variables, args)
         end
 
         private
 
-        def process_block_assignment(begin_node, other_node)
+        def check_assignment(begin_node, other_node)
           return unless other_node
 
           block_node = find_block_node(other_node)

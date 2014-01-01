@@ -6,7 +6,8 @@ module Rubocop
       # This cop checks for assignments in the conditions of
       # if/while/until.
       class AssignmentInCondition < Cop
-        ASGN_NODES = [:lvasgn, :ivasgn, :cvasgn, :gvasgn, :casgn]
+        include SafeAssignment
+
         MSG = 'Assignment in condition - you probably meant to use ==.'
 
         def on_if(node)
@@ -29,7 +30,7 @@ module Rubocop
           # assignments inside blocks are not what we're looking for
           return if condition.type == :block
 
-          on_node([:begin, *ASGN_NODES], condition) do |asgn_node|
+          on_node([:begin, *EQUALS_ASGN_NODES], condition) do |asgn_node|
             # skip safe assignment nodes if safe assignment is allowed
             return if safe_assignment_allowed? && safe_assignment?(asgn_node)
 
@@ -38,15 +39,6 @@ module Rubocop
               add_offence(asgn_node, :operator)
             end
           end
-        end
-
-        def safe_assignment?(node)
-          node.type == :begin && node.children.size == 1 &&
-            ASGN_NODES.include?(node.children[0].type)
-        end
-
-        def safe_assignment_allowed?
-          cop_config['AllowSafeAssignment']
         end
       end
     end
