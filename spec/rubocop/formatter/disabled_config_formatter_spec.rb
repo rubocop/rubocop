@@ -29,9 +29,11 @@ module Rubocop
           expect(output.string).to eq(described_class::HEADING +
                                       ['',
                                        '',
+                                       '# Offence count: 1',
                                        'Cop1:',
                                        '  Enabled: false',
                                        '',
+                                       '# Offence count: 1',
                                        'Cop2:',
                                        '  Enabled: false',
                                        ''].join("\n"))

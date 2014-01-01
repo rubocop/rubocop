@@ -7,6 +7,8 @@ require 'parser/current'
 require 'ast/sexp'
 require 'powerpack'
 
+require 'rubocop/version'
+
 require 'rubocop/cop/util'
 require 'rubocop/cop/offence'
 require 'rubocop/cop/cop'
@@ -197,4 +199,3 @@ require 'rubocop/source_parser'
 require 'rubocop/file_inspector'
 require 'rubocop/cli'
 require 'rubocop/options'
-require 'rubocop/version'
