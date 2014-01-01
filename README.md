@@ -199,6 +199,7 @@ AllCops:
     - db/**
     - config/**
     - script/**
+    - !ruby/regexp /old_and_unused\.rb$/
 
 # other configuration
 # ...
