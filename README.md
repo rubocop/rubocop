@@ -19,6 +19,43 @@ Most aspects of its behavior can be tweaked via various
 Apart from reporting problems in your code, RuboCop can also
 automatically fix some of the problems for you.
 
+- [Installation](#installation)
+- [Basic Usage](#basic-usage)
+	- [Cops](#cops)
+		- [Style](#style)
+		- [Lint](#lint)
+		- [Rails](#rails)
+- [Configuration](#configuration)
+	- [Inheritance](#inheritance)
+	- [Defaults](#defaults)
+	- [Including/Excluding files](#includingexcluding-files)
+	- [Automatically Generated Configuration](#automatically-generated-configuration)
+- [Disabling Cops within Source Code](#disabling-cops-within-source-code)
+- [Formatters](#formatters)
+	- [Clang Formatter (default)](#clang-formatter-default)
+	- [Emacs](#emacs)
+	- [Simple](#simple)
+	- [File List Formatter](#file-list-formatter)
+	- [JSON Formatter](#json-formatter)
+	- [OffenceCount Formatter](#offencecount-formatter)
+	- [Custom Formatters](#custom-formatters)
+		- [Creating Custom Formatter](#creating-custom-formatter)
+		- [Using Custom Formatter in Command Line](#using-custom-formatter-in-command-line)
+- [Compatibility](#compatibility)
+- [Editor integration](#editor-integration)
+	- [Emacs](#emacs-1)
+	- [Vim](#vim)
+	- [Sublime Text 2](#sublime-text-2)
+	- [Brackets](#brackets)
+	- [Other Editors](#other-editors)
+- [Guard integration](#guard-integration)
+- [Rake integration](#rake-integration)
+- [Team](#team)
+- [Contributors](#contributors)
+- [Mailing List](#mailing-list)
+- [Changelog](#changelog)
+- [Copyright](#copyright)
+
 ## Installation
 
 **RuboCop**'s installation is pretty standard:
@@ -325,7 +362,7 @@ rubocop --format emacs test.rb
 1 file inspected, 3 offences detected
 ```
 
-### Simple (default in RuboCop prior to version 0.9)
+### Simple
 
 The name of the formatter says it all :-)
 
