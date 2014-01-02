@@ -9,8 +9,8 @@ shared_examples_for 'accepts' do
   end
 end
 
-shared_examples_for 'mimics MRI 2.0' do |grep_mri_warning|
-  if RUBY_ENGINE == 'ruby' && RUBY_VERSION.start_with?('2.0')
+shared_examples_for 'mimics MRI 2.1' do |grep_mri_warning|
+  if RUBY_ENGINE == 'ruby' && RUBY_VERSION.start_with?('2.1')
     it "mimics MRI #{RUBY_VERSION} built-in syntax checking" do
       inspect_source(cop, source)
       offences_by_mri = MRISyntaxChecker.offences_for_source(
