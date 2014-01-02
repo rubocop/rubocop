@@ -119,7 +119,7 @@ describe Rubocop::CLI, :isolated_environment do
            '  Enabled: false',
            '',
            '# Offence count: 1',
-           'IndentationWidth:',
+           'IndentationConsistency:',
            '  Enabled: false',
            '',
            '# Offence count: 2',
