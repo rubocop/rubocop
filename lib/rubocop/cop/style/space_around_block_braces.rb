@@ -42,28 +42,29 @@ module Rubocop
           sb = node.loc.expression.source_buffer
 
           if left_brace.end_pos == right_brace.begin_pos
-            no_space(style_for_empty_braces, sb, left_brace.begin_pos,
-                     right_brace.end_pos, 'Space missing inside empty braces.')
+            if style_for_empty_braces == :space
+              offence(sb, left_brace.begin_pos, right_brace.end_pos,
+                      'Space missing inside empty braces.')
+            end
           else
             range = Parser::Source::Range.new(sb, left_brace.end_pos,
                                               right_brace.begin_pos)
             inner = range.source
             unless inner =~ /\n/
               if inner =~ /\S/
-                braces_with_contents_inside(node, inner)
-              else
-                space(style_for_empty_braces, sb, range.begin_pos,
-                      range.end_pos, 'Space inside empty braces detected.')
+                braces_with_contents_inside(node, inner, sb)
+              elsif style_for_empty_braces == :no_space
+                offence(sb, range.begin_pos, range.end_pos,
+                        'Space inside empty braces detected.')
               end
             end
           end
         end
 
-        def braces_with_contents_inside(node, inner)
+        def braces_with_contents_inside(node, inner, sb)
           _method, args, _body = *node
           left_brace, right_brace = node.loc.begin, node.loc.end
           pipe = args.loc.begin
-          sb = node.loc.expression.source_buffer
 
           if inner =~ /^\S/
             no_space_inside_left_brace(left_brace, pipe, sb)
@@ -72,8 +73,8 @@ module Rubocop
           end
 
           if inner =~ /\S$/
-            no_space(style_for_inside_braces, sb, right_brace.begin_pos,
-                     right_brace.end_pos, 'Space missing inside }.')
+            no_space(sb, right_brace.begin_pos, right_brace.end_pos,
+                     'Space missing inside }.')
           else
             space_inside_right_brace(right_brace, sb)
           end
@@ -81,47 +82,50 @@ module Rubocop
 
         def no_space_inside_left_brace(left_brace, pipe, sb)
           if pipe
-            if left_brace.end_pos == pipe.begin_pos
-              no_space(style_for_block_parameters, sb, left_brace.begin_pos,
-                       pipe.end_pos, 'Space between { and | missing.')
+            if left_brace.end_pos == pipe.begin_pos &&
+                cop_config['SpaceBeforeBlockParameters']
+              offence(sb, left_brace.begin_pos, pipe.end_pos,
+                      'Space between { and | missing.')
             end
           else
             # We indicate the position after the left brace. Otherwise it's
             # difficult to distinguish between space missing to the left and to
             # the right of the brace in autocorrect.
-            no_space(style_for_inside_braces, sb, left_brace.end_pos,
-                     left_brace.end_pos + 1, 'Space missing inside {.')
+            no_space(sb, left_brace.end_pos, left_brace.end_pos + 1,
+                     'Space missing inside {.')
           end
         end
 
         def space_inside_left_brace(left_brace, pipe, sb)
           if pipe
-            space(style_for_block_parameters, sb, left_brace.end_pos,
-                  pipe.begin_pos, 'Space between { and | detected.')
+            unless cop_config['SpaceBeforeBlockParameters']
+              offence(sb, left_brace.end_pos, pipe.begin_pos,
+                      'Space between { and | detected.')
+            end
           else
             brace_with_space = range_with_surrounding_space(left_brace, :right)
-            space(style_for_inside_braces, sb, brace_with_space.begin_pos + 1,
-                  brace_with_space.end_pos, 'Space inside { detected.')
+            space(sb, brace_with_space.begin_pos + 1, brace_with_space.end_pos,
+                  'Space inside { detected.')
           end
         end
 
         def space_inside_right_brace(right_brace, sb)
           brace_with_space = range_with_surrounding_space(right_brace, :left)
-          space(style_for_inside_braces, sb, brace_with_space.begin_pos,
-                brace_with_space.end_pos - 1, 'Space inside } detected.')
+          space(sb, brace_with_space.begin_pos, brace_with_space.end_pos - 1,
+                'Space inside } detected.')
         end
 
-        def no_space(specific_style, sb, begin_pos, end_pos, msg)
-          if specific_style == :space
-            offence(sb, begin_pos, end_pos, msg)
+        def no_space(sb, begin_pos, end_pos, msg)
+          if style == :space_inside_braces
+            offence(sb, begin_pos, end_pos, msg) { opposite_style_detected }
           else
             correct_style_detected
           end
         end
 
-        def space(specific_style, sb, begin_pos, end_pos, msg)
-          if specific_style == :no_space
-            offence(sb, begin_pos, end_pos, msg)
+        def space(sb, begin_pos, end_pos, msg)
+          if style == :no_space_inside_braces
+            offence(sb, begin_pos, end_pos, msg) { opposite_style_detected }
           else
             correct_style_detected
           end
@@ -129,15 +133,7 @@ module Rubocop
 
         def offence(sb, begin_pos, end_pos, msg)
           range = Parser::Source::Range.new(sb, begin_pos, end_pos)
-          add_offence(range, range, msg) { opposite_style_detected }
-        end
-
-        def available_styles
-          %w(space_inside_braces no_space_inside_braces)
-        end
-
-        def style_for_inside_braces
-          style == :space_inside_braces ? :space : :no_space
+          add_offence(range, range, msg) { yield if block_given? }
         end
 
         def style_for_empty_braces
@@ -146,10 +142,6 @@ module Rubocop
           when 'no_space' then :no_space
           else fail 'Unknown EnforcedStyleForEmptyBraces selected!'
           end
-        end
-
-        def style_for_block_parameters
-          cop_config['SpaceBeforeBlockParameters'] ? :space : :no_space
         end
 
         def autocorrect(range)
