@@ -103,14 +103,13 @@ module Rubocop
       def add_excludes_from_higher_level(config, highest_config)
         if highest_config['AllCops'] && highest_config['AllCops']['Excludes']
           config['AllCops'] ||= {}
-          config['AllCops']['Excludes'] ||= []
+          excludes = config['AllCops']['Excludes'] ||= []
           highest_config['AllCops']['Excludes'].each do |path|
             unless path.is_a?(Regexp) || path.start_with?('/')
               path = File.join(File.dirname(highest_config.loaded_path), path)
             end
-            config['AllCops']['Excludes'] << path
+            excludes << path unless excludes.include?(path)
           end
-          config['AllCops']['Excludes'].uniq!
         end
       end
 
@@ -132,10 +131,8 @@ module Rubocop
           if File.basename(base_config.loaded_path) == DOTFILE
             make_excludes_absolute(base_config)
           end
-          base_config.each do |key, value|
-            if value.is_a?(Hash)
-              hash[key] = hash.key?(key) ? merge(value, hash[key]) : value
-            end
+          base_config.each do |k, v|
+            hash[k] = hash.key?(k) ? merge(v, hash[k]) : v if v.is_a?(Hash)
           end
         end
       end
@@ -149,13 +146,11 @@ module Rubocop
 
       def dirs_to_search(target_dir)
         dirs_to_search = []
-        target_dir_pathname = Pathname.new(File.expand_path(target_dir))
-        target_dir_pathname.ascend do |dir_pathname|
+        Pathname.new(File.expand_path(target_dir)).ascend do |dir_pathname|
           break if dir_pathname.to_s == @root_level
           dirs_to_search << dir_pathname.to_s
         end
         dirs_to_search << Dir.home
-        dirs_to_search
       end
     end
   end
