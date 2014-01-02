@@ -26,7 +26,7 @@ describe Rubocop::Cop::Lint::ShadowingOuterLocalVariable do
       expect(cop.offences.first.line).to eq(4)
     end
 
-    include_examples 'mimics MRI 2.0'
+    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a splat block argument has same name ' +
@@ -50,7 +50,7 @@ describe Rubocop::Cop::Lint::ShadowingOuterLocalVariable do
       expect(cop.offences.first.line).to eq(4)
     end
 
-    include_examples 'mimics MRI 2.0'
+    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a block block argument has same name ' +
@@ -76,7 +76,7 @@ describe Rubocop::Cop::Lint::ShadowingOuterLocalVariable do
       expect(cop.offences.first.line).to eq(4)
     end
 
-    include_examples 'mimics MRI 2.0'
+    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a block local variable has same name ' +
@@ -101,7 +101,7 @@ describe Rubocop::Cop::Lint::ShadowingOuterLocalVariable do
       expect(cop.offences.first.line).to eq(4)
     end
 
-    include_examples 'mimics MRI 2.0', 'shadowing'
+    include_examples 'mimics MRI 2.1', 'shadowing'
   end
 
   context 'when a block argument has different name ' +
@@ -118,7 +118,7 @@ describe Rubocop::Cop::Lint::ShadowingOuterLocalVariable do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.0'
+    include_examples 'mimics MRI 2.1'
   end
 
   context 'when an outer scope variable is reassigned in a block' do
@@ -135,7 +135,7 @@ describe Rubocop::Cop::Lint::ShadowingOuterLocalVariable do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.0'
+    include_examples 'mimics MRI 2.1'
   end
 
   context 'when an outer scope variable is referenced in a block' do
@@ -152,7 +152,7 @@ describe Rubocop::Cop::Lint::ShadowingOuterLocalVariable do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.0'
+    include_examples 'mimics MRI 2.1'
   end
 
   context 'when multiple block arguments have same name "_"' do
@@ -166,7 +166,7 @@ describe Rubocop::Cop::Lint::ShadowingOuterLocalVariable do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.0'
+    include_examples 'mimics MRI 2.1'
   end
 
   context 'when multiple block arguments have ' +
@@ -181,7 +181,7 @@ describe Rubocop::Cop::Lint::ShadowingOuterLocalVariable do
     end
 
     include_examples 'accepts' unless RUBY_VERSION < '2.0'
-    include_examples 'mimics MRI 2.0'
+    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a block argument has same name "_" ' +
@@ -198,7 +198,7 @@ describe Rubocop::Cop::Lint::ShadowingOuterLocalVariable do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.0'
+    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a block argument has a same name starts with "_" ' +
@@ -215,7 +215,7 @@ describe Rubocop::Cop::Lint::ShadowingOuterLocalVariable do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.0'
+    include_examples 'mimics MRI 2.1'
   end
 
   context 'when a method argument has same name ' +
@@ -232,6 +232,6 @@ describe Rubocop::Cop::Lint::ShadowingOuterLocalVariable do
     end
 
     include_examples 'accepts'
-    include_examples 'mimics MRI 2.0'
+    include_examples 'mimics MRI 2.1'
   end
 end
