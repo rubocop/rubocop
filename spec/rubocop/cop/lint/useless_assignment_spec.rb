@@ -222,6 +222,24 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
+  context 'when a variable is assigned with operator assignment ' +
+          'in top level' do
+    let(:source) do
+      [
+        'foo ||= 1'
+      ]
+    end
+
+    it 'registers an offence' do
+      inspect_source(cop, source)
+      expect(cop.offences.size).to eq(1)
+      expect(cop.offences.first.message)
+        .to eq('Useless assignment to variable - foo. Use just operator ||.')
+      expect(cop.offences.first.line).to eq(1)
+      expect(cop.highlights).to eq(['foo'])
+    end
+  end
+
   context 'when a variable is assigned multiple times ' +
           'but unreferenced' do
     let(:source) do

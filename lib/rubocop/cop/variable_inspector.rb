@@ -40,7 +40,7 @@ module Rubocop
       ZERO_ARITY_SUPER_TYPE = :zsuper
 
       TWISTED_SCOPE_TYPES = [:block, :class, :sclass, :defs].freeze
-      SCOPE_TYPES = (TWISTED_SCOPE_TYPES + [:module, :def]).freeze
+      SCOPE_TYPES = (TWISTED_SCOPE_TYPES + [:top_level, :module, :def]).freeze
 
       def variable_table
         @variable_table ||= VariableTable.new(self)
@@ -50,13 +50,18 @@ module Rubocop
       def inspect_variables(root_node)
         return unless root_node
 
-        # Wrap with begin node if it's a standalone node.
-        unless root_node.type == :begin
-          root_node = Parser::AST::Node.new(:begin, [root_node])
-        end
+        # Wrap the root node with :top_level scope node.
+        top_level_node = wrap_with_top_level_node(root_node)
 
-        inspect_variables_in_scope(root_node)
+        inspect_variables_in_scope(top_level_node)
       end
+
+      def wrap_with_top_level_node(node)
+        # This is a custom node type, not defined in Parser.
+        Parser::AST::Node.new(:top_level, [node])
+      end
+
+      module_function :wrap_with_top_level_node
 
       # This is called for each scope recursively.
       def inspect_variables_in_scope(scope_node)

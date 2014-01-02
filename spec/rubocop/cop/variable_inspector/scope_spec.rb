@@ -23,8 +23,8 @@ describe Rubocop::Cop::VariableInspector::Scope do
   end
 
   let(:ast) do
-    processed_source = Rubocop::SourceParser.parse(source)
-    processed_source.ast
+    ast = Rubocop::SourceParser.parse(source).ast
+    Rubocop::Cop::VariableInspector.wrap_with_top_level_node(ast)
   end
 
   let(:scope_node_type) { :def }
@@ -172,12 +172,11 @@ describe Rubocop::Cop::VariableInspector::Scope do
     context 'when the scope is top level' do
       let(:source) do
         <<-END
-          foo = 1
           this_is_target
         END
       end
 
-      let(:scope_node_type) { :begin }
+      let(:scope_node_type) { :top_level }
 
       include_examples 'returns the body node'
     end
