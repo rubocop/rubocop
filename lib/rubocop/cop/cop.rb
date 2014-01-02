@@ -72,10 +72,6 @@ module Rubocop
         name.to_s.split('::')[-2].downcase.to_sym
       end
 
-      def self.style?
-        cop_type == :style
-      end
-
       def self.lint?
         cop_type == :lint
       end
@@ -151,28 +147,12 @@ module Rubocop
 
       alias_method :name, :cop_name
 
-      def include_paths
-        cop_config && cop_config['Include']
-      end
-
       def include_file?(file)
-        return true unless include_paths
-
-        include_paths.any? do |pattern|
-          match_path?(pattern, processed_source.buffer.name)
-        end
-      end
-
-      def exclude_paths
-        cop_config && cop_config['Exclude']
+        buffer_name_matches_any?('Include', true)
       end
 
       def exclude_file?(file)
-        return false unless exclude_paths
-
-        exclude_paths.any? do |pattern|
-          match_path?(pattern, processed_source.buffer.name)
-        end
+        buffer_name_matches_any?('Exclude', false)
       end
 
       def relevant_file?(file)
@@ -180,6 +160,12 @@ module Rubocop
       end
 
       private
+
+      def buffer_name_matches_any?(parameter, default_result)
+        paths = cop_config && cop_config[parameter]
+        return default_result unless paths
+        paths.any? { |path| match_path?(path, processed_source.buffer.name) }
+      end
 
       def match_path?(pattern, path)
         case pattern
