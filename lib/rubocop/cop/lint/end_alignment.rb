@@ -62,9 +62,7 @@ module Rubocop
                        0
                      end
             expr = node.loc.expression
-            range = Parser::Source::Range.new(expr.source_buffer,
-                                              expr.begin_pos,
-                                              rhs.loc.keyword.end_pos)
+            range = new_range(expr.begin_pos, rhs.loc.keyword.end_pos)
             check_offset(rhs, range.source, offset)
             ignore_node(rhs) # Don't check again.
           end

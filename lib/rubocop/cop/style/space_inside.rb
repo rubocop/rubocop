@@ -15,9 +15,7 @@ module Rubocop
           processed_source.tokens.each_cons(2) do |t1, t2|
             if t1.type == left || t2.type == right
               if t2.pos.line == t1.pos.line && space_between?(t1, t2)
-                range = Parser::Source::Range.new(processed_source.buffer,
-                                                  t1.pos.end_pos,
-                                                  t2.pos.begin_pos)
+                range = new_range(t1.pos.end_pos, t2.pos.begin_pos)
                 add_offence(range, range, format(MSG, kind))
               end
             end

@@ -14,8 +14,7 @@ module Rubocop
           original_source.lines.each_with_index do |line, index|
             if line =~ /\r$/
               add_offence(nil,
-                          source_range(buffer,
-                                       processed_source[0...index],
+                          source_range(processed_source[0...index],
                                        0, line.length),
                           MSG)
               # Usually there will be carriage return characters on all or none

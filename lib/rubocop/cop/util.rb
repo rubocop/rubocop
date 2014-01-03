@@ -106,14 +106,12 @@ module Rubocop
         end
       end
 
-      def source_range(source_buffer, preceding_lines, begin_column,
-                       column_count)
+      def source_range(preceding_lines, begin_column, column_count)
         newline_length = 1
         begin_pos = preceding_lines.reduce(0) do |a, e|
           a + e.length + newline_length
         end + begin_column
-        Parser::Source::Range.new(source_buffer, begin_pos,
-                                  begin_pos + column_count)
+        new_range(begin_pos, begin_pos + column_count)
       end
 
       def range_with_surrounding_space(range, side = :both)
@@ -125,7 +123,12 @@ module Rubocop
         end_pos = range.end_pos
         end_pos += 1 while go_right && src[end_pos] =~ /[ \t]/
         end_pos += 1 if go_right && src[end_pos] == "\n"
-        Parser::Source::Range.new(@processed_source.buffer, begin_pos, end_pos)
+        new_range(begin_pos, end_pos)
+      end
+
+      def new_range(begin_pos, end_pos)
+        Parser::Source::Range.new(processed_source.buffer, begin_pos,
+                                  end_pos)
       end
 
       # Returns for example a bare `if` node if the given node is an `if` whith

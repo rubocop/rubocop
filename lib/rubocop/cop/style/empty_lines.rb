@@ -24,10 +24,7 @@ module Rubocop
                 # we check if the prev and current lines are empty
                 if processed_source[line - 2].empty? &&
                     processed_source[line - 1].empty?
-                  range = source_range(processed_source.buffer,
-                                       processed_source[0...(line - 1)],
-                                       0,
-                                       1)
+                  range = source_range(processed_source[0...(line - 1)], 0, 1)
                   add_offence(range, range)
                 end
               end

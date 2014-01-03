@@ -13,8 +13,7 @@ module Rubocop
             if match
               spaces = match.captures[0]
               add_offence(nil,
-                          source_range(processed_source.buffer,
-                                       processed_source[0...index],
+                          source_range(processed_source[0...index],
                                        spaces.length, 1),
                           MSG)
             end

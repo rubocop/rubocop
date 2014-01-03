@@ -56,16 +56,14 @@ module Rubocop
 
         def check_source(start_line, end_line)
           if processed_source.lines[start_line].blank?
-            range = source_range(processed_source.buffer,
-                                 processed_source[0...start_line],
+            range = source_range(processed_source[0...start_line],
                                  0,
                                  1)
             add_offence(range, range, MSG_BEG)
           end
 
           if processed_source.lines[end_line - 2].blank?
-            range = source_range(processed_source.buffer,
-                                 processed_source[0...(end_line - 2)],
+            range = source_range(processed_source[0...(end_line - 2)],
                                  0,
                                  1)
             add_offence(range, range, MSG_END)

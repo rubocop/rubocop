@@ -209,9 +209,7 @@ module Rubocop
           if delta > 0
             corrector.insert_before(range, ' ' * delta)
           elsif delta < 0
-            range = Parser::Source::Range.new(range.source_buffer,
-                                              range.begin_pos - delta.abs,
-                                              range.begin_pos)
+            range = new_range(range.begin_pos - delta.abs, range.begin_pos)
             corrector.remove(range)
           end
         end

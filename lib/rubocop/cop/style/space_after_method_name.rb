@@ -13,9 +13,7 @@ module Rubocop
         def check(_node, _method_name, args, body)
           return unless args.loc.begin && args.loc.begin.is?('(')
           expr = args.loc.expression
-          pos_before_left_paren = Parser::Source::Range.new(expr.source_buffer,
-                                                            expr.begin_pos - 1,
-                                                            expr.begin_pos)
+          pos_before_left_paren = new_range(expr.begin_pos - 1, expr.begin_pos)
           if pos_before_left_paren.source =~ /\s/
             add_offence(pos_before_left_paren, pos_before_left_paren)
           end

@@ -10,8 +10,7 @@ module Rubocop
         def investigate(processed_source)
           processed_source.lines.each_with_index do |line, index|
             if line =~ /.*[ \t]+$/
-              range = source_range(processed_source.buffer,
-                                   processed_source[0...index],
+              range = source_range(processed_source[0...index],
                                    line.rstrip.length,
                                    line.length - line.rstrip.length)
               add_offence(range, range)

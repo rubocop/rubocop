@@ -29,9 +29,8 @@ module Rubocop
           return if ignored_node?(node)
           receiver, _method_name, *_args = *node
           if receiver && receiver.type == :block && receiver.loc.end.is?('end')
-            range = Parser::Source::Range.new(receiver.loc.end.source_buffer,
-                                              receiver.loc.end.begin_pos,
-                                              node.loc.expression.end_pos)
+            range = new_range(receiver.loc.end.begin_pos,
+                              node.loc.expression.end_pos)
             add_offence(nil, range)
           end
         end

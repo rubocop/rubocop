@@ -22,10 +22,8 @@ module Rubocop
             space_length = spaces_before_left_parenthesis(node)
             if space_length > 0
               expr = args.loc.expression
-              space_range =
-                Parser::Source::Range.new(expr.source_buffer,
-                                          expr.begin_pos - space_length,
-                                          expr.begin_pos)
+              space_range = new_range(expr.begin_pos - space_length,
+                                      expr.begin_pos)
               add_offence(nil, space_range)
             end
           end

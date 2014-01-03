@@ -26,10 +26,8 @@ module Rubocop
               do_kw_loc, end_kw_loc = receiver.loc.begin, receiver.loc.end
 
               if do_kw_loc.line != end_kw_loc.line
-                range =
-                  Parser::Source::Range.new(end_kw_loc.source_buffer,
-                                            end_kw_loc.begin_pos,
-                                            method.loc.expression.end_pos)
+                range = new_range(end_kw_loc.begin_pos,
+                                  method.loc.expression.end_pos)
                 add_offence(nil, range)
                 # Done. If there are more blocks in the chain, they will be
                 # found by subsequent calls to on_block.
