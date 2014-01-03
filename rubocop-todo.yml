@@ -3,7 +3,7 @@
 # one by one as the offences are removed from the code base.
 
 ClassLength:
-  Max: 140
+  Max: 150
 
 CyclomaticComplexity:
   Max: 10
