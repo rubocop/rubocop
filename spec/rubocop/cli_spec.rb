@@ -217,6 +217,19 @@ describe Rubocop::CLI, :isolated_environment do
       end
     end
 
+    describe '-D/--display-cop-names' do
+      it 'shows cop names', ruby: 2.0 do
+        create_file('example1.rb', "\tputs 0")
+        expect(cli.run(['--format',
+                        'emacs',
+                        '--debug',
+                        'example1.rb'])).to eq(1)
+        expect($stdout.string.lines[-1])
+          .to eq(["#{abs('example1.rb')}:1:1: C: Tab: Tab detected.",
+                  ''].join("\n"))
+      end
+    end
+
     describe '--show-cops' do
       let(:cops) { Rubocop::Cop::Cop.all }
 

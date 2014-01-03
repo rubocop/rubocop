@@ -111,6 +111,10 @@ module Rubocop
         @options[:debug]
       end
 
+      def display_cop_names?
+        debug? || @options[:display_cop_names]
+      end
+
       def message(node = nil)
         self.class::MSG
       end
@@ -127,7 +131,7 @@ module Rubocop
         severity = custom_severity || severity || default_severity
 
         message = message ? message : message(node)
-        message = debug? ? "#{name}: #{message}" : message
+        message = display_cop_names? ? "#{name}: #{message}" : message
 
         corrected = begin
                       autocorrect(node) if autocorrect?

@@ -113,21 +113,22 @@ For more details check the available command-line options:
 $ rubocop -h
 ```
 
-Command flag           | Description
------------------------|------------------------------------------------------------
-`-v/--version`         | Displays the current version and exits
-`-V/--verbose-version` | Displays the current version plus the version of Parser and Ruby
-`-d/--debug`           | Displays some extra debug output
-`-c/--config`          | Run with specified config file
-`-f/--format`          | Choose a formatter
-`-o/--out`             | Write output to a file instead of STDOUT
-`-r/--require`         | Require Ruby file
-`-R/--rails`           | Run extra Rails cops
-`-l/--lint`            | Run only lint cops
-`-a/--auto-correct`    | Auto-correct certain offences *Note:* Experimental - use with caution
-`--only`               | Run only the specified cop
-`--auto-gen-config`    | Generate a configuration file acting as a TODO list
-`--show-cops`          | Shows available cops and their configuration
+Command flag              | Description
+--------------------------|------------------------------------------------------------
+`-v/--version`            | Displays the current version and exits
+`-V/--verbose-version`    | Displays the current version plus the version of Parser and Ruby
+`-d/--debug`              | Displays some extra debug output
+`-D/--display-cop-names`  | Displays cop names in offence messages.
+`-c/--config`             | Run with specified config file
+`-f/--format`             | Choose a formatter
+`-o/--out`                | Write output to a file instead of STDOUT
+`-r/--require`            | Require Ruby file
+`-R/--rails`              | Run extra Rails cops
+`-l/--lint`               | Run only lint cops
+`-a/--auto-correct`       | Auto-correct certain offences *Note:* Experimental - use with caution
+`--only`                  | Run only the specified cop
+`--auto-gen-config`       | Generate a configuration file acting as a TODO list
+`--show-cops`             | Shows available cops and their configuration
 
 ### Cops
 

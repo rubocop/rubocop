@@ -59,6 +59,7 @@ Usage: rubocop [options] [file1, file2, ...]
         --show-cops                  Shows cops and their config for the
                                      current directory.
     -d, --debug                      Display debug info.
+    -D, --display-cop-names          Display cop names in offence messages.
     -R, --rails                      Run extra Rails cops.
     -l, --lint                       Run only lint cops.
     -a, --auto-correct               Auto-correct offences.

@@ -79,6 +79,9 @@ module Rubocop
              'Shows cops and their config for the',
              'current directory.')
       option(opts, '-d', '--debug', 'Display debug info.')
+      option(opts,
+             '-D', '--display-cop-names',
+             'Display cop names in offence messages.')
       option(opts, '-R', '--rails', 'Run extra Rails cops.')
       option(opts, '-l', '--lint', 'Run only lint cops.')
       option(opts, '-a', '--auto-correct', 'Auto-correct offences.')
