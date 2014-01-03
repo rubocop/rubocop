@@ -15,7 +15,7 @@ module Rubocop
           return unless processed_source.ast
           tokens = processed_source.tokens
 
-          on_node(:hash, processed_source.ast) do |hash|
+          Util.on_node(:hash, processed_source.ast) do |hash|
             b_ix = index_of_first_token(hash)
             if tokens[b_ix].type == :tLBRACE # Hash literal with braces?
               e_ix = index_of_last_token(hash)

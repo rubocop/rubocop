@@ -6,7 +6,7 @@ module Rubocop
       # Checks that operators have space around them, except for **
       # which should not have surrounding space.
       class SpaceAroundOperators < Cop
-        TYPES = %w(and or class) + ASGN_NODES
+        TYPES = %w(and or class) + Util::ASGN_NODES
 
         TYPES.each { |t| define_method(:"on_#{t}") { |node| check(node) } }
 

@@ -30,7 +30,7 @@ module Rubocop
           return unless loc.respond_to?(:question)
 
           node.children.each do |child|
-            on_node(:if, child) do |c|
+            Util.on_node(:if, child) do |c|
               add_offence(c, :expression) if c.loc.respond_to?(:question)
             end
           end

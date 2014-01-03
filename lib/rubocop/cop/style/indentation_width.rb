@@ -100,7 +100,7 @@ module Rubocop
           # If there are method calls chained to the right hand side of the
           # assignment, we let rhs be the receiver of those method calls before
           # we check its indentation.
-          rhs = first_part_of_call_chain(rhs)
+          rhs = Util.first_part_of_call_chain(rhs)
 
           if rhs && rhs.type == :if
             on_if(rhs, rhs.loc.column - node.loc.column)

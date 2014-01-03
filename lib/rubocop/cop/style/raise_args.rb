@@ -8,7 +8,8 @@ module Rubocop
         include ConfigurableEnforcedStyle
 
         def on_send(node)
-          return unless command?(:raise, node) || command?(:fail, node)
+          return unless Util.command?(:raise, node) || Util.command?(:fail,
+                                                                     node)
 
           case style
           when :compact

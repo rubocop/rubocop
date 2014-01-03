@@ -18,7 +18,7 @@ module Rubocop
 
         def on_block(node)
           method, _args, _body = *node
-          on_node(:send, method) do |send_node|
+          Util.on_node(:send, method) do |send_node|
             receiver, _method_name, *_args = *send_node
             if receiver && receiver.type == :block
               # The begin and end could also be braces, but we call the

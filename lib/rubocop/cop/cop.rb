@@ -44,7 +44,7 @@ module Rubocop
     #   end
     class Cop
       extend AST::Sexp
-      include Util
+      include RangeUtil
 
       # http://phrogz.net/programmingruby/language.html#table_18.4
       # Backtick is added last just to help editors parse this code.
