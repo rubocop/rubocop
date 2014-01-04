@@ -54,12 +54,12 @@ describe Rubocop::Cop::Lint::ElseLayout do
   end
 
   it 'handles ternary ops' do
-    inspect_source(cop, ['x ? a : b'])
+    inspect_source(cop, 'x ? a : b')
     expect(cop.offences).to be_empty
   end
 
   it 'handles modifier forms' do
-    inspect_source(cop, ['x if something'])
+    inspect_source(cop, 'x if something')
     expect(cop.offences).to be_empty
   end
 end
