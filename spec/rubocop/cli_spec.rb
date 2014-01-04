@@ -887,7 +887,6 @@ describe Rubocop::CLI, :isolated_environment do
     end
 
     it 'can disable Syntax offences with warning severity' do
-      pending
       # `-' interpreted as argument prefix
       create_file('example.rb', 'puts -1')
       create_file('.rubocop.yml', [
