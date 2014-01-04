@@ -292,21 +292,20 @@ describe Rubocop::CLI, :isolated_environment do
       end
 
       it 'prints the current configuration' do
-        out = stdout.lines.to_a
+        out = stdout
+          .gsub(/=>/, ':') # Change Ruby hash syntax to YAML hash syntax.
+          .gsub(/(  Description: )(.*)/, '\1"\2"') # Quote strings.
+          .lines.to_a
+        printed_config = YAML.load(out.join)
         cops.each do |cop|
-          conf = global_conf[cop.cop_name].dup
-          confstrt =
-            out.find_index { |i| i.include?("- #{cop.cop_name}") } + 1
-          c = out[confstrt, conf.keys.size].to_s
-          conf.delete('Description')
-          expect(c).to include(short_description_of_cop(cop))
-          conf.each do |k, v|
-            # ugly hack to get hash/array content tested
-            if v.kind_of?(Hash) || v.kind_of?(Array)
-              expect(c).to include "#{k}: #{v.to_s.dump[2, -2]}"
-            else
-              expect(c).to include "#{k}: #{v}"
+          cop_config = global_conf[cop.cop_name].dup
+          cop_config.each do |key, value|
+            printed_value = printed_config[cop.cop_name][key]
+            if value.is_a?(String)
+              value.delete!("\n") # Differences in newlines are not important.
+              value.gsub!(/=>/, ':')
             end
+            expect(printed_value).to eq(value)
           end
         end
       end
