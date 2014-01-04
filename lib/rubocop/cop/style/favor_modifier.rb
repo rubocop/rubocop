@@ -21,7 +21,7 @@ module Rubocop
 
           return false if body_length == 0
 
-          on_node(:lvasgn, cond) do
+          Util.on_node(:lvasgn, cond) do
             return false
           end
 
@@ -73,7 +73,7 @@ module Rubocop
 
         def investigate(processed_source)
           return unless processed_source.ast
-          on_node(:if, processed_source.ast) do |node|
+          Util.on_node(:if, processed_source.ast) do |node|
             # discard ternary ops, if/else and modifier if/unless nodes
             next if ternary_op?(node)
             next if modifier_if?(node)
@@ -97,7 +97,7 @@ module Rubocop
 
         def investigate(processed_source)
           return unless processed_source.ast
-          on_node([:while, :until], processed_source.ast) do |node|
+          Util.on_node([:while, :until], processed_source.ast) do |node|
             # discard modifier while/until
             next unless node.loc.end
 

@@ -21,8 +21,7 @@ module Rubocop
           if blank_lines > 0
             range_size =
               processed_source.raw_lines.to_a[-blank_lines..-1].join.length
-            range = source_range(processed_source.buffer,
-                                 processed_source[0...-blank_lines],
+            range = source_range(processed_source[0...-blank_lines],
                                  0, range_size)
             add_offence(range, range, format(MSG, blank_lines))
           end

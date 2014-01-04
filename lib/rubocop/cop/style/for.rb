@@ -21,7 +21,7 @@ module Rubocop
         end
 
         def on_block(node)
-          return if block_length(node) == 0
+          return if Util.block_length(node) == 0
 
           method, _args, _body = *node
           return unless method.type == :send
@@ -31,9 +31,7 @@ module Rubocop
 
           if style == :for
             end_pos = method.loc.expression.end_pos
-            range = Parser::Source::Range.new(processed_source.buffer,
-                                              end_pos - 'each'.length,
-                                              end_pos)
+            range = new_range(end_pos - 'each'.length, end_pos)
             add_offence(range, range, 'Prefer *for* over *each*.') do
               opposite_style_detected
             end

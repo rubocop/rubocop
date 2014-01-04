@@ -33,12 +33,14 @@ module Rubocop
 
         def autocorrect(node)
           @corrections << lambda do |corrector|
-            name =
-              case style
-              when :semantic then command?(:raise, node) ? 'fail' : 'raise'
-              when :only_raise then 'raise'
-              when :only_fail then 'fail'
-              end
+            name = case style
+                   when :semantic
+                     Util.command?(:raise, node) ? 'fail' : 'raise'
+                   when :only_raise
+                     'raise'
+                   when :only_fail
+                     'fail'
+                   end
 
             corrector.replace(node.loc.selector, name)
           end
@@ -83,8 +85,8 @@ module Rubocop
         end
 
         def each_command(method_name, node)
-          on_node(:send, node, :rescue) do |send_node|
-            yield send_node if command?(method_name, send_node)
+          Util.on_node(:send, node, :rescue) do |send_node|
+            yield send_node if Util.command?(method_name, send_node)
           end
         end
       end

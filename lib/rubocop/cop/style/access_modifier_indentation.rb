@@ -18,7 +18,7 @@ module Rubocop
         def investigate(processed_source)
           ast = processed_source.ast
           return unless ast
-          on_node([:class, :module, :sclass, :block], ast) do |class_node|
+          Util.on_node([:class, :module, :sclass, :block], ast) do |class_node|
             if class_node.type == :block && !class_constructor?(class_node)
               next
             end
@@ -28,7 +28,8 @@ module Rubocop
             # we'll have to walk all class children nodes
             # except other class/module nodes
             class_node.children.compact.each do |node|
-              on_node(:send, node, [:class, :module, :sclass]) do |send_node|
+              Util.on_node(:send, node,
+                           [:class, :module, :sclass]) do |send_node|
                 if self.class.modifier_node?(send_node)
                   check(send_node, class_start_col)
                 end

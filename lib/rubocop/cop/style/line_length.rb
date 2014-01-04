@@ -15,8 +15,7 @@ module Rubocop
             if line.length > max
               message = sprintf(MSG, line.length, max)
               add_offence(nil,
-                          source_range(processed_source.buffer,
-                                       processed_source[0...index], max,
+                          source_range(processed_source[0...index], max,
                                        line.length - max),
                           message) do
                 self.max = line.length

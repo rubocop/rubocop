@@ -17,7 +17,7 @@ module Rubocop
         MSG = 'default_scope expects a block as its sole argument.'
 
         def on_send(node)
-          return unless command?(:default_scope, node)
+          return unless Util.command?(:default_scope, node)
 
           _receiver, _method_name, *args = *node
 
@@ -25,7 +25,9 @@ module Rubocop
 
           first_arg = args[0]
 
-          add_offence(first_arg, :expression) if lambda_or_proc?(first_arg)
+          if Util.lambda_or_proc?(first_arg)
+            add_offence(first_arg, :expression)
+          end
         end
       end
     end

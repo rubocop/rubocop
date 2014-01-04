@@ -28,10 +28,8 @@ module Rubocop
         def autocorrect(node)
           @corrections << lambda do |corrector|
             receiver, _method_name, *_args = *node
-            space_range =
-              Parser::Source::Range.new(node.loc.selector.source_buffer,
-                                        node.loc.selector.end_pos,
-                                        receiver.loc.expression.begin_pos)
+            space_range = new_range(node.loc.selector.end_pos,
+                                    receiver.loc.expression.begin_pos)
             corrector.remove(space_range)
           end
         end

@@ -25,7 +25,7 @@ module Rubocop
 
         def check(node, method_name, *_)
           complexity = 1
-          on_node(DECISION_POINT_NODES, node) { complexity += 1 }
+          Util.on_node(DECISION_POINT_NODES, node) { complexity += 1 }
 
           max = cop_config['Max']
           if complexity > max

@@ -10,6 +10,7 @@ require 'powerpack'
 require 'rubocop/version'
 
 require 'rubocop/cop/util'
+require 'rubocop/cop/range_util'
 require 'rubocop/cop/offence'
 require 'rubocop/cop/cop'
 require 'rubocop/cop/commissioner'

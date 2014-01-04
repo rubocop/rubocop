@@ -23,8 +23,7 @@ module Rubocop
         def name_of_variable(vasgn_node)
           expr = vasgn_node.loc.expression
           name = vasgn_node.children.first
-          Parser::Source::Range.new(expr.source_buffer, expr.begin_pos,
-                                    expr.begin_pos + name.length)
+          new_range(expr.begin_pos, expr.begin_pos + name.length)
         end
 
         def name_of_setter(send_node)

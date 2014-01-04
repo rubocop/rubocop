@@ -15,7 +15,7 @@ module Rubocop
           return unless processed_source.ast
           tokens = processed_source.tokens
 
-          on_node(:hash, processed_source.ast) do |hash|
+          Util.on_node(:hash, processed_source.ast) do |hash|
             b_ix = index_of_first_token(hash)
             if tokens[b_ix].type == :tLBRACE # Hash literal with braces?
               e_ix = index_of_last_token(hash)
@@ -86,16 +86,14 @@ module Rubocop
           src = range.source_buffer.source
           end_pos = range.end_pos
           end_pos += 1 while src[end_pos] =~ /[ \t]/
-          Parser::Source::Range.new(range.source_buffer,
-                                    range.begin_pos + 1, end_pos)
+          new_range(range.begin_pos + 1, end_pos)
         end
 
         def range_of_space_to_the_left(range)
           src = range.source_buffer.source
           begin_pos = range.begin_pos
           begin_pos -= 1 while src[begin_pos - 1] =~ /[ \t]/
-          Parser::Source::Range.new(range.source_buffer, begin_pos,
-                                    range.end_pos - 1)
+          new_range(begin_pos, range.end_pos - 1)
         end
       end
     end

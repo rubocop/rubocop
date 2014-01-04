@@ -38,8 +38,7 @@ module Rubocop
           return unless match
           offset = match[0].length
           begin_pos = expr.begin_pos + offset
-          Parser::Source::Range.new(expr.source_buffer, begin_pos,
-                                    begin_pos + method_name_length)
+          new_range(begin_pos, begin_pos + method_name_length)
         end
       end
     end

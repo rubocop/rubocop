@@ -28,10 +28,8 @@ module Rubocop
                        else
                          node.loc.end # No body, use "end".
                        end
-          right_after_cond =
-            Parser::Source::Range.new(next_thing.source_buffer,
-                                      end_position(condition),
-                                      next_thing.begin_pos)
+          right_after_cond = new_range(end_position(condition),
+                                       next_thing.begin_pos)
           if right_after_cond.source =~ /\A\s*then\s*(#.*)?\s*\n/
             node.loc.expression.begin.line
           end

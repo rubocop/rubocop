@@ -18,10 +18,7 @@ module Rubocop
                   !correct_annotation?(first_word, colon, space, note)
                 start = comment.loc.expression.begin_pos + margin.length
                 length = first_word.length + (colon || '').length
-                range = Parser::Source::Range.new(processed_source.buffer,
-                                                  start,
-                                                  start + length)
-                add_offence(nil, range)
+                add_offence(nil, new_range(start, start + length))
               end
             end
           end

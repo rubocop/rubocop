@@ -15,7 +15,7 @@ module Rubocop
           # using alias is the only option in certain scenarios
           # in such scenarios we don't want to report an offence
           if method_name == :instance_exec
-            on_node(:alias, body) { |n| ignore_node(n) }
+            Util.on_node(:alias, body) { |n| ignore_node(n) }
           end
         end
 

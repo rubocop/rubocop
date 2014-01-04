@@ -20,7 +20,7 @@ module Rubocop
         end
 
         def code_length(node)
-          class_body_line_numbers = line_range(node).to_a[1...-1]
+          class_body_line_numbers = Util.line_range(node).to_a[1...-1]
 
           target_line_numbers = class_body_line_numbers -
                                   line_numbers_of_inner_classes(node)
@@ -35,9 +35,9 @@ module Rubocop
         def line_numbers_of_inner_classes(node)
           line_numbers = Set.new
 
-          on_node([:class, :module], node) do |inner_node|
+          Util.on_node([:class, :module], node) do |inner_node|
             next if inner_node.eql?(node)
-            line_range = line_range(inner_node)
+            line_range = Util.line_range(inner_node)
             line_numbers.merge(line_range)
           end
 

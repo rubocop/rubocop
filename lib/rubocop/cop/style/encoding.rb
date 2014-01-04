@@ -17,8 +17,7 @@ module Rubocop
             line = processed_source[line_number]
             unless line =~ /#.*coding\s?[:=]\s?(UTF|utf)-8/
               add_offence(nil,
-                          source_range(processed_source.buffer,
-                                       processed_source[0...line_number],
+                          source_range(processed_source[0...line_number],
                                        0, 1),
                           MSG)
             end

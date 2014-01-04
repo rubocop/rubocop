@@ -23,8 +23,7 @@ module Rubocop
           return unless match
           space, method_name = match.captures
           begin_pos = expr.begin_pos + 'def'.length + space.length
-          Parser::Source::Range.new(expr.source_buffer, begin_pos,
-                                    begin_pos + method_name.length)
+          new_range(begin_pos, begin_pos + method_name.length)
         end
 
         def name_of_singleton_method(defs_node)

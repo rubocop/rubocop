@@ -48,7 +48,7 @@ module Rubocop
           # If there are method calls chained to the right hand side of the
           # assignment, we let rhs be the receiver of those method calls before
           # we check if it's an if/unless/while/until.
-          rhs = first_part_of_call_chain(rhs)
+          rhs = Util.first_part_of_call_chain(rhs)
 
           return unless rhs
 
@@ -62,9 +62,7 @@ module Rubocop
                        0
                      end
             expr = node.loc.expression
-            range = Parser::Source::Range.new(expr.source_buffer,
-                                              expr.begin_pos,
-                                              rhs.loc.keyword.end_pos)
+            range = new_range(expr.begin_pos, rhs.loc.keyword.end_pos)
             check_offset(rhs, range.source, offset)
             ignore_node(rhs) # Don't check again.
           end

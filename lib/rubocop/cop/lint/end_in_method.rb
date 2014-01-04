@@ -12,7 +12,7 @@ module Rubocop
         private
 
         def check(node, *_)
-          on_node(:postexe, node) do |end_node|
+          Util.on_node(:postexe, node) do |end_node|
             add_offence(end_node, :keyword)
           end
         end
