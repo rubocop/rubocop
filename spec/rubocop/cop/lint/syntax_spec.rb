@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Rubocop::Cop::Lint::Syntax do
-  describe '.offences_from_diagnostic' do
+  describe '.offence_from_diagnostic' do
     subject(:offence) { described_class.offence_from_diagnostic(diagnostic) }
     let(:diagnostic) { Parser::Diagnostic.new(level, reason, args, location) }
     let(:level) { :warning }
@@ -27,7 +27,7 @@ describe Rubocop::Cop::Lint::Syntax do
       expect(offence.location).to eq(location)
     end
 
-    it 'sets Sytanx as cop name' do
+    it 'sets Syntax as a cop name' do
       expect(offence.cop_name).to eq('Syntax')
     end
   end
