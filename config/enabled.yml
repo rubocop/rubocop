@@ -13,19 +13,19 @@ Alias:
   Enabled: true
 
 AlignArray:
-  Description: >
+  Description: >-
                  Align the elements of an array literal if they span more than
                  one line.
   Enabled: true
 
 AlignHash:
-  Description: >
+  Description: >-
                  Align the elements of a hash literal if they span more than
                  one line.
   Enabled: true
 
 AlignParameters:
-  Description: >
+  Description: >-
                  Align the parameters of a method call if they span more
                  than one line.
   Enabled: true
@@ -51,7 +51,7 @@ BeginBlock:
   Enabled: true
 
 Blocks:
-  Description: >
+  Description: >-
                 Avoid using {...} for multi-line blocks (multiline chaining is
                 always ugly).
                 Prefer {...} over do...end for single-line blocks.
@@ -174,7 +174,7 @@ FavorSprintf:
   Enabled: true
 
 FavorUnlessOverNegatedIf:
-  Description: >
+  Description: >-
                  Favor unless over if for negative conditions
                  (or control flow or).
   Enabled: true
@@ -208,7 +208,7 @@ HashMethods:
   Enabled: true
 
 HashSyntax:
-  Description: >
+  Description: >-
                  Prefer Ruby 1.9 hash syntax { a: 1, b: 2 } over 1.8 syntax
                  { :a => 1, :b => 2 }.
   Enabled: true
@@ -218,7 +218,7 @@ IfWithSemicolon:
   Enabled: true
 
 IfUnlessModifier:
-  Description: >
+  Description: >-
                  Favor modifier if/unless usage when you have a
                  single-line body.
   Enabled: true
@@ -244,7 +244,7 @@ LeadingCommentSpace:
   Enabled: true
 
 Loop:
-  Description: >
+  Description: >-
                  Use Kernel#loop with break rather than begin/end/until or
                  begin/end/while for post-loop tests.
   Enabled: true
@@ -254,7 +254,7 @@ MethodCallParentheses:
   Enabled: true
 
 MethodDefParentheses:
-  Description: >
+  Description: >-
                  Checks if the method definitions have or don't have
                  parentheses.
   Enabled: true
@@ -280,7 +280,7 @@ MultilineIfThen:
   Enabled: true
 
 MultilineTernaryOperator:
-  Description: >
+  Description: >-
                  Avoid multi-line ?: (the ternary operator);
                  use if/unless instead.
   Enabled: true
@@ -298,13 +298,13 @@ Not:
   Enabled: true
 
 NumericLiterals:
-  Description: >
+  Description: >-
                  Add underscores to large numeric literals to improve their
                  readability.
   Enabled: true
 
 OneLineConditional:
-  Description: >
+  Description: >-
                  Favor the ternary operator(?:) over
                  if/then/else/end constructs.
   Enabled: true
@@ -318,7 +318,7 @@ ParameterLists:
   Enabled: true
 
 ParenthesesAroundCondition:
-  Description: >
+  Description: >-
                  Don't use parentheses around the condition of an
                  if/unless/while.
   Enabled: true
@@ -356,7 +356,7 @@ RedundantReturn:
   Enabled: true
 
 RegexpLiteral:
-  Description: >
+  Description: >-
                  Use %r for regular expressions matching more than
                  `MaxSlashes` '/' characters.
                  Use %r only for regular expressions matching more than
@@ -392,7 +392,7 @@ SpaceAroundOperators:
   Enabled: true
 
 SpaceAroundBlockBraces:
-  Description: >
+  Description: >-
                  Checks that block braces have or don't have surrounding space.
                  For blocks taking parameters, checks that the left brace has
                  or doesn't have trailing space.
@@ -419,7 +419,7 @@ SpaceAfterControlKeyword:
   Enabled: true
 
 SpaceAfterMethodName:
-  Description: >
+  Description: >-
                  Never put a space between a method name and the opening
                  parenthesis.
   Enabled: true
@@ -433,7 +433,7 @@ SpaceAfterSemicolon:
   Enabled: true
 
 SpaceAroundEqualsInParameterDefault:
-  Description: >
+  Description: >-
                  Use spaces around the = operator when assigning default
                  values in def params.
   Enabled: true
@@ -471,13 +471,13 @@ TrivialAccessors:
   Enabled: true
 
 UnlessElse:
-  Description: >
+  Description: >-
                  Never use unless with else. Rewrite these with the positive
                  case first.
   Enabled: true
 
 VariableInterpolation:
-  Description: >
+  Description: >-
                  Don't interpolate global, instance and class variables
                  directly in strings.
   Enabled: true
@@ -491,7 +491,7 @@ WhenThen:
   Enabled: true
 
 WhileUntilModifier:
-  Description: >
+  Description: >-
                  Favor modifier while/until usage when you have a
                  single-line body.
   Enabled: true
@@ -532,7 +532,7 @@ BlockAlignment:
   Enabled: true
 
 CommentAnnotation:
-  Description: >
+  Description: >-
                  Checks formatting of special comments
                  (TODO, FIXME, OPTIMIZE, HACK, REVIEW).
   Enabled: true
@@ -572,13 +572,13 @@ LiteralInCondition:
   Enabled: true
 
 ParenthesesAsGroupedExpression:
-  Description: >
+  Description: >-
                  Checks for method calls with a space before the opening
                  parenthesis.
   Enabled: true
 
 ShadowingOuterLocalVariable:
-  Description: >
+  Description: >-
                  Do not use the same name as outer local variable
                  for block arguments or block local variables.
   Enabled: true

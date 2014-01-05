@@ -231,6 +231,20 @@ describe Rubocop::CLI, :isolated_environment do
     end
 
     describe '--show-cops' do
+      shared_examples(:prints_config) do
+        it 'prints the current configuration' do
+          out = stdout.lines.to_a
+          printed_config = YAML.load(out.join)
+          cop_names = (cop_list[0] || '').split(',')
+          cop_names.each do |cop_name|
+            global_conf[cop_name].each do |key, value|
+              printed_value = printed_config[cop_name][key]
+              expect(printed_value).to eq(value)
+            end
+          end
+        end
+      end
+
       let(:cops) { Rubocop::Cop::Cop.all }
 
       let(:global_conf) do
@@ -242,71 +256,90 @@ describe Rubocop::CLI, :isolated_environment do
       let(:stdout) { $stdout.string }
 
       before do
-        expect { cli.run ['--show-cops'] }.to exit_with_code(0)
+        expect { cli.run ['--show-cops'] + cop_list }.to exit_with_code(0)
       end
 
-      # Extracts the first line out of the description
-      def short_description_of_cop(cop)
-        desc = full_description_of_cop(cop)
-        desc ? desc.lines.first.strip : ''
-      end
+      context 'with no args' do
+        let(:cop_list) { [] }
 
-      # Gets the full description of the cop or nil if no description is set.
-      def full_description_of_cop(cop)
-        cop_config = global_conf.for_cop(cop)
-        cop_config['Description']
-      end
-
-      it 'prints all available cops and their description' do
-        cops.each do |cop|
-          expect(stdout).to include cop.cop_name
-          expect(stdout).to include short_description_of_cop(cop)
+        # Extracts the first line out of the description
+        def short_description_of_cop(cop)
+          desc = full_description_of_cop(cop)
+          desc ? desc.lines.first.strip : ''
         end
-      end
 
-      it 'prints all types' do
-        cops
-          .types
-          .map(&:to_s)
-          .map(&:capitalize)
-          .each { |type| expect(stdout).to include(type) }
-      end
+        # Gets the full description of the cop or nil if no description is set.
+        def full_description_of_cop(cop)
+          cop_config = global_conf.for_cop(cop)
+          cop_config['Description']
+        end
 
-      it 'prints all cops in their right type listing' do
-        lines = stdout.lines
-        lines.slice_before(/Type /).each do |slice|
-          types = cops.types.map(&:to_s).map(&:capitalize)
-          current = types.delete(slice.shift[/Type '(?<c>[^'']+)'/, 'c'])
-          # all cops in their type listing
-          cops.with_type(current).each do |cop|
-            expect(slice.any? { |l| l.include? cop.cop_name }).to be_true
+        it 'prints all available cops and their description' do
+          cops.each do |cop|
+            expect(stdout).to include cop.cop_name
+            # Because of line breaks, we will only find the beginning.
+            expect(stdout).to include short_description_of_cop(cop)[0..60]
           end
+        end
 
-          # no cop in wrong type listing
-          types.each do |type|
-            cops.with_type(type).each do |cop|
-              expect(slice.any? { |l| l.include? cop.cop_name }).to be_false
+        it 'prints all types' do
+          cops
+            .types
+            .map(&:to_s)
+            .map(&:capitalize)
+            .each { |type| expect(stdout).to include(type) }
+        end
+
+        it 'prints all cops in their right type listing' do
+          lines = stdout.lines
+          lines.slice_before(/Type /).each do |slice|
+            types = cops.types.map(&:to_s).map(&:capitalize)
+            current = types.delete(slice.shift[/Type '(?<c>[^'']+)'/, 'c'])
+            # all cops in their type listing
+            cops.with_type(current).each do |cop|
+              expect(slice.any? { |l| l.include? cop.cop_name }).to be_true
+            end
+
+            # no cop in wrong type listing
+            types.each do |type|
+              cops.with_type(type).each do |cop|
+                expect(slice.any? { |l| l.include? cop.cop_name }).to be_false
+              end
             end
           end
         end
+
+        include_examples :prints_config
       end
 
-      it 'prints the current configuration' do
-        out = stdout
-          .gsub(/=>/, ':') # Change Ruby hash syntax to YAML hash syntax.
-          .gsub(/(  Description: )(.*)/, '\1"\2"') # Quote strings.
-          .lines.to_a
-        printed_config = YAML.load(out.join)
-        cops.each do |cop|
-          cop_config = global_conf[cop.cop_name].dup
-          cop_config.each do |key, value|
-            printed_value = printed_config[cop.cop_name][key]
-            if value.is_a?(String)
-              value.delete!("\n") # Differences in newlines are not important.
-              value.gsub!(/=>/, ':')
-            end
-            expect(printed_value).to eq(value)
-          end
+      context 'with one cop given' do
+        let(:cop_list) { ['Tab'] }
+
+        it 'prints that cop and nothing else' do
+          expect(stdout).to eq(['Tab:',
+                                '  Description: No hard tabs.',
+                                '  Enabled: true',
+                                '',
+                                ''].join("\n"))
+        end
+
+        include_examples :prints_config
+      end
+
+      context 'with two cops given' do
+        let(:cop_list) { ['Tab,LineLength'] }
+        include_examples :prints_config
+      end
+
+      context 'with one of the cops misspelled' do
+        let(:cop_list) { ['Tab,X123'] }
+
+        it 'skips the unknown cop' do
+          expect(stdout).to eq(['Tab:',
+                                '  Description: No hard tabs.',
+                                '  Enabled: true',
+                                '',
+                                ''].join("\n"))
         end
       end
     end

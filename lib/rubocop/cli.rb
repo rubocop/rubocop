@@ -79,25 +79,33 @@ module Rubocop
 
     def print_available_cops
       cops = Cop::Cop.all
-      puts "Available cops (#{cops.length}) + config for #{Dir.pwd.to_s}: "
-      dirconf = @config_store.for(Dir.pwd.to_s)
-      cops.types.sort!.each do |type|
-        coptypes = cops.with_type(type).sort_by!(&:cop_name)
-        puts "Type '#{type.to_s.capitalize}' (#{coptypes.size}):"
-        coptypes.each do |cop|
-          puts "#{cop.cop_name}:"
-          cnf = dirconf.for_cop(cop).dup
-          print_conf_option('Description',
-                            cnf.delete('Description') { 'None' })
-          cnf.each { |k, v| print_conf_option(k, v) }
-          print_conf_option('SupportsAutoCorrection',
-                            cop.new.support_autocorrect?.to_s)
-        end
+      show_all = @options[:show_cops].empty?
+
+      if show_all
+        puts "# Available cops (#{cops.length}) + config for #{Dir.pwd.to_s}: "
       end
+
+      cops.types.sort!.each { |type| print_cops_of_type(cops, type, show_all) }
     end
 
-    def print_conf_option(option, value)
-      puts  "  #{option}: #{value}"
+    def print_cops_of_type(cops, type, show_all)
+      cops_of_this_type = cops.with_type(type).sort_by!(&:cop_name)
+
+      if show_all
+        puts "# Type '#{type.to_s.capitalize}' (#{cops_of_this_type.size}):"
+      end
+
+      selected_cops = cops_of_this_type.select do |cop|
+        show_all || @options[:show_cops].include?(cop.cop_name)
+      end
+
+      selected_cops.each do |cop|
+        puts '# Supports --auto-correct' if cop.new.support_autocorrect?
+        puts "#{cop.cop_name}:"
+        cnf = @config_store.for(Dir.pwd.to_s).for_cop(cop)
+        puts cnf.to_yaml.lines.to_a[1..-1].map { |line| '  ' + line }
+        puts
+      end
     end
 
     def target_finder
