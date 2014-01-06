@@ -3,11 +3,11 @@
 module Rubocop
   module Cop
     module Lint
-      # This cop actually inspects nothing, just repacks Parser's diagnostics
-      # into RuboCop's offences.
-      # The purpose of this cop is to support disabling Syntax offences with
-      # config or inline comments by conforming to the cop framework.
-      class Syntax < Cop
+      # This is actually not a cop and inspects nothing. It just provides
+      # methods to repack Parser's diagnostics into RuboCop's offences.
+      module Syntax
+        COP_NAME = 'Syntax'.freeze
+
         def self.offences_from_diagnostics(diagnostics)
           diagnostics.map do |diagnostic|
             offence_from_diagnostic(diagnostic)
@@ -19,14 +19,8 @@ module Rubocop
             diagnostic.level,
             diagnostic.location,
             diagnostic.message,
-            cop_name
+            COP_NAME
           )
-        end
-
-        def investigate(processed_source)
-          processed_source.diagnostics.each do |d|
-            add_offence(nil, d.location, d.message, d.level)
-          end
         end
       end
     end

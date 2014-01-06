@@ -583,10 +583,6 @@ ShadowingOuterLocalVariable:
                  for block arguments or block local variables.
   Enabled: true
 
-Syntax:
-  Description: 'Reports several basic syntax warnings and invalid syntaxes.'
-  Enabled: true
-
 UnreachableCode:
   Description: 'Unreachable code.'
   Enabled: true
