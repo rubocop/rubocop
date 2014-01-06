@@ -18,10 +18,31 @@ module Rubocop
       class AmbiguousOperator < Cop
         include ParserDiagnostic
 
+        AMBIGUITIES = {
+          '+'  => { actual: 'positive number', possible: 'addition' },
+          '-'  => { actual: 'negative number', possible: 'subtraction' },
+          '*'  => { actual: 'splat',           possible: 'multiplication' },
+          '&'  => { actual: 'block',           possible: 'binary AND' },
+          '**' => { actual: 'keyword splat',   possible: 'exponent' }
+        }.each do |key, hash|
+          hash[:operator] = key
+        end
+
+        MSG_FORMAT = 'Ambiguous %{actual} operator. Parenthesize the method ' +
+                     "arguments if it's surely a %{actual} operator, or add " +
+                     'a whitespace to the right of the %{operator} if it ' +
+                     'should be a %{possible}.'
+
         private
 
         def relevant_diagnostic?(diagnostic)
           diagnostic.reason == :ambiguous_prefix
+        end
+
+        def alternative_message(diagnostic)
+          operator = diagnostic.location.source
+          hash = AMBIGUITIES[operator]
+          format(MSG_FORMAT, hash)
         end
       end
     end

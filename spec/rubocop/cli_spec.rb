@@ -633,7 +633,9 @@ describe Rubocop::CLI, :isolated_environment do
     expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
     expect($stdout.string)
       .to eq(["#{abs('example.rb')}:2:6: W: " +
-              "`*' interpreted as argument prefix",
+              'Ambiguous splat operator. Parenthesize the method arguments ' +
+              "if it's surely a splat operator, or add a whitespace to the " +
+              'right of the * if it should be a multiplication.',
               "#{abs('example.rb')}:3:1: C: " +
               'Favor the ternary operator (?:) over if/then/else/end ' +
               'constructs.',
