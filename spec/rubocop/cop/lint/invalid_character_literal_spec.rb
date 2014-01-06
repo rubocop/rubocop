@@ -26,7 +26,7 @@ describe Rubocop::Cop::Lint::InvalidCharacterLiteral do
 
       expect(cop.offences.size).to eq(1)
       expect(cop.offences.first.message)
-        .to eq('Invalid character syntax; use ?\s')
+        .to eq('Invalid character literal; use ?\s')
       expect(cop.highlights).to eq([' '])
     end
   end

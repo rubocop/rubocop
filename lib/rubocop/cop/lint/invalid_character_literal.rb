@@ -25,6 +25,12 @@ module Rubocop
         def relevant_diagnostic?(diagnostic)
           diagnostic.reason == :invalid_escape_use
         end
+
+        def alternative_message(diagnostic)
+          diagnostic.message
+            .capitalize
+            .gsub('character syntax', 'character literal')
+        end
       end
     end
   end
