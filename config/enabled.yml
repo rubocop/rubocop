@@ -511,6 +511,18 @@ BracesAroundHashParameters:
 #################### Lint ################################
 ### Warnings
 
+AmbiguousOperator:
+  Description: >
+                 Checks for ambiguous operators in the first argument of a
+                 method invocation without parentheses.
+  Enabled: true
+
+AmbiguousRegexpLiteral:
+  Description: >
+                 Checks for ambiguous regexp literals in the first argument of
+                 a method invocation without parenthesis.
+  Enabled: true
+
 AssignmentInCondition:
   Description: "Don't use assignment in conditions."
   Enabled: true
@@ -549,6 +561,12 @@ EndInMethod:
   Description: 'END blocks should not be placed inside method definitions.'
   Enabled: true
 
+InvalidCharacterLiteral:
+  Description: >
+                 Checks for invalid character literals with a non-escaped
+                 whitespace character.
+  Enabled: true
+
 LiteralInCondition:
   Description: 'Checks of literals used in conditions.'
   Enabled: true
@@ -565,10 +583,6 @@ ShadowingOuterLocalVariable:
                  for block arguments or block local variables.
   Enabled: true
 
-Syntax:
-  Description: 'Reports several basic syntax warnings and invalid syntaxes.'
-  Enabled: true
-
 UnreachableCode:
   Description: 'Unreachable code.'
   Enabled: true
@@ -583,6 +597,10 @@ UselessSetterCall:
 
 UselessComparison:
   Description: 'Checks for comparison of something with itself.'
+  Enabled: true
+
+UselessElseWithoutRescue:
+  Description: Checks for useless `else` in `begin..end` without `rescue`.
   Enabled: true
 
 Void:
