@@ -34,12 +34,12 @@ AndOr:
   Description: 'Use &&/|| instead of and/or.'
   Enabled: true
 
-AsciiIdentifiers:
-  Description: 'Use only ascii symbols in identifiers.'
-  Enabled: true
-
 AsciiComments:
   Description: 'Use only ascii symbols in comments.'
+  Enabled: true
+
+AsciiIdentifiers:
+  Description: 'Use only ascii symbols in identifiers.'
   Enabled: true
 
 Attr:
@@ -50,6 +50,14 @@ BeginBlock:
   Description: 'Avoid the use of BEGIN blocks.'
   Enabled: true
 
+BlockComments:
+  Description: 'Do not use block comments.'
+  Enabled: true
+
+BlockNesting:
+  Description: 'Avoid excessive block nesting'
+  Enabled: true
+
 Blocks:
   Description: >-
                 Avoid using {...} for multi-line blocks (multiline chaining is
@@ -57,12 +65,8 @@ Blocks:
                 Prefer {...} over do...end for single-line blocks.
   Enabled: true
 
-BlockComments:
-  Description: 'Do not use block comments.'
-  Enabled: true
-
-BlockNesting:
-  Description: 'Avoid excessive block nesting'
+BracesAroundHashParameters:
+  Description: 'Enforce braces style inside hash parameters.'
   Enabled: true
 
 CaseEquality:
@@ -77,12 +81,12 @@ CharacterLiteral:
   Description: 'Checks for uses of character literals.'
   Enabled: true
 
-ClassLength:
-  Description: 'Avoid classes longer than 100 lines of code.'
-  Enabled: true
-
 ClassAndModuleCamelCase:
   Description: 'Use CamelCase for classes and modules.'
+  Enabled: true
+
+ClassLength:
+  Description: 'Avoid classes longer than 100 lines of code.'
   Enabled: true
 
 ClassMethods:
@@ -99,6 +103,12 @@ CollectionMethods:
 
 ColonMethodCall:
   Description: 'Do not use :: for method call.'
+  Enabled: true
+
+CommentAnnotation:
+  Description: >-
+                 Checks formatting of special comments
+                 (TODO, FIXME, OPTIMIZE, HACK, REVIEW).
   Enabled: true
 
 ConstantName:
@@ -121,6 +131,10 @@ DotPosition:
   Description: 'Checks the position of the dot in multi-line method calls.'
   Enabled: true
 
+EmptyLineBetweenDefs:
+  Description: 'Use empty lines between defs.'
+  Enabled: true
+
 EmptyLines:
   Description: "Don't use several empty lines in a row."
   Enabled: true
@@ -131,10 +145,6 @@ EmptyLinesAroundAccessModifier:
 
 EmptyLinesAroundBody:
   Description: "Keeps track of blank lines around expression bodies."
-  Enabled: true
-
-EmptyLineBetweenDefs:
-  Description: 'Use empty lines between defs.'
   Enabled: true
 
 EmptyLiteral:
@@ -151,14 +161,6 @@ EndBlock:
 
 EndOfLine:
   Description: 'Use Unix-style line endings.'
-  Enabled: true
-
-EnsureReturn:
-  Description: 'Never use return in an ensure block.'
-  Enabled: true
-
-Eval:
-  Description: 'The use of eval represents a serious security risk.'
   Enabled: true
 
 EvenOdd:
@@ -199,10 +201,6 @@ GlobalVars:
   Description: 'Do not introduce global variables.'
   Enabled: true
 
-HandleExceptions:
-  Description: "Don't suppress exception."
-  Enabled: true
-
 HashMethods:
   Description: 'Checks for use of deprecated Hash methods.'
   Enabled: true
@@ -213,14 +211,14 @@ HashSyntax:
                  { :a => 1, :b => 2 }.
   Enabled: true
 
-IfWithSemicolon:
-  Description: 'Never use if x; .... Use the ternary operator instead.'
-  Enabled: true
-
 IfUnlessModifier:
   Description: >-
                  Favor modifier if/unless usage when you have a
                  single-line body.
+  Enabled: true
+
+IfWithSemicolon:
+  Description: 'Never use if x; .... Use the ternary operator instead.'
   Enabled: true
 
 IndentationWidth:
@@ -235,18 +233,12 @@ LambdaCall:
   Description: 'Use lambda.call(...) instead of lambda.(...).'
   Enabled: true
 
-LineLength:
-  Description: 'Limit lines to 79 characters.'
-  Enabled: true
-
 LeadingCommentSpace:
   Description: 'Comments should start with a space.'
   Enabled: true
 
-Loop:
-  Description: >-
-                 Use Kernel#loop with break rather than begin/end/until or
-                 begin/end/while for post-loop tests.
+LineLength:
+  Description: 'Limit lines to 79 characters.'
   Enabled: true
 
 MethodCallParentheses:
@@ -347,12 +339,12 @@ RedundantException:
   Description: "Checks for an obsolete RuntimeException argument in raise/fail."
   Enabled: true
 
-RedundantSelf:
-  Description: "Don't use self where it's not needed."
-  Enabled: true
-
 RedundantReturn:
   Description: "Don't use return where it's not required."
+  Enabled: true
+
+RedundantSelf:
+  Description: "Don't use self where it's not needed."
   Enabled: true
 
 RegexpLiteral:
@@ -365,10 +357,6 @@ RegexpLiteral:
 
 RescueModifier:
   Description: 'Avoid using rescue in its modifier form.'
-  Enabled: true
-
-RescueException:
-  Description: 'Avoid rescuing the Exception class.'
   Enabled: true
 
 Semicolon:
@@ -385,25 +373,6 @@ SingleLineBlockParams:
 
 SingleLineMethods:
   Description: 'Avoid single-line methods.'
-  Enabled: true
-
-SpaceAroundOperators:
-  Description: 'Use spaces around operators.'
-  Enabled: true
-
-SpaceAroundBlockBraces:
-  Description: >-
-                 Checks that block braces have or don't have surrounding space.
-                 For blocks taking parameters, checks that the left brace has
-                 or doesn't have trailing space.
-  Enabled: true
-
-SpaceInsideParens:
-  Description: 'No spaces after ( or before ).'
-  Enabled: true
-
-SpaceInsideBrackets:
-  Description: 'No spaces after [ or before ].'
   Enabled: true
 
 SpaceAfterColon:
@@ -432,18 +401,37 @@ SpaceAfterSemicolon:
   Description: 'Use spaces after semicolons.'
   Enabled: true
 
+SpaceAroundBlockBraces:
+  Description: >-
+                 Checks that block braces have or don't have surrounding space.
+                 For blocks taking parameters, checks that the left brace has
+                 or doesn't have trailing space.
+  Enabled: true
+
 SpaceAroundEqualsInParameterDefault:
   Description: >-
                  Use spaces around the = operator when assigning default
                  values in def params.
   Enabled: true
 
+SpaceAroundOperators:
+  Description: 'Use spaces around operators.'
+  Enabled: true
+
 SpaceBeforeModifierKeyword:
   Description: 'Put a space before the modifier keyword.'
   Enabled: true
 
+SpaceInsideBrackets:
+  Description: 'No spaces after [ or before ].'
+  Enabled: true
+
 SpaceInsideHashLiteralBraces:
   Description: "Use spaces inside hash literal braces - or don't."
+  Enabled: true
+
+SpaceInsideParens:
+  Description: 'No spaces after ( or before ).'
   Enabled: true
 
 SpecialGlobalVars:
@@ -490,6 +478,10 @@ WhenThen:
   Description: 'Use when x then ... for one-line cases.'
   Enabled: true
 
+WhileUntilDo:
+  Description: 'Checks for redundant do after while or until.'
+  Enabled: true
+
 WhileUntilModifier:
   Description: >-
                  Favor modifier while/until usage when you have a
@@ -498,14 +490,6 @@ WhileUntilModifier:
 
 WordArray:
   Description: 'Use %w or %W for arrays of words.'
-  Enabled: true
-
-WhileUntilDo:
-  Description: 'Checks for redundant do after while or until.'
-  Enabled: true
-
-BracesAroundHashParameters:
-  Description: 'Enforce braces style inside hash parameters.'
   Enabled: true
 
 #################### Lint ################################
@@ -529,12 +513,6 @@ AssignmentInCondition:
 
 BlockAlignment:
   Description: 'Align block ends correctly.'
-  Enabled: true
-
-CommentAnnotation:
-  Description: >-
-                 Checks formatting of special comments
-                 (TODO, FIXME, OPTIMIZE, HACK, REVIEW).
   Enabled: true
 
 ConditionPosition:
@@ -561,8 +539,20 @@ EndInMethod:
   Description: 'END blocks should not be placed inside method definitions.'
   Enabled: true
 
+EnsureReturn:
+  Description: 'Never use return in an ensure block.'
+  Enabled: true
+
+Eval:
+  Description: 'The use of eval represents a serious security risk.'
+  Enabled: true
+
+HandleExceptions:
+  Description: "Don't suppress exception."
+  Enabled: true
+
 InvalidCharacterLiteral:
-  Description: >
+  Description: >-
                  Checks for invalid character literals with a non-escaped
                  whitespace character.
   Enabled: true
@@ -571,10 +561,20 @@ LiteralInCondition:
   Description: 'Checks of literals used in conditions.'
   Enabled: true
 
+Loop:
+  Description: >-
+                 Use Kernel#loop with break rather than begin/end/until or
+                 begin/end/while for post-loop tests.
+  Enabled: true
+
 ParenthesesAsGroupedExpression:
   Description: >-
                  Checks for method calls with a space before the opening
                  parenthesis.
+  Enabled: true
+
+RescueException:
+  Description: 'Avoid rescuing the Exception class.'
   Enabled: true
 
 ShadowingOuterLocalVariable:
@@ -591,16 +591,16 @@ UselessAssignment:
   Description: 'Checks for useless assignment to a local variable.'
   Enabled: true
 
-UselessSetterCall:
-  Description: 'Checks for useless setter call to a local variable.'
-  Enabled: true
-
 UselessComparison:
   Description: 'Checks for comparison of something with itself.'
   Enabled: true
 
 UselessElseWithoutRescue:
-  Description: Checks for useless `else` in `begin..end` without `rescue`.
+  Description: 'Checks for useless `else` in `begin..end` without `rescue`.'
+  Enabled: true
+
+UselessSetterCall:
+  Description: 'Checks for useless setter call to a local variable.'
   Enabled: true
 
 Void:
