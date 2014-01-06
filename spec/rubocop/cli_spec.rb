@@ -886,14 +886,14 @@ describe Rubocop::CLI, :isolated_environment do
                 ''].join("\n"))
     end
 
-    it 'can disable Syntax offences with warning severity' do
+    it 'can disable parser-derived offences with warning severity' do
       # `-' interpreted as argument prefix
       create_file('example.rb', 'puts -1')
       create_file('.rubocop.yml', [
                                    'Encoding:',
                                    '  Enabled: false',
                                    '',
-                                   'Syntax:',
+                                   'AmbiguousOperator:',
                                    '  Enabled: false'
                                   ])
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(0)

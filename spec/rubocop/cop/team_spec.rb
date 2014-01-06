@@ -82,7 +82,7 @@ describe Rubocop::Cop::Team do
       let(:cop_names) { offences.map(&:cop_name) }
 
       it 'returns Parser warning offences' do
-        expect(cop_names).to include('Syntax')
+        expect(cop_names).to include('AmbiguousOperator')
       end
 
       it 'returns offences from cops' do
