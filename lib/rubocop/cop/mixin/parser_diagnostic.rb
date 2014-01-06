@@ -8,11 +8,25 @@ module Rubocop
     #     def relevant_diagnostic?(diagnostic)
     #       diagnostic.reason == :my_interested_diagnostic_type
     #     end
+    #
+    # If you want to use an alternative offence message rather than the one in
+    # Parser's diagnostic, define `#alternative_message`.
+    #
+    #     def alternative_message(diagnostic)
+    #       'My custom message'
+    #     end
     module ParserDiagnostic
       def investigate(processed_source)
         processed_source.diagnostics.each do |d|
           next unless relevant_diagnostic?(d)
-          add_offence(nil, d.location, d.message.capitalize, d.level)
+
+          message = if respond_to?(:alternative_message, true)
+                      alternative_message(d)
+                    else
+                      d.message.capitalize
+                    end
+
+          add_offence(nil, d.location, message, d.level)
         end
       end
     end

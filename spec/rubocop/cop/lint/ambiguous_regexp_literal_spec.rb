@@ -20,8 +20,9 @@ describe Rubocop::Cop::Lint::AmbiguousRegexpLiteral do
 
         expect(cop.offences.size).to eq(1)
         expect(cop.offences.first.message).to eq(
-          'Ambiguous first argument; ' +
-          'parenthesize arguments or add whitespace to the right'
+          'Ambiguous regexp literal. Parenthesize the method arguments ' +
+          "if it's surely a regexp literal, or add a whitespace to the " +
+          'right of the / if it should be a division.'
         )
         expect(cop.highlights).to eq(['/'])
       end
