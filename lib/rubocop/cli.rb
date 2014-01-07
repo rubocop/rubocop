@@ -85,7 +85,7 @@ module Rubocop
         coptypes = cops.with_type(type).sort_by!(&:cop_name)
         puts "Type '#{type.to_s.capitalize}' (#{coptypes.size}):"
         coptypes.each do |cop|
-          puts " - #{cop.cop_name}"
+          puts "#{cop.cop_name}:"
           cnf = dirconf.for_cop(cop).dup
           print_conf_option('Description',
                             cnf.delete('Description') { 'None' })
@@ -97,7 +97,7 @@ module Rubocop
     end
 
     def print_conf_option(option, value)
-      puts  "    - #{option}: #{value}"
+      puts  "  #{option}: #{value}"
     end
 
     def target_finder
