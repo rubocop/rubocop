@@ -30,6 +30,7 @@ module Rubocop
           require f
         end
 
+        add_flags_with_optional_args(opts)
         add_boolean_flags(opts)
       end.parse!(args)
 
@@ -74,10 +75,16 @@ module Rubocop
       end
     end
 
+    def add_flags_with_optional_args(opts)
+      option(opts, '--show-cops [cop1,cop2,...]',
+             'Shows the given cops, or all cops by',
+             'default, and their configurations for the',
+             'current directory.') do |list|
+        @options[:show_cops] = list.nil? ? [] : list.split(',')
+      end
+    end
+
     def add_boolean_flags(opts)
-      option(opts, '--show-cops',
-             'Shows cops and their config for the',
-             'current directory.')
       option(opts, '-d', '--debug', 'Display debug info.')
       option(opts,
              '-D', '--display-cop-names',
