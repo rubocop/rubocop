@@ -5,21 +5,29 @@ module Rubocop
     module Style
       # Checks for colon (:) not follwed by some kind of space.
       class SpaceAfterColon < Cop
-        include SpaceAfterPunctuation
+        include IfNode
 
-        # The colon following a label will not appear in the token
-        # array. Instad we get a tLABEL token, whose length we use to
-        # calculate where we expect a space.
-        def offset(token)
-          case token.type
-          when :tLABEL then token.text.length + 1
-          when :tCOLON then 1
+        MSG = 'Space missing after colon.'
+
+        def on_pair(node)
+          oper = node.loc.operator
+          if oper.is?(':') && oper.source_buffer.source[oper.end_pos] =~ /\S/
+            add_offence(oper, oper)
           end
         end
 
-        def kind(token)
-          case token.type
-          when :tLABEL, :tCOLON then 'colon'
+        def on_if(node)
+          if ternary_op?(node)
+            colon = node.loc.colon
+            if colon.source_buffer.source[colon.end_pos] =~ /\S/
+              add_offence(colon, colon)
+            end
+          end
+        end
+
+        def autocorrect(range)
+          @corrections << lambda do |corrector|
+            corrector.insert_after(range, ' ')
           end
         end
       end
