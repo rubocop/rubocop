@@ -447,7 +447,7 @@ Tab:
   Enabled: true
 
 TrailingBlankLines:
-  Description: 'Checks for superflous trailing blank lines.'
+  Description: 'Checks for superfluous trailing blank lines.'
   Enabled: true
 
 TrailingWhitespace:
