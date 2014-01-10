@@ -8,9 +8,9 @@ module Rubocop
       class IfUnlessModifier < Cop
         include StatementModifier
 
-        def error_message
-          'Favor modifier if/unless usage when you have a single-line body. ' +
-            'Another good alternative is the usage of control flow &&/||.'
+        def error_message(keyword)
+          "Favor modifier #{keyword} usage when you have a single-line body." \
+          ' Another good alternative is the usage of control flow &&/||.'
         end
 
         def investigate(processed_source)
@@ -23,7 +23,8 @@ module Rubocop
             next if if_else?(node)
 
             if check(node, processed_source.comments)
-              add_offence(node, :keyword, error_message)
+              add_offence(node, :keyword,
+                          error_message(node.loc.keyword.source))
             end
           end
         end

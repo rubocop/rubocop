@@ -162,7 +162,7 @@ describe Rubocop::CLI, :isolated_environment do
                         'example.rb'])).to eq(1)
         expect($stdout.string)
           .to eq(['== example.rb ==',
-                  'C:  1:  1: Favor modifier if/unless usage when you ' +
+                  'C:  1:  1: Favor modifier if usage when you ' +
                   'have a single-line body. Another good alternative is ' +
                   'the usage of control flow &&/||.',
                   '',
@@ -417,7 +417,7 @@ describe Rubocop::CLI, :isolated_environment do
                       'example3.rb:2:5: C: Use snake_case for methods.',
                       'def badName',
                       '    ^^^^^^^',
-                      'example3.rb:3:3: C: Favor modifier if/unless usage ' +
+                      'example3.rb:3:3: C: Favor modifier if usage ' +
                       'when you have a single-line body. Another good ' +
                       'alternative is the usage of control flow &&/||.',
                       '  if something',
@@ -981,7 +981,7 @@ describe Rubocop::CLI, :isolated_environment do
                         '-c', 'rubocop.yml', 'example1.rb'])
       expect($stdout.string)
         .to eq(['== example1.rb ==',
-                'C:  1:  1: Favor modifier if/unless usage when you have ' +
+                'C:  1:  1: Favor modifier if usage when you have ' +
                 'a single-line body. Another good alternative is the ' +
                 'usage of control flow &&/||.',
                 '',
