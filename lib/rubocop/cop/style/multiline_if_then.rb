@@ -38,7 +38,7 @@ module Rubocop
         end
 
         def end_position(conditional_node)
-          conditional_location(conditional_node).expression.end.end_pos
+          conditional_node.loc.expression.end.end_pos
         end
 
         def error_message

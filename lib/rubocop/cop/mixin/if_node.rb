@@ -20,16 +20,6 @@ module Rubocop
       def if_else?(node)
         node.loc.respond_to?(:else) && node.loc.else
       end
-
-      def conditional_location(conditional_node)
-        node = if conditional_node.type == :match_current_line
-                 conditional_node.children.first
-               else
-                 conditional_node
-               end
-
-        node.loc
-      end
     end
   end
 end

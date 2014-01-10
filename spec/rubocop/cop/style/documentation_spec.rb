@@ -82,7 +82,6 @@ describe Rubocop::Cop::Style::Documentation do
   end
 
   it 'does not raise an error for an implicit match conditional' do
-    pending
     expect do
       inspect_source(cop,
                      ['class Test',

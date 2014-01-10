@@ -26,7 +26,7 @@ module Rubocop
 
         indentation = sexp.loc.keyword.column
         kw_length = sexp.loc.keyword.size
-        cond_length = conditional_length(cond)
+        cond_length = cond.loc.expression.size
         space = 1
         total = indentation + body_length + space + kw_length + space +
           cond_length
@@ -39,10 +39,6 @@ module Rubocop
 
       def length(sexp)
         sexp.loc.expression.source.lines.to_a.size
-      end
-
-      def conditional_length(conditional_node)
-        conditional_location(conditional_node).expression.size
       end
 
       def body_length(body)
