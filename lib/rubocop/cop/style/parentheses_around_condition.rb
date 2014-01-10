@@ -8,9 +8,6 @@ module Rubocop
       class ParenthesesAroundCondition < Cop
         include SafeAssignment
 
-        MSG = "Don't use parentheses around the condition of an " +
-          'if/unless/while/until'
-
         def on_if(node)
           process_control_op(node)
         end
@@ -32,8 +29,13 @@ module Rubocop
             # allow safe assignment
             return if safe_assignment?(cond) && safe_assignment_allowed?
 
-            add_offence(cond, :expression)
+            add_offence(cond, :expression, message(node))
           end
+        end
+
+        def message(node)
+          "Don't use parentheses around the condition of an " \
+          "#{node.loc.keyword.source}."
         end
 
         def autocorrect(node)

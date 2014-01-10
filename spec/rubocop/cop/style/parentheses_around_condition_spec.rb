@@ -22,6 +22,9 @@ describe Rubocop::Cop::Style::ParenthesesAroundCondition, :config do
                          'x += 1 until (x < 10)',
                         ])
     expect(cop.offences.size).to eq(9)
+    expect(cop.messages.first).to eq(
+      "Don't use parentheses around the condition of an if."
+    )
   end
 
   it 'auto-corrects parentheses around condition' do
