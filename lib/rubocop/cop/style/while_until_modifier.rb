@@ -8,9 +8,6 @@ module Rubocop
       class WhileUntilModifier < Cop
         include StatementModifier
 
-        MSG =
-          'Favor modifier while/until usage when you have a single-line body.'
-
         def investigate(processed_source)
           return unless processed_source.ast
           on_node([:while, :until], processed_source.ast) do |node|
@@ -18,9 +15,16 @@ module Rubocop
             next unless node.loc.end
 
             if check(node, processed_source.comments)
-              add_offence(node, :keyword)
+              add_offence(node, :keyword,
+                          message(node.loc.keyword.source))
             end
           end
+        end
+
+        private
+
+        def message(keyword)
+          "Favor modifier #{keyword} usage when you have a single-line body."
         end
       end
     end

@@ -12,8 +12,7 @@ module StatementModifierHelper
                          '  b',
                          'end'])
     expect(cop.messages).to eq(
-      ['Favor modifier while/until usage when you have a single-line ' +
-       'body.'])
+      ["Favor modifier #{keyword} usage when you have a single-line body."])
     expect(cop.offences.map { |o| o.location.source }).to eq([keyword])
   end
 
