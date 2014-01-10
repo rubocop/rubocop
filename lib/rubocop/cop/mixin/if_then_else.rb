@@ -16,7 +16,7 @@ module Rubocop
         # We won't check modifier or ternary conditionals.
         return unless node.loc.expression.source =~ /\A(if|unless)\b/
         return unless offending_line(node)
-        add_offence(node, :expression, error_message)
+        add_offence(node, :expression, error_message(node))
       end
     end
   end

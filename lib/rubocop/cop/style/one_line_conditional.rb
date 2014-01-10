@@ -3,6 +3,7 @@
 module Rubocop
   module Cop
     module Style
+      # TODO: Make configurable.
       # Checks for uses of if/then/else/end on a single line.
       class OneLineConditional < Cop
         include IfThenElse
@@ -11,7 +12,7 @@ module Rubocop
           node.loc.expression.line unless node.loc.expression.source =~ /\n/
         end
 
-        def error_message
+        def error_message(_node)
           'Favor the ternary operator (?:) over if/then/else/end constructs.'
         end
       end

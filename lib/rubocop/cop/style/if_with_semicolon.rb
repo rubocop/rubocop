@@ -11,7 +11,7 @@ module Rubocop
           node.loc.begin.line if node.loc.begin && node.loc.begin.is?(';')
         end
 
-        def error_message
+        def error_message(_node)
           'Never use if x; Use the ternary operator instead.'
         end
       end

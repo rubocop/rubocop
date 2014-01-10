@@ -41,8 +41,8 @@ module Rubocop
           conditional_node.loc.expression.end.end_pos
         end
 
-        def error_message
-          'Never use then for multi-line if/unless.'
+        def error_message(node)
+          "Never use then for multi-line #{node.loc.keyword.source}."
         end
       end
     end

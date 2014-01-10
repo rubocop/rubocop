@@ -72,7 +72,7 @@ describe Rubocop::Cop::Style::MultilineIfThen do
     inspect_source(cop, ['unless cond then',
                          'end'])
     expect(cop.messages).to eq(
-      ['Never use then for multi-line if/unless.'])
+      ['Never use then for multi-line unless.'])
   end
 
   it 'accepts multiline unless without then' do
