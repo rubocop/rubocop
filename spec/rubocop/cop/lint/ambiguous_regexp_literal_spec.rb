@@ -14,10 +14,6 @@ describe Rubocop::Cop::Lint::AmbiguousRegexpLiteral do
       let(:source) { 'p /pattern/' }
 
       it 'registers an offence' do
-        pending "Currently Parser doesn't emit the diagnostic due to a bug. " +
-                'Waiting for the bug fix release. ' +
-                'https://github.com/whitequark/parser/pull/128'
-
         expect(cop.offences.size).to eq(1)
         expect(cop.offences.first.message).to eq(
           'Ambiguous regexp literal. Parenthesize the method arguments ' +
