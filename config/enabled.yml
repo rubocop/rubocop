@@ -496,13 +496,13 @@ WordArray:
 ### Warnings
 
 AmbiguousOperator:
-  Description: >
+  Description: >-
                  Checks for ambiguous operators in the first argument of a
                  method invocation without parentheses.
   Enabled: true
 
 AmbiguousRegexpLiteral:
-  Description: >
+  Description: >-
                  Checks for ambiguous regexp literals in the first argument of
                  a method invocation without parenthesis.
   Enabled: true
