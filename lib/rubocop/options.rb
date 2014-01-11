@@ -92,7 +92,12 @@ module Rubocop
       option(opts, '-R', '--rails', 'Run extra Rails cops.')
       option(opts, '-l', '--lint', 'Run only lint cops.')
       option(opts, '-a', '--auto-correct', 'Auto-correct offences.')
-      option(opts, '-n', '--no-color', 'Disable color output.')
+
+      @options[:color] = true
+      opts.on('-n', '--no-color', 'Disable color output.') do
+        @options[:color] = false
+      end
+
       option(opts, '-v', '--version', 'Display version.')
       option(opts, '-V', '--verbose-version', 'Display verbose version.')
     end
