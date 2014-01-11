@@ -60,7 +60,7 @@ module Rubocop
 
       @config_store.options_config = @options[:config] if @options[:config]
 
-      Rainbow.enabled = false if @options[:no_color]
+      Rainbow.enabled = false unless @options[:color]
 
       puts Rubocop::Version.version(false) if @options[:version]
       puts Rubocop::Version.version(true) if @options[:verbose_version]

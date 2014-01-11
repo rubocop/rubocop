@@ -29,6 +29,7 @@
 * [#707](https://github.com/bbatsov/rubocop/issues/707): Fix error on operator assignments in top level scope in `UselessAssignment`. ([@yujinakayama][])
 * Fix a bug where some offences were discarded when any cop that has specific target file path (by `Include` or `Exclude` under each cop configuration) had run. ([@yujinakayama][])
 * [#724](https://github.com/bbatsov/rubocop/issues/724): Accept colons denoting required keyword argument (a new feature in Ruby 2.1) without trailing space in `SpaceAfterColon`. ([@jonas054][])
+* The `--no-color` option works again. ([@jonas054][])
 
 ## 0.16.0 (25/12/2013)
 
