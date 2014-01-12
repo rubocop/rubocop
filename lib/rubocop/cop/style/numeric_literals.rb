@@ -46,6 +46,20 @@ module Rubocop
           end
         end
 
+        def autocorrect(node)
+          @corrections << lambda do |corrector|
+            int = node.loc.expression.source.to_i
+            formatted_int = int
+              .abs
+              .to_s
+              .reverse
+              .gsub(/...(?=.)/, '\&_')
+              .reverse
+            formatted_int.insert(0, '-') if int < 0
+            corrector.replace(node.loc.expression, formatted_int)
+          end
+        end
+
         def integer_part(node)
           node.loc.expression.source.sub(/^[+-]/, '').split('.').first
         end
