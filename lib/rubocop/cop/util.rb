@@ -65,6 +65,10 @@ module Rubocop
         const_names.reverse.join('::')
       end
 
+      def node_children(node)
+        node.children.select { |e| e.is_a? Parser::AST::Node }
+      end
+
       def command?(name, node)
         return unless node.type == :send
 

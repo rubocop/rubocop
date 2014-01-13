@@ -7,3 +7,9 @@ MethodCalledOnDoEndBlock:
 SymbolArray:
   Description: 'Use %i or %I for arrays of symbols.'
   Enabled: false
+
+UnitSpecNaming:
+  Description: 'Check that RSpec unit tests conform to a naming scheme.'
+  Enabled: false
+  EnforceDescribeStatement: true
+  EnforceFilenames: true
