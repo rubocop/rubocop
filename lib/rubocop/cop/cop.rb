@@ -169,8 +169,8 @@ module Rubocop
       def include_file?(file)
         return true unless include_paths
 
-        include_paths.any? do |regex|
-          processed_source.buffer.name =~ /#{regex}/
+        include_paths.any? do |pattern|
+          match_path?(pattern, processed_source.buffer.name)
         end
       end
 
@@ -181,8 +181,8 @@ module Rubocop
       def exclude_file?(file)
         return false unless exclude_paths
 
-        exclude_paths.any? do |regex|
-          processed_source.buffer.name =~ /#{regex}/
+        exclude_paths.any? do |pattern|
+          match_path?(pattern, processed_source.buffer.name)
         end
       end
 
@@ -191,6 +191,16 @@ module Rubocop
       end
 
       private
+
+      def match_path?(pattern, path)
+        case pattern
+        when String
+          basename = File.basename(path)
+          basename == pattern || File.fnmatch(pattern, basename)
+        when Regexp
+          path =~ pattern
+        end
+      end
 
       def disabled_line?(line_number)
         return false unless @processed_source
