@@ -33,7 +33,8 @@ module Rubocop
         def autocorrect(node)
           @corrections << lambda do |corrector|
             if style == :require_parentheses
-              corrector.insert_after(node.children[1].loc.expression, ')')
+
+              corrector.insert_after(args_node(node).loc.expression, ')')
               expression = node.loc.expression
               replacement = expression.source.sub(/(def\s+\S+)\s+/, '\1(')
               corrector.replace(expression, replacement)
@@ -45,6 +46,16 @@ module Rubocop
         end
 
         private
+
+        def args_node(def_node)
+          if def_node.type == :def
+            _method_name, args, _body = *def_node
+            args
+          else
+            _scope, _method_name, args, _body = *def_node
+            args
+          end
+        end
 
         def arguments?(args)
           args.children.size > 0

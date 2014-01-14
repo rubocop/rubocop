@@ -41,9 +41,14 @@ describe Rubocop::Cop::Style::MethodDefParentheses, :config do
       expect(cop.offences).to be_empty
     end
 
-    it 'auto-adds required parens' do
+    it 'auto-adds required parens for a def' do
       new_source = autocorrect_source(cop, 'def test param; end')
       expect(new_source).to eq('def test(param); end')
+    end
+
+    it 'auto-adds required parens for a defs' do
+      new_source = autocorrect_source(cop, 'def self.test param; end')
+      expect(new_source).to eq('def self.test(param); end')
     end
 
     it 'auto-adds required parens to argument lists on multiple lines' do
@@ -91,6 +96,11 @@ describe Rubocop::Cop::Style::MethodDefParentheses, :config do
     it 'auto-removes the parens' do
       new_source = autocorrect_source(cop, 'def test(param); end')
       expect(new_source).to eq('def test param; end')
+    end
+
+    it 'auto-removes the parens for defs' do
+      new_source = autocorrect_source(cop, 'def self.test(param); end')
+      expect(new_source).to eq('def self.test param; end')
     end
   end
 end
