@@ -16,26 +16,22 @@ module Rubocop
     AUTO_GENERATED_FILE = 'rubocop-todo.yml'
 
     class << self
-      attr_accessor :debug
+      attr_accessor :debug, :auto_gen_config
       attr_writer :root_level # The upwards search is stopped at this level.
+
       alias_method :debug?, :debug
+      alias_method :auto_gen_config?, :auto_gen_config
 
       def load_file(path)
         path = File.absolute_path(path)
         hash = YAML.load_file(path) || {}
         puts "configuration from #{path}" if debug?
-        contains_auto_generated_config = false
 
-        resolve_inheritance(path, hash) do |base_config|
-          if base_config.loaded_path.include?(AUTO_GENERATED_FILE)
-            contains_auto_generated_config = true
-          end
-        end
+        resolve_inheritance(path, hash)
 
         hash.delete('inherit_from')
         config = Config.new(hash, path)
         config.warn_unless_valid
-        config.contains_auto_generated_config = contains_auto_generated_config
         config
       end
 
@@ -73,6 +69,10 @@ module Rubocop
       def base_configs(path, inherit_from)
         Array(inherit_from).map do |f|
           f = File.join(File.dirname(path), f) unless f.start_with?('/')
+          if auto_gen_config? && f.include?(AUTO_GENERATED_FILE)
+            fail "Remove #{AUTO_GENERATED_FILE} from the current " +
+              'configuration before generating it again.'
+          end
           print 'Inheriting ' if debug?
           load_file(f)
         end
@@ -122,10 +122,7 @@ module Rubocop
       end
 
       def merge_with_default(config, config_file)
-        result = Config.new(merge(default_configuration, config), config_file)
-        result.contains_auto_generated_config =
-          config.contains_auto_generated_config
-        result
+        Config.new(merge(default_configuration, config), config_file)
       end
 
       private
@@ -140,7 +137,6 @@ module Rubocop
               hash[key] = hash.key?(key) ? merge(value, hash[key]) : value
             end
           end
-          yield base_config
         end
       end
 

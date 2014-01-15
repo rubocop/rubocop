@@ -15,7 +15,6 @@ module Rubocop
     COMMON_PARAMS = %w(Exclude Include Severity)
 
     attr_reader :loaded_path
-    attr_accessor :contains_auto_generated_config
 
     def initialize(hash = {}, loaded_path = nil)
       @hash = hash
