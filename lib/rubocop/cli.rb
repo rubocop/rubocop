@@ -57,6 +57,7 @@ module Rubocop
       end
 
       ConfigLoader.debug = @options[:debug]
+      ConfigLoader.auto_gen_config = @options[:auto_gen_config]
 
       @config_store.options_config = @options[:config] if @options[:config]
 
@@ -65,16 +66,6 @@ module Rubocop
       puts Rubocop::Version.version(false) if @options[:version]
       puts Rubocop::Version.version(true) if @options[:verbose_version]
       exit(0) if @options[:version] || @options[:verbose_version]
-
-      if @options[:auto_gen_config]
-        target_finder.find(args).each do |file|
-          config = @config_store.for(file)
-          if config.contains_auto_generated_config
-            fail "Remove #{ConfigLoader::AUTO_GENERATED_FILE} from the " +
-              'current configuration before generating it again.'
-          end
-        end
-      end
     end
 
     def print_available_cops

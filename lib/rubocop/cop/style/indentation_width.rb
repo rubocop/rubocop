@@ -19,13 +19,8 @@ module Rubocop
 
         CORRECT_INDENTATION = 2
 
-        def on_begin(node)
-          check_consistent(node)
-        end
-
         def on_kwbegin(node)
           check_indentation(node.loc.end, node.children.first)
-          check_consistent(node)
         end
 
         def on_block(node)
@@ -154,27 +149,6 @@ module Rubocop
         def starts_with_access_modifier?(body_node)
           body_node.type == :begin &&
             AccessModifierIndentation.modifier_node?(body_node.children.first)
-        end
-
-        def check_consistent(node)
-          children_to_check = node.children.reject do |child|
-            # Don't check nodes that have special indentation and will be
-            # checked by the AccessModifierIndentation cop.
-            AccessModifierIndentation.modifier_node?(child)
-          end
-
-          children_to_check.map(&:loc).each_cons(2) do |child1, child2|
-            if child2.line > child1.line && child2.column != child1.column
-              expr = child2.expression
-              indentation = expr.source_line =~ /\S/
-              end_pos = expr.begin_pos
-              begin_pos = end_pos - indentation
-              add_offence(nil,
-                          Parser::Source::Range.new(expr.source_buffer,
-                                                    begin_pos, end_pos),
-                          'Inconsistent indentation detected.')
-            end
-          end
         end
       end
     end

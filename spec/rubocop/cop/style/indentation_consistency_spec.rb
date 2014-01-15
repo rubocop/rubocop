@@ -2,60 +2,41 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::IndentationWidth do
+describe Rubocop::Cop::Style::IndentationConsistency do
   subject(:cop) { described_class.new }
 
   context 'with if statement' do
-    it 'registers an offence for bad indentation of an if body' do
+    it 'registers an offence for bad indentation in an if body' do
       inspect_source(cop,
                      ['if cond',
                       ' func',
+                      '  func',
                       'end'])
-      expect(cop.messages).to eq(['Use 2 (not 1) spaces for indentation.'])
+      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
-    it 'registers an offence for bad indentation of an else body' do
+    it 'registers an offence for bad indentation in an else body' do
       inspect_source(cop,
                      ['if cond',
                       '  func1',
                       'else',
                       ' func2',
+                      '  func2',
                       'end'])
-      expect(cop.messages).to eq(['Use 2 (not 1) spaces for indentation.'])
+      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
-    it 'registers an offence for bad indentation of an elsif body' do
+    it 'registers an offence for bad indentation in an elsif body' do
       inspect_source(cop,
                      ['if a1',
                       '  b1',
                       'elsif a2',
                       ' b2',
+                      'b3',
                       'else',
                       '  c',
                       'end'])
-      expect(cop.messages).to eq(['Use 2 (not 1) spaces for indentation.'])
-    end
-
-    it 'registers offence for bad indentation of ternary inside else' do
-      inspect_source(cop,
-                     ['if a',
-                      '  b',
-                      'else',
-                      '     x ? y : z',
-                      'end'])
-      expect(cop.messages)
-        .to eq(['Use 2 (not 5) spaces for indentation.'])
-    end
-
-    it 'registers offence for bad indentation of modifier if in else' do
-      inspect_source(cop,
-                     ['if a',
-                      '  b',
-                      'else',
-                      '   x if y',
-                      'end'])
-      expect(cop.messages)
-        .to eq(['Use 2 (not 3) spaces for indentation.'])
+      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
     it 'accepts a one line if statement' do
@@ -205,12 +186,13 @@ describe Rubocop::Cop::Style::IndentationWidth do
   end
 
   context 'with unless' do
-    it 'registers an offence for bad indentation of an unless body' do
+    it 'registers an offence for bad indentation in an unless body' do
       inspect_source(cop,
                      ['unless cond',
                       ' func',
+                      '  func',
                       'end'])
-      expect(cop.messages).to eq(['Use 2 (not 1) spaces for indentation.'])
+      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
     it 'accepts an empty unless' do
@@ -228,8 +210,9 @@ describe Rubocop::Cop::Style::IndentationWidth do
                      ['case a',
                       'when b',
                       ' c',
+                      '    d',
                       'end'])
-      expect(cop.messages).to eq(['Use 2 (not 1) spaces for indentation.'])
+      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
     it 'registers an offence for bad indentation in a case/else body' do
@@ -241,8 +224,9 @@ describe Rubocop::Cop::Style::IndentationWidth do
                       '  e',
                       'else',
                       '   f',
+                      '  g',
                       'end'])
-      expect(cop.messages).to eq(['Use 2 (not 3) spaces for indentation.'])
+      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
     it 'accepts correctly indented case/when/else' do
@@ -295,29 +279,31 @@ describe Rubocop::Cop::Style::IndentationWidth do
   end
 
   context 'with while/until' do
-    it 'registers an offence for bad indentation of a while body' do
+    it 'registers an offence for bad indentation in a while body' do
       inspect_source(cop,
                      ['while cond',
                       ' func',
+                      '  func',
                       'end'])
-      expect(cop.messages).to eq(['Use 2 (not 1) spaces for indentation.'])
+      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
-    it 'registers an offence for bad indentation of begin/end/while' do
+    it 'registers an offence for bad indentation in begin/end/while' do
       inspect_source(cop,
                      ['something = begin',
                       ' func1',
                       '   func2',
                       'end while cond'])
-      expect(cop.messages).to eq(['Use 2 (not 1) spaces for indentation.'])
+      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
-    it 'registers an offence for bad indentation of an until body' do
+    it 'registers an offence for bad indentation in an until body' do
       inspect_source(cop,
                      ['until cond',
                       ' func',
+                      '  func',
                       'end'])
-      expect(cop.messages).to eq(['Use 2 (not 1) spaces for indentation.'])
+      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
     it 'accepts an empty while' do
@@ -329,12 +315,13 @@ describe Rubocop::Cop::Style::IndentationWidth do
   end
 
   context 'with for' do
-    it 'registers an offence for bad indentation of a for body' do
+    it 'registers an offence for bad indentation in a for body' do
       inspect_source(cop,
                      ['for var in 1..10',
                       ' func',
+                      'func',
                       'end'])
-      expect(cop.messages).to eq(['Use 2 (not 1) spaces for indentation.'])
+      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
     it 'accepts an empty for' do
@@ -346,21 +333,23 @@ describe Rubocop::Cop::Style::IndentationWidth do
   end
 
   context 'with def/defs' do
-    it 'registers an offence for bad indentation of a def body' do
+    it 'registers an offence for bad indentation in a def body' do
       inspect_source(cop,
                      ['def test',
                       '    func1',
-                      '     func2', # No offence registered for this.
+                      '     func2',
                       'end'])
-      expect(cop.messages).to eq(['Use 2 (not 4) spaces for indentation.'])
+      expect(cop.messages)
+        .to eq(['Inconsistent indentation detected.'])
     end
 
-    it 'registers an offence for bad indentation of a defs body' do
+    it 'registers an offence for bad indentation in a defs body' do
       inspect_source(cop,
                      ['def self.test',
                       '   func',
+                      '    func',
                       'end'])
-      expect(cop.messages).to eq(['Use 2 (not 3) spaces for indentation.'])
+      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
     it 'accepts an empty def body' do
@@ -379,13 +368,16 @@ describe Rubocop::Cop::Style::IndentationWidth do
   end
 
   context 'with class' do
-    it 'registers an offence for bad indentation of a class body' do
+    it 'registers an offence for bad indentation in a class body' do
       inspect_source(cop,
                      ['class Test',
-                      '    def func',
+                      '    def func1',
                       '    end',
+                      '  def func2',
+                      '  end',
                       'end'])
-      expect(cop.messages).to eq(['Use 2 (not 4) spaces for indentation.'])
+      expect(cop.messages)
+        .to eq(['Inconsistent indentation detected.'])
     end
 
     it 'accepts an empty class body' do
@@ -415,16 +407,41 @@ describe Rubocop::Cop::Style::IndentationWidth do
                       'end'])
       expect(cop.offences).to be_empty
     end
+
+    it 'registers an offence for bad indentation in def but not for ' +
+      'outdented public, protected, and private' do
+      inspect_source(cop,
+                     ['class Test',
+                      'public',
+                      '',
+                      '  def e',
+                      '  end',
+                      '',
+                      'protected',
+                      '',
+                      '  def f',
+                      '  end',
+                      '',
+                      'private',
+                      '',
+                      ' def g',
+                      ' end',
+                      'end'])
+      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
+      expect(cop.highlights).to eq([' '])
+    end
   end
 
   context 'with module' do
-    it 'registers an offence for bad indentation of a module body' do
+    it 'registers an offence for bad indentation in a module body' do
       inspect_source(cop,
                      ['module Test',
-                      '    def func',
+                      '    def func1',
                       '    end',
+                      '     def func2',
+                      '     end',
                       'end'])
-      expect(cop.messages).to eq(['Use 2 (not 4) spaces for indentation.'])
+      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
     it 'accepts an empty module body' do
@@ -436,26 +453,29 @@ describe Rubocop::Cop::Style::IndentationWidth do
   end
 
   context 'with block' do
-    it 'registers an offence for bad indentation of a do/end body' do
+    it 'registers an offence for bad indentation in a do/end body' do
       inspect_source(cop,
                      ['a = func do',
                       ' b',
+                      '  c',
                       'end'])
-      expect(cop.messages).to eq(['Use 2 (not 1) spaces for indentation.'])
+      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
-    it 'registers an offence for bad indentation of a {} body' do
+    it 'registers an offence for bad indentation in a {} body' do
       inspect_source(cop,
                      ['func {',
                       '   b',
+                      '  c',
                       '}'])
-      expect(cop.messages).to eq(['Use 2 (not 3) spaces for indentation.'])
+      expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
     it 'accepts a correctly indented block body' do
       inspect_source(cop,
                      ['a = func do',
                       '  b',
+                      '  c',
                       'end'])
       expect(cop.offences).to be_empty
     end

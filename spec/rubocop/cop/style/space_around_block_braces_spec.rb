@@ -102,10 +102,17 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces do
   end
 
   it 'registers offences for both braces without inner space' do
-    inspect_source(cop, ['each {puts}'])
-    expect(cop.messages).to eq(['Space missing inside {.',
+    inspect_source(cop, ['a {}',
+                         'b { }',
+                         'each {puts}'])
+    expect(cop.messages).to eq(['Space inside empty braces detected.',
+                                'Space missing inside {.',
                                 'Space missing inside }.'])
-    expect(cop.highlights).to eq(['p', '}'])
+    expect(cop.highlights).to eq([' ', 'p', '}'])
+
+    # Both correct and incorrect code has been found in relation to
+    # EnforcedStyleForEmptyBraces, but that doesn't matter. EnforcedStyle can
+    # be changed to get rid of the EnforcedStyle offences.
     expect(cop.config_to_allow_offences).to eq('EnforcedStyle' =>
                                                'no_space_inside_braces')
   end
