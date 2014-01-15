@@ -10,6 +10,7 @@
 * [#702](https://github.com/bbatsov/rubocop/issues/702): Improve `rubocop-todo.yml` with comments about offence count, configuration parameters, and auto-correction support. ([@jonas054][])
 * Add new command-line flag `-D/--display-cop-names` to trigger the display of cop names in offence messages. ([@bbatsov][])
 * [#733](https://github.com/bbatsov/rubocop/pull/733): `NumericLiterals` cop does auto-correction. ([@dblock][])
+* [#713](https://github.com/bbatsov/rubocop/issues/713): New cop `TrailingComma` checks for comma after the last item in a hash, array, or method call parameter list. ([@jonas054][])
 
 ### Changes
 

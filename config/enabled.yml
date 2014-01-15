@@ -450,6 +450,10 @@ TrailingBlankLines:
   Description: 'Checks for superfluous trailing blank lines.'
   Enabled: true
 
+TrailingComma:
+  Description: 'Checks for trailing comma in parameter lists and literals.'
+  Enabled: true
+
 TrailingWhitespace:
   Description: 'Avoid trailing whitespace.'
   Enabled: true

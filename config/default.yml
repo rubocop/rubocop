@@ -249,6 +249,11 @@ SpaceInsideHashLiteralBraces:
     - space
     - no_space
 
+TrailingComma:
+  EnforcedStyleForMultiline: no_comma
+  SupportedStyles:
+    - comma
+    - no_comma
 
 # TrivialAccessors doesn't require exact name matches and doesn't allow
 # predicated methods by default.
