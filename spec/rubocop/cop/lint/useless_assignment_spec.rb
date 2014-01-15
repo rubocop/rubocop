@@ -1275,7 +1275,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
   context 'when a named capture is unreferenced in top level' do
     let(:source) do
       [
-        "/(?<foo>\w+)/ =~ 'FOO'",
+        "/(?<foo>\w+)/ =~ 'FOO'"
       ]
     end
 

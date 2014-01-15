@@ -10,7 +10,7 @@ describe Rubocop::Cop::Style::FavorUnlessOverNegatedIf do
                    ['if !a_condition',
                     '  some_method',
                     'end',
-                    'some_method if !a_condition',
+                    'some_method if !a_condition'
                    ])
     expect(cop.messages).to eq(
       ['Favor unless (or control flow or) over if for negative ' +

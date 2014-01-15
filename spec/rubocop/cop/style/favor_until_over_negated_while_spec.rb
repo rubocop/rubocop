@@ -10,7 +10,7 @@ describe Rubocop::Cop::Style::FavorUntilOverNegatedWhile do
                    ['while !a_condition',
                     '  some_method',
                     'end',
-                    'some_method while !a_condition',
+                    'some_method while !a_condition'
                    ])
     expect(cop.messages).to eq(
       ['Favor until over while for negative conditions.'] * 2)

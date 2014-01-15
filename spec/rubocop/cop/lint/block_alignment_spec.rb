@@ -22,7 +22,7 @@ describe Rubocop::Cop::Lint::BlockAlignment do
                       '  type_check_value(subvalue, array_type)',
                       'end',
                       'a || b do',
-                      'end',
+                      'end'
                      ])
       expect(cop.offences).to be_empty
     end
@@ -49,7 +49,7 @@ describe Rubocop::Cop::Lint::BlockAlignment do
     it 'accepts end aligned with the first variable' do
       inspect_source(cop,
                      ['a = b = c = test do |ala|',
-                      'end',
+                      'end'
                      ])
       expect(cop.offences).to be_empty
     end
