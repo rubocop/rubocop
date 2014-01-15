@@ -119,7 +119,7 @@ describe Rubocop::Cop::Offence do
 
       [{                  cop: 'B' }, {                  cop: 'A' }, 1],
       [{ line: 6,         cop: 'A' }, { line: 5,         cop: 'B' }, 1],
-      [{          col: 6, cop: 'A' }, {          col: 5, cop: 'B' }, 1],
+      [{          col: 6, cop: 'A' }, {          col: 5, cop: 'B' }, 1]
     ].each do |one, other, expectation|
       context "when receiver has #{one} and other has #{other}" do
         it "returns #{expectation}" do

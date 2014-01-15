@@ -50,7 +50,7 @@ describe Rubocop::Cop::Style::AlignParameters do
                          'func2(a,',
                          '     *b,',
                          '      c)',
-                         'func3(*a)',
+                         'func3(*a)'
                         ])
     expect(cop.offences.map(&:to_s))
       .to eq(['C:  5:  6: Align the parameters of a method call if ' +

@@ -83,7 +83,7 @@ describe Rubocop::Cop::Style::MultilineIfThen do
 
   it 'does not get confused by a postfix unless' do
     inspect_source(cop,
-                   ['two unless one',
+                   ['two unless one'
                    ])
     expect(cop.offences).to be_empty
   end

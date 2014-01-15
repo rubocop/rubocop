@@ -65,7 +65,7 @@ describe Rubocop::Cop::Style::EmptyLineBetweenDefs, :config do
               '  # calculates size',
               '  def n',
               '  end',
-              'end',
+              'end'
              ]
     inspect_source(cop, source)
     expect(cop.offences).to be_empty
@@ -77,7 +77,7 @@ describe Rubocop::Cop::Style::EmptyLineBetweenDefs, :config do
               '  #',
               '  def html_escape(s)',
               '  end',
-              'end',
+              'end'
              ]
     inspect_source(cop, source)
     expect(cop.messages).to be_empty
@@ -89,7 +89,7 @@ describe Rubocop::Cop::Style::EmptyLineBetweenDefs, :config do
               '    def initialize(attrs)',
               '    end',
               '  end',
-              'end',
+              'end'
              ]
     inspect_source(cop, source)
     expect(cop.messages).to be_empty

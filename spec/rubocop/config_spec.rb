@@ -27,7 +27,7 @@ describe Rubocop::Config do
         create_file(configuration_path, [
           'LyneLenth:',
           '  Enabled: true',
-          '  Max: 100',
+          '  Max: 100'
         ])
       end
 
@@ -43,7 +43,7 @@ describe Rubocop::Config do
         create_file(configuration_path, [
           'LineLength:',
           '  Enabled: true',
-          '  Min: 10',
+          '  Min: 10'
         ])
       end
 
@@ -64,7 +64,7 @@ describe Rubocop::Config do
           '    - lib/file.rb',
           '  Include:',
           '    - lib/file.xyz',
-          '  Severity: warning',
+          '  Severity: warning'
         ])
       end
 

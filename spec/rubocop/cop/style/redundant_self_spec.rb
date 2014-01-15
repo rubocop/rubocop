@@ -92,7 +92,7 @@ describe Rubocop::Cop::Style::RedundantSelf do
   it 'accepts a self receiver used to distinguish from blockarg' do
     src = ['def requested_specs(&groups)',
            '  some_method(self.groups)',
-           'end',
+           'end'
           ]
     inspect_source(cop, src)
     expect(cop.offences).to be_empty
@@ -101,7 +101,7 @@ describe Rubocop::Cop::Style::RedundantSelf do
   it 'accepts a self receiver used to distinguish from argument' do
     src = ['def requested_specs(groups)',
            '  some_method(self.groups)',
-           'end',
+           'end'
           ]
     inspect_source(cop, src)
     expect(cop.offences).to be_empty
@@ -110,7 +110,7 @@ describe Rubocop::Cop::Style::RedundantSelf do
   it 'accepts a self receiver used to distinguish from argument' do
     src = ['def requested_specs(final = true)',
            '  something if self.final != final',
-           'end',
+           'end'
           ]
     inspect_source(cop, src)
     expect(cop.offences).to be_empty
@@ -123,7 +123,7 @@ describe Rubocop::Cop::Style::RedundantSelf do
            '    groups.map! { |g| g.to_sym }',
            '    specs_for(groups)',
            '  end',
-           'end',
+           'end'
           ]
     inspect_source(cop, src)
     expect(cop.offences).to be_empty

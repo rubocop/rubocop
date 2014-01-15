@@ -86,12 +86,12 @@ describe Rubocop::ConfigLoader do
         create_file('.rubocop.yml',
                     ['AllCops:',
                      '  Excludes:',
-                     '    - vendor/**',
+                     '    - vendor/**'
                     ])
 
         create_file(file_path,
                     ['AllCops:',
-                     '  Excludes: []',
+                     '  Excludes: []'
                     ])
       end
 
@@ -109,7 +109,7 @@ describe Rubocop::ConfigLoader do
                     ['AllCops:',
                      '  Excludes:',
                      '    - vendor/**',
-                     '    - !ruby/regexp /[A-Z]/',
+                     '    - !ruby/regexp /[A-Z]/'
                     ])
 
         create_file(file_path, ['inherit_from: ../.rubocop.yml'])
@@ -142,7 +142,7 @@ describe Rubocop::ConfigLoader do
         create_file('src/.rubocop.yml',
                     ['AllCops:',
                      '  Excludes:',
-                     '    - vendor/**',
+                     '    - vendor/**'
                     ])
 
         create_file(file_path, ['inherit_from: ../src/.rubocop.yml'])
@@ -251,7 +251,7 @@ describe Rubocop::ConfigLoader do
     it 'returns a configuration loaded from the passed path' do
       create_file(configuration_path, [
         'Encoding:',
-        '  Enabled: true',
+        '  Enabled: true'
       ])
       configuration = load_file
       expect(configuration['Encoding']).to eq(
