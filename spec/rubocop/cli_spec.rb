@@ -194,15 +194,12 @@ describe Rubocop::CLI, :isolated_environment do
         create_file('example1.rb', "\tputs 0")
         expect(cli.run(['--debug', 'example1.rb'])).to eq(1)
         home = File.dirname(File.dirname(File.dirname(__FILE__)))
-        expect($stdout.string.lines.to_a[2, 5].map(&:chomp).join("\n"))
+        expect($stdout.string.lines.grep(/configuration/).map(&:chomp))
           .to eq(["For #{abs('')}:" +
                   " configuration from #{home}/config/default.yml",
                   "Inheriting configuration from #{home}/config/enabled.yml",
-                  "Inheriting configuration from #{home}/config/" +
-                  'disabled.yml',
-                  "AllCops/Excludes configuration from #{home}/.rubocop.yml",
-                  "Inheriting configuration from #{home}/rubocop-todo.yml"
-                 ].join("\n"))
+                  "Inheriting configuration from #{home}/config/disabled.yml"
+                 ])
       end
 
       it 'shows cop names' do

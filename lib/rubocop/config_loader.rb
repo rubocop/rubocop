@@ -89,6 +89,8 @@ module Rubocop
 
       def configuration_from_file(config_file)
         config = load_file(config_file)
+        return config if config_file == DEFAULT_FILE
+
         found_files = config_files_in_path(config_file)
         if found_files.any? && found_files.last != config_file
           print 'AllCops/Excludes ' if debug?
