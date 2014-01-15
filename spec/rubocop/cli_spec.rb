@@ -190,11 +190,11 @@ describe Rubocop::CLI, :isolated_environment do
     end
 
     describe '-d/--debug' do
-      it 'shows config files', ruby: 2.0 do
+      it 'shows config files' do
         create_file('example1.rb', "\tputs 0")
         expect(cli.run(['--debug', 'example1.rb'])).to eq(1)
         home = File.dirname(File.dirname(File.dirname(__FILE__)))
-        expect($stdout.string.lines[2, 5].map(&:chomp).join("\n"))
+        expect($stdout.string.lines.to_a[2, 5].map(&:chomp).join("\n"))
           .to eq(["For #{abs('')}:" +
                   " configuration from #{home}/config/default.yml",
                   "Inheriting configuration from #{home}/config/enabled.yml",
@@ -205,26 +205,26 @@ describe Rubocop::CLI, :isolated_environment do
                  ].join("\n"))
       end
 
-      it 'shows cop names', ruby: 2.0 do
+      it 'shows cop names' do
         create_file('example1.rb', "\tputs 0")
         expect(cli.run(['--format',
                         'emacs',
                         '--debug',
                         'example1.rb'])).to eq(1)
-        expect($stdout.string.lines[-1])
+        expect($stdout.string.lines.to_a[-1])
           .to eq(["#{abs('example1.rb')}:1:1: C: Tab: Tab detected.",
                   ''].join("\n"))
       end
     end
 
     describe '-D/--display-cop-names' do
-      it 'shows cop names', ruby: 2.0 do
+      it 'shows cop names' do
         create_file('example1.rb', "\tputs 0")
         expect(cli.run(['--format',
                         'emacs',
                         '--debug',
                         'example1.rb'])).to eq(1)
-        expect($stdout.string.lines[-1])
+        expect($stdout.string.lines.to_a[-1])
           .to eq(["#{abs('example1.rb')}:1:1: C: Tab: Tab detected.",
                   ''].join("\n"))
       end
