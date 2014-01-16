@@ -42,7 +42,31 @@ module Rubocop
           check(node)
         end
 
+        def on_send(node)
+          receiver, method_name, *args = *node
+          if visibility_and_def_on_same_line?(receiver, method_name, args)
+            expr = node.loc.expression
+            method_def = args.first
+            range = Parser::Source::Range.new(expr.source_buffer,
+                                              expr.begin_pos,
+                                              method_def.loc.keyword.end_pos)
+            check_offset(method_def, range.source,
+                         method_def.loc.keyword.begin_pos - expr.begin_pos)
+            ignore_node(method_def) # Don't check the same `end` again.
+          end
+        end
+
         private
+
+        # Returns true for constructs such as
+        # private def my_method
+        # which are allowed in Ruby 2.1 and later.
+        def visibility_and_def_on_same_line?(receiver, method_name, args)
+          !receiver &&
+            [:public, :protected, :private,
+             :module_function].include?(method_name) &&
+            args.size == 1 && [:def, :defs].include?(args.first.type)
+        end
 
         def check_assignment(node, rhs)
           # If there are method calls chained to the right hand side of the

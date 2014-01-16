@@ -17,7 +17,7 @@ describe Rubocop::Cop::Lint::EndAlignment, :config do
                            end_kw])
       expect(cop.offences.size).to eq(1)
       expect(cop.messages.first)
-        .to match(/end at 2, \d is not aligned with #{alignment_base} at 1,/)
+        .to match(/end at 2, \d+ is not aligned with #{alignment_base} at 1,/)
       expect(cop.highlights.first).to eq('end')
       expect(cop.config_to_allow_offences).to eq('AlignWith' => opposite)
     end
@@ -49,6 +49,26 @@ describe Rubocop::Cop::Lint::EndAlignment, :config do
   include_examples 'aligned', 'unless', 'test',      'end'
   include_examples 'aligned', 'while',  'test',      'end'
   include_examples 'aligned', 'until',  'test',      'end'
+
+  context 'in ruby 2.1 or later' do
+    include_examples 'aligned', 'public def',          'test', 'end'
+    include_examples 'aligned', 'protected def',       'test', 'end'
+    include_examples 'aligned', 'private def',         'test', 'end'
+    include_examples 'aligned', 'module_function def', 'test', 'end'
+
+    include_examples('misaligned',
+                     'public def', 'test',
+                     '       end')
+    include_examples('misaligned',
+                     'protected def', 'test',
+                     '          end')
+    include_examples('misaligned',
+                     'private def', 'test',
+                     '        end')
+    include_examples('misaligned',
+                     'module_function def', 'test',
+                     '                end')
+  end
 
   it 'can handle ternary if' do
     inspect_source(cop, 'a = cond ? x : y')
