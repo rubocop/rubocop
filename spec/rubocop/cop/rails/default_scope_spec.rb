@@ -23,6 +23,12 @@ describe Rubocop::Cop::Rails::DefaultScope do
     expect(cop.offences.size).to eq(1)
   end
 
+  it 'registers an offence for non blocks' do
+    inspect_source(cop,
+                   ['default_scope order: "position"'])
+    expect(cop.offences.size).to eq(1)
+  end
+
   it 'accepts a block arg' do
     inspect_source(cop,
                    ['default_scope { something }'])
