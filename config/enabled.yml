@@ -221,6 +221,10 @@ IfWithSemicolon:
   Description: 'Never use if x; .... Use the ternary operator instead.'
   Enabled: true
 
+IndentationConsistency:
+  Description: 'Keep indentation straight.'
+  Enabled: true
+
 IndentationWidth:
   Description: 'Use 2 spaces for indentation.'
   Enabled: true

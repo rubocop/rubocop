@@ -13,7 +13,7 @@ module Rubocop
           # Discard attr writer methods.
           return if method_name.to_s.end_with?('=')
           # Discard operator methods.
-          return if OPERATOR_METHODS.include?(method_name)
+          return if operator?(method_name)
 
           # We care only for the last argument.
           arg = args.last

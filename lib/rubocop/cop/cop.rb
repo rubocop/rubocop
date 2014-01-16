@@ -45,13 +45,7 @@ module Rubocop
     class Cop
       extend AST::Sexp
       include Util
-
-      # http://phrogz.net/programmingruby/language.html#table_18.4
-      # Backtick is added last just to help editors parse this code.
-      OPERATOR_METHODS = %w(
-          | ^ & <=> == === =~ > >= < <= << >>
-          + - * / % ** ~ +@ -@ [] []= ! != !~
-        ).map(&:to_sym) + [:'`']
+      include IgnoredNode
 
       attr_reader :config, :offences, :corrections
       attr_accessor :processed_source # TODO: Bad design.
@@ -78,10 +72,6 @@ module Rubocop
         name.to_s.split('::')[-2].downcase.to_sym
       end
 
-      def self.style?
-        cop_type == :style
-      end
-
       def self.lint?
         cop_type == :lint
       end
@@ -96,7 +86,6 @@ module Rubocop
 
         @offences = []
         @corrections = []
-        @ignored_nodes = []
       end
 
       def cop_config
@@ -158,32 +147,12 @@ module Rubocop
 
       alias_method :name, :cop_name
 
-      def ignore_node(node)
-        @ignored_nodes << node
-      end
-
-      def include_paths
-        cop_config && cop_config['Include']
-      end
-
       def include_file?(file)
-        return true unless include_paths
-
-        include_paths.any? do |pattern|
-          match_path?(pattern, processed_source.buffer.name)
-        end
-      end
-
-      def exclude_paths
-        cop_config && cop_config['Exclude']
+        buffer_name_matches_any?('Include', true)
       end
 
       def exclude_file?(file)
-        return false unless exclude_paths
-
-        exclude_paths.any? do |pattern|
-          match_path?(pattern, processed_source.buffer.name)
-        end
+        buffer_name_matches_any?('Exclude', false)
       end
 
       def relevant_file?(file)
@@ -191,6 +160,12 @@ module Rubocop
       end
 
       private
+
+      def buffer_name_matches_any?(parameter, default_result)
+        paths = cop_config && cop_config[parameter]
+        return default_result unless paths
+        paths.any? { |path| match_path?(path, processed_source.buffer.name) }
+      end
 
       def match_path?(pattern, path)
         case pattern
@@ -207,22 +182,6 @@ module Rubocop
         disabled_lines = @processed_source.disabled_lines_for_cops[name]
         return false unless disabled_lines
         disabled_lines.include?(line_number)
-      end
-
-      def part_of_ignored_node?(node)
-        expression = node.loc.expression
-        @ignored_nodes.each do |ignored_node|
-          if ignored_node.loc.expression.begin_pos <= expression.begin_pos &&
-            ignored_node.loc.expression.end_pos >= expression.end_pos
-            return true
-          end
-        end
-
-        false
-      end
-
-      def ignored_node?(node)
-        @ignored_nodes.any? { |n| n.eql?(node) } # Same object found in array?
       end
 
       def default_severity
