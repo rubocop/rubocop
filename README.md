@@ -20,7 +20,8 @@ Apart from reporting problems in your code, RuboCop can also
 automatically fix some of the problems for you.
 
 - [Installation](#installation)
-- [Basic Usage](#basic-usage)
+- [Basic Usage](#basic-usage)  
+	- [CI Build Integration](#ci-build-integration)
 	- [Cops](#cops)
 		- [Style](#style)
 		- [Lint](#lint)
@@ -129,6 +130,10 @@ Command flag              | Description
 `--only`                  | Run only the specified cop
 `--auto-gen-config`       | Generate a configuration file acting as a TODO list
 `--show-cops`             | Shows available cops and their configuration
+
+### CI Build Integration
+
+RuboCop can also be integrated into an existing CI build process by adding sample_spec/rubocop_spec.rb to your existing RSpec test suite. This will cause RuboCop checks to be treated like RSpec tests.
 
 ### Cops
 
