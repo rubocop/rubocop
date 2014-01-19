@@ -4,11 +4,13 @@ module Rubocop
   module Cop
     module Style
       # This cop checks for the presence of superfluous parentheses around the
-      # condition of if/while/until.
+      # condition of if/unless/while/until.
       class ParenthesesAroundCondition < Cop
+        include IfNode
         include SafeAssignment
 
         def on_if(node)
+          return if ternary_op?(node)
           process_control_op(node)
         end
 
@@ -34,8 +36,9 @@ module Rubocop
         end
 
         def message(node)
-          "Don't use parentheses around the condition of an " \
-          "#{node.loc.keyword.source}."
+          kw = node.loc.keyword.source
+          article = kw == 'while' ? 'a' : 'an'
+          "Don't use parentheses around the condition of #{article} #{kw}."
         end
 
         def autocorrect(node)

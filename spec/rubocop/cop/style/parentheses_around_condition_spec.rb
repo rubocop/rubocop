@@ -18,13 +18,14 @@ describe Rubocop::Cop::Style::ParenthesesAroundCondition, :config do
                          'end',
                          'x += 1 if (x < 10)',
                          'x += 1 unless (x < 10)',
-                         'x += 1 while (x < 10)',
-                         'x += 1 until (x < 10)'
+                         'x += 1 until (x < 10)',
+                         'x += 1 while (x < 10)'
                         ])
     expect(cop.offences.size).to eq(9)
-    expect(cop.messages.first).to eq(
-      "Don't use parentheses around the condition of an if."
-    )
+    expect(cop.messages.first)
+      .to eq("Don't use parentheses around the condition of an if.")
+    expect(cop.messages.last)
+      .to eq("Don't use parentheses around the condition of a while.")
   end
 
   it 'auto-corrects parentheses around condition' do
@@ -72,6 +73,11 @@ describe Rubocop::Cop::Style::ParenthesesAroundCondition, :config do
                          'x += 1 while x < 10',
                          'x += 1 until x < 10'
                         ])
+    expect(cop.offences).to be_empty
+  end
+
+  it 'accepts parentheses around condition in a ternary' do
+    inspect_source(cop, '(a == 0) ? b : a')
     expect(cop.offences).to be_empty
   end
 
