@@ -47,6 +47,40 @@ describe Rubocop::CLI, :isolated_environment do
                   '  puts i',
                   'end'].join("\n") + "\n")
       end
+
+      # In this example, the auto-correction (changing "raise" to "fail")
+      # creates a new problem (alignment of parameters), which is also
+      # corrected automatically.
+      it 'can correct a problems and the problem it creates' do
+        create_file('example.rb',
+                    ['# encoding: utf-8',
+                     'raise NotImplementedError,',
+                     "      'Method should be overridden in child classes'"])
+        expect(cli.run(['--auto-correct'])).to eq(1)
+        expect(IO.read('example.rb'))
+          .to eq(['# encoding: utf-8',
+                  'fail NotImplementedError,',
+                  "     'Method should be overridden in child classes'"]
+                   .join("\n") + "\n")
+        expect($stdout.string)
+          .to eq(['Inspecting 1 file',
+                  'C',
+                  '',
+                  'Offences:',
+                  '',
+                  'example.rb:2:1: C: [Corrected] Use `fail` instead of ' +
+                  '`raise` to signal exceptions.',
+                  'raise NotImplementedError,',
+                  '^^^^^',
+                  'example.rb:3:7: C: [Corrected] Align the parameters of a ' +
+                  'method call if they span more than one line.',
+                  "      'Method should be overridden in child classes'",
+                  '      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',
+                  '',
+                  '1 file inspected, 2 offences detected, 2 offences ' +
+                  'corrected',
+                  ''].join("\n"))
+      end
     end
 
     describe '--auto-gen-config' do
