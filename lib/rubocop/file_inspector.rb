@@ -20,15 +20,10 @@ module Rubocop
 
       target_files.each do |file|
         break if yield
-
-        puts "Scanning #{file}" if @options[:debug]
-        formatter_set.file_started(file, {})
-
-        offences = inspect_file(file, config_store)
+        offences = process_file(file, config_store)
 
         any_failed = true unless offences.empty?
         inspected_files << file
-        formatter_set.file_finished(file, offences.freeze)
       end
 
       formatter_set.finished(inspected_files.freeze)
@@ -48,6 +43,27 @@ module Rubocop
     end
 
     private
+
+    def process_file(file, config_store)
+      puts "Scanning #{file}" if @options[:debug]
+      offences = []
+      formatter_set.file_started(file, {})
+
+      # When running with --auto-correct, we need to inspect the file (which
+      # includes writing a corrected version of it) until no more corrections
+      # are made. This is because automatic corrections can introduce new
+      # offences. In the normal case the loop is only executed once.
+      loop do
+        new_offences = inspect_file(file, config_store)
+        unique_new = new_offences.reject { |n| offences.include?(n) }
+
+        offences += unique_new
+        break unless unique_new.any?(&:corrected?)
+      end
+
+      formatter_set.file_finished(file, offences.freeze)
+      offences
+    end
 
     def inspect_file(file, config_store)
       config = config_store.for(file)
