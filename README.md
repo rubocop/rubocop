@@ -523,9 +523,9 @@ RuboCop and displays the results in Vim.
 There's also a RuboCop checker in
 [syntastic](https://github.com/scrooloose/syntastic).
 
-### Sublime Text 2
+### Sublime Text
 
-If you're a ST2 user you might find the
+If you're a ST user you might find the
 [Sublime RuboCop plugin](https://github.com/pderichs/sublime_rubocop)
 useful.
 
