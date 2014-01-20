@@ -14,6 +14,19 @@ describe Rubocop::Cop::Style::EmptyLinesAroundBody do
     expect(cop.offences.size).to eq(1)
   end
 
+  # The cop only registers an offence if the extra line is completely emtpy. If
+  # there is trailing whitespace, then that must be dealt with first. Having
+  # two cops registering offence for the line with only spaces would cause
+  # havoc in auto-correction.
+  it 'accepts method body starting with a line with spaces' do
+    inspect_source(cop,
+                   ['def some_method',
+                    '  ',
+                    '  do_something',
+                    'end'])
+    expect(cop.offences).to be_empty
+  end
+
   it 'autocorrects method body starting with a blank' do
     corrected = autocorrect_source(cop,
                                    ['def some_method',

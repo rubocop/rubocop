@@ -81,6 +81,42 @@ describe Rubocop::CLI, :isolated_environment do
                   'corrected',
                   ''].join("\n"))
       end
+
+      # Thanks to repeated auto-correction, we can get rid of the trailing
+      # spaces, and then the extra empty line.
+      it 'can correct two problems in the same place' do
+        create_file('example.rb',
+                    ['# encoding: utf-8',
+                     '# Example class.',
+                     'class Klass',
+                     '  ',
+                     '  def f',
+                     '  end',
+                     'end'])
+        expect(cli.run(['--auto-correct'])).to eq(1)
+        expect(IO.read('example.rb'))
+          .to eq(['# encoding: utf-8',
+                  '# Example class.',
+                  'class Klass',
+                  '  def f',
+                  '  end',
+                  'end'].join("\n") + "\n")
+        expect($stderr.string).to eq('')
+        expect($stdout.string)
+          .to eq(['Inspecting 1 file',
+                  'C',
+                  '',
+                  'Offences:',
+                  '',
+                  'example.rb:4:1: C: [Corrected] Trailing whitespace ' +
+                  'detected.',
+                  'example.rb:4:1: C: [Corrected] Extra empty line detected ' +
+                  'at body beginning.',
+                  '',
+                  '1 file inspected, 2 offences detected, 2 offences ' +
+                  'corrected',
+                  ''].join("\n"))
+      end
     end
 
     describe '--auto-gen-config' do

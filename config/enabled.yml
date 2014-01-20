@@ -144,7 +144,7 @@ EmptyLinesAroundAccessModifier:
   Enabled: true
 
 EmptyLinesAroundBody:
-  Description: "Keeps track of blank lines around expression bodies."
+  Description: "Keeps track of empty lines around expression bodies."
   Enabled: true
 
 EmptyLiteral:
