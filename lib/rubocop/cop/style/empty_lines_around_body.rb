@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     module Style
-      # This cops checks redundant blanks lines around the bodies of classes,
+      # This cops checks redundant empty lines around the bodies of classes,
       # modules & methods.
       #
       # @example
@@ -24,8 +24,8 @@ module Rubocop
       class EmptyLinesAroundBody < Cop
         include CheckMethods
 
-        MSG_BEG = 'Extra blank line detected at body beginning.'
-        MSG_END = 'Extra blank line detected at body end.'
+        MSG_BEG = 'Extra empty line detected at body beginning.'
+        MSG_END = 'Extra empty line detected at body end.'
 
         def on_class(node)
           check(node)
@@ -55,7 +55,7 @@ module Rubocop
         end
 
         def check_source(start_line, end_line)
-          if processed_source.lines[start_line].blank?
+          if processed_source.lines[start_line].empty?
             range = source_range(processed_source.buffer,
                                  processed_source[0...start_line],
                                  0,
@@ -63,7 +63,7 @@ module Rubocop
             add_offence(range, range, MSG_BEG)
           end
 
-          if processed_source.lines[end_line - 2].blank?
+          if processed_source.lines[end_line - 2].empty?
             range = source_range(processed_source.buffer,
                                  processed_source[0...(end_line - 2)],
                                  0,
