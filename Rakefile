@@ -32,5 +32,4 @@ task default: [:spec, :internal_investigation]
 require 'yard'
 YARD::Rake::YardocTask.new
 
-require 'rubocop/rake_task'
 Rubocop::RakeTask.new
