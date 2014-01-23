@@ -16,7 +16,7 @@
 
 ### Changes
 
-* [581](https://github.com/bbatsov/rubocop/pull/581): Extracted a new cop `AmbiguousOperator` from `Syntax` cop. It checks for ambiguous operators in the first argument of a method invocation without parentheses. ([@yujinakayama][])
+* [#581](https://github.com/bbatsov/rubocop/pull/581): Extracted a new cop `AmbiguousOperator` from `Syntax` cop. It checks for ambiguous operators in the first argument of a method invocation without parentheses. ([@yujinakayama][])
 * Extracted a new cop `AmbiguousRegexpLiteral` from `Syntax` cop. It checks for ambiguous regexp literals in the first argument of a method invocation without parentheses. ([@yujinakayama][])
 * Extracted a new cop `UselessElseWithoutRescue` from `Syntax` cop. It checks for useless `else` in `begin..end` without `rescue`. ([@yujinakayama][])
 * Extracted a new cop `InvalidCharacterLiteral` from `Syntax` cop. It checks for invalid character literals with a non-escaped whitespace character (e.g. `? `). ([@yujinakayama][])
@@ -59,7 +59,7 @@
 * Rake task now support setting formatters. ([@pmenglund][])
 * [#653](https://github.com/bbatsov/rubocop/issues/653): `CaseIndentation` cop is now configurable with parameters `IndentWhenRelativeTo` and `IndentOneStep`. ([@jonas054][])
 * [#654](https://github.com/bbatsov/rubocop/pull/654): `For` cop is now configurable to enforce either `each` (default) or `for`. ([@jonas054][])
-* [#661](https://github.com/bbatsov/rubocop/issue/661): `EndAlignment` cop is now configurable for alignment with `keyword` (default) or `variable`. ([@jonas054][])
+* [#661](https://github.com/bbatsov/rubocop/issues/661): `EndAlignment` cop is now configurable for alignment with `keyword` (default) or `variable`. ([@jonas054][])
 * Allow to overwrite the severity of a cop with the new `Severity` param. ([@codez][])
 * New cop `FlipFlop` checks for flip flops. ([@agrimm][])
 * [#577](https://github.com/bbatsov/rubocop/issues/577): Introduced `MethodDefParentheses` to allow for for requiring either parentheses or no parentheses in method definitions. Replaces `DefWithoutParentheses`. ([@skanev][])
@@ -78,7 +78,7 @@
 * Handle properly heredocs in `StringLiterals` cop. ([@bbatsov][])
 * Fix `SpaceAroundOperators` to not report missing space around operator for `def self.method *args`. ([@jonas054][])
 * Properly handle `['AllCops']['Includes']` and `['AllCops']['Excludes']` when passing config via `-c`. ([@fancyremarker][], [@codez][])
-* [#611](https://github.com/bbatsov/rubocop/pull/611): Fix crash when loading an empty config file ([@sinisterchipmunk][])
+* [#611](https://github.com/bbatsov/rubocop/pull/611): Fix crash when loading an empty config file. ([@sinisterchipmunk][])
 * Fix `DotPosition` cop with `trailing` style for method calls on same line. ([@vonTronje][])
 * [#627](https://github.com/bbatsov/rubocop/pull/627): Fix counting of slashes in complicated regexps in `RegexpLiteral` cop. ([@jonas054][])
 * [#638](https://github.com/bbatsov/rubocop/issues/638): Fix bug in auto-correct that changes `each{ |x|` to `each d o |x|`. ([@jonas054][])
@@ -123,7 +123,7 @@
 * Encoding errors are reported as fatal offences rather than printed with red text. ([@jonas054][])
 * `AccessControl` cop is now configurable with the `EnforcedStyle` option. ([@sds][])
 * Split `AccessControl` cop to `AccessModifierIndentation` and `EmptyLinesAroundAccessModifier`. ([@bbatsov][])
-* [#594](https://github.com/bbatsov/rubocop/pull/594): Add configuration parameter `EnforcedStyleForEmptyBraces` to `SpaceInsideHashLiteralBraces` cop, and change `EnforcedStyleIsWithSpaces` (values `true`, `false`) to `EnforcedStyle` (values `space`, `no_space`) ([@jonas054][])
+* [#594](https://github.com/bbatsov/rubocop/pull/594): Add configuration parameter `EnforcedStyleForEmptyBraces` to `SpaceInsideHashLiteralBraces` cop, and change `EnforcedStyleIsWithSpaces` (values `true`, `false`) to `EnforcedStyle` (values `space`, `no_space`). ([@jonas054][])
 * Coverage builds linked from the README page are enabled again. ([@jonas054][])
 
 ### Bugs fixed
@@ -142,7 +142,7 @@
 * [#600](https://github.com/bbatsov/rubocop/pull/600): Don't require an empty line for access modifiers at the beginning of class/module body. ([@bbatsov][])
 * [#608](https://github.com/bbatsov/rubocop/pull/608): `RescueException` no longer crashes when the namespace of a rescued class is in a local variable. ([@jonas054][])
 * [#173](https://github.com/bbatsov/rubocop/issues/173): Allow the use of `alias` in the body of an `instance_exec`. ([@bbatsov][])
-* [#554](https://github.com/bbatsov/rubocop/issues/554): Handle properly multi-line arrays with comments in them in `WordArray` ([@bbatsov][])
+* [#554](https://github.com/bbatsov/rubocop/issues/554): Handle properly multi-line arrays with comments in them in `WordArray`. ([@bbatsov][])
 
 ## 0.14.1 (10/10/2013)
 
@@ -263,8 +263,8 @@
 
 ### New features
 
-* [#439](https://github.com/bbatsov/rubocop/issues/439) Added formatter 'OffenceCount' which outputs a summary list of cops and their offence count.
-* [#395](https://github.com/bbatsov/rubocop/issues/395) Added `--show-cops` option to show available cops.
+* [#439](https://github.com/bbatsov/rubocop/issues/439): Added formatter 'OffenceCount' which outputs a summary list of cops and their offence count.
+* [#395](https://github.com/bbatsov/rubocop/issues/395): Added `--show-cops` option to show available cops.
 * New cop `NilComparison` keeps track of comparisons like `== nil`.
 * New cop `EvenOdd` keeps track of occasions where `Fixnum#even?` or `Fixnum#odd?` should have been used (like `x % 2 == 0`).
 * New cop `IndentationWidth` checks for files using indentation that is not two spaces.
@@ -323,7 +323,7 @@
 ### Bugs fixed
 
 * [#374](https://github.com/bbatsov/rubocop/issues/374): Fixed error at post condition loop (`begin-end-while`, `begin-end-until`) in `UnusedLocalVariable` and `ShadowingOuterLocalVariable`.
-* [#373](https://github.com/bbatsov/rubocop/issues/373) and [#376](https://github.com/bbatsov/rubocop/issues/376): allow braces around multi-line blocks if `do`-`end` would change the meaning of the code.
+* [#373](https://github.com/bbatsov/rubocop/issues/373) and [#376](https://github.com/bbatsov/rubocop/issues/376): Allow braces around multi-line blocks if `do`-`end` would change the meaning of the code.
 * `RedundantSelf` now allows `self.` followed by any ruby keyword.
 * [#391](https://github.com/bbatsov/rubocop/issues/391): Fix bug in counting slashes in a regexp.
 * [#394](https://github.com/bbatsov/rubocop/issues/394): `DotPosition` cop handles correctly code like `l.(1)`.
@@ -358,15 +358,15 @@
 
 ### Bugs fixed
 
-* [#288](https://github.com/bbatsov/rubocop/issues/288): work with absolute Excludes paths internally (2nd fix for this issue).
+* [#288](https://github.com/bbatsov/rubocop/issues/288): Work with absolute Excludes paths internally (2nd fix for this issue).
 * `TrivialAccessors` now detects class attributes as well as instance attributes.
-* [#338](https://github.com/bbatsov/rubocop/issues/338): fix end alignment of blocks in chained assignments.
-* [#345](https://github.com/bbatsov/rubocop/issues/345): add `$SAFE` to the list of built-in global variables.
-* [#340](https://github.com/bbatsov/rubocop/issues/340): override config parameters rather than merging them.
-* [#349](https://github.com/bbatsov/rubocop/issues/349): fix false positive for `CharacterLiteral` (`%w(?)`).
-* [#346](https://github.com/bbatsov/rubocop/issues/346): support method chains for block end alignment checks.
-* [#350](https://github.com/bbatsov/rubocop/issues/350): support line breaks between variables on left hand side for block end alignment checks.
-* [#356](https://github.com/bbatsov/rubocop/issues/350): allow safe assignment in `ParenthesesAroundCondition`.
+* [#338](https://github.com/bbatsov/rubocop/issues/338): Fix end alignment of blocks in chained assignments.
+* [#345](https://github.com/bbatsov/rubocop/issues/345): Add `$SAFE` to the list of built-in global variables.
+* [#340](https://github.com/bbatsov/rubocop/issues/340): Override config parameters rather than merging them.
+* [#349](https://github.com/bbatsov/rubocop/issues/349): Fix false positive for `CharacterLiteral` (`%w(?)`).
+* [#346](https://github.com/bbatsov/rubocop/issues/346): Support method chains for block end alignment checks.
+* [#350](https://github.com/bbatsov/rubocop/issues/350): Support line breaks between variables on left hand side for block end alignment checks.
+* [#356](https://github.com/bbatsov/rubocop/issues/356): Allow safe assignment in `ParenthesesAroundCondition`.
 
 ### Misc
 
@@ -387,8 +387,8 @@
 
 ### Bugs fixed
 
-* [#318](https://github.com/bbatsov/rubocop/issues/318): correct some special cases of block end alignment.
-* [#317](https://github.com/bbatsov/rubocop/issues/317): fix a false positive in `LiteralInCondition`.
+* [#318](https://github.com/bbatsov/rubocop/issues/318): Correct some special cases of block end alignment.
+* [#317](https://github.com/bbatsov/rubocop/issues/317): Fix a false positive in `LiteralInCondition`.
 * [#321](https://github.com/bbatsov/rubocop/issues/321): Ignore variables whose name start with `_` in `ShadowingOuterLocalVariable`.
 * [#322](https://github.com/bbatsov/rubocop/issues/322): Fix exception of `UnusedLocalVariable` and `ShadowingOuterLocalVariable` when inspecting keyword splat argument.
 * [#316](https://github.com/bbatsov/rubocop/issues/316): Correct nested postfix unless in `MultilineIfThen`.
@@ -440,19 +440,19 @@
 
 ### Bugs fixed
 
-* [#239](https://github.com/bbatsov/rubocop/issues/239): fixed double quotes false positives.
-* [#233](https://github.com/bbatsov/rubocop/issues/233): report syntax cop offences.
+* [#239](https://github.com/bbatsov/rubocop/issues/239): Fixed double quotes false positives.
+* [#233](https://github.com/bbatsov/rubocop/issues/233): Report syntax cop offences.
 * Fix off-by-one error in favor_modifier.
-* [#229](https://github.com/bbatsov/rubocop/issues/229): recognize a line with CR+LF as a blank line in AccessControl cop.
-* [#235](https://github.com/bbatsov/rubocop/issues/235): handle multiple constant assignment in ConstantName cop.
-* [#246](https://github.com/bbatsov/rubocop/issues/246): correct handling of unicode escapes within double quotes.
+* [#229](https://github.com/bbatsov/rubocop/issues/229): Recognize a line with CR+LF as a blank line in AccessControl cop.
+* [#235](https://github.com/bbatsov/rubocop/issues/235): Handle multiple constant assignment in ConstantName cop.
+* [#246](https://github.com/bbatsov/rubocop/issues/246): Correct handling of unicode escapes within double quotes.
 * Fix crashes in Blocks, CaseEquality, CaseIndentation, ClassAndModuleCamelCase, ClassMethods, CollectionMethods, and ColonMethodCall.
-* [#263](https://github.com/bbatsov/rubocop/issues/263): do not check for space around operators called with method syntax.
-* [#271](https://github.com/bbatsov/rubocop/issues/271): always allow line breaks inside hash literal braces.
-* [#270](https://github.com/bbatsov/rubocop/issues/270): fixed a false positive in ParenthesesAroundCondition.
-* [#288](https://github.com/bbatsov/rubocop/issues/288): get config parameter AllCops/Excludes from highest config file in path.
-* [#276](https://github.com/bbatsov/rubocop/issues/276): let columns start at 1 instead of 0 in all output of column numbers.
-* [#292](https://github.com/bbatsov/rubocop/issues/292): don't check non-regular files (like sockets, etc).
+* [#263](https://github.com/bbatsov/rubocop/issues/263): Do not check for space around operators called with method syntax.
+* [#271](https://github.com/bbatsov/rubocop/issues/271): Always allow line breaks inside hash literal braces.
+* [#270](https://github.com/bbatsov/rubocop/issues/270): Fixed a false positive in ParenthesesAroundCondition.
+* [#288](https://github.com/bbatsov/rubocop/issues/288): Get config parameter AllCops/Excludes from highest config file in path.
+* [#276](https://github.com/bbatsov/rubocop/issues/276): Let columns start at 1 instead of 0 in all output of column numbers.
+* [#292](https://github.com/bbatsov/rubocop/issues/292): Don't check non-regular files (like sockets, etc).
 * Fix crashes in WordArray on arrays of character literals such as `[?\r, ?\n]`.
 * Fix crashes in Documentation on empty modules.
 
@@ -472,7 +472,7 @@
 
 * Correct calculation of whether a modifier version of a conditional statement will fit.
 * Fix an error in `MultilineIfThen` cop that occurred in some special cases.
-* [#231](https://github.com/bbatsov/rubocop/issues/231): fix a false positive for modifier if.
+* [#231](https://github.com/bbatsov/rubocop/issues/231): Fix a false positive for modifier if.
 
 ## 0.8.1 (05/30/2013)
 
@@ -487,8 +487,8 @@
 
 ### Bugs fixed
 
-* [#210](https://github.com/bbatsov/rubocop/issues/210): fix a false positive for double quotes in regexp literals.
-* [#211](https://github.com/bbatsov/rubocop/issues/211): fix a false positive for `initialize` method looking like a trivial writer.
+* [#210](https://github.com/bbatsov/rubocop/issues/210): Fix a false positive for double quotes in regexp literals.
+* [#211](https://github.com/bbatsov/rubocop/issues/211): Fix a false positive for `initialize` method looking like a trivial writer.
 * [#215](https://github.com/bbatsov/rubocop/issues/215): Fixed a lot of modifier `if/unless/while/until` issues.
 * [#213](https://github.com/bbatsov/rubocop/issues/213): Make sure even disabled cops get their configuration set.
 * [#214](https://github.com/bbatsov/rubocop/issues/214): Fix SpaceInsideHashLiteralBraces to handle string interpolation right.
@@ -512,11 +512,11 @@
 
 ### Bugs fixed
 
-* [#155](https://github.com/bbatsov/rubocop/issues/155) 'Do not use semicolons to terminate expressions.' is not implemented correctly.
+* [#155](https://github.com/bbatsov/rubocop/issues/155): 'Do not use semicolons to terminate expressions.' is not implemented correctly.
 * `OpMethod` now handles definition of unary operators without crashing.
 * `SymbolSnakeCase` now handles aliasing of operators without crashing.
 * `RescueException` now handles the splat operator `*` in a `rescue` clause without crashing.
-* [#159](https://github.com/bbatsov/rubocop/issues/159) AvoidFor cop misses many violations.
+* [#159](https://github.com/bbatsov/rubocop/issues/159): AvoidFor cop misses many violations.
 
 ## 0.7.1 (05/11/2013)
 
@@ -538,7 +538,7 @@
 * New cop `BlockComments` tracks uses of block comments(`=begin/=end` comments).
 * New cop `EmptyLines` tracks consecutive blank lines.
 * New cop `WordArray` tracks arrays of words.
-* [#108](https://github.com/bbatsov/rubocop/issues/108) New cop `SpaceInsideHashLiteralBraces` checks for spaces inside hash literal braces - style is configurable.
+* [#108](https://github.com/bbatsov/rubocop/issues/108): New cop `SpaceInsideHashLiteralBraces` checks for spaces inside hash literal braces - style is configurable.
 * New cop `LineContinuation` tracks uses of the line continuation character (`\`).
 * New cop `SymbolArray` tracks arrays of symbols.
 * Print warnings for unrecognized names in configuration files.
@@ -552,14 +552,14 @@
 
 ### Bugs fixed
 
-* [#101](https://github.com/bbatsov/rubocop/issues/101) `SpaceAroundEqualsInParameterDefault` doesn't work properly with empty string.
+* [#101](https://github.com/bbatsov/rubocop/issues/101): `SpaceAroundEqualsInParameterDefault` doesn't work properly with empty string.
 * Fix `BraceAfterPercent` for `%W`, `%i` and `%I` and added more tests.
 * Fix a false positive in the `Alias` cop. `:alias` is no longer treated as keyword.
 * `ArrayLiteral` now properly detects `Array.new`.
 * `HashLiteral` now properly detects `Hash.new`.
 * `VariableInterpolation` now detects regexp back references and doesn't crash.
 * Don't generate pathnames like some/project//some.rb.
-* [#151](https://github.com/bbatsov/rubocop/issues/151) Don't print the unrecognized cop warning several times for the same `.rubocop.yml`.
+* [#151](https://github.com/bbatsov/rubocop/issues/151): Don't print the unrecognized cop warning several times for the same `.rubocop.yml`.
 
 ### Misc
 
@@ -574,15 +574,15 @@
 
 ### Bugs fixed
 
-* [#90](https://github.com/bbatsov/rubocop/issues/90) Two cops crash when scanning code using `super`.
-* [#93](https://github.com/bbatsov/rubocop/issues/93) Issue with `whitespace?': undefined method`.
-* [#97](https://github.com/bbatsov/rubocop/issues/97) Build fails.
-* [#100](https://github.com/bbatsov/rubocop/issues/100) `OpMethod` cop doesn't work if method arg is not in braces.
+* [#90](https://github.com/bbatsov/rubocop/issues/90): Two cops crash when scanning code using `super`.
+* [#93](https://github.com/bbatsov/rubocop/issues/93): Issue with `whitespace?': undefined method`.
+* [#97](https://github.com/bbatsov/rubocop/issues/97): Build fails.
+* [#100](https://github.com/bbatsov/rubocop/issues/100): `OpMethod` cop doesn't work if method arg is not in braces.
 * `SymbolSnakeCase` now tracks Ruby 1.9 hash labels as well as regular symbols.
 
 ### Misc
 
-* [#88](https://github.com/bbatsov/rubocop/issues/88) Abort gracefully when interrupted with Ctrl-C.
+* [#88](https://github.com/bbatsov/rubocop/issues/88): Abort gracefully when interrupted with Ctrl-C.
 * No longer crashes on bugs within cops. Now problematic checks are skipped and a message is displayed.
 * Replaced `Term::ANSIColor` with `Rainbow`.
 * Add an option to disable colors in the output.
