@@ -12,11 +12,11 @@ module Rubocop
 
         def message(node)
           if style == :single_quotes
-            "Prefer single-quoted strings when you don't need string " +
-              'interpolation or special symbols.'
+            "Prefer single-quoted strings when you don't need string " \
+            'interpolation or special symbols.'
           else
-            'Prefer double-quoted strings unless you need single quotes to ' +
-              'avoid extra backslashes for escaping.'
+            'Prefer double-quoted strings unless you need single quotes to ' \
+            'avoid extra backslashes for escaping.'
           end
         end
 
