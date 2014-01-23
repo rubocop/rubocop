@@ -39,6 +39,7 @@
 * [#744](https://github.com/bbatsov/rubocop/issues/744): Any new offences created by `--auto-correct` are now handled immediately and corrected when possible, so running `--auto-correct` once is enough. ([@jonas054][])
 * [#748](https://github.com/bbatsov/rubocop/pull/748): Auto-correction conflict between `EmptyLinesAroundBody` and `TrailingWhitespace` resolved. ([@jonas054][])
 * `ParenthesesAroundCondition` no longer crashes on parentheses around the condition in a ternary if. ([@jonas054][])
+* [#738](https://github.com/bbatsov/rubocop/issues/738): Fix a false positive in `StringLiterals`. ([@bbatsov][])
 
 ## 0.16.0 (25/12/2013)
 

@@ -44,6 +44,11 @@ describe Rubocop::Cop::Style::StringLiterals, :config do
       expect(cop.offences).to be_empty
     end
 
+    it 'accepts % quotes' do
+      inspect_source(cop, ['a = %(x)'])
+      expect(cop.offences).to be_empty
+    end
+
     it 'accepts heredocs' do
       inspect_source(cop,
                      ['execute <<-SQL',
@@ -148,6 +153,11 @@ describe Rubocop::Cop::Style::StringLiterals, :config do
 
     it 'accepts %q and %Q quotes' do
       inspect_source(cop, ['a = %q(x) + %Q[x]'])
+      expect(cop.offences).to be_empty
+    end
+
+    it 'accepts % quotes' do
+      inspect_source(cop, ['a = %(x)'])
       expect(cop.offences).to be_empty
     end
 

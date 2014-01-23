@@ -22,7 +22,7 @@ module Rubocop
 
         def offence?(node)
           src = node.loc.expression.source
-          return false if src =~ /^(%q|\?|<<-)/i
+          return false if src =~ /^(%[qQ]?|\?|<<-)/i
           src !~ if style == :single_quotes
                    # regex matches IF there is a ' or there is a \\ in the
                    # string that is not preceeded/followed by another \\
