@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.17.0 (25/01/2014)
+
 ### New features
 
 * New cop `ConditionPosition` checks for misplaced conditions in expressions like `if/unless/when/until`. ([@bbatsov][])
