@@ -16,7 +16,7 @@ do so.
 * Include the output of `rubocop -v`:
 
 ```
-$ rubocop -V
+$ rubocop -v
 0.16.0 (using Parser 2.1.2, running on ruby 2.0.0 x86_64-darwin12.4.0)
 ```
 
