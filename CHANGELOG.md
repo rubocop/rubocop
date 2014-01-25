@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#714](https://github.com/bbatsov/rubocop/issues/714): New cop `RequireParentheses` checks for method calls without parentheses together with a boolean operator indicating that a mistake about precedence may have been made. ([@jonas054][])
+
 ### Changes
 
 * [#762](https://github.com/bbatsov/rubocop/issues/762): Support Rainbow gem both 1.99.x and 2.x. ([@yujinakayama][])
