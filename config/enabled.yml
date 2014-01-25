@@ -581,6 +581,12 @@ ParenthesesAsGroupedExpression:
                  parenthesis.
   Enabled: true
 
+RequireParentheses:
+  Description: >-
+                 Use parentheses in the method call to avoid confusion
+                 about precedence.
+  Enabled: true
+
 RescueException:
   Description: 'Avoid rescuing the Exception class.'
   Enabled: true
