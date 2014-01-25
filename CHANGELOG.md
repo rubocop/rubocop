@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#762](https://github.com/bbatsov/rubocop/issues/762): Support Rainbow gem both 1.99.x and 2.x. ([@yujinakayama][])
+
 ## 0.17.0 (25/01/2014)
 
 ### New features
