@@ -1,6 +1,9 @@
 # encoding: utf-8
 
 require 'rainbow'
+# Rainbow 2.0 does not load the monkey-patch for String by default.
+require 'rainbow/ext/string' unless String.respond_to?(:color)
+
 require 'English'
 require 'set'
 require 'parser/current'
