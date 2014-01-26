@@ -53,6 +53,33 @@ module Rubocop
         def min_size
           cop_config['MinSize']
         end
+
+        def autocorrect(node)
+          sb = node.loc.expression.source_buffer
+          interpolated = false
+
+          contents = node.children.map do |n|
+            if character_literal?(n)
+              interpolated = true
+              begin_pos = n.loc.expression.begin_pos + '?'.length
+              end_pos = n.loc.expression.end_pos
+            else
+              begin_pos = n.loc.begin.end_pos
+              end_pos = n.loc.end.begin_pos
+            end
+            Parser::Source::Range.new(sb, begin_pos, end_pos).source
+          end.join(' ')
+
+          char = interpolated ? 'W' : 'w'
+
+          @corrections << lambda do |corrector|
+            corrector.replace(node.loc.expression, "%#{char}(#{contents})")
+          end
+        end
+
+        def character_literal?(node)
+          node.loc.end.nil?
+        end
       end
     end
   end
