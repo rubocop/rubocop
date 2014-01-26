@@ -3,8 +3,6 @@
 require 'rake'
 require 'rake/tasklib'
 
-require 'rubocop/options'
-
 module Rubocop
   # Provides a custom rake task.
   #
@@ -57,6 +55,9 @@ module Rubocop
     end
 
     def setup_ivars(args)
+      # More lazy-loading to keep load time down.
+      require 'rubocop/options'
+
       @name = args.shift || :rubocop
       @verbose = true
       @fail_on_error = true
