@@ -16,6 +16,8 @@ module Rubocop
     attr_accessor :fail_on_error
     attr_accessor :patterns
     attr_accessor :formatters
+    attr_accessor :requires
+    attr_accessor :options
 
     def initialize(*args, &task_block)
       setup_ivars(args)
@@ -39,17 +41,28 @@ module Rubocop
 
       cli = CLI.new
       puts 'Running RuboCop...' if verbose
-      result = cli.run([formatters.map { |f| ['-f', f] }, patterns])
+      result = cli.run(full_options)
       abort('RuboCop failed!') if fail_on_error unless result == 0
     end
 
     private
+
+    def full_options
+      [].tap do |options|
+        options.concat(formatters.map { |f| ['--format', f] }.flatten)
+        options.concat(requires.map { |r| ['--require', r] }.flatten)
+        options.concat(options)
+        options.concat(patterns)
+      end
+    end
 
     def setup_ivars(args)
       @name = args.shift || :rubocop
       @verbose = true
       @fail_on_error = true
       @patterns = []
+      @requires = []
+      @options = []
       @formatters = [Rubocop::Options::DEFAULT_FORMATTER]
     end
   end
