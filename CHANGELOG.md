@@ -10,6 +10,10 @@
 
 * [#762](https://github.com/bbatsov/rubocop/issues/762): Support Rainbow gem both 1.99.x and 2.x. ([@yujinakayama][])
 
+### Bugs fixed
+
+* [#764](https://github.com/bbatsov/rubocop/issues/764): Handle heredocs in `TrailingComma`. ([@jonas054][])
+
 ## 0.17.0 (25/01/2014)
 
 ### New features

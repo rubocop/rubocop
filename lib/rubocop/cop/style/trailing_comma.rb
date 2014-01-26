@@ -48,6 +48,9 @@ module Rubocop
         def check(node, items, kind, begin_pos, end_pos)
           sb = items.first.loc.expression.source_buffer
           after_last_item = Parser::Source::Range.new(sb, begin_pos, end_pos)
+
+          return if heredoc?(after_last_item.source)
+
           comma_offset = after_last_item.source =~ /,/
           should_have_comma = style == :comma && multiline?(node)
           if comma_offset
@@ -58,6 +61,10 @@ module Rubocop
           elsif should_have_comma
             put_comma(items, kind, sb)
           end
+        end
+
+        def heredoc?(source_after_last_item)
+          source_after_last_item =~ /\w/
         end
 
         # Returns true if the node has round/square/curly brackets.

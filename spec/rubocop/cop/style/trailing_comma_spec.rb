@@ -130,6 +130,16 @@ describe Rubocop::Cop::Style::TrailingComma, :config do
                              '           )'])
         expect(cop.offences).to be_empty
       end
+
+      it 'accepts comma inside a heredoc' +
+        ' parameters at the end' do
+        inspect_source(cop, ['route(help: {',
+                             "  'auth' => <<-HELP.chomp",
+                             ',',
+                             'HELP',
+                             '})'])
+        expect(cop.offences).to be_empty
+      end
     end
 
     context 'when EnforcedStyleForMultiline is comma' do
@@ -193,6 +203,17 @@ describe Rubocop::Cop::Style::TrailingComma, :config do
                              '              c: 0,',
                              '              d: 1,',
                              '           )'])
+        expect(cop.offences).to be_empty
+      end
+
+      it 'accepts missing comma after a heredoc' do
+        # A heredoc that's the last item in a literal or parameter list can not
+        # have a trailing comma. It's a syntax error.
+        inspect_source(cop, ['route(help: {',
+                             "  'auth' => <<-HELP.chomp",
+                             '...',
+                             'HELP',
+                             '},)']) # We still need a comma after the hash.
         expect(cop.offences).to be_empty
       end
     end
