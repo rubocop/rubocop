@@ -91,7 +91,9 @@ end
 
 def parse_source(source, file = nil)
   source = source.join($RS) if source.is_a?(Array)
-  if file
+  if file.is_a? String
+    Rubocop::SourceParser.parse(source, file)
+  elsif file
     file.write(source)
     file.rewind
     Rubocop::SourceParser.parse(source, file.path)
