@@ -162,19 +162,10 @@ module Rubocop
       private
 
       def buffer_name_matches_any?(parameter, default_result)
-        paths = cop_config && cop_config[parameter]
-        return default_result unless paths
-        paths.any? { |path| match_path?(path, processed_source.buffer.name) }
-      end
-
-      def match_path?(pattern, path)
-        case pattern
-        when String
-          basename = File.basename(path)
-          basename == pattern || File.fnmatch(pattern, basename)
-        when Regexp
-          path =~ pattern
-        end
+        patterns = cop_config && cop_config[parameter]
+        return default_result unless patterns
+        path = relative_path(processed_source.buffer.name)
+        patterns.any? { |pattern| match_path?(pattern, path) }
       end
 
       def disabled_line?(line_number)

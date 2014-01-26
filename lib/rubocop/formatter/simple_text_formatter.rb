@@ -9,6 +9,7 @@ module Rubocop
     # location of the problem and the associated message.
     class SimpleTextFormatter < BaseFormatter
       include Colorizable
+      include PathUtil
 
       COLOR_FOR_SEVERITY = {
         refactor:   :yellow,
@@ -73,8 +74,11 @@ module Rubocop
       end
 
       def smart_path(path)
-        if path.start_with?(Dir.pwd)
-          Pathname.new(path).relative_path_from(Pathname.getwd).to_s
+        # Ideally, we calculate this relative to the project root.
+        base_dir = Dir.pwd
+
+        if path.start_with? base_dir
+          relative_path(path, base_dir)
         else
           path
         end

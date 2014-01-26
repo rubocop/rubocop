@@ -12,6 +12,8 @@ require 'powerpack'
 
 require 'rubocop/version'
 
+require 'rubocop/path_util'
+
 require 'rubocop/cop/util'
 require 'rubocop/cop/offence'
 require 'rubocop/cop/ignored_node'
