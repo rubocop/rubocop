@@ -46,11 +46,11 @@ module Rubocop
     private
 
     def full_options
-      [].tap do |options|
-        options.concat(formatters.map { |f| ['--format', f] }.flatten)
-        options.concat(requires.map { |r| ['--require', r] }.flatten)
-        options.concat(options)
-        options.concat(patterns)
+      [].tap do |result|
+        result.concat(formatters.map { |f| ['--format', f] }.flatten)
+        result.concat(requires.map { |r| ['--require', r] }.flatten)
+        result.concat(options)
+        result.concat(patterns)
       end
     end
 
