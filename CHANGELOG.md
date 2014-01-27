@@ -11,6 +11,7 @@
 ### Changes
 
 * [#762](https://github.com/bbatsov/rubocop/issues/762): Support Rainbow gem both 1.99.x and 2.x. ([@yujinakayama][])
+* [#761](https://github.com/bbatsov/rubocop/issues/761): Relax `json` requirement to `>= 1.7.7`. ([@bbatsov][])
 
 ### Bugs fixed
 
