@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
   subject(:cop) { described_class.new(config) }
 
-  context 'when IndentDepth is set to method' do
+  context 'when EnforcedStyle is set to indent' do
     let(:cop_config) { { 'EnforcedStyle' => 'indent' } }
 
     it 'registers an offence for misaligned private' do
@@ -163,12 +163,30 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
       expect(cop.messages)
         .to eq(['Indent access modifiers like private.'])
     end
+
+    it 'auto-corrects incorrectly indented access modifiers' do
+      corrected = autocorrect_source(cop, ['class Test',
+                                           '',
+                                           'public',
+                                           ' private',
+                                           '   protected',
+                                           '',
+                                           '  def test; end',
+                                           'end'])
+      expect(corrected).to eq(['class Test',
+                               '',
+                               '  public',
+                               '  private',
+                               '  protected',
+                               '',
+                               '  def test; end',
+                               'end'].join("\n"))
+    end
   end
 
-  context 'when IndentDepth is set to class' do
+  context 'when EnforcedStyle is set to outdent' do
     let(:cop_config) { { 'EnforcedStyle' => 'outdent' } }
     let(:indent_msg) { 'Outdent access modifiers like private.' }
-    let(:blank_msg) { 'Keep a blank line before and after private.' }
 
     it 'registers offence for private indented to method depth in a class' do
       inspect_source(cop,
@@ -273,6 +291,29 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       'end'])
       expect(cop.offences.size).to eq(1)
       expect(cop.messages).to eq([indent_msg])
+    end
+
+    it 'auto-corrects incorrectly indented access modifiers' do
+      corrected = autocorrect_source(cop, ['module M',
+                                           '  class Test',
+                                           '',
+                                           'public',
+                                           ' private',
+                                           '     protected',
+                                           '',
+                                           '    def test; end',
+                                           '  end',
+                                           'end'])
+      expect(corrected).to eq(['module M',
+                               '  class Test',
+                               '',
+                               '  public',
+                               '  private',
+                               '  protected',
+                               '',
+                               '    def test; end',
+                               '  end',
+                               'end'].join("\n"))
     end
   end
 end
