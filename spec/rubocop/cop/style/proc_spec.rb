@@ -19,4 +19,9 @@ describe Rubocop::Cop::Style::Proc do
     inspect_source(cop, ['p = Proc.new'])
     expect(cop.offences).to be_empty
   end
+
+  it 'auto-corrects Proc.new to proc' do
+    corrected = autocorrect_source(cop, ['Proc.new { test }'])
+    expect(corrected).to eq 'proc { test }'
+  end
 end

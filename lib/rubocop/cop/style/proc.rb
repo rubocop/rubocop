@@ -20,6 +20,12 @@ module Rubocop
 
           add_offence(block_method, :expression) if block_method == TARGET
         end
+
+        def autocorrect(node)
+          @corrections << lambda do |corrector|
+            corrector.replace(node.loc.expression, 'proc')
+          end
+        end
       end
     end
   end
