@@ -5,24 +5,24 @@ require 'spec_helper'
 describe Rubocop::Cop::Lint::RequireParentheses do
   subject(:cop) { described_class.new }
 
-  it 'registers an offence for missing parentheses around expression with ' +
+  it 'registers an offence for missing parentheses around expression with ' \
     '&& operator' do
     inspect_source(cop, ["if day.is? 'monday' && month == :jan",
                          '  foo',
                          'end'])
     expect(cop.highlights).to eq(["day.is? 'monday' && month == :jan"])
     expect(cop.messages)
-      .to eq(['Use parentheses in the method call to avoid confusion about ' +
+      .to eq(['Use parentheses in the method call to avoid confusion about ' \
               'precedence.'])
   end
 
-  it 'registers an offence for missing parentheses around expression with ' +
+  it 'registers an offence for missing parentheses around expression with ' \
     '|| operator' do
     inspect_source(cop, "day_is? 'tuesday' || true")
     expect(cop.highlights).to eq(["day_is? 'tuesday' || true"])
   end
 
-  it 'registers an offence for missing parentheses around expression in ' +
+  it 'registers an offence for missing parentheses around expression in ' \
     'ternary' do
     inspect_source(cop, "wd.include? 'tuesday' && true == true ? a : b")
     expect(cop.highlights).to eq(["wd.include? 'tuesday' && true == true"])

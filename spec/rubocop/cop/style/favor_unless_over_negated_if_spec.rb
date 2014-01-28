@@ -13,7 +13,7 @@ describe Rubocop::Cop::Style::FavorUnlessOverNegatedIf do
                     'some_method if !a_condition'
                    ])
     expect(cop.messages).to eq(
-      ['Favor unless (or control flow or) over if for negative ' +
+      ['Favor unless (or control flow or) over if for negative ' \
        'conditions.'] * 2)
   end
 
@@ -24,7 +24,7 @@ describe Rubocop::Cop::Style::FavorUnlessOverNegatedIf do
                     'end',
                     'some_method if not a_condition'])
     expect(cop.messages).to eq(
-      ['Favor unless (or control flow or) over if for negative ' +
+      ['Favor unless (or control flow or) over if for negative ' \
        'conditions.'] * 2)
     expect(cop.offences.map(&:line)).to eq([1, 4])
   end

@@ -32,7 +32,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is assigned and unreferenced ' +
+  context 'when a variable is assigned and unreferenced ' \
           'in a singleton method defined with self keyword' do
     let(:source) do
       [
@@ -60,7 +60,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is assigned and unreferenced ' +
+  context 'when a variable is assigned and unreferenced ' \
           'in a singleton method defined with variable name' do
     let(:source) do
       [
@@ -116,7 +116,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is assigned and unreferenced in a class ' +
+  context 'when a variable is assigned and unreferenced in a class ' \
           'subclassing another class stored in local variable' do
     let(:source) do
       [
@@ -145,7 +145,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is assigned and unreferenced ' +
+  context 'when a variable is assigned and unreferenced ' \
           'in a singleton class' do
     let(:source) do
       [
@@ -222,7 +222,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is assigned with operator assignment ' +
+  context 'when a variable is assigned with operator assignment ' \
           'in top level' do
     let(:source) do
       [
@@ -240,7 +240,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     end
   end
 
-  context 'when a variable is assigned multiple times ' +
+  context 'when a variable is assigned multiple times ' \
           'but unreferenced' do
     let(:source) do
       [
@@ -269,7 +269,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     end
   end
 
-  context 'when a referenced variable is reassigned ' +
+  context 'when a referenced variable is reassigned ' \
           'but not re-referenced' do
     let(:source) do
       [
@@ -291,7 +291,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     end
   end
 
-  context 'when an unreferenced variable is reassigned ' +
+  context 'when an unreferenced variable is reassigned ' \
           'and re-referenced' do
     let(:source) do
       [
@@ -416,7 +416,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is reassigned at the end of loop body ' +
+  context 'when a variable is reassigned at the end of loop body ' \
           'and would be referenced in next iteration' do
     let(:source) do
       [
@@ -438,7 +438,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is reassigned at the end of loop body ' +
+  context 'when a variable is reassigned at the end of loop body ' \
           'and would be referenced in loop condition' do
     let(:source) do
       [
@@ -460,7 +460,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context "when a variable is reassigned in loop body but won't " +
+  context "when a variable is reassigned in loop body but won't " \
           'be referenced either next iteration or loop condition' do
     let(:source) do
       [
@@ -488,7 +488,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     end
   end
 
-  context 'when a referenced variable is reassigned ' +
+  context 'when a referenced variable is reassigned ' \
           'but not re-referenced in a method defined in loop' do
     let(:source) do
       [
@@ -512,7 +512,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     end
   end
 
-  context 'when a variable that has same name as outer scope variable ' +
+  context 'when a variable that has same name as outer scope variable ' \
           'is not referenced in a method defined in loop' do
     let(:source) do
       [
@@ -537,7 +537,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     end
   end
 
-  context 'when a variable is assigned in single branch if ' +
+  context 'when a variable is assigned in single branch if ' \
           'and unreferenced' do
     let(:source) do
       [
@@ -561,7 +561,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a unreferenced variable is reassigned in same branch ' +
+  context 'when a unreferenced variable is reassigned in same branch ' \
           'and referenced after the branching' do
     let(:source) do
       [
@@ -586,7 +586,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     end
   end
 
-  context 'when a variable is reassigned in single branch if ' +
+  context 'when a variable is reassigned in single branch if ' \
           'and referenced after the branching' do
     let(:source) do
       [
@@ -606,7 +606,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is assigned in each branch of if ' +
+  context 'when a variable is assigned in each branch of if ' \
           'and referenced after the branching' do
     let(:source) do
       [
@@ -626,7 +626,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is reassigned in single branch if ' +
+  context 'when a variable is reassigned in single branch if ' \
           'and referenced in the branch' do
     let(:source) do
       [
@@ -651,7 +651,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     end
   end
 
-  context 'when a variable is assigned in each branch of if ' +
+  context 'when a variable is assigned in each branch of if ' \
           'and referenced in the else branch' do
     let(:source) do
       [
@@ -676,7 +676,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     end
   end
 
-  context 'when a variable is assigned in branch of modifier if ' +
+  context 'when a variable is assigned in branch of modifier if ' \
           'that references the variable in its conditional clause' +
           'and referenced after the branching' do
     let(:source) do
@@ -692,7 +692,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is assigned in branch of modifier if ' +
+  context 'when a variable is assigned in branch of modifier if ' \
           'that references the variable in its conditional clause' +
           'and unreferenced' do
     let(:source) do
@@ -713,7 +713,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     end
   end
 
-  context 'when a variable is assigned on each side of && ' +
+  context 'when a variable is assigned on each side of && ' \
           'and referenced after the &&' do
     let(:source) do
       [
@@ -728,7 +728,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a unreferenced variable is reassigned ' +
+  context 'when a unreferenced variable is reassigned ' \
           'on the left side of && and referenced after the &&' do
     let(:source) do
       [
@@ -750,7 +750,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     end
   end
 
-  context 'when a unreferenced variable is reassigned ' +
+  context 'when a unreferenced variable is reassigned ' \
           'on the right side of && and referenced after the &&' do
     let(:source) do
       [
@@ -766,7 +766,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is reassigned ' +
+  context 'when a variable is reassigned ' \
           'while referencing itself in rhs and referenced' do
     let(:source) do
       [
@@ -782,7 +782,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is reassigned ' +
+  context 'when a variable is reassigned ' \
           'with binary operator assignment and referenced' do
     let(:source) do
       [
@@ -798,7 +798,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is reassigned ' +
+  context 'when a variable is reassigned ' \
           'with logical operator assignment and referenced' do
     let(:source) do
       [
@@ -814,7 +814,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is reassigned with binary operator ' +
+  context 'when a variable is reassigned with binary operator ' \
            'assignment while assigning to itself in rhs ' +
            'then referenced' do
     let(:source) do
@@ -851,7 +851,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is assigned with ||= ' +
+  context 'when a variable is assigned with ||= ' \
           'at the last expression of the scope' do
     let(:source) do
       [
@@ -873,7 +873,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     end
   end
 
-  context 'when a variable is assigned with ||= ' +
+  context 'when a variable is assigned with ||= ' \
           'before the last expression of the scope' do
     let(:source) do
       [
@@ -895,7 +895,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     end
   end
 
-  context 'when a variable is assigned with multiple assignment ' +
+  context 'when a variable is assigned with multiple assignment ' \
           'and unreferenced' do
     let(:source) do
       [
@@ -910,7 +910,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       inspect_source(cop, source)
       expect(cop.offences.size).to eq(1)
       expect(cop.offences.first.message).to eq(
-        'Useless assignment to variable - bar. ' +
+        'Useless assignment to variable - bar. ' \
         'Use _ or _bar as a variable name ' +
         "to indicate that it won't be used."
       )
@@ -921,7 +921,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is reassigned with multiple assignment ' +
+  context 'when a variable is reassigned with multiple assignment ' \
           'while referencing itself in rhs and referenced' do
     let(:source) do
       [
@@ -937,7 +937,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is assigned in loop body ' +
+  context 'when a variable is assigned in loop body ' \
           'and referenced in post while condition' do
     let(:source) do
       [
@@ -952,7 +952,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is assigned in loop body ' +
+  context 'when a variable is assigned in loop body ' \
           'and referenced in post until condition' do
     let(:source) do
       [
@@ -967,7 +967,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is assigned ' +
+  context 'when a variable is assigned ' \
           'in main body of begin with rescue but unreferenced' do
     let(:source) do
       [
@@ -992,7 +992,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is assigned in main body of begin, rescue ' +
+  context 'when a variable is assigned in main body of begin, rescue ' \
           'and else then referenced after the begin' do
     let(:source) do
       [
@@ -1015,7 +1015,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is reassigned multiple times ' +
+  context 'when a variable is reassigned multiple times ' \
           'in main body of begin then referenced after the begin' do
     let(:source) do
       [
@@ -1037,7 +1037,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is reassigned multiple times ' +
+  context 'when a variable is reassigned multiple times ' \
           'in main body of begin then referenced in rescue' do
     let(:source) do
       [
@@ -1057,7 +1057,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is reassigned multiple times ' +
+  context 'when a variable is reassigned multiple times ' \
           'in main body of begin then referenced in ensure' do
     let(:source) do
       [
@@ -1077,7 +1077,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is reassigned multiple times in rescue ' +
+  context 'when a variable is reassigned multiple times in rescue ' \
           'and referenced after the begin' do
     let(:source) do
       [
@@ -1104,7 +1104,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     end
   end
 
-  context 'when a variable is reassigned multiple times ' +
+  context 'when a variable is reassigned multiple times ' \
           'in rescue with ensure then referenced after the begin' do
     let(:source) do
       [
@@ -1133,7 +1133,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     end
   end
 
-  context 'when a variable is reassigned multiple times ' +
+  context 'when a variable is reassigned multiple times ' \
           'in ensure with rescue then referenced after the begin' do
     let(:source) do
       [
@@ -1160,7 +1160,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     end
   end
 
-  context 'when a variable is assigned at the end of rescue ' +
+  context 'when a variable is assigned at the end of rescue ' \
           'and would be referenced with retry' do
     let(:source) do
       [
@@ -1180,7 +1180,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is assigned ' +
+  context 'when a variable is assigned ' \
           'in main body of begin, rescue and else ' +
           'and reassigned in ensure then referenced after the begin' do
     let(:source) do
@@ -1213,7 +1213,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     end
   end
 
-  context 'when a method argument is reassigned ' +
+  context 'when a method argument is reassigned ' \
           'and zero arity super is called' do
     let(:source) do
       [
@@ -1228,7 +1228,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a local variable is unreferenced ' +
+  context 'when a local variable is unreferenced ' \
           'and zero arity super is called' do
     let(:source) do
       [
@@ -1251,7 +1251,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a method argument is reassigned ' +
+  context 'when a method argument is reassigned ' \
           'but not passed to super' do
     let(:source) do
       [
@@ -1290,7 +1290,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a named capture is unreferenced ' +
+  context 'when a named capture is unreferenced ' \
           'in other than top level' do
     let(:source) do
       [
@@ -1329,7 +1329,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is referenced ' +
+  context 'when a variable is referenced ' \
           'in rhs of named capture expression' do
     let(:source) do
       [
@@ -1344,7 +1344,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'accepts'
   end
 
-  context 'when a variable is assigned in begin ' +
+  context 'when a variable is assigned in begin ' \
           'and referenced outside' do
     let(:source) do
       [
@@ -1361,7 +1361,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is shadowed by a block argument ' +
+  context 'when a variable is shadowed by a block argument ' \
           'and unreferenced' do
     let(:source) do
       [
@@ -1517,7 +1517,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a variable is assigned ' +
+  context 'when a variable is assigned ' \
           'while being passed to a method taking block' do
 
     context 'and the variable is used' do
@@ -1554,7 +1554,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     end
   end
 
-  context 'when a variabled is assigned ' +
+  context 'when a variabled is assigned ' \
           'and passed to a method followed by method taking block'  do
     let(:source) do
       [

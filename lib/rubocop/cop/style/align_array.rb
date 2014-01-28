@@ -8,7 +8,7 @@ module Rubocop
       class AlignArray < Cop
         include AutocorrectAlignment
 
-        MSG = 'Align the elements of an array literal if they span more ' +
+        MSG = 'Align the elements of an array literal if they span more ' \
           'than one line.'
 
         def on_array(node)

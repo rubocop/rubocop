@@ -55,7 +55,7 @@ describe Rubocop::Cop::Lint::UselessSetterCall do
     expect(cop.offences).to be_empty
   end
 
-  context 'when a lvar has an object passed as argument ' +
+  context 'when a lvar has an object passed as argument ' \
           'at the end of the method' do
     it 'accepts the lvar attr assignment' do
       inspect_source(cop,
@@ -71,7 +71,7 @@ describe Rubocop::Cop::Lint::UselessSetterCall do
     end
   end
 
-  context 'when a lvar has an object passed as argument ' +
+  context 'when a lvar has an object passed as argument ' \
           'by multiple-assignment at the end of the method' do
     it 'accepts the lvar attr assignment' do
       inspect_source(cop,
@@ -84,7 +84,7 @@ describe Rubocop::Cop::Lint::UselessSetterCall do
     end
   end
 
-  context 'when a lvar does not have any object passed as argument ' +
+  context 'when a lvar does not have any object passed as argument ' \
           'with multiple-assignment at the end of the method' do
     it 'registers an offence' do
       inspect_source(cop,
@@ -97,7 +97,7 @@ describe Rubocop::Cop::Lint::UselessSetterCall do
     end
   end
 
-  context 'when a lvar possibly has an object passed as argument ' +
+  context 'when a lvar possibly has an object passed as argument ' \
           'by logical-operator-assignment at the end of the method' do
     it 'accepts the lvar attr assignment' do
       inspect_source(cop,
@@ -111,7 +111,7 @@ describe Rubocop::Cop::Lint::UselessSetterCall do
     end
   end
 
-  context 'when a lvar does not have any object passed as argument ' +
+  context 'when a lvar does not have any object passed as argument ' \
           'by binary-operator-assignment at the end of the method' do
     it 'registers an offence' do
       inspect_source(cop,
@@ -125,7 +125,7 @@ describe Rubocop::Cop::Lint::UselessSetterCall do
     end
   end
 
-  context 'when a lvar declared as an argument ' +
+  context 'when a lvar declared as an argument ' \
           'is no longer the passed object at the end of the method' do
     it 'registers an offence for the lvar attr assignment' do
       inspect_source(cop,

@@ -9,7 +9,7 @@ module Rubocop
       class DefWithParentheses < Cop
         include CheckMethods
 
-        MSG = "Omit the parentheses in defs when the method doesn't accept " +
+        MSG = "Omit the parentheses in defs when the method doesn't accept " \
             'any arguments.'
 
         def check(node, _method_name, args, _body)

@@ -190,7 +190,7 @@ describe Rubocop::Cop::Style::CaseIndentation do
         expect(cop.offences).to be_empty
       end
 
-      it "registers an offence for  a when clause that's equally indented " +
+      it "registers an offence for  a when clause that's equally indented " \
         'with case' do
         source = ['y = case a',
                   '    when 0 then break',

@@ -81,7 +81,7 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
         .to eq(['Indent access modifiers like private.'])
     end
 
-    it 'registers an offence for misaligned private in class ' +
+    it 'registers an offence for misaligned private in class ' \
        'defined with Class.new' do
       inspect_source(cop,
                      ['Test = Class.new do',
@@ -95,7 +95,7 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
         .to eq(['Indent access modifiers like private.'])
     end
 
-    it 'registers an offence for misaligned private in module ' +
+    it 'registers an offence for misaligned private in module ' \
        'defined with Module.new' do
       inspect_source(cop,
                      ['Test = Module.new do',
@@ -195,7 +195,7 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
       expect(cop.messages).to eq([indent_msg])
     end
 
-    it 'registers offence for private indented to method depth in singleton' +
+    it 'registers offence for private indented to method depth in singleton' \
        'class' do
       inspect_source(cop,
                      ['class << self',
@@ -208,7 +208,7 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
       expect(cop.messages).to eq([indent_msg])
     end
 
-    it 'registers offence for private indented to method depth in class ' +
+    it 'registers offence for private indented to method depth in class ' \
        'defined with Class.new' do
       inspect_source(cop,
                      ['Test = Class.new do',
@@ -221,7 +221,7 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
       expect(cop.messages).to eq([indent_msg])
     end
 
-    it 'registers offence for private indented to method depth in module ' +
+    it 'registers offence for private indented to method depth in module ' \
        'defined with Module.new' do
       inspect_source(cop,
                      ['Test = Module.new do',

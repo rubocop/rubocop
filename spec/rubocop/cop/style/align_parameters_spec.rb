@@ -53,7 +53,7 @@ describe Rubocop::Cop::Style::AlignParameters do
                          'func3(*a)'
                         ])
     expect(cop.offences.map(&:to_s))
-      .to eq(['C:  5:  6: Align the parameters of a method call if ' +
+      .to eq(['C:  5:  6: Align the parameters of a method call if ' \
               'they span more than one line.'])
     expect(cop.highlights).to eq(['*b'])
   end
@@ -62,7 +62,7 @@ describe Rubocop::Cop::Style::AlignParameters do
     inspect_source(cop, ['func1(a,',
                          '     b,)'])
     expect(cop.offences.map(&:to_s))
-      .to eq(['C:  2:  6: Align the parameters of a method call if ' +
+      .to eq(['C:  2:  6: Align the parameters of a method call if ' \
               'they span more than one line.'])
     expect(cop.highlights).to eq(['b'])
   end

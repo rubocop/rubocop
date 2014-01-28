@@ -28,7 +28,7 @@ module Rubocop
           hash[:operator] = key
         end
 
-        MSG_FORMAT = 'Ambiguous %{actual} operator. Parenthesize the method ' +
+        MSG_FORMAT = 'Ambiguous %{actual} operator. Parenthesize the method ' \
                      "arguments if it's surely a %{actual} operator, or add " +
                      'a whitespace to the right of the %{operator} if it ' +
                      'should be a %{possible}.'

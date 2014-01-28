@@ -12,7 +12,7 @@ describe Rubocop::Cop::Style::AlignArray do
                          '  c,',
                          '   d',
                          ']'])
-    expect(cop.messages).to eq(['Align the elements of an array ' +
+    expect(cop.messages).to eq(['Align the elements of an array ' \
                                 'literal if they span more than ' +
                                 'one line.'] * 2)
     expect(cop.highlights).to eq(%w(b d))

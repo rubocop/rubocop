@@ -16,7 +16,7 @@ describe Rubocop::Cop::Lint::AmbiguousRegexpLiteral do
       it 'registers an offence' do
         expect(cop.offences.size).to eq(1)
         expect(cop.offences.first.message).to eq(
-          'Ambiguous regexp literal. Parenthesize the method arguments ' +
+          'Ambiguous regexp literal. Parenthesize the method arguments ' \
           "if it's surely a regexp literal, or add a whitespace to the " +
           'right of the / if it should be a division.'
         )

@@ -20,7 +20,7 @@ module Rubocop
       class RequireParentheses < Cop
         include IfNode
 
-        MSG = 'Use parentheses in the method call to avoid confusion about ' +
+        MSG = 'Use parentheses in the method call to avoid confusion about ' \
           'precedence.'
 
         def on_send(node)

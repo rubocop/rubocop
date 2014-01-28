@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Rubocop::Cop::Lint::ShadowingOuterLocalVariable do
   subject(:cop) { described_class.new }
 
-  context 'when a block argument has same name ' +
+  context 'when a block argument has same name ' \
           'as an outer scope variable' do
     let(:source) do
       [
@@ -29,7 +29,7 @@ describe Rubocop::Cop::Lint::ShadowingOuterLocalVariable do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a splat block argument has same name ' +
+  context 'when a splat block argument has same name ' \
           'as an outer scope variable' do
     let(:source) do
       [
@@ -53,7 +53,7 @@ describe Rubocop::Cop::Lint::ShadowingOuterLocalVariable do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a block block argument has same name ' +
+  context 'when a block block argument has same name ' \
           'as an outer scope variable' do
     let(:source) do
       [
@@ -79,7 +79,7 @@ describe Rubocop::Cop::Lint::ShadowingOuterLocalVariable do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a block local variable has same name ' +
+  context 'when a block local variable has same name ' \
           'as an outer scope variable' do
     let(:source) do
       [
@@ -104,7 +104,7 @@ describe Rubocop::Cop::Lint::ShadowingOuterLocalVariable do
     include_examples 'mimics MRI 2.1', 'shadowing'
   end
 
-  context 'when a block argument has different name ' +
+  context 'when a block argument has different name ' \
           'with outer scope variables' do
     let(:source) do
       [
@@ -169,7 +169,7 @@ describe Rubocop::Cop::Lint::ShadowingOuterLocalVariable do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when multiple block arguments have ' +
+  context 'when multiple block arguments have ' \
           'a same name starts with "_"' do
     let(:source) do
       [
@@ -184,7 +184,7 @@ describe Rubocop::Cop::Lint::ShadowingOuterLocalVariable do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a block argument has same name "_" ' +
+  context 'when a block argument has same name "_" ' \
           'as outer scope variable "_"' do
     let(:source) do
       [
@@ -201,7 +201,7 @@ describe Rubocop::Cop::Lint::ShadowingOuterLocalVariable do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a block argument has a same name starts with "_" ' +
+  context 'when a block argument has a same name starts with "_" ' \
           'as an outer scope variable' do
     let(:source) do
       [
@@ -218,7 +218,7 @@ describe Rubocop::Cop::Lint::ShadowingOuterLocalVariable do
     include_examples 'mimics MRI 2.1'
   end
 
-  context 'when a method argument has same name ' +
+  context 'when a method argument has same name ' \
           'as an outer scope variable' do
     let(:source) do
       [

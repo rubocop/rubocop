@@ -22,7 +22,7 @@ describe Rubocop::Cop::Lint::AmbiguousOperator do
         it 'registers an offence' do
           expect(cop.offences.size).to eq(1)
           expect(cop.offences.first.message).to eq(
-            'Ambiguous splat operator. ' +
+            'Ambiguous splat operator. ' \
             "Parenthesize the method arguments if it's surely a splat " +
             'operator, ' +
             'or add a whitespace to the right of the * if it should be a ' +
@@ -73,7 +73,7 @@ describe Rubocop::Cop::Lint::AmbiguousOperator do
         it 'registers an offence' do
           expect(cop.offences.size).to eq(1)
           expect(cop.offences.first.message).to eq(
-            'Ambiguous block operator. ' +
+            'Ambiguous block operator. ' \
             "Parenthesize the method arguments if it's surely a block " +
             'operator, ' +
             'or add a whitespace to the right of the & if it should be a ' +

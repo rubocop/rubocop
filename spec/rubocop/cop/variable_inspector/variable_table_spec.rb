@@ -89,7 +89,7 @@ describe Rubocop::Cop::VariableInspector::VariableTable do
         variable_table.push_scope(s(:block))
       end
 
-      context 'when a variable with the target name exists ' +
+      context 'when a variable with the target name exists ' \
               'in current scope' do
         before do
           variable_table.declare_variable(:foo, s(:lvasgn, :foo))
@@ -118,7 +118,7 @@ describe Rubocop::Cop::VariableInspector::VariableTable do
         end
       end
 
-      context 'when a variable with the target name does not exist ' +
+      context 'when a variable with the target name does not exist ' \
               'in current scope' do
         context 'but exists in the direct outer scope' do
           it 'returns the direct outer scope variable' do
@@ -165,7 +165,7 @@ describe Rubocop::Cop::VariableInspector::VariableTable do
         variable_table.push_scope(s(:def))
       end
 
-      context 'when a variable with the target name exists ' +
+      context 'when a variable with the target name exists ' \
               'in current scope' do
         before do
           variable_table.declare_variable(:foo, s(:lvasgn, :foo))
@@ -190,7 +190,7 @@ describe Rubocop::Cop::VariableInspector::VariableTable do
         end
       end
 
-      context 'when a variable with the target name does not exist ' +
+      context 'when a variable with the target name does not exist ' \
               'in current scope' do
         context 'but exists in the direct outer scope' do
           it 'returns nil' do

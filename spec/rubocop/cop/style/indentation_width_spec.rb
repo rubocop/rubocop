@@ -139,7 +139,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
       expect(cop.offences).to be_empty
     end
 
-    it 'accepts an if/else in assignment with end aligned with variable ' +
+    it 'accepts an if/else in assignment with end aligned with variable ' \
       'and chaining after the end' do
       inspect_source(cop,
                      ['var = if a',
@@ -150,7 +150,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
       expect(cop.offences).to be_empty
     end
 
-    it 'accepts an if/else in assignment with end aligned with variable ' +
+    it 'accepts an if/else in assignment with end aligned with variable ' \
       'and chaining with a block after the end' do
       inspect_source(cop,
                      ['var = if a',
@@ -179,7 +179,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
       expect(cop.offences).to be_empty
     end
 
-    it 'accepts an if/else in assignment on next line with end aligned ' +
+    it 'accepts an if/else in assignment on next line with end aligned ' \
       'with if' do
       inspect_source(cop,
                      ['var =',

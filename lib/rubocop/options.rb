@@ -123,7 +123,7 @@ module Rubocop
       # since those are mostly used by external tools.
       rejected = args.reject! { |a| %w(-s --silent).include?(a) }
       if rejected
-        warn '-s/--silent options is dropped. ' +
+        warn '-s/--silent options is dropped. ' \
           '`emacs` and `files` formatters no longer display summary.'
       end
     end

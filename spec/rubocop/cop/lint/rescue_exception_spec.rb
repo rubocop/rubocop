@@ -119,7 +119,7 @@ describe Rubocop::Cop::Lint::RescueException do
     expect(cop.offences).to be_empty
   end
 
-  it 'does not crash when the namespace of a rescued class is in a local ' +
+  it 'does not crash when the namespace of a rescued class is in a local ' \
     'variable' do
     inspect_source(cop,
                    ['adapter = current_adapter',

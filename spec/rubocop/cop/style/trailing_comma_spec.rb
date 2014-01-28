@@ -28,7 +28,7 @@ describe Rubocop::Cop::Style::TrailingComma, :config do
       expect(cop.highlights).to eq([','])
     end
 
-    it 'registers an offence for trailing comma in a method call with hash' +
+    it 'registers an offence for trailing comma in a method call with hash' \
       ' parameters at the end' do
       inspect_source(cop, 'some_method(a, b, c: 0, d: 1, )')
       expect(cop.messages)
@@ -95,7 +95,7 @@ describe Rubocop::Cop::Style::TrailingComma, :config do
         expect(cop.highlights).to eq([','])
       end
 
-      it 'registers an offence for trailing comma in a method call with ' +
+      it 'registers an offence for trailing comma in a method call with ' \
         'hash parameters at the end' do
         inspect_source(cop, ['some_method(',
                              '              a,',
@@ -121,7 +121,7 @@ describe Rubocop::Cop::Style::TrailingComma, :config do
         expect(cop.offences).to be_empty
       end
 
-      it 'accepts a method call with ' +
+      it 'accepts a method call with ' \
         'hash parameters at the end and no trailing comma' do
         inspect_source(cop, ['some_method(a,',
                              '            b,',
@@ -131,7 +131,7 @@ describe Rubocop::Cop::Style::TrailingComma, :config do
         expect(cop.offences).to be_empty
       end
 
-      it 'accepts comma inside a heredoc' +
+      it 'accepts comma inside a heredoc' \
         ' parameters at the end' do
         inspect_source(cop, ['route(help: {',
                              "  'auth' => <<-HELP.chomp",
@@ -164,7 +164,7 @@ describe Rubocop::Cop::Style::TrailingComma, :config do
         expect(cop.highlights).to eq(['c: 3333'])
       end
 
-      it 'registers an offence for no trailing comma in a method call with' +
+      it 'registers an offence for no trailing comma in a method call with' \
         ' hash parameters at the end' do
         inspect_source(cop, ['some_method(',
                              '              a,',
@@ -173,7 +173,7 @@ describe Rubocop::Cop::Style::TrailingComma, :config do
                              '              d: 1',
                              '           )'])
         expect(cop.messages)
-          .to eq(['Put a comma after the last parameter of a multiline ' +
+          .to eq(['Put a comma after the last parameter of a multiline ' \
                   'method call.'])
         expect(cop.highlights).to eq(['d: 1'])
       end
@@ -195,7 +195,7 @@ describe Rubocop::Cop::Style::TrailingComma, :config do
         expect(cop.offences).to be_empty
       end
 
-      it 'accepts trailing comma in a method call with hash' +
+      it 'accepts trailing comma in a method call with hash' \
         ' parameters at the end' do
         inspect_source(cop, ['some_method(',
                              '              a,',

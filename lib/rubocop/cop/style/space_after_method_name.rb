@@ -7,7 +7,7 @@ module Rubocop
       class SpaceAfterMethodName < Cop
         include CheckMethods
 
-        MSG = 'Never put a space between a method name and the opening ' +
+        MSG = 'Never put a space between a method name and the opening ' \
           'parenthesis.'
 
         def check(_node, _method_name, args, body)

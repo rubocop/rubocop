@@ -54,7 +54,7 @@ describe Rubocop::Cop::Style::DotPosition, :config do
       inspect_source(cop, ['something',
                            '  .method_name'])
       expect(cop.messages)
-        .to eq(['Place the . on the previous line, together with the method ' +
+        .to eq(['Place the . on the previous line, together with the method ' \
                 'call receiver.'])
       expect(cop.highlights).to eq(['.'])
       expect(cop.config_to_allow_offences).to eq('Style' => 'leading')

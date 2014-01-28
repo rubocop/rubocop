@@ -12,7 +12,7 @@ describe Rubocop::Cop::Style::UnlessElse do
                          '  a = 0',
                          'end'])
     expect(cop.messages).to eq(
-      ['Never use unless with else. Rewrite these with the ' +
+      ['Never use unless with else. Rewrite these with the ' \
        'positive case first.'])
   end
 

@@ -96,7 +96,7 @@ module Rubocop
             .to eq(SimpleTextFormatter)
         end
 
-        it 'returns class whose first letter of alias name ' +
+        it 'returns class whose first letter of alias name ' \
            'matches passed letter' do
           expect(builtin_formatter_class('s'))
             .to eq(SimpleTextFormatter)

@@ -10,7 +10,7 @@ describe Rubocop::Cop::Style::VariableInterpolation do
                    ['puts "this is a #$test"'])
     expect(cop.offences.size).to eq(1)
     expect(cop.messages)
-      .to eq(['Replace interpolated var $test' +
+      .to eq(['Replace interpolated var $test' \
         ' with expression #{$test}.'])
   end
 
@@ -27,7 +27,7 @@ describe Rubocop::Cop::Style::VariableInterpolation do
                    ['puts "this is a #@test"'])
     expect(cop.offences.size).to eq(1)
     expect(cop.messages)
-      .to eq(['Replace interpolated var @test' +
+      .to eq(['Replace interpolated var @test' \
         ' with expression #{@test}.'])
   end
 

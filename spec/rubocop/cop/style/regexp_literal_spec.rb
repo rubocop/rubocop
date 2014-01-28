@@ -12,7 +12,7 @@ describe Rubocop::Cop::Style::RegexpLiteral, :config do
         inspect_source(cop, ['x =~ /home\/\//',
                              'y =~ /etc\/top\//'])
         expect(cop.messages)
-          .to eq(['Use %r for regular expressions matching more ' +
+          .to eq(['Use %r for regular expressions matching more ' \
                   "than 1 '/' character."] * 2)
         expect(cop.config_to_allow_offences).to eq('MaxSlashes' => 2)
       end
@@ -32,7 +32,7 @@ describe Rubocop::Cop::Style::RegexpLiteral, :config do
       it 'registers an offence for one slash in regexp' do
         inspect_source(cop, ['x =~ /home\//'])
         expect(cop.messages)
-          .to eq(['Use %r for regular expressions matching more ' +
+          .to eq(['Use %r for regular expressions matching more ' \
                   "than 0 '/' characters."])
         expect(cop.config_to_allow_offences).to eq('MaxSlashes' => 1)
       end
@@ -45,7 +45,7 @@ describe Rubocop::Cop::Style::RegexpLiteral, :config do
       it 'registers an offence for zero slashes in regexp' do
         inspect_source(cop, ['y =~ %r(etc)'])
         expect(cop.messages)
-          .to eq(['Use %r only for regular expressions matching more ' +
+          .to eq(['Use %r only for regular expressions matching more ' \
                   "than 0 '/' characters."])
         expect(cop.config_to_allow_offences).to eq('MaxSlashes' => 1)
       end
@@ -68,7 +68,7 @@ describe Rubocop::Cop::Style::RegexpLiteral, :config do
         inspect_source(cop, ['x =~ %r(/home)',
                              'y =~ %r(etc)'])
         expect(cop.messages)
-          .to eq(['Use %r only for regular expressions matching more ' +
+          .to eq(['Use %r only for regular expressions matching more ' \
                   "than 1 '/' character."] * 2)
         expect(cop.config_to_allow_offences).to eq('MaxSlashes' => 2)
       end

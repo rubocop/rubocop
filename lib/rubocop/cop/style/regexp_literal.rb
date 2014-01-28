@@ -39,7 +39,7 @@ module Rubocop
         end
 
         def error_message(word)
-          sprintf('Use %%r %sfor regular expressions matching more ' +
+          sprintf('Use %%r %sfor regular expressions matching more ' \
                   "than %d '/' character%s.",
                   word,
                   max_slashes,

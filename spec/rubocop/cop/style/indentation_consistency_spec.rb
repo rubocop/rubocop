@@ -120,7 +120,7 @@ describe Rubocop::Cop::Style::IndentationConsistency do
       expect(cop.offences).to be_empty
     end
 
-    it 'accepts an if/else in assignment with end aligned with variable ' +
+    it 'accepts an if/else in assignment with end aligned with variable ' \
       'and chaining after the end' do
       inspect_source(cop,
                      ['var = if a',
@@ -131,7 +131,7 @@ describe Rubocop::Cop::Style::IndentationConsistency do
       expect(cop.offences).to be_empty
     end
 
-    it 'accepts an if/else in assignment with end aligned with variable ' +
+    it 'accepts an if/else in assignment with end aligned with variable ' \
       'and chaining with a block after the end' do
       inspect_source(cop,
                      ['var = if a',
@@ -160,7 +160,7 @@ describe Rubocop::Cop::Style::IndentationConsistency do
       expect(cop.offences).to be_empty
     end
 
-    it 'accepts an if/else in assignment on next line with end aligned ' +
+    it 'accepts an if/else in assignment on next line with end aligned ' \
       'with if' do
       inspect_source(cop,
                      ['var =',
@@ -408,7 +408,7 @@ describe Rubocop::Cop::Style::IndentationConsistency do
       expect(cop.offences).to be_empty
     end
 
-    it 'registers an offence for bad indentation in def but not for ' +
+    it 'registers an offence for bad indentation in def but not for ' \
       'outdented public, protected, and private' do
       inspect_source(cop,
                      ['class Test',

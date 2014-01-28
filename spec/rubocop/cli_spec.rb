@@ -68,16 +68,16 @@ describe Rubocop::CLI, :isolated_environment do
                   '',
                   'Offences:',
                   '',
-                  'example.rb:2:1: C: [Corrected] Use `fail` instead of ' +
+                  'example.rb:2:1: C: [Corrected] Use `fail` instead of ' \
                   '`raise` to signal exceptions.',
                   'raise NotImplementedError,',
                   '^^^^^',
-                  'example.rb:3:7: C: [Corrected] Align the parameters of a ' +
+                  'example.rb:3:7: C: [Corrected] Align the parameters of a ' \
                   'method call if they span more than one line.',
                   "      'Method should be overridden in child classes'",
                   '      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',
                   '',
-                  '1 file inspected, 2 offences detected, 2 offences ' +
+                  '1 file inspected, 2 offences detected, 2 offences ' \
                   'corrected',
                   ''].join("\n"))
       end
@@ -108,26 +108,26 @@ describe Rubocop::CLI, :isolated_environment do
                   '',
                   'Offences:',
                   '',
-                  'example.rb:4:1: C: [Corrected] Trailing whitespace ' +
+                  'example.rb:4:1: C: [Corrected] Trailing whitespace ' \
                   'detected.',
-                  'example.rb:4:1: C: [Corrected] Extra empty line detected ' +
+                  'example.rb:4:1: C: [Corrected] Extra empty line detected ' \
                   'at body beginning.',
                   '',
-                  '1 file inspected, 2 offences detected, 2 offences ' +
+                  '1 file inspected, 2 offences detected, 2 offences ' \
                   'corrected',
                   ''].join("\n"))
       end
     end
 
     describe '--auto-gen-config' do
-      it 'exits with error if asked to re-generate a todo list that is in ' +
+      it 'exits with error if asked to re-generate a todo list that is in ' \
         'use' do
         create_file('example1.rb', ['# encoding: utf-8',
                                     'x= 0 ',
                                     '#' * 85,
                                     'y ',
                                     'puts x'])
-        todo_contents = ['# This configuration was generated with `rubocop' +
+        todo_contents = ['# This configuration was generated with `rubocop' \
                          ' --auto-gen-config`',
                          '',
                          'LineLength:',
@@ -137,7 +137,7 @@ describe Rubocop::CLI, :isolated_environment do
           .to eq(todo_contents.join("\n") + "\n")
         create_file('.rubocop.yml', ['inherit_from: rubocop-todo.yml'])
         expect(cli.run(['--auto-gen-config'])).to eq(1)
-        expect($stderr.string).to eq('Remove rubocop-todo.yml from the ' +
+        expect($stderr.string).to eq('Remove rubocop-todo.yml from the ' \
                                      'current configuration before ' +
                                      "generating it again.\n")
       end
@@ -150,7 +150,7 @@ describe Rubocop::CLI, :isolated_environment do
                                     'puts x'])
         expect(cli.run(['--auto-gen-config', 'example1.rb'])).to eq(1)
         expect($stderr.string)
-          .to eq('--auto-gen-config can not be combined with any other ' +
+          .to eq('--auto-gen-config can not be combined with any other ' \
                  "arguments.\n")
         expect($stdout.string).to eq('')
       end
@@ -171,7 +171,7 @@ describe Rubocop::CLI, :isolated_environment do
           .to include([
                        'Created rubocop-todo.yml.',
                        'Run rubocop with --config rubocop-todo.yml, or',
-                       'add inherit_from: rubocop-todo.yml in a ' +
+                       'add inherit_from: rubocop-todo.yml in a ' \
                        '.rubocop.yml file.',
                        ''].join("\n"))
         expected =
@@ -180,7 +180,7 @@ describe Rubocop::CLI, :isolated_environment do
            '# The point is for the user to remove these configuration records',
            '# one by one as the offences are removed from the code base.',
            '# Note that changes in the inspected code, or installation of new',
-           '# versions of RuboCop, may require this file to be generated ' +
+           '# versions of RuboCop, may require this file to be generated ' \
            'again.',
            '',
            '# Offence count: 1',
@@ -232,7 +232,7 @@ describe Rubocop::CLI, :isolated_environment do
                         'example.rb'])).to eq(1)
         expect($stdout.string)
           .to eq(['== example.rb ==',
-                  'C:  1:  1: Favor modifier if usage when you ' +
+                  'C:  1:  1: Favor modifier if usage when you ' \
                   'have a single-line body. Another good alternative is ' +
                   'the usage of control flow &&/||.',
                   '',
@@ -455,7 +455,7 @@ describe Rubocop::CLI, :isolated_environment do
                             'example2.rb', 'example3.rb']))
               .to eq(1)
             expect($stdout.string)
-              .to eq(['example1.rb:2:2: C: Surrounding space missing for ' +
+              .to eq(['example1.rb:2:2: C: Surrounding space missing for ' \
                       "operator '='.",
                       'x= 0 ',
                       ' ^',
@@ -463,9 +463,9 @@ describe Rubocop::CLI, :isolated_environment do
                       'x= 0 ',
                       '    ^',
                       'example1.rb:3:80: C: Line is too long. [85/79]',
-                      '###################################################' +
+                      '###################################################' \
                       '##################################',
-                      '                                                   ' +
+                      '                                                   ' \
                       '                            ^^^^^^',
                       'example1.rb:4:2: C: Trailing whitespace detected.',
                       'y ',
@@ -473,23 +473,23 @@ describe Rubocop::CLI, :isolated_environment do
                       'example2.rb:2:1: C: Tab detected.',
                       "\tx",
                       '^',
-                      'example2.rb:3:1: C: Inconsistent indentation ' +
+                      'example2.rb:3:1: C: Inconsistent indentation ' \
                       'detected.',
                       'def a',
                       '',
-                      'example2.rb:4:1: C: Use 2 (not 3) spaces for ' +
+                      'example2.rb:4:1: C: Use 2 (not 3) spaces for ' \
                       'indentation.',
                       '   puts',
                       '^^^',
                       'example3.rb:2:5: C: Use snake_case for methods.',
                       'def badName',
                       '    ^^^^^^^',
-                      'example3.rb:3:3: C: Favor modifier if usage ' +
+                      'example3.rb:3:3: C: Favor modifier if usage ' \
                       'when you have a single-line body. Another good ' +
                       'alternative is the usage of control flow &&/||.',
                       '  if something',
                       '  ^^',
-                      'example3.rb:5:5: W: end at 5, 4 is not aligned ' +
+                      'example3.rb:5:5: W: end at 5, 4 is not aligned ' \
                       'with if at 3, 2',
                       '    end',
                       '    ^^^',

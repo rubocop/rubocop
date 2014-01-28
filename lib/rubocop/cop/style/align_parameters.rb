@@ -8,7 +8,7 @@ module Rubocop
       class AlignParameters < Cop
         include AutocorrectAlignment
 
-        MSG = 'Align the parameters of a method call if they span ' +
+        MSG = 'Align the parameters of a method call if they span ' \
           'more than one line.'
 
         def on_send(node)

@@ -51,7 +51,7 @@ describe Rubocop::Cop::Style::Blocks do
       expect(cop.offences).to be_empty
     end
 
-    it 'registers an offence for braces if do-end would not change ' +
+    it 'registers an offence for braces if do-end would not change ' \
       'the meaning' do
       src = ['scope :foo, (lambda { |f|',
              '  where(condition: "value")',

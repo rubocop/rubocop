@@ -38,7 +38,7 @@ describe Rubocop::Cop::Style::MultilineBlockChain do
       expect(cop.highlights).to eq(['end.c', 'end.e'])
     end
 
-    it 'registers an offence for a chain where the second block is ' +
+    it 'registers an offence for a chain where the second block is ' \
       'single-line' do
       inspect_source(cop, ['Thread.list.find_all { |t|',
                            '  t.alive?',

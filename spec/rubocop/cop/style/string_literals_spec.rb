@@ -8,7 +8,7 @@ describe Rubocop::Cop::Style::StringLiterals, :config do
   context 'configured with single quotes preferred' do
     let(:cop_config) { { 'EnforcedStyle' => 'single_quotes' } }
 
-    it 'registers offence for double quotes when single quotes ' +
+    it 'registers offence for double quotes when single quotes ' \
       'suffice' do
       inspect_source(cop, ['s = "abc"',
                            'x = "a\\\\b"',
@@ -19,7 +19,7 @@ describe Rubocop::Cop::Style::StringLiterals, :config do
                                     '"\\\\b"',
                                     '"a\\\\"'])
       expect(cop.messages)
-        .to eq(["Prefer single-quoted strings when you don't need " +
+        .to eq(["Prefer single-quoted strings when you don't need " \
                 'string interpolation or special symbols.'] * 4)
       expect(cop.config_to_allow_offences).to eq('EnforcedStyle' =>
                                                  'double_quotes')
@@ -29,7 +29,7 @@ describe Rubocop::Cop::Style::StringLiterals, :config do
       inspect_source(cop, ['s = "abc"',
                            "x = 'abc'"])
       expect(cop.messages)
-        .to eq(["Prefer single-quoted strings when you don't need " +
+        .to eq(["Prefer single-quoted strings when you don't need " \
                 'string interpolation or special symbols.'])
       expect(cop.config_to_allow_offences).to eq('Enabled' => false)
     end
@@ -60,7 +60,7 @@ describe Rubocop::Cop::Style::StringLiterals, :config do
 
     it 'accepts double quotes when they are needed' do
       src = ['a = "\n"',
-             'b = "#{encode_severity}:' +
+             'b = "#{encode_severity}:' \
              '#{sprintf("%3d", line_number)}: #{m}"',
              'c = "\'"',
              'd = "#@test"',
@@ -124,12 +124,12 @@ describe Rubocop::Cop::Style::StringLiterals, :config do
   context 'configured with double quotes preferred' do
     let(:cop_config) { { 'EnforcedStyle' => 'double_quotes' } }
 
-    it 'registers offence for single quotes when double quotes would ' +
+    it 'registers offence for single quotes when double quotes would ' \
       'be equivalent' do
       inspect_source(cop, ["s = 'abc'"])
       expect(cop.highlights).to eq(["'abc'"])
       expect(cop.messages)
-        .to eq(['Prefer double-quoted strings unless you need ' +
+        .to eq(['Prefer double-quoted strings unless you need ' \
                 'single quotes to avoid extra backslashes for ' +
                 'escaping.'])
       expect(cop.config_to_allow_offences).to eq('EnforcedStyle' =>
@@ -140,7 +140,7 @@ describe Rubocop::Cop::Style::StringLiterals, :config do
       inspect_source(cop, ['s = "abc"',
                            "x = 'abc'"])
       expect(cop.messages)
-        .to eq(['Prefer double-quoted strings unless you need ' +
+        .to eq(['Prefer double-quoted strings unless you need ' \
                 'single quotes to avoid extra backslashes for ' +
                 'escaping.'])
       expect(cop.config_to_allow_offences).to eq('Enabled' => false)

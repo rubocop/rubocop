@@ -94,7 +94,7 @@ describe Rubocop::Cop::Lint::BlockAlignment do
                       'end'
                      ])
       expect(cop.messages)
-        .to eq(['end at 4, 0 is not aligned with a_long_method_that_dont_fit_on_the_line ' +
+        .to eq(['end at 4, 0 is not aligned with a_long_method_that_dont_fit_on_the_line ' \
                 'do |v| at 2, 2'])
     end
   end
@@ -131,11 +131,11 @@ describe Rubocop::Cop::Lint::BlockAlignment do
              'end']
       inspect_source(cop, src)
       expect(cop.messages)
-        .to eq(['end at 5, 8 is not aligned with bar.get_stuffs at 2, 2 or' +
+        .to eq(['end at 5, 8 is not aligned with bar.get_stuffs at 2, 2 or' \
                 ' .reject do |stuff| at 3, 6',
-                'end at 7, 4 is not aligned with bar.get_stuffs at 2, 2 or' +
+                'end at 7, 4 is not aligned with bar.get_stuffs at 2, 2 or' \
                 ' end.select do |stuff| at 5, 8',
-                'end at 10, 8 is not aligned with bar.get_stuffs at 2, 2 or' +
+                'end at 10, 8 is not aligned with bar.get_stuffs at 2, 2 or' \
                 ' .select do |stuff| at 8, 6'])
     end
 
@@ -325,7 +325,7 @@ describe Rubocop::Cop::Lint::BlockAlignment do
                     '  end)'
                    ])
     expect(cop.messages)
-      .to eq(['end at 3, 2 is not aligned with arr.all? do |o| at 1, 7 or ' +
+      .to eq(['end at 3, 2 is not aligned with arr.all? do |o| at 1, 7 or ' \
               'expect(arr.all? do |o| at 1, 0'])
   end
 
