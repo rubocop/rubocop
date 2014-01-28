@@ -7,6 +7,7 @@ module Rubocop
       # Modifiers should be indented as deeps are method definitions and
       # surrounded by blank lines.
       class AccessModifierIndentation < Cop
+        include AutocorrectAlignment
         include ConfigurableEnforcedStyle
 
         MSG = '%s access modifiers like %s.'
@@ -47,7 +48,8 @@ module Rubocop
           access_modifier_start_col = send_node.loc.expression.column
           offset = access_modifier_start_col - class_start_col
 
-          if offset == expected_indent_offset
+          @column_delta = expected_indent_offset - offset
+          if @column_delta == 0
             correct_style_detected
           else
             add_offence(send_node, :expression) do
