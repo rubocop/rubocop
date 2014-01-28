@@ -8,6 +8,7 @@
 * [#743](https://github.com/bbatsov/rubocop/issues/743): `WordArray` cop does auto-correction. ([@jonas054][])
 * [#743](https://github.com/bbatsov/rubocop/issues/743): `Proc` cop does auto-correction. ([@bbatsov][])
 * [#768](https://github.com/bbatsov/rubocop/issues/768): Rake task now supports `requires` and `options`. ([@nevir][])
+* [#759](https://github.com/bbatsov/rubocop/issues/759): New cop `EndLineConcatenation` checks for string literal concatenation with `+` at line end. ([@bbatsov][])
 
 ### Changes
 

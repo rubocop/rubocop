@@ -241,6 +241,10 @@ LeadingCommentSpace:
   Description: 'Comments should start with a space.'
   Enabled: true
 
+LineEndConcatenation:
+  Description: 'Use \\ instead of + to concatenate two string literals at line end.'
+  Enabled: true
+  
 LineLength:
   Description: 'Limit lines to 79 characters.'
   Enabled: true
