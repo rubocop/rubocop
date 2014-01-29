@@ -19,6 +19,7 @@
 ### Bugs fixed
 
 * [#764](https://github.com/bbatsov/rubocop/issues/764): Handle heredocs in `TrailingComma`. ([@jonas054][])
+* Guide for contributors now points to correct issues page. ([@scottmatthewman][])
 
 ## 0.17.0 (25/01/2014)
 
@@ -674,3 +675,4 @@
 [@skanev]: http://github.com/skanev
 [@claco]: http://github.com/claco
 [@rifraf]: http://github.com/rifraf
+[@scottmatthewman]: https://github.com/scottmatthewman
