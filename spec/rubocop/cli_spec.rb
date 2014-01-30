@@ -906,16 +906,21 @@ describe Rubocop::CLI, :isolated_environment do
                                       '# encoding: utf-8',
                                       'x = 0'
                                      ])
+      create_file('dir/thing.rb', [
+                                   '# encoding: utf-8',
+                                   'x = 0'
+                                  ])
       create_file('.rubocop.yml', [
                                    'UselessAssignment:',
                                    '  Exclude:',
                                    '    - example.rb',
                                    '    - !ruby/regexp /regexp.rb\z/',
-                                   '    - "exclude_*"'
+                                   '    - "exclude_*"',
+                                   '    - "dir/*"'
                                   ])
       expect(cli.run(%w(--format simple))).to eq(0)
       expect($stdout.string)
-        .to eq(['', '3 files inspected, no offences detected',
+        .to eq(['', '4 files inspected, no offences detected',
                 ''].join("\n"))
     end
 

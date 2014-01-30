@@ -4,6 +4,7 @@ module Rubocop
   module Cop
     # This module contains a collection of useful utility methods.
     module Util
+      include PathUtil
       extend AST::Sexp
 
       PROC_NEW_NODE = s(:send, s(:const, nil, :Proc), :new)
