@@ -55,20 +55,17 @@ module Rubocop
         end
 
         def check_source(start_line, end_line)
-          if processed_source.lines[start_line].empty?
-            range = source_range(processed_source.buffer,
-                                 processed_source[0...start_line],
-                                 0,
-                                 1)
-            add_offence(range, range, MSG_BEG)
-          end
+          check_line(start_line, MSG_BEG)
+          check_line(end_line - 2, MSG_END) unless end_line - 2 == start_line
+        end
 
-          if processed_source.lines[end_line - 2].empty?
+        def check_line(line, msg)
+          if processed_source.lines[line].empty?
             range = source_range(processed_source.buffer,
-                                 processed_source[0...(end_line - 2)],
+                                 processed_source[0...line],
                                  0,
                                  1)
-            add_offence(range, range, MSG_END)
+            add_offence(range, range, msg)
           end
         end
       end
