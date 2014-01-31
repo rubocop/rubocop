@@ -85,6 +85,15 @@ describe Rubocop::Cop::Style::EmptyLinesAroundBody do
     expect(cop.offences.size).to eq(1)
   end
 
+  it 'autocorrects class body containing only a blank' do
+    corrected = autocorrect_source(cop,
+                                   ['class SomeClass',
+                                    '',
+                                    'end'])
+    expect(corrected).to eq ['class SomeClass',
+                             'end'].join("\n")
+  end
+
   it 'registers an offence for module body starting with a blank' do
     inspect_source(cop,
                    ['module SomeModule',
