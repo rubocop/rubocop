@@ -18,6 +18,23 @@ describe RuboCop::Cop::Style::SpaceAfterColon do
     expect(cop.messages).to be_empty
   end
 
+  it 'accepts colon in ternary followed by space' do
+    inspect_source(cop, ['x = w ? a : b'])
+    expect(cop.messages).to be_empty
+  end
+
+  it 'accepts hash rockets' do
+    inspect_source(cop, ['x = {"a"=>1}'])
+    expect(cop.messages).to be_empty
+  end
+
+  it 'accepts if' do
+    inspect_source(cop, ['x = if w',
+                         '      a',
+                         '    end'])
+    expect(cop.messages).to be_empty
+  end
+
   if RUBY_VERSION >= '2.1'
     it 'accepts colons denoting required keyword argument' do
       inspect_source(cop, ['def initialize(table:, nodes:)',
