@@ -5,6 +5,7 @@
 ### Bugs fixed
 
 * Remove double reporting in `EmptyLinesAroundBody` of empty line inside otherwise empty class/module/method that caused crash in autocorrect. ([@jonas054][])
+* [#779](https://github.com/bbatsov/rubocop/issues/779): Fix a false positive in `LineEndConcatenation`. ([@bbatsov][])
 
 ## 0.18.0 (30/01/2014)
 

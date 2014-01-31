@@ -18,6 +18,13 @@ describe Rubocop::Cop::Style::LineEndConcatenation do
     expect(cop.offences).to be_empty
   end
 
+  it 'accepts string concat at line end when followed by comment' do
+    inspect_source(cop,
+                   ['top = "test" + # something',
+                    '"top"'])
+    expect(cop.offences).to be_empty
+  end
+
   it 'autocorrects by replacing + with \\' do
     corrected = autocorrect_source(cop,
                                    ['top = "test" +',

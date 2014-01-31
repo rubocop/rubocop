@@ -42,10 +42,12 @@ module Rubocop
 
           return false unless arg.type == :str
 
-          receiver_line = receiver.loc.expression.line
-          arg_line = arg.loc.expression.line
+          plus_at_line_end?(node.loc.expression.source)
+        end
 
-          receiver_line != arg_line
+        def plus_at_line_end?(expression)
+          # check if the first line of the expression ends with a +
+          expression =~ /.+\+\s*$/
         end
       end
     end
