@@ -35,7 +35,7 @@ module Rubocop
 
             next if node.type == :class && !body
             next if namespace?(body)
-            next unless ast_with_comments[node].empty?
+            next if associated_comment?(node, ast_with_comments)
             add_offence(node, :keyword, format(MSG, node.type.to_s))
           end
         end
@@ -53,6 +53,14 @@ module Rubocop
           else
             false
           end
+        end
+
+        # Returns true if the node has a comment on the line above it.
+        def associated_comment?(node, ast_with_comments)
+          preceding_comment = ast_with_comments[node].last
+          return false if preceding_comment.nil?
+          distance = node.loc.keyword.line - preceding_comment.loc.line
+          distance == 1
         end
       end
     end
