@@ -6,6 +6,7 @@
 
 * Remove double reporting in `EmptyLinesAroundBody` of empty line inside otherwise empty class/module/method that caused crash in autocorrect. ([@jonas054][])
 * [#779](https://github.com/bbatsov/rubocop/issues/779): Fix a false positive in `LineEndConcatenation`. ([@bbatsov][])
+* [#751](https://github.com/bbatsov/rubocop/issues/751): Fix `Documentation` cop so that a comment followed by an empty line and then a class definition is not considered to be class documentation. ([@jonas054][])
 
 ## 0.18.0 (30/01/2014)
 

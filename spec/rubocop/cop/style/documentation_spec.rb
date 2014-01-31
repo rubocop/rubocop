@@ -14,6 +14,19 @@ describe Rubocop::Cop::Style::Documentation do
     expect(cop.offences.size).to eq(1)
   end
 
+  it 'does not consider comment followed by empty line to be class ' \
+     'documentation' do
+    inspect_source(cop,
+                   ['# Copyright 2014',
+                    '# Some company',
+                    '',
+                    'class My_Class',
+                    '  TEST = 20',
+                    'end'
+                   ])
+    expect(cop.offences.size).to eq(1)
+  end
+
   it 'registers an offence for non-namespace' do
     inspect_source(cop,
                    ['module My_Class',
