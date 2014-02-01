@@ -3,9 +3,8 @@
 module Rubocop
   module Cop
     module Style
-      # A couple of checks related to the use method visibility modifiers.
-      # Modifiers should be indented as deeps are method definitions and
-      # surrounded by blank lines.
+      # Modifiers should be indented as deep as method definitions, or as deep
+      # as the class/module keyword, depending on configuration.
       class AccessModifierIndentation < Cop
         include AutocorrectAlignment
         include ConfigurableEnforcedStyle
@@ -16,26 +15,24 @@ module Rubocop
         PROTECTED_NODE = s(:send, nil, :protected)
         PUBLIC_NODE = s(:send, nil, :public)
 
-        def investigate(processed_source)
-          ast = processed_source.ast
-          return unless ast
-          on_node([:class, :module, :sclass, :block], ast) do |class_node|
-            if class_node.type == :block && !class_constructor?(class_node)
-              next
-            end
+        def on_class(node)
+          _name, _base_class, body = *node
+          check_body(body, node)
+        end
 
-            class_start_col = class_node.loc.expression.column
+        def on_sclass(node)
+          _name, body = *node
+          check_body(body, node)
+        end
 
-            # we'll have to walk all class children nodes
-            # except other class/module nodes
-            class_node.children.compact.each do |node|
-              on_node(:send, node, [:class, :module, :sclass]) do |send_node|
-                if self.class.modifier_node?(send_node)
-                  check(send_node, class_start_col)
-                end
-              end
-            end
-          end
+        def on_module(node)
+          _name, body = *node
+          check_body(body, node)
+        end
+
+        def on_block(node)
+          _method, _args, body = *node
+          check_body(body, node) if class_constructor?(node)
         end
 
         def self.modifier_node?(node)
@@ -44,7 +41,16 @@ module Rubocop
 
         private
 
-        def check(send_node, class_start_col)
+        def check_body(body, node)
+          return if body.nil? # Empty class etc.
+
+          modifiers = body.children.select { |c| self.class.modifier_node?(c) }
+          class_column = node.loc.expression.column
+
+          modifiers.each { |modifier| check_modifier(modifier, class_column) }
+        end
+
+        def check_modifier(send_node, class_start_col)
           access_modifier_start_col = send_node.loc.expression.column
           offset = access_modifier_start_col - class_start_col
 
