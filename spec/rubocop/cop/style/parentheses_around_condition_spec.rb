@@ -28,6 +28,11 @@ describe Rubocop::Cop::Style::ParenthesesAroundCondition, :config do
       .to eq("Don't use parentheses around the condition of a while.")
   end
 
+  it 'accepts parentheses if there is no space between the keyword and (.' do
+    inspect_source(cop, ['if(x > 5) then something end'])
+    expect(cop.offences).to be_empty
+  end
+
   it 'auto-corrects parentheses around condition' do
     corrected = autocorrect_source(cop, ['if (x > 10)',
                                          'elsif (x < 3)',

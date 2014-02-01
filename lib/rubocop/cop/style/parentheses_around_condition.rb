@@ -28,11 +28,19 @@ module Rubocop
           cond, _body = *node
 
           if cond.type == :begin
+            return if parens_required?(node)
             # allow safe assignment
             return if safe_assignment?(cond) && safe_assignment_allowed?
 
             add_offence(cond, :expression, message(node))
           end
+        end
+
+        def parens_required?(node)
+          expr = node.loc.expression.source
+          keyword = node.loc.keyword.source
+
+          expr.start_with?("#{keyword}(")
         end
 
         def message(node)
