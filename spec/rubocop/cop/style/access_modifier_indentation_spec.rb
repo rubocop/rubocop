@@ -144,6 +144,13 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
       expect(cop.offences).to be_empty
     end
 
+    it 'accepts an empty class' do
+      inspect_source(cop,
+                     ['class Test',
+                      'end'])
+      expect(cop.offences).to be_empty
+    end
+
     it 'handles properly nested classes' do
       inspect_source(cop,
                      ['class Test',
@@ -312,6 +319,41 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                                '  protected',
                                '',
                                '    def test; end',
+                               '  end',
+                               'end'].join("\n"))
+    end
+
+    it 'auto-corrects private in complicated case' do
+      corrected = autocorrect_source(cop, ['class Hello',
+                                           '  def foo',
+                                           "    'hi'",
+                                           '  end',
+                                           '',
+                                           '  def bar',
+                                           '    Module.new do',
+                                           '',
+                                           '     private',
+                                           '',
+                                           '      def hi',
+                                           "        'bye'",
+                                           '      end',
+                                           '    end',
+                                           '  end',
+                                           'end'])
+      expect(corrected).to eq(['class Hello',
+                               '  def foo',
+                               "    'hi'",
+                               '  end',
+                               '',
+                               '  def bar',
+                               '    Module.new do',
+                               '',
+                               '    private',
+                               '',
+                               '      def hi',
+                               "        'bye'",
+                               '      end',
+                               '    end',
                                '  end',
                                'end'].join("\n"))
     end
