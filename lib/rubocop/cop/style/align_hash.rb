@@ -142,7 +142,7 @@ module Rubocop
         end
 
         MSG = 'Align the elements of a hash literal if they span more than ' \
-          'one line.'
+              'one line.'
 
         def on_hash(node)
           return if node.children.empty?
