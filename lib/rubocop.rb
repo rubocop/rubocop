@@ -30,6 +30,7 @@ require 'rubocop/cop/variable_inspector/reference'
 require 'rubocop/cop/variable_inspector/scope'
 require 'rubocop/cop/variable_inspector/variable_table'
 
+require 'rubocop/cop/mixin/annotation_comment'
 require 'rubocop/cop/mixin/array_syntax'
 require 'rubocop/cop/mixin/autocorrect_alignment'
 require 'rubocop/cop/mixin/check_assignment'

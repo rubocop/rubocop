@@ -8,6 +8,8 @@ module Rubocop
       # check and so are namespace modules - modules that have nothing in
       # their bodies except classes or other other modules.
       class Documentation < Cop
+        include AnnotationComment
+
         MSG = 'Missing top-level %s documentation comment.'
 
         def investigate(processed_source)
@@ -55,12 +57,16 @@ module Rubocop
           end
         end
 
-        # Returns true if the node has a comment on the line above it.
+        # Returns true if the node has a comment on the line above it that
+        # isn't an annotation.
         def associated_comment?(node, ast_with_comments)
+          return false if ast_with_comments[node].empty?
+
           preceding_comment = ast_with_comments[node].last
-          return false if preceding_comment.nil?
           distance = node.loc.keyword.line - preceding_comment.loc.line
-          distance == 1
+          return false if distance > 1
+
+          !annotation?(preceding_comment)
         end
       end
     end
