@@ -3,7 +3,13 @@
 require 'spec_helper'
 
 describe Rubocop::Cop::Style::Documentation do
-  subject(:cop) { described_class.new }
+
+  subject(:cop) { described_class.new(config) }
+  let(:config) do
+    Rubocop::Config.new('CommentAnnotation' => {
+                          'Keywords' => %w(TODO FIXME OPTIMIZE HACK REVIEW)
+                        })
+  end
 
   it 'registers an offence for non-empty class' do
     inspect_source(cop,
@@ -54,6 +60,16 @@ describe Rubocop::Cop::Style::Documentation do
                     'end'
                    ])
     expect(cop.offences).to be_empty
+  end
+
+  it 'registers an offence for non-empty class with annotation comment' do
+    inspect_source(cop,
+                   ['# OPTIMIZE: Make this faster.',
+                    'class My_Class',
+                    '  TEST = 20',
+                    'end'
+                   ])
+    expect(cop.offences.size).to eq(1)
   end
 
   it 'accepts non-empty module with documentation' do
