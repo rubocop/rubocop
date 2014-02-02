@@ -136,6 +136,18 @@ describe Rubocop::Cop::Style::AlignHash, :config do
       expect(cop.offences).to be_empty
     end
 
+    it 'accepts a multiline array of single line hashes' do
+      inspect_source(cop, ['def self.scenarios_order',
+                           '    [',
+                           '      { before:   %w( l k ) },',
+                           '      { ending:   %w( m l ) },',
+                           '      { starting: %w( m n ) },',
+                           '      { after:    %w( n o ) }',
+                           '    ]',
+                           '  end'])
+      expect(cop.offences).to be_empty
+    end
+
     it 'registers an offence for misaligned hash values' do
       inspect_source(cop, ['hash1 = {',
                            "  'a'   =>  0,",
