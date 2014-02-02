@@ -206,6 +206,15 @@ describe Rubocop::Cop::Style::TrailingComma, :config do
         expect(cop.offences).to be_empty
       end
 
+      it 'accepts a multiline word array' do
+        inspect_source(cop, ['ingredients = %w(',
+                             '  sausage',
+                             '  anchovies',
+                             '  olives',
+                             ')'])
+        expect(cop.offences).to be_empty
+      end
+
       it 'accepts missing comma after a heredoc' do
         # A heredoc that's the last item in a literal or parameter list can not
         # have a trailing comma. It's a syntax error.

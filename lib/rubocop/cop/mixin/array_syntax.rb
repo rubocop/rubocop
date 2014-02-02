@@ -6,7 +6,7 @@ module Rubocop
     # syntax.
     module ArraySyntax
       def array_of?(element_type, node)
-        return false unless node.loc.begin && node.loc.begin.is?('[')
+        return false unless square_brackets?(node)
 
         array_elems = node.children
 
@@ -14,6 +14,10 @@ module Rubocop
         return false unless array_elems && array_elems.size > 1
 
         array_elems.all? { |e| e.type == element_type }
+      end
+
+      def square_brackets?(node)
+        node.loc.begin && node.loc.begin.is?('[')
       end
     end
   end

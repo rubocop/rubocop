@@ -5,12 +5,13 @@ module Rubocop
     module Style
       # This cop checks for trailing comma in parameter lists and literals.
       class TrailingComma < Cop
+        include ArraySyntax
         include ConfigurableEnforcedStyle
 
         MSG = '%s comma after the last %s.'
 
         def on_array(node)
-          check_literal(node, 'item of %s array')
+          check_literal(node, 'item of %s array') if square_brackets?(node)
         end
 
         def on_hash(node)
