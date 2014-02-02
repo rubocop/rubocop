@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.18.1 (02/02/2014)
+
 ### Bugs fixed
 
 * Remove double reporting in `EmptyLinesAroundBody` of empty line inside otherwise empty class/module/method that caused crash in autocorrect. ([@jonas054][])
