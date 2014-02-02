@@ -146,6 +146,7 @@ module Rubocop
 
         def on_hash(node)
           return if node.children.empty?
+          return unless multiline?(node)
 
           @alignment_for_hash_rockets ||=
             new_alignment('EnforcedHashRocketStyle')
@@ -170,6 +171,10 @@ module Rubocop
         end
 
         private
+
+        def multiline?(node)
+          node.loc.expression.source.include?("\n")
+        end
 
         def alignment_for(pair)
           if pair.loc.operator.is?('=>')

@@ -10,6 +10,7 @@
 * [#783](https://github.com/bbatsov/rubocop/issues/783): Fix a false positive in `ParethesesAroundCondition` when the parentheses are actually required. ([@bbatsov][])
 * [#781](https://github.com/bbatsov/rubocop/issues/781): Fix problem with back-and-forth auto-correction in `AccessModifierIndentation`. ([@jonas054][])
 * [#785](https://github.com/bbatsov/rubocop/issues/785): Fix false positive on `%w` arrays in `TrailingComma`. ([@jonas054][])
+* [#782](https://github.com/bbatsov/rubocop/issues/782): Fix false positive in `AlignHash` for single line hashes. ([@jonas054][])
 
 ## 0.18.0 (30/01/2014)
 
