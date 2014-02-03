@@ -33,11 +33,13 @@ module Rubocop
         def autocorrect(node)
           @corrections << lambda do |corrector|
             if style == :require_parentheses
-
-              corrector.insert_after(args_node(node).loc.expression, ')')
-              expression = node.loc.expression
-              replacement = expression.source.sub(/(def\s+\S+)\s+/, '\1(')
-              corrector.replace(expression, replacement)
+              args_expr = args_node(node).loc.expression
+              args_with_space = range_with_surrounding_space(args_expr, :left)
+              just_space = Parser::Source::Range.new(args_expr.source_buffer,
+                                                     args_with_space.begin_pos,
+                                                     args_expr.begin_pos)
+              corrector.replace(just_space, '(')
+              corrector.insert_after(args_expr, ')')
             elsif style == :require_no_parentheses
               corrector.replace(node.loc.begin, ' ')
               corrector.remove(node.loc.end)
