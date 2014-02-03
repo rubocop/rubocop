@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bugs fixed
+
+* [#790](https://github.com/bbatsov/rubocop/issues/790): Fix auto-correction interference problem between `MethodDefParentheses` and other cops. ([@jonas054][])
+
 ## 0.18.1 (02/02/2014)
 
 ### Bugs fixed

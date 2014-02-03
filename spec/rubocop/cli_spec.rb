@@ -117,6 +117,39 @@ describe Rubocop::CLI, :isolated_environment do
                   'corrected',
                   ''].join("\n"))
       end
+
+      it 'can correct MethodDefParentheses and other offence' do
+        create_file('example.rb',
+                    ['# encoding: utf-8',
+                     'def primes limit',
+                     '  1.upto(limit).find_all { |i| is_prime[i] }',
+                     'end'])
+        expect(cli.run(%w(-D --auto-correct))).to eq(1)
+        expect($stderr.string).to eq('')
+        expect(IO.read('example.rb'))
+          .to eq(['# encoding: utf-8',
+                  'def primes(limit)',
+                  '  1.upto(limit).select { |i| is_prime[i] }',
+                  'end'].join("\n") + "\n")
+        expect($stdout.string)
+          .to eq(['Inspecting 1 file',
+                  'C',
+                  '',
+                  'Offences:',
+                  '',
+                  'example.rb:2:12: C: [Corrected] MethodDefParentheses: ' \
+                  'Use def with parentheses when there are parameters.',
+                  'def primes limit',
+                  '           ^^^^^',
+                  'example.rb:3:17: C: [Corrected] CollectionMethods: ' \
+                  'Prefer select over find_all.',
+                  '  1.upto(limit).find_all { |i| is_prime[i] }',
+                  '                ^^^^^^^^',
+                  '',
+                  '1 file inspected, 2 offences detected, 2 offences ' \
+                  'corrected',
+                  ''].join("\n"))
+      end
     end
 
     describe '--auto-gen-config' do
