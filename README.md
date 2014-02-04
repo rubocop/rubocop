@@ -60,7 +60,7 @@ automatically fix some of the problems for you.
 
 **RuboCop**'s installation is pretty standard:
 
-```bash
+```
 $ gem install rubocop
 ```
 
@@ -69,13 +69,13 @@ $ gem install rubocop
 Running `rubocop` with no arguments will check all Ruby source files
 in the current directory:
 
-```bash
+```
 $ rubocop
 ```
 
 Alternatively you can pass `rubocop` a list of files and directories to check:
 
-```bash
+```
 $ rubocop app spec lib/something.rb
 ```
 
@@ -109,7 +109,7 @@ test.rb:4:5: W: end at 4, 4 is not aligned with if at 2, 2
 
 For more details check the available command-line options:
 
-```bash
+```
 $ rubocop -h
 ```
 
@@ -329,7 +329,7 @@ for x in (0..19) # rubocop:disable AvoidFor
 The `Clang` formatter displays the offences in a manner similar to `clang`:
 
 ```
-rubocop test.rb
+$ rubocop test.rb
 
 Inspecting 1 file
 W
@@ -354,7 +354,7 @@ test.rb:4:5: W: end at 4, 4 is not aligned with if at 2, 2
 The `Emacs` formatter displays the offences in a format suitable for consumption by `Emacs` (and possibly other tools).
 
 ```
-rubocop --format emacs test.rb
+$ rubocop --format emacs test.rb
 
 /Users/bozhidar/projects/test.rb:1:1: C: Use snake_case for methods and variables.
 /Users/bozhidar/projects/test.rb:2:3: C: Favor modifier if/unless usage when you have a single-line body. Another good alternative is the usage of control flow &&/||.
@@ -368,7 +368,7 @@ rubocop --format emacs test.rb
 The name of the formatter says it all :-)
 
 ```
-rubocop --format simple test.rb
+$ rubocop --format simple test.rb
 
 == test.rb ==
 C:  1:  1: Use snake_case for methods and variables.
@@ -385,7 +385,7 @@ favorite editor. This formatter outputs just the names of the files
 with offences in them and makes it possible to do something like:
 
 ```
-rubocop --format files | xargs vim
+$ rubocop --format files | xargs vim
 ```
 
 ### JSON Formatter
@@ -446,7 +446,7 @@ With this in mind, you can use the offence count formatter to outline the offend
 cops and the number of offences found for each by running:
 
 ```
-rubocop --format offences
+$ rubocop --format offences
 
 87   Documentation
 12   DotPosition
@@ -486,7 +486,7 @@ You can tell RuboCop to use your custom formatter with a combination of
 For example, when you have defined `MyCustomFormatter` in
 `./path/to/my_custom_formatter.rb`, you would type this command:
 
-```bash
+```
 $ rubocop --require ./path/to/my_custom_formatter --format MyCustomFormatter
 ```
 
