@@ -7,8 +7,10 @@ module Rubocop
     #
     # Here's the format:
     #
-    # (26)  LineLength
-    # (3)   OneLineConditional
+    # 26  LineLength
+    # 3   OneLineConditional
+    # --
+    # 29  Total
     class OffenceCountFormatter < BaseFormatter
       attr_reader :offence_counts
 
@@ -34,6 +36,9 @@ module Rubocop
           output.puts "#{count.to_s.ljust(offence_count.to_s.length + 2)}" +
                       "#{cop_name}\n"
         end
+        output.puts '--'
+        output.puts "#{offence_count}  Total"
+
         output.puts
       end
 

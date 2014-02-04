@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#793](https://github.com/bbatsov/rubocop/issues/793): Add printing total count when `rubocop --format offences`. ([@ma2gedev][])
+
 ### Bugs fixed
 
 * [#790](https://github.com/bbatsov/rubocop/issues/790): Fix auto-correction interference problem between `MethodDefParentheses` and other cops. ([@jonas054][])
@@ -696,3 +700,4 @@
 [@claco]: http://github.com/claco
 [@rifraf]: http://github.com/rifraf
 [@scottmatthewman]: https://github.com/scottmatthewman
+[@ma2gedev]: http://github.com/ma2gedev
