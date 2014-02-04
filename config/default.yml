@@ -148,6 +148,9 @@ HashSyntax:
     - ruby19
     - hash_rockets
 
+IfUnlessModifier:
+  MaxLineLength: 79
+
 # Checks the indentation of the first key in a hash literal.
 IndentHash:
   # The value `special_inside_parentheses` means that hash literals with braces
@@ -300,6 +303,9 @@ VariableName:
   SupportedStyles:
     - snake_case
     - camelCase
+
+WhileUntilModifier:
+  MaxLineLength: 79
 
 WordArray:
   MinSize: 0

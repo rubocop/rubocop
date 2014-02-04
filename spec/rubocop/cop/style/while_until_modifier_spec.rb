@@ -72,4 +72,22 @@ describe Rubocop::Cop::Style::WhileUntilModifier do
     inspect_source(cop, ['ala until bala'])
     expect(cop.offenses).to be_empty
   end
+
+  context 'when the maximum line length is specified by the cop itself' do
+    let(:config) do
+      hash = {
+        'LineLength' => { 'Max' => 100 },
+        'WhileUntilModifier' => { 'MaxLineLength' => 79 }
+      }
+      Rubocop::Config.new(hash)
+    end
+
+    it "accepts multiline while that doesn't fit on one line" do
+      check_too_long(cop, 'while')
+    end
+
+    it "accepts multiline until that doesn't fit on one line" do
+      check_too_long(cop, 'until')
+    end
+  end
 end
