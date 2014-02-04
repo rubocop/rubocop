@@ -29,7 +29,8 @@ describe Rubocop::Cop::Style::ParenthesesAroundCondition, :config do
   end
 
   it 'accepts parentheses if there is no space between the keyword and (.' do
-    inspect_source(cop, ['if(x > 5) then something end'])
+    inspect_source(cop, ['if(x > 5) then something end',
+                         'do_something until(x > 5)'])
     expect(cop.offences).to be_empty
   end
 

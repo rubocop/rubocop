@@ -37,10 +37,11 @@ module Rubocop
         end
 
         def parens_required?(node)
-          expr = node.loc.expression.source
-          keyword = node.loc.keyword.source
+          exp = node.loc.expression
+          kw = node.loc.keyword
+          kw_offset = kw.begin_pos - exp.begin_pos
 
-          expr.start_with?("#{keyword}(")
+          exp.source[kw_offset..-1].start_with?(kw.source + '(')
         end
 
         def message(node)
