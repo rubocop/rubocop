@@ -325,6 +325,41 @@ for x in (0..19) # rubocop:disable AvoidFor
 
 ## Formatters
 
+You can change the output format of RuboCop by specifying formatters with the `-f/--format` option.
+RuboCop ships with several built-in formatters, and also you can create your custom formatter.
+
+Additionaly the output can be redirected to a file instead of `$stdout` with the `-o/--out` option.
+
+You can enable multiple formatters at the same time by specifying `-f/--format` multiple times.
+The `-o/--out` option applies to the previously specified `-f/--format`,
+or the default `progress` format if no `-f/--format` is specified before the `-o/--out` option.
+
+```bash
+# Simple format to $stdout.
+$ rubocop --format simple
+
+# Progress (default) format to the file result.txt.
+$ rubocop --out result.txt
+
+# Both progress and offence count formats to $stdout.
+# The offence count formatter outputs only the final summary,
+# so you'll mostly see the outputs from the progress formatter,
+# and at the end the offence count summary will be outputted.
+$ rubocop --format progress --format offences
+
+# Progress format to $stdout, and JSON format to the file rubocop.json.
+$ rubocop --format progress --format json --out rubocop.json
+#         ~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~
+#                 |               |_______________|
+#              $stdout
+
+# Progress format to result.txt, and simple format to $stdout.
+$ rubocop --output result.txt --format simple
+#         ~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~
+#                  |                 |
+#           default format        $stdout
+```
+
 ### Progress Formatter (default)
 
 The default `progress` formatter outputs a character for each inspected file,
