@@ -448,17 +448,19 @@ cops and the number of offences found for each by running:
 ```
 rubocop --format offences
 
-(87)  Documentation
-(12)  DotPosition
-(8)   AvoidGlobalVars
-(7)   EmptyLines
-(6)   AssignmentInCondition
-(4)   Blocks
-(4)   CommentAnnotation
-(3)   BlockAlignment
-(1)   IndentationWidth
-(1)   AvoidPerlBackrefs
-(1)   ColonMethodCall
+87   Documentation
+12   DotPosition
+8    AvoidGlobalVars
+7    EmptyLines
+6    AssignmentInCondition
+4    Blocks
+4    CommentAnnotation
+3    BlockAlignment
+1    IndentationWidth
+1    AvoidPerlBackrefs
+1    ColonMethodCall
+--
+134  Total
 ```
 
 ### Custom Formatters
