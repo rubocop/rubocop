@@ -32,7 +32,8 @@ automatically fix some of the problems for you.
 	- [Automatically Generated Configuration](#automatically-generated-configuration)
 - [Disabling Cops within Source Code](#disabling-cops-within-source-code)
 - [Formatters](#formatters)
-	- [Clang Formatter (default)](#clang-formatter-default)
+	- [Progress Formatter (default)](#progress-formatter-default)
+	- [Clang Formatter](#clang-formatter)
 	- [Emacs](#emacs)
 	- [Simple](#simple)
 	- [File List Formatter](#file-list-formatter)
@@ -60,7 +61,7 @@ automatically fix some of the problems for you.
 
 **RuboCop**'s installation is pretty standard:
 
-```bash
+```
 $ gem install rubocop
 ```
 
@@ -69,13 +70,13 @@ $ gem install rubocop
 Running `rubocop` with no arguments will check all Ruby source files
 in the current directory:
 
-```bash
+```
 $ rubocop
 ```
 
 Alternatively you can pass `rubocop` a list of files and directories to check:
 
-```bash
+```
 $ rubocop app spec lib/something.rb
 ```
 
@@ -109,7 +110,7 @@ test.rb:4:5: W: end at 4, 4 is not aligned with if at 2, 2
 
 For more details check the available command-line options:
 
-```bash
+```
 $ rubocop -h
 ```
 
@@ -324,24 +325,76 @@ for x in (0..19) # rubocop:disable AvoidFor
 
 ## Formatters
 
-### Clang Formatter (default)
+You can change the output format of RuboCop by specifying formatters with the `-f/--format` option.
+RuboCop ships with several built-in formatters, and also you can create your custom formatter.
 
-The `Clang` formatter displays the offences in a manner similar to `clang`:
+Additionaly the output can be redirected to a file instead of `$stdout` with the `-o/--out` option.
+
+You can enable multiple formatters at the same time by specifying `-f/--format` multiple times.
+The `-o/--out` option applies to the previously specified `-f/--format`,
+or the default `progress` format if no `-f/--format` is specified before the `-o/--out` option.
+
+```bash
+# Simple format to $stdout.
+$ rubocop --format simple
+
+# Progress (default) format to the file result.txt.
+$ rubocop --out result.txt
+
+# Both progress and offence count formats to $stdout.
+# The offence count formatter outputs only the final summary,
+# so you'll mostly see the outputs from the progress formatter,
+# and at the end the offence count summary will be outputted.
+$ rubocop --format progress --format offences
+
+# Progress format to $stdout, and JSON format to the file rubocop.json.
+$ rubocop --format progress --format json --out rubocop.json
+#         ~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~
+#                 |               |_______________|
+#              $stdout
+
+# Progress format to result.txt, and simple format to $stdout.
+$ rubocop --output result.txt --format simple
+#         ~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~
+#                  |                 |
+#           default format        $stdout
+```
+
+### Progress Formatter (default)
+
+The default `progress` formatter outputs a character for each inspected file,
+and at the end it displays all detected offences in the `clang` format.
+A `.` represents a clean file, and each of the capital letters means
+the severest offence (convention, warning, error or fatal) found in a file.
 
 ```
-rubocop test.rb
-
-Inspecting 1 file
-W
+$ rubocop
+Inspecting 26 files
+..W.C....C..CWCW.C...WC.CC
 
 Offences:
 
+lib/foo.rb:6:5: C: Missing top-level class documentation comment.
+    class Foo
+    ^^^^^
+
+...
+
+26 files inspected, 46 offences detected
+```
+
+### Clang Formatter
+
+The `clang` formatter displays the offences in a manner similar to `clang`:
+
+```
+$ rubocop test.rb
 test.rb:1:1: C: Use snake_case for methods and variables.
 def badName
-^^^
+    ^^^^^^^
 test.rb:2:3: C: Favor modifier if/unless usage when you have a single-line body. Another good alternative is the usage of control flow &&/||.
   if something
-  ^^^^^
+  ^^
 test.rb:4:5: W: end at 4, 4 is not aligned with if at 2, 2
     end
     ^^^
@@ -351,10 +404,10 @@ test.rb:4:5: W: end at 4, 4 is not aligned with if at 2, 2
 
 ### Emacs
 
-The `Emacs` formatter displays the offences in a format suitable for consumption by `Emacs` (and possibly other tools).
+The `emacs` formatter displays the offences in a format suitable for consumption by `Emacs` (and possibly other tools).
 
 ```
-rubocop --format emacs test.rb
+$ rubocop --format emacs test.rb
 
 /Users/bozhidar/projects/test.rb:1:1: C: Use snake_case for methods and variables.
 /Users/bozhidar/projects/test.rb:2:3: C: Favor modifier if/unless usage when you have a single-line body. Another good alternative is the usage of control flow &&/||.
@@ -368,7 +421,7 @@ rubocop --format emacs test.rb
 The name of the formatter says it all :-)
 
 ```
-rubocop --format simple test.rb
+$ rubocop --format simple test.rb
 
 == test.rb ==
 C:  1:  1: Use snake_case for methods and variables.
@@ -385,7 +438,7 @@ favorite editor. This formatter outputs just the names of the files
 with offences in them and makes it possible to do something like:
 
 ```
-rubocop --format files | xargs vim
+$ rubocop --format files | xargs vim
 ```
 
 ### JSON Formatter
@@ -446,7 +499,7 @@ With this in mind, you can use the offence count formatter to outline the offend
 cops and the number of offences found for each by running:
 
 ```
-rubocop --format offences
+$ rubocop --format offences
 
 87   Documentation
 12   DotPosition
@@ -486,7 +539,7 @@ You can tell RuboCop to use your custom formatter with a combination of
 For example, when you have defined `MyCustomFormatter` in
 `./path/to/my_custom_formatter.rb`, you would type this command:
 
-```bash
+```
 $ rubocop --require ./path/to/my_custom_formatter --format MyCustomFormatter
 ```
 
