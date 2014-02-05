@@ -32,7 +32,8 @@ automatically fix some of the problems for you.
 	- [Automatically Generated Configuration](#automatically-generated-configuration)
 - [Disabling Cops within Source Code](#disabling-cops-within-source-code)
 - [Formatters](#formatters)
-	- [Clang Formatter (default)](#clang-formatter-default)
+	- [Progress Formatter (default)](#progress-formatter-default)
+	- [Clang Formatter](#clang-formatter)
 	- [Emacs](#emacs)
 	- [Simple](#simple)
 	- [File List Formatter](#file-list-formatter)
@@ -324,24 +325,41 @@ for x in (0..19) # rubocop:disable AvoidFor
 
 ## Formatters
 
-### Clang Formatter (default)
+### Progress Formatter (default)
+
+The default `progress` formatter outputs a character for each inspected file,
+and at the end it displays all detected offences in the `clang` format.
+A `.` represents a clean file, and each of the capital letters means
+the severest offence (convention, warning, error or fatal) found in a file.
+
+```
+$ rubocop
+Inspecting 26 files
+..W.C....C..CWCW.C...WC.CC
+
+Offences:
+
+lib/foo.rb:6:5: C: Missing top-level class documentation comment.
+    class Foo
+    ^^^^^
+
+...
+
+26 files inspected, 46 offences detected
+```
+
+### Clang Formatter
 
 The `clang` formatter displays the offences in a manner similar to `clang`:
 
 ```
 $ rubocop test.rb
-
-Inspecting 1 file
-W
-
-Offences:
-
 test.rb:1:1: C: Use snake_case for methods and variables.
 def badName
-^^^
+    ^^^^^^^
 test.rb:2:3: C: Favor modifier if/unless usage when you have a single-line body. Another good alternative is the usage of control flow &&/||.
   if something
-  ^^^^^
+  ^^
 test.rb:4:5: W: end at 4, 4 is not aligned with if at 2, 2
     end
     ^^^
