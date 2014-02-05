@@ -326,7 +326,7 @@ for x in (0..19) # rubocop:disable AvoidFor
 
 ### Clang Formatter (default)
 
-The `Clang` formatter displays the offences in a manner similar to `clang`:
+The `clang` formatter displays the offences in a manner similar to `clang`:
 
 ```
 $ rubocop test.rb
@@ -351,7 +351,7 @@ test.rb:4:5: W: end at 4, 4 is not aligned with if at 2, 2
 
 ### Emacs
 
-The `Emacs` formatter displays the offences in a format suitable for consumption by `Emacs` (and possibly other tools).
+The `emacs` formatter displays the offences in a format suitable for consumption by `Emacs` (and possibly other tools).
 
 ```
 $ rubocop --format emacs test.rb
