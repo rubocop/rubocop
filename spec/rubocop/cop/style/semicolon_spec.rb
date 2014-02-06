@@ -82,6 +82,20 @@ describe Rubocop::Cop::Style::Semicolon, :config do
     expect(cop.offences).to be_empty
   end
 
+  it 'auto-corrects semicolons when syntactically possible' do
+    corrected =
+      autocorrect_source(cop,
+                         ['module Foo; end;',
+                          'puts "this is a test";',
+                          'puts "this is a test"; puts "So is this"',
+                          'def foo(a) x(1); y(2); z(3); end'])
+    expect(corrected)
+      .to eq(['module Foo; end',
+              'puts "this is a test"',
+              'puts "this is a test"; puts "So is this"',
+              'def foo(a) x(1); y(2); z(3); end'].join("\n"))
+  end
+
   context 'when AllowAsExpressionSeparator is true' do
     let(:cop_config) { { 'AllowAsExpressionSeparator' => true } }
 

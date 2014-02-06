@@ -55,12 +55,12 @@ describe Rubocop::CLI, :isolated_environment do
         expect(cli.run(%w(--auto-correct --format offences))).to eq(1)
         expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
                                              '# comment',
-                                             'def func1;',
+                                             'def func1',
                                              '  do_something',
                                              'end',
                                              'def func2',
-                                             '  do_1;',
-                                             '  do_2;',
+                                             '  do_1',
+                                             '  do_2',
                                              'end',
                                              ''].join("\n"))
         expect($stdout.string).to eq(['',
