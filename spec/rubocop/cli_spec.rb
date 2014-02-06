@@ -58,6 +58,7 @@ describe Rubocop::CLI, :isolated_environment do
                                              'def func1',
                                              '  do_something',
                                              'end',
+                                             '',
                                              'def func2',
                                              '  do_1',
                                              '  do_2',
@@ -66,11 +67,11 @@ describe Rubocop::CLI, :isolated_environment do
         expect($stdout.string).to eq(['',
                                       '6   TrailingWhitespace',
                                       '4   Semicolon',
-                                      '2   EmptyLineBetweenDefs',
                                       '2   SingleLineMethods',
                                       '1   DefWithParentheses',
+                                      '1   EmptyLineBetweenDefs',
                                       '--',
-                                      '15  Total',
+                                      '14  Total',
                                       '',
                                       ''].join("\n"))
       end
