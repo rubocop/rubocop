@@ -185,6 +185,10 @@ FavorUntilOverNegatedWhile:
   Description: 'Favor until over while for negative conditions.'
   Enabled: true
 
+FileName:
+  Description: 'Use snake_case for source file names.'
+  Enabled: true
+    
 FinalNewline:
   Description: 'Checks for a final newline in a source file.'
   Enabled: true

@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+* New cop `FileName` makes sure that source files have snake_case names. ([@bbatsov][])
+
 ### Changes
 
 * [#793](https://github.com/bbatsov/rubocop/issues/793): Add printing total count when `rubocop --format offences`. ([@ma2gedev][])
