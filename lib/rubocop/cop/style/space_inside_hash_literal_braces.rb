@@ -7,9 +7,8 @@ module Rubocop
       # surrounding space depending on configuration.
       class SpaceInsideHashLiteralBraces < Cop
         include SurroundingSpace
+        include ConfigurableMessage
         include ConfigurableEnforcedStyle
-
-        MSG = 'Space inside %s.'
 
         def investigate(processed_source)
           return unless processed_source.ast
@@ -61,7 +60,8 @@ module Rubocop
                           brace.source
                         end
           problem = expect_space ? 'missing' : 'detected'
-          sprintf(MSG, "#{inside_what} #{problem}")
+          message = cop_config['Message'] || 'Space inside %s.'
+          sprintf(message, "#{inside_what} #{problem}")
         end
 
         def autocorrect(range)

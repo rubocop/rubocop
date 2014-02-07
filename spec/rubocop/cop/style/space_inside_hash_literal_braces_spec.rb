@@ -6,6 +6,25 @@ describe Rubocop::Cop::Style::SpaceInsideHashLiteralBraces, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) { { 'EnforcedStyle' => 'space' } }
 
+  context 'with a custom message' do
+    let(:cop_config) do
+      {
+        'EnforcedStyleForEmptyBraces' => 'no_space',
+        'Message' => 'Christian side hug inside %s.'
+      }
+    end
+
+    it 'allows a user-defined message' do
+      inspect_source(cop, ['h = { }'])
+      expect(cop.messages)
+        .to(
+          eq([
+            'Christian side hug inside empty hash literal braces detected.'
+          ])
+        )
+    end
+  end
+
   context 'with space inside empty braces not allowed' do
     let(:cop_config) { { 'EnforcedStyleForEmptyBraces' => 'no_space' } }
 
