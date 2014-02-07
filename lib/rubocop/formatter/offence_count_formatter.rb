@@ -43,7 +43,7 @@ module Rubocop
       end
 
       def ordered_offence_counts(offence_counts)
-        Hash[offence_counts.sort_by { |k, v| v }.reverse]
+        Hash[offence_counts.sort_by { |k, v| [-v, k] }]
       end
 
       def total_offence_count(offence_counts = {})
