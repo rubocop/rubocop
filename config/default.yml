@@ -167,13 +167,6 @@ MethodName:
 NumericLiterals:
   MinDigits: 5
 
-Output:
-  Ignore:
-    - '^.*\.rake$'
-    - '^.*/script/.*$'
-    - '^.*/tasks/.*$'
-    - 'Rakefile$'
-
 ParameterLists:
   Max: 5
   CountKeywordArgs: true
