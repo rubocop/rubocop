@@ -102,6 +102,14 @@ describe Rubocop::Cop::Style::EmptyLineBetweenDefs, :config do
     expect(cop.offences.size).to eq(1)
   end
 
+  it 'auto-corrects adjacent one-liners by default' do
+    corrected = autocorrect_source(cop, ['  def a; end',
+                                         '  def b; end'])
+    expect(corrected).to eq(['  def a; end',
+                             '',
+                             '  def b; end'].join("\n"))
+  end
+
   context 'when AllowAdjacentOneLineDefs is enabled' do
     let(:cop_config) { { 'AllowAdjacentOneLineDefs' => true } }
 

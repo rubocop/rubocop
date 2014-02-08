@@ -33,6 +33,13 @@ module Rubocop
         def def_end(node)
           node.loc.end.line
         end
+
+        def autocorrect(node)
+          range = range_with_surrounding_space(node.loc.expression, :left)
+          @corrections << lambda do |corrector|
+            corrector.insert_before(range, "\n")
+          end
+        end
       end
     end
   end

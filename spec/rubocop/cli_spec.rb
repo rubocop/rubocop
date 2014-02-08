@@ -48,6 +48,34 @@ describe Rubocop::CLI, :isolated_environment do
                   'end'].join("\n") + "\n")
       end
 
+      it 'can correct single line methods' do
+        create_file('example.rb', ['# encoding: utf-8',
+                                   'def func1; do_something end # comment',
+                                   'def func2() do_1; do_2; end'])
+        expect(cli.run(%w(--auto-correct --format offences))).to eq(1)
+        expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
+                                             '# comment',
+                                             'def func1',
+                                             '  do_something',
+                                             'end',
+                                             '',
+                                             'def func2',
+                                             '  do_1',
+                                             '  do_2',
+                                             'end',
+                                             ''].join("\n"))
+        expect($stdout.string).to eq(['',
+                                      '6   TrailingWhitespace',
+                                      '4   Semicolon',
+                                      '2   SingleLineMethods',
+                                      '1   DefWithParentheses',
+                                      '1   EmptyLineBetweenDefs',
+                                      '--',
+                                      '14  Total',
+                                      '',
+                                      ''].join("\n"))
+      end
+
       # In this example, the auto-correction (changing "raise" to "fail")
       # creates a new problem (alignment of parameters), which is also
       # corrected automatically.

@@ -32,7 +32,7 @@ module Rubocop
                 # know if the first semicolon on the line is a separator of
                 # expressions. It's just a guess.
                 column = @processed_source[line - 1].index(';')
-                convention_on(line, column)
+                convention_on(line, column, !:last_on_line)
               end
             end
           end
@@ -47,16 +47,20 @@ module Rubocop
 
           tokens_for_lines.each do |line, tokens|
             if tokens.last.type == :tSEMI
-              convention_on(line, tokens.last.pos.column)
+              convention_on(line, tokens.last.pos.column, :last_on_line)
             end
           end
         end
 
-        def convention_on(line, column)
-          add_offence(nil,
-                      source_range(@processed_source.buffer,
-                                   @processed_source[0...(line - 1)], column,
-                                   1))
+        def convention_on(line, column, last_on_line)
+          range = source_range(@processed_source.buffer,
+                               @processed_source[0...(line - 1)], column,
+                               1)
+          add_offence(last_on_line ? range : nil, range)
+        end
+
+        def autocorrect(range)
+          @corrections << ->(corrector) { corrector.remove(range) } if range
         end
       end
     end

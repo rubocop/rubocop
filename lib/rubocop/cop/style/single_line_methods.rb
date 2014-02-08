@@ -23,8 +23,45 @@ module Rubocop
           empty_body = body.nil?
 
           if start_line == end_line && !(allow_empty? && empty_body)
+            @body = body
             add_offence(node, :expression)
           end
+        end
+
+        def autocorrect(node)
+          body = @body
+          eol_comment = processed_source.comments.find do |c|
+            c.loc.line == node.loc.expression.line
+          end
+          @corrections << lambda do |corrector|
+            if body.type == :begin
+              body.children.each do |part|
+                break_line_before(part.loc.expression, node, corrector, 1)
+              end
+            else
+              break_line_before(body.loc.expression, node, corrector, 1)
+            end
+
+            break_line_before(node.loc.end, node, corrector, 0)
+
+            move_comment(eol_comment, node, corrector) if eol_comment
+          end
+        end
+
+        def break_line_before(range, node, corrector, indent_steps)
+          corrector.insert_before(range,
+                                  "\n" + ' ' * (node.loc.keyword.column +
+                                                indent_steps *
+                                                IndentationWidth::
+                                                CORRECT_INDENTATION))
+        end
+
+        def move_comment(eol_comment, node, corrector)
+          text = eol_comment.loc.expression.source
+          corrector.insert_before(node.loc.expression,
+                                  text + "\n" +
+                                  ' ' * node.loc.keyword.column)
+          corrector.remove(eol_comment.loc.expression)
         end
       end
     end
