@@ -8,7 +8,7 @@ module Rubocop
       # It cannot be implemented in a reliable manner for all cases, so
       # only two scenarios are considered - if the first argument is a string
       # literal and if the second argument is an array literal.
-      class FavorSprintf < Cop
+      class FormatString < Cop
         MSG = 'Favor sprintf over String#%.'
 
         def on_send(node)

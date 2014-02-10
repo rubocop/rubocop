@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::FavorSprintf do
+describe Rubocop::Cop::Style::FormatString do
   subject(:cop) { described_class.new }
 
   it 'registers an offence for a string followed by something' do

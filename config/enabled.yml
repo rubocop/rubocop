@@ -171,10 +171,6 @@ FavorJoin:
   Description: 'Use Array#join instead of Array#*.'
   Enabled: true
 
-FavorSprintf:
-  Description: 'Use sprintf instead of String#%.'
-  Enabled: true
-
 FavorUnlessOverNegatedIf:
   Description: >-
                  Favor unless over if for negative conditions
@@ -201,6 +197,10 @@ For:
   Description: 'Checks use of for or each in multiline loops.'
   Enabled: true
 
+FormatString:
+  Description: 'Enforce the use of Kernel#sprintf, Kernel#format or String#%.'
+  Enabled: true
+  
 GlobalVars:
   Description: 'Do not introduce global variables.'
   Enabled: true
