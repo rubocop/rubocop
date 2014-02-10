@@ -129,6 +129,14 @@ For:
     - for
     - each
 
+# Enforce the method used for string formatting.
+FormatString:
+  EnforcedStyle: format
+  SupportedStyles:
+    - format
+    - sprintf
+    - percent
+    
 # Built-in global variables are allowed by default.
 GlobalVars:
   AllowedVariables: []

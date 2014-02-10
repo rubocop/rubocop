@@ -26,7 +26,7 @@ module Rubocop
           if op == op_type
             add_offence(node,
                         :operator,
-                        sprintf(MSG, OPS[op], op))
+                        format(MSG, OPS[op], op))
           end
         end
 

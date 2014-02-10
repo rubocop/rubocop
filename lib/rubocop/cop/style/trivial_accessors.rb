@@ -20,7 +20,7 @@ module Rubocop
                  end
           if kind
             add_offence(node, :keyword,
-                        sprintf(MSG, kind, kind))
+                        format(MSG, kind, kind))
           end
         end
 

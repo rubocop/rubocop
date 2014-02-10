@@ -2,46 +2,135 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::FormatString do
-  subject(:cop) { described_class.new }
+describe Rubocop::Cop::Style::FormatString, :config do
+  subject(:cop) { described_class.new(config) }
 
-  it 'registers an offence for a string followed by something' do
-    inspect_source(cop,
-                   ['puts "%d" % 10'])
-    expect(cop.offences.size).to eq(1)
-    expect(cop.messages)
-      .to eq(['Favor sprintf over String#%.'])
+  context 'when enforced style is sprintf' do
+    let(:cop_config) { { 'EnforcedStyle' => 'sprintf' } }
+    it 'registers an offence for a string followed by something' do
+      inspect_source(cop,
+                     ['puts "%d" % 10'])
+      expect(cop.offences.size).to eq(1)
+      expect(cop.messages)
+        .to eq(['Favor sprintf over String#%.'])
+    end
+
+    it 'registers an offence for something followed by an array' do
+      inspect_source(cop,
+                     ['puts x % [10, 11]'])
+      expect(cop.offences.size).to eq(1)
+      expect(cop.messages)
+        .to eq(['Favor sprintf over String#%.'])
+    end
+
+    it 'does not register an offence for numbers' do
+      inspect_source(cop,
+                     ['puts 10 % 4'])
+      expect(cop.offences).to be_empty
+    end
+
+    it 'does not register an offence for ambiguous cases' do
+      inspect_source(cop,
+                     ['puts x % 4'])
+      expect(cop.offences).to be_empty
+
+      inspect_source(cop,
+                     ['puts x % Y'])
+      expect(cop.offences).to be_empty
+    end
+
+    it 'works if the first operand contains embedded expressions' do
+      inspect_source(cop,
+                     ['puts "#{x * 5} %d #{@test}" % 10'])
+      expect(cop.offences.size).to eq(1)
+      expect(cop.messages)
+        .to eq(['Favor sprintf over String#%.'])
+    end
+
+    it 'registers an offence for format' do
+      inspect_source(cop,
+                     ['format(something, a, b)'])
+      expect(cop.offences.size).to eq(1)
+      expect(cop.messages)
+        .to eq(['Favor sprintf over format.'])
+    end
   end
 
-  it 'registers an offence for something followed by an array' do
-    inspect_source(cop,
-                   ['puts x % [10, 11]'])
-    expect(cop.offences.size).to eq(1)
-    expect(cop.messages)
-      .to eq(['Favor sprintf over String#%.'])
+  context 'when enforced style is format' do
+    let(:cop_config) { { 'EnforcedStyle' => 'format' } }
+
+    it 'registers an offence for a string followed by something' do
+      inspect_source(cop,
+                     ['puts "%d" % 10'])
+      expect(cop.offences.size).to eq(1)
+      expect(cop.messages)
+        .to eq(['Favor format over String#%.'])
+    end
+
+    it 'registers an offence for something followed by an array' do
+      inspect_source(cop,
+                     ['puts x % [10, 11]'])
+      expect(cop.offences.size).to eq(1)
+      expect(cop.messages)
+        .to eq(['Favor format over String#%.'])
+    end
+
+    it 'does not register an offence for numbers' do
+      inspect_source(cop,
+                     ['puts 10 % 4'])
+      expect(cop.offences).to be_empty
+    end
+
+    it 'does not register an offence for ambiguous cases' do
+      inspect_source(cop,
+                     ['puts x % 4'])
+      expect(cop.offences).to be_empty
+
+      inspect_source(cop,
+                     ['puts x % Y'])
+      expect(cop.offences).to be_empty
+    end
+
+    it 'works if the first operand contains embedded expressions' do
+      inspect_source(cop,
+                     ['puts "#{x * 5} %d #{@test}" % 10'])
+      expect(cop.offences.size).to eq(1)
+      expect(cop.messages)
+        .to eq(['Favor format over String#%.'])
+    end
+
+    it 'registers an offence for sprintf' do
+      inspect_source(cop,
+                     ['sprintf(something, a, b)'])
+      expect(cop.offences.size).to eq(1)
+      expect(cop.messages)
+        .to eq(['Favor format over sprintf.'])
+    end
   end
 
-  it 'does not register an offence for numbers' do
-    inspect_source(cop,
-                   ['puts 10 % 4'])
-    expect(cop.offences).to be_empty
-  end
+  context 'when enforced style is percent' do
+    let(:cop_config) { { 'EnforcedStyle' => 'percent' } }
 
-  it 'does not register an offence for ambiguous cases' do
-    inspect_source(cop,
-                   ['puts x % 4'])
-    expect(cop.offences).to be_empty
+    it 'registers an offence for format' do
+      inspect_source(cop,
+                     ['format(something, a, b)'])
+      expect(cop.offences.size).to eq(1)
+      expect(cop.messages)
+        .to eq(['Favor String#% over format.'])
+    end
 
-    inspect_source(cop,
-                   ['puts x % Y'])
-    expect(cop.offences).to be_empty
-  end
+    it 'registers an offence for sprintf' do
+      inspect_source(cop,
+                     ['sprintf(something, a, b)'])
+      expect(cop.offences.size).to eq(1)
+      expect(cop.messages)
+        .to eq(['Favor String#% over sprintf.'])
+    end
 
-  it 'works if the first operand contains embedded expressions' do
-    inspect_source(cop,
-                   ['puts "#{x * 5} %d #{@test}" % 10'])
-    expect(cop.offences.size).to eq(1)
-    expect(cop.messages)
-      .to eq(['Favor sprintf over String#%.'])
+    it 'accepts String#%' do
+      inspect_source(cop,
+                     ['puts "%d" % 10'])
+      expect(cop.offences).to be_empty
+    end
   end
 end

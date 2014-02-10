@@ -11,8 +11,8 @@ module Rubocop
 
     def version(debug = false)
       if debug
-        sprintf(MSG, STRING, Parser::VERSION,
-                RUBY_ENGINE, RUBY_VERSION, RUBY_PLATFORM)
+        format(MSG, STRING, Parser::VERSION,
+               RUBY_ENGINE, RUBY_VERSION, RUBY_PLATFORM)
       else
         STRING
       end

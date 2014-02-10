@@ -142,7 +142,7 @@ module Rubocop
           add_offence(nil,
                       Parser::Source::Range.new(expr.source_buffer,
                                                 begin_pos, end_pos),
-                      sprintf("Use #{CORRECT_INDENTATION} (not %d) spaces " +
+                      format("Use #{CORRECT_INDENTATION} (not %d) spaces " +
                               'for indentation.', indentation))
         end
 

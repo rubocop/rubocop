@@ -49,7 +49,7 @@ module Rubocop
         def message_for_useless_assignment(assignment)
           variable = assignment.variable
 
-          message = sprintf(MSG, variable.name)
+          message = format(MSG, variable.name)
 
           if assignment.multiple_assignment?
             message << ". Use _ or _#{variable.name} as a variable name " +
@@ -79,7 +79,7 @@ module Rubocop
         def check_for_unused_block_local_variable(variable)
           return unless variable.block_local_variable?
           return unless variable.assignments.empty?
-          message = sprintf(MSG, variable.name)
+          message = format(MSG, variable.name)
           add_offence(variable.declaration_node, :expression, message)
         end
       end

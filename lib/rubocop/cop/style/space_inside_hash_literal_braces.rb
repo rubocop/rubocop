@@ -61,7 +61,7 @@ module Rubocop
                           brace.source
                         end
           problem = expect_space ? 'missing' : 'detected'
-          sprintf(MSG, "#{inside_what} #{problem}")
+          format(MSG, "#{inside_what} #{problem}")
         end
 
         def autocorrect(range)

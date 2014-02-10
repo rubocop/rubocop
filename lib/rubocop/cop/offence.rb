@@ -85,8 +85,8 @@ module Rubocop
       # @api private
       # This is just for debugging purpose.
       def to_s
-        sprintf('%s:%3d:%3d: %s',
-                severity_code, line, real_column, message)
+        format('%s:%3d:%3d: %s',
+               severity_code, line, real_column, message)
       end
 
       # @api private

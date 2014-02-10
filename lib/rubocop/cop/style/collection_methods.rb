@@ -47,9 +47,9 @@ module Rubocop
           if preferred_methods[method_name]
             add_offence(
               node, :selector,
-              sprintf(MSG,
-                      preferred_method(method_name),
-                      method_name)
+              format(MSG,
+                     preferred_method(method_name),
+                     method_name)
             )
           end
         end

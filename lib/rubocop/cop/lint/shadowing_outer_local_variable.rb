@@ -22,7 +22,7 @@ module Rubocop
           outer_local_variable = variable_table.find_variable(variable.name)
           return unless outer_local_variable
 
-          message = sprintf(MSG, variable.name)
+          message = format(MSG, variable.name)
           add_offence(variable.declaration_node, :expression, message)
         end
       end
