@@ -12,6 +12,7 @@
 * [#743](https://github.com/bbatsov/rubocop/issues/743): `Semicolon` cop does auto-correction. ([@jonas054][])
 * [#743](https://github.com/bbatsov/rubocop/issues/743): `EmptyLineBetweenDefs` cop does auto-correction. ([@jonas054][])
 * [#809](https://github.com/bbatsov/rubocop/issues/809): New formatter `fuubar` displays a progress bar and shows details of offenses as soon as they are detected. ([@yujinakayama][])
+* [#797](https://github.com/bbatsov/rubocop/issues/797): New cop `IndentHash` checks the indentation of the first key in multi-line hash literals. ([@jonas054][])
 
 ### Changes
 

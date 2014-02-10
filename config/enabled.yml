@@ -233,6 +233,10 @@ IndentationWidth:
   Description: 'Use 2 spaces for indentation.'
   Enabled: true
 
+IndentHash:
+  Description: 'Checks the indentation of the first key in a hash literal.'
+  Enabled: true
+
 Lambda:
   Description: 'Use the new lambda literal syntax for single-line blocks.'
   Enabled: true
