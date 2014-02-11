@@ -330,6 +330,10 @@ RuboCop ships with several built-in formatters, and also you can create your cus
 
 Additionaly the output can be redirected to a file instead of `$stdout` with the `-o/--out` option.
 
+Some of the built-in formatters produce **machine-parsable** output
+and they are considered public APIs.
+The rest of the formatters are for humans, so parsing their outputs is discouraged.
+
 You can enable multiple formatters at the same time by specifying `-f/--format` multiple times.
 The `-o/--out` option applies to the previously specified `-f/--format`,
 or the default `progress` format if no `-f/--format` is specified before the `-o/--out` option.
@@ -404,6 +408,8 @@ test.rb:4:5: W: end at 4, 4 is not aligned with if at 2, 2
 
 ### Emacs
 
+**Machine-parsable**
+
 The `emacs` formatter displays the offenses in a format suitable for consumption by `Emacs` (and possibly other tools).
 
 ```
@@ -433,6 +439,8 @@ W:  4:  5: end at 4, 4 is not aligned with if at 2, 2
 
 ### File List Formatter
 
+ **Machine-parsable**
+
 Sometimes you might want to just open all files with offenses in your
 favorite editor. This formatter outputs just the names of the files
 with offenses in them and makes it possible to do something like:
@@ -442,6 +450,8 @@ $ rubocop --format files | xargs vim
 ```
 
 ### JSON Formatter
+
+**Machine-parsable**
 
 You can get RuboCop's inspection result in JSON format by passing `--format json` option in command line.
 The JSON structure is like the following example:
