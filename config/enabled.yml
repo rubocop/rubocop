@@ -539,6 +539,10 @@ Debugger:
   Description: 'Check for debugger calls.'
   Enabled: true
 
+DeprecatedClassMethods:
+  Description: 'Check for deprecated class method calls.'
+  Enabled: true
+
 ElseLayout:
   Description: 'Check for odd code arrangement in an else block.'
   Enabled: true
