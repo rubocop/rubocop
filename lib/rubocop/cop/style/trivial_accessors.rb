@@ -19,7 +19,7 @@ module Rubocop
                    'writer'
                  end
           if kind
-            add_offence(node, :keyword,
+            add_offense(node, :keyword,
                         format(MSG, kind, kind))
           end
         end

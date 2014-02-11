@@ -28,7 +28,7 @@ module Rubocop
         private
 
         def check(t1, t2)
-          # No offence if line break inside.
+          # No offense if line break inside.
           return if t1.pos.line < t2.pos.line
 
           is_empty_braces = t1.text == '{' && t2.text == '}'
@@ -37,10 +37,10 @@ module Rubocop
                          else
                            style == :space
                          end
-          if offence?(t1, t2, expect_space)
+          if offense?(t1, t2, expect_space)
             brace = (t1.text == '{' ? t1 : t2).pos
             range = expect_space ? brace : space_range(brace)
-            add_offence(range, range, message(brace, is_empty_braces,
+            add_offense(range, range, message(brace, is_empty_braces,
                                               expect_space)) do
               opposite_style_detected
             end
@@ -49,7 +49,7 @@ module Rubocop
           end
         end
 
-        def offence?(t1, t2, expect_space)
+        def offense?(t1, t2, expect_space)
           has_space = space_between?(t1, t2)
           expect_space ? !has_space : has_space
         end

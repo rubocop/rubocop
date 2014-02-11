@@ -22,8 +22,8 @@ describe Rubocop::Cop::Style::SingleLineBlockParams, :config do
                     '  [0, 1].reduce(5) { |c, d| c + d }',
                     '  ala.test { |x, z| bala }',
                     'end'])
-    expect(cop.offences.size).to eq(7)
-    expect(cop.offences.map(&:line).sort).to eq((2..8).to_a)
+    expect(cop.offenses.size).to eq(7)
+    expect(cop.offenses.map(&:line).sort).to eq((2..8).to_a)
   end
 
   it 'allows calls with proper argument names' do
@@ -37,7 +37,7 @@ describe Rubocop::Cop::Style::SingleLineBlockParams, :config do
                     '  [0, 1].reduce(5) { |a, e| a + e }',
                     '  ala.test { |x, y| bala }',
                     'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'ignores do..end blocks' do
@@ -47,7 +47,7 @@ describe Rubocop::Cop::Style::SingleLineBlockParams, :config do
                     '    c + d',
                     '  end',
                     'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'ignores :reduce symbols' do
@@ -55,7 +55,7 @@ describe Rubocop::Cop::Style::SingleLineBlockParams, :config do
                    ['def m',
                     '  call_method(:reduce) { |a, b| a + b}',
                     'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'does not report when destructuring is used' do
@@ -63,6 +63,6 @@ describe Rubocop::Cop::Style::SingleLineBlockParams, :config do
                    ['def m',
                     '  test.reduce { |a, (id, _)| a + id}',
                     'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 end

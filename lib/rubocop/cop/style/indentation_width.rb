@@ -139,7 +139,7 @@ module Rubocop
               [expr.begin_pos, expr.begin_pos - indentation]
             end
 
-          add_offence(nil,
+          add_offense(nil,
                       Parser::Source::Range.new(expr.source_buffer,
                                                 begin_pos, end_pos),
                       format("Use #{CORRECT_INDENTATION} (not %d) spaces " +

@@ -5,10 +5,10 @@ require 'spec_helper'
 describe Rubocop::Cop::Style::EmptyLines do
   subject(:cop) { described_class.new }
 
-  it 'registers an offence for consecutive empty lines' do
+  it 'registers an offense for consecutive empty lines' do
     inspect_source(cop,
                    ['test = 5', '', '', '', 'top'])
-    expect(cop.offences.size).to eq(2)
+    expect(cop.offenses.size).to eq(2)
   end
 
   it 'auto-corrects consecutive empty lines' do
@@ -20,21 +20,21 @@ describe Rubocop::Cop::Style::EmptyLines do
   it 'works when there are no tokens' do
     inspect_source(cop,
                    ['#comment'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'handles comments' do
     inspect_source(cop,
                    ['test', '', '#comment', 'top'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
-  it 'does not register an offence for empty lines in a string' do
+  it 'does not register an offense for empty lines in a string' do
     inspect_source(cop, ['result = "test
 
 
 
                                   string"'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 end

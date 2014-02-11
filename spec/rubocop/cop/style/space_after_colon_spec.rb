@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Rubocop::Cop::Style::SpaceAfterColon do
   subject(:cop) { described_class.new }
 
-  it 'registers an offence for colon without space after it' do
+  it 'registers an offense for colon without space after it' do
     # TODO: There is double reporting of the last colon (also from
     # SpaceAroundOperators).
     inspect_source(cop, ['x = w ? {a:3}:4'])

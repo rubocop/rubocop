@@ -34,7 +34,7 @@ module Rubocop
 
           if on_different_line?(node.loc.keyword.line,
                                 condition.loc.expression.line)
-            add_offence(condition, :expression,
+            add_offense(condition, :expression,
                         message(node.loc.keyword.source))
           end
         end

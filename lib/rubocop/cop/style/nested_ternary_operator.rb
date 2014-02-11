@@ -16,7 +16,7 @@ module Rubocop
 
           node.children.each do |child|
             on_node(:if, child) do |c|
-              add_offence(c, :expression) if c.loc.respond_to?(:question)
+              add_offense(c, :expression) if c.loc.respond_to?(:question)
             end
           end
         end

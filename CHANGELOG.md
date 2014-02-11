@@ -15,6 +15,8 @@
 * [#793](https://github.com/bbatsov/rubocop/issues/793): Add printing total count when `rubocop --format offences`. ([@ma2gedev][])
 * Remove `Ignore` param from the Rails `Output` cop. The standard `Exclude/Include` should be used instead. ([@bbatsov][])
 * Renamed `FavorSprintf` to `FormatString` and made it configurable. ([@bbatsov][])
+* Renamed `Offence` to `Offense`. ([@bbatsov][])
+* Use `offense` in all messages instead of `offence`. ([@bbatsov][])
 
 ### Bugs fixed
 

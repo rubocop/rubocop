@@ -9,7 +9,7 @@ end
 describe Rubocop::FileInspector do
   subject(:inspector) { described_class.new(options) }
   let(:options) { {} }
-  let(:offences) { [] }
+  let(:offenses) { [] }
   let(:errors) { [] }
 
   before(:each) do
@@ -18,7 +18,7 @@ describe Rubocop::FileInspector do
 
     allow(inspector).to receive(:inspect_file) do
       inspector.errors = errors
-      offences
+      offenses
     end
   end
 
@@ -41,16 +41,16 @@ describe Rubocop::FileInspector do
   end
 
   describe '#process_files' do
-    context 'if there are no offences in inspected files' do
+    context 'if there are no offenses in inspected files' do
       it 'returns false' do
         result = inspector.process_files(['file.rb'], nil) {}
         expect(result).to eq(false)
       end
     end
 
-    context 'if there is an offence in an inspected file' do
-      let(:offences) do
-        [Rubocop::Cop::Offence.new(:convention,
+    context 'if there is an offense in an inspected file' do
+      let(:offenses) do
+        [Rubocop::Cop::Offense.new(:convention,
                                    Struct.new(:line, :column,
                                               :source_line).new(1, 0, ''),
                                    'Use alias_method instead of alias.',
@@ -61,17 +61,17 @@ describe Rubocop::FileInspector do
         expect(inspector.process_files(['file.rb'], nil) {}).to eq(true)
       end
 
-      it 'sends the offence to a formatter' do
+      it 'sends the offense to a formatter' do
         inspector.process_files(['file.rb'], nil) {}
         expect($stdout.string.split("\n"))
           .to eq(['Inspecting 1 file',
                   'C',
                   '',
-                  'Offences:',
+                  'Offenses:',
                   '',
-                  "file.rb:1:1: C: #{offences.first.message}",
+                  "file.rb:1:1: C: #{offenses.first.message}",
                   '',
-                  '1 file inspected, 1 offence detected'])
+                  '1 file inspected, 1 offense detected'])
       end
     end
   end

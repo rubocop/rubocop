@@ -8,7 +8,7 @@ module Rubocop
       # It can enforce either the use of the class hash rocket syntax or
       # the use of the newer Ruby 1.9 syntax (when applicable).
       #
-      # A separate offence is registered for each problematic pair.
+      # A separate offense is registered for each problematic pair.
       class HashSyntax < Cop
         include ConfigurableEnforcedStyle
 
@@ -65,7 +65,7 @@ module Rubocop
         def check(pairs, delim, msg)
           pairs.each do |pair|
             if pair.loc.operator && pair.loc.operator.is?(delim)
-              add_offence(pair,
+              add_offense(pair,
                           pair.loc.expression.begin.join(pair.loc.operator),
                           msg) do
                 opposite_style_detected

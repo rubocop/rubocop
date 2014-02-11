@@ -54,7 +54,7 @@ module Rubocop
 
           # if the cond node is literal we obviously have a problem
           if literal?(cond)
-            add_offence(cond, :expression)
+            add_offense(cond, :expression)
           else
             # alternatively we have to consider a logical node with a
             # literal argument
@@ -94,7 +94,7 @@ module Rubocop
 
         def handle_node(node)
           if literal?(node)
-            add_offence(node, :expression)
+            add_offense(node, :expression)
           elsif [:send, :and, :or, :begin].include?(node.type)
             check_node(node)
           end

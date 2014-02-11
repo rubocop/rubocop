@@ -8,7 +8,7 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
   context 'when EnforcedStyle is set to indent' do
     let(:cop_config) { { 'EnforcedStyle' => 'indent' } }
 
-    it 'registers an offence for misaligned private' do
+    it 'registers an offense for misaligned private' do
       inspect_source(cop,
                      ['class Test',
                       '',
@@ -16,13 +16,13 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       '',
                       '  def test; end',
                       'end'])
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Indent access modifiers like private.'])
-      expect(cop.config_to_allow_offences).to eq('EnforcedStyle' => 'outdent')
+      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'outdent')
     end
 
-    it 'registers an offence for misaligned private in module' do
+    it 'registers an offense for misaligned private in module' do
       inspect_source(cop,
                      ['module Test',
                       '',
@@ -30,13 +30,13 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       '',
                       '  def test; end',
                       'end'])
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Indent access modifiers like private.'])
       # Not aligned according to `indent` or `outdent` style:
-      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
-    it 'registers an offence for correct + opposite alignment' do
+    it 'registers an offense for correct + opposite alignment' do
       inspect_source(cop,
                      ['module Test',
                       '',
@@ -46,13 +46,13 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       '',
                       '  def test; end',
                       'end'])
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Indent access modifiers like private.'])
       # No EnforcedStyle can allow both aligments:
-      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
-    it 'registers an offence for opposite + correct alignment' do
+    it 'registers an offense for opposite + correct alignment' do
       inspect_source(cop,
                      ['module Test',
                       '',
@@ -62,13 +62,13 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       '',
                       '  def test; end',
                       'end'])
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Indent access modifiers like public.'])
       # No EnforcedStyle can allow both aligments:
-      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
-    it 'registers an offence for misaligned private in singleton class' do
+    it 'registers an offense for misaligned private in singleton class' do
       inspect_source(cop,
                      ['class << self',
                       '',
@@ -76,12 +76,12 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       '',
                       '  def test; end',
                       'end'])
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Indent access modifiers like private.'])
     end
 
-    it 'registers an offence for misaligned private in class ' \
+    it 'registers an offense for misaligned private in class ' \
        'defined with Class.new' do
       inspect_source(cop,
                      ['Test = Class.new do',
@@ -90,12 +90,12 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       '',
                       '  def test; end',
                       'end'])
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Indent access modifiers like private.'])
     end
 
-    it 'registers an offence for misaligned private in module ' \
+    it 'registers an offense for misaligned private in module ' \
        'defined with Module.new' do
       inspect_source(cop,
                      ['Test = Module.new do',
@@ -104,12 +104,12 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       '',
                       '  def test; end',
                       'end'])
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Indent access modifiers like private.'])
     end
 
-    it 'registers an offence for misaligned protected' do
+    it 'registers an offense for misaligned protected' do
       inspect_source(cop,
                      ['class Test',
                       '',
@@ -117,7 +117,7 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       '',
                       '  def test; end',
                       'end'])
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Indent access modifiers like protected.'])
     end
@@ -130,7 +130,7 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       '',
                       '  def test; end',
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts properly indented protected' do
@@ -141,14 +141,14 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       '',
                       '  def test; end',
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts an empty class' do
       inspect_source(cop,
                      ['class Test',
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'handles properly nested classes' do
@@ -166,7 +166,7 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       '',
                       '  def test; end',
                       'end'])
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Indent access modifiers like private.'])
     end
@@ -195,7 +195,7 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'outdent' } }
     let(:indent_msg) { 'Outdent access modifiers like private.' }
 
-    it 'registers offence for private indented to method depth in a class' do
+    it 'registers offense for private indented to method depth in a class' do
       inspect_source(cop,
                      ['class Test',
                       '',
@@ -203,12 +203,12 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       '',
                       '  def test; end',
                       'end'])
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq([indent_msg])
-      expect(cop.config_to_allow_offences).to eq('EnforcedStyle' => 'indent')
+      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'indent')
     end
 
-    it 'registers offence for private indented to method depth in a module' do
+    it 'registers offense for private indented to method depth in a module' do
       inspect_source(cop,
                      ['module Test',
                       '',
@@ -216,11 +216,11 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       '',
                       '  def test; end',
                       'end'])
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq([indent_msg])
     end
 
-    it 'registers offence for private indented to method depth in singleton' \
+    it 'registers offense for private indented to method depth in singleton' \
        'class' do
       inspect_source(cop,
                      ['class << self',
@@ -229,11 +229,11 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       '',
                       '  def test; end',
                       'end'])
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq([indent_msg])
     end
 
-    it 'registers offence for private indented to method depth in class ' \
+    it 'registers offense for private indented to method depth in class ' \
        'defined with Class.new' do
       inspect_source(cop,
                      ['Test = Class.new do',
@@ -242,11 +242,11 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       '',
                       '  def test; end',
                       'end'])
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq([indent_msg])
     end
 
-    it 'registers offence for private indented to method depth in module ' \
+    it 'registers offense for private indented to method depth in module ' \
        'defined with Module.new' do
       inspect_source(cop,
                      ['Test = Module.new do',
@@ -255,7 +255,7 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       '',
                       '  def test; end',
                       'end'])
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq([indent_msg])
     end
 
@@ -267,7 +267,7 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       '',
                       '  def test; end',
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts protected indented to the containing class indent level' do
@@ -278,7 +278,7 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       '',
                       '  def test; end',
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'handles properly nested classes' do
@@ -296,7 +296,7 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       '',
                       '  def test; end',
                       'end'])
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq([indent_msg])
     end
 

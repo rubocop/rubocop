@@ -20,12 +20,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(5)
+      expect(cop.offenses.first.line).to eq(5)
       expect(cop.highlights).to eq(['foo'])
     end
 
@@ -48,12 +48,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(5)
+      expect(cop.offenses.first.line).to eq(5)
       expect(cop.highlights).to eq(['foo'])
     end
 
@@ -77,12 +77,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(6)
+      expect(cop.offenses.first.line).to eq(6)
       expect(cop.highlights).to eq(['foo'])
     end
 
@@ -104,12 +104,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(5)
+      expect(cop.offenses.first.line).to eq(5)
       expect(cop.highlights).to eq(['foo'])
     end
 
@@ -133,12 +133,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(6)
+      expect(cop.offenses.first.line).to eq(6)
       expect(cop.highlights).to eq(['foo'])
     end
 
@@ -162,12 +162,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(6)
+      expect(cop.offenses.first.line).to eq(6)
       expect(cop.highlights).to eq(['foo'])
     end
 
@@ -189,12 +189,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(5)
+      expect(cop.offenses.first.line).to eq(5)
       expect(cop.highlights).to eq(['foo'])
     end
 
@@ -210,12 +210,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(1)
+      expect(cop.offenses.first.line).to eq(1)
       expect(cop.highlights).to eq(['foo'])
     end
 
@@ -230,12 +230,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo. Use just operator ||.')
-      expect(cop.offences.first.line).to eq(1)
+      expect(cop.offenses.first.line).to eq(1)
       expect(cop.highlights).to eq(['foo'])
     end
   end
@@ -253,17 +253,17 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers offences for each asignment' do
+    it 'registers offenses for each asignment' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(2)
+      expect(cop.offenses.size).to eq(2)
 
-      expect(cop.offences[0].message)
+      expect(cop.offenses[0].message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences[0].line).to eq(2)
+      expect(cop.offenses[0].line).to eq(2)
 
-      expect(cop.offences[1].message)
+      expect(cop.offenses[1].message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences[1].line).to eq(4)
+      expect(cop.offenses[1].line).to eq(4)
 
       expect(cop.highlights).to eq(%w(foo foo))
     end
@@ -281,12 +281,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence for the non-re-referenced assignment' do
+    it 'registers an offense for the non-re-referenced assignment' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(4)
+      expect(cop.offenses.first.line).to eq(4)
       expect(cop.highlights).to eq(['foo'])
     end
   end
@@ -303,12 +303,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence for the unreferenced assignment' do
+    it 'registers an offense for the unreferenced assignment' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(2)
+      expect(cop.offenses.first.line).to eq(2)
       expect(cop.highlights).to eq(['foo'])
     end
   end
@@ -362,12 +362,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence for the declaration' do
+    it 'registers an offense for the declaration' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(1)
+      expect(cop.offenses.first.line).to eq(1)
       expect(cop.highlights).to eq(['foo'])
     end
 
@@ -383,12 +383,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers offences for the assignment' do
+    it 'registers offenses for the assignment' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(2)
+      expect(cop.offenses.first.line).to eq(2)
       expect(cop.highlights).to eq(['foo'])
     end
   end
@@ -404,12 +404,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(3)
+      expect(cop.offenses.first.line).to eq(3)
       expect(cop.highlights).to eq(['foo'])
     end
 
@@ -478,12 +478,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(7)
+      expect(cop.offenses.first.line).to eq(7)
       expect(cop.highlights).to eq(['foo'])
     end
   end
@@ -502,12 +502,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(5)
+      expect(cop.offenses.first.line).to eq(5)
       expect(cop.highlights).to eq(['foo'])
     end
   end
@@ -527,12 +527,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(6)
+      expect(cop.offenses.first.line).to eq(6)
       expect(cop.highlights).to eq(['foo'])
     end
   end
@@ -549,12 +549,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(3)
+      expect(cop.offenses.first.line).to eq(3)
       expect(cop.highlights).to eq(['foo'])
     end
 
@@ -576,12 +576,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence for the unreferenced assignment' do
+    it 'registers an offense for the unreferenced assignment' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(3)
+      expect(cop.offenses.first.line).to eq(3)
       expect(cop.highlights).to eq(['foo'])
     end
   end
@@ -641,12 +641,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence for the unreferenced assignment' do
+    it 'registers an offense for the unreferenced assignment' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(2)
+      expect(cop.offenses.first.line).to eq(2)
       expect(cop.highlights).to eq(['foo'])
     end
   end
@@ -666,12 +666,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence for the assignment in the if branch' do
+    it 'registers an offense for the assignment in the if branch' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(3)
+      expect(cop.offenses.first.line).to eq(3)
       expect(cop.highlights).to eq(['foo'])
     end
   end
@@ -703,12 +703,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(2)
+      expect(cop.offenses.first.line).to eq(2)
       expect(cop.highlights).to eq(['foo'])
     end
   end
@@ -740,12 +740,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence for the unreferenced assignment' do
+    it 'registers an offense for the unreferenced assignment' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(2)
+      expect(cop.offenses.first.line).to eq(2)
       expect(cop.highlights).to eq(['foo'])
     end
   end
@@ -827,12 +827,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence for the assignment in rhs' do
+    it 'registers an offense for the assignment in rhs' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(3)
+      expect(cop.offenses.first.line).to eq(3)
       expect(cop.highlights).to eq(['foo'])
     end
   end
@@ -862,13 +862,13 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message).to eq(
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message).to eq(
         'Useless assignment to variable - foo. Use just operator ||.'
       )
-      expect(cop.offences.first.line).to eq(3)
+      expect(cop.offenses.first.line).to eq(3)
       expect(cop.highlights).to eq(['foo'])
     end
   end
@@ -885,12 +885,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(3)
+      expect(cop.offenses.first.line).to eq(3)
       expect(cop.highlights).to eq(['foo'])
     end
   end
@@ -906,15 +906,15 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message).to eq(
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message).to eq(
         'Useless assignment to variable - bar. ' \
         'Use _ or _bar as a variable name ' +
         "to indicate that it won't be used."
       )
-      expect(cop.offences.first.line).to eq(2)
+      expect(cop.offenses.first.line).to eq(2)
       expect(cop.highlights).to eq(['bar'])
     end
 
@@ -980,12 +980,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(3)
+      expect(cop.offenses.first.line).to eq(3)
       expect(cop.highlights).to eq(['foo'])
     end
 
@@ -1094,12 +1094,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(6)
+      expect(cop.offenses.first.line).to eq(6)
       expect(cop.highlights).to eq(['foo'])
     end
   end
@@ -1123,12 +1123,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(6)
+      expect(cop.offenses.first.line).to eq(6)
       expect(cop.highlights).to eq(['foo'])
     end
   end
@@ -1150,12 +1150,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(6)
+      expect(cop.offenses.first.line).to eq(6)
       expect(cop.highlights).to eq(['foo'])
     end
   end
@@ -1202,14 +1202,14 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers offences for each assignment before ensure' do
+    it 'registers offenses for each assignment before ensure' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(4)
+      expect(cop.offenses.size).to eq(4)
 
-      expect(cop.offences[0].line).to eq(3)
-      expect(cop.offences[1].line).to eq(5)
-      expect(cop.offences[2].line).to eq(7)
-      expect(cop.offences[3].line).to eq(9)
+      expect(cop.offenses[0].line).to eq(3)
+      expect(cop.offenses[1].line).to eq(5)
+      expect(cop.offenses[2].line).to eq(7)
+      expect(cop.offenses[3].line).to eq(9)
     end
   end
 
@@ -1239,12 +1239,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(2)
+      expect(cop.offenses.first.line).to eq(2)
       expect(cop.highlights).to eq(['foo'])
     end
 
@@ -1262,12 +1262,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(2)
+      expect(cop.offenses.first.line).to eq(2)
       expect(cop.highlights).to eq(['foo'])
     end
   end
@@ -1279,12 +1279,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(1)
+      expect(cop.offenses.first.line).to eq(1)
     end
 
     include_examples 'mimics MRI 2.1'
@@ -1300,12 +1300,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(2)
+      expect(cop.offenses.first.line).to eq(2)
       expect(cop.highlights).to eq(["/(?<foo>\w+)/"])
     end
 
@@ -1374,12 +1374,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(2)
+      expect(cop.offenses.first.line).to eq(2)
       expect(cop.highlights).to eq(['foo'])
     end
 
@@ -1505,12 +1505,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - foo')
-      expect(cop.offences.first.line).to eq(1)
+      expect(cop.offenses.first.line).to eq(1)
       expect(cop.highlights).to eq(['foo'])
     end
 
@@ -1541,12 +1541,12 @@ describe Rubocop::Cop::Lint::UselessAssignment do
         ]
       end
 
-      it 'registers an offence' do
+      it 'registers an offense' do
         inspect_source(cop, source)
-        expect(cop.offences.size).to eq(1)
-        expect(cop.offences.first.message)
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.offenses.first.message)
           .to eq('Useless assignment to variable - foo')
-        expect(cop.offences.first.line).to eq(1)
+        expect(cop.offenses.first.line).to eq(1)
         expect(cop.highlights).to eq(['foo'])
       end
 

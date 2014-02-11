@@ -12,13 +12,13 @@ module Rubocop
 
       describe '#report_file' do
         before do
-          formatter.report_file(file, [offence])
+          formatter.report_file(file, [offense])
         end
 
         let(:file) { '/path/to/file' }
 
-        let(:offence) do
-          Cop::Offence.new(:convention, location,
+        let(:offense) do
+          Cop::Offense.new(:convention, location,
                            'This is a message.', 'CopName', corrected)
         end
 
@@ -50,7 +50,7 @@ module Rubocop
           end
         end
 
-        context 'when the offence is not corrected' do
+        context 'when the offense is not corrected' do
           let(:corrected) { false }
 
           it 'prints message as-is' do
@@ -59,7 +59,7 @@ module Rubocop
           end
         end
 
-        context 'when the offence is automatically corrected' do
+        context 'when the offense is automatically corrected' do
           let(:corrected) { true }
 
           it 'prints [Corrected] along with message' do
@@ -74,47 +74,47 @@ module Rubocop
           it 'handles pluralization correctly' do
             formatter.report_summary(0, 0, 0)
             expect(output.string).to eq(
-              "\n0 files inspected, no offences detected\n")
+              "\n0 files inspected, no offenses detected\n")
           end
         end
 
-        context 'when a file inspected and no offences detected' do
+        context 'when a file inspected and no offenses detected' do
           it 'handles pluralization correctly' do
             formatter.report_summary(1, 0, 0)
             expect(output.string).to eq(
-              "\n1 file inspected, no offences detected\n")
+              "\n1 file inspected, no offenses detected\n")
           end
         end
 
-        context 'when a offence detected' do
+        context 'when a offense detected' do
           it 'handles pluralization correctly' do
             formatter.report_summary(1, 1, 0)
             expect(output.string).to eq(
-              "\n1 file inspected, 1 offence detected\n")
+              "\n1 file inspected, 1 offense detected\n")
           end
         end
 
-        context 'when 2 offences detected' do
+        context 'when 2 offenses detected' do
           it 'handles pluralization correctly' do
             formatter.report_summary(2, 2, 0)
             expect(output.string).to eq(
-              "\n2 files inspected, 2 offences detected\n")
+              "\n2 files inspected, 2 offenses detected\n")
           end
         end
 
-        context 'when an offence is corrected' do
+        context 'when an offense is corrected' do
           it 'prints about correction' do
             formatter.report_summary(1, 1, 1)
             expect(output.string).to eq(
-              "\n1 file inspected, 1 offence detected, 1 offence corrected\n")
+              "\n1 file inspected, 1 offense detected, 1 offense corrected\n")
           end
         end
 
-        context 'when 2 offences are corrected' do
+        context 'when 2 offenses are corrected' do
           it 'handles pluralization correctly' do
             formatter.report_summary(1, 1, 2)
             expect(output.string).to eq(
-              "\n1 file inspected, 1 offence detected, 2 offences corrected\n")
+              "\n1 file inspected, 1 offense detected, 2 offenses corrected\n")
           end
         end
       end

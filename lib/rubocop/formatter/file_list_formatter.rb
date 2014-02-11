@@ -2,7 +2,7 @@
 
 module Rubocop
   module Formatter
-    # This formatter displays just a list of the files with offences in them,
+    # This formatter displays just a list of the files with offenses in them,
     # separated by newlines.
     #
     # Here's the format:
@@ -10,8 +10,8 @@ module Rubocop
     # /some/file
     # /some/other/file
     class FileListFormatter < BaseFormatter
-      def file_finished(file, offences)
-        return if offences.empty?
+      def file_finished(file, offenses)
+        return if offenses.empty?
         output.printf("%s\n", file)
       end
     end

@@ -15,9 +15,9 @@ describe Rubocop::Cop::Style::ClassLength, :config do
                          '  a = 5',
                          '  a = 6',
                          'end'])
-    expect(cop.offences.size).to eq(1)
+    expect(cop.offenses.size).to eq(1)
     expect(cop.messages).to eq(['Class definition is too long. [6/5]'])
-    expect(cop.config_to_allow_offences).to eq('Max' => 6)
+    expect(cop.config_to_allow_offenses).to eq('Max' => 6)
   end
 
   it 'accepts a class with 5 lines' do
@@ -28,7 +28,7 @@ describe Rubocop::Cop::Style::ClassLength, :config do
                          '  a = 4',
                          '  a = 5',
                          'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'accepts a class with less than 5 lines' do
@@ -38,7 +38,7 @@ describe Rubocop::Cop::Style::ClassLength, :config do
                          '  a = 3',
                          '  a = 4',
                          'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'does not count blank lines' do
@@ -51,13 +51,13 @@ describe Rubocop::Cop::Style::ClassLength, :config do
                          '',
                          '  a = 7',
                          'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'accepts empty classes' do
     inspect_source(cop, ['class Test',
                          'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   context 'when a class has inner classes' do
@@ -83,7 +83,7 @@ describe Rubocop::Cop::Style::ClassLength, :config do
                            '  a = 4',
                            '  a = 5',
                            'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'rejects a class with 6 lines that belong to the class directly' do
@@ -109,7 +109,7 @@ describe Rubocop::Cop::Style::ClassLength, :config do
                            '  a = 5',
                            '  a = 6',
                            'end'])
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
     end
   end
 
@@ -125,7 +125,7 @@ describe Rubocop::Cop::Style::ClassLength, :config do
                            '  a = 5',
                            '  a = 6',
                            'end'])
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
     end
   end
 end

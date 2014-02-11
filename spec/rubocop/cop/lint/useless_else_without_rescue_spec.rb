@@ -20,9 +20,9 @@ describe Rubocop::Cop::Lint::UselessElseWithoutRescue do
       ]
     end
 
-    it 'registers an offence' do
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+    it 'registers an offense' do
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Else without rescue is useless')
       expect(cop.highlights).to eq(['else'])
     end
@@ -42,7 +42,7 @@ describe Rubocop::Cop::Lint::UselessElseWithoutRescue do
     end
 
     it 'accepts' do
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
   end
 end

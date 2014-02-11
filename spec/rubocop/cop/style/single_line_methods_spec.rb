@@ -6,7 +6,7 @@ describe Rubocop::Cop::Style::SingleLineMethods, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) { { 'AllowIfMethodIsEmpty' => true } }
 
-  it 'registers an offence for a single-line method' do
+  it 'registers an offense for a single-line method' do
     inspect_source(cop,
                    ['def some_method; body end',
                     'def link_to(name, url); {:name => name}; end',
@@ -18,11 +18,11 @@ describe Rubocop::Cop::Style::SingleLineMethods, :config do
   context 'when AllowIfMethodIsEmpty is disabled' do
     let(:cop_config) { { 'AllowIfMethodIsEmpty' => false } }
 
-    it 'registers an offence for an empty method' do
+    it 'registers an offense for an empty method' do
       inspect_source(cop, ['def no_op; end',
                            'def self.resource_class=(klass); end',
                            'def @table.columns; end'])
-      expect(cop.offences.size).to eq(3)
+      expect(cop.offenses.size).to eq(3)
     end
   end
 
@@ -33,7 +33,7 @@ describe Rubocop::Cop::Style::SingleLineMethods, :config do
       inspect_source(cop, ['def no_op; end',
                            'def self.resource_class=(klass); end',
                            'def @table.columns; end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
   end
 
@@ -41,13 +41,13 @@ describe Rubocop::Cop::Style::SingleLineMethods, :config do
     inspect_source(cop, ['def some_method',
                          '  body',
                          'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'does not crash on an method with a capitalized name' do
     inspect_source(cop, ['def NoSnakeCase',
                          'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'auto-corrects def with semicolon after method name' do

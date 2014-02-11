@@ -12,7 +12,7 @@ module Rubocop
         def on_pair(node)
           oper = node.loc.operator
           if oper.is?(':') && oper.source_buffer.source[oper.end_pos] =~ /\S/
-            add_offence(oper, oper)
+            add_offense(oper, oper)
           end
         end
 
@@ -20,7 +20,7 @@ module Rubocop
           if ternary_op?(node)
             colon = node.loc.colon
             if colon.source_buffer.source[colon.end_pos] =~ /\S/
-              add_offence(colon, colon)
+              add_offense(colon, colon)
             end
           end
         end

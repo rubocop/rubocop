@@ -108,7 +108,7 @@ module Rubocop
 
           if kw_loc.line != end_loc.line &&
               kw_loc.column != end_loc.column + offset
-            add_offence(nil, end_loc,
+            add_offense(nil, end_loc,
                         format(MSG, end_loc.line, end_loc.column,
                                alignment_base, kw_loc.line, kw_loc.column)) do
               opposite_style_detected

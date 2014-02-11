@@ -21,7 +21,7 @@ module Rubocop
         def check_name(node)
           name = node.loc.name.source
 
-          add_offence(node, :name) if name =~ /_/
+          add_offense(node, :name) if name =~ /_/
         end
       end
     end

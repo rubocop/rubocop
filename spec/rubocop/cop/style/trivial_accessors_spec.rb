@@ -15,8 +15,8 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
                     'def Foo',
                     '  @Foo',
                     'end'])
-    expect(cop.offences.size).to eq(2)
-    expect(cop.offences
+    expect(cop.offenses.size).to eq(2)
+    expect(cop.offenses
              .map(&:line).sort).to eq([1, 5])
   end
 
@@ -30,8 +30,8 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
                     '    !foo',
                     '  end',
                     'end'])
-    expect(cop.offences.size).to eq(1)
-    expect(cop.offences
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.offenses
              .map(&:line).sort).to eq([2])
   end
 
@@ -45,8 +45,8 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
                     '    !foo',
                     '  end',
                     'end'])
-    expect(cop.offences.size).to eq(1)
-    expect(cop.offences
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.offenses
              .map(&:line).sort).to eq([2])
   end
 
@@ -59,8 +59,8 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
                     '    end',
                     '  end',
                     'end'])
-    expect(cop.offences.size).to eq(1)
-    expect(cop.offences
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.offenses
              .map(&:line).sort).to eq([3])
   end
 
@@ -119,8 +119,8 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
                     '   @val',
                     ' end',
                     'end'])
-    expect(cop.offences.size).to eq(2)
-    expect(cop.offences
+    expect(cop.offenses.size).to eq(2)
+    expect(cop.offenses
              .map(&:line).sort).to eq([2, 8])
   end
 
@@ -132,8 +132,8 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
                     '    @name',
                     '  end',
                     'end'])
-    expect(cop.offences.size).to eq(1)
-    expect(cop.offences
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.offenses
              .map(&:line).sort).to eq([3])
   end
 
@@ -145,8 +145,8 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
                     '    @name = name',
                     '  end',
                     'end'])
-    expect(cop.offences.size).to eq(1)
-    expect(cop.offences
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.offenses
              .map(&:line).sort).to eq([3])
   end
 
@@ -159,7 +159,7 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
                     '   or_more_of_them',
                     ' end',
                     'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'finds trivials with less peculiar methods' do
@@ -198,7 +198,7 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
                     '  #do stuff',
                     'end',
                     'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'treats splats as non-trivial' do
@@ -206,7 +206,7 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
                    [' def splatomatic(*values)',
                     '   @splatomatic = values',
                     ' end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'finds oneliner trivials' do
@@ -215,8 +215,8 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
                     '  def foo; @foo; end',
                     '  def foo= foo; @foo = foo; end',
                     'end'])
-    expect(cop.offences.size).to eq(2)
-    expect(cop.offences
+    expect(cop.offenses.size).to eq(2)
+    expect(cop.offenses
              .map(&:line).sort).to eq([2, 3])
   end
 
@@ -225,7 +225,7 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
                    ['def bar',
                     '  @bar + foo',
                     'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'finds trivial writer' do
@@ -233,8 +233,8 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
                    ['def foo=(val)',
                     ' @foo = val',
                     'end'])
-    expect(cop.offences.size).to eq(1)
-    expect(cop.offences
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.offenses
              .map(&:line).sort).to eq([1])
   end
 
@@ -259,8 +259,8 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
                     '    end',
                     '  end',
                     'end'])
-    expect(cop.offences.size).to eq(1)
-    expect(cop.offences
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.offenses
              .map(&:line).sort).to eq([2])
   end
 
@@ -280,8 +280,8 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
                     ' @bar = bar_value',
                     ' end',
                     'end'])
-    expect(cop.offences.size).to eq(3)
-    expect(cop.offences
+    expect(cop.offenses.size).to eq(3)
+    expect(cop.offenses
              .map(&:line).sort).to eq([2, 8, 11])
   end
 
@@ -290,7 +290,7 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
                    ['def bar=(value)',
                     ' @bar = value + 42',
                     'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'finds trivial writers in a little less trivial class' do
@@ -306,8 +306,8 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
                     ' @bar = bar_value',
                     ' end',
                     'end'])
-    expect(cop.offences.size).to eq(2)
-    expect(cop.offences
+    expect(cop.offenses.size).to eq(2)
+    expect(cop.offenses
              .map(&:line).sort).to eq([5, 8])
   end
 
@@ -326,7 +326,7 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
                     '   foo_method',
                     ' end',
                     'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'does not find trivial writer with exceptions' do
@@ -339,7 +339,7 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
                     '   end',
                     '   self[:expiration] = @expiration',
                     ' end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'accepts an initialize method looking like a writer' do
@@ -347,7 +347,7 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
                    [' def initialize(value)',
                     '   @top = value',
                     ' end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   context 'exact name match required' do
@@ -362,8 +362,8 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
                       'def bar',
                       '  @barr',
                       'end'])
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses
                .map(&:line).sort).to eq([1])
     end
 
@@ -376,8 +376,8 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
                       'def bar=(bar)',
                       '  @barr = bar',
                       'end'])
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses
                .map(&:line).sort).to eq([1])
     end
   end
@@ -390,7 +390,7 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
                      [' def foo?',
                       '   @foo',
                       ' end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
   end
 
@@ -402,14 +402,14 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
                      [' def to_foo',
                       '   @foo',
                       ' end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
     it 'ignores writers in the whitelist' do
       inspect_source(cop,
                      [' def bar=(bar)',
                       '   @bar = bar',
                       ' end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
   end
 end

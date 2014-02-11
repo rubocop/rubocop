@@ -9,7 +9,7 @@ module Rubocop
     #       diagnostic.reason == :my_interested_diagnostic_type
     #     end
     #
-    # If you want to use an alternative offence message rather than the one in
+    # If you want to use an alternative offense message rather than the one in
     # Parser's diagnostic, define `#alternative_message`.
     #
     #     def alternative_message(diagnostic)
@@ -26,7 +26,7 @@ module Rubocop
                       d.message.capitalize
                     end
 
-          add_offence(nil, d.location, message, d.level)
+          add_offense(nil, d.location, message, d.level)
         end
       end
     end

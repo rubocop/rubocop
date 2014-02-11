@@ -39,7 +39,7 @@ module Rubocop
             first_else_expr = else_branch.children.first
 
             if first_else_expr.loc.expression.line == node.loc.else.line
-              add_offence(first_else_expr, :expression, message)
+              add_offense(first_else_expr, :expression, message)
             end
           elsif node.loc.respond_to?(:keyword) &&
                 %w(if elsif).include?(node.loc.keyword.source)

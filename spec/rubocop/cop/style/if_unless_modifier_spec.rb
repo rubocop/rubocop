@@ -11,7 +11,7 @@ describe Rubocop::Cop::Style::IfUnlessModifier do
     Rubocop::Config.new(hash)
   end
 
-  it 'registers an offence for multiline if that fits on one line' do
+  it 'registers an offense for multiline if that fits on one line' do
     # This if statement fits exactly on one line if written as a
     # modifier.
     condition = 'a' * 38
@@ -28,7 +28,7 @@ describe Rubocop::Cop::Style::IfUnlessModifier do
        ' &&/||.'])
   end
 
-  it 'registers an offence for short multiline if near an else etc' do
+  it 'registers an offense for short multiline if near an else etc' do
     inspect_source(cop,
                    ['if x',
                     '  y',
@@ -43,7 +43,7 @@ describe Rubocop::Cop::Style::IfUnlessModifier do
                     'if a',
                     '  b',
                     'end'])
-    expect(cop.offences.size).to eq(1)
+    expect(cop.offenses.size).to eq(1)
   end
 
   it "accepts multiline if that doesn't fit on one line" do
@@ -54,7 +54,7 @@ describe Rubocop::Cop::Style::IfUnlessModifier do
     check_short_multiline(cop, 'if')
   end
 
-  it 'registers an offence for multiline unless that fits on one line' do
+  it 'registers an offense for multiline unless that fits on one line' do
     inspect_source(cop, ['unless a',
                          '  b',
                          'end'])
@@ -68,7 +68,7 @@ describe Rubocop::Cop::Style::IfUnlessModifier do
     inspect_source(cop, ['unless a',
                          '  b # A comment',
                          'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'accepts if-else-end' do
@@ -89,7 +89,7 @@ describe Rubocop::Cop::Style::IfUnlessModifier do
                          'elsif test2',
                          '  something_else',
                          'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   context 'with implicit match conditional' do
@@ -106,11 +106,11 @@ describe Rubocop::Cop::Style::IfUnlessModifier do
     context 'when a multiline if fits on one line' do
       let(:conditional) { "/#{'a' * 36}/" }
 
-      it 'registers an offence' do
+      it 'registers an offense' do
         expect("  #{body} if #{conditional}".length).to eq(79)
 
         inspect_source(cop, source)
-        expect(cop.offences.size).to eq(1)
+        expect(cop.offenses.size).to eq(1)
       end
     end
 
@@ -121,7 +121,7 @@ describe Rubocop::Cop::Style::IfUnlessModifier do
         expect("  #{body} if #{conditional}".length).to eq(80)
 
         inspect_source(cop, source)
-        expect(cop.offences).to be_empty
+        expect(cop.offenses).to be_empty
       end
     end
   end

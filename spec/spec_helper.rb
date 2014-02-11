@@ -83,7 +83,7 @@ def inspect_source_file(cop, source)
 end
 
 def inspect_source(cop, source, file = nil)
-  Rubocop::Formatter::DisabledConfigFormatter.config_to_allow_offences = {}
+  Rubocop::Formatter::DisabledConfigFormatter.config_to_allow_offenses = {}
   processed_source = parse_source(source, file)
   fail 'Error parsing example code' unless processed_source.valid_syntax?
   _investigate(cop, processed_source)
@@ -120,11 +120,11 @@ end
 
 class Rubocop::Cop::Cop
   def messages
-    offences.sort.map(&:message)
+    offenses.sort.map(&:message)
   end
 
   def highlights
-    offences.sort.map { |o| o.location.source }
+    offenses.sort.map { |o| o.location.source }
   end
 end
 

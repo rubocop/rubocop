@@ -13,7 +13,7 @@ module Rubocop
           if proper_dot_position?(node)
             correct_style_detected
           else
-            add_offence(node, :dot) { opposite_style_detected }
+            add_offense(node, :dot) { opposite_style_detected }
           end
         end
 

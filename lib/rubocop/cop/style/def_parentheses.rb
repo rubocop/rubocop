@@ -18,7 +18,7 @@ module Rubocop
 
           return if start_line == end_line
 
-          add_offence(args, :begin) if args.children == [] && args.loc.begin
+          add_offense(args, :begin) if args.children == [] && args.loc.begin
         end
 
         def autocorrect(node)

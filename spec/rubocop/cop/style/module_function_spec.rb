@@ -5,13 +5,13 @@ require 'spec_helper'
 describe Rubocop::Cop::Style::ModuleFunction do
   subject(:cop) { described_class.new }
 
-  it 'registers an offence for extend self in module' do
+  it 'registers an offense for extend self in module' do
     inspect_source(cop,
                    ['module Test',
                     '  extend self',
                     '  def test; end',
                     'end'])
-    expect(cop.offences.size).to eq(1)
+    expect(cop.offenses.size).to eq(1)
   end
 
   it 'accepts extend self in class' do
@@ -19,6 +19,6 @@ describe Rubocop::Cop::Style::ModuleFunction do
                    ['class Test',
                     '  extend self',
                     'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 end

@@ -24,7 +24,7 @@ module Rubocop
           _receiver, selector, *args = *node
 
           if args.size > 1
-            add_offence(node, :expression, message(selector)) do
+            add_offense(node, :expression, message(selector)) do
               opposite_style_detected
             end
           else
@@ -43,7 +43,7 @@ module Rubocop
 
               # Allow code like `raise Ex.new(arg1, arg2)`.
               if constructor_args.size <= 1
-                add_offence(node, :expression, message(selector)) do
+                add_offense(node, :expression, message(selector)) do
                   opposite_style_detected
                 end
               end

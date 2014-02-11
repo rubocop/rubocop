@@ -13,7 +13,7 @@ module Rubocop
           filename = File.basename(processed_source.buffer.name)
 
           unless filename =~ SNAKE_CASE
-            add_offence(nil,
+            add_offense(nil,
                         source_range(processed_source.buffer,
                                      processed_source[0..0],
                                      0, 1))

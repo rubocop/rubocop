@@ -27,7 +27,7 @@ module Rubocop
         def check(_node, _method_name, _args, body)
           return unless body && body.type == :kwbegin
 
-          add_offence(body, :begin)
+          add_offense(body, :begin)
         end
       end
     end

@@ -24,7 +24,7 @@ module Rubocop
           op_type = node.type.to_s
 
           if op == op_type
-            add_offence(node,
+            add_offense(node,
                         :operator,
                         format(MSG, OPS[op], op))
           end

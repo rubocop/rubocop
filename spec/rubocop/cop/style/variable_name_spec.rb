@@ -8,52 +8,52 @@ describe Rubocop::Cop::Style::VariableName, :config do
   shared_examples 'always accepted' do
     it 'accepts screaming snake case globals' do
       inspect_source(cop, '$MY_GLOBAL = 0')
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts screaming snake case constants' do
       inspect_source(cop, 'MY_CONSTANT = 0')
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts assigning to camel case constant' do
       inspect_source(cop, 'Paren = Struct.new :left, :right, :kind')
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts assignment with indexing of self' do
       inspect_source(cop, 'self[:a] = b')
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
   end
 
   context 'when configured for snake_case' do
     let(:cop_config) { { 'EnforcedStyle' => 'snake_case' } }
 
-    it 'registers an offence for camel case in local variable name' do
+    it 'registers an offense for camel case in local variable name' do
       inspect_source(cop, 'myLocal = 1')
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(['myLocal'])
-      expect(cop.config_to_allow_offences).to eq('EnforcedStyle' =>
+      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
                                                  'camelCase')
     end
 
-    it 'registers an offence for correct + opposite' do
+    it 'registers an offense for correct + opposite' do
       inspect_source(cop, ['my_local = 1',
                            'myLocal = 1'])
       expect(cop.highlights).to eq(['myLocal'])
-      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
-    it 'registers an offence for camel case in instance variable name' do
+    it 'registers an offense for camel case in instance variable name' do
       inspect_source(cop, '@myAttribute = 3')
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(['@myAttribute'])
     end
 
-    it 'registers an offence for camel case in setter name' do
+    it 'registers an offense for camel case in setter name' do
       inspect_source(cop, 'self.mySetter = 2')
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(['mySetter'])
     end
 
@@ -63,34 +63,34 @@ describe Rubocop::Cop::Style::VariableName, :config do
   context 'when configured for camelCase' do
     let(:cop_config) { { 'EnforcedStyle' => 'camelCase' } }
 
-    it 'registers an offence for snake case in local variable name' do
+    it 'registers an offense for snake case in local variable name' do
       inspect_source(cop, 'my_local = 1')
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(['my_local'])
-      expect(cop.config_to_allow_offences).to eq('EnforcedStyle' =>
+      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
                                                  'snake_case')
     end
 
-    it 'registers an offence for opposite + correct' do
+    it 'registers an offense for opposite + correct' do
       inspect_source(cop, ['my_local = 1',
                            'myLocal = 1'])
       expect(cop.highlights).to eq(['my_local'])
-      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
     it 'accepts camel case in local variable name' do
       inspect_source(cop, 'myLocal = 1')
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts camel case in instance variable name' do
       inspect_source(cop, '@myAttribute = 3')
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts camel case in setter name' do
       inspect_source(cop, 'self.mySetter = 2')
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     include_examples 'always accepted'

@@ -38,7 +38,7 @@ module Rubocop
             next if node.type == :class && !body
             next if namespace?(body)
             next if associated_comment?(node, ast_with_comments)
-            add_offence(node, :keyword, format(MSG, node.type.to_s))
+            add_offense(node, :keyword, format(MSG, node.type.to_s))
           end
         end
 

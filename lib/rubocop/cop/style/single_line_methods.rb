@@ -24,7 +24,7 @@ module Rubocop
 
           if start_line == end_line && !(allow_empty? && empty_body)
             @body = body
-            add_offence(node, :expression)
+            add_offense(node, :expression)
           end
         end
 

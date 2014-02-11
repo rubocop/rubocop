@@ -27,7 +27,7 @@ module Rubocop
     #
     # The Cop class is meant to be extended.
     #
-    # Cops track offences and can autocorrect them of the fly.
+    # Cops track offenses and can autocorrect them of the fly.
     #
     # A commissioner object is responsible for traversing the AST and invoking
     # the specific callbacks on each cop.
@@ -47,7 +47,7 @@ module Rubocop
       include Util
       include IgnoredNode
 
-      attr_reader :config, :offences, :corrections
+      attr_reader :config, :offenses, :corrections
       attr_accessor :processed_source # TODO: Bad design.
 
       @all = CopStore.new
@@ -84,7 +84,7 @@ module Rubocop
         @config = config || Config.new
         @options = options || { auto_correct: false, debug: false }
 
-        @offences = []
+        @offenses = []
         @corrections = []
       end
 
@@ -112,7 +112,7 @@ module Rubocop
         respond_to?(:autocorrect, true)
       end
 
-      def add_offence(node, loc, message = nil, severity = nil)
+      def add_offense(node, loc, message = nil, severity = nil)
         location = loc.is_a?(Symbol) ? node.loc.send(loc) : loc
 
         return if disabled_line?(location.line)
@@ -128,16 +128,16 @@ module Rubocop
                     rescue CorrectionNotPossible
                       false
                     end
-        @offences << Offence.new(severity, location, message, name, corrected)
+        @offenses << Offense.new(severity, location, message, name, corrected)
         yield if block_given?
       end
 
-      def config_to_allow_offences
-        Formatter::DisabledConfigFormatter.config_to_allow_offences[cop_name]
+      def config_to_allow_offenses
+        Formatter::DisabledConfigFormatter.config_to_allow_offenses[cop_name]
       end
 
-      def config_to_allow_offences=(hash)
-        Formatter::DisabledConfigFormatter.config_to_allow_offences[cop_name] =
+      def config_to_allow_offenses=(hash)
+        Formatter::DisabledConfigFormatter.config_to_allow_offenses[cop_name] =
           hash
       end
 
@@ -182,11 +182,11 @@ module Rubocop
       def custom_severity
         severity = cop_config && cop_config['Severity']
         if severity
-          if Offence::SEVERITIES.include?(severity.to_sym)
+          if Offense::SEVERITIES.include?(severity.to_sym)
             severity.to_sym
           else
             warn "Warning: Invalid severity '#{severity}'. " +
-                 "Valid severities are #{Offence::SEVERITIES.join(', ')}."
+                 "Valid severities are #{Offense::SEVERITIES.join(', ')}."
                  .color(:red)
           end
         end

@@ -6,7 +6,7 @@ require 'tempfile'
 
 module Rubocop
   module Formatter
-    describe OffenceCountFormatter do
+    describe OffenseCountFormatter do
       subject(:formatter) { described_class.new(output) }
       let(:output) { StringIO.new }
 
@@ -16,30 +16,30 @@ module Rubocop
         end
       end
 
-      let(:finish) { formatter.file_finished(files.first, offences) }
+      let(:finish) { formatter.file_finished(files.first, offenses) }
 
       describe '#file_finished' do
         before { formatter.started(files) }
 
-        context 'when no offences are detected' do
-          let(:offences) { [] }
-          it 'shouldn\'t add to offence_counts' do
-            expect { finish }.to_not change { formatter.offence_counts }
+        context 'when no offenses are detected' do
+          let(:offenses) { [] }
+          it 'shouldn\'t add to offense_counts' do
+            expect { finish }.to_not change { formatter.offense_counts }
           end
         end
 
-        context 'when any offences are detected' do
-          let(:offences) { [double('offence', cop_name: 'OffendedCop')] }
-          it 'should increment the count for the cop in offence_counts' do
-            expect { finish }.to change { formatter.offence_counts }
+        context 'when any offenses are detected' do
+          let(:offenses) { [double('offense', cop_name: 'OffendedCop')] }
+          it 'should increment the count for the cop in offense_counts' do
+            expect { finish }.to change { formatter.offense_counts }
           end
         end
       end
 
       describe '#report_summary' do
-        context 'when an offence is detected' do
+        context 'when an offense is detected' do
           let(:cop_counts) { { 'OffendedCop' => 1 } }
-          it 'shows the cop and the offence count' do
+          it 'shows the cop and the offense count' do
             formatter.report_summary(1, cop_counts)
             expect(output.string).to include(
               "\n1  OffendedCop\n--\n1  Total")
@@ -48,9 +48,9 @@ module Rubocop
       end
 
       describe '#finished' do
-        context 'when there are many offences' do
-          let(:offences) do
-            %w(CopB CopA CopC CopC).map { |c| double('offence', cop_name: c) }
+        context 'when there are many offenses' do
+          let(:offenses) do
+            %w(CopB CopA CopC CopC).map { |c| double('offense', cop_name: c) }
           end
 
           before do
@@ -58,7 +58,7 @@ module Rubocop
             finish
           end
 
-          it 'sorts by offence count first and then by cop name' do
+          it 'sorts by offense count first and then by cop name' do
             formatter.finished(files)
             expect(output.string).to eq(['',
                                          '2  CopC',

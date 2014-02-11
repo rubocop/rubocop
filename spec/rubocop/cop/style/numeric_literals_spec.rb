@@ -6,16 +6,16 @@ describe Rubocop::Cop::Style::NumericLiterals, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) { { 'MinDigits' => 5 } }
 
-  it 'registers an offence for a long integer without underscores' do
+  it 'registers an offense for a long integer without underscores' do
     inspect_source(cop, ['a = 123456'])
-    expect(cop.offences.size).to eq(1)
-    expect(cop.config_to_allow_offences).to eq('MinDigits' => 6)
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.config_to_allow_offenses).to eq('MinDigits' => 6)
   end
 
-  it 'registers an offence for an integer with misplaced underscore' do
+  it 'registers an offense for an integer with misplaced underscore' do
     inspect_source(cop, ['a = 123_456_78_90_00'])
-    expect(cop.offences.size).to eq(1)
-    expect(cop.config_to_allow_offences).to eq('Enabled' => false)
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
   end
 
   it 'accepts long numbers with underscore' do
@@ -44,10 +44,10 @@ describe Rubocop::Cop::Style::NumericLiterals, :config do
     inspect_source(cop, ['a = 0b1010101010101',
                          'b = 01717171717171',
                          'c = 0xab11111111bb'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
-  it 'autocorrects a long integer offence' do
+  it 'autocorrects a long integer offense' do
     corrected = autocorrect_source(cop, ['a = 123456'])
     expect(corrected).to eq 'a = 123_456'
   end

@@ -9,8 +9,8 @@ module Rubocop
 
         MSG = 'Do not use the character literal - use string literal instead.'
 
-        def offence?(node)
-          # we don't register an offence for things like ?\C-\M-d
+        def offense?(node)
+          # we don't register an offense for things like ?\C-\M-d
           node.loc.begin.is?('?') &&
             node.loc.expression.source.size.between?(2, 3)
         end

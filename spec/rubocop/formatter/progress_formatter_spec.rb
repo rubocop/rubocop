@@ -23,64 +23,64 @@ module Rubocop
       shared_examples 'calls #report_file_as_mark' do
         it 'calls #report_as_with_mark' do
           expect(formatter).to receive(:report_file_as_mark)
-          formatter.file_finished(files.first, offences)
+          formatter.file_finished(files.first, offenses)
         end
       end
 
-      context 'when no offences are detected' do
-        let(:offences) { [] }
+      context 'when no offenses are detected' do
+        let(:offenses) { [] }
         include_examples 'calls #report_file_as_mark'
       end
 
-      context 'when any offences are detected' do
-        let(:offences) { [double('offence').as_null_object] }
+      context 'when any offenses are detected' do
+        let(:offenses) { [double('offense').as_null_object] }
         include_examples 'calls #report_file_as_mark'
       end
     end
 
     describe '#report_file_as_mark' do
       before do
-        formatter.report_file_as_mark(files.first, offences)
+        formatter.report_file_as_mark(files.first, offenses)
       end
 
-      def offence_with_severity(severity)
+      def offense_with_severity(severity)
         source_buffer = Parser::Source::Buffer.new('test', 1)
         source_buffer.source = "a\n"
-        Cop::Offence.new(severity,
+        Cop::Offense.new(severity,
                          Parser::Source::Range.new(source_buffer, 0, 1),
                          'message',
                          'CopName')
       end
 
-      context 'when no offences are detected' do
-        let(:offences) { [] }
+      context 'when no offenses are detected' do
+        let(:offenses) { [] }
 
         it 'prints "."' do
           expect(output.string).to eq('.')
         end
       end
 
-      context 'when a refactor severity offence is detected' do
-        let(:offences) { [offence_with_severity(:refactor)] }
+      context 'when a refactor severity offense is detected' do
+        let(:offenses) { [offense_with_severity(:refactor)] }
 
         it 'prints "R"' do
           expect(output.string).to eq('R')
         end
       end
 
-      context 'when a refactor convention offence is detected' do
-        let(:offences) { [offence_with_severity(:convention)] }
+      context 'when a refactor convention offense is detected' do
+        let(:offenses) { [offense_with_severity(:convention)] }
 
         it 'prints "C"' do
           expect(output.string).to eq('C')
         end
       end
 
-      context 'when different severity offences are detected' do
-        let(:offences) do
+      context 'when different severity offenses are detected' do
+        let(:offenses) do
           [
-            offence_with_severity(:refactor),
-            offence_with_severity(:error)
+            offense_with_severity(:refactor),
+            offense_with_severity(:error)
           ]
         end
 
@@ -95,7 +95,7 @@ module Rubocop
         formatter.started(files)
       end
 
-      context 'when any offences are detected' do
+      context 'when any offenses are detected' do
         before do
           source_buffer = Parser::Source::Buffer.new('test', 1)
           source = 9.times.map do |index|
@@ -106,7 +106,7 @@ module Rubocop
 
           formatter.file_started(files[0], {})
           formatter.file_finished(files[0], [
-            Cop::Offence.new(
+            Cop::Offense.new(
               :convention,
               Parser::Source::Range.new(source_buffer,
                                         line_length + 2,
@@ -122,7 +122,7 @@ module Rubocop
 
           formatter.file_started(files[2], {})
           formatter.file_finished(files[2], [
-            Cop::Offence.new(
+            Cop::Offense.new(
               :error,
               Parser::Source::Range.new(source_buffer,
                                         4 * line_length + 1,
@@ -130,7 +130,7 @@ module Rubocop
               'bar',
               'Cop'
             ),
-            Cop::Offence.new(
+            Cop::Offense.new(
               :convention,
               Parser::Source::Range.new(source_buffer,
                                         5 * line_length,
@@ -141,10 +141,10 @@ module Rubocop
           ])
         end
 
-        it 'reports all detected offences for all failed files' do
+        it 'reports all detected offenses for all failed files' do
           formatter.finished(files)
           expect(output.string).to include([
-            'Offences:',
+            'Offenses:',
             '',
             'lib/rubocop.rb:2:3: C: foo',
             'This is line 2.',
@@ -159,7 +159,7 @@ module Rubocop
         end
       end
 
-      context 'when no offences are detected' do
+      context 'when no offenses are detected' do
         before do
           files.each do |file|
             formatter.file_started(file, {})
@@ -167,9 +167,9 @@ module Rubocop
           end
         end
 
-        it 'does not report offences' do
+        it 'does not report offenses' do
           formatter.finished(files)
-          expect(output.string).not_to include('Offences:')
+          expect(output.string).not_to include('Offenses:')
         end
       end
 

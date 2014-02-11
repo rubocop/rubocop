@@ -54,10 +54,10 @@ module Rubocop
         prepare(processed_source)
         invoke_cops_callback(processed_source)
         process(processed_source.ast) if processed_source.ast
-        @cops.each_with_object([]) do |cop, offences|
+        @cops.each_with_object([]) do |cop, offenses|
           filename = processed_source.buffer.name
           # ignore files that are of no interest to the cop in question
-          offences.concat(cop.offences) if cop.relevant_file?(filename)
+          offenses.concat(cop.offenses) if cop.relevant_file?(filename)
         end
       end
 

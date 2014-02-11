@@ -33,11 +33,11 @@ module Rubocop
 
           case node
           when ARRAY_NODE
-            add_offence(node, :expression, ARR_MSG)
+            add_offense(node, :expression, ARR_MSG)
           when HASH_NODE
-            add_offence(node, :expression, HASH_MSG)
+            add_offense(node, :expression, HASH_MSG)
           when STR_NODE
-            add_offence(node, :expression, STR_MSG)
+            add_offense(node, :expression, STR_MSG)
           end
         end
 

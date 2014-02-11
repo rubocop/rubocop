@@ -28,11 +28,11 @@ module Rubocop
           return unless div_by_2?(receiver)
 
           if args == ZERO
-            add_offence(node,
+            add_offense(node,
                         :expression,
                         method == :== ? MSG_EVEN : MSG_ODD)
           elsif args == ONE
-            add_offence(node,
+            add_offense(node,
                         :expression,
                         method == :== ? MSG_ODD : MSG_EVEN)
           end

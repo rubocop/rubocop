@@ -15,7 +15,7 @@ module Rubocop
           return unless loc.respond_to?(:keyword) && loc.respond_to?(:else)
 
           if loc.keyword.is?('unless') && loc.else
-            add_offence(node, :expression)
+            add_offense(node, :expression)
           end
         end
       end

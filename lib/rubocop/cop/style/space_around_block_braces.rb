@@ -33,7 +33,7 @@ module Rubocop
 
         def check_outside(left_brace)
           if range_with_surrounding_space(left_brace).source.start_with?('{')
-            add_offence(left_brace, left_brace,
+            add_offense(left_brace, left_brace,
                         'Space missing to the left of {.')
           end
         end
@@ -43,7 +43,7 @@ module Rubocop
 
           if left_brace.end_pos == right_brace.begin_pos
             if style_for_empty_braces == :space
-              offence(sb, left_brace.begin_pos, right_brace.end_pos,
+              offense(sb, left_brace.begin_pos, right_brace.end_pos,
                       'Space missing inside empty braces.')
             end
           else
@@ -54,7 +54,7 @@ module Rubocop
               if inner =~ /\S/
                 braces_with_contents_inside(node, inner, sb)
               elsif style_for_empty_braces == :no_space
-                offence(sb, range.begin_pos, range.end_pos,
+                offense(sb, range.begin_pos, range.end_pos,
                         'Space inside empty braces detected.')
               end
             end
@@ -84,7 +84,7 @@ module Rubocop
           if pipe
             if left_brace.end_pos == pipe.begin_pos &&
                 cop_config['SpaceBeforeBlockParameters']
-              offence(sb, left_brace.begin_pos, pipe.end_pos,
+              offense(sb, left_brace.begin_pos, pipe.end_pos,
                       'Space between { and | missing.')
             end
           else
@@ -99,7 +99,7 @@ module Rubocop
         def space_inside_left_brace(left_brace, pipe, sb)
           if pipe
             unless cop_config['SpaceBeforeBlockParameters']
-              offence(sb, left_brace.end_pos, pipe.begin_pos,
+              offense(sb, left_brace.end_pos, pipe.begin_pos,
                       'Space between { and | detected.')
             end
           else
@@ -117,7 +117,7 @@ module Rubocop
 
         def no_space(sb, begin_pos, end_pos, msg)
           if style == :space_inside_braces
-            offence(sb, begin_pos, end_pos, msg) { opposite_style_detected }
+            offense(sb, begin_pos, end_pos, msg) { opposite_style_detected }
           else
             correct_style_detected
           end
@@ -125,15 +125,15 @@ module Rubocop
 
         def space(sb, begin_pos, end_pos, msg)
           if style == :no_space_inside_braces
-            offence(sb, begin_pos, end_pos, msg) { opposite_style_detected }
+            offense(sb, begin_pos, end_pos, msg) { opposite_style_detected }
           else
             correct_style_detected
           end
         end
 
-        def offence(sb, begin_pos, end_pos, msg)
+        def offense(sb, begin_pos, end_pos, msg)
           range = Parser::Source::Range.new(sb, begin_pos, end_pos)
-          add_offence(range, range, msg) { yield if block_given? }
+          add_offense(range, range, msg) { yield if block_given? }
         end
 
         def style_for_empty_braces

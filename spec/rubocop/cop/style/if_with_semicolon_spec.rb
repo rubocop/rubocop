@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Rubocop::Cop::Style::IfWithSemicolon do
   subject(:cop) { described_class.new }
 
-  it 'registers an offence for one line if/;/end' do
+  it 'registers an offense for one line if/;/end' do
     inspect_source(cop, ['if cond; run else dont end'])
     expect(cop.messages).to eq(
       ['Never use if x; Use the ternary operator instead.'])

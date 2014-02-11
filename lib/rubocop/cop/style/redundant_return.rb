@@ -58,7 +58,7 @@ module Rubocop
           return if cop_config['AllowMultipleReturnValues'] &&
             node.children.size > 1
 
-          add_offence(node, :keyword)
+          add_offense(node, :keyword)
         end
       end
     end

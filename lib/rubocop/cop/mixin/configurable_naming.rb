@@ -19,7 +19,7 @@ module Rubocop
         if matches_config?(name)
           correct_style_detected
         else
-          add_offence(node, range, message(style)) do
+          add_offense(node, range, message(style)) do
             opposite_style_detected
           end
         end

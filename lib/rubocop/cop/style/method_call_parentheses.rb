@@ -13,7 +13,7 @@ module Rubocop
           # methods starting with a capital letter should be skipped
           return if method_name =~ /\A[A-Z]/
 
-          add_offence(node, :begin) if args.empty? && node.loc.begin
+          add_offense(node, :begin) if args.empty? && node.loc.begin
         end
 
         def autocorrect(node)

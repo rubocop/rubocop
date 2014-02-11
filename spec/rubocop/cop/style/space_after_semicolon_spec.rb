@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Rubocop::Cop::Style::SpaceAfterSemicolon do
   subject(:cop) { described_class.new }
 
-  it 'registers an offence for semicolon without space after it' do
+  it 'registers an offense for semicolon without space after it' do
     inspect_source(cop, ['x = 1;y = 2'])
     expect(cop.messages).to eq(
       ['Space missing after semicolon.'])

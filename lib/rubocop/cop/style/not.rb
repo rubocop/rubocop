@@ -13,7 +13,7 @@ module Rubocop
           # not does not take any arguments
           if args.empty? && method_name == :! &&
               node.loc.selector.is?('not')
-            add_offence(node, :selector)
+            add_offense(node, :selector)
           end
         end
       end

@@ -29,7 +29,7 @@ module Rubocop
           if OPS.include?(op)
             _receiver, _method, args = *node
 
-            add_offence(node, :selector) if args == NIL_NODE
+            add_offense(node, :selector) if args == NIL_NODE
           end
         end
       end

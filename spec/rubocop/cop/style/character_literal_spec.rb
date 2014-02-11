@@ -5,24 +5,24 @@ require 'spec_helper'
 describe Rubocop::Cop::Style::CharacterLiteral do
   subject(:cop) { described_class.new }
 
-  it 'registers an offence for character literals' do
+  it 'registers an offense for character literals' do
     inspect_source(cop, ['x = ?x'])
-    expect(cop.offences.size).to eq(1)
+    expect(cop.offenses.size).to eq(1)
   end
 
-  it 'registers an offence for literals like \n' do
+  it 'registers an offense for literals like \n' do
     inspect_source(cop, ['x = ?\n'])
-    expect(cop.offences.size).to eq(1)
+    expect(cop.offenses.size).to eq(1)
   end
 
   it 'accepts literals like ?\C-\M-d' do
     inspect_source(cop, ['x = ?\C-\M-d'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'accepts ? in a %w literal' do
     inspect_source(cop, ['%w{? A}'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it "auto-corrects ?x to 'x'" do

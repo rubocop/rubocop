@@ -14,7 +14,7 @@ module Rubocop
             range = source_range(processed_source.buffer,
                                  processed_source[0...-1],
                                  final_line.length - 1, 1)
-            add_offence(range, range)
+            add_offense(range, range)
           end
         end
 

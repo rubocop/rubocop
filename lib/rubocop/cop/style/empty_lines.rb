@@ -28,7 +28,7 @@ module Rubocop
                                        processed_source[0...(line - 1)],
                                        0,
                                        1)
-                  add_offence(range, range)
+                  add_offense(range, range)
                 end
               end
             end

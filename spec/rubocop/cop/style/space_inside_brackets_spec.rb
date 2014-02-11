@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Rubocop::Cop::Style::SpaceInsideBrackets do
   subject(:cop) { described_class.new }
 
-  it 'registers an offence for an array literal with spaces inside' do
+  it 'registers an offense for an array literal with spaces inside' do
     inspect_source(cop, ['a = [1, 2 ]',
                          'b = [ 1, 2]'])
     expect(cop.messages).to eq(

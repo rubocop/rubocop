@@ -69,7 +69,7 @@ module Rubocop
         # Once the variable is captured by a block, we have no idea
         # when, where and how many times the block would be invoked
         # and it means we cannot track the usage of the variable.
-        # So we consider it's used to suppress false positive offences.
+        # So we consider it's used to suppress false positive offenses.
         def used?
           @captured_by_block || referenced?
         end

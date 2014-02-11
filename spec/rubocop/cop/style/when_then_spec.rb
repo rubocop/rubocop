@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Rubocop::Cop::Style::WhenThen do
   subject(:cop) { described_class.new }
 
-  it 'registers an offence for when x;' do
+  it 'registers an offense for when x;' do
     inspect_source(cop, ['case a',
                          'when b; c',
                          'end'])

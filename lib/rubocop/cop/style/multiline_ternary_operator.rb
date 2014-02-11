@@ -14,7 +14,7 @@ module Rubocop
           # discard non-ternary ops
           return unless loc.respond_to?(:question)
 
-          add_offence(node, :expression) if loc.line != loc.colon.line
+          add_offense(node, :expression) if loc.line != loc.colon.line
         end
       end
     end

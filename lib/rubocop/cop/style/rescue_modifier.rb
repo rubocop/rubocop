@@ -12,7 +12,7 @@ module Rubocop
         def on_rescue(node)
           return if ignored_node?(node)
 
-          add_offence(node, :expression)
+          add_offense(node, :expression)
         end
 
         def on_kwbegin(node)

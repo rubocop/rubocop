@@ -6,7 +6,7 @@ require 'spec_helper'
 describe Rubocop::Cop::Lint::BlockAlignment do
   subject(:cop) { described_class.new }
 
-  it 'registers an offence for mismatched block end' do
+  it 'registers an offense for mismatched block end' do
     inspect_source(cop,
                    ['test do |ala|',
                     '  end'
@@ -24,7 +24,7 @@ describe Rubocop::Cop::Lint::BlockAlignment do
                       'a || b do',
                       'end'
                      ])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
   end
 
@@ -33,11 +33,11 @@ describe Rubocop::Cop::Lint::BlockAlignment do
                    ['variable = test do |ala|',
                     'end'
                    ])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   context 'when there is an assignment chain' do
-    it 'registers an offence for an end aligned with the 2nd variable' do
+    it 'registers an offense for an end aligned with the 2nd variable' do
       inspect_source(cop,
                      ['a = b = c = test do |ala|',
                       '    end'
@@ -51,7 +51,7 @@ describe Rubocop::Cop::Lint::BlockAlignment do
                      ['a = b = c = test do |ala|',
                       'end'
                      ])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
   end
 
@@ -62,11 +62,11 @@ describe Rubocop::Cop::Lint::BlockAlignment do
                       '  a + e.length + newline_length',
                       'end + 1'
                      ])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
   end
 
-  it 'registers an offence for mismatched block end with a variable' do
+  it 'registers an offense for mismatched block end with a variable' do
     inspect_source(cop,
                    ['variable = test do |ala|',
                     '  end'
@@ -83,10 +83,10 @@ describe Rubocop::Cop::Lint::BlockAlignment do
                       '    v.foo',
                       '  end'
                      ])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
-    it 'registers an offences for mismatched end alignment' do
+    it 'registers an offenses for mismatched end alignment' do
       inspect_source(cop,
                      ['variable =',
                       '  a_long_method_that_dont_fit_on_the_line do |v|',
@@ -114,10 +114,10 @@ describe Rubocop::Cop::Lint::BlockAlignment do
              '      end',
              'end']
       inspect_source(cop, src)
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
-    it 'registers offences for misaligned ends' do
+    it 'registers offenses for misaligned ends' do
       src = ['def foo(bar)',
              '  bar.get_stuffs',
              '      .reject do |stuff|',
@@ -151,7 +151,7 @@ describe Rubocop::Cop::Lint::BlockAlignment do
              '  do_something',
              'end']
       inspect_source(cop, src)
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     # Example from issue 447 of bbatsov/rubocop on github:
@@ -171,7 +171,7 @@ describe Rubocop::Cop::Lint::BlockAlignment do
              'end'
             ]
       inspect_source(cop, src)
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
   end
 
@@ -182,10 +182,10 @@ describe Rubocop::Cop::Lint::BlockAlignment do
              '  i - 5',
              'end']
       inspect_source(cop, src)
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
-    it 'registers an offence for end aligned with the block' do
+    it 'registers an offense for end aligned with the block' do
       src = ['e,',
              'f = [5, 6].map do |i|',
              '  i - 5',
@@ -201,10 +201,10 @@ describe Rubocop::Cop::Lint::BlockAlignment do
                    ['@variable = test do |ala|',
                     'end'
                    ])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
-  it 'registers an offence for mismatched block end with an instance variable' do
+  it 'registers an offense for mismatched block end with an instance variable' do
     inspect_source(cop,
                    ['@variable = test do |ala|',
                     '  end'
@@ -218,10 +218,10 @@ describe Rubocop::Cop::Lint::BlockAlignment do
                    ['@@variable = test do |ala|',
                     'end'
                    ])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
-  it 'registers an offence for mismatched block end with a class variable' do
+  it 'registers an offense for mismatched block end with a class variable' do
     inspect_source(cop,
                    ['@@variable = test do |ala|',
                     '  end'
@@ -235,10 +235,10 @@ describe Rubocop::Cop::Lint::BlockAlignment do
                    ['$variable = test do |ala|',
                     'end'
                    ])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
-  it 'registers an offence for mismatched block end with a global variable' do
+  it 'registers an offense for mismatched block end with a global variable' do
     inspect_source(cop,
                    ['$variable = test do |ala|',
                     '  end'
@@ -252,10 +252,10 @@ describe Rubocop::Cop::Lint::BlockAlignment do
                    ['CONSTANT = test do |ala|',
                     'end'
                    ])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
-  it 'registers an offence for mismatched block end with a constant' do
+  it 'registers an offense for mismatched block end with a constant' do
     inspect_source(cop,
                    ['Module::CONSTANT = test do |ala|',
                     '  end'
@@ -270,10 +270,10 @@ describe Rubocop::Cop::Lint::BlockAlignment do
                     '  token << 1',
                     'end'
                    ])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
-  it 'registers an offence for mismatched block end with a method call' do
+  it 'registers an offense for mismatched block end with a method call' do
     inspect_source(cop,
                    ['parser.childs << lambda do |token|',
                     '  token << 1',
@@ -289,10 +289,10 @@ describe Rubocop::Cop::Lint::BlockAlignment do
                     '  v = 1',
                     'end'
                    ])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
-  it 'registers an offence for mismatched end with a method call with arguments' do
+  it 'registers an offense for mismatched end with a method call with arguments' do
     inspect_source(cop,
                    ['@h[:f] = f.each_pair.map do |f, v|',
                     '  v = 1',
@@ -306,7 +306,7 @@ describe Rubocop::Cop::Lint::BlockAlignment do
     inspect_source(cop,
                    ['expect(arr.all? { |o| o.valid? })'
                    ])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'accepts end aligned with the block when the block is a method argument' do
@@ -315,10 +315,10 @@ describe Rubocop::Cop::Lint::BlockAlignment do
                     '         o.valid?',
                     '       end)'
                    ])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
-  it 'registers an offence for mismatched end not aligned with the block that is an argument' do
+  it 'registers an offense for mismatched end not aligned with the block that is an argument' do
     inspect_source(cop,
                    ['expect(arr.all? do |o|',
                     '  o.valid?',
@@ -335,10 +335,10 @@ describe Rubocop::Cop::Lint::BlockAlignment do
                     '  file << something',
                     'end'
                    ])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
-  it 'registers an offence for mismatched block end with an op-asgn (+=, -=)' do
+  it 'registers an offense for mismatched block end with an op-asgn (+=, -=)' do
     inspect_source(cop,
                    ['rb += files.select do |file|',
                     '  file << something',
@@ -353,10 +353,10 @@ describe Rubocop::Cop::Lint::BlockAlignment do
                    ['variable &&= test do |ala|',
                     'end'
                    ])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
-  it 'registers an offence for mismatched block end with an and-asgn (&&=)' do
+  it 'registers an offense for mismatched block end with an and-asgn (&&=)' do
     inspect_source(cop,
                    ['variable &&= test do |ala|',
                     '  end'
@@ -370,10 +370,10 @@ describe Rubocop::Cop::Lint::BlockAlignment do
                    ['variable ||= test do |ala|',
                     'end'
                    ])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
-  it 'registers an offence for mismatched block end with an or-asgn (||=)' do
+  it 'registers an offense for mismatched block end with an or-asgn (||=)' do
     inspect_source(cop,
                    ['variable ||= test do |ala|',
                     '  end'
@@ -388,7 +388,7 @@ describe Rubocop::Cop::Lint::BlockAlignment do
                     '  [1, 2]',
                     'end'
                    ])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'accepts end aligned with a call chain left hand side' do
@@ -396,10 +396,10 @@ describe Rubocop::Cop::Lint::BlockAlignment do
                    ['parser.diagnostics.consumer = lambda do |diagnostic|',
                     '  diagnostics << diagnostic',
                     'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
-  it 'registers an offence for mismatched block end with a mass assignment' do
+  it 'registers an offense for mismatched block end with a mass assignment' do
     inspect_source(cop,
                    ['var1, var2 = lambda do |test|',
                     '  [1, 2]',

@@ -49,7 +49,7 @@ Usage: rubocop [options] [file1, file2, ...]
                                        [e]macs
                                        [j]son
                                        [f]iles
-                                       [o]ffences
+                                       [o]ffenses
                                        custom formatter class name
     -o, --out FILE                   Write output to a file instead of STDOUT.
                                      This option applies to the previously
@@ -60,10 +60,10 @@ Usage: rubocop [options] [file1, file2, ...]
                                      default, and their configurations for the
                                      current directory.
     -d, --debug                      Display debug info.
-    -D, --display-cop-names          Display cop names in offence messages.
+    -D, --display-cop-names          Display cop names in offense messages.
     -R, --rails                      Run extra Rails cops.
     -l, --lint                       Run only lint cops.
-    -a, --auto-correct               Auto-correct offences.
+    -a, --auto-correct               Auto-correct offenses.
     -n, --no-color                   Disable color output.
     -v, --version                    Display version.
     -V, --verbose-version            Display verbose version.

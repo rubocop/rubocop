@@ -6,13 +6,13 @@ describe Rubocop::Cop::Style::AlignHash, :config do
   shared_examples 'not on separate lines' do
     it 'accepts single line hash' do
       inspect_source(cop, 'func(a: 0, bb: 1)')
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts several pairs per line' do
       inspect_source(cop, ['func(a: 1, bb: 2,',
                            '     ccc: 3, dddd: 4)'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
   end
 
@@ -25,7 +25,7 @@ describe Rubocop::Cop::Style::AlignHash, :config do
   end
 
   context 'with default configuration' do
-    it 'registers an offence for misaligned hash keys' do
+    it 'registers an offense for misaligned hash keys' do
       inspect_source(cop, ['hash1 = {',
                            '  a: 0,',
                            '   bb: 1',
@@ -50,40 +50,40 @@ describe Rubocop::Cop::Style::AlignHash, :config do
                            "  'ccc' => 2,",
                            "  'dddd'  =>  2",
                            '}'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
-    it 'registers an offence for separator alignment' do
+    it 'registers an offense for separator alignment' do
       inspect_source(cop, ['hash = {',
                            "    'a' => 0,",
                            "  'bbb' => 1",
                            '}'])
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(["'bbb' => 1"])
     end
 
     context 'with braceless hash as last argument' do
-      it 'registers an offence for misaligned hash keys' do
+      it 'registers an offense for misaligned hash keys' do
         inspect_source(cop, ['func(a: 0,',
                              '  b: 1)'])
-        expect(cop.offences.size).to eq(1)
+        expect(cop.offenses.size).to eq(1)
       end
 
-      it 'registers an offence for right alignment of keys' do
+      it 'registers an offense for right alignment of keys' do
         inspect_source(cop, ['func(a: 0,',
                              '   bbb: 1)'])
-        expect(cop.offences.size).to eq(1)
+        expect(cop.offenses.size).to eq(1)
       end
 
       it 'accepts aligned hash keys' do
         inspect_source(cop, ['func(a: 0,',
                              '     b: 1)'])
-        expect(cop.offences).to be_empty
+        expect(cop.offenses).to be_empty
       end
 
       it 'accepts an empty hash' do
         inspect_source(cop, 'h = {}')
-        expect(cop.offences).to be_empty
+        expect(cop.offenses).to be_empty
       end
     end
 
@@ -128,12 +128,12 @@ describe Rubocop::Cop::Style::AlignHash, :config do
                            '  bbb: 1',
                            '}'
                           ])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts an empty hash' do
       inspect_source(cop, 'h = {}')
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts a multiline array of single line hashes' do
@@ -145,10 +145,10 @@ describe Rubocop::Cop::Style::AlignHash, :config do
                            '      { after:    %w( n o ) }',
                            '    ]',
                            '  end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
-    it 'registers an offence for misaligned hash values' do
+    it 'registers an offense for misaligned hash values' do
       inspect_source(cop, ['hash1 = {',
                            "  'a'   =>  0,",
                            "  'bbb' => 1",
@@ -162,12 +162,12 @@ describe Rubocop::Cop::Style::AlignHash, :config do
                                     'bbb:1'])
     end
 
-    it 'registers an offence for misaligned hash rockets' do
+    it 'registers an offense for misaligned hash rockets' do
       inspect_source(cop, ['hash = {',
                            "  'a'   => 0,",
                            "  'bbb'  => 1",
                            '}'])
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
     end
 
     it 'auto-corrects alignment' do
@@ -196,7 +196,7 @@ describe Rubocop::Cop::Style::AlignHash, :config do
 
     it 'accepts a single method argument entry with colon' do
       inspect_source(cop, ['merge(parent: nil)'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
   end
 
@@ -233,28 +233,28 @@ describe Rubocop::Cop::Style::AlignHash, :config do
                            "    'a' => 0,",
                            "  'bbb' => 1",
                            '}'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts an empty hash' do
       inspect_source(cop, 'h = {}')
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
-    it 'registers an offence for misaligned hash values' do
+    it 'registers an offense for misaligned hash values' do
       inspect_source(cop, ['hash = {',
                            "    'a' =>  0,",
                            "  'bbb' => 1",
                            '}'])
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
     end
 
-    it 'registers an offence for misaligned hash rockets' do
+    it 'registers an offense for misaligned hash rockets' do
       inspect_source(cop, ['hash = {',
                            "    'a'  => 0,",
                            "  'bbb' =>  1",
                            '}'])
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
     end
 
     include_examples 'not on separate lines'
@@ -283,7 +283,7 @@ describe Rubocop::Cop::Style::AlignHash, :config do
       }
     end
 
-    it 'registers offences for misaligned entries' do
+    it 'registers offenses for misaligned entries' do
       inspect_source(cop, ['hash1 = {',
                            '  a:   0,',
                            '  bbb: 1',
@@ -304,7 +304,7 @@ describe Rubocop::Cop::Style::AlignHash, :config do
                            "  'a' => 0,",
                            "  'bbb' => 1",
                            '}'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
   end
 end

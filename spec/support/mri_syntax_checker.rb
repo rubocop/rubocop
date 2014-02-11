@@ -6,7 +6,7 @@ require 'open3'
 module MRISyntaxChecker
   module_function
 
-  def offences_for_source(source, fake_cop_name = 'Syntax', grep_message = nil)
+  def offenses_for_source(source, fake_cop_name = 'Syntax', grep_message = nil)
     if source.is_a?(Array)
       source_lines = source
       source = source_lines.join("\n")
@@ -17,12 +17,12 @@ module MRISyntaxChecker
     source_buffer = Parser::Source::Buffer.new('test', 1)
     source_buffer.source = source
 
-    offences = check_syntax(source).each_line.map do |line|
+    offenses = check_syntax(source).each_line.map do |line|
       check_line(line, source_lines, source_buffer, fake_cop_name,
                  grep_message)
     end
 
-    offences.compact
+    offenses.compact
   end
 
   def check_line(line, source_lines, source_buffer, fake_cop_name,
@@ -33,7 +33,7 @@ module MRISyntaxChecker
     begin_pos = source_lines[0...(line_number - 1)].reduce(0) do |a, e|
       a + e.length + "\n".length
     end
-    Rubocop::Cop::Offence.new(severity,
+    Rubocop::Cop::Offense.new(severity,
                               Parser::Source::Range.new(source_buffer,
                                                         begin_pos,
                                                         begin_pos + 1),

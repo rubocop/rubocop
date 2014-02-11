@@ -30,7 +30,7 @@ module Rubocop
                   Parser::Source::Range.new(end_kw_loc.source_buffer,
                                             end_kw_loc.begin_pos,
                                             method.loc.expression.end_pos)
-                add_offence(nil, range)
+                add_offense(nil, range)
                 # Done. If there are more blocks in the chain, they will be
                 # found by subsequent calls to on_block.
                 break

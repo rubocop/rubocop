@@ -12,14 +12,14 @@ describe Rubocop::Cop::Lint::EndAlignment, :config do
 
   shared_examples 'misaligned' do |alignment_base, arg, end_kw, name|
     name ||= alignment_base
-    it "registers an offence for mismatched #{name} ... end" do
+    it "registers an offense for mismatched #{name} ... end" do
       inspect_source(cop, ["#{alignment_base} #{arg}",
                            end_kw])
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
       expect(cop.messages.first)
         .to match(/end at 2, \d+ is not aligned with #{alignment_base} at 1,/)
       expect(cop.highlights.first).to eq('end')
-      expect(cop.config_to_allow_offences).to eq('AlignWith' => opposite)
+      expect(cop.config_to_allow_offenses).to eq('AlignWith' => opposite)
     end
   end
 
@@ -28,7 +28,7 @@ describe Rubocop::Cop::Lint::EndAlignment, :config do
     it "accepts matching #{name} ... end" do
       inspect_source(cop, ["#{alignment_base} #{arg}",
                            end_kw])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
   end
 
@@ -72,26 +72,26 @@ describe Rubocop::Cop::Lint::EndAlignment, :config do
 
   it 'can handle ternary if' do
     inspect_source(cop, 'a = cond ? x : y')
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'can handle modifier if' do
     inspect_source(cop, 'a = x if cond')
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
-  it 'registers an offence for correct + opposite' do
+  it 'registers an offense for correct + opposite' do
     inspect_source(cop, ['x = if a',
                          '      a1',
                          '    end',
                          'y = if b',
                          '  b1',
                          'end'])
-    expect(cop.offences.size).to eq(1)
+    expect(cop.offenses.size).to eq(1)
     expect(cop.messages.first)
       .to eq('end at 6, 0 is not aligned with y = if at 4, 4')
     expect(cop.highlights.first).to eq('end')
-    expect(cop.config_to_allow_offences).to eq('Enabled' => false)
+    expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
   end
 
   context 'regarding assignment' do

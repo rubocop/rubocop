@@ -15,9 +15,9 @@ describe Rubocop::Cop::Style::MethodLength, :config do
                          '  a = 5',
                          '  a = 6',
                          'end'])
-    expect(cop.offences.size).to eq(1)
-    expect(cop.offences.map(&:line).sort).to eq([1])
-    expect(cop.config_to_allow_offences).to eq('Max' => 6)
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.offenses.map(&:line).sort).to eq([1])
+    expect(cop.config_to_allow_offenses).to eq('Max' => 6)
   end
 
   it 'accepts a method with less than 5 lines' do
@@ -27,7 +27,7 @@ describe Rubocop::Cop::Style::MethodLength, :config do
                          '  a = 3',
                          '  a = 4',
                          'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'does not count blank lines' do
@@ -40,13 +40,13 @@ describe Rubocop::Cop::Style::MethodLength, :config do
                          '',
                          '  a = 7',
                          'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'accepts empty methods' do
     inspect_source(cop, ['def m()',
                          'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'is not fooled by one-liner methods, syntax #1' do
@@ -58,7 +58,7 @@ describe Rubocop::Cop::Style::MethodLength, :config do
                          '  a = 5',
                          '  a = 6',
                          'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'is not fooled by one-liner methods, syntax #2' do
@@ -70,7 +70,7 @@ describe Rubocop::Cop::Style::MethodLength, :config do
                          '  a = 5',
                          '  a = 6',
                          'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'checks class methods, syntax #1' do
@@ -82,8 +82,8 @@ describe Rubocop::Cop::Style::MethodLength, :config do
                          '  a = 5',
                          '  a = 6',
                          'end'])
-    expect(cop.offences.size).to eq(1)
-    expect(cop.offences.map(&:line).sort).to eq([1])
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.offenses.map(&:line).sort).to eq([1])
   end
 
   it 'checks class methods, syntax #2' do
@@ -99,8 +99,8 @@ describe Rubocop::Cop::Style::MethodLength, :config do
                          '    end',
                          '  end',
                          'end'])
-    expect(cop.offences.size).to eq(1)
-    expect(cop.offences.map(&:line).sort).to eq([3])
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.offenses.map(&:line).sort).to eq([3])
   end
 
   it 'properly counts lines when method ends with block' do
@@ -112,8 +112,8 @@ describe Rubocop::Cop::Style::MethodLength, :config do
                          '    a = 5',
                          '  end',
                          'end'])
-    expect(cop.offences.size).to eq(1)
-    expect(cop.offences.map(&:line).sort).to eq([1])
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.offenses.map(&:line).sort).to eq([1])
   end
 
   it 'does not count commented lines by default' do
@@ -125,7 +125,7 @@ describe Rubocop::Cop::Style::MethodLength, :config do
                          '  a = 5',
                          '  a = 6',
                          'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   context 'when CountComments is enabled' do
@@ -140,8 +140,8 @@ describe Rubocop::Cop::Style::MethodLength, :config do
                            '  a = 5',
                            '  a = 6',
                            'end'])
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.map(&:line).sort).to eq([1])
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.map(&:line).sort).to eq([1])
     end
   end
 end

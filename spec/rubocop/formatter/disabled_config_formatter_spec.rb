@@ -15,25 +15,25 @@ module Rubocop
         end
         o
       end
-      let(:offences) do
-        [Rubocop::Cop::Offence.new(:convention, location, 'message', 'Cop1'),
-         Rubocop::Cop::Offence.new(:convention, location, 'message', 'Cop2')]
+      let(:offenses) do
+        [Rubocop::Cop::Offense.new(:convention, location, 'message', 'Cop1'),
+         Rubocop::Cop::Offense.new(:convention, location, 'message', 'Cop2')]
       end
       let(:location) { OpenStruct.new(line: 1, column: 5) }
       before { $stdout = StringIO.new }
 
       describe '#finished' do
-        it 'displays YAML configuration disabling all cops with offences' do
-          formatter.file_finished('test.rb', offences)
+        it 'displays YAML configuration disabling all cops with offenses' do
+          formatter.file_finished('test.rb', offenses)
           formatter.finished(['test.rb'])
           expect(output.string).to eq(described_class::HEADING +
                                       ['',
                                        '',
-                                       '# Offence count: 1',
+                                       '# Offense count: 1',
                                        'Cop1:',
                                        '  Enabled: false',
                                        '',
-                                       '# Offence count: 1',
+                                       '# Offense count: 1',
                                        'Cop2:',
                                        '  Enabled: false',
                                        ''].join("\n"))

@@ -8,7 +8,7 @@ module Rubocop
       class WordArray < Cop
         include ArraySyntax
         # The parameter is called MinSize (meaning the minimum array size for
-        # which an offence can be registered), but essentially it's a Max
+        # which an offense can be registered), but essentially it's a Max
         # parameter (the maximum number of something that's allowed).
         include ConfigurableMax
 
@@ -18,7 +18,7 @@ module Rubocop
           array_elems = node.children
           if array_of?(:str, node) && !complex_content?(array_elems) &&
             array_elems.size > min_size && !comments_in_array?(node)
-            add_offence(node, :expression) { self.max = array_elems.size }
+            add_offense(node, :expression) { self.max = array_elems.size }
           end
         end
 

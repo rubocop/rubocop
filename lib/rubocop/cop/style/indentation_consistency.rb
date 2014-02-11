@@ -39,7 +39,7 @@ module Rubocop
               indentation = expr.source_line =~ /\S/
               end_pos = expr.begin_pos
               begin_pos = end_pos - indentation
-              add_offence(nil,
+              add_offense(nil,
                           Parser::Source::Range.new(expr.source_buffer,
                                                     begin_pos, end_pos))
             end

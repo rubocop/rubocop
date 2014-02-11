@@ -32,7 +32,7 @@ module Rubocop
             # allow safe assignment
             return if safe_assignment?(cond) && safe_assignment_allowed?
 
-            add_offence(cond, :expression, message(node))
+            add_offense(cond, :expression, message(node))
           end
         end
 

@@ -11,7 +11,7 @@ module Rubocop
           return unless node.children.first
           rescue_args = node.children.first.children
           if rescue_args.any? { |a| targets_exception?(a) }
-            add_offence(node, :expression)
+            add_offense(node, :expression)
           end
         end
 

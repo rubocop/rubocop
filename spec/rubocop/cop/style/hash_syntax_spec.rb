@@ -14,20 +14,20 @@ describe Rubocop::Cop::Style::HashSyntax, :config do
                           'SpaceAroundOperators' => { 'Enabled' => true })
     end
 
-    it 'registers offence for hash rocket syntax when new is possible' do
+    it 'registers offense for hash rocket syntax when new is possible' do
       inspect_source(cop, ['x = { :a => 0 }'])
       expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
-      expect(cop.config_to_allow_offences)
+      expect(cop.config_to_allow_offenses)
         .to eq('EnforcedStyle' => 'hash_rockets')
     end
 
-    it 'registers an offence for mixed syntax when new is possible' do
+    it 'registers an offense for mixed syntax when new is possible' do
       inspect_source(cop, ['x = { :a => 0, b: 1 }'])
       expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
-      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
-    it 'registers an offence for hash rockets in method calls' do
+    it 'registers an offense for hash rockets in method calls' do
       inspect_source(cop, ['func(3, :a => 0)'])
       expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
     end
@@ -52,7 +52,7 @@ describe Rubocop::Cop::Style::HashSyntax, :config do
       expect(cop.messages).to be_empty
     end
 
-    it 'registers offence when keys start with an uppercase letter' do
+    it 'registers offense when keys start with an uppercase letter' do
       inspect_source(cop, ['x = { :A => 0 }'])
       expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
     end
@@ -96,19 +96,19 @@ describe Rubocop::Cop::Style::HashSyntax, :config do
   context 'configured to enforce hash rockets style' do
     let(:cop_config) { { 'EnforcedStyle' => 'hash_rockets' } }
 
-    it 'registers offence for Ruby 1.9 style' do
+    it 'registers offense for Ruby 1.9 style' do
       inspect_source(cop, ['x = { a: 0 }'])
       expect(cop.messages).to eq(['Always use hash rockets in hashes.'])
-      expect(cop.config_to_allow_offences).to eq('EnforcedStyle' => 'ruby19')
+      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'ruby19')
     end
 
-    it 'registers an offence for mixed syntax' do
+    it 'registers an offense for mixed syntax' do
       inspect_source(cop, ['x = { :a => 0, b: 1 }'])
       expect(cop.messages).to eq(['Always use hash rockets in hashes.'])
-      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
-    it 'registers an offence for 1.9 style in method calls' do
+    it 'registers an offense for 1.9 style in method calls' do
       inspect_source(cop, ['func(3, a: 0)'])
       expect(cop.messages).to eq(['Always use hash rockets in hashes.'])
     end

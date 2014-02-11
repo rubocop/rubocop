@@ -29,7 +29,7 @@ module Rubocop
               current_level += 1
             end
             if current_level == max + 1
-              add_offence(node, :expression, message(max)) do
+              add_offense(node, :expression, message(max)) do
                 self.max = current_level
               end
               return

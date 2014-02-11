@@ -14,7 +14,7 @@ module Rubocop
           processed_source.lines.each_with_index do |line, index|
             if line.length > max
               message = format(MSG, line.length, max)
-              add_offence(nil,
+              add_offense(nil,
                           source_range(processed_source.buffer,
                                        processed_source[0...index], max,
                                        line.length - max),

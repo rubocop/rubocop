@@ -6,7 +6,7 @@ describe Rubocop::Cop::Style::ParenthesesAroundCondition, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) { { 'AllowSafeAssignment' => true } }
 
-  it 'registers an offence for parentheses around condition' do
+  it 'registers an offense for parentheses around condition' do
     inspect_source(cop, ['if (x > 10)',
                          'elsif (x < 3)',
                          'end',
@@ -21,7 +21,7 @@ describe Rubocop::Cop::Style::ParenthesesAroundCondition, :config do
                          'x += 1 until (x < 10)',
                          'x += 1 while (x < 10)'
                         ])
-    expect(cop.offences.size).to eq(9)
+    expect(cop.offenses.size).to eq(9)
     expect(cop.messages.first)
       .to eq("Don't use parentheses around the condition of an if.")
     expect(cop.messages.last)
@@ -31,7 +31,7 @@ describe Rubocop::Cop::Style::ParenthesesAroundCondition, :config do
   it 'accepts parentheses if there is no space between the keyword and (.' do
     inspect_source(cop, ['if(x > 5) then something end',
                          'do_something until(x > 5)'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'auto-corrects parentheses around condition' do
@@ -79,23 +79,23 @@ describe Rubocop::Cop::Style::ParenthesesAroundCondition, :config do
                          'x += 1 while x < 10',
                          'x += 1 until x < 10'
                         ])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'accepts parentheses around condition in a ternary' do
     inspect_source(cop, '(a == 0) ? b : a')
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'is not confused by leading parenthesis in subexpression' do
     inspect_source(cop, ['(a > b) && other ? one : two'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'is not confused by unbalanced parentheses' do
     inspect_source(cop, ['if (a + b).c()',
                          'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   context 'safe assignment is allowed' do
@@ -104,7 +104,7 @@ describe Rubocop::Cop::Style::ParenthesesAroundCondition, :config do
                      ['if (test = 10)',
                       'end'
                      ])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
   end
@@ -117,7 +117,7 @@ describe Rubocop::Cop::Style::ParenthesesAroundCondition, :config do
                      ['if (test = 10)',
                       'end'
                      ])
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
     end
   end
 end

@@ -3,14 +3,14 @@
 module Rubocop
   module Cop
     module Style
-      # This cop checks for uses of class variables. Offences
+      # This cop checks for uses of class variables. Offenses
       # are signaled only on assignment to class variables to
-      # reduced the number of offences that would be reported.
+      # reduced the number of offenses that would be reported.
       class ClassVars < Cop
         MSG = 'Replace class var %s with a class instance var.'
 
         def on_cvasgn(node)
-          add_offence(node, :name)
+          add_offense(node, :name)
         end
 
         def message(node)

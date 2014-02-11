@@ -19,7 +19,7 @@ describe Rubocop::Cop::Style::WhileUntilModifier do
     check_short_multiline(cop, 'unless')
   end
 
-  it 'registers an offence for multiline while that fits on one line' do
+  it 'registers an offense for multiline while that fits on one line' do
     check_really_short(cop, 'while')
   end
 
@@ -36,17 +36,17 @@ describe Rubocop::Cop::Style::WhileUntilModifier do
                          'while (line = lines.shift)',
                          '  puts line',
                          'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
-  it 'registers an offence for oneline while when assignment is in body' do
+  it 'registers an offense for oneline while when assignment is in body' do
     inspect_source(cop, ['while true',
                          '  x = 0',
                          'end'])
-    expect(cop.offences.size).to eq(1)
+    expect(cop.offenses.size).to eq(1)
   end
 
-  it 'registers an offence for multiline until that fits on one line' do
+  it 'registers an offense for multiline until that fits on one line' do
     check_really_short(cop, 'until')
   end
 
@@ -65,11 +65,11 @@ describe Rubocop::Cop::Style::WhileUntilModifier do
 
   it 'accepts modifier while' do
     inspect_source(cop, ['ala while bala'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'accepts modifier until' do
     inspect_source(cop, ['ala until bala'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 end

@@ -20,7 +20,7 @@ module Rubocop
           # It's also ok to assign a class constant another class constant
           # SomeClass = SomeOtherClass
           unless value && [:send, :block, :const].include?(value.type)
-            add_offence(node, :name) if const_name !~ SNAKE_CASE
+            add_offense(node, :name) if const_name !~ SNAKE_CASE
           end
         end
       end

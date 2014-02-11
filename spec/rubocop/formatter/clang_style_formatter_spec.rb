@@ -14,14 +14,14 @@ module Rubocop
           cop = Cop::Cop.new
           source_buffer = Parser::Source::Buffer.new('test', 1)
           source_buffer.source = ('aa'..'az').to_a.join($RS)
-          cop.add_offence(nil,
+          cop.add_offense(nil,
                           Parser::Source::Range.new(source_buffer, 0, 2),
                           'message 1')
-          cop.add_offence(nil,
+          cop.add_offense(nil,
                           Parser::Source::Range.new(source_buffer, 30, 32),
                           'message 2')
 
-          formatter.report_file('test', cop.offences)
+          formatter.report_file('test', cop.offenses)
           expect(output.string).to eq ['test:1:1: C: message 1',
                                        'aa',
                                        '^^',
@@ -36,14 +36,14 @@ module Rubocop
             cop = Cop::Cop.new
             source_buffer = Parser::Source::Buffer.new('test', 1)
             source_buffer.source = (['     ', 'yaba']).to_a.join($RS)
-            cop.add_offence(nil,
+            cop.add_offense(nil,
                             Parser::Source::Range.new(source_buffer, 0, 2),
                             'message 1')
-            cop.add_offence(nil,
+            cop.add_offense(nil,
                             Parser::Source::Range.new(source_buffer, 6, 10),
                             'message 2')
 
-            formatter.report_file('test', cop.offences)
+            formatter.report_file('test', cop.offenses)
             expect(output.string).to eq ['test:1:1: C: message 1',
                                          'test:2:1: C: message 2',
                                          'yaba',
@@ -66,9 +66,9 @@ module Rubocop
                                                  source.index(']') + 1)
 
             cop = Cop::Cop.new
-            cop.add_offence(nil, location, 'message 1')
+            cop.add_offense(nil, location, 'message 1')
 
-            formatter.report_file('test', cop.offences)
+            formatter.report_file('test', cop.offenses)
             expect(output.string).to eq ['test:1:14: C: message 1',
                                          'do_something([this,',
                                          '             ^^^^^^',
@@ -78,8 +78,8 @@ module Rubocop
 
         let(:file) { '/path/to/file' }
 
-        let(:offence) do
-          Cop::Offence.new(:convention, location,
+        let(:offense) do
+          Cop::Offense.new(:convention, location,
                            'This is a message.', 'CopName', corrected)
         end
 
@@ -89,21 +89,21 @@ module Rubocop
           Parser::Source::Range.new(source_buffer, 0, 1)
         end
 
-        context 'when the offence is not corrected' do
+        context 'when the offense is not corrected' do
           let(:corrected) { false }
 
           it 'prints message as-is' do
-            formatter.report_file(file, [offence])
+            formatter.report_file(file, [offense])
             expect(output.string)
               .to include(': This is a message.')
           end
         end
 
-        context 'when the offence is automatically corrected' do
+        context 'when the offense is automatically corrected' do
           let(:corrected) { true }
 
           it 'prints [Corrected] along with message' do
-            formatter.report_file(file, [offence])
+            formatter.report_file(file, [offense])
             expect(output.string)
               .to include(': [Corrected] This is a message.')
           end

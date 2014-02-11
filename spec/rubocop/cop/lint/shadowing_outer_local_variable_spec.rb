@@ -18,12 +18,12 @@ describe Rubocop::Cop::Lint::ShadowingOuterLocalVariable do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to include('Shadowing outer local variable - foo')
-      expect(cop.offences.first.line).to eq(4)
+      expect(cop.offenses.first.line).to eq(4)
     end
 
     include_examples 'mimics MRI 2.1'
@@ -42,12 +42,12 @@ describe Rubocop::Cop::Lint::ShadowingOuterLocalVariable do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to include('Shadowing outer local variable - foo')
-      expect(cop.offences.first.line).to eq(4)
+      expect(cop.offenses.first.line).to eq(4)
     end
 
     include_examples 'mimics MRI 2.1'
@@ -68,12 +68,12 @@ describe Rubocop::Cop::Lint::ShadowingOuterLocalVariable do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to include('Shadowing outer local variable - foo')
-      expect(cop.offences.first.line).to eq(4)
+      expect(cop.offenses.first.line).to eq(4)
     end
 
     include_examples 'mimics MRI 2.1'
@@ -93,12 +93,12 @@ describe Rubocop::Cop::Lint::ShadowingOuterLocalVariable do
       ]
     end
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, source)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to include('Shadowing outer local variable - foo')
-      expect(cop.offences.first.line).to eq(4)
+      expect(cop.offenses.first.line).to eq(4)
     end
 
     include_examples 'mimics MRI 2.1', 'shadowing'

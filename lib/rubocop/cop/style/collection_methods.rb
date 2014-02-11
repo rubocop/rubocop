@@ -45,7 +45,7 @@ module Rubocop
           _receiver, method_name, *_args = *node
 
           if preferred_methods[method_name]
-            add_offence(
+            add_offense(
               node, :selector,
               format(MSG,
                      preferred_method(method_name),

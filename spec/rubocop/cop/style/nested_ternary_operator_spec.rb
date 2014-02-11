@@ -5,9 +5,9 @@ require 'spec_helper'
 describe Rubocop::Cop::Style::NestedTernaryOperator do
   subject(:cop) { described_class.new }
 
-  it 'registers an offence for a nested ternary operator expression' do
+  it 'registers an offense for a nested ternary operator expression' do
     inspect_source(cop, ['a ? (b ? b1 : b2) : a2'])
-    expect(cop.offences.size).to eq(1)
+    expect(cop.offenses.size).to eq(1)
   end
 
   it 'accepts a non-nested ternary operator within an if' do
@@ -16,6 +16,6 @@ describe Rubocop::Cop::Style::NestedTernaryOperator do
                          'else',
                          '  d',
                          'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 end

@@ -25,7 +25,7 @@ module Rubocop
             exprs_lines = exprs.map { |e| e.loc.expression.line }
             lines = exprs_lines.group_by { |i| i }
 
-            # every line with more than 1 expression on it is an offence
+            # every line with more than 1 expression on it is an offense
             lines.each do |line, expr_on_line|
               if expr_on_line.size > 1
                 # TODO: Find the correct position of the semicolon. We don't
@@ -56,7 +56,7 @@ module Rubocop
           range = source_range(@processed_source.buffer,
                                @processed_source[0...(line - 1)], column,
                                1)
-          add_offence(last_on_line ? range : nil, range)
+          add_offense(last_on_line ? range : nil, range)
         end
 
         def autocorrect(range)

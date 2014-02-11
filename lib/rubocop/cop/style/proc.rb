@@ -18,7 +18,7 @@ module Rubocop
           #   ...)
           block_method, = *node
 
-          add_offence(block_method, :expression) if block_method == TARGET
+          add_offense(block_method, :expression) if block_method == TARGET
         end
 
         def autocorrect(node)

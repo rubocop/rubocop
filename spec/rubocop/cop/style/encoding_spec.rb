@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Rubocop::Cop::Style::Encoding do
   subject(:cop) { described_class.new }
 
-  it 'registers an offence when no encoding present', ruby: 1.9 do
+  it 'registers an offense when no encoding present', ruby: 1.9 do
     inspect_source(cop, ['def foo() end'])
 
     expect(cop.messages).to eq(
@@ -16,7 +16,7 @@ describe Rubocop::Cop::Style::Encoding do
     inspect_source(cop, ['# encoding: utf-8',
                          'def foo() end'])
 
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'accepts encoding on second line when shebang present', ruby: 1.9 do
@@ -27,7 +27,7 @@ describe Rubocop::Cop::Style::Encoding do
     expect(cop.messages).to be_empty
   end
 
-  it 'books an offence when encoding is in the wrong place', ruby: 1.9 do
+  it 'books an offense when encoding is in the wrong place', ruby: 1.9 do
     inspect_source(cop, ['def foo() end',
                          '# encoding: utf-8'])
 
@@ -35,10 +35,10 @@ describe Rubocop::Cop::Style::Encoding do
       ['Missing utf-8 encoding comment.'])
   end
 
-  it 'does not register an offence on Ruby 2.0', ruby: 2.0 do
+  it 'does not register an offense on Ruby 2.0', ruby: 2.0 do
     inspect_source(cop, ['def foo() end'])
 
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'accepts encoding inserted by magic_encoding gem', ruby: 1.9 do

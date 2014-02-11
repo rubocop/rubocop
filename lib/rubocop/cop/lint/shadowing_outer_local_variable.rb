@@ -23,7 +23,7 @@ module Rubocop
           return unless outer_local_variable
 
           message = format(MSG, variable.name)
-          add_offence(variable.declaration_node, :expression, message)
+          add_offense(variable.declaration_node, :expression, message)
         end
       end
     end

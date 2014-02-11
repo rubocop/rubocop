@@ -20,7 +20,7 @@ module Rubocop
           end
         end
 
-        def offence?(node)
+        def offense?(node)
           src = node.loc.expression.source
           return false if src =~ /^(%[qQ]?|\?|<<-)/i
           src !~ if style == :single_quotes

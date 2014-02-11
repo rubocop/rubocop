@@ -20,7 +20,7 @@ module Rubocop
           # If the method that is chained on the do...end block is itself a
           # method with a block, we allow it. It's pretty safe to assume that
           # these calls are not missed by anyone reading code. We also want to
-          # avoid double reporting of offences checked by the
+          # avoid double reporting of offenses checked by the
           # MultilineBlockChain cop.
           ignore_node(method)
         end
@@ -32,7 +32,7 @@ module Rubocop
             range = Parser::Source::Range.new(receiver.loc.end.source_buffer,
                                               receiver.loc.end.begin_pos,
                                               node.loc.expression.end_pos)
-            add_offence(nil, range)
+            add_offense(nil, range)
           end
         end
       end

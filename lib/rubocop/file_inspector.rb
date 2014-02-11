@@ -20,9 +20,9 @@ module Rubocop
 
       target_files.each do |file|
         break if yield
-        offences = process_file(file, config_store)
+        offenses = process_file(file, config_store)
 
-        any_failed = true unless offences.empty?
+        any_failed = true unless offenses.empty?
         inspected_files << file
       end
 
@@ -46,31 +46,31 @@ module Rubocop
 
     def process_file(file, config_store)
       puts "Scanning #{file}" if @options[:debug]
-      offences = []
+      offenses = []
       formatter_set.file_started(file, {})
 
       # When running with --auto-correct, we need to inspect the file (which
       # includes writing a corrected version of it) until no more corrections
       # are made. This is because automatic corrections can introduce new
-      # offences. In the normal case the loop is only executed once.
+      # offenses. In the normal case the loop is only executed once.
       loop do
-        new_offences = inspect_file(file, config_store)
-        unique_new = new_offences.reject { |n| offences.include?(n) }
+        new_offenses = inspect_file(file, config_store)
+        unique_new = new_offenses.reject { |n| offenses.include?(n) }
 
-        offences += unique_new
+        offenses += unique_new
         break unless unique_new.any?(&:corrected?)
       end
 
-      formatter_set.file_finished(file, offences.freeze)
-      offences
+      formatter_set.file_finished(file, offenses.freeze)
+      offenses
     end
 
     def inspect_file(file, config_store)
       config = config_store.for(file)
       team = Cop::Team.new(mobilized_cop_classes(config), config, @options)
-      offences = team.inspect_file(file)
+      offenses = team.inspect_file(file)
       @errors.concat(team.errors)
-      offences
+      offenses
     end
 
     def mobilized_cop_classes(config)

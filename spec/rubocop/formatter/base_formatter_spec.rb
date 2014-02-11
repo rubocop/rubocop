@@ -13,12 +13,12 @@ module Rubocop
         let(:output) { $stdout.string }
 
         before do
-          create_file('1_offence.rb', [
+          create_file('1_offense.rb', [
             '# encoding: utf-8',
             '#' * 90
           ])
 
-          create_file('4_offences.rb', [
+          create_file('4_offenses.rb', [
             '# encoding: utf-8',
             'puts x ',
             'test;',
@@ -26,7 +26,7 @@ module Rubocop
             '#' * 90
           ])
 
-          create_file('no_offence.rb', [
+          create_file('no_offense.rb', [
             '# encoding: utf-8'
           ])
 
@@ -71,9 +71,9 @@ module Rubocop
         shared_examples 'receives all file paths' do |method_name|
           it 'receives all file paths' do
             expected_paths = [
-              '1_offence.rb',
-              '4_offences.rb',
-              'no_offence.rb'
+              '1_offense.rb',
+              '4_offenses.rb',
+              'no_offense.rb'
             ].map { |path| File.expand_path(path) }.sort
 
             expect(formatter).to receive(method_name) do |all_files|
@@ -109,7 +109,7 @@ module Rubocop
               class << formatter
                 attr_reader :processed_file_count
 
-                def file_finished(file, offences)
+                def file_finished(file, offenses)
                   @processed_file_count ||= 0
                   @processed_file_count += 1
                 end
@@ -131,13 +131,13 @@ module Rubocop
         shared_examples 'receives a file path' do |method_name|
           it 'receives a file path' do
             expect(formatter).to receive(method_name)
-              .with(File.expand_path('1_offence.rb'), anything)
+              .with(File.expand_path('1_offense.rb'), anything)
 
             expect(formatter).to receive(method_name)
-              .with(File.expand_path('4_offences.rb'), anything)
+              .with(File.expand_path('4_offenses.rb'), anything)
 
             expect(formatter).to receive(method_name)
-              .with(File.expand_path('no_offence.rb'), anything)
+              .with(File.expand_path('no_offense.rb'), anything)
 
             run
           end
@@ -166,20 +166,20 @@ module Rubocop
         describe '#file_finished' do
           include_examples 'receives a file path', :file_finished
 
-          it 'receives an array of detected offences for the file' do
+          it 'receives an array of detected offenses for the file' do
             expect(formatter).to receive(:file_finished)
-            .exactly(3).times do |file, offences|
+            .exactly(3).times do |file, offenses|
               case File.basename(file)
-              when '1_offence.rb'
-                expect(offences.size).to eq(1)
-              when '4_offences.rb'
-                expect(offences.size).to eq(4)
-              when 'no_offence.rb'
-                expect(offences).to be_empty
+              when '1_offense.rb'
+                expect(offenses.size).to eq(1)
+              when '4_offenses.rb'
+                expect(offenses.size).to eq(4)
+              when 'no_offense.rb'
+                expect(offenses).to be_empty
               else
                 fail
               end
-              expect(offences.all? { |o| o.is_a?(Rubocop::Cop::Offence) })
+              expect(offenses.all? { |o| o.is_a?(Rubocop::Cop::Offense) })
                 .to be_true
             end
             run

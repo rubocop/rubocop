@@ -25,7 +25,7 @@ module Rubocop
         def check(node, method_name, args, _body)
           prefix_blacklist.each do |prefix|
             if method_name.to_s.start_with?(prefix)
-              add_offence(node, :name,
+              add_offense(node, :name,
                           message(method_name.to_s, prefix))
             end
           end

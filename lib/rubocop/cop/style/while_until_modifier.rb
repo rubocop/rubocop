@@ -15,7 +15,7 @@ module Rubocop
             next unless node.loc.end
 
             if check(node, processed_source.comments)
-              add_offence(node, :keyword,
+              add_offense(node, :keyword,
                           message(node.loc.keyword.source))
             end
           end

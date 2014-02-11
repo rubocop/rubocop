@@ -14,7 +14,7 @@ describe Rubocop::Cop::Style::EmptyLinesAroundAccessModifier do
                       '',
                       '  def test; end',
                       'end'])
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(["Keep a blank line before and after #{access_modifier}."])
     end
@@ -27,7 +27,7 @@ describe Rubocop::Cop::Style::EmptyLinesAroundAccessModifier do
                       "  #{access_modifier}",
                       '  def test; end',
                       'end'])
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(["Keep a blank line before and after #{access_modifier}."])
     end
@@ -39,7 +39,7 @@ describe Rubocop::Cop::Style::EmptyLinesAroundAccessModifier do
                       '',
                       '  def test; end',
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'recognizes blank lines with DOS style line endings' do
@@ -50,7 +50,7 @@ describe Rubocop::Cop::Style::EmptyLinesAroundAccessModifier do
                       "\r",
                       "  def test; end\r",
                       "end\r"])
-      expect(cop.offences.size).to eq(0)
+      expect(cop.offenses.size).to eq(0)
     end
   end
 end

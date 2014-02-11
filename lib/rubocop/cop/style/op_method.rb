@@ -17,7 +17,7 @@ module Rubocop
 
           if name !~ /\A\w/ && !BLACKLISTED.include?(name) &&
               args.children.size == 1 && args != TARGET_ARGS
-            add_offence(args.children[0], :expression,
+            add_offense(args.children[0], :expression,
                         format(MSG, name))
           end
         end

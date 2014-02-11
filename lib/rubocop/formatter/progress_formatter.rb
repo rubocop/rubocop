@@ -2,52 +2,52 @@
 
 module Rubocop
   module Formatter
-    # This formatter display dots for files with no offences and
+    # This formatter display dots for files with no offenses and
     # letters for files with problems in the them. In the end it
     # appends the regular report data in the clang style format.
     class ProgressFormatter < ClangStyleFormatter
       def started(target_files)
         super
-        @offences_for_files = {}
+        @offenses_for_files = {}
         file_phrase = target_files.count == 1 ? 'file' : 'files'
         output.puts "Inspecting #{target_files.count} #{file_phrase}"
       end
 
-      def file_finished(file, offences)
-        unless offences.empty?
-          count_stats(offences)
-          @offences_for_files[file] = offences
+      def file_finished(file, offenses)
+        unless offenses.empty?
+          count_stats(offenses)
+          @offenses_for_files[file] = offenses
         end
 
-        report_file_as_mark(file, offences)
+        report_file_as_mark(file, offenses)
       end
 
       def finished(inspected_files)
         output.puts
 
-        unless @offences_for_files.empty?
+        unless @offenses_for_files.empty?
           output.puts
-          output.puts 'Offences:'
+          output.puts 'Offenses:'
           output.puts
 
-          @offences_for_files.each do |file, offences|
-            report_file(file, offences)
+          @offenses_for_files.each do |file, offenses|
+            report_file(file, offenses)
           end
         end
 
         report_summary(inspected_files.count,
-                       @total_offence_count,
+                       @total_offense_count,
                        @total_correction_count)
       end
 
-      def report_file_as_mark(file, offences)
-        mark = if offences.empty?
+      def report_file_as_mark(file, offenses)
+        mark = if offenses.empty?
                  green('.')
                else
-                 highest_offence = offences.max do |a, b|
+                 highest_offense = offenses.max do |a, b|
                    a.severity_level <=> b.severity_level
                  end
-                 colored_severity_code(highest_offence)
+                 colored_severity_code(highest_offense)
                end
 
         output.write mark

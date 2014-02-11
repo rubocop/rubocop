@@ -12,10 +12,10 @@ describe Rubocop::Cop::Style::BlockNesting, :config do
               '    puts b',
               '  end',
               'end']
-    expect_nesting_offences(source, [])
+    expect_nesting_offenses(source, [])
   end
 
-  it 'registers an offence for `Max + 1` levels of `if` nesting' do
+  it 'registers an offense for `Max + 1` levels of `if` nesting' do
     source = ['if a',
               '  if b',
               '    if c',
@@ -23,10 +23,10 @@ describe Rubocop::Cop::Style::BlockNesting, :config do
               '    end',
               '  end',
               'end']
-    expect_nesting_offences(source, [3])
+    expect_nesting_offenses(source, [3])
   end
 
-  it 'registers a single offence for `Max + 2` levels of `if` nesting' do
+  it 'registers a single offense for `Max + 2` levels of `if` nesting' do
     source = ['if a',
               '  if b',
               '    if c',
@@ -36,10 +36,10 @@ describe Rubocop::Cop::Style::BlockNesting, :config do
               '    end',
               '  end',
               'end']
-    expect_nesting_offences(source, [3])
+    expect_nesting_offenses(source, [3])
   end
 
-  it 'registers 2 offences' do
+  it 'registers 2 offenses' do
     source = ['if a',
               '  if b',
               '    if c',
@@ -52,10 +52,10 @@ describe Rubocop::Cop::Style::BlockNesting, :config do
               '    end',
               '  end',
               'end']
-    expect_nesting_offences(source, [3, 8])
+    expect_nesting_offenses(source, [3, 8])
   end
 
-  it 'registers an offence for nested `case`' do
+  it 'registers an offense for nested `case`' do
     source = ['if a',
               '  if b',
               '    case c',
@@ -64,10 +64,10 @@ describe Rubocop::Cop::Style::BlockNesting, :config do
               '    end',
               '  end',
               'end']
-    expect_nesting_offences(source, [3])
+    expect_nesting_offenses(source, [3])
   end
 
-  it 'registers an offence for nested `while`' do
+  it 'registers an offense for nested `while`' do
     source = ['if a',
               '  if b',
               '    while c',
@@ -75,10 +75,10 @@ describe Rubocop::Cop::Style::BlockNesting, :config do
               '    end',
               '  end',
               'end']
-    expect_nesting_offences(source, [3])
+    expect_nesting_offenses(source, [3])
   end
 
-  it 'registers an offence for nested modifier `while`' do
+  it 'registers an offense for nested modifier `while`' do
     source = ['if a',
               '  if b',
               '    begin',
@@ -86,10 +86,10 @@ describe Rubocop::Cop::Style::BlockNesting, :config do
               '    end while c',
               '  end',
               'end']
-    expect_nesting_offences(source, [3])
+    expect_nesting_offenses(source, [3])
   end
 
-  it 'registers an offence for nested `until`' do
+  it 'registers an offense for nested `until`' do
     source = ['if a',
               '  if b',
               '    until c',
@@ -97,10 +97,10 @@ describe Rubocop::Cop::Style::BlockNesting, :config do
               '    end',
               '  end',
               'end']
-    expect_nesting_offences(source, [3])
+    expect_nesting_offenses(source, [3])
   end
 
-  it 'registers an offence for nested modifier `until`' do
+  it 'registers an offense for nested modifier `until`' do
     source = ['if a',
               '  if b',
               '    begin',
@@ -108,10 +108,10 @@ describe Rubocop::Cop::Style::BlockNesting, :config do
               '    end until c',
               '  end',
               'end']
-    expect_nesting_offences(source, [3])
+    expect_nesting_offenses(source, [3])
   end
 
-  it 'registers an offence for nested `for`' do
+  it 'registers an offense for nested `for`' do
     source = ['if a',
               '  if b',
               '    for c in [1,2] do',
@@ -119,10 +119,10 @@ describe Rubocop::Cop::Style::BlockNesting, :config do
               '    end',
               '  end',
               'end']
-    expect_nesting_offences(source, [3])
+    expect_nesting_offenses(source, [3])
   end
 
-  it 'registers an offence for nested `rescue`' do
+  it 'registers an offense for nested `rescue`' do
     source = ['if a',
               '  if b',
               '    begin',
@@ -132,7 +132,7 @@ describe Rubocop::Cop::Style::BlockNesting, :config do
               '    end',
               '  end',
               'end']
-    expect_nesting_offences(source, [5])
+    expect_nesting_offenses(source, [5])
   end
 
   it 'accepts if/elsif' do
@@ -141,16 +141,16 @@ describe Rubocop::Cop::Style::BlockNesting, :config do
               'elsif c',
               'elsif d',
               'end']
-    expect_nesting_offences(source, [])
+    expect_nesting_offenses(source, [])
   end
 
-  def expect_nesting_offences(source, lines, used_nesting_level = 3)
+  def expect_nesting_offenses(source, lines, used_nesting_level = 3)
     inspect_source(cop, source)
-    expect(cop.offences.map(&:line)).to eq(lines)
+    expect(cop.offenses.map(&:line)).to eq(lines)
     expect(cop.messages).to eq(
       ['Avoid more than 2 levels of block nesting.'] * lines.length)
-    if cop.offences.size > 0
-      expect(cop.config_to_allow_offences['Max']).to eq(used_nesting_level)
+    if cop.offenses.size > 0
+      expect(cop.config_to_allow_offenses['Max']).to eq(used_nesting_level)
     end
   end
 end

@@ -8,37 +8,37 @@ describe Rubocop::Cop::Style::MethodDefParentheses, :config do
   context 'require_parentheses' do
     let(:cop_config) { { 'EnforcedStyle' => 'require_parentheses' } }
 
-    it 'reports an offence for def with parameters but no parens' do
+    it 'reports an offense for def with parameters but no parens' do
       src = ['def func a, b',
              'end']
       inspect_source(cop, src)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.config_to_allow_offences).to eq('EnforcedStyle' =>
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
                                                  'require_no_parentheses')
     end
 
-    it 'reports an offence for correct + opposite' do
+    it 'reports an offense for correct + opposite' do
       src = ['def func(a, b)',
              'end',
              'def func a, b',
              'end']
       inspect_source(cop, src)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
-    it 'reports an offence for class def with parameters but no parens' do
+    it 'reports an offense for class def with parameters but no parens' do
       src = ['def Test.func a, b',
              'end']
       inspect_source(cop, src)
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
     end
 
     it 'accepts def with no args and no parens' do
       src = ['def func',
              'end']
       inspect_source(cop, src)
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'auto-adds required parens for a def' do
@@ -60,37 +60,37 @@ describe Rubocop::Cop::Style::MethodDefParentheses, :config do
   context 'require_no_parentheses' do
     let(:cop_config) { { 'EnforcedStyle' => 'require_no_parentheses' } }
 
-    it 'reports an offence for def with parameters with parens' do
+    it 'reports an offense for def with parameters with parens' do
       src = ['def func(a, b)',
              'end']
       inspect_source(cop, src)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.config_to_allow_offences).to eq('EnforcedStyle' =>
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
                                                  'require_parentheses')
     end
 
-    it 'reports an offence for opposite + correct' do
+    it 'reports an offense for opposite + correct' do
       src = ['def func(a, b)',
              'end',
              'def func a, b',
              'end']
       inspect_source(cop, src)
-      expect(cop.offences.size).to eq(1)
-      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
-    it 'reports an offence for class def with parameters with parens' do
+    it 'reports an offense for class def with parameters with parens' do
       src = ['def Test.func(a, b)',
              'end']
       inspect_source(cop, src)
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
     end
 
-    it 'reports an offence for def with no args and parens' do
+    it 'reports an offense for def with no args and parens' do
       src = ['def func()',
              'end']
       inspect_source(cop, src)
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
     end
 
     it 'auto-removes the parens' do

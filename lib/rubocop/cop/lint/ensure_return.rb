@@ -13,7 +13,7 @@ module Rubocop
           return unless ensure_body
 
           on_node(:return, ensure_body) do |e|
-            add_offence(e, :expression)
+            add_offense(e, :expression)
           end
         end
       end

@@ -5,20 +5,20 @@ require 'spec_helper'
 describe Rubocop::Cop::Style::SpaceAfterMethodName do
   subject(:cop) { described_class.new }
 
-  it 'registers an offence for def with space before the parenthesis' do
+  it 'registers an offense for def with space before the parenthesis' do
     inspect_source(cop,
                    ['def func (x)',
                     '  a',
                     'end'])
-    expect(cop.offences.size).to eq(1)
+    expect(cop.offenses.size).to eq(1)
   end
 
-  it 'registers an offence for defs with space before the parenthesis' do
+  it 'registers an offense for defs with space before the parenthesis' do
     inspect_source(cop,
                    ['def self.func (x)',
                     '  a',
                     'end'])
-    expect(cop.offences.size).to eq(1)
+    expect(cop.offenses.size).to eq(1)
   end
 
   it 'accepts a def without arguments' do
@@ -26,7 +26,7 @@ describe Rubocop::Cop::Style::SpaceAfterMethodName do
                    ['def func',
                     '  a',
                     'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'accepts a defs without arguments' do
@@ -34,7 +34,7 @@ describe Rubocop::Cop::Style::SpaceAfterMethodName do
                    ['def self.func',
                     '  a',
                     'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'accepts a def with arguments but no parentheses' do
@@ -42,7 +42,7 @@ describe Rubocop::Cop::Style::SpaceAfterMethodName do
                    ['def func x',
                     '  a',
                     'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'accepts a defs with arguments but no parentheses' do
@@ -50,7 +50,7 @@ describe Rubocop::Cop::Style::SpaceAfterMethodName do
                    ['def self.func x',
                     '  a',
                     'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'auto-corrects unwanted space' do

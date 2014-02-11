@@ -88,7 +88,7 @@ module Rubocop
           @local_variables << lhs
         end
 
-        # Detect offences
+        # Detect offenses
 
         def on_send(node)
           receiver, method_name, *_args = *node
@@ -97,7 +97,7 @@ module Rubocop
                 constant_name?(method_name) ||
                 @allowed_send_nodes.include?(node) ||
                 @local_variables.include?(method_name)
-              add_offence(node, :expression)
+              add_offense(node, :expression)
             end
           end
         end

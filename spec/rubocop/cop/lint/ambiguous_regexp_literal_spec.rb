@@ -13,9 +13,9 @@ describe Rubocop::Cop::Lint::AmbiguousRegexpLiteral do
     context 'without parentheses' do
       let(:source) { 'p /pattern/' }
 
-      it 'registers an offence' do
-        expect(cop.offences.size).to eq(1)
-        expect(cop.offences.first.message).to eq(
+      it 'registers an offense' do
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.offenses.first.message).to eq(
           'Ambiguous regexp literal. Parenthesize the method arguments ' \
           "if it's surely a regexp literal, or add a whitespace to the " +
           'right of the / if it should be a division.'
@@ -28,7 +28,7 @@ describe Rubocop::Cop::Lint::AmbiguousRegexpLiteral do
       let(:source) { 'p(/pattern/)' }
 
       it 'accepts' do
-        expect(cop.offences).to be_empty
+        expect(cop.offenses).to be_empty
       end
     end
   end

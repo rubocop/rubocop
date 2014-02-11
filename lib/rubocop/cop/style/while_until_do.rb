@@ -18,7 +18,7 @@ module Rubocop
 
           if length > 1
             if node.loc.begin && node.loc.begin.is?('do')
-              add_offence(node, :begin,
+              add_offense(node, :begin,
                           error_message(node.type))
             end
           end

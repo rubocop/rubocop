@@ -6,8 +6,8 @@ module Rubocop
     # The precise location of the problem is shown together with the
     # relevant source code.
     class ClangStyleFormatter < SimpleTextFormatter
-      def report_file(file, offences)
-        offences.each do |o|
+      def report_file(file, offenses)
+        offenses.each do |o|
           output.printf("%s:%d:%d: %s: %s\n",
                         cyan(smart_path(file)), o.line, o.real_column,
                         colored_severity_code(o), message(o))

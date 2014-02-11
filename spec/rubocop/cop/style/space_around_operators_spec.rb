@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Rubocop::Cop::Style::SpaceAroundOperators do
   subject(:cop) { described_class.new }
 
-  it 'registers an offence for assignment without space on both sides' do
+  it 'registers an offense for assignment without space on both sides' do
     inspect_source(cop, ['x=0', 'y= 0', 'z =0'])
     expect(cop.messages).to eq(
       ["Surrounding space missing for operator '='."] * 3)
@@ -16,7 +16,7 @@ describe Rubocop::Cop::Style::SpaceAroundOperators do
     expect(new_source).to eq(['x = 0', 'y = 0', 'z = 0'].join("\n"))
   end
 
-  it 'registers an offence for ternary operator without space' do
+  it 'registers an offense for ternary operator without space' do
     inspect_source(cop, ['x == 0?1:2'])
     expect(cop.messages).to eq(
       ["Surrounding space missing for operator '?'.",
@@ -28,19 +28,19 @@ describe Rubocop::Cop::Style::SpaceAroundOperators do
     expect(new_source).to eq('x == 0 ? 1 : 2')
   end
 
-  it 'registers an offence in presence of modifier if statement' do
+  it 'registers an offense in presence of modifier if statement' do
     check_modifier('if')
   end
 
-  it 'registers an offence in presence of modifier unless statement' do
+  it 'registers an offense in presence of modifier unless statement' do
     check_modifier('unless')
   end
 
-  it 'registers an offence in presence of modifier while statement' do
+  it 'registers an offense in presence of modifier while statement' do
     check_modifier('unless')
   end
 
-  it 'registers an offence in presence of modifier until statement' do
+  it 'registers an offense in presence of modifier until statement' do
     check_modifier('unless')
   end
 
@@ -48,7 +48,7 @@ describe Rubocop::Cop::Style::SpaceAroundOperators do
     src = ["a=1 #{keyword} condition",
            'c=2']
     inspect_source(cop, src)
-    expect(cop.offences.map(&:line)).to eq([1, 2])
+    expect(cop.offenses.map(&:line)).to eq([1, 2])
     expect(cop.messages).to eq(
       ["Surrounding space missing for operator '='."] * 2)
 
@@ -57,7 +57,7 @@ describe Rubocop::Cop::Style::SpaceAroundOperators do
       .to eq(src.map { |line| line.sub(/=/, ' = ') }.join("\n"))
   end
 
-  it 'registers an offence for binary operators that could be unary' do
+  it 'registers an offense for binary operators that could be unary' do
     inspect_source(cop, ['a-3', 'x&0xff', 'z+0'])
     expect(cop.messages).to eq(
       ["Surrounding space missing for operator '-'.",
@@ -70,7 +70,7 @@ describe Rubocop::Cop::Style::SpaceAroundOperators do
     expect(new_source).to eq(['a - 3', 'x & 0xff', 'z + 0'].join("\n"))
   end
 
-  it 'registers an offence for arguments to a method' do
+  it 'registers an offense for arguments to a method' do
     inspect_source(cop, ['puts 1+2'])
     expect(cop.messages).to eq(
       ["Surrounding space missing for operator '+'."])
@@ -118,7 +118,7 @@ describe Rubocop::Cop::Style::SpaceAroundOperators do
     inspect_source(cop, ['  def !',
                          '    !__getobj__',
                          '  end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
     expect(cop.messages).to be_empty
   end
 
@@ -161,15 +161,15 @@ describe Rubocop::Cop::Style::SpaceAroundOperators do
 
   it 'accepts an assignment with spaces' do
     inspect_source(cop, ['x = 0'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'accepts an operator called with method syntax' do
     inspect_source(cop, ['Date.today.+(1).to_s'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
-  it 'registers an offence for operators without spaces' do
+  it 'registers an offense for operators without spaces' do
     inspect_source(cop,
                    ['x+= a+b-c*d/e%f^g|h&i||j',
                     'y -=k&&l'])
@@ -211,10 +211,10 @@ describe Rubocop::Cop::Style::SpaceAroundOperators do
 
   it 'accepts an assignment followed by newline' do
     inspect_source(cop, ['x =', '0'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
-  it 'registers an offences for exponent operator with spaces' do
+  it 'registers an offenses for exponent operator with spaces' do
     inspect_source(cop, ['x = a * b ** 2'])
     expect(cop.messages).to eq(
       ['Space around operator ** detected.'])
@@ -229,16 +229,16 @@ describe Rubocop::Cop::Style::SpaceAroundOperators do
 
   it 'accepts exponent operator without spaces' do
     inspect_source(cop, ['x = a * b**2'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
-  it 'registers an offence for a setter call without spaces' do
+  it 'registers an offense for a setter call without spaces' do
     inspect_source(cop, ['x.y=2'])
     expect(cop.messages).to eq(
       ["Surrounding space missing for operator '='."])
   end
 
-  it 'registers an offence for a hash rocket without spaces' do
+  it 'registers an offense for a hash rocket without spaces' do
     inspect_source(cop, ['{ 1=>2, a: b }'])
     expect(cop.messages).to eq(
       ["Surrounding space missing for operator '=>'."])
@@ -272,14 +272,14 @@ describe Rubocop::Cop::Style::SpaceAroundOperators do
     expect(cop.messages).to be_empty
   end
 
-  it 'registers an offence for match operators without space' do
+  it 'registers an offense for match operators without space' do
     inspect_source(cop, ['x=~/abc/', 'y !~/abc/'])
     expect(cop.messages)
       .to eq(["Surrounding space missing for operator '=~'.",
               "Surrounding space missing for operator '!~'."])
   end
 
-  it 'registers an offence for various assignments without space' do
+  it 'registers an offense for various assignments without space' do
     inspect_source(cop, ['x||=0', 'y&&=0', 'z*=2',
                          '@a=0', '@@a=0', 'a,b=0', 'A=0', 'x[3]=0', '$A=0'])
     expect(cop.messages)
@@ -294,7 +294,7 @@ describe Rubocop::Cop::Style::SpaceAroundOperators do
               "Surrounding space missing for operator '='."])
   end
 
-  it 'registers an offence for equality operators without space' do
+  it 'registers an offense for equality operators without space' do
     inspect_source(cop, ['x==0', 'y!=0', 'Hash===z'])
     expect(cop.messages)
       .to eq(["Surrounding space missing for operator '=='.",
@@ -302,20 +302,20 @@ describe Rubocop::Cop::Style::SpaceAroundOperators do
               "Surrounding space missing for operator '==='."])
   end
 
-  it 'registers an offence for - without space with negative lhs operand' do
+  it 'registers an offense for - without space with negative lhs operand' do
     inspect_source(cop, ['-1-arg'])
     expect(cop.messages)
       .to eq(["Surrounding space missing for operator '-'."])
   end
 
-  it 'registers an offence for inheritance < without space' do
+  it 'registers an offense for inheritance < without space' do
     inspect_source(cop, ['class ShowSourceTestClass<ShowSourceTestSuperClass',
                          'end'])
     expect(cop.messages)
       .to eq(["Surrounding space missing for operator '<'."])
   end
 
-  it 'registers an offence for hash rocket without space at rescue' do
+  it 'registers an offense for hash rocket without space at rescue' do
     inspect_source(cop, ['begin',
                          'rescue Exception=>e',
                          'end'])

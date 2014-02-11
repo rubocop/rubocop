@@ -13,8 +13,8 @@ module Rubocop
       source_buffer.source = %w(a b cdefghi).join("\n")
       Parser::Source::Range.new(source_buffer, 9, 10)
     end
-    let(:offence) do
-      Cop::Offence.new(:convention, location,
+    let(:offense) do
+      Cop::Offense.new(:convention, location,
                        'This is message', 'CopName', true)
     end
 
@@ -38,15 +38,15 @@ module Rubocop
 
       let(:summary) { formatter.output_hash[:summary] }
 
-      it 'adds detected offence count in summary' do
-        expect(summary[:offence_count]).to eq(0)
+      it 'adds detected offense count in summary' do
+        expect(summary[:offense_count]).to eq(0)
 
         formatter.file_started(files[0], {})
-        expect(summary[:offence_count]).to eq(0)
+        expect(summary[:offense_count]).to eq(0)
         formatter.file_finished(files[0], [
-          double('offence1'), double('offence2')
+          double('offense1'), double('offense2')
         ])
-        expect(summary[:offence_count]).to eq(2)
+        expect(summary[:offense_count]).to eq(2)
       end
 
       it 'adds value of #hash_for_file to #output_hash[:files]' do
@@ -82,9 +82,9 @@ module Rubocop
     end
 
     describe '#hash_for_file' do
-      subject(:hash) { formatter.hash_for_file(file, offences) }
+      subject(:hash) { formatter.hash_for_file(file, offenses) }
       let(:file) { File.expand_path('spec/spec_helper.rb') }
-      let(:offences) { [double('offence1'), double('offence2')] }
+      let(:offenses) { [double('offense1'), double('offense2')] }
 
       it 'sets relative file path for :path key' do
         expect(hash[:path]).to eq('spec/spec_helper.rb')
@@ -92,32 +92,32 @@ module Rubocop
 
       before do
         count = 0
-        allow(formatter).to receive(:hash_for_offence) do
+        allow(formatter).to receive(:hash_for_offense) do
           count += 1
         end
       end
 
-      it 'sets an array of #hash_for_offence values for :offences key' do
-        expect(hash[:offences]).to eq([1, 2])
+      it 'sets an array of #hash_for_offense values for :offenses key' do
+        expect(hash[:offenses]).to eq([1, 2])
       end
     end
 
-    describe '#hash_for_offence' do
-      subject(:hash) { formatter.hash_for_offence(offence) }
+    describe '#hash_for_offense' do
+      subject(:hash) { formatter.hash_for_offense(offense) }
 
-      it 'sets Offence#severity value for :severity key' do
+      it 'sets Offense#severity value for :severity key' do
         expect(hash[:severity]).to eq(:convention)
       end
 
-      it 'sets Offence#message value for :message key' do
+      it 'sets Offense#message value for :message key' do
         expect(hash[:message]).to eq('This is message')
       end
 
-      it 'sets Offence#cop_name value for :cop_name key' do
+      it 'sets Offense#cop_name value for :cop_name key' do
         expect(hash[:cop_name]).to eq('CopName')
       end
 
-      it 'sets Offence#corrected? value for :corrected key' do
+      it 'sets Offense#corrected? value for :corrected key' do
         expect(hash[:corrected]).to be_true
       end
 
@@ -134,7 +134,7 @@ module Rubocop
     end
 
     describe '#hash_for_location' do
-      subject(:hash) { formatter.hash_for_location(offence) }
+      subject(:hash) { formatter.hash_for_location(offense) }
 
       it 'sets line value for :line key' do
         expect(hash[:line]).to eq(3)

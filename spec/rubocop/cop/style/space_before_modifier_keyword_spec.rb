@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Rubocop::Cop::Style::SpaceBeforeModifierKeyword do
   subject(:cop) { described_class.new }
 
-  it 'registers an offence for missing space before if/unless' do
+  it 'registers an offense for missing space before if/unless' do
     inspect_source(cop, ['(a = 3)if a == 2',
                          'a = "test"if a == 2',
                          'a = 42unless a == 2',
@@ -14,7 +14,7 @@ describe Rubocop::Cop::Style::SpaceBeforeModifierKeyword do
     expect(cop.highlights).to eq([')', '"', '2', ']', '}'])
   end
 
-  it 'registers an offence for missing space before while/until' do
+  it 'registers an offense for missing space before while/until' do
     inspect_source(cop, ['(a = 3)while b',
                          'a = "test"until b',
                          'a = 42while b',
@@ -28,7 +28,7 @@ describe Rubocop::Cop::Style::SpaceBeforeModifierKeyword do
                          'a = "test" unless b',
                          'a = 42 while b',
                          'a = [1,2,3] until b'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'accepts elsif at beginning of line' do
@@ -42,7 +42,7 @@ describe Rubocop::Cop::Style::SpaceBeforeModifierKeyword do
 
   it 'does not crash on ternary conditionals' do
     inspect_source(cop, 'a ? b : c')
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'auto-corrects missing space' do

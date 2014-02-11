@@ -26,7 +26,7 @@ module Rubocop
           first_arg = args[0]
 
           if first_arg.type != :block || lambda_or_proc?(first_arg)
-            add_offence(first_arg, :expression)
+            add_offense(first_arg, :expression)
           end
         end
       end

@@ -9,17 +9,17 @@ module Rubocop
               'begin/end/until(or while).'
 
         def on_while_post(node)
-          register_offence(node)
+          register_offense(node)
         end
 
         def on_until_post(node)
-          register_offence(node)
+          register_offense(node)
         end
 
         private
 
-        def register_offence(node)
-          add_offence(node, :keyword)
+        def register_offense(node)
+          add_offense(node, :keyword)
         end
       end
     end

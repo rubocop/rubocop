@@ -8,10 +8,10 @@ describe Rubocop::Cop::Style::Blocks do
   it 'accepts a multiline block with do-end' do
     inspect_source(cop, ['each do |x|',
                          'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
-  it 'registers an offence for a single line block with do-end' do
+  it 'registers an offense for a single line block with do-end' do
     inspect_source(cop, ['each do |x| end'])
     expect(cop.messages)
       .to eq(['Prefer {...} over do...end for single-line blocks.'])
@@ -19,7 +19,7 @@ describe Rubocop::Cop::Style::Blocks do
 
   it 'accepts a single line block with braces' do
     inspect_source(cop, ['each { |x| }'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'auto-corrects do and end for single line blocks to { and }' do
@@ -28,7 +28,7 @@ describe Rubocop::Cop::Style::Blocks do
   end
 
   context 'when there are braces around a multi-line block' do
-    it 'registers an offence in the simple case' do
+    it 'registers an offense in the simple case' do
       inspect_source(cop, ['each { |x|',
                            '}'])
       expect(cop.messages)
@@ -48,10 +48,10 @@ describe Rubocop::Cop::Style::Blocks do
              '  Counter.count',
              '}.from(0).to(1)']
       inspect_source(cop, src)
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
-    it 'registers an offence for braces if do-end would not change ' \
+    it 'registers an offense for braces if do-end would not change ' \
       'the meaning' do
       src = ['scope :foo, (lambda { |f|',
              '  where(condition: "value")',
@@ -61,7 +61,7 @@ describe Rubocop::Cop::Style::Blocks do
              '  # ...',
              '})']
       inspect_source(cop, src)
-      expect(cop.offences.size).to eq(2)
+      expect(cop.offenses.size).to eq(2)
     end
 
     it 'can handle special method names such as []= and done?' do

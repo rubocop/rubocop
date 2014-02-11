@@ -16,7 +16,7 @@ module Rubocop
 
           return if empty_lines_around?(node)
 
-          add_offence(node, :expression)
+          add_offense(node, :expression)
         end
 
         private

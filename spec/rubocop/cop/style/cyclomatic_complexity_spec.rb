@@ -12,7 +12,7 @@ describe Rubocop::Cop::Style::CyclomaticComplexity, :config do
       inspect_source(cop, ['def method_name',
                            '  call_foo',
                            'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts complex code outside of methods' do
@@ -25,20 +25,20 @@ describe Rubocop::Cop::Style::CyclomaticComplexity, :config do
                       '  call_foo if second_condition && third_condition',
                       '  call_bar if fourth_condition || fifth_condition',
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
-    it 'registers an offence for an if modifier' do
+    it 'registers an offense for an if modifier' do
       inspect_source(cop, ['def self.method_name',
                            '  call_foo if some_condition',
                            'end'])
       expect(cop.messages)
         .to eq(['Cyclomatic complexity for method_name is too high. [2/1]'])
       expect(cop.highlights).to eq(['def'])
-      expect(cop.config_to_allow_offences).to eq('Max' => 2)
+      expect(cop.config_to_allow_offenses).to eq('Max' => 2)
     end
 
-    it 'registers an offence for an unless modifier' do
+    it 'registers an offense for an unless modifier' do
       inspect_source(cop, ['def method_name',
                            '  call_foo unless some_condition',
                            'end'])
@@ -46,7 +46,7 @@ describe Rubocop::Cop::Style::CyclomaticComplexity, :config do
         .to eq(['Cyclomatic complexity for method_name is too high. [2/1]'])
     end
 
-    it 'registers an offence for an elsif block' do
+    it 'registers an offense for an elsif block' do
       inspect_source(cop, ['def method_name',
                            '  if first_condition then',
                            '    call_foo',
@@ -60,7 +60,7 @@ describe Rubocop::Cop::Style::CyclomaticComplexity, :config do
         .to eq(['Cyclomatic complexity for method_name is too high. [3/1]'])
     end
 
-    it 'registers an offence for a ternary operator' do
+    it 'registers an offense for a ternary operator' do
       inspect_source(cop, ['def method_name',
                            '  value = some_condition ? 1 : 2',
                            'end'])
@@ -68,7 +68,7 @@ describe Rubocop::Cop::Style::CyclomaticComplexity, :config do
         .to eq(['Cyclomatic complexity for method_name is too high. [2/1]'])
     end
 
-    it 'registers an offence for a while block' do
+    it 'registers an offense for a while block' do
       inspect_source(cop, ['def method_name',
                            '  while some_condition do',
                            '    call_foo',
@@ -78,7 +78,7 @@ describe Rubocop::Cop::Style::CyclomaticComplexity, :config do
         .to eq(['Cyclomatic complexity for method_name is too high. [2/1]'])
     end
 
-    it 'registers an offence for an until block' do
+    it 'registers an offense for an until block' do
       inspect_source(cop, ['def method_name',
                            '  until some_condition do',
                            '    call_foo',
@@ -88,7 +88,7 @@ describe Rubocop::Cop::Style::CyclomaticComplexity, :config do
         .to eq(['Cyclomatic complexity for method_name is too high. [2/1]'])
     end
 
-    it 'registers an offence for a for block' do
+    it 'registers an offense for a for block' do
       inspect_source(cop, ['def method_name',
                            '  for i in 1..2 do',
                            '    call_method',
@@ -98,7 +98,7 @@ describe Rubocop::Cop::Style::CyclomaticComplexity, :config do
         .to eq(['Cyclomatic complexity for method_name is too high. [2/1]'])
     end
 
-    it 'registers an offence for a rescue block' do
+    it 'registers an offense for a rescue block' do
       inspect_source(cop, ['def method_name',
                            '  begin',
                            '    call_foo',
@@ -110,7 +110,7 @@ describe Rubocop::Cop::Style::CyclomaticComplexity, :config do
         .to eq(['Cyclomatic complexity for method_name is too high. [2/1]'])
     end
 
-    it 'registers an offence for a case/when block' do
+    it 'registers an offense for a case/when block' do
       inspect_source(cop, ['def method_name',
                            '  case value',
                            '  when 1',
@@ -123,7 +123,7 @@ describe Rubocop::Cop::Style::CyclomaticComplexity, :config do
         .to eq(['Cyclomatic complexity for method_name is too high. [3/1]'])
     end
 
-    it 'registers an offence for &&' do
+    it 'registers an offense for &&' do
       inspect_source(cop, ['def method_name',
                            '  call_foo && call_bar',
                            'end'])
@@ -131,7 +131,7 @@ describe Rubocop::Cop::Style::CyclomaticComplexity, :config do
         .to eq(['Cyclomatic complexity for method_name is too high. [2/1]'])
     end
 
-    it 'registers an offence for and' do
+    it 'registers an offense for and' do
       inspect_source(cop, ['def method_name',
                            '  call_foo and call_bar',
                            'end'])
@@ -139,7 +139,7 @@ describe Rubocop::Cop::Style::CyclomaticComplexity, :config do
         .to eq(['Cyclomatic complexity for method_name is too high. [2/1]'])
     end
 
-    it 'registers an offence for ||' do
+    it 'registers an offense for ||' do
       inspect_source(cop, ['def method_name',
                            '  call_foo || call_bar',
                            'end'])
@@ -147,7 +147,7 @@ describe Rubocop::Cop::Style::CyclomaticComplexity, :config do
         .to eq(['Cyclomatic complexity for method_name is too high. [2/1]'])
     end
 
-    it 'registers an offence for or' do
+    it 'registers an offense for or' do
       inspect_source(cop, ['def method_name',
                            '  call_foo or call_bar',
                            'end'])

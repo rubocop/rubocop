@@ -12,7 +12,7 @@ module Rubocop
           if @prev_def_end && (def_start(node) - @prev_def_end) == 1
             unless @prev_was_single_line && singe_line_def?(node) &&
                 cop_config['AllowAdjacentOneLineDefs']
-              add_offence(node, :keyword)
+              add_offense(node, :keyword)
             end
           end
 

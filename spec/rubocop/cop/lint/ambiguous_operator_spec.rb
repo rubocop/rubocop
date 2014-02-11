@@ -19,9 +19,9 @@ describe Rubocop::Cop::Lint::AmbiguousOperator do
           ]
         end
 
-        it 'registers an offence' do
-          expect(cop.offences.size).to eq(1)
-          expect(cop.offences.first.message).to eq(
+        it 'registers an offense' do
+          expect(cop.offenses.size).to eq(1)
+          expect(cop.offenses.first.message).to eq(
             'Ambiguous splat operator. ' \
             "Parenthesize the method arguments if it's surely a splat " +
             'operator, ' +
@@ -41,7 +41,7 @@ describe Rubocop::Cop::Lint::AmbiguousOperator do
         end
 
         it 'accepts' do
-          expect(cop.offences).to be_empty
+          expect(cop.offenses).to be_empty
         end
       end
     end
@@ -55,7 +55,7 @@ describe Rubocop::Cop::Lint::AmbiguousOperator do
       end
 
       it 'accepts' do
-        expect(cop.offences).to be_empty
+        expect(cop.offenses).to be_empty
       end
     end
   end
@@ -70,9 +70,9 @@ describe Rubocop::Cop::Lint::AmbiguousOperator do
           ]
         end
 
-        it 'registers an offence' do
-          expect(cop.offences.size).to eq(1)
-          expect(cop.offences.first.message).to eq(
+        it 'registers an offense' do
+          expect(cop.offenses.size).to eq(1)
+          expect(cop.offenses.first.message).to eq(
             'Ambiguous block operator. ' \
             "Parenthesize the method arguments if it's surely a block " +
             'operator, ' +
@@ -92,7 +92,7 @@ describe Rubocop::Cop::Lint::AmbiguousOperator do
         end
 
         it 'accepts' do
-          expect(cop.offences).to be_empty
+          expect(cop.offenses).to be_empty
         end
       end
     end
@@ -106,7 +106,7 @@ describe Rubocop::Cop::Lint::AmbiguousOperator do
       end
 
       it 'accepts' do
-        expect(cop.offences).to be_empty
+        expect(cop.offenses).to be_empty
       end
     end
   end

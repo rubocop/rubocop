@@ -5,38 +5,38 @@ require 'spec_helper'
 describe Rubocop::Cop::Style::WhileUntilDo do
   subject(:cop) { described_class.new }
 
-  it 'registers an offence for do in multiline while' do
+  it 'registers an offense for do in multiline while' do
     inspect_source(cop, ['while cond do',
                          'end'])
-    expect(cop.offences.size).to eq(1)
+    expect(cop.offenses.size).to eq(1)
   end
 
-  it 'registers an offence for do in multiline until' do
+  it 'registers an offense for do in multiline until' do
     inspect_source(cop, ['until cond do',
                          'end'])
-    expect(cop.offences.size).to eq(1)
+    expect(cop.offenses.size).to eq(1)
   end
 
   it 'accepts do in single-line while' do
     inspect_source(cop, ['while cond do something end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'accepts do in single-line until' do
     inspect_source(cop, ['until cond do something end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'it accepts multi-line while without do' do
     inspect_source(cop, ['while cond',
                          'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'it accepts multi-line until without do' do
     inspect_source(cop, ['until cond',
                          'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'auto-corrects the usage of "do" in multiline while' do

@@ -4,7 +4,7 @@ module Rubocop
   module Cop
     module Style
       # This cops looks for uses of global variables.
-      # It does not report offences for built-in global variables.
+      # It does not report offenses for built-in global variables.
       # Built-in global variables are allowed by default. Additionally
       # users can allow additional variables via the AllowedVariables option.
       #
@@ -66,7 +66,7 @@ module Rubocop
         def check(node)
           global_var, = *node
 
-          add_offence(node, :name) unless allowed_var?(global_var)
+          add_offense(node, :name) unless allowed_var?(global_var)
         end
       end
     end

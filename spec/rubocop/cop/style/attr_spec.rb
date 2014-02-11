@@ -5,11 +5,11 @@ require 'spec_helper'
 describe Rubocop::Cop::Style::Attr do
   subject(:cop) { described_class.new }
 
-  it 'registers an offence attr' do
+  it 'registers an offense attr' do
     inspect_source(cop, ['class SomeClass',
                          '  attr :name',
                          'end'])
-    expect(cop.offences.size).to eq(1)
+    expect(cop.offenses.size).to eq(1)
   end
 
   it 'auto-corrects attr to attr_reader' do

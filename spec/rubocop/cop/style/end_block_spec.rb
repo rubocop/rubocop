@@ -5,9 +5,9 @@ require 'spec_helper'
 describe Rubocop::Cop::Style::EndBlock do
   subject(:cop) { described_class.new }
 
-  it 'reports an offence for an END block' do
+  it 'reports an offense for an END block' do
     src = ['END { test }']
     inspect_source(cop, src)
-    expect(cop.offences.size).to eq(1)
+    expect(cop.offenses.size).to eq(1)
   end
 end

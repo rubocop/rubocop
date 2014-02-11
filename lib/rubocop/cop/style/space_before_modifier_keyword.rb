@@ -12,7 +12,7 @@ module Rubocop
             kw = node.loc.keyword
             b = kw.begin_pos
             left_of_kw = Parser::Source::Range.new(kw.source_buffer, b - 1, b)
-            add_offence(node, left_of_kw) unless left_of_kw.is?(' ')
+            add_offense(node, left_of_kw) unless left_of_kw.is?(' ')
           end
         end
 

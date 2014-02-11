@@ -40,7 +40,7 @@ describe Rubocop::Cop::Team do
     include FileHelper
 
     let(:file_path) { 'example.rb' }
-    let(:offences) { team.inspect_file(file_path) }
+    let(:offenses) { team.inspect_file(file_path) }
 
     before do
       create_file(file_path, [
@@ -49,9 +49,9 @@ describe Rubocop::Cop::Team do
       ])
     end
 
-    it 'returns offences' do
-      expect(offences).not_to be_empty
-      expect(offences.all? { |o| o.is_a?(Rubocop::Cop::Offence) }).to be_true
+    it 'returns offenses' do
+      expect(offenses).not_to be_empty
+      expect(offenses.all? { |o| o.is_a?(Rubocop::Cop::Offense) }).to be_true
     end
 
     context 'when Parser cannot parse the file' do
@@ -62,11 +62,11 @@ describe Rubocop::Cop::Team do
         ])
       end
 
-      it 'returns only error offences' do
-        expect(offences.size).to eq(1)
-        offence = offences.first
-        expect(offence.cop_name).to eq('Syntax')
-        expect(offence.severity).to eq(:error)
+      it 'returns only error offenses' do
+        expect(offenses.size).to eq(1)
+        offense = offenses.first
+        expect(offense.cop_name).to eq('Syntax')
+        expect(offense.severity).to eq(:error)
       end
     end
 
@@ -79,13 +79,13 @@ describe Rubocop::Cop::Team do
         ])
       end
 
-      let(:cop_names) { offences.map(&:cop_name) }
+      let(:cop_names) { offenses.map(&:cop_name) }
 
-      it 'returns Parser warning offences' do
+      it 'returns Parser warning offenses' do
         expect(cop_names).to include('AmbiguousOperator')
       end
 
-      it 'returns offences from cops' do
+      it 'returns offenses from cops' do
         expect(cop_names).to include('LineLength')
       end
     end
@@ -110,8 +110,8 @@ describe Rubocop::Cop::Team do
         ].join("\n"))
       end
 
-      it 'still returns offences' do
-        expect(offences.first.cop_name).to eq('StringLiterals')
+      it 'still returns offenses' do
+        expect(offenses.first.cop_name).to eq('StringLiterals')
       end
     end
   end

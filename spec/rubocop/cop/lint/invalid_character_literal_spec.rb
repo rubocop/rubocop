@@ -19,13 +19,13 @@ describe Rubocop::Cop::Lint::InvalidCharacterLiteral do
   context 'with a non-escaped whitespace character literal ' do
     let(:source) { 'p(? )' }
 
-    it 'registers an offence' do
+    it 'registers an offense' do
       pending 'Is there a way to emit this warning without syntax errors?'
 
       inspect_source(cop, source)
 
-      expect(cop.offences.size).to eq(1)
-      expect(cop.offences.first.message)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
         .to eq('Invalid character literal; use ?\s')
       expect(cop.highlights).to eq([' '])
     end

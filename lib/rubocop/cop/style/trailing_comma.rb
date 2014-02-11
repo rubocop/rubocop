@@ -83,7 +83,7 @@ module Rubocop
           range = Parser::Source::Range.new(sb, comma_begin_pos,
                                             comma_begin_pos + 1)
           article = kind =~ /array/ ? 'an' : 'a'
-          add_offence(nil, range,
+          add_offense(nil, range,
                       format(MSG, 'Avoid', format(kind, article)))
         end
 
@@ -93,7 +93,7 @@ module Rubocop
           ix += last_expr.source[ix..-1] =~ /\S/
           range = Parser::Source::Range.new(sb, last_expr.begin_pos + ix,
                                             last_expr.end_pos)
-          add_offence(nil, range,
+          add_offense(nil, range,
                       format(MSG, 'Put a', format(kind, 'a multiline')))
         end
       end

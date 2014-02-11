@@ -38,7 +38,7 @@ module Rubocop
           var_name, = *receiver
           return if tracker.contain_object_passed_as_argument?(var_name)
 
-          add_offence(receiver,
+          add_offense(receiver,
                       :name,
                       MSG.format(receiver.loc.name.source))
         end

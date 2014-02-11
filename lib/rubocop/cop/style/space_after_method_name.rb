@@ -17,7 +17,7 @@ module Rubocop
                                                             expr.begin_pos - 1,
                                                             expr.begin_pos)
           if pos_before_left_paren.source =~ /\s/
-            add_offence(pos_before_left_paren, pos_before_left_paren)
+            add_offense(pos_before_left_paren, pos_before_left_paren)
           end
         end
 

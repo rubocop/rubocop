@@ -58,7 +58,7 @@ module Rubocop
           if @column_delta == 0
             correct_style_detected
           else
-            add_offence(send_node, :expression) do
+            add_offense(send_node, :expression) do
               if offset == unexpected_indent_offset
                 opposite_style_detected
               else

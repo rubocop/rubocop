@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Rubocop::Cop::Lint::ElseLayout do
   subject(:cop) { described_class.new }
 
-  it 'registers an offence for expr on same line as else' do
+  it 'registers an offense for expr on same line as else' do
     inspect_source(cop,
                    ['if something',
                     '  test',
@@ -14,7 +14,7 @@ describe Rubocop::Cop::Lint::ElseLayout do
                     '  test',
                     'end'
                   ])
-    expect(cop.offences.size).to eq(1)
+    expect(cop.offenses.size).to eq(1)
   end
 
   it 'accepts proper else' do
@@ -26,7 +26,7 @@ describe Rubocop::Cop::Lint::ElseLayout do
                     '  test',
                     'end'
                   ])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'accepts single-expr else regardless of layout' do
@@ -36,7 +36,7 @@ describe Rubocop::Cop::Lint::ElseLayout do
                     'else bala',
                     'end'
                   ])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'can handle elsifs' do
@@ -50,16 +50,16 @@ describe Rubocop::Cop::Lint::ElseLayout do
                     '  test',
                     'end'
                   ])
-    expect(cop.offences.size).to eq(1)
+    expect(cop.offenses.size).to eq(1)
   end
 
   it 'handles ternary ops' do
     inspect_source(cop, 'x ? a : b')
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'handles modifier forms' do
     inspect_source(cop, 'x if something')
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 end

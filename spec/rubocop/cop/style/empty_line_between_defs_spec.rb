@@ -6,7 +6,7 @@ describe Rubocop::Cop::Style::EmptyLineBetweenDefs, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) { { 'AllowAdjacentOneLineDefs' => false } }
 
-  it 'finds offences in inner classes' do
+  it 'finds offenses in inner classes' do
     source = ['class K',
               '  def m',
               '  end',
@@ -21,8 +21,8 @@ describe Rubocop::Cop::Style::EmptyLineBetweenDefs, :config do
               '  end',
               'end']
     inspect_source(cop, source)
-    expect(cop.offences.size).to eq(1)
-    expect(cop.offences.map(&:line).sort).to eq([7])
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.offenses.map(&:line).sort).to eq([7])
   end
 
   # Only one def, so rule about empty line *between* defs does not
@@ -32,7 +32,7 @@ describe Rubocop::Cop::Style::EmptyLineBetweenDefs, :config do
               'def m',
               'end']
     inspect_source(cop, source)
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   # Only one def, so rule about empty line *between* defs does not
@@ -43,7 +43,7 @@ describe Rubocop::Cop::Style::EmptyLineBetweenDefs, :config do
               '  def m',
               '  end']
     inspect_source(cop, source)
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'accepts the first def without leading empty line in a class' do
@@ -52,7 +52,7 @@ describe Rubocop::Cop::Style::EmptyLineBetweenDefs, :config do
               '  end',
               'end']
     inspect_source(cop, source)
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'accepts a def that follows an empty line and then a comment' do
@@ -68,7 +68,7 @@ describe Rubocop::Cop::Style::EmptyLineBetweenDefs, :config do
               'end'
              ]
     inspect_source(cop, source)
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'accepts a def that is the first of a module' do
@@ -95,11 +95,11 @@ describe Rubocop::Cop::Style::EmptyLineBetweenDefs, :config do
     expect(cop.messages).to be_empty
   end
 
-  it 'registers an offence for adjacent one-liners by default' do
+  it 'registers an offense for adjacent one-liners by default' do
     source = ['def a; end',
               'def b; end']
     inspect_source(cop, source)
-    expect(cop.offences.size).to eq(1)
+    expect(cop.offenses.size).to eq(1)
   end
 
   it 'auto-corrects adjacent one-liners by default' do
@@ -117,19 +117,19 @@ describe Rubocop::Cop::Style::EmptyLineBetweenDefs, :config do
       source = ['def a; end',
                 'def b; end']
       inspect_source(cop, source)
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
-    it 'registers an offence for adjacent defs if some are multi-line' do
+    it 'registers an offense for adjacent defs if some are multi-line' do
       source = ['def a; end',
                 'def b; end',
-                'def c', # Not a one-liner, so this is an offence.
+                'def c', # Not a one-liner, so this is an offense.
                 'end',
-                # Also an offence since previous was multi-line:
+                # Also an offense since previous was multi-line:
                 'def d; end'
                ]
       inspect_source(cop, source)
-      expect(cop.offences.map(&:line)).to eq([3, 5])
+      expect(cop.offenses.map(&:line)).to eq([3, 5])
     end
   end
 end

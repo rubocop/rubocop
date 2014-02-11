@@ -2,36 +2,36 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Offence do
+describe Rubocop::Cop::Offense do
   let(:location) do
     source_buffer = Parser::Source::Buffer.new('test', 1)
     source_buffer.source = "a\n"
     Parser::Source::Range.new(source_buffer, 0, 1)
   end
-  subject(:offence) do
+  subject(:offense) do
     described_class.new(:convention, location, 'message', 'CopName', true)
   end
 
   it 'has a few required attributes' do
-    expect(offence.severity).to eq(:convention)
-    expect(offence.line).to eq(1)
-    expect(offence.message).to eq('message')
-    expect(offence.cop_name).to eq('CopName')
-    expect(offence.corrected?).to be_true
+    expect(offense.severity).to eq(:convention)
+    expect(offense.line).to eq(1)
+    expect(offense.message).to eq('message')
+    expect(offense.cop_name).to eq('CopName')
+    expect(offense.corrected?).to be_true
   end
 
   it 'overrides #to_s' do
-    expect(offence.to_s).to eq('C:  1:  1: message')
+    expect(offense.to_s).to eq('C:  1:  1: message')
   end
 
   it 'does not blow up if a message contains %' do
-    offence = described_class.new(:convention, location, 'message % test',
+    offense = described_class.new(:convention, location, 'message % test',
                                   'CopName')
 
-    expect(offence.to_s).to eq('C:  1:  1: message % test')
+    expect(offense.to_s).to eq('C:  1:  1: message % test')
   end
 
-  it 'redefines == to compare offences based on their contents' do
+  it 'redefines == to compare offenses based on their contents' do
     o1 = described_class.new(:convention, location, 'message', 'CopName')
     o2 = described_class.new(:convention, location, 'message', 'CopName')
 
@@ -39,13 +39,13 @@ describe Rubocop::Cop::Offence do
   end
 
   it 'is frozen' do
-    expect(offence).to be_frozen
+    expect(offense).to be_frozen
   end
 
   [:severity, :location, :line, :column, :message, :cop_name].each do |a|
     describe "##{a}" do
       it 'is frozen' do
-        expect(offence.send(a)).to be_frozen
+        expect(offense.send(a)).to be_frozen
       end
     end
   end
@@ -80,7 +80,7 @@ describe Rubocop::Cop::Offence do
   end
 
   describe '#<=>' do
-    def offence(hash = {})
+    def offense(hash = {})
       attrs = {
         sev:  :convention,
         line: 5,
@@ -123,9 +123,9 @@ describe Rubocop::Cop::Offence do
     ].each do |one, other, expectation|
       context "when receiver has #{one} and other has #{other}" do
         it "returns #{expectation}" do
-          an_offence = offence(one)
-          other_offence = offence(other)
-          expect(an_offence <=> other_offence).to eq(expectation)
+          an_offense = offense(one)
+          other_offense = offense(other)
+          expect(an_offense <=> other_offense).to eq(expectation)
         end
       end
     end

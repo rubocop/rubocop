@@ -93,13 +93,13 @@ module Rubocop
       # @param file [String]
       #   the file path
       #
-      # @param offences [Array(Rubocop::Cop::Offence)]
-      #   all detected offences for the file
+      # @param offenses [Array(Rubocop::Cop::Offense)]
+      #   all detected offenses for the file
       #
       # @return [void]
       #
-      # @see Rubocop::Cop::Offence
-      def file_finished(file, offences)
+      # @see Rubocop::Cop::Offense
+      def file_finished(file, offenses)
       end
 
       # @api public

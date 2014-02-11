@@ -4,8 +4,8 @@ require 'rubocop/formatter/colorizable'
 
 module Rubocop
   module Formatter
-    # A basic formatter that displays only files with offences.
-    # Offences are displayed at compact form - just the
+    # A basic formatter that displays only files with offenses.
+    # Offenses are displayed at compact form - just the
     # location of the problem and the associated message.
     class SimpleTextFormatter < BaseFormatter
       include Colorizable
@@ -20,45 +20,45 @@ module Rubocop
       }.freeze
 
       def started(target_files)
-        @total_offence_count = 0
+        @total_offense_count = 0
         @total_correction_count = 0
       end
 
-      def file_finished(file, offences)
-        return if offences.empty?
-        count_stats(offences)
-        report_file(file, offences)
+      def file_finished(file, offenses)
+        return if offenses.empty?
+        count_stats(offenses)
+        report_file(file, offenses)
       end
 
       def finished(inspected_files)
         report_summary(inspected_files.count,
-                       @total_offence_count,
+                       @total_offense_count,
                        @total_correction_count)
       end
 
-      def report_file(file, offences)
+      def report_file(file, offenses)
         output.puts yellow("== #{smart_path(file)} ==")
 
-        offences.each do |o|
+        offenses.each do |o|
           output.printf("%s:%3d:%3d: %s\n",
                         colored_severity_code(o),
                         o.line, o.real_column, message(o))
         end
       end
 
-      def report_summary(file_count, offence_count, correction_count)
+      def report_summary(file_count, offense_count, correction_count)
         summary = pluralize(file_count, 'file')
         summary << ' inspected, '
 
-        offences_text = pluralize(offence_count, 'offence', no_for_zero: true)
-        offences_text << ' detected'
-        summary << colorize(offences_text, offence_count.zero? ? :green : :red)
+        offenses_text = pluralize(offense_count, 'offense', no_for_zero: true)
+        offenses_text << ' detected'
+        summary << colorize(offenses_text, offense_count.zero? ? :green : :red)
 
         if correction_count > 0
           summary << ', '
-          correction_text = pluralize(correction_count, 'offence')
+          correction_text = pluralize(correction_count, 'offense')
           correction_text << ' corrected'
-          color = correction_count == offence_count ? :green : :cyan
+          color = correction_count == offense_count ? :green : :cyan
           summary << colorize(correction_text, color)
         end
 
@@ -68,9 +68,9 @@ module Rubocop
 
       private
 
-      def count_stats(offences)
-        @total_offence_count += offences.count
-        @total_correction_count += offences.select(&:corrected?).count
+      def count_stats(offenses)
+        @total_offense_count += offenses.count
+        @total_correction_count += offenses.select(&:corrected?).count
       end
 
       def smart_path(path)
@@ -84,14 +84,14 @@ module Rubocop
         end
       end
 
-      def colored_severity_code(offence)
-        color = COLOR_FOR_SEVERITY[offence.severity]
-        colorize(offence.severity_code, color)
+      def colored_severity_code(offense)
+        color = COLOR_FOR_SEVERITY[offense.severity]
+        colorize(offense.severity_code, color)
       end
 
-      def message(offence)
-        message = offence.corrected? ? green('[Corrected] ') : ''
-        message << offence.message
+      def message(offense)
+        message = offense.corrected? ? green('[Corrected] ') : ''
+        message << offense.message
       end
 
       def pluralize(number, thing, options = {})

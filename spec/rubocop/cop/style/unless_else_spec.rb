@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Rubocop::Cop::Style::UnlessElse do
   subject(:cop) { described_class.new }
 
-  it 'registers an offence for an unless with else' do
+  it 'registers an offense for an unless with else' do
     inspect_source(cop, ['unless x',
                          '  a = 1',
                          'else',

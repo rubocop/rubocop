@@ -25,10 +25,10 @@ describe Rubocop::Cop::Style::CaseIndentation do
                     "           'output2'",
                     '         end']
           inspect_source(cop, source)
-          expect(cop.offences).to be_empty
+          expect(cop.offenses).to be_empty
         end
 
-        it 'registers on offence for an assignment indented as end' do
+        it 'registers on offense for an assignment indented as end' do
           source = ['output = case variable',
                     "when 'value1'",
                     "  'output1'",
@@ -37,11 +37,11 @@ describe Rubocop::Cop::Style::CaseIndentation do
                     'end']
           inspect_source(cop, source)
           expect(cop.messages).to eq(['Indent when as deep as case.'])
-          expect(cop.config_to_allow_offences).to eq('IndentWhenRelativeTo' =>
+          expect(cop.config_to_allow_offenses).to eq('IndentWhenRelativeTo' =>
                                                      'end')
         end
 
-        it 'registers on offence for an assignment indented some other way' do
+        it 'registers on offense for an assignment indented some other way' do
           source = ['output = case variable',
                     "  when 'value1'",
                     "    'output1'",
@@ -50,10 +50,10 @@ describe Rubocop::Cop::Style::CaseIndentation do
                     'end']
           inspect_source(cop, source)
           expect(cop.messages).to eq(['Indent when as deep as case.'])
-          expect(cop.config_to_allow_offences).to eq('Enabled' => false)
+          expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
         end
 
-        it 'registers on offence for correct + opposite' do
+        it 'registers on offense for correct + opposite' do
           source = ['output = case variable',
                     "         when 'value1'",
                     "           'output1'",
@@ -68,11 +68,11 @@ describe Rubocop::Cop::Style::CaseIndentation do
                     'end']
           inspect_source(cop, source)
           expect(cop.messages).to eq(['Indent when as deep as case.'])
-          expect(cop.config_to_allow_offences).to eq('Enabled' => false)
+          expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
         end
       end
 
-      it "registers an offence for a when clause that's deeper than case" do
+      it "registers an offense for a when clause that's deeper than case" do
         source = ['case a',
                   '    when 0 then return',
                   '    else',
@@ -99,7 +99,7 @@ describe Rubocop::Cop::Style::CaseIndentation do
                   'end',
                   '']
         inspect_source(cop, source)
-        expect(cop.offences).to be_empty
+        expect(cop.offenses).to be_empty
       end
 
       it "doesn't get confused by strings with case in them" do
@@ -163,10 +163,10 @@ describe Rubocop::Cop::Style::CaseIndentation do
                     "             'output2'",
                     '         end']
           inspect_source(cop, source)
-          expect(cop.offences).to be_empty
+          expect(cop.offenses).to be_empty
         end
 
-        it 'registers on offence for an assignment indented some other way' do
+        it 'registers on offense for an assignment indented some other way' do
           source = ['output = case variable',
                     "         when 'value1'",
                     "           'output1'",
@@ -187,10 +187,10 @@ describe Rubocop::Cop::Style::CaseIndentation do
                   '        end',
                   'end']
         inspect_source(cop, source)
-        expect(cop.offences).to be_empty
+        expect(cop.offenses).to be_empty
       end
 
-      it "registers an offence for  a when clause that's equally indented " \
+      it "registers an offense for  a when clause that's equally indented " \
         'with case' do
         source = ['y = case a',
                   '    when 0 then break',
@@ -226,10 +226,10 @@ describe Rubocop::Cop::Style::CaseIndentation do
                     "  'output2'",
                     'end']
           inspect_source(cop, source)
-          expect(cop.offences).to be_empty
+          expect(cop.offenses).to be_empty
         end
 
-        it 'registers on offence for an assignment indented some other way' do
+        it 'registers on offense for an assignment indented some other way' do
           source = ['output = case variable',
                     "  when 'value1'",
                     "    'output1'",
@@ -256,10 +256,10 @@ describe Rubocop::Cop::Style::CaseIndentation do
                     "    'output2'",
                     'end']
           inspect_source(cop, source)
-          expect(cop.offences).to be_empty
+          expect(cop.offenses).to be_empty
         end
 
-        it 'registers on offence for an assignment indented as case' do
+        it 'registers on offense for an assignment indented as case' do
           source = ['output = case variable',
                     "         when 'value1'",
                     "           'output1'",
@@ -268,11 +268,11 @@ describe Rubocop::Cop::Style::CaseIndentation do
                     '         end']
           inspect_source(cop, source)
           expect(cop.messages).to eq(['Indent when one step more than end.'])
-          expect(cop.config_to_allow_offences).to eq('IndentWhenRelativeTo' =>
+          expect(cop.config_to_allow_offenses).to eq('IndentWhenRelativeTo' =>
                                                      'case')
         end
 
-        it 'registers on offence for an assignment indented some other way' do
+        it 'registers on offense for an assignment indented some other way' do
           source = ['output = case variable',
                     "       when 'value1'",
                     "         'output1'",
@@ -281,7 +281,7 @@ describe Rubocop::Cop::Style::CaseIndentation do
                     '       end']
           inspect_source(cop, source)
           expect(cop.messages).to eq(['Indent when one step more than end.'])
-          expect(cop.config_to_allow_offences).to eq('Enabled' => false)
+          expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
         end
       end
     end

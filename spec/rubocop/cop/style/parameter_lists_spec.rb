@@ -11,24 +11,24 @@ describe Rubocop::Cop::Style::ParameterLists, :config do
     }
   end
 
-  it 'registers an offence for a method def with 5 parameters' do
+  it 'registers an offense for a method def with 5 parameters' do
     inspect_source(cop, ['def meth(a, b, c, d, e)',
                          'end'])
-    expect(cop.offences.size).to eq(1)
-    expect(cop.config_to_allow_offences).to eq('Max' => 5)
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.config_to_allow_offenses).to eq('Max' => 5)
   end
 
   it 'accepts a method def with 4 parameters' do
     inspect_source(cop, ['def meth(a, b, c, d)',
                          'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   context 'When CountKeywordArgs is true' do
     it 'counts keyword arguments as well', ruby: 2.0 do
       inspect_source(cop, ['def meth(a, b, c, d: 1, e: 2)',
                            'end'])
-      expect(cop.offences.size).to eq(1)
+      expect(cop.offenses.size).to eq(1)
     end
   end
 
@@ -38,7 +38,7 @@ describe Rubocop::Cop::Style::ParameterLists, :config do
     it 'it does not count keyword arguments', ruby: 2.0 do
       inspect_source(cop, ['def meth(a, b, c, d: 1, e: 2)',
                            'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
   end
 end

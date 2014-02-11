@@ -20,7 +20,7 @@ module Rubocop
         MSG = 'Use \\ instead of + to concatenate those strings.'
 
         def on_send(node)
-          add_offence(node, :selector) if offending_node?(node)
+          add_offense(node, :selector) if offending_node?(node)
         end
 
         def autocorrect(node)

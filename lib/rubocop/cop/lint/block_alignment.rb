@@ -115,7 +115,7 @@ module Rubocop
             match = /\S.*/.match(do_loc.source_line)
             indentation_of_do_line = match.begin(0)
             if end_loc.column != indentation_of_do_line
-              add_offence(nil,
+              add_offense(nil,
                           end_loc,
                           format(MSG, end_loc.line, end_loc.column,
                                  start_loc.source.lines.to_a.first.chomp,

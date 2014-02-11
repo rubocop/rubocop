@@ -4,7 +4,7 @@ module StatementModifierHelper
   def check_empty(cop, keyword)
     inspect_source(cop, ["#{keyword} cond",
                          'end'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   def check_really_short(cop, keyword)
@@ -13,7 +13,7 @@ module StatementModifierHelper
                          'end'])
     expect(cop.messages).to eq(
       ["Favor modifier #{keyword} usage when you have a single-line body."])
-    expect(cop.offences.map { |o| o.location.source }).to eq([keyword])
+    expect(cop.offenses.map { |o| o.location.source }).to eq([keyword])
   end
 
   def check_too_long(cop, keyword)
@@ -27,7 +27,7 @@ module StatementModifierHelper
                     "    #{body}",
                     '  end'])
 
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   def check_short_multiline(cop, keyword)

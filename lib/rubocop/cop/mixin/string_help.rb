@@ -3,8 +3,8 @@
 module Rubocop
   module Cop
     # Classes that include this module just implement functions to determine
-    # what is an offence and how to do auto-correction. They get help with
-    # adding offences for the faulty string nodes, and with filtering out
+    # what is an offense and how to do auto-correction. They get help with
+    # adding offenses for the faulty string nodes, and with filtering out
     # nodes.
     module StringHelp
       def on_str(node)
@@ -13,8 +13,8 @@ module Rubocop
         return unless node.loc.respond_to?(:begin) && node.loc.begin
         return if part_of_ignored_node?(node)
 
-        if offence?(node)
-          add_offence(node, :expression) { opposite_style_detected }
+        if offense?(node)
+          add_offense(node, :expression) { opposite_style_detected }
         else
           correct_style_detected
         end

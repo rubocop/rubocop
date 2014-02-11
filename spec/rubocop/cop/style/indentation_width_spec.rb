@@ -6,7 +6,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
   subject(:cop) { described_class.new }
 
   context 'with if statement' do
-    it 'registers an offence for bad indentation of an if body' do
+    it 'registers an offense for bad indentation of an if body' do
       inspect_source(cop,
                      ['if cond',
                       ' func',
@@ -14,7 +14,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
       expect(cop.messages).to eq(['Use 2 (not 1) spaces for indentation.'])
     end
 
-    it 'registers an offence for bad indentation of an else body' do
+    it 'registers an offense for bad indentation of an else body' do
       inspect_source(cop,
                      ['if cond',
                       '  func1',
@@ -24,7 +24,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
       expect(cop.messages).to eq(['Use 2 (not 1) spaces for indentation.'])
     end
 
-    it 'registers an offence for bad indentation of an elsif body' do
+    it 'registers an offense for bad indentation of an elsif body' do
       inspect_source(cop,
                      ['if a1',
                       '  b1',
@@ -36,7 +36,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
       expect(cop.messages).to eq(['Use 2 (not 1) spaces for indentation.'])
     end
 
-    it 'registers offence for bad indentation of ternary inside else' do
+    it 'registers offense for bad indentation of ternary inside else' do
       inspect_source(cop,
                      ['if a',
                       '  b',
@@ -47,7 +47,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
         .to eq(['Use 2 (not 5) spaces for indentation.'])
     end
 
-    it 'registers offence for bad indentation of modifier if in else' do
+    it 'registers offense for bad indentation of modifier if in else' do
       inspect_source(cop,
                      ['if a',
                       '  b',
@@ -61,7 +61,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
     it 'accepts a one line if statement' do
       inspect_source(cop,
                      ['if cond then func1 else func2 end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts a correctly aligned if/elsif/else/end' do
@@ -73,7 +73,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
                       'else',
                       '  c',
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts if/elsif/else/end laid out as a table' do
@@ -83,7 +83,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
                       'elsif @io == $stderr then str << "$stderr"',
                       'else                      str << @io.class.to_s',
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts if/then/else/end laid out as another table' do
@@ -92,7 +92,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
                       'then ConfigTable.load',
                       'else ConfigTable.new',
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts an empty if' do
@@ -100,7 +100,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
                      ['if a',
                       'else',
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts an if in assignment with end aligned with variable' do
@@ -126,7 +126,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
                       'VAR = if a',
                       '  0',
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts an if/else in assignment with end aligned with variable' do
@@ -136,7 +136,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
                       'else',
                       '  1',
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts an if/else in assignment with end aligned with variable ' \
@@ -147,7 +147,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
                       'else',
                       '  1',
                       'end.abc.join("")'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts an if/else in assignment with end aligned with variable ' \
@@ -158,7 +158,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
                       'else',
                       '  1',
                       'end.abc.tap {}'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts an if in assignment with end aligned with if' do
@@ -166,7 +166,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
                      ['var = if a',
                       '        0',
                       '      end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts an if/else in assignment with end aligned with if' do
@@ -176,7 +176,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
                       '      else',
                       '        1',
                       '      end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts an if/else in assignment on next line with end aligned ' \
@@ -188,7 +188,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
                       '  else',
                       '    1',
                       '  end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts an if/else branches with rescue clauses' do
@@ -200,12 +200,12 @@ describe Rubocop::Cop::Style::IndentationWidth do
                       'else',
                       '  a rescue nil',
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
   end
 
   context 'with unless' do
-    it 'registers an offence for bad indentation of an unless body' do
+    it 'registers an offense for bad indentation of an unless body' do
       inspect_source(cop,
                      ['unless cond',
                       ' func',
@@ -218,12 +218,12 @@ describe Rubocop::Cop::Style::IndentationWidth do
                      ['unless a',
                       'else',
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
   end
 
   context 'with case' do
-    it 'registers an offence for bad indentation in a case/when body' do
+    it 'registers an offense for bad indentation in a case/when body' do
       inspect_source(cop,
                      ['case a',
                       'when b',
@@ -232,7 +232,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
       expect(cop.messages).to eq(['Use 2 (not 1) spaces for indentation.'])
     end
 
-    it 'registers an offence for bad indentation in a case/else body' do
+    it 'registers an offense for bad indentation in a case/else body' do
       inspect_source(cop,
                      ['case a',
                       'when b',
@@ -255,7 +255,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
                       'else',
                       '  f',
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts case/when/else laid out as a table' do
@@ -265,7 +265,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
                       "when 'unless' then cond, _else, body = *sexp",
                       'else               cond, body = *sexp',
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts case/when/else with then beginning a line' do
@@ -274,7 +274,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
                       "when 'if'",
                       'then cond, body, _else = *sexp',
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts indented when/else plus indented body' do
@@ -290,12 +290,12 @@ describe Rubocop::Cop::Style::IndentationWidth do
                       '  else',
                       "    'plain'",
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
   end
 
   context 'with while/until' do
-    it 'registers an offence for bad indentation of a while body' do
+    it 'registers an offense for bad indentation of a while body' do
       inspect_source(cop,
                      ['while cond',
                       ' func',
@@ -303,7 +303,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
       expect(cop.messages).to eq(['Use 2 (not 1) spaces for indentation.'])
     end
 
-    it 'registers an offence for bad indentation of begin/end/while' do
+    it 'registers an offense for bad indentation of begin/end/while' do
       inspect_source(cop,
                      ['something = begin',
                       ' func1',
@@ -312,7 +312,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
       expect(cop.messages).to eq(['Use 2 (not 1) spaces for indentation.'])
     end
 
-    it 'registers an offence for bad indentation of an until body' do
+    it 'registers an offense for bad indentation of an until body' do
       inspect_source(cop,
                      ['until cond',
                       ' func',
@@ -324,12 +324,12 @@ describe Rubocop::Cop::Style::IndentationWidth do
       inspect_source(cop,
                      ['while a',
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
   end
 
   context 'with for' do
-    it 'registers an offence for bad indentation of a for body' do
+    it 'registers an offense for bad indentation of a for body' do
       inspect_source(cop,
                      ['for var in 1..10',
                       ' func',
@@ -341,21 +341,21 @@ describe Rubocop::Cop::Style::IndentationWidth do
       inspect_source(cop,
                      ['for var in 1..10',
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
   end
 
   context 'with def/defs' do
-    it 'registers an offence for bad indentation of a def body' do
+    it 'registers an offense for bad indentation of a def body' do
       inspect_source(cop,
                      ['def test',
                       '    func1',
-                      '     func2', # No offence registered for this.
+                      '     func2', # No offense registered for this.
                       'end'])
       expect(cop.messages).to eq(['Use 2 (not 4) spaces for indentation.'])
     end
 
-    it 'registers an offence for bad indentation of a defs body' do
+    it 'registers an offense for bad indentation of a defs body' do
       inspect_source(cop,
                      ['def self.test',
                       '   func',
@@ -367,19 +367,19 @@ describe Rubocop::Cop::Style::IndentationWidth do
       inspect_source(cop,
                      ['def test',
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts an empty defs body' do
       inspect_source(cop,
                      ['def self.test',
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
   end
 
   context 'with class' do
-    it 'registers an offence for bad indentation of a class body' do
+    it 'registers an offense for bad indentation of a class body' do
       inspect_source(cop,
                      ['class Test',
                       '    def func',
@@ -392,7 +392,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
       inspect_source(cop,
                      ['class Test',
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts indented public, protected, and private' do
@@ -413,12 +413,12 @@ describe Rubocop::Cop::Style::IndentationWidth do
                       '  def g',
                       '  end',
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
   end
 
   context 'with module' do
-    it 'registers an offence for bad indentation of a module body' do
+    it 'registers an offense for bad indentation of a module body' do
       inspect_source(cop,
                      ['module Test',
                       '    def func',
@@ -431,12 +431,12 @@ describe Rubocop::Cop::Style::IndentationWidth do
       inspect_source(cop,
                      ['module Test',
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
   end
 
   context 'with block' do
-    it 'registers an offence for bad indentation of a do/end body' do
+    it 'registers an offense for bad indentation of a do/end body' do
       inspect_source(cop,
                      ['a = func do',
                       ' b',
@@ -444,7 +444,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
       expect(cop.messages).to eq(['Use 2 (not 1) spaces for indentation.'])
     end
 
-    it 'registers an offence for bad indentation of a {} body' do
+    it 'registers an offense for bad indentation of a {} body' do
       inspect_source(cop,
                      ['func {',
                       '   b',
@@ -457,14 +457,14 @@ describe Rubocop::Cop::Style::IndentationWidth do
                      ['a = func do',
                       '  b',
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'accepts an empty block body' do
       inspect_source(cop,
                      ['a = func do',
                       'end'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
   end
 end

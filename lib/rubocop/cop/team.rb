@@ -26,23 +26,23 @@ module Rubocop
           processed_source = SourceParser.parse_file(file)
         rescue Encoding::UndefinedConversionError, ArgumentError => e
           range = Struct.new(:line, :column, :source_line).new(1, 0, '')
-          return [Offence.new(:fatal, range, e.message.capitalize + '.',
+          return [Offense.new(:fatal, range, e.message.capitalize + '.',
                               'Parser')]
         end
 
-        # If we got any syntax errors, return only the syntax offences.
+        # If we got any syntax errors, return only the syntax offenses.
         # Parser may return nil for AST even though there are no syntax errors.
         # e.g. sources which contain only comments
         unless processed_source.valid_syntax?
           diagnostics = processed_source.diagnostics
-          return Lint::Syntax.offences_from_diagnostics(diagnostics)
+          return Lint::Syntax.offenses_from_diagnostics(diagnostics)
         end
 
         commissioner = Commissioner.new(cops)
-        offences = commissioner.investigate(processed_source)
+        offenses = commissioner.investigate(processed_source)
         process_commissioner_errors(file, commissioner.errors)
         autocorrect(processed_source.buffer, cops)
-        offences.sort
+        offenses.sort
       end
 
       def cops

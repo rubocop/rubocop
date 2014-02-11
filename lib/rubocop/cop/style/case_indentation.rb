@@ -6,7 +6,7 @@ module Rubocop
       # This cop checks how the *when*s of a *case* expression
       # are indented in relation to its *case* or *end* keyword.
       #
-      # It will register a separate offence for each misaligned *when*.
+      # It will register a separate offense for each misaligned *when*.
       class CaseIndentation < Cop
         include ConfigurableEnforcedStyle
 
@@ -36,7 +36,7 @@ module Rubocop
                                    else
                                      "as deep as #{base}."
                                    end
-            add_offence(when_node, pos, msg) do
+            add_offense(when_node, pos, msg) do
               if pos.column == base_column(case_node, alternative_style)
                 opposite_style_detected
               else

@@ -5,8 +5,8 @@ module Rubocop
     # This formatter displays the report data in format that's
     # easy to process in the Emacs text editor.
     class EmacsStyleFormatter < BaseFormatter
-      def file_finished(file, offences)
-        offences.each do |o|
+      def file_finished(file, offenses)
+        offenses.each do |o|
           message = o.corrected? ? '[Corrected] ' : ''
           message << o.message
 

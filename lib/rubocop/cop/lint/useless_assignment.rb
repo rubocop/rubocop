@@ -42,7 +42,7 @@ module Rubocop
                          assignment.node.loc.name
                        end
 
-            add_offence(nil, location, message)
+            add_offense(nil, location, message)
           end
         end
 
@@ -80,7 +80,7 @@ module Rubocop
           return unless variable.block_local_variable?
           return unless variable.assignments.empty?
           message = format(MSG, variable.name)
-          add_offence(variable.declaration_node, :expression, message)
+          add_offense(variable.declaration_node, :expression, message)
         end
       end
     end

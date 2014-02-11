@@ -42,17 +42,17 @@ module Rubocop
 
         def check_ternary(arg, node)
           condition, _, _ = *arg
-          if offence?(condition)
+          if offense?(condition)
             expr = node.loc.expression
             range = Parser::Source::Range.new(expr.source_buffer,
                                               expr.begin_pos,
                                               condition.loc.expression.end_pos)
-            add_offence(range, range)
+            add_offense(range, range)
           end
         end
 
         def check_send(arg, node)
-          add_offence(node, :expression) if offence?(arg)
+          add_offense(node, :expression) if offense?(arg)
         end
 
         def predicate?(method_name)
@@ -63,7 +63,7 @@ module Rubocop
           node.loc.respond_to?(:end) && !!node.loc.end
         end
 
-        def offence?(node)
+        def offense?(node)
           [:and, :or].include?(node.type)
         end
       end

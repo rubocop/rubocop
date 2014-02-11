@@ -5,18 +5,18 @@ require 'spec_helper'
 describe Rubocop::Cop::Lint::DeprecatedClassMethods do
   subject(:cop) { described_class.new }
 
-  it 'registers an offence for File.exists?' do
+  it 'registers an offense for File.exists?' do
     inspect_source(cop,
                    ['File.exists?(o)'])
-    expect(cop.offences.size).to eq(1)
+    expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
       .to eq(['File.exists? is deprecated in favor of File.exist?.'])
   end
 
-  it 'registers an offence for Dir.exists?' do
+  it 'registers an offense for Dir.exists?' do
     inspect_source(cop,
                    ['Dir.exists?(o)'])
-    expect(cop.offences.size).to eq(1)
+    expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
       .to eq(['Dir.exists? is deprecated in favor of Dir.exist?.'])
   end

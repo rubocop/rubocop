@@ -23,7 +23,7 @@ module Rubocop
             next if if_else?(node)
 
             if check(node, processed_source.comments)
-              add_offence(node, :keyword,
+              add_offense(node, :keyword,
                           error_message(node.loc.keyword.source))
             end
           end

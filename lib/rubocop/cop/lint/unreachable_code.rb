@@ -17,7 +17,7 @@ module Rubocop
 
           expressions.each_cons(2) do |e1, e2|
             if NODE_TYPES.include?(e1.type) || flow_command?(e1)
-              add_offence(e2, :expression)
+              add_offense(e2, :expression)
             end
           end
         end

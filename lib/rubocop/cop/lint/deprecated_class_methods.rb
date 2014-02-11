@@ -21,7 +21,7 @@ module Rubocop
             next unless receiver == class_node(data)
             next unless method_name == data[1]
 
-            add_offence(node, :selector,
+            add_offense(node, :selector,
                         MSG.format(deprecated_method(data),
                                    replacement_method(data)))
           end

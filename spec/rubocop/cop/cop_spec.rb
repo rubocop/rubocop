@@ -10,45 +10,45 @@ describe Rubocop::Cop::Cop do
     Parser::Source::Range.new(source_buffer, 0, 1)
   end
 
-  it 'initially has 0 offences' do
-    expect(cop.offences).to be_empty
+  it 'initially has 0 offenses' do
+    expect(cop.offenses).to be_empty
   end
 
-  it 'keeps track of offences' do
-    cop.add_offence(nil, location, 'message')
+  it 'keeps track of offenses' do
+    cop.add_offense(nil, location, 'message')
 
-    expect(cop.offences.size).to eq(1)
+    expect(cop.offenses.size).to eq(1)
   end
 
-  it 'will report registered offences' do
-    cop.add_offence(nil, location, 'message')
+  it 'will report registered offenses' do
+    cop.add_offense(nil, location, 'message')
 
-    expect(cop.offences).not_to be_empty
+    expect(cop.offenses).not_to be_empty
   end
 
   it 'will set default severity' do
-    cop.add_offence(nil, location, 'message')
+    cop.add_offense(nil, location, 'message')
 
-    expect(cop.offences.first.severity).to eq(:convention)
+    expect(cop.offenses.first.severity).to eq(:convention)
   end
 
   it 'will set custom severity if present' do
     cop.config[cop.name] = { 'Severity' => 'warning' }
-    cop.add_offence(nil, location, 'message')
+    cop.add_offense(nil, location, 'message')
 
-    expect(cop.offences.first.severity).to eq(:warning)
+    expect(cop.offenses.first.severity).to eq(:warning)
   end
 
   it 'will warn if custom severity is invalid' do
     cop.config[cop.name] = { 'Severity' => 'superbad' }
     expect(cop).to receive(:warn)
-    cop.add_offence(nil, location, 'message')
+    cop.add_offense(nil, location, 'message')
   end
 
-  it 'registers offence with its name' do
+  it 'registers offense with its name' do
     cop = Rubocop::Cop::Style::For.new
-    cop.add_offence(nil, location, 'message')
-    expect(cop.offences.first.cop_name).to eq('For')
+    cop.add_offense(nil, location, 'message')
+    expect(cop.offenses.first.cop_name).to eq('For')
   end
 
   context 'with no submodule' do

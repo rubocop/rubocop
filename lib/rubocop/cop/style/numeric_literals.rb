@@ -7,7 +7,7 @@ module Rubocop
       # of digits in them.
       class NumericLiterals < Cop
         # The parameter is called MinDigits (meaning the minimum number of
-        # digits for which an offence can be registered), but essentially it's
+        # digits for which an offense can be registered), but essentially it's
         # a Max parameter (the maximum number of something that's allowed).
         include ConfigurableMax
 
@@ -37,10 +37,10 @@ module Rubocop
           if int.size >= min_digits
             case int
             when /^\d+$/
-              add_offence(node, :expression) { self.max = int.size }
+              add_offense(node, :expression) { self.max = int.size }
             when /\d{4}/, /_\d{1,2}_/
-              add_offence(node, :expression) do
-                self.config_to_allow_offences = { 'Enabled' => false }
+              add_offense(node, :expression) do
+                self.config_to_allow_offenses = { 'Enabled' => false }
               end
             end
           end

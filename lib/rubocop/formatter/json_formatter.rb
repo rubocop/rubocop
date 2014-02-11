@@ -14,7 +14,7 @@ module Rubocop
         @output_hash = {
           metadata: metadata_hash,
           files:    [],
-          summary:  { offence_count: 0 }
+          summary:  { offense_count: 0 }
         }
       end
 
@@ -22,9 +22,9 @@ module Rubocop
         output_hash[:summary][:target_file_count] = target_files.count
       end
 
-      def file_finished(file, offences)
-        output_hash[:files] << hash_for_file(file, offences)
-        output_hash[:summary][:offence_count] += offences.count
+      def file_finished(file, offenses)
+        output_hash[:files] << hash_for_file(file, offenses)
+        output_hash[:summary][:offense_count] += offenses.count
       end
 
       def finished(inspected_files)
@@ -42,28 +42,28 @@ module Rubocop
         }
       end
 
-      def hash_for_file(file, offences)
+      def hash_for_file(file, offenses)
         {
           path:     relative_path(file),
-          offences: offences.map { |o| hash_for_offence(o) }
+          offenses: offenses.map { |o| hash_for_offense(o) }
         }
       end
 
-      def hash_for_offence(offence)
+      def hash_for_offense(offense)
         {
-          severity: offence.severity,
-          message:  offence.message,
-          cop_name: offence.cop_name,
-          corrected: offence.corrected?,
-          location: hash_for_location(offence)
+          severity: offense.severity,
+          message:  offense.message,
+          cop_name: offense.cop_name,
+          corrected: offense.corrected?,
+          location: hash_for_location(offense)
         }
       end
 
-      # TODO: Consider better solution for Offence#real_column.
-      def hash_for_location(offence)
+      # TODO: Consider better solution for Offense#real_column.
+      def hash_for_location(offense)
         {
-          line:   offence.line,
-          column: offence.real_column
+          line:   offense.line,
+          column: offense.real_column
         }
       end
 

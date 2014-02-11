@@ -48,7 +48,7 @@ module Rubocop
                    '  [e]macs',
                    '  [j]son',
                    '  [f]iles',
-                   '  [o]ffences',
+                   '  [o]ffenses',
                    '  custom formatter class name']
 
     def add_formatting_options(opts, args)
@@ -88,10 +88,10 @@ module Rubocop
       option(opts, '-d', '--debug', 'Display debug info.')
       option(opts,
              '-D', '--display-cop-names',
-             'Display cop names in offence messages.')
+             'Display cop names in offense messages.')
       option(opts, '-R', '--rails', 'Run extra Rails cops.')
       option(opts, '-l', '--lint', 'Run only lint cops.')
-      option(opts, '-a', '--auto-correct', 'Auto-correct offences.')
+      option(opts, '-a', '--auto-correct', 'Auto-correct offenses.')
 
       @options[:color] = true
       opts.on('-n', '--no-color', 'Disable color output.') do

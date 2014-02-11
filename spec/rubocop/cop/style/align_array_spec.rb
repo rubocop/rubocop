@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Rubocop::Cop::Style::AlignArray do
   subject(:cop) { described_class.new }
 
-  it 'registers an offence for misaligned array elements' do
+  it 'registers an offense for misaligned array elements' do
     inspect_source(cop, ['array = [',
                          '  a,',
                          '   b,',
@@ -25,18 +25,18 @@ describe Rubocop::Cop::Style::AlignArray do
                          '  c,',
                          '  d',
                          ']'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'accepts single line array' do
     inspect_source(cop, 'array = [ a, b ]')
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'accepts several elements per line' do
     inspect_source(cop, ['array = [ a, b,',
                          '          c, d ]'])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'auto-corrects alignment' do

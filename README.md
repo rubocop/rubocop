@@ -38,7 +38,7 @@ automatically fix some of the problems for you.
 	- [Simple](#simple)
 	- [File List Formatter](#file-list-formatter)
 	- [JSON Formatter](#json-formatter)
-	- [OffenceCount Formatter](#offencecount-formatter)
+	- [OffenseCount Formatter](#offensecount-formatter)
 	- [Custom Formatters](#custom-formatters)
 		- [Creating Custom Formatter](#creating-custom-formatter)
 		- [Using Custom Formatter in Command Line](#using-custom-formatter-in-command-line)
@@ -93,7 +93,7 @@ end
 Running RuboCop on it (assuming it's in a file named `test.rb`) would produce the following report:
 
 ```
-Offences:
+Offenses:
 
 test.rb:1:5: C: Use snake_case for methods and variables.
 def badName
@@ -105,7 +105,7 @@ test.rb:4:5: W: end at 4, 4 is not aligned with if at 2, 2
     end
     ^^^
 
-1 file inspected, 3 offences detected
+1 file inspected, 3 offenses detected
 ```
 
 For more details check the available command-line options:
@@ -119,14 +119,14 @@ Command flag              | Description
 `-v/--version`            | Displays the current version and exits
 `-V/--verbose-version`    | Displays the current version plus the version of Parser and Ruby
 `-d/--debug`              | Displays some extra debug output
-`-D/--display-cop-names`  | Displays cop names in offence messages.
+`-D/--display-cop-names`  | Displays cop names in offense messages.
 `-c/--config`             | Run with specified config file
 `-f/--format`             | Choose a formatter
 `-o/--out`                | Write output to a file instead of STDOUT
 `-r/--require`            | Require Ruby file
 `-R/--rails`              | Run extra Rails cops
 `-l/--lint`               | Run only lint cops
-`-a/--auto-correct`       | Auto-correct certain offences *Note:* Experimental - use with caution
+`-a/--auto-correct`       | Auto-correct certain offenses *Note:* Experimental - use with caution
 `--only`                  | Run only the specified cop
 `--auto-gen-config`       | Generate a configuration file acting as a TODO list
 `--show-cops`             | Shows available cops and their configuration
@@ -290,12 +290,12 @@ CyclomaticComplexity:
 
 ### Automatically Generated Configuration
 
-If you have a code base with an overwhelming amount of offences, it can be a
+If you have a code base with an overwhelming amount of offenses, it can be a
 good idea to use `rubocop --auto-gen-config` and add an `inherit_from:
 rubocop-todo.yml` in your `.rubocop.yml`. The generated file `rubocop-todo.yml`
-contains configuration to disable all cops that currently detect an offence in
+contains configuration to disable all cops that currently detect an offense in
 the code. Then you can start removing the entries in the generated file one by
-one as you work through all the offences in the code.
+one as you work through all the offenses in the code.
 
 ## Disabling Cops within Source Code
 
@@ -341,11 +341,11 @@ $ rubocop --format simple
 # Progress (default) format to the file result.txt.
 $ rubocop --out result.txt
 
-# Both progress and offence count formats to $stdout.
-# The offence count formatter outputs only the final summary,
+# Both progress and offense count formats to $stdout.
+# The offense count formatter outputs only the final summary,
 # so you'll mostly see the outputs from the progress formatter,
-# and at the end the offence count summary will be outputted.
-$ rubocop --format progress --format offences
+# and at the end the offense count summary will be outputted.
+$ rubocop --format progress --format offenses
 
 # Progress format to $stdout, and JSON format to the file rubocop.json.
 $ rubocop --format progress --format json --out rubocop.json
@@ -363,16 +363,16 @@ $ rubocop --output result.txt --format simple
 ### Progress Formatter (default)
 
 The default `progress` formatter outputs a character for each inspected file,
-and at the end it displays all detected offences in the `clang` format.
+and at the end it displays all detected offenses in the `clang` format.
 A `.` represents a clean file, and each of the capital letters means
-the severest offence (convention, warning, error or fatal) found in a file.
+the severest offense (convention, warning, error or fatal) found in a file.
 
 ```
 $ rubocop
 Inspecting 26 files
 ..W.C....C..CWCW.C...WC.CC
 
-Offences:
+Offenses:
 
 lib/foo.rb:6:5: C: Missing top-level class documentation comment.
     class Foo
@@ -380,12 +380,12 @@ lib/foo.rb:6:5: C: Missing top-level class documentation comment.
 
 ...
 
-26 files inspected, 46 offences detected
+26 files inspected, 46 offenses detected
 ```
 
 ### Clang Formatter
 
-The `clang` formatter displays the offences in a manner similar to `clang`:
+The `clang` formatter displays the offenses in a manner similar to `clang`:
 
 ```
 $ rubocop test.rb
@@ -399,12 +399,12 @@ test.rb:4:5: W: end at 4, 4 is not aligned with if at 2, 2
     end
     ^^^
 
-1 file inspected, 3 offences detected
+1 file inspected, 3 offenses detected
 ```
 
 ### Emacs
 
-The `emacs` formatter displays the offences in a format suitable for consumption by `Emacs` (and possibly other tools).
+The `emacs` formatter displays the offenses in a format suitable for consumption by `Emacs` (and possibly other tools).
 
 ```
 $ rubocop --format emacs test.rb
@@ -413,7 +413,7 @@ $ rubocop --format emacs test.rb
 /Users/bozhidar/projects/test.rb:2:3: C: Favor modifier if/unless usage when you have a single-line body. Another good alternative is the usage of control flow &&/||.
 /Users/bozhidar/projects/test.rb:4:5: W: end at 4, 4 is not aligned with if at 2, 2
 
-1 file inspected, 3 offences detected
+1 file inspected, 3 offenses detected
 ```
 
 ### Simple
@@ -428,14 +428,14 @@ C:  1:  1: Use snake_case for methods and variables.
 C:  2:  3: Favor modifier if/unless usage when you have a single-line body. Another good alternative is the usage of control flow &&/||.
 W:  4:  5: end at 4, 4 is not aligned with if at 2, 2
 
-1 file inspected, 3 offences detected
+1 file inspected, 3 offenses detected
 ```
 
 ### File List Formatter
 
-Sometimes you might want to just open all files with offences in your
+Sometimes you might want to just open all files with offenses in your
 favorite editor. This formatter outputs just the names of the files
-with offences in them and makes it possible to do something like:
+with offenses in them and makes it possible to do something like:
 
 ```
 $ rubocop --format files | xargs vim
@@ -457,10 +457,10 @@ The JSON structure is like the following example:
   },
   "files": [{
       "path": "lib/foo.rb",
-      "offences": []
+      "offenses": []
     }, {
       "path": "lib/bar.rb",
-      "offences": [{
+      "offenses": [{
           "severity": "convention",
           "message": "Line is too long. [81/79]",
           "cop_name": "LineLength",
@@ -483,23 +483,23 @@ The JSON structure is like the following example:
     }
   ],
   "summary": {
-    "offence_count": 2,
+    "offense_count": 2,
     "target_file_count": 2,
     "inspected_file_count": 2
   }
 }
 ```
 
-### OffenceCount Formatter
+### OffenseCount Formatter
 
 Sometimes when first applying RuboCop to a codebase, it's nice to be able to
 see where most of your style cleanup is going to be spent.
 
-With this in mind, you can use the offence count formatter to outline the offended
-cops and the number of offences found for each by running:
+With this in mind, you can use the offense count formatter to outline the offended
+cops and the number of offenses found for each by running:
 
 ```
-$ rubocop --format offences
+$ rubocop --format offenses
 
 87   Documentation
 12   DotPosition
@@ -529,7 +529,7 @@ or implement all formatter API methods by duck typing.
 Please see the documents below for more formatter API details.
 
 * [Rubocop::Formatter::BaseFormatter](http://rubydoc.info/gems/rubocop/Rubocop/Formatter/BaseFormatter)
-* [Rubocop::Cop::Offence](http://rubydoc.info/gems/rubocop/Rubocop/Cop/Offence)
+* [Rubocop::Cop::Offense](http://rubydoc.info/gems/rubocop/Rubocop/Cop/Offense)
 * [Parser::Source::Range](http://rubydoc.info/github/whitequark/parser/Parser/Source/Range)
 
 #### Using Custom Formatter in Command Line

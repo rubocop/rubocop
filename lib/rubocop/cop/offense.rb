@@ -2,8 +2,8 @@
 
 module Rubocop
   module Cop
-    # An Offence represents a style violation detected by RuboCop.
-    class Offence
+    # An offense represents a style violation detected by RuboCop.
+    class Offense
       include Comparable
 
       # @api private
@@ -57,7 +57,7 @@ module Rubocop
       # @!attribute [r] corrected
       #
       # @return [Boolean]
-      #   whether this offence is automatically corrected.
+      #   whether this offense is automatically corrected.
       attr_reader :corrected
       alias_method :corrected?, :corrected
 
@@ -111,7 +111,7 @@ module Rubocop
       # @api public
       #
       # @return [Boolean]
-      #   returns `true` if two offences contain same attributes
+      #   returns `true` if two offenses contain same attributes
       def ==(other)
         severity == other.severity && line == other.line &&
           column == other.column && message == other.message &&
@@ -121,7 +121,7 @@ module Rubocop
       # @api public
       #
       # Returns `-1`, `0` or `+1`
-      # if this offence is less than, equal to, or greater than `other`.
+      # if this offense is less than, equal to, or greater than `other`.
       #
       # @return [Integer]
       #   comparison result

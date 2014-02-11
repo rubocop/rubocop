@@ -8,24 +8,24 @@ describe Rubocop::Cop::Style::LambdaCall, :config do
   context 'when style is set to call' do
     let(:cop_config) { { 'EnforcedStyle' => 'call' } }
 
-    it 'registers an offence for x.()' do
+    it 'registers an offense for x.()' do
       inspect_source(cop,
                      ['x.(a, b)'])
-      expect(cop.offences.size).to eq(1)
-      expect(cop.config_to_allow_offences).to eq('EnforcedStyle' => 'braces')
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'braces')
     end
 
-    it 'registers an offence for correct + opposite' do
+    it 'registers an offense for correct + opposite' do
       inspect_source(cop,
                      ['x.call(a, b)',
                       'x.(a, b)'])
-      expect(cop.offences.size).to eq(1)
-      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
     it 'accepts x.call()' do
       inspect_source(cop, ['x.call(a, b)'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'auto-corrects x.() to x.call()' do
@@ -37,24 +37,24 @@ describe Rubocop::Cop::Style::LambdaCall, :config do
   context 'when style is set to braces' do
     let(:cop_config) { { 'EnforcedStyle' => 'braces' } }
 
-    it 'registers an offence for x.call()' do
+    it 'registers an offense for x.call()' do
       inspect_source(cop,
                      ['x.call(a, b)'])
-      expect(cop.offences.size).to eq(1)
-      expect(cop.config_to_allow_offences).to eq('EnforcedStyle' => 'call')
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'call')
     end
 
-    it 'registers an offence for opposite + correct' do
+    it 'registers an offense for opposite + correct' do
       inspect_source(cop,
                      ['x.call(a, b)',
                       'x.(a, b)'])
-      expect(cop.offences.size).to eq(1)
-      expect(cop.config_to_allow_offences).to eq('Enabled' => false)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
     it 'accepts x.()' do
       inspect_source(cop, ['x.(a, b)'])
-      expect(cop.offences).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'auto-corrects x.call() to x.()' do

@@ -11,13 +11,13 @@ describe Rubocop::Cop::Style::Documentation do
                         })
   end
 
-  it 'registers an offence for non-empty class' do
+  it 'registers an offense for non-empty class' do
     inspect_source(cop,
                    ['class My_Class',
                     '  TEST = 20',
                     'end'
                    ])
-    expect(cop.offences.size).to eq(1)
+    expect(cop.offenses.size).to eq(1)
   end
 
   it 'does not consider comment followed by empty line to be class ' \
@@ -30,26 +30,26 @@ describe Rubocop::Cop::Style::Documentation do
                     '  TEST = 20',
                     'end'
                    ])
-    expect(cop.offences.size).to eq(1)
+    expect(cop.offenses.size).to eq(1)
   end
 
-  it 'registers an offence for non-namespace' do
+  it 'registers an offense for non-namespace' do
     inspect_source(cop,
                    ['module My_Class',
                     '  TEST = 20',
                     'end'
                    ])
-    expect(cop.offences.size).to eq(1)
+    expect(cop.offenses.size).to eq(1)
   end
 
-  it 'registers an offence for empty module without documentation' do
+  it 'registers an offense for empty module without documentation' do
     # Because why would you have an empty module? It requires some
     # explanation.
     inspect_source(cop,
                    ['module Test',
                     'end'
                    ])
-    expect(cop.offences.size).to eq(1)
+    expect(cop.offenses.size).to eq(1)
   end
 
   it 'accepts non-empty class with documentation' do
@@ -59,17 +59,17 @@ describe Rubocop::Cop::Style::Documentation do
                     '  TEST = 20',
                     'end'
                    ])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
-  it 'registers an offence for non-empty class with annotation comment' do
+  it 'registers an offense for non-empty class with annotation comment' do
     inspect_source(cop,
                    ['# OPTIMIZE: Make this faster.',
                     'class My_Class',
                     '  TEST = 20',
                     'end'
                    ])
-    expect(cop.offences.size).to eq(1)
+    expect(cop.offenses.size).to eq(1)
   end
 
   it 'accepts non-empty module with documentation' do
@@ -79,7 +79,7 @@ describe Rubocop::Cop::Style::Documentation do
                     '  TEST = 20',
                     'end'
                    ])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'accepts empty class without documentation' do
@@ -87,7 +87,7 @@ describe Rubocop::Cop::Style::Documentation do
                    ['class My_Class',
                     'end'
                    ])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'accepts namespace module without documentation' do
@@ -97,7 +97,7 @@ describe Rubocop::Cop::Style::Documentation do
                     '  class B; end',
                     'end'
                    ])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'accepts namespace class without documentation' do
@@ -107,7 +107,7 @@ describe Rubocop::Cop::Style::Documentation do
                     '  class B; end',
                     'end'
                    ])
-    expect(cop.offences).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'does not raise an error for an implicit match conditional' do

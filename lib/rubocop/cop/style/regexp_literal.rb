@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     module Style
-      # This cop checks for regexp literals and reports offences based
+      # This cop checks for regexp literals and reports offenses based
       # on how many escaped slashes there are in the regexp and on the
       # value of the configuration parameter MaxSlashes.
       class RegexpLiteral < Cop
@@ -24,7 +24,7 @@ module Rubocop
           end
 
           if msg
-            add_offence(node, :expression, msg) { self.max = safe_setting }
+            add_offense(node, :expression, msg) { self.max = safe_setting }
           end
         end
 

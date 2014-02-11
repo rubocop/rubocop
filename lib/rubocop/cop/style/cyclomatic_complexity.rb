@@ -29,7 +29,7 @@ module Rubocop
 
           max = cop_config['Max']
           if complexity > max
-            add_offence(node, :keyword,
+            add_offense(node, :keyword,
                         format(MSG, method_name, complexity, max)) do
               self.max = complexity
             end

@@ -5,26 +5,26 @@ module Rubocop
     # Handles `EnforcedStyle` configuration parameters.
     module ConfigurableEnforcedStyle
       def opposite_style_detected
-        self.config_to_allow_offences ||=
+        self.config_to_allow_offenses ||=
           { parameter_name => alternative_style.to_s }
-        both_styles_detected if config_to_allow_offences['Enabled']
+        both_styles_detected if config_to_allow_offenses['Enabled']
       end
 
       def correct_style_detected
         # Enabled:true indicates, later when the opposite style is detected,
         # that the correct style is used somewhere.
-        self.config_to_allow_offences ||= { 'Enabled' => true }
-        both_styles_detected if config_to_allow_offences[parameter_name]
+        self.config_to_allow_offenses ||= { 'Enabled' => true }
+        both_styles_detected if config_to_allow_offenses[parameter_name]
       end
 
       def both_styles_detected
         # Both correct and opposite styles exist.
-        self.config_to_allow_offences = { 'Enabled' => false }
+        self.config_to_allow_offenses = { 'Enabled' => false }
       end
 
       def unrecognized_style_detected
         # All we can do is to disable.
-        self.config_to_allow_offences = { 'Enabled' => false }
+        self.config_to_allow_offenses = { 'Enabled' => false }
       end
 
       def style

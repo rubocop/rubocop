@@ -9,7 +9,7 @@ module Rubocop
 
         def on_when(node)
           if node.loc.begin && node.loc.begin.is?(';')
-            add_offence(node, :begin)
+            add_offense(node, :begin)
           end
         end
 
