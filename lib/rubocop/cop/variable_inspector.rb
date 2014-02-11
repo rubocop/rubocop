@@ -278,19 +278,8 @@ module Rubocop
       # as referenced by ignoring AST order since they would be referenced
       # in next iteration.
       def mark_assignments_as_referenced_in_loop(node)
-        referenced_variable_names_in_loop = []
-        assignment_nodes_in_loop = []
-
-        # #scan does not consider scope,
-        # but we don't need to care about it here.
-        scan(node) do |scanning_node|
-          case scanning_node.type
-          when :lvar
-            referenced_variable_names_in_loop << scanning_node.children.first
-          when :lvasgn
-            assignment_nodes_in_loop << scanning_node
-          end
-        end
+        referenced_variable_names_in_loop, assignment_nodes_in_loop =
+          find_variables_in_loop(node)
 
         referenced_variable_names_in_loop.each do |name|
           variable = variable_table.find_variable(name)
@@ -304,6 +293,27 @@ module Rubocop
             assignment.reference!
           end
         end
+      end
+
+      def find_variables_in_loop(loop_node)
+        referenced_variable_names_in_loop = []
+        assignment_nodes_in_loop = []
+
+        # #scan does not consider scope,
+        # but we don't need to care about it here.
+        scan(loop_node) do |node|
+          case node.type
+          when :lvar
+            referenced_variable_names_in_loop << node.children.first
+          when *OPERATOR_ASSIGNMENT_TYPES
+            assignment_node = node.children.first
+            referenced_variable_names_in_loop << assignment_node.children.first
+          when :lvasgn
+            assignment_nodes_in_loop << node
+          end
+        end
+
+        [referenced_variable_names_in_loop, assignment_nodes_in_loop]
       end
 
       # Simple recursive scan

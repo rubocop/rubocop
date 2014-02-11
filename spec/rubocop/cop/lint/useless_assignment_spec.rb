@@ -479,6 +479,8 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     end
 
     it 'registers an offense' do
+      pending 'Requires an advanced logic that checks whether the return ' \
+              'value of an operator assignment is used or not.'
       inspect_source(cop, source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.message)
@@ -1171,6 +1173,25 @@ describe Rubocop::Cop::Lint::UselessAssignment do
         'rescue',
         '  fail if retried',
         '  retried = true',
+        '  retry',
+        'end'
+      ]
+    end
+
+    include_examples 'accepts'
+    include_examples 'mimics MRI 2.1'
+  end
+
+  context 'when a variable is assigned with operator assignment ' \
+          'in rescue and would be referenced with retry' do
+    let(:source) do
+      [
+        'retry_count = 0',
+        '',
+        'begin',
+        '  do_something',
+        'rescue',
+        '  fail if (retry_count += 1) > 3',
         '  retry',
         'end'
       ]
