@@ -414,12 +414,9 @@ The `emacs` formatter displays the offenses in a format suitable for consumption
 
 ```
 $ rubocop --format emacs test.rb
-
 /Users/bozhidar/projects/test.rb:1:1: C: Use snake_case for methods and variables.
 /Users/bozhidar/projects/test.rb:2:3: C: Favor modifier if/unless usage when you have a single-line body. Another good alternative is the usage of control flow &&/||.
 /Users/bozhidar/projects/test.rb:4:5: W: end at 4, 4 is not aligned with if at 2, 2
-
-1 file inspected, 3 offenses detected
 ```
 
 ### Simple
@@ -428,7 +425,6 @@ The name of the formatter says it all :-)
 
 ```
 $ rubocop --format simple test.rb
-
 == test.rb ==
 C:  1:  1: Use snake_case for methods and variables.
 C:  2:  3: Favor modifier if/unless usage when you have a single-line body. Another good alternative is the usage of control flow &&/||.
