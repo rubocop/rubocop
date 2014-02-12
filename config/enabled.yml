@@ -581,6 +581,10 @@ LiteralInCondition:
   Description: 'Checks of literals used in conditions.'
   Enabled: true
 
+LiteralInInterpolation:
+  Description: 'Checks for literals used in interpolation.'
+  Enabled: true
+  
 Loop:
   Description: >-
                  Use Kernel#loop with break rather than begin/end/until or
