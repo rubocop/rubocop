@@ -73,7 +73,7 @@ module Rubocop
       show_all = @options[:show_cops].empty?
 
       if show_all
-        puts "# Available cops (#{cops.length}) + config for #{Dir.pwd.to_s}: "
+        puts "# Available cops (#{cops.length}) + config for #{Dir.pwd}: "
       end
 
       cops.types.sort!.each { |type| print_cops_of_type(cops, type, show_all) }
