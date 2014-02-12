@@ -21,34 +21,35 @@ automatically fix some of the problems for you.
 
 - [Installation](#installation)
 - [Basic Usage](#basic-usage)
-	- [Cops](#cops)
-		- [Style](#style)
-		- [Lint](#lint)
-		- [Rails](#rails)
+    - [Cops](#cops)
+        - [Style](#style)
+        - [Lint](#lint)
+        - [Rails](#rails)
 - [Configuration](#configuration)
-	- [Inheritance](#inheritance)
-	- [Defaults](#defaults)
-	- [Including/Excluding files](#includingexcluding-files)
-	- [Automatically Generated Configuration](#automatically-generated-configuration)
+    - [Inheritance](#inheritance)
+    - [Defaults](#defaults)
+    - [Including/Excluding files](#includingexcluding-files)
+    - [Automatically Generated Configuration](#automatically-generated-configuration)
 - [Disabling Cops within Source Code](#disabling-cops-within-source-code)
 - [Formatters](#formatters)
-	- [Progress Formatter (default)](#progress-formatter-default)
-	- [Clang Formatter](#clang-formatter)
-	- [Emacs](#emacs)
-	- [Simple](#simple)
-	- [File List Formatter](#file-list-formatter)
-	- [JSON Formatter](#json-formatter)
-	- [OffenseCount Formatter](#offensecount-formatter)
-	- [Custom Formatters](#custom-formatters)
-		- [Creating Custom Formatter](#creating-custom-formatter)
-		- [Using Custom Formatter in Command Line](#using-custom-formatter-in-command-line)
+    - [Progress Formatter (default)](#progress-formatter-default)
+    - [Clang Style Formatter](#clang-style-formatter)
+    - [Fuubar Style Formatter](#fuubar-style-formatter)
+    - [Emacs Style Formatter](#emacs-style-formatter)
+    - [Simple Formatter](#simple-formatter)
+    - [File List Formatter](#file-list-formatter)
+    - [JSON Formatter](#json-formatter)
+    - [Offense Count Formatter](#offense-count-formatter)
+    - [Custom Formatters](#custom-formatters)
+        - [Creating Custom Formatter](#creating-custom-formatter)
+        - [Using Custom Formatter in Command Line](#using-custom-formatter-in-command-line)
 - [Compatibility](#compatibility)
 - [Editor integration](#editor-integration)
-	- [Emacs](#emacs-1)
-	- [Vim](#vim)
-	- [Sublime Text 2](#sublime-text-2)
-	- [Brackets](#brackets)
-	- [Other Editors](#other-editors)
+    - [Emacs](#emacs-1)
+    - [Vim](#vim)
+    - [Sublime Text 2](#sublime-text-2)
+    - [Brackets](#brackets)
+    - [Other Editors](#other-editors)
 - [Guard integration](#guard-integration)
 - [Rake integration](#rake-integration)
 - [Team](#team)
@@ -387,7 +388,7 @@ lib/foo.rb:6:5: C: Missing top-level class documentation comment.
 26 files inspected, 46 offenses detected
 ```
 
-### Clang Formatter
+### Clang Style Formatter
 
 The `clang` formatter displays the offenses in a manner similar to `clang`:
 
@@ -406,7 +407,24 @@ test.rb:4:5: W: end at 4, 4 is not aligned with if at 2, 2
 1 file inspected, 3 offenses detected
 ```
 
-### Emacs
+### Fuubar Style Formatter
+
+The `fuubar` style formatter displays a progress bar
+and shows details of offenses in the `clang` format as soon as they are detected.
+This is inspired by the [Fuubar](https://github.com/jeffkreeftmeijer/fuubar) formatter for RSpec.
+
+```
+$ rubocop --format fuubar
+lib/foo.rb.rb:1:1: C: Use snake_case for methods and variables.
+def badName
+    ^^^^^^^
+lib/bar.rb:13:14: W: File.exists? is deprecated in favor of File.exist?.
+        File.exists?(path)
+             ^^^^^^^
+ 22/53 files |======== 43 ========>                           |  ETA: 00:00:02
+```
+
+### Emacs Style Formatter
 
 **Machine-parsable**
 
@@ -419,7 +437,7 @@ $ rubocop --format emacs test.rb
 /Users/bozhidar/projects/test.rb:4:5: W: end at 4, 4 is not aligned with if at 2, 2
 ```
 
-### Simple
+### Simple Formatter
 
 The name of the formatter says it all :-)
 
@@ -496,7 +514,7 @@ The JSON structure is like the following example:
 }
 ```
 
-### OffenseCount Formatter
+### Offense Count Formatter
 
 Sometimes when first applying RuboCop to a codebase, it's nice to be able to
 see where most of your style cleanup is going to be spent.

@@ -45,9 +45,10 @@ module Rubocop
                    '  [p]rogress (default)',
                    '  [s]imple',
                    '  [c]lang',
+                   '  [fu]ubar',
                    '  [e]macs',
                    '  [j]son',
-                   '  [f]iles',
+                   '  [fi]les',
                    '  [o]ffenses',
                    '  custom formatter class name']
 

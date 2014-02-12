@@ -46,9 +46,10 @@ Usage: rubocop [options] [file1, file2, ...]
                                        [p]rogress (default)
                                        [s]imple
                                        [c]lang
+                                       [fu]ubar
                                        [e]macs
                                        [j]son
-                                       [f]iles
+                                       [fi]les
                                        [o]ffenses
                                        custom formatter class name
     -o, --out FILE                   Write output to a file instead of STDOUT.
