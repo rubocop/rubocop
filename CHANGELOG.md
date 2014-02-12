@@ -6,6 +6,7 @@
 
 * New cop `FileName` makes sure that source files have snake_case names. ([@bbatsov][])
 * New cop `DeprecatedClassMethods` checks for deprecated class methods. ([@bbatsov][])
+* New cop `StringConversionInInterpolation` checks for redundant `Object#to_s` in string interpolation. ([@bbatsov][])
 * [#743](https://github.com/bbatsov/rubocop/issues/743): `SingleLineMethods` cop does auto-correction. ([@jonas054][])
 * [#743](https://github.com/bbatsov/rubocop/issues/743): `Semicolon` cop does auto-correction. ([@jonas054][])
 * [#743](https://github.com/bbatsov/rubocop/issues/743): `EmptyLineBetweenDefs` cop does auto-correction. ([@jonas054][])

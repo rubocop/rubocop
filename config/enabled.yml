@@ -609,6 +609,10 @@ ShadowingOuterLocalVariable:
                  for block arguments or block local variables.
   Enabled: true
 
+StringConversionInInterpolation:
+  Description: 'Checks for Object#to_s usage in string interpolation.'
+  Enabled: true
+  
 UnreachableCode:
   Description: 'Unreachable code.'
   Enabled: true
