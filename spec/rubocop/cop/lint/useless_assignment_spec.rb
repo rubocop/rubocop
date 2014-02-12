@@ -460,6 +460,23 @@ describe Rubocop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
+  context 'when a setter is invoked with operator assignment in loop body' do
+    let(:source) do
+      [
+        'def some_method',
+        '  obj = {}',
+        '',
+        '  while obj[:count] < 100',
+        '    obj[:count] += 1',
+        '  end',
+        'end'
+      ]
+    end
+
+    include_examples 'accepts'
+    include_examples 'mimics MRI 2.1'
+  end
+
   context "when a variable is reassigned in loop body but won't " \
           'be referenced either next iteration or loop condition' do
     let(:source) do
