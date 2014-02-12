@@ -10,6 +10,7 @@ module Rubocop
         'progress' => ProgressFormatter,
         'simple'   => SimpleTextFormatter,
         'clang'    => ClangStyleFormatter,
+        'fuubar'   => FuubarStyleFormatter,
         'emacs'    => EmacsStyleFormatter,
         'json'     => JSONFormatter,
         'files'    => FileListFormatter,

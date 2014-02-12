@@ -34,6 +34,7 @@ automatically fix some of the problems for you.
 - [Formatters](#formatters)
     - [Progress Formatter (default)](#progress-formatter-default)
     - [Clang Style Formatter](#clang-style-formatter)
+    - [Fuubar Style Formatter](#fuubar-style-formatter)
     - [Emacs Style Formatter](#emacs-style-formatter)
     - [Simple Formatter](#simple-formatter)
     - [File List Formatter](#file-list-formatter)
@@ -404,6 +405,23 @@ test.rb:4:5: W: end at 4, 4 is not aligned with if at 2, 2
     ^^^
 
 1 file inspected, 3 offenses detected
+```
+
+### Fuubar Style Formatter
+
+The `fuubar` style formatter displays a progress bar
+and shows details of offenses in the `clang` format as soon as they are detected.
+This is inspired by the [Fuubar](https://github.com/jeffkreeftmeijer/fuubar) formatter for RSpec.
+
+```
+$ rubocop --format fuubar
+lib/foo.rb.rb:1:1: C: Use snake_case for methods and variables.
+def badName
+    ^^^^^^^
+lib/bar.rb:13:14: W: File.exists? is deprecated in favor of File.exist?.
+        File.exists?(path)
+             ^^^^^^^
+ 22/53 files |======== 43 ========>                           |  ETA: 00:00:02
 ```
 
 ### Emacs Style Formatter
