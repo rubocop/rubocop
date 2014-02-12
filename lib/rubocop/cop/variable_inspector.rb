@@ -306,8 +306,10 @@ module Rubocop
           when :lvar
             referenced_variable_names_in_loop << node.children.first
           when *OPERATOR_ASSIGNMENT_TYPES
-            assignment_node = node.children.first
-            referenced_variable_names_in_loop << assignment_node.children.first
+            asgn_node = node.children.first
+            if asgn_node.type == :lvasgn
+              referenced_variable_names_in_loop << asgn_node.children.first
+            end
           when :lvasgn
             assignment_nodes_in_loop << node
           end
