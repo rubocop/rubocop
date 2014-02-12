@@ -17,13 +17,11 @@ module Rubocop
       # than the start of the line where the opening curly brace is.
       class IndentHash < Cop
         include AutocorrectAlignment
+        include ConfigurableEnforcedStyle
 
         def on_hash(node)
           left_brace = node.loc.begin
-          if left_brace
-            check(node, left_brace.source_line =~ /\S/,
-                  'the start of the line where the left curly brace is')
-          end
+          check(node, left_brace, nil) if left_brace
         end
 
         def on_send(node)
@@ -35,9 +33,8 @@ module Rubocop
             on_node(:hash, arg, :send) do |hash_node|
               left_brace = hash_node.loc.begin
               if left_brace && left_brace.line == left_parenthesis.line
-                check(hash_node, left_parenthesis.column + 1,
-                      'the first position after the preceding left ' \
-                      'parenthesis')
+                check(hash_node, left_brace, left_parenthesis)
+                ignore_node(hash_node)
               end
             end
           end
@@ -45,7 +42,7 @@ module Rubocop
 
         private
 
-        def check(hash_node, base_column, base_description)
+        def check(hash_node, left_brace, left_parenthesis)
           return if ignored_node?(hash_node)
 
           first_pair = hash_node.children.first
@@ -54,12 +51,62 @@ module Rubocop
           left_brace = hash_node.loc.begin
           return if first_pair.loc.expression.line == left_brace.line
 
-          expected_column = base_column + IndentationWidth::CORRECT_INDENTATION
-          @column_delta = expected_column - first_pair.loc.expression.column
-          if @column_delta != 0
-            add_offense(first_pair, :expression, message(base_description))
+          column = first_pair.loc.expression.column
+          @column_delta =
+            expected_column(left_brace, left_parenthesis) - column
+
+          if @column_delta == 0
+            correct_style_detected
+          else
+            add_offense(first_pair, :expression,
+                        message(base_description(left_parenthesis))) do
+              if column == unexpected_column(left_brace, left_parenthesis)
+                opposite_style_detected
+              else
+                unrecognized_style_detected
+              end
+            end
           end
-          ignore_node(hash_node)
+        end
+
+        # Returns the expected, or correct indentation.
+        def expected_column(left_brace, left_parenthesis)
+          base_column =
+            if left_parenthesis && style == :special_inside_parentheses
+              left_parenthesis.column + 1
+            else
+              left_brace.source_line =~ /\S/
+            end
+
+          base_column + IndentationWidth::CORRECT_INDENTATION
+        end
+
+        # Returns the description of what the correct indentation is based on.
+        def base_description(left_parenthesis)
+          if left_parenthesis && style == :special_inside_parentheses
+            'the first position after the preceding left parenthesis'
+          else
+            'the start of the line where the left curly brace is'
+          end
+        end
+
+        # Returns the "unexpected column", which is the column that would be
+        # correct if the configuration was changed.
+        def unexpected_column(left_brace, left_parenthesis)
+          # Set a crazy value by default, indicating that there's no other
+          # configuration that can be chosen to make the used indentation
+          # accepted.
+          unexpected_base_column = -1000
+
+          if left_parenthesis
+            unexpected_base_column = if style == :special_inside_parentheses
+                                       left_brace.source_line =~ /\S/
+                                     else
+                                       left_parenthesis.column + 1
+                                     end
+          end
+
+          unexpected_base_column + IndentationWidth::CORRECT_INDENTATION
         end
 
         def message(base_description)
