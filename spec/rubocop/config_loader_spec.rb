@@ -188,10 +188,10 @@ describe Rubocop::ConfigLoader do
       it 'returns the ancestor configuration plus local overrides' do
         config = default_config
                    .merge('LineLength' => {
-                          'Description' =>
-                             default_config['LineLength']['Description'],
-                          'Enabled' => true,
-                          'Max' => 77
+                            'Description' =>
+                               default_config['LineLength']['Description'],
+                            'Enabled' => true,
+                            'Max' => 77
                           },
                           'MethodLength' => {
                             'Description' =>
