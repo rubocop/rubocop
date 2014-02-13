@@ -33,3 +33,11 @@ require 'yard'
 YARD::Rake::YardocTask.new
 
 Rubocop::RakeTask.new
+
+task :console do
+  require 'irb'
+  require 'irb/completion'
+  require 'rubocop'
+  ARGV.clear
+  IRB.start
+end
