@@ -229,8 +229,7 @@ describe Rubocop::CLI, :isolated_environment do
         expect(cli.run(['--auto-gen-config'])).to eq(1)
         expect($stderr.string).to eq('')
         expect($stdout.string)
-          .to include([
-                       'Created rubocop-todo.yml.',
+          .to include(['Created rubocop-todo.yml.',
                        'Run rubocop with --config rubocop-todo.yml, or',
                        'add inherit_from: rubocop-todo.yml in a ' \
                        '.rubocop.yml file.',
@@ -476,10 +475,8 @@ describe Rubocop::CLI, :isolated_environment do
       let(:target_file) { 'example.rb' }
 
       before do
-        create_file(target_file, [
-                                  '# encoding: utf-8',
-                                  '#' * 90
-                                 ])
+        create_file(target_file, ['# encoding: utf-8',
+                                  '#' * 90])
       end
 
       describe 'builtin formatters' do
@@ -487,10 +484,8 @@ describe Rubocop::CLI, :isolated_environment do
           it 'outputs with simple format' do
             cli.run(['--format', 'simple', 'example.rb'])
             expect($stdout.string)
-              .to include([
-                           "== #{target_file} ==",
-                           'C:  2: 80: Line is too long. [90/79]'
-                          ].join("\n"))
+              .to include(["== #{target_file} ==",
+                           'C:  2: 80: Line is too long. [90/79]'].join("\n"))
           end
         end
 
@@ -620,13 +615,11 @@ describe Rubocop::CLI, :isolated_environment do
             end
 
             cli.run(['--format', 'MyTool::RubocopFormatter', 'example.rb'])
-            expect($stdout.string).to eq([
-                                          "started: #{target_file}",
+            expect($stdout.string).to eq(["started: #{target_file}",
                                           "file_started: #{target_file}",
                                           "file_finished: #{target_file}",
                                           "finished: #{target_file}",
-                                          ''
-                                         ].join("\n"))
+                                          ''].join("\n"))
           end
         end
 
@@ -642,12 +635,10 @@ describe Rubocop::CLI, :isolated_environment do
       it 'can be used multiple times' do
         cli.run(['--format', 'simple', '--format', 'emacs', 'example.rb'])
         expect($stdout.string)
-          .to include([
-                       "== #{target_file} ==",
+          .to include(["== #{target_file} ==",
                        'C:  2: 80: Line is too long. [90/79]',
                        "#{abs(target_file)}:2:80: C: Line is too long. " +
-                       '[90/79]'
-                      ].join("\n"))
+                       '[90/79]'].join("\n"))
       end
     end
 
@@ -655,10 +646,8 @@ describe Rubocop::CLI, :isolated_environment do
       let(:target_file) { 'example.rb' }
 
       before do
-        create_file(target_file, [
-                                  '# encoding: utf-8',
-                                  '#' * 90
-                                 ])
+        create_file(target_file, ['# encoding: utf-8',
+                                  '#' * 90])
       end
 
       it 'redirects output to the specified file' do
@@ -667,19 +656,15 @@ describe Rubocop::CLI, :isolated_environment do
       end
 
       it 'is applied to the previously specified formatter' do
-        cli.run([
-                 '--format', 'simple',
+        cli.run(['--format', 'simple',
                  '--format', 'emacs', '--out', 'emacs_output.txt',
-                 target_file
-                ])
+                 target_file])
 
-        expect($stdout.string).to eq([
-                                      "== #{target_file} ==",
+        expect($stdout.string).to eq(["== #{target_file} ==",
                                       'C:  2: 80: Line is too long. [90/79]',
                                       '',
                                       '1 file inspected, 1 offense detected',
-                                      ''
-                                     ].join("\n"))
+                                      ''].join("\n"))
 
         expect(File.read('emacs_output.txt'))
           .to eq("#{abs(target_file)}:2:80: C: Line is too long. [90/79]\n")
@@ -746,22 +731,18 @@ describe Rubocop::CLI, :isolated_environment do
   end
 
   it 'checks a given correct file and returns 0' do
-    create_file('example.rb', [
-                               '# encoding: utf-8',
+    create_file('example.rb', ['# encoding: utf-8',
                                'x = 0',
-                               'puts x'
-                              ])
+                               'puts x'])
     expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(0)
     expect($stdout.string)
       .to eq("\n1 file inspected, no offenses detected\n")
   end
 
   it 'checks a given file with faults and returns 1' do
-    create_file('example.rb', [
-                               '# encoding: utf-8',
+    create_file('example.rb', ['# encoding: utf-8',
                                'x = 0 ',
-                               'puts x'
-                              ])
+                               'puts x'])
     expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(1)
     expect($stdout.string)
       .to eq ['== example.rb ==',
@@ -772,11 +753,9 @@ describe Rubocop::CLI, :isolated_environment do
   end
 
   it 'registers an offense for a syntax error' do
-    create_file('example.rb', [
-                               '# encoding: utf-8',
+    create_file('example.rb', ['# encoding: utf-8',
                                'class Test',
-                               'en'
-                              ])
+                               'en'])
     expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
     expect($stdout.string)
       .to eq(["#{abs('example.rb')}:4:1: E: unexpected " +
@@ -785,11 +764,9 @@ describe Rubocop::CLI, :isolated_environment do
   end
 
   it 'registers an offense for Parser warnings' do
-    create_file('example.rb', [
-                               '# encoding: utf-8',
+    create_file('example.rb', ['# encoding: utf-8',
                                'puts *test',
-                               'if a then b else c end'
-                              ])
+                               'if a then b else c end'])
     expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
     expect($stdout.string)
       .to eq(["#{abs('example.rb')}:2:6: W: " +
@@ -803,10 +780,8 @@ describe Rubocop::CLI, :isolated_environment do
   end
 
   it 'can process a file with an invalid UTF-8 byte sequence' do
-    create_file('example.rb', [
-                               '# encoding: utf-8',
-                               "# #{'f9'.hex.chr}#{'29'.hex.chr}"
-                              ])
+    create_file('example.rb', ['# encoding: utf-8',
+                               "# #{'f9'.hex.chr}#{'29'.hex.chr}"])
     expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
     expect($stdout.string)
       .to eq(["#{abs('example.rb')}:1:1: F: Invalid byte sequence in utf-8.",

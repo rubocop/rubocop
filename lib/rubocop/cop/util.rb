@@ -15,9 +15,9 @@ module Rubocop
       # http://phrogz.net/programmingruby/language.html#table_18.4
       # Backtick is added last just to help editors parse this code.
       OPERATOR_METHODS = %w(
-          | ^ & <=> == === =~ > >= < <= << >>
-          + - * / % ** ~ +@ -@ [] []= ! != !~
-        ).map(&:to_sym) + [:'`']
+        | ^ & <=> == === =~ > >= < <= << >>
+        + - * / % ** ~ +@ -@ [] []= ! != !~
+      ).map(&:to_sym) + [:'`']
 
       module_function
 
