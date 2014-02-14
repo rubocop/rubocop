@@ -37,4 +37,15 @@ describe Rubocop::Cop::Style::EmptyLines do
                                   string"'])
     expect(cop.offenses).to be_empty
   end
+
+  it 'does not register an offense for heredocs with empty lines inside' do
+    inspect_source(cop, ['str = <<-TEXT',
+                         'line 1',
+                         '',
+                         '',
+                         'line 2',
+                         'TEXT',
+                         'puts str'])
+    expect(cop.offenses).to be_empty
+  end
 end

@@ -13,8 +13,9 @@ module Rubocop
 
           prev_line = 1
 
-          processed_source.tokens.each do |token|
+          processed_source.tokens.sort_by { |t| t.pos.line }.each do |token|
             cur_line = token.pos.line
+
             line_diff = cur_line - prev_line
 
             if line_diff > LINE_OFFSET
