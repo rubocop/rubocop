@@ -233,6 +233,12 @@ IndentationWidth:
   Description: 'Use 2 spaces for indentation.'
   Enabled: true
 
+IndentArray:
+  Description: >-
+                 Checks the indentation of the first element in an array
+                 literal.
+  Enabled: true
+
 IndentHash:
   Description: 'Checks the indentation of the first key in a hash literal.'
   Enabled: true
