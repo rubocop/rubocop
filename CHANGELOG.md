@@ -31,6 +31,7 @@
 * [#794](https://github.com/bbatsov/rubocop/issues/794): Fix handling of modifier keywords with required parentheses in `ParenthesesAroundCondition`. ([@bbatsov][])
 * [#804](https://github.com/bbatsov/rubocop/issues/804): Fix a false positive with operator assignments in a loop (including `begin..rescue..end` with `retry`) in `UselessAssignment`. ([@yujinakayama][])
 * [#815](https://github.com/bbatsov/rubocop/issues/815): Fix a false positive for heredocs with blank lines in them in `EmptyLines`. ([@bbatsov][])
+* Auto-correction is now more robust and less likely to die because of `RangeError` or "clobbering". ([@jonas054][])
 
 ## 0.18.1 (02/02/2014)
 

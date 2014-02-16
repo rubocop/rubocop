@@ -18,7 +18,7 @@ describe Rubocop::FileInspector do
 
     allow(inspector).to receive(:inspect_file) do
       inspector.errors = errors
-      offenses
+      [offenses, !:updated_source_file]
     end
   end
 

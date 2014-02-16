@@ -48,6 +48,50 @@ describe Rubocop::CLI, :isolated_environment do
                   'end'].join("\n") + "\n")
       end
 
+      # A case where two cops, EmptyLinesAroundBody and EmptyLines, try to
+      # remove the same line in autocorrect.
+      it 'can correct two empty lines at end of class body' do
+        create_file('example.rb', ['class Test',
+                                   '  def f',
+                                   '  end',
+                                   '',
+                                   '',
+                                   'end'])
+        expect(cli.run(['--auto-correct'])).to eq(1)
+        expect($stderr.string).to eq('')
+        expect(IO.read('example.rb')).to eq(['class Test',
+                                             '  def f',
+                                             '  end',
+                                             'end'].join("\n") + "\n")
+      end
+
+      # A case where WordArray's correction can be clobbered by
+      # AccessModifierIndentation's correction.
+      it 'can correct indentation and another thing' do
+        create_file('example.rb', ['# encoding: utf-8',
+                                   'class Dsl',
+                                   'private',
+                                   '  A = ["git", "path"]',
+                                   'end'])
+        expect(cli.run(%w(--auto-correct --format emacs))).to eq(1)
+        expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
+                                             'class Dsl',
+                                             '  private',
+                                             '  A = %w(git path)',
+                                             'end'].join("\n") + "\n")
+      end
+
+      # A case where the same cop could try to correct an offense twice in one
+      # place.
+      it 'can correct empty line inside special form of nested modules' do
+        create_file('example.rb', ['module A module B',
+                                   '',
+                                   'end end'])
+        expect(cli.run(['--auto-correct'])).to eq(1)
+        expect(IO.read('example.rb')).to eq(['module A module B',
+                                             'end end'].join("\n") + "\n")
+      end
+
       it 'can correct single line methods' do
         create_file('example.rb', ['# encoding: utf-8',
                                    'def func1; do_something end # comment',

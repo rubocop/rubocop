@@ -54,11 +54,10 @@ module Rubocop
       # are made. This is because automatic corrections can introduce new
       # offenses. In the normal case the loop is only executed once.
       loop do
-        new_offenses = inspect_file(file, config_store)
+        new_offenses, updated_source_file = inspect_file(file, config_store)
         unique_new = new_offenses.reject { |n| offenses.include?(n) }
-
         offenses += unique_new
-        break unless unique_new.any?(&:corrected?)
+        break unless updated_source_file
       end
 
       formatter_set.file_finished(file, offenses.freeze)
@@ -70,7 +69,7 @@ module Rubocop
       team = Cop::Team.new(mobilized_cop_classes(config), config, @options)
       offenses = team.inspect_file(file)
       @errors.concat(team.errors)
-      offenses
+      [offenses, team.updated_source_file?]
     end
 
     def mobilized_cop_classes(config)
