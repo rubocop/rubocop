@@ -44,7 +44,7 @@ module Rubocop
         offenses = commissioner.investigate(processed_source)
         process_commissioner_errors(file, commissioner.errors)
         autocorrect(processed_source.buffer, cops)
-        offenses.sort
+        offenses
       end
 
       def cops

@@ -60,7 +60,7 @@ module Rubocop
         break unless updated_source_file
       end
 
-      formatter_set.file_finished(file, offenses.freeze)
+      formatter_set.file_finished(file, offenses.sort.freeze)
       offenses
     end
 

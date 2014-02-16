@@ -79,6 +79,25 @@ describe Rubocop::CLI, :isolated_environment do
                                              '  private',
                                              '  A = %w(git path)',
                                              'end'].join("\n") + "\n")
+        e = abs('example.rb')
+        expect($stdout.string)
+          .to eq(["#{e}:2:1: C: Missing top-level class documentation " \
+                  'comment.',
+                  "#{e}:3:1: C: [Corrected] Indent access modifiers like " \
+                  'private.',
+                  "#{e}:3:1: C: Keep a blank line before and after private.",
+                  # An offense that moves around during auto-correction will
+                  # appear to be duplicated:
+                  "#{e}:3:3: C: Keep a blank line before and after private.",
+                  "#{e}:4:7: C: [Corrected] Use %w or %W for array of words.",
+                  "#{e}:4:8: C: [Corrected] Prefer single-quoted strings " \
+                  "when you don't need string interpolation or special " \
+                  'symbols.',
+                  # Another instance of the same offense reported twice:
+                  "#{e}:4:15: C: [Corrected] Prefer single-quoted strings " \
+                  "when you don't need string interpolation or special " \
+                  'symbols.',
+                  ''].join("\n"))
       end
 
       # A case where the same cop could try to correct an offense twice in one
@@ -180,10 +199,10 @@ describe Rubocop::CLI, :isolated_environment do
                   '',
                   'Offenses:',
                   '',
-                  'example.rb:4:1: C: [Corrected] Trailing whitespace ' \
-                  'detected.',
                   'example.rb:4:1: C: [Corrected] Extra empty line detected ' \
                   'at body beginning.',
+                  'example.rb:4:1: C: [Corrected] Trailing whitespace ' \
+                  'detected.',
                   '',
                   '1 file inspected, 2 offenses detected, 2 offenses ' \
                   'corrected',
