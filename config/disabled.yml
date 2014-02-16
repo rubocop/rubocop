@@ -7,3 +7,7 @@ MethodCalledOnDoEndBlock:
 SymbolArray:
   Description: 'Use %i or %I for arrays of symbols.'
   Enabled: false
+
+MultilineAssignment:
+  Description: 'Place multi-line values on new line and indent.'
+  Enabled: false
