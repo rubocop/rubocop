@@ -124,5 +124,23 @@ describe Rubocop::Cop::Style::IfUnlessModifier do
         expect(cop.offenses).to be_empty
       end
     end
+
+    context 'when the maximum line length is specified by the cop itself' do
+      let(:config) do
+        hash = {
+          'LineLength' => { 'Max' => 100 },
+          'IfUnlessModifier' => { 'MaxLineLength' => 79 }
+        }
+        Rubocop::Config.new(hash)
+      end
+
+      it "accepts multiline if that doesn't fit on one line" do
+        check_too_long(cop, 'if')
+      end
+
+      it "accepts multiline unless that doesn't fit on one line" do
+        check_too_long(cop, 'unless')
+      end
+    end
   end
 end
