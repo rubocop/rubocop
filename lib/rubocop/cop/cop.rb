@@ -129,7 +129,7 @@ module Rubocop
                       autocorrect(node) if autocorrect?
                       autocorrect?
                     rescue CorrectionNotPossible
-                      false
+                      true
                     end
         @offenses << Offense.new(severity, location, message, name, corrected)
         yield if block_given?

@@ -241,6 +241,59 @@ describe Rubocop::CLI, :isolated_environment do
                   'corrected',
                   ''].join("\n"))
       end
+
+      it 'can correct HashSyntax and SpaceAroundOperators offenses' do
+        create_file('example.rb',
+                    ['# encoding: utf-8',
+                     '{ :b=>1 }'])
+        expect(cli.run(%w(-D --auto-correct --format emacs))).to eq(1)
+        expect($stderr.string).to eq('')
+        expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
+                                             '{ b: 1 }',
+                                             ''].join("\n"))
+        expect($stdout.string)
+          .to eq(["#{abs('example.rb')}:2:3: C: [Corrected] HashSyntax: Use " \
+                  "the new Ruby 1.9 hash syntax.",
+                  "#{abs('example.rb')}:2:5: C: [Corrected] " \
+                  "SpaceAroundOperators: Surrounding space missing for " \
+                  "operator '=>'.",
+                  ''].join("\n"))
+      end
+
+      it 'can correct TrailingBlankLines and TrailingWhitespace offenses' do
+        create_file('example.rb',
+                    ['# encoding: utf-8',
+                     '',
+                     '  ',
+                     '',
+                     ''])
+        expect(cli.run(%w(--auto-correct --format emacs))).to eq(1)
+        expect($stderr.string).to eq('')
+        expect(IO.read('example.rb')).to eq("# encoding: utf-8\n")
+        expect($stdout.string)
+          .to eq(["#{abs('example.rb')}:2:1: C: [Corrected] 3 trailing " \
+                  "blank lines detected.",
+                  "#{abs('example.rb')}:3:1: C: [Corrected] Trailing " \
+                  "whitespace detected.",
+                  ''].join("\n"))
+      end
+
+      it 'can correct MethodCallParentheses and EmptyLiteral offenses' do
+        create_file('example.rb',
+                    ['# encoding: utf-8',
+                     'Hash.new()'])
+        expect(cli.run(%w(--auto-correct --format emacs))).to eq(1)
+        expect($stderr.string).to eq('')
+        expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
+                                             '{}',
+                                             ''].join("\n"))
+        expect($stdout.string)
+          .to eq(["#{abs('example.rb')}:2:1: C: [Corrected] Use hash " \
+                  "literal {} instead of Hash.new.",
+                  "#{abs('example.rb')}:2:9: C: [Corrected] Do not use " \
+                  "parentheses for method calls with no arguments.",
+                  ''].join("\n"))
+      end
     end
 
     describe '--auto-gen-config' do
