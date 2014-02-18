@@ -22,7 +22,7 @@ module Rubocop
               [EmptyLiteral::HASH_NODE,
                EmptyLiteral::ARRAY_NODE,
                EmptyLiteral::STR_NODE].include?(node)
-            fail CorrectionNotPossible
+            return
           end
           @corrections << lambda do |corrector|
             corrector.remove(node.loc.begin)

@@ -33,7 +33,7 @@ module Rubocop
           # auto-correction in the two cops would result in clobbering.
           if range.source =~ / / &&
               config.for_cop('TrailingWhitespace')['Enabled']
-            fail CorrectionNotPossible
+            return
           end
 
           @corrections << ->(corrector) { corrector.remove(range) }

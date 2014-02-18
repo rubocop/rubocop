@@ -41,7 +41,7 @@ module Rubocop
             # Don't do the correction if there is no space before '=>'. The
             # combined corrections of this cop and SpaceAroundOperators could
             # produce code with illegal syntax.
-            fail CorrectionNotPossible
+            return
           end
 
           @corrections << lambda do |corrector|
