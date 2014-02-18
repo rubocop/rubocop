@@ -117,9 +117,12 @@ module Rubocop
 
         return if disabled_line?(location.line)
 
+        # Don't include the same location twice for one cop.
+        return if @offenses.find { |o| o.location == location }
+
         severity = custom_severity || severity || default_severity
 
-        message = message ? message : message(node)
+        message ||= message(node)
         message = display_cop_names? ? "#{name}: #{message}" : message
 
         corrected = begin

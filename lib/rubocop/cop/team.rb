@@ -4,7 +4,9 @@ module Rubocop
   module Cop
     # FIXME
     class Team
-      attr_reader :errors
+      attr_reader :errors, :updated_source_file
+
+      alias_method :updated_source_file?, :updated_source_file
 
       def initialize(cop_classes, config, options = nil)
         @cop_classes = cop_classes
@@ -42,7 +44,7 @@ module Rubocop
         offenses = commissioner.investigate(processed_source)
         process_commissioner_errors(file, commissioner.errors)
         autocorrect(processed_source.buffer, cops)
-        offenses.sort
+        offenses
       end
 
       def cops
@@ -57,6 +59,7 @@ module Rubocop
       private
 
       def autocorrect(buffer, cops)
+        @updated_source_file = false
         return unless autocorrect?
 
         corrections = cops.reduce([]) do |array, cop|
@@ -65,12 +68,26 @@ module Rubocop
         end
 
         corrector = Corrector.new(buffer, corrections)
-        new_source = corrector.rewrite
+        new_source = begin
+                       corrector.rewrite
+                     rescue RangeError, RuntimeError
+                       autocorrect_one_cop(buffer, cops)
+                     end
 
         unless new_source == buffer.source
           filename = buffer.name
           File.open(filename, 'w') { |f| f.write(new_source) }
+          @updated_source_file = true
         end
+      end
+
+      # Does a slower but safer auto-correction run by correcting for just one
+      # cop. The re-running of auto-corrections will make sure that the full
+      # set of auto-corrections is tried again after this method has finished.
+      def autocorrect_one_cop(buffer, cops)
+        cop_with_corrections = cops.find { |cop| cop.corrections.any? }
+        corrector = Corrector.new(buffer, cop_with_corrections.corrections)
+        corrector.rewrite
       end
 
       def process_commissioner_errors(file, file_errors)

@@ -48,6 +48,69 @@ describe Rubocop::CLI, :isolated_environment do
                   'end'].join("\n") + "\n")
       end
 
+      # A case where two cops, EmptyLinesAroundBody and EmptyLines, try to
+      # remove the same line in autocorrect.
+      it 'can correct two empty lines at end of class body' do
+        create_file('example.rb', ['class Test',
+                                   '  def f',
+                                   '  end',
+                                   '',
+                                   '',
+                                   'end'])
+        expect(cli.run(['--auto-correct'])).to eq(1)
+        expect($stderr.string).to eq('')
+        expect(IO.read('example.rb')).to eq(['class Test',
+                                             '  def f',
+                                             '  end',
+                                             'end'].join("\n") + "\n")
+      end
+
+      # A case where WordArray's correction can be clobbered by
+      # AccessModifierIndentation's correction.
+      it 'can correct indentation and another thing' do
+        create_file('example.rb', ['# encoding: utf-8',
+                                   'class Dsl',
+                                   'private',
+                                   '  A = ["git", "path"]',
+                                   'end'])
+        expect(cli.run(%w(--auto-correct --format emacs))).to eq(1)
+        expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
+                                             'class Dsl',
+                                             '  private',
+                                             '  A = %w(git path)',
+                                             'end'].join("\n") + "\n")
+        e = abs('example.rb')
+        expect($stdout.string)
+          .to eq(["#{e}:2:1: C: Missing top-level class documentation " \
+                  'comment.',
+                  "#{e}:3:1: C: [Corrected] Indent access modifiers like " \
+                  'private.',
+                  "#{e}:3:1: C: Keep a blank line before and after private.",
+                  # An offense that moves around during auto-correction will
+                  # appear to be duplicated:
+                  "#{e}:3:3: C: Keep a blank line before and after private.",
+                  "#{e}:4:7: C: [Corrected] Use %w or %W for array of words.",
+                  "#{e}:4:8: C: [Corrected] Prefer single-quoted strings " \
+                  "when you don't need string interpolation or special " \
+                  'symbols.',
+                  # Another instance of the same offense reported twice:
+                  "#{e}:4:15: C: [Corrected] Prefer single-quoted strings " \
+                  "when you don't need string interpolation or special " \
+                  'symbols.',
+                  ''].join("\n"))
+      end
+
+      # A case where the same cop could try to correct an offense twice in one
+      # place.
+      it 'can correct empty line inside special form of nested modules' do
+        create_file('example.rb', ['module A module B',
+                                   '',
+                                   'end end'])
+        expect(cli.run(['--auto-correct'])).to eq(1)
+        expect(IO.read('example.rb')).to eq(['module A module B',
+                                             'end end'].join("\n") + "\n")
+      end
+
       it 'can correct single line methods' do
         create_file('example.rb', ['# encoding: utf-8',
                                    'def func1; do_something end # comment',
@@ -136,10 +199,10 @@ describe Rubocop::CLI, :isolated_environment do
                   '',
                   'Offenses:',
                   '',
-                  'example.rb:4:1: C: [Corrected] Trailing whitespace ' \
-                  'detected.',
                   'example.rb:4:1: C: [Corrected] Extra empty line detected ' \
                   'at body beginning.',
+                  'example.rb:4:1: C: [Corrected] Trailing whitespace ' \
+                  'detected.',
                   '',
                   '1 file inspected, 2 offenses detected, 2 offenses ' \
                   'corrected',
