@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     module Style
-      # Checks for semicolon (;) not follwed by some kind of space.
+      # Checks for semicolon (;) not followed by some kind of space.
       class SpaceAfterSemicolon < Cop
         include SpaceAfterPunctuation
 

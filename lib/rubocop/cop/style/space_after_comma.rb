@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     module Style
-      # Checks for comma (,) not follwed by some kind of space.
+      # Checks for comma (,) not followed by some kind of space.
       class SpaceAfterComma < Cop
         include SpaceAfterPunctuation
 

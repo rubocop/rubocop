@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     module Style
-      # Checks for colon (:) not follwed by some kind of space.
+      # Checks for colon (:) not followed by some kind of space.
       class SpaceAfterColon < Cop
         include IfNode
 
