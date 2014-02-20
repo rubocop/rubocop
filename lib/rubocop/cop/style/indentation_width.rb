@@ -105,8 +105,9 @@ module Rubocop
 
         def check_if(node, body, else_clause, offset)
           return if ternary_op?(node)
-          # Don't check if expression is on same line as "then" keyword.
+
           check_indentation(node.loc.keyword, body, offset)
+
           if else_clause
             if elsif?(else_clause)
               _condition, inner_body, inner_else_clause = *else_clause
@@ -119,7 +120,10 @@ module Rubocop
 
         def check_indentation(base_loc, body_node, offset = 0)
           return unless body_node
+
+          # Don't check if expression is on same line as "then" keyword, etc.
           return if body_node.loc.line == base_loc.line
+
           return if starts_with_access_modifier?(body_node)
 
           # Don't check indentation if the line doesn't start with the body.
@@ -128,8 +132,11 @@ module Rubocop
           return unless body_node.loc.column == first_char_pos_on_line
 
           indentation = body_node.loc.column - base_loc.column
-          return if indentation == CORRECT_INDENTATION ||
-              indentation + offset == CORRECT_INDENTATION
+          if config.for_cop('EndAlignment')['Enabled'] &&
+              config.for_cop('EndAlignment')['AlignWith'] == 'variable'
+            indentation += offset
+          end
+          return if indentation == CORRECT_INDENTATION
 
           expr = body_node.loc.expression
           begin_pos, end_pos =

@@ -24,6 +24,7 @@
 * Renamed `FavorSprintf` to `FormatString` and made it configurable. ([@bbatsov][])
 * Renamed `Offence` to `Offense`. ([@bbatsov][])
 * Use `offense` in all messages instead of `offence`. ([@bbatsov][])
+* For indentation of `if`/`unless`/`while`/`until` bodies when the result is assigned to a variable, instead of supporting two styles simultaneously, `IndentationWidth` now supports one style of indentation at a time, specified by `EndAlignment`/`AlignWith`. ([@jonas054][])
 
 ### Bugs fixed
 
