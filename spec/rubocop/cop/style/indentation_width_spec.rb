@@ -3,7 +3,13 @@
 require 'spec_helper'
 
 describe Rubocop::Cop::Style::IndentationWidth do
-  subject(:cop) { described_class.new }
+  subject(:cop) { described_class.new(config) }
+  let(:config) do
+    Rubocop::Config.new('EndAlignment' => end_alignment_config)
+  end
+  let(:end_alignment_config) do
+    { 'Enabled' => true, 'AlignWith' => 'variable' }
+  end
 
   context 'with if statement' do
     it 'registers an offense for bad indentation of an if body' do
@@ -103,92 +109,180 @@ describe Rubocop::Cop::Style::IndentationWidth do
       expect(cop.offenses).to be_empty
     end
 
-    it 'accepts an if in assignment with end aligned with variable' do
-      inspect_source(cop,
-                     ['var = if a',
-                      '  0',
-                      'end',
-                      '@var = if a',
-                      '  0',
-                      'end',
-                      '$var = if a',
-                      '  0',
-                      'end',
-                      'var ||= if a',
-                      '  0',
-                      'end',
-                      'var &&= if a',
-                      '  0',
-                      'end',
-                      'var -= if a',
-                      '  0',
-                      'end',
-                      'VAR = if a',
-                      '  0',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
+    context 'with assignment' do
+      context 'when alignment style is variable' do
+        context 'and end is aligned with variable' do
+          it 'accepts an if with end aligned with variable' do
+            inspect_source(cop,
+                           ['var = if a',
+                            '  0',
+                            'end',
+                            '@var = if a',
+                            '  0',
+                            'end',
+                            '$var = if a',
+                            '  0',
+                            'end',
+                            'var ||= if a',
+                            '  0',
+                            'end',
+                            'var &&= if a',
+                            '  0',
+                            'end',
+                            'var -= if a',
+                            '  0',
+                            'end',
+                            'VAR = if a',
+                            '  0',
+                            'end'])
+            expect(cop.offenses).to be_empty
+          end
 
-    it 'accepts an if/else in assignment with end aligned with variable' do
-      inspect_source(cop,
-                     ['var = if a',
-                      '  0',
-                      'else',
-                      '  1',
-                      'end'])
-      expect(cop.offenses).to be_empty
-    end
+          it 'accepts an if/else' do
+            inspect_source(cop,
+                           ['var = if a',
+                            '  0',
+                            'else',
+                            '  1',
+                            'end'])
+            expect(cop.offenses).to be_empty
+          end
 
-    it 'accepts an if/else in assignment with end aligned with variable ' \
-      'and chaining after the end' do
-      inspect_source(cop,
-                     ['var = if a',
-                      '  0',
-                      'else',
-                      '  1',
-                      'end.abc.join("")'])
-      expect(cop.offenses).to be_empty
-    end
+          it 'accepts an if/else with chaining after the end' do
+            inspect_source(cop,
+                           ['var = if a',
+                            '  0',
+                            'else',
+                            '  1',
+                            'end.abc.join("")'])
+            expect(cop.offenses).to be_empty
+          end
 
-    it 'accepts an if/else in assignment with end aligned with variable ' \
-      'and chaining with a block after the end' do
-      inspect_source(cop,
-                     ['var = if a',
-                      '  0',
-                      'else',
-                      '  1',
-                      'end.abc.tap {}'])
-      expect(cop.offenses).to be_empty
-    end
+          it 'accepts an if/else with chaining with a block after the end' do
+            inspect_source(cop,
+                           ['var = if a',
+                            '  0',
+                            'else',
+                            '  1',
+                            'end.abc.tap {}'])
+            expect(cop.offenses).to be_empty
+          end
+        end
 
-    it 'accepts an if in assignment with end aligned with if' do
-      inspect_source(cop,
-                     ['var = if a',
-                      '        0',
-                      '      end'])
-      expect(cop.offenses).to be_empty
-    end
+        context 'and end is aligned with keyword' do
+          it 'registers an offense for an if' do
+            inspect_source(cop,
+                           ['var = if a',
+                            '        0',
+                            '      end'])
+            expect(cop.messages)
+              .to eq(['Use 2 (not 8) spaces for indentation.'])
+          end
 
-    it 'accepts an if/else in assignment with end aligned with if' do
-      inspect_source(cop,
-                     ['var = if a',
-                      '        0',
-                      '      else',
-                      '        1',
-                      '      end'])
-      expect(cop.offenses).to be_empty
-    end
+          it 'registers an offense for a while' do
+            inspect_source(cop,
+                           ['var = while a',
+                            '        b',
+                            '      end'])
+            expect(cop.messages)
+              .to eq(['Use 2 (not 8) spaces for indentation.'])
+          end
 
-    it 'accepts an if/else in assignment on next line with end aligned ' \
-      'with if' do
-      inspect_source(cop,
-                     ['var =',
-                      '  if a',
-                      '    0',
-                      '  else',
-                      '    1',
-                      '  end'])
-      expect(cop.offenses).to be_empty
+          it 'registers an offense for an until' do
+            inspect_source(cop,
+                           ['var = until a',
+                            '        b',
+                            '      end'])
+            expect(cop.messages)
+              .to eq(['Use 2 (not 8) spaces for indentation.'])
+          end
+        end
+      end
+
+      shared_examples 'assignment and if with keyword alignment' do
+        context 'and end is aligned with variable' do
+          it 'registers an offense for an if' do
+            inspect_source(cop,
+                           ['var = if a',
+                            '  0',
+                            'end'])
+            expect(cop.messages)
+              .to eq(['Use 2 (not -4) spaces for indentation.'])
+          end
+
+          it 'registers an offense for a while' do
+            inspect_source(cop,
+                           ['var = while a',
+                            '  b',
+                            'end'])
+            expect(cop.messages)
+              .to eq(['Use 2 (not -4) spaces for indentation.'])
+          end
+        end
+
+        context 'and end is aligned with keyword' do
+          it 'accepts an if in assignment' do
+            inspect_source(cop,
+                           ['var = if a',
+                            '        0',
+                            '      end'])
+            expect(cop.offenses).to be_empty
+          end
+
+          it 'accepts an if/else in assignment' do
+            inspect_source(cop,
+                           ['var = if a',
+                            '        0',
+                            '      else',
+                            '        1',
+                            '      end'])
+            expect(cop.offenses).to be_empty
+          end
+
+          it 'accepts an if/else in assignment on next line' do
+            inspect_source(cop,
+                           ['var =',
+                            '  if a',
+                            '    0',
+                            '  else',
+                            '    1',
+                            '  end'])
+            expect(cop.offenses).to be_empty
+          end
+
+          it 'accepts a while in assignment' do
+            inspect_source(cop,
+                           ['var = while a',
+                            '        b',
+                            '      end'])
+            expect(cop.offenses).to be_empty
+          end
+
+          it 'accepts an until in assignment' do
+            inspect_source(cop,
+                           ['var = until a',
+                            '        b',
+                            '      end'])
+            expect(cop.offenses).to be_empty
+          end
+        end
+      end
+
+      context 'when alignment style is keyword by choice' do
+        let(:end_alignment_config) do
+          { 'Enabled' => true, 'AlignWith' => 'keyword' }
+        end
+
+        include_examples 'assignment and if with keyword alignment'
+      end
+
+      context 'when alignment style is keyword by default' do
+        let(:end_alignment_config) do
+          { 'Enabled' => false, 'AlignWith' => 'variable' }
+        end
+
+        include_examples 'assignment and if with keyword alignment'
+      end
     end
 
     it 'accepts an if/else branches with rescue clauses' do

@@ -49,10 +49,10 @@ module Rubocop
           check_indentation(node.loc.keyword, body)
         end
 
-        def on_while(node)
+        def on_while(node, base = node)
           _condition, body = *node
           if node.loc.keyword.begin_pos == node.loc.expression.begin_pos
-            check_indentation(node.loc.keyword, body)
+            check_indentation(base.loc, body)
           end
         end
 
@@ -75,7 +75,7 @@ module Rubocop
           end
         end
 
-        def on_if(node, offset = 0)
+        def on_if(node, base = node)
           return if ignored_node?(node)
           return if ternary_op?(node)
           return if modifier_if?(node)
@@ -86,7 +86,7 @@ module Rubocop
           else               _condition, body = *node
           end
 
-          check_if(node, body, else_clause, offset) if body
+          check_if(node, body, else_clause, base.loc) if body
         end
 
         private
@@ -97,29 +97,46 @@ module Rubocop
           # we check its indentation.
           rhs = first_part_of_call_chain(rhs)
 
-          if rhs && rhs.type == :if
-            on_if(rhs, rhs.loc.column - node.loc.column)
+          if rhs
+            end_alignment_config = config.for_cop('EndAlignment')
+            style = if end_alignment_config['Enabled']
+                      end_alignment_config['AlignWith']
+                    else
+                      'keyword'
+                    end
+            base = style == 'variable' ? node : rhs
+
+            case rhs.type
+            when :if            then on_if(rhs, base)
+            when :while, :until then on_while(rhs, base)
+            else                     return
+            end
+
             ignore_node(rhs)
           end
         end
 
-        def check_if(node, body, else_clause, offset)
+        def check_if(node, body, else_clause, base_loc)
           return if ternary_op?(node)
-          # Don't check if expression is on same line as "then" keyword.
-          check_indentation(node.loc.keyword, body, offset)
+
+          check_indentation(base_loc, body)
+
           if else_clause
             if elsif?(else_clause)
               _condition, inner_body, inner_else_clause = *else_clause
-              check_if(else_clause, inner_body, inner_else_clause, offset)
+              check_if(else_clause, inner_body, inner_else_clause, base_loc)
             else
               check_indentation(node.loc.else, else_clause)
             end
           end
         end
 
-        def check_indentation(base_loc, body_node, offset = 0)
+        def check_indentation(base_loc, body_node)
           return unless body_node
+
+          # Don't check if expression is on same line as "then" keyword, etc.
           return if body_node.loc.line == base_loc.line
+
           return if starts_with_access_modifier?(body_node)
 
           # Don't check indentation if the line doesn't start with the body.
@@ -128,8 +145,7 @@ module Rubocop
           return unless body_node.loc.column == first_char_pos_on_line
 
           indentation = body_node.loc.column - base_loc.column
-          return if indentation == CORRECT_INDENTATION ||
-              indentation + offset == CORRECT_INDENTATION
+          return if indentation == CORRECT_INDENTATION
 
           expr = body_node.loc.expression
           begin_pos, end_pos =
