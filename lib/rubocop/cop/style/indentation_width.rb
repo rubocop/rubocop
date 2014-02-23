@@ -49,10 +49,10 @@ module Rubocop
           check_indentation(node.loc.keyword, body)
         end
 
-        def on_while(node)
+        def on_while(node, offset = 0)
           _condition, body = *node
           if node.loc.keyword.begin_pos == node.loc.expression.begin_pos
-            check_indentation(node.loc.keyword, body)
+            check_indentation(node.loc.keyword, body, offset)
           end
         end
 
@@ -97,8 +97,15 @@ module Rubocop
           # we check its indentation.
           rhs = first_part_of_call_chain(rhs)
 
-          if rhs && rhs.type == :if
-            on_if(rhs, rhs.loc.column - node.loc.column)
+          if rhs
+            offset = rhs.loc.column - node.loc.column
+
+            case rhs.type
+            when :if            then on_if(rhs, offset)
+            when :while, :until then on_while(rhs, offset)
+            else                     return
+            end
+
             ignore_node(rhs)
           end
         end

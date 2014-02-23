@@ -178,6 +178,24 @@ describe Rubocop::Cop::Style::IndentationWidth do
             expect(cop.messages)
               .to eq(['Use 2 (not 8) spaces for indentation.'])
           end
+
+          it 'registers an offense for a while' do
+            inspect_source(cop,
+                           ['var = while a',
+                            '        b',
+                            '      end'])
+            expect(cop.messages)
+              .to eq(['Use 2 (not 8) spaces for indentation.'])
+          end
+
+          it 'registers an offense for an until' do
+            inspect_source(cop,
+                           ['var = until a',
+                            '        b',
+                            '      end'])
+            expect(cop.messages)
+              .to eq(['Use 2 (not 8) spaces for indentation.'])
+          end
         end
       end
 
