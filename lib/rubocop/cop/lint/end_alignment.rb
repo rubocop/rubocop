@@ -80,15 +80,17 @@ module Rubocop
           when :if, :while, :until
             return if rhs.loc.respond_to?(:question) # ternary
 
-            offset = if style == :variable
-                       rhs.loc.keyword.column - node.loc.expression.column
-                     else
-                       0
-                     end
-            expr = node.loc.expression
-            range = Parser::Source::Range.new(expr.source_buffer,
-                                              expr.begin_pos,
-                                              rhs.loc.keyword.end_pos)
+            if style == :variable
+              expr = node.loc.expression
+              range = Parser::Source::Range.new(expr.source_buffer,
+                                                expr.begin_pos,
+                                                rhs.loc.keyword.end_pos)
+              offset = rhs.loc.keyword.column - node.loc.expression.column
+            else
+              range = rhs.loc.keyword
+              offset = 0
+            end
+
             check_offset(rhs, range.source, offset)
             ignore_node(rhs) # Don't check again.
           end

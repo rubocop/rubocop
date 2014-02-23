@@ -35,6 +35,7 @@
 * Auto-correction is now more robust and less likely to die because of `RangeError` or "clobbering". ([@jonas054][])
 * Offenses always reported in order of position in file, also during `--auto-correct` runs. ([@jonas054][])
 * Fix problem with `[Corrected]` tag sometimes missing in output from `--auto-correct` runs. ([@jonas054][])
+* Fix message from `EndAlignment` cop when `AlignWith` is `keyword`. ([@jonas054][])
 
 ## 0.18.1 (02/02/2014)
 

@@ -4,16 +4,15 @@ require 'spec_helper'
 
 describe Rubocop::Cop::Lint::EndAlignment, :config do
   subject(:cop) { described_class.new(config) }
-  let(:cop_config) { {} }
   let(:cop_config) { { 'AlignWith' => 'keyword' } }
   let(:opposite) do
     cop_config['AlignWith'] == 'keyword' ? 'variable' : 'keyword'
   end
 
-  shared_examples 'misaligned' do |alignment_base, arg, end_kw, name|
+  shared_examples 'misaligned' do |prefix, alignment_base, arg, end_kw, name|
     name ||= alignment_base
     it "registers an offense for mismatched #{name} ... end" do
-      inspect_source(cop, ["#{alignment_base} #{arg}",
+      inspect_source(cop, ["#{prefix}#{alignment_base} #{arg}",
                            end_kw])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages.first)
@@ -32,14 +31,14 @@ describe Rubocop::Cop::Lint::EndAlignment, :config do
     end
   end
 
-  include_examples 'misaligned', 'class',  'Test',      '  end'
-  include_examples 'misaligned', 'module', 'Test',      '  end'
-  include_examples 'misaligned', 'def',    'test',      '  end'
-  include_examples 'misaligned', 'def',    'Test.test', '  end', 'defs'
-  include_examples 'misaligned', 'if',     'test',      '  end'
-  include_examples 'misaligned', 'unless', 'test',      '  end'
-  include_examples 'misaligned', 'while',  'test',      '  end'
-  include_examples 'misaligned', 'until',  'test',      '  end'
+  include_examples 'misaligned', '', 'class',  'Test',      '  end'
+  include_examples 'misaligned', '', 'module', 'Test',      '  end'
+  include_examples 'misaligned', '', 'def',    'test',      '  end'
+  include_examples 'misaligned', '', 'def',    'Test.test', '  end', 'defs'
+  include_examples 'misaligned', '', 'if',     'test',      '  end'
+  include_examples 'misaligned', '', 'unless', 'test',      '  end'
+  include_examples 'misaligned', '', 'while',  'test',      '  end'
+  include_examples 'misaligned', '', 'until',  'test',      '  end'
 
   include_examples 'aligned', 'class',  'Test',      'end'
   include_examples 'aligned', 'module', 'Test',      'end'
@@ -56,16 +55,16 @@ describe Rubocop::Cop::Lint::EndAlignment, :config do
     include_examples 'aligned', 'private def',         'test', 'end'
     include_examples 'aligned', 'module_function def', 'test', 'end'
 
-    include_examples('misaligned',
+    include_examples('misaligned', '',
                      'public def', 'test',
                      '       end')
-    include_examples('misaligned',
+    include_examples('misaligned', '',
                      'protected def', 'test',
                      '          end')
-    include_examples('misaligned',
+    include_examples('misaligned', '',
                      'private def', 'test',
                      '        end')
-    include_examples('misaligned',
+    include_examples('misaligned', '',
                      'module_function def', 'test',
                      '                end')
   end
@@ -89,17 +88,17 @@ describe Rubocop::Cop::Lint::EndAlignment, :config do
                          'end'])
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages.first)
-      .to eq('end at 6, 0 is not aligned with y = if at 4, 4')
+      .to eq('end at 6, 0 is not aligned with if at 4, 4')
     expect(cop.highlights.first).to eq('end')
     expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
   end
 
   context 'regarding assignment' do
     context 'when AlignWith is keyword' do
-      include_examples 'misaligned', 'var = if',     'test', 'end'
-      include_examples 'misaligned', 'var = unless', 'test', 'end'
-      include_examples 'misaligned', 'var = while',  'test', 'end'
-      include_examples 'misaligned', 'var = until',  'test', 'end'
+      include_examples 'misaligned', 'var = ', 'if',     'test', 'end'
+      include_examples 'misaligned', 'var = ', 'unless', 'test', 'end'
+      include_examples 'misaligned', 'var = ', 'while',  'test', 'end'
+      include_examples 'misaligned', 'var = ', 'until',  'test', 'end'
 
       include_examples 'aligned', 'var = if',     'test', '      end'
       include_examples 'aligned', 'var = unless', 'test', '      end'
@@ -117,11 +116,11 @@ describe Rubocop::Cop::Lint::EndAlignment, :config do
       include_examples 'aligned', 'var = until',  'test', 'end.abc.join("")'
       include_examples 'aligned', 'var = until',  'test', 'end.abc.tap {}'
 
-      include_examples 'misaligned', 'var = if',     'test', '      end'
-      include_examples 'misaligned', 'var = unless', 'test', '      end'
-      include_examples 'misaligned', 'var = while',  'test', '      end'
-      include_examples 'misaligned', 'var = until',  'test', '      end'
-      include_examples 'misaligned', 'var = until',  'test', '      end.join'
+      include_examples 'misaligned', '', 'var = if',     'test', '      end'
+      include_examples 'misaligned', '', 'var = unless', 'test', '      end'
+      include_examples 'misaligned', '', 'var = while',  'test', '      end'
+      include_examples 'misaligned', '', 'var = until',  'test', '      end'
+      include_examples 'misaligned', '', 'var = until',  'test', '      end.j'
 
       include_examples 'aligned', '@var = if',  'test', 'end'
       include_examples 'aligned', '@@var = if', 'test', 'end'
