@@ -673,6 +673,10 @@ ReadAttribute:
   Description: 'Prefer self[:attribute] over read_attribute(:attribute).'
   Enabled: true
 
+ScopeArgs:
+  Description: 'Checks the arguments of ActiveRecord scopes.'
+  Enabled: true
+
 Validation:
   Description: 'Use sexy validations.'
   Enabled: true

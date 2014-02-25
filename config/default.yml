@@ -332,6 +332,10 @@ ReadAttribute:
   IncludePaths:
     - app/models
 
+ScopeArgs:
+  IncludePaths:
+    - app/models
+    
 Validation:
   IncludePaths:
     - app/models
