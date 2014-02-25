@@ -381,6 +381,10 @@ RescueModifier:
   Description: 'Avoid using rescue in its modifier form.'
   Enabled: true
 
+SelfAssignment:
+  Description: 'Checks for places where self-assignment shorthand should have been used.'
+  Enabled: true
+
 Semicolon:
   Description: "Don't use semicolons to terminate expressions."
   Enabled: true
