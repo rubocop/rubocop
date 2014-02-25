@@ -312,6 +312,14 @@ WordArray:
 
 ##################### Rails ##################################
 
+ActionFilter:
+  EnforcedStyle: action
+  SupportedStyles:
+    - action
+    - filter
+  IncludePaths:
+    -app/controllers
+
 DefaultScope:
   IncludePaths:
     - app/models

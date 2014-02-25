@@ -653,6 +653,10 @@ Void:
 
 ##################### Rails ##################################
 
+ActionFilter:
+  Description: 'Enforces consistent use of action filter methods.'
+  Enabled: true
+
 DefaultScope:
   Description: 'Checks if the argument passed to default_scope is a block.'
   Enabled: true
