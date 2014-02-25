@@ -15,7 +15,7 @@ module Rubocop
       class SelfAssignment < Cop
         include AST::Sexp
 
-        OPS = [:+, :-, :*, :**, :/]
+        OPS = [:+, :-, :*, :**, :/, :|, :&]
 
         def on_lvasgn(node)
           check(node, :lvar)
