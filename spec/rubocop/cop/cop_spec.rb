@@ -101,7 +101,7 @@ describe Rubocop::Cop::Cop do
       it 'has each cop in exactly one type' do
         sum = 0
         types.each do |c|
-          sum = sum + described_class.all.with_type(c).length
+          sum += described_class.all.with_type(c).length
         end
         expect(sum).to be described_class.all.length
       end
