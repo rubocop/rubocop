@@ -6,6 +6,42 @@ describe Rubocop::Cop::Lint::LiteralInCondition do
   subject(:cop) { described_class.new }
 
   %w(1 2.0 [1] {}).each do |lit|
+    it "registers an offense for literal #{lit} in if" do
+      inspect_source(cop,
+                     ["if #{lit}",
+                      '  top',
+                      'end'
+                     ])
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it "registers an offense for literal #{lit} in while" do
+      inspect_source(cop,
+                     ["while #{lit}",
+                      '  top',
+                      'end'
+                     ])
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it "registers an offense for literal #{lit} in until" do
+      inspect_source(cop,
+                     ["until #{lit}",
+                      '  top',
+                      'end'
+                     ])
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it "registers an offense for literal #{lit} in case" do
+      inspect_source(cop,
+                     ["case #{lit}",
+                      'when x then top',
+                      'end'
+                     ])
+      expect(cop.offenses.size).to eq(1)
+    end
+
     it "registers an offense for literal #{lit} in &&" do
       inspect_source(cop,
                      ["if x && #{lit}",

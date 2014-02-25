@@ -43,6 +43,10 @@ module Rubocop
           check_for_literal(node)
         end
 
+        def on_case(node)
+          check_for_literal(node)
+        end
+
         def message(node)
           MSG.format(node.loc.expression.source)
         end
