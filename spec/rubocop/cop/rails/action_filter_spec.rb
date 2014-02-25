@@ -20,7 +20,6 @@ describe Rubocop::Cop::Rails::ActionFilter, :config do
                        ["#{method} { |controller| something }"])
         expect(cop.offenses.size).to eq(1)
       end
-
     end
 
     described_class::ACTION_METHODS.each do |method|
@@ -29,6 +28,11 @@ describe Rubocop::Cop::Rails::ActionFilter, :config do
                        ["#{method} :something"])
         expect(cop.offenses).to be_empty
       end
+    end
+
+    it 'auto-corrects to preferred method' do
+      new_source = autocorrect_source(cop, 'before_filter :test')
+      expect(new_source).to eq('before_action :test')
     end
   end
 
@@ -47,7 +51,6 @@ describe Rubocop::Cop::Rails::ActionFilter, :config do
                        ["#{method} { |controller| something }"])
         expect(cop.offenses.size).to eq(1)
       end
-
     end
 
     described_class::FILTER_METHODS.each do |method|
@@ -56,6 +59,11 @@ describe Rubocop::Cop::Rails::ActionFilter, :config do
                        ["#{method} :something"])
         expect(cop.offenses).to be_empty
       end
+    end
+
+    it 'auto-corrects to preferred method' do
+      new_source = autocorrect_source(cop, 'before_action :test')
+      expect(new_source).to eq('before_filter :test')
     end
   end
 end

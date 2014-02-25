@@ -33,7 +33,7 @@ module Rubocop
         def autocorrect(node)
           @corrections << lambda do |corrector|
             corrector.replace(node.loc.selector,
-                              preferred_method(node.loc.selector.source))
+                              preferred_method(node.loc.selector.source).to_s)
           end
         end
 
@@ -65,7 +65,7 @@ module Rubocop
         end
 
         def preferred_method(method)
-          good_methods[bad_methods.index(method)]
+          good_methods[bad_methods.index(method.to_sym)]
         end
       end
     end
