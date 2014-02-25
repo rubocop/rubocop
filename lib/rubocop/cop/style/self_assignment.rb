@@ -32,8 +32,16 @@ module Rubocop
         def check(node, var_type)
           var_name, rhs = *node
 
-          return unless rhs && rhs.type == :send
+          return unless rhs
 
+          if rhs.type == :send
+            check_send_node(node, rhs, var_name, var_type)
+          elsif [:and, :or].include?(rhs.type)
+            check_boolean_node(node, rhs, var_name, var_type)
+          end
+        end
+
+        def check_send_node(node, rhs, var_name, var_type)
           receiver, method_name, *_args = *rhs
 
           return unless OPS.include?(method_name)
@@ -44,6 +52,19 @@ module Rubocop
             add_offense(node,
                         :expression,
                         "Use self-assignment shorthand #{method_name}=.")
+          end
+        end
+
+        def check_boolean_node(node, rhs, var_name, var_type)
+          first_operand, _second_operand = *rhs
+
+          target_node = s(var_type, var_name)
+
+          if first_operand == target_node
+            operator = rhs.loc.operator.source
+            add_offense(node,
+                        :expression,
+                        "Use self-assignment shorthand #{operator}=.")
           end
         end
       end
