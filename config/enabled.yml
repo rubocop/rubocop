@@ -337,6 +337,10 @@ ParenthesesAroundCondition:
                  if/unless/while.
   Enabled: true
 
+PercentLiteralDelimiters:
+  Description: 'Use `%`-literal delimiters consistently'
+  Enabled: true
+
 PerlBackrefs:
   Description: 'Avoid Perl-style regex back references.'
   Enabled: true
