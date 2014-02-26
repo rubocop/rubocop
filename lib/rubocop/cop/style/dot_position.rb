@@ -29,12 +29,10 @@ module Rubocop
             end
         end
 
-        def parameter_name
-          'Style'
-        end
-
         def proper_dot_position?(node)
-          dot_line = node.loc.dot.line
+          receiver, _method_name, *_args = *node
+
+          receiver_line = receiver.loc.expression.end.line
 
           if node.loc.selector
             selector_line = node.loc.selector.line
@@ -43,14 +41,15 @@ module Rubocop
             selector_line = node.loc.begin.line
           end
 
+          # receiver and selector are on the same line
+          return true if selector_line == receiver_line
+
+          dot_line = node.loc.dot.line
+
           case style
           when :leading then dot_line == selector_line
-          when :trailing then dot_line != selector_line || same_line?(node)
+          when :trailing then dot_line != selector_line
           end
-        end
-
-        def same_line?(node)
-          node.loc.dot.line == node.loc.line
         end
       end
     end

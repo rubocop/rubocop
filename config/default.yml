@@ -100,7 +100,7 @@ CyclomaticComplexity:
 
 # Multi-line method chaining should be done with leading dots.
 DotPosition:
-  Style: leading
+  EnforcedStyle: leading
   SupportedStyles:
     - leading
     - trailing

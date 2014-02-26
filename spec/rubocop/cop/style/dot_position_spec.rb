@@ -6,14 +6,14 @@ describe Rubocop::Cop::Style::DotPosition, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'Leading dots style' do
-    let(:cop_config) { { 'Style' => 'leading' } }
+    let(:cop_config) { { 'EnforcedStyle' => 'leading' } }
 
     it 'registers an offense for trailing dot in multi-line call' do
       inspect_source(cop, ['something.',
                            '  method_name'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(['.'])
-      expect(cop.config_to_allow_offenses).to eq('Style' => 'trailing')
+      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'trailing')
     end
 
     it 'registers an offense for correct + opposite' do
@@ -48,7 +48,7 @@ describe Rubocop::Cop::Style::DotPosition, :config do
   end
 
   context 'Trailing dots style' do
-    let(:cop_config) { { 'Style' => 'trailing' } }
+    let(:cop_config) { { 'EnforcedStyle' => 'trailing' } }
 
     it 'registers an offense for leading dot in multi-line call' do
       inspect_source(cop, ['something',
@@ -57,7 +57,7 @@ describe Rubocop::Cop::Style::DotPosition, :config do
         .to eq(['Place the . on the previous line, together with the method ' \
                 'call receiver.'])
       expect(cop.highlights).to eq(['.'])
-      expect(cop.config_to_allow_offenses).to eq('Style' => 'leading')
+      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'leading')
     end
 
     it 'accepts trailing dot in multi-line method call' do
@@ -80,15 +80,12 @@ describe Rubocop::Cop::Style::DotPosition, :config do
       inspect_source(cop, ['something.method_name'])
       expect(cop.offenses).to be_empty
     end
-  end
 
-  context 'Unknown style' do
-    let(:cop_config) { { 'Style' => 'test' } }
-
-    it 'raises an exception' do
-      expect do
-        inspect_source(cop, ['something.top'])
-      end.to raise_error(RuntimeError)
+    it 'does not get confused by several lines of chained methods' do
+      inspect_source(cop, ['File.new(something).',
+                           'readlines.map.',
+                           'compact.join("\n")'])
+      expect(cop.offenses).to be_empty
     end
   end
 end

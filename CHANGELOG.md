@@ -28,6 +28,7 @@
 * Renamed `Offence` to `Offense`. ([@bbatsov][])
 * Use `offense` in all messages instead of `offence`. ([@bbatsov][])
 * For indentation of `if`/`unless`/`while`/`until` bodies when the result is assigned to a variable, instead of supporting two styles simultaneously, `IndentationWidth` now supports one style of indentation at a time, specified by `EndAlignment`/`AlignWith`. ([@jonas054][])
+* Renamed `Style` param of `DotPosition` cop to `EnforcedStyle`. ([@bbatsov][])
 
 ### Bugs fixed
 
@@ -40,6 +41,7 @@
 * Fix problem with `[Corrected]` tag sometimes missing in output from `--auto-correct` runs. ([@jonas054][])
 * Fix message from `EndAlignment` cop when `AlignWith` is `keyword`. ([@jonas054][])
 * Handle `case` conditions in `LiteralInCondition`. ([@bbatsov][])
+* [#822](https://github.com/bbatsov/rubocop/issues/822): Fix a false positive in `DotPosition` when enforced style is set to `trailing`. ([@bbatsov][])
 
 ## 0.18.1 (02/02/2014)
 
