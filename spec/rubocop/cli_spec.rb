@@ -365,6 +365,7 @@ describe Rubocop::CLI, :isolated_environment do
            '  Enabled: false',
            '',
            '# Offense count: 1',
+           '# Cop supports --auto-correct.',
            'IndentationConsistency:',
            '  Enabled: false',
            '',
@@ -648,7 +649,7 @@ describe Rubocop::CLI, :isolated_environment do
                       'example2.rb:3:1: C: Inconsistent indentation ' \
                       'detected.',
                       'def a',
-                      '',
+                      '^^^^^',
                       'example2.rb:4:1: C: Use 2 (not 3) spaces for ' \
                       'indentation.',
                       '   puts',

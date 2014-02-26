@@ -14,6 +14,8 @@ module Rubocop
       #   end
       # end
       class IndentationConsistency < Cop
+        include AutocorrectAlignment
+
         MSG = 'Inconsistent indentation detected.'
 
         def on_begin(node)
@@ -33,17 +35,7 @@ module Rubocop
             AccessModifierIndentation.modifier_node?(child)
           end
 
-          children_to_check.map(&:loc).each_cons(2) do |child1, child2|
-            if child2.line > child1.line && child2.column != child1.column
-              expr = child2.expression
-              indentation = expr.source_line =~ /\S/
-              end_pos = expr.begin_pos
-              begin_pos = end_pos - indentation
-              add_offense(nil,
-                          Parser::Source::Range.new(expr.source_buffer,
-                                                    begin_pos, end_pos))
-            end
-          end
+          check_alignment(children_to_check)
         end
       end
     end
