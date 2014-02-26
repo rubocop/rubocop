@@ -13,6 +13,7 @@ module Rubocop
       #  end
       # end
       class IndentationWidth < Cop
+        include AutocorrectAlignment
         include CheckMethods
         include CheckAssignment
         include IfNode
@@ -145,7 +146,8 @@ module Rubocop
           return unless body_node.loc.column == first_char_pos_on_line
 
           indentation = body_node.loc.column - base_loc.column
-          return if indentation == CORRECT_INDENTATION
+          @column_delta = CORRECT_INDENTATION - indentation
+          return if @column_delta == 0
 
           expr = body_node.loc.expression
           begin_pos, end_pos =
@@ -155,11 +157,11 @@ module Rubocop
               [expr.begin_pos, expr.begin_pos - indentation]
             end
 
-          add_offense(nil,
+          add_offense(body_node,
                       Parser::Source::Range.new(expr.source_buffer,
                                                 begin_pos, end_pos),
                       format("Use #{CORRECT_INDENTATION} (not %d) spaces " +
-                              'for indentation.', indentation))
+                             'for indentation.', indentation))
         end
 
         def starts_with_access_modifier?(body_node)

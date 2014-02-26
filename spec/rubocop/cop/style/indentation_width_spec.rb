@@ -18,6 +18,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
                       ' func',
                       'end'])
       expect(cop.messages).to eq(['Use 2 (not 1) spaces for indentation.'])
+      expect(cop.highlights).to eq([' '])
     end
 
     it 'registers an offense for bad indentation of an else body' do
@@ -28,6 +29,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
                       ' func2',
                       'end'])
       expect(cop.messages).to eq(['Use 2 (not 1) spaces for indentation.'])
+      expect(cop.highlights).to eq([' '])
     end
 
     it 'registers an offense for bad indentation of an elsif body' do
@@ -51,6 +53,7 @@ describe Rubocop::Cop::Style::IndentationWidth do
                       'end'])
       expect(cop.messages)
         .to eq(['Use 2 (not 5) spaces for indentation.'])
+      expect(cop.highlights).to eq(['     '])
     end
 
     it 'registers offense for bad indentation of modifier if in else' do
@@ -62,6 +65,24 @@ describe Rubocop::Cop::Style::IndentationWidth do
                       'end'])
       expect(cop.messages)
         .to eq(['Use 2 (not 3) spaces for indentation.'])
+    end
+
+    it 'autocorrects bad indentation' do
+      corrected = autocorrect_source(cop,
+                                     ['if a1',
+                                      '   b1',
+                                      'elsif a2',
+                                      ' b2',
+                                      'else',
+                                      '    c',
+                                      'end'])
+      expect(corrected).to eq ['if a1',
+                               '  b1',
+                               'elsif a2',
+                               '  b2',
+                               'else',
+                               '  c',
+                               'end'].join("\n")
     end
 
     it 'accepts a one line if statement' do
@@ -217,6 +238,24 @@ describe Rubocop::Cop::Style::IndentationWidth do
                             'end'])
             expect(cop.messages)
               .to eq(['Use 2 (not -4) spaces for indentation.'])
+          end
+
+          it 'autocorrects bad indentation' do
+            corrected = autocorrect_source(cop,
+                                           ['var = if a',
+                                            '  b',
+                                            'end',
+                                            '',
+                                            'var = while a',
+                                            '  b',
+                                            'end'])
+            expect(corrected).to eq ['var = if a',
+                                     '        b',
+                                     'end', # Not this cop's job to fix end.
+                                     '',
+                                     'var = while a',
+                                     '        b',
+                                     'end'].join("\n")
           end
         end
 
