@@ -54,6 +54,12 @@ module Rubocop
           cop_config['MinSize']
         end
 
+        def delimiters
+          return @__delimiters if defined?(@delimiters)
+          default = '()'
+          @__delimiters = (cop_config['Delimiters'] || default).split(//)
+        end
+
         def autocorrect(node)
           sb = node.loc.expression.source_buffer
           interpolated = false
@@ -73,7 +79,10 @@ module Rubocop
           char = interpolated ? 'W' : 'w'
 
           @corrections << lambda do |corrector|
-            corrector.replace(node.loc.expression, "%#{char}(#{contents})")
+            corrector.replace(
+              node.loc.expression,
+              "%#{char}#{delimiters.first}#{contents}#{delimiters.last}"
+            )
           end
         end
 
