@@ -85,13 +85,29 @@ describe Rubocop::Cop::Style::WordArray, :config do
     expect(cop.offenses.size).to eq(1)
   end
 
-  it 'auto-corrects an array of words' do
-    new_source = autocorrect_source(cop, "['one', %q(two), 'three']")
-    expect(new_source).to eq('%w(one two three)')
+  context 'with default configuration' do
+    it 'auto-corrects an array of words' do
+      new_source = autocorrect_source(cop, "['one', %q(two), 'three']")
+      expect(new_source).to eq('%w(one two three)')
+    end
+
+    it 'auto-corrects an array of words and character constants' do
+      new_source = autocorrect_source(cop, '[%{one}, %Q(two), ?\n, ?\t]')
+      expect(new_source).to eq('%W(one two \n \t)')
+    end
   end
 
-  it 'auto-corrects an array of words and character constants' do
-    new_source = autocorrect_source(cop, '[%{one}, %Q(two), ?\n, ?\t]')
-    expect(new_source).to eq('%W(one two \n \t)')
+  context 'with custom configuration' do
+    let(:cop_config) { { 'Delimiters' => '[]' } }
+
+    it 'auto-corrects an array of words' do
+      new_source = autocorrect_source(cop, "['one', %q(two), 'three']")
+      expect(new_source).to eq('%w[one two three]')
+    end
+
+    it 'auto-corrects an array of words and character constants' do
+      new_source = autocorrect_source(cop, '[%{one}, %Q(two), ?\n, ?\t]')
+      expect(new_source).to eq('%W[one two \n \t]')
+    end
   end
 end
