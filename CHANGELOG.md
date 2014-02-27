@@ -44,6 +44,7 @@
 * Fix message from `EndAlignment` cop when `AlignWith` is `keyword`. ([@jonas054][])
 * Handle `case` conditions in `LiteralInCondition`. ([@bbatsov][])
 * [#822](https://github.com/bbatsov/rubocop/issues/822): Fix a false positive in `DotPosition` when enforced style is set to `trailing`. ([@bbatsov][])
+* Handle properly dynamic strings in `LineEndConcatenation`. ([@bbatsov][])
 
 ## 0.18.1 (02/02/2014)
 

@@ -38,9 +38,9 @@ module Rubocop
           # TODO: Report Emacs bug.
           return false unless :+ == method
 
-          return false unless receiver.type == :str
+          return false unless string_type?(receiver.type)
 
-          return false unless arg.type == :str
+          return false unless string_type?(arg.type)
 
           plus_at_line_end?(node.loc.expression.source)
         end
@@ -48,6 +48,10 @@ module Rubocop
         def plus_at_line_end?(expression)
           # check if the first line of the expression ends with a +
           expression =~ /.+\+\s*$/
+        end
+
+        def string_type?(node_type)
+          [:str, :dstr].include?(node_type)
         end
       end
     end

@@ -12,6 +12,13 @@ describe Rubocop::Cop::Style::LineEndConcatenation do
     expect(cop.offenses.size).to eq(1)
   end
 
+  it 'registers an offense for dynamic string concat at line end' do
+    inspect_source(cop,
+                   ['top = "test#{x}" +',
+                    '"top"'])
+    expect(cop.offenses.size).to eq(1)
+  end
+
   it 'accepts string concat on the same line' do
     inspect_source(cop,
                    ['top = "test" + "top"'])
