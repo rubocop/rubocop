@@ -48,6 +48,31 @@ describe Rubocop::CLI, :isolated_environment do
                   'end'].join("\n") + "\n")
       end
 
+      it 'can handle spaces when removing braces' do
+        create_file('example.rb',
+                    ['# encoding: utf-8',
+                     "assert_post_status_code 400, 's', {:type => 'bad'}"])
+        expect(cli.run(%w(--auto-correct --format emacs))).to eq(1)
+        expect(IO.read('example.rb'))
+          .to eq(['# encoding: utf-8',
+                  "assert_post_status_code 400, 's', type: 'bad'",
+                  ''].join("\n"))
+        e = abs('example.rb')
+        expect($stdout.string)
+          .to eq(["#{e}:2:35: C: [Corrected] Redundant curly braces around " \
+                  "a hash parameter.",
+                  "#{e}:2:35: C: [Corrected] Use the new Ruby 1.9 hash " \
+                  "syntax.",
+                  # TODO: Don't report that a problem is corrected when it
+                  # actually went away due to another correction.
+                  "#{e}:2:35: C: [Corrected] Space inside { missing.",
+                  # TODO: Don't report duplicates (HashSyntax in this case).
+                  "#{e}:2:36: C: [Corrected] Use the new Ruby 1.9 hash " \
+                  "syntax.",
+                  "#{e}:2:50: C: [Corrected] Space inside } missing.",
+                  ''].join("\n"))
+      end
+
       # A case where two cops, EmptyLinesAroundBody and EmptyLines, try to
       # remove the same line in autocorrect.
       it 'can correct two empty lines at end of class body' do
