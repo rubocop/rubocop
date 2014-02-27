@@ -39,6 +39,26 @@ describe Rubocop::Cop::Style::IndentationConsistency do
       expect(cop.messages).to eq(['Inconsistent indentation detected.'])
     end
 
+    it 'autocorrects bad indentation' do
+      corrected = autocorrect_source(cop,
+                                     ['if a1',
+                                      '   b1',
+                                      'elsif a2',
+                                      ' b2',
+                                      '  b3',
+                                      'else',
+                                      '    c',
+                                      'end'])
+      expect(corrected).to eq ['if a1',
+                               '   b1',
+                               'elsif a2',
+                               ' b2',
+                               ' b3',
+                               'else',
+                               '    c',
+                               'end'].join("\n")
+    end
+
     it 'accepts a one line if statement' do
       inspect_source(cop,
                      ['if cond then func1 else func2 end'])
@@ -428,7 +448,7 @@ describe Rubocop::Cop::Style::IndentationConsistency do
                       ' end',
                       'end'])
       expect(cop.messages).to eq(['Inconsistent indentation detected.'])
-      expect(cop.highlights).to eq([' '])
+      expect(cop.highlights).to eq(["def g\n end"])
     end
   end
 
