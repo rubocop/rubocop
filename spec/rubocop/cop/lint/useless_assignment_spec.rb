@@ -696,7 +696,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
   end
 
   context 'when a variable is assigned in branch of modifier if ' \
-          'that references the variable in its conditional clause' +
+          'that references the variable in its conditional clause' \
           'and referenced after the branching' do
     let(:source) do
       [
@@ -712,7 +712,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
   end
 
   context 'when a variable is assigned in branch of modifier if ' \
-          'that references the variable in its conditional clause' +
+          'that references the variable in its conditional clause' \
           'and unreferenced' do
     let(:source) do
       [
@@ -834,7 +834,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
   end
 
   context 'when a variable is reassigned with binary operator ' \
-           'assignment while assigning to itself in rhs ' +
+           'assignment while assigning to itself in rhs ' \
            'then referenced' do
     let(:source) do
       [
@@ -930,7 +930,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.message).to eq(
         'Useless assignment to variable - bar. ' \
-        'Use _ or _bar as a variable name ' +
+        'Use _ or _bar as a variable name ' \
         "to indicate that it won't be used."
       )
       expect(cop.offenses.first.line).to eq(2)
@@ -1219,7 +1219,7 @@ describe Rubocop::Cop::Lint::UselessAssignment do
   end
 
   context 'when a variable is assigned ' \
-          'in main body of begin, rescue and else ' +
+          'in main body of begin, rescue and else ' \
           'and reassigned in ensure then referenced after the begin' do
     let(:source) do
       [

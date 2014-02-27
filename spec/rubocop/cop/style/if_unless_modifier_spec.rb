@@ -24,7 +24,7 @@ describe Rubocop::Cop::Style::IfUnlessModifier do
                     '  end'])
     expect(cop.messages).to eq(
       ['Favor modifier if usage when you have a single-line' \
-       ' body. Another good alternative is the usage of control flow' +
+       ' body. Another good alternative is the usage of control flow' \
        ' &&/||.'])
   end
 
@@ -60,7 +60,7 @@ describe Rubocop::Cop::Style::IfUnlessModifier do
                          'end'])
     expect(cop.messages).to eq(
       ['Favor modifier unless usage when you have a single-line' \
-       ' body. Another good alternative is the usage of control flow' +
+       ' body. Another good alternative is the usage of control flow' \
        ' &&/||.'])
   end
 

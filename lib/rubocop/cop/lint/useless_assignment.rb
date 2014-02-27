@@ -52,7 +52,7 @@ module Rubocop
           message = format(MSG, variable.name)
 
           if assignment.multiple_assignment?
-            message << ". Use _ or _#{variable.name} as a variable name " +
+            message << ". Use _ or _#{variable.name} as a variable name " \
                        "to indicate that it won't be used."
           elsif assignment.operator_assignment?
             return_value_node = return_value_node_of_scope(variable.scope)

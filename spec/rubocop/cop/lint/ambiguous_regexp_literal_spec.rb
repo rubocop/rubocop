@@ -17,7 +17,7 @@ describe Rubocop::Cop::Lint::AmbiguousRegexpLiteral do
         expect(cop.offenses.size).to eq(1)
         expect(cop.offenses.first.message).to eq(
           'Ambiguous regexp literal. Parenthesize the method arguments ' \
-          "if it's surely a regexp literal, or add a whitespace to the " +
+          "if it's surely a regexp literal, or add a whitespace to the " \
           'right of the / if it should be a division.'
         )
         expect(cop.highlights).to eq(['/'])

@@ -23,9 +23,9 @@ describe Rubocop::Cop::Lint::AmbiguousOperator do
           expect(cop.offenses.size).to eq(1)
           expect(cop.offenses.first.message).to eq(
             'Ambiguous splat operator. ' \
-            "Parenthesize the method arguments if it's surely a splat " +
-            'operator, ' +
-            'or add a whitespace to the right of the * if it should be a ' +
+            "Parenthesize the method arguments if it's surely a splat " \
+            'operator, ' \
+            'or add a whitespace to the right of the * if it should be a ' \
             'multiplication.'
           )
           expect(cop.highlights).to eq(['*'])
@@ -74,9 +74,9 @@ describe Rubocop::Cop::Lint::AmbiguousOperator do
           expect(cop.offenses.size).to eq(1)
           expect(cop.offenses.first.message).to eq(
             'Ambiguous block operator. ' \
-            "Parenthesize the method arguments if it's surely a block " +
-            'operator, ' +
-            'or add a whitespace to the right of the & if it should be a ' +
+            "Parenthesize the method arguments if it's surely a block " \
+            'operator, ' \
+            'or add a whitespace to the right of the & if it should be a ' \
             'binary AND.'
           )
           expect(cop.highlights).to eq(['&'])

@@ -58,7 +58,7 @@ module Rubocop
           unless COMMON_PARAMS.include?(param) ||
                  default_config[name].key?(param)
             fail ValidationError,
-                 "unrecognized parameter #{name}:#{param} found " +
+                 "unrecognized parameter #{name}:#{param} found " \
                  "in #{loaded_path || self}"
           end
         end

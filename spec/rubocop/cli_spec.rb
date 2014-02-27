@@ -315,7 +315,7 @@ describe Rubocop::CLI, :isolated_environment do
         create_file('.rubocop.yml', ['inherit_from: rubocop-todo.yml'])
         expect(cli.run(['--auto-gen-config'])).to eq(1)
         expect($stderr.string).to eq('Remove rubocop-todo.yml from the ' \
-                                     'current configuration before ' +
+                                     'current configuration before ' \
                                      "generating it again.\n")
       end
 
@@ -410,7 +410,7 @@ describe Rubocop::CLI, :isolated_environment do
         expect($stdout.string)
           .to eq(['== example.rb ==',
                   'C:  1:  1: Favor modifier if usage when you ' \
-                  'have a single-line body. Another good alternative is ' +
+                  'have a single-line body. Another good alternative is ' \
                   'the usage of control flow &&/||.',
                   '',
                   '1 file inspected, 1 offense detected',
@@ -442,7 +442,7 @@ describe Rubocop::CLI, :isolated_environment do
         expect(cli.run(['--debug', 'example1.rb'])).to eq(1)
         home = File.dirname(File.dirname(File.dirname(__FILE__)))
         expect($stdout.string.lines.grep(/configuration/).map(&:chomp))
-          .to eq(["For #{abs('')}:" +
+          .to eq(["For #{abs('')}:" \
                   " configuration from #{home}/config/default.yml",
                   "Inheriting configuration from #{home}/config/enabled.yml",
                   "Inheriting configuration from #{home}/config/disabled.yml"
@@ -658,7 +658,7 @@ describe Rubocop::CLI, :isolated_environment do
                       'def badName',
                       '    ^^^^^^^',
                       'example3.rb:3:3: C: Favor modifier if usage ' \
-                      'when you have a single-line body. Another good ' +
+                      'when you have a single-line body. Another good ' \
                       'alternative is the usage of control flow &&/||.',
                       '  if something',
                       '  ^^',
@@ -684,12 +684,12 @@ describe Rubocop::CLI, :isolated_environment do
             expect(cli.run(['--format', 'emacs', 'example1.rb',
                             'example2.rb'])).to eq(1)
             expected_output =
-              ["#{abs('example1.rb')}:2:2: C: Surrounding space missing" +
+              ["#{abs('example1.rb')}:2:2: C: Surrounding space missing" \
                " for operator '='.",
                "#{abs('example1.rb')}:2:5: C: Trailing whitespace detected.",
                "#{abs('example1.rb')}:3:2: C: Trailing whitespace detected.",
                "#{abs('example2.rb')}:2:1: C: Tab detected.",
-               "#{abs('example2.rb')}:3:1: C: Inconsistent indentation " +
+               "#{abs('example2.rb')}:3:1: C: Inconsistent indentation " \
                'detected.',
                ''].join("\n")
             expect($stdout.string).to eq(expected_output)
@@ -754,7 +754,7 @@ describe Rubocop::CLI, :isolated_environment do
         expect($stdout.string)
           .to include(["== #{target_file} ==",
                        'C:  2: 80: Line is too long. [90/79]',
-                       "#{abs(target_file)}:2:80: C: Line is too long. " +
+                       "#{abs(target_file)}:2:80: C: Line is too long. " \
                        '[90/79]'].join("\n"))
       end
     end
@@ -875,7 +875,7 @@ describe Rubocop::CLI, :isolated_environment do
                                'en'])
     expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
     expect($stdout.string)
-      .to eq(["#{abs('example.rb')}:4:1: E: unexpected " +
+      .to eq(["#{abs('example.rb')}:4:1: E: unexpected " \
               'token $end',
               ''].join("\n"))
   end
@@ -886,12 +886,12 @@ describe Rubocop::CLI, :isolated_environment do
                                'if a then b else c end'])
     expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
     expect($stdout.string)
-      .to eq(["#{abs('example.rb')}:2:6: W: " +
-              'Ambiguous splat operator. Parenthesize the method arguments ' +
-              "if it's surely a splat operator, or add a whitespace to the " +
+      .to eq(["#{abs('example.rb')}:2:6: W: " \
+              'Ambiguous splat operator. Parenthesize the method arguments ' \
+              "if it's surely a splat operator, or add a whitespace to the " \
               'right of the * if it should be a multiplication.',
-              "#{abs('example.rb')}:3:1: C: " +
-              'Favor the ternary operator (?:) over if/then/else/end ' +
+              "#{abs('example.rb')}:3:1: C: " \
+              'Favor the ternary operator (?:) over if/then/else/end ' \
               'constructs.',
               ''].join("\n"))
   end

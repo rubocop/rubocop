@@ -33,7 +33,7 @@ module Rubocop
 
         offense_count = total_offense_count(offense_counts)
         offense_counts.each do |cop_name, count|
-          output.puts "#{count.to_s.ljust(offense_count.to_s.length + 2)}" +
+          output.puts "#{count.to_s.ljust(offense_count.to_s.length + 2)}" \
                       "#{cop_name}\n"
         end
         output.puts '--'

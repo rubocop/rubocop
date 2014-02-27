@@ -130,7 +130,7 @@ describe Rubocop::Cop::Style::StringLiterals, :config do
       expect(cop.highlights).to eq(["'abc'"])
       expect(cop.messages)
         .to eq(['Prefer double-quoted strings unless you need ' \
-                'single quotes to avoid extra backslashes for ' +
+                'single quotes to avoid extra backslashes for ' \
                 'escaping.'])
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
                                                  'single_quotes')
@@ -141,7 +141,7 @@ describe Rubocop::Cop::Style::StringLiterals, :config do
                            "x = 'abc'"])
       expect(cop.messages)
         .to eq(['Prefer double-quoted strings unless you need ' \
-                'single quotes to avoid extra backslashes for ' +
+                'single quotes to avoid extra backslashes for ' \
                 'escaping.'])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end

@@ -13,7 +13,7 @@ module Rubocop
           # Accept begin node for top level scope.
           unless SCOPE_TYPES.include?(node.type) || node.type == :begin
             fail ArgumentError,
-                 "Node type must be any of #{SCOPE_TYPES}, " +
+                 "Node type must be any of #{SCOPE_TYPES}, " \
                  "passed #{node.type}"
           end
           @node = node

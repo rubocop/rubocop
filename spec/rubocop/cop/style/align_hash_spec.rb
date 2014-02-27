@@ -35,7 +35,7 @@ describe Rubocop::Cop::Style::AlignHash, :config do
                            " 'dddd'  =>  2",
                            '}'])
       expect(cop.messages).to eq(['Align the elements of a hash ' \
-                                  'literal if they span more than ' +
+                                  'literal if they span more than ' \
                                   'one line.'] * 2)
       expect(cop.highlights).to eq(['bb: 1',
                                     "'dddd'  =>  2"])

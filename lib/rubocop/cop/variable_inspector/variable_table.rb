@@ -57,7 +57,7 @@ module Rubocop
           variable = find_variable(name)
 
           unless variable
-            fail "Assigning to undeclared local variable \"#{name}\" " +
+            fail "Assigning to undeclared local variable \"#{name}\" " \
                  "at #{node.loc.expression}, #{node.inspect}"
           end
 
