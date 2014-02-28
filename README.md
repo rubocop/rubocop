@@ -491,7 +491,8 @@ The JSON structure is like the following example:
           "corrected": true,
           "location": {
             "line": 546,
-            "column": 80
+            "column": 80,
+            "length": 4
           }
         }, {
           "severity": "warning",
@@ -500,7 +501,8 @@ The JSON structure is like the following example:
           "corrected": false,
           "location": {
             "line": 15,
-            "column": 9
+            "column": 9,
+            "length": 10
           }
         }
       ]
