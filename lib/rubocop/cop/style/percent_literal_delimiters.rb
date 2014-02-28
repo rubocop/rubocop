@@ -40,10 +40,19 @@ module Rubocop
           type = type(node)
           delimiters = preferred_delimiters(type)
 
+          corrected_source =
+            if node.type == :regexp
+              expression = contents(node.children.first)
+              reg_opt    = contents(node.children.last)
+              type + delimiters[0] + expression + delimiters[1] + reg_opt
+            else
+              type + delimiters[0] + contents(node) + delimiters[1]
+            end
+
           @corrections << lambda do |corrector|
             corrector.replace(
               node.loc.expression,
-              type + delimiters[0] + contents(node) + delimiters[1]
+              corrected_source
             )
           end
         end
@@ -76,14 +85,16 @@ module Rubocop
         end
 
         def contents(node)
-          if node.children.first.is_a?(String)
-            node.children.first
-          else
+          if node.children.empty?
+            ''
+          elsif node.children.first.is_a?(Parser::AST::Node)
             Parser::Source::Range.new(
               node.loc.expression.source_buffer,
               node.children.first.loc.expression.begin_pos,
               node.children.last.loc.expression.end_pos
             ).source
+          else
+            node.children.first.to_s
           end
         end
 

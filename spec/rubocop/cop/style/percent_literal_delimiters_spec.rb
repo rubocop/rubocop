@@ -229,5 +229,17 @@ describe Rubocop::Cop::Style::PercentLiteralDelimiters, :config do
       new_source = autocorrect_source(cop, '%w(some words)')
       expect(new_source).to eq('%w[some words]')
     end
+
+    it 'fixes a regular expression' do
+      original_source = '%r(.*)'
+      new_source = autocorrect_source(cop, original_source)
+      expect(new_source).to eq('%r[.*]')
+    end
+
+    it 'fixes a regular expression with option' do
+      original_source = '%r(.*)i'
+      new_source = autocorrect_source(cop, original_source)
+      expect(new_source).to eq('%r[.*]i')
+    end
   end
 end
