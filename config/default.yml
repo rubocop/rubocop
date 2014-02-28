@@ -201,6 +201,18 @@ ParameterLists:
 ParenthesesAroundCondition:
   AllowSafeAssignment: true
 
+PercentLiteralDelimiters:
+  PreferredDelimiters:
+    '%':  ()
+    '%i': ()
+    '%q': ()
+    '%Q': ()
+    '%r': '{}'
+    '%s': ()
+    '%w': ()
+    '%W': ()
+    '%x': ()
+
 PredicateName:
   NamePrefixBlacklist:
     - is_
