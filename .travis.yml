@@ -5,7 +5,7 @@ rvm:
   - 2.0.0
   - 2.1.0
   - jruby-19mode
-  - rbx-2.1.1
+  - rbx-2
 before_install: gem update --remote bundler
 script:
   - bundle exec rspec
