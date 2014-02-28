@@ -143,6 +143,10 @@ module Rubocop
       it 'sets column value for :column key' do
         expect(hash[:column]).to eq(6)
       end
+
+      it 'sets length value for :length key' do
+        expect(hash[:length]).to eq(1)
+      end
     end
   end
 end
