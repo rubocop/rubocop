@@ -54,14 +54,30 @@ describe Rubocop::Cop::Style::AlignArray do
                               ']'].join("\n"))
   end
 
-  it 'auto-corrects array within array' do
+  it 'auto-corrects array within array with too much indentation' do
     original_source = ['[:l1,',
                        '  [:l2,',
+                       '',
                        '    [:l3,',
-                       '      [:l4]]]]']
+                       '     [:l4]]]]']
     new_source = autocorrect_source(cop, original_source)
     expect(new_source).to eq(['[:l1,',
                               ' [:l2,',
+                              '',
+                              '  [:l3,',
+                              '   [:l4]]]]'].join("\n"))
+  end
+
+  it 'auto-corrects array within array with too little indentation' do
+    original_source = ['[:l1,',
+                       '[:l2,',
+                       '',
+                       '  [:l3,',
+                       '   [:l4]]]]']
+    new_source = autocorrect_source(cop, original_source)
+    expect(new_source).to eq(['[:l1,',
+                              ' [:l2,',
+                              '',
                               '  [:l3,',
                               '   [:l4]]]]'].join("\n"))
   end

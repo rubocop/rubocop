@@ -71,18 +71,21 @@ describe Rubocop::Cop::Style::IndentationWidth do
       corrected = autocorrect_source(cop,
                                      ['if a1',
                                       '   b1',
+                                      '   b1',
                                       'elsif a2',
                                       ' b2',
                                       'else',
                                       '    c',
                                       'end'])
-      expect(corrected).to eq ['if a1',
-                               '  b1',
-                               'elsif a2',
-                               '  b2',
-                               'else',
-                               '  c',
-                               'end'].join("\n")
+      expect(corrected)
+        .to eq ['if a1',
+                '  b1',
+                '   b1', # Will be corrected by IndentationConsistency.
+                'elsif a2',
+                '  b2',
+                'else',
+                '  c',
+                'end'].join("\n")
     end
 
     it 'accepts a one line if statement' do
