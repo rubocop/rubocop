@@ -38,16 +38,22 @@ module Rubocop
 
         def autocorrect(node)
           type = type(node)
-          delimiters = preferred_delimiters(type)
+
+          opening_delimiter, closing_delimiter = preferred_delimiters(type)
+          opening_newline = new_line(node.loc.begin, node.children.first)
+          closing_newline = new_line(node.loc.end, node.children.last)
+
+          expression, reg_opt =
+              if node.type == :regexp
+                [contents(node.children.first), contents(node.children.last)]
+              else
+                [contents(node), '']
+              end
 
           corrected_source =
-            if node.type == :regexp
-              expression = contents(node.children.first)
-              reg_opt    = contents(node.children.last)
-              type + delimiters[0] + expression + delimiters[1] + reg_opt
-            else
-              type + delimiters[0] + contents(node) + delimiters[1]
-            end
+            type + opening_delimiter + opening_newline +
+            expression +
+            closing_newline + closing_delimiter + reg_opt
 
           @corrections << lambda do |corrector|
             corrector.replace(
@@ -121,6 +127,15 @@ module Rubocop
           elsif node.respond_to?(:type) && node.type == :str
             node.loc.expression.source
           end
+        end
+
+        def new_line(range, child_node)
+          same_line?(range, child_node) ? '' : "\n"
+        end
+
+        def same_line?(range, child_node)
+          !child_node.is_a?(Parser::AST::Node) ||
+            range.begin.line == child_node.loc.line
         end
       end
     end

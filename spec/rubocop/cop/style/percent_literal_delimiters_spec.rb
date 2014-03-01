@@ -241,5 +241,10 @@ describe Rubocop::Cop::Style::PercentLiteralDelimiters, :config do
       new_source = autocorrect_source(cop, original_source)
       expect(new_source).to eq('%r[.*]i')
     end
+
+    it 'preserves line breaks when fixing a multiline array' do
+      new_source = autocorrect_source(cop, ['%w(', 'some', 'words', ')'])
+      expect(new_source).to eq("%w[\nsome\nwords\n]")
+    end
   end
 end
