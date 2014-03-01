@@ -44,7 +44,14 @@ module Rubocop
         end
 
         def on_case(node)
-          check_for_literal(node)
+          cond, *whens, _else = *node
+          if cond
+            handle_node(cond)
+          else
+            whens.each do |when_node|
+              check_for_literal(when_node)
+            end
+          end
         end
 
         def message(node)
