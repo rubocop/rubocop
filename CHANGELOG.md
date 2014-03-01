@@ -49,6 +49,7 @@
 * Handle properly dynamic strings in `LineEndConcatenation`. ([@bbatsov][])
 * [#832](https://github.com/bbatsov/rubocop/issues/832): Fix auto-correction interference problem between `BracesAroundHashParameters` and `SpaceInsideHashLiteralBraces`. ([@jonas054][])
 * Fix bug in auto-correction of alignment so that only space can be removed. ([@jonas054][])
+* Fix bug in `IndentationWidth` auto-correction so it doesn't correct things that `IndentationConsistency` should correct. ([@jonas054][])
 
 ## 0.18.1 (02/02/2014)
 

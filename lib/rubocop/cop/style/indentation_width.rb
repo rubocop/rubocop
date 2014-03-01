@@ -149,17 +149,20 @@ module Rubocop
           @column_delta = CORRECT_INDENTATION - indentation
           return if @column_delta == 0
 
+          # This cop only auto-corrects the first statement in a def body, for
+          # example.
+          body_node = body_node.children.first if body_node.type == :begin
+
           expr = body_node.loc.expression
-          begin_pos, end_pos =
-            if indentation >= 0
-              [expr.begin_pos - indentation, expr.begin_pos]
-            else
-              [expr.begin_pos, expr.begin_pos - indentation]
-            end
+          pos = if indentation >= 0
+                  (expr.begin_pos - indentation)..expr.begin_pos
+                else
+                  expr.begin_pos..(expr.begin_pos - indentation)
+                end
 
           add_offense(body_node,
                       Parser::Source::Range.new(expr.source_buffer,
-                                                begin_pos, end_pos),
+                                                pos.begin, pos.end),
                       format("Use #{CORRECT_INDENTATION} (not %d) spaces " \
                              'for indentation.', indentation))
         end
