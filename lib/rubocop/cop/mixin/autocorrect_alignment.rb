@@ -31,9 +31,11 @@ module Rubocop
           each_line(expr) do |line_begin_pos, line|
             range = calculate_range(expr, line_begin_pos, column_delta)
             if column_delta > 0
-              corrector.insert_before(range, ' ' * column_delta)
+              unless range.source == "\n"
+                corrector.insert_before(range, ' ' * column_delta)
+              end
             else
-              remove(range, corrector)
+              remove(range, corrector) if range.source =~ /^[ \t]+$/
             end
           end
         end
