@@ -560,6 +560,8 @@ describe Rubocop::CLI, :isolated_environment do
       let(:stdout) { $stdout.string }
 
       before do
+        create_file('.rubocop.yml', ['LineLength:',
+                                     '  Max: 110'])
         expect { cli.run ['--show-cops'] + cop_list }.to exit_with_code(0)
       end
 

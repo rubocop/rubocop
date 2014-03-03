@@ -51,6 +51,7 @@
 * Fix bug in auto-correction of alignment so that only space can be removed. ([@jonas054][])
 * Fix bug in `IndentationWidth` auto-correction so it doesn't correct things that `IndentationConsistency` should correct. ([@jonas054][])
 * [#847](https://github.com/bbatsov/rubocop/issues/847): Fix bug in `RegexpLiteral` concerning `--auto-gen-config`. ([@jonas054][])
+* [#848](https://github.com/bbatsov/rubocop/issues/848): Fix bug in `--show-cops` that made it print the default configuration rather than the current configuration. ([@jonas054][])
 
 ## 0.18.1 (02/02/2014)
 

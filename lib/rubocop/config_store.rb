@@ -26,10 +26,14 @@ module Rubocop
                                                         options_config)
     end
 
-    def for(file)
+    def for(file_or_dir)
       return @options_config if @options_config
 
-      dir = File.dirname(file)
+      dir = if File.directory?(file_or_dir)
+              file_or_dir
+            else
+              File.dirname(file_or_dir)
+            end
       @path_cache[dir] ||= ConfigLoader.configuration_file_for(dir)
       path = @path_cache[dir]
       @object_cache[path] ||= begin
