@@ -36,6 +36,7 @@ module Rubocop
       !any_failed && !wants_to_quit ? 0 : 1
     rescue => e
       $stderr.puts e.message
+      $stderr.puts e.backtrace
       return 1
     end
 

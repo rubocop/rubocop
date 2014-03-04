@@ -338,7 +338,7 @@ describe Rubocop::CLI, :isolated_environment do
         expect(IO.read('rubocop-todo.yml'))
           .to eq(todo_contents.join("\n") + "\n")
         create_file('.rubocop.yml', ['inherit_from: rubocop-todo.yml'])
-        expect(cli.run(['--auto-gen-config'])).to eq(1)
+        expect { cli.run(['--auto-gen-config']) }.to exit_with_code(1)
         expect($stderr.string).to eq('Remove rubocop-todo.yml from the ' \
                                      'current configuration before ' \
                                      "generating it again.\n")
@@ -350,7 +350,8 @@ describe Rubocop::CLI, :isolated_environment do
                                     '#' * 85,
                                     'y ',
                                     'puts x'])
-        expect(cli.run(['--auto-gen-config', 'example1.rb'])).to eq(1)
+        expect { cli.run(['--auto-gen-config', 'example1.rb']) }
+          .to exit_with_code(1)
         expect($stderr.string)
           .to eq('--auto-gen-config can not be combined with any other ' \
                  "arguments.\n")

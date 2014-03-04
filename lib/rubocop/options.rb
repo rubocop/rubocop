@@ -157,8 +157,8 @@ module Rubocop
 
     def validate_auto_gen_config_option(args)
       if args.any?
-        fail ArgumentError,
-             '--auto-gen-config can not be combined with any other arguments.'
+        warn '--auto-gen-config can not be combined with any other arguments.'
+        exit(1)
       end
     end
   end

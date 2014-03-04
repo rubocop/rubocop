@@ -70,8 +70,9 @@ module Rubocop
         Array(inherit_from).map do |f|
           f = File.join(File.dirname(path), f) unless f.start_with?('/')
           if auto_gen_config? && f.include?(AUTO_GENERATED_FILE)
-            fail "Remove #{AUTO_GENERATED_FILE} from the current " \
-              'configuration before generating it again.'
+            warn "Remove #{AUTO_GENERATED_FILE} from the current " \
+                 'configuration before generating it again.'
+            exit(1)
           end
           print 'Inheriting ' if debug?
           load_file(f)
