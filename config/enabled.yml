@@ -431,7 +431,13 @@ SpaceAfterSemicolon:
   Description: 'Use spaces after semicolons.'
   Enabled: true
 
-SpaceAroundBlockBraces:
+SpaceBeforeBlockBraces:
+  Description: >-
+                 Checks that the left block brace has or doesn't have space
+                 before it.
+  Enabled: true
+
+SpaceInsideBlockBraces:
   Description: >-
                  Checks that block braces have or don't have surrounding space.
                  For blocks taking parameters, checks that the left brace has

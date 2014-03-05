@@ -265,11 +265,17 @@ StringLiterals:
     - single_quotes
     - double_quotes
 
-SpaceAroundBlockBraces:
-  EnforcedStyle: space_inside_braces
+SpaceBeforeBlockBraces:
+  EnforcedStyle: space
   SupportedStyles:
-    - space_inside_braces
-    - no_space_inside_braces
+    - space
+    - no_space
+
+SpaceInsideBlockBraces:
+  EnforcedStyle: space
+  SupportedStyles:
+    - space
+    - no_space
   # Valid values are: space, no_space
   EnforcedStyleForEmptyBraces: no_space
   # Space between { and |. Overrides EnforcedStyle if there is a conflict.
