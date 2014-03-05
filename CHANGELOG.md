@@ -33,6 +33,7 @@
 * For indentation of `if`/`unless`/`while`/`until` bodies when the result is assigned to a variable, instead of supporting two styles simultaneously, `IndentationWidth` now supports one style of indentation at a time, specified by `EndAlignment`/`AlignWith`. ([@jonas054][])
 * Renamed `Style` param of `DotPosition` cop to `EnforcedStyle`. ([@bbatsov][])
 * Add `length` value to locations of offense in JSON formatter. ([@yujinakayama][])
+* `SpaceAroundBlockBraces` cop replaced by `SpaceBeforeBlockBraces` and `SpaceInsideBlockBraces`. ([@jonas054][])
 
 ### Bugs fixed
 

@@ -3,12 +3,11 @@
 module Rubocop
   module Cop
     module Style
-      # Checks that block braces have or don't have surrounding space depending
-      # on configuration. For blocks taking parameters, it checks that the left
-      # brace has or doesn't have trailing space depending on configuration.
-      # Also checks that the left brace is preceded by a space and this is not
-      # configurable.
-      class SpaceAroundBlockBraces < Cop
+      # Checks that block braces have or don't have surrounding space inside
+      # them on configuration. For blocks taking parameters, it checks that the
+      # left brace has or doesn't have trailing space depending on
+      # configuration.
+      class SpaceInsideBlockBraces < Cop
         include ConfigurableEnforcedStyle
         include SurroundingSpace
 
@@ -25,18 +24,10 @@ module Rubocop
 
           left_brace, right_brace = node.loc.begin, node.loc.end
 
-          check_outside(left_brace)
           check_inside(node, left_brace, right_brace)
         end
 
         private
-
-        def check_outside(left_brace)
-          if range_with_surrounding_space(left_brace).source.start_with?('{')
-            add_offense(left_brace, left_brace,
-                        'Space missing to the left of {.')
-          end
-        end
 
         def check_inside(node, left_brace, right_brace)
           sb = node.loc.expression.source_buffer
@@ -116,7 +107,7 @@ module Rubocop
         end
 
         def no_space(sb, begin_pos, end_pos, msg)
-          if style == :space_inside_braces
+          if style == :space
             offense(sb, begin_pos, end_pos, msg) { opposite_style_detected }
           else
             correct_style_detected
@@ -124,7 +115,7 @@ module Rubocop
         end
 
         def space(sb, begin_pos, end_pos, msg)
-          if style == :no_space_inside_braces
+          if style == :no_space
             offense(sb, begin_pos, end_pos, msg) { opposite_style_detected }
           else
             correct_style_detected

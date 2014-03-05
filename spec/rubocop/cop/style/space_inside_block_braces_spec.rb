@@ -2,19 +2,19 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::SpaceAroundBlockBraces do
-  SUPPORTED_STYLES = %w(space_inside_braces no_space_inside_braces)
+describe Rubocop::Cop::Style::SpaceInsideBlockBraces do
+  SUPPORTED_STYLES = %w(space no_space)
 
   subject(:cop) { described_class.new(config) }
   let(:config) do
     merged = Rubocop::ConfigLoader
-      .default_configuration['SpaceAroundBlockBraces'].merge(cop_config)
+      .default_configuration['SpaceInsideBlockBraces'].merge(cop_config)
     Rubocop::Config.new('Blocks' => { 'Enabled' => false },
-                        'SpaceAroundBlockBraces' => merged)
+                        'SpaceInsideBlockBraces' => merged)
   end
   let(:cop_config) do
     {
-      'EnforcedStyle' => 'space_inside_braces',
+      'EnforcedStyle' => 'space',
       'SupportedStyles' => SUPPORTED_STYLES,
       'SpaceBeforeBlockParameters' => true
     }
@@ -82,10 +82,9 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces do
     expect(cop.highlights).to be_empty
   end
 
-  it 'registers an offense for left brace without outer space' do
+  it 'accepts left brace without outer space' do
     inspect_source(cop, ['each{ puts }'])
-    expect(cop.messages).to eq(['Space missing to the left of {.'])
-    expect(cop.highlights).to eq(['{'])
+    expect(cop.highlights).to be_empty
   end
 
   it 'registers an offense for left brace without inner space' do
@@ -114,7 +113,7 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces do
     # EnforcedStyleForEmptyBraces, but that doesn't matter. EnforcedStyle can
     # be changed to get rid of the EnforcedStyle offenses.
     expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
-                                               'no_space_inside_braces')
+                                               'no_space')
   end
 
   it 'auto-corrects missing space' do
@@ -136,25 +135,25 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces do
     end
 
     it 'auto-corrects missing space' do
-      new_source = autocorrect_source(cop, 'each{|x| puts }')
+      new_source = autocorrect_source(cop, 'each {|x| puts }')
       expect(new_source).to eq('each { |x| puts }')
     end
 
     context 'and Blocks cop enabled' do
       let(:config) do
         Rubocop::Config.new('Blocks'                 => { 'Enabled' => true },
-                            'SpaceAroundBlockBraces' => cop_config)
+                            'SpaceInsideBlockBraces' => cop_config)
       end
 
       it 'does auto-correction for single-line blocks' do
-        new_source = autocorrect_source(cop, 'each{|x| puts}')
+        new_source = autocorrect_source(cop, 'each {|x| puts}')
         expect(new_source).to eq('each { |x| puts }')
       end
 
       it 'does not do auto-correction for multi-line blocks' do
         # {} will be changed to do..end by the Blocks cop, and then this cop is
         # not relevant anymore.
-        old_source = ['each{|x|',
+        old_source = ['each {|x|',
                       '  puts',
                       '}']
         new_source = autocorrect_source(cop, old_source)
@@ -165,7 +164,7 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces do
     context 'and space before block parameters not allowed' do
       let(:cop_config) do
         {
-          'EnforcedStyle'              => 'space_inside_braces',
+          'EnforcedStyle'              => 'space',
           'SupportedStyles'            => SUPPORTED_STYLES,
           'SpaceBeforeBlockParameters' => false
         }
@@ -190,10 +189,10 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces do
     end
   end
 
-  context 'configured with no_space_inside_braces' do
+  context 'configured with no_space' do
     let(:cop_config) do
       {
-        'EnforcedStyle'              => 'no_space_inside_braces',
+        'EnforcedStyle'              => 'no_space',
         'SupportedStyles'            => SUPPORTED_STYLES,
         'SpaceBeforeBlockParameters' => true
       }
@@ -224,18 +223,17 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces do
                                   'Space inside } detected.'])
       expect(cop.highlights).to eq([' ', '  '])
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
-                                                 'space_inside_braces')
+                                                 'space')
     end
 
-    it 'registers an offense for left brace without outer space' do
-      inspect_source(cop, ['each{puts}'])
-      expect(cop.messages).to eq(['Space missing to the left of {.'])
-      expect(cop.highlights).to eq(['{'])
+    it 'accepts left brace without outer space' do
+      inspect_source(cop, ['each {puts}'])
+      expect(cop.highlights).to be_empty
     end
 
-    it 'auto-corrects missing space' do
+    it 'auto-corrects unwanted space' do
       new_source = autocorrect_source(cop, 'each{ puts }')
-      expect(new_source).to eq('each {puts}')
+      expect(new_source).to eq('each{puts}')
     end
 
     context 'with passed in parameters' do
@@ -261,7 +259,7 @@ describe Rubocop::Cop::Style::SpaceAroundBlockBraces do
       context 'and space before block parameters not allowed' do
         let(:cop_config) do
           {
-            'EnforcedStyle'              => 'no_space_inside_braces',
+            'EnforcedStyle'              => 'no_space',
             'SupportedStyles'            => SUPPORTED_STYLES,
             'SpaceBeforeBlockParameters' => false
           }
