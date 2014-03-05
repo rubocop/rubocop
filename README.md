@@ -538,8 +538,7 @@ $ rubocop --format offences
 1    IndentationWidth
 1    AvoidPerlBackrefs
 1    ColonMethodCall
---
-134  Total
+
 ```
 
 ### Custom Formatters
