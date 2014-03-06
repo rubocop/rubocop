@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.org/bbatsov/rubocop.png?branch=master)](https://travis-ci.org/bbatsov/rubocop)
 [![Coverage Status](https://coveralls.io/repos/bbatsov/rubocop/badge.png?branch=master)](https://coveralls.io/r/bbatsov/rubocop)
 [![Code Climate](https://codeclimate.com/github/bbatsov/rubocop.png)](https://codeclimate.com/github/bbatsov/rubocop)
+[![Inline docs](http://inch-pages.github.io/github/bbatsov/rubocop.png)](http://inch-pages.github.io/github/bbatsov/rubocop)
 
 # RuboCop
 
