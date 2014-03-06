@@ -34,6 +34,7 @@
 * Renamed `Style` param of `DotPosition` cop to `EnforcedStyle`. ([@bbatsov][])
 * Add `length` value to locations of offense in JSON formatter. ([@yujinakayama][])
 * `SpaceAroundBlockBraces` cop replaced by `SpaceBeforeBlockBraces` and `SpaceInsideBlockBraces`. ([@jonas054][])
+* `SpaceAroundEqualsInParameterDefault` cop is now configurable with the `EnforcedStyle` option. ([@jonas054][])
 
 ### Bugs fixed
 
