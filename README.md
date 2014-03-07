@@ -50,6 +50,7 @@ automatically fix some of the problems for you.
     - [Vim](#vim)
     - [Sublime Text](#sublime-text)
     - [Brackets](#brackets)
+    - [TextMate2](#textmate2)
     - [Other Editors](#other-editors)
 - [Guard integration](#guard-integration)
 - [Rake integration](#rake-integration)
@@ -612,9 +613,16 @@ If you're a ST user you might find the
 useful.
 
 ### Brackets
+
 The [brackets-rubocop](https://github.com/smockle/brackets-rubocop)
 extension displays RuboCop results in Brackets.
 It can be installed via the extension manager in Brackets.
+
+### TextMate2
+
+The [textmate2-rubocop](https://github.com/mrdougal/textmate2-rubocop)
+bundle displays formatted RuboCop results in a new window.
+Installation instructions can be found [here](https://github.com/mrdougal/textmate2-rubocop#installation).
 
 ### Other Editors
 
