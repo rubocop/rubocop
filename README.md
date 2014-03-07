@@ -51,6 +51,7 @@ automatically fix some of the problems for you.
     - [Sublime Text](#sublime-text)
     - [Brackets](#brackets)
     - [TextMate2](#textmate2)
+    - [Atom](#atom)
     - [Other Editors](#other-editors)
 - [Guard integration](#guard-integration)
 - [Rake integration](#rake-integration)
@@ -623,6 +624,11 @@ It can be installed via the extension manager in Brackets.
 The [textmate2-rubocop](https://github.com/mrdougal/textmate2-rubocop)
 bundle displays formatted RuboCop results in a new window.
 Installation instructions can be found [here](https://github.com/mrdougal/textmate2-rubocop#installation).
+
+### Atom
+
+The [atom-lint](https://github.com/yujinakayama/atom-lint) package
+runs RuboCop and highlights the offenses in Atom.
 
 ### Other Editors
 
