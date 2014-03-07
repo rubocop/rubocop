@@ -265,6 +265,12 @@ StringLiterals:
     - single_quotes
     - double_quotes
 
+SpaceAroundEqualsInParameterDefault:
+  EnforcedStyle: space
+  SupportedStyles:
+    - space
+    - no_space
+
 SpaceBeforeBlockBraces:
   EnforcedStyle: space
   SupportedStyles:
