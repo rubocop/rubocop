@@ -12,6 +12,8 @@ module RuboCop
       #     end
       #   end
       class UselessAccessModifier < Cop
+        include AccessModifierNode
+
         MSG = 'Useless `%s` access modifier.'
 
         def on_class(node)
@@ -46,8 +48,7 @@ module RuboCop
         end
 
         def check_for_access_modifier(node)
-          return unless Style::AccessModifierIndentation
-            .modifier_node?(node)
+          return unless modifier_node?(node)
 
           add_offense_for_access_modifier
           @access_modifier_node = node

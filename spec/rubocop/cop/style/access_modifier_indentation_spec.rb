@@ -95,6 +95,18 @@ describe RuboCop::Cop::Style::AccessModifierIndentation, :config do
         .to eq(['Indent access modifiers like `private`.'])
     end
 
+    it 'accepts misaligned private in blocks that are not recognized as ' \
+       'class/module definitions' do
+      inspect_source(cop,
+                     ['Test = func do',
+                      '',
+                      'private',
+                      '',
+                      '  def test; end',
+                      'end'])
+      expect(cop.offenses).to be_empty
+    end
+
     it 'registers an offense for misaligned private in module ' \
        'defined with Module.new' do
       inspect_source(cop,
