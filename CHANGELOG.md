@@ -13,6 +13,7 @@
 * New Rails cop `ActionFilter` enforces the use of `_filter` or `_action` action filter methods. ([@bbatsov][])
 * New Rails cop `ScopeArgs` makes sure you invoke the `scope` method properly. ([@bbatsov][])
 * Add `with_fixed_indentation` style to `AlignParameters` cop. ([@hannestyden][])
+* Add `IgnoreLastArgumentHash` option to `AlignHash` cop. ([@hannestyden][])
 * [#743](https://github.com/bbatsov/rubocop/issues/743): `SingleLineMethods` cop does auto-correction. ([@jonas054][])
 * [#743](https://github.com/bbatsov/rubocop/issues/743): `Semicolon` cop does auto-correction. ([@jonas054][])
 * [#743](https://github.com/bbatsov/rubocop/issues/743): `EmptyLineBetweenDefs` cop does auto-correction. ([@jonas054][])

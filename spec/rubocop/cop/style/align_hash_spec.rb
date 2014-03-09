@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe Rubocop::Cop::Style::AlignHash, :config do
+  subject(:cop) { described_class.new(config) }
+
   shared_examples 'not on separate lines' do
     it 'accepts single line hash' do
       inspect_source(cop, 'func(a: 0, bb: 1)')
@@ -16,7 +18,86 @@ describe Rubocop::Cop::Style::AlignHash, :config do
     end
   end
 
-  subject(:cop) { described_class.new(config) }
+  context 'always inspect last argument hash' do
+    let(:cop_config) do
+      {
+        'EnforcedLastArgumentHashStyle' => 'always_inspect'
+      }
+    end
+
+    it 'registers offence for misaligned keys in implicit hash' do
+      inspect_source(cop, ['func(a: 0,',
+                           '  b: 1)'])
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it 'registers offence for misaligned keys in explicit hash' do
+      inspect_source(cop, ['func({a: 0,',
+                           '  b: 1})'])
+      expect(cop.offenses.size).to eq(1)
+    end
+  end
+
+  context 'always ignore last argument hash' do
+    let(:cop_config) do
+      {
+        'EnforcedLastArgumentHashStyle' => 'always_ignore'
+      }
+    end
+
+    it 'accepts misaligned keys in implicit hash' do
+      inspect_source(cop, ['func(a: 0,',
+                           '  b: 1)'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts misaligned keys in explicit hash' do
+      inspect_source(cop, ['func({a: 0,',
+                           '  b: 1})'])
+      expect(cop.offenses).to be_empty
+    end
+  end
+
+  context 'ignore implicit last argument hash' do
+    let(:cop_config) do
+      {
+        'EnforcedLastArgumentHashStyle' => 'ignore_implicit'
+      }
+    end
+
+    it 'accepts misaligned keys in implicit hash' do
+      inspect_source(cop, ['func(a: 0,',
+                           '  b: 1)'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers offence for misaligned keys in explicit hash' do
+      inspect_source(cop, ['func({a: 0,',
+                           '  b: 1})'])
+      expect(cop.offenses.size).to eq(1)
+    end
+  end
+
+  context 'ignore explicit last argument hash' do
+    let(:cop_config) do
+      {
+        'EnforcedLastArgumentHashStyle' => 'ignore_explicit'
+      }
+    end
+
+    it 'registers offence for misaligned keys in implicit hash' do
+      inspect_source(cop, ['func(a: 0,',
+                           '  b: 1)'])
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it 'accepts misaligned keys in explicit hash' do
+      inspect_source(cop, ['func({a: 0,',
+                           '  b: 1})'])
+      expect(cop.offenses).to be_empty
+    end
+  end
+
   let(:cop_config) do
     {
       'EnforcedHashRocketStyle' => 'key',
@@ -62,7 +143,7 @@ describe Rubocop::Cop::Style::AlignHash, :config do
       expect(cop.highlights).to eq(["'bbb' => 1"])
     end
 
-    context 'with braceless hash as last argument' do
+    context 'with implicit hash as last argument' do
       it 'registers an offense for misaligned hash keys' do
         inspect_source(cop, ['func(a: 0,',
                              '  b: 1)'])
