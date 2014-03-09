@@ -17,7 +17,21 @@ module Rubocop
           return if method == :[]=
           return if args.size <= 1
 
-          check_alignment(args)
+          check_alignment(args, base_column(node, args))
+        end
+
+        private
+
+        def fixed_indentation?
+          cop_config['EnforcedStyle'] == 'with_fixed_indentation'
+        end
+
+        def base_column(node, args)
+          if fixed_indentation?
+            node.loc.column + 2
+          else
+            args.first.loc.column
+          end
         end
       end
     end
