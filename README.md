@@ -52,6 +52,7 @@ automatically fix some of the problems for you.
     - [Brackets](#brackets)
     - [TextMate2](#textmate2)
     - [Atom](#atom)
+    - [LightTable](#lighttable)
     - [Other Editors](#other-editors)
 - [Guard integration](#guard-integration)
 - [Rake integration](#rake-integration)
@@ -629,6 +630,11 @@ Installation instructions can be found [here](https://github.com/mrdougal/textma
 
 The [atom-lint](https://github.com/yujinakayama/atom-lint) package
 runs RuboCop and highlights the offenses in Atom.
+
+### LightTable
+
+The [lt-rubocop](https://github.com/seancaffery/lt-rubocop) plugin
+provides LightTable integration.
 
 ### Other Editors
 
