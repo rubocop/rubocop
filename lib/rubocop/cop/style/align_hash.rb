@@ -6,6 +6,90 @@ module Rubocop
       # Here we check if the keys, separators, and values of a multi-line hash
       # literal are aligned.
       class AlignHash < Cop
+        MSG = 'Align the elements of a hash literal if they span more than ' \
+              'one line.'
+
+        def on_hash(node)
+          return if node.children.empty?
+          return unless multiline?(node)
+
+          @alignment_for_hash_rockets ||=
+            new_alignment('EnforcedHashRocketStyle')
+          @alignment_for_colons ||= new_alignment('EnforcedColonStyle')
+
+          first_pair = node.children.first
+
+          unless @alignment_for_hash_rockets.checkable_layout(node) &&
+              @alignment_for_colons.checkable_layout(node)
+            return
+          end
+
+          @column_deltas = alignment_for(first_pair)
+            .deltas_for_first_pair(first_pair, node)
+          add_offense(first_pair, :expression) unless good_alignment?
+
+          node.children.each_cons(2) do |prev, current|
+            @column_deltas = alignment_for(current).deltas(first_pair, prev,
+                                                           current)
+            add_offense(current, :expression) unless good_alignment?
+          end
+        end
+
+        private
+
+        def multiline?(node)
+          node.loc.expression.source.include?("\n")
+        end
+
+        def alignment_for(pair)
+          if pair.loc.operator.is?('=>')
+            @alignment_for_hash_rockets
+          else
+            @alignment_for_colons
+          end
+        end
+
+        def autocorrect(node)
+          # We can't use the instance variable inside the lambda. That would
+          # just give each lambda the same reference and they would all get the
+          # last value of each. Some local variables fix the problem.
+          key_delta       = @column_deltas[:key] || 0
+          separator_delta = @column_deltas[:separator] || 0
+          value_delta     = @column_deltas[:value] || 0
+
+          key, value = *node
+
+          @corrections << lambda do |corrector|
+            adjust(corrector, key_delta, key.loc.expression)
+            adjust(corrector, separator_delta, node.loc.operator)
+            adjust(corrector, value_delta, value.loc.expression)
+          end
+        end
+
+        def new_alignment(key)
+          case cop_config[key]
+          when 'key'       then KeyAlignment.new
+          when 'table'     then TableAlignment.new
+          when 'separator' then SeparatorAlignment.new
+          else fail "Unknown #{key}: #{cop_config[key]}"
+          end
+        end
+
+        def adjust(corrector, delta, range)
+          if delta > 0
+            corrector.insert_before(range, ' ' * delta)
+          elsif delta < 0
+            range = Parser::Source::Range.new(range.source_buffer,
+                                              range.begin_pos - delta.abs,
+                                              range.begin_pos)
+            corrector.remove(range)
+          end
+        end
+
+        def good_alignment?
+          @column_deltas.values.compact.none? { |v| v != 0 }
+        end
+
         # Handles calculation of deltas (deviations from correct alignment)
         # when the enforced style is 'key'.
         class KeyAlignment
@@ -139,90 +223,6 @@ module Rubocop
             _, current_value = *current_pair
             first_value.loc.column - current_value.loc.column
           end
-        end
-
-        MSG = 'Align the elements of a hash literal if they span more than ' \
-              'one line.'
-
-        def on_hash(node)
-          return if node.children.empty?
-          return unless multiline?(node)
-
-          @alignment_for_hash_rockets ||=
-            new_alignment('EnforcedHashRocketStyle')
-          @alignment_for_colons ||= new_alignment('EnforcedColonStyle')
-
-          first_pair = node.children.first
-
-          unless @alignment_for_hash_rockets.checkable_layout(node) &&
-              @alignment_for_colons.checkable_layout(node)
-            return
-          end
-
-          @column_deltas = alignment_for(first_pair)
-            .deltas_for_first_pair(first_pair, node)
-          add_offense(first_pair, :expression) unless good_alignment?
-
-          node.children.each_cons(2) do |prev, current|
-            @column_deltas = alignment_for(current).deltas(first_pair, prev,
-                                                           current)
-            add_offense(current, :expression) unless good_alignment?
-          end
-        end
-
-        private
-
-        def multiline?(node)
-          node.loc.expression.source.include?("\n")
-        end
-
-        def alignment_for(pair)
-          if pair.loc.operator.is?('=>')
-            @alignment_for_hash_rockets
-          else
-            @alignment_for_colons
-          end
-        end
-
-        def autocorrect(node)
-          # We can't use the instance variable inside the lambda. That would
-          # just give each lambda the same reference and they would all get the
-          # last value of each. Some local variables fix the problem.
-          key_delta       = @column_deltas[:key] || 0
-          separator_delta = @column_deltas[:separator] || 0
-          value_delta     = @column_deltas[:value] || 0
-
-          key, value = *node
-
-          @corrections << lambda do |corrector|
-            adjust(corrector, key_delta, key.loc.expression)
-            adjust(corrector, separator_delta, node.loc.operator)
-            adjust(corrector, value_delta, value.loc.expression)
-          end
-        end
-
-        def new_alignment(key)
-          case cop_config[key]
-          when 'key'       then KeyAlignment.new
-          when 'table'     then TableAlignment.new
-          when 'separator' then SeparatorAlignment.new
-          else fail "Unknown #{key}: #{cop_config[key]}"
-          end
-        end
-
-        def adjust(corrector, delta, range)
-          if delta > 0
-            corrector.insert_before(range, ' ' * delta)
-          elsif delta < 0
-            range = Parser::Source::Range.new(range.source_buffer,
-                                              range.begin_pos - delta.abs,
-                                              range.begin_pos)
-            corrector.remove(range)
-          end
-        end
-
-        def good_alignment?
-          @column_deltas.values.compact.none? { |v| v != 0 }
         end
       end
     end
