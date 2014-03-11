@@ -1031,7 +1031,7 @@ describe Rubocop::CLI, :isolated_environment do
       create_file('example.rb',
                   [
                    '# encoding: utf-8',
-                   '#' * 90 + ' # rubocop:disable LineLength',
+                   'a' * 90 + ' # rubocop:disable LineLength',
                    '#' * 95,
                    'y("123") # rubocop:disable LineLength,StringLiterals'
                   ])
