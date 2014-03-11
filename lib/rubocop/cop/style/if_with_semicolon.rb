@@ -8,7 +8,8 @@ module RuboCop
         include IfThenElse
 
         def offending_line(node)
-          node.loc.begin.line if node.loc.begin && node.loc.begin.is?(';')
+          b = node.loc.begin
+          b.line if b && b.is?(';')
         end
 
         def error_message(_node)
