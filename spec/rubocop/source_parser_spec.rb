@@ -110,7 +110,12 @@ describe Rubocop::SourceParser, :isolated_environment do
         'This is a string not a real comment # rubocop:disable Loop',
         'END',
         '',
-        'foo # rubocop:disable MethodCallParentheses'
+        'foo # rubocop:disable MethodCallParentheses',
+        '',
+        '# rubocop:enable Void',
+        '',
+        '# rubocop:disable For',
+        'foo'
       ]
     end
 
@@ -126,6 +131,18 @@ describe Rubocop::SourceParser, :isolated_environment do
       expected_part = (3..6).to_a
       expect(method_length_disabled_lines & expected_part)
         .to eq(expected_part)
+    end
+
+    it 'supports disabling all lines after a directive' do
+      for_disabled_lines = disabled_lines['For']
+      expected_part = (29..source.size).to_a
+      expect(for_disabled_lines & expected_part).to eq(expected_part)
+    end
+
+    it 'just ignores unpaired enabling directives' do
+      void_disabled_lines = disabled_lines['Void']
+      expected_part = (27..source.size).to_a
+      expect(void_disabled_lines & expected_part).to be_empty
     end
 
     it 'supports disabling single line with a direcive at end of line' do
