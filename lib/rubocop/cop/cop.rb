@@ -113,7 +113,7 @@ module Rubocop
       def add_offense(node, loc, message = nil, severity = nil)
         location = loc.is_a?(Symbol) ? node.loc.send(loc) : loc
 
-        return if disabled_line?(location.line)
+        return unless enabled_line?(location.line)
 
         # Don't include the same location twice for one cop.
         return if @offenses.find { |o| o.location == location }
@@ -165,11 +165,10 @@ module Rubocop
         patterns.any? { |pattern| match_path?(pattern, path) }
       end
 
-      def disabled_line?(line_number)
-        return false unless @processed_source
-        disabled_lines = @processed_source.disabled_lines_for_cops[name]
-        return false unless disabled_lines
-        disabled_lines.include?(line_number)
+      def enabled_line?(line_number)
+        return true unless @processed_source
+        @processed_source.comment_config
+          .cop_enabled_at_line?(self, line_number)
       end
 
       def default_severity

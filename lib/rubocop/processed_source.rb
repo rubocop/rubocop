@@ -5,8 +5,8 @@ module Rubocop
   # and other information such as disabled lines for cops.
   # It also provides a convenient way to access source lines.
   class ProcessedSource
-    attr_reader :buffer, :ast, :comments, :tokens, :diagnostics
-    attr_accessor :disabled_lines_for_cops
+    attr_reader :buffer, :ast, :comments, :tokens, :diagnostics,
+                :comment_config
 
     def initialize(buffer, ast, comments, tokens, diagnostics)
       @buffer = buffer
@@ -14,6 +14,7 @@ module Rubocop
       @comments = comments
       @tokens = tokens
       @diagnostics = diagnostics
+      @comment_config = CommentConfig.new(self)
     end
 
     def lines
