@@ -85,6 +85,10 @@ ClassAndModuleCamelCase:
   Description: 'Use CamelCase for classes and modules.'
   Enabled: true
 
+ClassAndModuleChildren:
+  Description: 'Checks style of children classes and modules.'
+  Enabled: true
+
 ClassLength:
   Description: 'Avoid classes longer than 100 lines of code.'
   Enabled: true
