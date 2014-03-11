@@ -100,7 +100,17 @@ describe Rubocop::SourceParser, :isolated_environment do
         '',
         "code = 'This is evil.'",
         'eval(code) # rubocop:disable Eval',
-        "puts 'This is not evil.'"
+        "puts 'This is not evil.'",
+        '',
+        'def some_method',
+        "  puts 'Disabling indented single line' # rubocop:disable LineLength",
+        'end',
+        '',
+        'string = <<END',
+        'This is a string not a real comment # rubocop:disable Loop',
+        'END',
+        '',
+        'foo # rubocop:disable MethodCallParentheses'
       ]
     end
 
@@ -124,6 +134,18 @@ describe Rubocop::SourceParser, :isolated_environment do
       expect(eval_disabled_lines).not_to include(15)
     end
 
+    it 'handles indented single line' do
+      line_length_disabled_lines = disabled_lines['LineLength']
+      expect(line_length_disabled_lines).to include(18)
+      expect(line_length_disabled_lines).not_to include(19)
+    end
+
+    it 'does not confuse a comment directive embedded in a string literal ' \
+       'with a real comment' do
+      loop_disabled_lines = disabled_lines['Loop']
+      expect(loop_disabled_lines).not_to include(22)
+    end
+
     it 'supports disabling all cops with keyword all' do
       all_cop_names = Rubocop::Cop::Cop.all.map(&:cop_name).sort
       expect(disabled_lines.keys.sort).to eq(all_cop_names)
@@ -134,6 +156,11 @@ describe Rubocop::SourceParser, :isolated_environment do
         expect(each_cop_disabled_lines & expected_part)
           .to eq(expected_part)
       end
+    end
+
+    it 'does not confuse a cop name including "all" with all cops' do
+      alias_disabled_lines = disabled_lines['Alias']
+      expect(alias_disabled_lines).not_to include(25)
     end
   end
 end
