@@ -130,6 +130,7 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
                     '  end',
                     '',
                     '  def each &block',
+                    '    +11',
                     '  end',
                     '',
                     '  def self.search *args',
