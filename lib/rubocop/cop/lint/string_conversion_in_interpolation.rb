@@ -17,9 +17,11 @@ module Rubocop
             final_node = begin_node.children.last
             next unless final_node.type == :send
 
-            _receiver, method_name, *_args = *final_node
+            _receiver, method_name, *args = *final_node
 
-            add_offense(final_node, :selector) if method_name == :to_s
+            if method_name == :to_s && args.empty?
+              add_offense(final_node, :selector)
+            end
           end
         end
       end
