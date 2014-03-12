@@ -6,6 +6,8 @@ module Rubocop
       # Here we check if the keys, separators, and values of a multi-line hash
       # literal are aligned.
       class AlignHash < Cop
+        include IgnoredNode
+
         # Handles calculation of deltas (deviations from correct alignment)
         # when the enforced style is 'key'.
         class KeyAlignment
@@ -144,7 +146,15 @@ module Rubocop
         MSG = 'Align the elements of a hash literal if they span more than ' \
               'one line.'
 
+        def on_send(node)
+          if (last_child = node.children.last) && hash?(last_child) &&
+              ignore_last_argument_hash?(last_child)
+            ignore_node(last_child)
+          end
+        end
+
         def on_hash(node)
+          return if ignored_node?(node)
           return if node.children.empty?
           return unless multiline?(node)
 
@@ -171,6 +181,23 @@ module Rubocop
         end
 
         private
+
+        def ignore_last_argument_hash?(node)
+          case cop_config['EnforcedLastArgumentHashStyle']
+          when 'always_inspect'  then false
+          when 'always_ignore'   then true
+          when 'ignore_explicit' then explicit_hash?(node)
+          when 'ignore_implicit' then !explicit_hash?(node)
+          end
+        end
+
+        def hash?(node)
+          node.respond_to?(:type) && node.type == :hash
+        end
+
+        def explicit_hash?(node)
+          !node.loc.begin.nil?
+        end
 
         def multiline?(node)
           node.loc.expression.source.include?("\n")
