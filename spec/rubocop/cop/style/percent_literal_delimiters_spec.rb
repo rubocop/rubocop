@@ -236,6 +236,12 @@ describe Rubocop::Cop::Style::PercentLiteralDelimiters, :config do
       expect(new_source).to eq('%r[.*]')
     end
 
+    it 'fixes a regular expression with interpolation' do
+      original_source = '%r|#{with_interpolation}|'
+      new_source = autocorrect_source(cop, original_source)
+      expect(new_source).to eq('%r[#{with_interpolation}]')
+    end
+
     it 'fixes a regular expression with option' do
       original_source = '%r(.*)i'
       new_source = autocorrect_source(cop, original_source)
