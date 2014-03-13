@@ -3,6 +3,7 @@
 require 'fileutils'
 require 'tmpdir'
 require 'spec_helper'
+require 'timeout'
 
 describe Rubocop::CLI, :isolated_environment do
   include FileHelper
@@ -318,6 +319,19 @@ describe Rubocop::CLI, :isolated_environment do
                   "#{abs('example.rb')}:2:9: C: [Corrected] Do not use " \
                   "parentheses for method calls with no arguments.",
                   ''].join("\n"))
+      end
+
+      it 'should not hang SpaceAfterPunctuation and SpaceInsideParens' do
+        create_file('example.rb',
+                    ['# encoding: utf-8',
+                     'some_method(a, )'])
+        Timeout.timeout(10) do
+          expect(cli.run(%w(--auto-correct))).to eq(1)
+        end
+        expect($stderr.string).to eq('')
+        expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
+                                             'some_method(a,)',
+                                             ''].join("\n"))
       end
     end
 
