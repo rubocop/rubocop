@@ -188,7 +188,7 @@ FavorUntilOverNegatedWhile:
 FileName:
   Description: 'Use snake_case for source file names.'
   Enabled: true
-    
+
 FinalNewline:
   Description: 'Checks for a final newline in a source file.'
   Enabled: true
@@ -204,7 +204,7 @@ For:
 FormatString:
   Description: 'Enforce the use of Kernel#sprintf, Kernel#format or String#%.'
   Enabled: true
-  
+
 GlobalVars:
   Description: 'Do not introduce global variables.'
   Enabled: true
@@ -262,7 +262,7 @@ LeadingCommentSpace:
 LineEndConcatenation:
   Description: 'Use \\ instead of + to concatenate two string literals at line end.'
   Enabled: true
-  
+
 LineLength:
   Description: 'Limit lines to 79 characters.'
   Enabled: true
@@ -613,7 +613,7 @@ LiteralInCondition:
 LiteralInInterpolation:
   Description: 'Checks for literals used in interpolation.'
   Enabled: true
-  
+
 Loop:
   Description: >-
                  Use Kernel#loop with break rather than begin/end/until or
@@ -645,7 +645,7 @@ ShadowingOuterLocalVariable:
 StringConversionInInterpolation:
   Description: 'Checks for Object#to_s usage in string interpolation.'
   Enabled: true
-  
+
 UnreachableCode:
   Description: 'Unreachable code.'
   Enabled: true

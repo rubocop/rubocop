@@ -214,7 +214,7 @@ FormatString:
     - format
     - sprintf
     - percent
-    
+
 # Built-in global variables are allowed by default.
 GlobalVars:
   AllowedVariables: []
@@ -326,7 +326,7 @@ SignalException:
 
 SingleLineBlockParams:
   Methods:
-    - reduce: 
+    - reduce:
         - a
         - e
     - inject:
@@ -438,7 +438,7 @@ ReadAttribute:
 ScopeArgs:
   IncludePaths:
     - app/models
-    
+
 Validation:
   IncludePaths:
     - app/models
