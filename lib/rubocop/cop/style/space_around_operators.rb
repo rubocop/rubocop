@@ -46,7 +46,7 @@ module Rubocop
         end
 
         def called_with_dot?(node)
-          !!node.loc.dot
+          node.loc.dot
         end
 
         def check(node)

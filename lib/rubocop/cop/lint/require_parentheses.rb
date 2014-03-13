@@ -60,7 +60,7 @@ module Rubocop
         end
 
         def parentheses?(node)
-          node.loc.respond_to?(:end) && !!node.loc.end
+          node.loc.respond_to?(:end) && node.loc.end
         end
 
         def offense?(node)
