@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.19.0 (13/03/2014)
+
 ### New features
 
 * New cop `FileName` makes sure that source files have snake_case names. ([@bbatsov][])
