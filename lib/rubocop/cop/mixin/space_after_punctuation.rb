@@ -10,7 +10,8 @@ module Rubocop
       def investigate(processed_source)
         processed_source.tokens.each_cons(2) do |t1, t2|
           if kind(t1) && t1.pos.line == t2.pos.line &&
-              t2.pos.column == t1.pos.column + offset(t1)
+              t2.pos.column == t1.pos.column + offset(t1) &&
+              t2.type != :tRPAREN
             add_offense(t1, t1.pos, format(MSG, kind(t1)))
           end
         end
