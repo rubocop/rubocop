@@ -35,13 +35,13 @@ describe Rubocop::Cop::Style::PercentLiteralDelimiters, :config do
     end
 
     it 'does not register an offense for other delimiters ' \
-        'when containing preferred delimiter characters' do
+       'when containing preferred delimiter characters' do
       inspect_source(cop, ['%([string])'])
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for other delimiters ' \
-        'when containing preferred delimiter characters in interpolation' do
+       'when containing preferred delimiter characters in interpolation' do
       inspect_source(cop, ['%(#{[1].first})'])
       expect(cop.messages.size).to eq(1)
     end
@@ -61,7 +61,7 @@ describe Rubocop::Cop::Style::PercentLiteralDelimiters, :config do
     end
 
     it 'does not register an offense for other delimiters ' \
-        'when containing preferred delimiter characters' do
+       'when containing preferred delimiter characters' do
       inspect_source(cop, ['%q([string])'])
       expect(cop.offenses).to be_empty
     end
@@ -81,13 +81,13 @@ describe Rubocop::Cop::Style::PercentLiteralDelimiters, :config do
     end
 
     it 'does not register an offense for other delimiters ' \
-        'when containing preferred delimiter characters' do
+       'when containing preferred delimiter characters' do
       inspect_source(cop, ['%Q([string])'])
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for other delimiters ' \
-        'when containing preferred delimiter characters in interpolation' do
+       'when containing preferred delimiter characters in interpolation' do
       inspect_source(cop, ['%Q(#{[1].first})'])
       expect(cop.messages.size).to eq(1)
     end
@@ -107,7 +107,7 @@ describe Rubocop::Cop::Style::PercentLiteralDelimiters, :config do
     end
 
     it 'does not register an offense for other delimiters ' \
-        'when containing preferred delimiter characters' do
+       'when containing preferred delimiter characters' do
       inspect_source(cop, ['%w([some] [words])'])
       expect(cop.offenses).to be_empty
     end
@@ -127,13 +127,13 @@ describe Rubocop::Cop::Style::PercentLiteralDelimiters, :config do
     end
 
     it 'does not register an offense for other delimiters ' \
-        'when containing preferred delimiter characters' do
+       'when containing preferred delimiter characters' do
       inspect_source(cop, ['%W([some] [words])'])
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for other delimiters ' \
-        'when containing preferred delimiter characters in interpolation' do
+       'when containing preferred delimiter characters in interpolation' do
       inspect_source(cop, ['%W(#{[1].first})'])
       expect(cop.messages.size).to eq(1)
     end
@@ -153,13 +153,13 @@ describe Rubocop::Cop::Style::PercentLiteralDelimiters, :config do
     end
 
     it 'does not register an offense for other delimiters ' \
-        'when containing preferred delimiter characters' do
+       'when containing preferred delimiter characters' do
       inspect_source(cop, ['%r([regexp])'])
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for other delimiters ' \
-        'when containing preferred delimiter characters in interpolation' do
+       'when containing preferred delimiter characters in interpolation' do
       inspect_source(cop, ['%r(#{[1].first})'])
       expect(cop.messages.size).to eq(1)
     end
@@ -207,13 +207,13 @@ describe Rubocop::Cop::Style::PercentLiteralDelimiters, :config do
     end
 
     it 'does not register an offense for other delimiters ' \
-        'when containing preferred delimiter characters' do
+       'when containing preferred delimiter characters' do
       inspect_source(cop, ['%x([command])'])
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for other delimiters ' \
-        'when containing preferred delimiter characters in interpolation' do
+       'when containing preferred delimiter characters in interpolation' do
       inspect_source(cop, ['%x(#{[1].first})'])
       expect(cop.messages.size).to eq(1)
     end

@@ -39,7 +39,7 @@ describe Rubocop::Cop::Style::MultilineBlockChain do
     end
 
     it 'registers an offense for a chain where the second block is ' \
-      'single-line' do
+       'single-line' do
       inspect_source(cop, ['Thread.list.find_all { |t|',
                            '  t.alive?',
                            '}.map { |thread| thread.object_id }'])

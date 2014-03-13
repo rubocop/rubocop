@@ -6,13 +6,13 @@ describe Rubocop::Cop::Lint::ParenthesesAsGroupedExpression do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for method call with space before the ' \
-    'parenthesis' do
+     'parenthesis' do
     inspect_source(cop, ['a.func (x)'])
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'registers an offense for predicate method call with space ' \
-    'before the parenthesis' do
+     'before the parenthesis' do
     inspect_source(cop, ['is? (x)'])
     expect(cop.offenses.size).to eq(1)
   end

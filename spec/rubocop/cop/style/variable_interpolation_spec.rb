@@ -11,7 +11,7 @@ describe Rubocop::Cop::Style::VariableInterpolation do
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
       .to eq(['Replace interpolated var $test' \
-        ' with expression #{$test}.'])
+              ' with expression #{$test}.'])
   end
 
   it 'registers an offense for interpolated regexp back references' do
@@ -28,7 +28,7 @@ describe Rubocop::Cop::Style::VariableInterpolation do
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
       .to eq(['Replace interpolated var @test' \
-        ' with expression #{@test}.'])
+              ' with expression #{@test}.'])
   end
 
   it 'registers an offense for interpolated class variables' do

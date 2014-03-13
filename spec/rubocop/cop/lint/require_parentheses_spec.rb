@@ -6,7 +6,7 @@ describe Rubocop::Cop::Lint::RequireParentheses do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for missing parentheses around expression with ' \
-    '&& operator' do
+     '&& operator' do
     inspect_source(cop, ["if day.is? 'monday' && month == :jan",
                          '  foo',
                          'end'])
@@ -17,13 +17,13 @@ describe Rubocop::Cop::Lint::RequireParentheses do
   end
 
   it 'registers an offense for missing parentheses around expression with ' \
-    '|| operator' do
+     '|| operator' do
     inspect_source(cop, "day_is? 'tuesday' || true")
     expect(cop.highlights).to eq(["day_is? 'tuesday' || true"])
   end
 
   it 'registers an offense for missing parentheses around expression in ' \
-    'ternary' do
+     'ternary' do
     inspect_source(cop, "wd.include? 'tuesday' && true == true ? a : b")
     expect(cop.highlights).to eq(["wd.include? 'tuesday' && true == true"])
   end

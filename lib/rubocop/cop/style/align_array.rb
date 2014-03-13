@@ -9,7 +9,7 @@ module Rubocop
         include AutocorrectAlignment
 
         MSG = 'Align the elements of an array literal if they span more ' \
-          'than one line.'
+              'than one line.'
 
         def on_array(node)
           check_alignment(node.children)

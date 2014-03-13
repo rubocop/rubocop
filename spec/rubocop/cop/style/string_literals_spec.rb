@@ -9,7 +9,7 @@ describe Rubocop::Cop::Style::StringLiterals, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'single_quotes' } }
 
     it 'registers offense for double quotes when single quotes ' \
-      'suffice' do
+       'suffice' do
       inspect_source(cop, ['s = "abc"',
                            'x = "a\\\\b"',
                            'y ="\\\\b"',

@@ -191,7 +191,7 @@ describe Rubocop::Cop::Style::CaseIndentation do
       end
 
       it "registers an offense for  a when clause that's equally indented " \
-        'with case' do
+         'with case' do
         source = ['y = case a',
                   '    when 0 then break',
                   '    when 0 then return',

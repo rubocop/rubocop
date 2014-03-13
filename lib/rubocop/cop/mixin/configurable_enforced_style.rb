@@ -40,7 +40,7 @@ module Rubocop
         a = cop_config['SupportedStyles'].map(&:to_sym)
         if a.size != 2
           fail 'alternative_style can only be used when there are exactly ' \
-            '2 SupportedStyles'
+               '2 SupportedStyles'
         end
         style == a.first ? a.last : a.first
       end
