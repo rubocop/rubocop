@@ -131,6 +131,10 @@ DotPosition:
   Description: 'Checks the position of the dot in multi-line method calls.'
   Enabled: true
 
+DoubleNegation:
+  Description: 'Checks for uses of double negation (!!).'
+  Enabled: true
+
 EmptyLineBetweenDefs:
   Description: 'Use empty lines between defs.'
   Enabled: true

@@ -9,6 +9,7 @@
 * New cop `StringConversionInInterpolation` checks for redundant `Object#to_s` in string interpolation. ([@bbatsov][])
 * New cop `LiteralInInterpolation` checks for interpolated string literals. ([@bbatsov][])
 * New cop `SelfAssignment` checks for places where the self-assignment shorthand should have been used. ([@bbatsov][])
+* New cop `DoubleNegation` checks for uses of `!!`. ([@bbatsov][])
 * New cop `PercentLiteralDelimiters` enforces consistent usage of `%`-literal delimiters. ([@hannestyden][])
 * New Rails cop `ActionFilter` enforces the use of `_filter` or `_action` action filter methods. ([@bbatsov][])
 * New Rails cop `ScopeArgs` makes sure you invoke the `scope` method properly. ([@bbatsov][])
