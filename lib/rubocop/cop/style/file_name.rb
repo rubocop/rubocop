@@ -7,12 +7,16 @@ module Rubocop
       class FileName < Cop
         MSG = 'Use snake_case for source file names.'
 
-        SNAKE_CASE = /^[\da-z_]+(\.rb)?$/
+        SNAKE_CASE = /^[\da-z_]+$/
 
         def investigate(processed_source)
-          filename = File.basename(processed_source.buffer.name)
+          file_path = processed_source.buffer.name
 
-          unless filename =~ SNAKE_CASE
+          return if config.file_to_include?(file_path)
+
+          basename = File.basename(file_path).sub(/\.[^\.]+$/, '')
+
+          unless basename =~ SNAKE_CASE
             add_offense(nil,
                         source_range(processed_source.buffer,
                                      processed_source[0..0],
