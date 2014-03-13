@@ -21,7 +21,7 @@ module Rubocop
         include IfNode
 
         MSG = 'Use parentheses in the method call to avoid confusion about ' \
-          'precedence.'
+              'precedence.'
 
         def on_send(node)
           _receiver, method_name, *args = *node

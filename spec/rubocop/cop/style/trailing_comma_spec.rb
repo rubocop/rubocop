@@ -29,7 +29,7 @@ describe Rubocop::Cop::Style::TrailingComma, :config do
     end
 
     it 'registers an offense for trailing comma in a method call with hash' \
-      ' parameters at the end' do
+       ' parameters at the end' do
       inspect_source(cop, 'some_method(a, b, c: 0, d: 1, )')
       expect(cop.messages)
         .to eq(['Avoid comma after the last parameter of a method call.'])
@@ -96,7 +96,7 @@ describe Rubocop::Cop::Style::TrailingComma, :config do
       end
 
       it 'registers an offense for trailing comma in a method call with ' \
-        'hash parameters at the end' do
+         'hash parameters at the end' do
         inspect_source(cop, ['some_method(',
                              '              a,',
                              '              b,',
@@ -122,7 +122,7 @@ describe Rubocop::Cop::Style::TrailingComma, :config do
       end
 
       it 'accepts a method call with ' \
-        'hash parameters at the end and no trailing comma' do
+         'hash parameters at the end and no trailing comma' do
         inspect_source(cop, ['some_method(a,',
                              '            b,',
                              '            c: 0,',
@@ -132,7 +132,7 @@ describe Rubocop::Cop::Style::TrailingComma, :config do
       end
 
       it 'accepts comma inside a heredoc' \
-        ' parameters at the end' do
+         ' parameters at the end' do
         inspect_source(cop, ['route(help: {',
                              "  'auth' => <<-HELP.chomp",
                              ',',
@@ -165,7 +165,7 @@ describe Rubocop::Cop::Style::TrailingComma, :config do
       end
 
       it 'registers an offense for no trailing comma in a method call with' \
-        ' hash parameters at the end' do
+         ' hash parameters at the end' do
         inspect_source(cop, ['some_method(',
                              '              a,',
                              '              b,',
@@ -196,7 +196,7 @@ describe Rubocop::Cop::Style::TrailingComma, :config do
       end
 
       it 'accepts trailing comma in a method call with hash' \
-        ' parameters at the end' do
+         ' parameters at the end' do
         inspect_source(cop, ['some_method(',
                              '              a,',
                              '              b,',

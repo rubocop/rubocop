@@ -118,13 +118,17 @@ def _investigate(cop, processed_source)
   commissioner
 end
 
-class Rubocop::Cop::Cop
-  def messages
-    offenses.sort.map(&:message)
-  end
+module Rubocop
+  module Cop
+    class Cop
+      def messages
+        offenses.sort.map(&:message)
+      end
 
-  def highlights
-    offenses.sort.map { |o| o.location.source }
+      def highlights
+        offenses.sort.map { |o| o.location.source }
+      end
+    end
   end
 end
 

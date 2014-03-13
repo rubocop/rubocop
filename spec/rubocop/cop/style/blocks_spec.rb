@@ -52,7 +52,7 @@ describe Rubocop::Cop::Style::Blocks do
     end
 
     it 'registers an offense for braces if do-end would not change ' \
-      'the meaning' do
+       'the meaning' do
       src = ['scope :foo, (lambda { |f|',
              '  where(condition: "value")',
              '})',

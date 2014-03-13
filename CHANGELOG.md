@@ -25,6 +25,7 @@
 * [#797](https://github.com/bbatsov/rubocop/issues/797): New cop `IndentArray` checks the indentation of the first element in multi-line array literals. ([@jonas054][])
 * [#806](https://github.com/bbatsov/rubocop/issues/806): Now excludes files in `vendor/**` by default. ([@jeremyolliver][])
 * [#795](https://github.com/bbatsov/rubocop/issues/795): `IfUnlessModifier` and `WhileUntilModifier` supports `MaxLineLength`, which is independent of `LineLength` parameter `Max`. ([@agrimm][])
+* [#868](https://github.com/bbatsov/rubocop/issues/868): New cop `ClassAndModuleChildren` checks the style of children definitions at classes and modules: nested / compact. ([@geniou][])
 
 ### Changes
 
@@ -753,3 +754,4 @@
 [@ma2gedev]: http://github.com/ma2gedev
 [@jeremyolliver]: https://github.com/jeremyolliver
 [@hannestyden]: https://github.com/hannestyden
+[@geniou]: https://github.com/geniou

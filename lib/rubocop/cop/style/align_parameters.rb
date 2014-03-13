@@ -9,7 +9,7 @@ module Rubocop
         include AutocorrectAlignment
 
         MSG = 'Align the parameters of a method call if they span ' \
-          'more than one line.'
+              'more than one line.'
 
         def on_send(node)
           _receiver, method, *args = *node

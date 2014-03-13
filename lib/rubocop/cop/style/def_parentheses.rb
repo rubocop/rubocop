@@ -10,7 +10,7 @@ module Rubocop
         include CheckMethods
 
         MSG = "Omit the parentheses in defs when the method doesn't accept " \
-            'any arguments.'
+              'any arguments.'
 
         def check(node, _method_name, args, _body)
           start_line = node.loc.keyword.line

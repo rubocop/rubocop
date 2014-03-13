@@ -774,7 +774,7 @@ describe Rubocop::CLI, :isolated_environment do
 
         context 'when a class name is specified' do
           it 'uses the class as a formatter' do
-            module ::MyTool
+            module MyTool
               class RubocopFormatter < Rubocop::Formatter::BaseFormatter
                 def started(all_files)
                   output.puts "started: #{all_files.join(',')}"

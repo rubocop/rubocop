@@ -2,8 +2,10 @@
 
 require 'spec_helper'
 
-class Rubocop::FileInspector
-  attr_writer :errors # Needed only for testing.
+module Rubocop
+  class FileInspector
+    attr_writer :errors # Needed only for testing.
+  end
 end
 
 describe Rubocop::FileInspector do

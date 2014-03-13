@@ -120,7 +120,7 @@ describe Rubocop::Cop::Lint::RescueException do
   end
 
   it 'does not crash when the namespace of a rescued class is in a local ' \
-    'variable' do
+     'variable' do
     inspect_source(cop,
                    ['adapter = current_adapter',
                     'begin',
