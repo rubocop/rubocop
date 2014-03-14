@@ -2,6 +2,9 @@
 
 ## master (unreleased)
 
+### Bugs fixed
+* Fix a bug where multiple cli options that result in exit can be specified at once (e.g. -vV -v -show-cops). ([@jkogara][])
+
 ## 0.19.0 (13/03/2014)
 
 ### New features
@@ -757,3 +760,4 @@
 [@jeremyolliver]: https://github.com/jeremyolliver
 [@hannestyden]: https://github.com/hannestyden
 [@geniou]: https://github.com/geniou
+[@jkogara]: https://github.com/jkogara
