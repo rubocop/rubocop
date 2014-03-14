@@ -5,6 +5,21 @@ require 'spec_helper'
 describe Rubocop::Cop::Style::PercentLiteralDelimiters, :config do
   subject(:cop) { described_class.new(config) }
 
+  context 'with missing configuration' do
+    let(:cop_config) do
+      {
+        'PreferredDelimiters' => {
+          '%'  => '[]'
+        }
+      }
+    end
+
+    it 'warns about missing options' do
+      expect { cop }.to \
+        raise_error(Rubocop::Cop::Style::PercentLiteralDelimiters::IncorrectConfigurationError) # rubocop:disable LineLength
+    end
+  end
+
   let(:cop_config) do
     {
       'PreferredDelimiters' => {
