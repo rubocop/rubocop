@@ -9,6 +9,8 @@ module Rubocop
 
         SNAKE_CASE = /^[\da-z_]+$/
 
+        WHITELIST = %w(Rakefile Gemfile)
+
         def investigate(processed_source)
           file_path = processed_source.buffer.name
 
@@ -16,7 +18,7 @@ module Rubocop
 
           basename = File.basename(file_path).sub(/\.[^\.]+$/, '')
 
-          unless basename =~ SNAKE_CASE
+          unless basename =~ SNAKE_CASE || WHITELIST.include?(basename)
             add_offense(nil,
                         source_range(processed_source.buffer,
                                      processed_source[0..0],

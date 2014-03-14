@@ -56,6 +56,15 @@ describe Rubocop::Cop::Style::FileName do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts offense for camelCase file names within whitelist' do
+    source = ['print 1']
+    processed_source = parse_source(source)
+    allow(processed_source.buffer)
+      .to receive(:name).and_return('/some/dir/Rakefile')
+    _investigate(cop, processed_source)
+    expect(cop.offenses).to be_empty
+  end
+
   context 'when the file is specified in AllCops/Includes' do
     let(:includes) { ['**/Gemfile'] }
 
