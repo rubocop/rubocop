@@ -420,26 +420,26 @@ ActionFilter:
   SupportedStyles:
     - action
     - filter
-  IncludePaths:
+  Include:
     -app/controllers
 
 DefaultScope:
-  IncludePaths:
+  Include:
     - app/models
 
 HasAndBelongsToMany:
-  IncludePaths:
+  Include:
     - app/models
 
 ReadAttribute:
-  IncludePaths:
+  Include:
     - app/models
 
 ScopeArgs:
-  IncludePaths:
+  Include:
     - app/models
 
 Validation:
-  IncludePaths:
+  Include:
     - app/models
 

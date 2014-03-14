@@ -5,6 +5,7 @@
 ### Bugs fixed
 
 * [#879](https://github.com/bbatsov/rubocop/issues/879): Fix --auto-gen-config for `RegexpLiteral` so we don't generate illegal values for `MaxSlashes`. ([@jonas054][])
+* Fix the name of the `Include` param in the default config of the Rails cops. ([@bbatsov][])
 
 ## 0.19.0 (13/03/2014)
 
