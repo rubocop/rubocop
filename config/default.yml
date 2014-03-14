@@ -200,6 +200,12 @@ EndAlignment:
     - keyword
     - variable
 
+FileName:
+  Exclude:
+    - Rakefile
+    - Gemfile
+    - Capfile
+
 # Checks use of for or each in multiline loops.
 For:
   EnforcedStyle: each
