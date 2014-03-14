@@ -321,6 +321,30 @@ describe Rubocop::CLI, :isolated_environment do
                   ''].join("\n"))
       end
 
+      it 'can correct IndentHash offenses with separator style' do
+        create_file('example.rb',
+                    ['# encoding: utf-8',
+                     'CONVERSION_CORRESPONDENCE = {',
+                     '              match_for_should: :match,',
+                     '          match_for_should_not: :match_when_negated,',
+                     '    failure_message_for_should: :failure_message,',
+                     'failure_message_for_should_not: :failure_message_when',
+                     '}'])
+        create_file('.rubocop.yml',
+                    ['AlignHash:',
+                     '  EnforcedColonStyle: separator'])
+        expect(cli.run(%w(--auto-correct))).to eq(1)
+        expect(IO.read('example.rb'))
+          .to eq(['# encoding: utf-8',
+                  'CONVERSION_CORRESPONDENCE = {',
+                  '                match_for_should: :match,',
+                  '            match_for_should_not: :match_when_negated,',
+                  '      failure_message_for_should: :failure_message,',
+                  '  failure_message_for_should_not: :failure_message_when',
+                  '}',
+                  ''].join("\n"))
+      end
+
       it 'should not hang SpaceAfterPunctuation and SpaceInsideParens' do
         create_file('example.rb',
                     ['# encoding: utf-8',

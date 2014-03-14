@@ -2,9 +2,81 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::IndentHash, :config do
+describe Rubocop::Cop::Style::IndentHash do
   subject(:cop) { described_class.new(config) }
+  let(:config) do
+    supported_styles = {
+      'SupportedStyles' => %w(special_inside_parentheses consistent)
+    }
+    Rubocop::Config.new('AlignHash' => align_hash_config,
+                        'IndentHash' => cop_config.merge(supported_styles))
+  end
+  let(:align_hash_config) do
+    {
+      'Enabled' => true,
+      'EnforcedColonStyle' => 'key',
+      'EnforcedHashRocketStyle' => 'key'
+    }
+  end
   let(:cop_config) { { 'EnforcedStyle' => 'special_inside_parentheses' } }
+
+  context 'when the AlignHash style is separator for :' do
+    let(:align_hash_config) do
+      {
+        'Enabled' => true,
+        'EnforcedColonStyle' => 'separator',
+        'EnforcedHashRocketStyle' => 'key'
+      }
+    end
+
+    it 'accepts correctly indented first pair' do
+      inspect_source(cop,
+                     ['a << {',
+                      '    a: 1,',
+                      '  aaa: 222',
+                      '}'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense for incorrectly indented first pair with :' do
+      inspect_source(cop,
+                     ['a << {',
+                      '       a: 1,',
+                      '     aaa: 222',
+                      '}'])
+      expect(cop.highlights).to eq(['a: 1'])
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+    end
+  end
+
+  context 'when the AlignHash style is separator for =>' do
+    let(:align_hash_config) do
+      {
+        'Enabled' => true,
+        'EnforcedColonStyle' => 'key',
+        'EnforcedHashRocketStyle' => 'separator'
+      }
+    end
+
+    it 'accepts correctly indented first pair' do
+      inspect_source(cop,
+                     ['a << {',
+                      "    'a' => 1,",
+                      "  'aaa' => 222",
+                      '}'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense for incorrectly indented first pair with =>' do
+      inspect_source(cop,
+                     ['a << {',
+                      "   'a' => 1,",
+                      " 'aaa' => 222",
+                      '}'])
+      expect(cop.highlights).to eq(["'a' => 1"])
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+    end
+  end
 
   context 'when hash is operand' do
     it 'accepts correctly indented first pair' do

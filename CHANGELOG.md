@@ -7,6 +7,7 @@
 * [#879](https://github.com/bbatsov/rubocop/issues/879): Fix --auto-gen-config for `RegexpLiteral` so we don't generate illegal values for `MaxSlashes`. ([@jonas054][])
 * Fix the name of the `Include` param in the default config of the Rails cops. ([@bbatsov][])
 * [#878](https://github.com/bbatsov/rubocop/pull/878): Blacklist `Rakefile`, `Gemfile` and `Capfile` by default in the `FileName` cop. ([@bbatsov][])
+* [#875](https://github.com/bbatsov/rubocop/issues/875): Handle `separator` style hashes in `IndentHash`. ([@jonas054][])
 
 ## 0.19.0 (13/03/2014)
 
