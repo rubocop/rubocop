@@ -52,10 +52,7 @@ module Rubocop
     private
 
     def act_on_options(args)
-      if @options[:show_cops]
-        print_available_cops
-        exit(0)
-      end
+      handle_exiting_options
 
       ConfigLoader.debug = @options[:debug]
       ConfigLoader.auto_gen_config = @options[:auto_gen_config]
@@ -63,10 +60,15 @@ module Rubocop
       @config_store.options_config = @options[:config] if @options[:config]
 
       Rainbow.enabled = false unless @options[:color]
+    end
+
+    def handle_exiting_options
+      return unless Options::EXITING_OPTIONS.any? { |o| @options.key? o }
 
       puts Rubocop::Version.version(false) if @options[:version]
       puts Rubocop::Version.version(true) if @options[:verbose_version]
-      exit(0) if @options[:version] || @options[:verbose_version]
+      print_available_cops if @options[:show_cops]
+      exit(0)
     end
 
     def print_available_cops

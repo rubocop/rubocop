@@ -8,6 +8,7 @@
 * Fix the name of the `Include` param in the default config of the Rails cops. ([@bbatsov][])
 * [#878](https://github.com/bbatsov/rubocop/pull/878): Blacklist `Rakefile`, `Gemfile` and `Capfile` by default in the `FileName` cop. ([@bbatsov][])
 * [#875](https://github.com/bbatsov/rubocop/issues/875): Handle `separator` style hashes in `IndentHash`. ([@jonas054][])
+* Fix a bug where multiple cli options that result in exit can be specified at once (e.g. `-vV`, `-v --show-cops`). ([@jkogara][])
 
 ## 0.19.0 (13/03/2014)
 
@@ -764,3 +765,4 @@
 [@jeremyolliver]: https://github.com/jeremyolliver
 [@hannestyden]: https://github.com/hannestyden
 [@geniou]: https://github.com/geniou
+[@jkogara]: https://github.com/jkogara

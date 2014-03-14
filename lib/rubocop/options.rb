@@ -6,6 +6,7 @@ module Rubocop
   # This class handles command line options.
   class Options
     DEFAULT_FORMATTER = 'progress'
+    EXITING_OPTIONS = [:version, :verbose_version, :show_cops]
 
     def initialize
       @options = {}
@@ -33,6 +34,10 @@ module Rubocop
         add_flags_with_optional_args(opts)
         add_boolean_flags(opts)
       end.parse!(args)
+
+      if (incompat = @options.keys & EXITING_OPTIONS).size > 1
+        fail ArgumentError, "Incompatible cli options: #{incompat.inspect}"
+      end
 
       [@options, args]
     end

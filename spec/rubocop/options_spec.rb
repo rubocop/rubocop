@@ -99,6 +99,33 @@ Usage: rubocop [options] [file1, file2, ...]
       end
     end
 
+    describe 'incompatible cli options' do
+      it 'fails with argument correct error' do
+        msg = 'Incompatible cli options: [:version, :verbose_version]'
+        expect { options.parse %w(-vV) }
+          .to raise_error(ArgumentError, msg)
+      end
+
+      it 'fails with argument correct error' do
+        msg = 'Incompatible cli options: [:version, :show_cops]'
+        expect { options.parse %w(-v --show-cops) }
+          .to raise_error(ArgumentError, msg)
+      end
+
+      it 'fails with argument correct error' do
+        msg = 'Incompatible cli options: [:verbose_version, :show_cops]'
+        expect { options.parse %w(-V --show-cops) }
+          .to raise_error(ArgumentError, msg)
+      end
+
+      it 'fails with argument correct error' do
+        msg = ['Incompatible cli options: [:version, :verbose_version,',
+               ' :show_cops]'].join
+        expect { options.parse %w(-vV --show-cops) }
+          .to raise_error(ArgumentError, msg)
+      end
+    end
+
     describe '--only' do
       it 'exits with error if an incorrect cop name is passed' do
         expect { options.parse(%w(--only 123)) }
