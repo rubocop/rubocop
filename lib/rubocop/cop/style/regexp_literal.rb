@@ -61,7 +61,11 @@ module Rubocop
             end
           end
 
-          cfg['MaxSlashes'] = value
+          if value >= 0
+            cfg['MaxSlashes'] = value
+          else
+            self.config_to_allow_offenses = { 'Enabled' => false }
+          end
         end
 
         def error_message(word)
