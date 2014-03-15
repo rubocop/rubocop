@@ -5,6 +5,8 @@
 [![Code Climate](https://codeclimate.com/github/bbatsov/rubocop.png)](https://codeclimate.com/github/bbatsov/rubocop)
 [![Inline docs](http://inch-pages.github.io/github/bbatsov/rubocop.png)](http://inch-pages.github.io/github/bbatsov/rubocop)
 
+![Rubocop logo](rubocop_logo_256x256.png)
+
 # RuboCop
 
 > Role models are important. <br/>
