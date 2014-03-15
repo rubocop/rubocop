@@ -1110,11 +1110,19 @@ describe Rubocop::CLI, :isolated_environment do
       create_file('dir1/app/models/example1.rb', ['# encoding: utf-8',
                                                   'read_attribute(:test)'])
       create_file('dir1/.rubocop.yml', ['AllCops:',
-                                        '  RunRailsCops: true'])
+                                        '  RunRailsCops: true',
+                                        '',
+                                        'ReadAttribute:',
+                                        '  Include:',
+                                        '    - dir1/app/models/*.rb'])
       create_file('dir2/app/models/example2.rb', ['# encoding: utf-8',
                                                   'read_attribute(:test)'])
       create_file('dir2/.rubocop.yml', ['AllCops:',
-                                        '  RunRailsCops: false'])
+                                        '  RunRailsCops: false',
+                                        '',
+                                        'ReadAttribute:',
+                                        '  Include:',
+                                        '    - dir2/app/models/*.rb'])
       expect(cli.run(%w(--format simple dir1 dir2))).to eq(1)
       expect($stdout.string)
         .to eq(['== dir1/app/models/example1.rb ==',

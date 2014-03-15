@@ -110,9 +110,13 @@ def parse_source(source, file = nil)
   end
 end
 
-def autocorrect_source(cop, source)
+def autocorrect_source_file(cop, source)
+  Tempfile.open('tmp') { |f| autocorrect_source(cop, source, f) }
+end
+
+def autocorrect_source(cop, source, file = nil)
   cop.instance_variable_get(:@options)[:auto_correct] = true
-  processed_source = parse_source(source)
+  processed_source = parse_source(source, file)
   _investigate(cop, processed_source)
 
   corrector =
