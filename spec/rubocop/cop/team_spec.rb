@@ -39,7 +39,7 @@ describe Rubocop::Cop::Team do
   describe '#inspect_file', :isolated_environment do
     include FileHelper
 
-    let(:file_path) { 'example.rb' }
+    let(:file_path) { '/tmp/example.rb' }
     let(:offenses) { team.inspect_file(file_path) }
 
     before do

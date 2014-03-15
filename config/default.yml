@@ -427,25 +427,25 @@ ActionFilter:
     - action
     - filter
   Include:
-    -app/controllers
+    - app/controllers/*.rb
 
 DefaultScope:
   Include:
-    - app/models
+    - app/models/*.rb
 
 HasAndBelongsToMany:
   Include:
-    - app/models
+    - app/models/*.rb
 
 ReadAttribute:
   Include:
-    - app/models
+    - app/models/*.rb
 
 ScopeArgs:
   Include:
-    - app/models
+    - app/models/*.rb
 
 Validation:
   Include:
-    - app/models
+    - app/models/*.rb
 
