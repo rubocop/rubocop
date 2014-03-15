@@ -6,10 +6,18 @@ describe Rubocop::Cop::Style::NumericLiterals, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) { { 'MinDigits' => 5 } }
 
-  it 'registers an offense for a long integer without underscores' do
-    inspect_source(cop, ['a = 123456'])
+  it 'registers an offense for a long undelimited integer' do
+    inspect_source(cop, ['a = 12345'])
     expect(cop.offenses.size).to eq(1)
     expect(cop.config_to_allow_offenses).to eq('MinDigits' => 6)
+  end
+
+  it 'registers an offense for a float with a long undelimited integer part' do
+    pending 'Though the offense message implies that floats are checked, ' \
+            'currently the cop only detects integers.'
+    inspect_source(cop, ['a = 123456.789'])
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.config_to_allow_offenses).to eq('MinDigits' => 7)
   end
 
   it 'registers an offense for an integer with misplaced underscore' do
