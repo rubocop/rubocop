@@ -4,6 +4,7 @@
 
 ### Bugs fixed
 
+* [#884](https://github.com/bbatsov/rubocop/issues/884): Fix --auto-gen-config for `NumericLiterals` so MinDigits is correct. ([@tmorris-fiksu][])
 * [#879](https://github.com/bbatsov/rubocop/issues/879): Fix --auto-gen-config for `RegexpLiteral` so we don't generate illegal values for `MaxSlashes`. ([@jonas054][])
 * Fix the name of the `Include` param in the default config of the Rails cops. ([@bbatsov][])
 * [#878](https://github.com/bbatsov/rubocop/pull/878): Blacklist `Rakefile`, `Gemfile` and `Capfile` by default in the `FileName` cop. ([@bbatsov][])
@@ -766,3 +767,4 @@
 [@hannestyden]: https://github.com/hannestyden
 [@geniou]: https://github.com/geniou
 [@jkogara]: https://github.com/jkogara
+[@tmorris-fiksu]: https://github.com/tmorris-fiksu
