@@ -60,12 +60,20 @@ module ExitCodeMatchers
 end
 
 RSpec.configure do |config|
+  config.treat_symbols_as_metadata_keys_with_true_values = true
+
+  # These two settings work together to allow you to limit a spec run
+  # to individual examples or groups you care about by tagging them with
+  # `:focus` metadata. When nothing is tagged with `:focus`, all examples
+  # get run.
+  config.filter_run :focus
+  config.run_all_when_everything_filtered = true
+
   broken_filter = lambda do |v|
     v.is_a?(Symbol) ? RUBY_ENGINE == v.to_s : v
   end
   config.filter_run_excluding ruby: ->(v) { !RUBY_VERSION.start_with?(v.to_s) }
   config.filter_run_excluding broken: broken_filter
-  config.treat_symbols_as_metadata_keys_with_true_values = true
 
   config.expect_with :rspec do |c|
     c.syntax = :expect # disables `should`
