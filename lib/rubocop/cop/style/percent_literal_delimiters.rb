@@ -5,6 +5,13 @@ module Rubocop
     module Style
       # This cop enforces the consitent useage of `%`-literal delimiters.
       class PercentLiteralDelimiters < Cop
+        IncorrectConfigurationError = Class.new(StandardError)
+
+        def initialize(configuration = {}, *_)
+          verify_configuration(configuration)
+          super
+        end
+
         def on_array(node)
           process(node, '%w', '%W', '%i')
         end
@@ -35,6 +42,20 @@ module Rubocop
         end
 
         private
+
+        def verify_configuration(configuration)
+          required_delimiters = %w(% %i %q %Q %r %s %w %W %x)
+
+          if (cop_config = configuration['PercentLiteralDelimiters'])
+            configured_delimiters = cop_config['PreferredDelimiters'].keys
+            missing_delimiters = required_delimiters - configured_delimiters
+
+            unless missing_delimiters.empty?
+              fail IncorrectConfigurationError,
+                   "missing configuration for #{missing_delimiters}"
+            end
+          end
+        end
 
         def autocorrect(node)
           type = type(node)
