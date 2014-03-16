@@ -43,13 +43,7 @@ module Rubocop
           opening_newline = new_line(node.loc.begin, node.children.first)
           closing_newline = new_line(node.loc.end, node.children.last)
 
-          expression, reg_opt =
-              if node.type == :regexp
-                [contents(node.children.first), contents(node.children.last)]
-              else
-                [contents(node), '']
-              end
-
+          expression, reg_opt = *contents(node)
           corrected_source =
             type + opening_delimiter + opening_newline +
             expression +
@@ -91,17 +85,33 @@ module Rubocop
         end
 
         def contents(node)
-          if node.children.empty?
-            ''
-          elsif node.children.first.is_a?(Parser::AST::Node)
-            Parser::Source::Range.new(
-              node.loc.expression.source_buffer,
-              node.children.first.loc.expression.begin_pos,
-              node.children.last.loc.expression.end_pos
-            ).source
+          first_child, *middle, last_child = *node
+          last_child ||= first_child
+          if node.type == :regexp
+            *_, next_to_last_child = *middle
+            next_to_last_child ||= first_child
+            [
+              source(node, first_child, next_to_last_child),
+              last_child.loc.expression.source
+            ]
           else
-            node.children.first.to_s
+            [
+              if first_child.is_a?(Parser::AST::Node)
+                source(node, first_child, last_child)
+              else
+                first_child.to_s
+              end,
+              ''
+            ]
           end
+        end
+
+        def source(node, begin_node, end_node)
+          Parser::Source::Range.new(
+            node.loc.expression.source_buffer,
+            begin_node.loc.expression.begin_pos,
+            end_node.loc.expression.end_pos
+          ).source
         end
 
         def uses_preferred_delimiter?(node, type)
