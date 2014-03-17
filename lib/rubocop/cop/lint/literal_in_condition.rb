@@ -23,6 +23,8 @@ module Rubocop
         LITERALS = [:str, :dstr, :int, :float, :array,
                     :hash, :regexp, :nil, :true, :false]
 
+        BASIC_LITERALS = LITERALS - [:dstr, :array, :hash]
+
         def on_if(node)
           check_for_literal(node)
         end
@@ -45,8 +47,9 @@ module Rubocop
 
         def on_case(node)
           cond, *whens, _else = *node
+
           if cond
-            handle_node(cond)
+            check_case_cond(cond)
           else
             whens.each do |when_node|
               check_for_literal(when_node)
@@ -85,6 +88,18 @@ module Rubocop
           LITERALS.include?(node.type)
         end
 
+        def basic_literal?(node)
+          if node && node.type == :array
+            primitive_array?(node)
+          else
+            BASIC_LITERALS.include?(node.type)
+          end
+        end
+
+        def primitive_array?(node)
+          node.children.all? { |n| basic_literal?(n) }
+        end
+
         def check_node(node)
           return unless node
 
@@ -109,6 +124,13 @@ module Rubocop
           elsif [:send, :and, :or, :begin].include?(node.type)
             check_node(node)
           end
+        end
+
+        def check_case_cond(node)
+          return if node.type == :array && !primitive_array?(node)
+          return if node.type == :dstr
+
+          handle_node(node)
         end
       end
     end

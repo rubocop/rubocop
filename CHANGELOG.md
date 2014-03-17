@@ -10,6 +10,7 @@
 * [#878](https://github.com/bbatsov/rubocop/pull/878): Blacklist `Rakefile`, `Gemfile` and `Capfile` by default in the `FileName` cop. ([@bbatsov][])
 * [#875](https://github.com/bbatsov/rubocop/issues/875): Handle `separator` style hashes in `IndentHash`. ([@jonas054][])
 * Fix a bug where multiple cli options that result in exit can be specified at once (e.g. `-vV`, `-v --show-cops`). ([@jkogara][])
+* [#889](https://github.com/bbatsov/rubocop/issues/889): Fix a false positive for `LiteralInCondition` when the condition is non-primitive array. ([@bbatsov][])
 
 ## 0.19.0 (13/03/2014)
 
