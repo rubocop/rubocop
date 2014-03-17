@@ -7,9 +7,14 @@ describe Rubocop::Cop::Style::NumericLiterals, :config do
   let(:cop_config) { { 'MinDigits' => 5 } }
 
   it 'registers an offense for a long undelimited integer' do
-    inspect_source(cop, ['a = 12345'])
+    inspect_source(cop, ['a = 123456'])
     expect(cop.offenses.size).to eq(1)
-    expect(cop.config_to_allow_offenses).to eq('MinDigits' => 6)
+    expect(cop.config_to_allow_offenses).to eq('MinDigits' => 7)
+  end
+
+  it 'does not register an offense for an integer with 5 digits' do
+    inspect_source(cop, ['a = 12345'])
+    expect(cop.messages).to be_empty
   end
 
   it 'registers an offense for a float with a long undelimited integer part' do
