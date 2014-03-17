@@ -21,6 +21,7 @@ require 'rubocop/cop/cop'
 require 'rubocop/cop/commissioner'
 require 'rubocop/cop/corrector'
 require 'rubocop/cop/team'
+require 'rubocop/cop/severity'
 
 require 'rubocop/cop/variable_inspector'
 require 'rubocop/cop/variable_inspector/locatable'

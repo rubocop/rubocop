@@ -57,6 +57,7 @@ Usage: rubocop [options] [file1, file2, ...]
                                      specified --format, or the default format
                                      if no format is specified.
     -r, --require FILE               Require Ruby file.
+        --fail-level SEVERITY        Minimum severity for exit with error code.
         --show-cops [cop1,cop2,...]  Shows the given cops, or all cops by
                                      default, and their configurations for the
                                      current directory.

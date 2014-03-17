@@ -85,8 +85,8 @@ module Rubocop
       end
 
       def colored_severity_code(offense)
-        color = COLOR_FOR_SEVERITY[offense.severity]
-        colorize(offense.severity_code, color)
+        color = COLOR_FOR_SEVERITY[offense.severity.name]
+        colorize(offense.severity.code, color)
       end
 
       def message(offense)

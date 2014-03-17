@@ -12,7 +12,7 @@ module Rubocop
           message << o.message
 
           output.printf("%s:%d:%d: %s: %s\n",
-                        file, o.line, o.real_column, o.severity_code,
+                        file, o.line, o.real_column, o.severity.code,
                         message)
         end
       end

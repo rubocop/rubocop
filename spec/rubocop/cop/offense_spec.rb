@@ -61,7 +61,7 @@ describe Rubocop::Cop::Offense do
   describe '#severity_level' do
     subject(:severity_level) do
       described_class.new(severity, location, 'message', 'CopName')
-        .severity_level
+        .severity.level
     end
 
     context 'when severity is :refactor' do

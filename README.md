@@ -141,6 +141,7 @@ Command flag              | Description
 `--only`                  | Run only the specified cop
 `--auto-gen-config`       | Generate a configuration file acting as a TODO list
 `--show-cops`             | Shows available cops and their configuration
+`--fail-level`            | Minimum severity for exit with error code
 
 ### Cops
 
@@ -293,6 +294,7 @@ LineLength:
 ```
 
 Cops can customize their severity level. All cops support the `Severity` param.
+Allowed params are `refactor`, `convention`, `warning`, `error` and `fatal`.
 
 ```yaml
 CyclomaticComplexity:

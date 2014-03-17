@@ -31,6 +31,7 @@ module Rubocop
           require f
         end
 
+        add_severity_option(opts)
         add_flags_with_optional_args(opts)
         add_boolean_flags(opts)
       end.parse!(args)
@@ -79,6 +80,15 @@ module Rubocop
         @options[:formatters] ||= [[DEFAULT_FORMATTER]]
         @options[:formatters].last << path
       end
+    end
+
+    def add_severity_option(opts)
+      opts.on('--fail-level SEVERITY',
+              Rubocop::Cop::Severity::NAMES,
+              Rubocop::Cop::Severity::CODE_TABLE,
+              'Minimum severity for exit with error code.') do |severity|
+                @options[:fail_level] = severity
+              end
     end
 
     def add_flags_with_optional_args(opts)

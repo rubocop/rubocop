@@ -6,16 +6,11 @@ module Rubocop
     class Offense
       include Comparable
 
-      # @api private
-      SEVERITIES = [:refactor, :convention, :warning, :error, :fatal]
-
       # @api public
       #
       # @!attribute [r] severity
       #
-      # @return [Symbol]
-      #   severity.
-      #   any of `:refactor`, `:convention`, `:warning`, `:error` or `:fatal`.
+      # @return [Rubocop::Cop::Severity]
       attr_reader :severity
 
       # @api public
@@ -69,10 +64,7 @@ module Rubocop
 
       # @api private
       def initialize(severity, location, message, cop_name, corrected = false)
-        unless SEVERITIES.include?(severity)
-          fail ArgumentError, "Unknown severity: #{severity}"
-        end
-        @severity = severity.freeze
+        @severity = Rubocop::Cop::Severity.new(severity)
         @location = location.freeze
         @line = location.line.freeze
         @column = location.column.freeze
@@ -86,17 +78,7 @@ module Rubocop
       # This is just for debugging purpose.
       def to_s
         format('%s:%3d:%3d: %s',
-               severity_code, line, real_column, message)
-      end
-
-      # @api private
-      def severity_code
-        @severity.to_s[0].upcase
-      end
-
-      # @api private
-      def severity_level
-        SEVERITIES.index(severity) + 1
+               severity.code, line, real_column, message)
       end
 
       # @api private

@@ -178,11 +178,11 @@ module Rubocop
       def custom_severity
         severity = cop_config && cop_config['Severity']
         if severity
-          if Offense::SEVERITIES.include?(severity.to_sym)
+          if Severity::NAMES.include?(severity.to_sym)
             severity.to_sym
           else
             warn "Warning: Invalid severity '#{severity}'. " +
-                 "Valid severities are #{Offense::SEVERITIES.join(', ')}."
+                 "Valid severities are #{Severity::NAMES.join(', ')}."
                  .color(:red)
           end
         end

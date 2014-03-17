@@ -22,7 +22,9 @@ module Rubocop
         break if yield
         offenses = process_file(file, config_store)
 
-        any_failed = true unless offenses.empty?
+        any_failed = true if offenses.any? do |o|
+          o.severity >= fail_level
+        end
         inspected_files << file
       end
 
@@ -108,6 +110,11 @@ module Rubocop
         $stderr.puts error.backtrace
         exit(1)
       end
+    end
+
+    def fail_level
+      @fail_level ||= Rubocop::Cop::Severity.new(
+        @options[:fail_level] || :refactor)
     end
   end
 end
