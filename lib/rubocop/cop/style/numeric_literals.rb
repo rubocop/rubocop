@@ -34,7 +34,7 @@ module Rubocop
           # TODO: handle non-decimal literals as well
           return if int.start_with?('0')
 
-          if int.size >= min_digits
+          if int.size > min_digits
             case int
             when /^\d+$/
               add_offense(node, :expression) { self.max = int.size + 1 }

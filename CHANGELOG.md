@@ -6,6 +6,7 @@
 
 ### Bugs fixed
 
+* `NumericLiterals` cop does not add an offense when the size of the integer is equal to MinDigits. ([@asok][])
 * [#884](https://github.com/bbatsov/rubocop/issues/884): Fix --auto-gen-config for `NumericLiterals` so MinDigits is correct. ([@tmorris-fiksu][])
 * [#879](https://github.com/bbatsov/rubocop/issues/879): Fix --auto-gen-config for `RegexpLiteral` so we don't generate illegal values for `MaxSlashes`. ([@jonas054][])
 * Fix the name of the `Include` param in the default config of the Rails cops. ([@bbatsov][])
@@ -772,3 +773,4 @@
 [@geniou]: https://github.com/geniou
 [@jkogara]: https://github.com/jkogara
 [@tmorris-fiksu]: https://github.com/tmorris-fiksu
+[@asok]: https://github.com/asok
