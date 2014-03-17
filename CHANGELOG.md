@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.19.1 (17/03/2014)
+
 ### Bugs fixed
 
 * [#884](https://github.com/bbatsov/rubocop/issues/884): Fix --auto-gen-config for `NumericLiterals` so MinDigits is correct. ([@tmorris-fiksu][])
