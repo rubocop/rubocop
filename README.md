@@ -70,6 +70,12 @@ automatically fix some of the problems for you.
 $ gem install rubocop
 ```
 
+If you'd rather install RuboCop using `bundler`, don't require it in your `Gemfile`:
+
+```
+gem 'rubocop', require: false
+```
+
 ## Basic Usage
 
 Running `rubocop` with no arguments will check all Ruby source files
