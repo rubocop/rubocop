@@ -1,4 +1,4 @@
-# Changelog
+# Change log
 
 ## master (unreleased)
 
@@ -9,8 +9,8 @@
 
 ### Bugs fixed
 
-* [#904](https://github.com/bbatsov/rubocop/issues/904) Fixed a NPE in `LiteralInInterpolation`. ([@bbatsov][])
-* [#904](https://github.com/bbatsov/rubocop/issues/904) Fixed a NPE in `StringConversionInInterpolation`. ([@bbatsov][])
+* [#904](https://github.com/bbatsov/rubocop/issues/904): Fixed a NPE in `LiteralInInterpolation`. ([@bbatsov][])
+* [#904](https://github.com/bbatsov/rubocop/issues/904): Fixed a NPE in `StringConversionInInterpolation`. ([@bbatsov][])
 
 ## 0.19.1 (17/03/2014)
 
