@@ -15,7 +15,7 @@ module Rubocop
         def on_dstr(node)
           node.children.select { |n| n.type == :begin }.each do |begin_node|
             final_node = begin_node.children.last
-            next unless final_node.type == :send
+            next unless final_node && final_node.type == :send
 
             _receiver, method_name, *args = *final_node
 

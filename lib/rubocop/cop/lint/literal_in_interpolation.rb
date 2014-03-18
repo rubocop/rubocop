@@ -17,6 +17,7 @@ module Rubocop
         def on_dstr(node)
           node.children.select { |n| n.type == :begin }.each do |begin_node|
             final_node = begin_node.children.last
+            next unless final_node
             next unless LITERALS.include?(final_node.type)
 
             add_offense(final_node, :expression)

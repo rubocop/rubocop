@@ -18,4 +18,9 @@ describe Rubocop::Cop::Lint::LiteralInInterpolation do
       expect(cop.offenses.size).to eq(1)
     end
   end
+
+  it 'does not explode on empty interpolation' do
+    inspect_source(cop, '"this is #{} silly"')
+    expect(cop.offenses).to be_empty
+  end
 end
