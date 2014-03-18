@@ -7,7 +7,7 @@ module Rubocop
       class FileName < Cop
         MSG = 'Use snake_case for source file names.'
 
-        SNAKE_CASE = /^[\da-z_]+$/
+        SNAKE_CASE = /^[\da-z_]+(\.[a-z]{3,4})?$/
 
         def investigate(processed_source)
           file_path = processed_source.buffer.name
