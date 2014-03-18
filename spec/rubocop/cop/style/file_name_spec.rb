@@ -6,7 +6,8 @@ describe Rubocop::Cop::Style::FileName do
   subject(:cop) { described_class.new(config) }
 
   let(:config) do
-    Rubocop::Config.new('AllCops' => { 'Includes' => includes })
+    Rubocop::Config.new({ 'AllCops' => { 'Includes' => includes } },
+                        '/some/.rubocop.yml')
   end
 
   let(:includes) { [] }

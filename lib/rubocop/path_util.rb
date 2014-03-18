@@ -6,7 +6,8 @@ module Rubocop
     module_function
 
     def relative_path(path, base_dir = Dir.pwd)
-      Pathname.new(path).relative_path_from(Pathname.new(base_dir)).to_s
+      path_name = Pathname.new(File.expand_path(path))
+      path_name.relative_path_from(Pathname.new(base_dir)).to_s
     end
 
     def match_path?(pattern, path)

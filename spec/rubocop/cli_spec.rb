@@ -1090,57 +1090,100 @@ describe Rubocop::CLI, :isolated_environment do
       .to eq(['', '1 file inspected, no offenses detected', ''].join("\n"))
   end
 
-  describe 'enabling/disabling rails cops' do
-    it 'by default does not run rails cops' do
-      create_file('app/models/example1.rb', ['# encoding: utf-8',
-                                             'read_attribute(:test)'])
-      expect(cli.run(['--format', 'simple', 'app/models/example1.rb']))
-        .to eq(0)
+  describe 'rails cops' do
+    describe 'enabling/disabling' do
+      it 'by default does not run rails cops' do
+        create_file('app/models/example1.rb', ['# encoding: utf-8',
+                                               'read_attribute(:test)'])
+        expect(cli.run(['--format', 'simple', 'app/models/example1.rb']))
+          .to eq(0)
+      end
+
+      it 'with -R given runs rails cops' do
+        create_file('app/models/example1.rb', ['# encoding: utf-8',
+                                               'read_attribute(:test)'])
+        expect(cli.run(['--format', 'simple', '-R', 'app/models/example1.rb']))
+          .to eq(1)
+        expect($stdout.string).to include('Prefer self[:attribute]')
+      end
+
+      it 'with configation option true in one dir runs rails cops there' do
+        source = ['# encoding: utf-8',
+                  'read_attribute(:test)']
+        create_file('dir1/app/models/example1.rb', source)
+        create_file('dir1/.rubocop.yml', ['AllCops:',
+                                          '  RunRailsCops: true',
+                                          '',
+                                          'ReadAttribute:',
+                                          '  Include:',
+                                          '    - app/models/*.rb'])
+        create_file('dir2/app/models/example2.rb', source)
+        create_file('dir2/.rubocop.yml', ['AllCops:',
+                                          '  RunRailsCops: false',
+                                          '',
+                                          'ReadAttribute:',
+                                          '  Include:',
+                                          '    - app/models/*.rb'])
+        expect(cli.run(%w(--format simple dir1 dir2))).to eq(1)
+        expect($stdout.string)
+          .to eq(['== dir1/app/models/example1.rb ==',
+                  'C:  2:  1: Prefer self[:attribute] over read_attribute' \
+                  '(:attribute).',
+                  '',
+                  '2 files inspected, 1 offense detected',
+                  ''].join("\n"))
+      end
+
+      it 'with configation option false but -R given runs rails cops' do
+        create_file('app/models/example1.rb', ['# encoding: utf-8',
+                                               'read_attribute(:test)'])
+        create_file('.rubocop.yml', ['AllCops:',
+                                     '  RunRailsCops: false'])
+        expect(cli.run(['--format', 'simple', '-R', 'app/models/example1.rb']))
+          .to eq(1)
+        expect($stdout.string).to include('Prefer self[:attribute]')
+      end
     end
 
-    it 'with -R given runs rails cops' do
-      create_file('app/models/example1.rb', ['# encoding: utf-8',
-                                             'read_attribute(:test)'])
-      expect(cli.run(['--format', 'simple', '-R', 'app/models/example1.rb']))
-        .to eq(1)
-      expect($stdout.string).to include('Prefer self[:attribute]')
-    end
+    describe 'including/excluding' do
+      it 'includes some directories by default' do
+        source = ['# encoding: utf-8',
+                  'read_attribute(:test)',
+                  "default_scope order: 'position'"]
+        # Several rails cops include app/models by default.
+        create_file('dir1/app/models/example1.rb', source)
+        create_file('dir1/app/models/example2.rb', source)
+        # No rails cops include app/views by default.
+        create_file('dir1/app/views/example3.rb', source)
+        # The .rubocop.yml file inherits from default.yml where the Include
+        # config parameter is set for the rails cops. The paths are interpreted
+        # as relative to dir1 because .rubocop.yml is placed there.
+        create_file('dir1/.rubocop.yml', ['AllCops:',
+                                          '  RunRailsCops: true',
+                                          '',
+                                          'ReadAttribute:',
+                                          '  Exclude:',
+                                          '    - example2.rb',
+                                          '',
+                                          'DefaultScope:',
+                                          '  Exclude:',
+                                          '    - "**/example2.rb"'])
+        # No .rubocop.yml file in dir2 means that the paths from default.yml
+        # are interpreted as relative to the current directory, so they don't
+        # match.
+        create_file('dir2/app/models/example4.rb', source)
 
-    it 'with configation option true in one dir runs rails cops there' do
-      create_file('dir1/app/models/example1.rb', ['# encoding: utf-8',
-                                                  'read_attribute(:test)'])
-      create_file('dir1/.rubocop.yml', ['AllCops:',
-                                        '  RunRailsCops: true',
-                                        '',
-                                        'ReadAttribute:',
-                                        '  Include:',
-                                        '    - dir1/app/models/*.rb'])
-      create_file('dir2/app/models/example2.rb', ['# encoding: utf-8',
-                                                  'read_attribute(:test)'])
-      create_file('dir2/.rubocop.yml', ['AllCops:',
-                                        '  RunRailsCops: false',
-                                        '',
-                                        'ReadAttribute:',
-                                        '  Include:',
-                                        '    - dir2/app/models/*.rb'])
-      expect(cli.run(%w(--format simple dir1 dir2))).to eq(1)
-      expect($stdout.string)
-        .to eq(['== dir1/app/models/example1.rb ==',
-                'C:  2:  1: Prefer self[:attribute] over read_attribute' \
-                '(:attribute).',
-                '',
-                '2 files inspected, 1 offense detected',
-                ''].join("\n"))
-    end
-
-    it 'with configation option false but -R given runs rails cops' do
-      create_file('app/models/example1.rb', ['# encoding: utf-8',
-                                             'read_attribute(:test)'])
-      create_file('.rubocop.yml', ['AllCops:',
-                                   '  RunRailsCops: false'])
-      expect(cli.run(['--format', 'simple', '-R', 'app/models/example1.rb']))
-        .to eq(1)
-      expect($stdout.string).to include('Prefer self[:attribute]')
+        expect(cli.run(%w(--format simple dir1 dir2))).to eq(1)
+        expect($stdout.string)
+          .to eq(['== dir1/app/models/example1.rb ==',
+                  'C:  2:  1: Prefer self[:attribute] over read_attribute' \
+                  '(:attribute).',
+                  'C:  3: 15: default_scope expects a block as its sole' \
+                  ' argument.',
+                  '',
+                  '4 files inspected, 2 offenses detected',
+                  ''].join("\n"))
+      end
     end
   end
 

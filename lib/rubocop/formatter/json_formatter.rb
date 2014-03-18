@@ -7,6 +7,8 @@ module Rubocop
   module Formatter
     # This formatter formats the report data in JSON format.
     class JSONFormatter < BaseFormatter
+      include PathUtil
+
       attr_reader :output_hash
 
       def initialize(output)
@@ -66,12 +68,6 @@ module Rubocop
           column: offense.real_column,
           length: offense.location.length
         }
-      end
-
-      private
-
-      def relative_path(path)
-        Pathname.new(path).relative_path_from(Pathname.getwd).to_s
       end
     end
   end

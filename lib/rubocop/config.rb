@@ -10,6 +10,8 @@ module Rubocop
   # during a run of the rubocop program, if files in several
   # directories are inspected.
   class Config < DelegateClass(Hash)
+    include PathUtil
+
     class ValidationError < StandardError; end
 
     COMMON_PARAMS = %w(Exclude Include Severity)
@@ -66,7 +68,7 @@ module Rubocop
     end
 
     def file_to_include?(file)
-      relative_file_path = relative_path_to_loaded_dir(file)
+      relative_file_path = path_relative_to_config(file)
       patterns_to_include.any? do |pattern|
         match_path?(pattern, relative_file_path)
       end
@@ -85,28 +87,18 @@ module Rubocop
       @hash['AllCops']['Excludes']
     end
 
-    private
-
-    def relative_path_to_loaded_dir(file)
-      return file unless loaded_path
-      ConfigLoader.relative_path(file, loaded_dir_pathname)
-    end
-
-    def loaded_dir_pathname
-      return nil unless loaded_path
-      @loaded_dir ||= begin
-        loaded_dir = File.expand_path(File.dirname(loaded_path))
-        Pathname.new(loaded_dir)
-      end
-    end
-
-    def match_path?(pattern, path)
-      case pattern
-      when String
-        File.basename(path) == pattern || File.fnmatch(pattern, path)
-      when Regexp
-        path =~ pattern
-      end
+    def path_relative_to_config(path)
+      # Paths specified in .rubocop.yml files are relative to the directory
+      # where that file is. Paths in other config files are relative to the
+      # current directory. This is so that paths in config/default.yml, for
+      # example, are not relative to RuboCop's config directory since that
+      # wouldn't work.
+      base_dir = if File.basename(loaded_path) == ConfigLoader::DOTFILE
+                   File.dirname(loaded_path)
+                 else
+                   Dir.pwd
+                 end
+      relative_path(path, base_dir)
     end
   end
 end

@@ -47,11 +47,6 @@ module Rubocop
         end
       end
 
-      def relative_path(path, base)
-        path_name = Pathname.new(File.expand_path(path))
-        path_name.relative_path_from(Pathname.new(base)).to_s
-      end
-
       # Return an extended merge of two hashes. That is, a normal hash merge,
       # with the addition that any value that is a hash, and occurs in both
       # arguments (i.e., cop names), will also be merged.

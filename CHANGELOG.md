@@ -11,6 +11,7 @@
 
 * [#904](https://github.com/bbatsov/rubocop/issues/904): Fixed a NPE in `LiteralInInterpolation`. ([@bbatsov][])
 * [#904](https://github.com/bbatsov/rubocop/issues/904): Fixed a NPE in `StringConversionInInterpolation`. ([@bbatsov][])
+* [#892](https://github.com/bbatsov/rubocop/issues/892): Make sure `Include` and `Exclude` paths in a `.rubocop.yml` are interpreted as relative to the directory of that file. ([@jonas054][])
 
 ## 0.19.1 (17/03/2014)
 
