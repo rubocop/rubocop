@@ -5,6 +5,7 @@
 ### New features
 
 * New cop `GuardClause` checks for conditionals that can be replaced by guard clauses. ([@bbatsov][])
+* [#899](https://github.com/bbatsov/rubocop/issues/899): Make LineEndConcatenation cop << aware. ([@mockdeep][])
 
 ### Bugs fixed
 
@@ -781,3 +782,4 @@
 [@geniou]: https://github.com/geniou
 [@jkogara]: https://github.com/jkogara
 [@tmorris-fiksu]: https://github.com/tmorris-fiksu
+[@mockdeep]: https://github.com/mockdeep
