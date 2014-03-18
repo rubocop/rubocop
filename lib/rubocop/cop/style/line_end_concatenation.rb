@@ -12,6 +12,9 @@ module Rubocop
       #   some_str = 'ala' +
       #              'bala'
       #
+      #   some_str = 'ala' <<
+      #              'bala'
+      #
       #   # good
       #   some_str = 'ala' \
       #              'bala'
@@ -36,18 +39,19 @@ module Rubocop
           receiver, method, arg = *node
 
           # TODO: Report Emacs bug.
-          return false unless :+ == method
+          return false unless [:+, :<<].include?(method)
 
           return false unless string_type?(receiver.type)
 
           return false unless string_type?(arg.type)
 
-          plus_at_line_end?(node.loc.expression.source)
+          expression = node.loc.expression.source
+          concatenator_at_line_end?(expression)
         end
 
-        def plus_at_line_end?(expression)
-          # check if the first line of the expression ends with a +
-          expression =~ /.+\+\s*$/
+        def concatenator_at_line_end?(expression)
+          # check if the first line of the expression ends with a + or a <<
+          expression =~ /.+(\+|<<)\s*$/
         end
 
         def string_type?(node_type)

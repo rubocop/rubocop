@@ -12,9 +12,23 @@ describe Rubocop::Cop::Style::LineEndConcatenation do
     expect(cop.offenses.size).to eq(1)
   end
 
+  it 'registers an offense for string concat with << at line end' do
+    inspect_source(cop,
+                   ['top = "test" <<',
+                    '"top"'])
+    expect(cop.offenses.size).to eq(1)
+  end
+
   it 'registers an offense for dynamic string concat at line end' do
     inspect_source(cop,
                    ['top = "test#{x}" +',
+                    '"top"'])
+    expect(cop.offenses.size).to eq(1)
+  end
+
+  it 'registers an offense for dynamic string concat with << at line end' do
+    inspect_source(cop,
+                   ['top = "test#{x}" <<',
                     '"top"'])
     expect(cop.offenses.size).to eq(1)
   end
