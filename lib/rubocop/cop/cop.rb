@@ -145,11 +145,11 @@ module Rubocop
       alias_method :name, :cop_name
 
       def include_file?(file)
-        buffer_name_matches_any?('Include', true)
+        file_name_matches_any?(file, 'Include', true)
       end
 
       def exclude_file?(file)
-        buffer_name_matches_any?('Exclude', false)
+        file_name_matches_any?(file, 'Exclude', false)
       end
 
       def relevant_file?(file)
@@ -158,10 +158,10 @@ module Rubocop
 
       private
 
-      def buffer_name_matches_any?(parameter, default_result)
+      def file_name_matches_any?(file, parameter, default_result)
         patterns = cop_config && cop_config[parameter]
         return default_result unless patterns
-        path = relative_path(processed_source.buffer.name)
+        path = config.path_relative_to_config(file)
         patterns.any? { |pattern| match_path?(pattern, path) }
       end
 

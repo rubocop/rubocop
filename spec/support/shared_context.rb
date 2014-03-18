@@ -17,6 +17,6 @@ shared_context 'config', :config do
       cop_name =>
       Rubocop::ConfigLoader.default_configuration[cop_name].merge(cop_config)
     }
-    Rubocop::Config.new(hash)
+    Rubocop::Config.new(hash, "#{Dir.pwd}/.rubocop.yml")
   end
 end
