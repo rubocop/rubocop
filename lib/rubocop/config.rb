@@ -10,6 +10,8 @@ module Rubocop
   # during a run of the rubocop program, if files in several
   # directories are inspected.
   class Config < DelegateClass(Hash)
+    include PathUtil
+
     class ValidationError < StandardError; end
 
     COMMON_PARAMS = %w(Exclude Include Severity)
@@ -89,7 +91,7 @@ module Rubocop
 
     def relative_path_to_loaded_dir(file)
       return file unless loaded_path
-      ConfigLoader.relative_path(file, loaded_dir_pathname)
+      relative_path(file, loaded_dir_pathname)
     end
 
     def loaded_dir_pathname
@@ -97,15 +99,6 @@ module Rubocop
       @loaded_dir ||= begin
         loaded_dir = File.expand_path(File.dirname(loaded_path))
         Pathname.new(loaded_dir)
-      end
-    end
-
-    def match_path?(pattern, path)
-      case pattern
-      when String
-        File.basename(path) == pattern || File.fnmatch(pattern, path)
-      when Regexp
-        path =~ pattern
       end
     end
   end
