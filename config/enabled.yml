@@ -212,7 +212,7 @@ FormatString:
 GlobalVars:
   Description: 'Do not introduce global variables.'
   Enabled: true
-
+  
 HashMethods:
   Description: 'Checks for use of deprecated Hash methods.'
   Enabled: true

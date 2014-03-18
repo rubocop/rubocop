@@ -1,5 +1,9 @@
 # These are all the cops that are disabled in the default configuration.
 
+GuardClause:
+  Description: 'Check for conditionals that can be replaced with guard clauses'
+  Enabled: false
+
 MethodCalledOnDoEndBlock:
   Description: 'Avoid chaining a method call on a do...end block.'
   Enabled: false

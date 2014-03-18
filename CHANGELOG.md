@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* New cop `GuardClause` checks for conditionals that can be replaced by guard clauses. ([@bbatsov][])
+
 ## 0.19.1 (17/03/2014)
 
 ### Bugs fixed
