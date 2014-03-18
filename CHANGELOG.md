@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bugs fixed
+
+* [#901](https://github.com/bbatsov/rubocop/issues/901): Fix FileName cop false positive for chained filenames ([@mockdeep][])
+
 ## 0.19.1 (17/03/2014)
 
 ### Bugs fixed
@@ -772,3 +776,4 @@
 [@geniou]: https://github.com/geniou
 [@jkogara]: https://github.com/jkogara
 [@tmorris-fiksu]: https://github.com/tmorris-fiksu
+[@mockdeep]: https://github.com/mockdeep

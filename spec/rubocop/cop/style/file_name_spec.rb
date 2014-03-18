@@ -38,6 +38,24 @@ describe Rubocop::Cop::Style::FileName do
     expect(cop.offenses).to be_empty
   end
 
+  it 'reports offense for camelCase chained file names ending in .rb' do
+    source = ['print 1']
+    processed_source = parse_source(source)
+    allow(processed_source.buffer)
+      .to receive(:name).and_return('/some/dir/testCase.json.rb')
+    _investigate(cop, processed_source)
+    expect(cop.offenses.size).to eq(1)
+  end
+
+  it 'accepts offense for snake_case chained file names ending in .rb' do
+    source = ['print 1']
+    processed_source = parse_source(source)
+    allow(processed_source.buffer)
+      .to receive(:name).and_return('/some/dir/test_case.json.rb')
+    _investigate(cop, processed_source)
+    expect(cop.offenses).to be_empty
+  end
+
   it 'accepts offense for snake_case file names without file extension' do
     source = ['print 1']
     processed_source = parse_source(source)
