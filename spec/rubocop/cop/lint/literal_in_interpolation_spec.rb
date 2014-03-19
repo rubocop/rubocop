@@ -19,8 +19,13 @@ describe Rubocop::Cop::Lint::LiteralInInterpolation do
     end
   end
 
-  it 'does not explode on empty interpolation' do
+  it 'accepts empty interpolation' do
     inspect_source(cop, '"this is #{} silly"')
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'accepts strings like __FILE__' do
+    inspect_source(cop, '"this is #{__FILE__} silly"')
     expect(cop.offenses).to be_empty
   end
 end
