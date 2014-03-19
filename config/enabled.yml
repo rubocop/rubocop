@@ -584,6 +584,10 @@ EmptyEnsure:
   Description: 'Checks for empty ensure block.'
   Enabled: true
 
+EmptyInterpolation:
+  Description: 'Checks for empty string interpolation.'
+  Enabled: true
+
 EndAlignment:
   Description: 'Align ends correctly.'
   Enabled: true

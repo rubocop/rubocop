@@ -5,6 +5,7 @@
 ### New features
 
 * New cop `GuardClause` checks for conditionals that can be replaced by guard clauses. ([@bbatsov][])
+* New cop `EmptyInterpolation` checks for empty interpolation in double-quoted strings. ([@bbatsov][])
 * [#899](https://github.com/bbatsov/rubocop/issues/899): Make LineEndConcatenation cop << aware. ([@mockdeep][])
 
 ### Bugs fixed
