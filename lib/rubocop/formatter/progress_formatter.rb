@@ -44,9 +44,7 @@ module Rubocop
         mark = if offenses.empty?
                  green('.')
                else
-                 highest_offense = offenses.max do |a, b|
-                   a.severity_level <=> b.severity_level
-                 end
+                 highest_offense = offenses.max_by { |o| o.severity }
                  colored_severity_code(highest_offense)
                end
 

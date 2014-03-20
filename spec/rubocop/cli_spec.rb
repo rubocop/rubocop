@@ -888,6 +888,23 @@ describe Rubocop::CLI, :isolated_environment do
           .to eq("#{abs(target_file)}:2:80: C: Line is too long. [90/79]\n")
       end
     end
+
+    describe '--fail-level option' do
+      let(:target_file) { 'example.rb' }
+
+      before do
+        create_file(target_file, ['# encoding: utf-8',
+                                  '#' * 90])
+      end
+
+      it 'should be failed when option is less than the severity level' do
+        expect(cli.run(['--fail-level', 'convention', target_file])).to eq(1)
+      end
+
+      it 'should be success when option is greater than the severity level' do
+        expect(cli.run(['--fail-level', 'warning', target_file])).to eq(0)
+      end
+    end
   end
 
   describe '#wants_to_quit?' do

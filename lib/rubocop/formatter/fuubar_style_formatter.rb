@@ -49,9 +49,7 @@ module Rubocop
         return if offenses.empty?
 
         offenses << @severest_offense if @severest_offense
-        @severest_offense = offenses.max do |a, b|
-          a.severity_level <=> b.severity_level
-        end
+        @severest_offense = offenses.max_by { |offense| offense.severity }
       end
 
       def with_color
@@ -66,7 +64,7 @@ module Rubocop
 
       def progressbar_color
         if @severest_offense
-          COLOR_FOR_SEVERITY[@severest_offense.severity]
+          COLOR_FOR_SEVERITY[@severest_offense.severity.name]
         else
           :green
         end

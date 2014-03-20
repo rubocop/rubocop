@@ -53,7 +53,7 @@ module Rubocop
 
       def hash_for_offense(offense)
         {
-          severity: offense.severity,
+          severity: offense.severity.name,
           message:  offense.message,
           cop_name: offense.cop_name,
           corrected: offense.corrected?,
