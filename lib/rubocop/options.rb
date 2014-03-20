@@ -98,6 +98,7 @@ module Rubocop
       option(opts, '-R', '--rails', 'Run extra Rails cops.')
       option(opts, '-l', '--lint', 'Run only lint cops.')
       option(opts, '-a', '--auto-correct', 'Auto-correct offenses.')
+      option(opts, '-p', '--parallel', 'Run in parallel (no progress bar)')
 
       @options[:color] = true
       opts.on('-n', '--no-color', 'Disable color output.') do

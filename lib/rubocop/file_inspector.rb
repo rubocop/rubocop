@@ -13,22 +13,28 @@ module Rubocop
     # return true if the caller wants to break the loop early.
     def process_files(target_files, config_store)
       target_files.each(&:freeze).freeze
-      inspected_files = []
-      any_failed = false
 
       formatter_set.started(target_files)
 
-      target_files.each do |file|
-        break if yield
+      results = maybe_parallel(target_files) do |file|
+        if yield
+          @options[:parallel] ? raise(Parallel::Break) : break
+        end
         offenses = process_file(file, config_store)
 
-        any_failed = true unless offenses.empty?
-        inspected_files << file
+        [file, offenses]
       end
 
-      formatter_set.finished(inspected_files.freeze)
+      if @options[:parallel]
+        # reproduce the stats since reporting happened in forked process
+        results.each do |file, offenses|
+          formatter_set.file_finished(file, offenses.sort.freeze)
+        end
+      end
+
+      formatter_set.finished(results.map(&:first).freeze)
       formatter_set.close_output_files
-      any_failed
+      results.map(&:last).map(&:any?).any?
     end
 
     def display_error_summary
@@ -43,6 +49,15 @@ module Rubocop
     end
 
     private
+
+    def maybe_parallel(files, &block)
+      if @options[:parallel]
+        require 'parallel'
+        Parallel.map(files, &block)
+      else
+        files.map(&block)
+      end
+    end
 
     def process_file(file, config_store)
       puts "Scanning #{file}" if @options[:debug]
