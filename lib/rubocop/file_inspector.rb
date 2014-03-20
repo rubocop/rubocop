@@ -13,22 +13,24 @@ module Rubocop
     # return true if the caller wants to break the loop early.
     def process_files(target_files, config_store)
       target_files.each(&:freeze).freeze
-      inspected_files = []
-      any_failed = false
 
       formatter_set.started(target_files)
 
-      target_files.each do |file|
-        break if yield
+      start = lambda { |file, i| formatter_set.file_started(file, {}) }
+      finish = lambda { |file, i, result| formatter_set.file_finished(file, result.last.sort.freeze) }
+
+      results = maybe_parallel(target_files, :start => start, :finish => finish) do |file|
+        if yield
+          @options[:parallel] ? raise(Parallel::Break) : break
+        end
         offenses = process_file(file, config_store)
 
-        any_failed = true unless offenses.empty?
-        inspected_files << file
+        [file, offenses]
       end
 
-      formatter_set.finished(inspected_files.freeze)
+      formatter_set.finished(results.map(&:first).freeze)
       formatter_set.close_output_files
-      any_failed
+      results.map(&:last).map(&:any?).any?
     end
 
     def display_error_summary
@@ -44,10 +46,23 @@ module Rubocop
 
     private
 
+    def maybe_parallel(files, options, &block)
+      if @options[:parallel]
+        require 'parallel'
+        Parallel.map(files, options, &block)
+      else
+        files.each_with_index.map do |file, i|
+          options[:start].call(file, i)
+          result = yield file
+          options[:finish].call(file, i, result)
+          result
+        end
+      end
+    end
+
     def process_file(file, config_store)
       puts "Scanning #{file}" if @options[:debug]
       offenses = []
-      formatter_set.file_started(file, {})
 
       # When running with --auto-correct, we need to inspect the file (which
       # includes writing a corrected version of it) until no more corrections
@@ -60,7 +75,6 @@ module Rubocop
         break unless updated_source_file
       end
 
-      formatter_set.file_finished(file, offenses.sort.freeze)
       offenses
     end
 
