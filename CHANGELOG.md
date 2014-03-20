@@ -15,6 +15,7 @@
 * [#904](https://github.com/bbatsov/rubocop/issues/904): Fixed a NPE in `StringConversionInInterpolation`. ([@bbatsov][])
 * [#892](https://github.com/bbatsov/rubocop/issues/892): Make sure `Include` and `Exclude` paths in a `.rubocop.yml` are interpreted as relative to the directory of that file. ([@jonas054][])
 * [#906](https://github.com/bbatsov/rubocop/issues/906): Fixed a false positive in `LiteralInInterpolation`. ([@bbatsov][])
+* [#909](https://github.com/bbatsov/rubocop/issues/909): Handle properly multiple `rescue` clauses in `SignalException`. ([@bbatsov][])
 
 ## 0.19.1 (17/03/2014)
 

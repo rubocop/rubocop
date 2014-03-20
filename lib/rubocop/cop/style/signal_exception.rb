@@ -12,11 +12,14 @@ module Rubocop
 
         def on_rescue(node)
           if style == :semantic
-            begin_node, rescue_node = *node
+            begin_node, *rescue_nodes, _else_node = *node
 
             check_for(:raise, begin_node)
-            check_for(:fail, rescue_node)
-            allow(:raise, rescue_node)
+
+            rescue_nodes.each do |rescue_node|
+              check_for(:fail, rescue_node)
+              allow(:raise, rescue_node)
+            end
           end
         end
 

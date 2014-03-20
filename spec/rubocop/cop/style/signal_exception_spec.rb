@@ -54,6 +54,18 @@ describe Rubocop::Cop::Style::SignalException, :config do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts raise in def with multiple rescues' do
+      inspect_source(cop,
+                     ['def test',
+                      '  fail',
+                      'rescue StandardError',
+                      '  # handle error',
+                      'rescue Exception',
+                      '  raise',
+                      'end'])
+      expect(cop.offenses).to be_empty
+    end
+
     it 'registers an offense for fail in def rescue section' do
       inspect_source(cop,
                      ['def test',
@@ -64,6 +76,18 @@ describe Rubocop::Cop::Style::SignalException, :config do
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Use `raise` instead of `fail` to rethrow exceptions.'])
+    end
+
+    it 'registers an offense for fail in second rescue' do
+      inspect_source(cop,
+                     ['def test',
+                      '  fail',
+                      'rescue StandardError',
+                      '  # handle error',
+                      'rescue Exception',
+                      '  fail',
+                      'end'])
+      expect(cop.offenses.size).to eq(1)
     end
 
     it 'registers only offense for one raise that should be fail' do
