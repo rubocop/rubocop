@@ -11,8 +11,10 @@ module Rubocop
       class BlockNesting < Cop
         include ConfigurableMax
 
-        NESTING_BLOCKS = [:case, :if, :while, :while_post, :until, :until_post,
-                          :for, :resbody]
+        NESTING_BLOCKS = [
+          :case, :if, :while, :while_post,
+          :until, :until_post, :for, :resbody
+        ]
 
         def investigate(processed_source)
           return unless processed_source.ast
