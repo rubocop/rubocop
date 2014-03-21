@@ -16,7 +16,7 @@ module Rubocop
 
           basename = File.basename(file_path).sub(/\.[^\.]+$/, '')
 
-          unless basename =~ SNAKE_CASE
+          unless basename.split('.').all? { |fragment| fragment =~ SNAKE_CASE }
             add_offense(nil,
                         source_range(processed_source.buffer,
                                      processed_source[0..0],

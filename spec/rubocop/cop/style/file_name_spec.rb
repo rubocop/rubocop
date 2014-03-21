@@ -62,6 +62,14 @@ describe Rubocop::Cop::Style::FileName do
     end
   end
 
+  context 'with snake_case file names with multiple extensions' do
+    let(:filename) { 'some/dir/some_view.html.slim_spec.rb' }
+
+    it 'does not report an offense' do
+      expect(cop.offenses).to be_empty
+    end
+  end
+
   context 'when the file is specified in AllCops/Includes' do
     let(:includes) { ['**/Gemfile'] }
 

@@ -10,6 +10,10 @@
 * [#896](https://github.com/bbatsov/rubocop/issues/896): New option `--fail-level` changes minimum severity for exit with error code. ([@hiroponz][])
 * `VariableInterpolation` cop does auto-correction. ([@bbatsov][])
 
+### Changes
+
+* [#913](https://github.com/bbatsov/rubocop/issues/913): `FileName` accepts multiple extensions. ([@tamird][])
+
 ### Bugs fixed
 
 * [#904](https://github.com/bbatsov/rubocop/issues/904): Fixed a NPE in `LiteralInInterpolation`. ([@bbatsov][])
@@ -793,3 +797,4 @@
 [@tmorris-fiksu]: https://github.com/tmorris-fiksu
 [@mockdeep]: https://github.com/mockdeep
 [@hiroponz]: https://github.com/hiroponz
+[@tamird]: https://github.com/tamird
