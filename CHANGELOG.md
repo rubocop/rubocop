@@ -17,6 +17,7 @@
 * [#892](https://github.com/bbatsov/rubocop/issues/892): Make sure `Include` and `Exclude` paths in a `.rubocop.yml` are interpreted as relative to the directory of that file. ([@jonas054][])
 * [#906](https://github.com/bbatsov/rubocop/issues/906): Fixed a false positive in `LiteralInInterpolation`. ([@bbatsov][])
 * [#909](https://github.com/bbatsov/rubocop/issues/909): Handle properly multiple `rescue` clauses in `SignalException`. ([@bbatsov][])
+* [#876](https://github.com/bbatsov/rubocop/issues/876): Do a deep merge of hashes when overriding default configuration in a `.rubocop.yml` file. ([@jonas054][])
 
 ## 0.19.1 (17/03/2014)
 
