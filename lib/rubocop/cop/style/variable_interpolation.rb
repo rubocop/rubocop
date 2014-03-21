@@ -9,15 +9,20 @@ module Rubocop
 
         def on_dstr(node)
           var_nodes(node.children).each do |v|
-            var = (v.type == :nth_ref ? '$' : '') + v.to_a[0].to_s
+            var = v.loc.expression.source
 
-            if node.loc.expression.source.include?("##{var}")
-              add_offense(v, :expression, format(MSG, var, var))
-            end
+            add_offense(v, :expression, format(MSG, var, var))
           end
         end
 
         private
+
+        def autocorrect(node)
+          @corrections << lambda do |corrector|
+            expr = node.loc.expression
+            corrector.replace(expr, "{#{expr.source}}")
+          end
+        end
 
         def var_nodes(nodes)
           nodes.select { |n| [:ivar, :cvar, :gvar, :nth_ref].include?(n.type) }

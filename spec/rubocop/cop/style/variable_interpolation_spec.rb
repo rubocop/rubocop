@@ -9,6 +9,7 @@ describe Rubocop::Cop::Style::VariableInterpolation do
     inspect_source(cop,
                    ['puts "this is a #$test"'])
     expect(cop.offenses.size).to eq(1)
+    expect(cop.highlights).to eq(['$test'])
     expect(cop.messages)
       .to eq(['Replace interpolated var $test' \
               ' with expression #{$test}.'])
@@ -18,6 +19,7 @@ describe Rubocop::Cop::Style::VariableInterpolation do
     inspect_source(cop,
                    ['puts "this is a #$1"'])
     expect(cop.offenses.size).to eq(1)
+    expect(cop.highlights).to eq(['$1'])
     expect(cop.messages)
       .to eq(['Replace interpolated var $1 with expression #{$1}.'])
   end
@@ -26,6 +28,7 @@ describe Rubocop::Cop::Style::VariableInterpolation do
     inspect_source(cop,
                    ['puts "this is a #@test"'])
     expect(cop.offenses.size).to eq(1)
+    expect(cop.highlights).to eq(['@test'])
     expect(cop.messages)
       .to eq(['Replace interpolated var @test' \
               ' with expression #{@test}.'])
@@ -35,6 +38,7 @@ describe Rubocop::Cop::Style::VariableInterpolation do
     inspect_source(cop,
                    ['puts "this is a #@@t"'])
     expect(cop.offenses.size).to eq(1)
+    expect(cop.highlights).to eq(['@@t'])
     expect(cop.messages)
       .to eq(['Replace interpolated var @@t with expression #{@@t}.'])
   end
@@ -43,5 +47,10 @@ describe Rubocop::Cop::Style::VariableInterpolation do
     inspect_source(cop,
                    ['puts "this is a #{@test} #{@@t} #{$t} #{$1}"'])
     expect(cop.offenses).to be_empty
+  end
+
+  it 'autocorrects by adding the missing {}' do
+    corrected = autocorrect_source(cop, ['"some #@var"'])
+    expect(corrected).to eq '"some #{@var}"'
   end
 end
