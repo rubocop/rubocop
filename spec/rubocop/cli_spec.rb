@@ -1337,23 +1337,48 @@ describe Rubocop::CLI, :isolated_environment do
       expect($stdout.string).to include('unexpected token $end')
     end
 
-    it 'can be configured to override a parameter that is a hash' do
+    it 'can be configured to merge a parameter that is a hash' do
       create_file('example1.rb',
                   ['# encoding: utf-8',
-                   'arr.find_all { |e| e > 0 }.collect { |e| -e }'])
-      # We only care about select over find_all. All other preferred methods
-      # appearing in the default config are gone when we override
-      # PreferredMethods. We get no report about collect.
+                   'puts %w(a b c)',
+                   'puts %q|hi|'])
+      # We want to change the preferred delimiters for word arrays. The other
+      # settings from default.yml are unchanged.
       create_file('rubocop.yml',
-                  ['CollectionMethods:',
-                   '  PreferredMethods:',
-                   '    find_all: select'])
+                  ['PercentLiteralDelimiters:',
+                   '  PreferredDelimiters:',
+                   "    '%w': '[]'",
+                   "    '%W': '[]'"])
       cli.run(['--format', 'simple', '-c', 'rubocop.yml', 'example1.rb'])
       expect($stdout.string)
         .to eq(['== example1.rb ==',
-                'C:  2:  5: Prefer select over find_all.',
+                'C:  2:  6: `%w`-literals should be delimited by `[` and `]`',
+                'C:  3:  6: `%q`-literals should be delimited by `(` and `)`',
                 '',
-                '1 file inspected, 1 offense detected',
+                '1 file inspected, 2 offenses detected',
+                ''].join("\n"))
+    end
+
+    it 'can be configured to override a parameter that is a hash in a ' \
+       'special case' do
+      create_file('example1.rb',
+                  ['# encoding: utf-8',
+                   'arr.select { |e| e > 0 }.collect { |e| -e }',
+                   'a2.find_all { |e| e > 0 }'])
+      # We prefer find_all over select. This setting overrides the default
+      # select over find_all. Other preferred methods appearing in the default
+      # config (e.g., map over collect) are kept.
+      create_file('rubocop.yml',
+                  ['CollectionMethods:',
+                   '  PreferredMethods:',
+                   '    select: find_all'])
+      cli.run(['--format', 'simple', '-c', 'rubocop.yml', 'example1.rb'])
+      expect($stdout.string)
+        .to eq(['== example1.rb ==',
+                'C:  2:  5: Prefer find_all over select.',
+                'C:  2: 26: Prefer map over collect.',
+                '',
+                '1 file inspected, 2 offenses detected',
                 ''].join("\n"))
     end
 

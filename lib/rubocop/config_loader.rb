@@ -47,15 +47,15 @@ module Rubocop
         end
       end
 
-      # Return an extended merge of two hashes. That is, a normal hash merge,
+      # Return a recursive merge of two hashes. That is, a normal hash merge,
       # with the addition that any value that is a hash, and occurs in both
-      # arguments (i.e., cop names), will also be merged.
+      # arguments, will also be merged. And so on.
       def merge(base_hash, derived_hash)
         result = base_hash.merge(derived_hash)
         keys_appearing_in_both = base_hash.keys & derived_hash.keys
         keys_appearing_in_both.each do |key|
           if base_hash[key].is_a?(Hash)
-            result[key] = base_hash[key].merge(derived_hash[key])
+            result[key] = merge(base_hash[key], derived_hash[key])
           end
         end
         result
