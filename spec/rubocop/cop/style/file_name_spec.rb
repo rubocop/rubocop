@@ -6,67 +6,79 @@ describe Rubocop::Cop::Style::FileName do
   subject(:cop) { described_class.new(config) }
 
   let(:config) do
-    Rubocop::Config.new({ 'AllCops' => { 'Includes' => includes } },
-                        '/some/.rubocop.yml')
+    Rubocop::Config.new(
+      { 'AllCops' => { 'Includes' => includes } },
+      '/some/.rubocop.yml'
+    )
   end
 
   let(:includes) { [] }
+  let(:source) { ['print 1'] }
+  let(:processed_source) { parse_source(source) }
 
-  it 'reports offense for camelCase file names ending in .rb' do
-    source = ['print 1']
-    processed_source = parse_source(source)
+  before do
     allow(processed_source.buffer)
-      .to receive(:name).and_return('/some/dir/testCase.rb')
+    .to receive(:name).and_return(filename)
     _investigate(cop, processed_source)
-    expect(cop.offenses.size).to eq(1)
   end
 
-  it 'reports offense for camelCase file names without file extension' do
-    source = ['print 1']
-    processed_source = parse_source(source)
-    allow(processed_source.buffer)
-      .to receive(:name).and_return('/some/dir/testCase')
-    _investigate(cop, processed_source)
-    expect(cop.offenses.size).to eq(1)
+  context 'with camelCase file names ending in .rb' do
+    let(:filename) { '/some/dir/testCase.rb' }
+
+    it 'reports an offense' do
+      expect(cop.offenses.size).to eq(1)
+    end
   end
 
-  it 'accepts offense for snake_case file names ending in .rb' do
-    source = ['print 1']
-    processed_source = parse_source(source)
-    allow(processed_source.buffer)
-      .to receive(:name).and_return('/some/dir/test_case.rb')
-    _investigate(cop, processed_source)
-    expect(cop.offenses).to be_empty
+  context 'with camelCase file names without file extension' do
+    let(:filename) { '/some/dir/testCase' }
+
+    it 'reports an offense' do
+      expect(cop.offenses.size).to eq(1)
+    end
   end
 
-  it 'accepts offense for snake_case file names without file extension' do
-    source = ['print 1']
-    processed_source = parse_source(source)
-    allow(processed_source.buffer)
-      .to receive(:name).and_return('/some/dir/test_case')
-    _investigate(cop, processed_source)
-    expect(cop.offenses).to be_empty
+  context 'with snake_case file names ending in .rb' do
+    let(:filename) { '/some/dir/test_case.rb' }
+
+    it 'reports an offense' do
+      expect(cop.offenses).to be_empty
+    end
   end
 
-  it 'accepts offense for snake_case file names with non-rb extension' do
-    source = ['print 1']
-    processed_source = parse_source(source)
-    allow(processed_source.buffer)
-      .to receive(:name).and_return('/some/dir/some_task.rake')
-    _investigate(cop, processed_source)
-    expect(cop.offenses).to be_empty
+  context 'with snake_case file names without file extension' do
+    let(:filename) { '/some/dir/test_case' }
+
+    it 'does not report an offense' do
+      expect(cop.offenses).to be_empty
+    end
+  end
+
+  context 'with snake_case file names with non-rb extension' do
+    let(:filename) { '/some/dir/some_task.rake' }
+
+    it 'does not report an offense' do
+      expect(cop.offenses).to be_empty
+    end
+  end
+
+  context 'with snake_case file names with multiple extensions' do
+    let(:filename) { 'some/dir/some_view.html.slim_spec.rb' }
+
+    it 'does not report an offense' do
+      expect(cop.offenses).to be_empty
+    end
   end
 
   context 'when the file is specified in AllCops/Includes' do
     let(:includes) { ['**/Gemfile'] }
 
-    it 'accepts the file name even if it is not snake_case' do
-      source = ['print 1']
-      processed_source = parse_source(source)
-      allow(processed_source.buffer)
-        .to receive(:name).and_return('/some/dir/Gemfile')
-      _investigate(cop, processed_source)
-      expect(cop.offenses).to be_empty
+    context 'with a non-snake_case file name' do
+      let(:filename) { '/some/dir/Gemfile' }
+
+      it 'does not report an offense' do
+        expect(cop.offenses).to be_empty
+      end
     end
   end
 end
