@@ -41,9 +41,9 @@ module Rubocop
           # TODO: Report Emacs bug.
           return false unless [:+, :<<].include?(method)
 
-          return false unless string_type?(receiver.type)
+          return false unless string_type?(receiver)
 
-          return false unless string_type?(arg.type)
+          return false unless string_type?(arg)
 
           expression = node.loc.expression.source
           concatenator_at_line_end?(expression)
@@ -54,8 +54,11 @@ module Rubocop
           expression =~ /.+(\+|<<)\s*$/
         end
 
-        def string_type?(node_type)
-          [:str, :dstr].include?(node_type)
+        def string_type?(node)
+          return false unless [:str, :dstr].include?(node.type)
+
+          # we care only about quotes-delimited literals
+          node.loc.begin && ["'", '"'].include?(node.loc.begin.source)
         end
       end
     end
