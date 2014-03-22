@@ -18,7 +18,7 @@ module Rubocop
           receiver, method_name, *_args = *node
 
           DEPRECATED_METHODS.each do |data|
-            next unless receiver == class_node(data)
+            next unless class_nodes(data).include?(receiver)
             next unless method_name == data[1]
 
             add_offense(node, :selector,
@@ -32,7 +32,7 @@ module Rubocop
             receiver, method_name, *_args = *node
 
             DEPRECATED_METHODS.each do |data|
-              next unless receiver == class_node(data)
+              next unless class_nodes(data).include?(receiver)
               next unless method_name == data[1]
 
               corrector.replace(node.loc.selector,
@@ -43,8 +43,9 @@ module Rubocop
 
         private
 
-        def class_node(data)
-          s(:const, nil, data[0])
+        def class_nodes(data)
+          [s(:const, nil, data[0]),
+           s(:const, s(:cbase), data[0])]
         end
 
         def deprecated_method(data)
