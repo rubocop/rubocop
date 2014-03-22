@@ -49,11 +49,12 @@ module Rubocop
         end
 
         def break_line_before(range, node, corrector, indent_steps)
-          corrector.insert_before(range,
-                                  "\n" + ' ' * (node.loc.keyword.column +
-                                                indent_steps *
-                                                IndentationWidth::
-                                                CORRECT_INDENTATION))
+          corrector.insert_before(
+            range,
+            "\n" + ' ' * (node.loc.keyword.column +
+                          indent_steps *
+                          IndentationWidth::CORRECT_INDENTATION)
+          )
         end
 
         def move_comment(eol_comment, node, corrector)
