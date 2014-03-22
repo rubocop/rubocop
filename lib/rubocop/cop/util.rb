@@ -106,6 +106,10 @@ module Rubocop
         lambda?(node) || proc?(node)
       end
 
+      def parentheses?(node)
+        node.loc.respond_to?(:end) && node.loc.end
+      end
+
       def on_node(syms, sexp, excludes = [])
         yield sexp if Array(syms).include?(sexp.type)
 

@@ -59,10 +59,6 @@ module Rubocop
           method_name =~ /\w\?$/
         end
 
-        def parentheses?(node)
-          node.loc.respond_to?(:end) && node.loc.end
-        end
-
         def offense?(node)
           [:and, :or].include?(node.type)
         end
