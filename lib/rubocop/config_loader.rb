@@ -32,6 +32,7 @@ module Rubocop
         hash.delete('inherit_from')
         config = Config.new(hash, path)
         config.warn_unless_valid
+        make_excludes_absolute(config)
         config
       end
 
@@ -39,7 +40,7 @@ module Rubocop
         if config['AllCops'] && config['AllCops']['Excludes']
           config['AllCops']['Excludes'].map! do |exclude_elem|
             if exclude_elem.is_a?(String) && !exclude_elem.start_with?('/')
-              File.join(File.dirname(config.loaded_path), exclude_elem)
+              File.join(config.base_dir_for_path_parameters, exclude_elem)
             else
               exclude_elem
             end
@@ -92,7 +93,6 @@ module Rubocop
           print 'AllCops/Excludes ' if debug?
           add_excludes_from_higher_level(config, load_file(found_files.last))
         end
-        make_excludes_absolute(config)
         merge_with_default(config, config_file)
       end
 
@@ -124,9 +124,6 @@ module Rubocop
 
       def resolve_inheritance(path, hash)
         base_configs(path, hash['inherit_from']).reverse_each do |base_config|
-          if File.basename(base_config.loaded_path) == DOTFILE
-            make_excludes_absolute(base_config)
-          end
           base_config.each do |k, v|
             hash[k] = hash.key?(k) ? merge(v, hash[k]) : v if v.is_a?(Hash)
           end

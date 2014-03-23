@@ -1538,6 +1538,17 @@ describe Rubocop::CLI, :isolated_environment do
                 ''].join("\n"))
     end
 
+    it 'excludes the vendor directory by default' do
+      create_file('vendor/ex.rb',
+                  ['# encoding: utf-8',
+                   '#' * 90])
+
+      cli.run(%w(--format simple))
+      expect($stdout.string)
+        .to eq(['', '0 files inspected, no offenses detected',
+                ''].join("\n"))
+    end
+
     # Being immune to bad configuration files in excluded directories has
     # become important due to a bug in rubygems
     # (https://github.com/rubygems/rubygems/issues/680) that makes
