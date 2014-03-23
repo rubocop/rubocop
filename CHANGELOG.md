@@ -25,6 +25,7 @@
 * [#912](https://github.com/bbatsov/rubocop/issues/912): Fix a false positive in `LineEndConcatenation` for `%` string literals. ([@bbatsov][])
 * [#912](https://github.com/bbatsov/rubocop/issues/912): Handle top-level constant resolution in `DeprecatedClassMethods` (e.g. `::File.exists?`). ([@bbatsov][])
 * [#914](https://github.com/bbatsov/rubocop/issues/914): Fixed rdoc error during gem installation. ([@bbatsov][])
+* The `--only` option now enables the given cop in case it is disabled in configuration. ([@jonas054][])
 
 ## 0.19.1 (17/03/2014)
 

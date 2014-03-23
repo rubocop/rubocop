@@ -49,14 +49,20 @@ module Rubocop
 
       def cops
         @cops ||= begin
-          @cop_classes.reduce([]) do |instances, cop_class|
-            next instances unless @config.cop_enabled?(cop_class)
-            instances << cop_class.new(@config, @options)
+          @cop_classes.each_with_object([]) do |cop_class, instances|
+            if cop_enabled?(cop_class)
+              instances << cop_class.new(@config, @options)
+            end
           end
         end
       end
 
       private
+
+      def cop_enabled?(cop_class)
+        @config.cop_enabled?(cop_class) ||
+          cop_class.cop_name == @options[:only]
+      end
 
       def autocorrect(buffer, cops)
         @updated_source_file = false

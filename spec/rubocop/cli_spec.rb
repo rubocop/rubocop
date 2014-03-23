@@ -515,6 +515,27 @@ describe Rubocop::CLI, :isolated_environment do
                   '1 file inspected, 1 offense detected',
                   ''].join("\n"))
       end
+
+      it 'enables the given cop' do
+        create_file('example.rb', ['x = 0 ',
+                                   # Disabling comments still apply.
+                                   '# rubocop:disable TrailingWhitespace',
+                                   'y = 1  '])
+
+        create_file('.rubocop.yml', ['TrailingWhitespace:',
+                                     '  Enabled: false'])
+
+        expect(cli.run(['--format', 'simple',
+                        '--only', 'TrailingWhitespace',
+                        'example.rb'])).to eq(1)
+        expect($stderr.string).to eq('')
+        expect($stdout.string)
+          .to eq(['== example.rb ==',
+                  'C:  1:  6: Trailing whitespace detected.',
+                  '',
+                  '1 file inspected, 1 offense detected',
+                  ''].join("\n"))
+      end
     end
 
     describe '--lint' do
