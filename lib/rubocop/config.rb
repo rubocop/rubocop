@@ -88,17 +88,19 @@ module Rubocop
     end
 
     def path_relative_to_config(path)
-      # Paths specified in .rubocop.yml files are relative to the directory
-      # where that file is. Paths in other config files are relative to the
-      # current directory. This is so that paths in config/default.yml, for
-      # example, are not relative to RuboCop's config directory since that
-      # wouldn't work.
-      base_dir = if File.basename(loaded_path) == ConfigLoader::DOTFILE
-                   File.dirname(loaded_path)
-                 else
-                   Dir.pwd
-                 end
-      relative_path(path, base_dir)
+      relative_path(path, base_dir_for_path_parameters)
+    end
+
+    # Paths specified in .rubocop.yml files are relative to the directory where
+    # that file is. Paths in other config files are relative to the current
+    # directory. This is so that paths in config/default.yml, for example, are
+    # not relative to RuboCop's config directory since that wouldn't work.
+    def base_dir_for_path_parameters
+      if File.basename(loaded_path) == ConfigLoader::DOTFILE
+        File.dirname(loaded_path)
+      else
+        Dir.pwd
+      end
     end
   end
 end
