@@ -13,6 +13,9 @@ describe Rubocop::Cop::Style::ClassMethods do
                     '  end',
                     'end'])
     expect(cop.offenses.size).to eq(1)
+    expect(cop.messages)
+      .to eq(['Use self.some_method instead of Test.some_method.'])
+    expect(cop.highlights).to eq(['Test'])
   end
 
   it 'registers an offense for methods using a module name' do
@@ -23,6 +26,9 @@ describe Rubocop::Cop::Style::ClassMethods do
                     '  end',
                     'end'])
     expect(cop.offenses.size).to eq(1)
+    expect(cop.messages)
+      .to eq(['Use self.some_method instead of Test.some_method.'])
+    expect(cop.highlights).to eq(['Test'])
   end
 
   it 'does not register an offense for methods using self' do
@@ -41,5 +47,22 @@ describe Rubocop::Cop::Style::ClassMethods do
                     '  do_something',
                     'end'])
     expect(cop.offenses).to be_empty
+  end
+
+  it 'autocorrects class name to self' do
+    src = ['class Test',
+           '  def Test.some_method',
+           '    do_something',
+           '  end',
+           'end']
+
+    correct_source = ['class Test',
+                      '  def self.some_method',
+                      '    do_something',
+                      '  end',
+                      'end'].join("\n")
+
+    new_source = autocorrect_source(cop, src)
+    expect(new_source).to eq(correct_source)
   end
 end
