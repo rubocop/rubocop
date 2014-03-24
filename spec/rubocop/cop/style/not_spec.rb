@@ -14,4 +14,15 @@ describe Rubocop::Cop::Style::Not do
     inspect_source(cop, '!test')
     expect(cop.offenses).to be_empty
   end
+
+  it 'auto-corrects "not" with !' do
+    new_source = autocorrect_source(cop, 'x = 10 if not y')
+    expect(new_source).to eq('x = 10 if !y')
+  end
+
+  it 'leaves "not" as is if auto-correction changes the meaning' do
+    src = 'not x < y'
+    new_source = autocorrect_source(cop, src)
+    expect(new_source).to eq(src)
+  end
 end

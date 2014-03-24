@@ -9,6 +9,7 @@
 * [#899](https://github.com/bbatsov/rubocop/issues/899): Make LineEndConcatenation cop << aware. ([@mockdeep][])
 * [#896](https://github.com/bbatsov/rubocop/issues/896): New option `--fail-level` changes minimum severity for exit with error code. ([@hiroponz][])
 * `VariableInterpolation` cop does auto-correction. ([@bbatsov][])
+* `Not` cop does auto-correction. ([@bbatsov][])
 
 ### Changes
 
