@@ -357,6 +357,19 @@ describe Rubocop::CLI, :isolated_environment do
                                              'some_method(a,)',
                                              ''].join("\n"))
       end
+
+      it 'should not hang SpaceAfterPunctuation and SpaceInsideBrackets' do
+        create_file('example.rb',
+                    ['# encoding: utf-8',
+                     'puts [1, ]'])
+        Timeout.timeout(10) do
+          expect(cli.run(%w(--auto-correct))).to eq(1)
+        end
+        expect($stderr.string).to eq('')
+        expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
+                                             'puts [1,]',
+                                             ''].join("\n"))
+      end
     end
 
     describe '--auto-gen-config' do
