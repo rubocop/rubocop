@@ -417,6 +417,12 @@ SingleLineMethods:
   Description: 'Avoid single-line methods.'
   Enabled: true
 
+SingleSpaceBeforeFirstArg:
+  Description: >-
+                 Checks that exactly one space is used between a method name
+                 and the first argument for method calls without parentheses.
+  Enabled: true
+
 SpaceAfterColon:
   Description: 'Use spaces after colons.'
   Enabled: true
