@@ -9,15 +9,13 @@ module Rubocop
       #
       #  # bad
       #  if x == nil
-      #  if x != nil
       #
       #  # good
       #  if x.nil?
-      #  if !x.nil?
       class NilComparison < Cop
         MSG = 'Prefer the use of the nil? predicate.'
 
-        OPS = %w(== === !=)
+        OPS = %w(== ===)
 
         NIL_NODE = s(:nil)
 

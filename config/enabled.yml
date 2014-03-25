@@ -315,6 +315,10 @@ NilComparison:
   Description: 'Prefer x.nil? to x == nil.'
   Enabled: true
 
+NonNilCheck:
+  Description: 'Checks for redundant nil checks.'
+  Enabled: true
+
 Not:
   Description: 'Use ! instead of not.'
   Enabled: true
