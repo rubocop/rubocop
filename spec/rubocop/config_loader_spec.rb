@@ -85,18 +85,18 @@ describe Rubocop::ConfigLoader do
       before do
         create_file('.rubocop.yml',
                     ['AllCops:',
-                     '  Excludes:',
+                     '  Exclude:',
                      '    - vendor/**'
                     ])
 
         create_file(file_path,
                     ['AllCops:',
-                     '  Excludes: []'
+                     '  Exclude: []'
                     ])
       end
 
-      it 'gets AllCops/Excludes from the highest directory level' do
-        excludes = configuration_from_file['AllCops']['Excludes']
+      it 'gets AllCops/Exclude from the highest directory level' do
+        excludes = configuration_from_file['AllCops']['Exclude']
         expect(excludes).to eq([File.expand_path('vendor/**')])
       end
     end
@@ -107,7 +107,7 @@ describe Rubocop::ConfigLoader do
       before do
         create_file('.rubocop.yml',
                     ['AllCops:',
-                     '  Excludes:',
+                     '  Exclude:',
                      '    - vendor/**',
                      '    - !ruby/regexp /[A-Z]/'
                     ])
@@ -115,8 +115,8 @@ describe Rubocop::ConfigLoader do
         create_file(file_path, ['inherit_from: ../.rubocop.yml'])
       end
 
-      it 'gets an absolute AllCops/Excludes' do
-        excludes = configuration_from_file['AllCops']['Excludes']
+      it 'gets an absolute AllCops/Exclude' do
+        excludes = configuration_from_file['AllCops']['Exclude']
         expect(excludes).to eq([File.expand_path('vendor/**'), /[A-Z]/])
       end
     end
@@ -141,7 +141,7 @@ describe Rubocop::ConfigLoader do
       before do
         create_file('src/.rubocop.yml',
                     ['AllCops:',
-                     '  Excludes:',
+                     '  Exclude:',
                      '    - vendor/**'
                     ])
 
@@ -149,7 +149,7 @@ describe Rubocop::ConfigLoader do
       end
 
       it 'gets an absolute AllCops/Exclude' do
-        excludes = configuration_from_file['AllCops']['Excludes']
+        excludes = configuration_from_file['AllCops']['Exclude']
         expect(excludes).to eq([File.expand_path('src/vendor/**')])
       end
     end
@@ -266,19 +266,19 @@ describe Rubocop::ConfigLoader do
     let(:base) do
       {
         'AllCops' => {
-          'Includes' => ['**/*.gemspec', '**/Rakefile'],
-          'Excludes' => []
+          'Include' => ['**/*.gemspec', '**/Rakefile'],
+          'Exclude' => []
         }
       }
     end
     let(:derived) do
-      { 'AllCops' => { 'Excludes' => ['example.rb', 'exclude_*'] } }
+      { 'AllCops' => { 'Exclude' => ['example.rb', 'exclude_*'] } }
     end
 
     it 'returns a recursive merge of its two arguments' do
       expect(merge).to eq('AllCops' => {
-                            'Includes' => ['**/*.gemspec', '**/Rakefile'],
-                            'Excludes' => ['example.rb', 'exclude_*']
+                            'Include' => ['**/*.gemspec', '**/Rakefile'],
+                            'Exclude' => ['example.rb', 'exclude_*']
                           })
     end
   end

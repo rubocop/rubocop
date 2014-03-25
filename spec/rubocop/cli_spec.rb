@@ -1274,7 +1274,7 @@ describe Rubocop::CLI, :isolated_environment do
                              'puts x'
                             ])
       create_file('.rubocop.yml', ['AllCops:',
-                                   '  Includes:',
+                                   '  Include:',
                                    '    - example',
                                    '    - !ruby/regexp /regexp$/'
                                   ])
@@ -1299,7 +1299,7 @@ describe Rubocop::CLI, :isolated_environment do
                                       'puts x'
                                      ])
       create_file('.rubocop.yml', ['AllCops:',
-                                   '  Excludes:',
+                                   '  Exclude:',
                                    '    - example.rb',
                                    '    - !ruby/regexp /regexp.rb$/',
                                    '    - "exclude_*"'
@@ -1320,7 +1320,7 @@ describe Rubocop::CLI, :isolated_environment do
       end
 
       create_file('example/.rubocop.yml', ['AllCops:',
-                                           '  Excludes:',
+                                           '  Exclude:',
                                            '    - ignored/**'])
       expect(File).not_to receive(:open).with(%r{/ignored/})
       allow(File).to receive(:open).and_call_original
@@ -1516,7 +1516,7 @@ describe Rubocop::CLI, :isolated_environment do
       end
 
       create_file('example/.rubocop.yml', ['AllCops:',
-                                           '  Excludes:',
+                                           '  Exclude:',
                                            '    - src/**',
                                            '    - etc/**',
                                            '    - tmp/spec/**'])
@@ -1533,7 +1533,7 @@ describe Rubocop::CLI, :isolated_environment do
     it 'can exclude a typical vendor directory' do
       create_file('vendor/bundle/ruby/1.9.1/gems/parser-2.0.0/.rubocop.yml',
                   ['AllCops:',
-                   '  Excludes:',
+                   '  Exclude:',
                    '    - lib/parser/lexer.rb'])
 
       create_file('vendor/bundle/ruby/1.9.1/gems/parser-2.0.0/lib/ex.rb',
@@ -1542,7 +1542,7 @@ describe Rubocop::CLI, :isolated_environment do
 
       create_file('.rubocop.yml',
                   ['AllCops:',
-                   '  Excludes:',
+                   '  Exclude:',
                    '    - vendor/**'])
 
       cli.run(%w(--format simple))
@@ -1577,7 +1577,7 @@ describe Rubocop::CLI, :isolated_environment do
 
       create_file('.rubocop.yml',
                   ['AllCops:',
-                   '  Excludes:',
+                   '  Exclude:',
                    '    - vendor/**'])
 
       cli.run(%w(--format simple))
@@ -1593,7 +1593,7 @@ describe Rubocop::CLI, :isolated_environment do
     it 'can exclude a vendor directory indirectly' do
       create_file('vendor/bundle/ruby/1.9.1/gems/parser-2.0.0/.rubocop.yml',
                   ['AllCops:',
-                   '  Excludes:',
+                   '  Exclude:',
                    '    - lib/parser/lexer.rb'])
 
       create_file('vendor/bundle/ruby/1.9.1/gems/parser-2.0.0/lib/ex.rb',
@@ -1605,7 +1605,7 @@ describe Rubocop::CLI, :isolated_environment do
 
       create_file('config/default.yml',
                   ['AllCops:',
-                   '  Excludes:',
+                   '  Exclude:',
                    '    - vendor/**'])
 
       cli.run(%w(--format simple))
@@ -1646,13 +1646,13 @@ describe Rubocop::CLI, :isolated_environment do
                 ''].join("\n"))
     end
 
-    it 'works when a configuration file passed by -c specifies Excludes ' \
+    it 'works when a configuration file passed by -c specifies Exclude ' \
        'with regexp' do
       create_file('example/example1.rb', ['# encoding: utf-8',
                                           '#' * 90])
 
       create_file('rubocop.yml', ['AllCops:',
-                                  '  Excludes:',
+                                  '  Exclude:',
                                   '    - !ruby/regexp /example1\.rb$/'])
 
       cli.run(%w(--format simple -c rubocop.yml))
@@ -1661,13 +1661,13 @@ describe Rubocop::CLI, :isolated_environment do
                 ''].join("\n"))
     end
 
-    it 'works when a configuration file passed by -c specifies Excludes ' \
+    it 'works when a configuration file passed by -c specifies Exclude ' \
        'with strings' do
       create_file('example/example1.rb', ['# encoding: utf-8',
                                           '#' * 90])
 
       create_file('rubocop.yml', ['AllCops:',
-                                  '  Excludes:',
+                                  '  Exclude:',
                                   '    - example/**'])
 
       cli.run(%w(--format simple -c rubocop.yml))

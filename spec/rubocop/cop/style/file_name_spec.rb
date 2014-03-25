@@ -7,7 +7,7 @@ describe Rubocop::Cop::Style::FileName do
 
   let(:config) do
     Rubocop::Config.new(
-      { 'AllCops' => { 'Includes' => includes } },
+      { 'AllCops' => { 'Include' => includes } },
       '/some/.rubocop.yml'
     )
   end
@@ -70,7 +70,7 @@ describe Rubocop::Cop::Style::FileName do
     end
   end
 
-  context 'when the file is specified in AllCops/Includes' do
+  context 'when the file is specified in AllCops/Include' do
     let(:includes) { ['**/Gemfile'] }
 
     context 'with a non-snake_case file name' do

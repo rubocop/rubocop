@@ -78,7 +78,7 @@ describe Rubocop::Config do
     let(:hash) do
       {
         'AllCops' => {
-          'Includes' => ['Gemfile', 'config/unicorn.rb.example']
+          'Include' => ['Gemfile', 'config/unicorn.rb.example']
         }
       }
     end
@@ -104,7 +104,7 @@ describe Rubocop::Config do
     let(:hash) do
       {
         'AllCops' => {
-          'Excludes' => ['/home/foo/project/log/*']
+          'Exclude' => ['/home/foo/project/log/*']
         }
       }
     end
@@ -135,16 +135,16 @@ describe Rubocop::Config do
     let(:hash) { {} }
     let(:loaded_path) { 'example/.rubocop.yml' }
 
-    context 'when config file has AllCops => Includes key' do
+    context 'when config file has AllCops => Include key' do
       let(:hash) do
         {
           'AllCops' => {
-            'Includes' => ['Gemfile', 'config/unicorn.rb.example']
+            'Include' => ['Gemfile', 'config/unicorn.rb.example']
           }
         }
       end
 
-      it 'returns the Includes value' do
+      it 'returns the Include value' do
         expect(patterns_to_include).to eq([
           'Gemfile',
           'config/unicorn.rb.example'
@@ -162,16 +162,16 @@ describe Rubocop::Config do
     let(:hash) { {} }
     let(:loaded_path) { 'example/.rubocop.yml' }
 
-    context 'when config file has AllCops => Excludes key' do
+    context 'when config file has AllCops => Exclude key' do
       let(:hash) do
         {
           'AllCops' => {
-            'Excludes' => ['log/*']
+            'Exclude' => ['log/*']
           }
         }
       end
 
-      it 'returns the Excludes value' do
+      it 'returns the Exclude value' do
         expect(patterns_to_exclude).to eq(['log/*'])
       end
     end

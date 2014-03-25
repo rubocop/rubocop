@@ -236,17 +236,17 @@ RuboCop checks all files recursively within the directory it is run
 on.  However, it only recognizes files ending with `.rb` or
 extensionless files with a `#!.*ruby` declaration as Ruby files. If
 you'd like it to check other files you'll need to manually pass them
-in, or to add entries for them under `AllCops`/`Includes`.  Files and
-directories can also be ignored through `AllCops`/`Excludes`.
+in, or to add entries for them under `AllCops`/`Include`.  Files and
+directories can also be ignored through `AllCops`/`Exclude`.
 
 Here is an example that might be used for a Rails project:
 
 ```yaml
 AllCops:
-  Includes:
+  Include:
     - Rakefile
     - config.ru
-  Excludes:
+  Exclude:
     - db/**
     - config/**
     - script/**
@@ -258,9 +258,9 @@ AllCops:
 
 Files and directories are specified relative to the `.rubocop.yml` file.
 
-**Note**: The `Excludes` parameter is special. It is valid for the
+**Note**: The `Exclude` parameter is special. It is valid for the
 directory tree starting where it is defined. It is not shadowed by the
-setting of `Excludes` in other `.rubocop.yml` files in
+setting of `Exclude` in other `.rubocop.yml` files in
 subdirectories. This is different from all other parameters, who
 follow RuboCop's general principle that configuration for an inspected
 file is taken from the nearest `.rubocop.yml`, searching upwards.

@@ -31,14 +31,26 @@ module Rubocop
 
         hash.delete('inherit_from')
         config = Config.new(hash, path)
+        deprecation_check(config)
         config.warn_unless_valid
         make_excludes_absolute(config)
         config
       end
 
+      def deprecation_check(config)
+        return unless config['AllCops']
+        if config['AllCops']['Excludes']
+          warn('AllCops/Excludes was renamed to AllCops/Exclude')
+          exit(-1)
+        elsif config['AllCops']['Includes']
+          warn('AllCops/Includes was renamed to AllCops/Include')
+          exit(-1)
+        end
+      end
+
       def make_excludes_absolute(config)
-        if config['AllCops'] && config['AllCops']['Excludes']
-          config['AllCops']['Excludes'].map! do |exclude_elem|
+        if config['AllCops'] && config['AllCops']['Exclude']
+          config['AllCops']['Exclude'].map! do |exclude_elem|
             if exclude_elem.is_a?(String) && !exclude_elem.start_with?('/')
               File.join(config.base_dir_for_path_parameters, exclude_elem)
             else
@@ -90,17 +102,17 @@ module Rubocop
 
         found_files = config_files_in_path(config_file)
         if found_files.any? && found_files.last != config_file
-          print 'AllCops/Excludes ' if debug?
+          print 'AllCops/Exclude ' if debug?
           add_excludes_from_higher_level(config, load_file(found_files.last))
         end
         merge_with_default(config, config_file)
       end
 
       def add_excludes_from_higher_level(config, highest_config)
-        if highest_config['AllCops'] && highest_config['AllCops']['Excludes']
+        if highest_config['AllCops'] && highest_config['AllCops']['Exclude']
           config['AllCops'] ||= {}
-          excludes = config['AllCops']['Excludes'] ||= []
-          highest_config['AllCops']['Excludes'].each do |path|
+          excludes = config['AllCops']['Exclude'] ||= []
+          highest_config['AllCops']['Exclude'].each do |path|
             unless path.is_a?(Regexp) || path.start_with?('/')
               path = File.join(File.dirname(highest_config.loaded_path), path)
             end

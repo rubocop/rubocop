@@ -80,11 +80,11 @@ module Rubocop
     end
 
     def patterns_to_include
-      @hash['AllCops']['Includes']
+      @hash['AllCops']['Include']
     end
 
     def patterns_to_exclude
-      @hash['AllCops']['Excludes']
+      @hash['AllCops']['Exclude']
     end
 
     def path_relative_to_config(path)

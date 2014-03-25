@@ -8,10 +8,10 @@ inherit_from:
 # Common configuration.
 AllCops:
   # Include gemspec and Rakefile
-  Includes:
+  Include:
     - '**/*.gemspec'
     - '**/Rakefile'
-  Excludes:
+  Exclude:
     - 'vendor/**'
   # By default, the rails cops are not run. Override in project or home
   # directory .rubocop.yml files, or by giving the -R/--rails option.
