@@ -15,7 +15,7 @@ module Rubocop
 
         def message(node)
           class_var, = *node
-          MSG.format(class_var)
+          format(MSG, class_var)
         end
       end
     end

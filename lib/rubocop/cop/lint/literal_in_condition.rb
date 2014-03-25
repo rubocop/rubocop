@@ -58,7 +58,7 @@ module Rubocop
         end
 
         def message(node)
-          MSG.format(node.loc.expression.source)
+          format(MSG, node.loc.expression.source)
         end
 
         private

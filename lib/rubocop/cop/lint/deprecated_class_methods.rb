@@ -22,8 +22,9 @@ module Rubocop
             next unless method_name == data[1]
 
             add_offense(node, :selector,
-                        MSG.format(deprecated_method(data),
-                                   replacement_method(data)))
+                        format(MSG,
+                               deprecated_method(data),
+                               replacement_method(data)))
           end
         end
 

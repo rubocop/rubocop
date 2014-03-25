@@ -15,8 +15,9 @@ module Rubocop
 
           if args.size == 1 && DEPRECATED_METHODS.include?(method_name)
             add_offense(node, :selector,
-                        MSG.format(method_name,
-                                   proper_method_name(method_name)))
+                        format(MSG,
+                               method_name,
+                               proper_method_name(method_name)))
           end
         end
 

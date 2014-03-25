@@ -40,7 +40,7 @@ module Rubocop
 
           add_offense(receiver,
                       :name,
-                      MSG.format(receiver.loc.name.source))
+                      format(MSG, receiver.loc.name.source))
         end
 
         def setter_call_to_local_variable?(node)

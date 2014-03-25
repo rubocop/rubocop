@@ -60,11 +60,11 @@ module Rubocop
           english_msg = english.join(' or ')
 
           if regular.length > 0 && english.length > 0
-            MSG_BOTH.format(english_msg, regular_msg, global_var)
+            format(MSG_BOTH, english_msg, regular_msg, global_var)
           elsif regular.length > 0
-            MSG_REGULAR.format(regular_msg, global_var)
+            format(MSG_REGULAR, regular_msg, global_var)
           elsif english.length > 0
-            MSG_ENGLISH.format(english_msg, global_var)
+            format(MSG_ENGLISH, english_msg, global_var)
           else
             fail 'Bug in SpecialGlobalVars - global var w/o preferred vars!'
           end

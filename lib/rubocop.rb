@@ -8,7 +8,10 @@ require 'English'
 require 'set'
 require 'parser/current'
 require 'ast/sexp'
-require 'powerpack'
+require 'powerpack/enumerable/drop_last'
+require 'powerpack/hash/symbolize_keys'
+require 'powerpack/string/blank'
+require 'powerpack/string/strip_indent'
 
 require 'rubocop/version'
 
