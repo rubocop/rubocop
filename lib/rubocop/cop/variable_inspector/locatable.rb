@@ -24,7 +24,7 @@ module Rubocop
         end
 
         def inside_of_branch?
-          !branch_point_node.nil?
+          branch_point_node
         end
 
         def branch_id

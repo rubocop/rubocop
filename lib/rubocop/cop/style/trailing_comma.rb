@@ -70,7 +70,7 @@ module Rubocop
 
         # Returns true if the node has round/square/curly brackets.
         def brackets?(node)
-          !node.loc.end.nil?
+          node.loc.end
         end
 
         # Returns true if the round/square/curly brackets of the given node are

@@ -196,7 +196,7 @@ module Rubocop
         end
 
         def explicit_hash?(node)
-          !node.loc.begin.nil?
+          node.loc.begin
         end
 
         def multiline?(node)

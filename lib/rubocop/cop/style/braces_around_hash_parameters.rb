@@ -75,7 +75,7 @@ module Rubocop
         end
 
         def braces?(arg)
-          !arg.loc.begin.nil?
+          arg.loc.begin
         end
 
         def all_hashes?(args)

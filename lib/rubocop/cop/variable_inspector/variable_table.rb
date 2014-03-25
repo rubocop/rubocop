@@ -105,7 +105,7 @@ module Rubocop
         end
 
         def variable_exist?(name)
-          !find_variable(name).nil?
+          find_variable(name)
         end
 
         def accessible_variables
