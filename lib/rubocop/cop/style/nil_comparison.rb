@@ -30,6 +30,16 @@ module Rubocop
             add_offense(node, :selector) if args == NIL_NODE
           end
         end
+
+        private
+
+        def autocorrect(node)
+          @corrections << lambda do |corrector|
+            expr = node.loc.expression
+            new_code = expr.source.sub(/\s*==\s*nil/, '.nil?')
+            corrector.replace(expr, new_code)
+          end
+        end
       end
     end
   end
