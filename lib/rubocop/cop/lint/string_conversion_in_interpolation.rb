@@ -24,6 +24,18 @@ module Rubocop
             end
           end
         end
+
+        private
+
+        def autocorrect(node)
+          @corrections << lambda do |corrector|
+            receiver, _method_name, *_args = *node
+            corrector.replace(
+              node.loc.expression,
+              receiver.loc.expression.source
+            )
+          end
+        end
       end
     end
   end

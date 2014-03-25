@@ -11,6 +11,7 @@
 * `VariableInterpolation` cop does auto-correction. ([@bbatsov][])
 * `Not` cop does auto-correction. ([@bbatsov][])
 * `ClassMethods` cop does auto-correction. ([@bbatsov][])
+* `StringConversionInInterpolation` cop does auto-correction. ([@bbatsov][])
 
 ### Changes
 

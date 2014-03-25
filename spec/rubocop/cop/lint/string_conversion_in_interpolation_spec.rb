@@ -29,4 +29,9 @@ describe Rubocop::Cop::Lint::StringConversionInInterpolation do
     inspect_source(cop, '"this is #{} silly"')
     expect(cop.offenses).to be_empty
   end
+
+  it 'autocorrects by removing the redundant to_s' do
+    corrected = autocorrect_source(cop, ['"some #{something.to_s}"'])
+    expect(corrected).to eq '"some #{something}"'
+  end
 end
