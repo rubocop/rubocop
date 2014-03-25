@@ -15,18 +15,14 @@ module Rubocop
       class NilComparison < Cop
         MSG = 'Prefer the use of the nil? predicate.'
 
-        OPS = %w(== ===)
+        OPS = [:==, :===]
 
         NIL_NODE = s(:nil)
 
         def on_send(node)
-          # lambda.() does not have a selector
-          return unless node.loc.selector
-          op = node.loc.selector.source
+          _receiver, method, args = *node
 
-          if OPS.include?(op)
-            _receiver, _method, args = *node
-
+          if OPS.include?(method)
             add_offense(node, :selector) if args == NIL_NODE
           end
         end
