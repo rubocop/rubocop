@@ -17,11 +17,6 @@ describe Rubocop::Cop::Style::NilComparison do
     expect(cop.offenses.size).to eq(1)
   end
 
-  it 'works with lambda.()' do
-    inspect_source(cop, ['a.(x) == nil'])
-    expect(cop.offenses.size).to eq(1)
-  end
-
   it 'autocorrects by replacing == nil with .nil?' do
     corrected = autocorrect_source(cop, ['x == nil'])
     expect(corrected).to eq 'x.nil?'

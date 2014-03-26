@@ -22,9 +22,4 @@ describe Rubocop::Cop::Style::NonNilCheck do
                    ['not x.nil?'])
     expect(cop.offenses.size).to eq(1)
   end
-
-  it 'works with lambda.()' do
-    inspect_source(cop, ['a.(x) != nil'])
-    expect(cop.offenses.size).to eq(1)
-  end
 end
