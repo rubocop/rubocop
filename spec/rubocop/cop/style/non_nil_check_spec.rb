@@ -22,4 +22,14 @@ describe Rubocop::Cop::Style::NonNilCheck do
     expect(cop.offenses.size).to eq(1)
     expect(cop.highlights).to eq(['not x.nil?'])
   end
+
+  it 'autocorrects by removing != nil' do
+    corrected = autocorrect_source(cop, 'x != nil')
+    expect(corrected).to eq 'x'
+  end
+
+  it 'autocorrects by removing non-nil (!x.nil?) check' do
+    corrected = autocorrect_source(cop, '!x.nil?')
+    expect(corrected).to eq 'x'
+  end
 end

@@ -13,6 +13,7 @@
 * `ClassMethods` cop does auto-correction. ([@bbatsov][])
 * `StringConversionInInterpolation` cop does auto-correction. ([@bbatsov][])
 * `NilComparison` cop does auto-correction. ([@bbatsov][])
+* `NonNilComparison` cop does auto-correction. ([@bbatsov][])
 
 ### Changes
 

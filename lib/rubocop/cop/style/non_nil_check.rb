@@ -38,6 +38,32 @@ module Rubocop
           _receiver, method, *_args = *node
           method == :nil?
         end
+
+        def autocorrect(node)
+          receiver, method, _args = *node
+
+          if method == :!=
+            autocorrect_comparison(node)
+          elsif method == :!
+            autocorrect_non_nil(node, receiver)
+          end
+        end
+
+        def autocorrect_comparison(node)
+          @corrections << lambda do |corrector|
+            expr = node.loc.expression
+            new_code = expr.source.sub(/\s*!=\s*nil/, '')
+            corrector.replace(expr, new_code)
+          end
+        end
+
+        def autocorrect_non_nil(node, inner_node)
+          @corrections << lambda do |corrector|
+            receiver, _method, _args = *inner_node
+            corrector.replace(node.loc.expression,
+                              receiver.loc.expression.source)
+          end
+        end
       end
     end
   end
