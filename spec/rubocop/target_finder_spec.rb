@@ -5,8 +5,12 @@ require 'spec_helper'
 describe Rubocop::TargetFinder, :isolated_environment do
   include FileHelper
 
-  subject(:target_finder) { described_class.new(config_store, debug) }
+  subject(:target_finder) do
+    described_class.new(config_store, options)
+  end
   let(:config_store) { Rubocop::ConfigStore.new }
+  let(:options) { { force_exclusion: force_exclusion, debug: debug } }
+  let(:force_exclusion) { false }
   let(:debug) { false }
 
   before do
@@ -80,6 +84,43 @@ describe Rubocop::TargetFinder, :isolated_environment do
       it 'does not return duplicated file paths' do
         count = found_basenames.count { |f| f == 'ruby1.rb' }
         expect(count).to eq(1)
+      end
+    end
+
+    context 'when some paths are specified in the configuration Exclude ' \
+            'and they are explicitly passed as arguments' do
+      before do
+        create_file('.rubocop.yml', [
+          'AllCops:',
+          '  Exclude:',
+          '    - dir1/ruby1.rb',
+          "    - 'dir2/*'"
+        ])
+
+        create_file('dir1/.rubocop.yml', [
+          'AllCops:',
+          '  Exclude:',
+          '    - executable'
+        ])
+      end
+
+      let(:args) do
+        ['dir1/ruby1.rb', 'dir1/ruby2.rb', 'dir1/exe*', 'dir2/ruby3.rb']
+      end
+
+      context 'normally' do
+        it 'does not exludes them' do
+          expect(found_basenames)
+            .to eq(['ruby1.rb', 'ruby2.rb', 'executable', 'ruby3.rb'])
+        end
+      end
+
+      context "when it's forced to adhere file exclusion configuration" do
+        let(:force_exclusion) { true }
+
+        it 'exludes them' do
+          expect(found_basenames).to eq(['ruby2.rb'])
+        end
       end
     end
   end

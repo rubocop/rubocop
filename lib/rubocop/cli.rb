@@ -103,7 +103,7 @@ module Rubocop
     end
 
     def target_finder
-      @target_finder ||= TargetFinder.new(@config_store, @options[:debug])
+      @target_finder ||= TargetFinder.new(@config_store, @options)
     end
   end
 end

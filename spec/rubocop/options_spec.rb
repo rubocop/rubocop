@@ -40,6 +40,9 @@ Usage: rubocop [options] [file1, file2, ...]
     -c, --config FILE                Specify configuration file.
         --auto-gen-config            Generate a configuration file acting as a
                                      TODO list.
+        --force-exclusion            Force excluding files specified in the
+                                     configuration `Exclude` even if they are
+                                     explicitly passed as arguments.
     -f, --format FORMATTER           Choose an output formatter. This option
                                      can be specified multiple times to enable
                                      multiple formatters at the same time.

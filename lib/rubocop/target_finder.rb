@@ -4,9 +4,17 @@ module Rubocop
   # This class finds target files to inspect by scanning the directory tree
   # and picking ruby files.
   class TargetFinder
-    def initialize(config_store, debug = false)
+    def initialize(config_store, options = {})
       @config_store = config_store
-      @debug = debug
+      @options = { force_exclusion: false, debug: false }.merge(options)
+    end
+
+    def force_exclusion?
+      @options[:force_exclusion]
+    end
+
+    def debug?
+      @options[:debug]
     end
 
     # Generate a list of target files by expanding globbing patterns
@@ -19,13 +27,11 @@ module Rubocop
       files = []
 
       args.uniq.each do |arg|
-        if File.directory?(arg)
-          files += target_files_in_dir(arg.chomp(File::SEPARATOR))
-        elsif arg.include?('*')
-          files += Dir[arg]
-        else
-          files << arg
-        end
+        files += if File.directory?(arg)
+                   target_files_in_dir(arg.chomp(File::SEPARATOR))
+                 else
+                   process_explicit_path(arg)
+                 end
       end
 
       files.map { |f| File.expand_path(f) }.uniq
@@ -63,8 +69,23 @@ module Rubocop
       first_line = File.open(file) { |f| f.readline }
       first_line =~ /#!.*ruby/
     rescue EOFError, ArgumentError => e
-      warn "Unprocessable file #{file}: #{e.class}, #{e.message}" if @debug
+      warn "Unprocessable file #{file}: #{e.class}, #{e.message}" if debug?
       false
+    end
+
+    def process_explicit_path(path)
+      files = if path.include?('*')
+                Dir[path]
+              else
+                [path]
+              end
+
+      return files unless force_exclusion?
+
+      files.reject do |file|
+        config = @config_store.for(file)
+        config.file_to_exclude?(file)
+      end
     end
   end
 end
