@@ -46,7 +46,7 @@ module Rubocop
         base_dir.gsub!(File::ALT_SEPARATOR, File::SEPARATOR)
       end
       files = Dir["#{base_dir}/**/*"].select { |path| FileTest.file?(path) }
-      base_dir_config = @config_store.for("#{base_dir}/foobar.rb")
+      base_dir_config = @config_store.for(base_dir)
 
       target_files = files.select do |file|
         next false if base_dir_config.file_to_exclude?(file)
