@@ -72,8 +72,7 @@ module Rubocop
             when /\*\*/
               corrector.replace(range, '**')
             else
-              corrector.insert_before(range, ' ') unless range.source =~ /^\s/
-              corrector.insert_after(range, ' ') unless range.source =~ /\s$/
+              corrector.replace(range, " #{range.source.strip} ")
             end
           end
         end

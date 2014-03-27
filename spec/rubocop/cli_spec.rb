@@ -273,7 +273,6 @@ describe Rubocop::CLI, :isolated_environment do
                     ['# encoding: utf-8',
                      '{ :b=>1 }'])
         expect(cli.run(%w(-D --auto-correct --format emacs))).to eq(1)
-        expect($stderr.string).to eq('')
         expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
                                              '{ b: 1 }',
                                              ''].join("\n"))
@@ -283,6 +282,21 @@ describe Rubocop::CLI, :isolated_environment do
                   "#{abs('example.rb')}:2:5: C: [Corrected] " \
                   "SpaceAroundOperators: Surrounding space missing for " \
                   "operator '=>'.",
+                  ''].join("\n"))
+      end
+
+      it 'can correct HashSyntax when --only is used' do
+        create_file('example.rb',
+                    ['# encoding: utf-8',
+                     '{ :b=>1 }'])
+        expect(cli.run(%w(--auto-correct -f emacs --only HashSyntax))).to eq(1)
+        expect($stderr.string).to eq('')
+        expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
+                                             '{ b: 1 }',
+                                             ''].join("\n"))
+        expect($stdout.string)
+          .to eq(["#{abs('example.rb')}:2:3: C: [Corrected] Use the new " \
+                  "Ruby 1.9 hash syntax.",
                   ''].join("\n"))
       end
 

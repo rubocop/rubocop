@@ -72,9 +72,11 @@ describe Rubocop::Cop::Style::HashSyntax, :config do
       expect(new_source).to eq('{ a: 1, b: 2}')
     end
 
-    it 'does not auto-correct if it interferes with SpaceAroundOperators' do
+    it 'auto-corrects even if it interferes with SpaceAroundOperators' do
+      # Clobbering caused by two cops changing in the same range is dealt with
+      # by the auto-correct loop, so there's no reason to avoid a change.
       new_source = autocorrect_source(cop, '{ :a=>1, :b=>2 }')
-      expect(new_source).to eq('{ :a=>1, :b=>2 }')
+      expect(new_source).to eq('{ a: 1, b: 2 }')
     end
 
     context 'with SpaceAroundOperators disabled' do

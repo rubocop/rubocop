@@ -36,23 +36,19 @@ module Rubocop
         def autocorrect(node)
           key = node.children.first.loc.expression
           op = node.loc.operator
-          if style == :ruby19 && !space_before_operator?(op, key) &&
-              config.for_cop('SpaceAroundOperators')['Enabled']
-            # Don't do the correction if there is no space before '=>'. The
-            # combined corrections of this cop and SpaceAroundOperators could
-            # produce code with illegal syntax.
-            return
-          end
 
           @corrections << lambda do |corrector|
             if style == :ruby19
-              corrector.insert_after(key, ' ')
-              corrector.replace(key, key.source.sub(/^:(.*)/, '\1:'))
+              range = Parser::Source::Range.new(key.source_buffer,
+                                                key.begin_pos, op.end_pos)
+              range = range_with_surrounding_space(range, :right)
+              corrector.replace(range,
+                                range.source.sub(/^:(.*\S)\s*=>\s*$/, '\1: '))
             else
               corrector.insert_after(key, ' => ')
               corrector.insert_before(key, ':')
+              corrector.remove(range_with_surrounding_space(op))
             end
-            corrector.remove(range_with_surrounding_space(op))
           end
         end
 
