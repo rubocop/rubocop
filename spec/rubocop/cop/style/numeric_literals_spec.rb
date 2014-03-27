@@ -13,8 +13,6 @@ describe Rubocop::Cop::Style::NumericLiterals, :config do
   end
 
   it 'registers an offense for a float with a long undelimited integer part' do
-    pending 'Though the offense message implies that floats are checked, ' \
-            'currently the cop only detects integers.'
     inspect_source(cop, ['a = 123456.789'])
     expect(cop.offenses.size).to eq(1)
     expect(cop.config_to_allow_offenses).to eq('MinDigits' => 7)

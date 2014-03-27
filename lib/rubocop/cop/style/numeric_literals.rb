@@ -18,7 +18,7 @@ module Rubocop
           check(node)
         end
 
-        def on_fload(node)
+        def on_float(node)
           check(node)
         end
 

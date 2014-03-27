@@ -39,6 +39,7 @@
 * Fix path resolution so that the default exclusion of `vendor` directories works. ([@jonas054][])
 * [#908](https://github.com/bbatsov/rubocop/issues/908): Fixed hanging while auto correct for `SpaceAfterComma` and `SpaceInsideBrackets`. ([@hiroponz][])
 * [#919](https://github.com/bbatsov/rubocop/issues/919): Don't avoid auto-correction in HashSyntax when there is missing space around operator. ([@jonas054][])
+* Fixed handling of floats in `NumericLiterals`. ([@bbatsov][])
 
 ## 0.19.1 (17/03/2014)
 
