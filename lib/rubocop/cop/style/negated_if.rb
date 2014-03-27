@@ -5,7 +5,7 @@ module Rubocop
     module Style
       # Checks for uses of if with a negated condition. Only ifs
       # without else are considered.
-      class FavorUnlessOverNegatedIf < Cop
+      class NegatedIf < Cop
         include NegativeConditional
 
         def on_if(node)

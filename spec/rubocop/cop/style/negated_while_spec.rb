@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::FavorUntilOverNegatedWhile do
+describe Rubocop::Cop::Style::NegatedWhile do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for while with exclamation point condition' do

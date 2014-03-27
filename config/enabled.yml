@@ -179,13 +179,13 @@ ArrayJoin:
   Description: 'Use Array#join instead of Array#*.'
   Enabled: true
 
-FavorUnlessOverNegatedIf:
+NegatedIf:
   Description: >-
                  Favor unless over if for negative conditions
                  (or control flow or).
   Enabled: true
 
-FavorUntilOverNegatedWhile:
+NegatedWhile:
   Description: 'Favor until over while for negative conditions.'
   Enabled: true
 

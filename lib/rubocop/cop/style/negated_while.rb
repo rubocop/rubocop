@@ -4,7 +4,7 @@ module Rubocop
   module Cop
     module Style
       # Checks for uses of while with a negated condition.
-      class FavorUntilOverNegatedWhile < Cop
+      class NegatedWhile < Cop
         include NegativeConditional
 
         def on_while(node)

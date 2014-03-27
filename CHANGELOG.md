@@ -21,6 +21,8 @@
 * `AllCops/Excludes` and `AllCops/Includes` were renamed to `AllCops/Exclude` and `AllCops/Include` for consistency with standard cop params. ([@bbatsov][])
 * Extract `NonNilCheck` cop from `NilComparison`. ([@bbatsov][])
 * Renamed `FavorJoin` to `ArrayJoin`. ([@bbatsov][])
+* Renamed `FavorUnlessOverNegatedIf` to `NegatedIf`. ([@bbatsov][])
+* Renamed `FavorUntilOverNegatedWhile`to `NegatedWhile`. ([@bbatsov][])
 
 ### Bugs fixed
 
