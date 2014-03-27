@@ -133,16 +133,6 @@ describe Rubocop::TargetFinder, :isolated_environment do
       expect(found_basenames).not_to include('ruby2.rb')
     end
 
-    it 'does not return duplicated paths' do
-      config = double('config').as_null_object
-      allow(config).to receive(:file_to_include?).and_return(true)
-      allow(config).to receive(:file_to_exclude?).and_return(false)
-      allow(config_store).to receive(:for).and_return(config)
-
-      count = found_basenames.count { |f| f == 'ruby1.rb' }
-      expect(count).to eq(1)
-    end
-
     context 'when an exception is raised while reading file' do
       around do |example|
         original_stderr = $stderr

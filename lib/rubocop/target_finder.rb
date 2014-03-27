@@ -55,7 +55,7 @@ module Rubocop
         @config_store.for(file).file_to_include?(file)
       end
 
-      target_files.uniq
+      target_files
     end
 
     def ruby_executable?(file)
