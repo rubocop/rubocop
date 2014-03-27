@@ -175,7 +175,7 @@ EvenOdd:
   Description: 'Favor the use of Fixnum#even? && Fixnum#odd?'
   Enabled: true
 
-FavorJoin:
+ArrayJoin:
   Description: 'Use Array#join instead of Array#*.'
   Enabled: true
 

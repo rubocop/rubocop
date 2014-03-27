@@ -8,7 +8,7 @@ module Rubocop
       # Not all cases can reliably checked, due to Ruby's dynamic
       # types, so we consider only cases when the first argument is an
       # array literal or the second is a string literal.
-      class FavorJoin < Cop
+      class ArrayJoin < Cop
         MSG = 'Favor Array#join over Array#*.'
 
         def on_send(node)

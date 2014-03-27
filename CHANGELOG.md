@@ -20,6 +20,7 @@
 * [#913](https://github.com/bbatsov/rubocop/issues/913): `FileName` accepts multiple extensions. ([@tamird][])
 * `AllCops/Excludes` and `AllCops/Includes` were renamed to `AllCops/Exclude` and `AllCops/Include` for consistency with standard cop params. ([@bbatsov][])
 * Extract `NonNilCheck` cop from `NilComparison`. ([@bbatsov][])
+* Renamed `FavorJoin` to `ArrayJoin`. ([@bbatsov][])
 
 ### Bugs fixed
 
