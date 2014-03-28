@@ -13,7 +13,7 @@ describe Rubocop::Cop::Style::NegatedIf do
                     'some_method if !a_condition'
                    ])
     expect(cop.messages).to eq(
-      ['Favor unless (or control flow or) over if for negative ' \
+      ['Favor unless over if for negative ' \
        'conditions.'] * 2)
   end
 
@@ -24,7 +24,7 @@ describe Rubocop::Cop::Style::NegatedIf do
                     'end',
                     'some_method if not a_condition'])
     expect(cop.messages).to eq(
-      ['Favor unless (or control flow or) over if for negative ' \
+      ['Favor unless over if for negative ' \
        'conditions.'] * 2)
     expect(cop.offenses.map(&:line)).to eq([1, 4])
   end
@@ -72,5 +72,10 @@ describe Rubocop::Cop::Style::NegatedIf do
   it 'does not blow up for ternary ops' do
     inspect_source(cop, 'a ? b : c')
     expect(cop.offenses).to be_empty
+  end
+
+  it 'autocorrects by replacing if not with unless' do
+    corrected = autocorrect_source(cop, 'something if !x.even?')
+    expect(corrected).to eq 'something unless x.even?'
   end
 end

@@ -16,7 +16,20 @@ module Rubocop
         end
 
         def error_message
-          'Favor unless (or control flow or) over if for negative conditions.'
+          'Favor unless over if for negative conditions.'
+        end
+
+        private
+
+        def autocorrect(node)
+          @corrections << lambda do |corrector|
+            condition, _body, _rest = *node
+            # unwrap the negated portion of the condition (a send node)
+            pos_condition, _method, = *condition
+            corrector.replace(node.loc.keyword, 'unless')
+            corrector.replace(condition.loc.expression,
+                              pos_condition.loc.expression.source)
+          end
         end
       end
     end
