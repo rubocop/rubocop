@@ -1,12 +1,22 @@
 # encoding: utf-8
 
+# Try to load the latest parser and fall back to the latest supported version,
+# if parser does not yet support the current Ruby version.
+# This should only be problem when using development Ruby builds.
+begin
+  require 'parser/current'
+rescue NotImplementedError => error
+  warn "Falling back to Ruby 2.1 parser: #{error.message}"
+  require 'parser/ruby21'
+  Parser::CurrentRuby = Parser::Ruby21
+end
+
 require 'rainbow'
 # Rainbow 2.0 does not load the monkey-patch for String by default.
 require 'rainbow/ext/string' unless String.method_defined?(:color)
 
 require 'English'
 require 'set'
-require 'parser/current'
 require 'ast/sexp'
 require 'powerpack/enumerable/drop_last'
 require 'powerpack/hash/symbolize_keys'
