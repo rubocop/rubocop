@@ -4,8 +4,12 @@ rvm:
   - 1.9.3
   - 2.0.0
   - 2.1.0
+  - ruby-head
   - jruby-19mode
   - rbx-2
+matrix:
+  allow_failures:
+    - rvm: ruby-head
 before_install: gem update --remote bundler
 script:
   - bundle exec rspec
