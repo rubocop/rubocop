@@ -953,6 +953,25 @@ describe Rubocop::CLI, :isolated_environment do
         expect(cli.run(['--fail-level', 'warning', target_file])).to eq(0)
       end
     end
+
+    describe '--force-exclusion' do
+      let(:target_file) { 'example.rb' }
+
+      before do
+        create_file(target_file, ['# encoding: utf-8',
+                                  '#' * 90])
+
+        create_file('.rubocop.yml', ['AllCops:',
+                                     '  Exclude:',
+                                     "    - #{target_file}"])
+
+      end
+
+      it 'excludes files specified in the configuration Exclude ' \
+         'even if they are explicitly passed as arguments' do
+        expect(cli.run(['--force-exclusion', target_file])).to eq(0)
+      end
+    end
   end
 
   describe '#wants_to_quit?' do

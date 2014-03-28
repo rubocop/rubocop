@@ -23,8 +23,7 @@ module Rubocop
           validate_only_option
         end
 
-        option(opts, '-c', '--config FILE', 'Specify configuration file.')
-
+        add_configuration_options(opts, args)
         add_formatting_options(opts, args)
 
         option(opts, '-r', '--require FILE', 'Require Ruby file.') do |f|
@@ -45,6 +44,23 @@ module Rubocop
 
     private
 
+    def add_configuration_options(opts, args)
+      option(opts, '-c', '--config FILE', 'Specify configuration file.')
+
+      option(opts, '--auto-gen-config',
+             'Generate a configuration file acting as a', 'TODO list.') do
+        validate_auto_gen_config_option(args)
+        @options[:formatters] = [[DEFAULT_FORMATTER],
+                                 [Formatter::DisabledConfigFormatter,
+                                  ConfigLoader::AUTO_GENERATED_FILE]]
+      end
+
+      option(opts, '--force-exclusion',
+             'Force excluding files specified in the',
+             'configuration `Exclude` even if they are',
+             'explicitly passed as arguments.')
+    end
+
     FORMAT_HELP = ['Choose an output formatter. This option',
                    'can be specified multiple times to enable',
                    'multiple formatters at the same time.',
@@ -59,14 +75,6 @@ module Rubocop
                    '  custom formatter class name']
 
     def add_formatting_options(opts, args)
-      option(opts, '--auto-gen-config',
-             'Generate a configuration file acting as a', 'TODO list.') do
-        validate_auto_gen_config_option(args)
-        @options[:formatters] = [[DEFAULT_FORMATTER],
-                                 [Formatter::DisabledConfigFormatter,
-                                  ConfigLoader::AUTO_GENERATED_FILE]]
-      end
-
       option(opts, '-f', '--format FORMATTER', *FORMAT_HELP) do |key|
         @options[:formatters] ||= []
         @options[:formatters] << [key]
