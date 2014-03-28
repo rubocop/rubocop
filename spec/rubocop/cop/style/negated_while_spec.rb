@@ -38,4 +38,9 @@ describe Rubocop::Cop::Style::NegatedWhile do
                     'some_method while not a_condition or other_cond'])
     expect(cop.messages).to be_empty
   end
+
+  it 'autocorrects by replacing while not with until' do
+    corrected = autocorrect_source(cop, 'something while !x.even?')
+    expect(corrected).to eq 'something until x.even?'
+  end
 end

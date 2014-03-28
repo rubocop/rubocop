@@ -14,6 +14,19 @@ module Rubocop
         def error_message
           'Favor until over while for negative conditions.'
         end
+
+        private
+
+        def autocorrect(node)
+          @corrections << lambda do |corrector|
+            condition, _body, _rest = *node
+            # unwrap the negated portion of the condition (a send node)
+            pos_condition, _method, = *condition
+            corrector.replace(node.loc.keyword, 'until')
+            corrector.replace(condition.loc.expression,
+                              pos_condition.loc.expression.source)
+          end
+        end
       end
     end
   end
