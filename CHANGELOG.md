@@ -14,6 +14,8 @@
 * `StringConversionInInterpolation` cop does auto-correction. ([@bbatsov][])
 * `NilComparison` cop does auto-correction. ([@bbatsov][])
 * `NonNilComparison` cop does auto-correction. ([@bbatsov][])
+* New lint cop `SpaceBeforeFirstArg` checks for space between the method name and the first argument in method calls without parentheses. ([@jonas054][])
+* New style cop `SingleSpaceBeforeFirstArg` checks that no more than one space is used between the method name and the first argument in method calls without parentheses. ([@jonas054][])
 
 ### Changes
 

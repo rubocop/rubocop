@@ -417,6 +417,12 @@ SingleLineMethods:
   Description: 'Avoid single-line methods.'
   Enabled: true
 
+SingleSpaceBeforeFirstArg:
+  Description: >-
+                 Checks that exactly one space is used between a method name
+                 and the first argument for method calls without parentheses.
+  Enabled: true
+
 SpaceAfterColon:
   Description: 'Use spaces after colons.'
   Enabled: true
@@ -432,7 +438,7 @@ SpaceAfterControlKeyword:
 SpaceAfterMethodName:
   Description: >-
                  Never put a space between a method name and the opening
-                 parenthesis.
+                 parenthesis in a method definition.
   Enabled: true
 
 SpaceAfterNot:
@@ -652,6 +658,12 @@ ShadowingOuterLocalVariable:
   Description: >-
                  Do not use the same name as outer local variable
                  for block arguments or block local variables.
+  Enabled: true
+
+SpaceBeforeFirstArg:
+  Description: >-
+                 Put a space between a method name and the first argument
+                 in a method call wihtout parentheses.
   Enabled: true
 
 StringConversionInInterpolation:
