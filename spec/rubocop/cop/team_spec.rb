@@ -40,7 +40,9 @@ describe Rubocop::Cop::Team do
     include FileHelper
 
     let(:file_path) { '/tmp/example.rb' }
-    let(:offenses) { team.inspect_file(file_path) }
+    let(:offenses) do
+      team.inspect_file(Rubocop::SourceParser.parse_file(file_path))
+    end
 
     before do
       create_file(file_path, [
@@ -52,22 +54,6 @@ describe Rubocop::Cop::Team do
     it 'returns offenses' do
       expect(offenses).not_to be_empty
       expect(offenses.all? { |o| o.is_a?(Rubocop::Cop::Offense) }).to be_true
-    end
-
-    context 'when Parser cannot parse the file' do
-      before do
-        create_file(file_path, [
-          '#' * 90,
-          'class Test'
-        ])
-      end
-
-      it 'returns only error offenses' do
-        expect(offenses.size).to eq(1)
-        offense = offenses.first
-        expect(offense.cop_name).to eq('Syntax')
-        expect(offense.severity).to eq(:error)
-      end
     end
 
     context 'when Parser reports non-fatal warning for the file' do
@@ -101,7 +87,7 @@ describe Rubocop::Cop::Team do
       end
 
       it 'does autocorrection' do
-        team.inspect_file(file_path)
+        team.inspect_file(Rubocop::SourceParser.parse_file(file_path))
         corrected_source = File.read(file_path)
         expect(corrected_source).to eq([
           '# encoding: utf-8',

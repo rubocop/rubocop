@@ -236,6 +236,7 @@ require 'rubocop/cop/rails/validation'
 
 require 'rubocop/formatter/base_formatter'
 require 'rubocop/formatter/simple_text_formatter'
+require 'rubocop/formatter/disabled_lines_formatter'
 require 'rubocop/formatter/disabled_config_formatter'
 require 'rubocop/formatter/emacs_style_formatter'
 require 'rubocop/formatter/clang_style_formatter'
