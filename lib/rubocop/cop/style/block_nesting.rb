@@ -30,11 +30,10 @@ module Rubocop
                 node.loc.keyword.is?('elsif')
               current_level += 1
             end
-            if current_level == max + 1
+            if current_level > max
               add_offense(node, :expression, message(max)) do
                 self.max = current_level
               end
-              return
             end
           end
           node.children.each do |child|
