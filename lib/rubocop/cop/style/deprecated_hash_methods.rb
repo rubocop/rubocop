@@ -5,7 +5,7 @@ module Rubocop
     module Style
       # This cop checks for uses of the deprecated methods Hash#has_key?
       # and Hash#has_value?
-      class HashMethods < Cop
+      class DeprecatedHashMethods < Cop
         MSG = '%s is deprecated in favor of %s.'
 
         DEPRECATED_METHODS = [:has_key?, :has_value?]

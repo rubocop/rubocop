@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::HashMethods do
+describe Rubocop::Cop::Style::DeprecatedHashMethods do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for has_key? with one arg' do

@@ -127,6 +127,10 @@ DefWithParentheses:
   Description: 'Use def with parentheses when there are arguments.'
   Enabled: true
 
+DeprecatedHashMethods:
+  Description: 'Checks for use of deprecated Hash methods.'
+  Enabled: true
+  
 Documentation:
   Description: 'Document classes and non-namespace modules.'
   Enabled: true
@@ -213,10 +217,6 @@ GlobalVars:
   Description: 'Do not introduce global variables.'
   Enabled: true
   
-HashMethods:
-  Description: 'Checks for use of deprecated Hash methods.'
-  Enabled: true
-
 HashSyntax:
   Description: >-
                  Prefer Ruby 1.9 hash syntax { a: 1, b: 2 } over 1.8 syntax
