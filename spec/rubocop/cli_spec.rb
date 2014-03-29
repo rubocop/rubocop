@@ -437,7 +437,7 @@ describe Rubocop::CLI, :isolated_environment do
         expect($stderr.string).to eq('')
         expect($stdout.string)
           .to include(['Created rubocop-todo.yml.',
-                       'Run rubocop with --config rubocop-todo.yml, or',
+                       'Run `rubocop --config rubocop-todo.yml`, or',
                        'add inherit_from: rubocop-todo.yml in a ' \
                        '.rubocop.yml file.',
                        ''].join("\n"))
