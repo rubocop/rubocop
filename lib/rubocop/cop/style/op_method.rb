@@ -4,9 +4,9 @@ module Rubocop
   module Cop
     module Style
       # This cop makes sure that certain operator methods have their sole
-      # parameter named *other*.
+      # parameter named `other`.
       class OpMethod < Cop
-        MSG = 'When defining the %s operator, name its argument *other*.'
+        MSG = 'When defining the `%s` operator, name its argument `other`.'
 
         BLACKLISTED = [:+@, :-@, :[], :[]=, :<<]
 

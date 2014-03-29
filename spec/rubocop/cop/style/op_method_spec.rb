@@ -12,7 +12,7 @@ describe Rubocop::Cop::Style::OpMethod do
                     'end'])
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
-      .to eq(['When defining the + operator, name its argument *other*.'])
+      .to eq(['When defining the `+` operator, name its argument `other`.'])
   end
 
   it 'works properly even if the argument not surrounded with braces' do
@@ -22,7 +22,7 @@ describe Rubocop::Cop::Style::OpMethod do
                     'end'])
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
-      .to eq(['When defining the + operator, name its argument *other*.'])
+      .to eq(['When defining the `+` operator, name its argument `other`.'])
   end
 
   it 'does not register an offense for arg named other' do
