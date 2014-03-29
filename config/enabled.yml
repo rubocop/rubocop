@@ -34,6 +34,10 @@ AndOr:
   Description: 'Use &&/|| instead of and/or.'
   Enabled: true
 
+ArrayJoin:
+  Description: 'Use Array#join instead of Array#*.'
+  Enabled: true
+
 AsciiComments:
   Description: 'Use only ascii symbols in comments.'
   Enabled: true
@@ -179,20 +183,6 @@ EvenOdd:
   Description: 'Favor the use of Fixnum#even? && Fixnum#odd?'
   Enabled: true
 
-ArrayJoin:
-  Description: 'Use Array#join instead of Array#*.'
-  Enabled: true
-
-NegatedIf:
-  Description: >-
-                 Favor unless over if for negative conditions
-                 (or control flow or).
-  Enabled: true
-
-NegatedWhile:
-  Description: 'Favor until over while for negative conditions.'
-  Enabled: true
-
 FileName:
   Description: 'Use snake_case for source file names.'
   Enabled: true
@@ -305,6 +295,16 @@ MultilineTernaryOperator:
   Description: >-
                  Avoid multi-line ?: (the ternary operator);
                  use if/unless instead.
+  Enabled: true
+
+NegatedIf:
+  Description: >-
+                 Favor unless over if for negative conditions
+                 (or control flow or).
+  Enabled: true
+
+NegatedWhile:
+  Description: 'Favor until over while for negative conditions.'
   Enabled: true
 
 NestedTernaryOperator:
