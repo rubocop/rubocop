@@ -38,7 +38,7 @@ module Rubocop
           cfg.each { |key, value| output.puts "  #{key}: #{value}" }
         end
         puts "Created #{output.path}."
-        puts "Run rubocop with --config #{output.path}, or"
+        puts "Run `rubocop --config #{output.path}`, or"
         puts "add inherit_from: #{output.path} in a .rubocop.yml file."
       end
 
