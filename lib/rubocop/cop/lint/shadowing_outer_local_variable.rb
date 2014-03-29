@@ -10,7 +10,7 @@ module Rubocop
       class ShadowingOuterLocalVariable < Cop
         include VariableInspector
 
-        MSG = 'Shadowing outer local variable - %s'
+        MSG = 'Shadowing outer local variable - `%s`'
 
         def investigate(processed_source)
           inspect_variables(processed_source.ast)

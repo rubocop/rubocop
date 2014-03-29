@@ -11,15 +11,13 @@ describe Rubocop::Cop::Style::UnlessElse do
                          'else',
                          '  a = 0',
                          'end'])
-    expect(cop.messages).to eq(
-      ['Never use unless with else. Rewrite these with the ' \
-       'positive case first.'])
+    expect(cop.offenses.size).to eq(1)
   end
 
   it 'accepts an unless without else' do
     inspect_source(cop, ['unless x',
                          '  a = 1',
                          'end'])
-    expect(cop.messages).to be_empty
+    expect(cop.offenses).to be_empty
   end
 end

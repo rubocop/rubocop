@@ -58,7 +58,7 @@ module Rubocop
 
           method_name = 'String#%' if method_name == :%
 
-          "Favor #{preferred} over #{method_name}."
+          "Favor `#{preferred}` over `#{method_name}`."
         end
       end
     end

@@ -5,7 +5,7 @@ module Rubocop
     module Lint
       # This cop checks for calls to debugger or pry.
       class Debugger < Cop
-        MSG = 'Remove calls to debugger.'
+        MSG = 'Remove calls to `debugger`.'
 
         # debugger call node
         #

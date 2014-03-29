@@ -7,7 +7,7 @@ module Rubocop
       class DeprecatedClassMethods < Cop
         include AST::Sexp
 
-        MSG = '%s is deprecated in favor of %s.'
+        MSG = '`%s` is deprecated in favor of `%s`.'
 
         DEPRECATED_METHODS = [
           [:File, :exists?, :exist?],

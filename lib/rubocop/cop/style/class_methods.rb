@@ -6,7 +6,7 @@ module Rubocop
       # This cop checks for uses of the class/module name instead of
       # self, when defining class/module methods.
       class ClassMethods < Cop
-        MSG = 'Use self.%s instead of %s.%s.'
+        MSG = 'Use `self.%s` instead of `%s.%s`.'
 
         # TODO: Check if we're in a class/module
         def on_defs(node)

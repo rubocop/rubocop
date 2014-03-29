@@ -13,8 +13,6 @@ describe Rubocop::Cop::Lint::RescueException do
                     '  #do nothing',
                     'end'])
     expect(cop.offenses.size).to eq(1)
-    expect(cop.messages)
-      .to eq(['Avoid rescuing the Exception class.'])
   end
 
   it 'registers an offense for rescue with ::Exception' do
@@ -25,8 +23,6 @@ describe Rubocop::Cop::Lint::RescueException do
                     '  #do nothing',
                     'end'])
     expect(cop.offenses.size).to eq(1)
-    expect(cop.messages)
-      .to eq(['Avoid rescuing the Exception class.'])
   end
 
   it 'registers an offense for rescue with StandardError, Exception' do
@@ -37,8 +33,6 @@ describe Rubocop::Cop::Lint::RescueException do
                     '  #do nothing',
                     'end'])
     expect(cop.offenses.size).to eq(1)
-    expect(cop.messages)
-      .to eq(['Avoid rescuing the Exception class.'])
   end
 
   it 'registers an offense for rescue with Exception => e' do
@@ -49,8 +43,6 @@ describe Rubocop::Cop::Lint::RescueException do
                     '  #do nothing',
                     'end'])
     expect(cop.offenses.size).to eq(1)
-    expect(cop.messages)
-      .to eq(['Avoid rescuing the Exception class.'])
   end
 
   it 'does not register an offense for rescue with no class' do

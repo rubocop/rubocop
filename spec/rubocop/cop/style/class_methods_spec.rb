@@ -14,7 +14,7 @@ describe Rubocop::Cop::Style::ClassMethods do
                     'end'])
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
-      .to eq(['Use self.some_method instead of Test.some_method.'])
+      .to eq(['Use `self.some_method` instead of `Test.some_method`.'])
     expect(cop.highlights).to eq(['Test'])
   end
 
@@ -27,7 +27,7 @@ describe Rubocop::Cop::Style::ClassMethods do
                     'end'])
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
-      .to eq(['Use self.some_method instead of Test.some_method.'])
+      .to eq(['Use `self.some_method` instead of `Test.some_method`.'])
     expect(cop.highlights).to eq(['Test'])
   end
 

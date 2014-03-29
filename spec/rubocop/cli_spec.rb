@@ -185,8 +185,8 @@ describe Rubocop::CLI, :isolated_environment do
                   '',
                   'Offenses:',
                   '',
-                  'example.rb:2:1: C: [Corrected] Use `fail` instead of ' \
-                  '`raise` to signal exceptions.',
+                  'example.rb:2:1: C: [Corrected] Use fail instead of ' \
+                  'raise to signal exceptions.',
                   'raise NotImplementedError,',
                   '^^^^^',
                   'example.rb:3:7: C: [Corrected] Align the parameters of a ' \
@@ -1419,8 +1419,8 @@ describe Rubocop::CLI, :isolated_environment do
       cli.run(['--format', 'simple', '-c', 'rubocop.yml', 'example1.rb'])
       expect($stdout.string)
         .to eq(['== example1.rb ==',
-                'C:  2:  6: `%w`-literals should be delimited by `[` and `]`',
-                'C:  3:  6: `%q`-literals should be delimited by `(` and `)`',
+                'C:  2:  6: %w-literals should be delimited by [ and ]',
+                'C:  3:  6: %q-literals should be delimited by ( and )',
                 '',
                 '1 file inspected, 2 offenses detected',
                 ''].join("\n"))

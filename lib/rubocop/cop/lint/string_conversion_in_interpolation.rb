@@ -10,7 +10,7 @@ module Rubocop
       #
       #   "result is #{something.to_s}"
       class StringConversionInInterpolation < Cop
-        MSG = 'Redundant use of Object#to_s in interpolation.'
+        MSG = 'Redundant use of `Object#to_s` in interpolation.'
 
         def on_dstr(node)
           node.children.select { |n| n.type == :begin }.each do |begin_node|

@@ -7,7 +7,7 @@ module Rubocop
       class EndInMethod < Cop
         include CheckMethods
 
-        MSG = 'END found in method definition. Use `at_exit` instead.'
+        MSG = '`END` found in method definition. Use `at_exit` instead.'
 
         private
 

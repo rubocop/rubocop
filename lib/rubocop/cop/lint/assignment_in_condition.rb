@@ -8,7 +8,7 @@ module Rubocop
       class AssignmentInCondition < Cop
         include SafeAssignment
 
-        MSG = 'Assignment in condition - you probably meant to use ==.'
+        MSG = 'Assignment in condition - you probably meant to use `==`.'
 
         def on_if(node)
           check(node)

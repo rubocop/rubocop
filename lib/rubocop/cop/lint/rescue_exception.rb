@@ -5,7 +5,7 @@ module Rubocop
     module Lint
       # This cop checks for *rescue* blocks targeting the Exception class.
       class RescueException < Cop
-        MSG = 'Avoid rescuing the Exception class.'
+        MSG = 'Avoid rescuing the `Exception` class.'
 
         def on_resbody(node)
           return unless node.children.first

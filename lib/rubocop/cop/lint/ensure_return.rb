@@ -5,7 +5,7 @@ module Rubocop
     module Lint
       # This cop checks for *return* from an *ensure* block.
       class EnsureReturn < Cop
-        MSG = 'Never return from an ensure block.'
+        MSG = 'Never return from an `ensure` block.'
 
         def on_ensure(node)
           _body, ensure_body = *node

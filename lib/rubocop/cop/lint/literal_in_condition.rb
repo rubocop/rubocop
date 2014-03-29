@@ -18,7 +18,7 @@ module Rubocop
       #   end
       #
       class LiteralInCondition < Cop
-        MSG = 'Literal %s appeared in a condition.'
+        MSG = 'Literal `%s` appeared in a condition.'
 
         LITERALS = [:str, :dstr, :int, :float, :array,
                     :hash, :regexp, :nil, :true, :false]

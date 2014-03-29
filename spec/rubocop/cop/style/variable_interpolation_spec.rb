@@ -11,8 +11,8 @@ describe Rubocop::Cop::Style::VariableInterpolation do
     expect(cop.offenses.size).to eq(1)
     expect(cop.highlights).to eq(['$test'])
     expect(cop.messages)
-      .to eq(['Replace interpolated var $test' \
-              ' with expression #{$test}.'])
+      .to eq(['Replace interpolated variable `$test`' \
+              ' with expression `#{$test}`.'])
   end
 
   it 'registers an offense for interpolated regexp back references' do
@@ -21,7 +21,7 @@ describe Rubocop::Cop::Style::VariableInterpolation do
     expect(cop.offenses.size).to eq(1)
     expect(cop.highlights).to eq(['$1'])
     expect(cop.messages)
-      .to eq(['Replace interpolated var $1 with expression #{$1}.'])
+      .to eq(['Replace interpolated variable `$1` with expression `#{$1}`.'])
   end
 
   it 'registers an offense for interpolated instance variables' do
@@ -30,8 +30,8 @@ describe Rubocop::Cop::Style::VariableInterpolation do
     expect(cop.offenses.size).to eq(1)
     expect(cop.highlights).to eq(['@test'])
     expect(cop.messages)
-      .to eq(['Replace interpolated var @test' \
-              ' with expression #{@test}.'])
+      .to eq(['Replace interpolated variable `@test`' \
+              ' with expression `#{@test}`.'])
   end
 
   it 'registers an offense for interpolated class variables' do
@@ -40,7 +40,7 @@ describe Rubocop::Cop::Style::VariableInterpolation do
     expect(cop.offenses.size).to eq(1)
     expect(cop.highlights).to eq(['@@t'])
     expect(cop.messages)
-      .to eq(['Replace interpolated var @@t with expression #{@@t}.'])
+      .to eq(['Replace interpolated variable `@@t` with expression `#{@@t}`.'])
   end
 
   it 'does not register an offense for variables in expressions' do

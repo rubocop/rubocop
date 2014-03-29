@@ -9,16 +9,14 @@ describe Rubocop::Cop::Lint::Eval do
     inspect_source(cop,
                    ['eval(something)'])
     expect(cop.offenses.size).to eq(1)
-    expect(cop.messages)
-      .to eq(['The use of eval is a serious security risk.'])
+    expect(cop.highlights) .to eq(['eval'])
   end
 
   it 'registers an offense for eval as command' do
     inspect_source(cop,
                    ['eval something'])
     expect(cop.offenses.size).to eq(1)
-    expect(cop.messages)
-      .to eq(['The use of eval is a serious security risk.'])
+    expect(cop.highlights) .to eq(['eval'])
   end
 
   it 'does not register an offense for eval as variable' do

@@ -6,9 +6,9 @@ module Rubocop
       # This cop checks for operators, variables and literals used
       # in void context.
       class Void < Cop
-        OP_MSG = 'Operator %s used in void context.'
-        VAR_MSG = 'Variable %s used in void context.'
-        LIT_MSG = 'Literal %s used in void context'
+        OP_MSG = 'Operator `%s` used in void context.'
+        VAR_MSG = 'Variable `%s` used in void context.'
+        LIT_MSG = 'Literal `%s` used in void context'
 
         OPS = %w(* / % + - == === != < > <= >= <=>)
         VARS = [:ivar, :lvar, :cvar, :const]

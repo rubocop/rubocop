@@ -49,7 +49,7 @@ module Rubocop
         end
 
         def message
-          'Odd else layout detected. Perhaps you meant to use elsif instead?'
+          'Odd `else` layout detected. Did you mean to use `elsif`?'
         end
       end
     end

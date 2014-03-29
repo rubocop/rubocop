@@ -9,8 +9,6 @@ describe Rubocop::Cop::Style::ArrayJoin do
     inspect_source(cop,
                    ['%w(one two three) * ", "'])
     expect(cop.offenses.size).to eq(1)
-    expect(cop.messages)
-      .to eq(['Favor Array#join over Array#*.'])
   end
 
   it 'does not register an offense for numbers' do

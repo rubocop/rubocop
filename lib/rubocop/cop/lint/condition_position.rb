@@ -40,7 +40,7 @@ module Rubocop
         end
 
         def message(keyword)
-          "Place the condition on the same line as #{keyword}."
+          "Place the condition on the same line as `#{keyword}`."
         end
 
         def on_different_line?(keyword_line, cond_line)

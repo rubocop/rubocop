@@ -12,7 +12,7 @@ describe Rubocop::Cop::Style::FormatString, :config do
                      ['puts "%d" % 10'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(['Favor sprintf over String#%.'])
+        .to eq(['Favor `sprintf` over `String#%`.'])
     end
 
     it 'registers an offense for something followed by an array' do
@@ -20,7 +20,7 @@ describe Rubocop::Cop::Style::FormatString, :config do
                      ['puts x % [10, 11]'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(['Favor sprintf over String#%.'])
+        .to eq(['Favor `sprintf` over `String#%`.'])
     end
 
     it 'does not register an offense for numbers' do
@@ -44,7 +44,7 @@ describe Rubocop::Cop::Style::FormatString, :config do
                      ['puts "#{x * 5} %d #{@test}" % 10'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(['Favor sprintf over String#%.'])
+        .to eq(['Favor `sprintf` over `String#%`.'])
     end
 
     it 'registers an offense for format' do
@@ -52,7 +52,7 @@ describe Rubocop::Cop::Style::FormatString, :config do
                      ['format(something, a, b)'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(['Favor sprintf over format.'])
+        .to eq(['Favor `sprintf` over `format`.'])
     end
   end
 
@@ -64,7 +64,7 @@ describe Rubocop::Cop::Style::FormatString, :config do
                      ['puts "%d" % 10'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(['Favor format over String#%.'])
+        .to eq(['Favor `format` over `String#%`.'])
     end
 
     it 'registers an offense for something followed by an array' do
@@ -72,7 +72,7 @@ describe Rubocop::Cop::Style::FormatString, :config do
                      ['puts x % [10, 11]'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(['Favor format over String#%.'])
+        .to eq(['Favor `format` over `String#%`.'])
     end
 
     it 'does not register an offense for numbers' do
@@ -96,7 +96,7 @@ describe Rubocop::Cop::Style::FormatString, :config do
                      ['puts "#{x * 5} %d #{@test}" % 10'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(['Favor format over String#%.'])
+        .to eq(['Favor `format` over `String#%`.'])
     end
 
     it 'registers an offense for sprintf' do
@@ -104,7 +104,7 @@ describe Rubocop::Cop::Style::FormatString, :config do
                      ['sprintf(something, a, b)'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(['Favor format over sprintf.'])
+        .to eq(['Favor `format` over `sprintf`.'])
     end
   end
 
@@ -116,7 +116,7 @@ describe Rubocop::Cop::Style::FormatString, :config do
                      ['format(something, a, b)'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(['Favor String#% over format.'])
+        .to eq(['Favor `String#%` over `format`.'])
     end
 
     it 'registers an offense for sprintf' do
@@ -124,7 +124,7 @@ describe Rubocop::Cop::Style::FormatString, :config do
                      ['sprintf(something, a, b)'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(['Favor String#% over sprintf.'])
+        .to eq(['Favor `String#%` over `sprintf`.'])
     end
 
     it 'accepts String#%' do
