@@ -89,9 +89,13 @@ module Rubocop
         colorize(offense.severity.code, color)
       end
 
+      def annotate_message(msg)
+        msg.gsub(/`(.*?)`/, Rainbow('\1').yellow)
+      end
+
       def message(offense)
         message = offense.corrected? ? green('[Corrected] ') : ''
-        message << offense.message
+        message << annotate_message(offense.message)
       end
 
       def pluralize(number, thing, options = {})
