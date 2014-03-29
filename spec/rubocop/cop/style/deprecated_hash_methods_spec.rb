@@ -10,7 +10,7 @@ describe Rubocop::Cop::Style::DeprecatedHashMethods do
                    ['o.has_key?(o)'])
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
-      .to eq(['has_key? is deprecated in favor of key?.'])
+      .to eq(['`Hash#has_key?` is deprecated in favor of `Hash#key?`.'])
   end
 
   it 'accepts has_key? with no args' do
@@ -24,7 +24,7 @@ describe Rubocop::Cop::Style::DeprecatedHashMethods do
                    ['o.has_value?(o)'])
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
-      .to eq(['has_value? is deprecated in favor of value?.'])
+      .to eq(['`Hash#has_value?` is deprecated in favor of `Hash#value?`.'])
   end
 
   it 'accepts has_value? with no args' do
