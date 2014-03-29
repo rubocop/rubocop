@@ -17,6 +17,10 @@ module Rubocop
       @comment_config = CommentConfig.new(self)
     end
 
+    def disabled_line_ranges
+      comment_config.cop_disabled_line_ranges
+    end
+
     def lines
       if @lines
         @lines
@@ -41,6 +45,10 @@ module Rubocop
 
     def valid_syntax?
       @diagnostics.none? { |d| [:error, :fatal].include?(d.level) }
+    end
+
+    def file_path
+      @buffer.name
     end
 
     private

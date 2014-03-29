@@ -20,11 +20,11 @@ module Rubocop
       disabled_line_ranges.none? { |range| range.include?(line_number) }
     end
 
-    private
-
     def cop_disabled_line_ranges
       @cop_disabled_line_ranges ||= analyze
     end
+
+    private
 
     def analyze
       disabled_line_ranges = Hash.new { |hash, key| hash[key] = [] }
@@ -54,6 +54,8 @@ module Rubocop
 
     def each_mentioned_cop
       all_cop_names = nil # For performance improvement
+
+      return if processed_source.comments.nil?
 
       processed_source.comments.each do |comment|
         match = comment.text.match(COMMENT_DIRECTIVE_REGEXP)

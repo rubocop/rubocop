@@ -19,6 +19,7 @@
 * `NegatedWhile` cop does auto-correction. ([@bbatsov][])
 * New lint cop `SpaceBeforeFirstArg` checks for space between the method name and the first argument in method calls without parentheses. ([@jonas054][])
 * New style cop `SingleSpaceBeforeFirstArg` checks that no more than one space is used between the method name and the first argument in method calls without parentheses. ([@jonas054][])
+* New formatter `disabled_lines` displays cops and line ranges disabled by inline comments. ([@fshowalter][])
 
 ### Changes
 
@@ -820,3 +821,4 @@
 [@mockdeep]: https://github.com/mockdeep
 [@hiroponz]: https://github.com/hiroponz
 [@tamird]: https://github.com/tamird
+[@fshowalter]: https://github.com/fshowalter

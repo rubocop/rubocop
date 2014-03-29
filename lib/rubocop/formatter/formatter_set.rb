@@ -14,7 +14,8 @@ module Rubocop
         'emacs'    => EmacsStyleFormatter,
         'json'     => JSONFormatter,
         'files'    => FileListFormatter,
-        'offenses' => OffenseCountFormatter
+        'offenses' => OffenseCountFormatter,
+        'disabled' => DisabledLinesFormatter
       }
 
       FORMATTER_APIS = [:started, :file_started, :file_finished, :finished]

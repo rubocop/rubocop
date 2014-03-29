@@ -29,6 +29,7 @@ module Rubocop
       end
 
       formatter_set.finished(inspected_files.freeze)
+
       formatter_set.close_output_files
       any_failed
     end
@@ -48,28 +49,56 @@ module Rubocop
 
     def process_file(file, config_store)
       puts "Scanning #{file}" if @options[:debug]
-      offenses = []
-      formatter_set.file_started(file, {})
+      processed_source, offenses = process_source(file)
+
+      if offenses.any?
+        formatter_set.file_started(file, offenses)
+        formatter_set.file_finished(file, offenses.compact.sort.freeze)
+        return offenses
+      end
+
+      formatter_set.file_started(
+        file, cop_disabled_line_ranges: processed_source.disabled_line_ranges)
 
       # When running with --auto-correct, we need to inspect the file (which
       # includes writing a corrected version of it) until no more corrections
       # are made. This is because automatic corrections can introduce new
       # offenses. In the normal case the loop is only executed once.
       loop do
-        new_offenses, updated_source_file = inspect_file(file, config_store)
-        unique_new = new_offenses.reject { |n| offenses.include?(n) }
-        offenses += unique_new
+        new_offenses, updated_source_file =
+          inspect_file(processed_source, config_store)
+        offenses += new_offenses.reject { |n| offenses.include?(n) }
         break unless updated_source_file
+
+        # We have to reprocess the source to pickup the changes. Since the
+        # change could (theoretically) introduce parsing errors, we break the
+        # loop if we find any.
+        processed_source, parse_offenses = process_source(file)
+        offenses += parse_offenses if parse_offenses.any?
       end
 
-      formatter_set.file_finished(file, offenses.sort.freeze)
+      formatter_set.file_finished(file, offenses.compact.sort.freeze)
       offenses
     end
 
-    def inspect_file(file, config_store)
-      config = config_store.for(file)
+    def process_source(file)
+      begin
+        processed_source = SourceParser.parse_file(file)
+      rescue Encoding::UndefinedConversionError, ArgumentError => e
+        range = Struct.new(:line, :column, :source_line).new(1, 0, '')
+        return [
+          nil,
+          [Cop::Offense.new(:fatal, range, e.message.capitalize + '.',
+                            'Parser')]]
+      end
+
+      [processed_source, []]
+    end
+
+    def inspect_file(processed_source, config_store)
+      config = config_store.for(processed_source.file_path)
       team = Cop::Team.new(mobilized_cop_classes(config), config, @options)
-      offenses = team.inspect_file(file)
+      offenses = team.inspect_file(processed_source)
       @errors.concat(team.errors)
       [offenses, team.updated_source_file?]
     end

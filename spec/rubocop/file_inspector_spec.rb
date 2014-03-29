@@ -18,6 +18,10 @@ describe Rubocop::FileInspector do
     $stdout = StringIO.new
     $stderr = StringIO.new
 
+    allow(inspector).to receive(:process_source) do
+      [double('ProcessedSource').as_null_object, []]
+    end
+
     allow(inspector).to receive(:inspect_file) do
       inspector.errors = errors
       [offenses, !:updated_source_file]
