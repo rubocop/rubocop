@@ -75,16 +75,15 @@ module Rubocop
       end
 
       def base_configs(path, inherit_from)
-        Array(inherit_from).map do |f|
+        configs = Array(inherit_from).map do |f|
           f = File.join(File.dirname(path), f) unless f.start_with?('/')
-          if auto_gen_config? && f.include?(AUTO_GENERATED_FILE)
-            warn "Remove #{AUTO_GENERATED_FILE} from the current " \
-                 'configuration before generating it again.'
-            exit(1)
+          unless auto_gen_config? && f.include?(AUTO_GENERATED_FILE)
+            print 'Inheriting ' if debug?
+            load_file(f)
           end
-          print 'Inheriting ' if debug?
-          load_file(f)
         end
+
+        configs.compact
       end
 
       # Returns the path of .rubocop.yml searching upwards in the
