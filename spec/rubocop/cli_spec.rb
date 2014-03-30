@@ -387,26 +387,35 @@ describe Rubocop::CLI, :isolated_environment do
     end
 
     describe '--auto-gen-config' do
-      it 'exits with error if asked to re-generate a todo list that is in ' \
-        'use' do
+      it 'overwrites an existing todo file' do
         create_file('example1.rb', ['# encoding: utf-8',
                                     'x= 0 ',
                                     '#' * 85,
                                     'y ',
                                     'puts x'])
-        todo_contents = ['# This configuration was generated with `rubocop' \
-                         ' --auto-gen-config`',
-                         '',
-                         'LineLength:',
-                         '  Enabled: false']
-        create_file('rubocop-todo.yml', todo_contents)
-        expect(IO.read('rubocop-todo.yml'))
-          .to eq(todo_contents.join("\n") + "\n")
+        create_file('rubocop-todo.yml', ['LineLength:',
+                                         '  Enabled: false'])
         create_file('.rubocop.yml', ['inherit_from: rubocop-todo.yml'])
-        expect { cli.run(['--auto-gen-config']) }.to exit_with_code(1)
-        expect($stderr.string).to eq('Remove rubocop-todo.yml from the ' \
-                                     'current configuration before ' \
-                                     "generating it again.\n")
+        expect(cli.run(['--auto-gen-config'])).to eq(1)
+        expect(IO.readlines('rubocop-todo.yml')[7..-1].map(&:chomp))
+          .to eq(['# Offense count: 1',
+                  'LineLength:',
+                  '  Max: 85',
+                  '',
+                  '# Offense count: 1',
+                  '# Cop supports --auto-correct.',
+                  'SpaceAroundOperators:',
+                  '  Enabled: false',
+                  '',
+                  '# Offense count: 2',
+                  '# Cop supports --auto-correct.',
+                  'TrailingWhitespace:',
+                  '  Enabled: false'])
+
+        # Create new CLI instance to avoid using chached configuration.
+        new_cli = described_class.new
+
+        expect(new_cli.run).to eq(0)
       end
 
       it 'exits with error if file arguments are given' do
