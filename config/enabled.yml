@@ -134,7 +134,7 @@ DefWithParentheses:
 DeprecatedHashMethods:
   Description: 'Checks for use of deprecated Hash methods.'
   Enabled: true
-  
+
 Documentation:
   Description: 'Document classes and non-namespace modules.'
   Enabled: true
@@ -206,7 +206,7 @@ FormatString:
 GlobalVars:
   Description: 'Do not introduce global variables.'
   Enabled: true
-  
+
 HashSyntax:
   Description: >-
                  Prefer Ruby 1.9 hash syntax { a: 1, b: 2 } over 1.8 syntax
@@ -672,6 +672,10 @@ StringConversionInInterpolation:
 
 UnreachableCode:
   Description: 'Unreachable code.'
+  Enabled: true
+
+UselessAccessModifier:
+  Description: 'Checks for useless access modifiers.'
   Enabled: true
 
 UselessAssignment:
