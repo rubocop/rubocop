@@ -4,7 +4,7 @@ module Rubocop
   module Cop
     module Style
       # This cop checks for excessive nesting of conditional and looping
-      # constructs. Despite the cop's name, blocks are not considered as a
+      # constructs. Despite the cop's name, blocks are not considered as an
       # extra level of nesting.
       #
       # The maximum level of nesting allowed is configurable.
@@ -27,12 +27,15 @@ module Rubocop
         def check_nesting_level(node, max, current_level)
           if NESTING_BLOCKS.include?(node.type)
             unless node.loc.respond_to?(:keyword) &&
-                node.loc.keyword.is?('elsif')
+                   node.loc.keyword.is?('elsif')
               current_level += 1
             end
             if current_level > max
-              add_offense(node, :expression, message(max)) do
-                self.max = current_level
+              self.max = current_level
+              unless part_of_ignored_node?(node)
+                add_offense(node, :expression, message(max)) do
+                  ignore_node(node)
+                end
               end
             end
           end

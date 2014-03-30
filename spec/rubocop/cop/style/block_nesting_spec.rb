@@ -26,9 +26,7 @@ describe Rubocop::Cop::Style::BlockNesting, :config do
     expect_nesting_offenses(source, [3])
   end
 
-  it 'registers a single offense for `Max + 2` levels of `if` nesting' do
-    pending 'The logic to avoid duplicates broke the to_allow value, which ' \
-            'is more important to get right than having duplicate warnings.'
+  it 'registers one offense for `Max + 2` levels of `if` nesting' do
     source = ['if a',
               '  if b',
               '    if c',
@@ -38,24 +36,7 @@ describe Rubocop::Cop::Style::BlockNesting, :config do
               '    end',
               '  end',
               'end']
-    # Reporting the offense as either line 3 or line 4 would be reasonable,
-    # but not both.
     expect_nesting_offenses(source, [3], 4)
-  end
-
-  # When this above pending spec is fixed, this will be redundant.
-  it 'calculates correct auto-gen for `Max + 2` levels of `if` nesting' do
-    source = ['if a',
-              '  if b',
-              '    if c',
-              '      if d',
-              '        puts d',
-              '      end',
-              '    end',
-              '  end',
-              'end']
-    inspect_source(cop, source)
-    expect(cop.config_to_allow_offenses['Max']).to eq(4)
   end
 
   it 'registers 2 offenses' do
