@@ -33,6 +33,14 @@ describe Rubocop::Cop::Style::OpMethod do
     expect(cop.offenses).to be_empty
   end
 
+  it 'does not register an offense for arg named _other' do
+    inspect_source(cop,
+                   ['def <=>(_other)',
+                    '  0',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'does not register an offense for []' do
     inspect_source(cop,
                    ['def [](index)',

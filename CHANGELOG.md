@@ -50,6 +50,8 @@
 * [#919](https://github.com/bbatsov/rubocop/issues/919): Don't avoid auto-correction in HashSyntax when there is missing space around operator. ([@jonas054][])
 * Fixed handling of floats in `NumericLiterals`. ([@bbatsov][])
 * [#927](https://github.com/bbatsov/rubocop/issues/927): Let `--auto-gen-config` overwrite an existing `rubocop-todo.yml` file instead of asking the user to remove it. ([@jonas054][])
+* [#936](https://github.com/bbatsov/rubocop/issues/936): Allow `_other` as well as `other` in `OpMethod`. ([@bbatsov][])
+
 
 ## 0.19.1 (17/03/2014)
 

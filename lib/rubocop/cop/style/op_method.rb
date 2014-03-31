@@ -10,13 +10,13 @@ module Rubocop
 
         BLACKLISTED = [:+@, :-@, :[], :[]=, :<<]
 
-        TARGET_ARGS = s(:args, s(:arg, :other))
+        TARGET_ARGS = [s(:args, s(:arg, :other)), s(:args, s(:arg, :_other))]
 
         def on_def(node)
           name, args, _body = *node
 
           if name !~ /\A\w/ && !BLACKLISTED.include?(name) &&
-              args.children.size == 1 && args != TARGET_ARGS
+              args.children.size == 1 && !TARGET_ARGS.include?(args)
             add_offense(args.children[0], :expression,
                         format(MSG, name))
           end
