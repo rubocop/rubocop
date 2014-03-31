@@ -377,6 +377,9 @@ SpaceInsideHashLiteralBraces:
     - space
     - no_space
 
+Tab:
+  TabWidth: 2
+
 TrailingComma:
   EnforcedStyleForMultiline: no_comma
   SupportedStyles:

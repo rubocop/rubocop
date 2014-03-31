@@ -14,4 +14,27 @@ describe Rubocop::Cop::Style::Tab do
     inspect_source(cop, ["(x = \"\t\")"])
     expect(cop.offenses).to be_empty
   end
+
+  context 'auto-corrects unwanted tabs' do
+    it 'single line' do
+      new_source = autocorrect_source(cop, "\tx = 0")
+      expect(new_source).to eq('  x = 0')
+    end
+
+    it 'multiple lines' do
+      new_source = autocorrect_source(cop,
+                                      ['if a',
+                                       "  \t\tcase b",
+                                       "  \t  when c then",
+                                       "\t  \tend",
+                                       'end'])
+      expect_source =
+%q(if a
+      case b
+      when c then
+      end
+end)
+      expect(new_source).to eq(expect_source)
+    end
+  end
 end
