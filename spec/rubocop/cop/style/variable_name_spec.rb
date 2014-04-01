@@ -96,6 +96,60 @@ describe Rubocop::Cop::Style::VariableName, :config do
     include_examples 'always accepted'
   end
 
+  context 'when configured for white space' do
+    let(:cop_config) { { 'EnforcedStyle' => 'white space' } }
+
+    it 'registers an offense for snake case in local variable name' do
+      inspect_source(cop, 'my_local = 1')
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.highlights).to eq(['my_local'])
+      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
+                                                 'snake_case')
+    end
+
+    it 'registers an offense for opposite + correct' do
+      inspect_source(cop, ['my local = 1',
+                           'myLocal = 1'])
+      expect(cop.highlights).to eq(['myLocal'])
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+    end
+
+    it 'registers an offense for snake case in instance variable name' do
+      inspect_source(cop, '@my_attribute = 3')
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.highlights).to eq(['@my_attribute'])
+    end
+
+    it 'registers an offense for snake case in setter name' do
+      inspect_source(cop, 'self.my_setter = 2')
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.highlights).to eq(['my_setter'])
+    end
+
+    it 'accepts white space in local variable name' do
+      inspect_source(cop, 'my local = 1')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts white space in instance variable name' do
+      inspect_source(cop, '@my attribute = 3')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts white space in setter name' do
+      inspect_source(cop, 'self.my setter = 2')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense for an unrecognised style' do
+      inspect_source(cop, 'my_Local = 1')
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.highlights).to eq(['my_Local'])
+    end
+
+    include_examples 'always accepted'
+  end
+
   context 'when configured with a bad value' do
     let(:cop_config) { { 'EnforcedStyle' => 'other' } }
 

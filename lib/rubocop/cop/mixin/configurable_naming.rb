@@ -9,6 +9,7 @@ module Rubocop
 
       SNAKE_CASE = /^@?[\da-z_]+[!?=]?$/
       CAMEL_CASE = /^@?[a-z][\da-zA-Z]+[!?=]?$/
+      WHITE_SPACE = /^@?[\da-z[:space:]]+[!?=]?$/
 
       def check(node, range)
         return unless range
@@ -18,15 +19,32 @@ module Rubocop
 
         if matches_config?(name)
           correct_style_detected
+        elsif (different_style = matches_any_config?(name))
+          add_offense(node, range, message(style)) do
+            different_style_detected(different_style)
+          end
         else
           add_offense(node, range, message(style)) do
-            opposite_style_detected
+            unrecognized_style_detected
           end
         end
       end
 
+      def matches_any_config?(name)
+        case name
+        when SNAKE_CASE then :snake_case
+        when CAMEL_CASE then :camelCase
+        when WHITE_SPACE then :"white space"
+        else nil
+        end
+      end
+
       def matches_config?(name)
-        name =~ (style == :snake_case ? SNAKE_CASE : CAMEL_CASE)
+        name =~ case style
+                when :snake_case then SNAKE_CASE
+                when :camelCase then CAMEL_CASE
+                when :"white space" then WHITE_SPACE
+                end
       end
 
       # Returns a range containing the method name after the given regexp and

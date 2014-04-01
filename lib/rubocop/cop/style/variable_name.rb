@@ -4,7 +4,7 @@ module Rubocop
   module Cop
     module Style
       # This cop makes sure that all variables use the configured style,
-      # snake_case or camelCase, for their names.
+      # snake_case or camelCase or white space, for their names.
       class VariableName < Cop
         include ConfigurableNaming
 

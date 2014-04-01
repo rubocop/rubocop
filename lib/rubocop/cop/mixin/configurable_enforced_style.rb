@@ -10,6 +10,12 @@ module Rubocop
         both_styles_detected if config_to_allow_offenses['Enabled']
       end
 
+      def different_style_detected(different_style)
+        self.config_to_allow_offenses ||=
+          { parameter_name => different_style.to_s }
+        both_styles_detected if config_to_allow_offenses['Enabled']
+      end
+
       def correct_style_detected
         # Enabled:true indicates, later when the opposite style is detected,
         # that the correct style is used somewhere.
