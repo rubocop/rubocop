@@ -56,9 +56,10 @@ module Rubocop
         def message(method)
           case style
           when :compact
-            "Provide an exception object as an argument to #{method}."
+            "Provide an exception object as an argument to `#{method}`."
           when :exploded
-            "Provide an exception class and message as arguments to #{method}."
+            "Provide an exception class and message as " \
+            "arguments to `#{method}`."
           end
         end
       end
