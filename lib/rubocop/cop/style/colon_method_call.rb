@@ -6,7 +6,7 @@ module Rubocop
       # This cop checks for methods invoked via the :: operator instead
       # of the . operator (like FileUtils::rmdir instead of FileUtils.rmdir).
       class ColonMethodCall < Cop
-        MSG = 'Do not use :: for method calls.'
+        MSG = 'Do not use `::` for method calls.'
 
         def on_send(node)
           receiver, _method_name, *_args = *node
