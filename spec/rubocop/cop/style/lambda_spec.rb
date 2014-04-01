@@ -9,7 +9,7 @@ describe Rubocop::Cop::Style::Lambda do
     inspect_source(cop, ['f = lambda { |x| x }'])
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
-      .to eq(['Use the new lambda literal syntax ->(params) {...}.'])
+      .to eq(['Use the new lambda literal syntax `->(params) {...}`.'])
   end
 
   it 'accepts the new lambda literal with single-line body' do
@@ -24,7 +24,7 @@ describe Rubocop::Cop::Style::Lambda do
                          'end'])
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
-      .to eq(['Use the lambda method for multi-line lambdas.'])
+      .to eq(['Use the `lambda` method for multi-line lambdas.'])
   end
 
   it 'accepts the old lambda syntax with multi-line body' do
