@@ -10,7 +10,7 @@ describe Rubocop::Cop::Style::Alias do
                    ['alias :ala :bala'])
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
-      .to eq(['Use alias_method instead of alias.'])
+      .to eq(['Use `alias_method` instead of `alias`.'])
   end
 
   it 'autocorrects alias with symbol args' do
@@ -23,7 +23,7 @@ describe Rubocop::Cop::Style::Alias do
                    ['alias ala bala'])
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
-      .to eq(['Use alias_method instead of alias.'])
+      .to eq(['Use `alias_method` instead of `alias`.'])
   end
 
   it 'autocorrects alias with bareword args' do

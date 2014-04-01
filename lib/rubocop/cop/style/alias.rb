@@ -6,7 +6,7 @@ module Rubocop
       # The purpose of the this cop is advise the use of
       # alias_method over the alias keyword whenever possible.
       class Alias < Cop
-        MSG = 'Use alias_method instead of alias.'
+        MSG = 'Use `alias_method` instead of `alias`.'
 
         def on_block(node)
           method, _args, body = *node
