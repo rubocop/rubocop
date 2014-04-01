@@ -34,7 +34,7 @@ module Rubocop
         def message(method_name, prefix)
           new_name = method_name.sub(prefix, '')
           new_name << '?' unless method_name.end_with?('?')
-          "Rename #{method_name} to #{new_name}."
+          "Rename `#{method_name}` to `#{new_name}`."
         end
 
         def prefix_blacklist
