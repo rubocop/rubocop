@@ -21,6 +21,8 @@ describe Rubocop::Cop::Style::RaiseArgs, :config do
                            '  raise Ex.new(msg)',
                            'end'])
       expect(cop.offenses.size).to eq(1)
+      expect(cop.messages)
+        .to eq(['Provide an exception object as an argument to `raise`.'])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
@@ -46,6 +48,9 @@ describe Rubocop::Cop::Style::RaiseArgs, :config do
     it 'reports an offense for a raise with exception object' do
       inspect_source(cop, ['raise Ex.new(msg)'])
       expect(cop.offenses.size).to eq(1)
+      expect(cop.messages)
+        .to eq(['Provide an exception class and message ' \
+                'as arguments to `raise`.'])
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'compact')
     end
 
