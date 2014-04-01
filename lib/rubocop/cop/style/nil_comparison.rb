@@ -13,7 +13,7 @@ module Rubocop
       #  # good
       #  if x.nil?
       class NilComparison < Cop
-        MSG = 'Prefer the use of the nil? predicate.'
+        MSG = 'Prefer the use of the `nil?` predicate.'
 
         OPS = [:==, :===]
 
