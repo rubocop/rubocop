@@ -24,6 +24,8 @@ describe Rubocop::Cop::Style::SingleLineBlockParams, :config do
                     'end'])
     expect(cop.offenses.size).to eq(7)
     expect(cop.offenses.map(&:line).sort).to eq((2..8).to_a)
+    expect(cop.messages.first)
+      .to eq('Name `reduce` block params `|a, e|`.')
   end
 
   it 'allows calls with proper argument names' do
