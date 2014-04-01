@@ -12,7 +12,7 @@ module Rubocop
         end
 
         def error_message
-          'Favor until over while for negative conditions.'
+          'Favor `until` over `while` for negative conditions.'
         end
 
         private

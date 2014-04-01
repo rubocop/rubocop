@@ -13,7 +13,7 @@ describe Rubocop::Cop::Style::NegatedWhile do
                     'some_method while !a_condition'
                    ])
     expect(cop.messages).to eq(
-      ['Favor until over while for negative conditions.'] * 2)
+      ['Favor `until` over `while` for negative conditions.'] * 2)
   end
 
   it 'registers an offense for while with "not" condition' do
@@ -23,7 +23,7 @@ describe Rubocop::Cop::Style::NegatedWhile do
                     'end',
                     'some_method while not a_condition'])
     expect(cop.messages).to eq(
-      ['Favor until over while for negative conditions.'] * 2)
+      ['Favor `until` over `while` for negative conditions.'] * 2)
     expect(cop.offenses.map(&:line)).to eq([1, 4])
   end
 
