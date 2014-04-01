@@ -415,7 +415,7 @@ describe Rubocop::CLI, :isolated_environment do
         # Create new CLI instance to avoid using chached configuration.
         new_cli = described_class.new
 
-        expect(new_cli.run).to eq(0)
+        expect(new_cli.run(['example1.rb'])).to eq(0)
       end
 
       it 'exits with error if file arguments are given' do
