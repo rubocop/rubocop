@@ -16,7 +16,7 @@ module Rubocop
         end
 
         def error_message
-          'Favor unless over if for negative conditions.'
+          'Favor `unless` over `if` for negative conditions.'
         end
 
         private
