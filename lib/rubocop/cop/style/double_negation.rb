@@ -15,7 +15,7 @@ module Rubocop
       #   # good
       #   !something.nil?
       class DoubleNegation < Cop
-        MSG = 'Avoid the use of double negation (!!).'
+        MSG = 'Avoid the use of double negation (`!!`).'
 
         def on_send(node)
           return unless not_node?(node)
