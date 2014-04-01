@@ -5,7 +5,7 @@ module Rubocop
     module Style
       # This cop checks for uses of *and* and *or*.
       class AndOr < Cop
-        MSG = 'Use %s instead of %s.'
+        MSG = 'Use `%s` instead of `%s`.'
 
         OPS = { 'and' => '&&', 'or' => '||' }
 

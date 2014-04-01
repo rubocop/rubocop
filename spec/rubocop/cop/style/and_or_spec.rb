@@ -9,14 +9,14 @@ describe Rubocop::Cop::Style::AndOr do
     inspect_source(cop,
                    ['test if a or b'])
     expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(['Use || instead of or.'])
+    expect(cop.messages).to eq(['Use `||` instead of `or`.'])
   end
 
   it 'registers an offense for AND' do
     inspect_source(cop,
                    ['test if a and b'])
     expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(['Use && instead of and.'])
+    expect(cop.messages).to eq(['Use `&&` instead of `and`.'])
   end
 
   it 'accepts ||' do
