@@ -412,6 +412,7 @@ VariableName:
   SupportedStyles:
     - snake_case
     - camelCase
+    - white space
 
 WhileUntilModifier:
   MaxLineLength: 79
