@@ -17,7 +17,9 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
                     'end'])
     expect(cop.offenses.size).to eq(2)
     expect(cop.offenses
-             .map(&:line).sort).to eq([1, 5])
+            .map(&:line).sort).to eq([1, 5])
+    expect(cop.messages)
+      .to eq(['Use `attr_reader` to define trivial reader methods.'] * 2)
   end
 
   it 'finds trivial reader in a class' do
@@ -146,8 +148,9 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
                     '  end',
                     'end'])
     expect(cop.offenses.size).to eq(1)
-    expect(cop.offenses
-             .map(&:line).sort).to eq([3])
+    expect(cop.offenses .map(&:line).sort).to eq([3])
+    expect(cop.messages)
+      .to eq(['Use `attr_writer` to define trivial writer methods.'])
   end
 
   it 'does not find trivial writer with function calls' do
