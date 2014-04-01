@@ -7,7 +7,7 @@ module Rubocop
       class RescueModifier < Cop
         include CheckMethods
 
-        MSG = 'Avoid using rescue in its modifier form.'
+        MSG = 'Avoid using `rescue` in its modifier form.'
 
         def on_rescue(node)
           return if ignored_node?(node)
