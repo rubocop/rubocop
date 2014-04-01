@@ -10,7 +10,7 @@ module Rubocop
       # enhanced by check for by blocks & procs as arguments of the
       # methods.
       class CollectionMethods < Cop
-        MSG = 'Prefer %s over %s.'
+        MSG = 'Prefer `%s` over `%s`.'
 
         def on_block(node)
           method, _args, _body = *node

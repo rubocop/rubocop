@@ -20,14 +20,14 @@ describe Rubocop::Cop::Style::CollectionMethods, :config do
       inspect_source(cop, ["[1, 2, 3].#{method} { |e| e + 1 }"])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(["Prefer #{preferred_method} over #{method}."])
+        .to eq(["Prefer `#{preferred_method}` over `#{method}`."])
     end
 
     it "registers an offense for #{method} with proc param" do
       inspect_source(cop, ["[1, 2, 3].#{method}(&:test)"])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(["Prefer #{preferred_method} over #{method}."])
+        .to eq(["Prefer `#{preferred_method}` over `#{method}`."])
     end
 
     it "accepts #{method} with more than 1 param" do
