@@ -8,7 +8,7 @@ module Rubocop
       class TrivialAccessors < Cop
         include CheckMethods
 
-        MSG = 'Use attr_%s to define trivial %s methods.'
+        MSG = 'Use `attr_%s` to define trivial %s methods.'
 
         private
 
