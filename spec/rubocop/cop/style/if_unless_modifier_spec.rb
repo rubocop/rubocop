@@ -23,9 +23,9 @@ describe Rubocop::Cop::Style::IfUnlessModifier do
                     "    #{body}",
                     '  end'])
     expect(cop.messages).to eq(
-      ['Favor modifier if usage when you have a single-line' \
+      ['Favor modifier `if` usage when having a single-line' \
        ' body. Another good alternative is the usage of control flow' \
-       ' &&/||.'])
+       ' `&&`/`||`.'])
   end
 
   it 'registers an offense for short multiline if near an else etc' do
@@ -59,9 +59,9 @@ describe Rubocop::Cop::Style::IfUnlessModifier do
                          '  b',
                          'end'])
     expect(cop.messages).to eq(
-      ['Favor modifier unless usage when you have a single-line' \
+      ['Favor modifier `unless` usage when having a single-line' \
        ' body. Another good alternative is the usage of control flow' \
-       ' &&/||.'])
+       ' `&&`/`||`.'])
   end
 
   it 'accepts code with EOL comment since user might want to keep it' do

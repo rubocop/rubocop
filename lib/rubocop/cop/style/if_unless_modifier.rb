@@ -10,8 +10,8 @@ module Rubocop
         include StatementModifier
 
         def error_message(keyword)
-          "Favor modifier #{keyword} usage when you have a single-line body." \
-          ' Another good alternative is the usage of control flow &&/||.'
+          "Favor modifier `#{keyword}` usage when having a single-line body." \
+          ' Another good alternative is the usage of control flow `&&`/`||`.'
         end
 
         def investigate(processed_source)
