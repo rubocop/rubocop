@@ -166,7 +166,7 @@ own. You can run only the lint cops like this:
 $ rubocop -l
 ```
 
-Disabling any of the lint cops in generally a bad idea.
+Disabling any of the lint cops is generally a bad idea.
 
 #### Rails
 
