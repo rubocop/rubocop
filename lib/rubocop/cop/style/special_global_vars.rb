@@ -5,9 +5,9 @@ module Rubocop
     module Style
       # This cop looks for uses of Perl-style global variables.
       class SpecialGlobalVars < Cop
-        MSG_BOTH = 'Prefer %s from the English library, or %s over %s.'
-        MSG_ENGLISH = 'Prefer %s from the English library over %s.'
-        MSG_REGULAR = 'Prefer %s over %s.'
+        MSG_BOTH = 'Prefer `%s` from the English library, or `%s` over `%s`.'
+        MSG_ENGLISH = 'Prefer `%s` from the English library over `%s`.'
+        MSG_REGULAR = 'Prefer `%s` over `%s`.'
 
         PREFERRED_VARS = {
           '$:' => ['$LOAD_PATH'],
@@ -56,8 +56,8 @@ module Rubocop
           end
 
           # For now, we assume that lists are 2 items or less.  Easy grammar!
-          regular_msg = regular.join(' or ')
-          english_msg = english.join(' or ')
+          regular_msg = regular.join('` or `')
+          english_msg = english.join('` or `')
 
           if regular.length > 0 && english.length > 0
             format(MSG_BOTH, english_msg, regular_msg, global_var)

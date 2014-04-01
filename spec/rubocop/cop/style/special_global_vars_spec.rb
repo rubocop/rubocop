@@ -9,34 +9,35 @@ describe Rubocop::Cop::Style::SpecialGlobalVars do
     inspect_source(cop, ['puts $:'])
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
-      .to eq(['Prefer $LOAD_PATH over $:.'])
+      .to eq(['Prefer `$LOAD_PATH` over `$:`.'])
   end
 
   it 'registers an offense for $"' do
     inspect_source(cop, ['puts $"'])
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
-      .to eq(['Prefer $LOADED_FEATURES over $".'])
+      .to eq(['Prefer `$LOADED_FEATURES` over `$"`.'])
   end
 
   it 'registers an offense for $0' do
     inspect_source(cop, ['puts $0'])
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
-      .to eq(['Prefer $PROGRAM_NAME over $0.'])
+      .to eq(['Prefer `$PROGRAM_NAME` over `$0`.'])
   end
 
   it 'registers an offense for $$' do
     inspect_source(cop, ['puts $$'])
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
-      .to eq(['Prefer $PROCESS_ID or $PID from the English library over $$.'])
+      .to eq(['Prefer `$PROCESS_ID` or `$PID` from the English ' \
+              'library over `$$`.'])
   end
 
   it 'is clear about variables from the English library vs those not' do
     inspect_source(cop, ['puts $*'])
     expect(cop.messages)
-      .to eq(['Prefer $ARGV from the English library, or ARGV over $*.'])
+      .to eq(['Prefer `$ARGV` from the English library, or `ARGV` over `$*`.'])
   end
 
   it 'does not register an offense for backrefs like $1' do
