@@ -51,7 +51,7 @@ module Rubocop
           if receiver == target_node
             add_offense(node,
                         :expression,
-                        "Use self-assignment shorthand #{method_name}=.")
+                        "Use self-assignment shorthand `#{method_name}=`.")
           end
         end
 
@@ -64,7 +64,7 @@ module Rubocop
             operator = rhs.loc.operator.source
             add_offense(node,
                         :expression,
-                        "Use self-assignment shorthand #{operator}=.")
+                        "Use self-assignment shorthand `#{operator}=`.")
           end
         end
       end

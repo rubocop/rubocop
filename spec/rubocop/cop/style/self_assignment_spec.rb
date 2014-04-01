@@ -11,7 +11,7 @@ describe Rubocop::Cop::Style::SelfAssignment do
                      ["#{var} = #{var} #{op} y"])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(["Use self-assignment shorthand #{op}=."])
+        .to eq(["Use self-assignment shorthand `#{op}=`."])
     end
 
     it "accepts shorthand assignment for #{op} and #{var}" do
@@ -19,7 +19,7 @@ describe Rubocop::Cop::Style::SelfAssignment do
                      ["#{var} = #{var} #{op} y"])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(["Use self-assignment shorthand #{op}=."])
+        .to eq(["Use self-assignment shorthand `#{op}=`."])
     end
   end
 
@@ -29,7 +29,7 @@ describe Rubocop::Cop::Style::SelfAssignment do
                      ["#{var} = #{var} #{op} y"])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(["Use self-assignment shorthand #{op}=."])
+        .to eq(["Use self-assignment shorthand `#{op}=`."])
     end
 
     it "accepts shorthand assignment for #{op} and #{var}" do
@@ -37,7 +37,7 @@ describe Rubocop::Cop::Style::SelfAssignment do
                      ["#{var} = #{var} #{op} y"])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(["Use self-assignment shorthand #{op}=."])
+        .to eq(["Use self-assignment shorthand `#{op}=`."])
     end
   end
 end
