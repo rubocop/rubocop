@@ -23,9 +23,9 @@ describe Rubocop::Cop::Style::ParenthesesAroundCondition, :config do
                         ])
     expect(cop.offenses.size).to eq(9)
     expect(cop.messages.first)
-      .to eq("Don't use parentheses around the condition of an if.")
+      .to eq("Don't use parentheses around the condition of an `if`.")
     expect(cop.messages.last)
-      .to eq("Don't use parentheses around the condition of a while.")
+      .to eq("Don't use parentheses around the condition of a `while`.")
   end
 
   it 'accepts parentheses if there is no space between the keyword and (.' do

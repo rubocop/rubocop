@@ -47,7 +47,7 @@ module Rubocop
         def message(node)
           kw = node.loc.keyword.source
           article = kw == 'while' ? 'a' : 'an'
-          "Don't use parentheses around the condition of #{article} #{kw}."
+          "Don't use parentheses around the condition of #{article} `#{kw}`."
         end
 
         def autocorrect(node)
