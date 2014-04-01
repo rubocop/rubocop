@@ -12,7 +12,7 @@ module Rubocop
         # parameter (the maximum number of something that's allowed).
         include ConfigurableMax
 
-        MSG = 'Use %w or %W for array of words.'
+        MSG = 'Use `%w` or `%W` for array of words.'
 
         def on_array(node)
           array_elems = node.children

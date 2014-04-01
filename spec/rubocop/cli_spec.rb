@@ -115,7 +115,8 @@ describe Rubocop::CLI, :isolated_environment do
                   # An offense that moves around during auto-correction will
                   # appear to be duplicated:
                   "#{e}:3:3: C: Keep a blank line before and after `private`.",
-                  "#{e}:4:7: C: [Corrected] Use %w or %W for array of words.",
+                  "#{e}:4:7: C: [Corrected] Use `%w` or `%W` " \
+                  'for array of words.',
                   "#{e}:4:8: C: [Corrected] Prefer single-quoted strings " \
                   "when you don't need string interpolation or special " \
                   'symbols.',
