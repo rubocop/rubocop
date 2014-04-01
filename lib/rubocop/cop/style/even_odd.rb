@@ -14,8 +14,8 @@ module Rubocop
       #   # good
       #   if x.even?
       class EvenOdd < Cop
-        MSG_EVEN = 'Use Fixnum.even?'
-        MSG_ODD = 'Use Fixnum.odd?'
+        MSG_EVEN = 'Replace with `Fixnum#even?`.'
+        MSG_ODD = 'Replace with `Fixnum#odd?`.'
 
         ZERO = s(:int, 0)
         ONE = s(:int, 1)
