@@ -42,7 +42,7 @@ module Rubocop
         end
 
         def error_message(node)
-          "Never use then for multi-line #{node.loc.keyword.source}."
+          "Never use `then` for multi-line `#{node.loc.keyword.source}`."
         end
       end
     end
