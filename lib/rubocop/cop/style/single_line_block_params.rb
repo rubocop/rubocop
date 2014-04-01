@@ -34,7 +34,7 @@ module Rubocop
 
         def message(method_name)
           args = target_args(method_name).join(', ')
-          "Name `#{method_name}` block params |#{args}|."
+          "Name `#{method_name}` block params `|#{args}|`."
         end
 
         def methods
