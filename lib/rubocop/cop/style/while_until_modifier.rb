@@ -25,7 +25,7 @@ module Rubocop
         private
 
         def message(keyword)
-          "Favor modifier #{keyword} usage when you have a single-line body."
+          "Favor modifier `#{keyword}` usage when having a single-line body."
         end
       end
     end
