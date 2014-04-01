@@ -6,7 +6,7 @@ module Rubocop
       # This cops checks for uses of Proc.new where Kernel#proc
       # would be more appropriate.
       class Proc < Cop
-        MSG = 'Use proc instead of Proc.new.'
+        MSG = 'Use `proc` instead of `Proc.new`.'
 
         TARGET = s(:send, s(:const, nil, :Proc), :new)
 
