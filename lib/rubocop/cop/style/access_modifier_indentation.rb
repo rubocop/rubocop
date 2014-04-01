@@ -9,7 +9,7 @@ module Rubocop
         include AutocorrectAlignment
         include ConfigurableEnforcedStyle
 
-        MSG = '%s access modifiers like %s.'
+        MSG = '%s access modifiers like `%s`.'
 
         PRIVATE_NODE = s(:send, nil, :private)
         PROTECTED_NODE = s(:send, nil, :protected)

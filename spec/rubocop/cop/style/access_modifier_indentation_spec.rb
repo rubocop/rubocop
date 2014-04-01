@@ -18,7 +18,7 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       'end'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(['Indent access modifiers like private.'])
+        .to eq(['Indent access modifiers like `private`.'])
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'outdent')
     end
 
@@ -31,7 +31,7 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       '  def test; end',
                       'end'])
       expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Indent access modifiers like private.'])
+      expect(cop.messages).to eq(['Indent access modifiers like `private`.'])
       # Not aligned according to `indent` or `outdent` style:
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
@@ -47,7 +47,7 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       '  def test; end',
                       'end'])
       expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Indent access modifiers like private.'])
+      expect(cop.messages).to eq(['Indent access modifiers like `private`.'])
       # No EnforcedStyle can allow both aligments:
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
@@ -63,7 +63,7 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       '  def test; end',
                       'end'])
       expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Indent access modifiers like public.'])
+      expect(cop.messages).to eq(['Indent access modifiers like `public`.'])
       # No EnforcedStyle can allow both aligments:
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
@@ -78,7 +78,7 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       'end'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(['Indent access modifiers like private.'])
+        .to eq(['Indent access modifiers like `private`.'])
     end
 
     it 'registers an offense for misaligned private in class ' \
@@ -92,7 +92,7 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       'end'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(['Indent access modifiers like private.'])
+        .to eq(['Indent access modifiers like `private`.'])
     end
 
     it 'registers an offense for misaligned private in module ' \
@@ -106,7 +106,7 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       'end'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(['Indent access modifiers like private.'])
+        .to eq(['Indent access modifiers like `private`.'])
     end
 
     it 'registers an offense for misaligned protected' do
@@ -119,7 +119,7 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       'end'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(['Indent access modifiers like protected.'])
+        .to eq(['Indent access modifiers like `protected`.'])
     end
 
     it 'accepts properly indented private' do
@@ -168,7 +168,7 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
                       'end'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(['Indent access modifiers like private.'])
+        .to eq(['Indent access modifiers like `private`.'])
     end
 
     it 'auto-corrects incorrectly indented access modifiers' do
@@ -193,7 +193,7 @@ describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
 
   context 'when EnforcedStyle is set to outdent' do
     let(:cop_config) { { 'EnforcedStyle' => 'outdent' } }
-    let(:indent_msg) { 'Outdent access modifiers like private.' }
+    let(:indent_msg) { 'Outdent access modifiers like `private`.' }
 
     it 'registers offense for private indented to method depth in a class' do
       inspect_source(cop,

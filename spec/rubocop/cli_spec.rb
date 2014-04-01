@@ -110,7 +110,7 @@ describe Rubocop::CLI, :isolated_environment do
           .to eq(["#{e}:2:1: C: Missing top-level class documentation " \
                   'comment.',
                   "#{e}:3:1: C: [Corrected] Indent access modifiers like " \
-                  'private.',
+                  '`private`.',
                   "#{e}:3:1: C: Keep a blank line before and after private.",
                   # An offense that moves around during auto-correction will
                   # appear to be duplicated:
