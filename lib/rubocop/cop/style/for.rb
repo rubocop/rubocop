@@ -12,7 +12,7 @@ module Rubocop
 
         def on_for(node)
           if style == :each
-            add_offense(node, :keyword, 'Prefer *each* over *for*.') do
+            add_offense(node, :keyword, 'Prefer `each` over `for`.') do
               opposite_style_detected
             end
           else
@@ -34,7 +34,7 @@ module Rubocop
             range = Parser::Source::Range.new(processed_source.buffer,
                                               end_pos - 'each'.length,
                                               end_pos)
-            add_offense(range, range, 'Prefer *for* over *each*.') do
+            add_offense(range, range, 'Prefer `for` over `each`.') do
               opposite_style_detected
             end
           else

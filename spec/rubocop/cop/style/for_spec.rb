@@ -15,7 +15,7 @@ describe Rubocop::Cop::Style::For, :config do
                       '    puts n',
                       '  end',
                       'end'])
-      expect(cop.messages).to eq(['Prefer *each* over *for*.'])
+      expect(cop.messages).to eq(['Prefer `each` over `for`.'])
       expect(cop.highlights).to eq(['for'])
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'for')
     end
@@ -30,7 +30,7 @@ describe Rubocop::Cop::Style::For, :config do
                       '    puts n',
                       '  end',
                       'end'])
-      expect(cop.messages).to eq(['Prefer *each* over *for*.'])
+      expect(cop.messages).to eq(['Prefer `each` over `for`.'])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
@@ -75,7 +75,7 @@ describe Rubocop::Cop::Style::For, :config do
                       '    puts n',
                       '  end',
                       'end'])
-      expect(cop.messages).to eq(['Prefer *for* over *each*.'])
+      expect(cop.messages).to eq(['Prefer `for` over `each`.'])
       expect(cop.highlights).to eq(['each'])
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'each')
     end
@@ -90,7 +90,7 @@ describe Rubocop::Cop::Style::For, :config do
                       '    puts n',
                       '  end',
                       'end'])
-      expect(cop.messages).to eq(['Prefer *for* over *each*.'])
+      expect(cop.messages).to eq(['Prefer `for` over `each`.'])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
