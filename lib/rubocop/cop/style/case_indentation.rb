@@ -31,11 +31,11 @@ module Rubocop
           if pos.column == expected_column
             correct_style_detected
           else
-            msg = 'Indent when ' + if indent
-                                     "one step more than #{base}."
-                                   else
-                                     "as deep as #{base}."
-                                   end
+            msg = 'Indent `when` ' + if indent
+                                       "one step more than `#{base}`."
+                                     else
+                                       "as deep as `#{base}`."
+                                     end
             add_offense(when_node, pos, msg) do
               if pos.column == base_column(case_node, alternative_style)
                 opposite_style_detected

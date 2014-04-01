@@ -36,7 +36,7 @@ describe Rubocop::Cop::Style::CaseIndentation do
                     "  'output2'",
                     'end']
           inspect_source(cop, source)
-          expect(cop.messages).to eq(['Indent when as deep as case.'])
+          expect(cop.messages).to eq(['Indent `when` as deep as `case`.'])
           expect(cop.config_to_allow_offenses).to eq('IndentWhenRelativeTo' =>
                                                      'end')
         end
@@ -49,7 +49,7 @@ describe Rubocop::Cop::Style::CaseIndentation do
                     "    'output2'",
                     'end']
           inspect_source(cop, source)
-          expect(cop.messages).to eq(['Indent when as deep as case.'])
+          expect(cop.messages).to eq(['Indent `when` as deep as `case`.'])
           expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
         end
 
@@ -67,7 +67,7 @@ describe Rubocop::Cop::Style::CaseIndentation do
                     "  'output2'",
                     'end']
           inspect_source(cop, source)
-          expect(cop.messages).to eq(['Indent when as deep as case.'])
+          expect(cop.messages).to eq(['Indent `when` as deep as `case`.'])
           expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
         end
       end
@@ -81,7 +81,7 @@ describe Rubocop::Cop::Style::CaseIndentation do
                   '        end',
                   'end']
         inspect_source(cop, source)
-        expect(cop.messages).to eq(['Indent when as deep as case.'] * 2)
+        expect(cop.messages).to eq(['Indent `when` as deep as `case`.'] * 2)
       end
 
       it "accepts a when clause that's equally indented with case" do
@@ -174,7 +174,8 @@ describe Rubocop::Cop::Style::CaseIndentation do
                     "           'output2'",
                     '         end']
           inspect_source(cop, source)
-          expect(cop.messages).to eq(['Indent when one step more than case.'])
+          expect(cop.messages)
+            .to eq(['Indent `when` one step more than `case`.'])
         end
       end
 
@@ -206,7 +207,7 @@ describe Rubocop::Cop::Style::CaseIndentation do
                   '']
         inspect_source(cop, source)
         expect(cop.messages)
-          .to eq(['Indent when one step more than case.'] * 5)
+          .to eq(['Indent `when` one step more than `case`.'] * 5)
       end
     end
   end
@@ -237,7 +238,7 @@ describe Rubocop::Cop::Style::CaseIndentation do
                     "    'output2'",
                     'end']
           inspect_source(cop, source)
-          expect(cop.messages).to eq(['Indent when as deep as end.'])
+          expect(cop.messages).to eq(['Indent `when` as deep as `end`.'])
         end
       end
     end
@@ -267,7 +268,8 @@ describe Rubocop::Cop::Style::CaseIndentation do
                     "           'output2'",
                     '         end']
           inspect_source(cop, source)
-          expect(cop.messages).to eq(['Indent when one step more than end.'])
+          expect(cop.messages)
+            .to eq(['Indent `when` one step more than `end`.'])
           expect(cop.config_to_allow_offenses).to eq('IndentWhenRelativeTo' =>
                                                      'case')
         end
@@ -280,7 +282,8 @@ describe Rubocop::Cop::Style::CaseIndentation do
                     "         'output2'",
                     '       end']
           inspect_source(cop, source)
-          expect(cop.messages).to eq(['Indent when one step more than end.'])
+          expect(cop.messages)
+            .to eq(['Indent `when` one step more than `end`.'])
           expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
         end
       end
