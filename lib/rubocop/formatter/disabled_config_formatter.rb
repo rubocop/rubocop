@@ -29,6 +29,10 @@ module Rubocop
 
       def finished(inspected_files)
         output.puts HEADING
+
+        # Syntax isn't a real cop and it can't be disabled.
+        @cops_with_offenses.delete('Syntax')
+
         @cops_with_offenses.sort.each do |cop_name, offense_count|
           output.puts
           cfg = self.class.config_to_allow_offenses[cop_name]

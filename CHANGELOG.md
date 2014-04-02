@@ -7,6 +7,7 @@
 * [#940](https://github.com/bbatsov/rubocop/issues/940): Fixed `UselessAccessModifier` not handling `attr_*` correctly. ([@fshowalter][])
 * `NegatedIf` properly handles negated `unless` condition.
 * `NegatedWhile` properly handles negated `until` condition.
+* [#925](https://github.com/bbatsov/rubocop/issues/925): Do not disable the `Syntax` cop in output from `--auto-gen-config`. ([@jonas054][])
 
 ## 0.20.0 (02/04/2014)
 
@@ -61,7 +62,6 @@
 * Fixed handling of floats in `NumericLiterals`. ([@bbatsov][])
 * [#927](https://github.com/bbatsov/rubocop/issues/927): Let `--auto-gen-config` overwrite an existing `rubocop-todo.yml` file instead of asking the user to remove it. ([@jonas054][])
 * [#936](https://github.com/bbatsov/rubocop/issues/936): Allow `_other` as well as `other` in `OpMethod`. ([@bbatsov][])
-
 
 ## 0.19.1 (17/03/2014)
 
