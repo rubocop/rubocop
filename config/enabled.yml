@@ -716,8 +716,8 @@ Output:
   Description: 'Checks for calls to puts, print, etc.'
   Enabled: true
 
-ReadAttribute:
-  Description: 'Prefer self[:attribute] over read_attribute(:attribute).'
+ReadWriteAttribute:
+  Description: 'Checks for read_attribute(:attr) and write_attribute(:attr, val).'
   Enabled: true
 
 ScopeArgs:

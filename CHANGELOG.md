@@ -31,6 +31,7 @@
 * Renamed `FavorUnlessOverNegatedIf` to `NegatedIf`. ([@bbatsov][])
 * Renamed `FavorUntilOverNegatedWhile`to `NegatedWhile`. ([@bbatsov][])
 * Renamed `HashMethods` to `DeprecatedHashMethods`. ([@bbatsov][])
+* Renamed `ReadAttribute` to `ReadWriteAttribute` and extended it to check for uses of `write_attribute`. ([@bbatsov][])
 * Add experimental support for Ruby 2.2 (development version) by falling back to Ruby 2.1 parser. ([@yujinakayama][])
 
 ### Bugs fixed

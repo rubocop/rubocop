@@ -437,7 +437,7 @@ HasAndBelongsToMany:
   Include:
     - app/models/*.rb
 
-ReadAttribute:
+ReadWriteAttribute:
   Include:
     - app/models/*.rb
 

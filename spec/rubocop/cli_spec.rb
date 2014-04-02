@@ -1200,7 +1200,7 @@ describe Rubocop::CLI, :isolated_environment do
                                                'read_attribute(:test)'])
         expect(cli.run(['--format', 'simple', '-R', 'app/models/example1.rb']))
           .to eq(1)
-        expect($stdout.string).to include('Prefer self[:attribute]')
+        expect($stdout.string).to include('Prefer self[:attr]')
       end
 
       it 'with configation option true in one dir runs rails cops there' do
@@ -1223,8 +1223,8 @@ describe Rubocop::CLI, :isolated_environment do
         expect(cli.run(%w(--format simple dir1 dir2))).to eq(1)
         expect($stdout.string)
           .to eq(['== dir1/app/models/example1.rb ==',
-                  'C:  2:  1: Prefer self[:attribute] over read_attribute' \
-                  '(:attribute).',
+                  'C:  2:  1: Prefer self[:attr] over read_attribute' \
+                  '(:attr).',
                   '',
                   '2 files inspected, 1 offense detected',
                   ''].join("\n"))
@@ -1237,7 +1237,7 @@ describe Rubocop::CLI, :isolated_environment do
                                      '  RunRailsCops: false'])
         expect(cli.run(['--format', 'simple', '-R', 'app/models/example1.rb']))
           .to eq(1)
-        expect($stdout.string).to include('Prefer self[:attribute]')
+        expect($stdout.string).to include('Prefer self[:attr]')
       end
     end
 
@@ -1257,7 +1257,7 @@ describe Rubocop::CLI, :isolated_environment do
         create_file('dir1/.rubocop.yml', ['AllCops:',
                                           '  RunRailsCops: true',
                                           '',
-                                          'ReadAttribute:',
+                                          'ReadWriteAttribute:',
                                           '  Exclude:',
                                           '    - example2.rb',
                                           '',
@@ -1272,8 +1272,8 @@ describe Rubocop::CLI, :isolated_environment do
         expect(cli.run(%w(--format simple dir1 dir2))).to eq(1)
         expect($stdout.string)
           .to eq(['== dir1/app/models/example1.rb ==',
-                  'C:  2:  1: Prefer self[:attribute] over read_attribute' \
-                  '(:attribute).',
+                  'C:  2:  1: Prefer self[:attr] over read_attribute' \
+                  '(:attr).',
                   'C:  3: 15: default_scope expects a block as its sole' \
                   ' argument.',
                   '',
