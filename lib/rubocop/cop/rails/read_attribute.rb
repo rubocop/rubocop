@@ -13,7 +13,7 @@ module Rubocop
       #   # good
       #   self[:attr]
       class ReadAttribute < Cop
-        MSG = 'Prefer self[:attribute] over read_attribute(:attribute).'
+        MSG = 'Prefer `self[:attribute]` over `read_attribute(:attribute)`.'
 
         def on_send(node)
           receiver, method_name, *_args = *node

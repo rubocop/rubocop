@@ -10,7 +10,7 @@ module Rubocop
       class ActionFilter < Cop
         include ConfigurableEnforcedStyle
 
-        MSG = 'Prefer %s over %s.'
+        MSG = 'Prefer `%s` over `%s`.'
 
         FILTER_METHODS = [:before_filter, :skip_before_filter,
                           :after_filter, :around_filter]

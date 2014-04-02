@@ -5,7 +5,7 @@ module Rubocop
     module Rails
       # This cop checks for the use of old-style attribute validation macros.
       class Validation < Cop
-        MSG = 'Use the new "sexy" validations (validates ...).'
+        MSG = 'Use the new "sexy" validations (`validates` ...).'
 
         BLACKLIST = [:validates_acceptance_of,
                      :validates_confirmation_of,

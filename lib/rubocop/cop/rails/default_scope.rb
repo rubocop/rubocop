@@ -14,7 +14,7 @@ module Rubocop
       #   # correct
       #   default_scope { something }
       class DefaultScope < Cop
-        MSG = 'default_scope expects a block as its sole argument.'
+        MSG = '`default_scope` expects a block as its sole argument.'
 
         def on_send(node)
           return unless command?(:default_scope, node)
