@@ -2,7 +2,7 @@
 
 module Rubocop
   module Cop
-    # Commissioner class is responsible for processing the AST and delagating
+    # Commissioner class is responsible for processing the AST and delegating
     # work to the specified cops.
     class Commissioner < Parser::AST::Processor
       attr_reader :errors
