@@ -112,9 +112,11 @@ describe Rubocop::CLI, :isolated_environment do
                   "#{e}:3:1: C: [Corrected] Indent access modifiers like " \
                   '`private`.',
                   "#{e}:3:1: C: Keep a blank line before and after `private`.",
+                  "#{e}:3:1: W: Useless `private` access modifier.",
                   # An offense that moves around during auto-correction will
                   # appear to be duplicated:
                   "#{e}:3:3: C: Keep a blank line before and after `private`.",
+                  "#{e}:3:3: W: Useless `private` access modifier.",
                   "#{e}:4:7: C: [Corrected] Use `%w` or `%W` " \
                   'for array of words.',
                   "#{e}:4:8: C: [Corrected] Prefer single-quoted strings " \
@@ -413,7 +415,7 @@ describe Rubocop::CLI, :isolated_environment do
                   'TrailingWhitespace:',
                   '  Enabled: false'])
 
-        # Create new CLI instance to avoid using chached configuration.
+        # Create new CLI instance to avoid using cached configuration.
         new_cli = described_class.new
 
         expect(new_cli.run(['example1.rb'])).to eq(0)
