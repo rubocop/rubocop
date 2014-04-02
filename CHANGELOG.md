@@ -2,11 +2,13 @@
 
 ## master (unreleased)
 
+## 0.20.0 (02/04/2014)
+
 ### New features
 
 * New cop `GuardClause` checks for conditionals that can be replaced by guard clauses. ([@bbatsov][])
 * New cop `EmptyInterpolation` checks for empty interpolation in double-quoted strings. ([@bbatsov][])
-* [#899](https://github.com/bbatsov/rubocop/issues/899): Make LineEndConcatenation cop << aware. ([@mockdeep][])
+* [#899](https://github.com/bbatsov/rubocop/issues/899): Make `LineEndConcatenation` cop `<<` aware. ([@mockdeep][])
 * [#896](https://github.com/bbatsov/rubocop/issues/896): New option `--fail-level` changes minimum severity for exit with error code. ([@hiroponz][])
 * [#893](https://github.com/bbatsov/rubocop/issues/893): New option `--force-exclusion` forces excluding files specified in the configuration `Exclude` even if they are explicitly passed as arguments. ([@yujinakayama][])
 * `VariableInterpolation` cop does auto-correction. ([@bbatsov][])
@@ -36,7 +38,7 @@
 
 ### Bugs fixed
 
-* [#926](https://github.com/bbatsov/rubocop/issues/926): Fixed BlockNesting not auto-generating correctly. ([@tmorris-fiksu][])
+* [#926](https://github.com/bbatsov/rubocop/issues/926): Fixed `BlockNesting` not auto-generating correctly. ([@tmorris-fiksu][])
 * [#904](https://github.com/bbatsov/rubocop/issues/904): Fixed a NPE in `LiteralInInterpolation`. ([@bbatsov][])
 * [#904](https://github.com/bbatsov/rubocop/issues/904): Fixed a NPE in `StringConversionInInterpolation`. ([@bbatsov][])
 * [#892](https://github.com/bbatsov/rubocop/issues/892): Make sure `Include` and `Exclude` paths in a `.rubocop.yml` are interpreted as relative to the directory of that file. ([@jonas054][])
@@ -49,7 +51,7 @@
 * The `--only` option now enables the given cop in case it is disabled in configuration. ([@jonas054][])
 * Fix path resolution so that the default exclusion of `vendor` directories works. ([@jonas054][])
 * [#908](https://github.com/bbatsov/rubocop/issues/908): Fixed hanging while auto correct for `SpaceAfterComma` and `SpaceInsideBrackets`. ([@hiroponz][])
-* [#919](https://github.com/bbatsov/rubocop/issues/919): Don't avoid auto-correction in HashSyntax when there is missing space around operator. ([@jonas054][])
+* [#919](https://github.com/bbatsov/rubocop/issues/919): Don't avoid auto-correction in `HashSyntax` when there is missing space around operator. ([@jonas054][])
 * Fixed handling of floats in `NumericLiterals`. ([@bbatsov][])
 * [#927](https://github.com/bbatsov/rubocop/issues/927): Let `--auto-gen-config` overwrite an existing `rubocop-todo.yml` file instead of asking the user to remove it. ([@jonas054][])
 * [#936](https://github.com/bbatsov/rubocop/issues/936): Allow `_other` as well as `other` in `OpMethod`. ([@bbatsov][])
