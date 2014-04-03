@@ -271,6 +271,44 @@ describe Rubocop::CLI, :isolated_environment do
                   ''].join("\n"))
       end
 
+      it 'can correct WordArray and SpaceAfterComma offenses' do
+        create_file('example.rb',
+                    ['# encoding: utf-8',
+                     "f(type: ['offline','offline_payment'],",
+                     "  bar_colors: ['958c12','953579','ff5800','0085cc'])"])
+        expect(cli.run(%w(-D --auto-correct --format o))).to eq(1)
+        expect($stdout.string)
+          .to eq(['',
+                  '4  SpaceAfterComma',
+                  '2  WordArray',
+                  '--',
+                  '6  Total',
+                  '',
+                  ''].join("\n"))
+        expect(IO.read('example.rb'))
+          .to eq(['# encoding: utf-8',
+                  'f(type: %w(offline offline_payment),',
+                  '  bar_colors: %w(958c12 953579 ff5800 0085cc))',
+                  ''].join("\n"))
+      end
+
+      it 'can correct SpaceAfterComma and HashSyntax offenses' do
+        create_file('example.rb',
+                    ['# encoding: utf-8',
+                     "I18n.t('description',:property_name => property.name)"])
+        expect(cli.run(%w(-D --auto-correct --format emacs))).to eq(1)
+        expect($stdout.string)
+          .to eq(["#{abs('example.rb')}:2:21: C: [Corrected] " \
+                  "SpaceAfterComma: Space missing after comma.",
+                  "#{abs('example.rb')}:2:22: C: [Corrected] " \
+                  "HashSyntax: Use the new Ruby 1.9 hash syntax.",
+                  ''].join("\n"))
+        expect(IO.read('example.rb'))
+          .to eq(['# encoding: utf-8',
+                  "I18n.t('description', property_name: property.name)",
+                  ''].join("\n"))
+      end
+
       it 'can correct HashSyntax and SpaceAroundOperators offenses' do
         create_file('example.rb',
                     ['# encoding: utf-8',

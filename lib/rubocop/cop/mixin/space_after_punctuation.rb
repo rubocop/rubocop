@@ -25,7 +25,7 @@ module Rubocop
 
       def autocorrect(token)
         @corrections << lambda do |corrector|
-          corrector.insert_after(token.pos, ' ')
+          corrector.replace(token.pos, token.pos.source + ' ')
         end
       end
     end
