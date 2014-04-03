@@ -32,4 +32,9 @@ describe Rubocop::Cop::Style::NonNilCheck do
     corrected = autocorrect_source(cop, '!x.nil?')
     expect(corrected).to eq 'x'
   end
+
+  it 'does not blow up when autocorrecting implicit receiver' do
+    corrected = autocorrect_source(cop, '!nil?')
+    expect(corrected).to eq 'self'
+  end
 end
