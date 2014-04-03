@@ -5,8 +5,8 @@
 ### Bugs fixed
 
 * [#940](https://github.com/bbatsov/rubocop/issues/940): Fixed `UselessAccessModifier` not handling `attr_*` correctly. ([@fshowalter][])
-* `NegatedIf` properly handles negated `unless` condition.
-* `NegatedWhile` properly handles negated `until` condition.
+* `NegatedIf` properly handles negated `unless` condition. ([@bbatsov][])
+* `NegatedWhile` properly handles negated `until` condition. ([@bbatsov][])
 * [#925](https://github.com/bbatsov/rubocop/issues/925): Do not disable the `Syntax` cop in output from `--auto-gen-config`. ([@jonas054][])
 
 ## 0.20.0 (02/04/2014)
