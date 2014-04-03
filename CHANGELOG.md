@@ -5,6 +5,8 @@
 ### Bugs fixed
 
 * [#940](https://github.com/bbatsov/rubocop/issues/940): Fixed `UselessAccessModifier` not handling `attr_*` correctly. ([@fshowalter][])
+* `NegatedIf` properly handles negated `unless` condition.
+* `NegatedWhile` properly handles negated `until` condition.
 
 ## 0.20.0 (02/04/2014)
 

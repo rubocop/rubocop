@@ -17,6 +17,17 @@ describe Rubocop::Cop::Style::NegatedIf do
        'conditions.'] * 2)
   end
 
+  it 'registers an offense for unless with exclamation point condition' do
+    inspect_source(cop,
+                   ['unless !a_condition',
+                    '  some_method',
+                    'end',
+                    'some_method unless !a_condition'
+                   ])
+    expect(cop.messages).to eq(['Favor `if` over `unless` for negative ' \
+                                'conditions.'] * 2)
+  end
+
   it 'registers an offense for if with "not" condition' do
     inspect_source(cop,
                    ['if not a_condition',
@@ -78,4 +89,10 @@ describe Rubocop::Cop::Style::NegatedIf do
     corrected = autocorrect_source(cop, 'something if !x.even?')
     expect(corrected).to eq 'something unless x.even?'
   end
+
+  it 'autocorrects by replacing unless not with if' do
+    corrected = autocorrect_source(cop, 'something unless !x.even?')
+    expect(corrected).to eq 'something if x.even?'
+  end
+
 end

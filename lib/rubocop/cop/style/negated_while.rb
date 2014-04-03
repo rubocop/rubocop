@@ -7,12 +7,22 @@ module Rubocop
       class NegatedWhile < Cop
         include NegativeConditional
 
+        MSG = 'Favor `%s` over `%s` for negative conditions.'
+
         def on_while(node)
           check(node)
         end
 
-        def error_message
-          'Favor `until` over `while` for negative conditions.'
+        def on_until(node)
+          check(node)
+        end
+
+        def message(node)
+          if node.type == :while
+            format(MSG, 'until', 'while')
+          else
+            format(MSG, 'while', 'until')
+          end
         end
 
         private
@@ -22,7 +32,9 @@ module Rubocop
             condition, _body, _rest = *node
             # unwrap the negated portion of the condition (a send node)
             pos_condition, _method, = *condition
-            corrector.replace(node.loc.keyword, 'until')
+            corrector.replace(
+              node.loc.keyword,
+              node.type == :while ? 'until' : 'while')
             corrector.replace(condition.loc.expression,
                               pos_condition.loc.expression.source)
           end

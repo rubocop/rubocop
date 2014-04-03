@@ -16,6 +16,17 @@ describe Rubocop::Cop::Style::NegatedWhile do
       ['Favor `until` over `while` for negative conditions.'] * 2)
   end
 
+  it 'registers an offense for until with exclamation point condition' do
+    inspect_source(cop,
+                   ['until !a_condition',
+                    '  some_method',
+                    'end',
+                    'some_method until !a_condition'
+                   ])
+    expect(cop.messages)
+      .to eq(['Favor `while` over `until` for negative conditions.'] * 2)
+  end
+
   it 'registers an offense for while with "not" condition' do
     inspect_source(cop,
                    ['while (not a_condition)',
@@ -42,5 +53,10 @@ describe Rubocop::Cop::Style::NegatedWhile do
   it 'autocorrects by replacing while not with until' do
     corrected = autocorrect_source(cop, 'something while !x.even?')
     expect(corrected).to eq 'something until x.even?'
+  end
+
+  it 'autocorrects by replacing until not with while' do
+    corrected = autocorrect_source(cop, 'something until !x.even?')
+    expect(corrected).to eq 'something while x.even?'
   end
 end
