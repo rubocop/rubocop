@@ -13,6 +13,7 @@
 * [#953](https://github.com/bbatsov/rubocop/pull/953): Fix auto-correction bug in `NonNilCheck`. ([@bbatsov][])
 * [#952](https://github.com/bbatsov/rubocop/pull/952): Handle implicit receiver in `StringConversionInInterpolation`. ([@bbatsov][])
 * [#956](https://github.com/bbatsov/rubocop/pull/956): Apply `ClassMethods` check only on `class`/`module` bodies. ([@bbatsov][])
+* [#945](https://github.com/bbatsov/rubocop/issues/945): Fix SpaceBeforeFirstArg cop for multiline argument and exclude assignments. ([@cschramm][])
 
 ## 0.20.0 (02/04/2014)
 
@@ -842,3 +843,4 @@
 [@hiroponz]: https://github.com/hiroponz
 [@tamird]: https://github.com/tamird
 [@fshowalter]: https://github.com/fshowalter
+[@cschramm]: https://github.com/cschramm
