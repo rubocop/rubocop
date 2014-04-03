@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+* [#940](https://github.com/bbatsov/rubocop/issues/940): Fixed `UselessAccessModifier` not handling attr_* correctly. ([@fshowalter][])
+
 ## 0.20.0 (02/04/2014)
 
 ### New features
