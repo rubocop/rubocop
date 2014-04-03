@@ -49,6 +49,44 @@ describe Rubocop::Cop::Lint::UselessAccessModifier do
     end
   end
 
+  context 'when an access modifier is followed by attr_*' do
+    let(:source) do
+      [
+        'class SomeClass',
+        '  protected',
+        '  attr_accessor :some_property',
+        'end'
+      ]
+    end
+
+    it 'does not register an offense' do
+      inspect_source(cop, source)
+      expect(cop.offenses.size).to eq(0)
+    end
+  end
+
+  context 'when an access modifier is followed by a ' \
+    'class method defined on constant' do
+    let(:source) do
+      [
+        'class SomeClass',
+        '  protected',
+        '  def SomeClass.some_method',
+        '  end',
+        'end'
+      ]
+    end
+
+    it 'registers an offense' do
+      inspect_source(cop, source)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
+        .to eq('Useless `protected` access modifier.')
+      expect(cop.offenses.first.line).to eq(2)
+      expect(cop.highlights).to eq(['protected'])
+    end
+  end
+
   context 'when consecutive access modifiers' do
     let(:source) do
       [

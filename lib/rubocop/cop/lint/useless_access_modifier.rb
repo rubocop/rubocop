@@ -21,7 +21,7 @@ module Rubocop
           body_nodes = body.type == :begin ? body.children : [body]
 
           body_nodes.each do |child_node|
-            check_for_access_modifier(child_node)
+            check_for_access_modifier(child_node) ||
             check_for_instance_method(child_node)
           end
 
@@ -39,7 +39,8 @@ module Rubocop
         end
 
         def check_for_instance_method(node)
-          return unless node.type == :def
+          return unless node.type == :def ||
+            node.type == :send
 
           @access_modifier_node = nil
         end
