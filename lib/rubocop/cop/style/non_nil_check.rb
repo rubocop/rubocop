@@ -60,8 +60,12 @@ module Rubocop
         def autocorrect_non_nil(node, inner_node)
           @corrections << lambda do |corrector|
             receiver, _method, _args = *inner_node
-            corrector.replace(node.loc.expression,
-                              receiver.loc.expression.source)
+            if receiver
+              corrector.replace(node.loc.expression,
+                                receiver.loc.expression.source)
+            else
+              corrector.replace(node.loc.expression, 'self')
+            end
           end
         end
       end

@@ -10,6 +10,7 @@
 * [#925](https://github.com/bbatsov/rubocop/issues/925): Do not disable the `Syntax` cop in output from `--auto-gen-config`. ([@jonas054][])
 * [#943](https://github.com/bbatsov/rubocop/issues/943): Fix auto-correction interference problem between `SpaceAfterComma` and other cops. ([@jonas054][])
 * [#954](https://github.com/bbatsov/rubocop/pull/954): Fix auto-correction bug in `NilComparison`. ([@bbatsov][])
+* [#953](https://github.com/bbatsov/rubocop/pull/953): Fix auto-correction bug in `NonNilCheck`. ([@bbatsov][])
 
 ## 0.20.0 (02/04/2014)
 
