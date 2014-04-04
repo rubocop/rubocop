@@ -144,8 +144,8 @@ module Rubocop
         Parser::Source::Range.new(@processed_source.buffer, begin_pos, end_pos)
       end
 
-      # Returns for example a bare `if` node if the given node is an `if` whith
-      # calls chained to the end of it.
+      # Returns, for example, a bare `if` node if the given node is an `if`
+      # with calls chained to the end of it.
       def first_part_of_call_chain(node)
         while node
           case node.type

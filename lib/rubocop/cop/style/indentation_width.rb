@@ -141,7 +141,7 @@ module Rubocop
           return if starts_with_access_modifier?(body_node)
 
           # Don't check indentation if the line doesn't start with the body.
-          # For example lines like "else do_something".
+          # For example, lines like "else do_something".
           first_char_pos_on_line = body_node.loc.expression.source_line =~ /\S/
           return unless body_node.loc.column == first_char_pos_on_line
 
