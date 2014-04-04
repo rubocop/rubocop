@@ -8,8 +8,30 @@ module Rubocop
       class ClassMethods < Cop
         MSG = 'Use `self.%s` instead of `%s.%s`.'
 
-        # TODO: Check if we're in a class/module
-        def on_defs(node)
+        def on_class(node)
+          _name, _superclass, body = *node
+          check(body)
+        end
+
+        def on_module(node)
+          _name, body = *node
+          check(body)
+        end
+
+        private
+
+        def check(node)
+          return unless node
+
+          if node.type == :defs
+            check_defs(node)
+          elsif node.type == :begin
+            defs_nodes = node.children.compact.select { |n| n.type == :defs }
+            defs_nodes.each { |n| check_defs(n) }
+          end
+        end
+
+        def check_defs(node)
           definee, method_name, _args, _body = *node
 
           if definee.type == :const
@@ -18,8 +40,6 @@ module Rubocop
                         message(class_name, method_name))
           end
         end
-
-        private
 
         def message(class_name, method_name)
           format(MSG, method_name, class_name, method_name)

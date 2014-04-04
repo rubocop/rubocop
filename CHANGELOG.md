@@ -12,6 +12,7 @@
 * [#954](https://github.com/bbatsov/rubocop/pull/954): Fix auto-correction bug in `NilComparison`. ([@bbatsov][])
 * [#953](https://github.com/bbatsov/rubocop/pull/953): Fix auto-correction bug in `NonNilCheck`. ([@bbatsov][])
 * [#952](https://github.com/bbatsov/rubocop/pull/952): Handle implicit receiver in `StringConversionInInterpolation`. ([@bbatsov][])
+* [#956](https://github.com/bbatsov/rubocop/pull/956): Apply `ClassMethods` check only on `class`/`module` bodies. ([@bbatsov][])
 
 ## 0.20.0 (02/04/2014)
 
