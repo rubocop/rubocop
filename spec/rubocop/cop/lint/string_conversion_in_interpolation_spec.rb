@@ -8,6 +8,8 @@ describe Rubocop::Cop::Lint::StringConversionInInterpolation do
   it 'registers an offense for #to_s in interpolation' do
     inspect_source(cop, '"this is the #{result.to_s}"')
     expect(cop.offenses.size).to eq(1)
+    expect(cop.messages)
+      .to eq(['Redundant use of `Object#to_s` in interpolation.'])
   end
 
   it 'detects #to_s in an interpolation with several expressions' do
@@ -27,7 +29,9 @@ describe Rubocop::Cop::Lint::StringConversionInInterpolation do
 
   it 'does not explode on implicit receiver' do
     inspect_source(cop, '"#{to_s}"')
-    expect(cop.offenses).to be_empty
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.messages)
+      .to eq(['Use `self` instead of `Object#to_s` in interpolation.'])
   end
 
   it 'does not explode on empty interpolation' do
@@ -38,5 +42,10 @@ describe Rubocop::Cop::Lint::StringConversionInInterpolation do
   it 'autocorrects by removing the redundant to_s' do
     corrected = autocorrect_source(cop, ['"some #{something.to_s}"'])
     expect(corrected).to eq '"some #{something}"'
+  end
+
+  it 'autocorrects implicit receiver by replacing to_s with self' do
+    corrected = autocorrect_source(cop, ['"some #{to_s}"'])
+    expect(corrected).to eq '"some #{self}"'
   end
 end
