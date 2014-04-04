@@ -26,6 +26,16 @@ describe Rubocop::Cop::Lint::SpaceBeforeFirstArg do
       inspect_source(cop, ['something[:x]'])
       expect(cop.offenses).to be_empty
     end
+
+    it 'accepts a method call with space before a multiline arg' do
+      inspect_source(cop, "something [\n  'foo',\n  'bar'\n]")
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts an assignment without space before first arg' do
+      inspect_source(cop, ['a.something=c', 'a.something,b=c,d'])
+      expect(cop.offenses).to be_empty
+    end
   end
 
   context 'for method calls with parentheses' do
