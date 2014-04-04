@@ -21,4 +21,9 @@ describe Rubocop::Cop::Style::NilComparison do
     corrected = autocorrect_source(cop, 'x == nil')
     expect(corrected).to eq 'x.nil?'
   end
+
+  it 'autocorrects by replacing === nil with .nil?' do
+    corrected = autocorrect_source(cop, 'x === nil')
+    expect(corrected).to eq 'x.nil?'
+  end
 end
