@@ -25,6 +25,11 @@ describe Rubocop::Cop::Lint::StringConversionInInterpolation do
     expect(cop.offenses).to be_empty
   end
 
+  it 'does not explode on implicit receiver' do
+    inspect_source(cop, '"#{to_s}"')
+    expect(cop.offenses).to be_empty
+  end
+
   it 'does not explode on empty interpolation' do
     inspect_source(cop, '"this is #{} silly"')
     expect(cop.offenses).to be_empty
