@@ -36,7 +36,23 @@ module Rubocop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
+          c = correction(node)
+          new_source = rewrite_node(node, c)
+
+          # Make the correction only if it doesn't change the AST.
+          @corrections << c if node == SourceParser.parse(new_source).ast
+        end
+
+        private
+
+        def rewrite_node(node, correction)
+          processed_source = SourceParser.parse(node.loc.expression.source)
+          c = correction(processed_source.ast)
+          Corrector.new(processed_source.buffer, [c]).rewrite
+        end
+
+        def correction(node)
+          lambda do |corrector|
             b, e = node.loc.begin, node.loc.end
             if b.is?('{')
               # If the left brace is immediately preceded by a word character,
@@ -52,8 +68,6 @@ module Rubocop
             end
           end
         end
-
-        private
 
         def get_block(node)
           case node.type
