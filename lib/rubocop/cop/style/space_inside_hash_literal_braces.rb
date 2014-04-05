@@ -30,6 +30,7 @@ module Rubocop
         def check(t1, t2)
           # No offense if line break inside.
           return if t1.pos.line < t2.pos.line
+          return if t2.type == :tCOMMENT # Also indicates there's a line break.
 
           is_empty_braces = t1.text == '{' && t2.text == '}'
           expect_space = if is_empty_braces

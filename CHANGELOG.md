@@ -16,6 +16,7 @@
 * [#945](https://github.com/bbatsov/rubocop/issues/945): Fix SpaceBeforeFirstArg cop for multiline argument and exclude assignments. ([@cschramm][])
 * [#948](https://github.com/bbatsov/rubocop/issues/948): `Blocks` cop avoids auto-correction if it would introduce a semantic change. ([@jonas054][])
 * [#946](https://github.com/bbatsov/rubocop/issues/946): Allow non-nil checks that are the final expressions of predicate method definitions in `NonNilCheck`. ([@bbatsov][])
+* [#957](https://github.com/bbatsov/rubocop/issues/957): Allow space + comment inside parentheses, braces, and square brackets. ([@jonas054][])
 
 ## 0.20.0 (02/04/2014)
 
