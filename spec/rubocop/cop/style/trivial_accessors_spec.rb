@@ -241,6 +241,16 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
              .map(&:line).sort).to eq([1])
   end
 
+  it 'finds DSL-style trivial writer' do
+    inspect_source(cop,
+                   ['def foo(val)',
+                    ' @foo = val',
+                    'end'])
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.offenses
+             .map(&:line).sort).to eq([1])
+  end
+
   it 'finds trivial writer in a class' do
     inspect_source(cop,
                    ['class TrivialFoo',
@@ -412,6 +422,18 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
                      [' def bar=(bar)',
                       '   @bar = bar',
                       ' end'])
+      expect(cop.offenses).to be_empty
+    end
+  end
+
+  context 'with DSL writers allowed' do
+    let(:cop_config) { { 'AllowDSLWriters' => true } }
+
+    it 'does not find DSL-style writer' do
+      inspect_source(cop,
+                     ['def foo(val)',
+                      ' @foo = val',
+                      'end'])
       expect(cop.offenses).to be_empty
     end
   end
