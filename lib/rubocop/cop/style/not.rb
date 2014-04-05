@@ -5,6 +5,8 @@ module Rubocop
     module Style
       # This cop checks for uses if the keyword *not* instead of !.
       class Not < Cop
+        include AutocorrectUnlessChangingAST
+
         MSG = 'Use `!` instead of `not`.'
 
         def on_send(node)
@@ -18,20 +20,6 @@ module Rubocop
         end
 
         private
-
-        def autocorrect(node)
-          c = correction(node)
-          new_source = rewrite_node(node, c)
-
-          # Make the correction only if it doesn't change the AST.
-          @corrections << c if node == SourceParser.parse(new_source).ast
-        end
-
-        def rewrite_node(node, correction)
-          processed_source = SourceParser.parse(node.loc.expression.source)
-          c = correction(processed_source.ast)
-          Corrector.new(processed_source.buffer, [c]).rewrite
-        end
 
         def correction(node)
           lambda do |corrector|
