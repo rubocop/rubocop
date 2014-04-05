@@ -6,6 +6,8 @@ module Rubocop
       # Check for uses of braces or do/end around single line or
       # multi-line blocks.
       class Blocks < Cop
+        include AutocorrectUnlessChangingAST
+
         MULTI_LINE_MSG = 'Avoid using {...} for multi-line blocks.'
         SINGLE_LINE_MSG = 'Prefer {...} over do...end for single-line blocks.'
 
@@ -35,21 +37,7 @@ module Rubocop
           end
         end
 
-        def autocorrect(node)
-          c = correction(node)
-          new_source = rewrite_node(node, c)
-
-          # Make the correction only if it doesn't change the AST.
-          @corrections << c if node == SourceParser.parse(new_source).ast
-        end
-
         private
-
-        def rewrite_node(node, correction)
-          processed_source = SourceParser.parse(node.loc.expression.source)
-          c = correction(processed_source.ast)
-          Corrector.new(processed_source.buffer, [c]).rewrite
-        end
 
         def correction(node)
           lambda do |corrector|
