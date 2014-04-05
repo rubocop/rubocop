@@ -13,12 +13,30 @@ module Rubocop
       #
       #  # good
       #  if x
+      #
+      # Non-nil checks are allowed if they are the final nodes of predicate.
+      #
+      #  # good
+      #  def signed_in?
+      #    !current_user.nil?
+      #  end
       class NonNilCheck < Cop
         MSG = 'Explicit non-nil checks are usually redundant.'
 
         NIL_NODE = s(:nil)
 
+        def on_def(node)
+          method_name, _args, body = *node
+          process_method(method_name, body)
+        end
+
+        def on_defs(node)
+          _scope, method_name, _args, body = *node
+          process_method(method_name, body)
+        end
+
         def on_send(node)
+          return if ignored_node?(node)
           receiver, method, args = *node
 
           return unless [:!=, :!].include?(method)
@@ -31,6 +49,18 @@ module Rubocop
         end
 
         private
+
+        def process_method(name, body)
+          # only predicate methods are handled differently
+          return unless name.to_s.end_with?('?')
+          return unless body
+
+          if body.type != :begin
+            ignore_node(body)
+          elsif body.type == :begin
+            ignore_node(body.children.last)
+          end
+        end
 
         def nil_check?(node)
           return false unless node && node.type == :send
