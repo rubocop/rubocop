@@ -21,7 +21,6 @@ module Rubocop
 
     def options_config=(options_config)
       loaded_config = ConfigLoader.load_file(options_config)
-      ConfigLoader.make_excludes_absolute(loaded_config)
       @options_config = ConfigLoader.merge_with_default(loaded_config,
                                                         options_config)
     end

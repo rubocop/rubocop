@@ -24,6 +24,40 @@ module Rubocop
       super(@hash)
     end
 
+    def make_excludes_absolute
+      if self['AllCops'] && self['AllCops']['Exclude']
+        self['AllCops']['Exclude'].map! do |exclude_elem|
+          if exclude_elem.is_a?(String) && !exclude_elem.start_with?('/')
+            File.join(base_dir_for_path_parameters, exclude_elem)
+          else
+            exclude_elem
+          end
+        end
+      end
+    end
+
+    def add_excludes_from_higher_level(highest_config)
+      if highest_config['AllCops'] && highest_config['AllCops']['Exclude']
+        self['AllCops'] ||= {}
+        excludes = self['AllCops']['Exclude'] ||= []
+        highest_config['AllCops']['Exclude'].each do |path|
+          unless path.is_a?(Regexp) || path.start_with?('/')
+            path = File.join(File.dirname(highest_config.loaded_path), path)
+          end
+          excludes << path unless excludes.include?(path)
+        end
+      end
+    end
+
+    def deprecation_check
+      return unless self['AllCops']
+      if self['AllCops']['Excludes']
+        yield 'AllCops/Excludes was renamed to AllCops/Exclude'
+      elsif self['AllCops']['Includes']
+        yield 'AllCops/Includes was renamed to AllCops/Include'
+      end
+    end
+
     def for_cop(cop)
       cop = cop.cop_name if cop.respond_to?(:cop_name)
       self[cop]

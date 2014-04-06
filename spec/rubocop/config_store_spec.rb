@@ -17,7 +17,7 @@ describe Rubocop::ConfigStore do
     allow(Rubocop::ConfigLoader)
       .to receive(:configuration_from_file) { |arg| arg }
     allow(Rubocop::ConfigLoader)
-      .to receive(:load_file) { |arg| "#{arg} loaded" }
+      .to receive(:load_file) { |arg| Rubocop::Config.new(arg) }
     allow(Rubocop::ConfigLoader)
       .to receive(:merge_with_default) { |config| "merged #{config}" }
   end
@@ -25,7 +25,7 @@ describe Rubocop::ConfigStore do
   describe '.for' do
     it 'always uses config specified in command line' do
       config_store.options_config = :options_config
-      expect(config_store.for('file1')).to eq('merged options_config loaded')
+      expect(config_store.for('file1')).to eq('merged options_config')
     end
 
     context 'when no config specified in command line' do

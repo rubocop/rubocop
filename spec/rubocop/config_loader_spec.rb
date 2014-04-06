@@ -325,40 +325,4 @@ describe Rubocop::ConfigLoader do
       end
     end
   end
-
-  describe '.deprecation_check' do
-    context 'when there is no AllCops configuration' do
-      it 'does not yield' do
-        expect do |b|
-          described_class.deprecation_check({}, &b)
-        end.not_to yield_control
-      end
-    end
-
-    context 'when there is AllCops configuration' do
-      it 'does not yield if there are no Excludes or Includes keys' do
-        config = { 'AllCops' => { 'Exclude' => [], 'Include' => [] } }
-
-        expect do |b|
-          described_class.deprecation_check(config, &b)
-        end.not_to yield_control
-      end
-
-      it 'yields if there are is an Includes key' do
-        config = { 'AllCops' => { 'Includes' => [] } }
-
-        expect do |b|
-          described_class.deprecation_check(config, &b)
-        end.to yield_with_args(String)
-      end
-
-      it 'yields if there are is an Excludes key' do
-        config = { 'AllCops' => { 'Excludes' => [] } }
-
-        expect do |b|
-          described_class.deprecation_check(config, &b)
-        end.to yield_with_args(String)
-      end
-    end
-  end
 end
