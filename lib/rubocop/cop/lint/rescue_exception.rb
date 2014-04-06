@@ -18,6 +18,17 @@ module Rubocop
         def targets_exception?(rescue_arg_node)
           Util.const_name(rescue_arg_node) == 'Exception'
         end
+
+        def autocorrect(node)
+          @corrections << lambda do |corrector|
+            corrector.remove(
+              range_with_surrounding_space(
+                node.children.first.children.first.loc.expression,
+                :left
+              )
+            )
+          end
+        end
       end
     end
   end
