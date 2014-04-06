@@ -400,6 +400,29 @@ describe Rubocop::CLI, :isolated_environment do
                   ''].join("\n"))
       end
 
+      it 'does not say [Corrected] if correction was avoided' do
+        create_file('example.rb', ['# encoding: utf-8',
+                                   'func a and b',
+                                   'not a && b',
+                                   'func a do b end'])
+        expect(cli.run(%w(-a -f simple))).to eq(1)
+        expect($stderr.string).to eq('')
+        expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
+                                             'func a and b',
+                                             'not a && b',
+                                             'func a do b end',
+                                             ''].join("\n"))
+        expect($stdout.string)
+          .to eq(['== example.rb ==',
+                  'C:  2:  8: Use && instead of and.',
+                  'C:  3:  1: Use ! instead of not.',
+                  'C:  4:  8: Prefer {...} over do...end for single-line ' \
+                  'blocks.',
+                  '',
+                  '1 file inspected, 3 offenses detected',
+                  ''].join("\n"))
+      end
+
       it 'should not hang SpaceAfterPunctuation and SpaceInsideParens' do
         create_file('example.rb',
                     ['# encoding: utf-8',
