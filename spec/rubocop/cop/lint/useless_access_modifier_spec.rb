@@ -34,6 +34,9 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
     let(:source) do
       [
         'class SomeClass',
+        '  def some_method',
+        '    puts 10',
+        '  end',
         '  protected',
         'end'
       ]
@@ -44,7 +47,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.message)
         .to eq('Useless `protected` access modifier.')
-      expect(cop.offenses.first.line).to eq(2)
+      expect(cop.offenses.first.line).to eq(5)
       expect(cop.highlights).to eq(['protected'])
     end
   end
