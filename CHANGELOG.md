@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#964](https://github.com/bbatsov/rubocop/issues/964): `RedundantBegin` cop does auto-correction. ([@tamird][])
 * [#966](https://github.com/bbatsov/rubocop/issues/966): `RescueException` cop does auto-correction. ([@tamird][])
 * [#967](https://github.com/bbatsov/rubocop/issues/967): `TrivialAccessors` cop does auto-correction. ([@tamird][])
 * [#963](https://github.com/bbatsov/rubocop/issues/963): Add `AllowDSLWriters` options to `TrivialAccessors`. ([@tamird][])
