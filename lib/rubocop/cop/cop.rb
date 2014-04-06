@@ -2,6 +2,8 @@
 
 module Rubocop
   module Cop
+    class CorrectionNotPossible < Exception; end
+
     # Store for all cops with helper functions
     class CopStore < ::Array
       # @return [Array<String>] list of types for current cops.
@@ -123,9 +125,13 @@ module Rubocop
         message ||= message(node)
         message = display_cop_names? ? "#{name}: #{message}" : message
 
-        autocorrect(node) if autocorrect?
-        @offenses << Offense.new(severity, location, message, name,
-                                 autocorrect?)
+        corrected = begin
+                      autocorrect(node) if autocorrect?
+                      autocorrect?
+                    rescue CorrectionNotPossible
+                      false
+                    end
+        @offenses << Offense.new(severity, location, message, name, corrected)
         yield if block_given?
       end
 
