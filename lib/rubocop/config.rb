@@ -97,7 +97,7 @@ module Rubocop
     # not relative to RuboCop's config directory since that wouldn't work.
     def base_dir_for_path_parameters
       if File.basename(loaded_path) == ConfigLoader::DOTFILE
-        File.dirname(loaded_path)
+        File.expand_path(File.dirname(loaded_path))
       else
         Dir.pwd
       end

@@ -1407,6 +1407,19 @@ describe Rubocop::CLI, :isolated_environment do
   end
 
   describe 'configuration from file' do
+    it 'allows the default configuration file as the -c argument' do
+      create_file('example.rb', ['# encoding: utf-8',
+                                 'x = 0',
+                                 'puts x'
+                                ])
+      create_file('.rubocop.yml', [])
+
+      expect(cli.run(%w(--format simple -c .rubocop.yml))).to eq(0)
+      expect($stdout.string)
+        .to eq(['', '1 file inspected, no offenses detected',
+                ''].join("\n"))
+    end
+
     it 'finds included files' do
       create_file('example', ['# encoding: utf-8',
                               'x = 0',
