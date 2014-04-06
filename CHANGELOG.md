@@ -6,6 +6,7 @@
 
 ### New features
 
+* [#965](https://github.com/bbatsov/rubocop/issues/965): `UselessAccessModifier` cop does auto-correction. ([@tamird][])
 * [#964](https://github.com/bbatsov/rubocop/issues/964): `RedundantBegin` cop does auto-correction. ([@tamird][])
 
 ### Bugs fixed

@@ -174,6 +174,28 @@ describe Rubocop::Cop::Lint::UselessAccessModifier do
     end
   end
 
+  context 'block modifiers' do
+    let(:source) do
+      [
+        'class SomeClass',
+        '  private',
+        'end'
+      ]
+    end
+
+    let(:corrected_source) do
+      [
+        'class SomeClass',
+        '  ',
+        'end'
+      ].join("\n")
+    end
+
+    it 'auto-corrects' do
+      expect(autocorrect_source(cop, source)).to eq(corrected_source)
+    end
+  end
+
   if RUBY_ENGINE == 'ruby' && RUBY_VERSION.start_with?('2.1')
     context 'ruby 2.1 style modifiers' do
       let(:source) do

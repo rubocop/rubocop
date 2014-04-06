@@ -28,7 +28,11 @@ module Rubocop
           add_offense_for_access_modifier
         end
 
-        private
+        def autocorrect(node)
+          @corrections << lambda do |corrector|
+            corrector.remove(node.loc.expression)
+          end
+        end
 
         def add_offense_for_access_modifier
           return unless @access_modifier_node
