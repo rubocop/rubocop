@@ -437,4 +437,58 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
       expect(cop.offenses).to be_empty
     end
   end
+
+  describe '#autocorrect' do
+    context 'matching reader' do
+      let(:source) do
+        ['def foo',
+         '  @foo',
+         'end']
+      end
+
+      let(:corrected_source) { 'attr_reader :foo' }
+
+      it 'autocorrects' do
+        expect(autocorrect_source(cop, source)).to eq(corrected_source)
+      end
+    end
+
+    context 'matching non-DSL writer' do
+      let(:source) do
+        ['def foo=(f)',
+         '  @foo=f',
+         'end']
+      end
+
+      let(:corrected_source) { 'attr_writer :foo' }
+
+      it 'autocorrects' do
+        expect(autocorrect_source(cop, source)).to eq(corrected_source)
+      end
+    end
+
+    context 'matching DSL-style writer' do
+      let(:source) do
+        ['def foo(f)',
+         '  @foo=f',
+         'end']
+      end
+
+      it 'does not autocorrect' do
+        expect(autocorrect_source(cop, source)).to eq(source.join("\n"))
+      end
+    end
+
+    context 'explicit receiver writer' do
+      let(:source) do
+        ['def derp.foo=(f)',
+         '  @foo=f',
+         'end']
+      end
+
+      it 'does not autocorrect' do
+        expect(autocorrect_source(cop, source)).to eq(source.join("\n"))
+      end
+    end
+  end
 end

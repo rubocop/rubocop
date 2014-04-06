@@ -89,6 +89,25 @@ module Rubocop
 
           method_name.to_s.chomp('=') == ivar_name[1..-1]
         end
+
+        def autocorrect(node)
+          method_name, args, body = *node
+          return unless node.type == :def
+          return unless names_match?(method_name, body)
+          kind = if trivial_writer?(method_name, args, body)
+                   return if dsl_writer?(method_name)
+                   'writer'
+                 elsif trivial_reader?(method_name, args, body)
+                   'reader'
+                 end
+
+          @corrections << lambda do |corrector|
+            corrector.replace(
+              node.loc.expression,
+              "attr_#{kind} :#{method_name.to_s.chomp('=')}"
+            )
+          end
+        end
       end
     end
   end
