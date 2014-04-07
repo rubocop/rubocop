@@ -6,6 +6,8 @@ module Rubocop
       # Check for uses of braces or do/end around single line or
       # multi-line blocks.
       class Blocks < Cop
+        include AutocorrectUnlessChangingAST
+
         MULTI_LINE_MSG = 'Avoid using {...} for multi-line blocks.'
         SINGLE_LINE_MSG = 'Prefer {...} over do...end for single-line blocks.'
 
@@ -35,8 +37,10 @@ module Rubocop
           end
         end
 
-        def autocorrect(node)
-          @corrections << lambda do |corrector|
+        private
+
+        def correction(node)
+          lambda do |corrector|
             b, e = node.loc.begin, node.loc.end
             if b.is?('{')
               # If the left brace is immediately preceded by a word character,
@@ -52,8 +56,6 @@ module Rubocop
             end
           end
         end
-
-        private
 
         def get_block(node)
           case node.type

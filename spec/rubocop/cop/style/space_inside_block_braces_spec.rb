@@ -34,6 +34,12 @@ describe Rubocop::Cop::Style::SpaceInsideBlockBraces do
       expect(cop.messages).to be_empty
     end
 
+    it 'accepts empty braces with comment and line break inside' do
+      inspect_source(cop, ['  each { # Comment',
+                           '  }'])
+      expect(cop.messages).to be_empty
+    end
+
     it 'registers an offense for empty braces with space inside' do
       inspect_source(cop, ['each { }'])
       expect(cop.messages).to eq(['Space inside empty braces detected.'])

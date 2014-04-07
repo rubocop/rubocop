@@ -20,6 +20,7 @@ module Rubocop
           _receiver, method_name, *args = *node
           return if args.empty?
           return if operator?(method_name)
+          return if method_name.to_s.end_with?('=')
 
           # Setter calls with parentheses are parsed this way. The parentheses
           # belong to the argument, not the send node.
@@ -28,7 +29,7 @@ module Rubocop
           arg1 = args.first.loc.expression
           arg1_with_space = range_with_surrounding_space(arg1, :left)
 
-          add_offense(nil, arg1) if arg1_with_space.source =~ /^\S/
+          add_offense(nil, arg1) if arg1_with_space.source =~ /\A\S/
         end
       end
     end

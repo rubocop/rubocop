@@ -26,6 +26,13 @@ describe Rubocop::Cop::Style::SpaceInsideBrackets do
     expect(cop.messages).to be_empty
   end
 
+  it 'accepts space inside square brackets if with comment' do
+    inspect_source(cop, ['a = [ # Comment',
+                         '     1, 2',
+                         '    ]'])
+    expect(cop.messages).to be_empty
+  end
+
   it 'accepts square brackets as method name' do
     inspect_source(cop, ['def Vector.[](*array)',
                          'end'])

@@ -43,7 +43,7 @@ describe Rubocop::Cop::Style::ClassMethods do
 
   it 'does not register an offense outside class/module bodies' do
     inspect_source(cop,
-                   ['def self.some_method',
+                   ['def Test.some_method',
                     '  do_something',
                     'end'])
     expect(cop.offenses).to be_empty

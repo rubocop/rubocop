@@ -27,6 +27,12 @@ describe Rubocop::Cop::Style::Blocks do
     expect(new_source).to eq('block { |x| }')
   end
 
+  it 'does not auto-correct do-end if {} would change the meaning' do
+    src = "s.subspec 'Subspec' do |sp| end"
+    new_source = autocorrect_source(cop, src)
+    expect(new_source).to eq(src)
+  end
+
   context 'when there are braces around a multi-line block' do
     it 'registers an offense in the simple case' do
       inspect_source(cop, ['each { |x|',

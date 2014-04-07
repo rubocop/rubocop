@@ -25,6 +25,18 @@ describe Rubocop::Cop::Style::SpaceInsideParens do
     expect(cop.messages).to be_empty
   end
 
+  it 'accepts parentheses with line break' do
+    inspect_source(cop, ['f(',
+                         '  1)'])
+    expect(cop.messages).to be_empty
+  end
+
+  it 'accepts parentheses with comment and line break' do
+    inspect_source(cop, ['f( # Comment',
+                         '  1)'])
+    expect(cop.messages).to be_empty
+  end
+
   it 'auto-corrects unwanted space' do
     new_source = autocorrect_source(cop, ['f( 3)',
                                           'g(3 )'])

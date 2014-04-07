@@ -107,9 +107,18 @@ describe Rubocop::Cop::Style::SpaceInsideHashLiteralBraces, :config do
       expect(cop.offenses).to be_empty
     end
 
-    it 'accepts multiline hashes for no space' do
+    it 'accepts multiline hash' do
       inspect_source(cop,
                      ['h = {',
+                      '      a: 1,',
+                      '      b: 2,',
+                      '}'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts multiline hash with comment' do
+      inspect_source(cop,
+                     ['h = { # Comment',
                       '      a: 1,',
                       '      b: 2,',
                       '}'])

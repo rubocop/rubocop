@@ -23,6 +23,36 @@ describe Rubocop::Cop::Style::NonNilCheck do
     expect(cop.highlights).to eq(['not x.nil?'])
   end
 
+  it 'does not register an offense if only expression in predicate' do
+    inspect_source(cop, ['def signed_in?',
+                         '  !current_user.nil?',
+                         'end'])
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'does not register an offense if only expression in class predicate' do
+    inspect_source(cop, ['def Test.signed_in?',
+                         '  !current_user.nil?',
+                         'end'])
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'does not register an offense if last expression in predicate' do
+    inspect_source(cop, ['def signed_in?',
+                         '  something',
+                         '  !current_user.nil?',
+                         'end'])
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'does not register an offense if last expression in class predicate' do
+    inspect_source(cop, ['def Test.signed_in?',
+                         '  something',
+                         '  !current_user.nil?',
+                         'end'])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'autocorrects by removing != nil' do
     corrected = autocorrect_source(cop, 'x != nil')
     expect(corrected).to eq 'x'
@@ -31,5 +61,10 @@ describe Rubocop::Cop::Style::NonNilCheck do
   it 'autocorrects by removing non-nil (!x.nil?) check' do
     corrected = autocorrect_source(cop, '!x.nil?')
     expect(corrected).to eq 'x'
+  end
+
+  it 'does not blow up when autocorrecting implicit receiver' do
+    corrected = autocorrect_source(cop, '!nil?')
+    expect(corrected).to eq 'self'
   end
 end
