@@ -8,6 +8,7 @@
 * [#967](https://github.com/bbatsov/rubocop/issues/967): `TrivialAccessors` cop does auto-correction. ([@tamird][])
 * [#963](https://github.com/bbatsov/rubocop/issues/963): Add `AllowDSLWriters` options to `TrivialAccessors`. ([@tamird][])
 * [#969](https://github.com/bbatsov/rubocop/issues/969): Let the `Debugger` cop check for forgotten calls to byebug. ([@bquorning][])
+* [#971](https://github.com/bbatsov/rubocop/issues/971): Configuration format deprecation warnings include the path to the problematic config file. ([@bcobb][])
 
 ### Bugs fixed
 
@@ -862,3 +863,4 @@
 [@fshowalter]: https://github.com/fshowalter
 [@cschramm]: https://github.com/cschramm
 [@bquorning]: https://github.com/bquorning
+[@bcobb]: https://github.com/bcobb
