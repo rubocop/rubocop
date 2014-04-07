@@ -5,6 +5,7 @@
 ### Bugs fixed
 
 * [#800](https://github.com/bbatsov/rubocop/issues/800): Do not report `[Corrected]` in `--auto-correct` mode if correction wasn't done. ([@jonas054][])
+* [#968](https://github.com/bbatsov/rubocop/issues/968): Fix bug when running Rubocop with `-c .rubocop.yml`. ([@bquorning][])
 
 ## 0.20.1 (05/04/2014)
 
@@ -853,3 +854,4 @@
 [@tamird]: https://github.com/tamird
 [@fshowalter]: https://github.com/fshowalter
 [@cschramm]: https://github.com/cschramm
+[@bquorning]: https://github.com/bquorning
