@@ -388,6 +388,15 @@ TrailingComma:
 TrivialAccessors:
   ExactNameMatch: false
   AllowPredicates: false
+  # Allows trivial writers that don't end in an equal sign. e.g.
+  #
+  # def on_exception(action)
+  #   @on_exception=action
+  # end
+  # on_exception :restart
+  #
+  # Commonly used in DSLs
+  AllowDSLWriters: false
   Whitelist:
     - to_ary
     - to_a
