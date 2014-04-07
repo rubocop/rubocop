@@ -537,7 +537,7 @@ With this in mind, you can use the offense count formatter to outline the offend
 cops and the number of offenses found for each by running:
 
 ```
-$ rubocop --format offenses
+$ rubocop --format offences
 
 87   Documentation
 12   DotPosition
