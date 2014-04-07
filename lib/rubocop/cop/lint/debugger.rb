@@ -12,6 +12,11 @@ module Rubocop
         # (send nil :debugger)
         DEBUGGER_NODE = s(:send, nil, :debugger)
 
+        # byebug call node
+        #
+        # (send nil :byebug)
+        BYEBUG_NODE = s(:send, nil, :byebug)
+
         # binding.pry node
         #
         # (send
@@ -24,7 +29,12 @@ module Rubocop
         #   (send nil :binding) :remote_pry)
         REMOTE_PRY_NODE = s(:send, s(:send, nil, :binding), :remote_pry)
 
-        DEBUGGER_NODES = [DEBUGGER_NODE, PRY_NODE, REMOTE_PRY_NODE]
+        DEBUGGER_NODES = [
+          DEBUGGER_NODE,
+          BYEBUG_NODE,
+          PRY_NODE,
+          REMOTE_PRY_NODE
+        ]
 
         def on_send(node)
           add_offense(node, :selector) if DEBUGGER_NODES.include?(node)
