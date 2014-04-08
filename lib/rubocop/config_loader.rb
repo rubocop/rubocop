@@ -31,7 +31,12 @@ module Rubocop
 
         hash.delete('inherit_from')
         config = Config.new(hash, path)
-        deprecation_check(config)
+
+        deprecation_check(config) do |deprecation_message|
+          warn("#{path} - #{deprecation_message}")
+          exit(-1)
+        end
+
         config.warn_unless_valid
         make_excludes_absolute(config)
         config
@@ -40,11 +45,9 @@ module Rubocop
       def deprecation_check(config)
         return unless config['AllCops']
         if config['AllCops']['Excludes']
-          warn('AllCops/Excludes was renamed to AllCops/Exclude')
-          exit(-1)
+          yield 'AllCops/Excludes was renamed to AllCops/Exclude'
         elsif config['AllCops']['Includes']
-          warn('AllCops/Includes was renamed to AllCops/Include')
-          exit(-1)
+          yield 'AllCops/Includes was renamed to AllCops/Include'
         end
       end
 
