@@ -170,6 +170,7 @@ describe Rubocop::Cop::Style::AlignHash, :config do
 
     it 'auto-corrects alignment' do
       new_source = autocorrect_source(cop, ['hash1 = { a: 0,',
+                                            '     # comment',
                                             '     bb: 1,',
                                             '           ccc: 2 }',
                                             'hash2 = { :a   => 0,',
@@ -177,6 +178,7 @@ describe Rubocop::Cop::Style::AlignHash, :config do
                                             '          :ccc  =>2 }'
                                            ])
       expect(new_source).to eq(['hash1 = { a: 0,',
+                                '          # comment',
                                 '          bb: 1,',
                                 '          ccc: 2 }',
                                 'hash2 = { :a   => 0,',
@@ -253,12 +255,14 @@ describe Rubocop::Cop::Style::AlignHash, :config do
 
     it 'auto-corrects alignment' do
       new_source = autocorrect_source(cop, ['hash1 = { a: 0,',
+                                            '     # comment',
                                             '     bb:   1,',
                                             '           ccc: 2 }',
                                             "hash2 = { 'a' => 0,",
                                             "     'bb' =>   1,",
                                             "           'ccc'  =>2 }"])
       expect(new_source).to eq(['hash1 = { a:   0,',
+                                '          # comment',
                                 '          bb:  1,',
                                 '          ccc: 2 }',
                                 "hash2 = { 'a'   => 0,",
@@ -342,12 +346,14 @@ describe Rubocop::Cop::Style::AlignHash, :config do
 
     it 'auto-corrects alignment' do
       new_source = autocorrect_source(cop, ['hash1 = { a: 0,',
+                                            '     # comment',
                                             '     bb:    1,',
                                             '           ccc: 2 }',
                                             'hash2 = { a => 0,',
                                             '     bb =>    1,',
                                             '           ccc  =>2 }'])
       expect(new_source).to eq(['hash1 = { a: 0,',
+                                '         # comment',
                                 '         bb: 1,',
                                 '        ccc: 2 }',
                                 'hash2 = { a => 0,',
