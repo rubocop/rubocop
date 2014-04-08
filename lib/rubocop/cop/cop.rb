@@ -88,6 +88,10 @@ module Rubocop
         @corrections = []
       end
 
+      def join_force?(force_class)
+        false
+      end
+
       def cop_config
         @config.for_cop(self)
       end

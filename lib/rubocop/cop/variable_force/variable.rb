@@ -2,7 +2,7 @@
 
 module Rubocop
   module Cop
-    module VariableInspector
+    class VariableForce
       # A Variable represents existance of a local variable.
       # This holds a variable declaration node,
       # and some states of the variable.

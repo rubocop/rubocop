@@ -28,8 +28,9 @@ module Rubocop
         end
       end
 
-      def initialize(cops, options = {})
+      def initialize(cops, forces, options = {})
         @cops = cops
+        @forces = forces
         @options = options
         reset_errors
       end
@@ -52,7 +53,8 @@ module Rubocop
       def investigate(processed_source)
         reset_errors
         prepare(processed_source)
-        invoke_cops_callback(processed_source)
+        invoke_custom_processing(@cops, processed_source)
+        invoke_custom_processing(@forces, processed_source)
         process(processed_source.ast) if processed_source.ast
         @cops.each_with_object([]) do |cop, offenses|
           filename = processed_source.buffer.name
@@ -72,18 +74,19 @@ module Rubocop
         @cops.each { |cop| cop.processed_source = processed_source }
       end
 
-      # There are cops that require their own custom processing.
+      # There are cops/forces that require their own custom processing.
       # If they define the #investigate method, all input parameters passed
       # to the commissioner will be passed to the cop too in order to do
       # its own processing.
-      def invoke_cops_callback(processed_source)
-        @cops.each do |cop|
+      def invoke_custom_processing(cops_or_forces, processed_source)
+        cops_or_forces.each do |cop|
           next unless cop.respond_to?(:investigate)
 
-          filename = processed_source.buffer.name
-
-          # ignore files that are of no interest to the cop in question
-          next unless cop.relevant_file?(filename)
+          if cop.respond_to?(:relevant_file?)
+            # ignore files that are of no interest to the cop in question
+            filename = processed_source.buffer.name
+            next unless cop.relevant_file?(filename)
+          end
 
           with_cop_error_handling(cop) do
             cop.investigate(processed_source)

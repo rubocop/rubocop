@@ -32,7 +32,7 @@ module Rubocop
           return Lint::Syntax.offenses_from_diagnostics(diagnostics)
         end
 
-        commissioner = Commissioner.new(cops)
+        commissioner = Commissioner.new(cops, forces)
         offenses = commissioner.investigate(processed_source)
         process_commissioner_errors(
           processed_source.file_path, commissioner.errors)
@@ -47,6 +47,14 @@ module Rubocop
               instances << cop_class.new(@config, @options)
             end
           end
+        end
+      end
+
+      def forces
+        @forces ||= Force.all.each_with_object([]) do |force_class, forces|
+          joining_cops = cops.select { |cop| cop.join_force?(force_class) }
+          next if joining_cops.empty?
+          forces << force_class.new(joining_cops)
         end
       end
 

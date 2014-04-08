@@ -2,7 +2,7 @@
 
 module Rubocop
   module Cop
-    module VariableInspector
+    class VariableForce
       # This class represents each reference of a variable.
       class Reference
         include Locatable

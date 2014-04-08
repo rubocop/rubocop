@@ -2,7 +2,7 @@
 
 module Rubocop
   module Cop
-    module VariableInspector
+    class VariableForce
       # This module provides a way to locate the conditional branch the node is
       # in. This is intended to be used as mix-in.
       module Locatable

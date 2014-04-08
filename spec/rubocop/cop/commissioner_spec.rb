@@ -6,11 +6,12 @@ require 'spec_helper'
 describe Rubocop::Cop::Commissioner do
   describe '#investigate' do
     let(:cop) { double(Rubocop::Cop, offenses: []).as_null_object }
+    let(:force) { double(Rubocop::Cop::Force).as_null_object }
 
     it 'returns all offenses found by the cops' do
       allow(cop).to receive(:offenses).and_return([1])
 
-      commissioner = described_class.new([cop])
+      commissioner = described_class.new([cop], [])
       source = []
       processed_source = parse_source(source)
 
@@ -25,7 +26,7 @@ describe Rubocop::Cop::Commissioner do
         cops << double('cop C', offenses: %w(baz), relevant_file?: true)
         cops.each(&:as_null_object)
 
-        commissioner = described_class.new(cops)
+        commissioner = described_class.new(cops, [])
         source = []
         processed_source = parse_source(source)
 
@@ -36,19 +37,20 @@ describe Rubocop::Cop::Commissioner do
     it 'traverses the AST and invoke cops specific callbacks' do
       expect(cop).to receive(:on_def)
 
-      commissioner = described_class.new([cop])
+      commissioner = described_class.new([cop], [])
       source = ['def method', '1', 'end']
       processed_source = parse_source(source)
 
       commissioner.investigate(processed_source)
     end
 
-    it 'passes the input params to all cops that implement their own #investigate method' do
+    it 'passes the input params to all cops/forces that implement their own #investigate method' do
       source = []
       processed_source = parse_source(source)
       expect(cop).to receive(:investigate).with(processed_source)
+      expect(force).to receive(:investigate).with(processed_source)
 
-      commissioner = described_class.new([cop])
+      commissioner = described_class.new([cop], [force])
 
       commissioner.investigate(processed_source)
     end
@@ -56,7 +58,7 @@ describe Rubocop::Cop::Commissioner do
     it 'stores all errors raised by the cops' do
       allow(cop).to receive(:on_def) { fail RuntimeError }
 
-      commissioner = described_class.new([cop])
+      commissioner = described_class.new([cop], [])
       source = ['def method', '1', 'end']
       processed_source = parse_source(source)
 
@@ -70,7 +72,7 @@ describe Rubocop::Cop::Commissioner do
       it 're-raises the exception received while processing' do
         allow(cop).to receive(:on_def) { fail RuntimeError }
 
-        commissioner = described_class.new([cop], raise_error: true)
+        commissioner = described_class.new([cop], [], raise_error: true)
         source = ['def method', '1', 'end']
         processed_source = parse_source(source)
 

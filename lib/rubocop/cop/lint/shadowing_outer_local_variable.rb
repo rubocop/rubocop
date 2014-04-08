@@ -8,15 +8,13 @@ module Rubocop
       # This is a mimic of the warning
       # "shadowing outer local variable - foo" from `ruby -cw`.
       class ShadowingOuterLocalVariable < Cop
-        include VariableInspector
-
         MSG = 'Shadowing outer local variable - `%s`'
 
-        def investigate(processed_source)
-          inspect_variables(processed_source.ast)
+        def join_force?(force_class)
+          force_class == VariableForce
         end
 
-        def before_declaring_variable(variable)
+        def before_declaring_variable(variable, variable_table)
           return if variable.name.to_s.start_with?('_')
 
           outer_local_variable = variable_table.find_variable(variable.name)
