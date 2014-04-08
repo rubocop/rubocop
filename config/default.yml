@@ -155,6 +155,12 @@ ClassLength:
 
 # Align with the style guide.
 CollectionMethods:
+  # Mapping from undesired method to desired_method
+  # e.g. to use `detect` over `find`:
+  #
+  # CollectionMethods:
+  #   PreferredMethods:
+  #     find: detect
   PreferredMethods:
     collect: 'map'
     collect!: 'map!'
