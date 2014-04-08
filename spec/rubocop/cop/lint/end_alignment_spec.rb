@@ -130,6 +130,8 @@ describe Rubocop::Cop::Lint::EndAlignment, :config do
       include_examples 'aligned', 'var ||= if', 'test', 'end'
       include_examples 'aligned', 'var &&= if', 'test', 'end'
       include_examples 'aligned', 'var += if',  'test', 'end'
+      include_examples 'aligned', 'h[k] = if',  'test', 'end'
+      include_examples 'aligned', 'h.k = if',   'test', 'end'
     end
   end
 end
