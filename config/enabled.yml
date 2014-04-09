@@ -254,7 +254,9 @@ LeadingCommentSpace:
   Enabled: true
 
 LineEndConcatenation:
-  Description: 'Use \\ instead of + to concatenate two string literals at line end.'
+  Description: >-
+                 Use \ instead of + or << to concatenate two string literals at
+                 line end.
   Enabled: true
 
 LineLength:
