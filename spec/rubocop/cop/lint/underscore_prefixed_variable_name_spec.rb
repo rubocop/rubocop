@@ -9,6 +9,20 @@ describe Rubocop::Cop::Lint::UnderscorePrefixedVariableName do
     inspect_source(cop, source)
   end
 
+  context 'when an underscore-prefixed argument is unused' do
+    context 'in a method calling super' do
+      let(:source) { <<-END }
+        def some_method(*_)
+          super
+        end
+      END
+
+      it 'does not register an offense' do
+        expect(cop.offenses).to be_empty
+      end
+    end
+  end
+
   context 'when an underscore-prefixed variable is used' do
     let(:source) { <<-END }
       def some_method
