@@ -106,6 +106,20 @@ describe Rubocop::Cop::Style::IndentationWidth do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts a correctly aligned if/elsif/else/end as a method argument' do
+      inspect_source(cop,
+                     ['foo(',
+                      '  if a1',
+                      '    b1',
+                      '  elsif a2',
+                      '    b2',
+                      '  else',
+                      '    c',
+                      '  end',
+                      ')'])
+      expect(cop.offenses).to be_empty
+    end
+
     it 'accepts if/elsif/else/end laid out as a table' do
       inspect_source(cop,
                      ['if    @io == $stdout then str << "$stdout"',
