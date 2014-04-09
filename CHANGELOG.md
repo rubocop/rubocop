@@ -13,6 +13,7 @@
 
 ### Bugs fixed
 
+* [#978](https://github.com/bbatsov/rubocop/issues/978): Fix regression in `IndentationWidth` handling method calls. ([@tamird][])
 * [#976](https://github.com/bbatsov/rubocop/issues/976): Fix `EndAlignment` not handling element assignment correctly. ([@tamird][])
 * [#976](https://github.com/bbatsov/rubocop/issues/976): Fix `IndentationWidth` not handling element assignment correctly. ([@tamird][])
 * [#800](https://github.com/bbatsov/rubocop/issues/800): Do not report `[Corrected]` in `--auto-correct` mode if correction wasn't done. ([@jonas054][])
