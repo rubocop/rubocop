@@ -125,7 +125,13 @@ def autocorrect_source(cop, source, file = nil)
 end
 
 def _investigate(cop, processed_source)
-  commissioner = Rubocop::Cop::Commissioner.new([cop], raise_error: true)
+  forces = Rubocop::Cop::Force.all.each_with_object([]) do |klass, instances|
+    next unless cop.join_force?(klass)
+    instances << klass.new([cop])
+  end
+
+  commissioner =
+    Rubocop::Cop::Commissioner.new([cop], forces, raise_error: true)
   commissioner.investigate(processed_source)
   commissioner
 end

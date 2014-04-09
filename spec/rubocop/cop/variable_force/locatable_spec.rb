@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::VariableInspector::Locatable do
+describe Rubocop::Cop::VariableForce::Locatable do
   include ASTHelper
   include AST::Sexp
 
   class LocatableObject
-    include Rubocop::Cop::VariableInspector::Locatable
+    include Rubocop::Cop::VariableForce::Locatable
 
     attr_reader :node, :scope
 
@@ -38,7 +38,7 @@ describe Rubocop::Cop::VariableInspector::Locatable do
     found_node
   end
 
-  let(:scope) { Rubocop::Cop::VariableInspector::Scope.new(def_node) }
+  let(:scope) { Rubocop::Cop::VariableForce::Scope.new(def_node) }
   let(:assignment) { LocatableObject.new(lvasgn_node, scope) }
 
   describe '#ancestor_nodes_in_scope' do

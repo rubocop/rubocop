@@ -2,7 +2,7 @@
 
 module Rubocop
   module Cop
-    module VariableInspector
+    class VariableForce
       # A VariableTable manages the lifetime of all scopes and local variables
       # in a program.
       # This holds scopes as stack structure, and provides a way to add local

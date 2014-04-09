@@ -1,0 +1,41 @@
+# encoding: utf-8
+
+module Rubocop
+  module Cop
+    # A scaffold for concrete forces.
+    class Force
+      attr_reader :cops
+
+      def self.all
+        @all ||= []
+      end
+
+      def self.inherited(subclass)
+        all << subclass
+      end
+
+      def self.force_name
+        name.split('::').last
+      end
+
+      def initialize(cops)
+        @cops = cops
+      end
+
+      def name
+        self.class.force_name
+      end
+
+      def run_hook(method_name, *args)
+        cops.each do |cop|
+          next unless cop.respond_to?(method_name)
+          cop.send(method_name, *args)
+        end
+      end
+
+      def investigate(processed_source)
+        # Do custom processing and invoke #run_hook at arbitrary timing.
+      end
+    end
+  end
+end

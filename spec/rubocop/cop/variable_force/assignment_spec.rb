@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::VariableInspector::Assignment do
+describe Rubocop::Cop::VariableForce::Assignment do
   include ASTHelper
   include AST::Sexp
 
@@ -42,9 +42,9 @@ describe Rubocop::Cop::VariableInspector::Assignment do
   end
 
   let(:name) { lvasgn_node.children.first }
-  let(:scope) { Rubocop::Cop::VariableInspector::Scope.new(def_node) }
+  let(:scope) { Rubocop::Cop::VariableForce::Scope.new(def_node) }
   let(:variable) do
-    Rubocop::Cop::VariableInspector::Variable.new(name, lvasgn_node, scope)
+    Rubocop::Cop::VariableForce::Variable.new(name, lvasgn_node, scope)
   end
   let(:assignment) { described_class.new(lvasgn_node, variable) }
 

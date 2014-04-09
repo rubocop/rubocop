@@ -139,4 +139,47 @@ describe Rubocop::Cop::Team do
       end
     end
   end
+
+  describe '#forces' do
+    subject(:forces) { team.forces }
+    let(:cop_classes) { Rubocop::Cop::Cop.non_rails }
+
+    it 'returns force instances' do
+      expect(forces).not_to be_empty
+
+      forces.each do |force|
+        expect(force).to be_a(Rubocop::Cop::Force)
+      end
+    end
+
+    context 'when a cop joined a force' do
+      let(:cop_classes) { [Rubocop::Cop::Lint::UselessAssignment] }
+
+      it 'returns the force' do
+        expect(forces.size).to eq(1)
+        expect(forces.first).to be_a(Rubocop::Cop::VariableForce)
+      end
+    end
+
+    context 'when multiple cops joined a same force' do
+      let(:cop_classes) do
+        [
+          Rubocop::Cop::Lint::UselessAssignment,
+          Rubocop::Cop::Lint::ShadowingOuterLocalVariable
+        ]
+      end
+
+      it 'returns only one force instance' do
+        expect(forces.size).to eq(1)
+      end
+    end
+
+    context 'when no cops joined force' do
+      let(:cop_classes) { [Rubocop::Cop::Style::For] }
+
+      it 'returns nothing' do
+        expect(forces).to be_empty
+      end
+    end
+  end
 end

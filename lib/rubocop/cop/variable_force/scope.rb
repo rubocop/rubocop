@@ -2,7 +2,7 @@
 
 module Rubocop
   module Cop
-    module VariableInspector
+    class VariableForce
       # A Scope represents a context of local variable visibility.
       # This is a place where local variables belong to.
       # A scope instance holds a scope node and variable entries.

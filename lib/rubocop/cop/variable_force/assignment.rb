@@ -2,7 +2,7 @@
 
 module Rubocop
   module Cop
-    module VariableInspector
+    class VariableForce
       # This class represents each assignment of a variable.
       class Assignment
         include Locatable

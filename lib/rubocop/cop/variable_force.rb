@@ -2,10 +2,27 @@
 
 module Rubocop
   module Cop
-    # This module provides a way to track local variables and scopes of Ruby.
-    # This is intended to be used as mix-in, and the user class may override
-    # some of the hook methods.
-    module VariableInspector
+    # This force provides a way to track local variables and scopes of Ruby.
+    # Cops intertact with this force need to override some of the hook methods.
+    #
+    #     def before_entering_scope(scope, variable_table)
+    #     end
+    #
+    #     def after_entering_scope(scope, variable_table)
+    #     end
+    #
+    #     def before_leaving_scope(scope, variable_table)
+    #     end
+    #
+    #     def after_leaving_scope(scope, variable_table)
+    #     end
+    #
+    #     def before_declaring_variable(variable, variable_table)
+    #     end
+    #
+    #     def after_declaring_variable(variable, variable_table)
+    #     end
+    class VariableForce < Force # rubocop:disable ClassLength
       VARIABLE_ASSIGNMENT_TYPE = :lvasgn
       REGEXP_NAMED_CAPTURE_TYPE = :match_with_lvasgn
       VARIABLE_ASSIGNMENT_TYPES =
@@ -42,26 +59,25 @@ module Rubocop
       TWISTED_SCOPE_TYPES = [:block, :class, :sclass, :defs].freeze
       SCOPE_TYPES = (TWISTED_SCOPE_TYPES + [:top_level, :module, :def]).freeze
 
+      def self.wrap_with_top_level_node(node)
+        # This is a custom node type, not defined in Parser.
+        Parser::AST::Node.new(:top_level, [node])
+      end
+
       def variable_table
         @variable_table ||= VariableTable.new(self)
       end
 
       # Starting point.
-      def inspect_variables(root_node)
+      def investigate(processed_source)
+        root_node = processed_source.ast
         return unless root_node
 
         # Wrap the root node with :top_level scope node.
-        top_level_node = wrap_with_top_level_node(root_node)
+        top_level_node = self.class.wrap_with_top_level_node(root_node)
 
         inspect_variables_in_scope(top_level_node)
       end
-
-      def wrap_with_top_level_node(node)
-        # This is a custom node type, not defined in Parser.
-        Parser::AST::Node.new(:top_level, [node])
-      end
-
-      module_function :wrap_with_top_level_node
 
       # This is called for each scope recursively.
       def inspect_variables_in_scope(scope_node)
@@ -339,24 +355,19 @@ module Rubocop
         @scanned_nodes ||= []
       end
 
-      # Hooks
-
-      def before_entering_scope(scope)
-      end
-
-      def after_entering_scope(scope)
-      end
-
-      def before_leaving_scope(scope)
-      end
-
-      def after_leaving_scope(scope)
-      end
-
-      def before_declaring_variable(variable_variable)
-      end
-
-      def after_declaring_variable(variable_variable)
+      # Hooks invoked by VariableTable.
+      [
+        :before_entering_scope,
+        :after_entering_scope,
+        :before_leaving_scope,
+        :after_leaving_scope,
+        :before_declaring_variable,
+        :after_declaring_variable
+      ].each do |hook|
+        define_method(hook) do |arg|
+          # Invoke hook in cops.
+          run_hook(hook, arg, variable_table)
+        end
       end
 
       # Post condition loops

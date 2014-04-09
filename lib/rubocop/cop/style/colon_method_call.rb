@@ -9,11 +9,11 @@ module Rubocop
         MSG = 'Do not use `::` for method calls.'
 
         def on_send(node)
-          receiver, _method_name, *_args = *node
+          receiver, method_name, *_args = *node
 
           # discard methods with nil receivers and op methods(like [])
           return unless receiver && node.loc.dot && node.loc.dot.is?('::')
-          return if allowed_name(_method_name.to_s)
+          return if allowed_name(method_name.to_s)
 
           add_offense(node, :dot)
         end

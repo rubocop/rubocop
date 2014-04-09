@@ -13,15 +13,13 @@ module Rubocop
       # reassignments and properly handles varied cases such as branch, loop,
       # rescue, ensure, etc.
       class UselessAssignment < Cop
-        include VariableInspector
-
         MSG = 'Useless assignment to variable - %s'
 
-        def investigate(processed_source)
-          inspect_variables(processed_source.ast)
+        def join_force?(force_class)
+          force_class == VariableForce
         end
 
-        def after_leaving_scope(scope)
+        def after_leaving_scope(scope, variable_table)
           scope.variables.each_value do |variable|
             check_for_unused_assignments(variable)
             check_for_unused_block_local_variable(variable)

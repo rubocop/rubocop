@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::VariableInspector::Scope do
+describe Rubocop::Cop::VariableForce::Scope do
   include ASTHelper
   include AST::Sexp
 
@@ -24,7 +24,7 @@ describe Rubocop::Cop::VariableInspector::Scope do
 
   let(:ast) do
     ast = Rubocop::SourceParser.parse(source).ast
-    Rubocop::Cop::VariableInspector.wrap_with_top_level_node(ast)
+    Rubocop::Cop::VariableForce.wrap_with_top_level_node(ast)
   end
 
   let(:scope_node_type) { :def }
