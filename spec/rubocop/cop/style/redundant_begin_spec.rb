@@ -54,4 +54,19 @@ describe Rubocop::Cop::Style::RedundantBegin do
     inspect_source(cop, src)
     expect(cop.offenses).to be_empty
   end
+
+  it 'auto-corrects by removing redundant begin blocks' do
+    src = ['def func',
+           '  begin',
+           '    something',
+           '  rescue',
+           '  end',
+           'end'].join("\n")
+    result_src = ['def func',
+                  '  something',
+                  '  rescue',
+                  'end'].join("\n")
+    new_source = autocorrect_source(cop, src)
+    expect(new_source).to eq(result_src)
+  end
 end

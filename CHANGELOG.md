@@ -17,6 +17,11 @@
 
 ## 0.20.1 (05/04/2014)
 
+### New features
+
+* [#965](https://github.com/bbatsov/rubocop/issues/965): `UselessAccessModifier` cop does auto-correction. ([@tamird][])
+* [#964](https://github.com/bbatsov/rubocop/issues/964): `RedundantBegin` cop does auto-correction. ([@tamird][])
+
 ### Bugs fixed
 
 * [#940](https://github.com/bbatsov/rubocop/issues/940): Fixed `UselessAccessModifier` not handling `attr_*` correctly. ([@fshowalter][])
