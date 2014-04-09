@@ -27,8 +27,11 @@ module Rubocop
         def on_block(node)
           _method, _args, body = *node
           # Check body against end/} indentation. Checking against variable
-          # assignments, etc, would be more difficult.
-          check_indentation(node.loc.end, body)
+          # assignments, etc, would be more difficult. The end/} must be at the
+          # beginning of its line.
+          if begins_its_line?(node.loc.end)
+            check_indentation(node.loc.end, body)
+          end
         end
 
         def on_module(node)
@@ -91,6 +94,11 @@ module Rubocop
         end
 
         private
+
+        def begins_its_line?(range)
+          source_before_end = range.source_buffer.source[0...range.begin_pos]
+          source_before_end =~ /\n\s*\Z/
+        end
 
         def check_assignment(node, rhs)
           # If there are method calls chained to the right hand side of the

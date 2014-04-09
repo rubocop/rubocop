@@ -650,5 +650,15 @@ describe Rubocop::Cop::Style::IndentationWidth do
                       'end'])
       expect(cop.offenses).to be_empty
     end
+
+    # The cop uses the block end/} as the base for indentation, so if it's not
+    # on its own line, all bets are off.
+    it 'accepts badly indented code if block end is not on separate line' do
+      inspect_source(cop,
+                     ['foo {',
+                      'def baz',
+                      'end }'])
+      expect(cop.offenses).to be_empty
+    end
   end
 end
