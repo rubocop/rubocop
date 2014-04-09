@@ -670,6 +670,10 @@ StringConversionInInterpolation:
   Description: 'Checks for Object#to_s usage in string interpolation.'
   Enabled: true
 
+UnderscorePrefixedVariableName:
+  Description: 'Do not use prefix `_` for a variable that is used.'
+  Enabled: true
+
 UnreachableCode:
   Description: 'Unreachable code.'
   Enabled: true

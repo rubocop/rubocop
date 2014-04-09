@@ -11,7 +11,7 @@ module Rubocop
           (VARIABLE_ASSIGNMENT_TYPES + DECLARATION_TYPES).freeze
 
         attr_reader :name, :declaration_node, :scope,
-                    :assignments, :captured_by_block
+                    :assignments, :references, :captured_by_block
         alias_method :captured_by_block?, :captured_by_block
 
         def initialize(name, declaration_node, scope)
@@ -26,6 +26,7 @@ module Rubocop
           @scope = scope
 
           @assignments = []
+          @references = []
           @captured_by_block = false
         end
 
@@ -34,11 +35,12 @@ module Rubocop
         end
 
         def referenced?
-          @assignments.any?(&:referenced?)
+          !@references.empty?
         end
 
         def reference!(node)
           reference = Reference.new(node, @scope)
+          @references << reference
           consumed_branch_ids = Set.new
 
           @assignments.reverse_each do |assignment|

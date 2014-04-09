@@ -20,50 +20,35 @@ describe Rubocop::Cop::VariableForce::Variable do
   describe '#referenced?' do
     let(:name) { :foo }
     let(:declaration_node) { s(:arg, name) }
-    let(:scope) { double('scope') }
+    let(:scope) { double('scope').as_null_object }
     let(:variable) { described_class.new(name, declaration_node, scope) }
 
     subject { variable.referenced? }
 
-    context 'when the variable is not yet assigned' do
+    context 'when the variable is not assigned' do
       it { should be_false }
+
+      context 'and the variable is referenced' do
+        before do
+          variable.reference!(s(:lvar, name))
+        end
+
+        it { should be_true }
+      end
     end
 
     context 'when the variable has an assignment' do
       before do
-        variable.assign(s(:lvasgn, :foo))
+        variable.assign(s(:lvasgn, name))
       end
 
-      context 'and the assignment is not yet referenced' do
+      context 'and the variable is not yet referenced' do
         it { should be_false }
       end
 
-      context 'and the assignment is referenced' do
+      context 'and the variable is referenced' do
         before do
-          variable.assignments.first.reference!
-        end
-
-        it { should be_true }
-      end
-    end
-
-    context 'when the variable has multiple assignments' do
-      before do
-        variable.assign(s(:lvasgn, :foo))
-        variable.assign(s(:lvasgn, :foo))
-      end
-
-      context 'and only once assignment is referenced' do
-        before do
-          variable.assignments[1].reference!
-        end
-
-        it { should be_true }
-      end
-
-      context 'and all assignments are referenced' do
-        before do
-          variable.assignments.each { |a| a.reference! }
+          variable.reference!(s(:lvar, name))
         end
 
         it { should be_true }
