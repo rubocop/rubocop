@@ -136,6 +136,22 @@ describe Rubocop::Cop::Style::IndentationWidth do
     context 'with assignment' do
       context 'when alignment style is variable' do
         context 'and end is aligned with variable' do
+          it 'accepts an if with end aligned with setter' do
+            inspect_source(cop,
+                           ['foo.bar = if baz',
+                            '  derp',
+                            'end'])
+            expect(cop.offenses).to be_empty
+          end
+
+          it 'accepts an if with end aligned with element assignment' do
+            inspect_source(cop,
+                           ['foo[bar] = if baz',
+                            '  derp',
+                            'end'])
+            expect(cop.offenses).to be_empty
+          end
+
           it 'accepts an if with end aligned with variable' do
             inspect_source(cop,
                            ['var = if a',
@@ -194,6 +210,24 @@ describe Rubocop::Cop::Style::IndentationWidth do
         end
 
         context 'and end is aligned with keyword' do
+          it 'registers an offense for an if with setter' do
+            inspect_source(cop,
+                           ['foo.bar = if baz',
+                            '            derp',
+                            '          end'])
+            expect(cop.messages)
+              .to eq(['Use 2 (not 12) spaces for indentation.'])
+          end
+
+          it 'registers an offense for an if with element assignment' do
+            inspect_source(cop,
+                           ['foo[bar] = if baz',
+                            '             derp',
+                            '           end'])
+            expect(cop.messages)
+              .to eq(['Use 2 (not 13) spaces for indentation.'])
+          end
+
           it 'registers an offense for an if' do
             inspect_source(cop,
                            ['var = if a',

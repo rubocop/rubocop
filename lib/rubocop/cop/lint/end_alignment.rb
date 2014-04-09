@@ -43,6 +43,8 @@ module Rubocop
         end
 
         def on_send(node)
+          super
+
           receiver, method_name, *args = *node
           if visibility_and_def_on_same_line?(receiver, method_name, args)
             expr = node.loc.expression
