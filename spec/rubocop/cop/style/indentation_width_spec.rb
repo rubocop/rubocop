@@ -88,6 +88,17 @@ describe Rubocop::Cop::Style::IndentationWidth do
                 'end'].join("\n")
     end
 
+    it 'does not blow up when trying to autocorrect ugly code' do
+      corrected = autocorrect_source(cop,
+                                     ['foo {',
+                                      '  def baz',
+                                      '  end }'])
+      expect(corrected)
+        .to eq ['foo {',
+                '  def baz',
+                '  end }'].join("\n")
+    end
+
     it 'accepts a one line if statement' do
       inspect_source(cop,
                      ['if cond then func1 else func2 end'])
@@ -307,6 +318,17 @@ describe Rubocop::Cop::Style::IndentationWidth do
                                      'var = while a',
                                      '        b',
                                      'end'].join("\n")
+          end
+
+          it 'does not blow up when trying to autocorrect ugly code' do
+            corrected = autocorrect_source(cop,
+                                           ['foo {',
+                                            '  def baz',
+                                            '  end }'])
+            expect(corrected)
+              .to eq ['foo {',
+                      '  def baz',
+                      '  end }'].join("\n")
           end
         end
 
