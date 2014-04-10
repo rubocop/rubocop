@@ -27,23 +27,29 @@ module Rubocop
           if task_block
             task_block.call(*[self, task_args].slice(0, task_block.arity))
           end
-          run_task(verbose)
+          run_main_task(verbose)
         end
       end
+
+      setup_subtasks(name)
     end
 
-    def run_task(verbose)
+    def run_main_task(verbose)
+      run_cli(verbose, full_options)
+    end
+
+    private
+
+    def run_cli(verbose, options)
       # We lazy-load rubocop so that the task doesn't dramatically impact the
       # load time of your Rakefile.
       require 'rubocop'
 
       cli = CLI.new
       puts 'Running RuboCop...' if verbose
-      result = cli.run(full_options)
+      result = cli.run(options)
       abort('RuboCop failed!') if fail_on_error unless result == 0
     end
-
-    private
 
     def full_options
       [].tap do |result|
@@ -65,6 +71,18 @@ module Rubocop
       @requires = []
       @options = []
       @formatters = [Rubocop::Options::DEFAULT_FORMATTER]
+    end
+
+    def setup_subtasks(name)
+      namespace name do
+
+        desc 'Auto-correct RuboCop offenses'
+
+        task :auto_correct do
+          options = full_options.unshift('--auto-correct')
+          run_cli(verbose, options)
+        end
+      end
     end
   end
 end

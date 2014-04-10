@@ -12,6 +12,7 @@
 * [#969](https://github.com/bbatsov/rubocop/issues/969): Let the `Debugger` cop check for forgotten calls to byebug. ([@bquorning][])
 * [#971](https://github.com/bbatsov/rubocop/issues/971): Configuration format deprecation warnings include the path to the problematic config file. ([@bcobb][])
 * [#490](https://github.com/bbatsov/rubocop/issues/490): Add EnforcedStyle config option to TrailingBlankLines. ([@jonas054][])
+* Add `auto_correct` task to Rake integration. ([@irrationalfab][])
 
 ### Changes
 
@@ -876,3 +877,4 @@
 [@cschramm]: https://github.com/cschramm
 [@bquorning]: https://github.com/bquorning
 [@bcobb]: https://github.com/bcobb
+[@irrationalfab]: https://github.com/irrationalfab
