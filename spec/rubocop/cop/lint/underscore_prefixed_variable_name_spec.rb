@@ -119,4 +119,61 @@ describe Rubocop::Cop::Lint::UnderscorePrefixedVariableName do
       expect(cop.highlights).to eq(['/(?<_foo>\\w+)/'])
     end
   end
+
+  context 'in a method calling `super` without arguments' do
+    context 'when an underscore-prefixed argument is not used explicitly' do
+      let(:source) { <<-END }
+        def some_method(*_)
+          super
+        end
+      END
+
+      it 'accepts' do
+        expect(cop.offenses).to be_empty
+      end
+    end
+
+    context 'when an underscore-prefixed argument is used explicitly' do
+      let(:source) { <<-END }
+        def some_method(*_)
+          super
+          puts _
+        end
+      END
+
+      it 'registers an offense' do
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.offenses.first.line).to eq(1)
+        expect(cop.highlights).to eq(['_'])
+      end
+    end
+  end
+
+  context 'in a method calling `super` with arguments' do
+    context 'when an underscore-prefixed argument is not used' do
+      let(:source) { <<-END }
+        def some_method(*_)
+          super(:something)
+        end
+      END
+
+      it 'accepts' do
+        expect(cop.offenses).to be_empty
+      end
+    end
+
+    context 'when an underscore-prefixed argument is used explicitly' do
+      let(:source) { <<-END }
+        def some_method(*_)
+          super(*_)
+        end
+      END
+
+      it 'registers an offense' do
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.offenses.first.line).to eq(1)
+        expect(cop.highlights).to eq(['_'])
+      end
+    end
+  end
 end
