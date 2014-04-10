@@ -13,6 +13,10 @@
 * [#971](https://github.com/bbatsov/rubocop/issues/971): Configuration format deprecation warnings include the path to the problematic config file. ([@bcobb][])
 * [#490](https://github.com/bbatsov/rubocop/issues/490): Add EnforcedStyle config option to TrailingBlankLines. ([@jonas054][])
 
+### Changes
+
+* Removed `FinalNewline` cop as its check is now performed by `TrailingBlankLines`. ([@jonas054][])
+
 ### Bugs fixed
 
 * Update description on `LineEndConcatenation` cop. ([@mockdeep][])
