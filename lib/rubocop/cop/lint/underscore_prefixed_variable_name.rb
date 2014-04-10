@@ -20,7 +20,8 @@ module Rubocop
 
         def check_variable(variable)
           return unless variable.name.to_s.start_with?('_')
-          return unless variable.referenced?
+          return if variable.references.empty?
+          return if variable.references.none?(&:explicit?)
 
           node = variable.declaration_node
 
