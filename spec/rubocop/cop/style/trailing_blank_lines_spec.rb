@@ -2,15 +2,8 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::TrailingBlankLines do
+describe Rubocop::Cop::Style::TrailingBlankLines, :config do
   subject(:cop) { described_class.new(config) }
-  let(:config) do
-    Rubocop::Config.new('TrailingWhitespace' => trailing_ws_config,
-                        'TrailingBlankLines' =>
-                        cop_config.merge('SupportedStyles' =>
-                                         %w(final_newline final_blank_line)))
-  end
-  let(:trailing_ws_config) { { 'Enabled' => true } }
 
   context 'when EnforcedStyle is final_newline' do
     let(:cop_config) { { 'EnforcedStyle' => 'final_newline' } }
@@ -36,19 +29,9 @@ describe Rubocop::Cop::Style::TrailingBlankLines do
       expect(new_source).to eq(['x = 0', ''].join("\n"))
     end
 
-    it 'does not auto-correct if it interferes with TrailingWhitespace' do
-      original = ['x = 0', '', '  ', '', '']
-      new_source = autocorrect_source(cop, original)
-      expect(new_source).to eq(original.join("\n"))
-    end
-
-    context 'with TrailingWhitespace disabled' do
-      let(:trailing_ws_config) { { 'Enabled' => false } }
-
-      it 'auto-corrects even if some lines have space' do
-        new_source = autocorrect_source(cop, ['x = 0', '', '  ', '', ''])
-        expect(new_source).to eq(['x = 0', ''].join("\n"))
-      end
+    it 'auto-corrects even if some lines have space' do
+      new_source = autocorrect_source(cop, ['x = 0', '', '  ', '', ''])
+      expect(new_source).to eq(['x = 0', ''].join("\n"))
     end
   end
 

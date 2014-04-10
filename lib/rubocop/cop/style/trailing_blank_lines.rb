@@ -46,13 +46,6 @@ module Rubocop
         end
 
         def autocorrect(range)
-          # Bail out if there's also trailing whitespace, because
-          # auto-correction in the two cops would result in clobbering.
-          if range.source =~ / / &&
-              config.for_cop('TrailingWhitespace')['Enabled']
-            return
-          end
-
           @corrections << lambda do |corrector|
             corrector.replace(range, style == :final_newline ? "\n" : "\n\n")
           end
