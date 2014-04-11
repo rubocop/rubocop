@@ -19,7 +19,9 @@ module Rubocop
       OptionParser.new do |opts|
         opts.banner = 'Usage: rubocop [options] [file1, file2, ...]'
 
-        option(opts, '--only COP', 'Run just one cop.') do
+        option(opts, '--only [COP1,COP2,...]',
+               'Run only the given cop(s).') do |list|
+          @options[:only] = list.split(',')
           validate_only_option
         end
 
@@ -101,7 +103,7 @@ module Rubocop
     end
 
     def add_flags_with_optional_args(opts)
-      option(opts, '--show-cops [cop1,cop2,...]',
+      option(opts, '--show-cops [COP1,COP2,...]',
              'Shows the given cops, or all cops by',
              'default, and their configurations for the',
              'current directory.') do |list|
@@ -174,8 +176,10 @@ module Rubocop
     end
 
     def validate_only_option
-      if Cop::Cop.all.none? { |c| c.cop_name == @options[:only] }
-        fail ArgumentError, "Unrecognized cop name: #{@options[:only]}."
+      @options[:only].each do |cop_to_run|
+        if Cop::Cop.all.none? { |c| c.cop_name == cop_to_run }
+          fail ArgumentError, "Unrecognized cop name: #{cop_to_run}."
+        end
       end
     end
 

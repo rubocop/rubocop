@@ -633,44 +633,92 @@ describe Rubocop::CLI, :isolated_environment do
     end
 
     describe '--only' do
-      it 'runs just one cop' do
-        create_file('example.rb', ['if x== 0 ',
-                                   "\ty",
-                                   'end'])
-        # IfUnlessModifier depends on the configuration of LineLength.
+      context 'when one cop is given' do
+        it 'runs just one cop' do
+          create_file('example.rb', ['if x== 0 ',
+                                     "\ty",
+                                     'end'])
+          # IfUnlessModifier depends on the configuration of LineLength.
 
-        expect(cli.run(['--format', 'simple',
-                        '--only', 'IfUnlessModifier',
-                        'example.rb'])).to eq(1)
-        expect($stdout.string)
-          .to eq(['== example.rb ==',
-                  'C:  1:  1: Favor modifier if usage when ' \
-                  'having a single-line body. Another good alternative is ' \
-                  'the usage of control flow &&/||.',
-                  '',
-                  '1 file inspected, 1 offense detected',
-                  ''].join("\n"))
+          expect(cli.run(['--format', 'simple',
+                          '--only', 'IfUnlessModifier',
+                          'example.rb'])).to eq(1)
+          expect($stdout.string)
+            .to eq(['== example.rb ==',
+                    'C:  1:  1: Favor modifier if usage when ' \
+                    'having a single-line body. Another good alternative is ' \
+                    'the usage of control flow &&/||.',
+                    '',
+                    '1 file inspected, 1 offense detected',
+                    ''].join("\n"))
+        end
+
+        it 'enables the given cop' do
+          create_file('example.rb', ['x = 0 ',
+                                     # Disabling comments still apply.
+                                     '# rubocop:disable TrailingWhitespace',
+                                     'y = 1  '])
+
+          create_file('.rubocop.yml', ['TrailingWhitespace:',
+                                       '  Enabled: false'])
+
+          expect(cli.run(['--format', 'simple',
+                          '--only', 'TrailingWhitespace',
+                          'example.rb'])).to eq(1)
+          expect($stderr.string).to eq('')
+          expect($stdout.string)
+            .to eq(['== example.rb ==',
+                    'C:  1:  6: Trailing whitespace detected.',
+                    '',
+                    '1 file inspected, 1 offense detected',
+                    ''].join("\n"))
+        end
       end
 
-      it 'enables the given cop' do
-        create_file('example.rb', ['x = 0 ',
-                                   # Disabling comments still apply.
-                                   '# rubocop:disable TrailingWhitespace',
-                                   'y = 1  '])
+      context 'when several cops are given' do
+        it 'runs the given cops' do
+          create_file('example.rb', ['if x== 100000000000000 ',
+                                     "\ty",
+                                     'end'])
+          expect(cli.run(['--format', 'simple',
+                          '--only',
+                          'IfUnlessModifier,Tab,SpaceAroundOperators',
+                          'example.rb'])).to eq(1)
+          expect($stderr.string).to eq('')
+          expect($stdout.string)
+            .to eq(['== example.rb ==',
+                    'C:  1:  1: Favor modifier if usage when ' \
+                    'having a single-line body. Another good alternative is ' \
+                    'the usage of control flow &&/||.',
+                    "C:  1:  5: Surrounding space missing for operator '=='.",
+                    'C:  2:  1: Tab detected.',
+                    '',
+                    '1 file inspected, 3 offenses detected',
+                    ''].join("\n"))
+        end
 
-        create_file('.rubocop.yml', ['TrailingWhitespace:',
-                                     '  Enabled: false'])
-
-        expect(cli.run(['--format', 'simple',
-                        '--only', 'TrailingWhitespace',
-                        'example.rb'])).to eq(1)
-        expect($stderr.string).to eq('')
-        expect($stdout.string)
-          .to eq(['== example.rb ==',
-                  'C:  1:  6: Trailing whitespace detected.',
-                  '',
-                  '1 file inspected, 1 offense detected',
-                  ''].join("\n"))
+        context 'and --lint' do
+          it 'runs the given cops plus all enabled lint cops' do
+            create_file('example.rb', ['if x== 100000000000000 ',
+                                       "\ty = 3",
+                                       '  end'])
+            create_file('.rubocop.yml', ['EndAlignment:',
+                                         '  Enabled: false'])
+            expect(cli.run(['--format', 'simple',
+                            '--only', 'Tab,SpaceAroundOperators',
+                            '--lint',
+                            'example.rb'])).to eq(1)
+            expect($stdout.string)
+              .to eq(['== example.rb ==',
+                      "C:  1:  5: Surrounding space missing for operator " \
+                      "'=='.",
+                      'C:  2:  1: Tab detected.',
+                      'W:  2:  2: Useless assignment to variable - y',
+                      '',
+                      '1 file inspected, 3 offenses detected',
+                      ''].join("\n"))
+          end
+        end
       end
     end
 
