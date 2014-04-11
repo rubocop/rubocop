@@ -661,7 +661,7 @@ ShadowingOuterLocalVariable:
 SpaceBeforeFirstArg:
   Description: >-
                  Put a space between a method name and the first argument
-                 in a method call wihtout parentheses.
+                 in a method call without parentheses.
   Enabled: true
 
 StringConversionInInterpolation:
