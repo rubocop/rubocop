@@ -349,7 +349,6 @@ describe Rubocop::CLI, :isolated_environment do
                      '',
                      ''])
         expect(cli.run(%w(--auto-correct --format emacs))).to eq(1)
-        expect($stderr.string).to eq('')
         expect(IO.read('example.rb')).to eq("# encoding: utf-8\n")
         expect($stdout.string)
           .to eq(["#{abs('example.rb')}:2:1: C: [Corrected] 3 trailing " \

@@ -187,10 +187,6 @@ FileName:
   Description: 'Use snake_case for source file names.'
   Enabled: true
 
-FinalNewline:
-  Description: 'Checks for a final newline in a source file.'
-  Enabled: true
-
 FlipFlop:
   Description: 'Checks for flip flops'
   Enabled: true
@@ -504,7 +500,7 @@ Tab:
   Enabled: true
 
 TrailingBlankLines:
-  Description: 'Checks for superfluous trailing blank lines.'
+  Description: 'Checks trailing blank lines and final newline.'
   Enabled: true
 
 TrailingComma:

@@ -383,6 +383,12 @@ SpaceInsideHashLiteralBraces:
     - space
     - no_space
 
+TrailingBlankLines:
+  EnforcedStyle: final_newline
+  SupportedStyles:
+    - final_newline
+    - final_blank_line
+
 TrailingComma:
   EnforcedStyleForMultiline: no_comma
   SupportedStyles:
