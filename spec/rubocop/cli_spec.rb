@@ -696,6 +696,29 @@ describe Rubocop::CLI, :isolated_environment do
                     '1 file inspected, 3 offenses detected',
                     ''].join("\n"))
         end
+
+        context 'and --lint' do
+          it 'runs the given cops plus all enabled lint cops' do
+            create_file('example.rb', ['if x== 100000000000000 ',
+                                       "\ty = 3",
+                                       '  end'])
+            create_file('.rubocop.yml', ['EndAlignment:',
+                                         '  Enabled: false'])
+            expect(cli.run(['--format', 'simple',
+                            '--only', 'Tab,SpaceAroundOperators',
+                            '--lint',
+                            'example.rb'])).to eq(1)
+            expect($stdout.string)
+              .to eq(['== example.rb ==',
+                      "C:  1:  5: Surrounding space missing for operator " \
+                      "'=='.",
+                      'C:  2:  1: Tab detected.',
+                      'W:  2:  2: Useless assignment to variable - y',
+                      '',
+                      '1 file inspected, 3 offenses detected',
+                      ''].join("\n"))
+          end
+        end
       end
     end
 

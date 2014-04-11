@@ -28,6 +28,7 @@
 * [#800](https://github.com/bbatsov/rubocop/issues/800): Do not report `[Corrected]` in `--auto-correct` mode if correction wasn't done. ([@jonas054][])
 * [#968](https://github.com/bbatsov/rubocop/issues/968): Fix bug when running Rubocop with `-c .rubocop.yml`. ([@bquorning][])
 * [#975](https://github.com/bbatsov/rubocop/pull/975): Fix infinite correction in `IndentationWidth`. ([@jonas054][])
+* [#986](https://github.com/bbatsov/rubocop/issues/986): When `--lint` is used together with `--only`, all lint cops are run in addition to the given cops. ([@jonas054][])
 
 ## 0.20.1 (05/04/2014)
 
