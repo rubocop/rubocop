@@ -9,12 +9,16 @@ describe Rubocop::Cop::Lint::Debugger do
     src = ['debugger']
     inspect_source(cop, src)
     expect(cop.offenses.size).to eq(1)
+    expect(cop.messages).to eq(['Remove debugger entry point `debugger`.'])
+    expect(cop.highlights).to eq(['debugger'])
   end
 
   it 'reports an offense for a byebug call' do
     src = ['byebug']
     inspect_source(cop, src)
     expect(cop.offenses.size).to eq(1)
+    expect(cop.messages).to eq(['Remove debugger entry point `byebug`.'])
+    expect(cop.highlights).to eq(['byebug'])
   end
 
   it 'reports an offense for pry bindings' do
@@ -22,6 +26,10 @@ describe Rubocop::Cop::Lint::Debugger do
            'binding.remote_pry']
     inspect_source(cop, src)
     expect(cop.offenses.size).to eq(2)
+    expect(cop.messages)
+      .to eq(['Remove debugger entry point `binding.pry`.',
+              'Remove debugger entry point `binding.remote_pry`.'])
+    expect(cop.highlights).to eq(['binding.pry', 'binding.remote_pry'])
   end
 
   it 'does not report an offense for non-pry binding' do

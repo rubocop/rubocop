@@ -5,7 +5,7 @@ module Rubocop
     module Lint
       # This cop checks for calls to debugger or pry.
       class Debugger < Cop
-        MSG = 'Remove calls to `debugger`.'
+        MSG = 'Remove debugger entry point `%s`.'
 
         # debugger call node
         #
@@ -37,7 +37,11 @@ module Rubocop
         ]
 
         def on_send(node)
-          add_offense(node, :selector) if DEBUGGER_NODES.include?(node)
+          if DEBUGGER_NODES.include?(node)
+            add_offense(node,
+                        :expression,
+                        format(MSG, node.loc.expression.source))
+          end
         end
       end
     end
