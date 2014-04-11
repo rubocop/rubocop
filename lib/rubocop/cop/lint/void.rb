@@ -8,7 +8,7 @@ module Rubocop
       class Void < Cop
         OP_MSG = 'Operator `%s` used in void context.'
         VAR_MSG = 'Variable `%s` used in void context.'
-        LIT_MSG = 'Literal `%s` used in void context'
+        LIT_MSG = 'Literal `%s` used in void context.'
 
         OPS = %w(* / % + - == === != < > <= >= <=>)
         VARS = [:ivar, :lvar, :cvar, :const]
