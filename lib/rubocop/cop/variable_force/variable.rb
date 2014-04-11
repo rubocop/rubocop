@@ -76,8 +76,12 @@ module Rubocop
           @captured_by_block || referenced?
         end
 
+        def argument?
+          ARGUMENT_DECLARATION_TYPES.include?(@declaration_node.type)
+        end
+
         def method_argument?
-          METHOD_ARGUMENT_DECLARATION_TYPES.include?(@declaration_node.type)
+          argument? && [:def, :defs].include?(@scope.node.type)
         end
 
         def block_local_variable?

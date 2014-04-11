@@ -24,6 +24,14 @@ module Rubocop
           @node.equal?(other.node)
         end
 
+        def name
+          case @node.type
+          when :def  then @node.children[0]
+          when :defs then @node.children[1]
+          else nil # TODO
+          end
+        end
+
         def body_node
           child_index = case @node.type
                         when :top_level           then 0

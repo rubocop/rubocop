@@ -672,6 +672,10 @@ UnderscorePrefixedVariableName:
   Description: 'Do not use prefix `_` for a variable that is used.'
   Enabled: true
 
+UnusedMethodArgument:
+  Description: 'Checks for unused method arguments.'
+  Enabled: true
+
 UnreachableCode:
   Description: 'Unreachable code.'
   Enabled: true
