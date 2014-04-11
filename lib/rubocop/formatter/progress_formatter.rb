@@ -19,7 +19,7 @@ module Rubocop
           @offenses_for_files[file] = offenses
         end
 
-        report_file_as_mark(file, offenses)
+        report_file_as_mark(offenses)
       end
 
       def finished(inspected_files)
@@ -40,7 +40,7 @@ module Rubocop
                        @total_correction_count)
       end
 
-      def report_file_as_mark(file, offenses)
+      def report_file_as_mark(offenses)
         mark = if offenses.empty?
                  green('.')
                else

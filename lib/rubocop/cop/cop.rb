@@ -88,7 +88,7 @@ module Rubocop
         @corrections = []
       end
 
-      def join_force?(force_class)
+      def join_force?(_force_class)
         false
       end
 
@@ -108,7 +108,7 @@ module Rubocop
         debug? || @options[:display_cop_names]
       end
 
-      def message(node = nil)
+      def message(_node = nil)
         self.class::MSG
       end
 

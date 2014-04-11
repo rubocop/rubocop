@@ -33,7 +33,7 @@ module Rubocop
         end
       end
 
-      def investigate(processed_source)
+      def investigate(_processed_source)
         # Do custom processing and invoke #run_hook at arbitrary timing.
       end
     end

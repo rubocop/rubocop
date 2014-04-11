@@ -12,7 +12,7 @@ module Rubocop
           force_class == VariableForce
         end
 
-        def after_leaving_scope(scope, variable_table)
+        def after_leaving_scope(scope, _variable_table)
           scope.variables.each_value do |variable|
             check_variable(variable)
           end

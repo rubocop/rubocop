@@ -1023,11 +1023,11 @@ describe Rubocop::CLI, :isolated_environment do
                   output.puts "started: #{all_files.join(',')}"
                 end
 
-                def file_started(file, options)
+                def file_started(file, _options)
                   output.puts "file_started: #{file}"
                 end
 
-                def file_finished(file, offenses)
+                def file_finished(file, _offenses)
                   output.puts "file_finished: #{file}"
                 end
 

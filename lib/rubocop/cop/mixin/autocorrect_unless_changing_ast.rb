@@ -8,7 +8,7 @@ module Rubocop
     module AutocorrectUnlessChangingAST
       def autocorrect(node)
         c = correction(node)
-        new_source = rewrite_node(node, c)
+        new_source = rewrite_node(node)
 
         # Make the correction only if it doesn't change the AST.
         if node != SourceParser.parse(new_source).ast
@@ -18,7 +18,7 @@ module Rubocop
         @corrections << c
       end
 
-      def rewrite_node(node, correction)
+      def rewrite_node(node)
         processed_source = SourceParser.parse(node.loc.expression.source)
         c = correction(processed_source.ast)
         Corrector.new(processed_source.buffer, [c]).rewrite

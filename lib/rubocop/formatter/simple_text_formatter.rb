@@ -19,7 +19,7 @@ module Rubocop
         fatal:      :red
       }.freeze
 
-      def started(target_files)
+      def started(_target_files)
         @total_offense_count = 0
         @total_correction_count = 0
       end

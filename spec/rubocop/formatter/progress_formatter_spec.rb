@@ -40,7 +40,7 @@ module Rubocop
 
     describe '#report_file_as_mark' do
       before do
-        formatter.report_file_as_mark(files.first, offenses)
+        formatter.report_file_as_mark(offenses)
       end
 
       def offense_with_severity(severity)

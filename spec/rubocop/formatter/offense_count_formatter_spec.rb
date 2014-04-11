@@ -40,7 +40,7 @@ module Rubocop
         context 'when an offense is detected' do
           let(:cop_counts) { { 'OffendedCop' => 1 } }
           it 'shows the cop and the offense count' do
-            formatter.report_summary(1, cop_counts)
+            formatter.report_summary(cop_counts)
             expect(output.string).to include(
               "\n1  OffendedCop\n--\n1  Total")
           end

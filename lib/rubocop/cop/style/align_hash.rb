@@ -15,7 +15,7 @@ module Rubocop
             true
           end
 
-          def deltas_for_first_pair(*_)
+          def deltas_for_first_pair(*)
             {} # The first pair is always considered correct.
           end
 
@@ -35,7 +35,7 @@ module Rubocop
             !any_pairs_on_the_same_line?(node) && all_have_same_sparator?(node)
           end
 
-          def deltas(first_pair, prev_pair, current_pair)
+          def deltas(first_pair, _prev_pair, current_pair)
             key_delta = key_delta(first_pair, current_pair)
             current_separator = current_pair.loc.operator
             separator_delta = separator_delta(first_pair, current_separator,
@@ -117,7 +117,7 @@ module Rubocop
 
         # Handles calculation of deltas when the enforced style is 'separator'.
         class SeparatorAlignment < AlignmentOfValues
-          def deltas_for_first_pair(first_pair, node)
+          def deltas_for_first_pair(*)
             {} # The first pair is always considered correct.
           end
 

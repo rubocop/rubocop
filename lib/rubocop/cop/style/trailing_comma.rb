@@ -56,8 +56,7 @@ module Rubocop
           should_have_comma = style == :comma && multiline?(node)
           if comma_offset
             unless should_have_comma
-              avoid_comma(items, kind,
-                          after_last_item.begin_pos + comma_offset, sb)
+              avoid_comma(kind, after_last_item.begin_pos + comma_offset, sb)
             end
           elsif should_have_comma
             put_comma(items, kind, sb)
@@ -79,7 +78,7 @@ module Rubocop
           [node.loc.begin, node.loc.end].map(&:line).uniq.size > 1
         end
 
-        def avoid_comma(items, kind, comma_begin_pos, sb)
+        def avoid_comma(kind, comma_begin_pos, sb)
           range = Parser::Source::Range.new(sb, comma_begin_pos,
                                             comma_begin_pos + 1)
           article = kind =~ /array/ ? 'an' : 'a'

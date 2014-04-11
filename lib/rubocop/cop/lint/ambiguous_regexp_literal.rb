@@ -27,7 +27,7 @@ module Rubocop
           diagnostic.reason == :ambiguous_literal
         end
 
-        def alternative_message(diagnostic)
+        def alternative_message(_diagnostic)
           MSG
         end
       end
