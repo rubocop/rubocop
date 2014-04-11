@@ -109,7 +109,7 @@ module Rubocop
         cop_classes = Cop::Cop.all
 
         if @options[:only]
-          cop_classes.select! { |c| c.cop_name == @options[:only] }
+          cop_classes.select! { |c| @options[:only].include?(c.cop_name) }
         else
           # filter out Rails cops unless requested
           cop_classes.reject!(&:rails?) unless run_rails_cops?(config)

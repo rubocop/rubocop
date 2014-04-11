@@ -62,7 +62,7 @@ module Rubocop
 
       def cop_enabled?(cop_class)
         @config.cop_enabled?(cop_class) ||
-          cop_class.cop_name == @options[:only]
+          (@options[:only] || []).include?(cop_class.cop_name)
       end
 
       def autocorrect(buffer, cops)

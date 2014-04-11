@@ -36,7 +36,7 @@ describe Rubocop::Options, :isolated_environment do
 
         expected_help = <<-END
 Usage: rubocop [options] [file1, file2, ...]
-        --only COP                   Run just one cop.
+        --only [COP1,COP2,...]       Run only the given cop(s).
     -c, --config FILE                Specify configuration file.
         --auto-gen-config            Generate a configuration file acting as a
                                      TODO list.
@@ -62,7 +62,7 @@ Usage: rubocop [options] [file1, file2, ...]
                                      if no format is specified.
     -r, --require FILE               Require Ruby file.
         --fail-level SEVERITY        Minimum severity for exit with error code.
-        --show-cops [cop1,cop2,...]  Shows the given cops, or all cops by
+        --show-cops [COP1,COP2,...]  Shows the given cops, or all cops by
                                      default, and their configurations for the
                                      current directory.
     -d, --debug                      Display debug info.

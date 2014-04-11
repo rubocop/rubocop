@@ -13,6 +13,7 @@
 * [#971](https://github.com/bbatsov/rubocop/issues/971): Configuration format deprecation warnings include the path to the problematic config file. ([@bcobb][])
 * [#490](https://github.com/bbatsov/rubocop/issues/490): Add EnforcedStyle config option to TrailingBlankLines. ([@jonas054][])
 * Add `auto_correct` task to Rake integration. ([@irrationalfab][])
+* [#986](https://github.com/bbatsov/rubocop/issues/986): The `--only` option can take a comma-separated list of cops. ([@jonas054][])
 
 ### Changes
 
