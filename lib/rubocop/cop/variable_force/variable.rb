@@ -84,6 +84,10 @@ module Rubocop
           argument? && [:def, :defs].include?(@scope.node.type)
         end
 
+        def block_argument?
+          argument? && @scope.node.type == :block
+        end
+
         def block_local_variable?
           @declaration_node.type == BLOCK_LOCAL_VARIABLE_DECLARATION_TYPE
         end

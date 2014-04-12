@@ -6,6 +6,7 @@
 
 * [#934](https://github.com/bbatsov/rubocop/issues/934): New cop `UnderscorePrefixedVariableName` checks for `_`-prefixed variables that are actually used. ([@yujinakayama][])
 * [#934](https://github.com/bbatsov/rubocop/issues/934): New cop `UnusedMethodArgument` checks for unused method arguments. ([@yujinakayama][])
+* [#934](https://github.com/bbatsov/rubocop/issues/934): New cop `UnusedBlockArgument` checks for unused block arguments. ([@yujinakayama][])
 * [#964](https://github.com/bbatsov/rubocop/issues/964): `RedundantBegin` cop does auto-correction. ([@tamird][])
 * [#966](https://github.com/bbatsov/rubocop/issues/966): `RescueException` cop does auto-correction. ([@tamird][])
 * [#967](https://github.com/bbatsov/rubocop/issues/967): `TrivialAccessors` cop does auto-correction. ([@tamird][])
