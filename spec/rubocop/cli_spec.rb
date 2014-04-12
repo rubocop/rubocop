@@ -1513,6 +1513,27 @@ describe Rubocop::CLI, :isolated_environment do
                 ''].join("\n"))
     end
 
+    it 'matches included/excluded files corectly when . argument is given' do
+      create_file('example.rb', 'x = 0')
+      create_file('special.dsl', ['# encoding: utf-8',
+                                  'setup { "stuff" }'
+                                 ])
+      create_file('.rubocop.yml', ['AllCops:',
+                                   '  Include:',
+                                   '    - "*.dsl"',
+                                   '  Exclude:',
+                                   '    - example.rb'
+                                  ])
+      expect(cli.run(%w(--format simple .))).to eq(1)
+      expect($stdout.string)
+        .to eq(['== special.dsl ==',
+                "C:  2:  9: Prefer single-quoted strings when you don't " \
+                "need string interpolation or special symbols.",
+                '',
+                '1 file inspected, 1 offense detected',
+                ''].join("\n"))
+    end
+
     # With rubinius 2.0.0.rc1 + rspec 2.13.1,
     # File.stub(:open).and_call_original causes SystemStackError.
     it 'does not read files in excluded list', broken: :rbx do

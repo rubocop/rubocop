@@ -76,6 +76,7 @@ module Rubocop
 
     def file_to_exclude?(file)
       file = File.join(Dir.pwd, file) unless file.start_with?('/')
+      file = File.expand_path(file)
       patterns_to_exclude.any? { |pattern| match_path?(pattern, file) }
     end
 
