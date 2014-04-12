@@ -67,11 +67,11 @@ module Rubocop
 
         # Using self.x to distinguish from local variable x
 
-        def on_def(node)
+        def on_def(_node)
           @local_variables = []
         end
 
-        def on_defs(node)
+        def on_defs(_node)
           @local_variables = []
         end
 

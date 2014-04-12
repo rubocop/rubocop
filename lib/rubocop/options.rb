@@ -26,7 +26,7 @@ module Rubocop
         end
 
         add_configuration_options(opts, args)
-        add_formatting_options(opts, args)
+        add_formatting_options(opts)
 
         option(opts, '-r', '--require FILE', 'Require Ruby file.') do |f|
           require f
@@ -77,7 +77,7 @@ module Rubocop
                    '  [o]ffenses',
                    '  custom formatter class name']
 
-    def add_formatting_options(opts, args)
+    def add_formatting_options(opts)
       option(opts, '-f', '--format FORMATTER', *FORMAT_HELP) do |key|
         @options[:formatters] ||= []
         @options[:formatters] << [key]

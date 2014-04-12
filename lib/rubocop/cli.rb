@@ -24,7 +24,7 @@ module Rubocop
       trap_interrupt
 
       @options, remaining_args = Options.new.parse(args)
-      act_on_options(remaining_args)
+      act_on_options
       target_files = target_finder.find(remaining_args)
 
       inspector = FileInspector.new(@options)
@@ -51,7 +51,7 @@ module Rubocop
 
     private
 
-    def act_on_options(args)
+    def act_on_options
       handle_exiting_options
 
       ConfigLoader.debug = @options[:debug]

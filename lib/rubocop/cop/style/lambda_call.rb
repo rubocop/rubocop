@@ -50,7 +50,7 @@ module Rubocop
           end
         end
 
-        def message(node)
+        def message(_node)
           if style == :call
             'Prefer the use of `lambda.call(...)` over `lambda.(...)`.'
           else

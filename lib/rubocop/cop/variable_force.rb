@@ -28,14 +28,11 @@ module Rubocop
       VARIABLE_ASSIGNMENT_TYPES =
         [VARIABLE_ASSIGNMENT_TYPE, REGEXP_NAMED_CAPTURE_TYPE].freeze
 
-      METHOD_ARGUMENT_DECLARATION_TYPES = [
+      ARGUMENT_DECLARATION_TYPES = [
         :arg, :optarg, :restarg,
-        :kwarg, :kwoptarg, :kwrestarg
+        :kwarg, :kwoptarg, :kwrestarg,
+        :blockarg # This doen't mean block argument, it's block-pass (&block).
       ].freeze
-      BLOCK_ARGUMENT_DECLARATION_TYPE = :blockarg
-      ARGUMENT_DECLARATION_TYPES = (
-        METHOD_ARGUMENT_DECLARATION_TYPES + [BLOCK_ARGUMENT_DECLARATION_TYPE]
-      ).freeze
       BLOCK_LOCAL_VARIABLE_DECLARATION_TYPE = :shadowarg
       DECLARATION_TYPES = (
         ARGUMENT_DECLARATION_TYPES + [BLOCK_LOCAL_VARIABLE_DECLARATION_TYPE]

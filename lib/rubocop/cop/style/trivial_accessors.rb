@@ -60,12 +60,12 @@ module Rubocop
         end
 
         def trivial_writer?(method_name, args, body)
-          looks_like_trivial_writer?(method_name, args, body) &&
+          looks_like_trivial_writer?(args, body) &&
             !allowed_method?(method_name, body) &&
             !allowed_writer?(method_name)
         end
 
-        def looks_like_trivial_writer?(method_name, args, body)
+        def looks_like_trivial_writer?(args, body)
           args.children.size == 1 && args.children[0].type != :restarg &&
             body && body.type == :ivasgn &&
             body.children[1] && body.children[1].type == :lvar

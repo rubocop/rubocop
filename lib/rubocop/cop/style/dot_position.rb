@@ -19,7 +19,7 @@ module Rubocop
 
         private
 
-        def message(node)
+        def message(_node)
           'Place the . on the ' +
             case style
             when :leading

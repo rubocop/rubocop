@@ -19,25 +19,26 @@ module Rubocop
         @offense_counts = Hash.new(0)
       end
 
-      def file_finished(file, offenses)
+      def file_finished(_file, offenses)
         offenses.each { |o| @offense_counts[o.cop_name] += 1 }
       end
 
-      def finished(inspected_files)
-        report_summary(inspected_files.count,
-                       ordered_offense_counts(@offense_counts))
+      def finished(_inspected_files)
+        report_summary(@offense_counts)
       end
 
-      def report_summary(file_count, offense_counts)
+      def report_summary(offense_counts)
+        per_cop_counts = ordered_offense_counts(offense_counts)
+        total_count = total_offense_count(offense_counts)
+
         output.puts
 
-        offense_count = total_offense_count(offense_counts)
-        offense_counts.each do |cop_name, count|
-          output.puts "#{count.to_s.ljust(offense_count.to_s.length + 2)}" \
+        per_cop_counts.each do |cop_name, count|
+          output.puts "#{count.to_s.ljust(total_count.to_s.length + 2)}" \
                       "#{cop_name}\n"
         end
         output.puts '--'
-        output.puts "#{offense_count}  Total"
+        output.puts "#{total_count}  Total"
 
         output.puts
       end
@@ -46,7 +47,7 @@ module Rubocop
         Hash[offense_counts.sort_by { |k, v| [-v, k] }]
       end
 
-      def total_offense_count(offense_counts = {})
+      def total_offense_count(offense_counts)
         offense_counts.values.inject(0, :+)
       end
     end

@@ -52,11 +52,11 @@ module Rubocop
         end
 
         def check_compact_style(node, body)
-          return unless one_child?(node, body) && !compact_node_name?(node)
+          return unless one_child?(body) && !compact_node_name?(node)
           add_offense(node, :name, COMPACT_MSG)
         end
 
-        def one_child?(node, body)
+        def one_child?(body)
           body && body.type != :begin
         end
 

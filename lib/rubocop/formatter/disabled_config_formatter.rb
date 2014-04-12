@@ -22,12 +22,12 @@ module Rubocop
         attr_accessor :config_to_allow_offenses
       end
 
-      def file_finished(file, offenses)
+      def file_finished(_file, offenses)
         @cops_with_offenses ||= Hash.new(0)
         offenses.each { |o| @cops_with_offenses[o.cop_name] += 1 }
       end
 
-      def finished(inspected_files)
+      def finished(_inspected_files)
         output.puts HEADING
 
         # Syntax isn't a real cop and it can't be disabled.

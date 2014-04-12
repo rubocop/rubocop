@@ -45,7 +45,7 @@ module Rubocop
         describe 'invocation order' do
           subject(:formatter) do
             formatter = double('formatter')
-            def formatter.method_missing(method_name, *args)
+            def formatter.method_missing(method_name, *)
               return if method_name == :output
               puts method_name
             end
@@ -109,7 +109,7 @@ module Rubocop
               class << formatter
                 attr_reader :processed_file_count
 
-                def file_finished(file, offenses)
+                def file_finished(_file, _offenses)
                   @processed_file_count ||= 0
                   @processed_file_count += 1
                 end

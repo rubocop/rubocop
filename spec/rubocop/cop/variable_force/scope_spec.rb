@@ -39,6 +39,34 @@ describe Rubocop::Cop::VariableForce::Scope do
 
   subject(:scope) { described_class.new(scope_node) }
 
+  describe '#name' do
+    context 'when the scope is instance method definition' do
+      let(:source) { <<-END }
+        def some_method
+        end
+      END
+
+      let(:scope_node_type) { :def }
+
+      it 'returns the method name' do
+        expect(scope.name).to eq(:some_method)
+      end
+    end
+
+    context 'when the scope is singleton method definition' do
+      let(:source) { <<-END }
+        def self.some_method
+        end
+      END
+
+      let(:scope_node_type) { :defs }
+
+      it 'returns the method name' do
+        expect(scope.name).to eq(:some_method)
+      end
+    end
+  end
+
   describe '#ancestors_of_node' do
     let(:source) do
       <<-END
