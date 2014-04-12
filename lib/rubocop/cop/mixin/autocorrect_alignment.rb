@@ -29,7 +29,7 @@ module Rubocop
 
         @corrections << lambda do |corrector|
           expr = node.loc.expression
-          each_line(expr) do |line_begin_pos, line|
+          each_line(expr) do |line_begin_pos|
             range = calculate_range(expr, line_begin_pos, column_delta)
             if column_delta > 0
               unless range.source == "\n"
@@ -70,7 +70,7 @@ module Rubocop
         offset = 0
         expr.source.each_line do |line|
           line_begin_pos = expr.begin_pos + offset
-          yield line_begin_pos, line
+          yield line_begin_pos
           offset += line.length
         end
       end
