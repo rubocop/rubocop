@@ -115,7 +115,7 @@ module Rubocop
             match = /\S.*/.match(do_loc.source_line)
             indentation_of_do_line = match.begin(0)
             if end_loc.column != indentation_of_do_line
-              add_offense(nil,
+              add_offense(block_node,
                           end_loc,
                           format(MSG, end_loc.line, end_loc.column,
                                  start_loc.source.lines.to_a.first.chomp,
@@ -144,6 +144,58 @@ module Rubocop
 
         def block_is_on_next_line?(begin_node, block_node)
           begin_node.loc.line != block_node.loc.line
+        end
+
+        def autocorrect(node)
+          key, _ = *node
+          source = node.loc.expression.source_buffer
+
+          @corrections << lambda do |corrector|
+            start_col = key.loc.expression.column
+
+            ensure_newline_after_block_start(corrector, node, start_col)
+
+            starting_position_of_block_end = node.loc.end.begin_pos
+            end_col = node.loc.end.column
+            end_line = node.loc.end.source_line
+
+            if end_line[0...end_col] =~ /[^\s]/
+              # end statement is not on its own line
+              corrector.insert_before(node.loc.end, "\n" + (' ' * start_col))
+            elsif end_col < start_col
+              delta = start_col - end_col
+              corrector.insert_before(node.loc.end, ' ' * delta)
+            elsif end_col > start_col
+              delta = start_col - end_col
+              range_start = starting_position_of_block_end + delta
+
+              range = Parser::Source::Range.new(source,
+                                                range_start,
+                                                range_start - delta)
+
+              corrector.remove(range)
+            end
+          end
+        end
+
+        def ensure_newline_after_block_start(corrector, node, start_col)
+          node_begin = node.loc.begin
+          start_line = node_begin.source_line
+
+          end_of_do_statement_col = node_begin.column + node_begin.length
+          start_line_after_do = start_line[end_of_do_statement_col..-1]
+
+          unless start_line_after_do =~ /\A\s*(\|[^|]*\|\s*)?\z/
+            params_match = start_line_after_do.match(/\A\s*(\|[^|]*\|\s*)?/)
+            starting_pos = node_begin.end_pos + params_match[0].length
+
+            source = node.loc.expression.source_buffer
+            range = Parser::Source::Range.new(source,
+                                              starting_pos - 1,
+                                              starting_pos)
+
+            corrector.insert_after(range, "\n  #{' ' * start_col}")
+          end
         end
       end
     end
