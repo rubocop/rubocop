@@ -15,7 +15,7 @@ module Rubocop
       class UselessSetterCall < Cop
         include CheckMethods
 
-        MSG = 'Useless setter call to local variable %s.'
+        MSG = 'Useless setter call to local variable `%s`.'
         ASSIGNMENT_TYPES = [:lvasgn, :ivasgn, :cvasgn, :gvasgn].freeze
 
         private

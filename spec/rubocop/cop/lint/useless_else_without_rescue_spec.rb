@@ -23,7 +23,7 @@ describe Rubocop::Cop::Lint::UselessElseWithoutRescue do
     it 'registers an offense' do
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.message)
-        .to eq('Else without rescue is useless')
+        .to eq('`else` without `rescue` is useless.')
       expect(cop.highlights).to eq(['else'])
     end
   end

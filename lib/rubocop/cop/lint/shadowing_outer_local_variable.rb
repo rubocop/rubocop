@@ -8,7 +8,7 @@ module Rubocop
       # This is a mimic of the warning
       # "shadowing outer local variable - foo" from `ruby -cw`.
       class ShadowingOuterLocalVariable < Cop
-        MSG = 'Shadowing outer local variable - `%s`'
+        MSG = 'Shadowing outer local variable - `%s`.'
 
         def join_force?(force_class)
           force_class == VariableForce

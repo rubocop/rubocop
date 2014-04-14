@@ -20,7 +20,7 @@ module Rubocop
         include CheckAssignment
         include ConfigurableEnforcedStyle
 
-        MSG = 'end at %d, %d is not aligned with %s at %d, %d'
+        MSG = '`end` at %d, %d is not aligned with `%s` at %d, %d'
 
         def on_class(node)
           check(node)

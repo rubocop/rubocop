@@ -14,7 +14,7 @@ module Rubocop
       class BlockAlignment < Cop
         include CheckAssignment
 
-        MSG = 'end at %d, %d is not aligned with %s at %d, %d%s'
+        MSG = '`end` at %d, %d is not aligned with `%s` at %d, %d%s'
 
         def initialize(config = nil, options = nil)
           super
@@ -131,7 +131,7 @@ module Rubocop
               start_loc.column == indentation_of_do_line
             ''
           else
-            " or #{match[0]} at #{do_loc.line}, #{indentation_of_do_line}"
+            " or `#{match[0]}` at #{do_loc.line}, #{indentation_of_do_line}"
           end
         end
 

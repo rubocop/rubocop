@@ -13,7 +13,7 @@ module Rubocop
       # reassignments and properly handles varied cases such as branch, loop,
       # rescue, ensure, etc.
       class UselessAssignment < Cop
-        MSG = 'Useless assignment to variable - %s'
+        MSG = 'Useless assignment to variable - `%s`.'
 
         def join_force?(force_class)
           force_class == VariableForce
@@ -50,13 +50,13 @@ module Rubocop
           message = format(MSG, variable.name)
 
           if assignment.multiple_assignment?
-            message << ". Use _ or _#{variable.name} as a variable name " \
+            message << " Use `_` or `_#{variable.name}` as a variable name " \
                        "to indicate that it won't be used."
           elsif assignment.operator_assignment?
             return_value_node = return_value_node_of_scope(variable.scope)
             if assignment.meta_assignment_node.equal?(return_value_node)
               non_assignment_operator = assignment.operator.sub(/=$/, '')
-              message << ". Use just operator #{non_assignment_operator}."
+              message << " Use just operator `#{non_assignment_operator}`."
             end
           end
 

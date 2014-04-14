@@ -13,6 +13,8 @@ describe Rubocop::Cop::Lint::UselessSetterCall do
                     'end'
                    ])
     expect(cop.offenses.size).to eq(1)
+    expect(cop.messages)
+      .to eq(['Useless setter call to local variable `top`.'])
   end
 
   it 'registers an offense for defs ending with lvar attr assignment' do
