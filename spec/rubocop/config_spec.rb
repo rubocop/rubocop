@@ -176,4 +176,46 @@ describe Rubocop::Config do
       end
     end
   end
+
+  describe '#deprecation_check' do
+    context 'when there is no AllCops configuration' do
+      let(:hash) { {} }
+
+      it 'does not yield' do
+        expect { |b| configuration.deprecation_check(&b) }.not_to yield_control
+      end
+    end
+
+    context 'when there is AllCops configuration' do
+      context 'if there are no Excludes or Includes keys' do
+        let(:hash) { { 'AllCops' => { 'Exclude' => [], 'Include' => [] } } }
+
+        it 'does not yield' do
+          expect do |b|
+            configuration.deprecation_check(&b)
+          end.not_to yield_control
+        end
+      end
+
+      context 'if there are is an Includes key' do
+        let(:hash) { { 'AllCops' => { 'Includes' => [] } } }
+
+        it 'yields' do
+          expect do |b|
+            configuration.deprecation_check(&b)
+          end.to yield_with_args(String)
+        end
+      end
+
+      context 'if there are is an Excludes key' do
+        let(:hash) { { 'AllCops' => { 'Excludes' => [] } } }
+
+        it 'yields' do
+          expect do |b|
+            configuration.deprecation_check(&b)
+          end.to yield_with_args(String)
+        end
+      end
+    end
+  end
 end

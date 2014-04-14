@@ -32,35 +32,14 @@ module Rubocop
         hash.delete('inherit_from')
         config = Config.new(hash, path)
 
-        deprecation_check(config) do |deprecation_message|
+        config.deprecation_check do |deprecation_message|
           warn("#{path} - #{deprecation_message}")
           exit(-1)
         end
 
         config.warn_unless_valid
-        make_excludes_absolute(config)
+        config.make_excludes_absolute
         config
-      end
-
-      def deprecation_check(config)
-        return unless config['AllCops']
-        if config['AllCops']['Excludes']
-          yield 'AllCops/Excludes was renamed to AllCops/Exclude'
-        elsif config['AllCops']['Includes']
-          yield 'AllCops/Includes was renamed to AllCops/Include'
-        end
-      end
-
-      def make_excludes_absolute(config)
-        if config['AllCops'] && config['AllCops']['Exclude']
-          config['AllCops']['Exclude'].map! do |exclude_elem|
-            if exclude_elem.is_a?(String) && !exclude_elem.start_with?('/')
-              File.join(config.base_dir_for_path_parameters, exclude_elem)
-            else
-              exclude_elem
-            end
-          end
-        end
       end
 
       # Return a recursive merge of two hashes. That is, a normal hash merge,
@@ -105,22 +84,9 @@ module Rubocop
         found_files = config_files_in_path(config_file)
         if found_files.any? && found_files.last != config_file
           print 'AllCops/Exclude ' if debug?
-          add_excludes_from_higher_level(config, load_file(found_files.last))
+          config.add_excludes_from_higher_level(load_file(found_files.last))
         end
         merge_with_default(config, config_file)
-      end
-
-      def add_excludes_from_higher_level(config, highest_config)
-        if highest_config['AllCops'] && highest_config['AllCops']['Exclude']
-          config['AllCops'] ||= {}
-          excludes = config['AllCops']['Exclude'] ||= []
-          highest_config['AllCops']['Exclude'].each do |path|
-            unless path.is_a?(Regexp) || path.start_with?('/')
-              path = File.join(File.dirname(highest_config.loaded_path), path)
-            end
-            excludes << path unless excludes.include?(path)
-          end
-        end
       end
 
       def default_configuration

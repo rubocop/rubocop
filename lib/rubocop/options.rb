@@ -3,6 +3,49 @@
 require 'optparse'
 
 module Rubocop
+  # This module contains help texts for command line options.
+  module OptionsHelp
+    TEXT = {
+      only:              'Run only the given cop(s).',
+      require:           'Require Ruby file.',
+      config:            'Specify configuration file.',
+      auto_gen_config:  ['Generate a configuration file acting as a',
+                         'TODO list.'],
+      force_exclusion:  ['Force excluding files specified in the',
+                         'configuration `Exclude` even if they are',
+                         'explicitly passed as arguments.'],
+      format:           ['Choose an output formatter. This option',
+                         'can be specified multiple times to enable',
+                         'multiple formatters at the same time.',
+                         '  [p]rogress (default)',
+                         '  [s]imple',
+                         '  [c]lang',
+                         '  [d]isabled cops via inline comments',
+                         '  [fu]ubar',
+                         '  [e]macs',
+                         '  [j]son',
+                         '  [fi]les',
+                         '  [o]ffenses',
+                         '  custom formatter class name'],
+      out:              ['Write output to a file instead of STDOUT.',
+                         'This option applies to the previously',
+                         'specified --format, or the default format',
+                         'if no format is specified.'],
+      fail_level:        'Minimum severity for exit with error code.',
+      show_cops:        ['Shows the given cops, or all cops by',
+                         'default, and their configurations for the',
+                         'current directory.'],
+      debug:             'Display debug info.',
+      display_cop_names: 'Display cop names in offense messages.',
+      rails:             'Run extra Rails cops.',
+      lint:              'Run only lint cops.',
+      auto_correct:      'Auto-correct offenses.',
+      no_color:          'Disable color output.',
+      version:           'Display version.',
+      verbose_version:   'Display verbose version.'
+    }
+  end
+
   # This class handles command line options.
   class Options
     DEFAULT_FORMATTER = 'progress'
@@ -19,8 +62,7 @@ module Rubocop
       OptionParser.new do |opts|
         opts.banner = 'Usage: rubocop [options] [file1, file2, ...]'
 
-        option(opts, '--only [COP1,COP2,...]',
-               'Run only the given cop(s).') do |list|
+        option(opts, '--only [COP1,COP2,...]') do |list|
           @options[:only] = list.split(',')
           validate_only_option
         end
@@ -28,9 +70,7 @@ module Rubocop
         add_configuration_options(opts, args)
         add_formatting_options(opts)
 
-        option(opts, '-r', '--require FILE', 'Require Ruby file.') do |f|
-          require f
-        end
+        option(opts, '-r', '--require FILE') { |f| require f }
 
         add_severity_option(opts)
         add_flags_with_optional_args(opts)
@@ -47,93 +87,65 @@ module Rubocop
     private
 
     def add_configuration_options(opts, args)
-      option(opts, '-c', '--config FILE', 'Specify configuration file.')
+      option(opts, '-c', '--config FILE')
 
-      option(opts, '--auto-gen-config',
-             'Generate a configuration file acting as a', 'TODO list.') do
+      option(opts, '--auto-gen-config') do
         validate_auto_gen_config_option(args)
         @options[:formatters] = [[DEFAULT_FORMATTER],
                                  [Formatter::DisabledConfigFormatter,
                                   ConfigLoader::AUTO_GENERATED_FILE]]
       end
 
-      option(opts, '--force-exclusion',
-             'Force excluding files specified in the',
-             'configuration `Exclude` even if they are',
-             'explicitly passed as arguments.')
+      option(opts, '--force-exclusion')
     end
 
-    FORMAT_HELP = ['Choose an output formatter. This option',
-                   'can be specified multiple times to enable',
-                   'multiple formatters at the same time.',
-                   '  [p]rogress (default)',
-                   '  [s]imple',
-                   '  [c]lang',
-                   '  [d]isabled cops via inline comments',
-                   '  [fu]ubar',
-                   '  [e]macs',
-                   '  [j]son',
-                   '  [fi]les',
-                   '  [o]ffenses',
-                   '  custom formatter class name']
-
     def add_formatting_options(opts)
-      option(opts, '-f', '--format FORMATTER', *FORMAT_HELP) do |key|
+      option(opts, '-f', '--format FORMATTER') do |key|
         @options[:formatters] ||= []
         @options[:formatters] << [key]
       end
 
-      option(opts, '-o', '--out FILE',
-             'Write output to a file instead of STDOUT.',
-             'This option applies to the previously',
-             'specified --format, or the default format',
-             'if no format is specified.') do |path|
+      option(opts, '-o', '--out FILE') do |path|
         @options[:formatters] ||= [[DEFAULT_FORMATTER]]
         @options[:formatters].last << path
       end
     end
 
     def add_severity_option(opts)
-      opts.on('--fail-level SEVERITY',
-              Rubocop::Cop::Severity::NAMES,
-              Rubocop::Cop::Severity::CODE_TABLE,
-              'Minimum severity for exit with error code.') do |severity|
-                @options[:fail_level] = severity
-              end
+      option(opts, '--fail-level SEVERITY',
+             Rubocop::Cop::Severity::NAMES,
+             Rubocop::Cop::Severity::CODE_TABLE) do |severity|
+        @options[:fail_level] = severity
+      end
     end
 
     def add_flags_with_optional_args(opts)
-      option(opts, '--show-cops [COP1,COP2,...]',
-             'Shows the given cops, or all cops by',
-             'default, and their configurations for the',
-             'current directory.') do |list|
+      option(opts, '--show-cops [COP1,COP2,...]') do |list|
         @options[:show_cops] = list.nil? ? [] : list.split(',')
       end
     end
 
     def add_boolean_flags(opts)
-      option(opts, '-d', '--debug', 'Display debug info.')
-      option(opts,
-             '-D', '--display-cop-names',
-             'Display cop names in offense messages.')
-      option(opts, '-R', '--rails', 'Run extra Rails cops.')
-      option(opts, '-l', '--lint', 'Run only lint cops.')
-      option(opts, '-a', '--auto-correct', 'Auto-correct offenses.')
+      option(opts, '-d', '--debug')
+      option(opts, '-D', '--display-cop-names')
+      option(opts, '-R', '--rails')
+      option(opts, '-l', '--lint')
+      option(opts, '-a', '--auto-correct')
 
       @options[:color] = true
-      opts.on('-n', '--no-color', 'Disable color output.') do
-        @options[:color] = false
-      end
+      option(opts, '-n', '--no-color') { @options[:color] = false }
 
-      option(opts, '-v', '--version', 'Display version.')
-      option(opts, '-V', '--verbose-version', 'Display verbose version.')
+      option(opts, '-v', '--version')
+      option(opts, '-V', '--verbose-version')
     end
 
     # Sets a value in the @options hash, based on the given long option and its
     # value, in addition to calling the block if a block is given.
     def option(opts, *args)
+      long_opt_symbol = long_opt_symbol(args)
+      args += Array(OptionsHelp::TEXT[long_opt_symbol])
       opts.on(*args) do |arg|
-        @options[long_opt_symbol(args)] = arg
+        @options[long_opt_symbol] = arg
         yield arg if block_given?
       end
     end
