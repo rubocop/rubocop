@@ -6,13 +6,57 @@ require 'spec_helper'
 describe Rubocop::Cop::Lint::BlockAlignment do
   subject(:cop) { described_class.new }
 
-  it 'registers an offense for mismatched block end' do
-    inspect_source(cop,
-                   ['test do |ala|',
-                    '  end'
-                   ])
-    expect(cop.messages)
-      .to eq(['end at 2, 2 is not aligned with test do |ala| at 1, 0'])
+  context 'when the block has no arguments' do
+    it 'registers an offense for mismatched block end' do
+      inspect_source(cop,
+                     ['test do',
+                      '  end'
+                     ])
+      expect(cop.messages)
+        .to eq(['end at 2, 2 is not aligned with test do at 1, 0'])
+    end
+
+    it 'auto-corrects alignment' do
+      new_source = autocorrect_source(cop, ['test do',
+                                            '  end'
+                                           ])
+
+      expect(new_source).to eq(['test do',
+                                'end'].join("\n"))
+    end
+  end
+
+  context 'when the block has arguments' do
+    it 'registers an offense for mismatched block end' do
+      inspect_source(cop,
+                     ['test do |ala|',
+                      '  end'
+                     ])
+      expect(cop.messages)
+        .to eq(['end at 2, 2 is not aligned with test do |ala| at 1, 0'])
+    end
+
+    it 'auto-corrects alignment' do
+      new_source = autocorrect_source(cop, ['test do |ala|',
+                                            '  end'
+                                           ])
+
+      expect(new_source).to eq(['test do |ala|',
+                                'end'].join("\n"))
+    end
+  end
+
+  it 'auto-corrects when the do/ end statements are not separated from the
+  block contents with newlines' do
+    src = ['test do |foo| bar',
+           '  baz end']
+
+    new_source = autocorrect_source(cop, src)
+
+    expect(new_source).to eq(['test do |foo| ',
+                              '  bar',
+                              '  baz ',
+                              'end'].join("\n"))
   end
 
   context 'when the block is a logical operand' do
@@ -52,6 +96,17 @@ describe Rubocop::Cop::Lint::BlockAlignment do
                       'end'
                      ])
       expect(cop.offenses).to be_empty
+    end
+
+    it 'auto-corrects alignment to the block start' do
+      new_source = autocorrect_source(cop,
+                                      ['a = b = c = test do |ala|',
+                                       '    end'
+                                      ])
+
+      expect(new_source).to eq(['a = b = c = test do |ala|',
+                                '            end'
+                               ].join("\n"))
     end
   end
 
@@ -96,6 +151,23 @@ describe Rubocop::Cop::Lint::BlockAlignment do
       expect(cop.messages)
         .to eq(['end at 4, 0 is not aligned with a_long_method_that_dont_fit_on_the_line ' \
                 'do |v| at 2, 2'])
+    end
+
+    it 'auto-corrects alignment' do
+      new_source = autocorrect_source(
+        cop,
+        ['variable =',
+         '  a_long_method_that_dont_fit_on_the_line do |v|',
+         '    v.foo',
+         'end'
+        ])
+
+      expect(new_source)
+        .to eq(['variable =',
+                '  a_long_method_that_dont_fit_on_the_line do |v|',
+                '    v.foo',
+                '  end'
+               ].join("\n"))
     end
   end
 
@@ -173,6 +245,36 @@ describe Rubocop::Cop::Lint::BlockAlignment do
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
+
+    it 'auto-corrects misaligned ends with the start of the expression' do
+      src = ['def foo(bar)',
+             '  bar.get_stuffs',
+             '      .reject do |stuff|',
+             '        stuff.with_a_very_long_expression_that_doesnt_fit_the_line',
+             '        end.select do |stuff|',
+             '        stuff.another_very_long_expression_that_doesnt_fit_the_line',
+             '    end',
+             '      .select do |stuff|',
+             '        stuff.another_very_long_expression_that_doesnt_fit_the_line',
+             '        end',
+             'end']
+
+      aligned_src = [
+        'def foo(bar)',
+        '  bar.get_stuffs',
+        '      .reject do |stuff|',
+        '        stuff.with_a_very_long_expression_that_doesnt_fit_the_line',
+        '  end.select do |stuff|',
+        '        stuff.another_very_long_expression_that_doesnt_fit_the_line',
+        '  end',
+        '      .select do |stuff|',
+        '        stuff.another_very_long_expression_that_doesnt_fit_the_line',
+        '  end',
+        'end'].join("\n")
+
+      new_source = autocorrect_source(cop, src)
+      expect(new_source).to eq(aligned_src)
+    end
   end
 
   context 'when variables of a mass assignment spans several lines' do
@@ -193,6 +295,16 @@ describe Rubocop::Cop::Lint::BlockAlignment do
       inspect_source(cop, src)
       expect(cop.messages)
         .to eq(['end at 4, 4 is not aligned with e, at 1, 0 or f = [5, 6].map do |i| at 2, 0'])
+    end
+
+    it 'can not auto-correct' do
+      src = ['e,',
+             'f = [5, 6].map do |i|',
+             '  i - 5',
+             '    end']
+
+      new_source = autocorrect_source(cop, src)
+      expect(new_source).to eq(src.join("\n"))
     end
   end
 
