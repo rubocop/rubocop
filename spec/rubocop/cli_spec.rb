@@ -713,7 +713,7 @@ describe Rubocop::CLI, :isolated_environment do
                       "C:  1:  5: Surrounding space missing for operator " \
                       "'=='.",
                       'C:  2:  1: Tab detected.',
-                      'W:  2:  2: Useless assignment to variable - y',
+                      'W:  2:  2: Useless assignment to variable - y.',
                       '',
                       '1 file inspected, 3 offenses detected',
                       ''].join("\n"))
@@ -1231,7 +1231,7 @@ describe Rubocop::CLI, :isolated_environment do
       .to eq(["#{abs('example.rb')}:2:6: W: " \
               'Ambiguous splat operator. Parenthesize the method arguments ' \
               "if it's surely a splat operator, or add a whitespace to the " \
-              'right of the * if it should be a multiplication.',
+              'right of the `*` if it should be a multiplication.',
               "#{abs('example.rb')}:3:1: C: " \
               'Favor the ternary operator (?:) over if/then/else/end ' \
               'constructs.',

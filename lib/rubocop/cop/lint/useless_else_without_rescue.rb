@@ -14,10 +14,16 @@ module Rubocop
       class UselessElseWithoutRescue < Cop
         include ParserDiagnostic
 
+        MSG = '`else` without `rescue` is useless.'
+
         private
 
         def relevant_diagnostic?(diagnostic)
           diagnostic.reason == :useless_else
+        end
+
+        def alternative_message(_diagnostic)
+          MSG
         end
       end
     end
