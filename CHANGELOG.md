@@ -19,6 +19,7 @@
 * Fix `Delegate` for delegation with assignment or constant. ([@geniou][])
 * [#1032](https://github.com/bbatsov/rubocop/issues/1032): Avoid duplicate reporting when code moves around due to `--auto-correct`. ([@jonas054][])
 * [#1036](https://github.com/bbatsov/rubocop/issues/1036): Handle strings like `__FILE__` in `LineEndConcatenation`. ([@bbatsov][])
+* [#1006](https://github.com/bbatsov/rubocop/issues/1006): Fix LineEndConcatenation to handle chained concatenations. ([@barunio][])
 
 ## 0.21.0 (24/04/2014)
 
@@ -915,3 +916,4 @@
 [@tommeier]: https://github.com/tommeier
 [@sfeldon]: https://github.com/sfeldon
 [@biinari]: https://github.com/biinari
+[@barunio]: https://github.com/barunio
