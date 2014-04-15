@@ -3,8 +3,10 @@
 module Rubocop
   module Cop
     module Style
-      # This cop enforces the consitent useage of `%`-literal delimiters.
+      # This cop enforces the consistent useage of `%`-literal delimiters.
       class PercentLiteralDelimiters < Cop
+        include PercentLiteral
+
         def on_array(node)
           process(node, '%w', '%W', '%i')
         end
@@ -57,16 +59,6 @@ module Rubocop
           end
         end
 
-        def process(node, *types)
-          on_percent_literal(node, types) if percent_literal?(node)
-        end
-
-        def percent_literal?(node)
-          if (begin_source = begin_source(node))
-            begin_source.start_with?('%')
-          end
-        end
-
         def on_percent_literal(node, types)
           type = type(node)
           if types.include?(type) &&
@@ -74,10 +66,6 @@ module Rubocop
               !contains_preferred_delimiter?(node, type)
             add_offense(node, :expression)
           end
-        end
-
-        def type(node)
-          node.loc.begin.source[0..-2]
         end
 
         def preferred_delimiters(type)
@@ -123,12 +111,6 @@ module Rubocop
           node
             .children.map { |n| string_source(n) }.compact
             .any? { |s| preferred_delimiters.any? { |d| s.include?(d) } }
-        end
-
-        def begin_source(node)
-          if node.loc.respond_to?(:begin) && node.loc.begin
-            node.loc.begin.source
-          end
         end
 
         def string_source(node)
