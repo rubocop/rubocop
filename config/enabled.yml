@@ -521,6 +521,10 @@ UnlessElse:
                  case first.
   Enabled: true
 
+UnneededCapitalW:
+  Description: 'Checks for %W when interpolation is not needed.'
+  Enabled: true
+
 VariableInterpolation:
   Description: >-
                  Don't interpolate global, instance and class variables
