@@ -560,6 +560,27 @@ describe Rubocop::Cop::Style::IndentationWidth do
                       'end'])
       expect(cop.offenses).to be_empty
     end
+
+    if RUBY_VERSION >= '2.1'
+      context 'when modifier and def are on the same line' do
+        it 'accepts a correctly aligned body' do
+          inspect_source(cop,
+                         ['private def test',
+                          '  something',
+                          'end'])
+          expect(cop.offenses).to be_empty
+        end
+
+        it 'registers an offense for bad indentation of a def body' do
+          inspect_source(cop,
+                         ['private def test',
+                          '          something',
+                          '        end'])
+          expect(cop.messages)
+            .to eq(['Use 2 (not 10) spaces for indentation.'])
+        end
+      end
+    end
   end
 
   context 'with class' do

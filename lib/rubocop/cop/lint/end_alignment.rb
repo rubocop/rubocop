@@ -60,16 +60,6 @@ module Rubocop
 
         private
 
-        # Returns true for constructs such as
-        # private def my_method
-        # which are allowed in Ruby 2.1 and later.
-        def visibility_and_def_on_same_line?(receiver, method_name, args)
-          !receiver &&
-            [:public, :protected, :private,
-             :module_function].include?(method_name) &&
-            args.size == 1 && [:def, :defs].include?(args.first.type)
-        end
-
         def check_assignment(node, rhs)
           # If there are method calls chained to the right hand side of the
           # assignment, we let rhs be the receiver of those method calls before

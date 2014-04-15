@@ -29,9 +29,8 @@ module Rubocop
           # Check body against end/} indentation. Checking against variable
           # assignments, etc, would be more difficult. The end/} must be at the
           # beginning of its line.
-          if begins_its_line?(node.loc.end)
-            check_indentation(node.loc.end, body)
-          end
+          loc = node.loc
+          check_indentation(loc.end, body) if begins_its_line?(loc.end)
         end
 
         def on_module(node)
@@ -44,8 +43,19 @@ module Rubocop
           members.each { |m| check_indentation(node.loc.keyword, m) }
         end
 
+        def on_send(node)
+          super
+          receiver, method_name, *args = *node
+
+          if visibility_and_def_on_same_line?(receiver, method_name, args)
+            _method_name, _args, body = *args.first
+            check_indentation(node.loc.expression, body)
+            ignore_node(args.first)
+          end
+        end
+
         def check(node, _method_name, _args, body)
-          check_indentation(node.loc.keyword, body)
+          check_indentation(node.loc.keyword, body) unless ignored_node?(node)
         end
 
         def on_for(node)
@@ -107,12 +117,8 @@ module Rubocop
           rhs = first_part_of_call_chain(rhs)
 
           if rhs
-            end_alignment_config = config.for_cop('EndAlignment')
-            style = if end_alignment_config['Enabled']
-                      end_alignment_config['AlignWith']
-                    else
-                      'keyword'
-                    end
+            end_config = config.for_cop('EndAlignment')
+            style = end_config['Enabled'] ? end_config['AlignWith'] : 'keyword'
             base = style == 'variable' ? node : rhs
 
             case rhs.type
@@ -162,15 +168,11 @@ module Rubocop
           body_node = body_node.children.first if body_node.type == :begin
 
           expr = body_node.loc.expression
-          pos = if indentation >= 0
-                  (expr.begin_pos - indentation)..expr.begin_pos
-                else
-                  expr.begin_pos..(expr.begin_pos - indentation)
-                end
+          begin_pos, ind = expr.begin_pos, expr.begin_pos - indentation
+          pos = indentation >= 0 ? ind..begin_pos : begin_pos..ind
 
-          add_offense(body_node,
-                      Parser::Source::Range.new(expr.source_buffer,
-                                                pos.begin, pos.end),
+          r = Parser::Source::Range.new(expr.source_buffer, pos.begin, pos.end)
+          add_offense(body_node, r,
                       format("Use #{CORRECT_INDENTATION} (not %d) spaces " \
                              'for indentation.', indentation))
         end
