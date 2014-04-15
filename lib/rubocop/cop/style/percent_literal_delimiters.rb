@@ -3,7 +3,7 @@
 module Rubocop
   module Cop
     module Style
-      # This cop enforces the consistent useage of `%`-literal delimiters.
+      # This cop enforces the consistent usage of `%`-literal delimiters.
       class PercentLiteralDelimiters < Cop
         include PercentLiteral
 
