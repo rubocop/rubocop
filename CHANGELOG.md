@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#1006](https://github.com/bbatsov/rubocop/issues/1006): Fix LineEndConcatenation to handle chained concatenations. ([@barunio][])
 * [#934](https://github.com/bbatsov/rubocop/issues/934): New cop `UnderscorePrefixedVariableName` checks for `_`-prefixed variables that are actually used. ([@yujinakayama][])
 * [#934](https://github.com/bbatsov/rubocop/issues/934): New cop `UnusedMethodArgument` checks for unused method arguments. ([@yujinakayama][])
 * [#934](https://github.com/bbatsov/rubocop/issues/934): New cop `UnusedBlockArgument` checks for unused block arguments. ([@yujinakayama][])
@@ -883,3 +884,4 @@
 [@bquorning]: https://github.com/bquorning
 [@bcobb]: https://github.com/bcobb
 [@irrationalfab]: https://github.com/irrationalfab
+[@barunio]: https://github.com/barunio

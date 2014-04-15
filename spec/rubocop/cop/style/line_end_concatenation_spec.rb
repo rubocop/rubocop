@@ -33,6 +33,32 @@ describe Rubocop::Cop::Style::LineEndConcatenation do
     expect(cop.offenses.size).to eq(1)
   end
 
+  it 'registers multiple offenses when there are chained << methods' do
+    inspect_source(cop,
+                   ['top = "test#{x}" <<',
+                    '"top" <<',
+                    '"ubertop"'])
+    expect(cop.offenses.size).to eq(2)
+  end
+
+  it 'registers multiple offenses when there are chained concatenations' do
+    inspect_source(cop,
+                   ['top = "test#{x}" +',
+                    '"top" +',
+                    '"foo"'])
+    expect(cop.offenses.size).to eq(2)
+  end
+
+  it 'registers multiple offenses when there are chained concatenations
+  combined with << calls' do
+    inspect_source(cop,
+                   ['top = "test#{x}" <<',
+                    '"top" +',
+                    '"foo" <<',
+                    '"bar"'])
+    expect(cop.offenses.size).to eq(3)
+  end
+
   it 'accepts string concat on the same line' do
     inspect_source(cop,
                    ['top = "test" + "top"'])
@@ -53,10 +79,51 @@ describe Rubocop::Cop::Style::LineEndConcatenation do
     expect(cop.offenses).to be_empty
   end
 
-  it 'autocorrects by replacing + with \\' do
+  it 'registers offenses only for the appropriate lines in chained concats' do
+    # only the last concatenation is an offense
+    inspect_source(cop,
+                   ['top = "test#{x}" + # comment',
+                    '"foo" +',
+                    '%(bar) +',
+                    '"baz" +',
+                    '"qux"'])
+    expect(cop.offenses.size).to eq(1)
+  end
+
+  it 'autocorrects in the simple case by replacing + with \\' do
     corrected = autocorrect_source(cop,
                                    ['top = "test" +',
                                     '"top"'])
     expect(corrected).to eq ['top = "test" \\', '"top"'].join("\n")
+  end
+
+  it 'autocorrects for chained concatenations and << calls' do
+    corrected = autocorrect_source(cop,
+                                   ['top = "test#{x}" <<',
+                                    '"top" +',
+                                    '"ubertop" <<',
+                                    '"foo"'])
+
+    expect(corrected).to eq ['top = "test#{x}" \\',
+                             '"top" \\',
+                             '"ubertop" \\',
+                             '"foo"'].join("\n")
+  end
+
+  it 'autocorrects only the lines that should be autocorrected' do
+    corrected = autocorrect_source(cop,
+                                   ['top = "test#{x}" <<',
+                                    '"top" + # comment',
+                                    '"foo" +',
+                                    '"bar" +',
+                                    '%(baz) +',
+                                    '"qux"'])
+
+    expect(corrected).to eq ['top = "test#{x}" \\',
+                             '"top" + # comment',
+                             '"foo" \\',
+                             '"bar" +',
+                             '%(baz) +',
+                             '"qux"'].join("\n")
   end
 end
