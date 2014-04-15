@@ -44,8 +44,19 @@ module Rubocop
           members.each { |m| check_indentation(node.loc.keyword, m) }
         end
 
+        def on_send(node)
+          super
+          receiver, method_name, *args = *node
+
+          if visibility_and_def_on_same_line?(receiver, method_name, args)
+            _method_name, _args, body = *args.first
+            check_indentation(node.loc.expression, body)
+            ignore_node(args.first)
+          end
+        end
+
         def check(node, _method_name, _args, body)
-          check_indentation(node.loc.keyword, body)
+          check_indentation(node.loc.keyword, body) unless ignored_node?(node)
         end
 
         def on_for(node)
