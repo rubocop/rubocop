@@ -4,7 +4,7 @@
 
 ### New features
 
-* [#835](https://github.com/bbatsov/rubocop/issues/835): New cop `UnneededCapitalW` checks for %W when interpolation not necessary and %w would do. ([@sfeldon][])
+* [#835](https://github.com/bbatsov/rubocop/issues/835): New cop `UnneededCapitalW` checks for `%W` when interpolation not necessary and `%w` would do. ([@sfeldon][])
 * [#934](https://github.com/bbatsov/rubocop/issues/934): New cop `UnderscorePrefixedVariableName` checks for `_`-prefixed variables that are actually used. ([@yujinakayama][])
 * [#934](https://github.com/bbatsov/rubocop/issues/934): New cop `UnusedMethodArgument` checks for unused method arguments. ([@yujinakayama][])
 * [#934](https://github.com/bbatsov/rubocop/issues/934): New cop `UnusedBlockArgument` checks for unused block arguments. ([@yujinakayama][])
