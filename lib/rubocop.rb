@@ -235,6 +235,7 @@ require 'rubocop/cop/style/word_array'
 
 require 'rubocop/cop/rails/action_filter'
 require 'rubocop/cop/rails/default_scope'
+require 'rubocop/cop/rails/delegate'
 require 'rubocop/cop/rails/has_and_belongs_to_many'
 require 'rubocop/cop/rails/output'
 require 'rubocop/cop/rails/read_write_attribute'
