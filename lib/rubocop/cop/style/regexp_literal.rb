@@ -11,17 +11,17 @@ module Rubocop
           string_parts = node.children.select { |child| child.type == :str }
           total_string = string_parts.map { |s| s.loc.expression.source }.join
           slashes = total_string.count('/')
-          if node.loc.begin.is?('/')
+          delimiter_start = node.loc.begin.source[0]
+
+          if delimiter_start == '/'
             if slashes > max_slashes
-              add_offense(node, :expression, error_message('')) do
-                self.slash_count_in_slashes_regexp = slashes
-              end
+              add_offense(node, :expression, error_message(''))
             end
           elsif slashes <= max_slashes
-            add_offense(node, :expression, error_message('only ')) do
-              self.slash_count_in_percent_r_regexp = slashes
-            end
+            add_offense(node, :expression, error_message('only '))
           end
+
+          configure_max(delimiter_start, slashes) if @options[:auto_gen_config]
         end
 
         private
@@ -34,38 +34,30 @@ module Rubocop
           m
         end
 
-        # MaxSlashes must be set equal to the highest number of slashes used
-        # within // to avoid reports.
-        def slash_count_in_slashes_regexp=(value)
-          configure_slashes(value) { |current| [current, value].max }
-        end
+        def configure_max(delimiter_start, value)
+          @slash_count ||= { '/' => Set.new([0]), '%' => Set.new([100_000]) }
+          @slash_count[delimiter_start].add(value)
 
-        # MaxSlashes must be set one less than the highest number of slashes
-        # used within %r{} to avoid reports.
-        def slash_count_in_percent_r_regexp=(value)
-          configure_slashes(value - 1) { |current| [current, value - 1].min }
-        end
+          # To avoid reports, MaxSlashes must be set equal to the highest
+          # number of slashes used within //, and also one less than the
+          # highest number of slashes used within %r{}. If no value can satisfy
+          # both requirements, just disable.
+          max = @slash_count['/'].max
+          min = @slash_count['%'].min
 
-        def configure_slashes(value)
-          cfg = self.config_to_allow_offenses ||= {}
-          return if cfg.key?('Enabled')
-
-          if cfg['MaxSlashes']
-            value = yield cfg['MaxSlashes']
-            if cfg['MaxSlashes'] > max_slashes && value < max_slashes ||
-                cfg['MaxSlashes'] < max_slashes && value > max_slashes
-              # We can't both increase and decrease MaxSlashes to avoid
-              # reports. This means that the only option is to disable the cop.
-              cfg = self.config_to_allow_offenses = { 'Enabled' => false }
-              return
-            end
-          end
-
-          if value >= 0
-            cfg['MaxSlashes'] = value
-          else
-            self.config_to_allow_offenses = { 'Enabled' => false }
-          end
+          self.config_to_allow_offenses = if max > max_slashes
+                                            if max < min
+                                              { 'MaxSlashes' => max }
+                                            else
+                                              { 'Enabled' => false }
+                                            end
+                                          elsif min < max_slashes + 1
+                                            if max < min
+                                              { 'MaxSlashes' => min - 1 }
+                                            else
+                                              { 'Enabled' => false }
+                                            end
+                                          end
         end
 
         def error_message(word)
