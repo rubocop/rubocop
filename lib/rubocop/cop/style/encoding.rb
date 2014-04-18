@@ -12,6 +12,7 @@ module Rubocop
 
         def investigate(processed_source)
           unless RUBY_VERSION >= '2.0.0'
+            return if processed_source.buffer.source.empty?
             line_number = 0
             line_number += 1 if processed_source[line_number] =~ /^#!/
             line = processed_source[line_number]

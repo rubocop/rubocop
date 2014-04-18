@@ -11,6 +11,8 @@ module FileHelper
 
     File.open(file_path, 'w') do |file|
       case content
+      when ''
+        # Write nothing. Create empty file.
       when String
         file.puts content
       when Array
