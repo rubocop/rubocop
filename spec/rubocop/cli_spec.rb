@@ -1331,6 +1331,13 @@ describe Rubocop::CLI, :isolated_environment do
       .to eq(['', '1 file inspected, no offenses detected', ''].join("\n"))
   end
 
+  it 'does not register any offenses for an empty file' do
+    create_file('example.rb', '')
+    expect(cli.run(%w(--format simple))).to eq(0)
+    expect($stdout.string)
+      .to eq(['', '1 file inspected, no offenses detected', ''].join("\n"))
+  end
+
   describe 'rails cops' do
     describe 'enabling/disabling' do
       it 'by default does not run rails cops' do

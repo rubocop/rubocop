@@ -10,6 +10,8 @@ module Rubocop
 
         def investigate(processed_source)
           sb = processed_source.buffer
+          return if sb.source.empty?
+
           whitespace_at_end = sb.source[/\s*\Z/]
           blank_lines = whitespace_at_end.count("\n") - 1
           wanted_blank_lines = style == :final_newline ? 0 : 1

@@ -12,6 +12,12 @@ describe Rubocop::Cop::Style::Encoding do
       ['Missing utf-8 encoding comment.'])
   end
 
+  it 'accepts an empty file', ruby: 1.9 do
+    inspect_source(cop, '')
+
+    expect(cop.offenses).to be_empty
+  end
+
   it 'accepts encoding on first line', ruby: 1.9 do
     inspect_source(cop, ['# encoding: utf-8',
                          'def foo() end'])
