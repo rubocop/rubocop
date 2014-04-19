@@ -20,10 +20,6 @@ module Rubocop
         end
       end
 
-      def on_dstr(node)
-        ignore_node(node)
-      end
-
       def on_regexp(node)
         ignore_node(node)
       end

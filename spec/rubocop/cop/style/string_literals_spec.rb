@@ -61,7 +61,7 @@ describe Rubocop::Cop::Style::StringLiterals, :config do
     it 'accepts double quotes when they are needed' do
       src = ['a = "\n"',
              'b = "#{encode_severity}:' \
-             '#{sprintf("%3d", line_number)}: #{m}"',
+             '#{sprintf(\'%3d\', line_number)}: #{m}"',
              'c = "\'"',
              'd = "#@test"',
              'e = "#$test"',
@@ -95,10 +95,16 @@ describe Rubocop::Cop::Style::StringLiterals, :config do
       expect(cop.offenses).to be_empty
     end
 
-    it 'can handle double quotes within embedded expression' do
+    it 'detects unneeded double quotes within embedded expression' do
       src = ['"#{"A"}"']
       inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it 'detects unneeded double quotes within concatenated string' do
+      src = ['"#{x}" \\', '"y"']
+      inspect_source(cop, src)
+      expect(cop.offenses.size).to eq(1)
     end
 
     it 'can handle a built-in constant parsed as string' do

@@ -61,15 +61,15 @@ describe Rubocop::CLI, :isolated_environment do
         e = abs('example.rb')
         expect($stdout.string)
           .to eq(["#{e}:2:35: C: [Corrected] Redundant curly braces around " \
-                  "a hash parameter.",
+                  'a hash parameter.',
                   "#{e}:2:35: C: [Corrected] Use the new Ruby 1.9 hash " \
-                  "syntax.",
+                  'syntax.',
                   # TODO: Don't report that a problem is corrected when it
                   # actually went away due to another correction.
                   "#{e}:2:35: C: [Corrected] Space inside { missing.",
                   # TODO: Don't report duplicates (HashSyntax in this case).
                   "#{e}:2:36: C: [Corrected] Use the new Ruby 1.9 hash " \
-                  "syntax.",
+                  'syntax.',
                   "#{e}:2:50: C: [Corrected] Space inside } missing.",
                   ''].join("\n"))
       end
@@ -299,9 +299,9 @@ describe Rubocop::CLI, :isolated_environment do
         expect(cli.run(%w(-D --auto-correct --format emacs))).to eq(1)
         expect($stdout.string)
           .to eq(["#{abs('example.rb')}:2:21: C: [Corrected] " \
-                  "SpaceAfterComma: Space missing after comma.",
+                  'SpaceAfterComma: Space missing after comma.',
                   "#{abs('example.rb')}:2:22: C: [Corrected] " \
-                  "HashSyntax: Use the new Ruby 1.9 hash syntax.",
+                  'HashSyntax: Use the new Ruby 1.9 hash syntax.',
                   ''].join("\n"))
         expect(IO.read('example.rb'))
           .to eq(['# encoding: utf-8',
@@ -319,9 +319,9 @@ describe Rubocop::CLI, :isolated_environment do
                                              ''].join("\n"))
         expect($stdout.string)
           .to eq(["#{abs('example.rb')}:2:3: C: [Corrected] HashSyntax: Use " \
-                  "the new Ruby 1.9 hash syntax.",
+                  'the new Ruby 1.9 hash syntax.',
                   "#{abs('example.rb')}:2:5: C: [Corrected] " \
-                  "SpaceAroundOperators: Surrounding space missing for " \
+                  'SpaceAroundOperators: Surrounding space missing for ' \
                   "operator '=>'.",
                   ''].join("\n"))
       end
@@ -337,7 +337,7 @@ describe Rubocop::CLI, :isolated_environment do
                                              ''].join("\n"))
         expect($stdout.string)
           .to eq(["#{abs('example.rb')}:2:3: C: [Corrected] Use the new " \
-                  "Ruby 1.9 hash syntax.",
+                  'Ruby 1.9 hash syntax.',
                   ''].join("\n"))
       end
 
@@ -352,9 +352,9 @@ describe Rubocop::CLI, :isolated_environment do
         expect(IO.read('example.rb')).to eq("# encoding: utf-8\n")
         expect($stdout.string)
           .to eq(["#{abs('example.rb')}:2:1: C: [Corrected] 3 trailing " \
-                  "blank lines detected.",
+                  'blank lines detected.',
                   "#{abs('example.rb')}:3:1: C: [Corrected] Trailing " \
-                  "whitespace detected.",
+                  'whitespace detected.',
                   ''].join("\n"))
       end
 
@@ -369,9 +369,9 @@ describe Rubocop::CLI, :isolated_environment do
                                              ''].join("\n"))
         expect($stdout.string)
           .to eq(["#{abs('example.rb')}:2:1: C: [Corrected] Use hash " \
-                  "literal {} instead of Hash.new.",
+                  'literal {} instead of Hash.new.',
                   "#{abs('example.rb')}:2:9: C: [Corrected] Do not use " \
-                  "parentheses for method calls with no arguments.",
+                  'parentheses for method calls with no arguments.',
                   ''].join("\n"))
       end
 
@@ -710,7 +710,7 @@ describe Rubocop::CLI, :isolated_environment do
                             'example.rb'])).to eq(1)
             expect($stdout.string)
               .to eq(['== example.rb ==',
-                      "C:  1:  5: Surrounding space missing for operator " \
+                      'C:  1:  5: Surrounding space missing for operator ' \
                       "'=='.",
                       'C:  2:  1: Tab detected.',
                       'W:  2:  2: Useless assignment to variable - y.',
@@ -1535,7 +1535,7 @@ describe Rubocop::CLI, :isolated_environment do
       expect($stdout.string)
         .to eq(['== special.dsl ==',
                 "C:  2:  9: Prefer single-quoted strings when you don't " \
-                "need string interpolation or special symbols.",
+                'need string interpolation or special symbols.',
                 '',
                 '1 file inspected, 1 offense detected',
                 ''].join("\n"))

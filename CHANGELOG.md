@@ -37,6 +37,7 @@
 * [#1001](https://github.com/bbatsov/rubocop/issues/1001): Fix `--auto-gen-config` logic for `RegexpLiteral`. ([@jonas054][])
 * [#993](https://github.com/bbatsov/rubocop/issues/993): Do not report any offenses for the contents of an empty file. ([@jonas054][])
 * [#1016](https://github.com/bbatsov/rubocop/issues/1016): Fix a false positive in `ConditionPosition` regarding statement modifiers. ([@bbatsov][])
+* [#1014](https://github.com/bbatsov/rubocop/issues/1014): Fix handling of strings nested in `dstr` nodes. ([@bbatsov][])
 
 ## 0.20.1 (05/04/2014)
 

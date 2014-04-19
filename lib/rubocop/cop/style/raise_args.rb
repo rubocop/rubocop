@@ -58,7 +58,7 @@ module Rubocop
           when :compact
             "Provide an exception object as an argument to `#{method}`."
           when :exploded
-            "Provide an exception class and message as " \
+            'Provide an exception class and message as ' \
             "arguments to `#{method}`."
           end
         end
