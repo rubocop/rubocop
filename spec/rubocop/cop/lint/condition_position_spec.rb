@@ -23,6 +23,13 @@ describe Rubocop::Cop::Lint::ConditionPosition do
                     ])
       expect(cop.offenses).to be_empty
     end
+
+    it 'accepts condition on a different line for modifiers' do
+      inspect_source(cop,
+                     ["do_something #{keyword}",
+                      '  something && something_else'])
+      expect(cop.offenses).to be_empty
+    end
   end
 
   it 'registers an offense for elsif condition on the next line' do
@@ -39,11 +46,6 @@ describe Rubocop::Cop::Lint::ConditionPosition do
 
   it 'handles ternary ops' do
     inspect_source(cop, ['x ? a : b'])
-    expect(cop.offenses).to be_empty
-  end
-
-  it 'handles modifier forms' do
-    inspect_source(cop, ['x if something'])
     expect(cop.offenses).to be_empty
   end
 end

@@ -30,6 +30,8 @@ module Rubocop
         private
 
         def check(node)
+          return if !node.loc.keyword.is?('elsif') && node.loc.end.nil?
+
           condition, = *node
 
           if on_different_line?(node.loc.keyword.line,
