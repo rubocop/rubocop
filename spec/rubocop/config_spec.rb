@@ -101,6 +101,9 @@ describe Rubocop::Config do
   end
 
   describe '#file_to_exclude?' do
+    before { $stderr = StringIO.new }
+    after { $stderr = STDERR }
+
     let(:hash) do
       {
         'AllCops' => {

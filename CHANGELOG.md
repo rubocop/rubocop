@@ -21,6 +21,7 @@
 ### Changes
 
 * Removed `FinalNewline` cop as its check is now performed by `TrailingBlankLines`. ([@jonas054][])
+* [#1011](https://github.com/bbatsov/rubocop/issues/1011): Pattern matching with `Dir#[]` for config parameters added. ([@jonas054][])
 
 ### Bugs fixed
 

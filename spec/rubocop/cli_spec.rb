@@ -1809,7 +1809,7 @@ describe Rubocop::CLI, :isolated_environment do
       create_file('.rubocop.yml',
                   ['AllCops:',
                    '  Exclude:',
-                   '    - vendor/**'])
+                   '    - vendor/**/*'])
 
       cli.run(%w(--format simple))
       expect($stderr.string).to eq('')
