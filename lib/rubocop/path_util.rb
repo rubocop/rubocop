@@ -10,11 +10,26 @@ module Rubocop
       path_name.relative_path_from(Pathname.new(base_dir)).to_s
     end
 
-    def match_path?(pattern, path)
+    # TODO: The old way of matching patterns is flawed, so a new one has been
+    # introduced. We keep supporting the old way for a while and issue
+    # deprecation warnings when a pattern is used that produced a match with
+    # the old way but doesn't match with the new.
+    def match_path?(pattern, path, config_path)
       case pattern
       when String
         basename = File.basename(path)
-        path == pattern || basename == pattern || File.fnmatch(pattern, path)
+        old_match = basename == pattern || File.fnmatch(pattern, path)
+        new_match = Dir[pattern].include?(path)
+        if old_match && !new_match
+          instruction = if basename == pattern
+                          ". Change to '**/#{pattern}'."
+                        elsif pattern.end_with?('**')
+                          ". Change to '#{pattern}/*'."
+                        end
+          warn("Warning: Deprecated pattern style '#{pattern}' in " \
+               "#{config_path}#{instruction}")
+        end
+        old_match || new_match
       when Regexp
         path =~ pattern
       end

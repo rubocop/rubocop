@@ -172,7 +172,9 @@ module Rubocop
         patterns = cop_config && cop_config[parameter]
         return default_result unless patterns
         path = config.path_relative_to_config(file)
-        patterns.any? { |pattern| match_path?(pattern, path) }
+        patterns.any? do |pattern|
+          match_path?(pattern, path, config.loaded_path)
+        end
       end
 
       def enabled_line?(line_number)

@@ -250,9 +250,9 @@ AllCops:
     - Rakefile
     - config.ru
   Exclude:
-    - db/**
-    - config/**
-    - script/**
+    - db/**/*
+    - config/**/*
+    - script/**/*
     - !ruby/regexp /old_and_unused\.rb$/
 
 # other configuration
@@ -260,6 +260,15 @@ AllCops:
 ```
 
 Files and directories are specified relative to the `.rubocop.yml` file.
+
+**Note**: Patterns that are just a file name, e.g. `Rakefile`, will match
+that file name in any directory, but this pattern style deprecated. The
+correct way to match the file in any directory, including the current, is
+`**/Rakefile`.
+
+**Note**: The pattern 'config/**' will match any file reqursively under
+`config`, but this pattern style is deprecated and should be replaced by
+`config/**/*`.
 
 **Note**: The `Exclude` parameter is special. It is valid for the
 directory tree starting where it is defined. It is not shadowed by the

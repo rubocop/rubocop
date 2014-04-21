@@ -104,14 +104,16 @@ module Rubocop
     def file_to_include?(file)
       relative_file_path = path_relative_to_config(file)
       patterns_to_include.any? do |pattern|
-        match_path?(pattern, relative_file_path)
+        match_path?(pattern, relative_file_path, loaded_path)
       end
     end
 
     def file_to_exclude?(file)
       file = File.join(Dir.pwd, file) unless file.start_with?('/')
       file = File.expand_path(file)
-      patterns_to_exclude.any? { |pattern| match_path?(pattern, file) }
+      patterns_to_exclude.any? do |pattern|
+        match_path?(pattern, file, loaded_path)
+      end
     end
 
     def patterns_to_include
