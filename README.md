@@ -266,7 +266,7 @@ that file name in any directory, but this pattern style deprecated. The
 correct way to match the file in any directory, including the current, is
 `**/Rakefile`.
 
-**Note**: The pattern 'config/**' will match any file reqursively under
+**Note**: The pattern `config/**` will match any file reqursively under
 `config`, but this pattern style is deprecated and should be replaced by
 `config/**/*`.
 
