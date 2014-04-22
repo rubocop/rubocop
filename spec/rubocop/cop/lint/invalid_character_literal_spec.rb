@@ -16,7 +16,7 @@ describe Rubocop::Cop::Lint::InvalidCharacterLiteral do
   #
   # https://github.com/ruby/ruby/blob/v2_1_0/parse.y#L7276
   # https://github.com/whitequark/parser/blob/v2.1.2/lib/parser/lexer.rl#L1660
-  context 'with a non-escaped whitespace character literal ' do
+  context 'with a non-escaped whitespace character literal' do
     let(:source) { 'p(? )' }
 
     it 'registers an offense' do
