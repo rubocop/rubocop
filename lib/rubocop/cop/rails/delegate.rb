@@ -58,17 +58,24 @@ module Rubocop
         end
 
         def trivial_delegate?(method_name, args, body)
-          args.children.size == 0 && body && delegate?(body) &&
-            method_name_matches?(method_name, body)
+          body && delegate?(body) &&
+            method_name_matches?(method_name, body) &&
+            arguments_match?(args, body)
         end
 
         def delegate?(body)
-          target = body.children.first
-          return false unless target.is_a? Parser::AST::Node
-          return unless target.type == :send
+          receiver, * = *body
+          receiver.children.none? { |n| n.is_a? Parser::AST::Node }
+        end
 
-          receiver, _method_name, *args = *target
-          receiver.nil? && args.empty?
+        def arguments_match?(args, body)
+          _receiver, _method_name, *arguments = *body
+          arg_array = Array(args)
+          argument_array = Array(arguments)
+          arg_array.size == argument_array.size && (
+            arg_array == argument_array ||
+            arg_array.map(&:children) == argument_array.map(&:children)
+          )
         end
 
         def method_name_matches?(method_name, body)
