@@ -18,6 +18,19 @@ describe Rubocop::Cop::Rails::Delegate do
     expect(cop.highlights).to eq(['def'])
   end
 
+  it 'finds trivial delegate with arguments' do
+    inspect_source(cop,
+                   ['def foo(baz)',
+                    '  bar.foo(baz)',
+                    'end'])
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.offenses
+            .map(&:line).sort).to eq([1])
+    expect(cop.messages)
+      .to eq(['Use `delegate` to define delegations.'])
+    expect(cop.highlights).to eq(['def'])
+  end
+
   it 'finds trivial delegate with prefix' do
     inspect_source(cop,
                    ['def bar_foo',
@@ -35,6 +48,30 @@ describe Rubocop::Cop::Rails::Delegate do
     inspect_source(cop,
                    ['def fox',
                     '  bar.foo.fox',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'ignores trivial delegate with mismatched arguments' do
+    inspect_source(cop,
+                   ['def fox(baz)',
+                    '  bar.fox(foo)',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'ignores trivial delegate with mismatched arguments' do
+    inspect_source(cop,
+                   ['def fox(foo = nil)',
+                    '  bar.fox(foo || 5)',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'ignores trivial delegate with mismatched arguments' do
+    inspect_source(cop,
+                   ['def fox(a, baz)',
+                    '  bar.fox(a)',
                     'end'])
     expect(cop.offenses).to be_empty
   end
