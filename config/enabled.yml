@@ -131,6 +131,10 @@ DefWithParentheses:
   Description: 'Use def with parentheses when there are arguments.'
   Enabled: true
 
+Delegate:
+  Description: 'Prefer delegate method for delegations.'
+  Enabled: true
+
 DeprecatedHashMethods:
   Description: 'Checks for use of deprecated Hash methods.'
   Enabled: true
