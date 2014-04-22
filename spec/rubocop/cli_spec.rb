@@ -1362,14 +1362,14 @@ describe Rubocop::CLI, :isolated_environment do
         create_file('dir1/.rubocop.yml', ['AllCops:',
                                           '  RunRailsCops: true',
                                           '',
-                                          'ReadAttribute:',
+                                          'ReadWriteAttribute:',
                                           '  Include:',
                                           '    - app/models/*.rb'])
         create_file('dir2/app/models/example2.rb', source)
         create_file('dir2/.rubocop.yml', ['AllCops:',
                                           '  RunRailsCops: false',
                                           '',
-                                          'ReadAttribute:',
+                                          'ReadWriteAttribute:',
                                           '  Include:',
                                           '    - app/models/*.rb'])
         expect(cli.run(%w(--format simple dir1 dir2))).to eq(1)
