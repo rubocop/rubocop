@@ -18,7 +18,7 @@ module Rubocop
       case pattern
       when String
         basename = File.basename(path)
-        old_match = basename == pattern || File.fnmatch(pattern, path)
+        old_match = basename == pattern || File.fnmatch?(pattern, path)
         new_match = Dir[pattern].include?(path)
         if old_match && !new_match
           instruction = if basename == pattern
