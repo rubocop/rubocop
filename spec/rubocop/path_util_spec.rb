@@ -4,7 +4,6 @@ require 'spec_helper'
 
 describe Rubocop::PathUtil do
   describe '#relative_path' do
-    pending 'builds paths relative to the current project by default'
     it 'builds paths relative to PWD by default as a stop-gap' do
       relative = File.join(Dir.pwd, 'relative')
       expect(subject.relative_path(relative)).to eq('relative')

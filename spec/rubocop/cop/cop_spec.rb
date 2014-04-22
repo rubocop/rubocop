@@ -81,8 +81,6 @@ describe Rubocop::Cop::Cop do
       it('has types') { expect(subject.length).not_to eq(0) }
       it { should include :lint }
       it do
-        pending 'Rails cops are usually removed after CLI start, ' \
-                'so CLI spec impacts this one'
         should include :rails
       end
       it { should include :style }

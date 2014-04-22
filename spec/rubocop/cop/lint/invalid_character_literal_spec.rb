@@ -16,18 +16,19 @@ describe Rubocop::Cop::Lint::InvalidCharacterLiteral do
   #
   # https://github.com/ruby/ruby/blob/v2_1_0/parse.y#L7276
   # https://github.com/whitequark/parser/blob/v2.1.2/lib/parser/lexer.rl#L1660
-  context 'with a non-escaped whitespace character literal ' do
+  context 'with a non-escaped whitespace character literal' do
     let(:source) { 'p(? )' }
 
     it 'registers an offense' do
-      pending 'Is there a way to emit this warning without syntax errors?'
+      pending 'Is there a way to emit this warning without syntax errors?' do
 
-      inspect_source(cop, source)
+        inspect_source(cop, source)
 
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.offenses.first.message)
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.offenses.first.message)
         .to eq('Invalid character literal; use ?\s')
-      expect(cop.highlights).to eq([' '])
+        expect(cop.highlights).to eq([' '])
+      end
     end
   end
 end

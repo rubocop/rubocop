@@ -18,8 +18,8 @@ module Rubocop
       case pattern
       when String
         basename = File.basename(path)
-        old_match = basename == pattern || File.fnmatch(pattern, path)
-        new_match = Dir[pattern].include?(path)
+        old_match = basename == pattern || File.fnmatch?(pattern, path)
+        new_match = File.fnmatch?(pattern, path, File::FNM_PATHNAME)
         if old_match && !new_match
           instruction = if basename == pattern
                           ". Change to '**/#{pattern}'."

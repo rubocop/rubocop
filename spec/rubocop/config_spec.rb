@@ -78,7 +78,7 @@ describe Rubocop::Config do
     let(:hash) do
       {
         'AllCops' => {
-          'Include' => ['Gemfile', 'config/unicorn.rb.example']
+          'Include' => ['**/Gemfile', 'config/unicorn.rb.example']
         }
       }
     end
@@ -142,14 +142,14 @@ describe Rubocop::Config do
       let(:hash) do
         {
           'AllCops' => {
-            'Include' => ['Gemfile', 'config/unicorn.rb.example']
+            'Include' => ['**/Gemfile', 'config/unicorn.rb.example']
           }
         }
       end
 
       it 'returns the Include value' do
         expect(patterns_to_include).to eq([
-          'Gemfile',
+          '**/Gemfile',
           'config/unicorn.rb.example'
         ])
       end

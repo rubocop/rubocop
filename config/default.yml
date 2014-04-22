@@ -208,9 +208,9 @@ EndAlignment:
 
 FileName:
   Exclude:
-    - Rakefile
-    - Gemfile
-    - Capfile
+    - '**/Rakefile'
+    - '**/Gemfile'
+    - '**/Capfile'
 
 # Checks use of for or each in multiline loops.
 For:
@@ -448,25 +448,24 @@ ActionFilter:
     - action
     - filter
   Include:
-    - app/controllers/*.rb
+    - app/controllers/**/*.rb
 
 DefaultScope:
   Include:
-    - app/models/*.rb
+    - app/models/**/*.rb
 
 HasAndBelongsToMany:
   Include:
-    - app/models/*.rb
+    - app/models/**/*.rb
 
 ReadWriteAttribute:
   Include:
-    - app/models/*.rb
+    - app/models/**/*.rb
 
 ScopeArgs:
   Include:
-    - app/models/*.rb
+    - app/models/**/*.rb
 
 Validation:
   Include:
-    - app/models/*.rb
-
+    - app/models/**/*.rb
