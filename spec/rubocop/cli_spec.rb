@@ -1364,14 +1364,14 @@ describe Rubocop::CLI, :isolated_environment do
                                           '',
                                           'ReadWriteAttribute:',
                                           '  Include:',
-                                          '    - app/models/*.rb'])
+                                          '    - app/models/**/*.rb'])
         create_file('dir2/app/models/example2.rb', source)
         create_file('dir2/.rubocop.yml', ['AllCops:',
                                           '  RunRailsCops: false',
                                           '',
                                           'ReadWriteAttribute:',
                                           '  Include:',
-                                          '    - app/models/*.rb'])
+                                          '    - app/models/**/*.rb'])
         expect(cli.run(%w(--format simple dir1 dir2))).to eq(1)
         expect($stdout.string)
           .to eq(['== dir1/app/models/example1.rb ==',
@@ -1411,7 +1411,7 @@ describe Rubocop::CLI, :isolated_environment do
                                           '',
                                           'ReadWriteAttribute:',
                                           '  Exclude:',
-                                          '    - example2.rb',
+                                          '    - "**/example2.rb"',
                                           '',
                                           'DefaultScope:',
                                           '  Exclude:',
@@ -1749,7 +1749,7 @@ describe Rubocop::CLI, :isolated_environment do
       create_file('example/.rubocop.yml', ['AllCops:',
                                            '  Exclude:',
                                            '    - src/**',
-                                           '    - etc/**',
+                                           '    - etc/**/*',
                                            '    - tmp/spec/**'])
 
       expect(cli.run(%w(--format simple example))).to eq(1)
@@ -1774,7 +1774,7 @@ describe Rubocop::CLI, :isolated_environment do
       create_file('.rubocop.yml',
                   ['AllCops:',
                    '  Exclude:',
-                   '    - vendor/**'])
+                   '    - vendor/**/*'])
 
       cli.run(%w(--format simple))
       expect($stdout.string)
@@ -1837,7 +1837,7 @@ describe Rubocop::CLI, :isolated_environment do
       create_file('config/default.yml',
                   ['AllCops:',
                    '  Exclude:',
-                   '    - vendor/**'])
+                   '    - vendor/**/*'])
 
       cli.run(%w(--format simple))
       expect($stdout.string)
