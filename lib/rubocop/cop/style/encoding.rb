@@ -3,27 +3,54 @@
 module Rubocop
   module Cop
     module Style
-      # This cop checks whether the source file has a
-      # utf-8 encoding comment. This check makes sense only
-      # in Ruby 1.9, since in 2.0+ utf-8 is the default source file
-      # encoding.
+      # This cop checks whether the source file has a utf-8 encoding comment or
+      # not. This check makes sense only in Ruby 1.9, since in 2.0+ utf-8 is
+      # the default source file encoding. There are two style:
+      #
+      # when_needed - only enforce an encoding comment if there are non ASCII
+      #               characters, otherwise report an offense
+      # always - enforce encoding comment in all files
       class Encoding < Cop
-        MSG = 'Missing utf-8 encoding comment.'
+        include ConfigurableEnforcedStyle
+
+        MSG_MISSING = 'Missing utf-8 encoding comment.'
+        MSG_UNNECESSARY = 'Unnecessary utf-8 encoding comment.'
 
         def investigate(processed_source)
-          unless RUBY_VERSION >= '2.0.0'
-            return if processed_source.buffer.source.empty?
-            line_number = 0
-            line_number += 1 if processed_source[line_number] =~ /^#!/
-            line = processed_source[line_number]
-            unless line =~ /#.*coding\s?[:=]\s?(UTF|utf)-8/
-              add_offense(nil,
-                          source_range(processed_source.buffer,
-                                       processed_source[0...line_number],
-                                       0, 1),
-                          MSG)
-            end
+          return if RUBY_VERSION >= '2.0.0'
+          return if processed_source.buffer.source.empty?
+
+          line_number = encoding_line_number(processed_source)
+          message = offense(processed_source, line_number)
+
+          if message
+            add_offense(nil,
+                        source_range(processed_source.buffer,
+                                     processed_source[0...line_number],
+                                     0, 1),
+                        message)
           end
+        end
+
+        private
+
+        def offense(processed_source, line_number)
+          line = processed_source[line_number]
+          encoding_present = line =~ /#.*coding\s?[:=]\s?(UTF|utf)-8/
+          ascii_only = processed_source.buffer.source.ascii_only?
+          always_encode = style == :always
+
+          if !encoding_present && (always_encode || !ascii_only)
+            MSG_MISSING
+          elsif !always_encode && ascii_only && encoding_present
+            MSG_UNNECESSARY
+          end
+        end
+
+        def encoding_line_number(processed_source)
+          line_number = 0
+          line_number += 1 if processed_source[line_number] =~ /^#!/
+          line_number
         end
       end
     end
