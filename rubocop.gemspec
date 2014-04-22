@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
   s.summary = 'Automatic Ruby code style checking tool.'
 
   s.add_runtime_dependency('rainbow', '>= 1.99.1', '< 3.0')
-  s.add_runtime_dependency('parser', '~> 2.1.7')
+  s.add_runtime_dependency('parser', '~> 2.1.9')
   s.add_runtime_dependency('powerpack', '~> 0.0.6')
   s.add_runtime_dependency('json', '>= 1.7.7', '< 2')
   s.add_runtime_dependency('ruby-progressbar', '~> 1.4')
