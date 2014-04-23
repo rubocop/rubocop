@@ -194,6 +194,13 @@ EmptyLineBetweenDefs:
   # need an empty line between them.
   AllowAdjacentOneLineDefs: false
 
+# Checks whether the source file has a utf-8 encoding comment or not
+Encoding:
+  EnforcedStyle: always
+  SupportedStyles:
+    - when_needed
+    - always
+
 # Align ends correctly.
 EndAlignment:
   # The value `keyword` means that `end` should be aligned with the matching
