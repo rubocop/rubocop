@@ -17,7 +17,7 @@
 * [#490](https://github.com/bbatsov/rubocop/issues/490): Add EnforcedStyle config option to TrailingBlankLines. ([@jonas054][])
 * Add `auto_correct` task to Rake integration. ([@irrationalfab][])
 * [#986](https://github.com/bbatsov/rubocop/issues/986): The `--only` option can take a comma-separated list of cops. ([@jonas054][])
-* New Rails cop `Delegate` that checks for delegations that could be replaced by the delegate method. ([@geniou][])
+* New Rails cop `Delegate` that checks for delegations that could be replaced by the `delegate` method. ([@geniou][])
 * Add configuration to `Encoding` cop to only enforce encoding comment if there are non ASCII characters. ([@geniou][])
 
 ### Changes
