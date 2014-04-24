@@ -120,6 +120,14 @@ describe Rubocop::Cop::Rails::Delegate do
     expect(cop.offenses).to be_empty
   end
 
+  it 'ignores delegation with assignment' do
+    inspect_source(cop,
+                   ['def new',
+                    '  @bar = Foo.new',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
+
   describe '#autocorrect' do
     context 'trivial delegation' do
       let(:source) do
