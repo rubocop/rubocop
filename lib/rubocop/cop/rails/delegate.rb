@@ -66,6 +66,7 @@ module Rubocop
         def delegate?(body)
           receiver, * = *body
           return false unless receiver.is_a? Parser::AST::Node
+          return false unless receiver.type == :send
           receiver.children.none? { |n| n.is_a? Parser::AST::Node }
         end
 

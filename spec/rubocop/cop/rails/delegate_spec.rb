@@ -128,6 +128,15 @@ describe Rubocop::Cop::Rails::Delegate do
     expect(cop.offenses).to be_empty
   end
 
+  it 'ignores delegation to constant' do
+    inspect_source(cop,
+                   ['FOO = []',
+                    'def size',
+                    '  FOO.size',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
+
   describe '#autocorrect' do
     context 'trivial delegation' do
       let(:source) do

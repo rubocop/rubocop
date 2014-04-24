@@ -4,7 +4,7 @@
 
 ### Bugs fixed
 
-* Fix `Delegate` for delegation with assignment. ([@geniou][])
+* Fix `Delegate` for delegation with assignment or constant. ([@geniou][])
 
 ## 0.21.0 (24/04/2014)
 
