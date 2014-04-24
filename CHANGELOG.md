@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.21.0 (24/04/2014)
+
 ### New features
 
 * [#835](https://github.com/bbatsov/rubocop/issues/835): New cop `UnneededCapitalW` checks for `%W` when interpolation not necessary and `%w` would do. ([@sfeldon][])
