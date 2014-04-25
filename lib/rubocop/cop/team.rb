@@ -69,9 +69,8 @@ module Rubocop
         @updated_source_file = false
         return unless autocorrect?
 
-        corrections = cops.reduce([]) do |array, cop|
+        corrections = cops.each_with_object([]) do |cop, array|
           array.concat(cop.corrections)
-          array
         end
 
         corrector = Corrector.new(buffer, corrections)

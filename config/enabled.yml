@@ -155,6 +155,10 @@ DoubleNegation:
   Description: 'Checks for uses of double negation (!!).'
   Enabled: true
 
+EachWithObject:
+  Description: 'Prefer `each_with_object` over `inject` or `reduce`.'
+  Enabled: true
+
 EmptyLineBetweenDefs:
   Description: 'Use empty lines between defs.'
   Enabled: true
