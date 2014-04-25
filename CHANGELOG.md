@@ -10,6 +10,7 @@
 
 * Fix `Void` and `SpaceAroundOperators` for short call syntax `lambda.()`. ([@biinari][])
 * Fix `Delegate` for delegation with assignment or constant. ([@geniou][])
+* [#1032](https://github.com/bbatsov/rubocop/issues/1032): Avoid duplicate reporting when code moves around due to `--auto-correct`. ([@jonas054][])
 
 ## 0.21.0 (24/04/2014)
 
