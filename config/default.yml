@@ -67,14 +67,14 @@ AlignHash:
   #   Accepts:
   #     function({a: 1,
   #       b: 2})
-  # ignore_implicit - Ingore only implicit hashes.
+  # ignore_implicit - Ignore only implicit hashes.
   #   Accepts:
   #     function(a: 1,
   #       b: 2)
   #   Registers an offence for:
   #     function({a: 1,
   #       b: 2})
-  # ignore_explicit - Ingore only explicit hashes.
+  # ignore_explicit - Ignore only explicit hashes.
   #   Accepts:
   #     function({a: 1,
   #       b: 2})
