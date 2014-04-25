@@ -50,11 +50,16 @@ module Rubocop
     end
 
     def deprecation_check
-      return unless self['AllCops']
-      if self['AllCops']['Excludes']
-        yield 'AllCops/Excludes was renamed to AllCops/Exclude'
-      elsif self['AllCops']['Includes']
-        yield 'AllCops/Includes was renamed to AllCops/Include'
+      all_cops = self['AllCops']
+      return unless all_cops
+
+      %w(Exclude Include).each do |key|
+        plural = "#{key}s"
+        if all_cops[plural]
+          all_cops[key] = all_cops[plural] # Stay backwards compatible.
+          all_cops.delete(plural)
+          yield "AllCops/#{plural} was renamed to AllCops/#{key}"
+        end
       end
     end
 

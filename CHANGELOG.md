@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* The parameters `AllCops/Excludes` and `AllCops/Includes` with final `s` only give a warning and don't halt `rubocop` execution. ([@jonas054][])
+
 ### Bugs fixed
 
 * Fix `Delegate` for delegation with assignment or constant. ([@geniou][])

@@ -34,7 +34,6 @@ module Rubocop
 
         config.deprecation_check do |deprecation_message|
           warn("#{path} - #{deprecation_message}")
-          exit(-1)
         end
 
         config.warn_unless_valid
