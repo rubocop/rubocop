@@ -246,6 +246,7 @@ describe Rubocop::Cop::Style::SpaceAroundOperators do
 
   it 'accepts unary operators without space' do
     inspect_source(cop, ['[].map(&:size)',
+                         'a.(b)',
                          '-3',
                          'arr.collect { |e| -e }',
                          'x = +2'])

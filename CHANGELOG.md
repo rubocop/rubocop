@@ -8,6 +8,7 @@
 
 ### Bugs fixed
 
+* Fix `Void` and `SpaceAroundOperators` for short call syntax `lambda.()`. ([@biinari][])
 * Fix `Delegate` for delegation with assignment or constant. ([@geniou][])
 
 ## 0.21.0 (24/04/2014)
@@ -903,3 +904,4 @@
 [@bcobb]: https://github.com/bcobb
 [@irrationalfab]: https://github.com/irrationalfab
 [@sfeldon]: https://github.com/sfeldon
+[@biinari]: https://github.com/biinari
