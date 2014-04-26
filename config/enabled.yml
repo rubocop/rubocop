@@ -119,6 +119,10 @@ CommentAnnotation:
                  (TODO, FIXME, OPTIMIZE, HACK, REVIEW).
   Enabled: true
 
+CommentIndentation:
+  Description: 'Indentation of comments.'
+  Enabled: true
+
 ConstantName:
   Description: 'Constants should use SCREAMING_SNAKE_CASE.'
   Enabled: true
