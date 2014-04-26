@@ -65,6 +65,10 @@ module Rubocop
       # are made. This is because automatic corrections can introduce new
       # offenses. In the normal case the loop is only executed once.
       loop do
+        # The offenses that couldn't be corrected will be found again so we
+        # only keep the corrected ones in order to avoid duplicate reporting.
+        offenses.select!(&:corrected?)
+
         new_offenses, updated_source_file =
           inspect_file(processed_source, config_store)
         offenses += new_offenses.reject { |n| offenses.include?(n) }
