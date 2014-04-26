@@ -54,4 +54,12 @@ describe Rubocop::Cop::Lint::Void do
     end
   end
 
+  it 'accepts short call syntax' do
+    inspect_source(cop,
+                   ['lambda.(a)',
+                    'top'
+                   ])
+    expect(cop.offenses).to be_empty
+  end
+
 end

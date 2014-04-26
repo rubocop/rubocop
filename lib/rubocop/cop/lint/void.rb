@@ -29,6 +29,7 @@ module Rubocop
 
         def check_for_void_op(node)
           return unless node.type == :send
+          return unless node.loc.selector
 
           op = node.loc.selector.source
 
