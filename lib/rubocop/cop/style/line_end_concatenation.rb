@@ -56,6 +56,8 @@ module Rubocop
 
         def string_type?(node)
           return false unless [:str, :dstr].include?(node.type)
+          # strings like __FILE__ are of no interest
+          return false unless node.loc.respond_to?(:begin)
 
           # we care only about quotes-delimited literals
           node.loc.begin && ["'", '"'].include?(node.loc.begin.source)

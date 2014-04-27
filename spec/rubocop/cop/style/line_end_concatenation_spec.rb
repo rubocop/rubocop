@@ -53,6 +53,13 @@ describe Rubocop::Cop::Style::LineEndConcatenation do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts string concat at line end for special strings like __FILE__' do
+    inspect_source(cop,
+                   ['top = __FILE__ +',
+                    '"top"'])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'autocorrects by replacing + with \\' do
     corrected = autocorrect_source(cop,
                                    ['top = "test" +',
