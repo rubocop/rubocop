@@ -518,6 +518,11 @@ describe Rubocop::CLI, :isolated_environment do
            'again.',
            '',
            '# Offense count: 1',
+           '# Cop supports --auto-correct.',
+           'CommentIndentation:',
+           '  Enabled: false',
+           '',
+           '# Offense count: 1',
            '# Configuration parameters: AllowedVariables.',
            'GlobalVars:',
            '  Enabled: false',
@@ -571,6 +576,11 @@ describe Rubocop::CLI, :isolated_environment do
            '# Note that changes in the inspected code, or installation of new',
            '# versions of RuboCop, may require this file to be generated ' \
            'again.',
+           '',
+           '# Offense count: 1',
+           '# Cop supports --auto-correct.',
+           'CommentIndentation:',
+           '  Enabled: false',
            '',
            '# Offense count: 1',
            '# Cop supports --auto-correct.',
@@ -944,6 +954,10 @@ describe Rubocop::CLI, :isolated_environment do
                       'example1.rb:4:2: C: Trailing whitespace detected.',
                       'y ',
                       ' ^',
+                      'example2.rb:1:1: C: Incorrect indentation detected' \
+                      ' (column 0 instead of 1).',
+                      '# encoding: utf-8',
+                      '^^^^^^^^^^^^^^^^^',
                       'example2.rb:2:1: C: Tab detected.',
                       "\tx",
                       '^',
@@ -968,7 +982,7 @@ describe Rubocop::CLI, :isolated_environment do
                       '    end',
                       '    ^^^',
                       '',
-                      '3 files inspected, 10 offenses detected',
+                      '3 files inspected, 11 offenses detected',
                       ''].join("\n"))
           end
         end
@@ -989,6 +1003,8 @@ describe Rubocop::CLI, :isolated_environment do
                " for operator '='.",
                "#{abs('example1.rb')}:2:5: C: Trailing whitespace detected.",
                "#{abs('example1.rb')}:3:2: C: Trailing whitespace detected.",
+               "#{abs('example2.rb')}:1:1: C: Incorrect indentation detected" \
+               ' (column 0 instead of 1).',
                "#{abs('example2.rb')}:2:1: C: Tab detected.",
                "#{abs('example2.rb')}:3:1: C: Inconsistent indentation " \
                'detected.',
