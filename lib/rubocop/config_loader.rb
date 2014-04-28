@@ -48,9 +48,8 @@ module Rubocop
         result = base_hash.merge(derived_hash)
         keys_appearing_in_both = base_hash.keys & derived_hash.keys
         keys_appearing_in_both.each do |key|
-          if base_hash[key].is_a?(Hash)
-            result[key] = merge(base_hash[key], derived_hash[key])
-          end
+          next unless base_hash[key].is_a?(Hash)
+          result[key] = merge(base_hash[key], derived_hash[key])
         end
         result
       end
@@ -58,10 +57,10 @@ module Rubocop
       def base_configs(path, inherit_from)
         configs = Array(inherit_from).map do |f|
           f = File.join(File.dirname(path), f) unless f.start_with?('/')
-          unless auto_gen_config? && f.include?(AUTO_GENERATED_FILE)
-            print 'Inheriting ' if debug?
-            load_file(f)
-          end
+          next if auto_gen_config? && f.include?(AUTO_GENERATED_FILE)
+
+          print 'Inheriting ' if debug?
+          load_file(f)
         end
 
         configs.compact

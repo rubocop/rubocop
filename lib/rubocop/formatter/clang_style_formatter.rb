@@ -13,11 +13,10 @@ module Rubocop
                         colored_severity_code(o), message(o))
 
           source_line = o.location.source_line
+          next if source_line.blank?
 
-          unless source_line.blank?
-            output.puts(source_line)
-            output.puts(highlight_line(o.location))
-          end
+          output.puts(source_line)
+          output.puts(highlight_line(o.location))
         end
       end
 

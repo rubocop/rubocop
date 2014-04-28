@@ -14,15 +14,15 @@ module Rubocop
         def investigate(processed_source)
           processed_source.comments.each do |comment|
             margin, first_word, colon, space, note = split_comment(comment)
-            if annotation?(comment) && !correct_annotation?(first_word, colon,
-                                                            space, note)
-              start = comment.loc.expression.begin_pos + margin.length
-              length = first_word.length + (colon || '').length
-              range = Parser::Source::Range.new(processed_source.buffer,
-                                                start,
-                                                start + length)
-              add_offense(nil, range)
-            end
+            next unless annotation?(comment) &&
+              !correct_annotation?(first_word, colon, space, note)
+
+            start = comment.loc.expression.begin_pos + margin.length
+            length = first_word.length + (colon || '').length
+            range = Parser::Source::Range.new(processed_source.buffer,
+                                              start,
+                                              start + length)
+            add_offense(nil, range)
           end
         end
 

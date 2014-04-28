@@ -19,14 +19,13 @@ module Rubocop
             next unless final_node && final_node.type == :send
 
             receiver, method_name, *args = *final_node
+            next unless method_name == :to_s && args.empty?
 
-            if method_name == :to_s && args.empty?
-              add_offense(
-                final_node,
-                :selector,
-                receiver ? MSG_DEFAULT : MSG_SELF
-              )
-            end
+            add_offense(
+              final_node,
+              :selector,
+              receiver ? MSG_DEFAULT : MSG_SELF
+            )
           end
         end
 

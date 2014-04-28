@@ -321,6 +321,10 @@ NestedTernaryOperator:
   Description: 'Use one expression per branch in a ternary operator.'
   Enabled: true
 
+Next:
+  Description: 'Use `next` to skip iteration instead of a condition at the end.'
+  Enabled: true
+
 NilComparison:
   Description: 'Prefer x.nil? to x == nil.'
   Enabled: true

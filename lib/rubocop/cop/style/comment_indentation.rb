@@ -31,10 +31,9 @@ module Rubocop
               # the preferred style of aligning the comment with the keyword.
             end
 
-            if column != correct_comment_indentation
-              add_offense(comment, comment.loc.expression,
-                          format(MSG, column, correct_comment_indentation))
-            end
+            next if column == correct_comment_indentation
+            add_offense(comment, comment.loc.expression,
+                        format(MSG, column, correct_comment_indentation))
           end
         end
 

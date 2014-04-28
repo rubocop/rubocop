@@ -6,6 +6,7 @@
 
 * [#974](https://github.com/bbatsov/rubocop/pull/974): New cop `CommentIndentation` checks indentation of comments. ([@jonas054][])
 * Add new cop `EachWithObject` to prefer `each_with_object` over `inject` or `reduce`. ([@geniou][])
++ [#1010](https://github.com/bbatsov/rubocop/issues/1010) New Cop `Next` check for conditions at the end of an interation and propose to use `next` instead. ([@geniou][])
 
 ### Changes
 

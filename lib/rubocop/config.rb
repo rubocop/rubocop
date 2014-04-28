@@ -55,11 +55,11 @@ module Rubocop
 
       %w(Exclude Include).each do |key|
         plural = "#{key}s"
-        if all_cops[plural]
-          all_cops[key] = all_cops[plural] # Stay backwards compatible.
-          all_cops.delete(plural)
-          yield "AllCops/#{plural} was renamed to AllCops/#{key}"
-        end
+        next unless all_cops[plural]
+
+        all_cops[key] = all_cops[plural] # Stay backwards compatible.
+        all_cops.delete(plural)
+        yield "AllCops/#{plural} was renamed to AllCops/#{key}"
       end
     end
 
@@ -96,12 +96,12 @@ module Rubocop
 
       valid_cop_names.each do |name|
         @hash[name].each_key do |param|
-          unless COMMON_PARAMS.include?(param) ||
-                 default_config[name].key?(param)
-            fail ValidationError,
-                 "unrecognized parameter #{name}:#{param} found " \
-                 "in #{loaded_path || self}"
-          end
+          next if COMMON_PARAMS.include?(param) ||
+            default_config[name].key?(param)
+
+          fail ValidationError,
+               "unrecognized parameter #{name}:#{param} found " \
+               "in #{loaded_path || self}"
         end
       end
     end
