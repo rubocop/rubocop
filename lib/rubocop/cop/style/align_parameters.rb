@@ -27,17 +27,12 @@ module Rubocop
         end
 
         def base_column(node, args)
-          first_arg_column = args.first.loc.column
-
           if fixed_indentation?
-            node_column = node.loc.column
-            if first_arg_column > node_column
-              node_column + 2
-            else
-              first_arg_column
-            end
+            line = node.loc.expression.source_buffer.source_line(node.loc.line)
+            indentation_of_line = /\S.*/.match(line).begin(0)
+            indentation_of_line + 2
           else
-            first_arg_column
+            args.first.loc.column
           end
         end
       end

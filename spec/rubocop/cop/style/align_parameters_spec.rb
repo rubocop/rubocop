@@ -183,7 +183,7 @@ describe Rubocop::Cop::Style::AlignParameters, :config do
       expect(cop.offenses).to be_empty
     end
 
-    context "assigned methods" do
+    context 'assigned methods' do
       it 'accepts the first parameter being on a new row' do
         inspect_source(cop, [' assigned_value = match(',
                              '   a,',
@@ -311,7 +311,7 @@ describe Rubocop::Cop::Style::AlignParameters, :config do
         .to eq(correct_source.join("\n"))
     end
 
-    context "assigned methods" do
+    context 'assigned methods' do
       it 'accepts the first parameter being on a new row' do
         inspect_source(cop, [' assigned_value = match(',
                              '   a,',
@@ -323,9 +323,9 @@ describe Rubocop::Cop::Style::AlignParameters, :config do
 
       it 'accepts the first parameter being on method row' do
         inspect_source(cop, [' assigned_value = match(a,',
-                             '                    b,',
-                             '                    c',
-                             '                  )'])
+                             '   b,',
+                             '   c',
+                             ' )'])
         expect(cop.offenses).to be_empty
       end
 
@@ -334,7 +334,7 @@ describe Rubocop::Cop::Style::AlignParameters, :config do
                            '         a,',
                            '            b,',
                            '                    c',
-                           '                  )']
+                           ' )']
 
         correct_source = [' assigned_value = match(',
                           '   a,',
