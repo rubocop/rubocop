@@ -27,13 +27,12 @@ module Rubocop
 
             # every line with more than 1 expression on it is an offense
             lines.each do |line, expr_on_line|
-              if expr_on_line.size > 1
-                # TODO: Find the correct position of the semicolon. We don't
-                # know if the first semicolon on the line is a separator of
-                # expressions. It's just a guess.
-                column = @processed_source[line - 1].index(';')
-                convention_on(line, column, !:last_on_line)
-              end
+              next unless expr_on_line.size > 1
+              # TODO: Find the correct position of the semicolon. We don't know
+              # if the first semicolon on the line is a separator of
+              # expressions. It's just a guess.
+              column = @processed_source[line - 1].index(';')
+              convention_on(line, column, !:last_on_line)
             end
           end
         end
@@ -46,9 +45,8 @@ module Rubocop
           end
 
           tokens_for_lines.each do |line, tokens|
-            if tokens.last.type == :tSEMI
-              convention_on(line, tokens.last.pos.column, :last_on_line)
-            end
+            next unless tokens.last.type == :tSEMI
+            convention_on(line, tokens.last.pos.column, :last_on_line)
           end
         end
 

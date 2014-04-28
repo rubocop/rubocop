@@ -9,9 +9,8 @@ module Rubocop
 
         def investigate(processed_source)
           processed_source.comments.each do |comment|
-            if comment.text.start_with?('=begin')
-              add_offense(comment, :expression)
-            end
+            next unless comment.text.start_with?('=begin')
+            add_offense(comment, :expression)
           end
         end
       end

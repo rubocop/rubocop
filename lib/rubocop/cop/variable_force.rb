@@ -168,9 +168,8 @@ module Rubocop
         variable_names = regexp.named_captures.keys
 
         variable_names.each do |name|
-          unless variable_table.variable_exist?(name)
-            variable_table.declare_variable(name, node)
-          end
+          next if variable_table.variable_exist?(name)
+          variable_table.declare_variable(name, node)
         end
 
         process_node(rhs_node)

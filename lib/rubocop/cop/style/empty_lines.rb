@@ -23,14 +23,14 @@ module Rubocop
               # don't show up in the tokens
               ((prev_line + 1)...cur_line).each do |line|
                 # we check if the prev and current lines are empty
-                if processed_source[line - 2].empty? &&
-                    processed_source[line - 1].empty?
-                  range = source_range(processed_source.buffer,
-                                       processed_source[0...(line - 1)],
-                                       0,
-                                       1)
-                  add_offense(range, range)
-                end
+                next unless processed_source[line - 2].empty? &&
+                  processed_source[line - 1].empty?
+
+                range = source_range(processed_source.buffer,
+                                     processed_source[0...(line - 1)],
+                                     0,
+                                     1)
+                add_offense(range, range)
               end
             end
 

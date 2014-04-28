@@ -189,9 +189,8 @@ module Rubocop
 
     def validate_only_option
       @options[:only].each do |cop_to_run|
-        if Cop::Cop.all.none? { |c| c.cop_name == cop_to_run }
-          fail ArgumentError, "Unrecognized cop name: #{cop_to_run}."
-        end
+        next unless Cop::Cop.all.none? { |c| c.cop_name == cop_to_run }
+        fail ArgumentError, "Unrecognized cop name: #{cop_to_run}."
       end
     end
 
