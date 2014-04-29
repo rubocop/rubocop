@@ -190,4 +190,14 @@ describe Rubocop::Cop::Style::Next, :config do
 
     expect(cop.offenses.size).to eq(0)
   end
+
+  it 'ignores loops with conditions at the end with ternary op' do
+    inspect_source(cop,
+                   ['[].each do |o|',
+                    '  o == x ? y : z',
+                    'end'
+                   ])
+
+    expect(cop.offenses.size).to eq(0)
+  end
 end

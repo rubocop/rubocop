@@ -62,6 +62,7 @@ module Rubocop
         end
 
         def simple_if_without_break?(body)
+          return false if ternary_op?(body)
           return false if if_else?(body)
           return false unless body.type == :if
           return false if style == :skip_modifier_ifs && modifier_if?(body)
