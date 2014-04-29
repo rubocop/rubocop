@@ -36,14 +36,13 @@ module Rubocop
         private
 
         def offending_node?(node)
-          receiver, method, arg = *node
+          receiver, method, first_arg = *node
 
-          # TODO: Report Emacs bug.
           return false unless [:+, :<<].include?(method)
 
-          return false unless terminal_node_is_string_type?(receiver)
+          return false unless final_node_is_string_type?(receiver)
 
-          return false unless root_node_is_string_type?(arg)
+          return false unless root_node_is_string_type?(first_arg)
 
           expression = node.loc.expression.source
           concatenator_at_line_end?(expression)
@@ -63,10 +62,10 @@ module Rubocop
           node.loc.begin && ["'", '"'].include?(node.loc.begin.source)
         end
 
-        def terminal_node_is_string_type?(node)
+        def final_node_is_string_type?(node)
           if node.type == :send
-            _, method, arg = *node
-            [:+, :<<].include?(method) && terminal_node_is_string_type?(arg)
+            _, method, first_arg = *node
+            [:+, :<<].include?(method) && final_node_is_string_type?(first_arg)
           else
             string_type?(node)
           end

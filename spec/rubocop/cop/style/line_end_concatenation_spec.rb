@@ -49,8 +49,8 @@ describe Rubocop::Cop::Style::LineEndConcatenation do
     expect(cop.offenses.size).to eq(2)
   end
 
-  it 'registers multiple offenses when there are chained concatenations
-  combined with << calls' do
+  it 'registers multiple offenses when there are chained concatenations' \
+     'combined with << calls' do
     inspect_source(cop,
                    ['top = "test#{x}" <<',
                     '"top" +',
