@@ -284,6 +284,15 @@ Next:
     - skip_modifier_ifs
     - always
 
+NonNilCheck:
+  # With `IncludeSemanticChanges` set to `true`, this cop reports offences for
+  # `!x.nil?` and autocorrects that and `x != nil` to solely `x`, which is
+  # **usually** OK, but might change behavior.
+  #
+  # With `IncludeSemanticChanges` set to `false`, this cop does not report
+  # offences for `!x.nil?` and does no changes that might change behavior.
+  IncludeSemanticChanges: false
+
 MethodDefParentheses:
   EnforcedStyle: require_parentheses
   SupportedStyles:
