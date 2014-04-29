@@ -6,8 +6,7 @@
 
 * [#974](https://github.com/bbatsov/rubocop/pull/974): New cop `CommentIndentation` checks indentation of comments. ([@jonas054][])
 * Add new cop `EachWithObject` to prefer `each_with_object` over `inject` or `reduce`. ([@geniou][])
-* [#1010](https://github.com/bbatsov/rubocop/issues/1010) New Cop `Next` check for conditions at the end of an interation and propose to use `next` instead. ([@geniou][])
-* Allow assignment in `AlignParameters` cop. ([@tommeier][])
+* [#1010](https://github.com/bbatsov/rubocop/issues/1010): New Cop `Next` check for conditions at the end of an interation and propose to use `next` instead. ([@geniou][])
 
 ### Changes
 
@@ -15,6 +14,7 @@
 
 ### Bugs fixed
 
+* Allow assignment in `AlignParameters` cop. ([@tommeier][])
 * Fix `Void` and `SpaceAroundOperators` for short call syntax `lambda.()`. ([@biinari][])
 * Fix `Delegate` for delegation with assignment or constant. ([@geniou][])
 * [#1032](https://github.com/bbatsov/rubocop/issues/1032): Avoid duplicate reporting when code moves around due to `--auto-correct`. ([@jonas054][])
