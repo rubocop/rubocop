@@ -183,6 +183,25 @@ describe Rubocop::Cop::Style::AlignParameters, :config do
       expect(cop.offenses).to be_empty
     end
 
+    context 'assigned methods' do
+      it 'accepts the first parameter being on a new row' do
+        inspect_source(cop, [' assigned_value = match(',
+                             '   a,',
+                             '   b,',
+                             '   c',
+                             ' )'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'accepts the first parameter being on method row' do
+        inspect_source(cop, [' assigned_value = match(a,',
+                             '                        b,',
+                             '                        c',
+                             '                  )'])
+        expect(cop.offenses).to be_empty
+      end
+    end
+
     it 'auto-corrects alignment' do
       new_source = autocorrect_source(cop, ['func(a,',
                                             '       b,',
@@ -290,6 +309,42 @@ describe Rubocop::Cop::Style::AlignParameters, :config do
 
       expect(autocorrect_source(cop, original_source))
         .to eq(correct_source.join("\n"))
+    end
+
+    context 'assigned methods' do
+      it 'accepts the first parameter being on a new row' do
+        inspect_source(cop, [' assigned_value = match(',
+                             '   a,',
+                             '   b,',
+                             '   c',
+                             ' )'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'accepts the first parameter being on method row' do
+        inspect_source(cop, [' assigned_value = match(a,',
+                             '   b,',
+                             '   c',
+                             ' )'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'autocorrects even when first argument is in wrong position' do
+        original_source = [' assigned_value = match(',
+                           '         a,',
+                           '            b,',
+                           '                    c',
+                           ' )']
+
+        correct_source = [' assigned_value = match(',
+                          '   a,',
+                          '   b,',
+                          '   c',
+                          ' )']
+
+        expect(autocorrect_source(cop, original_source))
+          .to eq(correct_source.join("\n"))
+      end
     end
   end
 end

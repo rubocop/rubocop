@@ -46,6 +46,7 @@
 
 ### Bugs fixed
 
+* Allow assignment in `AlignParameters` cop. ([@tommeier][])
 * Update description on `LineEndConcatenation` cop. ([@mockdeep][])
 * [#978](https://github.com/bbatsov/rubocop/issues/978): Fix regression in `IndentationWidth` handling method calls. ([@tamird][])
 * [#976](https://github.com/bbatsov/rubocop/issues/976): Fix `EndAlignment` not handling element assignment correctly. ([@tamird][])
@@ -911,5 +912,6 @@
 [@bquorning]: https://github.com/bquorning
 [@bcobb]: https://github.com/bcobb
 [@irrationalfab]: https://github.com/irrationalfab
+[@tommeier]: https://github.com/tommeier
 [@sfeldon]: https://github.com/sfeldon
 [@biinari]: https://github.com/biinari

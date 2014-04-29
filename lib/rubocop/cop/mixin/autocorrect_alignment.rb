@@ -8,11 +8,13 @@ module Rubocop
     module AutocorrectAlignment
       def check_alignment(items, base_column = nil)
         base_column ||= items.first.loc.column unless items.empty?
-        items.each_cons(2) do |prev, current|
-          if current.loc.line > prev.loc.line && start_of_line?(current.loc)
+        prev_line = -1
+        items.each do |current|
+          if current.loc.line > prev_line && start_of_line?(current.loc)
             @column_delta = base_column - current.loc.column
             add_offense(current, :expression) if @column_delta != 0
           end
+          prev_line = current.loc.line
         end
       end
 
