@@ -41,15 +41,13 @@ module Rubocop
 
         def check_method_node(node)
           _receiver, method_name, *_args = *node
+          return unless offending_method?(method_name)
 
-          if offending_method?(method_name)
-            add_offense(
-              node, :selector,
-              format(MSG,
-                     preferred_method(method_name),
-                     method_name)
-            )
-          end
+          add_offense(node, :selector,
+                      format(MSG,
+                             preferred_method(method_name),
+                             method_name)
+                     )
         end
 
         def offending_method?(method_name)

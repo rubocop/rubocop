@@ -11,15 +11,14 @@ module Rubocop
         RAISE_MSG = 'Use `raise` instead of `fail` to rethrow exceptions.'
 
         def on_rescue(node)
-          if style == :semantic
-            begin_node, *rescue_nodes, _else_node = *node
+          return unless style == :semantic
 
-            check_for(:raise, begin_node)
+          begin_node, *rescue_nodes, _else_node = *node
+          check_for(:raise, begin_node)
 
-            rescue_nodes.each do |rescue_node|
-              check_for(:fail, rescue_node)
-              allow(:raise, rescue_node)
-            end
+          rescue_nodes.each do |rescue_node|
+            check_for(:fail, rescue_node)
+            allow(:raise, rescue_node)
           end
         end
 

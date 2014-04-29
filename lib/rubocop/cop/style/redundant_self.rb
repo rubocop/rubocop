@@ -92,14 +92,13 @@ module Rubocop
 
         def on_send(node)
           receiver, method_name, *_args = *node
-          if receiver && receiver.type == :self
-            unless operator?(method_name) || keyword?(method_name) ||
-                constant_name?(method_name) ||
-                @allowed_send_nodes.include?(node) ||
-                @local_variables.include?(method_name)
-              add_offense(node, :expression)
-            end
-          end
+          return unless receiver && receiver.type == :self
+          return if operator?(method_name) || keyword?(method_name) ||
+            constant_name?(method_name) ||
+            @allowed_send_nodes.include?(node) ||
+            @local_variables.include?(method_name)
+
+          add_offense(node, :expression)
         end
 
         def autocorrect(node)
@@ -134,10 +133,10 @@ module Rubocop
         end
 
         def allow_self(node)
-          if node.type == :send
-            receiver, _method_name, *_args = *node
-            @allowed_send_nodes << node if receiver && receiver.type == :self
-          end
+          return unless node.type == :send
+
+          receiver, _method_name, *_args = *node
+          @allowed_send_nodes << node if receiver && receiver.type == :self
         end
       end
     end

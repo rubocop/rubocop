@@ -47,25 +47,23 @@ module Rubocop
           return unless OPS.include?(method_name)
 
           target_node = s(var_type, var_name)
+          return unless receiver == target_node
 
-          if receiver == target_node
-            add_offense(node,
-                        :expression,
-                        "Use self-assignment shorthand `#{method_name}=`.")
-          end
+          add_offense(node,
+                      :expression,
+                      "Use self-assignment shorthand `#{method_name}=`.")
         end
 
         def check_boolean_node(node, rhs, var_name, var_type)
           first_operand, _second_operand = *rhs
 
           target_node = s(var_type, var_name)
+          return unless first_operand == target_node
 
-          if first_operand == target_node
-            operator = rhs.loc.operator.source
-            add_offense(node,
-                        :expression,
-                        "Use self-assignment shorthand `#{operator}=`.")
-          end
+          operator = rhs.loc.operator.source
+          add_offense(node,
+                      :expression,
+                      "Use self-assignment shorthand `#{operator}=`.")
         end
       end
     end

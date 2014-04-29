@@ -15,10 +15,10 @@ module Rubocop
         end
 
         def on_if(node)
-          if node.loc.respond_to?(:question)
-            check_operator(node.loc.question)
-            check_operator(node.loc.colon)
-          end
+          return unless node.loc.respond_to?(:question)
+
+          check_operator(node.loc.question)
+          check_operator(node.loc.colon)
         end
 
         def on_resbody(node)

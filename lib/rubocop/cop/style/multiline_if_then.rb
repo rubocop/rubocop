@@ -32,9 +32,9 @@ module Rubocop
             Parser::Source::Range.new(next_thing.source_buffer,
                                       end_position(condition),
                                       next_thing.begin_pos)
-          if right_after_cond.source =~ /\A\s*then\s*(#.*)?\s*\n/
-            node.loc.expression.begin.line
-          end
+          return unless right_after_cond.source =~ /\A\s*then\s*(#.*)?\s*\n/
+
+          node.loc.expression.begin.line
         end
 
         def end_position(conditional_node)

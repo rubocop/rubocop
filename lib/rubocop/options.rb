@@ -161,10 +161,10 @@ module Rubocop
       # Currently we don't make -s/--silent option raise error
       # since those are mostly used by external tools.
       rejected = args.reject! { |a| %w(-s --silent).include?(a) }
-      if rejected
-        warn '-s/--silent options is dropped. ' \
-             '`emacs` and `files` formatters no longer display summary.'
-      end
+      return unless rejected
+
+      warn '-s/--silent options is dropped. ' \
+           '`emacs` and `files` formatters no longer display summary.'
     end
 
     def convert_deprecated_options(args)
@@ -195,10 +195,10 @@ module Rubocop
     end
 
     def validate_auto_gen_config_option(args)
-      if args.any?
-        warn '--auto-gen-config can not be combined with any other arguments.'
-        exit(1)
-      end
+      return unless args.any?
+
+      warn '--auto-gen-config can not be combined with any other arguments.'
+      exit(1)
     end
   end
 end

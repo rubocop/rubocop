@@ -14,12 +14,10 @@ module Rubocop
 
         def on_def(node)
           name, args, _body = *node
+          return unless name !~ /\A\w/ && !BLACKLISTED.include?(name) &&
+            args.children.size == 1 && !TARGET_ARGS.include?(args)
 
-          if name !~ /\A\w/ && !BLACKLISTED.include?(name) &&
-              args.children.size == 1 && !TARGET_ARGS.include?(args)
-            add_offense(args.children[0], :expression,
-                        format(MSG, name))
-          end
+          add_offense(args.children[0], :expression, format(MSG, name))
         end
       end
     end

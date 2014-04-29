@@ -7,10 +7,12 @@
 * [#974](https://github.com/bbatsov/rubocop/pull/974): New cop `CommentIndentation` checks indentation of comments. ([@jonas054][])
 * Add new cop `EachWithObject` to prefer `each_with_object` over `inject` or `reduce`. ([@geniou][])
 * [#1010](https://github.com/bbatsov/rubocop/issues/1010): New Cop `Next` check for conditions at the end of an interation and propose to use `next` instead. ([@geniou][])
+* The `GuardClause` cop now also looks for unless and it is configurable how many lines the body of an if / unless needs to have to not be ignored. ([@geniou][])
 
 ### Changes
 
 * The parameters `AllCops/Excludes` and `AllCops/Includes` with final `s` only give a warning and don't halt `rubocop` execution. ([@jonas054][])
+* The `GuardClause` cop is no longer irgnoring a one-line body by default - see configuration. ([@geniou][])
 
 ### Bugs fixed
 

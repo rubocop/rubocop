@@ -24,10 +24,9 @@ module Rubocop
           args = *args_node
 
           return true unless args.all? { |n| n.type == :arg }
+          return if args_match?(method_name, args)
 
-          unless args_match?(method_name, args)
-            add_offense(args_node, :expression, message(method_name))
-          end
+          add_offense(args_node, :expression, message(method_name))
         end
 
         private

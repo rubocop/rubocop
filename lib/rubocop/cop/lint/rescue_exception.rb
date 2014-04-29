@@ -10,9 +10,9 @@ module Rubocop
         def on_resbody(node)
           return unless node.children.first
           rescue_args = node.children.first.children
-          if rescue_args.any? { |a| targets_exception?(a) }
-            add_offense(node, :expression)
-          end
+          return unless rescue_args.any? { |a| targets_exception?(a) }
+
+          add_offense(node, :expression)
         end
 
         def targets_exception?(rescue_arg_node)

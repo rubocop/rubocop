@@ -28,11 +28,11 @@ module Rubocop
           on_node(DECISION_POINT_NODES, node) { complexity += 1 }
 
           max = cop_config['Max']
-          if complexity > max
-            add_offense(node, :keyword,
-                        format(MSG, method_name, complexity, max)) do
-              self.max = complexity
-            end
+          return unless complexity > max
+
+          add_offense(node, :keyword,
+                      format(MSG, method_name, complexity, max)) do
+            self.max = complexity
           end
         end
       end

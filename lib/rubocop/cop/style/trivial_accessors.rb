@@ -18,10 +18,9 @@ module Rubocop
                  elsif trivial_writer?(method_name, args, body)
                    'writer'
                  end
-          if kind
-            add_offense(node, :keyword,
-                        format(MSG, kind, kind))
-          end
+          return unless kind
+
+          add_offense(node, :keyword, format(MSG, kind, kind))
         end
 
         def exact_name_match?

@@ -63,11 +63,11 @@ module Rubocop
             Parser::Source::Range.new(sb, pos_after_last_pair,
                                       node.loc.end.begin_pos)
           trailing_comma_offset = range_after_last_pair.source =~ /,/
-          if trailing_comma_offset
-            comma_begin = pos_after_last_pair + trailing_comma_offset
-            corrector.remove(Parser::Source::Range.new(sb, comma_begin,
-                                                       comma_begin + 1))
-          end
+          return unless trailing_comma_offset
+
+          comma_begin = pos_after_last_pair + trailing_comma_offset
+          corrector.remove(Parser::Source::Range.new(sb, comma_begin,
+                                                     comma_begin + 1))
         end
 
         def non_empty_hash?(arg)

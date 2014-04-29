@@ -18,11 +18,10 @@ module Rubocop
           _receiver, method_name, *_args = *node
 
           return unless method_name == :!
+          return unless node.loc.expression.source =~ /^!\s+\w+/
 
-          if node.loc.expression.source =~ /^!\s+\w+/
-            # TODO: Improve source range to highlight the redundant whitespace.
-            add_offense(node, :selector)
-          end
+          # TODO: Improve source range to highlight the redundant whitespace.
+          add_offense(node, :selector)
         end
 
         def autocorrect(node)

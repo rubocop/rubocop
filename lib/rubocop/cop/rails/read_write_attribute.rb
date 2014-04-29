@@ -20,12 +20,11 @@ module Rubocop
 
         def on_send(node)
           receiver, method_name, *_args = *node
-
           return if receiver
+          return unless [:read_attribute,
+                         :write_attribute].include?(method_name)
 
-          if [:read_attribute, :write_attribute].include?(method_name)
-            add_offense(node, :selector)
-          end
+          add_offense(node, :selector)
         end
 
         def message(node)

@@ -11,18 +11,18 @@ module Rubocop
 
         def on_pair(node)
           oper = node.loc.operator
-          if oper.is?(':') && oper.source_buffer.source[oper.end_pos] =~ /\S/
-            add_offense(oper, oper)
-          end
+          return unless oper.is?(':') &&
+            oper.source_buffer.source[oper.end_pos] =~ /\S/
+
+          add_offense(oper, oper)
         end
 
         def on_if(node)
-          if ternary_op?(node)
-            colon = node.loc.colon
-            if colon.source_buffer.source[colon.end_pos] =~ /\S/
-              add_offense(colon, colon)
-            end
-          end
+          return unless ternary_op?(node)
+          colon = node.loc.colon
+          return unless colon.source_buffer.source[colon.end_pos] =~ /\S/
+
+          add_offense(colon, colon)
         end
 
         def autocorrect(range)

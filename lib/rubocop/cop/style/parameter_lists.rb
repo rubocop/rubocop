@@ -14,10 +14,10 @@ module Rubocop
 
         def on_args(node)
           count = args_count(node)
-          if count > max_params
-            add_offense(node, :expression, format(MSG, max_params)) do
-              self.max = count
-            end
+          return unless count > max_params
+
+          add_offense(node, :expression, format(MSG, max_params)) do
+            self.max = count
           end
         end
 

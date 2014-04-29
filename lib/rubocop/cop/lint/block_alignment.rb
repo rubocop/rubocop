@@ -30,10 +30,10 @@ module Rubocop
           return if already_processed_node?(node)
 
           _left, right = *node
-          if right.type == :block
-            check_block_alignment(node, right)
-            @inspected_blocks << right
-          end
+          return unless right.type == :block
+
+          check_block_alignment(node, right)
+          @inspected_blocks << right
         end
 
         alias_method :on_or, :on_and
@@ -106,24 +106,24 @@ module Rubocop
           end_loc = block_node.loc.end
           do_loc = block_node.loc.begin # Actually it's either do or {.
           return if do_loc.line == end_loc.line # One-liner, not interesting.
-          if start_loc.column != end_loc.column
-            # We've found that "end" is not aligned with the start node (which
-            # can be a block, a variable assignment, etc). But we also allow
-            # the "end" to be aligned with the start of the line where the "do"
-            # is, which is a style some people use in multi-line chains of
-            # blocks.
-            match = /\S.*/.match(do_loc.source_line)
-            indentation_of_do_line = match.begin(0)
-            if end_loc.column != indentation_of_do_line
-              add_offense(nil,
-                          end_loc,
-                          format(MSG, end_loc.line, end_loc.column,
-                                 start_loc.source.lines.to_a.first.chomp,
-                                 start_loc.line, start_loc.column,
-                                 alt_start_msg(match, start_loc, do_loc,
-                                               indentation_of_do_line)))
-            end
-          end
+          return unless start_loc.column != end_loc.column
+
+          # We've found that "end" is not aligned with the start node (which
+          # can be a block, a variable assignment, etc). But we also allow
+          # the "end" to be aligned with the start of the line where the "do"
+          # is, which is a style some people use in multi-line chains of
+          # blocks.
+          match = /\S.*/.match(do_loc.source_line)
+          indentation_of_do_line = match.begin(0)
+          return unless end_loc.column != indentation_of_do_line
+
+          add_offense(nil,
+                      end_loc,
+                      format(MSG, end_loc.line, end_loc.column,
+                             start_loc.source.lines.to_a.first.chomp,
+                             start_loc.line, start_loc.column,
+                             alt_start_msg(match, start_loc, do_loc,
+                                           indentation_of_do_line)))
         end
 
         def alt_start_msg(match, start_loc, do_loc, indentation_of_do_line)

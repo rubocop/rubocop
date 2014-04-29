@@ -11,17 +11,21 @@ module Rubocop
 
         def investigate(processed_source)
           file_path = processed_source.buffer.name
-
           return if config.file_to_include?(file_path)
 
           basename = File.basename(file_path).sub(/\.[^\.]+$/, '')
+          return if snake_case?(basename)
 
-          unless basename.split('.').all? { |fragment| fragment =~ SNAKE_CASE }
-            add_offense(nil,
-                        source_range(processed_source.buffer,
-                                     processed_source[0..0],
-                                     0, 1))
-          end
+          add_offense(nil,
+                      source_range(processed_source.buffer,
+                                   processed_source[0..0],
+                                   0, 1))
+        end
+
+        private
+
+        def snake_case?(basename)
+          basename.split('.').all? { |fragment| fragment =~ SNAKE_CASE }
         end
       end
     end

@@ -19,15 +19,14 @@ module Rubocop
           #   ...)
           block_method, = *node
 
-          if block_method == TARGET
-            selector = block_method.loc.selector.source
-            lambda_length = lambda_length(node)
+          return unless block_method == TARGET
+          selector = block_method.loc.selector.source
+          lambda_length = lambda_length(node)
 
-            if selector != '->' && lambda_length == 0
-              add_offense(block_method, :expression, SINGLE_MSG)
-            elsif selector == '->' && lambda_length > 0
-              add_offense(block_method, :expression, MULTI_MSG)
-            end
+          if selector != '->' && lambda_length == 0
+            add_offense(block_method, :expression, SINGLE_MSG)
+          elsif selector == '->' && lambda_length > 0
+            add_offense(block_method, :expression, MULTI_MSG)
           end
         end
 

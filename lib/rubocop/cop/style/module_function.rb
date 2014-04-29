@@ -19,11 +19,10 @@ module Rubocop
 
         def on_module(node)
           _name, body = *node
+          return unless body && body.type == :begin
 
-          if body && body.type == :begin
-            body.children.each do |body_node|
-              add_offense(body_node, :expression) if body_node == TARGET_NODE
-            end
+          body.children.each do |body_node|
+            add_offense(body_node, :expression) if body_node == TARGET_NODE
           end
         end
       end

@@ -632,6 +632,10 @@ Eval:
   Description: 'The use of eval represents a serious security risk.'
   Enabled: true
 
+GuardClause:
+  Description: 'Check for conditionals that can be replaced with guard clauses'
+  Enabled: true
+
 HandleExceptions:
   Description: "Don't suppress exception."
   Enabled: true

@@ -238,6 +238,11 @@ FormatString:
 GlobalVars:
   AllowedVariables: []
 
+# `MinBodyLength` defines the number of lines of the a body of an if / unless
+# needs to have to trigger this cop
+GuardClause:
+  MinBodyLength: 1
+
 HashSyntax:
   EnforcedStyle: ruby19
   SupportedStyles:
