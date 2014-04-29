@@ -10,6 +10,7 @@
 
 ### Changes
 
+* `NonNilCheck` offense reporting and autocorrect are configurable to include semantic changes. ([@hannestyden][])
 * The parameters `AllCops/Excludes` and `AllCops/Includes` with final `s` only give a warning and don't halt `rubocop` execution. ([@jonas054][])
 
 ### Bugs fixed

@@ -9,9 +9,12 @@ module Rubocop
       #
       #  # bad
       #  if x != nil
+      #
+      #  # good (when not allowing semantic changes)
+      #  # bad (when allowing semantic changes)
       #  if !x.nil?
       #
-      #  # good
+      #  # good (when allowing semantic changes)
       #  if x
       #
       # Non-nil checks are allowed if they are the final nodes of predicate.
@@ -43,12 +46,16 @@ module Rubocop
 
           if method == :!=
             add_offense(node, :selector) if args == NIL_NODE
-          elsif method == :!
+          elsif include_semantic_changes? && method == :!
             add_offense(node, :expression) if nil_check?(receiver)
           end
         end
 
         private
+
+        def include_semantic_changes?
+          cop_config['IncludeSemanticChanges']
+        end
 
         def process_method(name, body)
           # only predicate methods are handled differently
@@ -82,7 +89,12 @@ module Rubocop
         def autocorrect_comparison(node)
           @corrections << lambda do |corrector|
             expr = node.loc.expression
-            new_code = expr.source.sub(/\s*!=\s*nil/, '')
+            new_code =
+              if include_semantic_changes?
+                expr.source.sub(/\s*!=\s*nil/, '')
+              else
+                expr.source.sub(/^(\S*)\s*!=\s*nil/, '!\1.nil?')
+              end
             corrector.replace(expr, new_code)
           end
         end
