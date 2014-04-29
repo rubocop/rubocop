@@ -9,13 +9,12 @@ module Rubocop
 
         def investigate(processed_source)
           processed_source.lines.each_with_index do |line, index|
-            if line =~ /.*[ \t]+$/
-              range = source_range(processed_source.buffer,
-                                   processed_source[0...index],
-                                   line.rstrip.length,
-                                   line.length - line.rstrip.length)
-              add_offense(range, range)
-            end
+            next unless line =~ /.*[ \t]+$/
+            range = source_range(processed_source.buffer,
+                                 processed_source[0...index],
+                                 line.rstrip.length,
+                                 line.length - line.rstrip.length)
+            add_offense(range, range)
           end
         end
 

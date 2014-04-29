@@ -12,18 +12,17 @@ module Rubocop
         @processed_source = processed_source
         left, right, kind = specifics
         processed_source.tokens.each_cons(2) do |t1, t2|
-          if t1.type == left || t2.type == right
-            # If the second token is a comment, that means that a line break
-            # follows, and that the rules for space inside don't apply.
-            next if t2.type == :tCOMMENT
+          next unless t1.type == left || t2.type == right
 
-            if t2.pos.line == t1.pos.line && space_between?(t1, t2)
-              range = Parser::Source::Range.new(processed_source.buffer,
-                                                t1.pos.end_pos,
-                                                t2.pos.begin_pos)
-              add_offense(range, range, format(MSG, kind))
-            end
-          end
+          # If the second token is a comment, that means that a line break
+          # follows, and that the rules for space inside don't apply.
+          next if t2.type == :tCOMMENT
+          next unless t2.pos.line == t1.pos.line && space_between?(t1, t2)
+
+          range = Parser::Source::Range.new(processed_source.buffer,
+                                            t1.pos.end_pos,
+                                            t2.pos.begin_pos)
+          add_offense(range, range, format(MSG, kind))
         end
       end
 
