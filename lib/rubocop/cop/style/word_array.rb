@@ -16,10 +16,11 @@ module Rubocop
 
         def on_array(node)
           array_elems = node.children
-          if array_of?(:str, node) && !complex_content?(array_elems) &&
+          return unless array_of?(:str, node) &&
+            !complex_content?(array_elems) &&
             array_elems.size > min_size && !comments_in_array?(node)
-            add_offense(node, :expression) { self.max = array_elems.size }
-          end
+
+          add_offense(node, :expression) { self.max = array_elems.size }
         end
 
         private

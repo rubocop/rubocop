@@ -33,12 +33,10 @@ module Rubocop
 
         def check_defs(node)
           definee, method_name, _args, _body = *node
+          return unless definee.type == :const
 
-          if definee.type == :const
-            _, class_name = *definee
-            add_offense(definee, :name,
-                        message(class_name, method_name))
-          end
+          _, class_name = *definee
+          add_offense(definee, :name, message(class_name, method_name))
         end
 
         def message(class_name, method_name)

@@ -37,11 +37,10 @@ module Rubocop
         ]
 
         def on_send(node)
-          if DEBUGGER_NODES.include?(node)
-            add_offense(node,
-                        :expression,
-                        format(MSG, node.loc.expression.source))
-          end
+          return unless DEBUGGER_NODES.include?(node)
+          add_offense(node,
+                      :expression,
+                      format(MSG, node.loc.expression.source))
         end
       end
     end

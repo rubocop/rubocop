@@ -5,9 +5,8 @@ module Rubocop
     # Common functionality for handling percent literals.
     module PercentLiteral
       def percent_literal?(node)
-        if (begin_source = begin_source(node))
-          begin_source.start_with?('%')
-        end
+        return unless (begin_source = begin_source(node))
+        begin_source.start_with?('%')
       end
 
       def process(node, *types)

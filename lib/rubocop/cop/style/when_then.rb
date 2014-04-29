@@ -8,9 +8,9 @@ module Rubocop
         MSG = 'Never use `when x;`. Use `when x then` instead.'
 
         def on_when(node)
-          if node.loc.begin && node.loc.begin.is?(';')
-            add_offense(node, :begin)
-          end
+          return unless node.loc.begin && node.loc.begin.is?(';')
+
+          add_offense(node, :begin)
         end
 
         def autocorrect(node)

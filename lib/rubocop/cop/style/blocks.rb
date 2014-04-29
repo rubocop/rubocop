@@ -13,15 +13,15 @@ module Rubocop
 
         def on_send(node)
           _receiver, method_name, *args = *node
-          if args.any?
-            block = get_block(args.last)
-            if block && !parentheses?(node) && !operator?(method_name)
-              # If there are no parentheses around the arguments, then braces
-              # and do-end have different meaning due to how they bind, so we
-              # allow either.
-              ignore_node(block)
-            end
-          end
+          return unless args.any?
+
+          block = get_block(args.last)
+          return unless block && !parentheses?(node) && !operator?(method_name)
+
+          # If there are no parentheses around the arguments, then braces and
+          # do-end have different meaning due to how they bind, so we allow
+          # either.
+          ignore_node(block)
         end
 
         def on_block(node)

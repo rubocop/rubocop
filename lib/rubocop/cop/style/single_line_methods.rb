@@ -21,11 +21,10 @@ module Rubocop
           end_line = node.loc.end.line
 
           empty_body = body.nil?
+          return unless start_line == end_line && !(allow_empty? && empty_body)
 
-          if start_line == end_line && !(allow_empty? && empty_body)
-            @body = body
-            add_offense(node, :expression)
-          end
+          @body = body
+          add_offense(node, :expression)
         end
 
         def autocorrect(node)

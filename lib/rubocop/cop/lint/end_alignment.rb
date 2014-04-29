@@ -46,16 +46,17 @@ module Rubocop
           super
 
           receiver, method_name, *args = *node
-          if visibility_and_def_on_same_line?(receiver, method_name, args)
-            expr = node.loc.expression
-            method_def = args.first
-            range = Parser::Source::Range.new(expr.source_buffer,
-                                              expr.begin_pos,
-                                              method_def.loc.keyword.end_pos)
-            check_offset(method_def, range.source,
-                         method_def.loc.keyword.begin_pos - expr.begin_pos)
-            ignore_node(method_def) # Don't check the same `end` again.
-          end
+          return unless visibility_and_def_on_same_line?(receiver, method_name,
+                                                         args)
+
+          expr = node.loc.expression
+          method_def = args.first
+          range = Parser::Source::Range.new(expr.source_buffer,
+                                            expr.begin_pos,
+                                            method_def.loc.keyword.end_pos)
+          check_offset(method_def, range.source,
+                       method_def.loc.keyword.begin_pos - expr.begin_pos)
+          ignore_node(method_def) # Don't check the same `end` again.
         end
 
         private

@@ -46,12 +46,12 @@ module Rubocop
         def on_send(node)
           super
           receiver, method_name, *args = *node
+          return unless visibility_and_def_on_same_line?(receiver, method_name,
+                                                         args)
 
-          if visibility_and_def_on_same_line?(receiver, method_name, args)
-            _method_name, _args, body = *args.first
-            check_indentation(node.loc.expression, body)
-            ignore_node(args.first)
-          end
+          _method_name, _args, body = *args.first
+          check_indentation(node.loc.expression, body)
+          ignore_node(args.first)
         end
 
         def check(node, _method_name, _args, body)
@@ -65,9 +65,10 @@ module Rubocop
 
         def on_while(node, base = node)
           _condition, body = *node
-          if node.loc.keyword.begin_pos == node.loc.expression.begin_pos
-            check_indentation(base.loc, body)
-          end
+          return unless node.loc.keyword.begin_pos ==
+            node.loc.expression.begin_pos
+
+          check_indentation(base.loc, body)
         end
 
         alias_method :on_until, :on_while
@@ -115,34 +116,32 @@ module Rubocop
           # assignment, we let rhs be the receiver of those method calls before
           # we check its indentation.
           rhs = first_part_of_call_chain(rhs)
+          return unless rhs
 
-          if rhs
-            end_config = config.for_cop('EndAlignment')
-            style = end_config['Enabled'] ? end_config['AlignWith'] : 'keyword'
-            base = style == 'variable' ? node : rhs
+          end_config = config.for_cop('EndAlignment')
+          style = end_config['Enabled'] ? end_config['AlignWith'] : 'keyword'
+          base = style == 'variable' ? node : rhs
 
-            case rhs.type
-            when :if            then on_if(rhs, base)
-            when :while, :until then on_while(rhs, base)
-            else                     return
-            end
-
-            ignore_node(rhs)
+          case rhs.type
+          when :if            then on_if(rhs, base)
+          when :while, :until then on_while(rhs, base)
+          else                     return
           end
+
+          ignore_node(rhs)
         end
 
         def check_if(node, body, else_clause, base_loc)
           return if ternary_op?(node)
 
           check_indentation(base_loc, body)
+          return unless else_clause
 
-          if else_clause
-            if elsif?(else_clause)
-              _condition, inner_body, inner_else_clause = *else_clause
-              check_if(else_clause, inner_body, inner_else_clause, base_loc)
-            else
-              check_indentation(node.loc.else, else_clause)
-            end
+          if elsif?(else_clause)
+            _condition, inner_body, inner_else_clause = *else_clause
+            check_if(else_clause, inner_body, inner_else_clause, base_loc)
+          else
+            check_indentation(node.loc.else, else_clause)
           end
         end
 

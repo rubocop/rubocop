@@ -61,11 +61,11 @@ module Rubocop
 
         def on_percent_literal(node, types)
           type = type(node)
-          if types.include?(type) &&
-              !uses_preferred_delimiter?(node, type) &&
-              !contains_preferred_delimiter?(node, type)
-            add_offense(node, :expression)
-          end
+          return unless types.include?(type) &&
+            !uses_preferred_delimiter?(node, type) &&
+            !contains_preferred_delimiter?(node, type)
+
+          add_offense(node, :expression)
         end
 
         def preferred_delimiters(type)

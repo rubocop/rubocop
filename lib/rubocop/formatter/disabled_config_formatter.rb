@@ -53,12 +53,12 @@ module Rubocop
         end
 
         default_cfg = Rubocop::ConfigLoader.default_configuration[cop_name]
-        if default_cfg
-          params = default_cfg.keys - %w(Description Enabled) - cfg.keys
-          unless params.empty?
-            output.puts "# Configuration parameters: #{params.join(', ')}."
-          end
-        end
+        return unless default_cfg
+
+        params = default_cfg.keys - %w(Description Enabled) - cfg.keys
+        return if params.empty?
+
+        output.puts "# Configuration parameters: #{params.join(', ')}."
       end
     end
   end

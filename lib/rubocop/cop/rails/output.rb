@@ -15,10 +15,9 @@ module Rubocop
 
         def on_send(node)
           receiver, method_name, *_args = *node
+          return unless receiver.nil? && BLACKLIST.include?(method_name)
 
-          if receiver.nil? && BLACKLIST.include?(method_name)
-            add_offense(node, :selector)
-          end
+          add_offense(node, :selector)
         end
       end
     end

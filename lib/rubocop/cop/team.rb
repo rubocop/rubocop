@@ -80,11 +80,11 @@ module Rubocop
                        autocorrect_one_cop(buffer, cops)
                      end
 
-        unless new_source == buffer.source
-          filename = buffer.name
-          File.open(filename, 'w') { |f| f.write(new_source) }
-          @updated_source_file = true
-        end
+        return if new_source == buffer.source
+
+        filename = buffer.name
+        File.open(filename, 'w') { |f| f.write(new_source) }
+        @updated_source_file = true
       end
 
       # Does a slower but safer auto-correction run by correcting for just one

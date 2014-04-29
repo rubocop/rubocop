@@ -972,6 +972,10 @@ describe Rubocop::CLI, :isolated_environment do
                       'example3.rb:2:5: C: Use snake_case for methods.',
                       'def badName',
                       '    ^^^^^^^',
+                      'example3.rb:3:3: C: Use a guard clause instead of ' \
+                      'wrapping the code inside a conditional expression.',
+                      '  if something',
+                      '  ^^',
                       'example3.rb:3:3: C: Favor modifier if usage ' \
                       'when having a single-line body. Another good ' \
                       'alternative is the usage of control flow &&/||.',
@@ -982,7 +986,7 @@ describe Rubocop::CLI, :isolated_environment do
                       '    end',
                       '    ^^^',
                       '',
-                      '3 files inspected, 11 offenses detected',
+                      '3 files inspected, 12 offenses detected',
                       ''].join("\n"))
           end
         end

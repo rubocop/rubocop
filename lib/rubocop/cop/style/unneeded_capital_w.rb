@@ -18,10 +18,10 @@ module Rubocop
 
         def on_percent_literal(node, types)
           type = type(node)
-          if types.include?(type) &&
+          return unless types.include?(type) &&
             node.children.none? { |x| x.type == :dstr }
-            add_offense(node, :expression)
-          end
+
+          add_offense(node, :expression)
         end
       end
     end

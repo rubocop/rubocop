@@ -20,10 +20,9 @@ module Rubocop
 
         def on_send(node)
           _receiver, _method_name, *args = *node
+          return unless args.size == 1 && args.first.type == :block_pass
 
-          if args.size == 1 && args.first.type == :block_pass
-            check_method_node(node)
-          end
+          check_method_node(node)
         end
 
         def autocorrect(node)
@@ -38,14 +37,12 @@ module Rubocop
         def check_method_node(node)
           _receiver, method_name, *_args = *node
 
-          if preferred_methods[method_name]
-            add_offense(
-              node, :selector,
-              format(MSG,
-                     preferred_method(method_name),
-                     method_name)
-            )
-          end
+          return unless preferred_methods[method_name]
+          add_offense(node, :selector,
+                      format(MSG,
+                             preferred_method(method_name),
+                             method_name)
+                     )
         end
 
         def preferred_method(method)

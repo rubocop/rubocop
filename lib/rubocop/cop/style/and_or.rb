@@ -24,12 +24,9 @@ module Rubocop
         def process_logical_op(node)
           op = node.loc.operator.source
           op_type = node.type.to_s
+          return unless op == op_type
 
-          if op == op_type
-            add_offense(node,
-                        :operator,
-                        format(MSG, OPS[op], op))
-          end
+          add_offense(node, :operator, format(MSG, OPS[op], op))
         end
 
         def correction(node)

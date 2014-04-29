@@ -25,27 +25,28 @@ module Rubocop
     end
 
     def make_excludes_absolute
-      if self['AllCops'] && self['AllCops']['Exclude']
-        self['AllCops']['Exclude'].map! do |exclude_elem|
-          if exclude_elem.is_a?(String) && !exclude_elem.start_with?('/')
-            File.join(base_dir_for_path_parameters, exclude_elem)
-          else
-            exclude_elem
-          end
+      return unless self['AllCops'] && self['AllCops']['Exclude']
+
+      self['AllCops']['Exclude'].map! do |exclude_elem|
+        if exclude_elem.is_a?(String) && !exclude_elem.start_with?('/')
+          File.join(base_dir_for_path_parameters, exclude_elem)
+        else
+          exclude_elem
         end
       end
     end
 
     def add_excludes_from_higher_level(highest_config)
-      if highest_config['AllCops'] && highest_config['AllCops']['Exclude']
-        self['AllCops'] ||= {}
-        excludes = self['AllCops']['Exclude'] ||= []
-        highest_config['AllCops']['Exclude'].each do |path|
-          unless path.is_a?(Regexp) || path.start_with?('/')
-            path = File.join(File.dirname(highest_config.loaded_path), path)
-          end
-          excludes << path unless excludes.include?(path)
+      return unless highest_config['AllCops'] &&
+        highest_config['AllCops']['Exclude']
+
+      self['AllCops'] ||= {}
+      excludes = self['AllCops']['Exclude'] ||= []
+      highest_config['AllCops']['Exclude'].each do |path|
+        unless path.is_a?(Regexp) || path.start_with?('/')
+          path = File.join(File.dirname(highest_config.loaded_path), path)
         end
+        excludes << path unless excludes.include?(path)
       end
     end
 

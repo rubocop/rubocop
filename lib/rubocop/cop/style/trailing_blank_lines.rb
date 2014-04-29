@@ -16,16 +16,16 @@ module Rubocop
           blank_lines = whitespace_at_end.count("\n") - 1
           wanted_blank_lines = style == :final_newline ? 0 : 1
 
-          if blank_lines != wanted_blank_lines
-            begin_pos = sb.source.length - whitespace_at_end.length
-            autocorrect_range = Parser::Source::Range.new(sb, begin_pos,
-                                                          sb.source.length)
-            begin_pos += "\n".length unless whitespace_at_end.length == 0
-            report_range = Parser::Source::Range.new(sb, begin_pos,
-                                                     sb.source.length)
-            add_offense(autocorrect_range, report_range,
-                        message(wanted_blank_lines, blank_lines))
-          end
+          return unless blank_lines != wanted_blank_lines
+
+          begin_pos = sb.source.length - whitespace_at_end.length
+          autocorrect_range = Parser::Source::Range.new(sb, begin_pos,
+                                                        sb.source.length)
+          begin_pos += "\n".length unless whitespace_at_end.length == 0
+          report_range = Parser::Source::Range.new(sb, begin_pos,
+                                                   sb.source.length)
+          add_offense(autocorrect_range, report_range,
+                      message(wanted_blank_lines, blank_lines))
         end
 
         private

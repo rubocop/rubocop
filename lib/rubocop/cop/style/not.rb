@@ -13,10 +13,10 @@ module Rubocop
           _receiver, method_name, *args = *node
 
           # not does not take any arguments
-          if args.empty? && method_name == :! &&
-              node.loc.selector.is?('not')
-            add_offense(node, :selector)
-          end
+          return unless args.empty? && method_name == :! &&
+            node.loc.selector.is?('not')
+
+          add_offense(node, :selector)
         end
 
         private

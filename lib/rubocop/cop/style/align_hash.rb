@@ -147,10 +147,10 @@ module Rubocop
               'one line.'
 
         def on_send(node)
-          if (last_child = node.children.last) && hash?(last_child) &&
-              ignore_last_argument_hash?(last_child)
-            ignore_node(last_child)
-          end
+          return unless (last_child = node.children.last) &&
+            hash?(last_child) && ignore_last_argument_hash?(last_child)
+
+          ignore_node(last_child)
         end
 
         def on_hash(node)

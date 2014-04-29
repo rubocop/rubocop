@@ -23,13 +23,12 @@ module Rubocop
           line_number = encoding_line_number(processed_source)
           message = offense(processed_source, line_number)
 
-          if message
-            add_offense(nil,
-                        source_range(processed_source.buffer,
-                                     processed_source[0...line_number],
-                                     0, 1),
-                        message)
-          end
+          return unless message
+          add_offense(nil,
+                      source_range(processed_source.buffer,
+                                   processed_source[0...line_number],
+                                   0, 1),
+                      message)
         end
 
         private

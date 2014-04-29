@@ -24,9 +24,9 @@ module Rubocop
           pos_before_left_paren = Parser::Source::Range.new(expr.source_buffer,
                                                             expr.begin_pos - 1,
                                                             expr.begin_pos)
-          if pos_before_left_paren.source =~ /\s/
-            add_offense(pos_before_left_paren, pos_before_left_paren)
-          end
+          return unless pos_before_left_paren.source =~ /\s/
+
+          add_offense(pos_before_left_paren, pos_before_left_paren)
         end
 
         def autocorrect(pos_before_left_paren)

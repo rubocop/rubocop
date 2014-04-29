@@ -33,12 +33,10 @@ module Rubocop
           return if !node.loc.keyword.is?('elsif') && node.loc.end.nil?
 
           condition, = *node
+          return unless on_different_line?(node.loc.keyword.line,
+                                           condition.loc.expression.line)
 
-          if on_different_line?(node.loc.keyword.line,
-                                condition.loc.expression.line)
-            add_offense(condition, :expression,
-                        message(node.loc.keyword.source))
-          end
+          add_offense(condition, :expression, message(node.loc.keyword.source))
         end
 
         def message(keyword)

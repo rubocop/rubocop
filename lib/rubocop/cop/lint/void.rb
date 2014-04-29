@@ -37,17 +37,14 @@ module Rubocop
         end
 
         def check_for_var(node)
-          if VARS.include?(node.type)
-            add_offense(node, :name,
-                        format(VAR_MSG, node.loc.name.source))
-          end
+          return unless VARS.include?(node.type)
+          add_offense(node, :name, format(VAR_MSG, node.loc.name.source))
         end
 
         def check_for_literal(node)
-          if LITERALS.include?(node.type)
-            add_offense(node, :expression,
-                        format(LIT_MSG, node.loc.expression.source))
-          end
+          return unless LITERALS.include?(node.type)
+          add_offense(node, :expression,
+                      format(LIT_MSG, node.loc.expression.source))
         end
       end
     end

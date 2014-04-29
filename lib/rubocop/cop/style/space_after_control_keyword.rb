@@ -15,9 +15,9 @@ module Rubocop
           exp = node.loc.expression
           kw = node.loc.keyword
           kw_offset = kw.begin_pos - exp.begin_pos
-          if exp.source[kw_offset..-1].start_with?(kw.source + '(')
-            add_offense(node, kw)
-          end
+          return unless exp.source[kw_offset..-1].start_with?(kw.source + '(')
+
+          add_offense(node, kw)
         end
 
         KEYWORDS.each do |keyword|

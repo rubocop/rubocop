@@ -21,10 +21,9 @@ module Rubocop
 
         def on_send(node)
           _receiver, method, args = *node
+          return unless OPS.include?(method)
 
-          if OPS.include?(method)
-            add_offense(node, :selector) if args == NIL_NODE
-          end
+          add_offense(node, :selector) if args == NIL_NODE
         end
 
         private

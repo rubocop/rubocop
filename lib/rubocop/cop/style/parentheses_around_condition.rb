@@ -27,13 +27,12 @@ module Rubocop
         def process_control_op(node)
           cond, _body = *node
 
-          if cond.type == :begin
-            return if parens_required?(node)
-            # allow safe assignment
-            return if safe_assignment?(cond) && safe_assignment_allowed?
+          return unless cond.type == :begin
+          return if parens_required?(node)
+          # allow safe assignment
+          return if safe_assignment?(cond) && safe_assignment_allowed?
 
-            add_offense(cond, :expression, message(node))
-          end
+          add_offense(cond, :expression, message(node))
         end
 
         def parens_required?(node)

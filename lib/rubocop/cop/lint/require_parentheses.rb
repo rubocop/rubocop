@@ -42,13 +42,13 @@ module Rubocop
 
         def check_ternary(arg, node)
           condition, _, _ = *arg
-          if offense?(condition)
-            expr = node.loc.expression
-            range = Parser::Source::Range.new(expr.source_buffer,
-                                              expr.begin_pos,
-                                              condition.loc.expression.end_pos)
-            add_offense(range, range)
-          end
+          return unless offense?(condition)
+
+          expr = node.loc.expression
+          range = Parser::Source::Range.new(expr.source_buffer,
+                                            expr.begin_pos,
+                                            condition.loc.expression.end_pos)
+          add_offense(range, range)
         end
 
         def check_send(arg, node)

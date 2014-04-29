@@ -16,11 +16,11 @@ module Rubocop
 
       def check(node, *_)
         length = code_length(node)
-        if length > max_length
-          add_offense(node, :keyword, format(message, length,
-                                             max_length)) do
-            self.max = length
-          end
+        return unless length > max_length
+
+        add_offense(node, :keyword, format(message, length,
+                                           max_length)) do
+          self.max = length
         end
       end
 
