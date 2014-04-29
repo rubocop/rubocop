@@ -3,15 +3,13 @@
 module Rubocop
   module Cop
     module Style
-      # This cop if/unless expression that can be replace with a guard clause.
+      # Use a guard clause instead of wrapping the code inside a conditional
+      # expression
       #
       # @example
-      #
       #   # bad
       #   def test
       #     if something
-      #       work
-      #       work
       #       work
       #     end
       #   end
@@ -20,48 +18,60 @@ module Rubocop
       #   def test
       #     return unless something
       #     work
-      #     work
-      #     work
       #   end
       #
-      # It should be extended to handle methods whose body is if/else
-      # or a case expression with a default branch.
+      #   # also good
+      #   def test
+      #     work if something
+      #   end
       class GuardClause < Cop
-        include CheckMethods
+        include ConfigurableEnforcedStyle
         include IfNode
 
-        MSG = 'Use a guard clause instead of wrapping ' \
-              'the code inside a conditional expression.'
+        MSG = 'Use a guard clause instead of wrapping the code inside a ' \
+              'conditional expression.'
 
-        private
-
-        def check(_node, _method_name, _args, body)
+        def on_def(node)
+          _, _, body = *node
           return unless body
 
-          if body.type == :if
+          if if?(body)
             check_if_node(body)
           elsif body.type == :begin
             expressions = *body
             last_expr = expressions.last
 
-            check_if_node(last_expr) if last_expr && last_expr.type == :if
+            check_if_node(last_expr) if if?(last_expr)
           end
         end
 
-        def check_if_node(node)
-          _cond, _body, else_body = *node
+        private
 
-          return if else_body
+        def if?(body)
+          body && body.type == :if
+        end
+
+        def check_if_node(node)
+          _cond, body, else_body = *node
+
+          return if body && else_body
           # discard modifier ifs and ternary_ops
           return if modifier_if?(node) || ternary_op?(node)
           # discard short ifs
-          return unless if_length(node) > 3
+          return unless min_body_length?(node)
 
-          add_offense(node, :keyword)
+          add_offense(node, :keyword, MSG)
         end
 
-        def if_length(node)
-          node.loc.end.line - node.loc.keyword.line + 1
+        def min_body_length?(node)
+          (node.loc.end.line - node.loc.keyword.line) > min_body_length
+        end
+
+        def min_body_length
+          length = cop_config['MinBodyLength'] || 1
+          return length if length.is_a?(Integer) && length > 0
+
+          fail 'MinBodyLength needs to be a positive integer!'
         end
       end
     end
