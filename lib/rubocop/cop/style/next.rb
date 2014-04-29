@@ -24,15 +24,15 @@ module Rubocop
 
         MSG = 'Use `next` to skip iteration.'
         METHODS = [:collect, :detect, :downto, :each, :find, :find_all,
-                   :inject, :loop, :map!, :map, :reduce, :select, :times,
-                   :upto]
+                   :inject, :loop, :map!, :map, :reduce, :reverse_each,
+                   :select, :times, :upto]
 
         def on_block(node)
           method, _, body = *node
           return if body.nil?
 
           _, method_name = *method
-          return unless METHODS.include? method_name
+          return unless method?(method_name)
           return unless ends_with_condition?(body)
 
           add_offense(method, :selector, MSG)
@@ -54,6 +54,10 @@ module Rubocop
         end
 
         private
+
+        def method?(method_name)
+          METHODS.include?(method_name) || /\Aeach_/.match(method_name)
+        end
 
         def ends_with_condition?(body)
           return true if simple_if_without_break?(body)

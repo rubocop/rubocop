@@ -20,6 +20,12 @@ describe Rubocop::Cop::Style::Next, :config do
                     '  end',
                     'end',
                     '',
+                    '[].each_with_object({}) do |o, a|',
+                    '  if o == 1',
+                    '    a[o] = {}',
+                    '  end',
+                    'end',
+                    '',
                     'for o in 1..3 do',
                     '  if o == 1',
                     '    puts o',
@@ -55,11 +61,12 @@ describe Rubocop::Cop::Style::Next, :config do
                     '    puts o',
                     '  end',
                     'end'])
-    expect(cop.offenses.size).to eq(8)
-    expect(cop.offenses.map(&:line).sort).to eq([1, 7, 13, 19, 25, 31, 37, 43])
-    expect(cop.messages) .to eq(['Use `next` to skip iteration.'] * 8)
-    expect(cop.highlights).to eq(%w(downto each for loop map times until
-                                    while))
+    expect(cop.offenses.size).to eq(9)
+    expect(cop.offenses.map(&:line).sort).to eq([1, 7, 13, 19, 25, 31, 37, 43,
+                                                 49])
+    expect(cop.messages) .to eq(['Use `next` to skip iteration.'] * 9)
+    expect(cop.highlights).to eq(%w(downto each each_with_object for loop map
+                                    times until while))
   end
 
   it 'finds loop with condition at the end in different styles' do

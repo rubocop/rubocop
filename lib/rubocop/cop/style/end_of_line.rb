@@ -12,16 +12,16 @@ module Rubocop
           original_source = IO.read(buffer.name,
                                     encoding: buffer.source.encoding)
           original_source.lines.each_with_index do |line, index|
-            if line =~ /\r$/
-              add_offense(nil,
-                          source_range(buffer,
-                                       processed_source[0...index],
-                                       0, line.length),
-                          MSG)
-              # Usually there will be carriage return characters on all or none
-              # of the lines in a file, so we report only one offense.
-              break
-            end
+            next unless line =~ /\r$/
+
+            add_offense(nil,
+                        source_range(buffer,
+                                     processed_source[0...index],
+                                     0, line.length),
+                        MSG)
+            # Usually there will be carriage return characters on all or none
+            # of the lines in a file, so we report only one offense.
+            break
           end
         end
       end
