@@ -13,7 +13,7 @@ module Rubocop
     DOTFILE = '.rubocop.yml'
     RUBOCOP_HOME = File.realpath(File.join(File.dirname(__FILE__), '..', '..'))
     DEFAULT_FILE = File.join(RUBOCOP_HOME, 'config', 'default.yml')
-    AUTO_GENERATED_FILE = 'rubocop-todo.yml'
+    AUTO_GENERATED_FILE = '.rubocop_todo.yml'
 
     class << self
       attr_accessor :debug, :auto_gen_config
@@ -57,7 +57,11 @@ module Rubocop
       def base_configs(path, inherit_from)
         configs = Array(inherit_from).map do |f|
           f = File.join(File.dirname(path), f) unless f.start_with?('/')
-          next if auto_gen_config? && f.include?(AUTO_GENERATED_FILE)
+
+          if auto_gen_config?
+            next if f.include?(AUTO_GENERATED_FILE)
+            old_auto_config_file_warning if f.include?('rubocop-todo.yml')
+          end
 
           print 'Inheriting ' if debug?
           load_file(f)
@@ -122,6 +126,12 @@ module Rubocop
           dirs_to_search << dir_pathname.to_s
         end
         dirs_to_search << Dir.home
+      end
+
+      def old_auto_config_file_warning
+        warn 'Attention: rubocop_todo.yml has been renamed to ' \
+             "#{AUTO_GENERATED_FILE}".color(:red)
+        exit(1)
       end
     end
   end

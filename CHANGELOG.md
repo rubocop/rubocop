@@ -14,6 +14,7 @@
 * `NonNilCheck` offense reporting and autocorrect are configurable to include semantic changes. ([@hannestyden][])
 * The parameters `AllCops/Excludes` and `AllCops/Includes` with final `s` only give a warning and don't halt `rubocop` execution. ([@jonas054][])
 * The `GuardClause` cop is no longer irgnoring a one-line body by default - see configuration. ([@geniou][])
+* [#1050](https://github.com/bbatsov/rubocop/issues/1050): Rename `rubocop-todo.yml` file to `.robcop_todo.yml`. ([@geniou][])
 
 ### Bugs fixed
 

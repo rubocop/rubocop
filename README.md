@@ -315,12 +315,13 @@ CyclomaticComplexity:
 
 ### Automatically Generated Configuration
 
-If you have a code base with an overwhelming amount of offenses, it can be a
-good idea to use `rubocop --auto-gen-config` and add an `inherit_from:
-rubocop-todo.yml` in your `.rubocop.yml`. The generated file `rubocop-todo.yml`
-contains configuration to disable all cops that currently detect an offense in
-the code. Then you can start removing the entries in the generated file one by
-one as you work through all the offenses in the code.
+If you have a code base with an overwhelming amount of offenses, it can
+be a good idea to use `rubocop --auto-gen-config` and add an
+`inherit_from: .rubocop_todo.yml` in your `.rubocop.yml`. The generated
+file `.rubocop_todo.yml` contains configuration to disable all cops that
+currently detect an offense in the code. Then you can start removing the
+entries in the generated file one by one as you work through all the
+offenses in the code.
 
 ## Disabling Cops within Source Code
 
