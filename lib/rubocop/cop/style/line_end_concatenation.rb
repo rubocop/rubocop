@@ -20,7 +20,7 @@ module Rubocop
       #              'bala'
       #
       class LineEndConcatenation < Cop
-        MSG = 'Use \\ instead of + or << to concatenate those strings.'
+        MSG = 'Use `\\` instead of `+` or `<<` to concatenate those strings.'
 
         def on_send(node)
           add_offense(node, :selector) if offending_node?(node)
