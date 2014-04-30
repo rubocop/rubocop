@@ -541,6 +541,10 @@ UnneededCapitalW:
   Description: 'Checks for %W when interpolation is not needed.'
   Enabled: true
 
+UnneededPercentX:
+  Description: 'Checks for %x when `` would do.'
+  Enabled: true
+
 VariableInterpolation:
   Description: >-
                  Don't interpolate global, instance and class variables
