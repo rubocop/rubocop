@@ -11,7 +11,7 @@ module Rubocop
       let(:output) do
         o = StringIO.new
         def o.path
-          'rubocop-todo.yml'
+          '.rubocop_todo.yml'
         end
         o
       end
@@ -38,9 +38,9 @@ module Rubocop
                                        '  Enabled: false',
                                        ''].join("\n"))
           expect($stdout.string)
-            .to eq(['Created rubocop-todo.yml.',
-                    'Run `rubocop --config rubocop-todo.yml`, or',
-                    'add inherit_from: rubocop-todo.yml in a .rubocop.yml ' \
+            .to eq(['Created .rubocop_todo.yml.',
+                    'Run `rubocop --config .rubocop_todo.yml`, or',
+                    'add inherit_from: .rubocop_todo.yml in a .rubocop.yml ' \
                     'file.',
                     ''].join("\n"))
         end

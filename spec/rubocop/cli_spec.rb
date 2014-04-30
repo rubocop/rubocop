@@ -451,11 +451,11 @@ describe Rubocop::CLI, :isolated_environment do
                                     '#' * 85,
                                     'y ',
                                     'puts x'])
-        create_file('rubocop-todo.yml', ['LineLength:',
-                                         '  Enabled: false'])
-        create_file('.rubocop.yml', ['inherit_from: rubocop-todo.yml'])
+        create_file('.rubocop_todo.yml', ['LineLength:',
+                                          '  Enabled: false'])
+        create_file('.rubocop.yml', ['inherit_from: .rubocop_todo.yml'])
         expect(cli.run(['--auto-gen-config'])).to eq(1)
-        expect(IO.readlines('rubocop-todo.yml')[7..-1].map(&:chomp))
+        expect(IO.readlines('.rubocop_todo.yml')[7..-1].map(&:chomp))
           .to eq(['# Offense count: 1',
                   'LineLength:',
                   '  Max: 85',
@@ -503,9 +503,9 @@ describe Rubocop::CLI, :isolated_environment do
         expect(cli.run(['--auto-gen-config'])).to eq(1)
         expect($stderr.string).to eq('')
         expect($stdout.string)
-          .to include(['Created rubocop-todo.yml.',
-                       'Run `rubocop --config rubocop-todo.yml`, or',
-                       'add inherit_from: rubocop-todo.yml in a ' \
+          .to include(['Created .rubocop_todo.yml.',
+                       'Run `rubocop --config .rubocop_todo.yml`, or',
+                       'add inherit_from: .rubocop_todo.yml in a ' \
                        '.rubocop.yml file.',
                        ''].join("\n"))
         expected =
@@ -549,7 +549,7 @@ describe Rubocop::CLI, :isolated_environment do
            '# Cop supports --auto-correct.',
            'TrailingWhitespace:',
            '  Enabled: false']
-        actual = IO.read('rubocop-todo.yml').split($RS)
+        actual = IO.read('.rubocop_todo.yml').split($RS)
         expected.each_with_index do |line, ix|
           if line.is_a?(String)
             expect(actual[ix]).to eq(line)
@@ -590,7 +590,7 @@ describe Rubocop::CLI, :isolated_environment do
            '# Offense count: 1',
            'Tab:',
            '  Enabled: false']
-        actual = IO.read('rubocop-todo.yml').split($RS)
+        actual = IO.read('.rubocop_todo.yml').split($RS)
         expect(actual.length).to eq(expected.length)
         expected.each_with_index do |line, ix|
           if line.is_a?(String)
@@ -622,7 +622,7 @@ describe Rubocop::CLI, :isolated_environment do
            '# Offense count: 1',
            'RegexpLiteral:',
            '  MaxSlashes: 0']
-        actual = IO.read('rubocop-todo.yml').split($RS)
+        actual = IO.read('.rubocop_todo.yml').split($RS)
         expected.each_with_index do |line, ix|
           if line.is_a?(String)
             expect(actual[ix]).to eq(line)
@@ -631,7 +631,7 @@ describe Rubocop::CLI, :isolated_environment do
           end
         end
         $stdout = StringIO.new
-        result = cli.run(%w(--config rubocop-todo.yml --format emacs))
+        result = cli.run(%w(--config .rubocop_todo.yml --format emacs))
         expect($stdout.string).to eq('')
         expect(result).to eq(0)
       end
@@ -1951,6 +1951,25 @@ describe Rubocop::CLI, :isolated_environment do
         .to eq("Warning: Invalid severity 'superbad'. " \
                'Valid severities are refactor, convention, ' \
                "warning, error, fatal.\n")
+    end
+
+    context 'when a file inherits from the old auto generated file' do
+      before do
+        create_file('rubocop-todo.yml', '')
+        create_file('.rubocop.yml', ['inherit_from: rubocop-todo.yml'])
+      end
+
+      it 'prints no warning when --auto-gen-config is not set' do
+        expect { cli.run(%w(-c .rubocop.yml)) }.not_to exit_with_code(1)
+      end
+
+      it 'prints a warning when --auto-gen-config is set' do
+        expect { cli.run(%w(-c .rubocop.yml --auto-gen-config)) }
+          .to exit_with_code(1)
+        expect($stderr.string)
+          .to eq('Attention: rubocop_todo.yml has been renamed to ' \
+                 ".rubocop_todo.yml\n")
+      end
     end
   end
 end
