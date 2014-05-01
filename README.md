@@ -31,6 +31,7 @@ automatically fix some of the problems for you.
     - [Defaults](#defaults)
     - [Including/Excluding files](#includingexcluding-files)
     - [Automatically Generated Configuration](#automatically-generated-configuration)
+    - [Override Messages](#override-messages)
 - [Disabling Cops within Source Code](#disabling-cops-within-source-code)
 - [Formatters](#formatters)
     - [Progress Formatter (default)](#progress-formatter-default)
@@ -322,6 +323,16 @@ file `.rubocop_todo.yml` contains configuration to disable all cops that
 currently detect an offense in the code. Then you can start removing the
 entries in the generated file one by one as you work through all the
 offenses in the code.
+
+### Override Messages
+
+If you would like to override the default message displayed for an offense
+just add a custom message to your `.rubocop.yml`.
+
+```
+LineLength:
+  Message: 'Please break up lines longer that 79 characters. Thanks!'
+```
 
 ## Disabling Cops within Source Code
 

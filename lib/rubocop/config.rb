@@ -66,7 +66,7 @@ module Rubocop
 
     def for_cop(cop)
       cop = cop.cop_name if cop.respond_to?(:cop_name)
-      self[cop]
+      self[cop] || self.class.new
     end
 
     def cop_enabled?(cop)

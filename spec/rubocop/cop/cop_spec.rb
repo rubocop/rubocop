@@ -75,6 +75,28 @@ describe Rubocop::Cop::Cop do
     it('has right type') { expect(cop.cop_type).to eq(:rails) }
   end
 
+  describe '#message' do
+    context 'without configured message' do
+      it 'returns default message' do
+        message = 'A default message'
+        Rubocop::Cop::Style::For::MSG = message
+        cop = Rubocop::Cop::Style::For.new
+
+        expect(cop.message).to eq message
+      end
+    end
+
+    context 'with configured message' do
+      it 'returns configured message' do
+        message = 'A configured message'
+        config = Rubocop::Config.new('For' => { 'Message' => message })
+        cop = Rubocop::Cop::Style::For.new(config)
+
+        expect(cop.message).to eq message
+      end
+    end
+  end
+
   describe 'CopStore' do
     context '#types' do
       subject { described_class.all.types }
