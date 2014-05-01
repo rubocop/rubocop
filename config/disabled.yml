@@ -7,3 +7,9 @@ MethodCalledOnDoEndBlock:
 SymbolArray:
   Description: 'Use %i or %I for arrays of symbols.'
   Enabled: false
+
+TernaryOperator:
+  Description: >-
+                 Avoid ternary operators (boolean ? true : false). Use
+                 multi-line if instead to emphasize code branches.
+  Enabled: false
