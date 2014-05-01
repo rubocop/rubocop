@@ -7,3 +7,9 @@ MethodCalledOnDoEndBlock:
 SymbolArray:
   Description: 'Use %i or %I for arrays of symbols.'
   Enabled: false
+
+TrailingConditional:
+  Description: >-
+                 Avoid conditional modifiers (lines that end with
+                 conditionals).
+  Enabled: false
