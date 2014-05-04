@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#1061](https://github.com/bbatsov/rubocop/pull/1061): Ability to override offense message by setting Message in configuration. ([@salbertson][])
 * [#974](https://github.com/bbatsov/rubocop/pull/974): New cop `CommentIndentation` checks indentation of comments. ([@jonas054][])
 * Add new cop `EachWithObject` to prefer `each_with_object` over `inject` or `reduce`. ([@geniou][])
 * [#1010](https://github.com/bbatsov/rubocop/issues/1010): New Cop `Next` check for conditions at the end of an interation and propose to use `next` instead. ([@geniou][])
@@ -922,3 +923,4 @@
 [@sfeldon]: https://github.com/sfeldon
 [@biinari]: https://github.com/biinari
 [@barunio]: https://github.com/barunio
+[@salbertson]: https://github.com/salbertson

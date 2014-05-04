@@ -109,7 +109,7 @@ module Rubocop
       end
 
       def message(_node = nil)
-        self.class::MSG
+        cop_config['Message'] || self.class::MSG
       end
 
       def support_autocorrect?
@@ -169,7 +169,7 @@ module Rubocop
       private
 
       def file_name_matches_any?(file, parameter, default_result)
-        patterns = cop_config && cop_config[parameter]
+        patterns = cop_config[parameter]
         return default_result unless patterns
         path = config.path_relative_to_config(file)
         patterns.any? do |pattern|
@@ -188,7 +188,7 @@ module Rubocop
       end
 
       def custom_severity
-        severity = cop_config && cop_config['Severity']
+        severity = cop_config['Severity']
         return unless severity
 
         if Severity::NAMES.include?(severity.to_sym)

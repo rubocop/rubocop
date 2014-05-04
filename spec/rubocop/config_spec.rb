@@ -221,4 +221,31 @@ describe Rubocop::Config do
       end
     end
   end
+
+  describe '#for_cop' do
+    context 'when config exists' do
+      it 'returns cop config' do
+        config = Rubocop::Config.new(
+          'CopName' => { 'Configuration' => 'test config' }
+        )
+
+        cop_config = config.for_cop('CopName')
+
+        expect(cop_config).to eq('Configuration' => 'test config')
+      end
+    end
+
+    context 'when config does not exist' do
+      it 'returns null config' do
+        config = Rubocop::Config.new(
+          'CopName' => { 'Configuration' => 'test config' }
+        )
+
+        cop_config = config.for_cop('NotACopName')
+
+        expect(cop_config).not_to be_nil
+        expect(cop_config).not_to eq('Configuration' => 'test config')
+      end
+    end
+  end
 end
