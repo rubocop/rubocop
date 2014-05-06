@@ -90,9 +90,13 @@ describe Rubocop::Cop::Style::NegatedIf do
     expect(corrected).to eq 'something unless x.even?'
   end
 
+  it 'autocorrects by replacing parenthesized if not with unless' do
+    corrected = autocorrect_source(cop, 'something if (!x.even?)')
+    expect(corrected).to eq 'something unless (x.even?)'
+  end
+
   it 'autocorrects by replacing unless not with if' do
     corrected = autocorrect_source(cop, 'something unless !x.even?')
     expect(corrected).to eq 'something if x.even?'
   end
-
 end
