@@ -30,6 +30,8 @@ module Rubocop
         def autocorrect(node)
           @corrections << lambda do |corrector|
             condition, _body, _rest = *node
+            # look inside parentheses around the condition
+            condition = condition.children.first while condition.type == :begin
             # unwrap the negated portion of the condition (a send node)
             pos_condition, _method, = *condition
             corrector.replace(
