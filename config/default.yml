@@ -293,6 +293,55 @@ NonNilCheck:
   # offences for `!x.nil?` and does no changes that might change behavior.
   IncludeSemanticChanges: false
 
+MethodCallParentheses:
+  # Parentheses around parameters for methods that are part of an internal DSL
+  # (e.g. Rake, Rails, RSpec), methods that have "keyword" status in Ruby (e.g.
+  # attr_reader, puts) and attribute access methods should be omitted. These
+  # methods can be defined in `RequireNoParentheses`.
+  RequireNoParentheses:
+    - extend
+    - include
+    - p
+    - private_class_method
+    - puts
+    - require
+    - require_dependency
+    - set
+    - sleep
+    # attr
+    - attr_accessible
+    - attr_accessor
+    - attr_reader
+    - cattr_accessor
+    - cattr_writer
+    # active record
+    - after_create
+    - after_destroy
+    - after_initialize
+    - after_save
+    - after_validation
+    - before_create
+    - before_destroy
+    - before_initialize
+    - before_save
+    - before_validation
+    - belongs_to
+    - composed_of
+    - has_and_belongs_to_many
+    - has_many
+    - has_one
+    - validate
+    - validates
+    # routing
+    - delegate
+    - get
+    - match
+    - post
+    - resource
+    - resources
+    - root
+    - scope
+
 MethodDefParentheses:
   EnforcedStyle: require_parentheses
   SupportedStyles:
