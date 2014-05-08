@@ -139,4 +139,112 @@ describe Rubocop::Cop::Lint::UnusedMethodArgument do
       end
     end
   end
+
+  context 'auto-correct' do
+    it 'fixes single' do
+      expect(autocorrect_source(cop, <<-SOURCE
+      def some_method(foo)
+        super(:something)
+      end
+      SOURCE
+      )).to eq(<<-CORRECTED_SOURCE
+      def some_method(_foo)
+        super(:something)
+      end
+      CORRECTED_SOURCE
+      )
+    end
+
+    it 'fixes multiple' do
+      expect(autocorrect_source(cop, <<-SOURCE
+      def some_method(foo, bar)
+        super(:something)
+      end
+      SOURCE
+      )).to eq(<<-CORRECTED_SOURCE
+      def some_method(_foo, _bar)
+        super(:something)
+      end
+      CORRECTED_SOURCE
+      )
+    end
+
+    it 'preserves whitespace' do
+      expect(autocorrect_source(cop, <<-SOURCE
+      def some_method(foo,
+          bar)
+        super(:something)
+      end
+      SOURCE
+      )).to eq(<<-CORRECTED_SOURCE
+      def some_method(_foo,
+          _bar)
+        super(:something)
+      end
+      CORRECTED_SOURCE
+      )
+    end
+
+    it 'preserves splat' do
+      expect(autocorrect_source(cop, <<-SOURCE
+      def some_method(foo, *bars, baz)
+        stuff(foo, baz)
+      end
+      SOURCE
+      )).to eq(<<-CORRECTED_SOURCE
+      def some_method(foo, *_bars, baz)
+        stuff(foo, baz)
+      end
+      CORRECTED_SOURCE
+      )
+    end
+
+    it 'preserves default' do
+      expect(autocorrect_source(cop, <<-SOURCE
+      def some_method(foo, bar = baz)
+        stuff(foo)
+      end
+      SOURCE
+      )).to eq(<<-CORRECTED_SOURCE
+      def some_method(foo, _bar = baz)
+        stuff(foo)
+      end
+      CORRECTED_SOURCE
+      )
+    end
+
+    it 'preserves block reference' do
+      expect(autocorrect_source(cop, <<-SOURCE
+      def some_method(foo, &baz)
+        stuff(foo)
+      end
+      SOURCE
+      )).to eq(<<-CORRECTED_SOURCE
+      def some_method(foo, &_baz)
+        stuff(foo)
+      end
+      CORRECTED_SOURCE
+      )
+    end
+
+    it 'ignores used' do
+      original_source = <<-SOURCE
+      def some_method(foo, bar)
+        other_method(foo, bar)
+      end
+      SOURCE
+
+      expect(autocorrect_source(cop, original_source)).to eq(original_source)
+    end
+
+    it 'ignores implicit super' do
+      original_source = <<-SOURCE
+      def some_method(foo, bar)
+        super
+      end
+      SOURCE
+
+      expect(autocorrect_source(cop, original_source)).to eq(original_source)
+    end
+  end
 end

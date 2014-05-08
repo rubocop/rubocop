@@ -15,6 +15,13 @@ module Rubocop
           force_class == VariableForce
         end
 
+        def autocorrect(node)
+          new_name = node.loc.expression.source.sub(/(\W?)(\w+)/, '\\1_\\2')
+          @corrections << lambda do |corrector|
+            corrector.replace(node.loc.expression, new_name)
+          end
+        end
+
         def after_leaving_scope(scope, _variable_table)
           scope.variables.each_value do |variable|
             check_argument(variable)

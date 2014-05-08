@@ -147,4 +147,66 @@ describe Rubocop::Cop::Lint::UnusedBlockArgument do
       end
     end
   end
+
+  context 'auto-correct' do
+    it 'fixes single' do
+      expect(autocorrect_source(cop, <<-SOURCE
+      arr.map { |foo| stuff }
+      SOURCE
+      )).to eq(<<-CORRECTED_SOURCE
+      arr.map { |_foo| stuff }
+      CORRECTED_SOURCE
+      )
+    end
+
+    it 'fixes multiple' do
+      expect(autocorrect_source(cop, <<-SOURCE
+      hash.map { |key, val| stuff }
+      SOURCE
+      )).to eq(<<-CORRECTED_SOURCE
+      hash.map { |_key, _val| stuff }
+      CORRECTED_SOURCE
+      )
+    end
+
+    it 'preserves whitespace' do
+      expect(autocorrect_source(cop, <<-SOURCE
+      hash.map { |key,
+                  val| stuff }
+      SOURCE
+      )).to eq(<<-CORRECTED_SOURCE
+      hash.map { |_key,
+                  _val| stuff }
+      CORRECTED_SOURCE
+      )
+    end
+
+    it 'preserves splat' do
+      expect(autocorrect_source(cop, <<-SOURCE
+      obj.method { |foo, *bars, baz| stuff(foo, baz) }
+      SOURCE
+      )).to eq(<<-CORRECTED_SOURCE
+      obj.method { |foo, *_bars, baz| stuff(foo, baz) }
+      CORRECTED_SOURCE
+      )
+    end
+
+    it 'preserves default' do
+      expect(autocorrect_source(cop, <<-SOURCE
+      obj.method { |foo, bar = baz| stuff(foo) }
+      SOURCE
+      )).to eq(<<-CORRECTED_SOURCE
+      obj.method { |foo, _bar = baz| stuff(foo) }
+      CORRECTED_SOURCE
+      )
+    end
+
+    it 'ignores used' do
+      original_source = <<-SOURCE
+      obj.method { |foo, baz| stuff(foo, baz) }
+      SOURCE
+
+      expect(autocorrect_source(cop, original_source)).to eq(original_source)
+    end
+  end
 end
