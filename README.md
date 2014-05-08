@@ -1,9 +1,9 @@
-[![Gem Version](https://badge.fury.io/rb/rubocop.png)](http://badge.fury.io/rb/rubocop)
-[![Dependency Status](https://gemnasium.com/bbatsov/rubocop.png)](https://gemnasium.com/bbatsov/rubocop)
-[![Build Status](https://travis-ci.org/bbatsov/rubocop.png?branch=master)](https://travis-ci.org/bbatsov/rubocop)
+[![Gem Version](https://badge.fury.io/rb/rubocop.svg)](http://badge.fury.io/rb/rubocop)
+[![Dependency Status](https://gemnasium.com/bbatsov/rubocop.svg)](https://gemnasium.com/bbatsov/rubocop)
+[![Build Status](https://travis-ci.org/bbatsov/rubocop.svg?branch=master)](https://travis-ci.org/bbatsov/rubocop)
 [![Coverage Status](https://coveralls.io/repos/bbatsov/rubocop/badge.png?branch=master)](https://coveralls.io/r/bbatsov/rubocop)
 [![Code Climate](https://codeclimate.com/github/bbatsov/rubocop.png)](https://codeclimate.com/github/bbatsov/rubocop)
-[![Inline docs](http://inch-pages.github.io/github/bbatsov/rubocop.png)](http://inch-pages.github.io/github/bbatsov/rubocop)
+[![Inline docs](http://inch-pages.github.io/github/bbatsov/rubocop.svg)](http://inch-pages.github.io/github/bbatsov/rubocop)
 
 # RuboCop
 
