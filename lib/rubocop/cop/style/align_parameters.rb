@@ -28,11 +28,21 @@ module Rubocop
 
         def base_column(node, args)
           if fixed_indentation?
-            line = node.loc.expression.source_buffer.source_line(node.loc.line)
+            lineno = target_method_lineno(node)
+            line = node.loc.expression.source_buffer.source_line(lineno)
             indentation_of_line = /\S.*/.match(line).begin(0)
             indentation_of_line + 2
           else
             args.first.loc.column
+          end
+        end
+
+        def target_method_lineno(node)
+          if node.loc.selector
+            node.loc.selector.line
+          else
+            # l.(1) has no selector, so we use the opening parenthesis instead
+            node.loc.begin.line
           end
         end
       end
