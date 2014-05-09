@@ -268,7 +268,7 @@ LineEndConcatenation:
   Enabled: true
 
 LineLength:
-  Description: 'Limit lines to 79 characters.'
+  Description: 'Limit lines to 80 characters.'
   Enabled: true
 
 MethodCallParentheses:

@@ -913,7 +913,7 @@ describe Rubocop::CLI, :isolated_environment do
             cli.run(['--format', 'simple', 'example.rb'])
             expect($stdout.string)
               .to include(["== #{target_file} ==",
-                           'C:  2: 80: Line is too long. [90/79]'].join("\n"))
+                           'C:  2: 81: Line is too long. [90/80]'].join("\n"))
           end
         end
 
@@ -946,11 +946,11 @@ describe Rubocop::CLI, :isolated_environment do
                       'example1.rb:2:5: C: Trailing whitespace detected.',
                       'x= 0 ',
                       '    ^',
-                      'example1.rb:3:80: C: Line is too long. [85/79]',
+                      'example1.rb:3:81: C: Line is too long. [85/80]',
                       '###################################################' \
                       '##################################',
                       '                                                   ' \
-                      '                            ^^^^^^',
+                      '                             ^^^^^',
                       'example1.rb:4:2: C: Trailing whitespace detected.',
                       'y ',
                       ' ^',
@@ -1074,9 +1074,9 @@ describe Rubocop::CLI, :isolated_environment do
         cli.run(['--format', 'simple', '--format', 'emacs', 'example.rb'])
         expect($stdout.string)
           .to include(["== #{target_file} ==",
-                       'C:  2: 80: Line is too long. [90/79]',
-                       "#{abs(target_file)}:2:80: C: Line is too long. " \
-                       '[90/79]'].join("\n"))
+                       'C:  2: 81: Line is too long. [90/80]',
+                       "#{abs(target_file)}:2:81: C: Line is too long. " \
+                       '[90/80]'].join("\n"))
       end
     end
 
@@ -1099,13 +1099,13 @@ describe Rubocop::CLI, :isolated_environment do
                  target_file])
 
         expect($stdout.string).to eq(["== #{target_file} ==",
-                                      'C:  2: 80: Line is too long. [90/79]',
+                                      'C:  2: 81: Line is too long. [90/80]',
                                       '',
                                       '1 file inspected, 1 offense detected',
                                       ''].join("\n"))
 
         expect(File.read('emacs_output.txt'))
-          .to eq("#{abs(target_file)}:2:80: C: Line is too long. [90/79]\n")
+          .to eq("#{abs(target_file)}:2:81: C: Line is too long. [90/80]\n")
       end
     end
 
@@ -1280,7 +1280,7 @@ describe Rubocop::CLI, :isolated_environment do
       # all cops were disabled, then 2 were enabled again, so we
       # should get 2 offenses reported.
       expect($stdout.string)
-        .to eq(["#{abs('example.rb')}:8:80: C: Line is too long. [95/79]",
+        .to eq(["#{abs('example.rb')}:8:81: C: Line is too long. [95/80]",
                 "#{abs('example.rb')}:10:5: C: Prefer single-quoted " \
                 "strings when you don't need string interpolation or " \
                 'special symbols.',
@@ -1305,7 +1305,7 @@ describe Rubocop::CLI, :isolated_environment do
       # 3 cops were disabled, then 2 were enabled again, so we
       # should get 2 offenses reported.
       expect($stdout.string)
-        .to eq(["#{abs('example.rb')}:8:80: C: Line is too long. [95/79]",
+        .to eq(["#{abs('example.rb')}:8:81: C: Line is too long. [95/80]",
                 "#{abs('example.rb')}:10:5: C: Prefer single-quoted " \
                 "strings when you don't need string interpolation or " \
                 'special symbols.',
@@ -1330,7 +1330,7 @@ describe Rubocop::CLI, :isolated_environment do
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       expect($stdout.string)
         .to eq(
-               ["#{abs('example.rb')}:3:80: C: Line is too long. [95/79]",
+               ["#{abs('example.rb')}:3:81: C: Line is too long. [95/80]",
                 ''].join("\n"))
     end
   end
@@ -1730,7 +1730,7 @@ describe Rubocop::CLI, :isolated_environment do
       expect(cli.run(%w(--format simple example))).to eq(1)
       expect($stdout.string).to eq(
                                    ['== example/lib/example1.rb ==',
-                                    'C:  2: 80: Line is too long. [90/79]',
+                                    'C:  2: 81: Line is too long. [90/80]',
                                     '',
                                     '2 files inspected, 1 offense detected',
                                     ''].join("\n"))
@@ -1770,7 +1770,7 @@ describe Rubocop::CLI, :isolated_environment do
       expect(cli.run(%w(--format simple example))).to eq(1)
       expect($stdout.string).to eq(
                                    ['== example/tmp/test/example1.rb ==',
-                                    'C:  2: 80: Line is too long. [90/79]',
+                                    'C:  2: 81: Line is too long. [90/80]',
                                     '',
                                     '1 file inspected, 1 offense detected',
                                     ''].join("\n"))
@@ -1932,7 +1932,7 @@ describe Rubocop::CLI, :isolated_environment do
       cli.run(%w(--format simple -c rubocop.yml))
       expect($stdout.string)
         .to eq(['== example/example1.rb ==',
-                'E:  2: 80: Line is too long. [90/79]',
+                'E:  2: 81: Line is too long. [90/80]',
                 '',
                 '1 file inspected, 1 offense detected',
                 ''].join("\n"))

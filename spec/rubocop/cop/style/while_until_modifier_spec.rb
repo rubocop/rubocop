@@ -7,7 +7,7 @@ describe Rubocop::Cop::Style::WhileUntilModifier do
 
   subject(:cop) { described_class.new(config) }
   let(:config) do
-    hash = { 'LineLength' => { 'Max' => 79 } }
+    hash = { 'LineLength' => { 'Max' => 80 } }
     Rubocop::Config.new(hash)
   end
 
@@ -77,7 +77,7 @@ describe Rubocop::Cop::Style::WhileUntilModifier do
     let(:config) do
       hash = {
         'LineLength' => { 'Max' => 100 },
-        'WhileUntilModifier' => { 'MaxLineLength' => 79 }
+        'WhileUntilModifier' => { 'MaxLineLength' => 80 }
       }
       Rubocop::Config.new(hash)
     end

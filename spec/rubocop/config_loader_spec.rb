@@ -214,7 +214,7 @@ describe Rubocop::ConfigLoader do
                     ['MethodLength:',
                      '  Enabled: false',
                      '  CountComments: true',
-                     '  Max: 79'])
+                     '  Max: 80'])
 
         create_file('special.yml',
                     ['MethodLength:',
@@ -299,7 +299,7 @@ describe Rubocop::ConfigLoader do
       it 'is disabled' do
         create_file('.rubocop.yml', [
           'LineLength:',
-          '  Max: 79'
+          '  Max: 80'
         ])
         expect(config.cop_enabled?('SymbolArray')).to be_false
       end

@@ -7,7 +7,7 @@ describe Rubocop::Cop::Style::IfUnlessModifier do
 
   subject(:cop) { described_class.new(config) }
   let(:config) do
-    hash = { 'LineLength' => { 'Max' => 79 } }
+    hash = { 'LineLength' => { 'Max' => 80 } }
     Rubocop::Config.new(hash)
   end
 
@@ -15,8 +15,8 @@ describe Rubocop::Cop::Style::IfUnlessModifier do
     # This if statement fits exactly on one line if written as a
     # modifier.
     condition = 'a' * 38
-    body = 'b' * 35
-    expect("  #{body} if #{condition}".length).to eq(79)
+    body = 'b' * 36
+    expect("  #{body} if #{condition}".length).to eq(80)
 
     inspect_source(cop,
                    ["  if #{condition}",
@@ -101,13 +101,13 @@ describe Rubocop::Cop::Style::IfUnlessModifier do
       ]
     end
 
-    let(:body) { 'b' * 35 }
+    let(:body) { 'b' * 36 }
 
     context 'when a multiline if fits on one line' do
       let(:conditional) { "/#{'a' * 36}/" }
 
       it 'registers an offense' do
-        expect("  #{body} if #{conditional}".length).to eq(79)
+        expect("  #{body} if #{conditional}".length).to eq(80)
 
         inspect_source(cop, source)
         expect(cop.offenses.size).to eq(1)
@@ -118,7 +118,7 @@ describe Rubocop::Cop::Style::IfUnlessModifier do
       let(:conditional) { "/#{'a' * 37}/" }
 
       it 'accepts' do
-        expect("  #{body} if #{conditional}".length).to eq(80)
+        expect("  #{body} if #{conditional}".length).to eq(81)
 
         inspect_source(cop, source)
         expect(cop.offenses).to be_empty
@@ -129,7 +129,7 @@ describe Rubocop::Cop::Style::IfUnlessModifier do
       let(:config) do
         hash = {
           'LineLength' => { 'Max' => 100 },
-          'IfUnlessModifier' => { 'MaxLineLength' => 79 }
+          'IfUnlessModifier' => { 'MaxLineLength' => 80 }
         }
         Rubocop::Config.new(hash)
       end

@@ -19,8 +19,8 @@ module StatementModifierHelper
   def check_too_long(cop, keyword)
     # This statement is one character too long to fit.
     condition = 'a' * (40 - keyword.length)
-    body = 'b' * 36
-    expect("  #{body} #{keyword} #{condition}".length).to eq(80)
+    body = 'b' * 37
+    expect("  #{body} #{keyword} #{condition}".length).to eq(81)
 
     inspect_source(cop,
                    ["  #{keyword} #{condition}",

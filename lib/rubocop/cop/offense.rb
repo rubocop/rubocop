@@ -32,7 +32,7 @@ module Rubocop
       #   human-readable message
       #
       # @example
-      #   'Line is too long. [90/79]'
+      #   'Line is too long. [90/80]'
       attr_reader :message
 
       # @api public

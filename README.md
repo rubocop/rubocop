@@ -511,7 +511,7 @@ The JSON structure is like the following example:
       "path": "lib/bar.rb",
       "offenses": [{
           "severity": "convention",
-          "message": "Line is too long. [81/79]",
+          "message": "Line is too long. [81/80]",
           "cop_name": "LineLength",
           "corrected": true,
           "location": {

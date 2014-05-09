@@ -250,7 +250,7 @@ HashSyntax:
     - hash_rockets
 
 IfUnlessModifier:
-  MaxLineLength: 79
+  MaxLineLength: 80
 
 # Checks the indentation of the first key in a hash literal.
 IndentHash:
@@ -273,7 +273,7 @@ LambdaCall:
     - braces
 
 LineLength:
-  Max: 79
+  Max: 80
 
 Next:
   # With `always` all conditions at the end of an iteration needs to be
@@ -465,7 +465,7 @@ VariableName:
     - camelCase
 
 WhileUntilModifier:
-  MaxLineLength: 79
+  MaxLineLength: 80
 
 WordArray:
   MinSize: 0
