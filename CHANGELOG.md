@@ -26,6 +26,7 @@
 * [#1036](https://github.com/bbatsov/rubocop/issues/1036): Handle strings like `__FILE__` in `LineEndConcatenation`. ([@bbatsov][])
 * [#1006](https://github.com/bbatsov/rubocop/issues/1006): Fix LineEndConcatenation to handle chained concatenations. ([@barunio][])
 * [#1066](https://github.com/bbatsov/rubocop/issues/1066): Fix auto-correct for `NegatedIf` when the condition has parentheses around it. ([@jonas054][])
+* Fix `AlignParameters` `with_fixed_indentation` for multi-line method calls. ([@molawson][])
 
 ## 0.21.0 (24/04/2014)
 
@@ -923,3 +924,4 @@
 [@sfeldon]: https://github.com/sfeldon
 [@biinari]: https://github.com/biinari
 [@barunio]: https://github.com/barunio
+[@molawson]: https://github.com/molawson

@@ -311,6 +311,59 @@ describe Rubocop::Cop::Style::AlignParameters, :config do
         .to eq(correct_source.join("\n"))
     end
 
+    context 'multi-line method calls' do
+      it 'can handle existing indentation from multi-line method calls' do
+        inspect_source(cop, [' something',
+                             '   .method_name(',
+                             '     a,',
+                             '     b,',
+                             '     c',
+                             '   )'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'registers offences for double indentation from relevant method' do
+        inspect_source(cop, [' something',
+                             '   .method_name(',
+                             '       a,',
+                             '       b,',
+                             '       c',
+                             '   )'])
+        expect(cop.offenses.size).to eq(3)
+      end
+
+      it 'does not err on method call without a method name' do
+        inspect_source(cop, [' something',
+                             '   .(',
+                             '     a,',
+                             '     b,',
+                             '     c',
+                             '   )'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'autocorrects relative to position of relevant method call' do
+        original_source = [
+          ' something',
+          '   .method_name(',
+          '       a,',
+          '          b,',
+          '            c',
+          '   )'
+        ]
+        correct_source = [
+          ' something',
+          '   .method_name(',
+          '     a,',
+          '     b,',
+          '     c',
+          '   )'
+        ]
+        expect(autocorrect_source(cop, original_source))
+          .to eq(correct_source.join("\n"))
+      end
+    end
+
     context 'assigned methods' do
       it 'accepts the first parameter being on a new row' do
         inspect_source(cop, [' assigned_value = match(',
