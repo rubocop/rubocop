@@ -8,9 +8,7 @@ shared_context 'config', :config do
       fail '`config` must be used in `describe SomeCopClass do .. end`'
     end
 
-    unless cop_config.is_a?(Hash)
-      fail '`cop_config` must be declared with #let'
-    end
+    fail '`cop_config` must be declared with #let' unless cop_config.is_a?(Hash)
 
     cop_name = described_class.cop_name
     hash = {
