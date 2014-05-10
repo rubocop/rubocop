@@ -305,6 +305,10 @@ Style/MultilineBlockChain:
   Description: 'Avoid multi-line chains of blocks.'
   Enabled: true
 
+Style/MultilineBlockLayout:
+  Description: 'Ensures newlines after multiline block do statements.'
+  Enabled: true
+
 Style/MultilineIfThen:
   Description: 'Never use then for multi-line if/unless.'
   Enabled: true

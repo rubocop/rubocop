@@ -6,6 +6,7 @@
 
 * [#835](https://github.com/bbatsov/rubocop/issues/835): New cop `PercentQLiterals` checks if use of `%Q` and `%q` matches configuration. ([@jonas054][])
 * [#835](https://github.com/bbatsov/rubocop/issues/835): New cop `BarePercentLiterals` checks if usage of `%()` or `%Q()` matches configuration. ([@jonas054][])
+* [#1079](https://github.com/bbatsov/rubocop/pull/1079): New cop `MultilineBlockLayout` checks if a multiline block has an extpression on the same line as the start of the block. ([@barunio][])
 
 ### Bugs fixed
 
