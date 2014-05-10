@@ -35,10 +35,14 @@ module Rubocop
 
         private
 
+        def concat?(method)
+          [:+, :<<].include?(method)
+        end
+
         def offending_node?(node)
           receiver, method, first_arg = *node
 
-          return false unless [:+, :<<].include?(method)
+          return false unless concat?(method)
 
           return false unless final_node_is_string_type?(receiver)
 
@@ -65,7 +69,7 @@ module Rubocop
         def final_node_is_string_type?(node)
           if node.type == :send
             _, method, first_arg = *node
-            [:+, :<<].include?(method) && final_node_is_string_type?(first_arg)
+            concat?(method) && final_node_is_string_type?(first_arg)
           else
             string_type?(node)
           end
@@ -74,7 +78,7 @@ module Rubocop
         def root_node_is_string_type?(node)
           if node.type == :send
             receiver, method, _ = *node
-            [:+, :<<].include?(method) && root_node_is_string_type?(receiver)
+            concat?(method) && root_node_is_string_type?(receiver)
           else
             string_type?(node)
           end
