@@ -732,6 +732,10 @@ If you're interested in everything regarding RuboCop's development,
 consider joining its
 [Google Group](https://groups.google.com/forum/?fromgroups#!forum/rubocop).
 
+## Freenode
+
+If you're into IRC you can visit the `#rubocop` channel on Freenode.
+
 ## Changelog
 
 RuboCop's changelog is available [here](CHANGELOG.md).
