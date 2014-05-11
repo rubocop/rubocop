@@ -35,6 +35,18 @@ describe Rubocop::CLI, :isolated_environment do
     end
 
     describe '--auto-correct' do
+      it 'honors Exclude settings in individual cops' do
+        source = ['# encoding: utf-8',
+                  'puts %x(ls)']
+        create_file('example.rb', source)
+        create_file('.rubocop.yml', ['UnneededPercentX:',
+                                     '  Exclude:',
+                                     '    - example.rb'])
+        expect(cli.run(['--auto-correct'])).to eq(0)
+        expect($stdout.string).to include('no offenses detected')
+        expect(IO.read('example.rb')).to eq(source.join("\n") + "\n")
+      end
+
       it 'can correct two problems with blocks' do
         # {} should be do..end and space is missing.
         create_file('example.rb', ['# encoding: utf-8',
