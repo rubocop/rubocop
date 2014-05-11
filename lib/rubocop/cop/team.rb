@@ -69,7 +69,7 @@ module Rubocop
         return unless autocorrect?
 
         corrections = cops.each_with_object([]) do |cop, array|
-          array.concat(cop.corrections)
+          array.concat(cop.corrections) if cop.relevant_file?(buffer.name)
         end
 
         corrector = Corrector.new(buffer, corrections)
