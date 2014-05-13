@@ -107,7 +107,10 @@ describe Rubocop::Config do
     let(:hash) do
       {
         'AllCops' => {
-          'Exclude' => ['/home/foo/project/log/*']
+          'Exclude' => [
+            "#{Dir.pwd}/log/**/*",
+            '**/bar.rb'
+          ]
         }
       }
     end
@@ -116,15 +119,23 @@ describe Rubocop::Config do
 
     context 'when the passed path matches any of patterns to exclude' do
       it 'returns true' do
-        file_path = '/home/foo/project/log/foo.rb'
+        file_path = "#{Dir.pwd}/log/foo.rb"
         expect(configuration.file_to_exclude?(file_path)).to be_true
+
+        expect(configuration.file_to_exclude?('log/foo.rb')).to be_true
+
+        expect(configuration.file_to_exclude?('bar.rb')).to be_true
       end
     end
 
     context 'when the passed path does not match any of patterns to exclude' do
       it 'returns false' do
-        file_path = '/home/foo/project/log_file.rb'
+        file_path = "#{Dir.pwd}/log_file.rb"
         expect(configuration.file_to_exclude?(file_path)).to be_false
+
+        expect(configuration.file_to_exclude?('app/controller.rb')).to be_false
+
+        expect(configuration.file_to_exclude?('baz.rb')).to be_false
       end
     end
   end

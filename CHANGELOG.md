@@ -31,6 +31,7 @@
 * Fix `AlignParameters` `with_fixed_indentation` for multi-line method calls. ([@molawson][])
 * Fix problem that appears in some installations when reading empty YAML files. ([@jonas054][])
 * [#1022](https://github.com/bbatsov/rubocop/issues/1022): A Cop will no longer auto-correct a file that's excluded through an `Exclude` setting in the cop's configuration. ([@jonas054][])
+* Fix paths in `Exclude` config section not being recognized on Windows. ([@wndhydrnt][])
 
 ## 0.21.0 (24/04/2014)
 
@@ -929,3 +930,4 @@
 [@biinari]: https://github.com/biinari
 [@barunio]: https://github.com/barunio
 [@molawson]: https://github.com/molawson
+[@wndhydrnt]: https://github.com/wndhydrnt
