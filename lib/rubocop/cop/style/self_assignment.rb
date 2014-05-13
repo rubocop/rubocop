@@ -15,6 +15,7 @@ module Rubocop
       class SelfAssignment < Cop
         include AST::Sexp
 
+        MSG = 'Use self-assignment shorthand `%s=`.'
         OPS = [:+, :-, :*, :**, :/, :|, :&]
 
         def on_lvasgn(node)
@@ -29,9 +30,10 @@ module Rubocop
           check(node, :cvar)
         end
 
+        private
+
         def check(node, var_type)
           var_name, rhs = *node
-
           return unless rhs
 
           if rhs.type == :send
@@ -43,15 +45,12 @@ module Rubocop
 
         def check_send_node(node, rhs, var_name, var_type)
           receiver, method_name, *_args = *rhs
-
           return unless OPS.include?(method_name)
 
           target_node = s(var_type, var_name)
           return unless receiver == target_node
 
-          add_offense(node,
-                      :expression,
-                      "Use self-assignment shorthand `#{method_name}=`.")
+          add_offense(node, :expression, format(MSG, method_name))
         end
 
         def check_boolean_node(node, rhs, var_name, var_type)
@@ -61,9 +60,7 @@ module Rubocop
           return unless first_operand == target_node
 
           operator = rhs.loc.operator.source
-          add_offense(node,
-                      :expression,
-                      "Use self-assignment shorthand `#{operator}=`.")
+          add_offense(node, :expression, format(MSG, operator))
         end
       end
     end
