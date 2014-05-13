@@ -23,14 +23,14 @@ module Rubocop
 
         context 'when no offenses are detected' do
           let(:offenses) { [] }
-          it 'shouldn\'t add to offense_counts' do
+          it 'does not add to offense_counts' do
             expect { finish }.to_not change { formatter.offense_counts }
           end
         end
 
         context 'when any offenses are detected' do
           let(:offenses) { [double('offense', cop_name: 'OffendedCop')] }
-          it 'should increment the count for the cop in offense_counts' do
+          it 'increments the count for the cop in offense_counts' do
             expect { finish }.to change { formatter.offense_counts }
           end
         end
