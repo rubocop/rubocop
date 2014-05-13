@@ -411,6 +411,10 @@ RescueModifier:
   Description: 'Avoid using rescue in its modifier form.'
   Enabled: true
 
+Rspec:
+  Description: Do not use should when describing your tests.
+  Enabled: true
+
 SelfAssignment:
   Description: 'Checks for places where self-assignment shorthand should have been used.'
   Enabled: true
