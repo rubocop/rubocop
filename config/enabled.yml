@@ -469,6 +469,12 @@ SpaceBeforeBlockBraces:
                  before it.
   Enabled: true
 
+SpaceBeforeComment:
+  Description: >-
+                 Checks for missing space between code and a comment on the
+                 same line.
+  Enabled: true
+
 SpaceInsideBlockBraces:
   Description: >-
                  Checks that block braces have or don't have surrounding space.
