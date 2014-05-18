@@ -33,6 +33,7 @@
 * Fix problem that appears in some installations when reading empty YAML files. ([@jonas054][])
 * [#1022](https://github.com/bbatsov/rubocop/issues/1022): A Cop will no longer auto-correct a file that's excluded through an `Exclude` setting in the cop's configuration. ([@jonas054][])
 * Fix paths in `Exclude` config section not being recognized on Windows. ([@wndhydrnt][])
+* [#1094](https://github.com/bbatsov/rubocop/issues/1094): Fix ClassAndModuleChildren for classes with a single method. ([@geniou][])
 
 ## 0.21.0 (24/04/2014)
 

@@ -6,11 +6,7 @@ describe Rubocop::Cop::Style::ClassAndModuleChildren, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'nested style' do
-    let(:cop_config) do
-      {
-        'EnforcedStyle' => 'nested'
-      }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'nested' } }
 
     it 'registers an offense for not nested classes' do
       inspect_source(cop, ['class FooClass::BarClass', 'end'])
@@ -62,11 +58,7 @@ describe Rubocop::Cop::Style::ClassAndModuleChildren, :config do
   end
 
   context 'compact style' do
-    let(:cop_config) do
-      {
-        'EnforcedStyle' => 'compact'
-      }
-    end
+    let(:cop_config) { { 'EnforcedStyle' => 'compact' } }
 
     it 'registers a offense for classes with nested children' do
       inspect_source(cop,
@@ -120,6 +112,16 @@ describe Rubocop::Cop::Style::ClassAndModuleChildren, :config do
                       '  module BarModule',
                       '  end',
                       '  class BazModule',
+                      '  end',
+                      'end'
+                     ])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts class / module with single method' do
+      inspect_source(cop,
+                     ['class FooClass',
+                      '  def bar_method',
                       '  end',
                       'end'
                      ])
