@@ -57,7 +57,7 @@ module Rubocop
         end
 
         def one_child?(body)
-          body && body.type != :begin
+          body && [:module, :class].include?(body.type)
         end
 
         def compact_node_name?(node)
