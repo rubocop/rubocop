@@ -1979,7 +1979,7 @@ describe Rubocop::CLI, :isolated_environment do
         expect { cli.run(%w(-c .rubocop.yml --auto-gen-config)) }
           .to exit_with_code(1)
         expect($stderr.string)
-          .to eq('Attention: rubocop_todo.yml has been renamed to ' \
+          .to eq('Attention: rubocop-todo.yml has been renamed to ' \
                  ".rubocop_todo.yml\n")
       end
     end
