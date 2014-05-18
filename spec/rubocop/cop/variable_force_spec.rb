@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Rubocop::Cop::VariableForce do
   include AST::Sexp
 
-  subject(:force) { Rubocop::Cop::VariableForce.new([]) }
+  subject(:force) { described_class.new([]) }
 
   describe '#process_node' do
     before do

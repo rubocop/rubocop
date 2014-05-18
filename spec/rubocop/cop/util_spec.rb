@@ -34,14 +34,14 @@ describe Rubocop::Cop::Util do
 
     context 'when Source::Range object is passed' do
       it 'returns line range of that' do
-        line_range = Rubocop::Cop::Util.line_range(node.loc.expression)
+        line_range = described_class.line_range(node.loc.expression)
         expect(line_range).to eq(3..7)
       end
     end
 
     context 'when AST::Node object is passed' do
       it 'returns line range of the expression' do
-        line_range = Rubocop::Cop::Util.line_range(node)
+        line_range = described_class.line_range(node)
         expect(line_range).to eq(3..7)
       end
     end

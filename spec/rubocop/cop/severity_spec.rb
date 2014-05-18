@@ -73,23 +73,23 @@ describe Rubocop::Cop::Severity do
 
   describe 'constructs from code' do
     describe 'R' do
-      it { expect(Rubocop::Cop::Severity.new('R')).to eq(refactor) }
+      it { expect(described_class.new('R')).to eq(refactor) }
     end
 
     describe 'C' do
-      it { expect(Rubocop::Cop::Severity.new('C')).to eq(convention) }
+      it { expect(described_class.new('C')).to eq(convention) }
     end
 
     describe 'W' do
-      it { expect(Rubocop::Cop::Severity.new('W')).to eq(warning) }
+      it { expect(described_class.new('W')).to eq(warning) }
     end
 
     describe 'E' do
-      it { expect(Rubocop::Cop::Severity.new('E')).to eq(error) }
+      it { expect(described_class.new('E')).to eq(error) }
     end
 
     describe 'F' do
-      it { expect(Rubocop::Cop::Severity.new('F')).to eq(fatal) }
+      it { expect(described_class.new('F')).to eq(fatal) }
     end
   end
 

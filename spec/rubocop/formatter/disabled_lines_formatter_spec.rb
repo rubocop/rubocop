@@ -25,7 +25,7 @@ module Rubocop
 
         context 'when no disable cop comments are detected' do
           let(:cop_disabled_line_ranges) { {} }
-          it 'shouldn\'t add to cop_disabled_line_ranges' do
+          it 'does not add to cop_disabled_line_ranges' do
             expect { file_started }.to_not(
             change { formatter.cop_disabled_line_ranges })
           end
@@ -35,7 +35,7 @@ module Rubocop
           let(:cop_disabled_line_ranges) do
             { cop_disabled_line_ranges: { 'LineLength' => [1..1] } }
           end
-          it 'should merge the changes into cop_disabled_line_ranges' do
+          it 'merges the changes into cop_disabled_line_ranges' do
             expect { file_started }.to(
             change { formatter.cop_disabled_line_ranges })
           end
