@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Rubocop::Cop::Force do
-  subject(:force) { Rubocop::Cop::Force.new(cops) }
+  subject(:force) { described_class.new(cops) }
   let(:cops) { [double('cop1'), double('cop2')] }
 
   describe '.force_name' do

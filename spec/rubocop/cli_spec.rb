@@ -429,7 +429,7 @@ describe Rubocop::CLI, :isolated_environment do
                   ''].join("\n"))
       end
 
-      it 'should not hang SpaceAfterPunctuation and SpaceInsideParens' do
+      it 'does not hang SpaceAfterPunctuation and SpaceInsideParens' do
         create_file('example.rb',
                     ['# encoding: utf-8',
                      'some_method(a, )'])
@@ -442,7 +442,7 @@ describe Rubocop::CLI, :isolated_environment do
                                              ''].join("\n"))
       end
 
-      it 'should not hang SpaceAfterPunctuation and SpaceInsideBrackets' do
+      it 'does not hang SpaceAfterPunctuation and SpaceInsideBrackets' do
         create_file('example.rb',
                     ['# encoding: utf-8',
                      'puts [1, ]'])
@@ -1129,11 +1129,11 @@ describe Rubocop::CLI, :isolated_environment do
                                   '#' * 90])
       end
 
-      it 'should be failed when option is less than the severity level' do
+      it 'fails when option is less than the severity level' do
         expect(cli.run(['--fail-level', 'convention', target_file])).to eq(1)
       end
 
-      it 'should be success when option is greater than the severity level' do
+      it 'succeed when option is greater than the severity level' do
         expect(cli.run(['--fail-level', 'warning', target_file])).to eq(0)
       end
     end
@@ -1173,21 +1173,21 @@ describe Rubocop::CLI, :isolated_environment do
   end
 
   describe '#trap_interrupt' do
+    let(:interrupt_handlers) { [] }
     before do
-      @interrupt_handlers = []
       allow(Signal).to receive(:trap).with('INT') do |&block|
-        @interrupt_handlers << block
+        interrupt_handlers << block
       end
     end
 
     def interrupt
-      @interrupt_handlers.each(&:call)
+      interrupt_handlers.each(&:call)
     end
 
     it 'adds a handler for SIGINT' do
-      expect(@interrupt_handlers).to be_empty
+      expect(interrupt_handlers).to be_empty
       cli.trap_interrupt
-      expect(@interrupt_handlers.size).to eq(1)
+      expect(interrupt_handlers.size).to eq(1)
     end
 
     context 'with SIGINT once' do

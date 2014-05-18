@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe Rubocop::CommentConfig do
-  subject(:comment_config) { Rubocop::CommentConfig.new(parse_source(source)) }
+  subject(:comment_config) { described_class.new(parse_source(source)) }
 
   describe '#cop_enabled_at_line?' do
     let(:source) do

@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Rubocop::ConfigLoader do
   include FileHelper
 
-  let(:default_config) { Rubocop::ConfigLoader.default_configuration }
+  let(:default_config) { described_class.default_configuration }
 
   describe '.configuration_file_for', :isolated_environment do
     subject(:configuration_file_for) do
