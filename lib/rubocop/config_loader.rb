@@ -134,7 +134,7 @@ module Rubocop
       end
 
       def old_auto_config_file_warning
-        warn 'Attention: rubocop_todo.yml has been renamed to ' \
+        warn 'Attention: rubocop-todo.yml has been renamed to ' \
              "#{AUTO_GENERATED_FILE}".color(:red)
         exit(1)
       end
