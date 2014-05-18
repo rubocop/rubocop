@@ -6,7 +6,7 @@ describe Rubocop::Cop::Style::Documentation do
 
   subject(:cop) { described_class.new(config) }
   let(:config) do
-    Rubocop::Config.new('CommentAnnotation' => {
+    Rubocop::Config.new('Style/CommentAnnotation' => {
                           'Keywords' => %w(TODO FIXME OPTIMIZE HACK REVIEW)
                         })
   end

@@ -62,7 +62,7 @@ module Rubocop
         def separator_style?(first_pair)
           separator = first_pair.loc.operator
           key = "Enforced#{separator.is?(':') ? 'Colon' : 'HashRocket'}Style"
-          config.for_cop('AlignHash')[key] == 'separator'
+          config.for_cop('Style/AlignHash')[key] == 'separator'
         end
 
         def check_based_on_longest_key(pairs, left_brace, left_parenthesis)

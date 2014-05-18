@@ -5,7 +5,7 @@ module Rubocop
   # and provides a way to check if each cop is enabled at arbitrary line.
   class CommentConfig
     COMMENT_DIRECTIVE_REGEXP = Regexp.new(
-      '\A# rubocop : ((?:dis|en)able)\b ((?:\w+,? )+)'.gsub(' ', '\s*')
+      '\A# rubocop : ((?:dis|en)able)\b ((?:[\w/]+,? )+)'.gsub(' ', '\s*')
     )
 
     attr_reader :processed_source
@@ -75,6 +75,8 @@ module Rubocop
         single_line = !comment_only_line?(comment_line_number)
 
         cop_names.each do |cop_name|
+          cop_name = Cop::Cop.qualified_cop_name(cop_name,
+                                                 processed_source.buffer.name)
           yield cop_name, disabled, comment_line_number, single_line
         end
       end

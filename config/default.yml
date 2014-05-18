@@ -18,14 +18,14 @@ AllCops:
   RunRailsCops: false
 
 # Indent private/protected/public as deep as method definitions
-AccessModifierIndentation:
+Style/AccessModifierIndentation:
   EnforcedStyle: indent
   SupportedStyles:
     - outdent
     - indent
 
 # Align the elements of a hash literal if they span more than one line.
-AlignHash:
+Style/AlignHash:
   # Alignment of entries using hash rocket as separator. Valid values are:
   #
   # key - left alignment of keys
@@ -88,7 +88,7 @@ AlignHash:
     - ignore_implicit
     - ignore_explicit
 
-AlignParameters:
+Style/AlignParameters:
   # Alignment of parameters in multi-line method calls.
   #
   # The `with_first_parameter` style aligns the following lines along the same column
@@ -107,28 +107,24 @@ AlignParameters:
     - with_first_parameter
     - with_fixed_indentation
 
-# Allow safe assignment in conditions.
-AssignmentInCondition:
-  AllowSafeAssignment: true
-
-BlockNesting:
+Style/BlockNesting:
   Max: 3
 
-BracesAroundHashParameters:
+Style/BracesAroundHashParameters:
   EnforcedStyle: no_braces
   SupportedStyles:
     - braces
     - no_braces
 
 # Indentation of `when`.
-CaseIndentation:
+Style/CaseIndentation:
   IndentWhenRelativeTo: case
   SupportedStyles:
     - case
     - end
   IndentOneStep: false
 
-ClassAndModuleChildren:
+Style/ClassAndModuleChildren:
   # Checks the style of children definitions at classes and modules.
   #
   # Basically there are two different styles:
@@ -149,12 +145,12 @@ ClassAndModuleChildren:
     - nested
     - compact
 
-ClassLength:
+Style/ClassLength:
   CountComments: false  # count full line comments?
   Max: 100
 
 # Align with the style guide.
-CollectionMethods:
+Style/CollectionMethods:
   # Mapping from undesired method to desired_method
   # e.g. to use `detect` over `find`:
   #
@@ -169,7 +165,7 @@ CollectionMethods:
     find_all: 'select'
 
 # Checks formatting of special comments
-CommentAnnotation:
+Style/CommentAnnotation:
   Keywords:
     - TODO
     - FIXME
@@ -178,56 +174,44 @@ CommentAnnotation:
     - REVIEW
 
 # Avoid complex methods.
-CyclomaticComplexity:
+Style/CyclomaticComplexity:
   Max: 6
 
 # Multi-line method chaining should be done with leading dots.
-DotPosition:
+Style/DotPosition:
   EnforcedStyle: leading
   SupportedStyles:
     - leading
     - trailing
 
 # Use empty lines between defs.
-EmptyLineBetweenDefs:
+Style/EmptyLineBetweenDefs:
   # If true, this parameter means that single line method definitions don't
   # need an empty line between them.
   AllowAdjacentOneLineDefs: false
 
 # Checks whether the source file has a utf-8 encoding comment or not
-Encoding:
+Style/Encoding:
   EnforcedStyle: always
   SupportedStyles:
     - when_needed
     - always
 
-# Align ends correctly.
-EndAlignment:
-  # The value `keyword` means that `end` should be aligned with the matching
-  # keyword (if, while, etc.).
-  # The value `variable` means that in assignments, `end` should be aligned
-  # with the start of the variable on the left hand side of `=`. In all other
-  # situations, `end` should still be aligned with the keyword.
-  AlignWith: keyword
-  SupportedStyles:
-    - keyword
-    - variable
-
-FileName:
+Style/FileName:
   Exclude:
     - '**/Rakefile'
     - '**/Gemfile'
     - '**/Capfile'
 
 # Checks use of for or each in multiline loops.
-For:
+Style/For:
   EnforcedStyle: each
   SupportedStyles:
     - for
     - each
 
 # Enforce the method used for string formatting.
-FormatString:
+Style/FormatString:
   EnforcedStyle: format
   SupportedStyles:
     - format
@@ -235,25 +219,25 @@ FormatString:
     - percent
 
 # Built-in global variables are allowed by default.
-GlobalVars:
+Style/GlobalVars:
   AllowedVariables: []
 
 # `MinBodyLength` defines the number of lines of the a body of an if / unless
 # needs to have to trigger this cop
-GuardClause:
+Style/GuardClause:
   MinBodyLength: 1
 
-HashSyntax:
+Style/HashSyntax:
   EnforcedStyle: ruby19
   SupportedStyles:
     - ruby19
     - hash_rockets
 
-IfUnlessModifier:
+Style/IfUnlessModifier:
   MaxLineLength: 80
 
 # Checks the indentation of the first key in a hash literal.
-IndentHash:
+Style/IndentHash:
   # The value `special_inside_parentheses` means that hash literals with braces
   # that have their opening brace on the same line as a surrounding opening
   # round parenthesis, shall have their first key indented relative to the
@@ -266,16 +250,16 @@ IndentHash:
     - special_inside_parentheses
     - consistent
 
-LambdaCall:
+Style/LambdaCall:
   EnforcedStyle: call
   SupportedStyles:
     - call
     - braces
 
-LineLength:
+Style/LineLength:
   Max: 80
 
-Next:
+Style/Next:
   # With `always` all conditions at the end of an iteration needs to be
   # replace by next - with `skip_modifier_ifs` the modifier if like this one
   # are ignored: [1, 2].each { |a| return 'yes' if a == 1 }
@@ -284,7 +268,7 @@ Next:
     - skip_modifier_ifs
     - always
 
-NonNilCheck:
+Style/NonNilCheck:
   # With `IncludeSemanticChanges` set to `true`, this cop reports offences for
   # `!x.nil?` and autocorrects that and `x != nil` to solely `x`, which is
   # **usually** OK, but might change behavior.
@@ -293,34 +277,34 @@ NonNilCheck:
   # offences for `!x.nil?` and does no changes that might change behavior.
   IncludeSemanticChanges: false
 
-MethodDefParentheses:
+Style/MethodDefParentheses:
   EnforcedStyle: require_parentheses
   SupportedStyles:
     - require_parentheses
     - require_no_parentheses
 
-MethodLength:
+Style/MethodLength:
   CountComments: false  # count full line comments?
   Max: 10
 
-MethodName:
+Style/MethodName:
   EnforcedStyle: snake_case
   SupportedStyles:
     - snake_case
     - camelCase
 
-NumericLiterals:
+Style/NumericLiterals:
   MinDigits: 5
 
-ParameterLists:
+Style/ParameterLists:
   Max: 5
   CountKeywordArgs: true
 
 # Allow safe assignment in conditions.
-ParenthesesAroundCondition:
+Style/ParenthesesAroundCondition:
   AllowSafeAssignment: true
 
-PercentLiteralDelimiters:
+Style/PercentLiteralDelimiters:
   PreferredDelimiters:
     '%':  ()
     '%i': ()
@@ -332,33 +316,33 @@ PercentLiteralDelimiters:
     '%W': ()
     '%x': ()
 
-PredicateName:
+Style/PredicateName:
   NamePrefixBlacklist:
     - is_
     - has_
     - have_
 
-RaiseArgs:
+Style/RaiseArgs:
   EnforcedStyle: exploded
   SupportedStyles:
     - compact # raise Exception.new(msg)
     - exploded # raise Exception, msg
 
 
-RedundantReturn:
+Style/RedundantReturn:
   # When true allows code like `return x, y`.
   AllowMultipleReturnValues: false
 
-RegexpLiteral:
+Style/RegexpLiteral:
   # The maximum number of (escaped) slashes that a slash-delimited regexp is
   # allowed to have. If there are more slashes, a %r regexp shall be used.
   MaxSlashes: 1
 
-Semicolon:
+Style/Semicolon:
   # Allow ; to separate several expressions on the same line.
   AllowAsExpressionSeparator: false
 
-SignalException:
+Style/SignalException:
   EnforcedStyle: semantic
   SupportedStyles:
     - only_raise
@@ -366,7 +350,7 @@ SignalException:
     - semantic
 
 
-SingleLineBlockParams:
+Style/SingleLineBlockParams:
   Methods:
     - reduce:
         - a
@@ -375,28 +359,28 @@ SingleLineBlockParams:
         - a
         - e
 
-SingleLineMethods:
+Style/SingleLineMethods:
   AllowIfMethodIsEmpty: true
 
-StringLiterals:
+Style/StringLiterals:
   EnforcedStyle: single_quotes
   SupportedStyles:
     - single_quotes
     - double_quotes
 
-SpaceAroundEqualsInParameterDefault:
+Style/SpaceAroundEqualsInParameterDefault:
   EnforcedStyle: space
   SupportedStyles:
     - space
     - no_space
 
-SpaceBeforeBlockBraces:
+Style/SpaceBeforeBlockBraces:
   EnforcedStyle: space
   SupportedStyles:
     - space
     - no_space
 
-SpaceInsideBlockBraces:
+Style/SpaceInsideBlockBraces:
   EnforcedStyle: space
   SupportedStyles:
     - space
@@ -406,20 +390,20 @@ SpaceInsideBlockBraces:
   # Space between { and |. Overrides EnforcedStyle if there is a conflict.
   SpaceBeforeBlockParameters: true
 
-SpaceInsideHashLiteralBraces:
+Style/SpaceInsideHashLiteralBraces:
   EnforcedStyle: space
   EnforcedStyleForEmptyBraces: no_space
   SupportedStyles:
     - space
     - no_space
 
-TrailingBlankLines:
+Style/TrailingBlankLines:
   EnforcedStyle: final_newline
   SupportedStyles:
     - final_newline
     - final_blank_line
 
-TrailingComma:
+Style/TrailingComma:
   EnforcedStyleForMultiline: no_comma
   SupportedStyles:
     - comma
@@ -427,7 +411,7 @@ TrailingComma:
 
 # TrivialAccessors doesn't require exact name matches and doesn't allow
 # predicated methods by default.
-TrivialAccessors:
+Style/TrivialAccessors:
   ExactNameMatch: false
   AllowPredicates: false
   # Allows trivial writers that don't end in an equal sign. e.g.
@@ -458,21 +442,39 @@ TrivialAccessors:
     - to_s
     - to_sym
 
-VariableName:
+Style/VariableName:
   EnforcedStyle: snake_case
   SupportedStyles:
     - snake_case
     - camelCase
 
-WhileUntilModifier:
+Style/WhileUntilModifier:
   MaxLineLength: 80
 
-WordArray:
+Style/WordArray:
   MinSize: 0
+
+##################### Lint ##################################
+
+# Allow safe assignment in conditions.
+Lint/AssignmentInCondition:
+  AllowSafeAssignment: true
+
+# Align ends correctly.
+Lint/EndAlignment:
+  # The value `keyword` means that `end` should be aligned with the matching
+  # keyword (if, while, etc.).
+  # The value `variable` means that in assignments, `end` should be aligned
+  # with the start of the variable on the left hand side of `=`. In all other
+  # situations, `end` should still be aligned with the keyword.
+  AlignWith: keyword
+  SupportedStyles:
+    - keyword
+    - variable
 
 ##################### Rails ##################################
 
-ActionFilter:
+Rails/ActionFilter:
   EnforcedStyle: action
   SupportedStyles:
     - action
@@ -480,22 +482,22 @@ ActionFilter:
   Include:
     - app/controllers/**/*.rb
 
-DefaultScope:
+Rails/DefaultScope:
   Include:
     - app/models/**/*.rb
 
-HasAndBelongsToMany:
+Rails/HasAndBelongsToMany:
   Include:
     - app/models/**/*.rb
 
-ReadWriteAttribute:
+Rails/ReadWriteAttribute:
   Include:
     - app/models/**/*.rb
 
-ScopeArgs:
+Rails/ScopeArgs:
   Include:
     - app/models/**/*.rb
 
-Validation:
+Rails/Validation:
   Include:
     - app/models/**/*.rb

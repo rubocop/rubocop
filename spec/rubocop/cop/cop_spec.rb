@@ -14,6 +14,29 @@ describe Rubocop::Cop::Cop do
     expect(cop.offenses).to be_empty
   end
 
+  describe '.qualified_cop_name' do
+    it 'adds namespace if the cop name is found in exactly one namespace' do
+      expect(described_class.qualified_cop_name('LineLength', '--only'))
+        .to eq('Style/LineLength')
+    end
+
+    it 'returns the given cop name if it is not found in any namespace' do
+      expect(described_class.qualified_cop_name('UnknownCop', '--only'))
+        .to eq('UnknownCop')
+    end
+
+    it 'returns the given cop name if it already has a namespace' do
+      expect(described_class.qualified_cop_name('Style/LineLength', '--only'))
+        .to eq('Style/LineLength')
+    end
+
+    it 'raises an error if the cop name is in more than one namespace' do
+      pending 'Example needs a cop with same name in two namespaces'
+      expect { described_class.qualified_cop_name('ExampleCop', '--only') }
+        .to raise_error(Rubocop::Cop::AmbiguousCopName)
+    end
+  end
+
   it 'keeps track of offenses' do
     cop.add_offense(nil, location, 'message')
 
@@ -48,30 +71,30 @@ describe Rubocop::Cop::Cop do
   it 'registers offense with its name' do
     cop = Rubocop::Cop::Style::For.new
     cop.add_offense(nil, location, 'message')
-    expect(cop.offenses.first.cop_name).to eq('For')
+    expect(cop.offenses.first.cop_name).to eq('Style/For')
   end
 
   context 'with no submodule' do
     subject(:cop) { described_class }
-    it('has right name') { expect(cop.cop_name).to eq('Cop') }
+    it('has right name') { expect(cop.cop_name).to eq('Cop/Cop') }
     it('has right type') { expect(cop.cop_type).to eq(:cop) }
   end
 
   context 'with style cops' do
     subject(:cop) { Rubocop::Cop::Style::For }
-    it('has right name') { expect(cop.cop_name).to eq('For') }
+    it('has right name') { expect(cop.cop_name).to eq('Style/For') }
     it('has right type') { expect(cop.cop_type).to eq(:style) }
   end
 
   context 'with lint cops' do
     subject(:cop) { Rubocop::Cop::Lint::Loop }
-    it('has right name') { expect(cop.cop_name).to eq('Loop') }
+    it('has right name') { expect(cop.cop_name).to eq('Lint/Loop') }
     it('has right type') { expect(cop.cop_type).to eq(:lint) }
   end
 
   context 'with rails cops' do
     subject(:cop) { Rubocop::Cop::Rails::Validation }
-    it('has right name') { expect(cop.cop_name).to eq('Validation') }
+    it('has right name') { expect(cop.cop_name).to eq('Rails/Validation') }
     it('has right type') { expect(cop.cop_type).to eq(:rails) }
   end
 

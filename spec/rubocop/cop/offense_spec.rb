@@ -108,7 +108,7 @@ describe Rubocop::Cop::Offense do
     end
 
     # We want a nice table layout, so we allow space inside empty hashes.
-    # rubocop:disable SpaceInsideHashLiteralBraces
+    # rubocop:disable Style/SpaceInsideHashLiteralBraces
     [
       [{                           }, {                           }, 0],
 

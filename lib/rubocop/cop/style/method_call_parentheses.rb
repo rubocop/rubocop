@@ -18,7 +18,7 @@ module Rubocop
 
         def autocorrect(node)
           # Bail out if the call is going to be auto-corrected by EmptyLiteral.
-          if config.for_cop('EmptyLiteral')['Enabled'] &&
+          if config.for_cop('Style/EmptyLiteral')['Enabled'] &&
               [EmptyLiteral::HASH_NODE,
                EmptyLiteral::ARRAY_NODE,
                EmptyLiteral::STR_NODE].include?(node)

@@ -66,7 +66,8 @@ module Rubocop
 
     def for_cop(cop)
       cop = cop.cop_name if cop.respond_to?(:cop_name)
-      self[cop]
+      @for_cop ||= {}
+      @for_cop[cop] ||= self[Cop::Cop.qualified_cop_name(cop, loaded_path)]
     end
 
     def cop_enabled?(cop)
@@ -79,10 +80,21 @@ module Rubocop
       warn "Warning: #{e.message}".color(:red)
     end
 
+    def add_missing_namespaces
+      keys.each do |k|
+        q = Cop::Cop.qualified_cop_name(k, loaded_path)
+        next if q == k
+
+        self[q] = self[k]
+        delete(k)
+      end
+    end
+
     # TODO: This should be a private method
     def validate
       # Don't validate RuboCop's own files. Avoids inifinite recursion.
-      return if @loaded_path.start_with?(ConfigLoader::RUBOCOP_HOME)
+      return if @loaded_path.start_with?(File.join(ConfigLoader::RUBOCOP_HOME,
+                                                   'config'))
 
       default_config = ConfigLoader.default_configuration
 

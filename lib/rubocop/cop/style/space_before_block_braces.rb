@@ -15,7 +15,8 @@ module Rubocop
           # those braces will be changed to do..end by the user or by
           # auto-correct, so reporting space issues is not useful, and it
           # creates auto-correct conflicts.
-          if config.for_cop('Blocks')['Enabled'] && Util.block_length(node) > 0
+          if config.for_cop('Style/Blocks')['Enabled'] &&
+              Util.block_length(node) > 0
             return
           end
 

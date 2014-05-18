@@ -68,14 +68,14 @@ describe Rubocop::ConfigLoader do
       let(:file_path) { '.rubocop.yml' }
 
       before do
-        create_file(file_path, ['Encoding:',
+        create_file(file_path, ['Style/Encoding:',
                                 '  Enabled: false'])
       end
       it 'returns a configuration inheriting from default.yml' do
-        config = default_config['Encoding'].dup
+        config = default_config['Style/Encoding'].dup
         config['Enabled'] = false
         expect(configuration_from_file)
-          .to eql(default_config.merge('Encoding' => config))
+          .to eql(default_config.merge('Style/Encoding' => config))
       end
     end
 
@@ -161,14 +161,14 @@ describe Rubocop::ConfigLoader do
         create_file('dir/subdir/example.rb', '')
 
         create_file('.rubocop.yml',
-                    ['LineLength:',
+                    ['Style/LineLength:',
                      '  Enabled: false',
                      '  Max: 77'])
 
         create_file('dir/.rubocop.yml',
                     ['inherit_from: ../.rubocop.yml',
                      '',
-                     'MethodLength:',
+                     'Style/MethodLength:',
                      '  Enabled: true',
                      '  CountComments: false',
                      '  Max: 10'
@@ -177,29 +177,30 @@ describe Rubocop::ConfigLoader do
         create_file(file_path,
                     ['inherit_from: ../.rubocop.yml',
                      '',
-                     'LineLength:',
+                     'Style/LineLength:',
                      '  Enabled: true',
                      '',
-                     'MethodLength:',
+                     'Style/MethodLength:',
                      '  Max: 5'
                     ])
       end
 
       it 'returns the ancestor configuration plus local overrides' do
-        config = default_config
-                   .merge('LineLength' => {
-                            'Description' =>
-                               default_config['LineLength']['Description'],
-                            'Enabled' => true,
-                            'Max' => 77
-                          },
-                          'MethodLength' => {
-                            'Description' =>
-                               default_config['MethodLength']['Description'],
-                            'Enabled' => true,
-                            'CountComments' => false,
-                            'Max' => 5
-                          })
+        config =
+          default_config
+          .merge('Style/LineLength' => {
+                   'Description' =>
+                   default_config['Style/LineLength']['Description'],
+                   'Enabled' => true,
+                   'Max' => 77
+                 },
+                 'Style/MethodLength' => {
+                   'Description' =>
+                   default_config['Style/MethodLength']['Description'],
+                   'Enabled' => true,
+                   'CountComments' => false,
+                   'Max' => 5
+                 })
         expect(configuration_from_file).to eq(config)
       end
     end
@@ -211,13 +212,13 @@ describe Rubocop::ConfigLoader do
         create_file('example.rb', '')
 
         create_file('normal.yml',
-                    ['MethodLength:',
+                    ['Style/MethodLength:',
                      '  Enabled: false',
                      '  CountComments: true',
                      '  Max: 80'])
 
         create_file('special.yml',
-                    ['MethodLength:',
+                    ['Style/MethodLength:',
                      '  Enabled: false',
                      '  Max: 200'])
 
@@ -226,7 +227,7 @@ describe Rubocop::ConfigLoader do
                      '  - normal.yml',
                      '  - special.yml',
                      '',
-                     'MethodLength:',
+                     'Style/MethodLength:',
                      '  Enabled: true'
                     ])
       end
@@ -235,7 +236,7 @@ describe Rubocop::ConfigLoader do
         expected = { 'Enabled' => true,        # overridden in .rubocop.yml
                      'CountComments' => true,  # only defined in normal.yml
                      'Max' => 200 }            # special.yml takes precedence
-        expect(configuration_from_file['MethodLength'].to_set)
+        expect(configuration_from_file['Style/MethodLength'].to_set)
           .to be_superset(expected.to_set)
       end
     end
@@ -250,11 +251,11 @@ describe Rubocop::ConfigLoader do
 
     it 'returns a configuration loaded from the passed path' do
       create_file(configuration_path, [
-        'Encoding:',
+        'Style/Encoding:',
         '  Enabled: true'
       ])
       configuration = load_file
-      expect(configuration['Encoding']).to eq(
+      expect(configuration['Style/Encoding']).to eq(
         'Enabled' => true
       )
     end
@@ -291,27 +292,27 @@ describe Rubocop::ConfigLoader do
 
     context 'when no config file exists for the target file' do
       it 'is disabled' do
-        expect(config.cop_enabled?('SymbolArray')).to be_false
+        expect(config.cop_enabled?('Style/SymbolArray')).to be_false
       end
     end
 
     context 'when a config file which does not mention SymbolArray exists' do
       it 'is disabled' do
         create_file('.rubocop.yml', [
-          'LineLength:',
+          'Style/LineLength:',
           '  Max: 80'
         ])
-        expect(config.cop_enabled?('SymbolArray')).to be_false
+        expect(config.cop_enabled?('Style/SymbolArray')).to be_false
       end
     end
 
     context 'when a config file which explicitly enables SymbolArray exists' do
       it 'is enabled' do
         create_file('.rubocop.yml', [
-          'SymbolArray:',
+          'Style/SymbolArray:',
           '  Enabled: true'
         ])
-        expect(config.cop_enabled?('SymbolArray')).to be_true
+        expect(config.cop_enabled?('Style/SymbolArray')).to be_true
       end
     end
   end
@@ -320,7 +321,8 @@ describe Rubocop::ConfigLoader do
     describe 'AllowSafeAssignment' do
       it 'is enabled by default' do
         default_config = described_class.default_configuration
-        symbol_name_config = default_config.for_cop('AssignmentInCondition')
+        symbol_name_config =
+          default_config.for_cop('Lint/AssignmentInCondition')
         expect(symbol_name_config['AllowSafeAssignment']).to be_true
       end
     end

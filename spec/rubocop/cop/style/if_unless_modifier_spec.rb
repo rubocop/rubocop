@@ -7,7 +7,7 @@ describe Rubocop::Cop::Style::IfUnlessModifier do
 
   subject(:cop) { described_class.new(config) }
   let(:config) do
-    hash = { 'LineLength' => { 'Max' => 80 } }
+    hash = { 'Style/LineLength' => { 'Max' => 80 } }
     Rubocop::Config.new(hash)
   end
 
@@ -128,8 +128,8 @@ describe Rubocop::Cop::Style::IfUnlessModifier do
     context 'when the maximum line length is specified by the cop itself' do
       let(:config) do
         hash = {
-          'LineLength' => { 'Max' => 100 },
-          'IfUnlessModifier' => { 'MaxLineLength' => 80 }
+          'Style/LineLength' => { 'Max' => 100 },
+          'Style/IfUnlessModifier' => { 'MaxLineLength' => 80 }
         }
         Rubocop::Config.new(hash)
       end

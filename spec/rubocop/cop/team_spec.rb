@@ -68,11 +68,11 @@ describe Rubocop::Cop::Team do
       let(:cop_names) { offenses.map(&:cop_name) }
 
       it 'returns Parser warning offenses' do
-        expect(cop_names).to include('AmbiguousOperator')
+        expect(cop_names).to include('Lint/AmbiguousOperator')
       end
 
       it 'returns offenses from cops' do
-        expect(cop_names).to include('LineLength')
+        expect(cop_names).to include('Style/LineLength')
       end
     end
 
@@ -97,7 +97,7 @@ describe Rubocop::Cop::Team do
       end
 
       it 'still returns offenses' do
-        expect(offenses.first.cop_name).to eq('StringLiterals')
+        expect(offenses.first.cop_name).to eq('Style/StringLiterals')
       end
     end
   end
@@ -118,14 +118,14 @@ describe Rubocop::Cop::Team do
       it 'returns only intances of the classes' do
         expect(cops.size).to eq(2)
         cops.sort! { |a, b| a.name <=> b.name }
-        expect(cops[0].name).to eq('LineLength')
-        expect(cops[1].name).to eq('Void')
+        expect(cops[0].name).to eq('Lint/Void')
+        expect(cops[1].name).to eq('Style/LineLength')
       end
     end
 
     context 'when some classes are disabled with config' do
       before do
-        %w(Void LineLength).each do |cop_name|
+        %w(Lint/Void Style/LineLength).each do |cop_name|
           config.for_cop(cop_name)['Enabled'] = false
         end
       end
@@ -134,8 +134,8 @@ describe Rubocop::Cop::Team do
 
       it 'does not return intances of the classes' do
         expect(cops).not_to be_empty
-        expect(cop_names).not_to include('Void')
-        expect(cop_names).not_to include('LineLength')
+        expect(cop_names).not_to include('Style/Void')
+        expect(cop_names).not_to include('Style/LineLength')
       end
     end
   end

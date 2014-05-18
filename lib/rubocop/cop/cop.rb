@@ -3,6 +3,7 @@
 module Rubocop
   module Cop
     class CorrectionNotPossible < Exception; end
+    class AmbiguousCopName < Exception; end
 
     # Store for all cops with helper functions
     class CopStore < ::Array
@@ -56,6 +57,19 @@ module Rubocop
         @all.clone
       end
 
+      def self.qualified_cop_name(name, origin)
+        return name if name.include?('/')
+        found_ns = @all.types.map(&:capitalize).select do |ns|
+          @all.map(&:cop_name).include?("#{ns}/#{name}")
+        end
+
+        case found_ns.size
+        when 0 then name # No namespace found. Deal with it later in caller.
+        when 1 then "#{found_ns.first}/#{name}"
+        else fail AmbiguousCopName, "`#{name}` used in #{origin}"
+        end
+      end
+
       def self.non_rails
         @all.without_type(:rails)
       end
@@ -65,7 +79,7 @@ module Rubocop
       end
 
       def self.cop_name
-        name.to_s.split('::').last
+        @cop_name ||= name.to_s.split('::').last(2).join('/')
       end
 
       def self.cop_type

@@ -66,7 +66,9 @@ module Rubocop
         opts.banner = 'Usage: rubocop [options] [file1, file2, ...]'
 
         option(opts, '--only [COP1,COP2,...]') do |list|
-          @options[:only] = list.split(',')
+          @options[:only] = list.split(',').map do |c|
+            Cop::Cop.qualified_cop_name(c, '--only option')
+          end
           validate_only_option
         end
 

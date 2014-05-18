@@ -129,7 +129,7 @@ describe Rubocop::Cop::Lint::RescueException do
     end
 
     let(:corrected_source) do
-      ['begin', # rubocop:disable WordArray
+      ['begin', # rubocop:disable Style/WordArray
        'rescue',
        'end'].join("\n")
     end
