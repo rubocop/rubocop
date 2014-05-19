@@ -35,6 +35,9 @@ module Rubocop
       show_cops:        ['Shows the given cops, or all cops by',
                          'default, and their configurations for the',
                          'current directory.'],
+      fail_fast:        ['Inspect files in order of modification',
+                         'time and stop after the first file',
+                         'containing offenses.'],
       debug:             'Display debug info.',
       display_cop_names: 'Display cop names in offense messages.',
       rails:             'Run extra Rails cops.',
@@ -126,6 +129,7 @@ module Rubocop
     end
 
     def add_boolean_flags(opts)
+      option(opts, '-F', '--fail-fast')
       option(opts, '-d', '--debug')
       option(opts, '-D', '--display-cop-names')
       option(opts, '-R', '--rails')

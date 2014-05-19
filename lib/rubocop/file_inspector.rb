@@ -26,6 +26,7 @@ module Rubocop
           o.severity >= fail_level
         end
         inspected_files << file
+        break if @options[:fail_fast] && any_failed
       end
 
       formatter_set.finished(inspected_files.freeze)
