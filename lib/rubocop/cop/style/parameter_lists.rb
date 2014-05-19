@@ -11,6 +11,7 @@ module Rubocop
         include ConfigurableMax
 
         MSG = 'Avoid parameter lists longer than %d parameters.'
+        private_constant :MSG
 
         def on_args(node)
           count = args_count(node)

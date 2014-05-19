@@ -24,6 +24,7 @@ module Rubocop
         include CheckMethods
 
         MSG = 'Redundant `return` detected.'
+        private_constant :MSG
 
         private
 
@@ -58,7 +59,7 @@ module Rubocop
           return if cop_config['AllowMultipleReturnValues'] &&
             node.children.size > 1
 
-          add_offense(node, :keyword)
+          add_offense(node, :keyword, MSG)
         end
       end
     end

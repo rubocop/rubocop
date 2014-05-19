@@ -10,10 +10,12 @@ module Rubocop
       #   "result is #{}"
       class EmptyInterpolation < Cop
         MSG = 'Empty interpolation detected.'
+        private_constant :MSG
 
         def on_dstr(node)
           node.children.select { |n| n.type == :begin }.each do |begin_node|
-            add_offense(begin_node, :expression) if begin_node.children.empty?
+            next unless begin_node.children.empty?
+            add_offense(begin_node, :expression, MSG)
           end
         end
       end

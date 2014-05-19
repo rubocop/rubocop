@@ -13,6 +13,7 @@ module Rubocop
       #   end
       class UselessAccessModifier < Cop
         MSG = 'Useless `%s` access modifier.'
+        private_constant :MSG
 
         def on_class(node)
           _name, _base_class, body = *node

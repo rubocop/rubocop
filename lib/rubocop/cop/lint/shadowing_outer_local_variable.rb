@@ -9,6 +9,7 @@ module Rubocop
       # "shadowing outer local variable - foo" from `ruby -cw`.
       class ShadowingOuterLocalVariable < Cop
         MSG = 'Shadowing outer local variable - `%s`.'
+        private_constant :MSG
 
         def join_force?(force_class)
           force_class == VariableForce

@@ -8,6 +8,7 @@ module Rubocop
         include NegativeConditional
 
         MSG = 'Favor `%s` over `%s` for negative conditions.'
+        private_constant :MSG
 
         def on_while(node)
           check(node)

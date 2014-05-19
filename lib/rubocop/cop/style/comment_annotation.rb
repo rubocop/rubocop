@@ -10,6 +10,7 @@ module Rubocop
 
         MSG = 'Annotation keywords should be all upper case, followed by a ' \
               'colon and a space, then a note describing the problem.'
+        private_constant :MSG
 
         def investigate(processed_source)
           processed_source.comments.each do |comment|
@@ -22,7 +23,7 @@ module Rubocop
             range = Parser::Source::Range.new(processed_source.buffer,
                                               start,
                                               start + length)
-            add_offense(nil, range)
+            add_offense(nil, range, MSG)
           end
         end
 

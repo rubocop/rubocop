@@ -13,6 +13,9 @@ module Rubocop
       #     do_something
       #   end
       class ConditionPosition < Cop
+        MSG = 'Place the condition on the same line as `%s`.'
+        private_constant :MSG
+
         def on_if(node)
           return if node.loc.respond_to?(:question)
 
@@ -36,11 +39,8 @@ module Rubocop
           return unless on_different_line?(node.loc.keyword.line,
                                            condition.loc.expression.line)
 
-          add_offense(condition, :expression, message(node.loc.keyword.source))
-        end
-
-        def message(keyword)
-          "Place the condition on the same line as `#{keyword}`."
+          add_offense(condition, :expression,
+                      format(MSG, node.loc.keyword.source))
         end
 
         def on_different_line?(keyword_line, cond_line)

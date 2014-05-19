@@ -6,6 +6,7 @@ module Rubocop
       # This cop checks for unwanted parentheses in parameterless method calls.
       class MethodCallParentheses < Cop
         MSG = 'Do not use parentheses for method calls with no arguments.'
+        private_constant :MSG
 
         def on_send(node)
           _receiver, method_name, *args = *node
@@ -13,7 +14,7 @@ module Rubocop
           # methods starting with a capital letter should be skipped
           return if method_name =~ /\A[A-Z]/
 
-          add_offense(node, :begin) if args.empty? && node.loc.begin
+          add_offense(node, :begin, MSG) if args.empty? && node.loc.begin
         end
 
         def autocorrect(node)

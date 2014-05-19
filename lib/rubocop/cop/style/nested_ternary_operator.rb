@@ -7,6 +7,7 @@ module Rubocop
       class NestedTernaryOperator < Cop
         MSG = 'Ternary operators must not be nested. Prefer `if`/`else` ' \
               'constructs instead.'
+        private_constant :MSG
 
         def on_if(node)
           loc = node.loc
@@ -16,7 +17,7 @@ module Rubocop
 
           node.children.each do |child|
             on_node(:if, child) do |c|
-              add_offense(c, :expression) if c.loc.respond_to?(:question)
+              add_offense(c, :expression, MSG) if c.loc.respond_to?(:question)
             end
           end
         end

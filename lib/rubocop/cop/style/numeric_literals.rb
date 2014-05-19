@@ -13,6 +13,7 @@ module Rubocop
 
         MSG = 'Separate every 3 digits in the integer portion of a number ' \
               'with underscores(_).'
+        private_constant :MSG
 
         def on_int(node)
           check(node)
@@ -37,9 +38,9 @@ module Rubocop
 
           case int
           when /^\d+$/
-            add_offense(node, :expression) { self.max = int.size + 1 }
+            add_offense(node, :expression, MSG) { self.max = int.size + 1 }
           when /\d{4}/, /_\d{1,2}_/
-            add_offense(node, :expression) do
+            add_offense(node, :expression, MSG) do
               self.config_to_allow_offenses = { 'Enabled' => false }
             end
           end

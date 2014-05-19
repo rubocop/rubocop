@@ -7,10 +7,9 @@ module Rubocop
       # parameter named `other`.
       class OpMethod < Cop
         MSG = 'When defining the `%s` operator, name its argument `other`.'
-
         BLACKLISTED = [:+@, :-@, :[], :[]=, :<<]
-
         TARGET_ARGS = [s(:args, s(:arg, :other)), s(:args, s(:arg, :_other))]
+        private_constant :MSG, :BLACKLISTED, :TARGET_ARGS
 
         def on_def(node)
           name, args, _body = *node

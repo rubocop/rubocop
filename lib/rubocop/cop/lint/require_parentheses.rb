@@ -22,6 +22,7 @@ module Rubocop
 
         MSG = 'Use parentheses in the method call to avoid confusion about ' \
               'precedence.'
+        private_constant :MSG
 
         def on_send(node)
           _receiver, method_name, *args = *node
@@ -48,11 +49,11 @@ module Rubocop
           range = Parser::Source::Range.new(expr.source_buffer,
                                             expr.begin_pos,
                                             condition.loc.expression.end_pos)
-          add_offense(range, range)
+          add_offense(range, range, MSG)
         end
 
         def check_send(arg, node)
-          add_offense(node, :expression) if offense?(arg)
+          add_offense(node, :expression, MSG) if offense?(arg)
         end
 
         def predicate?(method_name)

@@ -8,12 +8,13 @@ module Rubocop
         include CheckMethods
 
         MSG = '`END` found in method definition. Use `at_exit` instead.'
+        private_constant :MSG
 
         private
 
         def check(node, *_)
           on_node(:postexe, node) do |end_node|
-            add_offense(end_node, :keyword)
+            add_offense(end_node, :keyword, MSG)
           end
         end
       end

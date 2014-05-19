@@ -6,6 +6,7 @@ module Rubocop
       # This cop checks for the use of old-style attribute validation macros.
       class Validation < Cop
         MSG = 'Use the new "sexy" validations (`validates` ...).'
+        private_constant :MSG
 
         BLACKLIST = [:validates_acceptance_of,
                      :validates_confirmation_of,
@@ -22,7 +23,7 @@ module Rubocop
           receiver, method_name, *_args = *node
           return unless receiver.nil? && BLACKLIST.include?(method_name)
 
-          add_offense(node, :selector)
+          add_offense(node, :selector, MSG)
         end
       end
     end

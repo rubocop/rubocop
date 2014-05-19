@@ -6,6 +6,7 @@ module Rubocop
       # This cop looks for trailing whitespace in the source code.
       class TrailingWhitespace < Cop
         MSG = 'Trailing whitespace detected.'
+        private_constant :MSG
 
         def investigate(processed_source)
           processed_source.lines.each_with_index do |line, index|
@@ -14,7 +15,7 @@ module Rubocop
                                  processed_source[0...index],
                                  line.rstrip.length,
                                  line.length - line.rstrip.length)
-            add_offense(range, range)
+            add_offense(range, range, MSG)
           end
         end
 

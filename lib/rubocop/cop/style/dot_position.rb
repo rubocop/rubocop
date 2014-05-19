@@ -13,13 +13,13 @@ module Rubocop
           if proper_dot_position?(node)
             correct_style_detected
           else
-            add_offense(node, :dot) { opposite_style_detected }
+            add_offense(node, :dot, message) { opposite_style_detected }
           end
         end
 
         private
 
-        def message(_node)
+        def message
           'Place the . on the ' +
             case style
             when :leading

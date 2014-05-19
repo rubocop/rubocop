@@ -7,12 +7,13 @@ module Rubocop
       # separated by empty lines.
       class EmptyLineBetweenDefs < Cop
         MSG = 'Use empty lines between defs.'
+        private_constant :MSG
 
         def on_def(node)
           if @prev_def_end && (def_start(node) - @prev_def_end) == 1
             unless @prev_was_single_line && singe_line_def?(node) &&
                 cop_config['AllowAdjacentOneLineDefs']
-              add_offense(node, :keyword)
+              add_offense(node, :keyword, MSG)
             end
           end
 

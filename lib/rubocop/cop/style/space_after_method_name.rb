@@ -17,6 +17,7 @@ module Rubocop
 
         MSG = 'Never put a space between a method name and the opening ' \
               'parenthesis.'
+        private_constant :MSG
 
         def check(_node, _method_name, args, _body)
           return unless args.loc.begin && args.loc.begin.is?('(')
@@ -26,7 +27,7 @@ module Rubocop
                                                             expr.begin_pos)
           return unless pos_before_left_paren.source =~ /\s/
 
-          add_offense(pos_before_left_paren, pos_before_left_paren)
+          add_offense(pos_before_left_paren, pos_before_left_paren, MSG)
         end
 
         def autocorrect(pos_before_left_paren)

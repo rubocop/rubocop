@@ -108,15 +108,11 @@ module Rubocop
         debug? || @options[:display_cop_names]
       end
 
-      def message(_node = nil)
-        self.class::MSG
-      end
-
       def support_autocorrect?
         respond_to?(:autocorrect, true)
       end
 
-      def add_offense(node, loc, message = nil, severity = nil)
+      def add_offense(node, loc, message, severity = nil)
         location = loc.is_a?(Symbol) ? node.loc.send(loc) : loc
 
         return unless enabled_line?(location.line)
@@ -126,7 +122,6 @@ module Rubocop
 
         severity = custom_severity || severity || default_severity
 
-        message ||= message(node)
         message = display_cop_names? ? "#{name}: #{message}" : message
 
         corrected = begin

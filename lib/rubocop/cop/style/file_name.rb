@@ -6,8 +6,8 @@ module Rubocop
       # This cop makes sure that Ruby source files have snake_case names.
       class FileName < Cop
         MSG = 'Use snake_case for source file names.'
-
         SNAKE_CASE = /^[\da-z_]+$/
+        private_constant :MSG, :SNAKE_CASE
 
         def investigate(processed_source)
           file_path = processed_source.buffer.name
@@ -19,7 +19,8 @@ module Rubocop
           add_offense(nil,
                       source_range(processed_source.buffer,
                                    processed_source[0..0],
-                                   0, 1))
+                                   0, 1),
+                      MSG)
         end
 
         private

@@ -10,7 +10,7 @@ module Rubocop
 
         private
 
-        def message(*)
+        def message
           if style == :single_quotes
             "Prefer single-quoted strings when you don't need string " \
             'interpolation or special symbols.'

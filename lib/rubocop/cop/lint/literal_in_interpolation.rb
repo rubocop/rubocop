@@ -11,8 +11,8 @@ module Rubocop
       class LiteralInInterpolation < Cop
         LITERALS = [:str, :dstr, :int, :float, :array,
                     :hash, :regexp, :nil, :true, :false]
-
         MSG = 'Literal interpolation detected.'
+        private_constant :LITERALS, :MSG
 
         def on_dstr(node)
           node.children.select { |n| n.type == :begin }.each do |begin_node|
@@ -22,7 +22,7 @@ module Rubocop
             return if special_string?(final_node)
             next unless LITERALS.include?(final_node.type)
 
-            add_offense(final_node, :expression)
+            add_offense(final_node, :expression, MSG)
           end
         end
 

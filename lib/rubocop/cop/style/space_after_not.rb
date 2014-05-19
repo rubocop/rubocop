@@ -13,6 +13,7 @@ module Rubocop
       #   !something
       class SpaceAfterNot < Cop
         MSG = 'Do not leave space between `!` and its argument.'
+        private_constant :MSG
 
         def on_send(node)
           _receiver, method_name, *_args = *node
@@ -21,7 +22,7 @@ module Rubocop
           return unless node.loc.expression.source =~ /^!\s+\w+/
 
           # TODO: Improve source range to highlight the redundant whitespace.
-          add_offense(node, :selector)
+          add_offense(node, :selector, MSG)
         end
 
         def autocorrect(node)

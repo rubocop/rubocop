@@ -5,6 +5,9 @@ module Rubocop
     module Style
       # Checks for uses of `do` in multi-line `while/until` statements.
       class WhileUntilDo < Cop
+        MSG = 'Never use `do` with multi-line `%s`.'
+        private_constant :MSG
+
         def on_while(node)
           handle(node)
         end
@@ -13,18 +16,14 @@ module Rubocop
           handle(node)
         end
 
+        private
+
         def handle(node)
           length = node.loc.expression.source.lines.to_a.size
           return unless length > 1
           return unless  node.loc.begin && node.loc.begin.is?('do')
 
-          add_offense(node, :begin, error_message(node.type))
-        end
-
-        private
-
-        def error_message(node_type)
-          format('Never use `do` with multi-line `%s`.', node_type)
+          add_offense(node, :begin, format(MSG, node.type))
         end
 
         def autocorrect(node)

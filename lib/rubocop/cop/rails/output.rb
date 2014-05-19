@@ -6,18 +6,18 @@ module Rubocop
       # This cop checks for the use of output calls like puts and print
       class Output < Cop
         MSG = 'Do not write to stdout. Use Rails\' logger if you want to log.'
-
         BLACKLIST = [:puts,
                      :print,
                      :p,
                      :pp,
                      :pretty_print]
+        private_constant :MSG, :BLACKLIST
 
         def on_send(node)
           receiver, method_name, *_args = *node
           return unless receiver.nil? && BLACKLIST.include?(method_name)
 
-          add_offense(node, :selector)
+          add_offense(node, :selector, MSG)
         end
       end
     end

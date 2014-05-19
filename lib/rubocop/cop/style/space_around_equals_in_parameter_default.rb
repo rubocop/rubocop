@@ -32,7 +32,7 @@ module Rubocop
             range = Parser::Source::Range.new(processed_source.buffer,
                                               arg.pos.end_pos,
                                               value.pos.begin_pos)
-            add_offense(range, range) do
+            add_offense(range, range, message) do
               if style == :space && no_surrounding_space ||
                   style == :no_space && space_on_both_sides
                 opposite_style_detected
@@ -51,7 +51,7 @@ module Rubocop
           !space_between?(arg, equals) && !space_between?(equals, value)
         end
 
-        def message(_)
+        def message
           format('Surrounding space %s in default value assignment.',
                  style == :space ? 'missing' : 'detected')
         end

@@ -29,7 +29,9 @@ describe Rubocop::Cop::Style::CommentAnnotation, :config do
     it 'marks the annotation keyword' do
       inspect_source(cop, ['# TODO:make better'])
       formatter.report_file('t', cop.offenses)
-      expect(output.string).to eq(["t:1:3: C: #{described_class::MSG}",
+      message = 'Annotation keywords should be all upper case, followed by ' \
+                'a colon and a space, then a note describing the problem.'
+      expect(output.string).to eq(["t:1:3: C: #{message}",
                                    '# TODO:make better',
                                    '  ^^^^^',
                                    ''].join("\n"))

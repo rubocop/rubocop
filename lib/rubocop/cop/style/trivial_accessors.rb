@@ -9,6 +9,7 @@ module Rubocop
         include CheckMethods
 
         MSG = 'Use `attr_%s` to define trivial %s methods.'
+        private_constant :MSG
 
         private
 

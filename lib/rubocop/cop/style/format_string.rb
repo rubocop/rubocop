@@ -14,7 +14,7 @@ module Rubocop
         include ConfigurableEnforcedStyle
 
         def on_send(node)
-          add_offense(node, :selector) if offending_node?(node)
+          add_offense(node, :selector, message(node)) if offending_node?(node)
         end
 
         private

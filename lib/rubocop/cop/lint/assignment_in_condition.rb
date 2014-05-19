@@ -9,6 +9,7 @@ module Rubocop
         include SafeAssignment
 
         MSG = 'Assignment in condition - you probably meant to use `==`.'
+        private_constant :MSG
 
         def on_if(node)
           check(node)
@@ -36,7 +37,7 @@ module Rubocop
 
             # assignment nodes from shorthand ops like ||= don't have operator
             if asgn_node.type != :begin && asgn_node.loc.operator
-              add_offense(asgn_node, :operator)
+              add_offense(asgn_node, :operator, MSG)
             end
           end
         end

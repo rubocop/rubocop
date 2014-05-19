@@ -9,6 +9,7 @@ module Rubocop
 
         FAIL_MSG = 'Use `fail` instead of `raise` to signal exceptions.'
         RAISE_MSG = 'Use `raise` instead of `fail` to rethrow exceptions.'
+        private_constant :FAIL_MSG, :RAISE_MSG
 
         def on_rescue(node)
           return unless style == :semantic

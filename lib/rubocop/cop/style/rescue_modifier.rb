@@ -8,11 +8,12 @@ module Rubocop
         include CheckMethods
 
         MSG = 'Avoid using `rescue` in its modifier form.'
+        private_constant :MSG
 
         def on_rescue(node)
           return if ignored_node?(node)
 
-          add_offense(node, :expression)
+          add_offense(node, :expression, MSG)
         end
 
         def on_kwbegin(node)

@@ -11,6 +11,7 @@ module Rubocop
       # Note that backreferences like $1, $2, etc are not global variables.
       class GlobalVars < Cop
         MSG = 'Do not introduce global variables.'
+        private_constant :MSG
 
         # predefined global variables their English aliases
         # http://www.zenspider.com/Languages/Ruby/QuickRef.html
@@ -66,7 +67,7 @@ module Rubocop
         def check(node)
           global_var, = *node
 
-          add_offense(node, :name) unless allowed_var?(global_var)
+          add_offense(node, :name, MSG) unless allowed_var?(global_var)
         end
       end
     end

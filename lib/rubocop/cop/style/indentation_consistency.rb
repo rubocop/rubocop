@@ -17,6 +17,7 @@ module Rubocop
         include AutocorrectAlignment
 
         MSG = 'Inconsistent indentation detected.'
+        private_constant :MSG
 
         def on_begin(node)
           check(node)
@@ -35,7 +36,7 @@ module Rubocop
             AccessModifierIndentation.modifier_node?(child)
           end
 
-          check_alignment(children_to_check)
+          check_alignment(children_to_check, MSG)
         end
       end
     end

@@ -8,13 +8,14 @@ module Rubocop
         include IfNode
 
         MSG = 'Space missing after colon.'
+        private_constant :MSG
 
         def on_pair(node)
           oper = node.loc.operator
           return unless oper.is?(':') &&
             oper.source_buffer.source[oper.end_pos] =~ /\S/
 
-          add_offense(oper, oper)
+          add_offense(oper, oper, MSG)
         end
 
         def on_if(node)
@@ -22,7 +23,7 @@ module Rubocop
           colon = node.loc.colon
           return unless colon.source_buffer.source[colon.end_pos] =~ /\S/
 
-          add_offense(colon, colon)
+          add_offense(colon, colon, MSG)
         end
 
         def autocorrect(range)

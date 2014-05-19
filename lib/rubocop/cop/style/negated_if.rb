@@ -9,6 +9,7 @@ module Rubocop
         include NegativeConditional
 
         MSG = 'Favor `%s` over `%s` for negative conditions.'
+        private_constant :MSG
 
         def on_if(node)
           return unless node.loc.respond_to?(:keyword)

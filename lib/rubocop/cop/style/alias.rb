@@ -7,6 +7,7 @@ module Rubocop
       # alias_method over the alias keyword whenever possible.
       class Alias < Cop
         MSG = 'Use `alias_method` instead of `alias`.'
+        private_constant :MSG
 
         def on_block(node)
           method, _args, body = *node
@@ -27,7 +28,7 @@ module Rubocop
 
           return if new.type == :gvar && old.type == :gvar
 
-          add_offense(node, :keyword)
+          add_offense(node, :keyword, MSG)
         end
 
         def autocorrect(node)

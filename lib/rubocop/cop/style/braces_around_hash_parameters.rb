@@ -7,6 +7,10 @@ module Rubocop
       class BracesAroundHashParameters < Cop
         include ConfigurableEnforcedStyle
 
+        MSG_REDUNDANT = 'Redundant curly braces around a hash parameter.'
+        MSG_MISSING = 'Missing curly braces around a hash parameter.'
+        private_constant :MSG_REDUNDANT, :MSG_MISSING
+
         def on_send(node)
           _receiver, method_name, *args = *node
 
@@ -28,16 +32,14 @@ module Rubocop
             if !braces?(arg) || all_hashes?(args)
               correct_style_detected
             else
-              add_offense(arg, :expression,
-                          'Redundant curly braces around a hash parameter.') do
+              add_offense(arg, :expression, MSG_REDUNDANT) do
                 opposite_style_detected
               end
             end
           elsif braces?(arg)
             correct_style_detected
           else
-            add_offense(arg, :expression,
-                        'Missing curly braces around a hash parameter.') do
+            add_offense(arg, :expression, MSG_MISSING) do
               opposite_style_detected
             end
           end

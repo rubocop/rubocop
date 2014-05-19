@@ -11,6 +11,7 @@ module Rubocop
       # puts (x + y)
       class ParenthesesAsGroupedExpression < Cop
         MSG = '`(...)` interpreted as grouped expression.'
+        private_constant :MSG
 
         def on_send(node)
           _receiver, method_name, args = *node
@@ -25,7 +26,7 @@ module Rubocop
                                       expr.begin_pos - space_length,
                                       expr.begin_pos)
 
-          add_offense(nil, space_range)
+          add_offense(nil, space_range, MSG)
         end
 
         private

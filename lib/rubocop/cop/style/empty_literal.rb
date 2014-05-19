@@ -9,6 +9,7 @@ module Rubocop
         ARR_MSG = 'Use array literal [] instead of Array.new.'
         HASH_MSG = 'Use hash literal {} instead of Hash.new.'
         STR_MSG = "Use string literal '' instead of String.new."
+        private_constant :ARR_MSG, :HASH_MSG, :STR_MSG
 
         # Empty array node
         #

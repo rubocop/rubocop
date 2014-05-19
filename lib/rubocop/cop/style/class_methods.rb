@@ -7,6 +7,7 @@ module Rubocop
       # self, when defining class/module methods.
       class ClassMethods < Cop
         MSG = 'Use `self.%s` instead of `%s.%s`.'
+        private_constant :MSG
 
         def on_class(node)
           _name, _superclass, body = *node

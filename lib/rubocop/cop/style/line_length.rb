@@ -9,6 +9,7 @@ module Rubocop
         include ConfigurableMax
 
         MSG = 'Line is too long. [%d/%d]'
+        private_constant :MSG
 
         def investigate(processed_source)
           processed_source.lines.each_with_index do |line, index|

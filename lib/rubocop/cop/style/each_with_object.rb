@@ -16,6 +16,7 @@ module Rubocop
       class EachWithObject < Cop
         MSG = 'Use `each_with_object` instead of `%s`.'
         METHODS = [:inject, :reduce]
+        private_constant :MSG, :METHODS
 
         def on_block(node)
           method, args, body = *node

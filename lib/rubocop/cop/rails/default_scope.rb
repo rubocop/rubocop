@@ -15,6 +15,7 @@ module Rubocop
       #   default_scope { something }
       class DefaultScope < Cop
         MSG = '`default_scope` expects a block as its sole argument.'
+        private_constant :MSG
 
         def on_send(node)
           return unless command?(:default_scope, node)
@@ -25,7 +26,7 @@ module Rubocop
           first_arg = args[0]
           return unless first_arg.type != :block || lambda_or_proc?(first_arg)
 
-          add_offense(first_arg, :expression)
+          add_offense(first_arg, :expression, MSG)
         end
       end
     end

@@ -6,9 +6,10 @@ module Rubocop
       # This cop checks for uses of Module#attr.
       class Attr < Cop
         MSG = 'Do not use `attr`. Use `attr_reader` instead.'
+        private_constant :MSG
 
         def on_send(node)
-          add_offense(node, :selector) if command?(:attr, node)
+          add_offense(node, :selector, MSG) if command?(:attr, node)
         end
 
         def autocorrect(node)

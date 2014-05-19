@@ -11,6 +11,7 @@ module Rubocop
       class ConstantName < Cop
         MSG = 'Use SCREAMING_SNAKE_CASE for constants.'
         SNAKE_CASE = /^[\dA-Z_]+$/
+        private_constant :MSG, :SNAKE_CASE
 
         def on_casgn(node)
           _scope, const_name, value = *node
@@ -21,7 +22,7 @@ module Rubocop
           # SomeClass = SomeOtherClass
           return if value && [:send, :block, :const].include?(value.type)
 
-          add_offense(node, :name) if const_name !~ SNAKE_CASE
+          add_offense(node, :name, MSG) if const_name !~ SNAKE_CASE
         end
       end
     end

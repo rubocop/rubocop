@@ -12,6 +12,9 @@ module Rubocop
       # spaces) more than the start of the line where the opening bracket is.
       class IndentArray < Cop
         include AutocorrectAlignment
+        MSG = 'Use %d spaces for indentation in an array, relative to ' \
+              'the start of the line where the left bracket is.'
+        private_constant :MSG
 
         def on_array(node)
           first_pair = node.children.first
@@ -27,13 +30,11 @@ module Rubocop
           expected_column = base_column + IndentationWidth::CORRECT_INDENTATION
           @column_delta = expected_column - column
 
-          add_offense(first_pair, :expression) if @column_delta != 0
+          add_offense(first_pair, :expression, message) if @column_delta != 0
         end
 
-        def message(_)
-          format('Use %d spaces for indentation in an array, relative to ' \
-                 'the start of the line where the left bracket is.',
-                 IndentationWidth::CORRECT_INDENTATION)
+        def message
+          format(MSG, IndentationWidth::CORRECT_INDENTATION)
         end
       end
     end

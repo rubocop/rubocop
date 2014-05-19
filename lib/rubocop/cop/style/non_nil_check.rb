@@ -25,8 +25,8 @@ module Rubocop
       #  end
       class NonNilCheck < Cop
         MSG = 'Explicit non-nil checks are usually redundant.'
-
         NIL_NODE = s(:nil)
+        private_constant :MSG, :NIL_NODE
 
         def on_def(node)
           method_name, _args, body = *node
@@ -45,9 +45,9 @@ module Rubocop
           return unless [:!=, :!].include?(method)
 
           if method == :!=
-            add_offense(node, :selector) if args == NIL_NODE
+            add_offense(node, :selector, MSG) if args == NIL_NODE
           elsif include_semantic_changes? && method == :!
-            add_offense(node, :expression) if nil_check?(receiver)
+            add_offense(node, :expression, MSG) if nil_check?(receiver)
           end
         end
 

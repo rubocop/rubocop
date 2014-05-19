@@ -7,6 +7,7 @@ module Rubocop
       # an underscore in them.
       class ClassAndModuleCamelCase < Cop
         MSG = 'Use CamelCase for classes and modules.'
+        private_constant :MSG
 
         def on_class(node)
           check_name(node)
@@ -21,7 +22,7 @@ module Rubocop
         def check_name(node)
           name = node.loc.name.source
 
-          add_offense(node, :name) if name =~ /_/
+          add_offense(node, :name, MSG) if name =~ /_/
         end
       end
     end

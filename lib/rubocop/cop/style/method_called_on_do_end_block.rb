@@ -14,6 +14,7 @@ module Rubocop
       # end.c
       class MethodCalledOnDoEndBlock < Cop
         MSG = 'Avoid chaining a method call on a do...end block.'
+        private_constant :MSG
 
         def on_block(node)
           method, _args, _body = *node
@@ -34,7 +35,7 @@ module Rubocop
           range = Parser::Source::Range.new(receiver.loc.end.source_buffer,
                                             receiver.loc.end.begin_pos,
                                             node.loc.expression.end_pos)
-          add_offense(nil, range)
+          add_offense(nil, range, MSG)
         end
       end
     end

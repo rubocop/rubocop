@@ -16,10 +16,12 @@ module Rubocop
       class EvenOdd < Cop
         MSG_EVEN = 'Replace with `Fixnum#even?`.'
         MSG_ODD = 'Replace with `Fixnum#odd?`.'
+        private_constant :MSG_EVEN, :MSG_ODD
 
         ZERO = s(:int, 0)
         ONE = s(:int, 1)
         TWO = s(:int, 2)
+        private_constant :ZERO, :ONE, :TWO
 
         def on_send(node)
           receiver, method, args = *node

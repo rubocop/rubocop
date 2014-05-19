@@ -11,10 +11,12 @@ module Rubocop
       class BlockNesting < Cop
         include ConfigurableMax
 
+        MSG = 'Avoid more than %s levels of block nesting.'
         NESTING_BLOCKS = [
           :case, :if, :while, :while_post,
           :until, :until_post, :for, :resbody
         ]
+        private_constant :MSG, :NESTING_BLOCKS
 
         def investigate(processed_source)
           return unless processed_source.ast
@@ -33,7 +35,7 @@ module Rubocop
             if current_level > max
               self.max = current_level
               unless part_of_ignored_node?(node)
-                add_offense(node, :expression, message(max)) do
+                add_offense(node, :expression, format(MSG, max)) do
                   ignore_node(node)
                 end
               end
@@ -43,10 +45,6 @@ module Rubocop
             next unless child.is_a?(Parser::AST::Node)
             check_nesting_level(child, max, current_level)
           end
-        end
-
-        def message(max)
-          "Avoid more than #{max} levels of block nesting."
         end
       end
     end

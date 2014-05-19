@@ -6,13 +6,14 @@ module Rubocop
       # This cop checks for *rescue* blocks targeting the Exception class.
       class RescueException < Cop
         MSG = 'Avoid rescuing the `Exception` class.'
+        private_constant :MSG
 
         def on_resbody(node)
           return unless node.children.first
           rescue_args = node.children.first.children
           return unless rescue_args.any? { |a| targets_exception?(a) }
 
-          add_offense(node, :expression)
+          add_offense(node, :expression, MSG)
         end
 
         def targets_exception?(rescue_arg_node)

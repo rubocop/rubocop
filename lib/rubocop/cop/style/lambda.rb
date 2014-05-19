@@ -9,8 +9,10 @@ module Rubocop
       class Lambda < Cop
         SINGLE_MSG = 'Use the new lambda literal syntax `->(params) {...}`.'
         MULTI_MSG = 'Use the `lambda` method for multi-line lambdas.'
+        private_constant :SINGLE_MSG, :MULTI_MSG
 
         TARGET = s(:send, nil, :lambda)
+        private_constant :TARGET
 
         def on_block(node)
           # We're looking for

@@ -26,6 +26,7 @@ module Rubocop
 
         MSG_BEG = 'Extra empty line detected at body beginning.'
         MSG_END = 'Extra empty line detected at body end.'
+        private_constant :MSG_BEG, :MSG_END
 
         def on_class(node)
           check(node)

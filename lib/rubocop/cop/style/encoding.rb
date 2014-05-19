@@ -15,6 +15,7 @@ module Rubocop
 
         MSG_MISSING = 'Missing utf-8 encoding comment.'
         MSG_UNNECESSARY = 'Unnecessary utf-8 encoding comment.'
+        private_constant :MSG_MISSING, :MSG_UNNECESSARY
 
         def investigate(processed_source)
           return if RUBY_VERSION >= '2.0.0'

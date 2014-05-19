@@ -44,6 +44,7 @@ module Rubocop
       # otherwise.
       class RedundantSelf < Cop
         MSG = 'Redundant `self` detected.'
+        private_constant :MSG
 
         def initialize(config = nil, options = nil)
           super
@@ -98,7 +99,7 @@ module Rubocop
             @allowed_send_nodes.include?(node) ||
             @local_variables.include?(method_name)
 
-          add_offense(node, :expression)
+          add_offense(node, :expression, MSG)
         end
 
         def autocorrect(node)

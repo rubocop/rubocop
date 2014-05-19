@@ -10,9 +10,10 @@ module Rubocop
 
         MSG = 'Align the elements of an array literal if they span more ' \
               'than one line.'
+        private_constant :MSG
 
         def on_array(node)
-          check_alignment(node.children)
+          check_alignment(node.children, MSG)
         end
       end
     end

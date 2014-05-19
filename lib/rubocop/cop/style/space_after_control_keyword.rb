@@ -8,6 +8,7 @@ module Rubocop
         MSG = 'Use space after control keywords.'
         # elsif and unless are handled by on_if.
         KEYWORDS = %w(if case when while until)
+        private_constant :MSG, :KEYWORDS
 
         def on_keyword(node)
           return if node.loc.is_a?(Parser::Source::Map::Ternary)
@@ -17,7 +18,7 @@ module Rubocop
           kw_offset = kw.begin_pos - exp.begin_pos
           return unless exp.source[kw_offset..-1].start_with?(kw.source + '(')
 
-          add_offense(node, kw)
+          add_offense(node, kw, MSG)
         end
 
         KEYWORDS.each do |keyword|

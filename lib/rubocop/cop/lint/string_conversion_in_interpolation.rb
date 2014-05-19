@@ -12,6 +12,7 @@ module Rubocop
       class StringConversionInInterpolation < Cop
         MSG_DEFAULT = 'Redundant use of `Object#to_s` in interpolation.'
         MSG_SELF = 'Use `self` instead of `Object#to_s` in interpolation.'
+        private_constant :MSG_DEFAULT, :MSG_SELF
 
         def on_dstr(node)
           node.children.select { |n| n.type == :begin }.each do |begin_node|

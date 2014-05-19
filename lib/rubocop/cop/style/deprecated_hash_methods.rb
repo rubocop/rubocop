@@ -7,8 +7,8 @@ module Rubocop
       # and Hash#has_value?
       class DeprecatedHashMethods < Cop
         MSG = '`Hash#%s` is deprecated in favor of `Hash#%s`.'
-
         DEPRECATED_METHODS = [:has_key?, :has_value?]
+        private_constant :MSG, :DEPRECATED_METHODS
 
         def on_send(node)
           _receiver, method_name, *args = *node

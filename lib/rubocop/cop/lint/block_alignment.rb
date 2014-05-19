@@ -15,6 +15,7 @@ module Rubocop
         include CheckAssignment
 
         MSG = '`end` at %d, %d is not aligned with `%s` at %d, %d%s'
+        private_constant :MSG
 
         def initialize(config = nil, options = nil)
           super
@@ -133,9 +134,6 @@ module Rubocop
           else
             " or `#{match[0]}` at #{do_loc.line}, #{indentation_of_do_line}"
           end
-        end
-
-        def message
         end
 
         def already_processed_node?(node)
