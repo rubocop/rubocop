@@ -28,7 +28,6 @@ automatically fix some of the problems for you.
         - [Rails](#rails)
 - [Configuration](#configuration)
     - [Inheritance](#inheritance)
-    - [Loading Extensions](#loading-extensions)
     - [Defaults](#defaults)
     - [Including/Excluding files](#includingexcluding-files)
     - [Automatically Generated Configuration](#automatically-generated-configuration)
@@ -42,9 +41,6 @@ automatically fix some of the problems for you.
     - [File List Formatter](#file-list-formatter)
     - [JSON Formatter](#json-formatter)
     - [Offense Count Formatter](#offense-count-formatter)
-    - [Custom Formatters](#custom-formatters)
-        - [Creating Custom Formatter](#creating-custom-formatter)
-        - [Using Custom Formatter in Command Line](#using-custom-formatter-in-command-line)
 - [Compatibility](#compatibility)
 - [Editor integration](#editor-integration)
     - [Emacs](#emacs)
@@ -57,6 +53,13 @@ automatically fix some of the problems for you.
     - [Other Editors](#other-editors)
 - [Guard integration](#guard-integration)
 - [Rake integration](#rake-integration)
+- [Extensions](#extensions)
+  - [Loading Extensions](#loading-extensions)
+  - [Custom Cops](#custom-cops)
+    - [Known Custom Cops](#known-custom-cops)
+  - [Custom Formatters](#custom-formatters)
+    - [Creating Custom Formatter](#creating-custom-formatter)
+    - [Using Custom Formatter in Command Line](#using-custom-formatter-in-command-line)
 - [Team](#team)
 - [Contributors](#contributors)
 - [Mailing List](#mailing-list)
@@ -136,7 +139,7 @@ Command flag              | Description
 `-c/--config`             | Run with specified config file
 `-f/--format`             | Choose a formatter
 `-o/--out`                | Write output to a file instead of STDOUT
-`-r/--require`            | Require Ruby file
+`-r/--require`            | Require Ruby file (see [Loading Extensions](#loading-extensions))
 `-R/--rails`              | Run extra Rails cops
 `-l/--lint`               | Run only lint cops
 `-a/--auto-correct`       | Auto-correct certain offenses *Note:* Experimental - use with caution
@@ -148,6 +151,8 @@ Command flag              | Description
 ### Cops
 
 In RuboCop lingo the various checks performed on the code are called cops. There are several cop departments.
+
+You can also load [custom cops](#custom-cops).
 
 #### Style
 
@@ -226,17 +231,6 @@ inheritance is:
 inherit_from:
   - ../.rubocop.yml
   - ../conf/.rubocop.yml
-```
-
-### Loading Extensions
-
-Besides the `--require` command line option you can also specify ruby
-files that should be loaded with the optional `require` directive.
-
-```yaml
-require:
- - ../my/custom/file.rb
- - rubocop-extension
 ```
 
 ### Defaults
@@ -405,6 +399,8 @@ $ rubocop --output result.txt --format simple
 #                  |                 |
 #           default format        $stdout
 ```
+
+You can also load [custom formatters](#custom-formatters).
 
 ### Progress Formatter (default)
 
@@ -583,38 +579,6 @@ $ rubocop --format offenses
 134  Total
 ```
 
-### Custom Formatters
-
-You can customize RuboCop's output format with custom formatter.
-
-#### Creating Custom Formatter
-
-To implement a custom formatter, you need to subclass
-`Rubocop::Formatter::BaseFormatter` and override some methods,
-or implement all formatter API methods by duck typing.
-
-Please see the documents below for more formatter API details.
-
-* [Rubocop::Formatter::BaseFormatter](http://rubydoc.info/gems/rubocop/Rubocop/Formatter/BaseFormatter)
-* [Rubocop::Cop::Offense](http://rubydoc.info/gems/rubocop/Rubocop/Cop/Offense)
-* [Parser::Source::Range](http://rubydoc.info/github/whitequark/parser/Parser/Source/Range)
-
-#### Using Custom Formatter in Command Line
-
-You can tell RuboCop to use your custom formatter with a combination of
-`--format` and `--require` option.
-For example, when you have defined `MyCustomFormatter` in
-`./path/to/my_custom_formatter.rb`, you would type this command:
-
-```
-$ rubocop --require ./path/to/my_custom_formatter --format MyCustomFormatter
-```
-
-Note: The path passed to `--require` is directly passed to `Kernel.require`.
-If your custom formatter file is not in `$LOAD_PATH`,
-you need to specify the path as relative path prefixed with `./` explicitly,
-or absolute path.
-
 ## Compatibility
 
 RuboCop supports the following Ruby implementations:
@@ -710,6 +674,63 @@ Rubocop::RakeTask.new(:rubocop) do |task|
   # don't abort rake on failure
   task.fail_on_error = false
 end
+```
+
+## Extensions
+
+It's possible to extend RuboCop with custom cops and formatters.
+
+### Loading Extensions
+
+Besides the `--require` command line option you can also specify ruby
+files that should be loaded with the optional `require` directive in the
+`.rubocop.yml` file:
+
+```yaml
+require:
+ - ../my/custom/file.rb
+ - rubocop-extension
+```
+
+Note: The pathes are directly passed to `Kernel.require`.  If your
+extension file is not in `$LOAD_PATH`, you need to specify the path as
+relative path prefixed with `./` explicitly, or absolute path.
+
+### Custom Cops
+
+You can configure the custom cops in your `.rubocop.yml` just like any
+other cop.
+
+#### Known Custom Cops
+
+* [rubocop-rspec](https://github.com/nevir/rubocop-rspec) -
+  RSpec-specific analysis
+
+### Custom Formatters
+
+You can customize RuboCop's output format with custom formatters.
+
+#### Creating Custom Formatter
+
+To implement a custom formatter, you need to subclass
+`Rubocop::Formatter::BaseFormatter` and override some methods,
+or implement all formatter API methods by duck typing.
+
+Please see the documents below for more formatter API details.
+
+* [Rubocop::Formatter::BaseFormatter](http://rubydoc.info/gems/rubocop/Rubocop/Formatter/BaseFormatter)
+* [Rubocop::Cop::Offense](http://rubydoc.info/gems/rubocop/Rubocop/Cop/Offense)
+* [Parser::Source::Range](http://rubydoc.info/github/whitequark/parser/Parser/Source/Range)
+
+#### Using Custom Formatter in Command Line
+
+You can tell RuboCop to use your custom formatter with a combination of
+`--format` and `--require` option.
+For example, when you have defined `MyCustomFormatter` in
+`./path/to/my_custom_formatter.rb`, you would type this command:
+
+```
+$ rubocop --require ./path/to/my_custom_formatter --format MyCustomFormatter
 ```
 
 ## Team
