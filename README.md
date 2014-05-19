@@ -603,8 +603,7 @@ or absolute path.
 
 RuboCop supports the following Ruby implementations:
 
-* MRI 1.9.2 ([until June 2014](https://www.ruby-lang.org/en/news/2013/12/17/maintenance-of-1-8-7-and-1-9-2/))
-* MRI 1.9.3
+* MRI 1.9.3 ([until February 2015](https://www.ruby-lang.org/en/news/2014/01/10/ruby-1-9-3-will-end-on-2015/))
 * MRI 2.0
 * MRI 2.1
 * JRuby in 1.9 mode
