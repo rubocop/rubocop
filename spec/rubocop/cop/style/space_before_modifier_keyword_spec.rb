@@ -32,7 +32,7 @@ describe Rubocop::Cop::Style::SpaceBeforeModifierKeyword do
   end
 
   it 'accepts elsif at beginning of line' do
-    inspect_source(cop, ["if RUBY_VERSION.between?('1.9.2', '2.0.0')",
+    inspect_source(cop, ["if RUBY_VERSION.between?('1.9.3', '2.0.0')",
                          "  require 'testing/performance/ruby/yarv'",
                          'elsif RUBY_VERSION.between?("1.8.6", "1.9")',
                          "  require 'testing/performance/ruby/mri'",

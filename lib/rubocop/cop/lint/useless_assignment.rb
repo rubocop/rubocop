@@ -14,6 +14,7 @@ module Rubocop
       # rescue, ensure, etc.
       class UselessAssignment < Cop
         MSG = 'Useless assignment to variable - `%s`.'
+        private_constant :MSG
 
         def join_force?(force_class)
           force_class == VariableForce

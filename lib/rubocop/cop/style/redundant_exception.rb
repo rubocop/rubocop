@@ -12,8 +12,8 @@ module Rubocop
       #   raise RuntimeError, 'message'
       class RedundantException < Cop
         MSG = 'Redundant `RuntimeError` argument can be removed.'
-
         TARGET_NODE = s(:const, nil, :RuntimeError)
+        private_constant :MSG, :TARGET_NODE
 
         def on_send(node)
           return unless command?(:raise, node) || command?(:fail, node)
@@ -24,7 +24,7 @@ module Rubocop
 
           first_arg, = *args
 
-          add_offense(first_arg, :expression) if first_arg == TARGET_NODE
+          add_offense(first_arg, :expression, MSG) if first_arg == TARGET_NODE
         end
       end
     end

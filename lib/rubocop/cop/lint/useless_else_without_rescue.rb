@@ -15,6 +15,7 @@ module Rubocop
         include ParserDiagnostic
 
         MSG = '`else` without `rescue` is useless.'
+        private_constant :MSG
 
         private
 

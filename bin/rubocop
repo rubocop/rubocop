@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 
-if RUBY_VERSION >= '1.9.2'
+if RUBY_VERSION >= '1.9.3'
   $LOAD_PATH.unshift(File.dirname(File.realpath(__FILE__)) + '/../lib')
 
   require 'rubocop'
@@ -17,6 +17,6 @@ if RUBY_VERSION >= '1.9.2'
   puts "Finished in #{time} seconds" if cli.options[:debug]
   exit result
 else
-  puts 'RuboCop supports only Ruby 1.9.2+'
+  puts 'RuboCop supports only Ruby 1.9.3+'
   exit(-1)
 end

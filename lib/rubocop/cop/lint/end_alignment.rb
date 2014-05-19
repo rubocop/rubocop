@@ -21,6 +21,7 @@ module Rubocop
         include ConfigurableEnforcedStyle
 
         MSG = '`end` at %d, %d is not aligned with `%s` at %d, %d'
+        private_constant :MSG
 
         def on_class(node)
           check(node)

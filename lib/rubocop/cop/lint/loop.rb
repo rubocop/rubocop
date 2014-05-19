@@ -7,6 +7,7 @@ module Rubocop
       class Loop < Cop
         MSG = 'Use `Kernel#loop` with `break` rather than ' \
               '`begin/end/until`(or `while`).'
+        private_constant :MSG
 
         def on_while_post(node)
           register_offense(node)
@@ -19,7 +20,7 @@ module Rubocop
         private
 
         def register_offense(node)
-          add_offense(node, :keyword)
+          add_offense(node, :keyword, MSG)
         end
       end
     end

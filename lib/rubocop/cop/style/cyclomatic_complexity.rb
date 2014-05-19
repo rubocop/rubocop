@@ -20,6 +20,7 @@ module Rubocop
         MSG = 'Cyclomatic complexity for %s is too high. [%d/%d]'
         DECISION_POINT_NODES = [:if, :while, :until, :for, :rescue, :when,
                                 :and, :or]
+        private_constant :MSG, :DECISION_POINT_NODES
 
         private
 

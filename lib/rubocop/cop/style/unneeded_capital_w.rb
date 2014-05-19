@@ -9,6 +9,7 @@ module Rubocop
 
         MSG =
           'Do not use `%W` unless interpolation is needed.  If not, use `%w`.'
+        private_constant :MSG
 
         def on_array(node)
           process(node, '%W')
@@ -21,7 +22,7 @@ module Rubocop
           return unless types.include?(type) &&
             node.children.none? { |x| x.type == :dstr }
 
-          add_offense(node, :expression)
+          add_offense(node, :expression, MSG)
         end
       end
     end

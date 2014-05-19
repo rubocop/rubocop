@@ -27,11 +27,13 @@ module Rubocop
         }.each do |key, hash|
           hash[:operator] = key
         end
+        private_constant :AMBIGUITIES
 
         MSG_FORMAT = 'Ambiguous %{actual} operator. Parenthesize the method ' \
                      "arguments if it's surely a %{actual} operator, or add " \
                      'a whitespace to the right of the `%{operator}` if it ' \
                      'should be a %{possible}.'
+        private_constant :MSG_FORMAT
 
         private
 

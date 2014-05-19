@@ -14,15 +14,16 @@ module Rubocop
       # end
       class ModuleFunction < Cop
         MSG = 'Use `module_function` instead of `extend self`.'
-
         TARGET_NODE = s(:send, nil, :extend, s(:self))
+        private_constant :MSG, :TARGET_NODE
 
         def on_module(node)
           _name, body = *node
           return unless body && body.type == :begin
 
           body.children.each do |body_node|
-            add_offense(body_node, :expression) if body_node == TARGET_NODE
+            next unless body_node == TARGET_NODE
+            add_offense(body_node, :expression, MSG)
           end
         end
       end

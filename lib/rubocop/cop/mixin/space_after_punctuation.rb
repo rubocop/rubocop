@@ -6,6 +6,7 @@ module Rubocop
     # punctuation.
     module SpaceAfterPunctuation
       MSG = 'Space missing after %s.'
+      private_constant :MSG
 
       def investigate(processed_source)
         processed_source.tokens.each_cons(2) do |t1, t2|

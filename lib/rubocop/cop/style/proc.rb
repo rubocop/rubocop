@@ -7,8 +7,8 @@ module Rubocop
       # would be more appropriate.
       class Proc < Cop
         MSG = 'Use `proc` instead of `Proc.new`.'
-
         TARGET = s(:send, s(:const, nil, :Proc), :new)
+        private_constant :MSG, :TARGET
 
         def on_block(node)
           # We're looking for
@@ -18,7 +18,7 @@ module Rubocop
           #   ...)
           block_method, = *node
 
-          add_offense(block_method, :expression) if block_method == TARGET
+          add_offense(block_method, :expression, MSG) if block_method == TARGET
         end
 
         def autocorrect(node)

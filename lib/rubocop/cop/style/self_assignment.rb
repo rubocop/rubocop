@@ -17,6 +17,7 @@ module Rubocop
 
         MSG = 'Use self-assignment shorthand `%s=`.'
         OPS = [:+, :-, :*, :**, :/, :|, :&]
+        private_constant :MSG, :OPS
 
         def on_lvasgn(node)
           check(node, :lvar)

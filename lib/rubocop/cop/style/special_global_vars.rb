@@ -8,6 +8,7 @@ module Rubocop
         MSG_BOTH = 'Prefer `%s` from the English library, or `%s` over `%s`.'
         MSG_ENGLISH = 'Prefer `%s` from the English library over `%s`.'
         MSG_REGULAR = 'Prefer `%s` over `%s`.'
+        private_constant :MSG_BOTH, :MSG_ENGLISH, :MSG_REGULAR
 
         PREFERRED_VARS = {
           '$:' => ['$LOAD_PATH'],
@@ -33,6 +34,7 @@ module Rubocop
           '$\'' => ['$POSTMATCH'],
           '$+' => ['$LAST_PAREN_MATCH']
         }.symbolize_keys
+        private_constant :PREFERRED_VARS
 
         # Anything *not* in this set is provided by the English library.
         NON_ENGLISH_VARS = Set.new([
@@ -41,11 +43,13 @@ module Rubocop
           '$PROGRAM_NAME',
           'ARGV'
         ])
+        private_constant :NON_ENGLISH_VARS
 
         def on_gvar(node)
           global_var, = *node
+          return unless PREFERRED_VARS[global_var]
 
-          add_offense(node, :expression) if PREFERRED_VARS[global_var]
+          add_offense(node, :expression, message(node))
         end
 
         def message(node)

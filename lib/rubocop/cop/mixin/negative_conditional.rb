@@ -17,7 +17,7 @@ module Rubocop
         return unless method == :! && !(node.loc.respond_to?(:else) &&
                                         node.loc.else)
 
-        add_offense(node, :expression)
+        add_offense(node, :expression, message(node))
       end
     end
   end

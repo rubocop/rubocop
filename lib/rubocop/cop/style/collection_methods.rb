@@ -11,6 +11,7 @@ module Rubocop
       # methods.
       class CollectionMethods < Cop
         MSG = 'Prefer `%s` over `%s`.'
+        private_constant :MSG
 
         def on_block(node)
           method, _args, _body = *node

@@ -15,6 +15,7 @@ module Rubocop
       #   scope :something, -> { where(something: true) }
       class ScopeArgs < Cop
         MSG = 'Use `lambda`/`proc` instead of a plain method call.'
+        private_constant :MSG
 
         def on_send(node)
           return unless command?(:scope, node)
@@ -25,7 +26,7 @@ module Rubocop
 
           second_arg = args[1]
 
-          add_offense(second_arg, :expression) if second_arg.type == :send
+          add_offense(second_arg, :expression, MSG) if second_arg.type == :send
         end
       end
     end

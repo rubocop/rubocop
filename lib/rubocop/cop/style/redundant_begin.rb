@@ -21,11 +21,12 @@ module Rubocop
         include CheckMethods
 
         MSG = 'Redundant `begin` block detected.'
+        private_constant :MSG
 
         def check(_node, _method_name, _args, body)
           return unless body && body.type == :kwbegin
 
-          add_offense(body, :begin)
+          add_offense(body, :begin, MSG)
         end
 
         def autocorrect(node)

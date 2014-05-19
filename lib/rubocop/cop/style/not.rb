@@ -8,6 +8,7 @@ module Rubocop
         include AutocorrectUnlessChangingAST
 
         MSG = 'Use `!` instead of `not`.'
+        private_constant :MSG
 
         def on_send(node)
           _receiver, method_name, *args = *node
@@ -16,7 +17,7 @@ module Rubocop
           return unless args.empty? && method_name == :! &&
             node.loc.selector.is?('not')
 
-          add_offense(node, :selector)
+          add_offense(node, :selector, MSG)
         end
 
         private

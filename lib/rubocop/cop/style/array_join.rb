@@ -10,13 +10,14 @@ module Rubocop
       # array literal or the second is a string literal.
       class ArrayJoin < Cop
         MSG = 'Favor `Array#join` over `Array#*`.'
+        private_constant :MSG
 
         def on_send(node)
           receiver_node, method_name, *arg_nodes = *node
           return unless receiver_node && receiver_node.type == :array &&
             method_name == :* && arg_nodes[0].type == :str
 
-          add_offense(node, :selector)
+          add_offense(node, :selector, MSG)
         end
       end
     end

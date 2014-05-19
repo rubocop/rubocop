@@ -13,6 +13,7 @@ module Rubocop
       #
       class SpaceBeforeFirstArg < Cop
         MSG = 'Put space between the method name and the first argument.'
+        private_constant :MSG
 
         def on_send(node)
           return if parentheses?(node)
@@ -29,7 +30,7 @@ module Rubocop
           arg1 = args.first.loc.expression
           arg1_with_space = range_with_surrounding_space(arg1, :left)
 
-          add_offense(nil, arg1) if arg1_with_space.source =~ /\A\S/
+          add_offense(nil, arg1, MSG) if arg1_with_space.source =~ /\A\S/
         end
       end
     end

@@ -26,6 +26,7 @@ module Rubocop
         METHODS = [:collect, :detect, :downto, :each, :find, :find_all,
                    :inject, :loop, :map!, :map, :reduce, :reverse_each,
                    :select, :times, :upto]
+        private_constant :MSG, :METHODS
 
         def on_block(node)
           method, _, body = *node

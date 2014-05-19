@@ -19,16 +19,17 @@ module Rubocop
       #   def attribute ...
       class AccessorMethodName < Cop
         include CheckMethods
+        MSG_GET = 'Do not prefix reader method names with `get_`.'
+        MSG_SET = 'Do not prefix writer method names with `set_`.'
+        private_constant :MSG_GET, :MSG_SET
 
         private
 
         def check(node, method_name, args, _body)
           if bad_reader_name?(method_name.to_s, args)
-            add_offense(node, :name,
-                        'Do not prefix reader method names with `get_`.')
+            add_offense(node, :name, MSG_GET)
           elsif bad_writer_name?(method_name.to_s, args)
-            add_offense(node, :name,
-                        'Do not prefix writer method names with `set_`.')
+            add_offense(node, :name, MSG_SET)
           end
         end
 

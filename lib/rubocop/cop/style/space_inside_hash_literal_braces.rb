@@ -10,6 +10,7 @@ module Rubocop
         include ConfigurableEnforcedStyle
 
         MSG = 'Space inside %s.'
+        private_constant :MSG
 
         def investigate(processed_source)
           return unless processed_source.ast

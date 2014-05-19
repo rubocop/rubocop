@@ -17,6 +17,7 @@ module Rubocop
 
         MSG = 'Useless setter call to local variable `%s`.'
         ASSIGNMENT_TYPES = [:lvasgn, :ivasgn, :cvasgn, :gvasgn].freeze
+        private_constant :MSG, :ASSIGNMENT_TYPES
 
         private
 

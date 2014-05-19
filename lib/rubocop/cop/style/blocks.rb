@@ -10,6 +10,7 @@ module Rubocop
 
         MULTI_LINE_MSG = 'Avoid using {...} for multi-line blocks.'
         SINGLE_LINE_MSG = 'Prefer {...} over do...end for single-line blocks.'
+        private_constant :MULTI_LINE_MSG, :SINGLE_LINE_MSG
 
         def on_send(node)
           _receiver, method_name, *args = *node

@@ -171,12 +171,12 @@ module Rubocop
 
           @column_deltas = alignment_for(first_pair)
             .deltas_for_first_pair(first_pair, node)
-          add_offense(first_pair, :expression) unless good_alignment?
+          add_offense(first_pair, :expression, MSG) unless good_alignment?
 
           node.children.each_cons(2) do |prev, current|
             @column_deltas = alignment_for(current).deltas(first_pair, prev,
                                                            current)
-            add_offense(current, :expression) unless good_alignment?
+            add_offense(current, :expression, MSG) unless good_alignment?
           end
         end
 

@@ -6,9 +6,11 @@ module Rubocop
       # This cop checks for usage of the %x() syntax when `` would do.
       class UnneededPercentX < Cop
         MSG = 'Do not use `%x` unless the command string contains backquotes.'
+        private_constant :MSG
 
         def on_xstr(node)
-          add_offense(node, :expression) if node.loc.expression.source !~ /`/
+          return unless node.loc.expression.source !~ /`/
+          add_offense(node, :expression, MSG)
         end
 
         private

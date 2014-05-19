@@ -10,6 +10,7 @@ module Rubocop
       METHODS_NOT_DEFINED_IN_PARSER_PROCESSOR = [
         :on_sym, :on_str, :on_int, :on_float
       ]
+      private_constant :METHODS_NOT_DEFINED_IN_PARSER_PROCESSOR
 
       def self.callback_methods
         Parser::AST::Processor.instance_methods.select do |method|

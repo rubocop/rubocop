@@ -7,9 +7,10 @@ module Rubocop
       # backreferences like $1, $2, etc.
       class PerlBackrefs < Cop
         MSG = 'Avoid the use of Perl-style backrefs.'
+        private_constant :MSG
 
         def on_nth_ref(node)
-          add_offense(node, :expression)
+          add_offense(node, :expression, MSG)
         end
 
         def autocorrect(node)

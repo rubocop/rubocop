@@ -14,6 +14,7 @@ module Rubocop
 
         MSG_19 = 'Use the new Ruby 1.9 hash syntax.'
         MSG_HASH_ROCKETS = 'Always use hash rockets in hashes.'
+        private_constant :MSG_19, :MSG_HASH_ROCKETS
 
         def on_hash(node)
           style == :ruby19 ? ruby19_check(node) : hash_rockets_check(node)

@@ -15,6 +15,7 @@ module Rubocop
       #   end
       class MultilineBlockChain < Cop
         MSG = 'Avoid multi-line chains of blocks.'
+        private_constant :MSG
 
         def on_block(node)
           method, _args, _body = *node
@@ -30,7 +31,7 @@ module Rubocop
                   Parser::Source::Range.new(end_kw_loc.source_buffer,
                                             end_kw_loc.begin_pos,
                                             method.loc.expression.end_pos)
-                add_offense(nil, range)
+                add_offense(nil, range, MSG)
                 # Done. If there are more blocks in the chain, they will be
                 # found by subsequent calls to on_block.
                 break

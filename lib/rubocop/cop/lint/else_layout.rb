@@ -15,6 +15,9 @@ module Rubocop
       #     do_that
       #   end
       class ElseLayout < Cop
+        MSG = 'Odd `else` layout detected. Did you mean to use `elsif`?'
+        private_constant :MSG
+
         def on_if(node)
           # ignore ternary ops
           return if node.loc.respond_to?(:question)
@@ -39,17 +42,13 @@ module Rubocop
             first_else_expr = else_branch.children.first
 
             if first_else_expr.loc.expression.line == node.loc.else.line
-              add_offense(first_else_expr, :expression, message)
+              add_offense(first_else_expr, :expression, MSG)
             end
           elsif node.loc.respond_to?(:keyword) &&
                 %w(if elsif).include?(node.loc.keyword.source)
             _cond, _if_branch, else_branch = *node
             check(else_branch)
           end
-        end
-
-        def message
-          'Odd `else` layout detected. Did you mean to use `elsif`?'
         end
       end
     end

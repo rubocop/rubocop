@@ -6,6 +6,7 @@ module Rubocop
       # This cop checks for tabs inside the source code.
       class Tab < Cop
         MSG = 'Tab detected.'
+        private_constant :MSG
 
         def investigate(processed_source)
           processed_source.lines.each_with_index do |line, index|

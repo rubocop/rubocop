@@ -32,6 +32,7 @@ module Rubocop
         include CheckMethods
 
         MSG = 'Use `delegate` to define delegations.'
+        private_constant :MSG
 
         private
 

@@ -16,13 +16,14 @@ module Rubocop
       #   !something.nil?
       class DoubleNegation < Cop
         MSG = 'Avoid the use of double negation (`!!`).'
+        private_constant :MSG
 
         def on_send(node)
           return unless not_node?(node)
 
           receiver, _method_name, *_args = *node
 
-          add_offense(node, :selector) if not_node?(receiver)
+          add_offense(node, :selector, MSG) if not_node?(receiver)
         end
 
         private

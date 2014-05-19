@@ -7,10 +7,12 @@ module Rubocop
       # in comments.
       class AsciiComments < Cop
         MSG = 'Use only ascii symbols in comments.'
+        private_constant :MSG
 
         def investigate(processed_source)
           processed_source.comments.each do |comment|
-            add_offense(comment, :expression) unless comment.text.ascii_only?
+            next if comment.text.ascii_only?
+            add_offense(comment, :expression, MSG)
           end
         end
       end

@@ -7,6 +7,7 @@ module Rubocop
       # used.
       class UnderscorePrefixedVariableName < Cop
         MSG = 'Do not use prefix `_` for a variable that is used.'
+        private_constant :MSG
 
         def join_force?(force_class)
           force_class == VariableForce
@@ -31,7 +32,7 @@ module Rubocop
                        node.loc.name
                      end
 
-          add_offense(nil, location)
+          add_offense(nil, location, MSG)
         end
       end
     end

@@ -7,6 +7,7 @@ module Rubocop
       class UnlessElse < Cop
         MSG = 'Never use `unless` with `else`. Rewrite these with the ' \
               'positive case first.'
+        private_constant :MSG
 
         def on_if(node)
           loc = node.loc
@@ -15,7 +16,7 @@ module Rubocop
           return unless loc.respond_to?(:keyword) && loc.respond_to?(:else)
           return unless loc.keyword.is?('unless') && loc.else
 
-          add_offense(node, :expression)
+          add_offense(node, :expression, MSG)
         end
       end
     end

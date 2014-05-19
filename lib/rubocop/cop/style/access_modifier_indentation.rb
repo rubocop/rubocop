@@ -10,10 +10,12 @@ module Rubocop
         include ConfigurableEnforcedStyle
 
         MSG = '%s access modifiers like `%s`.'
+        private_constant :MSG
 
         PRIVATE_NODE = s(:send, nil, :private)
         PROTECTED_NODE = s(:send, nil, :protected)
         PUBLIC_NODE = s(:send, nil, :public)
+        private_constant :PRIVATE_NODE, :PROTECTED_NODE, :PUBLIC_NODE
 
         def on_class(node)
           _name, _base_class, body = *node
@@ -58,7 +60,7 @@ module Rubocop
           if @column_delta == 0
             correct_style_detected
           else
-            add_offense(send_node, :expression) do
+            add_offense(send_node, :expression, message(send_node)) do
               if offset == unexpected_indent_offset
                 opposite_style_detected
               else

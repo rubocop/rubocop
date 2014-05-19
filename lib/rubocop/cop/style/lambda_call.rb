@@ -22,7 +22,7 @@ module Rubocop
           return unless selector == :call
 
           if offense?(node)
-            add_offense(node, :expression) { opposite_style_detected }
+            add_offense(node, :expression, message) { opposite_style_detected }
           else
             correct_style_detected
           end
@@ -50,7 +50,7 @@ module Rubocop
           end
         end
 
-        def message(_node)
+        def message
           if style == :call
             'Prefer the use of `lambda.call(...)` over `lambda.(...)`.'
           else

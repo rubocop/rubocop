@@ -11,6 +11,7 @@ module Rubocop
         include AnnotationComment
 
         MSG = 'Missing top-level %s documentation comment.'
+        private_constant :MSG
 
         def investigate(processed_source)
           ast = processed_source.ast

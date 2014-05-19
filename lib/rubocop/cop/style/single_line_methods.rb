@@ -9,6 +9,7 @@ module Rubocop
         include CheckMethods
 
         MSG = 'Avoid single-line method definitions.'
+        private_constant :MSG
 
         def allow_empty?
           cop_config['AllowIfMethodIsEmpty']
@@ -24,7 +25,7 @@ module Rubocop
           return unless start_line == end_line && !(allow_empty? && empty_body)
 
           @body = body
-          add_offense(node, :expression)
+          add_offense(node, :expression, MSG)
         end
 
         def autocorrect(node)

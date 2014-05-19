@@ -6,6 +6,7 @@ module Rubocop
       # This cop checks for variable interpolation (like "#@ivar").
       class VariableInterpolation < Cop
         MSG = 'Replace interpolated variable `%s` with expression `#{%s}`.'
+        private_constant :MSG
 
         def on_dstr(node)
           var_nodes(node.children).each do |v|

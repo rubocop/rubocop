@@ -7,6 +7,7 @@ module Rubocop
       # which should not have surrounding space.
       class SpaceAroundOperators < Cop
         TYPES = %w(and or class) + ASGN_NODES
+        private_constant :TYPES
 
         TYPES.each { |t| define_method(:"on_#{t}") { |node| check(node) } }
 

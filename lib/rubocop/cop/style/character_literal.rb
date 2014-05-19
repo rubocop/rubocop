@@ -7,8 +7,6 @@ module Rubocop
       class CharacterLiteral < Cop
         include StringHelp
 
-        MSG = 'Do not use the character literal - use string literal instead.'
-
         def offense?(node)
           # we don't register an offense for things like ?\C-\M-d
           node.loc.begin.is?('?') &&
@@ -25,6 +23,10 @@ module Rubocop
               corrector.replace(node.loc.expression, %Q("#{string}"))
             end
           end
+        end
+
+        def message
+          'Do not use the character literal - use string literal instead.'
         end
 
         # Dummy implementation of method in ConfigurableEnforcedStyle that is

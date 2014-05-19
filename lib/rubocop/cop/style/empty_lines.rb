@@ -7,6 +7,7 @@ module Rubocop
       class EmptyLines < Cop
         MSG = 'Extra blank line detected.'
         LINE_OFFSET = 2
+        private_constant :MSG, :LINE_OFFSET
 
         def investigate(processed_source)
           return if processed_source.tokens.empty?
@@ -30,7 +31,7 @@ module Rubocop
                                      processed_source[0...(line - 1)],
                                      0,
                                      1)
-                add_offense(range, range)
+                add_offense(range, range, MSG)
               end
             end
 

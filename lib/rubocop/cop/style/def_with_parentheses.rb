@@ -11,14 +11,16 @@ module Rubocop
 
         MSG = "Omit the parentheses in defs when the method doesn't accept " \
               'any arguments.'
+        private_constant :MSG
 
         def check(node, _method_name, args, _body)
           start_line = node.loc.keyword.line
           end_line = node.loc.end.line
 
           return if start_line == end_line
+          return unless args.children == [] && args.loc.begin
 
-          add_offense(args, :begin) if args.children == [] && args.loc.begin
+          add_offense(args, :begin, MSG)
         end
 
         def autocorrect(node)

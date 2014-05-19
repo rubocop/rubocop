@@ -8,6 +8,7 @@ module Rubocop
         include AutocorrectAlignment
 
         MSG = 'Incorrect indentation detected (column %d instead of %d).'
+        private_constant :MSG
 
         def investigate(processed_source)
           processed_source.comments.each do |comment|

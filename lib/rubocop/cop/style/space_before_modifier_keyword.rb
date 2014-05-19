@@ -6,6 +6,7 @@ module Rubocop
       # Here we check if modifier keywords are preceded by a space.
       class SpaceBeforeModifierKeyword < Cop
         MSG = 'Put a space before the modifier keyword.'
+        private_constant :MSG
 
         def on_if(node)
           return unless modifier?(node)
@@ -13,7 +14,7 @@ module Rubocop
           kw = node.loc.keyword
           b = kw.begin_pos
           left_of_kw = Parser::Source::Range.new(kw.source_buffer, b - 1, b)
-          add_offense(node, left_of_kw) unless left_of_kw.is?(' ')
+          add_offense(node, left_of_kw, MSG) unless left_of_kw.is?(' ')
         end
         alias_method :on_while, :on_if
         alias_method :on_until, :on_if

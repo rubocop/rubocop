@@ -28,6 +28,8 @@ module Rubocop
           process(node, '%x')
         end
 
+        private
+
         def message(node)
           type = type(node)
           delimiters = preferred_delimiters(type)
@@ -35,8 +37,6 @@ module Rubocop
           "`#{type}`-literals should be delimited by " \
           "`#{delimiters[0]}` and `#{delimiters[1]}`"
         end
-
-        private
 
         def autocorrect(node)
           type = type(node)
@@ -65,7 +65,7 @@ module Rubocop
             !uses_preferred_delimiter?(node, type) &&
             !contains_preferred_delimiter?(node, type)
 
-          add_offense(node, :expression)
+          add_offense(node, :expression, message(node))
         end
 
         def preferred_delimiters(type)

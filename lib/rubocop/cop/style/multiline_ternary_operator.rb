@@ -7,6 +7,7 @@ module Rubocop
       class MultilineTernaryOperator < Cop
         MSG = 'Avoid multi-line ?: (the ternary operator);' \
               ' use `if`/`unless` instead.'
+        private_constant :MSG
 
         def on_if(node)
           loc = node.loc
@@ -14,7 +15,7 @@ module Rubocop
           # discard non-ternary ops
           return unless loc.respond_to?(:question)
 
-          add_offense(node, :expression) if loc.line != loc.colon.line
+          add_offense(node, :expression, MSG) if loc.line != loc.colon.line
         end
       end
     end

@@ -7,6 +7,7 @@ module Rubocop
     module SpaceInside
       include SurroundingSpace
       MSG = 'Space inside %s detected.'
+      private_constant :MSG
 
       def investigate(processed_source)
         @processed_source = processed_source

@@ -7,6 +7,7 @@ module Rubocop
       # It also checks for lines terminated with a semicolon.
       class Semicolon < Cop
         MSG = 'Do not use semicolons to terminate expressions.'
+        private_constant :MSG
 
         def investigate(processed_source)
           return unless processed_source.ast
@@ -53,7 +54,7 @@ module Rubocop
           range = source_range(@processed_source.buffer,
                                @processed_source[0...(line - 1)], column,
                                1)
-          add_offense(last_on_line ? range : nil, range)
+          add_offense(last_on_line ? range : nil, range, MSG)
         end
 
         def autocorrect(range)

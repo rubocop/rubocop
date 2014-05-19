@@ -30,6 +30,7 @@ module Rubocop
 
         MSG = 'Use a guard clause instead of wrapping the code inside a ' \
               'conditional expression.'
+        private_constant :MSG
 
         def on_def(node)
           _, _, body = *node

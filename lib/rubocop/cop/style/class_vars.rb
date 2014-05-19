@@ -8,14 +8,11 @@ module Rubocop
       # reduced the number of offenses that would be reported.
       class ClassVars < Cop
         MSG = 'Replace class var %s with a class instance var.'
+        private_constant :MSG
 
         def on_cvasgn(node)
-          add_offense(node, :name)
-        end
-
-        def message(node)
           class_var, = *node
-          format(MSG, class_var)
+          add_offense(node, :name, format(MSG, class_var))
         end
       end
     end

@@ -13,6 +13,7 @@ module Rubocop
       #
       class SingleSpaceBeforeFirstArg < Cop
         MSG = 'Put one space between the method name and the first argument.'
+        private_constant :MSG
 
         def on_send(node)
           return if parentheses?(node)
@@ -29,7 +30,7 @@ module Rubocop
           space = Parser::Source::Range.new(arg1.source_buffer,
                                             arg1_with_space.begin_pos,
                                             arg1.begin_pos)
-          add_offense(space, space) if space.length > 1
+          add_offense(space, space, MSG) if space.length > 1
         end
 
         def autocorrect(range)

@@ -11,6 +11,7 @@ module Rubocop
         include ConfigurableEnforcedStyle
 
         MSG = 'Prefer `%s` over `%s`.'
+        private_constant :MSG
 
         FILTER_METHODS = [:before_filter, :skip_before_filter,
                           :after_filter, :around_filter]

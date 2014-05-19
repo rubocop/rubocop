@@ -8,8 +8,8 @@ module Rubocop
         include AutocorrectUnlessChangingAST
 
         MSG = 'Use `%s` instead of `%s`.'
-
         OPS = { 'and' => '&&', 'or' => '||' }
+        private_constant :MSG, :OPS
 
         def on_and(node)
           process_logical_op(node)

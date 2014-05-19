@@ -6,6 +6,7 @@ module Rubocop
       # This cop checks for *return* from an *ensure* block.
       class EnsureReturn < Cop
         MSG = 'Never return from an `ensure` block.'
+        private_constant :MSG
 
         def on_ensure(node)
           _body, ensure_body = *node
@@ -13,7 +14,7 @@ module Rubocop
           return unless ensure_body
 
           on_node(:return, ensure_body) do |e|
-            add_offense(e, :expression)
+            add_offense(e, :expression, MSG)
           end
         end
       end

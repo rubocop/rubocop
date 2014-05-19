@@ -7,6 +7,7 @@ module Rubocop
       # of the . operator (like FileUtils::rmdir instead of FileUtils.rmdir).
       class ColonMethodCall < Cop
         MSG = 'Do not use `::` for method calls.'
+        private_constant :MSG
 
         def on_send(node)
           receiver, method_name, *_args = *node
@@ -15,7 +16,7 @@ module Rubocop
           return unless receiver && node.loc.dot && node.loc.dot.is?('::')
           return if allowed_name(method_name.to_s)
 
-          add_offense(node, :dot)
+          add_offense(node, :dot, MSG)
         end
 
         def allowed_name(method_name)

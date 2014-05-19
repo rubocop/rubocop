@@ -9,6 +9,7 @@ module Rubocop
         include ConfigurableEnforcedStyle
 
         MSG = '%s comma after the last %s.'
+        private_constant :MSG
 
         def on_array(node)
           check_literal(node, 'item of %s array') if square_brackets?(node)

@@ -17,6 +17,7 @@ module Rubocop
       #   self[:attr] = val
       class ReadWriteAttribute < Cop
         MSG = 'Prefer `%s` over `%s`.'
+        private_constant :MSG
 
         def on_send(node)
           receiver, method_name, *_args = *node
@@ -24,7 +25,7 @@ module Rubocop
           return unless [:read_attribute,
                          :write_attribute].include?(method_name)
 
-          add_offense(node, :selector)
+          add_offense(node, :selector, message(node))
         end
 
         def message(node)

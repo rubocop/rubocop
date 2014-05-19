@@ -9,13 +9,14 @@ module Rubocop
       # like #++, #--, #:nodoc, etc.
       class LeadingCommentSpace < Cop
         MSG = 'Missing space after #.'
+        private_constant :MSG
 
         def investigate(processed_source)
           processed_source.comments.each do |comment|
             next unless comment.text =~ /^#+[^#\s:+-]/
             next if comment.text.start_with?('#!') && comment.loc.line == 1
 
-            add_offense(comment, :expression)
+            add_offense(comment, :expression, MSG)
           end
         end
 

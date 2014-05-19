@@ -13,6 +13,7 @@ module Rubocop
         include ConfigurableMax
 
         MSG = 'Use `%w` or `%W` for array of words.'
+        private_constant :MSG
 
         def on_array(node)
           array_elems = node.children
@@ -20,7 +21,7 @@ module Rubocop
             !complex_content?(array_elems) &&
             array_elems.size > min_size && !comments_in_array?(node)
 
-          add_offense(node, :expression) { self.max = array_elems.size }
+          add_offense(node, :expression, MSG) { self.max = array_elems.size }
         end
 
         private

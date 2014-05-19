@@ -10,6 +10,7 @@ module Rubocop
 
         MSG = 'Align the parameters of a method call if they span ' \
               'more than one line.'
+        private_constant :MSG
 
         def on_send(node)
           _receiver, method, *args = *node
@@ -17,7 +18,7 @@ module Rubocop
           return if method == :[]=
           return if args.size <= 1
 
-          check_alignment(args, base_column(node, args))
+          check_alignment(args, MSG, base_column(node, args))
         end
 
         private
