@@ -6,7 +6,11 @@ module Rubocop
   class TargetFinder
     def initialize(config_store, options = {})
       @config_store = config_store
-      @options = { force_exclusion: false, debug: false }.merge(options)
+      @options = {
+        force_exclusion: false,
+        debug: false,
+        fail_level: false
+      }.merge(options)
     end
 
     def force_exclusion?
@@ -15,6 +19,10 @@ module Rubocop
 
     def debug?
       @options[:debug]
+    end
+
+    def fail_fast?
+      @options[:fail_fast]
     end
 
     # Generate a list of target files by expanding globbing patterns
@@ -60,6 +68,9 @@ module Rubocop
         next true if ruby_executable?(file)
         @config_store.for(file).file_to_include?(file)
       end
+
+      # Most recently modified file first.
+      target_files.sort_by! { |path| -File.mtime(path).to_i } if fail_fast?
 
       target_files
     end

@@ -65,6 +65,9 @@ Usage: rubocop [options] [file1, file2, ...]
         --show-cops [COP1,COP2,...]  Shows the given cops, or all cops by
                                      default, and their configurations for the
                                      current directory.
+    -F, --fail-fast                  Inspect files in order of modification
+                                     time and stop after the first file
+                                     containing offenses.
     -d, --debug                      Display debug info.
     -D, --display-cop-names          Display cop names in offense messages.
     -R, --rails                      Run extra Rails cops.
