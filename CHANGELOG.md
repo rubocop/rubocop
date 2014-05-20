@@ -18,6 +18,7 @@
 * Add auto-correct to `UnusedBlockArgument` and `UnusedMethodArgument` cops. ([@hannestyden][])
 * [#1074](https://github.com/bbatsov/rubocop/issues/1074): New cop `SpaceBeforeComment` checks for missing space between code and a comment on the same line. ([@jonas054][])
 * [#1089](https://github.com/bbatsov/rubocop/pull/1089): New option `-F`/`--fail-fast` inspects files in modification time order and stop after the first file with offenses. ([@jonas054][])
+* Add optional `require` directive to `.rubocop.yml` to load custom ruby files. ([@geniou][])
 
 ### Changes
 
