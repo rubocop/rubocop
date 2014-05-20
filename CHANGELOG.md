@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.22.0 (20/04/2014)
+
 ### New features
 
 * [#974](https://github.com/bbatsov/rubocop/pull/974): New cop `CommentIndentation` checks indentation of comments. ([@jonas054][])
