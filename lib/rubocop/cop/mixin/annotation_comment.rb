@@ -29,7 +29,7 @@ module Rubocop
         end
 
         def keyword?(word)
-          config.for_cop('CommentAnnotation')['Keywords'].include?(word)
+          config.for_cop('Style/CommentAnnotation')['Keywords'].include?(word)
         end
       end
     end

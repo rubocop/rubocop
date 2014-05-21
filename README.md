@@ -199,12 +199,15 @@ The file has the following format:
 ```yaml
 inherit_from: ../.rubocop.yml
 
-Encoding:
+Style/Encoding:
   Enabled: false
 
-LineLength:
+Style/LineLength:
   Max: 99
 ```
+
+**Note**: Qualifying cop name with its type, e.g., `Style`, is recommended,
+  but not necessary as long as the cop name is unique across all types.
 
 ### Inheritance
 
@@ -296,7 +299,7 @@ paths match `app/models/*.rb`). All cops support the
 `Include` param.
 
 ```yaml
-DefaultScope:
+Rails/DefaultScope:
   Include:
     - app/models/*.rb
 ```
@@ -306,7 +309,7 @@ instance you might want to run some cop only on a specific file). All cops suppo
 `Exclude` param.
 
 ```yaml
-DefaultScope:
+Rails/DefaultScope:
   Exclude:
     - app/models/problematic.rb
 ```
@@ -314,7 +317,7 @@ DefaultScope:
 Specific cops can be disabled by setting `Enabled` to `false` for that specific cop.
 
 ```yaml
-LineLength:
+Style/LineLength:
   Enabled: false
 ```
 
@@ -322,7 +325,7 @@ Cops can customize their severity level. All cops support the `Severity` param.
 Allowed params are `refactor`, `convention`, `warning`, `error` and `fatal`.
 
 ```yaml
-CyclomaticComplexity:
+Style/CyclomaticComplexity:
   Severity: warning
 ```
 
@@ -342,9 +345,9 @@ One or more individual cops can be disabled locally in a section of a
 file by adding a comment such as
 
 ```ruby
-# rubocop:disable LineLength, StringLiterals
+# rubocop:disable Style/LineLength, Style/StringLiterals
 [...]
-# rubocop:enable LineLength, StringLiterals
+# rubocop:enable Style/LineLength, Style/StringLiterals
 ```
 
 You can also disable *all* cops with
@@ -359,7 +362,7 @@ One or more cops can be disabled on a single line with an end-of-line
 comment.
 
 ```ruby
-for x in (0..19) # rubocop:disable AvoidFor
+for x in (0..19) # rubocop:disable Style/AvoidFor
 ```
 
 ## Formatters

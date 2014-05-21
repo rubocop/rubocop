@@ -34,6 +34,10 @@ module Rubocop
       inspector.display_error_summary
 
       !any_failed && !wants_to_quit ? 0 : 1
+    rescue Cop::AmbiguousCopName => e
+      $stderr.puts "Ambiguous cop name #{e.message} needs namespace " \
+                   'qualifier.'
+      return 1
     rescue => e
       $stderr.puts e.message
       $stderr.puts e.backtrace

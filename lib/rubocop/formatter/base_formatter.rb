@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-# rubocop:disable LineLength, UnusedMethodArgument
+# rubocop:disable Style/LineLength, Lint/UnusedMethodArgument
 
 module Rubocop
   module Formatter
@@ -41,7 +41,7 @@ module Rubocop
     # * `#finished`
     #
     class BaseFormatter
-      # rubocop:enable LineLength
+      # rubocop:enable Style/LineLength
 
       # @api public
       #

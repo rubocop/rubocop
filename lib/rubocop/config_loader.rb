@@ -43,6 +43,7 @@ module Rubocop
           warn("#{path} - #{deprecation_message}")
         end
 
+        config.add_missing_namespaces
         config.warn_unless_valid
         config.make_excludes_absolute
         config

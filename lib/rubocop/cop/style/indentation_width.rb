@@ -118,7 +118,7 @@ module Rubocop
           rhs = first_part_of_call_chain(rhs)
           return unless rhs
 
-          end_config = config.for_cop('EndAlignment')
+          end_config = config.for_cop('Lint/EndAlignment')
           style = end_config['Enabled'] ? end_config['AlignWith'] : 'keyword'
           base = style == 'variable' ? node : rhs
 

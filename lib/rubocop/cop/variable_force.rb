@@ -22,7 +22,7 @@ module Rubocop
     #
     #     def after_declaring_variable(variable, variable_table)
     #     end
-    class VariableForce < Force # rubocop:disable ClassLength
+    class VariableForce < Force # rubocop:disable Style/ClassLength
       VARIABLE_ASSIGNMENT_TYPE = :lvasgn
       REGEXP_NAMED_CAPTURE_TYPE = :match_with_lvasgn
       VARIABLE_ASSIGNMENT_TYPES =
@@ -102,7 +102,7 @@ module Rubocop
         throw :skip_children
       end
 
-      # rubocop:disable MethodLength, CyclomaticComplexity
+      # rubocop:disable Style/MethodLength, Style/CyclomaticComplexity
       def dispatch_node(node)
         case node.type
         when *DECLARATION_TYPES
@@ -127,7 +127,7 @@ module Rubocop
           process_scope(node)
         end
       end
-      # rubocop:enable MethodLength, CyclomaticComplexity
+      # rubocop:enable Style/MethodLength, Style/CyclomaticComplexity
 
       def process_variable_declaration(node)
         # restarg would have no name:

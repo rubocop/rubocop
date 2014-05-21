@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#1097](https://github.com/bbatsov/rubocop/issues/1097): Add optional namespace prefix to cop names: `Style/LineLength` instead of `LineLength` in config files, `--only` argument, `--show-cops` output, and `# rubocop:disable`. ([@jonas054][])
+
 ### Bugs fixed
 
 * [#1104](https://github.com/bbatsov/rubocop/issues/1104): Fix `EachWithObject` with modifier if as body. ([@geniou][])

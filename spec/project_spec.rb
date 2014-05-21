@@ -76,7 +76,7 @@ describe 'RuboCop Project' do
         it 'has a valid URL' do
           issues.each do |issue|
             number = issue[:number].gsub(/\D/, '')
-            pattern = %r{^https://github\.com/bbatsov/rubocop/(?:issues|pull)/#{number}$} # rubocop:disable LineLength
+            pattern = %r{^https://github\.com/bbatsov/rubocop/(?:issues|pull)/#{number}$} # rubocop:disable Style/LineLength
             expect(issue[:url]).to match(pattern)
           end
         end
