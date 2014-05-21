@@ -28,6 +28,7 @@ automatically fix some of the problems for you.
         - [Rails](#rails)
 - [Configuration](#configuration)
     - [Inheritance](#inheritance)
+    - [Loading Extensions](#loading-extensions)
     - [Defaults](#defaults)
     - [Including/Excluding files](#includingexcluding-files)
     - [Automatically Generated Configuration](#automatically-generated-configuration)
@@ -222,6 +223,17 @@ inheritance is:
 inherit_from:
   - ../.rubocop.yml
   - ../conf/.rubocop.yml
+```
+
+### Loading Extensions
+
+Besides the `--require` command line option you can also specify ruby
+files that should be loaded with the optional `require` directive.
+
+```yaml
+require:
+ - ../my/custom/file.rb
+ - rubocop-extension
 ```
 
 ### Defaults

@@ -325,4 +325,19 @@ describe Rubocop::ConfigLoader do
       end
     end
   end
+
+  describe 'when a requirement is defined', :isolated_environment do
+    let(:required_file_path) { './required_file.rb' }
+
+    before do
+      create_file('.rubocop.yml', ['require:', "  - #{required_file_path}"])
+      create_file(required_file_path, ['class MyClass', 'end'])
+    end
+
+    it 'requires the passed path' do
+      config_path = described_class.configuration_file_for('.')
+      described_class.configuration_from_file(config_path)
+      expect(defined?(MyClass)).to be_true
+    end
+  end
 end

@@ -34,6 +34,8 @@ module Rubocop
 
         resolve_inheritance(path, hash)
 
+        Array(hash.delete('require')).each { |r| require(r) }
+
         hash.delete('inherit_from')
         config = Config.new(hash, path)
 
