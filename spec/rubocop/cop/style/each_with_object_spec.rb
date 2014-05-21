@@ -37,6 +37,28 @@ describe Rubocop::Cop::Style::EachWithObject do
     expect(cop.offenses).to be_empty
   end
 
+  it 'ignores inject and reduce with empty body' do
+    inspect_source(cop,
+                   ['[].inject({}) do |a, e|',
+                    'end',
+                    '',
+                    '[].reduce({}) do |a, e|',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'ignores inject and reduce modifier if as body' do
+    inspect_source(cop,
+                   ['[].inject({}) do |a, e|',
+                    '  a = e if e',
+                    'end',
+                    '',
+                    '[].reduce({}) do |a, e|',
+                    '  a = e if e',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'ignores inject and reduce passed in symbol' do
     inspect_source(cop, ['[].inject(:+)', '[].reduce(:+)'])
     expect(cop.offenses).to be_empty
