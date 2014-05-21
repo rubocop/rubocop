@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bugs fixed
+
+* [#1104](https://github.com/bbatsov/rubocop/issues/1104): Fix `EachWithObject` with modifier if as body. ([@geniou][])
+
 ## 0.22.0 (20/04/2014)
 
 ### New features

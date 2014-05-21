@@ -23,14 +23,33 @@ module Rubocop
 
           return unless METHODS.include? method_name
           return if method_args.type == :sym
+
+          return_value = return_value(body)
+          return unless return_value
+
+          return unless first_argument_returned?(args, return_value)
+
+          add_offense(method, :selector, format(MSG, method_name))
+        end
+
+        private
+
+        def return_value(body)
+          return unless body
+
           return_value = body.children.last
+          return unless return_value
           return unless return_value.type == :lvar
+
+          return_value
+        end
+
+        def first_argument_returned?(args, return_value)
           first_arg, = *args
           accumulator_var = *first_arg
           return_var = *return_value
-          return unless accumulator_var == return_var
 
-          add_offense(method, :selector, format(MSG, method_name))
+          accumulator_var == return_var
         end
       end
     end
