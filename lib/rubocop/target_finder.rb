@@ -6,11 +6,7 @@ module Rubocop
   class TargetFinder
     def initialize(config_store, options = {})
       @config_store = config_store
-      @options = {
-        force_exclusion: false,
-        debug: false,
-        fail_level: false
-      }.merge(options)
+      @options = options
     end
 
     def force_exclusion?
