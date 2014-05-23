@@ -9,6 +9,7 @@
 ### Bugs fixed
 
 * [#1104](https://github.com/bbatsov/rubocop/issues/1104): Fix `EachWithObject` with modifier if as body. ([@geniou][])
+* [#1106](https://github.com/bbatsov/rubocop/issues/1106): Fix `EachWithObject` with single method call as body. ([@geniou][])
 
 ## 0.22.0 (20/04/2014)
 
