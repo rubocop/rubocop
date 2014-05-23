@@ -7,10 +7,7 @@ describe Rubocop::Cop::Style::EachWithObject do
 
   it 'finds inject and reduce with passed in and returned hash' do
     inspect_source(cop,
-                   ['[].inject({}) do |a, e|',
-                    '  a[e] = 1',
-                    '  a',
-                    'end',
+                   ['[].inject({}) { |a, e| a }',
                     '',
                     '[].reduce({}) do |a, e|',
                     '  a[e] = 1',
@@ -18,7 +15,7 @@ describe Rubocop::Cop::Style::EachWithObject do
                     '  a',
                     'end'])
     expect(cop.offenses.size).to eq(2)
-    expect(cop.offenses.map(&:line).sort).to eq([1, 6])
+    expect(cop.offenses.map(&:line).sort).to eq([1, 3])
     expect(cop.messages)
       .to eq(['Use `each_with_object` instead of `inject`.',
               'Use `each_with_object` instead of `reduce`.'])
@@ -32,7 +29,7 @@ describe Rubocop::Cop::Style::EachWithObject do
                     'end',
                     '',
                     '[].reduce({}) do |a, e|',
-                    '  a + e',
+                    '  my_method e, a',
                     'end'])
     expect(cop.offenses).to be_empty
   end
@@ -42,19 +39,24 @@ describe Rubocop::Cop::Style::EachWithObject do
                    ['[].inject({}) do |a, e|',
                     'end',
                     '',
-                    '[].reduce({}) do |a, e|',
-                    'end'])
+                    '[].reduce({}) { |a, e| }'])
     expect(cop.offenses).to be_empty
   end
 
-  it 'ignores inject and reduce modifier if as body' do
+  it 'ignores inject and reduce with condition as body' do
     inspect_source(cop,
                    ['[].inject({}) do |a, e|',
                     '  a = e if e',
                     'end',
                     '',
+                    '[].inject({}) do |a, e|',
+                    '  if e',
+                    '    a = e',
+                    '  end',
+                    'end',
+                    '',
                     '[].reduce({}) do |a, e|',
-                    '  a = e if e',
+                    '  a = e ? e : 2',
                     'end'])
     expect(cop.offenses).to be_empty
   end
