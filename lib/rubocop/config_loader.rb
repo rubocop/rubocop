@@ -5,8 +5,10 @@ require 'pathname'
 
 # Psych can give an error when reading an empty file, so we use syck in Ruby
 # versions where it's available. Also, the problem with empty files does not
-# appear in Ruby 2.
-YAML::ENGINE.yamler = 'syck' if RUBY_VERSION < '2.0.0'
+# appear in Ruby 2 or in JRuby 1.9 mode.
+if RUBY_VERSION < '2.0.0' && RUBY_PLATFORM != 'java'
+  YAML::ENGINE.yamler = 'syck'
+end
 
 module Rubocop
   # This class represents the configuration of the RuboCop application
