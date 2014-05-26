@@ -11,6 +11,7 @@
 * [#1104](https://github.com/bbatsov/rubocop/issues/1104): Fix `EachWithObject` with modifier if as body. ([@geniou][])
 * [#1106](https://github.com/bbatsov/rubocop/issues/1106): Fix `EachWithObject` with single method call as body. ([@geniou][])
 * Avoid the warning about ignoring syck YAML engine from JRuby. ([@jonas054][])
+* [#1111](https://github.com/bbatsov/rubocop/issues/1111): Fix problem in `EndOfLine` with reading non-UTF-8 encoded files. ([@jonas054][])
 
 ## 0.22.0 (20/04/2014)
 

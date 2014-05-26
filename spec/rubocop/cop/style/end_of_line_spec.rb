@@ -21,11 +21,21 @@ describe Rubocop::Cop::Style::EndOfLine do
     expect(cop.messages).to eq(['Carriage return character detected.'])
   end
 
+  shared_examples 'iso-8859-15' do
+    it 'can inspect non-UTF-8 encoded source with proper encoding comment' do
+      inspect_source_file(cop, ['# coding: ISO-8859-15\r',
+                                "# Euro symbol: \xa4\r"])
+      expect(cop.offenses.size).to eq(1)
+    end
+  end
+
   context 'when there are many lines ending with CR+LF' do
     it 'registers only one offense' do
       inspect_source_file(cop, ['x=0', '', 'y=1'].join("\r\n"))
       expect(cop.messages.size).to eq(1)
     end
+
+    include_examples 'iso-8859-15'
   end
 
   context 'when the default external encoding is US_ASCII' do
@@ -41,5 +51,7 @@ describe Rubocop::Cop::Style::EndOfLine do
                            'end'].join("\n"))
       expect(cop.offenses).to be_empty
     end
+
+    include_examples 'iso-8859-15'
   end
 end
