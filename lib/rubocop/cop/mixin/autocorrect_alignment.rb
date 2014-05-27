@@ -29,6 +29,8 @@ module Rubocop
         # problem.
         column_delta = @column_delta
 
+        fail CorrectionNotPossible if block_comment_within?(node)
+
         @corrections << lambda do |corrector|
           expr = node.loc.expression
           each_line(expr) do |line_begin_pos|
@@ -41,6 +43,15 @@ module Rubocop
               remove(range, corrector) if range.source =~ /^[ \t]+$/
             end
           end
+        end
+      end
+
+      private
+
+      def block_comment_within?(node)
+        processed_source.comments.select { |c| c.document? }.find do |c|
+          inner, outer = c.loc.expression, node.loc.expression
+          inner.begin_pos >= outer.begin_pos && inner.end_pos <= outer.end_pos
         end
       end
 

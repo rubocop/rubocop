@@ -13,6 +13,7 @@
 * Avoid the warning about ignoring syck YAML engine from JRuby. ([@jonas054][])
 * [#1111](https://github.com/bbatsov/rubocop/issues/1111): Fix problem in `EndOfLine` with reading non-UTF-8 encoded files. ([@jonas054][])
 * [#1115](https://github.com/bbatsov/rubocop/issues/1115): Fix `Next` to ignore super nodes. ([@geniou][])
+* [#1117](https://github.com/bbatsov/rubocop/issues/1117): Don't auto-correct indentation in scopes that contain block comments (`=begin`..`=end`). ([@jonas054][])
 
 ## 0.22.0 (20/04/2014)
 

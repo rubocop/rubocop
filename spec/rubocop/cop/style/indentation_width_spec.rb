@@ -67,25 +67,60 @@ describe Rubocop::Cop::Style::IndentationWidth do
         .to eq(['Use 2 (not 3) spaces for indentation.'])
     end
 
-    it 'autocorrects bad indentation' do
-      corrected = autocorrect_source(cop,
-                                     ['if a1',
-                                      '   b1',
-                                      '   b1',
-                                      'elsif a2',
-                                      ' b2',
-                                      'else',
-                                      '    c',
-                                      'end'])
-      expect(corrected)
-        .to eq ['if a1',
-                '  b1',
-                '   b1', # Will be corrected by IndentationConsistency.
-                'elsif a2',
-                '  b2',
-                'else',
-                '  c',
-                'end'].join("\n")
+    describe '#autocorrect' do
+      it 'corrects bad indentation' do
+        corrected = autocorrect_source(cop,
+                                       ['if a1',
+                                        '   b1',
+                                        '   b1',
+                                        'elsif a2',
+                                        ' b2',
+                                        'else',
+                                        '    c',
+                                        'end'])
+        expect(corrected)
+          .to eq ['if a1',
+                  '  b1',
+                  '   b1', # Will be corrected by IndentationConsistency.
+                  'elsif a2',
+                  '  b2',
+                  'else',
+                  '  c',
+                  'end'].join("\n")
+      end
+
+      it 'does not correct in scopes that contain block comments' do
+        corrected = autocorrect_source(cop,
+                                       ['module Foo',
+                                        'class Bar',
+                                        '=begin',
+                                        'This is a nice long',
+                                        'comment',
+                                        'which spans a few lines',
+                                        '=end',
+                                        'def baz',
+                                        'do_something',
+                                        'end',
+                                        'end',
+                                        'end'])
+        expect(corrected).to eq ['module Foo',
+                                 # The class has a block comment within, so
+                                 # it's not corrected.
+                                 'class Bar',
+                                 '=begin',
+                                 'This is a nice long',
+                                 'comment',
+                                 'which spans a few lines',
+                                 '=end',
+                                 # The method has no block comment inside, so
+                                 # it's corrected.
+                                 '  def baz',
+                                 # Method contents are also corrected.
+                                 '    do_something',
+                                 '  end',
+                                 'end',
+                                 'end'].join("\n")
+      end
     end
 
     it 'accepts a one line if statement' do
