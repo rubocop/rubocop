@@ -207,4 +207,13 @@ describe Rubocop::Cop::Style::Next, :config do
 
     expect(cop.offenses.size).to eq(0)
   end
+
+  # https://github.com/bbatsov/rubocop/issues/1115
+  it 'ignores super nodes' do
+    inspect_source(cop,
+                   ['def foo',
+                    '  super(a, a) { a }',
+                    'end'])
+    expect(cop.offenses.size).to eq(0)
+  end
 end

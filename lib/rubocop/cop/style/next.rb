@@ -29,6 +29,7 @@ module Rubocop
 
         def on_block(node)
           method, _, body = *node
+          return unless method.type == :send
           return if body.nil?
 
           _, method_name = *method
