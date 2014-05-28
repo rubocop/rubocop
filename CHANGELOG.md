@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#1117](https://github.com/bbatsov/rubocop/issues/1117): `BlockComments` cop does auto-correction. ([@jonas054][])
+
 ### Changes
 
 * [#1097](https://github.com/bbatsov/rubocop/issues/1097): Add optional namespace prefix to cop names: `Style/LineLength` instead of `LineLength` in config files, `--only` argument, `--show-cops` output, and `# rubocop:disable`. ([@jonas054][])

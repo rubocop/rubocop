@@ -47,6 +47,35 @@ describe Rubocop::CLI, :isolated_environment do
         expect(IO.read('example.rb')).to eq(source.join("\n") + "\n")
       end
 
+      it 'can change block comments and indent them' do
+        create_file('example.rb', ['# encoding: utf-8',
+                                   'module Foo',
+                                   'class Bar',
+                                   '=begin',
+                                   'This is a nice long',
+                                   'comment',
+                                   'which spans a few lines',
+                                   '=end',
+                                   '  def baz',
+                                   '    do_something',
+                                   '  end',
+                                   'end',
+                                   'end'])
+        expect(cli.run(['--auto-correct'])).to eq(1)
+        expect(IO.read('example.rb'))
+          .to eq(['# encoding: utf-8',
+                  'module Foo',
+                  '  class Bar',
+                  '    # This is a nice long',
+                  '    # comment',
+                  '    # which spans a few lines',
+                  '    def baz',
+                  '      do_something',
+                  '    end',
+                  '  end',
+                  'end'].join("\n") + "\n")
+      end
+
       it 'can correct two problems with blocks' do
         # {} should be do..end and space is missing.
         create_file('example.rb', ['# encoding: utf-8',
