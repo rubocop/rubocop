@@ -9,8 +9,29 @@ module Rubocop
 
         def investigate(processed_source)
           processed_source.comments.each do |comment|
-            next unless comment.text.start_with?('=begin')
-            add_offense(comment, :expression)
+            add_offense(comment, :expression) if comment.document?
+          end
+        end
+
+        def autocorrect(comment)
+          expr = comment.loc.expression
+          eq_begin = expr.resize("=begin\n".length)
+          eq_end = Parser::Source::Range.new(expr.source_buffer,
+                                             expr.end_pos - "\n=end".length,
+                                             expr.end_pos)
+          contents = Parser::Source::Range.new(expr.source_buffer,
+                                               eq_begin.end_pos,
+                                               eq_end.begin_pos)
+          @corrections << lambda do |corrector|
+            corrector.remove(eq_begin)
+            unless contents.length == 0
+              corrector.replace(contents,
+                                contents.source
+                                  .gsub(/\A/, '# ')
+                                  .gsub(/\n\n/, "\n#\n")
+                                  .gsub(/\n(?=[^\z#])/, "\n# "))
+            end
+            corrector.remove(eq_end)
           end
         end
       end
