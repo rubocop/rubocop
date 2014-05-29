@@ -73,9 +73,22 @@ module Rubocop
         end
 
         # Returns true if the round/square/curly brackets of the given node are
-        # on different lines.
+        # on different lines, and each item within is on its own line, and the
+        # closing bracket is on its own line.
         def multiline?(node)
-          [node.loc.begin, node.loc.end].map(&:line).uniq.size > 1
+          elements = if node.type == :send
+                       _receiver, _method_name, *args = *node
+                       args
+                     else
+                       node.children
+                     end
+          items = [*elements.map { |e| e.loc.expression }, node.loc.end]
+          items.each_cons(2) { |a, b| return false if on_same_line?(a, b) }
+          true
+        end
+
+        def on_same_line?(a, b)
+          [a, b].map(&:line).uniq.size == 1
         end
 
         def avoid_comma(kind, comma_begin_pos, sb)

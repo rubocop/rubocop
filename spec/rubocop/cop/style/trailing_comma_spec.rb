@@ -4,9 +4,8 @@ require 'spec_helper'
 
 describe Rubocop::Cop::Style::TrailingComma, :config do
   subject(:cop) { described_class.new(config) }
-  let(:cop_config) { { 'EnforcedStyleForMultiline' => 'no_comma' } }
 
-  context 'with single line list of values' do
+  shared_examples 'single line lists' do
     it 'registers an offense for trailing comma in an Array literal' do
       inspect_source(cop, 'VALUES = [1001, 2020, 3333, ]')
       expect(cop.messages)
@@ -76,8 +75,22 @@ describe Rubocop::Cop::Style::TrailingComma, :config do
     end
   end
 
+  context 'with single line list of values' do
+    context 'when EnforcedStyleForMultiline is no_comma' do
+      let(:cop_config) { { 'EnforcedStyleForMultiline' => 'no_comma' } }
+      include_examples 'single line lists'
+    end
+
+    context 'when EnforcedStyleForMultiline is comma' do
+      let(:cop_config) { { 'EnforcedStyleForMultiline' => 'comma' } }
+      include_examples 'single line lists'
+    end
+  end
+
   context 'with multi-line list of values' do
     context 'when EnforcedStyleForMultiline is no_comma' do
+      let(:cop_config) { { 'EnforcedStyleForMultiline' => 'no_comma' } }
+
       it 'registers an offense for trailing comma in an Array literal' do
         inspect_source(cop, ['VALUES = [',
                              '           1001,',
@@ -131,8 +144,7 @@ describe Rubocop::Cop::Style::TrailingComma, :config do
         expect(cop.offenses).to be_empty
       end
 
-      it 'accepts comma inside a heredoc' \
-         ' parameters at the end' do
+      it 'accepts comma inside a heredoc parameters at the end' do
         inspect_source(cop, ['route(help: {',
                              "  'auth' => <<-HELP.chomp",
                              ',',
@@ -145,20 +157,28 @@ describe Rubocop::Cop::Style::TrailingComma, :config do
     context 'when EnforcedStyleForMultiline is comma' do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'comma' } }
 
-      it 'registers an offense for no trailing comma in an Array literal' do
+      it 'accepts Array literal with no trailing comma when closing bracket ' \
+         'is on same line as last value' do
         inspect_source(cop, ['VALUES = [',
                              '           1001,',
                              '           2020,',
                              '           3333]'])
-        expect(cop.messages)
-          .to eq(['Put a comma after the last item of a multiline array.'])
-        expect(cop.highlights).to eq(['3333'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'accepts Array literal with two of the values on the same line' do
+        inspect_source(cop, ['VALUES = [',
+                             '           1001, 2020,',
+                             '           3333',
+                             '         ]'])
+        expect(cop.offenses).to be_empty
       end
 
       it 'registers an offense for no trailing comma in a Hash literal' do
         inspect_source(cop, ['MAP = { a: 1001,',
                              '        b: 2020,',
-                             '        c: 3333 }'])
+                             '        c: 3333',
+                             '}'])
         expect(cop.messages)
           .to eq(['Put a comma after the last item of a multiline hash.'])
         expect(cop.highlights).to eq(['c: 3333'])
@@ -176,6 +196,12 @@ describe Rubocop::Cop::Style::TrailingComma, :config do
           .to eq(['Put a comma after the last parameter of a multiline ' \
                   'method call.'])
         expect(cop.highlights).to eq(['d: 1'])
+      end
+
+      it 'accepts a method call with two parameters on the same line' do
+        inspect_source(cop, ['some_method(a, b',
+                             '           )'])
+        expect(cop.offenses).to be_empty
       end
 
       it 'accepts trailing comma in an Array literal' do
