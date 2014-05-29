@@ -475,7 +475,8 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
       end
 
       it 'does not autocorrect' do
-        expect(autocorrect_source(cop, source)).to eq(source.join("\n"))
+        expect(autocorrect_source(cop, source))
+          .to eq(source.join("\n"))
       end
     end
 
@@ -487,7 +488,54 @@ describe Rubocop::Cop::Style::TrivialAccessors, :config do
       end
 
       it 'does not autocorrect' do
-        expect(autocorrect_source(cop, source)).to eq(source.join("\n"))
+        expect(autocorrect_source(cop, source))
+          .to eq(source.join("\n"))
+      end
+    end
+
+    context 'class receiver reader' do
+      let(:source) do
+        ['class Foo',
+         '  def self.foo',
+         '    @foo',
+         '  end',
+         'end']
+      end
+
+      let(:corrected_source) do
+        ['class Foo',
+         '  class << self',
+         '    attr_reader :foo',
+         '  end',
+         'end']
+      end
+
+      it 'autocorrects with class-level attr_reader' do
+        expect(autocorrect_source(cop, source))
+          .to eq(corrected_source.join("\n"))
+      end
+    end
+
+    context 'class receiver writer' do
+      let(:source) do
+        ['class Foo',
+         '  def self.foo=(f)',
+         '    @foo = f',
+         '  end',
+         'end']
+      end
+
+      let(:corrected_source) do
+        ['class Foo',
+         '  class << self',
+         '    attr_writer :foo',
+         '  end',
+         'end']
+      end
+
+      it 'autocorrects with class-level attr_writer' do
+        expect(autocorrect_source(cop, source))
+          .to eq(corrected_source.join("\n"))
       end
     end
   end

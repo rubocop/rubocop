@@ -5,6 +5,7 @@
 ### New features
 
 * [#1117](https://github.com/bbatsov/rubocop/issues/1117): `BlockComments` cop does auto-correction. ([@jonas054][])
+* [#1124](https://github.com/bbatsov/rubocop/pull/1124): `TrivialAccessors` cop auto-corrects class-level accessors. ([@ggilder][])
 
 ### Changes
 
@@ -955,3 +956,4 @@
 [@barunio]: https://github.com/barunio
 [@molawson]: https://github.com/molawson
 [@wndhydrnt]: https://github.com/wndhydrnt
+[@ggilder]: https://github.com/ggilder

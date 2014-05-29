@@ -89,21 +89,52 @@ module Rubocop
           method_name.to_s.chomp('=') == ivar_name[1..-1]
         end
 
+        def trivial_accessor_kind(method_name, args, body)
+          if trivial_writer?(method_name, args, body) &&
+            !dsl_writer?(method_name)
+            'writer'
+          elsif trivial_reader?(method_name, args, body)
+            'reader'
+          end
+        end
+
+        def accessor(kind, method_name)
+          "attr_#{kind} :#{method_name.to_s.chomp('=')}"
+        end
+
         def autocorrect(node)
+          if node.type == :def
+            autocorrect_instance(node)
+          elsif node.type == :defs && node.children.first.type == :self
+            autocorrect_class(node)
+          end
+        end
+
+        def autocorrect_instance(node)
           method_name, args, body = *node
-          return unless node.type == :def
           return unless names_match?(method_name, body)
-          kind = if trivial_writer?(method_name, args, body)
-                   return if dsl_writer?(method_name)
-                   'writer'
-                 elsif trivial_reader?(method_name, args, body)
-                   'reader'
-                 end
+          return unless (kind = trivial_accessor_kind(method_name, args, body))
 
           @corrections << lambda do |corrector|
             corrector.replace(
               node.loc.expression,
-              "attr_#{kind} :#{method_name.to_s.chomp('=')}"
+              accessor(kind, method_name)
+            )
+          end
+        end
+
+        def autocorrect_class(node)
+          _, method_name, args, body = *node
+          return unless names_match?(method_name, body)
+          return unless (kind = trivial_accessor_kind(method_name, args, body))
+
+          @corrections << lambda do |corrector|
+            indent = ' ' * node.loc.column
+            corrector.replace(
+              node.loc.expression,
+              ['class << self',
+               "#{indent}  #{accessor(kind, method_name)}",
+               "#{indent}end"].join("\n")
             )
           end
         end
