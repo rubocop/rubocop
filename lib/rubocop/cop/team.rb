@@ -74,8 +74,18 @@ module RuboCop
 
         corrector = Corrector.new(buffer, corrections)
         new_source = begin
-                       corrector.rewrite
+                       # Corrector#rewrite can raise RangeError or RuntimeError
+                       # for various error conditions including clobbering.
+                       s = corrector.rewrite
+                       # We raise RuntimeError ourselves if the rewritten code
+                       # is not parsable ruby. We don't want to write that code
+                       # to file.
+                       fail unless SourceParser.parse(s).valid_syntax?
+                       s
                      rescue RangeError, RuntimeError
+                       # Handle all errors by limiting the changes to one
+                       # cop. The caller will parse the source again when the
+                       # file has been updated.
                        autocorrect_one_cop(buffer, cops)
                      end
 
