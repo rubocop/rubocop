@@ -7,6 +7,10 @@ module RuboCop
       # on how many escaped slashes there are in the regexp and on the
       # value of the configuration parameter MaxSlashes.
       class RegexpLiteral < Cop
+        class << self
+          attr_accessor :slash_count
+        end
+
         def on_regexp(node)
           string_parts = node.children.select { |child| child.type == :str }
           total_string = string_parts.map { |s| s.loc.expression.source }.join
@@ -35,15 +39,19 @@ module RuboCop
         end
 
         def configure_max(delimiter_start, value)
-          @slash_count ||= { '/' => Set.new([0]), '%' => Set.new([100_000]) }
-          @slash_count[delimiter_start].add(value)
+          self.class.slash_count ||= {
+            '/' => Set.new([0]),
+            '%' => Set.new([100_000])
+          }
+
+          self.class.slash_count[delimiter_start].add(value)
 
           # To avoid reports, MaxSlashes must be set equal to the highest
           # number of slashes used within //, and also one less than the
           # highest number of slashes used within %r{}. If no value can satisfy
           # both requirements, just disable.
-          max = @slash_count['/'].max
-          min = @slash_count['%'].min
+          max = self.class.slash_count['/'].max
+          min = self.class.slash_count['%'].min
 
           self.config_to_allow_offenses = if max > max_slashes
                                             if max < min
