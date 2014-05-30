@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::NilComparison do
+describe RuboCop::Cop::Style::NilComparison do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for == nil' do

@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Cop
     module Style
       # This cop checks if the length a method exceeds some maximum value.

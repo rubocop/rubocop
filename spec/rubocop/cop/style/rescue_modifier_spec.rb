@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::RescueModifier do
+describe RuboCop::Cop::Style::RescueModifier do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for modifier rescue' do

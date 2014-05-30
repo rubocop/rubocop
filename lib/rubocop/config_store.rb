@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   # Handles caching of configurations and association of inspected
   # ruby files to configurations.
   class ConfigStore

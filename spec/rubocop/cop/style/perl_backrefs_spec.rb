@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::PerlBackrefs do
+describe RuboCop::Cop::Style::PerlBackrefs do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for $1' do

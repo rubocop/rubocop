@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   # This class handles the processing of files, which includes dealing with
   # formatters and letting cops inspect the files.
   class FileInspector
@@ -43,7 +43,7 @@ module Rubocop
       warn 'Errors are usually caused by RuboCop bugs.'
       warn 'Please, report your problems to RuboCop\'s issue tracker.'
       warn 'Mention the following information in the issue report:'
-      warn Rubocop::Version.version(true)
+      warn RuboCop::Version.version(true)
     end
 
     private
@@ -149,7 +149,7 @@ module Rubocop
     end
 
     def fail_level
-      @fail_level ||= Rubocop::Cop::Severity.new(
+      @fail_level ||= RuboCop::Cop::Severity.new(
         @options[:fail_level] || :refactor)
     end
   end

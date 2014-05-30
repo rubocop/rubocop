@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::VariableForce::Locatable do
+describe RuboCop::Cop::VariableForce::Locatable do
   include ASTHelper
   include AST::Sexp
 
   class LocatableObject
-    include Rubocop::Cop::VariableForce::Locatable
+    include RuboCop::Cop::VariableForce::Locatable
 
     attr_reader :node, :scope
 
@@ -18,7 +18,7 @@ describe Rubocop::Cop::VariableForce::Locatable do
   end
 
   let(:ast) do
-    processed_source = Rubocop::SourceParser.parse(source)
+    processed_source = RuboCop::SourceParser.parse(source)
     processed_source.ast
   end
 
@@ -38,7 +38,7 @@ describe Rubocop::Cop::VariableForce::Locatable do
     found_node
   end
 
-  let(:scope) { Rubocop::Cop::VariableForce::Scope.new(def_node) }
+  let(:scope) { RuboCop::Cop::VariableForce::Scope.new(def_node) }
   let(:assignment) { LocatableObject.new(lvasgn_node, scope) }
 
   describe '#ancestor_nodes_in_scope' do

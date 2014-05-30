@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::WhileUntilModifier do
+describe RuboCop::Cop::Style::WhileUntilModifier do
   include StatementModifierHelper
 
   subject(:cop) { described_class.new(config) }
   let(:config) do
     hash = { 'Style/LineLength' => { 'Max' => 80 } }
-    Rubocop::Config.new(hash)
+    RuboCop::Config.new(hash)
   end
 
   it "accepts multiline unless that doesn't fit on one line" do
@@ -79,7 +79,7 @@ describe Rubocop::Cop::Style::WhileUntilModifier do
         'Style/LineLength' => { 'Max' => 100 },
         'Style/WhileUntilModifier' => { 'MaxLineLength' => 80 }
       }
-      Rubocop::Config.new(hash)
+      RuboCop::Config.new(hash)
     end
 
     it "accepts multiline while that doesn't fit on one line" do

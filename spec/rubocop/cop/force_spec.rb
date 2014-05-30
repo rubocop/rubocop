@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Force do
+describe RuboCop::Cop::Force do
   subject(:force) { described_class.new(cops) }
   let(:cops) { [double('cop1'), double('cop2')] }
 
   describe '.force_name' do
     it 'returns the class name without namespace' do
-      expect(Rubocop::Cop::VariableForce.force_name).to eq('VariableForce')
+      expect(RuboCop::Cop::VariableForce.force_name).to eq('VariableForce')
     end
   end
 

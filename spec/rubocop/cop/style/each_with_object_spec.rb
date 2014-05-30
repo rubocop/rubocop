@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::EachWithObject do
+describe RuboCop::Cop::Style::EachWithObject do
   subject(:cop) { described_class.new }
 
   it 'finds inject and reduce with passed in and returned hash' do

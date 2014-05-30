@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::SpaceAroundEqualsInParameterDefault, :config do
+describe RuboCop::Cop::Style::SpaceAroundEqualsInParameterDefault, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'when EnforcedStyle is space' do

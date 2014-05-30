@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::VariableInterpolation do
+describe RuboCop::Cop::Style::VariableInterpolation do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for interpolated global variables' do

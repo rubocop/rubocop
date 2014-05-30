@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::VariableForce::VariableTable do
+describe RuboCop::Cop::VariableForce::VariableTable do
   include AST::Sexp
 
   subject(:variable_table) { described_class.new }

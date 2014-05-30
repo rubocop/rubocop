@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Cop
     module Lint
       # This cop checks for expressions where there is a call to a predicate

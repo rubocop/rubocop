@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::SpaceInsideBrackets do
+describe RuboCop::Cop::Style::SpaceInsideBrackets do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for an array literal with spaces inside' do

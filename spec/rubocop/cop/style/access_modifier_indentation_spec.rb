@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::AccessModifierIndentation, :config do
+describe RuboCop::Cop::Style::AccessModifierIndentation, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'when EnforcedStyle is set to indent' do

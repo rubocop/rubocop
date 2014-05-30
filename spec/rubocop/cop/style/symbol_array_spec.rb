@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::SymbolArray do
+describe RuboCop::Cop::Style::SymbolArray do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for arrays of symbols', ruby: 2.0 do

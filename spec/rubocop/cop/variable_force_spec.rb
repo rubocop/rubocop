@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::VariableForce do
+describe RuboCop::Cop::VariableForce do
   include AST::Sexp
 
   subject(:force) { described_class.new([]) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::CommentAnnotation, :config do
+describe RuboCop::Cop::Style::CommentAnnotation, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) do
     { 'Keywords' => %w(TODO FIXME OPTIMIZE HACK REVIEW) }
@@ -23,7 +23,7 @@ describe Rubocop::Cop::Style::CommentAnnotation, :config do
   end
 
   context 'when used with the clang formatter' do
-    let(:formatter) { Rubocop::Formatter::ClangStyleFormatter.new(output) }
+    let(:formatter) { RuboCop::Formatter::ClangStyleFormatter.new(output) }
     let(:output) { StringIO.new }
 
     it 'marks the annotation keyword' do

@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Cop
     # This force provides a way to track local variables and scopes of Ruby.
     # Cops intertact with this force need to override some of the hook methods.

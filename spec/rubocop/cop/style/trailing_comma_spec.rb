@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::TrailingComma, :config do
+describe RuboCop::Cop::Style::TrailingComma, :config do
   subject(:cop) { described_class.new(config) }
 
   shared_examples 'single line lists' do

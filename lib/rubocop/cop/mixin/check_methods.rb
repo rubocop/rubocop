@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Cop
     # Common functionality for checking instance methods and singeton methods.
     module CheckMethods

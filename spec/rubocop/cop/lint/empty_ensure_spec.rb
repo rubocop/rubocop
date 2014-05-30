@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::EmptyEnsure do
+describe RuboCop::Cop::Lint::EmptyEnsure do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for empty ensure' do

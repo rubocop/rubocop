@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Cop
     module Style
       # Modifiers should be indented as deep as method definitions, or as deep

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::SelfAssignment do
+describe RuboCop::Cop::Style::SelfAssignment do
   subject(:cop) { described_class.new }
 
   [:+, :-, :*, :**, :/, :|, :&].product(['x', '@x', '@@x']).each do |op, var|

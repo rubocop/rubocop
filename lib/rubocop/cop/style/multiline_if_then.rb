@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Cop
     module Style
       # Checks for uses of the `then` keyword in multi-line if statements.

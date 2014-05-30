@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::ClassAndModuleChildren, :config do
+describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'nested style' do

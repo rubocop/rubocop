@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::PathUtil do
+describe RuboCop::PathUtil do
   describe '#relative_path' do
     it 'builds paths relative to PWD by default as a stop-gap' do
       relative = File.join(Dir.pwd, 'relative')

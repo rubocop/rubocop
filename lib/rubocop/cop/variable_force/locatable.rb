@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Cop
     class VariableForce
       # This module provides a way to locate the conditional branch the node is

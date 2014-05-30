@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::MethodCalledOnDoEndBlock do
+describe RuboCop::Cop::Style::MethodCalledOnDoEndBlock do
   subject(:cop) { described_class.new }
 
   context 'with a multi-line do..end block' do

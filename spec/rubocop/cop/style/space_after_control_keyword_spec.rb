@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::SpaceAfterControlKeyword do
+describe RuboCop::Cop::Style::SpaceAfterControlKeyword do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for normal if' do

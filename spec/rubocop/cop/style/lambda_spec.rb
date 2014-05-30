@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::Lambda do
+describe RuboCop::Cop::Style::Lambda do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for an old single-line lambda call' do

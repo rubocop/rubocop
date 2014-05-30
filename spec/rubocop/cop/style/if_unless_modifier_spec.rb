@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::IfUnlessModifier do
+describe RuboCop::Cop::Style::IfUnlessModifier do
   include StatementModifierHelper
 
   subject(:cop) { described_class.new(config) }
   let(:config) do
     hash = { 'Style/LineLength' => { 'Max' => 80 } }
-    Rubocop::Config.new(hash)
+    RuboCop::Config.new(hash)
   end
 
   it 'registers an offense for multiline if that fits on one line' do
@@ -131,7 +131,7 @@ describe Rubocop::Cop::Style::IfUnlessModifier do
           'Style/LineLength' => { 'Max' => 100 },
           'Style/IfUnlessModifier' => { 'MaxLineLength' => 80 }
         }
-        Rubocop::Config.new(hash)
+        RuboCop::Config.new(hash)
       end
 
       it "accepts multiline if that doesn't fit on one line" do

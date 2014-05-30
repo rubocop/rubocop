@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::CaseIndentation do
+describe RuboCop::Cop::Style::CaseIndentation do
   subject(:cop) { described_class.new(config) }
   let(:config) do
-    merged = Rubocop::ConfigLoader
+    merged = RuboCop::ConfigLoader
       .default_configuration['Style/CaseIndentation'].merge(cop_config)
-    Rubocop::Config.new('Style/CaseIndentation' => merged)
+    RuboCop::Config.new('Style/CaseIndentation' => merged)
   end
 
   context 'with IndentWhenRelativeTo: case' do

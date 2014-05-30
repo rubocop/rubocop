@@ -5,7 +5,7 @@ require 'tmpdir'
 require 'spec_helper'
 require 'timeout'
 
-describe Rubocop::CLI, :isolated_environment do
+describe RuboCop::CLI, :isolated_environment do
   include FileHelper
 
   subject(:cli) { described_class.new }
@@ -13,7 +13,7 @@ describe Rubocop::CLI, :isolated_environment do
   before(:each) do
     $stdout = StringIO.new
     $stderr = StringIO.new
-    Rubocop::ConfigLoader.debug = false
+    RuboCop::ConfigLoader.debug = false
   end
 
   after(:each) do
@@ -30,7 +30,7 @@ describe Rubocop::CLI, :isolated_environment do
       it 'exits cleanly' do
         expect { cli.run ['-v'] }.to exit_with_code(0)
         expect { cli.run ['--version'] }.to exit_with_code(0)
-        expect($stdout.string).to eq((Rubocop::Version::STRING + "\n") * 2)
+        expect($stdout.string).to eq((RuboCop::Version::STRING + "\n") * 2)
       end
     end
 
@@ -864,12 +864,12 @@ describe Rubocop::CLI, :isolated_environment do
         end
       end
 
-      let(:cops) { Rubocop::Cop::Cop.all }
+      let(:cops) { RuboCop::Cop::Cop.all }
 
       let(:global_conf) do
         config_path =
-          Rubocop::ConfigLoader.configuration_file_for(Dir.pwd.to_s)
-        Rubocop::ConfigLoader.configuration_from_file(config_path)
+          RuboCop::ConfigLoader.configuration_file_for(Dir.pwd.to_s)
+        RuboCop::ConfigLoader.configuration_from_file(config_path)
       end
 
       let(:stdout) { $stdout.string }
@@ -1099,7 +1099,7 @@ describe Rubocop::CLI, :isolated_environment do
         context 'when a class name is specified' do
           it 'uses the class as a formatter' do
             module MyTool
-              class RubocopFormatter < Rubocop::Formatter::BaseFormatter
+              class RuboCopFormatter < RuboCop::Formatter::BaseFormatter
                 def started(all_files)
                   output.puts "started: #{all_files.join(',')}"
                 end
@@ -1118,7 +1118,7 @@ describe Rubocop::CLI, :isolated_environment do
               end
             end
 
-            cli.run(['--format', 'MyTool::RubocopFormatter', 'example.rb'])
+            cli.run(['--format', 'MyTool::RuboCopFormatter', 'example.rb'])
             expect($stdout.string).to eq(["started: #{target_file}",
                                           "file_started: #{target_file}",
                                           "file_finished: #{target_file}",

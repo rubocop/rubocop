@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Util do
+describe RuboCop::Cop::Util do
   describe '#line_range' do
     include ASTHelper
 

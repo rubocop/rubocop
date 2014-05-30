@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::MethodName, :config do
+describe RuboCop::Cop::Style::MethodName, :config do
   subject(:cop) { described_class.new(config) }
 
   shared_examples 'never accepted' do

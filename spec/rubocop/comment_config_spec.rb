@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::CommentConfig do
+describe RuboCop::CommentConfig do
   subject(:comment_config) { described_class.new(parse_source(source)) }
 
   describe '#cop_enabled_at_line?' do
@@ -91,7 +91,7 @@ describe Rubocop::CommentConfig do
     it 'supports disabling all cops with keyword all' do
       expected_part = (9..10).to_a
 
-      Rubocop::Cop::Cop.all.each do |cop|
+      RuboCop::Cop::Cop.all.each do |cop|
         disabled_lines = disabled_lines_of_cop(cop)
         expect(disabled_lines & expected_part).to eq(expected_part)
       end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::AlignHash, :config do
+describe RuboCop::Cop::Style::AlignHash, :config do
   subject(:cop) { described_class.new(config) }
 
   shared_examples 'not on separate lines' do

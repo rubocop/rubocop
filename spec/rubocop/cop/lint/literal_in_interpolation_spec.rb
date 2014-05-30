@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::LiteralInInterpolation do
+describe RuboCop::Cop::Lint::LiteralInInterpolation do
   subject(:cop) { described_class.new }
 
   %w(1 2.0 [1] {}).each do |lit|

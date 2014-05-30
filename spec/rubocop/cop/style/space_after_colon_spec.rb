@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::SpaceAfterColon do
+describe RuboCop::Cop::Style::SpaceAfterColon do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for colon without space after it' do

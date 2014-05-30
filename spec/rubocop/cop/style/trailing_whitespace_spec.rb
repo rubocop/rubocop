@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::TrailingWhitespace do
+describe RuboCop::Cop::Style::TrailingWhitespace do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for a line ending with space' do

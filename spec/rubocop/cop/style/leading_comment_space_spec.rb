@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::LeadingCommentSpace do
+describe RuboCop::Cop::Style::LeadingCommentSpace do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for comment without leading space' do

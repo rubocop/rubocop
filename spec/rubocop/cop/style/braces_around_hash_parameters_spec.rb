@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::BracesAroundHashParameters, :config do
+describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'no_braces' do

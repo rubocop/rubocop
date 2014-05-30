@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::BeginBlock do
+describe RuboCop::Cop::Style::BeginBlock do
   subject(:cop) { described_class.new }
 
   it 'reports an offense for a BEGIN block' do

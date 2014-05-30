@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Cop
     # This class takes a source buffer and rewrite its source
     # based on the different correction rules supplied.

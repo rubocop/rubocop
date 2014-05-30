@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Rails::ActionFilter, :config do
+describe RuboCop::Cop::Rails::ActionFilter, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'when style is action' do

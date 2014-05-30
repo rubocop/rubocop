@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::SpaceAroundOperators do
+describe RuboCop::Cop::Style::SpaceAroundOperators do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for assignment without space on both sides' do

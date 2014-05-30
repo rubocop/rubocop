@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::WhileUntilDo do
+describe RuboCop::Cop::Style::WhileUntilDo do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for do in multiline while' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::ClassLength, :config do
+describe RuboCop::Cop::Style::ClassLength, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) { { 'Max' => 5, 'CountComments' => false } }
 

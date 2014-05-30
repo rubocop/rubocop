@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::UnusedBlockArgument do
+describe RuboCop::Cop::Lint::UnusedBlockArgument do
   subject(:cop) { described_class.new }
 
   context 'inspection' do

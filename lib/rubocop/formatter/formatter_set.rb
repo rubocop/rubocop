@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Formatter
     # This is a collection of formatters. A FormatterSet can hold multiple
     # formatter instances and provides transparent formatter API methods

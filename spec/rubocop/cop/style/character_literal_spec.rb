@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::CharacterLiteral do
+describe RuboCop::Cop::Style::CharacterLiteral do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for character literals' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::UselessSetterCall do
+describe RuboCop::Cop::Lint::UselessSetterCall do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for def ending with lvar attr assignment' do

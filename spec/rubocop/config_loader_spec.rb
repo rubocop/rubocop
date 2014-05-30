@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::ConfigLoader do
+describe RuboCop::ConfigLoader do
   include FileHelper
 
   let(:default_config) { described_class.default_configuration }

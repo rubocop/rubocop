@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Rails::DefaultScope do
+describe RuboCop::Cop::Rails::DefaultScope do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for default scope with a lambda arg' do

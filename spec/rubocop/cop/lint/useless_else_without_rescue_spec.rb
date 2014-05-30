@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::UselessElseWithoutRescue do
+describe RuboCop::Cop::Lint::UselessElseWithoutRescue do
   subject(:cop) { described_class.new }
 
   before do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::Blocks do
+describe RuboCop::Cop::Style::Blocks do
   subject(:cop) { described_class.new }
 
   it 'accepts a multiline block with do-end' do

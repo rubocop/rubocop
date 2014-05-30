@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Cop
     # Common functionality for safe assignment. By safe assignment we mean
     # putting parentheses around an assignment to indicate "I know I'm using an

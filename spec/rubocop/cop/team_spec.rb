@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Team do
+describe RuboCop::Cop::Team do
   subject(:team) { described_class.new(cop_classes, config, options) }
-  let(:cop_classes) { Rubocop::Cop::Cop.non_rails }
-  let(:config) { Rubocop::ConfigLoader.default_configuration }
+  let(:cop_classes) { RuboCop::Cop::Cop.non_rails }
+  let(:config) { RuboCop::ConfigLoader.default_configuration }
   let(:options) { nil }
 
   describe '#autocorrect?' do
@@ -41,7 +41,7 @@ describe Rubocop::Cop::Team do
 
     let(:file_path) { '/tmp/example.rb' }
     let(:offenses) do
-      team.inspect_file(Rubocop::SourceParser.parse_file(file_path))
+      team.inspect_file(RuboCop::SourceParser.parse_file(file_path))
     end
 
     before do
@@ -53,7 +53,7 @@ describe Rubocop::Cop::Team do
 
     it 'returns offenses' do
       expect(offenses).not_to be_empty
-      expect(offenses.all? { |o| o.is_a?(Rubocop::Cop::Offense) }).to be_true
+      expect(offenses.all? { |o| o.is_a?(RuboCop::Cop::Offense) }).to be_true
     end
 
     context 'when Parser reports non-fatal warning for the file' do
@@ -87,7 +87,7 @@ describe Rubocop::Cop::Team do
       end
 
       it 'does autocorrection' do
-        team.inspect_file(Rubocop::SourceParser.parse_file(file_path))
+        team.inspect_file(RuboCop::SourceParser.parse_file(file_path))
         corrected_source = File.read(file_path)
         expect(corrected_source).to eq([
           '# encoding: utf-8',
@@ -107,12 +107,12 @@ describe Rubocop::Cop::Team do
 
     it 'returns cop instances' do
       expect(cops).not_to be_empty
-      expect(cops.all? { |c| c.is_a?(Rubocop::Cop::Cop) }).to be_true
+      expect(cops.all? { |c| c.is_a?(RuboCop::Cop::Cop) }).to be_true
     end
 
     context 'when only some cop classes are passed to .new' do
       let(:cop_classes) do
-        [Rubocop::Cop::Lint::Void, Rubocop::Cop::Style::LineLength]
+        [RuboCop::Cop::Lint::Void, RuboCop::Cop::Style::LineLength]
       end
 
       it 'returns only intances of the classes' do
@@ -142,30 +142,30 @@ describe Rubocop::Cop::Team do
 
   describe '#forces' do
     subject(:forces) { team.forces }
-    let(:cop_classes) { Rubocop::Cop::Cop.non_rails }
+    let(:cop_classes) { RuboCop::Cop::Cop.non_rails }
 
     it 'returns force instances' do
       expect(forces).not_to be_empty
 
       forces.each do |force|
-        expect(force).to be_a(Rubocop::Cop::Force)
+        expect(force).to be_a(RuboCop::Cop::Force)
       end
     end
 
     context 'when a cop joined a force' do
-      let(:cop_classes) { [Rubocop::Cop::Lint::UselessAssignment] }
+      let(:cop_classes) { [RuboCop::Cop::Lint::UselessAssignment] }
 
       it 'returns the force' do
         expect(forces.size).to eq(1)
-        expect(forces.first).to be_a(Rubocop::Cop::VariableForce)
+        expect(forces.first).to be_a(RuboCop::Cop::VariableForce)
       end
     end
 
     context 'when multiple cops joined a same force' do
       let(:cop_classes) do
         [
-          Rubocop::Cop::Lint::UselessAssignment,
-          Rubocop::Cop::Lint::ShadowingOuterLocalVariable
+          RuboCop::Cop::Lint::UselessAssignment,
+          RuboCop::Cop::Lint::ShadowingOuterLocalVariable
         ]
       end
 
@@ -175,7 +175,7 @@ describe Rubocop::Cop::Team do
     end
 
     context 'when no cops joined force' do
-      let(:cop_classes) { [Rubocop::Cop::Style::For] }
+      let(:cop_classes) { [RuboCop::Cop::Style::For] }
 
       it 'returns nothing' do
         expect(forces).to be_empty

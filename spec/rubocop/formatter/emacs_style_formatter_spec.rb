@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'stringio'
 
-module Rubocop
+module RuboCop
   module Formatter
     describe EmacsStyleFormatter do
       subject(:formatter) { described_class.new(output) }

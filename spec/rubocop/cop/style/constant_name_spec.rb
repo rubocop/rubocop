@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::ConstantName do
+describe RuboCop::Cop::Style::ConstantName do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for camel case in const name' do

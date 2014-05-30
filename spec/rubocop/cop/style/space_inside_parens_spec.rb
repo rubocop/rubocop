@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::SpaceInsideParens do
+describe RuboCop::Cop::Style::SpaceInsideParens do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for spaces inside parens' do

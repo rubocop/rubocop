@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::MultilineTernaryOperator do
+describe RuboCop::Cop::Style::MultilineTernaryOperator do
   subject(:cop) { described_class.new }
 
   it 'registers offense for a multiline ternary operator expression' do

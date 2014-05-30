@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::SpaceBeforeModifierKeyword do
+describe RuboCop::Cop::Style::SpaceBeforeModifierKeyword do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for missing space before if/unless' do

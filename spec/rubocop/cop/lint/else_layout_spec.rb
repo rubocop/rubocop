@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::ElseLayout do
+describe RuboCop::Cop::Lint::ElseLayout do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for expr on same line as else' do

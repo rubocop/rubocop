@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::LambdaCall, :config do
+describe RuboCop::Cop::Style::LambdaCall, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'when style is set to call' do

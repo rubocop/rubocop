@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::For, :config do
+describe RuboCop::Cop::Style::For, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'when each is the enforced style' do

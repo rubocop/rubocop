@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::VariableForce::Assignment do
+describe RuboCop::Cop::VariableForce::Assignment do
   include ASTHelper
   include AST::Sexp
 
   let(:ast) do
-    processed_source = Rubocop::SourceParser.parse(source)
+    processed_source = RuboCop::SourceParser.parse(source)
     processed_source.ast
   end
 
@@ -42,9 +42,9 @@ describe Rubocop::Cop::VariableForce::Assignment do
   end
 
   let(:name) { lvasgn_node.children.first }
-  let(:scope) { Rubocop::Cop::VariableForce::Scope.new(def_node) }
+  let(:scope) { RuboCop::Cop::VariableForce::Scope.new(def_node) }
   let(:variable) do
-    Rubocop::Cop::VariableForce::Variable.new(name, lvasgn_node, scope)
+    RuboCop::Cop::VariableForce::Variable.new(name, lvasgn_node, scope)
   end
   let(:assignment) { described_class.new(lvasgn_node, variable) }
 

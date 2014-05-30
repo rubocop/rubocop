@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::EmptyLineBetweenDefs, :config do
+describe RuboCop::Cop::Style::EmptyLineBetweenDefs, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) { { 'AllowAdjacentOneLineDefs' => false } }
 

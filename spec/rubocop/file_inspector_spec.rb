@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-module Rubocop
+module RuboCop
   class FileInspector
     attr_writer :errors # Needed only for testing.
   end
 end
 
-describe Rubocop::FileInspector do
+describe RuboCop::FileInspector do
   subject(:inspector) { described_class.new(options) }
   let(:options) { {} }
   let(:offenses) { [] }
@@ -56,7 +56,7 @@ describe Rubocop::FileInspector do
 
     context 'if there is an offense in an inspected file' do
       let(:offenses) do
-        [Rubocop::Cop::Offense.new(:convention,
+        [RuboCop::Cop::Offense.new(:convention,
                                    Struct.new(:line, :column,
                                               :source_line).new(1, 0, ''),
                                    'Use alias_method instead of alias.',

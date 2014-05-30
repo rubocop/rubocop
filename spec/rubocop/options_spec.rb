@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Options, :isolated_environment do
+describe RuboCop::Options, :isolated_environment do
   include FileHelper
 
   subject(:options) { described_class.new }
@@ -100,7 +100,7 @@ Usage: rubocop [options] [file1, file2, ...]
         end.sort
 
         expected_formatter_keys =
-          Rubocop::Formatter::FormatterSet::BUILTIN_FORMATTERS_FOR_KEYS
+          RuboCop::Formatter::FormatterSet::BUILTIN_FORMATTERS_FOR_KEYS
           .keys.sort
 
         expect(formatter_keys).to eq(expected_formatter_keys)
@@ -158,7 +158,7 @@ Usage: rubocop [options] [file1, file2, ...]
     end
   end
 
-  unless Rubocop::Version::STRING.start_with?('0')
+  unless RuboCop::Version::STRING.start_with?('0')
     describe '-e/--emacs option' do
       it 'is dropped in RuboCop 1.0.0' do
         # This spec can be removed once the option is dropped.

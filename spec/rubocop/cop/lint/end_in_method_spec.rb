@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::EndInMethod do
+describe RuboCop::Cop::Lint::EndInMethod do
   subject(:cop) { described_class.new }
 
   it 'reports an offense for def with an END inside' do

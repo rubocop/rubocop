@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::Documentation do
+describe RuboCop::Cop::Style::Documentation do
 
   subject(:cop) { described_class.new(config) }
   let(:config) do
-    Rubocop::Config.new('Style/CommentAnnotation' => {
+    RuboCop::Config.new('Style/CommentAnnotation' => {
                           'Keywords' => %w(TODO FIXME OPTIMIZE HACK REVIEW)
                         })
   end

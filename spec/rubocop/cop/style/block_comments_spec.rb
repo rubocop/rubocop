@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::BlockComments do
+describe RuboCop::Cop::Style::BlockComments do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for block comments' do

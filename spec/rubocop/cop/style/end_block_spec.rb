@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::EndBlock do
+describe RuboCop::Cop::Style::EndBlock do
   subject(:cop) { described_class.new }
 
   it 'reports an offense for an END block' do

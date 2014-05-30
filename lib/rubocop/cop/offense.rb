@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Cop
     # An offense represents a style violation detected by RuboCop.
     class Offense
@@ -10,7 +10,7 @@ module Rubocop
       #
       # @!attribute [r] severity
       #
-      # @return [Rubocop::Cop::Severity]
+      # @return [RuboCop::Cop::Severity]
       attr_reader :severity
 
       # @api public
@@ -64,7 +64,7 @@ module Rubocop
 
       # @api private
       def initialize(severity, location, message, cop_name, corrected = false)
-        @severity = Rubocop::Cop::Severity.new(severity)
+        @severity = RuboCop::Cop::Severity.new(severity)
         @location = location.freeze
         @line = location.line.freeze
         @column = location.column.freeze

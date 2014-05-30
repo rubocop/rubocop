@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Cop
     # Commissioner class is responsible for processing the AST and delegating
     # work to the specified cops.

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::AmbiguousRegexpLiteral do
+describe RuboCop::Cop::Lint::AmbiguousRegexpLiteral do
   subject(:cop) { described_class.new }
 
   before do

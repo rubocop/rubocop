@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::FlipFlop do
+describe RuboCop::Cop::Style::FlipFlop do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for inclusive flip flops' do

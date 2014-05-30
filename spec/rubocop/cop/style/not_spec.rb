@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::Not do
+describe RuboCop::Cop::Style::Not do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for not' do

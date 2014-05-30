@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Cop
     class CorrectionNotPossible < Exception; end
     class AmbiguousCopName < Exception; end

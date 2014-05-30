@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Cop
     module Rails
       # This cop checks for the use of old-style attribute validation macros.

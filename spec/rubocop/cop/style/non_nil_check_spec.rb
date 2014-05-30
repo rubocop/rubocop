@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::NonNilCheck, :config do
+describe RuboCop::Cop::Style::NonNilCheck, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:cop_config) do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::TrailingBlankLines, :config do
+describe RuboCop::Cop::Style::TrailingBlankLines, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'when EnforcedStyle is final_newline' do

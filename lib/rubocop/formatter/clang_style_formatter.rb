@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Formatter
     # This formatter formats report data in clang style.
     # The precise location of the problem is shown together with the

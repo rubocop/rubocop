@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::NestedTernaryOperator do
+describe RuboCop::Cop::Style::NestedTernaryOperator do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for a nested ternary operator expression' do

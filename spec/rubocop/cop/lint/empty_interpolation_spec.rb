@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::EmptyInterpolation do
+describe RuboCop::Cop::Lint::EmptyInterpolation do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for #{} in interpolation' do

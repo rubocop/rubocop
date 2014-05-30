@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::SpaceAfterComma do
+describe RuboCop::Cop::Style::SpaceAfterComma do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for block argument commas without space' do

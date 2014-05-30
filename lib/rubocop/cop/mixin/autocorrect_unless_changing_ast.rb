@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Cop
     # This module does auto-correction of nodes that could become grammatically
     # different after the correction. If the code change would alter the

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::RedundantException do
+describe RuboCop::Cop::Style::RedundantException do
   subject(:cop) { described_class.new }
 
   it 'reports an offense for a raise with RuntimeError' do

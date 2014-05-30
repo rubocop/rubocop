@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-describe Rubocop::TargetFinder, :isolated_environment do
+describe RuboCop::TargetFinder, :isolated_environment do
   include FileHelper
 
   subject(:target_finder) do
     described_class.new(config_store, options)
   end
-  let(:config_store) { Rubocop::ConfigStore.new }
+  let(:config_store) { RuboCop::ConfigStore.new }
   let(:options) { { force_exclusion: force_exclusion, debug: debug } }
   let(:force_exclusion) { false }
   let(:debug) { false }

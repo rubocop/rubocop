@@ -33,7 +33,7 @@ module MRISyntaxChecker
     begin_pos = source_lines[0...(line_number - 1)].reduce(0) do |a, e|
       a + e.length + "\n".length
     end
-    Rubocop::Cop::Offense.new(severity,
+    RuboCop::Cop::Offense.new(severity,
                               Parser::Source::Range.new(source_buffer,
                                                         begin_pos,
                                                         begin_pos + 1),

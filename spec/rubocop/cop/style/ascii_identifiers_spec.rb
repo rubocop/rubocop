@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::AsciiIdentifiers do
+describe RuboCop::Cop::Style::AsciiIdentifiers do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for a variable name with non-ascii chars' do

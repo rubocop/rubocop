@@ -5,7 +5,7 @@ require 'spec_helper'
 describe 'isolated environment', :isolated_environment do
   include FileHelper
 
-  let(:cli) { Rubocop::CLI.new }
+  let(:cli) { RuboCop::CLI.new }
 
   before(:each) { $stdout = StringIO.new }
   after(:each) { $stdout = STDOUT }

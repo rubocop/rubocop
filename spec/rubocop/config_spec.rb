@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Config do
+describe RuboCop::Config do
   include FileHelper
 
   subject(:configuration) { described_class.new(hash, loaded_path) }
@@ -17,7 +17,7 @@ describe Rubocop::Config do
     after(:each) { $stderr = STDERR }
 
     subject(:configuration) do
-      Rubocop::ConfigLoader.load_file(configuration_path)
+      RuboCop::ConfigLoader.load_file(configuration_path)
     end
 
     let(:configuration_path) { '.rubocop.yml' }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::ModuleFunction do
+describe RuboCop::Cop::Style::ModuleFunction do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for extend self in module' do

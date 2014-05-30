@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::Debugger do
+describe RuboCop::Cop::Lint::Debugger do
   subject(:cop) { described_class.new  }
 
   it 'reports an offense for a debugger call' do

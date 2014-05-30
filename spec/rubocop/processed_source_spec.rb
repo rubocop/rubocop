@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::ProcessedSource do
+describe RuboCop::ProcessedSource do
   subject(:processed_source) do
     described_class.new(
       buffer,

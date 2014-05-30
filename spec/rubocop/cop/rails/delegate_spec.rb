@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Rails::Delegate do
+describe RuboCop::Cop::Rails::Delegate do
   subject(:cop) { described_class.new }
 
   it 'finds trivial delegate' do

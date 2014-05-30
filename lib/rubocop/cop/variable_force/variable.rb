@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Cop
     class VariableForce
       # A Variable represents existance of a local variable.

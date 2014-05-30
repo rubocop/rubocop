@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::SpaceAfterNot do
+describe RuboCop::Cop::Style::SpaceAfterNot do
   subject(:cop) { described_class.new }
 
   it 'reports an offense for space after !' do

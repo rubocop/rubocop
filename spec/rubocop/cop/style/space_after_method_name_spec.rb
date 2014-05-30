@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::SpaceAfterMethodName do
+describe RuboCop::Cop::Style::SpaceAfterMethodName do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for def with space before the parenthesis' do

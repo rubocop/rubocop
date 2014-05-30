@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::EmptyLines do
+describe RuboCop::Cop::Style::EmptyLines do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for consecutive empty lines' do

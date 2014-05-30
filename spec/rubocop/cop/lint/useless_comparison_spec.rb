@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::UselessComparison do
+describe RuboCop::Cop::Lint::UselessComparison do
   subject(:cop) { described_class.new }
 
   described_class::OPS.each do |op|

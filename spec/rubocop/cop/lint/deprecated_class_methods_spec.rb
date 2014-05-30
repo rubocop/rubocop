@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::DeprecatedClassMethods do
+describe RuboCop::Cop::Lint::DeprecatedClassMethods do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for File.exists?' do

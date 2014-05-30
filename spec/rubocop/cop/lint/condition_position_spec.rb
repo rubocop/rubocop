@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::ConditionPosition do
+describe RuboCop::Cop::Lint::ConditionPosition do
   subject(:cop) { described_class.new }
 
   %w(if unless while until).each do |keyword|

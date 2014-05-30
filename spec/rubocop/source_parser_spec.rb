@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::SourceParser, :isolated_environment do
+describe RuboCop::SourceParser, :isolated_environment do
   include FileHelper
 
   describe '.parse_file' do
@@ -29,7 +29,7 @@ describe Rubocop::SourceParser, :isolated_environment do
     end
 
     it 'returns ProcessedSource' do
-      expect(processed_source).to be_a(Rubocop::ProcessedSource)
+      expect(processed_source).to be_a(RuboCop::ProcessedSource)
     end
 
     describe 'the returned processed source' do
@@ -45,7 +45,7 @@ describe Rubocop::SourceParser, :isolated_environment do
 
       it 'has an array of tokens' do
         expect(processed_source.tokens).to be_a(Array)
-        expect(processed_source.tokens.first).to be_a(Rubocop::Token)
+        expect(processed_source.tokens.first).to be_a(RuboCop::Token)
       end
 
       it 'has a source buffer' do

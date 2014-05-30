@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Severity do
+describe RuboCop::Cop::Severity do
   let(:refactor) { described_class.new(:refactor) }
   let(:convention) { described_class.new(:convention) }
   let(:warning) { described_class.new(:warning) }

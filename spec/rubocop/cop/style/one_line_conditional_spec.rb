@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::OneLineConditional do
+describe RuboCop::Cop::Style::OneLineConditional do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for one line if/then/end' do

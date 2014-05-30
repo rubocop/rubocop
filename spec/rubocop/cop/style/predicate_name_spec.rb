@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::PredicateName, :config do
+describe RuboCop::Cop::Style::PredicateName, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) { { 'NamePrefixBlacklist' => %w(has_ is_) } }
 

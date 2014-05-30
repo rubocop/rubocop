@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::CyclomaticComplexity, :config do
+describe RuboCop::Cop::Style::CyclomaticComplexity, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'when Max is 1' do

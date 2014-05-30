@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::SignalException, :config do
+describe RuboCop::Cop::Style::SignalException, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'when enforced style is `semantic`' do

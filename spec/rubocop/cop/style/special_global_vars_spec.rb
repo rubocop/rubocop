@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::SpecialGlobalVars do
+describe RuboCop::Cop::Style::SpecialGlobalVars do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for $:' do

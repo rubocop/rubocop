@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::CommentIndentation do
+describe RuboCop::Cop::Style::CommentIndentation do
   subject(:cop) { described_class.new }
 
   context 'on outer level' do

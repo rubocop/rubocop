@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::Void do
+describe RuboCop::Cop::Lint::Void do
   subject(:cop) { described_class.new }
 
   described_class::OPS.each do |op|

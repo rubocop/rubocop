@@ -4,7 +4,7 @@
 shared_context 'config', :config do
   let(:config) do
     # Module#<
-    unless described_class < Rubocop::Cop::Cop
+    unless described_class < RuboCop::Cop::Cop
       fail '`config` must be used in `describe SomeCopClass do .. end`'
     end
 
@@ -13,8 +13,8 @@ shared_context 'config', :config do
     cop_name = described_class.cop_name
     hash = {
       cop_name =>
-      Rubocop::ConfigLoader.default_configuration[cop_name].merge(cop_config)
+      RuboCop::ConfigLoader.default_configuration[cop_name].merge(cop_config)
     }
-    Rubocop::Config.new(hash, "#{Dir.pwd}/.rubocop.yml")
+    RuboCop::Config.new(hash, "#{Dir.pwd}/.rubocop.yml")
   end
 end

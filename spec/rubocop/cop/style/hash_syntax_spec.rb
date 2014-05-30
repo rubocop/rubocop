@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::HashSyntax, :config do
+describe RuboCop::Cop::Style::HashSyntax, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'configured to enforce ruby19 style' do
     let(:config) do
-      Rubocop::Config.new('Style/HashSyntax' => {
+      RuboCop::Config.new('Style/HashSyntax' => {
                             'EnforcedStyle'   => 'ruby19',
                             'SupportedStyles' => %w(ruby19 hash_rockets)
                           },
@@ -83,7 +83,7 @@ describe Rubocop::Cop::Style::HashSyntax, :config do
 
     context 'with SpaceAroundOperators disabled' do
       let(:config) do
-        Rubocop::Config.new('Style/HashSyntax' => {
+        RuboCop::Config.new('Style/HashSyntax' => {
                               'EnforcedStyle'   => 'ruby19',
                               'SupportedStyles' => %w(ruby19 hash_rockets)
                             },

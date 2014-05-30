@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::GlobalVars, :config do
+describe RuboCop::Cop::Style::GlobalVars, :config do
   cop_config = {
     'AllowedVariables' => ['$allowed']
   }

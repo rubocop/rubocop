@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   # SourceParser provides a way to parse Ruby source with Parser gem
   # and also parses comment directives which disable arbitrary cops.
   module SourceParser

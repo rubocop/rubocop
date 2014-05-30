@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::OpMethod do
+describe RuboCop::Cop::Style::OpMethod do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for arg not named other' do

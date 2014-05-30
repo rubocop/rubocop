@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::RegexpLiteral, :config do
+describe RuboCop::Cop::Style::RegexpLiteral, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'when MaxSlashes is -1' do

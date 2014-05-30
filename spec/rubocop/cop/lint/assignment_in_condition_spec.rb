@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::AssignmentInCondition, :config do
+describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) { { 'AllowSafeAssignment' => true } }
 

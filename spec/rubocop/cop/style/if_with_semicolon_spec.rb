@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::IfWithSemicolon do
+describe RuboCop::Cop::Style::IfWithSemicolon do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for one line if/;/end' do

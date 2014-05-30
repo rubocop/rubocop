@@ -2,14 +2,14 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::SpaceInsideBlockBraces do
+describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
   SUPPORTED_STYLES = %w(space no_space)
 
   subject(:cop) { described_class.new(config) }
   let(:config) do
-    merged = Rubocop::ConfigLoader
+    merged = RuboCop::ConfigLoader
       .default_configuration['Style/SpaceInsideBlockBraces'].merge(cop_config)
-    Rubocop::Config.new('Style/Blocks' => { 'Enabled' => false },
+    RuboCop::Config.new('Style/Blocks' => { 'Enabled' => false },
                         'Style/SpaceInsideBlockBraces' => merged)
   end
   let(:cop_config) do
@@ -147,7 +147,7 @@ describe Rubocop::Cop::Style::SpaceInsideBlockBraces do
 
     context 'and Blocks cop enabled' do
       let(:config) do
-        Rubocop::Config.new('Style/Blocks' => { 'Enabled' => true },
+        RuboCop::Config.new('Style/Blocks' => { 'Enabled' => true },
                             'Style/SpaceInsideBlockBraces' => cop_config)
       end
 

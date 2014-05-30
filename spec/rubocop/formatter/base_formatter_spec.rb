@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-module Rubocop
+module RuboCop
   module Formatter
     describe BaseFormatter do
       include FileHelper
@@ -179,7 +179,7 @@ module Rubocop
               else
                 fail
               end
-              expect(offenses.all? { |o| o.is_a?(Rubocop::Cop::Offense) })
+              expect(offenses.all? { |o| o.is_a?(RuboCop::Cop::Offense) })
                 .to be_true
             end
             run

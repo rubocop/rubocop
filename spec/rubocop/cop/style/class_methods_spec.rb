@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::ClassMethods do
+describe RuboCop::Cop::Style::ClassMethods do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for methods using a class name' do

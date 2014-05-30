@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Cop
     # Handles `Max` configuration parameters, especially setting them to an
     # appropriate value with --auto-gen-config.

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::EmptyLiteral do
+describe RuboCop::Cop::Style::EmptyLiteral do
   subject(:cop) { described_class.new }
 
   describe 'Empty Array' do

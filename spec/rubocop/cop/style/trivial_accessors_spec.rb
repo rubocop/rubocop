@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::TrivialAccessors, :config do
+describe RuboCop::Cop::Style::TrivialAccessors, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) { {} }
 

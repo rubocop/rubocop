@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::MethodDefParentheses, :config do
+describe RuboCop::Cop::Style::MethodDefParentheses, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'require_parentheses' do

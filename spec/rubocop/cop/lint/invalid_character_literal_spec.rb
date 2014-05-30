@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::InvalidCharacterLiteral do
+describe RuboCop::Cop::Lint::InvalidCharacterLiteral do
   subject(:cop) { described_class.new }
 
   # Is there a way to emit this warning without syntax error?

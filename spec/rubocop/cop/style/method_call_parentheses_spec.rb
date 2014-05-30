@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::MethodCallParentheses, :config do
+describe RuboCop::Cop::Style::MethodCallParentheses, :config do
   subject(:cop) { described_class.new(config) }
   let(:config) do
-    Rubocop::Config.new('Style/EmptyLiteral' => { 'Enabled' => true })
+    RuboCop::Config.new('Style/EmptyLiteral' => { 'Enabled' => true })
   end
 
   it 'registers an offense for parens in method call without args' do
@@ -43,7 +43,7 @@ describe Rubocop::Cop::Style::MethodCallParentheses, :config do
 
   context 'when EmptyLiteral is disabled' do
     let(:config) do
-      Rubocop::Config.new('Style/EmptyLiteral' => { 'Enabled' => false })
+      RuboCop::Config.new('Style/EmptyLiteral' => { 'Enabled' => false })
     end
 
     it 'auto-corrects calls that could be empty literals' do

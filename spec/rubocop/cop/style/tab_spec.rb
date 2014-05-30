@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::Tab do
+describe RuboCop::Cop::Style::Tab do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for a line indented with tab' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::StringConversionInInterpolation do
+describe RuboCop::Cop::Lint::StringConversionInInterpolation do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for #to_s in interpolation' do

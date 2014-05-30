@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Corrector do
+describe RuboCop::Cop::Corrector do
   describe '#rewrite' do
     it 'allows removal of a range' do
       source = 'true and false'

@@ -3,7 +3,7 @@
 require 'json'
 require 'pathname'
 
-module Rubocop
+module RuboCop
   module Formatter
     # This formatter formats the report data in JSON format.
     class JSONFormatter < BaseFormatter
@@ -36,7 +36,7 @@ module Rubocop
 
       def metadata_hash
         {
-          rubocop_version: Rubocop::Version::STRING,
+          rubocop_version: RuboCop::Version::STRING,
           ruby_engine:     RUBY_ENGINE,
           ruby_version:    RUBY_VERSION,
           ruby_patchlevel: RUBY_PATCHLEVEL.to_s,

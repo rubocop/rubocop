@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::GuardClause, :config do
+describe RuboCop::Cop::Style::GuardClause, :config do
   let(:cop) { described_class.new(config) }
   let(:cop_config) { {} }
 

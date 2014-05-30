@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::EmptyLinesAroundAccessModifier do
+describe RuboCop::Cop::Style::EmptyLinesAroundAccessModifier do
   subject(:cop) { described_class.new }
 
   %w(private protected public).each do |access_modifier|

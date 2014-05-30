@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::Alias do
+describe RuboCop::Cop::Style::Alias do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for alias with symbol args' do

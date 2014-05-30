@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::NegatedIf do
+describe RuboCop::Cop::Style::NegatedIf do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for if with exclamation point condition' do

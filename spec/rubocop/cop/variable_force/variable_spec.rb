@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::VariableForce::Variable do
+describe RuboCop::Cop::VariableForce::Variable do
   include AST::Sexp
 
   describe '.new' do
@@ -10,7 +10,7 @@ describe Rubocop::Cop::VariableForce::Variable do
       it 'raises error' do
         name = :foo
         declaration_node = s(:def)
-        scope = Rubocop::Cop::VariableForce::Scope.new(s(:class))
+        scope = RuboCop::Cop::VariableForce::Scope.new(s(:class))
         expect { described_class.new(name, declaration_node, scope) }
           .to raise_error(ArgumentError)
       end

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::UselessAssignment do
+describe RuboCop::Cop::Lint::UselessAssignment do
   subject(:cop) { described_class.new }
 
   context 'when a variable is assigned and unreferenced in a method' do

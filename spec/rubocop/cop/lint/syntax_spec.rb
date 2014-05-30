@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::Syntax do
+describe RuboCop::Cop::Lint::Syntax do
   describe '.offense_from_diagnostic' do
     subject(:offense) { described_class.offense_from_diagnostic(diagnostic) }
     let(:diagnostic) { Parser::Diagnostic.new(level, reason, args, location) }
@@ -12,7 +12,7 @@ describe Rubocop::Cop::Lint::Syntax do
     let(:location) { double('location').as_null_object }
 
     it 'returns an offense' do
-      expect(offense).to be_a(Rubocop::Cop::Offense)
+      expect(offense).to be_a(RuboCop::Cop::Offense)
     end
 
     it "sets diagnostic's level to offense's severity" do

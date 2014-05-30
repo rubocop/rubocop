@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::IndentationWidth do
+describe RuboCop::Cop::Style::IndentationWidth do
   subject(:cop) { described_class.new(config) }
   let(:config) do
-    Rubocop::Config.new('Lint/EndAlignment' => end_alignment_config)
+    RuboCop::Config.new('Lint/EndAlignment' => end_alignment_config)
   end
   let(:end_alignment_config) do
     { 'Enabled' => true, 'AlignWith' => 'variable' }

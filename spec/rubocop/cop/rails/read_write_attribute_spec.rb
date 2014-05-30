@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Rails::ReadWriteAttribute do
+describe RuboCop::Cop::Rails::ReadWriteAttribute do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for read_attribute' do

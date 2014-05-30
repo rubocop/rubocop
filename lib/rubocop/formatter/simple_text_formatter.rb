@@ -2,7 +2,7 @@
 
 require 'rubocop/formatter/colorizable'
 
-module Rubocop
+module RuboCop
   module Formatter
     # A basic formatter that displays only files with offenses.
     # Offenses are displayed at compact form - just the

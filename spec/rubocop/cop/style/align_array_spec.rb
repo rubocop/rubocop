@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::AlignArray do
+describe RuboCop::Cop::Style::AlignArray do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for misaligned array elements' do

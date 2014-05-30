@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Cop
     # Handles adding and checking ignored nodes.
     module IgnoredNode

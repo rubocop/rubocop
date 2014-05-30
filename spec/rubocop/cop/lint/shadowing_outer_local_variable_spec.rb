@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::ShadowingOuterLocalVariable do
+describe RuboCop::Cop::Lint::ShadowingOuterLocalVariable do
   subject(:cop) { described_class.new }
 
   context 'when a block argument has same name ' \

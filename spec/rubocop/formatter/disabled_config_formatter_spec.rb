@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'stringio'
 require 'ostruct'
 
-module Rubocop
+module RuboCop
   module Formatter
     describe DisabledConfigFormatter do
       subject(:formatter) { described_class.new(output) }
@@ -16,8 +16,8 @@ module Rubocop
         o
       end
       let(:offenses) do
-        [Rubocop::Cop::Offense.new(:convention, location, 'message', 'Cop1'),
-         Rubocop::Cop::Offense.new(:convention, location, 'message', 'Cop2')]
+        [RuboCop::Cop::Offense.new(:convention, location, 'message', 'Cop1'),
+         RuboCop::Cop::Offense.new(:convention, location, 'message', 'Cop2')]
       end
       let(:location) { OpenStruct.new(line: 1, column: 5) }
       before { $stdout = StringIO.new }

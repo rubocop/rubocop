@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::UnusedMethodArgument do
+describe RuboCop::Cop::Lint::UnusedMethodArgument do
   subject(:cop) { described_class.new }
 
   context 'inspection' do

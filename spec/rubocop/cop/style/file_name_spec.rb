@@ -2,11 +2,11 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::FileName do
+describe RuboCop::Cop::Style::FileName do
   subject(:cop) { described_class.new(config) }
 
   let(:config) do
-    Rubocop::Config.new(
+    RuboCop::Config.new(
       { 'AllCops' => { 'Include' => includes } },
       '/some/.rubocop.yml'
     )

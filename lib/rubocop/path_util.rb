@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   # Common methods and behaviors for dealing with paths.
   module PathUtil
     module_function

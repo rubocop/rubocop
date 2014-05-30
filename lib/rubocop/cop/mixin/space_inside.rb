@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Cop
     # Common functionality for checking for spaces inside various
     # kinds of parentheses.

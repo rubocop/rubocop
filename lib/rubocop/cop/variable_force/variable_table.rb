@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Cop
     class VariableForce
       # A VariableTable manages the lifetime of all scopes and local variables

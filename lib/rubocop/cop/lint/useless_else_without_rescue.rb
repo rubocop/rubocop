@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Cop
     module Lint
       # This cop checks for useless `else` in `begin..end` without `rescue`.

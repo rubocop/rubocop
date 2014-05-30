@@ -2,7 +2,7 @@
 
 require 'optparse'
 
-module Rubocop
+module RuboCop
   # This module contains help texts for command line options.
   module OptionsHelp
     TEXT = {
@@ -118,8 +118,8 @@ module Rubocop
 
     def add_severity_option(opts)
       option(opts, '--fail-level SEVERITY',
-             Rubocop::Cop::Severity::NAMES,
-             Rubocop::Cop::Severity::CODE_TABLE) do |severity|
+             RuboCop::Cop::Severity::NAMES,
+             RuboCop::Cop::Severity::CODE_TABLE) do |severity|
         @options[:fail_level] = severity
       end
     end

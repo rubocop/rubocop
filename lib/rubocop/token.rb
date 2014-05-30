@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   # A basic wrapper around Parser's tokens.
   class Token
     attr_reader :pos, :type, :text

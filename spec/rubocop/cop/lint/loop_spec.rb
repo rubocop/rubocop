@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::Loop do
+describe RuboCop::Cop::Lint::Loop do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for begin/end/while' do

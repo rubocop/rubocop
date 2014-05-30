@@ -7,7 +7,7 @@ if RUBY_VERSION >= '1.9.2'
   require 'rubocop'
   require 'benchmark'
 
-  cli = Rubocop::CLI.new
+  cli = RuboCop::CLI.new
   result = 0
 
   time = Benchmark.realtime do

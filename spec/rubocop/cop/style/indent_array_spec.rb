@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::IndentArray do
+describe RuboCop::Cop::Style::IndentArray do
   subject(:cop) { described_class.new }
 
   it 'accepts multi-assignments' do

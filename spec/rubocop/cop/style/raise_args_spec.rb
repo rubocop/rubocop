@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::RaiseArgs, :config do
+describe RuboCop::Cop::Style::RaiseArgs, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'when enforced style is compact' do

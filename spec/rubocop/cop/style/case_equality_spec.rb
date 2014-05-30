@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::CaseEquality do
+describe RuboCop::Cop::Style::CaseEquality do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for ===' do

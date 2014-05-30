@@ -3,10 +3,10 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Commissioner do
+describe RuboCop::Cop::Commissioner do
   describe '#investigate' do
-    let(:cop) { double(Rubocop::Cop, offenses: []).as_null_object }
-    let(:force) { double(Rubocop::Cop::Force).as_null_object }
+    let(:cop) { double(RuboCop::Cop, offenses: []).as_null_object }
+    let(:force) { double(RuboCop::Cop::Force).as_null_object }
 
     it 'returns all offenses found by the cops' do
       allow(cop).to receive(:offenses).and_return([1])

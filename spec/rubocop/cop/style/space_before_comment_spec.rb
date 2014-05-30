@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::SpaceBeforeComment do
+describe RuboCop::Cop::Style::SpaceBeforeComment do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for missing space before an EOL comment' do

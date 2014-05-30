@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::SingleSpaceBeforeFirstArg do
+describe RuboCop::Cop::Style::SingleSpaceBeforeFirstArg do
   subject(:cop) { described_class.new }
 
   context 'for method calls without parentheses' do

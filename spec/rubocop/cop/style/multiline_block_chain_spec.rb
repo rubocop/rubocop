@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::MultilineBlockChain do
+describe RuboCop::Cop::Style::MultilineBlockChain do
   subject(:cop) { described_class.new }
 
   context 'with multi-line block chaining' do

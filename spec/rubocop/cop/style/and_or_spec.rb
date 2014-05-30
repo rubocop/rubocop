@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::AndOr do
+describe RuboCop::Cop::Style::AndOr do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for OR' do

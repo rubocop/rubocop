@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Cop
     module Rails
       # This cop enforces the consistent use of action filters methods.

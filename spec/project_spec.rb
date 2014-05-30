@@ -4,10 +4,10 @@ require 'spec_helper'
 
 describe 'RuboCop Project' do
   describe 'default configuration file' do
-    let(:cop_names) { Rubocop::Cop::Cop.all.map(&:cop_name) }
+    let(:cop_names) { RuboCop::Cop::Cop.all.map(&:cop_name) }
 
     subject(:default_config) do
-      Rubocop::ConfigLoader.load_file('config/default.yml')
+      RuboCop::ConfigLoader.load_file('config/default.yml')
     end
 
     it 'has configuration for all cops' do

@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Cop
     module Rails
       # This cop checks for the use of the has_and_belongs_to_many macro.

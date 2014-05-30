@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Offense do
+describe RuboCop::Cop::Offense do
   let(:location) do
     source_buffer = Parser::Source::Buffer.new('test', 1)
     source_buffer.source = "a\n"

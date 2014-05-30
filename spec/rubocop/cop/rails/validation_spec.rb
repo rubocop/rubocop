@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Rails::Validation do
+describe RuboCop::Cop::Rails::Validation do
   subject(:cop) { described_class.new }
 
   described_class::BLACKLIST.each do |validation|

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::RescueException do
+describe RuboCop::Cop::Lint::RescueException do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for rescue from Exception' do

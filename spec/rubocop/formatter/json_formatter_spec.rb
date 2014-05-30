@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'stringio'
 
-module Rubocop
+module RuboCop
   describe Formatter::JSONFormatter do
     subject(:formatter) { described_class.new(output) }
     let(:output) { StringIO.new }

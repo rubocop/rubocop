@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::ClassVars do
+describe RuboCop::Cop::Style::ClassVars do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for class variable declaration' do

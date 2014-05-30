@@ -3,7 +3,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::BlockAlignment do
+describe RuboCop::Cop::Lint::BlockAlignment do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for mismatched block end' do

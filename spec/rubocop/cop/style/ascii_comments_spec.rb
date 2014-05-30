@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::AsciiComments do
+describe RuboCop::Cop::Style::AsciiComments do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for a comment with non-ascii chars' do

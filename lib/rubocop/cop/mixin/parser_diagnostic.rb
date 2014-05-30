@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Cop
     # Common functionality for cops which processes Parser's diagnostics.
     # This mixin requires its user class to define `#relevant_diagnostic?`.

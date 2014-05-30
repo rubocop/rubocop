@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::EndAlignment, :config do
+describe RuboCop::Cop::Lint::EndAlignment, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) { { 'AlignWith' => 'keyword' } }
   let(:opposite) do

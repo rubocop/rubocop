@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Cop do
+describe RuboCop::Cop::Cop do
   subject(:cop) { described_class.new }
   let(:location) do
     source_buffer = Parser::Source::Buffer.new('test', 1)
@@ -33,7 +33,7 @@ describe Rubocop::Cop::Cop do
     it 'raises an error if the cop name is in more than one namespace' do
       pending 'Example needs a cop with same name in two namespaces'
       expect { described_class.qualified_cop_name('ExampleCop', '--only') }
-        .to raise_error(Rubocop::Cop::AmbiguousCopName)
+        .to raise_error(RuboCop::Cop::AmbiguousCopName)
     end
   end
 
@@ -69,7 +69,7 @@ describe Rubocop::Cop::Cop do
   end
 
   it 'registers offense with its name' do
-    cop = Rubocop::Cop::Style::For.new
+    cop = RuboCop::Cop::Style::For.new
     cop.add_offense(nil, location, 'message')
     expect(cop.offenses.first.cop_name).to eq('Style/For')
   end
@@ -81,19 +81,19 @@ describe Rubocop::Cop::Cop do
   end
 
   context 'with style cops' do
-    subject(:cop) { Rubocop::Cop::Style::For }
+    subject(:cop) { RuboCop::Cop::Style::For }
     it('has right name') { expect(cop.cop_name).to eq('Style/For') }
     it('has right type') { expect(cop.cop_type).to eq(:style) }
   end
 
   context 'with lint cops' do
-    subject(:cop) { Rubocop::Cop::Lint::Loop }
+    subject(:cop) { RuboCop::Cop::Lint::Loop }
     it('has right name') { expect(cop.cop_name).to eq('Lint/Loop') }
     it('has right type') { expect(cop.cop_type).to eq(:lint) }
   end
 
   context 'with rails cops' do
-    subject(:cop) { Rubocop::Cop::Rails::Validation }
+    subject(:cop) { RuboCop::Cop::Rails::Validation }
     it('has right name') { expect(cop.cop_name).to eq('Rails/Validation') }
     it('has right type') { expect(cop.cop_type).to eq(:rails) }
   end

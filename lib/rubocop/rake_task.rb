@@ -3,11 +3,11 @@
 require 'rake'
 require 'rake/tasklib'
 
-module Rubocop
+module RuboCop
   # Provides a custom rake task.
   #
   # require 'rubocop/rake_task'
-  # Rubocop::RakeTask.new
+  # RuboCop::RakeTask.new
   class RakeTask < Rake::TaskLib
     attr_accessor :name
     attr_accessor :verbose
@@ -70,7 +70,7 @@ module Rubocop
       @patterns = []
       @requires = []
       @options = []
-      @formatters = [Rubocop::Options::DEFAULT_FORMATTER]
+      @formatters = [RuboCop::Options::DEFAULT_FORMATTER]
     end
 
     def setup_subtasks(name)

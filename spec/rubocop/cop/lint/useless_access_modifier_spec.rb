@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::UselessAccessModifier do
+describe RuboCop::Cop::Lint::UselessAccessModifier do
   subject(:cop) { described_class.new }
 
   context 'when an access modifier has no effect' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::ParenthesesAsGroupedExpression do
+describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for method call with space before the ' \

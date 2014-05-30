@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::StringLiterals, :config do
+describe RuboCop::Cop::Style::StringLiterals, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'configured with single quotes preferred' do

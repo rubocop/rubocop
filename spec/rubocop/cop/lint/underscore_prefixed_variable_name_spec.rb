@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::UnderscorePrefixedVariableName do
+describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
   subject(:cop) { described_class.new }
 
   before do

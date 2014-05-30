@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Cop
     # Classes that include this module just implement functions to determine
     # what is an offense and how to do auto-correction. They get help with

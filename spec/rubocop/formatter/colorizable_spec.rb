@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'rubocop/formatter/colorizable'
 require 'stringio'
 
-module Rubocop
+module RuboCop
   module Formatter
     describe Colorizable do
       let(:formatter_class) do

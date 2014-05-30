@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::AlignParameters, :config do
+describe RuboCop::Cop::Style::AlignParameters, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'aligned with first parameter' do

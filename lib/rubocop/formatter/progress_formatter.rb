@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Formatter
     # This formatter display dots for files with no offenses and
     # letters for files with problems in the them. In the end it

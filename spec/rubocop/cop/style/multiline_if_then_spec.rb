@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::MultilineIfThen do
+describe RuboCop::Cop::Style::MultilineIfThen do
   subject(:cop) { described_class.new }
 
   # if

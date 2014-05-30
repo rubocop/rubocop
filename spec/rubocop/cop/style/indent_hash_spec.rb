@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::IndentHash do
+describe RuboCop::Cop::Style::IndentHash do
   subject(:cop) { described_class.new(config) }
   let(:config) do
     supported_styles = {
       'SupportedStyles' => %w(special_inside_parentheses consistent)
     }
-    Rubocop::Config.new('Style/AlignHash' => align_hash_config,
+    RuboCop::Config.new('Style/AlignHash' => align_hash_config,
                         'Style/IndentHash' =>
                         cop_config.merge(supported_styles))
   end

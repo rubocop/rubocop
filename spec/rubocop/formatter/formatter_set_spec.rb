@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'tempfile'
 
-module Rubocop
+module RuboCop
   module Formatter
     describe FormatterSet do
       subject(:formatter_set) { described_class.new }
@@ -109,20 +109,20 @@ module Rubocop
         end
 
         it 'returns constant represented by the passed string' do
-          expect(custom_formatter_class('Rubocop')).to eq(Rubocop)
+          expect(custom_formatter_class('RuboCop')).to eq(RuboCop)
         end
 
         it 'can handle namespaced constant name' do
-          expect(custom_formatter_class('Rubocop::CLI')).to eq(Rubocop::CLI)
+          expect(custom_formatter_class('RuboCop::CLI')).to eq(RuboCop::CLI)
         end
 
         it 'can handle top level namespaced constant name' do
-          expect(custom_formatter_class('::Rubocop::CLI')).to eq(Rubocop::CLI)
+          expect(custom_formatter_class('::RuboCop::CLI')).to eq(RuboCop::CLI)
         end
 
         context 'when non-existent constant name is passed' do
           it 'raises error' do
-            expect { custom_formatter_class('Rubocop::NonExistentClass') }
+            expect { custom_formatter_class('RuboCop::NonExistentClass') }
               .to raise_error(NameError)
           end
         end

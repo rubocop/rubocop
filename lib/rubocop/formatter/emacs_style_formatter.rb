@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Formatter
     # This formatter displays the report data in format that's
     # easy to process in the Emacs text editor.

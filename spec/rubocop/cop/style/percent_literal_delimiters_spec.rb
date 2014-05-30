@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::PercentLiteralDelimiters, :config do
+describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:cop_config) do

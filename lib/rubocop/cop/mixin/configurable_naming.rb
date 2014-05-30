@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Cop
     # This module provides functionality for checking if names match the
     # configured EnforcedStyle.

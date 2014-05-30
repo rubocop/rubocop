@@ -4,7 +4,7 @@ require 'spec_helper'
 require 'stringio'
 require 'tempfile'
 
-module Rubocop
+module RuboCop
   module Formatter
     describe DisabledLinesFormatter do
       subject(:formatter) { described_class.new(output) }

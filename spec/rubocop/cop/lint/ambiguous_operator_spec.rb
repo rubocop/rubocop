@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::AmbiguousOperator do
+describe RuboCop::Cop::Lint::AmbiguousOperator do
   subject(:cop) { described_class.new }
 
   before do

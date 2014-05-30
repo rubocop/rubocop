@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::HandleExceptions do
+describe RuboCop::Cop::Lint::HandleExceptions do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for empty rescue block' do

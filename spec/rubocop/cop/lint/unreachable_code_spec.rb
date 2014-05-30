@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::UnreachableCode do
+describe RuboCop::Cop::Lint::UnreachableCode do
   subject(:cop) { described_class.new }
 
   described_class::NODE_TYPES.each do |t|

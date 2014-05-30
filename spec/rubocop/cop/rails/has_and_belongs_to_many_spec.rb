@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Rails::HasAndBelongsToMany do
+describe RuboCop::Cop::Rails::HasAndBelongsToMany do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for has_and_belongs_to_many' do

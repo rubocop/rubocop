@@ -2,14 +2,14 @@
 
 # rubocop:disable Style/LineLength, Lint/UnusedMethodArgument
 
-module Rubocop
+module RuboCop
   module Formatter
     # Abstract base class for formatter, implements all public API methods.
     #
     # ## Creating Custom Formatter
     #
     # You can create a custom formatter by subclassing
-    # `Rubocop::Formatter::BaseFormatter` and overriding some methods,
+    # `RuboCop::Formatter::BaseFormatter` and overriding some methods,
     # or by implementing all the methods by duck typing.
     #
     # ## Using Custom Formatter in Command Line
@@ -93,12 +93,12 @@ module Rubocop
       # @param file [String]
       #   the file path
       #
-      # @param offenses [Array(Rubocop::Cop::Offense)]
+      # @param offenses [Array(RuboCop::Cop::Offense)]
       #   all detected offenses for the file
       #
       # @return [void]
       #
-      # @see Rubocop::Cop::Offense
+      # @see RuboCop::Cop::Offense
       def file_finished(file, offenses)
       end
 

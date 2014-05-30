@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::EmptyLinesAroundBody do
+describe RuboCop::Cop::Style::EmptyLinesAroundBody do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for method body starting with a blank' do

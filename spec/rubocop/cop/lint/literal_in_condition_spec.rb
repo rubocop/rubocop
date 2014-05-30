@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Lint::LiteralInCondition do
+describe RuboCop::Cop::Lint::LiteralInCondition do
   subject(:cop) { described_class.new }
 
   %w(1 2.0 [1] {}).each do |lit|

@@ -91,7 +91,7 @@ def inspect_source_file(cop, source)
 end
 
 def inspect_source(cop, source, file = nil)
-  Rubocop::Formatter::DisabledConfigFormatter.config_to_allow_offenses = {}
+  RuboCop::Formatter::DisabledConfigFormatter.config_to_allow_offenses = {}
   processed_source = parse_source(source, file)
   fail 'Error parsing example code' unless processed_source.valid_syntax?
   _investigate(cop, processed_source)
@@ -100,13 +100,13 @@ end
 def parse_source(source, file = nil)
   source = source.join($RS) if source.is_a?(Array)
   if file.is_a? String
-    Rubocop::SourceParser.parse(source, file)
+    RuboCop::SourceParser.parse(source, file)
   elsif file
     file.write(source)
     file.rewind
-    Rubocop::SourceParser.parse(source, file.path)
+    RuboCop::SourceParser.parse(source, file.path)
   else
-    Rubocop::SourceParser.parse(source)
+    RuboCop::SourceParser.parse(source)
   end
 end
 
@@ -120,23 +120,23 @@ def autocorrect_source(cop, source, file = nil)
   _investigate(cop, processed_source)
 
   corrector =
-    Rubocop::Cop::Corrector.new(processed_source.buffer, cop.corrections)
+    RuboCop::Cop::Corrector.new(processed_source.buffer, cop.corrections)
   corrector.rewrite
 end
 
 def _investigate(cop, processed_source)
-  forces = Rubocop::Cop::Force.all.each_with_object([]) do |klass, instances|
+  forces = RuboCop::Cop::Force.all.each_with_object([]) do |klass, instances|
     next unless cop.join_force?(klass)
     instances << klass.new([cop])
   end
 
   commissioner =
-    Rubocop::Cop::Commissioner.new([cop], forces, raise_error: true)
+    RuboCop::Cop::Commissioner.new([cop], forces, raise_error: true)
   commissioner.investigate(processed_source)
   commissioner
 end
 
-module Rubocop
+module RuboCop
   module Cop
     class Cop
       def messages

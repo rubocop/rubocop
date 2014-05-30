@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Formatter
     # This formatter displays a YAML configuration file where all cops that
     # detected any offenses are configured to not detect the offense.
@@ -52,7 +52,7 @@ module Rubocop
           output.puts '# Cop supports --auto-correct.'
         end
 
-        default_cfg = Rubocop::ConfigLoader.default_configuration[cop_name]
+        default_cfg = RuboCop::ConfigLoader.default_configuration[cop_name]
         return unless default_cfg
 
         params = default_cfg.keys - %w(Description Enabled) - cfg.keys

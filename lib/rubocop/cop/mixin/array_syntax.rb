@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Cop
     # Common code for ordinary arrays with [] that can be written with %
     # syntax.

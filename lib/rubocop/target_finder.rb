@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   # This class finds target files to inspect by scanning the directory tree
   # and picking ruby files.
   class TargetFinder

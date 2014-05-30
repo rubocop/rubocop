@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   # The CLI is a class responsible of handling all the command line interface
   # logic.
   class CLI
@@ -69,8 +69,8 @@ module Rubocop
     def handle_exiting_options
       return unless Options::EXITING_OPTIONS.any? { |o| @options.key? o }
 
-      puts Rubocop::Version.version(false) if @options[:version]
-      puts Rubocop::Version.version(true) if @options[:verbose_version]
+      puts RuboCop::Version.version(false) if @options[:version]
+      puts RuboCop::Version.version(true) if @options[:verbose_version]
       print_available_cops if @options[:show_cops]
       exit(0)
     end

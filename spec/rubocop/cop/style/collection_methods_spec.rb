@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::CollectionMethods, :config do
+describe RuboCop::Cop::Style::CollectionMethods, :config do
   cop_config = {
     'PreferredMethods' => {
       'collect' => 'map',

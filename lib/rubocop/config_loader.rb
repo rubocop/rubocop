@@ -10,7 +10,7 @@ if RUBY_VERSION < '2.0.0' && RUBY_PLATFORM != 'java'
   YAML::ENGINE.yamler = 'syck'
 end
 
-module Rubocop
+module RuboCop
   # This class represents the configuration of the RuboCop application
   # and all its cops. A Config is associated with a YAML configuration
   # file from which it was read. Several different Configs can be used

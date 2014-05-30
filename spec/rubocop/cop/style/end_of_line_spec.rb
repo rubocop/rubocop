@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'tempfile'
 
-describe Rubocop::Cop::Style::EndOfLine do
+describe RuboCop::Cop::Style::EndOfLine do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for CR+LF' do

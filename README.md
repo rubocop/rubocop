@@ -658,7 +658,7 @@ To use RuboCop in your `Rakefile` add the following:
 ```ruby
 require 'rubocop/rake_task'
 
-Rubocop::RakeTask.new
+RuboCop::RakeTask.new
 ```
 
 The above will use default values
@@ -667,7 +667,7 @@ The above will use default values
 require 'rubocop/rake_task'
 
 desc 'Run RuboCop on the lib directory'
-Rubocop::RakeTask.new(:rubocop) do |task|
+RuboCop::RakeTask.new(:rubocop) do |task|
   task.patterns = ['lib/**/*.rb']
   # only show the files with failures
   task.formatters = ['files']
@@ -713,13 +713,13 @@ You can customize RuboCop's output format with custom formatters.
 #### Creating Custom Formatter
 
 To implement a custom formatter, you need to subclass
-`Rubocop::Formatter::BaseFormatter` and override some methods,
+`RuboCop::Formatter::BaseFormatter` and override some methods,
 or implement all formatter API methods by duck typing.
 
 Please see the documents below for more formatter API details.
 
-* [Rubocop::Formatter::BaseFormatter](http://rubydoc.info/gems/rubocop/Rubocop/Formatter/BaseFormatter)
-* [Rubocop::Cop::Offense](http://rubydoc.info/gems/rubocop/Rubocop/Cop/Offense)
+* [RuboCop::Formatter::BaseFormatter](http://rubydoc.info/gems/rubocop/RuboCop/Formatter/BaseFormatter)
+* [RuboCop::Cop::Offense](http://rubydoc.info/gems/rubocop/RuboCop/Cop/Offense)
 * [Parser::Source::Range](http://rubydoc.info/github/whitequark/parser/Parser/Source/Range)
 
 #### Using Custom Formatter in Command Line

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Rails::Output do
+describe RuboCop::Cop::Rails::Output do
   subject(:cop) { described_class.new }
 
   it 'records an offense for puts statements' do

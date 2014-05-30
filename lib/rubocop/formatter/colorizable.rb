@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-module Rubocop
+module RuboCop
   module Formatter
     # This mix-in module provides string coloring methods for terminals.
     # It automatically disables coloring if coloring is disabled in the process

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::IndentationConsistency do
+describe RuboCop::Cop::Style::IndentationConsistency do
   subject(:cop) { described_class.new }
 
   context 'with if statement' do

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Rubocop::Cop::Style::UnneededCapitalW do
+describe RuboCop::Cop::Style::UnneededCapitalW do
   subject(:cop) { described_class.new }
 
   it 'registers no offense for normal arrays of strings' do

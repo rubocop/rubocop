@@ -25,14 +25,14 @@ task :coverage do
 end
 
 desc 'Run RuboCop over itself'
-Rubocop::RakeTask.new(:internal_investigation)
+RuboCop::RakeTask.new(:internal_investigation)
 
 task default: [:spec, :internal_investigation]
 
 require 'yard'
 YARD::Rake::YardocTask.new
 
-Rubocop::RakeTask.new
+RuboCop::RakeTask.new
 
 task :console do
   require 'irb'
