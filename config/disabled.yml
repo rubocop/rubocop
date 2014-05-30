@@ -1,5 +1,9 @@
 # These are all the cops that are disabled in the default configuration.
 
+Style/InlineComment:
+  Description: 'Avoid inline comments.'
+  Enabled: false
+
 Style/MethodCalledOnDoEndBlock:
   Description: 'Avoid chaining a method call on a do...end block.'
   Enabled: false
