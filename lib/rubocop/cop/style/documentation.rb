@@ -66,7 +66,9 @@ module Rubocop
           distance = node.loc.keyword.line - preceding_comment.loc.line
           return false if distance > 1
 
-          !annotation?(preceding_comment)
+          # As long as there's at least one comment line that isn't an
+          # annotation, it's OK.
+          ast_with_comments[node].any? { |comment| !annotation?(comment) }
         end
       end
     end
