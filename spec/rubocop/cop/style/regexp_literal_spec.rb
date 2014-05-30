@@ -5,6 +5,8 @@ require 'spec_helper'
 describe Rubocop::Cop::Style::RegexpLiteral, :config do
   subject(:cop) { described_class.new(config) }
 
+  before { described_class.slash_count = nil }
+
   context 'when MaxSlashes is -1' do
     let(:cop_config) { { 'MaxSlashes' => -1 } }
 
@@ -169,6 +171,18 @@ describe Rubocop::Cop::Style::RegexpLiteral, :config do
                              'y =~ %r{/usr/lib/ext}'])
         expect(cop.config_to_allow_offenses).to eq(nil)
       end
+    end
+  end
+
+  context 'across multiple files (instances)' do
+    let(:cop_config) { { 'MaxSlashes' => 0 } }
+
+    it 'preserves slash count for --auto-gen-config' do
+      2.times do |i|
+        cop = described_class.new(config, auto_gen_config: true)
+        inspect_source(cop, "/http:#{'\/' * (i + 1)}/")
+      end
+      expect(described_class.slash_count['/']).to eq(Set.new([0, 1, 2]))
     end
   end
 end

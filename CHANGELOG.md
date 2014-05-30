@@ -13,6 +13,7 @@
 
 ### Bugs fixed
 
+* [#1126](https://github.com/bbatsov/rubocop/pull/1126): Fix `--auto-gen-config` bug with `RegexpLiteral` where only the last file's results would be used. ([@ggilder][])
 * [#1104](https://github.com/bbatsov/rubocop/issues/1104): Fix `EachWithObject` with modifier if as body. ([@geniou][])
 * [#1106](https://github.com/bbatsov/rubocop/issues/1106): Fix `EachWithObject` with single method call as body. ([@geniou][])
 * Avoid the warning about ignoring syck YAML engine from JRuby. ([@jonas054][])
@@ -955,3 +956,4 @@
 [@barunio]: https://github.com/barunio
 [@molawson]: https://github.com/molawson
 [@wndhydrnt]: https://github.com/wndhydrnt
+[@ggilder]: https://github.com/ggilder
