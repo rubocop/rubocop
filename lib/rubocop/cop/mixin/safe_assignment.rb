@@ -7,8 +7,19 @@ module Rubocop
     # assignment as a condition. It's not a mistake."
     module SafeAssignment
       def safe_assignment?(node)
-        node.type == :begin && node.children.size == 1 &&
-          Util::EQUALS_ASGN_NODES.include?(node.children[0].type)
+        return false unless node.type == :begin
+        return false unless node.children.size == 1
+
+        child = node.children.first
+        case child.type
+        when *Util::EQUALS_ASGN_NODES
+          true
+        when :send
+          _receiver, method_name, _args = *child
+          method_name.to_s.end_with?('=')
+        else
+          false
+        end
       end
 
       def safe_assignment_allowed?

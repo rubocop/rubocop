@@ -107,6 +107,13 @@ describe Rubocop::Cop::Style::ParenthesesAroundCondition, :config do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts setter in condition surrounded with parentheses' do
+      inspect_source(cop,
+                     ['if (self.test = 10)',
+                      'end'
+                     ])
+      expect(cop.offenses).to be_empty
+    end
   end
 
   context 'safe assignment is not allowed' do
