@@ -6,6 +6,7 @@
 
 * [#1117](https://github.com/bbatsov/rubocop/issues/1117): `BlockComments` cop does auto-correction. ([@jonas054][])
 * [#1124](https://github.com/bbatsov/rubocop/pull/1124): `TrivialAccessors` cop auto-corrects class-level accessors. ([@ggilder][])
+* [#1062](https://github.com/bbatsov/rubocop/pull/1062): New cop `InlineComment` checks for inline comments. ([@salbertson][])
 
 ### Changes
 
@@ -961,3 +962,4 @@
 [@molawson]: https://github.com/molawson
 [@wndhydrnt]: https://github.com/wndhydrnt
 [@ggilder]: https://github.com/ggilder
+[@salbertson]: https://github.com/salbertson
