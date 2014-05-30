@@ -72,6 +72,30 @@ describe RuboCop::Cop::Style::Documentation do
     expect(cop.offenses.size).to eq(1)
   end
 
+  it 'accepts non-empty class with annotation comment followed by other ' \
+     'comment' do
+    inspect_source(cop,
+                   ['# OPTIMIZE: Make this faster.',
+                    '# Class comment.',
+                    'class My_Class',
+                    '  TEST = 20',
+                    'end'
+                   ])
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'accepts non-empty class with comment that ends with an annotation' do
+    inspect_source(cop,
+                   ['# Does fooing.',
+                    '# FIXME: Not yet implemented.',
+                    'class Foo',
+                    '  def initialize',
+                    '  end',
+                    'end'
+                   ])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'accepts non-empty module with documentation' do
     inspect_source(cop,
                    ['# class comment',
