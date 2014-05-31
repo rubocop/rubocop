@@ -22,17 +22,18 @@ module RuboCop
         loc.expression.source_line[0...loc.column] =~ /^\s*$/
       end
 
-      def autocorrect(node)
+      def autocorrect(arg)
+        expr = arg.respond_to?(:loc) ? arg.loc.expression : arg
+
         # We can't use the instance variable inside the lambda. That would
         # just give each lambda the same reference and they would all get
         # the last value of @column_delta. A local variable fixes the
         # problem.
         column_delta = @column_delta
 
-        fail CorrectionNotPossible if block_comment_within?(node)
+        fail CorrectionNotPossible if block_comment_within?(expr)
 
         @corrections << lambda do |corrector|
-          expr = node.loc.expression
           each_line(expr) do |line_begin_pos|
             range = calculate_range(expr, line_begin_pos, column_delta)
             if column_delta > 0
@@ -48,9 +49,9 @@ module RuboCop
 
       private
 
-      def block_comment_within?(node)
+      def block_comment_within?(expr)
         processed_source.comments.select { |c| c.document? }.find do |c|
-          inner, outer = c.loc.expression, node.loc.expression
+          inner, outer = c.loc.expression, expr
           inner.begin_pos >= outer.begin_pos && inner.end_pos <= outer.end_pos
         end
       end

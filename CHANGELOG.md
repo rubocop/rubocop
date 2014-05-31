@@ -7,6 +7,7 @@
 * [#1117](https://github.com/bbatsov/rubocop/issues/1117): `BlockComments` cop does auto-correction. ([@jonas054][])
 * [#1124](https://github.com/bbatsov/rubocop/pull/1124): `TrivialAccessors` cop auto-corrects class-level accessors. ([@ggilder][])
 * [#1062](https://github.com/bbatsov/rubocop/pull/1062): New cop `InlineComment` checks for inline comments. ([@salbertson][])
+* [#1118](https://github.com/bbatsov/rubocop/issues/1118): Add checking and auto-correction of right brackets in `IndentArray` and `IndentHash`. ([@jonas054][])
 
 ### Changes
 

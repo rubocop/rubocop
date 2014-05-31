@@ -26,6 +26,38 @@ describe RuboCop::Cop::Style::IndentArray do
     expect(cop.highlights).to eq(['1'])
   end
 
+  it 'registers an offense for incorrectly indented closing bracket in an ' \
+     'empty array' do
+    inspect_source(cop,
+                   ['a << [',
+                    ' ]'])
+    expect(cop.messages)
+      .to eq(['Indent the right bracket the same as the start of the line ' \
+              'where the left bracket is.'])
+    expect(cop.highlights).to eq([']'])
+  end
+
+  context 'when the first element is not on its own line' do
+    it 'registers an offense for an incorrectly indented closing bracket' do
+      inspect_source(cop,
+                     ['a = [1,',
+                      '     2,',
+                      ']'])
+      expect(cop.highlights).to eq([']'])
+      expect(cop.messages)
+        .to eq(['Indent the right bracket the same as the left bracket.'])
+    end
+
+    it 'accepts closing bracket indented the same as opening bracket' do
+      inspect_source(cop,
+                     ['a = [1,',
+                      '     2,',
+                      '    ]'])
+      expect(cop.highlights).to eq([])
+      expect(cop.offenses).to be_empty
+    end
+  end
+
   it 'auto-corrects incorrectly indented only element' do
     corrected = autocorrect_source(cop, ['a << [',
                                          ' 1',
@@ -97,7 +129,10 @@ describe RuboCop::Cop::Style::IndentArray do
                         '     ])'])
         expect(cop.messages)
           .to eq(['Use 2 spaces for indentation in an array, relative to ' \
-                  'the start of the line where the left bracket is.'])
+                  'the start of the line where the left bracket is.',
+
+                  'Indent the right bracket the same as the start of the ' \
+                  'line where the left bracket is.'])
       end
 
       it 'accepts normal indentation for second argument' do

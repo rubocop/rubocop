@@ -100,8 +100,8 @@ describe RuboCop::CLI, :isolated_environment do
                   '      {',
                   "        another: 'hash',",
                   "        with: 'more'",
-                  '         },',
-                  '            ]',
+                  '      },',
+                  '    ]',
                   '  end',
                   'end'].join("\n") + "\n")
       end
