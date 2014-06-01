@@ -88,4 +88,36 @@ describe RuboCop::Cop::Style::AlignArray do
     new_source = autocorrect_source(cop, original_source)
     expect(new_source).to eq(original_source.join("\n"))
   end
+
+  it 'does not indent heredoc strings in autocorrect' do
+    original_source = ['var = [',
+                       "       { :type => 'something',",
+                       '         :sql => <<EOF',
+                       'Select something',
+                       'from atable',
+                       'EOF',
+                       '       },',
+                       "      { :type => 'something',",
+                       '        :sql => <<EOF',
+                       'Select something',
+                       'from atable',
+                       'EOF',
+                       '      }',
+                       ']']
+    new_source = autocorrect_source(cop, original_source)
+    expect(new_source).to eq(['var = [',
+                              "       { :type => 'something',",
+                              '         :sql => <<EOF',
+                              'Select something',
+                              'from atable',
+                              'EOF',
+                              '       },',
+                              "       { :type => 'something',",
+                              '         :sql => <<EOF',
+                              'Select something',
+                              'from atable',
+                              'EOF',
+                              '       }',
+                              ']'].join("\n"))
+  end
 end

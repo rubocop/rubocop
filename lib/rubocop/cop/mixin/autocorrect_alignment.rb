@@ -23,6 +23,7 @@ module RuboCop
       end
 
       def autocorrect(arg)
+        heredoc_ranges = heredoc_ranges(arg)
         expr = arg.respond_to?(:loc) ? arg.loc.expression : arg
 
         # We can't use the instance variable inside the lambda. That would
@@ -36,6 +37,9 @@ module RuboCop
         @corrections << lambda do |corrector|
           each_line(expr) do |line_begin_pos|
             range = calculate_range(expr, line_begin_pos, column_delta)
+            # We must not change indentation of heredoc stings.
+            next if heredoc_ranges.any? { |h| within?(range, h) }
+
             if column_delta > 0
               unless range.source == "\n"
                 corrector.insert_before(range, ' ' * column_delta)
@@ -49,11 +53,24 @@ module RuboCop
 
       private
 
+      def heredoc_ranges(arg)
+        return [] unless arg.is_a?(Parser::AST::Node)
+
+        heredoc_ranges = []
+        on_node(:dstr, arg) do |n|
+          heredoc_ranges << n.loc.heredoc_body.join(n.loc.heredoc_end)
+        end
+        heredoc_ranges
+      end
+
       def block_comment_within?(expr)
         processed_source.comments.select { |c| c.document? }.find do |c|
-          inner, outer = c.loc.expression, expr
-          inner.begin_pos >= outer.begin_pos && inner.end_pos <= outer.end_pos
+          within?(c.loc.expression, expr)
         end
+      end
+
+      def within?(inner, outer)
+        inner.begin_pos >= outer.begin_pos && inner.end_pos <= outer.end_pos
       end
 
       def calculate_range(expr, line_begin_pos, column_delta)

@@ -121,6 +121,34 @@ describe RuboCop::Cop::Style::IndentationWidth do
                                  'end',
                                  'end'].join("\n")
       end
+
+      it 'does not indent heredoc strings' do
+        corrected = autocorrect_source(cop,
+                                       ['module Foo',
+                                        'module Bar',
+                                        '  SOMETHING = <<GOO',
+                                        'text',
+                                        'more text',
+                                        'foo',
+                                        'GOO',
+                                        '  def baz',
+                                        '    do_something',
+                                        '  end',
+                                        'end',
+                                        'end'])
+        expect(corrected).to eq ['module Foo',
+                                 '  module Bar',
+                                 '    SOMETHING = <<GOO',
+                                 'text',
+                                 'more text',
+                                 'foo',
+                                 'GOO',
+                                 '    def baz',
+                                 '      do_something',
+                                 '    end',
+                                 '  end',
+                                 'end'].join("\n")
+      end
     end
 
     it 'accepts a one line if statement' do

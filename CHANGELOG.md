@@ -27,6 +27,7 @@
 * [#1123](https://github.com/bbatsov/rubocop/pull/1123): Support setter calls in safe assignment in `ParenthesesAroundCondition`. ([@jonas054][])
 * [#1090](https://github.com/bbatsov/rubocop/issues/1090): Correct handling of documentation vs annotation comment. ([@jonas054][])
 * [#1118](https://github.com/bbatsov/rubocop/issues/1118): Never write invalid ruby to a file in auto-correct. ([@jonas054][])
+* [#1120](https://github.com/bbatsov/rubocop/issues/1120): Don't change indentation of heredoc strings in auto-correct. ([@jonas054][])
 
 ## 0.22.0 (20/04/2014)
 
