@@ -47,6 +47,65 @@ describe RuboCop::CLI, :isolated_environment do
         expect(IO.read('example.rb')).to eq(source.join("\n") + "\n")
       end
 
+      it 'corrects code with indentation problems' do
+        create_file('example.rb', ['# encoding: utf-8',
+                                   'module Bar',
+                                   'class Goo',
+                                   '  def something',
+                                   '    first call',
+                                   "      do_other 'things'",
+                                   '      if other > 34',
+                                   '        more_work',
+                                   '      end',
+                                   '  end',
+                                   'end',
+                                   'end',
+                                   '',
+                                   'module Foo',
+                                   'class Bar',
+                                   '',
+                                   '  stuff = [',
+                                   '            {',
+                                   "              some: 'hash',",
+                                   '            },',
+                                   '                 {',
+                                   "              another: 'hash',",
+                                   "              with: 'more'",
+                                   '            },',
+                                   '          ]',
+                                   'end',
+                                   'end'
+                                  ])
+        expect(cli.run(['--auto-correct'])).to eq(1)
+        expect(IO.read('example.rb'))
+          .to eq(['# encoding: utf-8',
+                  'module Bar',
+                  '  class Goo',
+                  '    def something',
+                  '      first call',
+                  "      do_other 'things'",
+                  '      if other > 34',
+                  '        more_work',
+                  '      end',
+                  '    end',
+                  '  end',
+                  'end',
+                  '',
+                  'module Foo',
+                  '  class Bar',
+                  '    stuff = [',
+                  '      {',
+                  "        some: 'hash',",
+                  '      },',
+                  '      {',
+                  "        another: 'hash',",
+                  "        with: 'more'",
+                  '      },',
+                  '    ]',
+                  '  end',
+                  'end'].join("\n") + "\n")
+      end
+
       it 'can change block comments and indent them' do
         create_file('example.rb', ['# encoding: utf-8',
                                    'module Foo',

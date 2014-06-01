@@ -7,6 +7,7 @@
 * [#1117](https://github.com/bbatsov/rubocop/issues/1117): `BlockComments` cop does auto-correction. ([@jonas054][])
 * [#1124](https://github.com/bbatsov/rubocop/pull/1124): `TrivialAccessors` cop auto-corrects class-level accessors. ([@ggilder][])
 * [#1062](https://github.com/bbatsov/rubocop/pull/1062): New cop `InlineComment` checks for inline comments. ([@salbertson][])
+* [#1118](https://github.com/bbatsov/rubocop/issues/1118): Add checking and auto-correction of right brackets in `IndentArray` and `IndentHash`. ([@jonas054][])
 
 ### Changes
 
@@ -25,6 +26,7 @@
 * [#1117](https://github.com/bbatsov/rubocop/issues/1117): Don't auto-correct indentation in scopes that contain block comments (`=begin`..`=end`). ([@jonas054][])
 * [#1123](https://github.com/bbatsov/rubocop/pull/1123): Support setter calls in safe assignment in `ParenthesesAroundCondition`. ([@jonas054][])
 * [#1090](https://github.com/bbatsov/rubocop/issues/1090): Correct handling of documentation vs annotation comment. ([@jonas054][])
+* [#1118](https://github.com/bbatsov/rubocop/issues/1118): Never write invalid ruby to a file in auto-correct. ([@jonas054][])
 
 ## 0.22.0 (20/04/2014)
 

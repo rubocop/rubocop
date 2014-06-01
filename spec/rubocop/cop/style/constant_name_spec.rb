@@ -46,7 +46,7 @@ describe RuboCop::Cop::Style::ConstantName do
                    ['AnythingGoes = test do',
                     '  do_something',
                     'end'
-                    ])
+                   ])
     expect(cop.offenses).to be_empty
   end
 

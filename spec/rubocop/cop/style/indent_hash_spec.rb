@@ -21,6 +21,19 @@ describe RuboCop::Cop::Style::IndentHash do
   end
   let(:cop_config) { { 'EnforcedStyle' => 'special_inside_parentheses' } }
 
+  shared_examples 'right brace' do
+    it 'registers an offense for incorrectly indented }' do
+      inspect_source(cop,
+                     ['a << {',
+                      '  }'])
+      expect(cop.highlights).to eq(['}'])
+      expect(cop.messages)
+        .to eq(['Indent the right brace the same as the start of the line ' \
+                'where the left brace is.'])
+      expect(cop.config_to_allow_offenses).to eq(nil)
+    end
+  end
+
   context 'when the AlignHash style is separator for :' do
     let(:align_hash_config) do
       {
@@ -48,6 +61,8 @@ describe RuboCop::Cop::Style::IndentHash do
       expect(cop.highlights).to eq(['a: 1'])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
+
+    include_examples 'right brace'
   end
 
   context 'when the AlignHash style is separator for =>' do
@@ -77,6 +92,8 @@ describe RuboCop::Cop::Style::IndentHash do
       expect(cop.highlights).to eq(["'a' => 1"])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
+
+    include_examples 'right brace'
   end
 
   context 'when hash is operand' do
@@ -105,6 +122,8 @@ describe RuboCop::Cop::Style::IndentHash do
                                '  a: 1',
                                '}'].join("\n")
     end
+
+    include_examples 'right brace'
   end
 
   context 'when hash is argument to setter' do
@@ -198,8 +217,23 @@ describe RuboCop::Cop::Style::IndentHash do
       context 'and EnforcedStyle is special_inside_parentheses' do
         it 'accepts special indentation for first argument' do
           inspect_source(cop,
-                         ['func({',
+                         # Only the function calls are affected by
+                         # EnforcedStyle setting. Other indentation shall be
+                         # the same regardless of EnforcedStyle.
+                         ['h = {',
+                          '  a: 1',
+                          '}',
+                          'func({',
                           '       a: 1',
+                          '     })',
+                          'func(x, {',
+                          '       a: 1',
+                          '     })',
+                          'h = { a: 1',
+                          '}',
+                          'func({ a: 1',
+                          '     })',
+                          'func(x, { a: 1',
                           '     })'])
           expect(cop.offenses).to be_empty
         end
@@ -211,7 +245,10 @@ describe RuboCop::Cop::Style::IndentHash do
                           '})'])
           expect(cop.messages)
             .to eq(['Use 2 spaces for indentation in a hash, relative to the' \
-                    ' first position after the preceding left parenthesis.'])
+                    ' first position after the preceding left parenthesis.',
+
+                    'Indent the right brace the same as the first position ' \
+                    'after the preceding left parenthesis.'])
           expect(cop.config_to_allow_offenses)
             .to eq('EnforcedStyle' => 'consistent')
         end
@@ -222,7 +259,7 @@ describe RuboCop::Cop::Style::IndentHash do
                                                '})'])
           expect(corrected).to eq ['func({',
                                    '       a: 1',
-                                   '})'].join("\n")
+                                   '     })'].join("\n")
         end
 
         it 'accepts special indentation for second argument' do
@@ -248,8 +285,23 @@ describe RuboCop::Cop::Style::IndentHash do
 
         it 'accepts normal indentation for first argument' do
           inspect_source(cop,
-                         ['func({',
+                         # Only the function calls are affected by
+                         # EnforcedStyle setting. Other indentation shall be
+                         # the same regardless of EnforcedStyle.
+                         ['h = {',
                           '  a: 1',
+                          '}',
+                          'func({',
+                          '  a: 1',
+                          '})',
+                          'func(x, {',
+                          '  a: 1',
+                          '})',
+                          'h = { a: 1',
+                          '}',
+                          'func({ a: 1',
+                          '})',
+                          'func(x, { a: 1',
                           '})'])
           expect(cop.offenses).to be_empty
         end
@@ -261,7 +313,10 @@ describe RuboCop::Cop::Style::IndentHash do
                           '     })'])
           expect(cop.messages)
             .to eq(['Use 2 spaces for indentation in a hash, relative to the' \
-                    ' start of the line where the left curly brace is.'])
+                    ' start of the line where the left curly brace is.',
+
+                    'Indent the right brace the same as the start of the ' \
+                    'line where the left brace is.'])
           expect(cop.config_to_allow_offenses)
             .to eq('EnforcedStyle' => 'special_inside_parentheses')
         end
