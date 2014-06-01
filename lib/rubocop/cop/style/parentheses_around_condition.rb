@@ -28,12 +28,21 @@ module RuboCop
           cond, _body = *node
 
           return unless cond.type == :begin
+          # handle `if (something rescue something_else) ...`
+          return if modifier_op?(cond.children.first)
           # check if there's any whitespace between the keyword and the cond
           return if parens_required?(node)
           # allow safe assignment
           return if safe_assignment?(cond) && safe_assignment_allowed?
 
           add_offense(cond, :expression, message(node))
+        end
+
+        def modifier_op?(node)
+          return true if node.type == :rescue
+
+          [:if, :while, :until].include?(node.type) &&
+            node.loc.end.nil?
         end
 
         def parens_required?(node)

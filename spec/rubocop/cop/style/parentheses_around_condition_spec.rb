@@ -98,6 +98,14 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
     expect(cop.offenses).to be_empty
   end
 
+  %w(rescue if unless while until).each do |op|
+    it "allows parens if the condition node is a modifier #{op} op" do
+      inspect_source(cop, ["if (something #{op} top)",
+                           'end'])
+      expect(cop.offenses).to be_empty
+    end
+  end
+
   context 'safe assignment is allowed' do
     it 'accepts = in condition surrounded with parentheses' do
       inspect_source(cop,
