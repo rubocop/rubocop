@@ -28,6 +28,7 @@ module RuboCop
           cond, _body = *node
 
           return unless cond.type == :begin
+          # check if there's any whitespace between the keyword and the cond
           return if parens_required?(node)
           # allow safe assignment
           return if safe_assignment?(cond) && safe_assignment_allowed?
