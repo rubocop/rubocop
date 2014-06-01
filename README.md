@@ -632,6 +632,9 @@ Installation instructions can be found [here](https://github.com/mrdougal/textma
 The [atom-lint](https://github.com/yujinakayama/atom-lint) package
 runs RuboCop and highlights the offenses in Atom.
 
+You can also use the [linter-rubocop](https://github.com/AtomLinter/linter-rubocop)
+plugin for Atom's [linter](https://github.com/AtomLinter/Linter).
+
 ### LightTable
 
 The [lt-rubocop](https://github.com/seancaffery/lt-rubocop) plugin
