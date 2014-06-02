@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.23.0 (02/06/2014)
+
 ### New features
 
 * [#1117](https://github.com/bbatsov/rubocop/issues/1117): `BlockComments` cop does auto-correction. ([@jonas054][])
