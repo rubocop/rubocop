@@ -38,9 +38,7 @@ module RuboCop
           return unless body
 
           return_value = body.type == :begin ? body.children.last : body
-          return unless return_value && return_value.type == :lvar
-
-          return_value
+          return_value if return_value && return_value.type == :lvar
         end
 
         def first_argument_returned?(args, return_value)
