@@ -38,8 +38,7 @@ module RuboCop
           return unless body
 
           return_value = body.type == :begin ? body.children.last : body
-          return unless return_value
-          return unless return_value.type == :lvar
+          return unless return_value && return_value.type == :lvar
 
           return_value
         end
