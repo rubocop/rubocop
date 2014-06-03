@@ -19,6 +19,10 @@ module RuboCop
 
         def on_block(node)
           method, args, body = *node
+
+          # filter out super and zsuper nodes
+          return unless method.type == :send
+
           _, method_name, method_args = *method
 
           return unless METHODS.include? method_name
