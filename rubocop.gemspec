@@ -32,7 +32,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('json', '>= 1.7.7', '< 2')
   s.add_runtime_dependency('ruby-progressbar', '~> 1.4')
   s.add_development_dependency('rake', '~> 10.1')
-  s.add_development_dependency('rspec', '~> 2.14')
+  s.add_development_dependency('rspec', '~> 2.14.1')
   s.add_development_dependency('yard', '~> 0.8')
   s.add_development_dependency('bundler', '~> 1.3')
   s.add_development_dependency('simplecov', '~> 0.7')
