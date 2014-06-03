@@ -57,17 +57,9 @@ module RuboCop
       alias_method :corrected?, :corrected
 
       # @api private
-      attr_reader :line
-
-      # @api private
-      attr_reader :column
-
-      # @api private
       def initialize(severity, location, message, cop_name, corrected = false)
         @severity = RuboCop::Cop::Severity.new(severity)
         @location = location.freeze
-        @line = location.line.freeze
-        @column = location.column.freeze
         @message = message.freeze
         @cop_name = cop_name.freeze
         @corrected = corrected.freeze
@@ -79,6 +71,16 @@ module RuboCop
       def to_s
         format('%s:%3d:%3d: %s',
                severity.code, line, real_column, message)
+      end
+
+      # @api private
+      def line
+        location.line
+      end
+
+      # @api private
+      def column
+        location.column
       end
 
       # @api private
