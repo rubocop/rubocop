@@ -22,7 +22,7 @@ module RuboCop
           _, method_name, method_args = *method
 
           return unless METHODS.include? method_name
-          return if method_args.type == :sym
+          return if method_args && method_args.type == :sym
 
           return_value = return_value(body)
           return unless return_value

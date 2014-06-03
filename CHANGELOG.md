@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bugs fixed
+
+* [#1133](https://github.com/bbatsov/rubocop/issues/1133): Handle `reduce/inject` with no arguments in `EachWithObject`. ([@bbatsov][])
+
 ## 0.23.0 (02/06/2014)
 
 ### New features
