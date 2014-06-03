@@ -37,6 +37,7 @@ Rainbow.enabled = false
 
 module ExitCodeMatchers
   RSpec::Matchers.define :exit_with_code do |code|
+    supports_block_expectations
     actual = nil
     match do |block|
       begin
