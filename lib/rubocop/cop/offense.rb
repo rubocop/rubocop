@@ -59,10 +59,10 @@ module RuboCop
       # @api private
       def initialize(severity, location, message, cop_name, corrected = false)
         @severity = RuboCop::Cop::Severity.new(severity)
-        @location = location.freeze
+        @location = location
         @message = message.freeze
         @cop_name = cop_name.freeze
-        @corrected = corrected.freeze
+        @corrected = corrected
         freeze
       end
 
