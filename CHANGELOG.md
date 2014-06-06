@@ -2,6 +2,9 @@
 
 ## master (unreleased)
 
+### New features
+* [#835](https://github.com/bbatsov/rubocop/issues/835): `UnneededCapitalW` cop does auto-correction. ([@sfeldon][])
+
 ### Bugs fixed
 
 * [#1133](https://github.com/bbatsov/rubocop/issues/1133): Handle `reduce/inject` with no arguments in `EachWithObject`. ([@bbatsov][])

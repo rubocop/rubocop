@@ -23,6 +23,15 @@ module RuboCop
 
           add_offense(node, :expression)
         end
+
+        def autocorrect(node)
+          sb = node.loc.expression.source_buffer
+          uninterpolated_percent_w =  sb.source.sub(/%W/, '%w')
+
+          @corrections << lambda do |corrector|
+            corrector.replace(node.loc.expression, uninterpolated_percent_w)
+          end
+        end
       end
     end
   end
