@@ -1321,7 +1321,7 @@ describe RuboCop::CLI, :isolated_environment do
 
     context 'with SIGINT twice' do
       it 'exits immediately' do
-        expect_any_instance_of(Object).to receive(:exit!).with(1)
+        expect(cli).to receive(:exit!).with(1)
         cli.trap_interrupt
         interrupt
         interrupt
