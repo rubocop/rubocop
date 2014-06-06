@@ -23,6 +23,12 @@ module RuboCop
 
           add_offense(node, :expression)
         end
+
+        def autocorrect(node)
+          @corrections << lambda do |corrector|
+            corrector.replace(node.loc.begin, '%w(')
+          end
+        end
       end
     end
   end

@@ -2,9 +2,15 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#835](https://github.com/bbatsov/rubocop/issues/835): `UnneededCapitalW` cop does auto-correction. ([@sfeldon][])
+
 ### Changes
 
 * Unused block local variables (`obj.each { |arg; this| }`) are now handled by `UnusedBlockArgument` cop instead of `UselessAssignment` cop. ([@yujinakayama][])
+
+* [#835](https://github.com/bbatsov/rubocop/issues/835): `UnneededCapitalW` cop does auto-correction. ([@sfeldon][])
 
 ### Bugs fixed
 
