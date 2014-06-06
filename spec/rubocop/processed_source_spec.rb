@@ -78,7 +78,7 @@ describe RuboCop::ProcessedSource do
       let(:level) { :error }
 
       it 'returns false' do
-        expect(processed_source.valid_syntax?).to be_false
+        expect(processed_source.valid_syntax?).to be_falsey
       end
     end
 
@@ -86,7 +86,7 @@ describe RuboCop::ProcessedSource do
       let(:level) { :fatal }
 
       it 'returns false' do
-        expect(processed_source.valid_syntax?).to be_false
+        expect(processed_source.valid_syntax?).to be_falsey
       end
     end
 
@@ -94,7 +94,7 @@ describe RuboCop::ProcessedSource do
       let(:level) { :warning }
 
       it 'returns true' do
-        expect(processed_source.valid_syntax?).to be_true
+        expect(processed_source.valid_syntax?).to be_truthy
       end
     end
 
@@ -107,7 +107,7 @@ describe RuboCop::ProcessedSource do
       end
 
       it 'returns false' do
-        expect(processed_source.valid_syntax?).to be_false
+        expect(processed_source.valid_syntax?).to be_falsey
       end
     end
   end

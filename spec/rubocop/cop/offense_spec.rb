@@ -17,7 +17,7 @@ describe RuboCop::Cop::Offense do
     expect(offense.line).to eq(1)
     expect(offense.message).to eq('message')
     expect(offense.cop_name).to eq('CopName')
-    expect(offense.corrected?).to be_true
+    expect(offense.corrected?).to be_truthy
   end
 
   it 'overrides #to_s' do
@@ -35,7 +35,7 @@ describe RuboCop::Cop::Offense do
     o1 = described_class.new(:convention, location, 'message', 'CopName')
     o2 = described_class.new(:convention, location, 'message', 'CopName')
 
-    expect(o1 == o2).to be_true
+    expect(o1 == o2).to be_truthy
   end
 
   it 'is frozen' do

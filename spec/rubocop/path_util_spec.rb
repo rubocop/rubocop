@@ -31,7 +31,7 @@ describe RuboCop::PathUtil do
     context 'with deprecated patterns' do
       it 'matches dir/** and prints warning' do
         expect(subject.match_path?('dir/**', 'dir/sub/file', '.rubocop.yml'))
-          .to be_true
+          .to be_truthy
         expect($stderr.string)
           .to eq("Warning: Deprecated pattern style 'dir/**' in " \
                  ".rubocop.yml. Change to 'dir/**/*'.\n")
@@ -39,37 +39,37 @@ describe RuboCop::PathUtil do
 
       it 'matches strings to the basename and prints warning' do
         expect(subject.match_path?('file', 'dir/file', '.rubocop.yml'))
-          .to be_true
+          .to be_truthy
         expect($stderr.string)
           .to eq("Warning: Deprecated pattern style 'file' in .rubocop.yml. " \
                  "Change to '**/file'.\n")
 
-        expect(subject.match_path?('file', 'dir/files', '')).to be_false
-        expect(subject.match_path?('dir', 'dir/file', '')).to be_false
+        expect(subject.match_path?('file', 'dir/files', '')).to be_falsey
+        expect(subject.match_path?('dir', 'dir/file', '')).to be_falsey
       end
     end
 
     it 'matches strings to the full path' do
       expect(subject.match_path?("#{Dir.pwd}/dir/file",
-                                 "#{Dir.pwd}/dir/file", '')).to be_true
+                                 "#{Dir.pwd}/dir/file", '')).to be_truthy
       expect(subject.match_path?("#{Dir.pwd}/dir/file",
-                                 "#{Dir.pwd}/dir/dir/file", '')).to be_false
+                                 "#{Dir.pwd}/dir/dir/file", '')).to be_falsey
     end
 
     it 'matches glob expressions' do
-      expect(subject.match_path?('dir/*',    'dir/file', '')).to be_true
-      expect(subject.match_path?('dir/*/*',  'dir/sub/file', '')).to be_true
-      expect(subject.match_path?('dir/**/*', 'dir/sub/file', '')).to be_true
-      expect(subject.match_path?('dir/**/*', 'dir/file', '')).to be_true
-      expect(subject.match_path?('**/*',     'dir/sub/file', '')).to be_true
-      expect(subject.match_path?('**/file',  'file', '')).to be_true
+      expect(subject.match_path?('dir/*',    'dir/file', '')).to be_truthy
+      expect(subject.match_path?('dir/*/*',  'dir/sub/file', '')).to be_truthy
+      expect(subject.match_path?('dir/**/*', 'dir/sub/file', '')).to be_truthy
+      expect(subject.match_path?('dir/**/*', 'dir/file', '')).to be_truthy
+      expect(subject.match_path?('**/*',     'dir/sub/file', '')).to be_truthy
+      expect(subject.match_path?('**/file',  'file', '')).to be_truthy
 
-      expect(subject.match_path?('sub/*',    'dir/sub/file', '')).to be_false
+      expect(subject.match_path?('sub/*',    'dir/sub/file', '')).to be_falsey
     end
 
     it 'matches regexps' do
-      expect(subject.match_path?(/^d.*e$/, 'dir/file', '')).to be_true
-      expect(subject.match_path?(/^d.*e$/, 'dir/filez', '')).to be_false
+      expect(subject.match_path?(/^d.*e$/, 'dir/file', '')).to be_truthy
+      expect(subject.match_path?(/^d.*e$/, 'dir/filez', '')).to be_falsey
     end
   end
 end

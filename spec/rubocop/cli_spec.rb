@@ -977,13 +977,13 @@ describe RuboCop::CLI, :isolated_environment do
             current = types.delete(slice.shift[/Type '(?<c>[^'']+)'/, 'c'])
             # all cops in their type listing
             cops.with_type(current).each do |cop|
-              expect(slice.any? { |l| l.include? cop.cop_name }).to be_true
+              expect(slice.any? { |l| l.include? cop.cop_name }).to be_truthy
             end
 
             # no cop in wrong type listing
             types.each do |type|
               cops.with_type(type).each do |cop|
-                expect(slice.any? { |l| l.include? cop.cop_name }).to be_false
+                expect(slice.any? { |l| l.include? cop.cop_name }).to be_falsey
               end
             end
           end
@@ -1273,7 +1273,7 @@ describe RuboCop::CLI, :isolated_environment do
 
   describe '#wants_to_quit?' do
     it 'is initially false' do
-      expect(cli.wants_to_quit?).to be_false
+      expect(cli.wants_to_quit?).to be_falsey
     end
 
     context 'when true' do
@@ -1306,9 +1306,9 @@ describe RuboCop::CLI, :isolated_environment do
     context 'with SIGINT once' do
       it 'sets #wants_to_quit? to true' do
         cli.trap_interrupt
-        expect(cli.wants_to_quit?).to be_false
+        expect(cli.wants_to_quit?).to be_falsey
         interrupt
-        expect(cli.wants_to_quit?).to be_true
+        expect(cli.wants_to_quit?).to be_truthy
       end
 
       it 'does not exit immediately' do
