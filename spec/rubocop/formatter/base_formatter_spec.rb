@@ -180,7 +180,7 @@ module RuboCop
                 fail
               end
               expect(offenses.all? { |o| o.is_a?(RuboCop::Cop::Offense) })
-                .to be_true
+                .to be_truthy
             end
             run
           end

@@ -37,6 +37,7 @@ Rainbow.enabled = false
 
 module ExitCodeMatchers
   RSpec::Matchers.define :exit_with_code do |code|
+    supports_block_expectations
     actual = nil
     match do |block|
       begin
@@ -46,11 +47,11 @@ module ExitCodeMatchers
       end
       actual && actual == code
     end
-    failure_message_for_should do
+    failure_message do
       "expected block to call exit(#{code}) but exit" +
         (actual.nil? ? ' not called' : "(#{actual}) was called")
     end
-    failure_message_for_should_not do
+    failure_message_when_negated do
       "expected block not to call exit(#{code})"
     end
     description do
@@ -60,8 +61,6 @@ module ExitCodeMatchers
 end
 
 RSpec.configure do |config|
-  config.treat_symbols_as_metadata_keys_with_true_values = true
-
   # These two settings work together to allow you to limit a spec run
   # to individual examples or groups you care about by tagging them with
   # `:focus` metadata. When nothing is tagged with `:focus`, all examples

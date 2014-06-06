@@ -13,12 +13,12 @@ describe RuboCop::Cop::Team do
 
     context 'when the option argument of .new is omitted' do
       subject { described_class.new(cop_classes, config).autocorrect? }
-      it { should be_false }
+      it { should be_falsey }
     end
 
     context 'when { auto_correct: true } is passed to .new' do
       let(:options) { { auto_correct: true } }
-      it { should be_true }
+      it { should be_truthy }
     end
   end
 
@@ -27,12 +27,12 @@ describe RuboCop::Cop::Team do
 
     context 'when the option argument of .new is omitted' do
       subject { described_class.new(cop_classes, config).debug? }
-      it { should be_false }
+      it { should be_falsey }
     end
 
     context 'when { debug: true } is passed to .new' do
       let(:options) { { debug: true } }
-      it { should be_true }
+      it { should be_truthy }
     end
   end
 
@@ -53,7 +53,7 @@ describe RuboCop::Cop::Team do
 
     it 'returns offenses' do
       expect(offenses).not_to be_empty
-      expect(offenses.all? { |o| o.is_a?(RuboCop::Cop::Offense) }).to be_true
+      expect(offenses.all? { |o| o.is_a?(RuboCop::Cop::Offense) }).to be_truthy
     end
 
     context 'when Parser reports non-fatal warning for the file' do
@@ -107,7 +107,7 @@ describe RuboCop::Cop::Team do
 
     it 'returns cop instances' do
       expect(cops).not_to be_empty
-      expect(cops.all? { |c| c.is_a?(RuboCop::Cop::Cop) }).to be_true
+      expect(cops.all? { |c| c.is_a?(RuboCop::Cop::Cop) }).to be_truthy
     end
 
     context 'when only some cop classes are passed to .new' do

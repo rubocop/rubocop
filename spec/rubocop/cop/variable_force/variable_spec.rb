@@ -26,14 +26,14 @@ describe RuboCop::Cop::VariableForce::Variable do
     subject { variable.referenced? }
 
     context 'when the variable is not assigned' do
-      it { should be_false }
+      it { should be_falsey }
 
       context 'and the variable is referenced' do
         before do
           variable.reference!(s(:lvar, name))
         end
 
-        it { should be_true }
+        it { should be_truthy }
       end
     end
 
@@ -43,7 +43,7 @@ describe RuboCop::Cop::VariableForce::Variable do
       end
 
       context 'and the variable is not yet referenced' do
-        it { should be_false }
+        it { should be_falsey }
       end
 
       context 'and the variable is referenced' do
@@ -51,7 +51,7 @@ describe RuboCop::Cop::VariableForce::Variable do
           variable.reference!(s(:lvar, name))
         end
 
-        it { should be_true }
+        it { should be_truthy }
       end
     end
   end

@@ -292,7 +292,7 @@ describe RuboCop::ConfigLoader do
 
     context 'when no config file exists for the target file' do
       it 'is disabled' do
-        expect(config.cop_enabled?('Style/SymbolArray')).to be_false
+        expect(config.cop_enabled?('Style/SymbolArray')).to be_falsey
       end
     end
 
@@ -302,7 +302,7 @@ describe RuboCop::ConfigLoader do
           'Style/LineLength:',
           '  Max: 80'
         ])
-        expect(config.cop_enabled?('Style/SymbolArray')).to be_false
+        expect(config.cop_enabled?('Style/SymbolArray')).to be_falsey
       end
     end
 
@@ -312,7 +312,7 @@ describe RuboCop::ConfigLoader do
           'Style/SymbolArray:',
           '  Enabled: true'
         ])
-        expect(config.cop_enabled?('Style/SymbolArray')).to be_true
+        expect(config.cop_enabled?('Style/SymbolArray')).to be_truthy
       end
     end
   end
@@ -323,7 +323,7 @@ describe RuboCop::ConfigLoader do
         default_config = described_class.default_configuration
         symbol_name_config =
           default_config.for_cop('Lint/AssignmentInCondition')
-        expect(symbol_name_config['AllowSafeAssignment']).to be_true
+        expect(symbol_name_config['AllowSafeAssignment']).to be_truthy
       end
     end
   end
@@ -339,7 +339,7 @@ describe RuboCop::ConfigLoader do
     it 'requires the passed path' do
       config_path = described_class.configuration_file_for('.')
       described_class.configuration_from_file(config_path)
-      expect(defined?(MyClass)).to be_true
+      expect(defined?(MyClass)).to be_truthy
     end
   end
 end
