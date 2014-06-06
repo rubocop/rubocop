@@ -71,15 +71,13 @@ describe RuboCop::Cop::Style::UnneededCapitalW do
     expect(cop.offenses).to be_empty
   end
 
-  # TESTS FOR AUTOCORRECTION
+  it 'auto-corrects an array of words' do
+    new_source = autocorrect_source(cop, '%W(one two three)')
+    expect(new_source).to eq('%w(one two three)')
+  end
 
-  # it 'auto-corrects an array of words' do
-  #   new_source = autocorrect_source(cop, "['one', %q(two), 'three']")
-  #   expect(new_source).to eq('%w(one two three)')
-  # end
-
-  # it 'auto-corrects an array of words and character constants' do
-  #   new_source = autocorrect_source(cop, '[%{one}, %Q(two), ?\n, ?\t]')
-  #   expect(new_source).to eq('%W(one two \n \t)')
-  # end
+  it 'auto-corrects an array of words and character constants' do
+    new_source = autocorrect_source(cop, '%W(one two ?\n ?\t)')
+    expect(new_source).to eq('%w(one two ?\n ?\t)')
+  end
 end
