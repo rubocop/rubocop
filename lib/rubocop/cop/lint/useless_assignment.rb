@@ -22,12 +22,11 @@ module RuboCop
         def after_leaving_scope(scope, _variable_table)
           scope.variables.each_value do |variable|
             check_for_unused_assignments(variable)
-            check_for_unused_block_local_variable(variable)
           end
         end
 
         def check_for_unused_assignments(variable)
-          return if variable.name.to_s.start_with?('_')
+          return if variable.should_be_unused?
 
           variable.assignments.each do |assignment|
             next if assignment.used?
@@ -72,13 +71,6 @@ module RuboCop
           else
             body_node
           end
-        end
-
-        def check_for_unused_block_local_variable(variable)
-          return unless variable.block_local_variable?
-          return unless variable.assignments.empty?
-          message = format(MSG, variable.name)
-          add_offense(variable.declaration_node, :expression, message)
         end
       end
     end

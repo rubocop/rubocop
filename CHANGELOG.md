@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* Unused block local variables (`obj.each { |arg; this| }`) are now handled by `UnusedBlockArgument` cop instead of `UselessAssignment` cop. ([@yujinakayama][])
+
 ### Bugs fixed
 
 * [#1133](https://github.com/bbatsov/rubocop/issues/1133): Handle `reduce/inject` with no arguments in `EachWithObject`. ([@bbatsov][])

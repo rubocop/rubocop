@@ -15,7 +15,7 @@ module RuboCop
         end
 
         def before_declaring_variable(variable, variable_table)
-          return if variable.name.to_s.start_with?('_')
+          return if variable.should_be_unused?
 
           outer_local_variable = variable_table.find_variable(variable.name)
           return unless outer_local_variable

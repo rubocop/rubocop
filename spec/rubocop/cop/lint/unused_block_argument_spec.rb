@@ -72,6 +72,25 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument do
       end
     end
 
+    context 'when a block have a block local variable' do
+      context 'and the variable is unused' do
+        let(:source) { <<-END }
+          1.times do |index; block_local_variable|
+            puts index
+          end
+        END
+
+        it 'registers an offense' do
+          expect(cop.offenses.size).to eq(1)
+          expect(cop.offenses.first.message).to eq(
+            'Unused block local variable - `block_local_variable`.'
+          )
+          expect(cop.offenses.first.line).to eq(1)
+          expect(cop.highlights).to eq(['block_local_variable'])
+        end
+      end
+    end
+
     context 'when a lambda block takes arguments' do
       context 'and all the arguments are unused' do
         let(:source) { <<-END }
