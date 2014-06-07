@@ -363,16 +363,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers an offense for the declaration' do
-      inspect_source(cop, source)
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.offenses.first.message)
-        .to eq('Useless assignment to variable - `foo`.')
-      expect(cop.offenses.first.line).to eq(1)
-      expect(cop.highlights).to eq(['foo'])
-    end
-
-    include_examples 'mimics MRI 2.1'
+    include_examples 'accepts'
   end
 
   context 'when a block local variable is assigned and unreferenced' do

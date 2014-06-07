@@ -20,7 +20,11 @@ module RuboCop
         end
 
         def message(variable)
-          message = "Unused block argument - `#{variable.name}`. "
+          message = "Unused #{variable_type(variable)} - `#{variable.name}`."
+
+          return message if variable.explicit_block_local_variable?
+
+          message << ' '
 
           scope = variable.scope
           all_arguments = scope.variables.each_value.select(&:block_argument?)
@@ -32,6 +36,14 @@ module RuboCop
           end
 
           message
+        end
+
+        def variable_type(variable)
+          if variable.explicit_block_local_variable?
+            'block local variable'
+          else
+            'block argument'
+          end
         end
 
         def message_for_normal_block(variable, all_arguments)
