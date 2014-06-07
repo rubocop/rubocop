@@ -26,7 +26,7 @@ module RuboCop
         end
 
         def check_for_unused_assignments(variable)
-          return if variable.name.to_s.start_with?('_')
+          return if variable.should_be_unused?
 
           variable.assignments.each do |assignment|
             next if assignment.used?

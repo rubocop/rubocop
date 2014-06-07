@@ -19,7 +19,7 @@ module RuboCop
         end
 
         def check_variable(variable)
-          return unless variable.name.to_s.start_with?('_')
+          return unless variable.should_be_unused?
           return if variable.references.empty?
           return if variable.references.none?(&:explicit?)
 

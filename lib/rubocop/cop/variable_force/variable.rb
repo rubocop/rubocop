@@ -76,6 +76,10 @@ module RuboCop
           @captured_by_block || referenced?
         end
 
+        def should_be_unused?
+          name.to_s.start_with?('_')
+        end
+
         def argument?
           ARGUMENT_DECLARATION_TYPES.include?(@declaration_node.type)
         end
