@@ -34,7 +34,7 @@ module RuboCop
 
         shared_examples 'does nothing' do
           it 'does nothing' do
-            should == 'foo'
+            should eq('foo')
           end
         end
 
@@ -49,7 +49,7 @@ module RuboCop
             end
 
             it 'colorize the passed string' do
-              should == "\e[31mfoo\e[0m"
+              should eq("\e[31mfoo\e[0m")
             end
           end
 

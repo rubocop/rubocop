@@ -14,10 +14,9 @@ module RuboCop
         private
 
         def autocorrect(node)
-          string, = *node
           @corrections << lambda do |corrector|
-            corrector.replace(node.loc.expression,
-                              "`#{string.loc.expression.source}`")
+            corrector.replace(node.loc.begin, '`')
+            corrector.replace(node.loc.end, '`')
           end
         end
       end

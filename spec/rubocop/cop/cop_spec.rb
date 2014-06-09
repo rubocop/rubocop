@@ -31,7 +31,7 @@ describe RuboCop::Cop::Cop do
     end
 
     it 'raises an error if the cop name is in more than one namespace' do
-      pending 'Example needs a cop with same name in two namespaces'
+      skip 'Example needs a cop with same name in two namespaces'
       expect { described_class.qualified_cop_name('ExampleCop', '--only') }
         .to raise_error(RuboCop::Cop::AmbiguousCopName)
     end

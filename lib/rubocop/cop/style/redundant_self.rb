@@ -27,7 +27,7 @@ module RuboCop
       #
       #   def foo2
       #     bar = 1
-      #     self.bar # resolves name class with local variable
+      #     self.bar # resolves name clash with local variable
       #   end
       #
       # * Calling an attribute writer to prevent an local variable assignment

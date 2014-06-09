@@ -118,7 +118,7 @@ module RuboCop
       end
 
       it 'sets Offense#corrected? value for :corrected key' do
-        expect(hash[:corrected]).to be_true
+        expect(hash[:corrected]).to be_truthy
       end
 
       before do

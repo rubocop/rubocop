@@ -23,7 +23,7 @@ module RuboCop
         end
 
         def check_argument(variable)
-          return if variable.name.to_s.start_with?('_')
+          return if variable.should_be_unused?
           return if variable.referenced?
 
           message = message(variable)

@@ -31,12 +31,9 @@ module RuboCop
       ARGUMENT_DECLARATION_TYPES = [
         :arg, :optarg, :restarg,
         :kwarg, :kwoptarg, :kwrestarg,
-        :blockarg # This doen't mean block argument, it's block-pass (&block).
+        :blockarg, # This doen't mean block argument, it's block-pass (&block).
+        :shadowarg # This means block local variable (obj.each { |arg; this| }).
       ].freeze
-      BLOCK_LOCAL_VARIABLE_DECLARATION_TYPE = :shadowarg
-      DECLARATION_TYPES = (
-        ARGUMENT_DECLARATION_TYPES + [BLOCK_LOCAL_VARIABLE_DECLARATION_TYPE]
-      ).freeze
 
       LOGICAL_OPERATOR_ASSIGNMENT_TYPES = [:or_asgn, :and_asgn].freeze
       OPERATOR_ASSIGNMENT_TYPES =
@@ -105,7 +102,7 @@ module RuboCop
       # rubocop:disable Style/MethodLength, Style/CyclomaticComplexity
       def dispatch_node(node)
         case node.type
-        when *DECLARATION_TYPES
+        when *ARGUMENT_DECLARATION_TYPES
           process_variable_declaration(node)
         when VARIABLE_ASSIGNMENT_TYPE
           process_variable_assignment(node)

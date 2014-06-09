@@ -8,7 +8,7 @@ module RuboCop
       # and some states of the variable.
       class Variable
         VARIABLE_DECLARATION_TYPES =
-          (VARIABLE_ASSIGNMENT_TYPES + DECLARATION_TYPES).freeze
+          (VARIABLE_ASSIGNMENT_TYPES + ARGUMENT_DECLARATION_TYPES).freeze
 
         attr_reader :name, :declaration_node, :scope,
                     :assignments, :references, :captured_by_block
@@ -76,6 +76,10 @@ module RuboCop
           @captured_by_block || referenced?
         end
 
+        def should_be_unused?
+          name.to_s.start_with?('_')
+        end
+
         def argument?
           ARGUMENT_DECLARATION_TYPES.include?(@declaration_node.type)
         end
@@ -88,8 +92,8 @@ module RuboCop
           argument? && @scope.node.type == :block
         end
 
-        def block_local_variable?
-          @declaration_node.type == BLOCK_LOCAL_VARIABLE_DECLARATION_TYPE
+        def explicit_block_local_variable?
+          @declaration_node.type == :shadowarg
         end
       end
     end
