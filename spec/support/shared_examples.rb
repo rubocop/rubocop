@@ -31,3 +31,25 @@ shared_examples_for 'mimics MRI 2.1' do |grep_mri_warning|
     end
   end
 end
+
+shared_examples_for 'misaligned' do |prefix, alignment_base, arg, end_kw, name|
+  name ||= alignment_base
+  it "registers an offense for mismatched #{name} ... end" do
+    inspect_source(cop, ["#{prefix}#{alignment_base} #{arg}",
+                         end_kw])
+    expect(cop.offenses.size).to eq(1)
+    regexp = /`end` at 2, \d+ is not aligned with `#{alignment_base}` at 1,/
+    expect(cop.messages.first).to match(regexp)
+    expect(cop.highlights.first).to eq('end')
+    expect(cop.config_to_allow_offenses).to eq('AlignWith' => opposite)
+  end
+end
+
+shared_examples_for 'aligned' do |alignment_base, arg, end_kw, name|
+  name ||= alignment_base
+  it "accepts matching #{name} ... end" do
+    inspect_source(cop, ["#{alignment_base} #{arg}",
+                         end_kw])
+    expect(cop.offenses).to be_empty
+  end
+end
