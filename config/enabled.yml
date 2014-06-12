@@ -610,6 +610,10 @@ Lint/Debugger:
   Description: 'Check for debugger calls.'
   Enabled: true
 
+Lint/DefEndAlignment:
+  Description: 'Align ends corresponding to defs correctly.'
+  Enabled: true
+
 Lint/DeprecatedClassMethods:
   Description: 'Check for deprecated class method calls.'
   Enabled: true

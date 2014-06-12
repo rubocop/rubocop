@@ -7,18 +7,18 @@ module RuboCop
       #
       # Two modes are supported through the AlignWith configuration
       # parameter. If it's set to `keyword` (which is the default), the `end`
-      # shall be aligned with the start of the keyword (if, def, etc.). If it's
-      # set to `variable` the `end` shall be aligned with the left-hand-side of
-      # the variable assignment, if there is one.
+      # shall be aligned with the start of the keyword (if, class, etc.). If
+      # it's set to `variable` the `end` shall be aligned with the
+      # left-hand-side of the variable assignment, if there is one.
       #
       # @example
       #
       #   variable = if true
       #              end
       class EndAlignment < Cop
-        include CheckMethods
         include CheckAssignment
-        include ConfigurableEnforcedStyle
+        include EndKeywordAlignment
+        include IfNode
 
         MSG = '`end` at %d, %d is not aligned with `%s` at %d, %d'
 
@@ -31,7 +31,7 @@ module RuboCop
         end
 
         def on_if(node)
-          check(node) if node.loc.respond_to?(:end)
+          check(node) unless ternary_op?(node)
         end
 
         def on_while(node)
@@ -40,23 +40,6 @@ module RuboCop
 
         def on_until(node)
           check(node)
-        end
-
-        def on_send(node)
-          super
-
-          receiver, method_name, *args = *node
-          return unless visibility_and_def_on_same_line?(receiver, method_name,
-                                                         args)
-
-          expr = node.loc.expression
-          method_def = args.first
-          range = Parser::Source::Range.new(expr.source_buffer,
-                                            expr.begin_pos,
-                                            method_def.loc.keyword.end_pos)
-          check_offset(method_def, range.source,
-                       method_def.loc.keyword.begin_pos - expr.begin_pos)
-          ignore_node(method_def) # Don't check the same `end` again.
         end
 
         private
@@ -69,52 +52,22 @@ module RuboCop
 
           return unless rhs
 
-          case rhs.type
-          when :if, :while, :until
-            return if rhs.loc.respond_to?(:question) # ternary
+          return unless [:if, :while, :until].include?(rhs.type)
+          return if ternary_op?(rhs)
 
-            if style == :variable
-              expr = node.loc.expression
-              range = Parser::Source::Range.new(expr.source_buffer,
-                                                expr.begin_pos,
-                                                rhs.loc.keyword.end_pos)
-              offset = rhs.loc.keyword.column - node.loc.expression.column
-            else
-              range = rhs.loc.keyword
-              offset = 0
-            end
-
-            check_offset(rhs, range.source, offset)
-            ignore_node(rhs) # Don't check again.
-          end
-        end
-
-        def check(node, *_)
-          check_offset(node, node.loc.keyword.source, 0)
-        end
-
-        def check_offset(node, alignment_base, offset)
-          return if ignored_node?(node)
-
-          end_loc = node.loc.end
-          return unless end_loc # Discard modifier forms of if/while/until.
-
-          kw_loc = node.loc.keyword
-
-          if kw_loc.line != end_loc.line &&
-              kw_loc.column != end_loc.column + offset
-            add_offense(nil, end_loc,
-                        format(MSG, end_loc.line, end_loc.column,
-                               alignment_base, kw_loc.line, kw_loc.column)) do
-              opposite_style_detected
-            end
+          if style == :variable
+            expr = node.loc.expression
+            range = Parser::Source::Range.new(expr.source_buffer,
+                                              expr.begin_pos,
+                                              rhs.loc.keyword.end_pos)
+            offset = rhs.loc.keyword.column - node.loc.expression.column
           else
-            correct_style_detected
+            range = rhs.loc.keyword
+            offset = 0
           end
-        end
 
-        def parameter_name
-          'AlignWith'
+          check_offset(rhs, range.source, offset)
+          ignore_node(rhs) # Don't check again.
         end
       end
     end

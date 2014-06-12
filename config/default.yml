@@ -472,6 +472,16 @@ Lint/EndAlignment:
     - keyword
     - variable
 
+Lint/DefEndAlignment:
+  # The value `def` means that `end` should be aligned with the def keyword.
+  # The value `start_of_line` means that `end` should be aligned with method
+  # calls like `private`, `public`, etc, if present in front of the `def`
+  # keyword on the same line.
+  AlignWith: start_of_line
+  SupportedStyles:
+    - start_of_line
+    - def
+
 ##################### Rails ##################################
 
 Rails/ActionFilter:
