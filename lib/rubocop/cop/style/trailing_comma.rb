@@ -4,11 +4,31 @@ module RuboCop
   module Cop
     module Style
       # This cop checks for trailing comma in parameter lists and literals.
+      #
+      # @example
+      #   # always bad
+      #   a = [1, 2,]
+      #   b = [
+      #     1, 2,
+      #     3,
+      #   ]
+      #
+      #   # good if EnforcedStyleForMultiline is comma
+      #   a = [
+      #     1,
+      #     2,
+      #   ]
+      #
+      #   # good if EnforcedStyleForMultiline is no_comma
+      #   a = [
+      #     1,
+      #     2
+      #   ]
       class TrailingComma < Cop
         include ArraySyntax
         include ConfigurableEnforcedStyle
 
-        MSG = '%s comma after the last %s.'
+        MSG = '%s comma after the last %s'
 
         def on_array(node)
           check_literal(node, 'item of %s array') if square_brackets?(node)
@@ -56,7 +76,13 @@ module RuboCop
           should_have_comma = style == :comma && multiline?(node)
           if comma_offset
             unless should_have_comma
-              avoid_comma(kind, after_last_item.begin_pos + comma_offset, sb)
+              extra_info = if style == :comma
+                             ', unless each item is on its own line'
+                           else
+                             ''
+                           end
+              avoid_comma(kind, after_last_item.begin_pos + comma_offset, sb,
+                          extra_info)
             end
           elsif should_have_comma
             put_comma(items, kind, sb)
@@ -91,12 +117,13 @@ module RuboCop
           [a, b].map(&:line).uniq.size == 1
         end
 
-        def avoid_comma(kind, comma_begin_pos, sb)
+        def avoid_comma(kind, comma_begin_pos, sb, extra_info)
           range = Parser::Source::Range.new(sb, comma_begin_pos,
                                             comma_begin_pos + 1)
           article = kind =~ /array/ ? 'an' : 'a'
           add_offense(nil, range,
-                      format(MSG, 'Avoid', format(kind, article)))
+                      format(MSG, 'Avoid', format(kind, article)) +
+                      extra_info + '.')
         end
 
         def put_comma(items, kind, sb)
@@ -106,7 +133,7 @@ module RuboCop
           range = Parser::Source::Range.new(sb, last_expr.begin_pos + ix,
                                             last_expr.end_pos)
           add_offense(nil, range,
-                      format(MSG, 'Put a', format(kind, 'a multiline')))
+                      format(MSG, 'Put a', format(kind, 'a multiline') + '.'))
         end
       end
     end

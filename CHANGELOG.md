@@ -10,6 +10,7 @@
 ### Changes
 
 * Unused block local variables (`obj.each { |arg; this| }`) are now handled by `UnusedBlockArgument` cop instead of `UselessAssignment` cop. ([@yujinakayama][])
+* [#1141](https://github.com/bbatsov/rubocop/issues/1141): Clarify in the message from `TrailingComma` that a trailing comma is never allowed for lists where some items share a line. ([@jonas054][])
 
 ### Bugs fixed
 
