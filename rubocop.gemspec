@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.version = RuboCop::Version::STRING
   s.platform = Gem::Platform::RUBY
   s.required_ruby_version = '>= 1.9.2'
-  s.authors = ['Bozhidar Batsov']
+  s.authors = ['Bozhidar Batsov', 'Jonas Arvidsson', 'Yuji Nakayama']
   s.description = <<-EOF
     Automatic Ruby code style checking tool.
     Aims to enforce the community-driven Ruby Style Guide.
