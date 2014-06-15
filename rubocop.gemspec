@@ -15,7 +15,7 @@ Gem::Specification.new do |s|
     Aims to enforce the community-driven Ruby Style Guide.
   EOF
 
-  s.email = 'bozhidar@batsov.com'
+  s.email = 'rubocop@googlegroups.com'
   s.files = `git ls-files`.split($RS)
   s.test_files = s.files.grep(/^spec\//)
   s.executables = s.files.grep(/^bin\//) { |f| File.basename(f) }
