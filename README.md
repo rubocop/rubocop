@@ -257,8 +257,8 @@ Here is an example that might be used for a Rails project:
 ```yaml
 AllCops:
   Include:
-    - 'Rakefile'
-    - 'config.ru'
+    - '**/Rakefile'
+    - '**/config.ru'
   Exclude:
     - 'db/**/*'
     - 'config/**/*'
