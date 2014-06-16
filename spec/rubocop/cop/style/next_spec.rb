@@ -216,4 +216,9 @@ describe RuboCop::Cop::Style::Next, :config do
                     'end'])
     expect(cop.offenses.size).to eq(0)
   end
+
+  it 'does not blow up on empty body until block' do
+    inspect_source(cop, 'until sup; end')
+    expect(cop.offenses.size).to eq(0)
+  end
 end
