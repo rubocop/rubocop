@@ -6,6 +6,7 @@
 
 * [#835](https://github.com/bbatsov/rubocop/issues/835): `UnneededCapitalW` cop does auto-correction. ([@sfeldon][])
 * [#1092](https://github.com/bbatsov/rubocop/issues/1092): New cop `DefEndAlignment` takes over responsibility for checkng alignment of method definition `end`s from `EndAlignment`, and is configurable. ([@jonas054][])
+* [#1145](https://github.com/bbatsov/rubocop/issues/1145): New cop `ClassCheck` enforces consistent use of `is_a?` or `kind_of?`. ([@bbatsov][])
 
 ### Changes
 

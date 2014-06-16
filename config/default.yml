@@ -145,6 +145,12 @@ Style/ClassAndModuleChildren:
     - nested
     - compact
 
+Style/ClassCheck:
+  EnforcedStyle: is_a?
+  SupportedStyles:
+    - is_a?
+    - kind_of?
+    
 Style/ClassLength:
   CountComments: false  # count full line comments?
   Max: 100

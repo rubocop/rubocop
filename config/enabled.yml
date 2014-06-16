@@ -93,6 +93,10 @@ Style/ClassAndModuleChildren:
   Description: 'Checks style of children classes and modules.'
   Enabled: true
 
+Style/ClassCheck:
+  Description: 'Enforces consistent use of `Object#is_a?` or `Object#kind_of?`.'
+  Enabled: true
+
 Style/ClassLength:
   Description: 'Avoid classes longer than 100 lines of code.'
   Enabled: true
