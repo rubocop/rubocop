@@ -15,6 +15,7 @@
 ### Bugs fixed
 
 * [#1133](https://github.com/bbatsov/rubocop/issues/1133): Handle `reduce/inject` with no arguments in `EachWithObject`. ([@bbatsov][])
+* [#1152](https://github.com/bbatsov/rubocop/issues/1152): Handle `while/until` with no body in `Next`. ([@tamird][])
 
 ## 0.23.0 (02/06/2014)
 
