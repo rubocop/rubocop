@@ -257,12 +257,12 @@ Here is an example that might be used for a Rails project:
 ```yaml
 AllCops:
   Include:
-    - Rakefile
-    - config.ru
+    - '**/Rakefile'
+    - '**/config.ru'
   Exclude:
-    - db/**/*
-    - config/**/*
-    - script/**/*
+    - 'db/**/*'
+    - 'config/**/*'
+    - 'script/**/*'
     - !ruby/regexp /old_and_unused\.rb$/
 
 # other configuration
