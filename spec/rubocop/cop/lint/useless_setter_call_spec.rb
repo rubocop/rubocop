@@ -164,6 +164,30 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
     end
   end
 
+  context 'when a lvar contains a local object instanciated with literal' do
+    it 'registers an offense for the setter call on the lvar' do
+      inspect_source(cop,
+                     ['def test',
+                      '  some_arg = {}',
+                      '  some_arg[:attr] = 1',
+                      'end'
+                     ])
+      expect(cop.offenses.size).to eq(1)
+    end
+  end
+
+  context 'when a lvar contains a non-local object returned by a method' do
+    it 'accepts' do
+      inspect_source(cop,
+                     ['def test',
+                      '  some_lvar = Foo.shared_object',
+                      '  some_lvar[:attr] = 1',
+                      'end'
+                     ])
+      expect(cop.offenses).to be_empty
+    end
+  end
+
   it 'is not confused by operators ending with =' do
     inspect_source(cop,
                    ['def test',
