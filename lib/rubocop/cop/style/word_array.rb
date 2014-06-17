@@ -45,7 +45,7 @@ module RuboCop
             next if source.start_with?('?') # %W(\r \n) can replace [?\r, ?\n]
 
             str_content = Util.strip_quotes(source)
-            return true unless str_content =~ /\A[\w-]+\z/
+            return true unless str_content =~ /\A[\p{Word}]+\z/
           end
 
           false
