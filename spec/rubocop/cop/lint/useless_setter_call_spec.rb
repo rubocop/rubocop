@@ -5,61 +5,71 @@ require 'spec_helper'
 describe RuboCop::Cop::Lint::UselessSetterCall do
   subject(:cop) { described_class.new }
 
-  it 'registers an offense for def ending with lvar attr assignment' do
-    inspect_source(cop,
-                   ['def test',
-                    '  top = Top.new',
-                    '  top.attr = 5',
-                    'end'
-                   ])
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages)
-      .to eq(['Useless setter call to local variable `top`.'])
+  context 'with method ending with setter call on local object' do
+    it 'registers an offense' do
+      inspect_source(cop,
+                     ['def test',
+                      '  top = Top.new',
+                      '  top.attr = 5',
+                      'end'
+                     ])
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.messages)
+        .to eq(['Useless setter call to local variable `top`.'])
+    end
   end
 
-  it 'registers an offense for defs ending with lvar attr assignment' do
-    inspect_source(cop,
-                   ['def Top.test',
-                    '  top = Top.new',
-                    '  top.attr = 5',
-                    'end'
-                   ])
-    expect(cop.offenses.size).to eq(1)
+  context 'with singleton method ending with setter call on local object' do
+    it 'registers an offense' do
+      inspect_source(cop,
+                     ['def Top.test',
+                      '  top = Top.new',
+                      '  top.attr = 5',
+                      'end'
+                     ])
+      expect(cop.offenses.size).to eq(1)
+    end
   end
 
-  it 'accepts def ending with ivar assignment' do
-    inspect_source(cop,
-                   ['def test',
-                    '  something',
-                    '  @top = 5',
-                    'end'
-                   ])
-    expect(cop.offenses).to be_empty
+  context 'with method ending with ivar assignment' do
+    it 'accepts' do
+      inspect_source(cop,
+                     ['def test',
+                      '  something',
+                      '  @top = 5',
+                      'end'
+                     ])
+      expect(cop.offenses).to be_empty
+    end
   end
 
-  it 'accepts def ending ivar attr assignment' do
-    inspect_source(cop,
-                   ['def test',
-                    '  something',
-                    '  @top.attr = 5',
-                    'end'
-                   ])
-    expect(cop.offenses).to be_empty
+  context 'with method ending with setter call on ivar' do
+    it 'accepts' do
+      inspect_source(cop,
+                     ['def test',
+                      '  something',
+                      '  @top.attr = 5',
+                      'end'
+                     ])
+      expect(cop.offenses).to be_empty
+    end
   end
 
-  it 'accepts def ending with argument attr assignment' do
-    inspect_source(cop,
-                   ['def test(some_arg)',
-                    '  unrelated_local_variable = Top.new',
-                    '  some_arg.attr = 5',
-                    'end'
-                   ])
-    expect(cop.offenses).to be_empty
+  context 'with method ending with setter call on argument' do
+    it 'accepts' do
+      inspect_source(cop,
+                     ['def test(some_arg)',
+                      '  unrelated_local_variable = Top.new',
+                      '  some_arg.attr = 5',
+                      'end'
+                     ])
+      expect(cop.offenses).to be_empty
+    end
   end
 
-  context 'when a lvar has an object passed as argument ' \
+  context 'when a lvar contains an object passed as argument ' \
           'at the end of the method' do
-    it 'accepts the lvar attr assignment' do
+    it 'accepts the setter call on the lvar' do
       inspect_source(cop,
                      ['def test(some_arg)',
                       '  @some_ivar = some_arg',
@@ -73,9 +83,9 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
     end
   end
 
-  context 'when a lvar has an object passed as argument ' \
+  context 'when a lvar contains an object passed as argument ' \
           'by multiple-assignment at the end of the method' do
-    it 'accepts the lvar attr assignment' do
+    it 'accepts the setter call on the lvar' do
       inspect_source(cop,
                      ['def test(some_arg)',
                       '  _first, some_lvar, _third  = 1, some_arg, 3',
@@ -86,7 +96,7 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
     end
   end
 
-  context 'when a lvar does not have any object passed as argument ' \
+  context 'when a lvar does not contain any object passed as argument ' \
           'with multiple-assignment at the end of the method' do
     it 'registers an offense' do
       inspect_source(cop,
@@ -99,9 +109,9 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
     end
   end
 
-  context 'when a lvar possibly has an object passed as argument ' \
+  context 'when a lvar possibly contains an object passed as argument ' \
           'by logical-operator-assignment at the end of the method' do
-    it 'accepts the lvar attr assignment' do
+    it 'accepts the setter call on the lvar' do
       inspect_source(cop,
                      ['def test(some_arg)',
                       '  some_lvar = nil',
@@ -113,7 +123,7 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
     end
   end
 
-  context 'when a lvar does not have any object passed as argument ' \
+  context 'when a lvar does not contain any object passed as argument ' \
           'by binary-operator-assignment at the end of the method' do
     it 'registers an offense' do
       inspect_source(cop,
@@ -129,7 +139,7 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
 
   context 'when a lvar declared as an argument ' \
           'is no longer the passed object at the end of the method' do
-    it 'registers an offense for the lvar attr assignment' do
+    it 'registers an offense for the setter call on the lvar' do
       inspect_source(cop,
                      ['def test(some_arg)',
                       '  some_arg = Top.new',
