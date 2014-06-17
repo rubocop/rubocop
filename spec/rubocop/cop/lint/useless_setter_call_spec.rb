@@ -31,6 +31,20 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
     end
   end
 
+  context 'with method ending with square bracket setter on local object' do
+    it 'registers an offense' do
+      inspect_source(cop,
+                     ['def test',
+                      '  top = Top.new',
+                      '  top[:attr] = 5',
+                      'end'
+                     ])
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.messages)
+        .to eq(['Useless setter call to local variable `top`.'])
+    end
+  end
+
   context 'with method ending with ivar assignment' do
     it 'accepts' do
       inspect_source(cop,

@@ -47,7 +47,7 @@ module RuboCop
           return unless node && node.type == :send
           receiver, method, _args = *node
           return unless receiver && receiver.type == :lvar
-          method =~ /\w=$/
+          method =~ /(?:\w|\[\])=$/
         end
 
         # This class tracks variable assignments in a method body
