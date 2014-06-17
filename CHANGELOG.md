@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#639](https://github.com/bbatsov/rubocop/issues/639): Support square bracket setters in `UselessSetterCall`. ([@yujinakayama][])
 * [#835](https://github.com/bbatsov/rubocop/issues/835): `UnneededCapitalW` cop does auto-correction. ([@sfeldon][])
 * [#1092](https://github.com/bbatsov/rubocop/issues/1092): New cop `DefEndAlignment` takes over responsibility for checkng alignment of method definition `end`s from `EndAlignment`, and is configurable. ([@jonas054][])
 * [#1145](https://github.com/bbatsov/rubocop/issues/1145): New cop `ClassCheck` enforces consistent use of `is_a?` or `kind_of?`. ([@bbatsov][])
@@ -17,6 +18,7 @@
 
 * [#1133](https://github.com/bbatsov/rubocop/issues/1133): Handle `reduce/inject` with no arguments in `EachWithObject`. ([@bbatsov][])
 * [#1152](https://github.com/bbatsov/rubocop/issues/1152): Handle `while/until` with no body in `Next`. ([@tamird][])
+* Fix a false positive in `UselessSetterCall` for setter call on a local variable that contains a non-local object. ([@yujinakayama][])
 
 ## 0.23.0 (02/06/2014)
 

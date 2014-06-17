@@ -17,10 +17,17 @@ module RuboCop
 
         MSG = 'Useless setter call to local variable `%s`.'
         ASSIGNMENT_TYPES = [:lvasgn, :ivasgn, :cvasgn, :gvasgn].freeze
+        LITERAL_TYPES = [
+          :true, :false, :nil,
+          :int, :float,
+          :str, :dstr, :sym, :dsym, :xstr, :regexp,
+          :array, :hash,
+          :irange, :erange
+        ].freeze
 
         private
 
-        def check(_node, _method_name, args, body)
+        def check(_node, _method_name, _args, body)
           return unless body
 
           if body.type == :begin
@@ -33,10 +40,10 @@ module RuboCop
 
           return unless setter_call_to_local_variable?(last_expr)
 
-          tracker = MethodVariableTracker.new(args, body)
+          tracker = MethodVariableTracker.new(body)
           receiver, = *last_expr
-          var_name, = *receiver
-          return if tracker.contain_object_passed_as_argument?(var_name)
+          variable_name, = *receiver
+          return unless tracker.contain_local_object?(variable_name)
 
           add_offense(receiver,
                       :name,
@@ -47,27 +54,21 @@ module RuboCop
           return unless node && node.type == :send
           receiver, method, _args = *node
           return unless receiver && receiver.type == :lvar
-          method =~ /\w=$/
+          method =~ /(?:\w|\[\])=$/
         end
 
         # This class tracks variable assignments in a method body
         # and if a variable contains object passed as argument at the end of
         # the method.
         class MethodVariableTracker
-          def initialize(args_node, body_node)
-            @args_node = args_node
+          def initialize(body_node)
             @body_node = body_node
           end
 
-          def contain_object_passed_as_argument?(variable_name)
-            return @table[variable_name] if @table
+          def contain_local_object?(variable_name)
+            return @local[variable_name] if @table
 
-            @table = {}
-
-            @args_node.children.each do |arg_node|
-              arg_name, = *arg_node
-              @table[arg_name] = true
-            end
+            @local = {}
 
             scan(@body_node) do |node|
               case node.type
@@ -83,7 +84,7 @@ module RuboCop
               end
             end
 
-            @table[variable_name]
+            @local[variable_name]
           end
 
           def scan(node, &block)
@@ -109,7 +110,7 @@ module RuboCop
               if mrhs_node.type == :array && rhs_node
                 process_assignment(lhs_variable_name, rhs_node)
               else
-                @table[lhs_variable_name] = false
+                @local[lhs_variable_name] = true
               end
             end
 
@@ -128,7 +129,7 @@ module RuboCop
             lhs_node, = *op_asgn_node
             return unless ASSIGNMENT_TYPES.include?(lhs_node.type)
             lhs_variable_name, = *lhs_node
-            @table[lhs_variable_name] = false
+            @local[lhs_variable_name] = true
 
             throw :skip_children
           end
@@ -138,10 +139,17 @@ module RuboCop
 
             if [:lvar, :ivar, :cvar, :gvar].include?(rhs_node.type)
               rhs_variable_name, = *rhs_node
-              @table[lhs_variable_name] = @table[rhs_variable_name]
+              @local[lhs_variable_name] = @local[rhs_variable_name]
             else
-              @table[lhs_variable_name] = false
+              @local[lhs_variable_name] = constructor?(rhs_node)
             end
+          end
+
+          def constructor?(node)
+            return true if LITERAL_TYPES.include?(node.type)
+            return false unless node.type == :send
+            _receiver, method = *node
+            method == :new
           end
         end
       end
