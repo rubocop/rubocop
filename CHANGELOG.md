@@ -19,6 +19,7 @@
 * [#1133](https://github.com/bbatsov/rubocop/issues/1133): Handle `reduce/inject` with no arguments in `EachWithObject`. ([@bbatsov][])
 * [#1152](https://github.com/bbatsov/rubocop/issues/1152): Handle `while/until` with no body in `Next`. ([@tamird][])
 * Fix a false positive in `UselessSetterCall` for setter call on a local variable that contains a non-local object. ([@yujinakayama][])
+* [#1158](https://github.com/bbatsov/rubocop/issues/1158): Fix auto-correction of floating-point numbers. ([@bbatsov][])
 
 ## 0.23.0 (02/06/2014)
 

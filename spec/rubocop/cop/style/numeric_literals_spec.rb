@@ -67,4 +67,14 @@ describe RuboCop::Cop::Style::NumericLiterals, :config do
     corrected = autocorrect_source(cop, ['a = -123456'])
     expect(corrected).to eq 'a = -123_456'
   end
+
+  it 'autocorrects floating-point numbers' do
+    corrected = autocorrect_source(cop, ['a = 123456.78'])
+    expect(corrected).to eq 'a = 123_456.78'
+  end
+
+  it 'autocorrects negative floating-point numbers' do
+    corrected = autocorrect_source(cop, ['a = -123456.78'])
+    expect(corrected).to eq 'a = -123_456.78'
+  end
 end

@@ -47,15 +47,28 @@ module RuboCop
 
         def autocorrect(node)
           @corrections << lambda do |corrector|
-            int = node.loc.expression.source.to_i
-            formatted_int = int
-              .abs
-              .to_s
-              .reverse
-              .gsub(/...(?=.)/, '\&_')
-              .reverse
-            formatted_int.insert(0, '-') if int < 0
-            corrector.replace(node.loc.expression, formatted_int)
+            corrector.replace(
+              node.loc.expression,
+              format_number(node)
+            )
+          end
+        end
+
+        def format_number(node)
+          int_part, float_part = node.loc.expression.source.split('.')
+          int_part = int_part.to_i
+          formatted_int = int_part
+                          .abs
+                          .to_s
+                          .reverse
+                          .gsub(/...(?=.)/, '\&_')
+                          .reverse
+          formatted_int.insert(0, '-') if int_part < 0
+
+          if float_part
+            format('%s.%s', formatted_int, float_part)
+          else
+            formatted_int
           end
         end
 
