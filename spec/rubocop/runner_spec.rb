@@ -3,13 +3,13 @@
 require 'spec_helper'
 
 module RuboCop
-  class FileInspector
+  class Runner
     attr_writer :errors # Needed only for testing.
   end
 end
 
-describe RuboCop::FileInspector do
-  subject(:inspector) { described_class.new(options) }
+describe RuboCop::Runner do
+  subject(:runner) { described_class.new(options) }
   let(:options) { {} }
   let(:offenses) { [] }
   let(:errors) { [] }
@@ -18,12 +18,12 @@ describe RuboCop::FileInspector do
     $stdout = StringIO.new
     $stderr = StringIO.new
 
-    allow(inspector).to receive(:process_source) do
+    allow(runner).to receive(:process_source) do
       [double('ProcessedSource').as_null_object, []]
     end
 
-    allow(inspector).to receive(:inspect_file) do
-      inspector.errors = errors
+    allow(runner).to receive(:inspect_file) do
+      runner.errors = errors
       [offenses, !:updated_source_file]
     end
   end
@@ -33,23 +33,10 @@ describe RuboCop::FileInspector do
     $stderr = STDERR
   end
 
-  describe '#display_error_summary' do
-    let(:errors) do
-      ['An error occurred while Encoding cop was inspecting file.rb.']
-    end
-
-    it 'displays an error message to stderr when errors are present' do
-      inspector.process_files(['file.rb'], nil) {}
-      inspector.display_error_summary
-      expect($stderr.string.lines.to_a[-6..-5])
-        .to eq(["1 error occurred:\n", "#{errors.first}\n"])
-    end
-  end
-
-  describe '#process_files' do
+  describe '#run' do
     context 'if there are no offenses in inspected files' do
       it 'returns false' do
-        result = inspector.process_files(['file.rb'], nil) {}
+        result = runner.run(['file.rb'], nil) {}
         expect(result).to eq(false)
       end
     end
@@ -64,11 +51,11 @@ describe RuboCop::FileInspector do
       end
 
       it 'returns true' do
-        expect(inspector.process_files(['file.rb'], nil) {}).to eq(true)
+        expect(runner.run(['file.rb'], nil) {}).to eq(true)
       end
 
       it 'sends the offense to a formatter' do
-        inspector.process_files(['file.rb'], nil) {}
+        runner.run(['file.rb'], nil) {}
         expect($stdout.string.split("\n"))
           .to eq(['Inspecting 1 file',
                   'C',

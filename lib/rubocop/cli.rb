@@ -27,11 +27,11 @@ module RuboCop
       act_on_options
       target_files = target_finder.find(remaining_args)
 
-      inspector = FileInspector.new(@options)
-      any_failed = inspector.process_files(target_files, @config_store) do
+      runner = Runner.new(@options)
+      any_failed = runner.run(target_files, @config_store) do
         wants_to_quit?
       end
-      inspector.display_error_summary
+      runner.display_error_summary
 
       !any_failed && !wants_to_quit ? 0 : 1
     rescue Cop::AmbiguousCopName => e

@@ -3,7 +3,7 @@
 module RuboCop
   # This class handles the processing of files, which includes dealing with
   # formatters and letting cops inspect the files.
-  class FileInspector
+  class Runner
     def initialize(options)
       @options = options
       @errors = []
@@ -11,7 +11,7 @@ module RuboCop
 
     # Takes a block which it calls once per inspected file.  The block shall
     # return true if the caller wants to break the loop early.
-    def process_files(target_files, config_store)
+    def run(target_files, config_store)
       target_files.each(&:freeze).freeze
       inspected_files = []
       any_failed = false
