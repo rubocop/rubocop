@@ -31,7 +31,8 @@ module RuboCop
       any_failed = runner.run(target_files, @config_store) do
         wants_to_quit?
       end
-      runner.display_error_summary
+
+      display_error_summary(runner.errors)
 
       !any_failed && !wants_to_quit ? 0 : 1
     rescue Cop::AmbiguousCopName => e
@@ -104,6 +105,22 @@ module RuboCop
         puts cnf.to_yaml.lines.to_a[1..-1].map { |line| '  ' + line }
         puts
       end
+    end
+
+    def display_error_summary(errors)
+      return if errors.empty?
+
+      plural = errors.count > 1 ? 's' : ''
+      warn "\n#{errors.count} error#{plural} occurred:".color(:red)
+
+      errors.each { |error| warn error }
+
+      warn <<-END.strip_indent
+        Errors are usually caused by RuboCop bugs.
+        Please, report your problems to RuboCop's issue tracker.
+        Mention the following information in the issue report:
+        #{RuboCop::Version.version(true)}
+      END
     end
 
     def target_finder

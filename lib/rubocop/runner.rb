@@ -4,6 +4,8 @@ module RuboCop
   # This class handles the processing of files, which includes dealing with
   # formatters and letting cops inspect the files.
   class Runner
+    attr_reader :errors
+
     def initialize(options)
       @options = options
       @errors = []
@@ -33,17 +35,6 @@ module RuboCop
 
       formatter_set.close_output_files
       any_failed
-    end
-
-    def display_error_summary
-      return if @errors.empty?
-      plural = @errors.count > 1 ? 's' : ''
-      warn "\n#{@errors.count} error#{plural} occurred:".color(:red)
-      @errors.each { |error| warn error }
-      warn 'Errors are usually caused by RuboCop bugs.'
-      warn 'Please, report your problems to RuboCop\'s issue tracker.'
-      warn 'Mention the following information in the issue report:'
-      warn RuboCop::Version.version(true)
     end
 
     private

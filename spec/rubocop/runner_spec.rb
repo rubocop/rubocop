@@ -16,7 +16,6 @@ describe RuboCop::Runner do
 
   before(:each) do
     $stdout = StringIO.new
-    $stderr = StringIO.new
 
     allow(runner).to receive(:process_source) do
       [double('ProcessedSource').as_null_object, []]
@@ -30,7 +29,6 @@ describe RuboCop::Runner do
 
   after(:each) do
     $stdout = STDOUT
-    $stderr = STDERR
   end
 
   describe '#run' do

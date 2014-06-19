@@ -1387,6 +1387,23 @@ describe RuboCop::CLI, :isolated_environment do
               ''].join("\n"))
   end
 
+  context 'when errors are raised while processing files due to bugs' do
+    let(:errors) do
+      ['An error occurred while Encoding cop was inspecting file.rb.']
+    end
+
+    before do
+      allow_any_instance_of(RuboCop::Runner)
+        .to receive(:errors).and_return(errors)
+    end
+
+    it 'displays an error message to stderr' do
+      cli.run([])
+      expect($stderr.string)
+        .to include('1 error occurred:').and include(errors.first)
+    end
+  end
+
   describe 'rubocop:disable comment' do
     it 'can disable all cops in a code section' do
       create_file('example.rb',
