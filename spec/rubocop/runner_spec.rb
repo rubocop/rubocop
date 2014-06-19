@@ -9,7 +9,7 @@ module RuboCop
 end
 
 describe RuboCop::Runner do
-  subject(:runner) { described_class.new(options) }
+  subject(:runner) { described_class.new(options, RuboCop::ConfigStore.new) }
   let(:options) { {} }
   let(:offenses) { [] }
   let(:errors) { [] }
@@ -34,7 +34,7 @@ describe RuboCop::Runner do
   describe '#run' do
     context 'if there are no offenses in inspected files' do
       it 'returns false' do
-        result = runner.run(['file.rb'], nil) {}
+        result = runner.run(['file.rb']) {}
         expect(result).to eq(false)
       end
     end
@@ -49,11 +49,11 @@ describe RuboCop::Runner do
       end
 
       it 'returns true' do
-        expect(runner.run(['file.rb'], nil) {}).to eq(true)
+        expect(runner.run(['file.rb']) {}).to eq(true)
       end
 
       it 'sends the offense to a formatter' do
-        runner.run(['file.rb'], nil) {}
+        runner.run(['file.rb']) {}
         expect($stdout.string.split("\n"))
           .to eq(['Inspecting 1 file',
                   'C',

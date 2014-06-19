@@ -6,15 +6,17 @@ module RuboCop
   class Runner
     attr_reader :errors
 
-    def initialize(options)
+    def initialize(options, config_store)
       @options = options
+      @config_store = config_store
       @errors = []
     end
 
     # Takes a block which it calls once per inspected file.  The block shall
     # return true if the caller wants to break the loop early.
-    def run(target_files, config_store)
-      target_files.each(&:freeze).freeze
+    def run(paths)
+      target_files = find_target_files(paths)
+
       inspected_files = []
       any_failed = false
 
@@ -22,7 +24,7 @@ module RuboCop
 
       target_files.each do |file|
         break if yield
-        offenses = process_file(file, config_store)
+        offenses = process_file(file)
 
         any_failed = true if offenses.any? do |o|
           o.severity >= fail_level
@@ -39,7 +41,13 @@ module RuboCop
 
     private
 
-    def process_file(file, config_store)
+    def find_target_files(paths)
+      target_finder = TargetFinder.new(@config_store, @options)
+      target_files = target_finder.find(paths)
+      target_files.each(&:freeze).freeze
+    end
+
+    def process_file(file)
       puts "Scanning #{file}" if @options[:debug]
       processed_source, offenses = process_source(file)
 
@@ -61,8 +69,7 @@ module RuboCop
         # only keep the corrected ones in order to avoid duplicate reporting.
         offenses.select!(&:corrected?)
 
-        new_offenses, updated_source_file =
-          inspect_file(processed_source, config_store)
+        new_offenses, updated_source_file = inspect_file(processed_source)
         offenses += new_offenses.reject { |n| offenses.include?(n) }
         break unless updated_source_file
 
@@ -91,8 +98,8 @@ module RuboCop
       [processed_source, []]
     end
 
-    def inspect_file(processed_source, config_store)
-      config = config_store.for(processed_source.file_path)
+    def inspect_file(processed_source)
+      config = @config_store.for(processed_source.file_path)
       team = Cop::Team.new(mobilized_cop_classes(config), config, @options)
       offenses = team.inspect_file(processed_source)
       @errors.concat(team.errors)

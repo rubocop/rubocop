@@ -23,12 +23,11 @@ module RuboCop
     def run(args = ARGV)
       trap_interrupt
 
-      @options, remaining_args = Options.new.parse(args)
+      @options, paths = Options.new.parse(args)
       act_on_options
-      target_files = target_finder.find(remaining_args)
 
-      runner = Runner.new(@options)
-      any_failed = runner.run(target_files, @config_store) do
+      runner = Runner.new(@options, @config_store)
+      any_failed = runner.run(paths) do
         wants_to_quit?
       end
 
@@ -121,10 +120,6 @@ module RuboCop
         Mention the following information in the issue report:
         #{RuboCop::Version.version(true)}
       END
-    end
-
-    def target_finder
-      @target_finder ||= TargetFinder.new(@config_store, @options)
     end
   end
 end
