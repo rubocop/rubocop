@@ -27,13 +27,13 @@ module RuboCop
       act_on_options
 
       runner = Runner.new(@options, @config_store)
-      any_failed = runner.run(paths) do
+      all_passed = runner.run(paths) do
         wants_to_quit?
       end
 
       display_error_summary(runner.errors)
 
-      !any_failed && !wants_to_quit ? 0 : 1
+      all_passed && !wants_to_quit ? 0 : 1
     rescue Cop::AmbiguousCopName => e
       $stderr.puts "Ambiguous cop name #{e.message} needs namespace " \
                    'qualifier.'

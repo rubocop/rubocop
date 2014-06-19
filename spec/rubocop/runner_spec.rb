@@ -33,9 +33,9 @@ describe RuboCop::Runner do
 
   describe '#run' do
     context 'if there are no offenses in inspected files' do
-      it 'returns false' do
+      it 'returns true' do
         result = runner.run(['file.rb']) {}
-        expect(result).to eq(false)
+        expect(result).to be true
       end
     end
 
@@ -48,8 +48,8 @@ describe RuboCop::Runner do
                                    'Alias')]
       end
 
-      it 'returns true' do
-        expect(runner.run(['file.rb']) {}).to eq(true)
+      it 'returns false' do
+        expect(runner.run(['file.rb']) {}).to be false
       end
 
       it 'sends the offense to a formatter' do

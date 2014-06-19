@@ -18,25 +18,28 @@ module RuboCop
       target_files = find_target_files(paths)
 
       inspected_files = []
-      any_failed = false
+      all_passed = true
 
       formatter_set.started(target_files)
 
       target_files.each do |file|
         break if yield
+
         offenses = process_file(file)
 
-        any_failed = true if offenses.any? do |o|
+        all_passed = false if offenses.any? do |o|
           o.severity >= fail_level
         end
+
         inspected_files << file
-        break if @options[:fail_fast] && any_failed
+
+        break if @options[:fail_fast] && !all_passed
       end
 
       formatter_set.finished(inspected_files.freeze)
-
       formatter_set.close_output_files
-      any_failed
+
+      all_passed
     end
 
     private
