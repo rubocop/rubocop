@@ -21,6 +21,9 @@ module RuboCop
         CORRECT_INDENTATION = 2
 
         def on_kwbegin(node)
+          # Check indentation against end keyword but only if it's first on its
+          # line.
+          return unless begins_its_line?(node.loc.end)
           check_indentation(node.loc.end, node.children.first)
         end
 
@@ -164,7 +167,10 @@ module RuboCop
 
           # This cop only auto-corrects the first statement in a def body, for
           # example.
-          body_node = body_node.children.first if body_node.type == :begin
+          if body_node.type == :begin && !(body_node.loc.begin &&
+                                           body_node.loc.begin.is?('('))
+            body_node = body_node.children.first
+          end
 
           expr = body_node.loc.expression
           begin_pos, ind = expr.begin_pos, expr.begin_pos - indentation

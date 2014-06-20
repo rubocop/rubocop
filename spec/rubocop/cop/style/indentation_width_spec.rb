@@ -149,6 +149,47 @@ describe RuboCop::Cop::Style::IndentationWidth do
                                  '  end',
                                  'end'].join("\n")
       end
+
+      it 'indents parenthesized expressions' do
+        src = ['var1 = nil',
+               'array_list = []',
+               'if var1.attr1 != 0 || array_list.select{ |w|',
+               '                        (w.attr2 == var1.attr2)',
+               '                 }.blank?',
+               '  array_list << var1',
+               'end']
+        corrected = autocorrect_source(cop, src)
+        expect(corrected)
+          .to eq ['var1 = nil',
+                  'array_list = []',
+                  'if var1.attr1 != 0 || array_list.select{ |w|',
+                  '                   (w.attr2 == var1.attr2)',
+                  '                 }.blank?',
+                  '  array_list << var1',
+                  'end'].join("\n")
+      end
+
+      it 'leaves rescue ; end unchanged' do
+        src = ['if variable',
+               '  begin',
+               '    do_something',
+               '  rescue ; end # consume any exception',
+               'end']
+        corrected = autocorrect_source(cop, src)
+        expect(corrected).to eq src.join("\n")
+      end
+
+      it 'leaves block unchanged if block end is not on its own line' do
+        src = ['a_function {',
+               '  # a comment',
+               '  result = AObject.find_by_attr(attr) if attr',
+               '  result || AObject.make(',
+               '      :attr => attr,',
+               '      :attr2 => Other.get_value(),',
+               '      :attr3 => Another.get_value()) }']
+        corrected = autocorrect_source(cop, src)
+        expect(corrected).to eq src.join("\n")
+      end
     end
 
     it 'accepts a one line if statement' do
