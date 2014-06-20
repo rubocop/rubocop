@@ -20,6 +20,8 @@
 * [#1152](https://github.com/bbatsov/rubocop/issues/1152): Handle `while/until` with no body in `Next`. ([@tamird][])
 * Fix a false positive in `UselessSetterCall` for setter call on a local variable that contains a non-local object. ([@yujinakayama][])
 * [#1158](https://github.com/bbatsov/rubocop/issues/1158): Fix auto-correction of floating-point numbers. ([@bbatsov][])
+* [#1159](https://github.com/bbatsov/rubocop/issues/1159): Fix checking of `begin`..`end` structures, blocks, and parenthesized expressions in `IndentationWidth`. ([@jonas054][])
+* [#1159](https://github.com/bbatsov/rubocop/issues/1159): More rigid conditions for when `attr` is considered an offense. ([@jonas054][])
 
 ## 0.23.0 (02/06/2014)
 
