@@ -113,7 +113,7 @@ describe RuboCop::Cop::Rails::Delegate do
                     '  end',
                     '  ',
                     '  protected',
-                    '  ' ,
+                    '  ',
                     '  def fox',
                     '    bar.fox',
                     '  end'])
