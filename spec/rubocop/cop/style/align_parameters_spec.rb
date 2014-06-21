@@ -322,7 +322,7 @@ describe RuboCop::Cop::Style::AlignParameters, :config do
         expect(cop.offenses).to be_empty
       end
 
-      it 'registers offences for double indentation from relevant method' do
+      it 'registers offenses for double indentation from relevant method' do
         inspect_source(cop, [' something',
                              '   .method_name(',
                              '       a,',
