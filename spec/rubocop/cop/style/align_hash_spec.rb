@@ -25,13 +25,13 @@ describe RuboCop::Cop::Style::AlignHash, :config do
       }
     end
 
-    it 'registers offence for misaligned keys in implicit hash' do
+    it 'registers offense for misaligned keys in implicit hash' do
       inspect_source(cop, ['func(a: 0,',
                            '  b: 1)'])
       expect(cop.offenses.size).to eq(1)
     end
 
-    it 'registers offence for misaligned keys in explicit hash' do
+    it 'registers offense for misaligned keys in explicit hash' do
       inspect_source(cop, ['func({a: 0,',
                            '  b: 1})'])
       expect(cop.offenses.size).to eq(1)
@@ -71,7 +71,7 @@ describe RuboCop::Cop::Style::AlignHash, :config do
       expect(cop.offenses).to be_empty
     end
 
-    it 'registers offence for misaligned keys in explicit hash' do
+    it 'registers offense for misaligned keys in explicit hash' do
       inspect_source(cop, ['func({a: 0,',
                            '  b: 1})'])
       expect(cop.offenses.size).to eq(1)
@@ -85,7 +85,7 @@ describe RuboCop::Cop::Style::AlignHash, :config do
       }
     end
 
-    it 'registers offence for misaligned keys in implicit hash' do
+    it 'registers offense for misaligned keys in implicit hash' do
       inspect_source(cop, ['func(a: 0,',
                            '  b: 1)'])
       expect(cop.offenses.size).to eq(1)

@@ -54,10 +54,10 @@ Style/AlignHash:
   # inspected? Valid values are:
   #
   # always_inspect - Inspect both implicit and explicit hashes.
-  #   Registers an offence for:
+  #   Registers an offense for:
   #     function(a: 1,
   #       b: 2)
-  #   Registers an offence for:
+  #   Registers an offense for:
   #     function({a: 1,
   #       b: 2})
   # always_ignore - Ignore both implicit and explicit hashes.
@@ -71,14 +71,14 @@ Style/AlignHash:
   #   Accepts:
   #     function(a: 1,
   #       b: 2)
-  #   Registers an offence for:
+  #   Registers an offense for:
   #     function({a: 1,
   #       b: 2})
   # ignore_explicit - Ignore only explicit hashes.
   #   Accepts:
   #     function({a: 1,
   #       b: 2})
-  #   Registers an offence for:
+  #   Registers an offense for:
   #     function(a: 1,
   #       b: 2)
   EnforcedLastArgumentHashStyle: always_inspect
@@ -275,12 +275,12 @@ Style/Next:
     - always
 
 Style/NonNilCheck:
-  # With `IncludeSemanticChanges` set to `true`, this cop reports offences for
+  # With `IncludeSemanticChanges` set to `true`, this cop reports offenses for
   # `!x.nil?` and autocorrects that and `x != nil` to solely `x`, which is
   # **usually** OK, but might change behavior.
   #
   # With `IncludeSemanticChanges` set to `false`, this cop does not report
-  # offences for `!x.nil?` and does no changes that might change behavior.
+  # offenses for `!x.nil?` and does no changes that might change behavior.
   IncludeSemanticChanges: false
 
 Style/MethodDefParentheses:

@@ -38,7 +38,7 @@ $ rubocop -V
   is fine, but please isolate to its own commit so I can cherry-pick
   around it.
 * Make sure the test suite is passing ([including rbx and jruby][7]) and the code you wrote doesn't produce
-  RuboCop offences.
+  RuboCop offenses.
 * [Squash related commits together][5].
 * Open a [pull request][4] that relates to *only* one subject with a clear title
   and description in grammatically correct, complete sentences.
