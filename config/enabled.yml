@@ -473,10 +473,18 @@ Style/SpaceBeforeBlockBraces:
                  before it.
   Enabled: true
 
+Style/SpaceBeforeComma:
+  Description: 'No spaces before commas.'
+  Enabled: true
+
 Style/SpaceBeforeComment:
   Description: >-
                  Checks for missing space between code and a comment on the
                  same line.
+  Enabled: true
+
+Style/SpaceBeforeSemicolon:
+  Description: 'No spaces before semicolons.'
   Enabled: true
 
 Style/SpaceInsideBlockBraces:
