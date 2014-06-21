@@ -1796,8 +1796,10 @@ describe RuboCop::CLI, :isolated_environment do
         .to eq(['== example1.rb ==',
                 'C:  2:  6: %w-literals should be delimited by [ and ]',
                 'C:  3:  6: %q-literals should be delimited by ( and )',
+                'C:  3:  6: Use %q only for strings that contain both single ' \
+                'quotes and double quotes.',
                 '',
-                '1 file inspected, 2 offenses detected',
+                '1 file inspected, 3 offenses detected',
                 ''].join("\n"))
     end
 

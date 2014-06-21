@@ -559,6 +559,10 @@ Style/UnneededCapitalW:
   Description: 'Checks for %W when interpolation is not needed.'
   Enabled: true
 
+Style/UnneededPercentQ:
+  Description: 'Checks for %q/%Q when single quotes or double quotes would do.'
+  Enabled: true
+
 Style/UnneededPercentX:
   Description: 'Checks for %x when `` would do.'
   Enabled: true
