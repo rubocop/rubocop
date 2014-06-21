@@ -56,10 +56,7 @@ module RuboCop
             closing_indentation + closing_delimiter + reg_opt
 
           @corrections << lambda do |corrector|
-            corrector.replace(
-              node.loc.expression,
-              corrected_source
-            )
+            corrector.replace(node.loc.expression, corrected_source)
           end
         end
 
@@ -94,20 +91,18 @@ module RuboCop
           if node.type == :regexp
             *_, next_to_last_child = *middle
             next_to_last_child ||= first_child
-            [
-              source(node, first_child, next_to_last_child),
-              last_child.loc.expression.source
-            ]
+            expression = source(node, first_child, next_to_last_child)
+            reg_opt = last_child.loc.expression.source
           else
-            [
-              if first_child.is_a?(Parser::AST::Node)
-                source(node, first_child, last_child)
-              else
-                first_child.to_s
-              end,
-              ''
-            ]
+            expression = if first_child.is_a?(Parser::AST::Node)
+                           source(node, first_child, last_child)
+                         else
+                           first_child.to_s
+                         end
+            reg_opt = ''
           end
+
+          [expression, reg_opt]
         end
 
         def source(node, begin_node, end_node)

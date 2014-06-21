@@ -10,34 +10,34 @@ module RuboCop
         MSG = 'Incorrect indentation detected (column %d instead of %d).'
 
         def investigate(processed_source)
-          processed_source.comments.each do |comment|
-            lines = processed_source.lines
-            own_line = lines[comment.loc.line - 1]
-            next unless own_line =~ /\A\s*#/
-
-            next_line =
-              lines[comment.loc.line..-1].find { |line| !line.blank? }
-
-            correct_comment_indentation = correct_indentation(next_line)
-            column = comment.loc.column
-
-            @column_delta = correct_comment_indentation - column
-            next if @column_delta == 0
-
-            if two_alternatives?(next_line)
-              # Try the other
-              correct_comment_indentation += configured_indentation_width
-              # We keep @column_delta unchanged so that autocorrect changes to
-              # the preferred style of aligning the comment with the keyword.
-            end
-
-            next if column == correct_comment_indentation
-            add_offense(comment, comment.loc.expression,
-                        format(MSG, column, correct_comment_indentation))
-          end
+          processed_source.comments.each { |comment| check(comment) }
         end
 
         private
+
+        def check(comment)
+          lines = processed_source.lines
+          own_line = lines[comment.loc.line - 1]
+          return unless own_line =~ /\A\s*#/
+
+          next_line = lines[comment.loc.line..-1].find { |line| !line.blank? }
+          correct_comment_indentation = correct_indentation(next_line)
+          column = comment.loc.column
+
+          @column_delta = correct_comment_indentation - column
+          return if @column_delta == 0
+
+          if two_alternatives?(next_line)
+            # Try the other
+            correct_comment_indentation += configured_indentation_width
+            # We keep @column_delta unchanged so that autocorrect changes to
+            # the preferred style of aligning the comment with the keyword.
+          end
+
+          return if column == correct_comment_indentation
+          add_offense(comment, comment.loc.expression,
+                      format(MSG, column, correct_comment_indentation))
+        end
 
         def correct_indentation(next_line)
           return 0 unless next_line

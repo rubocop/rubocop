@@ -65,17 +65,18 @@ module RuboCop
         end
 
         case found_ns.size
-        when 0
-          name # No namespace found. Deal with it later in caller.
-        when 1
-          if name != basename && found_ns.first != File.dirname(name).to_sym
-            warn "#{origin}: #{name} has the wrong namespace - " \
-                 "should be #{found_ns.first}"
-          end
-          "#{found_ns.first}/#{basename}"
-        else
-          fail AmbiguousCopName, "`#{basename}` used in #{origin}"
+        when 0 then name # No namespace found. Deal with it later in caller.
+        when 1 then cop_name_with_namespace(name, origin, basename, found_ns[0])
+        else fail AmbiguousCopName, "`#{basename}` used in #{origin}"
         end
+      end
+
+      def self.cop_name_with_namespace(name, origin, basename, found_ns)
+        if name != basename && found_ns != File.dirname(name).to_sym
+          warn "#{origin}: #{name} has the wrong namespace - should be " \
+               "#{found_ns}"
+        end
+        "#{found_ns}/#{basename}"
       end
 
       def self.non_rails

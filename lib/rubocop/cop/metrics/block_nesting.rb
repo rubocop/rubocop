@@ -10,6 +10,7 @@ module RuboCop
       # The maximum level of nesting allowed is configurable.
       class BlockNesting < Cop
         include ConfigurableMax
+        include IfNode
 
         NESTING_BLOCKS = [
           :case, :if, :while, :while_post,
@@ -26,10 +27,7 @@ module RuboCop
 
         def check_nesting_level(node, max, current_level)
           if NESTING_BLOCKS.include?(node.type)
-            unless node.loc.respond_to?(:keyword) &&
-                   node.loc.keyword.is?('elsif')
-              current_level += 1
-            end
+            current_level += 1 unless elsif?(node)
             if current_level > max
               self.max = current_level
               unless part_of_ignored_node?(node)

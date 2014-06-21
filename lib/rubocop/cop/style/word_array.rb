@@ -60,26 +60,26 @@ module RuboCop
         end
 
         def autocorrect(node)
-          sb = node.loc.expression.source_buffer
-          interpolated = false
-
-          contents = node.children.map do |n|
-            if character_literal?(n)
-              interpolated = true
-              begin_pos = n.loc.expression.begin_pos + '?'.length
-              end_pos = n.loc.expression.end_pos
-            else
-              begin_pos = n.loc.begin.end_pos
-              end_pos = n.loc.end.begin_pos
-            end
-            Parser::Source::Range.new(sb, begin_pos, end_pos).source
-          end.join(' ')
-
-          char = interpolated ? 'W' : 'w'
+          @interpolated = false
+          contents = node.children.map { |n| source_for(n) }.join(' ')
+          char = @interpolated ? 'W' : 'w'
 
           @corrections << lambda do |corrector|
             corrector.replace(node.loc.expression, "%#{char}(#{contents})")
           end
+        end
+
+        def source_for(str_node)
+          if character_literal?(str_node)
+            @interpolated = true
+            begin_pos = str_node.loc.expression.begin_pos + '?'.length
+            end_pos = str_node.loc.expression.end_pos
+          else
+            begin_pos = str_node.loc.begin.end_pos
+            end_pos = str_node.loc.end.begin_pos
+          end
+          Parser::Source::Range.new(str_node.loc.expression.source_buffer,
+                                    begin_pos, end_pos).source
         end
 
         def character_literal?(node)

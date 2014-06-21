@@ -12,19 +12,12 @@ module RuboCop
         def on_method_def(node, _method_name, args, _body)
           if style == :require_parentheses
             if arguments?(args) && !parentheses?(args)
-              add_offense(node,
-                          args.loc.expression,
-                          'Use def with parentheses when there are ' \
-                          'parameters.') do
-                opposite_style_detected
-              end
+              missing_parentheses(node, args)
             else
               correct_style_detected
             end
           elsif parentheses?(args)
-            add_offense(args, :expression, 'Use def without parentheses.') do
-              opposite_style_detected
-            end
+            unwanted_parentheses(args)
           else
             correct_style_detected
           end
@@ -48,6 +41,19 @@ module RuboCop
         end
 
         private
+
+        def missing_parentheses(node, args)
+          add_offense(node, args.loc.expression,
+                      'Use def with parentheses when there are parameters.') do
+            opposite_style_detected
+          end
+        end
+
+        def unwanted_parentheses(args)
+          add_offense(args, :expression, 'Use def without parentheses.') do
+            opposite_style_detected
+          end
+        end
 
         def args_node(def_node)
           if def_node.type == :def

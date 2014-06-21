@@ -37,14 +37,18 @@ module RuboCop
                            style == :space
                          end
           if offense?(t1, t2, expect_space)
-            brace = (t1.text == '{' ? t1 : t2).pos
-            range = expect_space ? brace : space_range(brace)
-            add_offense(range, range, message(brace, is_empty_braces,
-                                              expect_space)) do
-              opposite_style_detected
-            end
+            incorrect_style_detected(t1, t2, expect_space, is_empty_braces)
           else
             correct_style_detected
+          end
+        end
+
+        def incorrect_style_detected(t1, t2, expect_space, is_empty_braces)
+          brace = (t1.text == '{' ? t1 : t2).pos
+          range = expect_space ? brace : space_range(brace)
+          add_offense(range, range,
+                      message(brace, is_empty_braces, expect_space)) do
+            opposite_style_detected
           end
         end
 

@@ -93,13 +93,11 @@ module RuboCop
     # TODO: This should be a private method
     def validate
       # Don't validate RuboCop's own files. Avoids inifinite recursion.
-      return if @loaded_path.start_with?(File.join(ConfigLoader::RUBOCOP_HOME,
-                                                   'config'))
-
-      default_config = ConfigLoader.default_configuration
+      return if loaded_path.start_with?(File.join(ConfigLoader::RUBOCOP_HOME,
+                                                  'config'))
 
       valid_cop_names, invalid_cop_names = @hash.keys.partition do |key|
-        default_config.key?(key)
+        ConfigLoader.default_configuration.key?(key)
       end
 
       invalid_cop_names.each do |name|
@@ -107,16 +105,7 @@ module RuboCop
              "unrecognized cop #{name} found in #{loaded_path || self}"
       end
 
-      valid_cop_names.each do |name|
-        @hash[name].each_key do |param|
-          next if COMMON_PARAMS.include?(param) ||
-                  default_config[name].key?(param)
-
-          fail ValidationError,
-               "unrecognized parameter #{name}:#{param} found " \
-               "in #{loaded_path || self}"
-        end
-      end
+      validate_parameter_names(valid_cop_names)
     end
 
     def file_to_include?(file)
@@ -154,6 +143,21 @@ module RuboCop
         File.expand_path(File.dirname(loaded_path))
       else
         Dir.pwd
+      end
+    end
+
+    private
+
+    def validate_parameter_names(valid_cop_names)
+      valid_cop_names.each do |name|
+        @hash[name].each_key do |param|
+          next if COMMON_PARAMS.include?(param) ||
+                  ConfigLoader.default_configuration[name].key?(param)
+
+          fail ValidationError,
+               "unrecognized parameter #{name}:#{param} found " \
+               "in #{loaded_path || self}"
+        end
       end
     end
   end

@@ -78,8 +78,6 @@ module RuboCop
             unless should_have_comma
               extra_info = if style == :comma
                              ', unless each item is on its own line'
-                           else
-                             ''
                            end
               avoid_comma(kind, after_last_item.begin_pos + comma_offset, sb,
                           extra_info)
@@ -123,7 +121,7 @@ module RuboCop
           article = kind =~ /array/ ? 'an' : 'a'
           add_offense(range, range,
                       format(MSG, 'Avoid', format(kind, article)) +
-                      extra_info + '.')
+                      "#{extra_info}.")
         end
 
         def put_comma(items, kind, sb)

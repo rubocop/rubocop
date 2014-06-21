@@ -55,6 +55,13 @@ module RuboCop
 
       formatter_set.file_started(file, file_info(processed_source))
 
+      offenses = do_inspection_loop(file, processed_source)
+
+      formatter_set.file_finished(file, offenses.compact.sort.freeze)
+      offenses
+    end
+
+    def do_inspection_loop(file, processed_source)
       offenses = []
 
       # When running with --auto-correct, we need to inspect the file (which
@@ -75,8 +82,6 @@ module RuboCop
         # loop if we find any.
         processed_source = ProcessedSource.from_file(file)
       end
-
-      formatter_set.file_finished(file, offenses.sort.freeze)
 
       offenses
     end

@@ -34,23 +34,26 @@ module RuboCop
           sb = node.loc.expression.source_buffer
 
           if left_brace.end_pos == right_brace.begin_pos
-            if style_for_empty_braces == :space
-              offense(sb, left_brace.begin_pos, right_brace.end_pos,
-                      'Space missing inside empty braces.')
-            end
-          else
+            adjacent_braces(sb, left_brace, right_brace)
+          elsif left_brace.line == right_brace.line
             range = Parser::Source::Range.new(sb, left_brace.end_pos,
                                               right_brace.begin_pos)
             inner = range.source
-            unless inner =~ /\n/
-              if inner =~ /\S/
-                braces_with_contents_inside(node, inner, sb)
-              elsif style_for_empty_braces == :no_space
-                offense(sb, range.begin_pos, range.end_pos,
-                        'Space inside empty braces detected.')
-              end
+
+            if inner =~ /\S/
+              braces_with_contents_inside(node, inner, sb)
+            elsif style_for_empty_braces == :no_space
+              offense(sb, range.begin_pos, range.end_pos,
+                      'Space inside empty braces detected.')
             end
           end
+        end
+
+        def adjacent_braces(sb, left_brace, right_brace)
+          return if style_for_empty_braces != :space
+
+          offense(sb, left_brace.begin_pos, right_brace.end_pos,
+                  'Space missing inside empty braces.')
         end
 
         def braces_with_contents_inside(node, inner, sb)

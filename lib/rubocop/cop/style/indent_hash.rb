@@ -101,14 +101,20 @@ module RuboCop
           if @column_delta == 0
             correct_style_detected
           else
-            add_offense(first_pair, :expression,
-                        message(base_description(left_parenthesis))) do
-              if column == unexpected_column(left_brace, left_parenthesis,
-                                             offset)
-                opposite_style_detected
-              else
-                unrecognized_style_detected
-              end
+            incorrect_style_detected(column, offset, first_pair,
+                                     left_parenthesis, left_brace)
+          end
+        end
+
+        def incorrect_style_detected(column, offset, first_pair,
+                                     left_parenthesis, left_brace)
+          add_offense(first_pair, :expression,
+                      message(base_description(left_parenthesis))) do
+            if column == unexpected_column(left_brace, left_parenthesis,
+                                           offset)
+              opposite_style_detected
+            else
+              unrecognized_style_detected
             end
           end
         end

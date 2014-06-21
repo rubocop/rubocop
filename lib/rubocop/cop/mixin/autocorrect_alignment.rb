@@ -30,32 +30,37 @@ module RuboCop
         heredoc_ranges = heredoc_ranges(arg)
         expr = arg.respond_to?(:loc) ? arg.loc.expression : arg
 
-        # We can't use the instance variable inside the lambda. That would
-        # just give each lambda the same reference and they would all get
-        # the last value of @column_delta. A local variable fixes the
-        # problem.
+        # We can't use the instance variable inside the lambda. That would just
+        # give each lambda the same reference and they would all get the last
+        # value of @column_delta. A local variable fixes the problem.
         column_delta = @column_delta
 
         fail CorrectionNotPossible if block_comment_within?(expr)
 
         @corrections << lambda do |corrector|
           each_line(expr) do |line_begin_pos|
-            range = calculate_range(expr, line_begin_pos, column_delta)
-            # We must not change indentation of heredoc stings.
-            next if heredoc_ranges.any? { |h| within?(range, h) }
-
-            if column_delta > 0
-              unless range.source == "\n"
-                corrector.insert_before(range, ' ' * column_delta)
-              end
-            else
-              remove(range, corrector) if range.source =~ /^[ \t]+$/
-            end
+            autocorrect_line(corrector, line_begin_pos, expr, column_delta,
+                             heredoc_ranges)
           end
         end
       end
 
       private
+
+      def autocorrect_line(corrector, line_begin_pos, expr, column_delta,
+                           heredoc_ranges)
+        range = calculate_range(expr, line_begin_pos, column_delta)
+        # We must not change indentation of heredoc stings.
+        return if heredoc_ranges.any? { |h| within?(range, h) }
+
+        if column_delta > 0
+          unless range.source == "\n"
+            corrector.insert_before(range, ' ' * column_delta)
+          end
+        else
+          remove(range, corrector) if range.source =~ /^[ \t]+$/
+        end
+      end
 
       def heredoc_ranges(arg)
         return [] unless arg.is_a?(Parser::AST::Node)

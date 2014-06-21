@@ -63,12 +63,9 @@ module RuboCop
           replacement = (node.type == :and ? '&&' : '||')
           lambda do |corrector|
             [expr1, expr2].each do |expr|
-              next unless expr.type == :send
-              _receiver, method_name, *args = *expr
-              # don't clobber if we already have a starting paren
-              next unless !expr.loc.begin || expr.loc.begin.source != '('
-              # don't touch anything unless we are sure it is a method call.
-              next unless args.last && method_name.to_s =~ /[a-z]/
+              _receiver, _method_name, *args = *expr
+              next unless correctable?(expr)
+
               sb = expr.loc.expression.source_buffer
               begin_paren = expr.loc.selector.end_pos
               end_paren = begin_paren + 1
@@ -78,6 +75,17 @@ module RuboCop
             end
             corrector.replace(node.loc.operator, replacement)
           end
+        end
+
+        def correctable?(expr)
+          return false unless expr.type == :send
+          _receiver, method_name, *args = *expr
+          # don't clobber if we already have a starting paren
+          return false unless !expr.loc.begin || expr.loc.begin.source != '('
+          # don't touch anything unless we are sure it is a method call.
+          return false unless args.last && method_name.to_s =~ /[a-z]/
+
+          true
         end
       end
     end

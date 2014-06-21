@@ -21,18 +21,22 @@ module RuboCop
         old_match = basename == pattern || File.fnmatch?(pattern, path)
         new_match = File.fnmatch?(pattern, path, File::FNM_PATHNAME)
         if old_match && !new_match
-          instruction = if basename == pattern
-                          ". Change to '**/#{pattern}'."
-                        elsif pattern.end_with?('**')
-                          ". Change to '#{pattern}/*'."
-                        end
-          warn("Warning: Deprecated pattern style '#{pattern}' in " \
-               "#{config_path}#{instruction}")
+          issue_deprecation_warning(basename, pattern, config_path)
         end
         old_match || new_match
       when Regexp
         path =~ pattern
       end
+    end
+
+    def issue_deprecation_warning(basename, pattern, config_path)
+      instruction = if basename == pattern
+                      ". Change to '**/#{pattern}'."
+                    elsif pattern.end_with?('**')
+                      ". Change to '#{pattern}/*'."
+                    end
+      warn("Warning: Deprecated pattern style '#{pattern}' in " \
+           "#{config_path}#{instruction}")
     end
   end
 end
