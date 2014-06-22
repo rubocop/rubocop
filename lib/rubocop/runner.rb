@@ -4,12 +4,14 @@ module RuboCop
   # This class handles the processing of files, which includes dealing with
   # formatters and letting cops inspect the files.
   class Runner
-    attr_reader :errors
+    attr_reader :errors, :aborting
+    alias_method :aborting?, :aborting
 
     def initialize(options, config_store)
       @options = options
       @config_store = config_store
       @errors = []
+      @aborting = false
     end
 
     # Takes a block which it calls once per inspected file.  The block shall
@@ -23,7 +25,7 @@ module RuboCop
       formatter_set.started(target_files)
 
       target_files.each do |file|
-        break if yield
+        break if aborting?
 
         offenses = process_file(file)
 
@@ -40,6 +42,10 @@ module RuboCop
       formatter_set.close_output_files
 
       all_passed
+    end
+
+    def abort
+      @aborting = true
     end
 
     private

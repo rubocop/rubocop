@@ -4,12 +4,7 @@ module RuboCop
   # The CLI is a class responsible of handling all the command line interface
   # logic.
   class CLI
-    # If set true while running,
-    # RuboCop will abort processing and exit gracefully.
-    attr_accessor :wants_to_quit
     attr_reader :options, :config_store
-
-    alias_method :wants_to_quit?, :wants_to_quit
 
     def initialize
       @options = {}
@@ -21,19 +16,15 @@ module RuboCop
     # the target files
     # @return [Fixnum] UNIX exit code
     def run(args = ARGV)
-      trap_interrupt
-
       @options, paths = Options.new.parse(args)
       act_on_options
 
       runner = Runner.new(@options, @config_store)
-      all_passed = runner.run(paths) do
-        wants_to_quit?
-      end
-
+      trap_interrupt(runner)
+      all_passed = runner.run(paths)
       display_error_summary(runner.errors)
 
-      all_passed && !wants_to_quit ? 0 : 1
+      all_passed && !runner.aborting? ? 0 : 1
     rescue Cop::AmbiguousCopName => e
       $stderr.puts "Ambiguous cop name #{e.message} needs namespace " \
                    'qualifier.'
@@ -44,10 +35,10 @@ module RuboCop
       return 1
     end
 
-    def trap_interrupt
+    def trap_interrupt(runner)
       Signal.trap('INT') do
-        exit!(1) if wants_to_quit?
-        self.wants_to_quit = true
+        exit!(1) if runner.aborting?
+        runner.abort
         $stderr.puts
         $stderr.puts 'Exiting... Interrupt again to exit immediately.'
       end

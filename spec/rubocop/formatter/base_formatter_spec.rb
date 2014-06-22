@@ -9,7 +9,7 @@ module RuboCop
 
       describe 'how the API methods are invoked', :isolated_environment do
         subject(:formatter) { double('formatter').as_null_object }
-        let(:cli) { CLI.new }
+        let(:runner) { Runner.new({}, ConfigStore.new) }
         let(:output) { $stdout.string }
 
         before do
@@ -39,7 +39,7 @@ module RuboCop
         end
 
         def run
-          cli.run([])
+          runner.run([])
         end
 
         describe 'invocation order' do
@@ -105,7 +105,7 @@ module RuboCop
           end
 
           context 'when RuboCop is interrupted by user' do
-            it 'received processed file paths' do
+            it 'receives only processed file paths' do
               class << formatter
                 attr_reader :processed_file_count
 
@@ -115,7 +115,7 @@ module RuboCop
                 end
               end
 
-              allow(cli).to receive(:wants_to_quit?) do
+              allow(runner).to receive(:aborting?) do
                 formatter.processed_file_count == 2
               end
 

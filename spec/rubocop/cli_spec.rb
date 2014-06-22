@@ -1271,22 +1271,19 @@ describe RuboCop::CLI, :isolated_environment do
     end
   end
 
-  describe '#wants_to_quit?' do
-    it 'is initially false' do
-      expect(cli.wants_to_quit?).to be_falsey
-    end
-
-    context 'when true' do
-      it 'returns 1' do
-        create_file('example.rb', '# encoding: utf-8')
-        cli.wants_to_quit = true
-        expect(cli.run(['example.rb'])).to eq(1)
-      end
+  context 'when interrupted' do
+    it 'returns 1' do
+      allow_any_instance_of(RuboCop::Runner)
+        .to receive(:aborting?).and_return(true)
+      create_file('example.rb', '# encoding: utf-8')
+      expect(cli.run(['example.rb'])).to eq(1)
     end
   end
 
   describe '#trap_interrupt' do
+    let(:runner) { RuboCop::Runner.new({}, RuboCop::ConfigStore.new) }
     let(:interrupt_handlers) { [] }
+
     before do
       allow(Signal).to receive(:trap).with('INT') do |&block|
         interrupt_handlers << block
@@ -1299,30 +1296,29 @@ describe RuboCop::CLI, :isolated_environment do
 
     it 'adds a handler for SIGINT' do
       expect(interrupt_handlers).to be_empty
-      cli.trap_interrupt
+      cli.trap_interrupt(runner)
       expect(interrupt_handlers.size).to eq(1)
     end
 
     context 'with SIGINT once' do
-      it 'sets #wants_to_quit? to true' do
-        cli.trap_interrupt
-        expect(cli.wants_to_quit?).to be_falsey
+      it 'aborts processing' do
+        cli.trap_interrupt(runner)
+        expect(runner).to receive(:abort)
         interrupt
-        expect(cli.wants_to_quit?).to be_truthy
       end
 
       it 'does not exit immediately' do
+        cli.trap_interrupt(runner)
         expect_any_instance_of(Object).not_to receive(:exit)
         expect_any_instance_of(Object).not_to receive(:exit!)
-        cli.trap_interrupt
         interrupt
       end
     end
 
     context 'with SIGINT twice' do
       it 'exits immediately' do
-        expect(cli).to receive(:exit!).with(1)
-        cli.trap_interrupt
+        cli.trap_interrupt(runner)
+        expect_any_instance_of(Object).to receive(:exit!).with(1)
         interrupt
         interrupt
       end
