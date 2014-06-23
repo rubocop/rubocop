@@ -58,16 +58,12 @@ module RuboCop
 
     def process_file(file)
       puts "Scanning #{file}" if @options[:debug]
-      processed_source, offenses = process_source(file)
 
-      if offenses.any?
-        formatter_set.file_started(file, offenses)
-        formatter_set.file_finished(file, offenses.compact.sort.freeze)
-        return offenses
-      end
+      processed_source = ProcessedSource.from_file(file)
 
-      formatter_set.file_started(
-        file, cop_disabled_line_ranges: processed_source.disabled_line_ranges)
+      formatter_set.file_started(file, file_info(processed_source))
+
+      offenses = []
 
       # When running with --auto-correct, we need to inspect the file (which
       # includes writing a corrected version of it) until no more corrections
@@ -85,27 +81,12 @@ module RuboCop
         # We have to reprocess the source to pickup the changes. Since the
         # change could (theoretically) introduce parsing errors, we break the
         # loop if we find any.
-        processed_source, parse_offenses = process_source(file)
-        offenses += parse_offenses if parse_offenses.any?
+        processed_source = ProcessedSource.from_file(file)
       end
 
-      formatter_set.file_finished(file, offenses.compact.sort.freeze)
+      formatter_set.file_finished(file, offenses.sort.freeze)
+
       offenses
-    end
-
-    def process_source(file)
-      processed_source = ProcessedSource.from_file(file)
-
-      if processed_source.parser_error
-        error = processed_source.parser_error
-        range = Struct.new(:line, :column, :source_line).new(1, 0, '')
-        return [
-          nil,
-          [Cop::Offense.new(:fatal, range, error.message.capitalize + '.',
-                            'Parser')]]
-      end
-
-      [processed_source, []]
     end
 
     def inspect_file(processed_source)
@@ -159,6 +140,10 @@ module RuboCop
     def fail_level
       @fail_level ||= RuboCop::Cop::Severity.new(
         @options[:fail_level] || :refactor)
+    end
+
+    def file_info(processed_source)
+      { cop_disabled_line_ranges: processed_source.disabled_line_ranges }
     end
   end
 end

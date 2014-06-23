@@ -8,61 +8,56 @@ module RuboCop
   end
 end
 
-describe RuboCop::Runner do
+describe RuboCop::Runner, :isolated_environment do
+  include FileHelper
+
   subject(:runner) { described_class.new(options, RuboCop::ConfigStore.new) }
-  let(:options) { {} }
-  let(:offenses) { [] }
-  let(:errors) { [] }
+  let(:options) { { formatters: [['progress', formatter_output_path]] } }
+  let(:formatter_output_path) { 'formatter_output.txt' }
+  let(:formatter_output) { File.read(formatter_output_path) }
 
-  before(:each) do
-    $stdout = StringIO.new
-
-    allow(runner).to receive(:process_source) do
-      [double('ProcessedSource').as_null_object, []]
-    end
-
-    allow(runner).to receive(:inspect_file) do
-      runner.errors = errors
-      [offenses, !:updated_source_file]
-    end
-  end
-
-  after(:each) do
-    $stdout = STDOUT
+  before do
+    create_file('example.rb', source)
   end
 
   describe '#run' do
     context 'if there are no offenses in inspected files' do
+      let(:source) { <<-END.strip_indent }
+        # coding: utf-8
+        def valid_code
+        end
+      END
+
       it 'returns true' do
-        result = runner.run(['file.rb']) {}
-        expect(result).to be true
+        expect(runner.run([])).to be true
       end
     end
 
     context 'if there is an offense in an inspected file' do
-      let(:offenses) do
-        [RuboCop::Cop::Offense.new(:convention,
-                                   Struct.new(:line, :column,
-                                              :source_line).new(1, 0, ''),
-                                   'Use alias_method instead of alias.',
-                                   'Alias')]
-      end
+      let(:source) { <<-END.strip_indent }
+        # coding: utf-8
+        def INVALID_CODE
+        end
+      END
 
       it 'returns false' do
-        expect(runner.run(['file.rb']) {}).to be false
+        expect(runner.run([])).to be false
       end
 
       it 'sends the offense to a formatter' do
-        runner.run(['file.rb']) {}
-        expect($stdout.string.split("\n"))
-          .to eq(['Inspecting 1 file',
-                  'C',
-                  '',
-                  'Offenses:',
-                  '',
-                  "file.rb:1:1: C: #{offenses.first.message}",
-                  '',
-                  '1 file inspected, 1 offense detected'])
+        runner.run([])
+        expect(formatter_output).to eq <<-END.strip_indent
+          Inspecting 1 file
+          C
+
+          Offenses:
+
+          example.rb:2:5: C: Use snake_case for methods.
+          def INVALID_CODE
+              ^^^^^^^^^^^^
+
+          1 file inspected, 1 offense detected
+        END
       end
     end
   end

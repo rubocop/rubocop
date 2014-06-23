@@ -25,11 +25,8 @@ module RuboCop
 
       def inspect_file(processed_source)
         # If we got any syntax errors, return only the syntax offenses.
-        # Parser may return nil for AST even though there are no syntax errors.
-        # e.g. sources which contain only comments
         unless processed_source.valid_syntax?
-          diagnostics = processed_source.diagnostics
-          return Lint::Syntax.offenses_from_diagnostics(diagnostics)
+          return Lint::Syntax.offenses_from_processed_source(processed_source)
         end
 
         commissioner = Commissioner.new(cops, forces)
