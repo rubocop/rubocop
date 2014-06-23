@@ -3,63 +3,61 @@
 module RuboCop
   # This class handles the processing of files, which includes dealing with
   # formatters and letting cops inspect the files.
-  class FileInspector
-    def initialize(options)
+  class Runner
+    attr_reader :errors, :aborting
+    alias_method :aborting?, :aborting
+
+    def initialize(options, config_store)
       @options = options
+      @config_store = config_store
       @errors = []
+      @aborting = false
     end
 
     # Takes a block which it calls once per inspected file.  The block shall
     # return true if the caller wants to break the loop early.
-    def process_files(target_files, config_store)
-      target_files.each(&:freeze).freeze
+    def run(paths)
+      target_files = find_target_files(paths)
+
       inspected_files = []
-      any_failed = false
+      all_passed = true
 
       formatter_set.started(target_files)
 
       target_files.each do |file|
-        break if yield
-        offenses = process_file(file, config_store)
-
-        any_failed = true if offenses.any? do |o|
-          o.severity >= fail_level
-        end
+        break if aborting?
+        offenses = process_file(file)
+        all_passed = false if offenses.any? { |o| considered_failure?(o) }
         inspected_files << file
-        break if @options[:fail_fast] && any_failed
+        break if @options[:fail_fast] && !all_passed
       end
 
       formatter_set.finished(inspected_files.freeze)
-
       formatter_set.close_output_files
-      any_failed
+
+      all_passed
     end
 
-    def display_error_summary
-      return if @errors.empty?
-      plural = @errors.count > 1 ? 's' : ''
-      warn "\n#{@errors.count} error#{plural} occurred:".color(:red)
-      @errors.each { |error| warn error }
-      warn 'Errors are usually caused by RuboCop bugs.'
-      warn 'Please, report your problems to RuboCop\'s issue tracker.'
-      warn 'Mention the following information in the issue report:'
-      warn RuboCop::Version.version(true)
+    def abort
+      @aborting = true
     end
 
     private
 
-    def process_file(file, config_store)
+    def find_target_files(paths)
+      target_finder = TargetFinder.new(@config_store, @options)
+      target_files = target_finder.find(paths)
+      target_files.each(&:freeze).freeze
+    end
+
+    def process_file(file)
       puts "Scanning #{file}" if @options[:debug]
-      processed_source, offenses = process_source(file)
 
-      if offenses.any?
-        formatter_set.file_started(file, offenses)
-        formatter_set.file_finished(file, offenses.compact.sort.freeze)
-        return offenses
-      end
+      processed_source = ProcessedSource.from_file(file)
 
-      formatter_set.file_started(
-        file, cop_disabled_line_ranges: processed_source.disabled_line_ranges)
+      formatter_set.file_started(file, file_info(processed_source))
+
+      offenses = []
 
       # When running with --auto-correct, we need to inspect the file (which
       # includes writing a corrected version of it) until no more corrections
@@ -70,38 +68,23 @@ module RuboCop
         # only keep the corrected ones in order to avoid duplicate reporting.
         offenses.select!(&:corrected?)
 
-        new_offenses, updated_source_file =
-          inspect_file(processed_source, config_store)
-        offenses += new_offenses.reject { |n| offenses.include?(n) }
+        new_offenses, updated_source_file = inspect_file(processed_source)
+        offenses.concat(new_offenses).uniq!
         break unless updated_source_file
 
         # We have to reprocess the source to pickup the changes. Since the
         # change could (theoretically) introduce parsing errors, we break the
         # loop if we find any.
-        processed_source, parse_offenses = process_source(file)
-        offenses += parse_offenses if parse_offenses.any?
+        processed_source = ProcessedSource.from_file(file)
       end
 
-      formatter_set.file_finished(file, offenses.compact.sort.freeze)
+      formatter_set.file_finished(file, offenses.sort.freeze)
+
       offenses
     end
 
-    def process_source(file)
-      begin
-        processed_source = SourceParser.parse_file(file)
-      rescue Encoding::UndefinedConversionError, ArgumentError => e
-        range = Struct.new(:line, :column, :source_line).new(1, 0, '')
-        return [
-          nil,
-          [Cop::Offense.new(:fatal, range, e.message.capitalize + '.',
-                            'Parser')]]
-      end
-
-      [processed_source, []]
-    end
-
-    def inspect_file(processed_source, config_store)
-      config = config_store.for(processed_source.file_path)
+    def inspect_file(processed_source)
+      config = @config_store.for(processed_source.path)
       team = Cop::Team.new(mobilized_cop_classes(config), config, @options)
       offenses = team.inspect_file(processed_source)
       @errors.concat(team.errors)
@@ -148,9 +131,19 @@ module RuboCop
       end
     end
 
-    def fail_level
-      @fail_level ||= RuboCop::Cop::Severity.new(
-        @options[:fail_level] || :refactor)
+    def considered_failure?(offense)
+      offense.severity >= minimum_severity_to_fail
+    end
+
+    def minimum_severity_to_fail
+      @minimum_severity_to_fail ||= begin
+        name = @options[:fail_level] || :refactor
+        RuboCop::Cop::Severity.new(name)
+      end
+    end
+
+    def file_info(processed_source)
+      { cop_disabled_line_ranges: processed_source.disabled_line_ranges }
     end
   end
 end

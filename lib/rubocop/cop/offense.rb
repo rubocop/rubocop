@@ -6,6 +6,9 @@ module RuboCop
     class Offense
       include Comparable
 
+      # @api private
+      COMPARISON_ATTRIBUTES = [:line, :column, :cop_name, :message, :severity]
+
       # @api public
       #
       # @!attribute [r] severity
@@ -97,9 +100,17 @@ module RuboCop
       # @return [Boolean]
       #   returns `true` if two offenses contain same attributes
       def ==(other)
-        severity == other.severity && line == other.line &&
-          column == other.column && message == other.message &&
-          cop_name == other.cop_name
+        COMPARISON_ATTRIBUTES.all? do |attribute|
+          send(attribute) == other.send(attribute)
+        end
+      end
+
+      alias_method :eql?, :==
+
+      def hash
+        COMPARISON_ATTRIBUTES.reduce(0) do |hash, attribute|
+          hash ^ send(attribute).hash
+        end
       end
 
       # @api public
@@ -110,7 +121,7 @@ module RuboCop
       # @return [Integer]
       #   comparison result
       def <=>(other)
-        [:line, :column, :cop_name, :message].each do |attribute|
+        COMPARISON_ATTRIBUTES.each do |attribute|
           result = send(attribute) <=> other.send(attribute)
           return result unless result == 0
         end

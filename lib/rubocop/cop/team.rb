@@ -25,17 +25,13 @@ module RuboCop
 
       def inspect_file(processed_source)
         # If we got any syntax errors, return only the syntax offenses.
-        # Parser may return nil for AST even though there are no syntax errors.
-        # e.g. sources which contain only comments
         unless processed_source.valid_syntax?
-          diagnostics = processed_source.diagnostics
-          return Lint::Syntax.offenses_from_diagnostics(diagnostics)
+          return Lint::Syntax.offenses_from_processed_source(processed_source)
         end
 
         commissioner = Commissioner.new(cops, forces)
         offenses = commissioner.investigate(processed_source)
-        process_commissioner_errors(
-          processed_source.file_path, commissioner.errors)
+        process_commissioner_errors(processed_source.path, commissioner.errors)
         autocorrect(processed_source.buffer, cops)
         offenses
       end
@@ -80,7 +76,7 @@ module RuboCop
                        # We raise RuntimeError ourselves if the rewritten code
                        # is not parsable ruby. We don't want to write that code
                        # to file.
-                       fail unless SourceParser.parse(s).valid_syntax?
+                       fail unless ProcessedSource.new(s).valid_syntax?
                        s
                      rescue RangeError, RuntimeError
                        # Handle all errors by limiting the changes to one

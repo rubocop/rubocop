@@ -4,12 +4,7 @@ module RuboCop
   # The CLI is a class responsible of handling all the command line interface
   # logic.
   class CLI
-    # If set true while running,
-    # RuboCop will abort processing and exit gracefully.
-    attr_accessor :wants_to_quit
     attr_reader :options, :config_store
-
-    alias_method :wants_to_quit?, :wants_to_quit
 
     def initialize
       @options = {}
@@ -21,19 +16,15 @@ module RuboCop
     # the target files
     # @return [Fixnum] UNIX exit code
     def run(args = ARGV)
-      trap_interrupt
-
-      @options, remaining_args = Options.new.parse(args)
+      @options, paths = Options.new.parse(args)
       act_on_options
-      target_files = target_finder.find(remaining_args)
 
-      inspector = FileInspector.new(@options)
-      any_failed = inspector.process_files(target_files, @config_store) do
-        wants_to_quit?
-      end
-      inspector.display_error_summary
+      runner = Runner.new(@options, @config_store)
+      trap_interrupt(runner)
+      all_passed = runner.run(paths)
+      display_error_summary(runner.errors)
 
-      !any_failed && !wants_to_quit ? 0 : 1
+      all_passed && !runner.aborting? ? 0 : 1
     rescue Cop::AmbiguousCopName => e
       $stderr.puts "Ambiguous cop name #{e.message} needs namespace " \
                    'qualifier.'
@@ -44,10 +35,10 @@ module RuboCop
       return 1
     end
 
-    def trap_interrupt
+    def trap_interrupt(runner)
       Signal.trap('INT') do
-        exit!(1) if wants_to_quit?
-        self.wants_to_quit = true
+        exit!(1) if runner.aborting?
+        runner.abort
         $stderr.puts
         $stderr.puts 'Exiting... Interrupt again to exit immediately.'
       end
@@ -106,8 +97,20 @@ module RuboCop
       end
     end
 
-    def target_finder
-      @target_finder ||= TargetFinder.new(@config_store, @options)
+    def display_error_summary(errors)
+      return if errors.empty?
+
+      plural = errors.count > 1 ? 's' : ''
+      warn "\n#{errors.count} error#{plural} occurred:".color(:red)
+
+      errors.each { |error| warn error }
+
+      warn <<-END.strip_indent
+        Errors are usually caused by RuboCop bugs.
+        Please, report your problems to RuboCop's issue tracker.
+        Mention the following information in the issue report:
+        #{RuboCop::Version.version(true)}
+      END
     end
   end
 end

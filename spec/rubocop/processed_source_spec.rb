@@ -3,31 +3,93 @@
 require 'spec_helper'
 
 describe RuboCop::ProcessedSource do
-  subject(:processed_source) do
-    described_class.new(
-      buffer,
-      double('ast'),
-      double('comments'),
-      double('tokens'),
-      diagnostics
-    )
+  include FileHelper
+
+  subject(:processed_source) { described_class.new(source, path) }
+
+  let(:source) { <<-END.strip_indent }
+    # encoding: utf-8
+    def some_method
+      puts 'foo'
+    end
+    some_method
+  END
+
+  let(:path) { 'path/to/file.rb' }
+
+  describe '.from_file', :isolated_environment do
+    before do
+      create_file(path, 'foo')
+    end
+
+    let(:processed_source) { described_class.from_file(path) }
+
+    it 'returns an instance of ProcessedSource' do
+      expect(processed_source).to be_a(described_class)
+    end
+
+    it "sets the file path to the instance's #path" do
+      expect(processed_source.path).to eq(path)
+    end
   end
 
-  let(:diagnostics) { double('diagnostics') }
-
-  let(:source) do
-    [
-      'def some_method',
-      "  puts 'foo'",
-      'end',
-      'some_method'
-    ].join("\n")
+  describe '#path' do
+    it 'is the path passed to .new' do
+      expect(processed_source.path).to eq(path)
+    end
   end
 
-  let(:buffer) do
-    buffer = Parser::Source::Buffer.new('(string)', 1)
-    buffer.source = source
-    buffer
+  describe '#buffer' do
+    it 'is a source buffer' do
+      expect(processed_source.buffer).to be_a(Parser::Source::Buffer)
+    end
+  end
+
+  describe '#ast' do
+    it 'is the root node of AST' do
+      expect(processed_source.ast).to be_a(Parser::AST::Node)
+    end
+  end
+
+  describe '#comments' do
+    it 'is an array of comments' do
+      expect(processed_source.comments).to be_a(Array)
+      expect(processed_source.comments.first).to be_a(Parser::Source::Comment)
+    end
+  end
+
+  describe '#tokens' do
+    it 'has an array of tokens' do
+      expect(processed_source.tokens).to be_a(Array)
+      expect(processed_source.tokens.first).to be_a(RuboCop::Token)
+    end
+  end
+
+  shared_context 'invalid encoding source' do
+    let(:source) do
+      [
+        '# encoding: utf-8',
+        "# \xf9"
+      ].join("\n")
+    end
+  end
+
+  describe '#parser_error' do
+    context 'when the source was properly parsed' do
+      it 'is nil' do
+        expect(processed_source.parser_error).to be_nil
+      end
+    end
+
+    context 'when the source could not be parsed due to encoding error' do
+      include_context 'invalid encoding source'
+
+      it 'returns the error' do
+        expect(processed_source.parser_error).to be_a(Exception)
+        expect(processed_source.parser_error.message)
+          .to include('invalid byte sequence')
+      end
+    end
   end
 
   describe '#lines' do
@@ -36,78 +98,70 @@ describe RuboCop::ProcessedSource do
     end
 
     it 'has same number of elements as line count' do
-      expect(processed_source.lines.size).to eq(4)
+      expect(processed_source.lines.size).to eq(5)
     end
 
     it 'contains lines as string without linefeed' do
       first_line = processed_source.lines.first
-      expect(first_line).to eq('def some_method')
+      expect(first_line).to eq('# encoding: utf-8')
     end
   end
 
   describe '#[]' do
     context 'when an index is passed' do
       it 'returns the line' do
-        expect(processed_source[2]).to eq('end')
+        expect(processed_source[3]).to eq('end')
       end
     end
 
     context 'when a range is passed' do
       it 'returns the array of lines' do
-        expect(processed_source[2..3]).to eq(%w(end some_method))
+        expect(processed_source[3..4]).to eq(%w(end some_method))
       end
     end
 
     context 'when start index and length are passed' do
       it 'returns the array of lines' do
-        expect(processed_source[2, 2]).to eq(%w(end some_method))
+        expect(processed_source[3, 2]).to eq(%w(end some_method))
       end
     end
   end
 
   describe 'valid_syntax?' do
-    def create_diagnostics(level)
-      Parser::Diagnostic.new(level, :odd_hash, [], double('location'))
-    end
+    subject { processed_source.valid_syntax? }
 
-    let(:diagnostics) do
-      [create_diagnostics(level)]
-    end
-
-    context 'when the source has diagnostic with error level' do
-      let(:level) { :error }
-
-      it 'returns false' do
-        expect(processed_source.valid_syntax?).to be_falsey
-      end
-    end
-
-    context 'when the source has diagnostic with fatal level' do
-      let(:level) { :fatal }
-
-      it 'returns false' do
-        expect(processed_source.valid_syntax?).to be_falsey
-      end
-    end
-
-    context 'when the source has diagnostic with warning level' do
-      let(:level) { :warning }
+    context 'when the source is completely valid' do
+      let(:source) { 'def valid_code; end' }
 
       it 'returns true' do
-        expect(processed_source.valid_syntax?).to be_truthy
+        expect(processed_source.diagnostics).to be_empty
+        expect(processed_source).to be_valid_syntax
       end
     end
 
-    context 'when the source has diagnostics with error and warning level' do
-      let(:diagnostics) do
-        [
-          create_diagnostics(:error),
-          create_diagnostics(:warning)
-        ]
-      end
+    context 'when the source is invalid' do
+      let(:source) { 'def invalid_code; en' }
 
       it 'returns false' do
-        expect(processed_source.valid_syntax?).to be_falsey
+        expect(processed_source).not_to be_valid_syntax
+      end
+    end
+
+    context 'when the source is valid but has some warning diagnostics' do
+      let(:source) { 'do_something *array' }
+
+      it 'returns true' do
+        expect(processed_source.diagnostics).not_to be_empty
+        expect(processed_source.diagnostics.first.level).to eq(:warning)
+        expect(processed_source).to be_valid_syntax
+      end
+    end
+
+    context 'when the source could not be parsed due to encoding error' do
+      include_context 'invalid encoding source'
+
+      it 'returns false' do
+        expect(processed_source).not_to be_valid_syntax
       end
     end
   end

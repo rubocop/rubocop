@@ -7,7 +7,7 @@ describe RuboCop::Cop::VariableForce::Assignment do
   include AST::Sexp
 
   let(:ast) do
-    processed_source = RuboCop::SourceParser.parse(source)
+    processed_source = RuboCop::ProcessedSource.new(source)
     processed_source.ast
   end
 

@@ -98,15 +98,14 @@ end
 
 def parse_source(source, file = nil)
   source = source.join($RS) if source.is_a?(Array)
-  if file.is_a? String
-    RuboCop::SourceParser.parse(source, file)
-  elsif file
+
+  if file && file.respond_to?(:write)
     file.write(source)
     file.rewind
-    RuboCop::SourceParser.parse(source, file.path)
-  else
-    RuboCop::SourceParser.parse(source)
+    file = file.path
   end
+
+  RuboCop::ProcessedSource.new(source, file)
 end
 
 def autocorrect_source_file(cop, source)
