@@ -26,15 +26,9 @@ module RuboCop
 
       target_files.each do |file|
         break if aborting?
-
         offenses = process_file(file)
-
-        all_passed = false if offenses.any? do |o|
-          o.severity >= fail_level
-        end
-
+        all_passed = false if offenses.any? { |o| considered_failure?(o) }
         inspected_files << file
-
         break if @options[:fail_fast] && !all_passed
       end
 
@@ -137,9 +131,15 @@ module RuboCop
       end
     end
 
-    def fail_level
-      @fail_level ||= RuboCop::Cop::Severity.new(
-        @options[:fail_level] || :refactor)
+    def considered_failure?(offense)
+      offense.severity >= minimum_severity_to_fail
+    end
+
+    def minimum_severity_to_fail
+      @minimum_severity_to_fail ||= begin
+        name = @options[:fail_level] || :refactor
+        RuboCop::Cop::Severity.new(name)
+      end
     end
 
     def file_info(processed_source)
