@@ -114,7 +114,7 @@ module RuboCop
         end
 
         def on_same_line?(a, b)
-          [a, b].map(&:line).uniq.size == 1
+          a.line + a.source.count("\n") == b.line
         end
 
         def avoid_comma(kind, comma_begin_pos, sb, extra_info)
