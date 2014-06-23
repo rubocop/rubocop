@@ -160,13 +160,21 @@ describe RuboCop::Cop::Style::TrailingComma, :config do
     context 'when EnforcedStyleForMultiline is comma' do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'comma' } }
 
-      it 'accepts Array literal with no trailing comma when closing bracket ' \
-         'is on same line as last value' do
-        inspect_source(cop, ['VALUES = [',
-                             '           1001,',
-                             '           2020,',
-                             '           3333]'])
-        expect(cop.offenses).to be_empty
+      context 'when closing bracket is on same line as last value' do
+        it 'accepts Array literal with no trailing comma' do
+          inspect_source(cop, ['VALUES = [',
+                               '           1001,',
+                               '           2020,',
+                               '           3333]'])
+          expect(cop.offenses).to be_empty
+        end
+
+        it 'accepts a method call with Hash as last parameter split on ' \
+           'multiple lines' do
+          inspect_source(cop, ['some_method(a: "b",',
+                               '            c: "d")'])
+          expect(cop.offenses).to be_empty
+        end
       end
 
       it 'accepts Array literal with two of the values on the same line' do
@@ -262,7 +270,7 @@ describe RuboCop::Cop::Style::TrailingComma, :config do
                              "  'auth' => <<-HELP.chomp",
                              '...',
                              'HELP',
-                             '},)']) # We still need a comma after the hash.
+                             '})'])
         expect(cop.offenses).to be_empty
       end
     end
