@@ -14,8 +14,6 @@ module RuboCop
       @aborting = false
     end
 
-    # Takes a block which it calls once per inspected file.  The block shall
-    # return true if the caller wants to break the loop early.
     def run(paths)
       target_files = find_target_files(paths)
 
