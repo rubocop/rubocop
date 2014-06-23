@@ -18,7 +18,7 @@ describe RuboCop::Cop::VariableForce::Locatable do
   end
 
   let(:ast) do
-    processed_source = RuboCop::SourceParser.parse(source)
+    processed_source = RuboCop::ProcessedSource.new(source)
     processed_source.ast
   end
 

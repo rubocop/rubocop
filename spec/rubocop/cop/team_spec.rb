@@ -41,7 +41,7 @@ describe RuboCop::Cop::Team do
 
     let(:file_path) { '/tmp/example.rb' }
     let(:offenses) do
-      team.inspect_file(RuboCop::SourceParser.parse_file(file_path))
+      team.inspect_file(RuboCop::ProcessedSource.from_file(file_path))
     end
 
     before do
@@ -87,7 +87,7 @@ describe RuboCop::Cop::Team do
       end
 
       it 'does autocorrection' do
-        team.inspect_file(RuboCop::SourceParser.parse_file(file_path))
+        team.inspect_file(RuboCop::ProcessedSource.from_file(file_path))
         corrected_source = File.read(file_path)
         expect(corrected_source).to eq([
           '# encoding: utf-8',

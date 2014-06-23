@@ -94,13 +94,14 @@ module RuboCop
     end
 
     def process_source(file)
-      begin
-        processed_source = SourceParser.parse_file(file)
-      rescue Encoding::UndefinedConversionError, ArgumentError => e
+      processed_source = ProcessedSource.from_file(file)
+
+      if processed_source.parser_error
+        error = processed_source.parser_error
         range = Struct.new(:line, :column, :source_line).new(1, 0, '')
         return [
           nil,
-          [Cop::Offense.new(:fatal, range, e.message.capitalize + '.',
+          [Cop::Offense.new(:fatal, range, error.message.capitalize + '.',
                             'Parser')]]
       end
 
@@ -108,7 +109,7 @@ module RuboCop
     end
 
     def inspect_file(processed_source)
-      config = @config_store.for(processed_source.file_path)
+      config = @config_store.for(processed_source.path)
       team = Cop::Team.new(mobilized_cop_classes(config), config, @options)
       offenses = team.inspect_file(processed_source)
       @errors.concat(team.errors)

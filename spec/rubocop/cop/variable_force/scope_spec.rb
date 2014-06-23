@@ -23,7 +23,7 @@ describe RuboCop::Cop::VariableForce::Scope do
   end
 
   let(:ast) do
-    ast = RuboCop::SourceParser.parse(source).ast
+    ast = RuboCop::ProcessedSource.new(source).ast
     RuboCop::Cop::VariableForce.wrap_with_top_level_node(ast)
   end
 

@@ -11,13 +11,15 @@ module RuboCop
         new_source = rewrite_node(node)
 
         # Make the correction only if it doesn't change the AST.
-        fail CorrectionNotPossible if node != SourceParser.parse(new_source).ast
+        if node != ProcessedSource.new(new_source).ast
+          fail CorrectionNotPossible
+        end
 
         @corrections << c
       end
 
       def rewrite_node(node)
-        processed_source = SourceParser.parse(node.loc.expression.source)
+        processed_source = ProcessedSource.new(node.loc.expression.source)
         c = correction(processed_source.ast)
         Corrector.new(processed_source.buffer, [c]).rewrite
       end
