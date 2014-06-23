@@ -75,7 +75,7 @@ module RuboCop
         offenses.select!(&:corrected?)
 
         new_offenses, updated_source_file = inspect_file(processed_source)
-        offenses += new_offenses.reject { |n| offenses.include?(n) }
+        offenses.concat(new_offenses).uniq!
         break unless updated_source_file
 
         # We have to reprocess the source to pickup the changes. Since the
