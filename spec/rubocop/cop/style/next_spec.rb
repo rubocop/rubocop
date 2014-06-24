@@ -7,6 +7,7 @@ describe RuboCop::Cop::Style::Next, :config do
   let(:cop_config) { {} }
 
   it 'finds all kind of loops with condition at the end of the iteration' do
+    # TODO: Split this long example into multiple examples.
     inspect_source(cop,
                    ['3.downto(1) do',
                     '  if o == 1',
@@ -122,6 +123,28 @@ describe RuboCop::Cop::Style::Next, :config do
                     '',
                     'loop do',
                     '  break unless o == 1',
+                    'end',
+                    '',
+                    'loop do',
+                    '  if o == 1',
+                    '    break',
+                    '  end',
+                    'end'])
+    expect(cop.offenses.size).to eq(0)
+  end
+
+  it 'ignores loops with conditional return' do
+    inspect_source(cop,
+                   ['loop do',
+                    "  puts ''",
+                    '  return if o == 1',
+                    'end',
+                    '',
+                    'loop do',
+                    "  puts ''",
+                    '  if o == 1',
+                    '    return',
+                    '  end',
                     'end'])
     expect(cop.offenses.size).to eq(0)
   end

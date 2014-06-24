@@ -73,7 +73,7 @@ module RuboCop
           return false if style == :skip_modifier_ifs && modifier_if?(node)
 
           _conditional, if_body, else_body = *node
-          (if_body || else_body).type != :break
+          ![:break, :return].include?((if_body || else_body).type)
         end
       end
     end

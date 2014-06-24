@@ -28,6 +28,7 @@
 * [#1167](https://github.com/bbatsov/rubocop/issues/1167): Fix handling of parameters spanning multiple lines in `TrailingComma`. ([@jonas054][])
 * [#1169](https://github.com/bbatsov/rubocop/issues/1169): Fix handling of ternary op conditions in `ParenthesesAroundCondition`. ([@bbatsov][])
 * [#1147](https://github.com/bbatsov/rubocop/issues/1147): WordArray checks arrays with special characters. ([@camilleldn][])
+* Fix a false positive against `return` in a loop in `Next` cop. ([@yujinakayama][])
 
 ## 0.23.0 (02/06/2014)
 
