@@ -192,7 +192,8 @@ describe RuboCop::ConfigLoader do
                    'Description' =>
                    default_config['Style/LineLength']['Description'],
                    'Enabled' => true,
-                   'Max' => 77
+                   'Max' => 77,
+                   'AllowURI' => true
                  },
                  'Style/MethodLength' => {
                    'Description' =>
