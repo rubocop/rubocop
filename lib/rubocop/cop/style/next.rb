@@ -23,20 +23,20 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         MSG = 'Use `next` to skip iteration.'
-        METHODS = [:collect, :detect, :downto, :each, :find, :find_all,
-                   :inject, :loop, :map!, :map, :reduce, :reverse_each,
-                   :select, :times, :upto]
+        ENUMERATORS = [:collect, :detect, :downto, :each, :find, :find_all,
+                       :inject, :loop, :map!, :map, :reduce, :reverse_each,
+                       :select, :times, :upto]
 
         def on_block(node)
-          method, _, body = *node
-          return unless method.type == :send
+          block_owner, _, body = *node
+          return unless block_owner.type == :send
           return if body.nil?
 
-          _, method_name = *method
-          return unless method?(method_name)
+          _, method_name = *block_owner
+          return unless enumerator?(method_name)
           return unless ends_with_condition?(body)
 
-          add_offense(method, :selector, MSG)
+          add_offense(block_owner, :selector, MSG)
         end
 
         def on_while(node)
@@ -56,8 +56,8 @@ module RuboCop
 
         private
 
-        def method?(method_name)
-          METHODS.include?(method_name) || /\Aeach_/.match(method_name)
+        def enumerator?(method_name)
+          ENUMERATORS.include?(method_name) || /\Aeach_/.match(method_name)
         end
 
         def ends_with_condition?(body)
@@ -66,14 +66,14 @@ module RuboCop
           body.type == :begin && simple_if_without_break?(body.children.last)
         end
 
-        def simple_if_without_break?(body)
-          return false if ternary_op?(body)
-          return false if if_else?(body)
-          return false unless body.type == :if
-          return false if style == :skip_modifier_ifs && modifier_if?(body)
+        def simple_if_without_break?(node)
+          return false if ternary_op?(node)
+          return false if if_else?(node)
+          return false unless node.type == :if
+          return false if style == :skip_modifier_ifs && modifier_if?(node)
 
-          _, return_method, return_body  = *body
-          (return_method || return_body).type != :break
+          _conditional, if_body, else_body = *node
+          (if_body || else_body).type != :break
         end
       end
     end
