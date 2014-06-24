@@ -19,6 +19,12 @@ describe RuboCop::Cop::Style::WordArray, :config do
     expect(cop.offenses.size).to eq(1)
   end
 
+  it 'registers an offense when unicode character words are used' do
+    inspect_source(cop,
+                   ['["ВУЗ", "вуз", "中文网"]'])
+    expect(cop.offenses.size).to eq(1)
+  end
+
   it 'registers an offense for arrays with character constants' do
     inspect_source(cop,
                    ['["one", ?\n]'])
