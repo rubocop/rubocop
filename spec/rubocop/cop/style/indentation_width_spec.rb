@@ -546,6 +546,20 @@ describe RuboCop::Cop::Style::IndentationWidth do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts aligned values in when clause' do
+      inspect_source(cop,
+                     ['case superclass',
+                      'when /\A(#{NAMESPACEMATCH})(?:\s|\Z)/,',
+                      '     /\A(Struct|OStruct)\.new/,',
+                      '     /\ADelegateClass\((.+?)\)\s*\Z/,',
+                      '     /\A(#{NAMESPACEMATCH})\(/',
+                      '  $1',
+                      'when "self"',
+                      '  namespace.path',
+                      'end'])
+      expect(cop.offenses).to be_empty
+    end
+
     it 'accepts case/when/else laid out as a table' do
       inspect_source(cop,
                      ['case sexp.loc.keyword.source',

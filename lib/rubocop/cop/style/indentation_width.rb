@@ -96,7 +96,7 @@ module RuboCop
           latest_when = nil
           branches.compact.each do |b|
             if b.type == :when
-              _condition, body = *b
+              *_conditions, body = *b
               # Check "when" body against "when" keyword indentation.
               check_indentation(b.loc.keyword, body)
               latest_when = b
