@@ -37,11 +37,9 @@ module RuboCop
       end
 
       def cops
-        @cops ||= begin
-          @cop_classes.each_with_object([]) do |cop_class, instances|
-            next unless cop_enabled?(cop_class)
-            instances << cop_class.new(@config, @options)
-          end
+        @cops ||= @cop_classes.each_with_object([]) do |cop_class, instances|
+          next unless cop_enabled?(cop_class)
+          instances << cop_class.new(@config, @options)
         end
       end
 
