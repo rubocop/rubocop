@@ -8,12 +8,9 @@ module RuboCop
       class AccessModifierIndentation < Cop
         include AutocorrectAlignment
         include ConfigurableEnforcedStyle
+        include AccessModifierNode
 
         MSG = '%s access modifiers like `%s`.'
-
-        PRIVATE_NODE = s(:send, nil, :private)
-        PROTECTED_NODE = s(:send, nil, :protected)
-        PUBLIC_NODE = s(:send, nil, :public)
 
         def on_class(node)
           _name, _base_class, body = *node
@@ -35,16 +32,12 @@ module RuboCop
           check_body(body, node) if class_constructor?(node)
         end
 
-        def self.modifier_node?(node)
-          [PRIVATE_NODE, PROTECTED_NODE, PUBLIC_NODE].include?(node)
-        end
-
         private
 
         def check_body(body, node)
           return if body.nil? # Empty class etc.
 
-          modifiers = body.children.select { |c| self.class.modifier_node?(c) }
+          modifiers = body.children.select { |c| modifier_node?(c) }
           class_column = node.loc.expression.column
 
           modifiers.each { |modifier| check_modifier(modifier, class_column) }

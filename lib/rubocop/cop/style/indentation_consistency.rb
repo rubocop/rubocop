@@ -15,6 +15,7 @@ module RuboCop
       # end
       class IndentationConsistency < Cop
         include AutocorrectAlignment
+        include AccessModifierNode
 
         MSG = 'Inconsistent indentation detected.'
 
@@ -32,7 +33,7 @@ module RuboCop
           children_to_check = node.children.reject do |child|
             # Don't check nodes that have special indentation and will be
             # checked by the AccessModifierIndentation cop.
-            AccessModifierIndentation.modifier_node?(child)
+            modifier_node?(child)
           end
 
           check_alignment(children_to_check)

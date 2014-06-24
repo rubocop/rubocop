@@ -57,9 +57,11 @@ module RuboCop
         end
 
         def autocorrect(range)
+          m = range.source.match(/=\s*(\S+)/)
+          rest = m ? m.captures[0] : ''
           replacement = style == :space ? ' = ' : '='
           @corrections << lambda do |corrector|
-            corrector.replace(range, replacement)
+            corrector.replace(range, replacement + rest)
           end
         end
       end

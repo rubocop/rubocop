@@ -5,11 +5,9 @@ module RuboCop
     module Style
       # Access modifiers should be surrounded by blank lines.
       class EmptyLinesAroundAccessModifier < Cop
-        MSG = 'Keep a blank line before and after `%s`.'
+        include AccessModifierNode
 
-        PRIVATE_NODE = s(:send, nil, :private)
-        PROTECTED_NODE = s(:send, nil, :protected)
-        PUBLIC_NODE = s(:send, nil, :public)
+        MSG = 'Keep a blank line before and after `%s`.'
 
         def on_send(node)
           return unless modifier_node?(node)
@@ -37,10 +35,6 @@ module RuboCop
 
         def message(node)
           format(MSG, node.loc.selector.source)
-        end
-
-        def modifier_node?(node)
-          [PRIVATE_NODE, PROTECTED_NODE, PUBLIC_NODE].include?(node)
         end
       end
     end

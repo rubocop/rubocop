@@ -11,6 +11,11 @@ describe RuboCop::Cop::Style::IfWithSemicolon do
       ['Never use if x; Use the ternary operator instead.'])
   end
 
+  it 'accepts one line if/then/end' do
+    inspect_source(cop, ['if cond then run else dont end'])
+    expect(cop.messages).to be_empty
+  end
+
   it 'can handle modifier conditionals' do
     inspect_source(cop, ['class Hash',
                          'end if RUBY_VERSION < "1.8.7"'])

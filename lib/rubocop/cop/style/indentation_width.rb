@@ -17,6 +17,7 @@ module RuboCop
         include CheckMethods
         include CheckAssignment
         include IfNode
+        include AccessModifierNode
 
         CORRECT_INDENTATION = 2
 
@@ -183,8 +184,7 @@ module RuboCop
         end
 
         def starts_with_access_modifier?(body_node)
-          body_node.type == :begin &&
-            AccessModifierIndentation.modifier_node?(body_node.children.first)
+          body_node.type == :begin && modifier_node?(body_node.children.first)
         end
       end
     end

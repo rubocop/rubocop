@@ -5,14 +5,13 @@ module RuboCop
     # Common functionality for checking surrounding space.
     module SurroundingSpace
       def space_between?(t1, t2)
-        char_preceding_2nd_token =
-          @processed_source[t2.pos.line - 1][t2.pos.column - 1]
-        if char_preceding_2nd_token == '+' && t1.type != :tPLUS
-          # Special case. A unary plus is not present in the tokens.
-          char_preceding_2nd_token =
-            @processed_source[t2.pos.line - 1][t2.pos.column - 2]
-        end
-        t2.pos.line > t1.pos.line || char_preceding_2nd_token =~ /[ \t]/
+        between = Parser::Source::Range.new(t1.pos.source_buffer,
+                                            t1.pos.end_pos,
+                                            t2.pos.begin_pos).source
+        # Check if the range between the tokens starts with a space. It can
+        # contain other characters, e.g. a unary plus, but it must start with
+        # space.
+        between =~ /^\s/
       end
 
       def index_of_first_token(node)
