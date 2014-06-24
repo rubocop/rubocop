@@ -26,6 +26,7 @@
 * [#1159](https://github.com/bbatsov/rubocop/issues/1159): Fix checking of `begin`..`end` structures, blocks, and parenthesized expressions in `IndentationWidth`. ([@jonas054][])
 * [#1159](https://github.com/bbatsov/rubocop/issues/1159): More rigid conditions for when `attr` is considered an offense. ([@jonas054][])
 * [#1167](https://github.com/bbatsov/rubocop/issues/1167): Fix handling of parameters spanning multiple lines in `TrailingComma`. ([@jonas054][])
+* [#1169](https://github.com/bbatsov/rubocop/issues/1169): Fix handling of ternary op conditions in `ParenthesesAroundCondition`. ([@bbatsov][])
 
 ## 0.23.0 (02/06/2014)
 

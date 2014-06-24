@@ -106,6 +106,11 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
     end
   end
 
+  it 'does not blow up when the condition is a ternary op' do
+    inspect_source(cop, ['x if (a ? b : c)'])
+    expect(cop.offenses.size).to eq(1)
+  end
+
   context 'safe assignment is allowed' do
     it 'accepts = in condition surrounded with parentheses' do
       inspect_source(cop,

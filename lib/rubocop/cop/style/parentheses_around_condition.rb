@@ -39,6 +39,7 @@ module RuboCop
         end
 
         def modifier_op?(node)
+          return false if ternary_op?(node)
           return true if node.type == :rescue
 
           [:if, :while, :until].include?(node.type) &&
