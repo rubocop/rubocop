@@ -12,7 +12,7 @@ module RuboCop
       #   puts 'hello'
       #  end
       # end
-      class IndentationWidth < Cop
+      class IndentationWidth < Cop # rubocop:disable Style/ClassLength
         include AutocorrectAlignment
         include CheckMethods
         include CheckAssignment
@@ -20,6 +20,20 @@ module RuboCop
         include AccessModifierNode
 
         CORRECT_INDENTATION = 2
+
+        def on_rescue(node)
+          _begin_node, *rescue_nodes, else_node = *node
+          rescue_nodes.each do |rescue_node|
+            _, _, body = *rescue_node
+            check_indentation(rescue_node.loc.keyword, body)
+          end
+          check_indentation(node.loc.else, else_node)
+        end
+
+        def on_ensure(node)
+          _body, ensure_body = *node
+          check_indentation(node.loc.keyword, ensure_body)
+        end
 
         def on_kwbegin(node)
           # Check indentation against end keyword but only if it's first on its

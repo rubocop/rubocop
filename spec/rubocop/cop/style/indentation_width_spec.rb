@@ -744,6 +744,46 @@ describe RuboCop::Cop::Style::IndentationWidth do
     end
   end
 
+  context 'with begin/rescue/else/ensure/end' do
+    it 'registers an offense for bad indentation of bodies' do
+      inspect_source(cop,
+                     ['def my_func',
+                      "  puts 'do something outside block'",
+                      '  begin',
+                      "  puts 'do something error prone'",
+                      '  rescue SomeException, SomeOther => e',
+                      "   puts 'wrongly intended error handling'",
+                      '  rescue',
+                      "   puts 'wrongly intended error handling'",
+                      '  else',
+                      "     puts 'wrongly intended normal case handling'",
+                      '  ensure',
+                      "      puts 'wrongly intended common handling'",
+                      '  end',
+                      'end'])
+      expect(cop.messages).to eq(['Use 2 (not 0) spaces for indentation.',
+                                  'Use 2 (not 1) spaces for indentation.',
+                                  'Use 2 (not 1) spaces for indentation.',
+                                  'Use 2 (not 3) spaces for indentation.',
+                                  'Use 2 (not 4) spaces for indentation.'])
+    end
+  end
+
+  context 'with def/rescue/end' do
+    it 'registers an offense for bad indentation of bodies' do
+      inspect_source(cop,
+                     ['def my_func',
+                      "  puts 'do something error prone'",
+                      'rescue SomeException',
+                      " puts 'wrongly intended error handling'",
+                      'rescue',
+                      " puts 'wrongly intended error handling'",
+                      'end'])
+      expect(cop.messages).to eq(['Use 2 (not 1) spaces for indentation.',
+                                  'Use 2 (not 1) spaces for indentation.'])
+    end
+  end
+
   context 'with block' do
     it 'registers an offense for bad indentation of a do/end body' do
       inspect_source(cop,
