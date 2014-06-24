@@ -13,6 +13,11 @@ describe RuboCop::Cop::Style::LineLength, :config do
     expect(cop.config_to_allow_offenses).to eq('Max' => 81)
   end
 
+  it 'highlights excessive characters' do
+    inspect_source(cop, '#' * 80 + 'abc')
+    expect(cop.highlights).to eq(['abc'])
+  end
+
   it "accepts a line that's 80 characters wide" do
     inspect_source(cop, ['#' * 80])
     expect(cop.offenses).to be_empty

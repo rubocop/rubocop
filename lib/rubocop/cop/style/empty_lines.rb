@@ -26,10 +26,7 @@ module RuboCop
                 next unless processed_source[line - 2].empty? &&
                   processed_source[line - 1].empty?
 
-                range = source_range(processed_source.buffer,
-                                     processed_source[0...(line - 1)],
-                                     0,
-                                     1)
+                range = source_range(processed_source.buffer, line, 0)
                 add_offense(range, range)
               end
             end

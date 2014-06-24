@@ -15,11 +15,12 @@ module RuboCop
             next unless line.length > max
 
             message = format(MSG, line.length, max)
-            add_offense(nil,
-                        source_range(processed_source.buffer,
-                                     processed_source[0...index], max,
-                                     line.length - max),
-                        message) do
+
+            range = source_range(processed_source.buffer,
+                                 index + 1,
+                                 max...(line.length))
+
+            add_offense(nil, range, message) do
               self.max = line.length
             end
           end

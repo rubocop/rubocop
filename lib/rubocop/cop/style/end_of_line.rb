@@ -15,11 +15,8 @@ module RuboCop
           original_source.lines.each_with_index do |line, index|
             next unless line =~ /\r$/
 
-            add_offense(nil,
-                        source_range(buffer,
-                                     processed_source[0...index],
-                                     0, line.length),
-                        MSG)
+            range = source_range(buffer, index + 1, 0, line.length)
+            add_offense(nil, range, MSG)
             # Usually there will be carriage return characters on all or none
             # of the lines in a file, so we report only one offense.
             break

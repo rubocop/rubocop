@@ -16,10 +16,8 @@ module RuboCop
           basename = File.basename(file_path).sub(/\.[^\.]+$/, '')
           return if snake_case?(basename)
 
-          add_offense(nil,
-                      source_range(processed_source.buffer,
-                                   processed_source[0..0],
-                                   0, 1))
+          range = source_range(processed_source.buffer, 1, 0)
+          add_offense(nil, range)
         end
 
         private

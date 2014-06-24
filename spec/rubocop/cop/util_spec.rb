@@ -46,4 +46,14 @@ describe RuboCop::Cop::Util do
       end
     end
   end
+
+  # Test compatibility with Range#size in Ruby 2.0.
+  describe '#numeric_range_size', ruby: 2 do
+    [1..1, 1...1, 1..2, 1...2, 1..3, 1...3, 1..-1, 1...-1].each do |range|
+      context "with range #{range}" do
+        subject { described_class.numeric_range_size(range) }
+        it { should eq(range.size) }
+      end
+    end
+  end
 end

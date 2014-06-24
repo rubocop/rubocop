@@ -121,14 +121,24 @@ module RuboCop
         end
       end
 
-      def source_range(source_buffer, preceding_lines, begin_column,
-                       column_count)
-        newline_length = 1
-        begin_pos = preceding_lines.reduce(0) do |a, e|
-          a + e.length + newline_length
-        end + begin_column
-        Parser::Source::Range.new(source_buffer, begin_pos,
-                                  begin_pos + column_count)
+      def source_range(source_buffer, line_number, column, length = 1)
+        if column.is_a?(Range)
+          column_index = column.begin
+          length = numeric_range_size(column)
+        else
+          column_index = column
+        end
+
+        preceding_line_numbers = (1...line_number)
+
+        line_begin_pos = preceding_line_numbers.reduce(0) do |pos, line|
+          pos + source_buffer.source_line(line).length + 1
+        end
+
+        begin_pos = line_begin_pos + column_index
+        end_pos = begin_pos + length
+
+        Parser::Source::Range.new(source_buffer, begin_pos, end_pos)
       end
 
       def range_with_surrounding_space(range, side = :both)
@@ -159,6 +169,14 @@ module RuboCop
           end
         end
         node
+      end
+
+      # Range#size is not avaialable prior to Ruby 2.0.
+      def numeric_range_size(range)
+        size = range.end - range.begin
+        size += 1 unless range.exclude_end?
+        size = 0 if size < 0
+        size
       end
     end
   end

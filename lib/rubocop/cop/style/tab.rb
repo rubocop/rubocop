@@ -13,11 +13,12 @@ module RuboCop
             next unless match
 
             spaces = match.captures[0]
-            add_offense(nil,
-                        source_range(processed_source.buffer,
-                                     processed_source[0...index],
-                                     spaces.length, 1),
-                        MSG)
+
+            range = source_range(processed_source.buffer,
+                                 index + 1,
+                                 spaces.length)
+
+            add_offense(nil, range, MSG)
           end
         end
       end

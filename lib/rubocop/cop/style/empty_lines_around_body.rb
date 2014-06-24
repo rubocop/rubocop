@@ -62,10 +62,7 @@ module RuboCop
         def check_line(line, msg)
           return unless processed_source.lines[line].empty?
 
-          range = source_range(processed_source.buffer,
-                               processed_source[0...line],
-                               0,
-                               1)
+          range = source_range(processed_source.buffer, line + 1, 0)
           add_offense(range, range, msg)
         end
       end
