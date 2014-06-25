@@ -24,11 +24,9 @@ module RuboCop
           message = offense(processed_source, line_number)
 
           return unless message
-          add_offense(nil,
-                      source_range(processed_source.buffer,
-                                   processed_source[0...line_number],
-                                   0, 1),
-                      message)
+
+          range = source_range(processed_source.buffer, line_number + 1, 0)
+          add_offense(nil, range, message)
         end
 
         private

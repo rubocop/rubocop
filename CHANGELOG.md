@@ -11,6 +11,7 @@
 * [#1161](https://github.com/bbatsov/rubocop/pull/1161): New cop `SpaceBeforeComma` detects spaces before a comma. ([@agrimm][])
 * [#1161](https://github.com/bbatsov/rubocop/pull/1161): New cop `SpaceBeforeSemicolon` detects spaces before a semicolon. ([@agrimm][])
 * [#835](https://github.com/bbatsov/rubocop/issues/835): New cop `UnneededPercentQ` checks for usage of the `%q`/`%Q` syntax when `''` or `""` would do. ([@jonas054][])
+* [#977](https://github.com/bbatsov/rubocop/issues/977): Add `AllowURI` option (enabled by default) to `LineLength` cop. ([@yujinakayama][])
 
 ### Changes
 

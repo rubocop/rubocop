@@ -264,6 +264,7 @@ Style/LambdaCall:
 
 Style/LineLength:
   Max: 80
+  AllowURI: true
 
 Style/Next:
   # With `always` all conditions at the end of an iteration needs to be

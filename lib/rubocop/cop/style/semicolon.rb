@@ -50,9 +50,7 @@ module RuboCop
         end
 
         def convention_on(line, column, last_on_line)
-          range = source_range(@processed_source.buffer,
-                               @processed_source[0...(line - 1)], column,
-                               1)
+          range = source_range(@processed_source.buffer, line, column)
           add_offense(last_on_line ? range : nil, range)
         end
 

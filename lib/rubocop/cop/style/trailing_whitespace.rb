@@ -10,10 +10,11 @@ module RuboCop
         def investigate(processed_source)
           processed_source.lines.each_with_index do |line, index|
             next unless line =~ /.*[ \t]+$/
+
             range = source_range(processed_source.buffer,
-                                 processed_source[0...index],
-                                 line.rstrip.length,
-                                 line.length - line.rstrip.length)
+                                 index + 1,
+                                 (line.rstrip.length)...(line.length))
+
             add_offense(range, range)
           end
         end
