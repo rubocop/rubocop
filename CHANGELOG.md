@@ -30,6 +30,8 @@
 * [#1169](https://github.com/bbatsov/rubocop/issues/1169): Fix handling of ternary op conditions in `ParenthesesAroundCondition`. ([@bbatsov][])
 * [#1147](https://github.com/bbatsov/rubocop/issues/1147): WordArray checks arrays with special characters. ([@camilleldn][])
 * Fix a false positive against `return` in a loop in `Next` cop. ([@yujinakayama][])
+* [#1165](https://github.com/bbatsov/rubocop/issues/1165): Support `rescue`/`else`/`ensure` bodies in `IndentationWidth`. ([@jonas054][])
+* Fix false positive for aligned list of values after `when` in `IndentationWidth`. ([@jonas054][])
 
 ## 0.23.0 (02/06/2014)
 
