@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.24.0 (25/06/2014)
+
 ### New features
 
 * [#639](https://github.com/bbatsov/rubocop/issues/639): Support square bracket setters in `UselessSetterCall`. ([@yujinakayama][])
