@@ -2,6 +2,11 @@
 
 ## master (unreleased)
 
+### Bugs fixed
+
+* [#1174](https://github.com/bbatsov/rubocop/issues/1174): Fix `--auto-correct` crash in `AlignParameters`. ([@jonas054][])
+* [#1176](https://github.com/bbatsov/rubocop/issues/1176): Fix `--auto-correct` crash in `IndentationWidth`. ([@jonas054][])
+
 ## 0.24.0 (25/06/2014)
 
 ### New features

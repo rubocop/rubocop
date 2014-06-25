@@ -58,7 +58,9 @@ module RuboCop
 
         heredoc_ranges = []
         on_node(:dstr, arg) do |n|
-          heredoc_ranges << n.loc.heredoc_body.join(n.loc.heredoc_end)
+          if n.loc.respond_to?(:heredoc_body)
+            heredoc_ranges << n.loc.heredoc_body.join(n.loc.heredoc_end)
+          end
         end
         heredoc_ranges
       end
