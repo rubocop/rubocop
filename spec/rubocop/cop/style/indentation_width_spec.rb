@@ -132,7 +132,7 @@ describe RuboCop::Cop::Style::IndentationWidth do
                                         'foo',
                                         'GOO',
                                         '  def baz',
-                                        '    do_something',
+                                        '    do_something("#{x}")',
                                         '  end',
                                         'end',
                                         'end'])
@@ -144,7 +144,7 @@ describe RuboCop::Cop::Style::IndentationWidth do
                                  'foo',
                                  'GOO',
                                  '    def baz',
-                                 '      do_something',
+                                 '      do_something("#{x}")',
                                  '    end',
                                  '  end',
                                  'end'].join("\n")
