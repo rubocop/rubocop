@@ -262,5 +262,17 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument do
         expect(corrected_source).to eq(expected_source)
       end
     end
+
+    context 'when a keyword argument is unused', ruby: 2 do
+      let(:source) { <<-END }
+        def some_method(foo, bar: 1)
+          puts foo
+        end
+      END
+
+      it 'ignores that since modifying the name changes the method interface' do
+        expect(corrected_source).to eq(source)
+      end
+    end
   end
 end
