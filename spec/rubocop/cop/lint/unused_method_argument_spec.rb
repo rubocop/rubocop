@@ -5,7 +5,7 @@ require 'spec_helper'
 describe RuboCop::Cop::Lint::UnusedMethodArgument do
   subject(:cop) { described_class.new }
 
-  context 'inspection' do
+  describe 'inspection' do
     before do
       inspect_source(cop, source)
     end
@@ -140,111 +140,97 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument do
     end
   end
 
-  context 'auto-correct' do
-    it 'fixes single' do
-      expect(autocorrect_source(cop, <<-SOURCE
-      def some_method(foo)
-        super(:something)
+  describe 'auto-correction' do
+    let(:corrected_source) { autocorrect_source(cop, source) }
+
+    context 'when multiple arguments are unused' do
+      let(:source) { <<-END }
+        def some_method(foo, bar)
+        end
+      END
+
+      let(:expected_source) { <<-END }
+        def some_method(_foo, _bar)
+        end
+      END
+
+      it 'adds underscore-prefix to them' do
+        expect(corrected_source).to eq(expected_source)
       end
-      SOURCE
-      )).to eq(<<-CORRECTED_SOURCE
-      def some_method(_foo)
-        super(:something)
-      end
-      CORRECTED_SOURCE
-      )
     end
 
-    it 'fixes multiple' do
-      expect(autocorrect_source(cop, <<-SOURCE
-      def some_method(foo, bar)
-        super(:something)
+    context 'when only a part of arguments is unused' do
+      let(:source) { <<-END }
+        def some_method(foo, bar)
+          puts foo
+        end
+      END
+
+      let(:expected_source) { <<-END }
+        def some_method(foo, _bar)
+          puts foo
+        end
+      END
+
+      it 'modifies only the unused one' do
+        expect(corrected_source).to eq(expected_source)
       end
-      SOURCE
-      )).to eq(<<-CORRECTED_SOURCE
-      def some_method(_foo, _bar)
-        super(:something)
-      end
-      CORRECTED_SOURCE
-      )
     end
 
-    it 'preserves whitespace' do
-      expect(autocorrect_source(cop, <<-SOURCE
-      def some_method(foo,
-          bar)
-        super(:something)
+    context 'when there are some whitespaces around the argument' do
+      let(:source) { <<-END }
+        def some_method(foo,
+            bar)
+          puts foo
+        end
+      END
+
+      let(:expected_source) { <<-END }
+        def some_method(foo,
+            _bar)
+          puts foo
+        end
+      END
+
+      it 'preserves the whitespace' do
+        expect(corrected_source).to eq(expected_source)
       end
-      SOURCE
-      )).to eq(<<-CORRECTED_SOURCE
-      def some_method(_foo,
-          _bar)
-        super(:something)
-      end
-      CORRECTED_SOURCE
-      )
     end
 
-    it 'preserves splat' do
-      expect(autocorrect_source(cop, <<-SOURCE
-      def some_method(foo, *bars, baz)
-        stuff(foo, baz)
+    context 'when a splat argument is unused' do
+      let(:source) { <<-END }
+        def some_method(foo, *bar)
+          puts foo
+        end
+      END
+
+      let(:expected_source) { <<-END }
+        def some_method(foo, *_bar)
+          puts foo
+        end
+      END
+
+      it 'preserves the splat' do
+        expect(corrected_source).to eq(expected_source)
       end
-      SOURCE
-      )).to eq(<<-CORRECTED_SOURCE
-      def some_method(foo, *_bars, baz)
-        stuff(foo, baz)
-      end
-      CORRECTED_SOURCE
-      )
     end
 
-    it 'preserves default' do
-      expect(autocorrect_source(cop, <<-SOURCE
-      def some_method(foo, bar = baz)
-        stuff(foo)
-      end
-      SOURCE
-      )).to eq(<<-CORRECTED_SOURCE
-      def some_method(foo, _bar = baz)
-        stuff(foo)
-      end
-      CORRECTED_SOURCE
-      )
-    end
+    context 'when an unsed argument has default value' do
+      let(:source) { <<-END }
+        def some_method(foo, bar = 1)
+          puts foo
+        end
+      END
 
-    it 'preserves block reference' do
-      expect(autocorrect_source(cop, <<-SOURCE
-      def some_method(foo, &baz)
-        stuff(foo)
-      end
-      SOURCE
-      )).to eq(<<-CORRECTED_SOURCE
-      def some_method(foo, &_baz)
-        stuff(foo)
-      end
-      CORRECTED_SOURCE
-      )
-    end
+      let(:expected_source) { <<-END }
+        def some_method(foo, _bar = 1)
+          puts foo
+        end
+      END
 
-    it 'ignores used' do
-      original_source = <<-SOURCE
-      def some_method(foo, bar)
-        other_method(foo, bar)
+      it 'preserves the default value' do
+        expect(corrected_source).to eq(expected_source)
       end
-      SOURCE
-
-      expect(autocorrect_source(cop, original_source)).to eq(original_source)
-    end
-
-    it 'ignores implicit super' do
-      original_source = <<-SOURCE
-      def some_method(foo, bar)
-        super
-      end
-      SOURCE
-
-      expect(autocorrect_source(cop, original_source)).to eq(original_source)
     end
   end
 end
