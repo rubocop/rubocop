@@ -49,6 +49,36 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument do
       end
     end
 
+    context 'when a required keyword argument is unused', ruby: 2.1 do
+      let(:source) { <<-END }
+        def self.some_method(foo, bar:)
+          puts foo
+        end
+      END
+
+      it 'registers an offense but does not suggest underscore-prefix' do
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.highlights).to eq(['bar'])
+        expect(cop.offenses.first.message)
+          .to eq('Unused method argument - `bar`.')
+      end
+    end
+
+    context 'when an optional keyword argument is unused', ruby: 2 do
+      let(:source) { <<-END }
+        def self.some_method(foo, bar: 1)
+          puts foo
+        end
+      END
+
+      it 'registers an offense but does not suggest underscore-prefix' do
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.highlights).to eq(['bar'])
+        expect(cop.offenses.first.message)
+          .to eq('Unused method argument - `bar`.')
+      end
+    end
+
     context 'when a singleton method argument is unused' do
       let(:source) { <<-END }
         def self.some_method(foo)

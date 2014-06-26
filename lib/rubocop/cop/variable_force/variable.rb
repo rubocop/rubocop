@@ -92,6 +92,10 @@ module RuboCop
           argument? && @scope.node.type == :block
         end
 
+        def keyword_argument?
+          [:kwarg, :kwoptarg].include?(@declaration_node.type)
+        end
+
         def explicit_block_local_variable?
           @declaration_node.type == :shadowarg
         end
