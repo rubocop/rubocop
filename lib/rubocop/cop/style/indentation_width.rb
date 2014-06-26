@@ -96,7 +96,23 @@ module RuboCop
           latest_when = nil
           branches.compact.each do |b|
             if b.type == :when
-              *_conditions, body = *b
+              # TODO: Revert to the original expresson once the fix in Rubinius
+              #   is released.
+              #
+              # Originally this expression was:
+              #
+              #   *_conditions, body = *b
+              #
+              # However it fails on Rubinius 2.2.9 due to its bug:
+              #
+              #   RuntimeError:
+              #     can't modify frozen instance of Array
+              #   # kernel/common/array.rb:988:in `pop'
+              #   # ./lib/rubocop/cop/style/indentation_width.rb:99:in `on_case'
+              #
+              # It seems to be fixed on the current master (0a92c3c).
+              body = b.children.last
+
               # Check "when" body against "when" keyword indentation.
               check_indentation(b.loc.keyword, body)
               latest_when = b
