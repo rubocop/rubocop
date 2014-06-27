@@ -9,13 +9,6 @@ module RuboCop
           force_class == VariableForce
         end
 
-        def autocorrect(node)
-          new_name = node.loc.expression.source.sub(/(\W?)(\w+)/, '\\1_\\2')
-          @corrections << lambda do |corrector|
-            corrector.replace(node.loc.expression, new_name)
-          end
-        end
-
         def after_leaving_scope(scope, _variable_table)
           scope.variables.each_value do |variable|
             check_argument(variable)
@@ -28,6 +21,14 @@ module RuboCop
 
           message = message(variable)
           add_offense(variable.declaration_node, :name, message)
+        end
+
+        def autocorrect(node)
+          return if [:kwarg, :kwoptarg].include?(node.type)
+
+          @corrections << lambda do |corrector|
+            corrector.insert_before(node.loc.name, '_')
+          end
         end
       end
     end

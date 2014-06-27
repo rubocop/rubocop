@@ -19,9 +19,12 @@ module RuboCop
         end
 
         def message(variable)
-          message = "Unused method argument - `#{variable.name}`. " \
-                    "If it's necessary, use `_` or `_#{variable.name}` " \
-                    "as an argument name to indicate that it won't be used."
+          message = "Unused method argument - `#{variable.name}`."
+
+          unless variable.keyword_argument?
+            message << " If it's necessary, use `_` or `_#{variable.name}` " \
+                       "as an argument name to indicate that it won't be used."
+          end
 
           scope = variable.scope
           all_arguments = scope.variables.each_value.select(&:method_argument?)
