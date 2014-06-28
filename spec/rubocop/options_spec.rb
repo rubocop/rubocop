@@ -134,13 +134,6 @@ Usage: rubocop [options] [file1, file2, ...]
       end
     end
 
-    describe '--only' do
-      it 'exits with error if an incorrect cop name is passed' do
-        expect { options.parse(%w(--only 123)) }
-          .to raise_error(ArgumentError, /Unrecognized cop name: 123./)
-      end
-    end
-
     describe '--require' do
       let(:required_file_path) { './path/to/required_file.rb' }
 

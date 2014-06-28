@@ -69,7 +69,6 @@ module RuboCop
           @options[:only] = list.split(',').map do |c|
             Cop::Cop.qualified_cop_name(c, '--only option')
           end
-          validate_only_option
         end
 
         add_configuration_options(opts, args)
@@ -191,13 +190,6 @@ module RuboCop
       message << '.'
       message << " Please use #{alternative} instead." if alternative
       warn message
-    end
-
-    def validate_only_option
-      @options[:only].each do |cop_to_run|
-        next unless Cop::Cop.all.none? { |c| c.cop_name == cop_to_run }
-        fail ArgumentError, "Unrecognized cop name: #{cop_to_run}."
-      end
     end
 
     def validate_auto_gen_config_option(args)

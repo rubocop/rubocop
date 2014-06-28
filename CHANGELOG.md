@@ -7,6 +7,7 @@
 * [#1174](https://github.com/bbatsov/rubocop/issues/1174): Fix `--auto-correct` crash in `AlignParameters`. ([@jonas054][])
 * [#1176](https://github.com/bbatsov/rubocop/issues/1176): Fix `--auto-correct` crash in `IndentationWidth`. ([@jonas054][])
 * [#1177](https://github.com/bbatsov/rubocop/issues/1177): Avoid suggesting underscore-prefixed name for unused keyword arguments and auto-correcting in that way. ([@yujinakayama][])
+* [#1157](https://github.com/bbatsov/rubocop/issues/1157): Validate `--only` arguments later when all cop names are known. ([@jonas054][])
 
 ## 0.24.0 (25/06/2014)
 
