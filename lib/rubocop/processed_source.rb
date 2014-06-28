@@ -15,7 +15,7 @@ module RuboCop
     def initialize(source, path = nil)
       @path = path
       @diagnostics = []
-      parse(source, path)
+      parse(source)
     end
 
     def comment_config
@@ -55,8 +55,8 @@ module RuboCop
 
     private
 
-    def parse(source, path)
-      buffer_name = path || '(string)'
+    def parse(source)
+      buffer_name = @path || '(string)'
       @buffer = Parser::Source::Buffer.new(buffer_name, 1)
 
       begin
