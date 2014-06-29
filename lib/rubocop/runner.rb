@@ -95,6 +95,8 @@ module RuboCop
         cop_classes = Cop::Cop.all
 
         if @options[:only]
+          validate_only_option
+
           cop_classes.select! do |c|
             @options[:only].include?(c.cop_name) || @options[:lint] && c.lint?
           end
@@ -107,6 +109,13 @@ module RuboCop
         end
 
         cop_classes
+      end
+    end
+
+    def validate_only_option
+      @options[:only].each do |cop_to_run|
+        next unless Cop::Cop.all.none? { |c| c.cop_name == cop_to_run }
+        fail ArgumentError, "Unrecognized cop name: #{cop_to_run}."
       end
     end
 

@@ -762,6 +762,48 @@ describe RuboCop::CLI, :isolated_environment do
                     ''].join("\n"))
         end
 
+        it 'exits with error if an incorrect cop name is passed' do
+          create_file('example.rb', ['if x== 0 ',
+                                     "\ty",
+                                     'end'])
+          expect(cli.run(['--only', 'Style/123'])).to eq(1)
+          expect($stderr.string).to include('Unrecognized cop name: Style/123.')
+        end
+
+        it 'accepts cop names from plugins' do
+          create_file('.rubocop.yml', ['require: rubocop_ext',
+                                       '',
+                                       'Style/SomeCop:',
+                                       '  Description: Something',
+                                       '  Enabled: true'])
+          create_file('rubocop_ext.rb', ['module RuboCop',
+                                         '  module Cop',
+                                         '    module Style',
+                                         '      class SomeCop < Cop',
+                                         '      end',
+                                         '    end',
+                                         '  end',
+                                         'end'])
+          create_file('redirect.rb', '$stderr = STDOUT')
+          rubocop = "#{RuboCop::ConfigLoader::RUBOCOP_HOME}/bin/rubocop"
+          # Since we define a new cop class, we have to do this in a separate
+          # process. Otherwise, the extra cop will affect other specs.
+          output =
+            `ruby -I . #{rubocop} --require redirect.rb --only Style/SomeCop`
+          expect($CHILD_STATUS.success?).to be_truthy
+          # The warning about the unrecognized cop is expected. It's given due
+          # to the fact that we haven't supplied any default configuration for
+          # rubocop_ext in this example.
+          expect(output)
+            .to eq(['Warning: unrecognized cop Style/SomeCop found in ' \
+                    "#{abs('.rubocop.yml')}",
+                    'Inspecting 2 files',
+                    '..',
+                    '',
+                    '2 files inspected, no offenses detected',
+                    ''].join("\n"))
+        end
+
         context 'without using namespace' do
           it 'runs just one cop' do
             create_file('example.rb', ['if x== 0 ',
