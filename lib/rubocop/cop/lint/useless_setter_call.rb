@@ -66,7 +66,7 @@ module RuboCop
           end
 
           def contain_local_object?(variable_name)
-            return @local[variable_name] if @table
+            return @local[variable_name] if @local
 
             @local = {}
 
