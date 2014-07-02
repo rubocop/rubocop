@@ -61,9 +61,7 @@ module RuboCop
 
       begin
         @buffer.source = source
-      rescue EncodingError, ArgumentError => error
-        # TODO: Remove ArgumentError here once the patch in Parser is released.
-        #   https://github.com/whitequark/parser/pull/156
+      rescue EncodingError => error
         @parser_error = error
         return
       end
