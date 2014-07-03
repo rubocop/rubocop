@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.24.1 (03/07/2014)
+
 ### Bugs fixed
 
 * [#1174](https://github.com/bbatsov/rubocop/issues/1174): Fix `--auto-correct` crash in `AlignParameters`. ([@jonas054][])
