@@ -76,6 +76,19 @@ describe RuboCop::Cop::Style::LineLength, :config do
         expect(cop.highlights).to eq([' and'])
       end
     end
+
+    context 'and an error other than URI::InvalidURIError is raised ' \
+            'while validating an URI-ish string' do
+      # rubocop:disable Style/LineLength
+      let(:source) { <<-END }
+        xxxxxxxxxxxxxxxxxxxxxxxxxxxxzxxxxxxxxxxx = LDAP::DEFAULT_GROUP_UNIQUE_MEMBER_LIST_KEY
+      END
+      # rubocop:enable Style/LineLength
+
+      it 'does not crash' do
+        expect { inspect_source(cop, source) }.not_to raise_error
+      end
+    end
   end
 
   context 'when AllowURI option is disabled' do
