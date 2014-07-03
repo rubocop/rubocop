@@ -244,4 +244,13 @@ describe RuboCop::Cop::Style::Next, :config do
     inspect_source(cop, 'until sup; end')
     expect(cop.offenses.size).to eq(0)
   end
+
+  it 'does not crash with an empty body branch' do
+    inspect_source(cop,
+                   ['loop do',
+                    '  if true',
+                    '  end',
+                    'end'])
+    expect(cop.offenses.size).to eq(1)
+  end
 end

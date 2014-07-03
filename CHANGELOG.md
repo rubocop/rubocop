@@ -9,6 +9,7 @@
 * [#1177](https://github.com/bbatsov/rubocop/issues/1177): Avoid suggesting underscore-prefixed name for unused keyword arguments and auto-correcting in that way. ([@yujinakayama][])
 * [#1157](https://github.com/bbatsov/rubocop/issues/1157): Validate `--only` arguments later when all cop names are known. ([@jonas054][])
 * [#1188](https://github.com/bbatsov/rubocop/issues/1188), [#1190](https://github.com/bbatsov/rubocop/issues/1190): Fix crash in `LineLength` cop when `AllowURI` option is enabled. ([@yujinakayama][])
+* [#1191](https://github.com/bbatsov/rubocop/issues/1191): Fix crash on empty body branches in a loop in `Next` cop. ([@yujinakayama][])
 
 ## 0.24.0 (25/06/2014)
 
