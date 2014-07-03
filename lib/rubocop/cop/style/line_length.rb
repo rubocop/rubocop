@@ -79,7 +79,7 @@ module RuboCop
         def valid_uri?(uri_ish_string)
           URI.parse(uri_ish_string)
           true
-        rescue URI::InvalidURIError
+        rescue
           false
         end
       end
