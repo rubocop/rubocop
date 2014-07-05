@@ -325,6 +325,12 @@ Style/PercentLiteralDelimiters:
     '%W': ()
     '%x': ()
 
+Style/PercentQLiterals:
+  EnforcedStyle: lower_case_q
+  SupportedStyles:
+    - lower_case_q # Use %q when possible, %Q when necessary
+    - upper_case_q # Always use %Q
+
 Style/PredicateName:
   NamePrefixBlacklist:
     - is_
