@@ -6,7 +6,7 @@ module RuboCop
       # This cop checks for single-line method definitions.
       # It can optionally accept single-line methods with no body.
       class SingleLineMethods < Cop
-        include CheckMethods
+        include OnMethod
 
         MSG = 'Avoid single-line method definitions.'
 
@@ -16,7 +16,7 @@ module RuboCop
 
         private
 
-        def check(node, _method_name, _args, body)
+        def on_method(node, _method_name, _args, body)
           start_line = node.loc.keyword.line
           end_line = node.loc.end.line
 

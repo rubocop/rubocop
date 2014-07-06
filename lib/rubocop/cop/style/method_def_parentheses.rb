@@ -6,10 +6,10 @@ module RuboCop
       # This cops checks for parentheses around the arguments in method
       # definitions. Both instance and class/singleton methods are checked.
       class MethodDefParentheses < Cop
-        include CheckMethods
+        include OnMethod
         include ConfigurableEnforcedStyle
 
-        def check(node, _method_name, args, _body)
+        def on_method(node, _method_name, args, _body)
           if style == :require_parentheses
             if arguments?(args) && !parentheses?(args)
               add_offense(node,

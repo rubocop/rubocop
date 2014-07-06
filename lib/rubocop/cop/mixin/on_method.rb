@@ -3,15 +3,15 @@
 module RuboCop
   module Cop
     # Common functionality for checking instance methods and singeton methods.
-    module CheckMethods
+    module OnMethod
       def on_def(node)
         method_name, args, body = *node
-        check(node, method_name, args, body)
+        on_method(node, method_name, args, body)
       end
 
       def on_defs(node)
         _scope, method_name, args, body = *node
-        check(node, method_name, args, body)
+        on_method(node, method_name, args, body)
       end
 
       private

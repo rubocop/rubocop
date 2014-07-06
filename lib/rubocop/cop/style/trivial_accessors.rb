@@ -6,13 +6,13 @@ module RuboCop
       # This cop looks for trivial reader/writer methods, that could
       # have been created with the attr_* family of functions automatically.
       class TrivialAccessors < Cop
-        include CheckMethods
+        include OnMethod
 
         MSG = 'Use `attr_%s` to define trivial %s methods.'
 
         private
 
-        def check(node, method_name, args, body)
+        def on_method(node, method_name, args, body)
           kind = if trivial_reader?(method_name, args, body)
                    'reader'
                  elsif trivial_writer?(method_name, args, body)

@@ -18,11 +18,11 @@ module RuboCop
       #   # good
       #   def value? ...
       class PredicateName < Cop
-        include CheckMethods
+        include OnMethod
 
         private
 
-        def check(node, method_name, _args, _body)
+        def on_method(node, method_name, _args, _body)
           prefix_blacklist.each do |prefix|
             next unless method_name.to_s.start_with?(prefix)
             add_offense(node, :name, message(method_name.to_s, prefix))
