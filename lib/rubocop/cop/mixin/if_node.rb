@@ -5,7 +5,7 @@ module RuboCop
     # Common functionality for checking if nodes.
     module IfNode
       def modifier_if?(node)
-        node.loc.end.nil?
+        node.loc.respond_to?(:end) && node.loc.end.nil?
       end
 
       def ternary_op?(node)

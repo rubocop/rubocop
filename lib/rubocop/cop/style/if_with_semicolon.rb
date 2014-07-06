@@ -5,15 +5,14 @@ module RuboCop
     module Style
       # Checks for uses of semicolon in if statements.
       class IfWithSemicolon < Cop
-        include IfThenElse
+        include OnNormalIfUnless
 
-        def offending_line(node)
-          b = node.loc.begin
-          b.line if b && b.is?(';')
-        end
+        MSG = 'Never use if x; Use the ternary operator instead.'
 
-        def error_message(_node)
-          'Never use if x; Use the ternary operator instead.'
+        def on_normal_if_unless(node)
+          beginning = node.loc.begin
+          return unless beginning && beginning.is?(';')
+          add_offense(node, :expression, MSG)
         end
       end
     end

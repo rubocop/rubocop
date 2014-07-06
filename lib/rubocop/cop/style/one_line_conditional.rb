@@ -6,14 +6,14 @@ module RuboCop
       # TODO: Make configurable.
       # Checks for uses of if/then/else/end on a single line.
       class OneLineConditional < Cop
-        include IfThenElse
+        include OnNormalIfUnless
 
-        def offending_line(node)
-          node.loc.expression.line unless node.loc.expression.source =~ /\n/
-        end
+        MSG = 'Favor the ternary operator (?:) ' \
+              'over if/then/else/end constructs.'
 
-        def error_message(_node)
-          'Favor the ternary operator (?:) over if/then/else/end constructs.'
+        def on_normal_if_unless(node)
+          return if node.loc.expression.source.include?("\n")
+          add_offense(node, :expression, MSG)
         end
       end
     end
