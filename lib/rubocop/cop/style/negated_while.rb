@@ -10,11 +10,11 @@ module RuboCop
         MSG = 'Favor `%s` over `%s` for negative conditions.'
 
         def on_while(node)
-          check(node)
+          check_negative_conditional(node)
         end
 
         def on_until(node)
-          check(node)
+          check_negative_conditional(node)
         end
 
         def message(node)
