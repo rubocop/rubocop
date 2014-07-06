@@ -13,11 +13,11 @@ module RuboCop
         private
 
         def on_method(node, _method_name, _args, _body)
-          check(node)
+          check_code_length(node)
         end
 
-        def message
-          'Method has too many lines. [%d/%d]'
+        def message(length, max_length)
+          format('Method has too many lines. [%d/%d]', length, max_length)
         end
 
         def code_length(node)

@@ -14,12 +14,11 @@ module RuboCop
         cop_config['CountComments']
       end
 
-      def check(node, *_)
+      def check_code_length(node, *_)
         length = code_length(node)
         return unless length > max_length
 
-        add_offense(node, :keyword, format(message, length,
-                                           max_length)) do
+        add_offense(node, :keyword, message(length, max_length)) do
           self.max = length
         end
       end
