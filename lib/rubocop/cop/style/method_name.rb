@@ -10,11 +10,11 @@ module RuboCop
         include ConfigurableNaming
 
         def on_def(node)
-          check(node, name_of_instance_method(node))
+          check_name(node, name_of_instance_method(node))
         end
 
         def on_defs(node)
-          check(node, name_of_singleton_method(node))
+          check_name(node, name_of_singleton_method(node))
         end
 
         def name_of_instance_method(def_node)

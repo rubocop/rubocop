@@ -9,15 +9,15 @@ module RuboCop
         include ConfigurableNaming
 
         def on_lvasgn(node)
-          check(node, name_of_variable(node))
+          check_name(node, name_of_variable(node))
         end
 
         def on_ivasgn(node)
-          check(node, name_of_variable(node))
+          check_name(node, name_of_variable(node))
         end
 
         def on_send(node)
-          check(node, name_of_setter(node))
+          check_name(node, name_of_setter(node))
         end
 
         def name_of_variable(vasgn_node)

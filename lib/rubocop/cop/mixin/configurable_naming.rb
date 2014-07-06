@@ -10,7 +10,7 @@ module RuboCop
       SNAKE_CASE = /^@?[\da-z_]+[!?=]?$/
       CAMEL_CASE = /^@?[a-z][\da-zA-Z]+[!?=]?$/
 
-      def check(node, range)
+      def check_name(node, range)
         return unless range
 
         name = range.source.to_sym
