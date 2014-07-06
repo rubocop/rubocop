@@ -10,35 +10,21 @@ module RuboCop
       SNAKE_CASE = /^@?[\da-z_]+[!?=]?$/
       CAMEL_CASE = /^@?[a-z][\da-zA-Z]+[!?=]?$/
 
-      def check_name(node, range)
-        return unless range
-
-        name = range.source.to_sym
+      def check_name(node, name, name_range)
         return if operator?(name)
 
-        if matches_config?(name)
+        if valid_name?(name)
           correct_style_detected
         else
-          add_offense(node, range, message(style)) do
+          add_offense(node, name_range, message(style)) do
             opposite_style_detected
           end
         end
       end
 
-      def matches_config?(name)
-        name =~ (style == :snake_case ? SNAKE_CASE : CAMEL_CASE)
-      end
-
-      # Returns a range containing the method name after the given regexp and
-      # a dot.
-      def after_dot(node, method_name_length, regexp)
-        expr = node.loc.expression
-        match = /\A#{regexp}\s*\.\s*/.match(expr.source)
-        return unless match
-        offset = match[0].length
-        begin_pos = expr.begin_pos + offset
-        Parser::Source::Range.new(expr.source_buffer, begin_pos,
-                                  begin_pos + method_name_length)
+      def valid_name?(name)
+        pattern = (style == :snake_case ? SNAKE_CASE : CAMEL_CASE)
+        name.match(pattern)
       end
     end
   end

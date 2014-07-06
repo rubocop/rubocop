@@ -9,34 +9,34 @@ module RuboCop
         include ConfigurableNaming
 
         def on_lvasgn(node)
-          check_name(node, name_of_variable(node))
+          name, = *node
+          check_name(node, name, node.loc.name)
         end
 
         def on_ivasgn(node)
-          check_name(node, name_of_variable(node))
+          name, = *node
+          check_name(node, name, node.loc.name)
         end
 
+        # TODO: Why is this checking invocations of setter rather than
+        #   definitions? Also, this is not variable.
         def on_send(node)
-          check_name(node, name_of_setter(node))
+          return unless setter_call_on_self?(node)
+          _receiver, method_name, = *node
+          attribute_name = method_name.to_s.sub(/=$/, '').to_sym
+          check_name(node, attribute_name, node.loc.selector)
         end
 
-        def name_of_variable(vasgn_node)
-          expr = vasgn_node.loc.expression
-          name = vasgn_node.children.first
-          Parser::Source::Range.new(expr.source_buffer, expr.begin_pos,
-                                    expr.begin_pos + name.length)
-        end
-
-        def name_of_setter(send_node)
-          receiver, method_name = *send_node
-          return unless receiver && receiver.type == :self
-          return unless method_name.to_s.end_with?('=')
-          after_dot(send_node, method_name.length - '='.length,
-                    Regexp.escape(receiver.loc.expression.source))
-        end
+        private
 
         def message(style)
           format('Use %s for variables.', style)
+        end
+
+        def setter_call_on_self?(send_node)
+          receiver, method_name, = *send_node
+          return false unless receiver && receiver.type == :self
+          method_name.to_s.end_with?('=')
         end
       end
     end
