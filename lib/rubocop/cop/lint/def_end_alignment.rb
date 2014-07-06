@@ -23,7 +23,7 @@ module RuboCop
         MSG = '`end` at %d, %d is not aligned with `%s` at %d, %d'
 
         def on_method(node, _method_name, _args, _body)
-          check_offset(node, node.loc.keyword.source, 0)
+          check_offset_of_node(node)
         end
 
         def on_send(node)

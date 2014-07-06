@@ -23,23 +23,23 @@ module RuboCop
         MSG = '`end` at %d, %d is not aligned with `%s` at %d, %d'
 
         def on_class(node)
-          check(node)
+          check_offset_of_node(node)
         end
 
         def on_module(node)
-          check(node)
+          check_offset_of_node(node)
         end
 
         def on_if(node)
-          check(node) unless ternary_op?(node)
+          check_offset_of_node(node) unless ternary_op?(node)
         end
 
         def on_while(node)
-          check(node)
+          check_offset_of_node(node)
         end
 
         def on_until(node)
-          check(node)
+          check_offset_of_node(node)
         end
 
         private
