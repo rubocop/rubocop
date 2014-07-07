@@ -14,8 +14,7 @@ module RuboCop
 
         private
 
-        def on_percent_literal(node, types)
-          return unless types.include?(type(node))
+        def on_percent_literal(node)
           if style == :lower_case_q
             if type(node) == '%Q'
               check(node,

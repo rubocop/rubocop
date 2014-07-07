@@ -16,10 +16,8 @@ module RuboCop
 
         private
 
-        def on_percent_literal(node, types)
-          type = type(node)
-          return unless types.include?(type) &&
-            node.children.none? { |x| x.type == :dstr }
+        def on_percent_literal(node)
+          return unless node.children.none? { |x| x.type == :dstr }
 
           add_offense(node, :expression)
         end

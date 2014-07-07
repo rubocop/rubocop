@@ -10,7 +10,8 @@ module RuboCop
       end
 
       def process(node, *types)
-        on_percent_literal(node, types) if percent_literal?(node)
+        return unless percent_literal?(node) && types.include?(type(node))
+        on_percent_literal(node)
       end
 
       def begin_source(node)
