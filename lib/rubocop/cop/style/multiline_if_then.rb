@@ -17,9 +17,9 @@ module RuboCop
       #   end
       class MultilineIfThen < Cop
         include IfNode
-        include IfThenElse
+        include OnNormalIfUnless
 
-        def offending_line(node)
+        def on_normal_if_unless(node)
           condition, body, else_clause = *node
           next_thing = if body && body.loc.expression
                          body.loc.expression.begin
@@ -34,14 +34,14 @@ module RuboCop
                                       next_thing.begin_pos)
           return unless right_after_cond.source =~ /\A\s*then\s*(#.*)?\s*\n/
 
-          node.loc.expression.begin.line
+          add_offense(node, :expression, message(node))
         end
 
         def end_position(conditional_node)
           conditional_node.loc.expression.end.end_pos
         end
 
-        def error_message(node)
+        def message(node)
           "Never use `then` for multi-line `#{node.loc.keyword.source}`."
         end
       end

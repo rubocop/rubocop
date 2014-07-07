@@ -10,7 +10,7 @@ module RuboCop
 
       private
 
-      def check(node, *_)
+      def check_offset_of_node(node)
         check_offset(node, node.loc.keyword.source, 0)
       end
 

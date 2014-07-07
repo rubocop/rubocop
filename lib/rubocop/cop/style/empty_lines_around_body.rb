@@ -22,7 +22,7 @@ module RuboCop
       #   end
       #
       class EmptyLinesAroundBody < Cop
-        include CheckMethods
+        include OnMethod
 
         MSG_BEG = 'Extra empty line detected at body beginning.'
         MSG_END = 'Extra empty line detected at body end.'
@@ -45,7 +45,11 @@ module RuboCop
 
         private
 
-        def check(node, *_)
+        def on_method(node, _method_name, _args, _body)
+          check(node)
+        end
+
+        def check(node)
           start_line = node.loc.keyword.line
           end_line = node.loc.end.line
 

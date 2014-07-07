@@ -14,7 +14,7 @@ module RuboCop
           return unless node.loc.respond_to?(:keyword)
           return if node.loc.keyword.is?('elsif')
 
-          check(node)
+          check_negative_conditional(node)
         end
 
         def message(node)

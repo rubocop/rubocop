@@ -10,13 +10,13 @@ module RuboCop
         include CodeLength
 
         def on_class(node)
-          check(node)
+          check_code_length(node)
         end
 
         private
 
-        def message
-          'Class definition is too long. [%d/%d]'
+        def message(length, max_length)
+          format('Class definition is too long. [%d/%d]', length, max_length)
         end
 
         def code_length(node)

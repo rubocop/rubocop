@@ -18,11 +18,11 @@ module RuboCop
       #   # good
       #   def attribute ...
       class AccessorMethodName < Cop
-        include CheckMethods
+        include OnMethod
 
         private
 
-        def check(node, method_name, args, _body)
+        def on_method(node, method_name, args, _body)
           if bad_reader_name?(method_name.to_s, args)
             add_offense(node, :name,
                         'Do not prefix reader method names with `get_`.')

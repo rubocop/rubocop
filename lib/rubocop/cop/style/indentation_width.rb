@@ -14,7 +14,7 @@ module RuboCop
       # end
       class IndentationWidth < Cop # rubocop:disable Style/ClassLength
         include AutocorrectAlignment
-        include CheckMethods
+        include OnMethod
         include CheckAssignment
         include IfNode
         include AccessModifierNode
@@ -72,7 +72,7 @@ module RuboCop
           ignore_node(args.first)
         end
 
-        def check(node, _method_name, _args, body)
+        def on_method(node, _method_name, _args, body)
           check_indentation(node.loc.keyword, body) unless ignored_node?(node)
         end
 

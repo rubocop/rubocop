@@ -5,7 +5,7 @@ module RuboCop
     # Some common code shared between FavorUnlessOverNegatedIf and
     # FavorUntilOverNegatedWhile.
     module NegativeConditional
-      def check(node)
+      def check_negative_conditional(node)
         condition, _body, _rest = *node
 
         # Look at last expression of contents if there's a parenthesis
