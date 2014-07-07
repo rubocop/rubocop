@@ -56,12 +56,12 @@ module RuboCop
         def braces_with_contents_inside(node, inner, sb)
           _method, args, _body = *node
           left_brace, right_brace = node.loc.begin, node.loc.end
-          pipe = args.loc.begin
+          args_delimiter = args.loc.begin # Can be ( | or nil.
 
           if inner =~ /^\S/
-            no_space_inside_left_brace(left_brace, pipe, sb)
+            no_space_inside_left_brace(left_brace, args_delimiter, sb)
           else
-            space_inside_left_brace(left_brace, pipe, sb)
+            space_inside_left_brace(left_brace, args_delimiter, sb)
           end
 
           if inner =~ /\S$/
@@ -72,11 +72,11 @@ module RuboCop
           end
         end
 
-        def no_space_inside_left_brace(left_brace, pipe, sb)
-          if pipe
-            if left_brace.end_pos == pipe.begin_pos &&
+        def no_space_inside_left_brace(left_brace, args_delimiter, sb)
+          if pipe?(args_delimiter)
+            if left_brace.end_pos == args_delimiter.begin_pos &&
                 cop_config['SpaceBeforeBlockParameters']
-              offense(sb, left_brace.begin_pos, pipe.end_pos,
+              offense(sb, left_brace.begin_pos, args_delimiter.end_pos,
                       'Space between { and | missing.')
             end
           else
@@ -88,10 +88,10 @@ module RuboCop
           end
         end
 
-        def space_inside_left_brace(left_brace, pipe, sb)
-          if pipe
+        def space_inside_left_brace(left_brace, args_delimiter, sb)
+          if pipe?(args_delimiter)
             unless cop_config['SpaceBeforeBlockParameters']
-              offense(sb, left_brace.end_pos, pipe.begin_pos,
+              offense(sb, left_brace.end_pos, args_delimiter.begin_pos,
                       'Space between { and | detected.')
             end
           else
@@ -99,6 +99,10 @@ module RuboCop
             space(sb, brace_with_space.begin_pos + 1, brace_with_space.end_pos,
                   'Space inside { detected.')
           end
+        end
+
+        def pipe?(args_delimiter)
+          args_delimiter && args_delimiter.is?('|')
         end
 
         def space_inside_right_brace(right_brace, sb)
