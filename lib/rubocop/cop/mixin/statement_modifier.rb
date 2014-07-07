@@ -7,14 +7,14 @@ module RuboCop
       include IfNode
 
       # TODO: Extremely ugly solution that needs lots of polish.
-      def check(sexp, comments)
-        case sexp.loc.keyword.source
-        when 'if'     then cond, body, _else = *sexp
-        when 'unless' then cond, _else, body = *sexp
-        else               cond, body = *sexp
+      def fit_within_line_as_modifier_form?(node)
+        case node.loc.keyword.source
+        when 'if'     then cond, body, _else = *node
+        when 'unless' then cond, _else, body = *node
+        else               cond, body = *node
         end
 
-        return false if length(sexp) > 3
+        return false if length(node) > 3
 
         body_length = body_length(body)
 
@@ -24,13 +24,13 @@ module RuboCop
           return false
         end
 
-        indentation = sexp.loc.keyword.column
-        kw_length = sexp.loc.keyword.size
+        indentation = node.loc.keyword.column
+        kw_length = node.loc.keyword.size
         cond_length = cond.loc.expression.size
         space = 1
         total = indentation + body_length + space + kw_length + space +
           cond_length
-        total <= max_line_length && !body_has_comment?(body, comments)
+        total <= max_line_length && !body_has_comment?(body)
       end
 
       def max_line_length
@@ -38,8 +38,8 @@ module RuboCop
         config.for_cop('Style/LineLength')['Max']
       end
 
-      def length(sexp)
-        sexp.loc.expression.source.lines.to_a.size
+      def length(node)
+        node.loc.expression.source.lines.to_a.size
       end
 
       def body_length(body)
@@ -50,8 +50,8 @@ module RuboCop
         end
       end
 
-      def body_has_comment?(body, comments)
-        comment_lines = comments.map(&:location).map(&:line)
+      def body_has_comment?(body)
+        comment_lines = processed_source.comments.map(&:location).map(&:line)
         body_line = body.loc.expression.line
         comment_lines.include?(body_line)
       end

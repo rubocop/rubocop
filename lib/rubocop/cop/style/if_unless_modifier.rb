@@ -9,7 +9,7 @@ module RuboCop
       class IfUnlessModifier < Cop
         include StatementModifier
 
-        def error_message(keyword)
+        def message(keyword)
           "Favor modifier `#{keyword}` usage when having a single-line body." \
           ' Another good alternative is the usage of control flow `&&`/`||`.'
         end
@@ -22,11 +22,8 @@ module RuboCop
             next if modifier_if?(node)
             next if elsif?(node)
             next if if_else?(node)
-
-            if check(node, processed_source.comments)
-              add_offense(node, :keyword,
-                          error_message(node.loc.keyword.source))
-            end
+            next unless fit_within_line_as_modifier_form?(node)
+            add_offense(node, :keyword, message(node.loc.keyword.source))
           end
         end
       end

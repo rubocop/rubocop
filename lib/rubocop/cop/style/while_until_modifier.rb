@@ -14,11 +14,8 @@ module RuboCop
           on_node([:while, :until], processed_source.ast) do |node|
             # discard modifier while/until
             next unless node.loc.end
-
-            if check(node, processed_source.comments)
-              add_offense(node, :keyword,
-                          message(node.loc.keyword.source))
-            end
+            next unless fit_within_line_as_modifier_form?(node)
+            add_offense(node, :keyword, message(node.loc.keyword.source))
           end
         end
 
