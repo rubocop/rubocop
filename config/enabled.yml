@@ -416,7 +416,9 @@ Style/RescueModifier:
   Enabled: true
 
 Style/SelfAssignment:
-  Description: 'Checks for places where self-assignment shorthand should have been used.'
+  Description: >-
+                 Checks for places where self-assignment shorthand should have
+                 been used.
   Enabled: true
 
 Style/Semicolon:
@@ -619,7 +621,9 @@ Lint/BlockAlignment:
   Enabled: true
 
 Lint/ConditionPosition:
-  Description: 'Checks for condition placed in a confusing position relative to the keyword.'
+  Description: >-
+                 Checks for condition placed in a confusing position relative to
+                 the keyword.
   Enabled: true
 
 Lint/Debugger:
@@ -781,7 +785,9 @@ Rails/Output:
   Enabled: true
 
 Rails/ReadWriteAttribute:
-  Description: 'Checks for read_attribute(:attr) and write_attribute(:attr, val).'
+  Description: >-
+                 Checks for read_attribute(:attr) and
+                 write_attribute(:attr, val).
   Enabled: true
 
 Rails/ScopeArgs:
