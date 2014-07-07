@@ -140,6 +140,11 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
       expect(cop.highlights).to eq(['{|'])
     end
 
+    it 'accepts new lambda syntax' do
+      inspect_source(cop, ['->(x) { x }'])
+      expect(cop.messages).to be_empty
+    end
+
     it 'auto-corrects missing space' do
       new_source = autocorrect_source(cop, 'each {|x| puts }')
       expect(new_source).to eq('each { |x| puts }')
@@ -180,6 +185,11 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
         inspect_source(cop, ['each { |x| puts }'])
         expect(cop.messages).to eq(['Space between { and | detected.'])
         expect(cop.highlights).to eq([' '])
+      end
+
+      it 'accepts new lambda syntax' do
+        inspect_source(cop, ['->(x) { x }'])
+        expect(cop.messages).to be_empty
       end
 
       it 'auto-corrects unwanted space' do
@@ -256,6 +266,11 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
           expect(cop.highlights).to eq(['{|'])
         end
 
+        it 'accepts new lambda syntax' do
+          inspect_source(cop, ['->(x) {x}'])
+          expect(cop.messages).to be_empty
+        end
+
         it 'auto-corrects missing space' do
           new_source = autocorrect_source(cop, 'each {|x| puts}')
           expect(new_source).to eq('each { |x| puts}')
@@ -275,6 +290,11 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
           inspect_source(cop, ['each { |x| puts}'])
           expect(cop.messages).to eq(['Space between { and | detected.'])
           expect(cop.highlights).to eq([' '])
+        end
+
+        it 'accepts new lambda syntax' do
+          inspect_source(cop, ['->(x) {x}'])
+          expect(cop.messages).to be_empty
         end
 
         it 'auto-corrects unwanted space' do
