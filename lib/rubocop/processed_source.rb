@@ -5,14 +5,16 @@ module RuboCop
   # and other information such as disabled lines for cops.
   # It also provides a convenient way to access source lines.
   class ProcessedSource
+    STRING_SOURCE_NAME = '(string)'
     attr_reader :path, :buffer, :ast, :comments, :tokens, :diagnostics,
-                :parser_error
+                :parser_error, :raw_source
 
     def self.from_file(path)
       new(File.read(path), path)
     end
 
     def initialize(source, path = nil)
+      @raw_source = source
       @path = path
       @diagnostics = []
       parse(source)
@@ -27,21 +29,7 @@ module RuboCop
     end
 
     def lines
-      if @lines
-        @lines
-      else
-        init_lines
-        @lines
-      end
-    end
-
-    def raw_lines
-      if @raw_lines
-        @raw_lines
-      else
-        init_lines
-        @raw_lines
-      end
+      @lines ||= raw_source.lines.map(&:chomp)
     end
 
     def [](*args)
@@ -56,7 +44,7 @@ module RuboCop
     private
 
     def parse(source)
-      buffer_name = @path || '(string)'
+      buffer_name = @path || STRING_SOURCE_NAME
       @buffer = Parser::Source::Buffer.new(buffer_name, 1)
 
       begin
@@ -89,11 +77,6 @@ module RuboCop
           @diagnostics << diagnostic
         end
       end
-    end
-
-    def init_lines
-      @raw_lines = @buffer.source.lines
-      @lines = @raw_lines.map(&:chomp)
     end
   end
 end

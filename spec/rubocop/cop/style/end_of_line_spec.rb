@@ -54,4 +54,12 @@ describe RuboCop::Cop::Style::EndOfLine do
 
     include_examples 'iso-8859-15'
   end
+
+  context 'when source is a string' do
+    it 'registers an offence' do
+      inspect_source(cop, ["x=0\r"])
+
+      expect(cop.messages).to eq(['Carriage return character detected.'])
+    end
+  end
 end
