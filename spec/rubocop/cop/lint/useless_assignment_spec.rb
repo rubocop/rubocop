@@ -1516,6 +1516,18 @@ describe RuboCop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
+  context 'when an anonymous keyword splat method argument is defined' do
+    let(:source) do
+      [
+        'def some_method(name: value, **)',
+        'end'
+      ]
+    end
+
+    include_examples 'accepts' unless RUBY_VERSION < '2.0'
+    include_examples 'mimics MRI 2.1'
+  end
+
   context 'when a block argument is not used' do
     let(:source) do
       [

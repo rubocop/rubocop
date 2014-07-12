@@ -127,13 +127,14 @@ module RuboCop
       # rubocop:enable Style/MethodLength, Style/CyclomaticComplexity
 
       def process_variable_declaration(node)
-        # restarg would have no name:
+        variable_name = node.children.first
+
+        # restarg and kwrestarg would have no name:
         #
         #   def initialize(*)
         #   end
-        return if node.type == :restarg && node.children.empty?
+        return unless variable_name
 
-        variable_name = node.children.first
         variable_table.declare_variable(variable_name, node)
       end
 
