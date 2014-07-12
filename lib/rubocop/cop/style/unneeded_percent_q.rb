@@ -17,9 +17,17 @@ module RuboCop
           check(node)
         end
 
+        # We process regexp nodes because the inner str nodes can cause
+        # confusion in on_str if they start with %( or %Q(.
+        def on_regexp(node)
+          string_parts = node.children.select { |child| child.type == :str }
+          string_parts.each { |s| ignore_node(s) }
+        end
+
         private
 
         def check(node)
+          return if ignored_node?(node)
           src = node.loc.expression.source
           return unless src =~ /^%q/i
           return if src =~ /'/ && src =~ /"/

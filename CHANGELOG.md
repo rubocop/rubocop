@@ -1,15 +1,16 @@
 # Change log
 
+## master (unreleased)
+
 ### New features
 
 * [#835](https://github.com/bbatsov/rubocop/issues/835): New cop `PercentQLiterals` checks if use of `%Q` and `%q` matches configuration. ([@jonas054][])
-
-## master (unreleased)
 
 ### Bugs fixed
 
 * [#1197](https://github.com/bbatsov/rubocop/issues/1197): Fix false positive for new lambda syntax in `SpaceInsideBlockBraces`. ([@jonas054][])
 * [#1201](https://github.com/bbatsov/rubocop/issues/1201): Fix error at anonymous keyword splat arguments in some variable cops. ([@yujinakayama][])
+* Fix false positive in `UnneededPercentQ` for `/%Q(something)/`. ([@jonas054][])
 
 ## 0.24.1 (03/07/2014)
 

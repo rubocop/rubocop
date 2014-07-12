@@ -52,6 +52,11 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts regular expressions starting with %Q' do
+      inspect_source(cop, '/%Q?/')
+      expect(cop.offenses).to be_empty
+    end
+
     it 'auto-corrects static %Q to double quotes' do
       new_source = autocorrect_source(cop, '%Q(hi)')
       # One could argue that the double quotes are not necessary for a static
