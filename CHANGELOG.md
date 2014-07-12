@@ -1,5 +1,9 @@
 # Change log
 
+### New features
+
+* [#835](https://github.com/bbatsov/rubocop/issues/835): New cop `PercentQLiterals` checks if use of `%Q` and `%q` matches configuration. ([@jonas054][])
+
 ## master (unreleased)
 
 ### Bugs fixed

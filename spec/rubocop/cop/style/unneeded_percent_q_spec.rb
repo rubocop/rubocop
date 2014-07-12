@@ -18,7 +18,7 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
     end
 
     it 'accepts a string with single quotes and double quotes' do
-      inspect_source(cop, %Q(%q('"hi"')))
+      inspect_source(cop, %q(%q('"hi"')))
       expect(cop.offenses).to be_empty
     end
 
@@ -43,7 +43,7 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
     end
 
     it 'accepts a string with single quotes and double quotes' do
-      inspect_source(cop, %Q(%Q('"hi"')))
+      inspect_source(cop, %q(%Q('"hi"')))
       expect(cop.offenses).to be_empty
     end
 
