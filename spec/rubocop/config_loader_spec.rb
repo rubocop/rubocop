@@ -343,4 +343,30 @@ describe RuboCop::ConfigLoader do
       expect(defined?(MyClass)).to be_truthy
     end
   end
+
+  describe 'disabling of all default cops' do
+    before do
+      described_class.instance_variable_set('@default_configuration', nil)
+    end
+
+    it 'is allowed' do
+      allow(described_class).to receive(:disable_default_cops?).and_return(true)
+
+      default_config.each do |cop_name, cop_config|
+        next if cop_name == 'AllCops'
+        expect(cop_config['Enabled']).to eq(false)
+      end
+    end
+
+    it 'is off by default' do
+      found_at_least_one_enabled = false
+
+      default_config.each do |cop_name, cop_config|
+        next if cop_name == 'AllCops'
+        found_at_least_one_enabled = true if cop_config['Enabled']
+      end
+
+      expect(found_at_least_one_enabled).to eq(true)
+    end
+  end
 end
