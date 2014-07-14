@@ -108,6 +108,13 @@ Style/AlignParameters:
     - with_first_parameter
     - with_fixed_indentation
 
+# Checks if usage of %() or %Q() matches configuration.
+Style/BarePercentLiterals:
+  EnforcedStyle: bare_percent
+  SupportedStyles:
+    - percent_q
+    - bare_percent
+
 Style/BlockNesting:
   Max: 3
 

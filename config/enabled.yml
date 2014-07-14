@@ -54,6 +54,10 @@ Style/BeginBlock:
   Description: 'Avoid the use of BEGIN blocks.'
   Enabled: true
 
+Style/BarePercentLiterals:
+  Description: 'Checks if usage of %() or %Q() matches configuration.'
+  Enabled: true
+
 Style/BlockComments:
   Description: 'Do not use block comments.'
   Enabled: true
