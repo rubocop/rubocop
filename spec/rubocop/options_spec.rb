@@ -72,6 +72,7 @@ Usage: rubocop [options] [file1, file2, ...]
     -D, --display-cop-names          Display cop names in offense messages.
     -R, --rails                      Run extra Rails cops.
     -l, --lint                       Run only lint cops.
+        --disable-default-cops       Disable cops from default configuration.
     -a, --auto-correct               Auto-correct offenses.
     -n, --no-color                   Disable color output.
     -v, --version                    Display version.

@@ -51,6 +51,7 @@ module RuboCop
 
       ConfigLoader.debug = @options[:debug]
       ConfigLoader.auto_gen_config = @options[:auto_gen_config]
+      ConfigLoader.disable_default_cops = @options[:disable_default_cops]
 
       @config_store.options_config = @options[:config] if @options[:config]
 

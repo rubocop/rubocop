@@ -23,11 +23,12 @@ module RuboCop
     AUTO_GENERATED_FILE = '.rubocop_todo.yml'
 
     class << self
-      attr_accessor :debug, :auto_gen_config
+      attr_accessor :debug, :auto_gen_config, :disable_default_cops
       attr_writer :root_level # The upwards search is stopped at this level.
 
       alias_method :debug?, :debug
       alias_method :auto_gen_config?, :auto_gen_config
+      alias_method :disable_default_cops?, :disable_default_cops
 
       def load_file(path)
         path = File.absolute_path(path)
@@ -104,7 +105,11 @@ module RuboCop
       def default_configuration
         @default_configuration ||= begin
                                      print 'Default ' if debug?
-                                     load_file(DEFAULT_FILE)
+                                     config = load_file(DEFAULT_FILE)
+                                     if disable_default_cops?
+                                       disable_cops_in_config(config)
+                                     end
+                                     config
                                    end
       end
 
@@ -142,6 +147,13 @@ module RuboCop
         warn 'Attention: rubocop-todo.yml has been renamed to ' \
              "#{AUTO_GENERATED_FILE}".color(:red)
         exit(1)
+      end
+
+      def disable_cops_in_config(config)
+        config.each do |cop_name, cop_config|
+          next if cop_name == 'AllCops'
+          cop_config['Enabled'] = false
+        end
       end
     end
   end

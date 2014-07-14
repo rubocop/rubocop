@@ -952,6 +952,12 @@ describe RuboCop::CLI, :isolated_environment do
       end
     end
 
+    describe '--disable-default-cops' do
+      it 'exits cleanly' do
+        expect { cli.run ['--disable-default-cops', '-v'] }.to exit_with_code(0)
+      end
+    end
+
     describe '--show-cops' do
       shared_examples(:prints_config) do
         it 'prints the current configuration' do
