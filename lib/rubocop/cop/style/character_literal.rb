@@ -22,7 +22,7 @@ module RuboCop
             if string.length == 1 # normal character
               corrector.replace(node.loc.expression, "'#{string}'")
             elsif string.length == 2 # special character like \n
-              corrector.replace(node.loc.expression, %Q("#{string}"))
+              corrector.replace(node.loc.expression, %("#{string}"))
             end
           end
         end

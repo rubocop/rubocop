@@ -5,6 +5,7 @@
 ### New features
 
 * [#835](https://github.com/bbatsov/rubocop/issues/835): New cop `PercentQLiterals` checks if use of `%Q` and `%q` matches configuration. ([@jonas054][])
+* [#835](https://github.com/bbatsov/rubocop/issues/835): New cop `BarePercentLiterals` checks if usage of `%()` or `%Q()` matches configuration. ([@jonas054][])
 
 ### Bugs fixed
 
