@@ -8,7 +8,11 @@ module RuboCop
         include SpaceInside
 
         def specifics
-          [:tLBRACK, :tRBRACK, 'square brackets']
+          [
+            [:tLBRACK, :tLBRACK2],
+            :tRBRACK,
+            'square brackets'
+          ]
         end
       end
     end

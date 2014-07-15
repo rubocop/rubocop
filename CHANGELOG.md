@@ -12,6 +12,7 @@
 * [#1197](https://github.com/bbatsov/rubocop/issues/1197): Fix false positive for new lambda syntax in `SpaceInsideBlockBraces`. ([@jonas054][])
 * [#1201](https://github.com/bbatsov/rubocop/issues/1201): Fix error at anonymous keyword splat arguments in some variable cops. ([@yujinakayama][])
 * Fix false positive in `UnneededPercentQ` for `/%Q(something)/`. ([@jonas054][])
+* Fix `SpacesInsideBrackets` for `Hash#[]` calls with spaces after left bracket. ([@mcls][])
 
 ## 0.24.1 (03/07/2014)
 
@@ -1025,3 +1026,4 @@
 [@ggilder]: https://github.com/ggilder
 [@salbertson]: https://github.com/salbertson
 [@camilleldn]: https://github.com/camilleldn
+[@mcls]: https://github.com/mcls

@@ -10,9 +10,9 @@ module RuboCop
 
       def investigate(processed_source)
         @processed_source = processed_source
-        left, right, kind = specifics
+        _, right, kind = specifics
         processed_source.tokens.each_cons(2) do |t1, t2|
-          next unless t1.type == left || t2.type == right
+          next unless left?(t1.type) || t2.type == right
 
           # If the second token is a comment, that means that a line break
           # follows, and that the rules for space inside don't apply.
@@ -28,6 +28,13 @@ module RuboCop
 
       def autocorrect(range)
         @corrections << ->(corrector) { corrector.remove(range) }
+      end
+
+      private
+
+      def left?(token_type)
+        @left_types ||= [specifics.first].flatten
+        @left_types.include?(token_type)
       end
     end
   end
