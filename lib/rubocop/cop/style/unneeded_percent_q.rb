@@ -31,6 +31,7 @@ module RuboCop
           src = node.loc.expression.source
           return unless src =~ /^%q/i
           return if src =~ /'/ && src =~ /"/
+          return if src =~ StringHelp::ESCAPED_CHAR_REGEXP
 
           extra = if src =~ /^%Q/
                     ', or for dynamic strings that contain double quotes'

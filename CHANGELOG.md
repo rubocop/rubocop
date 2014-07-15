@@ -14,6 +14,7 @@
 * [#1201](https://github.com/bbatsov/rubocop/issues/1201): Fix error at anonymous keyword splat arguments in some variable cops. ([@yujinakayama][])
 * Fix false positive in `UnneededPercentQ` for `/%Q(something)/`. ([@jonas054][])
 * Fix `SpacesInsideBrackets` for `Hash#[]` calls with spaces after left bracket. ([@mcls][])
+* [#1210](https://github.com/bbatsov/rubocop/issues/1210): Fix false positive in `UnneededPercentQ` for `%Q(\t")`. ([@jonas054][])
 
 ## 0.24.1 (03/07/2014)
 

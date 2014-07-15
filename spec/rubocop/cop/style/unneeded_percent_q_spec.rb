@@ -31,6 +31,13 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
       new_source = autocorrect_source(cop, "%q('hi')")
       expect(new_source).to eq(%q("'hi'"))
     end
+
+    it 'does not auto-correct %q to double quotes if it would make the string' \
+       ' dynamic' do
+      src = %q(%q('hi\n'))
+      new_source = autocorrect_source(cop, src)
+      expect(new_source).to eq(src)
+    end
   end
 
   context 'with %Q strings' do
@@ -44,6 +51,11 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
 
     it 'accepts a string with single quotes and double quotes' do
       inspect_source(cop, %q(%Q('"hi"')))
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts a string with double quotes and special characters' do
+      inspect_source(cop, %q(%Q("\thi")))
       expect(cop.offenses).to be_empty
     end
 
