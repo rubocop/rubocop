@@ -13,6 +13,22 @@ describe RuboCop::Cop::Style::SpaceInsideBrackets do
        'Space inside square brackets detected.'])
   end
 
+  it 'registers an offense for Hash#[] with symbol key and spaces inside' do
+    inspect_source(cop, ['a[ :key]',
+                         'b[:key ]'])
+    expect(cop.messages).to eq(
+      ['Space inside square brackets detected.',
+       'Space inside square brackets detected.'])
+  end
+
+  it 'registers an offense for Hash#[] with string key and spaces inside' do
+    inspect_source(cop, ['a[\'key\' ]',
+                         'b[ \'key\']'])
+    expect(cop.messages).to eq(
+      ['Space inside square brackets detected.',
+       'Space inside square brackets detected.'])
+  end
+
   it 'accepts space inside strings within square brackets' do
     inspect_source(cop, ["['Encoding:',",
                          " '  Enabled: false']"])
@@ -52,8 +68,16 @@ describe RuboCop::Cop::Style::SpaceInsideBrackets do
 
   it 'auto-corrects unwanted space' do
     new_source = autocorrect_source(cop, ['a = [1, 2 ]',
-                                          'b = [ 1, 2]'])
+                                          'b = [ 1, 2]',
+                                          'c[ :key]',
+                                          'd[:key ]',
+                                          'e["key" ]',
+                                          'f[ "key"]'])
     expect(new_source).to eq(['a = [1, 2]',
-                              'b = [1, 2]'].join("\n"))
+                              'b = [1, 2]',
+                              'c[:key]',
+                              'd[:key]',
+                              'e["key"]',
+                              'f["key"]'].join("\n"))
   end
 end

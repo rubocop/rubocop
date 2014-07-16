@@ -8,6 +8,7 @@ module RuboCop
         between = Parser::Source::Range.new(t1.pos.source_buffer,
                                             t1.pos.end_pos,
                                             t2.pos.begin_pos).source
+
         # Check if the range between the tokens starts with a space. It can
         # contain other characters, e.g. a unary plus, but it must start with
         # space.
