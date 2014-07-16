@@ -27,7 +27,11 @@ module RuboCop
         private
 
         def check(node)
-          return if ignored_node?(node)
+          if node.loc.respond_to?(:heredoc_body)
+            ignore_node(node)
+            return
+          end
+          return if ignored_node?(node) || part_of_ignored_node?(node)
           src = node.loc.expression.source
           return unless src =~ /^%q/i
           return if src =~ /'/ && src =~ /"/

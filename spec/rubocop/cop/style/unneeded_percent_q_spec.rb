@@ -116,4 +116,12 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
       expect(new_source).to eq(corrected)
     end
   end
+
+  it 'accepts a heredoc string that contains %q' do
+    inspect_source(cop, ['  s = <<END',
+                         "%q('hi') # line 1",
+                         '%q("hi")',
+                         'END'])
+    expect(cop.offenses).to be_empty
+  end
 end

@@ -15,6 +15,7 @@
 * Fix false positive in `UnneededPercentQ` for `/%Q(something)/`. ([@jonas054][])
 * Fix `SpacesInsideBrackets` for `Hash#[]` calls with spaces after left bracket. ([@mcls][])
 * [#1210](https://github.com/bbatsov/rubocop/issues/1210): Fix false positive in `UnneededPercentQ` for `%Q(\t")`. ([@jonas054][])
+* Fix false positive in `UnneededPercentQ` for heredoc strings with `%q`/`%Q`. ([@jonas054][])
 
 ## 0.24.1 (03/07/2014)
 
