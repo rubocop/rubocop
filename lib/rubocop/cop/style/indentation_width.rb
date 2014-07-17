@@ -140,11 +140,6 @@ module RuboCop
 
         private
 
-        def begins_its_line?(range)
-          source_before_end = range.source_buffer.source[0...range.begin_pos]
-          source_before_end =~ /\n\s*\Z/
-        end
-
         def check_assignment(node, rhs)
           # If there are method calls chained to the right hand side of the
           # assignment, we let rhs be the receiver of those method calls before
