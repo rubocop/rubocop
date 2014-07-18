@@ -199,8 +199,16 @@ module RuboCop
           node.loc.begin
         end
 
+        # Returns true if the hash spans multiple lines, and each key-value
+        # pair following the first is on a new line.
         def multiline?(node)
-          node.loc.expression.source.include?("\n")
+          return false unless node.loc.expression.source.include?("\n")
+
+          return false if node.children[1..-1].find do |child|
+            !begins_its_line?(child.loc.expression)
+          end
+
+          true
         end
 
         def alignment_for(pair)

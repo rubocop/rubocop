@@ -16,6 +16,13 @@ describe RuboCop::Cop::Style::AlignHash, :config do
                            '     ccc: 3, dddd: 4)'])
       expect(cop.offenses).to be_empty
     end
+
+    it "does not auto-correct pairs that don't start a line" do
+      source = ['render :json => {:a => messages,',
+                '                 :b => :json}, :status => 404']
+      new_source = autocorrect_source(cop, source)
+      expect(new_source).to eq(source.join("\n"))
+    end
   end
 
   context 'always inspect last argument hash' do
