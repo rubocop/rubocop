@@ -203,6 +203,7 @@ describe RuboCop::CLI, :isolated_environment do
         expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
                                              'class Dsl',
                                              '  private',
+                                             '',
                                              '  A = %w(git path)',
                                              'end'].join("\n") + "\n")
         e = abs('example.rb')
@@ -211,14 +212,25 @@ describe RuboCop::CLI, :isolated_environment do
                   'comment.',
                   "#{e}:3:1: C: [Corrected] Indent access modifiers like " \
                   '`private`.',
+                  "#{e}:3:1: C: [Corrected] Keep a blank line before and " \
+                  'after `private`.',
                   "#{e}:3:3: W: Useless `private` access modifier.",
-                  "#{e}:3:3: C: Keep a blank line before and after `private`.",
+                  "#{e}:3:3: C: [Corrected] Keep a blank line before and " \
+                  'after `private`.',
                   "#{e}:4:7: C: [Corrected] Use `%w` or `%W` " \
                   'for array of words.',
                   "#{e}:4:8: C: [Corrected] Prefer single-quoted strings " \
                   "when you don't need string interpolation or special " \
                   'symbols.',
                   "#{e}:4:15: C: [Corrected] Prefer single-quoted strings " \
+                  "when you don't need string interpolation or special " \
+                  'symbols.',
+                  "#{e}:5:7: C: [Corrected] Use `%w` or `%W` " \
+                  'for array of words.',
+                  "#{e}:5:8: C: [Corrected] Prefer single-quoted strings " \
+                  "when you don't need string interpolation or special " \
+                  'symbols.',
+                  "#{e}:5:15: C: [Corrected] Prefer single-quoted strings " \
                   "when you don't need string interpolation or special " \
                   'symbols.',
                   ''].join("\n"))

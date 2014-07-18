@@ -32,6 +32,40 @@ describe RuboCop::Cop::Style::EmptyLinesAroundAccessModifier do
         .to eq(["Keep a blank line before and after `#{access_modifier}`."])
     end
 
+    it "autocorrects blank line before #{access_modifier}" do
+      corrected = autocorrect_source(cop,
+                                     ['class Test',
+                                      '  something',
+                                      "  #{access_modifier}",
+                                      '',
+                                      '  def test; end',
+                                      'end'])
+      expect(corrected).to eq(['class Test',
+                               '  something',
+                               '',
+                               "  #{access_modifier}",
+                               '',
+                               '  def test; end',
+                               'end'].join("\n"))
+    end
+
+    it 'autocorrects blank line after #{access_modifier}' do
+      corrected = autocorrect_source(cop,
+                                     ['class Test',
+                                      '  something',
+                                      '',
+                                      "  #{access_modifier}",
+                                      '  def test; end',
+                                      'end'])
+      expect(corrected).to eq(['class Test',
+                               '  something',
+                               '',
+                               "  #{access_modifier}",
+                               '',
+                               '  def test; end',
+                               'end'].join("\n"))
+    end
+
     it 'accepts missing blank line when at the beginning of class/module' do
       inspect_source(cop,
                      ['class Test',
