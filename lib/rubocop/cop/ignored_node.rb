@@ -9,10 +9,17 @@ module RuboCop
       end
 
       def part_of_ignored_node?(node)
-        expression = node.loc.expression
-        ignored_nodes.any? do |ignored_node|
-          ignored_node.loc.expression.begin_pos <= expression.begin_pos &&
-            ignored_node.loc.expression.end_pos >= expression.end_pos
+        ignored_nodes.map(&:loc).any? do |ignored_loc|
+          if ignored_loc.expression.begin_pos > node.loc.expression.begin_pos
+            next false
+          end
+
+          ignored_end_pos = if ignored_loc.respond_to?(:heredoc_body)
+                              ignored_loc.heredoc_end.end_pos
+                            else
+                              ignored_loc.expression.end_pos
+                            end
+          ignored_end_pos >= node.loc.expression.end_pos
         end
       end
 

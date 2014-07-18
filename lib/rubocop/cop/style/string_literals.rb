@@ -23,14 +23,11 @@ module RuboCop
         def offense?(node)
           src = node.loc.expression.source
           return false if src =~ /^(%[qQ]?|\?|<<-)/i
-          src !~ if style == :single_quotes
-                   # regex matches IF there is a ' or there is a \\ in the
-                   # string that is not preceeded/followed by another \\
-                   # (e.g. "\\x34") but not "\\\\"
-                   /' | (?<! \\) \\{2}* \\ (?! \\)/x
-                 else
-                   /" | \\/x
-                 end
+          if style == :single_quotes
+            src !~ /'/ && src !~ StringHelp::ESCAPED_CHAR_REGEXP
+          else
+            src !~ /" | \\/x
+          end
         end
 
         def autocorrect(node)
