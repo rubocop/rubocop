@@ -18,6 +18,7 @@
 * [#1210](https://github.com/bbatsov/rubocop/issues/1210): Fix false positive in `UnneededPercentQ` for `%Q(\t")`. ([@jonas054][])
 * Fix false positive in `UnneededPercentQ` for heredoc strings with `%q`/`%Q`. ([@jonas054][])
 * [#1214](https://github.com/bbatsov/rubocop/issues/1214): Don't destroy code in `AlignHash` autocorrect. ([@jonas054][])
+* [#1219](https://github.com/bbatsov/rubocop/issues/1219): Don't report bad alignment for `end` or `}` in `BlockAlignment` if it doesn't begin its line. ([@jonas054][])
 
 ## 0.24.1 (03/07/2014)
 
