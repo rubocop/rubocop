@@ -124,12 +124,17 @@ describe RuboCop::Cop::Team do
     end
 
     context 'when some classes are disabled with config' do
-      before do
-        %w(Lint/Void Metrics/LineLength).each do |cop_name|
-          config.for_cop(cop_name)['Enabled'] = false
+      let(:disabled_config) do
+        %w(
+          Lint/Void
+          Metrics/LineLength
+        ).each_with_object({}) do |cop_name, accum|
+          accum[cop_name] = { 'Enabled' => false }
         end
       end
-
+      let(:config) do
+        RuboCop::ConfigLoader.merge_with_default(disabled_config, '')
+      end
       let(:cop_names) { cops.map(&:name) }
 
       it 'does not return intances of the classes' do

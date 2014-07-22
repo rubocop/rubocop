@@ -67,6 +67,7 @@ RSpec.configure do |config|
   # get run.
   config.filter_run :focus
   config.run_all_when_everything_filtered = true
+  config.order = :random
 
   broken_filter = lambda do |v|
     v.is_a?(Symbol) ? RUBY_ENGINE == v.to_s : v
