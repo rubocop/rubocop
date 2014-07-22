@@ -102,11 +102,13 @@ module RuboCop
         end
 
         def check_block_alignment(start_node, block_node)
-          start_loc = start_node.loc.expression
           end_loc = block_node.loc.end
-          do_loc = block_node.loc.begin # Actually it's either do or {.
-          return if do_loc.line == end_loc.line # One-liner, not interesting.
+          return unless begins_its_line?(end_loc)
+
+          start_loc = start_node.loc.expression
           return unless start_loc.column != end_loc.column
+
+          do_loc = block_node.loc.begin # Actually it's either do or {.
 
           # We've found that "end" is not aligned with the start node (which
           # can be a block, a variable assignment, etc). But we also allow

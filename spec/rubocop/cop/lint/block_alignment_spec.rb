@@ -15,6 +15,14 @@ describe RuboCop::Cop::Lint::BlockAlignment do
       .to eq(['`end` at 2, 2 is not aligned with `test do |ala|` at 1, 0'])
   end
 
+  it 'acepts a block end that does not begin its line' do
+    inspect_source(cop,
+                   ['  scope :bar, lambda { joins(:baz)',
+                    '                       .distinct }'
+                   ])
+    expect(cop.offenses).to be_empty
+  end
+
   context 'when the block is a logical operand' do
     it 'accepts a correctly aligned block end' do
       inspect_source(cop,
