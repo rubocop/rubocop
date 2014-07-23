@@ -11,7 +11,7 @@ describe RuboCop::Cop::Style::MultilineBlockLayout do
                     'end'
                    ])
     expect(cop.messages)
-      .to eq(['expression at 1, 8 is on the same line as the block start'])
+      .to eq(['expression at 1, 9 is on the same line as the block start'])
   end
 
   it 'registers an offense for missing newline in {} block w/o params' do
@@ -20,7 +20,7 @@ describe RuboCop::Cop::Style::MultilineBlockLayout do
                     '}'
                    ])
     expect(cop.messages)
-      .to eq(['expression at 1, 7 is on the same line as the block start'])
+      .to eq(['expression at 1, 8 is on the same line as the block start'])
   end
 
   it 'registers an offense for missing newline in do/end block with params' do
@@ -29,7 +29,7 @@ describe RuboCop::Cop::Style::MultilineBlockLayout do
                     'end'
                    ])
     expect(cop.messages)
-      .to eq(['expression at 1, 12 is on the same line as the block start'])
+      .to eq(['expression at 1, 13 is on the same line as the block start'])
   end
 
   it 'registers an offense for missing newline in {} block with params' do
@@ -38,7 +38,7 @@ describe RuboCop::Cop::Style::MultilineBlockLayout do
                     '}'
                    ])
     expect(cop.messages)
-      .to eq(['expression at 1, 11 is on the same line as the block start'])
+      .to eq(['expression at 1, 12 is on the same line as the block start'])
   end
 
   it 'does not register an offense for one-line do/end blocks' do
@@ -76,7 +76,7 @@ describe RuboCop::Cop::Style::MultilineBlockLayout do
                     'end'
                    ])
     expect(cop.messages)
-      .to eq(['expression at 1, 10 is on the same line as the block start'])
+      .to eq(['expression at 1, 11 is on the same line as the block start'])
   end
 
   it 'auto-corrects a do/end block with params that is missing newlines' do

@@ -39,11 +39,20 @@ module RuboCop
           # A block node has three children: the block start,
           # the arguments, and the expression. We care if the block start
           # and the expression start on the same line.
-          expression_loc = node.children.last.loc
+          last_expression = node.children.last
+          expression_loc = last_expression.loc
           return unless do_loc.line == expression_loc.line
 
-          error = format(MSG, expression_loc.line, expression_loc.column)
-          add_offense(node, expression_loc, error)
+          error = format(MSG, expression_loc.line, expression_loc.column + 1)
+
+          expression_start = last_expression.loc.column + 1
+
+          source = node.loc.expression.source_buffer
+          range = Parser::Source::Range.new(source,
+                                            expression_start - 1,
+                                            expression_start)
+
+          add_offense(node, range, error)
         end
 
         def autocorrect(node)
