@@ -29,7 +29,7 @@ module RuboCop
       #     bar(i)
       #   }
       class MultilineBlockLayout < Cop
-        MSG = 'expression at %d, %d is on the same line as the block start'
+        MSG = 'Expression at %d, %d is on the same line as the block start.'
 
         def on_block(node)
           end_loc = node.loc.end
