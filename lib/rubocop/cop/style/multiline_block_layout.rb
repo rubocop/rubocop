@@ -43,14 +43,14 @@ module RuboCop
           expression_loc = last_expression.loc
           return unless do_loc.line == expression_loc.line
 
-          error = format(MSG, expression_loc.line, expression_loc.column + 1)
+          msg = format(MSG, expression_loc.line, expression_loc.column + 1)
 
           expression = last_expression.loc.expression
           range = Parser::Source::Range.new(expression.source_buffer,
                                             expression.begin_pos,
                                             expression.end_pos)
 
-          add_offense(node, range, error)
+          add_offense(node, range, msg)
         end
 
         def autocorrect(node)
