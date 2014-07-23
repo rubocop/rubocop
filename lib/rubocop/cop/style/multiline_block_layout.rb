@@ -45,12 +45,10 @@ module RuboCop
 
           error = format(MSG, expression_loc.line, expression_loc.column + 1)
 
-          expression_start = last_expression.loc.column + 1
-
-          source = node.loc.expression.source_buffer
-          range = Parser::Source::Range.new(source,
-                                            expression_start - 1,
-                                            expression_start)
+          expression = last_expression.loc.expression
+          range = Parser::Source::Range.new(expression.source_buffer,
+                                            expression.begin_pos,
+                                            expression.end_pos)
 
           add_offense(node, range, error)
         end
