@@ -214,7 +214,7 @@ inherit_from: ../.rubocop.yml
 Style/Encoding:
   Enabled: false
 
-Style/LineLength:
+Metrics/LineLength:
   Max: 99
 ```
 
@@ -318,7 +318,7 @@ Rails/DefaultScope:
 Specific cops can be disabled by setting `Enabled` to `false` for that specific cop.
 
 ```yaml
-Style/LineLength:
+Metrics/LineLength:
   Enabled: false
 ```
 
@@ -326,7 +326,7 @@ Cops can customize their severity level. All cops support the `Severity` param.
 Allowed params are `refactor`, `convention`, `warning`, `error` and `fatal`.
 
 ```yaml
-Style/CyclomaticComplexity:
+Metrics/CyclomaticComplexity:
   Severity: warning
 ```
 
@@ -346,9 +346,9 @@ One or more individual cops can be disabled locally in a section of a
 file by adding a comment such as
 
 ```ruby
-# rubocop:disable Style/LineLength, Style/StringLiterals
+# rubocop:disable Metrics/LineLength, Style/StringLiterals
 [...]
-# rubocop:enable Style/LineLength, Style/StringLiterals
+# rubocop:enable Metrics/LineLength, Style/StringLiterals
 ```
 
 You can also disable *all* cops with

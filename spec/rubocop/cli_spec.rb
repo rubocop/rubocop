@@ -565,14 +565,14 @@ describe RuboCop::CLI, :isolated_environment do
                                     '#' * 85,
                                     'y ',
                                     'puts x'])
-        create_file('.rubocop_todo.yml', ['Style/LineLength:',
+        create_file('.rubocop_todo.yml', ['Metrics/LineLength:',
                                           '  Enabled: false'])
         create_file('.rubocop.yml', ['inherit_from: .rubocop_todo.yml'])
         expect(cli.run(['--auto-gen-config'])).to eq(1)
         expect(IO.readlines('.rubocop_todo.yml')[7..-1].map(&:chomp))
           .to eq(['# Offense count: 1',
                   '# Configuration parameters: AllowURI.',
-                  'Style/LineLength:',
+                  'Metrics/LineLength:',
                   '  Max: 85',
                   '',
                   '# Offense count: 1',
@@ -632,6 +632,11 @@ describe RuboCop::CLI, :isolated_environment do
            '# versions of RuboCop, may require this file to be generated ' \
            'again.',
            '',
+           '# Offense count: 2',
+           '# Configuration parameters: AllowURI.',
+           'Metrics/LineLength:',
+           '  Max: 90',
+           '',
            '# Offense count: 1',
            '# Cop supports --auto-correct.',
            'Style/CommentIndentation:',
@@ -646,11 +651,6 @@ describe RuboCop::CLI, :isolated_environment do
            '# Cop supports --auto-correct.',
            'Style/IndentationConsistency:',
            '  Enabled: false',
-           '',
-           '# Offense count: 2',
-           '# Configuration parameters: AllowURI.',
-           'Style/LineLength:',
-           '  Max: 90',
            '',
            '# Offense count: 1',
            '# Cop supports --auto-correct.',
@@ -990,7 +990,7 @@ describe RuboCop::CLI, :isolated_environment do
       let(:stdout) { $stdout.string }
 
       before do
-        create_file('.rubocop.yml', ['Style/LineLength:',
+        create_file('.rubocop.yml', ['Metrics/LineLength:',
                                      '  Max: 110'])
         expect { cli.run ['--show-cops'] + cop_list }.to exit_with_code(0)
       end
@@ -1063,7 +1063,7 @@ describe RuboCop::CLI, :isolated_environment do
       end
 
       context 'with two cops given' do
-        let(:cop_list) { ['Style/Tab,Style/LineLength'] }
+        let(:cop_list) { ['Style/Tab,Metrics/LineLength'] }
         include_examples :prints_config
       end
 
@@ -1458,18 +1458,18 @@ describe RuboCop::CLI, :isolated_environment do
 
   describe 'rubocop:disable comment' do
     it 'can disable all cops in a code section' do
-      create_file('example.rb',
-                  ['# encoding: utf-8',
-                   '# rubocop:disable all',
-                   '#' * 90,
-                   'x(123456)',
-                   'y("123")',
-                   'def func',
-                   '  # rubocop: enable Style/LineLength,Style/StringLiterals',
-                   '  ' + '#' * 93,
-                   '  x(123456)',
-                   '  y("123")',
-                   'end'])
+      src = ['# encoding: utf-8',
+             '# rubocop:disable all',
+             '#' * 90,
+             'x(123456)',
+             'y("123")',
+             'def func',
+             '  # rubocop: enable Metrics/LineLength,Style/StringLiterals',
+             '  ' + '#' * 93,
+             '  x(123456)',
+             '  y("123")',
+             'end']
+      create_file('example.rb', src)
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       # all cops were disabled, then 2 were enabled again, so we
       # should get 2 offenses reported.
@@ -1484,13 +1484,13 @@ describe RuboCop::CLI, :isolated_environment do
     it 'can disable selected cops in a code section' do
       create_file('example.rb',
                   ['# encoding: utf-8',
-                   '# rubocop:disable Style/LineLength,' \
+                   '# rubocop:disable Metrics/LineLength,' \
                    'Style/NumericLiterals,Style/StringLiterals',
                    '#' * 90,
                    'x(123456)',
                    'y("123")',
                    'def func',
-                   '  # rubocop: enable Style/LineLength, ' \
+                   '  # rubocop: enable Metrics/LineLength, ' \
                    'Style/StringLiterals',
                    '  ' + '#' * 93,
                    '  x(123456)',
@@ -1518,9 +1518,9 @@ describe RuboCop::CLI, :isolated_environment do
     it 'can disable selected cops on a single line' do
       create_file('example.rb',
                   ['# encoding: utf-8',
-                   'a' * 90 + ' # rubocop:disable Style/LineLength',
+                   'a' * 90 + ' # rubocop:disable Metrics/LineLength',
                    '#' * 95,
-                   'y("123") # rubocop:disable Style/LineLength,' \
+                   'y("123") # rubocop:disable Metrics/LineLength,' \
                    'Style/StringLiterals'
                   ])
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
@@ -1902,7 +1902,7 @@ describe RuboCop::CLI, :isolated_environment do
       create_file('rubocop.yml', ['Style/Encoding:',
                                   '  Enabled: false',
                                   '',
-                                  'Style/LineLength:',
+                                  'Metrics/LineLength:',
                                   '  Enabled: false'
                                  ])
       result = cli.run(['--format', 'simple',
@@ -1940,7 +1940,7 @@ describe RuboCop::CLI, :isolated_environment do
       create_file('example_src/example1.rb', ['# encoding: utf-8',
                                               '#' * 90
                                              ])
-      create_file('example_src/.rubocop.yml', ['Style/LineLength:',
+      create_file('example_src/.rubocop.yml', ['Metrics/LineLength:',
                                                '  Enabled: true',
                                                '  Max: 100'
                                               ])
@@ -1956,7 +1956,7 @@ describe RuboCop::CLI, :isolated_environment do
                                                    '#' * 90
                                                   ])
       end
-      create_file('example/src/.rubocop.yml', ['Style/LineLength:',
+      create_file('example/src/.rubocop.yml', ['Metrics/LineLength:',
                                                '  Enabled: true',
                                                '  Max: 100'
                                               ])
@@ -1973,11 +1973,11 @@ describe RuboCop::CLI, :isolated_environment do
       create_file('example_src/example1.rb', ['# encoding: utf-8',
                                               '#' * 90
                                              ])
-      create_file('example_src/.rubocop.yml', ['Style/LineLength:',
+      create_file('example_src/.rubocop.yml', ['Metrics/LineLength:',
                                                '  Enabled: true',
                                                '  Max: 100'
                                               ])
-      create_file("#{Dir.home}/.rubocop.yml", ['Style/LineLength:',
+      create_file("#{Dir.home}/.rubocop.yml", ['Metrics/LineLength:',
                                                '  Enabled: true',
                                                '  Max: 80'
                                               ])
@@ -2112,14 +2112,14 @@ describe RuboCop::CLI, :isolated_environment do
       create_file('example/example1.rb', ['# encoding: utf-8',
                                           '#' * 90])
 
-      create_file('example/.rubocop.yml', ['Style/LineLength:',
+      create_file('example/.rubocop.yml', ['Metrics/LineLength:',
                                            '  Enabled: true',
                                            '  Min: 10'])
 
       expect(cli.run(%w(--format simple example))).to eq(1)
       expect($stderr.string)
-        .to eq(['Warning: unrecognized parameter Style/LineLength:Min found ' \
-                'in ' + abs('example/.rubocop.yml'),
+        .to eq(['Warning: unrecognized parameter Metrics/LineLength:Min ' \
+                'found in ' + abs('example/.rubocop.yml'),
                 ''].join("\n"))
     end
 
@@ -2157,7 +2157,7 @@ describe RuboCop::CLI, :isolated_environment do
       create_file('example/example1.rb', ['# encoding: utf-8',
                                           '#' * 90])
 
-      create_file('rubocop.yml', ['Style/LineLength:',
+      create_file('rubocop.yml', ['Metrics/LineLength:',
                                   '  Severity: error'])
 
       cli.run(%w(--format simple -c rubocop.yml))
@@ -2174,7 +2174,7 @@ describe RuboCop::CLI, :isolated_environment do
       create_file('example/example1.rb', ['# encoding: utf-8',
                                           '#' * 90])
 
-      create_file('rubocop.yml', ['Style/LineLength:',
+      create_file('rubocop.yml', ['Metrics/LineLength:',
                                   '  Severity: superbad'])
 
       cli.run(%w(--format simple -c rubocop.yml))

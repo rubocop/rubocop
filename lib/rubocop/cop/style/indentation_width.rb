@@ -12,7 +12,7 @@ module RuboCop
       #   puts 'hello'
       #  end
       # end
-      class IndentationWidth < Cop # rubocop:disable Style/ClassLength
+      class IndentationWidth < Cop # rubocop:disable Metrics/ClassLength
         include AutocorrectAlignment
         include OnMethod
         include CheckAssignment

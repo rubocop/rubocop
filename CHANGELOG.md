@@ -9,6 +9,10 @@
 * [#1079](https://github.com/bbatsov/rubocop/pull/1079): New cop `MultilineBlockLayout` checks if a multiline block has an extpression on the same line as the start of the block. ([@barunio][])
 * [#1217](https://github.com/bbatsov/rubocop/pull/1217): `Style::EmptyLinesAroundAccessModifier` cop does auto-correction. ([@tamird][])
 
+### Changes
+
+* [#1220](https://github.com/bbatsov/rubocop/issues/1220): New namespace `Metrics` created and some `Style` cops moved there. ([@jonas054][])
+
 ### Bugs fixed
 
 * [#1197](https://github.com/bbatsov/rubocop/issues/1197): Fix false positive for new lambda syntax in `SpaceInsideBlockBraces`. ([@jonas054][])

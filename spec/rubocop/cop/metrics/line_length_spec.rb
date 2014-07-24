@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::LineLength, :config do
+describe RuboCop::Cop::Metrics::LineLength, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) { { 'Max' => 80 } }
 
@@ -40,11 +40,11 @@ describe RuboCop::Cop::Style::LineLength, :config do
     end
 
     context 'and the excessive characters include a complete URL' do
-      # rubocop:disable Style/LineLength
+      # rubocop:disable Metrics/LineLength
       let(:source) { <<-END }
         # See: http://google.com/, http://gmail.com/, https://maps.google.com/, http://plus.google.com/
       END
-      # rubocop:enable Style/LineLength
+      # rubocop:enable Metrics/LineLength
 
       it 'registers an offense for the line' do
         inspect_source(cop, source)
@@ -59,12 +59,12 @@ describe RuboCop::Cop::Style::LineLength, :config do
 
     context 'and the excessive characters include part of an URL ' \
             'and another word' do
-      # rubocop:disable Style/LineLength
+      # rubocop:disable Metrics/LineLength
       let(:source) { <<-END }
         # See: https://github.com/bbatsov/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c and
         #   http://google.com/
       END
-      # rubocop:enable Style/LineLength
+      # rubocop:enable Metrics/LineLength
 
       it 'registers an offense for the line' do
         inspect_source(cop, source)
@@ -79,11 +79,11 @@ describe RuboCop::Cop::Style::LineLength, :config do
 
     context 'and an error other than URI::InvalidURIError is raised ' \
             'while validating an URI-ish string' do
-      # rubocop:disable Style/LineLength
+      # rubocop:disable Metrics/LineLength
       let(:source) { <<-END }
         xxxxxxxxxxxxxxxxxxxxxxxxxxxxzxxxxxxxxxxx = LDAP::DEFAULT_GROUP_UNIQUE_MEMBER_LIST_KEY
       END
-      # rubocop:enable Style/LineLength
+      # rubocop:enable Metrics/LineLength
 
       it 'does not crash' do
         expect { inspect_source(cop, source) }.not_to raise_error

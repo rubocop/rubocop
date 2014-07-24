@@ -17,7 +17,7 @@ describe RuboCop::Cop::Cop do
   describe '.qualified_cop_name' do
     it 'adds namespace if the cop name is found in exactly one namespace' do
       expect(described_class.qualified_cop_name('LineLength', '--only'))
-        .to eq('Style/LineLength')
+        .to eq('Metrics/LineLength')
     end
 
     it 'returns the given cop name if it is not found in any namespace' do
@@ -26,8 +26,8 @@ describe RuboCop::Cop::Cop do
     end
 
     it 'returns the given cop name if it already has a namespace' do
-      expect(described_class.qualified_cop_name('Style/LineLength', '--only'))
-        .to eq('Style/LineLength')
+      expect(described_class.qualified_cop_name('Metrics/LineLength', '--only'))
+        .to eq('Metrics/LineLength')
     end
 
     it 'raises an error if the cop name is in more than one namespace' do

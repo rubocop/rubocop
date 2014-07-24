@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Metrics
       # This cop checks for methods with too many parameters.
       # The maximum number of parameters in configurable.
       # On Ruby 2.0+ keyword arguments can optionally

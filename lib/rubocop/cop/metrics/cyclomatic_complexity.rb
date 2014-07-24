@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Metrics
       # This cop checks that the cyclomatic complexity of methods is not higher
       # than the configured maximum. The cyclomatic complexity is the number of
       # linearly independent paths through a method. The algorithm counts

@@ -62,10 +62,6 @@ Style/BlockComments:
   Description: 'Do not use block comments.'
   Enabled: true
 
-Style/BlockNesting:
-  Description: 'Avoid excessive block nesting'
-  Enabled: true
-
 Style/Blocks:
   Description: >-
                 Avoid using {...} for multi-line blocks (multiline chaining is
@@ -101,10 +97,6 @@ Style/ClassCheck:
   Description: 'Enforces consistent use of `Object#is_a?` or `Object#kind_of?`.'
   Enabled: true
 
-Style/ClassLength:
-  Description: 'Avoid classes longer than 100 lines of code.'
-  Enabled: true
-
 Style/ClassMethods:
   Description: 'Use self when defining module/class methods.'
   Enabled: true
@@ -133,10 +125,6 @@ Style/CommentIndentation:
 
 Style/ConstantName:
   Description: 'Constants should use SCREAMING_SNAKE_CASE.'
-  Enabled: true
-
-Style/CyclomaticComplexity:
-  Description: 'Avoid complex methods.'
   Enabled: true
 
 Style/DefWithParentheses:
@@ -275,10 +263,6 @@ Style/LineEndConcatenation:
                  line end.
   Enabled: true
 
-Style/LineLength:
-  Description: 'Limit lines to 80 characters.'
-  Enabled: true
-
 Style/MethodCallParentheses:
   Description: 'Do not use parentheses for method calls with no arguments.'
   Enabled: true
@@ -287,10 +271,6 @@ Style/MethodDefParentheses:
   Description: >-
                  Checks if the method definitions have or don't have
                  parentheses.
-  Enabled: true
-
-Style/MethodLength:
-  Description: 'Avoid methods longer than 10 lines of code.'
   Enabled: true
 
 Style/MethodName:
@@ -363,10 +343,6 @@ Style/OneLineConditional:
 
 Style/OpMethod:
   Description: 'When defining binary operators, name the argument other.'
-  Enabled: true
-
-Style/ParameterLists:
-  Description: 'Avoid parameter lists longer than three or four parameters.'
   Enabled: true
 
 Style/ParenthesesAroundCondition:
@@ -607,6 +583,32 @@ Style/WhileUntilModifier:
 
 Style/WordArray:
   Description: 'Use %w or %W for arrays of words.'
+  Enabled: true
+
+#################### Metrics ################################
+
+Metrics/BlockNesting:
+  Description: 'Avoid excessive block nesting'
+  Enabled: true
+
+Metrics/ClassLength:
+  Description: 'Avoid classes longer than 100 lines of code.'
+  Enabled: true
+
+Metrics/CyclomaticComplexity:
+  Description: 'Avoid complex methods.'
+  Enabled: true
+
+Metrics/LineLength:
+  Description: 'Limit lines to 80 characters.'
+  Enabled: true
+
+Metrics/MethodLength:
+  Description: 'Avoid methods longer than 10 lines of code.'
+  Enabled: true
+
+Metrics/ParameterLists:
+  Description: 'Avoid parameter lists longer than three or four parameters.'
   Enabled: true
 
 #################### Lint ################################

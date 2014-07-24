@@ -10,11 +10,11 @@ describe RuboCop::CommentConfig do
       [
         '# encoding: utf-8',
         '',
-        '# rubocop:disable Style/MethodLength',
+        '# rubocop:disable Metrics/MethodLength',
         'def some_method',
         "  puts 'foo'",
         'end',
-        '# rubocop:enable Style/MethodLength',
+        '# rubocop:enable Metrics/MethodLength',
         '',
         '# rubocop:disable all',
         'some_method',
@@ -26,7 +26,7 @@ describe RuboCop::CommentConfig do
         '',
         'def some_method',
         "  puts 'Disabling indented single line' # rubocop:disable " \
-        'Style/LineLength',
+        'Metrics/LineLength',
         'end',
         '',
         'string = <<END',
@@ -51,7 +51,7 @@ describe RuboCop::CommentConfig do
 
     it 'supports disabling multiple lines with a pair of directive' do
       method_length_disabled_lines =
-        disabled_lines_of_cop('Style/MethodLength')
+        disabled_lines_of_cop('Metrics/MethodLength')
       expected_part = (3..6).to_a
       expect(method_length_disabled_lines & expected_part)
         .to eq(expected_part)
@@ -77,7 +77,7 @@ describe RuboCop::CommentConfig do
     end
 
     it 'handles indented single line' do
-      line_length_disabled_lines = disabled_lines_of_cop('Style/LineLength')
+      line_length_disabled_lines = disabled_lines_of_cop('Metrics/LineLength')
       expect(line_length_disabled_lines).to include(18)
       expect(line_length_disabled_lines).not_to include(19)
     end
