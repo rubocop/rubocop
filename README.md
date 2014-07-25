@@ -188,6 +188,13 @@ specifically:
 $ rubocop -R
 ```
 
+or add the following directive to your `.rubocop.yml`:
+
+```yaml
+AllCops:
+  RunRailsCops: true
+```
+
 ## Configuration
 
 The behavior of RuboCop can be controlled via the
