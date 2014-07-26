@@ -27,8 +27,7 @@ module RuboCop
       #     end                           # ===
       #   end                             # 7 complexity points
       class PerceivedComplexity < Cop
-        include OnMethod
-        include ConfigurableMax
+        include MethodComplexity
         include IfNode
 
         MSG = 'Perceived complexity for %s is too high. [%d/%d]'
@@ -36,40 +35,25 @@ module RuboCop
 
         private
 
-        def on_method(node, method_name, _args, _body)
-          max = cop_config['Max']
-          complexity = complexity(node)
-          return unless complexity > max
-
-          add_offense(node, :keyword,
-                      format(MSG, method_name, complexity, max)) do
-            self.max = complexity
+        def complexity_score_for(node)
+          case node.type
+          when :case
+            expression, *whens, _else = *node
+            # If cond is nil, that means each when has an expression that
+            # evaluates to true or false. It's just an alternative to
+            # if/elsif/elsif... so the when nodes count.
+            if expression.nil?
+              whens.length
+            else
+              # Otherwise, the case node gets 0.8 complexity points and each
+              # when gets 0.2.
+              (0.8 + 0.2 * whens.length).round
+            end
+          when :if
+            if_else?(node) && !elsif?(node) ? 2 : 1
+          else
+            1
           end
-        end
-
-        def complexity(node)
-          c = 1
-          on_node(COUNTED_NODES, node) do |n|
-            c += case n.type
-                 when :case
-                   expression, *whens, _else = *n
-                   # If cond is nil, that means each when has an expression that
-                   # evaluates to true or false. It's just an alternative to
-                   # if/elsif/elsif... so the when nodes count.
-                   if expression.nil?
-                     whens.length
-                   else
-                     # Otherwise, the case node gets 0.8 complexity points and
-                     # each when gets 0.2.
-                     (0.8 + 0.2 * whens.length).round
-                   end
-                 when :if
-                   if_else?(n) && !elsif?(n) ? 2 : 1
-                 else
-                   1
-                 end
-          end
-          c
         end
       end
     end
