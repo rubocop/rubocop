@@ -478,6 +478,9 @@ Metrics/ParameterLists:
   Max: 5
   CountKeywordArgs: true
 
+Metrics/PerceivedComplexity:
+  Max: 7
+
 ##################### Lint ##################################
 
 # Allow safe assignment in conditions.

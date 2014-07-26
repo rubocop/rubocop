@@ -105,6 +105,7 @@ require 'rubocop/cop/metrics/cyclomatic_complexity'
 require 'rubocop/cop/metrics/line_length'
 require 'rubocop/cop/metrics/method_length'
 require 'rubocop/cop/metrics/parameter_lists'
+require 'rubocop/cop/metrics/perceived_complexity'
 
 require 'rubocop/cop/style/access_modifier_indentation'
 require 'rubocop/cop/style/accessor_method_name'

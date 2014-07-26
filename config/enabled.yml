@@ -596,7 +596,9 @@ Metrics/ClassLength:
   Enabled: true
 
 Metrics/CyclomaticComplexity:
-  Description: 'Avoid complex methods.'
+  Description: >-
+                 A complexity metric that is strongy correlated to the number
+                 of test cases needed to validate a method.
   Enabled: true
 
 Metrics/LineLength:
@@ -609,6 +611,12 @@ Metrics/MethodLength:
 
 Metrics/ParameterLists:
   Description: 'Avoid parameter lists longer than three or four parameters.'
+  Enabled: true
+
+Metrics/PerceivedComplexity:
+  Description: >-
+                 A complexity metric geared towards measuring complexity for a
+                 human reader.
   Enabled: true
 
 #################### Lint ################################
