@@ -35,7 +35,7 @@ describe RuboCop::CommentConfig do
         '',
         'foo # rubocop:disable Style/MethodCallParentheses',
         '',
-        '# rubocop:enable Style/Void',
+        '# rubocop:enable Lint/Void',
         '',
         '# rubocop:disable Style/For',
         'foo'

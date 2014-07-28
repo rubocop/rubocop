@@ -134,7 +134,7 @@ describe RuboCop::Cop::Team do
 
       it 'does not return intances of the classes' do
         expect(cops).not_to be_empty
-        expect(cop_names).not_to include('Style/Void')
+        expect(cop_names).not_to include('Lint/Void')
         expect(cop_names).not_to include('Metrics/LineLength')
       end
     end

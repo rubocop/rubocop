@@ -1484,7 +1484,7 @@ describe RuboCop::CLI, :isolated_environment do
     it 'can disable selected cops in a code section' do
       create_file('example.rb',
                   ['# encoding: utf-8',
-                   '# rubocop:disable Metrics/LineLength,' \
+                   '# rubocop:disable Style/LineLength,' \
                    'Style/NumericLiterals,Style/StringLiterals',
                    '#' * 90,
                    'x(123456)',
@@ -1497,6 +1497,9 @@ describe RuboCop::CLI, :isolated_environment do
                    '  y("123")',
                    'end'])
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
+      expect($stderr.string)
+        .to eq("#{abs('example.rb')}: Style/LineLength has the wrong " \
+               "namespace - should be Metrics\n")
       # 3 cops were disabled, then 2 were enabled again, so we
       # should get 2 offenses reported.
       expect($stdout.string)
