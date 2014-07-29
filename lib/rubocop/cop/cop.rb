@@ -176,16 +176,9 @@ module RuboCop
 
       alias_method :name, :cop_name
 
-      def include_file?(file)
-        file_name_matches_any?(file, 'Include', true)
-      end
-
-      def exclude_file?(file)
-        file_name_matches_any?(file, 'Exclude', false)
-      end
-
       def relevant_file?(file)
-        include_file?(file) && !exclude_file?(file)
+        file_name_matches_any?(file, 'Include', true) &&
+          !file_name_matches_any?(file, 'Exclude', false)
       end
 
       private
