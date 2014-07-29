@@ -708,6 +708,9 @@ Lint/ParenthesesAsGroupedExpression:
                  parenthesis.
   Enabled: true
 
+Lint/RepeatedKey:
+  Description: 'Checks for repeated keys in a hash'
+
 Lint/RequireParentheses:
   Description: >-
                  Use parentheses in the method call to avoid confusion
