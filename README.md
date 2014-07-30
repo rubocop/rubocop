@@ -25,6 +25,7 @@ automatically fix some of the problems for you.
     - [Cops](#cops)
         - [Style](#style)
         - [Lint](#lint)
+        - [Metrics](#metrics)
         - [Rails](#rails)
 - [Configuration](#configuration)
     - [Inheritance](#inheritance)
@@ -177,6 +178,14 @@ The `-l`/`--lint` option can be used together with `--only` to run all the
 enabled lint cops plus a selection of other cops.
 
 Disabling any of the lint cops is generally a bad idea.
+
+#### Metrics
+
+Metrics cops deal with properties of the source code that can be measured,
+such as class length, method length, etc. Generally speaking, they have a
+configuration parameter called `Max` and when running
+`rubocop --auto-gen-config`, this parameter will be set to the highest value
+found for the inspected code.
 
 #### Rails
 
