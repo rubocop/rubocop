@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::ParameterLists, :config do
+describe RuboCop::Cop::Metrics::ParameterLists, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) do
     {

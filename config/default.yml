@@ -115,9 +115,6 @@ Style/BarePercentLiterals:
     - percent_q
     - bare_percent
 
-Style/BlockNesting:
-  Max: 3
-
 Style/BracesAroundHashParameters:
   EnforcedStyle: no_braces
   SupportedStyles:
@@ -159,10 +156,6 @@ Style/ClassCheck:
     - is_a?
     - kind_of?
 
-Style/ClassLength:
-  CountComments: false  # count full line comments?
-  Max: 100
-
 # Align with the style guide.
 Style/CollectionMethods:
   # Mapping from undesired method to desired_method
@@ -186,10 +179,6 @@ Style/CommentAnnotation:
     - OPTIMIZE
     - HACK
     - REVIEW
-
-# Avoid complex methods.
-Style/CyclomaticComplexity:
-  Max: 6
 
 # Multi-line method chaining should be done with leading dots.
 Style/DotPosition:
@@ -271,10 +260,6 @@ Style/LambdaCall:
     - call
     - braces
 
-Style/LineLength:
-  Max: 80
-  AllowURI: true
-
 Style/Next:
   # With `always` all conditions at the end of an iteration needs to be
   # replaced by next - with `skip_modifier_ifs` the modifier if like this one
@@ -299,10 +284,6 @@ Style/MethodDefParentheses:
     - require_parentheses
     - require_no_parentheses
 
-Style/MethodLength:
-  CountComments: false  # count full line comments?
-  Max: 10
-
 Style/MethodName:
   EnforcedStyle: snake_case
   SupportedStyles:
@@ -311,10 +292,6 @@ Style/MethodName:
 
 Style/NumericLiterals:
   MinDigits: 5
-
-Style/ParameterLists:
-  Max: 5
-  CountKeywordArgs: true
 
 # Allow safe assignment in conditions.
 Style/ParenthesesAroundCondition:
@@ -475,6 +452,34 @@ Style/WhileUntilModifier:
 
 Style/WordArray:
   MinSize: 0
+
+##################### Metrics ##################################
+
+Metrics/BlockNesting:
+  Max: 3
+
+Metrics/ClassLength:
+  CountComments: false  # count full line comments?
+  Max: 100
+
+# Avoid complex methods.
+Metrics/CyclomaticComplexity:
+  Max: 6
+
+Metrics/LineLength:
+  Max: 80
+  AllowURI: true
+
+Metrics/MethodLength:
+  CountComments: false  # count full line comments?
+  Max: 10
+
+Metrics/ParameterLists:
+  Max: 5
+  CountKeywordArgs: true
+
+Metrics/PerceivedComplexity:
+  Max: 7
 
 ##################### Lint ##################################
 

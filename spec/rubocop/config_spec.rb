@@ -41,7 +41,7 @@ describe RuboCop::Config do
     context 'when the configuration includes any unrecognized parameter' do
       before do
         create_file(configuration_path, [
-          'Style/LineLength:',
+          'Metrics/LineLength:',
           '  Enabled: true',
           '  Min: 10'
         ])
@@ -50,7 +50,7 @@ describe RuboCop::Config do
       it 'raises validation error' do
         expect { configuration.validate }
           .to raise_error(described_class::ValidationError,
-                          /^unrecognized parameter Style\/LineLength:Min/)
+                          /^unrecognized parameter Metrics\/LineLength:Min/)
       end
     end
 
@@ -59,7 +59,7 @@ describe RuboCop::Config do
       # configuration, but are nonetheless allowed for any cop.
       before do
         create_file(configuration_path, [
-          'Style/LineLength:',
+          'Metrics/LineLength:',
           '  Exclude:',
           '    - lib/file.rb',
           '  Include:',

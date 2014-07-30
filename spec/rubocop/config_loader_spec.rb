@@ -161,14 +161,14 @@ describe RuboCop::ConfigLoader do
         create_file('dir/subdir/example.rb', '')
 
         create_file('.rubocop.yml',
-                    ['Style/LineLength:',
+                    ['Metrics/LineLength:',
                      '  Enabled: false',
                      '  Max: 77'])
 
         create_file('dir/.rubocop.yml',
                     ['inherit_from: ../.rubocop.yml',
                      '',
-                     'Style/MethodLength:',
+                     'Metrics/MethodLength:',
                      '  Enabled: true',
                      '  CountComments: false',
                      '  Max: 10'
@@ -177,10 +177,10 @@ describe RuboCop::ConfigLoader do
         create_file(file_path,
                     ['inherit_from: ../.rubocop.yml',
                      '',
-                     'Style/LineLength:',
+                     'Metrics/LineLength:',
                      '  Enabled: true',
                      '',
-                     'Style/MethodLength:',
+                     'Metrics/MethodLength:',
                      '  Max: 5'
                     ])
       end
@@ -188,16 +188,16 @@ describe RuboCop::ConfigLoader do
       it 'returns the ancestor configuration plus local overrides' do
         config =
           default_config
-          .merge('Style/LineLength' => {
+          .merge('Metrics/LineLength' => {
                    'Description' =>
-                   default_config['Style/LineLength']['Description'],
+                   default_config['Metrics/LineLength']['Description'],
                    'Enabled' => true,
                    'Max' => 77,
                    'AllowURI' => true
                  },
-                 'Style/MethodLength' => {
+                 'Metrics/MethodLength' => {
                    'Description' =>
-                   default_config['Style/MethodLength']['Description'],
+                   default_config['Metrics/MethodLength']['Description'],
                    'Enabled' => true,
                    'CountComments' => false,
                    'Max' => 5
@@ -213,13 +213,13 @@ describe RuboCop::ConfigLoader do
         create_file('example.rb', '')
 
         create_file('normal.yml',
-                    ['Style/MethodLength:',
+                    ['Metrics/MethodLength:',
                      '  Enabled: false',
                      '  CountComments: true',
                      '  Max: 80'])
 
         create_file('special.yml',
-                    ['Style/MethodLength:',
+                    ['Metrics/MethodLength:',
                      '  Enabled: false',
                      '  Max: 200'])
 
@@ -228,7 +228,7 @@ describe RuboCop::ConfigLoader do
                      '  - normal.yml',
                      '  - special.yml',
                      '',
-                     'Style/MethodLength:',
+                     'Metrics/MethodLength:',
                      '  Enabled: true'
                     ])
       end
@@ -237,7 +237,7 @@ describe RuboCop::ConfigLoader do
         expected = { 'Enabled' => true,        # overridden in .rubocop.yml
                      'CountComments' => true,  # only defined in normal.yml
                      'Max' => 200 }            # special.yml takes precedence
-        expect(configuration_from_file['Style/MethodLength'].to_set)
+        expect(configuration_from_file['Metrics/MethodLength'].to_set)
           .to be_superset(expected.to_set)
       end
     end
@@ -300,7 +300,7 @@ describe RuboCop::ConfigLoader do
     context 'when a config file which does not mention SymbolArray exists' do
       it 'is disabled' do
         create_file('.rubocop.yml', [
-          'Style/LineLength:',
+          'Metrics/LineLength:',
           '  Max: 80'
         ])
         expect(config.cop_enabled?('Style/SymbolArray')).to be_falsey

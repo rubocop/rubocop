@@ -58,15 +58,23 @@ module RuboCop
       end
 
       def self.qualified_cop_name(name, origin)
-        return name if name.include?('/')
+        @cop_names ||= Set.new(@all.map(&:cop_name))
+        basename = File.basename(name)
         found_ns = @all.types.map(&:capitalize).select do |ns|
-          @all.map(&:cop_name).include?("#{ns}/#{name}")
+          @cop_names.include?("#{ns}/#{basename}")
         end
 
         case found_ns.size
-        when 0 then name # No namespace found. Deal with it later in caller.
-        when 1 then "#{found_ns.first}/#{name}"
-        else fail AmbiguousCopName, "`#{name}` used in #{origin}"
+        when 0
+          name # No namespace found. Deal with it later in caller.
+        when 1
+          if name != basename && found_ns.first != File.dirname(name).to_sym
+            warn "#{origin}: #{name} has the wrong namespace - " \
+                 "should be #{found_ns.first}"
+          end
+          "#{found_ns.first}/#{basename}"
+        else
+          fail AmbiguousCopName, "`#{basename}` used in #{origin}"
         end
       end
 
@@ -168,16 +176,9 @@ module RuboCop
 
       alias_method :name, :cop_name
 
-      def include_file?(file)
-        file_name_matches_any?(file, 'Include', true)
-      end
-
-      def exclude_file?(file)
-        file_name_matches_any?(file, 'Exclude', false)
-      end
-
       def relevant_file?(file)
-        include_file?(file) && !exclude_file?(file)
+        file_name_matches_any?(file, 'Include', true) &&
+          !file_name_matches_any?(file, 'Exclude', false)
       end
 
       private
@@ -193,8 +194,7 @@ module RuboCop
 
       def enabled_line?(line_number)
         return true unless @processed_source
-        @processed_source.comment_config
-          .cop_enabled_at_line?(self, line_number)
+        @processed_source.comment_config.cop_enabled_at_line?(self, line_number)
       end
 
       def default_severity

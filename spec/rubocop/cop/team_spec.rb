@@ -72,7 +72,7 @@ describe RuboCop::Cop::Team do
       end
 
       it 'returns offenses from cops' do
-        expect(cop_names).to include('Style/LineLength')
+        expect(cop_names).to include('Metrics/LineLength')
       end
     end
 
@@ -112,20 +112,20 @@ describe RuboCop::Cop::Team do
 
     context 'when only some cop classes are passed to .new' do
       let(:cop_classes) do
-        [RuboCop::Cop::Lint::Void, RuboCop::Cop::Style::LineLength]
+        [RuboCop::Cop::Lint::Void, RuboCop::Cop::Metrics::LineLength]
       end
 
       it 'returns only intances of the classes' do
         expect(cops.size).to eq(2)
         cops.sort! { |a, b| a.name <=> b.name }
         expect(cops[0].name).to eq('Lint/Void')
-        expect(cops[1].name).to eq('Style/LineLength')
+        expect(cops[1].name).to eq('Metrics/LineLength')
       end
     end
 
     context 'when some classes are disabled with config' do
       before do
-        %w(Lint/Void Style/LineLength).each do |cop_name|
+        %w(Lint/Void Metrics/LineLength).each do |cop_name|
           config.for_cop(cop_name)['Enabled'] = false
         end
       end
@@ -134,8 +134,8 @@ describe RuboCop::Cop::Team do
 
       it 'does not return intances of the classes' do
         expect(cops).not_to be_empty
-        expect(cop_names).not_to include('Style/Void')
-        expect(cop_names).not_to include('Style/LineLength')
+        expect(cop_names).not_to include('Lint/Void')
+        expect(cop_names).not_to include('Metrics/LineLength')
       end
     end
   end

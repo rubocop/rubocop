@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Metrics
       # This cop checks that the cyclomatic complexity of methods is not higher
       # than the configured maximum. The cyclomatic complexity is the number of
       # linearly independent paths through a method. The algorithm counts
@@ -14,26 +14,15 @@ module RuboCop
       # and ||/or is shorthand for a sequence of ifs, so they also add one.
       # Loops can be said to have an exit condition, so they add one.
       class CyclomaticComplexity < Cop
-        include OnMethod
-        include ConfigurableMax
+        include MethodComplexity
 
         MSG = 'Cyclomatic complexity for %s is too high. [%d/%d]'
-        DECISION_POINT_NODES = [:if, :while, :until, :for, :rescue, :when,
-                                :and, :or]
+        COUNTED_NODES = [:if, :while, :until, :for, :rescue, :when, :and, :or]
 
         private
 
-        def on_method(node, method_name, _args, _body)
-          complexity = 1
-          on_node(DECISION_POINT_NODES, node) { complexity += 1 }
-
-          max = cop_config['Max']
-          return unless complexity > max
-
-          add_offense(node, :keyword,
-                      format(MSG, method_name, complexity, max)) do
-            self.max = complexity
-          end
+        def complexity_score_for(_node)
+          1
         end
       end
     end

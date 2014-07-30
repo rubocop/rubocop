@@ -1,0 +1,32 @@
+# encoding: utf-8
+
+module RuboCop
+  module Cop
+    # This module handles measurement and reporting of complexity in methods.
+    module MethodComplexity
+      include OnMethod
+      include ConfigurableMax
+
+      private
+
+      def on_method(node, method_name, _args, _body)
+        max = cop_config['Max']
+        complexity = complexity(node)
+        return unless complexity > max
+
+        add_offense(node, :keyword,
+                    format(self.class::MSG, method_name, complexity, max)) do
+          self.max = complexity
+        end
+      end
+
+      def complexity(node)
+        c = 1
+        on_node(self.class::COUNTED_NODES, node) do |n|
+          c += complexity_score_for(n)
+        end
+        c
+      end
+    end
+  end
+end

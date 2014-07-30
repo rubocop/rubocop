@@ -1,5 +1,5 @@
 # encoding: utf-8
-# rubocop:disable Style/LineLength
+# rubocop:disable Metrics/LineLength
 
 require 'spec_helper'
 
