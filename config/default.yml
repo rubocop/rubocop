@@ -108,6 +108,15 @@ Style/AlignParameters:
     - with_first_parameter
     - with_fixed_indentation
 
+Style/AndOr:
+  # Whether `and` and `or` are banned only in conditionals (conditionals)
+  # or completely (always).
+  EnforcedStyle: always
+  SupportedStyles:
+    - always
+    - conditionals
+
+
 # Checks if usage of %() or %Q() matches configuration.
 Style/BarePercentLiterals:
   EnforcedStyle: bare_percent
