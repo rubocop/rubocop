@@ -668,7 +668,7 @@ To use RuboCop in your `Rakefile` add the following:
 ```ruby
 require 'rubocop/rake_task'
 
-RuboCop::RakeTask.new
+Rubocop::RakeTask.new
 ```
 
 The above will use default values
@@ -676,8 +676,8 @@ The above will use default values
 ```ruby
 require 'rubocop/rake_task'
 
-desc 'Run RuboCop on the lib directory'
-RuboCop::RakeTask.new(:rubocop) do |task|
+desc 'Run Rubocop on the lib directory'
+Rubocop::RakeTask.new(:rubocop) do |task|
   task.patterns = ['lib/**/*.rb']
   # only show the files with failures
   task.formatters = ['files']
