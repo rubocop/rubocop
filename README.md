@@ -223,7 +223,7 @@ inherit_from: ../.rubocop.yml
 Style/Encoding:
   Enabled: false
 
-Metrics/LineLength:
+Style/LineLength:
   Max: 99
 ```
 
@@ -327,7 +327,7 @@ Rails/DefaultScope:
 Specific cops can be disabled by setting `Enabled` to `false` for that specific cop.
 
 ```yaml
-Metrics/LineLength:
+Style/LineLength:
   Enabled: false
 ```
 
@@ -355,9 +355,9 @@ One or more individual cops can be disabled locally in a section of a
 file by adding a comment such as
 
 ```ruby
-# rubocop:disable Metrics/LineLength, Style/StringLiterals
+# rubocop:disable Style/LineLength, Style/StringLiterals
 [...]
-# rubocop:enable Metrics/LineLength, Style/StringLiterals
+# rubocop:enable Style/LineLength, Style/StringLiterals
 ```
 
 You can also disable *all* cops with
