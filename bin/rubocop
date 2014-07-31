@@ -1,22 +1,17 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 
-if RUBY_VERSION >= '1.9.2'
-  $LOAD_PATH.unshift(File.dirname(File.realpath(__FILE__)) + '/../lib')
+$LOAD_PATH.unshift(File.dirname(File.realpath(__FILE__)) + '/../lib')
 
-  require 'rubocop'
-  require 'benchmark'
+require 'rubocop'
+require 'benchmark'
 
-  cli = RuboCop::CLI.new
-  result = 0
+cli = RuboCop::CLI.new
+result = 0
 
-  time = Benchmark.realtime do
-    result = cli.run
-  end
-
-  puts "Finished in #{time} seconds" if cli.options[:debug]
-  exit result
-else
-  puts 'RuboCop supports only Ruby 1.9.2+'
-  exit(-1)
+time = Benchmark.realtime do
+  result = cli.run
 end
+
+puts "Finished in #{time} seconds" if cli.options[:debug]
+exit result
