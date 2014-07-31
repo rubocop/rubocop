@@ -29,11 +29,18 @@ module RuboCop
         #   (send nil :binding) :remote_pry)
         REMOTE_PRY_NODE = s(:send, s(:send, nil, :binding), :remote_pry)
 
+        # binding.pry_remote node
+        #
+        # (send
+        #   (send nil :binding) :pry_remote)
+        PRY_REMOTE_NODE = s(:send, s(:send, nil, :binding), :pry_remote)
+
         DEBUGGER_NODES = [
           DEBUGGER_NODE,
           BYEBUG_NODE,
           PRY_NODE,
-          REMOTE_PRY_NODE
+          REMOTE_PRY_NODE,
+          PRY_REMOTE_NODE
         ]
 
         def on_send(node)
