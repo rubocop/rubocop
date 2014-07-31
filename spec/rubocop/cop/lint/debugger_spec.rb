@@ -23,13 +23,17 @@ describe RuboCop::Cop::Lint::Debugger do
 
   it 'reports an offense for pry bindings' do
     src = ['binding.pry',
-           'binding.remote_pry']
+           'binding.remote_pry',
+           'binding.pry_remote']
     inspect_source(cop, src)
-    expect(cop.offenses.size).to eq(2)
+    expect(cop.offenses.size).to eq(3)
     expect(cop.messages)
       .to eq(['Remove debugger entry point `binding.pry`.',
-              'Remove debugger entry point `binding.remote_pry`.'])
-    expect(cop.highlights).to eq(['binding.pry', 'binding.remote_pry'])
+              'Remove debugger entry point `binding.remote_pry`.',
+              'Remove debugger entry point `binding.pry_remote`.'])
+    expect(cop.highlights).to eq(['binding.pry',
+                                  'binding.remote_pry',
+                                  'binding.pry_remote'])
   end
 
   it 'does not report an offense for non-pry binding' do
@@ -38,7 +42,7 @@ describe RuboCop::Cop::Lint::Debugger do
     expect(cop.offenses).to be_empty
   end
 
-  %w(debugger byebug).each do |comment|
+  %w(debugger byebug pry remote_pry pry_remote).each do |comment|
     it "does not report an offense for #{comment} in comments" do
       src = ["# #{comment}"]
       inspect_source(cop, src)
@@ -46,7 +50,7 @@ describe RuboCop::Cop::Lint::Debugger do
     end
   end
 
-  %w(debugger byebug pry).each do |method_name|
+  %w(debugger byebug pry remote_pry pry_remote).each do |method_name|
     it "does not report an offense for a #{method_name} method" do
       src = ["code.#{method_name}"]
       inspect_source(cop, src)
