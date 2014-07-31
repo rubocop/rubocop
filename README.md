@@ -20,6 +20,12 @@ Most aspects of its behavior can be tweaked via various
 Apart from reporting problems in your code, RuboCop can also
 automatically fix some of the problems for you.
 
+**This documentation tracks the `master` branch of RuboCop. Some of
+the features and settings discussed here might not be available in
+older releases (including the current stable release). Please, consult
+the relevant git repo branch if you need documentation for a specific RuboCop
+release.**
+
 - [Installation](#installation)
 - [Basic Usage](#basic-usage)
     - [Cops](#cops)
