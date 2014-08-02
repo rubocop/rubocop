@@ -3,13 +3,6 @@
 require 'yaml'
 require 'pathname'
 
-# Psych can give an error when reading an empty file, so we use syck in Ruby
-# versions where it's available. Also, the problem with empty files does not
-# appear in Ruby 2 or in JRuby 1.9 mode.
-if RUBY_VERSION < '2.0.0' && RUBY_PLATFORM != 'java'
-  YAML::ENGINE.yamler = 'syck'
-end
-
 module RuboCop
   # This class represents the configuration of the RuboCop application
   # and all its cops. A Config is associated with a YAML configuration
@@ -31,7 +24,18 @@ module RuboCop
 
       def load_file(path)
         path = File.absolute_path(path)
+
+        # Psych can give an error when reading an empty file, so we use syck in
+        # Ruby versions where it's available. Also, the problem with empty
+        # files does not appear in Ruby 2 or in JRuby 1.9 mode.
+        original_yamler = YAML::ENGINE.yamler
+        if RUBY_VERSION < '2.0.0' && RUBY_PLATFORM != 'java'
+          YAML::ENGINE.yamler = 'syck'
+        end
         hash = YAML.load_file(path) || {}
+        # Restore yamler for applications using RuboCop as a library.
+        YAML::ENGINE.yamler = original_yamler
+
         puts "configuration from #{path}" if debug?
 
         resolve_inheritance(path, hash)

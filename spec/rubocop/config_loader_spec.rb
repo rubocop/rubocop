@@ -260,6 +260,12 @@ describe RuboCop::ConfigLoader do
         'Enabled' => true
       )
     end
+
+    it 'returns an empty configuration loaded from an empty file' do
+      create_file(configuration_path, '')
+      configuration = load_file
+      expect(configuration).to eq({})
+    end
   end
 
   describe '.merge' do
