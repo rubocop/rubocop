@@ -40,6 +40,7 @@ module RuboCop
           # the arguments, and the expression. We care if the block start
           # and the expression start on the same line.
           last_expression = node.children.last
+          return unless last_expression
           expression_loc = last_expression.loc
           return unless do_loc.line == expression_loc.line
 
