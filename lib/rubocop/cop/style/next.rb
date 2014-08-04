@@ -56,6 +56,17 @@ module RuboCop
 
         private
 
+        def min_body_length?(node)
+          (node.loc.end.line - node.loc.keyword.line) > min_body_length
+        end
+
+        def min_body_length
+          length = cop_config['MinBodyLength'] || 1
+          return length if length.is_a?(Integer) && length > 0
+
+          fail 'MinBodyLength needs to be a positive integer!'
+        end
+
         def enumerator?(method_name)
           ENUMERATORS.include?(method_name) || /\Aeach_/.match(method_name)
         end
@@ -71,6 +82,7 @@ module RuboCop
           return false if if_else?(node)
           return false unless node.type == :if
           return false if style == :skip_modifier_ifs && modifier_if?(node)
+          return false if !modifier_if?(node) && !min_body_length?(node)
 
           # The `if` node must have only `if` body since we excluded `if` with
           # `else` above.

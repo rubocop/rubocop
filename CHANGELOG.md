@@ -11,6 +11,7 @@
 * [#1217](https://github.com/bbatsov/rubocop/pull/1217): `Style::EmptyLinesAroundAccessModifier` cop does auto-correction. ([@tamird][])
 * [#1220](https://github.com/bbatsov/rubocop/issues/1220): New cop `PerceivedComplexity` is similar to `CyclomaticComplexity`, but reports when methods have a high complexity for a human reader. ([@jonas054][])
 * `Debugger` cop now checks for `binding.pry_remote`. ([@yous][])
+* [#1238](https://github.com/bbatsov/rubocop/issues/1238): Add `MinBodyLength` option to `Next` cop. ([@bbatsov][])
 
 ### Changes
 

@@ -173,7 +173,7 @@ describe RuboCop::Cop::Style::Next, :config do
       { 'EnforcedStyle' => 'always' }
     end
 
-    it 'ignores modifier ifs' do
+    it 'does not ignore modifier ifs' do
       inspect_source(cop,
                      ['[].each do |o|',
                       '  puts o if o == 1',
@@ -251,6 +251,35 @@ describe RuboCop::Cop::Style::Next, :config do
                     '  if true',
                     '  end',
                     'end'])
-    expect(cop.offenses.size).to eq(1)
+    expect(cop.offenses).to be_empty
+  end
+
+  context 'MinBodyLength: 3' do
+    let(:cop_config) do
+      { 'MinBodyLength' => 3 }
+    end
+
+    it 'accepts if whose body has 1 line' do
+      inspect_source(cop,
+                     ['arr.each do |e|',
+                      '  if something',
+                      '    work',
+                      '  end',
+                      'end'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'reports an offense for if whose body has 3 lines' do
+      inspect_source(cop,
+                     ['arr.each do |e|',
+                      '  if something',
+                      '    work',
+                      '    work',
+                      '    work',
+                      '  end',
+                      'end'])
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.highlights).to eq(['each'])
+    end
   end
 end
