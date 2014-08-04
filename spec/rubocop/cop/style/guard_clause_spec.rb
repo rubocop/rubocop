@@ -102,7 +102,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
 
   context 'MinBodyLength: 1' do
     let(:cop_config) do
-      { 'EnforcedStyle' => 'MinBodyLength: 1' }
+      { 'MinBodyLength' => 1 }
     end
 
     it 'reports an offense for if whose body has 1 line' do
