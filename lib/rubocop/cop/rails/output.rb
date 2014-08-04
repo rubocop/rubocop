@@ -14,8 +14,10 @@ module RuboCop
                      :pretty_print]
 
         def on_send(node)
-          receiver, method_name, *_args = *node
-          return unless receiver.nil? && BLACKLIST.include?(method_name)
+          receiver, method_name, *args = *node
+          return unless receiver.nil? &&
+                        !args.empty? &&
+                        BLACKLIST.include?(method_name)
 
           add_offense(node, :selector)
         end
