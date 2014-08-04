@@ -60,6 +60,14 @@ describe RuboCop::Cop::Style::MultilineBlockLayout do
     expect(cop.offenses).to be_empty
   end
 
+  it 'does not error out when the block is empty' do
+    inspect_source(cop,
+                   ['test do |x|',
+                    'end'
+                   ])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'does not register offenses when there is a newline for {} block' do
     inspect_source(cop,
                    ['test {',
