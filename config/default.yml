@@ -536,6 +536,13 @@ Rails/HasAndBelongsToMany:
   Include:
     - app/models/**/*.rb
 
+Rails/Output:
+  Include:
+    - app/**/*.rb
+    - config/**/*.rb
+    - db/**/*.rb
+    - lib/**/*.rb
+    
 Rails/ReadWriteAttribute:
   Include:
     - app/models/**/*.rb
