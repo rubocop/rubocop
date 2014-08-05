@@ -28,13 +28,13 @@ module RuboCop
         # Psych can give an error when reading an empty file, so we use syck in
         # Ruby versions where it's available. Also, the problem with empty
         # files does not appear in Ruby 2 or in JRuby 1.9 mode.
-        original_yamler = YAML::ENGINE.yamler
         if RUBY_VERSION < '2.0.0' && RUBY_PLATFORM != 'java'
+          original_yamler = YAML::ENGINE.yamler
           YAML::ENGINE.yamler = 'syck'
         end
         hash = YAML.load_file(path) || {}
         # Restore yamler for applications using RuboCop as a library.
-        YAML::ENGINE.yamler = original_yamler
+        YAML::ENGINE.yamler = original_yamler if original_yamler
 
         puts "configuration from #{path}" if debug?
 
