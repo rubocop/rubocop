@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 
+# rubocop:disable RSpec/DescribeClass
 describe 'isolated environment', :isolated_environment do
   include FileHelper
 

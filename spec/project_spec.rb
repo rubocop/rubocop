@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'RuboCop Project' do
+describe 'RuboCop Project' do # rubocop:disable RSpec/DescribeClass
   describe 'default configuration file' do
     let(:cop_names) { RuboCop::Cop::Cop.all.map(&:cop_name) }
 
