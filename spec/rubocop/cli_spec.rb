@@ -559,6 +559,11 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     describe '--auto-gen-config' do
+      before(:each) do
+        RuboCop::Formatter::DisabledConfigFormatter
+          .config_to_allow_offenses = {}
+      end
+
       it 'overwrites an existing todo file' do
         create_file('example1.rb', ['# encoding: utf-8',
                                     'x= 0 ',
@@ -718,6 +723,7 @@ describe RuboCop::CLI, :isolated_environment do
       end
 
       it 'generates a todo list that removes the reports' do
+        RuboCop::Cop::Style::RegexpLiteral.slash_count = 0
         create_file('example.rb', ['# encoding: utf-8',
                                    'y.gsub!(%r{abc/xyz}, "#{x}")'])
         expect(cli.run(%w(--format emacs))).to eq(1)
@@ -736,8 +742,9 @@ describe RuboCop::CLI, :isolated_environment do
            'again.',
            '',
            '# Offense count: 1',
+           '# Configuration parameters: MaxSlashes.',
            'Style/RegexpLiteral:',
-           '  MaxSlashes: 0']
+           '  Enabled: false']
         actual = IO.read('.rubocop_todo.yml').split($RS)
         expected.each_with_index do |line, ix|
           if line.is_a?(String)
