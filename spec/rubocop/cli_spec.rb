@@ -95,12 +95,12 @@ describe RuboCop::CLI, :isolated_environment do
                   '  class Bar',
                   '    stuff = [',
                   '      {',
-                  "        some: 'hash',",
+                  "        some: 'hash'",
                   '      },',
                   '      {',
                   "        another: 'hash',",
                   "        with: 'more'",
-                  '      },',
+                  '      }',
                   '    ]',
                   '  end',
                   'end'].join("\n") + "\n")
@@ -197,7 +197,7 @@ describe RuboCop::CLI, :isolated_environment do
         create_file('example.rb', ['# encoding: utf-8',
                                    'class Dsl',
                                    'private',
-                                   '  A = ["git", "path"]',
+                                   '  A = ["git", "path",]',
                                    'end'])
         expect(cli.run(%w(--auto-correct --format emacs))).to eq(1)
         expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
@@ -225,6 +225,8 @@ describe RuboCop::CLI, :isolated_environment do
                   "#{e}:4:15: C: [Corrected] Prefer single-quoted strings " \
                   "when you don't need string interpolation or special " \
                   'symbols.',
+                  "#{e}:4:21: C: [Corrected] Avoid comma after the last item " \
+                  'of an array.',
                   "#{e}:5:7: C: [Corrected] Use `%w` or `%W` " \
                   'for array of words.',
                   "#{e}:5:8: C: [Corrected] Prefer single-quoted strings " \
@@ -233,6 +235,8 @@ describe RuboCop::CLI, :isolated_environment do
                   "#{e}:5:15: C: [Corrected] Prefer single-quoted strings " \
                   "when you don't need string interpolation or special " \
                   'symbols.',
+                  "#{e}:5:21: C: [Corrected] Avoid comma after the last item " \
+                  'of an array.',
                   ''].join("\n"))
       end
 
@@ -540,7 +544,7 @@ describe RuboCop::CLI, :isolated_environment do
         end
         expect($stderr.string).to eq('')
         expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
-                                             'some_method(a,)',
+                                             'some_method(a)',
                                              ''].join("\n"))
       end
 
@@ -553,7 +557,7 @@ describe RuboCop::CLI, :isolated_environment do
         end
         expect($stderr.string).to eq('')
         expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
-                                             'puts [1,]',
+                                             'puts [1]',
                                              ''].join("\n"))
       end
     end

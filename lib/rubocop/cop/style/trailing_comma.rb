@@ -121,7 +121,7 @@ module RuboCop
           range = Parser::Source::Range.new(sb, comma_begin_pos,
                                             comma_begin_pos + 1)
           article = kind =~ /array/ ? 'an' : 'a'
-          add_offense(nil, range,
+          add_offense(range, range,
                       format(MSG, 'Avoid', format(kind, article)) +
                       extra_info + '.')
         end
@@ -132,8 +132,17 @@ module RuboCop
           ix += last_expr.source[ix..-1] =~ /\S/
           range = Parser::Source::Range.new(sb, last_expr.begin_pos + ix,
                                             last_expr.end_pos)
-          add_offense(nil, range,
+          add_offense(range, range,
                       format(MSG, 'Put a', format(kind, 'a multiline') + '.'))
+        end
+
+        def autocorrect(range)
+          @corrections << lambda do |corrector|
+            case range.source
+            when ',' then corrector.remove(range)
+            else          corrector.insert_after(range, ',')
+            end
+          end
         end
       end
     end
