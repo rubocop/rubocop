@@ -75,6 +75,28 @@ describe RuboCop::Cop::Style::TrailingComma, :config do
       inspect_source(cop, 'some_method')
       expect(cop.offenses).to be_empty
     end
+
+    it 'auto-corrects unwanted comma in an Array literal' do
+      new_source = autocorrect_source(cop, 'VALUES = [1001, 2020, 3333, ]')
+      expect(new_source).to eq('VALUES = [1001, 2020, 3333 ]')
+    end
+
+    it 'auto-corrects unwanted comma in a Hash literal' do
+      new_source = autocorrect_source(cop,
+                                      'MAP = { a: 1001, b: 2020, c: 3333, }')
+      expect(new_source).to eq('MAP = { a: 1001, b: 2020, c: 3333 }')
+    end
+
+    it 'auto-corrects unwanted comma in a method call' do
+      new_source = autocorrect_source(cop, 'some_method(a, b, c, )')
+      expect(new_source).to eq('some_method(a, b, c )')
+    end
+
+    it 'auto-corrects unwanted comma in a method call with hash parameters at' \
+       ' the end' do
+      new_source = autocorrect_source(cop, 'some_method(a, b, c: 0, d: 1, )')
+      expect(new_source).to eq('some_method(a, b, c: 0, d: 1 )')
+    end
   end
 
   context 'with single line list of values' do
@@ -154,6 +176,44 @@ describe RuboCop::Cop::Style::TrailingComma, :config do
                              'HELP',
                              '})'])
         expect(cop.offenses).to be_empty
+      end
+
+      it 'auto-corrects unwanted comma in an Array literal' do
+        new_source = autocorrect_source(cop, ['VALUES = [',
+                                              '           1001,',
+                                              '           2020,',
+                                              '           3333,',
+                                              '         ]'])
+        expect(new_source).to eq(['VALUES = [',
+                                  '           1001,',
+                                  '           2020,',
+                                  '           3333',
+                                  '         ]'].join("\n"))
+      end
+
+      it 'auto-corrects unwanted comma in a Hash literal' do
+        new_source = autocorrect_source(cop, ['MAP = { a: 1001,',
+                                              '        b: 2020,',
+                                              '        c: 3333,',
+                                              '      }'])
+        expect(new_source).to eq(['MAP = { a: 1001,',
+                                  '        b: 2020,',
+                                  '        c: 3333',
+                                  '      }'].join("\n"))
+      end
+
+      it 'auto-corrects unwanted comma in a method call with hash parameters' \
+         ' at the end' do
+        new_source = autocorrect_source(cop, ['some_method(',
+                                              '              a,',
+                                              '              b,',
+                                              '              c: 0,',
+                                              '              d: 1,)'])
+        expect(new_source).to eq(['some_method(',
+                                  '              a,',
+                                  '              b,',
+                                  '              c: 0,',
+                                  '              d: 1)'].join("\n"))
       end
     end
 
@@ -272,6 +332,45 @@ describe RuboCop::Cop::Style::TrailingComma, :config do
                              'HELP',
                              '})'])
         expect(cop.offenses).to be_empty
+      end
+
+      it 'auto-corrects an Array literal with two of the values on the same' \
+         ' line and a trailing comma' do
+        new_source = autocorrect_source(cop, ['VALUES = [',
+                                              '           1001, 2020,',
+                                              '           3333,',
+                                              '         ]'])
+        expect(new_source).to eq(['VALUES = [',
+                                  '           1001, 2020,',
+                                  '           3333',
+                                  '         ]'].join("\n"))
+      end
+
+      it 'auto-corrects missing comma in a Hash literal' do
+        new_source = autocorrect_source(cop, ['MAP = { a: 1001,',
+                                              '        b: 2020,',
+                                              '        c: 3333',
+                                              '}'])
+        expect(new_source).to eq(['MAP = { a: 1001,',
+                                  '        b: 2020,',
+                                  '        c: 3333,',
+                                  '}'].join("\n"))
+      end
+
+      it 'auto-corrects missing comma in a method call with hash parameters' \
+         ' at the end' do
+        new_source = autocorrect_source(cop, ['some_method(',
+                                              '              a,',
+                                              '              b,',
+                                              '              c: 0,',
+                                              '              d: 1',
+                                              '           )'])
+        expect(new_source).to eq(['some_method(',
+                                  '              a,',
+                                  '              b,',
+                                  '              c: 0,',
+                                  '              d: 1,',
+                                  '           )'].join("\n"))
       end
     end
   end
