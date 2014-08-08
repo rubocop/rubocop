@@ -31,6 +31,7 @@
 * [#1219](https://github.com/bbatsov/rubocop/issues/1219): Don't report bad alignment for `end` or `}` in `BlockAlignment` if it doesn't begin its line. ([@jonas054][])
 * [#1227](https://github.com/bbatsov/rubocop/issues/1227): Don't permanently change yamler as it can affect other apps. ([@jonas054][])
 * [#1184](https://github.com/bbatsov/rubocop/issues/1184): Fix a false positive in `Output` cop. ([@bbatsov][])
+* [#1256](https://github.com/bbatsov/rubocop/issues/1256): Ignore block-pass in `TrailingComma`. ([@tamird][])
 
 ## 0.24.1 (03/07/2014)
 

@@ -314,6 +314,19 @@ describe RuboCop::Cop::Style::TrailingComma, :config do
         expect(cop.offenses).to be_empty
       end
 
+      # this is a sad parse error
+      it 'accepts no trailing comma in a method call with a block' \
+         ' paramter at the end' do
+        inspect_source(cop, ['some_method(',
+                             '              a,',
+                             '              b,',
+                             '              c: 0,',
+                             '              d: 1,',
+                             '              &block',
+                             '           )'])
+        expect(cop.offenses).to be_empty
+      end
+
       it 'accepts a multiline word array' do
         inspect_source(cop, ['ingredients = %w(',
                              '  sausage',
