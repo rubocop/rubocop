@@ -221,12 +221,13 @@ describe RuboCop::Cop::Style::TrailingComma, :config do
       let(:cop_config) { { 'EnforcedStyleForMultiline' => 'comma' } }
 
       context 'when closing bracket is on same line as last value' do
-        it 'accepts Array literal with no trailing comma' do
+        it 'registers an offense for an Array literal with no trailing comma' do
           inspect_source(cop, ['VALUES = [',
                                '           1001,',
                                '           2020,',
                                '           3333]'])
-          expect(cop.offenses).to be_empty
+          expect(cop.messages)
+            .to eq(['Put a comma after the last item of a multiline array.'])
         end
 
         it 'accepts a method call with Hash as last parameter split on ' \
@@ -240,20 +241,19 @@ describe RuboCop::Cop::Style::TrailingComma, :config do
       it 'accepts Array literal with two of the values on the same line' do
         inspect_source(cop, ['VALUES = [',
                              '           1001, 2020,',
-                             '           3333',
+                             '           3333,',
                              '         ]'])
         expect(cop.offenses).to be_empty
       end
 
       it 'registers an offense for an Array literal with two of the values ' \
-         'on the same line and a trailing comma' do
+         'on the same line and no trailing comma' do
         inspect_source(cop, ['VALUES = [',
                              '           1001, 2020,',
-                             '           3333,',
+                             '           3333',
                              '         ]'])
         expect(cop.messages)
-          .to eq(['Avoid comma after the last item of an array, unless each ' \
-                  'item is on its own line.'])
+          .to eq(['Put a comma after the last item of a multiline array.'])
       end
 
       it 'registers an offense for no trailing comma in a Hash literal' do
@@ -338,11 +338,11 @@ describe RuboCop::Cop::Style::TrailingComma, :config do
          ' line and a trailing comma' do
         new_source = autocorrect_source(cop, ['VALUES = [',
                                               '           1001, 2020,',
-                                              '           3333,',
+                                              '           3333',
                                               '         ]'])
         expect(new_source).to eq(['VALUES = [',
                                   '           1001, 2020,',
-                                  '           3333',
+                                  '           3333,',
                                   '         ]'].join("\n"))
       end
 
