@@ -127,7 +127,10 @@ module RuboCop
         end
 
         def put_comma(items, kind, sb)
-          last_expr = items.last.loc.expression
+          last_item = items.last
+          return if last_item.type == :block_pass
+
+          last_expr = last_item.loc.expression
           ix = last_expr.source.rindex("\n") || 0
           ix += last_expr.source[ix..-1] =~ /\S/
           range = Parser::Source::Range.new(sb, last_expr.begin_pos + ix,
