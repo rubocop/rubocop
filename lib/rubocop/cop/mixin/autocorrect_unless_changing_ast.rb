@@ -10,12 +10,20 @@ module RuboCop
         c = correction(node)
         new_source = rewrite_node(node)
 
-        # Make the correction only if it doesn't change the AST.
-        if node != ProcessedSource.new(new_source).ast
+        # Make the correction only if it doesn't change the AST. Regenerate the
+        # AST for `node` so we get it without context. Otherwise the comparison
+        # could be misleading.
+        if ast_for(node.loc.expression.source) != ast_for(new_source)
           fail CorrectionNotPossible
         end
 
         @corrections << c
+      end
+
+      private
+
+      def ast_for(source)
+        ProcessedSource.new(source).ast
       end
 
       def rewrite_node(node)
