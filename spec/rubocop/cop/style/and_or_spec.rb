@@ -118,6 +118,15 @@ describe RuboCop::Cop::Style::AndOr, :config do
                                 'true || false'].join("\n"))
     end
 
+    it 'auto-corrects "or" with || inside def' do
+      new_source = autocorrect_source(cop, ['def z(a, b)',
+                                            '  return true if a or b',
+                                            'end'])
+      expect(new_source).to eq(['def z(a, b)',
+                                '  return true if a || b',
+                                'end'].join("\n"))
+    end
+
     it 'leaves *or* as is if auto-correction changes the meaning' do
       src = "teststring.include? 'a' or teststring.include? 'b'"
       new_source = autocorrect_source(cop, src)
