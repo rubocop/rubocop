@@ -8,14 +8,26 @@ module RuboCop
         MSG = 'Replace interpolated variable `%s` with expression `#{%s}`.'
 
         def on_dstr(node)
+          check_for_interpolation(node)
+        end
+
+        def on_regexp(node)
+          check_for_interpolation(node)
+        end
+
+        def on_xstr(node)
+          check_for_interpolation(node)
+        end
+
+        private
+
+        def check_for_interpolation(node)
           var_nodes(node.children).each do |v|
             var = v.loc.expression.source
 
             add_offense(v, :expression, format(MSG, var, var))
           end
         end
-
-        private
 
         def autocorrect(node)
           @corrections << lambda do |corrector|

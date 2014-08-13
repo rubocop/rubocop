@@ -33,6 +33,7 @@
 * [#1184](https://github.com/bbatsov/rubocop/issues/1184): Fix a false positive in `Output` cop. ([@bbatsov][])
 * [#1256](https://github.com/bbatsov/rubocop/issues/1256): Ignore block-pass in `TrailingComma`. ([@tamird][])
 * [#1255](https://github.com/bbatsov/rubocop/issues/1255): Compare without context in `AutocorrectUnlessChangingAST`. ([@jonas054][])
+* [#1262](https://github.com/bbatsov/rubocop/issues/1262): Handle regexp and backtick literals in `VariableInterpolation`. ([@bbatsov][])
 
 ## 0.24.1 (03/07/2014)
 

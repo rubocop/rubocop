@@ -5,9 +5,29 @@ require 'spec_helper'
 describe RuboCop::Cop::Style::VariableInterpolation do
   subject(:cop) { described_class.new }
 
-  it 'registers an offense for interpolated global variables' do
+  it 'registers an offense for interpolated global variables in string' do
     inspect_source(cop,
                    ['puts "this is a #$test"'])
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.highlights).to eq(['$test'])
+    expect(cop.messages)
+      .to eq(['Replace interpolated variable `$test`' \
+              ' with expression `#{$test}`.'])
+  end
+
+  it 'registers an offense for interpolated global variables in regexp' do
+    inspect_source(cop,
+                   ['puts /this is a #$test/'])
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.highlights).to eq(['$test'])
+    expect(cop.messages)
+      .to eq(['Replace interpolated variable `$test`' \
+              ' with expression `#{$test}`.'])
+  end
+
+  it 'registers an offense for interpolated global variables in regexp' do
+    inspect_source(cop,
+                   ['puts `this is a #$test`'])
     expect(cop.offenses.size).to eq(1)
     expect(cop.highlights).to eq(['$test'])
     expect(cop.messages)
