@@ -21,6 +21,7 @@
 
 ### Bugs fixed
 
+* [#1251](https://github.com/bbatsov/rubocop/issues/1251): Fix `PercentLiteralDelimiters` auto-correct indentation error. ([@hannestyden][])
 * [#1197](https://github.com/bbatsov/rubocop/issues/1197): Fix false positive for new lambda syntax in `SpaceInsideBlockBraces`. ([@jonas054][])
 * [#1201](https://github.com/bbatsov/rubocop/issues/1201): Fix error at anonymous keyword splat arguments in some variable cops. ([@yujinakayama][])
 * Fix false positive in `UnneededPercentQ` for `/%Q(something)/`. ([@jonas054][])

@@ -258,5 +258,39 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
       new_source = autocorrect_source(cop, ['%w(', 'some', 'words', ')'])
       expect(new_source).to eq("%w[\nsome\nwords\n]")
     end
+
+    it 'preserves indentation when correcting a multiline array' do
+      original_source = [
+        '  array = %w(',
+        '    first',
+        '    second',
+        '  )'
+      ]
+      corrected_source = [
+        '  array = %w[',
+        '    first',
+        '    second',
+        '  ]'
+      ].join("\n")
+      new_source = autocorrect_source(cop, original_source)
+      expect(new_source).to eq(corrected_source)
+    end
+
+    it 'preserves irregular indentation when correcting a multiline array' do
+      original_source = [
+        '  array = %w(',
+        '    first',
+        '  second',
+        ')'
+      ]
+      corrected_source = [
+        '  array = %w[',
+        '    first',
+        '  second',
+        ']'
+      ].join("\n")
+      new_source = autocorrect_source(cop, original_source)
+      expect(new_source).to eq(corrected_source)
+    end
   end
 end

@@ -42,14 +42,18 @@ module RuboCop
           type = type(node)
 
           opening_delimiter, closing_delimiter = preferred_delimiters(type)
-          opening_newline = new_line(node.loc.begin, node.children.first)
-          closing_newline = new_line(node.loc.end, node.children.last)
 
+          first_child, *_middle, last_child = *node
+          opening_newline = new_line(node.loc.begin, first_child)
+          expression_indentation = leading_whitespace(first_child, :expression)
+          closing_newline = new_line(node.loc.end, last_child)
+          closing_indentation = leading_whitespace(node, :end)
           expression, reg_opt = *contents(node)
+
           corrected_source =
             type + opening_delimiter + opening_newline +
-            expression +
-            closing_newline + closing_delimiter + reg_opt
+            expression_indentation + expression + closing_newline +
+            closing_indentation + closing_delimiter + reg_opt
 
           @corrections << lambda do |corrector|
             corrector.replace(
@@ -69,6 +73,17 @@ module RuboCop
 
         def preferred_delimiters(type)
           cop_config['PreferredDelimiters'][type].split(//)
+        end
+
+        def leading_whitespace(object, part)
+          case object
+          when String
+            ''
+          when Parser::AST::Node
+            /(\s*)/.match(object.loc.send(part).source_line)[1]
+          else
+            fail "Unsupported object #{object}"
+          end
         end
 
         def contents(node)
