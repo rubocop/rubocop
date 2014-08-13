@@ -128,7 +128,7 @@ describe RuboCop::Cop::Style::AndOr, :config do
     end
 
     it 'leaves *or* as is if auto-correction changes the meaning' do
-      src = "teststring.include? 'a' or teststring.include? 'b'"
+      src = "x = y or teststring.include? 'b'"
       new_source = autocorrect_source(cop, src)
       expect(new_source).to eq(src)
     end
@@ -193,6 +193,66 @@ describe RuboCop::Cop::Style::AndOr, :config do
                      ['x = a + b until a or b'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Use `||` instead of `or`.'])
+    end
+
+    it 'auto-corrects "or" with || in method calls' do
+      new_source = autocorrect_source(cop, 'method a or b')
+      expect(new_source).to eq('method(a) || b')
+    end
+
+    it 'auto-corrects "or" with || in method calls (2)' do
+      new_source = autocorrect_source(cop, 'method a,b or b')
+      expect(new_source).to eq('method(a,b) || b')
+    end
+
+    it 'auto-corrects "or" with || in method calls (3)' do
+      new_source = autocorrect_source(cop, 'obj.method a or b')
+      expect(new_source).to eq('obj.method(a) || b')
+    end
+
+    it 'auto-corrects "or" with || in method calls (4)' do
+      new_source = autocorrect_source(cop, 'obj.method a,b or b')
+      expect(new_source).to eq('obj.method(a,b) || b')
+    end
+
+    it 'auto-corrects "or" with || and doesn\'t add extra parenthesis' do
+      new_source = autocorrect_source(cop, 'method(a, b) or b')
+      expect(new_source).to eq('method(a, b) || b')
+    end
+
+    it 'auto-corrects "or" with || and add parenthesis on left expr' do
+      new_source = autocorrect_source(cop, 'b or method a,b')
+      expect(new_source).to eq('b || method(a,b)')
+    end
+
+    it 'auto-corrects "and" with && in method calls' do
+      new_source = autocorrect_source(cop, 'method a and b')
+      expect(new_source).to eq('method(a) && b')
+    end
+
+    it 'auto-corrects "and" with && in method calls (2)' do
+      new_source = autocorrect_source(cop, 'method a,b and b')
+      expect(new_source).to eq('method(a,b) && b')
+    end
+
+    it 'auto-corrects "and" with && in method calls (3)' do
+      new_source = autocorrect_source(cop, 'obj.method a and b')
+      expect(new_source).to eq('obj.method(a) && b')
+    end
+
+    it 'auto-corrects "and" with && in method calls (4)' do
+      new_source = autocorrect_source(cop, 'obj.method a,b and b')
+      expect(new_source).to eq('obj.method(a,b) && b')
+    end
+
+    it 'auto-corrects "and" with && and doesn\'t add extra parenthesis' do
+      new_source = autocorrect_source(cop, 'method(a, b) and b')
+      expect(new_source).to eq('method(a, b) && b')
+    end
+
+    it 'auto-corrects "and" with && and add parenthesis on left expr' do
+      new_source = autocorrect_source(cop, 'b and method a,b')
+      expect(new_source).to eq('b && method(a,b)')
     end
 
   end
