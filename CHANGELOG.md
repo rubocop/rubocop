@@ -14,6 +14,7 @@
 * `Debugger` cop now checks for `binding.pry_remote`. ([@yous][])
 * [#1238](https://github.com/bbatsov/rubocop/issues/1238): Add `MinBodyLength` option to `Next` cop. ([@bbatsov][])
 * [#1241](https://github.com/bbatsov/rubocop/issues/1241): `TrailingComma` cop does auto-correction. ([@yous][])
+* [#1078](https://github.com/bbatsov/rubocop/pull/1078): New cop `BlockEndNewline` checks if the end statement of a multiline block is on its own line. ([@barunio][])
 
 ### Changes
 
