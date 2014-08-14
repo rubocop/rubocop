@@ -119,7 +119,7 @@ module RuboCop
           indentation_of_do_line = match.begin(0)
           return unless end_loc.column != indentation_of_do_line
 
-          add_offense(nil,
+          add_offense(block_node,
                       end_loc,
                       format(MSG, end_loc.line, end_loc.column,
                              start_loc.source.lines.to_a.first.chomp,
@@ -146,6 +146,29 @@ module RuboCop
 
         def block_is_on_next_line?(begin_node, block_node)
           begin_node.loc.line != block_node.loc.line
+        end
+
+        def autocorrect(node)
+          key = node.children.first
+          source = node.loc.expression.source_buffer
+
+          @corrections << lambda do |corrector|
+            start_col = key.loc.expression.column
+            starting_position_of_block_end = node.loc.end.begin_pos
+            end_col = node.loc.end.column
+
+            if end_col < start_col
+              delta = start_col - end_col
+              corrector.insert_before(node.loc.end, ' ' * delta)
+            elsif end_col > start_col
+              delta = start_col - end_col
+              range_start = starting_position_of_block_end + delta
+              range_end = range_start - delta
+
+              range = Parser::Source::Range.new(source, range_start, range_end)
+              corrector.remove(range)
+            end
+          end
         end
       end
     end

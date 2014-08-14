@@ -62,6 +62,10 @@ Style/BlockComments:
   Description: 'Do not use block comments.'
   Enabled: true
 
+Style/BlockEndNewline:
+  Description: 'Put end statement of multiline block on its own line.'
+  Enabled: true
+
 Style/Blocks:
   Description: >-
                 Avoid using {...} for multi-line blocks (multiline chaining is
