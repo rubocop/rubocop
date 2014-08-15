@@ -29,7 +29,7 @@ module RuboCop
       #     bar(i)
       #   }
       class MultilineBlockLayout < Cop
-        MSG = 'Expression at %d, %d is on the same line as the block start.'
+        MSG = 'Block body expression is on the same line as the block start.'
 
         def on_block(node)
           end_loc = node.loc.end
@@ -44,14 +44,12 @@ module RuboCop
           expression_loc = last_expression.loc
           return unless do_loc.line == expression_loc.line
 
-          msg = format(MSG, expression_loc.line, expression_loc.column + 1)
-
           expression = last_expression.loc.expression
           range = Parser::Source::Range.new(expression.source_buffer,
                                             expression.begin_pos,
                                             expression.end_pos)
 
-          add_offense(node, range, msg)
+          add_offense(node, range)
         end
 
         def autocorrect(node)
