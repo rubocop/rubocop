@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe RuboCop::Cop::Style::Next, :config do
   subject(:cop) { described_class.new(config) }
-  let(:cop_config) { {} }
+  let(:cop_config) { { 'MinBodyLength' => 1 } }
 
   it 'finds all kind of loops with condition at the end of the iteration' do
     # TODO: Split this long example into multiple examples.
