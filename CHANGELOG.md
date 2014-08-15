@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.25.0 (15/08/2014)
+
 ### New features
 
 * [#1259](https://github.com/bbatsov/rubocop/issues/1259): Allow AndOr cop to autocorrect by adding method call parenthesis. ([@vrthra][])
