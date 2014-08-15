@@ -10,7 +10,15 @@ AllCops:
   # Include gemspec and Rakefile
   Include:
     - '**/*.gemspec'
+    - '**/*.podspec'
+    - '**/*.jbuilder'
+    - '**/*.rake'
+    - '**/Gemfile'
     - '**/Rakefile'
+    - '**/Capfile'
+    - '**/Guardfile'
+    - '**/Podfile'
+    - '**/Thorfile'
     - '**/Vagrantfile'
   Exclude:
     - 'vendor/**/*'
