@@ -56,17 +56,17 @@ module RuboCop
 
         def autocorrect(node)
           @corrections << lambda do |corrector|
-            expression = node.children.last
+            _method, _args, block_body = *node
+            first_node = if block_body.type == :begin
+                           block_body.children.first
+                         else
+                           block_body
+                         end
 
-            start_col = node.loc.expression.column
-            expression_start = expression.loc.column
+            block_start_col = node.loc.expression.column
 
-            source = node.loc.expression.source_buffer
-            range = Parser::Source::Range.new(source,
-                                              expression_start - 1,
-                                              expression_start)
-
-            corrector.insert_after(range, "\n  #{' ' * start_col}")
+            corrector.insert_before(first_node.loc.expression,
+                                    "\n  #{' ' * block_start_col}")
           end
         end
       end

@@ -98,6 +98,19 @@ describe RuboCop::Cop::Style::MultilineBlockLayout do
                               'end'].join("\n"))
   end
 
+  it 'auto-corrects a do/end block with a mult-line body' do
+    src = ['test do |foo| bar',
+           '  test',
+           'end']
+
+    new_source = autocorrect_source(cop, src)
+
+    expect(new_source).to eq(['test do |foo| ',
+                              '  bar',
+                              '  test',
+                              'end'].join("\n"))
+  end
+
   it 'auto-corrects a {} block with params that is missing newlines' do
     src = ['test { |foo| bar',
            '}']
