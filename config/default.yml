@@ -223,6 +223,8 @@ Style/FileName:
     - '**/Gemfile'
     - '**/Capfile'
     - '**/Vagrantfile'
+    - '**/Podfile'
+    - '**/Thorfile'
 
 # Checks use of for or each in multiline loops.
 Style/For:
