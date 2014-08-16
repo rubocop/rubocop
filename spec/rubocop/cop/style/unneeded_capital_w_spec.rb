@@ -29,6 +29,24 @@ describe RuboCop::Cop::Style::UnneededCapitalW do
     expect(cop.offenses).to be_empty
   end
 
+  it 'registers no offense for %W with special characters' do
+    source = ['def dangerous_characters',
+              '  %W(\000) +',
+              '  %W(\001) +',
+              '  %W(\027) +',
+              '  %W(\002) +',
+              '  %W(\003) +',
+              '  %W(\004) +',
+              '  %W(\005) +',
+              '  %W(\006) +',
+              '  %W(\007) +',
+              '  %W(\00) +',
+              '  %W(\a)',
+              'end']
+    inspect_source(cop, source)
+    expect(cop.offenses).to be_empty
+  end
+
   it 'registers no offense for %w without interpolation' do
     inspect_source(cop,
                    ['%w(cat dog)'])
@@ -74,10 +92,5 @@ describe RuboCop::Cop::Style::UnneededCapitalW do
   it 'auto-corrects an array of words' do
     new_source = autocorrect_source(cop, '%W(one two three)')
     expect(new_source).to eq('%w(one two three)')
-  end
-
-  it 'auto-corrects an array of words and character constants' do
-    new_source = autocorrect_source(cop, '%W(one two ?\n ?\t)')
-    expect(new_source).to eq('%w(one two ?\n ?\t)')
   end
 end
