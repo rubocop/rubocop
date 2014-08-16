@@ -17,8 +17,12 @@ module RuboCop
         private
 
         def on_percent_literal(node)
-          return unless node.children.none? { |x| x.type == :dstr }
-
+          node.children.each do |string|
+            if string.type == :dstr ||
+              string.loc.expression.source =~ StringHelp::ESCAPED_CHAR_REGEXP
+              return
+            end
+          end
           add_offense(node, :expression)
         end
 
