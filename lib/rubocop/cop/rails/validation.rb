@@ -5,7 +5,7 @@ module RuboCop
     module Rails
       # This cop checks for the use of old-style attribute validation macros.
       class Validation < Cop
-        MSG = 'Use the new "sexy" validations (`validates` ...).'
+        MSG = 'Prefer the new style validations `%s` over `%s`.'
 
         BLACKLIST = [:validates_acceptance_of,
                      :validates_confirmation_of,
@@ -18,11 +18,34 @@ module RuboCop
                      :validates_size_of,
                      :validates_uniqueness_of]
 
+        WHITELIST = [
+          'validates :column, acceptance: value',
+          'validates :column, confirmation: value',
+          'validates :column, exclusion: value',
+          'validates :column, format: value',
+          'validates :column, inclusion: value',
+          'validates :column, length: value',
+          'validates :column, numericality: value',
+          'validates :column, presence: value',
+          'validates :column, size: value',
+          'validates :column, uniqueness: value'
+        ]
+
         def on_send(node)
           receiver, method_name, *_args = *node
           return unless receiver.nil? && BLACKLIST.include?(method_name)
 
-          add_offense(node, :selector)
+          add_offense(node,
+                      :selector,
+                      format(MSG,
+                             preferred_method(method_name),
+                             method_name))
+        end
+
+        private
+
+        def preferred_method(method)
+          WHITELIST[BLACKLIST.index(method.to_sym)]
         end
       end
     end
