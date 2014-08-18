@@ -515,6 +515,10 @@ Style/SpaceInsideParens:
   Description: 'No spaces after ( or before ).'
   Enabled: true
 
+Style/SpaceInsideRangeLiteral:
+  Description: 'No spaces inside range literals.'
+  Enabled: true
+
 Style/SpecialGlobalVars:
   Description: 'Avoid Perl-style global variables.'
   Enabled: true
