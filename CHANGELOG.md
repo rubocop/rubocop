@@ -9,6 +9,7 @@
 ### Bugs fixed
 
 * [#1263](https://github.com/bbatsov/rubocop/issues/1263): Do not report `%W` literals with special escaped characters in `UnneededCapitalW`. ([@jonas054][])
+* [#1286](https://github.com/bbatsov/rubocop/issues/1286): Fix a false positive in `VariableName`. ([@bbatsov][])
 
 ## 0.25.0 (15/08/2014)
 

@@ -51,10 +51,10 @@ describe RuboCop::Cop::Style::VariableName, :config do
       expect(cop.highlights).to eq(['@myAttribute'])
     end
 
-    it 'registers an offense for camel case in setter name' do
-      inspect_source(cop, 'self.mySetter = 2')
+    it 'registers an offense for camel case in class variable name' do
+      inspect_source(cop, '@@myAttr = 2')
       expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['mySetter'])
+      expect(cop.highlights).to eq(['@@myAttr'])
     end
 
     include_examples 'always accepted'
@@ -88,8 +88,8 @@ describe RuboCop::Cop::Style::VariableName, :config do
       expect(cop.offenses).to be_empty
     end
 
-    it 'accepts camel case in setter name' do
-      inspect_source(cop, 'self.mySetter = 2')
+    it 'accepts camel case in class variable name' do
+      inspect_source(cop, '@@myAttr = 2')
       expect(cop.offenses).to be_empty
     end
 
