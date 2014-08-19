@@ -825,5 +825,5 @@ Rails/ScopeArgs:
   Enabled: true
 
 Rails/Validation:
-  Description: 'Use sexy validations.'
+  Description: 'Use validates :attribute, hash of validations.'
   Enabled: true
