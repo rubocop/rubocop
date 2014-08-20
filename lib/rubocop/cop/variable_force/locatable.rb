@@ -27,6 +27,25 @@ module RuboCop
           branch_point_node
         end
 
+        def run_exclusively_with?(other)
+          return false unless branch_point_node.equal?(other.branch_point_node)
+          return false if branch_body_node.equal?(other.branch_body_node)
+
+          # Main body of rescue is always run:
+          #
+          #   begin
+          #     # main
+          #   rescue
+          #     # resbody
+          #   end
+          if branch_point_node.type == :rescue &&
+            (branch_body_name == 'main' || other.branch_body_name == 'main')
+            return false
+          end
+
+          true
+        end
+
         def branch_id
           return nil unless inside_of_branch?
           @branch_id ||= [branch_point_node.object_id, branch_type].join('_')
@@ -61,8 +80,6 @@ module RuboCop
           @ancestor_nodes_in_scope ||= scope.ancestors_of_node(@node)
         end
 
-        private
-
         def branch_body_name
           case branch_point_node.type
           when :if
@@ -82,6 +99,8 @@ module RuboCop
           raise InvalidBranchBodyError,
                 "Invalid body index #{body_index} of #{branch_point_node.type}"
         end
+
+        private
 
         def if_body_name
           case body_index
