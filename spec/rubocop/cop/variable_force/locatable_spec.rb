@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 describe RuboCop::Cop::VariableForce::Locatable do
-  include ASTHelper
   include AST::Sexp
 
   class LocatableObject
@@ -22,21 +21,8 @@ describe RuboCop::Cop::VariableForce::Locatable do
     processed_source.ast
   end
 
-  let(:def_node) do
-    found_node = scan_node(ast, include_origin_node: true) do |node|
-      break node if node.type == :def
-    end
-    fail 'No def node found!' unless found_node
-    found_node
-  end
-
-  let(:lvasgn_node) do
-    found_node = scan_node(ast) do |node|
-      break node if node.type == :lvasgn
-    end
-    fail 'No lvasgn node found!' unless found_node
-    found_node
-  end
+  let(:def_node) { ast.each_node.find(&:def_type?) }
+  let(:lvasgn_node) { ast.each_node.find(&:lvasgn_type?) }
 
   let(:scope) { RuboCop::Cop::VariableForce::Scope.new(def_node) }
   let(:assignment) { LocatableObject.new(lvasgn_node, scope) }

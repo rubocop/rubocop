@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 describe RuboCop::Cop::VariableForce::Scope do
-  include ASTHelper
   include AST::Sexp
 
   describe '.new' do
@@ -29,13 +28,7 @@ describe RuboCop::Cop::VariableForce::Scope do
 
   let(:scope_node_type) { :def }
 
-  let(:scope_node) do
-    found_node = scan_node(ast, include_origin_node: true) do |node|
-      break node if node.type == scope_node_type
-    end
-    fail 'No scope node found!' unless found_node
-    found_node
-  end
+  let(:scope_node) { ast.each_node(scope_node_type).first }
 
   subject(:scope) { described_class.new(scope_node) }
 
