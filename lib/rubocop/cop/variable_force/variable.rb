@@ -46,17 +46,14 @@ module RuboCop
           @assignments.reverse_each do |assignment|
             next if consumed_branch_ids.include?(assignment.branch_id)
 
-            assignment.reference!
-
-            if assignment.inside_of_branch?
-              break if assignment.branch_id == reference.branch_id
-
-              unless assignment.reference_penetrable?
-                consumed_branch_ids << assignment.branch_id
-              end
-            else
-              break
+            unless assignment.run_exclusively_with?(reference)
+              assignment.reference!
             end
+
+            break unless assignment.inside_of_branch?
+            break if assignment.branch_id == reference.branch_id
+            next if assignment.reference_penetrable?
+            consumed_branch_ids << assignment.branch_id
           end
         end
 

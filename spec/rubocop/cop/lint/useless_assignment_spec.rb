@@ -687,6 +687,33 @@ describe RuboCop::Cop::Lint::UselessAssignment do
     end
   end
 
+  context 'when a variable is reassigned and unreferenced in a if branch ' \
+          'while the variable is referenced in the paired else branch ' do
+    let(:source) do
+      [
+        'def some_method(flag)',
+        '  foo = 1',
+        '',
+        '  if flag',
+        '    puts foo',
+        '    foo = 2',
+        '  else',
+        '    puts foo',
+        '  end',
+        'end'
+      ]
+    end
+
+    it 'registers an offense for the reassignment in the if branch' do
+      inspect_source(cop, source)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
+        .to eq('Useless assignment to variable - `foo`.')
+      expect(cop.offenses.first.line).to eq(6)
+      expect(cop.highlights).to eq(['foo'])
+    end
+  end
+
   context 'when a variable is assigned in branch of modifier if ' \
           'that references the variable in its conditional clause' \
           'and referenced after the branching' do
@@ -1240,6 +1267,29 @@ describe RuboCop::Cop::Lint::UselessAssignment do
       expect(cop.offenses[1].line).to eq(5)
       expect(cop.offenses[2].line).to eq(7)
       expect(cop.offenses[3].line).to eq(9)
+    end
+  end
+
+  context 'when a rescued error variable is wrongly tried to be referenced ' \
+          'in another rescue body' do
+    let(:source) do
+      [
+        'begin',
+        '  do_something',
+        'rescue FirstError => error',
+        'rescue SecondError',
+        '  p error # => nil',
+        'end'
+      ]
+    end
+
+    it 'registers an offense' do
+      inspect_source(cop, source)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
+        .to eq('Useless assignment to variable - `error`.')
+      expect(cop.offenses.first.line).to eq(3)
+      expect(cop.highlights).to eq(['error'])
     end
   end
 
