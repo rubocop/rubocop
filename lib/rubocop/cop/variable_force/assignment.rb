@@ -65,37 +65,29 @@ module RuboCop
         end
 
         def meta_assignment_node
-          if instance_variable_defined?(:@meta_assignment_node)
-            return @meta_assignment_node
+          unless instance_variable_defined?(:@meta_assignment_node)
+            @meta_assignment_node =
+              operator_assignment_node || multiple_assignment_node
           end
 
-          @meta_assignment_node = nil
-
-          return unless parent_node
-
-          if OPERATOR_ASSIGNMENT_TYPES.include?(parent_node.type) &&
-             parent_node.children.index(@node) == 0
-            return @meta_assignment_node = parent_node
-          end
-
-          return unless grantparent_node
-
-          if parent_node.type == MULTIPLE_LEFT_HAND_SIDE_TYPE &&
-             grantparent_node.type == MULTIPLE_ASSIGNMENT_TYPE
-            return @meta_assignment_node = grantparent_node
-          end
-
-          nil
+          @meta_assignment_node
         end
 
         private
 
-        def parent_node
-          ancestor_nodes_in_scope.last
+        def operator_assignment_node
+          return nil unless node.parent
+          return nil unless OPERATOR_ASSIGNMENT_TYPES.include?(node.parent.type)
+          return nil unless node.parent.children.index(node) == 0
+          node.parent
         end
 
-        def grantparent_node
-          ancestor_nodes_in_scope[-2]
+        def multiple_assignment_node
+          grandparent_node = node.parent ? node.parent.parent : nil
+          return nil unless grandparent_node
+          return nil unless grandparent_node.type == MULTIPLE_ASSIGNMENT_TYPE
+          return nil unless node.parent.type == MULTIPLE_LEFT_HAND_SIDE_TYPE
+          grandparent_node
         end
       end
     end

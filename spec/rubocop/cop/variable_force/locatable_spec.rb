@@ -41,27 +41,6 @@ describe RuboCop::Cop::VariableForce::Locatable do
   let(:scope) { RuboCop::Cop::VariableForce::Scope.new(def_node) }
   let(:assignment) { LocatableObject.new(lvasgn_node, scope) }
 
-  describe '#ancestor_nodes_in_scope' do
-    let(:source) do
-      <<-END
-        class SomeClass
-          def some_method(flag)
-            puts 'Hello World!'
-
-            if flag > 0
-              foo = 1
-            end
-          end
-        end
-      END
-    end
-
-    it 'returns its ancestor nodes in the scope excluding scope node' do
-      ancestor_types = assignment.ancestor_nodes_in_scope.map(&:type)
-      expect(ancestor_types).to eq([:begin, :if])
-    end
-  end
-
   describe '#branch_point_node' do
     context 'when it is not in branch' do
       let(:source) do

@@ -67,45 +67,6 @@ describe RuboCop::Cop::VariableForce::Scope do
     end
   end
 
-  describe '#ancestors_of_node' do
-    let(:source) do
-      <<-END
-        puts 1
-
-        class SomeClass
-          def some_method
-            foo = 1
-
-            if foo > 0
-              while foo < 10
-                this_is_target
-                foo += 1
-              end
-            else
-              do_something
-            end
-          end
-        end
-      END
-    end
-
-    let(:target_node) do
-      found_node = scan_node(ast) do |node|
-        next unless node.type == :send
-        _receiver_node, method_name = *node
-        break node if method_name == :this_is_target
-      end
-      fail 'No target node found!' unless found_node
-      found_node
-    end
-
-    it 'returns nodes in between the scope node and the passed node' do
-      ancestor_nodes = scope.ancestors_of_node(target_node)
-      ancestor_types = ancestor_nodes.map(&:type)
-      expect(ancestor_types).to eq([:begin, :if, :while, :begin])
-    end
-  end
-
   describe '#body_node' do
     shared_examples 'returns the body node' do
       it 'returns the body node' do

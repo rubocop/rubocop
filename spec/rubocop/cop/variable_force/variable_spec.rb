@@ -1,9 +1,10 @@
 # encoding: utf-8
 
 require 'spec_helper'
+require 'astrolabe/sexp'
 
 describe RuboCop::Cop::VariableForce::Variable do
-  include AST::Sexp
+  include Astrolabe::Sexp
 
   describe '.new' do
     context 'when non variable declaration node is passed' do

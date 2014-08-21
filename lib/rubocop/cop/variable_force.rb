@@ -55,7 +55,7 @@ module RuboCop
 
       def self.wrap_with_top_level_node(node)
         # This is a custom node type, not defined in Parser.
-        Parser::AST::Node.new(:top_level, [node])
+        Astrolabe::Node.new(:top_level, [node])
       end
 
       def variable_table
@@ -81,10 +81,9 @@ module RuboCop
       end
 
       def process_children(origin_node)
-        origin_node.children.each do |child|
-          next unless child.is_a?(Parser::AST::Node)
-          next if scanned_node?(child)
-          process_node(child)
+        origin_node.each_child_node do |child_node|
+          next if scanned_node?(child_node)
+          process_node(child_node)
         end
       end
 
@@ -245,15 +244,10 @@ module RuboCop
       end
 
       def process_rescue(node)
-        resbody_nodes = node.children.select do |child|
-          next false unless child.is_a?(Parser::AST::Node)
-          child.type == :resbody
-        end
+        resbody_nodes = node.each_child_node(:resbody)
 
         contain_retry = resbody_nodes.any? do |resbody_node|
-          scan(resbody_node) do |node_in_resbody|
-            break true if node_in_resbody.type == :retry
-          end
+          resbody_node.each_descendant.any?(&:retry_type?)
         end
 
         # Treat begin..rescue..end with retry as a loop.
@@ -309,9 +303,9 @@ module RuboCop
         referenced_variable_names_in_loop = []
         assignment_nodes_in_loop = []
 
-        # #scan does not consider scope,
+        # #each_descendant does not consider scope,
         # but we don't need to care about it here.
-        scan(loop_node) do |node|
+        loop_node.each_descendant do |node|
           case node.type
           when :lvar
             referenced_variable_names_in_loop << node.children.first
@@ -326,16 +320,6 @@ module RuboCop
         end
 
         [referenced_variable_names_in_loop, assignment_nodes_in_loop]
-      end
-
-      # Simple recursive scan
-      def scan(node, &block)
-        node.children.each do |child|
-          next unless child.is_a?(Parser::AST::Node)
-          yield child
-          scan(child, &block)
-        end
-        nil
       end
 
       # Use Node#equal? for accurate check.
