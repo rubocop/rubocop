@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 describe RuboCop::Cop::VariableForce::Scope do
-  include ASTHelper
   include AST::Sexp
 
   describe '.new' do
@@ -29,13 +28,7 @@ describe RuboCop::Cop::VariableForce::Scope do
 
   let(:scope_node_type) { :def }
 
-  let(:scope_node) do
-    found_node = scan_node(ast, include_origin_node: true) do |node|
-      break node if node.type == scope_node_type
-    end
-    fail 'No scope node found!' unless found_node
-    found_node
-  end
+  let(:scope_node) { ast.each_node(scope_node_type).first }
 
   subject(:scope) { described_class.new(scope_node) }
 
@@ -64,45 +57,6 @@ describe RuboCop::Cop::VariableForce::Scope do
       it 'returns the method name' do
         expect(scope.name).to eq(:some_method)
       end
-    end
-  end
-
-  describe '#ancestors_of_node' do
-    let(:source) do
-      <<-END
-        puts 1
-
-        class SomeClass
-          def some_method
-            foo = 1
-
-            if foo > 0
-              while foo < 10
-                this_is_target
-                foo += 1
-              end
-            else
-              do_something
-            end
-          end
-        end
-      END
-    end
-
-    let(:target_node) do
-      found_node = scan_node(ast) do |node|
-        next unless node.type == :send
-        _receiver_node, method_name = *node
-        break node if method_name == :this_is_target
-      end
-      fail 'No target node found!' unless found_node
-      found_node
-    end
-
-    it 'returns nodes in between the scope node and the passed node' do
-      ancestor_nodes = scope.ancestors_of_node(target_node)
-      ancestor_types = ancestor_nodes.map(&:type)
-      expect(ancestor_types).to eq([:begin, :if, :while, :begin])
     end
   end
 

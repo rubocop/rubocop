@@ -14,9 +14,9 @@ module RuboCop
           # discard non-ternary ops
           return unless loc.respond_to?(:question)
 
-          node.children.each do |child|
-            on_node(:if, child) do |c|
-              add_offense(c, :expression) if c.loc.respond_to?(:question)
+          node.each_descendant(:if) do |nested_if_node|
+            if nested_if_node.loc.respond_to?(:question)
+              add_offense(nested_if_node, :expression)
             end
           end
         end

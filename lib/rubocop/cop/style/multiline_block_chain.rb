@@ -18,24 +18,23 @@ module RuboCop
 
         def on_block(node)
           method, _args, _body = *node
-          on_node(:send, method) do |send_node|
+          method.each_node(:send) do |send_node|
             receiver, _method_name, *_args = *send_node
-            if receiver && receiver.type == :block
-              # The begin and end could also be braces, but we call the
-              # variables do... and end...
-              do_kw_loc, end_kw_loc = receiver.loc.begin, receiver.loc.end
+            next unless receiver && receiver.type == :block
 
-              if do_kw_loc.line != end_kw_loc.line
-                range =
-                  Parser::Source::Range.new(end_kw_loc.source_buffer,
-                                            end_kw_loc.begin_pos,
-                                            method.loc.expression.end_pos)
-                add_offense(nil, range)
-                # Done. If there are more blocks in the chain, they will be
-                # found by subsequent calls to on_block.
-                break
-              end
-            end
+            # The begin and end could also be braces, but we call the
+            # variables do... and end...
+            do_kw_loc, end_kw_loc = receiver.loc.begin, receiver.loc.end
+            next if do_kw_loc.line == end_kw_loc.line
+
+            range =
+              Parser::Source::Range.new(end_kw_loc.source_buffer,
+                                        end_kw_loc.begin_pos,
+                                        method.loc.expression.end_pos)
+            add_offense(nil, range)
+            # Done. If there are more blocks in the chain, they will be
+            # found by subsequent calls to on_block.
+            break
           end
         end
       end

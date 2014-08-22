@@ -20,9 +20,7 @@ module RuboCop
 
         return false if body_length == 0
 
-        on_node(:lvasgn, cond) do
-          return false
-        end
+        return false if cond.each_node.any?(&:lvasgn_type?)
 
         indentation = node.loc.keyword.column
         kw_length = node.loc.keyword.size

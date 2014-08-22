@@ -4,8 +4,6 @@ require 'spec_helper'
 
 describe RuboCop::Cop::Util do
   describe '#line_range' do
-    include ASTHelper
-
     let(:source) do
       <<-END
         foo = 1
@@ -24,13 +22,7 @@ describe RuboCop::Cop::Util do
       processed_source.ast
     end
 
-    let(:node) do
-      target_node = scan_node(ast) do |node|
-        break node if node.type == :class
-      end
-      fail 'No target node found!' unless target_node
-      target_node
-    end
+    let(:node) { ast.each_node.find(&:class_type?) }
 
     context 'when Source::Range object is passed' do
       it 'returns line range of that' do

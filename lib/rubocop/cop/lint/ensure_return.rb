@@ -12,8 +12,8 @@ module RuboCop
 
           return unless ensure_body
 
-          on_node(:return, ensure_body) do |e|
-            add_offense(e, :expression)
+          ensure_body.each_node(:return) do |return_node|
+            add_offense(return_node, :expression)
           end
         end
       end

@@ -76,10 +76,6 @@ module RuboCop
           @branch_body_node
         end
 
-        def ancestor_nodes_in_scope
-          @ancestor_nodes_in_scope ||= scope.ancestors_of_node(@node)
-        end
-
         def branch_body_name
           case branch_point_node.type
           when :if
@@ -147,13 +143,19 @@ module RuboCop
         end
 
         def set_branch_point_and_body_nodes!
-          ancestors_and_self_nodes = ancestor_nodes_in_scope + [@node]
+          self_and_ancestor_nodes = [node] + ancestor_nodes_in_scope
 
-          ancestors_and_self_nodes.reverse.each_cons(2) do |child, parent|
+          self_and_ancestor_nodes.each_cons(2) do |child, parent|
             next unless branch?(parent, child)
             @branch_point_node = parent
             @branch_body_node = child
             break
+          end
+        end
+
+        def ancestor_nodes_in_scope
+          node.each_ancestor.take_while do |ancestor_node|
+            !ancestor_node.equal?(scope.node)
           end
         end
 

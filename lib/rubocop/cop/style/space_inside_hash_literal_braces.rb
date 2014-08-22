@@ -11,18 +11,16 @@ module RuboCop
 
         MSG = 'Space inside %s.'
 
-        def investigate(processed_source)
-          return unless processed_source.ast
+        def on_hash(node)
+          b_ix = index_of_first_token(node)
           tokens = processed_source.tokens
 
-          on_node(:hash, processed_source.ast) do |hash|
-            b_ix = index_of_first_token(hash)
-            if tokens[b_ix].type == :tLBRACE # Hash literal with braces?
-              e_ix = index_of_last_token(hash)
-              check(tokens[b_ix], tokens[b_ix + 1])
-              check(tokens[e_ix - 1], tokens[e_ix]) unless b_ix == e_ix - 1
-            end
-          end
+          # Hash literal with braces?
+          return unless tokens[b_ix].type == :tLBRACE
+
+          e_ix = index_of_last_token(node)
+          check(tokens[b_ix], tokens[b_ix + 1])
+          check(tokens[e_ix - 1], tokens[e_ix]) unless b_ix == e_ix - 1
         end
 
         private

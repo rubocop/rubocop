@@ -57,7 +57,7 @@ module RuboCop
         return [] unless arg.is_a?(Parser::AST::Node)
 
         heredoc_ranges = []
-        on_node(:dstr, arg) do |n|
+        arg.each_node(:dstr) do |n|
           if n.loc.respond_to?(:heredoc_body)
             heredoc_ranges << n.loc.heredoc_body.join(n.loc.heredoc_end)
           end

@@ -30,7 +30,7 @@ module RuboCop
           # assignments inside blocks are not what we're looking for
           return if condition.type == :block
 
-          on_node([:begin, *EQUALS_ASGN_NODES], condition) do |asgn_node|
+          condition.each_node(:begin, *EQUALS_ASGN_NODES) do |asgn_node|
             # skip safe assignment nodes if safe assignment is allowed
             return if safe_assignment_allowed? && safe_assignment?(asgn_node)
 

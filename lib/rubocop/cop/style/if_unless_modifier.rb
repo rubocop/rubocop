@@ -14,17 +14,14 @@ module RuboCop
           ' Another good alternative is the usage of control flow `&&`/`||`.'
         end
 
-        def investigate(processed_source)
-          return unless processed_source.ast
-          on_node(:if, processed_source.ast) do |node|
-            # discard ternary ops, if/else and modifier if/unless nodes
-            next if ternary_op?(node)
-            next if modifier_if?(node)
-            next if elsif?(node)
-            next if if_else?(node)
-            next unless fit_within_line_as_modifier_form?(node)
-            add_offense(node, :keyword, message(node.loc.keyword.source))
-          end
+        def on_if(node)
+          # discard ternary ops, if/else and modifier if/unless nodes
+          return if ternary_op?(node)
+          return if modifier_if?(node)
+          return if elsif?(node)
+          return if if_else?(node)
+          return unless fit_within_line_as_modifier_form?(node)
+          add_offense(node, :keyword, message(node.loc.keyword.source))
         end
       end
     end

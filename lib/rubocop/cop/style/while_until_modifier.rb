@@ -9,17 +9,21 @@ module RuboCop
       class WhileUntilModifier < Cop
         include StatementModifier
 
-        def investigate(processed_source)
-          return unless processed_source.ast
-          on_node([:while, :until], processed_source.ast) do |node|
-            # discard modifier while/until
-            next unless node.loc.end
-            next unless fit_within_line_as_modifier_form?(node)
-            add_offense(node, :keyword, message(node.loc.keyword.source))
-          end
+        def on_while(node)
+          check(node)
+        end
+
+        def on_until(node)
+          check(node)
         end
 
         private
+
+        def check(node)
+          return unless node.loc.end
+          return unless fit_within_line_as_modifier_form?(node)
+          add_offense(node, :keyword, message(node.loc.keyword.source))
+        end
 
         def message(keyword)
           "Favor modifier `#{keyword}` usage when having a single-line body."
