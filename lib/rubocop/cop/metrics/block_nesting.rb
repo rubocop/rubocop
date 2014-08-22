@@ -39,9 +39,9 @@ module RuboCop
               end
             end
           end
-          node.children.each do |child|
-            next unless child.is_a?(Parser::AST::Node)
-            check_nesting_level(child, max, current_level)
+
+          node.each_child_node do |child_node|
+            check_nesting_level(child_node, max, current_level)
           end
         end
 

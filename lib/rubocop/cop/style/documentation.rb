@@ -27,7 +27,7 @@ module RuboCop
         private
 
         def check(ast, ast_with_comments)
-          on_node([:class, :module], ast) do |node|
+          ast.each_node(:class, :module) do |node|
             case node.type
             when :class
               _name, _superclass, body = *node

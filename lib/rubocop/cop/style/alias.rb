@@ -16,7 +16,7 @@ module RuboCop
           # in such scenarios we don't want to report an offense
           return unless method_name == :instance_exec
 
-          on_node(:alias, body) { |n| ignore_node(n) }
+          body.each_node(:alias) { |n| ignore_node(n) }
         end
 
         def on_alias(node)

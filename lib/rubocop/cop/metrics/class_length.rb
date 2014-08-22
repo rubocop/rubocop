@@ -35,8 +35,7 @@ module RuboCop
         def line_numbers_of_inner_classes(node)
           line_numbers = Set.new
 
-          on_node([:class, :module], node) do |inner_node|
-            next if inner_node.eql?(node)
+          node.each_descendant(:class, :module) do |inner_node|
             line_range = line_range(inner_node)
             line_numbers.merge(line_range)
           end

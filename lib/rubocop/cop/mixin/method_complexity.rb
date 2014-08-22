@@ -21,11 +21,9 @@ module RuboCop
       end
 
       def complexity(node)
-        c = 1
-        on_node(self.class::COUNTED_NODES, node) do |n|
-          c += complexity_score_for(n)
+        node.each_node(self.class::COUNTED_NODES).reduce(1) do |score, n|
+          score + complexity_score_for(n)
         end
-        c
       end
     end
   end

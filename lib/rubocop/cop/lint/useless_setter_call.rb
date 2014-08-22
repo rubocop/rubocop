@@ -91,9 +91,8 @@ module RuboCop
             catch(:skip_children) do
               yield node
 
-              node.children.each do |child|
-                next unless child.is_a?(Parser::AST::Node)
-                scan(child, &block)
+              node.each_child_node do |child_node|
+                scan(child_node, &block)
               end
             end
           end
