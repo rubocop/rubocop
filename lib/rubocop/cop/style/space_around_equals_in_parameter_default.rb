@@ -9,14 +9,10 @@ module RuboCop
         include SurroundingSpace
         include ConfigurableEnforcedStyle
 
-        def investigate(processed_source)
-          return unless processed_source.ast
-          @processed_source = processed_source
-          on_node(:optarg, processed_source.ast) do |optarg|
-            index = index_of_first_token(optarg)
-            arg, equals, value = processed_source.tokens[index, 3]
-            check_optarg(arg, equals, value)
-          end
+        def on_optarg(node)
+          index = index_of_first_token(node)
+          arg, equals, value = processed_source.tokens[index, 3]
+          check_optarg(arg, equals, value)
         end
 
         private
