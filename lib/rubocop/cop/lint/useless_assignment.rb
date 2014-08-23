@@ -14,7 +14,7 @@ module RuboCop
       # rescue, ensure, etc.
       class UselessAssignment < Cop
         MSG = 'Useless assignment to variable - `%s`.'
-        MININUM_SIMILARITY_TO_SUGGEST = 0.9
+        MINIMUM_SIMILARITY_TO_SUGGEST = 0.9
 
         def join_force?(force_class)
           force_class == VariableForce
@@ -83,7 +83,7 @@ module RuboCop
 
           scores = names.each_with_object({}) do |name, hash|
             score = StringUtil.similarity(target_name, name)
-            hash[name] = score if score >= MININUM_SIMILARITY_TO_SUGGEST
+            hash[name] = score if score >= MINIMUM_SIMILARITY_TO_SUGGEST
           end
 
           most_similar_name, _max_score = scores.max_by { |_, score| score }
