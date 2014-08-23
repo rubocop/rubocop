@@ -23,7 +23,7 @@ describe RuboCop::Cop::VariableForce::Scope do
 
   let(:ast) do
     ast = RuboCop::ProcessedSource.new(source).ast
-    RuboCop::Cop::VariableForce.wrap_with_top_level_node(ast)
+    RuboCop::Cop::VariableForce.wrap_with_top_level_scope_node(ast)
   end
 
   let(:scope_node_type) { :def }
@@ -158,7 +158,7 @@ describe RuboCop::Cop::VariableForce::Scope do
         END
       end
 
-      let(:scope_node_type) { :top_level }
+      let(:scope_node_type) { :begin }
 
       include_examples 'returns the body node'
     end

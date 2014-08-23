@@ -34,7 +34,7 @@ module RuboCop
 
         def body_node
           child_index = case @node.type
-                        when :top_level           then 0
+                        when :begin               then 0
                         when :module, :sclass     then 1
                         when :def, :class, :block then 2
                         when :defs                then 3
