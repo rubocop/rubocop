@@ -5,6 +5,7 @@
 ### New features
 
 * New cop `SpaceInsideRangeLiteral` checks for spaces around `..` and `...` in range literals. ([@bbatsov][])
+* `UselessAssignment` cop now suggests a variable name for possible typos if there's a variable-ish identifier similar to the unused variable name in the same scope. ([@yujinakayama][])
 
 ### Bugs fixed
 

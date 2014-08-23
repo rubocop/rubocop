@@ -163,4 +163,157 @@ describe RuboCop::Cop::VariableForce::Scope do
       include_examples 'returns the body node'
     end
   end
+
+  describe '#each_node' do
+    shared_examples 'yields' do |description|
+      it "yields #{description}" do
+        yielded_types = []
+
+        scope.each_node do |node|
+          yielded_types << node.type
+        end
+
+        expect(yielded_types).to eq(expected_types.map(&:to_sym))
+      end
+    end
+
+    describe 'outer scope boundary handling' do
+      context 'when the scope is instance method' do
+        let(:source) { <<-END }
+          def some_method(arg1, arg2)
+            :body
+          end
+        END
+
+        let(:scope_node_type) { :def }
+        let(:expected_types) { %w(args arg arg sym) }
+        include_examples 'yields', 'the argument and the body nodes'
+      end
+
+      context 'when the scope is singleton method' do
+        let(:source) { <<-END }
+          def self.some_method(arg1, arg2)
+            :body
+          end
+        END
+
+        let(:scope_node_type) { :defs }
+        let(:expected_types) { %w(args arg arg sym) }
+        include_examples 'yields', 'the argument and the body nodes'
+      end
+
+      context 'when the scope is module' do
+        let(:source) { <<-END }
+          module SomeModule
+            :body
+          end
+        END
+
+        let(:scope_node_type) { :module }
+        let(:expected_types) { %w(sym) }
+        include_examples 'yields', 'the body nodes'
+      end
+
+      context 'when the scope is class' do
+        let(:source) { <<-END }
+          some_super_class = Class.new
+
+          class SomeClass < some_super_class
+            :body
+          end
+        END
+
+        let(:scope_node_type) { :class }
+        let(:expected_types) { %w(sym) }
+        include_examples 'yields', 'the body nodes'
+      end
+
+      context 'when the scope is singleton class' do
+        let(:source) { <<-END }
+          some_object = Object.new
+
+          class << some_object
+            :body
+          end
+        END
+
+        let(:scope_node_type) { :sclass }
+        let(:expected_types) { %w(sym) }
+        include_examples 'yields', 'the body nodes'
+      end
+
+      context 'when the scope is block' do
+        let(:source) { <<-END }
+          1.times do |arg1, arg2|
+            :body
+          end
+        END
+
+        let(:scope_node_type) { :block }
+        let(:expected_types) { %w(args arg arg sym) }
+        include_examples 'yields', 'the argument and the body nodes'
+      end
+
+      context 'when the scope is top level' do
+        let(:source) { <<-END }
+          :body
+        END
+
+        let(:scope_node_type) { :begin }
+        let(:expected_types) { %w(sym) }
+        include_examples 'yields', 'the body nodes'
+      end
+    end
+
+    describe 'inner scope boundary handling' do
+      context "when there's a method invocation with block" do
+        let(:source) { <<-END }
+          foo = 1
+
+          do_something(1, 2) do |arg|
+            :body
+          end
+
+          foo
+        END
+
+        let(:scope_node_type) { :begin }
+        let(:expected_types) { %w(lvasgn int block send int int lvar) }
+        include_examples 'yields', 'only the block node and the child send node'
+      end
+
+      context "when there's a singleton method definition" do
+        let(:source) { <<-END }
+          foo = 1
+
+          def self.some_method(arg1, arg2)
+            :body
+          end
+
+          foo
+        END
+
+        let(:scope_node_type) { :begin }
+        let(:expected_types) { %w(lvasgn int defs self lvar) }
+        include_examples 'yields', 'only the defs node and the method host node'
+      end
+
+      context 'when there are grouped nodes with a begin node' do
+        let(:source) { <<-END }
+          foo = 1
+
+          if true
+            do_something
+            do_anything
+          end
+
+          foo
+        END
+
+        let(:scope_node_type) { :begin }
+        let(:expected_types) { %w(lvasgn int if true begin send send lvar) }
+        include_examples 'yields', 'them without confused with top level scope'
+      end
+    end
+  end
 end

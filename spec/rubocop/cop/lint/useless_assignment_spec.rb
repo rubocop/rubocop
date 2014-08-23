@@ -1659,4 +1659,127 @@ describe RuboCop::Cop::Lint::UselessAssignment do
     include_examples 'accepts'
     include_examples 'mimics MRI 2.1'
   end
+
+  describe 'similar name suggestion' do
+    context "when there's a similar variable-like method invocation" do
+      let(:source) do
+        [
+          'def some_method',
+          '  enviromnent = {}',
+          '  another_symbol',
+          '  puts environment',
+          'end'
+        ]
+      end
+
+      it 'suggests the method name' do
+        inspect_source(cop, source)
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.offenses.first.message).to eq(
+          'Useless assignment to variable - `enviromnent`. ' \
+          'Did you mean `environment`?'
+        )
+      end
+    end
+
+    context "when there's a similar variable" do
+      let(:source) do
+        [
+          'def some_method',
+          '  environment = nil',
+          '  another_symbol',
+          '  enviromnent = {}',
+          '  puts environment',
+          'end'
+        ]
+      end
+
+      it 'suggests the variable name' do
+        inspect_source(cop, source)
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.offenses.first.message).to eq(
+          'Useless assignment to variable - `enviromnent`. ' \
+          'Did you mean `environment`?'
+        )
+      end
+    end
+
+    context 'when there are only less similar names' do
+      let(:source) do
+        [
+          'def some_method',
+          '  enviromnent = {}',
+          '  another_symbol',
+          '  puts envelope',
+          'end'
+        ]
+      end
+
+      it 'does not suggest any name' do
+        inspect_source(cop, source)
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.offenses.first.message)
+          .to eq('Useless assignment to variable - `enviromnent`.')
+      end
+    end
+
+    context "when there's a similar method invocation with explicit receiver" do
+      let(:source) do
+        [
+          'def some_method',
+          '  enviromnent = {}',
+          '  another_symbol',
+          '  puts self.environment',
+          'end'
+        ]
+      end
+
+      it 'does not suggest any name' do
+        inspect_source(cop, source)
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.offenses.first.message)
+          .to eq('Useless assignment to variable - `enviromnent`.')
+      end
+    end
+
+    context "when there's a similar method invocation with arguments" do
+      let(:source) do
+        [
+          'def some_method',
+          '  enviromnent = {}',
+          '  another_symbol',
+          '  puts environment(1)',
+          'end'
+        ]
+      end
+
+      it 'does not suggest any name' do
+        inspect_source(cop, source)
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.offenses.first.message)
+          .to eq('Useless assignment to variable - `enviromnent`.')
+      end
+    end
+
+    context "when there's a similar name but it's in inner scope" do
+      let(:source) do
+        [
+          'class SomeClass',
+          '  enviromnent = {}',
+          '',
+          '  def some_method(environment)',
+          '    puts environment',
+          '  end',
+          'end'
+        ]
+      end
+
+      it 'does not suggest any name' do
+        inspect_source(cop, source)
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.offenses.first.message)
+          .to eq('Useless assignment to variable - `enviromnent`.')
+      end
+    end
+  end
 end
