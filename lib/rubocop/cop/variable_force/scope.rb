@@ -7,6 +7,14 @@ module RuboCop
       # This is a place where local variables belong to.
       # A scope instance holds a scope node and variable entries.
       class Scope
+        OUTER_SCOPE_CHILD_INDICES = {
+          defs:   0..0,
+          module: 0..0,
+          class:  0..1,
+          sclass: 0..0,
+          block:  0..0
+        }
+
         attr_reader :node, :variables
 
         def initialize(node)
@@ -34,13 +42,47 @@ module RuboCop
 
         def body_node
           child_index = case @node.type
-                        when :top_level           then 0
+                        when :begin               then 0
                         when :module, :sclass     then 1
                         when :def, :class, :block then 2
                         when :defs                then 3
                         end
 
           @node.children[child_index]
+        end
+
+        def each_node(&block)
+          return to_enum(__method__) unless block_given?
+          scan_node(node, &block)
+        end
+
+        private
+
+        def scan_node(node, &block)
+          node.each_child_node do |child_node|
+            next if belong_to_another_scope?(child_node)
+            yield child_node
+            scan_node(child_node, &block)
+          end
+        end
+
+        def belong_to_another_scope?(node)
+          belong_to_outer_scope?(node) || belong_to_inner_scope?(node)
+        end
+
+        def belong_to_outer_scope?(target_node)
+          return false unless target_node.parent.equal?(node)
+          indices = OUTER_SCOPE_CHILD_INDICES[target_node.parent.type]
+          return false unless indices
+          indices.include?(target_node.sibling_index)
+        end
+
+        def belong_to_inner_scope?(target_node)
+          return false if target_node.parent.equal?(node)
+          return false unless SCOPE_TYPES.include?(target_node.parent.type)
+          indices = OUTER_SCOPE_CHILD_INDICES[target_node.parent.type]
+          return true unless indices
+          !indices.include?(target_node.sibling_index)
         end
       end
     end

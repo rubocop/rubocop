@@ -14,6 +14,7 @@ module RuboCop
       # rescue, ensure, etc.
       class UselessAssignment < Cop
         MSG = 'Useless assignment to variable - `%s`.'
+        MININUM_SIMILARITY_TO_SUGGEST = 0.9
 
         def join_force?(force_class)
           force_class == VariableForce
@@ -57,6 +58,9 @@ module RuboCop
               non_assignment_operator = assignment.operator.sub(/=$/, '')
               message << " Use just operator `#{non_assignment_operator}`."
             end
+          else
+            similar_name = find_similar_name(variable.name, variable.scope)
+            message << " Did you mean `#{similar_name}`?" if similar_name
           end
 
           message
@@ -71,6 +75,37 @@ module RuboCop
           else
             body_node
           end
+        end
+
+        def find_similar_name(target_name, scope)
+          names = collect_variable_like_names(scope)
+          names.delete(target_name)
+
+          scores = names.each_with_object({}) do |name, hash|
+            score = StringUtil.similarity(target_name, name)
+            hash[name] = score if score >= MININUM_SIMILARITY_TO_SUGGEST
+          end
+
+          most_similar_name, _max_score = scores.max_by { |_, score| score }
+          most_similar_name
+        end
+
+        def collect_variable_like_names(scope)
+          names = scope.each_node.with_object(Set.new) do |node, set|
+            if variable_like_method_invocation?(node)
+              _receiver, method_name, = *node
+              set << method_name
+            end
+          end
+
+          variable_names = scope.variables.each_value.map(&:name)
+          names.merge(variable_names)
+        end
+
+        def variable_like_method_invocation?(node)
+          return false unless node.send_type?
+          receiver, _method_name, *args = *node
+          receiver.nil? && args.empty?
         end
       end
     end

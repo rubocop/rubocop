@@ -51,11 +51,14 @@ module RuboCop
       ZERO_ARITY_SUPER_TYPE = :zsuper
 
       TWISTED_SCOPE_TYPES = [:block, :class, :sclass, :defs].freeze
-      SCOPE_TYPES = (TWISTED_SCOPE_TYPES + [:top_level, :module, :def]).freeze
+      SCOPE_TYPES = (TWISTED_SCOPE_TYPES + [:module, :def]).freeze
 
-      def self.wrap_with_top_level_node(node)
-        # This is a custom node type, not defined in Parser.
-        Astrolabe::Node.new(:top_level, [node])
+      def self.wrap_with_top_level_scope_node(root_node)
+        if root_node.begin_type?
+          root_node
+        else
+          Astrolabe::Node.new(:begin, [root_node])
+        end
       end
 
       def variable_table
@@ -67,10 +70,10 @@ module RuboCop
         root_node = processed_source.ast
         return unless root_node
 
-        # Wrap the root node with :top_level scope node.
-        top_level_node = self.class.wrap_with_top_level_node(root_node)
+        # Wrap the root node with begin node if it's a standalone node.
+        root_node = self.class.wrap_with_top_level_scope_node(root_node)
 
-        inspect_variables_in_scope(top_level_node)
+        inspect_variables_in_scope(root_node)
       end
 
       # This is called for each scope recursively.
