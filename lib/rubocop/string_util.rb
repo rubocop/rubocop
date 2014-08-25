@@ -14,8 +14,8 @@ module RuboCop
     class Jaro
       attr_reader :shorter, :longer
 
-      def self.distance(a, b)
-        new(a, b).distance
+      def self.distance(*args)
+        new(*args).distance
       end
 
       def initialize(a, b)
@@ -34,29 +34,29 @@ module RuboCop
 
       def compute_distance
         common_chars_a, common_chars_b = find_common_characters
-        matching_count = common_chars_a.size
+        matched_count = common_chars_a.size
 
-        return 0.0 if matching_count.zero?
+        return 0.0 if matched_count.zero?
 
         transposition_count =
           count_transpositions(common_chars_a, common_chars_b)
 
-        sum = (matching_count / shorter.size.to_f) +
-              (matching_count / longer.size.to_f) +
-              ((matching_count - transposition_count / 2) / matching_count.to_f)
+        sum = (matched_count / shorter.size.to_f) +
+              (matched_count / longer.size.to_f) +
+              ((matched_count - transposition_count / 2) / matched_count.to_f)
 
         sum / 3.0
       end
 
       def find_common_characters
-        common_chars_of_shorter = []
-        common_chars_of_longer = []
+        common_chars_of_shorter = Array.new(shorter.size)
+        common_chars_of_longer = Array.new(longer.size)
 
         # In Ruby 1.9 String#chars returns Enumerator rather than Array.
         longer_chars = longer.each_char.to_a
 
         shorter.each_char.with_index do |shorter_char, shorter_index|
-          matching_range(shorter_index).each do |longer_index|
+          matching_index_range(shorter_index).each do |longer_index|
             longer_char = longer_chars[longer_index]
 
             next unless shorter_char == longer_char
@@ -80,7 +80,7 @@ module RuboCop
         end
       end
 
-      def matching_range(origin)
+      def matching_index_range(origin)
         min = origin - matching_window
         min = 0 if min < 0
 
@@ -90,13 +90,13 @@ module RuboCop
       end
 
       def matching_window
-        @match_window ||= (longer.size / 2).to_i - 1
+        @matching_window ||= (longer.size / 2).to_i - 1
       end
     end
 
     # This class computes Jaro-Winkler distance, which adds prefix-matching
     # bonus to Jaro distance.
-    class JaroWinkler
+    class JaroWinkler < Jaro
       # Add the prefix bonus only when the Jaro distance is above this value.
       # In other words, if the Jaro distance is less than this value,
       # JaroWinkler.distance returns the raw Jaro distance.
@@ -107,45 +107,35 @@ module RuboCop
       DEFAULT_SCALING_FACTOR = 0.1
 
       # Cutoff the common prefix length to this value if it's longer than this.
-      MAX_COMMON_PREFIX = 4
+      MAX_COMMON_PREFIX_LENGTH = 4
 
       attr_reader :boost_threshold, :scaling_factor
 
-      def self.distance(a, b, boost_threshold = nil, scaling_factor = nil)
-        new(a, b, boost_threshold, scaling_factor).distance
-      end
-
       def initialize(a, b, boost_threshold = nil, scaling_factor = nil)
-        @jaro = Jaro.new(a, b)
+        super(a, b)
         @boost_threshold = boost_threshold || DEFAULT_BOOST_THRESHOLD
         @scaling_factor = scaling_factor || DEFAULT_SCALING_FACTOR
       end
 
-      def distance
-        if @jaro.distance >= boost_threshold
+      private
+
+      def compute_distance
+        jaro_distance = super
+
+        if jaro_distance >= boost_threshold
           bonus = limited_common_prefix_length.to_f * scaling_factor.to_f *
-                  (1.0 - @jaro.distance)
-          @jaro.distance + bonus
+                  (1.0 - jaro_distance)
+          jaro_distance + bonus
         else
-          @jaro.distance
+          jaro_distance
         end
       end
-
-      def shorter
-        @jaro.shorter
-      end
-
-      def longer
-        @jaro.longer
-      end
-
-      private
 
       def limited_common_prefix_length
         length = common_prefix_length
 
-        if length > MAX_COMMON_PREFIX
-          MAX_COMMON_PREFIX
+        if length > MAX_COMMON_PREFIX_LENGTH
+          MAX_COMMON_PREFIX_LENGTH
         else
           length
         end
