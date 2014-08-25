@@ -7,24 +7,18 @@ module RuboCop
     class Commissioner < Parser::AST::Processor
       attr_reader :errors
 
-      METHODS_NOT_DEFINED_IN_PARSER_PROCESSOR = [
-        :on_sym, :on_str, :on_int, :on_float
-      ]
-
       def self.callback_methods
-        Parser::AST::Processor.instance_methods.select do |method|
-          method.to_s =~ /^on_/
-        end + METHODS_NOT_DEFINED_IN_PARSER_PROCESSOR
+        Parser::Meta::NODE_TYPES.map { |type| "on_#{type}" }
       end
 
       # Methods that are not defined in Parser::AST::Processor
       # won't have a `super` to call. So we should not attempt
       # to invoke `super` when defining them.
       def self.call_super(callback)
-        if METHODS_NOT_DEFINED_IN_PARSER_PROCESSOR.include?(callback)
-          ''
-        else
+        if Parser::AST::Processor.method_defined?(callback)
           'super'
+        else
+          ''
         end
       end
 
