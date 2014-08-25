@@ -16,7 +16,7 @@ module RuboCop
 
       @config_to_allow_offenses = {}
 
-      COPS = Cop::Cop.all.group_by { |c| c.cop_name }
+      COPS = Cop::Cop.all.group_by(&:cop_name)
 
       class << self
         attr_accessor :config_to_allow_offenses

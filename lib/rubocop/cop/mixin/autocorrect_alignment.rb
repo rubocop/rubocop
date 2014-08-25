@@ -66,7 +66,7 @@ module RuboCop
       end
 
       def block_comment_within?(expr)
-        processed_source.comments.select { |c| c.document? }.find do |c|
+        processed_source.comments.select(&:document?).find do |c|
           within?(c.loc.expression, expr)
         end
       end

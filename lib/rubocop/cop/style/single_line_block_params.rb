@@ -51,7 +51,7 @@ module RuboCop
         end
 
         def args_match?(method_name, args)
-          actual_args = args.flat_map { |a| a.to_a }
+          actual_args = args.flat_map(&:to_a)
 
           actual_args == target_args(method_name).map(&:to_sym)
         end

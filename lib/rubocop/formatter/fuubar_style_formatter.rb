@@ -49,7 +49,7 @@ module RuboCop
         return if offenses.empty?
 
         offenses << @severest_offense if @severest_offense
-        @severest_offense = offenses.max_by { |offense| offense.severity }
+        @severest_offense = offenses.max_by(&:severity)
       end
 
       def with_color
