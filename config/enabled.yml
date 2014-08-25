@@ -249,6 +249,10 @@ Style/IndentHash:
   Description: 'Checks the indentation of the first key in a hash literal.'
   Enabled: true
 
+Style/InfiniteLoop:
+  Description: 'Use Kernel#loop for infinite loops.'
+  Enabled: true
+
 Style/Lambda:
   Description: 'Use the new lambda literal syntax for single-line blocks.'
   Enabled: true
