@@ -42,7 +42,7 @@ module RuboCop
     end
 
     # Finds all Ruby source files under the current or other supplied
-    # directory.  A Ruby source file is defined as a file with the `.rb`
+    # directory. A Ruby source file is defined as a file with the `.rb`
     # extension or a file with no extension that has a ruby shebang line
     # as its first line.
     # It is possible to specify includes and excludes using the config file,

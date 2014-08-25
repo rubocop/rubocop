@@ -55,7 +55,7 @@ module RuboCop
             NON_ENGLISH_VARS.include? var
           end
 
-          # For now, we assume that lists are 2 items or less.  Easy grammar!
+          # For now, we assume that lists are 2 items or less. Easy grammar!
           regular_msg = regular.join('` or `')
           english_msg = english.join('` or `')
 
