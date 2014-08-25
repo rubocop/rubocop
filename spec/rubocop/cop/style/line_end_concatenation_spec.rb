@@ -10,6 +10,7 @@ describe RuboCop::Cop::Style::LineEndConcatenation do
                    ['top = "test" +',
                     '"top"'])
     expect(cop.offenses.size).to eq(1)
+    expect(cop.highlights).to eq(['+'])
   end
 
   it 'registers an offense for string concat with << at line end' do
@@ -17,6 +18,7 @@ describe RuboCop::Cop::Style::LineEndConcatenation do
                    ['top = "test" <<',
                     '"top"'])
     expect(cop.offenses.size).to eq(1)
+    expect(cop.highlights).to eq(['<<'])
   end
 
   it 'registers an offense for string concat with << and \ at line ends' do
@@ -76,6 +78,14 @@ describe RuboCop::Cop::Style::LineEndConcatenation do
   it 'accepts string concat at line end when followed by comment' do
     inspect_source(cop,
                    ['top = "test" + # something',
+                    '"top"'])
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'accepts string concat at line end when followed by a comment line' do
+    inspect_source(cop,
+                   ['top = "test" +',
+                    '# something',
                     '"top"'])
     expect(cop.offenses).to be_empty
   end

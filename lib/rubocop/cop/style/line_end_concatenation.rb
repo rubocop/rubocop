@@ -21,70 +21,41 @@ module RuboCop
       #
       class LineEndConcatenation < Cop
         MSG = 'Use `\\` instead of `+` or `<<` to concatenate those strings.'
+        CONCAT_TOKEN_TYPES = [:tPLUS, :tLSHFT].freeze
+        SIMPLE_STRING_TOKEN_TYPE = :tSTRING
+        COMPLEX_STRING_EDGE_TOKEN_TYPES = [:tSTRING_BEG, :tSTRING_END].freeze
+        QUOTE_DELIMITERS = %w(' ").freeze
 
-        def on_send(node)
-          add_offense(node, :selector) if offending_node?(node)
+        def investigate(processed_source)
+          processed_source.tokens.each_cons(3) do |tokens|
+            check_token_set(*tokens)
+          end
         end
 
-        def autocorrect(node)
+        def autocorrect(operator_range)
           @corrections << lambda do |corrector|
-            # replace + with \
-            corrector.replace(node.loc.selector, '\\')
+            corrector.replace(operator_range, '\\')
           end
         end
 
         private
 
-        def concat?(method)
-          [:+, :<<].include?(method)
+        def check_token_set(predecessor, operator, successor)
+          return unless CONCAT_TOKEN_TYPES.include?(operator.type)
+          return unless standard_string_literal?(predecessor)
+          return unless standard_string_literal?(successor)
+          return if operator.pos.line == successor.pos.line
+          add_offense(operator.pos, operator.pos)
         end
 
-        def offending_node?(node)
-          receiver, method, first_arg = *node
-
-          return false unless concat?(method)
-
-          return false unless final_node_is_string_type?(receiver)
-
-          return false unless root_node_is_string_type?(first_arg)
-
-          expression = node.loc.expression.source
-          concatenator_at_line_end?(expression)
-        end
-
-        def concatenator_at_line_end?(expression)
-          # check if the first line of the expression ends with a + or a <<
-          expression =~ /.+(\+|<<)\s*$/
-        end
-
-        def string_type?(node)
-          return false unless [:str, :dstr].include?(node.type)
-          # strings like __FILE__ are of no interest
-          return false unless node.loc.respond_to?(:begin)
-
-          # we care only about quotes-delimited literals
-          if node.loc.begin
-            ["'", '"'].include?(node.loc.begin.source)
-          elsif node.children.any?
-            node.children.map { |child| string_type?(child) }.all?
-          end
-        end
-
-        def final_node_is_string_type?(node)
-          if node.type == :send
-            _, method, first_arg = *node
-            concat?(method) && final_node_is_string_type?(first_arg)
+        def standard_string_literal?(token)
+          case token.type
+          when SIMPLE_STRING_TOKEN_TYPE
+            true
+          when *COMPLEX_STRING_EDGE_TOKEN_TYPES
+            QUOTE_DELIMITERS.include?(token.text)
           else
-            string_type?(node)
-          end
-        end
-
-        def root_node_is_string_type?(node)
-          if node.type == :send
-            receiver, method, _ = *node
-            concat?(method) && root_node_is_string_type?(receiver)
-          else
-            string_type?(node)
+            false
           end
         end
       end
