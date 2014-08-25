@@ -6,6 +6,7 @@
 
 * New cop `SpaceInsideRangeLiteral` checks for spaces around `..` and `...` in range literals. ([@bbatsov][])
 * New cop `InfiniteLoop` checks for places where `Kernel#loop` should have been used. ([@bbatsov][])
+* New cop `SymbolProc` checks for places where a symbol can be used as proc instead of a block. ([@bbatsov][])
 * `UselessAssignment` cop now suggests a variable name for possible typos if there's a variable-ish identifier similar to the unused variable name in the same scope. ([@yujinakayama][])
 
 ### Bugs fixed

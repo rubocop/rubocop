@@ -531,6 +531,10 @@ Style/StringLiterals:
   Description: 'Checks if uses of quotes match the configured preference.'
   Enabled: true
 
+Style/SymbolProc:
+  Description: 'Use symbols as procs instead of blocks when possible.'
+  Enabled: true
+
 Style/Tab:
   Description: 'No hard tabs.'
   Enabled: true
