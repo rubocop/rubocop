@@ -104,4 +104,11 @@ describe RuboCop::Cop::Style::MultilineIfThen do
                       'end'])
     end.not_to raise_error
   end
+
+  it 'auto-corrects the usage of "then" in multiline if' do
+    new_source = autocorrect_source(cop, ['if cond then',
+                                          '  something',
+                                          'end'])
+    expect(new_source).to eq("if cond\n  something\nend")
+  end
 end

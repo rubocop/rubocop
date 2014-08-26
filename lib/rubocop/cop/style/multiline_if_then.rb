@@ -44,6 +44,16 @@ module RuboCop
         def message(node)
           "Never use `then` for multi-line `#{node.loc.keyword.source}`."
         end
+
+        def autocorrect(node)
+          @corrections << lambda do |corrector|
+            condition_node, = *node
+            end_of_condition_range = condition_node.loc.expression.end
+            then_range = node.loc.begin
+            whitespaces_and_then_range = end_of_condition_range.join(then_range)
+            corrector.remove(whitespaces_and_then_range)
+          end
+        end
       end
     end
   end
