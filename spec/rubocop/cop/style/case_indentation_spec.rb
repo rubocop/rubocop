@@ -28,7 +28,7 @@ describe RuboCop::Cop::Style::CaseIndentation do
           expect(cop.offenses).to be_empty
         end
 
-        it 'registers on offense for an assignment indented as end' do
+        it 'registers an offense for an assignment indented as end' do
           source = ['output = case variable',
                     "when 'value1'",
                     "  'output1'",
@@ -41,7 +41,7 @@ describe RuboCop::Cop::Style::CaseIndentation do
                                                      'end')
         end
 
-        it 'registers on offense for an assignment indented some other way' do
+        it 'registers an offense for an assignment indented some other way' do
           source = ['output = case variable',
                     "  when 'value1'",
                     "    'output1'",
@@ -53,7 +53,7 @@ describe RuboCop::Cop::Style::CaseIndentation do
           expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
         end
 
-        it 'registers on offense for correct + opposite' do
+        it 'registers an offense for correct + opposite' do
           source = ['output = case variable',
                     "         when 'value1'",
                     "           'output1'",
@@ -166,7 +166,7 @@ describe RuboCop::Cop::Style::CaseIndentation do
           expect(cop.offenses).to be_empty
         end
 
-        it 'registers on offense for an assignment indented some other way' do
+        it 'registers an offense for an assignment indented some other way' do
           source = ['output = case variable',
                     "         when 'value1'",
                     "           'output1'",
@@ -191,7 +191,7 @@ describe RuboCop::Cop::Style::CaseIndentation do
         expect(cop.offenses).to be_empty
       end
 
-      it "registers an offense for  a when clause that's equally indented " \
+      it "registers an offense for a when clause that's equally indented " \
          'with case' do
         source = ['y = case a',
                   '    when 0 then break',
@@ -230,7 +230,7 @@ describe RuboCop::Cop::Style::CaseIndentation do
           expect(cop.offenses).to be_empty
         end
 
-        it 'registers on offense for an assignment indented some other way' do
+        it 'registers an offense for an assignment indented some other way' do
           source = ['output = case variable',
                     "  when 'value1'",
                     "    'output1'",
@@ -260,7 +260,7 @@ describe RuboCop::Cop::Style::CaseIndentation do
           expect(cop.offenses).to be_empty
         end
 
-        it 'registers on offense for an assignment indented as case' do
+        it 'registers an offense for an assignment indented as case' do
           source = ['output = case variable',
                     "         when 'value1'",
                     "           'output1'",
@@ -274,7 +274,7 @@ describe RuboCop::Cop::Style::CaseIndentation do
                                                      'case')
         end
 
-        it 'registers on offense for an assignment indented some other way' do
+        it 'registers an offense for an assignment indented some other way' do
           source = ['output = case variable',
                     "       when 'value1'",
                     "         'output1'",
