@@ -15,7 +15,8 @@ describe RuboCop::Cop::Rails::Validation do
     it "outputs the correct message for #{validation}" do
       inspect_source(cop,
                      ["#{validation} :name"])
-      expect(cop.offenses.first.message).to include(described_class::WHITELIST[number])
+      expect(cop.offenses.first.message)
+        .to include(described_class::WHITELIST[number])
     end
   end
 
