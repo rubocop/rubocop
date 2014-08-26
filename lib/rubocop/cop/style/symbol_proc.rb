@@ -30,7 +30,6 @@ module RuboCop
           # method in block must be invoked on a lvar without args
           return if args
           return if receiver.type != :lvar
-          return if [:-@, :+@].include?(method_name)
 
           block_arg_name, = *block_args.children.first
           receiver_name, = *receiver

@@ -12,6 +12,13 @@ describe RuboCop::Cop::Style::SymbolProc do
       .to eq(['Pass `&:upcase` as an argument to `map` instead of a block.'])
   end
 
+  it 'registers an offense for a block when method in body is unary -/=' do
+    inspect_source(cop, ['something.map { |x| -x }'])
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.messages)
+      .to eq(['Pass `&:-@` as an argument to `map` instead of a block.'])
+  end
+
   it 'accepts method receiving another argument beside the block' do
     inspect_source(cop, ['File.open(file) { |f| f.readlines }'])
 
@@ -38,12 +45,6 @@ describe RuboCop::Cop::Style::SymbolProc do
 
   it 'accepts block when method in body is not called on block arg' do
     inspect_source(cop, ['something { |x| y.method }'])
-
-    expect(cop.offenses).to be_empty
-  end
-
-  it 'accepts block when method in body is unary -/=' do
-    inspect_source(cop, ['something.map { |x| -x }'])
 
     expect(cop.offenses).to be_empty
   end

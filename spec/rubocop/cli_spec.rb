@@ -1890,7 +1890,7 @@ describe RuboCop::CLI, :isolated_environment do
        'special case' do
       create_file('example1.rb',
                   ['# encoding: utf-8',
-                   'arr.select { |e| e > 0 }.collect { |e| -e }',
+                   'arr.select { |e| e > 0 }.collect { |e| e * 2 }',
                    'a2.find_all { |e| e > 0 }'])
       # We prefer find_all over select. This setting overrides the default
       # select over find_all. Other preferred methods appearing in the default
