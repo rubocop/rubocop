@@ -667,6 +667,7 @@ describe RuboCop::CLI, :isolated_environment do
            '  Enabled: false',
            '',
            '# Offense count: 1',
+           '# Cop supports --auto-correct.',
            'Style/Tab:',
            '  Enabled: false',
            '',
@@ -713,6 +714,7 @@ describe RuboCop::CLI, :isolated_environment do
            '  Enabled: false',
            '',
            '# Offense count: 1',
+           '# Cop supports --auto-correct.',
            'Style/Tab:',
            '  Enabled: false']
         actual = IO.read('.rubocop_todo.yml').split($RS)
@@ -1063,7 +1065,8 @@ describe RuboCop::CLI, :isolated_environment do
         let(:cop_list) { ['Style/Tab'] }
 
         it 'prints that cop and nothing else' do
-          expect(stdout).to eq(['Style/Tab:',
+          expect(stdout).to eq(['# Supports --auto-correct',
+                                'Style/Tab:',
                                 '  Description: No hard tabs.',
                                 '  Enabled: true',
                                 '',
@@ -1082,7 +1085,8 @@ describe RuboCop::CLI, :isolated_environment do
         let(:cop_list) { ['Style/Tab,Lint/X123'] }
 
         it 'skips the unknown cop' do
-          expect(stdout).to eq(['Style/Tab:',
+          expect(stdout).to eq(['# Supports --auto-correct',
+                                'Style/Tab:',
                                 '  Description: No hard tabs.',
                                 '  Enabled: true',
                                 '',
