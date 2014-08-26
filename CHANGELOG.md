@@ -4,6 +4,7 @@
 
 ### New features
 
+* New formatter `HTMLFormatter` generates a html file with a list of files with offences in them. ([@SkuliOskarsson][])
 * New cop `SpaceInsideRangeLiteral` checks for spaces around `..` and `...` in range literals. ([@bbatsov][])
 * New cop `InfiniteLoop` checks for places where `Kernel#loop` should have been used. ([@bbatsov][])
 * New cop `SymbolProc` checks for places where a symbol can be used as proc instead of a block. ([@bbatsov][])
@@ -1069,3 +1070,4 @@
 [@mcls]: https://github.com/mcls
 [@yous]: https://github.com/yous
 [@vrthra]: https://github.com/vrthra
+[@SkuliOskarsson]: https://github.com/SkuliOskarsson

@@ -13,6 +13,7 @@ module RuboCop
         'fuubar'   => FuubarStyleFormatter,
         'emacs'    => EmacsStyleFormatter,
         'json'     => JSONFormatter,
+        'html'     => HTMLFormatter,
         'files'    => FileListFormatter,
         'offenses' => OffenseCountFormatter,
         'disabled' => DisabledLinesFormatter

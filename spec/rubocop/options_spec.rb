@@ -53,6 +53,7 @@ Usage: rubocop [options] [file1, file2, ...]
                                        [fu]ubar
                                        [e]macs
                                        [j]son
+                                       [h]tml
                                        [fi]les
                                        [o]ffenses
                                        custom formatter class name
