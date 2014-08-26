@@ -9,16 +9,24 @@ module RuboCop
 
         def investigate(processed_source)
           processed_source.lines.each_with_index do |line, index|
-            match = line.match(/^( *)\t/)
+            match = line.match(/^( *)[\t ]*\t/)
             next unless match
 
             spaces = match.captures[0]
 
             range = source_range(processed_source.buffer,
                                  index + 1,
-                                 spaces.length)
+                                 (spaces.length)...(match.end(0)))
 
-            add_offense(nil, range, MSG)
+            add_offense(range, range, MSG)
+          end
+        end
+
+        private
+
+        def autocorrect(range)
+          @corrections << lambda do |corrector|
+            corrector.replace(range, range.source.gsub(/\t/, '  '))
           end
         end
       end
