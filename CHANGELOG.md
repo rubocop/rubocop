@@ -11,6 +11,7 @@
 * [#1272](https://github.com/bbatsov/rubocop/issues/1272): `Tab` cop does auto-correction. ([@yous][])
 * [#1274](https://github.com/bbatsov/rubocop/issues/1274): `MultilineIfThen` cop does auto-correction. ([@bbatsov][])
 * [#1279](https://github.com/bbatsov/rubocop/issues/1279): `DotPosition` cop does auto-correction. ([@yous][])
+* [#1277](https://github.com/bbatsov/rubocop/issues/1277): `SpaceBeforeFirstArg` cop does auto-correction. ([@yous][])
 
 ### Bugs fixed
 

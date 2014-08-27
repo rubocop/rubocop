@@ -36,6 +36,13 @@ describe RuboCop::Cop::Lint::SpaceBeforeFirstArg do
       inspect_source(cop, ['a.something=c', 'a.something,b=c,d'])
       expect(cop.offenses).to be_empty
     end
+
+    it 'auto-corrects method call with no space before the first arg' do
+      new_source = autocorrect_source(cop, ['something?x',
+                                            'a.something!y, z'])
+      expect(new_source).to eq(['something? x',
+                                'a.something! y, z'].join("\n"))
+    end
   end
 
   context 'for method calls with parentheses' do

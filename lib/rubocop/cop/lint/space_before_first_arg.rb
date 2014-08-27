@@ -28,8 +28,15 @@ module RuboCop
 
           arg1 = args.first.loc.expression
           arg1_with_space = range_with_surrounding_space(arg1, :left)
+          space = Parser::Source::Range.new(arg1.source_buffer,
+                                            arg1_with_space.begin_pos,
+                                            arg1.begin_pos)
 
-          add_offense(nil, arg1) if arg1_with_space.source =~ /\A\S/
+          add_offense(space, arg1) if arg1_with_space.source =~ /\A\S/
+        end
+
+        def autocorrect(range)
+          @corrections << ->(corrector) { corrector.insert_before(range, ' ') }
         end
       end
     end
