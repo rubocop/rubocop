@@ -38,6 +38,19 @@ module RuboCop
 
           add_offense(node, :keyword)
         end
+
+        def autocorrect(node)
+          @corrections << lambda do |corrector|
+            condition_node, = *node
+            start_range = node.loc.keyword.begin
+            end_range = if node.loc.begin
+                          node.loc.begin.end
+                        else
+                          condition_node.loc.expression.end
+                        end
+            corrector.replace(start_range.join(end_range), 'loop do')
+          end
+        end
       end
     end
   end

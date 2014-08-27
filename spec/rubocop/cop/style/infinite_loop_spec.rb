@@ -33,4 +33,16 @@ describe RuboCop::Cop::Style::InfiniteLoop do
 
     expect(cop.offenses).to be_empty
   end
+
+  it 'auto-corrects the usage of "while/until" with do' do
+    new_source = autocorrect_source(cop, ['while true do',
+                                          'end'])
+    expect(new_source).to eq("loop do\nend")
+  end
+
+  it 'auto-corrects the usage of "while/until" without do' do
+    new_source = autocorrect_source(cop, ['while 1',
+                                          'end'])
+    expect(new_source).to eq("loop do\nend")
+  end
 end
