@@ -6,8 +6,10 @@ Style/InlineComment:
 
 Style/MethodCalledOnDoEndBlock:
   Description: 'Avoid chaining a method call on a do...end block.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#single-line-blocks'
   Enabled: false
 
 Style/SymbolArray:
   Description: 'Use %i or %I for arrays of symbols.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-i'
   Enabled: false
