@@ -10,6 +10,7 @@
 * `UselessAssignment` cop now suggests a variable name for possible typos if there's a variable-ish identifier similar to the unused variable name in the same scope. ([@yujinakayama][])
 * [#1272](https://github.com/bbatsov/rubocop/issues/1272): `Tab` cop does auto-correction. ([@yous][])
 * [#1274](https://github.com/bbatsov/rubocop/issues/1274): `MultilineIfThen` cop does auto-correction. ([@bbatsov][])
+* [#1279](https://github.com/bbatsov/rubocop/issues/1279): `DotPosition` cop does auto-correction. ([@yous][])
 
 ### Bugs fixed
 
