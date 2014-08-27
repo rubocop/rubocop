@@ -187,21 +187,25 @@ describe RuboCop::ConfigLoader do
 
       it 'returns the ancestor configuration plus local overrides' do
         config =
-          default_config
-          .merge('Metrics/LineLength' => {
-                   'Description' =>
-                   default_config['Metrics/LineLength']['Description'],
-                   'Enabled' => true,
-                   'Max' => 77,
-                   'AllowURI' => true
-                 },
-                 'Metrics/MethodLength' => {
-                   'Description' =>
-                   default_config['Metrics/MethodLength']['Description'],
-                   'Enabled' => true,
-                   'CountComments' => false,
-                   'Max' => 5
-                 })
+          default_config.merge(
+            'Metrics/LineLength' => {
+              'Description' =>
+              default_config['Metrics/LineLength']['Description'],
+              'StyleGuide' =>
+              'https://github.com/bbatsov/ruby-style-guide#80-character-limits',
+              'Enabled' => true,
+              'Max' => 77,
+              'AllowURI' => true
+            },
+            'Metrics/MethodLength' => {
+              'Description' =>
+              default_config['Metrics/MethodLength']['Description'],
+              'StyleGuide' =>
+              'https://github.com/bbatsov/ruby-style-guide#short-methods',
+              'Enabled' => true,
+              'CountComments' => false,
+              'Max' => 5
+            })
         expect(configuration_from_file).to eq(config)
       end
     end

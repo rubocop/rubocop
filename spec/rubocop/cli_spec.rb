@@ -1075,12 +1075,15 @@ describe RuboCop::CLI, :isolated_environment do
         let(:cop_list) { ['Style/Tab'] }
 
         it 'prints that cop and nothing else' do
-          expect(stdout).to eq(['# Supports --auto-correct',
-                                'Style/Tab:',
-                                '  Description: No hard tabs.',
-                                '  Enabled: true',
-                                '',
-                                ''].join("\n"))
+          expect(stdout).to eq(
+            ['# Supports --auto-correct',
+             'Style/Tab:',
+             '  Description: No hard tabs.',
+             '  StyleGuide: ' \
+             'https://github.com/bbatsov/ruby-style-guide#spaces-indentation',
+             '  Enabled: true',
+             '',
+             ''].join("\n"))
         end
 
         include_examples :prints_config
@@ -1095,12 +1098,15 @@ describe RuboCop::CLI, :isolated_environment do
         let(:cop_list) { ['Style/Tab,Lint/X123'] }
 
         it 'skips the unknown cop' do
-          expect(stdout).to eq(['# Supports --auto-correct',
-                                'Style/Tab:',
-                                '  Description: No hard tabs.',
-                                '  Enabled: true',
-                                '',
-                                ''].join("\n"))
+          expect(stdout).to eq(
+            ['# Supports --auto-correct',
+             'Style/Tab:',
+             '  Description: No hard tabs.',
+             '  StyleGuide: ' \
+             'https://github.com/bbatsov/ruby-style-guide#spaces-indentation',
+             '  Enabled: true',
+             '',
+             ''].join("\n"))
         end
       end
     end
