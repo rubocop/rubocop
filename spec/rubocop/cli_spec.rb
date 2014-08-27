@@ -1043,7 +1043,7 @@ describe RuboCop::CLI, :isolated_environment do
           lines = stdout.lines
           lines.slice_before(/Type /).each do |slice|
             types = cops.types.map(&:to_s).map(&:capitalize)
-            current = types.delete(slice.shift[/Type '(?<c>[^'']+)'/, 'c'])
+            current = types.delete(slice.shift[/Type '(?<c>[^']+)'/, 'c'])
             # all cops in their type listing
             cops.with_type(current).each do |cop|
               expect(slice.any? { |l| l.include? cop.cop_name }).to be_truthy
