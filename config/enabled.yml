@@ -2,6 +2,7 @@
 
 Style/AccessModifierIndentation:
   Description: Check indentation of private/protected visibility modifiers.
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#indent-public-private-protected'
   Enabled: true
 
 Style/AccessorMethodName:
@@ -10,6 +11,7 @@ Style/AccessorMethodName:
 
 Style/Alias:
   Description: 'Use alias_method instead of alias.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#alias-method'
   Enabled: true
 
 Style/AlignArray:
@@ -32,6 +34,7 @@ Style/AlignParameters:
 
 Style/AndOr:
   Description: 'Use &&/|| instead of and/or.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-and-or-or'
   Enabled: true
 
 Style/ArrayJoin:
@@ -251,6 +254,7 @@ Style/IndentHash:
 
 Style/InfiniteLoop:
   Description: 'Use Kernel#loop for infinite loops.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#infinite-loop'
   Enabled: true
 
 Style/Lambda:
