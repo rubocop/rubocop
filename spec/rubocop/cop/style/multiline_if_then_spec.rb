@@ -109,6 +109,8 @@ describe RuboCop::Cop::Style::MultilineIfThen do
     new_source = autocorrect_source(cop, ['if cond then',
                                           '  something',
                                           'end'])
-    expect(new_source).to eq("if cond\n  something\nend")
+    expect(new_source).to eq(['if cond',
+                              '  something',
+                              'end'].join("\n"))
   end
 end

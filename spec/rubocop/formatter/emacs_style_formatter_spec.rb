@@ -24,7 +24,8 @@ module RuboCop
 
           formatter.file_finished('test', cop.offenses)
           expect(output.string).to eq ['test:1:1: C: message 1',
-                                       "test:3:6: C: message 2\n"].join("\n")
+                                       'test:3:6: C: message 2',
+                                       ''].join("\n")
         end
 
         context 'when the offense is automatically corrected' do

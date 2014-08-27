@@ -151,8 +151,10 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
       end
 
       it 'one hash parameter with braces and separators' do
-        corrected = autocorrect_source(cop, ["where(  \n { x: 1 }   )"])
-        expect(corrected).to eq "where(  \n  x: 1    )"
+        corrected = autocorrect_source(cop, ['where(  ',
+                                             ' { x: 1 }   )'])
+        expect(corrected).to eq(['where(  ',
+                                 '  x: 1    )'].join("\n"))
       end
 
       it 'one hash parameter with braces and multiple keys' do
@@ -212,7 +214,8 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
       end
 
       it 'one hash parameter with braces and separators around it' do
-        inspect_source(cop, ["where( \t    {  x: 1 \n  }   )"])
+        inspect_source(cop, ["where( \t    {  x: 1 ",
+                             '  }   )'])
         expect(cop.messages).to be_empty
         expect(cop.highlights).to be_empty
       end
