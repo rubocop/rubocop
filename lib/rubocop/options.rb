@@ -24,6 +24,7 @@ module RuboCop
                          '  [fu]ubar',
                          '  [e]macs',
                          '  [j]son',
+                         '  [h]tml',
                          '  [fi]les',
                          '  [o]ffenses',
                          '  custom formatter class name'],
