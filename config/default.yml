@@ -100,8 +100,8 @@ Style/AlignHash:
 Style/AlignParameters:
   # Alignment of parameters in multi-line method calls.
   #
-  # The `with_first_parameter` style aligns the following lines along the same column
-  # as the first parameter.
+  # The `with_first_parameter` style aligns the following lines along the same
+  # column as the first parameter.
   #
   #     method_call(a,
   #                 b)
