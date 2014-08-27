@@ -35,6 +35,8 @@ describe RuboCop::Cop::Style::WhenThen do
     new_source = autocorrect_source(cop, ['case a',
                                           'when b; c',
                                           'end'])
-    expect(new_source).to eq("case a\nwhen b then c\nend")
+    expect(new_source).to eq(['case a',
+                              'when b then c',
+                              'end'].join("\n"))
   end
 end

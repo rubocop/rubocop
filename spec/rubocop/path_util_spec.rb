@@ -33,16 +33,18 @@ describe RuboCop::PathUtil do
         expect(subject.match_path?('dir/**', 'dir/sub/file', '.rubocop.yml'))
           .to be_truthy
         expect($stderr.string)
-          .to eq("Warning: Deprecated pattern style 'dir/**' in " \
-                 ".rubocop.yml. Change to 'dir/**/*'.\n")
+          .to eq(["Warning: Deprecated pattern style 'dir/**' in " \
+                  ".rubocop.yml. Change to 'dir/**/*'.",
+                  ''].join("\n"))
       end
 
       it 'matches strings to the basename and prints warning' do
         expect(subject.match_path?('file', 'dir/file', '.rubocop.yml'))
           .to be_truthy
         expect($stderr.string)
-          .to eq("Warning: Deprecated pattern style 'file' in .rubocop.yml. " \
-                 "Change to '**/file'.\n")
+          .to eq(["Warning: Deprecated pattern style 'file' in .rubocop.yml. " \
+                  "Change to '**/file'.",
+                  ''].join("\n"))
 
         expect(subject.match_path?('file', 'dir/files', '')).to be_falsey
         expect(subject.match_path?('dir', 'dir/file', '')).to be_falsey

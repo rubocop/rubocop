@@ -256,7 +256,10 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
 
     it 'preserves line breaks when fixing a multiline array' do
       new_source = autocorrect_source(cop, ['%w(', 'some', 'words', ')'])
-      expect(new_source).to eq("%w[\nsome\nwords\n]")
+      expect(new_source).to eq(['%w[',
+                                'some',
+                                'words',
+                                ']'].join("\n"))
     end
 
     it 'preserves indentation when correcting a multiline array' do

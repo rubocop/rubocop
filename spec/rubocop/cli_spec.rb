@@ -103,7 +103,8 @@ describe RuboCop::CLI, :isolated_environment do
                   '      }',
                   '    ]',
                   '  end',
-                  'end'].join("\n") + "\n")
+                  'end',
+                  ''].join("\n"))
       end
 
       it 'can change block comments and indent them' do
@@ -132,7 +133,8 @@ describe RuboCop::CLI, :isolated_environment do
                   '      do_something',
                   '    end',
                   '  end',
-                  'end'].join("\n") + "\n")
+                  'end',
+                  ''].join("\n"))
       end
 
       it 'can correct two problems with blocks' do
@@ -146,7 +148,8 @@ describe RuboCop::CLI, :isolated_environment do
           .to eq(['# encoding: utf-8',
                   '(1..10).each do |i|',
                   '  puts i',
-                  'end'].join("\n") + "\n")
+                  'end',
+                  ''].join("\n"))
       end
 
       it 'can handle spaces when removing braces' do
@@ -188,7 +191,8 @@ describe RuboCop::CLI, :isolated_environment do
         expect(IO.read('example.rb')).to eq(['class Test',
                                              '  def f',
                                              '  end',
-                                             'end'].join("\n") + "\n")
+                                             'end',
+                                             ''].join("\n"))
       end
 
       # A case where WordArray's correction can be clobbered by
@@ -205,7 +209,8 @@ describe RuboCop::CLI, :isolated_environment do
                                              '  private',
                                              '',
                                              '  A = %w(git path)',
-                                             'end'].join("\n") + "\n")
+                                             'end',
+                                             ''].join("\n"))
         e = abs('example.rb')
         expect($stdout.string)
           .to eq(["#{e}:2:1: C: Missing top-level class documentation " \
@@ -248,7 +253,8 @@ describe RuboCop::CLI, :isolated_environment do
                                    'end end'])
         expect(cli.run(['--auto-correct'])).to eq(1)
         expect(IO.read('example.rb')).to eq(['module A module B',
-                                             'end end'].join("\n") + "\n")
+                                             'end end',
+                                             ''].join("\n"))
       end
 
       it 'can correct single line methods' do
@@ -291,8 +297,8 @@ describe RuboCop::CLI, :isolated_environment do
         expect(IO.read('example.rb'))
           .to eq(['# encoding: utf-8',
                   'fail NotImplementedError,',
-                  "     'Method should be overridden in child classes'"]
-                   .join("\n") + "\n")
+                  "     'Method should be overridden in child classes'",
+                  ''].join("\n"))
         expect($stdout.string)
           .to eq(['Inspecting 1 file',
                   'C',
@@ -331,7 +337,8 @@ describe RuboCop::CLI, :isolated_environment do
                   'class Klass',
                   '  def f',
                   '  end',
-                  'end'].join("\n") + "\n")
+                  'end',
+                  ''].join("\n"))
         expect($stderr.string).to eq('')
         expect($stdout.string)
           .to eq(['Inspecting 1 file',
@@ -361,7 +368,8 @@ describe RuboCop::CLI, :isolated_environment do
           .to eq(['# encoding: utf-8',
                   'def primes(limit)',
                   '  1.upto(limit).select { |i| is_prime[i] }',
-                  'end'].join("\n") + "\n")
+                  'end',
+                  ''].join("\n"))
         expect($stdout.string)
           .to eq(['Inspecting 1 file',
                   'C',
@@ -462,7 +470,8 @@ describe RuboCop::CLI, :isolated_environment do
                      '',
                      ''])
         expect(cli.run(%w(--auto-correct --format emacs))).to eq(1)
-        expect(IO.read('example.rb')).to eq("# encoding: utf-8\n")
+        expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
+                                             ''].join("\n"))
         expect($stdout.string)
           .to eq(["#{abs('example.rb')}:2:1: C: [Corrected] 3 trailing " \
                   'blank lines detected.',
@@ -609,8 +618,9 @@ describe RuboCop::CLI, :isolated_environment do
         expect { cli.run(['--auto-gen-config', 'example1.rb']) }
           .to exit_with_code(1)
         expect($stderr.string)
-          .to eq('--auto-gen-config can not be combined with any other ' \
-                 "arguments.\n")
+          .to eq(['--auto-gen-config can not be combined with any other ' \
+                  'arguments.',
+                  ''].join("\n"))
         expect($stdout.string).to eq('')
       end
 
@@ -1301,7 +1311,8 @@ describe RuboCop::CLI, :isolated_environment do
                                       ''].join("\n"))
 
         expect(File.read('emacs_output.txt'))
-          .to eq("#{abs(target_file)}:2:81: C: Line is too long. [90/80]\n")
+          .to eq(["#{abs(target_file)}:2:81: C: Line is too long. [90/80]",
+                  ''].join("\n"))
       end
     end
 
@@ -1402,7 +1413,9 @@ describe RuboCop::CLI, :isolated_environment do
                                'puts x'])
     expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(0)
     expect($stdout.string)
-      .to eq("\n1 file inspected, no offenses detected\n")
+      .to eq(['',
+              '1 file inspected, no offenses detected',
+              ''].join("\n"))
   end
 
   it 'checks a given file with faults and returns 1' do
@@ -1513,8 +1526,9 @@ describe RuboCop::CLI, :isolated_environment do
                    'end'])
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       expect($stderr.string)
-        .to eq("#{abs('example.rb')}: Style/LineLength has the wrong " \
-               "namespace - should be Metrics\n")
+        .to eq(["#{abs('example.rb')}: Style/LineLength has the wrong " \
+                'namespace - should be Metrics',
+                ''].join("\n"))
       # 3 cops were disabled, then 2 were enabled again, so we
       # should get 2 offenses reported.
       expect($stdout.string)
@@ -2197,9 +2211,10 @@ describe RuboCop::CLI, :isolated_environment do
 
       cli.run(%w(--format simple -c rubocop.yml))
       expect($stderr.string)
-        .to eq("Warning: Invalid severity 'superbad'. " \
-               'Valid severities are refactor, convention, ' \
-               "warning, error, fatal.\n")
+        .to eq(["Warning: Invalid severity 'superbad'. " \
+                'Valid severities are refactor, convention, ' \
+                'warning, error, fatal.',
+                ''].join("\n"))
     end
 
     context 'when a file inherits from the old auto generated file' do
@@ -2216,8 +2231,9 @@ describe RuboCop::CLI, :isolated_environment do
         expect { cli.run(%w(-c .rubocop.yml --auto-gen-config)) }
           .to exit_with_code(1)
         expect($stderr.string)
-          .to eq('Attention: rubocop-todo.yml has been renamed to ' \
-                 ".rubocop_todo.yml\n")
+          .to eq(['Attention: rubocop-todo.yml has been renamed to ' \
+                  '.rubocop_todo.yml',
+                  ''].join("\n"))
       end
     end
   end

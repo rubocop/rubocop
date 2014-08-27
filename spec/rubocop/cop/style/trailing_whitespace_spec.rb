@@ -17,7 +17,8 @@ describe RuboCop::Cop::Style::TrailingWhitespace do
   end
 
   it 'accepts a line without trailing whitespace' do
-    inspect_source(cop, ["x = 0\n"])
+    inspect_source(cop, ['x = 0',
+                         ''])
     expect(cop.offenses).to be_empty
   end
 

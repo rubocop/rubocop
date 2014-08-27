@@ -33,7 +33,11 @@ describe RuboCop::Cop::Style::DefWithParentheses do
   end
 
   it 'auto-removes unneeded parens' do
-    new_source = autocorrect_source(cop, "def test();\nsomething\nend")
-    expect(new_source).to eq("def test;\nsomething\nend")
+    new_source = autocorrect_source(cop, ['def test();',
+                                          'something',
+                                          'end'])
+    expect(new_source).to eq(['def test;',
+                              'something',
+                              'end'].join("\n"))
   end
 end

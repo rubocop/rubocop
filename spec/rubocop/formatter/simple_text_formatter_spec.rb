@@ -74,7 +74,9 @@ module RuboCop
           it 'handles pluralization correctly' do
             formatter.report_summary(0, 0, 0)
             expect(output.string).to eq(
-              "\n0 files inspected, no offenses detected\n")
+              ['',
+               '0 files inspected, no offenses detected',
+               ''].join("\n"))
           end
         end
 
@@ -82,7 +84,9 @@ module RuboCop
           it 'handles pluralization correctly' do
             formatter.report_summary(1, 0, 0)
             expect(output.string).to eq(
-              "\n1 file inspected, no offenses detected\n")
+              ['',
+               '1 file inspected, no offenses detected',
+               ''].join("\n"))
           end
         end
 
@@ -90,7 +94,9 @@ module RuboCop
           it 'handles pluralization correctly' do
             formatter.report_summary(1, 1, 0)
             expect(output.string).to eq(
-              "\n1 file inspected, 1 offense detected\n")
+              ['',
+               '1 file inspected, 1 offense detected',
+               ''].join("\n"))
           end
         end
 
@@ -98,7 +104,9 @@ module RuboCop
           it 'handles pluralization correctly' do
             formatter.report_summary(2, 2, 0)
             expect(output.string).to eq(
-              "\n2 files inspected, 2 offenses detected\n")
+              ['',
+               '2 files inspected, 2 offenses detected',
+               ''].join("\n"))
           end
         end
 
@@ -106,7 +114,9 @@ module RuboCop
           it 'prints about correction' do
             formatter.report_summary(1, 1, 1)
             expect(output.string).to eq(
-              "\n1 file inspected, 1 offense detected, 1 offense corrected\n")
+              ['',
+               '1 file inspected, 1 offense detected, 1 offense corrected',
+               ''].join("\n"))
           end
         end
 
@@ -114,7 +124,9 @@ module RuboCop
           it 'handles pluralization correctly' do
             formatter.report_summary(1, 1, 2)
             expect(output.string).to eq(
-              "\n1 file inspected, 1 offense detected, 2 offenses corrected\n")
+              ['',
+               '1 file inspected, 1 offense detected, 2 offenses corrected',
+               ''].join("\n"))
           end
         end
       end
