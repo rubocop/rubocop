@@ -51,6 +51,26 @@ module RuboCop
           when :trailing then dot_line != selector_line
           end
         end
+
+        def autocorrect(node)
+          receiver, _method_name, *_args = *node
+          if node.loc.selector
+            selector = node.loc.selector
+          else
+            # l.(1) has no selector, so we use the opening parenthesis instead
+            selector = node.loc.begin
+          end
+
+          @corrections << lambda do |corrector|
+            corrector.remove(node.loc.dot)
+            case style
+            when :leading
+              corrector.insert_before(selector, '.')
+            when :trailing
+              corrector.insert_after(receiver.loc.expression, '.')
+            end
+          end
+        end
       end
     end
   end

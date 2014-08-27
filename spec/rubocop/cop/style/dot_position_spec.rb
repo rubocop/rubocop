@@ -45,6 +45,31 @@ describe RuboCop::Cop::Style::DotPosition, :config do
       inspect_source(cop, ['something.method_name'])
       expect(cop.offenses).to be_empty
     end
+
+    it 'auto-corrects trailing dot in multi-line call' do
+      new_source = autocorrect_source(cop, ['something.',
+                                            '  method_name'])
+      expect(new_source).to eq(['something',
+                                '  .method_name'].join("\n"))
+    end
+
+    it 'auto-corrects trailing dot in multi-line call without selector' do
+      new_source = autocorrect_source(cop, ['something.',
+                                            '  (1)'])
+      expect(new_source).to eq(['something',
+                                '  .(1)'].join("\n"))
+    end
+
+    it 'auto-corrects correct + opposite style' do
+      new_source = autocorrect_source(cop, ['something',
+                                            '  .method_name',
+                                            'something.',
+                                            '  method_name'])
+      expect(new_source).to eq(['something',
+                                '  .method_name',
+                                'something',
+                                '  .method_name'].join("\n"))
+    end
   end
 
   context 'Trailing dots style' do
@@ -86,6 +111,20 @@ describe RuboCop::Cop::Style::DotPosition, :config do
                            'readlines.map.',
                            'compact.join("\n")'])
       expect(cop.offenses).to be_empty
+    end
+
+    it 'auto-corrects leading dot in multi-line call' do
+      new_source = autocorrect_source(cop, ['something',
+                                            '  .method_name'])
+      expect(new_source).to eq(['something.',
+                                '  method_name'].join("\n"))
+    end
+
+    it 'auto-corrects leading dot in multi-line call without selector' do
+      new_source = autocorrect_source(cop, ['something',
+                                            '  .(1)'])
+      expect(new_source).to eq(['something.',
+                                '  (1)'].join("\n"))
     end
   end
 end
