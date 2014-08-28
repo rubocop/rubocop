@@ -19,6 +19,7 @@
 * [#1263](https://github.com/bbatsov/rubocop/issues/1263): Do not report `%W` literals with special escaped characters in `UnneededCapitalW`. ([@jonas054][])
 * [#1286](https://github.com/bbatsov/rubocop/issues/1286): Fix a false positive in `VariableName`. ([@bbatsov][])
 * [#1211](https://github.com/bbatsov/rubocop/issues/1211): Fix false negative in `UselessAssignment` when there's a reference for the variable in an exclusive branch. ([@yujinakayama][])
+* [#1307](https://github.com/bbatsov/rubocop/issues/1307): Fix auto-correction of `RedundantBegin` cop deletes new line. ([@yous][])
 
 ## 0.25.0 (15/08/2014)
 

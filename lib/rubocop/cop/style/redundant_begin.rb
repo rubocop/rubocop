@@ -41,7 +41,7 @@ module RuboCop
               range_with_surrounding_space(node.loc.expression),
               range_with_surrounding_space(
                 child.loc.expression
-              ).source.gsub(/^\s{#{indent_diff}}/, '')
+              ).source.gsub(/^[ \t]{#{indent_diff}}/, '')
             )
           end
         end
