@@ -1,5 +1,4 @@
 # encoding: utf-8
-# rubocop:disable Metrics/LineLength
 
 require 'spec_helper'
 
@@ -44,7 +43,8 @@ describe RuboCop::Cop::Commissioner do
       commissioner.investigate(processed_source)
     end
 
-    it 'passes the input params to all cops/forces that implement their own #investigate method' do
+    it 'passes the input params to all cops/forces that implement their own' \
+       ' #investigate method' do
       source = []
       processed_source = parse_source(source)
       expect(cop).to receive(:investigate).with(processed_source)
