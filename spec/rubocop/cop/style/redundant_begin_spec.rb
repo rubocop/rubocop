@@ -86,4 +86,36 @@ describe RuboCop::Cop::Style::RedundantBegin do
     new_source = autocorrect_source(cop, src)
     expect(new_source).to eq(result_src)
   end
+
+  it "doesn't modify spacing when auto-correcting" do
+    src = ['def method',
+           '  begin',
+           '    BlockA do |strategy|',
+           '      foo',
+           '    end',
+           '',
+           '    BlockB do |portfolio|',
+           '      foo',
+           '    end',
+           '',
+           '  rescue => e',
+           '    bar',
+           '  end',
+           'end']
+
+    result_src = ['def method',
+                  '  BlockA do |strategy|',
+                  '    foo',
+                  '  end',
+                  '',
+                  '  BlockB do |portfolio|',
+                  '    foo',
+                  '  end',
+                  '',
+                  'rescue => e',
+                  '  bar',
+                  'end'].join("\n")
+    new_source = autocorrect_source(cop, src)
+    expect(new_source).to eq(result_src)
+  end
 end
