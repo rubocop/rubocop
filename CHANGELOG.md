@@ -9,6 +9,9 @@
 * New cop `InfiniteLoop` checks for places where `Kernel#loop` should have been used. ([@bbatsov][])
 * New cop `SymbolProc` checks for places where a symbol can be used as proc instead of a block. ([@bbatsov][])
 * `UselessAssignment` cop now suggests a variable name for possible typos if there's a variable-ish identifier similar to the unused variable name in the same scope. ([@yujinakayama][])
+* `PredicateName` cop now has separate configurations for prefices
+that denote predicate method names and predicate prefices that should
+be removed. ([@bbatsov][])
 * [#1272](https://github.com/bbatsov/rubocop/issues/1272): `Tab` cop does auto-correction. ([@yous][])
 * [#1274](https://github.com/bbatsov/rubocop/issues/1274): `MultilineIfThen` cop does auto-correction. ([@bbatsov][])
 * [#1279](https://github.com/bbatsov/rubocop/issues/1279): `DotPosition` cop does auto-correction. ([@yous][])

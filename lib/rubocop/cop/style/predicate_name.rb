@@ -23,20 +23,38 @@ module RuboCop
         private
 
         def on_method(node, method_name, _args, _body)
-          prefix_blacklist.each do |prefix|
-            next unless method_name.to_s.start_with?(prefix)
-            add_offense(node, :name, message(method_name.to_s, prefix))
+          predicate_prefices.each do |prefix|
+            method_name = method_name.to_s
+            next unless method_name.start_with?(prefix)
+            next if method_name == expected_name(method_name, prefix)
+            add_offense(
+              node,
+              :name,
+              message(method_name, expected_name(method_name, prefix))
+            )
           end
         end
 
-        def message(method_name, prefix)
-          new_name = method_name.sub(prefix, '')
+        def expected_name(method_name, prefix)
+          new_name = if prefix_blacklist.include?(prefix)
+                       method_name.sub(prefix, '')
+                     else
+                       method_name.dup
+                     end
           new_name << '?' unless method_name.end_with?('?')
+          new_name
+        end
+
+        def message(method_name, new_name)
           "Rename `#{method_name}` to `#{new_name}`."
         end
 
         def prefix_blacklist
           cop_config['NamePrefixBlacklist']
+        end
+
+        def predicate_prefices
+          cop_config['NamePrefix']
         end
       end
     end
