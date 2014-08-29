@@ -9,7 +9,7 @@
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     }
-    
+
     body, html {
     font-size: 62.5%;
     }
@@ -37,7 +37,7 @@
     margin: 0;
     padding: 0 22px 0 20px;
     }
-    
+
     .information, #offenses {
     width: 100%;
     padding: 20px;
@@ -46,7 +46,7 @@
     #offenses {
     padding: 0 20px;
     }
-    
+
     .information .infobox {
     border-left: 3px solid;
     border-radius: 4px;
@@ -56,7 +56,7 @@
     padding: 15px;
     border-color: #0088cc;
     }
-    
+
     .information .infobox .info-title {
     font-size: 1.8rem;
     line-height: 2.2rem;
@@ -72,7 +72,7 @@
     .information .infobox ul li {
     line-height: 1.8rem
     }
-    
+
     #offenses .offense-box {
     border-radius: 4px;
     margin-bottom: 20px;
@@ -141,31 +141,30 @@
       <div class="infobox">
         <h4 class="info-title">RuboCop Stats</h4>
         <ul>
-          <li><strong>Offense Count:</strong> <%= output_hash[:summary][:offense_count] %></li>
-          <li><strong>Target File Count:</strong> <%= output_hash[:summary][:target_file_count] %></li>
-          <li><strong>Inspected File Count:</strong> <%= output_hash[:summary][:inspected_file_count] %></li>
+          <li><strong>Offense Count:</strong> <%= summary.offense_count %></li>
+          <li><strong>Target File Count:</strong> <%= summary.target_files.count %></li>
+          <li><strong>Inspected File Count:</strong> <%= summary.inspected_files.count %></li>
         </ul>
       </div>
     </div>
     <div id="offenses">
-      <% output_hash[:files].each do |file| %>
-      <% if file[:offenses].any? %>
+      <% files.each do |file| %>
+      <% if file.offenses.any? %>
       <div class="offense-box">
-        <div class="box-title"><h3><%= file[:path] %> - <%= file[:offenses].length %></h3></div>
+        <div class="box-title"><h3><%= relative_path(file.path) %> - <%= file.offenses.count %></h3></div>
         <div class="offense-reports">
-          <% file[:offenses].each do |offense| %>
+          <% file.offenses.each do |offense| %>
           <div class="report">
-            <p class="message"><span class="severity <%= offense[:severity] %>"><%= offense[:severity] %>:</span> <%= offense[:message] %></p>
-            <% if offense[:location][:source_line].strip.length > 0 %>
+            <p class="message"><span class="severity <%= offense.severity %>"><%= offense.severity %>:</span> <%= offense.message %></p>
+            <% unless offense.location.source_line.strip.empty? %>
 <pre>
-<%= offense[:location][:source_line] %>
-<%= offense[:location][:highlight] %>
+<%= offense.location.source_line %>
 </pre>
             <% end %>
             <ul class="location">
-              <li><strong>Line: </strong> <%= offense[:location][:line] %></li>
-              <li><strong>Column: </strong> <%= offense[:location][:column] %></li>
-              <li><strong>Length: </strong> <%= offense[:location][:length] %></li>
+              <li><strong>Line: </strong> <%= offense.location.line %></li>
+              <li><strong>Column: </strong> <%= offense.real_column %></li>
+              <li><strong>Length: </strong> <%= offense.location.length %></li>
             </ul>
           </div>
           <% end %>
@@ -178,11 +177,11 @@
       <div class="infobox">
         <h4 class="info-title">Environment Information</h4>
         <ul>
-          <li><strong>RuboCop Version:</strong> <%= output_hash[:metadata][:rubocop_version] %></li>
-          <li><strong>Ruby Engine:</strong> <%= output_hash[:metadata][:ruby_engine] %></li>
-          <li><strong>Ruby Version:</strong> <%= output_hash[:metadata][:ruby_version] %></li>
-          <li><strong>Ruby Patch Level:</strong> <%= output_hash[:metadata][:ruby_patchlevel] %></li>
-          <li><strong>Ruby Platform:</strong> <%= output_hash[:metadata][:ruby_platform] %></li>
+          <li><strong>RuboCop Version:</strong> <%= metadata.rubocop_version %></li>
+          <li><strong>Ruby Engine:</strong> <%= metadata.ruby_engine %></li>
+          <li><strong>Ruby Version:</strong> <%= metadata.ruby_version %></li>
+          <li><strong>Ruby Patch Level:</strong> <%= metadata.ruby_patchlevel %></li>
+          <li><strong>Ruby Platform:</strong> <%= metadata.ruby_platform %></li>
         </ul>
       </div>
     </div>

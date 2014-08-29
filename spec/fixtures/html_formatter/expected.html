@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='UTF-8' />
+    <title>RuboCop output</title>
+    <style>
+    * {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    }
+
+    body, html {
+    font-size: 62.5%;
+    }
+    body {
+    background-color: #ecedf0;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    margin: 0;
+    }
+    #header {
+    background: #171717;
+    border-bottom: none;
+    border-left: 1px solid #3a3a3a;
+    box-shadow: 1px 3px 0 1px #cccccc;
+    height: 50px;
+    padding: 0;
+    }
+    h2 {
+    color: #FFF;
+    display: inline-block;
+    float: left;
+    height: 50px;
+    font-size: 2rem;
+    letter-spacing: normal;
+    line-height: 50px;
+    margin: 0;
+    padding: 0 22px 0 20px;
+    }
+
+    .information, #offenses {
+    width: 100%;
+    padding: 20px;
+    color: #333;
+    }
+    #offenses {
+    padding: 0 20px;
+    }
+
+    .information .infobox {
+    border-left: 3px solid;
+    border-radius: 4px;
+    background-color: #fff;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    padding: 15px;
+    border-color: #0088cc;
+    }
+
+    .information .infobox .info-title {
+    font-size: 1.8rem;
+    line-height: 2.2rem;
+    margin: 0;
+    }
+    .information .infobox ul {
+    font-size: 1.4rem;
+    list-style: none;
+    margin: 0;
+    margin-top: 5px;
+    padding: 0;
+    }
+    .information .infobox ul li {
+    line-height: 1.8rem
+    }
+
+    #offenses .offense-box {
+    border-radius: 4px;
+    margin-bottom: 20px;
+    background-color: #fff;
+    -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+    }
+    #offenses .offense-box .box-title h3 {
+    color: #33353f;
+    background-color: #f6f6f6;
+    font-size: 2rem;
+    line-height: 2rem;
+    display: block;
+    padding: 15px;
+    border-radius: 5px;
+    margin: 0;
+    }
+    #offenses .offense-box .offense-reports  {
+    padding: 0 15px;
+    }
+    #offenses .offense-box .offense-reports .report {
+    border-bottom: 1px dotted #ddd;
+    padding: 15px 0px;
+    position: relative;
+    font-size: 1.3rem;
+    }
+    #offenses .offense-box .offense-reports .report:last-child {
+    border-bottom: none;
+    }
+    #offenses .offense-box .offense-reports .report pre {
+    background: #000;
+    color: #fff;
+    padding: 10px 15px;
+    font-size: 1.2rem;
+    border-radius: 5px;
+    line-height: 1.6rem;
+    }
+    #offenses .offense-box .offense-reports .report .location {
+    padding: 0;
+    list-style: none;
+    }
+    #offenses .offense-box .offense-reports .report .location li {
+    display: inline;
+    margin-right: 10px;
+    }
+    .severity {
+    text-transform: capitalize;
+    font-weight: bold;
+    }
+    .severity.convention, .severity.refactor {
+    color: #47a447;
+    }
+    .severity.warning {
+    color: #ed9c28;
+    }
+    .severity.error, .severity.fatal {
+    color: #d2322d;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="header">
+      <h2>RuboCop Output</h2>
+    </div>
+    <div class="information">
+      <div class="infobox">
+        <h4 class="info-title">RuboCop Stats</h4>
+        <ul>
+          <li><strong>Offense Count:</strong> 13</li>
+          <li><strong>Target File Count:</strong> 3</li>
+          <li><strong>Inspected File Count:</strong> 3</li>
+        </ul>
+      </div>
+    </div>
+    <div id="offenses">
+      
+      
+      <div class="offense-box">
+        <div class="box-title"><h3>app/controllers/application_controller.rb - 1</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <p class="message"><span class="severity convention">convention:</span> Missing top-level class documentation comment.</p>
+            
+<pre>
+class ApplicationController < ActionController::Base
+</pre>
+            
+            <ul class="location">
+              <li><strong>Line: </strong> 1</li>
+              <li><strong>Column: </strong> 1</li>
+              <li><strong>Length: </strong> 5</li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box">
+        <div class="box-title"><h3>app/controllers/books_controller.rb - 8</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <p class="message"><span class="severity convention">convention:</span> Missing top-level class documentation comment.</p>
+            
+<pre>
+class BooksController < ApplicationController
+</pre>
+            
+            <ul class="location">
+              <li><strong>Line: </strong> 1</li>
+              <li><strong>Column: </strong> 1</li>
+              <li><strong>Length: </strong> 5</li>
+            </ul>
+          </div>
+          
+          <div class="report">
+            <p class="message"><span class="severity convention">convention:</span> Line is too long. [83/80]</p>
+            
+<pre>
+        format.html { redirect_to @book, notice: 'Book was successfully created.' }
+</pre>
+            
+            <ul class="location">
+              <li><strong>Line: </strong> 31</li>
+              <li><strong>Column: </strong> 81</li>
+              <li><strong>Length: </strong> 3</li>
+            </ul>
+          </div>
+          
+          <div class="report">
+            <p class="message"><span class="severity convention">convention:</span> Line is too long. [83/80]</p>
+            
+<pre>
+        format.html { redirect_to @book, notice: 'Book was successfully updated.' }
+</pre>
+            
+            <ul class="location">
+              <li><strong>Line: </strong> 45</li>
+              <li><strong>Column: </strong> 81</li>
+              <li><strong>Length: </strong> 3</li>
+            </ul>
+          </div>
+          
+          <div class="report">
+            <p class="message"><span class="severity convention">convention:</span> Line is too long. [87/80]</p>
+            
+<pre>
+      format.html { redirect_to books_url, notice: 'Book was successfully destroyed.' }
+</pre>
+            
+            <ul class="location">
+              <li><strong>Line: </strong> 59</li>
+              <li><strong>Column: </strong> 81</li>
+              <li><strong>Length: </strong> 7</li>
+            </ul>
+          </div>
+          
+          <div class="report">
+            <p class="message"><span class="severity convention">convention:</span> Keep a blank line before and after `private`.</p>
+            
+<pre>
+  private
+</pre>
+            
+            <ul class="location">
+              <li><strong>Line: </strong> 64</li>
+              <li><strong>Column: </strong> 3</li>
+              <li><strong>Length: </strong> 7</li>
+            </ul>
+          </div>
+          
+          <div class="report">
+            <p class="message"><span class="severity convention">convention:</span> Inconsistent indentation detected.</p>
+            
+<pre>
+    def set_book
+</pre>
+            
+            <ul class="location">
+              <li><strong>Line: </strong> 66</li>
+              <li><strong>Column: </strong> 5</li>
+              <li><strong>Length: </strong> 57</li>
+            </ul>
+          </div>
+          
+          <div class="report">
+            <p class="message"><span class="severity convention">convention:</span> Line is too long. [88/80]</p>
+            
+<pre>
+    # Never trust parameters from the scary internet, only allow the white list through.
+</pre>
+            
+            <ul class="location">
+              <li><strong>Line: </strong> 70</li>
+              <li><strong>Column: </strong> 81</li>
+              <li><strong>Length: </strong> 8</li>
+            </ul>
+          </div>
+          
+          <div class="report">
+            <p class="message"><span class="severity convention">convention:</span> Inconsistent indentation detected.</p>
+            
+<pre>
+    def book_params
+</pre>
+            
+            <ul class="location">
+              <li><strong>Line: </strong> 71</li>
+              <li><strong>Column: </strong> 5</li>
+              <li><strong>Length: </strong> 65</li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+      
+      <div class="offense-box">
+        <div class="box-title"><h3>app/models/book.rb - 4</h3></div>
+        <div class="offense-reports">
+          
+          <div class="report">
+            <p class="message"><span class="severity convention">convention:</span> Missing top-level class documentation comment.</p>
+            
+<pre>
+class Book < ActiveRecord::Base
+</pre>
+            
+            <ul class="location">
+              <li><strong>Line: </strong> 1</li>
+              <li><strong>Column: </strong> 1</li>
+              <li><strong>Length: </strong> 5</li>
+            </ul>
+          </div>
+          
+          <div class="report">
+            <p class="message"><span class="severity convention">convention:</span> Use snake_case for methods.</p>
+            
+<pre>
+  def someMethod
+</pre>
+            
+            <ul class="location">
+              <li><strong>Line: </strong> 2</li>
+              <li><strong>Column: </strong> 7</li>
+              <li><strong>Length: </strong> 10</li>
+            </ul>
+          </div>
+          
+          <div class="report">
+            <p class="message"><span class="severity warning">warning:</span> Useless assignment to variable - `foo`.</p>
+            
+<pre>
+    foo = bar = baz
+</pre>
+            
+            <ul class="location">
+              <li><strong>Line: </strong> 3</li>
+              <li><strong>Column: </strong> 5</li>
+              <li><strong>Length: </strong> 3</li>
+            </ul>
+          </div>
+          
+          <div class="report">
+            <p class="message"><span class="severity warning">warning:</span> Useless assignment to variable - `bar`.</p>
+            
+<pre>
+    foo = bar = baz
+</pre>
+            
+            <ul class="location">
+              <li><strong>Line: </strong> 3</li>
+              <li><strong>Column: </strong> 11</li>
+              <li><strong>Length: </strong> 3</li>
+            </ul>
+          </div>
+          
+        </div>
+      </div>
+      
+      
+    </div>
+    <div class="information">
+      <div class="infobox">
+        <h4 class="info-title">Environment Information</h4>
+        <ul>
+          <li><strong>RuboCop Version:</strong> 0.26.1</li>
+          <li><strong>Ruby Engine:</strong> ruby</li>
+          <li><strong>Ruby Version:</strong> 2.1.3</li>
+          <li><strong>Ruby Patch Level:</strong> 242</li>
+          <li><strong>Ruby Platform:</strong> x86_64-darwin13.0</li>
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>
