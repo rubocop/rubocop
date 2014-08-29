@@ -80,7 +80,9 @@ module RuboCop
           when String
             ''
           when Parser::AST::Node
-            /(\s*)/.match(object.loc.send(part).source_line)[1]
+            part_range = object.loc.send(part)
+            left_of_part = part_range.source_line[0...part_range.column]
+            /^(\s*)$/.match(left_of_part) ? left_of_part : ''
           else
             fail "Unsupported object #{object}"
           end
