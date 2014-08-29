@@ -23,7 +23,7 @@ module RuboCop
           return if bargs
           # something { |x, y| ... }
           return unless block_args.children.size == 1
-          return unless block_body.type == :send
+          return unless block_body && block_body.type == :send
 
           receiver, method_name, args = *block_body
 

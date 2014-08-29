@@ -37,6 +37,12 @@ describe RuboCop::Cop::Style::SymbolProc do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts empty block body' do
+    inspect_source(cop, ['something { |x| }'])
+
+    expect(cop.offenses).to be_empty
+  end
+
   it 'accepts block with more than 1 expression in body' do
     inspect_source(cop, ['something { |x| x.method; something_else }'])
 
