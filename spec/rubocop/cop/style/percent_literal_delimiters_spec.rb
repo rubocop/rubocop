@@ -230,6 +230,23 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
       expect(new_source).to eq('%w[some words]')
     end
 
+    it 'fixes a string array in a scope' do
+      new_source = autocorrect_source(cop, ['module Foo',
+                                            '   class Bar',
+                                            '     def baz',
+                                            '       %(one two)',
+                                            '     end',
+                                            '   end',
+                                            ' end'])
+      expect(new_source).to eq(['module Foo',
+                                '   class Bar',
+                                '     def baz',
+                                '       %[one two]',
+                                '     end',
+                                '   end',
+                                ' end'].join("\n"))
+    end
+
     it 'fixes a regular expression' do
       original_source = '%r(.*)'
       new_source = autocorrect_source(cop, original_source)
