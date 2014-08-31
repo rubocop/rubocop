@@ -48,7 +48,8 @@ module RuboCop
             if style == :no_braces
               corrector.remove(node.loc.begin)
               corrector.remove(node.loc.end)
-              remove_trailing_comma(node, corrector)
+              remove_leading_whitespace(node, corrector)
+              remove_trailing_comma_and_whitespace(node, corrector)
             elsif style == :braces
               corrector.insert_before(node.loc.expression, '{')
               corrector.insert_after(node.loc.expression, '}')
@@ -56,18 +57,24 @@ module RuboCop
           end
         end
 
-        def remove_trailing_comma(node, corrector)
-          sb = node.loc.end.source_buffer
-          pos_after_last_pair = node.children.last.loc.expression.end_pos
-          range_after_last_pair =
-            Parser::Source::Range.new(sb, pos_after_last_pair,
-                                      node.loc.end.begin_pos)
-          trailing_comma_offset = range_after_last_pair.source =~ /,/
-          return unless trailing_comma_offset
+        def remove_leading_whitespace(node, corrector)
+          corrector.remove(
+            Parser::Source::Range.new(
+              node.loc.expression.source_buffer,
+              node.loc.begin.end_pos,
+              node.children.first.loc.expression.begin_pos
+            )
+          )
+        end
 
-          comma_begin = pos_after_last_pair + trailing_comma_offset
-          corrector.remove(Parser::Source::Range.new(sb, comma_begin,
-                                                     comma_begin + 1))
+        def remove_trailing_comma_and_whitespace(node, corrector)
+          corrector.remove(
+            Parser::Source::Range.new(
+              node.loc.expression.source_buffer,
+              node.children.last.loc.expression.end_pos,
+              node.loc.end.begin_pos
+            )
+          )
         end
 
         def non_empty_hash?(arg)

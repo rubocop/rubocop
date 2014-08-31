@@ -22,6 +22,7 @@
 * [#1211](https://github.com/bbatsov/rubocop/issues/1211): Fix false negative in `UselessAssignment` when there's a reference for the variable in an exclusive branch. ([@yujinakayama][])
 * [#1307](https://github.com/bbatsov/rubocop/issues/1307): Fix auto-correction of `RedundantBegin` cop deletes new line. ([@yous][])
 * [#1283](https://github.com/bbatsov/rubocop/issues/1283): Fix auto-correction of indented expressions in `PercentLiteralDelimiters`. ([@jonas054][])
+* [#1315](https://github.com/bbatsov/rubocop/pull/1315): `BracesAroundHashParameters` auto-correction removes whitespace around content inside braces. ([@jspanjers][])
 
 ## 0.25.0 (15/08/2014)
 
@@ -1078,3 +1079,4 @@
 [@yous]: https://github.com/yous
 [@vrthra]: https://github.com/vrthra
 [@SkuliOskarsson]: https://github.com/SkuliOskarsson
+[@jspanjers]: https://github.com/jspanjers
