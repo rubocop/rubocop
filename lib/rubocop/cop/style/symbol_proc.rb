@@ -19,6 +19,8 @@ module RuboCop
 
           _breceiver, bmethod_name, bargs = *block_send
 
+          # we should ignore lambdas
+          return if bmethod_name == :lambda
           # File.open(file) { |f| f.readlines }
           return if bargs
           # something { |x, y| ... }

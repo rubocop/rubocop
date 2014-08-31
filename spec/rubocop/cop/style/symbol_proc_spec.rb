@@ -31,6 +31,12 @@ describe RuboCop::Cop::Style::SymbolProc do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts lambda with 1 argument' do
+    inspect_source(cop, ['->(x) { x.method }'])
+
+    expect(cop.offenses).to be_empty
+  end
+
   it 'accepts block with no arguments' do
     inspect_source(cop, ['something { x.method }'])
 
