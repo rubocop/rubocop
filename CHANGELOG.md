@@ -24,6 +24,7 @@
 * [#1307](https://github.com/bbatsov/rubocop/issues/1307): Fix auto-correction of `RedundantBegin` cop deletes new line. ([@yous][])
 * [#1283](https://github.com/bbatsov/rubocop/issues/1283): Fix auto-correction of indented expressions in `PercentLiteralDelimiters`. ([@jonas054][])
 * [#1315](https://github.com/bbatsov/rubocop/pull/1315): `BracesAroundHashParameters` auto-correction removes whitespace around content inside braces. ([@jspanjers][])
+* [#1313](https://github.com/bbatsov/rubocop/issues/1313): Fix a false positive in `AndOr` when enforced style is `conditionals`. ([@bbatsov][]).
 
 ## 0.25.0 (15/08/2014)
 

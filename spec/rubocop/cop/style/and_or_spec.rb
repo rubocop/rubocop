@@ -70,6 +70,10 @@ describe RuboCop::Cop::Style::AndOr, :config do
       expect(cop.offenses.size).to eq(2)
     end
 
+    it 'accepts and/or in if body' do
+      inspect_source(cop, 'if x then y and z end')
+      expect(cop.offenses).to be_empty
+    end
   end
 
   context 'when style is always' do

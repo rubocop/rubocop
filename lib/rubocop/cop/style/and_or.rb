@@ -35,7 +35,9 @@ module RuboCop
         private
 
         def on_conditionals(node)
-          node.each_node(:and, :or) do |logical_node|
+          condition_node, = *node
+
+          condition_node.each_node(:and, :or) do |logical_node|
             process_logical_op(logical_node)
           end
         end
