@@ -35,10 +35,7 @@ module RuboCop
           .expand_path('../../../../assets/output.html.erb', __FILE__))
         erb = ERB.new(template)
         html_content = erb.result(binding)
-        File.open('rubocop.html', 'w+') do |file|
-          file.puts html_content
-        end
-        output.write "Html file saved\n"
+        output.write html_content
       end
 
       def metadata_hash
