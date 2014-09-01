@@ -27,6 +27,7 @@
 * [#1313](https://github.com/bbatsov/rubocop/issues/1313): Fix a false positive in `AndOr` when enforced style is `conditionals`. ([@bbatsov][])
 * Handle post-conditional `while` and `until` in `AndOr` when enforced style is `conditionals`. ([@yujinakayama][])
 * [#1319](https://github.com/bbatsov/rubocop/issues/1319): Fix a false positive in `FormatString`. ([@bbatsov][])
+* [#1287](https://github.com/bbatsov/rubocop/issues/1287): Allow missing blank line for EmptyLinesAroundAccessModifier if next line closes a block. ([@sch1zo][])
 
 ## 0.25.0 (15/08/2014)
 
@@ -1084,3 +1085,4 @@
 [@vrthra]: https://github.com/vrthra
 [@SkuliOskarsson]: https://github.com/SkuliOskarsson
 [@jspanjers]: https://github.com/jspanjers
+[@sch1zo]: https://github.com/sch1zo
