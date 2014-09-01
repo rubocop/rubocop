@@ -11,68 +11,37 @@ describe RuboCop::Cop::Style::AndOr, :config do
     subject(:cop) { described_class.new(config) }
     let(:cop_config) { cop_config }
 
-    it 'does not warn on short-circuit (and)' do
-      inspect_source(cop,
-                     ['x = a + b and return x'])
-      expect(cop.offenses.size).to eq(0)
+    %w(and or).each do |operator|
+      it "registers an offense for \"#{operator}\" inside of conditional" do
+        inspect_source(cop,
+                       ["test if a #{operator} b"])
+        expect(cop.offenses.size).to eq(1)
+      end
+
+      it "accepts \"#{operator}\" outside of conditional" do
+        inspect_source(cop,
+                       ["x = a + b #{operator} return x"])
+        expect(cop.offenses).to be_empty
+      end
+
+      it "accepts \"#{operator}\" in if body" do
+        inspect_source(cop, "if x then y #{operator} z end")
+        expect(cop.offenses).to be_empty
+      end
     end
 
-    it 'does not warn on short-circuit (or)' do
-      inspect_source(cop,
-                     ['x = a + b or return x'])
-      expect(cop.offenses.size).to eq(0)
-    end
+    %w(&& ||).each do |operator|
+      it "accepts #{operator} inside of conditional" do
+        inspect_source(cop,
+                       ["test if a #{operator} b"])
+        expect(cop.offenses).to be_empty
+      end
 
-    it 'does warn on non short-circuit (and)' do
-      inspect_source(cop,
-                     ['x = a + b if a and b'])
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Use `&&` instead of `and`.'])
-    end
-
-    it 'does warn on non short-circuit (or)' do
-      inspect_source(cop,
-                     ['x = a + b if a or b'])
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Use `||` instead of `or`.'])
-    end
-
-    it 'does warn on non short-circuit (and) (unless)' do
-      inspect_source(cop,
-                     ['x = a + b unless a and b'])
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Use `&&` instead of `and`.'])
-    end
-
-    it 'does warn on non short-circuit (or) (unless)' do
-      inspect_source(cop,
-                     ['x = a + b unless a or b'])
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Use `||` instead of `or`.'])
-    end
-
-    it 'should handle boolean returning methods correctly' do
-      inspect_source(cop,
-                     ['1 if (not true) or false'])
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(['Use `||` instead of `or`.'])
-    end
-
-    it 'should handle recursion' do
-      inspect_source(cop,
-                     ['1 if (true and false) || (false or true)'])
-      expect(cop.offenses.size).to eq(2)
-    end
-
-    it 'should handle recursion' do
-      inspect_source(cop,
-                     ['1 if (true or false) && (false and true)'])
-      expect(cop.offenses.size).to eq(2)
-    end
-
-    it 'accepts and/or in if body' do
-      inspect_source(cop, 'if x then y and z end')
-      expect(cop.offenses).to be_empty
+      it "accepts #{operator} outside of conditional" do
+        inspect_source(cop,
+                       ["x = a #{operator} b"])
+        expect(cop.offenses).to be_empty
+      end
     end
   end
 
@@ -84,14 +53,14 @@ describe RuboCop::Cop::Style::AndOr, :config do
     subject(:cop) { described_class.new(config) }
     let(:cop_config) { cop_config }
 
-    it 'registers an offense for OR' do
+    it 'registers an offense for "or"' do
       inspect_source(cop,
                      ['test if a or b'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Use `||` instead of `or`.'])
     end
 
-    it 'registers an offense for AND' do
+    it 'registers an offense for "and"' do
       inspect_source(cop,
                      ['test if a and b'])
       expect(cop.offenses.size).to eq(1)
@@ -258,6 +227,5 @@ describe RuboCop::Cop::Style::AndOr, :config do
       new_source = autocorrect_source(cop, 'b and method a,b')
       expect(new_source).to eq('b && method(a,b)')
     end
-
   end
 end
