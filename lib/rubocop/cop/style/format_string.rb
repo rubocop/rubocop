@@ -30,12 +30,22 @@ module RuboCop
           end
         end
 
+        def format_method?(name, node)
+          receiver, method_name, args = *node
+
+          # we do an argument count check to reduce false positives
+          return false if args && args.children.size < 2
+
+          # commands have no explicit receiver
+          !receiver && method_name == name
+        end
+
         def format?(node)
-          command?(:format, node)
+          format_method?(:format, node)
         end
 
         def sprintf?(node)
-          command?(:sprintf, node)
+          format_method?(:sprintf, node)
         end
 
         def percent?(node)

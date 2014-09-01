@@ -127,6 +127,18 @@ describe RuboCop::Cop::Style::FormatString, :config do
         .to eq(['Favor `String#%` over `sprintf`.'])
     end
 
+    it 'accepts format with 1 argument' do
+      inspect_source(cop,
+                     ['format :xml'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts sprintf with 1 argument' do
+      inspect_source(cop,
+                     ['sprintf :xml'])
+      expect(cop.offenses).to be_empty
+    end
+
     it 'accepts String#%' do
       inspect_source(cop,
                      ['puts "%d" % 10'])
