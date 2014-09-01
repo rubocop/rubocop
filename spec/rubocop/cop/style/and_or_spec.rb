@@ -12,21 +12,40 @@ describe RuboCop::Cop::Style::AndOr, :config do
     let(:cop_config) { cop_config }
 
     %w(and or).each do |operator|
-      it "registers an offense for \"#{operator}\" inside of conditional" do
-        inspect_source(cop,
-                       ["test if a #{operator} b"])
-        expect(cop.offenses.size).to eq(1)
-      end
-
       it "accepts \"#{operator}\" outside of conditional" do
         inspect_source(cop,
                        ["x = a + b #{operator} return x"])
         expect(cop.offenses).to be_empty
       end
 
-      it "accepts \"#{operator}\" in if body" do
-        inspect_source(cop, "if x then y #{operator} z end")
-        expect(cop.offenses).to be_empty
+      {
+        'if'                     => 'if %{conditional}; %{body}; end',
+        'while'                  => 'while %{conditional}; %{body}; end',
+        'until'                  => 'until %{conditional}; %{body}; end',
+        'post-conditional while' => 'begin; %{body}; end while %{conditional}',
+        'post-conditional until' => 'begin; %{body}; end until %{conditional}'
+      }.each do |type, snippet_format|
+        it "registers an offense for \"#{operator}\" in #{type} conditional" do
+          elements = {
+            conditional: "a #{operator} b",
+            body:        'do_something'
+          }
+          source = format(snippet_format, elements)
+
+          inspect_source(cop, source)
+          expect(cop.offenses.size).to eq(1)
+        end
+
+        it "accepts \"#{operator}\" in #{type} body" do
+          elements = {
+            conditional: 'some_condition',
+            body:        "do_something #{operator} return"
+          }
+          source = format(snippet_format, elements)
+
+          inspect_source(cop, source)
+          expect(cop.offenses).to be_empty
+        end
       end
     end
 

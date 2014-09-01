@@ -28,7 +28,15 @@ module RuboCop
           on_conditionals(node) if style == :conditionals
         end
 
+        def on_while_post(node)
+          on_conditionals(node) if style == :conditionals
+        end
+
         def on_until(node)
+          on_conditionals(node) if style == :conditionals
+        end
+
+        def on_until_post(node)
           on_conditionals(node) if style == :conditionals
         end
 
