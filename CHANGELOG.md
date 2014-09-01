@@ -25,6 +25,7 @@
 * [#1283](https://github.com/bbatsov/rubocop/issues/1283): Fix auto-correction of indented expressions in `PercentLiteralDelimiters`. ([@jonas054][])
 * [#1315](https://github.com/bbatsov/rubocop/pull/1315): `BracesAroundHashParameters` auto-correction removes whitespace around content inside braces. ([@jspanjers][])
 * [#1313](https://github.com/bbatsov/rubocop/issues/1313): Fix a false positive in `AndOr` when enforced style is `conditionals`. ([@bbatsov][])
+* Handle post-conditional `while` and `until` in `AndOr` when enforced style is `conditionals`. ([@yujinakayama][])
 
 ## 0.25.0 (15/08/2014)
 
