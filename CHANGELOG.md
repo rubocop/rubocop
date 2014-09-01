@@ -14,6 +14,7 @@
 * [#1274](https://github.com/bbatsov/rubocop/issues/1274): `MultilineIfThen` cop does auto-correction. ([@bbatsov][])
 * [#1279](https://github.com/bbatsov/rubocop/issues/1279): `DotPosition` cop does auto-correction. ([@yous][])
 * [#1277](https://github.com/bbatsov/rubocop/issues/1277): `SpaceBeforeFirstArg` cop does auto-correction. ([@yous][])
+* [#1310](https://github.com/bbatsov/rubocop/issues/1310): Handle `module_function` in `Style/AccessModifierIndentation` and `Style/EmptyLinesAroundAccessModifier`. ([@bbatsov][])
 
 ### Bugs fixed
 

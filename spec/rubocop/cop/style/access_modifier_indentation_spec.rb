@@ -36,6 +36,21 @@ describe RuboCop::Cop::Style::AccessModifierIndentation, :config do
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
+    it 'registers an offense for misaligned module_function in module' do
+      inspect_source(cop,
+                     ['module Test',
+                      '',
+                      ' module_function',
+                      '',
+                      '  def test; end',
+                      'end'])
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.messages)
+        .to eq(['Indent access modifiers like `module_function`.'])
+      # Not aligned according to `indent` or `outdent` style:
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+    end
+
     it 'registers an offense for correct + opposite alignment' do
       inspect_source(cop,
                      ['module Test',
@@ -230,6 +245,17 @@ describe RuboCop::Cop::Style::AccessModifierIndentation, :config do
                       'end'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq([indent_msg])
+    end
+
+    it 'registers offense for module fn indented to method depth in a module' do
+      inspect_source(cop,
+                     ['module Test',
+                      '',
+                      '  module_function',
+                      '',
+                      '  def test; end',
+                      'end'])
+      expect(cop.offenses.size).to eq(1)
     end
 
     it 'registers offense for private indented to method depth in singleton' \
