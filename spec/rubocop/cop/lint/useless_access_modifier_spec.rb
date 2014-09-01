@@ -189,4 +189,29 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
       end
     end
   end
+
+  context 'autocorrect' do
+    it 'should remove the complete line with the useless modifier' do
+      corrected = autocorrect_source(cop,
+                                     ['class Test',
+                                      '  something',
+                                      '',
+                                      '  private',
+                                      'end'])
+      expect(corrected).to eq(['class Test',
+                               '  something',
+                               '',
+                               'end'].join("\n"))
+    end
+    it 'should not remove the line if the access modifier is not useless' do
+      source = ['class SomeClass',
+                '  def some_method',
+                '    puts 10',
+                '  end',
+                '  private :some_method',
+                'end']
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq(source.join("\n"))
+    end
+  end
 end

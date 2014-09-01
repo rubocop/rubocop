@@ -30,6 +30,18 @@ module RuboCop
           add_offense_for_access_modifier
         end
 
+        def autocorrect(node)
+          @corrections << lambda do |corrector|
+            line = Parser::Source::Range.new(
+              processed_source.buffer,
+              node.loc.expression.begin_pos - node.loc.column,
+              node.loc.expression.end_pos + 1
+            )
+
+            corrector.remove(line)
+          end
+        end
+
         private
 
         def add_offense_for_access_modifier
