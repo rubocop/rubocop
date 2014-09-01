@@ -46,7 +46,7 @@ module RuboCop
         end
 
         def next_line_empty?(next_line)
-          next_line.blank?
+          body_end?(next_line.lstrip) || next_line.blank?
         end
 
         def empty_lines_around?(node)
@@ -59,6 +59,10 @@ module RuboCop
 
         def class_def?(line)
           %w(class module).any? { |keyword| line.start_with?(keyword) }
+        end
+
+        def body_end?(line)
+          line.start_with?('end')
         end
 
         def message(node)
