@@ -18,6 +18,10 @@
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     margin: 0;
     }
+    code {
+    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 85%;
+    }
     #header {
     background: #171717;
     border-bottom: none;
@@ -102,11 +106,11 @@
     #offenses .offense-box .offense-reports .report:last-child {
     border-bottom: none;
     }
-    #offenses .offense-box .offense-reports .report pre {
+    #offenses .offense-box .offense-reports .report pre code {
+    display: block;
     background: #000;
     color: #fff;
     padding: 10px 15px;
-    font-size: 1.2rem;
     border-radius: 5px;
     line-height: 1.6rem;
     }
@@ -122,15 +126,52 @@
     text-transform: capitalize;
     font-weight: bold;
     }
-    .severity.convention, .severity.refactor {
-    color: #ed9c28;
+    .highlight {
+    padding: 2px;
+    border-radius: 2px;
+    font-weight: bold;
     }
+
+    .severity.refactor {
+    color: rgba(237, 156, 40, 1.0);
+    }
+    .highlight.refactor {
+    background-color: rgba(237, 156, 40, 0.6);
+    border: 1px solid rgba(237, 156, 40, 0.4);
+    }
+
+    .severity.convention {
+    color: rgba(237, 156, 40, 1.0);
+    }
+    .highlight.convention {
+    background-color: rgba(237, 156, 40, 0.6);
+    border: 1px solid rgba(237, 156, 40, 0.4);
+    }
+
     .severity.warning {
-    color: #9628ef;
+    color: rgba(150, 40, 239, 1.0);
     }
-    .severity.error, .severity.fatal {
-    color: #d2322d;
+    .highlight.warning {
+    background-color: rgba(150, 40, 239, 0.6);
+    border: 1px solid rgba(150, 40, 239, 0.4);
     }
+
+    .severity.error {
+    color: rgba(210, 50, 45, 1.0);
+    }
+    .highlight.error {
+    background-color: rgba(210, 50, 45, 0.6);
+    border: 1px solid rgba(210, 50, 45, 0.4);
+    }
+
+    .severity.fatal {
+    color: rgba(210, 50, 45, 1.0);
+    }
+    .highlight.fatal {
+    background-color: rgba(210, 50, 45, 0.6);
+    border: 1px solid rgba(210, 50, 45, 0.4);
+    }
+
     </style>
   </head>
   <body>
@@ -157,9 +198,7 @@
           <div class="report">
             <p class="message"><span class="severity convention">convention:</span> Missing top-level class documentation comment.</p>
             
-<pre>
-class ApplicationController < ActionController::Base
-</pre>
+            <pre><code><span class="highlight convention">class</span> ApplicationController < ActionController::Base</code></pre>
             
             <ul class="location">
               <li><strong>Line: </strong> 1</li>
@@ -180,9 +219,7 @@ class ApplicationController < ActionController::Base
           <div class="report">
             <p class="message"><span class="severity convention">convention:</span> Missing top-level class documentation comment.</p>
             
-<pre>
-class BooksController < ApplicationController
-</pre>
+            <pre><code><span class="highlight convention">class</span> BooksController < ApplicationController</code></pre>
             
             <ul class="location">
               <li><strong>Line: </strong> 1</li>
@@ -194,9 +231,7 @@ class BooksController < ApplicationController
           <div class="report">
             <p class="message"><span class="severity convention">convention:</span> Line is too long. [83/80]</p>
             
-<pre>
-        format.html { redirect_to @book, notice: 'Book was successfully created.' }
-</pre>
+            <pre><code>        format.html { redirect_to @book, notice: 'Book was successfully created.<span class="highlight convention">' }</span></code></pre>
             
             <ul class="location">
               <li><strong>Line: </strong> 31</li>
@@ -208,9 +243,7 @@ class BooksController < ApplicationController
           <div class="report">
             <p class="message"><span class="severity convention">convention:</span> Line is too long. [83/80]</p>
             
-<pre>
-        format.html { redirect_to @book, notice: 'Book was successfully updated.' }
-</pre>
+            <pre><code>        format.html { redirect_to @book, notice: 'Book was successfully updated.<span class="highlight convention">' }</span></code></pre>
             
             <ul class="location">
               <li><strong>Line: </strong> 45</li>
@@ -222,9 +255,7 @@ class BooksController < ApplicationController
           <div class="report">
             <p class="message"><span class="severity convention">convention:</span> Line is too long. [87/80]</p>
             
-<pre>
-      format.html { redirect_to books_url, notice: 'Book was successfully destroyed.' }
-</pre>
+            <pre><code>      format.html { redirect_to books_url, notice: 'Book was successfully destro<span class="highlight convention">yed.' }</span></code></pre>
             
             <ul class="location">
               <li><strong>Line: </strong> 59</li>
@@ -236,9 +267,7 @@ class BooksController < ApplicationController
           <div class="report">
             <p class="message"><span class="severity convention">convention:</span> Keep a blank line before and after `private`.</p>
             
-<pre>
-  private
-</pre>
+            <pre><code>  <span class="highlight convention">private</span></code></pre>
             
             <ul class="location">
               <li><strong>Line: </strong> 64</li>
@@ -250,9 +279,7 @@ class BooksController < ApplicationController
           <div class="report">
             <p class="message"><span class="severity convention">convention:</span> Inconsistent indentation detected.</p>
             
-<pre>
-    def set_book
-</pre>
+            <pre><code>    <span class="highlight convention">def set_book</span></code></pre>
             
             <ul class="location">
               <li><strong>Line: </strong> 66</li>
@@ -264,9 +291,7 @@ class BooksController < ApplicationController
           <div class="report">
             <p class="message"><span class="severity convention">convention:</span> Line is too long. [88/80]</p>
             
-<pre>
-    # Never trust parameters from the scary internet, only allow the white list through.
-</pre>
+            <pre><code>    # Never trust parameters from the scary internet, only allow the white list <span class="highlight convention">through.</span></code></pre>
             
             <ul class="location">
               <li><strong>Line: </strong> 70</li>
@@ -278,9 +303,7 @@ class BooksController < ApplicationController
           <div class="report">
             <p class="message"><span class="severity convention">convention:</span> Inconsistent indentation detected.</p>
             
-<pre>
-    def book_params
-</pre>
+            <pre><code>    <span class="highlight convention">def book_params</span></code></pre>
             
             <ul class="location">
               <li><strong>Line: </strong> 71</li>
@@ -301,9 +324,7 @@ class BooksController < ApplicationController
           <div class="report">
             <p class="message"><span class="severity convention">convention:</span> Missing top-level class documentation comment.</p>
             
-<pre>
-class Book < ActiveRecord::Base
-</pre>
+            <pre><code><span class="highlight convention">class</span> Book < ActiveRecord::Base</code></pre>
             
             <ul class="location">
               <li><strong>Line: </strong> 1</li>
@@ -315,9 +336,7 @@ class Book < ActiveRecord::Base
           <div class="report">
             <p class="message"><span class="severity convention">convention:</span> Use snake_case for methods.</p>
             
-<pre>
-  def someMethod
-</pre>
+            <pre><code>  def <span class="highlight convention">someMethod</span></code></pre>
             
             <ul class="location">
               <li><strong>Line: </strong> 2</li>
@@ -329,9 +348,7 @@ class Book < ActiveRecord::Base
           <div class="report">
             <p class="message"><span class="severity warning">warning:</span> Useless assignment to variable - `foo`.</p>
             
-<pre>
-    foo = bar = baz
-</pre>
+            <pre><code>    <span class="highlight warning">foo</span> = bar = baz</code></pre>
             
             <ul class="location">
               <li><strong>Line: </strong> 3</li>
@@ -343,9 +360,7 @@ class Book < ActiveRecord::Base
           <div class="report">
             <p class="message"><span class="severity warning">warning:</span> Useless assignment to variable - `bar`.</p>
             
-<pre>
-    foo = bar = baz
-</pre>
+            <pre><code>    foo = <span class="highlight warning">bar</span> = baz</code></pre>
             
             <ul class="location">
               <li><strong>Line: </strong> 3</li>

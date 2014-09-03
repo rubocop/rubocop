@@ -7,8 +7,6 @@ module RuboCop
   module Formatter
     # This formatter saves the output as a html file.
     class HTMLFormatter < BaseFormatter
-      include PathUtil
-
       TEMPLATE_PATH =
         File.expand_path('../../../../assets/output.html.erb', __FILE__)
 
@@ -36,21 +34,78 @@ module RuboCop
       end
 
       def render_html
+        context = ERBContext.new(files, summary)
+
         template = File.read(TEMPLATE_PATH)
-        erb = ERB.new(template)
-        html = erb.result(binding)
+        erb = ERB.new(template, nil, '-')
+        html = erb.result(context.binding)
 
         output.write html
       end
 
-      def metadata
-        OpenStruct.new(
-          rubocop_version: RuboCop::Version::STRING,
-          ruby_engine:     RUBY_ENGINE,
-          ruby_version:    RUBY_VERSION,
-          ruby_patchlevel: RUBY_PATCHLEVEL.to_s,
-          ruby_platform:   RUBY_PLATFORM
-        )
+      Color = Struct.new(:red, :green, :blue, :alpha) do
+        def to_s
+          "rgba(#{values.join(', ')})"
+        end
+
+        def fade_out(amount)
+          dup.tap do |color|
+            color.alpha -= amount
+          end
+        end
+      end
+
+      # This class privides helper methods used in the ERB template.
+      class ERBContext
+        include PathUtil
+
+        SEVERITY_COLORS = {
+          refactor:   Color.new(0xED, 0x9C, 0x28, 1.0),
+          convention: Color.new(0xED, 0x9C, 0x28, 1.0),
+          warning:    Color.new(0x96, 0x28, 0xEF, 1.0),
+          error:      Color.new(0xD2, 0x32, 0x2D, 1.0),
+          fatal:      Color.new(0xD2, 0x32, 0x2D, 1.0)
+        }
+
+        attr_reader :files, :summary
+
+        def initialize(files, summary)
+          @files = files
+          @summary = summary
+        end
+
+        # Make Kernel#binding public.
+        def binding
+          super
+        end
+
+        def highlighted_source_line(offense)
+          location = offense.location
+
+          column_range = if location.begin.line == location.end.line
+                           location.column_range
+                         else
+                           location.column...location.source_line.length
+                         end
+
+          source_line = location.source_line
+
+          source_line[0...column_range.begin] +
+          "<span class=\"highlight #{offense.severity}\">" +
+          source_line[column_range] +
+          '</span>' +
+          source_line[column_range.end..-1]
+        end
+
+        def metadata
+          OpenStruct.new(
+            rubocop_version: RuboCop::Version::STRING,
+            ruby_engine:     RUBY_ENGINE,
+            ruby_version:    RUBY_VERSION,
+            ruby_patchlevel: RUBY_PATCHLEVEL.to_s,
+            ruby_platform:   RUBY_PLATFORM
+          )
+        end
       end
     end
   end

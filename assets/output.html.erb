@@ -18,6 +18,10 @@
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     margin: 0;
     }
+    code {
+    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 85%;
+    }
     #header {
     background: #171717;
     border-bottom: none;
@@ -102,11 +106,11 @@
     #offenses .offense-box .offense-reports .report:last-child {
     border-bottom: none;
     }
-    #offenses .offense-box .offense-reports .report pre {
+    #offenses .offense-box .offense-reports .report pre code {
+    display: block;
     background: #000;
     color: #fff;
     padding: 10px 15px;
-    font-size: 1.2rem;
     border-radius: 5px;
     line-height: 1.6rem;
     }
@@ -122,15 +126,20 @@
     text-transform: capitalize;
     font-weight: bold;
     }
-    .severity.convention, .severity.refactor {
-    color: #ed9c28;
+    .highlight {
+    padding: 2px;
+    border-radius: 2px;
+    font-weight: bold;
     }
-    .severity.warning {
-    color: #9628ef;
+    <%- SEVERITY_COLORS.each do |severity, color| %>
+    .severity.<%= severity %> {
+    color: <%= color %>;
     }
-    .severity.error, .severity.fatal {
-    color: #d2322d;
+    .highlight.<%= severity %> {
+    background-color: <%= color.fade_out(0.4) %>;
+    border: 1px solid <%= color.fade_out(0.6) %>;
     }
+    <%- end %>
     </style>
   </head>
   <body>
@@ -157,9 +166,7 @@
           <div class="report">
             <p class="message"><span class="severity <%= offense.severity %>"><%= offense.severity %>:</span> <%= offense.message %></p>
             <% unless offense.location.source_line.strip.empty? %>
-<pre>
-<%= offense.location.source_line %>
-</pre>
+            <pre><code><%= highlighted_source_line(offense) %></code></pre>
             <% end %>
             <ul class="location">
               <li><strong>Line: </strong> <%= offense.location.line %></li>
