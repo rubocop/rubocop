@@ -122,6 +122,11 @@
     display: inline;
     margin-right: 10px;
     }
+    #offenses .offense-box .offense-reports .report .message code {
+    padding: 0.3em;
+    background-color: rgba(0,0,0,0.07);
+    border-radius: 3px;
+    }
     .severity {
     text-transform: capitalize;
     font-weight: bold;
@@ -265,7 +270,7 @@
           </div>
           
           <div class="report">
-            <p class="message"><span class="severity convention">convention:</span> Keep a blank line before and after `private`.</p>
+            <p class="message"><span class="severity convention">convention:</span> Keep a blank line before and after <code>private</code>.</p>
             
             <pre><code>  <span class="highlight convention">private</span></code></pre>
             
@@ -346,7 +351,7 @@
           </div>
           
           <div class="report">
-            <p class="message"><span class="severity warning">warning:</span> Useless assignment to variable - `foo`.</p>
+            <p class="message"><span class="severity warning">warning:</span> Useless assignment to variable - <code>foo</code>.</p>
             
             <pre><code>    <span class="highlight warning">foo</span> = bar = baz</code></pre>
             
@@ -358,7 +363,7 @@
           </div>
           
           <div class="report">
-            <p class="message"><span class="severity warning">warning:</span> Useless assignment to variable - `bar`.</p>
+            <p class="message"><span class="severity warning">warning:</span> Useless assignment to variable - <code>bar</code>.</p>
             
             <pre><code>    foo = <span class="highlight warning">bar</span> = baz</code></pre>
             
