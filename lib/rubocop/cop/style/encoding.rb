@@ -3,9 +3,10 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks whether the source file has a utf-8 encoding comment or
-      # not. This check makes sense only in Ruby 1.9, since in 2.0+ utf-8 is
-      # the default source file encoding. There are two style:
+      # This cop checks whether the source file has a utf-8 encoding
+      # comment or not. This check makes sense only for code that
+      # should support Ruby 1.9, since in 2.0+ utf-8 is the default
+      # source file encoding. There are two style:
       #
       # when_needed - only enforce an encoding comment if there are non ASCII
       #               characters, otherwise report an offense
@@ -17,7 +18,6 @@ module RuboCop
         MSG_UNNECESSARY = 'Unnecessary utf-8 encoding comment.'
 
         def investigate(processed_source)
-          return if RUBY_VERSION >= '2.0.0'
           return if processed_source.buffer.source.empty?
 
           line_number = encoding_line_number(processed_source)

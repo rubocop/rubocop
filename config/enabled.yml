@@ -202,11 +202,6 @@ Style/EmptyLiteral:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#literal-array-hash'
   Enabled: true
 
-Style/Encoding:
-  Description: 'Use UTF-8 as the source file encoding.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#utf-8'
-  Enabled: true
-
 Style/EndBlock:
   Description: 'Avoid the use of END blocks.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-END-blocks'

@@ -19,6 +19,7 @@
 ### Changes
 
 * [#1289](https://github.com/bbatsov/rubocop/issues/1289): Use utf-8 as default encoding for inspected files. ([@jonas054][])
+* [#1304](https://github.com/bbatsov/rubocop/issues/1304): `Style/Encoding` is no longer a no-op on Ruby 2.x. It's also disabled by default, as projects not supporting 1.9 don't need to run it. ([@bbatsov][])
 
 ### Bugs fixed
 
