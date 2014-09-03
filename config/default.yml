@@ -422,6 +422,12 @@ Style/SpaceInsideHashLiteralBraces:
     - space
     - no_space
 
+Style/SymbolProc:
+  # A list of method names to be ignored by the check.
+  # The names should be fairly unique, otherwise you'll end up ignoring lots of code.
+  IgnoredMethods:
+    - respond_to
+
 Style/TrailingBlankLines:
   EnforcedStyle: final_newline
   SupportedStyles:

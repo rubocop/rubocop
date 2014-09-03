@@ -21,6 +21,7 @@ module RuboCop
 
           # we should ignore lambdas
           return if bmethod_name == :lambda
+          return if ignored_method?(bmethod_name)
           # File.open(file) { |f| f.readlines }
           return if bargs
           # something { |x, y| ... }
@@ -55,6 +56,14 @@ module RuboCop
 
             corrector.replace(node.loc.expression, replacement)
           end
+        end
+
+        def ignored_methods
+          cop_config['IgnoredMethods']
+        end
+
+        def ignored_method?(name)
+          ignored_methods.include?(name.to_s)
         end
       end
     end

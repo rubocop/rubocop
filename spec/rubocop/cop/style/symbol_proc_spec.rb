@@ -2,8 +2,10 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::SymbolProc do
-  subject(:cop) { described_class.new }
+describe RuboCop::Cop::Style::SymbolProc, :config do
+  subject(:cop) { described_class.new(config) }
+
+  let(:cop_config) { { 'IgnoredMethods' => %w(respond_to) } }
 
   it 'registers an offense for a block with paratermess method call on param' do
     inspect_source(cop, 'coll.map { |e| e.upcase }')
@@ -33,6 +35,12 @@ describe RuboCop::Cop::Style::SymbolProc do
 
   it 'accepts lambda with 1 argument' do
     inspect_source(cop, ['->(x) { x.method }'])
+
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'accepts ignored method' do
+    inspect_source(cop, ['respond_to { |format| format.xml }'])
 
     expect(cop.offenses).to be_empty
   end
