@@ -79,6 +79,12 @@ module RuboCop
           super
         end
 
+        def decorated_message(offense)
+          offense.message.gsub(/`(.+?)`/) do
+            "<code>#{Regexp.last_match(1)}</code>"
+          end
+        end
+
         def highlighted_source_line(offense)
           location = offense.location
 

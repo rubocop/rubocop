@@ -122,6 +122,11 @@
     display: inline;
     margin-right: 10px;
     }
+    #offenses .offense-box .offense-reports .report .message code {
+    padding: 0.3em;
+    background-color: rgba(0,0,0,0.07);
+    border-radius: 3px;
+    }
     .severity {
     text-transform: capitalize;
     font-weight: bold;
@@ -164,7 +169,7 @@
         <div class="offense-reports">
           <% file.offenses.each do |offense| %>
           <div class="report">
-            <p class="message"><span class="severity <%= offense.severity %>"><%= offense.severity %>:</span> <%= offense.message %></p>
+            <p class="message"><span class="severity <%= offense.severity %>"><%= offense.severity %>:</span> <%= decorated_message(offense) %></p>
             <% unless offense.location.source_line.strip.empty? %>
             <pre><code><%= highlighted_source_line(offense) %></code></pre>
             <% end %>
