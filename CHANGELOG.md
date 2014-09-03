@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.26.0 (03/09/2014)
+
 ### New features
 
 * New formatter `HTMLFormatter` generates a html file with a list of files with offences in them. ([@SkuliOskarsson][])
