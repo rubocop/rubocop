@@ -16,6 +16,10 @@
 * [#1277](https://github.com/bbatsov/rubocop/issues/1277): `SpaceBeforeFirstArg` cop does auto-correction. ([@yous][])
 * [#1310](https://github.com/bbatsov/rubocop/issues/1310): Handle `module_function` in `Style/AccessModifierIndentation` and `Style/EmptyLinesAroundAccessModifier`. ([@bbatsov][])
 
+### Changes
+
+* [#1289](https://github.com/bbatsov/rubocop/issues/1289): Use utf-8 as default encoding for inspected files. ([@jonas054][])
+
 ### Bugs fixed
 
 * [#1263](https://github.com/bbatsov/rubocop/issues/1263): Do not report `%W` literals with special escaped characters in `UnneededCapitalW`. ([@jonas054][])
