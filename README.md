@@ -9,8 +9,6 @@
   <img src="https://raw.github.com/bbatsov/rubocop/master/logo/rubo-logo-horizontal.png" alt="RuboCop Logo"/>
 </p>
 
-# RuboCop
-
 > Role models are important. <br/>
 > -- Officer Alex J. Murphy / RoboCop
 
