@@ -5,6 +5,10 @@
 [![Code Climate](https://codeclimate.com/github/bbatsov/rubocop/badges/gpa.svg)](https://codeclimate.com/github/bbatsov/rubocop)
 [![Inline docs](http://inch-ci.org/github/bbatsov/rubocop.svg)](http://inch-ci.org/github/bbatsov/rubocop)
 
+<p align="center">
+  <img src="https://raw.github.com/bbatsov/rubocop/master/logo/rubo-logo-horizontal.png" alt="RuboCop Logo"/>
+</p>
+
 # RuboCop
 
 > Role models are important. <br/>
@@ -765,6 +769,14 @@ Here's a list of RuboCop's core developers:
 * [Jonas Arvidsson](https://github.com/jonas054)
 * [Yuji Nakayama](https://github.com/yujinakayama)
 * [Evgeni Dzhelyov](https://github.com/edzhelyov)
+
+## Logo
+
+RuboCop's logo was created by [Dimiter Petrov](https://www.chadomoto.com/). You can find the logo in various
+formats [here](https://github.com/bbatsov/rubocop/tree/master/logo).
+
+The logo is licensed under a
+[Creative Commons Attribution-NonCommercial 4.0 International License](http://creativecommons.org/licenses/by-nc/4.0/deed.en_GB).
 
 ## Contributors
 
