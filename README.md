@@ -70,6 +70,7 @@ release.**
     - [Creating Custom Formatter](#creating-custom-formatter)
     - [Using Custom Formatter in Command Line](#using-custom-formatter-in-command-line)
 - [Team](#team)
+- [Logo](#logo)
 - [Contributors](#contributors)
 - [Mailing List](#mailing-list)
 - [Changelog](#changelog)
