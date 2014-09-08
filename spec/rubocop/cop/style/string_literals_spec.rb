@@ -5,9 +5,26 @@ require 'spec_helper'
 describe RuboCop::Cop::Style::StringLiterals, :config do
   subject(:cop) { described_class.new(config) }
 
-  context 'configured with single quotes preferred' do
-    let(:cop_config) { { 'EnforcedStyle' => 'single_quotes' } }
+  shared_examples 'for all configurations' do
+    it 'can handle a built-in constant parsed as string' do
+      # Parser will produce str nodes for constants such as __FILE__.
+      src = ['if __FILE__ == $PROGRAM_NAME',
+             'end']
+      inspect_source(cop, src)
+      expect(cop.offenses).to be_empty
+    end
 
+    it 'accepts heredocs' do
+      inspect_source(cop,
+                     ['execute <<-SQL',
+                      '  SELECT name from users',
+                      'SQL'])
+
+      expect(cop.offenses).to be_empty
+    end
+  end
+
+  shared_examples 'prefer single-quoted strings or %q' do
     it 'registers offense for double quotes when single quotes ' \
        'suffice' do
       inspect_source(cop, ['s = "abc"',
@@ -21,54 +38,7 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
       expect(cop.messages)
         .to eq(["Prefer single-quoted strings when you don't need " \
                 'string interpolation or special symbols.'] * 4)
-      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
-                                                 'double_quotes')
-    end
-
-    it 'registers offense for correct + opposite' do
-      inspect_source(cop, ['s = "abc"',
-                           "x = 'abc'"])
-      expect(cop.messages)
-        .to eq(["Prefer single-quoted strings when you don't need " \
-                'string interpolation or special symbols.'])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
-    end
-
-    it 'accepts single quotes' do
-      inspect_source(cop, ["a = 'x'"])
-      expect(cop.offenses).to be_empty
-    end
-
-    it 'accepts %q and %Q quotes' do
-      inspect_source(cop, ['a = %q(x) + %Q[x]'])
-      expect(cop.offenses).to be_empty
-    end
-
-    it 'accepts % quotes' do
-      inspect_source(cop, ['a = %(x)'])
-      expect(cop.offenses).to be_empty
-    end
-
-    it 'accepts heredocs' do
-      inspect_source(cop,
-                     ['execute <<-SQL',
-                      '  SELECT name from users',
-                      'SQL'])
-
-      expect(cop.offenses).to be_empty
-    end
-
-    it 'accepts double quotes when they are needed' do
-      src = ['a = "\n"',
-             'b = "#{encode_severity}:' \
-             '#{sprintf(\'%3d\', line_number)}: #{m}"',
-             'c = "\'"',
-             'd = "#@test"',
-             'e = "#$test"',
-             'f = "\e"',
-             'g = "#@@test"']
-      inspect_source(cop, src)
-      expect(cop.offenses).to be_empty
     end
 
     it 'accepts double quotes at the start of regexp literals' do
@@ -107,16 +77,55 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
       expect(cop.offenses.size).to eq(1)
     end
 
-    it 'can handle a built-in constant parsed as string' do
-      # Parser will produce str nodes for constants such as __FILE__.
-      src = ['if __FILE__ == $PROGRAM_NAME',
-             'end']
+    it 'can handle character literals' do
+      src = 'a = ?/'
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
+  end
 
-    it 'can handle character literals' do
-      src = 'a = ?/'
+  shared_examples 'prefer quotes' do
+    it 'accepts %q and %Q quotes' do
+      inspect_source(cop, ['a = %q(x) + %Q[x]'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts % quotes' do
+      inspect_source(cop, ['a = %(x)'])
+      expect(cop.offenses).to be_empty
+    end
+  end
+
+  context 'configured with single quotes preferred' do
+    let(:cop_config) { { 'EnforcedStyle' => 'single_quotes' } }
+
+    include_examples 'for all configurations'
+    include_examples 'prefer single-quoted strings or %q'
+    include_examples 'prefer quotes'
+
+    it 'registers offense for correct + opposite' do
+      inspect_source(cop, ['s = "abc"',
+                           "x = 'abc'"])
+      expect(cop.messages)
+        .to eq(["Prefer single-quoted strings when you don't need " \
+                'string interpolation or special symbols.'])
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+    end
+
+    it 'accepts single quotes' do
+      inspect_source(cop, ["a = 'x'"])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts double quotes when they are needed' do
+      src = ['a = "\n"',
+             'b = "#{encode_severity}:' \
+             '#{sprintf(\'%3d\', line_number)}: #{m}"',
+             'c = "\'"',
+             'd = "#@test"',
+             'e = "#$test"',
+             'f = "\e"',
+             'g = "#@@test"']
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
@@ -127,8 +136,62 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
     end
   end
 
+  context 'configured with static strings preferred' do
+    let(:cop_config) { { 'EnforcedStyle' => 'static' } }
+
+    include_examples 'for all configurations'
+    include_examples 'prefer single-quoted strings or %q'
+
+    it 'registers offense for incorrect + correct' do
+      inspect_source(cop, ['s = "abc"',
+                           %q(s = "'"),
+                           "x = 'abc'"])
+      expect(cop.messages)
+        .to eq(["Prefer single-quoted strings when you don't need " \
+                'string interpolation or special symbols.',
+                'Prefer %q strings when the string contains a single quote ' \
+                "but you don't need string interpolation or special symbols."])
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+    end
+
+    it 'accepts single quotes and %q' do
+      inspect_source(cop, ["a = 'x' + %q(y)"])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers offense for % quotes when %q would do' do
+      inspect_source(cop, ['a = %(x)'])
+      expect(cop.highlights).to eq(['%(x)'])
+    end
+
+    it 'registers offense for %Q quotes when %q would do' do
+      inspect_source(cop, ['a = %Q(x)'])
+      expect(cop.highlights).to eq(['%Q(x)'])
+    end
+
+    it 'accepts double quotes when they are needed' do
+      src = ['a = "\n"',
+             'b = "#{encode_severity}:' \
+             '#{sprintf(\'%3d\', line_number)}: #{m}"',
+             'd = "#@test"',
+             'e = "#$test"',
+             'f = "\e"',
+             'g = "#@@test"']
+      inspect_source(cop, src)
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'auto-corrects " with \' or %q' do
+      new_source = autocorrect_source(cop, %q(puts "a" + "'"))
+      expect(new_source).to eq("puts 'a' + %q(')")
+    end
+  end
+
   context 'configured with double quotes preferred' do
     let(:cop_config) { { 'EnforcedStyle' => 'double_quotes' } }
+
+    include_examples 'for all configurations'
+    include_examples 'prefer quotes'
 
     it 'registers offense for single quotes when double quotes would ' \
       'be equivalent' do
@@ -138,8 +201,7 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
         .to eq(['Prefer double-quoted strings unless you need ' \
                 'single quotes to avoid extra backslashes for ' \
                 'escaping.'])
-      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' =>
-                                                 'single_quotes')
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
     it 'registers offense for opposite + correct' do
@@ -157,25 +219,6 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
       expect(cop.offenses).to be_empty
     end
 
-    it 'accepts %q and %Q quotes' do
-      inspect_source(cop, ['a = %q(x) + %Q[x]'])
-      expect(cop.offenses).to be_empty
-    end
-
-    it 'accepts % quotes' do
-      inspect_source(cop, ['a = %(x)'])
-      expect(cop.offenses).to be_empty
-    end
-
-    it 'accepts heredocs' do
-      inspect_source(cop,
-                     ['execute <<-SQL',
-                      '  SELECT name from users',
-                      'SQL'])
-
-      expect(cop.offenses).to be_empty
-    end
-
     it 'accepts single quotes when they are needed' do
       src = ["a = '\\n'",
              "b = '\"'"]
@@ -190,14 +233,6 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
 
     it "accepts ' in a %w" do
       inspect_source(cop, ["%w(')"])
-      expect(cop.offenses).to be_empty
-    end
-
-    it 'can handle a built-in constant parsed as string' do
-      # Parser will produce str nodes for constants such as __FILE__.
-      src = ['if __FILE__ == $PROGRAM_NAME',
-             'end']
-      inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
 

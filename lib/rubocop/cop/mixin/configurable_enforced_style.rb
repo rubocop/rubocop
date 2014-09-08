@@ -5,9 +5,13 @@ module RuboCop
     # Handles `EnforcedStyle` configuration parameters.
     module ConfigurableEnforcedStyle
       def opposite_style_detected
-        self.config_to_allow_offenses ||=
-          { parameter_name => alternative_style.to_s }
-        both_styles_detected if config_to_allow_offenses['Enabled']
+        if cop_config['SupportedStyles'].size == 2
+          self.config_to_allow_offenses ||=
+            { parameter_name => alternative_style.to_s }
+          both_styles_detected if config_to_allow_offenses['Enabled']
+        else
+          unrecognized_style_detected
+        end
       end
 
       def correct_style_detected
