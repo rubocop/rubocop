@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bugs fixed
+
+* [#1326](https://github.com/bbatsov/rubocop/issues/1326): Fix problem in `SpaceInsideParens` with detecting space inside parentheses used for grouping expressions. ([@jonas054][])
+
 ## 0.26.0 (03/09/2014)
 
 ### New features

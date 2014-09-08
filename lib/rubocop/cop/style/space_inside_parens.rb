@@ -8,7 +8,7 @@ module RuboCop
         include SpaceInside
 
         def specifics
-          [:tLPAREN2, :tRPAREN, 'parentheses']
+          [[:tLPAREN, :tLPAREN2], :tRPAREN, 'parentheses']
         end
       end
     end
