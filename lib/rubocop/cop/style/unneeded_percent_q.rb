@@ -27,15 +27,8 @@ module RuboCop
         private
 
         def check(node)
-          if node.loc.respond_to?(:heredoc_body)
-            ignore_node(node)
-            return
-          end
-          return if ignored_node?(node) || part_of_ignored_node?(node)
+          return unless offense?(node)
           src = node.loc.expression.source
-          return unless src =~ /^%q/i
-          return if src =~ /'/ && src =~ /"/
-          return if src =~ StringHelp::ESCAPED_CHAR_REGEXP
 
           extra = if src =~ /^%Q/
                     ', or for dynamic strings that contain double quotes'
@@ -43,6 +36,22 @@ module RuboCop
                     ''
                   end
           add_offense(node, :expression, format(MSG, src[0, 2], extra))
+        end
+
+        def offense?(node)
+          if node.loc.respond_to?(:heredoc_body)
+            ignore_node(node)
+            return false
+          end
+          return false if ignored_node?(node) || part_of_ignored_node?(node)
+          src = node.loc.expression.source
+          return false unless src =~ /^%q/i
+          if src =~ /'/
+            return false if src =~ /"/
+            style = config.for_cop('Style/StringLiterals')['EnforcedStyle']
+            return false if style == 'static'
+          end
+          src !~ StringHelp::ESCAPED_CHAR_REGEXP
         end
 
         def autocorrect(node)

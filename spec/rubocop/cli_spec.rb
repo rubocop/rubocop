@@ -35,6 +35,24 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     describe '--auto-correct' do
+      it 'corrects to static strings if so configured' do
+        source = <<-END.strip_indent
+         puts "a" + "'"
+         puts %Q(b) + %Q(')
+         puts %(c) + %(')
+        END
+        corrected_source = <<-END.strip_indent
+         puts 'a' + %q(')
+         puts 'b' + %q(')
+         puts 'c' + %q(')
+        END
+        create_file('example.rb', source)
+        create_file('.rubocop.yml', ['Style/StringLiterals:',
+                                     '  EnforcedStyle: static'])
+        expect(cli.run(['--auto-correct'])).to eq(1)
+        expect(IO.read('example.rb')).to eq(corrected_source)
+      end
+
       it 'honors Exclude settings in individual cops' do
         source = ['# encoding: utf-8',
                   'puts %x(ls)']

@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#835](https://github.com/bbatsov/rubocop/issues/835): Add `static` as choice in configuraton of `Style/Stringliterals` to prefer `%q(')` over `"'"`, etc. ([@jonas054][])
+
 ## 0.26.0 (03/09/2014)
 
 ### New features

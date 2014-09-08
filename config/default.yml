@@ -389,9 +389,15 @@ Style/SingleLineMethods:
 
 Style/StringLiterals:
   EnforcedStyle: single_quotes
+  # The value `single_quotes` means that `'` characters are preferred over `"`.
+  # The value `double_quotes` means that `"` characters are preferred over `'`,
+  # and that `"'"` is preferred over `%q(')`.
+  # The value `static` means that %q() and `'` are preferred over the dynamic
+  # %Q() and "".
   SupportedStyles:
     - single_quotes
     - double_quotes
+    - static
 
 Style/SpaceAroundEqualsInParameterDefault:
   EnforcedStyle: space
