@@ -7,10 +7,8 @@ describe RuboCop::Cop::Style::SpaceInsideParens do
 
   it 'registers an offense for spaces inside parens' do
     inspect_source(cop, ['f( 3)',
-                         'g(3 )'])
-    expect(cop.messages).to eq(
-      ['Space inside parentheses detected.',
-       'Space inside parentheses detected.'])
+                         'g = (a + 3 )'])
+    expect(cop.messages).to eq(['Space inside parentheses detected.'] * 2)
   end
 
   it 'accepts parentheses in block parameter list' do
@@ -39,8 +37,8 @@ describe RuboCop::Cop::Style::SpaceInsideParens do
 
   it 'auto-corrects unwanted space' do
     new_source = autocorrect_source(cop, ['f( 3)',
-                                          'g(3 )'])
+                                          'g = ( a + 3 )'])
     expect(new_source).to eq(['f(3)',
-                              'g(3)'].join("\n"))
+                              'g = (a + 3)'].join("\n"))
   end
 end
