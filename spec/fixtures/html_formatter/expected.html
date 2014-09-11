@@ -3,6 +3,7 @@
   <head>
     <meta charset='UTF-8' />
     <title>RuboCop Inspection Report</title>
+    
     <style>
     * {
     -webkit-box-sizing: border-box;
@@ -113,12 +114,7 @@
     line-height: 1.6rem;
     }
     #offenses .offense-box .offense-reports .report .location {
-    padding: 0;
-    list-style: none;
-    }
-    #offenses .offense-box .offense-reports .report .location li {
-    display: inline;
-    margin-right: 10px;
+    font-weight: bold;
     }
     #offenses .offense-box .offense-reports .report .message code {
     padding: 0.3em;
@@ -195,15 +191,14 @@
         <div class="offense-reports">
           
           <div class="report">
-            <p class="message"><span class="severity convention">convention:</span> Missing top-level class documentation comment.</p>
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Missing top-level class documentation comment.</span>
+            </div>
             
             <pre><code><span class="highlight convention">class</span> ApplicationController < ActionController::Base</code></pre>
             
-            <ul class="location">
-              <li><strong>Line: </strong> 1</li>
-              <li><strong>Column: </strong> 1</li>
-              <li><strong>Length: </strong> 5</li>
-            </ul>
           </div>
           
         </div>
@@ -216,99 +211,91 @@
         <div class="offense-reports">
           
           <div class="report">
-            <p class="message"><span class="severity convention">convention:</span> Missing top-level class documentation comment.</p>
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Missing top-level class documentation comment.</span>
+            </div>
             
             <pre><code><span class="highlight convention">class</span> BooksController < ApplicationController</code></pre>
             
-            <ul class="location">
-              <li><strong>Line: </strong> 1</li>
-              <li><strong>Column: </strong> 1</li>
-              <li><strong>Length: </strong> 5</li>
-            </ul>
           </div>
           
           <div class="report">
-            <p class="message"><span class="severity convention">convention:</span> Line is too long. [83/80]</p>
+            <div class="meta">
+              <span class="location">Line #31</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [83/80]</span>
+            </div>
             
             <pre><code>        format.html { redirect_to @book, notice: 'Book was successfully created.<span class="highlight convention">' }</span></code></pre>
             
-            <ul class="location">
-              <li><strong>Line: </strong> 31</li>
-              <li><strong>Column: </strong> 81</li>
-              <li><strong>Length: </strong> 3</li>
-            </ul>
           </div>
           
           <div class="report">
-            <p class="message"><span class="severity convention">convention:</span> Line is too long. [83/80]</p>
+            <div class="meta">
+              <span class="location">Line #45</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [83/80]</span>
+            </div>
             
             <pre><code>        format.html { redirect_to @book, notice: 'Book was successfully updated.<span class="highlight convention">' }</span></code></pre>
             
-            <ul class="location">
-              <li><strong>Line: </strong> 45</li>
-              <li><strong>Column: </strong> 81</li>
-              <li><strong>Length: </strong> 3</li>
-            </ul>
           </div>
           
           <div class="report">
-            <p class="message"><span class="severity convention">convention:</span> Line is too long. [87/80]</p>
+            <div class="meta">
+              <span class="location">Line #59</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [87/80]</span>
+            </div>
             
             <pre><code>      format.html { redirect_to books_url, notice: 'Book was successfully destro<span class="highlight convention">yed.' }</span></code></pre>
             
-            <ul class="location">
-              <li><strong>Line: </strong> 59</li>
-              <li><strong>Column: </strong> 81</li>
-              <li><strong>Length: </strong> 7</li>
-            </ul>
           </div>
           
           <div class="report">
-            <p class="message"><span class="severity convention">convention:</span> Keep a blank line before and after <code>private</code>.</p>
+            <div class="meta">
+              <span class="location">Line #64</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Keep a blank line before and after <code>private</code>.</span>
+            </div>
             
             <pre><code>  <span class="highlight convention">private</span></code></pre>
             
-            <ul class="location">
-              <li><strong>Line: </strong> 64</li>
-              <li><strong>Column: </strong> 3</li>
-              <li><strong>Length: </strong> 7</li>
-            </ul>
           </div>
           
           <div class="report">
-            <p class="message"><span class="severity convention">convention:</span> Inconsistent indentation detected.</p>
+            <div class="meta">
+              <span class="location">Line #66</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Inconsistent indentation detected.</span>
+            </div>
             
             <pre><code>    <span class="highlight convention">def set_book</span></code></pre>
             
-            <ul class="location">
-              <li><strong>Line: </strong> 66</li>
-              <li><strong>Column: </strong> 5</li>
-              <li><strong>Length: </strong> 57</li>
-            </ul>
           </div>
           
           <div class="report">
-            <p class="message"><span class="severity convention">convention:</span> Line is too long. [88/80]</p>
+            <div class="meta">
+              <span class="location">Line #70</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Line is too long. [88/80]</span>
+            </div>
             
             <pre><code>    # Never trust parameters from the scary internet, only allow the white list <span class="highlight convention">through.</span></code></pre>
             
-            <ul class="location">
-              <li><strong>Line: </strong> 70</li>
-              <li><strong>Column: </strong> 81</li>
-              <li><strong>Length: </strong> 8</li>
-            </ul>
           </div>
           
           <div class="report">
-            <p class="message"><span class="severity convention">convention:</span> Inconsistent indentation detected.</p>
+            <div class="meta">
+              <span class="location">Line #71</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Inconsistent indentation detected.</span>
+            </div>
             
             <pre><code>    <span class="highlight convention">def book_params</span></code></pre>
             
-            <ul class="location">
-              <li><strong>Line: </strong> 71</li>
-              <li><strong>Column: </strong> 5</li>
-              <li><strong>Length: </strong> 65</li>
-            </ul>
           </div>
           
         </div>
@@ -321,51 +308,47 @@
         <div class="offense-reports">
           
           <div class="report">
-            <p class="message"><span class="severity convention">convention:</span> Missing top-level class documentation comment.</p>
+            <div class="meta">
+              <span class="location">Line #1</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Missing top-level class documentation comment.</span>
+            </div>
             
             <pre><code><span class="highlight convention">class</span> Book < ActiveRecord::Base</code></pre>
             
-            <ul class="location">
-              <li><strong>Line: </strong> 1</li>
-              <li><strong>Column: </strong> 1</li>
-              <li><strong>Length: </strong> 5</li>
-            </ul>
           </div>
           
           <div class="report">
-            <p class="message"><span class="severity convention">convention:</span> Use snake_case for methods.</p>
+            <div class="meta">
+              <span class="location">Line #2</span> –
+              <span class="severity convention">convention:</span>
+              <span class="message">Use snake_case for methods.</span>
+            </div>
             
             <pre><code>  def <span class="highlight convention">someMethod</span></code></pre>
             
-            <ul class="location">
-              <li><strong>Line: </strong> 2</li>
-              <li><strong>Column: </strong> 7</li>
-              <li><strong>Length: </strong> 10</li>
-            </ul>
           </div>
           
           <div class="report">
-            <p class="message"><span class="severity warning">warning:</span> Useless assignment to variable - <code>foo</code>.</p>
+            <div class="meta">
+              <span class="location">Line #3</span> –
+              <span class="severity warning">warning:</span>
+              <span class="message">Useless assignment to variable - <code>foo</code>.</span>
+            </div>
             
             <pre><code>    <span class="highlight warning">foo</span> = bar = baz</code></pre>
             
-            <ul class="location">
-              <li><strong>Line: </strong> 3</li>
-              <li><strong>Column: </strong> 5</li>
-              <li><strong>Length: </strong> 3</li>
-            </ul>
           </div>
           
           <div class="report">
-            <p class="message"><span class="severity warning">warning:</span> Useless assignment to variable - <code>bar</code>.</p>
+            <div class="meta">
+              <span class="location">Line #3</span> –
+              <span class="severity warning">warning:</span>
+              <span class="message">Useless assignment to variable - <code>bar</code>.</span>
+            </div>
             
             <pre><code>    foo = <span class="highlight warning">bar</span> = baz</code></pre>
             
-            <ul class="location">
-              <li><strong>Line: </strong> 3</li>
-              <li><strong>Column: </strong> 11</li>
-              <li><strong>Length: </strong> 3</li>
-            </ul>
           </div>
           
         </div>

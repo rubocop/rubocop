@@ -3,6 +3,7 @@
   <head>
     <meta charset='UTF-8' />
     <title>RuboCop Inspection Report</title>
+    <%# TODO: Clean up the messy markup and style definitions. %>
     <style>
     * {
     -webkit-box-sizing: border-box;
@@ -113,12 +114,7 @@
     line-height: 1.6rem;
     }
     #offenses .offense-box .offense-reports .report .location {
-    padding: 0;
-    list-style: none;
-    }
-    #offenses .offense-box .offense-reports .report .location li {
-    display: inline;
-    margin-right: 10px;
+    font-weight: bold;
     }
     #offenses .offense-box .offense-reports .report .message code {
     padding: 0.3em;
@@ -163,15 +159,14 @@
         <div class="offense-reports">
           <% file.offenses.each do |offense| %>
           <div class="report">
-            <p class="message"><span class="severity <%= offense.severity %>"><%= offense.severity %>:</span> <%= decorated_message(offense) %></p>
+            <div class="meta">
+              <span class="location">Line #<%= offense.location.line %></span> –
+              <span class="severity <%= offense.severity %>"><%= offense.severity %>:</span>
+              <span class="message"><%= decorated_message(offense) %></span>
+            </div>
             <% unless offense.location.source_line.strip.empty? %>
             <pre><code><%= highlighted_source_line(offense) %></code></pre>
             <% end %>
-            <ul class="location">
-              <li><strong>Line: </strong> <%= offense.location.line %></li>
-              <li><strong>Column: </strong> <%= offense.real_column %></li>
-              <li><strong>Length: </strong> <%= offense.location.length %></li>
-            </ul>
           </div>
           <% end %>
         </div>
