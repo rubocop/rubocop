@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset='UTF-8' />
-    <title>RuboCop output</title>
+    <title>RuboCop Inspection Report</title>
     <style>
     * {
     -webkit-box-sizing: border-box;
@@ -59,18 +59,16 @@
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
     padding: 15px;
     border-color: #0088cc;
+    font-size: 1.4rem;
     }
-
     .information .infobox .info-title {
     font-size: 1.8rem;
     line-height: 2.2rem;
-    margin: 0;
+    margin: 0 0 0.5em;
     }
     .information .infobox ul {
-    font-size: 1.4rem;
     list-style: none;
     margin: 0;
-    margin-top: 5px;
     padding: 0;
     }
     .information .infobox ul li {
@@ -181,23 +179,19 @@
   </head>
   <body>
     <div id="header">
-      <h2>RuboCop Output</h2>
+      <h2>RuboCop Inspection Report</h2>
     </div>
     <div class="information">
       <div class="infobox">
-        <h4 class="info-title">RuboCop Stats</h4>
-        <ul>
-          <li><strong>Offense Count:</strong> 13</li>
-          <li><strong>Target File Count:</strong> 3</li>
-          <li><strong>Inspected File Count:</strong> 3</li>
-        </ul>
+        3 files inspected,
+        13 offenses detected
       </div>
     </div>
     <div id="offenses">
       
       
       <div class="offense-box">
-        <div class="box-title"><h3>app/controllers/application_controller.rb - 1</h3></div>
+        <div class="box-title"><h3>app/controllers/application_controller.rb - 1 offense</h3></div>
         <div class="offense-reports">
           
           <div class="report">
@@ -218,7 +212,7 @@
       
       
       <div class="offense-box">
-        <div class="box-title"><h3>app/controllers/books_controller.rb - 8</h3></div>
+        <div class="box-title"><h3>app/controllers/books_controller.rb - 8 offenses</h3></div>
         <div class="offense-reports">
           
           <div class="report">
@@ -323,7 +317,7 @@
       
       
       <div class="offense-box">
-        <div class="box-title"><h3>app/models/book.rb - 4</h3></div>
+        <div class="box-title"><h3>app/models/book.rb - 4 offenses</h3></div>
         <div class="offense-reports">
           
           <div class="report">
@@ -381,7 +375,7 @@
     </div>
     <div class="information">
       <div class="infobox">
-        <h4 class="info-title">Environment Information</h4>
+        <h4 class="info-title">Environment</h4>
         <ul>
           <li><strong>RuboCop Version:</strong> 0.26.1</li>
           <li><strong>Ruby Engine:</strong> ruby</li>

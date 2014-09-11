@@ -2,6 +2,7 @@
 
 require 'erb'
 require 'ostruct'
+require 'rubocop/formatter/text_util'
 
 module RuboCop
   module Formatter
@@ -57,7 +58,7 @@ module RuboCop
 
       # This class privides helper methods used in the ERB template.
       class ERBContext
-        include PathUtil
+        include PathUtil, TextUtil
 
         SEVERITY_COLORS = {
           refactor:   Color.new(0xED, 0x9C, 0x28, 1.0),
