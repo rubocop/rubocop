@@ -9,13 +9,20 @@ module RuboCop
       #
       # @example
       #
-      #   def test
+      #   def redundant
       #     begin
       #       ala
       #       bala
       #     rescue StandardError => e
       #       something
       #     end
+      #   end
+      #
+      #   def preferred
+      #     ala
+      #     bala
+      #   rescue StandardError => e
+      #     something
       #   end
       class RedundantBegin < Cop
         include OnMethod
