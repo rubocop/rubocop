@@ -5,6 +5,7 @@
 ### New features
 
 * [#1348](https://github.com/bbatsov/rubocop/issues/1348):  New cop `ElseAlignment` checks alignment of `else` and `elsif` keywords. ([@jonas054][])
+* [#1321](https://github.com/bbatsov/rubocop/issues/1321): New cop `MultilineOperationIndentation` checks indentation/alignment of binary operations if they span more than one line. ([@jonas054][])
 
 ### Bugs fixed
 
