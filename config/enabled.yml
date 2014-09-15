@@ -142,6 +142,7 @@ Style/CommentAnnotation:
   Description: >-
                  Checks formatting of special comments
                  (TODO, FIXME, OPTIMIZE, HACK, REVIEW).
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#annotate-keywords'
   Enabled: true
 
 Style/CommentIndentation:
@@ -155,6 +156,7 @@ Style/ConstantName:
 
 Style/DefWithParentheses:
   Description: 'Use def with parentheses when there are arguments.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#method-parens'
   Enabled: true
 
 Style/DeprecatedHashMethods:
@@ -335,6 +337,7 @@ Style/ModuleFunction:
 
 Style/MultilineBlockChain:
   Description: 'Avoid multi-line chains of blocks.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#single-line-blocks'
   Enabled: true
 
 Style/MultilineBlockLayout:
@@ -447,6 +450,7 @@ Style/RaiseArgs:
 
 Style/RedundantBegin:
   Description: "Don't use begin blocks when they are not needed."
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#begin-implicit'
   Enabled: true
 
 Style/RedundantException:
