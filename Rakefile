@@ -14,9 +14,7 @@ require 'rake'
 require 'rspec/core'
 require 'rspec/core/rake_task'
 require 'rubocop/rake_task'
-RSpec::Core::RakeTask.new(:spec) do |spec|
-  spec.pattern = FileList['spec/**/*_spec.rb']
-end
+RSpec::Core::RakeTask.new(:spec)
 
 desc 'Run RSpec with code coverage'
 task :coverage do
