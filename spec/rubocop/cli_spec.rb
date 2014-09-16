@@ -589,7 +589,7 @@ describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(['--auto-gen-config'])).to eq(1)
         expect(IO.readlines('.rubocop_todo.yml')[7..-1].map(&:chomp))
           .to eq(['# Offense count: 1',
-                  '# Configuration parameters: AllowURI.',
+                  '# Configuration parameters: AllowURI, URISchemes.',
                   'Metrics/LineLength:',
                   '  Max: 85',
                   '',
@@ -652,7 +652,7 @@ describe RuboCop::CLI, :isolated_environment do
            'again.',
            '',
            '# Offense count: 2',
-           '# Configuration parameters: AllowURI.',
+           '# Configuration parameters: AllowURI, URISchemes.',
            'Metrics/LineLength:',
            '  Max: 90',
            '',

@@ -64,7 +64,7 @@ module RuboCop
           unscanned_position = 0
 
           loop do
-            match_data = string.match(URI.regexp, unscanned_position)
+            match_data = string.match(uri_regexp, unscanned_position)
             break unless match_data
 
             uri_ish_string = match_data[0]
@@ -81,6 +81,10 @@ module RuboCop
           true
         rescue
           false
+        end
+
+        def uri_regexp
+          URI.regexp(cop_config['URISchemes'])
         end
       end
     end
