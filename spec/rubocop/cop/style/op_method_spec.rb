@@ -5,14 +5,17 @@ require 'spec_helper'
 describe RuboCop::Cop::Style::OpMethod do
   subject(:cop) { described_class.new }
 
-  it 'registers an offense for arg not named other' do
-    inspect_source(cop,
-                   ['def +(another)',
-                    '  another',
-                    'end'])
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages)
-      .to eq(['When defining the `+` operator, name its argument `other`.'])
+  [:+, :eql?, :equal?].each do |op|
+    it "registers an offense for #{op} with arg not named other" do
+      inspect_source(cop,
+                     ["def #{op}(another)",
+                      '  another',
+                      'end'])
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.messages)
+        .to eq(["When defining the `#{op}` operator, " \
+                "name its argument `other`."])
+    end
   end
 
   it 'works properly even if the argument not surrounded with braces' do
