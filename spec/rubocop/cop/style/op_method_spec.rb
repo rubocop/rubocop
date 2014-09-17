@@ -14,7 +14,7 @@ describe RuboCop::Cop::Style::OpMethod do
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(["When defining the `#{op}` operator, " \
-                "name its argument `other`."])
+                'name its argument `other`.'])
     end
   end
 
