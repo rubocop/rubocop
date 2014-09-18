@@ -5,6 +5,7 @@
 ### Bugs fixed
 
 * [#1326](https://github.com/bbatsov/rubocop/issues/1326): Fix problem in `SpaceInsideParens` with detecting space inside parentheses used for grouping expressions. ([@jonas054][])
+* [#1335](https://github.com/bbatsov/rubocop/issues/1335): Restrict URI schemes permitted by `LineLength` when `AllowURI` is enabled. ([@smangelsdorf][])
 * [#1339](https://github.com/bbatsov/rubocop/issues/1339): Handle `eql?` and `equal?` in `OpMethod`. ([@bbatsov][])
 
 ## 0.26.0 (03/09/2014)
@@ -1098,3 +1099,4 @@
 [@SkuliOskarsson]: https://github.com/SkuliOskarsson
 [@jspanjers]: https://github.com/jspanjers
 [@sch1zo]: https://github.com/sch1zo
+[@smangelsdorf]: https://github.com/smangelsdorf

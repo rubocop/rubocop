@@ -79,6 +79,10 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
 
     context 'and an error other than URI::InvalidURIError is raised ' \
             'while validating an URI-ish string' do
+      let(:cop_config) do
+        { 'Max' => 80, 'AllowURI' => true, 'URISchemes' => %w(LDAP) }
+      end
+
       # rubocop:disable Metrics/LineLength
       let(:source) { <<-END }
         xxxxxxxxxxxxxxxxxxxxxxxxxxxxzxxxxxxxxxxx = LDAP::DEFAULT_GROUP_UNIQUE_MEMBER_LIST_KEY
@@ -87,6 +91,30 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
 
       it 'does not crash' do
         expect { inspect_source(cop, source) }.not_to raise_error
+      end
+    end
+
+    context 'and the URL does not have a http(s) scheme' do
+      # rubocop:disable Metrics/LineLength
+      let(:source) { <<-END }
+        xxxxxxxxxxxxxxxxxxxxxxxxxxxxzxxxxxxxxxxx = 'otherprotocol://a.very.long.line.which.violates.LineLength/sadf'
+      END
+      # rubocop:enable Metrics/LineLength
+
+      it 'rejects the line' do
+        inspect_source(cop, source)
+        expect(cop.offenses.size).to eq(1)
+      end
+
+      context 'and the scheme has been configured' do
+        let(:cop_config) do
+          { 'Max' => 80, 'AllowURI' => true, 'URISchemes' => %w(otherprotocol) }
+        end
+
+        it 'accepts the line' do
+          inspect_source(cop, source)
+          expect(cop.offenses).to be_empty
+        end
       end
     end
   end

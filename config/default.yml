@@ -503,6 +503,9 @@ Metrics/CyclomaticComplexity:
 Metrics/LineLength:
   Max: 80
   AllowURI: true
+  URISchemes:
+    - http
+    - https
 
 Metrics/MethodLength:
   CountComments: false  # count full line comments?
