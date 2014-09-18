@@ -73,4 +73,9 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
     corrected = autocorrect_source(cop, ['coll.map { |s| s.upcase }'])
     expect(corrected).to eq 'coll.map(&:upcase)'
   end
+
+  it 'does not crash with a bare method call' do
+    run = -> { inspect_source(cop, ['coll.map { |s| bare_method }']) }
+    expect(&run).not_to raise_error
+  end
 end
