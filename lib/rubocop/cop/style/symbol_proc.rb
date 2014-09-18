@@ -24,21 +24,9 @@ module RuboCop
           return if ignored_method?(bmethod_name)
           # File.open(file) { |f| f.readlines }
           return if bargs
-          # something { |x, y| ... }
-          return unless block_args.children.size == 1
-          return unless block_body && block_body.type == :send
+          return unless can_shorten?(block_args, block_body)
 
-          receiver, method_name, args = *block_body
-
-          # method in block must be invoked on a lvar without args
-          return if args
-          return if receiver.type != :lvar
-
-          block_arg_name, = *block_args.children.first
-          receiver_name, = *receiver
-
-          return if block_arg_name != receiver_name
-
+          _receiver, method_name, _args = *block_body
           add_offense(node,
                       :expression,
                       format(MSG,
@@ -64,6 +52,23 @@ module RuboCop
 
         def ignored_method?(name)
           ignored_methods.include?(name.to_s)
+        end
+
+        def can_shorten?(block_args, block_body)
+          # something { |x, y| ... }
+          return false unless block_args.children.size == 1
+          return false unless block_body && block_body.type == :send
+
+          receiver, _method_name, args = *block_body
+
+          # method in block must be invoked on a lvar without args
+          return false if args
+          return false unless receiver && receiver.type == :lvar
+
+          block_arg_name, = *block_args.children.first
+          receiver_name, = *receiver
+
+          block_arg_name == receiver_name
         end
       end
     end
