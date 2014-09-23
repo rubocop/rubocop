@@ -32,7 +32,11 @@ module RuboCop
       end
 
       let(:expected_html) do
-        File.read(expected_html_path, encoding: 'UTF-8')
+        html = File.read(expected_html_path, encoding: 'UTF-8')
+        # Avoid failure on version bump
+        html.sub(/(class="version".{0,20})\d+(?:\.\d+){2}/i) do
+          Regexp.last_match(1) + RuboCop::Version::STRING
+        end
       end
 
       it 'outputs the result in HTML' do
