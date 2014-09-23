@@ -144,4 +144,41 @@ describe RuboCop::Cop::Metrics::MethodLength, :config do
       expect(cop.offenses.map(&:line).sort).to eq([1])
     end
   end
+
+  context 'checking a DSL method' do
+    before { cop_config['DSLMethods'] = [] }
+
+    let(:source) do
+      ['my_dsl_method(m) do',
+       '  a = 1',
+       '  a = 2',
+       '  a = 3',
+       '  a = 4',
+       '  a = 5',
+       '  a = 6',
+       'end']
+    end
+
+    it 'accepts a DSL method with more than 5 lines' do
+      inspect_source(cop, source)
+      expect(cop.offenses).to be_empty
+    end
+
+    context 'when DSLMethods contains the method name' do
+      before { cop_config['DSLMethods'] = %w(my_dsl_method) }
+
+      it 'rejects a DSL method with more than 5 lines' do
+        inspect_source(cop, source)
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.offenses.map(&:line).sort).to eq([1])
+        expect(cop.config_to_allow_offenses).to eq('Max' => 6)
+      end
+
+      it 'accepts a DSL method with an explicit receiver' do
+        source[0] = 'target.my_dsl_method(m) do'
+        inspect_source(cop, source)
+        expect(cop.offenses).to be_empty
+      end
+    end
+  end
 end

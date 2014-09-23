@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+* New option for `MethodLength`, `CyclomaticComplexity` and `PerceivedComplexity` cops, `DSLMethods`, which allows checking of blocks passed to DSL-style methods. ([@smangelsdorf][])
+
 ## 0.26.1 (18/09/2014)
 
 ### Bugs fixed

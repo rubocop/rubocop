@@ -6,24 +6,43 @@ module RuboCop
     module MethodComplexity
       include OnMethod
       include ConfigurableMax
+      include DSLMethod
+
+      def on_block(node)
+        return unless dsl_method?(node)
+
+        when_violated_by(node) do |complexity, max|
+          name =  "block passed to `#{dsl_method_name(node)}`"
+          add_offense(node, :begin, message(name, complexity, max)) do
+            self.max = complexity
+          end
+        end
+      end
 
       private
 
       def on_method(node, method_name, _args, _body)
+        when_violated_by(node) do |complexity, max|
+          add_offense(node, :keyword, message(method_name, complexity, max)) do
+            self.max = complexity
+          end
+        end
+      end
+
+      def when_violated_by(node)
         max = cop_config['Max']
         complexity = complexity(node)
-        return unless complexity > max
-
-        add_offense(node, :keyword,
-                    format(self.class::MSG, method_name, complexity, max)) do
-          self.max = complexity
-        end
+        yield(complexity, max) if complexity > max
       end
 
       def complexity(node)
         node.each_node(self.class::COUNTED_NODES).reduce(1) do |score, n|
           score + complexity_score_for(n)
         end
+      end
+
+      def message(name, complexity, max)
+        format(self.class::MSG, name, complexity, max)
       end
     end
   end

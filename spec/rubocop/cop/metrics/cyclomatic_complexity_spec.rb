@@ -179,6 +179,35 @@ describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
         .to eq(['Cyclomatic complexity for method_name_1 is too high. [2/1]',
                 'Cyclomatic complexity for method_name_2 is too high. [2/1]'])
     end
+
+    context 'with a DSL method' do
+      let(:cop_config) { { 'Max' => 1, 'DSLMethods' => %w(my_dsl_method) } }
+      it 'accepts a method with no decision points' do
+        inspect_source(cop, ['my_dsl_method do',
+                             '  call_foo',
+                             'end'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'registers an offense for an if modifier' do
+        inspect_source(cop, ['my_dsl_method do',
+                             '  call_foo if some_condition',
+                             'end'])
+        expect(cop.offenses.length).to eq(1)
+        expect(cop.messages)
+          .to eq(['Cyclomatic complexity for block passed to `my_dsl_method` ' \
+                  'is too high. [2/1]'])
+        expect(cop.highlights).to eq(['do'])
+        expect(cop.config_to_allow_offenses).to eq('Max' => 2)
+      end
+
+      it 'accepts a dsl-style method not configured for checking' do
+        inspect_source(cop, ['other_dsl_method do',
+                             '  call_foo if some_condition',
+                             'end'])
+        expect(cop.offenses).to be_empty
+      end
+    end
   end
 
   context 'when Max is 2' do

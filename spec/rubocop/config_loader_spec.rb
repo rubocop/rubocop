@@ -205,7 +205,8 @@ describe RuboCop::ConfigLoader do
               'https://github.com/bbatsov/ruby-style-guide#short-methods',
               'Enabled' => true,
               'CountComments' => false,
-              'Max' => 5
+              'Max' => 5,
+              'DSLMethods' => []
             })
         expect(configuration_from_file).to eq(config)
       end
