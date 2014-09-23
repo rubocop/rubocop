@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 require 'rubocop/formatter/colorizable'
+require 'rubocop/formatter/text_util'
 
 module RuboCop
   module Formatter
@@ -8,8 +9,7 @@ module RuboCop
     # Offenses are displayed at compact form - just the
     # location of the problem and the associated message.
     class SimpleTextFormatter < BaseFormatter
-      include Colorizable
-      include PathUtil
+      include Colorizable, PathUtil, TextUtil
 
       COLOR_FOR_SEVERITY = {
         refactor:   :yellow,

@@ -1,144 +1,47 @@
 # encoding: utf-8
 
 require 'spec_helper'
-require 'stringio'
+require 'fileutils'
 
 module RuboCop
-  describe Formatter::HTMLFormatter do
-    subject(:formatter) { described_class.new(output) }
-    let(:output) { StringIO.new }
-    let(:files) { %w(/path/to/file1 /path/to/file2) }
-    let(:location) do
-      source_buffer = Parser::Source::Buffer.new('test', 1)
-      source_buffer.source = %w(a b cdefghi).join("\n")
-      Parser::Source::Range.new(source_buffer, 9, 10)
-    end
-    let(:offense) do
-      Cop::Offense.new(:convention, location,
-                       'This is message', 'CopName', true)
-    end
+  module Formatter
+    describe HTMLFormatter, :isolated_environment do
+      spec_root = File.expand_path('../../..', __FILE__)
 
-    describe '#started' do
-      let(:summary) { formatter.output_hash[:summary] }
+      around do |example|
+        project_path = File.join(spec_root, 'fixtures/html_formatter/project')
+        FileUtils.cp_r(project_path, '.')
 
-      it 'sets target file count in summary' do
-        expect(summary[:target_file_count]).to be_nil
-        formatter.started(%w(/path/to/file1 /path/to/file2))
-        expect(summary[:target_file_count]).to eq(2)
-      end
-    end
-
-    describe '#file_finished' do
-      before do
-        count = 0
-        allow(formatter).to receive(:hash_for_file) do
-          count += 1
+        Dir.chdir(File.basename(project_path)) do
+          example.run
         end
       end
 
-      let(:summary) { formatter.output_hash[:summary] }
-
-      it 'adds detected offense count in summary' do
-        expect(summary[:offense_count]).to eq(0)
-
-        formatter.file_started(files[0], {})
-        expect(summary[:offense_count]).to eq(0)
-        formatter.file_finished(files[0], [
-          double('offense1'), double('offense2')
-        ])
-        expect(summary[:offense_count]).to eq(2)
+      let(:actual_html_path) do
+        path = File.expand_path('result.html')
+        CLI.new.run(['--format', 'html', '--out', path])
+        path
       end
 
-      it 'adds value of #hash_for_file to #output_hash[:files]' do
-        expect(formatter.output_hash[:files]).to be_empty
-
-        formatter.file_started(files[0], {})
-        expect(formatter.output_hash[:files]).to be_empty
-        formatter.file_finished(files[0], [])
-        expect(formatter.output_hash[:files]).to eq([1])
-
-        formatter.file_started(files[1], {})
-        expect(formatter.output_hash[:files]).to eq([1])
-        formatter.file_finished(files[1], [])
-        expect(formatter.output_hash[:files]).to eq([1, 2])
-      end
-    end
-
-    describe '#finished' do
-      let(:summary) { formatter.output_hash[:summary] }
-
-      it 'sets inspected file count in summary' do
-        expect(summary[:inspected_file_count]).to be_nil
-        formatter.finished(%w(/path/to/file1 /path/to/file2))
-        expect(summary[:inspected_file_count]).to eq(2)
-      end
-    end
-
-    describe '#hash_for_file' do
-      subject(:hash) { formatter.hash_for_file(file, offenses) }
-      let(:file) { File.expand_path('spec/spec_helper.rb') }
-      let(:offenses) { [double('offense1'), double('offense2')] }
-
-      it 'sets relative file path for :path key' do
-        expect(hash[:path]).to eq('spec/spec_helper.rb')
+      let(:actual_html) do
+        File.read(actual_html_path, encoding: 'UTF-8')
       end
 
-      before do
-        count = 0
-        allow(formatter).to receive(:hash_for_offense) do
-          count += 1
+      let(:expected_html_path) do
+        File.join(spec_root, 'fixtures/html_formatter/expected.html')
+      end
+
+      let(:expected_html) do
+        html = File.read(expected_html_path, encoding: 'UTF-8')
+        # Avoid failure on version bump
+        html.sub(/(class="version".{0,20})\d+(?:\.\d+){2}/i) do
+          Regexp.last_match(1) + RuboCop::Version::STRING
         end
       end
 
-      it 'sets an array of #hash_for_offense values for :offenses key' do
-        expect(hash[:offenses]).to eq([1, 2])
-      end
-    end
-
-    describe '#hash_for_offense' do
-      subject(:hash) { formatter.hash_for_offense(offense) }
-
-      it 'sets Offense#severity value for :severity key' do
-        expect(hash[:severity]).to eq(:convention)
-      end
-
-      it 'sets Offense#message value for :message key' do
-        expect(hash[:message]).to eq('This is message')
-      end
-
-      it 'sets Offense#cop_name value for :cop_name key' do
-        expect(hash[:cop_name]).to eq('CopName')
-      end
-
-      it 'sets Offense#corrected? value for :corrected key' do
-        expect(hash[:corrected]).to be_truthy
-      end
-
-      before do
-        allow(formatter)
-          .to receive(:hash_for_location).and_return(location_hash)
-      end
-
-      let(:location_hash) { { line: 1, column: 2 } }
-
-      it 'sets value of #hash_for_location for :location key' do
-        expect(hash[:location]).to eq(location_hash)
-      end
-    end
-
-    describe '#hash_for_location' do
-      subject(:hash) { formatter.hash_for_location(offense) }
-
-      it 'sets line value for :line key' do
-        expect(hash[:line]).to eq(3)
-      end
-
-      it 'sets column value for :column key' do
-        expect(hash[:column]).to eq(6)
-      end
-
-      it 'sets length value for :length key' do
-        expect(hash[:length]).to eq(1)
+      it 'outputs the result in HTML' do
+        # FileUtils.copy(actual_html_path, expected_html_path)
+        expect(actual_html).to eq(expected_html)
       end
     end
   end

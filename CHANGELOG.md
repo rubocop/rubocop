@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+* Refine HTML formatter. ([@yujinakayama][])
+
 ## 0.26.1 (18/09/2014)
 
 ### Bugs fixed
