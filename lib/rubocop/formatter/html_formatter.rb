@@ -103,16 +103,6 @@ module RuboCop
           '</span>' +
           source_line[column_range.end..-1]
         end
-
-        def metadata
-          OpenStruct.new(
-            rubocop_version: RuboCop::Version::STRING,
-            ruby_engine:     RUBY_ENGINE,
-            ruby_version:    RUBY_VERSION,
-            ruby_patchlevel: RUBY_PATCHLEVEL.to_s,
-            ruby_platform:   RUBY_PLATFORM
-          )
-        end
       end
     end
   end
