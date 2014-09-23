@@ -24,23 +24,26 @@
     font-size: 85%;
     }
     #header {
-    background: #171717;
-    border-bottom: none;
-    border-left: 1px solid #3a3a3a;
-    box-shadow: 1px 3px 0 1px #cccccc;
+    background: #f9f9f9;
+    color: #333;
+    border-bottom: 3px solid #ccc;
     height: 50px;
     padding: 0;
     }
-    h2 {
-    color: #FFF;
+    #header .logo {
+    float: left;
+    margin: 5px 12px 7px 20px;
+    width: 38px;
+    height: 38px;
+    }
+    #header .title {
     display: inline-block;
     float: left;
     height: 50px;
-    font-size: 2rem;
+    font-size: 2.4rem;
     letter-spacing: normal;
     line-height: 50px;
     margin: 0;
-    padding: 0 22px 0 20px;
     }
 
     .information, #offenses {
@@ -150,7 +153,8 @@
   </head>
   <body>
     <div id="header">
-      <h2>RuboCop Inspection Report</h2>
+      <img class="logo" src="data:image/png;base64,<%= base64_encoded_logo_image %>" alt="">
+      <h1 class="title">RuboCop Inspection Report</h1>
     </div>
     <div class="information">
       <div class="infobox">

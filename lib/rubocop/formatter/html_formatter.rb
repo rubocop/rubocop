@@ -2,6 +2,7 @@
 
 require 'erb'
 require 'ostruct'
+require 'base64'
 require 'rubocop/formatter/text_util'
 
 module RuboCop
@@ -68,6 +69,9 @@ module RuboCop
           fatal:      Color.new(0xD2, 0x32, 0x2D, 1.0)
         }
 
+        LOGO_IMAGE_PATH =
+          File.expand_path('../../../../assets/logo.png', __FILE__)
+
         attr_reader :files, :summary
 
         def initialize(files, summary)
@@ -102,6 +106,11 @@ module RuboCop
           source_line[column_range] +
           '</span>' +
           source_line[column_range.end..-1]
+        end
+
+        def base64_encoded_logo_image
+          image = File.read(LOGO_IMAGE_PATH, binmode: true)
+          Base64.encode64(image)
         end
       end
     end
