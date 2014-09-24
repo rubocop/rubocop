@@ -10,6 +10,10 @@ module RuboCop
         include OnMethod
         include CodeLength
 
+        def on_block(node)
+          check_code_length(node)
+        end
+
         private
 
         def on_method(node, _method_name, _args, _body)
@@ -23,7 +27,7 @@ module RuboCop
         def code_length(node)
           lines = node.loc.expression.source.lines.to_a[1..-2] || []
 
-          lines.reject! { |line| irrelevant_line(line) }
+          lines.reject! { |line| irrelevant_line?(line) }
 
           lines.size
         end

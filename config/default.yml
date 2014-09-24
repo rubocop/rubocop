@@ -499,6 +499,9 @@ Metrics/ClassLength:
 # Avoid complex methods.
 Metrics/CyclomaticComplexity:
   Max: 6
+  # List of method names which are invoked with a block, and the block should
+  # be treated as a method body. Useful for checking DSLs.
+  DSLMethods: []
 
 Metrics/LineLength:
   Max: 80
@@ -510,6 +513,7 @@ Metrics/LineLength:
 Metrics/MethodLength:
   CountComments: false  # count full line comments?
   Max: 10
+  DSLMethods: []
 
 Metrics/ParameterLists:
   Max: 5
@@ -517,6 +521,7 @@ Metrics/ParameterLists:
 
 Metrics/PerceivedComplexity:
   Max: 7
+  DSLMethods: []
 
 ##################### Lint ##################################
 
