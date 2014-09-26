@@ -6,6 +6,10 @@
 
 * [#1348](https://github.com/bbatsov/rubocop/issues/1348):  New cop `ElseAlignment` checks alignment of `else` and `elsif` keywords. ([@jonas054][])
 
+### Bugs fixed
+
+* `AlignHash` no longer skips multiline hashes that contain some elements on the same line. ([@mvz][])
+
 ## 0.26.1 (18/09/2014)
 
 ### Bugs fixed
@@ -1107,3 +1111,4 @@
 [@jspanjers]: https://github.com/jspanjers
 [@sch1zo]: https://github.com/sch1zo
 [@smangelsdorf]: https://github.com/smangelsdorf
+[@mvz]: https://github.com/mvz

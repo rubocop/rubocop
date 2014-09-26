@@ -129,6 +129,12 @@ describe RuboCop::Cop::Style::AlignHash, :config do
                                     "'dddd'  =>  2"])
     end
 
+    it 'registers an offense for misaligned mixed multiline hash keys' do
+      inspect_source(cop, ['hash = { a: 1, b: 2,',
+                           '        c: 3 }'])
+      expect(cop.offenses.size).to eq(1)
+    end
+
     it 'accepts aligned hash keys' do
       inspect_source(cop, ['hash1 = {',
                            '  a: 0,',
@@ -191,6 +197,13 @@ describe RuboCop::Cop::Style::AlignHash, :config do
                                 # Separator and value are not corrected
                                 # in 'key' mode.
                                 '          :ccc  =>2 }'].join("\n"))
+    end
+
+    it 'auto-corrects alignment for mixed multiline hash keys' do
+      new_sources = autocorrect_source(cop, ['hash = { a: 1, b: 2,',
+                                             '        c: 3 }'])
+      expect(new_sources).to eq(['hash = { a: 1, b: 2,',
+                                 '         c: 3 }'].join("\n"))
     end
   end
 
