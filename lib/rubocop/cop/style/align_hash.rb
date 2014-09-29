@@ -199,12 +199,11 @@ module RuboCop
           node.loc.begin
         end
 
-        # Returns true if the hash spans multiple lines, and each key-value
-        # pair following the first is on a new line.
+        # Returns true if the hash spans multiple lines
         def multiline?(node)
           return false unless node.loc.expression.source.include?("\n")
 
-          return false if node.children[1..-1].find do |child|
+          return false if node.children[1..-1].all? do |child|
             !begins_its_line?(child.loc.expression)
           end
 
