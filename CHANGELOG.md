@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bugs fixed
+
+* [#1355](https://github.com/bbatsov/rubocop/issues/1355): Add gems needed for Rubinius to the Gemfile. ([@mvz][])
+
 ## 0.26.1 (18/09/2014)
 
 ### Bugs fixed
@@ -1103,3 +1107,4 @@
 [@jspanjers]: https://github.com/jspanjers
 [@sch1zo]: https://github.com/sch1zo
 [@smangelsdorf]: https://github.com/smangelsdorf
+[@mvz]: https://github.com/mvz
