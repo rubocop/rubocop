@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#1348](https://github.com/bbatsov/rubocop/issues/1348):  New cop `ElseAlignment` checks alignment of `else` and `elsif` keywords. ([@jonas054][])
+
 ## 0.26.1 (18/09/2014)
 
 ### Bugs fixed
