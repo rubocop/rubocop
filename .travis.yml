@@ -11,6 +11,8 @@ matrix:
     - rvm: ruby-head
     - rvm: rbx-2
 before_install: gem update --remote bundler
+install:
+  - bundle install --retry=3
 script:
   - bundle exec rspec
   - bundle exec rubocop
