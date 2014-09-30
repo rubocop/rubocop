@@ -108,9 +108,8 @@ module RuboCop
                      else
                        node.children
                      end
-          items = [*elements.map { |e| e.loc.expression }, node.loc.end]
-          items.each_cons(2) { |a, b| return false if on_same_line?(a, b) }
-          true
+          items = elements.map { |e| e.loc.expression }
+          items.each_cons(2).any? { |a, b| !on_same_line?(a, b) }
         end
 
         def on_same_line?(a, b)

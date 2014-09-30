@@ -74,6 +74,7 @@
 
 * [#1220](https://github.com/bbatsov/rubocop/issues/1220): New namespace `Metrics` created and some `Style` cops moved there. ([@jonas054][])
 * Drop support for Ruby 1.9.2 in accordance with [the end of the security maintenance extension](https://www.ruby-lang.org/en/news/2014/07/01/eol-for-1-8-7-and-1-9-2/). ([@yujinakayama][])
+* [#1257](https://github.com/bbatsov/rubocop/issues/1257): `TrailingComma` now treats all multilines equally. ([@tamird][])
 
 ### Bugs fixed
 
