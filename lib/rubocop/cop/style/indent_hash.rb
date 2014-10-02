@@ -95,7 +95,7 @@ module RuboCop
         def check_first_pair(first_pair, left_brace, left_parenthesis, offset)
           column = first_pair.loc.expression.column
           expected_column = base_column(left_brace, left_parenthesis) +
-            IndentationWidth::CORRECT_INDENTATION + offset
+                            IndentationWidth::CORRECT_INDENTATION + offset
           @column_delta = expected_column - column
 
           if @column_delta == 0

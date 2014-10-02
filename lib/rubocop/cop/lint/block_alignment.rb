@@ -130,7 +130,7 @@ module RuboCop
 
         def alt_start_msg(match, start_loc, do_loc, indentation_of_do_line)
           if start_loc.line == do_loc.line &&
-              start_loc.column == indentation_of_do_line
+             start_loc.column == indentation_of_do_line
             ''
           else
             " or `#{match[0]}` at #{do_loc.line}, #{indentation_of_do_line}"

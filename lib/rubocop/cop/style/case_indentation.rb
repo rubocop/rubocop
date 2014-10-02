@@ -27,7 +27,7 @@ module RuboCop
         def check_when(when_node, case_node, base, indent, base_column)
           pos = when_node.loc.keyword
           expected_column = base_column +
-            (indent ? IndentationWidth::CORRECT_INDENTATION : 0)
+                            (indent ? IndentationWidth::CORRECT_INDENTATION : 0)
           if pos.column == expected_column
             correct_style_detected
           else

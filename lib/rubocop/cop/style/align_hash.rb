@@ -41,7 +41,7 @@ module RuboCop
             separator_delta = separator_delta(first_pair, current_separator,
                                               key_delta)
             value_delta = value_delta(first_pair, current_pair) -
-              key_delta - separator_delta
+                          key_delta - separator_delta
 
             { key: key_delta, separator: separator_delta, value: value_delta }
           end
@@ -106,7 +106,8 @@ module RuboCop
             first_key, _ = *first_pair
             _, current_value = *current_pair
             correct_value_column = first_key.loc.column +
-              spaced_separator(current_pair).length + @max_key_width
+                                   spaced_separator(current_pair).length +
+                                   @max_key_width
             correct_value_column - current_value.loc.column
           end
 
@@ -148,7 +149,8 @@ module RuboCop
 
         def on_send(node)
           return unless (last_child = node.children.last) &&
-            hash?(last_child) && ignore_last_argument_hash?(last_child)
+                        hash?(last_child) &&
+                        ignore_last_argument_hash?(last_child)
 
           ignore_node(last_child)
         end
@@ -165,12 +167,12 @@ module RuboCop
           first_pair = node.children.first
 
           unless @alignment_for_hash_rockets.checkable_layout(node) &&
-              @alignment_for_colons.checkable_layout(node)
+                 @alignment_for_colons.checkable_layout(node)
             return
           end
 
           @column_deltas = alignment_for(first_pair)
-            .deltas_for_first_pair(first_pair, node)
+                           .deltas_for_first_pair(first_pair, node)
           add_offense(first_pair, :expression) unless good_alignment?
 
           node.children.each_cons(2) do |prev, current|

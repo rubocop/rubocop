@@ -23,7 +23,7 @@ module RuboCop
         kw_loc = node.loc.keyword
 
         if kw_loc.line != end_loc.line &&
-            kw_loc.column != end_loc.column + offset
+           kw_loc.column != end_loc.column + offset
           add_offense(nil, end_loc,
                       format(MSG, end_loc.line, end_loc.column,
                              alignment_base, kw_loc.line, kw_loc.column)) do

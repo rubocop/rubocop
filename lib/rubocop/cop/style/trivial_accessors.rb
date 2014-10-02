@@ -91,7 +91,7 @@ module RuboCop
 
         def trivial_accessor_kind(method_name, args, body)
           if trivial_writer?(method_name, args, body) &&
-            !dsl_writer?(method_name)
+             !dsl_writer?(method_name)
             'writer'
           elsif trivial_reader?(method_name, args, body)
             'reader'

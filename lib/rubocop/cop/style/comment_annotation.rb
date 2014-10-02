@@ -15,7 +15,7 @@ module RuboCop
           processed_source.comments.each do |comment|
             margin, first_word, colon, space, note = split_comment(comment)
             next unless annotation?(comment) &&
-              !correct_annotation?(first_word, colon, space, note)
+                        !correct_annotation?(first_word, colon, space, note)
 
             start = comment.loc.expression.begin_pos + margin.length
             length = first_word.length + (colon || '').length

@@ -24,7 +24,7 @@ module RuboCop
 
           body_nodes.each do |child_node|
             check_for_access_modifier(child_node) ||
-            check_for_instance_method(child_node)
+              check_for_instance_method(child_node)
           end
 
           add_offense_for_access_modifier
@@ -41,8 +41,7 @@ module RuboCop
         end
 
         def check_for_instance_method(node)
-          return unless node.type == :def ||
-            node.type == :send
+          return unless node.type == :def || node.type == :send
 
           @access_modifier_node = nil
         end
