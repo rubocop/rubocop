@@ -56,7 +56,7 @@ module RuboCop
 
         def check_return_node(node)
           return if cop_config['AllowMultipleReturnValues'] &&
-            node.children.size > 1
+                    node.children.size > 1
 
           add_offense(node, :keyword)
         end

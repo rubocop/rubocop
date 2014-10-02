@@ -208,9 +208,9 @@ module RuboCop
         if Severity::NAMES.include?(severity.to_sym)
           severity.to_sym
         else
-          warn "Warning: Invalid severity '#{severity}'. " +
+          warn("Warning: Invalid severity '#{severity}'. " +
                "Valid severities are #{Severity::NAMES.join(', ')}."
-               .color(:red)
+               .color(:red))
         end
       end
     end

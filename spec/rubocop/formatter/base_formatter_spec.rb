@@ -168,7 +168,7 @@ module RuboCop
 
           it 'receives an array of detected offenses for the file' do
             expect(formatter).to receive(:file_finished)
-            .exactly(3).times do |file, offenses|
+              .exactly(3).times do |file, offenses|
               case File.basename(file)
               when '1_offense.rb'
                 expect(offenses.size).to eq(1)

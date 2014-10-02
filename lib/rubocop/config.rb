@@ -38,7 +38,7 @@ module RuboCop
 
     def add_excludes_from_higher_level(highest_config)
       return unless highest_config['AllCops'] &&
-        highest_config['AllCops']['Exclude']
+                    highest_config['AllCops']['Exclude']
 
       self['AllCops'] ||= {}
       excludes = self['AllCops']['Exclude'] ||= []
@@ -110,7 +110,7 @@ module RuboCop
       valid_cop_names.each do |name|
         @hash[name].each_key do |param|
           next if COMMON_PARAMS.include?(param) ||
-            default_config[name].key?(param)
+                  default_config[name].key?(param)
 
           fail ValidationError,
                "unrecognized parameter #{name}:#{param} found " \

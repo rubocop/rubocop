@@ -312,6 +312,12 @@ Style/MethodName:
     - snake_case
     - camelCase
 
+Style/MultilineOperationIndentation:
+  EnforcedStyle: aligned
+  SupportedStyles:
+    - aligned
+    - indented
+
 Style/NumericLiterals:
   MinDigits: 5
 

@@ -31,7 +31,7 @@ module RuboCop
           # Report offense only if changing case doesn't change semantics,
           # i.e., if the string would become dynamic or has special characters.
           return if node.children !=
-            ProcessedSource.new(corrected(src)).ast.children
+                    ProcessedSource.new(corrected(src)).ast.children
 
           add_offense(node, :begin, msg)
         end

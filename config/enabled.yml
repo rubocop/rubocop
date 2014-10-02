@@ -353,6 +353,12 @@ Style/MultilineIfThen:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-then'
   Enabled: true
 
+Style/MultilineOperationIndentation:
+  Description: >-
+                 Checks indentation of binary operations that span more than
+                 one line.
+  Enabled: true
+
 Style/MultilineTernaryOperator:
   Description: >-
                  Avoid multi-line ?: (the ternary operator);

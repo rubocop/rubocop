@@ -13,7 +13,7 @@ module RuboCop
         def on_send(node)
           _receiver, method_name, *args = *node
           return unless args.size == 1 &&
-            DEPRECATED_METHODS.include?(method_name)
+                        DEPRECATED_METHODS.include?(method_name)
 
           add_offense(node, :selector,
                       format(MSG,

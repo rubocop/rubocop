@@ -14,7 +14,7 @@ module RuboCop
 
           # not does not take any arguments
           return unless args.empty? && method_name == :! &&
-            node.loc.selector.is?('not')
+                        node.loc.selector.is?('not')
 
           add_offense(node, :selector)
         end

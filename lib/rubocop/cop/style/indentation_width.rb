@@ -84,7 +84,7 @@ module RuboCop
         def on_while(node, base = node)
           _condition, body = *node
           return unless node.loc.keyword.begin_pos ==
-            node.loc.expression.begin_pos
+                        node.loc.expression.begin_pos
 
           check_indentation(base.loc, body)
         end

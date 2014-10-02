@@ -39,7 +39,7 @@ module RuboCop
           #     # resbody
           #   end
           if branch_point_node.type == :rescue &&
-            (branch_body_name == 'main' || other.branch_body_name == 'main')
+             (branch_body_name == 'main' || other.branch_body_name == 'main')
             return false
           end
 

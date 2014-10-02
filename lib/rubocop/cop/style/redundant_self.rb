@@ -94,9 +94,9 @@ module RuboCop
           receiver, method_name, *_args = *node
           return unless receiver && receiver.type == :self
           return if operator?(method_name) || keyword?(method_name) ||
-            constant_name?(method_name) ||
-            @allowed_send_nodes.include?(node) ||
-            @local_variables.include?(method_name)
+                    constant_name?(method_name) ||
+                    @allowed_send_nodes.include?(node) ||
+                    @local_variables.include?(method_name)
 
           add_offense(node, :expression)
         end

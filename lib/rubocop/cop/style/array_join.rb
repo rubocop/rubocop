@@ -14,7 +14,7 @@ module RuboCop
         def on_send(node)
           receiver_node, method_name, *arg_nodes = *node
           return unless receiver_node && receiver_node.type == :array &&
-            method_name == :* && arg_nodes[0].type == :str
+                        method_name == :* && arg_nodes[0].type == :str
 
           add_offense(node, :selector)
         end

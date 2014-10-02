@@ -27,13 +27,13 @@ module RuboCop
         cond_length = cond.loc.expression.size
         space = 1
         total = indentation + body_length + space + kw_length + space +
-          cond_length
+                cond_length
         total <= max_line_length && !body_has_comment?(body)
       end
 
       def max_line_length
         cop_config && cop_config['MaxLineLength'] ||
-        config.for_cop('Metrics/LineLength')['Max']
+          config.for_cop('Metrics/LineLength')['Max']
       end
 
       def length(node)

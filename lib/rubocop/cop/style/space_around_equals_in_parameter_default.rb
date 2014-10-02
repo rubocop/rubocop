@@ -22,7 +22,7 @@ module RuboCop
           no_surrounding_space = no_surrounding_space?(arg, equals, value)
 
           if style == :space && space_on_both_sides ||
-              style == :no_space && no_surrounding_space
+             style == :no_space && no_surrounding_space
             correct_style_detected
           else
             range = Parser::Source::Range.new(processed_source.buffer,
@@ -30,7 +30,7 @@ module RuboCop
                                               value.pos.begin_pos)
             add_offense(range, range) do
               if style == :space && no_surrounding_space ||
-                  style == :no_space && space_on_both_sides
+                 style == :no_space && space_on_both_sides
                 opposite_style_detected
               else
                 unrecognized_style_detected

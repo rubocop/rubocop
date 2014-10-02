@@ -18,7 +18,7 @@ describe RuboCop::Cop::Style::FileName do
 
   before do
     allow(processed_source.buffer)
-    .to receive(:name).and_return(filename)
+      .to receive(:name).and_return(filename)
     _investigate(cop, processed_source)
   end
 

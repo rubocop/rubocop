@@ -19,7 +19,7 @@ module RuboCop
           # auto-correct, so reporting space issues is not useful, and it
           # creates auto-correct conflicts.
           if config.for_cop('Style/Blocks')['Enabled'] &&
-              Util.block_length(node) > 0
+             Util.block_length(node) > 0
             return
           end
 
@@ -75,7 +75,7 @@ module RuboCop
         def no_space_inside_left_brace(left_brace, args_delimiter, sb)
           if pipe?(args_delimiter)
             if left_brace.end_pos == args_delimiter.begin_pos &&
-                cop_config['SpaceBeforeBlockParameters']
+               cop_config['SpaceBeforeBlockParameters']
               offense(sb, left_brace.begin_pos, args_delimiter.end_pos,
                       'Space between { and | missing.')
             end

@@ -19,7 +19,7 @@ module RuboCop
         def on_percent_literal(node)
           node.children.each do |string|
             if string.type == :dstr ||
-              string.loc.expression.source =~ StringHelp::ESCAPED_CHAR_REGEXP
+               string.loc.expression.source =~ StringHelp::ESCAPED_CHAR_REGEXP
               return
             end
           end

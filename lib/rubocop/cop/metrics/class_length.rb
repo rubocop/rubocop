@@ -23,7 +23,7 @@ module RuboCop
           class_body_line_numbers = line_range(node).to_a[1...-1]
 
           target_line_numbers = class_body_line_numbers -
-                                  line_numbers_of_inner_classes(node)
+                                line_numbers_of_inner_classes(node)
 
           target_line_numbers.reduce(0) do |length, line_number|
             source_line = processed_source[line_number]

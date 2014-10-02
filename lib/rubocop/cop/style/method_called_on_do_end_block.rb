@@ -29,7 +29,7 @@ module RuboCop
           return if ignored_node?(node)
           receiver, _method_name, *_args = *node
           return unless receiver && receiver.type == :block &&
-            receiver.loc.end.is?('end')
+                        receiver.loc.end.is?('end')
 
           range = Parser::Source::Range.new(receiver.loc.end.source_buffer,
                                             receiver.loc.end.begin_pos,

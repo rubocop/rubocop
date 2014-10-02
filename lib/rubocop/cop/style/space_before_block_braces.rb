@@ -16,7 +16,7 @@ module RuboCop
           # auto-correct, so reporting space issues is not useful, and it
           # creates auto-correct conflicts.
           if config.for_cop('Style/Blocks')['Enabled'] &&
-              Util.block_length(node) > 0
+             Util.block_length(node) > 0
             return
           end
 

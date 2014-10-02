@@ -56,7 +56,7 @@ module RuboCop
         return unless default_cfg
 
         params = default_cfg.keys - %w(Description StyleGuide Enabled) -
-          cfg.keys
+                 cfg.keys
         return if params.empty?
 
         output.puts "# Configuration parameters: #{params.join(', ')}."
