@@ -35,6 +35,35 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     describe '--auto-correct' do
+      it 'corrects complicated cases conservatively' do
+        # Three cops make corrections here; Style/BracesAroundHashParameters,
+        # Style/IndentHash, and Style/AlignHash. Because they make minimal
+        # corrections relating only to their specific areas, and stay away from
+        # cleaning up extra whitespace in the process, the combined changes
+        # don't interfere with eachother and the result is semantically the
+        # same as the starting point.
+        source = ['# encoding: utf-8',
+                  'expect(subject[:address]).to eq({',
+                  "  street1:     '1 Market',",
+                  "  street2:     '#200',",
+                  "  city:        'Some Town',",
+                  "  state:       'CA',",
+                  "  postal_code: '99999-1111'",
+                  '})']
+        create_file('example.rb', source)
+        expect(cli.run(['-D', '--auto-correct'])).to eq(1)
+        corrected =
+          ['# encoding: utf-8',
+           'expect(subject[:address]).to eq(',
+           "                                  street1:     '1 Market',",
+           "                                  street2:     '#200',",
+           "                                  city:        'Some Town',",
+           "                                  state:       'CA',",
+           "                                  postal_code: '99999-1111'",
+           ')']
+        expect(IO.read('example.rb')).to eq(corrected.join("\n") + "\n")
+      end
+
       it 'honors Exclude settings in individual cops' do
         source = ['# encoding: utf-8',
                   'puts %x(ls)']

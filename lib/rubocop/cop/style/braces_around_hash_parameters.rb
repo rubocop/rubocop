@@ -48,33 +48,11 @@ module RuboCop
             if style == :no_braces
               corrector.remove(node.loc.begin)
               corrector.remove(node.loc.end)
-              remove_leading_whitespace(node, corrector)
-              remove_trailing_comma_and_whitespace(node, corrector)
             elsif style == :braces
               corrector.insert_before(node.loc.expression, '{')
               corrector.insert_after(node.loc.expression, '}')
             end
           end
-        end
-
-        def remove_leading_whitespace(node, corrector)
-          corrector.remove(
-            Parser::Source::Range.new(
-              node.loc.expression.source_buffer,
-              node.loc.begin.end_pos,
-              node.children.first.loc.expression.begin_pos
-            )
-          )
-        end
-
-        def remove_trailing_comma_and_whitespace(node, corrector)
-          corrector.remove(
-            Parser::Source::Range.new(
-              node.loc.expression.source_buffer,
-              node.children.last.loc.expression.end_pos,
-              node.loc.end.begin_pos
-            )
-          )
         end
 
         def non_empty_hash?(arg)
