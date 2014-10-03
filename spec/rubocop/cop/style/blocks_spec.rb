@@ -101,5 +101,13 @@ describe RuboCop::Cop::Style::Blocks do
       new_source = autocorrect_source(cop, source)
       expect(new_source).to eq(expected_source)
     end
+
+    it 'does not auto-correct {} if do-end would introduce a syntax error' do
+      src = ['my_method :arg1, arg2: proc {',
+             '  something',
+             '}, arg3: :another_value'].join("\n")
+      new_source = autocorrect_source(cop, src)
+      expect(new_source).to eq(src)
+    end
   end
 end

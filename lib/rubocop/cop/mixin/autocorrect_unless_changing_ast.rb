@@ -7,7 +7,6 @@ module RuboCop
     # abstract syntax tree, it is not done.
     module AutocorrectUnlessChangingAST
       def autocorrect(node)
-        c = correction(node)
         new_source = rewrite_node(node)
 
         # Make the correction only if it doesn't change the AST. Regenerate the
@@ -17,7 +16,11 @@ module RuboCop
           fail CorrectionNotPossible
         end
 
-        @corrections << c
+        if syntax_error?(node.loc.expression, new_source)
+          fail CorrectionNotPossible
+        end
+
+        @corrections << correction(node)
       end
 
       private
@@ -30,6 +33,16 @@ module RuboCop
         processed_source = ProcessedSource.new(node.loc.expression.source)
         c = correction(processed_source.ast)
         Corrector.new(processed_source.buffer, [c]).rewrite
+      end
+
+      # Return true if the change would introduce a syntax error in the buffer
+      # source.
+      def syntax_error?(replaced_range, new_source)
+        current_buffer_src = processed_source.buffer.source
+        pre = current_buffer_src[0...replaced_range.begin_pos]
+        post = current_buffer_src[replaced_range.end_pos..-1]
+        new_buffer_src = pre + new_source + post
+        !ProcessedSource.new(new_buffer_src).valid_syntax?
       end
     end
   end
