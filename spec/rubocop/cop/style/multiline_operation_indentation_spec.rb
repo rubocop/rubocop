@@ -80,13 +80,23 @@ describe RuboCop::Cop::Style::MultilineOperationIndentation, :config do
       expect(cop.highlights).to eq(['b'])
     end
 
-    it 'accepts aligned operands assignment' do
+    it 'accepts aligned operands in assignment' do
       inspect_source(cop,
                      ['formatted_int = int_part',
                       '                .to_s',
                       '                .reverse',
                       "                .gsub(/...(?=.)/, '\&_')"])
       expect(cop.messages).to be_empty
+    end
+
+    it 'registers an offense for unaligned operands in assignment' do
+      inspect_source(cop,
+                     ['bar = Foo',
+                      '  .a',
+                      '      .b(c)'])
+      expect(cop.messages).to eq(['Align the operands of an expression in an ' \
+                                  'assignment spanning multiple lines.'])
+      expect(cop.highlights).to eq(['.a'])
     end
 
     it 'auto-corrects' do
@@ -111,6 +121,28 @@ describe RuboCop::Cop::Style::MultilineOperationIndentation, :config do
                       '  something',
                       'end'])
       expect(cop.messages).to be_empty
+    end
+
+    it 'registers an offense for badly indented operands in chained ' \
+       'method call' do
+      inspect_source(cop,
+                     ['Foo',
+                      '.a',
+                      '  .b'])
+      expect(cop.messages).to eq(['Use 2 (not 0) spaces for indenting an ' \
+                                  'expression spanning multiple lines.'])
+      expect(cop.highlights).to eq(['.a'])
+    end
+
+    it 'registers an offense for badly indented operands in chained ' \
+       'method call' do
+      inspect_source(cop,
+                     ['Foo',
+                      '.a',
+                      '  .b(c)'])
+      expect(cop.messages).to eq(['Use 2 (not 0) spaces for indenting an ' \
+                                  'expression spanning multiple lines.'])
+      expect(cop.highlights).to eq(['.a'])
     end
 
     it 'registers an offense for aligned operands in if condition' do

@@ -6,7 +6,8 @@ describe RuboCop::Cop::Style::SpaceBeforeBlockBraces do
   subject(:cop) { described_class.new(config) }
   let(:config) do
     merged = RuboCop::ConfigLoader
-      .default_configuration['Style/SpaceBeforeBlockBraces'].merge(cop_config)
+             .default_configuration['Style/SpaceBeforeBlockBraces']
+             .merge(cop_config)
     RuboCop::Config.new('Style/Blocks' => { 'Enabled' => false },
                         'Style/SpaceBeforeBlockBraces' => merged)
   end
