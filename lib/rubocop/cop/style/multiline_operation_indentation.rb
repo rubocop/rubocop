@@ -146,11 +146,22 @@ module RuboCop
         end
 
         def not_for_this_cop?(node)
-          node.each_ancestor.find do |a|
-            # Grouped expressions are aligned, but that's a different rule.
-            (a.type == :begin && a.loc.respond_to?(:begin) && a.loc.begin) ||
-              (a.type == :send && a.loc.begin && a.loc.begin.is?('('))
+          node.each_ancestor.find do |ancestor|
+            grouped_expression?(ancestor) ||
+              inside_arg_list_parentheses?(node, ancestor)
           end
+        end
+
+        def grouped_expression?(node)
+          node.type == :begin && node.loc.respond_to?(:begin) && node.loc.begin
+        end
+
+        def inside_arg_list_parentheses?(node, ancestor)
+          a = ancestor.loc
+          return false unless ancestor.type == :send && a.begin &&
+                              a.begin.is?('(')
+          n = node.loc.expression
+          n.begin_pos > a.begin.begin_pos && n.end_pos < a.end.end_pos
         end
       end
     end

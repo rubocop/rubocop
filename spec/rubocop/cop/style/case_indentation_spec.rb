@@ -6,7 +6,7 @@ describe RuboCop::Cop::Style::CaseIndentation do
   subject(:cop) { described_class.new(config) }
   let(:config) do
     merged = RuboCop::ConfigLoader
-      .default_configuration['Style/CaseIndentation'].merge(cop_config)
+             .default_configuration['Style/CaseIndentation'].merge(cop_config)
     RuboCop::Config.new('Style/CaseIndentation' => merged)
   end
 
