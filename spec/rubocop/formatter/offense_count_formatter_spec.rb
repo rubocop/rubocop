@@ -2,7 +2,6 @@
 
 require 'spec_helper'
 require 'stringio'
-require 'tempfile'
 
 module RuboCop
   module Formatter

@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 require 'spec_helper'
+require 'tempfile'
 
 describe RuboCop::Cop::Rails::ActionFilter, :config do
   subject(:cop) { described_class.new(config) }
