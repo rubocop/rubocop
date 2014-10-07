@@ -6,6 +6,7 @@
 
 * [#1348](https://github.com/bbatsov/rubocop/issues/1348):  New cop `ElseAlignment` checks alignment of `else` and `elsif` keywords. ([@jonas054][])
 * [#1321](https://github.com/bbatsov/rubocop/issues/1321): New cop `MultilineOperationIndentation` checks indentation/alignment of binary operations if they span more than one line. ([@jonas054][])
+* [#1077](https://github.com/bbatsov/rubocop/issues/1077): New cop `Metrics/AbcSize` checks the ABC metric, based on assignments, branches, and conditions. ([@jonas054][], [@jfelchner][])
 
 ### Bugs fixed
 
@@ -1114,3 +1115,4 @@
 [@sch1zo]: https://github.com/sch1zo
 [@smangelsdorf]: https://github.com/smangelsdorf
 [@mvz]: https://github.com/mvz
+[@jfelchner]: https://github.com/jfelchner

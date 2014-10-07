@@ -16,7 +16,7 @@ module RuboCop
 
         add_offense(node, :keyword,
                     format(self.class::MSG, method_name, complexity, max)) do
-          self.max = complexity
+          self.max = complexity.ceil
         end
       end
 
