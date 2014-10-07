@@ -56,7 +56,7 @@ module RuboCop
         end
 
         def predicate?(method_name)
-          method_name =~ /\w\?$/
+          method_name.to_s.end_with?('?')
         end
 
         def offense?(node)

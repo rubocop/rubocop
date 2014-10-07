@@ -33,11 +33,11 @@ module RuboCop
           end
           return if ignored_node?(node) || part_of_ignored_node?(node)
           src = node.loc.expression.source
-          return unless src =~ /^%q/i
+          return unless src.start_with?('%q') || src.start_with?('%Q')
           return if src =~ /'/ && src =~ /"/
           return if src =~ StringHelp::ESCAPED_CHAR_REGEXP
 
-          extra = if src =~ /^%Q/
+          extra = if src.start_with?('%Q')
                     ', or for dynamic strings that contain double quotes'
                   else
                     ''

@@ -46,7 +46,7 @@ module RuboCop
 
         def encoding_line_number(processed_source)
           line_number = 0
-          line_number += 1 if processed_source[line_number] =~ /^#!/
+          line_number += 1 if processed_source[line_number].start_with?('#!')
           line_number
         end
       end
