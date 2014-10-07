@@ -22,7 +22,7 @@ module RuboCop
 
         def offense?(node)
           src = node.loc.expression.source
-          return false if src =~ /^(%[qQ]?|\?|<<-)/i
+          return false if src.start_with?('%') || src.start_with?('?')
           if style == :single_quotes
             src !~ /'/ && src !~ StringHelp::ESCAPED_CHAR_REGEXP
           else
