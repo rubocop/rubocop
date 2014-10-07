@@ -22,7 +22,7 @@ describe RuboCop::Cop::Metrics::AbcSize, :config do
   context 'when Max is 0' do
     let(:cop_config) { { 'Max' => 0 } }
 
-    it 'accepts an emppty method' do
+    it 'accepts an empty method' do
       inspect_source(cop, ['def method_name',
                            'end'])
       expect(cop.offenses).to be_empty
