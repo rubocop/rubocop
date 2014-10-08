@@ -62,26 +62,7 @@ module RuboCop
         @updated_source_file = false
         return unless autocorrect?
 
-        corrections = cops.each_with_object([]) do |cop, array|
-          array.concat(cop.corrections) if cop.relevant_file?(buffer.name)
-        end
-
-        corrector = Corrector.new(buffer, corrections)
-        new_source = begin
-                       # Corrector#rewrite can raise RangeError or RuntimeError
-                       # for various error conditions including clobbering.
-                       s = corrector.rewrite
-                       # We raise RuntimeError ourselves if the rewritten code
-                       # is not parsable ruby. We don't want to write that code
-                       # to file.
-                       fail unless ProcessedSource.new(s).valid_syntax?
-                       s
-                     rescue RangeError, RuntimeError
-                       # Handle all errors by limiting the changes to one
-                       # cop. The caller will parse the source again when the
-                       # file has been updated.
-                       autocorrect_one_cop(buffer, cops)
-                     end
+        new_source = autocorrect_one_cop(buffer, cops)
 
         return if new_source == buffer.source
 
@@ -90,13 +71,19 @@ module RuboCop
         @updated_source_file = true
       end
 
-      # Does a slower but safer auto-correction run by correcting for just one
-      # cop. The re-running of auto-corrections will make sure that the full
-      # set of auto-corrections is tried again after this method has finished.
+      # Does an auto-correction run by correcting for just one cop. The
+      # re-running of auto-corrections will make sure that the full set of
+      # auto-corrections is tried again after this method has finished.
       def autocorrect_one_cop(buffer, cops)
-        cop_with_corrections = cops.find { |cop| cop.corrections.any? }
-        corrector = Corrector.new(buffer, cop_with_corrections.corrections)
-        corrector.rewrite
+        cop_with_corrections = cops.find do |cop|
+          cop.relevant_file?(buffer.name) && cop.corrections.any?
+        end
+        if cop_with_corrections
+          corrector = Corrector.new(buffer, cop_with_corrections.corrections)
+          corrector.rewrite
+        else
+          buffer.source
+        end
       end
 
       def process_commissioner_errors(file, file_errors)
