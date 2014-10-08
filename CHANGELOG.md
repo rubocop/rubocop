@@ -12,6 +12,7 @@
 
 * `AlignHash` no longer skips multiline hashes that contain some elements on the same line. ([@mvz][])
 * [#1349](https://github.com/bbatsov/rubocop/issues/1349): `BracesAroundHashParameters` no longer cleans up whitespace in autocorrect, as these extra corrections are likely to interfere with other cops' corrections. ([@jonas054][])
+* [#1350](https://github.com/bbatsov/rubocop/issues/1350): Guard against `Blocks` cop introducing syntax errors in auto-correct. ([@jonas054][])
 
 ## 0.26.1 (18/09/2014)
 
