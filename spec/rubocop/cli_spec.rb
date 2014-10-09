@@ -35,13 +35,21 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     describe '--auto-correct' do
+      it 'corrects SymbolProc and SpaceBeforeBlockBraces offences' do
+        source = ['foo.map{ |a| a.nil? }']
+        create_file('example.rb', source)
+        expect(cli.run(['-D', '--auto-correct'])).to eq(1)
+        corrected = "foo.map(&:nil?)\n"
+        expect(IO.read('example.rb')).to eq(corrected)
+      end
+
       it 'corrects complicated cases conservatively' do
-        # Three cops make corrections here; Style/BracesAroundHashParameters,
-        # Style/IndentHash, and Style/AlignHash. Because they make minimal
-        # corrections relating only to their specific areas, and stay away from
-        # cleaning up extra whitespace in the process, the combined changes
-        # don't interfere with eachother and the result is semantically the
-        # same as the starting point.
+        # Two cops make corrections here; Style/BracesAroundHashParameters, and
+        # Style/AlignHash. Because they make minimal corrections relating only
+        # to their specific areas, and stay away from cleaning up extra
+        # whitespace in the process, the combined changes don't interfere with
+        # eachother and the result is semantically the same as the starting
+        # point.
         source = ['# encoding: utf-8',
                   'expect(subject[:address]).to eq({',
                   "  street1:     '1 Market',",
@@ -55,11 +63,11 @@ describe RuboCop::CLI, :isolated_environment do
         corrected =
           ['# encoding: utf-8',
            'expect(subject[:address]).to eq(',
-           "                                  street1:     '1 Market',",
-           "                                  street2:     '#200',",
-           "                                  city:        'Some Town',",
-           "                                  state:       'CA',",
-           "                                  postal_code: '99999-1111'",
+           "  street1:     '1 Market',",
+           "  street2:     '#200',",
+           "  city:        'Some Town',",
+           "  state:       'CA',",
+           "  postal_code: '99999-1111'",
            ')']
         expect(IO.read('example.rb')).to eq(corrected.join("\n") + "\n")
       end
@@ -303,13 +311,13 @@ describe RuboCop::CLI, :isolated_environment do
                                              'end',
                                              ''].join("\n"))
         expect($stdout.string).to eq(['',
-                                      '6   Style/TrailingWhitespace',
-                                      '4   Style/Semicolon',
-                                      '2   Style/SingleLineMethods',
+                                      '10  Style/TrailingWhitespace',
+                                      '5   Style/Semicolon',
+                                      '3   Style/SingleLineMethods',
                                       '1   Style/DefWithParentheses',
                                       '1   Style/EmptyLineBetweenDefs',
                                       '--',
-                                      '14  Total',
+                                      '20  Total',
                                       '',
                                       ''].join("\n"))
       end
