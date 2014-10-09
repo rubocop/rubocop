@@ -499,6 +499,7 @@ Metrics/ClassLength:
 # Avoid complex methods.
 Metrics/CyclomaticComplexity:
   Max: 6
+  DSLMethods: true
 
 Metrics/LineLength:
   Max: 80
@@ -510,6 +511,7 @@ Metrics/LineLength:
 Metrics/MethodLength:
   CountComments: false  # count full line comments?
   Max: 10
+  DSLMethods: true
 
 Metrics/ParameterLists:
   Max: 5
@@ -517,6 +519,7 @@ Metrics/ParameterLists:
 
 Metrics/PerceivedComplexity:
   Max: 7
+  DSLMethods: true
 
 ##################### Lint ##################################
 

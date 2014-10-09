@@ -197,6 +197,51 @@ describe RuboCop::Cop::Metrics::PerceivedComplexity, :config do
         .to eq(['Perceived complexity for method_name_1 is too high. [2/1]',
                 'Perceived complexity for method_name_2 is too high. [2/1]'])
     end
+
+    context 'with a method call with a block' do
+      let(:cop_config) { { 'Max' => 1 } }
+      it 'accepts a block with no decision points' do
+        inspect_source(cop, ['module MyModule',
+                             '  my_dsl_method do',
+                             '    call_foo',
+                             '  end',
+                             'end'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'registers an offense for an if modifier' do
+        inspect_source(cop, ['module MyModule',
+                             '  my_dsl_method do',
+                             '    call_foo if some_condition',
+                             '  end',
+                             'end'])
+        expect(cop.offenses.length).to eq(1)
+        expect(cop.messages)
+          .to eq(['Perceived complexity for block passed to `my_dsl_method` ' \
+                  'is too high. [2/1]'])
+        expect(cop.highlights).to eq(['do'])
+        expect(cop.config_to_allow_offenses).to eq('Max' => 2)
+      end
+
+      it 'ignores a method call not inside a class/module' do
+        inspect_source(cop, ['my_dsl_method do',
+                             '  call_foo if some_condition',
+                             'end'])
+        expect(cop.offenses).to be_empty
+      end
+
+      context 'when dsl method checks are disabled' do
+        let(:cop_config) { { 'Max' => 2, 'DSLMethods' => false } }
+        it 'accepts a block with an if modifier' do
+          inspect_source(cop, ['module MyModule',
+                               '  my_dsl_method do',
+                               '    call_foo if some_condition',
+                               '  end',
+                               'end'])
+          expect(cop.offenses).to be_empty
+        end
+      end
+    end
   end
 
   context 'when Max is 2' do

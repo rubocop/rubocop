@@ -3,3 +3,12 @@ inherit_from: ../.rubocop.yml
 # The documentation check doesn't make sense for test code
 Style/Documentation:
   Enabled: false
+
+Metrics/MethodLength:
+  DSLMethods: false
+
+Metrics/CyclomaticComplexity:
+  DSLMethods: false
+
+Metrics/PerceivedComplexity:
+  DSLMethods: false

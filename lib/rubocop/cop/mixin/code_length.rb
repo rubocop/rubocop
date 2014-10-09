@@ -18,14 +18,23 @@ module RuboCop
         length = code_length(node)
         return unless length > max_length
 
-        add_offense(node, :keyword, message(length, max_length)) do
+        sym = loc_selector(node.type)
+
+        add_offense(node, sym, message(node, length, max_length)) do
           self.max = length
         end
       end
 
       # Returns true for lines that shall not be included in the count.
-      def irrelevant_line(source_line)
+      def irrelevant_line?(source_line)
         source_line.blank? || !count_comments? && comment_line?(source_line)
+      end
+
+      private
+
+      def loc_selector(type)
+        return :begin if type == :block
+        :keyword
       end
     end
   end

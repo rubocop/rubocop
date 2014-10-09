@@ -179,6 +179,132 @@ describe RuboCop::Cop::Metrics::CyclomaticComplexity, :config do
         .to eq(['Cyclomatic complexity for method_name_1 is too high. [2/1]',
                 'Cyclomatic complexity for method_name_2 is too high. [2/1]'])
     end
+
+    context 'checking a method call with block' do
+      shared_examples 'an unchecked block' do
+        context 'with an `if` modifier' do
+          it 'accepts a block body' do
+            inspect_source(cop, source)
+            expect(cop.offenses).to be_empty
+          end
+        end
+      end
+
+      shared_examples 'a checked block' do
+        context 'with an `if` modifier' do
+          it 'accepts a block body' do
+            inspect_source(cop, source)
+            expect(cop.offenses).to be_empty
+          end
+        end
+      end
+
+      let(:source) do
+        ['my_dsl_method(m) do',
+         '  a = 1',
+         '  a = 2',
+         '  a = 3',
+         '  a = 4',
+         '  a = 5',
+         '  a = 6',
+         'end']
+      end
+
+      it_behaves_like 'an unchecked block'
+
+      context 'when the call is inside a module' do
+        let(:name) { 'my_dsl_method' }
+        let(:source) do
+          ['module MyModule',
+           '  def othermethod; 1; end',
+           '  my_dsl_method(m) do',
+           '    a = 1',
+           '    a = 2',
+           '    a = 3',
+           '    a = 4',
+           '    a = 5',
+           '    a = 6',
+           '  end',
+           'end']
+        end
+
+        it_behaves_like 'a checked block'
+
+        context 'when invoked with an explicit receiver' do
+          before { source[2] = '  x.my_dsl_method(m) do' }
+          it_behaves_like 'an unchecked block'
+        end
+      end
+
+      context 'when the call is inside a class' do
+        let(:name) { 'my_dsl_method' }
+        let(:source) do
+          ['class MyClass',
+           '  def othermethod; 1; end',
+           '  my_dsl_method(m) do',
+           '    a = 1',
+           '    a = 2',
+           '    a = 3',
+           '    a = 4',
+           '    a = 5',
+           '    a = 6',
+           '  end',
+           'end']
+        end
+
+        it_behaves_like 'a checked block'
+
+        context 'when invoked with an explicit receiver' do
+          before { source[2] = '  x.my_dsl_method(m) do' }
+          it_behaves_like 'an unchecked block'
+        end
+      end
+    end
+
+    context 'with a method call with a block' do
+      let(:cop_config) { { 'Max' => 1 } }
+      it 'accepts a block with no decision points' do
+        inspect_source(cop, ['module MyModule',
+                             '  my_dsl_method do',
+                             '    call_foo',
+                             '  end',
+                             'end'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'registers an offense for an if modifier' do
+        inspect_source(cop, ['module MyModule',
+                             '  my_dsl_method do',
+                             '    call_foo if some_condition',
+                             '  end',
+                             'end'])
+        expect(cop.offenses.length).to eq(1)
+        expect(cop.messages)
+          .to eq(['Cyclomatic complexity for block passed to `my_dsl_method` ' \
+                  'is too high. [2/1]'])
+        expect(cop.highlights).to eq(['do'])
+        expect(cop.config_to_allow_offenses).to eq('Max' => 2)
+      end
+
+      it 'ignores a method call not inside a class/module' do
+        inspect_source(cop, ['my_dsl_method do',
+                             '  call_foo if some_condition',
+                             'end'])
+        expect(cop.offenses).to be_empty
+      end
+
+      context 'when dsl method checks are disabled' do
+        let(:cop_config) { { 'Max' => 2, 'DSLMethods' => false } }
+        it 'accepts a block with an if modifier' do
+          inspect_source(cop, ['module MyModule',
+                               '  my_dsl_method do',
+                               '    call_foo if some_condition',
+                               '  end',
+                               'end'])
+          expect(cop.offenses).to be_empty
+        end
+      end
+    end
   end
 
   context 'when Max is 2' do

@@ -15,7 +15,7 @@ module RuboCop
 
         private
 
-        def message(length, max_length)
+        def message(_node, length, max_length)
           format('Class definition is too long. [%d/%d]', length, max_length)
         end
 
@@ -27,7 +27,7 @@ module RuboCop
 
           target_line_numbers.reduce(0) do |length, line_number|
             source_line = processed_source[line_number]
-            next length if irrelevant_line(source_line)
+            next length if irrelevant_line?(source_line)
             length + 1
           end
         end
