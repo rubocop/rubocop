@@ -4,7 +4,7 @@ require 'spec_helper'
 
 describe RuboCop::Cop::Style::WordArray, :config do
   subject(:cop) { described_class.new(config) }
-  let(:cop_config) { { 'MinSize' => 0 } }
+  let(:cop_config) { { 'MinSize' => 0, 'WordRegex' => /\A[\p{Word}]+\z/ } }
 
   it 'registers an offense for arrays of single quoted strings' do
     inspect_source(cop,
@@ -99,5 +99,19 @@ describe RuboCop::Cop::Style::WordArray, :config do
   it 'auto-corrects an array of words and character constants' do
     new_source = autocorrect_source(cop, '[%{one}, %Q(two), ?\n, ?\t]')
     expect(new_source).to eq('%W(one two \n \t)')
+  end
+
+  context 'with a custom WordRegex configuration' do
+    let(:cop_config) { { 'MinSize' => 0, 'WordRegex' => /\A[\w@.]+\z/ } }
+
+    it 'registers an offense for arrays of email addresses' do
+      inspect_source(cop, ["['a@example.com', 'b@example.com']"])
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it 'auto-corrects an array of email addresses' do
+      new_source = autocorrect_source(cop, "['a@example.com', 'b@example.com']")
+      expect(new_source).to eq('%w(a@example.com b@example.com)')
+    end
   end
 end
