@@ -1218,7 +1218,7 @@ describe RuboCop::CLI, :isolated_environment do
                       'indentation.',
                       '   puts',
                       '^^^',
-                      'example3.rb:2:5: C: Use snake_case for methods.',
+                      'example3.rb:2:5: C: Use snake_case for method names.',
                       'def badName',
                       '    ^^^^^^^',
                       'example3.rb:3:3: C: Use a guard clause instead of ' \

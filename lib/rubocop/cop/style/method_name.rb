@@ -20,7 +20,7 @@ module RuboCop
         end
 
         def message(style)
-          format('Use %s for methods.', style)
+          format('Use %s for method names.', style)
         end
       end
     end
