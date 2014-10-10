@@ -28,9 +28,10 @@ module RuboCop
           receiver, _method_name, *_args = *node
           return unless receiver
 
+          lhs = left_hand_side(receiver)
           rhs = right_hand_side(node)
-          range = offending_range(node, receiver, rhs, style)
-          check(range, node, receiver, rhs)
+          range = offending_range(node, lhs, rhs, style)
+          check(range, node, lhs, rhs)
         end
 
         private
@@ -96,6 +97,17 @@ module RuboCop
           else
             'an expression' + (assignment?(node) ? ' in an assignment' : '')
           end
+        end
+
+        # In a chain of method calls, we regard the top send node as the base
+        # for indentation of all lines following the first. For example:
+        # a.
+        #   b c { block }.            <-- b is indented relative to a
+        #   d                         <-- d is indented relative to a
+        def left_hand_side(receiver)
+          lhs = receiver
+          lhs = lhs.parent while lhs.parent && lhs.parent.type == :send
+          lhs
         end
 
         def right_hand_side(send_node)
