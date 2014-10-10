@@ -7,6 +7,7 @@
 * [#1348](https://github.com/bbatsov/rubocop/issues/1348):  New cop `ElseAlignment` checks alignment of `else` and `elsif` keywords. ([@jonas054][])
 * [#1321](https://github.com/bbatsov/rubocop/issues/1321): New cop `MultilineOperationIndentation` checks indentation/alignment of binary operations if they span more than one line. ([@jonas054][])
 * [#1077](https://github.com/bbatsov/rubocop/issues/1077): New cop `Metrics/AbcSize` checks the ABC metric, based on assignments, branches, and conditions. ([@jonas054][], [@jfelchner][])
+* [#1352](https://github.com/bbatsov/rubocop/issues/1352): `WordArray` is now configurable with the `WordRegex` option. ([@bquorning][])
 
 ### Bugs fixed
 
