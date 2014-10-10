@@ -15,6 +15,24 @@ describe RuboCop::Cop::Style::MultilineOperationIndentation, :config do
       expect(cop.messages).to be_empty
     end
 
+    it 'accepts even indentation of consecutive lines in typical RSpec code' do
+      inspect_source(cop,
+                     ['expect { Foo.new }.',
+                      '  to change { Bar.count }.',
+                      '  from(1).to(2)'])
+      expect(cop.messages).to be_empty
+    end
+
+    it 'registers an offense for extra indentation of 3rd line in typical ' \
+       'RSpec code' do
+      inspect_source(cop,
+                     ['expect { Foo.new }.',
+                      '  to change { Bar.count }.',
+                      '      from(1).to(2)'])
+      expect(cop.messages).to eq(['Use 2 (not 6) spaces for indenting an ' \
+                                  'expression spanning multiple lines.'])
+    end
+
     it 'registers an offense for badly indented operands in ordinary ' \
        'statement' do
       inspect_source(cop,
