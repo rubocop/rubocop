@@ -75,7 +75,7 @@ module RuboCop
         attr_reader :files, :summary
 
         def initialize(files, summary)
-          @files = files
+          @files = files.sort_by(&:path)
           @summary = summary
         end
 
