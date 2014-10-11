@@ -19,10 +19,26 @@ describe RuboCop::Cop::Style::WordArray, :config do
     expect(cop.offenses.size).to eq(1)
   end
 
-  it 'registers an offense for arrays of unicode word characters' do
-    inspect_source(cop,
-                   ['["ВУЗ", "вуз", "中文网"]'])
-    expect(cop.offenses.size).to eq(1)
+  shared_examples 'unicode' do
+    it 'registers an offense for arrays of unicode word characters' do
+      inspect_source(cop,
+                     ['["ВУЗ", "вуз", "中文网"]'])
+      expect(cop.offenses.size).to eq(1)
+    end
+  end
+
+  include_examples 'unicode'
+
+  context 'when WordRegex has binary encoding' do
+    # It can happen on some systems with some ruby platforms/versions that the
+    # regular expression taken from a configuration file gets a different,
+    # possibly incompatible, encoding than the inspected source code.
+    let(:cop_config) do
+      re = '\A[\p{Word}]+\z'.force_encoding('ASCII-8BIT')
+      { 'MinSize' => 0, 'WordRegex' => Regexp.new(re) }
+    end
+
+    include_examples 'unicode'
   end
 
   it 'registers an offense for arrays with character constants' do

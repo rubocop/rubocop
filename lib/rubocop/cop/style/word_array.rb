@@ -45,7 +45,7 @@ module RuboCop
             next if source.start_with?('?') # %W(\r \n) can replace [?\r, ?\n]
 
             str_content = Util.strip_quotes(source)
-            return true unless str_content =~ word_regex
+            return true unless str_content =~ word_regex(str_content)
           end
 
           false
@@ -55,8 +55,11 @@ module RuboCop
           cop_config['MinSize']
         end
 
-        def word_regex
-          cop_config['WordRegex']
+        # Returns the regular expression from configuration with the same
+        # encoding as the given string.
+        def word_regex(str)
+          r = cop_config['WordRegex']
+          Regexp.new(r.source.force_encoding(str.encoding), r.options)
         end
 
         def autocorrect(node)
