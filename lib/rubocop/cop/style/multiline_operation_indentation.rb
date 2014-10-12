@@ -28,8 +28,7 @@ module RuboCop
           receiver, _method_name, *_args = *node
           return unless receiver
 
-          lhs = left_hand_side(receiver)
-          rhs = right_hand_side(node)
+          lhs, rhs = left_hand_side(receiver), right_hand_side(node)
           range = offending_range(node, lhs, rhs, style)
           check(range, node, lhs, rhs)
         end
@@ -137,13 +136,10 @@ module RuboCop
             next unless a.loc.respond_to?(:keyword)
 
             case a.type
-            when :if, :while, :until
-              condition, = *a
-              within?(node, condition)
-            when :for
-              _, collection, _ = *a
-              within?(node, collection)
+            when :if, :while, :until then condition, = *a
+            when :for                then _, collection, _ = *a
             end
+            within?(node, condition || collection) if condition || collection
           end
         end
 
@@ -153,8 +149,7 @@ module RuboCop
         end
 
         def assignment?(node)
-          node.each_ancestor { |a| return true if ASGN_NODES.include?(a.type) }
-          false
+          node.each_ancestor.find { |a| ASGN_NODES.include?(a.type) }
         end
 
         def not_for_this_cop?(node)
