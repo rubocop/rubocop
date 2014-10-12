@@ -24,18 +24,14 @@ module RuboCop
 
       def load_file(path)
         path = File.absolute_path(path)
-
-        # Psych can give an error when reading an empty file, so we use syck in
-        # Ruby versions where it's available. Also, the problem with empty
-        # files does not appear in Ruby 2 or in JRuby 1.9 mode.
-        if RUBY_VERSION < '2.0.0' && RUBY_PLATFORM != 'java'
-          original_yamler = YAML::ENGINE.yamler
-          YAML::ENGINE.yamler = 'syck'
-        end
-        hash = YAML.load_file(path) || {}
-        # Restore yamler for applications using RuboCop as a library.
-        YAML::ENGINE.yamler = original_yamler if original_yamler
-
+        yaml_code = IO.read(path)
+        # At one time, there was a problem with the psych YAML engine under
+        # Ruby 1.9.3. YAML.load_file would crash when reading empty .yml files
+        # or files that only contained comments and blank lines. This problem
+        # is not possible to reproduce now, but we want to avoid it in case
+        # it's still there. So we only load the YAML code if we find some real
+        # code in there.
+        hash = yaml_code =~ /^[A-Z]/i ? YAML.load(yaml_code) : {}
         puts "configuration from #{path}" if debug?
 
         resolve_inheritance(path, hash)
