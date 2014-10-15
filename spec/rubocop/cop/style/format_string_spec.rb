@@ -139,6 +139,18 @@ describe RuboCop::Cop::Style::FormatString, :config do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts format without arguments' do
+      inspect_source(cop,
+                     ['format'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts sprintf without arguments' do
+      inspect_source(cop,
+                     ['sprintf'])
+      expect(cop.offenses).to be_empty
+    end
+    
     it 'accepts String#%' do
       inspect_source(cop,
                      ['puts "%d" % 10'])

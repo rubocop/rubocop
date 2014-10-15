@@ -34,7 +34,7 @@ module RuboCop
           receiver, method_name, args = *node
 
           # we do an argument count check to reduce false positives
-          return false if args && args.children.size < 2
+          return false unless args && args.children.size >= 2
 
           # commands have no explicit receiver
           !receiver && method_name == name
