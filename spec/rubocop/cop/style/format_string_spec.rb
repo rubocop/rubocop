@@ -150,7 +150,7 @@ describe RuboCop::Cop::Style::FormatString, :config do
                      ['sprintf'])
       expect(cop.offenses).to be_empty
     end
-    
+
     it 'accepts String#%' do
       inspect_source(cop,
                      ['puts "%d" % 10'])
