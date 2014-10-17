@@ -16,6 +16,7 @@
 * [#1350](https://github.com/bbatsov/rubocop/issues/1350): Guard against `Blocks` cop introducing syntax errors in auto-correct. ([@jonas054][])
 * [#1374](https://github.com/bbatsov/rubocop/issues/1374): To eliminate interference, auto-correction is now done by one cop at a time, with saving and re-parsing inbetween. ([@jonas054][])
 * [#1388](https://github.com/bbatsov/rubocop/issues/1388): Fix a false positive in `FormatString`. ([@bbatsov][])
+* [#1389](https://github.com/bbatsov/rubocop/issues/1389): Make `--out` to create parent directories. ([@yous][])
 
 ## 0.26.1 (18/09/2014)
 
