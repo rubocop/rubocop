@@ -2,20 +2,6 @@
 
 require 'spec_helper'
 
-def registers_offense(options)
-  it "registers an offense for #{options[:for]}" do
-    inspect_source(cop, ['def method_name',
-                         Array(options[:code]),
-                         'end'])
-    expect(cop.messages)
-      .to eq(['Assignment Branch Condition size for method_name is too high.' +
-              format(' [%.2g/0]', options[:with_size])])
-    expect(cop.highlights).to eq(['def'])
-    expect(cop.config_to_allow_offenses).to eq('Max' =>
-                                               options[:with_size].ceil)
-  end
-end
-
 describe RuboCop::Cop::Metrics::AbcSize, :config do
   subject(:cop) { described_class.new(config) }
 
@@ -28,22 +14,41 @@ describe RuboCop::Cop::Metrics::AbcSize, :config do
       expect(cop.offenses).to be_empty
     end
 
-    registers_offense(for: 'an if modifier',
-                      with_size: 2.24,
-                      code: 'call_foo if some_condition') # 0 + 2*2 + 1*1
+    it 'registers an offense for an if modifier' do
+      inspect_source(cop, ['def method_name',
+                           '  call_foo if some_condition', # 0 + 2*2 + 1*1
+                           'end'])
+      expect(cop.messages)
+        .to eq(['Assignment Branch Condition size for method_name is too ' \
+                'high. [2.24/0]'])
+      expect(cop.highlights).to eq(['def'])
+      expect(cop.config_to_allow_offenses).to eq('Max' => 3)
+    end
 
-    registers_offense(for: 'an assignment of a local variable',
-                      with_size: 1,
-                      code: 'x = 1')
+    it 'registers an offense for an assignment of a local variable' do
+      inspect_source(cop, ['def method_name',
+                           '  x = 1',
+                           'end'])
+      expect(cop.messages)
+        .to eq(['Assignment Branch Condition size for method_name is too ' \
+                'high. [1/0]'])
+      expect(cop.config_to_allow_offenses).to eq('Max' => 1)
+    end
 
-    registers_offense(
-      for: 'complex content including A, B, and C scores',
-      with_size: 6.4, # square root of 1*1 + 5*5 + 2*2, rounded
-      code: ['my_options = Hash.new if 1 == 1 || 2 == 2', # 1, 3, 2
-             'my_options.each do |key, value|',           # 0, 1, 0
-             '  p key',                                   # 0, 1, 0
-             '  p value',                                 # 0, 1, 0
-             'end'])
+    it 'registers an offense for complex content including A, B, and C ' \
+       'scores' do
+      inspect_source(cop,
+                     ['def method_name',
+                      '  my_options = Hash.new if 1 == 1 || 2 == 2', # 1, 3, 2
+                      '  my_options.each do |key, value|',           # 0, 1, 0
+                      '    p key',                                   # 0, 1, 0
+                      '    p value',                                 # 0, 1, 0
+                      '  end',
+                      'end'])
+      expect(cop.messages)
+        .to eq(['Assignment Branch Condition size for method_name is too ' \
+                'high. [6.4/0]']) # square root of 1*1 + 5*5 + 2*2 => 6.4
+    end
   end
 
   context 'when Max is 2' do
@@ -66,6 +71,29 @@ describe RuboCop::Cop::Metrics::AbcSize, :config do
                            '  y = 1 if y == 1',
                            'end'])
       expect(cop.offenses).to be_empty
+    end
+  end
+
+  {
+    1.3     => '3.74/1.3',    # no more than 2 decimals reported
+    10.3    => '37.42/10.3',
+    100.321 => '374.2/100.3', # 4 significant digits, so only 1 decimal here
+    1000.3  => '3742/1000'
+  }.each do |max, presentation|
+    context "when Max is #{max}" do
+      let(:cop_config) { { 'Max' => max } }
+
+      it "reports size and max as #{presentation}" do
+        # Build an amount of code large enough to register an offense.
+        code = ['  x = Hash.new if 1 == 1 || 2 == 2'] * max
+
+        inspect_source(cop, ['def method_name',
+                             *code,
+                             'end'])
+        expect(cop.messages)
+          .to eq(['Assignment Branch Condition size for method_name is too ' \
+                  "high. [#{presentation}]"])
+      end
     end
   end
 end
