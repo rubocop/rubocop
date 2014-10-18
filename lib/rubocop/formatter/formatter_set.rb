@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'fileutils'
+
 module RuboCop
   module Formatter
     # This is a collection of formatters. A FormatterSet can hold multiple
@@ -37,7 +39,13 @@ module RuboCop
                             builtin_formatter_class(formatter_type)
                           end
 
-        output = output_path ? File.open(output_path, 'w') : $stdout
+        if output_path
+          dir_path = File.dirname(output_path)
+          FileUtils.mkdir_p(dir_path) unless File.exist?(dir_path)
+          output = File.open(output_path, 'w')
+        else
+          output = $stdout
+        end
 
         self << formatter_class.new(output)
       end
