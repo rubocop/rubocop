@@ -17,7 +17,7 @@ describe RuboCop::Cop::Style::NonNilCheck, :config do
       expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(['!='])
       expect(cop.messages)
-        .to eq(['Explicit non-nil checks are usually redundant.'])
+        .to eq(['Prefer `!expression.nil?` over `expression != nil`.'])
     end
 
     it 'does not register an offense for != 0' do
@@ -93,6 +93,8 @@ describe RuboCop::Cop::Style::NonNilCheck, :config do
     it 'registers an offense for `!x.nil?`' do
       inspect_source(cop, '!x.nil?')
       expect(cop.offenses.size).to eq(1)
+      expect(cop.messages)
+        .to eq(['Explicit non-nil checks are usually redundant.'])
       expect(cop.highlights).to eq(['!x.nil?'])
     end
 

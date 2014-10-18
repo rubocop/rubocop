@@ -25,7 +25,6 @@ module RuboCop
       #  end
       class NonNilCheck < Cop
         include OnMethod
-        MSG = 'Explicit non-nil checks are usually redundant.'
 
         NIL_NODE = s(:nil)
 
@@ -41,6 +40,15 @@ module RuboCop
         end
 
         private
+
+        def message(node)
+          _receiver, method, _args = *node
+          if method == :!=
+            'Prefer `!expression.nil?` over `expression != nil`.'
+          else
+            'Explicit non-nil checks are usually redundant.'
+          end
+        end
 
         def include_semantic_changes?
           cop_config['IncludeSemanticChanges']
