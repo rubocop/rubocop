@@ -397,14 +397,14 @@ describe RuboCop::CLI, :isolated_environment do
         create_file('example.rb',
                     ['# encoding: utf-8',
                      'def primes limit',
-                     '  1.upto(limit).find_all { |i| is_prime[i] }',
+                     '  1.upto(limit).select { |i| i.even? }',
                      'end'])
         expect(cli.run(%w(-D --auto-correct))).to eq(1)
         expect($stderr.string).to eq('')
         expect(IO.read('example.rb'))
           .to eq(['# encoding: utf-8',
                   'def primes(limit)',
-                  '  1.upto(limit).select { |i| is_prime[i] }',
+                  '  1.upto(limit).select(&:even?)',
                   'end',
                   ''].join("\n"))
         expect($stdout.string)
@@ -418,10 +418,10 @@ describe RuboCop::CLI, :isolated_environment do
                   'Use def with parentheses when there are parameters.',
                   'def primes limit',
                   '           ^^^^^',
-                  'example.rb:3:17: C: [Corrected] Style/CollectionMethods: ' \
-                  'Prefer select over find_all.',
-                  '  1.upto(limit).find_all { |i| is_prime[i] }',
-                  '                ^^^^^^^^',
+                  'example.rb:3:3: C: [Corrected] Style/SymbolProc: ' \
+                  'Pass &:even? as an argument to select instead of a block.',
+                  '  1.upto(limit).select { |i| i.even? }',
+                  '  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',
                   '',
                   '1 file inspected, 2 offenses detected, 2 offenses ' \
                   'corrected',
@@ -1960,7 +1960,13 @@ describe RuboCop::CLI, :isolated_environment do
                   ['Style/CollectionMethods:',
                    '  PreferredMethods:',
                    '    select: find_all'])
-      cli.run(['--format', 'simple', '-c', 'rubocop.yml', 'example1.rb'])
+      cli.run(['--format',
+               'simple',
+               '-c',
+               'rubocop.yml',
+               '--only',
+               'CollectionMethods',
+               'example1.rb'])
       expect($stdout.string)
         .to eq(['== example1.rb ==',
                 'C:  2:  5: Prefer find_all over select.',

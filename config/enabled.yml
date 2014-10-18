@@ -128,11 +128,6 @@ Style/ClassVars:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-class-vars'
   Enabled: true
 
-Style/CollectionMethods:
-  Description: 'Preferred collection methods.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#map-fine-select-reduce-size'
-  Enabled: true
-
 Style/ColonMethodCall:
   Description: 'Do not use :: for method call.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#double-colons'

@@ -10,6 +10,10 @@
 * [#1352](https://github.com/bbatsov/rubocop/issues/1352): `WordArray` is now configurable with the `WordRegex` option. ([@bquorning][])
 * [#1181](https://github.com/bbatsov/rubocop/issues/1181): New cop `Style/StringLiteralsInInterpolation` checks quotes inside interpolated expressions in strings. ([@jonas054][])
 
+### Changes
+
+* [#1084](https://github.com/bbatsov/rubocop/issues/1084): Disabled `Style/CollectionMethods` by default. ([@bbatsov][])
+
 ### Bugs fixed
 
 * `AlignHash` no longer skips multiline hashes that contain some elements on the same line. ([@mvz][])
