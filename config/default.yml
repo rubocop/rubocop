@@ -398,6 +398,12 @@ Style/StringLiterals:
     - single_quotes
     - double_quotes
 
+Style/StringLiteralsInInterpolation:
+  EnforcedStyle: single_quotes
+  SupportedStyles:
+    - single_quotes
+    - double_quotes
+
 Style/SpaceAroundEqualsInParameterDefault:
   EnforcedStyle: space
   SupportedStyles:
