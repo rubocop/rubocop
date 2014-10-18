@@ -3,12 +3,12 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for uses of unidiomatic method names
+      # This cop enforces the use of consistent method names
       # from the Enumerable module.
       #
-      # The current definition of the check is flawed and should be
-      # enhanced by check for by blocks & procs as arguments of the
-      # methods.
+      # Unfortunately we cannot actually know if a method is from
+      # Enumerable or not (static analysis limitation), so this cop
+      # can yield some false positives.
       class CollectionMethods < Cop
         MSG = 'Prefer `%s` over `%s`.'
 
