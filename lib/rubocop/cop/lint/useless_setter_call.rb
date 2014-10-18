@@ -13,7 +13,7 @@ module RuboCop
       #    x.attr = 5
       #  end
       class UselessSetterCall < Cop
-        include OnMethod
+        include OnMethodDef
 
         MSG = 'Useless setter call to local variable `%s`.'
         ASSIGNMENT_TYPES = [:lvasgn, :ivasgn, :cvasgn, :gvasgn].freeze
@@ -27,7 +27,7 @@ module RuboCop
 
         private
 
-        def on_method(_node, _method_name, _args, body)
+        def on_method_def(_node, _method_name, _args, body)
           return unless body
 
           if body.type == :begin

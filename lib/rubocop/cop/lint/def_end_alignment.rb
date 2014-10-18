@@ -17,12 +17,12 @@ module RuboCop
       #   private def foo
       #   end
       class DefEndAlignment < Cop
-        include OnMethod
+        include OnMethodDef
         include EndKeywordAlignment
 
         MSG = '`end` at %d, %d is not aligned with `%s` at %d, %d'
 
-        def on_method(node, _method_name, _args, _body)
+        def on_method_def(node, _method_name, _args, _body)
           check_offset_of_node(node)
         end
 

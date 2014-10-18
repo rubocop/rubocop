@@ -24,7 +24,7 @@ module RuboCop
       #    !current_user.nil?
       #  end
       class NonNilCheck < Cop
-        include OnMethod
+        include OnMethodDef
 
         NIL_NODE = s(:nil)
 
@@ -54,7 +54,7 @@ module RuboCop
           cop_config['IncludeSemanticChanges']
         end
 
-        def on_method(_node, name, _args, body)
+        def on_method_def(_node, name, _args, body)
           # only predicate methods are handled differently
           return unless name.to_s.end_with?('?')
           return unless body

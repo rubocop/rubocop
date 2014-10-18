@@ -7,12 +7,12 @@ module RuboCop
       # Comment lines can optionally be ignored.
       # The maximum allowed length is configurable.
       class MethodLength < Cop
-        include OnMethod
+        include OnMethodDef
         include CodeLength
 
         private
 
-        def on_method(node, _method_name, _args, _body)
+        def on_method_def(node, _method_name, _args, _body)
           check_code_length(node)
         end
 

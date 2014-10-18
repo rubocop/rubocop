@@ -18,11 +18,11 @@ module RuboCop
       #   # good
       #   def value? ...
       class PredicateName < Cop
-        include OnMethod
+        include OnMethodDef
 
         private
 
-        def on_method(node, method_name, _args, _body)
+        def on_method_def(node, method_name, _args, _body)
           predicate_prefices.each do |prefix|
             method_name = method_name.to_s
             next unless method_name.start_with?(prefix)
