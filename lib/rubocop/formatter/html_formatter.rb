@@ -102,10 +102,10 @@ module RuboCop
           source_line = location.source_line
 
           source_line[0...column_range.begin] +
-          "<span class=\"highlight #{offense.severity}\">" +
-          source_line[column_range] +
-          '</span>' +
-          source_line[column_range.end..-1]
+            "<span class=\"highlight #{offense.severity}\">" +
+            source_line[column_range] +
+            '</span>' +
+            source_line[column_range.end..-1]
         end
 
         def base64_encoded_logo_image
