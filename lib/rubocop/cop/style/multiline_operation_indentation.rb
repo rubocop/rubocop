@@ -139,13 +139,11 @@ module RuboCop
             when :if, :while, :until then condition, = *a
             when :for                then _, collection, _ = *a
             end
-            within?(node, condition || collection) if condition || collection
-          end
-        end
 
-        def within?(inner, outer)
-          o, i = outer.loc.expression, inner.loc.expression
-          i.begin_pos >= o.begin_pos && i.end_pos <= o.end_pos
+            if condition || collection
+              within_node?(node, condition || collection)
+            end
+          end
         end
 
         def assignment?(node)

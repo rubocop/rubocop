@@ -61,6 +61,7 @@ require 'rubocop/cop/mixin/space_after_punctuation'
 require 'rubocop/cop/mixin/space_before_punctuation'
 require 'rubocop/cop/mixin/statement_modifier'
 require 'rubocop/cop/mixin/string_help'
+require 'rubocop/cop/mixin/string_literals_help'
 require 'rubocop/cop/mixin/unused_argument'
 
 require 'rubocop/cop/lint/ambiguous_operator'

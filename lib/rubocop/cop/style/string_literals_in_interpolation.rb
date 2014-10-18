@@ -6,7 +6,7 @@ module RuboCop
       # Checks if uses of quotes match the configured preference.
       class StringLiteralsInInterpolation < Cop
         include ConfigurableEnforcedStyle
-        include StringHelp
+        include StringLiteralsHelp
 
         private
 
@@ -25,18 +25,7 @@ module RuboCop
             a.type == :dstr && within_node?(node, a)
           end
 
-          src = node.loc.expression.source
-          return false if src.start_with?('%') || src.start_with?('?')
-          if style == :single_quotes
-            src !~ /'/ && src !~ StringHelp::ESCAPED_CHAR_REGEXP
-          else
-            src !~ /" | \\/x
-          end
-        end
-
-        def within_node?(inner, outer)
-          o, i = outer.loc.expression, inner.loc.expression
-          i.begin_pos >= o.begin_pos && i.end_pos <= o.end_pos
+          wrong_quotes?(node, style)
         end
 
         def autocorrect(node)
