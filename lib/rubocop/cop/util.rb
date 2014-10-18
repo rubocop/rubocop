@@ -158,6 +158,11 @@ module RuboCop
         source_before_end =~ /\n\s*\Z/
       end
 
+      def within_node?(inner, outer)
+        o, i = outer.loc.expression, inner.loc.expression
+        i.begin_pos >= o.begin_pos && i.end_pos <= o.end_pos
+      end
+
       # Returns, for example, a bare `if` node if the given node is an `if`
       # with calls chained to the end of it.
       def first_part_of_call_chain(node)

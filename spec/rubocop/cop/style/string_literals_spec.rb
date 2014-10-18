@@ -95,10 +95,10 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
       expect(cop.offenses).to be_empty
     end
 
-    it 'detects unneeded double quotes within embedded expression' do
+    it 'accepts double quotes within embedded expression' do
       src = ['"#{"A"}"']
       inspect_source(cop, src)
-      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses).to be_empty
     end
 
     it 'detects unneeded double quotes within concatenated string' do
