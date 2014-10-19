@@ -13,12 +13,12 @@ module RuboCop
       #   # good
       #   def func(x) ... end
       class SpaceAfterMethodName < Cop
-        include OnMethod
+        include OnMethodDef
 
         MSG = 'Never put a space between a method name and the opening ' \
               'parenthesis.'
 
-        def on_method(_node, _method_name, args, _body)
+        def on_method_def(_node, _method_name, args, _body)
           return unless args.loc.begin && args.loc.begin.is?('(')
           expr = args.loc.expression
           pos_before_left_paren = Parser::Source::Range.new(expr.source_buffer,

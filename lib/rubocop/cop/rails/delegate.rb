@@ -29,13 +29,13 @@ module RuboCop
       #     foo.bar
       #   end
       class Delegate < Cop
-        include OnMethod
+        include OnMethodDef
 
         MSG = 'Use `delegate` to define delegations.'
 
         private
 
-        def on_method(node, method_name, args, body)
+        def on_method_def(node, method_name, args, body)
           return unless trivial_delegate?(method_name, args, body)
           return if private_or_protected_delegation(node)
           add_offense(node, :keyword, MSG)

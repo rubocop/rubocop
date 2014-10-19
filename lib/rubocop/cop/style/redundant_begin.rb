@@ -25,11 +25,11 @@ module RuboCop
       #     something
       #   end
       class RedundantBegin < Cop
-        include OnMethod
+        include OnMethodDef
 
         MSG = 'Redundant `begin` block detected.'
 
-        def on_method(_node, _method_name, _args, body)
+        def on_method_def(_node, _method_name, _args, body)
           return unless body && body.type == :kwbegin
 
           add_offense(body, :begin)

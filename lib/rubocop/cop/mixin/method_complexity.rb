@@ -4,12 +4,12 @@ module RuboCop
   module Cop
     # This module handles measurement and reporting of complexity in methods.
     module MethodComplexity
-      include OnMethod
+      include OnMethodDef
       include ConfigurableMax
 
       private
 
-      def on_method(node, method_name, _args, _body)
+      def on_method_def(node, method_name, _args, _body)
         max = cop_config['Max']
         complexity = complexity(node)
         return unless complexity > max

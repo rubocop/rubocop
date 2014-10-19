@@ -24,40 +24,37 @@ module RuboCop
       #    !current_user.nil?
       #  end
       class NonNilCheck < Cop
-        MSG = 'Explicit non-nil checks are usually redundant.'
+        include OnMethodDef
 
         NIL_NODE = s(:nil)
-
-        def on_def(node)
-          method_name, _args, body = *node
-          process_method(method_name, body)
-        end
-
-        def on_defs(node)
-          _scope, method_name, _args, body = *node
-          process_method(method_name, body)
-        end
 
         def on_send(node)
           return if ignored_node?(node)
           receiver, method, args = *node
 
-          return unless [:!=, :!].include?(method)
-
           if method == :!=
             add_offense(node, :selector) if args == NIL_NODE
-          elsif include_semantic_changes? && method == :!
+          elsif method == :! && include_semantic_changes?
             add_offense(node, :expression) if nil_check?(receiver)
           end
         end
 
         private
 
+        def message(node)
+          _receiver, method, _args = *node
+          if method == :!=
+            'Prefer `!expression.nil?` over `expression != nil`.'
+          else
+            'Explicit non-nil checks are usually redundant.'
+          end
+        end
+
         def include_semantic_changes?
           cop_config['IncludeSemanticChanges']
         end
 
-        def process_method(name, body)
+        def on_method_def(_node, name, _args, body)
           # only predicate methods are handled differently
           return unless name.to_s.end_with?('?')
           return unless body

@@ -5,7 +5,7 @@ module RuboCop
     module Style
       # This cop checks for uses of rescue in its modifier form.
       class RescueModifier < Cop
-        include OnMethod
+        include OnMethodDef
 
         MSG = 'Avoid using `rescue` in its modifier form.'
 
@@ -20,7 +20,7 @@ module RuboCop
           check(body)
         end
 
-        def on_method(_node, _method_name, _args, body)
+        def on_method_def(_node, _method_name, _args, body)
           check(body)
         end
 
