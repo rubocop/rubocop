@@ -31,7 +31,7 @@ module RuboCop
             lineno = target_method_lineno(node)
             line = node.loc.expression.source_buffer.source_line(lineno)
             indentation_of_line = /\S.*/.match(line).begin(0)
-            indentation_of_line + 2
+            indentation_of_line + configured_indentation_width
           else
             args.first.loc.column
           end

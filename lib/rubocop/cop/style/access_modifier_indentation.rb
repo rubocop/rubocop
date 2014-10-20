@@ -73,13 +73,13 @@ module RuboCop
         end
 
         def expected_indent_offset
-          style == :outdent ? 0 : IndentationWidth::CORRECT_INDENTATION
+          style == :outdent ? 0 : configured_indentation_width
         end
 
         # An offset that is not expected, but correct if the configuration is
         # changed.
         def unexpected_indent_offset
-          IndentationWidth::CORRECT_INDENTATION - expected_indent_offset
+          configured_indentation_width - expected_indent_offset
         end
       end
     end

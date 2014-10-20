@@ -95,7 +95,7 @@ module RuboCop
         def check_first_pair(first_pair, left_brace, left_parenthesis, offset)
           column = first_pair.loc.expression.column
           expected_column = base_column(left_brace, left_parenthesis) +
-                            IndentationWidth::CORRECT_INDENTATION + offset
+                            configured_indentation_width + offset
           @column_delta = expected_column - column
 
           if @column_delta == 0
@@ -146,13 +146,12 @@ module RuboCop
                                      end
           end
 
-          unexpected_base_column + IndentationWidth::CORRECT_INDENTATION +
-            offset
+          unexpected_base_column + configured_indentation_width + offset
         end
 
         def message(base_description)
           format('Use %d spaces for indentation in a hash, relative to %s.',
-                 IndentationWidth::CORRECT_INDENTATION, base_description)
+                 configured_indentation_width, base_description)
         end
       end
     end

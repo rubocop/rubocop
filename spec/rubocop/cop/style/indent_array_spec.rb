@@ -3,7 +3,12 @@
 require 'spec_helper'
 
 describe RuboCop::Cop::Style::IndentArray do
-  subject(:cop) { described_class.new }
+  subject(:cop) { described_class.new(config) }
+  let(:config) do
+    RuboCop::Config
+      .new('Style/IndentationWidth' => { 'Width' => indentation_width })
+  end
+  let(:indentation_width) { 2 }
 
   it 'accepts multi-assignments' do
     inspect_source(cop, 'a, b = b, a')

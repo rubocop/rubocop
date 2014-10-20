@@ -258,6 +258,10 @@ Style/HashSyntax:
 Style/IfUnlessModifier:
   MaxLineLength: 80
 
+Style/IndentationWidth:
+  # Number of spaces for each indentation level.
+  Width: 2
+
 # Checks the indentation of the first key in a hash literal.
 Style/IndentHash:
   # The value `special_inside_parentheses` means that hash literals with braces

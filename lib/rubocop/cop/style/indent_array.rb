@@ -28,13 +28,13 @@ module RuboCop
           return if expr.line == left_bracket.line
 
           base_column = left_bracket.source_line =~ /\S/
-          expected_column = base_column + IndentationWidth::CORRECT_INDENTATION
+          expected_column = base_column + configured_indentation_width
           @column_delta = expected_column - expr.column
           return if @column_delta == 0
 
           msg = format('Use %d spaces for indentation in an array, relative ' \
                        'to the start of the line where the left bracket is.',
-                       IndentationWidth::CORRECT_INDENTATION)
+                       configured_indentation_width)
           add_offense(first_pair, :expression, msg)
         end
 

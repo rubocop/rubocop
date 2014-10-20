@@ -19,8 +19,6 @@ module RuboCop
         include IfNode
         include AccessModifierNode
 
-        CORRECT_INDENTATION = 2
-
         def on_rescue(node)
           _begin_node, *rescue_nodes, else_node = *node
           rescue_nodes.each do |rescue_node|
@@ -188,7 +186,7 @@ module RuboCop
           return unless body_node.loc.column == first_char_pos_on_line
 
           indentation = body_node.loc.column - base_loc.column
-          @column_delta = CORRECT_INDENTATION - indentation
+          @column_delta = configured_indentation_width - indentation
           return if @column_delta == 0
 
           # This cop only auto-corrects the first statement in a def body, for
@@ -204,12 +202,16 @@ module RuboCop
 
           r = Parser::Source::Range.new(expr.source_buffer, pos.begin, pos.end)
           add_offense(body_node, r,
-                      format("Use #{CORRECT_INDENTATION} (not %d) spaces " \
-                             'for indentation.', indentation))
+                      format("Use #{configured_indentation_width} (not %d) " \
+                             'spaces for indentation.', indentation))
         end
 
         def starts_with_access_modifier?(body_node)
           body_node.type == :begin && modifier_node?(body_node.children.first)
+        end
+
+        def configured_indentation_width
+          cop_config['Width']
         end
       end
     end

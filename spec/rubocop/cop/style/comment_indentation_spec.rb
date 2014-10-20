@@ -3,7 +3,12 @@
 require 'spec_helper'
 
 describe RuboCop::Cop::Style::CommentIndentation do
-  subject(:cop) { described_class.new }
+  subject(:cop) { described_class.new(config) }
+  let(:config) do
+    RuboCop::Config
+      .new('Style/IndentationWidth' => { 'Width' => indentation_width })
+  end
+  let(:indentation_width) { 2 }
 
   context 'on outer level' do
     it 'accepts a correctly indented comment' do

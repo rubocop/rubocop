@@ -7,7 +7,8 @@ describe RuboCop::Cop::Style::CaseIndentation do
   let(:config) do
     merged = RuboCop::ConfigLoader
              .default_configuration['Style/CaseIndentation'].merge(cop_config)
-    RuboCop::Config.new('Style/CaseIndentation' => merged)
+    RuboCop::Config.new('Style/CaseIndentation' => merged,
+                        'Style/IndentationWidth' => { 'Width' => 2 })
   end
 
   context 'with IndentWhenRelativeTo: case' do

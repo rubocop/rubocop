@@ -2,8 +2,15 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::AccessModifierIndentation, :config do
+describe RuboCop::Cop::Style::AccessModifierIndentation do
   subject(:cop) { described_class.new(config) }
+  let(:config) do
+    c = cop_config.merge('SupportedStyles' => %w(indent outdent))
+    RuboCop::Config
+      .new('Style/AccessModifierIndentation' => c,
+           'Style/IndentationWidth' => { 'Width' => indentation_width })
+  end
+  let(:indentation_width) { 2 }
 
   context 'when EnforcedStyle is set to indent' do
     let(:cop_config) { { 'EnforcedStyle' => 'indent' } }
@@ -215,6 +222,21 @@ describe RuboCop::Cop::Style::AccessModifierIndentation, :config do
                                '',
                                '  def test; end',
                                'end'].join("\n"))
+    end
+
+    context 'when 4 spaces per indent level are used' do
+      let(:indentation_width) { 4 }
+
+      it 'accepts properly indented private' do
+        inspect_source(cop,
+                       ['class Test',
+                        '',
+                        '    private',
+                        '',
+                        '    def test; end',
+                        'end'])
+        expect(cop.offenses).to be_empty
+      end
     end
   end
 

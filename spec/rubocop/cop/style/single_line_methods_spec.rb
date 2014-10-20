@@ -2,8 +2,12 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::SingleLineMethods, :config do
+describe RuboCop::Cop::Style::SingleLineMethods do
   subject(:cop) { described_class.new(config) }
+  let(:config) do
+    RuboCop::Config.new('Style/SingleLineMethods' => cop_config,
+                        'Style/IndentationWidth' => { 'Width' => 2 })
+  end
   let(:cop_config) { { 'AllowIfMethodIsEmpty' => true } }
 
   it 'registers an offense for a single-line method' do

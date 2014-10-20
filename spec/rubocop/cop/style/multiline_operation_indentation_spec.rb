@@ -2,8 +2,17 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::MultilineOperationIndentation, :config do
+describe RuboCop::Cop::Style::MultilineOperationIndentation do
   subject(:cop) { described_class.new(config) }
+  let(:config) do
+    merged = RuboCop::ConfigLoader
+             .default_configuration['Style/MultilineOperationIndentation']
+             .merge(cop_config)
+    RuboCop::Config
+      .new('Style/MultilineOperationIndentation' => merged,
+           'Style/IndentationWidth' => { 'Width' => indentation_width })
+  end
+  let(:indentation_width) { 2 }
 
   shared_examples 'common' do
     it 'accepts indented operands in ordinary statement' do

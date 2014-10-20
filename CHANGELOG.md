@@ -9,6 +9,7 @@
 * [#1077](https://github.com/bbatsov/rubocop/issues/1077): New cop `Metrics/AbcSize` checks the ABC metric, based on assignments, branches, and conditions. ([@jonas054][], [@jfelchner][])
 * [#1352](https://github.com/bbatsov/rubocop/issues/1352): `WordArray` is now configurable with the `WordRegex` option. ([@bquorning][])
 * [#1181](https://github.com/bbatsov/rubocop/issues/1181): New cop `Style/StringLiteralsInInterpolation` checks quotes inside interpolated expressions in strings. ([@jonas054][])
+* [#872](https://github.com/bbatsov/rubocop/issues/872): `Style/IndentationWidth` is now configurable with the `Width` option. ([@jonas054][])
 
 ### Changes
 
