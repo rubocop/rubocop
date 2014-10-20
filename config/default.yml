@@ -13,6 +13,7 @@ AllCops:
     - '**/*.podspec'
     - '**/*.jbuilder'
     - '**/*.rake'
+    - '**/*.opal'
     - '**/Gemfile'
     - '**/Rakefile'
     - '**/Capfile'
