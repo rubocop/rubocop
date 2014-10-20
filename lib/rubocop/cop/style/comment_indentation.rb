@@ -25,8 +25,8 @@ module RuboCop
             next if @column_delta == 0
 
             if two_alternatives?(next_line)
-              correct_comment_indentation +=
-                IndentationWidth::CORRECT_INDENTATION # Try the other
+              # Try the other
+              correct_comment_indentation += configured_indentation_width
               # We keep @column_delta unchanged so that autocorrect changes to
               # the preferred style of aligning the comment with the keyword.
             end
@@ -44,7 +44,7 @@ module RuboCop
 
           indentation_of_next_line = next_line =~ /\S/
           indentation_of_next_line + if less_indented?(next_line)
-                                       IndentationWidth::CORRECT_INDENTATION
+                                       configured_indentation_width
                                      else
                                        0
                                      end

@@ -2,8 +2,15 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::AlignParameters, :config do
+describe RuboCop::Cop::Style::AlignParameters do
   subject(:cop) { described_class.new(config) }
+  let(:config) do
+    RuboCop::Config.new('Style/AlignParameters' => cop_config,
+                        'Style/IndentationWidth' => {
+                          'Width' => indentation_width
+                        })
+  end
+  let(:indentation_width) { 2 }
 
   context 'aligned with first parameter' do
     let(:cop_config) do
@@ -382,38 +389,42 @@ describe RuboCop::Cop::Style::AlignParameters, :config do
     end
 
     context 'assigned methods' do
-      it 'accepts the first parameter being on a new row' do
-        inspect_source(cop, [' assigned_value = match(',
-                             '   a,',
-                             '   b,',
-                             '   c',
-                             ' )'])
-        expect(cop.offenses).to be_empty
-      end
+      context 'with IndentationWidth:Width set to 4' do
+        let(:indentation_width) { 4 }
 
-      it 'accepts the first parameter being on method row' do
-        inspect_source(cop, [' assigned_value = match(a,',
-                             '   b,',
-                             '   c',
-                             ' )'])
-        expect(cop.offenses).to be_empty
-      end
+        it 'accepts the first parameter being on a new row' do
+          inspect_source(cop, [' assigned_value = match(',
+                               '     a,',
+                               '     b,',
+                               '     c',
+                               ' )'])
+          expect(cop.offenses).to be_empty
+        end
 
-      it 'autocorrects even when first argument is in wrong position' do
-        original_source = [' assigned_value = match(',
-                           '         a,',
-                           '            b,',
-                           '                    c',
-                           ' )']
+        it 'accepts the first parameter being on method row' do
+          inspect_source(cop, [' assigned_value = match(a,',
+                               '     b,',
+                               '     c',
+                               ' )'])
+          expect(cop.offenses).to be_empty
+        end
 
-        correct_source = [' assigned_value = match(',
-                          '   a,',
-                          '   b,',
-                          '   c',
-                          ' )']
+        it 'autocorrects even when first argument is in wrong position' do
+          original_source = [' assigned_value = match(',
+                             '         a,',
+                             '            b,',
+                             '                    c',
+                             ' )']
 
-        expect(autocorrect_source(cop, original_source))
-          .to eq(correct_source.join("\n"))
+          correct_source = [' assigned_value = match(',
+                            '     a,',
+                            '     b,',
+                            '     c',
+                            ' )']
+
+          expect(autocorrect_source(cop, original_source))
+            .to eq(correct_source.join("\n"))
+        end
       end
     end
   end

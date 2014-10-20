@@ -27,7 +27,7 @@ module RuboCop
         def check_when(when_node, case_node, base, indent, base_column)
           pos = when_node.loc.keyword
           expected_column = base_column +
-                            (indent ? IndentationWidth::CORRECT_INDENTATION : 0)
+                            (indent ? configured_indentation_width : 0)
           if pos.column == expected_column
             correct_style_detected
           else
@@ -44,6 +44,10 @@ module RuboCop
               end
             end
           end
+        end
+
+        def configured_indentation_width
+          config.for_cop('IndentationWidth')['Width']
         end
 
         def parameter_name

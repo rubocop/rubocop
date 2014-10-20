@@ -6,6 +6,10 @@ module RuboCop
     # the left or to the right, amount being determined by the instance
     # variable @column_delta.
     module AutocorrectAlignment
+      def configured_indentation_width
+        config.for_cop('IndentationWidth')['Width']
+      end
+
       def check_alignment(items, base_column = nil)
         base_column ||= items.first.loc.column unless items.empty?
         prev_line = -1

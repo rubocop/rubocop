@@ -51,9 +51,12 @@ module RuboCop
           corrector.insert_before(
             range,
             "\n" + ' ' * (node.loc.keyword.column +
-                          indent_steps *
-                          IndentationWidth::CORRECT_INDENTATION)
+                          indent_steps * configured_indentation_width)
           )
+        end
+
+        def configured_indentation_width
+          config.for_cop('IndentationWidth')['Width']
         end
 
         def move_comment(eol_comment, node, corrector)

@@ -123,7 +123,7 @@ module RuboCop
 
         def correct_indentation(node)
           multiplier = kw_node_with_special_indentation(node) ? 2 : 1
-          IndentationWidth::CORRECT_INDENTATION * multiplier
+          configured_indentation_width * multiplier
         end
 
         def should_align?(node, given_style)
