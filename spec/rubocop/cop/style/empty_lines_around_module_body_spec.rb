@@ -15,7 +15,7 @@ describe RuboCop::Cop::Style::EmptyLinesAroundModuleBody, :config do
                       '  do_something',
                       'end'])
       expect(cop.messages)
-        .to eq(['Extra empty line detected at body beginning.'])
+        .to eq(['Extra empty line detected at module body beginning.'])
     end
 
     it 'registers an offense for module body ending with a blank' do
@@ -24,7 +24,8 @@ describe RuboCop::Cop::Style::EmptyLinesAroundModuleBody, :config do
                       '  do_something',
                       '',
                       'end'])
-      expect(cop.messages).to eq(['Extra empty line detected at body end.'])
+      expect(cop.messages)
+        .to eq(['Extra empty line detected at module body end.'])
     end
 
     it 'autocorrects beginning and end' do
@@ -49,8 +50,9 @@ describe RuboCop::Cop::Style::EmptyLinesAroundModuleBody, :config do
                      ['module SomeModule',
                       '  do_something',
                       'end'])
-      expect(cop.messages).to eq(['Empty line missing at body beginning.',
-                                  'Empty line missing at body end.'])
+      expect(cop.messages)
+        .to eq(['Empty line missing at module body beginning.',
+                'Empty line missing at module body end.'])
     end
 
     it 'registers an offense for module body not ending with a blank' do
@@ -59,7 +61,7 @@ describe RuboCop::Cop::Style::EmptyLinesAroundModuleBody, :config do
                       '',
                       '  do_something',
                       'end'])
-      expect(cop.messages).to eq(['Empty line missing at body end.'])
+      expect(cop.messages).to eq(['Empty line missing at module body end.'])
     end
 
     it 'autocorrects beginning and end' do

@@ -19,6 +19,8 @@ module RuboCop
       class EmptyLinesAroundModuleBody < Cop
         include EmptyLinesAroundBody
 
+        KIND = 'module'
+
         def on_module(node)
           check(node)
         end

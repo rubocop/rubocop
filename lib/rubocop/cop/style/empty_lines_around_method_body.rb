@@ -17,6 +17,8 @@ module RuboCop
         include EmptyLinesAroundBody
         include OnMethodDef
 
+        KIND = 'method'
+
         private
 
         def on_method_def(node, _method_name, _args, _body)

@@ -12,7 +12,7 @@ describe RuboCop::Cop::Style::EmptyLinesAroundMethodBody do
                     '  do_something',
                     'end'])
     expect(cop.messages)
-      .to eq(['Extra empty line detected at body beginning.'])
+      .to eq(['Extra empty line detected at method body beginning.'])
   end
 
   # The cop only registers an offense if the extra line is completely emtpy. If
@@ -46,7 +46,7 @@ describe RuboCop::Cop::Style::EmptyLinesAroundMethodBody do
                     '  do_something',
                     'end'])
     expect(cop.messages)
-      .to eq(['Extra empty line detected at body beginning.'])
+      .to eq(['Extra empty line detected at method body beginning.'])
   end
 
   it 'autocorrects class method body starting with a blank' do
@@ -66,7 +66,8 @@ describe RuboCop::Cop::Style::EmptyLinesAroundMethodBody do
                     '  do_something',
                     '',
                     'end'])
-    expect(cop.messages).to eq(['Extra empty line detected at body end.'])
+    expect(cop.messages)
+      .to eq(['Extra empty line detected at method body end.'])
   end
 
   it 'registers an offense for class method body ending with a blank' do
@@ -75,7 +76,8 @@ describe RuboCop::Cop::Style::EmptyLinesAroundMethodBody do
                     '  do_something',
                     '',
                     'end'])
-    expect(cop.messages).to eq(['Extra empty line detected at body end.'])
+    expect(cop.messages)
+      .to eq(['Extra empty line detected at method body end.'])
   end
 
   it 'is not fooled by single line methods' do

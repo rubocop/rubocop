@@ -384,7 +384,7 @@ describe RuboCop::CLI, :isolated_environment do
                   'Offenses:',
                   '',
                   'example.rb:4:1: C: [Corrected] Extra empty line detected ' \
-                  'at body beginning.',
+                  'at class body beginning.',
                   'example.rb:4:1: C: [Corrected] Trailing whitespace ' \
                   'detected.',
                   '',
