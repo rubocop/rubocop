@@ -11,6 +11,7 @@
 * [#1181](https://github.com/bbatsov/rubocop/issues/1181): New cop `Style/StringLiteralsInInterpolation` checks quotes inside interpolated expressions in strings. ([@jonas054][])
 * [#872](https://github.com/bbatsov/rubocop/issues/872): `Style/IndentationWidth` is now configurable with the `Width` option. ([@jonas054][])
 * [#1396](https://github.com/bbatsov/rubocop/issues/1396): Include `.opal` files by default. ([@bbatsov][])
+* [#771](https://github.com/bbatsov/rubocop/issues/771): Three new `Style` cops, `EmptyLinesAroundMethodBody` , `EmptyLinesAroundClassBody` , and `EmptyLinesAroundModuleBody` replace the `EmptyLinesAroundBody` cop. ([@jonas054][])
 
 ### Changes
 

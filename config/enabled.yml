@@ -194,8 +194,16 @@ Style/EmptyLinesAroundAccessModifier:
   Description: "Keep blank lines around access modifiers."
   Enabled: true
 
-Style/EmptyLinesAroundBody:
-  Description: "Keeps track of empty lines around expression bodies."
+Style/EmptyLinesAroundClassBody:
+  Description: "Keeps track of empty lines around class bodies."
+  Enabled: true
+
+Style/EmptyLinesAroundModuleBody:
+  Description: "Keeps track of empty lines around module bodies."
+  Enabled: true
+
+Style/EmptyLinesAroundMethodBody:
+  Description: "Keeps track of empty lines around method bodies."
   Enabled: true
 
 Style/EmptyLiteral:
