@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::EmptyLinesAroundBody do
+describe RuboCop::Cop::Style::EmptyLinesAroundMethodBody do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for method body starting with a blank' do
@@ -11,7 +11,8 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBody do
                     '',
                     '  do_something',
                     'end'])
-    expect(cop.offenses.size).to eq(1)
+    expect(cop.messages)
+      .to eq(['Extra empty line detected at method body beginning.'])
   end
 
   # The cop only registers an offense if the extra line is completely emtpy. If
@@ -44,7 +45,8 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBody do
                     '',
                     '  do_something',
                     'end'])
-    expect(cop.offenses.size).to eq(1)
+    expect(cop.messages)
+      .to eq(['Extra empty line detected at method body beginning.'])
   end
 
   it 'autocorrects class method body starting with a blank' do
@@ -64,7 +66,8 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBody do
                     '  do_something',
                     '',
                     'end'])
-    expect(cop.offenses.size).to eq(1)
+    expect(cop.messages)
+      .to eq(['Extra empty line detected at method body end.'])
   end
 
   it 'registers an offense for class method body ending with a blank' do
@@ -73,52 +76,8 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBody do
                     '  do_something',
                     '',
                     'end'])
-    expect(cop.offenses.size).to eq(1)
-  end
-
-  it 'registers an offense for class body starting with a blank' do
-    inspect_source(cop,
-                   ['class SomeClass',
-                    '',
-                    '  do_something',
-                    'end'])
-    expect(cop.offenses.size).to eq(1)
-  end
-
-  it 'autocorrects class body containing only a blank' do
-    corrected = autocorrect_source(cop,
-                                   ['class SomeClass',
-                                    '',
-                                    'end'])
-    expect(corrected).to eq ['class SomeClass',
-                             'end'].join("\n")
-  end
-
-  it 'registers an offense for module body starting with a blank' do
-    inspect_source(cop,
-                   ['module SomeModule',
-                    '',
-                    '  do_something',
-                    'end'])
-    expect(cop.offenses.size).to eq(1)
-  end
-
-  it 'registers an offense for class body ending with a blank' do
-    inspect_source(cop,
-                   ['class SomeClass',
-                    '  do_something',
-                    '',
-                    'end'])
-    expect(cop.offenses.size).to eq(1)
-  end
-
-  it 'registers an offense for module body ending with a blank' do
-    inspect_source(cop,
-                   ['module SomeModule',
-                    '  do_something',
-                    '',
-                    'end'])
-    expect(cop.offenses.size).to eq(1)
+    expect(cop.messages)
+      .to eq(['Extra empty line detected at method body end.'])
   end
 
   it 'is not fooled by single line methods' do

@@ -214,6 +214,18 @@ Style/EmptyLineBetweenDefs:
   # need an empty line between them.
   AllowAdjacentOneLineDefs: false
 
+Style/EmptyLinesAroundClassBody:
+  EnforcedStyle: no_empty_lines
+  SupportedStyles:
+    - empty_lines
+    - no_empty_lines
+
+Style/EmptyLinesAroundModuleBody:
+  EnforcedStyle: no_empty_lines
+  SupportedStyles:
+    - empty_lines
+    - no_empty_lines
+
 # Checks whether the source file has a utf-8 encoding comment or not
 Style/Encoding:
   EnforcedStyle: always
