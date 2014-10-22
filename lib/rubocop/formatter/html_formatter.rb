@@ -1,89 +1,117 @@
 # encoding: utf-8
 
 require 'erb'
-require 'pathname'
+require 'ostruct'
+require 'base64'
+require 'rubocop/formatter/text_util'
 
 module RuboCop
   module Formatter
     # This formatter saves the output as a html file.
     class HTMLFormatter < BaseFormatter
-      include PathUtil
+      TEMPLATE_PATH =
+        File.expand_path('../../../../assets/output.html.erb', __FILE__)
 
-      attr_reader :output_hash
+      attr_reader :files, :summary
 
       def initialize(output)
         super
-        @output_hash = {
-          metadata: metadata_hash,
-          files:    [],
-          summary:  { offense_count: 0 }
-        }
+        @files = []
+        @summary = OpenStruct.new(offense_count: 0)
       end
 
       def started(target_files)
-        output_hash[:summary][:target_file_count] = target_files.count
+        summary.target_files = target_files
       end
 
       def file_finished(file, offenses)
-        output_hash[:files] << hash_for_file(file, offenses)
-        output_hash[:summary][:offense_count] += offenses.count
+        files << OpenStruct.new(path: file, offenses: offenses)
+        summary.offense_count += offenses.count
       end
 
       def finished(inspected_files)
-        output_hash[:summary][:inspected_file_count] = inspected_files.count
-        template = File.read(File
-          .expand_path('../../../../assets/output.html.erb', __FILE__))
-        erb = ERB.new(template)
-        html_content = erb.result(binding)
-        output.write html_content
+        summary.inspected_files = inspected_files
+
+        render_html
       end
 
-      def metadata_hash
-        {
-          rubocop_version: RuboCop::Version::STRING,
-          ruby_engine:     RUBY_ENGINE,
-          ruby_version:    RUBY_VERSION,
-          ruby_patchlevel: RUBY_PATCHLEVEL.to_s,
-          ruby_platform:   RUBY_PLATFORM
+      def render_html
+        context = ERBContext.new(files, summary)
+
+        template = File.read(TEMPLATE_PATH)
+        erb = ERB.new(template, nil, '-')
+        html = erb.result(context.binding)
+
+        output.write html
+      end
+
+      Color = Struct.new(:red, :green, :blue, :alpha) do
+        def to_s
+          "rgba(#{values.join(', ')})"
+        end
+
+        def fade_out(amount)
+          dup.tap do |color|
+            color.alpha -= amount
+          end
+        end
+      end
+
+      # This class privides helper methods used in the ERB template.
+      class ERBContext
+        include PathUtil, TextUtil
+
+        SEVERITY_COLORS = {
+          refactor:   Color.new(0xED, 0x9C, 0x28, 1.0),
+          convention: Color.new(0xED, 0x9C, 0x28, 1.0),
+          warning:    Color.new(0x96, 0x28, 0xEF, 1.0),
+          error:      Color.new(0xD2, 0x32, 0x2D, 1.0),
+          fatal:      Color.new(0xD2, 0x32, 0x2D, 1.0)
         }
-      end
 
-      def hash_for_file(file, offenses)
-        {
-          path:     relative_path(file),
-          offenses: offenses.map { |o| hash_for_offense(o) }
-        }
-      end
+        LOGO_IMAGE_PATH =
+          File.expand_path('../../../../assets/logo.png', __FILE__)
 
-      def hash_for_offense(offense)
-        {
-          severity: offense.severity.name,
-          message:  offense.message,
-          cop_name: offense.cop_name,
-          corrected: offense.corrected?,
-          location: hash_for_location(offense)
-        }
-      end
+        attr_reader :files, :summary
 
-      # TODO: Consider better solution for Offense#real_column.
-      def hash_for_location(offense)
-        {
-          line:   offense.line,
-          column: offense.real_column,
-          length: offense.location.length,
-          source_line: offense.location.source_line,
-          highlight: highlight_line(offense.location)
-        }
-      end
+        def initialize(files, summary)
+          @files = files.sort_by(&:path)
+          @summary = summary
+        end
 
-      def highlight_line(location)
-        column_length = if location.begin.line == location.end.line
-                          location.column_range.count
-                        else
-                          location.source_line.length - location.column
-                        end
+        # Make Kernel#binding public.
+        def binding
+          super
+        end
 
-        ' ' * location.column + '^' * column_length
+        def decorated_message(offense)
+          offense.message.gsub(/`(.+?)`/) do
+            "<code>#{Regexp.last_match(1)}</code>"
+          end
+        end
+
+        def highlighted_source_line(offense)
+          location = offense.location
+
+          column_range = if location.begin.line == location.end.line
+                           location.column_range
+                         else
+                           location.column...location.source_line.length
+                         end
+
+          source_line = location.source_line
+
+          source_line[0...column_range.begin] +
+            "<span class=\"highlight #{offense.severity}\">" +
+            source_line[column_range] +
+            '</span>' +
+            source_line[column_range.end..-1]
+        end
+
+        def base64_encoded_logo_image
+          image = File.read(LOGO_IMAGE_PATH, binmode: true)
+          Base64.encode64(image)
+        end
       end
     end
   end

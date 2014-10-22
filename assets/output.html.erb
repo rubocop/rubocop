@@ -2,14 +2,15 @@
 <html>
   <head>
     <meta charset='UTF-8' />
-    <title>RuboCop output</title>
+    <title>RuboCop Inspection Report</title>
+    <%# TODO: Clean up the messy markup and style definitions. %>
     <style>
     * {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     }
-    
+
     body, html {
     font-size: 62.5%;
     }
@@ -18,26 +19,33 @@
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     margin: 0;
     }
+    code {
+    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 85%;
+    }
     #header {
-    background: #171717;
-    border-bottom: none;
-    border-left: 1px solid #3a3a3a;
-    box-shadow: 1px 3px 0 1px #cccccc;
+    background: #f9f9f9;
+    color: #333;
+    border-bottom: 3px solid #ccc;
     height: 50px;
     padding: 0;
     }
-    h2 {
-    color: #FFF;
+    #header .logo {
+    float: left;
+    margin: 5px 12px 7px 20px;
+    width: 38px;
+    height: 38px;
+    }
+    #header .title {
     display: inline-block;
     float: left;
     height: 50px;
-    font-size: 2rem;
+    font-size: 2.4rem;
     letter-spacing: normal;
     line-height: 50px;
     margin: 0;
-    padding: 0 22px 0 20px;
     }
-    
+
     .information, #offenses {
     width: 100%;
     padding: 20px;
@@ -46,7 +54,7 @@
     #offenses {
     padding: 0 20px;
     }
-    
+
     .information .infobox {
     border-left: 3px solid;
     border-radius: 4px;
@@ -55,24 +63,22 @@
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
     padding: 15px;
     border-color: #0088cc;
+    font-size: 1.4rem;
     }
-    
     .information .infobox .info-title {
     font-size: 1.8rem;
     line-height: 2.2rem;
-    margin: 0;
+    margin: 0 0 0.5em;
     }
     .information .infobox ul {
-    font-size: 1.4rem;
     list-style: none;
     margin: 0;
-    margin-top: 5px;
     padding: 0;
     }
     .information .infobox ul li {
     line-height: 1.8rem
     }
-    
+
     #offenses .offense-box {
     border-radius: 4px;
     margin-bottom: 20px;
@@ -102,71 +108,76 @@
     #offenses .offense-box .offense-reports .report:last-child {
     border-bottom: none;
     }
-    #offenses .offense-box .offense-reports .report pre {
+    #offenses .offense-box .offense-reports .report pre code {
+    display: block;
     background: #000;
     color: #fff;
     padding: 10px 15px;
-    font-size: 1.2rem;
     border-radius: 5px;
     line-height: 1.6rem;
     }
     #offenses .offense-box .offense-reports .report .location {
-    padding: 0;
-    list-style: none;
+    font-weight: bold;
     }
-    #offenses .offense-box .offense-reports .report .location li {
-    display: inline;
-    margin-right: 10px;
+    #offenses .offense-box .offense-reports .report .message code {
+    padding: 0.3em;
+    background-color: rgba(0,0,0,0.07);
+    border-radius: 3px;
     }
     .severity {
     text-transform: capitalize;
     font-weight: bold;
     }
-    .severity.convention, .severity.refactor {
-    color: #47a447;
+    .highlight {
+    padding: 2px;
+    border-radius: 2px;
+    font-weight: bold;
     }
-    .severity.warning {
-    color: #ed9c28;
+    <%- SEVERITY_COLORS.each do |severity, color| %>
+    .severity.<%= severity %> {
+    color: <%= color %>;
     }
-    .severity.error, .severity.fatal {
-    color: #d2322d;
+    .highlight.<%= severity %> {
+    background-color: <%= color.fade_out(0.4) %>;
+    border: 1px solid <%= color.fade_out(0.6) %>;
+    }
+    <%- end %>
+    footer {
+    margin-bottom: 20px;
+    margin-right: 20px;
+    font-size: 1.3rem;
+    color: #777;
+    text-align: right;
     }
     </style>
   </head>
   <body>
     <div id="header">
-      <h2>RuboCop Output</h2>
+      <img class="logo" src="data:image/png;base64,<%= base64_encoded_logo_image %>" alt="">
+      <h1 class="title">RuboCop Inspection Report</h1>
     </div>
     <div class="information">
       <div class="infobox">
-        <h4 class="info-title">RuboCop Stats</h4>
-        <ul>
-          <li><strong>Offense Count:</strong> <%= output_hash[:summary][:offense_count] %></li>
-          <li><strong>Target File Count:</strong> <%= output_hash[:summary][:target_file_count] %></li>
-          <li><strong>Inspected File Count:</strong> <%= output_hash[:summary][:inspected_file_count] %></li>
-        </ul>
+        <%= pluralize(files.count, 'file') %> inspected,
+        <%= pluralize(summary.offense_count, 'offense', no_for_zero: true) %> detected
       </div>
     </div>
     <div id="offenses">
-      <% output_hash[:files].each do |file| %>
-      <% if file[:offenses].any? %>
+      <% files.each do |file| %>
+      <% if file.offenses.any? %>
       <div class="offense-box">
-        <div class="box-title"><h3><%= file[:path] %> - <%= file[:offenses].length %></h3></div>
+        <div class="box-title"><h3><%= relative_path(file.path) %> - <%= pluralize(file.offenses.count, 'offense') %></h3></div>
         <div class="offense-reports">
-          <% file[:offenses].each do |offense| %>
+          <% file.offenses.each do |offense| %>
           <div class="report">
-            <p class="message"><span class="severity <%= offense[:severity] %>"><%= offense[:severity] %>:</span> <%= offense[:message] %></p>
-            <% if offense[:location][:source_line].strip.length > 0 %>
-<pre>
-<%= offense[:location][:source_line] %>
-<%= offense[:location][:highlight] %>
-</pre>
+            <div class="meta">
+              <span class="location">Line #<%= offense.location.line %></span> –
+              <span class="severity <%= offense.severity %>"><%= offense.severity %>:</span>
+              <span class="message"><%= decorated_message(offense) %></span>
+            </div>
+            <% unless offense.location.source_line.strip.empty? %>
+            <pre><code><%= highlighted_source_line(offense) %></code></pre>
             <% end %>
-            <ul class="location">
-              <li><strong>Line: </strong> <%= offense[:location][:line] %></li>
-              <li><strong>Column: </strong> <%= offense[:location][:column] %></li>
-              <li><strong>Length: </strong> <%= offense[:location][:length] %></li>
-            </ul>
           </div>
           <% end %>
         </div>
@@ -174,17 +185,9 @@
       <% end %>
       <% end %>
     </div>
-    <div class="information">
-      <div class="infobox">
-        <h4 class="info-title">Environment Information</h4>
-        <ul>
-          <li><strong>RuboCop Version:</strong> <%= output_hash[:metadata][:rubocop_version] %></li>
-          <li><strong>Ruby Engine:</strong> <%= output_hash[:metadata][:ruby_engine] %></li>
-          <li><strong>Ruby Version:</strong> <%= output_hash[:metadata][:ruby_version] %></li>
-          <li><strong>Ruby Patch Level:</strong> <%= output_hash[:metadata][:ruby_patchlevel] %></li>
-          <li><strong>Ruby Platform:</strong> <%= output_hash[:metadata][:ruby_platform] %></li>
-        </ul>
-      </div>
-    </div>
+    <footer>
+      Generated by <a href="https://github.com/bbatsov/rubocop">RuboCop</a>
+      <span class="version"><%= RuboCop::Version::STRING %></span>
+    </footer>
   </body>
 </html>
