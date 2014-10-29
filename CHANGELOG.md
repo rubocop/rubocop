@@ -26,6 +26,7 @@
 * [#1388](https://github.com/bbatsov/rubocop/issues/1388): Fix a false positive in `FormatString`. ([@bbatsov][])
 * [#1389](https://github.com/bbatsov/rubocop/issues/1389): Make `--out` to create parent directories. ([@yous][])
 * Refine HTML formatter. ([@yujinakayama][])
+* [#1410](https://github.com/bbatsov/rubocop/issues/1410): Handle specially Java primitive type references in `ColonMethodCall`. ([@bbatsov][])
 
 ## 0.26.1 (18/09/2014)
 

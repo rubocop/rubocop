@@ -53,6 +53,11 @@ describe RuboCop::Cop::Style::ColonMethodCall do
     expect(cop.offenses).to be_empty
   end
 
+  it 'does not register an offense for Java static types' do
+    inspect_source(cop, 'Java::int')
+    expect(cop.offenses).to be_empty
+  end
+
   it 'auto-corrects "::" with "."' do
     new_source = autocorrect_source(cop, 'test::method')
     expect(new_source).to eq('test.method')
