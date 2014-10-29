@@ -4,6 +4,7 @@
 [![Coverage Status](http://img.shields.io/coveralls/bbatsov/rubocop/master.svg)](https://coveralls.io/r/bbatsov/rubocop)
 [![Code Climate](https://codeclimate.com/github/bbatsov/rubocop/badges/gpa.svg)](https://codeclimate.com/github/bbatsov/rubocop)
 [![Inline docs](http://inch-ci.org/github/bbatsov/rubocop.svg)](http://inch-ci.org/github/bbatsov/rubocop)
+[![Gratipay](http://img.shields.io/gratipay/bbatsov.svg)](https://www.gratipay.com/bbatsov/)
 
 <p align="center">
   <img src="https://raw.github.com/bbatsov/rubocop/master/logo/rubo-logo-horizontal.png" alt="RuboCop Logo"/>
@@ -21,6 +22,10 @@ Most aspects of its behavior can be tweaked via various
 
 Apart from reporting problems in your code, RuboCop can also
 automatically fix some of the problems for you.
+
+You can support my work on RuboCop and [all my other projects](https://github.com/bbatsov) via [gratipay](https://www.gratipay.com/bbatsov).
+
+[![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.1.3/dist/gratipay.png)](https://gratipay.com/bbatsov)
 
 **This documentation tracks the `master` branch of RuboCop. Some of
 the features and settings discussed here might not be available in
@@ -794,9 +799,11 @@ priority right now. Writing a new cop is a great way to dive into RuboCop!
 Of course, bug reports and suggestions for improvements are always
 welcome. GitHub pull requests are even better! :-)
 
-I'm also accepting financial contributions via [gittip](https://www.gittip.com/bbatsov).
+You can also support my work on RuboCop and
+[all my other projects](https://github.com/bbatsov) via
+[gratipay](https://www.gratipay.com/bbatsov).
 
-[![Support via Gittip](https://rawgithub.com/twolfson/gittip-badge/0.2.0/dist/gittip.png)](https://www.gittip.com/bbatsov)
+[![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.1.3/dist/gratipay.png)](https://gratipay.com/bbatsov)
 
 ## Mailing List
 
