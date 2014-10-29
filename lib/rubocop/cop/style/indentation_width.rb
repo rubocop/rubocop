@@ -173,12 +173,7 @@ module RuboCop
         end
 
         def check_indentation(base_loc, body_node)
-          return unless body_node
-
-          # Don't check if expression is on same line as "then" keyword, etc.
-          return if body_node.loc.line == base_loc.line
-
-          return if starts_with_access_modifier?(body_node)
+          return if skip_node?(base_loc, body_node)
 
           # Don't check indentation if the line doesn't start with the body.
           # For example, lines like "else do_something".
@@ -210,8 +205,48 @@ module RuboCop
           body_node.type == :begin && modifier_node?(body_node.children.first)
         end
 
+        def skip_node?(base_loc, body_node)
+          body_node.nil? ||
+            node_is_excluded?(body_node) ||
+            body_node.loc.line == base_loc.line ||
+            starts_with_access_modifier?(body_node)
+        end
+
+        def node_is_excluded?(body_node)
+          body_node = body_node.children.first if body_node.type == :begin
+
+          configured_excluded_keywords.include?(keyword(body_node)) ||
+            configured_excluded_keywords.include?(method_name(body_node))
+        end
+
+        def keyword(body_node)
+          if body_node.loc.respond_to?(:keyword) &&
+             body_node.loc.keyword
+
+            body_node.loc.keyword.source
+          else
+            ''
+          end
+        end
+
+        def method_name(body_node)
+          child_node = body_node.children.first
+
+          return nil if child_node.nil? ||
+                        !child_node.respond_to?(:type) ||
+                        !child_node.send_type?
+
+          _receiver, method, *_args = *child_node
+
+          method.to_s
+        end
+
         def configured_indentation_width
           cop_config['Width']
+        end
+
+        def configured_excluded_keywords
+          cop_config['ExcludedKeywords']
         end
       end
     end

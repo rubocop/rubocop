@@ -274,6 +274,11 @@ Style/IfUnlessModifier:
 Style/IndentationWidth:
   # Number of spaces for each indentation level.
   Width: 2
+  # Keywords which should not add to the cumulative indentation width
+  # See: https://github.com/bbatsov/rubocop/issues/1031
+  ExcludedKeywords: []
+    # - module
+    # - class
 
 # Checks the indentation of the first key in a hash literal.
 Style/IndentHash:
@@ -605,7 +610,7 @@ Rails/Output:
     - config/**/*.rb
     - db/**/*.rb
     - lib/**/*.rb
-    
+
 Rails/ReadWriteAttribute:
   Include:
     - app/models/**/*.rb

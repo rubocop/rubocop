@@ -13,7 +13,7 @@ describe RuboCop::Cop::Style::IndentationWidth do
   end
 
   context 'with Width set to 4' do
-    let(:cop_config) { { 'Width' => 4 } }
+    let(:cop_config) { { 'Width' => 4, 'ExcludedKeywords' => [] } }
 
     context 'with if statement' do
       it 'registers an offense for bad indentation of an if body' do
@@ -50,8 +50,92 @@ describe RuboCop::Cop::Style::IndentationWidth do
     end
   end
 
+  context 'when excluding certain keywords' do
+    let(:cop_config) do
+      {
+        'ExcludedKeywords' => %w(class module def describe),
+        'Width'            => 2
+      }
+    end
+
+    it 'does not register an offense of the indentation for an excluded ' \
+       'keyword' do
+
+      inspect_source(cop,
+                     ['module Foo',
+                      'class Bar',
+                      'def my_module',
+                      '  var = 1 + 1',
+                      'end',
+                      '',
+                      'def self.my_module',
+                      '  var = 1 + 1',
+                      'end',
+                      'end',
+                      'end'])
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'does not register an offense of the indentation if a method call ' \
+       'matches an excluded keyword' do
+
+      inspect_source(cop,
+                     ['module Foo',
+                      'class Bar',
+                      'describe my_module do',
+                      '  var = 1 + 1',
+                      'end',
+                      'end',
+                      'end'])
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'does register an offense if there are indentation issues inside the ' \
+       'body of an excluded keyword' do
+
+      inspect_source(cop,
+                     ['module Foo',
+                      'class Bar',
+                      '   var = 1 + 1',
+                      'end',
+                      'end'])
+
+      expect(cop.messages).to eq(['Use 2 (not 3) spaces for indentation.'])
+      expect(cop.highlights).to eq(['   '])
+    end
+
+    describe '#autocorrect' do
+      let(:cop_config) do
+        {
+          'ExcludedKeywords' => %w(class module),
+          'Width'            => 2
+        }
+      end
+
+      it 'does not correct in scopes that contain block comments' do
+        corrected = autocorrect_source(cop,
+                                       ['module Foo',
+                                        'class Bar',
+                                        'def my_module',
+                                        'var = 1 + 1',
+                                        'end',
+                                        'end',
+                                        'end'])
+        expect(corrected).to eq ['module Foo',
+                                 'class Bar',
+                                 '  def my_module',
+                                 '    var = 1 + 1',
+                                 '  end',
+                                 'end',
+                                 'end'].join("\n")
+      end
+    end
+  end
+
   context 'with Width set to 2' do
-    let(:cop_config) { { 'Width' => 2 } }
+    let(:cop_config) { { 'Width' => 2, 'ExcludedKeywords' => [] } }
 
     context 'with if statement' do
       it 'registers an offense for bad indentation of an if body' do
