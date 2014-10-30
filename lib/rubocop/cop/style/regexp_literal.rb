@@ -53,19 +53,23 @@ module RuboCop
           max = self.class.slash_count['/'].max
           min = self.class.slash_count['%'].min
 
-          self.config_to_allow_offenses = if max > max_slashes
-                                            if max < min
-                                              { 'MaxSlashes' => max }
-                                            else
-                                              { 'Enabled' => false }
-                                            end
-                                          elsif min < max_slashes + 1
-                                            if max < min
-                                              { 'MaxSlashes' => min - 1 }
-                                            else
-                                              { 'Enabled' => false }
-                                            end
-                                          end
+          self.config_to_allow_offenses = calculate_config(max, min)
+        end
+
+        def calculate_config(max, min)
+          if max > max_slashes
+            if max < min
+              { 'MaxSlashes' => max }
+            else
+              { 'Enabled' => false }
+            end
+          elsif min < max_slashes + 1
+            if max < min
+              { 'MaxSlashes' => min - 1 }
+            else
+              { 'Enabled' => false }
+            end
+          end
         end
 
         def error_message(word)

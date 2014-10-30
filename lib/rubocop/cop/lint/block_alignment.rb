@@ -161,11 +161,9 @@ module RuboCop
               delta = start_col - end_col
               corrector.insert_before(node.loc.end, ' ' * delta)
             elsif end_col > start_col
-              delta = start_col - end_col
-              range_start = starting_position_of_block_end + delta
-              range_end = range_start - delta
-
-              range = Parser::Source::Range.new(source, range_start, range_end)
+              range_start = starting_position_of_block_end + start_col - end_col
+              range = Parser::Source::Range.new(source, range_start,
+                                                starting_position_of_block_end)
               corrector.remove(range)
             end
           end

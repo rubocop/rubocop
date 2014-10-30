@@ -78,18 +78,12 @@ module RuboCop
 
         def branch_body_name
           case branch_point_node.type
-          when :if
-            if_body_name
-          when :case
-            case_body_name
-          when *LOGICAL_OPERATOR_TYPES
-            logical_operator_body_name
-          when RESCUE_TYPE
-            rescue_body_name
-          when ENSURE_TYPE
-            ensure_body_name
-          else
-            fail InvalidBranchBodyError
+          when :if                     then if_body_name
+          when :case                   then case_body_name
+          when *LOGICAL_OPERATOR_TYPES then logical_operator_body_name
+          when RESCUE_TYPE             then rescue_body_name
+          when ENSURE_TYPE             then ensure_body_name
+          else fail InvalidBranchBodyError
           end
         rescue InvalidBranchBodyError
           raise InvalidBranchBodyError,

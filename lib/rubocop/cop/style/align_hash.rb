@@ -164,13 +164,18 @@ module RuboCop
             new_alignment('EnforcedHashRocketStyle')
           @alignment_for_colons ||= new_alignment('EnforcedColonStyle')
 
-          first_pair = node.children.first
-
           unless @alignment_for_hash_rockets.checkable_layout(node) &&
                  @alignment_for_colons.checkable_layout(node)
             return
           end
 
+          check_pairs(node)
+        end
+
+        private
+
+        def check_pairs(node)
+          first_pair = node.children.first
           @column_deltas = alignment_for(first_pair)
                            .deltas_for_first_pair(first_pair, node)
           add_offense(first_pair, :expression) unless good_alignment?
@@ -181,8 +186,6 @@ module RuboCop
             add_offense(current, :expression) unless good_alignment?
           end
         end
-
-        private
 
         def ignore_last_argument_hash?(node)
           case cop_config['EnforcedLastArgumentHashStyle']

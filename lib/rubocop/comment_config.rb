@@ -32,16 +32,12 @@ module RuboCop
 
       each_mentioned_cop do |cop_name, disabled, line, single_line|
         if single_line
-          next unless disabled
-          disabled_line_ranges[cop_name] << (line..line)
+          disabled_line_ranges[cop_name] << (line..line) if disabled
+        elsif disabled
+          disablement_start_line_numbers[cop_name] = line
         else
-          if disabled
-            disablement_start_line_numbers[cop_name] = line
-          else
-            start_line = disablement_start_line_numbers.delete(cop_name)
-            next unless start_line
-            disabled_line_ranges[cop_name] << (start_line..line)
-          end
+          start_line = disablement_start_line_numbers.delete(cop_name)
+          disabled_line_ranges[cop_name] << (start_line..line) if start_line
         end
       end
 
@@ -53,8 +49,6 @@ module RuboCop
     end
 
     def each_mentioned_cop
-      all_cop_names = nil # For performance improvement
-
       return if processed_source.comments.nil?
 
       processed_source.comments.each do |comment|
@@ -63,12 +57,8 @@ module RuboCop
 
         switch, cops_string = match.captures
 
-        if cops_string == 'all'
-          all_cop_names ||= Cop::Cop.all.map(&:cop_name)
-          cop_names = all_cop_names
-        else
-          cop_names = cops_string.split(/,\s*/)
-        end
+        cop_names =
+          cops_string == 'all' ? all_cop_names : cops_string.split(/,\s*/)
 
         disabled = (switch == 'disable')
         comment_line_number = comment.loc.expression.line
@@ -80,6 +70,10 @@ module RuboCop
           yield cop_name, disabled, comment_line_number, single_line
         end
       end
+    end
+
+    def all_cop_names
+      @all_cop_names ||= Cop::Cop.all.map(&:cop_name)
     end
 
     def comment_only_line?(line_number)

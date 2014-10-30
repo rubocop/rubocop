@@ -28,19 +28,17 @@ module RuboCop
             if !braces?(arg) || all_hashes?(args)
               correct_style_detected
             else
-              add_offense(arg, :expression,
-                          'Redundant curly braces around a hash parameter.') do
-                opposite_style_detected
-              end
+              offense(arg, 'Redundant curly braces around a hash parameter.')
             end
           elsif braces?(arg)
             correct_style_detected
           else
-            add_offense(arg, :expression,
-                        'Missing curly braces around a hash parameter.') do
-              opposite_style_detected
-            end
+            offense(arg, 'Missing curly braces around a hash parameter.')
           end
+        end
+
+        def offense(arg, msg)
+          add_offense(arg, :expression, msg) { opposite_style_detected }
         end
 
         def autocorrect(node)

@@ -173,17 +173,7 @@ module RuboCop
         end
 
         def check_indentation(base_loc, body_node)
-          return unless body_node
-
-          # Don't check if expression is on same line as "then" keyword, etc.
-          return if body_node.loc.line == base_loc.line
-
-          return if starts_with_access_modifier?(body_node)
-
-          # Don't check indentation if the line doesn't start with the body.
-          # For example, lines like "else do_something".
-          first_char_pos_on_line = body_node.loc.expression.source_line =~ /\S/
-          return unless body_node.loc.column == first_char_pos_on_line
+          return unless indentation_to_check?(base_loc, body_node)
 
           indentation = body_node.loc.column - base_loc.column
           @column_delta = configured_indentation_width - indentation
@@ -204,6 +194,22 @@ module RuboCop
           add_offense(body_node, r,
                       format("Use #{configured_indentation_width} (not %d) " \
                              'spaces for indentation.', indentation))
+        end
+
+        def indentation_to_check?(base_loc, body_node)
+          return false unless body_node
+
+          # Don't check if expression is on same line as "then" keyword, etc.
+          return false if body_node.loc.line == base_loc.line
+
+          return false if starts_with_access_modifier?(body_node)
+
+          # Don't check indentation if the line doesn't start with the body.
+          # For example, lines like "else do_something".
+          first_char_pos_on_line = body_node.loc.expression.source_line =~ /\S/
+          return false unless body_node.loc.column == first_char_pos_on_line
+
+          true
         end
 
         def starts_with_access_modifier?(body_node)

@@ -29,13 +29,10 @@ module RuboCop
                                    max
                                  end
 
-            range = source_range(processed_source.buffer,
-                                 index + 1,
+            range = source_range(processed_source.buffer, index + 1,
                                  excessive_position...(line.length))
 
-            add_offense(nil, range, message) do
-              self.max = line.length
-            end
+            add_offense(nil, range, message) { self.max = line.length }
           end
         end
 

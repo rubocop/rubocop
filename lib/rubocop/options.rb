@@ -63,6 +63,16 @@ module RuboCop
       ignore_dropped_options(args)
       convert_deprecated_options(args)
 
+      define_options(args).parse!(args)
+
+      validate_compatibility
+
+      [@options, args]
+    end
+
+    private
+
+    def define_options(args)
       OptionParser.new do |opts|
         opts.banner = 'Usage: rubocop [options] [file1, file2, ...]'
 
@@ -80,16 +90,13 @@ module RuboCop
         add_severity_option(opts)
         add_flags_with_optional_args(opts)
         add_boolean_flags(opts)
-      end.parse!(args)
-
-      if (incompat = @options.keys & EXITING_OPTIONS).size > 1
-        fail ArgumentError, "Incompatible cli options: #{incompat.inspect}"
       end
-
-      [@options, args]
     end
 
-    private
+    def validate_compatibility
+      return unless (incompat = @options.keys & EXITING_OPTIONS).size > 1
+      fail ArgumentError, "Incompatible cli options: #{incompat.inspect}"
+    end
 
     def add_configuration_options(opts, args)
       option(opts, '-c', '--config FILE')
