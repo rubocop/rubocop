@@ -40,6 +40,15 @@ describe RuboCop::Cop::Style::MultilineOperationIndentation do
       expect(cop.highlights).to eq(['.b'])
     end
 
+    it 'registers an offense for proc call without a selector' do
+      inspect_source(cop,
+                     ['a',
+                      ' .(args)'])
+      expect(cop.messages).to eq(['Use 2 (not 1) spaces for indenting an ' \
+                                  'expression spanning multiple lines.'])
+      expect(cop.highlights).to eq(['.('])
+    end
+
     it 'registers an offense for three spaces indentation of second line' do
       inspect_source(cop,
                      ['a ||',
