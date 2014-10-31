@@ -5,6 +5,10 @@ Style/CollectionMethods:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#map-fine-select-reduce-size'
   Enabled: false
 
+Style/DisableCopComment:
+  Description: 'Do not disable cops with inline comments.'
+  Enabled: false
+
 Style/Encoding:
   Description: 'Use UTF-8 as the source file encoding.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#utf-8'

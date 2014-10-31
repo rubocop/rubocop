@@ -49,7 +49,6 @@ Usage: rubocop [options] [file1, file2, ...]
                                        [p]rogress (default)
                                        [s]imple
                                        [c]lang
-                                       [d]isabled cops via inline comments
                                        [fu]ubar
                                        [e]macs
                                        [j]son

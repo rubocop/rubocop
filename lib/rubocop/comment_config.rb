@@ -24,6 +24,11 @@ module RuboCop
       @cop_disabled_line_ranges ||= analyze
     end
 
+    def self.disable?(comment)
+      switch, _ = parse(comment)
+      switch == 'disable'
+    end
+
     private
 
     def analyze
@@ -52,10 +57,8 @@ module RuboCop
       return if processed_source.comments.nil?
 
       processed_source.comments.each do |comment|
-        match = comment.text.match(COMMENT_DIRECTIVE_REGEXP)
-        next unless match
-
-        switch, cops_string = match.captures
+        switch, cops_string = self.class.parse(comment)
+        next unless switch
 
         cop_names =
           cops_string == 'all' ? all_cop_names : cops_string.split(/,\s*/)
@@ -70,6 +73,12 @@ module RuboCop
           yield cop_name, disabled, comment_line_number, single_line
         end
       end
+    end
+
+    def self.parse(comment)
+      match = COMMENT_DIRECTIVE_REGEXP.match(comment.text)
+      return false unless match
+      match.captures
     end
 
     def all_cop_names

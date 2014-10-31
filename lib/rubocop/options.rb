@@ -20,7 +20,6 @@ module RuboCop
                          '  [p]rogress (default)',
                          '  [s]imple',
                          '  [c]lang',
-                         '  [d]isabled cops via inline comments',
                          '  [fu]ubar',
                          '  [e]macs',
                          '  [j]son',
@@ -181,15 +180,16 @@ module RuboCop
     end
 
     def convert_deprecated_options(args)
-      args.map! do |arg|
-        case arg
-        when '-e', '--emacs'
+      args.each_with_index do |arg, ix|
+        if %w(-e --emacs).include?(arg)
           deprecate("#{arg} option", '--format emacs', '1.0.0')
-          %w(--format emacs)
-        else
-          arg
+          args[ix, 1] = %w(--format emacs)
+        elsif %w(-f --format).include?(arg) && args[ix + 1].start_with?('d')
+          deprecate("#{arg} #{args[ix + 1]} option",
+                    '--only Style/DisableCopComment', '1.0.0')
+          args[ix, 2] = %w(--only Style/DisableCopComment)
         end
-      end.flatten!
+      end
     end
 
     def deprecate(subject, alternative = nil, version = nil)

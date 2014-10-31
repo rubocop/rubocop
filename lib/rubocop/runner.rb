@@ -53,7 +53,7 @@ module RuboCop
 
       processed_source = ProcessedSource.from_file(file)
 
-      formatter_set.file_started(file, file_info(processed_source))
+      formatter_set.file_started(file, {})
 
       offenses = do_inspection_loop(file, processed_source)
 
@@ -152,10 +152,6 @@ module RuboCop
         name = @options[:fail_level] || :refactor
         RuboCop::Cop::Severity.new(name)
       end
-    end
-
-    def file_info(processed_source)
-      { cop_disabled_line_ranges: processed_source.disabled_line_ranges }
     end
   end
 end
