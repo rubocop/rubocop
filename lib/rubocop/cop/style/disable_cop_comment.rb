@@ -20,7 +20,10 @@ module RuboCop
                                column_range)
               line_ranges.each do |disabled_range|
                 next unless disabled_range.include?(comment.loc.line)
-                add_offense(r, r, format(MSG, cop, disabled_range))
+
+                add_offense(r, r, format(MSG, cop,
+                                         tweaked_range(disabled_range,
+                                                       processed_source)))
               end
             end
           end
@@ -37,6 +40,15 @@ module RuboCop
 
           column += comment.loc.column
           column...(column + cop_name.length)
+        end
+
+        # Replace Infinity with the line number of the last line.
+        def tweaked_range(range, processed_source)
+          if range.end == Float::INFINITY
+            (range.begin..processed_source.lines.size)
+          else
+            range
+          end
         end
       end
     end

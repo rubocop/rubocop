@@ -10,7 +10,7 @@ describe RuboCop::Cop::Style::DisableCopComment do
                          'def m',
                          'end'])
     expect(cop.messages)
-      .to eq(['Cop Metrics/MethodLength disabled on lines 1..Infinity.'])
+      .to eq(['Cop Metrics/MethodLength disabled on lines 1..3.'])
     expect(cop.highlights).to eq(['Metrics/MethodLength'])
   end
 
@@ -19,8 +19,8 @@ describe RuboCop::Cop::Style::DisableCopComment do
                          'def m',
                          'end'])
     expect(cop.messages)
-      .to eq(['Cop Metrics/MethodLength disabled on lines 1..Infinity.',
-              'Cop Metrics/ClassLength disabled on lines 1..Infinity.'])
+      .to eq(['Cop Metrics/MethodLength disabled on lines 1..3.',
+              'Cop Metrics/ClassLength disabled on lines 1..3.'])
     expect(cop.highlights).to eq(%w(MethodLength ClassLength))
   end
 
