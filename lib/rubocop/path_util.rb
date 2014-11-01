@@ -21,6 +21,13 @@ module RuboCop
         old_match = basename == pattern || File.fnmatch?(pattern, path)
         new_match = File.fnmatch?(pattern, path, File::FNM_PATHNAME)
         if old_match && !new_match
+          # Patterns like dir/**/* will produce an old match for files
+          # beginning with dot, but not a new match. That's a special case,
+          # though. Not what we want to handle here. And this is a match that
+          # we overrule. Only patterns like dir/**/.* can be used to match dot
+          # files.
+          return false if File.basename(path).start_with?('.')
+
           issue_deprecation_warning(basename, pattern, config_path)
         end
         old_match || new_match
