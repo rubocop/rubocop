@@ -11,7 +11,7 @@ describe RuboCop::Cop::Style::EmptyLiteral do
                      ['test = Array.new()'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(['Use array literal [] instead of Array.new.'])
+        .to eq(['Use array literal `[]` instead of `Array.new`.'])
     end
 
     it 'registers an offense for Array.new' do
@@ -19,7 +19,7 @@ describe RuboCop::Cop::Style::EmptyLiteral do
                      ['test = Array.new'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(['Use array literal [] instead of Array.new.'])
+        .to eq(['Use array literal `[]` instead of `Array.new`.'])
     end
 
     it 'does not register an offense for Array.new(3)' do
@@ -40,7 +40,7 @@ describe RuboCop::Cop::Style::EmptyLiteral do
                      ['test = Hash.new()'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(['Use hash literal {} instead of Hash.new.'])
+        .to eq(['Use hash literal `{}` instead of `Hash.new`.'])
     end
 
     it 'registers an offense for Hash.new' do
@@ -48,7 +48,7 @@ describe RuboCop::Cop::Style::EmptyLiteral do
                      ['test = Hash.new'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(['Use hash literal {} instead of Hash.new.'])
+        .to eq(['Use hash literal `{}` instead of `Hash.new`.'])
     end
 
     it 'does not register an offense for Hash.new(3)' do
@@ -75,7 +75,7 @@ describe RuboCop::Cop::Style::EmptyLiteral do
                      ['test = String.new()'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(["Use string literal '' instead of String.new."])
+        .to eq(["Use string literal `''` instead of `String.new`."])
     end
 
     it 'registers an offense for String.new' do
@@ -83,7 +83,7 @@ describe RuboCop::Cop::Style::EmptyLiteral do
                      ['test = String.new'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
-        .to eq(["Use string literal '' instead of String.new."])
+        .to eq(["Use string literal `''` instead of `String.new`."])
     end
 
     it 'does not register an offense for String.new("top")' do
