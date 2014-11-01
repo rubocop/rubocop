@@ -275,11 +275,14 @@ directory, `config/default.yml` will be used.
 
 ### Including/Excluding files
 
-RuboCop checks all files recursively within the directory it is run
-on.  However, it only recognizes files ending with `.rb` or
-extensionless files with a `#!.*ruby` declaration as Ruby files. If
-you'd like it to check other files you'll need to manually pass them
-in, or to add entries for them under `AllCops`/`Include`.  Files and
+RuboCop checks all files found by a recursive search starting from the
+directory it is run in, or directories given as command line
+arguments.  However, it only recognizes files ending with `.rb` or
+extensionless files with a `#!.*ruby` declaration as Ruby files.
+Hidden directories (i.e., directories whose names start with a dot)
+are not searched by default.  If you'd like it to check files that are
+not included by default, you'll need to pass them in on the command
+line, or to add entries for them under `AllCops`/`Include`.  Files and
 directories can also be ignored through `AllCops`/`Exclude`.
 
 Here is an example that might be used for a Rails project:

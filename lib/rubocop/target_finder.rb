@@ -55,20 +55,36 @@ module RuboCop
       if File::ALT_SEPARATOR
         base_dir.gsub!(File::ALT_SEPARATOR, File::SEPARATOR)
       end
-      files = Dir["#{base_dir}/**/*"].select { |path| FileTest.file?(path) }
+      all_files = find_files(base_dir, File::FNM_DOTMATCH)
+      hidden_files = all_files - find_files(base_dir, 0)
       base_dir_config = @config_store.for(base_dir)
 
-      target_files = files.select do |file|
-        next false if base_dir_config.file_to_exclude?(file)
-        next true if File.extname(file) == '.rb'
-        next true if ruby_executable?(file)
-        @config_store.for(file).file_to_include?(file)
+      target_files = all_files.select do |file|
+        to_inspect?(file, hidden_files, base_dir_config)
       end
 
       # Most recently modified file first.
       target_files.sort_by! { |path| -File.mtime(path).to_i } if fail_fast?
 
       target_files
+    end
+
+    def to_inspect?(file, hidden_files, base_dir_config)
+      # Make a special case for .rubocop.yml, because it can cause trouble
+      # if we read it later. We know it's not ruby, so we can safely say
+      # false here.
+      return false if File.basename(file) == '.rubocop.yml'
+
+      return false if base_dir_config.file_to_exclude?(file)
+      unless hidden_files.include?(file)
+        return true if File.extname(file) == '.rb'
+        return true if ruby_executable?(file)
+      end
+      @config_store.for(file).file_to_include?(file)
+    end
+
+    def find_files(base_dir, flags)
+      Dir.glob("#{base_dir}/**/*", flags).select { |path| FileTest.file?(path) }
     end
 
     def ruby_executable?(file)

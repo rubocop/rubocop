@@ -1777,23 +1777,23 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     it 'finds included files' do
-      create_file('example', ['# encoding: utf-8',
-                              'x = 0',
-                              'puts x'
-                             ])
-      create_file('regexp', ['# encoding: utf-8',
-                             'x = 0',
-                             'puts x'
-                            ])
+      create_file('file.rb', 'x=0') # Included by default
+      create_file('example', 'x=0')
+      create_file('regexp', 'x=0')
+      create_file('.dot1/file.rb', 'x=0') # Hidden but explicitly included
+      create_file('.dot2/file.rb', 'x=0') # Hidden, excluded by default
       create_file('.rubocop.yml', ['AllCops:',
                                    '  Include:',
                                    '    - example',
-                                   '    - !ruby/regexp /regexp$/'
+                                   '    - !ruby/regexp /regexp$/',
+                                   '    - .dot1/**/*'
                                   ])
-      expect(cli.run(%w(--format simple))).to eq(0)
-      expect($stdout.string)
-        .to eq(['', '2 files inspected, no offenses detected',
-                ''].join("\n"))
+      expect(cli.run(%w(--format files))).to eq(1)
+      expect($stderr.string).to eq('')
+      expect($stdout.string.split($RS).sort).to eq([abs('.dot1/file.rb'),
+                                                    abs('example'),
+                                                    abs('file.rb'),
+                                                    abs('regexp')])
     end
 
     it 'ignores excluded files' do
