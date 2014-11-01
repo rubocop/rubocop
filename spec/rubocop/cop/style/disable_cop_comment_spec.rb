@@ -9,16 +9,41 @@ describe RuboCop::Cop::Style::DisableCopComment do
     inspect_source(cop, ['# rubocop:disable Metrics/MethodLength',
                          'def m',
                          'end'])
-    expect(cop.messages).to eq(['Do not disable cops with inline comments.'])
-    expect(cop.highlights).to eq(['# rubocop:disable Metrics/MethodLength'])
+    expect(cop.messages)
+      .to eq(['Cop Metrics/MethodLength disabled on lines 1..Infinity.'])
+    expect(cop.highlights).to eq(['Metrics/MethodLength'])
   end
 
-  it 'registers one offense for a comment about two cops' do
+  it 'registers one offense per cop for a comment about two cops' do
     inspect_source(cop, ['# rubocop:disable MethodLength, ClassLength',
                          'def m',
                          'end'])
-    expect(cop.highlights)
-      .to eq(['# rubocop:disable MethodLength, ClassLength'])
+    expect(cop.messages)
+      .to eq(['Cop Metrics/MethodLength disabled on lines 1..Infinity.',
+              'Cop Metrics/ClassLength disabled on lines 1..Infinity.'])
+    expect(cop.highlights).to eq(%w(MethodLength ClassLength))
+  end
+
+  it 'highlights cop names in EOL comments' do
+    inspect_source(cop, ['class C # rubocop:disable ClassLength',
+                         '  def m',
+                         '  end',
+                         'end'])
+    expect(cop.messages)
+      .to eq(['Cop Metrics/ClassLength disabled on lines 1..1.'])
+    expect(cop.highlights).to eq(%w(ClassLength))
+  end
+
+  it 'registers one offense per comment line' do
+    inspect_source(cop, ['class C # rubocop:disable ClassLength',
+                         '  def m # rubocop:disable LineLength',
+                         '  end # rubocop:disable LineLength',
+                         'end'])
+    expect(cop.messages)
+      .to eq(['Cop Metrics/ClassLength disabled on lines 1..1.',
+              'Cop Metrics/LineLength disabled on lines 2..2.',
+              'Cop Metrics/LineLength disabled on lines 3..3.'])
+    expect(cop.highlights).to eq(%w(ClassLength LineLength LineLength))
   end
 
   it 'accepts a rubocop:enable comment' do
