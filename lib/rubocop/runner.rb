@@ -109,7 +109,7 @@ module RuboCop
           # filter out Rails cops unless requested
           cop_classes.reject!(&:rails?) unless run_rails_cops?(config)
 
-          # filter out style cops when --lint is passed
+          # select only lint cops when --lint is passed
           cop_classes.select!(&:lint?) if @options[:lint]
         end
 
