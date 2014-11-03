@@ -417,6 +417,18 @@ describe RuboCop::Cop::Style::ElseAlignment do
                       'end'])
       expect(cop.messages).to eq(['Align `else` with `begin`.'])
     end
+
+    it 'accepts a correctly aligned else' do
+      inspect_source(cop,
+                     ['begin',
+                      "  raise StandardError.new('Fail') if rand(2).odd?",
+                      'rescue StandardError => error',
+                      '  $stderr.puts error.message',
+                      'else',
+                      "  $stdout.puts 'Lucky you!'",
+                      'end'])
+      expect(cop.offenses).to be_empty
+    end
   end
 
   context 'with def/rescue/else/end' do

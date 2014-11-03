@@ -37,18 +37,12 @@ module RuboCop
         def on_rescue(node)
           return unless node.loc.else
 
-          grandparent = node.parent.parent
-          base = case node.parent.type
-                 when :def, :defs
-                   if grandparent && grandparent.type == :send
-                     grandparent.loc.selector
-                   else
-                     node.parent.loc.keyword
-                   end
-                 when :ensure
-                   grandparent.loc.begin
-                 else
-                   node.loc.keyword
+          parent = node.parent
+          base = case parent.type
+                 when :def, :defs then base_for_method_definition(parent)
+                 when :kwbegin    then parent.loc.begin
+                 when :ensure     then parent.parent.loc.begin
+                 else node.loc.keyword
                  end
           check_alignment(base, node.loc.else)
         end
@@ -60,6 +54,15 @@ module RuboCop
         end
 
         private
+
+        def base_for_method_definition(node)
+          parent = node.parent
+          if parent && parent.type == :send
+            parent.loc.selector # For example "private def ..."
+          else
+            node.loc.keyword
+          end
+        end
 
         def check_assignment(node, rhs)
           # If there are method calls chained to the right hand side of the
