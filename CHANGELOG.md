@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#1413](https://github.com/bbatsov/rubocop/pull/1413): New cop `Style/DisableCopComment` replaces the `--format disabled` option. ([@jonas054][])
+
 ### Bugs fixed
 
 * [#1411](https://github.com/bbatsov/rubocop/issues/1411): Handle lambda calls without a selector in `MultilineOperationIndentation`. ([@bbatsov][])

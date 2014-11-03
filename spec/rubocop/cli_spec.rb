@@ -1567,6 +1567,9 @@ describe RuboCop::CLI, :isolated_environment do
                    '  x(123456)',
                    '  y("123")',
                    'end'])
+      create_file('.rubocop.yml',
+                  ['Style/DisableCopComment:',
+                   '  Enabled: false'])
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       expect($stderr.string)
         .to eq(["#{abs('example.rb')}: Style/LineLength has the wrong " \
@@ -1598,10 +1601,12 @@ describe RuboCop::CLI, :isolated_environment do
                    'y("123") # rubocop:disable Metrics/LineLength,' \
                    'Style/StringLiterals'
                   ])
+      create_file('.rubocop.yml',
+                  ['Style/DisableCopComment:',
+                   '  Enabled: false'])
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       expect($stdout.string)
-        .to eq(
-               ["#{abs('example.rb')}:3:81: C: Line is too long. [95/80]",
+        .to eq(["#{abs('example.rb')}:3:81: C: Line is too long. [95/80]",
                 ''].join("\n"))
     end
 
@@ -1613,6 +1618,9 @@ describe RuboCop::CLI, :isolated_environment do
                      '#' * 95,
                      'y("123") # rubocop:disable StringLiterals'
                     ])
+        create_file('.rubocop.yml',
+                    ['Style/DisableCopComment:',
+                     '  Enabled: false'])
         expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
         expect($stdout.string)
           .to eq(

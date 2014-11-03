@@ -17,8 +17,7 @@ module RuboCop
         'json'     => JSONFormatter,
         'html'     => HTMLFormatter,
         'files'    => FileListFormatter,
-        'offenses' => OffenseCountFormatter,
-        'disabled' => DisabledLinesFormatter
+        'offenses' => OffenseCountFormatter
       }
 
       FORMATTER_APIS = [:started, :file_started, :file_finished, :finished]
