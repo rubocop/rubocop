@@ -18,11 +18,13 @@ module RuboCop
         end
 
         def offense?(node)
-          # If it's not a string within a dynamic string, i.e. part of an
-          # expression in an interpolation, then it's not an offense for this
-          # cop.
+          # If it's not a string within an interpolation, then it's not an
+          # offense for this cop. A :begin node inside a :dstr node is an
+          # interpolation.
+          begin_found = false
           return false unless node.each_ancestor.find do |a|
-            a.type == :dstr && within_node?(node, a)
+            begin_found = true if a.type == :begin
+            begin_found && a.type == :dstr
           end
 
           wrong_quotes?(node, style)

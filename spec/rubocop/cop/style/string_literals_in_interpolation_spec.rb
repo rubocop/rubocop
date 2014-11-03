@@ -8,8 +8,18 @@ describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
   context 'configured with single quotes preferred' do
     let(:cop_config) { { 'EnforcedStyle' => 'single_quotes' } }
 
-    it 'detects unneeded double quotes within embedded expression' do
+    it 'registers an offense for double quotes within embedded expression' do
       src = ['"#{"A"}"']
+      inspect_source(cop, src)
+      expect(cop.messages)
+        .to eq(['Prefer single-quoted strings inside interpolations.'])
+    end
+
+    it 'registers an offense for double quotes within embedded expression in ' \
+       'a heredoc string' do
+      src = ['<<END',
+             '#{"A"}',
+             'END']
       inspect_source(cop, src)
       expect(cop.messages)
         .to eq(['Prefer single-quoted strings inside interpolations.'])
@@ -17,6 +27,22 @@ describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
 
     it 'accepts double quotes on a static string' do
       src = ['"A"']
+      inspect_source(cop, src)
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts double quotes on a broken static string' do
+      src = ['"A" \\',
+             '  "B"']
+      inspect_source(cop, src)
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts double quotes on static strings within a method' do
+      src = ['def m',
+             '  puts "A"',
+             '  puts "B"',
+             'end']
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end
@@ -46,6 +72,16 @@ describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
 
     it 'registers an offense for single quotes within embedded expression' do
       src = %q("#{'A'}")
+      inspect_source(cop, src)
+      expect(cop.messages)
+        .to eq(['Prefer double-quoted strings inside interpolations.'])
+    end
+
+    it 'registers an offense for single quotes within embedded expression in ' \
+       'a heredoc string' do
+      src = ['<<END',
+             '#{\'A\'}',
+             'END']
       inspect_source(cop, src)
       expect(cop.messages)
         .to eq(['Prefer double-quoted strings inside interpolations.'])
