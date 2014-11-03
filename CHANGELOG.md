@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#1343](https://github.com/bbatsov/rubocop/issues/1343): Remove auto-correct from `RescueException` cop. ([@bbatsov][])
+
 ### Bugs fixed
 
 * [#1411](https://github.com/bbatsov/rubocop/issues/1411): Handle lambda calls without a selector in `MultilineOperationIndentation`. ([@bbatsov][])

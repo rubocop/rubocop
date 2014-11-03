@@ -5,7 +5,8 @@ module RuboCop
     module Lint
       # This cop checks for *rescue* blocks targeting the Exception class.
       class RescueException < Cop
-        MSG = 'Avoid rescuing the `Exception` class.'
+        MSG = 'Avoid rescuing the `Exception` class. ' \
+              'Perhaps you meant to rescue `StandardError`?'
 
         def on_resbody(node)
           return unless node.children.first
@@ -17,17 +18,6 @@ module RuboCop
 
         def targets_exception?(rescue_arg_node)
           Util.const_name(rescue_arg_node) == 'Exception'
-        end
-
-        def autocorrect(node)
-          @corrections << lambda do |corrector|
-            corrector.remove(
-              range_with_surrounding_space(
-                node.children.first.children.first.loc.expression,
-                :left
-              )
-            )
-          end
         end
       end
     end

@@ -120,40 +120,4 @@ describe RuboCop::Cop::Lint::RescueException do
                     'end'])
     expect(cop.offenses).to be_empty
   end
-
-  context 'without exception capture' do
-    let(:source) do
-      ['begin',
-       'rescue Exception',
-       'end']
-    end
-
-    let(:corrected_source) do
-      ['begin', # rubocop:disable Style/WordArray
-       'rescue',
-       'end'].join("\n")
-    end
-
-    it 'autocorrects by unspecifying the exception class' do
-      expect(autocorrect_source(cop, source)).to eq(corrected_source)
-    end
-  end
-
-  context 'with exception capture' do
-    let(:source) do
-      ['begin',
-       'rescue Exception => e',
-       'end']
-    end
-
-    let(:corrected_source) do
-      ['begin',
-       'rescue => e',
-       'end'].join("\n")
-    end
-
-    it 'autocorrects by unspecifying the exception class' do
-      expect(autocorrect_source(cop, source)).to eq(corrected_source)
-    end
-  end
 end
