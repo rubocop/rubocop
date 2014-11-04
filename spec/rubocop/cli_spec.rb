@@ -2071,9 +2071,12 @@ describe RuboCop::CLI, :isolated_environment do
     it 'can exclude directories relative to .rubocop.yml' do
       %w(src etc/test etc/spec tmp/test tmp/spec).each do |dir|
         create_file("example/#{dir}/example1.rb", ['# encoding: utf-8',
-                                                   '#' * 90
-                                                  ])
+                                                   '#' * 90])
       end
+
+      # Hidden subdirectories should also be excluded.
+      create_file('example/etc/.dot/example1.rb', ['# encoding: utf-8',
+                                                   '#' * 90])
 
       create_file('example/.rubocop.yml', ['AllCops:',
                                            '  Exclude:',
@@ -2082,8 +2085,8 @@ describe RuboCop::CLI, :isolated_environment do
                                            '    - tmp/spec/**'])
 
       expect(cli.run(%w(--format simple example))).to eq(1)
-      expect($stdout.string).to eq(
-                                   ['== example/tmp/test/example1.rb ==',
+      expect($stderr.string).to eq('')
+      expect($stdout.string).to eq(['== example/tmp/test/example1.rb ==',
                                     'C:  2: 81: Line is too long. [90/80]',
                                     '',
                                     '1 file inspected, 1 offense detected',
