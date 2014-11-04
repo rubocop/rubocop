@@ -5,6 +5,7 @@
 ### Changes
 
 * [#1343](https://github.com/bbatsov/rubocop/issues/1343): Remove auto-correct from `RescueException` cop. ([@bbatsov][])
+* [#1425](https://github.com/bbatsov/rubocop/issues/1425): `AllCops/Include` configuration parameters are only taken from the project `.rubocop.yml` and files it inherits from, not from `.rubocop.yml` files in subdirectories. ([@jonas054][])
 
 ### Bugs fixed
 

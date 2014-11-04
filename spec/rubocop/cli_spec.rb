@@ -1822,6 +1822,48 @@ describe RuboCop::CLI, :isolated_environment do
                 ''].join("\n"))
     end
 
+    it 'only reads configuration in explicitly included hidden directories' do
+      create_file('.hidden/example.rb', ['# encoding: utf-8',
+                                         'x=0'])
+      # This file contains configuration for an unknown cop. This would cause a
+      # warning to be printed on stderr if the file was read. But it's in a
+      # hidden directory, so it's not read.
+      create_file('.hidden/.rubocop.yml', ['SymbolName:',
+                                           '  Enabled: false'])
+
+      create_file('.other/example.rb', ['# encoding: utf-8',
+                                        'x=0'])
+      # The .other directory is explicitly included, so the configuration file
+      # is read, and modifies the behavior.
+      create_file('.other/.rubocop.yml', ['Style/SpaceAroundOperators:',
+                                          '  Enabled: false'])
+      create_file('.rubocop.yml', ['AllCops:',
+                                   '  Include:',
+                                   '    - .other/**/*'])
+      expect(cli.run(%w(--format simple))).to eq(1)
+      expect($stderr.string).to eq('')
+      expect($stdout.string)
+        .to eq(['== .other/example.rb ==',
+                'W:  2:  1: Useless assignment to variable - x.',
+                '',
+                '1 file inspected, 1 offense detected',
+                ''].join("\n"))
+    end
+
+    it 'does not consider Include parameters in subdirectories' do
+      create_file('dir/example.ruby', ['# encoding: utf-8',
+                                       'x=0'])
+      create_file('dir/.rubocop.yml', ['AllCops:',
+                                       '  Include:',
+                                       '    - "*.ruby"'])
+      expect(cli.run(%w(--format simple))).to eq(0)
+      expect($stderr.string).to eq('')
+      expect($stdout.string)
+        .to eq(['',
+                '0 files inspected, no offenses detected',
+                ''].join("\n"))
+    end
+
     it 'matches included/excluded files corectly when . argument is given' do
       create_file('example.rb', 'x = 0')
       create_file('special.dsl', ['# encoding: utf-8',

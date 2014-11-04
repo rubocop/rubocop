@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'set'
+
 module RuboCop
   # This class finds target files to inspect by scanning the directory tree
   # and picking ruby files.
@@ -56,7 +58,7 @@ module RuboCop
         base_dir.gsub!(File::ALT_SEPARATOR, File::SEPARATOR)
       end
       all_files = find_files(base_dir, File::FNM_DOTMATCH)
-      hidden_files = all_files - find_files(base_dir, 0)
+      hidden_files = Set.new(all_files - find_files(base_dir, 0))
       base_dir_config = @config_store.for(base_dir)
 
       target_files = all_files.select do |file|
@@ -70,17 +72,12 @@ module RuboCop
     end
 
     def to_inspect?(file, hidden_files, base_dir_config)
-      # Make a special case for .rubocop.yml, because it can cause trouble
-      # if we read it later. We know it's not ruby, so we can safely say
-      # false here.
-      return false if File.basename(file) == '.rubocop.yml'
-
       return false if base_dir_config.file_to_exclude?(file)
       unless hidden_files.include?(file)
         return true if File.extname(file) == '.rb'
         return true if ruby_executable?(file)
       end
-      @config_store.for(file).file_to_include?(file)
+      base_dir_config.file_to_include?(file)
     end
 
     def find_files(base_dir, flags)
