@@ -7,6 +7,13 @@ describe RuboCop::Cop::Style::MultilineIfThen do
 
   # if
 
+  it 'does not get confused by empty elsif branch' do
+    inspect_source(cop, ['if cond',
+                         'elsif cond',
+                         'end'])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'registers an offense for then in multiline if' do
     inspect_source(cop, ['if cond then',
                          'end',
