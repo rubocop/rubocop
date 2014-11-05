@@ -313,12 +313,12 @@ correct way to match the file in any directory, including the current, is
 `config`, but this pattern style is deprecated and should be replaced by
 `config/**/*`.
 
-**Note**: The `Exclude` parameter is special. It is valid for the
-directory tree starting where it is defined. It is not shadowed by the
-setting of `Exclude` in other `.rubocop.yml` files in
-subdirectories. This is different from all other parameters, who
-follow RuboCop's general principle that configuration for an inspected
-file is taken from the nearest `.rubocop.yml`, searching upwards.
+**Note**: The `Include` and `Exclude` parameters are special. They are
+valid for the directory tree starting where they are defined. They are not
+shadowed by the setting of `Include` and `Exclude` in other `.rubocop.yml`
+files in subdirectories. This is different from all other parameters, who
+follow RuboCop's general principle that configuration for an inspected file
+is taken from the nearest `.rubocop.yml`, searching upwards.
 
 Cops can be run only on specific sets of files when that's needed (for
 instance you might want to run some Rails model checks only on files whose
