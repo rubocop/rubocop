@@ -13,6 +13,7 @@
 * [#1401](https://github.com/bbatsov/rubocop/issues/1401): Files in hidden directories, i.e. ones beginning with dot, can now be selected through configuration, but are still not included by default. ([@jonas054][])
 * [#1415](https://github.com/bbatsov/rubocop/issues/1415): String literals concatenated with backslashes are now handled correctly by `StringLiteralsInInterpolation`. ([@jonas054][])
 * [#1416](https://github.com/bbatsov/rubocop/issues/1416): Fix handling of `begin/rescue/else/end` in `ElseAlignment`. ([@jonas054][])
+* [#1413](https://github.com/bbatsov/rubocop/issues/1413): Support empty elsif branches in `MultilineIfThen`. ([@janraasch][], [@jonas054][])
 
 ## 0.27.0 (30/10/2014)
 
@@ -1145,3 +1146,4 @@
 [@smangelsdorf]: https://github.com/smangelsdorf
 [@mvz]: https://github.com/mvz
 [@jfelchner]: https://github.com/jfelchner
+[@janraasch]: https://github.com/janraasch
