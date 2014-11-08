@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.27.1 (08/11/2014)
+
 ### Changes
 
 * [#1343](https://github.com/bbatsov/rubocop/issues/1343): Remove auto-correct from `RescueException` cop. ([@bbatsov][])

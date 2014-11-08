@@ -3,7 +3,7 @@
 module RuboCop
   # This module holds the RuboCop version information.
   module Version
-    STRING = '0.27.0'
+    STRING = '0.27.1'
 
     MSG = '%s (using Parser %s, running on %s %s %s)'
 
