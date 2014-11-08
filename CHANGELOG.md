@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#801](https://github.com/bbatsov/rubocop/issues/801): New style `context_dependent` for `Style/BracesAroundHashParameters` looks at preceding parameter to determine if braces should be used for final parameter. ([@jonas054][])
+
 ## 0.27.1 (08/11/2014)
 
 ### Changes

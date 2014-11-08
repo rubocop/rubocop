@@ -87,7 +87,7 @@ Style/Blocks:
   Enabled: true
 
 Style/BracesAroundHashParameters:
-  Description: 'Enforce braces style inside hash parameters.'
+  Description: 'Enforce braces style around hash parameters.'
   Enabled: true
 
 Style/CaseEquality:
