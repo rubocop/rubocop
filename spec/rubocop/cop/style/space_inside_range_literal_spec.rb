@@ -40,6 +40,18 @@ describe RuboCop::Cop::Style::SpaceInsideRangeLiteral do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts multiline range literal with no space in it' do
+    inspect_source(cop, ['x = 0..',
+                         '    10'])
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'registers an offense in multiline range literal with space in it' do
+    inspect_source(cop, ['x = 0 ..',
+                         '    10'])
+    expect(cop.offenses.size).to eq(1)
+  end
+
   it 'autocorrects space around .. literal' do
     corrected = autocorrect_source(cop, ['1  .. 2'])
     expect(corrected).to eq '1..2'

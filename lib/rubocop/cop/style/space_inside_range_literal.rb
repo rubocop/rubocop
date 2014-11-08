@@ -4,6 +4,7 @@ module RuboCop
   module Cop
     module Style
       # Checks for spaces inside range literals.
+      #
       # @example
       #   # bad
       #   1 .. 3
@@ -31,9 +32,13 @@ module RuboCop
 
         def check(node)
           expression = node.loc.expression.source
-          operator = node.loc.operator.source.gsub(/\./, '\.')
+          op = node.loc.operator.source
+          escaped_op = op.gsub(/\./, '\.')
 
-          return unless expression =~ /(\s#{operator})|(#{operator}\s)/
+          # account for multiline range literals
+          expression.sub!(/#{escaped_op}\n\s*/, op)
+
+          return unless expression =~ /(\s#{escaped_op})|(#{escaped_op}\s)/
 
           add_offense(node, :expression)
         end

@@ -14,6 +14,7 @@
 * [#1415](https://github.com/bbatsov/rubocop/issues/1415): String literals concatenated with backslashes are now handled correctly by `StringLiteralsInInterpolation`. ([@jonas054][])
 * [#1416](https://github.com/bbatsov/rubocop/issues/1416): Fix handling of `begin/rescue/else/end` in `ElseAlignment`. ([@jonas054][])
 * [#1413](https://github.com/bbatsov/rubocop/issues/1413): Support empty elsif branches in `MultilineIfThen`. ([@janraasch][], [@jonas054][])
+* [#1406](https://github.com/bbatsov/rubocop/issues/1406): Allow a newline in `SpaceInsideRangeLiteral`. ([@bbatsov][])
 
 ## 0.27.0 (30/10/2014)
 
