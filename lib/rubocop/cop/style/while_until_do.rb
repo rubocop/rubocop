@@ -24,7 +24,7 @@ module RuboCop
         private
 
         def error_message(node_type)
-          format('Never use `do` with multi-line `%s`.', node_type)
+          format('Do not use `do` with multi-line `%s`.', node_type)
         end
 
         def autocorrect(node)

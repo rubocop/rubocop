@@ -15,7 +15,7 @@ module RuboCop
       class SpaceAfterMethodName < Cop
         include OnMethodDef
 
-        MSG = 'Never put a space between a method name and the opening ' \
+        MSG = 'Do not put a space between a method name and the opening ' \
               'parenthesis.'
 
         def on_method_def(_node, _method_name, args, _body)

@@ -271,7 +271,7 @@ Style/IfUnlessModifier:
   Enabled: true
 
 Style/IfWithSemicolon:
-  Description: 'Never use if x; .... Use the ternary operator instead.'
+  Description: 'Do not use if x; .... Use the ternary operator instead.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-semicolon-ifs'
   Enabled: true
 
@@ -352,7 +352,7 @@ Style/MultilineBlockLayout:
   Enabled: true
 
 Style/MultilineIfThen:
-  Description: 'Never use then for multi-line if/unless.'
+  Description: 'Do not use then for multi-line if/unless.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-then'
   Enabled: true
 
@@ -544,7 +544,7 @@ Style/SpaceAfterControlKeyword:
 
 Style/SpaceAfterMethodName:
   Description: >-
-                 Never put a space between a method name and the opening
+                 Do not put a space between a method name and the opening
                  parenthesis in a method definition.
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#parens-no-spaces'
   Enabled: true
@@ -670,7 +670,7 @@ Style/TrivialAccessors:
 
 Style/UnlessElse:
   Description: >-
-                 Never use unless with else. Rewrite these with the positive
+                 Do not use unless with else. Rewrite these with the positive
                  case first.
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-else-with-unless'
   Enabled: true
@@ -832,7 +832,7 @@ Lint/EndInMethod:
   Enabled: true
 
 Lint/EnsureReturn:
-  Description: 'Never use return in an ensure block.'
+  Description: 'Do not use return in an ensure block.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-return-ensure'
   Enabled: true
 

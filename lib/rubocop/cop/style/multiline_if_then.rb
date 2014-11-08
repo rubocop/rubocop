@@ -26,7 +26,7 @@ module RuboCop
         end
 
         def message(node)
-          "Never use `then` for multi-line `#{node.loc.keyword.source}`."
+          "Do not use `then` for multi-line `#{node.loc.keyword.source}`."
         end
 
         def autocorrect(node)

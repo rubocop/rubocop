@@ -7,7 +7,7 @@ module RuboCop
       class IfWithSemicolon < Cop
         include OnNormalIfUnless
 
-        MSG = 'Never use if x; Use the ternary operator instead.'
+        MSG = 'Do not use if x; Use the ternary operator instead.'
 
         def on_normal_if_unless(node)
           beginning = node.loc.begin
