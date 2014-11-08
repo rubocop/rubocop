@@ -20,25 +20,9 @@ module RuboCop
         include OnNormalIfUnless
 
         def on_normal_if_unless(node)
-          condition, body, else_clause = *node
-          next_thing = if body && body.loc.expression
-                         body.loc.expression.begin
-                       elsif else_clause && else_clause.loc.expression
-                         else_clause.loc.expression.begin
-                       else
-                         node.loc.end # No body, use "end".
-                       end
-          right_after_cond =
-            Parser::Source::Range.new(next_thing.source_buffer,
-                                      end_position(condition),
-                                      next_thing.begin_pos)
-          return unless right_after_cond.source =~ /\A\s*then\s*(#.*)?\s*\n/
-
-          add_offense(node, :expression, message(node))
-        end
-
-        def end_position(conditional_node)
-          conditional_node.loc.expression.end.end_pos
+          return unless node.loc.begin
+          return unless node.loc.begin.source_line =~ /then\s*(#.*)?$/
+          add_offense(node, :begin)
         end
 
         def message(node)
@@ -47,11 +31,8 @@ module RuboCop
 
         def autocorrect(node)
           @corrections << lambda do |corrector|
-            condition_node, = *node
-            end_of_condition_range = condition_node.loc.expression.end
-            then_range = node.loc.begin
-            whitespaces_and_then_range = end_of_condition_range.join(then_range)
-            corrector.remove(whitespaces_and_then_range)
+            corrector.remove(range_with_surrounding_space(node.loc.begin,
+                                                          :left))
           end
         end
       end

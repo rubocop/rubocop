@@ -26,7 +26,20 @@ describe RuboCop::Cop::Style::MultilineIfThen do
                          'end',
                          'if cond then # bad',
                          'end'])
-    expect(cop.offenses.map(&:line)).to eq([1, 3, 5, 7, 10])
+    expect(cop.offenses.map(&:line)).to eq([1, 3, 5, 8, 10])
+    expect(cop.highlights).to eq(['then'] * 5)
+    expect(cop.messages).to eq(['Never use `then` for multi-line `if`.'] * 5)
+  end
+
+  it 'registers an offense for then in multiline elsif' do
+    inspect_source(cop, ['if cond1',
+                         '  a',
+                         'elsif cond2 then',
+                         '  b',
+                         'end'])
+    expect(cop.offenses.map(&:line)).to eq([3])
+    expect(cop.highlights).to eq(['then'])
+    expect(cop.messages).to eq(['Never use `then` for multi-line `elsif`.'])
   end
 
   it 'accepts multiline if without then' do
