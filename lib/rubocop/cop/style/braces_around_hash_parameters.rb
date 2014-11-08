@@ -3,9 +3,12 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for braces in method calls with hash parameters.
+      # This cop checks for braces around the last parameter in a method call
+      # if the last parameter is a hash.
       class BracesAroundHashParameters < Cop
         include ConfigurableEnforcedStyle
+
+        MSG = '%s curly braces around a hash parameter.'
 
         def on_send(node)
           _receiver, method_name, *args = *node
@@ -24,29 +27,32 @@ module RuboCop
         private
 
         def check(arg, args)
-          if style == :no_braces
-            if !braces?(arg) || all_hashes?(args)
-              correct_style_detected
-            else
-              offense(arg, 'Redundant curly braces around a hash parameter.')
-            end
-          elsif braces?(arg)
-            correct_style_detected
-          else
-            offense(arg, 'Missing curly braces around a hash parameter.')
+          if style == :braces && !braces?(arg)
+            add_offense(arg, :expression, format(MSG, 'Missing'))
+          elsif style == :no_braces && braces?(arg)
+            add_offense(arg, :expression, format(MSG, 'Redundant'))
+          elsif style == :context_dependent
+            check_context_dependent(arg, args)
           end
         end
 
-        def offense(arg, msg)
-          add_offense(arg, :expression, msg) { opposite_style_detected }
+        def check_context_dependent(arg, args)
+          braces_around_2nd_from_end = args.length > 1 && args[-2].type == :hash
+          if braces?(arg)
+            unless braces_around_2nd_from_end
+              add_offense(arg, :expression, format(MSG, 'Redundant'))
+            end
+          elsif braces_around_2nd_from_end
+            add_offense(arg, :expression, format(MSG, 'Missing'))
+          end
         end
 
         def autocorrect(node)
           @corrections << lambda do |corrector|
-            if style == :no_braces
+            if braces?(node)
               corrector.remove(node.loc.begin)
               corrector.remove(node.loc.end)
-            elsif style == :braces
+            else
               corrector.insert_before(node.loc.expression, '{')
               corrector.insert_after(node.loc.expression, '}')
             end
@@ -59,10 +65,6 @@ module RuboCop
 
         def braces?(arg)
           arg.loc.begin
-        end
-
-        def all_hashes?(args)
-          args.length > 1 && args.all? { |a| a.type == :hash }
         end
       end
     end

@@ -139,8 +139,16 @@ Style/BarePercentLiterals:
 Style/BracesAroundHashParameters:
   EnforcedStyle: no_braces
   SupportedStyles:
+    # The `braces` style enforces braces around all method parameters that are
+    # hashes.
     - braces
+    # The `no_braces` style checks that the last parameter doesn't have braces
+    # around it.
     - no_braces
+    # The `context_dependent` style checks that the last parameter doesn't have
+    # braces around it, but requires braces if the second to last parameter is
+    # also a hash literal.
+    - context_dependent
 
 # Indentation of `when`.
 Style/CaseIndentation:
