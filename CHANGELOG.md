@@ -5,6 +5,7 @@
 ### Changes
 
 * [#801](https://github.com/bbatsov/rubocop/issues/801): New style `context_dependent` for `Style/BracesAroundHashParameters` looks at preceding parameter to determine if braces should be used for final parameter. ([@jonas054][])
+* Methods can now be excluded from Metrics/MethodLength by qualified name (e.g. MyModule::MyClass#my_method). ([@mwean][])
 
 ## 0.27.1 (08/11/2014)
 
@@ -1154,3 +1155,4 @@
 [@mvz]: https://github.com/mvz
 [@jfelchner]: https://github.com/jfelchner
 [@janraasch]: https://github.com/janraasch
+[@mwean]: https://github.com/mwean
