@@ -7,16 +7,14 @@ module RuboCop
     # abstract syntax tree, it is not done.
     module AutocorrectUnlessChangingAST
       def autocorrect(node)
-        new_source = rewrite_node(node)
+        current_buffer_src = processed_source.buffer.source
+        replaced_range = node.loc.expression
+        pre = current_buffer_src[0...replaced_range.begin_pos]
+        post = current_buffer_src[replaced_range.end_pos..-1]
+        new_buffer_src = pre + rewrite_node(node) + post
 
-        # Make the correction only if it doesn't change the AST. Regenerate the
-        # AST for `node` so we get it without context. Otherwise the comparison
-        # could be misleading.
-        if ast_for(node.loc.expression.source) != ast_for(new_source)
-          fail CorrectionNotPossible
-        end
-
-        if syntax_error?(node.loc.expression, new_source)
+        # Make the correction only if it doesn't change the AST for the buffer.
+        if processed_source.ast != ProcessedSource.new(new_buffer_src).ast
           fail CorrectionNotPossible
         end
 
@@ -25,24 +23,10 @@ module RuboCop
 
       private
 
-      def ast_for(source)
-        ProcessedSource.new(source).ast
-      end
-
       def rewrite_node(node)
-        processed_source = ProcessedSource.new(node.loc.expression.source)
-        c = correction(processed_source.ast)
-        Corrector.new(processed_source.buffer, [c]).rewrite
-      end
-
-      # Return true if the change would introduce a syntax error in the buffer
-      # source.
-      def syntax_error?(replaced_range, new_source)
-        current_buffer_src = processed_source.buffer.source
-        pre = current_buffer_src[0...replaced_range.begin_pos]
-        post = current_buffer_src[replaced_range.end_pos..-1]
-        new_buffer_src = pre + new_source + post
-        !ProcessedSource.new(new_buffer_src).valid_syntax?
+        ps = ProcessedSource.new(node.loc.expression.source)
+        c = correction(ps.ast)
+        Corrector.new(ps.buffer, [c]).rewrite
       end
     end
   end
