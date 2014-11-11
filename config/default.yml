@@ -553,6 +553,11 @@ Metrics/LineLength:
 Metrics/MethodLength:
   CountComments: false  # count full line comments?
   Max: 10
+  # IgnoredMethods:
+  #   - MyModule::MyClass#my_method
+  #   - AnotherClass.my_method
+  # Modules/classes are separated by "::" and methods are prepended
+  # by "." if it is a class method and "#" if it is an instance method.
 
 Metrics/ParameterLists:
   Max: 5
