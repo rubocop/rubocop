@@ -181,6 +181,10 @@ Style/ElseAlignment:
   Description: 'Align elses and elsifs correctly.'
   Enabled: true
 
+Style/EmptyElse:
+  Description: 'Avoid empty else-clauses.'
+  Enabled: true
+
 Style/EmptyLineBetweenDefs:
   Description: 'Use empty lines between defs.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#empty-lines-between-methods'

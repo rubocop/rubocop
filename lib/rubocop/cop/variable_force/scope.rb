@@ -33,10 +33,10 @@ module RuboCop
         end
 
         def name
+          # TODO: Add an else clause
           case @node.type
           when :def  then @node.children[0]
           when :defs then @node.children[1]
-          else nil # TODO
           end
         end
 
