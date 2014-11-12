@@ -64,6 +64,7 @@ release.**
     - [TextMate2](#textmate2)
     - [Atom](#atom)
     - [LightTable](#lighttable)
+    - [RubyMine](#rubymine)
     - [Other Editors](#other-editors)
 - [Guard integration](#guard-integration)
 - [Rake integration](#rake-integration)
@@ -671,6 +672,11 @@ plugin for Atom's [linter](https://github.com/AtomLinter/Linter).
 
 The [lt-rubocop](https://github.com/seancaffery/lt-rubocop) plugin
 provides LightTable integration.
+
+### RubyMine
+
+The [rubocop-for-rubymine](https://github.com/sirlantis/rubocop-for-rubymine) plugin
+provides basic RuboCop integration for RubyMine/IntelliJ IDEA.
 
 ### Other Editors
 
