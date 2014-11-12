@@ -33,6 +33,14 @@ describe RuboCop::Cop::Style::Blocks do
     expect(new_source).to eq(src)
   end
 
+  it 'does not auto-correct {} if do-end would change the meaning' do
+    src = ['foo :bar, :baz, qux: lambda { |a|',
+           '  bar a',
+           '}'].join("\n")
+    new_source = autocorrect_source(cop, src)
+    expect(new_source).to eq(src)
+  end
+
   context 'when there are braces around a multi-line block' do
     it 'registers an offense in the simple case' do
       inspect_source(cop, ['each { |x|',
