@@ -55,6 +55,7 @@ release.**
     - [File List Formatter](#file-list-formatter)
     - [JSON Formatter](#json-formatter)
     - [Offense Count Formatter](#offense-count-formatter)
+    - [HTML Formatter](#html-formatter)
 - [Compatibility](#compatibility)
 - [Editor integration](#editor-integration)
     - [Emacs](#emacs)
@@ -611,6 +612,14 @@ $ rubocop --format offenses
 1    ColonMethodCall
 --
 134  Total
+```
+
+### HTML Formatter
+
+Useful for CI environments. It will create an HTML report like [this](http://f.cl.ly/items/0M3029412x3O091a1X1R/expected.html).
+
+```
+$ rubocop --format html -o rubocop.html
 ```
 
 ## Compatibility
