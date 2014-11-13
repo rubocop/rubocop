@@ -39,6 +39,11 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts single quotes in interpolation' do
+      inspect_source(cop, [%q("hello#{hash['there']}")])
+      expect(cop.offenses).to be_empty
+    end
+
     it 'accepts %q and %Q quotes' do
       inspect_source(cop, ['a = %q(x) + %Q[x]'])
       expect(cop.offenses).to be_empty
@@ -95,7 +100,7 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
       expect(cop.offenses).to be_empty
     end
 
-    it 'accepts double quotes within embedded expression' do
+    it 'accepts double quotes in interpolation' do
       src = ['"#{"A"}"']
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
@@ -154,6 +159,11 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
 
     it 'accepts double quotes' do
       inspect_source(cop, ['a = "x"'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts single quotes in interpolation' do
+      inspect_source(cop, [%q("hello#{hash['there']}")])
       expect(cop.offenses).to be_empty
     end
 

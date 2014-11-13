@@ -8,17 +8,6 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include StringLiteralsHelp
 
-        def on_dstr(node)
-          # A dstr node with dstr and str children is a concatenated
-          # string. Don't ignore the whole thing.
-          return if node.children.find { |child| child.type == :str }
-
-          # Dynamic strings can not use single quotes, and quotes inside
-          # interpolation expressions are checked by the
-          # StringLiteralsInInterpolation cop, so ignore.
-          ignore_node(node)
-        end
-
         private
 
         def message(*)
@@ -32,6 +21,10 @@ module RuboCop
         end
 
         def offense?(node)
+          # If it's a string within an interpolation, then it's not an offense
+          # for this cop.
+          return false if inside_interpolation?(node)
+
           wrong_quotes?(node, style)
         end
       end

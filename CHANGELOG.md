@@ -9,6 +9,8 @@
 
 ### Bugs fixed
 
+* [#1181](https://github.com/bbatsov/rubocop/issues/1181): *(fix again)* `Style/StringLiterals` cop stays away from strings inside interpolated expressions. ([@jonas054][])
+
 ## 0.27.1 (08/11/2014)
 
 ### Changes
