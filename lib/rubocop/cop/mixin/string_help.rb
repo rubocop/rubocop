@@ -27,6 +27,15 @@ module RuboCop
       def on_regexp(node)
         ignore_node(node)
       end
+
+      def inside_interpolation?(node)
+        # A :begin node inside a :dstr node is an interpolation.
+        begin_found = false
+        node.each_ancestor.find do |a|
+          begin_found = true if a.type == :begin
+          begin_found && a.type == :dstr
+        end
+      end
     end
   end
 end
