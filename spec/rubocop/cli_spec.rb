@@ -238,13 +238,12 @@ describe RuboCop::CLI, :isolated_environment do
         create_file('example.rb', ['# encoding: utf-8',
                                    'class Dsl',
                                    'private',
+                                   '',
                                    '  A = ["git", "path",]',
                                    'end'])
         expect(cli.run(%w(--auto-correct --format emacs))).to eq(1)
         expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
                                              'class Dsl',
-                                             '  private',
-                                             '',
                                              '  A = %w(git path)',
                                              'end',
                                              ''].join("\n"))
@@ -252,13 +251,21 @@ describe RuboCop::CLI, :isolated_environment do
         expect($stdout.string)
           .to eq(["#{e}:2:1: C: Missing top-level class documentation " \
                   'comment.',
+                  "#{e}:3:1: W: [Corrected] Useless `private` access modifier.",
                   "#{e}:3:1: C: [Corrected] Indent access modifiers like " \
                   '`private`.',
-                  "#{e}:3:1: C: [Corrected] Keep a blank line before and " \
-                  'after `private`.',
-                  "#{e}:3:3: W: Useless `private` access modifier.",
-                  "#{e}:3:3: C: [Corrected] Keep a blank line before and " \
-                  'after `private`.',
+                  "#{e}:3:1: C: [Corrected] Extra empty line detected at " \
+                  'body beginning.',
+                  "#{e}:3:7: C: [Corrected] Use `%w` or `%W` " \
+                  'for array of words.',
+                  "#{e}:3:8: C: [Corrected] Prefer single-quoted strings " \
+                  "when you don't need string interpolation or special " \
+                  'symbols.',
+                  "#{e}:3:15: C: [Corrected] Prefer single-quoted strings " \
+                  "when you don't need string interpolation or special " \
+                  'symbols.',
+                  "#{e}:3:21: C: [Corrected] Avoid comma after the last item " \
+                  'of an array.',
                   "#{e}:4:7: C: [Corrected] Use `%w` or `%W` " \
                   'for array of words.',
                   "#{e}:4:8: C: [Corrected] Prefer single-quoted strings " \
