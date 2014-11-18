@@ -198,7 +198,7 @@ describe RuboCop::Cop::Style::MultilineOperationIndentation do
                                   '`unless` statement spanning multiple ' \
                                   'lines.'])
       expect(cop.highlights).to eq(['.b'])
-      expect(cop.config_to_allow_offenses).to be_nil
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
     it 'registers an offense for misaligned operands in while condition' do
@@ -397,6 +397,18 @@ describe RuboCop::Cop::Style::MultilineOperationIndentation do
                       "  .gsub(/...(?=.)/, '\&_')",
                       '  .reverse'])
       expect(cop.messages).to be_empty
+    end
+
+    it 'registers an offense for correct + unrecognized style' do
+      inspect_source(cop,
+                     ['a ||',
+                      '  b',
+                      'c and',
+                      '    d'])
+      expect(cop.messages).to eq(['Use 2 (not 4) spaces for indenting an ' \
+                                  'expression spanning multiple lines.'])
+      expect(cop.highlights).to eq(%w(d))
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
     it 'registers an offense for aligned operatiors in assignment' do
