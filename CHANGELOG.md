@@ -7,12 +7,12 @@
 * New cop `ExtraSpacing` points out unnecessary spacing in files. ([@blainesch][])
 * New cop `EmptyLinesAroundBlockBody` provides same functionality as the EmptyLinesAround(Class|Method|Module)Body but for blocks. ([@jcarbo][])
 * New cop `Style/EmptyElse` checks for empty `else`-clauses. ([@Koronen][])
+* [#1454](https://github.com/bbatsov/rubocop/issues/1454): New `--only-guide-cops` and `AllCops/StyleGuideCopsOnly` options that will only enforce cops that link to a style guide. ([@marxarelli][])
 
 ### Changes
 
 * [#801](https://github.com/bbatsov/rubocop/issues/801): New style `context_dependent` for `Style/BracesAroundHashParameters` looks at preceding parameter to determine if braces should be used for final parameter. ([@jonas054][])
 * [#1427](https://github.com/bbatsov/rubocop/issues/1427): Excluding directories on the top level is now done earlier, so that these file trees are not searched, thus saving time when inspecting projects with many excluded files. ([@jonas054][])
-
 ### Bugs fixed
 
 * Fix `%W[]` auto corrected to `%w(]`. ([@toy][])
@@ -1180,3 +1180,4 @@
 [@toy]: https://github.com/toy
 [@Koronen]: https://github.com/Koronen
 [@blainesch]: https://github.com/blainesch
+[@marxarelli]: https://github.com/marxarelli

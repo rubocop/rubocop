@@ -1639,6 +1639,91 @@ describe RuboCop::CLI, :isolated_environment do
       .to eq(['', '1 file inspected, no offenses detected', ''].join("\n"))
   end
 
+  describe 'style guide only usage' do
+    context 'via the cli option' do
+      describe '--only-guide-cops' do
+        it 'skips cops that have no link to a style guide' do
+          create_file('example.rb', 'fail')
+          create_file('.rubocop.yml', ['Metrics/LineLength:',
+                                       '  Enabled: true',
+                                       '  StyleGuide: ~',
+                                       '  Max: 2'])
+
+          expect(cli.run(['--format', 'simple', '--only-guide-cops',
+                          'example.rb'])).to eq(0)
+        end
+
+        it 'runs cops for rules that link to a style guide' do
+          create_file('example.rb', 'fail')
+          create_file('.rubocop.yml', ['Metrics/LineLength:',
+                                       '  Enabled: true',
+                                       '  StyleGuide: "http://an.example/url"',
+                                       '  Max: 2'])
+
+          expect(cli.run(['--format', 'simple', '--only-guide-cops',
+                          'example.rb'])).to eq(1)
+
+          expect($stdout.string)
+            .to eq(['== example.rb ==',
+                    'C:  1:  3: Line is too long. [4/2]',
+                    '',
+                    '1 file inspected, 1 offense detected',
+                    ''].join("\n"))
+        end
+
+        it 'overrides configuration of AllCops/StyleGuideCopsOnly' do
+          create_file('example.rb', 'fail')
+          create_file('.rubocop.yml', ['AllCops:',
+                                       '  StyleGuideCopsOnly: false',
+                                       'Metrics/LineLength:',
+                                       '  Enabled: true',
+                                       '  StyleGuide: ~',
+                                       '  Max: 2'])
+
+          expect(cli.run(['--format', 'simple', '--only-guide-cops',
+                          'example.rb'])).to eq(0)
+        end
+      end
+    end
+
+    context 'via the config' do
+      before do
+        create_file('example.rb', 'fail')
+        create_file('.rubocop.yml', ['AllCops:',
+                                     "  StyleGuideCopsOnly: #{guide_cops_only}",
+                                     'Metrics/LineLength:',
+                                     '  Enabled: true',
+                                     '  StyleGuide: ~',
+                                     '  Max: 2'])
+      end
+
+      describe 'AllCops/StyleGuideCopsOnly' do
+        context 'when it is true' do
+          let(:guide_cops_only) { 'true' }
+
+          it 'skips cops that have no link to a style guide' do
+            expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(0)
+          end
+        end
+
+        context 'when it is false' do
+          let(:guide_cops_only) { 'false' }
+
+          it 'runs cops for rules regardless of any link to the style guide' do
+            expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(1)
+
+            expect($stdout.string)
+              .to eq(['== example.rb ==',
+                      'C:  1:  3: Line is too long. [4/2]',
+                      '',
+                      '1 file inspected, 1 offense detected',
+                      ''].join("\n"))
+          end
+        end
+      end
+    end
+  end
+
   describe 'rails cops' do
     describe 'enabling/disabling' do
       it 'by default does not run rails cops' do

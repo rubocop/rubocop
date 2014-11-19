@@ -37,6 +37,8 @@ describe RuboCop::Options, :isolated_environment do
         expected_help = <<-END
 Usage: rubocop [options] [file1, file2, ...]
         --only [COP1,COP2,...]       Run only the given cop(s).
+        --only-guide-cops            Run only cops for rules that link to a
+                                     style guide.
     -c, --config FILE                Specify configuration file.
         --auto-gen-config            Generate a configuration file acting as a
                                      TODO list.
