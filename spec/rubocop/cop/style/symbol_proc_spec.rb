@@ -74,6 +74,12 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
     expect(corrected).to eq 'coll.map(&:upcase)'
   end
 
+  it 'autocorrects multiple aliases with symbols as proc' do
+    corrected = autocorrect_source(cop, ['coll.map { |s| s.upcase }' \
+                                         '.map { |s| s.downcase }'])
+    expect(corrected).to eq 'coll.map(&:upcase).map(&:downcase)'
+  end
+
   it 'does not crash with a bare method call' do
     run = -> { inspect_source(cop, ['coll.map { |s| bare_method }']) }
     expect(&run).not_to raise_error
