@@ -38,10 +38,10 @@ module RuboCop
           return unless node.loc.else
 
           parent = node.parent
+          parent = parent.parent if parent.type == :ensure
           base = case parent.type
                  when :def, :defs then base_for_method_definition(parent)
-                 when :kwbegin    then parent.loc.begin
-                 when :ensure     then parent.parent.loc.begin
+                 when :kwbegin then parent.loc.begin
                  else node.loc.keyword
                  end
           check_alignment(base, node.loc.else)

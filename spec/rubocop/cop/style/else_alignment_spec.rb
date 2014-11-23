@@ -431,7 +431,51 @@ describe RuboCop::Cop::Style::ElseAlignment do
     end
   end
 
+  context 'with def/rescue/else/ensure/end' do
+    it 'accepts a correctly aligned else' do
+      inspect_source(cop,
+                     ['def my_func(string)',
+                      '  puts string',
+                      'rescue => e',
+                      '  puts e',
+                      'else',
+                      '  puts e',
+                      'ensure',
+                      "  puts 'I love methods that print'",
+                      'end'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense for misaligned else' do
+      inspect_source(cop,
+                     ['def my_func(string)',
+                      '  puts string',
+                      'rescue => e',
+                      '  puts e',
+                      '  else',
+                      '  puts e',
+                      'ensure',
+                      "  puts 'I love methods that print'",
+                      'end'])
+      expect(cop.messages).to eq(['Align `else` with `def`.'])
+    end
+  end
+
   context 'with def/rescue/else/end' do
+    it 'accepts a correctly aligned else' do
+      inspect_source(cop,
+                     ['def my_func',
+                      "  puts 'do something error prone'",
+                      'rescue SomeException',
+                      "  puts 'error handling'",
+                      'rescue',
+                      "  puts 'error handling'",
+                      'else',
+                      "  puts 'normal handling'",
+                      'end'])
+      expect(cop.messages).to be_empty
+    end
+
     it 'registers an offense for misaligned else' do
       inspect_source(cop,
                      ['def my_func',
