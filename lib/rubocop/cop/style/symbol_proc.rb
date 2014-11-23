@@ -36,13 +36,16 @@ module RuboCop
 
         def autocorrect(node)
           @corrections << lambda do |corrector|
-            block_method, _block_args, block_body = *node
+            _block_method, _block_args, block_body = *node
             _receiver, method_name, _args = *block_body
 
-            replacement = "#{block_method.loc.expression.source}" \
-                          "(&:#{method_name})"
+            block_range =
+              Parser::Source::Range.new(node.loc.expression.source_buffer,
+                                        node.loc.begin.begin_pos,
+                                        node.loc.end.end_pos)
 
-            corrector.replace(node.loc.expression, replacement)
+            corrector.replace(range_with_surrounding_space(block_range, :left),
+                              "(&:#{method_name})")
           end
         end
 
