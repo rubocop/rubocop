@@ -9,6 +9,7 @@
 
 ### Bugs fixed
 
+* Fix `%W[]` auto corrected to `%w(]`. ([@toy][])
 * Fix Style/ElseAlignment Cop to find the right parent on def/rescue/else/ensure/end. ([@oneamtu][])
 * [#1181](https://github.com/bbatsov/rubocop/issues/1181): *(fix again)* `Style/StringLiterals` cop stays away from strings inside interpolated expressions. ([@jonas054][])
 * [#1441](https://github.com/bbatsov/rubocop/issues/1441): Correct the logic used by `Style/Blocks` and other cops to determine if an auto-correction would alter the meaning of the code. ([@jonas054][])
@@ -1165,3 +1166,4 @@
 [@janraasch]: https://github.com/janraasch
 [@jcarbo]: https://github.com/jcarbo
 [@oneamtu]: https://github.com/oneamtu
+[@toy]: https://github.com/toy

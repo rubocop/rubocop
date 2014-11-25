@@ -93,4 +93,9 @@ describe RuboCop::Cop::Style::UnneededCapitalW do
     new_source = autocorrect_source(cop, '%W(one two three)')
     expect(new_source).to eq('%w(one two three)')
   end
+
+  it 'auto-corrects an array of words with different bracket' do
+    new_source = autocorrect_source(cop, '%W[one two three]')
+    expect(new_source).to eq('%w[one two three]')
+  end
 end
