@@ -231,7 +231,6 @@ describe RuboCop::Cop::Style::SignalException, :config do
                                 '  raise',
                                 'end'].join("\n"))
     end
-
   end
 
   context 'when enforced style is `fail`' do

@@ -61,5 +61,4 @@ describe RuboCop::Cop::Lint::Void do
                    ])
     expect(cop.offenses).to be_empty
   end
-
 end

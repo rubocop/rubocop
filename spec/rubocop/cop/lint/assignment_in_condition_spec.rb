@@ -90,7 +90,6 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
                      ])
       expect(cop.offenses).to be_empty
     end
-
   end
 
   context 'safe assignment is not allowed' do
