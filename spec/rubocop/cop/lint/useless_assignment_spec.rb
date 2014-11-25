@@ -1611,7 +1611,6 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
   context 'when a variable is assigned ' \
           'while being passed to a method taking block' do
-
     context 'and the variable is used' do
       let(:source) do
         [

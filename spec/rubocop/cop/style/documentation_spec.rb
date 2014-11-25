@@ -3,7 +3,6 @@
 require 'spec_helper'
 
 describe RuboCop::Cop::Style::Documentation do
-
   subject(:cop) { described_class.new(config) }
   let(:config) do
     RuboCop::Config.new('Style/CommentAnnotation' => {

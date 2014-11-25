@@ -75,7 +75,6 @@ module RuboCop
 
     def setup_subtasks(name)
       namespace name do
-
         desc 'Auto-correct RuboCop offenses'
 
         task :auto_correct do

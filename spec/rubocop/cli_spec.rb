@@ -1386,7 +1386,6 @@ describe RuboCop::CLI, :isolated_environment do
         create_file('.rubocop.yml', ['AllCops:',
                                      '  Exclude:',
                                      "    - #{target_file}"])
-
       end
 
       it 'excludes files specified in the configuration Exclude ' \
@@ -1759,7 +1758,6 @@ describe RuboCop::CLI, :isolated_environment do
         .to eq(['', '4 files inspected, no offenses detected',
                 ''].join("\n"))
     end
-
   end
 
   describe 'configuration from file' do
