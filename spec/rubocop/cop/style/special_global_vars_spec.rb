@@ -54,4 +54,9 @@ describe RuboCop::Cop::Style::SpecialGlobalVars do
     new_source = autocorrect_source(cop, '$/')
     expect(new_source).to eq('$INPUT_RECORD_SEPARATOR')
   end
+
+  it 'auto-corrects #$: to #{$LOAD_PATH}' do
+    new_source = autocorrect_source(cop, '"#$:"')
+    expect(new_source).to eq('"#{$LOAD_PATH}"')
+  end
 end

@@ -73,9 +73,14 @@ module RuboCop
         def autocorrect(node)
           @corrections << lambda do |corrector|
             global_var, = *node
-
-            corrector.replace(node.loc.expression,
-                              PREFERRED_VARS[global_var].first)
+            parent_type = node.parent ? node.parent.type : nil
+            if [:dstr, :xstr, :regexp].include?(parent_type)
+              corrector.replace(node.loc.expression,
+                                "{#{PREFERRED_VARS[global_var].first}}")
+            else
+              corrector.replace(node.loc.expression,
+                                PREFERRED_VARS[global_var].first)
+            end
           end
         end
       end

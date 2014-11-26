@@ -21,6 +21,7 @@
 * [#1456](https://github.com/bbatsov/rubocop/pull/1456): Fix autocorrect in `SymbolProc` when there are multiple offenses on the same line. ([@jcarbo][])
 * [#1459](https://github.com/bbatsov/rubocop/issues/1459): Handle parenthesis around the condition in `--auto-correct` for `NegatedWhile`. ([@jonas054][])
 * [#1465](https://github.com/bbatsov/rubocop/issues/1465): Fix autocorrect of code like `#$1` in `PerlBackrefs`. ([@bbatsov][])
+* Fix autocorrect of code like `#$:` in `SpecialGlobalVars`. ([@bbatsov][])
 
 ## 0.27.1 (08/11/2014)
 
