@@ -15,9 +15,14 @@ module RuboCop
         def autocorrect(node)
           @corrections << lambda do |corrector|
             backref, = *node
-
-            corrector.replace(node.loc.expression,
-                              "Regexp.last_match[#{backref}]")
+            parent_type = node.parent ? node.parent.type : nil
+            if [:dstr, :xstr, :regexp].include?(parent_type)
+              corrector.replace(node.loc.expression,
+                                "{Regexp.last_match[#{backref}]}")
+            else
+              corrector.replace(node.loc.expression,
+                                "Regexp.last_match[#{backref}]")
+            end
           end
         end
       end
