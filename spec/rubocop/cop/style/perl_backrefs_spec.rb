@@ -15,7 +15,7 @@ describe RuboCop::Cop::Style::PerlBackrefs do
     expect(new_source).to eq('Regexp.last_match[1]')
   end
 
-  it 'auto-corrects #$1 to {Regexp.last_match[1]}' do
+  it 'auto-corrects #$1 to #{Regexp.last_match[1]}' do
     new_source = autocorrect_source(cop, '"#$1"')
     expect(new_source).to eq('"#{Regexp.last_match[1]}"')
   end
