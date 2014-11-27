@@ -53,7 +53,13 @@ module RuboCop
         def args_match?(method_name, args)
           actual_args = args.flat_map(&:to_a)
 
-          actual_args == target_args(method_name).map(&:to_sym)
+          # Prepending an underscore to mark an unused parameter is allowed, so
+          # we remove any leading underscores before comparing.
+          actual_args_no_underscores = actual_args.map do |arg|
+            arg.to_s.sub(/^_+/, '')
+          end
+
+          actual_args_no_underscores == target_args(method_name)
         end
       end
     end

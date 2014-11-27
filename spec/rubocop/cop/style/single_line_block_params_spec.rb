@@ -11,7 +11,7 @@ describe RuboCop::Cop::Style::SingleLineBlockParams, :config do
     }
   end
 
-  it 'find wrong argument names in calls with different syntax' do
+  it 'finds wrong argument names in calls with different syntax' do
     inspect_source(cop,
                    ['def m',
                     '  [0, 1].reduce { |c, d| c + d }',
@@ -40,6 +40,18 @@ describe RuboCop::Cop::Style::SingleLineBlockParams, :config do
                     '  ala.test { |x, y| bala }',
                     'end'])
     expect(cop.offenses).to be_empty
+  end
+
+  it 'allows an unused parameter to have a leading underscore' do
+    inspect_source(cop,
+                   ['File.foreach(filename).reduce(0) { |a, _e| a + 1 }'])
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'finds incorrectly named parameters with leading underscores' do
+    inspect_source(cop,
+                   ['File.foreach(filename).reduce(0) { |_x, _y| }'])
+    expect(cop.messages).to eq(['Name `reduce` block params `|a, e|`.'])
   end
 
   it 'ignores do..end blocks' do
