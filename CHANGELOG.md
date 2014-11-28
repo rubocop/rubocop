@@ -22,6 +22,7 @@
 * [#1459](https://github.com/bbatsov/rubocop/issues/1459): Handle parenthesis around the condition in `--auto-correct` for `NegatedWhile`. ([@jonas054][])
 * [#1465](https://github.com/bbatsov/rubocop/issues/1465): Fix autocorrect of code like `#$1` in `PerlBackrefs`. ([@bbatsov][])
 * Fix autocorrect of code like `#$:` in `SpecialGlobalVars`. ([@bbatsov][])
+* [#1466](https://github.com/bbatsov/rubocop/issues/1466): Allow leading underscore for unused parameters in `SingleLineBlockParams`. ([@jonas054][])
 
 ## 0.27.1 (08/11/2014)
 
