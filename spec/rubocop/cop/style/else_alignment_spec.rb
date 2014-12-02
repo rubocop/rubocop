@@ -84,12 +84,24 @@ describe RuboCop::Cop::Style::ElseAlignment do
     context 'with assignment' do
       context 'when alignment style is variable' do
         context 'and end is aligned with variable' do
-          it 'accepts an if with end aligned with setter' do
+          it 'accepts an if-else with end aligned with setter' do
             inspect_source(cop,
                            ['foo.bar = if baz',
                             '  derp1',
                             'else',
                             '  derp2',
+                            'end'])
+            expect(cop.offenses).to be_empty
+          end
+
+          it 'accepts an if-elsif-else with end aligned with setter' do
+            inspect_source(cop,
+                           ['foo.bar = if baz',
+                            '  derp1',
+                            'elsif meh',
+                            '  derp2',
+                            'else',
+                            '  derp3',
                             'end'])
             expect(cop.offenses).to be_empty
           end
