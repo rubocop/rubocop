@@ -742,7 +742,7 @@ require:
  - rubocop-extension
 ```
 
-Note: The pathes are directly passed to `Kernel.require`.  If your
+Note: The paths are directly passed to `Kernel.require`.  If your
 extension file is not in `$LOAD_PATH`, you need to specify the path as
 relative path prefixed with `./` explicitly, or absolute path.
 
