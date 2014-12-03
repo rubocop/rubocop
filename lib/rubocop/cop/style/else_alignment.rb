@@ -21,17 +21,18 @@ module RuboCop
           else_range = node.loc.else
           return unless begins_its_line?(else_range)
 
-          base_range = if base
-                         base.loc.expression
-                       else
-                         base = node
-                         until %w(if unless).include?(base.loc.keyword.source)
-                           base = base.parent
-                         end
-                         base.loc.keyword
-                       end
+          check_alignment(base_range(node, base), else_range)
 
-          check_alignment(base_range, else_range)
+          return if else_range.source != 'elsif'
+
+          # If the `else` part is actually an `elsif`, we check the `elsif`
+          # node in case it contains an `else` within, because that `else`
+          # should have the same alignment (base).
+          _condition, _if_body, else_body = *node
+          on_if(else_body, base)
+          # The `elsif` node will get an `on_if` call from the framework later,
+          # but we're done here, so we set it to ignored.
+          ignore_node(else_body)
         end
 
         def on_rescue(node)
@@ -54,6 +55,18 @@ module RuboCop
         end
 
         private
+
+        def base_range(node, base)
+          if base
+            base.loc.expression
+          else
+            base = node
+            until %w(if unless).include?(base.loc.keyword.source)
+              base = base.parent
+            end
+            base.loc.keyword
+          end
+        end
 
         def base_for_method_definition(node)
           parent = node.parent
@@ -81,14 +94,14 @@ module RuboCop
           ignore_node(rhs)
         end
 
-        def check_alignment(base_loc, else_range)
+        def check_alignment(base_range, else_range)
           return unless begins_its_line?(else_range)
 
-          @column_delta = base_loc.column - else_range.column
+          @column_delta = base_range.column - else_range.column
           return if @column_delta == 0
 
           add_offense(else_range, else_range,
-                      format(MSG, else_range.source, base_loc.source[/^\S*/]))
+                      format(MSG, else_range.source, base_range.source[/^\S*/]))
         end
       end
     end

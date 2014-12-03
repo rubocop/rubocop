@@ -146,14 +146,17 @@ describe RuboCop::Cop::Style::ElseAlignment do
         end
 
         context 'and end is aligned with keyword' do
-          it 'registers an offense for an if with setter' do
+          it 'registers offenses for an if with setter' do
             inspect_source(cop,
                            ['foo.bar = if baz',
                             '            derp1',
-                            '          else',
+                            '          elsif meh',
                             '            derp2',
+                            '          else',
+                            '            derp3',
                             '          end'])
-            expect(cop.messages).to eq(['Align `else` with `foo.bar`.'])
+            expect(cop.messages).to eq(['Align `elsif` with `foo.bar`.',
+                                        'Align `else` with `foo.bar`.'])
           end
 
           it 'registers an offense for an if with element assignment' do
