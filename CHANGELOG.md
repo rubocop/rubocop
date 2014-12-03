@@ -23,6 +23,7 @@
 * [#1465](https://github.com/bbatsov/rubocop/issues/1465): Fix autocorrect of code like `#$1` in `PerlBackrefs`. ([@bbatsov][])
 * Fix autocorrect of code like `#$:` in `SpecialGlobalVars`. ([@bbatsov][])
 * [#1466](https://github.com/bbatsov/rubocop/issues/1466): Allow leading underscore for unused parameters in `SingleLineBlockParams`. ([@jonas054][])
+* [#1470](https://github.com/bbatsov/rubocop/issues/1470): Handle `elsif` + `else` in `ElseAlignment`. ([@jonas054][])
 
 ## 0.27.1 (08/11/2014)
 
