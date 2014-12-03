@@ -18,7 +18,7 @@ describe RuboCop::Cop::Style::CaseIndentation do
       end
 
       context 'regarding assignment where the right hand side is a case' do
-        it 'accepts a correcty indented assignment' do
+        it 'accepts a correctly indented assignment' do
           source = ['output = case variable',
                     "         when 'value1'",
                     "           'output1'",
@@ -156,7 +156,7 @@ describe RuboCop::Cop::Style::CaseIndentation do
       end
 
       context 'regarding assignment where the right hand side is a case' do
-        it 'accepts a correcty indented assignment' do
+        it 'accepts a correctly indented assignment' do
           source = ['output = case variable',
                     "           when 'value1'",
                     "             'output1'",
@@ -220,7 +220,7 @@ describe RuboCop::Cop::Style::CaseIndentation do
       end
 
       context 'regarding assignment where the right hand side is a case' do
-        it 'accepts a correcty indented assignment' do
+        it 'accepts a correctly indented assignment' do
           source = ['output = case variable',
                     "when 'value1'",
                     "  'output1'",
@@ -250,7 +250,7 @@ describe RuboCop::Cop::Style::CaseIndentation do
       end
 
       context 'regarding assignment where the right hand side is a case' do
-        it 'accepts a correcty indented assignment' do
+        it 'accepts a correctly indented assignment' do
           source = ['output = case variable',
                     "  when 'value1'",
                     "    'output1'",

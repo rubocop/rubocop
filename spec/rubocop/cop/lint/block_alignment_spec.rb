@@ -45,7 +45,7 @@ describe RuboCop::Cop::Lint::BlockAlignment do
     end
   end
 
-  it 'acepts a block end that does not begin its line' do
+  it 'accepts a block end that does not begin its line' do
     inspect_source(cop,
                    ['  scope :bar, lambda { joins(:baz)',
                     '                       .distinct }'
@@ -383,7 +383,7 @@ describe RuboCop::Cop::Lint::BlockAlignment do
 
   it 'accepts end aligned with a method call' do
     inspect_source(cop,
-                   ['parser.childs << lambda do |token|',
+                   ['parser.children << lambda do |token|',
                     '  token << 1',
                     'end'
                    ])
@@ -392,13 +392,13 @@ describe RuboCop::Cop::Lint::BlockAlignment do
 
   it 'registers an offense for mismatched block end with a method call' do
     inspect_source(cop,
-                   ['parser.childs << lambda do |token|',
+                   ['parser.children << lambda do |token|',
                     '  token << 1',
                     '  end'
                    ])
     expect(cop.messages)
       .to eq(['`end` at 3, 2 is not aligned with' \
-              ' `parser.childs << lambda do |token|` at 1, 0'])
+              ' `parser.children << lambda do |token|` at 1, 0'])
   end
 
   it 'accepts end aligned with a method call with arguments' do

@@ -115,7 +115,7 @@ describe RuboCop::Cop::Team do
         [RuboCop::Cop::Lint::Void, RuboCop::Cop::Metrics::LineLength]
       end
 
-      it 'returns only intances of the classes' do
+      it 'returns only instances of the classes' do
         expect(cops.size).to eq(2)
         cops.sort! { |a, b| a.name <=> b.name }
         expect(cops[0].name).to eq('Lint/Void')
@@ -137,7 +137,7 @@ describe RuboCop::Cop::Team do
       end
       let(:cop_names) { cops.map(&:name) }
 
-      it 'does not return intances of the classes' do
+      it 'does not return instances of the classes' do
         expect(cops).not_to be_empty
         expect(cop_names).not_to include('Lint/Void')
         expect(cop_names).not_to include('Metrics/LineLength')

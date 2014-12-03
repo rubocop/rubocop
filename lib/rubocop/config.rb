@@ -92,7 +92,7 @@ module RuboCop
 
     # TODO: This should be a private method
     def validate
-      # Don't validate RuboCop's own files. Avoids inifinite recursion.
+      # Don't validate RuboCop's own files. Avoids infinite recursion.
       return if loaded_path.start_with?(File.join(ConfigLoader::RUBOCOP_HOME,
                                                   'config'))
 

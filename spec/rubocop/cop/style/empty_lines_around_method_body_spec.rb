@@ -15,7 +15,7 @@ describe RuboCop::Cop::Style::EmptyLinesAroundMethodBody do
       .to eq(['Extra empty line detected at method body beginning.'])
   end
 
-  # The cop only registers an offense if the extra line is completely emtpy. If
+  # The cop only registers an offense if the extra line is completely empty. If
   # there is trailing whitespace, then that must be dealt with first. Having
   # two cops registering offense for the line with only spaces would cause
   # havoc in auto-correction.

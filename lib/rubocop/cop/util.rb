@@ -181,7 +181,7 @@ module RuboCop
         node
       end
 
-      # Range#size is not avaialable prior to Ruby 2.0.
+      # Range#size is not available prior to Ruby 2.0.
       def numeric_range_size(range)
         size = range.end - range.begin
         size += 1 unless range.exclude_end?

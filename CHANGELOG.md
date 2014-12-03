@@ -120,7 +120,7 @@
 * [#1232](https://github.com/bbatsov/rubocop/issues/1232): Add EnforcedStyle option to cop `AndOr` to restrict it to conditionals. ([@vrthra][])
 * [#835](https://github.com/bbatsov/rubocop/issues/835): New cop `PercentQLiterals` checks if use of `%Q` and `%q` matches configuration. ([@jonas054][])
 * [#835](https://github.com/bbatsov/rubocop/issues/835): New cop `BarePercentLiterals` checks if usage of `%()` or `%Q()` matches configuration. ([@jonas054][])
-* [#1079](https://github.com/bbatsov/rubocop/pull/1079): New cop `MultilineBlockLayout` checks if a multiline block has an extpression on the same line as the start of the block. ([@barunio][])
+* [#1079](https://github.com/bbatsov/rubocop/pull/1079): New cop `MultilineBlockLayout` checks if a multiline block has an expression on the same line as the start of the block. ([@barunio][])
 * [#1217](https://github.com/bbatsov/rubocop/pull/1217): `Style::EmptyLinesAroundAccessModifier` cop does auto-correction. ([@tamird][])
 * [#1220](https://github.com/bbatsov/rubocop/issues/1220): New cop `PerceivedComplexity` is similar to `CyclomaticComplexity`, but reports when methods have a high complexity for a human reader. ([@jonas054][])
 * `Debugger` cop now checks for `binding.pry_remote`. ([@yous][])
@@ -168,7 +168,7 @@
 
 * [#639](https://github.com/bbatsov/rubocop/issues/639): Support square bracket setters in `UselessSetterCall`. ([@yujinakayama][])
 * [#835](https://github.com/bbatsov/rubocop/issues/835): `UnneededCapitalW` cop does auto-correction. ([@sfeldon][])
-* [#1092](https://github.com/bbatsov/rubocop/issues/1092): New cop `DefEndAlignment` takes over responsibility for checkng alignment of method definition `end`s from `EndAlignment`, and is configurable. ([@jonas054][])
+* [#1092](https://github.com/bbatsov/rubocop/issues/1092): New cop `DefEndAlignment` takes over responsibility for checking alignment of method definition `end`s from `EndAlignment`, and is configurable. ([@jonas054][])
 * [#1145](https://github.com/bbatsov/rubocop/issues/1145): New cop `ClassCheck` enforces consistent use of `is_a?` or `kind_of?`. ([@bbatsov][])
 * [#1161](https://github.com/bbatsov/rubocop/pull/1161): New cop `SpaceBeforeComma` detects spaces before a comma. ([@agrimm][])
 * [#1161](https://github.com/bbatsov/rubocop/pull/1161): New cop `SpaceBeforeSemicolon` detects spaces before a semicolon. ([@agrimm][])
@@ -231,7 +231,7 @@
 
 * [#974](https://github.com/bbatsov/rubocop/pull/974): New cop `CommentIndentation` checks indentation of comments. ([@jonas054][])
 * Add new cop `EachWithObject` to prefer `each_with_object` over `inject` or `reduce`. ([@geniou][])
-* [#1010](https://github.com/bbatsov/rubocop/issues/1010): New Cop `Next` check for conditions at the end of an interation and propose to use `next` instead. ([@geniou][])
+* [#1010](https://github.com/bbatsov/rubocop/issues/1010): New Cop `Next` check for conditions at the end of an iteration and propose to use `next` instead. ([@geniou][])
 * The `GuardClause` cop now also looks for unless and it is configurable how many lines the body of an if / unless needs to have to not be ignored. ([@geniou][])
 * [#835](https://github.com/bbatsov/rubocop/issues/835): New cop `UnneededPercentX` checks for `%x` when backquotes would do. ([@jonas054][])
 * Add auto-correct to `UnusedBlockArgument` and `UnusedMethodArgument` cops. ([@hannestyden][])
@@ -243,7 +243,7 @@
 
 * `NonNilCheck` offense reporting and autocorrect are configurable to include semantic changes. ([@hannestyden][])
 * The parameters `AllCops/Excludes` and `AllCops/Includes` with final `s` only give a warning and don't halt `rubocop` execution. ([@jonas054][])
-* The `GuardClause` cop is no longer irgnoring a one-line body by default - see configuration. ([@geniou][])
+* The `GuardClause` cop is no longer ignoring a one-line body by default - see configuration. ([@geniou][])
 * [#1050](https://github.com/bbatsov/rubocop/issues/1050): Rename `rubocop-todo.yml` file to `.rubocop_todo.yml`. ([@geniou][])
 * [#1064](https://github.com/bbatsov/rubocop/issues/1064): Adjust default max line length to 80. ([@bbatsov][])
 

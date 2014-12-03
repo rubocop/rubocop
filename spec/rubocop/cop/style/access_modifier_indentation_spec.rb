@@ -70,7 +70,7 @@ describe RuboCop::Cop::Style::AccessModifierIndentation do
                       'end'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Indent access modifiers like `private`.'])
-      # No EnforcedStyle can allow both aligments:
+      # No EnforcedStyle can allow both alignments:
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
@@ -86,7 +86,7 @@ describe RuboCop::Cop::Style::AccessModifierIndentation do
                       'end'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Indent access modifiers like `public`.'])
-      # No EnforcedStyle can allow both aligments:
+      # No EnforcedStyle can allow both alignments:
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 

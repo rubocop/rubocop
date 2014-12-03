@@ -35,7 +35,7 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     describe '--auto-correct' do
-      it 'corrects SymbolProc and SpaceBeforeBlockBraces offences' do
+      it 'corrects SymbolProc and SpaceBeforeBlockBraces offenses' do
         source = ['foo.map{ |a| a.nil? }']
         create_file('example.rb', source)
         expect(cli.run(['-D', '--auto-correct'])).to eq(1)
@@ -48,7 +48,7 @@ describe RuboCop::CLI, :isolated_environment do
         # Style/AlignHash. Because they make minimal corrections relating only
         # to their specific areas, and stay away from cleaning up extra
         # whitespace in the process, the combined changes don't interfere with
-        # eachother and the result is semantically the same as the starting
+        # each other and the result is semantically the same as the starting
         # point.
         source = ['# encoding: utf-8',
                   'expect(subject[:address]).to eq({',
@@ -1656,7 +1656,7 @@ describe RuboCop::CLI, :isolated_environment do
         expect($stdout.string).to include('Prefer self[:attr]')
       end
 
-      it 'with configation option true in one dir runs rails cops there' do
+      it 'with configuration option true in one dir runs rails cops there' do
         source = ['# encoding: utf-8',
                   'read_attribute(:test)']
         create_file('dir1/app/models/example1.rb', source)
@@ -1683,7 +1683,7 @@ describe RuboCop::CLI, :isolated_environment do
                   ''].join("\n"))
       end
 
-      it 'with configation option false but -R given runs rails cops' do
+      it 'with configuration option false but -R given runs rails cops' do
         create_file('app/models/example1.rb', ['# encoding: utf-8',
                                                'read_attribute(:test)'])
         create_file('.rubocop.yml', ['AllCops:',
@@ -1862,7 +1862,7 @@ describe RuboCop::CLI, :isolated_environment do
                 ''].join("\n"))
     end
 
-    it 'matches included/excluded files corectly when . argument is given' do
+    it 'matches included/excluded files correctly when . argument is given' do
       create_file('example.rb', 'x = 0')
       create_file('special.dsl', ['# encoding: utf-8',
                                   'setup { "stuff" }'

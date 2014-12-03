@@ -316,7 +316,7 @@ describe RuboCop::Cop::Style::TrailingComma, :config do
 
       # this is a sad parse error
       it 'accepts no trailing comma in a method call with a block' \
-         ' paramter at the end' do
+         ' parameter at the end' do
         inspect_source(cop, ['some_method(',
                              '              a,',
                              '              b,',

@@ -411,7 +411,7 @@ describe RuboCop::Cop::Style::MultilineOperationIndentation do
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
-    it 'registers an offense for aligned operatiors in assignment' do
+    it 'registers an offense for aligned operators in assignment' do
       inspect_source(cop,
                      ['formatted_int = int_part',
                       '                .abs',

@@ -9,13 +9,13 @@ module RuboCop
       PRIVATE_NODE = s(:send, nil, :private)
       PROTECTED_NODE = s(:send, nil, :protected)
       PUBLIC_NODE = s(:send, nil, :public)
-      MODUDULE_FUNCTION_NODE = s(:send, nil, :module_function)
+      MODULE_FUNCTION_NODE = s(:send, nil, :module_function)
 
       def modifier_node?(node)
         [PRIVATE_NODE,
          PROTECTED_NODE,
          PUBLIC_NODE,
-         MODUDULE_FUNCTION_NODE].include?(node)
+         MODULE_FUNCTION_NODE].include?(node)
       end
     end
   end
