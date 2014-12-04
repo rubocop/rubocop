@@ -57,7 +57,7 @@ module RuboCop
         end
       end
 
-      # This class privides helper methods used in the ERB template.
+      # This class provides helper methods used in the ERB template.
       class ERBContext
         include PathUtil, TextUtil
 

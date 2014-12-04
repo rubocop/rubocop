@@ -254,7 +254,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
       ]
     end
 
-    it 'registers offenses for each asignment' do
+    it 'registers offenses for each assignment' do
       inspect_source(cop, source)
       expect(cop.offenses.size).to eq(2)
 
@@ -1645,7 +1645,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
     end
   end
 
-  context 'when a variabled is assigned ' \
+  context 'when a variable is assigned ' \
           'and passed to a method followed by method taking block'  do
     let(:source) do
       [

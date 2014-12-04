@@ -11,7 +11,7 @@ describe RuboCop::Cop::Style::EndOfLine do
     expect(cop.messages).to eq(['Carriage return character detected.'])
   end
 
-  it 'highlights the whole offendng line' do
+  it 'highlights the whole offending line' do
     inspect_source_file(cop, ['x=0', '', "y=1\r"])
     expect(cop.highlights).to eq(["y=1\r"])
   end
@@ -56,7 +56,7 @@ describe RuboCop::Cop::Style::EndOfLine do
   end
 
   context 'when source is a string' do
-    it 'registers an offence' do
+    it 'registers an offense' do
       inspect_source(cop, ["x=0\r"])
 
       expect(cop.messages).to eq(['Carriage return character detected.'])

@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     class VariableForce
-      # A Variable represents existance of a local variable.
+      # A Variable represents existence of a local variable.
       # This holds a variable declaration node,
       # and some states of the variable.
       class Variable

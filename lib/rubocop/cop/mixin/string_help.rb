@@ -8,7 +8,7 @@ module RuboCop
     # nodes.
     module StringHelp
       # Regex matches IF there is a ' or there is a \\ in the string that is
-      # not preceeded/followed by another \\ (e.g. "\\x34") but not "\\\\".
+      # not preceded/followed by another \\ (e.g. "\\x34") but not "\\\\".
       ESCAPED_CHAR_REGEXP = /(?<! \\) \\{2}* \\ (?! \\)/x
 
       def on_str(node)

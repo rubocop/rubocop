@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     # This force provides a way to track local variables and scopes of Ruby.
-    # Cops intertact with this force need to override some of the hook methods.
+    # Cops interact with this force need to override some of the hook methods.
     #
     #     def before_entering_scope(scope, variable_table)
     #     end
@@ -31,7 +31,7 @@ module RuboCop
       ARGUMENT_DECLARATION_TYPES = [
         :arg, :optarg, :restarg,
         :kwarg, :kwoptarg, :kwrestarg,
-        :blockarg, # This doen't mean block argument, it's block-pass (&block).
+        :blockarg, # This doesn't mean block argument, it's block-pass (&block).
         :shadowarg # This means block local variable (obj.each { |arg; this| }).
       ].freeze
 
@@ -290,7 +290,7 @@ module RuboCop
 
         referenced_variable_names_in_loop.each do |name|
           variable = variable_table.find_variable(name)
-          # Non related references which are catched in the above scan
+          # Non related references which are caught in the above scan
           # would be skipped here.
           next unless variable
           variable.assignments.each do |assignment|

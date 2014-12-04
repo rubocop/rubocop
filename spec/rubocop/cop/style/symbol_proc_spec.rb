@@ -7,7 +7,8 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
 
   let(:cop_config) { { 'IgnoredMethods' => %w(respond_to) } }
 
-  it 'registers an offense for a block with paratermess method call on param' do
+  it 'registers an offense for a block with parameterless method call on ' \
+     'param' do
     inspect_source(cop, 'coll.map { |e| e.upcase }')
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)

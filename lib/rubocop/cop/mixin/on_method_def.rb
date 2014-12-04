@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    # Common functionality for checking instance methods and singeton methods.
+    # Common functionality for checking instance methods and singleton methods.
     module OnMethodDef
       def on_def(node)
         method_name, args, body = *node

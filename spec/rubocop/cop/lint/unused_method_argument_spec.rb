@@ -245,7 +245,7 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument do
       end
     end
 
-    context 'when an unsed argument has default value' do
+    context 'when an unused argument has default value' do
       let(:source) { <<-END }
         def some_method(foo, bar = 1)
           puts foo

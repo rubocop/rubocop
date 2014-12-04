@@ -94,7 +94,7 @@ module RuboCop
           latest_when = nil
           branches.compact.each do |b|
             if b.type == :when
-              # TODO: Revert to the original expresson once the fix in Rubinius
+              # TODO: Revert to the original expression once the fix in Rubinius
               #   is released.
               #
               # Originally this expression was:

@@ -63,7 +63,7 @@ describe RuboCop::Cop::Style::PercentQLiterals, :config do
       end
 
       it 'accepts %q' do
-        # This is most probably a mistake, but not this cop's responisibility.
+        # This is most probably a mistake, but not this cop's responsibility.
         inspect_source(cop, ['%q(#{1 + 2})'])
         expect(cop.offenses).to be_empty
       end

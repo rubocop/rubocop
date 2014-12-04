@@ -70,7 +70,7 @@ describe RuboCop::CommentConfig do
       expect(void_disabled_lines & expected_part).to be_empty
     end
 
-    it 'supports disabling single line with a direcive at end of line' do
+    it 'supports disabling single line with a directive at end of line' do
       eval_disabled_lines = disabled_lines_of_cop('Lint/Eval')
       expect(eval_disabled_lines).to include(14)
       expect(eval_disabled_lines).not_to include(15)

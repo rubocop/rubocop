@@ -32,7 +32,7 @@ module RuboCop
         # values are aligned.
         class AlignmentOfValues
           def checkable_layout(node)
-            !any_pairs_on_the_same_line?(node) && all_have_same_sparator?(node)
+            !any_pairs_on_the_same_line?(node) && all_have_same_separator?(node)
           end
 
           def deltas(first_pair, _prev_pair, current_pair)
@@ -64,7 +64,7 @@ module RuboCop
             lines_of_the_children.uniq.size < lines_of_the_children.size
           end
 
-          def all_have_same_sparator?(node)
+          def all_have_same_separator?(node)
             first_separator = node.children.first.loc.operator.source
             node.children[1..-1].all? do |pair|
               pair.loc.operator.is?(first_separator)

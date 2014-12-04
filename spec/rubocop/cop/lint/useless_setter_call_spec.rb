@@ -164,7 +164,7 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
     end
   end
 
-  context 'when a lvar contains a local object instanciated with literal' do
+  context 'when a lvar contains a local object instantiated with literal' do
     it 'registers an offense for the setter call on the lvar' do
       inspect_source(cop,
                      ['def test',

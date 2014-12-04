@@ -10,12 +10,12 @@ describe RuboCop::Cop::Style::Tab do
     expect(cop.offenses.size).to eq(1)
   end
 
-  it 'registers an offence for a line indented with multiple tabs' do
+  it 'registers an offense for a line indented with multiple tabs' do
     inspect_source(cop, ["\t\t\tx = 0"])
     expect(cop.offenses.size).to eq(1)
   end
 
-  it 'registers an offence for a line indented with mixed whitespace' do
+  it 'registers an offense for a line indented with mixed whitespace' do
     inspect_source(cop, [" \tx = 0"])
     expect(cop.offenses.size).to eq(1)
   end
