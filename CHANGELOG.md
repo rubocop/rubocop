@@ -5,6 +5,7 @@
 ### New features
 
 * New cop `EmptyLinesAroundBlockBody` provides same functionality as the EmptyLinesAround(Class|Method|Module)Body but for blocks. ([@jcarbo][])
+* New cop `Style/EmptyElse` checks for empty `else`-clauses. ([@Koronen][])
 
 ### Changes
 
@@ -1176,3 +1177,4 @@
 [@jcarbo]: https://github.com/jcarbo
 [@oneamtu]: https://github.com/oneamtu
 [@toy]: https://github.com/toy
+[@Koronen]: https://github.com/Koronen
