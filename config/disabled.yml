@@ -23,3 +23,8 @@ Style/SymbolArray:
   Description: 'Use %i or %I for arrays of symbols.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-i'
   Enabled: false
+
+Style/ExtraSpacing:
+  Description: 'Do not use unnecessary spacing.'
+  Enabled: false
+
