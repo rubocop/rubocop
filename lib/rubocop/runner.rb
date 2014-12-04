@@ -106,15 +106,24 @@ module RuboCop
             @options[:only].include?(c.cop_name) || @options[:lint] && c.lint?
           end
         else
-          # filter out Rails cops unless requested
-          cop_classes.reject!(&:rails?) unless run_rails_cops?(config)
-
-          # select only lint cops when --lint is passed
-          cop_classes.select!(&:lint?) if @options[:lint]
+          filter_cop_classes(cop_classes, config)
         end
 
         cop_classes
       end
+    end
+
+    def filter_cop_classes(cop_classes, config)
+      # use only cops that link to a style guide if requested
+      if style_guide_cops_only?(config)
+        cop_classes.select! { |cop| config.for_cop(cop)['StyleGuide'] }
+      end
+
+      # filter out Rails cops unless requested
+      cop_classes.reject!(&:rails?) unless run_rails_cops?(config)
+
+      # select only lint cops when --lint is passed
+      cop_classes.select!(&:lint?) if @options[:lint]
     end
 
     def validate_only_option
@@ -126,6 +135,10 @@ module RuboCop
 
     def run_rails_cops?(config)
       @options[:rails] || config['AllCops']['RunRailsCops']
+    end
+
+    def style_guide_cops_only?(config)
+      @options[:only_guide_cops] || config['AllCops']['StyleGuideCopsOnly']
     end
 
     def formatter_set

@@ -7,6 +7,8 @@ module RuboCop
   module OptionsHelp
     TEXT = {
       only:              'Run only the given cop(s).',
+      only_guide_cops:  ['Run only cops for rules that link to a',
+                         'style guide.'],
       require:           'Require Ruby file.',
       config:            'Specify configuration file.',
       auto_gen_config:  ['Generate a configuration file acting as a',
@@ -76,12 +78,7 @@ module RuboCop
       OptionParser.new do |opts|
         opts.banner = 'Usage: rubocop [options] [file1, file2, ...]'
 
-        option(opts, '--only [COP1,COP2,...]') do |list|
-          @options[:only] = list.split(',').map do |c|
-            Cop::Cop.qualified_cop_name(c, '--only option')
-          end
-        end
-
+        add_only_options(opts)
         add_configuration_options(opts, args)
         add_formatting_options(opts)
 
@@ -96,6 +93,16 @@ module RuboCop
     def validate_compatibility
       return unless (incompat = @options.keys & EXITING_OPTIONS).size > 1
       fail ArgumentError, "Incompatible cli options: #{incompat.inspect}"
+    end
+
+    def add_only_options(opts)
+      option(opts, '--only [COP1,COP2,...]') do |list|
+        @options[:only] = list.split(',').map do |c|
+          Cop::Cop.qualified_cop_name(c, '--only option')
+        end
+      end
+
+      option(opts, '--only-guide-cops')
     end
 
     def add_configuration_options(opts, args)
