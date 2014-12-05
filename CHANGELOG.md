@@ -28,6 +28,7 @@
 * Fix autocorrect of code like `#$:` in `SpecialGlobalVars`. ([@bbatsov][])
 * [#1466](https://github.com/bbatsov/rubocop/issues/1466): Allow leading underscore for unused parameters in `SingleLineBlockParams`. ([@jonas054][])
 * [#1470](https://github.com/bbatsov/rubocop/issues/1470): Handle `elsif` + `else` in `ElseAlignment`. ([@jonas054][])
+* [#1474](https://github.com/bbatsov/rubocop/issues/1474): Multiline string with both `<<` and `\` caught by `Style/LineEndConcatenation` cop. ([@katieschilling][])
 
 ## 0.27.1 (08/11/2014)
 
@@ -1183,3 +1184,4 @@
 [@Koronen]: https://github.com/Koronen
 [@blainesch]: https://github.com/blainesch
 [@marxarelli]: https://github.com/marxarelli
+[@katieschilling]: https://github.com/katieschilling

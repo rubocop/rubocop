@@ -63,7 +63,11 @@ module RuboCop
           return false unless node.loc.respond_to?(:begin)
 
           # we care only about quotes-delimited literals
-          node.loc.begin && ["'", '"'].include?(node.loc.begin.source)
+          if node.loc.begin
+            ["'", '"'].include?(node.loc.begin.source)
+          elsif node.children.any?
+            node.children.map { |child| string_type?(child) }.all?
+          end
         end
 
         def final_node_is_string_type?(node)
