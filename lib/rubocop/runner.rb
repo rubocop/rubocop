@@ -157,7 +157,7 @@ module RuboCop
     end
 
     def considered_failure?(offense)
-      offense.severity >= minimum_severity_to_fail
+      !offense.corrected? && offense.severity >= minimum_severity_to_fail
     end
 
     def minimum_severity_to_fail

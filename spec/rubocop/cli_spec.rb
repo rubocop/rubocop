@@ -38,9 +38,13 @@ describe RuboCop::CLI, :isolated_environment do
       it 'corrects SymbolProc and SpaceBeforeBlockBraces offenses' do
         source = ['foo.map{ |a| a.nil? }']
         create_file('example.rb', source)
-        expect(cli.run(['-D', '--auto-correct'])).to eq(1)
+        expect(cli.run(['-D', '--auto-correct'])).to eq(0)
         corrected = "foo.map(&:nil?)\n"
         expect(IO.read('example.rb')).to eq(corrected)
+        uncorrected = $stdout.string.split($RS).select do |line|
+          line.include?('example.rb:') && !line.include?('[Corrected]')
+        end
+        expect(uncorrected).to be_empty # Hence exit code 0.
       end
 
       it 'corrects complicated cases conservatively' do
@@ -59,7 +63,7 @@ describe RuboCop::CLI, :isolated_environment do
                   "  postal_code: '99999-1111'",
                   '})']
         create_file('example.rb', source)
-        expect(cli.run(['-D', '--auto-correct'])).to eq(1)
+        expect(cli.run(['-D', '--auto-correct'])).to eq(0)
         corrected =
           ['# encoding: utf-8',
            'expect(subject[:address]).to eq(',
@@ -180,7 +184,7 @@ describe RuboCop::CLI, :isolated_environment do
                                    '(1..10).each{ |i|',
                                    '  puts i',
                                    '}'])
-        expect(cli.run(['--auto-correct'])).to eq(1)
+        expect(cli.run(['--auto-correct'])).to eq(0)
         expect(IO.read('example.rb'))
           .to eq(['# encoding: utf-8',
                   '(1..10).each do |i|',
@@ -193,7 +197,7 @@ describe RuboCop::CLI, :isolated_environment do
         create_file('example.rb',
                     ['# encoding: utf-8',
                      "assert_post_status_code 400, 's', {:type => 'bad'}"])
-        expect(cli.run(%w(--auto-correct --format emacs))).to eq(1)
+        expect(cli.run(%w(--auto-correct --format emacs))).to eq(0)
         expect(IO.read('example.rb'))
           .to eq(['# encoding: utf-8',
                   "assert_post_status_code 400, 's', type: 'bad'",
@@ -292,13 +296,17 @@ describe RuboCop::CLI, :isolated_environment do
         expect(IO.read('example.rb')).to eq(['module A module B',
                                              'end end',
                                              ''].join("\n"))
+        uncorrected = $stdout.string.split($RS).select do |line|
+          line.include?('example.rb:') && !line.include?('[Corrected]')
+        end
+        expect(uncorrected).not_to be_empty # Hence exit code 1.
       end
 
       it 'can correct single line methods' do
         create_file('example.rb', ['# encoding: utf-8',
                                    'def func1; do_something end # comment',
                                    'def func2() do_1; do_2; end'])
-        expect(cli.run(%w(--auto-correct --format offenses))).to eq(1)
+        expect(cli.run(%w(--auto-correct --format offenses))).to eq(0)
         expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
                                              '# comment',
                                              'def func1',
@@ -330,7 +338,7 @@ describe RuboCop::CLI, :isolated_environment do
                     ['# encoding: utf-8',
                      'raise NotImplementedError,',
                      "      'Method should be overridden in child classes'"])
-        expect(cli.run(['--auto-correct'])).to eq(1)
+        expect(cli.run(['--auto-correct'])).to eq(0)
         expect(IO.read('example.rb'))
           .to eq(['# encoding: utf-8',
                   'fail NotImplementedError,',
@@ -367,7 +375,7 @@ describe RuboCop::CLI, :isolated_environment do
                      '  def f',
                      '  end',
                      'end'])
-        expect(cli.run(['--auto-correct'])).to eq(1)
+        expect(cli.run(['--auto-correct'])).to eq(0)
         expect(IO.read('example.rb'))
           .to eq(['# encoding: utf-8',
                   '# Example class.',
@@ -399,7 +407,7 @@ describe RuboCop::CLI, :isolated_environment do
                      'def primes limit',
                      '  1.upto(limit).select { |i| i.even? }',
                      'end'])
-        expect(cli.run(%w(-D --auto-correct))).to eq(1)
+        expect(cli.run(%w(-D --auto-correct))).to eq(0)
         expect($stderr.string).to eq('')
         expect(IO.read('example.rb'))
           .to eq(['# encoding: utf-8',
@@ -433,7 +441,7 @@ describe RuboCop::CLI, :isolated_environment do
                     ['# encoding: utf-8',
                      "f(type: ['offline','offline_payment'],",
                      "  bar_colors: ['958c12','953579','ff5800','0085cc'])"])
-        expect(cli.run(%w(-D --auto-correct --format o))).to eq(1)
+        expect(cli.run(%w(-D --auto-correct --format o))).to eq(0)
         expect($stdout.string)
           .to eq(['',
                   '4  Style/SpaceAfterComma',
@@ -453,7 +461,7 @@ describe RuboCop::CLI, :isolated_environment do
         create_file('example.rb',
                     ['# encoding: utf-8',
                      "I18n.t('description',:property_name => property.name)"])
-        expect(cli.run(%w(-D --auto-correct --format emacs))).to eq(1)
+        expect(cli.run(%w(-D --auto-correct --format emacs))).to eq(0)
         expect($stdout.string)
           .to eq(["#{abs('example.rb')}:2:21: C: [Corrected] " \
                   'Style/SpaceAfterComma: Space missing after comma.',
@@ -470,7 +478,7 @@ describe RuboCop::CLI, :isolated_environment do
         create_file('example.rb',
                     ['# encoding: utf-8',
                      '{ :b=>1 }'])
-        expect(cli.run(%w(-D --auto-correct --format emacs))).to eq(1)
+        expect(cli.run(%w(-D --auto-correct --format emacs))).to eq(0)
         expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
                                              '{ b: 1 }',
                                              ''].join("\n"))
@@ -488,7 +496,7 @@ describe RuboCop::CLI, :isolated_environment do
                     ['# encoding: utf-8',
                      '{ :b=>1 }'])
         expect(cli.run(%w(--auto-correct -f emacs
-                          --only Style/HashSyntax))).to eq(1)
+                          --only Style/HashSyntax))).to eq(0)
         expect($stderr.string).to eq('')
         expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
                                              '{ b: 1 }',
@@ -506,7 +514,7 @@ describe RuboCop::CLI, :isolated_environment do
                      '  ',
                      '',
                      ''])
-        expect(cli.run(%w(--auto-correct --format emacs))).to eq(1)
+        expect(cli.run(%w(--auto-correct --format emacs))).to eq(0)
         expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
                                              ''].join("\n"))
         expect($stdout.string)
@@ -521,7 +529,7 @@ describe RuboCop::CLI, :isolated_environment do
         create_file('example.rb',
                     ['# encoding: utf-8',
                      'Hash.new()'])
-        expect(cli.run(%w(--auto-correct --format emacs))).to eq(1)
+        expect(cli.run(%w(--auto-correct --format emacs))).to eq(0)
         expect($stderr.string).to eq('')
         expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
                                              '{}',
@@ -546,7 +554,7 @@ describe RuboCop::CLI, :isolated_environment do
         create_file('.rubocop.yml',
                     ['Style/AlignHash:',
                      '  EnforcedColonStyle: separator'])
-        expect(cli.run(%w(--auto-correct))).to eq(1)
+        expect(cli.run(%w(--auto-correct))).to eq(0)
         expect(IO.read('example.rb'))
           .to eq(['# encoding: utf-8',
                   'CONVERSION_CORRESPONDENCE = {',
@@ -586,7 +594,7 @@ describe RuboCop::CLI, :isolated_environment do
                     ['# encoding: utf-8',
                      'some_method(a, )'])
         Timeout.timeout(10) do
-          expect(cli.run(%w(--auto-correct))).to eq(1)
+          expect(cli.run(%w(--auto-correct))).to eq(0)
         end
         expect($stderr.string).to eq('')
         expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
@@ -599,7 +607,7 @@ describe RuboCop::CLI, :isolated_environment do
                     ['# encoding: utf-8',
                      'puts [1, ]'])
         Timeout.timeout(10) do
-          expect(cli.run(%w(--auto-correct))).to eq(1)
+          expect(cli.run(%w(--auto-correct))).to eq(0)
         end
         expect($stderr.string).to eq('')
         expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
