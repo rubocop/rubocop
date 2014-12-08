@@ -15,6 +15,11 @@ describe RuboCop::Cop::Style::ExtraSpacing do
     expect(cop.offenses.size).to eq(0)
   end
 
+  it 'ignores whitespace inside a string' do
+    inspect_source(cop, ['m = "hello   this"'])
+    expect(cop.offenses.size).to eq(0)
+  end
+
   it 'does not permit you to line up assignments' do
     inspect_source(cop, [
       'website = "example.org"',
