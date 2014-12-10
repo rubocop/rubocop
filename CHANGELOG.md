@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.28.0 (10/12/2014)
+
 ### New features
 
 * New cop `ExtraSpacing` points out unnecessary spacing in files. ([@blainesch][])
@@ -32,7 +34,6 @@
 * [#1474](https://github.com/bbatsov/rubocop/issues/1474): Multiline string with both `<<` and `\` caught by `Style/LineEndConcatenation` cop. ([@katieschilling][])
 * [#1485](https://github.com/bbatsov/rubocop/issues/1485): Ignore procs in `SymbolProc`. ([@bbatsov][])
 * [#1473](https://github.com/bbatsov/rubocop/issues/1473): `Style/MultilineOperationIndentation` doesn't recognize assignment to array/hash element. ([@jonas054][])
-
 
 ## 0.27.1 (08/11/2014)
 
