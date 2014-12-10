@@ -57,6 +57,11 @@ describe RuboCop::Cop::Style::LeadingCommentSpace do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts sprockets directives' do
+    inspect_source(cop, '#= require_tree .')
+    expect(cop.offenses).to be_empty
+  end
+
   it 'auto-corrects missing space' do
     new_source = autocorrect_source(cop, '#comment')
     expect(new_source).to eq('# comment')

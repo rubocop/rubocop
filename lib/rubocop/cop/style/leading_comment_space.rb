@@ -12,7 +12,7 @@ module RuboCop
 
         def investigate(processed_source)
           processed_source.comments.each do |comment|
-            next unless comment.text =~ /^#+[^#\s:+-]/
+            next unless comment.text =~ /^#+[^#\s=:+-]/
             next if comment.text.start_with?('#!') && comment.loc.line == 1
 
             add_offense(comment, :expression)
