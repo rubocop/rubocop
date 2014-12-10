@@ -12,7 +12,7 @@ module RuboCop
       #   b
       #     something
       #   end
-      class MultilineOperationIndentation < Cop
+      class MultilineOperationIndentation < Cop # rubocop:disable ClassLength
         include ConfigurableEnforcedStyle
         include AutocorrectAlignment
 
@@ -107,7 +107,11 @@ module RuboCop
         #   d                         <-- d is indented relative to a
         def left_hand_side(receiver)
           lhs = receiver
-          lhs = lhs.parent while lhs.parent && lhs.parent.type == :send
+          while lhs.parent && lhs.parent.type == :send
+            _receiver, method_name, *_args = *lhs.parent
+            break if operator?(method_name)
+            lhs = lhs.parent
+          end
           lhs
         end
 
@@ -153,7 +157,17 @@ module RuboCop
         end
 
         def assignment?(node)
-          node.each_ancestor.find { |a| ASGN_NODES.include?(a.type) }
+          node.each_ancestor.find do |a|
+            case a.type
+            when :send
+              _receiver, method_name, *_args = *a
+              # The []= operator is the only assignment operator that is parsed
+              # as a :send node.
+              method_name == :[]=
+            when *ASGN_NODES
+              true
+            end
+          end
         end
 
         def not_for_this_cop?(node)

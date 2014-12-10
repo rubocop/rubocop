@@ -188,6 +188,27 @@ describe RuboCop::Cop::Style::MultilineOperationIndentation do
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'indented')
     end
 
+    it 'registers an offense for misaligned string operand when the first ' \
+       'operand has backslash continuation' do
+      inspect_source(cop,
+                     ["flash[:error] = 'Here is a string ' \\",
+                      "                'That spans' <<",
+                      "  'multiple lines'"])
+      expect(cop.messages).to eq(['Align the operands of an expression in an ' \
+                                  'assignment spanning multiple lines.'])
+      expect(cop.highlights).to eq(["'multiple lines'"])
+    end
+
+    it 'registers an offense for misaligned string operand when plus is used' do
+      inspect_source(cop,
+                     ["flash[:error] = 'Here is a string ' +",
+                      "                'That spans' <<",
+                      "  'multiple lines'"])
+      expect(cop.messages).to eq(['Align the operands of an expression in an ' \
+                                  'assignment spanning multiple lines.'])
+      expect(cop.highlights).to eq(["'multiple lines'"])
+    end
+
     it 'registers an offense for misaligned operands in unless condition' do
       inspect_source(cop,
                      ['unless a',
