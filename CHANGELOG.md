@@ -29,6 +29,7 @@
 * [#1466](https://github.com/bbatsov/rubocop/issues/1466): Allow leading underscore for unused parameters in `SingleLineBlockParams`. ([@jonas054][])
 * [#1470](https://github.com/bbatsov/rubocop/issues/1470): Handle `elsif` + `else` in `ElseAlignment`. ([@jonas054][])
 * [#1474](https://github.com/bbatsov/rubocop/issues/1474): Multiline string with both `<<` and `\` caught by `Style/LineEndConcatenation` cop. ([@katieschilling][])
+* [#1485](https://github.com/bbatsov/rubocop/issues/1485): Ignore procs in `SymbolProc`. ([@bbatsov][])
 
 ## 0.27.1 (08/11/2014)
 

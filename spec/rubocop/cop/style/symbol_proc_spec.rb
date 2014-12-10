@@ -40,6 +40,18 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts proc with 1 argument' do
+    inspect_source(cop, ['proc { |x| x.method }'])
+
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'accepts Proc.new with 1 argument' do
+    inspect_source(cop, ['Proc.new { |x| x.method }'])
+
+    expect(cop.offenses).to be_empty
+  end
+
   it 'accepts ignored method' do
     inspect_source(cop, ['respond_to { |format| format.xml }'])
 

@@ -14,13 +14,18 @@ module RuboCop
       class SymbolProc < Cop
         MSG = 'Pass `&:%s` as an argument to `%s` instead of a block.'
 
+        PROC_NODE = s(:send, s(:const, nil, :Proc), :new)
+
         def on_block(node)
           block_send, block_args, block_body = *node
 
           _breceiver, bmethod_name, bargs = *block_send
 
-          # we should ignore lambdas
-          return if bmethod_name == :lambda
+          # TODO: Rails-specific handling that we should probably make
+          # configurable - https://github.com/bbatsov/rubocop/issues/1485
+          # we should ignore lambdas & procs
+          return if block_send == PROC_NODE
+          return if [:lambda, :proc].include?(bmethod_name)
           return if ignored_method?(bmethod_name)
           # File.open(file) { |f| f.readlines }
           return if bargs
