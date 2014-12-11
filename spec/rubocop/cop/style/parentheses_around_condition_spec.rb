@@ -112,9 +112,17 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
   end
 
   context 'safe assignment is allowed' do
-    it 'accepts = in condition surrounded with parentheses' do
+    it 'accepts variable assignment in condition surrounded with parentheses' do
       inspect_source(cop,
                      ['if (test = 10)',
+                      'end'
+                     ])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts element assignment in condition surrounded with parentheses' do
+      inspect_source(cop,
+                     ['if (test[0] = 10)',
                       'end'
                      ])
       expect(cop.offenses).to be_empty
@@ -132,9 +140,19 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
   context 'safe assignment is not allowed' do
     let(:cop_config) { { 'AllowSafeAssignment' => false } }
 
-    it 'does not accept = in condition surrounded with parentheses' do
+    it 'does not accept variable assignment in condition surrounded with ' \
+       'parentheses' do
       inspect_source(cop,
                      ['if (test = 10)',
+                      'end'
+                     ])
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it 'does not accept element assignment in condition surrounded with ' \
+       'parentheses' do
+      inspect_source(cop,
+                     ['if (test[0] = 10)',
                       'end'
                      ])
       expect(cop.offenses.size).to eq(1)
