@@ -23,26 +23,27 @@ module RuboCop
         reject { |c| c.cop_type == type }
       end
     end
-
-    # A scaffold for concrete cops.
-    #
-    # The Cop class is meant to be extended.
-    #
-    # Cops track offenses and can autocorrect them of the fly.
-    #
-    # A commissioner object is responsible for traversing the AST and invoking
-    # the specific callbacks on each cop.
-    # If a cop needs to do its own processing of the AST or depends on
-    # something else, it should define the `#investigate` method and do
-    # the processing there.
-    #
-    # @example
-    #
-    #   class CustomCop < Cop
-    #     def investigate(processed_source)
-    #       # Do custom processing
-    #     end
-    #   end
+=begin
+    A scaffold for concrete cops.
+    
+    The Cop class is meant to be extended.
+    
+    Cops track offenses and can autocorrect them of the fly.
+    
+    A commissioner object is responsible for traversing the AST and invoking
+    the specific callbacks on each cop.
+    If a cop needs to do its own processing of the AST or depends on
+    something else, it should define the `#investigate` method and do
+    the processing there.
+    
+    @example
+    
+      class CustomCop < Cop
+        def investigate(processed_source)
+          # Do custom processing
+        end
+      end
+=end
     class Cop
       extend AST::Sexp
       include Util
@@ -83,17 +84,11 @@ module RuboCop
         @all.without_type(:rails)
       end
 
-      def self.inherited(subclass)
-        @all << subclass
-      end
+      def self.inherited(subclass); @all << subclass; end
 
-      def self.cop_name
-        @cop_name ||= name.to_s.split('::').last(2).join('/')
-      end
+      def self.cop_name; @cop_name ||= name.to_s.split('::').last(2).join '/'; end
 
-      def self.cop_type
-        name.to_s.split('::')[-2].downcase.to_sym
-      end
+      def self.cop_type; name.to_s.split('::')[-2].downcase.to_sym; end
 
       def self.lint?
         cop_type == :lint
@@ -104,36 +99,22 @@ module RuboCop
       end
 
       def initialize(config = nil, options = nil)
-        @config = config || Config.new
-        @options = options || { auto_correct: false, debug: false }
-
-        @offenses = []
-        @corrections = []
+        @config, @options, @offenses, @corrections= config || Config.new, options || { auto_correct: false, debug: false }, [], []
       end
 
-      def join_force?(_force_class)
-        false
-      end
+      def join_force?(_force_class); false; end
 
-      def cop_config
-        @config.for_cop(self)
-      end
+      def cop_config; @config.for_cop(self); end
 
-      def autocorrect?
-        @options[:auto_correct] && support_autocorrect?
-      end
+      def autocorrect?; @options[:auto_correct] && support_autocorrect?; end
 
       def debug?
         @options[:debug]
       end
 
-      def display_cop_names?
-        debug? || @options[:display_cop_names]
-      end
+      def display_cop_names?; debug? || @options[:display_cop_names]; end
 
-      def message(_node = nil)
-        self.class::MSG
-      end
+      def message(_node = nil); self.class::MSG; end
 
       def support_autocorrect?
         respond_to?(:autocorrect, true)
@@ -171,9 +152,7 @@ module RuboCop
           hash
       end
 
-      def cop_name
-        self.class.cop_name
-      end
+      def cop_name; self.class.cop_name; end
 
       alias_method :name, :cop_name
 
@@ -206,8 +185,7 @@ module RuboCop
         severity = cop_config && cop_config['Severity']
         return unless severity
 
-        if Severity::NAMES.include?(severity.to_sym)
-          severity.to_sym
+        if Severity::NAMES.include?(severity.to_sym) then severity.to_sym
         else
           warn("Warning: Invalid severity '#{severity}'. " +
                "Valid severities are #{Severity::NAMES.join(', ')}."
