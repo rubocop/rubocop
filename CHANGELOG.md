@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bugs fixed
+
+* Handle element assignment in `Lint/AssignmentInCondition`. ([@jonas054][])
+
 ## 0.28.0 (10/12/2014)
 
 ### New features

@@ -6,9 +6,11 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for assignment without space on both sides' do
-    inspect_source(cop, ['x=0', 'y= 0', 'z =0'])
-    expect(cop.messages).to eq(
-      ["Surrounding space missing for operator '='."] * 3)
+    inspect_source(cop, ['x=0', 'y+= 0', 'z[0] =0'])
+    expect(cop.messages)
+      .to eq(["Surrounding space missing for operator '='.",
+              "Surrounding space missing for operator '+='.",
+              "Surrounding space missing for operator '='."])
   end
 
   it 'auto-corrects assignment without space on both sides' do
