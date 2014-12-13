@@ -65,13 +65,6 @@ module RuboCop
           format(MSG, style.capitalize, node.loc.selector.source)
         end
 
-        def class_constructor?(block_node)
-          send_node = block_node.children.first
-          receiver_node, method_name, *_ = *send_node
-          return false unless method_name == :new
-          %w(Class Module).include?(Util.const_name(receiver_node))
-        end
-
         def expected_indent_offset
           style == :outdent ? 0 : configured_indentation_width
         end

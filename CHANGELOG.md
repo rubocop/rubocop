@@ -5,6 +5,7 @@
 ### Bugs fixed
 
 * Handle element assignment in `Lint/AssignmentInCondition`. ([@jonas054][])
+* [#1484](https://github.com/bbatsov/rubocop/issues/1484): Fix `EmptyLinesAroundAccessModifier` incorrectly finding a violation inside method calls with names identical to an access modifier. ([@dblock][])
 
 ## 0.28.0 (10/12/2014)
 

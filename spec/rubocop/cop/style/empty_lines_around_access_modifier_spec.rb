@@ -32,6 +32,38 @@ describe RuboCop::Cop::Style::EmptyLinesAroundAccessModifier do
         .to eq(["Keep a blank line before and after `#{access_modifier}`."])
     end
 
+    it "ignores #{access_modifier} inside a method call" do
+      inspect_source(cop,
+                     ['class Test',
+                      '  def #{access_modifier}?',
+                      "    #{access_modifier}",
+                      '  end',
+                      'end'])
+      expect(cop.offenses.size).to eq(0)
+    end
+
+    it "ignores #{access_modifier} deep inside a method call" do
+      inspect_source(cop,
+                     ['class Test',
+                      "  def #{access_modifier}?",
+                      '    if true',
+                      "      #{access_modifier}",
+                      '    end',
+                      '  end',
+                      'end'])
+      expect(cop.offenses.size).to eq(0)
+    end
+
+    it "ignores #{access_modifier} with a right-hand-side condition" do
+      inspect_source(cop,
+                     ['class Test',
+                      "  def #{access_modifier}?",
+                      "    #{access_modifier} if true",
+                      '  end',
+                      'end'])
+      expect(cop.offenses.size).to eq(0)
+    end
+
     it "autocorrects blank line before #{access_modifier}" do
       corrected = autocorrect_source(cop,
                                      ['class Test',
