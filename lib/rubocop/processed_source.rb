@@ -48,6 +48,11 @@ module RuboCop
       @diagnostics.none? { |d| [:error, :fatal].include?(d.level) }
     end
 
+    # Raw source checksum for tracking infinite loops.
+    def checksum
+      Digest::MD5.hexdigest(@raw_source)
+    end
+
     private
 
     def parse(source)

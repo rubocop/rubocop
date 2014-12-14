@@ -15,12 +15,12 @@ module RuboCop
 
       # @return [Array<Cop>] Cops for that specific type.
       def with_type(type)
-        select { |c| c.cop_type == type }
+        CopStore.new(select { |c| c.cop_type == type })
       end
 
       # @return [Array<Cop>] Cops not for a specific type.
       def without_type(type)
-        reject { |c| c.cop_type == type }
+        CopStore.new(reject { |c| c.cop_type == type })
       end
     end
 
@@ -54,11 +54,11 @@ module RuboCop
       @all = CopStore.new
 
       def self.all
-        @all.clone
+        @all.without_type(:test)
       end
 
       def self.qualified_cop_name(name, origin)
-        @cop_names ||= Set.new(@all.map(&:cop_name))
+        @cop_names ||= Set.new(all.map(&:cop_name))
         basename = File.basename(name)
         found_ns = @all.types.map(&:capitalize).select do |ns|
           @cop_names.include?("#{ns}/#{basename}")
@@ -80,7 +80,7 @@ module RuboCop
       end
 
       def self.non_rails
-        @all.without_type(:rails)
+        all.without_type(:rails)
       end
 
       def self.inherited(subclass)
@@ -101,6 +101,10 @@ module RuboCop
 
       def self.rails?
         cop_type == :rails
+      end
+
+      def self.test?
+        cop_type == :test
       end
 
       def initialize(config = nil, options = nil)
