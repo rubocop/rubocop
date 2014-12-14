@@ -161,6 +161,7 @@ Command flag              | Description
 `-l/--lint`               | Run only lint cops
 `-a/--auto-correct`       | Auto-correct certain offenses *Note:* Experimental - use with caution
 `--only`                  | Run only the specified cop(s)
+`--except`                | Run all cops enabled by configuration except the specified one(s)
 `--auto-gen-config`       | Generate a configuration file acting as a TODO list
 `--show-cops`             | Shows available cops and their configuration
 `--fail-level`            | Minimum severity for exit with error code

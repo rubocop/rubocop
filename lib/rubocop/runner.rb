@@ -99,14 +99,18 @@ module RuboCop
       @mobilized_cop_classes[config.object_id] ||= begin
         cop_classes = Cop::Cop.all
 
-        if @options[:only]
-          validate_only_option
+        [:only, :except].each { |option| validate_cop_list(option) }
 
+        if @options[:only]
           cop_classes.select! do |c|
             @options[:only].include?(c.cop_name) || @options[:lint] && c.lint?
           end
         else
           filter_cop_classes(cop_classes, config)
+        end
+
+        if @options[:except]
+          cop_classes.reject! { |c| @options[:except].include?(c.cop_name) }
         end
 
         cop_classes
@@ -126,8 +130,10 @@ module RuboCop
       cop_classes.select!(&:lint?) if @options[:lint]
     end
 
-    def validate_only_option
-      @options[:only].each do |cop_to_run|
+    def validate_cop_list(option)
+      return unless @options[option]
+
+      @options[option].each do |cop_to_run|
         next unless Cop::Cop.all.none? { |c| c.cop_name == cop_to_run }
         fail ArgumentError, "Unrecognized cop name: #{cop_to_run}."
       end

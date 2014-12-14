@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#1430](https://github.com/bbatsov/rubocop/issues/1430): Add `--except` option for disabling cops on the command line. ([@jonas054][])
+
 ### Bugs fixed
 
 * Handle element assignment in `Lint/AssignmentInCondition`. ([@jonas054][])

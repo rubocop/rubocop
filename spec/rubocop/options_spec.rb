@@ -36,6 +36,7 @@ describe RuboCop::Options, :isolated_environment do
 
         expected_help = <<-END
 Usage: rubocop [options] [file1, file2, ...]
+        --except [COP1,COP2,...]     Disable the given cop(s).
         --only [COP1,COP2,...]       Run only the given cop(s).
         --only-guide-cops            Run only cops for rules that link to a
                                      style guide.
