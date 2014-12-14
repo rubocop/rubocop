@@ -976,6 +976,79 @@ describe RuboCop::CLI, :isolated_environment do
       end
     end
 
+    describe '--except' do
+      context 'when two cops are given' do
+        it 'runs all cops except the given' do
+          create_file('example.rb', ['if x== 0 ',
+                                     "\ty",
+                                     'end'])
+          expect(cli.run(['--format', 'offenses',
+                          '--except', 'Style/IfUnlessModifier,Style/Tab',
+                          'example.rb'])).to eq(1)
+          expect($stdout.string)
+            .to eq(['',
+                    '1  Style/IndentationWidth',
+                    '1  Style/SpaceAroundOperators',
+                    '1  Style/TrailingWhitespace',
+                    '--',
+                    '3  Total',
+                    '',
+                    ''].join("\n"))
+        end
+
+        it 'exits with error if an incorrect cop name is passed' do
+          create_file('example.rb', ['if x== 0 ',
+                                     "\ty",
+                                     'end'])
+          expect(cli.run(['--except', 'Style/123'])).to eq(1)
+          expect($stderr.string).to include('Unrecognized cop name: Style/123.')
+        end
+
+        context 'when one cop is given without namespace' do
+          it 'disables the given cop' do
+            create_file('example.rb', ['if x== 0 ',
+                                       "\ty",
+                                       'end'])
+
+            cli.run(['--format', 'offenses',
+                     '--except', 'IfUnlessModifier',
+                     'example.rb'])
+            with_option = $stdout.string
+            $stdout = StringIO.new
+            cli.run(['--format', 'offenses',
+                     'example.rb'])
+            without_option = $stdout.string
+
+            expect(without_option.split($RS) - with_option.split($RS))
+              .to eq(['1  Style/IfUnlessModifier', '5  Total'])
+          end
+        end
+      end
+
+      context 'when several cops are given' do
+        it 'disables the given cops' do
+          create_file('example.rb', ['if x== 100000000000000 ',
+                                     "\ty",
+                                     'end'])
+          expect(cli.run(['--format', 'offenses',
+                          '--except',
+                          'Style/IfUnlessModifier,Style/Tab,' \
+                          'Style/SpaceAroundOperators',
+                          'example.rb'])).to eq(1)
+          expect($stderr.string).to eq('')
+          expect($stdout.string)
+            .to eq(['',
+                    '1  Style/IndentationWidth',
+                    '1  Style/NumericLiterals',
+                    '1  Style/TrailingWhitespace',
+                    '--',
+                    '3  Total',
+                    '',
+                    ''].join("\n"))
+        end
+      end
+    end
+
     describe '--lint' do
       it 'runs only lint cops' do
         create_file('example.rb', ['if 0 ',

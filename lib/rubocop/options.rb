@@ -9,6 +9,7 @@ module RuboCop
       only:              'Run only the given cop(s).',
       only_guide_cops:  ['Run only cops for rules that link to a',
                          'style guide.'],
+      except:            'Disable the given cop(s).',
       require:           'Require Ruby file.',
       config:            'Specify configuration file.',
       auto_gen_config:  ['Generate a configuration file acting as a',
@@ -96,13 +97,17 @@ module RuboCop
     end
 
     def add_only_options(opts)
-      option(opts, '--only [COP1,COP2,...]') do |list|
-        @options[:only] = list.split(',').map do |c|
-          Cop::Cop.qualified_cop_name(c, '--only option')
+      add_cop_selection_csv_option('except', opts)
+      add_cop_selection_csv_option('only', opts)
+      option(opts, '--only-guide-cops')
+    end
+
+    def add_cop_selection_csv_option(option, opts)
+      option(opts, "--#{option} [COP1,COP2,...]") do |list|
+        @options[:"#{option}"] = list.split(',').map do |c|
+          Cop::Cop.qualified_cop_name(c, "--#{option} option")
         end
       end
-
-      option(opts, '--only-guide-cops')
     end
 
     def add_configuration_options(opts, args)
