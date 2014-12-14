@@ -1,18 +1,21 @@
+sudo: false
+
 language: ruby
+
 rvm:
   - 1.9.3
   - 2.0.0
   - 2.1
   - ruby-head
   - jruby-19mode
-  - rbx-2
+  - jruby-head
+  - rbx-2.2.10
+
 matrix:
   allow_failures:
     - rvm: ruby-head
-    - rvm: rbx-2
-before_install: gem update --remote bundler
-install:
-  - bundle install --retry=3
+    - rvm: jruby-head
+
 script:
   - bundle exec rspec
   - bundle exec rubocop
