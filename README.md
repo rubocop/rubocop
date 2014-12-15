@@ -148,23 +148,23 @@ $ rubocop -h
 
 Command flag              | Description
 --------------------------|------------------------------------------------------------
-`-v/--version`            | Displays the current version and exits
-`-V/--verbose-version`    | Displays the current version plus the version of Parser and Ruby
-`-F/--fail-fast`          | Inspects in modification time order and stops after first file with offenses
-`-d/--debug`              | Displays some extra debug output
+`-v/--version`            | Displays the current version and exits.
+`-V/--verbose-version`    | Displays the current version plus the version of Parser and Ruby.
+`-F/--fail-fast`          | Inspects in modification time order and stops after first file with offenses.
+`-d/--debug`              | Displays some extra debug output.
 `-D/--display-cop-names`  | Displays cop names in offense messages.
-`-c/--config`             | Run with specified config file
-`-f/--format`             | Choose a formatter
-`-o/--out`                | Write output to a file instead of STDOUT
-`-r/--require`            | Require Ruby file (see [Loading Extensions](#loading-extensions))
-`-R/--rails`              | Run extra Rails cops
-`-l/--lint`               | Run only lint cops
-`-a/--auto-correct`       | Auto-correct certain offenses *Note:* Experimental - use with caution
-`--only`                  | Run only the specified cop(s)
-`--except`                | Run all cops enabled by configuration except the specified one(s)
-`--auto-gen-config`       | Generate a configuration file acting as a TODO list
-`--show-cops`             | Shows available cops and their configuration
-`--fail-level`            | Minimum severity for exit with error code
+`-c/--config`             | Run with specified config file.
+`-f/--format`             | Choose a formatter.
+`-o/--out`                | Write output to a file instead of STDOUT.
+`-r/--require`            | Require Ruby file (see [Loading Extensions](#loading-extensions)).
+`-R/--rails`              | Run extra Rails cops.
+`-l/--lint`               | Run only lint cops.
+`-a/--auto-correct`       | Auto-correct certain offenses. *Note:* Experimental - use with caution.
+`--only`                  | Run only the specified cop(s).
+`--except`                | Run all cops enabled by configuration except the specified one(s).
+`--auto-gen-config`       | Generate a configuration file acting as a TODO list.
+`--show-cops`             | Shows available cops and their configuration.
+`--fail-level`            | Minimum severity for exit with error code.
 
 ### Cops
 
