@@ -191,8 +191,13 @@ module RuboCop
       def file_name_matches_any?(file, parameter, default_result)
         patterns = cop_config && cop_config[parameter]
         return default_result unless patterns
-        path = config.path_relative_to_config(file)
+        path = nil
         patterns.any? do |pattern|
+          # Try to match the absolute path, as Exclude properties are absolute.
+          next true if match_path?(pattern, file, config.loaded_path)
+
+          # Try with relative path.
+          path ||= config.path_relative_to_config(file)
           match_path?(pattern, path, config.loaded_path)
         end
       end

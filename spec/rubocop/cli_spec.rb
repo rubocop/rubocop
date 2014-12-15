@@ -2494,5 +2494,19 @@ describe RuboCop::CLI, :isolated_environment do
                   ''].join("\n"))
       end
     end
+
+    context 'when a file inherits from a higher level' do
+      before do
+        create_file('.rubocop.yml', ['Metrics/LineLength:',
+                                     '  Exclude:',
+                                     '    - dir/example.rb'])
+        create_file('dir/.rubocop.yml', 'inherit_from: ../.rubocop.yml')
+        create_file('dir/example.rb', '#' * 90)
+      end
+
+      it 'inherits relative excludes correctly' do
+        expect(cli.run([])).to eq(0)
+      end
+    end
   end
 end
