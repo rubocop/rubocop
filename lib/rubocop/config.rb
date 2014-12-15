@@ -25,13 +25,15 @@ module RuboCop
     end
 
     def make_excludes_absolute
-      return unless self['AllCops'] && self['AllCops']['Exclude']
+      keys.each do |key|
+        next unless self[key]['Exclude']
 
-      self['AllCops']['Exclude'].map! do |exclude_elem|
-        if exclude_elem.is_a?(String) && !exclude_elem.start_with?('/')
-          File.join(base_dir_for_path_parameters, exclude_elem)
-        else
-          exclude_elem
+        self[key]['Exclude'].map! do |exclude_elem|
+          if exclude_elem.is_a?(String) && !exclude_elem.start_with?('/')
+            File.join(base_dir_for_path_parameters, exclude_elem)
+          else
+            exclude_elem
+          end
         end
       end
     end
