@@ -11,8 +11,6 @@ end
 describe RuboCop::Runner, :isolated_environment do
   include FileHelper
 
-  subject(:runner) { described_class.new(options, RuboCop::ConfigStore.new) }
-  let(:options) { { formatters: [['progress', formatter_output_path]] } }
   let(:formatter_output_path) { 'formatter_output.txt' }
   let(:formatter_output) { File.read(formatter_output_path) }
 
@@ -21,6 +19,8 @@ describe RuboCop::Runner, :isolated_environment do
   end
 
   describe '#run' do
+    let(:options) { { formatters: [['progress', formatter_output_path]] } }
+    subject(:runner) { described_class.new(options, RuboCop::ConfigStore.new) }
     context 'if there are no offenses in inspected files' do
       let(:source) { <<-END.strip_indent }
         # coding: utf-8
@@ -58,6 +58,41 @@ describe RuboCop::Runner, :isolated_environment do
 
           1 file inspected, 1 offense detected
         END
+      end
+    end
+  end
+
+  describe '#run with cops autocorrecting each-other' do
+    let(:options) do
+      {
+        auto_correct: true,
+        formatters: [['progress', formatter_output_path]]
+      }
+    end
+
+    subject(:runner) do
+      runner_class = Class.new(RuboCop::Runner) do
+        def mobilized_cop_classes(_config)
+          [
+            RuboCop::Cop::Test::ClassMustBeAModuleCop,
+            RuboCop::Cop::Test::ModuleMustBeAClassCop
+          ]
+        end
+      end
+      runner_class.new(options, RuboCop::ConfigStore.new)
+    end
+
+    context 'if there is an offense in an inspected file' do
+      let(:source) { <<-END.strip_indent }
+        # coding: utf-8
+        class Klass
+        end
+      END
+
+      it 'aborts because of an infinite loop' do
+        expect do
+          runner.run([])
+        end.to raise_error RuboCop::Runner::InfiniteCorrectionLoop
       end
     end
   end
