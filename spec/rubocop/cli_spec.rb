@@ -47,6 +47,27 @@ describe RuboCop::CLI, :isolated_environment do
         expect(uncorrected).to be_empty # Hence exit code 0.
       end
 
+      it 'corrects only IndentationWidth without crashing', :focus do
+        source = ['foo = if bar',
+                  '  something',
+                  'elsif baz',
+                  '  other_thing',
+                  'else',
+                  '  fail',
+                  'end']
+        create_file('example.rb', source)
+        expect(cli.run([%w(--only IndentationWidth --auto-correct)])).to eq(0)
+        corrected = ['foo = if bar',
+                     '        something',
+                     'elsif baz',
+                     '  other_thing',
+                     'else',
+                     '  fail',
+                     'end',
+                     ''].join("\n")
+        expect(IO.read('example.rb')).to eq(corrected)
+      end
+
       it 'corrects complicated cases conservatively' do
         # Two cops make corrections here; Style/BracesAroundHashParameters, and
         # Style/AlignHash. Because they make minimal corrections relating only
