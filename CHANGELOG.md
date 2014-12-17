@@ -15,6 +15,7 @@
 * Handle element assignment in `Lint/AssignmentInCondition`. ([@jonas054][])
 * [#1484](https://github.com/bbatsov/rubocop/issues/1484): Fix `EmptyLinesAroundAccessModifier` incorrectly finding a violation inside method calls with names identical to an access modifier. ([@dblock][])
 * Fix bug concerning `Exclude` properties inherited from a higher directory level. ([@jonas054][])
+* [#1500](https://github.com/bbatsov/rubocop/issues/1500): Fix crashing `--auto-correct --only IndentationWidth`. ([@jonas054][])
 
 ## 0.28.0 (10/12/2014)
 

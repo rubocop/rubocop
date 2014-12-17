@@ -128,9 +128,9 @@ module RuboCop
           return if modifier_if?(node)
 
           case node.loc.keyword.source
-          when 'if'     then _condition, body, else_clause = *node
-          when 'unless' then _condition, else_clause, body = *node
-          else               _condition, body = *node
+          when 'if', 'elsif' then _condition, body, else_clause = *node
+          when 'unless'      then _condition, else_clause, body = *node
+          else                    _condition, body = *node
           end
 
           check_if(node, body, else_clause, base.loc) if body
@@ -164,12 +164,11 @@ module RuboCop
           check_indentation(base_loc, body)
           return unless else_clause
 
-          if elsif?(else_clause)
-            _condition, inner_body, inner_else_clause = *else_clause
-            check_if(else_clause, inner_body, inner_else_clause, base_loc)
-          else
-            check_indentation(node.loc.else, else_clause)
-          end
+          # If the else clause is an elsif, it will get its own on_if call so
+          # we don't need to process it here.
+          return if elsif?(else_clause)
+
+          check_indentation(node.loc.else, else_clause)
         end
 
         def check_indentation(base_loc, body_node)
