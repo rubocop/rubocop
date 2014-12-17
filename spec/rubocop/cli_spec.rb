@@ -47,7 +47,7 @@ describe RuboCop::CLI, :isolated_environment do
         expect(uncorrected).to be_empty # Hence exit code 0.
       end
 
-      it 'corrects only IndentationWidth without crashing', :focus do
+      it 'corrects only IndentationWidth without crashing' do
         source = ['foo = if bar',
                   '  something',
                   'elsif baz',
