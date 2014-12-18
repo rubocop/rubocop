@@ -116,6 +116,11 @@ module RuboCop
         # code in there.
         hash = yaml_code =~ /^[A-Z]/i ? YAML.load(yaml_code) : {}
         puts "configuration from #{absolute_path}" if debug?
+
+        unless hash.is_a?(Hash)
+          fail(TypeError, "Malformed configuration in #{absolute_path}")
+        end
+
         hash
       end
 
