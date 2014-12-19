@@ -4,7 +4,16 @@ module RuboCop
   # This class handles the processing of files, which includes dealing with
   # formatters and letting cops inspect the files.
   class Runner
-    class InfiniteCorrectionLoop < Exception; end
+    # An exception indicating that the inspection loop got stuck correcting
+    # offenses back and forth.
+    class InfiniteCorrectionLoop < Exception
+      attr_reader :offenses
+
+      def initialize(path, offenses)
+        super "Infinite loop detected in #{path}."
+        @offenses = offenses
+      end
+    end
 
     attr_reader :errors, :aborting
     alias_method :aborting?, :aborting
@@ -32,10 +41,10 @@ module RuboCop
         break if @options[:fail_fast] && !all_passed
       end
 
+      all_passed
+    ensure
       formatter_set.finished(inspected_files.freeze)
       formatter_set.close_output_files
-
-      all_passed
     end
 
     def abort
@@ -60,7 +69,11 @@ module RuboCop
       offenses = do_inspection_loop(file, processed_source)
 
       formatter_set.file_finished(file, offenses.compact.sort.freeze)
+
       offenses
+    rescue InfiniteCorrectionLoop => e
+      formatter_set.file_finished(file, e.offenses.compact.sort.freeze)
+      raise
     end
 
     def do_inspection_loop(file, processed_source)
@@ -76,7 +89,7 @@ module RuboCop
       # are made. This is because automatic corrections can introduce new
       # offenses. In the normal case the loop is only executed once.
       loop do
-        check_for_inifinite_loop(processed_source)
+        check_for_infinite_loop(processed_source, offenses)
 
         # The offenses that couldn't be corrected will be found again so we
         # only keep the corrected ones in order to avoid duplicate reporting.
@@ -97,12 +110,11 @@ module RuboCop
 
     # Check whether a run created source identical to a previous run, which
     # means that we definitely have an infinite loop.
-    def check_for_inifinite_loop(processed_source)
+    def check_for_infinite_loop(processed_source, offenses)
       checksum = processed_source.checksum
 
       if @processed_sources.include?(checksum)
-        fail InfiniteCorrectionLoop,
-             "Infinite loop detected in #{processed_source.path}."
+        fail InfiniteCorrectionLoop.new(processed_source.path, offenses)
       end
 
       @processed_sources << checksum
