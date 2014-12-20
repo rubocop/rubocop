@@ -12,14 +12,14 @@ describe RuboCop::Cop::Style::Encoding, :config do
 
     it 'registers no offense when no encoding present but only ASCII ' \
        'characters' do
-      inspect_source(cop, ['def foo() end'])
+      inspect_source(cop, 'def foo() end')
 
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense when there is no encoding present but non ' \
        'ASCII characters' do
-      inspect_source(cop, ['def foo() \'ä\' end'])
+      inspect_source(cop, 'def foo() \'ä\' end')
 
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(
@@ -86,7 +86,7 @@ describe RuboCop::Cop::Style::Encoding, :config do
     end
 
     it 'registers an offense when no encoding present' do
-      inspect_source(cop, ['def foo() end'])
+      inspect_source(cop, 'def foo() end')
 
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(

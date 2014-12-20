@@ -8,31 +8,31 @@ describe RuboCop::Cop::Style::Semicolon, :config do
 
   it 'registers an offense for a single expression' do
     inspect_source(cop,
-                   ['puts "this is a test";'])
+                   'puts "this is a test";')
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'registers an offense for several expressions' do
     inspect_source(cop,
-                   ['puts "this is a test"; puts "So is this"'])
+                   'puts "this is a test"; puts "So is this"')
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'registers an offense for one line method with two statements' do
     inspect_source(cop,
-                   ['def foo(a) x(1); y(2); z(3); end'])
+                   'def foo(a) x(1); y(2); z(3); end')
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'accepts semicolon before end if so configured' do
     inspect_source(cop,
-                   ['def foo(a) z(3); end'])
+                   'def foo(a) z(3); end')
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts semicolon after params if so configured' do
     inspect_source(cop,
-                   ['def foo(a); z(3) end'])
+                   'def foo(a); z(3) end')
     expect(cop.offenses).to be_empty
   end
 
@@ -65,13 +65,13 @@ describe RuboCop::Cop::Style::Semicolon, :config do
 
   it 'accepts one line empty module definitions' do
     inspect_source(cop,
-                   ['module Foo; end'])
+                   'module Foo; end')
     expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense for semicolon at the end no matter what' do
     inspect_source(cop,
-                   ['module Foo; end;'])
+                   'module Foo; end;')
     expect(cop.offenses.size).to eq(1)
   end
 
@@ -101,13 +101,13 @@ describe RuboCop::Cop::Style::Semicolon, :config do
 
     it 'accepts several expressions' do
       inspect_source(cop,
-                     ['puts "this is a test"; puts "So is this"'])
+                     'puts "this is a test"; puts "So is this"')
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts one line method with two statements' do
       inspect_source(cop,
-                     ['def foo(a) x(1); y(2); z(3); end'])
+                     'def foo(a) x(1); y(2); z(3); end')
       expect(cop.offenses).to be_empty
     end
   end

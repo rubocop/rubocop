@@ -12,7 +12,7 @@ describe RuboCop::Cop::Style::MultilineTernaryOperator do
   end
 
   it 'accepts a single line ternary operator expression' do
-    inspect_source(cop, ['a = cond ? b : c'])
+    inspect_source(cop, 'a = cond ? b : c')
     expect(cop.offenses).to be_empty
   end
 end

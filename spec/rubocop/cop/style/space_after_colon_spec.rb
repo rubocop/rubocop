@@ -8,23 +8,23 @@ describe RuboCop::Cop::Style::SpaceAfterColon do
   it 'registers an offense for colon without space after it' do
     # TODO: There is double reporting of the last colon (also from
     # SpaceAroundOperators).
-    inspect_source(cop, ['x = w ? {a:3}:4'])
+    inspect_source(cop, 'x = w ? {a:3}:4')
     expect(cop.messages).to eq(['Space missing after colon.'] * 2)
     expect(cop.highlights).to eq([':'] * 2)
   end
 
   it 'accepts colons in symbols' do
-    inspect_source(cop, ['x = :a'])
+    inspect_source(cop, 'x = :a')
     expect(cop.messages).to be_empty
   end
 
   it 'accepts colon in ternary followed by space' do
-    inspect_source(cop, ['x = w ? a : b'])
+    inspect_source(cop, 'x = w ? a : b')
     expect(cop.messages).to be_empty
   end
 
   it 'accepts hash rockets' do
-    inspect_source(cop, ['x = {"a"=>1}'])
+    inspect_source(cop, 'x = {"a"=>1}')
     expect(cop.messages).to be_empty
   end
 
@@ -44,7 +44,7 @@ describe RuboCop::Cop::Style::SpaceAfterColon do
   end
 
   it 'accepts colons in strings' do
-    inspect_source(cop, ["str << ':'"])
+    inspect_source(cop, "str << ':'")
     expect(cop.messages).to be_empty
   end
 

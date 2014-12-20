@@ -9,7 +9,7 @@ describe RuboCop::Cop::Style::RaiseArgs, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'compact' } }
 
     it 'reports an offense for a raise with 2 args' do
-      inspect_source(cop, ['raise RuntimeError, msg'])
+      inspect_source(cop, 'raise RuntimeError, msg')
       expect(cop.offenses.size).to eq(1)
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'exploded')
     end
@@ -27,17 +27,17 @@ describe RuboCop::Cop::Style::RaiseArgs, :config do
     end
 
     it 'reports an offense for a raise with 3 args' do
-      inspect_source(cop, ['raise RuntimeError, msg, caller'])
+      inspect_source(cop, 'raise RuntimeError, msg, caller')
       expect(cop.offenses.size).to eq(1)
     end
 
     it 'accepts a raise with msg argument' do
-      inspect_source(cop, ['raise msg'])
+      inspect_source(cop, 'raise msg')
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts a raise with an exception argument' do
-      inspect_source(cop, ['raise Ex.new(msg)'])
+      inspect_source(cop, 'raise Ex.new(msg)')
       expect(cop.offenses).to be_empty
     end
   end
@@ -46,7 +46,7 @@ describe RuboCop::Cop::Style::RaiseArgs, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'exploded' } }
 
     it 'reports an offense for a raise with exception object' do
-      inspect_source(cop, ['raise Ex.new(msg)'])
+      inspect_source(cop, 'raise Ex.new(msg)')
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Provide an exception class and message ' \
@@ -65,22 +65,22 @@ describe RuboCop::Cop::Style::RaiseArgs, :config do
     end
 
     it 'accepts exception constructor with more than 1 argument' do
-      inspect_source(cop, ['raise RuntimeError.new(a1, a2, a3)'])
+      inspect_source(cop, 'raise RuntimeError.new(a1, a2, a3)')
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts a raise with 3 args' do
-      inspect_source(cop, ['raise RuntimeError, msg, caller'])
+      inspect_source(cop, 'raise RuntimeError, msg, caller')
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts a raise with 2 args' do
-      inspect_source(cop, ['raise RuntimeError, msg'])
+      inspect_source(cop, 'raise RuntimeError, msg')
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts a raise with msg argument' do
-      inspect_source(cop, ['raise msg'])
+      inspect_source(cop, 'raise msg')
       expect(cop.offenses).to be_empty
     end
   end

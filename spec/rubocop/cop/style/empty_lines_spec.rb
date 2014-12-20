@@ -19,7 +19,7 @@ describe RuboCop::Cop::Style::EmptyLines do
 
   it 'works when there are no tokens' do
     inspect_source(cop,
-                   ['#comment'])
+                   '#comment')
     expect(cop.offenses).to be_empty
   end
 

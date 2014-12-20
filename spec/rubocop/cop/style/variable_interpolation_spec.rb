@@ -7,7 +7,7 @@ describe RuboCop::Cop::Style::VariableInterpolation do
 
   it 'registers an offense for interpolated global variables in string' do
     inspect_source(cop,
-                   ['puts "this is a #$test"'])
+                   'puts "this is a #$test"')
     expect(cop.offenses.size).to eq(1)
     expect(cop.highlights).to eq(['$test'])
     expect(cop.messages)
@@ -17,7 +17,7 @@ describe RuboCop::Cop::Style::VariableInterpolation do
 
   it 'registers an offense for interpolated global variables in regexp' do
     inspect_source(cop,
-                   ['puts /this is a #$test/'])
+                   'puts /this is a #$test/')
     expect(cop.offenses.size).to eq(1)
     expect(cop.highlights).to eq(['$test'])
     expect(cop.messages)
@@ -27,7 +27,7 @@ describe RuboCop::Cop::Style::VariableInterpolation do
 
   it 'registers an offense for interpolated global variables in regexp' do
     inspect_source(cop,
-                   ['puts `this is a #$test`'])
+                   'puts `this is a #$test`')
     expect(cop.offenses.size).to eq(1)
     expect(cop.highlights).to eq(['$test'])
     expect(cop.messages)
@@ -37,7 +37,7 @@ describe RuboCop::Cop::Style::VariableInterpolation do
 
   it 'registers an offense for interpolated regexp back references' do
     inspect_source(cop,
-                   ['puts "this is a #$1"'])
+                   'puts "this is a #$1"')
     expect(cop.offenses.size).to eq(1)
     expect(cop.highlights).to eq(['$1'])
     expect(cop.messages)
@@ -46,7 +46,7 @@ describe RuboCop::Cop::Style::VariableInterpolation do
 
   it 'registers an offense for interpolated instance variables' do
     inspect_source(cop,
-                   ['puts "this is a #@test"'])
+                   'puts "this is a #@test"')
     expect(cop.offenses.size).to eq(1)
     expect(cop.highlights).to eq(['@test'])
     expect(cop.messages)
@@ -56,7 +56,7 @@ describe RuboCop::Cop::Style::VariableInterpolation do
 
   it 'registers an offense for interpolated class variables' do
     inspect_source(cop,
-                   ['puts "this is a #@@t"'])
+                   'puts "this is a #@@t"')
     expect(cop.offenses.size).to eq(1)
     expect(cop.highlights).to eq(['@@t'])
     expect(cop.messages)
@@ -65,7 +65,7 @@ describe RuboCop::Cop::Style::VariableInterpolation do
 
   it 'does not register an offense for variables in expressions' do
     inspect_source(cop,
-                   ['puts "this is a #{@test} #{@@t} #{$t} #{$1}"'])
+                   'puts "this is a #{@test} #{@@t} #{$t} #{$1}"')
     expect(cop.offenses).to be_empty
   end
 

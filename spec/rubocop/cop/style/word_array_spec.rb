@@ -8,56 +8,56 @@ describe RuboCop::Cop::Style::WordArray, :config do
 
   it 'registers an offense for arrays of single quoted strings' do
     inspect_source(cop,
-                   ["['one', 'two', 'three']"])
+                   "['one', 'two', 'three']")
     expect(cop.offenses.size).to eq(1)
     expect(cop.config_to_allow_offenses).to eq('MinSize' => 3)
   end
 
   it 'registers an offense for arrays of double quoted strings' do
     inspect_source(cop,
-                   ['["one", "two", "three"]'])
+                   '["one", "two", "three"]')
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'registers an offense for arrays of unicode word characters' do
     inspect_source(cop,
-                   ['["ВУЗ", "вуз", "中文网"]'])
+                   '["ВУЗ", "вуз", "中文网"]')
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'registers an offense for arrays with character constants' do
     inspect_source(cop,
-                   ['["one", ?\n]'])
+                   '["one", ?\n]')
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'does not register an offense for array of non-words' do
     inspect_source(cop,
-                   ['["one space", "two", "three"]'])
+                   '["one space", "two", "three"]')
     expect(cop.offenses).to be_empty
   end
 
   it 'does not register an offense for array containing non-string' do
     inspect_source(cop,
-                   ['["one", "two", 3]'])
+                   '["one", "two", 3]')
     expect(cop.offenses).to be_empty
   end
 
   it 'does not register an offense for array starting with %w' do
     inspect_source(cop,
-                   ['%w(one two three)'])
+                   '%w(one two three)')
     expect(cop.offenses).to be_empty
   end
 
   it 'does not register an offense for array with one element' do
     inspect_source(cop,
-                   ['["three"]'])
+                   '["three"]')
     expect(cop.offenses).to be_empty
   end
 
   it 'does not register an offense for array with empty strings' do
     inspect_source(cop,
-                   ['["", "two", "three"]'])
+                   '["", "two", "three"]')
     expect(cop.offenses).to be_empty
   end
 
@@ -65,7 +65,7 @@ describe RuboCop::Cop::Style::WordArray, :config do
     cop_config['MinSize'] = 3
 
     inspect_source(cop,
-                   ['["one", "two", "three"]'])
+                   '["one", "two", "three"]')
     expect(cop.offenses).to be_empty
   end
 
@@ -105,7 +105,7 @@ describe RuboCop::Cop::Style::WordArray, :config do
     let(:cop_config) { { 'MinSize' => 0, 'WordRegex' => /\A[\w@.]+\z/ } }
 
     it 'registers an offense for arrays of email addresses' do
-      inspect_source(cop, ["['a@example.com', 'b@example.com']"])
+      inspect_source(cop, "['a@example.com', 'b@example.com']")
       expect(cop.offenses.size).to eq(1)
     end
 

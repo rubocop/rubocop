@@ -7,23 +7,23 @@ describe RuboCop::Cop::Style::SpaceAfterControlKeyword do
 
   it 'registers an offense for normal if' do
     inspect_source(cop,
-                   ['if(test) then result end'])
+                   'if(test) then result end')
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'registers an offense for modifier unless' do
-    inspect_source(cop, ['action unless(test)'])
+    inspect_source(cop, 'action unless(test)')
 
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'does not get confused by keywords' do
-    inspect_source(cop, ['[:if, :unless].action'])
+    inspect_source(cop, '[:if, :unless].action')
     expect(cop.offenses).to be_empty
   end
 
   it 'does not get confused by the ternary operator' do
-    inspect_source(cop, ['a ? b : c'])
+    inspect_source(cop, 'a ? b : c')
     expect(cop.offenses).to be_empty
   end
 

@@ -296,7 +296,7 @@ describe RuboCop::Cop::Style::AlignHash, :config do
     end
 
     it 'accepts a single method argument entry with colon' do
-      inspect_source(cop, ['merge(parent: nil)'])
+      inspect_source(cop, 'merge(parent: nil)')
       expect(cop.offenses).to be_empty
     end
   end

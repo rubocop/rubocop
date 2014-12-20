@@ -12,7 +12,7 @@ describe RuboCop::Cop::Style::TrailingWhitespace do
   end
 
   it 'registers an offense for a line ending with tab' do
-    inspect_source(cop, ["x = 0\t"])
+    inspect_source(cop, "x = 0\t")
     expect(cop.offenses.size).to eq(1)
   end
 

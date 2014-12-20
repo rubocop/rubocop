@@ -64,12 +64,12 @@ describe RuboCop::Cop::Style::WhileUntilModifier do
   end
 
   it 'accepts modifier while' do
-    inspect_source(cop, ['ala while bala'])
+    inspect_source(cop, 'ala while bala')
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts modifier until' do
-    inspect_source(cop, ['ala until bala'])
+    inspect_source(cop, 'ala until bala')
     expect(cop.offenses).to be_empty
   end
 

@@ -7,7 +7,7 @@ describe RuboCop::Cop::Style::Alias do
 
   it 'registers an offense for alias with symbol args' do
     inspect_source(cop,
-                   ['alias :ala :bala'])
+                   'alias :ala :bala')
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
       .to eq(['Use `alias_method` instead of `alias`.'])
@@ -20,7 +20,7 @@ describe RuboCop::Cop::Style::Alias do
 
   it 'registers an offense for alias with bareword args' do
     inspect_source(cop,
-                   ['alias ala bala'])
+                   'alias ala bala')
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
       .to eq(['Use `alias_method` instead of `alias`.'])
@@ -33,19 +33,19 @@ describe RuboCop::Cop::Style::Alias do
 
   it 'does not register an offense for alias_method' do
     inspect_source(cop,
-                   ['alias_method :ala, :bala'])
+                   'alias_method :ala, :bala')
     expect(cop.offenses).to be_empty
   end
 
   it 'does not register an offense for :alias' do
     inspect_source(cop,
-                   ['[:alias, :ala, :bala]'])
+                   '[:alias, :ala, :bala]')
     expect(cop.offenses).to be_empty
   end
 
   it 'does not register an offense for alias with gvars' do
     inspect_source(cop,
-                   ['alias $ala $bala'])
+                   'alias $ala $bala')
     expect(cop.offenses).to be_empty
   end
 

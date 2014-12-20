@@ -56,12 +56,12 @@ describe RuboCop::Cop::Style::SpaceInsideBrackets do
   end
 
   it 'accepts square brackets called with method call syntax' do
-    inspect_source(cop, ['subject.[](0)'])
+    inspect_source(cop, 'subject.[](0)')
     expect(cop.messages).to be_empty
   end
 
   it 'only reports a single space once' do
-    inspect_source(cop, ['[ ]'])
+    inspect_source(cop, '[ ]')
     expect(cop.messages).to eq(
       ['Space inside square brackets detected.'])
   end

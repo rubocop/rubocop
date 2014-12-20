@@ -47,7 +47,7 @@ describe RuboCop::Cop::Style::AlignParameters do
     end
 
     it 'accepts calls that only span one line' do
-      inspect_source(cop, ['find(path, s, @special[sexp[0]])'])
+      inspect_source(cop, 'find(path, s, @special[sexp[0]])')
       expect(cop.offenses).to be_empty
     end
 
@@ -100,12 +100,12 @@ describe RuboCop::Cop::Style::AlignParameters do
     end
 
     it "doesn't get confused by symbols with embedded expressions" do
-      inspect_source(cop, ['send(:"#{name}_comments_path")'])
+      inspect_source(cop, 'send(:"#{name}_comments_path")')
       expect(cop.offenses).to be_empty
     end
 
     it "doesn't get confused by regexen with embedded expressions" do
-      inspect_source(cop, ['a(/#{name}/)'])
+      inspect_source(cop, 'a(/#{name}/)')
       expect(cop.offenses).to be_empty
     end
 
@@ -142,7 +142,7 @@ describe RuboCop::Cop::Style::AlignParameters do
     end
 
     it 'can handle a call embedded in a string' do
-      inspect_source(cop, ['model("#{index(name)}", child)'])
+      inspect_source(cop, 'model("#{index(name)}", child)')
       expect(cop.offenses).to be_empty
     end
 
@@ -163,12 +163,12 @@ describe RuboCop::Cop::Style::AlignParameters do
     end
 
     it 'can handle a ternary condition with a block reference' do
-      inspect_source(cop, ['cond ? a : func(&b)'])
+      inspect_source(cop, 'cond ? a : func(&b)')
       expect(cop.offenses).to be_empty
     end
 
     it 'can handle parentheses used with no parameters' do
-      inspect_source(cop, ['func()'])
+      inspect_source(cop, 'func()')
       expect(cop.offenses).to be_empty
     end
 
@@ -180,7 +180,7 @@ describe RuboCop::Cop::Style::AlignParameters do
     end
 
     it 'can handle method calls without parentheses' do
-      inspect_source(cop, ['a(b c, d)'])
+      inspect_source(cop, 'a(b c, d)')
       expect(cop.offenses).to be_empty
     end
 

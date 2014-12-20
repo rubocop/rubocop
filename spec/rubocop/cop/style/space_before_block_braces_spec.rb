@@ -15,13 +15,13 @@ describe RuboCop::Cop::Style::SpaceBeforeBlockBraces do
 
   context 'when EnforcedStyle is space' do
     it 'accepts braces surrounded by spaces' do
-      inspect_source(cop, ['each { puts }'])
+      inspect_source(cop, 'each { puts }')
       expect(cop.messages).to be_empty
       expect(cop.highlights).to be_empty
     end
 
     it 'registers an offense for left brace without outer space' do
-      inspect_source(cop, ['each{ puts }'])
+      inspect_source(cop, 'each{ puts }')
       expect(cop.messages).to eq(['Space missing to the left of {.'])
       expect(cop.highlights).to eq(['{'])
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'no_space')
@@ -45,7 +45,7 @@ describe RuboCop::Cop::Style::SpaceBeforeBlockBraces do
     let(:cop_config) { { 'EnforcedStyle' => 'no_space' } }
 
     it 'registers an offense for braces surrounded by spaces' do
-      inspect_source(cop, ['each { puts }'])
+      inspect_source(cop, 'each { puts }')
       expect(cop.messages).to eq(['Space detected to the left of {.'])
       expect(cop.highlights).to eq([' '])
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'space')
@@ -65,7 +65,7 @@ describe RuboCop::Cop::Style::SpaceBeforeBlockBraces do
     end
 
     it 'accepts left brace without outer space' do
-      inspect_source(cop, ['each{ puts }'])
+      inspect_source(cop, 'each{ puts }')
       expect(cop.messages).to be_empty
       expect(cop.highlights).to be_empty
     end

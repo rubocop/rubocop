@@ -88,7 +88,7 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
   end
 
   it 'is not confused by leading parenthesis in subexpression' do
-    inspect_source(cop, ['(a > b) && other ? one : two'])
+    inspect_source(cop, '(a > b) && other ? one : two')
     expect(cop.offenses).to be_empty
   end
 
@@ -107,7 +107,7 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
   end
 
   it 'does not blow up when the condition is a ternary op' do
-    inspect_source(cop, ['x if (a ? b : c)'])
+    inspect_source(cop, 'x if (a ? b : c)')
     expect(cop.offenses.size).to eq(1)
   end
 

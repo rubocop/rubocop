@@ -16,7 +16,7 @@ describe RuboCop::Cop::Style::AsciiIdentifiers do
 
   it 'accepts identifiers with only ascii chars' do
     inspect_source(cop,
-                   ['x.empty?'])
+                   'x.empty?')
     expect(cop.offenses).to be_empty
   end
 
@@ -30,7 +30,7 @@ describe RuboCop::Cop::Style::AsciiIdentifiers do
 
   it 'does not get confused by an empty file' do
     inspect_source(cop,
-                   [''])
+                   '')
     expect(cop.offenses).to be_empty
   end
 end

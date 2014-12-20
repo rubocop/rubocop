@@ -13,8 +13,7 @@ describe RuboCop::Cop::Style::AndOr, :config do
 
     %w(and or).each do |operator|
       it "accepts \"#{operator}\" outside of conditional" do
-        inspect_source(cop,
-                       ["x = a + b #{operator} return x"])
+        inspect_source(cop, "x = a + b #{operator} return x")
         expect(cop.offenses).to be_empty
       end
 
@@ -51,14 +50,12 @@ describe RuboCop::Cop::Style::AndOr, :config do
 
     %w(&& ||).each do |operator|
       it "accepts #{operator} inside of conditional" do
-        inspect_source(cop,
-                       ["test if a #{operator} b"])
+        inspect_source(cop, "test if a #{operator} b")
         expect(cop.offenses).to be_empty
       end
 
       it "accepts #{operator} outside of conditional" do
-        inspect_source(cop,
-                       ["x = a #{operator} b"])
+        inspect_source(cop, "x = a #{operator} b")
         expect(cop.offenses).to be_empty
       end
     end
@@ -73,28 +70,24 @@ describe RuboCop::Cop::Style::AndOr, :config do
     let(:cop_config) { cop_config }
 
     it 'registers an offense for "or"' do
-      inspect_source(cop,
-                     ['test if a or b'])
+      inspect_source(cop, 'test if a or b')
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Use `||` instead of `or`.'])
     end
 
     it 'registers an offense for "and"' do
-      inspect_source(cop,
-                     ['test if a and b'])
+      inspect_source(cop, 'test if a and b')
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Use `&&` instead of `and`.'])
     end
 
     it 'accepts ||' do
-      inspect_source(cop,
-                     ['test if a || b'])
+      inspect_source(cop, 'test if a || b')
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts &&' do
-      inspect_source(cop,
-                     ['test if a && b'])
+      inspect_source(cop, 'test if a && b')
       expect(cop.offenses).to be_empty
     end
 
@@ -132,57 +125,49 @@ describe RuboCop::Cop::Style::AndOr, :config do
     end
 
     it 'warns on short-circuit (and)' do
-      inspect_source(cop,
-                     ['x = a + b and return x'])
+      inspect_source(cop, 'x = a + b and return x')
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Use `&&` instead of `and`.'])
     end
 
     it 'also warns on non short-circuit (and)' do
-      inspect_source(cop,
-                     ['x = a + b if a and b'])
+      inspect_source(cop, 'x = a + b if a and b')
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Use `&&` instead of `and`.'])
     end
 
     it 'also warns on non short-circuit (and) (unless)' do
-      inspect_source(cop,
-                     ['x = a + b unless a and b'])
+      inspect_source(cop, 'x = a + b unless a and b')
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Use `&&` instead of `and`.'])
     end
 
     it 'warns on short-circuit (or)' do
-      inspect_source(cop,
-                     ['x = a + b or return x'])
+      inspect_source(cop, 'x = a + b or return x')
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Use `||` instead of `or`.'])
     end
 
     it 'also warns on non short-circuit (or)' do
-      inspect_source(cop,
-                     ['x = a + b if a or b'])
+      inspect_source(cop, 'x = a + b if a or b')
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Use `||` instead of `or`.'])
     end
 
     it 'also warns on non short-circuit (or) (unless)' do
-      inspect_source(cop,
-                     ['x = a + b unless a or b'])
+      inspect_source(cop, 'x = a + b unless a or b')
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Use `||` instead of `or`.'])
     end
 
     it 'also warns on while (or)' do
-      inspect_source(cop,
-                     ['x = a + b while a or b'])
+      inspect_source(cop, 'x = a + b while a or b')
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Use `||` instead of `or`.'])
     end
 
     it 'also warns on until (or)' do
-      inspect_source(cop,
-                     ['x = a + b until a or b'])
+      inspect_source(cop, 'x = a + b until a or b')
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Use `||` instead of `or`.'])
     end

@@ -28,7 +28,7 @@ describe RuboCop::Cop::Lint::Void do
 
   described_class::OPS.each do |op|
     it "accepts void op #{op} by itself without a begin block" do
-      inspect_source(cop, ["a #{op} b"])
+      inspect_source(cop, "a #{op} b")
       expect(cop.offenses).to be_empty
     end
   end

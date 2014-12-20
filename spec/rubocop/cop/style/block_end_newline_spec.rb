@@ -6,7 +6,7 @@ describe RuboCop::Cop::Style::BlockEndNewline do
   subject(:cop) { described_class.new }
 
   it 'does not register an offense for a one-liner' do
-    inspect_source(cop, ['test do foo end'])
+    inspect_source(cop, 'test do foo end')
     expect(cop.messages).to be_empty
   end
 

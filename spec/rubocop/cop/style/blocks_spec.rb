@@ -12,13 +12,13 @@ describe RuboCop::Cop::Style::Blocks do
   end
 
   it 'registers an offense for a single line block with do-end' do
-    inspect_source(cop, ['each do |x| end'])
+    inspect_source(cop, 'each do |x| end')
     expect(cop.messages)
       .to eq(['Prefer {...} over do...end for single-line blocks.'])
   end
 
   it 'accepts a single line block with braces' do
-    inspect_source(cop, ['each { |x| }'])
+    inspect_source(cop, 'each { |x| }')
     expect(cop.offenses).to be_empty
   end
 

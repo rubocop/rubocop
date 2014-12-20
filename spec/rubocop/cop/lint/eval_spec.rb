@@ -7,27 +7,27 @@ describe RuboCop::Cop::Lint::Eval do
 
   it 'registers an offense for eval as function' do
     inspect_source(cop,
-                   ['eval(something)'])
+                   'eval(something)')
     expect(cop.offenses.size).to eq(1)
     expect(cop.highlights) .to eq(['eval'])
   end
 
   it 'registers an offense for eval as command' do
     inspect_source(cop,
-                   ['eval something'])
+                   'eval something')
     expect(cop.offenses.size).to eq(1)
     expect(cop.highlights) .to eq(['eval'])
   end
 
   it 'does not register an offense for eval as variable' do
     inspect_source(cop,
-                   ['eval = something'])
+                   'eval = something')
     expect(cop.offenses).to be_empty
   end
 
   it 'does not register an offense for eval as method' do
     inspect_source(cop,
-                   ['something.eval'])
+                   'something.eval')
     expect(cop.offenses).to be_empty
   end
 end

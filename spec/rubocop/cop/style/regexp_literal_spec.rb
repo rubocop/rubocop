@@ -11,7 +11,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
     let(:cop_config) { { 'MaxSlashes' => -1 } }
 
     it 'fails' do
-      expect { inspect_source(cop, ['x =~ /home/']) }
+      expect { inspect_source(cop, 'x =~ /home/') }
         .to raise_error(RuntimeError)
     end
   end
@@ -20,26 +20,26 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
     let(:cop_config) { { 'MaxSlashes' => 0 } }
 
     it 'registers an offense for one slash in // regexp' do
-      inspect_source(cop, ['x =~ /home\//'])
+      inspect_source(cop, 'x =~ /home\//')
       expect(cop.messages)
         .to eq(['Use %r for regular expressions matching more ' \
                 "than 0 '/' characters."])
     end
 
     it 'accepts zero slashes in // regexp' do
-      inspect_source(cop, ['z =~ /a/'])
+      inspect_source(cop, 'z =~ /a/')
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for zero slashes in %r regexp' do
-      inspect_source(cop, ['y =~ %r(etc)'])
+      inspect_source(cop, 'y =~ %r(etc)')
       expect(cop.messages)
         .to eq(['Use %r only for regular expressions matching more ' \
                 "than 0 '/' characters."])
     end
 
     it 'accepts %r regexp with one slash' do
-      inspect_source(cop, ['x =~ %r(/home)'])
+      inspect_source(cop, 'x =~ %r(/home)')
       expect(cop.offenses).to be_empty
     end
 
@@ -47,17 +47,17 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
       subject(:cop) { described_class.new(config, auto_gen_config: true) }
 
       it 'sets MaxSlashes: 1 for one slash in // regexp' do
-        inspect_source(cop, ['x =~ /home\//'])
+        inspect_source(cop, 'x =~ /home\//')
         expect(cop.config_to_allow_offenses).to eq('MaxSlashes' => 1)
       end
 
       it 'disables the cop for zero slashes in %r regexp' do
-        inspect_source(cop, ['y =~ %r(etc)'])
+        inspect_source(cop, 'y =~ %r(etc)')
         expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
       end
 
       it 'generates nothing if there are no offenses' do
-        inspect_source(cop, ['x =~ %r(/home)'])
+        inspect_source(cop, 'x =~ %r(/home)')
         expect(cop.config_to_allow_offenses).to eq(nil)
       end
     end
@@ -100,7 +100,7 @@ describe RuboCop::Cop::Style::RegexpLiteral, :config do
     end
 
     it 'ignores slashes do not belong // regexp' do
-      inspect_source(cop, ['x =~ /\s{#{x[/\s+/].length}}/'])
+      inspect_source(cop, 'x =~ /\s{#{x[/\s+/].length}}/')
       expect(cop.offenses).to be_empty
     end
 

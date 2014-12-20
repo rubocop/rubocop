@@ -7,19 +7,19 @@ describe RuboCop::Cop::Style::NumericLiterals, :config do
   let(:cop_config) { { 'MinDigits' => 5 } }
 
   it 'registers an offense for a long undelimited integer' do
-    inspect_source(cop, ['a = 12345'])
+    inspect_source(cop, 'a = 12345')
     expect(cop.offenses.size).to eq(1)
     expect(cop.config_to_allow_offenses).to eq('MinDigits' => 6)
   end
 
   it 'registers an offense for a float with a long undelimited integer part' do
-    inspect_source(cop, ['a = 123456.789'])
+    inspect_source(cop, 'a = 123456.789')
     expect(cop.offenses.size).to eq(1)
     expect(cop.config_to_allow_offenses).to eq('MinDigits' => 7)
   end
 
   it 'registers an offense for an integer with misplaced underscore' do
-    inspect_source(cop, ['a = 123_456_78_90_00'])
+    inspect_source(cop, 'a = 123_456_78_90_00')
     expect(cop.offenses.size).to eq(1)
     expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
   end
@@ -31,12 +31,12 @@ describe RuboCop::Cop::Style::NumericLiterals, :config do
   end
 
   it 'accepts a short integer without underscore' do
-    inspect_source(cop, ['a = 123'])
+    inspect_source(cop, 'a = 123')
     expect(cop.messages).to be_empty
   end
 
   it 'does not count a leading minus sign as a digit' do
-    inspect_source(cop, ['a = -1230'])
+    inspect_source(cop, 'a = -1230')
     expect(cop.messages).to be_empty
   end
 

@@ -118,7 +118,7 @@ describe RuboCop::Cop::Style::MethodName, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'other' } }
 
     it 'fails' do
-      expect { inspect_source(cop, ['def a', 'end']) }
+      expect { inspect_source(cop, 'def a', 'end') }
         .to raise_error(RuntimeError)
     end
   end

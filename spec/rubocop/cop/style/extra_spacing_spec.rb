@@ -6,17 +6,17 @@ describe RuboCop::Cop::Style::ExtraSpacing do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for double extra spacing on variable assignment' do
-    inspect_source(cop, ['m    = "hello"'])
+    inspect_source(cop, 'm    = "hello"')
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'ignores whitespace at the beginning of the line' do
-    inspect_source(cop, ['  m = "hello"'])
+    inspect_source(cop, '  m = "hello"')
     expect(cop.offenses.size).to eq(0)
   end
 
   it 'ignores whitespace inside a string' do
-    inspect_source(cop, ['m = "hello   this"'])
+    inspect_source(cop, 'm = "hello   this"')
     expect(cop.offenses.size).to eq(0)
   end
 

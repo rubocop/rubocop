@@ -8,7 +8,7 @@ describe RuboCop::Cop::Style::SelfAssignment do
   [:+, :-, :*, :**, :/, :|, :&].product(['x', '@x', '@@x']).each do |op, var|
     it "registers an offense for non-shorthand assignment #{op} and #{var}" do
       inspect_source(cop,
-                     ["#{var} = #{var} #{op} y"])
+                     "#{var} = #{var} #{op} y")
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(["Use self-assignment shorthand `#{op}=`."])
@@ -16,7 +16,7 @@ describe RuboCop::Cop::Style::SelfAssignment do
 
     it "accepts shorthand assignment for #{op} and #{var}" do
       inspect_source(cop,
-                     ["#{var} = #{var} #{op} y"])
+                     "#{var} = #{var} #{op} y")
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(["Use self-assignment shorthand `#{op}=`."])
@@ -26,7 +26,7 @@ describe RuboCop::Cop::Style::SelfAssignment do
   ['||', '&&'].product(['x', '@x', '@@x']).each do |op, var|
     it "registers an offense for non-shorthand assignment #{op} and #{var}" do
       inspect_source(cop,
-                     ["#{var} = #{var} #{op} y"])
+                     "#{var} = #{var} #{op} y")
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(["Use self-assignment shorthand `#{op}=`."])
@@ -34,7 +34,7 @@ describe RuboCop::Cop::Style::SelfAssignment do
 
     it "accepts shorthand assignment for #{op} and #{var}" do
       inspect_source(cop,
-                     ["#{var} = #{var} #{op} y"])
+                     "#{var} = #{var} #{op} y")
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(["Use self-assignment shorthand `#{op}=`."])

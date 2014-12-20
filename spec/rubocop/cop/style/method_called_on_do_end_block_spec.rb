@@ -33,13 +33,13 @@ describe RuboCop::Cop::Style::MethodCalledOnDoEndBlock do
 
   context 'with a single-line do..end block' do
     it 'registers an offense for a chained call' do
-      inspect_source(cop, ['a do b end.c'])
+      inspect_source(cop, 'a do b end.c')
       expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(['end.c'])
     end
 
     it 'accepts a single-line do..end block with a chained block' do
-      inspect_source(cop, ['a do b end.c do d end'])
+      inspect_source(cop, 'a do b end.c do d end')
       expect(cop.offenses).to be_empty
     end
   end
@@ -53,7 +53,7 @@ describe RuboCop::Cop::Style::MethodCalledOnDoEndBlock do
     end
 
     it 'accepts a single-line block with a chained call' do
-      inspect_source(cop, ['a { b }.c'])
+      inspect_source(cop, 'a { b }.c')
       expect(cop.offenses).to be_empty
     end
   end

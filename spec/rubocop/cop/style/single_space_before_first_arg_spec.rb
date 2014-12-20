@@ -56,7 +56,7 @@ describe RuboCop::Cop::Style::SingleSpaceBeforeFirstArg do
     end
 
     it 'accepts a method call with space after the left parenthesis' do
-      inspect_source(cop, ['something(  x  )'])
+      inspect_source(cop, 'something(  x  )')
       expect(cop.offenses).to be_empty
     end
   end
