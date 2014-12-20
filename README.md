@@ -163,6 +163,7 @@ Command flag              | Description
 `--only`                  | Run only the specified cop(s).
 `--except`                | Run all cops enabled by configuration except the specified one(s).
 `--auto-gen-config`       | Generate a configuration file acting as a TODO list.
+`--exclude-limit`         | Limit how many files `--auto-gen-config` can list in `Exclude` parameters, default is 0.
 `--show-cops`             | Shows available cops and their configuration.
 `--fail-level`            | Minimum severity for exit with error code.
 
@@ -368,6 +369,12 @@ file `.rubocop_todo.yml` contains configuration to disable all cops that
 currently detect an offense in the code. Then you can start removing the
 entries in the generated file one by one as you work through all the
 offenses in the code.
+
+By adding the option `--exclude-limit COUNT`, e.g.,
+`rubocop --auto-gen-config --exclude-limit 5`, you can generate `Exclude`
+properties listing files with offenses. For cops that have more than `COUNT`
+files with offenses, the normal parameters (`Enabled`, `Max`, `EnforcedStyle`,
+etc.) will be generated instead.
 
 ## Disabling Cops within Source Code
 

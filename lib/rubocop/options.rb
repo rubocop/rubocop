@@ -14,6 +14,9 @@ module RuboCop
       config:            'Specify configuration file.',
       auto_gen_config:  ['Generate a configuration file acting as a',
                          'TODO list.'],
+      exclude_limit:    ['Used together with --auto-gen-config to',
+                         'set the limit for how many Exclude',
+                         'properties to generate. Default is 0.'],
       force_exclusion:  ['Force excluding files specified in the',
                          'configuration `Exclude` even if they are',
                          'explicitly passed as arguments.'],
@@ -120,6 +123,10 @@ module RuboCop
                                   ConfigLoader::AUTO_GENERATED_FILE]]
       end
 
+      option(opts, '--exclude-limit COUNT') do
+        validate_exclude_limit_option(args)
+      end
+
       option(opts, '--force-exclusion')
     end
 
@@ -213,10 +220,26 @@ module RuboCop
     end
 
     def validate_auto_gen_config_option(args)
-      return unless args.any?
+      return if args.empty?
+      return if args.size <= 2 && args.first == '--exclude-limit'
 
       warn '--auto-gen-config can not be combined with any other arguments.'
       exit(1)
+    end
+
+    def validate_exclude_limit_option(args)
+      if @options[:exclude_limit] !~ /^\d+$/
+        # Emulate OptionParser's behavior to make failures consistent regardless
+        # of option order.
+        fail OptionParser::MissingArgument
+      end
+
+      # --exclude-limit is valid if there's a parsed or yet unparsed
+      # --auto-gen-config.
+      return if @options[:auto_gen_config] || args.include?('--auto-gen-config')
+
+      fail ArgumentError,
+           '--exclude-limit can only be used with --auto-gen-config.'
     end
   end
 end

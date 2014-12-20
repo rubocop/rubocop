@@ -19,14 +19,18 @@ module RuboCop
         [RuboCop::Cop::Offense.new(:convention, location, 'message', 'Cop1'),
          RuboCop::Cop::Offense.new(:convention, location, 'message', 'Cop2')]
       end
-      let(:location) { OpenStruct.new(line: 1, column: 5) }
+      let(:location) do
+        OpenStruct.new(line: 1, column: 5,
+                       source_buffer: OpenStruct.new(name: 'test.rb'))
+      end
       before { $stdout = StringIO.new }
 
       describe '#finished' do
         it 'displays YAML configuration disabling all cops with offenses' do
           formatter.file_finished('test.rb', offenses)
           formatter.finished(['test.rb'])
-          expect(output.string).to eq(described_class::HEADING +
+          expect(output.string).to eq(format(described_class::HEADING,
+                                             'rubocop --auto-gen-config') +
                                       ['',
                                        '',
                                        '# Offense count: 1',
