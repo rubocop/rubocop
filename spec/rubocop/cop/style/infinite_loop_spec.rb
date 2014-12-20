@@ -29,7 +29,7 @@ describe RuboCop::Cop::Style::InfiniteLoop do
 
   it 'accepts Kernel#loop' do
     inspect_source(cop,
-                   ['loop { break if something }'])
+                   'loop { break if something }')
 
     expect(cop.offenses).to be_empty
   end

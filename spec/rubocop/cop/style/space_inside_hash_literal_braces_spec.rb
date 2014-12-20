@@ -10,12 +10,12 @@ describe RuboCop::Cop::Style::SpaceInsideHashLiteralBraces, :config do
     let(:cop_config) { { 'EnforcedStyleForEmptyBraces' => 'no_space' } }
 
     it 'accepts empty braces with no space inside' do
-      inspect_source(cop, ['h = {}'])
+      inspect_source(cop, 'h = {}')
       expect(cop.messages).to be_empty
     end
 
     it 'registers an offense for empty braces with space inside' do
-      inspect_source(cop, ['h = { }'])
+      inspect_source(cop, 'h = { }')
       expect(cop.messages)
         .to eq(['Space inside empty hash literal braces detected.'])
       expect(cop.highlights).to eq([' '])
@@ -31,12 +31,12 @@ describe RuboCop::Cop::Style::SpaceInsideHashLiteralBraces, :config do
     let(:cop_config) { { 'EnforcedStyleForEmptyBraces' => 'space' } }
 
     it 'accepts empty braces with space inside' do
-      inspect_source(cop, ['h = { }'])
+      inspect_source(cop, 'h = { }')
       expect(cop.messages).to be_empty
     end
 
     it 'registers an offense for empty braces with no space inside' do
-      inspect_source(cop, ['h = {}'])
+      inspect_source(cop, 'h = {}')
       expect(cop.messages)
         .to eq(['Space inside empty hash literal braces missing.'])
       expect(cop.highlights).to eq(['{'])
@@ -62,7 +62,7 @@ describe RuboCop::Cop::Style::SpaceInsideHashLiteralBraces, :config do
 
   it 'registers an offense for correct + opposite' do
     inspect_source(cop,
-                   ['h = { a: 1}'])
+                   'h = { a: 1}')
     expect(cop.messages).to eq(['Space inside } missing.'])
     expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
   end
@@ -79,7 +79,7 @@ describe RuboCop::Cop::Style::SpaceInsideHashLiteralBraces, :config do
 
     it 'registers an offense for hashes with spaces' do
       inspect_source(cop,
-                     ['h = { a: 1, b: 2 }'])
+                     'h = { a: 1, b: 2 }')
       expect(cop.messages).to eq(['Space inside { detected.',
                                   'Space inside } detected.'])
       expect(cop.highlights).to eq([' ', ' '])
@@ -88,7 +88,7 @@ describe RuboCop::Cop::Style::SpaceInsideHashLiteralBraces, :config do
 
     it 'registers an offense for opposite + correct' do
       inspect_source(cop,
-                     ['h = {a: 1 }'])
+                     'h = {a: 1 }')
       expect(cop.messages).to eq(['Space inside } detected.'])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
@@ -134,14 +134,14 @@ describe RuboCop::Cop::Style::SpaceInsideHashLiteralBraces, :config do
   end
 
   it 'accepts hash literals with no braces' do
-    inspect_source(cop, ['x(a: b.c)'])
+    inspect_source(cop, 'x(a: b.c)')
     expect(cop.offenses).to be_empty
   end
 
   it 'can handle interpolation in a braceless hash literal' do
     # A tricky special case where the closing brace of the
     # interpolation risks getting confused for a hash literal brace.
-    inspect_source(cop, ['f(get: "#{x}")'])
+    inspect_source(cop, 'f(get: "#{x}")')
     expect(cop.offenses).to be_empty
   end
 end

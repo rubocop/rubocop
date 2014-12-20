@@ -23,7 +23,7 @@ describe RuboCop::Cop::Lint::SpaceBeforeFirstArg do
     end
 
     it 'accepts square brackets operator' do
-      inspect_source(cop, ['something[:x]'])
+      inspect_source(cop, 'something[:x]')
       expect(cop.offenses).to be_empty
     end
 
@@ -33,7 +33,8 @@ describe RuboCop::Cop::Lint::SpaceBeforeFirstArg do
     end
 
     it 'accepts an assignment without space before first arg' do
-      inspect_source(cop, ['a.something=c', 'a.something,b=c,d'])
+      inspect_source(cop, ['a.something=c',
+                           'a.something,b=c,d'])
       expect(cop.offenses).to be_empty
     end
 
@@ -53,12 +54,12 @@ describe RuboCop::Cop::Lint::SpaceBeforeFirstArg do
     end
 
     it 'accepts a method call with space after the left parenthesis' do
-      inspect_source(cop, ['something?(  x  )'])
+      inspect_source(cop, 'something?(  x  )')
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts setter call' do
-      inspect_source(cop, ['self.class.controller_path=(path)'])
+      inspect_source(cop, 'self.class.controller_path=(path)')
       expect(cop.offenses).to be_empty
     end
   end

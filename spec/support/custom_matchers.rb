@@ -30,7 +30,7 @@ end
 
 RSpec::Matchers.define :find_offenses_in do |code|
   match do |cop|
-    inspect_source(cop, [code])
+    inspect_source(cop, code)
     includes_highlight(cop) &&
       includes_message(cop) &&
       cop.offenses.any?

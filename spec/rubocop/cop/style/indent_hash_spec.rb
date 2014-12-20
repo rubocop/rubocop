@@ -202,13 +202,13 @@ describe RuboCop::Cop::Style::IndentHash do
 
     it 'accepts single line hash' do
       inspect_source(cop,
-                     ['a = { a: 1, b: 2 }'])
+                     'a = { a: 1, b: 2 }')
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts an empty hash' do
       inspect_source(cop,
-                     ['a = {}'])
+                     'a = {}')
       expect(cop.offenses).to be_empty
     end
   end
@@ -334,13 +334,13 @@ describe RuboCop::Cop::Style::IndentHash do
     context 'and argument are not surrounded by parentheses' do
       it 'accepts braceless hash' do
         inspect_source(cop,
-                       ['func a: 1, b: 2'])
+                       'func a: 1, b: 2')
         expect(cop.offenses).to be_empty
       end
 
       it 'accepts single line hash with braces' do
         inspect_source(cop,
-                       ['func x, { a: 1, b: 2 }'])
+                       'func x, { a: 1, b: 2 }')
         expect(cop.offenses).to be_empty
       end
 

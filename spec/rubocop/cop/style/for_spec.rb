@@ -45,12 +45,12 @@ describe RuboCop::Cop::Style::For, :config do
     end
 
     it 'accepts :for' do
-      inspect_source(cop, ['[:for, :ala, :bala]'])
+      inspect_source(cop, '[:for, :ala, :bala]')
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts def for' do
-      inspect_source(cop, ['def for; end'])
+      inspect_source(cop, 'def for; end')
       expect(cop.offenses).to be_empty
     end
   end

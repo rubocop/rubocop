@@ -7,7 +7,7 @@ describe RuboCop::Cop::Style::RescueModifier do
 
   it 'registers an offense for modifier rescue' do
     inspect_source(cop,
-                   ['method rescue handle'])
+                   'method rescue handle')
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
       .to eq(['Avoid using `rescue` in its modifier form.'])
@@ -15,7 +15,7 @@ describe RuboCop::Cop::Style::RescueModifier do
 
   it 'handles more complex expression with modifier rescue' do
     inspect_source(cop,
-                   ['method1 or method2 rescue handle'])
+                   'method1 or method2 rescue handle')
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
       .to eq(['Avoid using `rescue` in its modifier form.'])

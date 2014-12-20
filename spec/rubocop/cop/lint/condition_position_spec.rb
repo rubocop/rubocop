@@ -45,7 +45,7 @@ describe RuboCop::Cop::Lint::ConditionPosition do
   end
 
   it 'handles ternary ops' do
-    inspect_source(cop, ['x ? a : b'])
+    inspect_source(cop, 'x ? a : b')
     expect(cop.offenses).to be_empty
   end
 end

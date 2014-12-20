@@ -9,22 +9,22 @@ describe RuboCop::Cop::Style::MethodCallParentheses, :config do
   end
 
   it 'registers an offense for parens in method call without args' do
-    inspect_source(cop, ['top.test()'])
+    inspect_source(cop, 'top.test()')
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'accepts parentheses for methods starting with an upcase letter' do
-    inspect_source(cop, ['Test()'])
+    inspect_source(cop, 'Test()')
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts no parens in method call without args' do
-    inspect_source(cop, ['top.test'])
+    inspect_source(cop, 'top.test')
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts parens in method call with args' do
-    inspect_source(cop, ['top.test(a)'])
+    inspect_source(cop, 'top.test(a)')
     expect(cop.offenses).to be_empty
   end
 

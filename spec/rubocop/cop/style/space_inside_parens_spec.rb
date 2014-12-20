@@ -19,7 +19,7 @@ describe RuboCop::Cop::Style::SpaceInsideParens do
   end
 
   it 'accepts parentheses with no spaces' do
-    inspect_source(cop, ['split("\n")'])
+    inspect_source(cop, 'split("\n")')
     expect(cop.messages).to be_empty
   end
 

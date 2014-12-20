@@ -6,12 +6,12 @@ describe RuboCop::Cop::Style::SpaceAfterNot do
   subject(:cop) { described_class.new }
 
   it 'reports an offense for space after !' do
-    inspect_source(cop, ['! something'])
+    inspect_source(cop, '! something')
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'accepts no space after !' do
-    inspect_source(cop, ['!something'])
+    inspect_source(cop, '!something')
     expect(cop.offenses).to be_empty
   end
 

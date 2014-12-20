@@ -92,7 +92,7 @@ describe RuboCop::Cop::Style::StringLiteralsInInterpolation, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'other' } }
 
     it 'fails' do
-      expect { inspect_source(cop, ['a = "#{"b"}"']) }
+      expect { inspect_source(cop, 'a = "#{"b"}"') }
         .to raise_error(RuntimeError)
     end
   end

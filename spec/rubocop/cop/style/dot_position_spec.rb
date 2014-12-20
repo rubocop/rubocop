@@ -32,17 +32,18 @@ describe RuboCop::Cop::Style::DotPosition, :config do
     end
 
     it 'does not err on method call with no dots' do
-      inspect_source(cop, ['puts something'])
+      inspect_source(cop, 'puts something')
       expect(cop.offenses).to be_empty
     end
 
     it 'does not err on method call without a method name' do
-      inspect_source(cop, ['l.', '(1)'])
+      inspect_source(cop, ['l.',
+                           '(1)'])
       expect(cop.offenses.size).to eq(1)
     end
 
     it 'does not err on method call on same line' do
-      inspect_source(cop, ['something.method_name'])
+      inspect_source(cop, 'something.method_name')
       expect(cop.offenses).to be_empty
     end
 
@@ -92,17 +93,18 @@ describe RuboCop::Cop::Style::DotPosition, :config do
     end
 
     it 'does not err on method call with no dots' do
-      inspect_source(cop, ['puts something'])
+      inspect_source(cop, 'puts something')
       expect(cop.offenses).to be_empty
     end
 
     it 'does not err on method call without a method name' do
-      inspect_source(cop, ['l', '.(1)'])
+      inspect_source(cop, ['l',
+                           '.(1)'])
       expect(cop.offenses.size).to eq(1)
     end
 
     it 'does not err on method call on same line' do
-      inspect_source(cop, ['something.method_name'])
+      inspect_source(cop, 'something.method_name')
       expect(cop.offenses).to be_empty
     end
 

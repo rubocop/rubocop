@@ -62,12 +62,12 @@ describe RuboCop::Cop::Style::EachWithObject do
   end
 
   it 'ignores inject and reduce passed in symbol' do
-    inspect_source(cop, ['[].inject(:+)', '[].reduce(:+)'])
+    inspect_source(cop, '[].inject(:+)', '[].reduce(:+)')
     expect(cop.offenses).to be_empty
   end
 
   it 'does not blow up for reduce with no arguments' do
-    inspect_source(cop, ['[1, 2, 3].inject { |a, e| a + e }'])
+    inspect_source(cop, '[1, 2, 3].inject { |a, e| a + e }')
     expect(cop.offenses).to be_empty
   end
 end

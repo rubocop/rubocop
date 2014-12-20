@@ -25,7 +25,7 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
     let(:cop_config) { { 'EnforcedStyleForEmptyBraces' => 'no_space' } }
 
     it 'accepts empty braces with no space inside' do
-      inspect_source(cop, ['each {}'])
+      inspect_source(cop, 'each {}')
       expect(cop.messages).to be_empty
     end
 
@@ -42,7 +42,7 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
     end
 
     it 'registers an offense for empty braces with space inside' do
-      inspect_source(cop, ['each { }'])
+      inspect_source(cop, 'each { }')
       expect(cop.messages).to eq(['Space inside empty braces detected.'])
       expect(cop.highlights).to eq([' '])
     end
@@ -67,12 +67,12 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
     let(:cop_config) { { 'EnforcedStyleForEmptyBraces' => 'space' } }
 
     it 'accepts empty braces with space inside' do
-      inspect_source(cop, ['each { }'])
+      inspect_source(cop, 'each { }')
       expect(cop.messages).to be_empty
     end
 
     it 'registers an offense for empty braces with no space inside' do
-      inspect_source(cop, ['each {}'])
+      inspect_source(cop, 'each {}')
       expect(cop.messages).to eq(['Space missing inside empty braces.'])
       expect(cop.highlights).to eq(['{}'])
     end
@@ -84,24 +84,24 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
   end
 
   it 'accepts braces surrounded by spaces' do
-    inspect_source(cop, ['each { puts }'])
+    inspect_source(cop, 'each { puts }')
     expect(cop.messages).to be_empty
     expect(cop.highlights).to be_empty
   end
 
   it 'accepts left brace without outer space' do
-    inspect_source(cop, ['each{ puts }'])
+    inspect_source(cop, 'each{ puts }')
     expect(cop.highlights).to be_empty
   end
 
   it 'registers an offense for left brace without inner space' do
-    inspect_source(cop, ['each {puts }'])
+    inspect_source(cop, 'each {puts }')
     expect(cop.messages).to eq(['Space missing inside {.'])
     expect(cop.highlights).to eq(['p'])
   end
 
   it 'registers an offense for right brace without inner space' do
-    inspect_source(cop, ['each { puts}'])
+    inspect_source(cop, 'each { puts}')
     expect(cop.messages).to eq(['Space missing inside }.'])
     expect(cop.highlights).to eq(['}'])
     expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
@@ -130,19 +130,19 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
 
   context 'with passed in parameters' do
     it 'accepts left brace with inner space' do
-      inspect_source(cop, ['each { |x| puts }'])
+      inspect_source(cop, 'each { |x| puts }')
       expect(cop.messages).to be_empty
       expect(cop.highlights).to be_empty
     end
 
     it 'registers an offense for left brace without inner space' do
-      inspect_source(cop, ['each {|x| puts }'])
+      inspect_source(cop, 'each {|x| puts }')
       expect(cop.messages).to eq(['Space between { and | missing.'])
       expect(cop.highlights).to eq(['{|'])
     end
 
     it 'accepts new lambda syntax' do
-      inspect_source(cop, ['->(x) { x }'])
+      inspect_source(cop, '->(x) { x }')
       expect(cop.messages).to be_empty
     end
 
@@ -183,13 +183,13 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
       end
 
       it 'registers an offense for left brace with inner space' do
-        inspect_source(cop, ['each { |x| puts }'])
+        inspect_source(cop, 'each { |x| puts }')
         expect(cop.messages).to eq(['Space between { and | detected.'])
         expect(cop.highlights).to eq([' '])
       end
 
       it 'accepts new lambda syntax' do
-        inspect_source(cop, ['->(x) { x }'])
+        inspect_source(cop, '->(x) { x }')
         expect(cop.messages).to be_empty
       end
 
@@ -199,7 +199,7 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
       end
 
       it 'accepts left brace without inner space' do
-        inspect_source(cop, ['each {|x| puts }'])
+        inspect_source(cop, 'each {|x| puts }')
         expect(cop.messages).to be_empty
         expect(cop.highlights).to be_empty
       end
@@ -216,26 +216,26 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
     end
 
     it 'accepts braces without spaces inside' do
-      inspect_source(cop, ['each {puts}'])
+      inspect_source(cop, 'each {puts}')
       expect(cop.messages).to be_empty
       expect(cop.highlights).to be_empty
     end
 
     it 'registers an offense for left brace with inner space' do
-      inspect_source(cop, ['each { puts}'])
+      inspect_source(cop, 'each { puts}')
       expect(cop.messages).to eq(['Space inside { detected.'])
       expect(cop.highlights).to eq([' '])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
     it 'registers an offense for right brace with inner space' do
-      inspect_source(cop, ['each {puts  }'])
+      inspect_source(cop, 'each {puts  }')
       expect(cop.messages).to eq(['Space inside } detected.'])
       expect(cop.highlights).to eq(['  '])
     end
 
     it 'registers offenses for both braces with inner space' do
-      inspect_source(cop, ['each { puts  }'])
+      inspect_source(cop, 'each { puts  }')
       expect(cop.messages).to eq(['Space inside { detected.',
                                   'Space inside } detected.'])
       expect(cop.highlights).to eq([' ', '  '])
@@ -244,7 +244,7 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
     end
 
     it 'accepts left brace without outer space' do
-      inspect_source(cop, ['each {puts}'])
+      inspect_source(cop, 'each {puts}')
       expect(cop.highlights).to be_empty
     end
 
@@ -256,19 +256,19 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
     context 'with passed in parameters' do
       context 'and space before block parameters allowed' do
         it 'accepts left brace with inner space' do
-          inspect_source(cop, ['each { |x| puts}'])
+          inspect_source(cop, 'each { |x| puts}')
           expect(cop.messages).to eq([])
           expect(cop.highlights).to eq([])
         end
 
         it 'registers an offense for left brace without inner space' do
-          inspect_source(cop, ['each {|x| puts}'])
+          inspect_source(cop, 'each {|x| puts}')
           expect(cop.messages).to eq(['Space between { and | missing.'])
           expect(cop.highlights).to eq(['{|'])
         end
 
         it 'accepts new lambda syntax' do
-          inspect_source(cop, ['->(x) {x}'])
+          inspect_source(cop, '->(x) {x}')
           expect(cop.messages).to be_empty
         end
 
@@ -288,13 +288,13 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
         end
 
         it 'registers an offense for left brace with inner space' do
-          inspect_source(cop, ['each { |x| puts}'])
+          inspect_source(cop, 'each { |x| puts}')
           expect(cop.messages).to eq(['Space between { and | detected.'])
           expect(cop.highlights).to eq([' '])
         end
 
         it 'accepts new lambda syntax' do
-          inspect_source(cop, ['->(x) {x}'])
+          inspect_source(cop, '->(x) {x}')
           expect(cop.messages).to be_empty
         end
 

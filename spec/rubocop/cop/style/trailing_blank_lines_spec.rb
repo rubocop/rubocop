@@ -25,7 +25,7 @@ describe RuboCop::Cop::Style::TrailingBlankLines, :config do
     end
 
     it 'registers an offense for no final newline' do
-      inspect_source(cop, ['x = 0'])
+      inspect_source(cop, 'x = 0')
       expect(cop.messages).to eq(['Final newline missing.'])
     end
 
@@ -56,7 +56,7 @@ describe RuboCop::Cop::Style::TrailingBlankLines, :config do
     end
 
     it 'registers an offense for no final newline' do
-      inspect_source(cop, ['x = 0'])
+      inspect_source(cop, 'x = 0')
       expect(cop.messages).to eq(['Final newline missing.'])
     end
 

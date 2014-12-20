@@ -6,32 +6,27 @@ describe RuboCop::Cop::Style::LeadingCommentSpace do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for comment without leading space' do
-    inspect_source(cop,
-                   ['#missing space'])
+    inspect_source(cop, '#missing space')
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'does not register an offense for # followed by no text' do
-    inspect_source(cop,
-                   ['#'])
+    inspect_source(cop, '#')
     expect(cop.offenses).to be_empty
   end
 
   it 'does not register an offense for more than one space' do
-    inspect_source(cop,
-                   ['#   heavily indented'])
+    inspect_source(cop, '#   heavily indented')
     expect(cop.offenses).to be_empty
   end
 
   it 'does not register an offense for more than one #' do
-    inspect_source(cop,
-                   ['###### heavily indented'])
+    inspect_source(cop, '###### heavily indented')
     expect(cop.offenses).to be_empty
   end
 
   it 'does not register an offense for only #s' do
-    inspect_source(cop,
-                   ['######'])
+    inspect_source(cop, '######')
     expect(cop.offenses).to be_empty
   end
 
@@ -43,8 +38,8 @@ describe RuboCop::Cop::Style::LeadingCommentSpace do
   end
 
   it 'registers an offense for #! after the first line' do
-    inspect_source(cop,
-                   ['test', '#!/usr/bin/ruby'])
+    inspect_source(cop, ['test',
+                         '#!/usr/bin/ruby'])
     expect(cop.offenses.size).to eq(1)
   end
 

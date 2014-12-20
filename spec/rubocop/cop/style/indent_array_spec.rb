@@ -106,14 +106,12 @@ describe RuboCop::Cop::Style::IndentArray do
   end
 
   it 'accepts single line array' do
-    inspect_source(cop,
-                   ['a = [1, 2]'])
+    inspect_source(cop, 'a = [1, 2]')
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts an empty array' do
-    inspect_source(cop,
-                   ['a = []'])
+    inspect_source(cop, 'a = []')
     expect(cop.offenses).to be_empty
   end
 
@@ -150,8 +148,7 @@ describe RuboCop::Cop::Style::IndentArray do
 
     context 'and arguments are not surrounded by parentheses' do
       it 'accepts single line array' do
-        inspect_source(cop,
-                       ['func x, [1, 2]'])
+        inspect_source(cop, 'func x, [1, 2]')
         expect(cop.offenses).to be_empty
       end
 

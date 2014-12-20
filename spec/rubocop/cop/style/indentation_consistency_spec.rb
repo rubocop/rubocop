@@ -60,8 +60,7 @@ describe RuboCop::Cop::Style::IndentationConsistency do
     end
 
     it 'accepts a one line if statement' do
-      inspect_source(cop,
-                     ['if cond then func1 else func2 end'])
+      inspect_source(cop, 'if cond then func1 else func2 end')
       expect(cop.offenses).to be_empty
     end
 

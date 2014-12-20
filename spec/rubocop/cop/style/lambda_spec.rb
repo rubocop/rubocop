@@ -6,7 +6,7 @@ describe RuboCop::Cop::Style::Lambda do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for an old single-line lambda call' do
-    inspect_source(cop, ['f = lambda { |x| x }'])
+    inspect_source(cop, 'f = lambda { |x| x }')
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
       .to eq(['Use the new lambda literal syntax `->(params) {...}`.'])
@@ -35,7 +35,7 @@ describe RuboCop::Cop::Style::Lambda do
   end
 
   it 'accepts the lambda call outside of block' do
-    inspect_source(cop, ['l = lambda.test'])
+    inspect_source(cop, 'l = lambda.test')
     expect(cop.offenses).to be_empty
   end
 end

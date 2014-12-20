@@ -6,22 +6,22 @@ describe RuboCop::Cop::Style::CharacterLiteral do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for character literals' do
-    inspect_source(cop, ['x = ?x'])
+    inspect_source(cop, 'x = ?x')
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'registers an offense for literals like \n' do
-    inspect_source(cop, ['x = ?\n'])
+    inspect_source(cop, 'x = ?\n')
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'accepts literals like ?\C-\M-d' do
-    inspect_source(cop, ['x = ?\C-\M-d'])
+    inspect_source(cop, 'x = ?\C-\M-d')
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts ? in a %w literal' do
-    inspect_source(cop, ['%w{? A}'])
+    inspect_source(cop, '%w{? A}')
     expect(cop.offenses).to be_empty
   end
 

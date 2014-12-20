@@ -24,7 +24,7 @@ describe RuboCop::Cop::Lint::UselessComparison do
   end
 
   it 'works with lambda.()' do
-    inspect_source(cop, ['a.(x) > a.(x)'])
+    inspect_source(cop, 'a.(x) > a.(x)')
     expect(cop.offenses.size).to eq(1)
   end
 end

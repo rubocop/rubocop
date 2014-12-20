@@ -6,7 +6,7 @@ describe RuboCop::Cop::Lint::EmptyInterpolation do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for #{} in interpolation' do
-    inspect_source(cop, ['"this is the #{}"'])
+    inspect_source(cop, '"this is the #{}"')
     expect(cop.offenses.size).to eq(1)
     expect(cop.highlights).to eq(['#{}'])
   end
