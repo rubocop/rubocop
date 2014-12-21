@@ -266,6 +266,13 @@ describe RuboCop::ConfigLoader do
       )
     end
 
+    it 'fails with a TypeError when loading a malformed configuration file' do
+      create_file(configuration_path, 'This string is not a YAML hash')
+      expect { load_file }.to raise_error(
+        TypeError, /^Malformed configuration in .*\.rubocop\.yml$/
+      )
+    end
+
     it 'returns an empty configuration loaded from an empty file' do
       create_file(configuration_path, '')
       configuration = load_file
