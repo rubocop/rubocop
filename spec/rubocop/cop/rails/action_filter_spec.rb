@@ -11,22 +11,19 @@ describe RuboCop::Cop::Rails::ActionFilter, :config do
 
     described_class::FILTER_METHODS.each do |method|
       it "registers an offense for #{method}" do
-        inspect_source_file(cop,
-                            ["#{method} :name"])
+        inspect_source_file(cop, "#{method} :name")
         expect(cop.offenses.size).to eq(1)
       end
 
       it "registers an offense for #{method} with block" do
-        inspect_source_file(cop,
-                            ["#{method} { |controller| something }"])
+        inspect_source_file(cop, "#{method} { |controller| something }")
         expect(cop.offenses.size).to eq(1)
       end
     end
 
     described_class::ACTION_METHODS.each do |method|
       it "accepts #{method}" do
-        inspect_source_file(cop,
-                            ["#{method} :something"])
+        inspect_source_file(cop, "#{method} :something")
         expect(cop.offenses).to be_empty
       end
     end
@@ -42,22 +39,19 @@ describe RuboCop::Cop::Rails::ActionFilter, :config do
 
     described_class::ACTION_METHODS.each do |method|
       it "registers an offense for #{method}" do
-        inspect_source_file(cop,
-                            ["#{method} :name"])
+        inspect_source_file(cop, "#{method} :name")
         expect(cop.offenses.size).to eq(1)
       end
 
       it "registers an offense for #{method} with block" do
-        inspect_source_file(cop,
-                            ["#{method} { |controller| something }"])
+        inspect_source_file(cop, "#{method} { |controller| something }")
         expect(cop.offenses.size).to eq(1)
       end
     end
 
     described_class::FILTER_METHODS.each do |method|
       it "accepts #{method}" do
-        inspect_source_file(cop,
-                            ["#{method} :something"])
+        inspect_source_file(cop, "#{method} :something")
         expect(cop.offenses).to be_empty
       end
     end

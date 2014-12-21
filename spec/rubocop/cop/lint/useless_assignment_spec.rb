@@ -225,9 +225,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   context 'when a variable is assigned with operator assignment ' \
           'in top level' do
     let(:source) do
-      [
-        'foo ||= 1'
-      ]
+      'foo ||= 1'
     end
 
     it 'registers an offense' do
@@ -1354,9 +1352,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
   context 'when a named capture is unreferenced in top level' do
     let(:source) do
-      [
-        "/(?<foo>\w+)/ =~ 'FOO'"
-      ]
+      "/(?<foo>\w+)/ =~ 'FOO'"
     end
 
     it 'registers an offense' do
@@ -1592,9 +1588,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
 
   context 'when there is only one AST node and it is unused variable' do
     let(:source) do
-      [
-        'foo = 1'
-      ]
+      'foo = 1'
     end
 
     it 'registers an offense' do

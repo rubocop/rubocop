@@ -101,7 +101,7 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
     end
 
     it 'accepts double quotes in interpolation' do
-      src = ['"#{"A"}"']
+      src = '"#{"A"}"'
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end

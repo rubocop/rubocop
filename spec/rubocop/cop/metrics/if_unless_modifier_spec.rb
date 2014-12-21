@@ -73,8 +73,8 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
 
   it 'accepts if-else-end' do
     inspect_source(cop,
-                   ['if args.last.is_a? Hash then args.pop else ' \
-                    'Hash.new end'])
+                   'if args.last.is_a? Hash then args.pop else ' \
+                   'Hash.new end')
     expect(cop.messages).to be_empty
   end
 

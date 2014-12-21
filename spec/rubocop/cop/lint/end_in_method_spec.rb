@@ -22,7 +22,7 @@ describe RuboCop::Cop::Lint::EndInMethod do
   end
 
   it 'accepts END outside of def(s)' do
-    src = ['END { something }']
+    src = 'END { something }'
     inspect_source(cop, src)
     expect(cop.offenses).to be_empty
   end

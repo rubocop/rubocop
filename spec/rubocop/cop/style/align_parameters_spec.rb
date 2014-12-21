@@ -185,7 +185,7 @@ describe RuboCop::Cop::Style::AlignParameters do
     end
 
     it 'can handle other method calls without parentheses' do
-      src = ['chars(Unicode.apply_mapping @wrapped_string, :uppercase)']
+      src = 'chars(Unicode.apply_mapping @wrapped_string, :uppercase)'
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end

@@ -99,13 +99,13 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
   end
 
   it 'accepts scope operator' do
-    source = ['@io.class == Zlib::GzipWriter']
+    source = '@io.class == Zlib::GzipWriter'
     inspect_source(cop, source)
     expect(cop.messages).to be_empty
   end
 
   it 'accepts ::Kernel::raise' do
-    source = ['::Kernel::raise IllegalBlockError.new']
+    source = '::Kernel::raise IllegalBlockError.new'
     inspect_source(cop, source)
     expect(cop.messages).to be_empty
   end
