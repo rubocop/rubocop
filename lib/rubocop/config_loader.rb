@@ -24,15 +24,7 @@ module RuboCop
 
       def load_file(path)
         path = File.absolute_path(path)
-        yaml_code = IO.read(path)
-        # At one time, there was a problem with the psych YAML engine under
-        # Ruby 1.9.3. YAML.load_file would crash when reading empty .yml files
-        # or files that only contained comments and blank lines. This problem
-        # is not possible to reproduce now, but we want to avoid it in case
-        # it's still there. So we only load the YAML code if we find some real
-        # code in there.
-        hash = yaml_code =~ /^[A-Z]/i ? YAML.load(yaml_code) : {}
-        puts "configuration from #{path}" if debug?
+        hash = load_yaml_configuration(path)
 
         resolve_inheritance(path, hash)
 
@@ -113,6 +105,19 @@ module RuboCop
       end
 
       private
+
+      def load_yaml_configuration(absolute_path)
+        yaml_code = IO.read(absolute_path)
+        # At one time, there was a problem with the psych YAML engine under
+        # Ruby 1.9.3. YAML.load_file would crash when reading empty .yml files
+        # or files that only contained comments and blank lines. This problem
+        # is not possible to reproduce now, but we want to avoid it in case
+        # it's still there. So we only load the YAML code if we find some real
+        # code in there.
+        hash = yaml_code =~ /^[A-Z]/i ? YAML.load(yaml_code) : {}
+        puts "configuration from #{absolute_path}" if debug?
+        hash
+      end
 
       def resolve_inheritance(path, hash)
         base_configs(path, hash['inherit_from']).reverse_each do |base_config|
