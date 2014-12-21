@@ -54,6 +54,14 @@ describe RuboCop::Cop::Style::FormatString, :config do
       expect(cop.messages)
         .to eq(['Favor `sprintf` over `format`.'])
     end
+
+    it 'registers an offense for format with 2 arguments' do
+      inspect_source(cop,
+                     ['format("%X", 123)'])
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.messages)
+        .to eq(['Favor `sprintf` over `format`.'])
+    end
   end
 
   context 'when enforced style is format' do
@@ -106,6 +114,14 @@ describe RuboCop::Cop::Style::FormatString, :config do
       expect(cop.messages)
         .to eq(['Favor `format` over `sprintf`.'])
     end
+
+    it 'registers an offense for sprintf with 2 arguments' do
+      inspect_source(cop,
+                     "sprintf('%020d', 123)")
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.messages)
+        .to eq(['Favor `format` over `sprintf`.'])
+    end
   end
 
   context 'when enforced style is percent' do
@@ -125,6 +141,14 @@ describe RuboCop::Cop::Style::FormatString, :config do
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Favor `String#%` over `sprintf`.'])
+    end
+
+    it 'registers an offense for sprintf with 3 arguments' do
+      inspect_source(cop,
+                     'format("%d %04x", 123, 123)')
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.messages)
+        .to eq(['Favor `String#%` over `format`.'])
     end
 
     it 'accepts format with 1 argument' do
