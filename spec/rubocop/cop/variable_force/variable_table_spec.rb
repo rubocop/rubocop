@@ -209,6 +209,13 @@ describe RuboCop::Cop::VariableForce::VariableTable do
     end
   end
 
+  describe '#find_variable with an empty scope stack' do
+    it 'returns nil' do
+      found_variable = variable_table.find_variable(:unknown)
+      expect(found_variable).to be_nil
+    end
+  end
+
   describe '#accessible_variables' do
     let(:accessible_variable_names) do
       variable_table.accessible_variables.map(&:name)
