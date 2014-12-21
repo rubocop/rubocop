@@ -424,8 +424,7 @@ describe RuboCop::Cop::Lint::BlockAlignment do
 
   it 'does not raise an error for nested block in a method call' do
     inspect_source(cop,
-                   ['expect(arr.all? { |o| o.valid? })'
-                   ])
+                   'expect(arr.all? { |o| o.valid? })')
     expect(cop.offenses).to be_empty
   end
 

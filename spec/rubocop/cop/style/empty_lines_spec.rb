@@ -30,11 +30,11 @@ describe RuboCop::Cop::Style::EmptyLines do
   end
 
   it 'does not register an offense for empty lines in a string' do
-    inspect_source(cop, ['result = "test
+    inspect_source(cop, 'result = "test
 
 
 
-                                  string"'])
+                                  string"')
     expect(cop.offenses).to be_empty
   end
 

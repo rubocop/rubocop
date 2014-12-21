@@ -6,7 +6,7 @@ describe RuboCop::Cop::Style::RedundantBegin do
   subject(:cop) { described_class.new }
 
   it 'reports an offense for single line def with redundant begin block' do
-    src = ['  def func; begin; x; y; rescue; z end end']
+    src = '  def func; begin; x; y; rescue; z end end'
     inspect_source(cop, src)
     expect(cop.offenses.size).to eq(1)
   end

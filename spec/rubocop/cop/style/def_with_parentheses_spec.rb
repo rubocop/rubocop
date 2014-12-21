@@ -27,7 +27,7 @@ describe RuboCop::Cop::Style::DefWithParentheses do
   end
 
   it 'accepts empty parentheses in one liners' do
-    src = ["def to_s() join '/' end"]
+    src = "def to_s() join '/' end"
     inspect_source(cop, src)
     expect(cop.offenses).to be_empty
   end

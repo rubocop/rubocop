@@ -6,43 +6,43 @@ describe RuboCop::Cop::Style::RedundantSelf do
   subject(:cop) { described_class.new }
 
   it 'reports an offense a self receiver on an rvalue' do
-    src = ['a = self.b']
+    src = 'a = self.b'
     inspect_source(cop, src)
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'accepts a self receiver on an lvalue of an assignment' do
-    src = ['self.a = b']
+    src = 'self.a = b'
     inspect_source(cop, src)
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts a self receiver on an lvalue of an or-assignment' do
-    src = ['self.logger ||= Rails.logger']
+    src = 'self.logger ||= Rails.logger'
     inspect_source(cop, src)
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts a self receiver on an lvalue of an and-assignment' do
-    src = ['self.flag &&= value']
+    src = 'self.flag &&= value'
     inspect_source(cop, src)
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts a self receiver on an lvalue of a plus-assignment' do
-    src = ['self.sum += 10']
+    src = 'self.sum += 10'
     inspect_source(cop, src)
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts a self receiver with the square bracket operator' do
-    src = ['self[a]']
+    src = 'self[a]'
     inspect_source(cop, src)
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts a self receiver with the double less-than operator' do
-    src = ['self << a']
+    src = 'self << a'
     inspect_source(cop, src)
     expect(cop.offenses).to be_empty
   end
@@ -130,13 +130,13 @@ describe RuboCop::Cop::Style::RedundantSelf do
   end
 
   it 'accepts a self receiver used to distinguish from constant' do
-    src = ['self.Foo']
+    src = 'self.Foo'
     inspect_source(cop, src)
     expect(cop.offenses).to be_empty
   end
 
   it 'auto-corrects by removing redundant self' do
-    new_source = autocorrect_source(cop, ['self.x'])
+    new_source = autocorrect_source(cop, 'self.x')
     expect(new_source).to eq('x')
   end
 end
