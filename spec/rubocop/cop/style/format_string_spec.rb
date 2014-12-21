@@ -57,7 +57,7 @@ describe RuboCop::Cop::Style::FormatString, :config do
 
     it 'registers an offense for format with 2 arguments' do
       inspect_source(cop,
-                     ['format("%X", 123)'])
+                     'format("%X", 123)')
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Favor `sprintf` over `format`.'])
