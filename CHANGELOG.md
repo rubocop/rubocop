@@ -17,6 +17,7 @@
 * [#1484](https://github.com/bbatsov/rubocop/issues/1484): Fix `EmptyLinesAroundAccessModifier` incorrectly finding a violation inside method calls with names identical to an access modifier. ([@dblock][])
 * Fix bug concerning `Exclude` properties inherited from a higher directory level. ([@jonas054][])
 * [#1500](https://github.com/bbatsov/rubocop/issues/1500): Fix crashing `--auto-correct --only IndentationWidth`. ([@jonas054][])
+* [#1512](https://github.com/bbatsov/rubocop/issues/1512): Fix false negative for typical string formatting examples. ([@kakutani][], [@jonas054][])
 
 ## 0.28.0 (10/12/2014)
 
@@ -1206,3 +1207,4 @@
 [@blainesch]: https://github.com/blainesch
 [@marxarelli]: https://github.com/marxarelli
 [@katieschilling]: https://github.com/katieschilling
+[@kakutani]: https://github.com/kakutani

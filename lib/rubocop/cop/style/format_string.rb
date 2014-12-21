@@ -31,13 +31,13 @@ module RuboCop
         end
 
         def format_method?(name, node)
-          receiver, method_name, args = *node
+          receiver, method_name, *args = *node
 
           # commands have no explicit receiver
           return false unless !receiver && method_name == name
 
           # we do an argument count check to reduce false positives
-          args && args.children.size >= 2
+          args.size >= 2
         end
 
         def format?(node)
