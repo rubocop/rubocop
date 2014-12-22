@@ -24,14 +24,6 @@ module RuboCop
 
           wrong_quotes?(node, style)
         end
-
-        def autocorrect(node)
-          @corrections << lambda do |corrector|
-            replacement = node.loc.begin.is?('"') ? "'" : '"'
-            corrector.replace(node.loc.begin, replacement)
-            corrector.replace(node.loc.end, replacement)
-          end
-        end
       end
     end
   end
