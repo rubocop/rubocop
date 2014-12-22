@@ -1,5 +1,8 @@
 # encoding: utf-8
 
+# Coverage support needs to be required *before* the RuboCop code is required!
+require 'support/coverage'
+
 require 'rubocop'
 
 # Requires supporting files with custom matchers and macros, etc,
