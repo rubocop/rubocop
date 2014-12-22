@@ -10,6 +10,7 @@
 ### Changes
 
 * [#1492](https://github.com/bbatsov/rubocop/pull/1492): Abort when auto-correct causes an infinite loop. ([@dblock][])
+* Remove duplicate code. ([@rrosenblum][])
 
 ### Bugs fixed
 
