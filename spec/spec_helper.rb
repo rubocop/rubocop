@@ -1,10 +1,12 @@
 # encoding: utf-8
 
-require 'rubocop'
-
 # Requires supporting files with custom matchers and macros, etc,
 # in ./support/ and its subdirectories.
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
+
+# Requiring all the production code AFTER the support files is necessary in
+# order for the `coverage` target to work.
+require 'rubocop'
 
 RSpec.configure do |config|
   # These two settings work together to allow you to limit a spec run

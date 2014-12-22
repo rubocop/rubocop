@@ -74,8 +74,8 @@ describe RuboCop::Runner, :isolated_environment do
       runner_class = Class.new(RuboCop::Runner) do
         def mobilized_cop_classes(_config)
           [
-            RuboCop::Cop::Test::ClassMustBeAModuleCop,
-            RuboCop::Cop::Test::ModuleMustBeAClassCop
+            RuboCop::Cop::Style::SpaceAfterSemicolon,
+            RuboCop::Cop::Style::SpaceInsideBlockBraces
           ]
         end
       end
@@ -83,10 +83,14 @@ describe RuboCop::Runner, :isolated_environment do
     end
 
     context 'if there is an offense in an inspected file' do
+      before do
+        create_file('.rubocop.yml', ['SpaceInsideBlockBraces:',
+                                     '  EnforcedStyle: no_space'])
+      end
+
       let(:source) { <<-END.strip_indent }
         # coding: utf-8
-        class Klass
-        end
+        func { a; }
       END
 
       it 'aborts because of an infinite loop' do
