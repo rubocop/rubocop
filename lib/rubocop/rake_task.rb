@@ -31,7 +31,7 @@ module RuboCop
         end
       end
 
-      setup_subtasks(name)
+      setup_subtasks(name, *args, &task_block)
     end
 
     def run_main_task(verbose)
@@ -73,11 +73,14 @@ module RuboCop
       @formatters = [RuboCop::Options::DEFAULT_FORMATTER]
     end
 
-    def setup_subtasks(name)
+    def setup_subtasks(name, *args, &task_block)
       namespace name do
         desc 'Auto-correct RuboCop offenses'
 
-        task :auto_correct do
+        task(:auto_correct, *args) do |_, task_args|
+          if task_block
+            task_block.call(*[self, task_args].slice(0, task_block.arity))
+          end
           options = full_options.unshift('--auto-correct')
           run_cli(verbose, options)
         end
