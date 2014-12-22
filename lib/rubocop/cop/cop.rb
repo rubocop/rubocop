@@ -54,7 +54,7 @@ module RuboCop
       @all = CopStore.new
 
       def self.all
-        @all.without_type(:test)
+        @all.clone
       end
 
       def self.qualified_cop_name(name, origin)
@@ -101,10 +101,6 @@ module RuboCop
 
       def self.rails?
         cop_type == :rails
-      end
-
-      def self.test?
-        cop_type == :test
       end
 
       def initialize(config = nil, options = nil)
