@@ -36,13 +36,25 @@ describe RuboCop::Cop::Lint::Debugger do
                                   'binding.pry_remote'])
   end
 
+  it 'reports an offense for capybara debug methods' do
+    src = %w(save_and_open_page save_and_open_screenshot)
+    inspect_source(cop, src)
+    expect(cop.offenses.size).to eq(2)
+    expect(cop.messages)
+      .to eq(['Remove debugger entry point `save_and_open_page`.',
+              'Remove debugger entry point `save_and_open_screenshot`.'])
+    expect(cop.highlights)
+      .to eq(%w(save_and_open_page save_and_open_screenshot))
+  end
+
   it 'does not report an offense for non-pry binding' do
     src = 'binding.pirate'
     inspect_source(cop, src)
     expect(cop.offenses).to be_empty
   end
 
-  %w(debugger byebug pry remote_pry pry_remote).each do |comment|
+  %w(debugger byebug pry remote_pry pry_remote
+     save_and_open_page save_and_open_screenshot).each do |comment|
     it "does not report an offense for #{comment} in comments" do
       src = "# #{comment}"
       inspect_source(cop, src)
@@ -50,7 +62,8 @@ describe RuboCop::Cop::Lint::Debugger do
     end
   end
 
-  %w(debugger byebug pry remote_pry pry_remote).each do |method_name|
+  %w(debugger byebug pry remote_pry pry_remote
+     save_and_open_page save_and_open_screenshot).each do |method_name|
     it "does not report an offense for a #{method_name} method" do
       src = "code.#{method_name}"
       inspect_source(cop, src)
