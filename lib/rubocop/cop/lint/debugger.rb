@@ -35,12 +35,24 @@ module RuboCop
         #   (send nil :binding) :pry_remote)
         PRY_REMOTE_NODE = s(:send, s(:send, nil, :binding), :pry_remote)
 
+        # save_and_open_page
+        #
+        # (send nil :save_and_open_page)
+        CAPYBARA_SAVE_PAGE = s(:send, nil, :save_and_open_page)
+
+        # save_and_open_screenshot
+        #
+        # (send nil :save_and_open_screenshot)
+        CAPYBARA_SAVE_SCREENSHOT = s(:send, nil, :save_and_open_screenshot)
+
         DEBUGGER_NODES = [
           DEBUGGER_NODE,
           BYEBUG_NODE,
           PRY_NODE,
           REMOTE_PRY_NODE,
-          PRY_REMOTE_NODE
+          PRY_REMOTE_NODE,
+          CAPYBARA_SAVE_PAGE,
+          CAPYBARA_SAVE_SCREENSHOT
         ]
 
         def on_send(node)
