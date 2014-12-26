@@ -117,13 +117,11 @@ describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(['-D', '--auto-correct'])).to eq(0)
         corrected =
           ['# encoding: utf-8',
-           'expect(subject[:address]).to eq(',
-           "  street1:     '1 Market',",
-           "  street2:     '#200',",
-           "  city:        'Some Town',",
-           "  state:       'CA',",
-           "  postal_code: '99999-1111'",
-           ')']
+           "expect(subject[:address]).to eq(street1:     '1 Market',",
+           "                                street2:     '#200',",
+           "                                city:        'Some Town',",
+           "                                state:       'CA',",
+           "                                postal_code: '99999-1111')"]
         expect(IO.read('example.rb')).to eq(corrected.join("\n") + "\n")
       end
 

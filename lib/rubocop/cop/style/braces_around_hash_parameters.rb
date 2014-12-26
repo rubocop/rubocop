@@ -50,8 +50,10 @@ module RuboCop
         def autocorrect(node)
           @corrections << lambda do |corrector|
             if braces?(node)
-              corrector.remove(node.loc.begin)
-              corrector.remove(node.loc.end)
+              right_range = range_with_surrounding_space(node.loc.begin, :right)
+              corrector.remove(right_range)
+              left_range = range_with_surrounding_space(node.loc.end, :left)
+              corrector.remove(left_range)
             else
               corrector.insert_before(node.loc.expression, '{')
               corrector.insert_after(node.loc.expression, '}')
