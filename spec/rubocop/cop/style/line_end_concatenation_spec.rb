@@ -75,6 +75,36 @@ describe RuboCop::Cop::Style::LineEndConcatenation do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts string concat with a return value of method on a string' do
+    inspect_source(cop,
+                   [
+                     # What we want here is 'content   ', not '
+                     # content content content '.
+                     'content_and_three_spaces = "content" +',
+                     '  " " * 3',
+                     # Method call with dot on a string literal.
+                     "a_thing = 'a ' +",
+                     "  'gniht'.reverse",
+                     # Formatting operator.
+                     "output = 'value: ' +",
+                     "  '%d' % value",
+                     # Index operator.
+                     "'letter: ' +",
+                     "  'abcdefghij'[ix]"
+                   ])
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'accepts string concat with a return value of method on an interpolated ' \
+     'string' do
+    source = <<-END
+      x3a = 'x' +
+        "\#{'a' + "\#{3}"}".reverse
+    END
+    inspect_source(cop, source)
+    expect(cop.offenses).to be_empty
+  end
+
   it 'accepts string concat at line end when followed by comment' do
     inspect_source(cop,
                    ['top = "test" + # something',
