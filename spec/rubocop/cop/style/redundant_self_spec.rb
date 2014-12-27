@@ -89,44 +89,88 @@ describe RuboCop::Cop::Style::RedundantSelf do
     expect(cop.offenses).to be_empty
   end
 
-  it 'accepts a self receiver used to distinguish from blockarg' do
-    src = ['def requested_specs(&groups)',
-           '  some_method(self.groups)',
-           'end'
-          ]
-    inspect_source(cop, src)
-    expect(cop.offenses).to be_empty
+  describe 'instance methods' do
+    it 'accepts a self receiver used to distinguish from blockarg' do
+      src = ['def requested_specs(&groups)',
+             '  some_method(self.groups)',
+             'end'
+            ]
+      inspect_source(cop, src)
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts a self receiver used to distinguish from argument' do
+      src = ['def requested_specs(groups)',
+             '  some_method(self.groups)',
+             'end'
+            ]
+      inspect_source(cop, src)
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts a self receiver used to distinguish from argument' do
+      src = ['def requested_specs(final = true)',
+             '  something if self.final != final',
+             'end'
+            ]
+      inspect_source(cop, src)
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts a self receiver used to distinguish from local variable' do
+      src = ['def requested_specs',
+             '  @requested_specs ||= begin',
+             '    groups = self.groups - Bundler.settings.without',
+             '    groups.map! { |g| g.to_sym }',
+             '    specs_for(groups)',
+             '  end',
+             'end'
+            ]
+      inspect_source(cop, src)
+      expect(cop.offenses).to be_empty
+    end
   end
 
-  it 'accepts a self receiver used to distinguish from argument' do
-    src = ['def requested_specs(groups)',
-           '  some_method(self.groups)',
-           'end'
-          ]
-    inspect_source(cop, src)
-    expect(cop.offenses).to be_empty
-  end
+  describe 'class methods' do
+    it 'accepts a self receiver used to distinguish from blockarg' do
+      src = ['def self.requested_specs(&groups)',
+             '  some_method(self.groups)',
+             'end'
+            ]
+      inspect_source(cop, src)
+      expect(cop.offenses).to be_empty
+    end
 
-  it 'accepts a self receiver used to distinguish from argument' do
-    src = ['def requested_specs(final = true)',
-           '  something if self.final != final',
-           'end'
-          ]
-    inspect_source(cop, src)
-    expect(cop.offenses).to be_empty
-  end
+    it 'accepts a self receiver used to distinguish from argument' do
+      src = ['def self.requested_specs(groups)',
+             '  some_method(self.groups)',
+             'end'
+            ]
+      inspect_source(cop, src)
+      expect(cop.offenses).to be_empty
+    end
 
-  it 'accepts a self receiver used to distinguish from local variable' do
-    src = ['def requested_specs',
-           '  @requested_specs ||= begin',
-           '    groups = self.groups - Bundler.settings.without',
-           '    groups.map! { |g| g.to_sym }',
-           '    specs_for(groups)',
-           '  end',
-           'end'
-          ]
-    inspect_source(cop, src)
-    expect(cop.offenses).to be_empty
+    it 'accepts a self receiver used to distinguish from argument' do
+      src = ['def self.requested_specs(final = true)',
+             '  something if self.final != final',
+             'end'
+            ]
+      inspect_source(cop, src)
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts a self receiver used to distinguish from local variable' do
+      src = ['def self.requested_specs',
+             '  @requested_specs ||= begin',
+             '    groups = self.groups - Bundler.settings.without',
+             '    groups.map! { |g| g.to_sym }',
+             '    specs_for(groups)',
+             '  end',
+             'end'
+            ]
+      inspect_source(cop, src)
+      expect(cop.offenses).to be_empty
+    end
   end
 
   it 'accepts a self receiver used to distinguish from constant' do
