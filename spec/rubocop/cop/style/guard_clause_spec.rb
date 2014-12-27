@@ -152,4 +152,21 @@ describe RuboCop::Cop::Style::GuardClause, :config do
       expect(cop.offenses).to be_empty
     end
   end
+
+  context 'Invalid MinBodyLength' do
+    let(:cop_config) do
+      { 'MinBodyLength' => -2 }
+    end
+
+    it 'fails with an error' do
+      source = ['def func',
+                '  if something',
+                '    work',
+                '  end',
+                'end']
+
+      expect { inspect_source(cop, source) }
+        .to raise_error('MinBodyLength needs to be a positive integer!')
+    end
+  end
 end
