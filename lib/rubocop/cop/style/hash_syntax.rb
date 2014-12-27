@@ -54,10 +54,6 @@ module RuboCop
 
         private
 
-        def space_before_operator?(op, key)
-          op.begin_pos - key.begin_pos - key.source.length > 0
-        end
-
         def check(pairs, delim, msg)
           pairs.each do |pair|
             if pair.loc.operator && pair.loc.operator.is?(delim)
