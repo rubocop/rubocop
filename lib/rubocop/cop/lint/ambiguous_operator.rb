@@ -40,8 +40,7 @@ module RuboCop
         end
 
         def alternative_message(diagnostic)
-          operator = diagnostic.location.source
-          hash = AMBIGUITIES[operator]
+          operator, hash = diagnostic.location.source, AMBIGUITIES[operator]
           format(MSG_FORMAT, hash)
         end
       end
