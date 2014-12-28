@@ -10,10 +10,6 @@ module RuboCop
         invoke_hook_for_normal_if_unless(node)
       end
 
-      def on_unless(node)
-        invoke_hook_for_normal_if_unless(node)
-      end
-
       def invoke_hook_for_normal_if_unless(node)
         # We won't check modifier or ternary conditionals.
         return if modifier_if?(node) || ternary_op?(node)

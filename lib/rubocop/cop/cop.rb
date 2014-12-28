@@ -103,10 +103,6 @@ module RuboCop
         cop_type == :rails
       end
 
-      def self.test?
-        cop_type == :test
-      end
-
       def initialize(config = nil, options = nil)
         @config = config || Config.new
         @options = options || { auto_correct: false, debug: false }
