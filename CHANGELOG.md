@@ -11,6 +11,7 @@
 ### Changes
 
 * [#1492](https://github.com/bbatsov/rubocop/pull/1492): Abort when auto-correct causes an infinite loop. ([@dblock][])
+* Options `-e`/`--emacs` are no longer recognized. Using them will now raise an error. ([@bquorning][])
 
 ### Bugs fixed
 

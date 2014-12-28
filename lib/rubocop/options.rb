@@ -64,7 +64,6 @@ module RuboCop
 
     def parse(args)
       ignore_dropped_options(args)
-      convert_deprecated_options(args)
 
       define_options(args).parse!(args)
 
@@ -190,26 +189,6 @@ module RuboCop
 
       warn '-s/--silent options is dropped. ' \
            '`emacs` and `files` formatters no longer display summary.'
-    end
-
-    def convert_deprecated_options(args)
-      args.map! do |arg|
-        case arg
-        when '-e', '--emacs'
-          deprecate("#{arg} option", '--format emacs', '1.0.0')
-          %w(--format emacs)
-        else
-          arg
-        end
-      end.flatten!
-    end
-
-    def deprecate(subject, alternative = nil, version = nil)
-      message =  "#{subject} is deprecated"
-      message << " and will be removed in RuboCop #{version}" if version
-      message << '.'
-      message << " Please use #{alternative} instead." if alternative
-      warn message
     end
 
     def validate_auto_gen_config_option(args)
