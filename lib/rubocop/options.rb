@@ -63,8 +63,6 @@ module RuboCop
     end
 
     def parse(args)
-      ignore_dropped_options(args)
-
       define_options(args).parse!(args)
 
       validate_compatibility
@@ -179,16 +177,6 @@ module RuboCop
     def long_opt_symbol(args)
       long_opt = args.find { |arg| arg.start_with?('--') }
       long_opt[2..-1].sub(/ .*/, '').gsub(/-/, '_').to_sym
-    end
-
-    def ignore_dropped_options(args)
-      # Currently we don't make -s/--silent option raise error
-      # since those are mostly used by external tools.
-      rejected = args.reject! { |a| %w(-s --silent).include?(a) }
-      return unless rejected
-
-      warn '-s/--silent options is dropped. ' \
-           '`emacs` and `files` formatters no longer display summary.'
     end
 
     def validate_auto_gen_config_option(args)

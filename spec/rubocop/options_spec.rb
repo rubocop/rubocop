@@ -154,15 +154,4 @@ Usage: rubocop [options] [file1, file2, ...]
       end
     end
   end
-
-  unless RuboCop::Version::STRING.start_with?('0')
-    describe '-s/--silent option' do
-      it 'raises error in RuboCop 1.0.0' do
-        # This spec can be removed
-        # once Options#ignore_dropped_options is removed.
-        expect { options.parse(['--silent']) }
-          .to raise_error(OptionParser::InvalidOption)
-      end
-    end
-  end
 end
