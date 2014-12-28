@@ -83,6 +83,15 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
     end
   end
 
+  context 'with invalid value for EnforcedStyleForEmptyBraces' do
+    let(:cop_config) { { 'EnforcedStyleForEmptyBraces' => 'unknown' } }
+
+    it 'fails with an error' do
+      expect { inspect_source(cop, 'each { }') }
+        .to raise_error('Unknown EnforcedStyleForEmptyBraces selected!')
+    end
+  end
+
   it 'accepts braces surrounded by spaces' do
     inspect_source(cop, 'each { puts }')
     expect(cop.messages).to be_empty
