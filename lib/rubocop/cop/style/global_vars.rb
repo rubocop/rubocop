@@ -44,11 +44,7 @@ module RuboCop
         ).map(&:to_sym)
 
         def user_vars
-          if cop_config['AllowedVariables']
-            cop_config['AllowedVariables'].map(&:to_sym)
-          else
-            []
-          end
+          cop_config['AllowedVariables'].map(&:to_sym)
         end
 
         def allowed_var?(global_var)

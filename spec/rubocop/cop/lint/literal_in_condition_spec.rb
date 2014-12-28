@@ -24,11 +24,29 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
       expect(cop.offenses.size).to eq(1)
     end
 
+    it "registers an offense for literal #{lit} in post-loop while" do
+      inspect_source(cop,
+                     ['begin',
+                      '  top',
+                      "end while(#{lit})"
+                     ])
+      expect(cop.offenses.size).to eq(1)
+    end
+
     it "registers an offense for literal #{lit} in until" do
       inspect_source(cop,
                      ["until #{lit}",
                       '  top',
                       'end'
+                     ])
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it "registers an offense for literal #{lit} in post-loop until" do
+      inspect_source(cop,
+                     ['begin',
+                      '  top',
+                      "end until #{lit}"
                      ])
       expect(cop.offenses.size).to eq(1)
     end
