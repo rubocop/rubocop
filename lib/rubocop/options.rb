@@ -63,9 +63,6 @@ module RuboCop
     end
 
     def parse(args)
-      ignore_dropped_options(args)
-      convert_deprecated_options(args)
-
       define_options(args).parse!(args)
 
       validate_compatibility
@@ -180,36 +177,6 @@ module RuboCop
     def long_opt_symbol(args)
       long_opt = args.find { |arg| arg.start_with?('--') }
       long_opt[2..-1].sub(/ .*/, '').gsub(/-/, '_').to_sym
-    end
-
-    def ignore_dropped_options(args)
-      # Currently we don't make -s/--silent option raise error
-      # since those are mostly used by external tools.
-      rejected = args.reject! { |a| %w(-s --silent).include?(a) }
-      return unless rejected
-
-      warn '-s/--silent options is dropped. ' \
-           '`emacs` and `files` formatters no longer display summary.'
-    end
-
-    def convert_deprecated_options(args)
-      args.map! do |arg|
-        case arg
-        when '-e', '--emacs'
-          deprecate("#{arg} option", '--format emacs', '1.0.0')
-          %w(--format emacs)
-        else
-          arg
-        end
-      end.flatten!
-    end
-
-    def deprecate(subject, alternative = nil, version = nil)
-      message =  "#{subject} is deprecated"
-      message << " and will be removed in RuboCop #{version}" if version
-      message << '.'
-      message << " Please use #{alternative} instead." if alternative
-      warn message
     end
 
     def validate_auto_gen_config_option(args)
