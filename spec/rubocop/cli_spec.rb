@@ -56,7 +56,7 @@ describe RuboCop::CLI, :isolated_environment do
                   '  fail',
                   'end']
         create_file('example.rb', source)
-        expect(cli.run([%w(--only IndentationWidth --auto-correct)])).to eq(0)
+        expect(cli.run(%w(--only IndentationWidth --auto-correct))).to eq(0)
         corrected = ['foo = if bar',
                      '        something',
                      'elsif baz',
