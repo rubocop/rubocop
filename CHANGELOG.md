@@ -23,6 +23,7 @@
 * [#1504](https://github.com/bbatsov/rubocop/issues/1504): Fail with a meaningful error if the configuration file is malformed. ([@bquorning][])
 * Fix bug where `auto_correct` Rake tasks does not take in the options specified in its parent task. ([@rrosenblum][])
 * [#1054](https://github.com/bbatsov/rubocop/issues/1054): Handle comments within concatenated strings in `LineEndConcatenation`. ([@yujinakayama][], [@jonas054][])
+* [#1527](https://github.com/bbatsov/rubocop/issues/1527): Make autocorrect `BracesAroundHashParameter` leave the correct number of spaces. ([@mattjmcnaughton][])
 
 ## 0.28.0 (10/12/2014)
 
@@ -1214,3 +1215,4 @@
 [@katieschilling]: https://github.com/katieschilling
 [@kakutani]: https://github.com/kakutani
 [@rrosenblum]: https://github.com/rrosenblum
+[@mattjmcnaughton]: https://github.com/mattjmcnaughton
