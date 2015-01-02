@@ -5,26 +5,30 @@ require 'spec_helper'
 describe RuboCop::Cop::Rails::ReadWriteAttribute do
   subject(:cop) { described_class.new }
 
-  it 'registers an offense for read_attribute' do
-    inspect_source(cop, 'res = read_attribute(:test)')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['read_attribute'])
+  context 'read_attribute' do
+    it 'registers an offense' do
+      inspect_source(cop, 'res = read_attribute(:test)')
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.highlights).to eq(['read_attribute'])
+    end
+
+    it 'registers no offense with explicit receiver' do
+      inspect_source(cop, 'res = object.read_attribute(:test)')
+      expect(cop.offenses.size).to eq(0)
+    end
   end
 
-  it 'registers no offense for read_attribute with explicit receiver' do
-    inspect_source(cop, 'res = object.read_attribute(:test)')
-    expect(cop.offenses.size).to eq(0)
-  end
+  context 'write_attribute' do
+    it 'registers an offense' do
+      inspect_source(cop, 'write_attribute(:test, val)')
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.highlights).to eq(['write_attribute'])
+    end
 
-  it 'registers an offense for write_attribute' do
-    inspect_source(cop, 'write_attribute(:test, val)')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights).to eq(['write_attribute'])
-  end
-
-  it 'registers no offense for write_attribute with explicit receiver' do
-    inspect_source(cop, 'object.write_attribute(:test, val)')
-    expect(cop.offenses.size).to eq(0)
+    it 'registers no offense with explicit receiver' do
+      inspect_source(cop, 'object.write_attribute(:test, val)')
+      expect(cop.offenses.size).to eq(0)
+    end
   end
 
   describe '#autocorrect' do
