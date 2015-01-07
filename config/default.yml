@@ -29,6 +29,10 @@ AllCops:
   # By default, the rails cops are not run. Override in project or home
   # directory .rubocop.yml files, or by giving the -R/--rails option.
   RunRailsCops: false
+  # Cop names are not displayed in offense messages by default. Change behavior
+  # by overriding DisplayCopNames, or by giving the -D/--display-cop-names
+  # option.
+  DisplayCopNames: false
 
 # Indent private/protected/public as deep as method definitions
 Style/AccessModifierIndentation:
