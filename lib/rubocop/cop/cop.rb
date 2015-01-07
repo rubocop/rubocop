@@ -128,7 +128,8 @@ module RuboCop
       end
 
       def display_cop_names?
-        debug? || @options[:display_cop_names]
+        debug? || @options[:display_cop_names] ||
+          config['AllCops'] && config['AllCops']['DisplayCopNames']
       end
 
       def message(_node = nil)

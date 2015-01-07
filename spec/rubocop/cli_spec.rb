@@ -1999,6 +1999,31 @@ describe RuboCop::CLI, :isolated_environment do
                 ''].join("\n"))
     end
 
+    it 'displays cop names if DisplayCopNames is true' do
+      source = ['# encoding: utf-8',
+                'x = 0 ',
+                'puts x']
+      create_file('example1.rb', source)
+
+      # DisplayCopNames: false inherited from config/default.yml
+      create_file('.rubocop.yml', [])
+
+      create_file('dir/example2.rb', source)
+      create_file('dir/.rubocop.yml', ['AllCops:',
+                                       '  DisplayCopNames: true'])
+
+      expect(cli.run(%w(--format simple))).to eq(1)
+      expect($stdout.string)
+        .to eq(['== example1.rb ==',
+                'C:  2:  6: Trailing whitespace detected.',
+                '== dir/example2.rb ==',
+                'C:  2:  6: Style/TrailingWhitespace: Trailing whitespace' \
+                ' detected.',
+                '',
+                '2 files inspected, 2 offenses detected',
+                ''].join("\n"))
+    end
+
     it 'finds included files' do
       create_file('file.rb', 'x=0') # Included by default
       create_file('example', 'x=0')

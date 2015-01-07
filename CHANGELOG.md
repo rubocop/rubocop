@@ -8,6 +8,7 @@
 * [#1506](https://github.com/bbatsov/rubocop/pull/1506): Add auto-correct from `EvenOdd` cop. ([@blainesch][])
 * [#1507](https://github.com/bbatsov/rubocop/issues/1507): `Debugger` cop now checks for the Capybara debug methods `save_and_open_page` and `save_and_open_screenshot`. ([@rrosenblum][])
 * [#1539](https://github.com/bbatsov/rubocop/pull/1539): Implement autocorrection for Rails/ReadWriteAttribute cop. ([@huerlisi][])
+* [#1324](https://github.com/bbatsov/rubocop/issues/1324): Add `AllCops/DisplayCopNames` configuration option for showing cop names in reports, like `--display-cop-names`. ([@jonas054][])
 
 ### Changes
 
