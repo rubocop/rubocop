@@ -12,6 +12,7 @@ rvm:
 matrix:
   allow_failures:
     - rvm: ruby-head
+    - rvm: jruby-19mode
     - rvm: rbx-2
 before_install: gem update --remote bundler
 install:
