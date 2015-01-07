@@ -7,6 +7,7 @@
 * [#1430](https://github.com/bbatsov/rubocop/issues/1430): Add `--except` option for disabling cops on the command line. ([@jonas054][])
 * [#1506](https://github.com/bbatsov/rubocop/pull/1506): Add auto-correct from `EvenOdd` cop. ([@blainesch][])
 * [#1507](https://github.com/bbatsov/rubocop/issues/1507): `Debugger` cop now checks for the Capybara debug methods `save_and_open_page` and `save_and_open_screenshot`. ([@rrosenblum][])
+* [#1539](https://github.com/bbatsov/rubocop/pull/1539): Implement autocorrection for Rails/ReadWriteAttribute cop. ([@huerlisi][])
 
 ### Changes
 
@@ -1216,3 +1217,4 @@
 [@kakutani]: https://github.com/kakutani
 [@rrosenblum]: https://github.com/rrosenblum
 [@mattjmcnaughton]: https://github.com/mattjmcnaughton
+[@huerlisi]: https://github.com/huerlisi

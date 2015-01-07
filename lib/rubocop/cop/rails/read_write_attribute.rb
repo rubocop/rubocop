@@ -36,6 +36,39 @@ module RuboCop
             format(MSG, 'self[:attr] = val', 'write_attribute(:attr, var)')
           end
         end
+
+        def autocorrect(node)
+          _receiver, method_name, _body = *node
+
+          case method_name
+          when :read_attribute
+            replacement = read_attribute_replacement(node)
+          when :write_attribute
+            replacement = write_attribute_replacement(node)
+          end
+
+          @corrections << lambda do |corrector|
+            corrector.replace(node.loc.expression, replacement)
+          end
+        end
+
+        private
+
+        def read_attribute_replacement(node)
+          _receiver, _method_name, body = *node
+
+          "self[#{body.loc.expression.source}]"
+        end
+
+        def write_attribute_replacement(node)
+          _receiver, _method_name, *args = *node
+          name, value = *args
+
+          name_source = name.loc.expression.source
+          value_source = value.loc.expression.source
+
+          "self[#{name_source}] = #{value_source}"
+        end
       end
     end
   end
