@@ -369,12 +369,12 @@ describe RuboCop::CLI, :isolated_environment do
                                              ''].join("\n"))
         expect($stdout.string).to eq(['',
                                       '10  Style/TrailingWhitespace',
-                                      '5   Style/Semicolon',
+                                      '3   Style/Semicolon',
                                       '3   Style/SingleLineMethods',
                                       '1   Style/DefWithParentheses',
                                       '1   Style/EmptyLineBetweenDefs',
                                       '--',
-                                      '20  Total',
+                                      '18  Total',
                                       '',
                                       ''].join("\n"))
       end
@@ -619,22 +619,26 @@ describe RuboCop::CLI, :isolated_environment do
         create_file('example.rb', ['# encoding: utf-8',
                                    'a = c and b',
                                    'not a && b',
-                                   'func a do b end'])
+                                   'func a do b end',
+                                   "Signal.trap('TERM') { system(cmd); exit }"])
         expect(cli.run(%w(-a -f simple))).to eq(1)
         expect($stderr.string).to eq('')
-        expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
-                                             'a = c and b',
-                                             'not a && b',
-                                             'func a do b end',
-                                             ''].join("\n"))
+        expect(IO.read('example.rb'))
+          .to eq(['# encoding: utf-8',
+                  'a = c and b',
+                  'not a && b',
+                  'func a do b end',
+                  "Signal.trap('TERM') { system(cmd); exit }",
+                  ''].join("\n"))
         expect($stdout.string)
           .to eq(['== example.rb ==',
                   'C:  2:  7: Use && instead of and.',
                   'C:  3:  1: Use ! instead of not.',
                   'C:  4:  8: Prefer {...} over do...end for single-line ' \
                   'blocks.',
+                  'C:  5: 34: Do not use semicolons to terminate expressions.',
                   '',
-                  '1 file inspected, 3 offenses detected',
+                  '1 file inspected, 4 offenses detected',
                   ''].join("\n"))
       end
 
