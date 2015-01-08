@@ -16,10 +16,8 @@ describe RuboCop::Cop::Style::SelfAssignment do
 
     it "accepts shorthand assignment for #{op} and #{var}" do
       inspect_source(cop,
-                     "#{var} = #{var} #{op} y")
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(["Use self-assignment shorthand `#{op}=`."])
+                     "#{var} #{op}= y")
+      expect(cop.offenses).to be_empty
     end
   end
 
@@ -34,10 +32,8 @@ describe RuboCop::Cop::Style::SelfAssignment do
 
     it "accepts shorthand assignment for #{op} and #{var}" do
       inspect_source(cop,
-                     "#{var} = #{var} #{op} y")
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(["Use self-assignment shorthand `#{op}=`."])
+                     "#{var} #{op}= y")
+      expect(cop.offenses).to be_empty
     end
   end
 end
