@@ -17,6 +17,7 @@
 
 ### Bugs fixed
 
+* [#1553](https://github.com/bbatsov/rubocop/pull/1553): Fix bug where `Style/EmptyLinesAroundAccessModifier` interfered with `Style/EmptyLinesAroundBlockBody` when there is and access modifier at the beginning of a block. ([@volkert][])
 * Handle element assignment in `Lint/AssignmentInCondition`. ([@jonas054][])
 * [#1484](https://github.com/bbatsov/rubocop/issues/1484): Fix `EmptyLinesAroundAccessModifier` incorrectly finding a violation inside method calls with names identical to an access modifier. ([@dblock][])
 * Fix bug concerning `Exclude` properties inherited from a higher directory level. ([@jonas054][])
@@ -1219,3 +1220,4 @@
 [@rrosenblum]: https://github.com/rrosenblum
 [@mattjmcnaughton]: https://github.com/mattjmcnaughton
 [@huerlisi]: https://github.com/huerlisi
+[@volkert]: https://github.com/volkert
