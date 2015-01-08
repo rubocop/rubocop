@@ -108,6 +108,52 @@ describe RuboCop::Cop::Style::EmptyLinesAroundAccessModifier do
       expect(cop.offenses).to be_empty
     end
 
+    context 'at the beginning of block' do
+      context 'for blocks defined with do' do
+        it 'accepts missing blank line' do
+          inspect_source(cop,
+                         ['included do',
+                          "  #{access_modifier}",
+                          '',
+                          '  def test; end',
+                          'end'])
+          expect(cop.offenses).to be_empty
+        end
+
+        it 'accepts missing blank line with arguments' do
+          inspect_source(cop,
+                         ['included do |foo|',
+                          "  #{access_modifier}",
+                          '',
+                          '  def test; end',
+                          'end'])
+          expect(cop.offenses).to be_empty
+        end
+      end
+
+      context 'for blocks defined with {}' do
+        it 'accepts missing blank line' do
+          inspect_source(cop,
+                         ['included {',
+                          "  #{access_modifier}",
+                          '',
+                          '  def test; end',
+                          '}'])
+          expect(cop.offenses).to be_empty
+        end
+
+        it 'accepts missing blank line with arguments' do
+          inspect_source(cop,
+                         ['included { |foo|',
+                          "  #{access_modifier}",
+                          '',
+                          '  def test; end',
+                          '}'])
+          expect(cop.offenses).to be_empty
+        end
+      end
+    end
+
     it 'accepts missing blank line when at the end of block' do
       inspect_source(cop,
                      ['class Test',

@@ -42,7 +42,9 @@ module RuboCop
         private
 
         def previous_line_empty?(previous_line)
-          class_def?(previous_line.lstrip) || previous_line.blank?
+          block_start?(previous_line.lstrip) ||
+            class_def?(previous_line.lstrip) ||
+            previous_line.blank?
         end
 
         def next_line_empty?(next_line)
@@ -59,6 +61,10 @@ module RuboCop
 
         def class_def?(line)
           %w(class module).any? { |keyword| line.start_with?(keyword) }
+        end
+
+        def block_start?(line)
+          line.match(/ (do|{)( \|.*?\|)?\s?$/)
         end
 
         def body_end?(line)
