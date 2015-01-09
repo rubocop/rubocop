@@ -10,6 +10,7 @@
 * [#1539](https://github.com/bbatsov/rubocop/pull/1539): Implement autocorrection for Rails/ReadWriteAttribute cop. ([@huerlisi][])
 * [#1324](https://github.com/bbatsov/rubocop/issues/1324): Add `AllCops/DisplayCopNames` configuration option for showing cop names in reports, like `--display-cop-names`. ([@jonas054][])
 * [#1271](https://github.com/bbatsov/rubocop/issues/1271): `Lambda` cop does auto-correction. ([@lumeet][])
+* [#1284](https://github.com/bbatsov/rubocop/issues/1284): Support namespaces, e.g. `Lint`, in the arguments to `--only` and `--except`. ([@jonas054][])
 
 ### Changes
 
