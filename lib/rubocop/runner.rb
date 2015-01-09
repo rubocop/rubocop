@@ -133,22 +133,29 @@ module RuboCop
       @mobilized_cop_classes[config.object_id] ||= begin
         cop_classes = Cop::Cop.all
 
-        [:only, :except].each { |option| validate_cop_list(option) }
+        [:only, :except].each { |opt| Options.validate_cop_list(@options[opt]) }
 
         if @options[:only]
           cop_classes.select! do |c|
-            @options[:only].include?(c.cop_name) || @options[:lint] && c.lint?
+            cop_match?(c, @options[:only]) || @options[:lint] && c.lint?
           end
         else
           filter_cop_classes(cop_classes, config)
         end
 
-        if @options[:except]
-          cop_classes.reject! { |c| @options[:except].include?(c.cop_name) }
-        end
+        cop_classes.reject! { |c| cop_match?(c, @options[:except]) }
 
         cop_classes
       end
+    end
+
+    # Returns true if the cop name or the cop namespace matches any of the
+    # given names.
+    def cop_match?(cop, given_names)
+      return false unless given_names
+
+      given_names.include?(cop.cop_name) ||
+        given_names.include?(cop.cop_type.to_s.capitalize)
     end
 
     def filter_cop_classes(cop_classes, config)
@@ -162,15 +169,6 @@ module RuboCop
 
       # select only lint cops when --lint is passed
       cop_classes.select!(&:lint?) if @options[:lint]
-    end
-
-    def validate_cop_list(option)
-      return unless @options[option]
-
-      @options[option].each do |cop_to_run|
-        next unless Cop::Cop.all.none? { |c| c.cop_name == cop_to_run }
-        fail ArgumentError, "Unrecognized cop name: #{cop_to_run}."
-      end
     end
 
     def run_rails_cops?(config)

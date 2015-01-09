@@ -900,7 +900,8 @@ describe RuboCop::CLI, :isolated_environment do
                                      "\ty",
                                      'end'])
           expect(cli.run(['--only', 'Style/123'])).to eq(1)
-          expect($stderr.string).to include('Unrecognized cop name: Style/123.')
+          expect($stderr.string)
+            .to include('Unrecognized cop or namespace: Style/123.')
         end
 
         it 'accepts cop names from plugins' do
@@ -1027,54 +1028,100 @@ describe RuboCop::CLI, :isolated_environment do
           end
         end
       end
-    end
 
-    describe '--except' do
-      context 'when two cops are given' do
-        it 'runs all cops except the given' do
-          create_file('example.rb', ['if x== 0 ',
+      context 'when a namespace is given' do
+        it 'runs all enabled cops in that namespace' do
+          create_file('example.rb', ['if x== 100000000000000 ',
+                                     '  ' + '#' * 100,
                                      "\ty",
                                      'end'])
-          expect(cli.run(['--format', 'offenses',
-                          '--except', 'Style/IfUnlessModifier,Style/Tab',
-                          'example.rb'])).to eq(1)
+          expect(cli.run(%w(-f offenses --only Metrics example.rb))).to eq(1)
+          expect($stdout.string).to eq(['',
+                                        '1  Metrics/LineLength',
+                                        '--',
+                                        '1  Total',
+                                        '',
+                                        ''].join("\n"))
+        end
+      end
+
+      context 'when two namespaces are given' do
+        it 'runs all enabled cops in those namespaces' do
+          create_file('example.rb', ['# encoding: utf-8',
+                                     'if x== 100000000000000 ',
+                                     '  # ' + '-' * 98,
+                                     "\ty",
+                                     'end'])
+          create_file('.rubocop.yml', ['Style/SpaceAroundOperators:',
+                                       '  Enabled: false'])
+          expect(cli.run(%w(-f o --only Metrics,Style example.rb))).to eq(1)
           expect($stdout.string)
             .to eq(['',
+                    '1  Metrics/LineLength',
+                    '1  Style/CommentIndentation',
                     '1  Style/IndentationWidth',
-                    '1  Style/SpaceAroundOperators',
+                    '1  Style/NumericLiterals',
+                    '1  Style/Tab',
                     '1  Style/TrailingWhitespace',
                     '--',
-                    '3  Total',
+                    '6  Total',
                     '',
                     ''].join("\n"))
         end
+      end
+    end
 
-        it 'exits with error if an incorrect cop name is passed' do
+    describe '--except' do
+      context 'when one name is given' do
+        it 'exits with error if the cop name is incorrect' do
           create_file('example.rb', ['if x== 0 ',
                                      "\ty",
                                      'end'])
           expect(cli.run(['--except', 'Style/123'])).to eq(1)
-          expect($stderr.string).to include('Unrecognized cop name: Style/123.')
+          expect($stderr.string)
+            .to include('Unrecognized cop or namespace: Style/123.')
         end
+      end
 
-        context 'when one cop is given without namespace' do
-          it 'disables the given cop' do
-            create_file('example.rb', ['if x== 0 ',
-                                       "\ty",
-                                       'end'])
+      context 'when one cop plus one namespace are given' do
+        it 'runs all cops except the given' do
+          create_file('example.rb', ['if x== 0 ',
+                                     "\ty = 3",
+                                     'end'])
+          expect(cli.run(['--format', 'offenses',
+                          '--except', 'Style/IfUnlessModifier,Lint',
+                          'example.rb'])).to eq(1)
+          expect($stdout.string)
+            .to eq(['',
+                    # Note: No Lint/UselessAssignment offense.
+                    '1  Style/IndentationWidth',
+                    '1  Style/SpaceAroundOperators',
+                    '1  Style/Tab',
+                    '1  Style/TrailingWhitespace',
+                    '--',
+                    '4  Total',
+                    '',
+                    ''].join("\n"))
+        end
+      end
 
-            cli.run(['--format', 'offenses',
-                     '--except', 'IfUnlessModifier',
-                     'example.rb'])
-            with_option = $stdout.string
-            $stdout = StringIO.new
-            cli.run(['--format', 'offenses',
-                     'example.rb'])
-            without_option = $stdout.string
+      context 'when one cop is given without namespace' do
+        it 'disables the given cop' do
+          create_file('example.rb', ['if x== 0 ',
+                                     "\ty",
+                                     'end'])
 
-            expect(without_option.split($RS) - with_option.split($RS))
-              .to eq(['1  Style/IfUnlessModifier', '5  Total'])
-          end
+          cli.run(['--format', 'offenses',
+                   '--except', 'IfUnlessModifier',
+                   'example.rb'])
+          with_option = $stdout.string
+          $stdout = StringIO.new
+          cli.run(['--format', 'offenses',
+                   'example.rb'])
+          without_option = $stdout.string
+
+          expect(without_option.split($RS) - with_option.split($RS))
+            .to eq(['1  Style/IfUnlessModifier', '5  Total'])
         end
       end
 

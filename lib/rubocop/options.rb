@@ -70,6 +70,19 @@ module RuboCop
       [@options, args]
     end
 
+    # Cop name validation must be done later than option parsing, so it's not
+    # called from within this class.
+    def self.validate_cop_list(names)
+      return unless names
+
+      namespaces = Cop::Cop.all.types.map { |t| t.to_s.capitalize }
+      names.each do |name|
+        next if Cop::Cop.all.any? { |c| c.cop_name == name } ||
+                namespaces.include?(name)
+        fail ArgumentError, "Unrecognized cop or namespace: #{name}."
+      end
+    end
+
     private
 
     def define_options(args)
