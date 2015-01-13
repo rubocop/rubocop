@@ -39,6 +39,31 @@ describe RuboCop::Cop::Util do
     end
   end
 
+  describe 'source indicated by #range_with_surrounding_space' do
+    let(:input_range) { OpenStruct.new(begin_pos: 5, end_pos: 9) }
+    let(:buffer) { OpenStruct.new(source: 'f {  a(2) }') }
+    subject do
+      r = described_class.range_with_surrounding_space(input_range, side,
+                                                       buffer)
+      buffer.source[r.begin_pos...r.end_pos]
+    end
+
+    context 'when side is :both' do
+      let(:side) { :both }
+      it { should eq('  a(2) ') }
+    end
+
+    context 'when side is :left' do
+      let(:side) { :left }
+      it { should eq('  a(2)') }
+    end
+
+    context 'when side is :right' do
+      let(:side) { :right }
+      it { should eq('a(2) ') }
+    end
+  end
+
   # Test compatibility with Range#size in Ruby 2.0.
   describe '#numeric_range_size', ruby: 2 do
     [1..1, 1...1, 1..2, 1...2, 1..3, 1...3, 1..-1, 1...-1].each do |range|
