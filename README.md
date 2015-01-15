@@ -125,19 +125,28 @@ end
 Running RuboCop on it (assuming it's in a file named `test.rb`) would produce the following report:
 
 ```
+Inspecting 1 file
+W
+
 Offenses:
 
-test.rb:1:5: C: Use snake_case for methods and variables.
+test.rb:1:1: C: Missing utf-8 encoding comment.
+def badName
+^
+test.rb:1:5: C: Use snake_case for method names.
 def badName
     ^^^^^^^
-test.rb:2:3: C: Favor modifier if/unless usage when you have a single-line body. Another good alternative is the usage of control flow &&/||.
+test.rb:2:3: C: Use a guard clause instead of wrapping the code inside a conditional expression.
+  if something
+  ^^
+test.rb:2:3: C: Favor modifier if usage when having a single-line body. Another good alternative is the usage of control flow &&/||.
   if something
   ^^
 test.rb:4:5: W: end at 4, 4 is not aligned with if at 2, 2
     end
     ^^^
 
-1 file inspected, 3 offenses detected
+1 file inspected, 5 offenses detected
 ```
 
 For more details check the available command-line options:
@@ -400,7 +409,7 @@ for x in (0..19) # rubocop:disable Style/AvoidFor
 You can change the output format of RuboCop by specifying formatters with the `-f/--format` option.
 RuboCop ships with several built-in formatters, and also you can create your custom formatter.
 
-Additionaly the output can be redirected to a file instead of `$stdout` with the `-o/--out` option.
+Additionally the output can be redirected to a file instead of `$stdout` with the `-o/--out` option.
 
 Some of the built-in formatters produce **machine-parsable** output
 and they are considered public APIs.
@@ -467,17 +476,28 @@ The `clang` formatter displays the offenses in a manner similar to `clang`:
 
 ```
 $ rubocop test.rb
-test.rb:1:1: C: Use snake_case for methods and variables.
+Inspecting 1 file
+W
+
+Offenses:
+
+test.rb:1:1: C: Missing utf-8 encoding comment.
+def badName
+^
+test.rb:1:5: C: Use snake_case for method names.
 def badName
     ^^^^^^^
-test.rb:2:3: C: Favor modifier if/unless usage when you have a single-line body. Another good alternative is the usage of control flow &&/||.
+test.rb:2:3: C: Use a guard clause instead of wrapping the code inside a conditional expression.
+  if something
+  ^^
+test.rb:2:3: C: Favor modifier if usage when having a single-line body. Another good alternative is the usage of control flow &&/||.
   if something
   ^^
 test.rb:4:5: W: end at 4, 4 is not aligned with if at 2, 2
     end
     ^^^
 
-1 file inspected, 3 offenses detected
+1 file inspected, 5 offenses detected
 ```
 
 ### Fuubar Style Formatter
@@ -517,11 +537,13 @@ The name of the formatter says it all :-)
 ```
 $ rubocop --format simple test.rb
 == test.rb ==
-C:  1:  1: Use snake_case for methods and variables.
-C:  2:  3: Favor modifier if/unless usage when you have a single-line body. Another good alternative is the usage of control flow &&/||.
+C:  1:  1: Missing utf-8 encoding comment.
+C:  1:  5: Use snake_case for method names.
+C:  2:  3: Use a guard clause instead of wrapping the code inside a conditional expression.
+C:  2:  3: Favor modifier if usage when having a single-line body. Another good alternative is the usage of control flow &&/||.
 W:  4:  5: end at 4, 4 is not aligned with if at 2, 2
 
-1 file inspected, 3 offenses detected
+1 file inspected, 5 offenses detected
 ```
 
 ### File List Formatter
