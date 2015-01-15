@@ -130,9 +130,6 @@ W
 
 Offenses:
 
-test.rb:1:1: C: Missing utf-8 encoding comment.
-def badName
-^
 test.rb:1:5: C: Use snake_case for method names.
 def badName
     ^^^^^^^
@@ -146,7 +143,7 @@ test.rb:4:5: W: end at 4, 4 is not aligned with if at 2, 2
     end
     ^^^
 
-1 file inspected, 5 offenses detected
+1 file inspected, 4 offenses detected
 ```
 
 For more details check the available command-line options:
@@ -481,9 +478,6 @@ W
 
 Offenses:
 
-test.rb:1:1: C: Missing utf-8 encoding comment.
-def badName
-^
 test.rb:1:5: C: Use snake_case for method names.
 def badName
     ^^^^^^^
@@ -497,7 +491,7 @@ test.rb:4:5: W: end at 4, 4 is not aligned with if at 2, 2
     end
     ^^^
 
-1 file inspected, 5 offenses detected
+1 file inspected, 4 offenses detected
 ```
 
 ### Fuubar Style Formatter
@@ -537,13 +531,12 @@ The name of the formatter says it all :-)
 ```
 $ rubocop --format simple test.rb
 == test.rb ==
-C:  1:  1: Missing utf-8 encoding comment.
 C:  1:  5: Use snake_case for method names.
 C:  2:  3: Use a guard clause instead of wrapping the code inside a conditional expression.
 C:  2:  3: Favor modifier if usage when having a single-line body. Another good alternative is the usage of control flow &&/||.
 W:  4:  5: end at 4, 4 is not aligned with if at 2, 2
 
-1 file inspected, 5 offenses detected
+1 file inspected, 4 offenses detected
 ```
 
 ### File List Formatter
