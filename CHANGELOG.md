@@ -31,6 +31,7 @@
 * [#1054](https://github.com/bbatsov/rubocop/issues/1054): Handle comments within concatenated strings in `LineEndConcatenation`. ([@yujinakayama][], [@jonas054][])
 * [#1527](https://github.com/bbatsov/rubocop/issues/1527): Make autocorrect `BracesAroundHashParameter` leave the correct number of spaces. ([@mattjmcnaughton][])
 * [#1547](https://github.com/bbatsov/rubocop/issues/1547): Don't print `[Corrected]` when auto-correction was avoided in `Style/Semicolon`. ([@jonas054][])
+* [#1573](https://github.com/bbatsov/rubocop/issues/1573): Fix assignment-related auto-correction for `BlockAlignment`. ([@lumeet][])
 
 ## 0.28.0 (10/12/2014)
 
