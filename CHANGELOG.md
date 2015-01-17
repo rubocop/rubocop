@@ -14,6 +14,7 @@
 * [#1276](https://github.com/bbatsov/rubocop/issues/1276): `SelfAssignment` cop does auto-correction. ([@lumeet][])
 * Add autocorrect to `RedundantException`. ([@mattjmcnaughton][])
 * [#1571](https://github.com/bbatsov/rubocop/pull/1571): New cop `StructInheritance` checks for inheritance from Struct.new. ([@mmozuras][])
+* [#1575](https://github.com/bbatsov/rubocop/issues/1575): New cop `DuplicateMethods` points out duplicate method name in class and module. ([@d4rk5eed][])
 
 ### Changes
 
@@ -1236,3 +1237,4 @@
 [@volkert]: https://github.com/volkert
 [@lumeet]: https://github.com/lumeet
 [@mmozuras]: https://github.com/mmozuras
+[@d4rk5eed]: https://github.com/d4rk5eed
