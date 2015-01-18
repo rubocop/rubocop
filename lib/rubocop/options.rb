@@ -35,7 +35,8 @@ module RuboCop
                          'This option applies to the previously',
                          'specified --format, or the default format',
                          'if no format is specified.'],
-      fail_level:        'Minimum severity for exit with error code.',
+      fail_level:       ['Minimum severity (A/R/C/W/E/F) for exit',
+                         'with error code.'],
       show_cops:        ['Shows the given cops, or all cops by',
                          'default, and their configurations for the',
                          'current directory.'],
@@ -146,9 +147,10 @@ module RuboCop
     end
 
     def add_severity_option(opts)
+      table = RuboCop::Cop::Severity::CODE_TABLE.merge(A: :autocorrect)
       option(opts, '--fail-level SEVERITY',
-             RuboCop::Cop::Severity::NAMES,
-             RuboCop::Cop::Severity::CODE_TABLE) do |severity|
+             RuboCop::Cop::Severity::NAMES + [:autocorrect],
+             table) do |severity|
         @options[:fail_level] = severity
       end
     end

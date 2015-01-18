@@ -44,6 +44,7 @@ release.**
     - [Inheritance](#inheritance)
     - [Defaults](#defaults)
     - [Including/Excluding files](#includingexcluding-files)
+    - [Generic configuration parameters](#generic-configuration-parameters)
     - [Automatically Generated Configuration](#automatically-generated-configuration)
 - [Disabling Cops within Source Code](#disabling-cops-within-source-code)
 - [Formatters](#formatters)
@@ -170,7 +171,7 @@ Command flag              | Description
 `--except`                | Run all cops enabled by configuration except the specified cop(s) and/or departments.
 `--auto-gen-config`       | Generate a configuration file acting as a TODO list.
 `--show-cops`             | Shows available cops and their configuration.
-`--fail-level`            | Minimum severity for exit with error code.
+`--fail-level`            | Minimum [severity](#severity) for exit with error code. Full severity name or upper case initial can be given. Normally, auto-corrected offenses are ignored. Use `A` or `autocorrect` if you'd like them to trigger failure.
 
 ### Cops
 
@@ -350,6 +351,13 @@ Rails/DefaultScope:
     - app/models/problematic.rb
 ```
 
+### Generic configuration parameters
+
+In addition to `Include` and `Exclude`, the following parameters are available
+for every cop.
+
+#### Enabled
+
 Specific cops can be disabled by setting `Enabled` to `false` for that specific cop.
 
 ```yaml
@@ -357,8 +365,10 @@ Metrics/LineLength:
   Enabled: false
 ```
 
-Cops can customize their severity level. All cops support the `Severity` param.
-Allowed params are `refactor`, `convention`, `warning`, `error` and `fatal`.
+#### Severity
+
+Cops can customize their severity level. Allowed params are `refactor`,
+`convention`, `warning`, `error` and `fatal`.
 
 ```yaml
 Metrics/CyclomaticComplexity:
