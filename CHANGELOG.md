@@ -13,6 +13,7 @@
 * [#1284](https://github.com/bbatsov/rubocop/issues/1284): Support namespaces, e.g. `Lint`, in the arguments to `--only` and `--except`. ([@jonas054][])
 * [#1276](https://github.com/bbatsov/rubocop/issues/1276): `SelfAssignment` cop does auto-correction. ([@lumeet][])
 * Add autocorrect to `RedundantException`. ([@mattjmcnaughton][])
+* [#1571](https://github.com/bbatsov/rubocop/pull/1571): New cop `StructInheritance` checks for inheritance from Struct.new. ([@mmozuras][])
 
 ### Changes
 
@@ -1227,3 +1228,4 @@
 [@huerlisi]: https://github.com/huerlisi
 [@volkert]: https://github.com/volkert
 [@lumeet]: https://github.com/lumeet
+[@mmozuras]: https://github.com/mmozuras
