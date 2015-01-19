@@ -12,6 +12,7 @@
 * [#1271](https://github.com/bbatsov/rubocop/issues/1271): `Lambda` cop does auto-correction. ([@lumeet][])
 * [#1284](https://github.com/bbatsov/rubocop/issues/1284): Support namespaces, e.g. `Lint`, in the arguments to `--only` and `--except`. ([@jonas054][])
 * [#1276](https://github.com/bbatsov/rubocop/issues/1276): `SelfAssignment` cop does auto-correction. ([@lumeet][])
+* Add autocorrect to `RedundantException`. ([@mattjmcnaughton][])
 
 ### Changes
 
