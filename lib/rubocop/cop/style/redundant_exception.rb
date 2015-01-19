@@ -26,6 +26,18 @@ module RuboCop
 
           add_offense(first_arg, :expression) if first_arg == TARGET_NODE
         end
+
+        # switch `raise RuntimeError, 'message'` to `raise 'message'`
+        def autocorrect(node)
+          @corrections << lambda do |corrector|
+            start_range = node.loc.expression.begin
+            no_comma = range_with_surrounding_comma(node.loc.expression.end,
+                                                    :right)
+            comma_range = start_range.join(no_comma)
+            final_range = range_with_surrounding_space(comma_range, :right)
+            corrector.replace(final_range, '')
+          end
+        end
       end
     end
   end

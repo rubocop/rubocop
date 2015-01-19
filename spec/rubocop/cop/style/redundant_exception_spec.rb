@@ -24,4 +24,36 @@ describe RuboCop::Cop::Style::RedundantException do
     inspect_source(cop, 'fail RuntimeError, msg, caller')
     expect(cop.offenses).to be_empty
   end
+
+  it 'auto-corrects a raise by removing RuntimeError' do
+    src = 'raise RuntimeError, msg'
+    result_src = 'raise msg'
+    new_src = autocorrect_source(cop, src)
+    expect(new_src).to eq(result_src)
+  end
+
+  it 'auto-corrects a fil by removing RuntimeError' do
+    src = 'fail RuntimeError, msg'
+    result_src = 'fail msg'
+    new_src = autocorrect_source(cop, src)
+    expect(new_src).to eq(result_src)
+  end
+
+  it 'does not modify raise w/ RuntimeError if it does not have 2 args' do
+    src = 'raise runtimeError, msg, caller'
+    new_src = autocorrect_source(cop, src)
+    expect(new_src).to eq(src)
+  end
+
+  it 'does not modify fail w/ RuntimeError if it does not have 2 args' do
+    src = 'fail RuntimeError, msg, caller'
+    new_src = autocorrect_source(cop, src)
+    expect(new_src).to eq(src)
+  end
+
+  it 'does not modify rescue w/ non redundant error' do
+    src = 'fail OtherError, msg'
+    new_src = autocorrect_source(cop, src)
+    expect(new_src).to eq(src)
+  end
 end

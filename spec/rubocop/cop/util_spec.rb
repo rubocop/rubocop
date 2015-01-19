@@ -39,6 +39,32 @@ describe RuboCop::Cop::Util do
     end
   end
 
+  describe 'source indicated by #range_with_surrounding_comma' do
+    let(:input_range) { OpenStruct.new(begin_pos: 7, end_pos: 12) }
+    let(:buffer) { OpenStruct.new(source: 'raise ,Error,') }
+
+    subject do
+      r = described_class.range_with_surrounding_comma(input_range,
+                                                       side, buffer)
+      buffer.source[r.begin_pos...r.end_pos]
+    end
+
+    context 'when side is :both' do
+      let(:side) { :both }
+      it { should eq(',Error,') }
+    end
+
+    context 'when side is :left' do
+      let(:side) { :left }
+      it { should eq(',Error') }
+    end
+
+    context 'when side is :right' do
+      let(:side) { :right }
+      it { should eq('Error,') }
+    end
+  end
+
   describe 'source indicated by #range_with_surrounding_space' do
     let(:input_range) { OpenStruct.new(begin_pos: 5, end_pos: 9) }
     let(:buffer) { OpenStruct.new(source: 'f {  a(2) }') }
