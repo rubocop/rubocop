@@ -93,14 +93,14 @@ describe RuboCop::Cop::Lint::BlockAlignment do
       expect(cop.offenses).to be_empty
     end
 
-    it 'auto-corrects alignment to the block start' do
+    it 'auto-corrects alignment to the first variable' do
       new_source = autocorrect_source(cop,
                                       ['a = b = c = test do |ala|',
                                        '    end'
                                       ])
 
       expect(new_source).to eq(['a = b = c = test do |ala|',
-                                '            end'
+                                'end'
                                ].join("\n"))
     end
   end

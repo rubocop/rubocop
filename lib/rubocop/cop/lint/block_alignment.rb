@@ -149,11 +149,11 @@ module RuboCop
         end
 
         def autocorrect(node)
-          key = node.children.first
+          ancestor_node = ancestor_on_same_line(node)
           source = node.loc.expression.source_buffer
 
           @corrections << lambda do |corrector|
-            start_col = key.loc.expression.column
+            start_col = (ancestor_node || node).loc.expression.column
             starting_position_of_block_end = node.loc.end.begin_pos
             end_col = node.loc.end.column
 
@@ -166,6 +166,13 @@ module RuboCop
                                                 starting_position_of_block_end)
               corrector.remove(range)
             end
+          end
+        end
+
+        def ancestor_on_same_line(node)
+          node.ancestors.reverse.find do |ancestor|
+            next unless ancestor.loc.respond_to?(:line)
+            ancestor.loc.line == node.loc.line
           end
         end
       end
