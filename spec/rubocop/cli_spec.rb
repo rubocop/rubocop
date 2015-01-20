@@ -1555,15 +1555,62 @@ describe RuboCop::CLI, :isolated_environment do
 
       before do
         create_file(target_file, ['# encoding: utf-8',
-                                  '#' * 90])
+                                  'def f',
+                                  ' x',
+                                  'end'])
+      end
+
+      after do
+        expect($stderr.string).to eq('')
+        expect($stdout.string)
+          .to include('1 file inspected, 1 offense detected')
       end
 
       it 'fails when option is less than the severity level' do
+        expect(cli.run(['--fail-level', 'refactor', target_file])).to eq(1)
+        expect(cli.run(['--fail-level', 'autocorrect', target_file])).to eq(1)
+      end
+
+      it 'fails when option is equal to the severity level' do
         expect(cli.run(['--fail-level', 'convention', target_file])).to eq(1)
       end
 
-      it 'succeed when option is greater than the severity level' do
+      it 'succeeds when option is greater than the severity level' do
         expect(cli.run(['--fail-level', 'warning', target_file])).to eq(0)
+      end
+
+      context 'with --auto-correct' do
+        after do
+          expect($stdout.string.lines.to_a.last)
+            .to eq('1 file inspected, 1 offense detected, 1 offense corrected' \
+                   "\n")
+        end
+
+        it 'fails when option is autocorrect and all offenses are ' \
+           'autocorrected' do
+          expect(cli.run(['--auto-correct', '--format', 'simple',
+                          '--fail-level', 'autocorrect',
+                          target_file])).to eq(1)
+        end
+
+        it 'fails when option is A and all offenses are autocorrected' do
+          expect(cli.run(['--auto-correct', '--format', 'simple',
+                          '--fail-level', 'A',
+                          target_file])).to eq(1)
+        end
+
+        it 'succeeds when option is not given and all offenses are ' \
+           'autocorrected' do
+          expect(cli.run(['--auto-correct', '--format', 'simple',
+                          target_file])).to eq(0)
+        end
+
+        it 'succeeds when option is refactor and all offenses are ' \
+           'autocorrected' do
+          expect(cli.run(['--auto-correct', '--format', 'simple',
+                          '--fail-level', 'refactor',
+                          target_file])).to eq(0)
+        end
       end
     end
 

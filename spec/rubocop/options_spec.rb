@@ -65,7 +65,8 @@ Usage: rubocop [options] [file1, file2, ...]
                                      specified --format, or the default format
                                      if no format is specified.
     -r, --require FILE               Require Ruby file.
-        --fail-level SEVERITY        Minimum severity for exit with error code.
+        --fail-level SEVERITY        Minimum severity (A/R/C/W/E/F) for exit
+                                     with error code.
         --show-cops [COP1,COP2,...]  Shows the given cops, or all cops by
                                      default, and their configurations for the
                                      current directory.
@@ -135,6 +136,29 @@ Usage: rubocop [options] [file1, file2, ...]
                ' :show_cops]'].join
         expect { options.parse %w(-vV --show-cops) }
           .to raise_error(ArgumentError, msg)
+      end
+    end
+
+    describe '--fail-level' do
+      it 'accepts full severity names' do
+        %w(refactor convention warning error fatal).each do |severity|
+          expect { options.parse(['--fail-level', severity]) }
+            .not_to raise_error
+        end
+      end
+
+      it 'accepts severity initial letters' do
+        %w(R C W E F).each do |severity|
+          expect { options.parse(['--fail-level', severity]) }
+            .not_to raise_error
+        end
+      end
+
+      it 'accepts the "fake" severities A/autocorrect' do
+        %w(autocorrect A).each do |severity|
+          expect { options.parse(['--fail-level', severity]) }
+            .not_to raise_error
+        end
       end
     end
 
