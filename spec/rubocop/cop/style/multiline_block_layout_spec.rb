@@ -87,6 +87,36 @@ describe RuboCop::Cop::Style::MultilineBlockLayout do
       .to eq(['Block body expression is on the same line as the block start.'])
   end
 
+  it 'registers an offense for line-break before arguments' do
+    inspect_source(cop,
+                   ['test do',
+                    '  |x| play_with(x)',
+                    'end'])
+    expect(cop.messages)
+      .to eq(['Block argument expression is not on the same line as the ' \
+              'block start.'])
+  end
+
+  it 'registers an offense for line-break before arguments with empty block' do
+    inspect_source(cop,
+                   ['test do',
+                    '  |x|',
+                    'end'])
+    expect(cop.messages)
+      .to eq(['Block argument expression is not on the same line as the ' \
+              'block start.'])
+  end
+
+  it 'registers an offense for line-break within arguments' do
+    inspect_source(cop,
+                   ['test do |x,',
+                    '  y|',
+                    'end'])
+    expect(cop.messages)
+      .to eq(['Block argument expression is not on the same line as the ' \
+              'block start.'])
+  end
+
   it 'auto-corrects a do/end block with params that is missing newlines' do
     src = ['test do |foo| bar',
            'end']
@@ -134,5 +164,36 @@ describe RuboCop::Cop::Style::MultilineBlockLayout do
                               '      foo',
                               '  bar',
                               '}'].join("\n"))
+  end
+
+  it 'auto-corrects a line-break before arguments' do
+    new_source = autocorrect_source(cop,
+                                    ['test do',
+                                     '  |x| play_with(x)',
+                                     'end'])
+
+    expect(new_source).to eq(['test do |x|',
+                              '  play_with(x)',
+                              'end'].join("\n"))
+  end
+
+  it 'auto-corrects a line-break before arguments with empty block' do
+    new_source = autocorrect_source(cop,
+                                    ['test do',
+                                     '  |x|',
+                                     'end'])
+
+    expect(new_source).to eq(['test do |x|',
+                              'end'].join("\n"))
+  end
+
+  it 'auto-corrects a line-break within arguments' do
+    new_source = autocorrect_source(cop,
+                                    ['test do |x,',
+                                     '  y| play_with(x, y)',
+                                     'end'])
+    expect(new_source).to eq(['test do |x, y|',
+                              '  play_with(x, y)',
+                              'end'].join("\n"))
   end
 end
