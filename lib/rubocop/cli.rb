@@ -24,7 +24,7 @@ module RuboCop
       all_passed = runner.run(paths)
       display_error_summary(runner.errors)
 
-      all_passed && !runner.aborting? ? 0 : 1
+      all_passed && !runner.aborting? && runner.errors.empty? ? 0 : 1
     rescue Cop::AmbiguousCopName => e
       $stderr.puts "Ambiguous cop name #{e.message} needs namespace " \
                    'qualifier.'
