@@ -64,8 +64,25 @@ describe RuboCop::Cop::Style::EmptyLiteral do
     end
 
     it 'auto-corrects Hash.new to {}' do
-      new_source = autocorrect_source(cop, 'test = Hash.new')
-      expect(new_source).to eq('test = {}')
+      new_source = autocorrect_source(cop, 'Hash.new')
+      expect(new_source).to eq('{}')
+    end
+
+    it 'auto-corrects Hash.new to {} in various contexts' do
+      new_source =
+        autocorrect_source(cop, ['test = Hash.new',
+                                 'Hash.new.merge("a" => 3)',
+                                 'yadayada.map { a }.reduce(Hash.new, :merge)'])
+      expect(new_source)
+        .to eq(['test = {}',
+                '{}.merge("a" => 3)',
+                'yadayada.map { a }.reduce({}, :merge)'].join("\n"))
+    end
+
+    it 'does not auto-correct Hash.new to {} if changing code meaning' do
+      source = 'yadayada.map { a }.reduce Hash.new, :merge'
+      new_source = autocorrect_source(cop, source)
+      expect(new_source).to eq(source)
     end
   end
 

@@ -29,30 +29,45 @@ module RuboCop
         STR_NODE = s(:send, s(:const, nil, :String), :new)
 
         def on_send(node)
-          return if part_of_ignored_node?(node)
-
           case node
           when ARRAY_NODE
             add_offense(node, :expression, ARR_MSG)
           when HASH_NODE
+            # If Hash.new takes a block, it can't be changed to {}.
+            return if node.parent && node.parent.block_type?
+
             add_offense(node, :expression, HASH_MSG)
           when STR_NODE
             add_offense(node, :expression, STR_MSG)
           end
         end
 
-        # TODO: Check block contents as well.
-        alias_method :on_block, :ignore_node
-
         def autocorrect(node)
-          @corrections << lambda do |corrector|
-            name = case node
-                   when ARRAY_NODE then '[]'
-                   when HASH_NODE then '{}'
-                   when STR_NODE then "''"
+          name = case node
+                 when ARRAY_NODE
+                   '[]'
+                 when HASH_NODE
+                   # `some_method {}` is not same as `some_method Hash.new`
+                   # because the braces are interpreted as a block, so we avoid
+                   # the correction. Parentheses around the arguments would
+                   # solve the problem, but we let the user add those manually.
+                   if first_arg_in_method_call_without_parentheses?(node)
+                     fail CorrectionNotPossible
                    end
+                   '{}'
+                 when STR_NODE
+                   "''"
+                 end
+          @corrections << lambda do |corrector|
             corrector.replace(node.loc.expression, name)
           end
+        end
+
+        def first_arg_in_method_call_without_parentheses?(node)
+          return false unless node.parent && node.parent.send_type?
+
+          _receiver, _method_name, *args = *node.parent
+          node.object_id == args.first.object_id && !parentheses?(node.parent)
         end
       end
     end
