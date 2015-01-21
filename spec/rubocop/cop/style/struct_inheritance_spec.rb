@@ -29,6 +29,14 @@ describe RuboCop::Cop::Style::StructInheritance do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts extending DelegateClass' do
+    inspect_source(cop,
+                   ['class Person < DelegateClass(Animal)',
+                    'end'
+                   ])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'accepts assignment to Struct.new' do
     inspect_source(cop, 'Person = Struct.new(:first_name, :last_name)')
     expect(cop.offenses).to be_empty

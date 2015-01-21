@@ -27,7 +27,9 @@ module RuboCop
         def struct_constructor?(node)
           if node && node.send_type?
             receiver, method_name = *node
-            receiver.const_type? &&
+
+            receiver &&
+              receiver.const_type? &&
               receiver.children.last == :Struct &&
               method_name == :new
           else
