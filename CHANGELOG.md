@@ -38,6 +38,7 @@
 * [#1547](https://github.com/bbatsov/rubocop/issues/1547): Don't print `[Corrected]` when auto-correction was avoided in `Style/Semicolon`. ([@jonas054][])
 * [#1573](https://github.com/bbatsov/rubocop/issues/1573): Fix assignment-related auto-correction for `BlockAlignment`. ([@lumeet][])
 * [#1587](https://github.com/bbatsov/rubocop/pull/1587): Exit with exit code 1 if there were errors ("crashing" cops). ([@jonas054][])
+* [#1574](https://github.com/bbatsov/rubocop/issues/1574): Avoid auto-correcting `Hash.new` to `{}` when braces would be interpreted as a block. ([@jonas054][])
 
 ## 0.28.0 (10/12/2014)
 
