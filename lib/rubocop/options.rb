@@ -29,6 +29,7 @@ module RuboCop
                          '  [j]son',
                          '  [h]tml',
                          '  [fi]les',
+                         '  [q]uiet',
                          '  [o]ffenses',
                          '  custom formatter class name'],
       out:              ['Write output to a file instead of STDOUT.',

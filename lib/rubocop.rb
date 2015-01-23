@@ -282,6 +282,7 @@ require 'rubocop/formatter/json_formatter'
 require 'rubocop/formatter/html_formatter'
 require 'rubocop/formatter/file_list_formatter'
 require 'rubocop/formatter/offense_count_formatter'
+require 'rubocop/formatter/quiet_formatter'
 require 'rubocop/formatter/formatter_set'
 
 require 'rubocop/config'
