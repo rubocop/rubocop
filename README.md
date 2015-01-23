@@ -550,6 +550,23 @@ W:  4:  5: end at 4, 4 is not aligned with if at 2, 2
 1 file inspected, 4 offenses detected
 ```
 
+### Quiet Formatter
+
+Produces no output if there are no offenses.
+Otherwise, identical to the Simple formatter.
+
+```
+$ rubocop --format quiet naughty.rb
+== naughty.rb ==
+C:  1:  5: Use snake_case for method names.
+C:  2:  3: Use a guard clause instead of wrapping the code inside a conditional expression.
+
+1 file inspected, 2 offenses detected
+
+$ rubocop --format quiet nice.rb
+$
+```
+
 ### File List Formatter
 
  **Machine-parsable**
@@ -647,25 +664,6 @@ Useful for CI environments. It will create an HTML report like [this](http://f.c
 
 ```
 $ rubocop --format html -o rubocop.html
-```
-
-### Quiet Formatter
-
-Produces no output if there are no offenses.
-Otherwise, identical to the Simple formatter.
-
-```
-$ rubocop --format quiet naughty.rb
-== test.rb ==
-C:  1:  5: Use snake_case for method names.
-C:  2:  3: Use a guard clause instead of wrapping the code inside a conditional expression.
-C:  2:  3: Favor modifier if usage when having a single-line body. Another good alternative is the usage of control flow &&/||.
-W:  4:  5: end at 4, 4 is not aligned with if at 2, 2
-
-1 file inspected, 4 offenses detected
-
-$ rubocop --format quiet nice.rb
-$
 ```
 
 ## Compatibility
