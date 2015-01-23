@@ -151,6 +151,14 @@ describe RuboCop::Cop::Style::MultilineOperationIndentation do
       expect(cop.messages).to be_empty
     end
 
+    it 'accepts any indentation of parameters to #[]' do
+      inspect_source(cop,
+                     ['payment = Models::IncomingPayments[',
+                      "        id:      input['incoming-payment-id'],",
+                      '           user_id: @user[:id]]'])
+      expect(cop.messages).to be_empty
+    end
+
     it 'registers an offense for extra indentation of 3rd line in typical ' \
        'RSpec code' do
       inspect_source(cop,
