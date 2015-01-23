@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+* [#1583](https://github.com/bbatsov/rubocop/issues/1583): Add `quiet` formatter that is silent when no offences are found. ([@dhempy][])
+
 ### New features
 
 * [#1430](https://github.com/bbatsov/rubocop/issues/1430): Add `--except` option for disabling cops on the command line. ([@jonas054][])
@@ -1231,3 +1233,4 @@
 [@volkert]: https://github.com/volkert
 [@lumeet]: https://github.com/lumeet
 [@mmozuras]: https://github.com/mmozuras
+[@dhempy]: https://github.com/dhempy
