@@ -7,10 +7,10 @@ module RuboCop
       #
       # @example
       #
-      # module Test
-      #   extend self
+      #   module Test
+      #     extend self
       #
-      #   ...
+      #     ...
       # end
       class ModuleFunction < Cop
         MSG = 'Use `module_function` instead of `extend self`.'

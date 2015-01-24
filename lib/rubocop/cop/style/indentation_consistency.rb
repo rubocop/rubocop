@@ -7,12 +7,12 @@ module RuboCop
       #
       # @example
       #
-      # class A
-      #   def test
-      #     puts 'hello'
-      #      puts 'world'
+      #   class A
+      #     def test
+      #       puts 'hello'
+      #        puts 'world'
+      #     end
       #   end
-      # end
       class IndentationConsistency < Cop
         include AutocorrectAlignment
         include AccessModifierNode
