@@ -14,9 +14,9 @@ module RuboCop
       #
       # @example
       #
-      # if day.is? :tuesday && month == :jan
-      #   ...
-      # end
+      #   if day.is? :tuesday && month == :jan
+      #     ...
+      #   end
       class RequireParentheses < Cop
         include IfNode
 

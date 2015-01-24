@@ -7,11 +7,11 @@ module RuboCop
       #
       # @example
       #
-      # class A
-      #  def test
-      #   puts 'hello'
-      #  end
-      # end
+      #   class A
+      #    def test
+      #     puts 'hello'
+      #    end
+      #   end
       class IndentationWidth < Cop # rubocop:disable Metrics/ClassLength
         include AutocorrectAlignment
         include OnMethodDef

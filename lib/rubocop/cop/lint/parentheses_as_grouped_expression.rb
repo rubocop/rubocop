@@ -8,7 +8,7 @@ module RuboCop
       #
       # @example
       #
-      # puts (x + y)
+      #   puts (x + y)
       class ParenthesesAsGroupedExpression < Cop
         MSG = '`(...)` interpreted as grouped expression.'
 

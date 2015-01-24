@@ -9,9 +9,9 @@ module RuboCop
       #
       # @example
       #
-      # a do
-      #   b
-      # end.c
+      #   a do
+      #     b
+      #   end.c
       class MethodCalledOnDoEndBlock < Cop
         MSG = 'Avoid chaining a method call on a do...end block.'
 
