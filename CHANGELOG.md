@@ -41,6 +41,7 @@
 * [#1587](https://github.com/bbatsov/rubocop/pull/1587): Exit with exit code 1 if there were errors ("crashing" cops). ([@jonas054][])
 * [#1574](https://github.com/bbatsov/rubocop/issues/1574): Avoid auto-correcting `Hash.new` to `{}` when braces would be interpreted as a block. ([@jonas054][])
 * [#1591](https://github.com/bbatsov/rubocop/issues/1591): Don't check parameters inside `[]` in `MultilineOperationIndentation`. ([@jonas054][])
+* [#1509](https://github.com/bbatsov/rubocop/issues/1509): Ignore class methods in `Rails/Delegate`. ([@bbatsov][])
 
 ## 0.28.0 (10/12/2014)
 

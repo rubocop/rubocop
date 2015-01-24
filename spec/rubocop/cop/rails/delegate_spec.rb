@@ -44,6 +44,14 @@ describe RuboCop::Cop::Rails::Delegate do
     expect(cop.highlights).to eq(['def'])
   end
 
+  it 'ignores class methods' do
+    inspect_source(cop,
+                   ['def self.fox',
+                    '  new.fox',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'ignores non trivial delegate' do
     inspect_source(cop,
                    ['def fox',
