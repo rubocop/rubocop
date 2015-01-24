@@ -25,8 +25,9 @@ module RuboCop
         end
 
         def on_send(node)
-          receiver, _method_name, *_args = *node
+          receiver, method_name, *_args = *node
           return unless receiver
+          return if method_name == :[] # Don't check parameters inside [].
 
           lhs, rhs = left_hand_side(receiver), right_hand_side(node)
           range = offending_range(node, lhs, rhs, style)
