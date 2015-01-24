@@ -824,6 +824,10 @@ Lint/DeprecatedClassMethods:
   Description: 'Check for deprecated class method calls.'
   Enabled: true
 
+Lint/DuplicateMethods:
+  Description: 'Check for duplicate methods calls.'
+  Enabled: true
+
 Lint/ElseLayout:
   Description: 'Check for odd code arrangement in an else block.'
   Enabled: true
