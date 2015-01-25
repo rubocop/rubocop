@@ -1466,8 +1466,6 @@ describe RuboCop::CLI, :isolated_environment do
           end
         end
 
-
-
         context 'when unknown format name is specified' do
           it 'aborts with error message' do
             expect { cli.run(['--format', 'unknown', 'example.rb']) }
