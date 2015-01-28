@@ -43,6 +43,7 @@
 * [#1591](https://github.com/bbatsov/rubocop/issues/1591): Don't check parameters inside `[]` in `MultilineOperationIndentation`. ([@jonas054][])
 * [#1509](https://github.com/bbatsov/rubocop/issues/1509): Ignore class methods in `Rails/Delegate`. ([@bbatsov][])
 * [#1594](https://github.com/bbatsov/rubocop/issues/1594): Fix `@example` warnings in Yard Doc documentation generation. ([@mattjmcnaughton][])
+* [#1598](https://github.com/bbatsov/rubocop/issues/1598): Fix bug in file inclusion when running from another directory. ([@jonas054][])
 
 ## 0.28.0 (10/12/2014)
 
