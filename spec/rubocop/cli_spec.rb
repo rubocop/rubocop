@@ -1447,6 +1447,25 @@ describe RuboCop::CLI, :isolated_environment do
           end
         end
 
+        context 'when quiet format is specified' do
+          context 'with an offensive file' do
+            it 'outputs with simple format' do
+              cli.run(['--format', 'quiet', 'example.rb'])
+              expect($stdout.string)
+                .to include(["== #{target_file} ==",
+                             'C:  2: 81: Line is too long. [90/80]'].join("\n"))
+            end
+          end
+
+          context 'with a clean file' do
+            it 'outputs nothing' do
+              create_file('clean.rb', ['puts \'Hello, world!\''])
+              cli.run(['--format', 'quiet', 'clean.rb'])
+              expect($stdout.string).to eq('')
+            end
+          end
+        end
+
         context 'when unknown format name is specified' do
           it 'aborts with error message' do
             expect { cli.run(['--format', 'unknown', 'example.rb']) }

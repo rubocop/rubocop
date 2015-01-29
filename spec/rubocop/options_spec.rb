@@ -58,6 +58,7 @@ Usage: rubocop [options] [file1, file2, ...]
                                        [j]son
                                        [h]tml
                                        [fi]les
+                                       [q]uiet
                                        [o]ffenses
                                        custom formatter class name
     -o, --out FILE                   Write output to a file instead of STDOUT.
