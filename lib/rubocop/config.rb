@@ -111,9 +111,11 @@ module RuboCop
     end
 
     def file_to_include?(file)
+      absolute_file_path = File.expand_path(file)
       relative_file_path = path_relative_to_config(file)
       patterns_to_include.any? do |pattern|
-        match_path?(pattern, relative_file_path, loaded_path)
+        match_path?(pattern, relative_file_path, loaded_path) ||
+          match_path?(pattern, absolute_file_path, loaded_path)
       end
     end
 

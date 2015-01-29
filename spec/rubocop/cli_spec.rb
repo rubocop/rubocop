@@ -1687,6 +1687,44 @@ describe RuboCop::CLI, :isolated_environment do
     end
   end
 
+  context 'when given a file/directory that is not under the current dir' do
+    shared_examples 'checks Rakefile' do
+      it 'checks a Rakefile but Style/FileName does not report' do
+        create_file('Rakefile', 'x = 1')
+        create_file('other/empty', '')
+        Dir.chdir('other') do
+          expect(cli.run(['--format', 'simple', checked_path])).to eq(1)
+        end
+        expect($stdout.string)
+          .to eq(["== #{abs('Rakefile')} ==",
+                  'W:  1:  1: Useless assignment to variable - x.',
+                  '',
+                  '1 file inspected, 1 offense detected',
+                  ''].join("\n"))
+      end
+    end
+
+    context 'and the directory is absolute' do
+      let(:checked_path) { abs('..') }
+      include_examples 'checks Rakefile'
+    end
+
+    context 'and the directory is relative' do
+      let(:checked_path) { '..' }
+      include_examples 'checks Rakefile'
+    end
+
+    context 'and the Rakefile path is absolute' do
+      let(:checked_path) { abs('../Rakefile') }
+      include_examples 'checks Rakefile'
+    end
+
+    context 'and the Rakefile path is relative' do
+      let(:checked_path) { '../Rakefile' }
+      include_examples 'checks Rakefile'
+    end
+  end
+
   it 'checks a given correct file and returns 0' do
     create_file('example.rb', ['# encoding: utf-8',
                                'x = 0',
