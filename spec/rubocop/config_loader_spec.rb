@@ -246,6 +246,19 @@ describe RuboCop::ConfigLoader do
           .to be_superset(expected.to_set)
       end
     end
+
+    context 'when a file inherits from an expanded path' do
+      let(:file_path) { '.rubocop.yml' }
+
+      before do
+        create_file('~/.rubocop.yml', [''])
+        create_file(file_path, ['inherit_from: ~/.rubocop.yml'])
+      end
+
+      it 'does not fail to load expanded path' do
+        expect { configuration_from_file }.not_to raise_error
+      end
+    end
   end
 
   describe '.load_file', :isolated_environment do

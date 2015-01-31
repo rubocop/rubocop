@@ -58,7 +58,7 @@ module RuboCop
 
       def base_configs(path, inherit_from)
         configs = Array(inherit_from).map do |f|
-          f = File.join(File.dirname(path), f) unless f.start_with?('/')
+          f = File.expand_path(f, File.dirname(path))
 
           if auto_gen_config?
             next if f.include?(AUTO_GENERATED_FILE)
