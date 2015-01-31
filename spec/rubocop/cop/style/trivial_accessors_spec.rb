@@ -453,6 +453,20 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
       end
     end
 
+    context 'non-matching reader' do
+      let(:source) do
+        ['def foo',
+         '  @bar',
+         'end']
+      end
+
+      it 'does not autocorrect' do
+        expect(autocorrect_source(cop, source))
+          .to eq(source.join("\n"))
+        expect(cop.offenses.map(&:corrected?)).to eq [false]
+      end
+    end
+
     context 'matching non-DSL writer' do
       let(:source) do
         ['def foo=(f)',
@@ -477,6 +491,7 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
       it 'does not autocorrect' do
         expect(autocorrect_source(cop, source))
           .to eq(source.join("\n"))
+        expect(cop.offenses.map(&:corrected?)).to eq [false]
       end
     end
 
@@ -490,6 +505,7 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
       it 'does not autocorrect' do
         expect(autocorrect_source(cop, source))
           .to eq(source.join("\n"))
+        expect(cop.offenses.map(&:corrected?)).to eq [false]
       end
     end
 

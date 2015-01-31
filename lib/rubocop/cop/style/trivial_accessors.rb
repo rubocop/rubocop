@@ -107,13 +107,17 @@ module RuboCop
             autocorrect_instance(node)
           elsif node.type == :defs && node.children.first.type == :self
             autocorrect_class(node)
+          else
+            fail CorrectionNotPossible
           end
         end
 
         def autocorrect_instance(node)
           method_name, args, body = *node
-          return unless names_match?(method_name, body)
-          return unless (kind = trivial_accessor_kind(method_name, args, body))
+          unless names_match?(method_name, body) &&
+                 (kind = trivial_accessor_kind(method_name, args, body))
+            fail CorrectionNotPossible
+          end
 
           @corrections << lambda do |corrector|
             corrector.replace(
@@ -125,8 +129,10 @@ module RuboCop
 
         def autocorrect_class(node)
           _, method_name, args, body = *node
-          return unless names_match?(method_name, body)
-          return unless (kind = trivial_accessor_kind(method_name, args, body))
+          unless names_match?(method_name, body) &&
+                 (kind = trivial_accessor_kind(method_name, args, body))
+            fail CorrectionNotPossible
+          end
 
           @corrections << lambda do |corrector|
             indent = ' ' * node.loc.column
