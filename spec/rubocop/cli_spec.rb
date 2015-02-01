@@ -1875,8 +1875,7 @@ describe RuboCop::CLI, :isolated_environment do
                   ])
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       expect($stdout.string)
-        .to eq(
-               ["#{abs('example.rb')}:3:81: C: Line is too long. [95/80]",
+        .to eq(["#{abs('example.rb')}:3:81: C: Line is too long. [95/80]",
                 ''].join("\n"))
     end
 
@@ -1890,8 +1889,7 @@ describe RuboCop::CLI, :isolated_environment do
                     ])
         expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
         expect($stdout.string)
-          .to eq(
-                 ["#{abs('example.rb')}:3:81: C: Line is too long. [95/80]",
+          .to eq(["#{abs('example.rb')}:3:81: C: Line is too long. [95/80]",
                   ''].join("\n"))
       end
     end
@@ -2468,8 +2466,7 @@ describe RuboCop::CLI, :isolated_environment do
                                                '  Max: 100'
                                               ])
       expect(cli.run(%w(--format simple example))).to eq(1)
-      expect($stdout.string).to eq(
-                                   ['== example/lib/example1.rb ==',
+      expect($stdout.string).to eq(['== example/lib/example1.rb ==',
                                     'C:  2: 81: Line is too long. [90/80]',
                                     '',
                                     '2 files inspected, 1 offense detected',
