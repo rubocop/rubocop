@@ -46,6 +46,7 @@
 * [#1598](https://github.com/bbatsov/rubocop/issues/1598): Fix bug in file inclusion when running from another directory. ([@jonas054][])
 * [#1580](https://github.com/bbatsov/rubocop/issues/1580): Don't print `[Corrected]` when auto-correction was avoided in `TrivialAccessors`. ([@lumeet][])
 * [#1612](https://github.com/bbatsov/rubocop/issues/1612): Allow `expand_path` on `inherit_from` in `.rubocop.yml`. ([@mattjmcnaughton][])
+* [#1610](https://github.com/bbatsov/rubocop/issues/1610): Check that class method names actually match the name of the containing class/module in `Style/ClassMethods`. ([@bbatsov][])
 
 ## 0.28.0 (10/12/2014)
 

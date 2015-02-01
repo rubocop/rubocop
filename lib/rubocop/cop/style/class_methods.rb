@@ -24,31 +24,32 @@ module RuboCop
         MSG = 'Use `self.%s` instead of `%s.%s`.'
 
         def on_class(node)
-          _name, _superclass, body = *node
-          check(body)
+          name, _superclass, body = *node
+          check(name, body)
         end
 
         def on_module(node)
-          _name, body = *node
-          check(body)
+          name, body = *node
+          check(name, body)
         end
 
         private
 
-        def check(node)
+        def check(name, node)
           return unless node
 
           if node.type == :defs
-            check_defs(node)
+            check_defs(name, node)
           elsif node.type == :begin
             defs_nodes = node.children.compact.select { |n| n.type == :defs }
-            defs_nodes.each { |n| check_defs(n) }
+            defs_nodes.each { |n| check_defs(name, n) }
           end
         end
 
-        def check_defs(node)
+        def check_defs(name, node)
           definee, method_name, _args, _body = *node
-          return unless definee.type == :const
+          # check if the class/module name matches the definee for the defs node
+          return unless name == definee
 
           _, class_name = *definee
           add_offense(definee, :name, message(class_name, method_name))

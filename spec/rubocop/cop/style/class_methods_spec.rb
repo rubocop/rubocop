@@ -41,6 +41,18 @@ describe RuboCop::Cop::Style::ClassMethods do
     expect(cop.offenses).to be_empty
   end
 
+  it 'does not register an offense for other top-level singleton methods' do
+    inspect_source(cop,
+                   ['class Test',
+                    '  X = Something.new',
+                    '',
+                    '  def X.some_method',
+                    '    do_something',
+                    '  end',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'does not register an offense outside class/module bodies' do
     inspect_source(cop,
                    ['def Test.some_method',
