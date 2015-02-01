@@ -15,6 +15,7 @@
 * Add autocorrect to `RedundantException`. ([@mattjmcnaughton][])
 * [#1571](https://github.com/bbatsov/rubocop/pull/1571): New cop `StructInheritance` checks for inheritance from Struct.new. ([@mmozuras][])
 * [#1575](https://github.com/bbatsov/rubocop/issues/1575): New cop `DuplicateMethods` points out duplicate method name in class and module. ([@d4rk5eed][])
+* [#1144](https://github.com/bbatsov/rubocop/issues/1144): New cop `FirstParameterIndentation` checks the indentation of the first parameter in a method call. ([@jonas054][])
 
 ### Changes
 
@@ -22,7 +23,6 @@
 * Options `-e`/`--emacs` and `-s`/`--silent` are no longer recognized. Using them will now raise an error. ([@bquorning][])
 * [#1565](https://github.com/bbatsov/rubocop/issues/1565): Let `--fail-level A` cause exit with error if all offenses are auto-corrected. ([@jonas054][])
 * [#1309](https://github.com/bbatsov/rubocop/issues/1309): Add argument handling to `MultilineBlockLayout`. ([@lumeet][])
-
 
 ### Bugs fixed
 

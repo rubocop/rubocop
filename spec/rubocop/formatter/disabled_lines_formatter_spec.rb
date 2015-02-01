@@ -26,7 +26,7 @@ module RuboCop
           let(:cop_disabled_line_ranges) { {} }
           it 'does not add to cop_disabled_line_ranges' do
             expect { file_started }.to_not(
-            change { formatter.cop_disabled_line_ranges })
+              change { formatter.cop_disabled_line_ranges })
           end
         end
 
@@ -36,7 +36,7 @@ module RuboCop
           end
           it 'merges the changes into cop_disabled_line_ranges' do
             expect { file_started }.to(
-            change { formatter.cop_disabled_line_ranges })
+              change { formatter.cop_disabled_line_ranges })
           end
         end
       end
@@ -54,12 +54,11 @@ module RuboCop
 
           it 'lists disabled cops by file' do
             formatter.finished(files)
-            expect(output.string).to eq(
-            ['',
-             'Cops disabled line ranges:',
-             '',
-             'lib/rubocop.rb:1..1: LineLength',
-             ''].join("\n"))
+            expect(output.string).to eq(['',
+                                         'Cops disabled line ranges:',
+                                         '',
+                                         'lib/rubocop.rb:1..1: LineLength',
+                                         ''].join("\n"))
           end
         end
       end

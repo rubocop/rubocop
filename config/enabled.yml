@@ -239,6 +239,10 @@ Style/FileName:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#snake-case-files'
   Enabled: true
 
+Style/FirstParameterIndentation:
+  Description: 'Checks the indentation of the first parameter in a method call.'
+  Enabled: true
+
 Style/FlipFlop:
   Description: 'Checks for flip flops'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-flip-flops'
