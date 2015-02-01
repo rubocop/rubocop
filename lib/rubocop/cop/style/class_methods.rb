@@ -5,6 +5,21 @@ module RuboCop
     module Style
       # This cop checks for uses of the class/module name instead of
       # self, when defining class/module methods.
+      #
+      # @example
+      #   # bad
+      #   class SomeClass
+      #     def SomeClass.class_method
+      #       ...
+      #     end
+      #   end
+      #
+      #   # good
+      #   class SomeClass
+      #     def self.class_method
+      #       ...
+      #     end
+      #   end
       class ClassMethods < Cop
         MSG = 'Use `self.%s` instead of `%s.%s`.'
 
