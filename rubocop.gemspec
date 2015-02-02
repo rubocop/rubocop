@@ -17,7 +17,17 @@ Gem::Specification.new do |s|
 
   s.email = 'rubocop@googlegroups.com'
   s.files = `git ls-files`.split($RS).reject do |file|
-    file =~ /^spec\//
+    file =~ /^(?:
+    spec\/.*
+    |Gemfile
+    |Rakefile
+    |\.rspec
+    |\.gitignore
+    |\.rubocop.yml
+    |\.rubocop_todo.yml
+    |\.travis.yml
+    |.*\.eps
+    )$/x
   end
   s.test_files = []
   s.executables = s.files.grep(/^bin\//) { |f| File.basename(f) }
