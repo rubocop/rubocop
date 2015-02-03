@@ -22,15 +22,17 @@ module RuboCop
         include AutocorrectAlignment
         include ConfigurableEnforcedStyle
 
+        COMMENT_OR_BLANK_LINE = /^\s*(#.*)?$/
+
         def on_send(node)
           _receiver, method_name, *args = *node
           return if args.empty?
           return if operator?(method_name)
 
           base_indentation = if special_inner_call_indentation?(node)
-                               base_range(node, args.first).column
+                               column_of(base_range(node, args.first))
                              else
-                               node.loc.expression.source_line =~ /\S/
+                               previous_code_line(args.first.loc.line) =~ /\S/
                              end
           check_alignment([args.first],
                           base_indentation + configured_indentation_width)
@@ -40,11 +42,11 @@ module RuboCop
 
         def message(arg_node)
           send_node = arg_node.parent
-          base = if special_inner_call_indentation?(send_node)
-                   text = base_range(send_node, arg_node).source.strip
-                          .sub(/\n.*/, '')
-                          .chomp('(')
+          text = base_range(send_node, arg_node).source.strip
+          base = if text !~ /\n/ && special_inner_call_indentation?(send_node)
                    "`#{text}`"
+                 elsif text.lines.reverse_each.first =~ /^\s*#/
+                   'the previous line (not counting the comment)'
                  else
                    'the previous line'
                  end
@@ -74,6 +76,29 @@ module RuboCop
           Parser::Source::Range.new(processed_source.buffer,
                                     send_node.loc.expression.begin_pos,
                                     arg_node.loc.expression.begin_pos)
+        end
+
+        # Returns the column of the given range. For single line ranges, this
+        # is simple. For ranges with line breaks, we look a the last code line.
+        def column_of(range)
+          source = range.source.strip
+          if source.include?("\n")
+            previous_code_line(range.line + source.count("\n") + 1) =~ /\S/
+          else
+            range.column
+          end
+        end
+
+        # Takes the line number of a given code line and returns a string
+        # containing the previous line that's not a comment line or a blank
+        # line.
+        def previous_code_line(line_number)
+          line = ''
+          while line =~ COMMENT_OR_BLANK_LINE
+            line_number -= 1
+            line = processed_source.lines[line_number - 1]
+          end
+          line
         end
       end
     end
