@@ -70,6 +70,59 @@ describe RuboCop::Cop::Style::FirstParameterIndentation, :config do
         expect(cop.offenses).to be_empty
       end
 
+      context 'when the receiver contains a line break' do
+        it 'accepts a correctly indented first parameter' do
+          inspect_source(cop, ['puts x.',
+                               '  merge(',
+                               '    b: 2',
+                               '  )'])
+          expect(cop.offenses).to be_empty
+        end
+
+        it 'registers an offense for an over-indented first parameter' do
+          inspect_source(cop, ['puts x.',
+                               '  merge(',
+                               '      b: 2',
+                               '  )'])
+          expect(cop.messages).to eq(['Indent the first parameter one step ' \
+                                      'more than the previous line.'])
+          expect(cop.highlights).to eq(['b: 2'])
+        end
+
+        it 'accepts a correctly indented first parameter preceded by an ' \
+           'empty line' do
+          inspect_source(cop, ['puts x.',
+                               '  merge(',
+                               '',
+                               '    b: 2',
+                               '  )'])
+          expect(cop.offenses).to be_empty
+        end
+
+        context 'when preceded by a comment line' do
+          it 'accepts a correctly indented first parameter' do
+            inspect_source(cop, ['puts x.',
+                                 '  merge(',
+                                 '    # comment',
+                                 '    b: 2',
+                                 '  )'])
+            expect(cop.offenses).to be_empty
+          end
+
+          it 'registers an offense for an under-indented first parameter' do
+            inspect_source(cop, ['puts x.',
+                                 '  merge(',
+                                 '  # comment',
+                                 '  b: 2',
+                                 '  )'])
+            expect(cop.messages).to eq(['Indent the first parameter one ' \
+                                        'step more than the previous line ' \
+                                        '(not counting the comment).'])
+            expect(cop.highlights).to eq(['b: 2'])
+          end
+        end
+      end
+
       it 'accepts method calls with no parameters' do
         inspect_source(cop, ['run()',
                              'run_again'])
@@ -138,7 +191,7 @@ describe RuboCop::Cop::Style::FirstParameterIndentation, :config do
           inspect_source(cop, ['run(:foo, defaults.merge(',
                                '                        bar: 3))'])
           expect(cop.messages).to eq(['Indent the first parameter one step ' \
-                                      'more than `defaults.merge`.'])
+                                      'more than `defaults.merge(`.'])
           expect(cop.highlights).to eq(['bar: 3'])
         end
       end
@@ -174,7 +227,7 @@ describe RuboCop::Cop::Style::FirstParameterIndentation, :config do
           inspect_source(cop, ['run(:foo, defaults.merge(',
                                '                        bar: 3))'])
           expect(cop.messages).to eq(['Indent the first parameter one step ' \
-                                      'more than `defaults.merge`.'])
+                                      'more than `defaults.merge(`.'])
           expect(cop.highlights).to eq(['bar: 3'])
         end
 
@@ -183,7 +236,7 @@ describe RuboCop::Cop::Style::FirstParameterIndentation, :config do
                                '          merge(',
                                '  bar: 3))'])
           expect(cop.messages).to eq(['Indent the first parameter one step ' \
-                                      'more than `defaults.`.'])
+                                      'more than the previous line.'])
           expect(cop.highlights).to eq(['bar: 3'])
         end
       end
