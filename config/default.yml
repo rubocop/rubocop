@@ -33,6 +33,10 @@ AllCops:
   # by overriding DisplayCopNames, or by giving the -D/--display-cop-names
   # option.
   DisplayCopNames: false
+  # Additional cops that do not reference a style guide rule may be enabled by
+  # default. Change behavior by overriding StyleGuideCopsOnly, or by giving
+  # the --only-guide-cops option.
+  StyleGuideCopsOnly: false
 
 # Indent private/protected/public as deep as method definitions
 Style/AccessModifierIndentation:
