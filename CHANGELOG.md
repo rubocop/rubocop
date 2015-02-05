@@ -26,6 +26,7 @@
 
 ### Bugs fixed
 
+* [#1634](https://github.com/bbatsov/rubocop/pull/1634): Fix `PerlBackrefs` Cop Autocorrections to Not Raise. ([@cshaffer][])
 * [#1553](https://github.com/bbatsov/rubocop/pull/1553): Fix bug where `Style/EmptyLinesAroundAccessModifier` interfered with `Style/EmptyLinesAroundBlockBody` when there is and access modifier at the beginning of a block. ([@volkert][])
 * Handle element assignment in `Lint/AssignmentInCondition`. ([@jonas054][])
 * [#1484](https://github.com/bbatsov/rubocop/issues/1484): Fix `EmptyLinesAroundAccessModifier` incorrectly finding a violation inside method calls with names identical to an access modifier. ([@dblock][])
@@ -1244,3 +1245,4 @@
 [@lumeet]: https://github.com/lumeet
 [@mmozuras]: https://github.com/mmozuras
 [@d4rk5eed]: https://github.com/d4rk5eed
+[@cshaffer]: https://github.com/cshaffer
