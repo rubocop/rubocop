@@ -598,6 +598,10 @@ Style/SpaceInsideBlockBraces:
                  or doesn't have trailing space.
   Enabled: true
 
+Style/SpaceAroundBlockParameters:
+  Description: 'Checks the spacing inside and after block parameters pipes.'
+  Enabled: true
+
 Style/SpaceAroundEqualsInParameterDefault:
   Description: >-
                  Checks that the equals signs in parameter default assignments
