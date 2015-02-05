@@ -458,6 +458,12 @@ Style/StringLiteralsInInterpolation:
     - single_quotes
     - double_quotes
 
+Style/SpaceAroundBlockParameters:
+  EnforcedStyleInsidePipes: no_space
+  SupportedStyles:
+    - space
+    - no_space
+
 Style/SpaceAroundEqualsInParameterDefault:
   EnforcedStyle: space
   SupportedStyles:
