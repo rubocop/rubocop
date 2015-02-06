@@ -102,7 +102,7 @@ describe RuboCop::Cop::Style::FirstParameterIndentation, :config do
         context 'when preceded by a comment line' do
           it 'accepts a correctly indented first parameter' do
             inspect_source(cop, ['puts x.',
-                                 '  merge(',
+                                 '  merge( # EOL comment',
                                  '    # comment',
                                  '    b: 2',
                                  '  )'])
@@ -238,6 +238,17 @@ describe RuboCop::Cop::Style::FirstParameterIndentation, :config do
           expect(cop.messages).to eq(['Indent the first parameter one step ' \
                                       'more than the previous line.'])
           expect(cop.highlights).to eq(['bar: 3'])
+        end
+
+        it 'accepts a correctly indented first parameter in interpolation' do
+          inspect_source(cop, ['puts %(',
+                               '  <p>',
+                               '    #{Array(',
+                               '      42',
+                               '    )}',
+                               '  </p>',
+                               ')'])
+          expect(cop.offenses).to be_empty
         end
       end
 

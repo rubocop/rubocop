@@ -22,8 +22,6 @@ module RuboCop
         include AutocorrectAlignment
         include ConfigurableEnforcedStyle
 
-        COMMENT_OR_BLANK_LINE = /^\s*(#.*)?$/
-
         def on_send(node)
           _receiver, method_name, *args = *node
           return if args.empty?
@@ -93,8 +91,13 @@ module RuboCop
         # containing the previous line that's not a comment line or a blank
         # line.
         def previous_code_line(line_number)
+          @comment_lines ||=
+            processed_source.comments
+            .select { |c| begins_its_line?(c.loc.expression) }
+            .map { |c| c.loc.line }
+
           line = ''
-          while line =~ COMMENT_OR_BLANK_LINE
+          while line =~ /^\s*$/ || @comment_lines.include?(line_number)
             line_number -= 1
             line = processed_source.lines[line_number - 1]
           end
