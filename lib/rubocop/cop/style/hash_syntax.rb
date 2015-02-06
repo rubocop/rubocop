@@ -14,9 +14,17 @@ module RuboCop
 
         MSG_19 = 'Use the new Ruby 1.9 hash syntax.'
         MSG_HASH_ROCKETS = 'Always use hash rockets in hashes.'
+        MSG_RUBY19_NO_MIXED_KEYS = 'Don\'t mix styles in the same hash.'
 
         def on_hash(node)
-          style == :ruby19 ? ruby19_check(node) : hash_rockets_check(node)
+          case style
+          when :ruby19 then
+            ruby19_check(node)
+          when :hash_rockets then
+            hash_rockets_check(node)
+          when :ruby19_no_mixed_keys then
+            ruby19_no_mixed_keys_check(node)
+          end
         end
 
         def ruby19_check(node)
@@ -33,22 +41,67 @@ module RuboCop
           check(pairs, ':', MSG_HASH_ROCKETS)
         end
 
+        def ruby19_no_mixed_keys_check(node)
+          pairs = *node
+
+          sym_indices = pairs.all? { |p| word_symbol_pair?(p) }
+
+          if sym_indices
+            check(pairs, '=>', MSG_19)
+          else
+            check(pairs, ':', MSG_RUBY19_NO_MIXED_KEYS)
+          end
+        end
+
         def autocorrect(node)
+          @corrections << lambda do |corrector|
+            case style
+            when :ruby19 then
+              autocorrect_ruby19(corrector, node)
+            when :hash_rockets then
+              autocorrect_hash_rockets(corrector, node)
+            when :ruby19_no_mixed_keys then
+              autocorrect_ruby19_no_mixed_keys(corrector, node)
+            end
+          end
+        end
+
+        def autocorrect_ruby19(corrector, node)
           key = node.children.first.loc.expression
           op = node.loc.operator
 
-          @corrections << lambda do |corrector|
-            if style == :ruby19
-              range = Parser::Source::Range.new(key.source_buffer,
-                                                key.begin_pos, op.end_pos)
-              range = range_with_surrounding_space(range, :right)
-              corrector.replace(range,
-                                range.source.sub(/^:(.*\S)\s*=>\s*$/, '\1: '))
-            else
-              corrector.insert_after(key, ' => ')
-              corrector.insert_before(key, ':')
-              corrector.remove(range_with_surrounding_space(op))
-            end
+          range = Parser::Source::Range.new(key.source_buffer,
+                                            key.begin_pos, op.end_pos)
+          range = range_with_surrounding_space(range, :right)
+          corrector.replace(range,
+                            range.source.sub(/^:(.*\S)\s*=>\s*$/, '\1: '))
+        end
+
+        def autocorrect_hash_rockets(corrector, node)
+          key = node.children.first.loc.expression
+          op = node.loc.operator
+
+          corrector.insert_after(key, ' => ')
+          corrector.insert_before(key, ':')
+          corrector.remove(range_with_surrounding_space(op))
+        end
+
+        def autocorrect_ruby19_no_mixed_keys(corrector, node)
+          op = node.loc.operator
+
+          if op.is?(':')
+            autocorrect_hash_rockets(corrector, node)
+          else
+            autocorrect_ruby19(corrector, node)
+          end
+        end
+
+        def alternative_style
+          case style
+          when :hash_rockets then
+            :ruby19
+          when :ruby19, :ruby19_no_mixed_keys then
+            :hash_rockets
           end
         end
 
