@@ -140,6 +140,19 @@ describe RuboCop::TargetFinder, :isolated_environment do
       expect(found_basenames).not_to include('ruby1.rb')
       expect(found_basenames).to include('ruby3.rb')
     end
+
+    it 'works also if a folder is named ","' do
+      create_file(',/ruby4.rb', '# encoding: utf-8')
+
+      config = double('config')
+      exclude_property = { 'Exclude' => [File.expand_path('dir1/**/*')] }
+      allow(config).to receive(:[]).with('AllCops').and_return(exclude_property)
+      allow(config_store).to receive(:for).and_return(config)
+
+      expect(found_basenames).not_to include('ruby1.rb')
+      expect(found_basenames).to include('ruby3.rb')
+      expect(found_basenames).to include('ruby4.rb')
+    end
   end
 
   describe '#target_files_in_dir' do

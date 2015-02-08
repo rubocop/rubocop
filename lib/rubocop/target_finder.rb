@@ -88,6 +88,7 @@ module RuboCop
     def find_files(base_dir, flags)
       wanted_toplevel_dirs = toplevel_dirs(base_dir, flags) -
                              excluded_dirs(base_dir)
+      wanted_toplevel_dirs.map! { |dir| dir.gsub(',', '\,') }
 
       pattern = if wanted_toplevel_dirs.empty?
                   # We need this special case to avoid creating the pattern
