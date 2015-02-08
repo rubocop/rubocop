@@ -29,7 +29,7 @@ module RuboCop
       $stderr.puts "Ambiguous cop name #{e.message} needs namespace " \
                    'qualifier.'
       return 1
-    rescue => e
+    rescue StandardError, SyntaxError => e
       $stderr.puts e.message
       $stderr.puts e.backtrace
       return 1
