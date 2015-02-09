@@ -2692,6 +2692,17 @@ describe RuboCop::CLI, :isolated_environment do
                 ''].join("\n"))
     end
 
+    it 'fails when a configuration file has invalid YAML syntax' do
+      create_file('example/.rubocop.yml', ['AllCops:',
+                                           '  Exclude:',
+                                           '    - **/*_old.rb'])
+
+      cli.run(['example'])
+      expect($stderr.string)
+        .to start_with('(<unknown>): did not find expected alphabetic or ' \
+          'numeric character while scanning an alias at line 3 column 7')
+    end
+
     context 'when a file inherits from the old auto generated file' do
       before do
         create_file('rubocop-todo.yml', '')

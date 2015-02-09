@@ -27,24 +27,7 @@ module RuboCop
 
     def run(paths)
       target_files = find_target_files(paths)
-
-      inspected_files = []
-      all_passed = true
-
-      formatter_set.started(target_files)
-
-      target_files.each do |file|
-        break if aborting?
-        offenses = process_file(file)
-        all_passed = false if offenses.any? { |o| considered_failure?(o) }
-        inspected_files << file
-        break if @options[:fail_fast] && !all_passed
-      end
-
-      all_passed
-    ensure
-      formatter_set.finished(inspected_files.freeze)
-      formatter_set.close_output_files
+      inspect_files(target_files)
     end
 
     def abort
@@ -57,6 +40,26 @@ module RuboCop
       target_finder = TargetFinder.new(@config_store, @options)
       target_files = target_finder.find(paths)
       target_files.each(&:freeze).freeze
+    end
+
+    def inspect_files(files)
+      inspected_files = []
+      all_passed = true
+
+      formatter_set.started(files)
+
+      files.each do |file|
+        break if aborting?
+        offenses = process_file(file)
+        all_passed = false if offenses.any? { |o| considered_failure?(o) }
+        inspected_files << file
+        break if @options[:fail_fast] && !all_passed
+      end
+
+      all_passed
+    ensure
+      formatter_set.finished(inspected_files.freeze)
+      formatter_set.close_output_files
     end
 
     def process_file(file)
