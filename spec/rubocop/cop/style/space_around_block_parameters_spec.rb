@@ -10,6 +10,11 @@ describe RuboCop::Cop::Style::SpaceAroundBlockParameters, :config do
       inspect_source(cop, '{}.each {}')
       expect(cop.offenses).to be_empty
     end
+
+    it 'skips lambda without args' do
+      inspect_source(cop, '->() { puts "a" }')
+      expect(cop.offenses).to be_empty
+    end
   end
 
   context 'when EnforcedStyleInsidePipes is no_space' do

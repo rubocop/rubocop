@@ -18,7 +18,7 @@ module RuboCop
         def on_block(node)
           _method, args, body = *node
           opening_pipe, closing_pipe = args.loc.begin, args.loc.end
-          return unless opening_pipe
+          return unless !args.children.empty? && opening_pipe
 
           check_inside_pipes(args.children, opening_pipe, closing_pipe)
 
