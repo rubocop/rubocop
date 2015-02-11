@@ -196,4 +196,16 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
                    ])
     expect(cop.offenses).to be_empty
   end
+
+  it 'handles exception assignments without exploding' do
+    inspect_source(cop,
+                   ['def foo(bar)',
+                    '  begin',
+                    '  rescue StandardError => _',
+                    '  end',
+                    '  bar[:baz] = true',
+                    'end'
+                   ])
+    expect(cop.offenses).to be_empty
+  end
 end

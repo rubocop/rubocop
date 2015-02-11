@@ -80,7 +80,7 @@ module RuboCop
                 process_binary_operator_assignment(node)
               when *ASSIGNMENT_TYPES
                 _, rhs_node = *node
-                process_assignment(node, rhs_node)
+                process_assignment(node, rhs_node) if rhs_node
               end
             end
 
