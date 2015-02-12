@@ -8,6 +8,7 @@
 * [#1642](https://github.com/bbatsov/rubocop/issues/1642): Raise the correct exception if the configuration file is malformed. ([@bquorning][])
 * [#1647](https://github.com/bbatsov/rubocop/issues/1647): Skip `SpaceAroundBlockParameters` when lambda has no argument. ([@eitoball][])
 * [#1649](https://github.com/bbatsov/rubocop/issues/1649): Handle exception assignments in `UselessSetterCall`. ([@bbatsov][])
+* [#1644](https://github.com/bbatsov/rubocop/issues/1644): Don't search the entire file system when a folder is named `,`. ([@bquorning][])
 
 ## 0.29.0 (05/02/2015)
 
