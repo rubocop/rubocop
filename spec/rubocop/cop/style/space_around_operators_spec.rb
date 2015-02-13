@@ -56,7 +56,7 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
 
     new_source = autocorrect_source(cop, src)
     expect(new_source)
-      .to eq(src.map { |line| line.sub(/=/, ' = ') }.join("\n"))
+      .to eq(src.map { |line| line.sub('=', ' = ') }.join("\n"))
   end
 
   it 'registers an offense for binary operators that could be unary' do
