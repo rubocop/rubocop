@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.29.1 (13/02/2015)
+
 ### Bugs fixed
 
 * [#1638](https://github.com/bbatsov/rubocop/issues/1638): Use Parser functionality rather than regular expressions for matching comments in `FirstParameterIndentation`. ([@jonas054][])
