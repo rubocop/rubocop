@@ -611,7 +611,7 @@ Style/SpaceAroundEqualsInParameterDefault:
   Enabled: true
 
 Style/SpaceAroundOperators:
-  Description: 'Use spaces around operators.'
+  Description: 'Use a single space around operators.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#spaces-operators'
   Enabled: true
 

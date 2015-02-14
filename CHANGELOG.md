@@ -5,6 +5,7 @@
 ### New features
 
 * [#1604](https://github.com/bbatsov/rubocop/issues/1604): Add `IgnoreClassMethods` option to `TrivialAccessors` cop. ([@bbatsov][])
+* [#1651](https://github.com/bbatsov/rubocop/issues/1651): The `Style/SpaceAroundOperators` cop now also detects extra spaces around operators. A list of operators that *may* be surrounded by multiple spaces is configurable. ([@bquorning][])
 
 ## 0.29.1 (13/02/2015)
 

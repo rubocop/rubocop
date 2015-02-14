@@ -470,6 +470,11 @@ Style/SpaceAroundEqualsInParameterDefault:
     - space
     - no_space
 
+Style/SpaceAroundOperators:
+  MultiSpaceAllowedForOperators:
+    - '='
+    - '=>'
+
 Style/SpaceBeforeBlockBraces:
   EnforcedStyle: space
   SupportedStyles:

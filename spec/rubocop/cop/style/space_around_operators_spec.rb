@@ -2,86 +2,10 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::SpaceAroundOperators do
-  subject(:cop) { described_class.new }
+describe RuboCop::Cop::Style::SpaceAroundOperators, :config do
+  subject(:cop) { described_class.new(config) }
 
-  it 'registers an offense for assignment without space on both sides' do
-    inspect_source(cop, ['x=0', 'y+= 0', 'z[0] =0'])
-    expect(cop.messages)
-      .to eq(['Surrounding space missing for operator `=`.',
-              'Surrounding space missing for operator `+=`.',
-              'Surrounding space missing for operator `=`.'])
-  end
-
-  it 'auto-corrects assignment without space on both sides' do
-    new_source = autocorrect_source(cop, ['x=0', 'y= 0', 'z =0'])
-    expect(new_source).to eq(['x = 0', 'y = 0', 'z = 0'].join("\n"))
-  end
-
-  it 'registers an offense for ternary operator without space' do
-    inspect_source(cop, 'x == 0?1:2')
-    expect(cop.messages).to eq(
-      ['Surrounding space missing for operator `?`.',
-       'Surrounding space missing for operator `:`.'])
-  end
-
-  it 'auto-corrects a ternary operator without space' do
-    new_source = autocorrect_source(cop, 'x == 0?1:2')
-    expect(new_source).to eq('x == 0 ? 1 : 2')
-  end
-
-  it 'registers an offense in presence of modifier if statement' do
-    check_modifier('if')
-  end
-
-  it 'registers an offense in presence of modifier unless statement' do
-    check_modifier('unless')
-  end
-
-  it 'registers an offense in presence of modifier while statement' do
-    check_modifier('unless')
-  end
-
-  it 'registers an offense in presence of modifier until statement' do
-    check_modifier('unless')
-  end
-
-  def check_modifier(keyword)
-    src = ["a=1 #{keyword} condition",
-           'c=2']
-    inspect_source(cop, src)
-    expect(cop.offenses.map(&:line)).to eq([1, 2])
-    expect(cop.messages).to eq(
-      ['Surrounding space missing for operator `=`.'] * 2)
-
-    new_source = autocorrect_source(cop, src)
-    expect(new_source)
-      .to eq(src.map { |line| line.sub('=', ' = ') }.join("\n"))
-  end
-
-  it 'registers an offense for binary operators that could be unary' do
-    inspect_source(cop, ['a-3', 'x&0xff', 'z+0'])
-    expect(cop.messages).to eq(
-      ['Surrounding space missing for operator `-`.',
-       'Surrounding space missing for operator `&`.',
-       'Surrounding space missing for operator `+`.'])
-  end
-
-  it 'auto-corrects missing space in binary operators that could be unary' do
-    new_source = autocorrect_source(cop, ['a-3', 'x&0xff', 'z+0'])
-    expect(new_source).to eq(['a - 3', 'x & 0xff', 'z + 0'].join("\n"))
-  end
-
-  it 'registers an offense for arguments to a method' do
-    inspect_source(cop, 'puts 1+2')
-    expect(cop.messages).to eq(
-      ['Surrounding space missing for operator `+`.'])
-  end
-
-  it 'auto-corrects missing space in arguments to a method' do
-    new_source = autocorrect_source(cop, 'puts 1+2')
-    expect(new_source).to eq('puts 1 + 2')
-  end
+  let(:cop_config) { {} }
 
   it 'accepts operator surrounded by tabs' do
     inspect_source(cop, "a\t+\tb")
@@ -172,32 +96,6 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
     expect(cop.offenses).to be_empty
   end
 
-  it 'registers an offense for operators without spaces' do
-    inspect_source(cop,
-                   ['x+= a+b-c*d/e%f^g|h&i||j',
-                    'y -=k&&l'])
-    expect(cop.messages)
-      .to eq(['Surrounding space missing for operator `+=`.',
-              'Surrounding space missing for operator `+`.',
-              'Surrounding space missing for operator `-`.',
-              'Surrounding space missing for operator `*`.',
-              'Surrounding space missing for operator `/`.',
-              'Surrounding space missing for operator `%`.',
-              'Surrounding space missing for operator `^`.',
-              'Surrounding space missing for operator `|`.',
-              'Surrounding space missing for operator `&`.',
-              'Surrounding space missing for operator `||`.',
-              'Surrounding space missing for operator `-=`.',
-              'Surrounding space missing for operator `&&`.'])
-  end
-
-  it 'auto-corrects missing space' do
-    new_source = autocorrect_source(cop, ['x+= a+b-c*d/e%f^g|h&i||j',
-                                          'y -=k&&l'])
-    expect(new_source).to eq(['x += a + b - c * d / e % f ^ g | h & i || j',
-                              'y -= k && l'].join("\n"))
-  end
-
   it 'accepts operators with spaces' do
     inspect_source(cop,
                    ['x += a + b - c * d / e % f ^ g | h & i || j',
@@ -235,18 +133,6 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
     expect(cop.offenses).to be_empty
   end
 
-  it 'registers an offense for a setter call without spaces' do
-    inspect_source(cop, 'x.y=2')
-    expect(cop.messages).to eq(
-      ['Surrounding space missing for operator `=`.'])
-  end
-
-  it 'registers an offense for a hash rocket without spaces' do
-    inspect_source(cop, '{ 1=>2, a: b }')
-    expect(cop.messages).to eq(
-      ['Surrounding space missing for operator `=>`.'])
-  end
-
   it 'accepts unary operators without space' do
     inspect_source(cop, ['[].map(&:size)',
                          'a.(b)',
@@ -276,55 +162,362 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
     expect(cop.messages).to be_empty
   end
 
-  it 'registers an offense for match operators without space' do
-    inspect_source(cop, ['x=~/abc/',
-                         'y !~/abc/'])
-    expect(cop.messages)
-      .to eq(['Surrounding space missing for operator `=~`.',
-              'Surrounding space missing for operator `!~`.'])
+  describe 'missing space around operators' do
+    it 'registers an offense for assignment without space on both sides' do
+      inspect_source(cop, ['x=0', 'y+= 0', 'z[0] =0'])
+      expect(cop.messages)
+        .to eq(['Surrounding space missing for operator `=`.',
+                'Surrounding space missing for operator `+=`.',
+                'Surrounding space missing for operator `=`.'])
+    end
+
+    it 'auto-corrects assignment without space on both sides' do
+      new_source = autocorrect_source(cop, ['x=0', 'y= 0', 'z =0'])
+      expect(new_source).to eq(['x = 0', 'y = 0', 'z = 0'].join("\n"))
+    end
+
+    it 'registers an offense for ternary operator without space' do
+      inspect_source(cop, 'x == 0?1:2')
+      expect(cop.messages).to eq(
+        ['Surrounding space missing for operator `?`.',
+         'Surrounding space missing for operator `:`.'])
+    end
+
+    it 'auto-corrects a ternary operator without space' do
+      new_source = autocorrect_source(cop, 'x == 0?1:2')
+      expect(new_source).to eq('x == 0 ? 1 : 2')
+    end
+
+    it 'registers an offense in presence of modifier if statement' do
+      check_modifier('if')
+    end
+
+    it 'registers an offense in presence of modifier unless statement' do
+      check_modifier('unless')
+    end
+
+    it 'registers an offense in presence of modifier while statement' do
+      check_modifier('unless')
+    end
+
+    it 'registers an offense in presence of modifier until statement' do
+      check_modifier('unless')
+    end
+
+    def check_modifier(keyword)
+      src = ["a=1 #{keyword} condition",
+             'c=2']
+      inspect_source(cop, src)
+      expect(cop.offenses.map(&:line)).to eq([1, 2])
+      expect(cop.messages).to eq(
+        ['Surrounding space missing for operator `=`.'] * 2)
+
+      new_source = autocorrect_source(cop, src)
+      expect(new_source)
+        .to eq(src.map { |line| line.sub('=', ' = ') }.join("\n"))
+    end
+
+    it 'registers an offense for binary operators that could be unary' do
+      inspect_source(cop, ['a-3', 'x&0xff', 'z+0'])
+      expect(cop.messages).to eq(
+        ['Surrounding space missing for operator `-`.',
+         'Surrounding space missing for operator `&`.',
+         'Surrounding space missing for operator `+`.'])
+    end
+
+    it 'auto-corrects missing space in binary operators that could be unary' do
+      new_source = autocorrect_source(cop, ['a-3', 'x&0xff', 'z+0'])
+      expect(new_source).to eq(['a - 3', 'x & 0xff', 'z + 0'].join("\n"))
+    end
+
+    it 'registers an offense for arguments to a method' do
+      inspect_source(cop, 'puts 1+2')
+      expect(cop.messages).to eq(
+        ['Surrounding space missing for operator `+`.'])
+    end
+
+    it 'auto-corrects missing space in arguments to a method' do
+      new_source = autocorrect_source(cop, 'puts 1+2')
+      expect(new_source).to eq('puts 1 + 2')
+    end
+
+    it 'registers an offense for operators without spaces' do
+      inspect_source(cop,
+                     ['x+= a+b-c*d/e%f^g|h&i||j',
+                      'y -=k&&l'])
+      expect(cop.messages)
+        .to eq(['Surrounding space missing for operator `+=`.',
+                'Surrounding space missing for operator `+`.',
+                'Surrounding space missing for operator `-`.',
+                'Surrounding space missing for operator `*`.',
+                'Surrounding space missing for operator `/`.',
+                'Surrounding space missing for operator `%`.',
+                'Surrounding space missing for operator `^`.',
+                'Surrounding space missing for operator `|`.',
+                'Surrounding space missing for operator `&`.',
+                'Surrounding space missing for operator `||`.',
+                'Surrounding space missing for operator `-=`.',
+                'Surrounding space missing for operator `&&`.'])
+    end
+
+    it 'auto-corrects missing space' do
+      new_source = autocorrect_source(cop, ['x+= a+b-c*d/e%f^g|h&i||j',
+                                            'y -=k&&l'])
+      expect(new_source).to eq(['x += a + b - c * d / e % f ^ g | h & i || j',
+                                'y -= k && l'].join("\n"))
+    end
+
+    it 'registers an offense for a setter call without spaces' do
+      inspect_source(cop, 'x.y=2')
+      expect(cop.messages).to eq(
+        ['Surrounding space missing for operator `=`.'])
+    end
+
+    it 'registers an offense for a hash rocket without spaces' do
+      inspect_source(cop, '{ 1=>2, a: b }')
+      expect(cop.messages).to eq(
+        ['Surrounding space missing for operator `=>`.'])
+    end
+
+    it 'registers an offense for match operators without space' do
+      inspect_source(cop, ['x=~/abc/',
+                           'y !~/abc/'])
+      expect(cop.messages)
+        .to eq(['Surrounding space missing for operator `=~`.',
+                'Surrounding space missing for operator `!~`.'])
+    end
+
+    it 'registers an offense for various assignments without space' do
+      inspect_source(cop, ['x||=0', 'y&&=0', 'z*=2',
+                           '@a=0', '@@a=0', 'a,b=0', 'A=0', 'x[3]=0', '$A=0'])
+      expect(cop.messages)
+        .to eq(['Surrounding space missing for operator `||=`.',
+                'Surrounding space missing for operator `&&=`.',
+                'Surrounding space missing for operator `*=`.',
+                'Surrounding space missing for operator `=`.',
+                'Surrounding space missing for operator `=`.',
+                'Surrounding space missing for operator `=`.',
+                'Surrounding space missing for operator `=`.',
+                'Surrounding space missing for operator `=`.',
+                'Surrounding space missing for operator `=`.'])
+    end
+
+    it 'registers an offense for equality operators without space' do
+      inspect_source(cop, ['x==0', 'y!=0', 'Hash===z'])
+      expect(cop.messages)
+        .to eq(['Surrounding space missing for operator `==`.',
+                'Surrounding space missing for operator `!=`.',
+                'Surrounding space missing for operator `===`.'])
+    end
+
+    it 'registers an offense for - without space with negative lhs operand' do
+      inspect_source(cop, '-1-arg')
+      expect(cop.messages)
+        .to eq(['Surrounding space missing for operator `-`.'])
+    end
+
+    it 'registers an offense for inheritance < without space' do
+      inspect_source(cop, ['class ShowSourceTestClass<ShowSourceTestSuperClass',
+                           'end'])
+      expect(cop.messages)
+        .to eq(['Surrounding space missing for operator `<`.'])
+    end
+
+    it 'registers an offense for hash rocket without space at rescue' do
+      inspect_source(cop, ['begin',
+                           'rescue Exception=>e',
+                           'end'])
+      expect(cop.messages)
+        .to eq(['Surrounding space missing for operator `=>`.'])
+    end
   end
 
-  it 'registers an offense for various assignments without space' do
-    inspect_source(cop, ['x||=0', 'y&&=0', 'z*=2',
-                         '@a=0', '@@a=0', 'a,b=0', 'A=0', 'x[3]=0', '$A=0'])
-    expect(cop.messages)
-      .to eq(['Surrounding space missing for operator `||=`.',
-              'Surrounding space missing for operator `&&=`.',
-              'Surrounding space missing for operator `*=`.',
-              'Surrounding space missing for operator `=`.',
-              'Surrounding space missing for operator `=`.',
-              'Surrounding space missing for operator `=`.',
-              'Surrounding space missing for operator `=`.',
-              'Surrounding space missing for operator `=`.',
-              'Surrounding space missing for operator `=`.'])
-  end
+  describe 'extra space around operators' do
+    before do
+      # Don't accept multiple spaces around `=` in these tests.
+      cop_config['MultiSpaceAllowedForOperators'] = []
+    end
 
-  it 'registers an offense for equality operators without space' do
-    inspect_source(cop, ['x==0', 'y!=0', 'Hash===z'])
-    expect(cop.messages)
-      .to eq(['Surrounding space missing for operator `==`.',
-              'Surrounding space missing for operator `!=`.',
-              'Surrounding space missing for operator `===`.'])
-  end
+    it 'registers an offense for assignment with many spaces on either side' do
+      inspect_source(cop, ['x  = 0', 'y +=  0', 'z[0]  =  0'])
+      expect(cop.messages)
+        .to eq(['Operator `=` should be surrounded with a single space.',
+                'Operator `+=` should be surrounded with a single space.',
+                'Operator `=` should be surrounded with a single space.'])
+    end
 
-  it 'registers an offense for - without space with negative lhs operand' do
-    inspect_source(cop, '-1-arg')
-    expect(cop.messages)
-      .to eq(['Surrounding space missing for operator `-`.'])
-  end
+    it 'accepts assignment with many spaces on either side, if so configured' do
+      cop_config['MultiSpaceAllowedForOperators'] = ['=']
 
-  it 'registers an offense for inheritance < without space' do
-    inspect_source(cop, ['class ShowSourceTestClass<ShowSourceTestSuperClass',
-                         'end'])
-    expect(cop.messages)
-      .to eq(['Surrounding space missing for operator `<`.'])
-  end
+      inspect_source(cop, ['x  = 0', 'y +=  0', 'z[0]  =  0'])
+      expect(cop.messages)
+        .to eq(['Operator `+=` should be surrounded with a single space.'])
+    end
 
-  it 'registers an offense for hash rocket without space at rescue' do
-    inspect_source(cop, ['begin',
-                         'rescue Exception=>e',
-                         'end'])
-    expect(cop.messages)
-      .to eq(['Surrounding space missing for operator `=>`.'])
+    it 'auto-corrects assignment with too many spaces on either side' do
+      new_source = autocorrect_source(cop, ['x  = 0', 'y =  0', 'z  =   0'])
+      expect(new_source).to eq(['x = 0', 'y = 0', 'z = 0'].join("\n"))
+    end
+
+    it 'registers an offense for ternary operator with too many spaces' do
+      inspect_source(cop, 'x == 0  ? 1 :  2')
+      expect(cop.messages).to eq(
+        ['Operator `?` should be surrounded with a single space.',
+         'Operator `:` should be surrounded with a single space.'])
+    end
+
+    it 'auto-corrects a ternary operator too many spaces' do
+      new_source = autocorrect_source(cop, 'x == 0  ? 1 :  2')
+      expect(new_source).to eq('x == 0 ? 1 : 2')
+    end
+
+    it 'registers an offense in presence of modifier if statement' do
+      check_modifier('if')
+    end
+
+    it 'registers an offense in presence of modifier unless statement' do
+      check_modifier('unless')
+    end
+
+    it 'registers an offense in presence of modifier while statement' do
+      check_modifier('unless')
+    end
+
+    it 'registers an offense in presence of modifier until statement' do
+      check_modifier('unless')
+    end
+
+    def check_modifier(keyword)
+      src = ["a =  1 #{keyword} condition",
+             'c =  2']
+      inspect_source(cop, src)
+      expect(cop.offenses.map(&:line)).to eq([1, 2])
+      expect(cop.messages).to eq(
+        ['Operator `=` should be surrounded with a single space.'] * 2)
+
+      new_source = autocorrect_source(cop, src)
+      expect(new_source)
+        .to eq(src.map { |line| line.sub(' =  ', ' = ') }.join("\n"))
+    end
+
+    it 'registers an offense for binary operators that could be unary' do
+      inspect_source(cop, ['a -  3', 'x &  0xff', 'z +  0'])
+      expect(cop.messages).to eq(
+        ['Operator `-` should be surrounded with a single space.',
+         'Operator `&` should be surrounded with a single space.',
+         'Operator `+` should be surrounded with a single space.'])
+    end
+
+    it 'auto-corrects missing space in binary operators that could be unary' do
+      new_source = autocorrect_source(cop, ['a -  3', 'x &  0xff', 'z +  0'])
+      expect(new_source).to eq(['a - 3', 'x & 0xff', 'z + 0'].join("\n"))
+    end
+
+    it 'registers an offense for arguments to a method' do
+      inspect_source(cop, 'puts 1 +  2')
+      expect(cop.messages).to eq(
+        ['Operator `+` should be surrounded with a single space.'])
+    end
+
+    it 'auto-corrects missing space in arguments to a method' do
+      new_source = autocorrect_source(cop, 'puts 1 +  2')
+      expect(new_source).to eq('puts 1 + 2')
+    end
+
+    it 'registers an offense for operators with too many spaces' do
+      inspect_source(cop,
+                     ['x +=  a  + b -  c  * d /  e  % f  ^ g   | h &  i  ||  j',
+                      'y  -=  k   &&        l'])
+      expect(cop.messages)
+        .to eq(['Operator `+=` should be surrounded with a single space.',
+                'Operator `+` should be surrounded with a single space.',
+                'Operator `-` should be surrounded with a single space.',
+                'Operator `*` should be surrounded with a single space.',
+                'Operator `/` should be surrounded with a single space.',
+                'Operator `%` should be surrounded with a single space.',
+                'Operator `^` should be surrounded with a single space.',
+                'Operator `|` should be surrounded with a single space.',
+                'Operator `&` should be surrounded with a single space.',
+                'Operator `||` should be surrounded with a single space.',
+                'Operator `-=` should be surrounded with a single space.',
+                'Operator `&&` should be surrounded with a single space.'])
+    end
+
+    it 'auto-corrects missing space' do
+      new_source = autocorrect_source(
+        cop,
+        ['x +=  a  + b -  c  * d /  e  % f  ^ g   | h &  i  ||  j',
+         'y  -=  k   &&        l']
+      )
+      expect(new_source).to eq(['x += a + b - c * d / e % f ^ g | h & i || j',
+                                'y -= k && l'].join("\n"))
+    end
+
+    it 'registers an offense for a setter call with too many spaces' do
+      inspect_source(cop, 'x.y  =  2')
+      expect(cop.messages).to eq(
+        ['Operator `=` should be surrounded with a single space.'])
+    end
+
+    it 'registers an offense for a hash rocket with too many spaces' do
+      inspect_source(cop, '{ 1  =>   2, a: b }')
+      expect(cop.messages).to eq(
+        ['Operator `=>` should be surrounded with a single space.'])
+    end
+
+    it 'registers an offense for match operators with too many spaces' do
+      inspect_source(cop, ['x  =~ /abc/',
+                           'y !~   /abc/'])
+      expect(cop.messages)
+        .to eq(['Operator `=~` should be surrounded with a single space.',
+                'Operator `!~` should be surrounded with a single space.'])
+    end
+
+    it 'registers an offense for various assignments with too many spaces' do
+      inspect_source(cop, ['x ||=  0', 'y  &&=  0', 'z  *=   2',
+                           '@a  = 0', '@@a  = 0', 'a,b   =   0',
+                           'A  = 0', 'x[3]   = 0', '$A   =   0'])
+      expect(cop.messages)
+        .to eq(['Operator `||=` should be surrounded with a single space.',
+                'Operator `&&=` should be surrounded with a single space.',
+                'Operator `*=` should be surrounded with a single space.',
+                'Operator `=` should be surrounded with a single space.',
+                'Operator `=` should be surrounded with a single space.',
+                'Operator `=` should be surrounded with a single space.',
+                'Operator `=` should be surrounded with a single space.',
+                'Operator `=` should be surrounded with a single space.',
+                'Operator `=` should be surrounded with a single space.'])
+    end
+
+    it 'registers an offense for equality operators with too many spaces' do
+      inspect_source(cop, ['x  ==  0', 'y   != 0', 'Hash   ===   z'])
+      expect(cop.messages)
+        .to eq(['Operator `==` should be surrounded with a single space.',
+                'Operator `!=` should be surrounded with a single space.',
+                'Operator `===` should be surrounded with a single space.'])
+    end
+
+    it 'registers an offense for - with too many spaces with ' \
+       'negative lhs operand' do
+      inspect_source(cop, '-1  - arg')
+      expect(cop.messages)
+        .to eq(['Operator `-` should be surrounded with a single space.'])
+    end
+
+    it 'registers an offense for inheritance < with too many spaces' do
+      inspect_source(cop,
+                     ['class ShowSourceTestClass  <  ShowSourceTestSuperClass',
+                      'end'])
+      expect(cop.messages)
+        .to eq(['Operator `<` should be surrounded with a single space.'])
+    end
+
+    it 'registers an offense for hash rocket with too many spaces at rescue' do
+      inspect_source(cop, ['begin',
+                           'rescue Exception   =>      e',
+                           'end'])
+      expect(cop.messages)
+        .to eq(['Operator `=>` should be surrounded with a single space.'])
+    end
   end
 end
