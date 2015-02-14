@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#1604](https://github.com/bbatsov/rubocop/issues/1604): Add `IgnoreClassMethods` option to `TrivialAccessors` cop. ([@bbatsov][])
+
 ## 0.29.1 (13/02/2015)
 
 ### Bugs fixed

@@ -527,6 +527,7 @@ Style/TrivialAccessors:
   #
   # Commonly used in DSLs
   AllowDSLWriters: false
+  IgnoreClassMethods: false
   Whitelist:
     - to_ary
     - to_a

@@ -554,5 +554,19 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
           .to eq(corrected_source.join("\n"))
       end
     end
+
+    context 'when IgnoreClassMethods is true' do
+      let(:cop_config) { { 'IgnoreClassMethods' => true } }
+
+      it 'ignores trivial reader in a class method' do
+        inspect_source(cop,
+                       ['class TrivialFoo',
+                        '  def self.foo',
+                        '    @foo',
+                        '  end',
+                        'end'])
+        expect(cop.offenses).to be_empty
+      end
+    end
   end
 end

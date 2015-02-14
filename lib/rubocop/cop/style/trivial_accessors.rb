@@ -6,9 +6,18 @@ module RuboCop
       # This cop looks for trivial reader/writer methods, that could
       # have been created with the attr_* family of functions automatically.
       class TrivialAccessors < Cop
-        include OnMethodDef
-
         MSG = 'Use `attr_%s` to define trivial %s methods.'
+
+        def on_def(node)
+          method_name, args, body = *node
+          on_method_def(node, method_name, args, body)
+        end
+
+        def on_defs(node)
+          return if ignore_class_methods?
+          _scope, method_name, args, body = *node
+          on_method_def(node, method_name, args, body)
+        end
 
         private
 
@@ -33,6 +42,10 @@ module RuboCop
 
         def allow_dsl_writers?
           cop_config['AllowDSLWriters']
+        end
+
+        def ignore_class_methods?
+          cop_config['IgnoreClassMethods']
         end
 
         def whitelist
