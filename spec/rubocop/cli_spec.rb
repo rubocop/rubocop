@@ -536,7 +536,7 @@ describe RuboCop::CLI, :isolated_environment do
                   'Style/HashSyntax: Use the new Ruby 1.9 hash syntax.',
                   "#{abs('example.rb')}:2:5: C: [Corrected] " \
                   'Style/SpaceAroundOperators: Surrounding space missing for ' \
-                  "operator '=>'.",
+                  'operator `=>`.',
                   ''].join("\n"))
       end
 
@@ -998,7 +998,7 @@ describe RuboCop::CLI, :isolated_environment do
                     'C:  1:  1: Favor modifier if usage when ' \
                     'having a single-line body. Another good alternative is ' \
                     'the usage of control flow &&/||.',
-                    "C:  1:  5: Surrounding space missing for operator '=='.",
+                    'C:  1:  5: Surrounding space missing for operator ==.',
                     'C:  2:  1: Tab detected.',
                     '',
                     '1 file inspected, 3 offenses detected',
@@ -1018,8 +1018,7 @@ describe RuboCop::CLI, :isolated_environment do
                             'example.rb'])).to eq(1)
             expect($stdout.string)
               .to eq(['== example.rb ==',
-                      'C:  1:  5: Surrounding space missing for operator ' \
-                      "'=='.",
+                      'C:  1:  5: Surrounding space missing for operator ==.',
                       'C:  2:  1: Tab detected.',
                       'W:  2:  2: Useless assignment to variable - y.',
                       '',
@@ -1370,7 +1369,7 @@ describe RuboCop::CLI, :isolated_environment do
               .to eq(1)
             expect($stdout.string)
               .to eq(['example1.rb:2:2: C: Surrounding space missing for ' \
-                      "operator '='.",
+                      'operator =.',
                       'x= 0 ',
                       ' ^',
                       'example1.rb:2:5: C: Trailing whitespace detected.',
@@ -1434,7 +1433,7 @@ describe RuboCop::CLI, :isolated_environment do
                             'example2.rb'])).to eq(1)
             expected_output =
               ["#{abs('example1.rb')}:2:2: C: Surrounding space missing" \
-               " for operator '='.",
+               ' for operator `=`.',
                "#{abs('example1.rb')}:2:5: C: Trailing whitespace detected.",
                "#{abs('example1.rb')}:3:2: C: Trailing whitespace detected.",
                "#{abs('example2.rb')}:1:1: C: Incorrect indentation detected" \

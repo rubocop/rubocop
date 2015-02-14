@@ -63,7 +63,7 @@ module RuboCop
           elsif with_space.source !~ /^\s.*\s$/
             add_offense(with_space, op,
                         'Surrounding space missing for operator' \
-                        " '#{op.source}'.")
+                        " `#{op.source}`.")
           end
         end
 
