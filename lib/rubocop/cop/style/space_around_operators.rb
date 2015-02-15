@@ -58,7 +58,8 @@ module RuboCop
           with_space = range_with_surrounding_space(op)
           if op.is?('**')
             unless with_space.is?('**')
-              add_offense(with_space, op, 'Space around operator ** detected.')
+              add_offense(with_space, op,
+                          'Space around operator `**` detected.')
             end
           elsif with_space.source !~ /^\s.*\s$/
             add_offense(with_space, op,

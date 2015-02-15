@@ -118,7 +118,7 @@ describe RuboCop::Cop::Style::SpaceAroundOperators, :config do
   it 'registers an offenses for exponent operator with spaces' do
     inspect_source(cop, 'x = a * b ** 2')
     expect(cop.messages).to eq(
-      ['Space around operator ** detected.'])
+      ['Space around operator `**` detected.'])
   end
 
   it 'auto-corrects unwanted space around **' do
