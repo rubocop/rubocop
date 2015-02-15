@@ -132,4 +132,34 @@ describe RuboCop::Cop::Cop do
       end
     end
   end
+
+  describe '#autocorrect?' do
+    # dummy config for a generic cop instance
+    let(:config) { RuboCop::Config.new({}) }
+    let(:options) { nil }
+    let(:cop) { described_class.new(config, options) }
+    let(:support_autocorrect) { true }
+    subject { cop.autocorrect? }
+
+    before do
+      allow(cop).to receive(:support_autocorrect?) { support_autocorrect }
+    end
+
+    context 'when the option is false' do
+      let(:options) { { auto_correct: false } }
+      it { should be false }
+    end
+
+    context 'when the option is true' do
+      let(:options) { { auto_correct: true } }
+      it { should be true }
+
+      context 'when the cop is set to not autocorrect' do
+        let(:config) do
+          RuboCop::Config.new('Cop/Cop' => { 'AutoCorrect' => 'False' })
+        end
+        it { should be false }
+      end
+    end
+  end
 end
