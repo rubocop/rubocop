@@ -134,7 +134,7 @@ Style/ColonMethodCall:
   Enabled: true
 
 Style/CommandLiteral:
-  Description: 'Checks for %x when `` would do.'
+  Description: 'Use `` or %x around command literals.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-x'
   Enabled: true
 

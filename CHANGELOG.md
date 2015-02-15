@@ -33,7 +33,7 @@
 
 ### Changes
 
-* `UnneededPercentX` renamed to `CommandLiteral`. ([@bquorning][])
+* [#1397](https://github.com/bbatsov/rubocop/issues/1397): `UnneededPercentX` renamed to `CommandLiteral`. The cop can be configured to enforce using either `%x` or backticks around command literals, or using `%x` around multi-line commands and backticks around single-line commands. ([@bquorning][])
 
 ## 0.29.1 (13/02/2015)
 

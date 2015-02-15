@@ -2,33 +2,456 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::CommandLiteral do
-  subject(:cop) { described_class.new }
-
-  it 'registers an offense for a %x string without backquotes' do
-    inspect_source(cop, '%x(ls)')
-    expect(cop.messages)
-      .to eq(['Do not use `%x` unless the command string contains ' \
-              'backquotes.'])
+describe RuboCop::Cop::Style::CommandLiteral, :config do
+  subject(:cop) { described_class.new(config) }
+  let(:config) do
+    supported_styles = {
+      'SupportedStyles' => %w(backticks percent_x mixed)
+    }
+    RuboCop::Config.new('Style/PercentLiteralDelimiters' =>
+                          percent_literal_delimiters_config,
+                        'Style/CommandLiteral' =>
+                          cop_config.merge(supported_styles))
+  end
+  let(:percent_literal_delimiters_config) do
+    { 'PreferredDelimiters' => { '%x' => '()' } }
   end
 
-  it 'accepts a %x string with backquotes' do
-    inspect_source(cop, '%x(echo `ls`)')
-    expect(cop.offenses).to be_empty
+  describe '%x commands with other delimiters than parentheses' do
+    let(:cop_config) { { 'EnforcedStyle' => 'backticks' } }
+
+    it 'registers an offense' do
+      inspect_source(cop, '%x$ls$')
+      expect(cop.messages).to eq(['Use backticks around command string.'])
+    end
   end
 
-  it 'accepts a `` string without inner backquotes' do
-    inspect_source(cop, '`ls`')
-    expect(cop.offenses).to be_empty
+  describe 'when PercentLiteralDelimiters is configured with curly braces' do
+    let(:cop_config) { { 'EnforcedStyle' => 'percent_x' } }
+    let(:percent_literal_delimiters_config) do
+      { 'PreferredDelimiters' => { '%x' => '[]' } }
+    end
+
+    it 'respects the configuration when auto-correcting' do
+      new_source = autocorrect_source(cop, '`ls`')
+      expect(new_source).to eq('%x[ls]')
+    end
   end
 
-  it 'accepts a `` string with inner backquotes' do
-    inspect_source(cop, '`echo \`ls\``')
-    expect(cop.offenses).to be_empty
+  context 'when EnforcedStyle is set to backticks' do
+    let(:cop_config) { { 'EnforcedStyle' => 'backticks' } }
+
+    describe 'a single-line ` string without backticks' do
+      let(:source) { '`ls`' }
+
+      it 'is accepted' do
+        inspect_source(cop, source)
+        expect(cop.offenses).to be_empty
+      end
+    end
+
+    describe 'a single-line ` string with backticks' do
+      let(:source) { '`echo \`ls\``' }
+
+      it 'registers an offense' do
+        inspect_source(cop, source)
+        expect(cop.messages).to eq(['Use `%x` around command string.'])
+      end
+
+      it 'cannot auto-correct' do
+        new_source = autocorrect_source(cop, source)
+        expect(new_source).to eq(source)
+      end
+
+      describe 'when configured to allow inner backticks' do
+        before { cop_config['AllowInnerBackticks'] = true }
+
+        it 'is accepted' do
+          inspect_source(cop, source)
+          expect(cop.offenses).to be_empty
+        end
+      end
+    end
+
+    describe 'a multi-line ` string without backticks' do
+      let(:source) do
+        ['`',
+         '  ls',
+         '  ls -l',
+         '`']
+      end
+
+      it 'is accepted' do
+        inspect_source(cop, source)
+        expect(cop.offenses).to be_empty
+      end
+    end
+
+    describe 'a multi-line ` string with backticks' do
+      let(:source) do
+        ['`',
+         '  echo \`ls\`',
+         '  echo \`ls -l\`',
+         '`']
+      end
+
+      it 'registers an offense' do
+        inspect_source(cop, source)
+        expect(cop.messages).to eq(['Use `%x` around command string.'])
+      end
+
+      it 'cannot auto-correct' do
+        new_source = autocorrect_source(cop, source)
+        expect(new_source).to eq(source.join("\n"))
+      end
+
+      describe 'when configured to allow inner backticks' do
+        before { cop_config['AllowInnerBackticks'] = true }
+
+        it 'is accepted' do
+          inspect_source(cop, source)
+          expect(cop.offenses).to be_empty
+        end
+      end
+    end
+
+    describe 'a single-line %x string without backticks' do
+      let(:source) { '%x(ls)' }
+
+      it 'registers an offense' do
+        inspect_source(cop, source)
+        expect(cop.messages).to eq(['Use backticks around command string.'])
+      end
+
+      it 'auto-corrects' do
+        new_source = autocorrect_source(cop, source)
+        expect(new_source).to eq('`ls`')
+      end
+    end
+
+    describe 'a single-line %x string with backticks' do
+      let(:source) { '%x(echo `ls`)' }
+
+      it 'is accepted' do
+        inspect_source(cop, source)
+        expect(cop.offenses).to be_empty
+      end
+
+      describe 'when configured to allow inner backticks' do
+        before { cop_config['AllowInnerBackticks'] = true }
+
+        it 'registers an offense' do
+          inspect_source(cop, source)
+          expect(cop.messages).to eq(['Use backticks around command string.'])
+        end
+
+        it 'cannot auto-correct' do
+          new_source = autocorrect_source(cop, source)
+          expect(new_source).to eq(source)
+        end
+      end
+    end
+
+    describe 'a multi-line %x string without backticks' do
+      let(:source) do
+        ['%x(',
+         '  ls',
+         '  ls -l',
+         ')']
+      end
+
+      it 'registers an offense' do
+        inspect_source(cop, source)
+        expect(cop.messages).to eq(['Use backticks around command string.'])
+      end
+
+      it 'auto-corrects' do
+        new_source = autocorrect_source(cop, source)
+        expect(new_source).to eq("`\n  ls\n  ls -l\n`")
+      end
+    end
+
+    describe 'a multi-line %x string with backticks' do
+      let(:source) do
+        ['%x(',
+         '  echo `ls`',
+         '  echo `ls -l`',
+         ')']
+      end
+
+      it 'is accepted' do
+        inspect_source(cop, source)
+        expect(cop.offenses).to be_empty
+      end
+
+      describe 'when configured to allow inner backticks' do
+        before { cop_config['AllowInnerBackticks'] = true }
+
+        it 'registers an offense' do
+          inspect_source(cop, source)
+          expect(cop.messages).to eq(['Use backticks around command string.'])
+        end
+
+        it 'cannot auto-correct' do
+          new_source = autocorrect_source(cop, source)
+          expect(new_source).to eq(source.join("\n"))
+        end
+      end
+    end
   end
 
-  it 'auto-corrects' do
-    new_source = autocorrect_source(cop, '%x(ls)')
-    expect(new_source).to eq('`ls`')
+  context 'when EnforcedStyle is set to percent_x' do
+    let(:cop_config) { { 'EnforcedStyle' => 'percent_x' } }
+
+    describe 'a single-line ` string without backticks' do
+      let(:source) { '`ls`' }
+
+      it 'registers an offense' do
+        inspect_source(cop, source)
+        expect(cop.messages).to eq(['Use `%x` around command string.'])
+      end
+
+      it 'auto-corrects' do
+        new_source = autocorrect_source(cop, source)
+        expect(new_source).to eq('%x(ls)')
+      end
+    end
+
+    describe 'a single-line ` string with backticks' do
+      let(:source) { '`echo \`ls\``' }
+
+      it 'registers an offense' do
+        inspect_source(cop, source)
+        expect(cop.messages).to eq(['Use `%x` around command string.'])
+      end
+
+      it 'cannot auto-correct' do
+        new_source = autocorrect_source(cop, source)
+        expect(new_source).to eq(source)
+      end
+    end
+
+    describe 'a multi-line ` string without backticks' do
+      let(:source) do
+        ['`',
+         '  ls',
+         '  ls -l',
+         '`']
+      end
+
+      it 'registers an offense' do
+        inspect_source(cop, source)
+        expect(cop.messages).to eq(['Use `%x` around command string.'])
+      end
+
+      it 'auto-corrects' do
+        new_source = autocorrect_source(cop, source)
+        expect(new_source).to eq("%x(\n  ls\n  ls -l\n)")
+      end
+    end
+
+    describe 'a multi-line ` string with backticks' do
+      let(:source) do
+        ['`',
+         '  echo \`ls\`',
+         '  echo \`ls -l\`',
+         '`']
+      end
+
+      it 'registers an offense' do
+        inspect_source(cop, source)
+        expect(cop.messages).to eq(['Use `%x` around command string.'])
+      end
+
+      it 'cannot auto-correct' do
+        new_source = autocorrect_source(cop, source)
+        expect(new_source).to eq(source.join("\n"))
+      end
+    end
+
+    describe 'a single-line %x string without backticks' do
+      let(:source) { '%x(ls)' }
+
+      it 'is accepted' do
+        inspect_source(cop, source)
+        expect(cop.offenses).to be_empty
+      end
+    end
+
+    describe 'a single-line %x string with backticks' do
+      let(:source) { '%x(echo `ls`)' }
+
+      it 'is accepted' do
+        inspect_source(cop, source)
+        expect(cop.offenses).to be_empty
+      end
+    end
+
+    describe 'a multi-line %x string without backticks' do
+      let(:source) do
+        ['%x(',
+         '  ls',
+         '  ls -l',
+         ')']
+      end
+
+      it 'is accepted' do
+        inspect_source(cop, source)
+        expect(cop.offenses).to be_empty
+      end
+    end
+
+    describe 'a multi-line %x string with backticks' do
+      let(:source) do
+        ['%x(',
+         '  echo `ls`',
+         '  echo `ls -l`',
+         ')']
+      end
+
+      it 'is accepted' do
+        inspect_source(cop, source)
+        expect(cop.offenses).to be_empty
+      end
+    end
+  end
+
+  context 'when EnforcedStyle is set to mixed' do
+    let(:cop_config) { { 'EnforcedStyle' => 'mixed' } }
+
+    describe 'a single-line ` string without backticks' do
+      let(:source) { '`ls`' }
+
+      it 'is accepted' do
+        inspect_source(cop, source)
+        expect(cop.offenses).to be_empty
+      end
+    end
+
+    describe 'a single-line ` string with backticks' do
+      let(:source) { '`echo \`ls\``' }
+
+      it 'registers an offense' do
+        inspect_source(cop, source)
+        expect(cop.messages).to eq(['Use `%x` around command string.'])
+      end
+
+      it 'cannot auto-correct' do
+        new_source = autocorrect_source(cop, source)
+        expect(new_source).to eq(source)
+      end
+
+      describe 'when configured to allow inner backticks' do
+        before { cop_config['AllowInnerBackticks'] = true }
+
+        it 'is accepted' do
+          inspect_source(cop, source)
+          expect(cop.offenses).to be_empty
+        end
+      end
+    end
+
+    describe 'a multi-line ` string without backticks' do
+      let(:source) do
+        ['`',
+         '  ls',
+         '  ls -l',
+         '`']
+      end
+
+      it 'registers an offense' do
+        inspect_source(cop, source)
+        expect(cop.messages).to eq(['Use `%x` around command string.'])
+      end
+
+      it 'auto-corrects' do
+        new_source = autocorrect_source(cop, source)
+        expect(new_source).to eq("%x(\n  ls\n  ls -l\n)")
+      end
+    end
+
+    describe 'a multi-line ` string with backticks' do
+      let(:source) do
+        ['`',
+         '  echo \`ls\`',
+         '  echo \`ls -l\`',
+         '`']
+      end
+
+      it 'registers an offense' do
+        inspect_source(cop, source)
+        expect(cop.messages).to eq(['Use `%x` around command string.'])
+      end
+
+      it 'cannot auto-correct' do
+        new_source = autocorrect_source(cop, source)
+        expect(new_source).to eq(source.join("\n"))
+      end
+    end
+
+    describe 'a single-line %x string without backticks' do
+      let(:source) { '%x(ls)' }
+
+      it 'registers an offense' do
+        inspect_source(cop, source)
+        expect(cop.messages).to eq(['Use backticks around command string.'])
+      end
+
+      it 'auto-corrects' do
+        new_source = autocorrect_source(cop, source)
+        expect(new_source).to eq('`ls`')
+      end
+    end
+
+    describe 'a single-line %x string with backticks' do
+      let(:source) { '%x(echo `ls`)' }
+
+      it 'is accepted' do
+        inspect_source(cop, source)
+        expect(cop.offenses).to be_empty
+      end
+
+      describe 'when configured to allow inner backticks' do
+        before { cop_config['AllowInnerBackticks'] = true }
+
+        it 'registers an offense' do
+          inspect_source(cop, source)
+          expect(cop.messages).to eq(['Use backticks around command string.'])
+        end
+
+        it 'cannot auto-correct' do
+          new_source = autocorrect_source(cop, source)
+          expect(new_source).to eq(source)
+        end
+      end
+    end
+
+    describe 'a multi-line %x string without backticks' do
+      let(:source) do
+        ['%x(',
+         '  ls',
+         '  ls -l',
+         ')']
+      end
+
+      it 'is accepted' do
+        inspect_source(cop, source)
+        expect(cop.offenses).to be_empty
+      end
+    end
+
+    describe 'a multi-line %x string with backticks' do
+      let(:source) do
+        ['%x(',
+         '  echo `ls`',
+         '  echo `ls -l`',
+         ')']
+      end
+
+      it 'is accepted' do
+        inspect_source(cop, source)
+        expect(cop.offenses).to be_empty
+      end
+    end
   end
 end
