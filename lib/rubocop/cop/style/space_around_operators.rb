@@ -63,7 +63,17 @@ module RuboCop
           elsif with_space.source !~ /^\s.*\s$/
             add_offense(with_space, op,
                         'Surrounding space missing for operator' \
-                        " '#{op.source}'.")
+                        " `#{op.source}`.")
+          elsif with_space.source =~ /(^  |  $)/ && !multi_space_operator?(op)
+            add_offense(with_space, op,
+                        "Operator `#{op.source}` should be surrounded" \
+                        ' with a single space.')
+          end
+        end
+
+        def multi_space_operator?(op)
+          cop_config['MultiSpaceAllowedForOperators'].any? do |multi_space_op|
+            op.is?(multi_space_op)
           end
         end
 
