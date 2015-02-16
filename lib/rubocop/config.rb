@@ -95,8 +95,9 @@ module RuboCop
     # TODO: This should be a private method
     def validate
       # Don't validate RuboCop's own files. Avoids infinite recursion.
-      return if loaded_path.start_with?(File.join(ConfigLoader::RUBOCOP_HOME,
-                                                  'config'))
+      base_config_path = File.expand_path(File.join(ConfigLoader::RUBOCOP_HOME,
+                                                    'config'))
+      return if File.expand_path(loaded_path).start_with?(base_config_path)
 
       valid_cop_names, invalid_cop_names = @hash.keys.partition do |key|
         ConfigLoader.default_configuration.key?(key)
