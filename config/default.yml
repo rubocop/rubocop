@@ -323,6 +323,8 @@ Style/HashSyntax:
     - ruby19
     - ruby19_no_mixed_keys
     - hash_rockets
+# Force hashes that have a symbol value to use hash rockets
+  UseHashRocketsWithSymbolValues: false
 
 Style/IfUnlessModifier:
   MaxLineLength: 80
