@@ -303,6 +303,7 @@ Style/HashSyntax:
   EnforcedStyle: ruby19
   SupportedStyles:
     - ruby19
+    - ruby19_no_mixed_keys
     - hash_rockets
 
 Style/IfUnlessModifier:
