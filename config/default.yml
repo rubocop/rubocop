@@ -224,6 +224,17 @@ Style/DotPosition:
     - leading
     - trailing
 
+# Warn on empty else statements
+# empty - warn only on empty else
+# nil - warn on else with nil in it
+# both - warn on empty else and else with nil in it
+Style/EmptyElse:
+  EnforcedStyle: both
+  SupportedStyles:
+    - empty
+    - nil
+    - both
+
 # Use empty lines between defs.
 Style/EmptyLineBetweenDefs:
   # If true, this parameter means that single line method definitions don't

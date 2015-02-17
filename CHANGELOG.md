@@ -9,6 +9,7 @@
 * [#1651](https://github.com/bbatsov/rubocop/issues/1651): The `Style/SpaceAroundOperators` cop now also detects extra spaces around operators. A list of operators that *may* be surrounded by multiple spaces is configurable. ([@bquorning][])
 * Add auto-correct to `Encoding` cop. ([@rrosenblum][])
 * [#1621](https://github.com/bbatsov/rubocop/issues/1621): `TrailingComma` has a new style `consistent_comma`. ([@tamird][])
+* [#1611](https://github.com/bbatsov/rubocop/issues/1611): Add `empty`, `nil`, and `both` `SupportedStyles` to `EmptyElse` cop. Default is `both`. ([@rrosenblum][])
 
 ### Bugs fixed
 
