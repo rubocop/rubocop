@@ -16,6 +16,7 @@ module RuboCop
 
         MSG_MISSING = 'Missing utf-8 encoding comment.'
         MSG_UNNECESSARY = 'Unnecessary utf-8 encoding comment.'
+        ENCODING_PATTERN = /#.*coding\s?[:=]\s?(?:UTF|utf)-8/
 
         def investigate(processed_source)
           return if processed_source.buffer.source.empty?
@@ -26,14 +27,25 @@ module RuboCop
           return unless message
 
           range = source_range(processed_source.buffer, line_number + 1, 0)
-          add_offense(nil, range, message)
+          add_offense(processed_source.tokens.first, range, message)
+        end
+
+        def autocorrect(node)
+          encoding = cop_config['AutoCorrectEncodingComment']
+          if encoding && encoding =~ ENCODING_PATTERN
+            @corrections << lambda do |corrector|
+              corrector.replace(node.pos, "#{encoding}\n#{node.pos.source}")
+            end
+          else
+            fail "#{encoding} does not match #{ENCODING_PATTERN}"
+          end
         end
 
         private
 
         def offense(processed_source, line_number)
           line = processed_source[line_number]
-          encoding_present = line =~ /#.*coding\s?[:=]\s?(?:UTF|utf)-8/
+          encoding_present = line =~ ENCODING_PATTERN
           ascii_only = processed_source.buffer.source.ascii_only?
           always_encode = style == :always
 

@@ -249,11 +249,14 @@ Style/EmptyLinesAroundModuleBody:
     - no_empty_lines
 
 # Checks whether the source file has a utf-8 encoding comment or not
+# AutoCorrectEncodingComment must match the regex
+# /#.*coding\s?[:=]\s?(?:UTF|utf)-8/
 Style/Encoding:
   EnforcedStyle: always
   SupportedStyles:
     - when_needed
     - always
+  AutoCorrectEncodingComment: '# encoding: utf-8'
 
 Style/FileName:
   # File names listed in AllCops:Include are excluded by default. Add extra
