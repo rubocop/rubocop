@@ -380,11 +380,11 @@ describe RuboCop::Cop::Style::SpaceAroundOperators, :config do
     end
 
     it 'registers an offense in presence of modifier while statement' do
-      check_modifier('unless')
+      check_modifier('while')
     end
 
     it 'registers an offense in presence of modifier until statement' do
-      check_modifier('unless')
+      check_modifier('until')
     end
 
     def check_modifier(keyword)
