@@ -33,7 +33,7 @@ module RuboCop
 
         def offense(processed_source, line_number)
           line = processed_source[line_number]
-          encoding_present = line =~ /#.*coding\s?[:=]\s?(UTF|utf)-8/
+          encoding_present = line =~ /#.*coding\s?[:=]\s?(?:UTF|utf)-8/
           ascii_only = processed_source.buffer.source.ascii_only?
           always_encode = style == :always
 
