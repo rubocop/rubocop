@@ -1,0 +1,121 @@
+# encoding: utf-8
+
+module RuboCop
+  module Cop
+    module Rails
+      # This cop checks for the correct use of Date methods,
+      # such as Date.today, Date.current etc.
+      #
+      # Using Date.today is dangerous, because it doesn't know anything about
+      # Rails time zone. You must use Time.zone.today instead.
+      #
+      # The cop also reports warnings when you are using 'to_time' method,
+      # because it doesn't know about Rails time zone too.
+      #
+      # Two styles are supported for this cop. When EnforcedStyle is 'always'
+      # then the Date methods (today, current, yesterday, tomorrow)
+      # are prohibited and the usage of both 'to_time'
+      # and 'to_time_in_current_zone' is reported as warning.
+      #
+      # When EnforcedStyle is 'acceptable' then only 'Date.today' is prohibited
+      # and only 'to_time' is reported as warning.
+      #
+      # @example
+      #   # no offense
+      #   Time.zone.today
+      #   Time.zone.today - 1.day
+      #
+      #   # acceptable
+      #   Date.current
+      #   Date.yesterday
+      #
+      #   # always reports offense
+      #   Date.today
+      #   date.to_time
+      #
+      #   # reports offense only when style is 'always'
+      #   date.to_time_in_current_zone
+      class Date < Cop
+        include ConfigurableEnforcedStyle
+
+        MSG = 'Do not use `%s` without zone. Use `%s` instead.'
+
+        MSG_SEND =  'Do not use `%s` on Date objects,' \
+                    'because it knows nothing about time zone in use.'
+
+        BAD_DAYS = [:today, :current, :yesterday, :tomorrow]
+
+        def on_const(node)
+          _, klass = *node.children
+
+          return unless method_send?(node)
+
+          check_date_node(node.parent) if klass == :Date
+        end
+
+        def on_send(node)
+          method_name = extract_method(node)
+          return unless bad_methods.include?(method_name)
+
+          add_offense(node, :selector,
+                      format(MSG_SEND,
+                             method_name
+                            )
+                     )
+        end
+
+        private
+
+        def check_date_node(node)
+          chain = extract_method_chain(node)
+          return if (chain & bad_days).empty?
+
+          method_name = *(chain & bad_days)
+
+          add_offense(node, :selector,
+                      format(MSG,
+                             "Date.#{method_name}",
+                             'Time.zone.today')
+                     )
+        end
+
+        def extract_method_chain(node)
+          chain = []
+          p = node
+          while !p.nil? && p.send_type?
+            chain << extract_method(p)
+            p = p.parent
+          end
+          chain
+        end
+
+        def extract_method(node)
+          _receiver, method_name, *_args = *node
+          method_name
+        end
+
+        # checks that parent node of send_type
+        # and receiver is the given node
+        def method_send?(node)
+          return false unless node.parent.send_type?
+
+          receiver, _method_name, *_args = *node.parent
+
+          receiver == node
+        end
+
+        def good_days
+          style == :always ? [] : [:current, :yesterday, :tomorrow]
+        end
+
+        def bad_days
+          BAD_DAYS - good_days
+        end
+
+        def bad_methods
+          style == :always ? [:to_time, :to_time_in_current_zone] : [:to_time]
+        end
+      end
+    end
+  end
+end
