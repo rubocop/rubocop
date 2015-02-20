@@ -33,6 +33,10 @@ AllCops:
   # by overriding DisplayCopNames, or by giving the -D/--display-cop-names
   # option.
   DisplayCopNames: false
+  # Style guide URLs are not displayed in offense messages by default. Change
+  # behavior by overriding DisplayStyleGuide, or by giving the
+  # -S/--display-style-guide option.
+  DisplayStyleGuide: false
   # Additional cops that do not reference a style guide rule may be enabled by
   # default. Change behavior by overriding StyleGuideCopsOnly, or by giving
   # the --only-guide-cops option.

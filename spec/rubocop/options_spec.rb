@@ -34,6 +34,7 @@ describe RuboCop::Options, :isolated_environment do
         rescue SystemExit # rubocop:disable Lint/HandleExceptions
         end
 
+        # rubocop:disable Metrics/LineLength
         expected_help = <<-END
 Usage: rubocop [options] [file1, file2, ...]
         --except [COP1,COP2,...]     Disable the given cop(s).
@@ -75,13 +76,15 @@ Usage: rubocop [options] [file1, file2, ...]
                                      containing offenses.
     -d, --debug                      Display debug info.
     -D, --display-cop-names          Display cop names in offense messages.
+    -S, --display-style-guide        Display style guide URLs in offense messages.
     -R, --rails                      Run extra Rails cops.
     -l, --lint                       Run only lint cops.
     -a, --auto-correct               Auto-correct offenses.
     -n, --no-color                   Disable color output.
     -v, --version                    Display version.
     -V, --verbose-version            Display verbose version.
-      END
+        END
+        # rubocop:enable Metrics/LineLength
 
         expect($stdout.string).to eq(expected_help)
       end
