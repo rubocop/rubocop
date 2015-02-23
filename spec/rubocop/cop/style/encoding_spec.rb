@@ -57,7 +57,7 @@ describe RuboCop::Cop::Style::Encoding, :config do
       expect(cop.messages).to be_empty
     end
 
-    it 'books an offense when encoding is in the wrong place' do
+    it 'registers an offense when encoding is in the wrong place' do
       inspect_source(cop, ['def foo() \'ä\' end',
                            '# encoding: utf-8'])
 
@@ -77,6 +77,16 @@ describe RuboCop::Cop::Style::Encoding, :config do
       inspect_source(cop, ['# vim:fileencoding=utf-8',
                            'def foo() \'ä\' end'])
       expect(cop.messages).to be_empty
+    end
+
+    context 'auto-correct' do
+      it 'inserts an encoding comment on the first line when there are ' \
+        'non ASCII characters in the file' do
+          new_source = autocorrect_source(cop, 'def foo() \'ä\' end')
+
+          expect(new_source).to eq(['# encoding: utf-8',
+                                    'def foo() \'ä\' end'].join("\n"))
+        end
     end
   end
 
@@ -134,6 +144,37 @@ describe RuboCop::Cop::Style::Encoding, :config do
       inspect_source(cop, ['# vim:fileencoding=utf-8',
                            'def foo() end'])
       expect(cop.messages).to be_empty
+    end
+
+    context 'auto-correct' do
+      context 'valid auto correct encoding comment' do
+        it 'inserts an encoding comment as the first line' do
+          cop_config['AutoCorrectEncodingComment'] = '# encoding: utf-8'
+          new_source = autocorrect_source(cop, 'def foo() end')
+
+          expect(new_source).to eq("# encoding: utf-8\ndef foo() end")
+        end
+
+        it 'inserts an encoding comment as the first line and leaves ' \
+           'the wrong encoding line when encoding is in the wrong place' do
+          cop_config['AutoCorrectEncodingComment'] = '# encoding: utf-8'
+          new_source = autocorrect_source(cop, ['def foo() end',
+                                                '# encoding: utf-8'])
+
+          expect(new_source).to eq(['# encoding: utf-8',
+                                    'def foo() end',
+                                    '# encoding: utf-8'].join("\n"))
+        end
+      end
+
+      context 'invalid auto correct comment' do
+        it 'throws an exception' do
+          cop_config['AutoCorrectEncodingComment'] = 'invalid'
+          expect { autocorrect_source(cop, 'def foo() end') }
+            .to raise_error(RuntimeError, 'invalid does not match ' \
+                          '(?-mix:#.*coding\s?[:=]\s?(?:UTF|utf)-8)')
+        end
+      end
     end
   end
 end
