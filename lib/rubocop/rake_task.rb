@@ -53,7 +53,11 @@ module RuboCop
 
     def full_options
       [].tap do |result|
-        result.concat(formatters.map { |f| ['--format', f] }.flatten)
+        result.concat(formatters.map do |f|
+          res = ['--format', f.first]
+          res << ['--out', f.last] if f.last
+        end.flatten
+        )
         result.concat(requires.map { |r| ['--require', r] }.flatten)
         result.concat(options)
         result.concat(patterns)
