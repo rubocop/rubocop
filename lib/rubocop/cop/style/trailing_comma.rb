@@ -8,12 +8,14 @@ module RuboCop
       # @example
       #   # always bad
       #   a = [1, 2,]
-      #   b = [
+      #
+      #   # good if EnforcedStyleForMultiline is consistent_comma
+      #   a = [
       #     1, 2,
       #     3,
       #   ]
       #
-      #   # good if EnforcedStyleForMultiline is comma
+      #   # good if EnforcedStyleForMultiline is comma or consistent_comma
       #   a = [
       #     1,
       #     2,
@@ -66,6 +68,7 @@ module RuboCop
                 node.loc.end.begin_pos)
         end
 
+        # rubocop:disable Metrics/MethodLength
         def check(node, items, kind, begin_pos, end_pos)
           sb = items.first.loc.expression.source_buffer
           after_last_item = Parser::Source::Range.new(sb, begin_pos, end_pos)
@@ -73,11 +76,17 @@ module RuboCop
           return if heredoc?(after_last_item.source)
 
           comma_offset = after_last_item.source =~ /,/
-          should_have_comma = style == :comma && multiline?(node)
+          should_have_comma =
+            [:comma, :consistent_comma].include?(style) && multiline?(node)
           if comma_offset
             unless should_have_comma
-              extra_info = if style == :comma
+              extra_info = case style
+                           when :comma
                              ', unless each item is on its own line'
+                           when :consistent_comma
+                             ', unless items are split onto multiple lines'
+                           else
+                             ''
                            end
               avoid_comma(kind, after_last_item.begin_pos + comma_offset, sb,
                           extra_info)
@@ -86,6 +95,7 @@ module RuboCop
             put_comma(items, kind, sb)
           end
         end
+        # rubocop:enable Metrics/MethodLength
 
         def heredoc?(source_after_last_item)
           source_after_last_item =~ /\w/
@@ -106,9 +116,13 @@ module RuboCop
                      else
                        node.children
                      end
-          items = [*elements.map { |e| e.loc.expression }, node.loc.end]
-          items.each_cons(2) { |a, b| return false if on_same_line?(a, b) }
-          true
+          items = elements.map { |e| e.loc.expression }
+          if style == :consistent_comma
+            items.each_cons(2).any? { |a, b| !on_same_line?(a, b) }
+          else
+            items << node.loc.end
+            items.each_cons(2).all? { |a, b| !on_same_line?(a, b) }
+          end
         end
 
         def on_same_line?(a, b)
