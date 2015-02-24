@@ -38,6 +38,23 @@ describe RuboCop::Config do
       end
     end
 
+    context 'when the configuration is in the base RuboCop config folder' do
+      before do
+        create_file(configuration_path, [
+          'InvalidProperty:',
+          '  Enabled: true'
+        ])
+        stub_const('RuboCop::ConfigLoader::RUBOCOP_HOME', rubocop_home_path)
+      end
+
+      let(:rubocop_home_path) { File.realpath('.') }
+      let(:configuration_path) { 'config/.rubocop.yml' }
+
+      it 'is not validated' do
+        expect { configuration.validate }.to_not raise_error
+      end
+    end
+
     context 'when the configuration includes any unrecognized parameter' do
       before do
         create_file(configuration_path, [

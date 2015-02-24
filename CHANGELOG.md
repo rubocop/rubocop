@@ -9,6 +9,10 @@
 * [#1651](https://github.com/bbatsov/rubocop/issues/1651): The `Style/SpaceAroundOperators` cop now also detects extra spaces around operators. A list of operators that *may* be surrounded by multiple spaces is configurable. ([@bquorning][])
 * Add auto-correct to `Encoding` cop. ([@rrosenblum][])
 
+### Bugs fixed
+
+* [#1659](https://github.com/bbatsov/rubocop/pull/1659): Fix stack overflow with JRuby and Windows 8, during initial config validation. ([@pimterry][])
+
 ## 0.29.1 (13/02/2015)
 
 ### Bugs fixed
@@ -1268,3 +1272,4 @@
 [@cshaffer]: https://github.com/cshaffer
 [@eitoball]: https://github.com/eitoball
 [@iainbeeston]: https://github.com/iainbeeston
+[@pimterry]: https://github.com/pimterry
