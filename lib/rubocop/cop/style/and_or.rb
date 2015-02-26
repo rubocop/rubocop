@@ -73,7 +73,7 @@ module RuboCop
               corrector.replace(range, '(')
               corrector.insert_after(args.last.loc.expression, ')')
             end
-            corrector.replace(node.loc.operator, replacement)
+            corrector.replace(node.loc.operator, replacement) unless expr2.type == :return
           end
         end
 
