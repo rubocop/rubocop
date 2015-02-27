@@ -114,7 +114,7 @@ module RuboCop
         # is not possible to reproduce now, but we want to avoid it in case
         # it's still there. So we only load the YAML code if we find some real
         # code in there.
-        hash = yaml_code =~ /^[A-Z]/i ? YAML.load(yaml_code) : {}
+        hash = yaml_code =~ /^[A-Z]/i ? yaml_safe_load(yaml_code) : {}
         puts "configuration from #{absolute_path}" if debug?
 
         unless hash.is_a?(Hash)
@@ -122,6 +122,14 @@ module RuboCop
         end
 
         hash
+      end
+
+      def yaml_safe_load(yaml_code)
+        if YAML.respond_to?(:safe_load) # Ruby 2.1+
+          YAML.safe_load(yaml_code, [Regexp])
+        else
+          YAML.load(yaml_code)
+        end
       end
 
       def resolve_inheritance(path, hash)
