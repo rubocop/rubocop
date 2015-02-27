@@ -1183,12 +1183,14 @@ describe RuboCop::CLI, :isolated_environment do
 
       it 'shows cop names' do
         create_file('example1.rb', "\tputs 0")
+        file = abs('example1.rb')
+
         expect(cli.run(['--format',
                         'emacs',
                         '--debug',
                         'example1.rb'])).to eq(1)
         expect($stdout.string.lines.to_a[-1])
-          .to eq(["#{abs('example1.rb')}:1:1: C: Style/Tab: Tab detected.",
+          .to eq(["#{file}:1:1: C: Style/Tab: Tab detected.",
                   ''].join("\n"))
       end
     end
@@ -1196,12 +1198,30 @@ describe RuboCop::CLI, :isolated_environment do
     describe '-D/--display-cop-names' do
       it 'shows cop names' do
         create_file('example1.rb', "\tputs 0")
+        file = abs('example1.rb')
+
         expect(cli.run(['--format',
                         'emacs',
-                        '--debug',
+                        '--display-cop-names',
                         'example1.rb'])).to eq(1)
         expect($stdout.string.lines.to_a[-1])
-          .to eq(["#{abs('example1.rb')}:1:1: C: Style/Tab: Tab detected.",
+          .to eq(["#{file}:1:1: C: Style/Tab: Tab detected.",
+                  ''].join("\n"))
+      end
+    end
+
+    describe '-S/--display-style-guide' do
+      it 'shows style guide entry' do
+        create_file('example1.rb', "\tputs 0")
+        file = abs('example1.rb')
+        url = 'https://github.com/bbatsov/ruby-style-guide#spaces-indentation'
+
+        expect(cli.run(['--format',
+                        'emacs',
+                        '--display-style-guide',
+                        'example1.rb'])).to eq(1)
+        expect($stdout.string.lines.to_a[-1])
+          .to eq(["#{file}:1:1: C: Tab detected. (#{url})",
                   ''].join("\n"))
       end
     end
@@ -2154,6 +2174,33 @@ describe RuboCop::CLI, :isolated_environment do
                 '== dir/example2.rb ==',
                 'C:  2:  6: Style/TrailingWhitespace: Trailing whitespace' \
                 ' detected.',
+                '',
+                '2 files inspected, 2 offenses detected',
+                ''].join("\n"))
+    end
+
+    it 'displays style guide URLs if DisplayStyleGuide is true' do
+      source = ['# encoding: utf-8',
+                'x = 0 ',
+                'puts x']
+      create_file('example1.rb', source)
+
+      # DisplayCopNames: false inherited from config/default.yml
+      create_file('.rubocop.yml', [])
+
+      create_file('dir/example2.rb', source)
+      create_file('dir/.rubocop.yml', ['AllCops:',
+                                       '  DisplayStyleGuide: true'])
+
+      url = 'https://github.com/bbatsov/ruby-style-guide#no-trailing-whitespace'
+
+      expect(cli.run(%w(--format simple))).to eq(1)
+      expect($stdout.string)
+        .to eq(['== example1.rb ==',
+                'C:  2:  6: Trailing whitespace detected.',
+                '== dir/example2.rb ==',
+                'C:  2:  6: Trailing whitespace' \
+                " detected. (#{url})",
                 '',
                 '2 files inspected, 2 offenses detected',
                 ''].join("\n"))

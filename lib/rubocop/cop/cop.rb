@@ -132,6 +132,12 @@ module RuboCop
           config['AllCops'] && config['AllCops']['DisplayCopNames']
       end
 
+      def display_style_guide?
+        style_guide_url &&
+          (@options[:display_style_guide] ||
+            config['AllCops'] && config['AllCops']['DisplayStyleGuide'])
+      end
+
       def message(_node = nil)
         self.class::MSG
       end
@@ -151,7 +157,7 @@ module RuboCop
         severity = custom_severity || severity || default_severity
 
         message ||= message(node)
-        message = display_cop_names? ? "#{name}: #{message}" : message
+        message = annotate_message(message)
 
         corrected = begin
                       autocorrect(node) if autocorrect?
@@ -183,7 +189,18 @@ module RuboCop
           !file_name_matches_any?(file, 'Exclude', false)
       end
 
+      def style_guide_url
+        url = cop_config && cop_config['StyleGuide']
+        (url.nil? || url.empty?) ? nil : url
+      end
+
       private
+
+      def annotate_message(message)
+        message = "#{name}: #{message}" if display_cop_names?
+        message = "#{message} (#{style_guide_url})" if display_style_guide?
+        message
+      end
 
       def file_name_matches_any?(file, parameter, default_result)
         patterns = cop_config && cop_config[parameter]
