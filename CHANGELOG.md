@@ -11,6 +11,7 @@
 * Add auto-correct to `Encoding` cop. ([@rrosenblum][])
 * [#1621](https://github.com/bbatsov/rubocop/issues/1621): `TrailingComma` has a new style `consistent_comma`. ([@tamird][])
 * [#1611](https://github.com/bbatsov/rubocop/issues/1611): Add `empty`, `nil`, and `both` `SupportedStyles` to `EmptyElse` cop. Default is `both`. ([@rrosenblum][])
+* [#1611](https://github.com/bbatsov/rubocop/issues/1611): Add new `MissingElse` cop. Default is to have this cop be disabled. ([@rrosenblum][])
 
 ### Bugs fixed
 
