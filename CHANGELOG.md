@@ -5,6 +5,7 @@
 ### New features
 
 * [#1669](https://github.com/bbatsov/rubocop/pull/1669): Add command-line switch `--display-style-guide`. ([@marxarelli][])
+* [#1405](https://github.com/bbatsov/rubocop/issues/1405): Add Rails TimeZone and Date cops. ([@palkan][])
 * [#1641](https://github.com/bbatsov/rubocop/pull/1641): Add ruby19_no_mixed_keys style to `HashStyle` cop. ([@iainbeeston][])
 * [#1604](https://github.com/bbatsov/rubocop/issues/1604): Add `IgnoreClassMethods` option to `TrivialAccessors` cop. ([@bbatsov][])
 * [#1651](https://github.com/bbatsov/rubocop/issues/1651): The `Style/SpaceAroundOperators` cop now also detects extra spaces around operators. A list of operators that *may* be surrounded by multiple spaces is configurable. ([@bquorning][])
@@ -1277,3 +1278,4 @@
 [@eitoball]: https://github.com/eitoball
 [@iainbeeston]: https://github.com/iainbeeston
 [@pimterry]: https://github.com/pimterry
+[@palkan]: https://github.com/palkan

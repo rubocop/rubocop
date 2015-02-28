@@ -975,6 +975,12 @@ Rails/ActionFilter:
   Description: 'Enforces consistent use of action filter methods.'
   Enabled: true
 
+Rails/Date:
+  Description: >- 
+                  Checks the correct usage of date aware methods,
+                  such as Date.today, Date.current etc.
+  Enabled: true
+
 Rails/DefaultScope:
   Description: 'Checks if the argument passed to default_scope is a block.'
   Enabled: true
@@ -999,6 +1005,10 @@ Rails/ReadWriteAttribute:
 
 Rails/ScopeArgs:
   Description: 'Checks the arguments of ActiveRecord scopes.'
+  Enabled: true
+
+Rails/TimeZone:
+  Description: 'Checks the correct usage of time zone aware methods.'
   Enabled: true
 
 Rails/Validation:
