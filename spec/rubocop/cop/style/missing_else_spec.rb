@@ -31,7 +31,7 @@ describe RuboCop::Cop::Style::MissingElse do
       end
 
       context 'with an else-clause with side-effects' do
-        it "doesn't register an offence" do
+        it "doesn't register an offense" do
           inspect_source(cop, 'if cond; foo else bar; nil end')
           expect(cop.messages).to be_empty
         end
@@ -62,7 +62,7 @@ describe RuboCop::Cop::Style::MissingElse do
       end
 
       context 'with an else-clause with side-effects' do
-        it "doesn't register an offence" do
+        it "doesn't register an offense" do
           inspect_source(cop, 'unless cond; foo else bar; nil end')
           expect(cop.messages).to be_empty
         end
@@ -78,7 +78,7 @@ describe RuboCop::Cop::Style::MissingElse do
 
     context 'given a case statement' do
       context 'with a completely empty else-clause' do
-        it "doesn't register an offence" do
+        it "doesn't register an offense" do
           inspect_source(cop, 'case v; when a; foo else end')
           expect(cop.messages).to be_empty
         end
@@ -92,7 +92,7 @@ describe RuboCop::Cop::Style::MissingElse do
       end
 
       context 'with an else-clause with side-effects' do
-        it "doesn't register an offence" do
+        it "doesn't register an offense" do
           inspect_source(cop, 'case v; when a; foo; else b; nil end')
           expect(cop.messages).to be_empty
         end
@@ -134,7 +134,7 @@ describe RuboCop::Cop::Style::MissingElse do
       end
 
       context 'with an else-clause with side-effects' do
-        it "doesn't register an offence" do
+        it "doesn't register an offense" do
           inspect_source(cop, 'if cond; foo else bar; nil end')
           expect(cop.messages).to be_empty
         end
@@ -165,7 +165,7 @@ describe RuboCop::Cop::Style::MissingElse do
       end
 
       context 'with an else-clause with side-effects' do
-        it "doesn't register an offence" do
+        it "doesn't register an offense" do
           inspect_source(cop, 'unless cond; foo else bar; nil end')
           expect(cop.messages).to be_empty
         end
@@ -182,7 +182,7 @@ describe RuboCop::Cop::Style::MissingElse do
 
     context 'given a case statement' do
       context 'with a completely empty else-clause' do
-        it "doesn't register an offence" do
+        it "doesn't register an offense" do
           inspect_source(cop, 'case v; when a; foo else end')
           expect(cop.messages).to be_empty
         end
@@ -196,7 +196,7 @@ describe RuboCop::Cop::Style::MissingElse do
       end
 
       context 'with an else-clause with side-effects' do
-        it "doesn't register an offence" do
+        it "doesn't register an offense" do
           inspect_source(cop, 'case v; when a; foo; else b; nil end')
           expect(cop.messages).to be_empty
         end
@@ -243,7 +243,7 @@ describe RuboCop::Cop::Style::MissingElse do
       end
 
       context 'with an else-clause with side-effects' do
-        it "doesn't register an offence" do
+        it "doesn't register an offense" do
           inspect_source(cop, 'if cond; foo else bar; nil end')
           expect(cop.messages).to be_empty
         end
@@ -275,7 +275,7 @@ describe RuboCop::Cop::Style::MissingElse do
       end
 
       context 'with an else-clause with side-effects' do
-        it "doesn't register an offence" do
+        it "doesn't register an offense" do
           inspect_source(cop, 'unless cond; foo else bar; nil end')
           expect(cop.messages).to be_empty
         end
@@ -293,7 +293,7 @@ describe RuboCop::Cop::Style::MissingElse do
 
     context 'given a case statement' do
       context 'with a completely empty else-clause' do
-        it "doesn't register an offence" do
+        it "doesn't register an offense" do
           inspect_source(cop, 'case v; when a; foo else end')
           expect(cop.messages).to be_empty
         end
@@ -307,7 +307,7 @@ describe RuboCop::Cop::Style::MissingElse do
       end
 
       context 'with an else-clause with side-effects' do
-        it "doesn't register an offence" do
+        it "doesn't register an offense" do
           inspect_source(cop, 'case v; when a; foo; else b; nil end')
           expect(cop.messages).to be_empty
         end
@@ -355,7 +355,7 @@ describe RuboCop::Cop::Style::MissingElse do
       end
 
       context 'with an else-clause with side-effects' do
-        it "doesn't register an offence" do
+        it "doesn't register an offense" do
           inspect_source(cop, 'if cond; foo else bar; nil end')
           expect(cop.messages).to be_empty
         end
@@ -386,7 +386,7 @@ describe RuboCop::Cop::Style::MissingElse do
       end
 
       context 'with an else-clause with side-effects' do
-        it "doesn't register an offence" do
+        it "doesn't register an offense" do
           inspect_source(cop, 'unless cond; foo else bar; nil end')
           expect(cop.messages).to be_empty
         end
@@ -403,7 +403,7 @@ describe RuboCop::Cop::Style::MissingElse do
 
     context 'given a case statement' do
       context 'with a completely empty else-clause' do
-        it "doesn't register an offence" do
+        it "doesn't register an offense" do
           inspect_source(cop, 'case v; when a; foo else end')
           expect(cop.messages).to be_empty
         end
@@ -417,7 +417,7 @@ describe RuboCop::Cop::Style::MissingElse do
       end
 
       context 'with an else-clause with side-effects' do
-        it "doesn't register an offence" do
+        it "doesn't register an offense" do
           inspect_source(cop, 'case v; when a; foo; else b; nil end')
           expect(cop.messages).to be_empty
         end
@@ -464,7 +464,7 @@ describe RuboCop::Cop::Style::MissingElse do
       end
 
       context 'with an else-clause with side-effects' do
-        it "doesn't register an offence" do
+        it "doesn't register an offense" do
           inspect_source(cop, 'if cond; foo else bar; nil end')
           expect(cop.messages).to be_empty
         end
@@ -495,7 +495,7 @@ describe RuboCop::Cop::Style::MissingElse do
       end
 
       context 'with an else-clause with side-effects' do
-        it "doesn't register an offence" do
+        it "doesn't register an offense" do
           inspect_source(cop, 'unless cond; foo else bar; nil end')
           expect(cop.messages).to be_empty
         end
@@ -512,7 +512,7 @@ describe RuboCop::Cop::Style::MissingElse do
 
     context 'given a case statement' do
       context 'with a completely empty else-clause' do
-        it "doesn't register an offence" do
+        it "doesn't register an offense" do
           inspect_source(cop, 'case v; when a; foo else end')
           expect(cop.messages).to be_empty
         end
@@ -526,7 +526,7 @@ describe RuboCop::Cop::Style::MissingElse do
       end
 
       context 'with an else-clause with side-effects' do
-        it "doesn't register an offence" do
+        it "doesn't register an offense" do
           inspect_source(cop, 'case v; when a; foo; else b; nil end')
           expect(cop.messages).to be_empty
         end
@@ -572,7 +572,7 @@ describe RuboCop::Cop::Style::MissingElse do
       end
 
       context 'with an else-clause with side-effects' do
-        it "doesn't register an offence" do
+        it "doesn't register an offense" do
           inspect_source(cop, 'if cond; foo else bar; nil end')
           expect(cop.messages).to be_empty
         end
@@ -602,7 +602,7 @@ describe RuboCop::Cop::Style::MissingElse do
       end
 
       context 'with an else-clause with side-effects' do
-        it "doesn't register an offence" do
+        it "doesn't register an offense" do
           inspect_source(cop, 'unless cond; foo else bar; nil end')
           expect(cop.messages).to be_empty
         end
@@ -618,7 +618,7 @@ describe RuboCop::Cop::Style::MissingElse do
 
     context 'given a case statement' do
       context 'with a completely empty else-clause' do
-        it "doesn't register an offence" do
+        it "doesn't register an offense" do
           inspect_source(cop, 'case v; when a; foo else end')
           expect(cop.messages).to be_empty
         end
@@ -632,7 +632,7 @@ describe RuboCop::Cop::Style::MissingElse do
       end
 
       context 'with an else-clause with side-effects' do
-        it "doesn't register an offence" do
+        it "doesn't register an offense" do
           inspect_source(cop, 'case v; when a; foo; else b; nil end')
           expect(cop.messages).to be_empty
         end

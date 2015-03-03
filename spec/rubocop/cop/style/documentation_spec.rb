@@ -155,7 +155,7 @@ describe RuboCop::Cop::Style::Documentation do
         expect(cop.offenses).to be_empty
       end
 
-      it "registers an offence for nested #{keyword} without documentation" do
+      it "registers an offense for nested #{keyword} without documentation" do
         inspect_source(cop,
                        ['module TestModule #:nodoc:',
                         '  TEST = 20',
