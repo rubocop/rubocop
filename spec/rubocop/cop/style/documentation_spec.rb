@@ -143,4 +143,45 @@ describe RuboCop::Cop::Style::Documentation do
                      ])
     end.to_not raise_error
   end
+
+  context 'with # :nodoc:' do
+    %w(class module).each do |keyword|
+      it "accepts non-namespace #{keyword} without documentation" do
+        inspect_source(cop,
+                       ["#{keyword} Test #:nodoc:",
+                        '  TEST = 20',
+                        'end'
+                       ])
+        expect(cop.offenses).to be_empty
+      end
+
+      it "registers an offence for nested #{keyword} without documentation" do
+        inspect_source(cop,
+                       ['module TestModule #:nodoc:',
+                        '  TEST = 20',
+                        "  #{keyword} Test",
+                        '    TEST = 20',
+                        '  end',
+                        'end'
+                       ])
+        expect(cop.offenses.size).to eq(1)
+      end
+
+      context 'with `all` modifier' do
+        it "accepts nested #{keyword} without documentation" do
+          inspect_source(cop,
+                         ['module A #:nodoc: all',
+                          '  module B',
+                          '    TEST = 20',
+                          "    #{keyword} Test",
+                          '      TEST = 20',
+                          '    end',
+                          '  end',
+                          'end'
+                         ])
+          expect(cop.offenses).to be_empty
+        end
+      end
+    end
+  end
 end
