@@ -13,26 +13,30 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         MSG_19 = 'Use the new Ruby 1.9 hash syntax.'
-        MSG_HASH_ROCKETS = 'Always use hash rockets in hashes.'
-        MSG_RUBY19_NO_MIXED_KEYS = 'Don\'t mix styles in the same hash.'
+        MSG_RUBY19_NO_MIXED_KEYS = "Don't mix styles in the same hash."
+        MSG_HASH_ROCKETS = 'Use hash rockets syntax.'
+
+        @force_hash_rockets = false
 
         def on_hash(node)
-          case style
-          when :ruby19 then
-            ruby19_check(node)
-          when :hash_rockets then
+          if cop_config['UseHashRocketsWithSymbolValues']
+            pairs = *node
+            @force_hash_rockets = pairs.any? { |p| symbol_value?(p) }
+          end
+
+          if style == :hash_rockets || @force_hash_rockets
             hash_rockets_check(node)
-          when :ruby19_no_mixed_keys then
+          elsif style == :ruby19_no_mixed_keys
             ruby19_no_mixed_keys_check(node)
+          else
+            ruby19_check(node)
           end
         end
 
         def ruby19_check(node)
           pairs = *node
 
-          sym_indices = pairs.all? { |p| word_symbol_pair?(p) }
-
-          check(pairs, '=>', MSG_19) if sym_indices
+          check(pairs, '=>', MSG_19) if sym_indices?(pairs)
         end
 
         def hash_rockets_check(node)
@@ -44,9 +48,9 @@ module RuboCop
         def ruby19_no_mixed_keys_check(node)
           pairs = *node
 
-          sym_indices = pairs.all? { |p| word_symbol_pair?(p) }
-
-          if sym_indices
+          if @force_hash_rockets
+            check(pairs, ':', MSG_HASH_ROCKETS)
+          elsif sym_indices?(pairs)
             check(pairs, '=>', MSG_19)
           else
             check(pairs, ':', MSG_RUBY19_NO_MIXED_KEYS)
@@ -55,13 +59,59 @@ module RuboCop
 
         def autocorrect(node)
           @corrections << lambda do |corrector|
-            case style
-            when :ruby19 then
-              autocorrect_ruby19(corrector, node)
-            when :hash_rockets then
+            if style == :hash_rockets || @force_hash_rockets
               autocorrect_hash_rockets(corrector, node)
-            when :ruby19_no_mixed_keys then
+            elsif style == :ruby19_no_mixed_keys
               autocorrect_ruby19_no_mixed_keys(corrector, node)
+            else
+              autocorrect_ruby19(corrector, node)
+            end
+          end
+        end
+
+        def alternative_style
+          case style
+          when :hash_rockets then
+            :ruby19
+          when :ruby19, :ruby19_no_mixed_keys then
+            :hash_rockets
+          end
+        end
+
+        private
+
+        def symbol_value?(pair)
+          _key, value = *pair
+
+          value.sym_type?
+        end
+
+        def sym_indices?(pairs)
+          pairs.all? { |p| word_symbol_pair?(p) }
+        end
+
+        def word_symbol_pair?(pair)
+          key, _value = *pair
+
+          if key.sym_type?
+            sym_name = key.to_a[0]
+
+            sym_name =~ /\A[A-Za-z_]\w*\z/
+          else
+            false
+          end
+        end
+
+        def check(pairs, delim, msg)
+          pairs.each do |pair|
+            if pair.loc.operator && pair.loc.operator.is?(delim)
+              add_offense(pair,
+                          pair.loc.expression.begin.join(pair.loc.operator),
+                          msg) do
+                opposite_style_detected
+              end
+            else
+              correct_style_detected
             end
           end
         end
@@ -93,43 +143,6 @@ module RuboCop
             autocorrect_hash_rockets(corrector, node)
           else
             autocorrect_ruby19(corrector, node)
-          end
-        end
-
-        def alternative_style
-          case style
-          when :hash_rockets then
-            :ruby19
-          when :ruby19, :ruby19_no_mixed_keys then
-            :hash_rockets
-          end
-        end
-
-        private
-
-        def check(pairs, delim, msg)
-          pairs.each do |pair|
-            if pair.loc.operator && pair.loc.operator.is?(delim)
-              add_offense(pair,
-                          pair.loc.expression.begin.join(pair.loc.operator),
-                          msg) do
-                opposite_style_detected
-              end
-            else
-              correct_style_detected
-            end
-          end
-        end
-
-        def word_symbol_pair?(pair)
-          key, _value = *pair
-
-          if key.type == :sym
-            sym_name = key.to_a[0]
-
-            sym_name =~ /\A[A-Za-z_]\w*\z/
-          else
-            false
           end
         end
       end

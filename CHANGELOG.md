@@ -14,6 +14,7 @@
 * [#1611](https://github.com/bbatsov/rubocop/issues/1611): Add `empty`, `nil`, and `both` `SupportedStyles` to `EmptyElse` cop. Default is `both`. ([@rrosenblum][])
 * [#1611](https://github.com/bbatsov/rubocop/issues/1611): Add new `MissingElse` cop. Default is to have this cop be disabled. ([@rrosenblum][])
 * [#1602](https://github.com/bbatsov/rubocop/issues/1602): Add support for `# :nodoc` in `Documentation`. ([@lumeet][])
+* [#1437](https://github.com/bbatsov/rubocop/issues/1437): Modify `HashSyntax` cop to allow the use of hash rockets for hashes that have symbol values when using ruby19 syntax. ([@rrosenblum][])
 
 ### Bugs fixed
 
