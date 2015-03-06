@@ -976,7 +976,7 @@ Rails/ActionFilter:
   Enabled: true
 
 Rails/Date:
-  Description: >- 
+  Description: >-
                   Checks the correct usage of date aware methods,
                   such as Date.today, Date.current etc.
   Enabled: true
