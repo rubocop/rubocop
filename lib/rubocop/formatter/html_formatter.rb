@@ -38,7 +38,7 @@ module RuboCop
       def render_html
         context = ERBContext.new(files, summary)
 
-        template = File.read(TEMPLATE_PATH)
+        template = File.read(TEMPLATE_PATH, encoding: Encoding::UTF_8)
         erb = ERB.new(template, nil, '-')
         html = erb.result(context.binding)
 
