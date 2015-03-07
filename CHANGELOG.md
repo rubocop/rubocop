@@ -21,6 +21,7 @@
 * [#1659](https://github.com/bbatsov/rubocop/pull/1659): Fix stack overflow with JRuby and Windows 8, during initial config validation. ([@pimterry][])
 * [#1694](https://github.com/bbatsov/rubocop/issues/1694): Ignore methods with a `blockarg` in `TrivialAccessors`. ([@bbatsov][])
 * [#1617](https://github.com/bbatsov/rubocop/issues/1617): Always read the html output template using utf-8. ([@bbatsov][])
+* [#1684](https://github.com/bbatsov/rubocop/issues/1684): Ignore symbol keys like `:"string"` in `HashSyntax`. ([@bbatsov][])
 
 ## 0.29.1 (13/02/2015)
 

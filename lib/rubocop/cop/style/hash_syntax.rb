@@ -94,9 +94,9 @@ module RuboCop
           key, _value = *pair
 
           if key.sym_type?
-            sym_name = key.to_a[0]
+            sym_name = key.loc.expression.source
 
-            sym_name =~ /\A[A-Za-z_]\w*\z/
+            sym_name !~ /\A:["']/
           else
             false
           end

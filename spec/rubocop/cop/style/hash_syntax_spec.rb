@@ -41,18 +41,8 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
         expect(cop.messages).to be_empty
       end
 
-      it 'accepts hash rockets when keys have whitespaces in them' do
-        inspect_source(cop, 'x = { :"t o" => 0 }')
-        expect(cop.messages).to be_empty
-      end
-
-      it 'accepts hash rockets when keys have special symbols in them' do
-        inspect_source(cop, 'x = { :"\tab" => 1 }')
-        expect(cop.messages).to be_empty
-      end
-
-      it 'accepts hash rockets when keys start with a digit' do
-        inspect_source(cop, 'x = { :"1" => 1 }')
+      it 'accepts hash rockets when symbol keys have string in them' do
+        inspect_source(cop, 'x = { :"string" => 0 }')
         expect(cop.messages).to be_empty
       end
 
