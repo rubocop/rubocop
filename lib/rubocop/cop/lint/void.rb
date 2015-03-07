@@ -16,6 +16,16 @@ module RuboCop
                     :hash, :regexp, :nil, :true, :false]
 
         def on_begin(node)
+          check_begin(node)
+        end
+
+        def on_kwbegin(node)
+          check_begin(node)
+        end
+
+        private
+
+        def check_begin(node)
           expressions = *node
 
           expressions.drop_last(1).each do |expr|
@@ -24,8 +34,6 @@ module RuboCop
             check_for_var(expr)
           end
         end
-
-        private
 
         def check_for_void_op(node)
           return unless node.type == :send

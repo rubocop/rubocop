@@ -54,6 +54,16 @@ describe RuboCop::Cop::Lint::Void do
     end
   end
 
+  it 'handles explicit begin blocks' do
+    inspect_source(cop,
+                   ['begin',
+                    ' 1',
+                    ' 2',
+                    'end'
+                   ])
+    expect(cop.offenses.size).to eq(1)
+  end
+
   it 'accepts short call syntax' do
     inspect_source(cop,
                    ['lambda.(a)',
