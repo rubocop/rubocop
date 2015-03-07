@@ -47,6 +47,7 @@ module RuboCop
       extend AST::Sexp
       include Util
       include IgnoredNode
+      include AutocorrectLogic
 
       attr_reader :config, :offenses, :corrections
       attr_accessor :processed_source # TODO: Bad design.
@@ -119,10 +120,6 @@ module RuboCop
         @config.for_cop(self)
       end
 
-      def autocorrect?
-        @options[:auto_correct] && support_autocorrect?
-      end
-
       def debug?
         @options[:debug]
       end
@@ -140,10 +137,6 @@ module RuboCop
 
       def message(_node = nil)
         self.class::MSG
-      end
-
-      def support_autocorrect?
-        respond_to?(:autocorrect, true)
       end
 
       def add_offense(node, loc, message = nil, severity = nil)

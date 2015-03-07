@@ -16,6 +16,7 @@
 * [#1602](https://github.com/bbatsov/rubocop/issues/1602): Add support for `# :nodoc` in `Documentation`. ([@lumeet][])
 * [#1437](https://github.com/bbatsov/rubocop/issues/1437): Modify `HashSyntax` cop to allow the use of hash rockets for hashes that have symbol values when using ruby19 syntax. ([@rrosenblum][])
 * New cop `Style/SymbolLiteral` makes sure you're not using the string within symbol syntax unless it's needed. ([@bbatsov][])
+* [#1657](https://github.com/bbatsov/rubocop/issues/1657): Autocorrect can be turned off on a specific cop via the configuration. ([@jdoconnor][])
 
 ### Bugs fixed
 
@@ -1285,3 +1286,4 @@
 [@iainbeeston]: https://github.com/iainbeeston
 [@pimterry]: https://github.com/pimterry
 [@palkan]: https://github.com/palkan
+[@jdoconnor]: https://github.com/jdoconnor
