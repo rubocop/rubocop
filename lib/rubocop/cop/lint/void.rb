@@ -13,7 +13,7 @@ module RuboCop
         OPS = %w(* / % + - == === != < > <= >= <=>)
         VARS = [:ivar, :lvar, :cvar, :const]
         LITERALS = [:str, :dstr, :int, :float, :array,
-                    :hash, :regexp, :nil, :true, :false]
+                    :hash, :regexp, :nil, :true, :false, :sym]
 
         def on_begin(node)
           check_begin(node)

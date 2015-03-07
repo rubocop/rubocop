@@ -25,6 +25,7 @@
 * [#1617](https://github.com/bbatsov/rubocop/issues/1617): Always read the html output template using utf-8. ([@bbatsov][])
 * [#1684](https://github.com/bbatsov/rubocop/issues/1684): Ignore symbol keys like `:"string"` in `HashSyntax`. ([@bbatsov][])
 * Handle explicit `begin` blocks in `Lint/Void`. ([@bbatsov][])
+* Handle symbols in `Lint/Void`. ([@bbatsov][])
 
 ## 0.29.1 (13/02/2015)
 

@@ -44,7 +44,7 @@ describe RuboCop::Cop::Lint::Void do
     end
   end
 
-  %w(1 2.0 /test/ [1] {}).each do |lit|
+  %w(1 2.0 :test /test/ [1] {}).each do |lit|
     it "registers an offense for void lit #{lit} if not on last line" do
       inspect_source(cop,
                      ["#{lit}",
