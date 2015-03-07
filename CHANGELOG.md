@@ -15,6 +15,7 @@
 * [#1611](https://github.com/bbatsov/rubocop/issues/1611): Add new `MissingElse` cop. Default is to have this cop be disabled. ([@rrosenblum][])
 * [#1602](https://github.com/bbatsov/rubocop/issues/1602): Add support for `# :nodoc` in `Documentation`. ([@lumeet][])
 * [#1437](https://github.com/bbatsov/rubocop/issues/1437): Modify `HashSyntax` cop to allow the use of hash rockets for hashes that have symbol values when using ruby19 syntax. ([@rrosenblum][])
+* New cop `Style/SymbolLiteral` makes sure you're not using the string within symbol syntax unless it's needed. ([@bbatsov][])
 
 ### Bugs fixed
 

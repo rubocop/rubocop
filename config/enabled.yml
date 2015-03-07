@@ -660,6 +660,10 @@ Style/StructInheritance:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-extend-struct-new'
   Enabled: true
 
+Style/SymbolLiteral:
+  Description: 'Use plain symbols instead of string symbols when possible.'
+  Enabled: true
+
 Style/SymbolProc:
   Description: 'Use symbols as procs instead of blocks when possible.'
   Enabled: true
