@@ -19,6 +19,7 @@
 ### Bugs fixed
 
 * [#1659](https://github.com/bbatsov/rubocop/pull/1659): Fix stack overflow with JRuby and Windows 8, during initial config validation. ([@pimterry][])
+* [#1694](https://github.com/bbatsov/rubocop/issues/1694): Ignore methods with a `blockarg` in `TrivialAccessors`. ([@bbatsov][])
 
 ## 0.29.1 (13/02/2015)
 

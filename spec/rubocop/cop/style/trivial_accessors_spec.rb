@@ -212,6 +212,14 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
     expect(cop.offenses).to be_empty
   end
 
+  it 'treats block arguments as non-trivial' do
+    inspect_source(cop,
+                   ['def something(&block)',
+                    '  @b = block',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'finds oneliner trivials' do
     inspect_source(cop,
                    ['class Oneliner',
