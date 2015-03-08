@@ -19,8 +19,14 @@ describe RuboCop::Cop::Style::WhileUntilModifier do
     check_short_multiline(cop, 'unless')
   end
 
-  it 'registers an offense for multiline while that fits on one line' do
-    check_really_short(cop, 'while')
+  context 'multiline while that fits on one line' do
+    it 'registers an offense' do
+      check_really_short(cop, 'while')
+    end
+
+    it 'does auto-correction' do
+      autocorrect_really_short(cop, 'while')
+    end
   end
 
   it "accepts multiline while that doesn't fit on one line" do
@@ -39,15 +45,32 @@ describe RuboCop::Cop::Style::WhileUntilModifier do
     expect(cop.offenses).to be_empty
   end
 
-  it 'registers an offense for oneline while when assignment is in body' do
-    inspect_source(cop, ['while true',
-                         '  x = 0',
-                         'end'])
-    expect(cop.offenses.size).to eq(1)
+  context 'oneline while when assignment is in body' do
+    let(:source) do
+      ['while true',
+       '  x = 0',
+       'end']
+    end
+
+    it 'registers an offense'  do
+      inspect_source(cop, source)
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it 'does auto-correction' do
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq 'x = 0 while true'
+    end
   end
 
-  it 'registers an offense for multiline until that fits on one line' do
-    check_really_short(cop, 'until')
+  context 'multiline until that fits on one line' do
+    it 'registers an offense' do
+      check_really_short(cop, 'until')
+    end
+
+    it 'does auto-correction' do
+      autocorrect_really_short(cop, 'until')
+    end
   end
 
   it "accepts multiline until that doesn't fit on one line" do
