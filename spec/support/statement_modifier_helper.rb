@@ -16,6 +16,14 @@ module StatementModifierHelper
     expect(cop.offenses.map { |o| o.location.source }).to eq([keyword])
   end
 
+  def autocorrect_really_short(cop, keyword)
+    corrected = autocorrect_source(cop,
+                                   ["#{keyword} a",
+                                    '  b',
+                                    'end'])
+    expect(corrected).to eq "b #{keyword} a"
+  end
+
   def check_too_long(cop, keyword)
     # This statement is one character too long to fit.
     condition = 'a' * (40 - keyword.length)
