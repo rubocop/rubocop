@@ -1,5 +1,9 @@
 # These are all the cops that are disabled in the default configuration.
 
+Style/AutoResourceCleanup:
+  Description: 'Suggests the usage of an auto resource cleanup version of a method (if available).'
+  Enabled: false
+
 Style/CollectionMethods:
   Description: 'Preferred collection methods.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#map-find-select-reduce-size'
