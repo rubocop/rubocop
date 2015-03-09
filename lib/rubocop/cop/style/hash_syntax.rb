@@ -93,13 +93,10 @@ module RuboCop
         def word_symbol_pair?(pair)
           key, _value = *pair
 
-          if key.sym_type?
-            sym_name = key.loc.expression.source
+          return false unless key.sym_type?
 
-            sym_name !~ /\A:["']/
-          else
-            false
-          end
+          sym_name = key.loc.expression.source
+          sym_name !~ /\A:["']|=\z/
         end
 
         def check(pairs, delim, msg)
