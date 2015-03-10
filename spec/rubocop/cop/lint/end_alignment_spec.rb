@@ -4,7 +4,9 @@ require 'spec_helper'
 
 describe RuboCop::Cop::Lint::EndAlignment, :config do
   subject(:cop) { described_class.new(config) }
-  let(:cop_config) { { 'AlignWith' => 'keyword' } }
+  let(:cop_config) do
+    { 'AlignWith' => 'keyword', 'AutoCorrect' => true }
+  end
   let(:opposite) do
     cop_config['AlignWith'] == 'keyword' ? 'variable' : 'keyword'
   end
@@ -33,18 +35,34 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
     expect(cop.offenses).to be_empty
   end
 
-  it 'registers an offense for correct + opposite' do
-    inspect_source(cop, ['x = if a',
-                         '      a1',
-                         '    end',
-                         'y = if b',
-                         '  b1',
-                         'end'])
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages.first)
-      .to eq('`end` at 6, 0 is not aligned with `if` at 4, 4')
-    expect(cop.highlights.first).to eq('end')
-    expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+  context 'correct + opposite' do
+    let(:source) do
+      ['x = if a',
+       '      a1',
+       '    end',
+       'y = if b',
+       '  b1',
+       'end']
+    end
+
+    it 'registers an offense' do
+      inspect_source(cop, source)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.messages.first)
+        .to eq('`end` at 6, 0 is not aligned with `if` at 4, 4')
+      expect(cop.highlights.first).to eq('end')
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+    end
+
+    it 'does auto-correction' do
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq(['x = if a',
+                               '      a1',
+                               '    end',
+                               'y = if b',
+                               '  b1',
+                               '    end'].join("\n"))
+    end
   end
 
   context 'regarding assignment' do
@@ -61,7 +79,9 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
     end
 
     context 'when AlignWith is variable' do
-      let(:cop_config) { { 'AlignWith' => 'variable' } }
+      let(:cop_config) do
+        { 'AlignWith' => 'variable', 'AutoCorrect' => true }
+      end
 
       include_examples 'aligned', 'var = if',     'test', 'end'
       include_examples 'aligned', 'var = unless', 'test', 'end'
