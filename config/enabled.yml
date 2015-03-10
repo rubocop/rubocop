@@ -973,6 +973,12 @@ Lint/Void:
   Description: 'Possible use of operator/literal/variable in void context.'
   Enabled: true
 
+##################### Performance #############################
+
+Performance/ReverseEach:
+  Description: 'Use `reverse_each` instead of `reverse.each`.'
+  Enabled: true
+
 ##################### Rails ##################################
 
 Rails/ActionFilter:
