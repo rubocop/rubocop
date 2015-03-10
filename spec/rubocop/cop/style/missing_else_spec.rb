@@ -256,6 +256,11 @@ describe RuboCop::Cop::Style::MissingElse do
           expect(cop.messages)
             .to eq(msg)
         end
+
+        it 'highlights' do
+          inspect_source(cop, 'if cond; foo end')
+          expect(cop.highlights).to eq(['if cond; foo end'])
+        end
       end
     end
 
