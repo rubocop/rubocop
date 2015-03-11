@@ -77,8 +77,7 @@ module RuboCop
 
       def relative_path(filename)
         @base_dir ||= Pathname.new(
-          File.dirname(Pathname.new(output.path).realpath.to_s)
-        )
+          File.dirname(Pathname.new(output.path).realpath.to_s))
         Pathname.new(filename).relative_path_from(@base_dir)
       end
     end
