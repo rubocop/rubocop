@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'pathname'
+
 module RuboCop
   module Formatter
     # This formatter displays a YAML configuration file where all cops that
@@ -22,9 +24,13 @@ module RuboCop
         attr_accessor :config_to_allow_offenses
       end
 
-      def file_finished(_file, offenses)
-        @cops_with_offenses ||= Hash.new(0)
-        offenses.each { |o| @cops_with_offenses[o.cop_name] += 1 }
+      def file_finished(file, offenses)
+        @cops_with_offenses ||= {}
+        offenses.each do |o|
+          @cops_with_offenses[o.cop_name] ||= { count: 0, files: [] }
+          @cops_with_offenses[o.cop_name][:count] += 1
+          @cops_with_offenses[o.cop_name][:files] << file
+        end
       end
 
       def finished(_inspected_files)
@@ -33,13 +39,18 @@ module RuboCop
         # Syntax isn't a real cop and it can't be disabled.
         @cops_with_offenses.delete('Syntax')
 
-        @cops_with_offenses.sort.each do |cop_name, offense_count|
+        @cops_with_offenses.sort.each do |cop_name, offenses|
           output.puts
           cfg = self.class.config_to_allow_offenses[cop_name]
-          cfg ||= { 'Enabled' => false }
-          output_cop_comments(output, cfg, cop_name, offense_count)
+          cfg ||= {}
+          output_cop_comments(output, cfg, cop_name, offenses[:count])
           output.puts "#{cop_name}:"
           cfg.each { |key, value| output.puts "  #{key}: #{value}" }
+          unless offenses[:files].empty?
+            output.puts '  Exclude:'
+            output.puts offenses[:files].uniq
+              .map { |file| "    - #{ relative_path(file) }" }
+          end
         end
         puts "Created #{output.path}."
         puts "Run `rubocop --config #{output.path}`, or"
@@ -60,6 +71,15 @@ module RuboCop
         return if params.empty?
 
         output.puts "# Configuration parameters: #{params.join(', ')}."
+      end
+
+      private
+
+      def relative_path(filename)
+        @base_dir ||= Pathname.new(
+          File.dirname(Pathname.new(output.path).realpath.to_s)
+        )
+        Pathname.new(filename).relative_path_from(@base_dir)
       end
     end
   end
