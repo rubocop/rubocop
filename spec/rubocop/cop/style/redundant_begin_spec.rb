@@ -118,4 +118,58 @@ describe RuboCop::Cop::Style::RedundantBegin do
     new_source = autocorrect_source(cop, src)
     expect(new_source).to eq(result_src)
   end
+
+  it 'respects indented heredocs' do
+    source = <<-CODE.split("\n")
+def method
+  begin
+    fail
+  rescue
+    puts <<-EOS
+      This is a string
+    EOS
+  end
+end
+    CODE
+
+    expected = <<-CODE.split("\n")
+def method
+  fail
+rescue
+  puts <<-EOS
+    This is a string
+  EOS
+end
+    CODE
+
+    corrected = autocorrect_source(cop, source).split("\n")
+    expect(corrected).to eq(expected)
+  end
+
+  it 'respects unindented heredocs' do
+    source = <<-CODE.split("\n")
+def method
+  begin
+    fail
+  rescue
+    puts <<-EOS
+This is a string
+    EOS
+  end
+end
+    CODE
+
+    expected = <<-CODE.split("\n")
+def method
+  fail
+rescue
+  puts <<-EOS
+This is a string
+  EOS
+end
+    CODE
+
+    corrected = autocorrect_source(cop, source).split("\n")
+    expect(corrected).to eq(expected)
+  end
 end
