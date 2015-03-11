@@ -530,4 +530,16 @@ describe RuboCop::Cop::Lint::BlockAlignment do
     expect(cop.messages)
       .to eq(['`end` at 3, 2 is not aligned with `var1, var2` at 1, 0'])
   end
+
+  context 'when multiple similar-looking blocks have misaligned ends' do
+    it 'registers an offense for each of them' do
+      inspect_source(cop,
+                     ['a = test do',
+                      ' end',
+                      'b = test do',
+                      ' end'
+                     ])
+      expect(cop.offenses.size).to eq 2
+    end
+  end
 end

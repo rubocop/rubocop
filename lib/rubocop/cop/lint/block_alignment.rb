@@ -16,24 +16,19 @@ module RuboCop
 
         MSG = '`end` at %d, %d is not aligned with `%s` at %d, %d%s'
 
-        def initialize(config = nil, options = nil)
-          super
-          @inspected_blocks = []
-        end
-
         def on_block(node)
-          return if already_processed_node?(node)
+          return if ignored_node?(node)
           check_block_alignment(node, node)
         end
 
         def on_and(node)
-          return if already_processed_node?(node)
+          return if ignored_node?(node)
 
           _left, right = *node
           return unless right.type == :block
 
           check_block_alignment(node, right)
-          @inspected_blocks << right
+          ignore_node(right)
         end
 
         alias_method :on_or, :on_and
@@ -74,9 +69,9 @@ module RuboCop
                                                                 block_node)
             return
           end
-          return if already_processed_node?(block_node)
+          return if ignored_node?(block_node)
 
-          @inspected_blocks << block_node
+          ignore_node(block_node)
           check_block_alignment(begin_node, block_node)
         end
 
@@ -138,10 +133,6 @@ module RuboCop
         end
 
         def message
-        end
-
-        def already_processed_node?(node)
-          @inspected_blocks.include?(node)
         end
 
         def block_is_on_next_line?(begin_node, block_node)
