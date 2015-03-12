@@ -24,6 +24,7 @@
 * [#1281](https://github.com/bbatsov/rubocop/issues/1281): `IfUnlessModifier` cop does auto-correction. ([@lumeet][])
 * New cop `Performance/Detect` to detect usage of `select.first`, `select.last`, `find_all.first`, and `find_all.last` and convert them to use `detect` instead. ([@palkan][], [@rrosenblum][])
 * [#1728](https://github.com/bbatsov/rubocop/pull/1728): New cop `NonLocalExitFromIterator` checks for misused `return` in block. ([@ypresto][])
+* New cop `Performance/Size` to convert calls to `count` on `Array` and `Hash` to `size`. ([@rrosenblum][])
 
 ### Bugs fixed
 

@@ -116,6 +116,7 @@ require 'rubocop/cop/metrics/parameter_lists'
 require 'rubocop/cop/metrics/perceived_complexity'
 
 require 'rubocop/cop/performance/detect'
+require 'rubocop/cop/performance/size'
 require 'rubocop/cop/performance/reverse_each'
 
 require 'rubocop/cop/style/access_modifier_indentation'
