@@ -690,17 +690,21 @@ describe RuboCop::CLI, :isolated_environment do
                   '# Configuration parameters: AllowURI, URISchemes.',
                   'Metrics/LineLength:',
                   '  Max: 85',
+                  '  Exclude:',
+                  '    - example1.rb',
                   '',
                   '# Offense count: 1',
                   '# Cop supports --auto-correct.',
                   '# Configuration parameters: MultiSpaceAllowedForOperators.',
                   'Style/SpaceAroundOperators:',
-                  '  Enabled: false',
+                  '  Exclude:',
+                  '    - example1.rb',
                   '',
                   '# Offense count: 2',
                   '# Cop supports --auto-correct.',
                   'Style/TrailingWhitespace:',
-                  '  Enabled: false'])
+                  '  Exclude:',
+                  '    - example1.rb'])
 
         # Create new CLI instance to avoid using cached configuration.
         new_cli = described_class.new
@@ -754,37 +758,45 @@ describe RuboCop::CLI, :isolated_environment do
            '# Configuration parameters: AllowURI, URISchemes.',
            'Metrics/LineLength:',
            '  Max: 90',
+           '  Exclude:',
+           '    - example1.rb',
            '',
            '# Offense count: 1',
            '# Cop supports --auto-correct.',
            'Style/CommentIndentation:',
-           '  Enabled: false',
+           '  Exclude:',
+           '    - example2.rb',
            '',
            '# Offense count: 1',
            '# Configuration parameters: AllowedVariables.',
            'Style/GlobalVars:',
-           '  Enabled: false',
+           '  Exclude:',
+           '    - example1.rb',
            '',
            '# Offense count: 1',
            '# Cop supports --auto-correct.',
            'Style/IndentationConsistency:',
-           '  Enabled: false',
+           '  Exclude:',
+           '    - example2.rb',
            '',
            '# Offense count: 1',
            '# Cop supports --auto-correct.',
            '# Configuration parameters: MultiSpaceAllowedForOperators.',
            'Style/SpaceAroundOperators:',
-           '  Enabled: false',
+           '  Exclude:',
+           '    - example1.rb',
            '',
            '# Offense count: 1',
            '# Cop supports --auto-correct.',
            'Style/Tab:',
-           '  Enabled: false',
+           '  Exclude:',
+           '    - example2.rb',
            '',
            '# Offense count: 2',
            '# Cop supports --auto-correct.',
            'Style/TrailingWhitespace:',
-           '  Enabled: false']
+           '  Exclude:',
+           '    - example1.rb']
         actual = IO.read('.rubocop_todo.yml').split($RS)
         expected.each_with_index do |line, ix|
           if line.is_a?(String)
@@ -816,17 +828,20 @@ describe RuboCop::CLI, :isolated_environment do
            '# Offense count: 1',
            '# Cop supports --auto-correct.',
            'Style/CommentIndentation:',
-           '  Enabled: false',
+           '  Exclude:',
+           '    - example2.rb',
            '',
            '# Offense count: 1',
            '# Cop supports --auto-correct.',
            'Style/IndentationConsistency:',
-           '  Enabled: false',
+           '  Exclude:',
+           '    - example2.rb',
            '',
            '# Offense count: 1',
            '# Cop supports --auto-correct.',
            'Style/Tab:',
-           '  Enabled: false']
+           '  Exclude:',
+           '    - example2.rb']
         actual = IO.read('.rubocop_todo.yml').split($RS)
         expect(actual.length).to eq(expected.length)
         expected.each_with_index do |line, ix|
@@ -860,7 +875,8 @@ describe RuboCop::CLI, :isolated_environment do
            '# Offense count: 1',
            '# Configuration parameters: MaxSlashes.',
            'Style/RegexpLiteral:',
-           '  Enabled: false']
+           '  Exclude:',
+           '    - example.rb']
         actual = IO.read('.rubocop_todo.yml').split($RS)
         expected.each_with_index do |line, ix|
           if line.is_a?(String)
