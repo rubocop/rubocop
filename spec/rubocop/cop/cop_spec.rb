@@ -145,14 +145,19 @@ describe RuboCop::Cop::Cop do
       allow(cop).to receive(:support_autocorrect?) { support_autocorrect }
     end
 
-    context 'when the option is false' do
-      let(:options) { { auto_correct: false } }
+    context 'when the option is not given' do
+      let(:options) { {} }
       it { should be false }
     end
 
-    context 'when the option is true' do
+    context 'when the option is given' do
       let(:options) { { auto_correct: true } }
       it { should be true }
+
+      context 'when cop does not support autocorrection' do
+        let(:support_autocorrect) { false }
+        it { should be false }
+      end
 
       context 'when the cop is set to not autocorrect' do
         let(:config) do
