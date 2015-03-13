@@ -5,7 +5,11 @@ module RuboCop
     # This module encapsulates the logic for autocorrect behaviour for a cop
     module AutocorrectLogic
       def autocorrect?
-        @options.fetch(:auto_correct, false) && support_autocorrect? && autocorrect_enabled?
+        autocorrect_requested? && support_autocorrect? && autocorrect_enabled?
+      end
+
+      def autocorrect_requested?
+        @options.fetch(:auto_correct, false)
       end
 
       def support_autocorrect?
