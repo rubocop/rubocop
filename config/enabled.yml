@@ -133,6 +133,11 @@ Style/ColonMethodCall:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#double-colons'
   Enabled: true
 
+Style/CommandLiteral:
+  Description: 'Checks for %x when `` would do.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-x'
+  Enabled: true
+
 Style/CommentAnnotation:
   Description: >-
                  Checks formatting of special comments
@@ -707,11 +712,6 @@ Style/UnneededCapitalW:
 Style/UnneededPercentQ:
   Description: 'Checks for %q/%Q when single quotes or double quotes would do.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-q'
-  Enabled: true
-
-Style/UnneededPercentX:
-  Description: 'Checks for %x when `` would do.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-x'
   Enabled: true
 
 Style/VariableInterpolation:

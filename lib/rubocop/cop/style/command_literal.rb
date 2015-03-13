@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     module Style
       # This cop checks for usage of the %x() syntax when `` would do.
-      class UnneededPercentX < Cop
+      class CommandLiteral < Cop
         MSG = 'Do not use `%x` unless the command string contains backquotes.'
 
         def on_xstr(node)

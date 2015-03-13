@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::UnneededPercentX do
+describe RuboCop::Cop::Style::CommandLiteral do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for a %x string without backquotes' do

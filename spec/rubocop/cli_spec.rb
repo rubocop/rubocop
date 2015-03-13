@@ -129,7 +129,7 @@ describe RuboCop::CLI, :isolated_environment do
         source = ['# encoding: utf-8',
                   'puts %x(ls)']
         create_file('example.rb', source)
-        create_file('.rubocop.yml', ['Style/UnneededPercentX:',
+        create_file('.rubocop.yml', ['Style/CommandLiteral:',
                                      '  Exclude:',
                                      '    - example.rb'])
         expect(cli.run(['--auto-correct'])).to eq(0)
