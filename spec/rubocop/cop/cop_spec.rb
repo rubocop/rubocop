@@ -74,6 +74,60 @@ describe RuboCop::Cop::Cop do
     expect(cop.offenses.first.cop_name).to eq('Style/For')
   end
 
+  describe 'setting of Offense#corrected attribute' do
+    context 'when cop does not support autocorrection' do
+      before do
+        allow(cop).to receive(:support_autocorrect?).and_return(false)
+      end
+
+      it 'is not specified (set to nil)' do
+        cop.add_offense(nil, location, 'message')
+        expect(cop.offenses.first.corrected?).to be_nil
+      end
+    end
+
+    context 'when cop supports autocorrection' do
+      before do
+        @cop = RuboCop::Cop::Style::Alias.new
+      end
+
+      context 'when offense was corrected' do
+        before do
+          allow(@cop).to receive(:autocorrect?).and_return(true)
+        end
+
+        it 'is set to true' do
+          @cop.add_offense(nil, location, 'message')
+          expect(@cop.offenses.first.corrected?).to eq(true)
+        end
+      end
+
+      context 'when autocorrection is not needed' do
+        before do
+          allow(@cop).to receive(:autocorrect?).and_return(false)
+        end
+
+        it 'is set to false' do
+          @cop.add_offense(nil, location, 'message')
+          expect(@cop.offenses.first.corrected?).to eq(false)
+        end
+      end
+
+      context 'when offense was not corrected because of an error' do
+        before do
+          allow(@cop).to receive(:autocorrect?).and_return(true)
+          allow(@cop).to receive(:autocorrect)
+            .and_raise(RuboCop::Cop::CorrectionNotPossible)
+        end
+
+        it 'is set to false' do
+          @cop.add_offense(nil, location, 'message')
+          expect(@cop.offenses.first.corrected?).to eq(false)
+        end
+      end
+    end
+  end
+
   context 'with no submodule' do
     subject(:cop) { described_class }
     it('has right name') { expect(cop.cop_name).to eq('Cop/Cop') }

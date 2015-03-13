@@ -152,14 +152,20 @@ module RuboCop
         message ||= message(node)
         message = annotate_message(message)
 
-        corrected = begin
-                      autocorrect(node) if autocorrect?
-                      autocorrect?
-                    rescue CorrectionNotPossible
-                      false
-                    end
+        corrected = correct(node)
+
         @offenses << Offense.new(severity, location, message, name, corrected)
         yield if block_given?
+      end
+
+      def correct(node)
+        return nil unless support_autocorrect?
+        return false unless autocorrect?
+
+        autocorrect(node)
+        true
+      rescue CorrectionNotPossible
+        false
       end
 
       def config_to_allow_offenses
