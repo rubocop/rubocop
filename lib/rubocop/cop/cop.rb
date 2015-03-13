@@ -106,7 +106,7 @@ module RuboCop
 
       def initialize(config = nil, options = nil)
         @config = config || Config.new
-        @options = options || { auto_correct: false, debug: false }
+        @options = options || { debug: false }
 
         @offenses = []
         @corrections = []
