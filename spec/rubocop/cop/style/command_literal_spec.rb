@@ -38,6 +38,17 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
     end
   end
 
+  describe 'heredoc commands' do
+    let(:cop_config) { { 'EnforcedStyle' => 'backticks' } }
+
+    it 'is ignored' do
+      inspect_source(cop, ['<<`COMMAND`',
+                           '  ls',
+                           'COMMAND'])
+      expect(cop.offenses).to be_empty
+    end
+  end
+
   context 'when EnforcedStyle is set to backticks' do
     let(:cop_config) { { 'EnforcedStyle' => 'backticks' } }
 

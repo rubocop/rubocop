@@ -33,6 +33,8 @@ module RuboCop
         MSG_USE_PERCENT_X = 'Use `%x` around command string.'
 
         def on_xstr(node)
+          return if heredoc_literal?(node)
+
           if backtick_literal?(node)
             check_backtick_literal(node)
           else
@@ -75,6 +77,10 @@ module RuboCop
         def node_body(node)
           loc = node.loc
           loc.expression.source[loc.begin.end_pos...loc.end.begin_pos]
+        end
+
+        def heredoc_literal?(node)
+          node.loc.respond_to?(:heredoc_body)
         end
 
         def backtick_literal?(node)
