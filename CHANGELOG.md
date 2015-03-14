@@ -30,6 +30,7 @@
 * Handle explicit `begin` blocks in `Lint/Void`. ([@bbatsov][])
 * Handle symbols in `Lint/Void`. ([@bbatsov][])
 * [#1695](https://github.com/bbatsov/rubocop/pull/1695): Fix bug with `--auto-gen-config` and `SpaceInsideBlockBraces`. ([@meganemura][])
+* Correct issues with whitespace around multi-line lambda arguments. ([@zvkemp][])
 
 ## 0.29.1 (13/02/2015)
 
@@ -1294,3 +1295,4 @@
 [@palkan]: https://github.com/palkan
 [@jdoconnor]: https://github.com/jdoconnor
 [@meganemura]: https://github.com/meganemura
+[@zvkemp]: https://github.com/zvkemp

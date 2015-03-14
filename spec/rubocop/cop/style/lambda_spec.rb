@@ -73,4 +73,65 @@ describe RuboCop::Cop::Style::Lambda do
                               '  x',
                               'end'].join("\n"))
   end
+
+  context 'unusual lack of spacing' do
+    # The lack of spacing shown here is valid ruby syntax,
+    # and can be the result of previous autocorrects re-writing
+    # a multi-line `->(x){ ... }` to `->(x)do ... end`.
+    # See rubocop/cop/style/blocks.rb.
+    # Tests correction of an issue resulting in `lambdado` syntax errors.
+    it 'auto-corrects a multi-line lambda' do
+      new_source = autocorrect_source(cop, ['->(x)do',
+                                            '  x',
+                                            'end'])
+      expect(new_source).to eq(['lambda do |x|',
+                                '  x',
+                                'end'].join("\n"))
+    end
+
+    it 'auto-corrects a multi-line lambda with no spacing after args' do
+      new_source = autocorrect_source(cop, ['-> (x)do',
+                                            '  x',
+                                            'end'])
+      expect(new_source).to eq(['lambda do |x|',
+                                '  x',
+                                'end'].join("\n"))
+    end
+
+    it 'auto-corrects a multi-line lambda with no spacing before args' do
+      new_source = autocorrect_source(cop, ['->(x) do',
+                                            '  x',
+                                            'end'])
+      expect(new_source).to eq(['lambda do |x|',
+                                '  x',
+                                'end'].join("\n"))
+    end
+
+    it 'auto-corrects a multi-line lambda with empty args' do
+      new_source = autocorrect_source(cop, ['->()do',
+                                            '  x',
+                                            'end'])
+      expect(new_source).to eq(['lambda do',
+                                '  x',
+                                'end'].join("\n"))
+    end
+
+    it 'auto-corrects a multi-line lambda with empty args and bad spacing' do
+      new_source = autocorrect_source(cop, ['-> ()do',
+                                            '  x',
+                                            'end'])
+      expect(new_source).to eq(['lambda do',
+                                '  x',
+                                'end'].join("\n"))
+    end
+
+    it 'auto-corrects a new multi-line lambda with no args' do
+      new_source = autocorrect_source(cop, ['->do',
+                                            '  x',
+                                            'end'])
+      expect(new_source).to eq(['lambda do',
+                                '  x',
+                                'end'].join("\n"))
+    end
+  end
 end
