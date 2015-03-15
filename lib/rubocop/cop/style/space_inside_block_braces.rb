@@ -80,7 +80,9 @@ module RuboCop
             if left_brace.end_pos == args_delimiter.begin_pos &&
                cop_config['SpaceBeforeBlockParameters']
               offense(sb, left_brace.begin_pos, args_delimiter.end_pos,
-                      'Space between { and | missing.')
+                      'Space between { and | missing.') do
+                opposite_style_detected
+              end
             end
           else
             # We indicate the position after the left brace. Otherwise it's
@@ -95,7 +97,9 @@ module RuboCop
           if pipe?(args_delimiter)
             unless cop_config['SpaceBeforeBlockParameters']
               offense(sb, left_brace.end_pos, args_delimiter.begin_pos,
-                      'Space between { and | detected.')
+                      'Space between { and | detected.') do
+                opposite_style_detected
+              end
             end
           else
             brace_with_space = range_with_surrounding_space(left_brace, :right)
