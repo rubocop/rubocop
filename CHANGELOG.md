@@ -20,6 +20,7 @@
 * New cop `Style/AutoResourceCleanup` suggests the use of block taking versions of methods that do resource cleanup. ([@bbatsov][])
 * [#1275](https://github.com/bbatsov/rubocop/issues/1275): `WhileUntilModifier` cop does auto-correction. ([@lumeet][])
 * New cop `Performance/ReverseEach` to convert `reverse.each` to `reverse_each`. ([@rrosenblum][])
+* [#1281](https://github.com/bbatsov/rubocop/issues/1281): `IfUnlessModifier` cop does auto-correction. ([@lumeet][])
 
 ### Bugs fixed
 

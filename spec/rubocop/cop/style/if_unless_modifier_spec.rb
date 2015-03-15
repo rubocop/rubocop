@@ -11,39 +11,70 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
     RuboCop::Config.new(hash)
   end
 
-  it 'registers an offense for multiline if that fits on one line' do
-    # This if statement fits exactly on one line if written as a
-    # modifier.
-    condition = 'a' * 38
-    body = 'b' * 36
-    expect("  #{body} if #{condition}".length).to eq(80)
+  context 'multiline if that fits on one line' do
+    let(:source) do
+      ["if #{condition}",
+       "  #{body}",
+       'end']
+    end
 
-    inspect_source(cop,
-                   ["  if #{condition}",
-                    "    #{body}",
-                    '  end'])
-    expect(cop.messages).to eq(
-      ['Favor modifier `if` usage when having a single-line' \
-       ' body. Another good alternative is the usage of control flow' \
-       ' `&&`/`||`.'])
+    let(:condition) { 'a' * 38 }
+    let(:body) { 'b' * 38 }
+
+    it 'registers an offense'  do
+      # This if statement fits exactly on one line if written as a
+      # modifier.
+      expect("#{body} if #{condition}".length).to eq(80)
+
+      inspect_source(cop, source)
+      expect(cop.messages).to eq(
+        ['Favor modifier `if` usage when having a single-line' \
+         ' body. Another good alternative is the usage of control flow' \
+         ' `&&`/`||`.'])
+    end
+
+    it 'does auto-correction' do
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq "#{body} if #{condition}"
+    end
   end
 
-  it 'registers an offense for short multiline if near an else etc' do
-    inspect_source(cop,
-                   ['if x',
-                    '  y',
-                    'elsif x1',
-                    '  y1',
-                    'else',
-                    '  z',
-                    'end',
-                    'n = a ? 0 : 1',
-                    'm = 3 if m0',
-                    '',
-                    'if a',
-                    '  b',
-                    'end'])
-    expect(cop.offenses.size).to eq(1)
+  context 'short multiline if near an else etc' do
+    let(:source) do
+      ['if x',
+       '  y',
+       'elsif x1',
+       '  y1',
+       'else',
+       '  z',
+       'end',
+       'n = a ? 0 : 1',
+       'm = 3 if m0',
+       '',
+       'if a',
+       '  b',
+       'end']
+    end
+
+    it 'registers an offense'  do
+      inspect_source(cop, source)
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it 'does auto-correction' do
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq(['if x',
+                               '  y',
+                               'elsif x1',
+                               '  y1',
+                               'else',
+                               '  z',
+                               'end',
+                               'n = a ? 0 : 1',
+                               'm = 3 if m0',
+                               '',
+                               'b if a'].join("\n"))
+    end
   end
 
   it "accepts multiline if that doesn't fit on one line" do
@@ -54,14 +85,25 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
     check_short_multiline(cop, 'if')
   end
 
-  it 'registers an offense for multiline unless that fits on one line' do
-    inspect_source(cop, ['unless a',
-                         '  b',
-                         'end'])
-    expect(cop.messages).to eq(
-      ['Favor modifier `unless` usage when having a single-line' \
-       ' body. Another good alternative is the usage of control flow' \
-       ' `&&`/`||`.'])
+  context 'multiline unless that fits on one line' do
+    let(:source) do
+      ['unless a',
+       '  b',
+       'end']
+    end
+
+    it 'registers an offense' do
+      inspect_source(cop, source)
+      expect(cop.messages).to eq(
+        ['Favor modifier `unless` usage when having a single-line' \
+         ' body. Another good alternative is the usage of control flow' \
+         ' `&&`/`||`.'])
+    end
+
+    it 'does auto-correction' do
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq 'b unless a'
+    end
   end
 
   it 'accepts code with EOL comment since user might want to keep it' do
@@ -111,6 +153,11 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
 
         inspect_source(cop, source)
         expect(cop.offenses.size).to eq(1)
+      end
+
+      it 'does auto-correction' do
+        corrected = autocorrect_source(cop, source)
+        expect(corrected).to eq "  #{body} if #{conditional}"
       end
     end
 
