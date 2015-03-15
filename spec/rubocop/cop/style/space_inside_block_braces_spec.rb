@@ -107,6 +107,7 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
     inspect_source(cop, 'each {puts }')
     expect(cop.messages).to eq(['Space missing inside {.'])
     expect(cop.highlights).to eq(['p'])
+    expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
   end
 
   it 'registers an offense for right brace without inner space' do
@@ -148,6 +149,7 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
       inspect_source(cop, 'each {|x| puts }')
       expect(cop.messages).to eq(['Space between { and | missing.'])
       expect(cop.highlights).to eq(['{|'])
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
     it 'accepts new lambda syntax' do
@@ -195,6 +197,7 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
         inspect_source(cop, 'each { |x| puts }')
         expect(cop.messages).to eq(['Space between { and | detected.'])
         expect(cop.highlights).to eq([' '])
+        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
       end
 
       it 'accepts new lambda syntax' do
@@ -241,6 +244,7 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
       inspect_source(cop, 'each {puts  }')
       expect(cop.messages).to eq(['Space inside } detected.'])
       expect(cop.highlights).to eq(['  '])
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
     it 'registers offenses for both braces with inner space' do
@@ -274,6 +278,7 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
           inspect_source(cop, 'each {|x| puts}')
           expect(cop.messages).to eq(['Space between { and | missing.'])
           expect(cop.highlights).to eq(['{|'])
+          expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
         end
 
         it 'accepts new lambda syntax' do
@@ -300,6 +305,7 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
           inspect_source(cop, 'each { |x| puts}')
           expect(cop.messages).to eq(['Space between { and | detected.'])
           expect(cop.highlights).to eq([' '])
+          expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
         end
 
         it 'accepts new lambda syntax' do
