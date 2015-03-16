@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'forwardable'
+
 module RuboCop
   module Cop
     module Style
@@ -33,85 +35,106 @@ module RuboCop
         MSG_USE_PERCENT_X = 'Use `%x` around command string.'
 
         def on_xstr(node)
-          return if heredoc_literal?(node)
-
-          if backtick_literal?(node)
-            check_backtick_literal(node)
-          else
-            check_percent_x_literal(node)
-          end
+          Node.new(node, self).check
         end
 
         private
 
-        def check_backtick_literal(node)
-          return if style == :backticks && !contains_disallowed_backtick?(node)
-          return if style == :mixed &&
-                    single_line?(node) &&
-                    !contains_disallowed_backtick?(node)
-
-          add_offense(node, :expression, MSG_USE_PERCENT_X)
-        end
-
-        def check_percent_x_literal(node)
-          return if style == :backticks && contains_disallowed_backtick?(node)
-          return if style == :percent_x
-          return if style == :mixed && multi_line?(node)
-          return if style == :mixed && contains_disallowed_backtick?(node)
-
-          add_offense(node, :expression, MSG_USE_BACKTICKS)
-        end
-
-        def contains_disallowed_backtick?(node)
-          !allow_inner_backticks? && contains_backtick?(node)
-        end
-
-        def allow_inner_backticks?
-          cop_config['AllowInnerBackticks']
-        end
-
-        def contains_backtick?(node)
-          node_body(node) =~ /`/
-        end
-
-        def node_body(node)
-          loc = node.loc
-          loc.expression.source[loc.begin.length...-loc.end.length]
-        end
-
-        def heredoc_literal?(node)
-          node.loc.respond_to?(:heredoc_body)
-        end
-
-        def backtick_literal?(node)
-          node.loc.begin.source == '`'
-        end
-
-        def single_line?(node)
-          !multi_line?(node)
-        end
-
-        def multi_line?(node)
-          block_length(node) > 1
-        end
-
-        def preferred_delimiters
-          config.for_cop('Style/PercentLiteralDelimiters') \
-            ['PreferredDelimiters']['%x'].split(//)
-        end
-
         def autocorrect(node)
-          fail CorrectionNotPossible if contains_backtick?(node)
-
-          if backtick_literal?(node)
-            replacement = ['%x', ''].zip(preferred_delimiters).map(&:join)
-          else
-            replacement = %w(` `)
-          end
+          replacement = Node.new(node, self).replacement
 
           @corrections << lambda do |corrector|
             corrector.replace(node.loc.begin, replacement.first)
             corrector.replace(node.loc.end, replacement.last)
+          end
+        end
+
+        # Wrapper class for CommandLiteral-specific code for a node instance.
+        class Node
+          include Util
+          extend Forwardable
+          def_delegators :@cop, :style, :config, :cop_config, :add_offense
+
+          def initialize(node, cop)
+            @node, @cop = node, cop
+          end
+
+          attr_reader :node
+
+          def check
+            return if heredoc_literal?
+
+            if backtick_literal?
+              check_backtick_literal
+            else
+              check_percent_x_literal
+            end
+          end
+
+          def check_backtick_literal
+            return if style == :backticks && !contains_disallowed_backtick?
+            return if style == :mixed &&
+                      single_line? &&
+                      !contains_disallowed_backtick?
+
+            add_offense(node, :expression, MSG_USE_PERCENT_X)
+          end
+
+          def check_percent_x_literal
+            return if style == :backticks && contains_disallowed_backtick?
+            return if style == :percent_x
+            return if style == :mixed && multi_line?
+            return if style == :mixed && contains_disallowed_backtick?
+
+            add_offense(node, :expression, MSG_USE_BACKTICKS)
+          end
+
+          def contains_disallowed_backtick?
+            !allow_inner_backticks? && contains_backtick?
+          end
+
+          def allow_inner_backticks?
+            cop_config['AllowInnerBackticks']
+          end
+
+          def contains_backtick?
+            node_body =~ /`/
+          end
+
+          def node_body
+            loc = node.loc
+            loc.expression.source[loc.begin.length...-loc.end.length]
+          end
+
+          def heredoc_literal?
+            node.loc.respond_to?(:heredoc_body)
+          end
+
+          def backtick_literal?
+            node.loc.begin.source == '`'
+          end
+
+          def single_line?
+            !multi_line?
+          end
+
+          def multi_line?
+            block_length(node) > 1
+          end
+
+          def preferred_delimiters
+            config.for_cop('Style/PercentLiteralDelimiters') \
+              ['PreferredDelimiters']['%x'].split(//)
+          end
+
+          def replacement
+            fail CorrectionNotPossible if contains_backtick?
+
+            if backtick_literal?
+              ['%x', ''].zip(preferred_delimiters).map(&:join)
+            else
+              %w(` `)
+            end
           end
         end
       end
