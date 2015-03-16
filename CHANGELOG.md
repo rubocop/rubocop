@@ -31,6 +31,10 @@
 * Handle symbols in `Lint/Void`. ([@bbatsov][])
 * [#1695](https://github.com/bbatsov/rubocop/pull/1695): Fix bug with `--auto-gen-config` and `SpaceInsideBlockBraces`. ([@meganemura][])
 
+### Changes
+
+* [#1397](https://github.com/bbatsov/rubocop/issues/1397): `UnneededPercentX` renamed to `CommandLiteral`. The cop can be configured to enforce using either `%x` or backticks around command literals, or using `%x` around multi-line commands and backticks around single-line commands. The cop ignores heredoc commands. ([@bquorning][])
+
 ## 0.29.1 (13/02/2015)
 
 ### Bugs fixed

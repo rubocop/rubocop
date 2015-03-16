@@ -212,6 +212,20 @@ Style/CollectionMethods:
     detect: 'find'
     find_all: 'select'
 
+# Use ` or %x around command literals.
+Style/CommandLiteral:
+  EnforcedStyle: backticks
+  # backticks: Always use backticks.
+  # percent_x: Always use %x.
+  # mixed: Use backticks on single-line commands, and %x on multi-line commands.
+  SupportedStyles:
+    - backticks
+    - percent_x
+    - mixed
+  # If false, the cop will always recommend using %x if one or more backticks
+  # are found in the command string.
+  AllowInnerBackticks: false
+
 # Checks formatting of special comments
 Style/CommentAnnotation:
   Keywords:
