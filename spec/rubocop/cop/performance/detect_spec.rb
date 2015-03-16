@@ -2,9 +2,22 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Performance::Detect, :config do
+describe RuboCop::Cop::Performance::Detect do
   subject(:cop) { described_class.new(config) }
-  let(:cop_config) { { 'PreferredMethod' => 'detect' } }
+
+  let(:collection_method) { nil }
+
+  let(:config) do
+    RuboCop::Config.new(
+      'Style/CollectionMethods' =>
+        {
+          'PreferredMethods' => {
+            'detect' => collection_method
+          }
+        }
+    )
+  end
+
   described_class::SELECT_METHODS.each do |method|
     it "registers an offense when first is called on #{method}" do
       inspect_source(cop, "[1, 2, 3].#{method} { |i| i % 2 == 0 }.first")
@@ -47,7 +60,7 @@ describe RuboCop::Cop::Performance::Detect, :config do
   context 'autocorrect' do
     shared_examples 'detect_autocorrect' do |preferred_method|
       context "with #{preferred_method}" do
-        let(:cop_config) { { 'PreferredMethod' => preferred_method } }
+        let(:collection_method) { preferred_method }
         described_class::SELECT_METHODS.each do |method|
           it "corrects #{method}.first to #{preferred_method} (with block)" do
             new_source = autocorrect_source(

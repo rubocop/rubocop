@@ -51,7 +51,8 @@ module RuboCop
         private
 
         def preferred_method
-          cop_config['PreferredMethod']
+          config.for_cop('Style/CollectionMethods') \
+            ['PreferredMethods']['detect'] || 'detect'
         end
       end
     end

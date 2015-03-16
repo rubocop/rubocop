@@ -725,10 +725,3 @@ Rails/TimeZone:
 Rails/Validation:
   Include:
     - app/models/**/*.rb
-
-##################### Performance ##################################
-
-Performance/Detect:
-  # Defines what method to use instead of `select.first`, e.g.
-  # `detect` or `find`.
-  PreferredMethod: detect
