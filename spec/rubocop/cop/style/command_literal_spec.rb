@@ -53,7 +53,7 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'backticks' } }
 
     describe 'a single-line ` string without backticks' do
-      let(:source) { '`ls`' }
+      let(:source) { 'foo = `ls`' }
 
       it 'is accepted' do
         inspect_source(cop, source)
@@ -62,7 +62,7 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
     end
 
     describe 'a single-line ` string with backticks' do
-      let(:source) { '`echo \`ls\``' }
+      let(:source) { 'foo = `echo \`ls\``' }
 
       it 'registers an offense' do
         inspect_source(cop, source)
@@ -86,7 +86,7 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
 
     describe 'a multi-line ` string without backticks' do
       let(:source) do
-        ['`',
+        ['foo = `',
          '  ls',
          '  ls -l',
          '`']
@@ -100,7 +100,7 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
 
     describe 'a multi-line ` string with backticks' do
       let(:source) do
-        ['`',
+        ['foo = `',
          '  echo \`ls\`',
          '  echo \`ls -l\`',
          '`']
@@ -127,7 +127,7 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
     end
 
     describe 'a single-line %x string without backticks' do
-      let(:source) { '%x(ls)' }
+      let(:source) { 'foo = %x(ls)' }
 
       it 'registers an offense' do
         inspect_source(cop, source)
@@ -136,12 +136,12 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
 
       it 'auto-corrects' do
         new_source = autocorrect_source(cop, source)
-        expect(new_source).to eq('`ls`')
+        expect(new_source).to eq('foo = `ls`')
       end
     end
 
     describe 'a single-line %x string with backticks' do
-      let(:source) { '%x(echo `ls`)' }
+      let(:source) { 'foo = %x(echo `ls`)' }
 
       it 'is accepted' do
         inspect_source(cop, source)
@@ -165,7 +165,7 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
 
     describe 'a multi-line %x string without backticks' do
       let(:source) do
-        ['%x(',
+        ['foo = %x(',
          '  ls',
          '  ls -l',
          ')']
@@ -178,13 +178,13 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
 
       it 'auto-corrects' do
         new_source = autocorrect_source(cop, source)
-        expect(new_source).to eq("`\n  ls\n  ls -l\n`")
+        expect(new_source).to eq("foo = `\n  ls\n  ls -l\n`")
       end
     end
 
     describe 'a multi-line %x string with backticks' do
       let(:source) do
-        ['%x(',
+        ['foo = %x(',
          '  echo `ls`',
          '  echo `ls -l`',
          ')']
@@ -215,7 +215,7 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'percent_x' } }
 
     describe 'a single-line ` string without backticks' do
-      let(:source) { '`ls`' }
+      let(:source) { 'foo = `ls`' }
 
       it 'registers an offense' do
         inspect_source(cop, source)
@@ -224,12 +224,12 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
 
       it 'auto-corrects' do
         new_source = autocorrect_source(cop, source)
-        expect(new_source).to eq('%x(ls)')
+        expect(new_source).to eq('foo = %x(ls)')
       end
     end
 
     describe 'a single-line ` string with backticks' do
-      let(:source) { '`echo \`ls\``' }
+      let(:source) { 'foo = `echo \`ls\``' }
 
       it 'registers an offense' do
         inspect_source(cop, source)
@@ -244,7 +244,7 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
 
     describe 'a multi-line ` string without backticks' do
       let(:source) do
-        ['`',
+        ['foo = `',
          '  ls',
          '  ls -l',
          '`']
@@ -257,13 +257,13 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
 
       it 'auto-corrects' do
         new_source = autocorrect_source(cop, source)
-        expect(new_source).to eq("%x(\n  ls\n  ls -l\n)")
+        expect(new_source).to eq("foo = %x(\n  ls\n  ls -l\n)")
       end
     end
 
     describe 'a multi-line ` string with backticks' do
       let(:source) do
-        ['`',
+        ['foo = `',
          '  echo \`ls\`',
          '  echo \`ls -l\`',
          '`']
@@ -281,7 +281,7 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
     end
 
     describe 'a single-line %x string without backticks' do
-      let(:source) { '%x(ls)' }
+      let(:source) { 'foo = %x(ls)' }
 
       it 'is accepted' do
         inspect_source(cop, source)
@@ -290,7 +290,7 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
     end
 
     describe 'a single-line %x string with backticks' do
-      let(:source) { '%x(echo `ls`)' }
+      let(:source) { 'foo = %x(echo `ls`)' }
 
       it 'is accepted' do
         inspect_source(cop, source)
@@ -300,7 +300,7 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
 
     describe 'a multi-line %x string without backticks' do
       let(:source) do
-        ['%x(',
+        ['foo = %x(',
          '  ls',
          '  ls -l',
          ')']
@@ -314,7 +314,7 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
 
     describe 'a multi-line %x string with backticks' do
       let(:source) do
-        ['%x(',
+        ['foo = %x(',
          '  echo `ls`',
          '  echo `ls -l`',
          ')']
@@ -331,7 +331,7 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'mixed' } }
 
     describe 'a single-line ` string without backticks' do
-      let(:source) { '`ls`' }
+      let(:source) { 'foo = `ls`' }
 
       it 'is accepted' do
         inspect_source(cop, source)
@@ -340,7 +340,7 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
     end
 
     describe 'a single-line ` string with backticks' do
-      let(:source) { '`echo \`ls\``' }
+      let(:source) { 'foo = `echo \`ls\``' }
 
       it 'registers an offense' do
         inspect_source(cop, source)
@@ -364,7 +364,7 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
 
     describe 'a multi-line ` string without backticks' do
       let(:source) do
-        ['`',
+        ['foo = `',
          '  ls',
          '  ls -l',
          '`']
@@ -377,13 +377,13 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
 
       it 'auto-corrects' do
         new_source = autocorrect_source(cop, source)
-        expect(new_source).to eq("%x(\n  ls\n  ls -l\n)")
+        expect(new_source).to eq("foo = %x(\n  ls\n  ls -l\n)")
       end
     end
 
     describe 'a multi-line ` string with backticks' do
       let(:source) do
-        ['`',
+        ['foo = `',
          '  echo \`ls\`',
          '  echo \`ls -l\`',
          '`']
@@ -401,7 +401,7 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
     end
 
     describe 'a single-line %x string without backticks' do
-      let(:source) { '%x(ls)' }
+      let(:source) { 'foo = %x(ls)' }
 
       it 'registers an offense' do
         inspect_source(cop, source)
@@ -410,12 +410,12 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
 
       it 'auto-corrects' do
         new_source = autocorrect_source(cop, source)
-        expect(new_source).to eq('`ls`')
+        expect(new_source).to eq('foo = `ls`')
       end
     end
 
     describe 'a single-line %x string with backticks' do
-      let(:source) { '%x(echo `ls`)' }
+      let(:source) { 'foo = %x(echo `ls`)' }
 
       it 'is accepted' do
         inspect_source(cop, source)
@@ -439,7 +439,7 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
 
     describe 'a multi-line %x string without backticks' do
       let(:source) do
-        ['%x(',
+        ['foo = %x(',
          '  ls',
          '  ls -l',
          ')']
@@ -453,7 +453,7 @@ describe RuboCop::Cop::Style::CommandLiteral, :config do
 
     describe 'a multi-line %x string with backticks' do
       let(:source) do
-        ['%x(',
+        ['foo = %x(',
          '  echo `ls`',
          '  echo `ls -l`',
          ')']
