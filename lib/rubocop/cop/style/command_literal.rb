@@ -76,7 +76,7 @@ module RuboCop
 
         def node_body(node)
           loc = node.loc
-          loc.expression.source[loc.begin.end_pos...loc.end.begin_pos]
+          loc.expression.source[loc.begin.length...-loc.end.length]
         end
 
         def heredoc_literal?(node)
