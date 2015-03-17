@@ -686,7 +686,12 @@ describe RuboCop::CLI, :isolated_environment do
         create_file('.rubocop.yml', ['inherit_from: .rubocop_todo.yml'])
         expect(cli.run(['--auto-gen-config'])).to eq(1)
         expect(IO.readlines('.rubocop_todo.yml')[7..-1].map(&:chomp))
-          .to eq(['# Offense count: 1',
+          .to eq(['# Offense count: 2',
+                  '# Cop supports --auto-correct.',
+                  'Style/TrailingWhitespace:',
+                  '  Enabled: false',
+                  '',
+                  '# Offense count: 1',
                   '# Configuration parameters: AllowURI, URISchemes.',
                   'Metrics/LineLength:',
                   '  Max: 85',
@@ -695,11 +700,6 @@ describe RuboCop::CLI, :isolated_environment do
                   '# Cop supports --auto-correct.',
                   '# Configuration parameters: MultiSpaceAllowedForOperators.',
                   'Style/SpaceAroundOperators:',
-                  '  Enabled: false',
-                  '',
-                  '# Offense count: 2',
-                  '# Cop supports --auto-correct.',
-                  'Style/TrailingWhitespace:',
                   '  Enabled: false'])
 
         # Create new CLI instance to avoid using cached configuration.
@@ -755,6 +755,11 @@ describe RuboCop::CLI, :isolated_environment do
            'Metrics/LineLength:',
            '  Max: 90',
            '',
+           '# Offense count: 2',
+           '# Cop supports --auto-correct.',
+           'Style/TrailingWhitespace:',
+           '  Enabled: false',
+           '',
            '# Offense count: 1',
            '# Cop supports --auto-correct.',
            'Style/CommentIndentation:',
@@ -779,11 +784,6 @@ describe RuboCop::CLI, :isolated_environment do
            '# Offense count: 1',
            '# Cop supports --auto-correct.',
            'Style/Tab:',
-           '  Enabled: false',
-           '',
-           '# Offense count: 2',
-           '# Cop supports --auto-correct.',
-           'Style/TrailingWhitespace:',
            '  Enabled: false']
         actual = IO.read('.rubocop_todo.yml').split($RS)
         expected.each_with_index do |line, ix|

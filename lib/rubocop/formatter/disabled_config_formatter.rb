@@ -33,7 +33,9 @@ module RuboCop
         # Syntax isn't a real cop and it can't be disabled.
         @cops_with_offenses.delete('Syntax')
 
-        @cops_with_offenses.sort.each do |cop_name, offense_count|
+        @cops_with_offenses
+          .sort_by { |cop_name, offense_count| [-offense_count, cop_name] }
+          .each do |cop_name, offense_count|
           output.puts
           cfg = self.class.config_to_allow_offenses[cop_name]
           cfg ||= { 'Enabled' => false }
@@ -41,6 +43,7 @@ module RuboCop
           output.puts "#{cop_name}:"
           cfg.each { |key, value| output.puts "  #{key}: #{value}" }
         end
+
         puts "Created #{output.path}."
         puts "Run `rubocop --config #{output.path}`, or"
         puts "add inherit_from: #{output.path} in a .rubocop.yml file."
