@@ -453,7 +453,16 @@ Style/RedundantReturn:
   # When true allows code like `return x, y`.
   AllowMultipleReturnValues: false
 
+# Use / or %r around regular expressions.
 Style/RegexpLiteral:
+  EnforcedStyle: slashes
+  # slashes: Always use slashes.
+  # percent_r: Always use %r.
+  # mixed: Use slashes on single-line regexes, and %r on multi-line regexes.
+  SupportedStyles:
+    - slashes
+    - percent_r
+    - mixed
   # If false, the cop will always recommend using %r if one or more slashes
   # are found in the regexp string.
   AllowInnerSlashes: false

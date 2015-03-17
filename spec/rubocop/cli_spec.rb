@@ -853,7 +853,9 @@ describe RuboCop::CLI, :isolated_environment do
            'again.',
            '',
            '# Offense count: 1',
-           '# Configuration parameters: AllowInnerSlashes.',
+           '# Cop supports --auto-correct.',
+           '# Configuration parameters: EnforcedStyle, SupportedStyles, ' \
+           'AllowInnerSlashes.',
            'Style/RegexpLiteral:',
            '  Enabled: false']
         actual = IO.read('.rubocop_todo.yml').split($RS)
