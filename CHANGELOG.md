@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#1712](https://github.com/bbatsov/rubocop/pull/1712): Set `Offense#corrected?` to `true`, `false`, or `nil` when it was, wasn't, or can't be auto-corrected, respectively. ([@vassilevsky][])
 * [#1669](https://github.com/bbatsov/rubocop/pull/1669): Add command-line switch `--display-style-guide`. ([@marxarelli][])
 * [#1405](https://github.com/bbatsov/rubocop/issues/1405): Add Rails TimeZone and Date cops. ([@palkan][])
 * [#1641](https://github.com/bbatsov/rubocop/pull/1641): Add ruby19_no_mixed_keys style to `HashStyle` cop. ([@iainbeeston][])
@@ -1302,3 +1303,4 @@
 [@jdoconnor]: https://github.com/jdoconnor
 [@meganemura]: https://github.com/meganemura
 [@zvkemp]: https://github.com/zvkemp
+[@vassilevsky]: https://github.com/vassilevsky
