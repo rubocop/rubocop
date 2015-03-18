@@ -32,6 +32,7 @@
 * Handle symbols in `Lint/Void`. ([@bbatsov][])
 * [#1695](https://github.com/bbatsov/rubocop/pull/1695): Fix bug with `--auto-gen-config` and `SpaceInsideBlockBraces`. ([@meganemura][])
 * Correct issues with whitespace around multi-line lambda arguments. ([@zvkemp][])
+* [#1579](https://github.com/bbatsov/rubocop/issues/1579): Fix handling of similar-looking blocks in `BlockAlignment`. ([@lumeet][])
 
 ### Changes
 
