@@ -34,6 +34,7 @@
 * [#1695](https://github.com/bbatsov/rubocop/pull/1695): Fix bug with `--auto-gen-config` and `SpaceInsideBlockBraces`. ([@meganemura][])
 * Correct issues with whitespace around multi-line lambda arguments. ([@zvkemp][])
 * [#1579](https://github.com/bbatsov/rubocop/issues/1579): Fix handling of similar-looking blocks in `BlockAlignment`. ([@lumeet][])
+* [#1676](https://github.com/bbatsov/rubocop/pull/1676): Fix auto-correct in `Lambda` when a new multi-line lambda is used as an argument. ([@lumeet][])
 
 ### Changes
 

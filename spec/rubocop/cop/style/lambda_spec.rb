@@ -134,4 +134,22 @@ describe RuboCop::Cop::Style::Lambda do
                                 'end'].join("\n"))
     end
   end
+
+  context 'new multi-line lambda as an argument' do
+    let(:source) do
+      ['has_many :kittens, -> do',
+       '  where(cats: Cat.young.where_values_hash)',
+       'end, source: cats']
+    end
+
+    it 'registers an offense' do
+      inspect_source(cop, source)
+      expect(cop.offenses.size).to eq 1
+    end
+
+    it 'does not auto-correct' do
+      expect(autocorrect_source(cop, source)).to eq(source.join("\n"))
+      expect(cop.offenses.map(&:corrected?)).to eq [false]
+    end
+  end
 end
