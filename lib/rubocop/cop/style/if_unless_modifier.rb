@@ -23,6 +23,21 @@ module RuboCop
           return unless fit_within_line_as_modifier_form?(node)
           add_offense(node, :keyword, message(node.loc.keyword.source))
         end
+
+        def autocorrect(node)
+          if node.loc.keyword.source == 'if'
+            cond, body = *node
+          else
+            cond, _else, body = *node
+          end
+
+          @corrections << lambda do |corrector|
+            oneline = "#{body.loc.expression.source} " \
+                      "#{node.loc.keyword.source} " +
+                      cond.loc.expression.source
+            corrector.replace(node.loc.expression, oneline)
+          end
+        end
       end
     end
   end
