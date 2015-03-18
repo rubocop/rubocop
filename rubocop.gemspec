@@ -17,8 +17,8 @@ Gem::Specification.new do |s|
 
   s.email = 'rubocop@googlegroups.com'
   s.files = `git ls-files`.split($RS).reject do |file|
-    file =~ /^(?:
-    spec\/.*
+    file =~ %r{^(?:
+    spec/.*
     |Gemfile
     |Rakefile
     |\.rspec
@@ -27,10 +27,10 @@ Gem::Specification.new do |s|
     |\.rubocop_todo.yml
     |\.travis.yml
     |.*\.eps
-    )$/x
+    )$}x
   end
   s.test_files = []
-  s.executables = s.files.grep(/^bin\//) { |f| File.basename(f) }
+  s.executables = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
   s.extra_rdoc_files = ['LICENSE.txt', 'README.md']
   s.homepage = 'http://github.com/bbatsov/rubocop'
   s.licenses = ['MIT']
