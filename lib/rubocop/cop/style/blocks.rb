@@ -43,9 +43,9 @@ module RuboCop
           lambda do |corrector|
             b, e = node.loc.begin, node.loc.end
             if b.is?('{')
-              # If the left brace is immediately preceded by a word character,
+              # If the left brace is not preceded by a whitespace character,
               # then we need a space before `do` to get valid Ruby code.
-              if b.source_buffer.source[b.begin_pos - 1, 1] =~ /\w/
+              if b.source_buffer.source[b.begin_pos - 1, 1] =~ /\S/
                 corrector.insert_before(b, ' ')
               end
               corrector.replace(b, 'do')
