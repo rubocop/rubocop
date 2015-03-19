@@ -58,13 +58,13 @@ module RuboCop
           if empty_else && empty_else['Enabled']
             case empty_else['EnforcedStyle']
             when 'empty'
-              add_offense(node, node.location, format(MSG_NIL, node.type))
+              add_offense(node, :expression, format(MSG_NIL, node.type))
             when 'nil'
-              add_offense(node, node.location, format(MSG_EMPTY, node.type))
+              add_offense(node, :expression, format(MSG_EMPTY, node.type))
             end
           end
 
-          add_offense(node, node.location, format(MSG, node.type))
+          add_offense(node, :expression, format(MSG, node.type))
         end
       end
     end

@@ -25,6 +25,7 @@
 
 ### Bugs fixed
 
+* [#1705](https://github.com/bbatsov/rubocop/issues/1705): Fix crash when reporting offenses of `MissingElse` cop. ([@gerry3][])
 * [#1659](https://github.com/bbatsov/rubocop/pull/1659): Fix stack overflow with JRuby and Windows 8, during initial config validation. ([@pimterry][])
 * [#1694](https://github.com/bbatsov/rubocop/issues/1694): Ignore methods with a `blockarg` in `TrivialAccessors`. ([@bbatsov][])
 * [#1617](https://github.com/bbatsov/rubocop/issues/1617): Always read the html output template using utf-8. ([@bbatsov][])
@@ -1306,3 +1307,4 @@
 [@meganemura]: https://github.com/meganemura
 [@zvkemp]: https://github.com/zvkemp
 [@vassilevsky]: https://github.com/vassilevsky
+[@gerry3]: https://github.com/gerry3
