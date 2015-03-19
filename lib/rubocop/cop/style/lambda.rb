@@ -7,6 +7,8 @@ module RuboCop
       # anonymous functions and uses of the 1.9 lambda syntax for multi-line
       # anonymous functions.
       class Lambda < Cop
+        include AutocorrectUnlessChangingAST
+
         SINGLE_MSG = 'Use the new lambda literal syntax `->(params) {...}`.'
         SINGLE_NO_ARG_MSG = 'Use the new lambda literal syntax `-> {...}`.'
         MULTI_MSG = 'Use the `lambda` method for multi-line lambdas.'
@@ -25,19 +27,19 @@ module RuboCop
           length = lambda_length(node)
 
           if selector != '->' && length == 1
-            add_offense_for_single_line(block_method, args)
+            add_offense_for_single_line(node, block_method.loc.expression, args)
           elsif selector == '->' && length > 1
-            add_offense(block_method, :expression, MULTI_MSG)
+            add_offense(node, block_method.loc.expression, MULTI_MSG)
           end
         end
 
         private
 
-        def add_offense_for_single_line(block_method, args)
+        def add_offense_for_single_line(block_node, location, args)
           if args.children.empty?
-            add_offense(block_method, :expression, SINGLE_NO_ARG_MSG)
+            add_offense(block_node, location, SINGLE_NO_ARG_MSG)
           else
-            add_offense(block_method, :expression, SINGLE_MSG)
+            add_offense(block_node, location, SINGLE_MSG)
           end
         end
 
@@ -48,14 +50,14 @@ module RuboCop
           end_line - start_line + 1
         end
 
-        def autocorrect(node)
-          ancestor = node.ancestors.first
+        def correction(node)
+          lambda do |corrector|
+            block_method, _args = *node
 
-          @corrections << lambda do |corrector|
-            if node.loc.expression.source == 'lambda'
-              autocorrect_old_to_new(corrector, ancestor)
+            if block_method.loc.expression.source == 'lambda'
+              autocorrect_old_to_new(corrector, node)
             else
-              autocorrect_new_to_old(corrector, ancestor)
+              autocorrect_new_to_old(corrector, node)
             end
           end
         end
