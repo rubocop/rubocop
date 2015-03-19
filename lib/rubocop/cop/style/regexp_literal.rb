@@ -3,81 +3,112 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for regexp literals and reports offenses based
-      # on how many escaped slashes there are in the regexp and on the
-      # value of the configuration parameter MaxSlashes.
+      # This cop enforces using // or %r around regular expressions.
+      #
+      # @example
+      #   # Good if EnforcedStyle is slashes or mixed, bad if percent_r.
+      #   snake_case = /^[\dA-Z_]+$/
+      #
+      #   # Good if EnforcedStyle is percent_r, bad if slashes or mixed.
+      #   snake_case = %r{^[\dA-Z_]+$}
+      #
+      #   # Good if EnforcedStyle is slashes, bad if percent_r or mixed.
+      #   regex = /
+      #     foo
+      #     (bar)
+      #     (baz)
+      #   /x
+      #
+      #   # Good if EnforcedStyle is percent_r or mixed, bad if slashes.
+      #   regex = %r{
+      #     foo
+      #     (bar)
+      #     (baz)
+      #   }x
+      #
+      #   # Bad unless AllowInnerSlashes is true.
+      #   x =~ /home\//
       class RegexpLiteral < Cop
-        class << self
-          attr_accessor :slash_count
-        end
+        include ConfigurableEnforcedStyle
+
+        MSG_USE_SLASHES = 'Use `//` around regular expression.'
+        MSG_USE_PERCENT_R = 'Use `%r` around regular expression.'
 
         def on_regexp(node)
-          string_parts = node.children.select { |child| child.type == :str }
-          total_string = string_parts.map { |s| s.loc.expression.source }.join
-          slashes = total_string.count('/')
-          delimiter_start = node.loc.begin.source[0]
-
-          if delimiter_start == '/'
-            if slashes > max_slashes
-              add_offense(node, :expression, error_message(''))
-            end
-          elsif slashes <= max_slashes
-            add_offense(node, :expression, error_message('only '))
+          if slash_literal?(node)
+            check_slash_literal(node)
+          else
+            check_percent_r_literal(node)
           end
-
-          configure_max(delimiter_start, slashes) if @options[:auto_gen_config]
         end
 
         private
 
-        def max_slashes
-          m = cop_config['MaxSlashes']
-          unless m.is_a?(Fixnum) && m >= 0
-            fail "Illegal value for MaxSlashes: #{m}"
+        def check_slash_literal(node)
+          return if style == :slashes && !contains_disallowed_slash?(node)
+          return if style == :mixed &&
+                    single_line?(node) &&
+                    !contains_disallowed_slash?(node)
+
+          add_offense(node, :expression, MSG_USE_PERCENT_R)
+        end
+
+        def check_percent_r_literal(node)
+          return if style == :slashes && contains_disallowed_slash?(node)
+          return if style == :percent_r
+          return if style == :mixed && multi_line?(node)
+          return if style == :mixed && contains_disallowed_slash?(node)
+
+          add_offense(node, :expression, MSG_USE_SLASHES)
+        end
+
+        def contains_disallowed_slash?(node)
+          !allow_inner_slashes? && contains_slash?(node)
+        end
+
+        def contains_slash?(node)
+          node_body(node).include?('/')
+        end
+
+        def allow_inner_slashes?
+          cop_config['AllowInnerSlashes']
+        end
+
+        def node_body(node)
+          string_parts = node.children.select { |child| child.type == :str }
+          string_parts.map { |s| s.loc.expression.source }.join
+        end
+
+        def slash_literal?(node)
+          node.loc.begin.source == '/'
+        end
+
+        def single_line?(node)
+          !multi_line?(node)
+        end
+
+        def multi_line?(node)
+          block_length(node) > 1
+        end
+
+        def preferred_delimiters
+          config.for_cop('Style/PercentLiteralDelimiters') \
+            ['PreferredDelimiters']['%r'].split(//)
+        end
+
+        def autocorrect(node)
+          fail CorrectionNotPossible if contains_slash?(node)
+
+          if slash_literal?(node)
+            replacement = ['%r', ''].zip(preferred_delimiters).map(&:join)
+          else
+            replacement = %w(/ /)
           end
-          m
-        end
 
-        def configure_max(delimiter_start, value)
-          self.class.slash_count ||= {
-            '/' => Set.new([0]),
-            '%' => Set.new([100_000])
-          }
-
-          self.class.slash_count[delimiter_start].add(value)
-
-          # To avoid reports, MaxSlashes must be set equal to the highest
-          # number of slashes used within //, and also one less than the
-          # highest number of slashes used within %r{}. If no value can satisfy
-          # both requirements, just disable.
-          max = self.class.slash_count['/'].max
-          min = self.class.slash_count['%'].min
-
-          self.config_to_allow_offenses = calculate_config(max, min)
-        end
-
-        def calculate_config(max, min)
-          if max > max_slashes
-            if max < min
-              { 'MaxSlashes' => max }
-            else
-              { 'Enabled' => false }
-            end
-          elsif min < max_slashes + 1
-            if max < min
-              { 'MaxSlashes' => min - 1 }
-            else
-              { 'Enabled' => false }
-            end
+          @corrections << lambda do |corrector|
+            corrector.replace(node.loc.begin, replacement.first)
+            corrector.replace(node.loc.end, replacement.last)
           end
-        end
-
-        def error_message(word)
-          format('Use %%r %sfor regular expressions matching more ' \
-                 "than %d '/' character%s.",
-                 word,
-                 max_slashes,
-                 max_slashes == 1 ? '' : 's')
         end
       end
     end

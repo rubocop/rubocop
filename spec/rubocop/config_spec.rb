@@ -67,7 +67,7 @@ describe RuboCop::Config do
       it 'raises validation error' do
         expect { configuration.validate }
           .to raise_error(described_class::ValidationError,
-                          /^unrecognized parameter Metrics\/LineLength:Min/)
+                          %r{^unrecognized parameter Metrics/LineLength:Min})
       end
     end
 
