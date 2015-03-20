@@ -17,13 +17,11 @@ module RuboCop
         private
 
         def on_percent_literal(node)
-          node.children.each do |string|
-            if string.type == :dstr ||
-               string.loc.expression.source =~ StringHelp::ESCAPED_CHAR_REGEXP
-              return
-            end
+          requires_interpolation = node.children.any? do |string|
+            string.type == :dstr ||
+            string.loc.expression.source =~ StringHelp::ESCAPED_CHAR_REGEXP
           end
-          add_offense(node, :expression)
+          add_offense(node, :expression) unless requires_interpolation
         end
 
         def autocorrect(node)

@@ -28,4 +28,10 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
     inspect_source(cop, '"this is #{__FILE__} silly"')
     expect(cop.offenses).to be_empty
   end
+
+  it 'registers an offense for interpolation after __FILE__' do
+    inspect_source(cop,
+                   '"this is the #{__FILE__} #{1}"')
+    expect(cop.offenses.size).to eq(1)
+  end
 end

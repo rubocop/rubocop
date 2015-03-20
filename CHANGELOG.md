@@ -39,6 +39,7 @@
 * [#1579](https://github.com/bbatsov/rubocop/issues/1579): Fix handling of similar-looking blocks in `BlockAlignment`. ([@lumeet][])
 * [#1676](https://github.com/bbatsov/rubocop/pull/1676): Fix auto-correct in `Lambda` when a new multi-line lambda is used as an argument. ([@lumeet][])
 * [#1656](https://github.com/bbatsov/rubocop/issues/1656): Fix bug that would include hidden directories implicitly. ([@jonas054][])
+* [#1728](https://github.com/bbatsov/rubocop/pull/1728): Fix bug in `LiteralInInterpolation` and `AssignmentInCondition`. ([@ypresto][])
 
 ### Changes
 
