@@ -23,6 +23,7 @@
 * New cop `Performance/ReverseEach` to convert `reverse.each` to `reverse_each`. ([@rrosenblum][])
 * [#1281](https://github.com/bbatsov/rubocop/issues/1281): `IfUnlessModifier` cop does auto-correction. ([@lumeet][])
 * New cop `Performance/Detect` to detect usage of `select.first`, `select.last`, `find_all.first`, and `find_all.last` and convert them to use `detect` instead. ([@palkan][], [@rrosenblum][])
+* [#1728](https://github.com/bbatsov/rubocop/pull/1728): New cop `NonLocalExitFromIterator` checks for misused `return` in block. ([@ypresto][])
 
 ### Bugs fixed
 
@@ -1310,3 +1311,4 @@
 [@zvkemp]: https://github.com/zvkemp
 [@vassilevsky]: https://github.com/vassilevsky
 [@gerry3]: https://github.com/gerry3
+[@ypresto]: https://github.com/ypresto

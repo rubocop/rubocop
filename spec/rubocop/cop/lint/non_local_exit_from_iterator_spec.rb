@@ -1,0 +1,132 @@
+# encoding: utf-8
+
+require 'spec_helper'
+
+describe RuboCop::Cop::Lint::NonLocalExitFromIterator do
+  subject(:cop) { described_class.new }
+
+  context 'inspection' do
+    before do
+      inspect_source(cop, source)
+    end
+
+    let(:message) do
+      'Non-local exit from iterator, without return value. ' \
+        '`next`, `break`, `Array#find`, `Array#any?`, etc. is preferred.'
+    end
+
+    shared_examples_for 'offense detector' do
+      it 'registers an offense' do
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.offenses.first.message).to eq(message)
+        expect(cop.offenses.first.severity.name).to eq(:warning)
+        expect(cop.highlights).to eq(['return'])
+      end
+    end
+
+    context 'when block is followed by method chain' do
+      context 'and has single argument' do
+        let(:source) { <<-END }
+          items.each do |item|
+            return if item.stock == 0
+            item.update!(foobar: true)
+          end
+        END
+
+        it_behaves_like('offense detector')
+        it { expect(cop.offenses.first.line).to eq(2) }
+      end
+
+      context 'and has multiple arguments' do
+        let(:source) { <<-END }
+          items.each_with_index do |item, i|
+            return if item.stock == 0
+            item.update!(foobar: true)
+          end
+        END
+
+        it_behaves_like('offense detector')
+        it { expect(cop.offenses.first.line).to eq(2) }
+      end
+
+      context 'and has no argument' do
+        let(:source) { <<-END }
+          item.with_lock do
+            return if item.stock == 0
+            item.update!(foobar: true)
+          end
+        END
+
+        it { expect(cop.offenses).to be_empty }
+      end
+    end
+
+    context 'when block is not followed by method chain' do
+      let(:source) { <<-END }
+        transaction do
+          return unless update_necessary?
+          find_each do |item|
+            return if item.stock == 0 # false-negative...
+            item.update!(foobar: true)
+          end
+        end
+      END
+
+      it { expect(cop.offenses).to be_empty }
+    end
+
+    context 'when block is lambda' do
+      let(:source) { <<-END }
+        items.each(lambda do |item|
+          return if item.stock == 0
+          item.update!(foobar: true)
+        end)
+        items.each -> (item) {
+          return if item.stock == 0
+          item.update!(foobar: true)
+        }
+      END
+
+      it { expect(cop.offenses).to be_empty }
+    end
+
+    context 'when block in middle of nest is followed by method chain' do
+      let(:source) { <<-END }
+        transaction do
+          return unless update_necessary?
+          items.each do |item|
+            return if item.nil?
+            item.with_lock do
+              return if item.stock == 0
+              item.very_complicated_update_operation!
+            end
+          end
+        end
+      END
+
+      it 'registers offenses' do
+        expect(cop.offenses.size).to eq(2)
+        expect(cop.offenses[0].message).to eq(message)
+        expect(cop.offenses[0].severity.name).to eq(:warning)
+        expect(cop.offenses[0].line).to eq(4)
+        expect(cop.offenses[1].message).to eq(message)
+        expect(cop.offenses[1].severity.name).to eq(:warning)
+        expect(cop.offenses[1].line).to eq(6)
+        expect(cop.highlights).to eq(%w(return return))
+      end
+    end
+
+    context 'when return with value' do
+      let(:source) { <<-END }
+        def find_first_sold_out_item(items)
+          items.each do |item|
+            return item if item.stock == 0
+            item.foobar!
+          end
+        end
+      END
+
+      it { expect(cop.offenses).to be_empty }
+    end
+  end
+end
