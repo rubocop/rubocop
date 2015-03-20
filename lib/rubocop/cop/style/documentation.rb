@@ -70,10 +70,17 @@ module RuboCop
           preceding_comment = ast_with_comments[node].last
           distance = node.loc.keyword.line - preceding_comment.loc.line
           return false if distance > 1
+          return false unless comment_line_only?(preceding_comment)
 
           # As long as there's at least one comment line that isn't an
           # annotation, it's OK.
           ast_with_comments[node].any? { |comment| !annotation?(comment) }
+        end
+
+        def comment_line_only?(comment)
+          source_buffer = comment.loc.expression.source_buffer
+          comment_line = source_buffer.source_line(comment.loc.line)
+          comment_line =~ /^\s*#/
         end
 
         # The :nodoc: comment is not actually associated with the class/module
