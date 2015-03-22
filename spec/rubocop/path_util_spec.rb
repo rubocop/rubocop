@@ -23,6 +23,8 @@ describe RuboCop::PathUtil do
       create_file('dir/files', '')
       create_file('dir/dir/file', '')
       create_file('dir/sub/file', '')
+      create_file('dir/.hidden/file', '')
+      create_file('dir/.hidden_file', '')
       $stderr = StringIO.new
     end
 
@@ -36,6 +38,20 @@ describe RuboCop::PathUtil do
           .to eq(["Warning: Deprecated pattern style 'dir/**' in " \
                   ".rubocop.yml. Change to 'dir/**/*'.",
                   ''].join("\n"))
+      end
+
+      it 'does not match dir/** for file in hidden dir' do
+        expect(subject.match_path?('dir/**', 'dir/.hidden/file',
+                                   '.rubocop.yml'))
+          .to be_falsey
+        expect($stderr.string).to eq('')
+      end
+
+      it 'does not match dir/** for hidden file' do
+        expect(subject.match_path?('dir/**', 'dir/.hidden_file',
+                                   '.rubocop.yml'))
+          .to be_falsey
+        expect($stderr.string).to eq('')
       end
 
       it 'matches strings to the basename and prints warning' do
@@ -67,6 +83,12 @@ describe RuboCop::PathUtil do
       expect(subject.match_path?('**/file',  'file', '')).to be_truthy
 
       expect(subject.match_path?('sub/*',    'dir/sub/file', '')).to be_falsey
+
+      expect(subject.match_path?('**/*', 'dir/.hidden/file', '')).to be_falsey
+      expect(subject.match_path?('**/*', 'dir/.hidden_file', '')).to be_falsey
+      expect(subject.match_path?('**/.*/*', 'dir/.hidden/file', ''))
+        .to be_truthy
+      expect(subject.match_path?('**/.*', 'dir/.hidden_file', '')).to be_truthy
     end
 
     it 'matches regexps' do

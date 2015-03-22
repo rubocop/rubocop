@@ -2209,9 +2209,11 @@ describe RuboCop::CLI, :isolated_environment do
       create_file('regexp', 'x=0')
       create_file('.dot1/file.rb', 'x=0') # Hidden but explicitly included
       create_file('.dot2/file.rb', 'x=0') # Hidden, excluded by default
+      create_file('.dot3/file.rake', 'x=0') # Hidden, not included by wildcard
       create_file('.rubocop.yml', ['AllCops:',
                                    '  Include:',
                                    '    - example',
+                                   '    - "**/*.rake"',
                                    '    - !ruby/regexp /regexp$/',
                                    '    - .dot1/**/*'
                                   ])

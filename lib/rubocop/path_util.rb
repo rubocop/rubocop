@@ -25,15 +25,11 @@ module RuboCop
           # beginning with dot, but not a new match. That's a special case,
           # though. Not what we want to handle here. And this is a match that
           # we overrule. Only patterns like dir/**/.* can be used to match dot
-          # files.
-          return false if basename.start_with?('.')
+          # files. Hidden directories (starting with a dot) will also produce
+          # an old match, just like hidden files.
+          return false if path.split(File::SEPARATOR).any? { |s| hidden?(s) }
 
-          # Hidden directories (starting with a dot) will also produce an old
-          # match, just like hidden files. A deprecation warning would be wrong
-          # for these.
-          if path.split(File::SEPARATOR).none? { |s| s.start_with?('.') }
-            issue_deprecation_warning(basename, pattern, config_path)
-          end
+          issue_deprecation_warning(basename, pattern, config_path)
         end
         old_match || new_match
       when Regexp
@@ -49,6 +45,10 @@ module RuboCop
                     end
       warn("Warning: Deprecated pattern style '#{pattern}' in " \
            "#{config_path}#{instruction}")
+    end
+
+    def hidden?(path_component)
+      path_component =~ /^\.[^.]/
     end
   end
 end
