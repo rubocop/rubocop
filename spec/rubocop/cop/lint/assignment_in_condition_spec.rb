@@ -78,6 +78,14 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
     expect(cop.offenses).to be_empty
   end
 
+  it 'registers an offense for assignment after == in condition' do
+    inspect_source(cop,
+                   ['if test == 10 || foobar = 1',
+                    'end'
+                   ])
+    expect(cop.offenses.size).to eq(1)
+  end
+
   it 'accepts = in a block that is called in a condition' do
     inspect_source(cop,
                    'return 1 if any_errors? { o = inspect(file) }')
@@ -88,6 +96,12 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
     inspect_source(cop,
                    'raise StandardError unless foo ||= bar')
     expect(cop.offenses).to be_empty
+  end
+
+  it 'registers an offense for assignment after ||= in condition' do
+    inspect_source(cop,
+                   'raise StandardError unless (foo ||= bar) || a = b')
+    expect(cop.offenses.size).to eq(1)
   end
 
   context 'safe assignment is allowed' do

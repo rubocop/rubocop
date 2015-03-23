@@ -23,6 +23,7 @@
 * New cop `Performance/ReverseEach` to convert `reverse.each` to `reverse_each`. ([@rrosenblum][])
 * [#1281](https://github.com/bbatsov/rubocop/issues/1281): `IfUnlessModifier` cop does auto-correction. ([@lumeet][])
 * New cop `Performance/Detect` to detect usage of `select.first`, `select.last`, `find_all.first`, and `find_all.last` and convert them to use `detect` instead. ([@palkan][], [@rrosenblum][])
+* [#1728](https://github.com/bbatsov/rubocop/pull/1728): New cop `NonLocalExitFromIterator` checks for misused `return` in block. ([@ypresto][])
 
 ### Bugs fixed
 
@@ -38,6 +39,7 @@
 * [#1579](https://github.com/bbatsov/rubocop/issues/1579): Fix handling of similar-looking blocks in `BlockAlignment`. ([@lumeet][])
 * [#1676](https://github.com/bbatsov/rubocop/pull/1676): Fix auto-correct in `Lambda` when a new multi-line lambda is used as an argument. ([@lumeet][])
 * [#1656](https://github.com/bbatsov/rubocop/issues/1656): Fix bug that would include hidden directories implicitly. ([@jonas054][])
+* [#1728](https://github.com/bbatsov/rubocop/pull/1728): Fix bug in `LiteralInInterpolation` and `AssignmentInCondition`. ([@ypresto][])
 
 ### Changes
 
@@ -1310,3 +1312,4 @@
 [@zvkemp]: https://github.com/zvkemp
 [@vassilevsky]: https://github.com/vassilevsky
 [@gerry3]: https://github.com/gerry3
+[@ypresto]: https://github.com/ypresto

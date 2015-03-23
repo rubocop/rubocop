@@ -9,6 +9,7 @@ module RuboCop
         include SafeAssignment
 
         MSG = 'Assignment in condition - you probably meant to use `==`.'
+        ASGN_TYPES = [:begin, *EQUALS_ASGN_NODES, :send]
 
         def on_if(node)
           check(node)
@@ -29,20 +30,31 @@ module RuboCop
 
           # assignments inside blocks are not what we're looking for
           return if condition.type == :block
-
-          condition.each_node(:begin, *EQUALS_ASGN_NODES, :send) do |asgn_node|
+          traverse_node(condition, ASGN_TYPES) do |asgn_node|
             if asgn_node.type == :send
               _receiver, method_name, *_args = *asgn_node
-              return if method_name != :[]=
+              next :skip_children if method_name != :[]=
             end
 
             # skip safe assignment nodes if safe assignment is allowed
-            return if safe_assignment_allowed? && safe_assignment?(asgn_node)
+            if safe_assignment_allowed? && safe_assignment?(asgn_node)
+              next :skip_children
+            end
 
             # assignment nodes from shorthand ops like ||= don't have operator
             if asgn_node.type != :begin && asgn_node.loc.operator
               add_offense(asgn_node, :operator)
             end
+          end
+        end
+
+        # each_node/visit_descendants_with_types with :skip_children
+        def traverse_node(node, types, &block)
+          result = yield node if types.include?(node.type)
+          # return to skip all descendant nodes
+          return if result == :skip_children
+          node.children.each do |child|
+            traverse_node(child, types, &block) if child.is_a?(Astrolabe::Node)
           end
         end
       end
