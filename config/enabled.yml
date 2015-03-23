@@ -975,6 +975,10 @@ Lint/Void:
 
 ##################### Performance #############################
 
+Performance/DefineMethod:
+  Description: 'Use `define_method` instead of `module_eval`.'
+  Enabled: true
+
 Performance/Detect:
   Description: >-
                   Use `detect` instead of `select.first`, `find_all.first`,
