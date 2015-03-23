@@ -972,7 +972,9 @@ Lint/Void:
 ##################### Performance #############################
 
 Performance/Detect:
-  Description: 'Use `detect` instead of `select.first` or `find_all.first`.'
+  Description: >-
+                  Use `detect` instead of `select.first`, `find_all.first`,
+                  `select.last`, and `find_all.last`.
   Enabled: true
 
 Performance/ReverseEach:
