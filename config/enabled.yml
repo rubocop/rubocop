@@ -975,6 +975,12 @@ Lint/Void:
 
 ##################### Performance #############################
 
+Performance/Size:
+  Description: >-
+                  Use `size` instead of `count` for counting
+                  the number of elements in `Array` and `Hash`.
+  Enabled: true
+
 Performance/Detect:
   Description: >-
                   Use `detect` instead of `select.first`, `find_all.first`,
