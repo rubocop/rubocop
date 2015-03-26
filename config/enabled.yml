@@ -991,6 +991,12 @@ Performance/ReverseEach:
   Description: 'Use `reverse_each` instead of `reverse.each`.'
   Enabled: true
 
+Performance/Sample:
+  Description: >-
+                  Use `sample` instead of `shuffle.first`,
+                  `shuffle.last`, and `shuffle[Fixnum]`.
+  Enabled: true
+
 ##################### Rails ##################################
 
 Rails/ActionFilter:
