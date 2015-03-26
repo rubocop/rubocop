@@ -112,12 +112,31 @@ module RuboCop
     end
 
     def file_to_include?(file)
-      absolute_file_path = File.expand_path(file)
       relative_file_path = path_relative_to_config(file)
+
+      # Optimization to quickly decide if the given file is hidden (on the top
+      # level) and can not be matched by any pattern.
+      is_hidden = relative_file_path.start_with?('.') &&
+                  !relative_file_path.start_with?('..')
+      return false if is_hidden && !possibly_include_hidden?
+
+      absolute_file_path = File.expand_path(file)
+
       patterns_to_include.any? do |pattern|
         match_path?(pattern, relative_file_path, loaded_path) ||
           match_path?(pattern, absolute_file_path, loaded_path)
       end
+    end
+
+    # Returns true if there's a chance that an Include pattern matches hidden
+    # files, false if that's definitely not possible.
+    def possibly_include_hidden?
+      if @possibly_include_hidden.nil?
+        @possibly_include_hidden = patterns_to_include.any? do |s|
+          s.is_a?(Regexp) || s.start_with?('.') || s.include?('/.')
+        end
+      end
+      @possibly_include_hidden
     end
 
     def file_to_exclude?(file)

@@ -6,6 +6,10 @@ module RuboCop
     module_function
 
     def relative_path(path, base_dir = Dir.pwd)
+      # Optimization for the common case where path begins with the base
+      # dir. Just cut off the first part.
+      return path[(base_dir.length + 1)..-1] if path.start_with?(base_dir)
+
       path_name = Pathname.new(File.expand_path(path))
       path_name.relative_path_from(Pathname.new(base_dir)).to_s
     end
