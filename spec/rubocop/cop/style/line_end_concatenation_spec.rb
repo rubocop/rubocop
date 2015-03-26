@@ -152,6 +152,16 @@ describe RuboCop::Cop::Style::LineEndConcatenation do
     expect(corrected).to eq ['top = "test" \\', '"top"'].join("\n")
   end
 
+  # The "central auto-correction engine" can't handle intermediate states where
+  # the code has syntax errors, so it's important to fix the trailing
+  # whitespace in this cop.
+  it 'autocorrects a + with trailing whitespace to \\' do
+    corrected = autocorrect_source(cop,
+                                   ['top = "test" + ',
+                                    '"top"'])
+    expect(corrected).to eq ['top = "test" \\', '"top"'].join("\n")
+  end
+
   it 'autocorrects for chained concatenations and << calls' do
     corrected = autocorrect_source(cop,
                                    ['top = "test#{x}" <<',
