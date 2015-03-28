@@ -145,37 +145,42 @@ module RuboCop
         buffer ||= @processed_source.buffer
         src = buffer.source
 
-        if side == :both
-          go_left, go_right = true, true
-        else
-          go_left = side == :left
-          go_right = side == :right
-        end
+        go_left, go_right = directions(side)
 
         begin_pos, end_pos = range.begin_pos, range.end_pos
-        begin_pos -= 1 if go_left && src[begin_pos - 1] == ','
-        end_pos += 1 if go_right && src[end_pos] == ','
+        begin_pos = move_pos(src, begin_pos, -1, go_left, /,/)
+        end_pos = move_pos(src, end_pos, 1, go_right, /,/)
 
         Parser::Source::Range.new(buffer, begin_pos, end_pos)
       end
 
-      def range_with_surrounding_space(range, side = :both, buffer = nil)
+      def range_with_surrounding_space(range, side = :both, buffer = nil,
+                                       with_newline = true)
         buffer ||= @processed_source.buffer
         src = buffer.source
 
-        if side == :both
-          go_left, go_right = true, true
-        else
-          go_left = side == :left
-          go_right = side == :right
-        end
+        go_left, go_right = directions(side)
 
         begin_pos, end_pos = range.begin_pos, range.end_pos
-        begin_pos -= 1 while go_left && src[begin_pos - 1] =~ /[ \t]/
-        begin_pos -= 1 if go_left && src[begin_pos - 1] == "\n"
-        end_pos += 1 while go_right && src[end_pos] =~ /[ \t]/
-        end_pos += 1 if go_right && src[end_pos] == "\n"
+        begin_pos = move_pos(src, begin_pos, -1, go_left, /[ \t]/)
+        begin_pos = move_pos(src, begin_pos, -1, go_left && with_newline, /\n/)
+        end_pos = move_pos(src, end_pos, 1, go_right, /[ \t]/)
+        end_pos = move_pos(src, end_pos, 1, go_right && with_newline, /\n/)
         Parser::Source::Range.new(buffer, begin_pos, end_pos)
+      end
+
+      def move_pos(src, pos, step, condition, regexp)
+        offset = step == -1 ? -1 : 0
+        pos += step while condition && src[pos + offset] =~ regexp
+        pos
+      end
+
+      def directions(side)
+        if side == :both
+          [true, true]
+        else
+          [side == :left, side == :right]
+        end
       end
 
       def begins_its_line?(range)
