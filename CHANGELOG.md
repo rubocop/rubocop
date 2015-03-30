@@ -26,6 +26,7 @@
 * [#1728](https://github.com/bbatsov/rubocop/pull/1728): New cop `NonLocalExitFromIterator` checks for misused `return` in block. ([@ypresto][])
 * New cop `Performance/Size` to convert calls to `count` on `Array` and `Hash` to `size`. ([@rrosenblum][])
 * New cop `Performance/Sample` to convert usages of `shuffle.first`, `shuffle.last`, and `shuffle[Fixnum]` to `sample`. ([@rrosenblum][])
+* New cop `Performance/FlatMap` to convert `Enumerable#map...Array#flatten` and `Enumerable#collect...Array#flatten` to `Enumerable#flat_map`. ([@rrosenblum][])
 
 ### Bugs fixed
 
