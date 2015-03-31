@@ -15,14 +15,15 @@ module RuboCop
       #   [1, 2, 3, 4].map { |e| [e, e] }.flatten
       #   [1, 2, 3, 4].collect { |e| [e, e] }.flatten
       class FlatMap < Cop
-        MSG = 'Use `flat_map` instead of `%s...flatten`.'
+        MSG = 'Use `flat_map` instead of `%s...%s`.'
         FLATTEN_MULTIPLE_LEVELS = ' Beware, `flat_map` only flattens 1 level ' \
                                   'and `flatten` can be used to flatten ' \
                                   'multiple levels'
+        FLATTEN = [:flatten, :flatten!]
 
         def on_send(node)
           left, second_method, flatten_param  = *node
-          return unless second_method == :flatten
+          return unless FLATTEN.include?(second_method)
           flatten_level, = *flatten_param
           expression, = *left
           _array, first_method = *expression
