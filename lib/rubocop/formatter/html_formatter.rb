@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+require 'cgi'
 require 'erb'
 require 'ostruct'
 require 'base64'
@@ -101,11 +102,16 @@ module RuboCop
 
           source_line = location.source_line
 
-          source_line[0...column_range.begin] +
+          escape(source_line[0...column_range.begin]) +
             "<span class=\"highlight #{offense.severity}\">" +
-            source_line[column_range] +
+            escape(source_line[column_range]) +
             '</span>' +
-            source_line[column_range.end..-1]
+            escape(source_line[column_range.end..-1])
+        end
+
+        def escape(s)
+          # Single quotes not escaped in Ruby 1.9, so add extra substitution.
+          CGI.escapeHTML(s).gsub(/'/, '&#39;')
         end
 
         def base64_encoded_logo_image

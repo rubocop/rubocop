@@ -44,6 +44,7 @@
 * [#1656](https://github.com/bbatsov/rubocop/issues/1656): Fix bug that would include hidden directories implicitly. ([@jonas054][])
 * [#1728](https://github.com/bbatsov/rubocop/pull/1728): Fix bug in `LiteralInInterpolation` and `AssignmentInCondition`. ([@ypresto][])
 * [#1735](https://github.com/bbatsov/rubocop/issues/1735): Handle trailing space in `LineEndConcatenation` autocorrect. ([@jonas054][])
+* [#1750](https://github.com/bbatsov/rubocop/issues/1750): Escape offending code lines output by the HTML formatter in case they contain markup. ([@jonas054][])
 
 ### Changes
 
