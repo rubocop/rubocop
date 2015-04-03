@@ -116,7 +116,7 @@
 
 ### New features
 
-* New cop `ExtraSpacing` points out unnecessary spacing in files. ([@blainesch][])
+* [#1450](https://github.com/bbatsov/rubocop/issues/1450): New cop `ExtraSpacing` points out unnecessary spacing in files. ([@blainesch][])
 * New cop `EmptyLinesAroundBlockBody` provides same functionality as the EmptyLinesAround(Class|Method|Module)Body but for blocks. ([@jcarbo][])
 * New cop `Style/EmptyElse` checks for empty `else`-clauses. ([@Koronen][])
 * [#1454](https://github.com/bbatsov/rubocop/issues/1454): New `--only-guide-cops` and `AllCops/StyleGuideCopsOnly` options that will only enforce cops that link to a style guide. ([@marxarelli][])
