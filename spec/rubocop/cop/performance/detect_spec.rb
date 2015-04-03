@@ -34,7 +34,8 @@ describe RuboCop::Cop::Performance::Detect do
     end
 
     it "registers an offense when first is called on multiline #{method}" do
-      inspect_source(cop, %(
+      inspect_source(
+        cop, %(
         [1, 2, 3].#{method} do
           |i| i % 2 == 0
         end.first)
@@ -45,7 +46,8 @@ describe RuboCop::Cop::Performance::Detect do
     end
 
     it "registers an offense when first is called on multiline #{method}" do
-      inspect_source(cop, %(
+      inspect_source(
+        cop, %(
         [1, 2, 3].#{method} do
           |i| i % 2 == 0
         end.last)
@@ -133,7 +135,7 @@ describe RuboCop::Cop::Performance::Detect do
               %([1, 2, 3].#{method} do
                   |i| i % 2 == 0
                 end.first)
-              )
+            )
 
             expect(new_source).to eq(
               %([1, 2, 3].#{preferred_method} do
@@ -149,7 +151,7 @@ describe RuboCop::Cop::Performance::Detect do
               %([1, 2, 3].#{method} do
                   |i| i % 2 == 0
                 end.last)
-              )
+            )
 
             expect(new_source).to eq(
               %([1, 2, 3].reverse.#{preferred_method} do
