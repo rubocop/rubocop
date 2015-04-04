@@ -4,9 +4,25 @@ module RuboCop
   module Cop
     module Style
       # The purpose of the this cop is advise the use of
-      # alias_method over the alias keyword whenever possible.
+      # alias_method over the alias keyword where appropriate.
       class Alias < Cop
         MSG = 'Use `alias_method` instead of `alias`.'
+
+        def on_module(node)
+          _name, body = *node
+          return if body.nil?
+
+          # using alias in lexical module scope is acceptable
+          ignore_alias_in(body)
+        end
+
+        def on_class(node)
+          _name, _superclass, body = *node
+          return if body.nil?
+
+          # using alias in lexical class scope is acceptable
+          ignore_alias_in(body)
+        end
 
         def on_block(node)
           method, _args, body = *node
@@ -16,7 +32,7 @@ module RuboCop
           # in such scenarios we don't want to report an offense
           return unless method_name == :instance_exec
 
-          body.each_node(:alias) { |n| ignore_node(n) }
+          ignore_alias_in(body)
         end
 
         def on_alias(node)
@@ -41,6 +57,12 @@ module RuboCop
             corrector.replace(new.loc.expression, ":#{new.children.first}")
             corrector.replace(old.loc.expression, ":#{old.children.first}")
           end
+        end
+
+        private
+
+        def ignore_alias_in(body)
+          body.each_node(:alias) { |n| ignore_node(n) }
         end
       end
     end
