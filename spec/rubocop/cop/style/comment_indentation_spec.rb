@@ -57,6 +57,14 @@ describe RuboCop::Cop::Style::CommentIndentation do
     end
   end
 
+  it 'registers offenses before __END__ but not after' do
+    inspect_source(cop, [' #',
+                         '__END__',
+                         '  #'])
+    expect(cop.messages)
+      .to eq(['Incorrect indentation detected (column 1 instead of 0).'])
+  end
+
   context 'around program structure keywords' do
     it 'accepts correctly indented comments' do
       inspect_source(cop, ['#',

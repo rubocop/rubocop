@@ -12,6 +12,13 @@ module RuboCop
           sb = processed_source.buffer
           return if sb.source.empty?
 
+          # The extra text that comes after the last token could be __END__
+          # followed by some data to read. If so, we don't check it because
+          # there could be good reasons why it needs to end with a certain
+          # number of newlines.
+          extra = sb.source[processed_source.tokens.last.pos.end_pos..-1]
+          return if extra.strip.start_with?('__END__')
+
           whitespace_at_end = sb.source[/\s*\Z/]
           blank_lines = whitespace_at_end.count("\n") - 1
           wanted_blank_lines = style == :final_newline ? 0 : 1

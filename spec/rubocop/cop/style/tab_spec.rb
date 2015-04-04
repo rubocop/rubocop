@@ -20,6 +20,13 @@ describe RuboCop::Cop::Style::Tab do
     expect(cop.offenses.size).to eq(1)
   end
 
+  it 'registers offenses before __END__ but not after' do
+    inspect_source(cop, ["\tx = 0",
+                         '__END__',
+                         "\tx = 0"])
+    expect(cop.messages).to eq(['Tab detected.'])
+  end
+
   it 'accepts a line with tab in a string' do
     inspect_source(cop, "(x = \"\t\")")
     expect(cop.offenses).to be_empty

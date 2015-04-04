@@ -18,6 +18,15 @@ describe RuboCop::Cop::Style::TrailingBlankLines, :config do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts final blank lines if they come after __END__' do
+      inspect_source(cop, ['x = 0',
+                           '',
+                           '__END__',
+                           '',
+                           ''])
+      expect(cop.offenses).to be_empty
+    end
+
     it 'registers an offense for multiple trailing blank lines' do
       inspect_source(cop, ['x = 0', '', '', '', ''])
       expect(cop.offenses.size).to eq(1)
