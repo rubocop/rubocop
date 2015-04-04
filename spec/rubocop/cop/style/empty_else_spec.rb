@@ -52,7 +52,7 @@ describe RuboCop::Cop::Style::EmptyElse do
       end
 
       context 'with an else-clause containing only the literal nil' do
-        it 'registers an offense' do
+        it "doesn't register an offense" do
           inspect_source(cop, 'unless cond; foo else nil end')
           expect(cop.messages).to be_empty
         end
@@ -82,7 +82,7 @@ describe RuboCop::Cop::Style::EmptyElse do
       end
 
       context 'with an else-clause containing only the literal nil' do
-        it 'registers an offense' do
+        it "doesn't register an offense" do
           inspect_source(cop, 'case v; when a; foo; when b; bar; else nil end')
           expect(cop.messages).to be_empty
         end
