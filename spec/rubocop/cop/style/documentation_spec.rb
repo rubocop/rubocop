@@ -144,6 +144,17 @@ describe RuboCop::Cop::Style::Documentation do
     end.to_not raise_error
   end
 
+  it 'registers an offense if the comment line contains code' do
+    inspect_source(cop,
+                   ['module A # The A Module',
+                    '  class B',
+                    '    C = 1',
+                    '  end',
+                    'end'
+                   ])
+    expect(cop.offenses.size).to eq 1
+  end
+
   context 'with # :nodoc:' do
     %w(class module).each do |keyword|
       it "accepts non-namespace #{keyword} without documentation" do
