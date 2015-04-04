@@ -23,6 +23,13 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
     expect(cop.offenses).to be_empty
   end
 
+  it 'registers an offense for long line before __END__ but not after' do
+    inspect_source(cop, ['#' * 150,
+                         '__END__',
+                         '#' * 200])
+    expect(cop.messages).to eq(['Line is too long. [150/80]'])
+  end
+
   context 'when AllowURI option is enabled' do
     let(:cop_config) { { 'Max' => 80, 'AllowURI' => true } }
 
