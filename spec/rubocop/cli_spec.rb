@@ -765,6 +765,7 @@ describe RuboCop::CLI, :isolated_environment do
            '',
            '# Offense count: 1',
            '# Cop supports --auto-correct.',
+           '# Configuration parameters: EnforcedStyle, SupportedStyles.',
            'Style/IndentationConsistency:',
            '  Enabled: false',
            '',
@@ -818,6 +819,7 @@ describe RuboCop::CLI, :isolated_environment do
            '',
            '# Offense count: 1',
            '# Cop supports --auto-correct.',
+           '# Configuration parameters: EnforcedStyle, SupportedStyles.',
            'Style/IndentationConsistency:',
            '  Enabled: false',
            '',
@@ -2138,6 +2140,80 @@ describe RuboCop::CLI, :isolated_environment do
   end
 
   describe 'configuration from file' do
+    context 'when configured for rails style indentation' do
+      it 'accepts rails style indentation' do
+        create_file('.rubocop.yml', ['Style/IndentationConsistency:',
+                                     '  EnforcedStyle: rails'])
+        create_file('example.rb', ['# encoding: utf-8',
+                                   '',
+                                   '# A feline creature',
+                                   'class Cat',
+                                   '  def meow',
+                                   "    puts('Meow!')",
+                                   '  end',
+                                   '',
+                                   '  protected',
+                                   '',
+                                   '    def can_we_be_friends?(another_cat)',
+                                   '      some_logic(another_cat)',
+                                   '    end',
+                                   '',
+                                   '  private',
+                                   '',
+                                   '    def meow_at_3am?',
+                                   '      rand < 0.8',
+                                   '    end',
+                                   'end'])
+        result = cli.run(%w(--format simple))
+        expect($stderr.string).to eq('')
+        expect(result).to eq(0)
+        expect($stdout.string)
+          .to eq(['', '1 file inspected, no offenses detected',
+                  ''].join("\n"))
+      end
+
+      %w(class module).each do |parent|
+        it "registers offense for normal indentation in #{parent}" do
+          create_file('.rubocop.yml', ['Style/IndentationConsistency:',
+                                       '  EnforcedStyle: rails'])
+          create_file('example.rb', ['# encoding: utf-8',
+                                     '',
+                                     '# A feline creature',
+                                     "#{parent} Cat",
+                                     '  def meow',
+                                     "    puts('Meow!')",
+                                     '  end',
+                                     '',
+                                     '  protected',
+                                     '',
+                                     '  def can_we_be_friends?(another_cat)',
+                                     '    some_logic(another_cat)',
+                                     '  end',
+                                     '',
+                                     '  private',
+                                     '',
+                                     '  def meow_at_3am?',
+                                     '    rand < 0.8',
+                                     '  end',
+                                     '',
+                                     '  def meow_at_4am?',
+                                     '    rand < 0.8',
+                                     '  end',
+                                     'end'])
+          result = cli.run(%w(--format simple))
+          expect($stderr.string).to eq('')
+          expect(result).to eq(1)
+          expect($stdout.string)
+            .to eq(['== example.rb ==',
+                    'C: 11:  3: Use 2 (not 0) spaces for rails indentation.',
+                    'C: 17:  3: Use 2 (not 0) spaces for rails indentation.',
+                    '',
+                    '1 file inspected, 2 offenses detected',
+                    ''].join("\n"))
+        end
+      end
+    end
+
     it 'allows the default configuration file as the -c argument' do
       create_file('example.rb', ['# encoding: utf-8',
                                  'x = 0',
