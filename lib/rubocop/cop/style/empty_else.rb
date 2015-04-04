@@ -110,6 +110,31 @@ module RuboCop
             add_offense(node, :else, MSG)
           end
         end
+
+        def autocorrect(node)
+          return false if autocorrect_forbidden?(node.type.to_s)
+
+          lambda do |corrector|
+            end_pos = if node.loc.end
+                        node.loc.end.begin_pos
+                      else
+                        node.loc.expression.end_pos + 1
+                      end
+            range = Parser::Source::Range.new(node.loc.expression.source_buffer,
+                                              node.loc.else.begin_pos,
+                                              end_pos)
+            corrector.remove(range)
+          end
+        end
+
+        def autocorrect_forbidden?(type)
+          [type, 'both'].include? missing_else_style
+        end
+
+        def missing_else_style
+          missing_config = config.for_cop('Style/MissingElse')
+          missing_config['Enabled'] ? missing_config['EnforcedStyle'] : nil
+        end
       end
     end
   end

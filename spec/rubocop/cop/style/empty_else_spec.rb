@@ -4,21 +4,56 @@ require 'spec_helper'
 
 describe RuboCop::Cop::Style::EmptyElse do
   subject(:cop) { described_class.new(config) }
+  let(:missing_else_config) { {} }
+
+  shared_examples 'auto-correct' do |keyword|
+    context 'MissingElse is disabled' do
+      it 'does auto-correction' do
+        expect(autocorrect_source(cop, source)).to eq(corrected_source)
+      end
+    end
+
+    %w(both if case).each do |missing_else_style|
+      context "MissingElse is #{missing_else_style}" do
+        let(:missing_else_config) do
+          { 'Enabled' => true,
+            'EnforcedStyle' => missing_else_style }
+        end
+
+        if ['both', keyword].include? missing_else_style
+          it 'does not auto-correct' do
+            expect(autocorrect_source(cop, source)).to eq(source)
+            expect(cop.offenses.map(&:corrected?)).to eq [false]
+          end
+        else
+          it 'does auto-correction' do
+            expect(autocorrect_source(cop, source)).to eq(corrected_source)
+          end
+        end
+      end
+    end
+  end
 
   context 'configured to warn on empty else' do
     let(:config) do
       RuboCop::Config.new('Style/EmptyElse' => {
                             'EnforcedStyle' => 'empty',
                             'SupportedStyles' => %w(empty nil both)
-                          })
+                          },
+                          'Style/MissingElse' => missing_else_config)
     end
 
     context 'given an if-statement' do
       context 'with a completely empty else-clause' do
+        let(:source) { 'if a; foo else end' }
+        let(:corrected_source) { 'if a; foo end' }
+
         it 'registers an offense' do
-          inspect_source(cop, 'if a; foo else end')
+          inspect_source(cop, source)
           expect(cop.messages).to eq(['Redundant `else`-clause.'])
         end
+
+        it_behaves_like 'auto-correct', 'if'
       end
 
       context 'with an else-clause containing only the literal nil' do
@@ -45,10 +80,15 @@ describe RuboCop::Cop::Style::EmptyElse do
 
     context 'given an unless-statement' do
       context 'with a completely empty else-clause' do
+        let(:source) { 'unless cond; foo else end' }
+        let(:corrected_source) { 'unless cond; foo end' }
+
         it 'registers an offense' do
-          inspect_source(cop, 'unless cond; foo else end')
+          inspect_source(cop, source)
           expect(cop.messages).to eq(['Redundant `else`-clause.'])
         end
+
+        it_behaves_like 'auto-correct', 'if'
       end
 
       context 'with an else-clause containing only the literal nil' do
@@ -75,10 +115,15 @@ describe RuboCop::Cop::Style::EmptyElse do
 
     context 'given a case statement' do
       context 'with a completely empty else-clause' do
+        let(:source) { 'case v; when a; foo else end' }
+        let(:corrected_source) { 'case v; when a; foo end' }
+
         it 'registers an offense' do
-          inspect_source(cop, 'case v; when a; foo else end')
+          inspect_source(cop, source)
           expect(cop.messages).to eq(['Redundant `else`-clause.'])
         end
+
+        it_behaves_like 'auto-correct', 'case'
       end
 
       context 'with an else-clause containing only the literal nil' do
@@ -109,7 +154,8 @@ describe RuboCop::Cop::Style::EmptyElse do
       RuboCop::Config.new('Style/EmptyElse' => {
                             'EnforcedStyle' => 'nil',
                             'SupportedStyles' => %w(empty nil both)
-                          })
+                          },
+                          'Style/MissingElse' => missing_else_config)
     end
 
     context 'given an if-statement' do
@@ -121,10 +167,15 @@ describe RuboCop::Cop::Style::EmptyElse do
       end
 
       context 'with an else-clause containing only the literal nil' do
+        let(:source) { 'if a; foo elsif b; bar else nil end' }
+        let(:corrected_source) { 'if a; foo elsif b; bar end' }
+
         it 'registers an offense' do
-          inspect_source(cop, 'if a; foo elsif b; bar else nil end')
+          inspect_source(cop, source)
           expect(cop.messages).to eq(['Redundant `else`-clause.'])
         end
+
+        it_behaves_like 'auto-correct', 'if'
       end
 
       context 'with an else-clause with side-effects' do
@@ -151,10 +202,15 @@ describe RuboCop::Cop::Style::EmptyElse do
       end
 
       context 'with an else-clause containing only the literal nil' do
+        let(:source) { 'unless cond; foo else nil end' }
+        let(:corrected_source) { 'unless cond; foo end' }
+
         it 'registers an offense' do
-          inspect_source(cop, 'unless cond; foo else nil end')
+          inspect_source(cop, source)
           expect(cop.messages).to eq(['Redundant `else`-clause.'])
         end
+
+        it_behaves_like 'auto-correct', 'if'
       end
 
       context 'with an else-clause with side-effects' do
@@ -181,10 +237,15 @@ describe RuboCop::Cop::Style::EmptyElse do
       end
 
       context 'with an else-clause containing only the literal nil' do
+        let(:source) { 'case v; when a; foo; when b; bar; else nil end' }
+        let(:corrected_source) { 'case v; when a; foo; when b; bar; end' }
+
         it 'registers an offense' do
-          inspect_source(cop, 'case v; when a; foo; when b; bar; else nil end')
+          inspect_source(cop, source)
           expect(cop.messages).to eq(['Redundant `else`-clause.'])
         end
+
+        it_behaves_like 'auto-correct', 'case'
       end
 
       context 'with an else-clause with side-effects' do
@@ -208,22 +269,33 @@ describe RuboCop::Cop::Style::EmptyElse do
       RuboCop::Config.new('Style/EmptyElse' => {
                             'EnforcedStyle' => 'both',
                             'SupportedStyles' => %w(empty nil both)
-                          })
+                          },
+                          'Style/MissingElse' => missing_else_config)
     end
 
     context 'given an if-statement' do
       context 'with a completely empty else-clause' do
+        let(:source) { 'if a; foo else end' }
+        let(:corrected_source) { 'if a; foo end' }
+
         it 'registers an offense' do
-          inspect_source(cop, 'if a; foo else end')
+          inspect_source(cop, source)
           expect(cop.messages).to eq(['Redundant `else`-clause.'])
         end
+
+        it_behaves_like 'auto-correct', 'if'
       end
 
       context 'with an else-clause containing only the literal nil' do
+        let(:source) { 'if a; foo elsif b; bar else nil end' }
+        let(:corrected_source) { 'if a; foo elsif b; bar end' }
+
         it 'registers an offense' do
-          inspect_source(cop, 'if a; foo elsif b; bar else nil end')
+          inspect_source(cop, source)
           expect(cop.messages).to eq(['Redundant `else`-clause.'])
         end
+
+        it_behaves_like 'auto-correct', 'if'
       end
 
       context 'with an else-clause with side-effects' do
@@ -243,17 +315,27 @@ describe RuboCop::Cop::Style::EmptyElse do
 
     context 'given an unless-statement' do
       context 'with a completely empty else-clause' do
+        let(:source) { 'unless cond; foo else end' }
+        let(:corrected_source) { 'unless cond; foo end' }
+
         it 'registers an offense' do
-          inspect_source(cop, 'unless cond; foo else end')
+          inspect_source(cop, source)
           expect(cop.messages).to eq(['Redundant `else`-clause.'])
         end
+
+        it_behaves_like 'auto-correct', 'if'
       end
 
       context 'with an else-clause containing only the literal nil' do
+        let(:source) { 'unless cond; foo else nil end' }
+        let(:corrected_source) { 'unless cond; foo end' }
+
         it 'registers an offense' do
-          inspect_source(cop, 'unless cond; foo else nil end')
+          inspect_source(cop, source)
           expect(cop.messages).to eq(['Redundant `else`-clause.'])
         end
+
+        it_behaves_like 'auto-correct', 'if'
       end
 
       context 'with an else-clause with side-effects' do
@@ -273,17 +355,27 @@ describe RuboCop::Cop::Style::EmptyElse do
 
     context 'given a case statement' do
       context 'with a completely empty else-clause' do
+        let(:source) { 'case v; when a; foo else end' }
+        let(:corrected_source) { 'case v; when a; foo end' }
+
         it 'registers an offense' do
-          inspect_source(cop, 'case v; when a; foo else end')
+          inspect_source(cop, source)
           expect(cop.messages).to eq(['Redundant `else`-clause.'])
         end
+
+        it_behaves_like 'auto-correct', 'case'
       end
 
       context 'with an else-clause containing only the literal nil' do
+        let(:source) { 'case v; when a; foo; when b; bar; else nil end' }
+        let(:corrected_source) { 'case v; when a; foo; when b; bar; end' }
+
         it 'registers an offense' do
-          inspect_source(cop, 'case v; when a; foo; when b; bar; else nil end')
+          inspect_source(cop, source)
           expect(cop.messages).to eq(['Redundant `else`-clause.'])
         end
+
+        it_behaves_like 'auto-correct', 'case'
       end
 
       context 'with an else-clause with side-effects' do
