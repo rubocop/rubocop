@@ -1033,6 +1033,10 @@ Rails/Delegate:
   Description: 'Prefer delegate method for delegations.'
   Enabled: true
 
+Rails/FindBy:
+  Description: 'Prefer find_by over where.first.'
+  Enabled: true
+
 Rails/HasAndBelongsToMany:
   Description: 'Prefer has_many :through to has_and_belongs_to_many.'
   Enabled: true

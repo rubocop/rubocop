@@ -704,6 +704,10 @@ Rails/DefaultScope:
   Include:
     - app/models/**/*.rb
 
+Rails/FindBy:
+  Include:
+    - app/models/**/*.rb
+
 Rails/HasAndBelongsToMany:
   Include:
     - app/models/**/*.rb
