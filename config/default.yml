@@ -708,6 +708,10 @@ Rails/FindBy:
   Include:
     - app/models/**/*.rb
 
+Rails/FindEach:
+  Include:
+    - app/models/**/*.rb
+
 Rails/HasAndBelongsToMany:
   Include:
     - app/models/**/*.rb

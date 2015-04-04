@@ -29,6 +29,7 @@
 * New cop `Performance/FlatMap` to convert `Enumerable#map...Array#flatten` and `Enumerable#collect...Array#flatten` to `Enumerable#flat_map`. ([@rrosenblum][])
 * [#1144](https://github.com/bbatsov/rubocop/issues/1144): New cop `ClosingParenthesisIndentation` checks the indentation of hanging closing parentheses. ([@jonas054][])
 * New Rails cop `FindBy` identifies usages of `where.first` and `where.take`. ([@bbatsov][])
+* New Rails cop `FindEach` identifies usages of `all.each`. ([@bbatsov][])
 
 ### Bugs fixed
 
