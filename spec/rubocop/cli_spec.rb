@@ -40,7 +40,7 @@ describe RuboCop::CLI, :isolated_environment do
         create_file('example.rb', source)
         expect(cli.run(['-D', '--auto-correct'])).to eq(0)
         corrected = "foo.map(&:nil?)\n"
-        expect(IO.read('example.rb')).to eq(corrected)
+        expect(File.read('example.rb')).to eq(corrected)
         uncorrected = $stdout.string.split($RS).select do |line|
           line.include?('example.rb:') && !line.include?('[Corrected]')
         end
@@ -65,7 +65,7 @@ describe RuboCop::CLI, :isolated_environment do
                      '  fail',
                      'end',
                      ''].join("\n")
-        expect(IO.read('example.rb')).to eq(corrected)
+        expect(File.read('example.rb')).to eq(corrected)
       end
 
       it 'crashes on infinite loop but prints offenses' do
@@ -80,7 +80,7 @@ describe RuboCop::CLI, :isolated_environment do
                  --auto-correct --format simple)
         expect { cli.run(cmd) }.to raise_error(RuboCop::Runner::
                                                InfiniteCorrectionLoop)
-        expect(IO.read('example.rb'))
+        expect(File.read('example.rb'))
           .to eq("3.times{something; other_thing;}\n")
 
         expected_output = [
@@ -122,7 +122,7 @@ describe RuboCop::CLI, :isolated_environment do
            "                                city:        'Some Town',",
            "                                state:       'CA',",
            "                                postal_code: '99999-1111')"]
-        expect(IO.read('example.rb')).to eq(corrected.join("\n") + "\n")
+        expect(File.read('example.rb')).to eq(corrected.join("\n") + "\n")
       end
 
       it 'honors Exclude settings in individual cops' do
@@ -134,7 +134,7 @@ describe RuboCop::CLI, :isolated_environment do
                                      '    - example.rb'])
         expect(cli.run(['--auto-correct'])).to eq(0)
         expect($stdout.string).to include('no offenses detected')
-        expect(IO.read('example.rb')).to eq(source.join("\n") + "\n")
+        expect(File.read('example.rb')).to eq(source.join("\n") + "\n")
       end
 
       it 'corrects code with indentation problems' do
@@ -167,7 +167,7 @@ describe RuboCop::CLI, :isolated_environment do
                                    'end'
                                   ])
         expect(cli.run(['--auto-correct'])).to eq(1)
-        expect(IO.read('example.rb'))
+        expect(File.read('example.rb'))
           .to eq(['# encoding: utf-8',
                   'module Bar',
                   '  class Goo',
@@ -210,7 +210,7 @@ describe RuboCop::CLI, :isolated_environment do
                                    'end',
                                    'end'])
         expect(cli.run(['--auto-correct'])).to eq(1)
-        expect(IO.read('example.rb'))
+        expect(File.read('example.rb'))
           .to eq(['# encoding: utf-8',
                   'module Foo',
                   '  class Bar',
@@ -232,7 +232,7 @@ describe RuboCop::CLI, :isolated_environment do
                                    '  puts i',
                                    '}'])
         expect(cli.run(['--auto-correct'])).to eq(0)
-        expect(IO.read('example.rb'))
+        expect(File.read('example.rb'))
           .to eq(['# encoding: utf-8',
                   '(1..10).each do |i|',
                   '  puts i',
@@ -245,7 +245,7 @@ describe RuboCop::CLI, :isolated_environment do
                     ['# encoding: utf-8',
                      "assert_post_status_code 400, 's', {:type => 'bad'}"])
         expect(cli.run(%w(--auto-correct --format emacs))).to eq(0)
-        expect(IO.read('example.rb'))
+        expect(File.read('example.rb'))
           .to eq(['# encoding: utf-8',
                   "assert_post_status_code 400, 's', type: 'bad'",
                   ''].join("\n"))
@@ -276,7 +276,7 @@ describe RuboCop::CLI, :isolated_environment do
                                    'end'])
         expect(cli.run(['--auto-correct'])).to eq(1)
         expect($stderr.string).to eq('')
-        expect(IO.read('example.rb')).to eq(['class Test',
+        expect(File.read('example.rb')).to eq(['class Test',
                                              '  def f',
                                              '  end',
                                              'end',
@@ -292,7 +292,7 @@ describe RuboCop::CLI, :isolated_environment do
                                    '  A = ["git", "path",]',
                                    'end'])
         expect(cli.run(%w(--auto-correct --format emacs))).to eq(1)
-        expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
+        expect(File.read('example.rb')).to eq(['# encoding: utf-8',
                                              'class Dsl',
                                              '  private',
                                              '',
@@ -340,7 +340,7 @@ describe RuboCop::CLI, :isolated_environment do
                                    '',
                                    'end end'])
         expect(cli.run(['--auto-correct'])).to eq(1)
-        expect(IO.read('example.rb')).to eq(['module A module B',
+        expect(File.read('example.rb')).to eq(['module A module B',
                                              'end end',
                                              ''].join("\n"))
         uncorrected = $stdout.string.split($RS).select do |line|
@@ -354,7 +354,7 @@ describe RuboCop::CLI, :isolated_environment do
                                    'def func1; do_something end # comment',
                                    'def func2() do_1; do_2; end'])
         expect(cli.run(%w(--auto-correct --format offenses))).to eq(0)
-        expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
+        expect(File.read('example.rb')).to eq(['# encoding: utf-8',
                                              '# comment',
                                              'def func1',
                                              '  do_something',
@@ -386,7 +386,7 @@ describe RuboCop::CLI, :isolated_environment do
                      'raise NotImplementedError,',
                      "      'Method should be overridden in child classes'"])
         expect(cli.run(['--auto-correct'])).to eq(0)
-        expect(IO.read('example.rb'))
+        expect(File.read('example.rb'))
           .to eq(['# encoding: utf-8',
                   'fail NotImplementedError,',
                   "     'Method should be overridden in child classes'",
@@ -423,7 +423,7 @@ describe RuboCop::CLI, :isolated_environment do
                      '  end',
                      'end'])
         expect(cli.run(['--auto-correct'])).to eq(0)
-        expect(IO.read('example.rb'))
+        expect(File.read('example.rb'))
           .to eq(['# encoding: utf-8',
                   '# Example class.',
                   'class Klass',
@@ -456,7 +456,7 @@ describe RuboCop::CLI, :isolated_environment do
                      'end'])
         expect(cli.run(%w(-D --auto-correct))).to eq(0)
         expect($stderr.string).to eq('')
-        expect(IO.read('example.rb'))
+        expect(File.read('example.rb'))
           .to eq(['# encoding: utf-8',
                   'def primes(limit)',
                   '  1.upto(limit).select(&:even?)',
@@ -497,7 +497,7 @@ describe RuboCop::CLI, :isolated_environment do
                   '6  Total',
                   '',
                   ''].join("\n"))
-        expect(IO.read('example.rb'))
+        expect(File.read('example.rb'))
           .to eq(['# encoding: utf-8',
                   'f(type: %w(offline offline_payment),',
                   '  bar_colors: %w(958c12 953579 ff5800 0085cc))',
@@ -515,7 +515,7 @@ describe RuboCop::CLI, :isolated_environment do
                   "#{abs('example.rb')}:2:22: C: [Corrected] " \
                   'Style/HashSyntax: Use the new Ruby 1.9 hash syntax.',
                   ''].join("\n"))
-        expect(IO.read('example.rb'))
+        expect(File.read('example.rb'))
           .to eq(['# encoding: utf-8',
                   "I18n.t('description', property_name: property.name)",
                   ''].join("\n"))
@@ -526,7 +526,7 @@ describe RuboCop::CLI, :isolated_environment do
                     ['# encoding: utf-8',
                      '{ :b=>1 }'])
         expect(cli.run(%w(-D --auto-correct --format emacs))).to eq(0)
-        expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
+        expect(File.read('example.rb')).to eq(['# encoding: utf-8',
                                              '{ b: 1 }',
                                              ''].join("\n"))
         expect($stdout.string)
@@ -545,7 +545,7 @@ describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(%w(--auto-correct -f emacs
                           --only Style/HashSyntax))).to eq(0)
         expect($stderr.string).to eq('')
-        expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
+        expect(File.read('example.rb')).to eq(['# encoding: utf-8',
                                              '{ b: 1 }',
                                              ''].join("\n"))
         expect($stdout.string)
@@ -562,7 +562,7 @@ describe RuboCop::CLI, :isolated_environment do
                      '',
                      ''])
         expect(cli.run(%w(--auto-correct --format emacs))).to eq(0)
-        expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
+        expect(File.read('example.rb')).to eq(['# encoding: utf-8',
                                              ''].join("\n"))
         expect($stdout.string)
           .to eq(["#{abs('example.rb')}:2:1: C: [Corrected] 3 trailing " \
@@ -578,7 +578,7 @@ describe RuboCop::CLI, :isolated_environment do
                      'Hash.new()'])
         expect(cli.run(%w(--auto-correct --format emacs))).to eq(0)
         expect($stderr.string).to eq('')
-        expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
+        expect(File.read('example.rb')).to eq(['# encoding: utf-8',
                                              '{}',
                                              ''].join("\n"))
         expect($stdout.string)
@@ -602,7 +602,7 @@ describe RuboCop::CLI, :isolated_environment do
                     ['Style/AlignHash:',
                      '  EnforcedColonStyle: separator'])
         expect(cli.run(%w(--auto-correct))).to eq(0)
-        expect(IO.read('example.rb'))
+        expect(File.read('example.rb'))
           .to eq(['# encoding: utf-8',
                   'CONVERSION_CORRESPONDENCE = {',
                   '                match_for_should: :match,',
@@ -621,7 +621,7 @@ describe RuboCop::CLI, :isolated_environment do
                                    "Signal.trap('TERM') { system(cmd); exit }"])
         expect(cli.run(%w(-a -f simple))).to eq(1)
         expect($stderr.string).to eq('')
-        expect(IO.read('example.rb'))
+        expect(File.read('example.rb'))
           .to eq(['# encoding: utf-8',
                   'a = c and b',
                   'not a && b',
@@ -648,7 +648,7 @@ describe RuboCop::CLI, :isolated_environment do
           expect(cli.run(%w(--auto-correct))).to eq(0)
         end
         expect($stderr.string).to eq('')
-        expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
+        expect(File.read('example.rb')).to eq(['# encoding: utf-8',
                                              'some_method(a)',
                                              ''].join("\n"))
       end
@@ -661,7 +661,7 @@ describe RuboCop::CLI, :isolated_environment do
           expect(cli.run(%w(--auto-correct))).to eq(0)
         end
         expect($stderr.string).to eq('')
-        expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
+        expect(File.read('example.rb')).to eq(['# encoding: utf-8',
                                              'puts [1]',
                                              ''].join("\n"))
       end
@@ -683,7 +683,7 @@ describe RuboCop::CLI, :isolated_environment do
                                           '  Enabled: false'])
         create_file('.rubocop.yml', ['inherit_from: .rubocop_todo.yml'])
         expect(cli.run(['--auto-gen-config'])).to eq(1)
-        expect(IO.readlines('.rubocop_todo.yml')[7..-1].map(&:chomp))
+        expect(File.readlines('.rubocop_todo.yml')[7..-1].map(&:chomp))
           .to eq(['# Offense count: 1',
                   '# Configuration parameters: AllowURI, URISchemes.',
                   'Metrics/LineLength:',
@@ -784,7 +784,7 @@ describe RuboCop::CLI, :isolated_environment do
            '# Cop supports --auto-correct.',
            'Style/TrailingWhitespace:',
            '  Enabled: false']
-        actual = IO.read('.rubocop_todo.yml').split($RS)
+        actual = File.read('.rubocop_todo.yml').split($RS)
         expected.each_with_index do |line, ix|
           if line.is_a?(String)
             expect(actual[ix]).to eq(line)
@@ -827,7 +827,7 @@ describe RuboCop::CLI, :isolated_environment do
            '# Cop supports --auto-correct.',
            'Style/Tab:',
            '  Enabled: false']
-        actual = IO.read('.rubocop_todo.yml').split($RS)
+        actual = File.read('.rubocop_todo.yml').split($RS)
         expect(actual.length).to eq(expected.length)
         expected.each_with_index do |line, ix|
           if line.is_a?(String)
@@ -860,7 +860,7 @@ describe RuboCop::CLI, :isolated_environment do
            'AllowInnerSlashes.',
            'Style/RegexpLiteral:',
            '  Enabled: false']
-        actual = IO.read('.rubocop_todo.yml').split($RS)
+        actual = File.read('.rubocop_todo.yml').split($RS)
         expected.each_with_index do |line, ix|
           if line.is_a?(String)
             expect(actual[ix]).to eq(line)

@@ -107,7 +107,7 @@ module RuboCop
       private
 
       def load_yaml_configuration(absolute_path)
-        yaml_code = IO.read(absolute_path)
+        yaml_code = File.read(absolute_path)
         # At one time, there was a problem with the psych YAML engine under
         # Ruby 1.9.3. YAML.load_file would crash when reading empty .yml files
         # or files that only contained comments and blank lines. This problem
