@@ -8,7 +8,7 @@ describe RuboCop::Cop::Style::SpaceBeforeBlockBraces do
     merged = RuboCop::ConfigLoader
              .default_configuration['Style/SpaceBeforeBlockBraces']
              .merge(cop_config)
-    RuboCop::Config.new('Style/Blocks' => { 'Enabled' => false },
+    RuboCop::Config.new('Style/BlockDelimiters' => { 'Enabled' => false },
                         'Style/SpaceBeforeBlockBraces' => merged)
   end
   let(:cop_config) { { 'EnforcedStyle' => 'space' } }
