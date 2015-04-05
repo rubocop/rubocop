@@ -21,7 +21,7 @@ module RuboCop
           receiver, second_method, _selector = *node
           return unless TARGET_SELECTORS.include?(second_method)
           return if receiver.nil?
-          _array, first_method = *receiver
+          _scope, first_method = *receiver
           return unless first_method == :where
           begin_of_offense = receiver.loc.selector.begin_pos
           end_of_offense = node.loc.selector.end_pos
