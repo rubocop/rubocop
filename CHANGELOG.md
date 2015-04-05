@@ -57,6 +57,8 @@
 * [#1397](https://github.com/bbatsov/rubocop/issues/1397): `UnneededPercentX` renamed to `CommandLiteral`. The cop can be configured to enforce using either `%x` or backticks around command literals, or using `%x` around multi-line commands and backticks around single-line commands. The cop ignores heredoc commands. ([@bquorning][])
 * [#1020](https://github.com/bbatsov/rubocop/issues/1020): Removed the `MaxSlashes` configuration option for `RegexpLiteral`. Instead, the cop can be configured to enforce using either `%r` or slashes around regular expressions, or using `%r` around multi-line regexes and slashes around single-line regexes. ([@bquorning][])
 * [#1734](https://github.com/bbatsov/rubocop/issues/1734): The default exclusion of hidden directories has been optimized for speed. ([@jonas054][])
+* [#1673](https://github.com/bbatsov/rubocop/issues/1673): `Style/TrivialAccessors` now requires
+matching names by default. ([@bbatsov][])
 
 ## 0.29.1 (13/02/2015)
 

@@ -462,6 +462,8 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
     end
 
     context 'non-matching reader' do
+      let(:cop_config) { { 'ExactNameMatch' => false } }
+
       let(:source) do
         ['def foo',
          '  @bar',

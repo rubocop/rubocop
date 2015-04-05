@@ -577,10 +577,18 @@ Style/TrailingComma:
     - consistent_comma
     - no_comma
 
-# TrivialAccessors doesn't require exact name matches and doesn't allow
+# TrivialAccessors requires exact name matches and doesn't allow
 # predicated methods by default.
 Style/TrivialAccessors:
-  ExactNameMatch: false
+  # When set to false the cop will suggest the use of accessor methods
+  # in situations like:
+  #
+  # def name
+  #   @other_name
+  # end
+  #
+  # This way you can uncover "hidden" attributes in your code.
+  ExactNameMatch: true
   AllowPredicates: false
   # Allows trivial writers that don't end in an equal sign. e.g.
   #
