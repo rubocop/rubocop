@@ -78,7 +78,7 @@ describe RuboCop::Cop::Style::Lambda do
     # The lack of spacing shown here is valid ruby syntax,
     # and can be the result of previous autocorrects re-writing
     # a multi-line `->(x){ ... }` to `->(x)do ... end`.
-    # See rubocop/cop/style/blocks.rb.
+    # See rubocop/cop/style/block_delimiters.rb.
     # Tests correction of an issue resulting in `lambdado` syntax errors.
     it 'auto-corrects a multi-line lambda' do
       new_source = autocorrect_source(cop, ['->(x)do',

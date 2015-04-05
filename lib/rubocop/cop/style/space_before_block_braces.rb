@@ -11,11 +11,11 @@ module RuboCop
         def on_block(node)
           return if node.loc.begin.is?('do') # No braces.
 
-          # If braces are on separate lines, and the Blocks cop is enabled,
-          # those braces will be changed to do..end by the user or by
+          # If braces are on separate lines, and the BlockDelimiters cop is
+          # enabled, those braces will be changed to do..end by the user or by
           # auto-correct, so reporting space issues is not useful, and it
           # creates auto-correct conflicts.
-          if config.for_cop('Style/Blocks')['Enabled'] &&
+          if config.for_cop('Style/BlockDelimiters')['Enabled'] &&
              Util.block_length(node) > 0
             return
           end

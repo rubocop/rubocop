@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::Blocks, :config do
+describe RuboCop::Cop::Style::BlockDelimiters, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'Semantic style' do

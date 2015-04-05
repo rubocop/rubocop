@@ -10,7 +10,7 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
     merged = RuboCop::ConfigLoader
              .default_configuration['Style/SpaceInsideBlockBraces']
              .merge(cop_config)
-    RuboCop::Config.new('Style/Blocks' => { 'Enabled' => false },
+    RuboCop::Config.new('Style/BlockDelimiters' => { 'Enabled' => false },
                         'Style/SpaceInsideBlockBraces' => merged)
   end
   let(:cop_config) do
@@ -162,9 +162,9 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
       expect(new_source).to eq('each { |x| puts }')
     end
 
-    context 'and Blocks cop enabled' do
+    context 'and BlockDelimiters cop enabled' do
       let(:config) do
-        RuboCop::Config.new('Style/Blocks' => { 'Enabled' => true },
+        RuboCop::Config.new('Style/BlockDelimiters' => { 'Enabled' => true },
                             'Style/SpaceInsideBlockBraces' => cop_config)
       end
 
@@ -174,8 +174,8 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
       end
 
       it 'does not do auto-correction for multi-line blocks' do
-        # {} will be changed to do..end by the Blocks cop, and then this cop is
-        # not relevant anymore.
+        # {} will be changed to do..end by the BlockDelimiters cop, and then
+        # this cop is not relevant anymore.
         old_source = ['each {|x|',
                       '  puts',
                       '}']

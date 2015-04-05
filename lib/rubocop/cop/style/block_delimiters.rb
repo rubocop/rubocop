@@ -5,7 +5,7 @@ module RuboCop
     module Style
       # Check for uses of braces or do/end around single line or
       # multi-line blocks.
-      class Blocks < Cop
+      class BlockDelimiters < Cop
         include ConfigurableEnforcedStyle
         include AutocorrectUnlessChangingAST
 
