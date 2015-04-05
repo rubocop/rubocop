@@ -17,7 +17,6 @@ module RuboCop
 
     class << self
       attr_accessor :debug, :auto_gen_config
-      attr_writer :root_level # The upwards search is stopped at this level.
 
       alias_method :debug?, :debug
       alias_method :auto_gen_config?, :auto_gen_config
@@ -150,7 +149,6 @@ module RuboCop
       def dirs_to_search(target_dir)
         dirs_to_search = []
         Pathname.new(File.expand_path(target_dir)).ascend do |dir_pathname|
-          break if dir_pathname.to_s == @root_level
           dirs_to_search << dir_pathname.to_s
         end
         dirs_to_search << Dir.home
