@@ -30,6 +30,7 @@
 * [#1144](https://github.com/bbatsov/rubocop/issues/1144): New cop `ClosingParenthesisIndentation` checks the indentation of hanging closing parentheses. ([@jonas054][])
 * New Rails cop `FindBy` identifies usages of `where.first` and `where.take`. ([@bbatsov][])
 * New Rails cop `FindEach` identifies usages of `all.each`. ([@bbatsov][])
+* [#1342](https://github.com/bbatsov/rubocop/issues/1342): `IndentationConsistency` is now configurable with the styles `normal` and `rails`. ([@jonas054][])
 
 ### Bugs fixed
 

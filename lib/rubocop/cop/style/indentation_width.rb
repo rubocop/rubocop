@@ -51,12 +51,32 @@ module RuboCop
 
         def on_module(node)
           _module_name, *members = *node
-          members.each { |m| check_indentation(node.loc.keyword, m) }
+          check_members(node, members)
         end
 
         def on_class(node)
           _class_name, _base_class, *members = *node
-          members.each { |m| check_indentation(node.loc.keyword, m) }
+          check_members(node, members)
+        end
+
+        def check_members(node, members)
+          check_indentation(node.loc.keyword, members.first)
+
+          return unless members.any? && members.first.begin_type?
+          style =
+            config.for_cop('Style/IndentationConsistency')['EnforcedStyle']
+          return unless style == 'rails'
+
+          special = %w(protected private) # Extra indentation step after these.
+          previous_modifier = nil
+          members.first.children.each do |m|
+            if modifier_node?(m) && special.include?(m.loc.expression.source)
+              previous_modifier = m
+            elsif previous_modifier
+              check_indentation(previous_modifier.loc.expression, m, style)
+              previous_modifier = nil
+            end
+          end
         end
 
         def on_send(node)
@@ -171,7 +191,7 @@ module RuboCop
           check_indentation(node.loc.else, else_clause)
         end
 
-        def check_indentation(base_loc, body_node)
+        def check_indentation(base_loc, body_node, style = 'normal')
           return unless indentation_to_check?(base_loc, body_node)
 
           indentation = body_node.loc.column - base_loc.column
@@ -185,14 +205,11 @@ module RuboCop
             body_node = body_node.children.first
           end
 
-          expr = body_node.loc.expression
-          begin_pos, ind = expr.begin_pos, expr.begin_pos - indentation
-          pos = indentation >= 0 ? ind..begin_pos : begin_pos..ind
-
-          r = Parser::Source::Range.new(expr.source_buffer, pos.begin, pos.end)
-          add_offense(body_node, r,
+          indentation_name = style == 'normal' ? '' : "#{style} "
+          add_offense(body_node, offending_range(body_node, indentation),
                       format("Use #{configured_indentation_width} (not %d) " \
-                             'spaces for indentation.', indentation))
+                             "spaces for #{indentation_name}indentation.",
+                             indentation))
         end
 
         def indentation_to_check?(base_loc, body_node)
@@ -209,6 +226,13 @@ module RuboCop
           return false unless body_node.loc.column == first_char_pos_on_line
 
           true
+        end
+
+        def offending_range(body_node, indentation)
+          expr = body_node.loc.expression
+          begin_pos, ind = expr.begin_pos, expr.begin_pos - indentation
+          pos = indentation >= 0 ? ind..begin_pos : begin_pos..ind
+          Parser::Source::Range.new(expr.source_buffer, pos.begin, pos.end)
         end
 
         def starts_with_access_modifier?(body_node)

@@ -6,8 +6,10 @@ describe RuboCop::Cop::Style::IndentationWidth do
   subject(:cop) { described_class.new(config) }
   let(:config) do
     RuboCop::Config.new('Style/IndentationWidth' => cop_config,
+                        'Style/IndentationConsistency' => consistency_config,
                         'Lint/EndAlignment' => end_alignment_config)
   end
+  let(:consistency_config) { { 'EnforcedStyle' => 'normal' } }
   let(:end_alignment_config) do
     { 'Enabled' => true, 'AlignWith' => 'variable' }
   end
@@ -759,43 +761,102 @@ describe RuboCop::Cop::Style::IndentationWidth do
         expect(cop.offenses).to be_empty
       end
 
-      it 'accepts indented public, protected, and private' do
-        inspect_source(cop,
-                       ['class Test',
-                        '  public',
-                        '',
-                        '  def e',
-                        '  end',
-                        '',
-                        '  protected',
-                        '',
-                        '  def f',
-                        '  end',
-                        '',
-                        '  private',
-                        '',
-                        '  def g',
-                        '  end',
-                        'end'])
-        expect(cop.offenses).to be_empty
+      context 'when consistency style is normal' do
+        it 'accepts indented public, protected, and private' do
+          inspect_source(cop,
+                         ['class Test',
+                          '  public',
+                          '',
+                          '  def e',
+                          '  end',
+                          '',
+                          '  protected',
+                          '',
+                          '  def f',
+                          '  end',
+                          '',
+                          '  private',
+                          '',
+                          '  def g',
+                          '  end',
+                          'end'])
+          expect(cop.offenses).to be_empty
+        end
+      end
+
+      context 'when consistency style is rails' do
+        let(:consistency_config) { { 'EnforcedStyle' => 'rails' } }
+
+        it 'registers an offense for normal non-rails indentation' do
+          inspect_source(cop,
+                         ['class Test',
+                          '  public',
+                          '',
+                          '  def e',
+                          '  end',
+                          '',
+                          '  protected',
+                          '',
+                          '  def f',
+                          '  end',
+                          '',
+                          '  private',
+                          '',
+                          '  def g',
+                          '  end',
+                          'end'])
+          expect(cop.messages)
+            .to eq(['Use 2 (not 0) spaces for rails indentation.'] * 2)
+          expect(cop.offenses.map(&:line)).to eq([9, 14])
+        end
       end
     end
 
     context 'with module' do
-      it 'registers an offense for bad indentation of a module body' do
-        inspect_source(cop,
-                       ['module Test',
-                        '    def func',
-                        '    end',
-                        'end'])
-        expect(cop.messages).to eq(['Use 2 (not 4) spaces for indentation.'])
+      context 'when consistency style is normal' do
+        it 'registers an offense for bad indentation of a module body' do
+          inspect_source(cop,
+                         ['module Test',
+                          '    def func',
+                          '    end',
+                          'end'])
+          expect(cop.messages).to eq(['Use 2 (not 4) spaces for indentation.'])
+        end
+
+        it 'accepts an empty module body' do
+          inspect_source(cop,
+                         ['module Test',
+                          'end'])
+          expect(cop.offenses).to be_empty
+        end
       end
 
-      it 'accepts an empty module body' do
-        inspect_source(cop,
-                       ['module Test',
-                        'end'])
-        expect(cop.offenses).to be_empty
+      context 'when consistency style is rails' do
+        let(:consistency_config) { { 'EnforcedStyle' => 'rails' } }
+
+        it 'registers an offense for bad indentation of a module body' do
+          inspect_source(cop,
+                         ['module Test',
+                          '   def func1',
+                          '   end',
+                          '  private',
+                          ' def func2',
+                          ' end',
+                          'end'])
+          expect(cop.messages)
+            .to eq(['Use 2 (not 3) spaces for indentation.',
+                    'Use 2 (not -1) spaces for rails indentation.'])
+        end
+
+        it 'accepts normal non-rails indentation of module functions' do
+          inspect_source(cop,
+                         ['module Test',
+                          '  module_function',
+                          '  def func',
+                          '  end',
+                          'end'])
+          expect(cop.offenses).to be_empty
+        end
       end
     end
 
