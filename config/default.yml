@@ -235,6 +235,28 @@ Style/CommentAnnotation:
     - HACK
     - REVIEW
 
+# Checks that you have put a copyright in a comment before any code.
+#
+# You can override the default Notice in your .rubocop.yml file.
+#
+# In order to use autocorrect, you must supply a value for the
+# AutocorrectNotice key that matches the regexp Notice.  A blank
+# AutocorrectNotice will cause an error during autocorrect.
+#
+# Autocorrect will add a copyright notice in a comment at the top
+# of the file immediately after any shebang or encoding comments.
+#
+# Example rubocop.yml:
+#
+# Style/Copyright:
+#   Enabled: true
+#   Notice: 'Copyright (\(c\) )?2015 Yahoo! Inc'
+#   AutocorrectNotice: '# Copyright (c) 2015 Yahoo! Inc.'
+#
+Style/Copyright:
+  Notice: '^Copyright (\(c\) )?2[0-9]{3} .+'
+  AutocorrectNotice: ''
+
 # Multi-line method chaining should be done with leading dots.
 Style/DotPosition:
   EnforcedStyle: leading
