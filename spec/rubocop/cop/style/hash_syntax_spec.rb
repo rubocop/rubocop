@@ -51,6 +51,11 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
         expect(cop.messages).to be_empty
       end
 
+      it 'accepts hash rockets when symbol characters are not supported' do
+        inspect_source(cop, 'x = { :[] => 0 }')
+        expect(cop.messages).to be_empty
+      end
+
       it 'registers offense when keys start with an uppercase letter' do
         inspect_source(cop, 'x = { :A => 0 }')
         expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])

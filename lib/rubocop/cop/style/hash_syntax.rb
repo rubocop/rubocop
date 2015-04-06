@@ -96,7 +96,13 @@ module RuboCop
           return false unless key.sym_type?
 
           sym_name = key.loc.expression.source
-          sym_name !~ /\A:["']|=\z/
+          valid_19_syntax_symbol?(sym_name)
+        end
+
+        def valid_19_syntax_symbol?(sym_name)
+          return false if sym_name =~ /\A:["']/
+          sym_name.sub!(/\A:/, '')
+          RuboCop::ProcessedSource.new("{ #{sym_name}: :foo }").valid_syntax?
         end
 
         def check(pairs, delim, msg)

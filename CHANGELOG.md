@@ -12,10 +12,12 @@
 * [#1791](https://github.com/bbatsov/rubocop/pull/1791): Fix autocorrection of `PercentLiteralDelimiters` with no content. ([@cshaffer][])
 * Fix handling of `while` and `until` with assignment in `IndentationWidth`. ([@lumeet][])
 * [#1793](https://github.com/bbatsov/rubocop/pull/1793): Fix bug in `TrailingComma` that caused `,` in comment to count as a trailing comma. ([@jonas054][])
+* [#1765](https://github.com/bbatsov/rubocop/pull/1765): Update 1.9 hash to stop triggering when the symbol is not valid in the 1.9 hash syntax. ([@crimsonknave][])
 
 ## 0.30.0 (06/04/2015)
 
 ### New features
+
 * [#1767](https://github.com/bbatsov/rubocop/pull/1767): Do not register offenses on non-enumerable select/find_all by `Performance/Detect`. ([@palkan][])
 * [#1600](https://github.com/bbatsov/rubocop/issues/1600): Add `line_count_based` and `semantic` styles to the `BlockDelimiters` (formerly `Blocks`) cop. ([@clowder][], [@mudge][])
 * [#1712](https://github.com/bbatsov/rubocop/pull/1712): Set `Offense#corrected?` to `true`, `false`, or `nil` when it was, wasn't, or can't be auto-corrected, respectively. ([@vassilevsky][])
@@ -1345,3 +1347,4 @@
 [@mudge]: https://github.com/mudge
 [@mzp]: https://github.com/mzp
 [@bankair]: https://github.com/bankair
+[@crimsonknave]: https://github.com/crimsonknave
