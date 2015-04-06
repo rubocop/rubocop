@@ -168,6 +168,50 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument do
         end
       end
     end
+
+    context 'in a method calling `binding` without arguments' do
+      let(:source) { <<-END }
+        def some_method(foo, bar)
+          do_something binding
+        end
+      END
+
+      it 'accepts all arguments' do
+        expect(cop.offenses).to be_empty
+      end
+
+      context 'inside another method definition' do
+        let(:source) { <<-END }
+          def some_method(foo, bar)
+            def other(a)
+              puts something(binding)
+            end
+          end
+        END
+
+        it 'registers offenses' do
+          expect(cop.offenses.size).to eq 2
+          expect(cop.offenses.first.line).to eq(1)
+          expect(cop.highlights).to eq(%w(foo bar))
+        end
+      end
+    end
+
+    context 'in a method calling `binding` with arguments' do
+      context 'when a method argument is unused' do
+        let(:source) { <<-END }
+          def some_method(foo)
+            binding(:something)
+          end
+        END
+
+        it 'registers an offense' do
+          expect(cop.offenses.size).to eq(1)
+          expect(cop.offenses.first.line).to eq(1)
+          expect(cop.highlights).to eq(['foo'])
+        end
+      end
+    end
   end
 
   describe 'auto-correction' do
