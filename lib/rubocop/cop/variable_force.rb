@@ -53,6 +53,8 @@ module RuboCop
       TWISTED_SCOPE_TYPES = [:block, :class, :sclass, :defs].freeze
       SCOPE_TYPES = (TWISTED_SCOPE_TYPES + [:module, :def]).freeze
 
+      SEND_TYPE = :send
+
       def self.wrap_with_top_level_scope_node(root_node)
         if root_node.begin_type?
           root_node
@@ -124,6 +126,8 @@ module RuboCop
           process_zero_arity_super(node)
         when *SCOPE_TYPES
           process_scope(node)
+        when SEND_TYPE
+          process_send(node)
         end
       end
       # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity
@@ -279,6 +283,16 @@ module RuboCop
 
         inspect_variables_in_scope(node)
         skip_children!
+      end
+
+      def process_send(node)
+        _receiver, method_name, args = *node
+        return unless method_name == :binding
+        return if args && !args.children.empty?
+
+        variable_table.accessible_variables.each do |variable|
+          variable.reference!(node)
+        end
       end
 
       # Mark all assignments which are referenced in the same loop

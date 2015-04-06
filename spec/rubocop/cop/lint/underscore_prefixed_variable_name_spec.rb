@@ -120,59 +120,61 @@ describe RuboCop::Cop::Lint::UnderscorePrefixedVariableName do
     end
   end
 
-  context 'in a method calling `super` without arguments' do
-    context 'when an underscore-prefixed argument is not used explicitly' do
-      let(:source) { <<-END }
-        def some_method(*_)
-          super
-        end
-      END
+  %w(super binding).each do |keyword|
+    context "in a method calling `#{keyword}` without arguments" do
+      context 'when an underscore-prefixed argument is not used explicitly' do
+        let(:source) { <<-END }
+          def some_method(*_)
+            #{keyword}
+          end
+        END
 
-      it 'accepts' do
-        expect(cop.offenses).to be_empty
+        it 'accepts' do
+          expect(cop.offenses).to be_empty
+        end
+      end
+
+      context 'when an underscore-prefixed argument is used explicitly' do
+        let(:source) { <<-END }
+          def some_method(*_)
+            #{keyword}
+            puts _
+          end
+        END
+
+        it 'registers an offense' do
+          expect(cop.offenses.size).to eq(1)
+          expect(cop.offenses.first.line).to eq(1)
+          expect(cop.highlights).to eq(['_'])
+        end
       end
     end
 
-    context 'when an underscore-prefixed argument is used explicitly' do
-      let(:source) { <<-END }
-        def some_method(*_)
-          super
-          puts _
-        end
-      END
+    context "in a method calling `#{keyword}` with arguments" do
+      context 'when an underscore-prefixed argument is not used' do
+        let(:source) { <<-END }
+          def some_method(*_)
+            #{keyword}(:something)
+          end
+        END
 
-      it 'registers an offense' do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.offenses.first.line).to eq(1)
-        expect(cop.highlights).to eq(['_'])
+        it 'accepts' do
+          expect(cop.offenses).to be_empty
+        end
       end
-    end
-  end
 
-  context 'in a method calling `super` with arguments' do
-    context 'when an underscore-prefixed argument is not used' do
-      let(:source) { <<-END }
-        def some_method(*_)
-          super(:something)
+      context 'when an underscore-prefixed argument is used explicitly' do
+        let(:source) { <<-END }
+          def some_method(*_)
+            #{keyword}(*_)
+          end
+        END
+
+        it 'registers an offense' do
+          expect(cop.offenses.size).to eq(1)
+          expect(cop.offenses.first.line).to eq(1)
+          expect(cop.highlights).to eq(['_'])
         end
-      END
-
-      it 'accepts' do
-        expect(cop.offenses).to be_empty
-      end
-    end
-
-    context 'when an underscore-prefixed argument is used explicitly' do
-      let(:source) { <<-END }
-        def some_method(*_)
-          super(*_)
-        end
-      END
-
-      it 'registers an offense' do
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.offenses.first.line).to eq(1)
-        expect(cop.highlights).to eq(['_'])
       end
     end
   end

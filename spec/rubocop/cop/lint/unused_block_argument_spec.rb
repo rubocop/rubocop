@@ -165,6 +165,50 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument do
         expect(cop.offenses).to be_empty
       end
     end
+
+    context 'in a method calling `binding` without arguments' do
+      let(:source) { <<-END }
+        test do |key, value|
+          puts something(binding)
+        end
+      END
+
+      it 'accepts all arguments' do
+        expect(cop.offenses).to be_empty
+      end
+
+      context 'inside a method definition' do
+        let(:source) { <<-END }
+          test do |key, value|
+            def other(a)
+              puts something(binding)
+            end
+          end
+        END
+
+        it 'registers offenses' do
+          expect(cop.offenses.size).to eq 2
+          expect(cop.offenses.first.line).to eq(1)
+          expect(cop.highlights).to eq(%w(key value))
+        end
+      end
+    end
+
+    context 'in a method calling `binding` with arguments' do
+      context 'when a method argument is unused' do
+        let(:source) { <<-END }
+          test do |key, value|
+            puts something(binding(:other))
+          end
+        END
+
+        it 'registers an offense' do
+          expect(cop.offenses.size).to eq(2)
+          expect(cop.offenses.first.line).to eq(1)
+          expect(cop.highlights).to eq(%w(key value))
+        end
+      end
+    end
   end
 
   context 'auto-correct' do

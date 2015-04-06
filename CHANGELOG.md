@@ -52,6 +52,7 @@
 * [#1750](https://github.com/bbatsov/rubocop/issues/1750): Escape offending code lines output by the HTML formatter in case they contain markup. ([@jonas054][])
 * [#1541](https://github.com/bbatsov/rubocop/issues/1541): No inspection of text that follows `__END__`. ([@jonas054][])
 * Fix comment detection in `Style/Documentation`. ([@lumeet][])
+* [#1637](https://github.com/bbatsov/rubocop/issues/1637): Fix handling of `binding` calls in `UnusedBlockArgument` and `UnusedMethodArgument`. ([@lumeet][])
 
 ### Changes
 
