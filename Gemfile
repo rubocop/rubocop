@@ -6,6 +6,9 @@ gemspec
 
 group :test do
   gem 'coveralls', require: false
+  gem 'fakefs',
+    git: 'git@github.com:bquorning/fakefs.git',
+    ref: 'glob-absolute-path'
 end
 
 local_gemfile = 'Gemfile.local'
