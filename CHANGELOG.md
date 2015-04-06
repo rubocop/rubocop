@@ -9,6 +9,7 @@
 ### Bugs fixed
 
 * [#1816](https://github.com/bbatsov/rubocop/issues/1816): Fix bug in `Sample` when calling `#shuffle` with something other than an element selector. ([@rrosenblum][])
+* [#1768](https://github.com/bbatsov/rubocop/pull/1768): `DefEndAlignment` recognizes preceding `private_class_method` or `public_class_method` before `def`. ([@til][])
 
 ## 0.30.1 (21/04/2015)
 
@@ -1364,3 +1365,4 @@
 [@crimsonknave]: https://github.com/crimsonknave
 [@renuo]: https://github.com/renuo
 [@sdeframond]: https://github.com/sdeframond
+[@til]: https://github.com/til
