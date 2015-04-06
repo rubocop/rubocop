@@ -94,6 +94,10 @@ module RuboCop
                   # We need this special case to avoid creating the pattern
                   # /**/* which searches the entire file system.
                   ["#{base_dir}/**/*"]
+                elsif wanted_toplevel_dirs.one?
+                  # Search the non-excluded top directories, but also add files
+                  # on the top level, which would otherwise not be found.
+                  ["#{base_dir}/*","#{wanted_toplevel_dirs.first}/**/*"]
                 else
                   # Search the non-excluded top directories, but also add files
                   # on the top level, which would otherwise not be found.
