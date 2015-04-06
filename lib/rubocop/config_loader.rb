@@ -27,7 +27,7 @@ module RuboCop
 
         resolve_inheritance(path, hash)
 
-        Array(hash.delete('require')).each { |r| require(r) }
+        Array(hash.delete('require')).each { |r| Object.class_eval(File.read(r)) }
 
         hash.delete('inherit_from')
         config = Config.new(hash, path)
