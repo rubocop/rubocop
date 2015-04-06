@@ -47,7 +47,7 @@ describe RuboCop::Config do
         stub_const('RuboCop::ConfigLoader::RUBOCOP_HOME', rubocop_home_path)
       end
 
-      let(:rubocop_home_path) { File.realpath('.') }
+      let(:rubocop_home_path) { Dir.pwd }
       let(:configuration_path) { 'config/.rubocop.yml' }
 
       it 'is not validated' do
