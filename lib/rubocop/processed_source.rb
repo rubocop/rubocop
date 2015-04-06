@@ -13,7 +13,10 @@ module RuboCop
                 :parser_error, :raw_source
 
     def self.from_file(path)
-      new(File.read(path), path)
+      file = File.read(path)
+      new(file, path)
+    rescue
+      abort("#{Rainbow('rubocop: No such file or directory').red} -- #{path}")
     end
 
     def initialize(source, path = nil)
