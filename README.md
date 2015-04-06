@@ -32,7 +32,7 @@ You can support my work on RuboCop and [all my other projects](https://github.co
 **This documentation tracks the `master` branch of RuboCop. Some of
 the features and settings discussed here might not be available in
 older releases (including the current stable release). Please, consult
-the relevant git tag (e.g. v0.29.1) if you need documentation for a
+the relevant git tag (e.g. v0.30.0) if you need documentation for a
 specific RuboCop release.**
 
 - [Installation](#installation)

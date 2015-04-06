@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.30.0 (06/04/2015)
+
 ### New features
 
 * [#1600](https://github.com/bbatsov/rubocop/issues/1600): Add `line_count_based` and `semantic` styles to the `BlockDelimiters` (formerly `Blocks`) cop. ([@clowder][], [@mudge][])
