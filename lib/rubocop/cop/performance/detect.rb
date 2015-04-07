@@ -28,9 +28,13 @@ module RuboCop
           return unless second_method == :first || second_method == :last
           return if receiver.nil?
 
-          receiver, _args, _body = *receiver if receiver.block_type?
+          receiver, _args, body = *receiver if receiver.block_type?
 
-          _, first_method = *receiver
+          _, first_method, args = *receiver
+
+          # check that we have usual block or block pass
+          return if body.nil? && (args.nil? || !args.block_pass_type?)
+
           return unless SELECT_METHODS.include?(first_method)
 
           range = receiver.loc.selector.join(node.loc.selector)
