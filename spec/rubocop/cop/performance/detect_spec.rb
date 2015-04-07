@@ -77,6 +77,20 @@ describe RuboCop::Cop::Performance::Detect do
 
       expect(cop.messages).to be_empty
     end
+
+    it "does not register an offense when #{method} is called" \
+       'without block or args' do
+      inspect_source(cop, "adapter.#{method}.first")
+
+      expect(cop.messages).to be_empty
+    end
+
+    it "does not register an offense when #{method} is called" \
+       'with args but without ampersand syntax' do
+      inspect_source(cop, "adapter.#{method}('something').first")
+
+      expect(cop.messages).to be_empty
+    end
   end
 
   it 'does not register an offense when detect is used' do
