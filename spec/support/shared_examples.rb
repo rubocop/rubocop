@@ -47,6 +47,7 @@ end
 
 shared_examples_for 'aligned' do |alignment_base, arg, end_kw, name|
   name ||= alignment_base
+  name = name.gsub(/\n/, ' <newline>')
   it "accepts matching #{name} ... end" do
     inspect_source(cop, ["#{alignment_base} #{arg}",
                          end_kw])
