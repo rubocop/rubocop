@@ -20,8 +20,6 @@ module RuboCop
         include EndKeywordAlignment
         include IfNode
 
-        MSG = '`end` at %d, %d is not aligned with `%s` at %d, %d'
-
         def on_class(node)
           check_offset_of_node(node)
         end
@@ -55,8 +53,8 @@ module RuboCop
           return unless [:if, :while, :until].include?(rhs.type)
           return if ternary_op?(rhs)
 
-          if style == :variable
-            expr = node.loc.expression
+          expr = node.loc.expression
+          if style == :variable && !line_break_before_keyword?(expr, rhs)
             range = Parser::Source::Range.new(expr.source_buffer,
                                               expr.begin_pos,
                                               rhs.loc.keyword.end_pos)
@@ -68,6 +66,10 @@ module RuboCop
 
           check_offset(rhs, range.source, offset)
           ignore_node(rhs) # Don't check again.
+        end
+
+        def line_break_before_keyword?(whole_expression, rhs)
+          rhs.loc.keyword.line > whole_expression.line
         end
       end
     end
