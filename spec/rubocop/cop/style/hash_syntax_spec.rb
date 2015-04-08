@@ -41,9 +41,18 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
         expect(cop.messages).to be_empty
       end
 
-      it 'accepts hash rockets when symbol keys have string in them' do
-        inspect_source(cop, 'x = { :"string" => 0 }')
-        expect(cop.messages).to be_empty
+      context 'ruby < 2.2', ruby_less_than: 2.2 do
+        it 'accepts hash rockets when symbol keys have string in them' do
+          inspect_source(cop, 'x = { :"string" => 0 }')
+          expect(cop.messages).to be_empty
+        end
+      end
+
+      context 'ruby >= 2.2', ruby_greater_than_or_equal: 2.2 do
+        it 'registers an offense when symbol keys have strings in them' do
+          inspect_source(cop, 'x = { :"string" => 0 }')
+          expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+        end
       end
 
       it 'accepts hash rockets when symbol keys end with =' do
@@ -283,37 +292,57 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
         expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
       end
 
-      it 'accepts hash rockets when keys have whitespaces in them' do
-        inspect_source(cop, 'x = { :"t o" => 0, :b => 1 }')
-        expect(cop.messages).to be_empty
+      context 'ruby < 2.2', ruby_less_than: 2.2 do
+        it 'accepts hash rockets when keys have whitespaces in them' do
+          inspect_source(cop, 'x = { :"t o" => 0, :b => 1 }')
+          expect(cop.messages).to be_empty
+        end
+
+        it 'registers an offense when keys have whitespaces and mix styles' do
+          inspect_source(cop, 'x = { :"t o" => 0, b: 1 }')
+          expect(cop.messages).to eq(["Don't mix styles in the same hash."])
+          expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+        end
+
+        it 'accepts hash rockets when keys have special symbols in them' do
+          inspect_source(cop, 'x = { :"\tab" => 1, :b => 1 }')
+          expect(cop.messages).to be_empty
+        end
+
+        it 'registers an offense when keys have special symbols and '\
+          'mix styles' do
+          inspect_source(cop, 'x = { :"\tab" => 1, b: 1 }')
+          expect(cop.messages).to eq(["Don't mix styles in the same hash."])
+          expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+        end
+
+        it 'accepts hash rockets when keys start with a digit' do
+          inspect_source(cop, 'x = { :"1" => 1, :b => 1 }')
+          expect(cop.messages).to be_empty
+        end
+
+        it 'registers an offense when keys start with a digit and mix styles' do
+          inspect_source(cop, 'x = { :"1" => 1, b: 1 }')
+          expect(cop.messages).to eq(["Don't mix styles in the same hash."])
+          expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+        end
       end
 
-      it 'registers an offense when keys have whitespaces and mix styles' do
-        inspect_source(cop, 'x = { :"t o" => 0, b: 1 }')
-        expect(cop.messages).to eq(["Don't mix styles in the same hash."])
-        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
-      end
+      context 'ruby >= 2.2', ruby_greater_than_or_equal: 2.2 do
+        it 'registers an offense when keys have whitespaces in them' do
+          inspect_source(cop, 'x = { :"t o" => 0 }')
+          expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+        end
 
-      it 'accepts hash rockets when keys have special symbols in them' do
-        inspect_source(cop, 'x = { :"\tab" => 1, :b => 1 }')
-        expect(cop.messages).to be_empty
-      end
+        it 'registers an offense when keys have special symbols in them' do
+          inspect_source(cop, 'x = { :"\tab" => 1 }')
+          expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+        end
 
-      it 'registers an offense when keys have special symbols and mix styles' do
-        inspect_source(cop, 'x = { :"\tab" => 1, b: 1 }')
-        expect(cop.messages).to eq(["Don't mix styles in the same hash."])
-        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
-      end
-
-      it 'accepts hash rockets when keys start with a digit' do
-        inspect_source(cop, 'x = { :"1" => 1, :b => 1 }')
-        expect(cop.messages).to be_empty
-      end
-
-      it 'registers an offense when keys start with a digit and mix styles' do
-        inspect_source(cop, 'x = { :"1" => 1, b: 1 }')
-        expect(cop.messages).to eq(["Don't mix styles in the same hash."])
-        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+        it 'accepts hash rockets when keys start with a digit' do
+          inspect_source(cop, 'x = { :"1" => 1 }')
+          expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+        end
       end
 
       it 'auto-corrects old to new style' do
@@ -399,37 +428,57 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
         expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
       end
 
-      it 'accepts hash rockets when keys have whitespaces in them' do
-        inspect_source(cop, 'x = { :"t o" => 0, :b => 1 }')
-        expect(cop.messages).to be_empty
+      context 'ruby < 2.2', ruby_less_than: 2.2 do
+        it 'accepts hash rockets when keys have whitespaces in them' do
+          inspect_source(cop, 'x = { :"t o" => 0, :b => 1 }')
+          expect(cop.messages).to be_empty
+        end
+
+        it 'registers an offense when keys have whitespaces and mix styles' do
+          inspect_source(cop, 'x = { :"t o" => 0, b: 1 }')
+          expect(cop.messages).to eq(["Don't mix styles in the same hash."])
+          expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+        end
+
+        it 'accepts hash rockets when keys have special symbols in them' do
+          inspect_source(cop, 'x = { :"\tab" => 1, :b => 1 }')
+          expect(cop.messages).to be_empty
+        end
+
+        it 'registers an offense when keys have special symbols and ' \
+          'mix styles' do
+          inspect_source(cop, 'x = { :"\tab" => 1, b: 1 }')
+          expect(cop.messages).to eq(["Don't mix styles in the same hash."])
+          expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+        end
+
+        it 'accepts hash rockets when keys start with a digit' do
+          inspect_source(cop, 'x = { :"1" => 1, :b => 1 }')
+          expect(cop.messages).to be_empty
+        end
+
+        it 'registers an offense when keys start with a digit and mix styles' do
+          inspect_source(cop, 'x = { :"1" => 1, b: 1 }')
+          expect(cop.messages).to eq(["Don't mix styles in the same hash."])
+          expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+        end
       end
 
-      it 'registers an offense when keys have whitespaces and mix styles' do
-        inspect_source(cop, 'x = { :"t o" => 0, b: 1 }')
-        expect(cop.messages).to eq(["Don't mix styles in the same hash."])
-        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
-      end
+      context 'ruby >= 2.2', ruby_greater_than_or_equal: 2.2 do
+        it 'registers an offense when keys have whitespaces in them' do
+          inspect_source(cop, 'x = { :"t o" => 0 }')
+          expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+        end
 
-      it 'accepts hash rockets when keys have special symbols in them' do
-        inspect_source(cop, 'x = { :"\tab" => 1, :b => 1 }')
-        expect(cop.messages).to be_empty
-      end
+        it 'registers an offense when keys have special symbols in them' do
+          inspect_source(cop, 'x = { :"\tab" => 1 }')
+          expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+        end
 
-      it 'registers an offense when keys have special symbols and mix styles' do
-        inspect_source(cop, 'x = { :"\tab" => 1, b: 1 }')
-        expect(cop.messages).to eq(["Don't mix styles in the same hash."])
-        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
-      end
-
-      it 'accepts hash rockets when keys start with a digit' do
-        inspect_source(cop, 'x = { :"1" => 1, :b => 1 }')
-        expect(cop.messages).to be_empty
-      end
-
-      it 'registers an offense when keys start with a digit and mix styles' do
-        inspect_source(cop, 'x = { :"1" => 1, b: 1 }')
-        expect(cop.messages).to eq(["Don't mix styles in the same hash."])
-        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+        it 'accepts hash rockets when keys start with a digit' do
+          inspect_source(cop, 'x = { :"1" => 1 }')
+          expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+        end
       end
 
       it 'auto-corrects old to new style' do

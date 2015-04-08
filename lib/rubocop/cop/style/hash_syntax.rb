@@ -100,7 +100,6 @@ module RuboCop
         end
 
         def valid_19_syntax_symbol?(sym_name)
-          return false if sym_name =~ /\A:["']/
           sym_name.sub!(/\A:/, '')
           RuboCop::ProcessedSource.new("{ #{sym_name}: :foo }").valid_syntax?
         end
