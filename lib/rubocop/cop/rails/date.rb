@@ -70,7 +70,7 @@ module RuboCop
           chain = extract_method_chain(node)
           return if (chain & bad_days).empty?
 
-          method_name = *(chain & bad_days)
+          method_name = (chain & bad_days).join('.')
 
           add_offense(node, :selector,
                       format(MSG,

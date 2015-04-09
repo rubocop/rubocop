@@ -30,31 +30,31 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
       expect(cop.offenses.size).to eq(1)
     end
 
-    it 'registers an offense for Time.strptime' do
-      inspect_source(cop, 'Time.strptime(time_string, "%Y-%m-%dT%H:%M:%S%z")')
+    it 'registers an offense for Time.strftime' do
+      inspect_source(cop, 'Time.strftime(time_string, "%Y-%m-%dT%H:%M:%S%z")')
       expect(cop.offenses.size).to eq(1)
     end
 
-    it 'registers an offense for Time.strptime.in_time_zone' do
+    it 'registers an offense for Time.strftime.in_time_zone' do
       inspect_source(
         cop,
-        'Time.strptime(time_string, "%Y-%m-%dT%H:%M:%S%z").in_time_zone'
+        'Time.strftime(time_string, "%Y-%m-%dT%H:%M:%S%z").in_time_zone'
       )
       expect(cop.offenses.size).to eq(1)
     end
 
-    it 'registers an offense for Time.strptime with nested Time.zone' do
+    it 'registers an offense for Time.strftime with nested Time.zone' do
       inspect_source(
         cop,
-        'Time.strptime(Time.zone.now.to_s, "%Y-%m-%dT%H:%M:%S%z")'
+        'Time.strftime(Time.zone.now.to_s, "%Y-%m-%dT%H:%M:%S%z")'
       )
       expect(cop.offenses.size).to eq(1)
     end
 
-    it 'registers an offense for Time.zone.strptime with nested Time.now' do
+    it 'registers an offense for Time.zone.strftime with nested Time.now' do
       inspect_source(
         cop,
-        'Time.zone.strptime(Time.now.to_s, "%Y-%m-%dT%H:%M:%S%z")'
+        'Time.zone.strftime(Time.now.to_s, "%Y-%m-%dT%H:%M:%S%z")'
       )
       expect(cop.offenses.size).to eq(1)
     end
@@ -94,10 +94,15 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
       expect(cop.offenses).to be_empty
     end
 
-    it 'accepts Time.zone.strptime' do
+    it 'accepts Time.strptime' do
+      inspect_source(cop, 'Time.strptime(datetime, format).in_time_zone')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts Time.zone.strftime' do
       inspect_source(
         cop,
-        'Time.zone.strptime(time_string, "%Y-%m-%dT%H:%M:%S%z")'
+        'Time.zone.strftime(time_string, "%Y-%m-%dT%H:%M:%S%z")'
       )
       expect(cop.offenses).to be_empty
     end
@@ -113,10 +118,10 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
       end
     end
 
-    it 'accepts Time.strptime.in_time_zone' do
+    it 'accepts Time.strftime.in_time_zone' do
       inspect_source(
         cop,
-        'Time.strptime(time_string, "%Y-%m-%dT%H:%M:%S%z").in_time_zone'
+        'Time.strftime(time_string, "%Y-%m-%dT%H:%M:%S%z").in_time_zone'
       )
       expect(cop.offenses).to be_empty
     end
