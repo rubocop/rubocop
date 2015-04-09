@@ -19,7 +19,13 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
         expect(cop.offenses.size).to eq(1)
       end
 
-      it "registers an offense for #{klass}.new" do
+      it "registers an offense for #{klass}.new without argument" do
+        inspect_source(cop, "#{klass}.new")
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.offenses.first.message).to include('#Time.zone.now')
+      end
+
+      it "registers an offense for #{klass}.new with argument" do
         inspect_source(cop, "#{klass}.new(2012, 6, 10, 12, 00)")
         expect(cop.offenses.size).to eq(1)
         expect(cop.offenses.first.message).to include('#Time.zone.local')

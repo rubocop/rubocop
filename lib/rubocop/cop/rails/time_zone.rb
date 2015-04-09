@@ -35,8 +35,6 @@ module RuboCop
 
         DANGER_METHODS = [:now, :local, :new, :strftime, :parse, :at]
 
-        SAFE_METHODS = { 'new' => 'local' }
-
         def on_const(node)
           _module, klass = *node
 
@@ -53,8 +51,7 @@ module RuboCop
                     !(chain & good_methods).empty?
 
           method_name = (chain & DANGER_METHODS).join('.')
-
-          safe_method_name = SAFE_METHODS.fetch(method_name, method_name)
+          safe_method_name = safe_method(method_name, node)
 
           add_offense(node, :selector,
                       format(MSG,
@@ -86,6 +83,17 @@ module RuboCop
           receiver, _method_name, *_args = *node.parent
 
           receiver == node
+        end
+
+        def safe_method(method_name, node)
+          _receiver, _method_name, *args = *node
+          return method_name unless method_name == 'new'
+
+          if args.empty?
+            'now'
+          else
+            'local'
+          end
         end
 
         def good_methods
