@@ -22,6 +22,7 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
       it "registers an offense for #{klass}.new" do
         inspect_source(cop, "#{klass}.new(2012, 6, 10, 12, 00)")
         expect(cop.offenses.size).to eq(1)
+        expect(cop.offenses.first.message).to include('#Time.zone.local')
       end
     end
 

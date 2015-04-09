@@ -35,6 +35,8 @@ module RuboCop
 
         DANGER_METHODS = [:now, :local, :new, :strftime, :parse, :at]
 
+        SAFE_METHODS = { 'new' => 'local' }
+
         def on_const(node)
           _module, klass = *node
 
@@ -52,10 +54,12 @@ module RuboCop
 
           method_name = (chain & DANGER_METHODS).join('.')
 
+          safe_method_name = SAFE_METHODS.fetch(method_name, method_name)
+
           add_offense(node, :selector,
                       format(MSG,
                              "#{klass}.#{method_name}",
-                             "#Time.zone.#{method_name}")
+                             "#Time.zone.#{safe_method_name}")
                      )
         end
 
