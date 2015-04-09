@@ -18,8 +18,7 @@ module RuboCop
           node.children.select { |n| n.type == :begin }.each do |begin_node|
             final_node = begin_node.children.last
             next unless final_node
-            # handle strings like __FILE__
-            next if special_string?(final_node)
+            next if special_keyword?(final_node)
             next unless LITERALS.include?(final_node.type)
 
             add_offense(final_node, :expression)
@@ -28,8 +27,10 @@ module RuboCop
 
         private
 
-        def special_string?(node)
-          node.type == :str && !node.loc.respond_to?(:begin)
+        def special_keyword?(node)
+          # handle strings like __FILE__
+          (node.type == :str && !node.loc.respond_to?(:begin)) ||
+            node.loc.expression.is?('__LINE__')
         end
       end
     end
