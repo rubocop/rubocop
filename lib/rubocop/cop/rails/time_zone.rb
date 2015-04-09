@@ -33,7 +33,7 @@ module RuboCop
 
         TIMECLASS = [:Time, :DateTime]
 
-        DANGER_METHODS = [:now, :local, :new, :strptime, :parse, :at]
+        DANGER_METHODS = [:now, :local, :new, :strftime, :parse, :at]
 
         def on_const(node)
           _module, klass = *node
@@ -50,7 +50,7 @@ module RuboCop
           return if (chain & DANGER_METHODS).empty? ||
                     !(chain & good_methods).empty?
 
-          method_name = *(chain & DANGER_METHODS)
+          method_name = (chain & DANGER_METHODS).join('.')
 
           add_offense(node, :selector,
                       format(MSG,
