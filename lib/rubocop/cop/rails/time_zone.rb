@@ -51,11 +51,12 @@ module RuboCop
                     !(chain & good_methods).empty?
 
           method_name = (chain & DANGER_METHODS).join('.')
+          safe_method_name = safe_method(method_name, node)
 
           add_offense(node, :selector,
                       format(MSG,
                              "#{klass}.#{method_name}",
-                             "#Time.zone.#{method_name}")
+                             "Time.zone.#{safe_method_name}")
                      )
         end
 
@@ -82,6 +83,17 @@ module RuboCop
           receiver, _method_name, *_args = *node.parent
 
           receiver == node
+        end
+
+        def safe_method(method_name, node)
+          _receiver, _method_name, *args = *node
+          return method_name unless method_name == 'new'
+
+          if args.empty?
+            'now'
+          else
+            'local'
+          end
         end
 
         def good_methods

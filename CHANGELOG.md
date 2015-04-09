@@ -7,6 +7,7 @@
 * [#1691](https://github.com/bbatsov/rubocop/issues/1691): For assignments with line break after `=`, use `keyword` alignment in `EndAlignment` regardless of configured style. ([@jonas054][])
 * [#1769](https://github.com/bbatsov/rubocop/issues/1769): Fix bug where `LiteralInInterpolation` registers an offense for interpolation of `__LINE__`. ([@rrosenblum][])
 * [#1773](https://github.com/bbatsov/rubocop/pull/1773): Fix typo ('strptime' -> 'strftime') in `Rails/TimeZone`. ([@palkan][])
+* [#1777](https://github.com/bbatsov/rubocop/pull/1777): Fix offense message from Rails/TimeZone. ([@mzp][])
 
 ## 0.30.0 (06/04/2015)
 
@@ -1338,3 +1339,4 @@
 [@ypresto]: https://github.com/ypresto
 [@clowder]: https://github.com/clowder
 [@mudge]: https://github.com/mudge
+[@mzp]: https://github.com/mzp
