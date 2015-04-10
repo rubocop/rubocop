@@ -31,6 +31,9 @@ module RuboCop
         Array(hash.delete('require')).each { |r| require(r) }
 
         hash.delete('inherit_from')
+        # Prevent rubocop from failing when there is an empty section in the
+        # configuration
+        hash.delete_if { |_section, content| content.nil? }
         config = Config.new(hash, path)
 
         config.deprecation_check do |deprecation_message|

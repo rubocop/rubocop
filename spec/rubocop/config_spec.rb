@@ -71,6 +71,20 @@ describe RuboCop::Config do
       end
     end
 
+    context 'when the configuration file includes an empty section' do
+      before do
+        create_file(configuration_path, [
+          'AllCops:',
+          '  RunRailsCops: true',
+          'Rails/HasAndBelongsToMany:'
+        ])
+      end
+
+      it 'does not raise validation error' do
+        expect { configuration.validate }.to_not raise_error
+      end
+    end
+
     context 'when the configuration includes any common parameter' do
       # Common parameters are parameters that are not in the default
       # configuration, but are nonetheless allowed for any cop.
