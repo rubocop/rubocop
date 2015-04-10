@@ -96,7 +96,7 @@ module RuboCop
           return false unless key.sym_type?
 
           sym_name = key.loc.expression.source
-          sym_name !~ /\A:["']|=\z/
+          sym_name !~ /\A:\W|=\z/
         end
 
         def check(pairs, delim, msg)
