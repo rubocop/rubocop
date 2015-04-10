@@ -8,6 +8,7 @@
 * [#1769](https://github.com/bbatsov/rubocop/issues/1769): Fix bug where `LiteralInInterpolation` registers an offense for interpolation of `__LINE__`. ([@rrosenblum][])
 * [#1773](https://github.com/bbatsov/rubocop/pull/1773): Fix typo ('strptime' -> 'strftime') in `Rails/TimeZone`. ([@palkan][])
 * [#1777](https://github.com/bbatsov/rubocop/pull/1777): Fix offense message from Rails/TimeZone. ([@mzp][])
+* [#1781](https://github.com/bbatsov/rubocop/pull/1781): Fix the error happening with empty config sections. ([@bankair][])
 
 ## 0.30.0 (06/04/2015)
 
@@ -1340,3 +1341,4 @@
 [@clowder]: https://github.com/clowder
 [@mudge]: https://github.com/mudge
 [@mzp]: https://github.com/mzp
+[@bankair]: https://github.com/bankair
