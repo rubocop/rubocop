@@ -77,6 +77,11 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
         new_source = autocorrect_source(cop, '{ :a=>1, :b=>2 }')
         expect(new_source).to eq('{ a: 1, b: 2 }')
       end
+
+      it 'accepts hash rockets when symbol is non-literal' do
+        inspect_source(cop, 'x = { :| => 0 }')
+        expect(cop.messages).to be_empty
+      end
     end
 
     context 'with SpaceAroundOperators disabled' do
