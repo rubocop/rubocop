@@ -416,6 +416,35 @@ describe RuboCop::Cop::Style::IndentationWidth do
                 .to eq(['Use 2 (not 8) spaces for indentation.'])
             end
           end
+
+          context 'and end is aligned randomly' do
+            it 'registers an offense for an if' do
+              inspect_source(cop,
+                             ['var = if a',
+                              '          0',
+                              '      end'])
+              expect(cop.messages)
+                .to eq(['Use 2 (not 10) spaces for indentation.'])
+            end
+
+            it 'registers an offense for a while' do
+              inspect_source(cop,
+                             ['var = while a',
+                              '          b',
+                              '      end'])
+              expect(cop.messages)
+                .to eq(['Use 2 (not 10) spaces for indentation.'])
+            end
+
+            it 'registers an offense for an until' do
+              inspect_source(cop,
+                             ['var = until a',
+                              '          b',
+                              '      end'])
+              expect(cop.messages)
+                .to eq(['Use 2 (not 10) spaces for indentation.'])
+            end
+          end
         end
 
         shared_examples 'assignment and if with keyword alignment' do
