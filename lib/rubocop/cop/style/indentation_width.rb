@@ -100,6 +100,8 @@ module RuboCop
         end
 
         def on_while(node, base = node)
+          return if ignored_node?(node)
+
           _condition, body = *node
           return unless node.loc.keyword.begin_pos ==
                         node.loc.expression.begin_pos
