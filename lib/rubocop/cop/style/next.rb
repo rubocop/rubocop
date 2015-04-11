@@ -21,6 +21,7 @@ module RuboCop
       class Next < Cop
         include IfNode
         include ConfigurableEnforcedStyle
+        include MinBodyLength
 
         MSG = 'Use `next` to skip iteration.'
         ENUMERATORS = [:collect, :detect, :downto, :each, :find, :find_all,
@@ -55,17 +56,6 @@ module RuboCop
         end
 
         private
-
-        def min_body_length?(node)
-          (node.loc.end.line - node.loc.keyword.line) > min_body_length
-        end
-
-        def min_body_length
-          length = cop_config['MinBodyLength'] || 1
-          return length if length.is_a?(Integer) && length > 0
-
-          fail 'MinBodyLength needs to be a positive integer!'
-        end
 
         def enumerator?(method_name)
           ENUMERATORS.include?(method_name) || /\Aeach_/.match(method_name)
