@@ -26,6 +26,7 @@ module RuboCop
 
     def make_excludes_absolute
       keys.each do |key|
+        validate_section_presence(key)
         next unless self[key]['Exclude']
 
         self[key]['Exclude'].map! do |exclude_elem|
@@ -172,8 +173,16 @@ module RuboCop
 
     private
 
+    def validate_section_presence(name)
+      return unless @hash.key?(name) && @hash[name].nil?
+      fail ValidationError,
+           "empty section #{name} found " \
+           "in #{loaded_path || self}"
+    end
+
     def validate_parameter_names(valid_cop_names)
       valid_cop_names.each do |name|
+        validate_section_presence(name)
         @hash[name].each_key do |param|
           next if COMMON_PARAMS.include?(param) ||
                   ConfigLoader.default_configuration[name].key?(param)
