@@ -983,6 +983,13 @@ Lint/Void:
 
 ##################### Performance #############################
 
+Performance/Count:
+  Description: >-
+                  Use `count` instead of `select...size`, `reject...size`,
+                  `select...count`, `reject...count`, `select...length`,
+                  and `reject...length`.
+  Enabled: true
+
 Performance/Detect:
   Description: >-
                   Use `detect` instead of `select.first`, `find_all.first`,
