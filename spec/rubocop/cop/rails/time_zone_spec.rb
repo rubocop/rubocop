@@ -14,11 +14,6 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
         expect(cop.offenses.size).to eq(1)
       end
 
-      it "registers an offense for #{klass}.now.in_time_zone" do
-        inspect_source(cop, "#{klass}.now.in_time_zone")
-        expect(cop.offenses.size).to eq(1)
-      end
-
       it "registers an offense for #{klass}.new without argument" do
         inspect_source(cop, "#{klass}.new")
         expect(cop.offenses.size).to eq(1)
@@ -29,6 +24,13 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
         inspect_source(cop, "#{klass}.new(2012, 6, 10, 12, 00)")
         expect(cop.offenses.size).to eq(1)
         expect(cop.offenses.first.message).to include('Time.zone.local')
+      end
+
+      described_class::ACCEPTED_METHODS.each do |a_method|
+        it "registers an offense #{klass}.now.#{a_method}" do
+          inspect_source(cop, "#{klass}.now.#{a_method}")
+          expect(cop.offenses.size).to eq(1)
+        end
       end
     end
 
@@ -76,6 +78,16 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
       expect(cop.offenses.size).to eq(1)
     end
 
+    it 'registers an offense for Time.parse.localtime(offset)' do
+      inspect_source(cop, "Time.parse('12:00').localtime('+03:00')")
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it 'registers an offense for Time.parse.localtime' do
+      inspect_source(cop, "Time.parse('12:00').localtime")
+      expect(cop.offenses.size).to eq(1)
+    end
+
     it 'accepts Time.zone.now' do
       inspect_source(cop, 'Time.zone.now')
       expect(cop.offenses).to be_empty
@@ -113,15 +125,27 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
       )
       expect(cop.offenses).to be_empty
     end
+
+    it 'accepts Time.zone.parse.localtime' do
+      inspect_source(cop, "Time.zone.parse('12:00').localtime")
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts Time.zone.parse.localtime(offset)' do
+      inspect_source(cop, "Time.zone.parse('12:00').localtime('+03:00')")
+      expect(cop.offenses).to be_empty
+    end
   end
 
-  context 'when EnforcedStyle is "ignore_acceptable"' do
+  context 'when EnforcedStyle is "acceptable"' do
     let(:cop_config) { { 'EnforcedStyle' => 'acceptable' } }
 
     described_class::TIMECLASS.each do |klass|
-      it "accepts #{klass}.now.in_time_zone" do
-        inspect_source(cop, "#{klass}.now.in_time_zone")
-        expect(cop.offenses).to be_empty
+      described_class::ACCEPTED_METHODS.each do |a_method|
+        it "accepts #{klass}.now.#{a_method}" do
+          inspect_source(cop, "#{klass}.now.#{a_method}")
+          expect(cop.offenses).to be_empty
+        end
       end
     end
 
@@ -130,6 +154,11 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
         cop,
         'Time.strftime(time_string, "%Y-%m-%dT%H:%M:%S%z").in_time_zone'
       )
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts Time.parse.localtime(offset)' do
+      inspect_source(cop, "Time.parse('12:00').localtime('+03:00')")
       expect(cop.offenses).to be_empty
     end
   end

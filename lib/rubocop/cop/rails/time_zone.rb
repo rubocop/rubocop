@@ -31,9 +31,15 @@ module RuboCop
 
         MSG = 'Do not use `%s` without zone. Use `%s` instead.'
 
+        MSG_LOCALTIME = 'Do not use `Time.localtime` without offset or zone.'
+
         TIMECLASS = [:Time, :DateTime]
 
         DANGER_METHODS = [:now, :local, :new, :strftime, :parse, :at]
+
+        ACCEPTED_METHODS = [:in_time_zone, :utc,
+                            :iso8601, :jisx0301, :rfc3339,
+                            :to_i, :to_f]
 
         def on_const(node)
           _module, klass = *node
@@ -47,8 +53,9 @@ module RuboCop
 
         def check_time_node(klass, node)
           chain = extract_method_chain(node)
-          return if (chain & DANGER_METHODS).empty? ||
-                    !(chain & good_methods).empty?
+          return if danger_chain?(chain)
+
+          return check_localtime(node) if need_check_localtime?(chain)
 
           method_name = (chain & DANGER_METHODS).join('.')
           safe_method_name = safe_method(method_name, node)
@@ -62,10 +69,9 @@ module RuboCop
 
         def extract_method_chain(node)
           chain = []
-          p = node
-          while !p.nil? && p.send_type?
-            chain << extract_method(p)
-            p = p.parent
+          while !node.nil? && node.send_type?
+            chain << extract_method(node)
+            node = node.parent
           end
           chain
         end
@@ -96,8 +102,27 @@ module RuboCop
           end
         end
 
+        def check_localtime(node)
+          selector_node = node
+          while !node.nil? && node.send_type?
+            break if extract_method(node) == :localtime
+            node = node.parent
+          end
+          _receiver, _method, args = *node
+
+          add_offense(selector_node, :selector, MSG_LOCALTIME) if args.nil?
+        end
+
+        def danger_chain?(chain)
+          (chain & DANGER_METHODS).empty? || !(chain & good_methods).empty?
+        end
+
+        def need_check_localtime?(chain)
+          (style == :acceptable) && chain.include?(:localtime)
+        end
+
         def good_methods
-          style == :always ? [:zone] : [:zone, :in_time_zone]
+          style == :always ? [:zone] : [:zone] + ACCEPTED_METHODS
         end
       end
     end
