@@ -13,12 +13,12 @@ describe RuboCop::Cop::Team do
 
     context 'when the option argument of .new is omitted' do
       subject { described_class.new(cop_classes, config).autocorrect? }
-      it { should be_falsey }
+      it { is_expected.to be_falsey }
     end
 
     context 'when { auto_correct: true } is passed to .new' do
       let(:options) { { auto_correct: true } }
-      it { should be_truthy }
+      it { is_expected.to be_truthy }
     end
   end
 
@@ -27,12 +27,12 @@ describe RuboCop::Cop::Team do
 
     context 'when the option argument of .new is omitted' do
       subject { described_class.new(cop_classes, config).debug? }
-      it { should be_falsey }
+      it { is_expected.to be_falsey }
     end
 
     context 'when { debug: true } is passed to .new' do
       let(:options) { { debug: true } }
-      it { should be_truthy }
+      it { is_expected.to be_truthy }
     end
   end
 

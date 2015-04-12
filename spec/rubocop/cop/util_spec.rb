@@ -51,17 +51,17 @@ describe RuboCop::Cop::Util do
 
     context 'when side is :both' do
       let(:side) { :both }
-      it { should eq(',Error,') }
+      it { is_expected.to eq(',Error,') }
     end
 
     context 'when side is :left' do
       let(:side) { :left }
-      it { should eq(',Error') }
+      it { is_expected.to eq(',Error') }
     end
 
     context 'when side is :right' do
       let(:side) { :right }
-      it { should eq('Error,') }
+      it { is_expected.to eq('Error,') }
     end
   end
 
@@ -76,17 +76,17 @@ describe RuboCop::Cop::Util do
 
     context 'when side is :both' do
       let(:side) { :both }
-      it { should eq('  a(2) ') }
+      it { is_expected.to eq('  a(2) ') }
     end
 
     context 'when side is :left' do
       let(:side) { :left }
-      it { should eq('  a(2)') }
+      it { is_expected.to eq('  a(2)') }
     end
 
     context 'when side is :right' do
       let(:side) { :right }
-      it { should eq('a(2) ') }
+      it { is_expected.to eq('a(2) ') }
     end
   end
 
@@ -95,7 +95,7 @@ describe RuboCop::Cop::Util do
     [1..1, 1...1, 1..2, 1...2, 1..3, 1...3, 1..-1, 1...-1].each do |range|
       context "with range #{range}" do
         subject { described_class.numeric_range_size(range) }
-        it { should eq(range.size) }
+        it { is_expected.to eq(range.size) }
       end
     end
   end
