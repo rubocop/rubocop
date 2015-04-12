@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#1788](https://github.com/bbatsov/rubocop/pull/1788): New cop `ModuleLength` checks for overly long module definitions. ([@sdeframond][])
+
 ## 0.30.1 (21/04/2015)
 
 ### Bugs fixed
@@ -1355,3 +1359,4 @@
 [@bankair]: https://github.com/bankair
 [@crimsonknave]: https://github.com/crimsonknave
 [@renuo]: https://github.com/renuo
+[@sdeframond]: https://github.com/sdeframond
