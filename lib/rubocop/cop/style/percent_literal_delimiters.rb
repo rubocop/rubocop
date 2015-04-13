@@ -76,6 +76,8 @@ module RuboCop
           case object
           when String
             ''
+          when NilClass
+            ''
           when Parser::AST::Node
             part_range = object.loc.send(part)
             left_of_part = part_range.source_line[0...part_range.column]
