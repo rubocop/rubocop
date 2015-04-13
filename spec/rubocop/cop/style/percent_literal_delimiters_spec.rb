@@ -225,6 +225,11 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
       expect(new_source).to eq('%[string]')
     end
 
+    it 'fixes a string with no content' do
+      new_source = autocorrect_source(cop, '%()')
+      expect(new_source).to eq('%[]')
+    end
+
     it 'fixes a string array' do
       new_source = autocorrect_source(cop, '%w(some words)')
       expect(new_source).to eq('%w[some words]')
