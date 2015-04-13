@@ -175,7 +175,7 @@ module RuboCop
         end
 
         def not_for_this_cop?(node)
-          node.each_ancestor.find do |ancestor|
+          node.each_ancestor.any? do |ancestor|
             grouped_expression?(ancestor) ||
               inside_arg_list_parentheses?(node, ancestor)
           end
