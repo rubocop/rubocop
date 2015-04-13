@@ -156,11 +156,9 @@ describe RuboCop::Cop::Cop do
     context '#types' do
       subject { described_class.all.types }
       it('has types') { expect(subject.length).not_to eq(0) }
-      it { should include :lint }
-      it do
-        should include :rails
-      end
-      it { should include :style }
+      it { is_expected.to include(:lint) }
+      it { is_expected.to include(:rails) }
+      it { is_expected.to include(:style) }
       it 'contains every value only once' do
         expect(subject.length).to eq(subject.uniq.length)
       end
@@ -201,23 +199,23 @@ describe RuboCop::Cop::Cop do
 
     context 'when the option is not given' do
       let(:options) { {} }
-      it { should be false }
+      it { is_expected.to be(false) }
     end
 
     context 'when the option is given' do
       let(:options) { { auto_correct: true } }
-      it { should be true }
+      it { is_expected.to be(true) }
 
       context 'when cop does not support autocorrection' do
         let(:support_autocorrect) { false }
-        it { should be false }
+        it { is_expected.to be(false) }
       end
 
       context 'when the cop is set to not autocorrect' do
         let(:config) do
           RuboCop::Config.new('Cop/Cop' => { 'AutoCorrect' => 'False' })
         end
-        it { should be false }
+        it { is_expected.to be(false) }
       end
     end
   end
