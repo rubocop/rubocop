@@ -38,6 +38,18 @@ describe RuboCop::Config do
       end
     end
 
+    context 'when the configuration includes an empty section' do
+      before do
+        create_file(configuration_path, ['Metrics/LineLength:'])
+      end
+
+      it 'raises validation error' do
+        expect { configuration.validate }
+          .to raise_error(described_class::ValidationError,
+                          %r{^empty section Metrics/LineLength})
+      end
+    end
+
     context 'when the configuration is in the base RuboCop config folder' do
       before do
         create_file(configuration_path, [
