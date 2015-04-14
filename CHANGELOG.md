@@ -10,6 +10,7 @@
 * [#1777](https://github.com/bbatsov/rubocop/pull/1777): Fix offense message from Rails/TimeZone. ([@mzp][])
 * Fix handling of `while` and `until` with assignment in `IndentationWidth`. ([@lumeet][])
 * [#1791](https://github.com/bbatsov/rubocop/pull/1791): Fix autocorrection of `PercentLiteralDelimiters` with no content. ([@cshaffer][])
+* [#1793](https://github.com/bbatsov/rubocop/pull/1793): Fix bug in `TrailingComma` that caused `,` in comment to count as a trailing comma. ([@jonas054][])
 
 ## 0.30.0 (06/04/2015)
 
