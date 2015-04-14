@@ -16,8 +16,7 @@ module RuboCop
           # followed by some data to read. If so, we don't check it because
           # there could be good reasons why it needs to end with a certain
           # number of newlines.
-          extra = sb.source[processed_source.tokens.last.pos.end_pos..-1]
-          return if extra.strip.start_with?('__END__')
+          return if ends_in_end?(processed_source)
 
           whitespace_at_end = sb.source[/\s*\Z/]
           blank_lines = whitespace_at_end.count("\n") - 1
@@ -36,6 +35,16 @@ module RuboCop
         end
 
         private
+
+        def ends_in_end?(processed_source)
+          sb = processed_source.buffer
+
+          return true if sb.source.strip.start_with?('__END__')
+          return false if processed_source.tokens.empty?
+
+          extra = sb.source[processed_source.tokens.last.pos.end_pos..-1]
+          extra.strip.start_with?('__END__')
+        end
 
         def message(wanted_blank_lines, blank_lines)
           case blank_lines

@@ -19,16 +19,23 @@ describe RuboCop::Cop::Style::TrailingBlankLines, :config do
     end
 
     it 'accepts final blank lines if they come after __END__' do
-      inspect_source(cop, ['x = 0',
-                           '',
-                           '__END__',
-                           '',
-                           ''])
+      inspect_source(cop, ['x = 0', '', '__END__', '', ''])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts final blank lines if they come after __END__ in empty file' do
+      inspect_source(cop, ['__END__', '', '', ''])
       expect(cop.offenses).to be_empty
     end
 
     it 'registers an offense for multiple trailing blank lines' do
       inspect_source(cop, ['x = 0', '', '', '', ''])
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.messages).to eq(['3 trailing blank lines detected.'])
+    end
+
+    it 'registers an offense for multiple blank lines in an empty file' do
+      inspect_source(cop, ['', '', '', '', ''])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['3 trailing blank lines detected.'])
     end
@@ -41,6 +48,11 @@ describe RuboCop::Cop::Style::TrailingBlankLines, :config do
     it 'auto-corrects unwanted blank lines' do
       new_source = autocorrect_source(cop, ['x = 0', '', '', '', ''])
       expect(new_source).to eq(['x = 0', ''].join("\n"))
+    end
+
+    it 'auto-corrects unwanted blank lines in an empty file' do
+      new_source = autocorrect_source(cop, ['', '', '', '', ''])
+      expect(new_source).to eq(['', ''].join("\n"))
     end
 
     it 'auto-corrects even if some lines have space' do
@@ -64,6 +76,13 @@ describe RuboCop::Cop::Style::TrailingBlankLines, :config do
         .to eq(['3 trailing blank lines instead of 1 detected.'])
     end
 
+    it 'registers an offense for multiple blank lines in an empty file' do
+      inspect_source(cop, ['', '', '', '', ''])
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.messages)
+        .to eq(['3 trailing blank lines instead of 1 detected.'])
+    end
+
     it 'registers an offense for no final newline' do
       inspect_source(cop, 'x = 0')
       expect(cop.messages).to eq(['Final newline missing.'])
@@ -77,6 +96,11 @@ describe RuboCop::Cop::Style::TrailingBlankLines, :config do
     it 'auto-corrects unwanted blank lines' do
       new_source = autocorrect_source(cop, ['x = 0', '', '', '', ''])
       expect(new_source).to eq(['x = 0', '', ''].join("\n"))
+    end
+
+    it 'auto-corrects unwanted blank lines in an empty file' do
+      new_source = autocorrect_source(cop, ['', '', '', '', ''])
+      expect(new_source).to eq(['', '', ''].join("\n"))
     end
 
     it 'auto-corrects missing blank line' do
