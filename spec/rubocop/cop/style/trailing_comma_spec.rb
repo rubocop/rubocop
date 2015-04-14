@@ -178,6 +178,14 @@ describe RuboCop::Cop::Style::TrailingComma, :config do
         expect(cop.offenses).to be_empty
       end
 
+      it 'accepts comma in comment after last value item' do
+        inspect_source(cop, ['{ ',
+                             "  foo: 'foo',",
+                             "  bar: 'bar'.delete(',')#,",
+                             '}'])
+        expect(cop.offenses).to be_empty
+      end
+
       it 'auto-corrects unwanted comma in an Array literal' do
         new_source = autocorrect_source(cop, ['VALUES = [',
                                               '           1001,',
@@ -260,6 +268,16 @@ describe RuboCop::Cop::Style::TrailingComma, :config do
         inspect_source(cop, ['MAP = { a: 1001,',
                              '        b: 2020,',
                              '        c: 3333',
+                             '}'])
+        expect(cop.messages)
+          .to eq(['Put a comma after the last item of a multiline hash.'])
+        expect(cop.highlights).to eq(['c: 3333'])
+      end
+
+      it 'registers an offense for trailing comma in a comment in Hash' do
+        inspect_source(cop, ['MAP = { a: 1001,',
+                             '        b: 2020,',
+                             '        c: 3333 # ,',
                              '}'])
         expect(cop.messages)
           .to eq(['Put a comma after the last item of a multiline hash.'])

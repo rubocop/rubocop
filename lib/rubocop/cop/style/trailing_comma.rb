@@ -78,7 +78,7 @@ module RuboCop
           comma_offset = after_last_item.source =~ /,/
           should_have_comma =
             [:comma, :consistent_comma].include?(style) && multiline?(node)
-          if comma_offset
+          if comma_offset && !inside_comment?(after_last_item, comma_offset)
             unless should_have_comma
               extra_info = case style
                            when :comma
@@ -96,6 +96,13 @@ module RuboCop
           end
         end
         # rubocop:enable Metrics/MethodLength
+
+        def inside_comment?(range, comma_offset)
+          processed_source.comments.any? do |comment|
+            comment_offset = comment.loc.expression.begin_pos - range.begin_pos
+            comment_offset >= 0 && comment_offset < comma_offset
+          end
+        end
 
         def heredoc?(source_after_last_item)
           source_after_last_item =~ /\w/
