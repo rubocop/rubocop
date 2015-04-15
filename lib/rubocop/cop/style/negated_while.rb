@@ -31,7 +31,7 @@ module RuboCop
           @corrections << lambda do |corrector|
             condition, _body, _rest = *node
             # Look inside parentheses around the condition, if any.
-            condition, _ = *condition while condition.type == :begin
+            condition, = *condition while condition.type == :begin
             # Unwrap the negated portion of the condition (a send node).
             pos_condition, _method, = *condition
             corrector.replace(

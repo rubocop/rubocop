@@ -101,7 +101,7 @@ module RuboCop
           end
 
           def value_delta(first_pair, current_pair)
-            first_key, _ = *first_pair
+            first_key, = *first_pair
             _, current_value = *current_pair
             correct_value_column = first_key.loc.column +
                                    spaced_separator(current_pair).length +
