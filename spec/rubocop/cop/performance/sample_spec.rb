@@ -27,6 +27,25 @@ describe RuboCop::Cop::Performance::Sample do
   it_behaves_like('register_offenses', '.last')
   it_behaves_like('register_offenses', '[0]')
   it_behaves_like('register_offenses', '[2]')
+  it_behaves_like('register_offenses', '[0, 3]')
+  it_behaves_like('register_offenses', '[0..3]')
+  it_behaves_like('register_offenses', '[0...3]')
+
+  it 'registers an offense for random' do
+    source = ['random = { random: Random.new(1) }',
+              '[1, 2, 3, 4].shuffle(random)'].join("\n")
+    inspect_source(cop, source)
+
+    expect(cop.messages)
+      .to eq(['Use `sample` instead of `shuffle(random)`.'])
+  end
+
+  it 'when using shuffle with a defined random' do
+    inspect_source(cop, '[1, 2, 3, 4].shuffle(random: Random.new(1))')
+
+    expect(cop.messages)
+      .to eq(['Use `sample` instead of `shuffle(random: Random.new(1))`.'])
+  end
 
   it 'does not registers an offense when using sample' do
     inspect_source(cop, '[1, 2, 3, 4].sample')
@@ -34,16 +53,52 @@ describe RuboCop::Cop::Performance::Sample do
     expect(cop.messages).to be_empty
   end
 
-  shared_examples 'corrects' do |selector|
-    it "shuffle#{selector} to sample" do
-      new_source = autocorrect_source(cop, "[1, 2, 3, 4].shuffle#{selector}")
+  context 'autocorrect' do
+    shared_examples 'corrects' do |selector|
+      it "shuffle#{selector} to sample" do
+        new_source = autocorrect_source(cop, "[1, 2, 3, 4].shuffle#{selector}")
 
-      expect(new_source).to eq('[1, 2, 3, 4].sample')
+        expect(new_source).to eq('[1, 2, 3, 4].sample')
+      end
+    end
+
+    it_behaves_like('corrects', '.first')
+    it_behaves_like('corrects', '.last')
+    it_behaves_like('corrects', '[0]')
+    it_behaves_like('corrects', '[3]')
+
+    it 'does not correct shuffle with an inclusive range selector' do
+      new_source = autocorrect_source(cop, '[1, 2, 3, 4].shuffle[0..3]')
+
+      expect(new_source).to eq('[1, 2, 3, 4].shuffle[0..3]')
+    end
+
+    it 'does not correct shuffle with an exclusive range selector' do
+      new_source = autocorrect_source(cop, '[1, 2, 3, 4].shuffle[0...3]')
+
+      expect(new_source).to eq('[1, 2, 3, 4].shuffle[0...3]')
+    end
+
+    it 'corrects shuffle with an array range selector' do
+      new_source = autocorrect_source(cop, '[1, 2, 3, 4].shuffle[0, 3]')
+
+      expect(new_source).to eq('[1, 2, 3, 4].sample(3)')
+    end
+
+    it 'corrects shuffle with an assigned random hash' do
+      source = '[1, 2, 3, 4].shuffle(random: Random.new(1))'
+      new_source = autocorrect_source(cop, source)
+
+      expect(new_source).to eq('[1, 2, 3, 4].sample(random: Random.new(1))')
+    end
+
+    it 'corrects shuffle with an assigned random variable' do
+      source = ['random = { random: Random.new(1) }',
+                '[1, 2, 3, 4].shuffle(random)'].join("\n")
+      new_source = autocorrect_source(cop, source)
+
+      expect(new_source).to eq(['random = { random: Random.new(1) }',
+                                '[1, 2, 3, 4].sample(random)'].join("\n"))
     end
   end
-
-  it_behaves_like('corrects', '.first')
-  it_behaves_like('corrects', '.last')
-  it_behaves_like('corrects', '[0]')
-  it_behaves_like('corrects', '[2]')
 end

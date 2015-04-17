@@ -14,6 +14,7 @@
 * [#1793](https://github.com/bbatsov/rubocop/pull/1793): Fix bug in `TrailingComma` that caused `,` in comment to count as a trailing comma. ([@jonas054][])
 * [#1765](https://github.com/bbatsov/rubocop/pull/1765): Update 1.9 hash to stop triggering when the symbol is not valid in the 1.9 hash syntax. ([@crimsonknave][])
 * [#1806](https://github.com/bbatsov/rubocop/issues/1806): Require a newer version of `parser` and use its corrected solution for comment association in `Style/Documentation`. ([@jonas054][])
+* [#1792](https://github.com/bbatsov/rubocop/issues/1792): Fix bugs in `Sample` that did not account for array selectors with a range and passing random to shuffle. ([@rrosenblum][])
 
 ## 0.30.0 (06/04/2015)
 
