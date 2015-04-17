@@ -103,6 +103,64 @@ describe RuboCop::Config do
     end
   end
 
+  describe '#make_excludes_absolute' do
+    context 'when config is in root directory' do
+      let(:hash) do
+        {
+          'AllCops' => {
+            'Exclude' => [
+              'config/environment',
+              'spec'
+            ]
+          }
+        }
+      end
+
+      before do
+        allow(configuration)
+          .to receive(:base_dir_for_path_parameters)
+          .and_return('/home/foo/project')
+        configuration.make_excludes_absolute
+      end
+
+      it 'should generate valid absulute directory' do
+        expect(configuration['AllCops']['Exclude'])
+          .to eq [
+            '/home/foo/project/config/environment',
+            '/home/foo/project/spec'
+          ]
+      end
+    end
+
+    context 'when config is in subdirectory' do
+      let(:hash) do
+        {
+          'AllCops' => {
+            'Exclude' => [
+              '../../config/environment',
+              '../../spec'
+            ]
+          }
+        }
+      end
+
+      before do
+        allow(configuration)
+          .to receive(:base_dir_for_path_parameters)
+          .and_return('/home/foo/project/config/tools')
+        configuration.make_excludes_absolute
+      end
+
+      it 'should generate valid absulute directory' do
+        expect(configuration['AllCops']['Exclude'])
+          .to eq [
+            '/home/foo/project/config/environment',
+            '/home/foo/project/spec'
+          ]
+      end
+    end
+  end
+
   describe '#file_to_include?' do
     let(:hash) do
       {
