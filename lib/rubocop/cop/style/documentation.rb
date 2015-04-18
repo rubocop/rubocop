@@ -89,7 +89,7 @@ module RuboCop
         # :nodoc: all.
         def nodoc?(node, ast_with_comments, require_all = false)
           return false unless node
-          nodoc_node = node.children.last
+          nodoc_node = node.children.first
           return false unless nodoc_node
 
           nodoc_node = nodoc_node.children.first while nodoc_node.type == :begin
