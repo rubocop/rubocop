@@ -83,16 +83,15 @@ module RuboCop
           comment_line =~ /^\s*#/
         end
 
-        # The :nodoc: comment is not actually associated with the class/module
-        # ifself but its first commentable child node. Unless the element is
-        # tagged with :nodoc:, the search proceeds to check its ancestors for
-        # :nodoc: all.
+        # First checks if the :nodoc: comment is associated with the
+        # class/module. Unless the element is tagged with :nodoc:, the search
+        # proceeds to check its ancestors for :nodoc: all.
+        # Note: How end-of-line comments are associated with code changed in
+        # parser-2.2.0.4.
         def nodoc?(node, ast_with_comments, require_all = false)
           return false unless node
-          nodoc_node = node.children.last
+          nodoc_node = node.children.first
           return false unless nodoc_node
-
-          nodoc_node = nodoc_node.children.first while nodoc_node.type == :begin
           comment = ast_with_comments[nodoc_node].first
 
           if comment && comment.loc.line == node.loc.line
