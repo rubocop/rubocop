@@ -13,6 +13,7 @@
 * Fix handling of `while` and `until` with assignment in `IndentationWidth`. ([@lumeet][])
 * [#1793](https://github.com/bbatsov/rubocop/pull/1793): Fix bug in `TrailingComma` that caused `,` in comment to count as a trailing comma. ([@jonas054][])
 * [#1765](https://github.com/bbatsov/rubocop/pull/1765): Update 1.9 hash to stop triggering when the symbol is not valid in the 1.9 hash syntax. ([@crimsonknave][])
+* [#1809](https://github.com/bbatsov/rubocop/pull/1809): Fix breaking changes in `parser` 2.2.0.4. ([@tamird][])
 
 ## 0.30.0 (06/04/2015)
 
