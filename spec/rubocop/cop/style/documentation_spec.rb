@@ -194,5 +194,44 @@ describe RuboCop::Cop::Style::Documentation do
         end
       end
     end
+
+    context 'on a subclass' do
+      it 'accepts non-namespace subclass without documentation' do
+        inspect_source(cop,
+                       ['class Test < Parent #:nodoc:',
+                        '  TEST = 20',
+                        'end'
+                       ])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'registers an offense for nested subclass without documentation' do
+        inspect_source(cop,
+                       ['module TestModule #:nodoc:',
+                        '  TEST = 20',
+                        '  class Test < Parent',
+                        '    TEST = 20',
+                        '  end',
+                        'end'
+                       ])
+        expect(cop.offenses.size).to eq(1)
+      end
+
+      context 'with `all` modifier' do
+        it 'accepts nested subclass without documentation' do
+          inspect_source(cop,
+                         ['module A #:nodoc: all',
+                          '  module B',
+                          '    TEST = 20',
+                          '    class Test < Parent',
+                          '      TEST = 20',
+                          '    end',
+                          '  end',
+                          'end'
+                         ])
+          expect(cop.offenses).to be_empty
+        end
+      end
+    end
   end
 end
