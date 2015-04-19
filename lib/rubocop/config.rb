@@ -31,7 +31,9 @@ module RuboCop
 
         self[key]['Exclude'].map! do |exclude_elem|
           if exclude_elem.is_a?(String) && !exclude_elem.start_with?('/')
-            File.join(base_dir_for_path_parameters, exclude_elem)
+            File.expand_path(
+              File.join(base_dir_for_path_parameters, exclude_elem)
+            )
           else
             exclude_elem
           end
