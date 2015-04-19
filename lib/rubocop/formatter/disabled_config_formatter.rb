@@ -22,9 +22,14 @@ module RuboCop
         attr_accessor :config_to_allow_offenses
       end
 
-      def file_finished(_file, offenses)
-        @cops_with_offenses ||= Hash.new(0)
-        offenses.each { |o| @cops_with_offenses[o.cop_name] += 1 }
+      def file_finished(file, offenses)
+        @cops_with_offenses ||= {}
+
+        offenses.each do |offense|
+          @cops_with_offenses[offense.cop_name] ||= { count: 0, files: [] }
+          @cops_with_offenses[offense.cop_name][:count] += 1
+          @cops_with_offenses[offense.cop_name][:files] << file
+        end
       end
 
       def finished(_inspected_files)
@@ -33,17 +38,24 @@ module RuboCop
         # Syntax isn't a real cop and it can't be disabled.
         @cops_with_offenses.delete('Syntax')
 
-        @cops_with_offenses.sort.each do |cop_name, offense_count|
+        @cops_with_offenses.sort.each do |cop_name, data|
           output.puts
           cfg = self.class.config_to_allow_offenses[cop_name]
-          cfg ||= { 'Enabled' => false }
-          output_cop_comments(output, cfg, cop_name, offense_count)
+          cfg ||= {}
+          output_cop_comments(output, cfg, cop_name, data[:count])
           output.puts "#{cop_name}:"
           cfg.each { |key, value| output.puts "  #{key}: #{value}" }
+          output_file_excludes(output, data[:files])
         end
         puts "Created #{output.path}."
         puts "Run `rubocop --config #{output.path}`, or"
         puts "add inherit_from: #{output.path} in a .rubocop.yml file."
+      end
+
+      def output_file_excludes(output, files)
+        return if files.nil?
+        output.puts '  Exclude:' if files.any?
+        files.uniq.sort.each { |file| output.puts "    - '#{file}'" }
       end
 
       def output_cop_comments(output, cfg, cop_name, offense_count)

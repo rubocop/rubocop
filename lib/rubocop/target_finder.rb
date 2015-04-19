@@ -28,7 +28,10 @@ module RuboCop
     # files under the current directory
     # @return [Array] array of file paths
     def find(args)
-      return target_files_in_dir if args.empty?
+      if args.empty?
+        @base_dir = Dir.pwd
+        return target_files_in_dir(@base_dir)
+      end
 
       files = []
 
@@ -67,6 +70,9 @@ module RuboCop
 
       # Most recently modified file first.
       target_files.sort_by! { |path| -File.mtime(path).to_i } if fail_fast?
+
+      # Strip the base_dir off.
+      target_files.map! { |file| file.gsub(/\A#{base_dir}\//, '') }
 
       target_files
     end
