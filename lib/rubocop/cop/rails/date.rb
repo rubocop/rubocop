@@ -81,10 +81,9 @@ module RuboCop
 
         def extract_method_chain(node)
           chain = []
-          p = node
-          while !p.nil? && p.send_type?
-            chain << extract_method(p)
-            p = p.parent
+          while !node.nil? && node.send_type?
+            chain << extract_method(node)
+            node = node.parent
           end
           chain
         end
