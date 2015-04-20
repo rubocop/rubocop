@@ -11,46 +11,72 @@ module RuboCop
       #   [1, 2, 3].shuffle.first
       #   [1, 2, 3].shuffle.last
       #   [1, 2, 3].shuffle[0]
+      #   [1, 2, 3].shuffle[0, 3]
+      #   [1, 2, 3].shuffle(random: Random.new(1))
       #
       #   # good
       #   [1, 2, 3].sample
+      #   [1, 2, 3].sample(3)
+      #   [1, 2, 3].sample(random: Random.new(1))
       class Sample < Cop
-        MSG = 'Use `sample` instead of `shuffle.%s`.'
-        MSG_SELECTOR = 'Use `sample` instead of `shuffle[%s]`.'
-        ARRAY_SELECTORS = [:first, :last, :[]]
+        MSG = 'Use `sample` instead of `shuffle%s`.'
+        RANGE_TYPES = [:irange, :erange]
 
         def on_send(node)
-          receiver, second_method, selector = *node
-          return unless ARRAY_SELECTORS.include?(second_method)
-          return if receiver.nil?
-          _array, first_method = *receiver
-          return unless first_method == :shuffle
+          _receiver, method, params, = *node
+          return unless method == :shuffle
+          _receiver, _method, params, = *node.parent if params.nil?
 
-          begin_of_offense = receiver.loc.selector.begin_pos
-          end_of_offense = node.loc.selector.end_pos
-          range = Parser::Source::Range.new(node.loc.expression.source_buffer,
-                                            begin_of_offense,
-                                            end_of_offense)
-
-          message = if second_method == :[]
-                      format(MSG_SELECTOR, selector.loc.expression.source)
+          message = if params && params.lvar_type?
+                      format(MSG, shuffle_params(node))
+                    elsif node.parent
+                      _params, selector = *node.parent
+                      if selector == :[]
+                        format(MSG, node.parent.loc.selector.source)
+                      else
+                        format(MSG, ".#{node.parent.loc.selector.source}")
+                      end
                     else
-                      format(MSG, second_method)
+                      format(MSG, shuffle_params(node))
                     end
 
-          add_offense(node, range, message)
+          add_offense(node, range_of_shuffle(node), message)
         end
 
         def autocorrect(node)
-          receiver, = *node
-          location_of_shuffle = receiver.loc.selector.begin_pos
-          range = Parser::Source::Range.new(node.loc.expression.source_buffer,
-                                            location_of_shuffle,
-                                            node.loc.selector.end_pos)
+          _receiver, _method, params, selector = *node
+          _receiver, _method, params, selector = *node.parent if params.nil?
+
+          return if params && RANGE_TYPES.include?(params.type)
+
+          range = if params && (params.hash_type? || params.lvar_type?)
+                    range_of_shuffle(node)
+                  else
+                    Parser::Source::Range.new(node.loc.expression.source_buffer,
+                                              node.loc.selector.begin_pos,
+                                              node.parent.loc.selector.end_pos)
+                  end
 
           @corrections << lambda do |corrector|
             corrector.replace(range, 'sample')
+            return if selector.nil?
+            corrector.insert_after(range, "(#{selector.loc.expression.source})")
           end
+        end
+
+        private
+
+        def range_of_shuffle(node)
+          Parser::Source::Range.new(node.loc.expression.source_buffer,
+                                    node.loc.selector.begin_pos,
+                                    node.loc.selector.end_pos)
+        end
+
+        def shuffle_params(node)
+          params = Parser::Source::Range.new(node.loc.expression.source_buffer,
+                                             node.loc.selector.end_pos,
+                                             node.loc.expression.end_pos)
+          params.source
         end
       end
     end
