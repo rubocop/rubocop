@@ -16,6 +16,7 @@
 * [#1806](https://github.com/bbatsov/rubocop/issues/1806): Require a newer version of `parser` and use its corrected solution for comment association in `Style/Documentation`. ([@jonas054][])
 * [#1792](https://github.com/bbatsov/rubocop/issues/1792): Fix bugs in `Sample` that did not account for array selectors with a range and passing random to shuffle. ([@rrosenblum][])
 * [#1770](https://github.com/bbatsov/rubocop/pull/1770): Add more acceptable methods to `Rails/TimeZone` (`utc`, `localtime`, `to_i`, `iso8601` etc). ([@palkan][])
+* [#1795](https://github.com/bbatsov/rubocop/pull/1795): Fix bug in `TrailingBlankLines` that caused a crash for files containing only newlines. ([@renuo][])
 
 ## 0.30.0 (06/04/2015)
 
@@ -1351,3 +1352,4 @@
 [@mzp]: https://github.com/mzp
 [@bankair]: https://github.com/bankair
 [@crimsonknave]: https://github.com/crimsonknave
+[@renuo]: https://github.com/renuo
