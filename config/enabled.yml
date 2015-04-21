@@ -765,6 +765,10 @@ Metrics/ClassLength:
   Description: 'Avoid classes longer than 100 lines of code.'
   Enabled: true
 
+Metrics/ModuleLength:
+  Description: 'Avoid modules longer than 100 lines of code.'
+  Enabled: true
+
 Metrics/CyclomaticComplexity:
   Description: >-
                  A complexity metric that is strongly correlated to the number

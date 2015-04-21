@@ -735,6 +735,10 @@ Metrics/ClassLength:
   CountComments: false  # count full line comments?
   Max: 100
 
+Metrics/ModuleLength:
+  CountComments: false  # count full line comments?
+  Max: 100
+
 # Avoid complex methods.
 Metrics/CyclomaticComplexity:
   Max: 6
