@@ -21,26 +21,15 @@ module RuboCop
       class Sample < Cop
         MSG = 'Use `sample` instead of `shuffle%s`.'
         RANGE_TYPES = [:irange, :erange]
+        VALID_ARRAY_SELECTORS = [:first, :last, :[], nil]
 
         def on_send(node)
-          _receiver, method, params, = *node
-          return unless method == :shuffle
-          _receiver, _method, params, = *node.parent if params.nil?
+          _receiver, first_method, params, = *node
+          return unless first_method == :shuffle
+          _receiver, second_method, params, = *node.parent if params.nil?
+          return unless VALID_ARRAY_SELECTORS.include?(second_method)
 
-          message = if params && params.lvar_type?
-                      format(MSG, shuffle_params(node))
-                    elsif node.parent
-                      _params, selector = *node.parent
-                      if selector == :[]
-                        format(MSG, node.parent.loc.selector.source)
-                      else
-                        format(MSG, ".#{node.parent.loc.selector.source}")
-                      end
-                    else
-                      format(MSG, shuffle_params(node))
-                    end
-
-          add_offense(node, range_of_shuffle(node), message)
+          add_offense(node, range_of_shuffle(node), message(node, params))
         end
 
         def autocorrect(node)
@@ -66,6 +55,21 @@ module RuboCop
 
         private
 
+        def message(node, params)
+          if params && params.lvar_type?
+            format(MSG, shuffle_params(node))
+          elsif node.parent
+            _params, selector = *node.parent
+            if selector == :[]
+              format(MSG, node.parent.loc.selector.source)
+            else
+              format(MSG, ".#{node.parent.loc.selector.source}")
+            end
+          else
+            format(MSG, shuffle_params(node))
+          end
+        end
+
         def range_of_shuffle(node)
           Parser::Source::Range.new(node.loc.expression.source_buffer,
                                     node.loc.selector.begin_pos,
@@ -76,6 +80,7 @@ module RuboCop
           params = Parser::Source::Range.new(node.loc.expression.source_buffer,
                                              node.loc.selector.end_pos,
                                              node.loc.expression.end_pos)
+
           params.source
         end
       end
