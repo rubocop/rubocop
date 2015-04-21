@@ -40,15 +40,27 @@ describe RuboCop::Cop::Performance::Sample do
       .to eq(['Use `sample` instead of `shuffle(random)`.'])
   end
 
-  it 'when using shuffle with a defined random' do
+  it 'registers an offense when using shuffle with a defined random' do
     inspect_source(cop, '[1, 2, 3, 4].shuffle(random: Random.new(1))')
 
     expect(cop.messages)
       .to eq(['Use `sample` instead of `shuffle(random: Random.new(1))`.'])
   end
 
-  it 'does not registers an offense when using sample' do
+  it 'does not register an offense when using sample' do
     inspect_source(cop, '[1, 2, 3, 4].sample')
+
+    expect(cop.messages).to be_empty
+  end
+
+  it 'does not register an offense when calling a method on shuffle' do
+    inspect_source(cop, '[1, 2, 3, 4].shuffle.join([5, 6, 7])')
+
+    expect(cop.messages).to be_empty
+  end
+
+  it 'does not register an offense when calling map on shuffle' do
+    inspect_source(cop, '[1, 2, 3, 4].shuffle.map { |e| e }')
 
     expect(cop.messages).to be_empty
   end

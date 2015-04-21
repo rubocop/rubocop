@@ -6,6 +6,10 @@
 
 * [#1788](https://github.com/bbatsov/rubocop/pull/1788): New cop `ModuleLength` checks for overly long module definitions. ([@sdeframond][])
 
+### Bugs fixed
+
+* [#1816](https://github.com/bbatsov/rubocop/issues/1816): Fix bug in `Sample` when calling `#shuffle` with something other than an element selector. ([@rrosenblum][])
+
 ## 0.30.1 (21/04/2015)
 
 ### Bugs fixed
