@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.30.1 (21/04/2015)
+
 ### Bugs fixed
 
 * [#1691](https://github.com/bbatsov/rubocop/issues/1691): For assignments with line break after `=`, use `keyword` alignment in `EndAlignment` regardless of configured style. ([@jonas054][])
