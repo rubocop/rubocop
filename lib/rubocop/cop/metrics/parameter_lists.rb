@@ -27,7 +27,7 @@ module RuboCop
           if count_keyword_args?
             node.children.size
           else
-            node.children.reject { |a| a.type == :kwoptarg }.size
+            node.children.count { |a| a.type != :kwoptarg }
           end
         end
 
