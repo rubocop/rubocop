@@ -43,7 +43,7 @@ describe RuboCop::Cop::Performance::FlatMap, :config do
     end
 
     shared_examples 'flatten_with_params_disabled' do |method, flatten|
-      it "does not registers an offense when calling #{method}...#{flatten}" do
+      it "does not register an offense when calling #{method}...#{flatten}" do
         inspect_source(cop, "[1, 2, 3, 4].map { |e| [e, e] }.#{flatten}")
 
         expect(cop.messages).to be_empty
