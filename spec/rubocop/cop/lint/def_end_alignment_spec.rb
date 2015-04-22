@@ -18,10 +18,12 @@ describe RuboCop::Cop::Lint::DefEndAlignment, :config do
     include_examples 'aligned', 'def', 'Test.test', 'end', 'defs'
 
     context 'in ruby 2.1 or later' do
-      include_examples 'aligned', 'public def',          'test', 'end'
-      include_examples 'aligned', 'protected def',       'test', 'end'
-      include_examples 'aligned', 'private def',         'test', 'end'
-      include_examples 'aligned', 'module_function def', 'test', 'end'
+      include_examples 'aligned', 'public def',               'test', 'end'
+      include_examples 'aligned', 'protected def',            'test', 'end'
+      include_examples 'aligned', 'private def',              'test', 'end'
+      include_examples 'aligned', 'module_function def',      'test', 'end'
+      include_examples 'aligned', 'private_class_method def', 'test', 'end'
+      include_examples 'aligned', 'public_class_method def',  'test', 'end'
 
       include_examples('misaligned', '',
                        'public def', 'test',
@@ -35,6 +37,12 @@ describe RuboCop::Cop::Lint::DefEndAlignment, :config do
       include_examples('misaligned', '',
                        'module_function def', 'test',
                        '                end')
+      include_examples('misaligned', '',
+                       'private_class_method def', 'test',
+                       '                     end')
+      include_examples('misaligned', '',
+                       'public_class_method def', 'test',
+                       '                    end')
     end
 
     it 'registers an offense for correct + opposite' do

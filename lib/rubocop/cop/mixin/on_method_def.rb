@@ -22,6 +22,7 @@ module RuboCop
       def visibility_and_def_on_same_line?(receiver, method_name, args)
         !receiver &&
           [:public, :protected, :private,
+           :private_class_method, :public_class_method,
            :module_function].include?(method_name) &&
           args.size == 1 && [:def, :defs].include?(args.first.type)
       end
