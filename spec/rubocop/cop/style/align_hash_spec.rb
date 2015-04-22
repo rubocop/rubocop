@@ -19,7 +19,14 @@ describe RuboCop::Cop::Style::AlignHash, :config do
 
     it "does not auto-correct pairs that don't start a line" do
       source = ['render :json => {:a => messages,',
-                '                 :b => :json}, :status => 404']
+                '                 :b => :json}, :status => 404',
+                'def example',
+                '  a(',
+                '    b: :c,',
+                '    d: e(',
+                '      f: g',
+                '    ), h: :i)',
+                'end']
       new_source = autocorrect_source(cop, source)
       expect(new_source).to eq(source.join("\n"))
     end
