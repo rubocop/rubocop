@@ -13,12 +13,22 @@ describe RuboCop::Cop::Style::CommentAnnotation, :config do
     expect(cop.offenses.size).to eq(1)
   end
 
+  it 'autocorrects a missing colon' do
+    corrected = autocorrect_source(cop, '# TODO make better')
+    expect(corrected).to eq('# TODO: make better')
+  end
+
   context 'with configured keyword' do
     let(:cop_config) { { 'Keywords' => %w(ISSUE) } }
 
     it 'registers an offense for a missing colon after the word' do
       inspect_source(cop, '# ISSUE wrong order')
       expect(cop.offenses.size).to eq(1)
+    end
+
+    it 'autocorrects a missing colon after keyword' do
+      corrected = autocorrect_source(cop, '# ISSUE wrong order')
+      expect(corrected).to eq('# ISSUE: wrong order')
     end
   end
 
@@ -41,9 +51,19 @@ describe RuboCop::Cop::Style::CommentAnnotation, :config do
     expect(cop.offenses.size).to eq(1)
   end
 
+  it 'autocorrects lower case' do
+    corrected = autocorrect_source(cop, '# fixme: does not work')
+    expect(corrected).to eq('# FIXME: does not work')
+  end
+
   it 'registers an offense for capitalized annotation keyword' do
     inspect_source(cop, '# Optimize: does not work')
     expect(cop.offenses.size).to eq(1)
+  end
+
+  it 'autocorrects a capitalized annotation keyword' do
+    corrected = autocorrect_source(cop, '# Optimize: does not work')
+    expect(corrected).to eq('# OPTIMIZE: does not work')
   end
 
   it 'registers an offense for upper case with colon but no note' do
