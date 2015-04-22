@@ -4,6 +4,7 @@
 
 ### New features
 
+* Recognize rackup file (config.ru) out of the box. ([@carhartl][])
 * [#1788](https://github.com/bbatsov/rubocop/pull/1788): New cop `ModuleLength` checks for overly long module definitions. ([@sdeframond][])
 
 ### Bugs fixed
@@ -1366,3 +1367,4 @@
 [@renuo]: https://github.com/renuo
 [@sdeframond]: https://github.com/sdeframond
 [@til]: https://github.com/til
+[@carhartl]: https://github.com/carhartl

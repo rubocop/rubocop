@@ -14,6 +14,7 @@ AllCops:
     - '**/*.jbuilder'
     - '**/*.rake'
     - '**/*.opal'
+    - '**/config.ru'
     - '**/Gemfile'
     - '**/Rakefile'
     - '**/Capfile'
