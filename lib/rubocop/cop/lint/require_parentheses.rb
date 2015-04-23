@@ -41,7 +41,7 @@ module RuboCop
         private
 
         def check_ternary(arg, node)
-          condition, _, _ = *arg
+          condition, = *arg
           return unless offense?(condition)
 
           expr = node.loc.expression

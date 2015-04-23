@@ -714,6 +714,12 @@ Style/UnneededPercentQ:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-q'
   Enabled: true
 
+Style/TrailingUnderscoreVariable:
+  Description: >-
+                 Checks for the usage of unneeded trailing underscores at the
+                 end of parallel variable assignment.
+  Enabled: true
+
 Style/VariableInterpolation:
   Description: >-
                  Don't interpolate global, instance and class variables

@@ -148,7 +148,7 @@ module RuboCop
 
             case a.type
             when :if, :while, :until then condition, = *a
-            when :for                then _, collection, _ = *a
+            when :for                then _, collection, = *a
             end
 
             if condition || collection

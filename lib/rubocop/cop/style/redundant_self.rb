@@ -112,7 +112,7 @@ module RuboCop
         private
 
         def on_argument(node)
-          name, _ = *node
+          name, = *node
           @local_variables << name
         end
 
