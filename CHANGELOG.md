@@ -7,6 +7,7 @@
 * Recognize rackup file (config.ru) out of the box. ([@carhartl][])
 * [#1788](https://github.com/bbatsov/rubocop/pull/1788): New cop `ModuleLength` checks for overly long module definitions. ([@sdeframond][])
 * New cop `Performance/Count` to convert `Enumerable#select...size`, `Enumerable#reject...size`, `Enumerable#select...count`, `Enumerable#reject...count` `Enumerable#select...length`, and `Enumerable#reject...length` to `Enumerable#count`. ([@rrosenblum][])
+* `CommentAnnotation` cop does auto-correction. ([@dylandavidson][])
 
 ### Bugs fixed
 
@@ -1370,3 +1371,4 @@
 [@sdeframond]: https://github.com/sdeframond
 [@til]: https://github.com/til
 [@carhartl]: https://github.com/carhartl
+[@dylandavidson]: https://github.com/dylandavidson

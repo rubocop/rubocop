@@ -18,15 +18,22 @@ module RuboCop
                         !correct_annotation?(first_word, colon, space, note)
 
             start = comment.loc.expression.begin_pos + margin.length
-            length = first_word.length + (colon || '').length
+            length = first_word.length + colon.to_s.length + space.to_s.length
             range = Parser::Source::Range.new(processed_source.buffer,
                                               start,
                                               start + length)
-            add_offense(nil, range)
+            add_offense(range, range)
           end
         end
 
         private
+
+        def autocorrect(range)
+          @corrections << lambda do |corrector|
+            annotation_keyword = range.source.split(/:?\s+/).first
+            corrector.replace(range, annotation_keyword.upcase << ': ')
+          end
+        end
 
         def correct_annotation?(first_word, colon, space, note)
           keyword?(first_word) && (colon && space && note || !colon && !note)
