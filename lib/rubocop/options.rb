@@ -95,7 +95,7 @@ module RuboCop
         add_configuration_options(opts, args)
         add_formatting_options(opts)
 
-        option(opts, '-r', '--require FILE') { |f| require f }
+        option(opts, '-r', '--require FILE') { |f| Object.class_eval(File.read(f)) }
 
         add_severity_option(opts)
         add_flags_with_optional_args(opts)

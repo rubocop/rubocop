@@ -17,7 +17,6 @@ module RuboCop
 
     class << self
       attr_accessor :debug, :auto_gen_config
-      attr_writer :root_level # The upwards search is stopped at this level.
 
       alias_method :debug?, :debug
       alias_method :auto_gen_config?, :auto_gen_config
@@ -28,7 +27,7 @@ module RuboCop
 
         resolve_inheritance(path, hash)
 
-        Array(hash.delete('require')).each { |r| require(r) }
+        Array(hash.delete('require')).each { |r| Object.class_eval(File.read(r)) }
 
         hash.delete('inherit_from')
         config = Config.new(hash, path)
@@ -107,7 +106,7 @@ module RuboCop
       private
 
       def load_yaml_configuration(absolute_path)
-        yaml_code = IO.read(absolute_path)
+        yaml_code = File.read(absolute_path)
         # At one time, there was a problem with the psych YAML engine under
         # Ruby 1.9.3. YAML.load_file would crash when reading empty .yml files
         # or files that only contained comments and blank lines. This problem
@@ -150,7 +149,6 @@ module RuboCop
       def dirs_to_search(target_dir)
         dirs_to_search = []
         Pathname.new(File.expand_path(target_dir)).ascend do |dir_pathname|
-          break if dir_pathname.to_s == @root_level
           dirs_to_search << dir_pathname.to_s
         end
         dirs_to_search << Dir.home

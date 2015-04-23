@@ -6,13 +6,16 @@ require 'fileutils'
 module RuboCop
   module Formatter
     describe HTMLFormatter, :isolated_environment do
-      spec_root = File.expand_path('../../..', __FILE__)
+      fixtures_path =
+        File.expand_path('../../../fixtures/html_formatter', __FILE__)
 
       around do |example|
-        project_path = File.join(spec_root, 'fixtures/html_formatter/project')
-        FileUtils.cp_r(project_path, '.')
+        assets_path = File.expand_path('../../../../assets', __FILE__)
 
-        Dir.chdir(File.basename(project_path)) do
+        FakeFS::FileSystem.clone(assets_path)
+        FakeFS::FileSystem.clone(fixtures_path)
+
+        Dir.chdir(File.join(fixtures_path, 'project')) do
           example.run
         end
       end
@@ -28,7 +31,7 @@ module RuboCop
       end
 
       let(:expected_html_path) do
-        File.join(spec_root, 'fixtures/html_formatter/expected.html')
+        File.join(fixtures_path, 'expected.html')
       end
 
       let(:expected_html) do
