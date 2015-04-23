@@ -19,11 +19,11 @@ module RuboCop
             {} # The first pair is always considered correct.
           end
 
-          def deltas(first_pair, prev_pair, current_pair)
-            if current_pair.loc.line == prev_pair.loc.line
-              {}
-            else
+          def deltas(first_pair, current_pair)
+            if Util.begins_its_line?(current_pair.loc.expression)
               { key: first_pair.loc.column - current_pair.loc.column }
+            else
+              {}
             end
           end
         end
@@ -35,7 +35,7 @@ module RuboCop
             !any_pairs_on_the_same_line?(node) && all_have_same_separator?(node)
           end
 
-          def deltas(first_pair, _prev_pair, current_pair)
+          def deltas(first_pair, current_pair)
             key_delta = key_delta(first_pair, current_pair)
             current_separator = current_pair.loc.operator
             separator_delta = separator_delta(first_pair, current_separator,
@@ -57,11 +57,9 @@ module RuboCop
           end
 
           def any_pairs_on_the_same_line?(node)
-            lines_of_the_children = node.children.map do |pair|
-              key, _value = *pair
-              key.loc.line
+            node.children[1..-1].any? do |pair|
+              !Util.begins_its_line?(pair.loc.expression)
             end
-            lines_of_the_children.uniq.size < lines_of_the_children.size
           end
 
           def all_have_same_separator?(node)
@@ -180,9 +178,8 @@ module RuboCop
                            .deltas_for_first_pair(first_pair, node)
           add_offense(first_pair, :expression) unless good_alignment?
 
-          node.children.each_cons(2) do |prev, current|
-            @column_deltas = alignment_for(current).deltas(first_pair, prev,
-                                                           current)
+          node.children.each do |current|
+            @column_deltas = alignment_for(current).deltas(first_pair, current)
             add_offense(current, :expression) unless good_alignment?
           end
         end
