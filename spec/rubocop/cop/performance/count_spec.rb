@@ -62,6 +62,15 @@ describe RuboCop::Cop::Performance::Count do
       expect(cop.messages).to be_empty
     end
 
+    it "registers an offense for #{selector} with params instead of a block" do
+      inspect_source(cop, ['Data = Struct.new(:value)',
+                           'array = [Data.new(2), Data.new(3), Data.new(2)]',
+                           "puts array.#{selector}(&:value).count"].join("\n"))
+
+      expect(cop.messages)
+        .to eq(["Use `count` instead of `#{selector}...count`."])
+    end
+
     it "allows usage of #{selector}!...size" do
       inspect_source(cop,
                      "[1, 2, 3].#{selector}! { |e| e.odd? }.size")
@@ -111,6 +120,14 @@ describe RuboCop::Cop::Performance::Count do
     expect(cop.messages).to be_empty
   end
 
+  it 'allows usage of count on an interstitial method called on select' do
+    inspect_source(cop, ['Data = Struct.new(:value)',
+                         'array = [Data.new(2), Data.new(3), Data.new(2)]',
+                         'puts array.select(&:value).uniq.count'].join("\n"))
+
+    expect(cop.messages).to be_empty
+  end
+
   context 'autocorrect' do
     it 'corrects select..size to count' do
       new_source = autocorrect_source(cop, '[1, 2].select { |e| e > 2 }.size')
@@ -128,6 +145,19 @@ describe RuboCop::Cop::Performance::Count do
       new_source = autocorrect_source(cop, '[1, 2].select { |e| e > 2 }.length')
 
       expect(new_source).to eq('[1, 2].count { |e| e > 2 }')
+    end
+
+    it 'corrects select...size when select has parameters' do
+      source = ['Data = Struct.new(:value)',
+                'array = [Data.new(2), Data.new(3), Data.new(2)]',
+                'puts array.select(&:value).size'].join("\n")
+
+      new_source = autocorrect_source(cop, source)
+
+      expect(new_source)
+        .to eq(['Data = Struct.new(:value)',
+                'array = [Data.new(2), Data.new(3), Data.new(2)]',
+                'puts array.count(&:value)'].join("\n"))
     end
 
     it 'will not correct reject...size' do
@@ -150,6 +180,16 @@ describe RuboCop::Cop::Performance::Count do
 
     it 'will not correct select...count when count has a block' do
       source = '[1, 2].select { |e| e > 2 }.count { |e| e.even? }'
+      new_source = autocorrect_source(cop, source)
+
+      expect(new_source).to eq(source)
+    end
+
+    it 'will not correct reject...size when select has parameters' do
+      source = ['Data = Struct.new(:value)',
+                'array = [Data.new(2), Data.new(3), Data.new(2)]',
+                'puts array.reject(&:value).size'].join("\n")
+
       new_source = autocorrect_source(cop, source)
 
       expect(new_source).to eq(source)
