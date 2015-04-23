@@ -15,6 +15,7 @@
 * [#1816](https://github.com/bbatsov/rubocop/issues/1816): Fix bug in `Sample` when calling `#shuffle` with something other than an element selector. ([@rrosenblum][])
 * [#1768](https://github.com/bbatsov/rubocop/pull/1768): `DefEndAlignment` recognizes preceding `private_class_method` or `public_class_method` before `def`. ([@til][])
 * [#1820](https://github.com/bbatsov/rubocop/issues/1820): Correct the logic in `AlignHash` for when to ignore a key because it's not on its own line. ([@jonas054][])
+* Fix bug in `Sample` and `FlatMap` that would cause them to report having been auto-corrected when they were not. ([@rrosenblum][])
 
 ## 0.30.1 (21/04/2015)
 
