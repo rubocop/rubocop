@@ -7,7 +7,7 @@ inherit_from:
 
 # Common configuration.
 AllCops:
-  # Include gemspec and Rakefile
+  # Include common Ruby source files.
   Include:
     - '**/*.gemspec'
     - '**/*.podspec'
