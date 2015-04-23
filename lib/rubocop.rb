@@ -117,6 +117,7 @@ require 'rubocop/cop/metrics/method_length'
 require 'rubocop/cop/metrics/parameter_lists'
 require 'rubocop/cop/metrics/perceived_complexity'
 
+require 'rubocop/cop/performance/count'
 require 'rubocop/cop/performance/detect'
 require 'rubocop/cop/performance/flat_map'
 require 'rubocop/cop/performance/reverse_each'
