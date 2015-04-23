@@ -70,7 +70,7 @@ module RuboCop
 
       def count_stats(offenses)
         @total_offense_count += offenses.count
-        @total_correction_count += offenses.select(&:corrected?).count
+        @total_correction_count += offenses.count(&:corrected?)
       end
 
       def smart_path(path)
