@@ -614,30 +614,41 @@ describe RuboCop::CLI, :isolated_environment do
       end
 
       it 'does not say [Corrected] if correction was avoided' do
-        create_file('example.rb', ['# encoding: utf-8',
-                                   'a = c and b',
-                                   'not a && b',
-                                   'func a do b end',
-                                   "Signal.trap('TERM') { system(cmd); exit }"])
+        src = ['# encoding: utf-8',
+               'a = c and b',
+               'not a && b',
+               'func a do b end',
+               "Signal.trap('TERM') { system(cmd); exit }"]
+        corrected = ['# encoding: utf-8',
+                     'a = c and b',
+                     'not a && b',
+                     'func a do b end',
+                     "Signal.trap('TERM') { system(cmd); exit }"]
+        offenses =
+          ['== example.rb ==',
+           'C:  2:  7: Use && instead of and.',
+           'C:  3:  1: Use ! instead of not.',
+           'C:  4:  8: Prefer {...} over do...end for single-line blocks.',
+           'C:  5: 34: Do not use semicolons to terminate expressions.']
+
+        if RUBY_VERSION >= '2'
+          src += ['def self.some_method(foo, bar: 1)',
+                  '  log.debug(foo)',
+                  'end']
+          corrected += ['def self.some_method(foo, bar: 1)',
+                        '  log.debug(foo)',
+                        'end']
+          offenses += ['W:  6: 27: Unused method argument - bar.']
+          summary = '1 file inspected, 5 offenses detected'
+        else
+          summary = '1 file inspected, 4 offenses detected'
+        end
+        create_file('example.rb', src)
         expect(cli.run(%w(-a -f simple))).to eq(1)
         expect($stderr.string).to eq('')
-        expect(IO.read('example.rb'))
-          .to eq(['# encoding: utf-8',
-                  'a = c and b',
-                  'not a && b',
-                  'func a do b end',
-                  "Signal.trap('TERM') { system(cmd); exit }",
-                  ''].join("\n"))
+        expect(IO.read('example.rb')).to eq(corrected.join("\n") + "\n")
         expect($stdout.string)
-          .to eq(['== example.rb ==',
-                  'C:  2:  7: Use && instead of and.',
-                  'C:  3:  1: Use ! instead of not.',
-                  'C:  4:  8: Prefer {...} over do...end for single-line ' \
-                  'blocks.',
-                  'C:  5: 34: Do not use semicolons to terminate expressions.',
-                  '',
-                  '1 file inspected, 4 offenses detected',
-                  ''].join("\n"))
+          .to eq((offenses + ['', summary, '']).join("\n"))
       end
 
       it 'does not hang SpaceAfterPunctuation and SpaceInsideParens' do

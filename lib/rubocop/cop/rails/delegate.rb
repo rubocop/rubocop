@@ -41,10 +41,7 @@ module RuboCop
         private
 
         def autocorrect(node)
-          method_name, args, body = *node
-          return unless trivial_delegate?(method_name, args, body)
-          return if private_or_protected_delegation(node)
-
+          method_name, _args, body = *node
           delegation = ["delegate :#{body.children[1]}",
                         "to: :#{body.children[0].children[1]}"]
           if method_name == prefixed_method_name(body)
