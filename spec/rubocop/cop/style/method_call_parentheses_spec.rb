@@ -2,11 +2,8 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::MethodCallParentheses, :config do
-  subject(:cop) { described_class.new(config) }
-  let(:config) do
-    RuboCop::Config.new('Style/EmptyLiteral' => { 'Enabled' => true })
-  end
+describe RuboCop::Cop::Style::MethodCallParentheses do
+  subject(:cop) { described_class.new }
 
   it 'registers an offense for parens in method call without args' do
     inspect_source(cop, 'top.test()')
@@ -33,27 +30,15 @@ describe RuboCop::Cop::Style::MethodCallParentheses, :config do
     expect(new_source).to eq('test')
   end
 
-  it 'does not auto-correct calls that will be changed to empty literals' do
+  # These will be offenses for the EmptyLiteral cop. The autocorrect loop will
+  # handle that.
+  it 'auto-corrects calls that could be empty literals' do
     original = ['Hash.new()',
                 'Array.new()',
                 'String.new()']
     new_source = autocorrect_source(cop, original)
-    expect(new_source).to eq(original.join("\n"))
-  end
-
-  context 'when EmptyLiteral is disabled' do
-    let(:config) do
-      RuboCop::Config.new('Style/EmptyLiteral' => { 'Enabled' => false })
-    end
-
-    it 'auto-corrects calls that could be empty literals' do
-      original = ['Hash.new()',
-                  'Array.new()',
-                  'String.new()']
-      new_source = autocorrect_source(cop, original)
-      expect(new_source).to eq(['Hash.new',
-                                'Array.new',
-                                'String.new'].join("\n"))
-    end
+    expect(new_source).to eq(['Hash.new',
+                              'Array.new',
+                              'String.new'].join("\n"))
   end
 end
