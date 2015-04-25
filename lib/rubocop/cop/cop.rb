@@ -2,7 +2,6 @@
 
 module RuboCop
   module Cop
-    class CorrectionNotPossible < Exception; end
     class AmbiguousCopName < Exception; end
 
     # Store for all cops with helper functions
@@ -162,10 +161,7 @@ module RuboCop
         return nil unless support_autocorrect?
         return false unless autocorrect?
 
-        autocorrect(node)
-        true
-      rescue CorrectionNotPossible
-        false
+        autocorrect(node) ? true : false
       end
 
       def config_to_allow_offenses

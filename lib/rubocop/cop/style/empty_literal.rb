@@ -51,9 +51,7 @@ module RuboCop
                    # because the braces are interpreted as a block, so we avoid
                    # the correction. Parentheses around the arguments would
                    # solve the problem, but we let the user add those manually.
-                   if first_arg_in_method_call_without_parentheses?(node)
-                     fail CorrectionNotPossible
-                   end
+                   return if first_arg_in_method_call_without_parentheses?(node)
                    '{}'
                  when STR_NODE
                    "''"

@@ -116,8 +116,7 @@ describe RuboCop::Cop::Cop do
       context 'when offense was not corrected because of an error' do
         before do
           allow(@cop).to receive(:autocorrect?).and_return(true)
-          allow(@cop).to receive(:autocorrect)
-            .and_raise(RuboCop::Cop::CorrectionNotPossible)
+          allow(@cop).to receive(:autocorrect).and_return(false)
         end
 
         it 'is set to false' do

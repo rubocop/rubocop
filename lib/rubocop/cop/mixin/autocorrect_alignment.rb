@@ -35,7 +35,7 @@ module RuboCop
         # value of @column_delta. A local variable fixes the problem.
         column_delta = @column_delta
 
-        fail CorrectionNotPossible if block_comment_within?(expr)
+        return if block_comment_within?(expr)
 
         @corrections << lambda do |corrector|
           each_line(expr) do |line_begin_pos|

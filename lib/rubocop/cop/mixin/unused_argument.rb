@@ -24,7 +24,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          fail CorrectionNotPossible if [:kwarg, :kwoptarg].include?(node.type)
+          return if [:kwarg, :kwoptarg].include?(node.type)
 
           @corrections << lambda do |corrector|
             corrector.insert_before(node.loc.name, '_')

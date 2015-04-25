@@ -52,8 +52,7 @@ module RuboCop
         def autocorrect(node)
           expression, first_method, second_method, = parse(node)
 
-          fail CorrectionNotPossible if first_method == :reject ||
-                                        second_method == :reject
+          return if first_method == :reject || second_method == :reject
 
           selector = if SELECTORS.include?(first_method)
                        expression.loc.selector

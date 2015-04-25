@@ -101,7 +101,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          fail CorrectionNotPossible if contains_backtick?(node)
+          return if contains_backtick?(node)
 
           if backtick_literal?(node)
             replacement = ['%x', ''].zip(preferred_delimiters).map(&:join)

@@ -97,7 +97,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          fail CorrectionNotPossible if contains_slash?(node)
+          return if contains_slash?(node)
 
           if slash_literal?(node)
             replacement = ['%r', ''].zip(preferred_delimiters).map(&:join)
