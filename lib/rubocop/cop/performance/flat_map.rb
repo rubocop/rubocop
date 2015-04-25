@@ -46,7 +46,7 @@ module RuboCop
         def autocorrect(node)
           receiver, _flatten, flatten_param  = *node
           flatten_level, = *flatten_param
-          return if flatten_level.nil?
+          fail CorrectionNotPossible if flatten_level.nil?
           array, = *receiver
 
           @corrections << lambda do |corrector|
