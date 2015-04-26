@@ -676,6 +676,18 @@ describe RuboCop::CLI, :isolated_environment do
                                              'puts [1]',
                                              ''].join("\n"))
       end
+
+      it 'can be disabled for any cop in configuration' do
+        create_file('example.rb', ['# encoding: utf-8',
+                                   'puts "Hello", 123456'])
+        create_file('.rubocop.yml', ['Style/StringLiterals:',
+                                     '  AutoCorrect: false'])
+        expect(cli.run(%w(--auto-correct))).to eq(1)
+        expect($stderr.string).to eq('')
+        expect(IO.read('example.rb')).to eq(['# encoding: utf-8',
+                                             'puts "Hello", 123_456',
+                                             ''].join("\n"))
+      end
     end
 
     describe '--auto-gen-config' do

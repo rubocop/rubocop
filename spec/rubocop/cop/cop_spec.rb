@@ -213,7 +213,7 @@ describe RuboCop::Cop::Cop do
 
       context 'when the cop is set to not autocorrect' do
         let(:config) do
-          RuboCop::Config.new('Cop/Cop' => { 'AutoCorrect' => 'False' })
+          RuboCop::Config.new('Cop/Cop' => { 'AutoCorrect' => false })
         end
         it { is_expected.to be(false) }
       end
