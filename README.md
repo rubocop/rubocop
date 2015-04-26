@@ -384,6 +384,16 @@ Metrics/CyclomaticComplexity:
   Severity: warning
 ```
 
+#### AutoCorrect
+
+Cops that support the `--auto-correct` option can have that support
+disabled. For example:
+
+```yaml
+Style/PerlBackrefs:
+  AutoCorrect: false
+```
+
 ### Automatically Generated Configuration
 
 If you have a code base with an overwhelming amount of offenses, it can

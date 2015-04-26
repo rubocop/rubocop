@@ -17,6 +17,7 @@
 * [#1820](https://github.com/bbatsov/rubocop/issues/1820): Correct the logic in `AlignHash` for when to ignore a key because it's not on its own line. ([@jonas054][])
 * [#1829](https://github.com/bbatsov/rubocop/pull/1829): Fix bug in `Sample` and `FlatMap` that would cause them to report having been auto-corrected when they were not. ([@rrosenblum][])
 * [#1832](https://github.com/bbatsov/rubocop/pull/1832): Fix bug in `UnusedMethodArgument` that would cause them to report having been auto-corrected when they were not. ([@jonas054][])
+* [#1834](https://github.com/bbatsov/rubocop/issues/1834): Support only boolean values for `AutoCorrect` configuration parameter, and remove warning for unknown parameter. ([@jonas054][])
 
 ## 0.30.1 (21/04/2015)
 

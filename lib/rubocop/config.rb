@@ -14,7 +14,7 @@ module RuboCop
 
     class ValidationError < StandardError; end
 
-    COMMON_PARAMS = %w(Exclude Include Severity)
+    COMMON_PARAMS = %w(Exclude Include Severity AutoCorrect)
 
     attr_reader :loaded_path
 
