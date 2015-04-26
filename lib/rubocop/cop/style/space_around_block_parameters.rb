@@ -17,7 +17,8 @@ module RuboCop
 
         def on_block(node)
           _method, args, body = *node
-          opening_pipe, closing_pipe = args.loc.begin, args.loc.end
+          opening_pipe = args.loc.begin
+          closing_pipe = args.loc.end
           return unless !args.children.empty? && opening_pipe
 
           check_inside_pipes(args.children, opening_pipe, closing_pipe)
@@ -37,7 +38,8 @@ module RuboCop
         end
 
         def check_inside_pipes(args, opening_pipe, closing_pipe)
-          first, last = args.first.loc.expression, args.last.loc.expression
+          first = args.first.loc.expression
+          last = args.last.loc.expression
 
           if style == :no_space
             check_no_space(opening_pipe.end_pos, first.begin_pos,

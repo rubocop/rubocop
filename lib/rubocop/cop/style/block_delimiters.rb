@@ -56,7 +56,8 @@ module RuboCop
 
         def correction(node)
           lambda do |corrector|
-            b, e = node.loc.begin, node.loc.end
+            b = node.loc.begin
+            e = node.loc.end
             if b.is?('{')
               # If the left brace is not preceded by a whitespace character,
               # then we need a space before `do` to get valid Ruby code.

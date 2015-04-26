@@ -41,7 +41,8 @@ module RuboCop
         end
 
         def unary_operation?(node)
-          whole, selector = node.loc.expression, node.loc.selector
+          whole = node.loc.expression
+          selector = node.loc.selector
           return unless selector
           operator?(selector) && whole.begin_pos == selector.begin_pos
         end

@@ -232,7 +232,8 @@ module RuboCop
 
         def offending_range(body_node, indentation)
           expr = body_node.loc.expression
-          begin_pos, ind = expr.begin_pos, expr.begin_pos - indentation
+          begin_pos = expr.begin_pos
+          ind = expr.begin_pos - indentation
           pos = indentation >= 0 ? ind..begin_pos : begin_pos..ind
           Parser::Source::Range.new(expr.source_buffer, pos.begin, pos.end)
         end
