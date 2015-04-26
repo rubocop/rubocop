@@ -29,7 +29,7 @@ module RuboCop
         private
 
         def autocorrect(range)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             annotation_keyword = range.source.split(/:?\s+/).first
             corrector.replace(range, annotation_keyword.upcase << ': ')
           end

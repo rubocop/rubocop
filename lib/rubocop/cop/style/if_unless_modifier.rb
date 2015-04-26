@@ -31,7 +31,7 @@ module RuboCop
             cond, _else, body = *node
           end
 
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             oneline = "#{body.loc.expression.source} " \
                       "#{node.loc.keyword.source} " +
                       cond.loc.expression.source

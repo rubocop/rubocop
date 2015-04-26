@@ -31,7 +31,7 @@ module RuboCop
         def autocorrect(node)
           _receiver, method_name, *_args = *node
 
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             corrector.replace(node.loc.selector,
                               method_name == :is_a? ? 'kind_of?' : 'is_a?')
           end

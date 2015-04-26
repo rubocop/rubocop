@@ -17,7 +17,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             corrector.remove(node.loc.begin)
             corrector.remove(node.loc.end)
           end

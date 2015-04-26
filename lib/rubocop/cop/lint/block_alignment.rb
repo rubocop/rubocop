@@ -143,7 +143,7 @@ module RuboCop
           ancestor_node = ancestor_on_same_line(node)
           source = node.loc.expression.source_buffer
 
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             start_col = (ancestor_node || node).loc.expression.column
             starting_position_of_block_end = node.loc.end.begin_pos
             end_col = node.loc.end.column

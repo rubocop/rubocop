@@ -55,7 +55,7 @@ module RuboCop
             expression_indentation + expression + closing_newline +
             closing_indentation + closing_delimiter + reg_opt
 
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             corrector.replace(node.loc.expression, corrected_source)
           end
         end

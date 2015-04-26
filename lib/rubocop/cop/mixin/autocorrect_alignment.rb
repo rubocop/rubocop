@@ -35,9 +35,9 @@ module RuboCop
         # value of @column_delta. A local variable fixes the problem.
         column_delta = @column_delta
 
-        fail CorrectionNotPossible if block_comment_within?(expr)
+        return if block_comment_within?(expr)
 
-        @corrections << lambda do |corrector|
+        lambda do |corrector|
           each_line(expr) do |line_begin_pos|
             autocorrect_line(corrector, line_begin_pos, expr, column_delta,
                              heredoc_ranges)

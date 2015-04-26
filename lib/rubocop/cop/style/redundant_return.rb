@@ -28,7 +28,7 @@ module RuboCop
         private
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             if node.children.size > 1
               kids = node.children.map { |child| child.loc.expression }
               corrector.insert_before(kids.first, '[')

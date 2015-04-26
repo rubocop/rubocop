@@ -46,11 +46,8 @@ module RuboCop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
-            corrector.replace(
-              node.loc.expression,
-              format_number(node)
-            )
+          lambda do |corrector|
+            corrector.replace(node.loc.expression, format_number(node))
           end
         end
 

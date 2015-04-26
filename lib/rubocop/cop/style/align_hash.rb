@@ -230,7 +230,7 @@ module RuboCop
 
           key, value = *node
 
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             adjust(corrector, key_delta, key.loc.expression)
             adjust(corrector, separator_delta, node.loc.operator)
             adjust(corrector, value_delta, value.loc.expression)

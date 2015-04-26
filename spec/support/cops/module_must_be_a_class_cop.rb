@@ -9,9 +9,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
-            corrector.replace(node.loc.keyword, 'class')
-          end
+          ->(corrector) { corrector.replace(node.loc.keyword, 'class') }
         end
       end
     end

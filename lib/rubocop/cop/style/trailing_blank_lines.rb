@@ -64,7 +64,7 @@ module RuboCop
         end
 
         def autocorrect(range)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             corrector.replace(range, style == :final_newline ? "\n" : "\n\n")
           end
         end

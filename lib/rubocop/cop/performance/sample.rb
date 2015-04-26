@@ -36,7 +36,7 @@ module RuboCop
           _receiver, _method, params, selector = *node
           _receiver, _method, params, selector = *node.parent if params.nil?
 
-          fail CorrectionNotPossible unless correction_possible?(params)
+          return if params && RANGE_TYPES.include?(params.type)
 
           range = if params && (params.hash_type? || params.lvar_type?)
                     range_of_shuffle(node)
@@ -46,7 +46,7 @@ module RuboCop
                                               node.parent.loc.selector.end_pos)
                   end
 
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             corrector.replace(range, 'sample')
             return if selector.nil?
             corrector.insert_after(range, "(#{selector.loc.expression.source})")
@@ -54,10 +54,6 @@ module RuboCop
         end
 
         private
-
-        def correction_possible?(params)
-          params.nil? || !RANGE_TYPES.include?(params.type)
-        end
 
         def message(node, params)
           if params && params.lvar_type?

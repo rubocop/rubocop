@@ -12,7 +12,7 @@ module RuboCop
         MSG_MISSING = 'Empty line missing at %s body %s.'
 
         def autocorrect(range)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             case style
             when :no_empty_lines then corrector.remove(range)
             when :empty_lines    then corrector.insert_before(range, "\n")

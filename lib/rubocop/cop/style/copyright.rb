@@ -72,7 +72,7 @@ module RuboCop
             'your RuboCop config' if autocorrect_notice.empty?
           fail "AutocorrectNotice '#{autocorrect_notice}' must match " \
             "Notice /#{notice}/" unless autocorrect_notice =~ Regexp.new(notice)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             if token.nil?
               range = Parser::Source::Range.new('', 0, 0)
             else

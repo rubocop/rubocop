@@ -36,7 +36,7 @@ module RuboCop
         end
 
         def autocorrect(range)
-          @corrections << ->(corrector) { corrector.insert_before(range, ' ') }
+          ->(corrector) { corrector.insert_before(range, ' ') }
         end
       end
     end

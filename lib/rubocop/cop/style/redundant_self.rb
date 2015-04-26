@@ -103,7 +103,7 @@ module RuboCop
 
         def autocorrect(node)
           receiver, _method_name, *_args = *node
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             corrector.remove(receiver.loc.expression)
             corrector.remove(node.loc.dot)
           end

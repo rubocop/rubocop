@@ -60,9 +60,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
-            corrector.replace(node.loc.name, 'self')
-          end
+          ->(corrector) { corrector.replace(node.loc.name, 'self') }
         end
       end
     end

@@ -24,7 +24,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             current_name = node.loc.expression.source
             corrector.replace(node.loc.expression,
                               current_name.gsub(/["']/, ''))

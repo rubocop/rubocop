@@ -33,7 +33,7 @@ module RuboCop
         def autocorrect(node)
           encoding = cop_config['AutoCorrectEncodingComment']
           if encoding && encoding =~ ENCODING_PATTERN
-            @corrections << lambda do |corrector|
+            lambda do |corrector|
               corrector.replace(node.pos, "#{encoding}\n#{node.pos.source}")
             end
           else

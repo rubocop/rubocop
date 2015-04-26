@@ -64,7 +64,7 @@ module RuboCop
           contents = node.children.map { |n| source_for(n) }.join(' ')
           char = @interpolated ? 'W' : 'w'
 
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             corrector.replace(node.loc.expression, "%#{char}(#{contents})")
           end
         end

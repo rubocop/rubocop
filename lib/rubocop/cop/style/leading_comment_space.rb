@@ -23,9 +23,7 @@ module RuboCop
           expr = comment.loc.expression
           b = expr.begin_pos
           hash_mark = Parser::Source::Range.new(expr.source_buffer, b, b + 1)
-          @corrections << lambda do |corrector|
-            corrector.insert_after(hash_mark, ' ')
-          end
+          ->(corrector) { corrector.insert_after(hash_mark, ' ') }
         end
       end
     end

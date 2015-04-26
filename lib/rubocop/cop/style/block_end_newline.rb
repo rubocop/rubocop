@@ -40,7 +40,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             indentation = indentation_of_block_start_line(node)
             corrector.insert_before(node.loc.end, "\n" + (' ' * indentation))
           end

@@ -25,7 +25,7 @@ module RuboCop
         private
 
         def autocorrect(range)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             corrector.replace(range, range.source.gsub(/\t/, '  '))
           end
         end

@@ -18,7 +18,7 @@ module RuboCop
         def autocorrect(comment)
           eq_begin, eq_end, contents = parts(comment)
 
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             corrector.remove(eq_begin)
             unless contents.length == 0
               corrector.replace(contents,

@@ -14,9 +14,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
-            corrector.replace(node.loc.selector, 'attr_reader')
-          end
+          ->(corrector) { corrector.replace(node.loc.selector, 'attr_reader') }
         end
       end
     end

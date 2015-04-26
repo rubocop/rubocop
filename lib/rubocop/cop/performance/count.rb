@@ -52,8 +52,7 @@ module RuboCop
         def autocorrect(node)
           expression, first_method, second_method, = parse(node)
 
-          fail CorrectionNotPossible if first_method == :reject ||
-                                        second_method == :reject
+          return if first_method == :reject || second_method == :reject
 
           selector = if SELECTORS.include?(first_method)
                        expression.loc.selector
@@ -61,7 +60,7 @@ module RuboCop
                        expression.parent.loc.selector
                      end
 
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             range = Parser::Source::Range.new(node.loc.expression.source_buffer,
                                               node.loc.dot.begin_pos,
                                               node.loc.expression.end_pos)

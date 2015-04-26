@@ -58,7 +58,7 @@ module RuboCop
 
           receiver, _args, _body = *receiver if receiver.block_type?
 
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             corrector.remove(first_range)
             corrector.replace(receiver.loc.selector, replacement)
           end

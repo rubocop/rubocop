@@ -29,7 +29,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             receiver, method_name, *_args = *node
 
             DEPRECATED_METHODS.each do |data|

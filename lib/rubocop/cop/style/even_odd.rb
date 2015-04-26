@@ -26,10 +26,8 @@ module RuboCop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
-            correction = "#{base_number(node)}.#{offense_type(node)}?"
-            corrector.replace(node.loc.expression, correction)
-          end
+          correction = "#{base_number(node)}.#{offense_type(node)}?"
+          ->(corrector) { corrector.replace(node.loc.expression, correction) }
         end
 
         private

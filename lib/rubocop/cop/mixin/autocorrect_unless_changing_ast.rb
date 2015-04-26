@@ -15,10 +15,10 @@ module RuboCop
 
         # Make the correction only if it doesn't change the AST for the buffer.
         if processed_source.ast != ProcessedSource.new(new_buffer_src).ast
-          fail CorrectionNotPossible
+          return
         end
 
-        @corrections << correction(node)
+        correction(node)
       end
 
       private
