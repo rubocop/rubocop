@@ -33,9 +33,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
-            corrector.replace(node.loc.dot, '_')
-          end
+          ->(corrector) { corrector.replace(node.loc.dot, '_') }
         end
       end
     end

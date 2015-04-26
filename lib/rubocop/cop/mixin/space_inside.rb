@@ -27,7 +27,7 @@ module RuboCop
       end
 
       def autocorrect(range)
-        @corrections << ->(corrector) { corrector.remove(range) }
+        ->(corrector) { corrector.remove(range) }
       end
 
       # Wraps info about the brackets. Makes it easy to check whether a token

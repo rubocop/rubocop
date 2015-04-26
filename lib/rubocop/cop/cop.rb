@@ -161,7 +161,10 @@ module RuboCop
         return nil unless support_autocorrect?
         return false unless autocorrect?
 
-        autocorrect(node) ? true : false
+        correction = autocorrect(node)
+        return false unless correction
+        @corrections << correction
+        true
       end
 
       def config_to_allow_offenses

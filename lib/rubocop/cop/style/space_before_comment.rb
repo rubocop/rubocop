@@ -19,9 +19,7 @@ module RuboCop
         private
 
         def autocorrect(range)
-          @corrections << lambda do |corrector|
-            corrector.insert_before(range, ' ')
-          end
+          ->(corrector) { corrector.insert_before(range, ' ') }
         end
       end
     end

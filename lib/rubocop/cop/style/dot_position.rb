@@ -61,7 +61,7 @@ module RuboCop
             selector = node.loc.begin
           end
 
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             corrector.remove(node.loc.dot)
             case style
             when :leading

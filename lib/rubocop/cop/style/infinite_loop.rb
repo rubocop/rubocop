@@ -40,14 +40,14 @@ module RuboCop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
-            condition_node, = *node
-            start_range = node.loc.keyword.begin
-            end_range = if node.loc.begin
-                          node.loc.begin.end
-                        else
-                          condition_node.loc.expression.end
-                        end
+          condition_node, = *node
+          start_range = node.loc.keyword.begin
+          end_range = if node.loc.begin
+                        node.loc.begin.end
+                      else
+                        condition_node.loc.expression.end
+                      end
+          lambda do |corrector|
             corrector.replace(start_range.join(end_range), 'loop do')
           end
         end

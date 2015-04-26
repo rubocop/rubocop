@@ -40,7 +40,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             _block_method, _block_args, block_body = *node
             _receiver, method_name, _args = *block_body
 

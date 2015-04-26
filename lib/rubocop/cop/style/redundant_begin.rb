@@ -36,7 +36,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             child = node.children.first
 
             begin_indent = node.loc.column

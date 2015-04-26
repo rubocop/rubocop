@@ -71,7 +71,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             global_var, = *node
             parent_type = node.parent ? node.parent.type : nil
             if [:dstr, :xstr, :regexp].include?(parent_type)

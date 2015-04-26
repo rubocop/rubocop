@@ -36,9 +36,7 @@ module RuboCop
 
         def autocorrect(node)
           range = range_with_surrounding_space(node.loc.expression, :left)
-          @corrections << lambda do |corrector|
-            corrector.insert_before(range, "\n")
-          end
+          ->(corrector) { corrector.insert_before(range, "\n") }
         end
       end
     end

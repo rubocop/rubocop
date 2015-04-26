@@ -48,7 +48,7 @@ module RuboCop
           operator = node.loc.operator.source
           operator_escaped = operator.gsub(/\./, '\.')
 
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             corrector.replace(
               node.loc.expression,
               expression

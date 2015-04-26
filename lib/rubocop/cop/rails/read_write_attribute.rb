@@ -47,9 +47,7 @@ module RuboCop
             replacement = write_attribute_replacement(node)
           end
 
-          @corrections << lambda do |corrector|
-            corrector.replace(node.loc.expression, replacement)
-          end
+          ->(corrector) { corrector.replace(node.loc.expression, replacement) }
         end
 
         private

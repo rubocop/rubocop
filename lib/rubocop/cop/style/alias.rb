@@ -31,7 +31,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             # replace alias with alias_method
             corrector.replace(node.loc.keyword, 'alias_method')
             # insert a comma

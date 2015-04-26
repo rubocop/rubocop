@@ -38,9 +38,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
-            corrector.replace(node.loc.selector, 'size')
-          end
+          ->(corrector) { corrector.replace(node.loc.selector, 'size') }
         end
 
         private

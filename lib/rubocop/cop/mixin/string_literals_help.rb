@@ -17,7 +17,7 @@ module RuboCop
       end
 
       def autocorrect(node)
-        @corrections << lambda do |corrector|
+        lambda do |corrector|
           replacement = node.loc.begin.is?('"') ? "'" : '"'
           corrector.replace(node.loc.begin, replacement)
           corrector.replace(node.loc.end, replacement)

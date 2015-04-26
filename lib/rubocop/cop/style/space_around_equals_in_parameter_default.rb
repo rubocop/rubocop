@@ -62,9 +62,7 @@ module RuboCop
           m = range.source.match(/=\s*(\S+)/)
           rest = m ? m.captures[0] : ''
           replacement = style == :space ? ' = ' : '='
-          @corrections << lambda do |corrector|
-            corrector.replace(range, replacement + rest)
-          end
+          ->(corrector) { corrector.replace(range, replacement + rest) }
         end
       end
     end

@@ -29,11 +29,9 @@ module RuboCop
         private
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
-            expr = node.loc.expression
-            new_code = expr.source.sub(/\s*={2,3}\s*nil/, '.nil?')
-            corrector.replace(expr, new_code)
-          end
+          expr = node.loc.expression
+          new_code = expr.source.sub(/\s*={2,3}\s*nil/, '.nil?')
+          ->(corrector) { corrector.replace(expr, new_code) }
         end
       end
     end

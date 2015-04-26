@@ -32,7 +32,7 @@ module RuboCop
           eol_comment = processed_source.comments.find do |c|
             c.loc.line == node.loc.expression.line
           end
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             if body.type == :begin
               body.children.each do |part|
                 break_line_before(part.loc.expression, node, corrector, 1)

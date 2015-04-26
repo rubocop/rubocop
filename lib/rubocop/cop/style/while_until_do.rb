@@ -28,13 +28,11 @@ module RuboCop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
-            condition_node, = *node
-            end_of_condition_range = condition_node.loc.expression.end
-            do_range = node.loc.begin
-            whitespaces_and_do_range = end_of_condition_range.join(do_range)
-            corrector.remove(whitespaces_and_do_range)
-          end
+          condition_node, = *node
+          end_of_condition_range = condition_node.loc.expression.end
+          do_range = node.loc.begin
+          whitespaces_and_do_range = end_of_condition_range.join(do_range)
+          ->(corrector) { corrector.remove(whitespaces_and_do_range) }
         end
       end
     end

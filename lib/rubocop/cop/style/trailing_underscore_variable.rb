@@ -51,9 +51,7 @@ module RuboCop
                                       first_offense.loc.expression.begin_pos,
                                       end_position)
 
-          @corrections << lambda do |corrector|
-            corrector.remove(range) unless range.nil?
-          end
+          ->(corrector) { corrector.remove(range) unless range.nil? }
         end
 
         private

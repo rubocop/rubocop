@@ -46,7 +46,7 @@ module RuboCop
                                               node.parent.loc.selector.end_pos)
                   end
 
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             corrector.replace(range, 'sample')
             return if selector.nil?
             corrector.insert_after(range, "(#{selector.loc.expression.source})")

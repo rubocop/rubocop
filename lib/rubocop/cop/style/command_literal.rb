@@ -109,7 +109,7 @@ module RuboCop
             replacement = %w(` `)
           end
 
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             corrector.replace(node.loc.begin, replacement.first)
             corrector.replace(node.loc.end, replacement.last)
           end

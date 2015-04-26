@@ -28,7 +28,7 @@ module RuboCop
         private
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             condition, _body, _rest = *node
             # Look inside parentheses around the condition, if any.
             condition, = *condition while condition.type == :begin

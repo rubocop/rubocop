@@ -41,7 +41,7 @@ module RuboCop
             node.loc.selector.end_pos
           )
 
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             corrector.replace(where_loc, 'find_by')
             corrector.replace(first_loc, '')
           end

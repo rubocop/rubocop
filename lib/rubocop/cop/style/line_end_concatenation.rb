@@ -35,13 +35,11 @@ module RuboCop
         end
 
         def autocorrect(operator_range)
-          @corrections << lambda do |corrector|
-            # Include any trailing whitespace so we don't create a syntax error.
-            operator_range = range_with_surrounding_space(operator_range,
-                                                          :right, nil,
-                                                          !:with_newline)
-            corrector.replace(operator_range, '\\')
-          end
+          # Include any trailing whitespace so we don't create a syntax error.
+          operator_range = range_with_surrounding_space(operator_range,
+                                                        :right, nil,
+                                                        !:with_newline)
+          ->(corrector) { corrector.replace(operator_range, '\\') }
         end
 
         private

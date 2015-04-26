@@ -79,7 +79,7 @@ module RuboCop
         end
 
         def autocorrect(range)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             case range.source
             when /^\s+$/ then corrector.remove(range)
             else              corrector.insert_after(range, ' ')

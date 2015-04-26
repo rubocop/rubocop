@@ -36,7 +36,7 @@ module RuboCop
         def autocorrect(node)
           src = node.loc.begin.source
           replacement = src.start_with?('%Q') ? '%' : '%Q'
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             corrector.replace(node.loc.begin, src.sub(/%Q?/, replacement))
           end
         end

@@ -33,7 +33,7 @@ module RuboCop
         end
 
         def autocorrect(range)
-          @corrections << ->(corrector) { corrector.replace(range, ' ') }
+          ->(corrector) { corrector.replace(range, ' ') }
         end
       end
     end

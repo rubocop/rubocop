@@ -25,9 +25,7 @@ module RuboCop
         end
 
         def autocorrect(range)
-          @corrections << lambda do |corrector|
-            corrector.remove(range)
-          end
+          ->(corrector) { corrector.remove(range) }
         end
       end
     end

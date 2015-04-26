@@ -37,7 +37,7 @@ module RuboCop
 
         return if block_comment_within?(expr)
 
-        @corrections << lambda do |corrector|
+        lambda do |corrector|
           each_line(expr) do |line_begin_pos|
             autocorrect_line(corrector, line_begin_pos, expr, column_delta,
                              heredoc_ranges)

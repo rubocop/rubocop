@@ -18,7 +18,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             send_line = node.loc.line
             previous_line = processed_source[send_line - 2]
             next_line = processed_source[send_line]

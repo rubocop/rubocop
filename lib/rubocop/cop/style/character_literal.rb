@@ -16,7 +16,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             string = node.loc.expression.source[1..-1]
 
             if string.length == 1 # normal character

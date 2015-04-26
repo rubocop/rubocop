@@ -39,7 +39,7 @@ module RuboCop
         def autocorrect(node)
           src = node.loc.expression.source
 
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             corrector.replace(node.loc.expression, corrected(src))
           end
         end

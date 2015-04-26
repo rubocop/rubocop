@@ -31,9 +31,7 @@ module RuboCop
         def autocorrect(node)
           each_loc = node.loc.selector
 
-          @corrections << lambda do |corrector|
-            corrector.replace(each_loc, 'find_each')
-          end
+          ->(corrector) { corrector.replace(each_loc, 'find_each') }
         end
       end
     end

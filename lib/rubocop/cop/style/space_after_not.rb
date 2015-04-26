@@ -25,7 +25,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             receiver, _method_name, *_args = *node
             space_range =
               Parser::Source::Range.new(node.loc.selector.source_buffer,

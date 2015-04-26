@@ -68,7 +68,7 @@ module RuboCop
         end
 
         def autocorrect(range)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             # It is possible that BracesAroundHashParameters will remove the
             # braces while this cop inserts spaces. This can lead to unwanted
             # changes to the inspected code. If we replace the brace with a

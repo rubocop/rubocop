@@ -48,7 +48,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             if braces?(node)
               right_range = range_with_surrounding_space(node.loc.begin, :right)
               corrector.remove(right_range)

@@ -58,7 +58,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             if style == :hash_rockets || @force_hash_rockets
               autocorrect_hash_rockets(corrector, node)
             elsif style == :ruby19_no_mixed_keys

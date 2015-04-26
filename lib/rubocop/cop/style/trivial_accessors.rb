@@ -131,11 +131,8 @@ module RuboCop
             return
           end
 
-          @corrections << lambda do |corrector|
-            corrector.replace(
-              node.loc.expression,
-              accessor(kind, method_name)
-            )
+          lambda do |corrector|
+            corrector.replace(node.loc.expression, accessor(kind, method_name))
           end
         end
 
@@ -146,7 +143,7 @@ module RuboCop
             return
           end
 
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             indent = ' ' * node.loc.column
             corrector.replace(
               node.loc.expression,

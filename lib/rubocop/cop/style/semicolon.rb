@@ -56,7 +56,7 @@ module RuboCop
 
         def autocorrect(range)
           return unless range
-          @corrections << ->(corrector) { corrector.remove(range) }
+          ->(corrector) { corrector.remove(range) }
         end
       end
     end

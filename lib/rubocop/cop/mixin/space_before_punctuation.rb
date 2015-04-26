@@ -23,9 +23,7 @@ module RuboCop
       end
 
       def autocorrect(pos_before_punctuation)
-        @corrections << lambda do |corrector|
-          corrector.remove(pos_before_punctuation)
-        end
+        ->(corrector) { corrector.remove(pos_before_punctuation) }
       end
     end
   end

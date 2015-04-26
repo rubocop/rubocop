@@ -24,7 +24,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             if style == :require_parentheses
               args_expr = args_node(node).loc.expression
               args_with_space = range_with_surrounding_space(args_expr, :left)

@@ -50,7 +50,7 @@ module RuboCop
 
           array, = *receiver
 
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             range = Parser::Source::Range.new(node.loc.expression.source_buffer,
                                               node.loc.dot.begin_pos,
                                               node.loc.expression.end_pos)

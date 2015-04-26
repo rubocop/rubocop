@@ -34,7 +34,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             name =
               case style
               when :semantic then command?(:raise, node) ? 'fail' : 'raise'

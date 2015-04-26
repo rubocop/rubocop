@@ -37,7 +37,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             if style == :call
               receiver_node, = *node
               expr = node.loc.expression

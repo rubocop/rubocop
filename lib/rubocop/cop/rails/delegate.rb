@@ -48,7 +48,7 @@ module RuboCop
             delegation << ['prefix: true']
           end
 
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             corrector.replace(node.loc.expression, delegation.join(', '))
           end
         end

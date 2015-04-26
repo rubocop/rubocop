@@ -56,9 +56,7 @@ module RuboCop
                  when STR_NODE
                    "''"
                  end
-          @corrections << lambda do |corrector|
-            corrector.replace(node.loc.expression, name)
-          end
+          ->(corrector) { corrector.replace(node.loc.expression, name) }
         end
 
         def first_arg_in_method_call_without_parentheses?(node)

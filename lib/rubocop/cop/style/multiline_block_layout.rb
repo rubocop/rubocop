@@ -70,7 +70,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             _method, args, block_body = *node
             unless args.children.empty? ||
                    args.loc.end.line == node.loc.begin.line

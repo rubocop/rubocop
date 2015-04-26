@@ -47,7 +47,7 @@ module RuboCop
 
         def autocorrect(node)
           delimiter = node.loc.expression.source =~ /^%Q[^"]+$|'/ ? '"' : "'"
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             corrector.replace(node.loc.begin, delimiter)
             corrector.replace(node.loc.end, delimiter)
           end

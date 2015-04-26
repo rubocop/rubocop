@@ -32,7 +32,7 @@ module RuboCop
         private
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             receiver, _method_name, *_args = *node
             corrector.replace(
               node.loc.expression,

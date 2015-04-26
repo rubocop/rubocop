@@ -18,7 +18,7 @@ module RuboCop
           return
         end
 
-        @corrections << correction(node)
+        correction(node)
       end
 
       private

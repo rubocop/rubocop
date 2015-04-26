@@ -25,7 +25,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          @corrections << lambda do |corrector|
+          lambda do |corrector|
             src = node.loc.begin.source
             corrector.replace(node.loc.begin, src.tr('W', 'w'))
           end
