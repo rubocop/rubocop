@@ -147,7 +147,8 @@ module RuboCop
 
         go_left, go_right = directions(side)
 
-        begin_pos, end_pos = range.begin_pos, range.end_pos
+        begin_pos = range.begin_pos
+        end_pos = range.end_pos
         begin_pos = move_pos(src, begin_pos, -1, go_left, /,/)
         end_pos = move_pos(src, end_pos, 1, go_right, /,/)
 
@@ -161,7 +162,8 @@ module RuboCop
 
         go_left, go_right = directions(side)
 
-        begin_pos, end_pos = range.begin_pos, range.end_pos
+        begin_pos = range.begin_pos
+        end_pos = range.end_pos
         begin_pos = move_pos(src, begin_pos, -1, go_left, /[ \t]/)
         begin_pos = move_pos(src, begin_pos, -1, go_left && with_newline, /\n/)
         end_pos = move_pos(src, end_pos, 1, go_right, /[ \t]/)
@@ -189,7 +191,8 @@ module RuboCop
       end
 
       def within_node?(inner, outer)
-        o, i = outer.loc.expression, inner.loc.expression
+        o = outer.loc.expression
+        i = inner.loc.expression
         i.begin_pos >= o.begin_pos && i.end_pos <= o.end_pos
       end
 

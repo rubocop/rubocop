@@ -24,7 +24,8 @@ module RuboCop
 
             # The begin and end could also be braces, but we call the
             # variables do... and end...
-            do_kw_loc, end_kw_loc = receiver.loc.begin, receiver.loc.end
+            do_kw_loc = receiver.loc.begin
+            end_kw_loc = receiver.loc.end
             next if do_kw_loc.line == end_kw_loc.line
 
             range =

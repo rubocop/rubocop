@@ -20,9 +20,11 @@ module RuboCop
 
       def initialize(a, b)
         if a.size < b.size
-          @shorter, @longer = a, b
+          @shorter = a
+          @longer = b
         else
-          @shorter, @longer = b, a
+          @shorter = b
+          @longer = a
         end
       end
 

@@ -12,7 +12,9 @@ module RuboCop
     end
 
     def initialize(pos, type, text)
-      @pos, @type, @text = pos, type, text
+      @pos = pos
+      @type = type
+      @text = text
     end
 
     def to_s

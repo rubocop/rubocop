@@ -1014,6 +1014,13 @@ Performance/FlatMap:
   # This can be dangerous since `flat_map` will only flatten 1 level, and
   # `flatten` without any parameters can flatten multiple levels.
 
+Performance/ParallelAssignment:
+  Description: >-
+                  Check for simple usages of parallel assignment.
+                  It will only warn when the number of variables
+                  matches on both sides of the assignment.
+  Enabled: true
+
 Performance/ReverseEach:
   Description: 'Use `reverse_each` instead of `reverse.each`.'
   Enabled: true

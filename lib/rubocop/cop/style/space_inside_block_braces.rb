@@ -23,7 +23,8 @@ module RuboCop
             return
           end
 
-          left_brace, right_brace = node.loc.begin, node.loc.end
+          left_brace = node.loc.begin
+          right_brace = node.loc.end
 
           check_inside(node, left_brace, right_brace)
         end
@@ -58,7 +59,8 @@ module RuboCop
 
         def braces_with_contents_inside(node, inner, sb)
           _method, args, _body = *node
-          left_brace, right_brace = node.loc.begin, node.loc.end
+          left_brace = node.loc.begin
+          right_brace = node.loc.end
           args_delimiter = args.loc.begin # Can be ( | or nil.
 
           if inner =~ /^\S/

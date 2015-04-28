@@ -9,6 +9,7 @@
 * New cop `Performance/Count` to convert `Enumerable#select...size`, `Enumerable#reject...size`, `Enumerable#select...count`, `Enumerable#reject...count` `Enumerable#select...length`, and `Enumerable#reject...length` to `Enumerable#count`. ([@rrosenblum][])
 * `CommentAnnotation` cop does auto-correction. ([@dylandavidson][])
 * New cop `Style/TrailingUnderscoreVariable` to remove trailing underscore variables from mass assignment. ([@rrosenblum][])
+* [#1136](https://github.com/bbatsov/rubocop/issues/1136): New cop `Performance/ParallelAssignment` to avoid usages of unnessary parallel assignment. ([@rrosenblum][])
 
 ### Bugs fixed
 

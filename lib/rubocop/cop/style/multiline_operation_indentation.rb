@@ -29,7 +29,8 @@ module RuboCop
           return unless receiver
           return if method_name == :[] # Don't check parameters inside [].
 
-          lhs, rhs = left_hand_side(receiver), right_hand_side(node)
+          lhs = left_hand_side(receiver)
+          rhs = right_hand_side(node)
           range = offending_range(node, lhs, rhs, style)
           check(range, node, lhs, rhs)
         end
