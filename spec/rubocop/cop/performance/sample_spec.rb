@@ -65,6 +65,12 @@ describe RuboCop::Cop::Performance::Sample do
     expect(cop.messages).to be_empty
   end
 
+  it 'does not register an offense when calling shuffle by itself' do
+    inspect_source(cop, '[1, 2, 3, 4].shuffle')
+
+    expect(cop.messages).to be_empty
+  end
+
   context 'autocorrect' do
     shared_examples 'corrects' do |selector|
       it "shuffle#{selector} to sample" do
