@@ -15,6 +15,7 @@ module RuboCop
       #   [1, 2, 3].shuffle(random: Random.new(1))
       #
       #   # good
+      #   [1, 2, 3].shuffle
       #   [1, 2, 3].sample
       #   [1, 2, 3].sample(3)
       #   [1, 2, 3].sample(random: Random.new(1))
@@ -28,6 +29,7 @@ module RuboCop
           return unless first_method == :shuffle
           _receiver, second_method, params, = *node.parent if params.nil?
           return unless VALID_ARRAY_SELECTORS.include?(second_method)
+          return if second_method.nil? && params.nil?
 
           add_offense(node, range_of_shuffle(node), message(node, params))
         end
