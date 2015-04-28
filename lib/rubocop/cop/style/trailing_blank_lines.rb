@@ -43,7 +43,7 @@ module RuboCop
           return false if processed_source.tokens.empty?
 
           extra = sb.source[processed_source.tokens.last.pos.end_pos..-1]
-          extra.strip.start_with?('__END__')
+          extra && extra.strip.start_with?('__END__')
         end
 
         def message(wanted_blank_lines, blank_lines)
