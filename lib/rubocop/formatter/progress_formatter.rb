@@ -6,11 +6,12 @@ module RuboCop
     # letters for files with problems in the them. In the end it
     # appends the regular report data in the clang style format.
     class ProgressFormatter < ClangStyleFormatter
+      include TextUtil
+
       def started(target_files)
         super
         @offenses_for_files = {}
-        file_phrase = target_files.count == 1 ? 'file' : 'files'
-        output.puts "Inspecting #{target_files.count} #{file_phrase}"
+        output.puts "Inspecting #{pluralize(target_files.size, 'file')}"
       end
 
       def file_finished(file, offenses)

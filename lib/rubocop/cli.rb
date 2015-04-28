@@ -4,6 +4,8 @@ module RuboCop
   # The CLI is a class responsible of handling all the command line interface
   # logic.
   class CLI
+    include Formatter::TextUtil
+
     attr_reader :options, :config_store
 
     def initialize
@@ -100,8 +102,7 @@ module RuboCop
     def display_error_summary(errors)
       return if errors.empty?
 
-      plural = errors.count > 1 ? 's' : ''
-      warn "\n#{errors.count} error#{plural} occurred:".color(:red)
+      warn "\n#{pluralize(errors.size, 'error')} occurred:".color(:red)
 
       errors.each { |error| warn error }
 
