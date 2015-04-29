@@ -86,7 +86,15 @@ module RuboCop
                                                          args)
 
           _method_name, _args, body = *args.first
-          check_indentation(node.loc.expression, body)
+          def_end_config = config.for_cop('Lint/DefEndAlignment')
+          style = if def_end_config['Enabled']
+                    def_end_config['AlignWith']
+                  else
+                    'start_of_line'
+                  end
+          base = style == 'def' ? args.first : node
+
+          check_indentation(base.loc.expression, body)
           ignore_node(args.first)
         end
 
