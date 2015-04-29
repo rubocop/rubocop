@@ -24,7 +24,7 @@ module RuboCop
 
         if kw_loc.line != end_loc.line &&
            kw_loc.column != end_loc.column + offset
-          add_offense(nil, end_loc,
+          add_offense(node, end_loc,
                       format(MSG, end_loc.line, end_loc.column,
                              alignment_base, kw_loc.line, kw_loc.column)) do
             opposite_style_detected
@@ -36,6 +36,19 @@ module RuboCop
 
       def parameter_name
         'AlignWith'
+      end
+
+      def align(node, alignment_node)
+        source_buffer = node.loc.expression.source_buffer
+        begin_pos = node.loc.end.begin_pos
+        whitespace = Parser::Source::Range.new(source_buffer,
+                                               begin_pos - node.loc.end.column,
+                                               begin_pos)
+        fail CorrectionNotPossible unless whitespace.source.strip.empty?
+
+        column = alignment_node ? alignment_node.loc.expression.column : 0
+
+        ->(corrector) { corrector.replace(whitespace, ' ' * column) }
       end
     end
   end

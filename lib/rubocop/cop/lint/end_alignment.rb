@@ -71,6 +71,11 @@ module RuboCop
         def line_break_before_keyword?(whole_expression, rhs)
           rhs.loc.keyword.line > whole_expression.line
         end
+
+        def autocorrect(node)
+          align(node,
+                style == :variable ? node.each_ancestor(:lvasgn).first : node)
+        end
       end
     end
   end

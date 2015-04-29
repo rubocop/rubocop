@@ -8,8 +8,20 @@ describe RuboCop::Cop::Lint::DefEndAlignment, :config do
     cop_config['AlignWith'] == 'def' ? 'start_of_line' : 'def'
   end
 
+  let(:source) do
+    ['private def a',
+     '  a1',
+     'end',
+     '',
+     'private def b',
+     '          b1',
+     '        end']
+  end
+
   context 'when AlignWith is start_of_line' do
-    let(:cop_config) { { 'AlignWith' => 'start_of_line' } }
+    let(:cop_config) do
+      { 'AlignWith' => 'start_of_line', 'AutoCorrect' => true }
+    end
 
     include_examples 'misaligned', '', 'def', 'test',      '  end'
     include_examples 'misaligned', '', 'def', 'Test.test', '  end', 'defs'
@@ -45,24 +57,33 @@ describe RuboCop::Cop::Lint::DefEndAlignment, :config do
                        '                    end')
     end
 
-    it 'registers an offense for correct + opposite' do
-      inspect_source(cop, ['private def a',
-                           '  a1',
-                           'end',
-                           '',
-                           'private def b',
-                           '          b1',
-                           '        end'])
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages.first)
-        .to eq('`end` at 7, 8 is not aligned with `private def` at 5, 8')
-      expect(cop.highlights.first).to eq('end')
-      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+    context 'correct + opposite' do
+      it 'registers an offense' do
+        inspect_source(cop, source)
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.messages.first)
+          .to eq('`end` at 7, 8 is not aligned with `private def` at 5, 8')
+        expect(cop.highlights.first).to eq('end')
+        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+      end
+
+      it 'does auto-correction' do
+        corrected = autocorrect_source(cop, source)
+        expect(corrected).to eq(['private def a',
+                                 '  a1',
+                                 'end',
+                                 '',
+                                 'private def b',
+                                 '          b1',
+                                 'end'].join("\n"))
+      end
     end
   end
 
   context 'when AlignWith is def' do
-    let(:cop_config) { { 'AlignWith' => 'def' } }
+    let(:cop_config) do
+      { 'AlignWith' => 'def', 'AutoCorrect' => true }
+    end
 
     include_examples 'misaligned', '', 'def', 'test',      '  end'
     include_examples 'misaligned', '', 'def', 'Test.test', '  end', 'defs'
@@ -97,19 +118,26 @@ describe RuboCop::Cop::Lint::DefEndAlignment, :config do
                        'module_function ', 'def', 'test',
                        'end')
 
-      it 'registers an offense for correct + opposite' do
-        inspect_source(cop, ['private def a',
-                             '  a1',
-                             'end',
-                             '',
-                             'private def b',
-                             '          b1',
-                             '        end'])
-        expect(cop.offenses.size).to eq(1)
-        expect(cop.messages.first)
-          .to eq('`end` at 3, 0 is not aligned with `def` at 1, 8')
-        expect(cop.highlights.first).to eq('end')
-        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+      context 'correct + opposite' do
+        it 'registers an offense' do
+          inspect_source(cop, source)
+          expect(cop.offenses.size).to eq(1)
+          expect(cop.messages.first)
+            .to eq('`end` at 3, 0 is not aligned with `def` at 1, 8')
+          expect(cop.highlights.first).to eq('end')
+          expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+        end
+
+        it 'does auto-correction' do
+          corrected = autocorrect_source(cop, source)
+          expect(corrected).to eq(['private def a',
+                                   '  a1',
+                                   '        end',
+                                   '',
+                                   'private def b',
+                                   '          b1',
+                                   '        end'].join("\n"))
+        end
       end
     end
   end

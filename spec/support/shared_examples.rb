@@ -34,14 +34,23 @@ end
 
 shared_examples_for 'misaligned' do |prefix, alignment_base, arg, end_kw, name|
   name ||= alignment_base
+  source = ["#{prefix}#{alignment_base} #{arg}",
+            end_kw]
+
   it "registers an offense for mismatched #{name} ... end" do
-    inspect_source(cop, ["#{prefix}#{alignment_base} #{arg}",
-                         end_kw])
+    inspect_source(cop, source)
     expect(cop.offenses.size).to eq(1)
     regexp = /`end` at 2, \d+ is not aligned with `#{alignment_base}` at 1,/
     expect(cop.messages.first).to match(regexp)
     expect(cop.highlights.first).to eq('end')
     expect(cop.config_to_allow_offenses).to eq('AlignWith' => opposite)
+  end
+
+  it "auto-corrects mismatched #{name} ... end" do
+    aligned_source = ["#{prefix}#{alignment_base} #{arg}",
+                      "#{' ' * prefix.length}#{end_kw.strip}"].join("\n")
+    corrected = autocorrect_source(cop, source)
+    expect(corrected).to eq(aligned_source)
   end
 end
 

@@ -781,6 +781,7 @@ Lint/EndAlignment:
   SupportedStyles:
     - keyword
     - variable
+  AutoCorrect: false
 
 Lint/DefEndAlignment:
   # The value `def` means that `end` should be aligned with the def keyword.
@@ -791,6 +792,7 @@ Lint/DefEndAlignment:
   SupportedStyles:
     - start_of_line
     - def
+  AutoCorrect: false
 
 ##################### Rails ##################################
 
