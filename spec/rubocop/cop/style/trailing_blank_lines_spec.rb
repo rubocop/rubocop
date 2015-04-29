@@ -40,8 +40,17 @@ describe RuboCop::Cop::Style::TrailingBlankLines, :config do
       expect(cop.messages).to eq(['3 trailing blank lines detected.'])
     end
 
-    it 'registers an offense for no final newline' do
+    it 'registers an offense for no final newline after assignment' do
       inspect_source(cop, 'x = 0')
+      expect(cop.messages).to eq(['Final newline missing.'])
+    end
+
+    it 'registers an offense for no final newline after block comment' do
+      inspect_source(cop,
+                     "puts 'testing rubocop when final new line is missing " \
+                     "after block comments'\n\n=begin\nfirst line\nsecond " \
+                     "line\nthird line\n=end")
+
       expect(cop.messages).to eq(['Final newline missing.'])
     end
 
