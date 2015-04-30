@@ -7,11 +7,15 @@ describe RuboCop::Cop::Style::IndentationWidth do
   let(:config) do
     RuboCop::Config.new('Style/IndentationWidth' => cop_config,
                         'Style/IndentationConsistency' => consistency_config,
-                        'Lint/EndAlignment' => end_alignment_config)
+                        'Lint/EndAlignment' => end_alignment_config,
+                        'Lint/DefEndAlignment' => def_end_alignment_config)
   end
   let(:consistency_config) { { 'EnforcedStyle' => 'normal' } }
   let(:end_alignment_config) do
     { 'Enabled' => true, 'AlignWith' => 'variable' }
+  end
+  let(:def_end_alignment_config) do
+    { 'Enabled' => true, 'AlignWith' => 'start_of_line' }
   end
 
   context 'with Width set to 4' do
@@ -720,54 +724,93 @@ describe RuboCop::Cop::Style::IndentationWidth do
     end
 
     context 'with def/defs' do
-      it 'registers an offense for bad indentation of a def body' do
-        inspect_source(cop,
-                       ['def test',
-                        '    func1',
-                        '     func2', # No offense registered for this.
-                        'end'])
-        expect(cop.messages).to eq(['Use 2 (not 4) spaces for indentation.'])
+      shared_examples 'without modifier on the same line' do
+        it 'registers an offense for bad indentation of a def body' do
+          inspect_source(cop,
+                         ['def test',
+                          '    func1',
+                          '     func2', # No offense registered for this.
+                          'end'])
+          expect(cop.messages).to eq(['Use 2 (not 4) spaces for indentation.'])
+        end
+
+        it 'registers an offense for bad indentation of a defs body' do
+          inspect_source(cop,
+                         ['def self.test',
+                          '   func',
+                          'end'])
+          expect(cop.messages).to eq(['Use 2 (not 3) spaces for indentation.'])
+        end
+
+        it 'accepts an empty def body' do
+          inspect_source(cop,
+                         ['def test',
+                          'end'])
+          expect(cop.offenses).to be_empty
+        end
+
+        it 'accepts an empty defs body' do
+          inspect_source(cop,
+                         ['def self.test',
+                          'end'])
+          expect(cop.offenses).to be_empty
+        end
       end
 
-      it 'registers an offense for bad indentation of a defs body' do
-        inspect_source(cop,
-                       ['def self.test',
-                        '   func',
-                        'end'])
-        expect(cop.messages).to eq(['Use 2 (not 3) spaces for indentation.'])
-      end
+      context 'when end is aligned with start of line' do
+        let(:def_end_alignment_config) do
+          { 'Enabled' => true, 'AlignWith' => 'start_of_line' }
+        end
 
-      it 'accepts an empty def body' do
-        inspect_source(cop,
-                       ['def test',
-                        'end'])
-        expect(cop.offenses).to be_empty
-      end
+        include_examples 'without modifier on the same line'
 
-      it 'accepts an empty defs body' do
-        inspect_source(cop,
-                       ['def self.test',
-                        'end'])
-        expect(cop.offenses).to be_empty
-      end
+        if RUBY_VERSION >= '2.1'
+          context 'when modifier and def are on the same line' do
+            it 'accepts a correctly aligned body' do
+              inspect_source(cop,
+                             ['private def test',
+                              '  something',
+                              'end'])
+              expect(cop.offenses).to be_empty
+            end
 
-      if RUBY_VERSION >= '2.1'
-        context 'when modifier and def are on the same line' do
-          it 'accepts a correctly aligned body' do
-            inspect_source(cop,
-                           ['private def test',
-                            '  something',
-                            'end'])
-            expect(cop.offenses).to be_empty
+            it 'registers an offense for bad indentation of a def body' do
+              inspect_source(cop,
+                             ['private def test',
+                              '          something',
+                              '        end'])
+              expect(cop.messages)
+                .to eq(['Use 2 (not 10) spaces for indentation.'])
+            end
           end
+        end
+      end
 
-          it 'registers an offense for bad indentation of a def body' do
-            inspect_source(cop,
-                           ['private def test',
-                            '          something',
-                            '        end'])
-            expect(cop.messages)
-              .to eq(['Use 2 (not 10) spaces for indentation.'])
+      context 'when end is aligned with def' do
+        let(:def_end_alignment_config) do
+          { 'Enabled' => true, 'AlignWith' => 'def' }
+        end
+
+        include_examples 'without modifier on the same line'
+
+        if RUBY_VERSION >= '2.1'
+          context 'when modifier and def are on the same line' do
+            it 'accepts a correctly aligned body' do
+              inspect_source(cop,
+                             ['private def test',
+                              '          something',
+                              'end'])
+              expect(cop.offenses).to be_empty
+            end
+
+            it 'registers an offense for bad indentation of a def body' do
+              inspect_source(cop,
+                             ['private def test',
+                              '  something',
+                              '        end'])
+              expect(cop.messages)
+                .to eq(['Use 2 (not -6) spaces for indentation.'])
+            end
           end
         end
       end
