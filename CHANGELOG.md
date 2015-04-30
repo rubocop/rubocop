@@ -21,6 +21,7 @@
 * [#1832](https://github.com/bbatsov/rubocop/pull/1832): Fix bug in `UnusedMethodArgument` that would cause them to report having been auto-corrected when they were not. ([@jonas054][])
 * [#1834](https://github.com/bbatsov/rubocop/issues/1834): Support only boolean values for `AutoCorrect` configuration parameter, and remove warning for unknown parameter. ([@jonas054][])
 * [#1843](https://github.com/bbatsov/rubocop/issues/1843): Fix crash in `TrailingBlankLines` when a file ends with a block comment without final newline. ([@jonas054][])
+* [#1849](https://github.com/bbatsov/rubocop/issues/1849): Fix bug where you can not have nested arrays in the Rake task configuration. ([@rrosenblum][])
 
 ## 0.30.1 (21/04/2015)
 
