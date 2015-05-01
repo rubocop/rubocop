@@ -44,7 +44,7 @@ module RuboCop
         whitespace = Parser::Source::Range.new(source_buffer,
                                                begin_pos - node.loc.end.column,
                                                begin_pos)
-        fail CorrectionNotPossible unless whitespace.source.strip.empty?
+        return false unless whitespace.source.strip.empty?
 
         column = alignment_node ? alignment_node.loc.expression.column : 0
 
