@@ -65,6 +65,27 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
     end
   end
 
+  context 'when end is preceded by something else than whitespace' do
+    let(:source) do
+      ['module A',
+       'puts a end']
+    end
+
+    it 'registers an offense' do
+      inspect_source(cop, source)
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.messages.first)
+        .to eq('`end` at 2, 7 is not aligned with `module` at 1, 0')
+      expect(cop.highlights.first).to eq('end')
+    end
+
+    it "doesn't auto-correct" do
+      expect(autocorrect_source(cop, source))
+        .to eq(source.join("\n"))
+      expect(cop.offenses.map(&:corrected?)).to eq [false]
+    end
+  end
+
   context 'regarding assignment' do
     context 'when AlignWith is keyword' do
       include_examples 'misaligned', 'var = ', 'if',     'test', 'end'
