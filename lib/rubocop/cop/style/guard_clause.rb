@@ -27,6 +27,7 @@ module RuboCop
       class GuardClause < Cop
         include ConfigurableEnforcedStyle
         include IfNode
+        include MinBodyLength
 
         MSG = 'Use a guard clause instead of wrapping the code inside a ' \
               'conditional expression.'
@@ -61,17 +62,6 @@ module RuboCop
           return unless min_body_length?(node)
 
           add_offense(node, :keyword, MSG)
-        end
-
-        def min_body_length?(node)
-          (node.loc.end.line - node.loc.keyword.line) > min_body_length
-        end
-
-        def min_body_length
-          length = cop_config['MinBodyLength'] || 1
-          return length if length.is_a?(Integer) && length > 0
-
-          fail 'MinBodyLength needs to be a positive integer!'
         end
       end
     end
