@@ -140,25 +140,16 @@ module RuboCop
 
         if @options[:only]
           cop_classes.select! do |c|
-            cop_match?(c, @options[:only]) || @options[:lint] && c.lint?
+            c.match?(@options[:only]) || @options[:lint] && c.lint?
           end
         else
           filter_cop_classes(cop_classes, config)
         end
 
-        cop_classes.reject! { |c| cop_match?(c, @options[:except]) }
+        cop_classes.reject! { |c| c.match?(@options[:except]) }
 
         cop_classes
       end
-    end
-
-    # Returns true if the cop name or the cop namespace matches any of the
-    # given names.
-    def cop_match?(cop, given_names)
-      return false unless given_names
-
-      given_names.include?(cop.cop_name) ||
-        given_names.include?(cop.cop_type.to_s.capitalize)
     end
 
     def filter_cop_classes(cop_classes, config)

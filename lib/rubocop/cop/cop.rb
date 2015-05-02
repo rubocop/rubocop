@@ -138,6 +138,15 @@ module RuboCop
             config['AllCops'] && config['AllCops']['DisplayStyleGuide'])
       end
 
+      # Returns true if the cop name or the cop namespace matches any of the
+      # given names.
+      def self.match?(given_names)
+        return false unless given_names
+
+        given_names.include?(cop_name) ||
+          given_names.include?(cop_type.to_s.capitalize)
+      end
+
       def message(_node = nil)
         self.class::MSG
       end
