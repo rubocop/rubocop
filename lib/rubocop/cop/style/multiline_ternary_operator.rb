@@ -9,12 +9,13 @@ module RuboCop
               ' use `if`/`unless` instead.'
 
         def on_if(node)
+          _condition, _if_branch, else_branch = *node
           loc = node.loc
 
           # discard non-ternary ops
           return unless loc.respond_to?(:question)
 
-          add_offense(node, :expression) if loc.line != loc.colon.line
+          add_offense(node, :expression) if loc.line != else_branch.loc.line
         end
       end
     end
