@@ -25,12 +25,6 @@ RSpec.configure do |config|
   config.filter_run_excluding ruby_less_than: (lambda do |v|
     ruby_version >= Gem::Version.new(v)
   end)
-  config.filter_run_excluding ruby_less_than: (lambda do |v|
-    ruby_version >= Gem::Version.new(v)
-  end)
-  config.filter_run_excluding ruby_greater_than_or_equal: (lambda do |v|
-    ruby_version < Gem::Version.new(v)
-  end)
   config.filter_run_excluding ruby_greater_than_or_equal: (lambda do |v|
     ruby_version < Gem::Version.new(v)
   end)
