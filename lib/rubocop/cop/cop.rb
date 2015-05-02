@@ -21,6 +21,28 @@ module RuboCop
       def without_type(type)
         CopStore.new(reject { |c| c.cop_type == type })
       end
+
+      def qualified_cop_name(name, origin)
+        @cop_names ||= Set.new(map(&:cop_name))
+        basename = File.basename(name)
+        found_ns = types.map(&:capitalize).select do |ns|
+          @cop_names.include?("#{ns}/#{basename}")
+        end
+
+        case found_ns.size
+        when 0 then name # No namespace found. Deal with it later in caller.
+        when 1 then cop_name_with_namespace(name, origin, basename, found_ns[0])
+        else fail AmbiguousCopName, "`#{basename}` used in #{origin}"
+        end
+      end
+
+      def cop_name_with_namespace(name, origin, basename, found_ns)
+        if name != basename && found_ns != File.dirname(name).to_sym
+          warn "#{origin}: #{name} has the wrong namespace - should be " \
+               "#{found_ns}"
+        end
+        "#{found_ns}/#{basename}"
+      end
     end
 
     # A scaffold for concrete cops.
@@ -58,25 +80,7 @@ module RuboCop
       end
 
       def self.qualified_cop_name(name, origin)
-        @cop_names ||= Set.new(all.map(&:cop_name))
-        basename = File.basename(name)
-        found_ns = @all.types.map(&:capitalize).select do |ns|
-          @cop_names.include?("#{ns}/#{basename}")
-        end
-
-        case found_ns.size
-        when 0 then name # No namespace found. Deal with it later in caller.
-        when 1 then cop_name_with_namespace(name, origin, basename, found_ns[0])
-        else fail AmbiguousCopName, "`#{basename}` used in #{origin}"
-        end
-      end
-
-      def self.cop_name_with_namespace(name, origin, basename, found_ns)
-        if name != basename && found_ns != File.dirname(name).to_sym
-          warn "#{origin}: #{name} has the wrong namespace - should be " \
-               "#{found_ns}"
-        end
-        "#{found_ns}/#{basename}"
+        @all.qualified_cop_name(name, origin)
       end
 
       def self.non_rails
@@ -132,6 +136,15 @@ module RuboCop
         style_guide_url &&
           (@options[:display_style_guide] ||
             config['AllCops'] && config['AllCops']['DisplayStyleGuide'])
+      end
+
+      # Returns true if the cop name or the cop namespace matches any of the
+      # given names.
+      def self.match?(given_names)
+        return false unless given_names
+
+        given_names.include?(cop_name) ||
+          given_names.include?(cop_type.to_s.capitalize)
       end
 
       def message(_node = nil)

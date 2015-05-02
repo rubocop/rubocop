@@ -83,14 +83,6 @@ module RuboCop
           end
         end
 
-        def parentheses?(send_node)
-          send_node.loc.begin
-        end
-
-        def operator?(method_name)
-          method_name =~ /^\W/
-        end
-
         def proper_block_style?(node)
           case style
           when :line_count_based
