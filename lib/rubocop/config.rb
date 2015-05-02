@@ -19,9 +19,8 @@ module RuboCop
     attr_reader :loaded_path
 
     def initialize(hash = {}, loaded_path = nil)
-      @hash = hash
       @loaded_path = loaded_path
-      super(@hash)
+      super(hash)
     end
 
     def make_excludes_absolute
@@ -101,7 +100,7 @@ module RuboCop
                                                     'config'))
       return if File.expand_path(loaded_path).start_with?(base_config_path)
 
-      valid_cop_names, invalid_cop_names = @hash.keys.partition do |key|
+      valid_cop_names, invalid_cop_names = keys.partition do |key|
         ConfigLoader.default_configuration.key?(key)
       end
 
@@ -148,11 +147,11 @@ module RuboCop
     end
 
     def patterns_to_include
-      @hash['AllCops']['Include']
+      self['AllCops']['Include']
     end
 
     def patterns_to_exclude
-      @hash['AllCops']['Exclude']
+      self['AllCops']['Exclude']
     end
 
     def path_relative_to_config(path)
@@ -174,14 +173,14 @@ module RuboCop
     private
 
     def validate_section_presence(name)
-      return unless @hash.key?(name) && @hash[name].nil?
+      return unless key?(name) && self[name].nil?
       fail ValidationError, "empty section #{name} found in #{loaded_path}"
     end
 
     def validate_parameter_names(valid_cop_names)
       valid_cop_names.each do |name|
         validate_section_presence(name)
-        @hash[name].each_key do |param|
+        self[name].each_key do |param|
           next if COMMON_PARAMS.include?(param) ||
                   ConfigLoader.default_configuration[name].key?(param)
 
