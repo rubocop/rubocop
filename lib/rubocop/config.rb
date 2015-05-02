@@ -31,9 +31,8 @@ module RuboCop
 
         self[key]['Exclude'].map! do |exclude_elem|
           if exclude_elem.is_a?(String) && !exclude_elem.start_with?('/')
-            File.expand_path(
-              File.join(base_dir_for_path_parameters, exclude_elem)
-            )
+            File.expand_path(File.join(base_dir_for_path_parameters,
+                                       exclude_elem))
           else
             exclude_elem
           end
@@ -107,8 +106,7 @@ module RuboCop
       end
 
       invalid_cop_names.each do |name|
-        fail ValidationError,
-             "unrecognized cop #{name} found in #{loaded_path || self}"
+        fail ValidationError, "unrecognized cop #{name} found in #{loaded_path}"
       end
 
       validate_parameter_names(valid_cop_names)
@@ -177,9 +175,7 @@ module RuboCop
 
     def validate_section_presence(name)
       return unless @hash.key?(name) && @hash[name].nil?
-      fail ValidationError,
-           "empty section #{name} found " \
-           "in #{loaded_path || self}"
+      fail ValidationError, "empty section #{name} found in #{loaded_path}"
     end
 
     def validate_parameter_names(valid_cop_names)
@@ -190,8 +186,7 @@ module RuboCop
                   ConfigLoader.default_configuration[name].key?(param)
 
           fail ValidationError,
-               "unrecognized parameter #{name}:#{param} found " \
-               "in #{loaded_path || self}"
+               "unrecognized parameter #{name}:#{param} found in #{loaded_path}"
         end
       end
     end
