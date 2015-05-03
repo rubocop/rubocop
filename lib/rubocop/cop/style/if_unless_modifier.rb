@@ -25,18 +25,23 @@ module RuboCop
         end
 
         def autocorrect(node)
-          if node.loc.keyword.source == 'if'
+          if node.loc.keyword.is?('if')
             cond, body = *node
           else
             cond, _else, body = *node
           end
 
-          lambda do |corrector|
-            oneline = "#{body.loc.expression.source} " \
-                      "#{node.loc.keyword.source} " +
-                      cond.loc.expression.source
-            corrector.replace(node.loc.expression, oneline)
+          oneline =
+            "#{body.loc.expression.source} #{node.loc.keyword.source} " +
+            cond.loc.expression.source
+          first_line_comment = processed_source.comments.find do |c|
+            c.loc.line == node.loc.line
           end
+          if first_line_comment
+            oneline << ' ' << first_line_comment.loc.expression.source
+          end
+
+          ->(corrector) { corrector.replace(node.loc.expression, oneline) }
         end
       end
     end
