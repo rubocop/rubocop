@@ -12,6 +12,7 @@
 * [#1136](https://github.com/bbatsov/rubocop/issues/1136): New cop `Performance/ParallelAssignment` to avoid usages of unnessary parallel assignment. ([@rrosenblum][])
 * [#1278](https://github.com/bbatsov/rubocop/issues/1278): `DefEndAlignment` and `EndAlignment` cops do auto-correction. ([@lumeet][])
 * `IndentationWidth` cop follows the `AlignWith` option of the `DefEndAlignment` cop. ([@lumeet][])
+* [#1837](https://github.com/bbatsov/rubocop/issues/1837): New cop `EachWithObjectArgument` checks that `each_with_object` isn't called with an immutable object as argument. ([@jonas054][])
 
 ### Bugs fixed
 
