@@ -5,26 +5,43 @@ require 'spec_helper'
 describe RuboCop::Cop::Style::SpaceAfterComma do
   subject(:cop) { described_class.new }
 
-  it 'registers an offense for block argument commas without space' do
-    inspect_source(cop, 'each { |s,t| }')
-    expect(cop.messages).to eq(
-      ['Space missing after comma.'])
+  shared_examples 'ends with an item' do |items, correct_items|
+    it 'registers an offense' do
+      inspect_source(cop, source.call(items))
+      expect(cop.messages).to eq(
+        ['Space missing after comma.'])
+    end
+
+    it 'does auto-correction' do
+      new_source = autocorrect_source(cop, source.call(items))
+      expect(new_source).to eq source.call(correct_items)
+    end
   end
 
-  it 'registers an offense for array index commas without space' do
-    inspect_source(cop, 'formats[0,1]')
-    expect(cop.messages).to eq(
-      ['Space missing after comma.'])
+  shared_examples 'trailing comma' do |items|
+    it 'accepts the last comma' do
+      inspect_source(cop, source.call(items))
+      expect(cop.messages).to be_empty
+    end
   end
 
-  it 'registers an offense for method call arg commas without space' do
-    inspect_source(cop, 'a(1,2)')
-    expect(cop.messages).to eq(
-      ['Space missing after comma.'])
+  context 'block argument commas without space' do
+    let(:source) { ->(args) { "each { |#{args}| }" } }
+
+    it_behaves_like 'ends with an item', 's,t', 's, t'
+    it_behaves_like 'trailing comma', 's, t,'
   end
 
-  it 'auto-corrects missing space' do
-    new_source = autocorrect_source(cop, 'each { |s,t| a(1,formats[0,1])}')
-    expect(new_source).to eq('each { |s, t| a(1, formats[0, 1])}')
+  context 'array index commas without space' do
+    let(:source) { ->(items) { "formats[#{items}]" } }
+
+    it_behaves_like 'ends with an item', '0,1', '0, 1'
+    it_behaves_like 'trailing comma', '0,'
+  end
+
+  context 'method call arg commas without space' do
+    let(:source) { ->(args) { "a(#{args})" } }
+
+    it_behaves_like 'ends with an item', '1,2', '1, 2'
   end
 end

@@ -71,6 +71,20 @@ describe RuboCop::Cop::Style::SpaceAroundBlockParameters, :config do
       expect(cop.highlights).to eq(['  '])
     end
 
+    context 'trailing comma' do
+      it 'registers an offense for space after the last comma' do
+        inspect_source(cop, '{}.each { |x, | puts x }')
+        expect(cop.messages)
+          .to eq(['Space after last block parameter detected.'])
+        expect(cop.highlights).to eq([' '])
+      end
+
+      it 'accepts no space after the last comma' do
+        inspect_source(cop, '{}.each { |x,| puts x }')
+        expect(cop.offenses).to be_empty
+      end
+    end
+
     it 'auto-corrects offenses' do
       new_source = autocorrect_source(cop,
                                       '{}.each { |  x=5,  (y,*z) |puts x }')
@@ -144,6 +158,20 @@ describe RuboCop::Cop::Style::SpaceAroundBlockParameters, :config do
       expect(cop.messages)
         .to eq(['Extra space before block parameter detected.'])
       expect(cop.highlights).to eq(['  '])
+    end
+
+    context 'trailing comma' do
+      it 'accepts space after the last comma' do
+        inspect_source(cop, '{}.each { | x, | puts x }')
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'registers an offense for no space after the last comma' do
+        inspect_source(cop, '{}.each { | x,| puts x }')
+        expect(cop.messages)
+          .to eq(['Space after last block parameter missing.'])
+        expect(cop.highlights).to eq(['x'])
+      end
     end
 
     it 'auto-corrects offenses' do

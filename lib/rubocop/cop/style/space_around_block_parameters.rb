@@ -38,24 +38,40 @@ module RuboCop
         end
 
         def check_inside_pipes(args, opening_pipe, closing_pipe)
+          if style == :no_space
+            check_no_space_style_inside_pipes(args, opening_pipe, closing_pipe)
+          elsif style == :space
+            check_space_style_inside_pipes(args, opening_pipe, closing_pipe)
+          end
+        end
+
+        def check_no_space_style_inside_pipes(args, opening_pipe, closing_pipe)
           first = args.first.loc.expression
           last = args.last.loc.expression
 
-          if style == :no_space
-            check_no_space(opening_pipe.end_pos, first.begin_pos,
-                           'Space before first')
-            check_no_space(last.end_pos, closing_pipe.begin_pos,
-                           'Space after last')
-          elsif style == :space
-            check_space(opening_pipe.end_pos, first.begin_pos, first,
-                        'before first block parameter')
-            check_space(last.end_pos, closing_pipe.begin_pos, last,
-                        'after last block parameter')
-            check_no_space(opening_pipe.end_pos, first.begin_pos - 1,
-                           'Extra space before first')
-            check_no_space(last.end_pos + 1, closing_pipe.begin_pos,
-                           'Extra space after last')
-          end
+          check_no_space(opening_pipe.end_pos, first.begin_pos,
+                         'Space before first')
+          check_no_space(last_end_pos_inside_pipes(last.end_pos),
+                         closing_pipe.begin_pos, 'Space after last')
+        end
+
+        def check_space_style_inside_pipes(args, opening_pipe, closing_pipe)
+          first = args.first.loc.expression
+          last = args.last.loc.expression
+          last_end_pos = last_end_pos_inside_pipes(last.end_pos)
+
+          check_space(opening_pipe.end_pos, first.begin_pos, first,
+                      'before first block parameter')
+          check_space(last_end_pos, closing_pipe.begin_pos, last,
+                      'after last block parameter')
+          check_no_space(opening_pipe.end_pos, first.begin_pos - 1,
+                         'Extra space before first')
+          check_no_space(last_end_pos + 1, closing_pipe.begin_pos,
+                         'Extra space after last')
+        end
+
+        def last_end_pos_inside_pipes(pos)
+          processed_source.buffer.source[pos] == ',' ? pos + 1 : pos
         end
 
         def check_each_arg(args)
