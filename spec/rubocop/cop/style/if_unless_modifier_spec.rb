@@ -60,6 +60,23 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
     end
   end
 
+  context 'multiline if that fits on one line with comment near end' do
+    let(:source) do
+      ['if a',
+       '  b',
+       'end # comment',
+       'if a',
+       '  b',
+       '  # comment',
+       'end']
+    end
+
+    it 'accepts' do
+      inspect_source(cop, source)
+      expect(cop.offenses).to be_empty
+    end
+  end
+
   context 'short multiline if near an else etc' do
     let(:source) do
       ['if x',

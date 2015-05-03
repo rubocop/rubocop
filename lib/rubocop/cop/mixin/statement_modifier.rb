@@ -6,7 +6,6 @@ module RuboCop
     module StatementModifier
       include IfNode
 
-      # TODO: Extremely ugly solution that needs lots of polish.
       def fit_within_line_as_modifier_form?(node)
         case node.loc.keyword.source
         when 'if'     then cond, body, _else = *node
@@ -19,8 +18,9 @@ module RuboCop
         body_length = body_length(body)
 
         return false if body_length == 0
-
         return false if cond.each_node.any?(&:lvasgn_type?)
+        return false if body_has_comment?(body)
+        return false if end_keyword_has_comment?(node)
 
         indentation = node.loc.keyword.column
         kw_length = node.loc.keyword.size
@@ -28,7 +28,8 @@ module RuboCop
         space = 1
         total = indentation + body_length + space + kw_length + space +
                 cond_length
-        total <= max_line_length && !body_has_comment?(body)
+
+        total <= max_line_length
       end
 
       def max_line_length
@@ -49,9 +50,15 @@ module RuboCop
       end
 
       def body_has_comment?(body)
-        comment_lines = processed_source.comments.map(&:location).map(&:line)
-        body_line = body.loc.expression.line
-        comment_lines.include?(body_line)
+        comment_lines.include?(body.loc.expression.line)
+      end
+
+      def end_keyword_has_comment?(node)
+        comment_lines.include?(node.loc.end.line)
+      end
+
+      def comment_lines
+        @comment_lines ||= processed_source.comments.map(&:location).map(&:line)
       end
     end
   end
