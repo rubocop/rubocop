@@ -87,6 +87,16 @@ describe RuboCop::Cop::Style::MultilineBlockLayout do
       .to eq(['Block body expression is on the same line as the block start.'])
   end
 
+  it 'registers offenses for new lambda literal syntax as expected' do
+    inspect_source(cop,
+                   ['-> x do foo',
+                    '  bar',
+                    'end'
+                   ])
+    expect(cop.messages)
+      .to eq(['Block body expression is on the same line as the block start.'])
+  end
+
   it 'registers an offense for line-break before arguments' do
     inspect_source(cop,
                    ['test do',
