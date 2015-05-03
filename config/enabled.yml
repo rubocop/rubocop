@@ -850,6 +850,10 @@ Lint/DuplicateMethods:
   Description: 'Check for duplicate methods calls.'
   Enabled: true
 
+Lint/EachWithObjectArgument:
+  Description: 'Check for immutable argument given to each_with_object.'
+  Enabled: true
+
 Lint/ElseLayout:
   Description: 'Check for odd code arrangement in an else block.'
   Enabled: true
