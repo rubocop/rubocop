@@ -15,6 +15,7 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
     let(:source) do
       ["if #{condition}",
        "  #{body}",
+       '', # Empty lines should make no difference.
        'end']
     end
 
@@ -36,6 +37,44 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
     it 'does auto-correction' do
       corrected = autocorrect_source(cop, source)
       expect(corrected).to eq "#{body} if #{condition}"
+    end
+  end
+
+  context 'multiline if that fits on one line with comment on first line' do
+    let(:source) do
+      ['if a # comment',
+       '  b',
+       'end']
+    end
+
+    it 'registers an offense' do
+      inspect_source(cop, source)
+      expect(cop.messages).to eq(
+        ['Favor modifier `if` usage when having a single-line' \
+         ' body. Another good alternative is the usage of control flow' \
+         ' `&&`/`||`.'])
+    end
+
+    it 'does auto-correction and preserves comment' do
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq 'b if a # comment'
+    end
+  end
+
+  context 'multiline if that fits on one line with comment near end' do
+    let(:source) do
+      ['if a',
+       '  b',
+       'end # comment',
+       'if a',
+       '  b',
+       '  # comment',
+       'end']
+    end
+
+    it 'accepts' do
+      inspect_source(cop, source)
+      expect(cop.offenses).to be_empty
     end
   end
 
