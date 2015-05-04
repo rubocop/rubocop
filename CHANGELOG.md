@@ -13,6 +13,7 @@
 * [#1278](https://github.com/bbatsov/rubocop/issues/1278): `DefEndAlignment` and `EndAlignment` cops do auto-correction. ([@lumeet][])
 * `IndentationWidth` cop follows the `AlignWith` option of the `DefEndAlignment` cop. ([@lumeet][])
 * [#1837](https://github.com/bbatsov/rubocop/issues/1837): New cop `EachWithObjectArgument` checks that `each_with_object` isn't called with an immutable object as argument. ([@jonas054][])
+* `ArrayJoin` cop does auto-correction. ([@tmr08c][])
 
 ### Bugs fixed
 
@@ -1383,3 +1384,4 @@
 [@til]: https://github.com/til
 [@carhartl]: https://github.com/carhartl
 [@dylandavidson]: https://github.com/dylandavidson
+[@tmr08c]: https://github.com/tmr08c
