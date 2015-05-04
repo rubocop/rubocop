@@ -15,6 +15,7 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
     let(:source) do
       ["if #{condition}",
        "  #{body}",
+       '', # Empty lines should make no difference.
        'end']
     end
 

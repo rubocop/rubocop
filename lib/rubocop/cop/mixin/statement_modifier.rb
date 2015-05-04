@@ -38,7 +38,7 @@ module RuboCop
       end
 
       def length(node)
-        node.loc.expression.source.lines.to_a.size
+        node.loc.expression.source.lines.grep(/\S/).size
       end
 
       def body_length(body)
