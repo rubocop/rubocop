@@ -50,14 +50,17 @@ module RuboCop
           # with arguments and the expression start on the same line.
           _block_start, args, last_expression = node.children
 
-          if !args.children.empty? && do_loc.line != args.loc.end.line
-            add_offense_for_expression(node, args, ARG_MSG)
-          else
-            return unless last_expression
-            expression_loc = last_expression.loc
-            return unless do_loc.line == expression_loc.line
-            add_offense_for_expression(node, last_expression, MSG)
+          unless args.children.empty?
+            line = args.loc.end.nil? ? args.loc.line : args.loc.end.line
+            if do_loc.line != line
+              add_offense_for_expression(node, args, ARG_MSG)
+            end
           end
+
+          return unless last_expression
+          expression_loc = last_expression.loc
+          return unless do_loc.line == expression_loc.line
+          add_offense_for_expression(node, last_expression, MSG)
         end
 
         def add_offense_for_expression(node, expr, msg)

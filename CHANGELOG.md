@@ -26,6 +26,7 @@
 * [#1843](https://github.com/bbatsov/rubocop/issues/1843): Fix crash in `TrailingBlankLines` when a file ends with a block comment without final newline. ([@jonas054][])
 * [#1849](https://github.com/bbatsov/rubocop/issues/1849): Fix bug where you can not have nested arrays in the Rake task configuration. ([@rrosenblum][])
 * Fix bug in `MultilineTernaryOperator` where it will not register an offense when only the false branch is on a separate line. ([@rrosenblum][])
+* Fix crash in `MultilineBlockLayout` when using new lambda literal syntax without parentheses. ([@hbd225][])
 
 ## 0.30.1 (21/04/2015)
 
@@ -1385,3 +1386,4 @@
 [@carhartl]: https://github.com/carhartl
 [@dylandavidson]: https://github.com/dylandavidson
 [@tmr08c]: https://github.com/tmr08c
+[@hbd225]: https://github.com/hbd225
