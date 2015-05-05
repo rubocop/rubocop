@@ -4,6 +4,7 @@
 
 ### New features
 
+* `Rails/TimeZone` emits acceptable methods on a violation when `EnforcedStyle` is `:acceptable`. ([@l8nite][])
 * Recognize rackup file (config.ru) out of the box. ([@carhartl][])
 * [#1788](https://github.com/bbatsov/rubocop/pull/1788): New cop `ModuleLength` checks for overly long module definitions. ([@sdeframond][])
 * New cop `Performance/Count` to convert `Enumerable#select...size`, `Enumerable#reject...size`, `Enumerable#select...count`, `Enumerable#reject...count` `Enumerable#select...length`, and `Enumerable#reject...length` to `Enumerable#count`. ([@rrosenblum][])
@@ -1388,3 +1389,4 @@
 [@dylandavidson]: https://github.com/dylandavidson
 [@tmr08c]: https://github.com/tmr08c
 [@hbd225]: https://github.com/hbd225
+[@l8nite]: https://github.com/l8nite

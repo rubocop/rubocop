@@ -141,6 +141,17 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
     let(:cop_config) { { 'EnforcedStyle' => 'acceptable' } }
 
     described_class::TIMECLASS.each do |klass|
+      it "registers an offense for #{klass}.now" do
+        inspect_source(cop, "#{klass}.now")
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.offenses.first.message).to include('Use one of')
+
+        described_class::ACCEPTED_METHODS.each do |a_method|
+          expect(cop.offenses.first.message)
+            .to include("#{klass}.now.#{a_method}")
+        end
+      end
+
       described_class::ACCEPTED_METHODS.each do |a_method|
         it "accepts #{klass}.now.#{a_method}" do
           inspect_source(cop, "#{klass}.now.#{a_method}")
