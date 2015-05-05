@@ -11,10 +11,17 @@ module RuboCop
         processed_source.tokens.each_cons(2) do |t1, t2|
           next unless kind(t1) && t1.pos.line == t2.pos.line &&
                       t2.pos.column == t1.pos.column + offset &&
-                      ![:tRPAREN, :tRBRACK, :tPIPE].include?(t2.type)
+                      ![:tRPAREN, :tRBRACK, :tPIPE].include?(t2.type) &&
+                      !(t2.type == :tRCURLY && space_forbidden_before_rcurly?)
 
           add_offense(t1, t1.pos, format(MSG, kind(t1)))
         end
+      end
+
+      def space_forbidden_before_rcurly?
+        cfg = config.for_cop('Style/SpaceInsideBlockBraces')
+        style = cfg['Enabled'] ? cfg['EnforcedStyle'] : 'space'
+        style == 'no_space'
       end
 
       # The normal offset, i.e., the distance from the punctuation

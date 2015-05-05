@@ -68,36 +68,6 @@ describe RuboCop::CLI, :isolated_environment do
         expect(IO.read('example.rb')).to eq(corrected)
       end
 
-      it 'crashes on infinite loop but prints offenses' do
-        create_file('example.rb', '3.times{ something;other_thing;}')
-        # This configuration makes --auto-correct impossible to finish since a
-        # space will be added after each ; but then removed again for the one
-        # that's inside }.
-        create_file('.rubocop.yml', ['SpaceInsideBlockBraces:',
-                                     '  EnforcedStyle: no_space',
-                                     '  SpaceBeforeBlockParameters: false'])
-        cmd = %w(--only SpaceAfterSemicolon,SpaceInsideBlockBraces
-                 --auto-correct --format simple)
-        expect { cli.run(cmd) }.to raise_error(RuboCop::Runner::
-                                               InfiniteCorrectionLoop)
-        expect(IO.read('example.rb'))
-          .to eq("3.times{something; other_thing;}\n")
-
-        expected_output = [
-          '== example.rb ==',
-          'C:  1:  9: [Corrected] Space inside { detected.',
-          'C:  1: 19: [Corrected] Space missing after semicolon.',
-          'C:  1: 31: [Corrected] Space missing after semicolon.',
-          'C:  1: 32: [Corrected] Space inside } detected.',
-          'C:  1: 33: [Corrected] Space inside } detected.',
-          '',
-          # We're interrupted during inspection, hence 0 files inspected.
-          '0 files inspected, 5 offenses detected, 5 offenses corrected',
-          ''
-        ]
-        expect($stdout.string).to eq(expected_output.join("\n"))
-      end
-
       it 'corrects complicated cases conservatively' do
         # Two cops make corrections here; Style/BracesAroundHashParameters, and
         # Style/AlignHash. Because they make minimal corrections relating only

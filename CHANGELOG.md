@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Changes
+
+* Prefer `SpaceInsideBlockBraces` to `SpaceBeforeSemicolon` and `SpaceAfterSemicolon` to avoid an infinite loop when auto-correcting. ([@lumeet][])
+
 ### Bugs fixed
 
 * Don't count required keyword args when specifying `CountKeywordArgs: false` for `ParameterLists`. ([@sumeet][])
