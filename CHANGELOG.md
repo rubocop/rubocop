@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.31.0 (05/05/2015)
+
 ### New features
 
 * `Rails/TimeZone` emits acceptable methods on a violation when `EnforcedStyle` is `:acceptable`. ([@l8nite][])
