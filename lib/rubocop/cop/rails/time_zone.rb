@@ -31,6 +31,8 @@ module RuboCop
 
         MSG = 'Do not use `%s` without zone. Use `%s` instead.'
 
+        MSG_ACCEPTABLE = 'Do not use `%s` without zone. Use one of %s instead.'
+
         MSG_LOCALTIME = 'Do not use `Time.localtime` without offset or zone.'
 
         TIMECLASS = [:Time, :DateTime]
@@ -58,13 +60,29 @@ module RuboCop
           return check_localtime(node) if need_check_localtime?(chain)
 
           method_name = (chain & DANGER_METHODS).join('.')
-          safe_method_name = safe_method(method_name, node)
 
-          add_offense(node, :selector,
-                      format(MSG,
-                             "#{klass}.#{method_name}",
-                             "Time.zone.#{safe_method_name}")
-                     )
+          message = build_message(klass, method_name, node)
+
+          add_offense(node, :selector, message)
+        end
+
+        def build_message(klass, method_name, node)
+          if acceptable?
+            accepted_methods = ACCEPTED_METHODS.map do |am|
+              "`#{klass}.#{method_name}.#{am}`"
+            end
+
+            format(MSG_ACCEPTABLE,
+                   "#{klass}.#{method_name}",
+                   accepted_methods.join(', ')
+                  )
+          else
+            safe_method_name = safe_method(method_name, node)
+            format(MSG,
+                   "#{klass}.#{method_name}",
+                   "#{klass}.zone.#{safe_method_name}"
+                  )
+          end
         end
 
         def extract_method_chain(node)
@@ -118,7 +136,11 @@ module RuboCop
         end
 
         def need_check_localtime?(chain)
-          (style == :acceptable) && chain.include?(:localtime)
+          acceptable? && chain.include?(:localtime)
+        end
+
+        def acceptable?
+          style == :acceptable
         end
 
         def good_methods
