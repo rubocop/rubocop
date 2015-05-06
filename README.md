@@ -70,6 +70,7 @@ specific RuboCop release.**
     - [LightTable](#lighttable)
     - [RubyMine](#rubymine)
     - [Other Editors](#other-editors)
+- [Git pre-commit hook integration](#git-pre-commit-hook-integration)
 - [Guard integration](#guard-integration)
 - [Rake integration](#rake-integration)
 - [Extensions](#extensions)
@@ -737,6 +738,18 @@ provides basic RuboCop integration for RubyMine/IntelliJ IDEA.
 
 Here's one great opportunity to contribute to RuboCop - implement
 RuboCop integration for your favorite editor.
+
+## Git pre-commit hook integration
+
+[overcommit](https://github.com/brigade/overcommit) is a fully configurable and
+extendable Git commit hook manager. To use RuboCop with overcommit, add the
+following to your `.overcommit.yml` file:
+
+```yaml
+PreCommit:
+  Rubocop:
+    enabled: true
+```
 
 ## Guard integration
 
