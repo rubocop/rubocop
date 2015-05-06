@@ -35,8 +35,14 @@ describe RuboCop::Cop::Metrics::ParameterLists, :config do
   context 'When CountKeywordArgs is false' do
     before { cop_config['CountKeywordArgs'] = false }
 
-    it 'it does not count keyword arguments', ruby: 2 do
+    it 'does not count keyword arguments', ruby: 2 do
       inspect_source(cop, ['def meth(a, b, c, d: 1, e: 2)',
+                           'end'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'does not count keyword arguments without default values', ruby: 2.1 do
+      inspect_source(cop, ['def meth(a, b, c, d:, e:)',
                            'end'])
       expect(cop.offenses).to be_empty
     end

@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bugs fixed
+
+* Don't count required keyword args when specifying `CountKeywordArgs: false` for `ParameterLists`. ([@sumeet][])
+
 ## 0.31.0 (05/05/2015)
 
 ### New features
@@ -1393,3 +1397,4 @@
 [@tmr08c]: https://github.com/tmr08c
 [@hbd225]: https://github.com/hbd225
 [@l8nite]: https://github.com/l8nite
+[@sumeet]: https://github.com/sumeet
