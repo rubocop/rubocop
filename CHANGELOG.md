@@ -10,6 +10,7 @@
 
 * Don't count required keyword args when specifying `CountKeywordArgs: false` for `ParameterLists`. ([@sumeet][])
 * [#1879](https://github.com/bbatsov/rubocop/issues/1879): Avoid auto-correcting hash with trailing comma into invalid code in `BracesAroundHashParameters`. ([@jonas054][])
+* [#1870](https://github.com/bbatsov/rubocop/pull/1870) New cop `NestedMethodDefinition` checks for method definitions inside other methods. ([@ojab][])
 
 ## 0.31.0 (05/05/2015)
 
