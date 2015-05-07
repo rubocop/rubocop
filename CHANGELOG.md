@@ -11,6 +11,7 @@
 ### Changes
 
 * Prefer `SpaceInsideBlockBraces` to `SpaceBeforeSemicolon` and `SpaceAfterSemicolon` to avoid an infinite loop when auto-correcting. ([@lumeet][])
+* [#1873](https://github.com/bbatsov/rubocop/issues/1873): Move `ParallelAssignment` cop from Performance to Style. ([@rrosenblum][])
 
 ### Bugs fixed
 

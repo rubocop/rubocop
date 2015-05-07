@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Performance::ParallelAssignment, :config do
+describe RuboCop::Cop::Style::ParallelAssignment, :config do
   subject(:cop) { described_class.new(config) }
 
   let(:config) do
