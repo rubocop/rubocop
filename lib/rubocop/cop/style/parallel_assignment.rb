@@ -20,6 +20,8 @@ module RuboCop
       #   b = 2
       #   c = 3
       class ParallelAssignment < Cop
+        include IfNode
+
         MSG = 'Do not use parallel assignment.'
 
         def on_masgn(node)
@@ -39,38 +41,148 @@ module RuboCop
           # allow mass assignment when using splat
           return if (left_elements + right_elements).any?(&:splat_type?)
 
-          return if variable_reassignment?(left_elements, right_elements)
+          # a, b = b, a
+          return if swapping_variables?(left_elements, right_elements)
 
           add_offense(node, :expression)
         end
 
         def autocorrect(node)
-          left, right = *node
-
           lambda do |corrector|
-            l_vars = extract_sources(left)
-            r_vars = extract_sources(right)
-            groups = l_vars.zip(r_vars)
+            assignment_corrector = if modifier_statement?(node.parent)
+                                     ModifierCorrector.new(node)
+                                   elsif rescue_modifier?(node.parent)
+                                     RescueCorrector.new(node)
+                                   else
+                                     GenericCorrector.new(node)
+                                   end
 
-            assignment = groups.map { |pair| pair.join(' = ') }
-
-            space_offset = node.loc.expression.column
-            corrector.replace(node.loc.expression,
-                              assignment.join("\n" << ' ' * space_offset))
+            corrector.replace(assignment_corrector.correction_range,
+                              assignment_corrector.correction)
           end
         end
 
         private
 
-        def extract_sources(node)
-          node.children.map { |child| child.loc.expression.source }
-        end
-
-        def variable_reassignment?(left_elements, right_elements)
+        def swapping_variables?(left_elements, right_elements)
           left_elements.any? do |le|
             right_elements.any? do |re|
               re.loc.expression.is?(le.loc.expression.source)
             end
+          end
+        end
+
+        def modifier_statement?(node)
+          node &&
+            ((node.if_type? && modifier_if?(node)) ||
+            ((node.while_type? || node.until_type?) && modifier_while?(node)))
+        end
+
+        def modifier_while?(node)
+          node.loc.respond_to?(:keyword) &&
+            %w(while until).include?(node.loc.keyword.source) &&
+            node.loc.respond_to?(:end) && node.loc.end.nil?
+        end
+
+        def rescue_modifier?(node)
+          node &&
+            node.rescue_type? &&
+            (node.parent.nil? || !node.parent.kwbegin_type?)
+        end
+
+        # An internal class for correcting parallel assignment
+        class GenericCorrector
+          attr_reader :correction, :correction_range
+
+          def initialize(node)
+            @node = node
+          end
+
+          def correction
+            "#{assignment.join("\n#{indent}")}"
+          end
+
+          def correction_range
+            @node.loc.expression
+          end
+
+          protected
+
+          def space_offset
+            @node.loc.expression.column
+          end
+
+          def indent
+            ' ' * space_offset
+          end
+
+          def assignment
+            left, right = *@node
+            l_vars = extract_sources(left)
+            r_vars = extract_sources(right)
+            groups = l_vars.zip(r_vars)
+
+            groups.map { |pair| pair.join(' = ') }
+          end
+
+          private
+
+          def extract_sources(node)
+            node.children.map { |child| child.loc.expression.source }
+          end
+        end
+
+        # An internal class for correcting parallel assignment
+        # protected by rescue
+        class RescueCorrector < GenericCorrector
+          def correction
+            _node, rescue_clause = *@node.parent
+            _, _, rescue_result = *rescue_clause
+
+            "begin\n" <<
+              indent << assignment.join("\n#{indent}") <<
+              "\nrescue\n" <<
+              indent << rescue_result.loc.expression.source <<
+              "\nend"
+          end
+
+          def correction_range
+            @node.parent.loc.expression
+          end
+
+          protected
+
+          def space_offset
+            offset = super
+            offset + 2
+          end
+        end
+
+        # An internal class for correcting parallel assignment
+        # guarded by if, unless, while, or until
+        class ModifierCorrector < GenericCorrector
+          def correction
+            parent = @node.parent
+
+            modifier_range =
+              Parser::Source::Range.new(parent.loc.expression.source_buffer,
+                                        parent.loc.keyword.begin_pos,
+                                        parent.loc.expression.end_pos)
+
+            "#{modifier_range.source}\n" <<
+              indent << assignment.join("\n#{indent}") <<
+              "\nend"
+          end
+
+          def correction_range
+            @node.parent.loc.expression
+          end
+
+          protected
+
+          def space_offset
+            offset = super
+            offset + 2
           end
         end
       end
