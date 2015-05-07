@@ -1,122 +1,89 @@
-# encoding: utf-8
+# encoding: UTF-8
 
 require 'spec_helper'
 
 describe RuboCop::Cop::Performance::Sample do
   subject(:cop) { described_class.new }
 
-  shared_examples 'register_offenses' do |selector|
-    it "when using shuffle#{selector} on an explicit array" do
-      inspect_source(cop, "[1, 2, 3, 4].shuffle#{selector}")
-
-      expect(cop.messages)
-        .to eq(["Use `sample` instead of `shuffle#{selector}`."])
+  shared_examples 'registers offense' do |wrong, right|
+    it "when using #{wrong} on a literal Array" do
+      inspect_source(cop, "[1, 2, 3].#{wrong}")
+      expect(cop.messages).to eq(["Use `#{right}` instead of `#{wrong}`."])
     end
 
-    it "when using shuffle#{selector} on an array that is assigned " \
-       'to a variable' do
-      inspect_source(cop, ['foo = [1, 2, 3, 4]',
-                           "foo.shuffle#{selector}"].join("\n"))
-
-      expect(cop.messages)
-        .to eq(["Use `sample` instead of `shuffle#{selector}`."])
+    it "when using #{wrong} on a collection variable" do
+      inspect_source(cop, ['coll = [1, 2, 3]', "coll.#{wrong}"].join("\n"))
+      expect(cop.messages).to eq(["Use `#{right}` instead of `#{wrong}`."])
     end
   end
 
-  it_behaves_like('register_offenses', '.first')
-  it_behaves_like('register_offenses', '.last')
-  it_behaves_like('register_offenses', '[0]')
-  it_behaves_like('register_offenses', '[2]')
-  it_behaves_like('register_offenses', '[0, 3]')
-  it_behaves_like('register_offenses', '[0..3]')
-  it_behaves_like('register_offenses', '[0...3]')
-
-  it 'registers an offense for random' do
-    source = ['random = { random: Random.new(1) }',
-              '[1, 2, 3, 4].shuffle(random)'].join("\n")
-    inspect_source(cop, source)
-
-    expect(cop.messages)
-      .to eq(['Use `sample` instead of `shuffle(random)`.'])
-  end
-
-  it 'registers an offense when using shuffle with a defined random' do
-    inspect_source(cop, '[1, 2, 3, 4].shuffle(random: Random.new(1))')
-
-    expect(cop.messages)
-      .to eq(['Use `sample` instead of `shuffle(random: Random.new(1))`.'])
-  end
-
-  it 'does not register an offense when using sample' do
-    inspect_source(cop, '[1, 2, 3, 4].sample')
-
-    expect(cop.messages).to be_empty
-  end
-
-  it 'does not register an offense when calling a method on shuffle' do
-    inspect_source(cop, '[1, 2, 3, 4].shuffle.join([5, 6, 7])')
-
-    expect(cop.messages).to be_empty
-  end
-
-  it 'does not register an offense when calling map on shuffle' do
-    inspect_source(cop, '[1, 2, 3, 4].shuffle.map { |e| e }')
-
-    expect(cop.messages).to be_empty
-  end
-
-  it 'does not register an offense when calling shuffle by itself' do
-    inspect_source(cop, '[1, 2, 3, 4].shuffle')
-
-    expect(cop.messages).to be_empty
-  end
-
-  context 'autocorrect' do
-    shared_examples 'corrects' do |selector|
-      it "shuffle#{selector} to sample" do
-        new_source = autocorrect_source(cop, "[1, 2, 3, 4].shuffle#{selector}")
-
-        expect(new_source).to eq('[1, 2, 3, 4].sample')
-      end
+  shared_examples 'does not register offense' do |acceptable|
+    it "when using #{acceptable} on a literal Array" do
+      inspect_source(cop, "[1, 2, 3].#{acceptable}")
+      expect(cop.messages).to be_empty
     end
 
-    it_behaves_like('corrects', '.first')
-    it_behaves_like('corrects', '.last')
-    it_behaves_like('corrects', '[0]')
-    it_behaves_like('corrects', '[3]')
-
-    it 'does not correct shuffle with an inclusive range selector' do
-      new_source = autocorrect_source(cop, '[1, 2, 3, 4].shuffle[0..3]')
-
-      expect(new_source).to eq('[1, 2, 3, 4].shuffle[0..3]')
+    it "when using #{acceptable} on a collection variable" do
+      inspect_source(cop, ['coll = [1, 2, 3]', "coll.#{acceptable}"].join("\n"))
+      expect(cop.messages).to be_empty
     end
+  end
 
-    it 'does not correct shuffle with an exclusive range selector' do
-      new_source = autocorrect_source(cop, '[1, 2, 3, 4].shuffle[0...3]')
-
-      expect(new_source).to eq('[1, 2, 3, 4].shuffle[0...3]')
+  shared_examples 'corrects' do |wrong, right|
+    it "#{wrong} to #{right}" do
+      new_source = autocorrect_source(cop, "[1, 2, 3].#{wrong}")
+      expect(new_source).to eq("[1, 2, 3].#{right}")
     end
+  end
 
-    it 'corrects shuffle with an array range selector' do
-      new_source = autocorrect_source(cop, '[1, 2, 3, 4].shuffle[0, 3]')
-
-      expect(new_source).to eq('[1, 2, 3, 4].sample(3)')
+  shared_examples 'does not correct' do |acceptable|
+    it acceptable do
+      new_source = autocorrect_source(cop, "[1, 2, 3].#{acceptable}")
+      expect(new_source).to eq("[1, 2, 3].#{acceptable}")
     end
+  end
 
-    it 'corrects shuffle with an assigned random hash' do
-      source = '[1, 2, 3, 4].shuffle(random: Random.new(1))'
-      new_source = autocorrect_source(cop, source)
+  fixes = {
+    'shuffle.first'   => 'sample',
+    'shuffle.last'    => 'sample',
+    'shuffle[0]'      => 'sample',
+    'shuffle[2]'      => 'sample',
+    'shuffle[0, 3]'   => 'sample(3)',
+    'shuffle[2, 3]'   => 'sample(3)',
+    'shuffle[0..3]'   => 'sample(4)',
+    'shuffle[0...3]'  => 'sample(3)',
+    'shuffle[-4..-3]' => 'sample(2)',
+    'shuffle.first(2)'   => 'sample(2)',
+    'shuffle.last(3)'    => 'sample(3)',
+    'shuffle.first(foo)' => 'sample(foo)',
+    'shuffle.last(bar)'  => 'sample(bar)',
+    'shuffle(random: Random.new).first'    => 'sample(random: Random.new)',
+    'shuffle(random: Random.new).first(2)' => 'sample(2, random: Random.new)',
+    'shuffle(random: foo).last(bar)'       => 'sample(bar, random: foo)',
+    'shuffle(random: Random.new)[2]'       => 'sample(random: Random.new)',
+    'shuffle(random: Random.new)[2, 3]'    => 'sample(3, random: Random.new)',
+    'shuffle(random: Random.new)[0..3]'    => 'sample(4, random: Random.new)'
+  }
 
-      expect(new_source).to eq('[1, 2, 3, 4].sample(random: Random.new(1))')
-    end
+  fixes.each do |wrong, right|
+    it_behaves_like('registers offense', wrong, right)
+    it_behaves_like('corrects',          wrong, right)
+  end
 
-    it 'corrects shuffle with an assigned random variable' do
-      source = ['random = { random: Random.new(1) }',
-                '[1, 2, 3, 4].shuffle(random)'].join("\n")
-      new_source = autocorrect_source(cop, source)
+  acceptables = [
+    'sample',
+    'shuffle',
+    'shuffle[2..-3]',
+    'shuffle[foo..bar]',
+    'shuffle[foo, bar]',
+    'shuffle(random: Random.new)',
+    'shuffle.join([5, 6, 7])',
+    'shuffle.map { |e| e }',
+    'shuffle(random: Random.new).find(&:odd?)'
+  ]
 
-      expect(new_source).to eq(['random = { random: Random.new(1) }',
-                                '[1, 2, 3, 4].sample(random)'].join("\n"))
-    end
+  acceptables.each do |acceptable|
+    it_behaves_like('does not register offense', acceptable)
+    it_behaves_like('does not correct',          acceptable)
   end
 end
