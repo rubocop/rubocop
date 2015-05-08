@@ -21,12 +21,16 @@ module RuboCop
         'disabled' => DisabledLinesFormatter
       }
 
-      FORMATTER_APIS = [:started, :file_started, :file_finished, :finished]
+      FORMATTER_APIS = [:started, :file_started, :finished]
 
       FORMATTER_APIS.each do |method_name|
         define_method(method_name) do |*args|
           each { |f| f.send(method_name, *args) }
         end
+      end
+
+      def file_finished(file, offenses)
+        each { |f| f.file_finished(file, f.wanted_offenses(offenses)) }
       end
 
       def add_formatter(formatter_type, output_path = nil)

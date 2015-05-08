@@ -80,7 +80,7 @@ module RuboCop
 
         let(:offense) do
           Cop::Offense.new(:convention, location,
-                           'This is a message.', 'CopName', corrected)
+                           'This is a message.', 'CopName', status)
         end
 
         let(:location) do
@@ -90,7 +90,7 @@ module RuboCop
         end
 
         context 'when the offense is not corrected' do
-          let(:corrected) { false }
+          let(:status) { :uncorrected }
 
           it 'prints message as-is' do
             formatter.report_file(file, [offense])
@@ -100,7 +100,7 @@ module RuboCop
         end
 
         context 'when the offense is automatically corrected' do
-          let(:corrected) { true }
+          let(:status) { :corrected }
 
           it 'prints [Corrected] along with message' do
             formatter.report_file(file, [offense])

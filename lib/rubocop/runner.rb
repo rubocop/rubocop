@@ -190,8 +190,11 @@ module RuboCop
 
     def considered_failure?(offense)
       # For :autocorrect level, any offense - corrected or not - is a failure.
-      @options[:fail_level] == :autocorrect ||
-        !offense.corrected? && offense.severity >= minimum_severity_to_fail
+      return true if @options[:fail_level] == :autocorrect
+
+      return false if offense.disabled?
+
+      !offense.corrected? && offense.severity >= minimum_severity_to_fail
     end
 
     def minimum_severity_to_fail
