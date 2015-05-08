@@ -15,7 +15,7 @@ module RuboCop
     end
     let(:offense) do
       Cop::Offense.new(:convention, location,
-                       'This is message', 'CopName', true)
+                       'This is message', 'CopName', :corrected)
     end
 
     describe '#started' do

@@ -9,7 +9,7 @@ describe RuboCop::Cop::Offense do
     Parser::Source::Range.new(source_buffer, 0, 1)
   end
   subject(:offense) do
-    described_class.new(:convention, location, 'message', 'CopName', true)
+    described_class.new(:convention, location, 'message', 'CopName', :corrected)
   end
 
   it 'has a few required attributes' do

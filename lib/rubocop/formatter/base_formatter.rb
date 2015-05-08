@@ -102,6 +102,10 @@ module RuboCop
       def file_finished(file, offenses)
       end
 
+      def wanted_offenses(offenses)
+        offenses.reject(&:disabled?)
+      end
+
       # @api public
       #
       # Invoked after all files are inspected, or interrupted by user.

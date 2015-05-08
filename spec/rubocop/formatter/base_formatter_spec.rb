@@ -57,10 +57,13 @@ module RuboCop
             expect(output).to eq([
               'started',
               'file_started',
+              'wanted_offenses',
               'file_finished',
               'file_started',
+              'wanted_offenses',
               'file_finished',
               'file_started',
+              'wanted_offenses',
               'file_finished',
               'finished',
               ''
@@ -167,6 +170,14 @@ module RuboCop
           include_examples 'receives a file path', :file_finished
 
           it 'receives an array of detected offenses for the file' do
+            class << formatter
+              # Override null object behavior, since the return value will be
+              # the input to file_finished.
+              def wanted_offenses(offenses)
+                offenses
+              end
+            end
+
             expect(formatter).to receive(:file_finished)
               .exactly(3).times do |file, offenses|
               case File.basename(file)

@@ -56,16 +56,29 @@ module RuboCop
       #
       # @return [Boolean]
       #   whether this offense is automatically corrected.
-      attr_reader :corrected
+      def corrected
+        @status == :unsupported ? nil : @status == :corrected
+      end
       alias_method :corrected?, :corrected
 
+      # @api public
+      #
+      # @!attribute [r] disabled?
+      #
+      # @return [Boolean]
+      #   whether this offense was locally disabled where it occurred
+      def disabled?
+        @status == :disabled
+      end
+
       # @api private
-      def initialize(severity, location, message, cop_name, corrected = false)
+      def initialize(severity, location, message, cop_name,
+                     status = :uncorrected)
         @severity = RuboCop::Cop::Severity.new(severity)
         @location = location
         @message = message.freeze
         @cop_name = cop_name.freeze
-        @corrected = corrected
+        @status = status
         freeze
       end
 

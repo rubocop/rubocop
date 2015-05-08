@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#1865](https://github.com/bbatsov/rubocop/issues/1865): The option `--format d` now prints `(unnecessary)` after a cop name to indicate that a `rubocop:disable` comment can be removed. ([@jonas054][])
+
 ### Bugs fixed
 
 * Don't count required keyword args when specifying `CountKeywordArgs: false` for `ParameterLists`. ([@sumeet][])

@@ -11,6 +11,7 @@ module RuboCop
 
       def started(_target_files)
         @cop_disabled_line_ranges = {}
+        @offenses = {}
       end
 
       def file_started(file, options)
@@ -18,6 +19,14 @@ module RuboCop
 
         @cop_disabled_line_ranges[file] =
           options[:cop_disabled_line_ranges]
+      end
+
+      def file_finished(file, offenses)
+        @offenses[file] = offenses
+      end
+
+      def wanted_offenses(offenses)
+        offenses.select(&:disabled?)
       end
 
       def finished(_inspected_files)
@@ -30,10 +39,15 @@ module RuboCop
         summary = "\nCops disabled line ranges:\n\n"
 
         @cop_disabled_line_ranges.each do |file, disabled_cops|
+          @offenses[file] ||= []
           disabled_cops.each do |cop, line_ranges|
+            cop_offenses = @offenses[file].select { |o| o.cop_name == cop }
             line_ranges.each do |line_range|
-              file = cyan(smart_path(file))
-              summary << "#{file}:#{line_range}: #{cop}\n"
+              summary << "#{cyan(smart_path(file))}:#{line_range}: #{cop}"
+              if cop_offenses.none? { |o| line_range.include?(o.line) }
+                summary << red(' (unnecessary)')
+              end
+              summary << "\n"
             end
           end
         end

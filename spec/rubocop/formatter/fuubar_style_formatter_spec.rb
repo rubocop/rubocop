@@ -53,9 +53,9 @@ module RuboCop
         formatter.started(files)
       end
 
-      def offense(severity, corrected = false)
+      def offense(severity, status = :uncorrected)
         source_range = double('source_range').as_null_object
-        Cop::Offense.new(severity, source_range, 'message', 'Cop', corrected)
+        Cop::Offense.new(severity, source_range, 'message', 'Cop', status)
       end
 
       context 'initially' do
@@ -117,7 +117,7 @@ module RuboCop
 
       context 'when a offense is detected in a file and auto-corrected' do
         before do
-          formatter.file_finished(files[0], [offense(:convention, true)])
+          formatter.file_finished(files[0], [offense(:convention, :corrected)])
         end
 
         it 'is green' do
