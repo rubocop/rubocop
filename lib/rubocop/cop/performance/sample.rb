@@ -85,13 +85,16 @@ module RuboCop
             arg.loc.expression.source if arg
           end
 
+          # FIXME: use Range#size once Ruby 1.9 support is dropped
           def range_size(range_node)
             vals = *range_node
             return 0 unless vals.all?(&:int_type?)
             low, high = *vals.map(&:to_a).map(&:first)
+            size = high - low
+            return 0 if size < 0
             case range_node.type
-            when :erange then (low...high).size
-            when :irange then (low..high).size
+            when :erange then size
+            when :irange then size + 1
             end
           end
 
