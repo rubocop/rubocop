@@ -9,6 +9,7 @@
 ### Bugs fixed
 
 * Don't count required keyword args when specifying `CountKeywordArgs: false` for `ParameterLists`. ([@sumeet][])
+* [#1879](https://github.com/bbatsov/rubocop/issues/1879): Avoid auto-correcting hash with trailing comma into invalid code in `BracesAroundHashParameters`. ([@jonas054][])
 
 ## 0.31.0 (05/05/2015)
 

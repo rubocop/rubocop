@@ -143,6 +143,15 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
       corrected = autocorrect_source(cop, 'get :i, { q: { x: 1 } }')
       expect(corrected).to eq('get :i, q: { x: 1 }')
     end
+
+    context 'in a method call without parentheses' do
+      it 'does not correct a hash parameter with trailing comma' do
+        # Because `get :i, x: 1,` is invalid syntax.
+        src = 'get :i, { x: 1, }'
+        corrected = autocorrect_source(cop, src)
+        expect(corrected).to eq(src)
+      end
+    end
   end
 
   context 'when EnforcedStyle is no_braces' do
