@@ -7,6 +7,7 @@ module RuboCop
       # if the last parameter is a hash.
       class BracesAroundHashParameters < Cop
         include ConfigurableEnforcedStyle
+        include AutocorrectUnlessChangingAST
 
         MSG = '%s curly braces around a hash parameter.'
 
@@ -28,9 +29,10 @@ module RuboCop
 
         def check(arg, args)
           if style == :braces && !braces?(arg)
-            add_offense(arg, :expression, format(MSG, 'Missing'))
+            add_offense(arg.parent, arg.loc.expression, format(MSG, 'Missing'))
           elsif style == :no_braces && braces?(arg)
-            add_offense(arg, :expression, format(MSG, 'Redundant'))
+            add_offense(arg.parent, arg.loc.expression,
+                        format(MSG, 'Redundant'))
           elsif style == :context_dependent
             check_context_dependent(arg, args)
           end
@@ -40,14 +42,21 @@ module RuboCop
           braces_around_2nd_from_end = args.length > 1 && args[-2].type == :hash
           if braces?(arg)
             unless braces_around_2nd_from_end
-              add_offense(arg, :expression, format(MSG, 'Redundant'))
+              add_offense(arg.parent, arg.loc.expression,
+                          format(MSG, 'Redundant'))
             end
           elsif braces_around_2nd_from_end
-            add_offense(arg, :expression, format(MSG, 'Missing'))
+            add_offense(arg.parent, arg.loc.expression, format(MSG, 'Missing'))
           end
         end
 
-        def autocorrect(node)
+        # We let AutocorrectUnlessChangingAST#autocorrect work with the send
+        # node, becuase that context is needed. When parsing the code to see if
+        # the AST has changed, a braceless hash would not be parsed as a hash
+        # otherwise.
+        def correction(send_node)
+          _receiver, _method_name, *args = *send_node
+          node = args.last
           lambda do |corrector|
             if braces?(node)
               right_range = range_with_surrounding_space(node.loc.begin, :right)
