@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* New cop `NestedMethodDefinition` checks for method definitions inside other methods. ([@ojab][])
+
 ### Changes
 
 * Prefer `SpaceInsideBlockBraces` to `SpaceBeforeSemicolon` and `SpaceAfterSemicolon` to avoid an infinite loop when auto-correcting. ([@lumeet][])
@@ -1403,3 +1407,4 @@
 [@hbd225]: https://github.com/hbd225
 [@l8nite]: https://github.com/l8nite
 [@sumeet]: https://github.com/sumeet
+[@ojab]: https://github.com/ojab

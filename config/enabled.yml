@@ -909,6 +909,11 @@ Lint/Loop:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#loop-with-break'
   Enabled: true
 
+Lint/NestedMethodDefinition:
+  Description: 'Do not use nested method definitions.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-nested-methods'
+  Enabled: true
+
 Lint/NonLocalExitFromIterator:
   Description: 'Do not use return in iterator to cause non-local exit.'
   Enabled: true
