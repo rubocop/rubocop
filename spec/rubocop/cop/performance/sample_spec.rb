@@ -6,25 +6,15 @@ describe RuboCop::Cop::Performance::Sample do
   subject(:cop) { described_class.new }
 
   shared_examples 'registers offense' do |wrong, right|
-    it "when using #{wrong} on a literal Array" do
+    it "when using #{wrong}" do
       inspect_source(cop, "[1, 2, 3].#{wrong}")
-      expect(cop.messages).to eq(["Use `#{right}` instead of `#{wrong}`."])
-    end
-
-    it "when using #{wrong} on a collection variable" do
-      inspect_source(cop, ['coll = [1, 2, 3]', "coll.#{wrong}"].join("\n"))
       expect(cop.messages).to eq(["Use `#{right}` instead of `#{wrong}`."])
     end
   end
 
-  shared_examples 'does not register offense' do |acceptable|
-    it "when using #{acceptable} on a literal Array" do
+  shared_examples 'accepts' do |acceptable|
+    it acceptable do
       inspect_source(cop, "[1, 2, 3].#{acceptable}")
-      expect(cop.messages).to be_empty
-    end
-
-    it "when using #{acceptable} on a collection variable" do
-      inspect_source(cop, ['coll = [1, 2, 3]', "coll.#{acceptable}"].join("\n"))
       expect(cop.messages).to be_empty
     end
   end
@@ -36,23 +26,16 @@ describe RuboCop::Cop::Performance::Sample do
     end
   end
 
-  shared_examples 'does not correct' do |acceptable|
-    it acceptable do
-      new_source = autocorrect_source(cop, "[1, 2, 3].#{acceptable}")
-      expect(new_source).to eq("[1, 2, 3].#{acceptable}")
-    end
-  end
-
   fixes = {
-    'shuffle.first'   => 'sample',
-    'shuffle.last'    => 'sample',
-    'shuffle[0]'      => 'sample',
-    'shuffle[2]'      => 'sample',
-    'shuffle[0, 3]'   => 'sample(3)',
-    'shuffle[2, 3]'   => 'sample(3)',
-    'shuffle[0..3]'   => 'sample(4)',
-    'shuffle[0...3]'  => 'sample(3)',
-    'shuffle[-4..-3]' => 'sample(2)',
+    'shuffle.first'      => 'sample',
+    'shuffle.last'       => 'sample',
+    'shuffle[0]'         => 'sample',
+    'shuffle[2]'         => 'sample',
+    'shuffle[0, 3]'      => 'sample(3)',
+    'shuffle[2, 3]'      => 'sample(3)',
+    'shuffle[0..3]'      => 'sample(4)',
+    'shuffle[0...3]'     => 'sample(3)',
+    'shuffle[-4..-3]'    => 'sample(2)',
     'shuffle.first(2)'   => 'sample(2)',
     'shuffle.last(3)'    => 'sample(3)',
     'shuffle.first(foo)' => 'sample(foo)',
@@ -70,20 +53,13 @@ describe RuboCop::Cop::Performance::Sample do
     it_behaves_like('corrects',          wrong, right)
   end
 
-  acceptables = [
-    'sample',
-    'shuffle',
-    'shuffle[2..-3]',
-    'shuffle[foo..bar]',
-    'shuffle[foo, bar]',
-    'shuffle(random: Random.new)',
-    'shuffle.join([5, 6, 7])',
-    'shuffle.map { |e| e }',
-    'shuffle(random: Random.new).find(&:odd?)'
-  ]
-
-  acceptables.each do |acceptable|
-    it_behaves_like('does not register offense', acceptable)
-    it_behaves_like('does not correct',          acceptable)
-  end
+  it_behaves_like('accepts', 'sample')
+  it_behaves_like('accepts', 'shuffle')
+  it_behaves_like('accepts', 'shuffle[2..-3]')
+  it_behaves_like('accepts', 'shuffle[foo..bar]')
+  it_behaves_like('accepts', 'shuffle[foo, bar]')
+  it_behaves_like('accepts', 'shuffle(random: Random.new)')
+  it_behaves_like('accepts', 'shuffle.join([5, 6, 7])')
+  it_behaves_like('accepts', 'shuffle.map { |e| e }')
+  it_behaves_like('accepts', 'shuffle(random: Random.new).find(&:odd?)')
 end
