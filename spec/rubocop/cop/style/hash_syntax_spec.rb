@@ -339,7 +339,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
           expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
         end
 
-        it 'accepts hash rockets when keys start with a digit' do
+        it 'registers an offense when keys start with a digit' do
           inspect_source(cop, 'x = { :"1" => 1 }')
           expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
         end
@@ -475,7 +475,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
           expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
         end
 
-        it 'accepts hash rockets when keys start with a digit' do
+        it 'registers an offense when keys start with a digit' do
           inspect_source(cop, 'x = { :"1" => 1 }')
           expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
         end
