@@ -20,6 +20,7 @@
 * [#1868](https://github.com/bbatsov/rubocop/issues/1868): Do not register an offense in `Performance/Count` when `select` is called with symbols or strings as the parameters. ([@rrosenblum][])
 * `Sample` rewritten to properly handle shuffle randomness source, first/last params and non-literal ranges. ([@chastell][])
 * [#1873](https://github.com/bbatsov/rubocop/issues/1873): Modify `ParallelAssignment` to properly autocorrect when the assignment is protected by a modifier statement. ([@rrosenblum][])
+* Configure `ParallelAssignment` to work with non-standard `IndentationWidths`. ([@rrosenblum][])
 
 ## 0.31.0 (05/05/2015)
 

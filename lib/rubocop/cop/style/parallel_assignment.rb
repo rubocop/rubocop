@@ -15,11 +15,13 @@ module RuboCop
       #   # good
       #   one, two = *foo
       #   a, b = foo()
+      #   a, b = b, a
       #
       #   a = 1
       #   b = 2
       #   c = 3
       class ParallelAssignment < Cop
+        include AutocorrectAlignment
         include IfNode
 
         MSG = 'Do not use parallel assignment.'
@@ -49,13 +51,14 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            assignment_corrector = if modifier_statement?(node.parent)
-                                     ModifierCorrector.new(node)
-                                   elsif rescue_modifier?(node.parent)
-                                     RescueCorrector.new(node)
-                                   else
-                                     GenericCorrector.new(node)
-                                   end
+            assignment_corrector =
+              if modifier_statement?(node.parent)
+                ModifierCorrector.new(node, configured_indentation_width)
+              elsif rescue_modifier?(node.parent)
+                RescueCorrector.new(node, configured_indentation_width)
+              else
+                GenericCorrector.new(node, configured_indentation_width)
+              end
 
             corrector.replace(assignment_corrector.correction_range,
                               assignment_corrector.correction)
@@ -94,8 +97,9 @@ module RuboCop
         class GenericCorrector
           attr_reader :correction, :correction_range
 
-          def initialize(node)
+          def initialize(node, indentation_width)
             @node = node
+            @indentation_width = indentation_width
           end
 
           def correction
@@ -116,12 +120,13 @@ module RuboCop
             ' ' * space_offset
           end
 
+          attr_reader :indentation_width
+
           def assignment
             left, right = *@node
             l_vars = extract_sources(left)
             r_vars = extract_sources(right)
             groups = l_vars.zip(r_vars)
-
             groups.map { |pair| pair.join(' = ') }
           end
 
@@ -154,7 +159,7 @@ module RuboCop
 
           def space_offset
             offset = super
-            offset + 2
+            offset + indentation_width
           end
         end
 
@@ -182,7 +187,7 @@ module RuboCop
 
           def space_offset
             offset = super
-            offset + 2
+            offset + indentation_width
           end
         end
       end

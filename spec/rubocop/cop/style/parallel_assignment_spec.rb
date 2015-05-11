@@ -297,8 +297,60 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
       end
     end
 
-    it 'uses IndentationWidth to determine space offset' do
-      fail
+    describe 'Using custom indentation width' do
+      let(:config) do
+        RuboCop::Config.new('Performance/ParallelAssignment' => {
+                              'Enabled' => true
+                            },
+                            'Style/IndentationWidth' => {
+                              'Enabled' => true,
+                              'Width' => 3
+                            })
+      end
+
+      it 'works with standard correction' do
+        new_source = autocorrect_source(cop, 'a, b, c = 1, 2, 3')
+
+        expect(new_source).to eq(['a = 1',
+                                  'b = 2',
+                                  'c = 3'].join("\n"))
+      end
+
+      it 'works with guard clauses' do
+        new_source = autocorrect_source(cop, 'a, b = 1, 2 if foo')
+
+        expect(new_source).to eq(['if foo',
+                                  '   a = 1',
+                                  '   b = 2',
+                                  'end'].join("\n"))
+      end
+
+      it 'works with rescue' do
+        new_source = autocorrect_source(cop, 'a, b = 1, 2 rescue foo')
+
+        expect(new_source).to eq(['begin',
+                                  '   a = 1',
+                                  '   b = 2',
+                                  'rescue',
+                                  '   foo',
+                                  'end'].join("\n"))
+      end
+
+      it 'works with nesting' do
+        new_source = autocorrect_source(cop, ['def foo',
+                                              '   if true',
+                                              '      a, b, c = 1, 2, 3',
+                                              '   end',
+                                              'end'].join("\n"))
+
+        expect(new_source).to eq(['def foo',
+                                  '   if true',
+                                  '      a = 1',
+                                  '      b = 2',
+                                  '      c = 3',
+                                  '   end',
+                                  'end'].join("\n"))
+      end
     end
   end
 end
