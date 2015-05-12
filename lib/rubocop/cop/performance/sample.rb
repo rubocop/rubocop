@@ -12,13 +12,16 @@ module RuboCop
       #   [1, 2, 3].shuffle.first(2)
       #   [1, 2, 3].shuffle.last
       #   [1, 2, 3].shuffle[2]
-      #   [1, 2, 3].shuffle[1, 3]
+      #   [1, 2, 3].shuffle[0, 2]    # sample(2) will do the same
+      #   [1, 2, 3].shuffle[0..2]    # sample(3) will do the same
       #   [1, 2, 3].shuffle(random: Random.new).first
       #
       #   # good
       #   [1, 2, 3].shuffle
       #   [1, 2, 3].sample
       #   [1, 2, 3].sample(3)
+      #   [1, 2, 3].shuffle[1, 3]    # sample(3) might return a longer Array
+      #   [1, 2, 3].shuffle[1..3]    # sample(3) might return a longer Array
       #   [1, 2, 3].shuffle[foo, bar]
       #   [1, 2, 3].shuffle(random: Random.new)
       class Sample < Cop
@@ -71,7 +74,7 @@ module RuboCop
           def corrigible?
             case method
             when :first, :last then true
-            when :[]           then sample_size != 0
+            when :[]           then sample_size != :unknown
             else false
             end
           end
@@ -88,13 +91,12 @@ module RuboCop
           # FIXME: use Range#size once Ruby 1.9 support is dropped
           def range_size(range_node)
             vals = *range_node
-            return 0 unless vals.all?(&:int_type?)
+            return :unknown unless vals.all?(&:int_type?)
             low, high = *vals.map(&:to_a).map(&:first)
-            size = high - low
-            return 0 if size < 0
+            return :unknown unless low.zero? && high >= 0
             case range_node.type
-            when :erange then size
-            when :irange then size + 1
+            when :erange then high - low
+            when :irange then high - low + 1
             end
           end
 
@@ -110,10 +112,15 @@ module RuboCop
             case args.size
             when 1
               arg = args.first
-              range_size(arg) if [:erange, :irange].include?(arg.type)
+              case arg.type
+              when :erange, :irange then range_size(arg)
+              when :int             then arg.to_a.first.zero? ? nil : :unknown
+              else :unknown
+              end
             when 2
-              arg = args.last
-              arg.int_type? ? arg.to_a.first : 0
+              first, second = *args
+              return :unknown unless first.int_type? && first.to_a.first.zero?
+              second.int_type? ? second.to_a.first : :unknown
             end
           end
 
