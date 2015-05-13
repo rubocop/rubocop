@@ -11,6 +11,7 @@
 * New cop `Style/NestedModifier` checks for nested `if`, `unless`, `while` and `until` modifier statements. ([@lumeet][])
 * [#2270](https://github.com/bbatsov/rubocop/pull/2270): Add a new `inherit_gem` configuration to inherit a config file from an installed gem [(originally requested in #290)](https://github.com/bbatsov/rubocop/issues/290). ([@jhansche][])
 * Allow `StyleGuide` parameters in local configuration for all cops, so users can add references to custom style guide documents. ([@cornelius][])
+* `UnusedMethodArgument` cop allows configuration to skip keyword arguments. ([@apiology][])
 
 ### Bug Fixes
 
@@ -1653,3 +1654,4 @@
 [@jhansche]: https://github.com/jhansche
 [@cornelius]: https://github.com/cornelius
 [@eagletmt]: https://github.com/eagletmt
+[@apiology]: https://github.com/apiology
