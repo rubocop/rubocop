@@ -452,7 +452,7 @@ Style/ParallelAssignment:
                   It will only warn when the number of variables
                   matches on both sides of the assignment.
                   This also provides performance benefits
-                  https://github.com/JuanitoFatas/fast-ruby#parallel-assignment-vs-sequential-assignment-code
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#parallel-assignment'
   Enabled: true
 
 Style/ParenthesesAroundCondition:
