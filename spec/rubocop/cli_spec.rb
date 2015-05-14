@@ -699,6 +699,33 @@ describe RuboCop::CLI, :isolated_environment do
         expect(new_cli.run(['example1.rb'])).to eq(0)
       end
 
+      it 'honors rubocop:disable comments' do
+        create_file('example1.rb', ['# encoding: utf-8',
+                                    '#' * 81,
+                                    '# rubocop:disable LineLength',
+                                    '#' * 85,
+                                    'y ',
+                                    'puts 123456'])
+        create_file('.rubocop.yml', ['inherit_from: .rubocop_todo.yml'])
+        expect(cli.run(['--auto-gen-config'])).to eq(1)
+        expect(IO.readlines('.rubocop_todo.yml')[7..-1].join)
+          .to eq(['# Offense count: 1',
+                  '# Configuration parameters: AllowURI, URISchemes.',
+                  'Metrics/LineLength:',
+                  '  Max: 81',
+                  '',
+                  '# Offense count: 1',
+                  '# Cop supports --auto-correct.',
+                  'Style/NumericLiterals:',
+                  '  MinDigits: 7',
+                  '',
+                  '# Offense count: 1',
+                  '# Cop supports --auto-correct.',
+                  'Style/TrailingWhitespace:',
+                  '  Enabled: false',
+                  ''].join("\n"))
+      end
+
       it 'exits with error if file arguments are given' do
         create_file('example1.rb', ['# encoding: utf-8',
                                     'x= 0 ',
@@ -1119,25 +1146,27 @@ describe RuboCop::CLI, :isolated_environment do
       end
 
       context 'when several cops are given' do
-        it 'disables the given cops' do
-          create_file('example.rb', ['if x== 100000000000000 ',
-                                     "\ty",
-                                     'end'])
-          expect(cli.run(['--format', 'offenses',
-                          '--except',
-                          'Style/IfUnlessModifier,Style/Tab,' \
-                          'Style/SpaceAroundOperators',
-                          'example.rb'])).to eq(1)
-          expect($stderr.string).to eq('')
-          expect($stdout.string)
-            .to eq(['',
-                    '1  Style/IndentationWidth',
-                    '1  Style/NumericLiterals',
-                    '1  Style/TrailingWhitespace',
-                    '--',
-                    '3  Total',
-                    '',
-                    ''].join("\n"))
+        %w(UnneededDisable Lint/UnneededDisable Lint).each do |cop_name|
+          it "disables the given cops including #{cop_name}" do
+            create_file('example.rb', ['if x== 100000000000000 ',
+                                       "\ty",
+                                       'end # rubocop:disable all'])
+            expect(cli.run(['--format', 'offenses',
+                            '--except',
+                            'Style/IfUnlessModifier,Style/Tab,' \
+                            "Style/SpaceAroundOperators,#{cop_name}",
+                            'example.rb'])).to eq(1)
+            expect($stderr.string).to eq('')
+            expect($stdout.string)
+              .to eq(['',
+                      '1  Style/IndentationWidth',
+                      '1  Style/NumericLiterals',
+                      '1  Style/TrailingWhitespace',
+                      '--',
+                      '3  Total',
+                      '',
+                      ''].join("\n"))
+          end
         end
       end
     end
@@ -1883,8 +1912,8 @@ describe RuboCop::CLI, :isolated_environment do
                   ['# encoding: utf-8',
                    'a' * 90 + ' # rubocop:disable Metrics/LineLength',
                    '#' * 95,
-                   'y("123") # rubocop:disable Metrics/LineLength,' \
-                   'Style/StringLiterals'
+                   'y("123", 123456) # rubocop:disable Style/StringLiterals,' \
+                   'Style/NumericLiterals'
                   ])
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
       expect($stdout.string)
@@ -1903,6 +1932,28 @@ describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
         expect($stdout.string)
           .to eq(["#{abs('example.rb')}:3:81: C: Line is too long. [95/80]",
+                  ''].join("\n"))
+      end
+    end
+
+    context 'when not necessary' do
+      it 'causes an offense to be reported' do
+        create_file('example.rb',
+                    ['# encoding: utf-8',
+                     '#' * 95,
+                     '# rubocop:disable all',
+                     'a' * 10 + ' # rubocop:disable LineLength,ClassLength',
+                     'y(123) # rubocop:disable all'])
+        expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
+        expect($stderr.string).to eq('')
+        expect($stdout.string)
+          .to eq(["#{abs('example.rb')}:2:81: C: Line is too long. [95/80]",
+                  "#{abs('example.rb')}:3:1: W: Unnecessary disabling of " \
+                  'all cops.',
+                  "#{abs('example.rb')}:4:12: W: Unnecessary disabling of " \
+                  'Metrics/ClassLength, Metrics/LineLength.',
+                  "#{abs('example.rb')}:5:8: W: Unnecessary disabling of " \
+                  'all cops.',
                   ''].join("\n"))
       end
     end

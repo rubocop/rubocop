@@ -21,12 +21,32 @@ module RuboCop
         'disabled' => DisabledLinesFormatter
       }
 
-      FORMATTER_APIS = [:started, :file_started, :file_finished, :finished]
+      FORMATTER_APIS = [:started, :finished]
 
       FORMATTER_APIS.each do |method_name|
         define_method(method_name) do |*args|
           each { |f| f.send(method_name, *args) }
         end
+      end
+
+      def file_started(file, options)
+        @cop_disabled_line_ranges ||= {}
+        @cop_disabled_line_ranges[file] = options[:cop_disabled_line_ranges]
+        @comments ||= {}
+        @comments[file] = options[:comments]
+        @excepted_cops = options[:excepted_cops] || []
+        each { |f| f.file_started(file, options) }
+      end
+
+      def file_finished(file, offenses)
+        if @cop_disabled_line_ranges[file].any? &&
+           (@excepted_cops & %w(Lint Lint/UnneededDisable)).empty?
+          cop = Cop::Lint::UnneededDisable.new
+          cop.check(file, offenses, @cop_disabled_line_ranges, @comments)
+          offenses += cop.offenses
+        end
+        offenses = offenses.sort.reject(&:disabled?)
+        each { |f| f.file_finished(file, offenses) }
       end
 
       def add_formatter(formatter_type, output_path = nil)

@@ -154,8 +154,6 @@ module RuboCop
       def add_offense(node, loc, message = nil, severity = nil)
         location = loc.is_a?(Symbol) ? node.loc.send(loc) : loc
 
-        return unless enabled_line?(location.line)
-
         # Don't include the same location twice for one cop.
         return if @offenses.find { |o| o.location == location }
 
@@ -164,20 +162,20 @@ module RuboCop
         message ||= message(node)
         message = annotate_message(message)
 
-        corrected = correct(node)
+        status = enabled_line?(location.line) ? correct(node) : :disabled
 
-        @offenses << Offense.new(severity, location, message, name, corrected)
-        yield if block_given?
+        @offenses << Offense.new(severity, location, message, name, status)
+        yield if block_given? && status != :disabled
       end
 
       def correct(node)
-        return nil unless support_autocorrect?
-        return false unless autocorrect?
+        return :unsupported unless support_autocorrect?
+        return :uncorrected unless autocorrect?
 
         correction = autocorrect(node)
-        return false unless correction
+        return :uncorrected unless correction
         @corrections << correction
-        true
+        :corrected
       end
 
       def config_to_allow_offenses

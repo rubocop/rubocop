@@ -962,6 +962,10 @@ Lint/UnderscorePrefixedVariableName:
   Description: 'Do not use prefix `_` for a variable that is used.'
   Enabled: true
 
+Lint/UnneededDisable:
+  Description: 'Checks for rubocop:disable comments that can be removed.'
+  Enabled: true
+
 Lint/UnusedBlockArgument:
   Description: 'Checks for unused block arguments.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#underscore-unused-vars'
