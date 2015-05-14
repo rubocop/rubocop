@@ -121,26 +121,40 @@ describe RuboCop::Cop::Performance::Count do
 
   context 'ActiveRecord select' do
     it 'allows usage of select with a string' do
-      inspect_source(cop, "Model.select('field AS field_one').count")
+      source = ['klass = Model',
+                "klass.select('field AS field_one').count"].join("\n")
+      inspect_source(cop, source)
 
       expect(cop.messages).to be_empty
     end
 
     it 'allows usage of select with multiple strings' do
-      source = "Model.select('field AS field_one', 'other AS field_two').count"
+      source = ['klass = Model',
+                "klass.select('field AS one', 'other AS two').count"]
+               .join("\n")
       inspect_source(cop, source)
 
       expect(cop.messages).to be_empty
     end
 
     it 'allows usage of select with a symbol' do
-      inspect_source(cop, 'Model.select(:field).count')
+      source = ['klass = Model',
+                'klass.select(:field).count'].join("\n")
+      inspect_source(cop, source)
 
       expect(cop.messages).to be_empty
     end
 
     it 'allows usage of select with multiple symbols' do
-      inspect_source(cop, 'Model.select(:field, :other_field).count')
+      source = ['klass = Model',
+                'klass.select(:field, :other_field).count'].join("\n")
+      inspect_source(cop, source)
+
+      expect(cop.messages).to be_empty
+    end
+
+    it 'allows usage of select called as a static method' do
+      inspect_source(cop, 'Model.select { |model| model.works? }.count')
 
       expect(cop.messages).to be_empty
     end
