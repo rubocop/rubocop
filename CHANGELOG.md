@@ -17,6 +17,7 @@
 * [#1879](https://github.com/bbatsov/rubocop/issues/1879): Avoid auto-correcting hash with trailing comma into invalid code in `BracesAroundHashParameters`. ([@jonas054][])
 * [#1868](https://github.com/bbatsov/rubocop/issues/1868): Do not register an offense in `Performance/Count` when `select` is called with symbols or strings as the parameters. ([@rrosenblum][])
 * `Sample` rewritten to properly handle shuffle randomness source, first/last params and non-literal ranges. ([@chastell][])
+* [#1868](https://github.com/bbatsov/rubocop/issues/1868): Do not register an offense in `Performance/Count` when `select` is called as a static method. This should fix the false positives for use with `ActiveRecord`. ([@rrosenblum][])
 
 ## 0.31.0 (05/05/2015)
 

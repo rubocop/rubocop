@@ -30,9 +30,10 @@ module RuboCop
         COUNTERS = [:count, :length, :size]
 
         def on_send(node)
-          selector, selector_loc, params, counter = parse(node)
+          object, selector, selector_loc, params, counter = parse(node)
           return unless COUNTERS.include?(counter)
           return unless SELECTORS.include?(selector)
+          return if object.respond_to?(:const_type?) && object.const_type?
           return if params && !params.block_pass_type?
           return if node.parent && node.parent.block_type?
 
@@ -44,7 +45,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          selector, selector_loc = parse(node)
+          _object, selector, selector_loc = parse(node)
 
           return if selector == :reject
 
@@ -63,6 +64,7 @@ module RuboCop
         def parse(node)
           left, counter = *node
           expression, selector, params = *left
+          object, = *expression
 
           selector_loc =
             if selector.is_a?(Symbol)
@@ -75,7 +77,7 @@ module RuboCop
               expression.loc.selector if contains_selector?(expression)
             end
 
-          [selector, selector_loc, params, counter]
+          [object, selector, selector_loc, params, counter]
         end
 
         def contains_selector?(node)
