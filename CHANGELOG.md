@@ -4,6 +4,7 @@
 
 ### New features
 
+* New cop `SpaceInsideStringInterpolation` checks for spaces within string interpolations. ([@glasnt][])
 * New cop `NestedMethodDefinition` checks for method definitions inside other methods. ([@ojab][])
 * `LiteralInInterpolation` cop does auto-correction. ([@tmr08c][])
 
@@ -1412,3 +1413,4 @@
 [@sumeet]: https://github.com/sumeet
 [@ojab]: https://github.com/ojab
 [@chastell]: https://github.com/chastell
+[@glasnt]: https://github.com/glasnt

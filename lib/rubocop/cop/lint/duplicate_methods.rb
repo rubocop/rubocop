@@ -76,7 +76,7 @@ module RuboCop
               method, _args, _body = *node
             elsif node.defs_type?
               _receiver, method = *node
-              method = "self.#{ method }"
+              method = "self.#{method}"
             end
 
             method ? [method, node] : nil
