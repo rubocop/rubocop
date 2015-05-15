@@ -6,6 +6,7 @@ module RuboCop
       # This cop checks for single-line method definitions.
       # It can optionally accept single-line methods with no body.
       class SingleLineMethods < Cop
+        include AutocorrectAlignment
         include OnMethodDef
 
         MSG = 'Avoid single-line method definitions.'
@@ -53,10 +54,6 @@ module RuboCop
             "\n" + ' ' * (node.loc.keyword.column +
                           indent_steps * configured_indentation_width)
           )
-        end
-
-        def configured_indentation_width
-          config.for_cop('IndentationWidth')['Width']
         end
 
         def move_comment(eol_comment, node, corrector)
