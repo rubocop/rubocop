@@ -8,6 +8,7 @@ module RuboCop
       #
       # It will register a separate offense for each misaligned *when*.
       class CaseIndentation < Cop
+        include AutocorrectAlignment
         include ConfigurableEnforcedStyle
 
         def on_case(case_node)
@@ -48,10 +49,6 @@ module RuboCop
               unrecognized_style_detected
             end
           end
-        end
-
-        def configured_indentation_width
-          config.for_cop('IndentationWidth')['Width']
         end
 
         def parameter_name
