@@ -925,6 +925,17 @@ describe RuboCop::CLI, :isolated_environment do
             .to include('Unrecognized cop or namespace: Style/123.')
         end
 
+        %w(Lint/UnneededDisable UnneededDisable).each do |name|
+          it "exits with error if cop name #{name} is passed" do
+            create_file('example.rb', ['if x== 0 ',
+                                       "\ty",
+                                       'end'])
+            expect(cli.run(['--only', 'UnneededDisable'])).to eq(1)
+            expect($stderr.string)
+              .to include('Lint/UnneededDisable can not be used with --only.')
+          end
+        end
+
         it 'accepts cop names from plugins' do
           create_file('.rubocop.yml', ['require: rubocop_ext',
                                        '',
