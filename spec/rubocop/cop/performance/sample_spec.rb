@@ -30,12 +30,9 @@ describe RuboCop::Cop::Performance::Sample do
     'shuffle.first'      => 'sample',
     'shuffle.last'       => 'sample',
     'shuffle[0]'         => 'sample',
-    'shuffle[2]'         => 'sample',
     'shuffle[0, 3]'      => 'sample(3)',
-    'shuffle[2, 3]'      => 'sample(3)',
     'shuffle[0..3]'      => 'sample(4)',
     'shuffle[0...3]'     => 'sample(3)',
-    'shuffle[-4..-3]'    => 'sample(2)',
     'shuffle.first(2)'   => 'sample(2)',
     'shuffle.last(3)'    => 'sample(3)',
     'shuffle.first(foo)' => 'sample(foo)',
@@ -43,8 +40,6 @@ describe RuboCop::Cop::Performance::Sample do
     'shuffle(random: Random.new).first'    => 'sample(random: Random.new)',
     'shuffle(random: Random.new).first(2)' => 'sample(2, random: Random.new)',
     'shuffle(random: foo).last(bar)'       => 'sample(bar, random: foo)',
-    'shuffle(random: Random.new)[2]'       => 'sample(random: Random.new)',
-    'shuffle(random: Random.new)[2, 3]'    => 'sample(3, random: Random.new)',
     'shuffle(random: Random.new)[0..3]'    => 'sample(4, random: Random.new)'
   }
 
@@ -55,11 +50,20 @@ describe RuboCop::Cop::Performance::Sample do
 
   it_behaves_like('accepts', 'sample')
   it_behaves_like('accepts', 'shuffle')
-  it_behaves_like('accepts', 'shuffle[2..-3]')
+  it_behaves_like('accepts', 'shuffle[2]')            # nil if coll.size < 3
+  it_behaves_like('accepts', 'shuffle[3, 3]')         # nil if coll.size < 3
+  it_behaves_like('accepts', 'shuffle[2..3]')         # empty if coll.size < 3
+  it_behaves_like('accepts', 'shuffle[2..-3]')        # can't compute range size
+  it_behaves_like('accepts', 'shuffle[foo..3]')       # can't compute range size
+  it_behaves_like('accepts', 'shuffle[-4..-3]')       # nil if coll.size < 3
+  it_behaves_like('accepts', 'shuffle[foo]')          # foo could be a Range
+  it_behaves_like('accepts', 'shuffle[foo, 3]')       # nil if coll.size < foo
   it_behaves_like('accepts', 'shuffle[foo..bar]')
   it_behaves_like('accepts', 'shuffle[foo, bar]')
   it_behaves_like('accepts', 'shuffle(random: Random.new)')
   it_behaves_like('accepts', 'shuffle.join([5, 6, 7])')
   it_behaves_like('accepts', 'shuffle.map { |e| e }')
+  it_behaves_like('accepts', 'shuffle(random: Random.new)[2]')
+  it_behaves_like('accepts', 'shuffle(random: Random.new)[2, 3]')
   it_behaves_like('accepts', 'shuffle(random: Random.new).find(&:odd?)')
 end
