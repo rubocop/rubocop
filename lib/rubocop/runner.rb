@@ -66,8 +66,13 @@ module RuboCop
       puts "Scanning #{file}" if @options[:debug]
 
       processed_source = ProcessedSource.from_file(file)
+      file_info = {
+        cop_disabled_line_ranges: processed_source.disabled_line_ranges,
+        comments: processed_source.comments,
+        excepted_cops: @options[:except]
+      }
 
-      formatter_set.file_started(file, file_info(processed_source))
+      formatter_set.file_started(file, file_info)
 
       offenses = do_inspection_loop(file, processed_source)
 
@@ -190,8 +195,11 @@ module RuboCop
 
     def considered_failure?(offense)
       # For :autocorrect level, any offense - corrected or not - is a failure.
-      @options[:fail_level] == :autocorrect ||
-        !offense.corrected? && offense.severity >= minimum_severity_to_fail
+      return true if @options[:fail_level] == :autocorrect
+
+      return false if offense.disabled?
+
+      !offense.corrected? && offense.severity >= minimum_severity_to_fail
     end
 
     def minimum_severity_to_fail
@@ -199,10 +207,6 @@ module RuboCop
         name = @options[:fail_level] || :refactor
         RuboCop::Cop::Severity.new(name)
       end
-    end
-
-    def file_info(processed_source)
-      { cop_disabled_line_ranges: processed_source.disabled_line_ranges }
     end
   end
 end

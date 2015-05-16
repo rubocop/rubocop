@@ -19,7 +19,7 @@ module RuboCop
 
         let(:offense) do
           Cop::Offense.new(:convention, location,
-                           'This is a message.', 'CopName', corrected)
+                           'This is a message.', 'CopName', status)
         end
 
         let(:location) do
@@ -28,7 +28,7 @@ module RuboCop
           Parser::Source::Range.new(source_buffer, 0, 1)
         end
 
-        let(:corrected) { false }
+        let(:status) { :uncorrected }
 
         context 'the file is under the current working directory' do
           let(:file) { File.expand_path('spec/spec_helper.rb') }
@@ -51,7 +51,7 @@ module RuboCop
         end
 
         context 'when the offense is not corrected' do
-          let(:corrected) { false }
+          let(:status) { :uncorrected }
 
           it 'prints message as-is' do
             expect(output.string)
@@ -60,7 +60,7 @@ module RuboCop
         end
 
         context 'when the offense is automatically corrected' do
-          let(:corrected) { true }
+          let(:status) { :corrected }
 
           it 'prints [Corrected] along with message' do
             expect(output.string)

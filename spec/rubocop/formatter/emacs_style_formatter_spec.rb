@@ -33,7 +33,7 @@ module RuboCop
 
           let(:offense) do
             Cop::Offense.new(:convention, location,
-                             'This is a message.', 'CopName', corrected)
+                             'This is a message.', 'CopName', status)
           end
 
           let(:location) do
@@ -42,7 +42,7 @@ module RuboCop
             Parser::Source::Range.new(source_buffer, 0, 1)
           end
 
-          let(:corrected) { true }
+          let(:status) { :corrected }
 
           it 'prints [Corrected] along with message' do
             formatter.file_finished(file, [offense])

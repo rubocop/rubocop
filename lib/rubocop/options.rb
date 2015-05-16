@@ -104,6 +104,10 @@ module RuboCop
     end
 
     def validate_compatibility
+      if @options.key?(:only) &&
+         (@options[:only] & %w(Lint/UnneededDisable UnneededDisable)).any?
+        fail ArgumentError, 'Lint/UnneededDisable can not be used with --only.'
+      end
       return unless (incompat = @options.keys & EXITING_OPTIONS).size > 1
       fail ArgumentError, "Incompatible cli options: #{incompat.inspect}"
     end
