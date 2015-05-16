@@ -146,6 +146,8 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
         expect(cop.offenses.size).to eq(1)
         expect(cop.offenses.first.message).to include('Use one of')
 
+        expect(cop.offenses.first.message).to include("#{klass}.zone.now")
+
         described_class::ACCEPTED_METHODS.each do |a_method|
           expect(cop.offenses.first.message)
             .to include("#{klass}.now.#{a_method}")
@@ -157,6 +159,11 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
           inspect_source(cop, "#{klass}.now.#{a_method}")
           expect(cop.offenses).to be_empty
         end
+      end
+
+      it 'accepts #{klass}.zone.now' do
+        inspect_source(cop, "#{klass}.zone.now")
+        expect(cop.offenses).to be_empty
       end
     end
 

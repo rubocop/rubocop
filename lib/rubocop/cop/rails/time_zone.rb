@@ -68,13 +68,9 @@ module RuboCop
 
         def build_message(klass, method_name, node)
           if acceptable?
-            accepted_methods = ACCEPTED_METHODS.map do |am|
-              "`#{klass}.#{method_name}.#{am}`"
-            end
-
             format(MSG_ACCEPTABLE,
                    "#{klass}.#{method_name}",
-                   accepted_methods.join(', ')
+                   acceptable_methods(klass, method_name, node).join(', ')
                   )
           else
             safe_method_name = safe_method(method_name, node)
@@ -145,6 +141,18 @@ module RuboCop
 
         def good_methods
           style == :always ? [:zone] : [:zone] + ACCEPTED_METHODS
+        end
+
+        def acceptable_methods(klass, method_name, node)
+          acceptable = [
+            "`#{klass}.zone.#{safe_method(method_name, node)}`"
+          ]
+
+          ACCEPTED_METHODS.each do |am|
+            acceptable << "`#{klass}.#{method_name}.#{am}`"
+          end
+
+          acceptable
         end
       end
     end
