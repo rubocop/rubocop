@@ -144,6 +144,20 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
       expect(corrected).to eq('get :i, q: { x: 1 }')
     end
 
+    context 'with a comment following the last key-value pair' do
+      it 'corrects and leaves line breaks' do
+        src = ['r = opts.merge({',
+               '  p1: opts[:a],',
+               '  p2: (opts[:b] || opts[:c]) # a comment',
+               '})']
+        corrected = autocorrect_source(cop, src)
+        expect(corrected).to eq(['r = opts.merge(',
+                                 '  p1: opts[:a],',
+                                 '  p2: (opts[:b] || opts[:c]) # a comment',
+                                 ')'].join("\n"))
+      end
+    end
+
     context 'in a method call without parentheses' do
       it 'does not correct a hash parameter with trailing comma' do
         # Because `get :i, x: 1,` is invalid syntax.
