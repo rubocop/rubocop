@@ -59,15 +59,34 @@ module RuboCop
           node = args.last
           lambda do |corrector|
             if braces?(node)
-              right_range = range_with_surrounding_space(node.loc.begin, :right)
-              corrector.remove(right_range)
-              left_range = range_with_surrounding_space(node.loc.end, :left)
-              corrector.remove(left_range)
+              remove_braces(corrector, node)
             else
-              corrector.insert_before(node.loc.expression, '{')
-              corrector.insert_after(node.loc.expression, '}')
+              add_braces(corrector, node)
             end
           end
+        end
+
+        def remove_braces(corrector, node)
+          comments = processed_source.comments
+          right_brace_and_space = range_with_surrounding_space(node.loc.end,
+                                                               :left)
+          if comments.find { |c| c.loc.line == right_brace_and_space.line }
+            # Removing a line break between a comment and the closing
+            # parenthesis would cause a syntax error, so we only remove the
+            # braces in that case.
+            corrector.remove(node.loc.begin)
+            corrector.remove(node.loc.end)
+          else
+            left_brace_and_space = range_with_surrounding_space(node.loc.begin,
+                                                                :right)
+            corrector.remove(left_brace_and_space)
+            corrector.remove(right_brace_and_space)
+          end
+        end
+
+        def add_braces(corrector, node)
+          corrector.insert_before(node.loc.expression, '{')
+          corrector.insert_after(node.loc.expression, '}')
         end
 
         def non_empty_hash?(arg)
