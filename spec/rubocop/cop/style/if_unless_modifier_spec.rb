@@ -38,6 +38,19 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
       corrected = autocorrect_source(cop, source)
       expect(corrected).to eq "#{body} if #{condition}"
     end
+
+    context 'and has two statements separated by semicolon' do
+      let(:source) do
+        ['if condition',
+         '  do_this; do_that',
+         'end']
+      end
+
+      it 'accepts' do
+        inspect_source(cop, source)
+        expect(cop.offenses).to be_empty
+      end
+    end
   end
 
   context 'multiline if that fits on one line with comment on first line' do
