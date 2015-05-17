@@ -14,6 +14,7 @@ module RuboCop
         end
 
         return false if length(node) > 3
+        return false if body && body.begin_type? # multiple statements
 
         body_length = body_length(body)
 
