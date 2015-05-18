@@ -8,6 +8,7 @@
 * New cop `NestedMethodDefinition` checks for method definitions inside other methods. ([@ojab][])
 * `LiteralInInterpolation` cop does auto-correction. ([@tmr08c][])
 * [#1865](https://github.com/bbatsov/rubocop/issues/1865): New cop `Lint/UnneededDisable` checks for `rubocop:disable` comments that can be removed. ([@jonas054][])
+* `EmptyElse` cop does auto-correction. ([@lumeet][])
 
 ### Changes
 
