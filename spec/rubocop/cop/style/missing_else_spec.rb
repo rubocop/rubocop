@@ -69,7 +69,7 @@ describe RuboCop::Cop::Style::MissingElse do
       end
 
       context 'with no else-clause' do
-        it 'registers an offense' do
+        it "doesn't register an offense" do
           inspect_source(cop, 'unless cond; foo end')
           expect(cop.messages).to be_empty
         end
@@ -538,7 +538,7 @@ describe RuboCop::Cop::Style::MissingElse do
       end
 
       context 'with no else-clause' do
-        it 'registers an offense' do
+        it "doesn't register an offense" do
           inspect_source(cop, 'case v; when a; foo; when b; bar; end')
           expect(cop.messages).to be_empty
         end
@@ -584,7 +584,7 @@ describe RuboCop::Cop::Style::MissingElse do
       end
 
       context 'with no else-clause' do
-        it 'registers an offense' do
+        it "doesn't register an offense" do
           inspect_source(cop, 'if cond; foo end')
           expect(cop.messages).to be_empty
         end
@@ -614,7 +614,7 @@ describe RuboCop::Cop::Style::MissingElse do
       end
 
       context 'with no else-clause' do
-        it 'registers an offense' do
+        it "doesn't register an offense" do
           inspect_source(cop, 'unless cond; foo end')
           expect(cop.messages).to be_empty
         end
