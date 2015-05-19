@@ -88,16 +88,16 @@ module RuboCop
     def find_files(base_dir, flags)
       wanted_toplevel_dirs = toplevel_dirs(base_dir, flags) -
                              excluded_dirs(base_dir)
-      wanted_toplevel_dirs.map! { |dir| dir.gsub(',', '\,') }
+      wanted_toplevel_dirs.map! { |dir| dir << '/**/*' }
 
       pattern = if wanted_toplevel_dirs.empty?
                   # We need this special case to avoid creating the pattern
                   # /**/* which searches the entire file system.
-                  "#{base_dir}/**/*"
+                  ["#{base_dir}/**/*"]
                 else
                   # Search the non-excluded top directories, but also add files
                   # on the top level, which would otherwise not be found.
-                  "{#{base_dir}/*,{#{wanted_toplevel_dirs.join(',')}}/**/*}"
+                  wanted_toplevel_dirs.unshift("#{base_dir}/*")
                 end
       Dir.glob(pattern, flags).select { |path| FileTest.file?(path) }
     end
