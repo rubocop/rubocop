@@ -32,6 +32,7 @@
 * [#1803](https://github.com/bbatsov/rubocop/issues/1803): Don't warn for `return` from `lambda` block in `NonLocalExitFromIterator`. ([@ypresto][])
 * [#1905](https://github.com/bbatsov/rubocop/issues/1905): Ignore sparse and trailing comments in `Style/Documentation`. ([@RGBD][])
 * [#1923](https://github.com/bbatsov/rubocop/issues/1923): Handle properly `for` without body in `Style/Next`. ([@bbatsov][])
+* [#1901](https://github.com/bbatsov/rubocop/issues/1901): Do not auto correct comments that are missing a note. ([@rrosenblum][])
 
 ## 0.31.0 (05/05/2015)
 
