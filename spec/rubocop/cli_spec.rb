@@ -1256,6 +1256,42 @@ describe RuboCop::CLI, :isolated_environment do
           .to eq(["#{file}:1:1: C: Tab detected. (#{url})",
                   ''].join("\n"))
       end
+
+      it 'shows reference entry' do
+        create_file('example1.rb', '[1, 2, 3].reverse.each { |e| puts e }')
+        file = abs('example1.rb')
+        url = 'https://github.com/JuanitoFatas/fast-ruby' \
+              '#enumerablereverseeach-vs-enumerablereverse_each-code'
+
+        expect(cli.run(['--format',
+                        'emacs',
+                        '--display-style-guide',
+                        'example1.rb'])).to eq(1)
+
+        output = "#{file}:1:11: C: " \
+                 "Use `reverse_each` instead of `reverse.each`. (#{url})"
+        expect($stdout.string.lines.to_a[-1])
+          .to eq([output, ''].join("\n"))
+      end
+
+      it 'shows style guide and reference entries' do
+        create_file('example1.rb', '$foo = 1')
+        file = abs('example1.rb')
+        style_guide_link = 'https://github.com/bbatsov/ruby-style-guide' \
+                           '#instance-vars'
+        reference_link = 'http://www.zenspider.com/Languages/Ruby/QuickRef.html'
+
+        expect(cli.run(['--format',
+                        'emacs',
+                        '--display-style-guide',
+                        'example1.rb'])).to eq(1)
+
+        output = "#{file}:1:1: C: " \
+                 'Do not introduce global variables. ' \
+                 "(#{style_guide_link}, #{reference_link})"
+        expect($stdout.string.lines.to_a[-1])
+          .to eq([output, ''].join("\n"))
+      end
     end
 
     describe '--show-cops' do
