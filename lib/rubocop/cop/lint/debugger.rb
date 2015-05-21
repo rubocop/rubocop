@@ -43,7 +43,12 @@ module RuboCop
         # save_and_open_screenshot
         #
         # (send nil :save_and_open_screenshot)
-        CAPYBARA_SAVE_SCREENSHOT = s(:send, nil, :save_and_open_screenshot)
+        CAPYBARA_SAVE_OPEN_SCREENSHOT = s(:send, nil, :save_and_open_screenshot)
+
+        # save_screenshot
+        #
+        # (send nil :save_screenshot)
+        CAPYBARA_SAVE_SCREENSHOT = s(:send, nil, :save_screenshot)
 
         DEBUGGER_NODES = [
           DEBUGGER_NODE,
@@ -52,6 +57,7 @@ module RuboCop
           REMOTE_PRY_NODE,
           PRY_REMOTE_NODE,
           CAPYBARA_SAVE_PAGE,
+          CAPYBARA_SAVE_OPEN_SCREENSHOT,
           CAPYBARA_SAVE_SCREENSHOT
         ]
 
