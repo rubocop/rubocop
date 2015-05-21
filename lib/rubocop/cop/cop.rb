@@ -133,7 +133,7 @@ module RuboCop
       end
 
       def display_style_guide?
-        style_guide_url &&
+        (style_guide_url || reference_url) &&
           (@options[:display_style_guide] ||
             config['AllCops'] && config['AllCops']['DisplayStyleGuide'])
       end
@@ -203,11 +203,19 @@ module RuboCop
         (url.nil? || url.empty?) ? nil : url
       end
 
+      def reference_url
+        url = cop_config && cop_config['Reference']
+        (url.nil? || url.empty?) ? nil : url
+      end
+
       private
 
       def annotate_message(message)
         message = "#{name}: #{message}" if display_cop_names?
-        message = "#{message} (#{style_guide_url})" if display_style_guide?
+        if display_style_guide?
+          links = [style_guide_url, reference_url].compact.join(', ')
+          message = "#{message} (#{links})"
+        end
         message
       end
 
