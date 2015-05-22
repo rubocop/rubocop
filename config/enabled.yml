@@ -120,7 +120,7 @@ Style/ClassCheck:
 
 Style/ClassMethods:
   Description: 'Use self when defining module/class methods.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#def-self-singletons'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#def-self-class-methods'
   Enabled: true
 
 Style/ClassVars:
