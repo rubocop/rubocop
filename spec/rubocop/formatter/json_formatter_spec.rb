@@ -121,14 +121,8 @@ module RuboCop
         expect(hash[:corrected]).to be_truthy
       end
 
-      before do
-        allow(formatter)
-          .to receive(:hash_for_location).and_return(location_hash)
-      end
-
-      let(:location_hash) { { line: 1, column: 2 } }
-
       it 'sets value of #hash_for_location for :location key' do
+        location_hash =  { line: 3, column: 6, length: 1 }
         expect(hash[:location]).to eq(location_hash)
       end
     end
