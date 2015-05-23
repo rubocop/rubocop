@@ -10,7 +10,7 @@
 * [#1865](https://github.com/bbatsov/rubocop/issues/1865): New cop `Lint/UnneededDisable` checks for `rubocop:disable` comments that can be removed. ([@jonas054][])
 * `EmptyElse` cop does auto-correction. ([@lumeet][])
 * Show reference links when displaying style guide links. ([@rrosenblum][])
-* Debugger cop now checks for the Capybara debug method save_screenshot. ([@crazydog115][])
+* `Debugger` cop now checks for the Capybara debug method `save_screenshot`. ([@crazydog115][])
 
 ### Changes
 
