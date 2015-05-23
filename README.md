@@ -747,7 +747,7 @@ following to your `.overcommit.yml` file:
 
 ```yaml
 PreCommit:
-  Rubocop:
+  RuboCop:
     enabled: true
 ```
 
