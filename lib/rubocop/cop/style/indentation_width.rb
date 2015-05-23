@@ -157,11 +157,7 @@ module RuboCop
           return if ternary_op?(node)
           return if modifier_if?(node)
 
-          case node.loc.keyword.source
-          when 'if', 'elsif' then _condition, body, else_clause = *node
-          when 'unless'      then _condition, else_clause, body = *node
-          else                    _condition, body = *node
-          end
+          _condition, body, else_clause = if_node_parts(node)
 
           check_if(node, body, else_clause, base.loc) if body
         end

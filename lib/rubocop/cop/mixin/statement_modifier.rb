@@ -7,11 +7,7 @@ module RuboCop
       include IfNode
 
       def fit_within_line_as_modifier_form?(node)
-        case node.loc.keyword.source
-        when 'if'     then cond, body, _else = *node
-        when 'unless' then cond, _else, body = *node
-        else               cond, body = *node
-        end
+        cond, body, _else = if_node_parts(node)
 
         return false if length(node) > 3
         return false if body && body.begin_type? # multiple statements

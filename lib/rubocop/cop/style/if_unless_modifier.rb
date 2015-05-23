@@ -25,11 +25,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          if node.loc.keyword.is?('if')
-            cond, body = *node
-          else
-            cond, _else, body = *node
-          end
+          cond, body, _else = if_node_parts(node)
 
           oneline =
             "#{body.loc.expression.source} #{node.loc.keyword.source} " +
