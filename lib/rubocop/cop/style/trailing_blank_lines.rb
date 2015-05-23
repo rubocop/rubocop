@@ -24,6 +24,14 @@ module RuboCop
 
           return unless blank_lines != wanted_blank_lines
 
+          offense_detected(sb, wanted_blank_lines, blank_lines,
+                           whitespace_at_end)
+        end
+
+        private
+
+        def offense_detected(sb, wanted_blank_lines, blank_lines,
+                             whitespace_at_end)
           begin_pos = sb.source.length - whitespace_at_end.length
           autocorrect_range = Parser::Source::Range.new(sb, begin_pos,
                                                         sb.source.length)

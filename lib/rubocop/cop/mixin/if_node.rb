@@ -22,6 +22,16 @@ module RuboCop
       def if_else?(node)
         node.loc.respond_to?(:else) && node.loc.else
       end
+
+      def if_node_parts(node)
+        case node.loc.keyword.source
+        when 'if', 'elsif' then condition, body, else_clause = *node
+        when 'unless'      then condition, else_clause, body = *node
+        else                    condition, body = *node
+        end
+
+        [condition, body, else_clause]
+      end
     end
   end
 end
