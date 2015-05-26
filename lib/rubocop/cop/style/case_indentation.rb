@@ -61,6 +61,23 @@ module RuboCop
           when :end  then case_node.location.end.column
           end
         end
+
+        def autocorrect(node)
+          when_column = node.location.keyword.column
+          source_buffer = node.loc.expression.source_buffer
+          begin_pos = node.loc.keyword.begin_pos
+          whitespace = Parser::Source::Range.new(source_buffer,
+                                                 begin_pos - when_column,
+                                                 begin_pos)
+          return false unless whitespace.source.strip.empty?
+
+          case_node = node.each_ancestor(:case).first
+          base_type = cop_config[parameter_name] == 'end' ? :end : :case
+          column = base_column(case_node, base_type)
+          column += configured_indentation_width if cop_config['IndentOneStep']
+
+          ->(corrector) { corrector.replace(whitespace, ' ' * column) }
+        end
       end
     end
   end
