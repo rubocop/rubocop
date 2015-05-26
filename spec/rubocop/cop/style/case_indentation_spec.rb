@@ -18,71 +18,154 @@ describe RuboCop::Cop::Style::CaseIndentation do
       end
 
       context 'regarding assignment where the right hand side is a case' do
+        let(:correct_source) do
+          ['output = case variable',
+           "         when 'value1'",
+           "  'output1'",
+           'else',
+           "  'output2'",
+           'end']
+        end
+
+        let(:source) do
+          ['output = case variable',
+           "         when 'value1'",
+           "           'output1'",
+           '         else',
+           "           'output2'",
+           '         end']
+        end
+
         it 'accepts a correctly indented assignment' do
-          source = ['output = case variable',
-                    "         when 'value1'",
-                    "           'output1'",
-                    '         else',
-                    "           'output2'",
-                    '         end']
           inspect_source(cop, source)
           expect(cop.offenses).to be_empty
         end
 
-        it 'registers an offense for an assignment indented as end' do
-          source = ['output = case variable',
-                    "when 'value1'",
-                    "  'output1'",
-                    'else',
-                    "  'output2'",
-                    'end']
-          inspect_source(cop, source)
-          expect(cop.messages).to eq(['Indent `when` as deep as `case`.'])
-          expect(cop.config_to_allow_offenses).to eq('IndentWhenRelativeTo' =>
-                                                     'end')
+        context 'an assignment indented as end' do
+          let(:source) do
+            ['output = case variable',
+             "when 'value1'",
+             "  'output1'",
+             'else',
+             "  'output2'",
+             'end']
+          end
+
+          it 'registers an offense' do
+            inspect_source(cop, source)
+            expect(cop.messages).to eq(['Indent `when` as deep as `case`.'])
+            expect(cop.config_to_allow_offenses).to eq('IndentWhenRelativeTo' =>
+                                                       'end')
+          end
+
+          it 'does auto-correction' do
+            corrected = autocorrect_source(cop, source)
+            expect(corrected).to eq correct_source.join("\n")
+          end
         end
 
-        it 'registers an offense for an assignment indented some other way' do
-          source = ['output = case variable',
-                    "  when 'value1'",
-                    "    'output1'",
-                    '  else',
-                    "    'output2'",
-                    'end']
-          inspect_source(cop, source)
-          expect(cop.messages).to eq(['Indent `when` as deep as `case`.'])
-          expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+        context 'an assignment indented some other way' do
+          let(:source) do
+            ['output = case variable',
+             "  when 'value1'",
+             "    'output1'",
+             '  else',
+             "    'output2'",
+             'end']
+          end
+
+          let(:correct_source) do
+            ['output = case variable',
+             "         when 'value1'",
+             "    'output1'",
+             '  else',
+             "    'output2'",
+             'end']
+          end
+
+          it 'registers an offense' do
+            inspect_source(cop, source)
+            expect(cop.messages).to eq(['Indent `when` as deep as `case`.'])
+            expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+          end
+
+          it 'does auto-correction' do
+            corrected = autocorrect_source(cop, source)
+            expect(corrected).to eq correct_source.join("\n")
+          end
         end
 
-        it 'registers an offense for correct + opposite' do
-          source = ['output = case variable',
-                    "         when 'value1'",
-                    "           'output1'",
-                    '         else',
-                    "           'output2'",
-                    '         end',
-                    'output = case variable',
-                    "when 'value1'",
-                    "  'output1'",
-                    'else',
-                    "  'output2'",
-                    'end']
-          inspect_source(cop, source)
-          expect(cop.messages).to eq(['Indent `when` as deep as `case`.'])
-          expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+        context 'correct + opposite' do
+          let(:source) do
+            ['output = case variable',
+             "         when 'value1'",
+             "           'output1'",
+             '         else',
+             "           'output2'",
+             '         end',
+             'output = case variable',
+             "when 'value1'",
+             "  'output1'",
+             'else',
+             "  'output2'",
+             'end']
+          end
+
+          let(:correct_source) do
+            ['output = case variable',
+             "         when 'value1'",
+             "           'output1'",
+             '         else',
+             "           'output2'",
+             '         end',
+             'output = case variable',
+             "         when 'value1'",
+             "  'output1'",
+             'else',
+             "  'output2'",
+             'end']
+          end
+
+          it 'registers an offense' do
+            inspect_source(cop, source)
+            expect(cop.messages).to eq(['Indent `when` as deep as `case`.'])
+            expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+          end
+
+          it 'does auto-correction' do
+            corrected = autocorrect_source(cop, source)
+            expect(corrected).to eq(correct_source.join("\n"))
+          end
         end
       end
 
-      it "registers an offense for a when clause that's deeper than case" do
-        source = ['case a',
-                  '    when 0 then return',
-                  '    else',
-                  '        case b',
-                  '         when 1 then return',
-                  '        end',
-                  'end']
-        inspect_source(cop, source)
-        expect(cop.messages).to eq(['Indent `when` as deep as `case`.'] * 2)
+      context "a when clause that's deeper than case" do
+        let(:source) do
+          ['case a',
+           '    when 0 then return',
+           '    else',
+           '        case b',
+           '         when 1 then return',
+           '        end',
+           'end']
+        end
+
+        it 'registers an offense' do
+          inspect_source(cop, source)
+          expect(cop.messages).to eq(['Indent `when` as deep as `case`.'] * 2)
+        end
+
+        it 'does auto-correction' do
+          corrected = autocorrect_source(cop, source)
+          expect(corrected).to eq(['case a',
+                                   'when 0 then return',
+                                   '    else',
+                                   '        case b',
+                                   '        when 1 then return',
+                                   '        end',
+                                   'end'
+                                  ].join("\n"))
+        end
       end
 
       it "accepts a when clause that's equally indented with case" do
@@ -155,28 +238,50 @@ describe RuboCop::Cop::Style::CaseIndentation do
         { 'IndentWhenRelativeTo' => 'case', 'IndentOneStep' => true }
       end
 
+      let(:correct_source) do
+        ['output = case variable',
+         "           when 'value1'",
+         "             'output1'",
+         '           else',
+         "             'output2'",
+         '         end']
+      end
+
       context 'regarding assignment where the right hand side is a case' do
         it 'accepts a correctly indented assignment' do
-          source = ['output = case variable',
-                    "           when 'value1'",
-                    "             'output1'",
-                    '           else',
-                    "             'output2'",
-                    '         end']
-          inspect_source(cop, source)
+          inspect_source(cop, correct_source)
           expect(cop.offenses).to be_empty
         end
 
-        it 'registers an offense for an assignment indented some other way' do
-          source = ['output = case variable',
-                    "         when 'value1'",
-                    "           'output1'",
-                    '         else',
-                    "           'output2'",
-                    '         end']
-          inspect_source(cop, source)
-          expect(cop.messages)
-            .to eq(['Indent `when` one step more than `case`.'])
+        context 'an assignment indented some other way' do
+          let(:source) do
+            ['output = case variable',
+             "         when 'value1'",
+             "           'output1'",
+             '         else',
+             "           'output2'",
+             '         end']
+          end
+
+          let(:correct_source) do
+            ['output = case variable',
+             "           when 'value1'",
+             "           'output1'",
+             '         else',
+             "           'output2'",
+             '         end']
+          end
+
+          it 'registers an offense' do
+            inspect_source(cop, source)
+            expect(cop.messages)
+              .to eq(['Indent `when` one step more than `case`.'])
+          end
+
+          it 'does auto-correction' do
+            corrected = autocorrect_source(cop, source)
+            expect(corrected).to eq correct_source.join("\n")
+          end
         end
       end
 
@@ -192,23 +297,43 @@ describe RuboCop::Cop::Style::CaseIndentation do
         expect(cop.offenses).to be_empty
       end
 
-      it "registers an offense for a when clause that's equally indented " \
-         'with case' do
-        source = ['y = case a',
-                  '    when 0 then break',
-                  '    when 0 then return',
-                  '      z = case b',
-                  '          when 1 then return',
-                  '          when 1 then break',
-                  '          end',
-                  '    end',
-                  'case c',
-                  'when 2 then encoding',
-                  'end',
-                  '']
-        inspect_source(cop, source)
-        expect(cop.messages)
-          .to eq(['Indent `when` one step more than `case`.'] * 5)
+      context "a when clause that's equally indented with case" do
+        let(:source) do
+          ['y = case a',
+           '    when 0 then break',
+           '    when 0 then return',
+           '      z = case b',
+           '          when 1 then return',
+           '          when 1 then break',
+           '          end',
+           '    end',
+           'case c',
+           'when 2 then encoding',
+           'end',
+           '']
+        end
+
+        it 'registers an offense' do
+          inspect_source(cop, source)
+          expect(cop.messages)
+            .to eq(['Indent `when` one step more than `case`.'] * 5)
+        end
+
+        it 'does auto-correction' do
+          corrected = autocorrect_source(cop, source)
+          expect(corrected).to eq(['y = case a',
+                                   '      when 0 then break',
+                                   '      when 0 then return',
+                                   '      z = case b',
+                                   '            when 1 then return',
+                                   '            when 1 then break',
+                                   '          end',
+                                   '    end',
+                                   'case c',
+                                   '  when 2 then encoding',
+                                   'end',
+                                   ''].join("\n"))
+        end
       end
     end
   end
@@ -219,27 +344,49 @@ describe RuboCop::Cop::Style::CaseIndentation do
         { 'IndentWhenRelativeTo' => 'end', 'IndentOneStep' => false }
       end
 
+      let(:correct_source) do
+        ['output = case variable',
+         "when 'value1'",
+         "  'output1'",
+         'else',
+         "  'output2'",
+         'end']
+      end
+
       context 'regarding assignment where the right hand side is a case' do
         it 'accepts a correctly indented assignment' do
-          source = ['output = case variable',
-                    "when 'value1'",
-                    "  'output1'",
-                    'else',
-                    "  'output2'",
-                    'end']
-          inspect_source(cop, source)
+          inspect_source(cop, correct_source)
           expect(cop.offenses).to be_empty
         end
 
-        it 'registers an offense for an assignment indented some other way' do
-          source = ['output = case variable',
-                    "  when 'value1'",
-                    "    'output1'",
-                    '  else',
-                    "    'output2'",
-                    'end']
-          inspect_source(cop, source)
-          expect(cop.messages).to eq(['Indent `when` as deep as `end`.'])
+        context 'an assignment indented some other way' do
+          let(:source) do
+            ['output = case variable',
+             "  when 'value1'",
+             "    'output1'",
+             '  else',
+             "    'output2'",
+             'end']
+          end
+
+          let(:correct_source) do
+            ['output = case variable',
+             "when 'value1'",
+             "    'output1'",
+             '  else',
+             "    'output2'",
+             'end']
+          end
+
+          it 'registers an offense' do
+            inspect_source(cop, source)
+            expect(cop.messages).to eq(['Indent `when` as deep as `end`.'])
+          end
+
+          it 'does auto-correction' do
+            corrected = autocorrect_source(cop, source)
+            expect(corrected).to eq correct_source.join("\n")
+          end
         end
       end
     end
@@ -249,45 +396,105 @@ describe RuboCop::Cop::Style::CaseIndentation do
         { 'IndentWhenRelativeTo' => 'end', 'IndentOneStep' => true }
       end
 
+      let(:correct_source) do
+        ['output = case variable',
+         "  when 'value1'",
+         "    'output1'",
+         '  else',
+         "    'output2'",
+         'end']
+      end
+
       context 'regarding assignment where the right hand side is a case' do
         it 'accepts a correctly indented assignment' do
-          source = ['output = case variable',
-                    "  when 'value1'",
-                    "    'output1'",
-                    '  else',
-                    "    'output2'",
-                    'end']
-          inspect_source(cop, source)
+          inspect_source(cop, correct_source)
           expect(cop.offenses).to be_empty
         end
 
-        it 'registers an offense for an assignment indented as case' do
-          source = ['output = case variable',
-                    "         when 'value1'",
-                    "           'output1'",
-                    '         else',
-                    "           'output2'",
-                    '         end']
-          inspect_source(cop, source)
-          expect(cop.messages)
-            .to eq(['Indent `when` one step more than `end`.'])
-          expect(cop.config_to_allow_offenses).to eq('IndentWhenRelativeTo' =>
-                                                     'case')
+        context 'an assignment indented as case' do
+          let(:source) do
+            ['output = case variable',
+             "         when 'value1'",
+             "           'output1'",
+             '         else',
+             "           'output2'",
+             '         end']
+          end
+
+          let(:correct_source) do
+            ['output = case variable',
+             "           when 'value1'",
+             "           'output1'",
+             '         else',
+             "           'output2'",
+             '         end']
+          end
+
+          it 'registers an offense' do
+            inspect_source(cop, source)
+            expect(cop.messages)
+              .to eq(['Indent `when` one step more than `end`.'])
+            expect(cop.config_to_allow_offenses).to eq('IndentWhenRelativeTo' =>
+                                                       'case')
+          end
+
+          it 'does auto-correction' do
+            corrected = autocorrect_source(cop, source)
+            expect(corrected).to eq correct_source.join("\n")
+          end
         end
 
-        it 'registers an offense for an assignment indented some other way' do
-          source = ['output = case variable',
-                    "       when 'value1'",
-                    "         'output1'",
-                    '       else',
-                    "         'output2'",
-                    '       end']
-          inspect_source(cop, source)
-          expect(cop.messages)
-            .to eq(['Indent `when` one step more than `end`.'])
-          expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+        context 'an assignment indented some other way' do
+          let(:source) do
+            ['output = case variable',
+             "       when 'value1'",
+             "         'output1'",
+             '       else',
+             "         'output2'",
+             '       end']
+          end
+
+          let(:correct_source) do
+            ['output = case variable',
+             "         when 'value1'",
+             "         'output1'",
+             '       else',
+             "         'output2'",
+             '       end']
+          end
+
+          it 'registers an offense' do
+            inspect_source(cop, source)
+            expect(cop.messages)
+              .to eq(['Indent `when` one step more than `end`.'])
+            expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+          end
+
+          it 'does auto-correction' do
+            corrected = autocorrect_source(cop, source)
+            expect(corrected).to eq correct_source.join("\n")
+          end
         end
       end
+    end
+  end
+
+  context 'when case is preceded by something else than whitespace' do
+    let(:cop_config) { {} }
+    let(:source) do
+      ['case test when something',
+       'end']
+    end
+
+    it 'registers an offense' do
+      inspect_source(cop, source)
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it "doesn't auto-correct" do
+      expect(autocorrect_source(cop, source))
+        .to eq(source.join("\n"))
+      expect(cop.offenses.map(&:corrected?)).to eq [false]
     end
   end
 end
