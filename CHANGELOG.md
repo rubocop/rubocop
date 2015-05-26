@@ -29,6 +29,7 @@
 * [#1899](https://github.com/bbatsov/rubocop/issues/1899): Be careful about comments when auto-correcting in `BracesAroundHashParameters`. ([@jonas054][])
 * [#1897](https://github.com/bbatsov/rubocop/issues/1897): Don't report that semicolon separated statements can be converted to modifier form in `IfUnlessModifier` (and don't auto-correct them). ([@jonas054][])
 * [#1644](https://github.com/bbatsov/rubocop/issues/1644): Don't search the entire file system when a folder is named `,` (fix for jruby and rbx). ([@rrosenblum][])
+* [#1803](https://github.com/bbatsov/rubocop/issues/1803): Don't warn for `return` from `lambda` block in `NonLocalExitFromIterator`. ([@ypresto][])
 
 ## 0.31.0 (05/05/2015)
 

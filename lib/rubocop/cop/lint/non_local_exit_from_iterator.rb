@@ -39,6 +39,10 @@ module RuboCop
           return if return_value?(return_node)
           return_node.each_ancestor(:block) do |block_node|
             send_node, args_node, _body_node = *block_node
+
+            # `return` does not exit to outside of lambda block, this is safe.
+            break if lambda?(send_node)
+
             next if args_node.children.empty?
             if chained_send?(send_node)
               add_offense(return_node, :keyword)
@@ -54,6 +58,11 @@ module RuboCop
         def chained_send?(send_node)
           receiver_node, _selector_node = *send_node
           !receiver_node.nil?
+        end
+
+        def lambda?(send_node)
+          receiver_node, selector_node = *send_node
+          receiver_node.nil? && selector_node == :lambda
         end
       end
     end
