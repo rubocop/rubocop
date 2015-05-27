@@ -65,16 +65,22 @@ module RuboCop
         # Returns true if the node has a comment on the line above it that
         # isn't an annotation.
         def associated_comment?(node, ast_with_comments)
-          return false if ast_with_comments[node].empty?
+          preceding_comments = preceding_comments(node, ast_with_comments)
+          return false if preceding_comments.empty?
 
-          preceding_comment = ast_with_comments[node].last
-          distance = node.loc.keyword.line - preceding_comment.loc.line
+          distance = node.loc.keyword.line - preceding_comments.last.loc.line
           return false if distance > 1
-          return false unless comment_line_only?(preceding_comment)
+          return false unless comment_line_only?(preceding_comments.last)
 
           # As long as there's at least one comment line that isn't an
           # annotation, it's OK.
-          ast_with_comments[node].any? { |comment| !annotation?(comment) }
+          preceding_comments.any? { |comment| !annotation?(comment) }
+        end
+
+        def preceding_comments(node, ast_with_comments)
+          return [] unless node && ast_with_comments
+
+          ast_with_comments[node].select { |c| c.loc.line < node.loc.line }
         end
 
         def comment_line_only?(comment)

@@ -155,6 +155,34 @@ describe RuboCop::Cop::Style::Documentation do
     expect(cop.offenses.size).to eq 1
   end
 
+  context 'sparse and trailing comments' do
+    %w(class module).each do |keyword|
+      it "ingores comments after #{keyword} node end" do
+        inspect_source(cop,
+                       ['module TestModule',
+                        '  # documentation comment',
+                        "  #{keyword} Test",
+                        '    TEST = 20',
+                        '  end # decorating comment',
+                        'end'
+                       ])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'ignores sparse comments inside #{keyword} node' do
+        inspect_source(cop,
+                       ['module TestModule',
+                        "  #{keyword} Test",
+                        '    TEST = 20',
+                        '    # sparse comment',
+                        '  end',
+                        'end'
+                       ])
+        expect(cop.offenses.size).to eq(1)
+      end
+    end
+  end
+
   context 'with # :nodoc:' do
     %w(class module).each do |keyword|
       it "accepts non-namespace #{keyword} without documentation" do
