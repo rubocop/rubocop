@@ -898,7 +898,10 @@ describe RuboCop::CLI, :isolated_environment do
     describe '--only' do
       context 'when one cop is given' do
         it 'runs just one cop' do
-          create_file('example.rb', ['if x== 0 ',
+          # The disable comment should not be reported as unnecessary (even if
+          # it is) since --only overrides configuration.
+          create_file('example.rb', ['# rubocop:disable LineLength',
+                                     'if x== 0 ',
                                      "\ty",
                                      'end'])
           # IfUnlessModifier depends on the configuration of LineLength.
@@ -908,7 +911,7 @@ describe RuboCop::CLI, :isolated_environment do
                           'example.rb'])).to eq(1)
           expect($stdout.string)
             .to eq(['== example.rb ==',
-                    'C:  1:  1: Favor modifier if usage when ' \
+                    'C:  2:  1: Favor modifier if usage when ' \
                     'having a single-line body. Another good alternative is ' \
                     'the usage of control flow &&/||.',
                     '',
@@ -1116,7 +1119,10 @@ describe RuboCop::CLI, :isolated_environment do
 
       context 'when one cop plus one namespace are given' do
         it 'runs all cops except the given' do
-          create_file('example.rb', ['if x== 0 ',
+          # The disable comment should not be reported as unnecessary (even if
+          # it is) since --except overrides configuration.
+          create_file('example.rb', ['# rubocop:disable LineLength',
+                                     'if x== 0 ',
                                      "\ty = 3",
                                      'end'])
           expect(cli.run(['--format', 'offenses',
