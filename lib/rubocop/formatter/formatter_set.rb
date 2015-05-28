@@ -35,12 +35,15 @@ module RuboCop
         @comments ||= {}
         @comments[file] = options[:comments]
         @excepted_cops = options[:excepted_cops] || []
+        @only_cops = options[:only_cops] || []
         each { |f| f.file_started(file, options) }
       end
 
       def file_finished(file, offenses)
         if @cop_disabled_line_ranges[file].any? &&
-           (@excepted_cops & %w(Lint Lint/UnneededDisable)).empty?
+           # Don't check unneeded disable if --only or --except option is
+           # given, because these options override configuration.
+           @excepted_cops.empty? && @only_cops.empty?
           cop = Cop::Lint::UnneededDisable.new
           cop.check(file, offenses, @cop_disabled_line_ranges, @comments)
           offenses += cop.offenses
