@@ -245,6 +245,16 @@ describe RuboCop::Cop::Style::Next, :config do
     expect(cop.offenses.size).to eq(0)
   end
 
+  it 'does not blow up on empty body while block' do
+    inspect_source(cop, 'while sup; end')
+    expect(cop.offenses.size).to eq(0)
+  end
+
+  it 'does not blow up on empty body for block' do
+    inspect_source(cop, 'for x in y; end')
+    expect(cop.offenses.size).to eq(0)
+  end
+
   it 'does not crash with an empty body branch' do
     inspect_source(cop,
                    ['loop do',

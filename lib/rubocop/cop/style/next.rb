@@ -50,7 +50,7 @@ module RuboCop
 
         def on_for(node)
           _, _, body = *node
-          return unless ends_with_condition?(body)
+          return unless body && ends_with_condition?(body)
 
           add_offense(node, :keyword, MSG)
         end
