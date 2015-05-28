@@ -7,20 +7,27 @@ module RuboCop
       class DeprecatedClassMethods < Cop
         include AST::Sexp
 
-        MSG = '`%s` is deprecated in favor of `%s`.'
+        # Inner class to DeprecatedClassMethods.
+        # This class exists to add abstraction and clean naming to the
+        # objects that are going to be operated on.
+        class DeprecatedClassMethod
+          attr_reader :class_constant, :deprecated_method, :replacement_method
 
-        DEPRECATED_METHODS = [
-          [:File, :exists?, :exist?],
-          [:Dir, :exists?, :exist?]
+          def initialize(class_constant, deprecated_method, replacement_method)
+            @class_constant = class_constant
+            @deprecated_method = deprecated_method
+            @replacement_method = replacement_method
+          end
+        end
+
+        MSG = '`%s` is deprecated in favor of `%s`.'
+        DEPRECATED_METHODS_OBJECT = [
+          DeprecatedClassMethod.new(:File, :exists?, :exist?),
+          DeprecatedClassMethod.new(:Dir, :exists?, :exist?)
         ]
 
         def on_send(node)
-          receiver, method_name, *_args = *node
-
-          DEPRECATED_METHODS.each do |data|
-            next unless class_nodes(data).include?(receiver)
-            next unless method_name == data[1]
-
+          check(node) do |data|
             add_offense(node, :selector,
                         format(MSG,
                                deprecated_method(data),
@@ -30,31 +37,41 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            receiver, method_name, *_args = *node
-
-            DEPRECATED_METHODS.each do |data|
-              next unless class_nodes(data).include?(receiver)
-              next unless method_name == data[1]
-
+            check(node) do |data|
               corrector.replace(node.loc.selector,
-                                data[2].to_s)
+                                data.replacement_method.to_s)
             end
           end
         end
 
         private
 
+        def check(node, &block)
+          receiver, method_name, *_args = *node
+
+          DEPRECATED_METHODS_OBJECT.each do |data|
+            next unless class_nodes(data).include?(receiver)
+            next unless method_name == data.deprecated_method
+
+            block.call(data)
+          end
+        end
+
         def class_nodes(data)
-          [s(:const, nil, data[0]),
-           s(:const, s(:cbase), data[0])]
+          [s(:const, nil, data.class_constant),
+           s(:const, s(:cbase), data.class_constant)]
         end
 
         def deprecated_method(data)
-          format('%s.%s', data[0], data[1])
+          method_call(data.class_constant, data.deprecated_method)
         end
 
         def replacement_method(data)
-          format('%s.%s', data[0], data[2])
+          method_call(data.class_constant, data.replacement_method)
+        end
+
+        def method_call(class_constant, method)
+          format('%s.%s', class_constant, method)
         end
       end
     end

@@ -19,6 +19,11 @@ describe RuboCop::Cop::Lint::DeprecatedClassMethods do
       .to eq(['`File.exists?` is deprecated in favor of `File.exist?`.'])
   end
 
+  it 'does not register an offense for File.exist?' do
+    inspect_source(cop, 'File.exist?(o)')
+    expect(cop.messages).to be_empty
+  end
+
   it 'registers an offense for Dir.exists?' do
     inspect_source(cop, 'Dir.exists?(o)')
     expect(cop.offenses.size).to eq(1)
