@@ -30,7 +30,7 @@
 * [#1897](https://github.com/bbatsov/rubocop/issues/1897): Don't report that semicolon separated statements can be converted to modifier form in `IfUnlessModifier` (and don't auto-correct them). ([@jonas054][])
 * [#1644](https://github.com/bbatsov/rubocop/issues/1644): Don't search the entire file system when a folder is named `,` (fix for jruby and rbx). ([@rrosenblum][])
 * [#1803](https://github.com/bbatsov/rubocop/issues/1803): Don't warn for `return` from `lambda` block in `NonLocalExitFromIterator`. ([@ypresto][])
-* [#1905](https://github.com/bbatsov/rubocop/issues/1905): Ignore sparse and trailing comments in Style/Documentation. ([@RGBD][])
+* [#1905](https://github.com/bbatsov/rubocop/issues/1905): Ignore sparse and trailing comments in `Style/Documentation`. ([@RGBD][])
 * [#1923](https://github.com/bbatsov/rubocop/issues/1923): Handle properly `for` without body in `Style/Next`. ([@bbatsov][])
 
 ## 0.31.0 (05/05/2015)
