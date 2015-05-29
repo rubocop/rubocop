@@ -8,8 +8,11 @@ module RuboCop
       class CommentAnnotation < Cop
         include AnnotationComment
 
-        MSG = 'Annotation keywords should be all upper case, followed by a ' \
-              'colon and a space, then a note describing the problem.'
+        MSG = 'Annotation keywords like `%s` should be all upper case, ' \
+              'followed by a colon, and a space, ' \
+              'then a note describing the problem.'
+        MISSING_NOTE = 'Annotation comment, with keyword `%s`, ' \
+                       'is missing a note.'
 
         def investigate(processed_source)
           processed_source.comments.each do |comment|
@@ -19,19 +22,31 @@ module RuboCop
 
             start = comment.loc.expression.begin_pos + margin.length
             length = first_word.length + colon.to_s.length + space.to_s.length
-            range = Parser::Source::Range.new(processed_source.buffer,
+            source_buffer = comment.loc.expression.source_buffer
+            range = Parser::Source::Range.new(source_buffer,
                                               start,
                                               start + length)
-            add_offense(range, range)
+            if note
+              add_offense(comment, range, format(MSG, first_word))
+            else
+              add_offense(comment, range, format(MISSING_NOTE, first_word))
+            end
           end
         end
 
         private
 
-        def autocorrect(range)
+        def autocorrect(comment)
+          margin, first_word, colon, space, note = split_comment(comment)
+          start = comment.loc.expression.begin_pos + margin.length
+          return if note.nil?
+
           lambda do |corrector|
-            annotation_keyword = range.source.split(/:?\s+/).first
-            corrector.replace(range, annotation_keyword.upcase << ': ')
+            length = first_word.length + colon.to_s.length + space.to_s.length
+            range = Parser::Source::Range.new(comment.loc.expression.source,
+                                              start,
+                                              start + length)
+            corrector.replace(range, "#{first_word.upcase}: ")
           end
         end
 

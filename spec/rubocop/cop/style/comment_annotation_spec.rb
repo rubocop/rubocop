@@ -8,14 +8,17 @@ describe RuboCop::Cop::Style::CommentAnnotation, :config do
     { 'Keywords' => %w(TODO FIXME OPTIMIZE HACK REVIEW) }
   end
 
-  it 'registers an offense for a missing colon' do
-    inspect_source(cop, '# TODO make better')
-    expect(cop.offenses.size).to eq(1)
-  end
+  context 'missing colon' do
+    it 'registers an offense' do
+      inspect_source(cop, '# TODO make better')
+      expect(cop.messages).to eq([format(described_class::MSG, 'TODO')])
+      expect(cop.highlights).to eq(['TODO '])
+    end
 
-  it 'autocorrects a missing colon' do
-    corrected = autocorrect_source(cop, '# TODO make better')
-    expect(corrected).to eq('# TODO: make better')
+    it 'autocorrects' do
+      corrected = autocorrect_source(cop, '# TODO make better')
+      expect(corrected).to eq('# TODO: make better')
+    end
   end
 
   context 'with configured keyword' do
@@ -23,7 +26,8 @@ describe RuboCop::Cop::Style::CommentAnnotation, :config do
 
     it 'registers an offense for a missing colon after the word' do
       inspect_source(cop, '# ISSUE wrong order')
-      expect(cop.offenses.size).to eq(1)
+      expect(cop.messages).to eq([format(described_class::MSG, 'ISSUE')])
+      expect(cop.highlights).to eq(['ISSUE '])
     end
 
     it 'autocorrects a missing colon after keyword' do
@@ -32,43 +36,58 @@ describe RuboCop::Cop::Style::CommentAnnotation, :config do
     end
   end
 
-  context 'when used with the clang formatter' do
-    let(:formatter) { RuboCop::Formatter::ClangStyleFormatter.new(output) }
-    let(:output) { StringIO.new }
-
-    it 'marks the annotation keyword' do
+  context 'missing space after colon' do
+    it 'registers an offense' do
       inspect_source(cop, '# TODO:make better')
-      formatter.report_file('t', cop.offenses)
-      expect(output.string).to eq(["t:1:3: C: #{described_class::MSG}",
-                                   '# TODO:make better',
-                                   '  ^^^^^',
-                                   ''].join("\n"))
+      expect(cop.messages).to eq([format(described_class::MSG, 'TODO')])
+      expect(cop.highlights).to eq(['TODO:'])
+    end
+
+    it 'autocrrects' do
+      corrected = autocorrect_source(cop, '# TODO:make better')
+      expect(corrected).to eq('# TODO: make better')
     end
   end
 
-  it 'registers an offense for lower case' do
-    inspect_source(cop, '# fixme: does not work')
-    expect(cop.offenses.size).to eq(1)
+  context 'lower case keyword' do
+    it 'registers an offense' do
+      inspect_source(cop, '# fixme: does not work')
+      expect(cop.messages).to eq([format(described_class::MSG, 'fixme')])
+      expect(cop.highlights).to eq(['fixme: '])
+    end
+
+    it 'autocorrects' do
+      corrected = autocorrect_source(cop, '# fixme: does not work')
+      expect(corrected).to eq('# FIXME: does not work')
+    end
   end
 
-  it 'autocorrects lower case' do
-    corrected = autocorrect_source(cop, '# fixme: does not work')
-    expect(corrected).to eq('# FIXME: does not work')
+  context 'capitalized keyword' do
+    it 'registers an offense' do
+      inspect_source(cop, '# Optimize: does not work')
+      expect(cop.messages).to eq([format(described_class::MSG, 'Optimize')])
+      expect(cop.highlights).to eq(['Optimize: '])
+    end
+
+    it 'autocorrects' do
+      corrected = autocorrect_source(cop, '# Optimize: does not work')
+      expect(corrected).to eq('# OPTIMIZE: does not work')
+    end
   end
 
-  it 'registers an offense for capitalized annotation keyword' do
-    inspect_source(cop, '# Optimize: does not work')
-    expect(cop.offenses.size).to eq(1)
-  end
+  context 'upper case keyword with colon by no note' do
+    it 'registers an offense' do
+      inspect_source(cop, '# HACK:')
+      expect(cop.messages)
+        .to eq(['Annotation comment, with keyword `HACK`, is missing a note.'])
+      expect(cop.highlights).to eq(['HACK:'])
+    end
 
-  it 'autocorrects a capitalized annotation keyword' do
-    corrected = autocorrect_source(cop, '# Optimize: does not work')
-    expect(corrected).to eq('# OPTIMIZE: does not work')
-  end
-
-  it 'registers an offense for upper case with colon but no note' do
-    inspect_source(cop, '# HACK:')
-    expect(cop.offenses.size).to eq(1)
+    it 'does not autocorrects' do
+      source = '# HACK:'
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq(source)
+    end
   end
 
   it 'accepts upper case keyword with colon, space and note' do
