@@ -12,6 +12,7 @@
 * Show reference links when displaying style guide links. ([@rrosenblum][])
 * `Debugger` cop now checks for the Capybara debug method `save_screenshot`. ([@crazydog115][])
 * [#1282](https://github.com/bbatsov/rubocop/issues/1282): `CaseIndentation` cop does auto-correction. ([@lumeet][])
+* [#1928](https://github.com/bbatsov/rubocop/issues/1928): Do auto-correction one offense at a time (rather than one cop at a time) if there are tabs in the code. ([@jonas054][])
 
 ### Changes
 

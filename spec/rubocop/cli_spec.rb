@@ -35,6 +35,32 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     describe '--auto-correct' do
+      it 'corrects Tab and IndentationConsistency offenses' do
+        source = ['  render_views',
+                  "    describe 'GET index' do",
+                  "\t    it 'returns http success' do",
+                  "\t    end",
+                  "\tdescribe 'admin user' do",
+                  '     before(:each) do',
+                  "\t    end",
+                  "\tend",
+                  '    end',
+                  '']
+        create_file('example.rb', source)
+        expect(cli.run(['--auto-correct'])).to eq(0)
+        corrected = ['  render_views',
+                     "  describe 'GET index' do",
+                     "    it 'returns http success' do",
+                     '    end',
+                     "    describe 'admin user' do",
+                     '      before(:each) do',
+                     '      end',
+                     '    end',
+                     '  end',
+                     '']
+        expect(IO.read('example.rb')).to eq(corrected.join("\n"))
+      end
+
       it 'corrects SymbolProc and SpaceBeforeBlockBraces offenses' do
         source = ['foo.map{ |a| a.nil? }']
         create_file('example.rb', source)

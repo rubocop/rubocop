@@ -79,7 +79,14 @@ module RuboCop
           cop.relevant_file?(buffer.name) && cop.corrections.any?
         end
         if cop_with_corrections
-          corrector = Corrector.new(buffer, cop_with_corrections.corrections)
+          corrections = cop_with_corrections.corrections
+          # Be extra careful if there are tabs in the source and just correct
+          # one offense, because inserting or removing space next to a tab has
+          # special implications, and existing ranges can't be used after such
+          # a change.
+          corrections = [corrections.first] if buffer.source =~ /\t/
+
+          corrector = Corrector.new(buffer, corrections)
           corrector.rewrite
         else
           buffer.source
