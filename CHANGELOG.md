@@ -34,6 +34,7 @@
 * [#1905](https://github.com/bbatsov/rubocop/issues/1905): Ignore sparse and trailing comments in `Style/Documentation`. ([@RGBD][])
 * [#1923](https://github.com/bbatsov/rubocop/issues/1923): Handle properly `for` without body in `Style/Next`. ([@bbatsov][])
 * [#1901](https://github.com/bbatsov/rubocop/issues/1901): Do not auto correct comments that are missing a note. ([@rrosenblum][])
+* [#1926](https://github.com/bbatsov/rubocop/issues/1926): Fix crash in `Style/AlignHash` when correcting a hash with a splat in it. ([@rrosenblum][])
 
 ## 0.31.0 (05/05/2015)
 

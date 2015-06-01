@@ -231,9 +231,13 @@ module RuboCop
           key, value = *node
 
           lambda do |corrector|
-            adjust(corrector, key_delta, key.loc.expression)
-            adjust(corrector, separator_delta, node.loc.operator)
-            adjust(corrector, value_delta, value.loc.expression)
+            if value.nil?
+              adjust(corrector, key_delta, node.loc.expression)
+            else
+              adjust(corrector, key_delta, key.loc.expression)
+              adjust(corrector, separator_delta, node.loc.operator)
+              adjust(corrector, value_delta, value.loc.expression)
+            end
           end
         end
 
