@@ -2,6 +2,9 @@
 
 ## master (unreleased)
 
+### New features
+* New cop `DuplicateRequires` points out when something has been required more than once in a file. ([@jkeck][])
+
 ### Bugs fixed
 
 * Make it possible to disable `Lint/UnneededDisable`. ([@jonas054][])
@@ -1447,3 +1450,4 @@
 [@panthomakos]: https://github.com/panthomakos
 [@matugm]: https://github.com/matugm
 [@m1foley]: https://github.com/m1foley
+[@jkeck]: https://github.com/jkeck
