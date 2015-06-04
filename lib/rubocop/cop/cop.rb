@@ -155,7 +155,7 @@ module RuboCop
         location = loc.is_a?(Symbol) ? node.loc.send(loc) : loc
 
         # Don't include the same location twice for one cop.
-        return if @offenses.find { |o| o.location == location }
+        return if @offenses.any? { |o| o.location == location }
 
         severity = custom_severity || severity || default_severity
 

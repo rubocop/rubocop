@@ -70,7 +70,7 @@ module RuboCop
           comments = processed_source.comments
           right_brace_and_space = range_with_surrounding_space(node.loc.end,
                                                                :left)
-          if comments.find { |c| c.loc.line == right_brace_and_space.line }
+          if comments.any? { |c| c.loc.line == right_brace_and_space.line }
             # Removing a line break between a comment and the closing
             # parenthesis would cause a syntax error, so we only remove the
             # braces in that case.
