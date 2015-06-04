@@ -119,7 +119,7 @@ module RuboCop
         def multiline?(node)
           elements = if node.type == :send
                        _receiver, _method_name, *args = *node
-                       args
+                       args.flat_map { |a| a.type == :hash ? a.children : a }
                      else
                        node.children
                      end
