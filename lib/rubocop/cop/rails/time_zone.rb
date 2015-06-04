@@ -39,7 +39,7 @@ module RuboCop
 
         DANGER_METHODS = [:now, :local, :new, :strftime, :parse, :at]
 
-        ACCEPTED_METHODS = [:in_time_zone, :utc,
+        ACCEPTED_METHODS = [:in_time_zone, :utc, :getlocal,
                             :iso8601, :jisx0301, :rfc3339,
                             :to_i, :to_f]
 
