@@ -18,7 +18,7 @@ describe RuboCop::Cop::Style::StructInheritance do
                    ['class Person < Struct.new(:first_name, :last_name) do end',
                     'end'
                    ])
-    expect(cop.offenses).to be_empty
+    expect(cop.offenses.size).to eq(1)
   end
 
   it 'accepts plain class' do
