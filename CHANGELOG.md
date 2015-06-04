@@ -4,6 +4,7 @@
 
 ### New features
 
+* Adjust behavior of `TrailingComma` cop to account for multi-line hashes nested within method calls. ([@panthomakos][])
 * New cop `SpaceInsideStringInterpolation` checks for spaces within string interpolations. ([@glasnt][])
 * New cop `NestedMethodDefinition` checks for method definitions inside other methods. ([@ojab][])
 * `LiteralInInterpolation` cop does auto-correction. ([@tmr08c][])
@@ -1431,3 +1432,4 @@
 [@glasnt]: https://github.com/glasnt
 [@crazydog115]: https://github.com/crazydog115
 [@RGBD]: https://github.com/RGBD
+[@panthomakos]: https://github.com/panthomakos

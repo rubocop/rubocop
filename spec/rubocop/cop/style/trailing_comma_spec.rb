@@ -237,6 +237,14 @@ describe RuboCop::Cop::Style::TrailingComma, :config do
           expect(cop.offenses).to be_empty
         end
 
+        it 'accepts a Hash literal with no trailing comma' do
+          inspect_source(cop, ['VALUES = {',
+                               '           a: "b",',
+                               '           c: "d",',
+                               '           e: "f"}'])
+          expect(cop.offenses).to be_empty
+        end
+
         it 'accepts a method call with Hash as last parameter split on ' \
            'multiple lines' do
           inspect_source(cop, ['some_method(a: "b",',
@@ -405,11 +413,31 @@ describe RuboCop::Cop::Style::TrailingComma, :config do
             .to eq(['Put a comma after the last item of a multiline array.'])
         end
 
-        it 'accepts a method call with Hash as last parameter split on ' \
-           'multiple lines' do
+        it 'registers an offense for a Hash literal with no trailing comma' do
+          inspect_source(cop, ['VALUES = {',
+                               '           a: "b",',
+                               '           b: "c",',
+                               '           d: "e"}'])
+          expect(cop.messages)
+            .to eq(['Put a comma after the last item of a multiline hash.'])
+        end
+
+        it 'registers an offense for a method call, with a Hash as the ' \
+           'last parameter, split on multiple lines' do
           inspect_source(cop, ['some_method(a: "b",',
                                '            c: "d")'])
-          expect(cop.offenses).to be_empty
+          expect(cop.messages)
+            .to eq(['Put a comma after the last parameter of a ' \
+                    'multiline method call.'])
+        end
+
+        it 'auto-corrects a missing comma in a Hash literal' do
+          new_source = autocorrect_source(cop, ['MAP = { a: 1001,',
+                                                '        b: 2020,',
+                                                '        c: 3333}'])
+          expect(new_source).to eq(['MAP = { a: 1001,',
+                                    '        b: 2020,',
+                                    '        c: 3333,}'].join("\n"))
         end
       end
 
@@ -485,6 +513,15 @@ describe RuboCop::Cop::Style::TrailingComma, :config do
                              '              b,',
                              '              c: 0,',
                              '              d: 1,',
+                             '           )'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'accepts a trailing comma in a method call with ' \
+         'a single hash parameter' do
+        inspect_source(cop, ['some_method(',
+                             '              a: 0,',
+                             '              b: 1,',
                              '           )'])
         expect(cop.offenses).to be_empty
       end
