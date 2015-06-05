@@ -21,6 +21,7 @@
 * Prefer `SpaceInsideBlockBraces` to `SpaceBeforeSemicolon` and `SpaceAfterSemicolon` to avoid an infinite loop when auto-correcting. ([@lumeet][])
 * [#1873](https://github.com/bbatsov/rubocop/issues/1873): Move `ParallelAssignment` cop from Performance to Style. ([@rrosenblum][])
 * Add `getlocal` to acceptable methods of `Rails/TimeZone`. ([@ojab][])
+* [#1851](https://github.com/bbatsov/rubocop/issues/1851), [#1948](https://github.com/bbatsov/rubocop/issues/1948): Change offense message for `ClassLength` and `ModuleLength` to match that of `MethodLength`. ([@bquorning][])
 
 ### Bugs fixed
 

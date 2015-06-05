@@ -16,7 +16,7 @@ module RuboCop
         private
 
         def message(length, max_length)
-          format('Module definition is too long. [%d/%d]', length, max_length)
+          format('Module has too many lines. [%d/%d]', length, max_length)
         end
       end
     end

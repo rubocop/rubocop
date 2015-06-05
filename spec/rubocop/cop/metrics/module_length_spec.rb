@@ -16,7 +16,7 @@ describe RuboCop::Cop::Metrics::ModuleLength, :config do
                          '  a = 6',
                          'end'])
     expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(['Module definition is too long. [6/5]'])
+    expect(cop.messages).to eq(['Module has too many lines. [6/5]'])
     expect(cop.config_to_allow_offenses).to eq('Max' => 6)
   end
 
