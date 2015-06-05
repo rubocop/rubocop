@@ -212,6 +212,29 @@ describe RuboCop::Cop::Style::AlignHash, :config do
       expect(new_sources).to eq(['hash = { a: 1, b: 2,',
                                  '         c: 3 }'].join("\n"))
     end
+
+    context 'ruby >= 2.0', ruby_greater_than_or_equal: 2.0 do
+      it 'auto-corrects alignment when using double splat ' \
+         'in an explicit hash' do
+        new_source = autocorrect_source(cop, ["Hash(foo: 'bar',",
+                                              '       **extra_params',
+                                              ')'].join("\n"))
+
+        expect(new_source).to eq(["Hash(foo: 'bar',",
+                                  '     **extra_params',
+                                  ')'].join("\n"))
+      end
+
+      it 'auto-corrects alignment when using double splat in braces' do
+        new_source = autocorrect_source(cop, ["{foo: 'bar',",
+                                              '       **extra_params',
+                                              '}'].join("\n"))
+
+        expect(new_source).to eq(["{foo: 'bar',",
+                                  ' **extra_params',
+                                  '}'].join("\n"))
+      end
+    end
   end
 
   include_examples 'not on separate lines'
@@ -226,7 +249,7 @@ describe RuboCop::Cop::Style::AlignHash, :config do
 
     include_examples 'not on separate lines'
 
-    it 'accepts aligned hash keys' do
+    it 'accepts aligned hash keys and values' do
       inspect_source(cop, ['hash1 = {',
                            "  'a'   => 0,",
                            "  'bbb' => 1",
@@ -256,6 +279,25 @@ describe RuboCop::Cop::Style::AlignHash, :config do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts hashes that use different separators' do
+      inspect_source(cop, ['hash = {',
+                           '  a: 1,',
+                           "  'bbb' => 2",
+                           '}'])
+      expect(cop.offenses).to be_empty
+    end
+
+    context 'ruby >= 2.0', ruby_greater_than_or_equal: 2.0 do
+      it 'accepts hashes that use different separators and double splats' do
+        inspect_source(cop, ['hash = {',
+                             '  a: 1,',
+                             "  'bbb' => 2,",
+                             '  **foo',
+                             '}'])
+        expect(cop.offenses).to be_empty
+      end
+    end
+
     it 'registers an offense for misaligned hash values' do
       inspect_source(cop, ['hash1 = {',
                            "  'a'   =>  0,",
@@ -268,6 +310,22 @@ describe RuboCop::Cop::Style::AlignHash, :config do
                           ])
       expect(cop.highlights).to eq(["'a'   =>  0",
                                     'bbb:1'])
+    end
+
+    it 'registers an offense for misaligned hash keys' do
+      inspect_source(cop, ['hash1 = {',
+                           "  'a'   =>  0,",
+                           " 'bbb'  =>  1",
+                           '}',
+                           'hash2 = {',
+                           '   a:  0,',
+                           '  bbb: 1',
+                           '}'
+                          ])
+      expect(cop.highlights).to eq(["'a'   =>  0",
+                                    "'bbb'  =>  1",
+                                    'a:  0',
+                                    'bbb: 1'])
     end
 
     it 'registers an offense for misaligned hash rockets' do
@@ -363,6 +421,16 @@ describe RuboCop::Cop::Style::AlignHash, :config do
                            "  'bbb' =>  1",
                            '}'])
       expect(cop.offenses.size).to eq(1)
+    end
+
+    context 'ruby >= 2.0', ruby_greater_than_or_equal: 2.0 do
+      it 'accepts hashes with different separators' do
+        inspect_source(cop, ['{a: 1,',
+                             "  'b' => 2,",
+                             '   **params}'])
+
+        expect(cop.offenses).to be_empty
+      end
     end
 
     include_examples 'not on separate lines'
