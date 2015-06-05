@@ -2982,5 +2982,15 @@ describe RuboCop::CLI, :isolated_environment do
         expect(cli.run([])).to eq(0)
       end
     end
+
+    it 'shows an error if the input file cannot be found' do
+      begin
+        cli.run(%w(/tmp/not_a_file))
+      rescue SystemExit => e
+        expect(e.status).to eq(1)
+        expect(e.message)
+          .to eq 'rubocop: No such file or directory -- /tmp/not_a_file'
+      end
+    end
   end
 end

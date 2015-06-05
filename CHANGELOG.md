@@ -5,6 +5,7 @@
 ### New features
 
 * Adjust behavior of `TrailingComma` cop to account for multi-line hashes nested within method calls. ([@panthomakos][])
+* [#1719](https://github.com/bbatsov/rubocop/pull/1719): Display an error and abort the program if input file can't be found. ([@matugm][])
 * New cop `SpaceInsideStringInterpolation` checks for spaces within string interpolations. ([@glasnt][])
 * New cop `NestedMethodDefinition` checks for method definitions inside other methods. ([@ojab][])
 * `LiteralInInterpolation` cop does auto-correction. ([@tmr08c][])
@@ -1435,3 +1436,4 @@
 [@crazydog115]: https://github.com/crazydog115
 [@RGBD]: https://github.com/RGBD
 [@panthomakos]: https://github.com/panthomakos
+[@matugm]: https://github.com/matugm
