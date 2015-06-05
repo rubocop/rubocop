@@ -16,7 +16,7 @@ describe RuboCop::Cop::Metrics::ClassLength, :config do
                          '  a = 6',
                          'end'])
     expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq(['Class definition is too long. [6/5]'])
+    expect(cop.messages).to eq(['Class has too many lines. [6/5]'])
     expect(cop.config_to_allow_offenses).to eq('Max' => 6)
   end
 
