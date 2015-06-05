@@ -27,12 +27,13 @@ module RuboCop
         MSG = 'Use `size` instead of `count`.'
 
         def on_send(node)
-          receiver, method = *node
+          receiver, method, args = *node
 
           return if receiver.nil?
           return unless method == :count
           return unless array?(receiver) || hash?(receiver)
           return if node.parent && node.parent.block_type?
+          return if args && args.block_pass_type?
 
           add_offense(node, node.loc.selector)
         end
