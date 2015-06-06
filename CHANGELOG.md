@@ -6,6 +6,10 @@
 
 * Make it possible to disable `Lint/UnneededDisable`. ([@jonas054][])
 
+### Changes
+
+* [#1708](https://github.com/bbatsov/rubocop/issues/1708): Improve message for `FirstParameterIndentation`. ([@tejasbubane][])
+
 ## 0.32.0 (06/06/2015)
 
 ### New features
@@ -1447,3 +1451,4 @@
 [@panthomakos]: https://github.com/panthomakos
 [@matugm]: https://github.com/matugm
 [@m1foley]: https://github.com/m1foley
+[@tejasbubane]: https://github.com/tejasbubane
