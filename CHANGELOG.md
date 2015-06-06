@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.32.0 (06/06/2015)
+
 ### New features
 
 * Adjust behavior of `TrailingComma` cop to account for multi-line hashes nested within method calls. ([@panthomakos][])
