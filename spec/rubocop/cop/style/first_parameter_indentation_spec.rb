@@ -25,7 +25,8 @@ describe RuboCop::Cop::Style::FirstParameterIndentation, :config do
                              '    bar: 3',
                              ')'])
         expect(cop.messages).to eq(['Indent the first parameter one step ' \
-                                    'more than the previous line.'])
+                                    'more than the start of the ' \
+                                    'previous line.'])
         expect(cop.highlights).to eq([':foo'])
       end
 
@@ -85,7 +86,8 @@ describe RuboCop::Cop::Style::FirstParameterIndentation, :config do
                                '      b: 2',
                                '  )'])
           expect(cop.messages).to eq(['Indent the first parameter one step ' \
-                                      'more than the previous line.'])
+                                      'more than the start of the ' \
+                                      'previous line.'])
           expect(cop.highlights).to eq(['b: 2'])
         end
 
@@ -115,9 +117,9 @@ describe RuboCop::Cop::Style::FirstParameterIndentation, :config do
                                  '  # comment',
                                  '  b: 2',
                                  '  )'])
-            expect(cop.messages).to eq(['Indent the first parameter one ' \
-                                        'step more than the previous line ' \
-                                        '(not counting the comment).'])
+            expect(cop.messages).to eq(['Indent the first parameter one step ' \
+                                        'more than the start of the previous ' \
+                                        'line (not counting the comment).'])
             expect(cop.highlights).to eq(['b: 2'])
           end
         end
@@ -236,7 +238,8 @@ describe RuboCop::Cop::Style::FirstParameterIndentation, :config do
                                '          merge(',
                                '  bar: 3))'])
           expect(cop.messages).to eq(['Indent the first parameter one step ' \
-                                      'more than the previous line.'])
+                                      'more than the start of the ' \
+                                      'previous line.'])
           expect(cop.highlights).to eq(['bar: 3'])
         end
 
@@ -281,7 +284,8 @@ describe RuboCop::Cop::Style::FirstParameterIndentation, :config do
         inspect_source(cop, ['run(:foo, defaults.merge(',
                              '            bar: 3))'])
         expect(cop.messages).to eq(['Indent the first parameter one step ' \
-                                    'more than the previous line.'])
+                                    'more than the start of the ' \
+                                    'previous line.'])
         expect(cop.highlights).to eq(['bar: 3'])
       end
 

@@ -17,6 +17,10 @@
 * [#1964](https://github.com/bbatsov/rubocop/issues/1964): Fix `RedundantBegin` auto-correct issue with comments by doing a smaller correction. ([@jonas054][])
 * [#1978](https://github.com/bbatsov/rubocop/pull/1978): Don't count disabled offences if fail-level is autocorrect. ([@sch1zo][])
 
+### Changes
+
+* [#1708](https://github.com/bbatsov/rubocop/issues/1708): Improve message for `FirstParameterIndentation`. ([@tejasbubane][])
+
 ## 0.32.0 (06/06/2015)
 
 ### New features
@@ -1458,3 +1462,4 @@
 [@panthomakos]: https://github.com/panthomakos
 [@matugm]: https://github.com/matugm
 [@m1foley]: https://github.com/m1foley
+[@tejasbubane]: https://github.com/tejasbubane
