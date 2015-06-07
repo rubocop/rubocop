@@ -15,14 +15,13 @@ module RuboCop
       class UnneededDisable < Cop
         COP_NAME = 'Lint/UnneededDisable'
 
-        def check(file, offenses, cop_disabled_line_ranges, comments)
+        def check(offenses, cop_disabled_line_ranges, comments)
           unneeded_cops = {}
 
-          cop_disabled_line_ranges[file].each do |cop, line_ranges|
+          cop_disabled_line_ranges.each do |cop, line_ranges|
             cop_offenses = offenses.select { |o| o.cop_name == cop }
             line_ranges.each do |line_range|
-              comment =
-                comments[file].find { |c| c.loc.line == line_range.begin }
+              comment = comments.find { |c| c.loc.line == line_range.begin }
               unneeded_cop = find_unneeded(comment, offenses, cop, cop_offenses,
                                            line_range)
               if unneeded_cop

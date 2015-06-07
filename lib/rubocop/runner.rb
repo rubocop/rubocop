@@ -70,7 +70,8 @@ module RuboCop
         cop_disabled_line_ranges: processed_source.disabled_line_ranges,
         comments: processed_source.comments,
         only_cops: @options[:only],
-        excepted_cops: @options[:except]
+        excepted_cops: @options[:except],
+        config_store: @config_store
       }
 
       formatter_set.file_started(file, file_info)

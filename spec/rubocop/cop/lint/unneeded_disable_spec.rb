@@ -5,16 +5,15 @@ require 'spec_helper'
 describe RuboCop::Cop::Lint::UnneededDisable do
   describe '.check' do
     let(:cop) { described_class.new }
-    let(:file) { 'example.rb' }
 
     before(:each) do
-      cop.check(file, offenses, cop_disabled_line_ranges, comments)
+      cop.check(offenses, cop_disabled_line_ranges, comments)
     end
 
     context 'when there are no disabled lines' do
       let(:offenses) { [] }
-      let(:cop_disabled_line_ranges) { { file => [] } }
-      let(:comments) { [] }
+      let(:cop_disabled_line_ranges) { {} }
+      let(:comments) { {} }
 
       it 'returns an empty array' do
         expect(cop.offenses).to eq([])
@@ -22,7 +21,7 @@ describe RuboCop::Cop::Lint::UnneededDisable do
     end
 
     context 'when there are disabled lines' do
-      let(:comments) { { file => [OpenStruct.new(loc: loc)] } }
+      let(:comments) { [OpenStruct.new(loc: loc)] }
       let(:loc) do
         OpenStruct.new(line: expression.line,
                        column: expression.column,
@@ -37,7 +36,7 @@ describe RuboCop::Cop::Lint::UnneededDisable do
           context 'one cop' do
             let(:source) { '# rubocop:disable Metrics/MethodLength' }
             let(:cop_disabled_line_ranges) do
-              { file => { 'Metrics/MethodLength' => [1..Float::INFINITY] } }
+              { 'Metrics/MethodLength' => [1..Float::INFINITY] }
             end
 
             it 'returns an offense' do
@@ -53,7 +52,7 @@ describe RuboCop::Cop::Lint::UnneededDisable do
           context 'an unknown cop' do
             let(:source) { '# rubocop:disable UnknownCop' }
             let(:cop_disabled_line_ranges) do
-              { file => { 'UnknownCop' => [1..Float::INFINITY] } }
+              { 'UnknownCop' => [1..Float::INFINITY] }
             end
 
             it 'returns an offense' do
@@ -66,11 +65,9 @@ describe RuboCop::Cop::Lint::UnneededDisable do
             let(:source) { '# rubocop:disable all' }
             let(:cop_disabled_line_ranges) do
               {
-                file => {
-                  'Metrics/MethodLength' => [1..Float::INFINITY],
-                  'Metrics/ClassLength' => [1..Float::INFINITY]
-                  # etc... (no need to include all cops here)
-                }
+                'Metrics/MethodLength' => [1..Float::INFINITY],
+                'Metrics/ClassLength' => [1..Float::INFINITY]
+                # etc... (no need to include all cops here)
               }
             end
 
@@ -95,9 +92,7 @@ describe RuboCop::Cop::Lint::UnneededDisable do
         context 'and a comment disables' do
           context 'that cop' do
             let(:source) { '# rubocop:disable Style/Tab' }
-            let(:cop_disabled_line_ranges) do
-              { file => { 'Style/Tab' => [1..100] } }
-            end
+            let(:cop_disabled_line_ranges) { { 'Style/Tab' => [1..100] } }
 
             it 'returns an empty array' do
               expect(cop.offenses).to be_empty
@@ -106,9 +101,7 @@ describe RuboCop::Cop::Lint::UnneededDisable do
 
           context 'that cop but on other lines' do
             let(:source) { '# rubocop:disable Style/Tab' }
-            let(:cop_disabled_line_ranges) do
-              { file => { 'Style/Tab' => [10..12] } }
-            end
+            let(:cop_disabled_line_ranges) { { 'Style/Tab' => [10..12] } }
             let(:expression) do
               OpenStruct.new(line: 10, column: 0, source: source)
             end
@@ -123,11 +116,9 @@ describe RuboCop::Cop::Lint::UnneededDisable do
             let(:source) { '# rubocop:disable all' }
             let(:cop_disabled_line_ranges) do
               {
-                file => {
-                  'Metrics/MethodLength' => [1..Float::INFINITY],
-                  'Metrics/ClassLength' => [1..Float::INFINITY]
-                  # etc... (no need to include all cops here)
-                }
+                'Metrics/MethodLength' => [1..Float::INFINITY],
+                'Metrics/ClassLength' => [1..Float::INFINITY]
+                # etc... (no need to include all cops here)
               }
             end
 
