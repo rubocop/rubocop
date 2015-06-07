@@ -30,10 +30,8 @@ module RuboCop
       end
 
       def file_started(file, options)
-        @cop_disabled_line_ranges ||= {}
-        @cop_disabled_line_ranges[file] = options[:cop_disabled_line_ranges]
-        @comments ||= {}
-        @comments[file] = options[:comments]
+        @cop_disabled_line_ranges = options[:cop_disabled_line_ranges]
+        @comments = options[:comments]
         @excepted_cops = options[:excepted_cops] || []
         @only_cops = options[:only_cops] || []
         @config_store = options[:config_store]
@@ -41,13 +39,13 @@ module RuboCop
       end
 
       def file_finished(file, offenses)
-        if @cop_disabled_line_ranges[file].any? &&
+        if @cop_disabled_line_ranges.any? &&
            # Don't check unneeded disable if --only or --except option is
            # given, because these options override configuration.
            @excepted_cops.empty? && @only_cops.empty? &&
            @config_store.for(file)['Lint/UnneededDisable']['Enabled']
           cop = Cop::Lint::UnneededDisable.new
-          cop.check(file, offenses, @cop_disabled_line_ranges, @comments)
+          cop.check(offenses, @cop_disabled_line_ranges, @comments)
           offenses += cop.offenses
         end
         offenses = offenses.sort.reject(&:disabled?)
