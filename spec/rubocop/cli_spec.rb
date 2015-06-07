@@ -2035,6 +2035,24 @@ describe RuboCop::CLI, :isolated_environment do
                   'all cops.',
                   ''].join("\n"))
       end
+
+      context 'and UnneededDisable is disabled' do
+        it 'does not cause UnneededDisable offenses to be reported' do
+          create_file('example.rb',
+                      ['# encoding: utf-8',
+                       '#' * 95,
+                       '# rubocop:disable all',
+                       'a' * 10 + ' # rubocop:disable LineLength,ClassLength',
+                       'y(123) # rubocop:disable all'])
+          create_file('.rubocop.yml', ['UnneededDisable:',
+                                       '  Enabled: false'])
+          expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
+          expect($stderr.string).to eq('')
+          expect($stdout.string)
+            .to eq(["#{abs('example.rb')}:2:81: C: Line is too long. [95/80]",
+                    ''].join("\n"))
+        end
+      end
     end
   end
 

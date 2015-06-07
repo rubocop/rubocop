@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bugs fixed
+
+* Make it possible to disable `Lint/UnneededDisable`. ([@jonas054][])
+
 ## 0.32.0 (06/06/2015)
 
 ### New features
