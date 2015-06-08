@@ -1065,6 +1065,14 @@ Performance/Size:
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#arraycount-vs-arraysize-code'
   Enabled: true
 
+Performance/StringReplacement:
+  Description: >-
+                  Use `tr` instead of `gsub` when you are replacing the same
+                  number of characters. Use `delete` instead of `gsub` when
+                  you are deleting characters.
+  Reference: 'https://github.com/JuanitoFatas/fast-ruby#stringgsub-vs-stringtr-code'
+  Enabled: true
+
 ##################### Rails ##################################
 
 Rails/ActionFilter:
