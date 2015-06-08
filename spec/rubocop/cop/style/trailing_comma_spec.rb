@@ -360,6 +360,15 @@ describe RuboCop::Cop::Style::TrailingComma, :config do
         expect(cop.offenses).to be_empty
       end
 
+      it 'accepts an empty hash being passed as a method argument' do
+        inspect_source(cop, 'Foo.new({})')
+        inspect_source(cop, ['Foo.new({',
+                             '         })'])
+        inspect_source(cop, ['Foo.new([',
+                             '         ])'])
+        expect(cop.offenses).to be_empty
+      end
+
       it 'auto-corrects an Array literal with two of the values on the same' \
          ' line and a trailing comma' do
         new_source = autocorrect_source(cop, ['VALUES = [',
