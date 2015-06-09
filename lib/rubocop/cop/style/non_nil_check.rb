@@ -84,15 +84,19 @@ module RuboCop
         end
 
         def autocorrect_comparison(node)
+          expr = node.loc.expression.source
+
+          new_code =
+            if include_semantic_changes?
+              expr.sub(/\s*!=\s*nil/, '')
+            else
+              expr.sub(/^(\S*)\s*!=\s*nil/, '!\1.nil?')
+            end
+
+          return if expr == new_code
+
           lambda do |corrector|
-            expr = node.loc.expression
-            new_code =
-              if include_semantic_changes?
-                expr.source.sub(/\s*!=\s*nil/, '')
-              else
-                expr.source.sub(/^(\S*)\s*!=\s*nil/, '!\1.nil?')
-              end
-            corrector.replace(expr, new_code)
+            corrector.replace(node.loc.expression, new_code)
           end
         end
 
