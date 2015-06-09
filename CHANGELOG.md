@@ -5,6 +5,7 @@
 ### Bugs fixed
 
 * Make it possible to disable `Lint/UnneededDisable`. ([@jonas054][])
+* [#1958](https://github.com/bbatsov/rubocop/issues/1958): Show name of `Lint/UnneededDisable` when `-D/--display-cop-names` is given. ([@jonas054][])
 
 ## 0.32.0 (06/06/2015)
 
