@@ -1261,15 +1261,15 @@ describe RuboCop::CLI, :isolated_environment do
 
     describe '-D/--display-cop-names' do
       it 'shows cop names' do
-        create_file('example1.rb', "\tputs 0")
+        create_file('example1.rb', "\tputs 0 # rubocop:disable NumericLiterals")
         file = abs('example1.rb')
 
-        expect(cli.run(['--format',
-                        'emacs',
-                        '--display-cop-names',
+        expect(cli.run(['--format', 'emacs', '--display-cop-names',
                         'example1.rb'])).to eq(1)
-        expect($stdout.string.lines.to_a[-1])
+        expect($stdout.string)
           .to eq(["#{file}:1:1: C: Style/Tab: Tab detected.",
+                  "#{file}:1:9: W: Lint/UnneededDisable: Unnecessary " \
+                  'disabling of Style/NumericLiterals.',
                   ''].join("\n"))
       end
     end
