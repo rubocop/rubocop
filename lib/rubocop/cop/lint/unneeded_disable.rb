@@ -17,6 +17,7 @@ module RuboCop
 
         def check(offenses, cop_disabled_line_ranges, comments)
           unneeded_cops = {}
+          disabled_ranges = cop_disabled_line_ranges[COP_NAME] || [0..0]
 
           cop_disabled_line_ranges.each do |cop, line_ranges|
             cop_offenses = offenses.select { |o| o.cop_name == cop }
@@ -24,6 +25,9 @@ module RuboCop
               comment = comments.find { |c| c.loc.line == line_range.begin }
               unneeded_cop = find_unneeded(comment, offenses, cop, cop_offenses,
                                            line_range)
+
+              next if ignore_offense?(disabled_ranges, line_range)
+
               if unneeded_cop
                 unneeded_cops[comment.loc.expression] ||= Set.new
                 unneeded_cops[comment.loc.expression].add(unneeded_cop)
@@ -31,10 +35,7 @@ module RuboCop
             end
           end
 
-          unneeded_cops.each do |range, cops|
-            add_offense(range, range,
-                        "Unnecessary disabling of #{cops.sort.join(', ')}.")
-          end
+          add_offenses(unneeded_cops)
         end
 
         private
@@ -44,6 +45,19 @@ module RuboCop
             'all cops' if offenses.none? { |o| line_range.include?(o.line) }
           elsif cop_offenses.none? { |o| line_range.include?(o.line) }
             cop
+          end
+        end
+
+        def ignore_offense?(disabled_ranges, line_range)
+          disabled_ranges.any? do |range|
+            range.include?(line_range.min) && range.include?(line_range.max)
+          end
+        end
+
+        def add_offenses(unneeded_cops)
+          unneeded_cops.each do |range, cops|
+            add_offense(range, range,
+                        "Unnecessary disabling of #{cops.sort.join(', ')}.")
           end
         end
       end

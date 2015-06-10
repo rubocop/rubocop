@@ -61,6 +61,50 @@ describe RuboCop::Cop::Lint::UnneededDisable do
             end
           end
 
+          context 'itself' do
+            let(:source) { '# rubocop:disable Lint/UnneededDisable' }
+            let(:cop_disabled_line_ranges) do
+              { 'Lint/UnneededDisable' => [1..Float::INFINITY] }
+            end
+
+            it 'does not return an offense' do
+              expect(cop.offenses).to be_empty
+            end
+          end
+
+          context 'itself and another cop' do
+            context 'disabled on the same range' do
+              let(:source) do
+                '# rubocop:disable Lint/UnneededDisable, Metrics/ClassLength'
+              end
+
+              let(:cop_disabled_line_ranges) do
+                { 'Lint/UnneededDisable' => [1..Float::INFINITY],
+                  'Metrics/ClassLength' => [1..Float::INFINITY] }
+              end
+
+              it 'does not return an offense' do
+                expect(cop.offenses).to be_empty
+              end
+            end
+          end
+
+          context 'multiple cops' do
+            let(:source) do
+              '# rubocop:disable Metrics/MethodLength, Metrics/ClassLength'
+            end
+            let(:cop_disabled_line_ranges) do
+              { 'Metrics/ClassLength' => [1..Float::INFINITY],
+                'Metrics/MethodLength' => [1..Float::INFINITY] }
+            end
+
+            it 'returns an offenses' do
+              expect(cop.messages)
+                .to eq(['Unnecessary disabling of Metrics/ClassLength, ' \
+                        'Metrics/MethodLength.'])
+            end
+          end
+
           context 'all cops' do
             let(:source) { '# rubocop:disable all' }
             let(:cop_disabled_line_ranges) do

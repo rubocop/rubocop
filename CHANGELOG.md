@@ -20,6 +20,7 @@
 ### Changes
 
 * [#1708](https://github.com/bbatsov/rubocop/issues/1708): Improve message for `FirstParameterIndentation`. ([@tejasbubane][])
+* [#1959](https://github.com/bbatsov/rubocop/issues/1959): Allow `Lint/UnneededDisable` to be inline disabled. ([@rrosenblum][])
 
 ## 0.32.0 (06/06/2015)
 
