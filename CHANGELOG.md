@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* `Debugger` cop now checks catches methods called with arguments. ([@crazydog115][])
+
 ### Bugs fixed
 
 * Make it possible to disable `Lint/UnneededDisable`. ([@jonas054][])
