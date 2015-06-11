@@ -6,6 +6,7 @@
 
 * Make it possible to disable `Lint/UnneededDisable`. ([@jonas054][])
 * [#1958](https://github.com/bbatsov/rubocop/issues/1958): Show name of `Lint/UnneededDisable` when `-D/--display-cop-names` is given. ([@jonas054][])
+* Do not show `Style/NonNilCheck` offenses as corrected when the source code is not modified. ([@rrosenblum][])
 
 ## 0.32.0 (06/06/2015)
 
@@ -22,7 +23,6 @@
 * `Debugger` cop now checks for the Capybara debug method `save_screenshot`. ([@crazydog115][])
 * [#1282](https://github.com/bbatsov/rubocop/issues/1282): `CaseIndentation` cop does auto-correction. ([@lumeet][])
 * [#1928](https://github.com/bbatsov/rubocop/issues/1928): Do auto-correction one offense at a time (rather than one cop at a time) if there are tabs in the code. ([@jonas054][])
-* Do not show `Style/NonNilCheck` offenses as corrected when the source code is not modified. ([@rrosenblum][])
 
 ### Changes
 
