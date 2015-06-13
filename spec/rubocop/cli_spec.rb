@@ -61,6 +61,37 @@ describe RuboCop::CLI, :isolated_environment do
         expect(IO.read('example.rb')).to eq(corrected.join("\n"))
       end
 
+      it 'corrects IndentationWidth and IndentationConsistency offenses' do
+        source = ["require 'spec_helper'",
+                  'describe ArticlesController do',
+                  '  render_views',
+                  '    describe "GET \'index\'" do',
+                  '            it "returns http success" do',
+                  '            end',
+                  '        describe "admin user" do',
+                  '             before(:each) do',
+                  '            end',
+                  '        end',
+                  '    end',
+                  'end']
+        create_file('example.rb', source)
+        expect(cli.run(['--auto-correct'])).to eq(0)
+        corrected = ["require 'spec_helper'",
+                     'describe ArticlesController do',
+                     '  render_views',
+                     "  describe \"GET 'index'\" do",
+                     "    it 'returns http success' do",
+                     '    end',
+                     "    describe 'admin user' do",
+                     '      before(:each) do',
+                     '      end',
+                     '    end',
+                     '  end',
+                     'end',
+                     '']
+        expect(IO.read('example.rb')).to eq(corrected.join("\n"))
+      end
+
       it 'corrects SymbolProc and SpaceBeforeBlockBraces offenses' do
         source = ['foo.map{ |a| a.nil? }']
         create_file('example.rb', source)
