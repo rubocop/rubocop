@@ -29,6 +29,11 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
+            unless arguments?(node.children)
+              corrector.replace(node.loc.expression, 'nil')
+              next
+            end
+
             if node.children.size > 1
               kids = node.children.map { |child| child.loc.expression }
               corrector.insert_before(kids.first, '[')
@@ -37,6 +42,13 @@ module RuboCop
             return_kw = range_with_surrounding_space(node.loc.keyword, :right)
             corrector.remove(return_kw)
           end
+        end
+
+        def arguments?(args)
+          return false if args.empty?
+          return true if args.size > 1
+
+          !args.first.begin_type? || !args.first.children.empty?
         end
 
         def on_method_def(_node, _method_name, _args, body)
