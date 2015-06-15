@@ -62,7 +62,9 @@ module RuboCop
         ]
 
         def on_send(node)
-          return unless DEBUGGER_NODES.include?(node)
+          receiver, method_name, *_args = *node
+          node_without_args = self.class.s(:send, receiver, method_name)
+          return unless DEBUGGER_NODES.include? node_without_args
           add_offense(node,
                       :expression,
                       format(MSG, node.loc.expression.source))
