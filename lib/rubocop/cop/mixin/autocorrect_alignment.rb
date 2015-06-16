@@ -16,7 +16,19 @@ module RuboCop
         items.each do |current|
           if current.loc.line > prev_line && start_of_line?(current.loc)
             @column_delta = base_column - current.loc.column
-            add_offense(current, :expression) if @column_delta != 0
+            if @column_delta != 0
+              expr = current.loc.expression
+              if offenses.any? { |o| within?(expr, o.location) }
+                # If this offense is within a line range that is already being
+                # realigned by autocorrect, we report the offense without
+                # autocorrecting it. Two rewrites in the same area by the same
+                # cop can not be handled. The next iteration will find the
+                # offense again and correct it.
+                add_offense(nil, expr)
+              else
+                add_offense(current, :expression)
+              end
+            end
           end
           prev_line = current.loc.line
         end
@@ -27,6 +39,8 @@ module RuboCop
       end
 
       def autocorrect(arg)
+        return unless arg
+
         heredoc_ranges = heredoc_ranges(arg)
         expr = arg.respond_to?(:loc) ? arg.loc.expression : arg
 

@@ -548,5 +548,36 @@ describe RuboCop::Cop::Style::IndentationConsistency, :config do
                       'end'])
       expect(cop.offenses).to be_empty
     end
+
+    it 'does not auto-correct an offense within another offense' do
+      corrected = autocorrect_source(cop,
+                                     ["require 'spec_helper'",
+                                      'describe ArticlesController do',
+                                      '  render_views',
+                                      '    describe "GET \'index\'" do',
+                                      '            it "returns success" do',
+                                      '            end',
+                                      '        describe "admin user" do',
+                                      '             before(:each) do',
+                                      '            end',
+                                      '        end',
+                                      '    end',
+                                      'end'])
+      expect(cop.offenses.map(&:line)).to eq [4, 7] # Two offenses are found.
+
+      # The offense on line 4 is corrected, affecting lines 4 to 11.
+      expect(corrected).to eq ["require 'spec_helper'",
+                               'describe ArticlesController do',
+                               '  render_views',
+                               "  describe \"GET 'index'\" do",
+                               '          it "returns success" do',
+                               '          end',
+                               '      describe "admin user" do',
+                               '           before(:each) do',
+                               '          end',
+                               '      end',
+                               '  end',
+                               'end'].join("\n")
+    end
   end
 end
