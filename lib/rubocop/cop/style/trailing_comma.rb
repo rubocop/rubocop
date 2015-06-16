@@ -71,6 +71,7 @@ module RuboCop
         # rubocop:disable Metrics/MethodLength
         def check(node, items, kind, begin_pos, end_pos)
           sb = items.first.loc.expression.source_buffer
+
           after_last_item = Parser::Source::Range.new(sb, begin_pos, end_pos)
 
           return if heredoc?(after_last_item.source)
@@ -123,6 +124,12 @@ module RuboCop
                      else
                        node.children
                      end
+
+          # Without this check, Foo.new({}) is considered multiline, which
+          # it should not be. Essentially, if there are no elements, the
+          # expression can not be multiline.
+          return if elements.empty?
+
           items = elements.map { |e| e.loc.expression }
           if style == :consistent_comma
             items.each_cons(2).any? { |a, b| !on_same_line?(a, b) }
