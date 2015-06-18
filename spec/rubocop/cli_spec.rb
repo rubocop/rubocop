@@ -1836,6 +1836,25 @@ describe RuboCop::CLI, :isolated_environment do
       end
     end
 
+    describe 'with --auto-correct and disabled offense' do
+      let(:target_file) { 'example.rb' }
+      after do
+        expect($stdout.string.lines.to_a.last)
+          .to eq('1 file inspected, no offenses detected' \
+                 "\n")
+      end
+      it 'succeeds when there is only a disabled offence' do
+        create_file(target_file, ['# encoding: utf-8',
+                                  'def f',
+                                  ' x # rubocop:disable Style/IndentationWidth',
+                                  'end'])
+
+        expect(cli.run(['--auto-correct', '--format', 'simple',
+                        '--fail-level', 'autocorrect',
+                        target_file])).to eq(0)
+      end
+    end
+
     describe '--force-exclusion' do
       let(:target_file) { 'example.rb' }
 
