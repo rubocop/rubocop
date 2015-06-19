@@ -13,6 +13,7 @@ module RuboCop
          '# Note that changes in the inspected code, or installation of new',
          '# versions of RuboCop, may require this file to be generated again.']
         .join("\n")
+      MAXIMUM_EXCLUSION_ITEMS = 15
 
       @config_to_allow_offenses = {}
 
@@ -22,9 +23,14 @@ module RuboCop
         attr_accessor :config_to_allow_offenses
       end
 
-      def file_finished(_file, offenses)
+      def file_finished(file, offenses)
         @cops_with_offenses ||= Hash.new(0)
-        offenses.each { |o| @cops_with_offenses[o.cop_name] += 1 }
+        @files_with_offences ||= {}
+        offenses.each do |o|
+          @cops_with_offenses[o.cop_name] += 1
+          @files_with_offences[o.cop_name] ||= []
+          @files_with_offences[o.cop_name] << file
+        end
       end
 
       def finished(_inspected_files)
@@ -36,10 +42,11 @@ module RuboCop
         @cops_with_offenses.sort.each do |cop_name, offense_count|
           output.puts
           cfg = self.class.config_to_allow_offenses[cop_name]
-          cfg ||= { 'Enabled' => false }
+          cfg ||= {}
           output_cop_comments(output, cfg, cop_name, offense_count)
           output.puts "#{cop_name}:"
           cfg.each { |key, value| output.puts "  #{key}: #{value}" }
+          output_offending_files(output, cfg, cop_name)
         end
         puts "Created #{output.path}."
         puts "Run `rubocop --config #{output.path}`, or"
@@ -61,6 +68,36 @@ module RuboCop
         return if params.empty?
 
         output.puts "# Configuration parameters: #{params.join(', ')}."
+      end
+
+      def output_offending_files(output, cfg, cop_name)
+        return unless cfg.empty?
+
+        offending_files = @files_with_offences[cop_name].uniq.sort
+        if offending_files.count > MAXIMUM_EXCLUSION_ITEMS
+          output.puts '  Enabled: false'
+        else
+          output_exclude_list(output, offending_files)
+        end
+      end
+
+      def output_exclude_list(output, offending_files)
+        require 'pathname'
+        parent = Pathname.new(Dir.pwd)
+
+        output.puts '  Exclude:'
+        offending_files.each do |file|
+          file_path = Pathname.new(file)
+          begin
+            relative = file_path.relative_path_from(parent)
+            output.puts "    - '#{relative}'"
+          rescue ArgumentError
+            output.puts "    - '#{file}'"
+          end
+        end
+      rescue LoadError
+        # Fallback to Enabled: false for Ruby < 1.9.3
+        output.puts '  Enabled: false'
       end
     end
   end

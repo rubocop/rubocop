@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#1980](https://github.com/bbatsov/rubocop/pull/1980): `--auto-gen-config` now outputs an excluded files list for failed cops (up to a maxiumum of 15 files). ([@bmorrall][])
+
 ### Bugs fixed
 
 * [#1988](https://github.com/bbatsov/rubocop/issues/1988): Fix bug in `Style/ParallelAssignment` when assigning from `Module::CONSTANT`. ([@rrosenblum][])
@@ -1471,3 +1475,4 @@
 [@matugm]: https://github.com/matugm
 [@m1foley]: https://github.com/m1foley
 [@tejasbubane]: https://github.com/tejasbubane
+[@bmorrall]: https://github.com/bmorrall
