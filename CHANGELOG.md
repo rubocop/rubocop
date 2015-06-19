@@ -14,6 +14,7 @@
 * Fix auto-correct in `Style/RedundantReturn` when `return` has no arguments. ([@lumeet][])
 * [#1955](https://github.com/bbatsov/rubocop/issues/1955): Fix false positive for `Style/TrailingComma` cop. ([@mattjmcnaughton][])
 * [#1928](https://github.com/bbatsov/rubocop/issues/1928): Avoid auto-correcting two alignment offenses in the same area at the same time. ([@jonas054][])
+* [#1964](https://github.com/bbatsov/rubocop/issues/1964): Fix `RedundantBegin` auto-correct issue with comments by doing a smaller correction. ([@jonas054][])
 
 ## 0.32.0 (06/06/2015)
 

@@ -37,19 +37,8 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            child = node.children.first
-
-            begin_indent = node.loc.column
-            child_indent = child.loc.column
-
-            indent_diff = child_indent - begin_indent
-
-            corrector.replace(
-              range_with_surrounding_space(node.loc.expression),
-              range_with_surrounding_space(
-                child.loc.expression
-              ).source.gsub(/^[ \t]{#{indent_diff}}/, '')
-            )
+            corrector.remove(node.loc.begin)
+            corrector.remove(node.loc.end)
           end
         end
       end
