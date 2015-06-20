@@ -44,9 +44,9 @@ module RuboCop
           base = if text !~ /\n/ && special_inner_call_indentation?(send_node)
                    "`#{text}`"
                  elsif text.lines.reverse_each.first =~ /^\s*#/
-                   'the previous line (not counting the comment)'
+                   'the start of the previous line (not counting the comment)'
                  else
-                   'the previous line'
+                   'the start of the previous line'
                  end
           format('Indent the first parameter one step more than %s.', base)
         end
