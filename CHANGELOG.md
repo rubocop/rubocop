@@ -21,6 +21,10 @@
 
 * [#1708](https://github.com/bbatsov/rubocop/issues/1708): Improve message for `FirstParameterIndentation`. ([@tejasbubane][])
 
+### Changes
+
+* [#1708](https://github.com/bbatsov/rubocop/issues/1708): Improve message for `FirstParameterIndentation`. ([@tejasbubane][])
+
 ## 0.32.0 (06/06/2015)
 
 ### New features
