@@ -20,6 +20,16 @@ describe RuboCop::Cop::Rails::Date, :config do
         inspect_source(cop, "date.#{method}")
         expect(cop.offenses.size).to eq(1)
       end
+
+      it "accepts variable named #{method}" do
+        inspect_source(cop, "#{method} = 1")
+        expect(cop.offenses).to be_empty
+      end
+
+      it "accepts variable #{method} as range end" do
+        inspect_source(cop, "from_time..#{method}")
+        expect(cop.offenses).to be_empty
+      end
     end
   end
 

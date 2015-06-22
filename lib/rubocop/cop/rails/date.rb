@@ -54,8 +54,8 @@ module RuboCop
         end
 
         def on_send(node)
-          method_name = extract_method(node)
-          return unless bad_methods.include?(method_name)
+          receiver, method_name, *_args = *node
+          return unless receiver && bad_methods.include?(method_name)
 
           add_offense(node, :selector,
                       format(MSG_SEND,
