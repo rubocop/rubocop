@@ -88,10 +88,15 @@ describe RuboCop::CommentConfig do
       expect(loop_disabled_lines).not_to include(22)
     end
 
-    it 'supports disabling all cops with keyword all' do
+    it 'supports disabling all cops except Lint/UnneededDisable with ' \
+       'keyword all' do
       expected_part = (9..10).to_a
 
-      RuboCop::Cop::Cop.all.each do |cop|
+      cops = RuboCop::Cop::Cop.all.reject do |klass|
+        klass == RuboCop::Cop::Lint::UnneededDisable
+      end
+
+      cops.each do |cop|
         disabled_lines = disabled_lines_of_cop(cop)
         expect(disabled_lines & expected_part).to eq(expected_part)
       end
