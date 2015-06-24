@@ -7,6 +7,7 @@ require 'ostruct'
 module RuboCop
   module Formatter
     describe DisabledConfigFormatter do
+
       subject(:formatter) { described_class.new(output) }
       let(:output) do
         o = StringIO.new
@@ -31,11 +32,13 @@ module RuboCop
                                        '',
                                        '# Offense count: 1',
                                        'Cop1:',
-                                       '  Enabled: false',
+                                       '  Exclude:',
+                                       '    - test.rb',
                                        '',
                                        '# Offense count: 1',
                                        'Cop2:',
-                                       '  Enabled: false',
+                                       '  Exclude:',
+                                       '    - test.rb',
                                        ''].join("\n"))
           expect($stdout.string)
             .to eq(['Created .rubocop_todo.yml.',
