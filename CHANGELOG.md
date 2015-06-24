@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.32.1 (24/06/2015)
+
 ### New features
 
 * `Debugger` cop now checks catches methods called with arguments. ([@crazydog115][])
