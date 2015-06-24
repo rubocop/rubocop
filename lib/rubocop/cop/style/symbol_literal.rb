@@ -27,7 +27,7 @@ module RuboCop
           lambda do |corrector|
             current_name = node.loc.expression.source
             corrector.replace(node.loc.expression,
-                              current_name.gsub(/["']/, ''))
+                              current_name.delete(%q('")))
           end
         end
       end
