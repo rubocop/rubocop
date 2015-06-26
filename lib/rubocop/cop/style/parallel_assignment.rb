@@ -37,6 +37,9 @@ module RuboCop
           # account for edge cases using one variable with a comma
           return if left_elements.size == 1
 
+          # account for edge case of Constant::CONSTANT
+          return unless right.array_type?
+
           # allow mass assignment as the return of a method call
           return if right.block_type? || right.send_type?
 
