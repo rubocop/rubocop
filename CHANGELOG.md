@@ -5,6 +5,7 @@
 ### New features
 
 * [#1980](https://github.com/bbatsov/rubocop/pull/1980): `--auto-gen-config` now outputs an excluded files list for failed cops (up to a maxiumum of 15 files). ([@bmorrall][])
+* [#1918](https://github.com/bbatsov/rubocop/issues/1918): New configuration parameter `AllCops:DisabledByDefault` when set to `true` makes only cops found in user configuration enabled, which makes cop selection *opt-in*. ([@jonas054][])
 
 ### Bugs fixed
 
