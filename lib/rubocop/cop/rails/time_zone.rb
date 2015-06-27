@@ -76,7 +76,7 @@ module RuboCop
             safe_method_name = safe_method(method_name, node)
             format(MSG,
                    "#{klass}.#{method_name}",
-                   "#{klass}.zone.#{safe_method_name}"
+                   "Time.zone.#{safe_method_name}"
                   )
           end
         end
@@ -145,7 +145,7 @@ module RuboCop
 
         def acceptable_methods(klass, method_name, node)
           acceptable = [
-            "`#{klass}.zone.#{safe_method(method_name, node)}`"
+            "`Time.zone.#{safe_method(method_name, node)}`"
           ]
 
           ACCEPTED_METHODS.each do |am|

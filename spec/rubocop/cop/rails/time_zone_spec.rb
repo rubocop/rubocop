@@ -12,18 +12,19 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
       it "registers an offense for #{klass}.now" do
         inspect_source(cop, "#{klass}.now")
         expect(cop.offenses.size).to eq(1)
+        expect(cop.offenses.first.message).to include('`Time.zone.now`')
       end
 
       it "registers an offense for #{klass}.new without argument" do
         inspect_source(cop, "#{klass}.new")
         expect(cop.offenses.size).to eq(1)
-        expect(cop.offenses.first.message).to include('Time.zone.now')
+        expect(cop.offenses.first.message).to include('`Time.zone.now`')
       end
 
       it "registers an offense for #{klass}.new with argument" do
         inspect_source(cop, "#{klass}.new(2012, 6, 10, 12, 00)")
         expect(cop.offenses.size).to eq(1)
-        expect(cop.offenses.first.message).to include('Time.zone.local')
+        expect(cop.offenses.first.message).to include('`Time.zone.local`')
       end
 
       described_class::ACCEPTED_METHODS.each do |a_method|
@@ -144,9 +145,9 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
       it "registers an offense for #{klass}.now" do
         inspect_source(cop, "#{klass}.now")
         expect(cop.offenses.size).to eq(1)
-        expect(cop.offenses.first.message).to include('Use one of')
 
-        expect(cop.offenses.first.message).to include("#{klass}.zone.now")
+        expect(cop.offenses.first.message).to include('Use one of')
+        expect(cop.offenses.first.message).to include('`Time.zone.now`')
 
         described_class::ACCEPTED_METHODS.each do |a_method|
           expect(cop.offenses.first.message)
