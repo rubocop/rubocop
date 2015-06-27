@@ -2256,21 +2256,29 @@ describe RuboCop::CLI, :isolated_environment do
 
     context 'via the config' do
       before do
-        create_file('example.rb', 'fail')
-        create_file('.rubocop.yml', ['AllCops:',
-                                     "  StyleGuideCopsOnly: #{guide_cops_only}",
-                                     'Metrics/LineLength:',
-                                     '  Enabled: true',
-                                     '  StyleGuide: ~',
-                                     '  Max: 2'])
+        create_file('example.rb', 'do_something or fail')
+        create_file('.rubocop.yml',
+                    ['AllCops:',
+                     "  StyleGuideCopsOnly: #{guide_cops_only}",
+                     "  DisabledByDefault: #{disabled_by_default}",
+                     'Metrics/LineLength:',
+                     '  Enabled: true',
+                     '  StyleGuide: ~',
+                     '  Max: 2'])
       end
 
       describe 'AllCops/StyleGuideCopsOnly' do
+        let(:disabled_by_default) { 'false' }
+
         context 'when it is true' do
           let(:guide_cops_only) { 'true' }
 
           it 'skips cops that have no link to a style guide' do
-            expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(0)
+            expect(cli.run(['--format', 'offenses', 'example.rb'])).to eq(1)
+
+            expect($stdout.string.strip).to eq(['1  Style/AndOr',
+                                                '--',
+                                                '1  Total'].join("\n"))
           end
         end
 
@@ -2278,14 +2286,41 @@ describe RuboCop::CLI, :isolated_environment do
           let(:guide_cops_only) { 'false' }
 
           it 'runs cops for rules regardless of any link to the style guide' do
-            expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(1)
+            expect(cli.run(['--format', 'offenses', 'example.rb'])).to eq(1)
 
-            expect($stdout.string)
-              .to eq(['== example.rb ==',
-                      'C:  1:  3: Line is too long. [4/2]',
-                      '',
-                      '1 file inspected, 1 offense detected',
-                      ''].join("\n"))
+            expect($stdout.string.strip).to eq(['1  Metrics/LineLength',
+                                                '1  Style/AndOr',
+                                                '--',
+                                                '2  Total'].join("\n"))
+          end
+        end
+      end
+
+      describe 'AllCops/DisabledByDefault' do
+        let(:guide_cops_only) { 'false' }
+
+        context 'when it is true' do
+          let(:disabled_by_default) { 'true' }
+
+          it 'runs only the cop configured in .rubocop.yml' do
+            expect(cli.run(['--format', 'offenses', 'example.rb'])).to eq(1)
+
+            expect($stdout.string.strip).to eq(['1  Metrics/LineLength',
+                                                '--',
+                                                '1  Total'].join("\n"))
+          end
+        end
+
+        context 'when it is false' do
+          let(:disabled_by_default) { 'false' }
+
+          it 'runs all cops that are enabled in default configuration' do
+            expect(cli.run(['--format', 'offenses', 'example.rb'])).to eq(1)
+
+            expect($stdout.string.strip).to eq(['1  Metrics/LineLength',
+                                                '1  Style/AndOr',
+                                                '--',
+                                                '2  Total'].join("\n"))
           end
         end
       end

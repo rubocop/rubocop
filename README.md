@@ -368,6 +368,15 @@ Metrics/LineLength:
   Enabled: false
 ```
 
+Most cops are enabled by default. Some cops, configured in [config/disabled.yml](https://github.com/bbatsov/rubocop/blob/master/config/disabled.yml), are disabled by default. The cop enabling process can be altered by setting `DisabledByDefault` to `true`.
+
+```yaml
+AllCops:
+  DisabledByDefault: true
+```
+
+All cops are then disabled by default, and only cops appearing in user configuration files are enabled. `Enabled: true` does not have to be set for cops in user configuration. They will be enabled anyway.
+
 #### Severity
 
 Each cop has a default severity level based on which department it belongs

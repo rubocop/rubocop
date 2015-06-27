@@ -100,11 +100,32 @@ module RuboCop
                                    end
       end
 
+      # Merges the given configuration with the default one. If
+      # AllCops:DisabledByDefault is true, it changes the Enabled params so
+      # that only cops from user configuration are enabled.
       def merge_with_default(config, config_file)
-        Config.new(merge(default_configuration, config), config_file)
+        configs =
+          if config.key?('AllCops') && config['AllCops']['DisabledByDefault']
+            disabled_default = transform(default_configuration) do |params|
+              params.merge('Enabled' => false) # Overwrite with false.
+            end
+            enabled_user_config = transform(config) do |params|
+              { 'Enabled' => true }.merge(params) # Set true if not set.
+            end
+            [disabled_default, enabled_user_config]
+          else
+            [default_configuration, config]
+          end
+        Config.new(merge(configs.first, configs.last), config_file)
       end
 
       private
+
+      # Returns a new hash where the parameters of the given config hash have
+      # been replaced by parmeters returned by the given block.
+      def transform(config)
+        Hash[config.map { |cop, params| [cop, yield(params)] }]
+      end
 
       def load_yaml_configuration(absolute_path)
         yaml_code = IO.read(absolute_path)
