@@ -13,7 +13,7 @@ module RuboCop
          '# Note that changes in the inspected code, or installation of new',
          '# versions of RuboCop, may require this file to be generated again.']
         .join("\n")
-      MAXIMUM_EXCLUSION_ITEMS = 15
+      MAXIMUM_EXCLUSION_ITEMS = ENV.fetch('RUBOCOP_MAXIMUM_EXCLUSION_ITEMS', 15).to_i
 
       @config_to_allow_offenses = {}
 
