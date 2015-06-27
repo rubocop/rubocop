@@ -71,6 +71,14 @@ describe RuboCop::Cop::Performance::Detect do
         .to eq(["Use `reverse.detect` instead of `#{method}.last`."])
     end
 
+    it "registers an offense when #{method} is called" \
+       'on `lazy` without receiver' do
+      inspect_source(cop, "lazy.#{method}(&:even?).first")
+
+      expect(cop.messages)
+        .to eq(["Use `detect` instead of `#{method}.first`."])
+    end
+
     it "does not register an offense when #{method} is used " \
        'without first or last' do
       inspect_source(cop, "[1, 2, 3].#{method} { |i| i % 2 == 0 }")
@@ -88,6 +96,13 @@ describe RuboCop::Cop::Performance::Detect do
     it "does not register an offense when #{method} is called" \
        'with args but without ampersand syntax' do
       inspect_source(cop, "adapter.#{method}('something').first")
+
+      expect(cop.messages).to be_empty
+    end
+
+    it "does not register an offense when #{method} is called" \
+       'on lazy enumerable' do
+      inspect_source(cop, "adapter.lazy.#{method} { 'something' }.first")
 
       expect(cop.messages).to be_empty
     end
