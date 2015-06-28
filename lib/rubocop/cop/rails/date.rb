@@ -46,9 +46,9 @@ module RuboCop
         BAD_DAYS = [:today, :current, :yesterday, :tomorrow]
 
         def on_const(node)
-          _, klass = *node.children
-
-          return unless method_send?(node)
+          mod, klass = *node.children
+          # we should only check core Date class (`Date` or `::Date`)
+          return unless (mod.nil? || mod.cbase_type?) && method_send?(node)
 
           check_date_node(node.parent) if klass == :Date
         end

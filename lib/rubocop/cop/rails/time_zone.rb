@@ -37,16 +37,17 @@ module RuboCop
 
         TIMECLASS = [:Time, :DateTime]
 
-        DANGER_METHODS = [:now, :local, :new, :strftime, :parse, :at]
+        DANGEROUS_METHODS = [:now, :local, :new, :strftime, :parse, :at]
 
         ACCEPTED_METHODS = [:in_time_zone, :utc, :getlocal,
                             :iso8601, :jisx0301, :rfc3339,
                             :to_i, :to_f]
 
         def on_const(node)
-          _module, klass = *node
-
-          return unless method_send?(node)
+          mod, klass = *node
+          # we should only check core class
+          # (`DateTime`/`Time` or `::Date`/`::DateTime`)
+          return unless (mod.nil? || mod.cbase_type?) && method_send?(node)
 
           check_time_node(klass, node.parent) if TIMECLASS.include?(klass)
         end
@@ -59,7 +60,7 @@ module RuboCop
 
           return check_localtime(node) if need_check_localtime?(chain)
 
-          method_name = (chain & DANGER_METHODS).join('.')
+          method_name = (chain & DANGEROUS_METHODS).join('.')
 
           message = build_message(klass, method_name, node)
 
@@ -128,7 +129,7 @@ module RuboCop
         end
 
         def danger_chain?(chain)
-          (chain & DANGER_METHODS).empty? || !(chain & good_methods).empty?
+          (chain & DANGEROUS_METHODS).empty? || !(chain & good_methods).empty?
         end
 
         def need_check_localtime?(chain)

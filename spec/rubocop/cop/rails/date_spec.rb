@@ -13,6 +13,16 @@ describe RuboCop::Cop::Rails::Date, :config do
         inspect_source(cop, "Date.#{day}")
         expect(cop.offenses.size).to eq(1)
       end
+
+      it "registers an offense for ::Date.#{day}" do
+        inspect_source(cop, "::Date.#{day}")
+        expect(cop.offenses.size).to eq(1)
+      end
+
+      it "accepts Some::Date.#{day}" do
+        inspect_source(cop, "Some::Date.#{day}")
+        expect(cop.offenses).to be_empty
+      end
     end
 
     %w(to_time to_time_in_current_zone).each do |method|

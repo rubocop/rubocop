@@ -27,6 +27,16 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
         expect(cop.offenses.first.message).to include('`Time.zone.local`')
       end
 
+      it "registers an offense for ::#{klass}.now" do
+        inspect_source(cop, "::#{klass}.now")
+        expect(cop.offenses.size).to eq(1)
+      end
+
+      it "accepts Some::#{klass}.now" do
+        inspect_source(cop, "Some::#{klass}.forward(0).strftime('%H:%M')")
+        expect(cop.offenses).to be_empty
+      end
+
       described_class::ACCEPTED_METHODS.each do |a_method|
         it "registers an offense #{klass}.now.#{a_method}" do
           inspect_source(cop, "#{klass}.now.#{a_method}")
@@ -135,6 +145,13 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
     it 'accepts Time.zone.parse.localtime(offset)' do
       inspect_source(cop, "Time.zone.parse('12:00').localtime('+03:00')")
       expect(cop.offenses).to be_empty
+    end
+
+    described_class::DANGEROUS_METHODS.each do |a_method|
+      it "accepts Some::Time.#{a_method}" do
+        inspect_source(cop, "Some::Time.#{a_method}")
+        expect(cop.offenses).to be_empty
+      end
     end
   end
 
