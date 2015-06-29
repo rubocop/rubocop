@@ -197,7 +197,7 @@ module RuboCop
     # e.g. [..., '--auto-correct', ...] to :auto_correct.
     def long_opt_symbol(args)
       long_opt = args.find { |arg| arg.start_with?('--') }
-      long_opt[2..-1].sub(/ .*/, '').gsub(/-/, '_').to_sym
+      long_opt[2..-1].sub(/ .*/, '').tr('-', '_').to_sym
     end
 
     def validate_auto_gen_config_option(args)

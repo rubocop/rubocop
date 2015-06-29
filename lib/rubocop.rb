@@ -127,6 +127,7 @@ require 'rubocop/cop/performance/flat_map'
 require 'rubocop/cop/performance/reverse_each'
 require 'rubocop/cop/performance/sample'
 require 'rubocop/cop/performance/size'
+require 'rubocop/cop/performance/string_replacement'
 
 require 'rubocop/cop/style/access_modifier_indentation'
 require 'rubocop/cop/style/accessor_method_name'
