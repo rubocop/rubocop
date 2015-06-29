@@ -76,6 +76,44 @@ module RuboCop
                                        exclusion_list,
                                        ''].flatten.join("\n"))
         end
+
+        it 'file exclusion offense count can be configured' do
+          exclusion_list = []
+          file_list = []
+          old_maximum_exclusion_items =
+            RuboCop::Formatter::DisabledConfigFormatter::MAXIMUM_EXCLUSION_ITEMS
+          RuboCop::Formatter::DisabledConfigFormatter
+            .send(:remove_const, 'MAXIMUM_EXCLUSION_ITEMS')
+          RuboCop::Formatter::DisabledConfigFormatter
+            .const_set('MAXIMUM_EXCLUSION_ITEMS', 5)
+
+          15.times do |index|
+            file_name = format('test_%02d.rb', index)
+            formatter.file_finished(file_name, offenses)
+            file_list << file_name
+            exclusion_list << "    - '#{file_name}'"
+          end
+
+          file_list << 'test.rb'
+          formatter.file_finished('test.rb', [offenses.first])
+          formatter.finished(file_list)
+          expect(output.string).to eq(described_class::HEADING +
+                                      ['',
+                                       '',
+                                       '# Offense count: 16',
+                                       'Cop1:',
+                                       '  Enabled: false',
+                                       '',
+                                       '# Offense count: 15',
+                                       'Cop2:',
+                                       '  Enabled: false',
+                                       ''].flatten.join("\n"))
+
+          RuboCop::Formatter::DisabledConfigFormatter
+            .send(:remove_const, 'MAXIMUM_EXCLUSION_ITEMS')
+          RuboCop::Formatter::DisabledConfigFormatter
+            .const_set('MAXIMUM_EXCLUSION_ITEMS', old_maximum_exclusion_items)
+        end
       end
     end
   end
