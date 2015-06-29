@@ -975,7 +975,10 @@ Lint/UnderscorePrefixedVariableName:
   Enabled: true
 
 Lint/UnneededDisable:
-  Description: 'Checks for rubocop:disable comments that can be removed.'
+  Description: >-
+                 Checks for rubocop:disable comments that can be removed.
+                 Note: this cop is not disabled when disabling all cops.
+                 It must be explicitly disabled.
   Enabled: true
 
 Lint/UnusedBlockArgument:
