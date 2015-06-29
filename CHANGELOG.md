@@ -13,6 +13,7 @@
 * [#1988](https://github.com/bbatsov/rubocop/issues/1988): Fix bug in `Style/ParallelAssignment` when assigning from `Module::CONSTANT`. ([@rrosenblum][])
 * [#1995](https://github.com/bbatsov/rubocop/pull/1995): Improve message for `Rails/TimeZone`. ([@palkan][])
 * [#1977](https://github.com/bbatsov/rubocop/issues/1977): Fix bugs in `Rails/Date` and `Rails/TimeZone` when using namespaced Time/Date. ([@palkan][])
+* [#1973](https://github.com/bbatsov/rubocop/issues/1973): Do not register an offense in `Performance/Detect` when `select` is called on `Enumerable::Lazy`. ([@palkan][])
 
 ## 0.32.1 (24/06/2015)
 

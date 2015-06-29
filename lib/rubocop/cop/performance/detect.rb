@@ -22,20 +22,23 @@ module RuboCop
         REVERSE_MSG = 'Use `reverse.%s` instead of `%s.%s`.'
 
         SELECT_METHODS = [:select, :find_all]
+        DANGEROUS_METHODS = [:first, :last]
 
         def on_send(node)
           receiver, second_method = *node
-          return unless second_method == :first || second_method == :last
           return if receiver.nil?
+          return unless DANGEROUS_METHODS.include?(second_method)
 
           receiver, _args, body = *receiver if receiver.block_type?
 
-          _, first_method, args = *receiver
+          caller, first_method, args = *receiver
 
           # check that we have usual block or block pass
           return if body.nil? && (args.nil? || !args.block_pass_type?)
 
           return unless SELECT_METHODS.include?(first_method)
+
+          return if lazy?(caller)
 
           range = receiver.loc.selector.join(node.loc.selector)
 
@@ -69,6 +72,12 @@ module RuboCop
         def preferred_method
           config.for_cop('Style/CollectionMethods') \
             ['PreferredMethods']['detect'] || 'detect'
+        end
+
+        def lazy?(node)
+          return false if node.nil?
+          receiver, method, _args = *node
+          method == :lazy && !receiver.nil?
         end
       end
     end
