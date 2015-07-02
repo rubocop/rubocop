@@ -19,12 +19,11 @@ module RuboCop
       # Returns true for constructs such as
       # private def my_method
       # which are allowed in Ruby 2.1 and later.
-      def visibility_and_def_on_same_line?(receiver, method_name, args)
+      def modifier_and_def_on_same_line?(receiver, method_name, args)
         !receiver &&
-          [:public, :protected, :private,
-           :private_class_method, :public_class_method,
-           :module_function].include?(method_name) &&
-          args.size == 1 && [:def, :defs].include?(args.first.type)
+          method_name != :def &&
+          args.size == 1 &&
+          [:def, :defs].include?(args.first.type)
       end
     end
   end
