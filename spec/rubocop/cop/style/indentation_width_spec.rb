@@ -768,7 +768,7 @@ describe RuboCop::Cop::Style::IndentationWidth do
           context 'when modifier and def are on the same line' do
             it 'accepts a correctly aligned body' do
               inspect_source(cop,
-                             ['private def test',
+                             ['foo def test',
                               '  something',
                               'end'])
               expect(cop.offenses).to be_empty
@@ -776,11 +776,11 @@ describe RuboCop::Cop::Style::IndentationWidth do
 
             it 'registers an offense for bad indentation of a def body' do
               inspect_source(cop,
-                             ['private def test',
-                              '          something',
-                              '        end'])
+                             ['foo def test',
+                              '      something',
+                              '    end'])
               expect(cop.messages)
-                .to eq(['Use 2 (not 10) spaces for indentation.'])
+                .to eq(['Use 2 (not 6) spaces for indentation.'])
             end
           end
         end
@@ -797,19 +797,19 @@ describe RuboCop::Cop::Style::IndentationWidth do
           context 'when modifier and def are on the same line' do
             it 'accepts a correctly aligned body' do
               inspect_source(cop,
-                             ['private def test',
-                              '          something',
+                             ['foo def test',
+                              '      something',
                               'end'])
               expect(cop.offenses).to be_empty
             end
 
             it 'registers an offense for bad indentation of a def body' do
               inspect_source(cop,
-                             ['private def test',
+                             ['foo def test',
                               '  something',
-                              '        end'])
+                              '    end'])
               expect(cop.messages)
-                .to eq(['Use 2 (not -6) spaces for indentation.'])
+                .to eq(['Use 2 (not -2) spaces for indentation.'])
             end
           end
         end

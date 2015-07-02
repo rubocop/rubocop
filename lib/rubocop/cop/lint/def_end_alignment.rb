@@ -28,8 +28,8 @@ module RuboCop
 
         def on_send(node)
           receiver, method_name, *args = *node
-          return unless visibility_and_def_on_same_line?(receiver, method_name,
-                                                         args)
+          return unless modifier_and_def_on_same_line?(receiver, method_name,
+                                                       args)
 
           method_def = args.first
           if style == :start_of_line
