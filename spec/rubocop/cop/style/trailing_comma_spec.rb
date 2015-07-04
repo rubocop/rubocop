@@ -110,6 +110,12 @@ describe RuboCop::Cop::Style::TrailingComma, :config do
       include_examples 'single line lists',
                        ', unless each item is on its own line'
     end
+
+    context 'when EnforcedStyleForMultiline is consistent_comma' do
+      let(:cop_config) { { 'EnforcedStyleForMultiline' => 'consistent_comma' } }
+      include_examples 'single line lists',
+                       ', unless items are split onto multiple lines'
+    end
   end
 
   context 'with multi-line list of values' do
