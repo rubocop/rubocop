@@ -650,6 +650,12 @@ Style/SpaceInsideHashLiteralBraces:
     - space
     - no_space
 
+Style/SpaceInsideStringInterpolation:
+  EnforcedStyle: no_space
+  SupportedStyles:
+    - space
+    - no_space
+
 Style/SymbolProc:
   # A list of method names to be ignored by the check.
   # The names should be fairly unique, otherwise you'll end up ignoring lots of code.

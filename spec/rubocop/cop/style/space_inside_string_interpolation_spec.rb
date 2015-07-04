@@ -2,49 +2,96 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::SpaceInsideStringInterpolation do
-  subject(:cop) { described_class.new }
+describe RuboCop::Cop::Style::SpaceInsideStringInterpolation, :config do
+  subject(:cop) { described_class.new(config) }
 
-  context 'for ill-formatted string interpolations' do
-    let(:source) do
-      ['"#{ var}"',
-       '"#{ var }"',
-       '"#{var }"',
-       '"#{   var   }"',
-       '"#{var	}"',
-       '"#{	var	}"',
-       '"#{	var}"',
-       '"#{ 	 var 	 	}"']
+  let(:irregular_source) do
+    ['"#{ var}"',
+     '"#{var }"',
+     '"#{   var   }"',
+     '"#{var	}"',
+     '"#{	var	}"',
+     '"#{	var}"',
+     '"#{ 	 var 	 	}"']
+  end
+
+  context 'when EnforcedStyle is no_space' do
+    let(:cop_config) { { 'EnforcedStyle' => 'no_space' } }
+    let(:expected_message) do
+      'Space inside string interpolation detected.'
     end
 
-    let(:corrected_source) { '"#{var}"' }
+    context 'for ill-formatted string interpolations' do
+      let(:source) { irregular_source << '"#{ var }"' }
+      let(:corrected_source) { '"#{var}"' }
 
-    it 'registers an offense for any variation of spaces inside the braces' do
-      inspect_source(cop, source)
-      expect(cop.messages)
-        .to eq(['Space inside string interpolation detected.'] * 8)
+      it 'registers an offense for any irregular spacing inside the braces' do
+        inspect_source(cop, source)
+        expect(cop.messages).to eq([expected_message] * source.length)
+      end
+
+      it 'auto-corrects spacing within a string interpolation' do
+        new_source = autocorrect_source(cop, source)
+        expected_source = ([corrected_source] * source.length).join("\n")
+        expect(new_source).to eq(expected_source)
+      end
     end
 
-    it 'auto-corrects spacing within a string interpolation' do
-      new_source = autocorrect_source(cop, source)
-      expect(new_source).to eq(([corrected_source] * 8).join("\n"))
+    context 'for well-formatted string interpolations' do
+      let(:source) do
+        ['"Variable is    #{var}      "',
+         '"  Variable is  #{var}"']
+      end
+
+      it 'does not register an offense for excess literal spacing' do
+        inspect_source(cop, source)
+        expect(cop.messages).to be_empty
+      end
+
+      it 'does not correct valid string interpolations' do
+        new_source = autocorrect_source(cop, source)
+        expect(new_source).to eq(source.join("\n"))
+      end
     end
   end
 
-  context 'for well-formatted string interpolations' do
-    let(:source) do
-      ['"Variable is    #{var}      "',
-       '"  Variable is  #{var}"']
+  context 'when EnforcedStyle is space' do
+    let(:cop_config) { { 'EnforcedStyle' => 'space' } }
+    let(:expected_message) do
+      'Missing space around string interpolation detected.'
     end
 
-    it 'does not register an offense for excess literal spacing' do
-      inspect_source(cop, source)
-      expect(cop.messages).to be_empty
+    context 'for ill-formatted string interpolations' do
+      let(:source) { irregular_source << '"#{var}"' }
+      let(:corrected_source) { '"#{ var }"' }
+
+      it 'registers an offense for any irregular spacing inside the braces' do
+        inspect_source(cop, source)
+        expect(cop.messages).to eq([expected_message] * source.length)
+      end
+
+      it 'auto-corrects spacing within a string interpolation' do
+        new_source = autocorrect_source(cop, source)
+        expected_source = ([corrected_source] * source.length).join("\n")
+        expect(new_source).to eq(expected_source)
+      end
     end
 
-    it 'does not correct valid string interpolations' do
-      new_source = autocorrect_source(cop, source)
-      expect(new_source).to eq(source.join("\n"))
+    context 'for well-formatted string interpolations' do
+      let(:source) do
+        ['"Variable is    #{ var }      "',
+         '"  Variable is  #{ var }"']
+      end
+
+      it 'does not register an offense for excess literal spacing' do
+        inspect_source(cop, source)
+        expect(cop.messages).to be_empty
+      end
+
+      it 'does not correct valid string interpolations' do
+        new_source = autocorrect_source(cop, source)
+        expect(new_source).to eq(source.join("\n"))
+      end
     end
   end
 end

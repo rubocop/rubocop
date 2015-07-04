@@ -11,7 +11,7 @@ describe RuboCop::Cop::Style::UnneededCapitalW do
   end
 
   it 'registers no offense for normal arrays of strings with interpolation' do
-    inspect_source(cop, '["one", "two", "th#{ ?r }ee"]')
+    inspect_source(cop, '["one", "two", "th#{?r}ee"]')
     expect(cop.offenses).to be_empty
   end
 
@@ -21,7 +21,7 @@ describe RuboCop::Cop::Style::UnneededCapitalW do
   end
 
   it 'registers no offense for %W with interpolation' do
-    inspect_source(cop, '%W(c#{ ?a }t dog)')
+    inspect_source(cop, '%W(c#{?a}t dog)')
     expect(cop.offenses).to be_empty
   end
 
@@ -49,7 +49,7 @@ describe RuboCop::Cop::Style::UnneededCapitalW do
   end
 
   it 'registers no offense for %w with interpolation-like syntax' do
-    inspect_source(cop, '%w(c#{ ?a }t dog)')
+    inspect_source(cop, '%w(c#{?a}t dog)')
     expect(cop.offenses).to be_empty
   end
 

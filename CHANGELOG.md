@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#2010](https://github.com/bbatsov/rubocop/pull/2010): Add `space` style for SpaceInsideStringInterpolation. ([@gotrevor][])
 * [#2007](https://github.com/bbatsov/rubocop/pull/2007): Allow any modifier before `def`, not only visibility modifiers. ([@fphilipe][])
 * [#1980](https://github.com/bbatsov/rubocop/pull/1980): `--auto-gen-config` now outputs an excluded files list for failed cops (up to a maxiumum of 15 files). ([@bmorrall][])
 * [#1918](https://github.com/bbatsov/rubocop/issues/1918): New configuration parameter `AllCops:DisabledByDefault` when set to `true` makes only cops found in user configuration enabled, which makes cop selection *opt-in*. ([@jonas054][])
@@ -1483,3 +1484,4 @@
 [@tejasbubane]: https://github.com/tejasbubane
 [@bmorrall]: https://github.com/bmorrall
 [@fphilipe]: https://github.com/fphilipe
+[@gotrevor]: https://github.com/gotrevor
