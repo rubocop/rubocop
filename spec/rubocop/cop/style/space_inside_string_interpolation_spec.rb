@@ -15,26 +15,39 @@ describe RuboCop::Cop::Style::SpaceInsideStringInterpolation, :config do
      '"#{ 	 var 	 	}"']
   end
 
+  shared_examples 'ill-formatted string interpolations' do
+    let(:source_length) { source.class == String ? 1 : source.length }
+
+    it 'registers an offense for any irregular spacing inside the braces' do
+      inspect_source(cop, source)
+      expect(cop.messages).to eq([expected_message] * source_length)
+    end
+
+    it 'auto-corrects spacing within a string interpolation' do
+      new_source = autocorrect_source(cop, source)
+      expected_source = ([corrected_source] * source_length).join("\n")
+      expect(new_source).to eq(expected_source)
+    end
+  end
+
   context 'when EnforcedStyle is no_space' do
     let(:cop_config) { { 'EnforcedStyle' => 'no_space' } }
     let(:expected_message) do
       'Space inside string interpolation detected.'
     end
 
-    context 'for ill-formatted string interpolations' do
-      let(:source) { irregular_source << '"#{ var }"' }
+    context 'for always ill-formatted string interpolations' do
+      let(:source) { irregular_source }
       let(:corrected_source) { '"#{var}"' }
 
-      it 'registers an offense for any irregular spacing inside the braces' do
-        inspect_source(cop, source)
-        expect(cop.messages).to eq([expected_message] * source.length)
-      end
+      it_behaves_like 'ill-formatted string interpolations'
+    end
 
-      it 'auto-corrects spacing within a string interpolation' do
-        new_source = autocorrect_source(cop, source)
-        expected_source = ([corrected_source] * source.length).join("\n")
-        expect(new_source).to eq(expected_source)
-      end
+    context 'for "space" style formatted string interpolations' do
+      let(:source) { '"#{ var }"' }
+      let(:corrected_source) { '"#{var}"' }
+
+      it_behaves_like 'ill-formatted string interpolations'
     end
 
     context 'for well-formatted string interpolations' do
@@ -61,20 +74,18 @@ describe RuboCop::Cop::Style::SpaceInsideStringInterpolation, :config do
       'Missing space around string interpolation detected.'
     end
 
-    context 'for ill-formatted string interpolations' do
-      let(:source) { irregular_source << '"#{var}"' }
+    context 'for always ill-formatted string interpolations' do
+      let(:source) { irregular_source }
       let(:corrected_source) { '"#{ var }"' }
 
-      it 'registers an offense for any irregular spacing inside the braces' do
-        inspect_source(cop, source)
-        expect(cop.messages).to eq([expected_message] * source.length)
-      end
+      it_behaves_like 'ill-formatted string interpolations'
+    end
 
-      it 'auto-corrects spacing within a string interpolation' do
-        new_source = autocorrect_source(cop, source)
-        expected_source = ([corrected_source] * source.length).join("\n")
-        expect(new_source).to eq(expected_source)
-      end
+    context 'for "no_space" style formatted string interpolations' do
+      let(:source) { '"#{var}"' }
+      let(:corrected_source) { '"#{ var }"' }
+
+      it_behaves_like 'ill-formatted string interpolations'
     end
 
     context 'for well-formatted string interpolations' do
