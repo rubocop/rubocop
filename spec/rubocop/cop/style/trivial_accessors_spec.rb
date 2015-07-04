@@ -179,6 +179,18 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
     end
   end
 
+  context 'disallow predicates' do
+    let(:cop_config) { { 'AllowPredicates' => false } }
+
+    it 'does not accept predicate-like reader' do
+      inspect_source(cop,
+                     ['def foo?',
+                      '  @foo',
+                      'end'])
+      expect(cop.offenses.size).to eq(1)
+    end
+  end
+
   context 'allow predicates' do
     let(:cop_config) { { 'AllowPredicates' => true } }
 
@@ -192,7 +204,7 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   context 'with whitelist' do
-    let(:cop_config) { { 'Whitelist' => ['to_foo', 'bar='] } }
+    let(:cop_config) { { 'Whitelist' => ['to_foo', 'bar=', 'foo?'] } }
 
     it 'accepts whitelisted reader' do
       inspect_source(cop,
@@ -208,6 +220,19 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
                       '   @bar = bar',
                       ' end'])
       expect(cop.offenses).to be_empty
+    end
+
+    context 'with AllowPredicates: false' do
+      let(:cop_config) { { 'AllowPredicates' => false } }
+
+      it 'accepts whitelisted predicate' do
+        pending 'Whitelist should override AllowPredicates'
+        inspect_source(cop,
+                       [' def foo?',
+                        '   @foo',
+                        ' end'])
+        expect(cop.offenses).to be_empty
+      end
     end
   end
 
@@ -266,6 +291,20 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
       it 'does not autocorrect' do
         expect(autocorrect_source(cop, source))
           .to eq(source.join("\n"))
+        expect(cop.offenses.map(&:corrected?)).to eq [false]
+      end
+    end
+
+    context 'predicate reader, with AllowPredicates: false' do
+      let(:cop_config) { { 'AllowPredicates' => false } }
+      let(:source) do
+        ['def foo?',
+         '  @foo',
+         'end']
+      end
+
+      it 'does not autocorrect' do
+        expect(autocorrect_source(cop, source)).to eq(source.join("\n"))
         expect(cop.offenses.map(&:corrected?)).to eq [false]
       end
     end
