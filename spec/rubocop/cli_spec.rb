@@ -35,6 +35,36 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     describe '--auto-correct' do
+      it 'corrects InitialIndentation offenses' do
+        source = ['  # comment 1',
+                  '',
+                  '  # comment 2',
+                  '  def func',
+                  '    begin',
+                  '      foo',
+                  '      bar',
+                  '    rescue',
+                  '      baz',
+                  '    end',
+                  '  end',
+                  ''].join("\n")
+        create_file('example.rb', source)
+        create_file('.rubocop.yml', ['Lint/DefEndAlignment:',
+                                     '  AutoCorrect: true'])
+        expect(cli.run(['--auto-correct'])).to eq(1)
+        corrected = ['# comment 1',
+                     '',
+                     '# comment 2',
+                     'def func',
+                     '  foo',
+                     '  bar',
+                     'rescue',
+                     '  baz',
+                     '  end', # TODO: The `end` should have been corrected.
+                     '']
+        expect(IO.read('example.rb')).to eq(corrected.join("\n"))
+      end
+
       it 'corrects RedundantBegin offenses and fixes indentation etc' do
         source = ['  def func',
                   '    begin',
@@ -71,36 +101,36 @@ describe RuboCop::CLI, :isolated_environment do
                   ''].join("\n")
         create_file('example.rb', source)
         expect(cli.run(['--auto-correct'])).to eq(1)
-        corrected = ['  def func',
+        corrected = ['def func',
+                     '  foo',
+                     '  bar',
+                     'rescue',
+                     '  baz',
+                     '  end',
+                     '',
+                     'def func',
+                     '  x; y; rescue; z',
+                     'end',
+                     '',
+                     'def method',
+                     '  BlockA do |_strategy|',
                      '    foo',
-                     '    bar',
-                     '  rescue',
-                     '    baz',
                      '  end',
                      '',
-                     '  def func',
-                     '    x; y; rescue; z',
+                     '  BlockB do |_portfolio|',
+                     '    foo',
                      '  end',
                      '',
-                     '  def method',
-                     '    BlockA do |_strategy|',
-                     '      foo',
-                     '    end',
+                     'rescue => e # some problem',
+                     '  bar',
+                     'end',
                      '',
-                     '    BlockB do |_portfolio|',
-                     '      foo',
-                     '    end',
-                     '',
-                     '  rescue => e # some problem',
-                     '    bar',
-                     '  end',
-                     '',
-                     '  def method',
-                     '    # comment 1',
-                     '    do_some_stuff',
-                     '  rescue # comment 2',
-                     '    # comment 3',
-                     '  end',
+                     'def method',
+                     '  # comment 1',
+                     '  do_some_stuff',
+                     'rescue # comment 2',
+                     '  # comment 3',
+                     'end',
                      '']
         expect(IO.read('example.rb')).to eq(corrected.join("\n"))
       end
@@ -118,15 +148,15 @@ describe RuboCop::CLI, :isolated_environment do
                   '']
         create_file('example.rb', source)
         expect(cli.run(['--auto-correct'])).to eq(0)
-        corrected = ['  render_views',
-                     "  describe 'GET index' do",
-                     "    it 'returns http success' do",
-                     '    end',
-                     "    describe 'admin user' do",
-                     '      before(:each) do',
-                     '      end',
+        corrected = ['render_views',
+                     "describe 'GET index' do",
+                     "  it 'returns http success' do",
+                     '  end',
+                     "  describe 'admin user' do",
+                     '    before(:each) do',
                      '    end',
                      '  end',
+                     'end',
                      '']
         expect(IO.read('example.rb')).to eq(corrected.join("\n"))
       end
@@ -924,6 +954,12 @@ describe RuboCop::CLI, :isolated_environment do
            '',
            '# Offense count: 1',
            '# Cop supports --auto-correct.',
+           'Style/InitialIndentation:',
+           '  Exclude:',
+           "    - 'example2.rb'",
+           '',
+           '# Offense count: 1',
+           '# Cop supports --auto-correct.',
            '# Configuration parameters: MultiSpaceAllowedForOperators.',
            'Style/SpaceAroundOperators:',
            '  Exclude:',
@@ -978,6 +1014,12 @@ describe RuboCop::CLI, :isolated_environment do
            '# Cop supports --auto-correct.',
            '# Configuration parameters: EnforcedStyle, SupportedStyles.',
            'Style/IndentationConsistency:',
+           '  Exclude:',
+           "    - 'example2.rb'",
+           '',
+           '# Offense count: 1',
+           '# Cop supports --auto-correct.',
+           'Style/InitialIndentation:',
            '  Exclude:',
            "    - 'example2.rb'",
            '',
@@ -1360,7 +1402,7 @@ describe RuboCop::CLI, :isolated_environment do
       end
 
       it 'shows cop names' do
-        create_file('example1.rb', "\tputs 0")
+        create_file('example1.rb', 'puts 0 ')
         file = abs('example1.rb')
 
         expect(cli.run(['--format',
@@ -1368,39 +1410,41 @@ describe RuboCop::CLI, :isolated_environment do
                         '--debug',
                         'example1.rb'])).to eq(1)
         expect($stdout.string.lines.to_a[-1])
-          .to eq(["#{file}:1:1: C: Style/Tab: Tab detected.",
-                  ''].join("\n"))
+          .to eq("#{file}:1:7: C: Style/TrailingWhitespace: Trailing " \
+                 "whitespace detected.\n")
       end
     end
 
     describe '-D/--display-cop-names' do
       it 'shows cop names' do
-        create_file('example1.rb', "\tputs 0 # rubocop:disable NumericLiterals")
+        create_file('example1.rb', 'puts 0 # rubocop:disable NumericLiterals ')
         file = abs('example1.rb')
 
         expect(cli.run(['--format', 'emacs', '--display-cop-names',
                         'example1.rb'])).to eq(1)
+        # TODO: Should say "Unnecessary disabling of Style/NumericLiterals."
         expect($stdout.string)
-          .to eq(["#{file}:1:1: C: Style/Tab: Tab detected.",
-                  "#{file}:1:9: W: Lint/UnneededDisable: Unnecessary " \
-                  'disabling of Style/NumericLiterals.',
+          .to eq(["#{file}:1:8: W: Lint/UnneededDisable: Unnecessary " \
+                  'disabling of NumericLiterals .',
+                  "#{file}:1:41: C: Style/TrailingWhitespace: Trailing " \
+                  'whitespace detected.',
                   ''].join("\n"))
       end
     end
 
     describe '-S/--display-style-guide' do
       it 'shows style guide entry' do
-        create_file('example1.rb', "\tputs 0")
+        create_file('example1.rb', 'puts 0 ')
         file = abs('example1.rb')
-        url = 'https://github.com/bbatsov/ruby-style-guide#spaces-indentation'
+        url =
+          'https://github.com/bbatsov/ruby-style-guide#no-trailing-whitespace'
 
         expect(cli.run(['--format',
                         'emacs',
                         '--display-style-guide',
                         'example1.rb'])).to eq(1)
         expect($stdout.string.lines.to_a[-1])
-          .to eq(["#{file}:1:1: C: Tab detected. (#{url})",
-                  ''].join("\n"))
+          .to eq("#{file}:1:7: C: Trailing whitespace detected. (#{url})\n")
       end
 
       it 'shows reference entry' do
@@ -1626,6 +1670,10 @@ describe RuboCop::CLI, :isolated_environment do
                       'example2.rb:2:1: C: Tab detected.',
                       "\tx",
                       '^',
+                      'example2.rb:2:2: C: Indentation of first line in file ' \
+                      'detected.',
+                      '	x',
+                      ' ^',
                       'example2.rb:3:1: C: Inconsistent indentation ' \
                       'detected.',
                       'def a',
@@ -1651,7 +1699,7 @@ describe RuboCop::CLI, :isolated_environment do
                       '    end',
                       '    ^^^',
                       '',
-                      '3 files inspected, 12 offenses detected',
+                      '3 files inspected, 13 offenses detected',
                       ''].join("\n"))
           end
         end
@@ -1675,6 +1723,8 @@ describe RuboCop::CLI, :isolated_environment do
                "#{abs('example2.rb')}:1:1: C: Incorrect indentation detected" \
                ' (column 0 instead of 1).',
                "#{abs('example2.rb')}:2:1: C: Tab detected.",
+               "#{abs('example2.rb')}:2:2: C: Indentation of first line in " \
+               'file detected.',
                "#{abs('example2.rb')}:3:1: C: Inconsistent indentation " \
                'detected.',
                ''].join("\n")
