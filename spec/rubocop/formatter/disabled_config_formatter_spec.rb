@@ -24,10 +24,13 @@ module RuboCop
 
       describe '#finished' do
         it 'displays YAML configuration disabling all cops with offenses' do
+          formatter.file_started('test_a.rb', {})
           formatter.file_finished('test_a.rb', offenses)
+          formatter.file_started('test_b.rb', {})
           formatter.file_finished('test_b.rb', [offenses.first])
           formatter.finished(['test_a.rb', 'test_b.rb'])
-          expect(output.string).to eq(described_class::HEADING +
+          expect(output.string).to eq(format(described_class::HEADING,
+                                             'rubocop --auto-gen-config') +
                                       ['',
                                        '',
                                        '# Offense count: 2',
@@ -55,15 +58,18 @@ module RuboCop
 
           15.times do |index|
             file_name = format('test_%02d.rb', index)
+            formatter.file_started(file_name, {})
             formatter.file_finished(file_name, offenses)
             file_list << file_name
             exclusion_list << "    - '#{file_name}'"
           end
 
           file_list << 'test.rb'
+          formatter.file_started('test.rb', {})
           formatter.file_finished('test.rb', [offenses.first])
           formatter.finished(file_list)
-          expect(output.string).to eq(described_class::HEADING +
+          expect(output.string).to eq(format(described_class::HEADING,
+                                             'rubocop --auto-gen-config') +
                                       ['',
                                        '',
                                        '# Offense count: 16',
@@ -74,6 +80,42 @@ module RuboCop
                                        'Cop2:',
                                        '  Exclude:',
                                        exclusion_list,
+                                       ''].flatten.join("\n"))
+        end
+
+        it 'can be configured to set the exclusion list limit' do
+          exclusion_list = []
+          file_list = []
+          options = {
+            cli_options: {
+              exclude_limit: 5
+            }
+          }
+
+          15.times do |index|
+            file_name = format('test_%02d.rb', index)
+            formatter.file_started(file_name, options)
+            formatter.file_finished(file_name, offenses)
+            file_list << file_name
+            exclusion_list << "    - '#{file_name}'"
+          end
+
+          file_list << 'test.rb'
+          formatter.file_started('test.rb', options)
+          formatter.file_finished('test.rb', [offenses.first])
+          formatter.finished(file_list)
+          expect(output.string).to eq(format(described_class::HEADING,
+                                             'rubocop --auto-gen-config ' \
+                                             '--exclude-limit 5') +
+                                      ['',
+                                       '',
+                                       '# Offense count: 16',
+                                       'Cop1:',
+                                       '  Enabled: false',
+                                       '',
+                                       '# Offense count: 15',
+                                       'Cop2:',
+                                       '  Enabled: false',
                                        ''].flatten.join("\n"))
         end
       end

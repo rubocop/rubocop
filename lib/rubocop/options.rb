@@ -3,62 +3,11 @@
 require 'optparse'
 
 module RuboCop
-  # This module contains help texts for command line options.
-  module OptionsHelp
-    TEXT = {
-      only:                 'Run only the given cop(s).',
-      only_guide_cops:     ['Run only cops for rules that link to a',
-                            'style guide.'],
-      except:               'Disable the given cop(s).',
-      require:              'Require Ruby file.',
-      config:               'Specify configuration file.',
-      auto_gen_config:     ['Generate a configuration file acting as a',
-                            'TODO list.'],
-      force_exclusion:     ['Force excluding files specified in the',
-                            'configuration `Exclude` even if they are',
-                            'explicitly passed as arguments.'],
-      format:              ['Choose an output formatter. This option',
-                            'can be specified multiple times to enable',
-                            'multiple formatters at the same time.',
-                            '  [p]rogress (default)',
-                            '  [s]imple',
-                            '  [c]lang',
-                            '  [d]isabled cops via inline comments',
-                            '  [fu]ubar',
-                            '  [e]macs',
-                            '  [j]son',
-                            '  [h]tml',
-                            '  [fi]les',
-                            '  [o]ffenses',
-                            '  custom formatter class name'],
-      out:                 ['Write output to a file instead of STDOUT.',
-                            'This option applies to the previously',
-                            'specified --format, or the default format',
-                            'if no format is specified.'],
-      fail_level:          ['Minimum severity (A/R/C/W/E/F) for exit',
-                            'with error code.'],
-      show_cops:           ['Shows the given cops, or all cops by',
-                            'default, and their configurations for the',
-                            'current directory.'],
-      fail_fast:           ['Inspect files in order of modification',
-                            'time and stop after the first file',
-                            'containing offenses.'],
-      debug:                'Display debug info.',
-      display_cop_names:    'Display cop names in offense messages.',
-      display_style_guide:  'Display style guide URLs in offense messages.',
-      rails:                'Run extra Rails cops.',
-      lint:                 'Run only lint cops.',
-      auto_correct:         'Auto-correct offenses.',
-      no_color:             'Disable color output.',
-      version:              'Display version.',
-      verbose_version:      'Display verbose version.'
-    }
-  end
-
   # This class handles command line options.
   class Options
     DEFAULT_FORMATTER = 'progress'
     EXITING_OPTIONS = [:version, :verbose_version, :show_cops]
+    DEFAULT_MAXIMUM_EXCLUSION_ITEMS = 15
 
     def initialize
       @options = {}
@@ -136,6 +85,10 @@ module RuboCop
                                   ConfigLoader::AUTO_GENERATED_FILE]]
       end
 
+      option(opts, '--exclude-limit COUNT') do
+        validate_exclude_limit_option(args)
+      end
+
       option(opts, '--force-exclusion')
     end
 
@@ -201,10 +154,82 @@ module RuboCop
     end
 
     def validate_auto_gen_config_option(args)
-      return unless args.any?
+      return if args.empty?
+      return if args.size <= 2 && args.first == '--exclude-limit'
 
-      warn '--auto-gen-config can not be combined with any other arguments.'
+      warn '--auto-gen-config can only be combined with --exclude-limit.'
       exit(1)
     end
+
+    def validate_exclude_limit_option(args)
+      if @options[:exclude_limit] !~ /^\d+$/
+        # Emulate OptionParser's behavior to make failures consistent regardless
+        # of option order.
+        fail OptionParser::MissingArgument
+      end
+
+      # --exclude-limit is valid if there's a parsed or yet unparsed
+      # --auto-gen-config.
+      return if @options[:auto_gen_config] || args.include?('--auto-gen-config')
+
+      fail ArgumentError,
+           '--exclude-limit can only be used with --auto-gen-config.'
+    end
+  end
+
+  # This module contains help texts for command line options.
+  module OptionsHelp
+    MAX_EXCL = RuboCop::Options::DEFAULT_MAXIMUM_EXCLUSION_ITEMS.to_s
+    TEXT = {
+      only:                 'Run only the given cop(s).',
+      only_guide_cops:     ['Run only cops for rules that link to a',
+                            'style guide.'],
+      except:               'Disable the given cop(s).',
+      require:              'Require Ruby file.',
+      config:               'Specify configuration file.',
+      auto_gen_config:     ['Generate a configuration file acting as a',
+                            'TODO list.'],
+      exclude_limit:       ['Used together with --auto-gen-config to',
+                            'set the limit for how many Exclude',
+                            "properties to generate. Default is #{MAX_EXCL}."],
+      force_exclusion:     ['Force excluding files specified in the',
+                            'configuration `Exclude` even if they are',
+                            'explicitly passed as arguments.'],
+      format:              ['Choose an output formatter. This option',
+                            'can be specified multiple times to enable',
+                            'multiple formatters at the same time.',
+                            '  [p]rogress (default)',
+                            '  [s]imple',
+                            '  [c]lang',
+                            '  [d]isabled cops via inline comments',
+                            '  [fu]ubar',
+                            '  [e]macs',
+                            '  [j]son',
+                            '  [h]tml',
+                            '  [fi]les',
+                            '  [o]ffenses',
+                            '  custom formatter class name'],
+      out:                 ['Write output to a file instead of STDOUT.',
+                            'This option applies to the previously',
+                            'specified --format, or the default format',
+                            'if no format is specified.'],
+      fail_level:          ['Minimum severity (A/R/C/W/E/F) for exit',
+                            'with error code.'],
+      show_cops:           ['Shows the given cops, or all cops by',
+                            'default, and their configurations for the',
+                            'current directory.'],
+      fail_fast:           ['Inspect files in order of modification',
+                            'time and stop after the first file',
+                            'containing offenses.'],
+      debug:                'Display debug info.',
+      display_cop_names:    'Display cop names in offense messages.',
+      display_style_guide:  'Display style guide URLs in offense messages.',
+      rails:                'Run extra Rails cops.',
+      lint:                 'Run only lint cops.',
+      auto_correct:         'Auto-correct offenses.',
+      no_color:             'Disable color output.',
+      version:              'Display version.',
+      verbose_version:      'Display verbose version.'
+    }
   end
 end

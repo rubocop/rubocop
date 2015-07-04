@@ -173,6 +173,7 @@ Command flag              | Description
 `--only`                  | Run only the specified cop(s) and/or cops in the specified departments.
 `--except`                | Run all cops enabled by configuration except the specified cop(s) and/or departments.
 `--auto-gen-config`       | Generate a configuration file acting as a TODO list.
+`--exclude-limit`         | Limit how many individual files `--auto-gen-config` can list in `Exclude` parameters, default is 15.
 `--show-cops`             | Shows available cops and their configuration.
 `--fail-level`            | Minimum [severity](#severity) for exit with error code. Full severity name or upper case initial can be given. Normally, auto-corrected offenses are ignored. Use `A` or `autocorrect` if you'd like them to trigger failure.
 
@@ -409,10 +410,18 @@ Style/PerlBackrefs:
 If you have a code base with an overwhelming amount of offenses, it can
 be a good idea to use `rubocop --auto-gen-config` and add an
 `inherit_from: .rubocop_todo.yml` in your `.rubocop.yml`. The generated
-file `.rubocop_todo.yml` contains configuration to disable all cops that
-currently detect an offense in the code. Then you can start removing the
-entries in the generated file one by one as you work through all the
-offenses in the code.
+file `.rubocop_todo.yml` contains configuration to disable cops that
+currently detect an offense in the code by excluding the offending
+files, or disabling the cop altogether once a file count limit has been
+reached.
+
+By adding the option `--exclude-limit COUNT`, e.g., `rubocop
+--auto-gen-config --exclude-limit 5`, you can change how many files are
+excluded before the cop is entirely disabled. The default COUNT is 15.
+
+Then you can start removing the entries in the generated
+`.rubocop_todo.yml` file one by one as you work through all the offenses
+in the code.
 
 ## Disabling Cops within Source Code
 
