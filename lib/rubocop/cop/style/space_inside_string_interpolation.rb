@@ -6,15 +6,11 @@ module RuboCop
       # This cop checks for whitespace within string interpolations.
       #
       # @example
-      #   Good:
-      #      var = "This is the #{good} example"
+      #   # Good if EnforcedStyle is no_space, bad if space.
+      #      var = "This is the #{no_space} example"
       #
-      #   Bad:
-      #      var = "This is the #{ bad } example"
-      #
-      #   These examples are graded with the default style of "no_space".
-      #   With style "space", the grades of these examples are switched.
-      #
+      #   # Good if EnforceStyle is space, bad if no_space.
+      #      var = "This is the #{ space } example"
       class SpaceInsideStringInterpolation < Cop
         include ConfigurableEnforcedStyle
 
