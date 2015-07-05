@@ -100,7 +100,7 @@ module RuboCop
         def names_match?(method_name, body)
           ivar_name, = *body
 
-          method_name.to_s.chomp('=') == ivar_name[1..-1]
+          method_name.to_s.sub(/[=?]$/, '') == ivar_name[1..-1]
         end
 
         def trivial_accessor_kind(method_name, args, body)
@@ -127,6 +127,7 @@ module RuboCop
         def autocorrect_instance(node)
           method_name, args, body = *node
           unless names_match?(method_name, body) &&
+                 !predicate?(method_name) &&
                  (kind = trivial_accessor_kind(method_name, args, body))
             return
           end

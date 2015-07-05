@@ -13,6 +13,7 @@
 
 ### Bugs fixed
 
+* [#2014](https://github.com/bbatsov/rubocop/pull/2014): Fix `Style/TrivialAccessors` to support AllowPredicates: false. ([@gotrevor][])
 * [#1988](https://github.com/bbatsov/rubocop/issues/1988): Fix bug in `Style/ParallelAssignment` when assigning from `Module::CONSTANT`. ([@rrosenblum][])
 * [#1995](https://github.com/bbatsov/rubocop/pull/1995): Improve message for `Rails/TimeZone`. ([@palkan][])
 * [#1977](https://github.com/bbatsov/rubocop/issues/1977): Fix bugs in `Rails/Date` and `Rails/TimeZone` when using namespaced Time/Date. ([@palkan][])
