@@ -108,6 +108,7 @@ require 'rubocop/cop/lint/useless_access_modifier'
 require 'rubocop/cop/lint/useless_assignment'
 require 'rubocop/cop/lint/useless_comparison'
 require 'rubocop/cop/lint/useless_else_without_rescue'
+require 'rubocop/cop/lint/useless_optional_argument'
 require 'rubocop/cop/lint/useless_setter_call'
 require 'rubocop/cop/lint/void'
 

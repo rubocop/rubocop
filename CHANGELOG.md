@@ -10,6 +10,7 @@
 * [#1918](https://github.com/bbatsov/rubocop/issues/1918): New configuration parameter `AllCops:DisabledByDefault` when set to `true` makes only cops found in user configuration enabled, which makes cop selection *opt-in*. ([@jonas054][])
 * New cop `Performance/StringReplacement` checks for usages of `gsub` that can be replaced with `tr` or `delete`. ([@rrosenblum][])
 * [#2001](https://github.com/bbatsov/rubocop/issues/2001): New cop `Style/InitialIndentation` checks for indentation of the first non-blank non-comment line in a file. ([@jonas054][])
+* New cop `Lint/UselessOptionalArgument` checks for optional arguments that do not appear at the end of an argument list. ([@rrosenblum][])
 
 ### Bugs fixed
 
