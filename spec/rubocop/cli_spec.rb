@@ -51,7 +51,7 @@ describe RuboCop::CLI, :isolated_environment do
         create_file('example.rb', source)
         create_file('.rubocop.yml', ['Lint/DefEndAlignment:',
                                      '  AutoCorrect: true'])
-        expect(cli.run(['--auto-correct'])).to eq(1)
+        expect(cli.run(['--auto-correct'])).to eq(0)
         corrected = ['# comment 1',
                      '',
                      '# comment 2',
@@ -60,8 +60,9 @@ describe RuboCop::CLI, :isolated_environment do
                      '  bar',
                      'rescue',
                      '  baz',
-                     '  end', # TODO: The `end` should have been corrected.
+                     'end',
                      '']
+        expect($stderr.string).to eq('')
         expect(IO.read('example.rb')).to eq(corrected.join("\n"))
       end
 
