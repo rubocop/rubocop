@@ -49,7 +49,11 @@ module RuboCop
         private
 
         def autocorrect(node)
-          align(node, style == :start_of_line ? node.ancestors.first : node)
+          if style == :start_of_line && node.parent && node.parent.send_type?
+            align(node, node.parent)
+          else
+            align(node, node)
+          end
         end
       end
     end
