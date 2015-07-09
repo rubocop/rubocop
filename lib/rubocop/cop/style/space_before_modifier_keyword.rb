@@ -3,17 +3,24 @@
 module RuboCop
   module Cop
     module Style
-      # Here we check if modifier keywords are preceded by a space.
+      # Here we check if modifier keywords are preceded by one space.
       class SpaceBeforeModifierKeyword < Cop
-        MSG = 'Put a space before the modifier keyword.'
+        MSG_MISSING = 'Put a space before the modifier keyword.'
+        MSG_EXTRA = 'Put only one space before the modifier keyword.'
 
         def on_if(node)
           return unless modifier?(node)
 
           kw = node.loc.keyword
-          b = kw.begin_pos
-          left_of_kw = Parser::Source::Range.new(kw.source_buffer, b - 1, b)
-          add_offense(node, left_of_kw) unless left_of_kw.is?(' ')
+          kw_with_space = range_with_surrounding_space(kw, :left)
+          space_length = kw_with_space.length - kw.length
+
+          if space_length == 0
+            add_offense(kw, kw, MSG_MISSING)
+          elsif space_length > 1
+            space = kw_with_space.resize(space_length)
+            add_offense(space, space, MSG_EXTRA)
+          end
         end
         alias_method :on_while, :on_if
         alias_method :on_until, :on_if
@@ -28,8 +35,14 @@ module RuboCop
           node.loc.keyword.is?('elsif')
         end
 
-        def autocorrect(node)
-          ->(corrector) { corrector.insert_before(node.loc.keyword, ' ') }
+        def autocorrect(range)
+          lambda do |corrector|
+            if range.source.start_with?(' ')
+              corrector.replace(range, ' ')
+            else
+              corrector.insert_before(range, ' ')
+            end
+          end
         end
       end
     end
