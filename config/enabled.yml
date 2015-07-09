@@ -1017,6 +1017,12 @@ Lint/UselessElseWithoutRescue:
   Description: 'Checks for useless `else` in `begin..end` without `rescue`.'
   Enabled: true
 
+Lint/UselessOptionalArgument:
+  Description: >-
+                 Checks for optional arguments that do not appear at the end
+                 of the argument list
+  Enabled: true
+
 Lint/UselessSetterCall:
   Description: 'Checks for useless setter call to a local variable.'
   Enabled: true
