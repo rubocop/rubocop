@@ -11,7 +11,19 @@ describe RuboCop::Cop::Style::SpaceBeforeModifierKeyword do
                          'a = 42unless a == 2',
                          'a = [1,2,3]unless a == 2',
                          'a = {:a => "b"}if a == 2'])
-    expect(cop.highlights).to eq([')', '"', '2', ']', '}'])
+    expect(cop.highlights).to eq(%w(if if unless unless if))
+    expect(cop.messages).to eq(['Put a space before the modifier keyword.'] * 5)
+  end
+
+  it 'registers an offense for extra space before if/unless' do
+    inspect_source(cop, ['(a = 3)  if a == 2',
+                         'a = "test"   if a == 2',
+                         'a = 42  unless a == 2',
+                         'a = [1,2,3]   unless a == 2',
+                         'a = {:a => "b"}  if a == 2'])
+    expect(cop.highlights).to eq(['  ', '   ', '  ', '   ', '  '])
+    expect(cop.messages)
+      .to eq(['Put only one space before the modifier keyword.'] * 5)
   end
 
   it 'registers an offense for missing space before while/until' do
@@ -20,7 +32,16 @@ describe RuboCop::Cop::Style::SpaceBeforeModifierKeyword do
                          'a = 42while b',
                          'a = [1,2,3]until b',
                          'a = {:a => "b"}while b'])
-    expect(cop.highlights).to eq([')', '"', '2', ']', '}'])
+    expect(cop.highlights).to eq(%w(while until while until while))
+  end
+
+  it 'registers an offense for extra space before while/until' do
+    inspect_source(cop, ['(a = 3)  while b',
+                         'a = "test"  until b',
+                         'a = 42  while b',
+                         'a = [1,2,3]  until b',
+                         'a = {:a => "b"}  while b'])
+    expect(cop.highlights).to eq(['  '] * 5)
   end
 
   it 'accepts modifiers with preceding space' do
@@ -28,6 +49,16 @@ describe RuboCop::Cop::Style::SpaceBeforeModifierKeyword do
                          'a = "test" unless b',
                          'a = 42 while b',
                          'a = [1,2,3] until b'])
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'accepts non-modifier if' do
+    inspect_source(cop, ['    if space_length == 0',
+                         '      add_offense(kw, kw, MSG_MISSING)',
+                         '    elsif space_length > 1',
+                         '      space = kw_with_space.resize(space_length)',
+                         '      add_offense(space, space, MSG_EXTRA)',
+                         '    end'])
     expect(cop.offenses).to be_empty
   end
 
@@ -56,6 +87,29 @@ describe RuboCop::Cop::Style::SpaceBeforeModifierKeyword do
                                           'a = 42while b',
                                           'a = [1,2,3]until b',
                                           'a = {:a => "b"}while b'])
+    expect(new_source).to eq(['(a = 3) if a == 2',
+                              'a = "test" if a == 2',
+                              'a = 42 unless a == 2',
+                              'a = [1,2,3] unless a == 2',
+                              'a = {:a => "b"} if a == 2',
+                              '(a = 3) while b',
+                              'a = "test" until b',
+                              'a = 42 while b',
+                              'a = [1,2,3] until b',
+                              'a = {:a => "b"} while b'].join("\n"))
+  end
+
+  it 'auto-corrects extra space' do
+    new_source = autocorrect_source(cop, ['(a = 3)  if a == 2',
+                                          'a = "test"   if a == 2',
+                                          'a = 42  unless a == 2',
+                                          'a = [1,2,3]   unless a == 2',
+                                          'a = {:a => "b"}  if a == 2',
+                                          '(a = 3)   while b',
+                                          'a = "test"  until b',
+                                          'a = 42   while b',
+                                          'a = [1,2,3]  until b',
+                                          'a = {:a => "b"}   while b'])
     expect(new_source).to eq(['(a = 3) if a == 2',
                               'a = "test" if a == 2',
                               'a = 42 unless a == 2',

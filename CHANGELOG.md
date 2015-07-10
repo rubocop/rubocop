@@ -12,6 +12,10 @@
 * [#2001](https://github.com/bbatsov/rubocop/issues/2001): New cop `Style/InitialIndentation` checks for indentation of the first non-blank non-comment line in a file. ([@jonas054][])
 * New cop `Lint/UselessOptionalArgument` checks for optional arguments that do not appear at the end of an argument list. ([@rrosenblum][])
 
+### Changes
+
+* [#2008](https://github.com/bbatsov/rubocop/issues/2008): `Style/SpaceBeforeModifierKeyword` now also checks for *too many* spaces before a modifier keyword. ([@jonas054][])
+
 ### Bugs fixed
 
 * [#2014](https://github.com/bbatsov/rubocop/pull/2014): Fix `Style/TrivialAccessors` to support AllowPredicates: false. ([@gotrevor][])
