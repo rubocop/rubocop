@@ -204,7 +204,7 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
   end
 
   context 'with whitelist' do
-    let(:cop_config) { { 'Whitelist' => ['to_foo', 'bar=', 'foo?'] } }
+    let(:cop_config) { { 'Whitelist' => ['to_foo', 'bar='] } }
 
     it 'accepts whitelisted reader' do
       inspect_source(cop,
@@ -223,10 +223,12 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
     end
 
     context 'with AllowPredicates: false' do
-      let(:cop_config) { { 'AllowPredicates' => false } }
+      let(:cop_config) do
+        { 'AllowPredicates' => false,
+          'Whitelist' => ['foo?'] }
+      end
 
       it 'accepts whitelisted predicate' do
-        pending 'Whitelist should override AllowPredicates'
         inspect_source(cop,
                        [' def foo?',
                         '   @foo',
