@@ -19,6 +19,7 @@
 * [#2052](https://github.com/bbatsov/rubocop/pull/2052): `Style/RescueModifier` uses token stream to identify offenses. ([@urbanautomaton][])
 * [#2008](https://github.com/bbatsov/rubocop/issues/2008): `Style/SpaceBeforeModifierKeyword` now also checks for *too many* spaces before a modifier keyword. ([@jonas054][])
 * Rename `Rails/Date` and `Rails/TimeZone` style names to "strict" and "flexible" and make "flexible" to be default. ([@palkan][])
+* [#2035](https://github.com/bbatsov/rubocop/issues/2035): `Style/ExtraSpacing` is now enabled by default and has a configuration parameter `AllowForAlignment` that is `true` by default, making it allow extra spacing if it's used for alignment purposes. ([@jonas054][])
 
 ### Bugs fixed
 

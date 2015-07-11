@@ -243,6 +243,10 @@ Style/EvenOdd:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#predicate-methods'
   Enabled: true
 
+Style/ExtraSpacing:
+  Description: 'Do not use unnecessary spacing.'
+  Enabled: true
+
 Style/FileName:
   Description: 'Use snake_case for source file names.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#snake-case-files'
