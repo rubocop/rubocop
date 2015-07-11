@@ -44,6 +44,9 @@ Usage: rubocop [options] [file1, file2, ...]
     -c, --config FILE                Specify configuration file.
         --auto-gen-config            Generate a configuration file acting as a
                                      TODO list.
+        --exclude-limit COUNT        Used together with --auto-gen-config to
+                                     set the limit for how many Exclude
+                                     properties to generate. Default is 15.
         --force-exclusion            Force excluding files specified in the
                                      configuration `Exclude` even if they are
                                      explicitly passed as arguments.
@@ -178,6 +181,28 @@ Usage: rubocop [options] [file1, file2, ...]
       it 'requires the passed path' do
         options.parse(['--require', required_file_path, 'example.rb'])
         expect($stdout.string).to start_with('Hello from required file!')
+      end
+    end
+
+    describe '--exclude-limit' do
+      it 'fails if given last without argument' do
+        expect { options.parse %w(--auto-gen-config --exclude-limit) }
+          .to raise_error(OptionParser::MissingArgument)
+      end
+
+      it 'fails if given alone without argument' do
+        expect { options.parse %w(--exclude-limit) }
+          .to raise_error(OptionParser::MissingArgument)
+      end
+
+      it 'fails if given first without argument' do
+        expect { options.parse %w(--exclude-limit --auto-gen-config) }
+          .to raise_error(OptionParser::MissingArgument)
+      end
+
+      it 'fails if given without --auto-gen-config' do
+        expect { options.parse %w(--exclude-limit 10) }
+          .to raise_error(ArgumentError)
       end
     end
   end

@@ -7,6 +7,7 @@
 * [#2010](https://github.com/bbatsov/rubocop/pull/2010): Add `space` style for SpaceInsideStringInterpolation. ([@gotrevor][])
 * [#2007](https://github.com/bbatsov/rubocop/pull/2007): Allow any modifier before `def`, not only visibility modifiers. ([@fphilipe][])
 * [#1980](https://github.com/bbatsov/rubocop/pull/1980): `--auto-gen-config` now outputs an excluded files list for failed cops (up to a maxiumum of 15 files). ([@bmorrall][])
+* [#2004](https://github.com/bbatsov/rubocop/pull/2004): Introduced `--exclude-limit COUNT` to configure how many files `--auto-gen-config` will exclude. ([@awwaiid][], [@jonas054][])
 * [#1918](https://github.com/bbatsov/rubocop/issues/1918): New configuration parameter `AllCops:DisabledByDefault` when set to `true` makes only cops found in user configuration enabled, which makes cop selection *opt-in*. ([@jonas054][])
 * New cop `Performance/StringReplacement` checks for usages of `gsub` that can be replaced with `tr` or `delete`. ([@rrosenblum][])
 * [#2001](https://github.com/bbatsov/rubocop/issues/2001): New cop `Style/InitialIndentation` checks for indentation of the first non-blank non-comment line in a file. ([@jonas054][])
@@ -1493,3 +1494,4 @@
 [@bmorrall]: https://github.com/bmorrall
 [@fphilipe]: https://github.com/fphilipe
 [@gotrevor]: https://github.com/gotrevor
+[@awwaiid]: https://github.com/awwaiid
