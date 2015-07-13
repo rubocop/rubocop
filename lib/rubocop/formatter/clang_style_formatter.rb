@@ -8,9 +8,9 @@ module RuboCop
     class ClangStyleFormatter < SimpleTextFormatter
       def report_file(file, offenses)
         offenses.each do |o|
-          output.printf("%s:%d:%d: %s: %s\n",
+          output.printf("%s:%d:%d: %s [%s]: %s\n",
                         cyan(smart_path(file)), o.line, o.real_column,
-                        colored_severity_code(o), message(o))
+                        colored_severity_code(o), o.cop_name, message(o))
 
           source_line = o.location.source_line
           next if source_line.blank?
