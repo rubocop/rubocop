@@ -34,14 +34,31 @@ module RuboCop
               next
             end
 
+            return_value, = *node
             if node.children.size > 1
-              kids = node.children.map { |child| child.loc.expression }
-              corrector.insert_before(kids.first, '[')
-              corrector.insert_after(kids.last, ']')
+              add_brackets(corrector, node)
+            elsif return_value.hash_type?
+              add_braces(corrector, return_value) unless braces?(return_value)
             end
             return_kw = range_with_surrounding_space(node.loc.keyword, :right)
             corrector.remove(return_kw)
           end
+        end
+
+        def braces?(arg)
+          arg.loc.begin
+        end
+
+        def add_brackets(corrector, node)
+          kids = node.children.map { |child| child.loc.expression }
+          corrector.insert_before(kids.first, '[')
+          corrector.insert_after(kids.last, ']')
+        end
+
+        def add_braces(corrector, node)
+          kids = node.children.map { |child| child.loc.expression }
+          corrector.insert_before(kids.first, '{')
+          corrector.insert_after(kids.last, '}')
         end
 
         def arguments?(args)
