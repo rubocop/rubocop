@@ -525,12 +525,13 @@ describe RuboCop::CLI, :isolated_environment do
                   '',
                   'Offenses:',
                   '',
-                  'example.rb:2:1: C: [Corrected] Use fail instead of ' \
-                  'raise to signal exceptions.',
+                  'example.rb:2:1: C [Style/SignalException]: [Corrected] Use' \
+                  ' fail instead of raise to signal exceptions.',
                   'raise NotImplementedError,',
                   '^^^^^',
-                  'example.rb:3:7: C: [Corrected] Align the parameters of a ' \
-                  'method call if they span more than one line.',
+                  'example.rb:3:7: C [Style/AlignParameters]: [Corrected] ' \
+                  'Align the parameters of a method call if they span more ' \
+                  'than one line.',
                   "      'Method should be overridden in child classes'",
                   '      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',
                   '',
@@ -566,10 +567,11 @@ describe RuboCop::CLI, :isolated_environment do
                   '',
                   'Offenses:',
                   '',
-                  'example.rb:4:1: C: [Corrected] Extra empty line detected ' \
-                  'at class body beginning.',
-                  'example.rb:4:1: C: [Corrected] Trailing whitespace ' \
-                  'detected.',
+                  'example.rb:4:1: C [Style/EmptyLinesAroundClassBody]: ' \
+                  '[Corrected] Extra empty line detected at class body ' \
+                  'beginning.',
+                  'example.rb:4:1: C [Style/TrailingWhitespace]: [Corrected] ' \
+                  'Trailing whitespace detected.',
                   '',
                   '1 file inspected, 2 offenses detected, 2 offenses ' \
                   'corrected',
@@ -596,13 +598,14 @@ describe RuboCop::CLI, :isolated_environment do
                   '',
                   'Offenses:',
                   '',
-                  'example.rb:2:12: C: [Corrected] ' \
-                  'Style/MethodDefParentheses: ' \
-                  'Use def with parentheses when there are parameters.',
+                  'example.rb:2:12: C [Style/MethodDefParentheses]: ' \
+                  '[Corrected] Style/MethodDefParentheses: Use def with ' \
+                  'parentheses when there are parameters.',
                   'def primes limit',
                   '           ^^^^^',
-                  'example.rb:3:3: C: [Corrected] Style/SymbolProc: ' \
-                  'Pass &:even? as an argument to select instead of a block.',
+                  'example.rb:3:3: C [Style/SymbolProc]: [Corrected] ' \
+                  'Style/SymbolProc: Pass &:even? as an argument to select ' \
+                  'instead of a block.',
                   '  1.upto(limit).select { |i| i.even? }',
                   '  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',
                   '',
@@ -1732,54 +1735,60 @@ describe RuboCop::CLI, :isolated_environment do
                             'example2.rb', 'example3.rb']))
               .to eq(1)
             expect($stdout.string)
-              .to eq(['example1.rb:2:2: C: Surrounding space missing for ' \
-                      'operator =.',
+              .to eq(['example1.rb:2:2: C [Style/SpaceAroundOperators]: ' \
+                      'Surrounding space missing for operator =.',
                       'x= 0 ',
                       ' ^',
-                      'example1.rb:2:5: C: Trailing whitespace detected.',
+                      'example1.rb:2:5: C [Style/TrailingWhitespace]: ' \
+                      'Trailing whitespace detected.',
                       'x= 0 ',
                       '    ^',
-                      'example1.rb:3:81: C: Line is too long. [85/80]',
+                      'example1.rb:3:81: C [Metrics/LineLength]: Line is too ' \
+                      'long. [85/80]',
                       '###################################################' \
                       '##################################',
                       '                                                   ' \
                       '                             ^^^^^',
-                      'example1.rb:4:2: C: Trailing whitespace detected.',
+                      'example1.rb:4:2: C [Style/TrailingWhitespace]: ' \
+                      'Trailing whitespace detected.',
                       'y ',
                       ' ^',
-                      'example2.rb:1:1: C: Incorrect indentation detected' \
-                      ' (column 0 instead of 1).',
+                      'example2.rb:1:1: C [Style/CommentIndentation]: ' \
+                      'Incorrect indentation detected (column 0 instead of 1).',
                       '# encoding: utf-8',
                       '^^^^^^^^^^^^^^^^^',
-                      'example2.rb:2:1: C: Tab detected.',
+                      'example2.rb:2:1: C [Style/Tab]: Tab detected.',
                       "\tx",
                       '^',
-                      'example2.rb:2:2: C: Indentation of first line in file ' \
-                      'detected.',
+                      'example2.rb:2:2: C [Style/InitialIndentation]: ' \
+                      'Indentation of first line in file detected.',
                       '	x',
                       ' ^',
-                      'example2.rb:3:1: C: Inconsistent indentation ' \
-                      'detected.',
+                      'example2.rb:3:1: C [Style/IndentationConsistency]: ' \
+                      'Inconsistent indentation detected.',
                       'def a',
                       '^^^^^',
-                      'example2.rb:4:1: C: Use 2 (not 3) spaces for ' \
-                      'indentation.',
+                      'example2.rb:4:1: C [Style/IndentationWidth]: Use 2 ' \
+                      '(not 3) spaces for indentation.',
                       '   puts',
                       '^^^',
-                      'example3.rb:2:5: C: Use snake_case for method names.',
+                      'example3.rb:2:5: C [Style/MethodName]: Use snake_case ' \
+                      'for method names.',
                       'def badName',
                       '    ^^^^^^^',
-                      'example3.rb:3:3: C: Use a guard clause instead of ' \
-                      'wrapping the code inside a conditional expression.',
+                      'example3.rb:3:3: C [Style/GuardClause]: Use a guard ' \
+                      'clause instead of wrapping the code inside a ' \
+                      'conditional expression.',
                       '  if something',
                       '  ^^',
-                      'example3.rb:3:3: C: Favor modifier if usage ' \
-                      'when having a single-line body. Another good ' \
-                      'alternative is the usage of control flow &&/||.',
+                      'example3.rb:3:3: C [Style/IfUnlessModifier]: Favor ' \
+                      'modifier if usage when having a single-line body. ' \
+                      'Another good alternative is the usage of control ' \
+                      'flow &&/||.',
                       '  if something',
                       '  ^^',
-                      'example3.rb:5:5: W: end at 5, 4 is not aligned ' \
-                      'with if at 3, 2',
+                      'example3.rb:5:5: W [Lint/EndAlignment]: end at 5, 4 is' \
+                      ' not aligned with if at 3, 2',
                       '    end',
                       '    ^^^',
                       '',

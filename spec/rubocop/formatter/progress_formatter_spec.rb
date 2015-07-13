@@ -146,13 +146,13 @@ module RuboCop
           expect(output.string).to include([
             'Offenses:',
             '',
-            'lib/rubocop.rb:2:3: C: foo',
+            'lib/rubocop.rb:2:3: C [Cop]: foo',
             'This is line 2.',
             '  ^',
-            'bin/rubocop:5:2: E: bar',
+            'bin/rubocop:5:2: E [Cop]: bar',
             'This is line 5.',
             ' ^',
-            'bin/rubocop:6:1: C: foo',
+            'bin/rubocop:6:1: C [Cop]: foo',
             'This is line 6.',
             '^'
           ].join("\n"))

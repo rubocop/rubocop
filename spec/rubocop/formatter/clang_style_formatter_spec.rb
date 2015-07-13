@@ -22,10 +22,10 @@ module RuboCop
                           'message 2')
 
           formatter.report_file('test', cop.offenses)
-          expect(output.string).to eq ['test:1:1: C: message 1',
+          expect(output.string).to eq ['test:1:1: C [Cop/Cop]: message 1',
                                        'aa',
                                        '^^',
-                                       'test:11:1: C: message 2',
+                                       'test:11:1: C [Cop/Cop]: message 2',
                                        'ak',
                                        '^^',
                                        ''].join("\n")
@@ -44,8 +44,8 @@ module RuboCop
                             'message 2')
 
             formatter.report_file('test', cop.offenses)
-            expect(output.string).to eq ['test:1:1: C: message 1',
-                                         'test:2:1: C: message 2',
+            expect(output.string).to eq ['test:1:1: C [Cop/Cop]: message 1',
+                                         'test:2:1: C [Cop/Cop]: message 2',
                                          'yaba',
                                          '^^^^',
                                          ''].join("\n")
@@ -69,7 +69,7 @@ module RuboCop
             cop.add_offense(nil, location, 'message 1')
 
             formatter.report_file('test', cop.offenses)
-            expect(output.string).to eq ['test:1:14: C: message 1',
+            expect(output.string).to eq ['test:1:14: C [Cop/Cop]: message 1',
                                          'do_something([this,',
                                          '             ^^^^^^',
                                          ''].join("\n")
