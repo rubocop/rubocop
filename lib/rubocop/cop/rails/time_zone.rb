@@ -24,6 +24,7 @@ module RuboCop
       #   Time.zone.parse('2015-03-02 19:05:37')
       #
       #   # no offense only if style is 'acceptable'
+      #   Time.current
       #   DateTime.strptime(str, "%Y-%m-%d %H:%M %Z").in_time_zone
       #   Time.at(timestamp).in_time_zone
       class TimeZone < Cop
@@ -35,11 +36,14 @@ module RuboCop
 
         MSG_LOCALTIME = 'Do not use `Time.localtime` without offset or zone.'
 
+        MSG_CURRENT = 'Do not use `%s`. Use `Time.zone.now` instead.'
+
         TIMECLASS = [:Time, :DateTime]
 
-        DANGEROUS_METHODS = [:now, :local, :new, :strftime, :parse, :at]
+        DANGEROUS_METHODS = [:now, :local, :new, :strftime,
+                             :parse, :at, :current]
 
-        ACCEPTED_METHODS = [:in_time_zone, :utc, :getlocal,
+        ACCEPTED_METHODS = [:current, :in_time_zone, :utc, :getlocal,
                             :iso8601, :jisx0301, :rfc3339,
                             :to_i, :to_f]
 
@@ -72,6 +76,10 @@ module RuboCop
             format(MSG_ACCEPTABLE,
                    "#{klass}.#{method_name}",
                    acceptable_methods(klass, method_name, node).join(', ')
+                  )
+          elsif method_name == 'current'
+            format(MSG_CURRENT,
+                   "#{klass}.#{method_name}"
                   )
           else
             safe_method_name = safe_method(method_name, node)
