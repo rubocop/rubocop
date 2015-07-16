@@ -25,6 +25,7 @@
 * [#1977](https://github.com/bbatsov/rubocop/issues/1977): Fix bugs in `Rails/Date` and `Rails/TimeZone` when using namespaced Time/Date. ([@palkan][])
 * [#1973](https://github.com/bbatsov/rubocop/issues/1973): Do not register an offense in `Performance/Detect` when `select` is called on `Enumerable::Lazy`. ([@palkan][])
 * [#2015](https://github.com/bbatsov/rubocop/issues/2015): Fix bug occurring for auto-correction of a misaligned `end` in a file with only one method. ([@jonas054][])
+* Allow string interpolation segments inside single quoted string literals when double quotes are preferred. ([@segiddins][])
 
 ## 0.32.1 (24/06/2015)
 
@@ -1495,3 +1496,4 @@
 [@fphilipe]: https://github.com/fphilipe
 [@gotrevor]: https://github.com/gotrevor
 [@awwaiid]: https://github.com/awwaiid
+[@segiddins]: https://github.com/segiddins
