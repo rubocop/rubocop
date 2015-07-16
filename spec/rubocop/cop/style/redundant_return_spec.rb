@@ -150,6 +150,28 @@ describe RuboCop::Cop::Style::RedundantReturn, :config do
       new_source = autocorrect_source(cop, src)
       expect(new_source).to eq(result_src)
     end
+
+    it 'auto-corrects removes return when using an explicit hash' do
+      src = ['def func',
+             '  return {:a => 1, :b => 2}',
+             'end'].join("\n")
+      result_src = ['def func',
+                    '  {:a => 1, :b => 2}', # :a => 1, :b => 2 is not valid Ruby
+                    'end'].join("\n")
+      new_source = autocorrect_source(cop, src)
+      expect(new_source).to eq(result_src)
+    end
+
+    it 'auto-corrects by making an implicit hash explicit' do
+      src = ['def func',
+             '  return :a => 1, :b => 2',
+             'end'].join("\n")
+      result_src = ['def func',
+                    '  {:a => 1, :b => 2}', # :a => 1, :b => 2 is not valid Ruby
+                    'end'].join("\n")
+      new_source = autocorrect_source(cop, src)
+      expect(new_source).to eq(result_src)
+    end
   end
 
   context 'when multi-value returns are allowed' do
