@@ -188,7 +188,8 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
 
     it 'accepts single quotes when they are needed' do
       src = ["a = '\\n'",
-             "b = '\"'"]
+             "b = '\"'",
+             "c = '\#{x}'"]
       inspect_source(cop, src)
       expect(cop.offenses).to be_empty
     end

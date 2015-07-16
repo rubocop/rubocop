@@ -12,7 +12,7 @@ module RuboCop
         if style == :single_quotes
           src !~ /'/ && src !~ StringHelp::ESCAPED_CHAR_REGEXP
         else
-          src !~ /" | \\/x
+          src !~ /" | \\ | \#/x
         end
       end
 
