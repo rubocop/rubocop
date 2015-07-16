@@ -8,10 +8,10 @@ module RuboCop
       # Built on top of Ruby on Rails style guide (https://github.com/bbatsov/rails-style-guide#time)
       # and the article http://danilenko.org/2012/7/6/rails_timezones/ .
       #
-      # Two styles are supported for this cop. When EnforcedStyle is 'always'
+      # Two styles are supported for this cop. When EnforcedStyle is 'strict'
       # then only use of Time.zone is allowed.
       #
-      # When EnforcedStyle is 'acceptable' then it's also allowed
+      # When EnforcedStyle is 'flexible' then it's also allowed
       # to use Time.in_time_zone.
       #
       # @example
@@ -145,11 +145,11 @@ module RuboCop
         end
 
         def acceptable?
-          style == :acceptable
+          style == :flexible
         end
 
         def good_methods
-          style == :always ? [:zone] : [:zone] + ACCEPTED_METHODS
+          style == :strict ? [:zone] : [:zone] + ACCEPTED_METHODS
         end
 
         def acceptable_methods(klass, method_name, node)

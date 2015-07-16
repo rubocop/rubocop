@@ -5,8 +5,8 @@ require 'spec_helper'
 describe RuboCop::Cop::Rails::TimeZone, :config do
   subject(:cop) { described_class.new(config) }
 
-  context 'when EnforcedStyle is "always"' do
-    let(:cop_config) { { 'EnforcedStyle' => 'always' } }
+  context 'when EnforcedStyle is "strict"' do
+    let(:cop_config) { { 'EnforcedStyle' => 'strict' } }
 
     described_class::TIMECLASS.each do |klass|
       it "registers an offense for #{klass}.now" do
@@ -161,8 +161,8 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
     end
   end
 
-  context 'when EnforcedStyle is "acceptable"' do
-    let(:cop_config) { { 'EnforcedStyle' => 'acceptable' } }
+  context 'when EnforcedStyle is "flexible"' do
+    let(:cop_config) { { 'EnforcedStyle' => 'flexible' } }
 
     described_class::TIMECLASS.each do |klass|
       it "registers an offense for #{klass}.now" do

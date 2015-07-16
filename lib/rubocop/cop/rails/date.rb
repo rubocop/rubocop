@@ -12,12 +12,12 @@ module RuboCop
       # The cop also reports warnings when you are using 'to_time' method,
       # because it doesn't know about Rails time zone too.
       #
-      # Two styles are supported for this cop. When EnforcedStyle is 'always'
+      # Two styles are supported for this cop. When EnforcedStyle is 'strict'
       # then the Date methods (today, current, yesterday, tomorrow)
       # are prohibited and the usage of both 'to_time'
       # and 'to_time_in_current_zone' is reported as warning.
       #
-      # When EnforcedStyle is 'acceptable' then only 'Date.today' is prohibited
+      # When EnforcedStyle is 'flexible' then only 'Date.today' is prohibited
       # and only 'to_time' is reported as warning.
       #
       # @example
@@ -104,7 +104,7 @@ module RuboCop
         end
 
         def good_days
-          style == :always ? [] : [:current, :yesterday, :tomorrow]
+          style == :strict ? [] : [:current, :yesterday, :tomorrow]
         end
 
         def bad_days
@@ -112,7 +112,7 @@ module RuboCop
         end
 
         def bad_methods
-          style == :always ? [:to_time, :to_time_in_current_zone] : [:to_time]
+          style == :strict ? [:to_time, :to_time_in_current_zone] : [:to_time]
         end
       end
     end
