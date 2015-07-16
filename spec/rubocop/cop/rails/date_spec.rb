@@ -5,8 +5,8 @@ require 'spec_helper'
 describe RuboCop::Cop::Rails::Date, :config do
   subject(:cop) { described_class.new(config) }
 
-  context 'when EnforcedStyle is "always"' do
-    let(:cop_config) { { 'EnforcedStyle' => 'always' } }
+  context 'when EnforcedStyle is "strict"' do
+    let(:cop_config) { { 'EnforcedStyle' => 'strict' } }
 
     %w(today current yesterday tomorrow).each do |day|
       it "registers an offense for Date.#{day}" do
@@ -43,8 +43,8 @@ describe RuboCop::Cop::Rails::Date, :config do
     end
   end
 
-  context 'when EnforcedStyle is "ignore_acceptable"' do
-    let(:cop_config) { { 'EnforcedStyle' => 'acceptable' } }
+  context 'when EnforcedStyle is "flexible"' do
+    let(:cop_config) { { 'EnforcedStyle' => 'flexible' } }
 
     %w(current yesterday tomorrow).each do |day|
       it "accepts Date.#{day}" do
