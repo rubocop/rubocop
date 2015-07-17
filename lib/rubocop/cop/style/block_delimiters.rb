@@ -155,7 +155,8 @@ module RuboCop
         def return_value_of_scope?(node)
           return unless node.parent
 
-          conditional?(node.parent) || node.parent.children.last == node
+          conditional?(node.parent) || array_or_range?(node.parent) ||
+            node.parent.children.last == node
         end
 
         def procedural_methods
@@ -172,6 +173,10 @@ module RuboCop
 
         def conditional?(node)
           node.if_type? || node.or_type? || node.and_type?
+        end
+
+        def array_or_range?(node)
+          node.array_type? || node.irange_type? || node.erange_type?
         end
       end
     end
