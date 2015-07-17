@@ -107,6 +107,21 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
       expect(cop.messages).to be_empty
     end
 
+    it 'accepts a single line block with {} if used in an array' do
+      inspect_source(cop, '[detect { true }, other]')
+      expect(cop.messages).to be_empty
+    end
+
+    it 'accepts a single line block with {} if used in an irange' do
+      inspect_source(cop, 'detect { true }..other')
+      expect(cop.messages).to be_empty
+    end
+
+    it 'accepts a single line block with {} if used in an erange' do
+      inspect_source(cop, 'detect { true }...other')
+      expect(cop.messages).to be_empty
+    end
+
     it 'accepts a multi-line functional block with do-end if it is ' \
        'a known procedural method' do
       inspect_source(cop, ['foo = bar.tap do |x|',
