@@ -13,6 +13,13 @@ describe RuboCop::Cop::Style::RescueModifier do
       .to eq(['Avoid using `rescue` in its modifier form.'])
   end
 
+  it 'locates the rescue within the line' do
+    inspect_source(cop,
+                   'method rescue handle')
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.highlights.first).to eq('rescue')
+  end
+
   it 'handles more complex expression with modifier rescue' do
     inspect_source(cop,
                    'method1 or method2 rescue handle')
@@ -27,6 +34,15 @@ describe RuboCop::Cop::Style::RescueModifier do
                     '  test rescue modifier_handle',
                     'rescue',
                     '  normal_handle',
+                    'end'])
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.offenses.first.line).to eq(2)
+  end
+
+  it 'handles modifier rescue in a method' do
+    inspect_source(cop,
+                   ['def a_method',
+                    '  test rescue nil',
                     'end'])
     expect(cop.offenses.size).to eq(1)
     expect(cop.offenses.first.line).to eq(2)
