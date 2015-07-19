@@ -75,7 +75,7 @@ module RuboCop
           add_offense(node, :selector,
                       format(MSG,
                              "Date.#{method_name}",
-                             'Time.zone.today')
+                             "Time.zone.#{method_name}")
                      )
         end
 
