@@ -30,6 +30,7 @@
 * [#2026](https://github.com/bbatsov/rubocop/issues/2026): Allow `Time.current` when style is "acceptable".([@palkan][])
 * [#2029](https://github.com/bbatsov/rubocop/issues/2029): Fix bug where `Style/RedundantReturn` auto-corrects returning implicit hashes to invalid syntax. ([@rrosenblum][])
 * [#2021](https://github.com/bbatsov/rubocop/issues/2021): Fix bug in `Style/BlockDelimiters` when a `semantic` expression is used in an array or a range. ([@lumeet][])
+* [#1992](https://github.com/bbatsov/rubocop/issues/1992): Allow parentheses in assignment to a variable with the same name as the method's in `Style/MethodCallParentheses`. ([@lumeet][])
 
 ## 0.32.1 (24/06/2015)
 
