@@ -15,6 +15,7 @@
 
 ### Changes
 
+* [#2052](https://github.com/bbatsov/rubocop/pull/2052): `Style/RescueModifier` uses token stream to identify offenses. ([@urbanautomaton][])
 * [#2008](https://github.com/bbatsov/rubocop/issues/2008): `Style/SpaceBeforeModifierKeyword` now also checks for *too many* spaces before a modifier keyword. ([@jonas054][])
 * Rename `Rails/Date` and `Rails/TimeZone` style names to "strict" and "flexible" and make "flexible" to be default. ([@palkan][])
 
@@ -1502,3 +1503,4 @@
 [@gotrevor]: https://github.com/gotrevor
 [@awwaiid]: https://github.com/awwaiid
 [@segiddins]: https://github.com/segiddins
+[@urbanautomaton]: https://github.com/urbanautomaton.com
