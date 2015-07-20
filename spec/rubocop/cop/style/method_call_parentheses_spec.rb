@@ -25,6 +25,33 @@ describe RuboCop::Cop::Style::MethodCallParentheses do
     expect(cop.offenses).to be_empty
   end
 
+  context 'assignment to a variable with the same name' do
+    it 'accepts parens in local variable assignment ' do
+      inspect_source(cop, 'test = test()')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts parens in shorthand assignment' do
+      inspect_source(cop, 'test ||= test()')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts parens in parallel assignment' do
+      inspect_source(cop, 'one, test = 1, test()')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts parens in complex assignment' do
+      inspect_source(cop, ['test = begin',
+                           '  case a',
+                           '  when b',
+                           '    c = test() if d',
+                           '  end',
+                           'end'])
+      expect(cop.offenses).to be_empty
+    end
+  end
+
   it 'auto-corrects by removing unneeded braces' do
     new_source = autocorrect_source(cop, 'test()')
     expect(new_source).to eq('test')
