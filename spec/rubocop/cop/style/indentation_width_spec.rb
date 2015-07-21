@@ -757,9 +757,9 @@ describe RuboCop::Cop::Style::IndentationWidth do
         end
 
         it 'with an assignment' do
-          inspect_source(cop, [
-                           'something = def self.foo',
-                           'end'])
+          inspect_source(cop,
+                         ['something = def self.foo',
+                          'end'])
           expect(cop.offenses).to be_empty
         end
       end
@@ -996,7 +996,7 @@ describe RuboCop::Cop::Style::IndentationWidth do
                                     'Use 2 (not 1) spaces for indentation.'])
       end
 
-      it 'registers an offense for bad indentation of defs bodies with a modifier' do
+      it 'registers an offense for bad indent of defs bodies with a modifier' do
         inspect_source(cop,
                        ['foo def self.my_func',
                         "  puts 'do something error prone'",
