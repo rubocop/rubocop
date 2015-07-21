@@ -33,6 +33,7 @@
 * [#2021](https://github.com/bbatsov/rubocop/issues/2021): Fix bug in `Style/BlockDelimiters` when a `semantic` expression is used in an array or a range. ([@lumeet][])
 * [#1992](https://github.com/bbatsov/rubocop/issues/1992): Allow parentheses in assignment to a variable with the same name as the method's in `Style/MethodCallParentheses`. ([@lumeet][])
 * [#2045](https://github.com/bbatsov/rubocop/issues/2045): Fix crash in `Style/IndentationWidth` when using `private_class_method def self.foo` syntax. ([@unmanbearpig][])
+* [#2006](https://github.com/bbatsov/rubocop/issues/2006): Fix crash in `Style/FirstParameterIndentation` in case of nested offenses. ([@unmanbearpig][])
 
 ## 0.32.1 (24/06/2015)
 
