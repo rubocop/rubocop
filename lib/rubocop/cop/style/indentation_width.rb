@@ -85,7 +85,8 @@ module RuboCop
           return unless modifier_and_def_on_same_line?(receiver, method_name,
                                                        args)
 
-          _method_name, _args, body = *args.first
+          *_, body = *args.first
+
           def_end_config = config.for_cop('Lint/DefEndAlignment')
           style = if def_end_config['Enabled']
                     def_end_config['AlignWith']

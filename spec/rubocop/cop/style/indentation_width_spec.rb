@@ -755,6 +755,13 @@ describe RuboCop::Cop::Style::IndentationWidth do
                           'end'])
           expect(cop.offenses).to be_empty
         end
+
+        it 'with an assignment' do
+          inspect_source(cop, [
+                           'something = def self.foo',
+                           'end'])
+          expect(cop.offenses).to be_empty
+        end
       end
 
       context 'when end is aligned with start of line' do
@@ -777,6 +784,15 @@ describe RuboCop::Cop::Style::IndentationWidth do
             it 'registers an offense for bad indentation of a def body' do
               inspect_source(cop,
                              ['foo def test',
+                              '      something',
+                              '    end'])
+              expect(cop.messages)
+                .to eq(['Use 2 (not 6) spaces for indentation.'])
+            end
+
+            it 'registers an offense for bad indentation of a defs body' do
+              inspect_source(cop,
+                             ['foo def self.test',
                               '      something',
                               '    end'])
               expect(cop.messages)
@@ -806,6 +822,15 @@ describe RuboCop::Cop::Style::IndentationWidth do
             it 'registers an offense for bad indentation of a def body' do
               inspect_source(cop,
                              ['foo def test',
+                              '  something',
+                              '    end'])
+              expect(cop.messages)
+                .to eq(['Use 2 (not -2) spaces for indentation.'])
+            end
+
+            it 'registers an offense for bad indentation of a defs body' do
+              inspect_source(cop,
+                             ['foo def self.test',
                               '  something',
                               '    end'])
               expect(cop.messages)
@@ -961,6 +986,19 @@ describe RuboCop::Cop::Style::IndentationWidth do
       it 'registers an offense for bad indentation of bodies' do
         inspect_source(cop,
                        ['def my_func',
+                        "  puts 'do something error prone'",
+                        'rescue SomeException',
+                        " puts 'wrongly intended error handling'",
+                        'rescue',
+                        " puts 'wrongly intended error handling'",
+                        'end'])
+        expect(cop.messages).to eq(['Use 2 (not 1) spaces for indentation.',
+                                    'Use 2 (not 1) spaces for indentation.'])
+      end
+
+      it 'registers an offense for bad indentation of defs bodies with a modifier' do
+        inspect_source(cop,
+                       ['foo def self.my_func',
                         "  puts 'do something error prone'",
                         'rescue SomeException',
                         " puts 'wrongly intended error handling'",
