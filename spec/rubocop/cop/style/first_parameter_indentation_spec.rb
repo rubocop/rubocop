@@ -38,6 +38,39 @@ describe RuboCop::Cop::Style::FirstParameterIndentation, :config do
         expect(cop.highlights).to eq([':foo'])
       end
 
+      it 'registers an offense on lines affected by another offense' do
+        inspect_source(cop, ['foo(',
+                             ' bar(',
+                             '  7',
+                             ')',
+                             ')'])
+
+        expect(cop.highlights).to eq([['bar(',
+                                       '  7',
+                                       ')'].join("\n"),
+                                      '7'])
+
+        expect(cop.messages)
+          .to eq(['Indent the first parameter one step more than ' \
+                  'the start of the previous line.',
+                  'Bad indentation of the first parameter.'])
+      end
+
+      it 'auto-corrects nested offenses' do
+        new_source = autocorrect_source(cop, ['foo(',
+                                              ' bar(',
+                                              '  7',
+                                              ')',
+                                              ')'])
+
+        expect(new_source)
+          .to eq(['foo(',
+                  '  bar(',
+                  '   7',
+                  ' )', # Will be corrected by IndentationConsistency.
+                  ')'].join("\n"))
+      end
+
       context 'for assignment' do
         it 'accepts a correctly indented first parameter and does not care ' \
            'about the second parameter' do
