@@ -39,6 +39,7 @@
 * [#2059](https://github.com/bbatsov/rubocop/issues/2059): Don't check for trivial accessors in modules. ([@bbatsov][])
 * Add proper punctuation to the end of offense messages, where it is missing. ([@lumeet][])
 * [#2071](https://github.com/bbatsov/rubocop/pull/2071): Keep line breaks in place on WordArray autocorrect.([@unmanbearpig][])
+* [#2075](https://github.com/bbatsov/rubocop/pull/2075): Properly correct `Style/PercentLiteralDelimiters` with escape characters in them. ([@rrosenblum][])
 
 ## 0.32.1 (24/06/2015)
 

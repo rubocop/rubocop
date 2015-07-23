@@ -317,5 +317,32 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
       new_source = autocorrect_source(cop, original_source)
       expect(new_source).to eq(corrected_source)
     end
+
+    shared_examples :escape_characters do |percent_literal|
+      it "corrects #{percent_literal} with \\n in it" do
+        new_source = autocorrect_source(cop, "#{percent_literal}{\n}")
+
+        expect(new_source).to eq("#{percent_literal}[\n]")
+      end
+
+      it "corrects #{percent_literal} with \\t in it" do
+        new_source = autocorrect_source(cop, "#{percent_literal}{\t}")
+
+        expect(new_source).to eq("#{percent_literal}[\t]")
+      end
+    end
+
+    it_behaves_like(:escape_characters, '%')
+    it_behaves_like(:escape_characters, '%q')
+    it_behaves_like(:escape_characters, '%Q')
+    it_behaves_like(:escape_characters, '%s')
+    it_behaves_like(:escape_characters, '%w')
+    it_behaves_like(:escape_characters, '%W')
+    it_behaves_like(:escape_characters, '%x')
+    it_behaves_like(:escape_characters, '%r')
+
+    context 'symbol array', ruby_greater_than_or_equal: 2.0 do
+      it_behaves_like(:escape_characters, '%i')
+    end
   end
 end
