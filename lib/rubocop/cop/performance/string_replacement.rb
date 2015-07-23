@@ -40,9 +40,8 @@ module RuboCop
             return unless first_source =~ DETERMINISTIC_REGEX
           end
 
-          if first_source.length != second_source.length
-            return unless second_source.empty?
-          end
+          return if first_source.length != 1
+          return unless second_source.length <= 1
 
           message = message(method, first_source, second_source)
           add_offense(node, range(node), message)
