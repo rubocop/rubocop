@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    module Lint
+    module Style
       # This cop checks for optional arguments to methods
       # that do not come at the end of the argument list
       #
@@ -17,8 +17,9 @@ module RuboCop
       #
       #   def foobar(a = 1, b = 2, c = 3)
       #   end
-      class UselessOptionalArgument < Cop
-        MSG = 'Useless optional argument for variable `%s`.'
+      class OptionalArguments < Cop
+        MSG =
+          'Optional arguments should appear at the end of the argument list.'
 
         def on_def(node)
           _method, arguments, = *node
@@ -40,14 +41,6 @@ module RuboCop
             arg, = *argument
 
             add_offense(argument, :expression, format(MSG, arg))
-          end
-        end
-
-        def autocorrect(node)
-          arg, = *node
-
-          lambda do |corrector|
-            corrector.replace(node.loc.expression, arg.to_s)
           end
         end
       end
