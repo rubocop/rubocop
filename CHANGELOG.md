@@ -12,6 +12,7 @@
 * New cop `Performance/StringReplacement` checks for usages of `gsub` that can be replaced with `tr` or `delete`. ([@rrosenblum][])
 * [#2001](https://github.com/bbatsov/rubocop/issues/2001): New cop `Style/InitialIndentation` checks for indentation of the first non-blank non-comment line in a file. ([@jonas054][])
 * New cop `Lint/UselessOptionalArgument` checks for optional arguments that do not appear at the end of an argument list. ([@rrosenblum][])
+* [#2060](https://github.com/bbatsov/rubocop/issues/2060): New cop `Style/RescueEnsureAlignment` checks for bad alignment of `rescue` and `ensure` keywords. ([@lumeet][])
 
 ### Changes
 
