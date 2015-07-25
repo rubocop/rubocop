@@ -349,6 +349,24 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
       end
     end
 
+    context 'explicit receiver reader with instance_eval' do
+      let(:source) do
+        [
+          'obj.instance_eval do |_|',
+          '  def foo',
+          '    @foo',
+          '  end',
+          'end'
+        ]
+      end
+
+      it 'does not autocorrect' do
+        expect(autocorrect_source(cop, source))
+          .to eq(source.join("\n"))
+        expect(cop.offenses.map(&:corrected?)).to eq [false]
+      end
+    end
+
     context 'class receiver reader' do
       let(:source) do
         ['class Foo',

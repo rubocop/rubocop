@@ -117,11 +117,17 @@ module RuboCop
         end
 
         def autocorrect(node)
-          if node.type == :def
+          if node.type == :def && !in_instance_context?(node)
             autocorrect_instance(node)
           elsif node.type == :defs && node.children.first.type == :self
             autocorrect_class(node)
           end
+        end
+
+        def in_instance_context?(node)
+          (node.parent &&
+           node.parent.type == :block &&
+           node.parent.children.first.children.last == :instance_eval)
         end
 
         def autocorrect_instance(node)
