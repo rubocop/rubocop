@@ -651,7 +651,7 @@ Style/SpaceAroundOperators:
   Enabled: true
 
 Style/SpaceBeforeModifierKeyword:
-  Description: 'Put one space before the modifier keyword.'
+  Description: 'Put a space before the modifier keyword.'
   Enabled: true
 
 Style/SpaceInsideBrackets:
