@@ -22,7 +22,7 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
     let(:condition) { 'a' * 38 }
     let(:body) { 'b' * 38 }
 
-    it 'registers an offense'  do
+    it 'registers an offense' do
       # This if statement fits exactly on one line if written as a
       # modifier.
       expect("#{body} if #{condition}".length).to eq(80)
@@ -108,7 +108,7 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
        'end']
     end
 
-    it 'registers an offense'  do
+    it 'registers an offense' do
       inspect_source(cop, source)
       expect(cop.offenses.size).to eq(1)
     end

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe RuboCop::Cop::Lint::Debugger do
-  subject(:cop) { described_class.new  }
+  subject(:cop) { described_class.new }
 
   include_examples 'debugger', 'debugger', 'debugger'
   include_examples 'debugger', 'byebug', 'byebug'

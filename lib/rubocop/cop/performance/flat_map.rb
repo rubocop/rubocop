@@ -22,7 +22,7 @@ module RuboCop
         FLATTEN = [:flatten, :flatten!]
 
         def on_send(node)
-          left, second_method, flatten_param  = *node
+          left, second_method, flatten_param = *node
           return unless FLATTEN.include?(second_method)
           flatten_level, = *flatten_param
           expression, = *left
@@ -44,7 +44,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          receiver, _flatten, flatten_param  = *node
+          receiver, _flatten, flatten_param = *node
           flatten_level, = *flatten_param
           return if flatten_level.nil?
 

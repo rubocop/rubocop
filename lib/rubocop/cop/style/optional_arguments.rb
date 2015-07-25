@@ -36,7 +36,7 @@ module RuboCop
 
           optarg_positions.each do |optarg_position|
             # there can only be one group of optional arguments
-            break if  optarg_position > arg_positions.max
+            break if optarg_position > arg_positions.max
             argument = arguments[optarg_position]
             arg, = *argument
 
