@@ -452,6 +452,12 @@ Style/OpMethod:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#other-arg'
   Enabled: true
 
+Style/OptionalArguments:
+  Description: >-
+                 Checks for optional arguments that do not appear at the end
+                 of the argument list
+  Enabled: true
+
 Style/ParallelAssignment:
   Description: >-
                   Check for simple usages of parallel assignment.
@@ -1019,12 +1025,6 @@ Lint/UselessComparison:
 
 Lint/UselessElseWithoutRescue:
   Description: 'Checks for useless `else` in `begin..end` without `rescue`.'
-  Enabled: true
-
-Lint/UselessOptionalArgument:
-  Description: >-
-                 Checks for optional arguments that do not appear at the end
-                 of the argument list
   Enabled: true
 
 Lint/UselessSetterCall:
