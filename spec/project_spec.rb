@@ -11,12 +11,12 @@ describe 'RuboCop Project' do
     end
 
     it 'has configuration for all cops' do
-      expect(default_config.keys.sort).to eq((['AllCops'] + cop_names).sort)
+      expect(default_config.keys).to match_array((['AllCops'] + cop_names))
     end
 
     it 'has a nicely formatted description for all cops' do
       cop_names.each do |name|
-        description = default_config[name]['Description']
+        description = default_config.fetch(name).fetch('Description')
         expect(description).not_to be_nil
         expect(description).not_to include("\n")
       end

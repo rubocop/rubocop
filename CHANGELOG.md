@@ -11,16 +11,18 @@
 * [#1918](https://github.com/bbatsov/rubocop/issues/1918): New configuration parameter `AllCops:DisabledByDefault` when set to `true` makes only cops found in user configuration enabled, which makes cop selection *opt-in*. ([@jonas054][])
 * New cop `Performance/StringReplacement` checks for usages of `gsub` that can be replaced with `tr` or `delete`. ([@rrosenblum][])
 * [#2001](https://github.com/bbatsov/rubocop/issues/2001): New cop `Style/InitialIndentation` checks for indentation of the first non-blank non-comment line in a file. ([@jonas054][])
-* New cop `Lint/UselessOptionalArgument` checks for optional arguments that do not appear at the end of an argument list. ([@rrosenblum][])
+* [#2060](https://github.com/bbatsov/rubocop/issues/2060): New cop `Style/RescueEnsureAlignment` checks for bad alignment of `rescue` and `ensure` keywords. ([@lumeet][])
+* New cop `Style/OptionalArguments` checks for optional arguments that do not appear at the end of an argument list. ([@rrosenblum][])
+* New cop `Lint/CircularArgumentReference` checks for "circular argument references" in keyword arguments, which Ruby 2.2 warns against. ([@maxjacobson][])
 
 ### Changes
 
 * [#2052](https://github.com/bbatsov/rubocop/pull/2052): `Style/RescueModifier` uses token stream to identify offenses. ([@urbanautomaton][])
-* [#2008](https://github.com/bbatsov/rubocop/issues/2008): `Style/SpaceBeforeModifierKeyword` now also checks for *too many* spaces before a modifier keyword. ([@jonas054][])
 * Rename `Rails/Date` and `Rails/TimeZone` style names to "strict" and "flexible" and make "flexible" to be default. ([@palkan][])
+* [#2035](https://github.com/bbatsov/rubocop/issues/2035): `Style/ExtraSpacing` is now enabled by default and has a configuration parameter `AllowForAlignment` that is `true` by default, making it allow extra spacing if it's used for alignment purposes. ([@jonas054][])
 
 ### Bugs fixed
-
+* [#2066](https://github.com/bbatsov/rubocop/issues/2066): Fix `Style/TrivialAccessors` to not register offenses inside `instance_eval`. ([@tranvictor][])
 * [#2014](https://github.com/bbatsov/rubocop/pull/2014): Fix `Style/TrivialAccessors` to support AllowPredicates: false. ([@gotrevor][])
 * [#1988](https://github.com/bbatsov/rubocop/issues/1988): Fix bug in `Style/ParallelAssignment` when assigning from `Module::CONSTANT`. ([@rrosenblum][])
 * [#1995](https://github.com/bbatsov/rubocop/pull/1995): Improve message for `Rails/TimeZone`. ([@palkan][])
@@ -34,6 +36,9 @@
 * [#1992](https://github.com/bbatsov/rubocop/issues/1992): Allow parentheses in assignment to a variable with the same name as the method's in `Style/MethodCallParentheses`. ([@lumeet][])
 * [#2045](https://github.com/bbatsov/rubocop/issues/2045): Fix crash in `Style/IndentationWidth` when using `private_class_method def self.foo` syntax. ([@unmanbearpig][])
 * [#2006](https://github.com/bbatsov/rubocop/issues/2006): Fix crash in `Style/FirstParameterIndentation` in case of nested offenses. ([@unmanbearpig][])
+* [#2059](https://github.com/bbatsov/rubocop/issues/2059): Don't check for trivial accessors in modules. ([@bbatsov][])
+* Add proper punctuation to the end of offense messages, where it is missing. ([@lumeet][])
+* [#2071](https://github.com/bbatsov/rubocop/pull/2071): Keep line breaks in place on WordArray autocorrect.([@unmanbearpig][])
 
 ## 0.32.1 (24/06/2015)
 
@@ -1507,3 +1512,4 @@
 [@segiddins]: https://github.com/segiddins
 [@urbanautomaton]: https://github.com/urbanautomaton.com
 [@unmanbearpig]: https://github.com/unmanbearpig
+[@maxjacobson]: https://github.com/maxjacobson

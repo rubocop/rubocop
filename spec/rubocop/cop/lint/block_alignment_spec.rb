@@ -12,7 +12,7 @@ describe RuboCop::Cop::Lint::BlockAlignment do
                       '  end'
                      ])
       expect(cop.messages)
-        .to eq(['`end` at 2, 2 is not aligned with `test do` at 1, 0'])
+        .to eq(['`end` at 2, 2 is not aligned with `test do` at 1, 0.'])
     end
 
     it 'auto-corrects alignment' do
@@ -32,7 +32,7 @@ describe RuboCop::Cop::Lint::BlockAlignment do
                       '  end'
                      ])
       expect(cop.messages)
-        .to eq(['`end` at 2, 2 is not aligned with `test do |ala|` at 1, 0'])
+        .to eq(['`end` at 2, 2 is not aligned with `test do |ala|` at 1, 0.'])
     end
 
     it 'auto-corrects alignment' do
@@ -82,7 +82,7 @@ describe RuboCop::Cop::Lint::BlockAlignment do
                      ])
       expect(cop.messages)
         .to eq(['`end` at 2, 4 is not aligned with' \
-                ' `a = b = c = test do |ala|` at 1, 0'])
+                ' `a = b = c = test do |ala|` at 1, 0.'])
     end
 
     it 'accepts end aligned with the first variable' do
@@ -123,7 +123,7 @@ describe RuboCop::Cop::Lint::BlockAlignment do
                    ])
     expect(cop.messages)
       .to eq(['`end` at 2, 2 is not aligned with `variable = test do |ala|`' \
-              ' at 1, 0'])
+              ' at 1, 0.'])
   end
 
   context 'when the block is defined on the next line' do
@@ -146,7 +146,7 @@ describe RuboCop::Cop::Lint::BlockAlignment do
                      ])
       expect(cop.messages)
         .to eq(['`end` at 4, 0 is not aligned with' \
-                ' `a_long_method_that_dont_fit_on_the_line do |v|` at 2, 2'])
+                ' `a_long_method_that_dont_fit_on_the_line do |v|` at 2, 2.'])
     end
 
     it 'auto-corrects alignment' do
@@ -202,11 +202,11 @@ describe RuboCop::Cop::Lint::BlockAlignment do
       inspect_source(cop, src)
       expect(cop.messages)
         .to eq(['`end` at 5, 8 is not aligned with `bar.get_stuffs` at 2, 2' \
-                ' or `.reject do |stuff|` at 3, 6',
+                ' or `.reject do |stuff|` at 3, 6.',
                 '`end` at 7, 4 is not aligned with `bar.get_stuffs` at 2, 2' \
-                ' or `end.select do |stuff|` at 5, 8',
+                ' or `end.select do |stuff|` at 5, 8.',
                 '`end` at 10, 8 is not aligned with `bar.get_stuffs` at 2, 2' \
-                ' or `.select do |stuff|` at 8, 6'])
+                ' or `.select do |stuff|` at 8, 6.'])
     end
 
     # Example from issue 393 of bbatsov/rubocop on github:
@@ -294,7 +294,7 @@ describe RuboCop::Cop::Lint::BlockAlignment do
       inspect_source(cop, src)
       expect(cop.messages)
         .to eq(['`end` at 4, 4 is not aligned with `e,` at 1, 0 or' \
-                ' `f = [5, 6].map do |i|` at 2, 0'])
+                ' `f = [5, 6].map do |i|` at 2, 0.'])
     end
 
     it 'can not auto-correct' do
@@ -324,7 +324,7 @@ describe RuboCop::Cop::Lint::BlockAlignment do
                    ])
     expect(cop.messages)
       .to eq(['`end` at 2, 2 is not aligned with `@variable = test do |ala|`' \
-              ' at 1, 0'])
+              ' at 1, 0.'])
   end
 
   it 'accepts end aligned with a class variable' do
@@ -342,7 +342,7 @@ describe RuboCop::Cop::Lint::BlockAlignment do
                    ])
     expect(cop.messages)
       .to eq(['`end` at 2, 2 is not aligned with `@@variable = test do |ala|`' \
-              ' at 1, 0'])
+              ' at 1, 0.'])
   end
 
   it 'accepts end aligned with a global variable' do
@@ -360,7 +360,7 @@ describe RuboCop::Cop::Lint::BlockAlignment do
                    ])
     expect(cop.messages)
       .to eq(['`end` at 2, 2 is not aligned with `$variable = test do |ala|`' \
-              ' at 1, 0'])
+              ' at 1, 0.'])
   end
 
   it 'accepts end aligned with a constant' do
@@ -378,7 +378,7 @@ describe RuboCop::Cop::Lint::BlockAlignment do
                    ])
     expect(cop.messages)
       .to eq(['`end` at 2, 2 is not aligned with' \
-              ' `Module::CONSTANT = test do |ala|` at 1, 0'])
+              ' `Module::CONSTANT = test do |ala|` at 1, 0.'])
   end
 
   it 'accepts end aligned with a method call' do
@@ -398,7 +398,7 @@ describe RuboCop::Cop::Lint::BlockAlignment do
                    ])
     expect(cop.messages)
       .to eq(['`end` at 3, 2 is not aligned with' \
-              ' `parser.children << lambda do |token|` at 1, 0'])
+              ' `parser.children << lambda do |token|` at 1, 0.'])
   end
 
   it 'accepts end aligned with a method call with arguments' do
@@ -419,7 +419,7 @@ describe RuboCop::Cop::Lint::BlockAlignment do
                    ])
     expect(cop.messages)
       .to eq(['`end` at 3, 2 is not aligned with' \
-              ' `@h[:f] = f.each_pair.map do |f, v|` at 1, 0'])
+              ' `@h[:f] = f.each_pair.map do |f, v|` at 1, 0.'])
   end
 
   it 'does not raise an error for nested block in a method call' do
@@ -446,7 +446,7 @@ describe RuboCop::Cop::Lint::BlockAlignment do
                    ])
     expect(cop.messages)
       .to eq(['`end` at 3, 2 is not aligned with `arr.all? do |o|` at 1, 7 or' \
-              ' `expect(arr.all? do |o|` at 1, 0'])
+              ' `expect(arr.all? do |o|` at 1, 0.'])
   end
 
   it 'accepts end aligned with an op-asgn (+=, -=)' do
@@ -465,7 +465,7 @@ describe RuboCop::Cop::Lint::BlockAlignment do
                     '  end'
                    ])
     expect(cop.messages)
-      .to eq(['`end` at 3, 2 is not aligned with `rb` at 1, 0'])
+      .to eq(['`end` at 3, 2 is not aligned with `rb` at 1, 0.'])
   end
 
   it 'accepts end aligned with an and-asgn (&&=)' do
@@ -483,7 +483,7 @@ describe RuboCop::Cop::Lint::BlockAlignment do
                    ])
     expect(cop.messages)
       .to eq(['`end` at 2, 2 is not aligned with `variable &&= test do |ala|`' \
-              ' at 1, 0'])
+              ' at 1, 0.'])
   end
 
   it 'accepts end aligned with an or-asgn (||=)' do
@@ -501,7 +501,7 @@ describe RuboCop::Cop::Lint::BlockAlignment do
                    ])
     expect(cop.messages)
       .to eq(['`end` at 2, 2 is not aligned with `variable ||= test do |ala|`' \
-              ' at 1, 0'])
+              ' at 1, 0.'])
   end
 
   it 'accepts end aligned with a mass assignment' do
@@ -528,7 +528,7 @@ describe RuboCop::Cop::Lint::BlockAlignment do
                     '  end'
                    ])
     expect(cop.messages)
-      .to eq(['`end` at 3, 2 is not aligned with `var1, var2` at 1, 0'])
+      .to eq(['`end` at 3, 2 is not aligned with `var1, var2` at 1, 0.'])
   end
 
   context 'when multiple similar-looking blocks have misaligned ends' do

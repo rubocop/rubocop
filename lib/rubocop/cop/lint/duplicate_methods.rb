@@ -65,7 +65,7 @@ module RuboCop
 
         def method_names(body)
           body.child_nodes.map do |node|
-            _receiver, node, body  = *node if node.send_type?
+            _receiver, node, body = *node if node.send_type?
 
             if node.is_a? Symbol
               next if body.nil?

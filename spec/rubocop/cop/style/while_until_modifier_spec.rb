@@ -52,7 +52,7 @@ describe RuboCop::Cop::Style::WhileUntilModifier do
        'end']
     end
 
-    it 'registers an offense'  do
+    it 'registers an offense' do
       inspect_source(cop, source)
       expect(cop.offenses.size).to eq(1)
     end

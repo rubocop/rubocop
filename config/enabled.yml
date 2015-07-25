@@ -243,6 +243,10 @@ Style/EvenOdd:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#predicate-methods'
   Enabled: true
 
+Style/ExtraSpacing:
+  Description: 'Do not use unnecessary spacing.'
+  Enabled: true
+
 Style/FileName:
   Description: 'Use snake_case for source file names.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#snake-case-files'
@@ -452,6 +456,12 @@ Style/OpMethod:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#other-arg'
   Enabled: true
 
+Style/OptionalArguments:
+  Description: >-
+                 Checks for optional arguments that do not appear at the end
+                 of the argument list
+  Enabled: true
+
 Style/ParallelAssignment:
   Description: >-
                   Check for simple usages of parallel assignment.
@@ -521,6 +531,10 @@ Style/RedundantSelf:
 Style/RegexpLiteral:
   Description: 'Use / or %r around regular expressions.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-r'
+  Enabled: true
+
+Style/RescueEnsureAlignment:
+  Description: 'Align rescues and ensures correctly.'
   Enabled: true
 
 Style/RescueModifier:
@@ -637,7 +651,7 @@ Style/SpaceAroundOperators:
   Enabled: true
 
 Style/SpaceBeforeModifierKeyword:
-  Description: 'Put one space before the modifier keyword.'
+  Description: 'Put a space before the modifier keyword.'
   Enabled: true
 
 Style/SpaceInsideBrackets:
@@ -849,6 +863,10 @@ Lint/BlockAlignment:
   Description: 'Align block ends correctly.'
   Enabled: true
 
+Lint/CircularArgumentReference:
+  Description: "Don't refer to the keyword argument in the default value."
+  Enabled: true
+
 Lint/ConditionPosition:
   Description: >-
                  Checks for condition placed in a confusing position relative to
@@ -1015,12 +1033,6 @@ Lint/UselessComparison:
 
 Lint/UselessElseWithoutRescue:
   Description: 'Checks for useless `else` in `begin..end` without `rescue`.'
-  Enabled: true
-
-Lint/UselessOptionalArgument:
-  Description: >-
-                 Checks for optional arguments that do not appear at the end
-                 of the argument list
   Enabled: true
 
 Lint/UselessSetterCall:

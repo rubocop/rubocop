@@ -161,6 +161,17 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts writer in a module' do
+    inspect_source(cop,
+                   ['module Foo',
+                    '  def bar=(bar)',
+                    '    @bar = bar',
+                    '  end',
+                    'end'])
+
+    expect(cop.offenses).to be_empty
+  end
+
   context 'exact name match disabled' do
     let(:cop_config) { { 'ExactNameMatch' => false } }
 
@@ -265,6 +276,28 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
       inspect_source(cop,
                      ['def self.foo(val)',
                       '  @foo = val',
+                      'end'])
+      expect(cop.offenses).to be_empty
+    end
+  end
+
+  context 'ignore methods within instance_eval context' do
+    it 'accepts reader within instance_eval context' do
+      inspect_source(cop,
+                     ['obj.instance_eval do |_|',
+                      '  def foo',
+                      '    @foo',
+                      '  end',
+                      'end'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'acceps writer within instance_eval context' do
+      inspect_source(cop,
+                     ['obj.instance_eval do |_|',
+                      '  def foo=(value)',
+                      '    @foo = value',
+                      '  end',
                       'end'])
       expect(cop.offenses).to be_empty
     end

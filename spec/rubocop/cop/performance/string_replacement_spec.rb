@@ -13,36 +13,42 @@ describe RuboCop::Cop::Performance::StringReplacement do
 
   shared_examples 'accepts' do |method|
     context 'non deterministic parameters' do
+      it 'accepts gsub when the length of the pattern is greater than 1' do
+        inspect_source(cop, "'abc'.#{method}('ab', 'de')")
+
+        expect(cop.messages).to be_empty
+      end
+
       it 'accepts the first param being a variable' do
-        inspect_source(cop, ['regex = /abc/',
+        inspect_source(cop, ['regex = /a/',
                              "'abc'.#{method}(regex, '1')"])
 
         expect(cop.messages).to be_empty
       end
 
       it 'accepts the second param being a variable' do
-        inspect_source(cop, ["replacement = 'efg'",
+        inspect_source(cop, ["replacement = 'e'",
                              "'abc'.#{method}('abc', replacement)"])
 
         expect(cop.messages).to be_empty
       end
 
       it 'accepts the both params being a variables' do
-        inspect_source(cop, ['regex = /abc/',
-                             "replacement = 'efg'",
+        inspect_source(cop, ['regex = /a/',
+                             "replacement = 'e'",
                              "'abc'.#{method}(regex, replacement)"])
 
         expect(cop.messages).to be_empty
       end
 
       it 'accepts gsub with only one param' do
-        inspect_source(cop, "'abc'.#{method}('ab')")
+        inspect_source(cop, "'abc'.#{method}('a')")
 
         expect(cop.messages).to be_empty
       end
 
       it 'accepts gsub with a block' do
-        inspect_source(cop, "'abc'.#{method}('ab') { |s| s.upcase } ")
+        inspect_source(cop, "'abc'.#{method}('a') { |s| s.upcase } ")
 
         expect(cop.messages).to be_empty
       end
@@ -107,7 +113,7 @@ describe RuboCop::Cop::Performance::StringReplacement do
   describe 'deterministic regex' do
     describe 'regex literal' do
       it 'registers an offense when only using word characters' do
-        inspect_source(cop, "'abc'.gsub(/abc/, '123')")
+        inspect_source(cop, "'abc'.gsub(/a/, '1')")
 
         expect(cop.messages).to eq(['Use `tr` instead of `gsub`.'])
       end
@@ -149,14 +155,14 @@ describe RuboCop::Cop::Performance::StringReplacement do
       end
 
       it 'registers an offense when using numbers' do
-        inspect_source(cop, %('123'.gsub(/123/, 'abc')))
+        inspect_source(cop, %('123'.gsub(/1/, 'a')))
 
         expect(cop.messages).to eq(['Use `tr` instead of `gsub`.'])
       end
 
       it 'allows deterministic regex when the length of the pattern ' \
          'and the length of the replacement do not match' do
-        inspect_source(cop, %('abc'.gsub(/ab/, 'def')))
+        inspect_source(cop, %('abc'.gsub(/a/, 'def')))
 
         expect(cop.messages).to be_empty
       end
@@ -168,7 +174,7 @@ describe RuboCop::Cop::Performance::StringReplacement do
       end
 
       it 'registers an offense when using %r notation' do
-        inspect_source(cop, %('/abc'.gsub(%r{abc}, 'def')))
+        inspect_source(cop, %('/abc'.gsub(%r{a}, 'd')))
 
         expect(cop.messages).to eq(['Use `tr` instead of `gsub`.'])
       end
@@ -176,19 +182,19 @@ describe RuboCop::Cop::Performance::StringReplacement do
 
     describe 'regex constructor' do
       it 'registers an offense when only using word characters' do
-        inspect_source(cop, "'abc'.gsub(Regexp.new('abc'), '123')")
+        inspect_source(cop, "'abc'.gsub(Regexp.new('b'), '2')")
 
         expect(cop.messages).to eq(['Use `tr` instead of `gsub`.'])
       end
 
       it 'registers an offense when regex is built from regex' do
-        inspect_source(cop, "'abc'.gsub(Regexp.new(/abc/), '123')")
+        inspect_source(cop, "'abc'.gsub(Regexp.new(/b/), '2')")
 
         expect(cop.messages).to eq(['Use `tr` instead of `gsub`.'])
       end
 
       it 'registers an offense when using compile' do
-        inspect_source(cop, "'123'.gsub(Regexp.compile('12'), 'ab')")
+        inspect_source(cop, "'123'.gsub(Regexp.compile('1'), 'a')")
 
         expect(cop.messages).to eq(['Use `tr` instead of `gsub`.'])
       end
@@ -292,7 +298,7 @@ describe RuboCop::Cop::Performance::StringReplacement do
   end
 
   it 'registers an offense when using gsub to find and replace ' \
-     'a single character ' do
+     'a single character' do
     inspect_source(cop, "'abc'.gsub('a', '1')")
 
     expect(cop.messages).to eq(['Use `tr` instead of `gsub`.'])
@@ -307,34 +313,11 @@ describe RuboCop::Cop::Performance::StringReplacement do
     expect(cop.highlights).to eq(["gsub!('a', '1')"])
   end
 
-  it 'registers an offense for gsub when the length of the pattern matches ' \
-     'the length of the replacement' do
-    inspect_source(cop, "'abc'.gsub('ab', 'de')")
-
-    expect(cop.messages).to eq(['Use `tr` instead of `gsub`.'])
-    expect(cop.highlights).to eq(["gsub('ab', 'de')"])
-  end
-
-  it 'registers an offense for gsub! when the length of the pattern matches ' \
-     'the length of the replacement' do
-    inspect_source(cop, "'abc'.gsub!('ab', 'de')")
-
-    expect(cop.messages).to eq(['Use `tr!` instead of `gsub!`.'])
-    expect(cop.highlights).to eq(["gsub!('ab', 'de')"])
-  end
-
   it 'registers an offense for gsub! when deleting one characters' do
     inspect_source(cop, "'abc'.gsub!('a', '')")
 
     expect(cop.messages).to eq(['Use `delete!` instead of `gsub!`.'])
     expect(cop.highlights).to eq(["gsub!('a', '')"])
-  end
-
-  it 'registers an offense for gsub! when deleting multiple characters' do
-    inspect_source(cop, "'abc'.gsub!('ab', '')")
-
-    expect(cop.messages).to eq(['Use `tr!` instead of `gsub!`.'])
-    expect(cop.highlights).to eq(["gsub!('ab', '')"])
   end
 
   it 'registers an offense when using escape characters in the replacement' do
@@ -352,34 +335,28 @@ describe RuboCop::Cop::Performance::StringReplacement do
   context 'auto-correct' do
     describe 'corrects to tr' do
       it 'when the length of the pattern and replacement are the same' do
-        new_source = autocorrect_source(cop, "'abc'.gsub('ab', 'de')")
+        new_source = autocorrect_source(cop, "'abc'.gsub('a', 'd')")
 
-        expect(new_source).to eq("'abc'.tr('ab', 'de')")
-      end
-
-      it 'when the length of the pattern and replacement are the same' do
-        new_source = autocorrect_source(cop, "'abc'.gsub!('ab', 'de')")
-
-        expect(new_source).to eq("'abc'.tr!('ab', 'de')")
+        expect(new_source).to eq("'abc'.tr('a', 'd')")
       end
 
       it 'when the pattern is a regex literal' do
-        new_source = autocorrect_source(cop, "'abc'.gsub(/ab/, '12')")
+        new_source = autocorrect_source(cop, "'abc'.gsub(/a/, '1')")
 
-        expect(new_source).to eq("'abc'.tr('ab', '12')")
+        expect(new_source).to eq("'abc'.tr('a', '1')")
       end
 
       it 'when the pattern is a regex literal using %r' do
-        new_source = autocorrect_source(cop, "'abc'.gsub(%r{ab}, '12')")
+        new_source = autocorrect_source(cop, "'abc'.gsub(%r{a}, '1')")
 
-        expect(new_source).to eq("'abc'.tr('ab', '12')")
+        expect(new_source).to eq("'abc'.tr('a', '1')")
       end
 
       it 'when the pattern uses Regexp.new' do
         new_source = autocorrect_source(cop,
-                                        "'abc'.gsub(Regexp.new('ab'), '12')")
+                                        "'abc'.gsub(Regexp.new('a'), '1')")
 
-        expect(new_source).to eq("'abc'.tr('ab', '12')")
+        expect(new_source).to eq("'abc'.tr('a', '1')")
       end
 
       it 'when the pattern uses Regexp.compile' do
@@ -411,12 +388,6 @@ describe RuboCop::Cop::Performance::StringReplacement do
         new_source = autocorrect_source(cop, '"a`b".gsub("`", "\"")')
 
         expect(new_source).to eq('"a`b".tr(\'`\', "\"")')
-      end
-
-      it 'when deleteing multiple characters' do
-        new_source = autocorrect_source(cop, "'abc'.gsub('ab', '')")
-
-        expect(new_source).to eq("'abc'.tr('ab', '')")
       end
     end
 
