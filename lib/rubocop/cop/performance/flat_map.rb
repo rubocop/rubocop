@@ -18,7 +18,7 @@ module RuboCop
         MSG = 'Use `flat_map` instead of `%s...%s`.'
         FLATTEN_MULTIPLE_LEVELS = ' Beware, `flat_map` only flattens 1 level ' \
                                   'and `flatten` can be used to flatten ' \
-                                  'multiple levels'
+                                  'multiple levels.'
         FLATTEN = [:flatten, :flatten!]
 
         def on_send(node)

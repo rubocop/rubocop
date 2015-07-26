@@ -1779,7 +1779,7 @@ describe RuboCop::CLI, :isolated_environment do
                       '  if something',
                       '  ^^',
                       'example3.rb:5:5: W: end at 5, 4 is not aligned ' \
-                      'with if at 3, 2',
+                      'with if at 3, 2.',
                       '    end',
                       '    ^^^',
                       '',
@@ -2928,8 +2928,8 @@ describe RuboCop::CLI, :isolated_environment do
       cli.run(['--format', 'simple', '-c', 'rubocop.yml', 'example1.rb'])
       expect($stdout.string)
         .to eq(['== example1.rb ==',
-                'C:  2:  6: %w-literals should be delimited by [ and ]',
-                'C:  3:  6: %q-literals should be delimited by ( and )',
+                'C:  2:  6: %w-literals should be delimited by [ and ].',
+                'C:  3:  6: %q-literals should be delimited by ( and ).',
                 'C:  3:  6: Use %q only for strings that contain both single ' \
                 'quotes and double quotes.',
                 '',
