@@ -460,6 +460,7 @@ Style/OptionalArguments:
   Description: >-
                  Checks for optional arguments that do not appear at the end
                  of the argument list
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#optional-arguments'
   Enabled: true
 
 Style/ParallelAssignment:
