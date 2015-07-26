@@ -76,7 +76,7 @@ describe RuboCop::Cop::Performance::FlatMap, :config do
         expect(cop.messages)
           .to eq(["Use `flat_map` instead of `map...#{flatten}`. " \
                'Beware, `flat_map` only flattens 1 level and `flatten` ' \
-               'can be used to flatten multiple levels'])
+               'can be used to flatten multiple levels.'])
       end
 
       it "will not correct #{method}..#{flatten} to flat_map" do

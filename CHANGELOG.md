@@ -36,6 +36,7 @@
 * [#2045](https://github.com/bbatsov/rubocop/issues/2045): Fix crash in `Style/IndentationWidth` when using `private_class_method def self.foo` syntax. ([@unmanbearpig][])
 * [#2006](https://github.com/bbatsov/rubocop/issues/2006): Fix crash in `Style/FirstParameterIndentation` in case of nested offenses. ([@unmanbearpig][])
 * [#2059](https://github.com/bbatsov/rubocop/issues/2059): Don't check for trivial accessors in modules. ([@bbatsov][])
+* Add proper punctuation to the end of offense messages, where it is missing. ([@lumeet][])
 
 ## 0.32.1 (24/06/2015)
 
