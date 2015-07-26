@@ -20,7 +20,7 @@
 * Rename `Rails/Date` and `Rails/TimeZone` style names to "strict" and "flexible" and make "flexible" to be default. ([@palkan][])
 
 ### Bugs fixed
-
+* [#2066](https://github.com/bbatsov/rubocop/issues/2066): Fix `Style/TrivialAccessors` to not register offenses inside `instance_eval`. ([@tranvictor][])
 * [#2014](https://github.com/bbatsov/rubocop/pull/2014): Fix `Style/TrivialAccessors` to support AllowPredicates: false. ([@gotrevor][])
 * [#1988](https://github.com/bbatsov/rubocop/issues/1988): Fix bug in `Style/ParallelAssignment` when assigning from `Module::CONSTANT`. ([@rrosenblum][])
 * [#1995](https://github.com/bbatsov/rubocop/pull/1995): Improve message for `Rails/TimeZone`. ([@palkan][])

@@ -9,6 +9,7 @@ module RuboCop
         MSG = 'Use `attr_%s` to define trivial %s methods.'
 
         def on_def(node)
+          return if in_instance_context?(node)
           method_name, args, body = *node
           on_method_def(node, method_name, args, body)
         end
@@ -125,9 +126,11 @@ module RuboCop
         end
 
         def in_instance_context?(node)
-          (node.parent &&
-           node.parent.type == :block &&
-           node.parent.children.first.children.last == :instance_eval)
+          parent = node.parent
+          return false if parent == nil || parent.type != :block
+          block, _ = *parent
+          _, context = *block
+          context == :instance_eval
         end
 
         def autocorrect_instance(node)

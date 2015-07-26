@@ -270,6 +270,28 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
     end
   end
 
+  context 'ignore methods within instance_eval context' do
+    it 'accepts reader within instance_eval context' do
+      inspect_source(cop,
+                     ['obj.instance_eval do |_|',
+                      '  def foo',
+                      '    @foo',
+                      '  end',
+                      'end'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'acceps writer within instance_eval context' do
+      inspect_source(cop,
+                     ['obj.instance_eval do |_|',
+                      '  def foo=(value)',
+                      '    @foo = value',
+                      '  end',
+                      'end'])
+      expect(cop.offenses).to be_empty
+    end
+  end
+
   describe '#autocorrect' do
     context 'trivial reader' do
       let(:source) { trivial_reader }
@@ -340,24 +362,6 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
         ['def derp.foo=(f)',
          '  @foo=f',
          'end']
-      end
-
-      it 'does not autocorrect' do
-        expect(autocorrect_source(cop, source))
-          .to eq(source.join("\n"))
-        expect(cop.offenses.map(&:corrected?)).to eq [false]
-      end
-    end
-
-    context 'explicit receiver reader with instance_eval' do
-      let(:source) do
-        [
-          'obj.instance_eval do |_|',
-          '  def foo',
-          '    @foo',
-          '  end',
-          'end'
-        ]
       end
 
       it 'does not autocorrect' do
