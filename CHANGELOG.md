@@ -35,6 +35,7 @@
 * [#1992](https://github.com/bbatsov/rubocop/issues/1992): Allow parentheses in assignment to a variable with the same name as the method's in `Style/MethodCallParentheses`. ([@lumeet][])
 * [#2045](https://github.com/bbatsov/rubocop/issues/2045): Fix crash in `Style/IndentationWidth` when using `private_class_method def self.foo` syntax. ([@unmanbearpig][])
 * [#2006](https://github.com/bbatsov/rubocop/issues/2006): Fix crash in `Style/FirstParameterIndentation` in case of nested offenses. ([@unmanbearpig][])
+* [#2059](https://github.com/bbatsov/rubocop/issues/2059): Don't check for trivial accessors in modules. ([@bbatsov][])
 
 ## 0.32.1 (24/06/2015)
 

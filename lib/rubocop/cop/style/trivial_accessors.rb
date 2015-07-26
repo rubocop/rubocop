@@ -9,17 +9,25 @@ module RuboCop
         MSG = 'Use `attr_%s` to define trivial %s methods.'
 
         def on_def(node)
+          return if in_module?(node)
           method_name, args, body = *node
           on_method_def(node, method_name, args, body)
         end
 
         def on_defs(node)
+          return if in_module?(node)
           return if ignore_class_methods?
           _scope, method_name, args, body = *node
           on_method_def(node, method_name, args, body)
         end
 
         private
+
+        def in_module?(node)
+          pnode = node.parent
+          pnode = pnode.parent if pnode && pnode.type == :begin
+          !pnode.nil? && pnode.type == :module
+        end
 
         def on_method_def(node, method_name, args, body)
           kind = if trivial_reader?(method_name, args, body)
