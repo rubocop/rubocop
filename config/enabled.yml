@@ -863,6 +863,10 @@ Lint/BlockAlignment:
   Description: 'Align block ends correctly.'
   Enabled: true
 
+Lint/CircularArgumentReference:
+  Description: "Don't refer to the keyword argument in the default value."
+  Enabled: true
+
 Lint/ConditionPosition:
   Description: >-
                  Checks for condition placed in a confusing position relative to
