@@ -1640,7 +1640,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
   end
 
   context 'when a variable is assigned ' \
-          'and passed to a method followed by method taking block'  do
+          'and passed to a method followed by method taking block' do
     let(:source) do
       [
         "pattern = '*.rb'",

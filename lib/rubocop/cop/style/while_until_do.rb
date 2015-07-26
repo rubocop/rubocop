@@ -16,7 +16,7 @@ module RuboCop
         def handle(node)
           length = node.loc.expression.source.lines.to_a.size
           return unless length > 1
-          return unless  node.loc.begin && node.loc.begin.is?('do')
+          return unless node.loc.begin && node.loc.begin.is?('do')
 
           add_offense(node, :begin, error_message(node.type))
         end

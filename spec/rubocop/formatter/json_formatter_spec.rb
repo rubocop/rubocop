@@ -122,7 +122,7 @@ module RuboCop
       end
 
       it 'sets value of #hash_for_location for :location key' do
-        location_hash =  { line: 3, column: 6, length: 1 }
+        location_hash = { line: 3, column: 6, length: 1 }
         expect(hash[:location]).to eq(location_hash)
       end
     end

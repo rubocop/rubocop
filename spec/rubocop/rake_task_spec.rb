@@ -63,7 +63,7 @@ describe RuboCop::RakeTask do
 
       cli = double('cli', run: 0)
       allow(RuboCop::CLI).to receive(:new) { cli }
-      options = ['--format', 'files',  '--display-cop-names', 'lib/**/*.rb']
+      options = ['--format', 'files', '--display-cop-names', 'lib/**/*.rb']
       expect(cli).to receive(:run).with(options)
 
       Rake::Task['rubocop'].execute
@@ -112,7 +112,7 @@ describe RuboCop::RakeTask do
 
         cli = double('cli', run: 0)
         allow(RuboCop::CLI).to receive(:new) { cli }
-        options = ['--auto-correct', '--format', 'files',  '-D', 'lib/**/*.rb']
+        options = ['--auto-correct', '--format', 'files', '-D', 'lib/**/*.rb']
         expect(cli).to receive(:run).with(options)
 
         Rake::Task['rubocop:auto_correct'].execute
