@@ -13,6 +13,7 @@
 * [#2001](https://github.com/bbatsov/rubocop/issues/2001): New cop `Style/InitialIndentation` checks for indentation of the first non-blank non-comment line in a file. ([@jonas054][])
 * [#2060](https://github.com/bbatsov/rubocop/issues/2060): New cop `Style/RescueEnsureAlignment` checks for bad alignment of `rescue` and `ensure` keywords. ([@lumeet][])
 * New cop `Style/OptionalArguments` checks for optional arguments that do not appear at the end of an argument list. ([@rrosenblum][])
+* New cop `Lint/CircularArgumentReference` checks for "circular argument references" in keyword arguments, which Ruby 2.2 warns against. ([@maxjacobson][])
 
 ### Changes
 
@@ -1510,3 +1511,4 @@
 [@segiddins]: https://github.com/segiddins
 [@urbanautomaton]: https://github.com/urbanautomaton.com
 [@unmanbearpig]: https://github.com/unmanbearpig
+[@maxjacobson]: https://github.com/maxjacobson
