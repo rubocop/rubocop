@@ -61,12 +61,24 @@ module RuboCop
 
         def autocorrect(node)
           @interpolated = false
-          contents = node.children.map { |n| source_for(n) }.join(' ')
+          contents = autocorrect_words(node.children, node.loc.line)
+
           char = @interpolated ? 'W' : 'w'
 
           lambda do |corrector|
             corrector.replace(node.loc.expression, "%#{char}(#{contents})")
           end
+        end
+
+        def autocorrect_words(word_nodes, base_line_number)
+          previous_node_line_number = base_line_number
+          word_nodes.map do |node|
+            number_of_line_breaks = node.loc.line - previous_node_line_number
+            line_breaks = "\n" * number_of_line_breaks
+            previous_node_line_number = node.loc.line
+
+            line_breaks + source_for(node)
+          end.join(' ')
         end
 
         def source_for(str_node)

@@ -101,6 +101,14 @@ describe RuboCop::Cop::Style::WordArray, :config do
     expect(new_source).to eq('%W(one two \n \t)')
   end
 
+  it 'keeps the line breaks in place after auto-correct' do
+    new_source = autocorrect_source(cop,
+                                    ["['one',",
+                                     "'two', 'three']"])
+    expect(new_source).to eq(['%w(one ',
+                              'two three)'].join("\n"))
+  end
+
   context 'with a custom WordRegex configuration' do
     let(:cop_config) { { 'MinSize' => 0, 'WordRegex' => /\A[\w@.]+\z/ } }
 
