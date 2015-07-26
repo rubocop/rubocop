@@ -161,6 +161,17 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts writer in a module' do
+    inspect_source(cop,
+                   ['module Foo',
+                    '  def bar=(bar)',
+                    '    @bar = bar',
+                    '  end',
+                    'end'])
+
+    expect(cop.offenses).to be_empty
+  end
+
   context 'exact name match disabled' do
     let(:cop_config) { { 'ExactNameMatch' => false } }
 

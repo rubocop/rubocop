@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Lint::UselessOptionalArgument do
+describe RuboCop::Cop::Style::OptionalArguments do
   subject(:cop) { described_class.new }
 
   it 'registers an offense when an optional argument is followed by a ' \
@@ -10,7 +10,8 @@ describe RuboCop::Cop::Lint::UselessOptionalArgument do
     inspect_source(cop, ['def foo(a = 1, b)',
                          'end'])
 
-    expect(cop.messages).to eq(['Useless optional argument for variable `a`.'])
+    expect(cop.messages)
+      .to eq([described_class::MSG])
     expect(cop.highlights).to eq(['a = 1'])
   end
 
@@ -19,8 +20,7 @@ describe RuboCop::Cop::Lint::UselessOptionalArgument do
     inspect_source(cop, ['def foo(a = 1, b = 2, c)',
                          'end'])
 
-    expect(cop.messages).to eq(['Useless optional argument for variable `a`.',
-                                'Useless optional argument for variable `b`.'])
+    expect(cop.messages).to eq([described_class::MSG, described_class::MSG])
     expect(cop.highlights).to eq(['a = 1', 'b = 2'])
   end
 
@@ -66,24 +66,6 @@ describe RuboCop::Cop::Lint::UselessOptionalArgument do
     expect(cop.messages).to be_empty
   end
 
-  describe 'autocorrect' do
-    it 'corrects a single useless optional arguments' do
-      new_source = autocorrect_source(cop, ['def foo(a = 1, b)',
-                                            'end'])
-
-      expect(new_source).to eq(['def foo(a, b)',
-                                'end'].join("\n"))
-    end
-
-    it 'corrects multiple useless optional arguments' do
-      new_source = autocorrect_source(cop, ['def foo(a = 1, b = 2, c)',
-                                            'end'])
-
-      expect(new_source).to eq(['def foo(a, b, c)',
-                                'end'].join("\n"))
-    end
-  end
-
   context 'named params' do
     context 'with default values', ruby_greater_than_or_equal: 2.0 do
       it 'allows optional arguments before an optional named argument' do
@@ -100,8 +82,7 @@ describe RuboCop::Cop::Lint::UselessOptionalArgument do
         inspect_source(cop, ['def foo(a = 1, b, c:, d: 4)',
                              'end'])
 
-        expect(cop.messages)
-          .to eq(['Useless optional argument for variable `a`.'])
+        expect(cop.messages).to eq([described_class::MSG])
         expect(cop.highlights).to eq(['a = 1'])
       end
 
@@ -118,17 +99,6 @@ describe RuboCop::Cop::Lint::UselessOptionalArgument do
                              'end'])
 
         expect(cop.messages).to be_empty
-      end
-
-      context 'autocorrect' do
-        it 'removes the default values of optional arguments when they ' \
-           'appear before required arguments and named arguments' do
-          new_source = autocorrect_source(cop, ['def foo(a = 1, b, c:, d: 4)',
-                                                'end'])
-
-          expect(new_source).to eq(['def foo(a, b, c:, d: 4)',
-                                    'end'].join("\n"))
-        end
       end
     end
   end

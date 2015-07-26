@@ -49,10 +49,6 @@ Style/SymbolArray:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-i'
   Enabled: false
 
-Style/ExtraSpacing:
-  Description: 'Do not use unnecessary spacing.'
-  Enabled: false
-
 Lint/LiteralInInterpolation:
   Description: 'Avoid interpolating literals in strings'
   AutoCorrect: false

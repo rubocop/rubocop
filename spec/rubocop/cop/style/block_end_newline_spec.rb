@@ -38,8 +38,8 @@ describe RuboCop::Cop::Style::BlockEndNewline do
   end
 
   it 'autocorrects a do/end block where the end is not on its own line' do
-    src =  ['test do',
-            '  foo end']
+    src = ['test do',
+           '  foo end']
 
     new_source = autocorrect_source(cop, src)
 
@@ -49,8 +49,8 @@ describe RuboCop::Cop::Style::BlockEndNewline do
   end
 
   it 'autocorrects a {} block where the } is not on its own line' do
-    src =  ['test {',
-            '  foo }']
+    src = ['test {',
+           '  foo }']
 
     new_source = autocorrect_source(cop, src)
 

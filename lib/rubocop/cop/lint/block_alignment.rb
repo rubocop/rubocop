@@ -14,7 +14,7 @@ module RuboCop
       class BlockAlignment < Cop
         include CheckAssignment
 
-        MSG = '`end` at %d, %d is not aligned with `%s` at %d, %d%s'
+        MSG = '`end` at %d, %d is not aligned with `%s` at %d, %d%s.'
 
         def on_block(node)
           return if ignored_node?(node)

@@ -49,7 +49,7 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
       inspect_source(cop, source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages.first)
-        .to eq('`end` at 6, 0 is not aligned with `if` at 4, 4')
+        .to eq('`end` at 6, 0 is not aligned with `if` at 4, 4.')
       expect(cop.highlights.first).to eq('end')
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
@@ -75,7 +75,7 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
       inspect_source(cop, source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages.first)
-        .to eq('`end` at 2, 7 is not aligned with `module` at 1, 0')
+        .to eq('`end` at 2, 7 is not aligned with `module` at 1, 0.')
       expect(cop.highlights.first).to eq('end')
     end
 
