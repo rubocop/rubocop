@@ -134,8 +134,8 @@ module RuboCop
 
         def in_instance_context?(node)
           parent = node.parent
-          return false if parent == nil || parent.type != :block
-          block, _ = *parent
+          return false if parent.nil? || parent.type != :block
+          block, = *parent
           _, context = *block
           context == :instance_eval
         end
