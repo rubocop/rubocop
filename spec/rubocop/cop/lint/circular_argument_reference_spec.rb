@@ -21,7 +21,7 @@ describe RuboCop::Cop::Lint::CircularArgumentReference do
   end
 
   context 'ruby >= 2.0', ruby_greater_than_or_equal: 2.0 do
-    before do
+    before(:each) do
       inspect_source(cop, source)
     end
 
