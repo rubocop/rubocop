@@ -212,11 +212,34 @@ module RuboCop
             body_node = body_node.children.first
           end
 
+          # Since autocorrect changes a number of lines, and not only the line
+          # where the reported offending range is, we avoid auto-correction if
+          # this cop has already found other offenses is the same
+          # range. Otherwise, two corrections can interfere with each other,
+          # resulting in corrupted code.
+          node = if autocorrect? && other_offense_in_same_range?(body_node)
+                   nil
+                 else
+                   body_node
+                 end
+
           indentation_name = style == 'normal' ? '' : "#{style} "
-          add_offense(body_node, offending_range(body_node, indentation),
+          add_offense(node, offending_range(body_node, indentation),
                       format("Use #{configured_indentation_width} (not %d) " \
                              "spaces for #{indentation_name}indentation.",
                              indentation))
+        end
+
+        # Returns true if the given node is within another node that has
+        # already been marked for auto-correction by this cop.
+        def other_offense_in_same_range?(node)
+          expr = node.loc.expression
+          @offense_ranges ||= []
+
+          return true if @offense_ranges.any? { |r| within?(expr, r) }
+
+          @offense_ranges << expr
+          false
         end
 
         def indentation_to_check?(base_loc, body_node)

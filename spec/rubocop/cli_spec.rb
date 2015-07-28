@@ -35,6 +35,26 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     describe '--auto-correct' do
+      it 'corrects IndentationWidth, RedundantBegin, and ' \
+         'RescueEnsureAlignment offenses' do
+        source = ['def verify_section',
+                  '      begin',
+                  '      scroll_down_until_element_exists',
+                  '      rescue',
+                  '        scroll_down_until_element_exists',
+                  '        end',
+                  'end']
+        create_file('example.rb', source)
+        expect(cli.run(['--auto-correct'])).to eq(0)
+        corrected = ['def verify_section',
+                     '  scroll_down_until_element_exists',
+                     'rescue',
+                     '  scroll_down_until_element_exists',
+                     'end',
+                     '']
+        expect(IO.read('example.rb')).to eq(corrected.join("\n"))
+      end
+
       it 'corrects InitialIndentation offenses' do
         source = ['  # comment 1',
                   '',

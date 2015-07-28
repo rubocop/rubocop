@@ -160,12 +160,12 @@ describe RuboCop::Cop::Style::IndentationWidth do
                                    'comment',
                                    'which spans a few lines',
                                    '=end',
-                                   # The method has no block comment inside, so
-                                   # it's corrected.
-                                   '  def baz',
-                                   # Method contents are also corrected.
-                                   '    do_something',
-                                   '  end',
+                                   # The method has no block comment inside,
+                                   # but it's within a class that has a block
+                                   # comment, so it's not corrected either.
+                                   'def baz',
+                                   'do_something',
+                                   'end',
                                    'end',
                                    'end'].join("\n")
         end
