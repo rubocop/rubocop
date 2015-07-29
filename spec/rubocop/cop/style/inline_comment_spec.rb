@@ -3,11 +3,12 @@
 require 'spec_helper'
 
 describe RuboCop::Cop::Style::InlineComment do
-  it 'registers an offense for a inline comment' do
-    code = 'two = 1 + 1 # An inline comment'
+  subject(:cop) { described_class.new }
 
-    expect(subject).to find_offenses_in(code)
-      .with_message('Avoid inline comments.')
-      .with_highlight('# An inline comment')
+  it 'registers an offense for a inline comment' do
+    inspect_source(cop, 'two = 1 + 1 # An inline comment')
+
+    expect(cop.messages).to eq(['Avoid inline comments.'])
+    expect(cop.highlights).to eq(['# An inline comment'])
   end
 end
