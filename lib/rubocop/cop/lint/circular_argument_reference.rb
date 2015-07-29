@@ -18,11 +18,13 @@ module RuboCop
           arg_name, arg_value = *node
           case arg_value.type
           when :send
-            # ruby 2.0
-            _, name = *arg_value
-            return unless name == arg_name
+            # Ruby 2.0 will have type send every time, and "send nil" if it is
+            # calling itself with a specified "self" receiver
+            receiver, name = *arg_value
+            return unless name == arg_name && receiver.nil?
           when :lvar
-            # ruby 2.2
+            # Ruby 2.2.2 will have type lvar if it is calling its own method
+            # without a specified "self"
             return unless arg_value.to_a == [arg_name]
           else
             return

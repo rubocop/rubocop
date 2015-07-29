@@ -16,7 +16,7 @@ describe RuboCop::Cop::Lint::CircularArgumentReference do
     it 'fails with a syntax error before the cop even comes into play' do
       expect { inspect_source(cop, source) }.to raise_error(
         RuntimeError, /Error parsing/)
-      expect(cop.offenses.size).to eq(0)
+      expect(cop.offenses).to be_empty
     end
   end
 
@@ -35,7 +35,7 @@ describe RuboCop::Cop::Lint::CircularArgumentReference do
       end
 
       it 'does not register an offense' do
-        expect(cop.offenses.size).to eq(0)
+        expect(cop.offenses).to be_empty
       end
     end
 
@@ -48,7 +48,7 @@ describe RuboCop::Cop::Lint::CircularArgumentReference do
         ]
       end
       it 'does not register an offense' do
-        expect(cop.offenses.size).to eq(0)
+        expect(cop.offenses).to be_empty
       end
     end
 
@@ -68,7 +68,37 @@ describe RuboCop::Cop::Lint::CircularArgumentReference do
       end
     end
 
-    context 'when there are multiple offense keyword arguments' do
+    context 'when the keyword argument is not circular, but calls a method ' \
+            'of its own class with a self specification' do
+      let(:source) do
+        [
+          'def puts_value(value: self.class.value, smile: self.smile)',
+          '  puts value',
+          'end'
+        ]
+      end
+
+      it 'does not register an offense' do
+        expect(cop.offenses).to be_empty
+      end
+    end
+
+    context 'when the keyword argument is not circular, but calls a method ' \
+            'of some other object with the same name' do
+      let(:source) do
+        [
+          'def puts_length(length: mystring.length)',
+          '  puts length',
+          'end'
+        ]
+      end
+
+      it 'does not register an offense' do
+        expect(cop.offenses).to be_empty
+      end
+    end
+
+    context 'when there are multiple offensive keyword arguments' do
       let(:source) do
         [
           'def some_method(some_arg: some_arg, other_arg: other_arg)',
