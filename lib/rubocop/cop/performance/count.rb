@@ -68,6 +68,8 @@ module RuboCop
             if selector.is_a?(Symbol)
               if expression && expression.parent.loc.respond_to?(:selector)
                 expression.parent.loc.selector
+              else
+                left.loc.selector if left.loc.respond_to?(:selector)
               end
             else
               _enumerable, selector, params = *expression
