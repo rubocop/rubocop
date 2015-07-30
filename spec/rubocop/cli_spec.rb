@@ -3284,9 +3284,10 @@ describe RuboCop::CLI, :isolated_environment do
                                            '    - **/*_old.rb'])
 
       cli.run(['example'])
+      # MRI and JRuby return slightly different error messages.
       expect($stderr.string)
-        .to start_with('(<unknown>): did not find expected alphabetic or ' \
-          'numeric character while scanning an alias at line 3 column 7')
+        .to match(/^\(<unknown>\):\ (did\ not\ find\ )?expected\ alphabetic\ or
+                  \ numeric\ character/x)
     end
 
     context 'when a file inherits from the old auto generated file' do
