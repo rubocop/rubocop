@@ -86,6 +86,20 @@ describe RuboCop::Cop::Performance::Count do
       expect(cop.highlights).to eq(["#{selector}(&:something).count"])
     end
 
+    it "registers an offense for #{selector}(&:something).count " \
+       'when called as an instance method on its own class' do
+      source = ['class A < Array',
+                '  def count(&block)',
+                "    #{selector}(&block).count",
+                '  end',
+                'end']
+      inspect_source(cop, source)
+
+      expect(cop.messages)
+        .to eq(["Use `count` instead of `#{selector}...count`."])
+      expect(cop.highlights).to eq(["#{selector}(&block).count"])
+    end
+
     it "allows usage of #{selector} without getting the size" do
       inspect_source(cop, "[1, 2, 3].#{selector} { |e| e.even? }")
 
