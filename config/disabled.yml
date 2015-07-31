@@ -44,6 +44,10 @@ Style/MissingElse:
     - case
     - both
 
+Style/OptionHash:
+  Description: "Don't use option hashes when you can use keyword arguments."
+  Enabled: false
+
 Style/SymbolArray:
   Description: 'Use %i or %I for arrays of symbols.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-i'
