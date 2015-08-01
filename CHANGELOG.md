@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#2057](https://github.com/bbatsov/rubocop/pull/2057): New cop `Lint/FormatParameterMismatch` checks for a mismatch between the number of fields expected in format/sprintf/% and what was pased to it. ([@edmz][])
 * [#2010](https://github.com/bbatsov/rubocop/pull/2010): Add `space` style for SpaceInsideStringInterpolation. ([@gotrevor][])
 * [#2007](https://github.com/bbatsov/rubocop/pull/2007): Allow any modifier before `def`, not only visibility modifiers. ([@fphilipe][])
 * [#1980](https://github.com/bbatsov/rubocop/pull/1980): `--auto-gen-config` now outputs an excluded files list for failed cops (up to a maxiumum of 15 files). ([@bmorrall][])
@@ -1518,3 +1519,4 @@
 [@unmanbearpig]: https://github.com/unmanbearpig
 [@maxjacobson]: https://github.com/maxjacobson
 [@sliuu]: https://github.com/sliuu
+[@edmz]: https://github.com/edmz

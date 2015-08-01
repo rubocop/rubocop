@@ -924,6 +924,10 @@ Lint/Eval:
   Description: 'The use of eval represents a serious security risk.'
   Enabled: true
 
+Lint/FormatParameterMismatch:
+  Description: 'The number of parameters to format/sprint must match the fields.'
+  Enabled: true  
+
 Lint/HandleExceptions:
   Description: "Don't suppress exception."
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#dont-hide-exceptions'
