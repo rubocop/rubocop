@@ -44,6 +44,7 @@
 * [#2075](https://github.com/bbatsov/rubocop/pull/2075): Properly correct `Style/PercentLiteralDelimiters` with escape characters in them. ([@rrosenblum][])
 * [#2023](https://github.com/bbatsov/rubocop/issues/2023): Avoid auto-correction corruption in `IndentationWidth`. ([@jonas054][])
 * [#2080](https://github.com/bbatsov/rubocop/issues/2080): Properly parse code in `Performance/Count` when calling `select..count` in a class that extends an enumerable. ([@rrosenblum][])
+* [#2093](https://github.com/bbatsov/rubocop/issues/2093): Fix bug in `Style/OneLineConditional` which should not raise an offense with an 'if/then/end' statement. ([@sliuu][])
 
 ## 0.32.1 (24/06/2015)
 

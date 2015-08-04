@@ -9,11 +9,15 @@ module RuboCop
         include OnNormalIfUnless
 
         MSG = 'Favor the ternary operator (?:) ' \
-              'over if/then/else/end constructs.'
+              'over %s/then/else/end constructs.'
 
         def on_normal_if_unless(node)
-          return if node.loc.expression.source.include?("\n")
-          add_offense(node, :expression, MSG)
+          exp = node.loc.expression.source
+          return if exp.include?("\n")
+          return unless node.loc.respond_to?(:else) && node.loc.else
+          condition = exp.include?('if') ? 'if' : 'unless'
+
+          add_offense(node, :expression, format(MSG, condition))
         end
       end
     end
