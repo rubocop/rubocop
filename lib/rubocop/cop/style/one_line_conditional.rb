@@ -8,8 +8,8 @@ module RuboCop
       class OneLineConditional < Cop
         include OnNormalIfUnless
 
-        MSG = 'Favor the ternary operator (?:) ' \
-              'over %s/then/else/end constructs.'
+        MSG = 'Favor the ternary operator (`?:`) ' \
+              'over `%s/then/else/end` constructs.'
 
         def on_normal_if_unless(node)
           exp = node.loc.expression.source

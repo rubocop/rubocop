@@ -2179,7 +2179,7 @@ describe RuboCop::CLI, :isolated_environment do
               "if it's surely a splat operator, or add a whitespace to the " \
               'right of the `*` if it should be a multiplication.',
               "#{abs('example.rb')}:3:1: C: " \
-              'Favor the ternary operator (?:) over if/then/else/end ' \
+              'Favor the ternary operator (`?:`) over `if/then/else/end` ' \
               'constructs.',
               ''].join("\n"))
   end
