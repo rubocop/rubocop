@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#2081](https://github.com/bbatsov/rubocop/pull/2081): New cop `Style/Send` checks for the use of `send` and instead encourages changing it to `BasicObject#__send__` or `Object#public_send` (disabled by default). ([@syndbg][])
 * [#2057](https://github.com/bbatsov/rubocop/pull/2057): New cop `Lint/FormatParameterMismatch` checks for a mismatch between the number of fields expected in format/sprintf/% and what was pased to it. ([@edmz][])
 * [#2010](https://github.com/bbatsov/rubocop/pull/2010): Add `space` style for SpaceInsideStringInterpolation. ([@gotrevor][])
 * [#2007](https://github.com/bbatsov/rubocop/pull/2007): Allow any modifier before `def`, not only visibility modifiers. ([@fphilipe][])
@@ -1521,3 +1522,4 @@
 [@maxjacobson]: https://github.com/maxjacobson
 [@sliuu]: https://github.com/sliuu
 [@edmz]: https://github.com/edmz
+[@syndbg]: https://github.com/syndbg
