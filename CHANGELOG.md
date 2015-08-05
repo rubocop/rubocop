@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.33.0 (05/08/2015)
+
 ### New features
 
 * [#2081](https://github.com/bbatsov/rubocop/pull/2081): New cop `Style/Send` checks for the use of `send` and instead encourages changing it to `BasicObject#__send__` or `Object#public_send` (disabled by default). ([@syndbg][])
