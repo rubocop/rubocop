@@ -106,7 +106,7 @@ module RuboCop
           end
 
           def correction
-            "#{assignment.join("\n#{indent}")}"
+            "#{assignment.join("\n#{base_indentation}")}"
           end
 
           def correction_range
@@ -115,12 +115,12 @@ module RuboCop
 
           protected
 
-          def space_offset
-            @node.loc.expression.column
+          def base_indentation
+            ' ' * @node.loc.column
           end
 
-          def indent
-            ' ' * space_offset
+          def extra_indentation
+            base_indentation + (' ' * indentation_width)
           end
 
           attr_reader :indentation_width
@@ -148,21 +148,14 @@ module RuboCop
             _, _, rescue_result = *rescue_clause
 
             "begin\n" <<
-              indent << assignment.join("\n#{indent}") <<
-              "\nrescue\n" <<
-              indent << rescue_result.loc.expression.source <<
-              "\nend"
+              extra_indentation << assignment.join("\n#{extra_indentation}") <<
+              "\n#{base_indentation}rescue\n" <<
+              extra_indentation << rescue_result.loc.expression.source <<
+              "\n#{base_indentation}end"
           end
 
           def correction_range
             @node.parent.loc.expression
-          end
-
-          protected
-
-          def space_offset
-            offset = super
-            offset + indentation_width
           end
         end
 
@@ -178,19 +171,12 @@ module RuboCop
                                         parent.loc.expression.end_pos)
 
             "#{modifier_range.source}\n" <<
-              indent << assignment.join("\n#{indent}") <<
-              "\nend"
+              extra_indentation << assignment.join("\n#{extra_indentation}") <<
+              "\n#{base_indentation}end"
           end
 
           def correction_range
             @node.parent.loc.expression
-          end
-
-          protected
-
-          def space_offset
-            offset = super
-            offset + indentation_width
           end
         end
       end

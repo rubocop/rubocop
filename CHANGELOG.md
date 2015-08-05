@@ -4,6 +4,7 @@
 
 ### Bug Fixes
 * [#2105](https://github.com/bbatsov/rubocop/pull/2105): Fix a warning that was thrown when enabling `Style/OptionHash`. ([@wli][])
+* [#2107](https://github.com/bbatsov/rubocop/pull/2107): Fix auto-correct of `Style/ParallelAssignment` for nested expressions. ([@rrosenblum][])
 
 ## 0.33.0 (05/08/2015)
 

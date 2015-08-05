@@ -183,6 +183,20 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
                                   'end'].join("\n"))
       end
 
+      it 'when the expression uses a modifier if statement ' \
+         'inside a method' do
+        new_source = autocorrect_source(cop, ['def foo',
+                                              '  a, b = 1, 2 if foo',
+                                              'end'])
+
+        expect(new_source).to eq(['def foo',
+                                  '  if foo',
+                                  '    a = 1',
+                                  '    b = 2',
+                                  '  end',
+                                  'end'].join("\n"))
+      end
+
       it 'parallel assignment in if statements' do
         new_source = autocorrect_source(cop, ['if foo',
                                               '  a, b = 1, 2',
@@ -265,7 +279,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
                                   'end'].join("\n"))
       end
 
-      it 'parallel assignment in rescuce statements' do
+      it 'parallel assignment in rescue statements' do
         new_source = autocorrect_source(cop, ['begin',
                                               '  a, b = 1, 2',
                                               'rescue',
@@ -277,6 +291,22 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
                                   '  b = 2',
                                   'rescue',
                                   "  'foo'",
+                                  'end'].join("\n"))
+      end
+
+      it 'when the expression uses a modifier rescue statement ' \
+         'inside a method' do
+        new_source = autocorrect_source(cop, ['def foo',
+                                              '  a, b = 1, 2 rescue foo',
+                                              'end'])
+
+        expect(new_source).to eq(['def foo',
+                                  '  begin',
+                                  '    a = 1',
+                                  '    b = 2',
+                                  '  rescue',
+                                  '    foo',
+                                  '  end',
                                   'end'].join("\n"))
       end
     end
