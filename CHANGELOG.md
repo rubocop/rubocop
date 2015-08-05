@@ -2,6 +2,9 @@
 
 ## master (unreleased)
 
+### Bug Fixes
+* [#2105](https://github.com/bbatsov/rubocop/pull/2105): Fix a warning that was thrown when enabling `Style/OptionHash`. ([@wli][])
+
 ## 0.33.0 (05/08/2015)
 
 ### New features
@@ -1525,3 +1528,4 @@
 [@sliuu]: https://github.com/sliuu
 [@edmz]: https://github.com/edmz
 [@syndbg]: https://github.com/syndbg
+[@wli]: https://github.com/wli
