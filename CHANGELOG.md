@@ -19,6 +19,8 @@
 
 ### Bug Fixes
 
+* [#2123](https://github.com/bbatsov/rubocop/pull/2123): Fix handing of dynamic widths `Lint/FormatParameterMismatch`. ([@edmz][])
+* [#2116](https://github.com/bbatsov/rubocop/pull/2116): Fix named params (using hash) `Lint/FormatParameterMismatch`. ([@edmz][])
 * [#2135](https://github.com/bbatsov/rubocop/issues/2135): Ignore `super` and `zsuper` nodes in `Style/SymbolProc`. ([@bbatsov][])
 * [#2165](https://github.com/bbatsov/rubocop/issues/2165): Fix a NPE in `Style/Alias`. ([@bbatsov][])
 * [#2168](https://github.com/bbatsov/rubocop/issues/2168): Fix a NPE in `Rails/TimeZone`. ([@bbatsov][])
