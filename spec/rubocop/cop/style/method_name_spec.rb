@@ -14,10 +14,21 @@ describe RuboCop::Cop::Style::MethodName, :config do
     end
 
     it 'registers an offense for capitalized camel case' do
-      inspect_source(cop, ['def MyMethod',
+      inspect_source(cop, ['class MyClass',
+                           '  def MyMethod',
+                           '  end',
                            'end'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(['MyMethod'])
+    end
+
+    it 'registers an offense for singleton upper case method without ' \
+       'corresponding class' do
+      inspect_source(cop, ['module Sequel',
+                           '  def self.Model(source)',
+                           '  end',
+                           'end'])
+      expect(cop.highlights).to eq(['Model'])
     end
   end
 
@@ -32,6 +43,19 @@ describe RuboCop::Cop::Style::MethodName, :config do
                            '  # ...',
                            'end'])
       expect(cop.offenses).to be_empty
+    end
+
+    %w(class module).each do |kind|
+      it "accepts class emitter method in a #{kind}" do
+        inspect_source(cop, ["#{kind} Sequel",
+                             '  def self.Model(source)',
+                             '  end',
+                             '',
+                             '  class Model',
+                             '  end',
+                             'end'])
+        expect(cop.offenses).to be_empty
+      end
     end
   end
 
