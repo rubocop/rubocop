@@ -50,7 +50,7 @@ module RuboCop
         # (send nil :save_screenshot)
         CAPYBARA_SAVE_SCREENSHOT = s(:send, nil, :save_screenshot)
 
-        DEBUGGER_NODES = [
+        DEBUGGER_NODES = Set.new([
           DEBUGGER_NODE,
           BYEBUG_NODE,
           PRY_NODE,
@@ -59,12 +59,12 @@ module RuboCop
           CAPYBARA_SAVE_PAGE,
           CAPYBARA_SAVE_OPEN_SCREENSHOT,
           CAPYBARA_SAVE_SCREENSHOT
-        ]
+        ].map(&:to_sexp))
 
         def on_send(node)
           receiver, method_name, *_args = *node
           node_without_args = self.class.s(:send, receiver, method_name)
-          return unless DEBUGGER_NODES.include? node_without_args
+          return unless DEBUGGER_NODES.include?(node_without_args.to_sexp)
           add_offense(node,
                       :expression,
                       format(MSG, node.loc.expression.source))

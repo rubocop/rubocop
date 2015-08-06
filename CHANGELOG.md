@@ -5,6 +5,7 @@
 ### Changes
 
 * [#1351](https://github.com/bbatsov/rubocop/issues/1351): Allow class emitter methods in `Style/MethodName`. ([@jonas054][])
+* Speed up `Lint/Debugger` by 45%. ([@wli][])
 
 ### Bug Fixes
 
