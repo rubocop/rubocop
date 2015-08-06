@@ -46,6 +46,7 @@ Style/MissingElse:
 
 Style/OptionHash:
   Description: "Don't use option hashes when you can use keyword arguments."
+  Enabled: false
 
 Style/Send:
   Description: 'Prefer `Object#__send__` or `Object#public_send` to `send`, as `send` may overlap with existing methods.'

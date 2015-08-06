@@ -2,6 +2,9 @@
 
 ## master (unreleased)
 
+### Bug Fixes
+* [#2105](https://github.com/bbatsov/rubocop/pull/2105): Fix a warning that was thrown when enabling `Style/OptionHash`. ([@wli][])
+
 ## 0.33.0 (05/08/2015)
 
 ### New features
@@ -18,7 +21,7 @@
 * [#2060](https://github.com/bbatsov/rubocop/issues/2060): New cop `Style/RescueEnsureAlignment` checks for bad alignment of `rescue` and `ensure` keywords. ([@lumeet][])
 * New cop `Style/OptionalArguments` checks for optional arguments that do not appear at the end of an argument list. ([@rrosenblum][])
 * New cop `Lint/CircularArgumentReference` checks for "circular argument references" in keyword arguments, which Ruby 2.2 warns against. ([@maxjacobson][], [@sliuu][])
-* [#2030](https://github.com/bbatsov/rubocop/issues/2030): New cop `Lint/OptionHash` checks for option hashes and encourages changing them to keyword arguments (disabled by default). ([@maxjacobson][])
+* [#2030](https://github.com/bbatsov/rubocop/issues/2030): New cop `Style/OptionHash` checks for option hashes and encourages changing them to keyword arguments (disabled by default). ([@maxjacobson][])
 
 ### Changes
 
@@ -1525,3 +1528,4 @@
 [@sliuu]: https://github.com/sliuu
 [@edmz]: https://github.com/edmz
 [@syndbg]: https://github.com/syndbg
+[@wli]: https://github.com/wli
