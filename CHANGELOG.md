@@ -2,7 +2,12 @@
 
 ## master (unreleased)
 
+### Changes
+
+* [#1351](https://github.com/bbatsov/rubocop/issues/1351): Allow class emitter methods in `Style/MethodName`. ([@jonas054][])
+
 ### Bug Fixes
+
 * [#2105](https://github.com/bbatsov/rubocop/pull/2105): Fix a warning that was thrown when enabling `Style/OptionHash`. ([@wli][])
 
 ## 0.33.0 (05/08/2015)

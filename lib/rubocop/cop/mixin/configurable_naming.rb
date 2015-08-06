@@ -13,7 +13,7 @@ module RuboCop
       def check_name(node, name, name_range)
         return if operator?(name)
 
-        if valid_name?(name)
+        if valid_name?(node, name)
           correct_style_detected
         else
           add_offense(node, name_range, message(style)) do
@@ -22,9 +22,20 @@ module RuboCop
         end
       end
 
-      def valid_name?(name)
+      def valid_name?(node, name)
         pattern = (style == :snake_case ? SNAKE_CASE : CAMEL_CASE)
-        name.match(pattern)
+        name.match(pattern) || class_emitter_method?(node, name)
+      end
+
+      # A class emitter method is a singleton method in a class/module, where
+      # the method has the same name as a class defined in the class/module.
+      def class_emitter_method?(node, name)
+        return false unless node.defs_type?
+        return false unless node.parent
+
+        node.parent.children.any? do |c|
+          c.class_type? && c.loc.name.is?(name.to_s)
+        end
       end
     end
   end
