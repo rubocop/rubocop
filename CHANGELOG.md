@@ -10,6 +10,7 @@
 
 * [#2105](https://github.com/bbatsov/rubocop/pull/2105): Fix a warning that was thrown when enabling `Style/OptionHash`. ([@wli][])
 * [#2107](https://github.com/bbatsov/rubocop/pull/2107): Fix auto-correct of `Style/ParallelAssignment` for nested expressions. ([@rrosenblum][])
+* [#2111](https://github.com/bbatsov/rubocop/issues/2111): Deal with byte order mark in `Style/InitialIndentation`. ([@jonas054][])
 
 ## 0.33.0 (05/08/2015)
 
