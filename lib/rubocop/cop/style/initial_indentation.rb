@@ -17,6 +17,11 @@ module RuboCop
 
           with_space = range_with_surrounding_space(first_token.pos, :left,
                                                     nil, !:with_newline)
+          # If the file starts with a byte order mark (BOM), the column can be
+          # non-zero, but then we find out here if there's no space to the left
+          # of the first token.
+          return if with_space == first_token.pos
+
           space = Parser::Source::Range.new(processed_source.buffer,
                                             with_space.begin_pos,
                                             first_token.pos.begin_pos)
