@@ -104,7 +104,7 @@ module RuboCop
         end
 
         def aligned_same_character?(token, line)
-          line[token.pos.column] == token.text[0]
+          line[token.pos.column] == token.text.to_s[0]
         end
       end
     end

@@ -14,6 +14,13 @@ describe RuboCop::Cop::Style::ExtraSpacing, :config do
       expect(cop.offenses.size).to eq(1)
     end
 
+    it 'can handle extra space before a float' do
+      source = ['{:a => "a",',
+                ' :b => [nil,  2.5]}']
+      inspect_source(cop, source)
+      expect(cop.offenses.size).to eq(1)
+    end
+
     it 'gives the correct line' do
       inspect_source(cop, ['class A   < String',
                            'end'])
