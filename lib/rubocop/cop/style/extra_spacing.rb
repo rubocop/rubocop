@@ -49,7 +49,13 @@ module RuboCop
 
           pre = (token.pos.line - 2).downto(0)
           post = token.pos.line.upto(processed_source.lines.size - 1)
-          aligned_with?(pre, token) || aligned_with?(post, token)
+          return true if aligned_with?(pre, token) || aligned_with?(post, token)
+
+          # If no aligned token was found, search for an aligned token on the
+          # nearest line with the same indentation as the checked line.
+          base_indentation = processed_source.lines[token.pos.line - 1] =~ /\S/
+          aligned_with?(pre, token, base_indentation) ||
+            aligned_with?(post, token, base_indentation)
         end
 
         def aligned_comments?(token)
@@ -72,11 +78,19 @@ module RuboCop
           processed_source.comments[ix].loc.column
         end
 
-        def aligned_with?(indices_to_check, token)
+        # Returns true if the previous or next line, not counting empty or
+        # comment lines, contains a token that's aligned with the given
+        # token. If base_indentation is given, lines with different indentation
+        # than the base indentation are also skipped.
+        def aligned_with?(indices_to_check, token, base_indentation = nil)
           indices_to_check.each do |ix|
             next if comment_lines.include?(ix + 1)
             line = processed_source.lines[ix]
             next if line.strip.empty?
+            if base_indentation
+              indentation = line =~ /\S/
+              next if indentation != base_indentation
+            end
             return (aligned_words?(token, line) ||
                     aligned_assignments?(token, line) ||
                     aligned_same_character?(token, line))
