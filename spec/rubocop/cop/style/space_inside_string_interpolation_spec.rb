@@ -66,6 +66,11 @@ describe RuboCop::Cop::Style::SpaceInsideStringInterpolation, :config do
         expect(new_source).to eq(source.join("\n"))
       end
     end
+
+    it 'accepts empty interpolation' do
+      inspect_source(cop, '"#{}"')
+      expect(cop.messages).to be_empty
+    end
   end
 
   context 'when EnforcedStyle is space' do
@@ -103,6 +108,11 @@ describe RuboCop::Cop::Style::SpaceInsideStringInterpolation, :config do
         new_source = autocorrect_source(cop, source)
         expect(new_source).to eq(source.join("\n"))
       end
+    end
+
+    it 'accepts empty interpolation' do
+      inspect_source(cop, '"#{}"')
+      expect(cop.messages).to be_empty
     end
   end
 end
