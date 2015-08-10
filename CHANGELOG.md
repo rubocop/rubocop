@@ -13,6 +13,7 @@
 * [#2107](https://github.com/bbatsov/rubocop/pull/2107): Fix auto-correct of `Style/ParallelAssignment` for nested expressions. ([@rrosenblum][])
 * [#2111](https://github.com/bbatsov/rubocop/issues/2111): Deal with byte order mark in `Style/InitialIndentation`. ([@jonas054][])
 * [#2113](https://github.com/bbatsov/rubocop/issues/2113): Handle non-string tokens in `Style/ExtraSpacing`. ([@jonas054][])
+* [#2129](https://github.com/bbatsov/rubocop/issues/2129): Handle empty interpolations in `Style/SpaceInsideStringInterpolation`. ([@lumeet][])
 
 ## 0.33.0 (05/08/2015)
 

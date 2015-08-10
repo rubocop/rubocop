@@ -20,6 +20,7 @@ module RuboCop
         def on_dstr(node)
           node.children.select { |n| n.type == :begin }.each do |begin_node|
             final_node = begin_node.children.last
+            next unless final_node
 
             interp = final_node.loc.expression
             interp_with_surrounding_space = range_with_surrounding_space(interp)
