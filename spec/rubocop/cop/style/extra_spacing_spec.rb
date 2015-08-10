@@ -128,6 +128,23 @@ describe RuboCop::Cop::Style::ExtraSpacing, :config do
       'end',
       '',
       'File.umask 0000    # Ensure sensible umask.'
+    ],
+
+    'aligning long assignment expressions that include line breaks' => [
+      'size_attribute_name    = FactoryGirl.create(:attribute,',
+      "                                            name:   'Size',",
+      '                                            values: %w{small large})',
+      'carrier_attribute_name = FactoryGirl.create(:attribute,',
+      "                                            name:   'Carrier',",
+      '                                            values: %w{verizon})'
+    ],
+
+    'aligning values of an implicit hash literal' => [
+      "register(street1:     '1 Market',",
+      "         street2:     '#200',",
+      "         city:        'Some Town',",
+      "         state:       'CA',",
+      "         postal_code: '99999-1111')"
     ]
   }
 
