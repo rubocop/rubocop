@@ -21,7 +21,6 @@ module RuboCop
       #   b = 2
       #   c = 3
       class ParallelAssignment < Cop
-        include AutocorrectAlignment
         include IfNode
 
         MSG = 'Do not use parallel assignment.'
@@ -56,11 +55,11 @@ module RuboCop
           lambda do |corrector|
             assignment_corrector =
               if modifier_statement?(node.parent)
-                ModifierCorrector.new(node, configured_indentation_width)
+                ModifierCorrector.new(node, config)
               elsif rescue_modifier?(node.parent)
-                RescueCorrector.new(node, configured_indentation_width)
+                RescueCorrector.new(node, config)
               else
-                GenericCorrector.new(node, configured_indentation_width)
+                GenericCorrector.new(node, config)
               end
 
             corrector.replace(assignment_corrector.correction_range,
@@ -98,35 +97,27 @@ module RuboCop
 
         # An internal class for correcting parallel assignment
         class GenericCorrector
-          attr_reader :correction, :correction_range
+          include AutocorrectAlignment
 
-          def initialize(node, indentation_width)
+          attr_reader :config, :node, :correction, :correction_range
+
+          def initialize(node, config)
             @node = node
-            @indentation_width = indentation_width
+            @config = config
           end
 
           def correction
-            "#{assignment.join("\n#{base_indentation}")}"
+            "#{assignment.join("\n#{offset(node)}")}"
           end
 
           def correction_range
-            @node.loc.expression
+            node.loc.expression
           end
 
           protected
 
-          def base_indentation
-            ' ' * @node.loc.column
-          end
-
-          def extra_indentation
-            base_indentation + (' ' * indentation_width)
-          end
-
-          attr_reader :indentation_width
-
           def assignment
-            left, right = *@node
+            left, right = *node
             l_vars = extract_sources(left)
             r_vars = extract_sources(right)
             groups = l_vars.zip(r_vars)
@@ -144,18 +135,18 @@ module RuboCop
         # protected by rescue
         class RescueCorrector < GenericCorrector
           def correction
-            _node, rescue_clause = *@node.parent
+            _node, rescue_clause = *node.parent
             _, _, rescue_result = *rescue_clause
 
             "begin\n" <<
-              extra_indentation << assignment.join("\n#{extra_indentation}") <<
-              "\n#{base_indentation}rescue\n" <<
-              extra_indentation << rescue_result.loc.expression.source <<
-              "\n#{base_indentation}end"
+              indentation(node) << assignment.join("\n#{indentation(node)}") <<
+              "\n#{offset(node)}rescue\n" <<
+              indentation(node) << rescue_result.loc.expression.source <<
+              "\n#{offset(node)}end"
           end
 
           def correction_range
-            @node.parent.loc.expression
+            node.parent.loc.expression
           end
         end
 
@@ -163,7 +154,7 @@ module RuboCop
         # guarded by if, unless, while, or until
         class ModifierCorrector < GenericCorrector
           def correction
-            parent = @node.parent
+            parent = node.parent
 
             modifier_range =
               Parser::Source::Range.new(parent.loc.expression.source_buffer,
@@ -171,12 +162,12 @@ module RuboCop
                                         parent.loc.expression.end_pos)
 
             "#{modifier_range.source}\n" <<
-              extra_indentation << assignment.join("\n#{extra_indentation}") <<
-              "\n#{base_indentation}end"
+              indentation(node) << assignment.join("\n#{indentation(node)}") <<
+              "\n#{offset(node)}end"
           end
 
           def correction_range
-            @node.parent.loc.expression
+            node.parent.loc.expression
           end
         end
       end

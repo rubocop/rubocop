@@ -44,14 +44,6 @@ module RuboCop
         def modifier?(node)
           @modifier_locations.include?(node.loc.keyword)
         end
-
-        def indentation(node)
-          offset(node) + (' ' * configured_indentation_width)
-        end
-
-        def offset(node)
-          ' ' * node.loc.column
-        end
       end
     end
   end
