@@ -486,10 +486,10 @@ TvFXMeuCkZPcaEBLqvgPBhCuiZo8+sAAAAAASUVORK5CYII=
             <div class="meta">
               <span class="location">Line #4</span> –
               <span class="severity convention">convention:</span>
-              <span class="message">Use <code>%r</code> around regular expression.</span>
+              <span class="message">Avoid using <code>rescue</code> in its modifier form.</span>
             </div>
             
-            <pre><code>    Regexp.new(<span class="highlight convention">/\A&lt;p&gt;(.*)&lt;\/p&gt;\Z/m</span>).match(full_document)[1] rescue full_document</code></pre>
+            <pre><code>    <span class="highlight convention">Regexp.new(/\A&lt;p&gt;(.*)&lt;\/p&gt;\Z/m).match(full_document)[1] rescue full_document</span></code></pre>
             
           </div>
           
@@ -497,10 +497,10 @@ TvFXMeuCkZPcaEBLqvgPBhCuiZo8+sAAAAAASUVORK5CYII=
             <div class="meta">
               <span class="location">Line #4</span> –
               <span class="severity convention">convention:</span>
-              <span class="message">Avoid using <code>rescue</code> in its modifier form.</span>
+              <span class="message">Use <code>%r</code> around regular expression.</span>
             </div>
             
-            <pre><code>    Regexp.new(/\A&lt;p&gt;(.*)&lt;\/p&gt;\Z/m).match(full_document)[1] <span class="highlight convention">rescue</span> full_document</code></pre>
+            <pre><code>    Regexp.new(<span class="highlight convention">/\A&lt;p&gt;(.*)&lt;\/p&gt;\Z/m</span>).match(full_document)[1] rescue full_document</code></pre>
             
           </div>
           

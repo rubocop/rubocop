@@ -3,29 +3,28 @@
 require 'spec_helper'
 
 describe RuboCop::Cop::Style::RescueModifier do
-  subject(:cop) { described_class.new }
-
-  it 'registers an offense for modifier rescue' do
-    inspect_source(cop,
-                   'method rescue handle')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.messages)
-      .to eq(['Avoid using `rescue` in its modifier form.'])
+  let(:config) do
+    RuboCop::Config.new('Style/IndentationWidth' => {
+                          'Width' => 2
+                        })
   end
 
-  it 'locates the rescue within the line' do
-    inspect_source(cop,
-                   'method rescue handle')
-    expect(cop.offenses.size).to eq(1)
-    expect(cop.highlights.first).to eq('rescue')
+  subject(:cop) { described_class.new(config) }
+
+  it 'registers an offense for modifier rescue' do
+    inspect_source(cop, 'method rescue handle')
+
+    expect(cop.messages)
+      .to eq(['Avoid using `rescue` in its modifier form.'])
+    expect(cop.highlights).to eq(['method rescue handle'])
   end
 
   it 'handles more complex expression with modifier rescue' do
-    inspect_source(cop,
-                   'method1 or method2 rescue handle')
-    expect(cop.offenses.size).to eq(1)
+    inspect_source(cop, 'method1 or method2 rescue handle')
+
     expect(cop.messages)
       .to eq(['Avoid using `rescue` in its modifier form.'])
+    expect(cop.highlights).to eq(['method1 or method2 rescue handle'])
   end
 
   it 'handles modifier rescue in normal rescue' do
@@ -35,8 +34,10 @@ describe RuboCop::Cop::Style::RescueModifier do
                     'rescue',
                     '  normal_handle',
                     'end'])
+
     expect(cop.offenses.size).to eq(1)
     expect(cop.offenses.first.line).to eq(2)
+    expect(cop.highlights).to eq(['test rescue modifier_handle'])
   end
 
   it 'handles modifier rescue in a method' do
@@ -104,6 +105,7 @@ describe RuboCop::Cop::Style::RescueModifier do
                       'end'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.line).to eq(2)
+      expect(cop.highlights).to eq(['test rescue modifier_handle'])
     end
   end
 
@@ -127,6 +129,63 @@ describe RuboCop::Cop::Style::RescueModifier do
                       'end'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.line).to eq(2)
+      expect(cop.highlights).to eq(['test rescue modifier_handle'])
+    end
+  end
+
+  context 'autocorrect' do
+    it 'corrects basic rescue modifier' do
+      new_source = autocorrect_source(cop, 'foo rescue bar')
+
+      expect(new_source).to eq(['begin',
+                                '  foo',
+                                'rescue',
+                                '  bar',
+                                'end'].join("\n"))
+    end
+
+    it 'corrects complex rescue modifier' do
+      new_source = autocorrect_source(cop, 'foo || bar rescue bar')
+
+      expect(new_source).to eq(['begin',
+                                '  foo || bar',
+                                'rescue',
+                                '  bar',
+                                'end'].join("\n"))
+    end
+
+    it 'corrects rescue modifier nested inside of def' do
+      source = ['def foo',
+                '  test rescue modifier_handle',
+                'end'].join("\n")
+      new_source = autocorrect_source(cop, source)
+
+      expect(new_source).to eq(['def foo',
+                                '  begin',
+                                '    test',
+                                '  rescue',
+                                '    modifier_handle',
+                                '  end',
+                                'end'].join("\n"))
+    end
+
+    it 'corrects nested rescue modifier' do
+      source = ['begin',
+                '  test rescue modifier_handle',
+                'rescue',
+                '  normal_handle',
+                'end'].join("\n")
+      new_source = autocorrect_source(cop, source)
+
+      expect(new_source).to eq(['begin',
+                                '  begin',
+                                '    test',
+                                '  rescue',
+                                '    modifier_handle',
+                                '  end',
+                                'rescue',
+                                '  normal_handle',
+                                'end'].join("\n"))
     end
   end
 end

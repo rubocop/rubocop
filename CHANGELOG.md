@@ -5,6 +5,7 @@
 ### Changes
 
 * [#1351](https://github.com/bbatsov/rubocop/issues/1351): Allow class emitter methods in `Style/MethodName`. ([@jonas054][])
+* [#2126](https://github.com/bbatsov/rubocop/pull/2126): `Style/RescueModifier` can now auto-correct. ([@rrosenblum][])
 
 ### Bug Fixes
 
