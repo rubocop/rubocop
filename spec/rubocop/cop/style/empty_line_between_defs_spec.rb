@@ -25,6 +25,37 @@ describe RuboCop::Cop::Style::EmptyLineBetweenDefs, :config do
     expect(cop.offenses.map(&:line).sort).to eq([7])
   end
 
+  context 'when there are only comments between defs' do
+    let(:source) do
+      ['class J',
+       '  def n',
+       '  end # n-related',
+       '  # checks something o-related',
+       '  # and more',
+       '  def o',
+       '  end',
+       'end']
+    end
+
+    it 'registers an offense' do
+      inspect_source(cop, source)
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it 'auto-corrects' do
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq(['class J',
+                               '  def n',
+                               '  end # n-related',
+                               '',
+                               '  # checks something o-related',
+                               '  # and more',
+                               '  def o',
+                               '  end',
+                               'end'].join("\n"))
+    end
+  end
+
   # Only one def, so rule about empty line *between* defs does not
   # apply.
   it 'accepts a def that follows a line with code' do
