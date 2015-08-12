@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#2143](https://github.com/bbatsov/rubocop/pull/2143): New cop `Performance/CaseWhenSplat` will identify and rearange `case` `when` statements that contain a `when` condition with a splat. ([@rrosenblum][])
+
 ### Changes
 
 * [#1351](https://github.com/bbatsov/rubocop/issues/1351): Allow class emitter methods in `Style/MethodName`. ([@jonas054][])

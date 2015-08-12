@@ -926,7 +926,7 @@ Lint/Eval:
 
 Lint/FormatParameterMismatch:
   Description: 'The number of parameters to format/sprint must match the fields.'
-  Enabled: true  
+  Enabled: true
 
 Lint/HandleExceptions:
   Description: "Don't suppress exception."
@@ -1049,6 +1049,12 @@ Lint/Void:
   Enabled: true
 
 ##################### Performance #############################
+
+Performance/CaseWhenSplat:
+  Description: >-
+                  Place `when` conditions that use splat at the end
+                  of the list of `when` branches.
+  Enabled: true
 
 Performance/Count:
   Description: >-
