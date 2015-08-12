@@ -65,7 +65,8 @@ module RuboCop
         end
 
         def modifier?(node)
-          @modifier_locations.include? node.loc.keyword
+          return false unless @modifier_locations.respond_to?(:include?)
+          @modifier_locations.include?(node.loc.keyword)
         end
 
         def ancestor_node(node)
