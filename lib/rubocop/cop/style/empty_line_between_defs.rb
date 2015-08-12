@@ -9,27 +9,36 @@ module RuboCop
         MSG = 'Use empty lines between defs.'
 
         def on_def(node)
-          if @prev_def_end && @prev_def_end < def_end(node) &&
-             nothing_or_comments_between_end_and_def?(node)
-            unless @prev_was_single_line && single_line_def?(node) &&
-                   cop_config['AllowAdjacentOneLineDefs']
-              add_offense(node, :keyword)
-            end
-          end
+          nodes = [prev_node(node), node]
 
-          @prev_def_end = def_end(node)
-          @prev_was_single_line = single_line_def?(node)
+          return unless nodes.all?(&method(:def_node?))
+          return if blank_lines_between?(*nodes)
+          return if nodes.all?(&method(:single_line_def?)) &&
+                    cop_config['AllowAdjacentOneLineDefs']
+
+          add_offense(node, :keyword)
         end
 
         private
 
-        def nothing_or_comments_between_end_and_def?(node)
-          distance = def_start(node) - @prev_def_end
-          return true if distance == 1
+        def def_node?(node)
+          node && node.def_type?
+        end
 
-          (@prev_def_end + 1...def_start(node)).all? do |line|
-            processed_source.comments.find { |c| c.loc.line == line }
-          end
+        def blank_lines_between?(first_def_node, second_def_node)
+          lines_between_defs(first_def_node, second_def_node).any?(&:blank?)
+        end
+
+        def prev_node(node)
+          return nil unless node.parent && node.sibling_index > 0
+
+          node.parent.children[node.sibling_index - 1]
+        end
+
+        def lines_between_defs(first_def_node, second_def_node)
+          line_range = def_end(first_def_node)..(def_start(second_def_node) - 2)
+
+          processed_source.lines[line_range]
         end
 
         def single_line_def?(node)
@@ -45,7 +54,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          prev_def = node.ancestors.first.children[node.sibling_index - 1]
+          prev_def = prev_node(node)
           end_pos = prev_def.loc.end.end_pos
           source_buffer = prev_def.loc.end.source_buffer
           newline_pos = source_buffer.source.index("\n", end_pos)
