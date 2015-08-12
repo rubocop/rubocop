@@ -188,4 +188,20 @@ describe RuboCop::Cop::Style::RescueModifier do
                                 'end'].join("\n"))
     end
   end
+
+  describe 'excluded file' do
+    let(:config) do
+      RuboCop::Config.new('Style/RescueModifier' =>
+                          { 'Enabled' => true,
+                            'Exclude' => ['**/**'] })
+    end
+
+    subject(:cop) { described_class.new(config) }
+
+    it 'processes excluded files with issue' do
+      inspect_source_file(cop, 'foo rescue bar')
+
+      expect(cop.messages).to be_empty
+    end
+  end
 end

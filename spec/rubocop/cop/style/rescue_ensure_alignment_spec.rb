@@ -73,4 +73,24 @@ describe RuboCop::Cop::Style::RescueEnsureAlignment do
   context 'ensure' do
     it_behaves_like 'common behavior', 'ensure'
   end
+
+  describe 'excluded file' do
+    let(:config) do
+      RuboCop::Config.new('Style/RescueEnsureAlignment' =>
+                          { 'Enabled' => true,
+                            'Exclude' => ['**/**'] })
+    end
+
+    subject(:cop) { described_class.new(config) }
+
+    it 'processes excluded files with issue' do
+      inspect_source_file(cop, ['begin',
+                                '  foo',
+                                'rescue',
+                                '  bar',
+                                'end'])
+
+      expect(cop.messages).to be_empty
+    end
+  end
 end
