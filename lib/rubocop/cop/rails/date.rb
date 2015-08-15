@@ -33,7 +33,7 @@ module RuboCop
       #   Date.today
       #   date.to_time
       #
-      #   # reports offense only when style is 'always'
+      #   # reports offense only when style is 'strict'
       #   date.to_time_in_current_zone
       class Date < Cop
         include ConfigurableEnforcedStyle
