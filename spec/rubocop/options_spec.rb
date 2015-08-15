@@ -86,6 +86,8 @@ Usage: rubocop [options] [file1, file2, ...]
     -n, --no-color                   Disable color output.
     -v, --version                    Display version.
     -V, --verbose-version            Display verbose version.
+    -s, --stdin                      Pipe source from STDIN.
+                                     This is useful for editor integration.
         END
         # rubocop:enable Metrics/LineLength
 
@@ -202,6 +204,27 @@ Usage: rubocop [options] [file1, file2, ...]
 
       it 'fails if given without --auto-gen-config' do
         expect { options.parse %w(--exclude-limit 10) }
+          .to raise_error(ArgumentError)
+      end
+    end
+
+    describe '-s/--stdin' do
+      before do
+        $stdin = StringIO.new
+        $stdin.puts("{ foo: 'bar' }")
+        $stdin.rewind
+      end
+
+      it 'fails if no paths are given' do
+        expect { options.parse %w(-s) }.to raise_error(ArgumentError)
+      end
+
+      it 'succeeds with exactly one path' do
+        expect { options.parse %w(--stdin foo) }.not_to raise_error
+      end
+
+      it 'fails if more than one path is given' do
+        expect { options.parse %w(--stdin foo bar) }
           .to raise_error(ArgumentError)
       end
     end

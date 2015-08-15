@@ -18,6 +18,10 @@ module RuboCop
 
       validate_compatibility
 
+      if @options[:stdin] && !args.one?
+        fail ArgumentError, '-s/--stdin requires exactly one path.'
+      end
+
       [@options, args]
     end
 
@@ -133,6 +137,7 @@ module RuboCop
 
       option(opts, '-v', '--version')
       option(opts, '-V', '--verbose-version')
+      option(opts, '-s', '--stdin') { @options[:stdin] = $stdin.read }
     end
 
     # Sets a value in the @options hash, based on the given long option and its
@@ -230,7 +235,9 @@ module RuboCop
       auto_correct:         'Auto-correct offenses.',
       no_color:             'Disable color output.',
       version:              'Display version.',
-      verbose_version:      'Display verbose version.'
+      verbose_version:      'Display verbose version.',
+      stdin:                ['Pipe source from STDIN.',
+                             'This is useful for editor integration.']
     }
   end
 end

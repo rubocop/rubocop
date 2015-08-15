@@ -8,6 +8,7 @@
 * [#2126](https://github.com/bbatsov/rubocop/pull/2126): `Style/RescueModifier` can now auto-correct. ([@rrosenblum][])
 * [#2109](https://github.com/bbatsov/rubocop/issues/2109): Allow alignment with a token on the nearest line with same indentation in `Style/ExtraSpacing`. ([@jonas054][])
 * `Lint/EndAlignment` handles the `case` keyword. ([@lumeet][])
+* [#2146](https://github.com/bbatsov/rubocop/pull/2146): Add STDIN support. ([@caseywebdev][])
 
 ### Bug Fixes
 
@@ -1547,3 +1548,4 @@
 [@edmz]: https://github.com/edmz
 [@syndbg]: https://github.com/syndbg
 [@wli]: https://github.com/wli
+[@caseywebdev]: https://github.com/caseywebdev

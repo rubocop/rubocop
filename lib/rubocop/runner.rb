@@ -65,7 +65,7 @@ module RuboCop
     def process_file(file)
       puts "Scanning #{file}" if @options[:debug]
 
-      processed_source = ProcessedSource.from_file(file)
+      processed_source = get_processed_source(file)
       file_info = {
         cop_disabled_line_ranges: processed_source.disabled_line_ranges,
         comments: processed_source.comments,
@@ -111,7 +111,7 @@ module RuboCop
         # loop if we find any.
         break unless updated_source_file
 
-        processed_source = ProcessedSource.from_file(file)
+        processed_source = get_processed_source(file)
       end
 
       offenses
@@ -208,6 +208,11 @@ module RuboCop
         name = @options[:fail_level] || :refactor
         RuboCop::Cop::Severity.new(name)
       end
+    end
+
+    def get_processed_source(file)
+      return ProcessedSource.new(@options[:stdin], file) if @options[:stdin]
+      ProcessedSource.from_file(file)
     end
   end
 end
