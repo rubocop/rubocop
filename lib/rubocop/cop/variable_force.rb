@@ -106,28 +106,28 @@ module RuboCop
       # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
       def dispatch_node(node)
         case node.type
-        when *ARGUMENT_DECLARATION_TYPES
-          process_variable_declaration(node)
         when VARIABLE_ASSIGNMENT_TYPE
           process_variable_assignment(node)
         when REGEXP_NAMED_CAPTURE_TYPE
           process_regexp_named_captures(node)
-        when *OPERATOR_ASSIGNMENT_TYPES
-          process_variable_operator_assignment(node)
         when MULTIPLE_ASSIGNMENT_TYPE
           process_variable_multiple_assignment(node)
         when VARIABLE_REFERENCE_TYPE
           process_variable_referencing(node)
-        when *LOOP_TYPES
-          process_loop(node)
         when RESCUE_TYPE
           process_rescue(node)
         when ZERO_ARITY_SUPER_TYPE
           process_zero_arity_super(node)
-        when *SCOPE_TYPES
-          process_scope(node)
         when SEND_TYPE
           process_send(node)
+        when *ARGUMENT_DECLARATION_TYPES
+          process_variable_declaration(node)
+        when *OPERATOR_ASSIGNMENT_TYPES
+          process_variable_operator_assignment(node)
+        when *LOOP_TYPES
+          process_loop(node)
+        when *SCOPE_TYPES
+          process_scope(node)
         end
       end
       # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity
@@ -326,13 +326,13 @@ module RuboCop
           case node.type
           when :lvar
             referenced_variable_names_in_loop << node.children.first
+          when :lvasgn
+            assignment_nodes_in_loop << node
           when *OPERATOR_ASSIGNMENT_TYPES
             asgn_node = node.children.first
             if asgn_node.type == :lvasgn
               referenced_variable_names_in_loop << asgn_node.children.first
             end
-          when :lvasgn
-            assignment_nodes_in_loop << node
           end
         end
 
