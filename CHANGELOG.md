@@ -7,6 +7,7 @@
 * [#1351](https://github.com/bbatsov/rubocop/issues/1351): Allow class emitter methods in `Style/MethodName`. ([@jonas054][])
 * [#2126](https://github.com/bbatsov/rubocop/pull/2126): `Style/RescueModifier` can now auto-correct. ([@rrosenblum][])
 * [#2109](https://github.com/bbatsov/rubocop/issues/2109): Allow alignment with a token on the nearest line with same indentation in `Style/ExtraSpacing`. ([@jonas054][])
+* `Lint/EndAlignment` handles the `case` keyword. ([@lumeet][])
 
 ### Bug Fixes
 

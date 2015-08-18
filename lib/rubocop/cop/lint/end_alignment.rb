@@ -40,6 +40,10 @@ module RuboCop
           check_offset_of_node(node)
         end
 
+        def on_case(node)
+          check_offset_of_node(node)
+        end
+
         private
 
         def check_assignment(node, rhs)
@@ -50,7 +54,7 @@ module RuboCop
 
           return unless rhs
 
-          return unless [:if, :while, :until].include?(rhs.type)
+          return unless [:if, :while, :until, :case].include?(rhs.type)
           return if ternary_op?(rhs)
 
           expr = node.loc.expression
