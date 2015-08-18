@@ -16,6 +16,7 @@
 * [#2113](https://github.com/bbatsov/rubocop/issues/2113): Handle non-string tokens in `Style/ExtraSpacing`. ([@jonas054][])
 * [#2129](https://github.com/bbatsov/rubocop/issues/2129): Handle empty interpolations in `Style/SpaceInsideStringInterpolation`. ([@lumeet][])
 * [#2119](https://github.com/bbatsov/rubocop/issues/2119): Do not raise an error in `Style/RescueEnsureAlignment` and `Style/RescueModifier` when processing an excluded file. ([@rrosenblum][])
+* [#2149](https://github.com/bbatsov/rubocop/issues/2149): Do not register an offense in `Rails/Date` when `Date#to_time` is called with a time zone argument. ([@maxjacobson][])
 
 ## 0.33.0 (05/08/2015)
 
