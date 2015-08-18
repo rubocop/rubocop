@@ -33,6 +33,11 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
         expect(cop.offenses.first.message).to include('`Time.zone.local`')
       end
 
+      it "does not register an offense for #{klass}.new with zone argument" do
+        inspect_source(cop, "#{klass}.new(1988, 3, 15, 3, 0, 0, '-05:00')")
+        expect(cop.offenses).to be_empty
+      end
+
       it "registers an offense for ::#{klass}.now" do
         inspect_source(cop, "::#{klass}.now")
         expect(cop.offenses.size).to eq(1)

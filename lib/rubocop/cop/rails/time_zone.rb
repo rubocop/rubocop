@@ -66,6 +66,8 @@ module RuboCop
 
           method_name = (chain & DANGEROUS_METHODS).join('.')
 
+          return if offset_provided?(node)
+
           message = build_message(klass, method_name, node)
 
           add_offense(node, :selector, message)
@@ -162,6 +164,15 @@ module RuboCop
           end
 
           acceptable
+        end
+
+        # Time.new can be called with a time zone offset
+        # When it is, that should be considered safe
+        # Example:
+        # Time.new(1988, 3, 15, 3, 0, 0, "-05:00")
+        def offset_provided?(node)
+          _, _, *args = *node
+          args.length >= 7
         end
       end
     end
