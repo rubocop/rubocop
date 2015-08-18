@@ -54,8 +54,9 @@ module RuboCop
         end
 
         def on_send(node)
-          receiver, method_name, *_args = *node
+          receiver, method_name, *args = *node
           return unless receiver && bad_methods.include?(method_name)
+          return if method_name == :to_time && args.length == 1
 
           add_offense(node, :selector,
                       format(MSG_SEND,

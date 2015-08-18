@@ -41,6 +41,13 @@ describe RuboCop::Cop::Rails::Date, :config do
         expect(cop.offenses).to be_empty
       end
     end
+
+    context 'when a zone is provided' do
+      it 'does not register an offense' do
+        inspect_source(cop, 'date.to_time(:utc)')
+        expect(cop.offenses).to be_empty
+      end
+    end
   end
 
   context 'when EnforcedStyle is "flexible"' do
