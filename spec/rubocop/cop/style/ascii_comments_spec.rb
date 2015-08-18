@@ -18,4 +18,11 @@ describe RuboCop::Cop::Style::AsciiComments do
     inspect_source(cop, '# AZaz1@$%~,;*_`|')
     expect(cop.offenses).to be_empty
   end
+
+  it 'accepts comments with one non-ascii character' do
+    inspect_source(cop,
+                   ['# encoding: utf-8',
+                    '# REVIEW: Does this font handle "Ө" and "Ү"?'])
+    expect(cop.offenses).to be_empty
+  end
 end
