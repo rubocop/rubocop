@@ -17,6 +17,7 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
   include_examples 'misaligned', '', 'unless', 'test',      '  end'
   include_examples 'misaligned', '', 'while',  'test',      '  end'
   include_examples 'misaligned', '', 'until',  'test',      '  end'
+  include_examples 'misaligned', '', 'case',   'a when b',  '  end'
 
   include_examples 'aligned', 'class',  'Test',      'end'
   include_examples 'aligned', 'module', 'Test',      'end'
@@ -24,6 +25,7 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
   include_examples 'aligned', 'unless', 'test',      'end'
   include_examples 'aligned', 'while',  'test',      'end'
   include_examples 'aligned', 'until',  'test',      'end'
+  include_examples 'aligned', 'case',   'a when b',  'end'
 
   it 'can handle ternary if' do
     inspect_source(cop, 'a = cond ? x : y')
@@ -88,15 +90,17 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
 
   context 'regarding assignment' do
     context 'when AlignWith is keyword' do
-      include_examples 'misaligned', 'var = ', 'if',     'test', 'end'
-      include_examples 'misaligned', 'var = ', 'unless', 'test', 'end'
-      include_examples 'misaligned', 'var = ', 'while',  'test', 'end'
-      include_examples 'misaligned', 'var = ', 'until',  'test', 'end'
+      include_examples 'misaligned', 'var = ', 'if',     'test',     'end'
+      include_examples 'misaligned', 'var = ', 'unless', 'test',     'end'
+      include_examples 'misaligned', 'var = ', 'while',  'test',     'end'
+      include_examples 'misaligned', 'var = ', 'until',  'test',     'end'
+      include_examples 'misaligned', 'var = ', 'case',   'a when b', 'end'
 
-      include_examples 'aligned', 'var = if',     'test', '      end'
-      include_examples 'aligned', 'var = unless', 'test', '      end'
-      include_examples 'aligned', 'var = while',  'test', '      end'
-      include_examples 'aligned', 'var = until',  'test', '      end'
+      include_examples 'aligned', 'var = if',     'test',     '      end'
+      include_examples 'aligned', 'var = unless', 'test',     '      end'
+      include_examples 'aligned', 'var = while',  'test',     '      end'
+      include_examples 'aligned', 'var = until',  'test',     '      end'
+      include_examples 'aligned', 'var = case',   'a when b', '      end'
     end
 
     context 'when AlignWith is variable' do
@@ -104,20 +108,22 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
         { 'AlignWith' => 'variable', 'AutoCorrect' => true }
       end
 
-      include_examples 'aligned', 'var = if',     'test', 'end'
-      include_examples 'aligned', 'var = unless', 'test', 'end'
-      include_examples 'aligned', 'var = while',  'test', 'end'
-      include_examples 'aligned', 'var = until',  'test', 'end'
-      include_examples 'aligned', 'var = until',  'test', 'end.abc.join("")'
-      include_examples 'aligned', 'var = until',  'test', 'end.abc.tap {}'
+      include_examples 'aligned', 'var = if',     'test',     'end'
+      include_examples 'aligned', 'var = unless', 'test',     'end'
+      include_examples 'aligned', 'var = while',  'test',     'end'
+      include_examples 'aligned', 'var = until',  'test',     'end'
+      include_examples 'aligned', 'var = until',  'test',     'end.ab.join("")'
+      include_examples 'aligned', 'var = until',  'test',     'end.ab.tap {}'
+      include_examples 'aligned', 'var = case',   'a when b', 'end'
 
       include_examples 'aligned', "var =\n  if",  'test', '  end'
 
-      include_examples 'misaligned', '', 'var = if',     'test', '      end'
-      include_examples 'misaligned', '', 'var = unless', 'test', '      end'
-      include_examples 'misaligned', '', 'var = while',  'test', '      end'
-      include_examples 'misaligned', '', 'var = until',  'test', '      end'
-      include_examples 'misaligned', '', 'var = until',  'test', '      end.j'
+      include_examples 'misaligned', '', 'var = if',     'test',     '      end'
+      include_examples 'misaligned', '', 'var = unless', 'test',     '      end'
+      include_examples 'misaligned', '', 'var = while',  'test',     '      end'
+      include_examples 'misaligned', '', 'var = until',  'test',     '      end'
+      include_examples 'misaligned', '', 'var = until',  'test',   '      end.j'
+      include_examples 'misaligned', '', 'var = case',   'a when b', '      end'
 
       include_examples 'aligned', '@var = if',  'test', 'end'
       include_examples 'aligned', '@@var = if', 'test', 'end'
