@@ -291,6 +291,31 @@ describe RuboCop::ConfigLoader do
       configuration = load_file
       expect(configuration).to eq({})
     end
+
+    context 'when SafeYAML is required' do
+      before do
+        create_file(configuration_path, [
+          'Style/WordArray:',
+          "  WordRegex: !ruby/regexp '/\\A[\\p{Word}]+\\z/'"
+        ])
+      end
+
+      it 'de-serializes Regexp class' do
+        if ::Process.respond_to?(:fork)
+          # To load SafeYAML in different memory space
+          pid = ::Process.fork do
+            require 'safe_yaml'
+            configuration = described_class.load_file('.rubocop.yml')
+
+            word_regexp = configuration['Style/WordArray']['WordRegex']
+            expect(word_regexp).to be_a(::Regexp)
+          end
+          ::Process.wait(pid)
+        else
+          warn 'Process.fork is not available.'
+        end
+      end
+    end
   end
 
   describe '.merge' do

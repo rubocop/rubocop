@@ -6,6 +6,7 @@ gemspec
 
 group :test do
   gem 'coveralls', require: false
+  gem 'safe_yaml', require: false
 end
 
 local_gemfile = 'Gemfile.local'
