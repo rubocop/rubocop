@@ -366,10 +366,16 @@ describe RuboCop::Cop::Performance::StringReplacement do
         expect(new_source).to eq("'abc'.tr('a', '1')")
       end
 
-      it 'when the replacement contains an escape character' do
+      it 'when the replacement contains an escape new line character' do
         new_source = autocorrect_source(cop, "'abc'.gsub('a', '\n')")
 
-        expect(new_source).to eq("'abc'.tr('a', \"\\n\")")
+        expect(new_source).to eq("'abc'.tr('a', '\n')")
+      end
+
+      it 'when the replacement contains an escape backslash character' do
+        new_source = autocorrect_source(cop, "\"\".gsub('/', '\\\\')")
+
+        expect(new_source).to eq("\"\".tr('/', '\\\\')")
       end
 
       it 'when the pattern contains an escape character' do
