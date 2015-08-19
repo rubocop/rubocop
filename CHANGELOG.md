@@ -5,6 +5,7 @@
 ### New features
 
 * [#2143](https://github.com/bbatsov/rubocop/pull/2143): New cop `Performance/CaseWhenSplat` will identify and rearange `case` `when` statements that contain a `when` condition with a splat. ([@rrosenblum][])
+* New cop `Lint/DuplicatedKey` checks for duplicated keys in hashes, which Ruby 2.2 warns against. ([@sliuu][])
 
 ### Changes
 
