@@ -99,7 +99,7 @@ module RuboCop
             .map { |c| c.loc.line }
 
           line = ''
-          while line =~ /^\s*$/ || @comment_lines.include?(line_number)
+          while line.blank? || @comment_lines.include?(line_number)
             line_number -= 1
             line = processed_source.lines[line_number - 1]
           end

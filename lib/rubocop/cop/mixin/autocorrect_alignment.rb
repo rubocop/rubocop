@@ -45,7 +45,7 @@ module RuboCop
       end
 
       def start_of_line?(loc)
-        loc.expression.source_line[0...loc.column] =~ /^\s*$/
+        loc.expression.source_line[0...loc.column].blank?
       end
 
       def autocorrect(arg)
