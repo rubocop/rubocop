@@ -20,10 +20,15 @@ module RuboCop
       #   'a b c'.delete(' ')
       class StringReplacement < Cop
         MSG = 'Use `%s` instead of `%s`.'
-        DETERMINISTIC_REGEX = /^[\w\s\-,."']+$/
-        REGEXP_CONSTRUCTOR_METHODS = [:new, :compile]
-        GSUB_METHODS = [:gsub, :gsub!]
-        DETERMINISTIC_TYPES = [:regexp, :str, :send]
+        DETERMINISTIC_REGEX = /^[\w\s\-,."']+$/.freeze
+        REGEXP_CONSTRUCTOR_METHODS = [:new, :compile].freeze
+        GSUB_METHODS = [:gsub, :gsub!].freeze
+        DETERMINISTIC_TYPES = [:regexp, :str, :send].freeze
+        DELETE = 'delete'.freeze
+        TR = 'tr'.freeze
+        BANG = '!'.freeze
+        SINGLE_QUOTE = "'".freeze
+        CLOSING_PAREN = ')'.freeze
 
         def on_send(node)
           _string, method, first_param, second_param = *node
@@ -51,19 +56,21 @@ module RuboCop
           _string, method, first_param, second_param = *node
           first_source = first_source(first_param)
           second_source, = *second_param
-          replacement_method = replacement_method(first_source, second_source)
+          replacement_method = replacement_method(method,
+                                                  first_source,
+                                                  second_source)
+
+          range = Parser::Source::Range.new(node.loc.expression.source_buffer,
+                                            node.loc.selector.begin_pos,
+                                            first_param.loc.expression.end_pos)
 
           lambda do |corrector|
-            replacement =
-              if second_source.empty? && first_source.length == 1
-                "#{replacement_method}#{'!' if bang_method?(method)}" \
-                "(#{escape(first_source)})"
-              else
-                "#{replacement_method}#{'!' if bang_method?(method)}" \
-                "(#{escape(first_source)}, #{escape(second_source)})"
-              end
+            corrector.replace(range,
+                              "#{replacement_method}(#{escape(first_source)}")
 
-            corrector.replace(range(node), replacement)
+            if second_source.empty? && first_source.length == 1
+              remove_second_param(corrector, node, first_param)
+            end
           end
         end
 
@@ -123,24 +130,26 @@ module RuboCop
                                     node.loc.expression.end_pos)
         end
 
-        def replacement_method(first_source, second_source)
-          if second_source.empty? && first_source.length == 1
-            'delete'
-          else
-            'tr'
-          end
+        def replacement_method(method, first_source, second_source)
+          replacement = if second_source.empty? && first_source.length == 1
+                          DELETE
+                        else
+                          TR
+                        end
+
+          "#{replacement}#{BANG if bang_method?(method)}"
         end
 
         def message(method, first_source, second_source)
-          replacement_method = replacement_method(first_source, second_source)
+          replacement_method = replacement_method(method,
+                                                  first_source,
+                                                  second_source)
 
-          format(MSG,
-                 "#{replacement_method}#{'!' if bang_method?(method)}",
-                 method)
+          format(MSG, replacement_method, method)
         end
 
         def bang_method?(method)
-          method.to_s.end_with?('!')
+          method.to_s.end_with?(BANG)
         end
 
         def escape(string)
@@ -152,8 +161,17 @@ module RuboCop
         end
 
         def require_double_quotes?(string)
-          /'/ =~ string.inspect ||
+          string.inspect.include?(SINGLE_QUOTE) ||
             StringHelp::ESCAPED_CHAR_REGEXP =~ string.inspect
+        end
+
+        def remove_second_param(corrector, node, first_param)
+          end_range =
+            Parser::Source::Range.new(node.loc.expression.source_buffer,
+                                      first_param.loc.expression.end_pos,
+                                      node.loc.expression.end_pos)
+
+          corrector.replace(end_range, CLOSING_PAREN)
         end
       end
     end
