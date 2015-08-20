@@ -60,6 +60,40 @@ describe RuboCop::Runner, :isolated_environment do
         END
       end
     end
+
+    context 'if -s/--stdin is used with an offense' do
+      let(:options) do
+        {
+          formatters: [['progress', formatter_output_path]],
+          stdin: <<-END.strip_indent
+            # coding: utf-8
+            def INVALID_CODE
+            end
+          END
+        }
+      end
+      let(:source) { '' }
+
+      it 'returns false' do
+        expect(runner.run([])).to be false
+      end
+
+      it 'sends the offense to a formatter' do
+        runner.run([])
+        expect(formatter_output).to eq <<-END.strip_indent
+          Inspecting 1 file
+          C
+
+          Offenses:
+
+          example.rb:2:5: C: Use snake_case for method names.
+          def INVALID_CODE
+              ^^^^^^^^^^^^
+
+          1 file inspected, 1 offense detected
+        END
+      end
+    end
   end
 
   describe '#run with cops autocorrecting each-other' do
