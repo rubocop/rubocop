@@ -15,6 +15,7 @@ module RuboCop
           # using alias is the only option in certain scenarios
           # in such scenarios we don't want to report an offense
           return unless method_name == :instance_exec
+          return unless body
 
           body.each_node(:alias) { |n| ignore_node(n) }
         end

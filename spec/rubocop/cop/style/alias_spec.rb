@@ -56,4 +56,9 @@ describe RuboCop::Cop::Style::Alias do
                     'end'])
     expect(cop.offenses).to be_empty
   end
+
+  it 'handles instance_exec with an empty block' do
+    inspect_source(cop, 'instance_exec {}')
+    expect(cop.offenses).to be_empty
+  end
 end
