@@ -19,4 +19,5 @@ install:
   - bundle install --retry=3
 script:
   - bundle exec rspec
+  - bundle exec rake coveralls:push
   - bundle exec rubocop

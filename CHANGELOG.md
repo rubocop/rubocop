@@ -21,6 +21,7 @@
 * Do not register a `Rails/TimeZone` offense when using Time.new safely. ([@maxjacobson][])
 * [#2124](https://github.com/bbatsov/rubocop/issues/2124): Fix bug in `Style/EmptyLineBetweenDefs` when there are only comments between method definitions. ([@lumeet][])
 * [#2154](https://github.com/bbatsov/rubocop/issues/2154): `Performance/StringReplacement` can auto-correct replacements with backslash in them. ([@rrosenblum][])
+* [#2009](https://github.com/bbatsov/rubocop/issues/2009): Fix bug in `RuboCop::ConfigLoader.load_file` when `safe_yaml` is required. ([@eitoball][])
 
 ## 0.33.0 (05/08/2015)
 
