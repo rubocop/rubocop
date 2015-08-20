@@ -304,6 +304,12 @@ describe RuboCop::ConfigLoader do
         if ::Process.respond_to?(:fork)
           # To load SafeYAML in different memory space
           pid = ::Process.fork do
+            # Need to write coverage result under different name
+            if defined?(SimpleCov)
+              SimpleCov.command_name "rspec_#{Process.pid}"
+              SimpleCov.pid = Process.pid
+            end
+
             require 'safe_yaml'
             configuration = described_class.load_file('.rubocop.yml')
 
