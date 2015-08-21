@@ -34,18 +34,6 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
     expect(cop.offenses).to be_empty
   end
 
-  it 'accepts super with no arguments' do
-    inspect_source(cop, 'super { |x| x.method }')
-
-    expect(cop.offenses).to be_empty
-  end
-
-  it 'accepts super with arguments' do
-    inspect_source(cop, 'super(1, 2) { |x| x.method }')
-
-    expect(cop.offenses).to be_empty
-  end
-
   it 'accepts lambda with 1 argument' do
     inspect_source(cop, '->(x) { x.method }')
 
@@ -108,5 +96,35 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
   it 'does not crash with a bare method call' do
     run = -> { inspect_source(cop, 'coll.map { |s| bare_method }') }
     expect(&run).not_to raise_error
+  end
+
+  context 'when `super` has arguments' do
+    let(:source) { 'super(one, two) { |x| x.test }' }
+
+    it 'registers an offense' do
+      inspect_source(cop, source)
+      expect(cop.messages)
+        .to eq(['Pass `&:test` as an argument to `super` instead of a block.'])
+    end
+
+    it 'auto-corrects' do
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq 'super(one, two, &:test)'
+    end
+  end
+
+  context 'when `super` has no arguments' do
+    let(:source) { 'super { |x| x.test }' }
+
+    it 'registers an offense' do
+      inspect_source(cop, source)
+      expect(cop.messages)
+        .to eq(['Pass `&:test` as an argument to `super` instead of a block.'])
+    end
+
+    it 'auto-corrects' do
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq 'super(&:test)'
+    end
   end
 end

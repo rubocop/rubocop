@@ -17,18 +17,18 @@ module RuboCop
         PROC_NODE = s(:send, s(:const, nil, :Proc), :new)
 
         def on_block(node)
-          block_send, block_args, block_body = *node
+          block_send_or_super, block_args, block_body = *node
 
-          # TODO: Handle properly super and zsuper nodes
-          # https://github.com/bbatsov/rubocop/issues/2135
-          return if [:super, :zsuper].include?(block_send.type)
-
-          _breceiver, bmethod_name, bargs = *block_send
+          if super?(block_send_or_super)
+            bmethod_name = :super
+          else
+            _breceiver, bmethod_name, bargs = *block_send_or_super
+          end
 
           # TODO: Rails-specific handling that we should probably make
           # configurable - https://github.com/bbatsov/rubocop/issues/1485
           # we should ignore lambdas & procs
-          return if block_send == PROC_NODE
+          return if block_send_or_super == PROC_NODE
           return if [:lambda, :proc].include?(bmethod_name)
           return if ignored_method?(bmethod_name)
           # File.open(file) { |f| f.readlines }
@@ -45,17 +45,41 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            _block_method, _block_args, block_body = *node
+            block_send_or_super, _block_args, block_body = *node
             _receiver, method_name, _args = *block_body
 
-            block_range =
-              Parser::Source::Range.new(node.loc.expression.source_buffer,
-                                        node.loc.begin.begin_pos,
-                                        node.loc.end.end_pos)
-
-            corrector.replace(range_with_surrounding_space(block_range, :left),
-                              "(&:#{method_name})")
+            if super?(block_send_or_super)
+              args = *block_send_or_super
+              autocorrect_super(corrector, node, args, method_name)
+            else
+              autocorrect_no_args(corrector, node, method_name)
+            end
           end
+        end
+
+        def autocorrect_super(corrector, node, args, method_name)
+          if args.empty?
+            autocorrect_no_args(corrector, node, method_name)
+          else
+            autocorrect_with_args(corrector, node, args, method_name)
+          end
+        end
+
+        def autocorrect_no_args(corrector, node, method_name)
+          corrector.replace(block_range_with_space(node), "(&:#{method_name})")
+        end
+
+        def autocorrect_with_args(corrector, node, args, method_name)
+          corrector.insert_after(args.last.loc.expression, ", &:#{method_name}")
+          corrector.remove(block_range_with_space(node))
+        end
+
+        def block_range_with_space(node)
+          block_range =
+            Parser::Source::Range.new(node.loc.expression.source_buffer,
+                                      node.loc.begin.begin_pos,
+                                      node.loc.end.end_pos)
+          range_with_surrounding_space(block_range, :left)
         end
 
         def ignored_methods
@@ -81,6 +105,10 @@ module RuboCop
           receiver_name, = *receiver
 
           block_arg_name == receiver_name
+        end
+
+        def super?(node)
+          [:super, :zsuper].include?(node.type)
         end
       end
     end
