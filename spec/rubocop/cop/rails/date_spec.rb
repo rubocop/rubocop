@@ -48,6 +48,11 @@ describe RuboCop::Cop::Rails::Date, :config do
         expect(cop.offenses).to be_empty
       end
     end
+
+    it 'does not blow up in the presence of a single constant to inspect' do
+      inspect_source(cop, 'A')
+      expect(cop.offenses).to be_empty
+    end
   end
 
   context 'when EnforcedStyle is "flexible"' do
@@ -69,10 +74,5 @@ describe RuboCop::Cop::Rails::Date, :config do
       inspect_source(cop, 'date.to_time_in_current_zone')
       expect(cop.offenses).to be_empty
     end
-  end
-
-  it 'does not blow up in the presence of a single constant to inspect' do
-    inspect_source(cop, 'A')
-    expect(cop.offenses).to be_empty
   end
 end
