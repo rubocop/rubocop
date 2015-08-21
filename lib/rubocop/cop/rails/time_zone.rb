@@ -109,7 +109,7 @@ module RuboCop
         # checks that parent node of send_type
         # and receiver is the given node
         def method_send?(node)
-          return false unless node.parent.send_type?
+          return false unless node.parent && node.parent.send_type?
 
           receiver, _method_name, *_args = *node.parent
 

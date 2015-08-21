@@ -220,5 +220,10 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
       inspect_source(cop, "Time.parse('12:00').localtime('+03:00')")
       expect(cop.offenses).to be_empty
     end
+
+    it 'does not blow up in the presence of a single constant to inspect' do
+      inspect_source(cop, 'A')
+      expect(cop.offenses).to be_empty
+    end
   end
 end

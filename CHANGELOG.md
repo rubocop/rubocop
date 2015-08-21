@@ -17,6 +17,7 @@
 ### Bug Fixes
 
 * [#2165](https://github.com/bbatsov/rubocop/issues/2165): Fix a NPE in `Style/Alias`. ([@bbatsov][])
+* [#2168](https://github.com/bbatsov/rubocop/issues/2168): Fix a NPE in `Rails/TimeZone`. ([@bbatsov][])
 * [#2105](https://github.com/bbatsov/rubocop/pull/2105): Fix a warning that was thrown when enabling `Style/OptionHash`. ([@wli][])
 * [#2107](https://github.com/bbatsov/rubocop/pull/2107): Fix auto-correct of `Style/ParallelAssignment` for nested expressions. ([@rrosenblum][])
 * [#2111](https://github.com/bbatsov/rubocop/issues/2111): Deal with byte order mark in `Style/InitialIndentation`. ([@jonas054][])
