@@ -891,6 +891,10 @@ Lint/DuplicateMethods:
   Description: 'Check for duplicate methods calls.'
   Enabled: true
 
+Lint/DuplicatedKey:
+  Description: 'Check for duplicate keys in hash literals.'
+  Enabled: true
+
 Lint/EachWithObjectArgument:
   Description: 'Check for immutable argument given to each_with_object.'
   Enabled: true
