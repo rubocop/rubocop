@@ -12,11 +12,11 @@ module RuboCop
 
         child = node.children.first
         case child.type
-        when *Util::EQUALS_ASGN_NODES
-          true
         when :send
           _receiver, method_name, _args = *child
           method_name.to_s.end_with?('=')
+        when *Util::EQUALS_ASGN_NODES
+          true
         else
           false
         end
