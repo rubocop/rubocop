@@ -19,6 +19,10 @@ module RuboCop
         def on_block(node)
           block_send, block_args, block_body = *node
 
+          # TODO: Handle properly super and zsuper nodes
+          # https://github.com/bbatsov/rubocop/issues/2135
+          return if [:super, :zsuper].include?(block_send.type)
+
           _breceiver, bmethod_name, bargs = *block_send
 
           # TODO: Rails-specific handling that we should probably make

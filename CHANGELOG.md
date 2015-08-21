@@ -16,6 +16,7 @@
 
 ### Bug Fixes
 
+* [#2135](https://github.com/bbatsov/rubocop/issues/2135): Ignore `super` and `zsuper` nodes in `Style/SymbolProc`. ([@bbatsov][])
 * [#2165](https://github.com/bbatsov/rubocop/issues/2165): Fix a NPE in `Style/Alias`. ([@bbatsov][])
 * [#2168](https://github.com/bbatsov/rubocop/issues/2168): Fix a NPE in `Rails/TimeZone`. ([@bbatsov][])
 * [#2169](https://github.com/bbatsov/rubocop/issues/2169): Fix a NPE in `Rails/Date`. ([@bbatsov][])

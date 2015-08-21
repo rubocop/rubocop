@@ -34,6 +34,18 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts super with no arguments' do
+    inspect_source(cop, 'super { |x| x.method }')
+
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'accepts super with arguments' do
+    inspect_source(cop, 'super(1, 2) { |x| x.method }')
+
+    expect(cop.offenses).to be_empty
+  end
+
   it 'accepts lambda with 1 argument' do
     inspect_source(cop, '->(x) { x.method }')
 
