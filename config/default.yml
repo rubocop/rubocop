@@ -523,6 +523,15 @@ Style/MultilineOperationIndentation:
 Style/NumericLiterals:
   MinDigits: 5
 
+Style/OptionHash:
+  # A list of parameter names that will be flagged by this cop.
+  SuspiciousParamNames:
+    - options
+    - opts
+    - args
+    - params
+    - parameters
+
 # Allow safe assignment in conditions.
 Style/ParenthesesAroundCondition:
   AllowSafeAssignment: true

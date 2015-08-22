@@ -2,11 +2,9 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::OptionHash do
-  subject(:cop) { described_class.new }
-  before(:each) do
-    inspect_source(cop, source)
-  end
+describe RuboCop::Cop::Style::OptionHash, :config do
+  subject(:cop) { described_class.new(config) }
+  let(:cop_config) { { 'SuspiciousParamNames' => ['options'] } }
 
   let(:source) do
     [
@@ -18,12 +16,14 @@ describe RuboCop::Cop::Style::OptionHash do
 
   context 'ruby < 2.0, which has no keyword arguments', ruby_less_than: 2.0 do
     it 'does not register an offense' do
+      inspect_source(cop, source)
       expect(cop.offenses).to be_empty
     end
   end
 
   context 'ruby >= 2.0', ruby_greater_than_or_equal: 2.0 do
     it 'registers an offense' do
+      inspect_source(cop, source)
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages.first)
         .to eq('Prefer keyword arguments to options hashes.')
@@ -40,7 +40,16 @@ describe RuboCop::Cop::Style::OptionHash do
         ]
       end
 
-      it 'registers an offense' do
+      it 'does not register an offense' do
+        inspect_source(cop, source)
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'registers an offense when in SuspiciousParamNames list' do
+        cop_config['SuspiciousParamNames'] = ['config']
+
+        inspect_source(cop, source)
+
         expect(cop.offenses.size).to eq(1)
         expect(cop.messages.first)
           .to eq('Prefer keyword arguments to options hashes.')
@@ -49,6 +58,10 @@ describe RuboCop::Cop::Style::OptionHash do
     end
 
     context 'when there are no arguments' do
+      before(:each) do
+        inspect_source(cop, source)
+      end
+
       let(:source) do
         [
           'def meditate',
@@ -64,6 +77,10 @@ describe RuboCop::Cop::Style::OptionHash do
     end
 
     context 'when the last argument is a non-options-hash optional hash' do
+      before(:each) do
+        inspect_source(cop, source)
+      end
+
       let(:source) do
         [
           'def cook(instructions, ingredients = { hot: [], cold: [] })',
