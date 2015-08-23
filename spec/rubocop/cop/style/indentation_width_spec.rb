@@ -115,6 +115,15 @@ describe RuboCop::Cop::Style::IndentationWidth do
           .to eq(['Use 2 (not 3) spaces for indentation.'])
       end
 
+      it 'accepts indentation after if on new line after assignment' do
+        inspect_source(cop,
+                       ['Rails.application.config.ideal_postcodes_key =',
+                        '  if Rails.env.production? || Rails.env.staging?',
+                        '    "AAAA-AAAA-AAAA-AAAA"',
+                        '  end'])
+        expect(cop.offenses).to be_empty
+      end
+
       describe '#autocorrect' do
         it 'corrects bad indentation' do
           corrected = autocorrect_source(cop,

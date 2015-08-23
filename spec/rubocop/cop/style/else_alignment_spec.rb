@@ -39,6 +39,18 @@ describe RuboCop::Cop::Style::ElseAlignment do
       expect(cop.highlights).to eq(['elsif'])
     end
 
+    it 'accepts indentation after else when if is on new line after ' \
+       'assignment' do
+      inspect_source(cop,
+                     ['Rails.application.config.ideal_postcodes_key =',
+                      '  if Rails.env.production? || Rails.env.staging?',
+                      '    "AAAA-AAAA-AAAA-AAAA"',
+                      '  else',
+                      '    "BBBB-BBBB-BBBB-BBBB"',
+                      '  end'])
+      expect(cop.offenses).to be_empty
+    end
+
     describe '#autocorrect' do
       it 'corrects bad alignment' do
         corrected = autocorrect_source(cop,

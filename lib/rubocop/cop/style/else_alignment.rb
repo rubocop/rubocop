@@ -86,7 +86,11 @@ module RuboCop
 
           end_config = config.for_cop('Lint/EndAlignment')
           style = end_config['Enabled'] ? end_config['AlignWith'] : 'keyword'
-          base = style == 'variable' ? node : rhs
+          base = if style == 'variable' && node.loc.line == rhs.loc.line
+                   node
+                 else
+                   rhs
+                 end
 
           return if rhs.type != :if
 
