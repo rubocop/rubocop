@@ -8,6 +8,7 @@ module RuboCop
       # are special cases when they should follow the same rules as the
       # alignment of end.
       class ElseAlignment < Cop
+        include EndKeywordAlignment
         include AutocorrectAlignment
         include CheckAssignment
 
@@ -86,7 +87,7 @@ module RuboCop
 
           end_config = config.for_cop('Lint/EndAlignment')
           style = end_config['Enabled'] ? end_config['AlignWith'] : 'keyword'
-          base = style == 'variable' ? node : rhs
+          base = variable_alignment?(node.loc, rhs, style.to_sym) ? node : rhs
 
           return if rhs.type != :if
 
