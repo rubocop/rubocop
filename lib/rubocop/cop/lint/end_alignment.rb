@@ -58,7 +58,7 @@ module RuboCop
           return if ternary_op?(rhs)
 
           expr = node.loc.expression
-          if style == :variable && !line_break_before_keyword?(expr, rhs)
+          if variable_alignment?(expr, rhs, style)
             range = Parser::Source::Range.new(expr.source_buffer,
                                               expr.begin_pos,
                                               rhs.loc.keyword.end_pos)
@@ -70,10 +70,6 @@ module RuboCop
 
           check_offset(rhs, range.source, offset)
           ignore_node(rhs) # Don't check again.
-        end
-
-        def line_break_before_keyword?(whole_expression, rhs)
-          rhs.loc.keyword.line > whole_expression.line
         end
 
         def autocorrect(node)

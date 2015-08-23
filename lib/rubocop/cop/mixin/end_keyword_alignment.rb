@@ -38,6 +38,15 @@ module RuboCop
         'AlignWith'
       end
 
+      def variable_alignment?(whole_expression, rhs, end_alignment_style)
+        end_alignment_style == :variable &&
+          !line_break_before_keyword?(whole_expression, rhs)
+      end
+
+      def line_break_before_keyword?(whole_expression, rhs)
+        rhs.loc.line > whole_expression.line
+      end
+
       def align(node, alignment_node)
         source_buffer = node.loc.expression.source_buffer
         begin_pos = node.loc.end.begin_pos
