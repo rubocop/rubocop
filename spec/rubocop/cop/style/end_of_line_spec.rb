@@ -1,7 +1,6 @@
 # encoding: utf-8
 
 require 'spec_helper'
-require 'tempfile'
 
 describe RuboCop::Cop::Style::EndOfLine do
   subject(:cop) { described_class.new }
