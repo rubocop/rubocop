@@ -124,6 +124,22 @@ describe RuboCop::Cop::Style::IndentationWidth do
         expect(cop.offenses).to be_empty
       end
 
+      it 'accepts `rescue` after an empty body' do
+        inspect_source(cop, ['begin',
+                             'rescue',
+                             '  handle_error',
+                             'end'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'accepts `ensure` after an empty body' do
+        inspect_source(cop, ['begin',
+                             'ensure',
+                             '  something',
+                             'end'])
+        expect(cop.offenses).to be_empty
+      end
+
       describe '#autocorrect' do
         it 'corrects bad indentation' do
           corrected = autocorrect_source(cop,

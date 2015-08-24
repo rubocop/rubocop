@@ -256,6 +256,11 @@ module RuboCop
           first_char_pos_on_line = body_node.loc.expression.source_line =~ /\S/
           return false unless body_node.loc.column == first_char_pos_on_line
 
+          if [:rescue, :ensure].include?(body_node.type)
+            block_body, *_ = *body_node
+            return unless block_body
+          end
+
           true
         end
 
