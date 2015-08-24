@@ -15,6 +15,7 @@
 * [#2109](https://github.com/bbatsov/rubocop/issues/2109): Allow alignment with a token on the nearest line with same indentation in `Style/ExtraSpacing`. ([@jonas054][])
 * `Lint/EndAlignment` handles the `case` keyword. ([@lumeet][])
 * [#2146](https://github.com/bbatsov/rubocop/pull/2146): Add STDIN support. ([@caseywebdev][])
+* [#2175](https://github.com/bbatsov/rubocop/pull/2175): Files that are excluded from a cop (e.g. using the `Exclude:` config option) are no longer being processed by that cop. ([@bquorning][])
 
 ### Bug Fixes
 

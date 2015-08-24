@@ -4,9 +4,12 @@ require 'spec_helper'
 
 describe RuboCop::Cop::Rails::ActionFilter, :config do
   subject(:cop) { described_class.new(config) }
+  let(:cop_config) { { 'Include' => nil } }
 
   context 'when style is action' do
-    let(:cop_config) { { 'EnforcedStyle' => 'action' } }
+    before do
+      cop_config.update('EnforcedStyle' => 'action')
+    end
 
     described_class::FILTER_METHODS.each do |method|
       it "registers an offense for #{method}" do
@@ -34,7 +37,9 @@ describe RuboCop::Cop::Rails::ActionFilter, :config do
   end
 
   context 'when style is filter' do
-    let(:cop_config) { { 'EnforcedStyle' => 'filter' } }
+    before do
+      cop_config.update('EnforcedStyle' => 'filter')
+    end
 
     described_class::ACTION_METHODS.each do |method|
       it "registers an offense for #{method}" do

@@ -198,6 +198,10 @@ module RuboCop
           !file_name_matches_any?(file, 'Exclude', false)
       end
 
+      def excluded_file?(file)
+        !relevant_file?(file)
+      end
+
       def style_guide_url
         url = cop_config && cop_config['StyleGuide']
         (url.nil? || url.empty?) ? nil : url

@@ -4,7 +4,9 @@ require 'spec_helper'
 
 describe RuboCop::Cop::Commissioner do
   describe '#investigate' do
-    let(:cop) { double(RuboCop::Cop, offenses: []).as_null_object }
+    let(:cop) do
+      double(RuboCop::Cop, offenses: [], excluded_file?: false).as_null_object
+    end
     let(:force) { double(RuboCop::Cop::Force).as_null_object }
 
     it 'returns all offenses found by the cops' do
@@ -20,9 +22,9 @@ describe RuboCop::Cop::Commissioner do
     context 'when a cop has no interest in the file' do
       it 'returns all offenses except the ones of the cop' do
         cops = []
-        cops << double('cop A', offenses: %w(foo), relevant_file?: true)
-        cops << double('cop B', offenses: %w(bar), relevant_file?: false)
-        cops << double('cop C', offenses: %w(baz), relevant_file?: true)
+        cops << double('cop A', offenses: %w(foo), excluded_file?: false)
+        cops << double('cop B', offenses: %w(bar), excluded_file?: true)
+        cops << double('cop C', offenses: %w(baz), excluded_file?: false)
         cops.each(&:as_null_object)
 
         commissioner = described_class.new(cops, [])
