@@ -56,6 +56,39 @@ describe RuboCop::Cop::Style::EmptyLineBetweenDefs, :config do
     end
   end
 
+  context 'conditional method definitions' do
+    it 'accepts defs inside a conditional without blank lines in between' do
+      source = ['if condition',
+                '  def foo',
+                '    true',
+                '  end',
+                'else',
+                '  def foo',
+                '    false',
+                '  end',
+                'end']
+      inspect_source(cop, source)
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense for consecutive defs inside a conditional' do
+      source = ['if condition',
+                '  def foo',
+                '    true',
+                '  end',
+                '  def bar',
+                '    true',
+                '  end',
+                'else',
+                '  def foo',
+                '    false',
+                '  end',
+                'end']
+      inspect_source(cop, source)
+      expect(cop.offenses.size).to eq(1)
+    end
+  end
+
   # Only one def, so rule about empty line *between* defs does not
   # apply.
   it 'accepts a def that follows a line with code' do
