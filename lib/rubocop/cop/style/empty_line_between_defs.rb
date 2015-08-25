@@ -9,6 +9,8 @@ module RuboCop
         MSG = 'Use empty lines between defs.'
 
         def on_def(node)
+          return unless node.parent && node.parent.begin_type?
+
           nodes = [prev_node(node), node]
 
           return unless nodes.all?(&method(:def_node?))
@@ -30,7 +32,7 @@ module RuboCop
         end
 
         def prev_node(node)
-          return nil unless node.parent && node.sibling_index > 0
+          return nil unless node.sibling_index > 0
 
           node.parent.children[node.sibling_index - 1]
         end
