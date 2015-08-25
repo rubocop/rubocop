@@ -38,6 +38,7 @@
 * [#2009](https://github.com/bbatsov/rubocop/issues/2009): Fix bug in `RuboCop::ConfigLoader.load_file` when `safe_yaml` is required. ([@eitoball][])
 * [#2155](https://github.com/bbatsov/rubocop/issues/2155): Configuration `EndAlignment: AlignWith: variable` only applies when the operands of `=` are on the same line. ([@jonas054][])
 * Fix bug in `Style/IndentationWidth` when `rescue` or `ensure` is preceded by an empty body. ([@lumeet][])
+* [#2183](https://github.com/bbatsov/rubocop/issues/2183): Fix bug in `Style/BlockDelimiters` when auto-correcting adjacent braces. ([@lumeet][])
 
 ## 0.33.0 (05/08/2015)
 
