@@ -59,11 +59,8 @@ module RuboCop
             b = node.loc.begin
             e = node.loc.end
             if b.is?('{')
-              # If the left brace is not preceded by a whitespace character,
-              # then we need a space before `do` to get valid Ruby code.
-              if b.source_buffer.source[b.begin_pos - 1, 1] =~ /\S/
-                corrector.insert_before(b, ' ')
-              end
+              corrector.insert_before(b, ' ') unless whitespace_before?(b)
+              corrector.insert_before(e, ' ') unless whitespace_before?(e)
               corrector.replace(b, 'do')
               corrector.replace(e, 'end')
             else
@@ -71,6 +68,10 @@ module RuboCop
               corrector.replace(e, '}')
             end
           end
+        end
+
+        def whitespace_before?(node)
+          node.source_buffer.source[node.begin_pos - 1, 1] =~ /\s/
         end
 
         def get_block(node)
