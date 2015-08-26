@@ -22,4 +22,13 @@ describe RuboCop::Cop::Rails::ScopeArgs do
                    'scope :active, proc { where(active: true) }')
     expect(cop.offenses).to be_empty
   end
+
+  it 'accepts a multi-line lamba arg' do
+    inspect_source(cop,
+                   'scope :active_by_status, lambda do |status|' \
+                   '  where(active: true)' \
+                   '    .where(status: status)' \
+                   'end')
+    expect(cop.offenses).to be_empty
+  end
 end
