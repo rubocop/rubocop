@@ -16,6 +16,7 @@
 * `Lint/EndAlignment` handles the `case` keyword. ([@lumeet][])
 * [#2146](https://github.com/bbatsov/rubocop/pull/2146): Add STDIN support. ([@caseywebdev][])
 * [#2175](https://github.com/bbatsov/rubocop/pull/2175): Files that are excluded from a cop (e.g. using the `Exclude:` config option) are no longer being processed by that cop. ([@bquorning][])
+* `Rails/ActionFilter` now handles complete list of methods found in the Rails 4.2 [release notes](https://github.com/rails/rails/blob/4115a12da1409c753c747fd4bab6e612c0c6e51a/guides/source/4_2_release_notes.md#notable-changes-1). ([@MGerrior][])
 
 ### Bug Fixes
 
@@ -1565,3 +1566,4 @@
 [@syndbg]: https://github.com/syndbg
 [@wli]: https://github.com/wli
 [@caseywebdev]: https://github.com/caseywebdev
+[@MGerrior]: https://github.com/MGerrior
