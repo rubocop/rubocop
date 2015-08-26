@@ -21,6 +21,7 @@
 
 ### Bug Fixes
 
+* Allow using multi-line lambdas for Rails' Scopes. ([@wk8][])
 * [#2123](https://github.com/bbatsov/rubocop/pull/2123): Fix handing of dynamic widths `Lint/FormatParameterMismatch`. ([@edmz][])
 * [#2116](https://github.com/bbatsov/rubocop/pull/2116): Fix named params (using hash) `Lint/FormatParameterMismatch`. ([@edmz][])
 * [#2135](https://github.com/bbatsov/rubocop/issues/2135): Ignore `super` and `zsuper` nodes in `Style/SymbolProc`. ([@bbatsov][])
@@ -1568,3 +1569,4 @@
 [@wli]: https://github.com/wli
 [@caseywebdev]: https://github.com/caseywebdev
 [@MGerrior]: https://github.com/MGerrior
+[@wk8]: https://github.com/wk8
