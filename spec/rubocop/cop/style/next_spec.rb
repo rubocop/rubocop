@@ -63,11 +63,30 @@ describe RuboCop::Cop::Style::Next, :config do
                     '  end',
                     'end'])
     expect(cop.offenses.size).to eq(9)
-    expect(cop.offenses.map(&:line).sort).to eq([1, 7, 13, 19, 25, 31, 37, 43,
-                                                 49])
+    expect(cop.offenses.map(&:line).sort).to eq([2, 8, 14, 20, 26, 32, 38, 44,
+                                                 50])
     expect(cop.messages) .to eq(['Use `next` to skip iteration.'] * 9)
-    expect(cop.highlights).to eq(%w(downto each each_with_object for loop map
-                                    times until while))
+    expect(cop.highlights).to eq(%w(if if if if if if if if if))
+  end
+
+  it 'registers an offense for unless inside until' do
+    inspect_source(cop, ['until false',
+                         '  unless o == 1',
+                         '    puts o',
+                         '  end',
+                         'end'])
+
+    expect(cop.highlights).to eq(['unless'])
+  end
+
+  it 'registers an offense for unless inside for' do
+    inspect_source(cop, ['for o in 1..3 do',
+                         '  unless o == 1',
+                         '    puts o',
+                         '  end',
+                         'end'])
+
+    expect(cop.highlights).to eq(['unless'])
   end
 
   it 'finds loop with condition at the end in different styles' do
@@ -92,10 +111,10 @@ describe RuboCop::Cop::Style::Next, :config do
                     'end'])
 
     expect(cop.offenses.size).to eq(3)
-    expect(cop.offenses.map(&:line).sort).to eq([1, 7, 14])
+    expect(cop.offenses.map(&:line).sort).to eq([2, 9, 15])
     expect(cop.messages)
       .to eq(['Use `next` to skip iteration.'] * 3)
-    expect(cop.highlights).to eq(['each'] * 3)
+    expect(cop.highlights).to eq(%w(if if unless))
   end
 
   it 'ignores empty blocks' do
@@ -184,10 +203,9 @@ describe RuboCop::Cop::Style::Next, :config do
                       'end'])
 
       expect(cop.offenses.size).to eq(2)
-      expect(cop.offenses.map(&:line).sort).to eq([1, 5])
-      expect(cop.messages)
-        .to eq(['Use `next` to skip iteration.'] * 2)
-      expect(cop.highlights).to eq(['each'] * 2)
+      expect(cop.offenses.map(&:line).sort).to eq([2, 6])
+      expect(cop.messages).to eq(['Use `next` to skip iteration.'] * 2)
+      expect(cop.highlights).to eq(%w(if unless))
     end
   end
 
@@ -289,7 +307,7 @@ describe RuboCop::Cop::Style::Next, :config do
                       '  end',
                       'end'])
       expect(cop.offenses.size).to eq(1)
-      expect(cop.highlights).to eq(['each'])
+      expect(cop.highlights).to eq(['if'])
     end
   end
 

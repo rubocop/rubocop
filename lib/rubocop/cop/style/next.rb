@@ -36,23 +36,29 @@ module RuboCop
           _, method_name = *block_owner
           return unless enumerator?(method_name)
           return unless ends_with_condition?(body)
+          *_, condition = *body
 
-          add_offense(block_owner, :selector, MSG)
+          offense_node = (condition && condition.if_type?) ? condition : body
+          add_offense(offense_node, :keyword, MSG)
         end
 
         def on_while(node)
           _, body = *node
           return unless body && ends_with_condition?(body)
+          *_, condition = *body
 
-          add_offense(node, :keyword, MSG)
+          offense_node = (condition && condition.if_type?) ? condition : body
+          add_offense(offense_node, :keyword, MSG)
         end
         alias_method :on_until, :on_while
 
         def on_for(node)
           _, _, body = *node
           return unless body && ends_with_condition?(body)
+          *_, condition = *body
 
-          add_offense(node, :keyword, MSG)
+          offense_node = (condition && condition.if_type?) ? condition : body
+          add_offense(offense_node, :keyword, MSG)
         end
 
         private
