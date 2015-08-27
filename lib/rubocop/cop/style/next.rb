@@ -26,9 +26,10 @@ module RuboCop
         MSG = 'Use `next` to skip iteration.'.freeze
         EXIT_TYPES = [:break, :return].freeze
         EACH_ = 'each_'.freeze
-        ENUMERATORS = [:collect, :detect, :downto, :each, :find, :find_all,
-                       :inject, :loop, :map!, :map, :reduce, :reverse_each,
-                       :select, :times, :upto].freeze
+        ENUMERATORS = [:collect, :collect_concat, :detect, :downto, :each,
+                       :find, :find_all, :find_index, :inject, :loop, :map!,
+                       :map, :reduce, :reject, :reject!, :reverse_each, :select,
+                       :select!, :times, :upto].freeze
 
         def on_block(node)
           block_owner, _, body = *node

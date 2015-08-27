@@ -88,6 +88,61 @@ describe RuboCop::Cop::Style::Next, :config do
       expect(cop.highlights).to eq(["#{condition} o == 1"])
     end
 
+    it "registers an offense for #{condition} inside of collect" do
+      inspect_source(cop, ['[].collect do |o|',
+                           "  #{condition} o == 1",
+                           '    true',
+                           '  end',
+                           'end'])
+
+      expect(cop.messages).to eq(['Use `next` to skip iteration.'])
+      expect(cop.highlights).to eq(["#{condition} o == 1"])
+    end
+
+    it "registers an offense for #{condition} inside of select" do
+      inspect_source(cop, ['[].select do |o|',
+                           "  #{condition} o == 1",
+                           '    true',
+                           '  end',
+                           'end'])
+
+      expect(cop.messages).to eq(['Use `next` to skip iteration.'])
+      expect(cop.highlights).to eq(["#{condition} o == 1"])
+    end
+
+    it "registers an offense for #{condition} inside of select!" do
+      inspect_source(cop, ['[].select! do |o|',
+                           "  #{condition} o == 1",
+                           '    true',
+                           '  end',
+                           'end'])
+
+      expect(cop.messages).to eq(['Use `next` to skip iteration.'])
+      expect(cop.highlights).to eq(["#{condition} o == 1"])
+    end
+
+    it "registers an offense for #{condition} inside of reject" do
+      inspect_source(cop, ['[].reject do |o|',
+                           "  #{condition} o == 1",
+                           '    true',
+                           '  end',
+                           'end'])
+
+      expect(cop.messages).to eq(['Use `next` to skip iteration.'])
+      expect(cop.highlights).to eq(["#{condition} o == 1"])
+    end
+
+    it "registers an offense for #{condition} inside of reject!" do
+      inspect_source(cop, ['[].reject! do |o|',
+                           "  #{condition} o == 1",
+                           '    true',
+                           '  end',
+                           'end'])
+
+      expect(cop.messages).to eq(['Use `next` to skip iteration.'])
+      expect(cop.highlights).to eq(["#{condition} o == 1"])
+    end
+
     it "registers an offense for #{condition} inside of nested iterators" do
       inspect_source(cop, ['loop do',
                            '  until false',
