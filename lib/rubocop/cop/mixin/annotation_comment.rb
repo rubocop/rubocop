@@ -16,8 +16,7 @@ module RuboCop
         def split_comment(comment)
           match = comment.text.match(/^(# ?)([A-Za-z]+)(\s*:)?(\s+)?(\S+)?/)
           return false unless match
-          margin, first_word, colon, space, note = *match.captures
-          [margin, first_word, colon, space, note]
+          match.captures
         end
 
         def keyword_appearance?(first_word, colon, space)
