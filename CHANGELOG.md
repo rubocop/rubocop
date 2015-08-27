@@ -7,6 +7,7 @@
 * [#2143](https://github.com/bbatsov/rubocop/pull/2143): New cop `Performance/CaseWhenSplat` will identify and rearange `case` `when` statements that contain a `when` condition with a splat. ([@rrosenblum][])
 * New cop `Lint/DuplicatedKey` checks for duplicated keys in hashes, which Ruby 2.2 warns against. ([@sliuu][])
 * [#2106](https://github.com/bbatsov/rubocop/issues/2106): Add `SuspiciousParamNames` option to `Style/OptionHash`. ([@wli][])
+* [#2193](https://github.com/bbatsov/rubocop/pull/2193): `Style/Next` supports more `Enumerable` methods. ([@rrosenblum][])
 
 ### Changes
 
