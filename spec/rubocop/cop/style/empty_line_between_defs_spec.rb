@@ -89,6 +89,72 @@ describe RuboCop::Cop::Style::EmptyLineBetweenDefs, :config do
     end
   end
 
+  context 'class methods' do
+    context 'adjacent class methods' do
+      let(:offending_source) do
+        ['class Test',
+         '  def self.foo',
+         '    true',
+         '  end',
+         '  def self.bar',
+         '    true',
+         '  end',
+         'end']
+      end
+
+      it 'registers an offense for missing blank line between methods' do
+        inspect_source(cop, offending_source)
+        expect(cop.offenses.size).to eq(1)
+      end
+
+      it 'autocorrects it' do
+        corrected = autocorrect_source(cop, offending_source)
+        expect(corrected).to eq(['class Test',
+                                 '  def self.foo',
+                                 '    true',
+                                 '  end',
+                                 '',
+                                 '  def self.bar',
+                                 '    true',
+                                 '  end',
+                                 'end']
+                                 .join("\n"))
+      end
+    end
+
+    context 'mixed instance and class methods' do
+      let(:offending_source) do
+        ['class Test',
+         '  def foo',
+         '    true',
+         '  end',
+         '  def self.bar',
+         '    true',
+         '  end',
+         'end']
+      end
+
+      it 'registers an offense for missing blank line between methods' do
+        inspect_source(cop, offending_source)
+        expect(cop.offenses.size).to eq(1)
+      end
+
+      it 'autocorrects it' do
+        corrected = autocorrect_source(cop, offending_source)
+        expect(corrected).to eq(['class Test',
+                                 '  def foo',
+                                 '    true',
+                                 '  end',
+                                 '',
+                                 '  def self.bar',
+                                 '    true',
+                                 '  end',
+                                 'end']
+                                 .join("\n"))
+      end
+    end
+  end
+
   # Only one def, so rule about empty line *between* defs does not
   # apply.
   it 'accepts a def that follows a line with code' do

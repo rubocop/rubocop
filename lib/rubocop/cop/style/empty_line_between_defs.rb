@@ -6,9 +6,10 @@ module RuboCop
       # This cop checks whether method definitions are
       # separated by empty lines.
       class EmptyLineBetweenDefs < Cop
+        include OnMethodDef
         MSG = 'Use empty lines between method definitions.'
 
-        def on_def(node)
+        def on_method_def(node, _method_name, _args, _body)
           return unless node.parent && node.parent.begin_type?
 
           nodes = [prev_node(node), node]
@@ -24,7 +25,8 @@ module RuboCop
         private
 
         def def_node?(node)
-          node && node.def_type?
+          return unless node
+          node.def_type? || node.defs_type?
         end
 
         def blank_lines_between?(first_def_node, second_def_node)
