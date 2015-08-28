@@ -37,6 +37,7 @@ describe RuboCop::Options, :isolated_environment do
         # rubocop:disable Metrics/LineLength
         expected_help = <<-END
 Usage: rubocop [options] [file1, file2, ...]
+    -L, --list-target-files          List all files RuboCop will inspect.
         --except [COP1,COP2,...]     Disable the given cop(s).
         --only [COP1,COP2,...]       Run only the given cop(s).
         --only-guide-cops            Run only cops for rules that link to a

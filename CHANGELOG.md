@@ -8,6 +8,7 @@
 * New cop `Lint/DuplicatedKey` checks for duplicated keys in hashes, which Ruby 2.2 warns against. ([@sliuu][])
 * [#2106](https://github.com/bbatsov/rubocop/issues/2106): Add `SuspiciousParamNames` option to `Style/OptionHash`. ([@wli][])
 * [#2193](https://github.com/bbatsov/rubocop/pull/2193): `Style/Next` supports more `Enumerable` methods. ([@rrosenblum][])
+* [#2179](https://github.com/bbatsov/rubocop/issues/2179): Add `--list-target-files` option to CLI, which prints the files which will be inspected. ([@maxjacobson][])
 
 ### Changes
 

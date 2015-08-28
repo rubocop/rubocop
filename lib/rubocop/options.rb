@@ -44,6 +44,7 @@ module RuboCop
       OptionParser.new do |opts|
         opts.banner = 'Usage: rubocop [options] [file1, file2, ...]'
 
+        add_list_options(opts)
         add_only_options(opts)
         add_configuration_options(opts, args)
         add_formatting_options(opts)
@@ -140,6 +141,10 @@ module RuboCop
       option(opts, '-s', '--stdin') { @options[:stdin] = $stdin.read }
     end
 
+    def add_list_options(opts)
+      option(opts, '-L', '--list-target-files')
+    end
+
     # Sets a value in the @options hash, based on the given long option and its
     # value, in addition to calling the block if a block is given.
     def option(opts, *args)
@@ -232,6 +237,7 @@ module RuboCop
       display_style_guide:  'Display style guide URLs in offense messages.',
       rails:                'Run extra Rails cops.',
       lint:                 'Run only lint cops.',
+      list_target_files:    'List all files RuboCop will inspect.',
       auto_correct:         'Auto-correct offenses.',
       no_color:             'Disable color output.',
       version:              'Display version.',
