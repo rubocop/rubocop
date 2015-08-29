@@ -381,24 +381,30 @@ describe RuboCop::Cop::Performance::StringReplacement do
       it 'when the pattern contains an escape character' do
         new_source = autocorrect_source(cop, "'abc'.gsub('\n', ',')")
 
-        expect(new_source).to eq("'abc'.tr(\"\\n\", ',')")
+        expect(new_source).to eq("'abc'.tr('\n', ',')")
+      end
+
+      it 'when the pattern contains double backslash' do
+        new_source = autocorrect_source(cop, "''.gsub('\\\\', '')")
+
+        expect(new_source).to eq("''.delete('\\\\')")
       end
 
       it 'when replacing to a single quote' do
         new_source = autocorrect_source(cop, '"a`b".gsub("`", "\'")')
 
-        expect(new_source).to eq('"a`b".tr(\'`\', "\'")')
+        expect(new_source).to eq('"a`b".tr("`", "\'")')
       end
 
       it 'when replacing to a double quote' do
         new_source = autocorrect_source(cop, '"a`b".gsub("`", "\"")')
 
-        expect(new_source).to eq('"a`b".tr(\'`\', "\"")')
+        expect(new_source).to eq('"a`b".tr("`", "\"")')
       end
     end
 
     describe 'corrects to delete' do
-      it 'when deleteing a single character' do
+      it 'when deleting a single character' do
         new_source = autocorrect_source(cop, "'abc'.gsub!('a', '')")
 
         expect(new_source).to eq("'abc'.delete!('a')")
@@ -410,10 +416,10 @@ describe RuboCop::Cop::Performance::StringReplacement do
         expect(new_source).to eq("'abc'.delete('a')")
       end
 
-      it 'when deleteing an escape character' do
+      it 'when deleting an escape character' do
         new_source = autocorrect_source(cop, "'abc'.gsub('\n', '')")
 
-        expect(new_source).to eq("'abc'.delete(\"\\n\")")
+        expect(new_source).to eq("'abc'.delete('\n')")
       end
 
       it 'when the pattern uses Regexp.new' do
