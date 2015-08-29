@@ -160,6 +160,7 @@ Command flag              | Description
 --------------------------|------------------------------------------------------------
 `-v/--version`            | Displays the current version and exits.
 `-V/--verbose-version`    | Displays the current version plus the version of Parser and Ruby.
+`-L/--list-target-files`  | List all files RuboCop will inspect.
 `-F/--fail-fast`          | Inspects in modification time order and stops after first file with offenses.
 `-d/--debug`              | Displays some extra debug output.
 `-D/--display-cop-names`  | Displays cop names in offense messages.

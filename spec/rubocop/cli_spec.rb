@@ -26,6 +26,56 @@ describe RuboCop::CLI, :isolated_environment do
   end
 
   describe 'option' do
+    describe '--list-target-files' do
+      context 'when there are no files' do
+        it 'prints nothing with -L' do
+          cli.run ['-L']
+          expect($stdout.string).to be_empty
+        end
+
+        it 'prints nothing with --list-target-files' do
+          cli.run ['--list-target-files']
+          expect($stdout.string).to be_empty
+        end
+      end
+
+      context 'when there are some files' do
+        before(:each) do
+          create_file('show.rabl', 'object @user => :person')
+          create_file('app.rb', 'puts "hello world"')
+          create_file('Gemfile', ['source "https://rubygems.org"',
+                                  'gem "rubocop"'])
+          create_file('lib/helper.rb', 'puts "helpful"')
+        end
+
+        context 'when there are no includes or excludes' do
+          it 'prints known ruby files' do
+            cli.run ['-L']
+            expect($stdout.string.split("\n")).to match_array ['app.rb',
+                                                               'Gemfile',
+                                                               'lib/helper.rb']
+          end
+        end
+
+        context 'when there is an include and exclude' do
+          before(:each) do
+            create_file('.rubocop.yml', ['AllCops:',
+                                         '  Exclude:',
+                                         '    - Gemfile',
+                                         '  Include:',
+                                         '    - "**/*.rabl"'])
+          end
+
+          it 'prints the included files and not the excluded ones' do
+            cli.run ['--list-target-files']
+            expect($stdout.string.split("\n")).to match_array ['app.rb',
+                                                               'lib/helper.rb',
+                                                               'show.rabl']
+          end
+        end
+      end
+    end
+
     describe '--version' do
       it 'exits cleanly' do
         expect { cli.run ['-v'] }.to exit_with_code(0)

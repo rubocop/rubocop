@@ -27,7 +27,11 @@ module RuboCop
 
     def run(paths)
       target_files = find_target_files(paths)
-      inspect_files(target_files)
+      if @options[:list_target_files]
+        list_files(target_files)
+      else
+        inspect_files(target_files)
+      end
     end
 
     def abort
@@ -60,6 +64,12 @@ module RuboCop
     ensure
       formatter_set.finished(inspected_files.freeze)
       formatter_set.close_output_files
+    end
+
+    def list_files(paths)
+      paths.each do |path|
+        puts PathUtil.relative_path(path)
+      end
     end
 
     def process_file(file)
