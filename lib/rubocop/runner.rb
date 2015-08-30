@@ -87,7 +87,7 @@ module RuboCop
 
       offenses = do_inspection_loop(file, processed_source)
 
-      formatter_set.file_finished(file, offenses.compact.sort.freeze)
+      offenses = formatter_set.file_finished(file, offenses.compact.sort.freeze)
 
       offenses
     rescue InfiniteCorrectionLoop => e

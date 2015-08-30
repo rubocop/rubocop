@@ -52,6 +52,7 @@ module RuboCop
 
         offenses = offenses.sort.reject(&:disabled?)
         each { |f| f.file_finished(file, offenses) }
+        offenses
       end
 
       def add_formatter(formatter_type, output_path = nil)

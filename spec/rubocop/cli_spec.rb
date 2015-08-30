@@ -2373,6 +2373,15 @@ describe RuboCop::CLI, :isolated_environment do
                   ''].join("\n"))
       end
 
+      context 'and there are no other offenses' do
+        it 'exits with error code' do
+          create_file('example.rb',
+                      ['# encoding: utf-8',
+                       'a' * 10 + ' # rubocop:disable LineLength'])
+          expect(cli.run(['example.rb'])).to eq(1)
+        end
+      end
+
       context 'and UnneededDisable is disabled' do
         it 'does not cause UnneededDisable offenses to be reported' do
           create_file('example.rb',
