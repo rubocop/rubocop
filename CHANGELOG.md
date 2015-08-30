@@ -10,6 +10,7 @@
 * [#2193](https://github.com/bbatsov/rubocop/pull/2193): `Style/Next` supports more `Enumerable` methods. ([@rrosenblum][])
 * [#2179](https://github.com/bbatsov/rubocop/issues/2179): Add `--list-target-files` option to CLI, which prints the files which will be inspected. ([@maxjacobson][])
 * New cop `Style/MutableConstant` checks for assignment of mutable objects to constants. ([@bbatsov][])
+* New cop `Style/RedudantFreeze` checks for usages of `Object#freeze` on immutable objects. ([@bbatsov][])
 
 ### Changes
 

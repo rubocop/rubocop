@@ -517,6 +517,10 @@ Style/RedundantException:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-explicit-runtimeerror'
   Enabled: true
 
+Style/RedundantFreeze:
+  Description: "Checks usages of Object#freeze on immutable objects."
+  Enabled: true
+
 Style/RedundantReturn:
   Description: "Don't use return where it's not required."
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-explicit-return'
