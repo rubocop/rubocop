@@ -12,7 +12,7 @@ module RuboCop
       #   b
       #     something
       #   end
-      class MultilineOperationIndentation < Cop # rubocop:disable ClassLength
+      class MultilineOperationIndentation < Cop
         include ConfigurableEnforcedStyle
         include AutocorrectAlignment
 
