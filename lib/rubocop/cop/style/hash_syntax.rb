@@ -101,6 +101,11 @@ module RuboCop
 
         def valid_19_syntax_symbol?(sym_name)
           sym_name.sub!(/\A:/, '')
+
+          # Most hash keys can be matched against a simple regex.
+          return true if sym_name =~ /\A[_a-z]\w*[?!]?\z/i
+
+          # For more complicated hash keys, let the Parser validate the syntax.
           RuboCop::ProcessedSource.new("{ #{sym_name}: :foo }").valid_syntax?
         end
 
