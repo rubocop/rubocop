@@ -22,26 +22,8 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
       .to eq(['Pass `&:-@` as an argument to `map` instead of a block.'])
   end
 
-  it 'accepts method receiving another argument beside the block' do
-    inspect_source(cop, 'File.open(file) { |f| f.readlines }')
-
-    expect(cop.offenses).to be_empty
-  end
-
   it 'accepts block with more than 1 arguments' do
     inspect_source(cop, 'something { |x, y| x.method }')
-
-    expect(cop.offenses).to be_empty
-  end
-
-  it 'accepts super with no arguments' do
-    inspect_source(cop, 'super { |x| x.method }')
-
-    expect(cop.offenses).to be_empty
-  end
-
-  it 'accepts super with arguments' do
-    inspect_source(cop, 'super(1, 2) { |x| x.method }')
 
     expect(cop.offenses).to be_empty
   end
@@ -94,6 +76,21 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
     expect(cop.offenses).to be_empty
   end
 
+  context 'when the method has arguments' do
+    let(:source) { 'method(one, 2) { |x| x.test }' }
+
+    it 'registers an offense' do
+      inspect_source(cop, source)
+      expect(cop.messages)
+        .to eq(['Pass `&:test` as an argument to `method` instead of a block.'])
+    end
+
+    it 'auto-corrects' do
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq 'method(one, 2, &:test)'
+    end
+  end
+
   it 'autocorrects alias with symbols as proc' do
     corrected = autocorrect_source(cop, ['coll.map { |s| s.upcase }'])
     expect(corrected).to eq 'coll.map(&:upcase)'
@@ -108,5 +105,35 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
   it 'does not crash with a bare method call' do
     run = -> { inspect_source(cop, 'coll.map { |s| bare_method }') }
     expect(&run).not_to raise_error
+  end
+
+  context 'when `super` has arguments' do
+    let(:source) { 'super(one, two) { |x| x.test }' }
+
+    it 'registers an offense' do
+      inspect_source(cop, source)
+      expect(cop.messages)
+        .to eq(['Pass `&:test` as an argument to `super` instead of a block.'])
+    end
+
+    it 'auto-corrects' do
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq 'super(one, two, &:test)'
+    end
+  end
+
+  context 'when `super` has no arguments' do
+    let(:source) { 'super { |x| x.test }' }
+
+    it 'registers an offense' do
+      inspect_source(cop, source)
+      expect(cop.messages)
+        .to eq(['Pass `&:test` as an argument to `super` instead of a block.'])
+    end
+
+    it 'auto-corrects' do
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq 'super(&:test)'
+    end
   end
 end
