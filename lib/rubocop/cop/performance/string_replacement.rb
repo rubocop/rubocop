@@ -60,13 +60,12 @@ module RuboCop
                                                   first_source,
                                                   second_source)
 
-          range = Parser::Source::Range.new(node.loc.expression.source_buffer,
-                                            node.loc.selector.begin_pos,
-                                            first_param.loc.expression.end_pos)
-
           lambda do |corrector|
-            corrector.replace(range,
-                              "#{replacement_method}(#{escape(first_source)}")
+            corrector.replace(node.loc.selector, replacement_method)
+            unless first_param.str_type?
+              corrector.replace(first_param.loc.expression,
+                                escape(first_source))
+            end
 
             if second_source.empty? && first_source.length == 1
               remove_second_param(corrector, node, first_param)
@@ -162,7 +161,7 @@ module RuboCop
 
         def require_double_quotes?(string)
           string.inspect.include?(SINGLE_QUOTE) ||
-            StringHelp::ESCAPED_CHAR_REGEXP =~ string.inspect
+            StringHelp::ESCAPED_CHAR_REGEXP =~ string
         end
 
         def remove_second_param(corrector, node, first_param)
