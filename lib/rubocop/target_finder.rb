@@ -118,7 +118,7 @@ module RuboCop
 
     def ruby_executable?(file)
       return false unless File.extname(file).empty?
-      first_line = File.open(file) { |f| f.readline }
+      first_line = File.open(file, &:readline)
       first_line =~ /#!.*ruby/
     rescue EOFError, ArgumentError => e
       warn "Unprocessable file #{file}: #{e.class}, #{e.message}" if debug?

@@ -24,6 +24,7 @@
 * [*2138](https://github.com/bbatsov/rubocop/issues/2138): Change the offense in `Style/Next` to highlight the condition instead of the iteration. ([@rrosenblum][])
 * `Style/EmptyLineBetweenDefs` now handles class methods as well. ([@unmanbearpig][])
 * Improve handling of `super` in `Style/SymbolProc`. ([@lumeet][])
+* `Style/SymbolProc` is applied to methods receiving arguments. ([@lumeet][])
 
 ### Bug Fixes
 

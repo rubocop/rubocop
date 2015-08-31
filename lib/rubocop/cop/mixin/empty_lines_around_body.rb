@@ -34,9 +34,7 @@ module RuboCop
         def check_source(start_line, end_line)
           case style
           when :no_empty_lines
-            check_both(start_line, end_line, MSG_EXTRA) do |line|
-              line.empty?
-            end
+            check_both(start_line, end_line, MSG_EXTRA, &:empty?)
           when :empty_lines
             check_both(start_line, end_line, MSG_MISSING) do |line|
               !line.empty?

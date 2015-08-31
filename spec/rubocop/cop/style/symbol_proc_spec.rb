@@ -22,12 +22,6 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
       .to eq(['Pass `&:-@` as an argument to `map` instead of a block.'])
   end
 
-  it 'accepts method receiving another argument beside the block' do
-    inspect_source(cop, 'File.open(file) { |f| f.readlines }')
-
-    expect(cop.offenses).to be_empty
-  end
-
   it 'accepts block with more than 1 arguments' do
     inspect_source(cop, 'something { |x, y| x.method }')
 
@@ -80,6 +74,21 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
     inspect_source(cop, 'something { |x| y.method }')
 
     expect(cop.offenses).to be_empty
+  end
+
+  context 'when the method has arguments' do
+    let(:source) { 'method(one, 2) { |x| x.test }' }
+
+    it 'registers an offense' do
+      inspect_source(cop, source)
+      expect(cop.messages)
+        .to eq(['Pass `&:test` as an argument to `method` instead of a block.'])
+    end
+
+    it 'auto-corrects' do
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq 'method(one, 2, &:test)'
+    end
   end
 
   it 'autocorrects alias with symbols as proc' do

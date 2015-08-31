@@ -22,7 +22,7 @@ module RuboCop
           if super?(block_send_or_super)
             bmethod_name = :super
           else
-            _breceiver, bmethod_name, bargs = *block_send_or_super
+            _breceiver, bmethod_name, _bargs = *block_send_or_super
           end
 
           # TODO: Rails-specific handling that we should probably make
@@ -31,8 +31,6 @@ module RuboCop
           return if block_send_or_super == PROC_NODE
           return if [:lambda, :proc].include?(bmethod_name)
           return if ignored_method?(bmethod_name)
-          # File.open(file) { |f| f.readlines }
-          return if bargs
           return unless can_shorten?(block_args, block_body)
 
           _receiver, method_name, _args = *block_body
@@ -50,14 +48,15 @@ module RuboCop
 
             if super?(block_send_or_super)
               args = *block_send_or_super
-              autocorrect_super(corrector, node, args, method_name)
+              autocorrect_method(corrector, node, args, method_name)
             else
-              autocorrect_no_args(corrector, node, method_name)
+              _breceiver, _bmethod_name, *args = *block_send_or_super
+              autocorrect_method(corrector, node, args, method_name)
             end
           end
         end
 
-        def autocorrect_super(corrector, node, args, method_name)
+        def autocorrect_method(corrector, node, args, method_name)
           if args.empty?
             autocorrect_no_args(corrector, node, method_name)
           else
