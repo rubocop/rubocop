@@ -15,6 +15,9 @@ module RuboCop
 
     def parse(args)
       define_options(args).parse!(args)
+      # The --no-color CLI option sets `color: false` so we don't want the
+      # `no_color` key, which is created automatically.
+      @options.delete(:no_color)
 
       validate_compatibility
 
@@ -61,6 +64,9 @@ module RuboCop
       if @options.key?(:only) &&
          (@options[:only] & %w(Lint/UnneededDisable UnneededDisable)).any?
         fail ArgumentError, 'Lint/UnneededDisable can not be used with --only.'
+      end
+      if @options.key?(:cache) && !%w(true false).include?(@options[:cache])
+        fail ArgumentError, '-C/--cache argument must be true or false'
       end
       return unless (incompat = @options.keys & EXITING_OPTIONS).size > 1
       fail ArgumentError, "Incompatible cli options: #{incompat.inspect}"
@@ -126,6 +132,7 @@ module RuboCop
 
     def add_boolean_flags(opts)
       option(opts, '-F', '--fail-fast')
+      option(opts, '-C', '--cache FLAG')
       option(opts, '-d', '--debug')
       option(opts, '-D', '--display-cop-names')
       option(opts, '-S', '--display-style-guide')
@@ -232,6 +239,9 @@ module RuboCop
       fail_fast:           ['Inspect files in order of modification',
                             'time and stop after the first file',
                             'containing offenses.'],
+      cache:               ["Use result caching (FLAG=true) or don't",
+                            '(FLAG=false), default determined by',
+                            'configuration parameter AllCops: UseCache.'],
       debug:                'Display debug info.',
       display_cop_names:    'Display cop names in offense messages.',
       display_style_guide:  'Display style guide URLs in offense messages.',

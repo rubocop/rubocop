@@ -78,6 +78,9 @@ Usage: rubocop [options] [file1, file2, ...]
     -F, --fail-fast                  Inspect files in order of modification
                                      time and stop after the first file
                                      containing offenses.
+    -C, --cache FLAG                 Use result caching (FLAG=true) or don't
+                                     (FLAG=false), default determined by
+                                     configuration parameter AllCops: UseCache.
     -d, --debug                      Display debug info.
     -D, --display-cop-names          Display cop names in offense messages.
     -S, --display-style-guide        Display style guide URLs in offense messages.
@@ -184,6 +187,25 @@ Usage: rubocop [options] [file1, file2, ...]
       it 'requires the passed path' do
         options.parse(['--require', required_file_path, 'example.rb'])
         expect($stdout.string).to start_with('Hello from required file!')
+      end
+    end
+
+    describe '--cache' do
+      it 'fails if no argument is given' do
+        expect { options.parse %w(--cache) }
+          .to raise_error(OptionParser::MissingArgument)
+      end
+
+      it 'fails if unrecognized argument is given' do
+        expect { options.parse %w(--cache maybe) }.to raise_error(ArgumentError)
+      end
+
+      it 'accepts true as argument' do
+        expect { options.parse %w(--cache true) }.to_not raise_error
+      end
+
+      it 'accepts false as argument' do
+        expect { options.parse %w(--cache false) }.to_not raise_error
       end
     end
 

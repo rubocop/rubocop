@@ -3,7 +3,7 @@
 module RuboCop
   # This class handles the processing of files, which includes dealing with
   # formatters and letting cops inspect the files.
-  class Runner
+  class Runner # rubocop:disable Metrics/ClassLength
     # An exception indicating that the inspection loop got stuck correcting
     # offenses back and forth.
     class InfiniteCorrectionLoop < Exception
@@ -62,6 +62,7 @@ module RuboCop
 
       all_passed
     ensure
+      ResultCache.cleanup(@config_store, @options[:debug]) if cached_run?
       formatter_set.finished(inspected_files.freeze)
       formatter_set.close_output_files
     end
@@ -75,17 +76,20 @@ module RuboCop
     def process_file(file)
       puts "Scanning #{file}" if @options[:debug]
 
-      processed_source = get_processed_source(file)
-      file_info = {
-        cop_disabled_line_ranges: processed_source.disabled_line_ranges,
-        comments: processed_source.comments,
-        cli_options: @options,
-        config_store: @config_store
-      }
-
-      formatter_set.file_started(file, file_info)
-
-      offenses = do_inspection_loop(file, processed_source)
+      cache = ResultCache.new(file, @options, @config_store) if cached_run?
+      if cache && cache.valid?
+        offenses, disabled_line_ranges, comments = cache.load
+        file_started(file, disabled_line_ranges, comments)
+      else
+        processed_source = get_processed_source(file)
+        file_started(file, processed_source.disabled_line_ranges,
+                     processed_source.comments)
+        offenses = do_inspection_loop(file, processed_source)
+        if cache
+          cache.save(offenses, processed_source.disabled_line_ranges,
+                     processed_source.comments)
+        end
+      end
 
       offenses = formatter_set.file_finished(file, offenses.compact.sort.freeze)
 
@@ -93,6 +97,27 @@ module RuboCop
     rescue InfiniteCorrectionLoop => e
       formatter_set.file_finished(file, e.offenses.compact.sort.freeze)
       raise
+    end
+
+    def file_started(file, disabled_line_ranges, comments)
+      formatter_set.file_started(file,
+                                 cop_disabled_line_ranges: disabled_line_ranges,
+                                 comments: comments,
+                                 cli_options: @options,
+                                 config_store: @config_store)
+    end
+
+    def cached_run?
+      @cached_run ||=
+        (@options[:cache] == 'true' ||
+         @options[:cache] != 'false' &&
+         @config_store.for(Dir.pwd)['AllCops']['UseCache']) &&
+        # When running --auto-gen-config, there's some processing done in the
+        # cops related to calculating the Max parameters for Metrics cops. We
+        # need to do that processing and can not use caching.
+        !@options[:auto_gen_config] &&
+        # Auto-correction needs a full run. It can not use cached results.
+        !@options[:auto_correct]
     end
 
     def do_inspection_loop(file, processed_source)
