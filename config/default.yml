@@ -49,6 +49,17 @@ AllCops:
   # opt-out. Note that when DisabledByDefault is true, cops in user
   # configuration will be enabled even if they don't set the Enabled parameter.
   DisabledByDefault: false
+  # Enables the result cache if true. Can be overridden by the --cache command
+  # line option.
+  UseCache: true
+  # Threshold for how many files can be stored in the result cache before some
+  # of the files are automatically removed.
+  MaxFilesInCache: 20000
+  # The cache will be stored in "rubocop_cache" under this directory. The name
+  # "/tmp" is special and will be converted to the system temporary directory,
+  # which is "/tmp" on Unix-like systems, but could be something else on other
+  # systems.
+  CacheRootDirectory: /tmp
 
 # Indent private/protected/public as deep as method definitions
 Style/AccessModifierIndentation:

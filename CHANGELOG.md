@@ -11,6 +11,7 @@
 * [#2179](https://github.com/bbatsov/rubocop/issues/2179): Add `--list-target-files` option to CLI, which prints the files which will be inspected. ([@maxjacobson][])
 * New cop `Style/MutableConstant` checks for assignment of mutable objects to constants. ([@bbatsov][])
 * New cop `Style/RedudantFreeze` checks for usages of `Object#freeze` on immutable objects. ([@bbatsov][])
+* [#1924](https://github.com/bbatsov/rubocop/issues/1924): New option `--cache` and configuration parameter `AllCops: UseCache` turn result caching on (default) or off. ([@jonas054][])
 
 ### Changes
 
