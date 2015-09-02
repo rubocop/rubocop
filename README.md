@@ -25,9 +25,9 @@ automatically fix some of the problems for you.
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/bbatsov/rubocop?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-You can support my work on RuboCop and [all my other projects](https://github.com/bbatsov) via [gratipay](https://www.gratipay.com/bbatsov).
+You can support my work on RuboCop via [gratipay](https://www.gratipay.com/rubocop).
 
-[![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.1.3/dist/gratipay.png)](https://gratipay.com/bbatsov)
+[![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.1.3/dist/gratipay.png)](https://gratipay.com/rubocop)
 
 **This documentation tracks the `master` branch of RuboCop. Some of
 the features and settings discussed here might not be available in
@@ -958,11 +958,10 @@ priority right now. Writing a new cop is a great way to dive into RuboCop!
 Of course, bug reports and suggestions for improvements are always
 welcome. GitHub pull requests are even better! :-)
 
-You can also support my work on RuboCop and
-[all my other projects](https://github.com/bbatsov) via
-[gratipay](https://www.gratipay.com/bbatsov).
+You can also support my work on RuboCop via
+[gratipay](https://www.gratipay.com/rubocop).
 
-[![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.1.3/dist/gratipay.png)](https://gratipay.com/bbatsov)
+[![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.1.3/dist/gratipay.png)](https://gratipay.com/rubocop)
 
 ## Mailing List
 
