@@ -10,6 +10,8 @@ module RuboCop
       # Enumerable or not (static analysis limitation), so this cop
       # can yield some false positives.
       class CollectionMethods < Cop
+        include MethodPreference
+
         MSG = 'Prefer `%s` over `%s`.'
 
         def on_block(node)
@@ -43,26 +45,6 @@ module RuboCop
                              preferred_method(method_name),
                              method_name)
                      )
-        end
-
-        def preferred_method(method)
-          preferred_methods[method.to_sym]
-        end
-
-        def preferred_methods
-          @preferred_methods ||=
-            begin
-              # Make sure default configuration 'foo' => 'bar' is removed from
-              # the total configuration if there is a 'bar' => 'foo' override.
-              default = default_cop_config['PreferredMethods']
-              merged = cop_config['PreferredMethods']
-              overrides = merged.values - default.values
-              merged.reject { |key, _| overrides.include?(key) }.symbolize_keys
-            end
-        end
-
-        def default_cop_config
-          ConfigLoader.default_configuration[cop_name]
         end
       end
     end

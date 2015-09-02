@@ -636,6 +636,16 @@ Style/StringLiteralsInInterpolation:
     - single_quotes
     - double_quotes
 
+Style/StringMethods:
+  # Mapping from undesired method to desired_method
+  # e.g. to use `to_sym` over `intern`:
+  #
+  # StringMethods:
+  #   PreferredMethods:
+  #     intern: to_sym
+  PreferredMethods:
+    intern: to_sym
+
 Style/SpaceAroundBlockParameters:
   EnforcedStyleInsidePipes: no_space
   SupportedStyles:
