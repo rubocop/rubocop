@@ -163,11 +163,12 @@ module RuboCop
     # directory. This is so that paths in config/default.yml, for example, are
     # not relative to RuboCop's config directory since that wouldn't work.
     def base_dir_for_path_parameters
-      if File.basename(loaded_path) == ConfigLoader::DOTFILE
-        File.expand_path(File.dirname(loaded_path))
-      else
-        Dir.pwd
-      end
+      @base_dir_for_path_parameters ||=
+        if File.basename(loaded_path) == ConfigLoader::DOTFILE
+          File.expand_path(File.dirname(loaded_path))
+        else
+          Dir.pwd
+        end
     end
 
     private
