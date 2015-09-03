@@ -28,6 +28,7 @@
 * `Style/SymbolProc` is applied to methods receiving arguments. ([@lumeet][])
 * [#1839](https://github.com/bbatsov/rubocop/issues/1839): Remove Rainbow monkey patching of String which conflicts with other gems like colorize. ([@daviddavis][])
 * `Style/HashSyntax` is now a bit faster when checking Ruby 1.9 syntax hash keys. ([@bquorning][])
+* `Lint/DeprecatedClassMethods` is now a whole lot faster. ([@bquorning][])
 
 ### Bug Fixes
 

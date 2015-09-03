@@ -5,18 +5,25 @@ module RuboCop
     module Lint
       # This cop checks for uses of the deprecated class method usages.
       class DeprecatedClassMethods < Cop
-        include AST::Sexp
-
         # Inner class to DeprecatedClassMethods.
         # This class exists to add abstraction and clean naming to the
         # objects that are going to be operated on.
         class DeprecatedClassMethod
+          include AST::Sexp
+
           attr_reader :class_constant, :deprecated_method, :replacement_method
 
           def initialize(class_constant, deprecated_method, replacement_method)
             @class_constant = class_constant
             @deprecated_method = deprecated_method
             @replacement_method = replacement_method
+          end
+
+          def class_nodes
+            @class_nodes ||= [
+              s(:const, nil, class_constant),
+              s(:const, s(:cbase), class_constant)
+            ]
           end
         end
 
@@ -50,16 +57,11 @@ module RuboCop
           receiver, method_name, *_args = *node
 
           DEPRECATED_METHODS_OBJECT.each do |data|
-            next unless class_nodes(data).include?(receiver)
+            next unless data.class_nodes.include?(receiver)
             next unless method_name == data.deprecated_method
 
             block.call(data)
           end
-        end
-
-        def class_nodes(data)
-          [s(:const, nil, data.class_constant),
-           s(:const, s(:cbase), data.class_constant)]
         end
 
         def deprecated_method(data)
