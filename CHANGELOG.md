@@ -26,6 +26,7 @@
 * `Style/EmptyLineBetweenDefs` now handles class methods as well. ([@unmanbearpig][])
 * Improve handling of `super` in `Style/SymbolProc`. ([@lumeet][])
 * `Style/SymbolProc` is applied to methods receiving arguments. ([@lumeet][])
+* [#1839](https://github.com/bbatsov/rubocop/issues/1839): Remove Rainbow monkey patching of String which conflicts with other gems like colorize. ([@daviddavis][])
 
 ### Bug Fixes
 

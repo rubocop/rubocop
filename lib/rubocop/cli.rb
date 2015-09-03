@@ -103,7 +103,7 @@ module RuboCop
     def display_error_summary(errors)
       return if errors.empty?
 
-      warn "\n#{pluralize(errors.size, 'error')} occurred:".color(:red)
+      warn Rainbow("\n#{pluralize(errors.size, 'error')} occurred:").red
 
       errors.each { |error| warn error }
 
