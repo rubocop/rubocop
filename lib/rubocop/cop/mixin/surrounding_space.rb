@@ -17,13 +17,13 @@ module RuboCop
 
       def index_of_first_token(node)
         b = node.loc.expression.begin
-        token_table[[b.line, b.column]]
+        token_table[b.line][b.column]
       end
 
       def index_of_last_token(node)
         e = node.loc.expression.end
         (0...e.column).to_a.reverse.find do |c|
-          ix = token_table[[e.line, c]]
+          ix = token_table[e.line][c]
           return ix if ix
         end
       end
@@ -32,7 +32,8 @@ module RuboCop
         @token_table ||= begin
           table = {}
           @processed_source.tokens.each_with_index do |t, ix|
-            table[[t.pos.line, t.pos.column]] = ix
+            table[t.pos.line] ||= {}
+            table[t.pos.line][t.pos.column] = ix
           end
           table
         end
