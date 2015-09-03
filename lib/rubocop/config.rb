@@ -80,7 +80,7 @@ module RuboCop
     def warn_unless_valid
       validate
     rescue Config::ValidationError => e
-      warn "Warning: #{e.message}".color(:red)
+      warn Rainbow.new.wrap("Warning: #{e.message}").red
     end
 
     def add_missing_namespaces

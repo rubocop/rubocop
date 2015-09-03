@@ -2,8 +2,6 @@
 
 require 'parser/current'
 require 'rainbow'
-# Rainbow 2.0 does not load the monkey-patch for String by default.
-require 'rainbow/ext/string' unless String.method_defined?(:color)
 
 require 'English'
 require 'set'
