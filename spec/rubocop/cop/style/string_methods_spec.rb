@@ -18,6 +18,7 @@ RSpec.describe RuboCop::Cop::Style::StringMethods, :config do
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(["Prefer `#{preferred_method}` over `#{method}`."])
+      expect(cop.highlights).to eq(%w(intern))
     end
   end
 end
