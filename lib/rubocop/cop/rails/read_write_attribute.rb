@@ -33,7 +33,7 @@ module RuboCop
           if method_name == :read_attribute
             format(MSG, 'self[:attr]', 'read_attribute(:attr)')
           else
-            format(MSG, 'self[:attr] = val', 'write_attribute(:attr, var)')
+            format(MSG, 'self[:attr] = val', 'write_attribute(:attr, val)')
           end
         end
 
