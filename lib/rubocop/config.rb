@@ -151,11 +151,11 @@ module RuboCop
     end
 
     def patterns_to_include
-      self['AllCops']['Include']
+      @patterns_to_include ||= self['AllCops']['Include']
     end
 
     def patterns_to_exclude
-      self['AllCops']['Exclude']
+      @patterns_to_exclude ||= self['AllCops']['Exclude']
     end
 
     def path_relative_to_config(path)
