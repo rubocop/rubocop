@@ -23,6 +23,10 @@ module RuboCop
       super(hash)
     end
 
+    def to_s
+      @to_s ||= __getobj__.to_s
+    end
+
     def make_excludes_absolute
       keys.each do |key|
         validate_section_presence(key)
