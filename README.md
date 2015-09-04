@@ -25,7 +25,9 @@ automatically fix some of the problems for you.
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/bbatsov/rubocop?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-You can support my work on RuboCop via [Gratipay](https://www.gratipay.com/rubocop).
+You can support my work on RuboCop via
+[Salt](https://salt.bountysource.com/teams/rubocop) and
+[Gratipay](https://www.gratipay.com/rubocop).
 
 [![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.1.3/dist/gratipay.png)](https://gratipay.com/rubocop)
 
@@ -959,6 +961,7 @@ Of course, bug reports and suggestions for improvements are always
 welcome. GitHub pull requests are even better! :-)
 
 You can also support my work on RuboCop via
+[Salt](https://salt.bountysource.com/teams/rubocop) and
 [Gratipay](https://www.gratipay.com/rubocop).
 
 [![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.1.3/dist/gratipay.png)](https://gratipay.com/rubocop)
