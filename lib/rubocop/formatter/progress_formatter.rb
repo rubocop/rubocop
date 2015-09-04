@@ -8,6 +8,14 @@ module RuboCop
     class ProgressFormatter < ClangStyleFormatter
       include TextUtil
 
+      DOT = '.'.freeze
+      GREEN_DOT = Rainbow(DOT).green.freeze
+
+      def initialize(output)
+        super
+        @dot = @output.tty? ? GREEN_DOT : DOT
+      end
+
       def started(target_files)
         super
         @offenses_for_files = {}
@@ -36,14 +44,14 @@ module RuboCop
           end
         end
 
-        report_summary(inspected_files.count,
+        report_summary(inspected_files.size,
                        @total_offense_count,
                        @total_correction_count)
       end
 
       def report_file_as_mark(offenses)
         mark = if offenses.empty?
-                 green('.')
+                 @dot
                else
                  highest_offense = offenses.max_by(&:severity)
                  colored_severity_code(highest_offense)
