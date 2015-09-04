@@ -54,6 +54,7 @@
 * Fix bug in `Style/IndentationWidth` when `rescue` or `ensure` is preceded by an empty body. ([@lumeet][])
 * [#2183](https://github.com/bbatsov/rubocop/issues/2183): Fix bug in `Style/BlockDelimiters` when auto-correcting adjacent braces. ([@lumeet][])
 * [#2199](https://github.com/bbatsov/rubocop/issues/2199): Make `rubocop` exit with error when there are only `Lint/UnneededDisable` offenses. ([@jonas054][])
+* Fix handling of empty parentheses when auto-correcting in `Style/SymbolProc`. ([@lumeet][])
 
 ## 0.33.0 (05/08/2015)
 

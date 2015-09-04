@@ -76,9 +76,20 @@ module RuboCop
         def block_range_with_space(node)
           block_range =
             Parser::Source::Range.new(node.loc.expression.source_buffer,
-                                      node.loc.begin.begin_pos,
+                                      begin_pos_for_replacement(node),
                                       node.loc.end.end_pos)
           range_with_surrounding_space(block_range, :left)
+        end
+
+        def begin_pos_for_replacement(node)
+          block_send_or_super, _block_args, _block_body = *node
+          expr = block_send_or_super.loc.expression
+
+          if (paren_pos = (expr.source =~ /\(\s*\)$/))
+            expr.begin_pos + paren_pos
+          else
+            node.loc.begin.begin_pos
+          end
         end
 
         def ignored_methods

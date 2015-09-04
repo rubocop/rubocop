@@ -102,6 +102,11 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
     expect(corrected).to eq 'coll.map(&:upcase).map(&:downcase)'
   end
 
+  it 'auto-corrects correctly when there are no arguments in parentheses' do
+    corrected = autocorrect_source(cop, ['coll.map(   ) { |s| s.upcase }'])
+    expect(corrected).to eq 'coll.map(&:upcase)'
+  end
+
   it 'does not crash with a bare method call' do
     run = -> { inspect_source(cop, 'coll.map { |s| bare_method }') }
     expect(&run).not_to raise_error
