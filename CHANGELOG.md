@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.34.0 (05/09/2015)
+
 ### New features
 
 * [#2143](https://github.com/bbatsov/rubocop/pull/2143): New cop `Performance/CaseWhenSplat` will identify and rearange `case` `when` statements that contain a `when` condition with a splat. ([@rrosenblum][])
