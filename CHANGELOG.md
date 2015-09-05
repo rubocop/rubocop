@@ -12,6 +12,7 @@
 * New cop `Style/MutableConstant` checks for assignment of mutable objects to constants. ([@bbatsov][])
 * New cop `Style/RedudantFreeze` checks for usages of `Object#freeze` on immutable objects. ([@bbatsov][])
 * [#1924](https://github.com/bbatsov/rubocop/issues/1924): New option `--cache` and configuration parameter `AllCops: UseCache` turn result caching on (default) or off. ([@jonas054][])
+* [#2204](https://github.com/bbatsov/rubocop/pull/2204): New cop `Style/StringMethods` will check for preferred method `to_sym` over `intern`. ([@imtayadeway][])
 
 ### Changes
 
@@ -1582,3 +1583,4 @@
 [@wli]: https://github.com/wli
 [@caseywebdev]: https://github.com/caseywebdev
 [@MGerrior]: https://github.com/MGerrior
+[@imtayadeway]: https://github.com/imtayadeway
