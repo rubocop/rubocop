@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug Fixes
+
+* [#2214](https://github.com/bbatsov/rubocop/pull/2214): Fix `File name too long error` when `STDIN` option is provided. ([@mrfoto][])
+
 ## 0.34.0 (05/09/2015)
 
 ### New features
@@ -1586,3 +1590,4 @@
 [@caseywebdev]: https://github.com/caseywebdev
 [@MGerrior]: https://github.com/MGerrior
 [@imtayadeway]: https://github.com/imtayadeway
+[@mrfoto]: https://github.com/mrfoto
