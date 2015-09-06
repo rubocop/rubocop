@@ -26,7 +26,7 @@ module RuboCop
     def save(offenses, disabled_line_ranges, comments)
       FileUtils.mkdir_p(File.dirname(@path))
       preliminary_path = "#{@path}_#{rand(1_000_000_000)}"
-      File.open(preliminary_path, 'w') do |f|
+      File.open(preliminary_path, 'wb') do |f|
         # The Hash[x.sort] call is a trick that converts a Hash with a default
         # block to a Hash without a default block. Thus making it possible to
         # dump.

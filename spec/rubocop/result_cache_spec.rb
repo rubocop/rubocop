@@ -82,6 +82,18 @@ describe RuboCop::ResultCache, :isolated_environment do
     end
   end
 
+  describe '#save' do
+    context 'when the default internal encoding is UTF-8' do
+      let(:comments) { ["# Hello \xF0"] }
+      before(:each) { Encoding.default_internal = Encoding::UTF_8 }
+      after(:each) { Encoding.default_internal = nil }
+
+      it 'writes non UTF-8 encodable data to file with no exception' do
+        cache.save(offenses, disabled_lines, comments)
+      end
+    end
+  end
+
   describe '.cleanup' do
     before do
       cfg = { 'AllCops' => { 'MaxFilesInCache' => 1 } }
