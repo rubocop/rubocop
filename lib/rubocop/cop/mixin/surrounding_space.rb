@@ -22,7 +22,7 @@ module RuboCop
 
       def index_of_last_token(node)
         e = node.loc.expression.end
-        (0...e.column).to_a.reverse.find do |c|
+        (0...e.column).to_a.reverse_each do |c|
           ix = token_table[e.line][c]
           return ix if ix
         end
