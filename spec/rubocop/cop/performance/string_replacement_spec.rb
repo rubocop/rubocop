@@ -434,6 +434,12 @@ describe RuboCop::Cop::Performance::StringReplacement do
 
         expect(new_source).to eq("'ab'.delete('a')")
       end
+
+      it 'corrects when there are no brackets' do
+        new_source = autocorrect_source(cop, "'abc'.gsub! 'a', ''")
+
+        expect(new_source).to eq("'abc'.delete! 'a'")
+      end
     end
   end
 end

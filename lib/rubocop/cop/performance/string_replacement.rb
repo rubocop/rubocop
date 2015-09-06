@@ -28,7 +28,6 @@ module RuboCop
         TR = 'tr'.freeze
         BANG = '!'.freeze
         SINGLE_QUOTE = "'".freeze
-        CLOSING_PAREN = ')'.freeze
 
         def on_send(node)
           _string, method, first_param, second_param = *node
@@ -164,13 +163,17 @@ module RuboCop
             StringHelp::ESCAPED_CHAR_REGEXP =~ string
         end
 
+        def method_suffix(node)
+          node.loc.end ? node.loc.end.source : ''
+        end
+
         def remove_second_param(corrector, node, first_param)
           end_range =
             Parser::Source::Range.new(node.loc.expression.source_buffer,
                                       first_param.loc.expression.end_pos,
                                       node.loc.expression.end_pos)
 
-          corrector.replace(end_range, CLOSING_PAREN)
+          corrector.replace(end_range, method_suffix(node))
         end
       end
     end
