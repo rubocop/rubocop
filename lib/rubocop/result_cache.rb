@@ -108,7 +108,7 @@ module RuboCop
     end
 
     NON_CHANGING = [:color, :format, :formatters, :out, :debug, :fail_level,
-                    :cache, :fail_fast]
+                    :cache, :fail_fast, :stdin]
 
     # Return the options given at invocation, minus the ones that have no
     # effect on which offenses and disabled line ranges are found, and thus
