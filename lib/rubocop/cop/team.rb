@@ -97,8 +97,8 @@ module RuboCop
         file_errors.each do |cop, errors|
           errors.each do |e|
             handle_error(e,
-                         Rainbow("An error occurred while #{cop.name}" /
-                         " cop was inspecting #{file}.".red))
+                         Rainbow("An error occurred while #{cop.name}" \
+                         " cop was inspecting #{file}.").red)
           end
         end
       end
