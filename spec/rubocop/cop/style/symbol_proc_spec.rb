@@ -76,6 +76,12 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts block with a block argument ' do
+    inspect_source(cop, 'something { |&x| x.call }')
+
+    expect(cop.offenses).to be_empty
+  end
+
   context 'when the method has arguments' do
     let(:source) { 'method(one, 2) { |x| x.test }' }
 
