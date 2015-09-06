@@ -103,6 +103,7 @@ module RuboCop
         def can_shorten?(block_args, block_body)
           # something { |x, y| ... }
           return false unless block_args.children.size == 1
+          return false if block_args.children.first.blockarg_type?
           return false unless block_body && block_body.type == :send
 
           receiver, _method_name, args = *block_body
