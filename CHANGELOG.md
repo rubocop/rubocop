@@ -4,6 +4,7 @@
 
 ### Bug Fixes
 
+* [#2212](https://github.com/bbatsov/rubocop/issues/2212): Handle methods without parentheses in auto-correct. ([@karreiro][])
 * [#2214](https://github.com/bbatsov/rubocop/pull/2214): Fix `File name too long error` when `STDIN` option is provided. ([@mrfoto][])
 * [#2217](https://github.com/bbatsov/rubocop/issues/2217): Allow block arguments in `Style/SymbolProc`. ([@lumeet][])
 
@@ -1592,3 +1593,4 @@
 [@MGerrior]: https://github.com/MGerrior
 [@imtayadeway]: https://github.com/imtayadeway
 [@mrfoto]: https://github.com/mrfoto
+[@karreiro]: https://github.com/karreiro
