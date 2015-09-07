@@ -8,6 +8,7 @@
 * [#2214](https://github.com/bbatsov/rubocop/pull/2214): Fix `File name too long error` when `STDIN` option is provided. ([@mrfoto][])
 * [#2217](https://github.com/bbatsov/rubocop/issues/2217): Allow block arguments in `Style/SymbolProc`. ([@lumeet][])
 * [#2213](https://github.com/bbatsov/rubocop/issues/2213): Write to cache with binary encoding to avoid transcoding exceptions in some locales. ([@jonas054][])
+* [#2218](https://github.com/bbatsov/rubocop/issues/2218): Fix loading config error when safe yaml is only partially loaded. ([@maxjacobson][])
 
 ## 0.34.0 (05/09/2015)
 
