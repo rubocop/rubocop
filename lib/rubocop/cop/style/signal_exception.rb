@@ -37,7 +37,8 @@ module RuboCop
           lambda do |corrector|
             name =
               case style
-              when :semantic then command?(:raise, node) ? 'fail' : 'raise'
+              when :semantic
+                command_or_kernel_call?(:raise, node) ? 'fail' : 'raise'
               when :only_raise then 'raise'
               when :only_fail then 'fail'
               end
@@ -63,30 +64,42 @@ module RuboCop
           return unless node
 
           if style == :semantic
-            each_command(method_name, node) do |send_node|
+            each_command_or_kernel_call(method_name, node) do |send_node|
               next if ignored_node?(send_node)
 
               add_offense(send_node, :selector, message(method_name))
               ignore_node(send_node)
             end
-          else
-            _receiver, selector, _args = *node
-
-            if [:raise, :fail].include?(selector) && selector != method_name
-              add_offense(node, :selector, message(method_name))
-            end
+          elsif command_or_kernel_call?(method_name == :raise ? :fail : :raise,
+                                        node)
+            add_offense(node, :selector, message(method_name))
           end
         end
 
+        def command_or_kernel_call?(name, node)
+          command?(name, node) || kernel_call?(name, node)
+        end
+
+        def kernel_call?(name, node)
+          return false unless node.type == :send
+          receiver, selector, _args = *node
+
+          return false unless name == selector
+          return false unless receiver.const_type?
+
+          _, constant = *receiver
+          constant == :Kernel
+        end
+
         def allow(method_name, node)
-          each_command(method_name, node) do |send_node|
+          each_command_or_kernel_call(method_name, node) do |send_node|
             ignore_node(send_node)
           end
         end
 
-        def each_command(method_name, node)
+        def each_command_or_kernel_call(method_name, node)
           on_node(:send, node, :rescue) do |send_node|
-            yield send_node if command?(method_name, send_node)
+            yield send_node if command_or_kernel_call?(method_name, send_node)
           end
         end
       end

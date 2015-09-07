@@ -111,6 +111,30 @@ describe RuboCop::Cop::Style::SignalException, :config do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts `raise` and `fail` with explicit receiver' do
+      inspect_source(cop,
+                     ['def test',
+                      '  test.raise',
+                      'rescue Exception',
+                      '  test.fail',
+                      'end'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense for `raise` and `fail` with `Kernel` as ' \
+       'explicit receiver' do
+      inspect_source(cop,
+                     ['def test',
+                      '  Kernel.raise',
+                      'rescue Exception',
+                      '  Kernel.fail',
+                      'end'])
+      expect(cop.offenses.size).to eq(2)
+      expect(cop.messages)
+        .to eq(['Use `fail` instead of `raise` to signal exceptions.',
+                'Use `raise` instead of `fail` to rethrow exceptions.'])
+    end
+
     it 'registers an offense for raise not in a begin/rescue/end' do
       inspect_source(cop,
                      ["case cop_config['EnforcedStyle']",
@@ -218,6 +242,18 @@ describe RuboCop::Cop::Style::SignalException, :config do
         .to eq(['Always use `raise` to signal exceptions.'])
     end
 
+    it 'accepts `fail` with explicit receiver' do
+      inspect_source(cop, 'test.fail')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense for `fail` with `Kernel` as explicit receiver' do
+      inspect_source(cop, 'Kernel.fail')
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.messages)
+        .to eq(['Always use `raise` to signal exceptions.'])
+    end
+
     it 'auto-corrects fail to raise always' do
       new_source = autocorrect_source(cop,
                                       ['begin',
@@ -267,6 +303,18 @@ describe RuboCop::Cop::Style::SignalException, :config do
                       'rescue Exception',
                       '  raise',
                       'end'])
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.messages)
+        .to eq(['Always use `fail` to signal exceptions.'])
+    end
+
+    it 'accepts `raise` with explicit receiver' do
+      inspect_source(cop, 'test.raise')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense for `raise` with `Kernel` as explicit receiver' do
+      inspect_source(cop, 'Kernel.raise')
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Always use `fail` to signal exceptions.'])
