@@ -300,25 +300,25 @@ describe RuboCop::ConfigLoader do
         ])
       end
 
-      it 'de-serializes Regexp class' do
-        if ::Process.respond_to?(:fork)
-          # To load SafeYAML in different memory space
-          pid = ::Process.fork do
-            # Need to write coverage result under different name
-            if defined?(SimpleCov)
-              SimpleCov.command_name "rspec_#{Process.pid}"
-              SimpleCov.pid = Process.pid
-            end
-
-            require 'safe_yaml'
+      context 'when it is fully required' do
+        it 'de-serializes Regexp class' do
+          in_its_own_process_with('safe_yaml') do
             configuration = described_class.load_file('.rubocop.yml')
 
             word_regexp = configuration['Style/WordArray']['WordRegex']
             expect(word_regexp).to be_a(::Regexp)
           end
-          ::Process.wait(pid)
-        else
-          warn 'Process.fork is not available.'
+        end
+      end
+
+      context 'when safe_yaml is required without monkey patching' do
+        it 'de-serializes Regexp class' do
+          in_its_own_process_with('safe_yaml/load') do
+            configuration = described_class.load_file('.rubocop.yml')
+
+            word_regexp = configuration['Style/WordArray']['WordRegex']
+            expect(word_regexp).to be_a(::Regexp)
+          end
         end
       end
     end
