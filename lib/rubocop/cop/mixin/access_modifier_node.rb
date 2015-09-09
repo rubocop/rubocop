@@ -40,7 +40,7 @@ module RuboCop
       # Returns true when the block node looks like Class or Module.new do ... .
       def class_constructor?(block_node)
         send_node = block_node.children.first
-        receiver_node, method_name, *_ = *send_node
+        receiver_node, method_name, = *send_node
         return false unless method_name == :new
         %w(Class Module).include?(Util.const_name(receiver_node))
       end
