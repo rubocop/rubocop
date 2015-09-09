@@ -5,6 +5,7 @@
 ### New features
 
 * [#2036](https://github.com/bbatsov/rubocop/issues/2036): New cop `Style/StabbyLambdaParentheses` will find and correct cases where a stabby lambda's paramaters are not wrapped in parentheses. ([@hmadison][])
+* [#2246](https://github.com/bbatsov/rubocop/pull/2246): `Style/TrailingUnderscoreVariable` will now register an offense for `*_`. ([@rrosenblum][])
 
 ### Bug Fixes
 

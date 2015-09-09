@@ -21,6 +21,13 @@ describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
       .to eq(['Do not use trailing `_`s in parallel assignment.'])
   end
 
+  it 'registers an offense for splat underscore as the last variable' do
+    inspect_source(cop, 'a, *_ = foo()')
+
+    expect(cop.messages)
+      .to eq(['Do not use trailing `_`s in parallel assignment.'])
+  end
+
   it 'registers an offense when underscore is the second to last variable ' \
      'and blank is the last variable' do
     inspect_source(cop, 'a, _, = foo()')
@@ -63,6 +70,13 @@ describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
     expect(cop.messages).to be_empty
   end
 
+  it 'does not register an offense for a named splat underscore ' \
+     'as the last variable' do
+    inspect_source(cop, 'a, *_b = foo()')
+
+    expect(cop.messages).to be_empty
+  end
+
   describe 'autocorrect' do
     it 'removes trailing underscores automatically' do
       new_source = autocorrect_source(cop, 'a, b, _ = foo()')
@@ -98,6 +112,12 @@ describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
       new_source = autocorrect_source(cop, '_, _, _, = foo()')
 
       expect(new_source).to eq('foo()')
+    end
+
+    it 'remove splat underscore' do
+      new_source = autocorrect_source(cop, 'a, *_ = foo()')
+
+      expect(new_source).to eq('a, = foo()')
     end
   end
 end

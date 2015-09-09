@@ -60,7 +60,9 @@ module RuboCop
           first_offense = nil
 
           variables.reverse_each do |variable|
-            break unless variable.children.first == :_
+            var, = *variable
+            var, = *var
+            break unless var == :_
             first_offense = variable
           end
 
