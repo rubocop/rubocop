@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.34.1 (09/09/2015)
+
 ### Bug Fixes
 
 * [#2212](https://github.com/bbatsov/rubocop/issues/2212): Handle methods without parentheses in auto-correct. ([@karreiro][])
