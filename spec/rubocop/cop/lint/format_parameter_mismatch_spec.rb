@@ -38,15 +38,16 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
   end
 
   it 'registers offense with sprintf' do
-    inspect_source(cop, 'format("%s %s", 1, 2, 3)')
+    inspect_source(cop, 'sprintf("%s %s", 1, 2, 3)')
     expect(cop.offenses.size).to eq(1)
 
-    msg = ['Number arguments (3) to `format` mismatches expected fields (2).']
+    msg = ['Number arguments (3) to `sprintf` mismatches expected fields (2).']
     expect(cop.messages).to eq(msg)
   end
 
   it 'correctly parses different sprintf formats' do
-    inspect_source(cop, 'format("%020x%+g:% g %%%#20.8x %#.0e", 1, 2, 3, 4, 5)')
+    inspect_source(cop,
+                   'sprintf("%020x%+g:% g %%%#20.8x %#.0e", 1, 2, 3, 4, 5)')
     expect(cop.offenses).to be_empty
   end
 
