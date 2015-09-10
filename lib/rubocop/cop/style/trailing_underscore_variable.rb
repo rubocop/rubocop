@@ -18,7 +18,8 @@ module RuboCop
       class TrailingUnderscoreVariable < Cop
         include SurroundingSpace
 
-        MSG = 'Do not use trailing `_`s in parallel assignment.'
+        MSG = 'Do not use trailing `_`s in parallel assignment.'.freeze
+        UNDERSCORE = '_'.freeze
 
         def on_masgn(node)
           left, = *node
@@ -62,11 +63,20 @@ module RuboCop
           variables.reverse_each do |variable|
             var, = *variable
             var, = *var
-            break unless var == :_
+            if allow_named_underscore_variables
+              break unless var == :_
+            else
+              break unless var.to_s.start_with?(UNDERSCORE)
+            end
             first_offense = variable
           end
 
           first_offense
+        end
+
+        def allow_named_underscore_variables
+          @allow_named_underscore_variables ||=
+            cop_config['AllowNamedUnderscoreVariables']
         end
       end
     end
