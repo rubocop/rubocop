@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#2036](https://github.com/bbatsov/rubocop/issues/2036): New cop `Style/StabbyLambdaParentheses` will find and correct cases where a stabby lambda's paramaters are not wrapped in parentheses. ([@hmadison][])
+
 ## 0.34.2 (21/09/2015)
 
 ### Bug Fixes
@@ -1622,3 +1626,4 @@
 [@mrfoto]: https://github.com/mrfoto
 [@karreiro]: https://github.com/karreiro
 [@dreyks]: https://github.com/dreyks
+[@hmadison]: https://github.com/hmadison
