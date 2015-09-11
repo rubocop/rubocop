@@ -30,6 +30,8 @@ module RuboCop
         private
 
         def offending_node?(node)
+          return false unless called_on_string?(node)
+
           if sprintf?(node) || format?(node) || percent?(node)
             if named_mode?(node)
               false
@@ -39,6 +41,15 @@ module RuboCop
             end
           else
             false
+          end
+        end
+
+        def called_on_string?(node)
+          receiver_node, _method, format_string, = *node
+          if receiver_node.nil? || receiver_node.const_type?
+            format_string && format_string.str_type?
+          else
+            receiver_node.str_type?
           end
         end
 

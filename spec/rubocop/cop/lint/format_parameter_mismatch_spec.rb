@@ -5,6 +5,35 @@ require 'spec_helper'
 describe RuboCop::Cop::Lint::FormatParameterMismatch do
   subject(:cop) { described_class.new }
 
+  shared_examples 'variables' do |variable|
+    it 'does not register an offense for % called on a variable' do
+      inspect_source(cop, ["#{variable} = '%s'",
+                           "#{variable} % [foo]"])
+
+      expect(cop.messages).to be_empty
+    end
+
+    it 'does not register an offense for format called on a variable' do
+      inspect_source(cop, ["#{variable} = '%s'",
+                           "format(#{variable}, foo)"])
+
+      expect(cop.messages).to be_empty
+    end
+
+    it 'does not register an offense for format called on a variable' do
+      inspect_source(cop, ["#{variable} = '%s'",
+                           "sprintf(#{variable}, foo)"])
+
+      expect(cop.messages).to be_empty
+    end
+  end
+
+  it_behaves_like 'variables', 'CONST'
+  it_behaves_like 'variables', 'var'
+  it_behaves_like 'variables', '@var'
+  it_behaves_like 'variables', '@@var'
+  it_behaves_like 'variables', '$var'
+
   it 'registers an offense when calling Kernel.format ' \
      'and the fields do not match' do
     inspect_source(cop, 'Kernel.format("%s %s", 1)')
