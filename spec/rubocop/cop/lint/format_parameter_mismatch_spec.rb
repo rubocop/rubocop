@@ -5,6 +5,24 @@ require 'spec_helper'
 describe RuboCop::Cop::Lint::FormatParameterMismatch do
   subject(:cop) { described_class.new }
 
+  it 'registers an offense when calling Kernel.format ' \
+     'and the fields do not match' do
+    inspect_source(cop, 'Kernel.format("%s %s", 1)')
+    expect(cop.offenses.size).to eq(1)
+
+    msg = ['Number arguments (1) to `format` mismatches expected fields (2).']
+    expect(cop.messages).to eq(msg)
+  end
+
+  it 'registers an offense when calling Kernel.sprintf ' \
+     'and the fields do not match' do
+    inspect_source(cop, 'Kernel.sprintf("%s %s", 1)')
+    expect(cop.offenses.size).to eq(1)
+
+    msg = ['Number arguments (1) to `sprintf` mismatches expected fields (2).']
+    expect(cop.messages).to eq(msg)
+  end
+
   it 'registers an offense when there are less arguments than expected' do
     inspect_source(cop, 'format("%s %s", 1)')
     expect(cop.offenses.size).to eq(1)

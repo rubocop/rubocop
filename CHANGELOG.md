@@ -12,6 +12,7 @@
 * [#2213](https://github.com/bbatsov/rubocop/issues/2213): Write to cache with binary encoding to avoid transcoding exceptions in some locales. ([@jonas054][])
 * [#2218](https://github.com/bbatsov/rubocop/issues/2218): Fix loading config error when safe yaml is only partially loaded. ([@maxjacobson][])
 * [#2161](https://github.com/bbatsov/rubocop/issues/2161): Allow an explicit receiver (except `Kernel`) in `Style/SignalException`. ([@lumeet][])
+* [#2237](https://github.com/bbatsov/rubocop/pull/2237): Allow `Lint/FormatParameterMismatch` to be called using `Kernel.format` and `Kernel.sprintf`. ([@rrosenblum][])
 
 ## 0.34.0 (05/09/2015)
 

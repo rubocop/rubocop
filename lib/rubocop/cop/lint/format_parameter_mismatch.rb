@@ -17,6 +17,7 @@ module RuboCop
         # rubocop:disable Metrics/LineLength
         FIELD_REGEX = /(%(([\s#+-0\*])?(\d*)?(.\d+)?(\.)?[bBdiouxXeEfgGaAcps]|%))/
         NAMED_FIELD_REGEX = /%\{[_a-zA-Z][_a-zA-Z]+\}/
+        KERNEL = 'Kernel'.freeze
 
         def fields_regex
           FIELD_REGEX
@@ -87,8 +88,11 @@ module RuboCop
         def format_method?(name, node)
           receiver, method_name, *args = *node
 
-          # commands have no explicit receiver
-          return false unless !receiver && method_name == name
+          if receiver && receiver.const_type?
+            return false unless receiver.loc.name.is?(KERNEL)
+          end
+
+          return false unless method_name == name
 
           args.size > 1 && :str == args.first.type
         end
