@@ -14,6 +14,16 @@ describe RuboCop::Cop::Style::ExtraSpacing, :config do
       expect(cop.offenses.size).to eq(1)
     end
 
+    it 'accepts aligned values of an implicit hash literal' do
+      source = ["register(street1:    '1 Market',",
+                "         street2:    '#200',",
+                "         :city =>    'Some Town',",
+                "         state:      'CA',",
+                "         postal_code:'99999-1111')"]
+      inspect_source(cop, source)
+      expect(cop.offenses).to be_empty
+    end
+
     it 'can handle extra space before a float' do
       source = ['{:a => "a",',
                 ' :b => [nil,  2.5]}']
@@ -137,14 +147,6 @@ describe RuboCop::Cop::Style::ExtraSpacing, :config do
       'carrier_attribute_name = FactoryGirl.create(:attribute,',
       "                                            name:   'Carrier',",
       '                                            values: %w{verizon})'
-    ],
-
-    'aligning values of an implicit hash literal' => [
-      "register(street1:     '1 Market',",
-      "         street2:     '#200',",
-      "         city:        'Some Town',",
-      "         state:       'CA',",
-      "         postal_code: '99999-1111')"
     ]
   }
 
