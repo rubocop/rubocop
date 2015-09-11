@@ -30,7 +30,7 @@ module RuboCop
 
         def offending_node?(node)
           if sprintf?(node) || format?(node) || percent?(node)
-            if named_mode?(node)
+            if named_mode?(node) || node_with_splat_args?(node)
               false
             else
               num_of_args_for_format, num_of_expected_fields = count_matches(node)
@@ -55,6 +55,14 @@ module RuboCop
             .expression
             .source
             .scan(NAMED_FIELD_REGEX).count > 0
+        end
+
+        def node_with_splat_args?(node)
+          return false if percent?(node)
+
+          _receiver_node, _method_name, *args = *node
+
+          args[1..-1].any? { |arg| arg.type == :splat }
         end
 
         def heredoc?(node)
