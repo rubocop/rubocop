@@ -180,9 +180,7 @@ module RuboCop
         [:only, :except].each { |opt| Options.validate_cop_list(@options[opt]) }
 
         if @options[:only]
-          cop_classes.select! do |c|
-            c.match?(@options[:only]) || @options[:lint] && c.lint?
-          end
+          cop_classes.select! { |c| c.match?(@options[:only]) }
         else
           filter_cop_classes(cop_classes, config)
         end
@@ -201,9 +199,6 @@ module RuboCop
 
       # filter out Rails cops unless requested
       cop_classes.reject!(&:rails?) unless run_rails_cops?(config)
-
-      # select only lint cops when --lint is passed
-      cop_classes.select!(&:lint?) if @options[:lint]
     end
 
     def run_rails_cops?(config)

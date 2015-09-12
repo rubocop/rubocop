@@ -137,7 +137,10 @@ module RuboCop
       option(opts, '-D', '--display-cop-names')
       option(opts, '-S', '--display-style-guide')
       option(opts, '-R', '--rails')
-      option(opts, '-l', '--lint')
+      option(opts, '-l', '--lint') do
+        @options[:only] ||= []
+        @options[:only] << 'Lint'
+      end
       option(opts, '-a', '--auto-correct')
 
       @options[:color] = true

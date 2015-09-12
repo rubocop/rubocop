@@ -1533,6 +1533,7 @@ describe RuboCop::CLI, :isolated_environment do
       it 'runs only lint cops' do
         create_file('example.rb', ['if 0 ',
                                    "\ty",
+                                   "\tz # rubocop:disable Style/Tab",
                                    'end'])
         # IfUnlessModifier depends on the configuration of LineLength.
 
