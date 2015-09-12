@@ -5,6 +5,53 @@ require 'spec_helper'
 describe RuboCop::Cop::Lint::FormatParameterMismatch do
   subject(:cop) { described_class.new }
 
+  shared_examples 'variables' do |variable|
+    it 'does not register an offense for % called on a variable' do
+      inspect_source(cop, ["#{variable} = '%s'",
+                           "#{variable} % [foo]"])
+
+      expect(cop.messages).to be_empty
+    end
+
+    it 'does not register an offense for format called on a variable' do
+      inspect_source(cop, ["#{variable} = '%s'",
+                           "format(#{variable}, foo)"])
+
+      expect(cop.messages).to be_empty
+    end
+
+    it 'does not register an offense for format called on a variable' do
+      inspect_source(cop, ["#{variable} = '%s'",
+                           "sprintf(#{variable}, foo)"])
+
+      expect(cop.messages).to be_empty
+    end
+  end
+
+  it_behaves_like 'variables', 'CONST'
+  it_behaves_like 'variables', 'var'
+  it_behaves_like 'variables', '@var'
+  it_behaves_like 'variables', '@@var'
+  it_behaves_like 'variables', '$var'
+
+  it 'registers an offense when calling Kernel.format ' \
+     'and the fields do not match' do
+    inspect_source(cop, 'Kernel.format("%s %s", 1)')
+    expect(cop.offenses.size).to eq(1)
+
+    msg = ['Number arguments (1) to `format` mismatches expected fields (2).']
+    expect(cop.messages).to eq(msg)
+  end
+
+  it 'registers an offense when calling Kernel.sprintf ' \
+     'and the fields do not match' do
+    inspect_source(cop, 'Kernel.sprintf("%s %s", 1)')
+    expect(cop.offenses.size).to eq(1)
+
+    msg = ['Number arguments (1) to `sprintf` mismatches expected fields (2).']
+    expect(cop.messages).to eq(msg)
+  end
+
   it 'registers an offense when there are less arguments than expected' do
     inspect_source(cop, 'format("%s %s", 1)')
     expect(cop.offenses.size).to eq(1)
@@ -38,15 +85,16 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
   end
 
   it 'registers offense with sprintf' do
-    inspect_source(cop, 'format("%s %s", 1, 2, 3)')
+    inspect_source(cop, 'sprintf("%s %s", 1, 2, 3)')
     expect(cop.offenses.size).to eq(1)
 
-    msg = ['Number arguments (3) to `format` mismatches expected fields (2).']
+    msg = ['Number arguments (3) to `sprintf` mismatches expected fields (2).']
     expect(cop.messages).to eq(msg)
   end
 
   it 'correctly parses different sprintf formats' do
-    inspect_source(cop, 'format("%020x%+g:% g %%%#20.8x %#.0e", 1, 2, 3, 4, 5)')
+    inspect_source(cop,
+                   'sprintf("%020x%+g:% g %%%#20.8x %#.0e", 1, 2, 3, 4, 5)')
     expect(cop.offenses).to be_empty
   end
 
@@ -130,53 +178,53 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
   end
 
   it 'finds the correct number of fields' do
-    expect(''.scan(cop.fields_regex).size)
+    expect(''.scan(described_class::FIELD_REGEX).size)
       .to eq(0)
-    expect('%s'.scan(cop.fields_regex).size)
+    expect('%s'.scan(described_class::FIELD_REGEX).size)
       .to eq(1)
-    expect('%s %s'.scan(cop.fields_regex).size)
+    expect('%s %s'.scan(described_class::FIELD_REGEX).size)
       .to eq(2)
-    expect('%s %s %%'.scan(cop.fields_regex).size)
+    expect('%s %s %%'.scan(described_class::FIELD_REGEX).size)
       .to eq(3)
-    expect('%s %s %%'.scan(cop.fields_regex).size)
+    expect('%s %s %%'.scan(described_class::FIELD_REGEX).size)
       .to eq(3)
-    expect('% d'.scan(cop.fields_regex).size)
+    expect('% d'.scan(described_class::FIELD_REGEX).size)
       .to eq(1)
-    expect('%+d'.scan(cop.fields_regex).size)
+    expect('%+d'.scan(described_class::FIELD_REGEX).size)
       .to eq(1)
-    expect('%d'.scan(cop.fields_regex).size)
+    expect('%d'.scan(described_class::FIELD_REGEX).size)
       .to eq(1)
-    expect('%+o'.scan(cop.fields_regex).size)
+    expect('%+o'.scan(described_class::FIELD_REGEX).size)
       .to eq(1)
-    expect('%#o'.scan(cop.fields_regex).size)
+    expect('%#o'.scan(described_class::FIELD_REGEX).size)
       .to eq(1)
-    expect('%.0e'.scan(cop.fields_regex).size)
+    expect('%.0e'.scan(described_class::FIELD_REGEX).size)
       .to eq(1)
-    expect('%#.0e'.scan(cop.fields_regex).size)
+    expect('%#.0e'.scan(described_class::FIELD_REGEX).size)
       .to eq(1)
-    expect('% 020d'.scan(cop.fields_regex).size)
+    expect('% 020d'.scan(described_class::FIELD_REGEX).size)
       .to eq(1)
-    expect('%20d'.scan(cop.fields_regex).size)
+    expect('%20d'.scan(described_class::FIELD_REGEX).size)
       .to eq(1)
-    expect('%+20d'.scan(cop.fields_regex).size)
+    expect('%+20d'.scan(described_class::FIELD_REGEX).size)
       .to eq(1)
-    expect('%020d'.scan(cop.fields_regex).size)
+    expect('%020d'.scan(described_class::FIELD_REGEX).size)
       .to eq(1)
-    expect('%+020d'.scan(cop.fields_regex).size)
+    expect('%+020d'.scan(described_class::FIELD_REGEX).size)
       .to eq(1)
-    expect('% 020d'.scan(cop.fields_regex).size)
+    expect('% 020d'.scan(described_class::FIELD_REGEX).size)
       .to eq(1)
-    expect('%-20d'.scan(cop.fields_regex).size)
+    expect('%-20d'.scan(described_class::FIELD_REGEX).size)
       .to eq(1)
-    expect('%-+20d'.scan(cop.fields_regex).size)
+    expect('%-+20d'.scan(described_class::FIELD_REGEX).size)
       .to eq(1)
-    expect('%- 20d'.scan(cop.fields_regex).size)
+    expect('%- 20d'.scan(described_class::FIELD_REGEX).size)
       .to eq(1)
-    expect('%020x'.scan(cop.fields_regex).size)
+    expect('%020x'.scan(described_class::FIELD_REGEX).size)
       .to eq(1)
-    expect('%#20.8x'.scan(cop.fields_regex).size)
+    expect('%#20.8x'.scan(described_class::FIELD_REGEX).size)
       .to eq(1)
-    expect('%+g:% g:%-g'.scan(cop.fields_regex).size)
+    expect('%+g:% g:%-g'.scan(described_class::FIELD_REGEX).size)
       .to eq(3)
   end
 end
