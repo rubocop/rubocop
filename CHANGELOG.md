@@ -7,6 +7,7 @@
 * [#2232](https://github.com/bbatsov/rubocop/issues/2232): Fix false positive in `Lint/FormatParameterMismatch` for argument with splat operator. ([@dreyks][])
 * [#2237](https://github.com/bbatsov/rubocop/pull/2237): Allow `Lint/FormatParameterMismatch` to be called using `Kernel.format` and `Kernel.sprintf`. ([@rrosenblum][])
 * [#2234](https://github.com/bbatsov/rubocop/issues/2234): Do not register an offense for `Lint/FormatParameterMismatch` when the format string is a variable. ([@rrosenblum][])
+* [#2240](https://github.com/bbatsov/rubocop/pull/2240): `Lint/UnneededDisable` should not report non-`Lint` `rubocop:disable` comments when running `rubocop --lint`. ([@jonas054][])
 
 ## 0.34.1 (09/09/2015)
 
