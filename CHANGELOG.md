@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#2232](https://github.com/bbatsov/rubocop/issues/2232): Fix false positive in `Lint/FormatParameterMismatch` for argument with splat operator. ([@dreyks][])
+
 ## 0.34.1 (09/09/2015)
 
 ### Bug Fixes
@@ -1599,3 +1603,4 @@
 [@imtayadeway]: https://github.com/imtayadeway
 [@mrfoto]: https://github.com/mrfoto
 [@karreiro]: https://github.com/karreiro
+[@dreyks]: https://github.com/dreyks
