@@ -20,7 +20,7 @@ module RuboCop
     end
 
     def load
-      Marshal.load(IO.read(@path))
+      Marshal.load(IO.binread(@path))
     end
 
     def save(offenses, disabled_line_ranges, comments)
