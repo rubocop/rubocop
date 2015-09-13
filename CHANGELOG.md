@@ -9,6 +9,7 @@
 * [#2234](https://github.com/bbatsov/rubocop/issues/2234): Do not register an offense for `Lint/FormatParameterMismatch` when the format string is a variable. ([@rrosenblum][])
 * [#2240](https://github.com/bbatsov/rubocop/pull/2240): `Lint/UnneededDisable` should not report non-`Lint` `rubocop:disable` comments when running `rubocop --lint`. ([@jonas054][])
 * [#2121](https://github.com/bbatsov/rubocop/issues/2121): Allow space before values in hash literals in `Style/ExtraSpacing` to avoid correction conflict. ([@jonas054][])
+* [#2241](https://github.com/bbatsov/rubocop/issues/2241): Read cache in binary format. ([@jonas054][])
 
 ## 0.34.1 (09/09/2015)
 
