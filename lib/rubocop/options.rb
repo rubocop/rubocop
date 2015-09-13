@@ -200,7 +200,6 @@ module RuboCop
   # This module contains help texts for command line options.
   module OptionsHelp
     MAX_EXCL = RuboCop::Options::DEFAULT_MAXIMUM_EXCLUSION_ITEMS.to_s
-    # rubocop:disable Style/ExtraSpacing
     TEXT = {
       only:                 'Run only the given cop(s).',
       only_guide_cops:     ['Run only cops for rules that link to a',

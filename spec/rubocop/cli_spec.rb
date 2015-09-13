@@ -90,6 +90,24 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     describe '--auto-correct' do
+      it 'does not correct ExtraSpacing in a hash that would be changed back' do
+        create_file('.rubocop.yml', ['Style/AlignHash:',
+                                     '  EnforcedColonStyle: table'])
+        source = ['hash = {',
+                  '  alice: {',
+                  '    age:  23,',
+                  "    role: 'Director'",
+                  '  },',
+                  '  bob:   {',
+                  '    age:  25,',
+                  "    role: 'Consultant'",
+                  '  }',
+                  '}']
+        create_file('example.rb', source)
+        expect(cli.run(['--auto-correct'])).to eq(1)
+        expect(IO.read('example.rb')).to eq(source.join("\n") + "\n")
+      end
+
       it 'corrects IndentationWidth, RedundantBegin, and ' \
          'RescueEnsureAlignment offenses' do
         source = ['def verify_section',
