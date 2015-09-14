@@ -15,6 +15,8 @@ module RuboCop
       #   #good
       #   a, b, = foo()
       #   a, = foo()
+      #   *a, b, _ = foo()  => We need to know to not include 2 variables in a
+      #   a, *b, _ = foo()  => The correction `a, *b, = foo()` is a syntax error
       class TrailingUnderscoreVariable < Cop
         include SurroundingSpace
 
@@ -69,6 +71,13 @@ module RuboCop
               break unless var.to_s.start_with?(UNDERSCORE)
             end
             first_offense = variable
+          end
+
+          return nil if first_offense.nil?
+
+          first_offense_index = variables.index(first_offense)
+          0.upto(first_offense_index - 1).each do |index|
+            return nil if variables[index].splat_type?
           end
 
           first_offense

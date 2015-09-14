@@ -65,6 +65,56 @@ describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
       expect(cop.messages).to be_empty
     end
 
+    it 'does not register an offense for an underscore preceeded by a ' \
+       'splat variable anywhere in the argument chain' do
+      inspect_source(cop, '*a, b, _ = foo()')
+
+      expect(cop.messages).to be_empty
+    end
+
+    it 'does not register an offense for an underscore preceeded by a ' \
+       'splat variable' do
+      inspect_source(cop, 'a, *b, _ = foo()')
+
+      expect(cop.messages).to be_empty
+    end
+
+    it 'does not register an offense for multiple underscores preceeded by a ' \
+       'splat variable' do
+      inspect_source(cop, 'a, *b, _, _ = foo()')
+
+      expect(cop.messages).to be_empty
+    end
+
+    it 'does not register an offense for multiple named underscores ' \
+       'preceeded by a splat variable' do
+      inspect_source(cop, 'a, *b, _c, _d = foo()')
+
+      expect(cop.messages).to be_empty
+    end
+
+    it 'registers an offense for multiple underscore variables preceeded by ' \
+       'a splat underscore variable' do
+      inspect_source(cop, 'a, *_, _, _ = foo()')
+
+      expect(cop.messages)
+        .to eq(['Do not use trailing `_`s in parallel assignment.'])
+    end
+
+    it 'does not register an offense for a named underscore variable ' \
+       'preceeded by a splat variable' do
+      inspect_source(cop, 'a, *b, _c = foo()')
+
+      expect(cop.messages).to be_empty
+    end
+
+    it 'does not register an offense for a named variable preceeded by a ' \
+       'names splat underscore variable' do
+      inspect_source(cop, 'a, *b, _c = foo()')
+
+      expect(cop.messages).to be_empty
+    end
+
     describe 'autocorrect' do
       it 'removes trailing underscores automatically' do
         new_source = autocorrect_source(cop, 'a, b, _ = foo()')
@@ -120,6 +170,13 @@ describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
                           })
     end
 
+    it 'does not register an offense for an underscore variable preceeded ' \
+       'by a named splat underscore variable' do
+      inspect_source(cop, 'a, *_b, _ = foo()')
+
+      expect(cop.messages).to be_empty
+    end
+
     it 'does not register an offense for named variables ' \
        'that start with an underscore' do
       inspect_source(cop, 'a, b, _c = foo()')
@@ -130,6 +187,20 @@ describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
     it 'does not register an offense for a named splat underscore ' \
        'as the last variable' do
       inspect_source(cop, 'a, *_b = foo()')
+
+      expect(cop.messages).to be_empty
+    end
+
+    it 'does not register an offense for an underscore preceeded by ' \
+       'a named splat underscore' do
+      inspect_source(cop, 'a, *_b, _ = foo()')
+
+      expect(cop.messages).to be_empty
+    end
+
+    it 'does not register an offense for multiple underscore variables ' \
+       'preceeded by a named splat underscore variable' do
+      inspect_source(cop, 'a, *_b, _, _ = foo()')
 
       expect(cop.messages).to be_empty
     end
@@ -161,6 +232,37 @@ describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
         .to eq(['Do not use trailing `_`s in parallel assignment.'])
     end
 
+    it 'does not register an offense for a named underscore preceeded by a ' \
+       'splat variable' do
+      inspect_source(cop, 'a, *b, _c = foo()')
+
+      expect(cop.messages).to be_empty
+    end
+
+    it 'registers an offense for an underscore variable preceeded ' \
+       'by a named splat underscore variable' do
+      inspect_source(cop, 'a, *_b, _ = foo()')
+
+      expect(cop.messages)
+        .to eq(['Do not use trailing `_`s in parallel assignment.'])
+    end
+
+    it 'registers an offense for an underscore preceeded by ' \
+       'a named splat underscore' do
+      inspect_source(cop, 'a, b, *_c, _ = foo()')
+
+      expect(cop.messages)
+        .to eq(['Do not use trailing `_`s in parallel assignment.'])
+    end
+
+    it 'registers an offense for multiple underscore variables ' \
+       'preceeded by a named splat underscore variable' do
+      inspect_source(cop, 'a, *_b, _, _ = foo()')
+
+      expect(cop.messages)
+        .to eq(['Do not use trailing `_`s in parallel assignment.'])
+    end
+
     context 'autocorrect' do
       it 'removes named underscore variables' do
         new_source = autocorrect_source(cop, 'a, _b = foo()')
@@ -170,6 +272,12 @@ describe RuboCop::Cop::Style::TrailingUnderscoreVariable do
 
       it 'removes named splat underscore variables' do
         new_source = autocorrect_source(cop, 'a, *_b = foo()')
+
+        expect(new_source).to eq('a, = foo()')
+      end
+
+      it 'removes named splat underscore and named underscore variables' do
+        new_source = autocorrect_source(cop, 'a, *_b, _c = foo()')
 
         expect(new_source).to eq('a, = foo()')
       end

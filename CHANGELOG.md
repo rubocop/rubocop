@@ -13,6 +13,7 @@
 * [#2275](https://github.com/bbatsov/rubocop/pull/2275): Copy default `Exclude` into `Exclude` lists in `.rubocop_todo.yml`. ([@jonas054][])
 * `Style/IfUnlessModifier` accepts blocks followed by a chained call. ([@lumeet][])
 * [#2261](https://github.com/bbatsov/rubocop/issues/2261): Make relative `Exclude` paths in `$HOME/.rubocop_todo.yml` be relative to current directory. ([@jonas054][])
+* [#2246](https://github.com/bbatsov/rubocop/pull/2246): Do not register an offense for `Style/TrailingUnderscoreVariable` when the underscore variable is preceeded by a splat variable. ([@rrosenblum][])
 
 ## 0.34.2 (21/09/2015)
 
