@@ -11,6 +11,10 @@
 * [#2121](https://github.com/bbatsov/rubocop/issues/2121): Allow space before values in hash literals in `Style/ExtraSpacing` to avoid correction conflict. ([@jonas054][])
 * [#2241](https://github.com/bbatsov/rubocop/issues/2241): Read cache in binary format. ([@jonas054][])
 
+### Changes
+
+* [#2248](https://github.com/bbatsov/rubocop/issues/2248): Allow block-pass in `Style/AutoResourceCleanup`. ([@lumeet][])
+
 ## 0.34.1 (09/09/2015)
 
 ### Bug Fixes
