@@ -16,4 +16,10 @@ describe RuboCop::Cop::Style::AutoResourceCleanup do
 
     expect(cop.offenses).to be_empty
   end
+
+  it 'does not register an offense for File.open with block-pass' do
+    inspect_source(cop, 'File.open("file", &:read)')
+
+    expect(cop.offenses).to be_empty
+  end
 end
