@@ -298,5 +298,91 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
                                 '  bar',
                                 'end'].join("\n"))
     end
+
+    it 'corrects splat on array literals using %w' do
+      new_source = autocorrect_source(cop, ['case foo',
+                                            'when *%w(first second)',
+                                            '  baz',
+                                            'end'])
+
+      expect(new_source).to eq(['case foo',
+                                "when 'first', 'second'",
+                                '  baz',
+                                'end'].join("\n"))
+    end
+
+    it 'corrects splat on array literals using %W' do
+      new_source = autocorrect_source(cop, ['case foo',
+                                            'when *%W(#{first} #{second})',
+                                            '  baz',
+                                            'end'])
+
+      expect(new_source).to eq(['case foo',
+                                'when "#{first}", "#{second}"',
+                                '  baz',
+                                'end'].join("\n"))
+    end
+
+    context 'ruby >= 2.0', ruby_greater_than_or_equal: 2.0 do
+      it 'corrects splat on array literals using %i' do
+        new_source = autocorrect_source(cop, ['case foo',
+                                              'when *%i(first second)',
+                                              '  baz',
+                                              'end'])
+
+        expect(new_source).to eq(['case foo',
+                                  'when :first, :second',
+                                  '  baz',
+                                  'end'].join("\n"))
+      end
+
+      it 'corrects splat on array literals using %I' do
+        new_source = autocorrect_source(cop, ['case foo',
+                                              'when *%I(#{first} #{second})',
+                                              '  baz',
+                                              'end'])
+
+        expect(new_source).to eq(['case foo',
+                                  'when :"#{first}", :"#{second}"',
+                                  '  baz',
+                                  'end'].join("\n"))
+      end
+
+      it 'corrects everything at once' do
+        new_source = autocorrect_source(cop, ['case foo',
+                                              'when *bar',
+                                              '  1',
+                                              'when baz',
+                                              '  2',
+                                              "when *['a', 'b']",
+                                              '  3',
+                                              'when *%w(c d)',
+                                              '  4',
+                                              'when *%W(#{e} #{f})',
+                                              '  5',
+                                              'when *%i(g h)',
+                                              '  6',
+                                              'when *%I(#{i} #{j})',
+                                              '  7',
+                                              'end'])
+
+        expect(new_source).to eq(['case foo',
+                                  'when baz',
+                                  '  2',
+                                  "when 'a', 'b'",
+                                  '  3',
+                                  "when 'c', 'd'",
+                                  '  4',
+                                  'when "#{e}", "#{f}"',
+                                  '  5',
+                                  'when :g, :h',
+                                  '  6',
+                                  'when :"#{i}", :"#{j}"',
+                                  '  7',
+                                  'when *bar',
+                                  '  1',
+                                  'end'].join("\n"))
+      end
+    end
   end
 end
