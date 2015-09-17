@@ -11,6 +11,7 @@
 * [#2121](https://github.com/bbatsov/rubocop/issues/2121): Allow space before values in hash literals in `Style/ExtraSpacing` to avoid correction conflict. ([@jonas054][])
 * [#2241](https://github.com/bbatsov/rubocop/issues/2241): Read cache in binary format. ([@jonas054][])
 * [#2247](https://github.com/bbatsov/rubocop/issues/2247): Fix auto-correct of `Performance/CaseWhenSplat` for percent arrays (`%w`, `%W`, `%i`, and `%I`). ([@rrosenblum][])
+* [#2244](https://github.com/bbatsov/rubocop/issues/2244): Disregard annotation keywords in `Style/CommentAnnotation` if they don't start a comment. ([@jonas054][])
 
 ### Changes
 
