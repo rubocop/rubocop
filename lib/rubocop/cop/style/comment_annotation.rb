@@ -15,7 +15,9 @@ module RuboCop
                        'is missing a note.'
 
         def investigate(processed_source)
-          processed_source.comments.each do |comment|
+          processed_source.comments.each_with_index do |comment, ix|
+            next unless first_comment_line?(processed_source.comments, ix)
+
             margin, first_word, colon, space, note = split_comment(comment)
             next unless annotation?(comment) &&
                         !correct_annotation?(first_word, colon, space, note)
@@ -35,6 +37,10 @@ module RuboCop
         end
 
         private
+
+        def first_comment_line?(comments, ix)
+          ix == 0 || comments[ix - 1].loc.line < comments[ix].loc.line - 1
+        end
 
         def autocorrect(comment)
           margin, first_word, colon, space, note = split_comment(comment)
