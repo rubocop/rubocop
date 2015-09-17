@@ -56,6 +56,11 @@ module RuboCop
         MSG = 'Place `when` conditions with a splat ' \
               'at the end of the `when` branches.'.freeze
         ARRAY_MSG = 'Do not expand array literals in `when` conditions.'.freeze
+        OPEN_BRACKET = '['.freeze
+        PERCENT_W = '%w'.freeze
+        PERCENT_CAPITAL_W = '%W'.freeze
+        PERCENT_I = '%i'.freeze
+        PERCENT_CAPITAL_I = '%I'.freeze
 
         def on_case(node)
           _case_branch, *when_branches, _else_branch = *node
@@ -104,9 +109,16 @@ module RuboCop
 
         def correct_array_literal(condition, variable)
           lambda do |corrector|
-            corrector.remove(condition.loc.operator)
-            corrector.remove(variable.loc.begin)
-            corrector.remove(variable.loc.end)
+            array_start = variable.loc.begin.source
+
+            if array_start.start_with?(OPEN_BRACKET)
+              corrector.remove(condition.loc.operator)
+              corrector.remove(variable.loc.begin)
+              corrector.remove(variable.loc.end)
+            else
+              corrector.replace(condition.loc.expression,
+                                expand_percent_array(variable))
+            end
           end
         end
 
@@ -124,6 +136,22 @@ module RuboCop
             corrector.remove(range)
             corrector.insert_after(when_branches.last.loc.expression,
                                    correction)
+          end
+        end
+
+        def expand_percent_array(array)
+          array_start = array.loc.begin.source
+          elements = *array
+          elements = elements.map { |e| e.loc.expression.source }
+
+          if array_start.start_with?(PERCENT_W)
+            "'#{elements.join("', '")}'"
+          elsif array_start.start_with?(PERCENT_CAPITAL_W)
+            %("#{elements.join('", "')}")
+          elsif array_start.start_with?(PERCENT_I)
+            ":#{elements.join(', :')}"
+          elsif array_start.start_with?(PERCENT_CAPITAL_I)
+            %(:"#{elements.join('", :"')}")
           end
         end
       end
