@@ -17,6 +17,7 @@
 ### Changes
 
 * [#2248](https://github.com/bbatsov/rubocop/issues/2248): Allow block-pass in `Style/AutoResourceCleanup`. ([@lumeet][])
+* [#2258](https://github.com/bbatsov/rubocop/pull/2258): `Style/Documentation` will exclude test directories by default. ([@rrosenblum][])
 
 ## 0.34.1 (09/09/2015)
 
