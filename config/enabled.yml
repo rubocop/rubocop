@@ -171,6 +171,9 @@ Style/DeprecatedHashMethods:
 Style/Documentation:
   Description: 'Document classes and non-namespace modules.'
   Enabled: true
+  Exclude:
+    - 'spec/**/*'
+    - 'test/**/*'
 
 Style/DotPosition:
   Description: 'Checks the position of the dot in multi-line method calls.'

@@ -1,5 +1,0 @@
-inherit_from: ../.rubocop.yml
-
-# The documentation check doesn't make sense for test code
-Style/Documentation:
-  Enabled: false
