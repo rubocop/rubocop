@@ -33,9 +33,11 @@ module RuboCop
         end
 
         def investigate(processed_source)
-          @modifier_locations = processed_source.tokens
-                                .select { |t| t.type == :kRESCUE_MOD }
-                                .map(&:pos)
+          @modifier_locations =
+            processed_source.tokens.each_with_object([]) do |token, locations|
+              next unless token.type == :kRESCUE_MOD
+              locations << token.pos
+            end
         end
 
         def autocorrect(node)
