@@ -37,6 +37,12 @@ describe RuboCop::Cop::Style::RescueEnsureAlignment do
                                     ' `end` at 5, 0.'])
       end
 
+      it 'accepts rescue and ensure on the same line' do
+        inspect_source(cop, 'begin; puts 1; rescue; ensure; puts 2; end')
+
+        expect(cop.messages).to be_empty
+      end
+
       it 'auto-corrects' do
         corrected = autocorrect_source(cop, ['begin',
                                              '  something',

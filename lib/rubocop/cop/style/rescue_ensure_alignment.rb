@@ -56,6 +56,7 @@ module RuboCop
         def check(node)
           end_loc = ancestor_node(node).loc.end
           return if end_loc.column == node.loc.keyword.column
+          return if end_loc.line == node.loc.keyword.line
 
           kw_loc = node.loc.keyword
 
