@@ -13,6 +13,7 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
       .to eq(['Pass `&:upcase` as an argument to `map` instead of a block.'])
+    expect(cop.highlights).to eq(['{ |e| e.upcase }'])
   end
 
   it 'registers an offense for a block when method in body is unary -/=' do

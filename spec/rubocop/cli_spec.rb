@@ -694,10 +694,10 @@ describe RuboCop::CLI, :isolated_environment do
                   'Use def with parentheses when there are parameters.',
                   'def primes limit',
                   '           ^^^^^',
-                  'example.rb:3:3: C: [Corrected] Style/SymbolProc: ' \
+                  'example.rb:3:24: C: [Corrected] Style/SymbolProc: ' \
                   'Pass &:even? as an argument to select instead of a block.',
                   '  1.upto(limit).select { |i| i.even? }',
-                  '  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',
+                  '                       ^^^^^^^^^^^^^^^',
                   '',
                   '1 file inspected, 2 offenses detected, 2 offenses ' \
                   'corrected',

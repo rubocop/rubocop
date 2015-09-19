@@ -34,8 +34,14 @@ module RuboCop
           return unless can_shorten?(block_args, block_body)
 
           _receiver, method_name, _args = *block_body
+
+          sb = node.loc.expression.source_buffer
+          block_start = node.loc.begin.begin_pos
+          block_end = node.loc.end.end_pos
+          range = Parser::Source::Range.new(sb, block_start, block_end)
+
           add_offense(node,
-                      :expression,
+                      range,
                       format(MSG,
                              method_name,
                              bmethod_name))
