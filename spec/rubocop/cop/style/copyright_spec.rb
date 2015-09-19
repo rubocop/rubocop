@@ -86,7 +86,7 @@ describe RuboCop::Cop::Style::Copyright, :config do
     end
 
     it 'fails to autocorrect when the AutocorrectNotice does ' \
-     'not match the Notice pattern' do
+       'not match the Notice pattern' do
       cop_config['AutocorrectNotice'] = '# Copyleft (c) 2015 Acme Inc.'
       expect do
         autocorrect_source(cop, source)
