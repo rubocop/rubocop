@@ -701,10 +701,6 @@ Style/StringLiteralsInInterpolation:
                  strings match the configured preference.
   Enabled: true
 
-Style/StringMethods:
-  Description: 'Checks if configured preferred methods are used over non-preferred.'
-  Enabled: true
-
 Style/StructInheritance:
   Description: 'Checks for inheritance from Struct.new.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-extend-struct-new'

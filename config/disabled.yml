@@ -57,6 +57,10 @@ Style/Send:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#prefer-public-send'
   Enabled: false
 
+Style/StringMethods:
+  Description: 'Checks if configured preferred methods are used over non-preferred.'
+  Enabled: false
+
 Style/SymbolArray:
   Description: 'Use %i or %I for arrays of symbols.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-i'
