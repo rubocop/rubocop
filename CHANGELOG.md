@@ -14,6 +14,7 @@
 * [#2244](https://github.com/bbatsov/rubocop/issues/2244): Disregard annotation keywords in `Style/CommentAnnotation` if they don't start a comment. ([@jonas054][])
 * [#2257](https://github.com/bbatsov/rubocop/pull/2257): Fix bug where `Style/RescueEnsureAlignment` will register an offense for `rescue` and `ensure` on the same line. ([@rrosenblum][])
 * [#2255](https://github.com/bbatsov/rubocop/issues/2255): Refine the offense highlighting for `Style/SymbolProc`. ([@bbatsov][])
+* [#2260](https://github.com/bbatsov/rubocop/pull/2260): Make `Exclude` in `.rubocop_todo.yml` work when running from a subdirectory. ([@jonas054][])
 
 ### Changes
 
