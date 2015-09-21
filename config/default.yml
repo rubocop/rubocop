@@ -624,6 +624,12 @@ Style/SingleLineBlockParams:
 Style/SingleLineMethods:
   AllowIfMethodIsEmpty: true
 
+Style/StabbyLambdaParentheses:
+  EnforcedStyle: require_parentheses
+  SupportedStyles:
+    - require_parentheses
+    - require_no_parentheses
+
 Style/StringLiterals:
   EnforcedStyle: single_quotes
   SupportedStyles:
