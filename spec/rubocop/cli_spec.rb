@@ -2620,6 +2620,17 @@ describe RuboCop::CLI, :isolated_environment do
     end
 
     describe 'including/excluding' do
+      it 'honors Exclude settings in .rubocop_todo.yml one level up' do
+        create_file('lib/example.rb', ['# encoding: utf-8',
+                                       'puts %x(ls)'])
+        create_file('.rubocop.yml', 'inherit_from: .rubocop_todo.yml')
+        create_file('.rubocop_todo.yml', ['Style/CommandLiteral:',
+                                          '  Exclude:',
+                                          '    - lib/example.rb'])
+        Dir.chdir('lib') { expect(cli.run([])).to eq(0) }
+        expect($stdout.string).to include('no offenses detected')
+      end
+
       it 'includes some directories by default' do
         source = ['# encoding: utf-8',
                   'read_attribute(:test)',
