@@ -232,6 +232,13 @@ Usage: rubocop [options] [file1, file2, ...]
       end
     end
 
+    describe '--auto-gen-config' do
+      it 'accepts other options' do
+        expect { options.parse %w(--auto-gen-config --rails) }
+          .not_to raise_error
+      end
+    end
+
     describe '-s/--stdin' do
       before do
         $stdin = StringIO.new

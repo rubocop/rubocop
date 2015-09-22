@@ -71,6 +71,10 @@
 * [#2344](https://github.com/bbatsov/rubocop/pull/2344): When autocorrecting, `Style/ParallelAssignment` reorders assignment statements, if necessary, to avoid breaking code. ([@alexdowad][])
 * `Style/MultilineOperationAlignment` does not try to align the receiver and selector of a method call if both are on the LHS of an assignment. ([@alexdowad][])
 
+### Changes
+
+* [#2194](https://github.com/bbatsov/rubocop/issues/2194): Allow any options with `--auto-gen-config`. ([@agrimm][])
+
 ## 0.34.2 (21/09/2015)
 
 ### Bug Fixes

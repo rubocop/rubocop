@@ -978,21 +978,6 @@ describe RuboCop::CLI, :isolated_environment do
                   ''].join("\n"))
       end
 
-      it 'exits with error if file arguments are given' do
-        create_file('example1.rb', ['# encoding: utf-8',
-                                    'x= 0 ',
-                                    '#' * 85,
-                                    'y ',
-                                    'puts x'])
-        expect { cli.run(['--auto-gen-config', 'example1.rb']) }
-          .to exit_with_code(1)
-        expect($stderr.string)
-          .to eq(['--auto-gen-config can only be combined with ' \
-                  '--exclude-limit.',
-                  ''].join("\n"))
-        expect($stdout.string).to eq('')
-      end
-
       it 'can generate a todo list' do
         create_file('example1.rb', ['# encoding: utf-8',
                                     '$x= 0 ',

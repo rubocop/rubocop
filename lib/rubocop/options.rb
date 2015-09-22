@@ -71,7 +71,6 @@ module RuboCop
       option(opts, '-c', '--config FILE')
 
       option(opts, '--auto-gen-config') do
-        @validator.validate_auto_gen_config_option(args)
         @options[:formatters] = [[DEFAULT_FORMATTER],
                                  [Formatter::DisabledConfigFormatter,
                                   ConfigLoader::AUTO_GENERATED_FILE]]
@@ -191,14 +190,6 @@ module RuboCop
       end
       return if (incompat = @options.keys & Options::EXITING_OPTIONS).size <= 1
       fail ArgumentError, "Incompatible cli options: #{incompat.inspect}"
-    end
-
-    def validate_auto_gen_config_option(args)
-      return if args.empty?
-      return if args.size <= 2 && args.first == '--exclude-limit'
-
-      warn '--auto-gen-config can only be combined with --exclude-limit.'
-      exit(1)
     end
 
     def validate_exclude_limit_option(args)
