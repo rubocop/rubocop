@@ -259,6 +259,51 @@ describe RuboCop::ConfigLoader do
         expect { configuration_from_file }.not_to raise_error
       end
     end
+
+    context 'when a file inherits from an unknown gem' do
+      let(:file_path) { '.rubocop.yml' }
+
+      before do
+        create_file(file_path,
+                    ['inherit_gem:',
+                     '  not_a_real_gem: config/rubocop.yml'
+                    ])
+      end
+
+      it 'fails to load' do
+        expect { configuration_from_file }.to raise_error(Gem::LoadError)
+      end
+    end
+
+    context 'when a file inherits from a known gem' do
+      let(:file_path) { '.rubocop.yml' }
+
+      before do
+        create_file('somegemname/config/rubocop.yml',
+                    ['Metrics/MethodLength:',
+                     '  Enabled: false',
+                     '  Max: 200'
+                    ])
+        create_file(file_path,
+                    ['inherit_gem:',
+                     '  somegemname: config/rubocop.yml',
+                     '',
+                     'Metrics/MethodLength:',
+                     '  Enabled: true'
+                    ])
+      end
+
+      it 'returns values from the gem config' do
+        mock_spec = Struct.new(:gem_dir).new('somegemname')
+        expect(Gem::Specification).to receive(:find_by_name)
+          .at_least(:once).with('somegemname').and_return(mock_spec)
+
+        expected = { 'Enabled' => true,        # overridden in .rubocop.yml
+                     'Max' => 200 }            # inherited from somegem
+        expect(configuration_from_file['Metrics/MethodLength'].to_set)
+          .to be_superset(expected.to_set)
+      end
+    end
   end
 
   describe '.load_file', :isolated_environment do
