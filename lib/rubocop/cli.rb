@@ -18,10 +18,11 @@ module RuboCop
     # the target files
     # @return [Fixnum] UNIX exit code
     def run(args = ARGV)
+      command_line_args = args.dup
       @options, paths = Options.new.parse(args)
       act_on_options
 
-      runner = Runner.new(@options, @config_store)
+      runner = Runner.new(@options, @config_store, command_line_args)
       trap_interrupt(runner)
       all_passed = runner.run(paths)
       display_error_summary(runner.errors)

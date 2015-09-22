@@ -6,7 +6,7 @@ require 'stringio'
 module RuboCop
   module Formatter
     describe ClangStyleFormatter do
-      subject(:formatter) { described_class.new(output) }
+      subject(:formatter) { described_class.new(output, []) }
       let(:output) { StringIO.new }
 
       describe '#report_file' do

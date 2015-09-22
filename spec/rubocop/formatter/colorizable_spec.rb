@@ -14,7 +14,7 @@ module RuboCop
       end
 
       let(:formatter) do
-        formatter_class.new(output)
+        formatter_class.new(output, [])
       end
 
       let(:output) { double('output') }

@@ -5,7 +5,7 @@ require 'stringio'
 
 module RuboCop
   describe Formatter::JSONFormatter do
-    subject(:formatter) { described_class.new(output) }
+    subject(:formatter) { described_class.new(output, []) }
     let(:output) { StringIO.new }
     let(:files) { %w(/path/to/file1 /path/to/file2) }
     let(:location) do

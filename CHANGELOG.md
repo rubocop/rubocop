@@ -6,6 +6,10 @@
 
 * [#2036](https://github.com/bbatsov/rubocop/issues/2036): New cop `Style/StabbyLambdaParentheses` will find and correct cases where a stabby lambda's paramaters are not wrapped in parentheses. ([@hmadison][])
 
+### Changes
+
+* `.rubocop_todo.yml` correctly reflects the command line arguments supplied to RuboCop. ([@agrimm][])
+
 ## 0.34.2 (21/09/2015)
 
 ### Bug Fixes

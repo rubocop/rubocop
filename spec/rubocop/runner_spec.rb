@@ -20,7 +20,9 @@ describe RuboCop::Runner, :isolated_environment do
 
   describe '#run' do
     let(:options) { { formatters: [['progress', formatter_output_path]] } }
-    subject(:runner) { described_class.new(options, RuboCop::ConfigStore.new) }
+    subject(:runner) do
+      described_class.new(options, RuboCop::ConfigStore.new, [])
+    end
     context 'if there are no offenses in inspected files' do
       let(:source) { <<-END.strip_indent }
         # coding: utf-8
@@ -113,7 +115,7 @@ describe RuboCop::Runner, :isolated_environment do
           ]
         end
       end
-      runner_class.new(options, RuboCop::ConfigStore.new)
+      runner_class.new(options, RuboCop::ConfigStore.new, [])
     end
 
     context 'if there is an offense in an inspected file' do

@@ -11,7 +11,7 @@ module RuboCop
       DOT = '.'.freeze
       GREEN_DOT = Rainbow(DOT).green.freeze
 
-      def initialize(output)
+      def initialize(output, _command_line_args)
         super
         @dot = @output.tty? ? GREEN_DOT : DOT
       end

@@ -11,7 +11,7 @@ module RuboCop
 
       attr_reader :output_hash
 
-      def initialize(output)
+      def initialize(output, _command_line_args)
         super
         @output_hash = {
           metadata: metadata_hash,
