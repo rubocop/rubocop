@@ -3418,6 +3418,19 @@ describe RuboCop::CLI, :isolated_environment do
       end
     end
 
+    context 'when configuration is taken from $HOME/.rubocop.yml' do
+      before do
+        create_file("#{Dir.home}/.rubocop.yml", ['Metrics/LineLength:',
+                                                 '  Exclude:',
+                                                 '    - dir/example.rb'])
+        create_file('dir/example.rb', '#' * 90)
+      end
+
+      it 'handles relative excludes correctly when run from project root' do
+        expect(cli.run([])).to eq(0)
+      end
+    end
+
     it 'shows an error if the input file cannot be found' do
       begin
         cli.run(%w(/tmp/not_a_file))

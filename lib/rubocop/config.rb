@@ -170,7 +170,8 @@ module RuboCop
     def base_dir_for_path_parameters
       config_files = [ConfigLoader::DOTFILE, ConfigLoader::AUTO_GENERATED_FILE]
       @base_dir_for_path_parameters ||=
-        if config_files.include?(File.basename(loaded_path))
+        if config_files.include?(File.basename(loaded_path)) &&
+           loaded_path != File.join(Dir.home, ConfigLoader::DOTFILE)
           File.expand_path(File.dirname(loaded_path))
         else
           Dir.pwd
