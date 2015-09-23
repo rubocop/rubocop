@@ -1085,6 +1085,10 @@ Performance/Detect:
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#enumerabledetect-vs-enumerableselectfirst-code'
   Enabled: true
 
+Performance/FixedSize:
+  Description: 'Do not compute the size of statically sized objects except in constants'
+  Enabled: true
+
 Performance/FlatMap:
   Description: >-
                   Use `Enumerable#flat_map`
