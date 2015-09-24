@@ -89,16 +89,21 @@ module RuboCop
         if offending_files.count > @exclude_limit
           output.puts '  Enabled: false'
         else
-          output_exclude_list(output, offending_files)
+          output_exclude_list(output, offending_files, cop_name)
         end
       end
 
-      def output_exclude_list(output, offending_files)
+      def output_exclude_list(output, offending_files, cop_name)
         require 'pathname'
         parent = Pathname.new(Dir.pwd)
 
+        # Exclude properties in .rubocop_todo.yml override default ones, so in
+        # order to retain the default excludes we must copy them.
+        default_cfg = RuboCop::ConfigLoader.default_configuration[cop_name]
+        default_excludes = default_cfg ? default_cfg['Exclude'] || [] : []
+
         output.puts '  Exclude:'
-        offending_files.each do |file|
+        (default_excludes + offending_files).each do |file|
           file_path = Pathname.new(file)
           begin
             relative = file_path.relative_path_from(parent)

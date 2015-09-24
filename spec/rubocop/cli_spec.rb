@@ -1004,7 +1004,16 @@ describe RuboCop::CLI, :isolated_environment do
                                     'puts x'])
         create_file('example2.rb', ['# encoding: utf-8',
                                     "\tx = 0",
-                                    'puts x'])
+                                    'puts x',
+                                    '',
+                                    'class A',
+                                    '  def a',
+                                    '  end',
+                                    'end'])
+        # Make ConfigLoader reload the default configuration so that its
+        # absolute Exclude paths will point into this example's work directory.
+        RuboCop::ConfigLoader.default_configuration = nil
+
         expect(cli.run(['--auto-gen-config'])).to eq(1)
         expect($stderr.string).to eq('')
         expect($stdout.string)
@@ -1035,12 +1044,20 @@ describe RuboCop::CLI, :isolated_environment do
            "    - 'example2.rb'",
            '',
            '# Offense count: 1',
+           '# Configuration parameters: Exclude.',
+           'Style/Documentation:',
+           '  Exclude:',
+           "    - 'spec/**/*'", # Copied from default configuration
+           "    - 'test/**/*'", # Copied from default configuration
+           "    - 'example2.rb'",
+           '',
+           '# Offense count: 1',
            '# Configuration parameters: AllowedVariables.',
            'Style/GlobalVars:',
            '  Exclude:',
            "    - 'example1.rb'",
            '',
-           '# Offense count: 1',
+           '# Offense count: 2',
            '# Cop supports --auto-correct.',
            '# Configuration parameters: EnforcedStyle, SupportedStyles.',
            'Style/IndentationConsistency:',

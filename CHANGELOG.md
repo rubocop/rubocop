@@ -6,6 +6,10 @@
 
 * [#2036](https://github.com/bbatsov/rubocop/issues/2036): New cop `Style/StabbyLambdaParentheses` will find and correct cases where a stabby lambda's paramaters are not wrapped in parentheses. ([@hmadison][])
 
+### Bug Fixes
+
+* [#2275](https://github.com/bbatsov/rubocop/pull/2275): Copy default `Exclude` into `Exclude` lists in `.rubocop_todo.yml`. ([@jonas054][])
+
 ## 0.34.2 (21/09/2015)
 
 ### Bug Fixes

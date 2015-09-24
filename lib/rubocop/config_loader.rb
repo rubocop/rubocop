@@ -18,6 +18,7 @@ module RuboCop
     class << self
       attr_accessor :debug, :auto_gen_config, :exclude_limit
       attr_writer :root_level # The upwards search is stopped at this level.
+      attr_writer :default_configuration
 
       alias_method :debug?, :debug
       alias_method :auto_gen_config?, :auto_gen_config
