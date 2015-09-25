@@ -13,6 +13,10 @@
 * Allow `StyleGuide` parameters in local configuration for all cops, so users can add references to custom style guide documents. ([@cornelius][])
 * `UnusedMethodArgument` cop allows configuration to skip keyword arguments. ([@apiology][])
 * [#2318](https://github.com/bbatsov/rubocop/pull/2318): `Lint/Debugger` cop now checks for `Pry.rescue`. ([@rrosenblum][])
+* [#2277](https://github.com/bbatsov/rubocop/pull/2277): New cop `Style/FirstArrayElementLineBreak` checks for a line break before the first element in a multi-line array. ([@panthomakos][])
+* [#2277](https://github.com/bbatsov/rubocop/pull/2277): New cop `Style/FirstHashElementLineBreak` checks for a line break before the first element in a multi-line hash. ([@panthomakos][])
+* [#2277](https://github.com/bbatsov/rubocop/pull/2277): New cop `Style/FirstMethodArgumentLineBreak` checks for a line break before the first argument in a multi-line method call. ([@panthomakos][])
+* [#2277](https://github.com/bbatsov/rubocop/pull/2277): New cop `Style/FirstMethodParameterLineBreak` checks for a line break before the first parameter in a multi-line method parameter definition. ([@panthomakos][])
 
 ### Bug Fixes
 
