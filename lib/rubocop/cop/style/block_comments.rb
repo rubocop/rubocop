@@ -6,6 +6,8 @@ module RuboCop
       # This cop looks for uses of block comments (=begin...=end).
       class BlockComments < Cop
         MSG = 'Do not use block comments.'
+        BEGIN_LENGTH = "=begin\n".length
+        END_LENGTH = "\n=end".length
 
         def investigate(processed_source)
           processed_source.comments.each do |comment|
@@ -33,9 +35,9 @@ module RuboCop
 
         def parts(comment)
           expr = comment.loc.expression
-          eq_begin = expr.resize("=begin\n".length)
+          eq_begin = expr.resize(BEGIN_LENGTH)
           eq_end = Parser::Source::Range.new(expr.source_buffer,
-                                             expr.end_pos - "\n=end".length,
+                                             expr.end_pos - END_LENGTH,
                                              expr.end_pos)
           contents = Parser::Source::Range.new(expr.source_buffer,
                                                eq_begin.end_pos,
