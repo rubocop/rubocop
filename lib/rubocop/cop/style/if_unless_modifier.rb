@@ -20,8 +20,15 @@ module RuboCop
           return if modifier_if?(node)
           return if elsif?(node)
           return if if_else?(node)
+          # Accept cases that require parentheses around modifier if statement.
+          return if chained?(node)
           return unless fit_within_line_as_modifier_form?(node)
           add_offense(node, :keyword, message(node.loc.keyword.source))
+        end
+
+        def chained?(node)
+          ancestor = node.ancestors.first
+          ancestor && ancestor.send_type?
         end
 
         def autocorrect(node)

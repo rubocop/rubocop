@@ -242,4 +242,11 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
       end
     end
   end
+
+  it 'accepts if-end followed by a chained call' do
+    inspect_source(cop, ['if test',
+                         '  something',
+                         'end.inspect'])
+    expect(cop.messages).to be_empty
+  end
 end

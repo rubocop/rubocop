@@ -9,6 +9,7 @@
 ### Bug Fixes
 
 * [#2275](https://github.com/bbatsov/rubocop/pull/2275): Copy default `Exclude` into `Exclude` lists in `.rubocop_todo.yml`. ([@jonas054][])
+* `Style/IfUnlessModifier` accepts blocks followed by a chained call. ([@lumeet][])
 
 ## 0.34.2 (21/09/2015)
 
