@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#2028](https://github.com/bbatsov/rubocop/issues/2028): New config `ExtraDetails` supports addition of `Details` param to all cops to allow extra details on offense to be displayed. ([@tansaku][])
 * [#2036](https://github.com/bbatsov/rubocop/issues/2036): New cop `Style/StabbyLambdaParentheses` will find and correct cases where a stabby lambda's paramaters are not wrapped in parentheses. ([@hmadison][])
 * [#2246](https://github.com/bbatsov/rubocop/pull/2246): `Style/TrailingUnderscoreVariable` will now register an offense for `*_`. ([@rrosenblum][])
 * [#2246](https://github.com/bbatsov/rubocop/pull/2246): `Style/TrailingUnderscoreVariable` now has a configuration to remove named underscore variables (Defaulted to false). ([@rrosenblum][])
@@ -1683,3 +1684,4 @@
 [@apiology]: https://github.com/apiology
 [@alexdowad]: https://github.com/alexdowad
 [@minustehbare]: https://github.com/minustehbare
+[@tansaku]: https://github.com/tansaku

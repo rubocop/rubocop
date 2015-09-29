@@ -83,6 +83,7 @@ Usage: rubocop [options] [file1, file2, ...]
                                      configuration parameter AllCops: UseCache.
     -d, --debug                      Display debug info.
     -D, --display-cop-names          Display cop names in offense messages.
+    -E, --extra-details              Display extra details in offense messages.
     -S, --display-style-guide        Display style guide URLs in offense messages.
     -R, --rails                      Run extra Rails cops.
     -l, --lint                       Run only lint cops.
