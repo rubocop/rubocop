@@ -836,6 +836,7 @@ are no changes in:
 * RuboCop configuration for the file
 * the options given to `rubocop`, with some exceptions that have no
   bearing on which offenses are reported
+* the Ruby version used to invoke `rubocop`
 * version of the `rubocop` program (or to be precise, anything in the
   source code of the invoked `rubocop` program)
 
