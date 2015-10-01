@@ -91,6 +91,55 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
     end
   end
 
+  context 'multiline if that fits on one line with an if in the body' do
+    let(:source) do
+      ["if #{condition}",
+       "  #{body} if c",
+       'end']
+    end
+
+    let(:condition) { 'a' * 3 }
+    let(:body) { 'b' * 3 }
+
+    it 'registers an offense' do
+      inspect_source(cop, source)
+      expect(cop.messages).to eq(
+        ['Favor modifier `if` usage when having a single-line' \
+         ' body. Another good alternative is the usage of control flow' \
+         ' `&&`/`||`.'])
+    end
+
+    it 'does auto-correction' do
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq "#{body} if #{condition} && c"
+    end
+  end
+
+  context 'multiline if that fits on one line with an if containing an || ' \
+          'in the body' do
+    let(:source) do
+      ["if #{condition}",
+       "  #{body} if c || d",
+       'end']
+    end
+
+    let(:condition) { 'a' * 3 }
+    let(:body) { 'b' * 3 }
+
+    it 'registers an offense' do
+      inspect_source(cop, source)
+      expect(cop.messages).to eq(
+        ['Favor modifier `if` usage when having a single-line' \
+         ' body. Another good alternative is the usage of control flow' \
+         ' `&&`/`||`.'])
+    end
+
+    it 'does auto-correction' do
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq "#{body} if #{condition} && (c || d)"
+    end
+  end
+
   context 'short multiline if near an else etc' do
     let(:source) do
       ['if x',
@@ -155,6 +204,55 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
     it 'does auto-correction' do
       corrected = autocorrect_source(cop, source)
       expect(corrected).to eq 'b unless a'
+    end
+  end
+
+  context 'multiline unless that fits on one line with an unless in the body' do
+    let(:source) do
+      ["unless #{condition}",
+       "  #{body} unless c",
+       'end']
+    end
+
+    let(:condition) { 'a' * 3 }
+    let(:body) { 'b' * 3 }
+
+    it 'registers an offense' do
+      inspect_source(cop, source)
+      expect(cop.messages).to eq(
+        ['Favor modifier `unless` usage when having a single-line' \
+         ' body. Another good alternative is the usage of control flow' \
+         ' `&&`/`||`.'])
+    end
+
+    it 'does auto-correction' do
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq "#{body} unless #{condition} && c"
+    end
+  end
+
+  context 'multiline unless that fits on one line with an unless ' \
+          'containing an || in the body' do
+    let(:source) do
+      ["unless #{condition}",
+       "  #{body} unless c || d",
+       'end']
+    end
+
+    let(:condition) { 'a' * 3 }
+    let(:body) { 'b' * 3 }
+
+    it 'registers an offense' do
+      inspect_source(cop, source)
+      expect(cop.messages).to eq(
+        ['Favor modifier `unless` usage when having a single-line' \
+         ' body. Another good alternative is the usage of control flow' \
+         ' `&&`/`||`.'])
+    end
+
+    it 'does auto-correction' do
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq "#{body} unless #{condition} && (c || d)"
     end
   end
 
