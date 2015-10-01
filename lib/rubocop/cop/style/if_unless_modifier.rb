@@ -33,18 +33,36 @@ module RuboCop
 
         def autocorrect(node)
           cond, body, _else = if_node_parts(node)
+          oneline = if body.if_type?
+                      correction_from_inner_if_unless_modifier(body, cond)
+                    else
+                      "#{body.loc.expression.source} " \
+                        "#{node.loc.keyword.source} " \
+                        "#{cond.loc.expression.source}"
+                    end
 
-          oneline =
-            "#{body.loc.expression.source} #{node.loc.keyword.source} " +
-            cond.loc.expression.source
           first_line_comment = processed_source.comments.find do |c|
             c.loc.line == node.loc.line
           end
+
           if first_line_comment
-            oneline << ' ' << first_line_comment.loc.expression.source
+            oneline << " #{first_line_comment.loc.expression.source}"
           end
 
           ->(corrector) { corrector.replace(node.loc.expression, oneline) }
+        end
+
+        def correction_from_inner_if_unless_modifier(body, cond)
+          inner_condition, inner_body, = if_node_parts(body)
+
+          "#{inner_body.loc.expression.source} " \
+            "#{body.loc.keyword.source} " \
+            "#{cond.loc.expression.source} && " <<
+            if inner_condition.or_type?
+              "(#{inner_condition.loc.expression.source})"
+            else
+              "#{inner_condition.loc.expression.source}"
+            end
         end
       end
     end

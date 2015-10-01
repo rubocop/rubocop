@@ -12,6 +12,10 @@
 * `Style/IfUnlessModifier` accepts blocks followed by a chained call. ([@lumeet][])
 * [#2261](https://github.com/bbatsov/rubocop/issues/2261): Make relative `Exclude` paths in `$HOME/.rubocop_todo.yml` be relative to current directory. ([@jonas054][])
 
+### Changes
+
+* [#2289](https://github.com/bbatsov/rubocop/pull/2289): `Style/IfUnlessModifier` will now auto-correct nested `if` and `unless` modifiers using `&&` instead of a second `if` or `unless`. ([@rrosenblum][])
+
 ## 0.34.2 (21/09/2015)
 
 ### Bug Fixes
