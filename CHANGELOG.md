@@ -2,10 +2,6 @@
 
 ## master (unreleased)
 
-### Bug Fixes
-
-* [#2261](https://github.com/bbatsov/rubocop/issues/2261): Make relative `Exclude` paths in `$HOME/.rubocop_todo.yml` be relative to current directory. ([@jonas054][])
-
 ### New features
 
 * [#2036](https://github.com/bbatsov/rubocop/issues/2036): New cop `Style/StabbyLambdaParentheses` will find and correct cases where a stabby lambda's paramaters are not wrapped in parentheses. ([@hmadison][])
@@ -14,6 +10,7 @@
 
 * [#2275](https://github.com/bbatsov/rubocop/pull/2275): Copy default `Exclude` into `Exclude` lists in `.rubocop_todo.yml`. ([@jonas054][])
 * `Style/IfUnlessModifier` accepts blocks followed by a chained call. ([@lumeet][])
+* [#2261](https://github.com/bbatsov/rubocop/issues/2261): Make relative `Exclude` paths in `$HOME/.rubocop_todo.yml` be relative to current directory. ([@jonas054][])
 
 ## 0.34.2 (21/09/2015)
 
