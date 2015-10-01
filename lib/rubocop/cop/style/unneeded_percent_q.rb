@@ -14,7 +14,7 @@ module RuboCop
         end
 
         def on_str(node)
-          check(node)
+          check(node) if string_literal?(node)
         end
 
         # We process regexp nodes because the inner str nodes can cause
@@ -51,6 +51,11 @@ module RuboCop
             corrector.replace(node.loc.begin, delimiter)
             corrector.replace(node.loc.end, delimiter)
           end
+        end
+
+        def string_literal?(node)
+          node.loc.respond_to?(:begin) && node.loc.respond_to?(:end) &&
+            node.loc.begin && node.loc.end
         end
       end
     end

@@ -134,7 +134,7 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
       it 'corrects a dynamic string without quotes' do
         new_source = autocorrect_source(cop, "%Q(hi\#{4})")
 
-        expect(new_source).to eq(%Q("hi\#{4}"))
+        expect(new_source).to eq(%("hi\#{4}"))
       end
     end
   end
@@ -145,5 +145,33 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
                          '%q("hi")',
                          'END'])
     expect(cop.offenses).to be_empty
+  end
+
+  it 'accepts %q at the beginning of a double quoted string ' \
+     'with interpolation' do
+    inspect_source(cop, "\"%q(a)\#{b}\"")
+
+    expect(cop.messages).to be_empty
+  end
+
+  it 'accepts %Q at the beginning of a double quoted string ' \
+     'with interpolation' do
+    inspect_source(cop, "\"%Q(a)\#{b}\"")
+
+    expect(cop.messages).to be_empty
+  end
+
+  it 'accepts %q at the beginning of a section of a double quoted string ' \
+     'with interpolation' do
+    inspect_source(cop, %("%\#{b}%q(a)"))
+
+    expect(cop.messages).to be_empty
+  end
+
+  it 'accepts %Q at the beginning of a section of a double quoted string ' \
+     'with interpolation' do
+    inspect_source(cop, %("%\#{b}%Q(a)"))
+
+    expect(cop.messages).to be_empty
   end
 end
