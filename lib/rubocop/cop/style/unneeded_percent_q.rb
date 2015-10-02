@@ -7,46 +7,44 @@ module RuboCop
       class UnneededPercentQ < Cop
         MSG = 'Use `%s` only for strings that contain both single quotes and ' \
               'double quotes%s.'
+        DYNAMIC_MSG = ', or for dynamic strings that contain double quotes'
+        SINGLE_QUOTE = "'".freeze
+        QUOTE = '"'.freeze
+        EMPTY = ''.freeze
+        PERCENT_Q = '%q'.freeze
+        PERCENT_CAPITAL_Q = '%Q'.freeze
 
         def on_dstr(node)
-          # Using %Q to avoid escaping inner " is ok.
-          check(node) unless node.loc.expression.source =~ /"/
+          check(node)
         end
 
         def on_str(node)
-          check(node) if string_literal?(node)
-        end
-
-        # We process regexp nodes because the inner str nodes can cause
-        # confusion in on_str if they start with %( or %Q(.
-        def on_regexp(node)
-          string_parts = node.children.select { |child| child.type == :str }
-          string_parts.each { |s| ignore_node(s) }
+          # Interpolated strings that contain more than just interpolation
+          # will call `on_dstr` for the entire string and `on_str` for the
+          # non interpolated portion of the string
+          return unless string_literal?(node)
+          check(node)
         end
 
         private
 
         def check(node)
-          if node.loc.respond_to?(:heredoc_body)
-            ignore_node(node)
-            return
-          end
-          return if ignored_node?(node) || part_of_ignored_node?(node)
           src = node.loc.expression.source
-          return unless src.start_with?('%q') || src.start_with?('%Q')
-          return if src =~ /'/ && src =~ /"/
+          return unless start_with_percent_q_variant?(src)
+          return if src.include?(SINGLE_QUOTE) && src.include?(QUOTE)
           return if src =~ StringHelp::ESCAPED_CHAR_REGEXP
 
-          extra = if src.start_with?('%Q')
-                    ', or for dynamic strings that contain double quotes'
+          extra = if src.start_with?(PERCENT_CAPITAL_Q)
+                    DYNAMIC_MSG
                   else
-                    ''
+                    EMPTY
                   end
           add_offense(node, :expression, format(MSG, src[0, 2], extra))
         end
 
         def autocorrect(node)
-          delimiter = node.loc.expression.source =~ /^%Q[^"]+$|'/ ? '"' : "'"
+          delimiter =
+            node.loc.expression.source =~ /^%Q[^"]+$|'/ ? QUOTE : SINGLE_QUOTE
           lambda do |corrector|
             corrector.replace(node.loc.begin, delimiter)
             corrector.replace(node.loc.end, delimiter)
@@ -56,6 +54,10 @@ module RuboCop
         def string_literal?(node)
           node.loc.respond_to?(:begin) && node.loc.respond_to?(:end) &&
             node.loc.begin && node.loc.end
+        end
+
+        def start_with_percent_q_variant?(string)
+          string.start_with?(PERCENT_Q) || string.start_with?(PERCENT_CAPITAL_Q)
         end
       end
     end
