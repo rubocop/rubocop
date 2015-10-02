@@ -22,7 +22,6 @@ module RuboCop
 
         def investigate(processed_source)
           ast = processed_source.ast
-          ignored_ranges = ast ? ignored_ranges(ast) : []
 
           processed_source.tokens.each_cons(2) do |t1, t2|
             next if t2.type == :tNL
@@ -30,10 +29,12 @@ module RuboCop
             next if t2.pos.begin_pos - 1 <= t1.pos.end_pos
             next if allow_for_alignment? && aligned_with_something?(t2)
             start_pos = t1.pos.end_pos
+            next if ignored_ranges(ast).find { |r| r.include?(start_pos) }
+
             end_pos = t2.pos.begin_pos - 1
             range = Parser::Source::Range.new(processed_source.buffer,
                                               start_pos, end_pos)
-            add_offense(range, range, MSG) unless ignored_ranges.include?(range)
+            add_offense(range, range, MSG)
           end
         end
 
@@ -44,18 +45,20 @@ module RuboCop
         private
 
         # Returns an array of ranges that should not be reported. It's the
-        # extra spaces between the separators (: or =>) and values in a hash,
-        # since those are handled by the Style/AlignHash cop.
+        # extra spaces between the keys and values in a hash, since those are
+        # handled by the Style/AlignHash cop.
         def ignored_ranges(ast)
-          ranges = []
-          on_node(:pair, ast) do |pair|
-            _, value = *pair
-            ranges <<
-              Parser::Source::Range.new(processed_source.buffer,
-                                        pair.loc.operator.end_pos,
-                                        value.loc.expression.begin_pos - 1)
+          return [] unless ast
+
+          @ignored_ranges ||= begin
+            ranges = []
+            on_node(:pair, ast) do |pair|
+              key, value = *pair
+              r = key.loc.expression.end_pos...value.loc.expression.begin_pos
+              ranges << r
+            end
+            ranges
           end
-          ranges
         end
 
         def allow_for_alignment?
