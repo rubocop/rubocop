@@ -764,6 +764,7 @@ Style/TrailingUnderscoreVariable:
   Description: >-
                  Checks for the usage of unneeded trailing underscores at the
                  end of parallel variable assignment.
+  AllowNamedUnderscoreVariables: true
   Enabled: true
 
 Style/VariableInterpolation:

@@ -257,7 +257,7 @@ module RuboCop
           return false unless body_node.loc.column == first_char_pos_on_line
 
           if [:rescue, :ensure].include?(body_node.type)
-            block_body, *_ = *body_node
+            block_body, = *body_node
             return unless block_body
           end
 
