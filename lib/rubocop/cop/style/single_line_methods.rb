@@ -34,12 +34,14 @@ module RuboCop
             c.loc.line == node.loc.expression.line
           end
           lambda do |corrector|
-            if body.type == :begin
-              body.children.each do |part|
-                break_line_before(part.loc.expression, node, corrector, 1)
+            if body
+              if body.type == :begin
+                body.children.each do |part|
+                  break_line_before(part.loc.expression, node, corrector, 1)
+                end
+              else
+                break_line_before(body.loc.expression, node, corrector, 1)
               end
-            else
-              break_line_before(body.loc.expression, node, corrector, 1)
             end
 
             break_line_before(node.loc.end, node, corrector, 0)
