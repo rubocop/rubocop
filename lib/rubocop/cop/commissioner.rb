@@ -30,7 +30,7 @@ module RuboCop
       end
 
       callback_methods.each do |callback|
-        class_eval <<-EOS
+        class_eval <<-EOS, __FILE__, __LINE__
           def #{callback}(node)
             @cops.each do |cop|
               next unless cop.respond_to?(:#{callback})
