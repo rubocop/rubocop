@@ -85,10 +85,7 @@ module RuboCop
         file_started(file, processed_source.disabled_line_ranges,
                      processed_source.comments)
         offenses = do_inspection_loop(file, processed_source)
-        if cache
-          cache.save(offenses, processed_source.disabled_line_ranges,
-                     processed_source.comments)
-        end
+        save_in_cache(cache, offenses, processed_source)
       end
 
       offenses = formatter_set.file_finished(file, offenses.compact.sort.freeze)
@@ -118,6 +115,17 @@ module RuboCop
         !@options[:auto_gen_config] &&
         # Auto-correction needs a full run. It can not use cached results.
         !@options[:auto_correct]
+    end
+
+    def save_in_cache(cache, offenses, processed_source)
+      return unless cache
+      # Caching results when a cop has crashed would prevent the crash in the
+      # next run, since the cop would not be called then. We want crashes to
+      # show up the same in each run.
+      return if errors.any?
+
+      cache.save(offenses, processed_source.disabled_line_ranges,
+                 processed_source.comments)
     end
 
     def do_inspection_loop(file, processed_source)
