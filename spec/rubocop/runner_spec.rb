@@ -61,6 +61,26 @@ describe RuboCop::Runner, :isolated_environment do
       end
     end
 
+    context 'if a cop crashes' do
+      before(:each) do
+        # The cache responds that it's not valid, which means that new results
+        # should normally be collected and saved...
+        cache = double('cache', 'valid?' => false)
+        # ... but there's a crash in one cop.
+        runner.errors = ['An error occurred in ...']
+
+        allow(RuboCop::ResultCache).to receive(:new) { cache }
+      end
+
+      let(:source) { '' }
+
+      it 'does not call ResultCache#save' do
+        # The double doesn't define #save, so we'd get an error if it were
+        # called.
+        runner.run([])
+      end
+    end
+
     context 'if -s/--stdin is used with an offense' do
       let(:options) do
         {

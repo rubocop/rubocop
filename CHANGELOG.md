@@ -14,6 +14,7 @@
 * `Style/IfUnlessModifier` accepts blocks followed by a chained call. ([@lumeet][])
 * [#2261](https://github.com/bbatsov/rubocop/issues/2261): Make relative `Exclude` paths in `$HOME/.rubocop_todo.yml` be relative to current directory. ([@jonas054][])
 * [#2246](https://github.com/bbatsov/rubocop/pull/2246): Do not register an offense for `Style/TrailingUnderscoreVariable` when the underscore variable is preceeded by a splat variable. ([@rrosenblum][])
+* [#2292](https://github.com/bbatsov/rubocop/pull/2292): Results should not be stored in the cache if affected by errors (crashes). ([@jonas054][])
 
 ## 0.34.2 (21/09/2015)
 
