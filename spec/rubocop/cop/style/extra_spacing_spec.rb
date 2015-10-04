@@ -24,6 +24,30 @@ describe RuboCop::Cop::Style::ExtraSpacing, :config do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts space between key and value in a hash with hash rockets' do
+      source = [
+        'ospf_h = {',
+        "  'ospfTest'    => {",
+        "    'foo'      => {",
+        "      area: '0.0.0.0', cost: 10, hello: 30, pass: true },",
+        "    'longname' => {",
+        "      area: '1.1.1.38', pass: false },",
+        "    'vlan101'  => {",
+        "      area: '2.2.2.101', cost: 5, hello: 20, pass: true }",
+        '  },',
+        "  'TestOspfInt' => {",
+        "    'x'               => {",
+        "      area: '0.0.0.19' },",
+        "    'vlan290'         => {",
+        "      area: '2.2.2.29', cost: 200, hello: 30, pass: true },",
+        "    'port-channel100' => {",
+        "      area: '3.2.2.29', cost: 25, hello: 50, pass: false }",
+        '  }',
+        '}']
+      inspect_source(cop, source)
+      expect(cop.offenses).to be_empty
+    end
+
     it 'can handle extra space before a float' do
       source = ['{:a => "a",',
                 ' :b => [nil,  2.5]}']
