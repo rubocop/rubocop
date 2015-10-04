@@ -55,6 +55,14 @@ describe RuboCop::Cop::Style::ExtraSpacing, :config do
       expect(cop.offenses.size).to eq(1)
     end
 
+    it 'can handle unary plus in an argument list' do
+      source = ['assert_difference(MyModel.count, +2,',
+                '                  3,  +3,', # Extra spacing only here.
+                '                  4,+4)']
+      inspect_source(cop, source)
+      expect(cop.offenses.map { |o| o.location.line }).to eq([2])
+    end
+
     it 'gives the correct line' do
       inspect_source(cop, ['class A   < String',
                            'end'])
