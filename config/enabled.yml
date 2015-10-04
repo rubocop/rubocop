@@ -415,6 +415,10 @@ Style/NegatedWhile:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#until-for-negatives'
   Enabled: true
 
+Style/NestedModifier:
+  Description: 'Avoid using nested modifiers.'
+  Enabled: true
+
 Style/NestedTernaryOperator:
   Description: 'Use one expression per branch in a ternary operator.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-nested-ternary'
