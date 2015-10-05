@@ -34,6 +34,9 @@ module RuboCop
             end_pos = t2.pos.begin_pos - 1
             range = Parser::Source::Range.new(processed_source.buffer,
                                               start_pos, end_pos)
+            # Unary + doesn't appear as a token and needs special handling.
+            next if unary_plus_non_offense?(range)
+
             add_offense(range, range, MSG)
           end
         end
@@ -43,6 +46,10 @@ module RuboCop
         end
 
         private
+
+        def unary_plus_non_offense?(range)
+          range.resize(range.size + 1).source =~ /^ ?\+$/
+        end
 
         # Returns an array of ranges that should not be reported. It's the
         # extra spaces between the keys and values in a hash, since those are
