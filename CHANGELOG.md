@@ -17,6 +17,7 @@
 * [#2246](https://github.com/bbatsov/rubocop/pull/2246): Do not register an offense for `Style/TrailingUnderscoreVariable` when the underscore variable is preceeded by a splat variable. ([@rrosenblum][])
 * [#2292](https://github.com/bbatsov/rubocop/pull/2292): Results should not be stored in the cache if affected by errors (crashes). ([@jonas054][])
 * [#2280](https://github.com/bbatsov/rubocop/issues/2280): Avoid reporting space between hash literal keys and values in `Style/ExtraSpacing`. ([@jonas054][])
+* [#2284](https://github.com/bbatsov/rubocop/issues/2284): Fix result cache being shared between ruby versions. ([@miquella][])
 
 ## 0.34.2 (21/09/2015)
 
@@ -1639,3 +1640,4 @@
 [@karreiro]: https://github.com/karreiro
 [@dreyks]: https://github.com/dreyks
 [@hmadison]: https://github.com/hmadison
+[@miquella]: https://github.com/miquella

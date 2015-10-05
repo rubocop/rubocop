@@ -11,7 +11,8 @@ module RuboCop
     # collisions.
     def initialize(file, options, config_store, cache_root = nil)
       cache_root ||= ResultCache.cache_root(config_store)
-      @path = File.join(cache_root, rubocop_checksum, relevant_options(options),
+      @path = File.join(cache_root, rubocop_checksum, RUBY_VERSION,
+                        relevant_options(options),
                         file_checksum(file, config_store))
     end
 
