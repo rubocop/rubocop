@@ -13,6 +13,7 @@ module RuboCop
         EMPTY = ''.freeze
         PERCENT_Q = '%q'.freeze
         PERCENT_CAPITAL_Q = '%Q'.freeze
+        STRING_INTERPOLATION_REGEXP = /#\{.+}/
 
         def on_dstr(node)
           check(node)
@@ -33,6 +34,9 @@ module RuboCop
           return unless start_with_percent_q_variant?(src)
           return if src.include?(SINGLE_QUOTE) && src.include?(QUOTE)
           return if src =~ StringHelp::ESCAPED_CHAR_REGEXP
+          if src.start_with?(PERCENT_Q) && src =~ STRING_INTERPOLATION_REGEXP
+            return
+          end
 
           extra = if src.start_with?(PERCENT_CAPITAL_Q)
                     DYNAMIC_MSG
