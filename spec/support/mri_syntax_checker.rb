@@ -31,7 +31,7 @@ module MRISyntaxChecker
     return unless line_number
     return if grep_message && !message.include?(grep_message)
     begin_pos = source_lines[0...(line_number - 1)].reduce(0) do |a, e|
-      a + e.length + "\n".length
+      a + e.length + 1
     end
     RuboCop::Cop::Offense.new(severity,
                               Parser::Source::Range.new(source_buffer,

@@ -102,7 +102,7 @@ module RuboCop
             "This is line #{index + 1}."
           end
           source_buffer.source = source.join("\n")
-          line_length = source[0].length + "\n".length
+          line_length = source[0].length + 1
 
           formatter.file_started(files[0], {})
           formatter.file_finished(files[0], [

@@ -102,7 +102,7 @@ describe RuboCop::Cop::Offense do
       source_buffer = Parser::Source::Buffer.new('test', 1)
       source_buffer.source = source.join("\n")
       begin_pos = source[0...(line - 1)].reduce(0) do |a, e|
-        a + e.length + "\n".length
+        a + e.length + 1
       end + column
       Parser::Source::Range.new(source_buffer, begin_pos, begin_pos + 1)
     end

@@ -13,6 +13,7 @@ module RuboCop
         include ConfigurableMax
 
         MSG = 'Use `%w` or `%W` for array of words.'
+        QUESTION_MARK_SIZE = '?'.size
 
         def on_array(node)
           array_elems = node.children
@@ -84,7 +85,7 @@ module RuboCop
         def source_for(str_node)
           if character_literal?(str_node)
             @interpolated = true
-            begin_pos = str_node.loc.expression.begin_pos + '?'.length
+            begin_pos = str_node.loc.expression.begin_pos + QUESTION_MARK_SIZE
             end_pos = str_node.loc.expression.end_pos
           else
             begin_pos = str_node.loc.begin.end_pos
