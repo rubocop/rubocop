@@ -8,6 +8,7 @@
 * [#2246](https://github.com/bbatsov/rubocop/pull/2246): `Style/TrailingUnderscoreVariable` will now register an offense for `*_`. ([@rrosenblum][])
 * [#2246](https://github.com/bbatsov/rubocop/pull/2246): `Style/TrailingUnderscoreVariable` now has a configuration to remove named underscore variables (Defaulted to false). ([@rrosenblum][])
 * [#2276](https://github.com/bbatsov/rubocop/pull/2276): New cop `Performance/FixedSize` will register an offense when calling `length`, `size`, or `count` on statically sized objected (strings, symbols, arrays, and hashes). ([@rrosenblum][])
+* New cop `Style/NestedModifier` checks for nested `if`, `unless`, `while` and `until` modifier statements. ([@lumeet][])
 
 ### Bug Fixes
 
