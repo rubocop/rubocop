@@ -10,6 +10,7 @@
 * [#2276](https://github.com/bbatsov/rubocop/pull/2276): New cop `Performance/FixedSize` will register an offense when calling `length`, `size`, or `count` on statically sized objected (strings, symbols, arrays, and hashes). ([@rrosenblum][])
 * New cop `Style/NestedModifier` checks for nested `if`, `unless`, `while` and `until` modifier statements. ([@lumeet][])
 * [#2270](https://github.com/bbatsov/rubocop/pull/2270): Add a new `inherit_gem` configuration to inherit a config file from an installed gem [(originally requested in #290)](https://github.com/bbatsov/rubocop/issues/290). ([@jhansche][])
+* Allow `StyleGuide` parameters in local configuration for all cops, so users can add references to custom style guide documents. ([@cornelius][])
 
 ### Bug Fixes
 
@@ -1648,3 +1649,4 @@
 [@hmadison]: https://github.com/hmadison
 [@miquella]: https://github.com/miquella
 [@jhansche]: https://github.com/jhansche
+[@cornelius]: https://github.com/cornelius
