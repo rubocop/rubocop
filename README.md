@@ -292,6 +292,23 @@ inherit_from:
   - ../conf/.rubocop.yml
 ```
 
+### Inheriting configuration from a remote URL
+
+The optional `inherit_from` directive can contain a full url to a remote
+file. This makes it possible to have common project settings stored on a http
+server and shared between many projects. You can inherit from both remote and
+local files in the same config.
+
+The same inheritance rules apply to remote URLs and inheriting from local
+files where the first file in the list has the lowest precedence and the
+last one has the highest. The format for multiple inheritance using URLs is:
+
+```yaml
+inherit_from:
+  - http://www.example.com/rubocop.yml
+  - ../.rubocop.yml
+```
+
 #### Inheriting configuration from a dependency gem
 
 The optional `inherit_gem` directive is used to include configuration from

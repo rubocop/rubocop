@@ -25,6 +25,7 @@
 * `Lint/LiteralInCondition` warns if a symbol or dynamic symbol is used as a condition. ([@alexdowad][])
 * [#2369](https://github.com/bbatsov/rubocop/issues/2369): `Style/TrailingComma` doesn't add a trailing comma to a multiline method chain which is the only arg to a method call. ([@alexdowad][])
 * `CircularArgumentReference` cop updated to lint for ordinal circular argument references on top of optional keyword arguments. ([@maxjacobson][])
+* Added ability to download shared rubocop config files from remote urls. ([@ptrippett][])
 
 ### Bug Fixes
 
@@ -1687,3 +1688,4 @@
 [@alexdowad]: https://github.com/alexdowad
 [@minustehbare]: https://github.com/minustehbare
 [@tansaku]: https://github.com/tansaku
+[@ptrippett]: https://github.com/ptrippett

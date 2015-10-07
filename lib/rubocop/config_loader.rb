@@ -60,15 +60,20 @@ module RuboCop
 
       def base_configs(path, inherit_from)
         configs = Array(inherit_from).compact.map do |f|
-          f = File.expand_path(f, File.dirname(path))
+          if f =~ URI.regexp
+            f = RemoteConfig.new(f).file
+            load_file(f)
+          else
+            f = File.expand_path(f, File.dirname(path))
 
-          if auto_gen_config?
-            next if f.include?(AUTO_GENERATED_FILE)
-            old_auto_config_file_warning if f.include?('rubocop-todo.yml')
+            if auto_gen_config?
+              next if f.include?(AUTO_GENERATED_FILE)
+              old_auto_config_file_warning if f.include?('rubocop-todo.yml')
+            end
+
+            print 'Inheriting ' if debug?
+            load_file(f)
           end
-
-          print 'Inheriting ' if debug?
-          load_file(f)
         end
 
         configs.compact
