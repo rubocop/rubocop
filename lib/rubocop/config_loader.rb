@@ -27,6 +27,7 @@ module RuboCop
         path = File.absolute_path(path)
         hash = load_yaml_configuration(path)
 
+        resolve_inheritance_from_gems(hash, hash.delete('inherit_gem'))
         resolve_inheritance(path, hash)
 
         Array(hash.delete('require')).each { |r| require(r) }
@@ -58,7 +59,7 @@ module RuboCop
       end
 
       def base_configs(path, inherit_from)
-        configs = Array(inherit_from).map do |f|
+        configs = Array(inherit_from).compact.map do |f|
           f = File.expand_path(f, File.dirname(path))
 
           if auto_gen_config?
@@ -164,6 +165,21 @@ module RuboCop
             hash[k] = hash.key?(k) ? merge(v, hash[k]) : v if v.is_a?(Hash)
           end
         end
+      end
+
+      def resolve_inheritance_from_gems(hash, gems)
+        (gems || {}).each_pair do |gem_name, config_path|
+          hash['inherit_from'] = Array(hash['inherit_from'])
+          hash['inherit_from'] << gem_config_path(gem_name, config_path)
+        end
+      end
+
+      def gem_config_path(gem_name, relative_config_path)
+        spec = Gem::Specification.find_by_name(gem_name)
+        return File.join(spec.gem_dir, relative_config_path)
+      rescue Gem::LoadError => e
+        raise Gem::LoadError,
+              "Unable to find gem #{gem_name}; is the gem installed? #{e}"
       end
 
       def config_files_in_path(target)

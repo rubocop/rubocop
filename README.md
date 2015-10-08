@@ -269,6 +269,11 @@ Metrics/LineLength:
 
 ### Inheritance
 
+RuboCop supports inheriting configuration from one or more supplemental
+configuration files at runtime.
+
+#### Inheriting from another configuration file in the project
+
 The optional `inherit_from` directive is used to include configuration
 from one or more files. This makes it possible to have the common
 project settings in the `.rubocop.yml` file at the project root, and
@@ -284,6 +289,40 @@ inheritance is:
 inherit_from:
   - ../.rubocop.yml
   - ../conf/.rubocop.yml
+```
+
+#### Inheriting configuration from a dependency gem
+
+The optional `inherit_gem` directive is used to include configuration from
+one or more gems external to the current project. This makes it possible to
+inherit a shared dependency's RuboCop configuration that can be used from
+multiple disparate projects.
+
+Configurations inherited in this way will be essentially *prepended* to the
+`inherit_from` directive, such that the `inherit_gem` configurations will be
+loaded first, then the `inherit_from` relative file paths will be loaded
+(overriding the configurations from the gems), and finally the remaining
+directives in the configuration file will supersede any of the inherited
+configurations. This means the configurations inherited from one or more gems
+have the lowest precedence of inheritance.
+
+The directive should be formatted as a YAML Hash using the gem name as the
+key and the relative path within the gem as the value:
+
+```yaml
+inherit_gem:
+  rubocop: config/default.yml
+  my-shared-gem: .rubocop.yml
+  cucumber: conf/rubocop.yml
+```
+
+**Note**: If the shared dependency is declared using a [Bundler](http://bundler.io/)
+Gemfile and the gem was installed using `bundle install`, it would be
+necessary to also invoke RuboCop using Bundler in order to find the
+dependency's installation path at runtime:
+
+```
+$ bundle exec rubocop <options...>
 ```
 
 ### Defaults
