@@ -85,6 +85,18 @@ describe RuboCop::Cop::Performance::StringReplacement do
         expect(cop.messages).to be_empty
       end
 
+      it 'allows regex literals with options' do
+        inspect_source(cop, "'abc'.#{method}(/a/i, '1')")
+
+        expect(cop.messages).to be_empty
+      end
+
+      it 'allows regex with options' do
+        inspect_source(cop, "'abc'.#{method}(Regexp.new(/a/i), '1')")
+
+        expect(cop.messages).to be_empty
+      end
+
       it 'allows empty string pattern' do
         inspect_source(cop, "'abc'.gsub('', '1')")
 

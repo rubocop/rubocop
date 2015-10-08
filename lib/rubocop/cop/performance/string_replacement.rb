@@ -32,16 +32,17 @@ module RuboCop
         def on_send(node)
           _string, method, first_param, second_param = *node
           return unless GSUB_METHODS.include?(method)
-          return unless second_param && second_param.str_type?
+          return unless string?(second_param)
           return unless DETERMINISTIC_TYPES.include?(first_param.type)
 
-          first_source = first_source(first_param)
+          first_source, options = first_source(first_param)
           second_source, = *second_param
 
           return if first_source.nil?
 
           if regex?(first_param)
             return unless first_source =~ DETERMINISTIC_REGEX
+            return if options
           end
 
           return if first_source.length != 1
@@ -53,7 +54,7 @@ module RuboCop
 
         def autocorrect(node)
           _string, method, first_param, second_param = *node
-          first_source = first_source(first_param)
+          first_source, = first_source(first_param)
           second_source, = *second_param
           replacement_method = replacement_method(method,
                                                   first_source,
@@ -74,17 +75,21 @@ module RuboCop
 
         private
 
+        def string?(node)
+          node && node.str_type?
+        end
+
         def first_source(first_param)
           case first_param.type
           when :regexp, :send
             return nil unless regex?(first_param)
 
-            source, = extract_source(first_param)
+            source, options = extract_source(first_param)
           when :str
             source, = *first_param
           end
 
-          source
+          [source, options]
         end
 
         def extract_source(node)
@@ -97,9 +102,10 @@ module RuboCop
         end
 
         def source_from_regex_literal(node)
-          regex, = *node
+          regex, options = *node
           source, = *regex
-          source
+          options, = *options
+          [source, options]
         end
 
         def source_from_regex_constructor(node)
