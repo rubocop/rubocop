@@ -88,12 +88,13 @@ describe RuboCop::Config do
       # configuration, but are nonetheless allowed for any cop.
       before do
         create_file(configuration_path, [
-          'Metrics/LineLength:',
+          'Metrics/ModuleLength:',
           '  Exclude:',
           '    - lib/file.rb',
           '  Include:',
           '    - lib/file.xyz',
-          '  Severity: warning'
+          '  Severity: warning',
+          '  StyleGuide: https://example.com/some-style.html'
         ])
       end
 
