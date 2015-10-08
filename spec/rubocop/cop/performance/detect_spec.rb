@@ -188,6 +188,32 @@ describe RuboCop::Cop::Performance::Detect do
                 end)
             )
           end
+
+          it "corrects multiline #{method} to #{preferred_method} " \
+             'with \'first\' on the last line' do
+            new_source = autocorrect_source(
+              cop,
+              %([1, 2, 3].#{method} { true }
+                         .first['x'])
+            )
+
+            expect(new_source).to eq(
+              %([1, 2, 3].#{preferred_method} { true }['x'])
+            )
+          end
+
+          it "corrects multiline #{method} to #{preferred_method} " \
+             'with \'first\' on the last line (short syntax)' do
+            new_source = autocorrect_source(
+              cop,
+              %([1, 2, 3].#{method}(&:blank?)
+                         .first['x'])
+            )
+
+            expect(new_source).to eq(
+              %([1, 2, 3].#{preferred_method}(&:blank?)['x'])
+            )
+          end
         end
       end
     end
