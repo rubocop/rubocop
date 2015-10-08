@@ -33,7 +33,7 @@ module RuboCop
         return false unless node.defs_type?
         return false unless node.parent
 
-        node.parent.children.any? do |c|
+        node.parent.children.compact.any? do |c|
           c.class_type? && c.loc.name.is?(name.to_s)
         end
       end

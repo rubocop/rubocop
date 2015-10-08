@@ -95,6 +95,14 @@ describe RuboCop::Cop::Style::MethodName, :config do
       expect(cop.offenses).to be_empty
     end
 
+    it 'registers an offense for singleton camelCase method within class' do
+      inspect_source(cop, ['class Sequel',
+                           '  def self.fooBar',
+                           '  end',
+                           'end'])
+      expect(cop.highlights).to eq(['fooBar'])
+    end
+
     include_examples 'never accepted'
     include_examples 'always accepted'
   end
@@ -132,6 +140,14 @@ describe RuboCop::Cop::Style::MethodName, :config do
                            'end'])
       expect(cop.highlights).to eq(['my_method'])
       expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+    end
+
+    it 'registers an offense for singleton snake_case method within class' do
+      inspect_source(cop, ['class Sequel',
+                           '  def self.foo_bar',
+                           '  end',
+                           'end'])
+      expect(cop.highlights).to eq(['foo_bar'])
     end
 
     include_examples 'always accepted'
