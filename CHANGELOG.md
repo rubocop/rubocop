@@ -25,6 +25,7 @@
 * [#2284](https://github.com/bbatsov/rubocop/issues/2284): Fix result cache being shared between ruby versions. ([@miquella][])
 * [#2285](https://github.com/bbatsov/rubocop/issues/2285): Fix `ConfigurableNaming#class_emitter_method?` error when handling singleton class methods. ([@palkan][])
 * [#2295](https://github.com/bbatsov/rubocop/issues/2295): Fix Performance/Detect autocorrect to handle rogue newlines. ([@palkan][])
+* [#2294](https://github.com/bbatsov/rubocop/issues/2294): Do not register an offense in `Performance/StringReplacement` for regex with options. ([@rrosenblum][])
 
 ## 0.34.2 (21/09/2015)
 
