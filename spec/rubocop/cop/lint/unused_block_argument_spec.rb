@@ -4,7 +4,8 @@
 require 'spec_helper'
 
 describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
-  subject(:cop) { described_class.new }
+  subject(:cop) { described_class.new(config) }
+  let(:cop_config) { { 'AllowUnusedKeywordArguments' => false } }
 
   context 'inspection' do
     before do
@@ -141,6 +142,31 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
 
       it 'accepts' do
         expect(cop.offenses).to be_empty
+      end
+    end
+
+    context 'when an optional keyword argument is unused', ruby: 2 do
+      let(:source) { <<-END }
+        define_method(:foo) do |bar: 'default'|
+          puts 'bar'
+        end
+      END
+
+      it 'registers an offense but does not suggest underscore-prefix' do
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.highlights).to eq(['bar'])
+        expect(cop.offenses.first.message).to eq(
+          'Unused block argument - `bar`. ' \
+          "You can omit the argument if you don't care about it."
+        )
+      end
+
+      context 'and AllowUnusedKeywordArguments set' do
+        let(:cop_config) { { 'AllowUnusedKeywordArguments' => true } }
+
+        it 'does not care' do
+          expect(cop.offenses).to be_empty
+        end
       end
     end
 
