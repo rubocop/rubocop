@@ -174,4 +174,10 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
 
     expect(cop.messages).to be_empty
   end
+
+  it 'accepts %q containing string interpolation' do
+    inspect_source(cop, %(%q(foo \#{'bar'} baz)))
+
+    expect(cop.messages).to be_empty
+  end
 end

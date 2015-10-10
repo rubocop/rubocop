@@ -26,6 +26,7 @@
 * [#2285](https://github.com/bbatsov/rubocop/issues/2285): Fix `ConfigurableNaming#class_emitter_method?` error when handling singleton class methods. ([@palkan][])
 * [#2295](https://github.com/bbatsov/rubocop/issues/2295): Fix Performance/Detect autocorrect to handle rogue newlines. ([@palkan][])
 * [#2294](https://github.com/bbatsov/rubocop/issues/2294): Do not register an offense in `Performance/StringReplacement` for regex with options. ([@rrosenblum][])
+* Fix `Style/UnneededPercentQ` condition for single-quoted literal containing interpolation-like string. ([@eagletmt][])
 
 ## 0.34.2 (21/09/2015)
 
@@ -1651,3 +1652,4 @@
 [@miquella]: https://github.com/miquella
 [@jhansche]: https://github.com/jhansche
 [@cornelius]: https://github.com/cornelius
+[@eagletmt]: https://github.com/eagletmt
