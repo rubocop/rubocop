@@ -2,8 +2,9 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Lint::UnusedMethodArgument do
-  subject(:cop) { described_class.new }
+describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
+  subject(:cop) { described_class.new(config) }
+  let(:cop_config) { { 'AllowUnusedKeywordArguments' => false } }
 
   describe 'inspection' do
     before do
@@ -76,6 +77,14 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument do
         expect(cop.highlights).to eq(['bar'])
         expect(cop.offenses.first.message)
           .to eq('Unused method argument - `bar`.')
+      end
+
+      context 'and AllowUnusedKeywordArguments set' do
+        let(:cop_config) { { 'AllowUnusedKeywordArguments' => true } }
+
+        it 'does not care' do
+          expect(cop.offenses).to be_empty
+        end
       end
     end
 
