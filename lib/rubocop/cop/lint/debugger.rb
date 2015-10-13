@@ -35,6 +35,12 @@ module RuboCop
         #   (send nil :binding) :pry_remote)
         PRY_REMOTE_NODE = s(:send, s(:send, nil, :binding), :pry_remote)
 
+        # Pry.rescue
+        #
+        # (send
+        #   (const nil :Pry) :rescue)
+        PRY_RESCUE = s(:send, s('const', nil, :Pry), :rescue)
+
         # save_and_open_page
         #
         # (send nil :save_and_open_page)
@@ -56,6 +62,7 @@ module RuboCop
           PRY_NODE,
           REMOTE_PRY_NODE,
           PRY_REMOTE_NODE,
+          PRY_RESCUE,
           CAPYBARA_SAVE_PAGE,
           CAPYBARA_SAVE_OPEN_SCREENSHOT,
           CAPYBARA_SAVE_SCREENSHOT

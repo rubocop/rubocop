@@ -12,6 +12,7 @@
 * [#2270](https://github.com/bbatsov/rubocop/pull/2270): Add a new `inherit_gem` configuration to inherit a config file from an installed gem [(originally requested in #290)](https://github.com/bbatsov/rubocop/issues/290). ([@jhansche][])
 * Allow `StyleGuide` parameters in local configuration for all cops, so users can add references to custom style guide documents. ([@cornelius][])
 * `UnusedMethodArgument` cop allows configuration to skip keyword arguments. ([@apiology][])
+* [#2318](https://github.com/bbatsov/rubocop/pull/2318): `Lint/Debugger` cop now checks for `Pry.rescue`. ([@rrosenblum][])
 
 ### Bug Fixes
 
