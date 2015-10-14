@@ -1,8 +1,6 @@
 # encoding: utf-8
 
 require 'spec_helper'
-require 'stringio'
-require 'ostruct'
 
 module RuboCop
   module Formatter
