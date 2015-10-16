@@ -90,7 +90,6 @@ module RuboCop
       option(opts, '-c', '--config FILE')
 
       option(opts, '--auto-gen-config') do
-        validate_auto_gen_config_option(args)
         @options[:formatters] = [[DEFAULT_FORMATTER],
                                  [Formatter::DisabledConfigFormatter,
                                   ConfigLoader::AUTO_GENERATED_FILE]]
@@ -171,14 +170,6 @@ module RuboCop
     def long_opt_symbol(args)
       long_opt = args.find { |arg| arg.start_with?('--') }
       long_opt[2..-1].sub(/ .*/, '').tr('-', '_').to_sym
-    end
-
-    def validate_auto_gen_config_option(args)
-      return if args.empty?
-      return if args.size <= 2 && args.first == '--exclude-limit'
-
-      warn '--auto-gen-config can only be combined with --exclude-limit.'
-      exit(1)
     end
 
     def validate_exclude_limit_option(args)

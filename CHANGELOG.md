@@ -30,6 +30,10 @@
 * [#2294](https://github.com/bbatsov/rubocop/issues/2294): Do not register an offense in `Performance/StringReplacement` for regex with options. ([@rrosenblum][])
 * Fix `Style/UnneededPercentQ` condition for single-quoted literal containing interpolation-like string. ([@eagletmt][])
 
+### Changes
+
+* [#2194](https://github.com/bbatsov/rubocop/issues/2194): Allow any options with `--auto-gen-config`. ([@agrimm][])
+
 ## 0.34.2 (21/09/2015)
 
 ### Bug Fixes
