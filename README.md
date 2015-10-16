@@ -104,7 +104,7 @@ $ gem install rubocop
 If you'd rather install RuboCop using `bundler`, don't require it in your `Gemfile`:
 
 ```
-gem 'rubocop', require: false
+gem 'rubocop', '~> 0.34', require: false
 ```
 
 ## Basic Usage
