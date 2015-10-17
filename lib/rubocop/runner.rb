@@ -185,7 +185,9 @@ module RuboCop
       @mobilized_cop_classes[config.object_id] ||= begin
         cop_classes = Cop::Cop.all
 
-        [:only, :except].each { |opt| Options.validate_cop_list(@options[opt]) }
+        [:only, :except].each do |opt|
+          OptionsValidator.validate_cop_list(@options[opt])
+        end
 
         if @options[:only]
           cop_classes.select! { |c| c.match?(@options[:only]) }

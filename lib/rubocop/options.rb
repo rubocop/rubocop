@@ -11,6 +11,7 @@ module RuboCop
 
     def initialize
       @options = {}
+      @validator = OptionsValidator.new(@options)
     end
 
     def parse(args)
@@ -19,28 +20,13 @@ module RuboCop
       # `no_color` key, which is created automatically.
       @options.delete(:no_color)
 
-      validate_compatibility
+      @validator.validate_compatibility
 
       if @options[:stdin] && !args.one?
         fail ArgumentError, '-s/--stdin requires exactly one path.'
       end
 
       [@options, args]
-    end
-
-    # Cop name validation must be done later than option parsing, so it's not
-    # called from within this class.
-    def self.validate_cop_list(names)
-      return unless names
-
-      namespaces = Cop::Cop.all.types.map { |t| t.to_s.capitalize }
-      names.each do |name|
-        next if Cop::Cop.all.any? { |c| c.cop_name == name }
-        next if namespaces.include?(name)
-        next if %w(Syntax Lint/Syntax).include?(name)
-
-        fail ArgumentError, "Unrecognized cop or namespace: #{name}."
-      end
     end
 
     private
@@ -60,22 +46,6 @@ module RuboCop
         add_flags_with_optional_args(opts)
         add_boolean_flags(opts)
       end
-    end
-
-    def validate_compatibility
-      if @options.key?(:only) &&
-         (@options[:only] & %w(Lint/UnneededDisable UnneededDisable)).any?
-        fail ArgumentError, 'Lint/UnneededDisable can not be used with --only.'
-      end
-      if @options.key?(:except) &&
-         (@options[:except] & %w(Lint/Syntax Syntax)).any?
-        fail ArgumentError, 'Syntax checking can not be turned off.'
-      end
-      if @options.key?(:cache) && !%w(true false).include?(@options[:cache])
-        fail ArgumentError, '-C/--cache argument must be true or false'
-      end
-      return unless (incompat = @options.keys & EXITING_OPTIONS).size > 1
-      fail ArgumentError, "Incompatible cli options: #{incompat.inspect}"
     end
 
     def add_only_options(opts)
@@ -101,14 +71,14 @@ module RuboCop
       option(opts, '-c', '--config FILE')
 
       option(opts, '--auto-gen-config') do
-        validate_auto_gen_config_option(args)
+        @validator.validate_auto_gen_config_option(args)
         @options[:formatters] = [[DEFAULT_FORMATTER],
                                  [Formatter::DisabledConfigFormatter,
                                   ConfigLoader::AUTO_GENERATED_FILE]]
       end
 
       option(opts, '--exclude-limit COUNT') do
-        validate_exclude_limit_option(args)
+        @validator.validate_exclude_limit_option(args)
       end
 
       option(opts, '--force-exclusion')
@@ -182,6 +152,44 @@ module RuboCop
     def long_opt_symbol(args)
       long_opt = args.find { |arg| arg.start_with?('--') }
       long_opt[2..-1].sub(/ .*/, '').tr('-', '_').to_sym
+    end
+  end
+
+  # Validates option arguments and the options' compatibilty with each other.
+  class OptionsValidator
+    def initialize(options)
+      @options = options
+    end
+
+    # Cop name validation must be done later than option parsing, so it's not
+    # called from within Options.
+    def self.validate_cop_list(names)
+      return unless names
+
+      namespaces = Cop::Cop.all.types.map { |t| t.to_s.capitalize }
+      names.each do |name|
+        next if Cop::Cop.all.any? { |c| c.cop_name == name }
+        next if namespaces.include?(name)
+        next if %w(Syntax Lint/Syntax).include?(name)
+
+        fail ArgumentError, "Unrecognized cop or namespace: #{name}."
+      end
+    end
+
+    def validate_compatibility
+      if @options.key?(:only) &&
+         (@options[:only] & %w(Lint/UnneededDisable UnneededDisable)).any?
+        fail ArgumentError, 'Lint/UnneededDisable can not be used with --only.'
+      end
+      if @options.key?(:except) &&
+         (@options[:except] & %w(Lint/Syntax Syntax)).any?
+        fail ArgumentError, 'Syntax checking can not be turned off.'
+      end
+      if @options.key?(:cache) && !%w(true false).include?(@options[:cache])
+        fail ArgumentError, '-C/--cache argument must be true or false'
+      end
+      return if (incompat = @options.keys & Options::EXITING_OPTIONS).size <= 1
+      fail ArgumentError, "Incompatible cli options: #{incompat.inspect}"
     end
 
     def validate_auto_gen_config_option(args)
