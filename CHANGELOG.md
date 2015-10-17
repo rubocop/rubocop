@@ -33,6 +33,7 @@
 * [#2295](https://github.com/bbatsov/rubocop/issues/2295): Fix Performance/Detect autocorrect to handle rogue newlines. ([@palkan][])
 * [#2294](https://github.com/bbatsov/rubocop/issues/2294): Do not register an offense in `Performance/StringReplacement` for regex with options. ([@rrosenblum][])
 * Fix `Style/UnneededPercentQ` condition for single-quoted literal containing interpolation-like string. ([@eagletmt][])
+* [#2324](https://github.com/bbatsov/rubocop/issues/2324): Handle `--only Lint/Syntax` and `--except Lint/Syntax` correctly. ([@jonas054][])
 
 ## 0.34.2 (21/09/2015)
 
