@@ -1304,6 +1304,20 @@ describe RuboCop::CLI, :isolated_environment do
             .to include('Unrecognized cop or namespace: Style/123.')
         end
 
+        it 'exits with error if an empty string is given' do
+          create_file('example.rb', 'x')
+          expect(cli.run(['--only', ''])).to eq(1)
+          expect($stderr.string).to include('Unrecognized cop or namespace: .')
+        end
+
+        %w(Syntax Lint/Syntax).each do |name|
+          it "only checks syntax if #{name} is given" do
+            create_file('example.rb', 'x ')
+            expect(cli.run(['--only', name])).to eq(0)
+            expect($stdout.string).to include('no offenses detected')
+          end
+        end
+
         %w(Lint/UnneededDisable UnneededDisable).each do |name|
           it "exits with error if cop name #{name} is passed" do
             create_file('example.rb', ['if x== 0 ',
@@ -1490,6 +1504,21 @@ describe RuboCop::CLI, :isolated_environment do
           expect(cli.run(['--except', 'Style/123'])).to eq(1)
           expect($stderr.string)
             .to include('Unrecognized cop or namespace: Style/123.')
+        end
+
+        it 'exits with error if an empty string is given' do
+          create_file('example.rb', 'x')
+          expect(cli.run(['--except', ''])).to eq(1)
+          expect($stderr.string).to include('Unrecognized cop or namespace: .')
+        end
+
+        %w(Syntax Lint/Syntax).each do |name|
+          it "exits with error if #{name} is given" do
+            create_file('example.rb', 'x ')
+            expect(cli.run(['--except', name])).to eq(1)
+            expect($stderr.string)
+              .to include('Syntax checking can not be turned off.')
+          end
         end
       end
 

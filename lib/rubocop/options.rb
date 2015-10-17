@@ -35,8 +35,10 @@ module RuboCop
 
       namespaces = Cop::Cop.all.types.map { |t| t.to_s.capitalize }
       names.each do |name|
-        next if Cop::Cop.all.any? { |c| c.cop_name == name } ||
-                namespaces.include?(name)
+        next if Cop::Cop.all.any? { |c| c.cop_name == name }
+        next if namespaces.include?(name)
+        next if %w(Syntax Lint/Syntax).include?(name)
+
         fail ArgumentError, "Unrecognized cop or namespace: #{name}."
       end
     end
@@ -65,6 +67,10 @@ module RuboCop
          (@options[:only] & %w(Lint/UnneededDisable UnneededDisable)).any?
         fail ArgumentError, 'Lint/UnneededDisable can not be used with --only.'
       end
+      if @options.key?(:except) &&
+         (@options[:except] & %w(Lint/Syntax Syntax)).any?
+        fail ArgumentError, 'Syntax checking can not be turned off.'
+      end
       if @options.key?(:cache) && !%w(true false).include?(@options[:cache])
         fail ArgumentError, '-C/--cache argument must be true or false'
       end
@@ -80,9 +86,14 @@ module RuboCop
 
     def add_cop_selection_csv_option(option, opts)
       option(opts, "--#{option} [COP1,COP2,...]") do |list|
-        @options[:"#{option}"] = list.split(',').map do |c|
-          Cop::Cop.qualified_cop_name(c, "--#{option} option")
-        end
+        @options[:"#{option}"] =
+          if list.empty?
+            ['']
+          else
+            list.split(',').map do |c|
+              Cop::Cop.qualified_cop_name(c, "--#{option} option")
+            end
+          end
       end
     end
 
