@@ -25,10 +25,10 @@ module RuboCop
           *_, rescue_args = *rescue_modifier
 
           correction =
-            "begin\n" <<
-            indentation(node) << operation.source <<
-            "\n#{offset(node)}rescue\n" <<
-            indentation(node) << rescue_args.source <<
+            "begin\n" +
+            indentation(node) + operation.source +
+            "\n#{offset(node)}rescue\n" +
+            indentation(node) + rescue_args.source +
             "\n#{offset(node)}end"
           range = Parser::Source::Range.new(node.loc.expression.source_buffer,
                                             node.loc.expression.begin_pos,

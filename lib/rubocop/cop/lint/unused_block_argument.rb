@@ -26,7 +26,8 @@ module RuboCop
         end
 
         def message(variable)
-          message = "Unused #{variable_type(variable)} - `#{variable.name}`."
+          message =
+            "Unused #{variable_type(variable)} - `#{variable.name}`.".dup
 
           return message if variable.explicit_block_local_variable?
 
@@ -65,7 +66,7 @@ module RuboCop
         end
 
         def message_for_lambda(variable, all_arguments)
-          message = message_for_underscore_prefix(variable)
+          message = message_for_underscore_prefix(variable).dup
 
           if all_arguments.none?(&:referenced?)
             message << ' Also consider using a proc without arguments ' \

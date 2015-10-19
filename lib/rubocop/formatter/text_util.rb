@@ -11,7 +11,7 @@ module RuboCop
                  'no'
                else
                  number.to_s
-               end
+               end.dup
 
         text << " #{thing}"
         text << 's' unless number == 1

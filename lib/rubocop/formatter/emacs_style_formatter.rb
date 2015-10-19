@@ -8,7 +8,7 @@ module RuboCop
     class EmacsStyleFormatter < BaseFormatter
       def file_finished(file, offenses)
         offenses.each do |o|
-          message = o.corrected? ? '[Corrected] ' : ''
+          message = (o.corrected? ? '[Corrected] ' : '').dup
           message << o.message
 
           output.printf("%s:%d:%d: %s: %s\n",

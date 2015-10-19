@@ -27,7 +27,7 @@ module RuboCop
       private
 
       def cops_disabled_in_comments_summary
-        summary = "\nCops disabled line ranges:\n\n"
+        summary = "\nCops disabled line ranges:\n\n".dup
 
         @cop_disabled_line_ranges.each do |file, disabled_cops|
           disabled_cops.each do |cop, line_ranges|

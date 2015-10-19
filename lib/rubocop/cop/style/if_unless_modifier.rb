@@ -63,7 +63,7 @@ module RuboCop
             c.loc.line == node.loc.line
           end
           if first_line_comment
-            oneline << ' ' << first_line_comment.loc.expression.source
+            oneline << ' ' + first_line_comment.loc.expression.source
           end
           oneline = "(#{oneline})" if parenthesize?(node)
 

@@ -197,10 +197,10 @@ module RuboCop
             _node, rescue_clause = *node.parent
             _, _, rescue_result = *rescue_clause
 
-            "begin\n" <<
-              indentation(node) << assignment.join("\n#{indentation(node)}") <<
-              "\n#{offset(node)}rescue\n" <<
-              indentation(node) << rescue_result.source <<
+            "begin\n" + indentation(node) +
+              assignment.join("\n#{indentation(node)}") +
+              "\n#{offset(node)}rescue\n" +
+              indentation(node) + rescue_result.source +
               "\n#{offset(node)}end"
           end
 
@@ -220,8 +220,9 @@ module RuboCop
                                         parent.loc.keyword.begin_pos,
                                         parent.loc.expression.end_pos)
 
-            "#{modifier_range.source}\n" <<
-              indentation(node) << assignment.join("\n#{indentation(node)}") <<
+            "#{modifier_range.source}\n" +
+              indentation(node) +
+              assignment.join("\n#{indentation(node)}") +
               "\n#{offset(node)}end"
           end
 
