@@ -354,4 +354,55 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
       end
     end
   end
+
+  context 'braces for chaining style' do
+    let(:cop_config) { { 'EnforcedStyle' => 'braces_for_chaining' } }
+
+    it 'accepts a multi-line block with do-end' do
+      inspect_source(cop, ['each do |x|',
+                           'end'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense for multi-line chained do-end blocks' do
+      inspect_source(cop, ['each do |x|',
+                           'end.map(&:to_s)'])
+      expect(cop.messages)
+        .to eq([
+          'Prefer `{...}` over `do...end` for multi-line chained blocks.'])
+    end
+
+    it 'auto-corrects do-end for chained blocks' do
+      src = ['each do |x|',
+             'end.map(&:to_s)']
+      new_source = autocorrect_source(cop, src)
+      expect(new_source).to eq("each { |x|\n}.map(&:to_s)")
+    end
+
+    it 'registers an offense for a single line block with do-end' do
+      inspect_source(cop, 'each do |x| end')
+      expect(cop.messages)
+        .to eq(['Prefer `{...}` over `do...end` for single-line blocks.'])
+    end
+
+    it 'accepts a single line block with braces' do
+      inspect_source(cop, 'each { |x| }')
+      expect(cop.offenses).to be_empty
+    end
+
+    context 'when there are braces around a multi-line block' do
+      it 'registers an offense in the simple case' do
+        inspect_source(cop, ['each { |x|',
+                             '}'])
+        expect(cop.messages)
+          .to eq(['Prefer `do...end` for multi-line blocks without chaining.'])
+      end
+
+      it 'allows when the block is being chained' do
+        inspect_source(cop, ['each { |x|',
+                             '}.map(&:to_sym)'])
+        expect(cop.offenses).to be_empty
+      end
+    end
+  end
 end
