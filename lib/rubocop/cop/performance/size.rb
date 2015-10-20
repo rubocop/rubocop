@@ -33,7 +33,7 @@ module RuboCop
           return unless method == :count
           return unless array?(receiver) || hash?(receiver)
           return if node.parent && node.parent.block_type?
-          return if args && args.block_pass_type?
+          return if args
 
           add_offense(node, node.loc.selector)
         end
