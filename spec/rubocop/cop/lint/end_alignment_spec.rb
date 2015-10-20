@@ -88,6 +88,26 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
     end
   end
 
+  context 'case as argument' do
+    context 'when AlignWith is keyword' do
+      let(:cop_config) do
+        { 'AlignWith' => 'keyword', 'AutoCorrect' => true }
+      end
+
+      include_examples 'aligned', 'test case', 'a when b', '     end'
+      include_examples 'misaligned', 'test ', 'case', 'a when b', 'end'
+    end
+
+    context 'when AlignWith is variable' do
+      let(:cop_config) do
+        { 'AlignWith' => 'variable', 'AutoCorrect' => true }
+      end
+
+      include_examples 'aligned', 'test case', 'a when b', 'end'
+      include_examples 'misaligned', '', 'test case', 'a when b', '     end'
+    end
+  end
+
   context 'regarding assignment' do
     context 'when AlignWith is keyword' do
       include_examples 'misaligned', 'var = ', 'if',     'test',     'end'
