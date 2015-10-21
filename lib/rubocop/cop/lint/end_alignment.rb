@@ -41,6 +41,10 @@ module RuboCop
         end
 
         def on_case(node)
+          if argument_case?(node)
+            return check_alignment(node.ancestors.first, node)
+          end
+
           check_offset_of_node(node)
         end
 
@@ -57,24 +61,40 @@ module RuboCop
           return unless [:if, :while, :until, :case].include?(rhs.type)
           return if ternary_op?(rhs)
 
-          expr = node.loc.expression
-          if variable_alignment?(expr, rhs, style)
+          check_alignment(node, rhs)
+        end
+
+        def check_alignment(outer_node, inner_node)
+          expr = outer_node.loc.expression
+          if variable_alignment?(expr, inner_node, style)
             range = Parser::Source::Range.new(expr.source_buffer,
                                               expr.begin_pos,
-                                              rhs.loc.keyword.end_pos)
-            offset = rhs.loc.keyword.column - node.loc.expression.column
+                                              inner_node.loc.keyword.end_pos)
+            offset =
+              inner_node.loc.keyword.column - outer_node.loc.expression.column
           else
-            range = rhs.loc.keyword
+            range = inner_node.loc.keyword
             offset = 0
           end
 
-          check_offset(rhs, range.source, offset)
-          ignore_node(rhs) # Don't check again.
+          check_offset(inner_node, range.source, offset)
+          ignore_node(inner_node) # Don't check again.
         end
 
         def autocorrect(node)
-          align(node,
-                style == :variable ? node.each_ancestor(:lvasgn).first : node)
+          align(node, alignment_node(node))
+        end
+
+        def alignment_node(node)
+          return node unless style == :variable
+          return node.ancestors.first if argument_case?(node)
+
+          node.each_ancestor(:lvasgn).first
+        end
+
+        def argument_case?(node)
+          node.case_type? && !node.ancestors.empty? &&
+            node.ancestors.first.send_type?
         end
       end
     end
