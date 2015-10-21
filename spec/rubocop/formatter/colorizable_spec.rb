@@ -1,8 +1,6 @@
 # encoding: utf-8
 
 require 'spec_helper'
-require 'rubocop/formatter/colorizable'
-require 'stringio'
 
 module RuboCop
   module Formatter

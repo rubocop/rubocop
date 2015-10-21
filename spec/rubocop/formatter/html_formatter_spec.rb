@@ -1,7 +1,6 @@
 # encoding: utf-8
 
 require 'spec_helper'
-require 'fileutils'
 
 module RuboCop
   module Formatter
