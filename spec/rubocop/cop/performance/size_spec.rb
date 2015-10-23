@@ -62,6 +62,12 @@ describe RuboCop::Cop::Performance::Size do
       expect(cop.offenses).to be_empty
     end
 
+    it 'does not register an offense when calling count with an argument' do
+      inspect_source(cop, '[1, 2, 3].count(1)')
+
+      expect(cop.offenses).to be_empty
+    end
+
     it 'corrects count to size' do
       new_source = autocorrect_source(cop, '[1, 2, 3].count')
 
@@ -120,6 +126,12 @@ describe RuboCop::Cop::Performance::Size do
 
     it 'does not register an offense when calling count with a to_proc block' do
       inspect_source(cop, '{a: 1, b: 2, c: 3}.count(&:nil?)')
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'does not register an offense when calling count with an argument' do
+      inspect_source(cop, '{a: 1, b: 2, c: 3}.count(1)')
 
       expect(cop.offenses).to be_empty
     end
