@@ -82,7 +82,7 @@ module RuboCop
             corrector.insert_before(range, ' ' * column_delta)
           end
         else
-          remove(range, corrector) if range.source =~ /^[ \t]+$/
+          remove(range, corrector) if range.source =~ /\A[ \t]+\z/
         end
       end
 

@@ -263,6 +263,20 @@ describe RuboCop::Cop::Style::IndentationWidth do
           corrected = autocorrect_source(cop, src)
           expect(corrected).to eq src.join("\n")
         end
+
+        it 'handles lines with only whitespace' do
+          corrected = autocorrect_source(cop, ['def x',
+                                               '    y',
+                                               ' ',
+                                               'rescue',
+                                               'end'])
+
+          expect(corrected).to eq ['def x',
+                                   '  y',
+                                   ' ',
+                                   'rescue',
+                                   'end'].join("\n")
+        end
       end
 
       it 'accepts a one line if statement' do
