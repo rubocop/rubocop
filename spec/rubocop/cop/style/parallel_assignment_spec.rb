@@ -309,6 +309,16 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
                                   '  end',
                                   'end'].join("\n"))
       end
+
+      it 'when the expression order matters' do
+        new_source = autocorrect_source(cop, [
+          'type, value_type = type.class, type.first'])
+
+        expect(new_source).to eq([
+          'value_type = type.first',
+          'type = type.class'
+        ].join("\n"))
+      end
     end
 
     describe 'does not correct' do
