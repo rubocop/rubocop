@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 require 'spec_helper'
+require 'timeout'
 
 describe RuboCop::CLI, :isolated_environment do
   include FileHelper
