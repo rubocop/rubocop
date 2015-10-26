@@ -38,6 +38,7 @@
 * [#2317](https://github.com/bbatsov/rubocop/issues/2317): Handle `case` as an argument correctly in `Lint/EndAlignment`. ([@lumeet][])
 * [#2287](https://github.com/bbatsov/rubocop/issues/2287): Fix auto-correct of lines with only whitespace in `Style/IndentationWidth`. ([@lumeet][])
 * [#2331](https://github.com/bbatsov/rubocop/issues/2331): Do not register an offense in `Performance/Size` for `count` with an argument. ([@rrosenblum][])
+* Handle a backslash at the end of a line in `Style/SpaceAroundOperators`. ([@lumeet][])
 
 ## 0.34.2 (21/09/2015)
 
