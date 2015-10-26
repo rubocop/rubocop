@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     # FIXME
     class Team
-      attr_reader :errors, :updated_source_file
+      attr_reader :errors, :warnings, :updated_source_file
 
       alias_method :updated_source_file?, :updated_source_file
 
@@ -13,6 +13,7 @@ module RuboCop
         @config = config
         @options = options || { auto_correct: false, debug: false }
         @errors = []
+        @warnings = []
       end
 
       def autocorrect?
@@ -96,11 +97,23 @@ module RuboCop
       def process_commissioner_errors(file, file_errors)
         file_errors.each do |cop, errors|
           errors.each do |e|
-            handle_error(e,
-                         Rainbow("An error occurred while #{cop.name}" \
-                         " cop was inspecting #{file}.").red)
+            if e.is_a?(Warning)
+              handle_warning(e,
+                             Rainbow("#{e.message} (from file: " \
+                             "#{file})").yellow)
+            else
+              handle_error(e,
+                           Rainbow("An error occurred while #{cop.name}" \
+                           " cop was inspecting #{file}.").red)
+            end
           end
         end
+      end
+
+      def handle_warning(e, message)
+        @warnings << message
+        warn message
+        puts e.backtrace if debug?
       end
 
       def handle_error(e, message)

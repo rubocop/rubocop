@@ -24,6 +24,7 @@ module RuboCop
       runner = Runner.new(@options, @config_store)
       trap_interrupt(runner)
       all_passed = runner.run(paths)
+      display_warning_summary(runner.warnings)
       display_error_summary(runner.errors)
 
       all_passed && !runner.aborting? && runner.errors.empty? ? 0 : 1
@@ -98,6 +99,14 @@ module RuboCop
         puts cnf.to_yaml.lines.to_a[1..-1].map { |line| '  ' + line }
         puts
       end
+    end
+
+    def display_warning_summary(warnings)
+      return if warnings.empty?
+
+      warn Rainbow("\n#{pluralize(warnings.size, 'warning')}:").yellow
+
+      warnings.each { |warning| warn warning }
     end
 
     def display_error_summary(errors)

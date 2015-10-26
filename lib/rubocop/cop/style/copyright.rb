@@ -68,10 +68,12 @@ module RuboCop
         end
 
         def autocorrect(token)
-          fail 'An AutocorrectNotice must be defined in ' \
+          fail Warning, 'An AutocorrectNotice must be defined in ' \
             'your RuboCop config' if autocorrect_notice.empty?
-          fail "AutocorrectNotice '#{autocorrect_notice}' must match " \
-            "Notice /#{notice}/" unless autocorrect_notice =~ Regexp.new(notice)
+          regex = Regexp.new(notice)
+          fail Warning, "AutocorrectNotice '#{autocorrect_notice}' must " \
+            "match Notice /#{notice}/" unless autocorrect_notice =~ regex
+
           lambda do |corrector|
             if token.nil?
               range = Parser::Source::Range.new('', 0, 0)
