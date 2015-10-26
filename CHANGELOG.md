@@ -18,6 +18,7 @@
 * [#2277](https://github.com/bbatsov/rubocop/pull/2277): New cop `Style/FirstMethodArgumentLineBreak` checks for a line break before the first argument in a multi-line method call. ([@panthomakos][])
 * [#2277](https://github.com/bbatsov/rubocop/pull/2277): New cop `Style/FirstMethodParameterLineBreak` checks for a line break before the first parameter in a multi-line method parameter definition. ([@panthomakos][])
 * Add `Rails/PluralizationGrammar` cop, checks for incorrect grammar when using methods like `3.day.ago`, when you should write `3.days.ago`. ([@maxjacobson][])
+* [#2347](https://github.com/bbatsov/rubocop/pull/2347): `Lint/Eval` cop does not warn about "security risk" when eval argument is a string literal without interpolations. ([@alexdowad][])
 
 ### Bug Fixes
 
@@ -1665,3 +1666,4 @@
 [@cornelius]: https://github.com/cornelius
 [@eagletmt]: https://github.com/eagletmt
 [@apiology]: https://github.com/apiology
+[@alexdowad]: https://github.com/alexdowad
