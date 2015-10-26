@@ -57,6 +57,12 @@ describe RuboCop::Cop::Style::VariableName, :config do
       expect(cop.highlights).to eq(['@@myAttr'])
     end
 
+    it 'registers an offense for camel case in method parameter' do
+      inspect_source(cop, 'def method(funnyArg); end')
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.highlights).to eq(['funnyArg'])
+    end
+
     include_examples 'always accepted'
   end
 
@@ -91,6 +97,12 @@ describe RuboCop::Cop::Style::VariableName, :config do
     it 'accepts camel case in class variable name' do
       inspect_source(cop, '@@myAttr = 2')
       expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense for snake case in method parameter' do
+      inspect_source(cop, 'def method(funny_arg); end')
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.highlights).to eq(['funny_arg'])
     end
 
     include_examples 'always accepted'
