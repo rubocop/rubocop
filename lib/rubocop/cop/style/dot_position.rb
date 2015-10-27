@@ -46,6 +46,12 @@ module RuboCop
 
           dot_line = node.loc.dot.line
 
+          # don't register an offense if there is a line comment between
+          # the dot and the selector
+          # otherwise, we might break the code while "correcting" it
+          # (even if there is just an extra blank line, treat it the same)
+          return true if (selector_line - dot_line) > 1
+
           case style
           when :leading then dot_line == selector_line
           when :trailing then dot_line != selector_line

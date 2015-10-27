@@ -71,6 +71,24 @@ describe RuboCop::Cop::Style::DotPosition, :config do
                                 'something',
                                 '  .method_name'].join("\n"))
     end
+
+    context 'when there is an intervening line comment' do
+      it 'does not register offense' do
+        inspect_source(cop, ['something.',
+                             '# a comment here',
+                             '  method_name'])
+        expect(cop.offenses).to be_empty
+      end
+    end
+
+    context 'when there is an intervening blank line' do
+      it 'does not register offense' do
+        inspect_source(cop, ['something.',
+                             '',
+                             '  method_name'])
+        expect(cop.offenses).to be_empty
+      end
+    end
   end
 
   context 'Trailing dots style' do
