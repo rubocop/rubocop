@@ -115,6 +115,12 @@ describe RuboCop::Cop::Style::SpaceAroundOperators, :config do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts an operator at the beginning of a line' do
+    inspect_source(cop, ['a = b \\',
+                         '    && c'])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'registers an offenses for exponent operator with spaces' do
     inspect_source(cop, 'x = a * b ** 2')
     expect(cop.messages).to eq(

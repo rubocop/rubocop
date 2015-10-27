@@ -57,6 +57,8 @@ module RuboCop
 
         def check_operator(op)
           with_space = range_with_surrounding_space(op)
+          return if with_space.source.start_with?("\n")
+
           if op.is?('**')
             unless with_space.is?('**')
               add_offense(with_space, op,
