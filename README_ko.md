@@ -12,29 +12,22 @@
 > Role models are important. <br/>
 > -- Officer Alex J. Murphy / RoboCop
 
-**RuboCop** is a Ruby static code analyzer. Out of the box it will
-enforce many of the guidelines outlined in the community
-[Ruby Style Guide](https://github.com/bbatsov/ruby-style-guide).
 
-Most aspects of its behavior can be tweaked via various
-[configuration options](https://github.com/bbatsov/rubocop/blob/master/config/default.yml).
+**RuboCop**은 루비정적 분석 소프트웨어이며 커뮤니티 [Ruby Style Guide](https://github.com/bbatsov/ruby-style-guide)을 기준으로 정적분석을 수행합니다.
 
-Apart from reporting problems in your code, RuboCop can also
-automatically fix some of the problems for you.
+다양한
+[configuration options](https://github.com/bbatsov/rubocop/blob/master/config/default.yml)을 사용해 RuboCop의 동작을 설정할 수 있습니다.
+
+코드 정적 분석은 물론 일부 오류들은 자동으로 수정할 수도 있습니다.
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/bbatsov/rubocop?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-You can support my work on RuboCop via
-[Salt](https://salt.bountysource.com/teams/rubocop) and
-[Gratipay](https://www.gratipay.com/rubocop).
+[Salt](https://salt.bountysource.com/teams/rubocop) 혹은
+[Gratipay](https://www.gratipay.com/rubocop)를 통해 이 프로젝트를 지원할 수 있습니다.
 
 [![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.1.3/dist/gratipay.png)](https://gratipay.com/rubocop)
 
-**This documentation tracks the `master` branch of RuboCop. Some of
-the features and settings discussed here might not be available in
-older releases (including the current stable release). Please, consult
-the relevant git tag (e.g. v0.30.0) if you need documentation for a
-specific RuboCop release.**
+**이 문서는 RuboCop의 'master' 브랜치를 기준으로 작성되었습니다. 이 문서에 소개된 몇몇 기능 및 설정들은 오래된 버전에서는 동작하지 않을 수 있습니다(현재 stable release를 포함해). 특정한 RuboCop release 버전 문서를 확인하고 싶은 경우 해당 git tag(예 v0.30.0)을 사용하시기 바랍니다.**
 
 - [Installation](#installation)
 - [Basic Usage](#basic-usage)
@@ -95,13 +88,13 @@ specific RuboCop release.**
 
 ## Installation
 
-**RuboCop**'s installation is pretty standard:
+**RuboCop**은 일반적인 gem install 절차에 따라 설치 가능할 수 있습니다.
 
 ```
 $ gem install rubocop
 ```
 
-If you'd rather install RuboCop using `bundler`, don't require it in your `Gemfile`:
+`bundler`를 사용해 설치를 진행하고 싶다면, `Gemfile`에 다음의 코드를 추가합니다:
 
 ```
 gem 'rubocop', require: false
@@ -109,20 +102,19 @@ gem 'rubocop', require: false
 
 ## Basic Usage
 
-Running `rubocop` with no arguments will check all Ruby source files
-in the current directory:
+파리미터 없이 `rubocop` 명령어를 실행하면 현재 디렉토리(및 그 하위 디렉토리)에 포함된 모드 Ruby 파일들에 대한 정적분석을 수행합니다:
 
 ```
 $ rubocop
 ```
 
-Alternatively you can pass `rubocop` a list of files and directories to check:
+정적분석을 수행할 대상 파일의 리스트나 디렉토리를 파라미터로 설정할 수 있습니다:
 
 ```
 $ rubocop app spec lib/something.rb
 ```
 
-Here's RuboCop in action. Consider the following Ruby source code:
+RuboCop을 실행해 보겠습니다. 다음 루비 소스 프로젝트 코드를 사용한다고 가정합니다:
 
 ```ruby
 def badName
@@ -132,7 +124,7 @@ def badName
 end
 ```
 
-Running RuboCop on it (assuming it's in a file named `test.rb`) would produce the following report:
+위의 프로젝트에 RoboCop을 실행하면(파일 이름은 `test.rb`라고 가정) 다음과 같은 보고서가 표시됩니다:
 
 ```
 Inspecting 1 file
@@ -156,7 +148,7 @@ test.rb:4:5: W: end at 4, 4 is not aligned with if at 2, 2
 1 file inspected, 4 offenses detected
 ```
 
-For more details check the available command-line options:
+명령어 파라미터를 추가하여 더 많은 분석 정보를 확인할 수 있습니다:
 
 ```
 $ rubocop -h
@@ -164,77 +156,60 @@ $ rubocop -h
 
 Command flag              | Description
 --------------------------|------------------------------------------------------------
-`-v/--version`            | Displays the current version and exits.
-`-V/--verbose-version`    | Displays the current version plus the version of Parser and Ruby.
-`-L/--list-target-files`  | List all files RuboCop will inspect.
-`-F/--fail-fast`          | Inspects in modification time order and stops after first file with offenses.
-`-C/--cache`              | Store and reuse results for faster operation.
-`-d/--debug`              | Displays some extra debug output.
-`-D/--display-cop-names`  | Displays cop names in offense messages.
-`-c/--config`             | Run with specified config file.
-`-f/--format`             | Choose a formatter.
-`-o/--out`                | Write output to a file instead of STDOUT.
-`-r/--require`            | Require Ruby file (see [Loading Extensions](#loading-extensions)).
-`-R/--rails`              | Run extra Rails cops.
-`-l/--lint`               | Run only lint cops.
-`-a/--auto-correct`       | Auto-correct certain offenses. *Note:* Experimental - use with caution.
-`--only`                  | Run only the specified cop(s) and/or cops in the specified departments.
-`--except`                | Run all cops enabled by configuration except the specified cop(s) and/or departments.
-`--auto-gen-config`       | Generate a configuration file acting as a TODO list.
-`--exclude-limit`         | Limit how many individual files `--auto-gen-config` can list in `Exclude` parameters, default is 15.
-`--show-cops`             | Shows available cops and their configuration.
-`--fail-level`            | Minimum [severity](#severity) for exit with error code. Full severity name or upper case initial can be given. Normally, auto-corrected offenses are ignored. Use `A` or `autocorrect` if you'd like them to trigger failure.
-`-s/--stdin`              | Pipe source from STDIN. This is useful for editor integration.
+`-v/--version`            | 현재 RuboCop 버전을 표시합니다.
+`-V/--verbose-version`    | 현재 RuboCop 버전에 Parser, Ruby 버전을 함께 표시합니다.
+`-L/--list-target-files`  | RuboCop이 정적 분석을 수행하는 모든 파일들을 리스팅합니다.
+`-F/--fail-fast`          | 가장 최근 수정된 파일 순으로 정적 분석을 수행하며, 위반 사항(offense)가 발생하면 정적 분석을 종료합니다.
+`-C/--cache`              | 빠른 정적분석을 위해 정적 분석 결과 데이터를 저장 및 재사용합니다.
+`-d/--debug`              | 추가적인 디버그 메시지를 출력합니다.
+`-D/--display-cop-names`  | 위반 사항 발견 메시지에 cop(check) 이름을 표시합니다.
+`-c/--config`             | 지정한 config 파일을 기준으로 정적분석을 수행합니다.
+`-f/--format`             | Formatter를 선택합니다.
+`-o/--out`                | STDOUT이 아닌 지정된 파일에 보고서를 저장합니다.
+`-r/--require`            | Ruby 파일을 요청합니다([Loading Extensions](#loading-extensions) 참고).
+`-R/--rails`              | Rails cop을 추가 실행합니다.
+`-l/--lint`               | Lint cops 만을 실행합니다.
+`-a/--auto-correct`       | 특정한 위반 사항을 자동으로 수정한다. (*주의: * 실험적인 기능이므로 테스트 후 적용하길 권장합니다)
+`--only`                  | 지정한 cops 혹은 지정된 department에 설정된 cops 만을 실행합니다.
+`--except`                | 지정한 cops를 제외하고 configuration에 활성화 되어 있는 모든 cops를 실행합니다.
+`--auto-gen-config`       | 자동으로 configuration 파일을 생성하며, 이 configuration 파일은 TODO 리스트처럼 사용합니다.
+`--exclude-limit`         | `--auto-gen-config` 가 Exclude parameter에 포함할 수 있는 최대 파일수를 지정합니다. 기본값은 15입니다.
+`--show-cops`             | 실행 가능한 cops와 설정값을 출력합니다.
+`--fail-level`            | 위반이 발생하는 경우 분석을 중지하기 위한 Minimum [severity](#severity)를 설정합니다. severity의 이름을 쓰거나 severity를 의미하는 대문자를 사용할 수 있습니다. 일반적으로 auto-corrected offenses는 무시됩니다. `A` 혹은 `auto-correct`를 사용하면 auto-corrected offenses를 실패 트리거로 사용할 수 있다.
+`-s/--stdin`              | 분석 과정에서 표준 입력도구(STDIN, 키보드)를 파이핑합니다. Editor와 통합시 유용하게 사용할 수 있습니다.
 
 ### Cops
 
-In RuboCop lingo the various checks performed on the code are called cops. There are several cop departments.
-
-You can also load [custom cops](#custom-cops).
+RuboCop에서 코드 정적 분석을 위해 수행하는 여려 가지 확인 작업을 cops라고 칭합니다. cop은 다양한 department로 구분됩니다.
+[custom cops](#custom-cops)을 로딩하여 사용할 수도 있습니다.
 
 #### Style
 
-Most of the cops in RuboCop are so called style cops that check for
-stylistics problems in your code. Almost all of the them are based on
-the Ruby Style Guide. Many of the style cops have configurations
-options allowing them to support different popular coding
-conventions.
+RuboCop의 대부분의  cops는 style cops 라 불리며 코드 스타일의 문제점을 확인합니다. style cops는 대부분은 Ruby Style Guide에 기반을 두고 있다. Style cops는 각각 configuration option을 가지고 있으며 이 옵션들을 통해 다양한 코딩 컨벤션을 지원한다.
 
 #### Lint
 
-Lint cops check for possible errors and very bad practices in your
-code. RuboCop implements in a portable way all built-in MRI lint
-checks (`ruby -wc`) and adds a lot of extra lint checks of its
-own. You can run only the lint cops like this:
+Lint cops는 잠재적인 오류와 바람직하지 않은 프랙티스들을 확인합니다. RuboCop 매우 편리한 방법으로 내장된 MRI lint checks (`ruby -wc`)를 구현하였으며, 추가로 고유의 lint check 요소들을 포함합니다. lint check cops 만을 실행할 경우 다음 명령어를 사용합니다:
 
 ```
 $ rubocop -l
 ```
 
-The `-l`/`--lint` option can be used together with `--only` to run all the
-enabled lint cops plus a selection of other cops.
-
-Disabling any of the lint cops is generally a bad idea.
+`-l`/`--lint` 옵션은 `–only` 옵션과 함께 사용할 수 있으며, 두 옵션을 함께 사용하면 모든 lint cops를 사용하면서 다른 cops들을 추가할 수 있습니다. lint cops을 비활성화하는 것은 가급적 권장하지 않습니다.
 
 #### Metrics
 
-Metrics cops deal with properties of the source code that can be measured,
-such as class length, method length, etc. Generally speaking, they have a
-configuration parameter called `Max` and when running
-`rubocop --auto-gen-config`, this parameter will be set to the highest value
-found for the inspected code.
+Metrics cops는 측정 가능한 소스 코드의 속성들을 다룹니다. 측정 가능한 소스 코드의 속성으로는 클래스 크기<sub>class length</sub>, 메소드 크기<sub>method length</sub>와 같은 것들이 포함됩니다. 일반적으로 이러한 속성들은 'Max'라는 파라미터를 가지고 있으며 `rubocop --auto-gen-config` 명령어를 수행할 때 코드를 분석한 값중 가장 큰 값으로 이 'Max' 값을 설정합니다.
 
 #### Rails
 
-Rails cops are specific to the Ruby on Rails framework. Unlike style
-and lint cops they are not used by default and you have to request them
-specifically:
+Rails cops는 Ruby on Rails 프레임워크에 특화되어 있습니다. Style, lint cops와 다르게 rails cops는 기본적으로 사용되지 않으며 사용할 경우에는 다음의 명령어를 수행해야 합니다:
 
 ```
 $ rubocop -R
 ```
 
-or add the following directive to your `.rubocop.yml`:
+혹은 다음 지시어를 `.rubocop.yml`에 등록합니다:
 
 ```yaml
 AllCops:
@@ -243,16 +218,9 @@ AllCops:
 
 ## Configuration
 
-The behavior of RuboCop can be controlled via the
-[.rubocop.yml](https://github.com/bbatsov/rubocop/blob/master/.rubocop.yml)
-configuration file. It makes it possible to enable/disable certain cops
-(checks) and to alter their behavior if they accept any parameters. The file
-can be placed either in your home directory or in some project directory.
+RuboCop은 [.rubocop.yml](https://github.com/bbatsov/rubocop/blob/master/.rubocop.yml) 설정 파일에 따라 동작합니다. 이 파일에서는 파일에서는 특정한 cops (checks)를 활성화/비활성화 할 수 있으며, cops의 파라미터 값을 설정할 수 있으며 홈 디렉토리/ 프로젝트 디렉토리에 위치합니다.
 
-RuboCop will start looking for the configuration file in the directory
-where the inspected file is and continue its way up to the root directory.
-
-The file has the following format:
+RuboCop은 분석 대상 파일이 있는 디렉토리의 configuration 파일을 가장 먼저 찾기 시작하며, 해당 디렉토리에 configuration 파일이 없을 경우 상위 디렉토리의 파일을 사용합니다. configuration 파일은 다음과 같은 형태로 구성되어 있습니다:
 
 ```yaml
 inherit_from: ../.rubocop.yml
@@ -264,26 +232,15 @@ Metrics/LineLength:
   Max: 99
 ```
 
-**Note**: Qualifying cop name with its type, e.g., `Style`, is recommended,
-  but not necessary as long as the cop name is unique across all types.
+**주의**: cop 이름과 cop의 type(예, Style)를 함께 쓸 것을 권장하고 있지만, cop 이름에서 type은 중복되어도 관계 없습니다.
 
 ### Inheritance
 
-RuboCop supports inheriting configuration from one or more supplemental
-configuration files at runtime.
+RuboCop은 configruation 파일의 단일 상속, 다중 상속을 런타임에 지원합니다.
 
 #### Inheriting from another configuration file in the project
 
-The optional `inherit_from` directive is used to include configuration
-from one or more files. This makes it possible to have the common
-project settings in the `.rubocop.yml` file at the project root, and
-then only the deviations from those rules in the subdirectories. The
-files can be given with absolute paths or paths relative to the file
-where they are referenced. The settings after an `inherit_from`
-directive override any settings in the file(s) inherited from. When
-multiple files are included, the first file in the list has the lowest
-precedence and the last one has the highest. The format for multiple
-inheritance is:
+옵션인 `inherit_from` 지시어를 사용해서 단일 혹은 다중 설정 파일로부터 상속을 할 수 있습니다. 공통적으로 사용하는 프로젝트 속성은 프로젝트 루트 디렉토리의 `.rubocop.yml`에 설정한 뒤, 하위 디렉토리에는 달라지는 속성값들만 가지고 있는 설정 파일을 별도로 저장해 두고 사용하면 됩니다. 상속하는 파일들은 상대 경로 혹은 절대 경로를 사용해서 지정할 수 있습니다.`inherit_from` 지시자 이후의 설정 내용들은 모두 오버라이딩 되며, 동일한 속성값을 가지고 있는 복수개의 설정 파일을 상속하는 경우 리스트이 가장 마지막에서 호출된 파일로부터 속성값을 상속합니다.  다중 상속은 다음과 같은 형태로 선언한다:
 
 ```yaml
 inherit_from:
@@ -293,21 +250,11 @@ inherit_from:
 
 #### Inheriting configuration from a dependency gem
 
-The optional `inherit_gem` directive is used to include configuration from
-one or more gems external to the current project. This makes it possible to
-inherit a shared dependency's RuboCop configuration that can be used from
-multiple disparate projects.
+옵션인 `inherit_gem`  지시어를 사용해서 프로젝트 외부의 단일 혹은 다중 gem 파일을 포함할 할 수 있습니다. 이 방법을 사용해 공용 의존성을 가진 RuboCop configuration을 상속해서 복수의 분리된 프로젝트들에 적용할 수 있습니다.
 
-Configurations inherited in this way will be essentially *prepended* to the
-`inherit_from` directive, such that the `inherit_gem` configurations will be
-loaded first, then the `inherit_from` relative file paths will be loaded
-(overriding the configurations from the gems), and finally the remaining
-directives in the configuration file will supersede any of the inherited
-configurations. This means the configurations inherited from one or more gems
-have the lowest precedence of inheritance.
+이 방법으로 상속되는 설정값들은 `inherit_from 지시어 이전에 선언되어야 합니다. `inherit_gem` 지시어로 선언된 설정값들을 먼저 로딩하고, 그 다음으로 'inherit_from' 지시어로 선언된 설정값들을 로딩해야 합니다. 그리고 나서 마지막으로 지시어(cops)로 선언되어 있는 설정값들이 상속됩니다. 즉, 단일 혹은 복수 gem에서 상속되는 설정값들의 우선 순위는 가장 낮습니다.
 
-The directive should be formatted as a YAML Hash using the gem name as the
-key and the relative path within the gem as the value:
+지시어는 YAML Hash 형태로 선언하며 gem의 이름을 key로, gem의 상대 경로를 key의 값으로 사용합니다:
 
 ```yaml
 inherit_gem:
@@ -316,10 +263,7 @@ inherit_gem:
   cucumber: conf/rubocop.yml
 ```
 
-**Note**: If the shared dependency is declared using a [Bundler](http://bundler.io/)
-Gemfile and the gem was installed using `bundle install`, it would be
-necessary to also invoke RuboCop using Bundler in order to find the
-dependency's installation path at runtime:
+**Note**: [Bundler](http://bundler.io/) Gemfile을 사용해 공유된 의존성을 선언한 뒤 해당 gem을 bundle install로 설치힌 경우에는 RuboCop 역시 Gemfile을 통해 설치헤야 해당 의존성의 설치 경로 관련 정보를 런타임에 찾아낼 수 있습니다:
 
 ```
 $ bundle exec rubocop <options...>
@@ -327,27 +271,13 @@ $ bundle exec rubocop <options...>
 
 ### Defaults
 
-The file
-[config/default.yml](https://github.com/bbatsov/rubocop/blob/master/config/default.yml)
-under the RuboCop home directory contains the default settings that
-all configurations inherit from. Project and personal `.rubocop.yml`
-files need only make settings that are different from the default
-ones. If there is no `.rubocop.yml` file in the project or home
-directory, `config/default.yml` will be used.
+RuboCop 홈 디렉토리에 [config/default.yml](https://github.com/bbatsov/rubocop/blob/master/config/default.yml) 파일이 존재합니다. 이 파일은 기본적으로 상속하는 모든 설정의 기본값을 포함하고 있으며, 개별 프로젝트 및 사용자가 정의한 `.rubocop.yml` 파일은 `defualt.yml`과 달리 실제로 사용할 설정값들만 변경하면 됩니다. 프로젝트 혹은 홈 디렉토리에 `.rubocop.yml` 파일이 없는 경우 `config/default.yml` 파일을 기준으로 분석을 수행합니다.
 
 ### Including/Excluding files
 
-RuboCop checks all files found by a recursive search starting from the
-directory it is run in, or directories given as command line
-arguments.  However, it only recognizes files ending with `.rb` or
-extensionless files with a `#!.*ruby` declaration as Ruby files.
-Hidden directories (i.e., directories whose names start with a dot)
-are not searched by default.  If you'd like it to check files that are
-not included by default, you'll need to pass them in on the command
-line, or to add entries for them under `AllCops`/`Include`.  Files and
-directories can also be ignored through `AllCops`/`Exclude`.
+RuboCop은 명령어를 기본적으로 명령어를 실행한 디렉토리로부터 혹은 옵션으로 입력한 디렉토리를 포함해 해당 디렉토리의 모든 하위 디렉토리에 위치한 파일들을 분석합니다. 하지만, '.rb' 확장자를 가진 파일 혹ㄷ은 `#1.*ruby` 지시자를 포함한 파일만 루피 파일로 인식합니다. hidden directory(.으로 시작하는 디렉토리)는 기본적으로 분석 대상에서 제외되며, 이들을 분석 대상으로 포함하고 싶은 경우에는 해당 디렉토리를 커맨드 라인에서 파라미터로 넘기거나 `AllCops / Include` 지시어에 입력해 주어야 합니다. 분석 대상에서 파일이나 디렉토리를 제거하고 싶은 경우에는 `AllCops / Exclude` 지시어를 사용합니다.
 
-Here is an example that might be used for a Rails project:
+레일즈 프로젝트라면 다음과 같은 형태로 분석 대상을 포함/제외시킬 수 있습니다:
 
 ```yaml
 AllCops:
@@ -364,28 +294,16 @@ AllCops:
 # ...
 ```
 
-Files and directories are specified relative to the `.rubocop.yml` file.
+파일과 디렉토리는 `.rubocop.yml` 파일에 대한 상대 경로로 입력합니다.
 
-**Note**: Patterns that are just a file name, e.g. `Rakefile`, will match
-that file name in any directory, but this pattern style deprecated. The
-correct way to match the file in any directory, including the current, is
-`**/Rakefile`.
+**Note**: 모든 폴더의 특정한 파일(예 'Rakefile' 등)을 분석 대상에 포함/ 제외하고자 할 경우, 현재 디렉토리를 포함해 `**/Rakefile`과 같이 패턴을 이력합니다.
 
-**Note**: The pattern `config/**` will match any file recursively under
-`config`, but this pattern style is deprecated and should be replaced by
-`config/**/*`.
+**Note**: config 디렉토리 및 그 하위에 포함된 모든 파일을 분석 대상에 포함/ 제외하고자 할 경우, `config/**/*`과 같이 패턴을 입력합니다.
 
-**Note**: The `Include` and `Exclude` parameters are special. They are
-valid for the directory tree starting where they are defined. They are not
-shadowed by the setting of `Include` and `Exclude` in other `.rubocop.yml`
-files in subdirectories. This is different from all other parameters, who
-follow RuboCop's general principle that configuration for an inspected file
-is taken from the nearest `.rubocop.yml`, searching upwards.
+**Note**:
+`Include`, `Exclude`는 특별한 성격의 지시어로 선언된 파일(`.rubocop.yml`)이 포함된 디렉토리 및 하위 디렉토리에 대해 유효성을 보장받습니다. 즉 하위 폴더에 위치한 `Include`, `Exclude` 지시어의 영향을 받지 않는다는 의미입니다. 일반적인 지시어들은 분석 대상 파일과 가장 가까운 위치에 있는 설정 파일의 영향을 받습니다.
 
-Cops can be run only on specific sets of files when that's needed (for
-instance you might want to run some Rails model checks only on files whose
-paths match `app/models/*.rb`). All cops support the
-`Include` param.
+필요한 경우, 특정한 파일들에 대해서만 cops를 적용할 수 있습니다(예를 들어 `apps/models/*.rb` 파일들에만 Rails model check를 수행하는 경우 등). 모든 cops는 `Include` 지시어를 함께 사용할 수 있습니다.
 
 ```yaml
 Rails/DefaultScope:
@@ -393,9 +311,8 @@ Rails/DefaultScope:
     - app/models/*.rb
 ```
 
-Cops can also exclude only specific sets of files when that's needed (for
-instance you might want to run some cop only on a specific file). All cops support the
-`Exclude` param.
+필요한 경우, 특정한 파일들에 대해서만 cops 적용을 제외할 수 있습니다(예를 들어 특정한 cops는 특정한 파일에만 적용하는 등).
+모든 cops는 `Exclude` 지시어를 함께 사용할 수 있습니다:
 
 ```yaml
 Rails/DefaultScope:
@@ -405,38 +322,33 @@ Rails/DefaultScope:
 
 ### Generic configuration parameters
 
-In addition to `Include` and `Exclude`, the following parameters are available
-for every cop.
+`Include`, `Exlcude` 지시어와 함께 다음 파라미터들을 개별적인 cops 단위로 사용할 수 있습니다:
 
 #### Enabled
 
-Specific cops can be disabled by setting `Enabled` to `false` for that specific cop.
+`Enabled` 지시어의 값을 `false`로 설정해서 특정한 cop를 비활성화 할 수 있습니다.
 
 ```yaml
 Metrics/LineLength:
   Enabled: false
 ```
 
-Most cops are enabled by default. Some cops, configured in [config/disabled.yml](https://github.com/bbatsov/rubocop/blob/master/config/disabled.yml), are disabled by default. The cop enabling process can be altered by setting `DisabledByDefault` to `true`.
+기본적으로 대부분의 cops는 활성화되어 있으나, [config/disabled.yml](https://github.com/bbatsov/rubocop/blob/master/config/disabled.yml)
+에 포함된 cops 들은 기본적으로 비활성화 되어 있습니다. `DisabledByDefault`를 `true`로 설정해서 cop 활성화 프로세스를 변경할 수 있습니다.
 
 ```yaml
 AllCops:
   DisabledByDefault: true
 ```
 
-All cops are then disabled by default, and only cops appearing in user configuration files are enabled. `Enabled: true` does not have to be set for cops in user configuration. They will be enabled anyway.
+위와 같이 설정하는 경우 기본적으로 모든 cops는 비활성화되며, 사용자 configuration 파일에서 활성화 설정된 cops들만 활성화됩니다. `Enabled: true`를 굳이 사용자 configuration에서 설정할 필요는 없습니다. 어쨌든 이 cops 들은 활성돠 횝니다.
 
 #### Severity
 
-Each cop has a default severity level based on which department it belongs
-to. The level is `warning` for `Lint` and `convention` for all the others.
-Cops can customize their severity level. Allowed params are `refactor`,
-`convention`, `warning`, `error` and `fatal`.
+각각의 cop은 기본 심각도를 가지고 있습니다. `Lint`의 경우 `warning`, 다른 cops의 경우는 `convention`으로 레벨이 설정되어 있습니다. 심각도 레벨은 커스터마이징이 기능하며, `refactor`, `convention`, `warnging`, `error` 및 `fatal`을 사용할 수 있습니다.
 
-There is one exception from the general rule above and that is `Lint/Syntax`, a
-special cop that checks for syntax errors before the other cops are invoked. It
-can not be disabled and its severity (`fatal`) can not be changed in
-configuration.
+단 위의 원칙이 예외적으로 적용되는 cop이 하나 있는데 바로 `Lint/Syntax`입니다. 이 특별한 cops은 다른 cops이 호출되기 전에 syntax error를 확인합니다.
+이 `Lint/Syntax` cop은 임의로 비활성화 할 수 없으며, 심각도 역시 configuration에서 변경할 수 없습니다(항상 `fatal` 심각도).
 
 ```yaml
 Metrics/CyclomaticComplexity:
@@ -445,8 +357,7 @@ Metrics/CyclomaticComplexity:
 
 #### AutoCorrect
 
-Cops that support the `--auto-correct` option can have that support
-disabled. For example:
+`--auto-correct` 옵션을 지원하는 cop들은 해당 옵션을 비활성화 할 수 있습니다. 다음 예를 참조합니다:
 
 ```yaml
 Style/PerlBackrefs:
@@ -455,26 +366,15 @@ Style/PerlBackrefs:
 
 ### Automatically Generated Configuration
 
-If you have a code base with an overwhelming amount of offenses, it can
-be a good idea to use `rubocop --auto-gen-config` and add an
-`inherit_from: .rubocop_todo.yml` in your `.rubocop.yml`. The generated
-file `.rubocop_todo.yml` contains configuration to disable cops that
-currently detect an offense in the code by excluding the offending
-files, or disabling the cop altogether once a file count limit has been
-reached.
+이미 작성된 코드들에서 Offenses가 너무 많이 발견된다면 `rubocop --auto-gen-gconfig` 명령어를 실행한 뒤, 사용자 정의 `.rubucop.yml`에 `inherit_from: .rubocop_todo.yml` 지시어를 포함하는 것도 고려해볼 수 있습니다. 자동으로 생성되는 `.rubocop_todo.yml` 파일은 위반 사항을 포함한 파일을 분석에서 제외함으로서 현재 코드 상에서 발견된 모든 offense를 비활성하는 설정값을 가지고 있습니다. 또한 파일의 수가 설정된 값을 초과하면 모든 cop을 비활성화 하기도 합니다.
 
-By adding the option `--exclude-limit COUNT`, e.g., `rubocop
---auto-gen-config --exclude-limit 5`, you can change how many files are
-excluded before the cop is entirely disabled. The default COUNT is 15.
+`--exclude-limit COUNT`, 즉 `rubocop --auto-gen-config --exclude-limit 5`와 같은 형태로 명령어를 사용해서 해당 cop을 언제 완전히 제외할 지 설정할 수 있습니다. 기본값은 15입니다.
 
-Then you can start removing the entries in the generated
-`.rubocop_todo.yml` file one by one as you work through all the offenses
-in the code.
+그리고 나서 자동 생성된 `.rubocop_todo.yml` 파일에서 copt을 하나씩 지워나가면서 코드 상의 offenses 들을 확인할 수 있다.
 
-## Disabling Cops within Source Code
+## 소스 코드 내에서 Cops를 비활성화 하기
 
-One or more individual cops can be disabled locally in a section of a
-file by adding a comment such as
+하나 혹은 복수의 cops를 소스 코드상에서 비활성화 할 수 있습니다. 주석에 다음과 같이 추가합니다:
 
 ```ruby
 # rubocop:disable Metrics/LineLength, Style/StringLiterals
@@ -482,7 +382,7 @@ file by adding a comment such as
 # rubocop:enable Metrics/LineLength, Style/StringLiterals
 ```
 
-You can also disable *all* cops with
+또는 *모든* cops를 비활성화 할 수 있습니다. 코드에 다음 내용을 포함시킵니다:
 
 ```ruby
 # rubocop:disable all
@@ -490,8 +390,7 @@ You can also disable *all* cops with
 # rubocop:enable all
 ```
 
-One or more cops can be disabled on a single line with an end-of-line
-comment.
+구문의 끝에서 다음 주석을 포함하면 하나 혹은 복수의 cops를 비활성화 할 수 있습니다.
 
 ```ruby
 for x in (0..19) # rubocop:disable Style/AvoidFor
@@ -499,53 +398,46 @@ for x in (0..19) # rubocop:disable Style/AvoidFor
 
 ## Formatters
 
-You can change the output format of RuboCop by specifying formatters with the `-f/--format` option.
-RuboCop ships with several built-in formatters, and also you can create your custom formatter.
+`-f/--format` 옴션을 사용해 RuboCop의 보고서 출력 형식을 변경할 수 있습니다. RuboCop은 다양한 formatter를 내장하고 있으며 사용자 정의 formatter를 생성할 수도 있습니다.
 
-Additionally the output can be redirected to a file instead of `$stdout` with the `-o/--out` option.
+추가로 `-o/--out` 옵션을 사용하면 STDOUT이 아닌 파일에 분석 결과를 저장할 수 있습니다.
 
-Some of the built-in formatters produce **machine-parsable** output
-and they are considered public APIs.
-The rest of the formatters are for humans, so parsing their outputs is discouraged.
+몇몇 내장 formatter들은 **시스템에서 파싱 가능한** 결과 보고서를 생성하며, public API와 같이 취급됩니다. 나머지는 사람이 인식할 수 있는 fornatter들로 이 결과 보고서를 파싱하는 것은 의미가 없습니다.
 
-You can enable multiple formatters at the same time by specifying `-f/--format` multiple times.
-The `-o/--out` option applies to the previously specified `-f/--format`,
-or the default `progress` format if no `-f/--format` is specified before the `-o/--out` option.
+`-f/--format` 옵션을 여러번 사용하면 다양한 formatter를 동시에 활성화 할 수 있습니다. `-o/--out` 옵션은 직전에 호출된 `-f/--format` 옵션의 결과값을 저장됩니다.
+`-o/--out` 옵션 앞에 `-f/-format` 옵셥을 사용하지 않는 경우 기본 `progress` format 형태의 결과 보고서가 저장됩니다.
 
 ```bash
-# Simple format to $stdout.
+# $stdout에 simple format 보고서를 출력합니다.
 $ rubocop --format simple
 
-# Progress (default) format to the file result.txt.
+# result.txt 파일에 progress format 보고서를 저장합니다.
 $ rubocop --out result.txt
 
-# Both progress and offense count formats to $stdout.
-# The offense count formatter outputs only the final summary,
-# so you'll mostly see the outputs from the progress formatter,
-# and at the end the offense count summary will be outputted.
+# $stdout에 progress format 및 coutn format 보거서를 출력합니다.
+# offense count formatter는 분석 결과의 최종 요약 내용만을 출력하므로
+# $stdout에 출력된 대부분의 내용은 progress formatter가 출력한 것입니다.
+# offense count symmary는 출력된 보고서의 가장 마지막에 표시됩니다.
 $ rubocop --format progress --format offenses
 
-# Progress format to $stdout, and JSON format to the file rubocop.json.
+# $stdout에 prograss format 보고소를 출력하고, rubocop.json 파일에 JSON format 보고서를 저장합니다.
 $ rubocop --format progress --format json --out rubocop.json
 #         ~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~
 #                 |               |_______________|
 #              $stdout
 
-# Progress format to result.txt, and simple format to $stdout.
+# result.txt에 progress format 보고서를 저장하고, $stdout에 simple format 보고서를 출력합니다.
 $ rubocop --output result.txt --format simple
 #         ~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~
 #                  |                 |
 #           default format        $stdout
 ```
 
-You can also load [custom formatters](#custom-formatters).
+[custom formatters](#custom-formatters) 역시 사용할 수 있습니다.
 
 ### Progress Formatter (default)
 
-The default `progress` formatter outputs a character for each inspected file,
-and at the end it displays all detected offenses in the `clang` format.
-A `.` represents a clean file, and each of the capital letters means
-the severest offense (convention, warning, error or fatal) found in a file.
+기본 `progress` formatter는 분석된 모든 파일에 하나의 캐릭터를 표시하며 분석 로그 마지막에 분석된 모든 위반 사항을 `clang` 포맷으로 표시합니다. `.` 기호는 문제가 없는 파일을 의미하며, 모든 대분자는 파일에서 발견된 각 위반 사항의 심각도를 표시합니다(convention, warning, error of fatal).
 
 ```
 $ rubocop
@@ -565,7 +457,7 @@ lib/foo.rb:6:5: C: Missing top-level class documentation comment.
 
 ### Clang Style Formatter
 
-The `clang` formatter displays the offenses in a manner similar to `clang`:
+`clang` formatter는 `clang`과 비슷한 형태로 위반 사항을 표시합니다:
 
 ```
 $ rubocop test.rb
@@ -592,9 +484,8 @@ test.rb:4:5: W: end at 4, 4 is not aligned with if at 2, 2
 
 ### Fuubar Style Formatter
 
-The `fuubar` style formatter displays a progress bar
-and shows details of offenses in the `clang` format as soon as they are detected.
-This is inspired by the [Fuubar](https://github.com/jeffkreeftmeijer/fuubar) formatter for RSpec.
+`fuubar` style formatter는 프로그레스 바를 표시해 주며, 위반 사항이 발생되는 즉시 `clang` 형태로 결과를 표시합니다.
+이 formatter는 RSpec의 [Fuubar](https://github.com/jeffkreeftmeijer/fuubar)에서 영감을 받아 구현했습니다.
 
 ```
 $ rubocop --format fuubar
@@ -609,9 +500,9 @@ lib/bar.rb:13:14: W: File.exists? is deprecated in favor of File.exist?.
 
 ### Emacs Style Formatter
 
-**Machine-parsable**
+**시스템에서 파싱 가능**
 
-The `emacs` formatter displays the offenses in a format suitable for consumption by `Emacs` (and possibly other tools).
+`emacs` formatter는 `Emacs`에서 인식할 수 있는 형태로 위반 사항을 표시합니다(`Emacs` 혹은 다을 도구들에서도 인식 가능할 수 있습니다).
 
 ```
 $ rubocop --format emacs test.rb
@@ -622,7 +513,7 @@ $ rubocop --format emacs test.rb
 
 ### Simple Formatter
 
-The name of the formatter says it all :-)
+Simple formatter는 그 이름 그대로, 간단한 형태로 분석 결과를 출력합니다 :-)
 
 ```
 $ rubocop --format simple test.rb
@@ -637,11 +528,10 @@ W:  4:  5: end at 4, 4 is not aligned with if at 2, 2
 
 ### File List Formatter
 
- **Machine-parsable**
+ **시스템에서 파싱 가능**
 
-Sometimes you might want to just open all files with offenses in your
-favorite editor. This formatter outputs just the names of the files
-with offenses in them and makes it possible to do something like:
+때대로 여러분이 선호하는 editor에서 위반 사항을 포함한 모든 파일들을 열고 싶은 경우가 있을 수 있습니다.
+File List formatter는 위반 사항을 포함하고 있는 파일들의 이름만을 리스팅하며, 파이브와 함께 다음과 같이 사용할 수 있습니다.:
 
 ```
 $ rubocop --format files | xargs vim
@@ -649,10 +539,9 @@ $ rubocop --format files | xargs vim
 
 ### JSON Formatter
 
-**Machine-parsable**
+**시스템에서 파싱 가능**
 
-You can get RuboCop's inspection result in JSON format by passing `--format json` option in command line.
-The JSON structure is like the following example:
+`--format json` 옵션을 사용하면 RuboCop 분셕 결과를 JSON 포맷으로 출력할 수 있습니다. 생성되는 JSON 구조는 다음과 같습니다:
 
 ```javascript
 {
@@ -702,11 +591,9 @@ The JSON structure is like the following example:
 
 ### Offense Count Formatter
 
-Sometimes when first applying RuboCop to a codebase, it's nice to be able to
-see where most of your style cleanup is going to be spent.
+코드 베이스에 처음 RoboCop을 적용하는 경우 때로 어떤 부분에서 코드 개선을 해야할지 대략적으로 판단하는 것이 유용한 경우가 있습니다.
 
-With this in mind, you can use the offense count formatter to outline the offended
-cops and the number of offenses found for each by running:
+이 때 offenses count Formatter를 사용해서 위반한 cops와 각 cops의 위반 수를 쉽게 확인할 수 있다:
 
 ```
 $ rubocop --format offenses
@@ -728,7 +615,7 @@ $ rubocop --format offenses
 
 ### HTML Formatter
 
-Useful for CI environments. It will create an HTML report like [this](http://f.cl.ly/items/0M3029412x3O091a1X1R/expected.html).
+CI(지속적인 통합) 환경에서 유용하게 사용할 수 있으며, HTML Formatter는 [this](http://f.cl.ly/items/0M3029412x3O091a1X1R/expected.html)와 같은 형태의 HTML 보고서를 생성합니다.
 
 ```
 $ rubocop --format html -o rubocop.html
@@ -736,7 +623,7 @@ $ rubocop --format html -o rubocop.html
 
 ## Compatibility
 
-RuboCop supports the following Ruby implementations:
+RubiCop은 다음 루비 구현 환경을 지원합니다:
 
 * MRI 1.9.3
 * MRI 2.0
@@ -749,67 +636,51 @@ RuboCop supports the following Ruby implementations:
 
 ### Emacs
 
-[rubocop.el](https://github.com/bbatsov/rubocop-emacs) is a simple
-Emacs interface for RuboCop. It allows you to run RuboCop inside Emacs
-and quickly jump between problems in your code.
+[rubocop.el](https://github.com/bbatsov/rubocop-emacs)는 간단한 RuboCop-Emcas 인터페이스 입니다.
+이 인터페이스를 사용해 Emacs에서 RubiCop을 실행할 수 있고, 코드 내의 위반 발생 지점을 손쉽게 이동할 수 있습니다.
 
-[flycheck](https://github.com/lunaryorn/flycheck) > 0.9 also supports
-RuboCop and uses it by default when available.
+[flycheck](https://github.com/lunaryorn/flycheck) > 0.9 역시 RuboCop을 지원하며 일반적인 경우 기본적으로 사용합니다.
 
 ### Vim
 
-The [vim-rubocop](https://github.com/ngmy/vim-rubocop) plugin runs
-RuboCop and displays the results in Vim.
+[vim-rubocop](https://github.com/ngmy/vim-rubocop) 플러그인을 사용해 Vim에서 RuboCop을 실행하고 분석과를 표시할 수 있습니다.
 
-There's also a RuboCop checker in
-[syntastic](https://github.com/scrooloose/syntastic).
+[syntastic](https://github.com/scrooloose/syntastic)에서도 RuboCop Checker를 사용할 수 있습니다.
 
 ### Sublime Text
 
-If you're a ST user you might find the
-[Sublime RuboCop plugin](https://github.com/pderichs/sublime_rubocop)
-useful.
+Sublime Text를 사용하고 있다면 [Sublime RuboCop plugin](https://github.com/pderichs/sublime_rubocop)을 유용하게 사용할 수 있습니다.
 
 ### Brackets
 
-The [brackets-rubocop](https://github.com/smockle/brackets-rubocop)
-extension displays RuboCop results in Brackets.
-It can be installed via the extension manager in Brackets.
+[brackets-rubocop](https://github.com/smockle/brackets-rubocop) extension을 사용하면 Brackets에서 RuboCop 분석 결과를 표시할 수 있으며, Brackets의 extension manager에서 설치할 수 있습니다.
 
 ### TextMate2
 
-The [textmate2-rubocop](https://github.com/mrdougal/textmate2-rubocop)
-bundle displays formatted RuboCop results in a new window.
-Installation instructions can be found [here](https://github.com/mrdougal/textmate2-rubocop#installation).
+[textmate2-rubocop](https://github.com/mrdougal/textmate2-rubocop)을 사용하면 새 윈도우에서 RoboCop 분석 결과를 표시할 수 있습니다. 설치 가이드는 [here](https://github.com/mrdougal/textmate2-rubocop#installation)를 참조합니다.
 
 ### Atom
 
-The [atom-lint](https://github.com/yujinakayama/atom-lint) package
-runs RuboCop and highlights the offenses in Atom.
+[atom-lint](https://github.com/yujinakayama/atom-lint) 패키지는 RubiCop을 실행하고 Atom에 offenses를 하이라이트 합니다.
 
-You can also use the [linter-rubocop](https://github.com/AtomLinter/linter-rubocop)
-plugin for Atom's [linter](https://github.com/AtomLinter/Linter).
+또한 Atom의 [linter](https://github.com/AtomLinter/Linter)용으로 [linter-rubocop](https://github.com/AtomLinter/linter-rubocop) 플러그인을 사용할 수 있습니다.
 
 ### LightTable
 
-The [lt-rubocop](https://github.com/seancaffery/lt-rubocop) plugin
-provides LightTable integration.
+[lt-rubocop](https://github.com/seancaffery/lt-rubocop) 플러그인을 사용해 RuboCop과 LightTable을 통합할 수 있습니다.
 
 ### RubyMine
 
-The [rubocop-for-rubymine](https://github.com/sirlantis/rubocop-for-rubymine) plugin
-provides basic RuboCop integration for RubyMine/IntelliJ IDEA.
+[rubocop-for-rubymine](https://github.com/sirlantis/rubocop-for-rubymine) 플러그인을 사용해 RoboCop과 RubyMine/IntelliJ IDEA를 통합할 수 있습니다.
 
 ### Other Editors
 
-Here's one great opportunity to contribute to RuboCop - implement
-RuboCop integration for your favorite editor.
+여러분이 가장 선호하는 Editor와 RuboCop을 통합할 기회를 가지고 싶다먄 언제든지 환영입니다!
 
 ## Git pre-commit hook integration
 
-[overcommit](https://github.com/brigade/overcommit) is a fully configurable and
-extendable Git commit hook manager. To use RuboCop with overcommit, add the
-following to your `.overcommit.yml` file:
+[overcommit](https://github.com/brigade/overcommit)은 자유로운 설정이 가능하며 확장기 가능한 Git commit hook manager입니다. RuboCop과 overcommit을 함께 사용하고 싶다면 다음 내용을 여러분이 사용하는 `.overcommit.yml` 파일에 추가합니다.
+
 
 ```yaml
 PreCommit:
@@ -819,16 +690,11 @@ PreCommit:
 
 ## Guard integration
 
-If you're fond of [Guard](https://github.com/guard/guard) you might
-like
-[guard-rubocop](https://github.com/yujinakayama/guard-rubocop). It
-allows you to automatically check Ruby code style with RuboCop when
-files are modified.
-
+[Guard](https://github.com/guard/guard)를 선호한다면, [guard-rubocop](https://github.com/yujinakayama/guard-rubocop)가 좋은 선택이 될 것입니다. guard-rubocop은 파일이 변경되는 즉시 Ruby code style의 준수 여부를 확인합니다.
 
 ## Rake integration
 
-To use RuboCop in your `Rakefile` add the following:
+`Rakefile`에서 RuboCop을 사용할 경우, 다음 내용을 추가합니다:
 
 ```ruby
 require 'rubocop/rake_task'
@@ -836,14 +702,14 @@ require 'rubocop/rake_task'
 RuboCop::RakeTask.new
 ```
 
-If you run `rake -T`, the following two RuboCop tasks should show up:
+`rake -T`를 실행하면 다음과 같은 2개의 RuboCop 태스크가 나타납니다:
 
 ```sh
 rake rubocop                                  # Run RuboCop
 rake rubocop:auto_correct                     # Auto-correct RuboCop offenses
 ```
 
-The above will use default values
+위의 태스크는 기본 값들을 사용합니다:
 
 ```ruby
 require 'rubocop/rake_task'
@@ -860,63 +726,37 @@ end
 
 ## Caching
 
-Large projects containing hundreds or even thousands of files can take
-a really long time to inspect, but RuboCop has functionality to
-mitigate this problem. There's a caching mechanism that stores
-information about offenses found in inspected files.
+큰 프로젝트들은 수백 혹은 수천 개의 파일을 포함하고 있으며 분석을 위해 상당한 시간이 소요됩니다.
+하지만 RuboCop은 이러한 문제를 완화하기 위한 기능을 가지고 있있으며, 캐싱 매커니즘을 제공하며 분석된 파일에 발견된 offenses와 관련된 정보들을 저장합니다.
 
 ### Cache Validity
 
-Later runs will be able to retrieve this information and present the
-stored information instead of inspecting the file again. This will be
-done if the cache for the file is still valid, which it is if there
-are no changes in:
-* the contents of the inspected file
-* RuboCop configuration for the file
-* the options given to `rubocop`, with some exceptions that have no
-  bearing on which offenses are reported
-* the Ruby version used to invoke `rubocop`
-* version of the `rubocop` program (or to be precise, anything in the
-  source code of the invoked `rubocop` program)
+다음 번의 분석은 이번 분석의 결과를 참조하며 기존 파일을 다시 분석하는 대신 이미 저장되어 있는 과거 분석 결과를 표시한다. 이 기능은 해당 파일의 캐시가 유용한 경우에 자동으로 수행되는데, 파일의 캐시는 다음 리스트의 변화가 없는 경우 유지된다:
+* 분석된 파일의 내용
+* 분석된 파일과 관련된 RuboCop configuration
+* `rubocop` 실행시 사용한 옵션, 단 옵션에 의해 보고된 offenses가 없는 경우는 해당하지 않음
+* RuboCop 을 수행한 Ruby 버전
+* `rubocop` 프로그램 버전(정확히는 수행된 `rubocop` 프로그램의 모든 소스 코드)
 
 ### Enabling and Disabling the Cache
 
-The caching functionality is enabled if the configuration parameter
-`AllCops: UseCache` is `true`, which it is by default. The command
-line option `--cache false` can be used to turn off caching, thus
-overriding the configuration parameter. If `AllCops: UseCache` is set
-to `false` in the local `.rubocop.yml`, then it's `--cache true` that
-overrides the setting.
+캐싱 기능은 `AllCops: UseCache` 설정값의 파라미터가 `true`로 설정된 경우 활성화되며, 기본적으로 `true` 값으로 설정된다. 커맨드라인 옵션으로 `--cache false`를 사용하면 캐싱을 비솰성화 할 수 있으며, configuration parameter는 오버라이딩 된다. 로컬 `.rubocop.yml` 파일의 `AllCops: UseCache`가 `false`로 설정되어 있는 경우  커맨드라인 옵션으로 `--cache true`를 사용하면 설정 파일의 설정값을 오버라이딩 한다.
 
 ### Cache Path
 
-By default, the cache is stored in in a subdirectory of the temporary
-directory, `/tmp/rubocop_cache/` on Unix-like systems. The
-configuration parameter `AllCops: CacheRootDirectory` can be used to
-set it to a different path. One reason to use this option could be
-that there's a network disk where users on different machines want to
-have a common RuboCop cache. Another could be that a Continuous
-Integration system allows directories, but not a temporary directory,
-to be saved between runs.
+기본적으로 캐시는 유닉스 계열의 시스팀엔 경우 `/tmp/rubocop_cache/`라는 임시 디렉토리의 하위 디렉토리에 저장됩니다. 다른 캐시 저장 장소를 사용할 경우 `AllCops: CacheRootDirectory`에 경로를 설정할 수 있습니다. 이 기능은 네트워크 디스크를 다수의 사용자가 공통의 RuboCop 캐시를 사용해야 할 경우, 혹은 지속적인 통합 시스템이 임시 디렉토리가 아닌 영구 디렉토리들을 사용하도록 할 경우에 활용할 수 있습니다.
 
 ### Cache Pruning
 
-Each time a file has changed, its offenses will be stored under a new
-key in the cache. This means that the cache will continue to grow
-until we do something to stop it. The configuration parameter
-`AllCops: MaxFilesInCache` sets a limit, and when the number of files
-in the cache exceeds that limit, the oldest files will be automatially
-removed from the cache.
+하나 이상의 파일이 변경될 때마다, 해당 파일의 위반 내역은 캐시에 새로운 키로 저장됩니다. 즉 캐시의 용량은 계속 증가하게 됩니다. `AllCops: MaxFilesInCache`에 제한값을 설정할 수 있으면, 캐시 파일의 수가 제한값을 넘어서면 오래된 캐시부터 자동적으로 삭제됩니다.
 
 ## Extensions
 
-It's possible to extend RuboCop with custom cops and formatters.
+사용자 정의 cops 와 formatter를 사용해서  RuboCop의 기능을 확장할 수 있습니다.
 
 ### Loading Extensions
 
-Besides the `--require` command line option you can also specify ruby
-files that should be loaded with the optional `require` directive in the
-`.rubocop.yml` file:
+`--require` 커맨드 라인 옵션 혹은 `.rubocop.yml`에서 `require` 지시어를 사용해서 임의의 ruby 파일들을 로딩할 수 있습니다.
 
 ```yaml
 require:
@@ -924,14 +764,11 @@ require:
  - rubocop-extension
 ```
 
-Note: The paths are directly passed to `Kernel.require`.  If your
-extension file is not in `$LOAD_PATH`, you need to specify the path as
-relative path prefixed with `./` explicitly, or absolute path.
+NOTE: 위에서 설정한 경로들은 직접 `Kernel.require`로 전달됩니다. 사용자 정의 확장 파일이 `$LOAD_PATH`에 존재하지 않는 경우, `./`와 같은 상대 경로 혹은 절대 경로를 사용해 확장 파일의 위치를 지정할 수 있습니다.
 
 ### Custom Cops
 
-You can configure the custom cops in your `.rubocop.yml` just like any
-other cop.
+일반적인 여타 cop들과 마찬가지로, 사용자 정의 cops들을 `.rubocop.yml`에서 설정할 수 있습니다.
 
 #### Known Custom Cops
 
@@ -940,15 +777,13 @@ other cop.
 
 ### Custom Formatters
 
-You can customize RuboCop's output format with custom formatters.
+사용자 정의 formatter를 사용해 RuboCop 분석 결과의 출력 형태를 자유롭게 변경할 수 있습니다.
 
 #### Creating Custom Formatter
 
-To implement a custom formatter, you need to subclass
-`RuboCop::Formatter::BaseFormatter` and override some methods,
-or implement all formatter API methods by duck typing.
+사용자 정의 formatter를 구현하려면, `RobpCop::Formatter:BaseFormatter`의 하위 클래스를 만들고, 필요한 method들을 오버라이드 하거나 모든 formatter API method를 직접 구현하시기 바랍니다.
 
-Please see the documents below for more formatter API details.
+Formatter API와 관련된 세부 사항은 아래 링크를 참조 하십시오:
 
 * [RuboCop::Formatter::BaseFormatter](http://rubydoc.info/gems/rubocop/RuboCop/Formatter/BaseFormatter)
 * [RuboCop::Cop::Offense](http://rubydoc.info/gems/rubocop/RuboCop/Cop/Offense)
@@ -956,10 +791,8 @@ Please see the documents below for more formatter API details.
 
 #### Using Custom Formatter in Command Line
 
-You can tell RuboCop to use your custom formatter with a combination of
-`--format` and `--require` option.
-For example, when you have defined `MyCustomFormatter` in
-`./path/to/my_custom_formatter.rb`, you would type this command:
+`--format` 혹은 `--require` 옵션을 조합해서 사용자 정의 formatter를 사용할 수 있습니다.
+예를 들어 `MyCustomFormatter`를 `./path/to/my_custom_formatter.rb`에 정의한 경우 다음 커맨드를 사용할 수 있습니다:
 
 ```
 $ rubocop --require ./path/to/my_custom_formatter --format MyCustomFormatter
@@ -967,7 +800,7 @@ $ rubocop --require ./path/to/my_custom_formatter --format MyCustomFormatter
 
 ## Team
 
-Here's a list of RuboCop's core developers:
+RoboCop의 핵심 개발자는 다음과 같습니다:
 
 * [Bozhidar Batsov](https://github.com/bbatsov)
 * [Jonas Arvidsson](https://github.com/jonas054)
@@ -976,48 +809,38 @@ Here's a list of RuboCop's core developers:
 
 ## Logo
 
-RuboCop's logo was created by [Dimiter Petrov](https://www.chadomoto.com/). You can find the logo in various
-formats [here](https://github.com/bbatsov/rubocop/tree/master/logo).
+RuboCop의 로고는 [Dimiter Petrov](https://www.chadomoto.com/)가 제작했습니다.
+다음 링크에서 다양한 포맷의 로고를 다운로드 받을 수 있습니다: [here](https://github.com/bbatsov/rubocop/tree/master/logo).
 
-The logo is licensed under a
-[Creative Commons Attribution-NonCommercial 4.0 International License](http://creativecommons.org/licenses/by-nc/4.0/deed.en_GB).
+모든 로고들은 [Creative Commons Attribution-NonCommercial 4.0 International License](http://creativecommons.org/licenses/by-nc/4.0/deed.en_GB) 라이선스를 준수합니다.
 
 ## Contributors
 
-Here's a [list](https://github.com/bbatsov/rubocop/contributors) of
-all the people who have contributed to the development of RuboCop.
+RuboCop의 개발에 도움을 모든 컨트리뷰터는 다음
+[list](https://github.com/bbatsov/rubocop/contributors)에 표시되어 있습니다.
 
-I'm extremely grateful to each and every one of them!
+이 모든 분들께 감사드립니다.
 
-If you'd like to contribute to RuboCop, please take the time to go
-through our short
-[contribution guidelines](CONTRIBUTING.md).
+만약 여러분이 RuboCop에 컨트리뷰션하길 원한다면, 다음의 짧은 가이드라인을 주의깊게 읽어보시길 바랍니다: [contribution guidelines](CONTRIBUTING.md).
 
-Converting more of the Ruby Style Guide into RuboCop cops is our top
-priority right now. Writing a new cop is a great way to dive into RuboCop!
+이 프로젝트의 최우선 순위는 Ruby Style Guide의 내용을 RuboCop cops로 변경하는 것입니다. 새로운 cop을 작성하는 것은 RuboCop 개발에 뛰어드는 멋진 방법이며, 물론 버그 리포트나 개선 사항에 대한 제안도 언제든 환영합니다. GitHub pull requests 라면 더욱 좋습니다! :-)
 
-Of course, bug reports and suggestions for improvements are always
-welcome. GitHub pull requests are even better! :-)
-
-You can also support my work on RuboCop via
-[Salt](https://salt.bountysource.com/teams/rubocop) and
-[Gratipay](https://www.gratipay.com/rubocop).
+[Salt](https://salt.bountysource.com/teams/rubocop)나 [Gratipay](https://www.gratipay.com/rubocop)를 통해서도 이 프로젝트를 지원할 수 있습니다.
 
 [![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.1.3/dist/gratipay.png)](https://gratipay.com/rubocop)
 
 ## Mailing List
 
-If you're interested in everything regarding RuboCop's development,
-consider joining its
-[Google Group](https://groups.google.com/forum/?fromgroups#!forum/rubocop).
+RuboCop 개발에 관심이 있다면 다음 메일링 그룹에 가입할 것을 고려해 보십시오:
+[Google Group](https://groups.google.com/forum/?fromgroups#!forum/rubocop)
 
 ## Freenode
 
-If you're into IRC you can visit the `#rubocop` channel on Freenode.
+IRC를 사용하고 있다면 Freenode에서  `#rubocop` 채널을 방문해 보십시오.
 
 ## Changelog
 
-RuboCop's changelog is available [here](CHANGELOG.md).
+RuboCop 변경 사항은 다음 링크를 참조하십시오: [here](CHANGELOG.md)
 
 ## Copyright
 
