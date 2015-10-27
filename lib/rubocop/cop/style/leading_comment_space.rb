@@ -6,13 +6,14 @@ module RuboCop
       # This cop checks whether comments have a leading space
       # after the # denoting the start of the comment. The
       # leading space is not required for some RDoc special syntax,
-      # like #++, #--, #:nodoc, etc.
+      # like #++, #--, #:nodoc, etc. Neither is it required for
+      # =begin/=end comments.
       class LeadingCommentSpace < Cop
         MSG = 'Missing space after #.'
 
         def investigate(processed_source)
           processed_source.comments.each do |comment|
-            next unless comment.text =~ /^#+[^#\s=:+-]/
+            next unless comment.text =~ /\A#+[^#\s=:+-]/
             next if comment.text.start_with?('#!') && comment.loc.line == 1
 
             add_offense(comment, :expression)

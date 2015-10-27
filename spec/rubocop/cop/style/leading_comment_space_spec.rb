@@ -61,4 +61,11 @@ describe RuboCop::Cop::Style::LeadingCommentSpace do
     new_source = autocorrect_source(cop, '#comment')
     expect(new_source).to eq('# comment')
   end
+
+  it 'accepts =begin/=end comments' do
+    inspect_source(cop, ['=begin',
+                         '#blahblah',
+                         '=end'])
+    expect(cop.offenses).to be_empty
+  end
 end
