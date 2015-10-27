@@ -55,7 +55,7 @@ module RuboCop
       end
 
       def comment_lines
-        @comment_lines ||= processed_source.comments.map(&:location).map(&:line)
+        @comment_lines ||= processed_source.comments.map { |c| c.location.line }
       end
     end
   end

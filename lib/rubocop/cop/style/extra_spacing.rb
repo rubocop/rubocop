@@ -132,7 +132,7 @@ module RuboCop
               whole_line_comments = processed_source.comments.select do |c|
                 begins_its_line?(c.loc.expression)
               end
-              whole_line_comments.map(&:loc).map(&:line)
+              whole_line_comments.map { |c| c.loc.line }
             end
         end
 
