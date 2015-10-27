@@ -16,7 +16,9 @@ module RuboCop
 
         MSG_MISSING = 'Missing utf-8 encoding comment.'
         MSG_UNNECESSARY = 'Unnecessary utf-8 encoding comment.'
-        ENCODING_PATTERN = /#.*coding\s?[:=]\s?(?:UTF|utf)-8/
+        ENCODING_PATTERN = /#.*coding\s?[:=]\s?(?:UTF|utf)-8/.freeze
+        AUTO_CORRECT_ENCODING_COMMENT = 'AutoCorrectEncodingComment'.freeze
+        SHEBANG = '#!'.freeze
 
         def investigate(processed_source)
           return if processed_source.buffer.source.empty?
@@ -31,7 +33,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          encoding = cop_config['AutoCorrectEncodingComment']
+          encoding = cop_config[AUTO_CORRECT_ENCODING_COMMENT]
           if encoding && encoding =~ ENCODING_PATTERN
             lambda do |corrector|
               if encoding_line_number(processed_source) == 0
@@ -62,7 +64,7 @@ module RuboCop
 
         def encoding_line_number(processed_source)
           line_number = 0
-          line_number += 1 if processed_source[line_number].start_with?('#!')
+          line_number += 1 if processed_source[line_number].start_with?(SHEBANG)
           line_number
         end
       end
