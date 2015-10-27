@@ -133,6 +133,30 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
     expect(cop.offenses).to be_empty
   end
 
+  context 'when multiple arguments are called for' do
+    context 'and a single variable argument is passed' do
+      it 'does not register an offense' do
+        # the variable could evaluate to an array
+        inspect_source(cop, 'puts "%s %s" % var')
+        expect(cop.offenses).to be_empty
+      end
+    end
+
+    context 'and a single send node is passed' do
+      it 'does not register an offense' do
+        inspect_source(cop, 'puts "%s %s" % ("ab".chars)')
+        expect(cop.offenses).to be_empty
+      end
+    end
+  end
+
+  context 'when format is not a string literal' do
+    it 'does not register an offense' do
+      inspect_source(cop, 'puts str % [1, 2]')
+      expect(cop.offenses).to be_empty
+    end
+  end
+
   it 'ignores percent right next to format string' do
     inspect_source(cop, 'format("%0.1f%% percent", 22.5)')
     expect(cop.offenses).to be_empty
