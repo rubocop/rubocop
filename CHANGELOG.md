@@ -40,6 +40,7 @@
 * [#2287](https://github.com/bbatsov/rubocop/issues/2287): Fix auto-correct of lines with only whitespace in `Style/IndentationWidth`. ([@lumeet][])
 * [#2331](https://github.com/bbatsov/rubocop/issues/2331): Do not register an offense in `Performance/Size` for `count` with an argument. ([@rrosenblum][])
 * Handle a backslash at the end of a line in `Style/SpaceAroundOperators`. ([@lumeet][])
+* Don't warn about lack of "leading space" in a =begin/=end comment. ([@alexdowad][])
 
 ## 0.34.2 (21/09/2015)
 
