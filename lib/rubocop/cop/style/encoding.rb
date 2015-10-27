@@ -34,7 +34,11 @@ module RuboCop
           encoding = cop_config['AutoCorrectEncodingComment']
           if encoding && encoding =~ ENCODING_PATTERN
             lambda do |corrector|
-              corrector.replace(node.pos, "#{encoding}\n#{node.pos.source}")
+              if encoding_line_number(processed_source) == 0
+                corrector.insert_before(node.pos, "#{encoding}\n")
+              else
+                corrector.insert_after(node.pos, "\n#{encoding}")
+              end
             end
           else
             fail "#{encoding} does not match #{ENCODING_PATTERN}"

@@ -148,14 +148,15 @@ describe RuboCop::Cop::Style::Encoding, :config do
 
     context 'auto-correct' do
       context 'valid auto correct encoding comment' do
-        it 'inserts an encoding comment as the first line' do
+        it 'inserts an encoding comment on the first line of files without ' \
+           'a shebang' do
           cop_config['AutoCorrectEncodingComment'] = '# encoding: utf-8'
           new_source = autocorrect_source(cop, 'def foo() end')
 
           expect(new_source).to eq("# encoding: utf-8\ndef foo() end")
         end
 
-        it 'inserts an encoding comment as the first line and leaves ' \
+        it 'inserts an encoding comment on the first line and leaves ' \
            'the wrong encoding line when encoding is in the wrong place' do
           cop_config['AutoCorrectEncodingComment'] = '# encoding: utf-8'
           new_source = autocorrect_source(cop, ['def foo() end',
@@ -164,6 +165,18 @@ describe RuboCop::Cop::Style::Encoding, :config do
           expect(new_source).to eq(['# encoding: utf-8',
                                     'def foo() end',
                                     '# encoding: utf-8'].join("\n"))
+        end
+
+        it 'inserts an encoding comment on the second line when the first ' \
+           'line is a shebang' do
+          new_source = autocorrect_source(cop, ['#!/usr/bin/env ruby',
+                                                'def foo',
+                                                'end'])
+
+          expect(new_source).to eq(['#!/usr/bin/env ruby',
+                                    '# encoding: utf-8',
+                                    'def foo',
+                                    'end'].join("\n"))
         end
       end
 
