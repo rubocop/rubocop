@@ -8,9 +8,13 @@ module RuboCop
         MSG = 'The use of `eval` is a serious security risk.'
 
         def on_send(node)
-          receiver, method_name, = *node
+          receiver, method_name, *args = *node
 
-          add_offense(node, :selector) if receiver.nil? && method_name == :eval
+          return unless receiver.nil? &&
+                        method_name == :eval &&
+                        !args.empty? &&
+                        args.first.type != :str
+          add_offense(node, :selector)
         end
       end
     end
