@@ -541,6 +541,24 @@ Style/MethodName:
     - snake_case
     - camelCase
 
+Style/MultilineAssignmentLayout:
+  # The types of assignments which are subject to this rule.
+  SupportedTypes:
+    - block
+    - case
+    - class
+    - if
+    - kwbegin
+    - module
+  EnforcedStyle: new_line
+  SupportedStyles:
+    # Ensures that the assignment operator and the rhs are on the same line for
+    # the set of supported types.
+    - same_line
+    # Ensures that the assignment operator and the rhs are on separate lines
+    # for the set of supported types.
+    - new_line
+
 Style/MultilineOperationIndentation:
   EnforcedStyle: aligned
   SupportedStyles:

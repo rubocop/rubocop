@@ -68,6 +68,11 @@ Style/MissingElse:
     - case
     - both
 
+Style/MultilineAssignmentLayout:
+  Description: 'Check for a newline after the assignment operator in multi-line assignments.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#indent-conditional-assignment'
+  Enabled: false
+
 Style/MutableConstant:
   Description: 'Do not assign mutable objects to constants.'
   Enabled: false
