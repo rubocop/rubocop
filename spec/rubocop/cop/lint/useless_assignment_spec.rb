@@ -1774,5 +1774,24 @@ describe RuboCop::Cop::Lint::UselessAssignment do
           .to eq('Useless assignment to variable - `enviromnent`.')
       end
     end
+
+    # regression test, from problem in Locatable
+    context 'when a variable is assigned in 2 identical if branches' do
+      let(:source) do
+        ['def foo',
+         '  if bar',
+         '    foo = 1',
+         '  else',
+         '    foo = 1',
+         '  end',
+         '  foo.bar.baz',
+         'end']
+      end
+
+      it "doesn't think 1 of the 2 assignments is useless" do
+        inspect_source(cop, source)
+        expect(cop.offenses).to be_empty
+      end
+    end
   end
 end

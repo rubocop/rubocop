@@ -54,6 +54,7 @@
 * [#2262](https://github.com/bbatsov/rubocop/issues/2262): Replace `Rainbow` reference with `Colorizable#yellow`. ([@minustehbare][])
 * [#2068](https://github.com/bbatsov/rubocop/issues/2068): Display warning if `Style/Copyright` is misconfigured. ([@alexdowad][])
 * [#2321](https://github.com/bbatsov/rubocop/issues/2321): In `Style/EachWithObject`, don't replace reduce with each_with_object if the accumulator parameter is assigned to in the block. ([@alexdowad][])
+* [#1981](https://github.com/bbatsov/rubocop/issues/1981): `Lint/UselessAssignment` doesn't erroneously identify assignments in identical if branches as useless. ([@alexdowad][])
 
 ## 0.34.2 (21/09/2015)
 
