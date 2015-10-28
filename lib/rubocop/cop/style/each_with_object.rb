@@ -7,6 +7,9 @@ module RuboCop
       # returned at the end and so could be replace by each_with_object without
       # the need to return the object at the end.
       #
+      # However, we can't replace with each_with_object if the accumulator
+      # parameter is assigned to within the block.
+      #
       # @example
       #   # bad
       #   [1, 2].inject({}) { |a, e| a[e] = e; a }
@@ -23,15 +26,25 @@ module RuboCop
           # filter out super and zsuper nodes
           return unless method.type == :send
 
-          _, method_name, method_args = *method
+          _, method_name, method_arg = *method
 
           return unless METHODS.include? method_name
-          return if method_args && method_args.type == :sym
+          return if method_arg && BASIC_LITERALS.include?(method_arg.type)
 
           return_value = return_value(body)
           return unless return_value
 
           return unless first_argument_returned?(args, return_value)
+
+          # if the accumulator parameter is assigned to in the block,
+          # then we can't convert to each_with_object
+          first_arg, = *args
+          accumulator_var, = *first_arg
+          return if body.each_descendant.any? do |n|
+            next unless ASGN_NODES.include?(n.type)
+            lhs, _rhs = *n
+            lhs.equal?(accumulator_var)
+          end
 
           add_offense(method, :selector, format(MSG, method_name))
         end
@@ -47,8 +60,8 @@ module RuboCop
 
         def first_argument_returned?(args, return_value)
           first_arg, = *args
-          accumulator_var = *first_arg
-          return_var = *return_value
+          accumulator_var, = *first_arg
+          return_var, = *return_value
 
           accumulator_var == return_var
         end

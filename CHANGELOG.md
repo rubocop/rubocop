@@ -52,6 +52,7 @@
 * [#2272](https://github.com/bbatsov/rubocop/issues/2272): `Lint/NonLocalExitFromIterator` does not warn about `return` in a block which is passed to `Module#define_method`. ([@alexdowad][])
 * [#2262](https://github.com/bbatsov/rubocop/issues/2262): Replace `Rainbow` reference with `Colorizable#yellow`. ([@minustehbare][])
 * [#2068](https://github.com/bbatsov/rubocop/issues/2068): Display warning if `Style/Copyright` is misconfigured. ([@alexdowad][])
+* [#2321](https://github.com/bbatsov/rubocop/issues/2321): In `Style/EachWithObject`, don't replace reduce with each_with_object if the accumulator parameter is assigned to in the block. ([@alexdowad][])
 
 ## 0.34.2 (21/09/2015)
 
