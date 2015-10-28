@@ -44,6 +44,7 @@
 * Don't warn about lack of "leading space" in a =begin/=end comment. ([@alexdowad][])
 * [#2307](https://github.com/bbatsov/rubocop/issues/2307): In `Lint/FormatParameterMismatch`, don't register an offense if either argument to % is not a literal. ([@alexdowad][])
 * [#2356](https://github.com/bbatsov/rubocop/pull/2356): `Style/Encoding` will now place the encoding comment on the second line if the first line is a shebang. ([@rrosenblum][])
+* `Style/InitialIndentation` cop doesn't error out when a line begins with an integer literal. ([@alexdowad][])
 
 ## 0.34.2 (21/09/2015)
 
