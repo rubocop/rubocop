@@ -66,6 +66,7 @@ module RuboCop
     #   end
     class Cop
       extend AST::Sexp
+      extend NodePattern::Macros
       include Util
       include IgnoredNode
       include AutocorrectLogic
