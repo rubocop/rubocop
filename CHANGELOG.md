@@ -17,6 +17,7 @@
 * [#2277](https://github.com/bbatsov/rubocop/pull/2277): New cop `Style/FirstHashElementLineBreak` checks for a line break before the first element in a multi-line hash. ([@panthomakos][])
 * [#2277](https://github.com/bbatsov/rubocop/pull/2277): New cop `Style/FirstMethodArgumentLineBreak` checks for a line break before the first argument in a multi-line method call. ([@panthomakos][])
 * [#2277](https://github.com/bbatsov/rubocop/pull/2277): New cop `Style/FirstMethodParameterLineBreak` checks for a line break before the first parameter in a multi-line method parameter definition. ([@panthomakos][])
+* Translate README.md into Korean (added newly README_ko.md). ([@MosesKim][])
 
 ### Bug Fixes
 
@@ -1664,3 +1665,4 @@
 [@cornelius]: https://github.com/cornelius
 [@eagletmt]: https://github.com/eagletmt
 [@apiology]: https://github.com/apiology
+[@MosesKim]: https://github.com/moseskim
