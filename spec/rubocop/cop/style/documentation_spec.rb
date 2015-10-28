@@ -133,6 +133,36 @@ describe RuboCop::Cop::Style::Documentation do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts namespace class which uses Constant = Class.new' do
+    inspect_source(cop,
+                   ['class Test',
+                    '  A = Class.new',
+                    '  B = Class.new(A)',
+                    '  C = Class.new { call_method }',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'accepts namespace module which uses Constant = Class.new' do
+    inspect_source(cop,
+                   ['module Test',
+                    '  A = Class.new',
+                    '  B = Class.new(A)',
+                    '  C = Class.new { call_method }',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'accepts namespace module which uses Constant = Module.new' do
+    inspect_source(cop,
+                   ['module Test',
+                    '  A = Module.new',
+                    '  B = Module.new { call_method }',
+                    'end'
+                   ])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'does not raise an error for an implicit match conditional' do
     expect do
       inspect_source(cop,

@@ -47,18 +47,21 @@ module RuboCop
           end
         end
 
+        # 'Const = Class.new' or 'Const = Module.new' are module definitions
+        mod_new = '(send (const nil {:Class :Module}) :new ...)'
+        def_node_matcher :module_definition?,
+                         "{class
+                           module
+                           (casgn _ _ {#{mod_new} (block #{mod_new} ...)})}"
+
         def namespace?(body_node)
           return false unless body_node
 
           case body_node.type
           when :begin
-            body_node.children.all? do |node|
-              [:class, :module].include?(node.type)
-            end
-          when :class, :module
-            true
+            body_node.children.all? { |node| module_definition?(node) }
           else
-            false
+            module_definition?(body_node)
           end
         end
 
