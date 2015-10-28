@@ -21,6 +21,7 @@
 * [#2347](https://github.com/bbatsov/rubocop/pull/2347): `Lint/Eval` cop does not warn about "security risk" when eval argument is a string literal without interpolations. ([@alexdowad][])
 * [#2335](https://github.com/bbatsov/rubocop/issues/2335): `Style/VariableName` cop checks naming style of method parameters. ([@alexdowad][])
 * [#2329](https://github.com/bbatsov/rubocop/pull/2329): New style `braces_for_chaining` for `Style/BlockDelimiters` cop enforces braces on a multi-line block if its return value is being chained with another method. ([@panthomakos][])
+* `Lint/LiteralInCondition` warns if a symbol or dynamic symbol is used as a condition. ([@alexdowad][])
 
 ### Bug Fixes
 
