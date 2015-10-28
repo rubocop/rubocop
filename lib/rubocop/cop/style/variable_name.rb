@@ -23,6 +23,11 @@ module RuboCop
           check_name(node, name, node.loc.name)
         end
 
+        def on_arg(node)
+          name, = *node
+          check_name(node, name, node.loc.name)
+        end
+
         private
 
         def message(style)

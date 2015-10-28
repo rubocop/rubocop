@@ -19,6 +19,7 @@
 * [#2277](https://github.com/bbatsov/rubocop/pull/2277): New cop `Style/FirstMethodParameterLineBreak` checks for a line break before the first parameter in a multi-line method parameter definition. ([@panthomakos][])
 * Add `Rails/PluralizationGrammar` cop, checks for incorrect grammar when using methods like `3.day.ago`, when you should write `3.days.ago`. ([@maxjacobson][])
 * [#2347](https://github.com/bbatsov/rubocop/pull/2347): `Lint/Eval` cop does not warn about "security risk" when eval argument is a string literal without interpolations. ([@alexdowad][])
+* [#2335](https://github.com/bbatsov/rubocop/issues/2335): `Style/VariableName` cop checks naming style of method parameters. ([@alexdowad][])
 
 ### Bug Fixes
 
