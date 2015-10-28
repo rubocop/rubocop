@@ -150,5 +150,17 @@ describe RuboCop::Cop::Lint::NonLocalExitFromIterator do
 
       it { expect(cop.offenses).to be_empty }
     end
+
+    context 'when the message is define_method' do
+      let(:source) { <<-END }
+        [:method_one, :method_two].each do |method_name|
+          define_method(method_name) do
+            return if predicate?
+          end
+        end
+      END
+
+      it { expect(cop.offenses).to be_empty }
+    end
   end
 end

@@ -5,7 +5,8 @@ module RuboCop
     module Lint
       # This cop checks for non-local exit from iterator, without return value.
       # It warns only when satisfies all of these: `return` doesn't have return
-      # value, block followed by method chain, and block have arguments.
+      # value, the block is preceded by a method chain, the block has arguments,
+      # and the method which receives the block is not `define_method`.
       #
       # @example
       #
@@ -42,6 +43,9 @@ module RuboCop
 
             # `return` does not exit to outside of lambda block, this is safe.
             break if lambda?(send_node)
+            # if a proc is passed to `Module#define_method`, `return` will not
+            # cause a non-local exit error
+            break if define_method?(send_node)
 
             next if args_node.children.empty?
             if chained_send?(send_node)
@@ -63,6 +67,11 @@ module RuboCop
         def lambda?(send_node)
           receiver_node, selector_node = *send_node
           receiver_node.nil? && selector_node == :lambda
+        end
+
+        def define_method?(send_node)
+          _receiver, selector = *send_node
+          selector == :define_method
         end
       end
     end
