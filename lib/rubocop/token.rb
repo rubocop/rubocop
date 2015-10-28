@@ -14,7 +14,8 @@ module RuboCop
     def initialize(pos, type, text)
       @pos = pos
       @type = type
-      @text = text
+      # Parser token "text" may be a Fixnum
+      @text = text.to_s
     end
 
     def to_s

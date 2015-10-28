@@ -180,5 +180,14 @@ describe RuboCop::ProcessedSource do
         expect(processed_source).not_to be_valid_syntax
       end
     end
+
+    context 'when a line starts with an integer literal' do
+      let(:source) { '1 + 1' }
+
+      # regression test
+      it 'tokenizes the source correctly' do
+        expect(processed_source.tokens[0].text).to eq '1'
+      end
+    end
   end
 end
