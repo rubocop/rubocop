@@ -25,32 +25,55 @@ module RuboCop
         def on_block(node)
           return if ignored_node?(node)
 
-          if proper_block_style?(node)
-            correct_style_detected
-          else
-            add_offense(node, :begin) { opposite_style_detected }
-          end
+          return if proper_block_style?(node)
+
+          add_offense(node, :begin)
         end
 
         private
 
-        def message(node)
-          block_begin = node.loc.begin.source
+        def line_count_based_message(node)
           block_length = Util.block_length(node)
 
+          if block_length > 0
+            'Avoid using `{...}` for multi-line blocks.'
+          else
+            'Prefer `{...}` over `do...end` for single-line blocks.'
+          end
+        end
+
+        def semantic_message(node)
+          block_begin = node.loc.begin.source
+
+          if block_begin == '{'
+            'Prefer `do...end` over `{...}` for procedural blocks.'
+          else
+            'Prefer `{...}` over `do...end` for functional blocks.'
+          end
+        end
+
+        def braces_for_chaining_message(node)
+          block_length = Util.block_length(node)
+
+          if block_length > 0
+            if return_value_chaining?(node)
+              'Prefer `{...}` over `do...end` for multi-line chained blocks.'
+            else
+              'Prefer `do...end` for multi-line blocks without chaining.'
+            end
+          else
+            'Prefer `{...}` over `do...end` for single-line blocks.'
+          end
+        end
+
+        def message(node)
           case style
           when :line_count_based
-            if block_length > 0
-              'Avoid using `{...}` for multi-line blocks.'
-            else
-              'Prefer `{...}` over `do...end` for single-line blocks.'
-            end
+            line_count_based_message(node)
           when :semantic
-            if block_begin == '{'
-              'Prefer `do...end` over `{...}` for procedural blocks.'
-            else
-              'Prefer `{...}` over `do...end` for functional blocks.'
-            end
+            semantic_message(node)
+          when :braces_for_chaining
+            braces_for_chaining_message(node)
           end
         end
 
@@ -90,6 +113,8 @@ module RuboCop
             line_count_based_block_style?(node)
           when :semantic
             semantic_block_style?(node)
+          when :braces_for_chaining
+            braces_for_chaining_style?(node)
           end
         end
 
@@ -115,6 +140,21 @@ module RuboCop
           else
             procedural_method?(method_name) || !return_value_used?(node)
           end
+        end
+
+        def braces_for_chaining_style?(node)
+          block_length = Util.block_length(node)
+          block_begin = node.loc.begin.source
+
+          if block_length > 0
+            block_begin == (return_value_chaining?(node) ? '{' : 'do')
+          else
+            block_begin == '{'
+          end
+        end
+
+        def return_value_chaining?(node)
+          node.parent && node.parent.send_type? && node.parent.loc.dot
         end
 
         def extract_method_name_from_block(block)

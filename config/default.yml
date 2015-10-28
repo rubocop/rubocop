@@ -183,6 +183,11 @@ Style/BlockDelimiters:
     # method) but exceptions are permitted in the `ProceduralMethods`,
     # `FunctionalMethods` and `IgnoredMethods` sections below.
     - semantic
+    # The `braces_for_chaining` style enforces braces around single line blocks
+    # and do..end around multi-line blocks, except for multi-line blocks whose
+    # return value is being chained with another method (in which case braces
+    # are enforced).
+    - braces_for_chaining
   ProceduralMethods:
     # Methods that are known to be procedural in nature but look functional from
     # their usage, e.g.
