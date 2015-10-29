@@ -3,19 +3,50 @@
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for circular argument references in keyword arguments.
+      # This cop checks for circular argument references in optional keyword
+      # arguments and optional ordinal arguments.
       #
       # This cop mirrors a warning produced by MRI since 2.2.
       #
       # @example
+      #   # bad
       #   def bake(pie: pie)
       #     pie.heat_up
+      #   end
+      #
+      #   # good
+      #   def bake(pie:)
+      #     pie.refrigerate
+      #   end
+      #
+      #   # good
+      #   def bake(pie: self.pie)
+      #     pie.feed_to(user)
+      #   end
+      #
+      #   # bad
+      #   def cook(dry_ingredients = dry_ingredients)
+      #     dry_ingredients.reduce(&:+)
+      #   end
+      #
+      #   # good
+      #   def cook(dry_ingredients = self.dry_ingredients)
+      #     dry_ingredients.combine
       #   end
       class CircularArgumentReference < Cop
         MSG = 'Circular argument reference - `%s`.'
 
         def on_kwoptarg(node)
-          arg_name, arg_value = *node
+          check_for_circular_argument_references(*node)
+        end
+
+        def on_optarg(node)
+          check_for_circular_argument_references(*node)
+        end
+
+        private
+
+        def check_for_circular_argument_references(arg_name, arg_value)
           case arg_value.type
           when :send
             # Ruby 2.0 will have type send every time, and "send nil" if it is
