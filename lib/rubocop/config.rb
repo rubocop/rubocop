@@ -20,6 +20,9 @@ module RuboCop
 
     def initialize(hash = {}, loaded_path = nil)
       @loaded_path = loaded_path
+      @for_cop = Hash.new do |h, cop|
+        h[cop] = self[Cop::Cop.qualified_cop_name(cop, loaded_path)] || {}
+      end
       super(hash)
     end
 
@@ -72,13 +75,11 @@ module RuboCop
     end
 
     def for_cop(cop)
-      cop = cop.cop_name if cop.respond_to?(:cop_name)
-      @for_cop ||= {}
-      @for_cop[cop] ||= self[Cop::Cop.qualified_cop_name(cop, loaded_path)]
+      @for_cop[cop.respond_to?(:cop_name) ? cop.cop_name : cop]
     end
 
     def cop_enabled?(cop)
-      for_cop(cop).nil? || for_cop(cop)['Enabled']
+      for_cop(cop).empty? || for_cop(cop)['Enabled']
     end
 
     def warn_unless_valid

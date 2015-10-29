@@ -16,7 +16,7 @@ module RuboCop
         def check_argument(variable)
           return unless variable.method_argument?
           return if variable.keyword_argument? &&
-                    cop_config && cop_config['AllowUnusedKeywordArguments']
+                    cop_config['AllowUnusedKeywordArguments']
           super
         end
 
