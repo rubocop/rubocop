@@ -50,6 +50,7 @@
 * `Style/InitialIndentation` cop doesn't error out when a line begins with an integer literal. ([@alexdowad][])
 * [#2296](https://github.com/bbatsov/rubocop/issues/2296): In `Style/DotPosition`, don't "correct" (and break) a method call which has a line comment (or blank line) between the dot and the selector. ([@alexdowad][])
 * [#2272](https://github.com/bbatsov/rubocop/issues/2272): `Lint/NonLocalExitFromIterator` does not warn about `return` in a block which is passed to `Module#define_method`. ([@alexdowad][])
+* [#2262](https://github.com/bbatsov/rubocop/issues/2262): Replace `Rainbow` reference with `Colorizable#yellow`. ([@minustehbare][])
 
 ## 0.34.2 (21/09/2015)
 
@@ -1678,3 +1679,4 @@
 [@eagletmt]: https://github.com/eagletmt
 [@apiology]: https://github.com/apiology
 [@alexdowad]: https://github.com/alexdowad
+[@minustehbare]: https://github.com/minustehbare
