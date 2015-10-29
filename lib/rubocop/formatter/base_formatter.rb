@@ -57,8 +57,12 @@ module RuboCop
       #
       # @param output [IO]
       #   `$stdout` or opened file
-      def initialize(output)
+      #
+      # @param command_line_args [Array(String)]
+      #   the arguments passed at the command line
+      def initialize(output, command_line_args)
         @output = output
+        @command_line_args = command_line_args
       end
 
       # @api public

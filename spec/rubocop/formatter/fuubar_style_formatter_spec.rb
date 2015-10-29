@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module RuboCop
   describe Formatter::FuubarStyleFormatter do
-    subject(:formatter) { described_class.new(output) }
+    subject(:formatter) { described_class.new(output, []) }
     let(:output) { StringIO.new }
 
     let(:files) do

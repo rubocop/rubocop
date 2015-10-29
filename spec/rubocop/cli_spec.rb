@@ -2169,7 +2169,7 @@ describe RuboCop::CLI, :isolated_environment do
   end
 
   describe '#trap_interrupt' do
-    let(:runner) { RuboCop::Runner.new({}, RuboCop::ConfigStore.new) }
+    let(:runner) { RuboCop::Runner.new({}, RuboCop::ConfigStore.new, []) }
     let(:interrupt_handlers) { [] }
 
     before do

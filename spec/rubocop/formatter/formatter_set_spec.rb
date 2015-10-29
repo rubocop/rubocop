@@ -15,8 +15,8 @@ module RuboCop
 
       describe 'formatter API method' do
         before do
-          formatter_set.add_formatter('simple')
-          formatter_set.add_formatter('emacs')
+          formatter_set.add_formatter('simple', nil, [])
+          formatter_set.add_formatter('emacs', nil, [])
         end
 
         let(:files) { ['/path/to/file1', '/path/to/file2'] }
@@ -31,25 +31,25 @@ module RuboCop
 
       describe 'add_formatter' do
         it 'adds a formatter to itself' do
-          formatter_set.add_formatter('simple')
+          formatter_set.add_formatter('simple', nil, [])
           expect(formatter_set.size).to eq(1)
         end
 
         it 'adds a formatter with specified formatter type' do
-          formatter_set.add_formatter('simple')
+          formatter_set.add_formatter('simple', nil, [])
           expect(formatter_set.first.class).to eq(SimpleTextFormatter)
         end
 
         it 'can add multiple formatters by being invoked multiple times' do
-          formatter_set.add_formatter('simple')
-          formatter_set.add_formatter('emacs')
+          formatter_set.add_formatter('simple', nil, [])
+          formatter_set.add_formatter('emacs', nil, [])
           expect(formatter_set[0].class).to eq(SimpleTextFormatter)
           expect(formatter_set[1].class).to eq(EmacsStyleFormatter)
         end
 
         context 'when output path is omitted' do
           it 'adds a formatter outputs to $stdout' do
-            formatter_set.add_formatter('simple')
+            formatter_set.add_formatter('simple', nil, [])
             expect(formatter_set.first.output).to eq($stdout)
           end
         end
@@ -57,7 +57,7 @@ module RuboCop
         context 'when output path is specified' do
           it 'adds a formatter outputs to the specified file' do
             output_path = Tempfile.new('').path
-            formatter_set.add_formatter('simple', output_path)
+            formatter_set.add_formatter('simple', output_path, [])
             expect(formatter_set.first.output.class).to eq(File)
             expect(formatter_set.first.output.path).to eq(output_path)
           end
@@ -65,7 +65,7 @@ module RuboCop
           it "creates parent directories if they don't exist" do
             Dir.mktmpdir do |tmpdir|
               output_path = File.join(tmpdir, 'path/does/not/exist')
-              formatter_set.add_formatter('simple', output_path)
+              formatter_set.add_formatter('simple', output_path, [])
               expect(formatter_set.first.output.class).to eq(File)
               expect(formatter_set.first.output.path).to eq(output_path)
             end
@@ -77,9 +77,9 @@ module RuboCop
         before do
           2.times do
             output_path = Tempfile.new('').path
-            formatter_set.add_formatter('simple', output_path)
+            formatter_set.add_formatter('simple', output_path, [])
           end
-          formatter_set.add_formatter('simple')
+          formatter_set.add_formatter('simple', nil, [])
         end
 
         it 'closes all output files' do

@@ -5,7 +5,7 @@ require 'spec_helper'
 module RuboCop
   module Formatter
     describe EmacsStyleFormatter do
-      subject(:formatter) { described_class.new(output) }
+      subject(:formatter) { described_class.new(output, []) }
       let(:output) { StringIO.new }
 
       describe '#file_finished' do

@@ -50,6 +50,10 @@
 * [#2296](https://github.com/bbatsov/rubocop/issues/2296): In `Style/DotPosition`, don't "correct" (and break) a method call which has a line comment (or blank line) between the dot and the selector. ([@alexdowad][])
 * [#2272](https://github.com/bbatsov/rubocop/issues/2272): `Lint/NonLocalExitFromIterator` does not warn about `return` in a block which is passed to `Module#define_method`. ([@alexdowad][])
 
+### Changes
+
+* `.rubocop_todo.yml` correctly reflects the command line arguments supplied to RuboCop. ([@agrimm][])
+
 ## 0.34.2 (21/09/2015)
 
 ### Bug Fixes

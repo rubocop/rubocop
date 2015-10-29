@@ -18,9 +18,10 @@ module RuboCop
     attr_reader :errors, :aborting
     alias_method :aborting?, :aborting
 
-    def initialize(options, config_store)
+    def initialize(options, config_store, command_line_args)
       @options = options
       @config_store = config_store
+      @command_line_args = command_line_args
       @errors = []
       @aborting = false
     end
@@ -224,7 +225,7 @@ module RuboCop
         set = Formatter::FormatterSet.new
         pairs = @options[:formatters] || [[Options::DEFAULT_FORMATTER]]
         pairs.each do |formatter_key, output_path|
-          set.add_formatter(formatter_key, output_path)
+          set.add_formatter(formatter_key, output_path, @command_line_args)
         end
         set
       rescue => error

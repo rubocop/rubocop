@@ -55,7 +55,7 @@ module RuboCop
         offenses
       end
 
-      def add_formatter(formatter_type, output_path = nil)
+      def add_formatter(formatter_type, output_path, command_line_args)
         formatter_class = case formatter_type
                           when Class
                             formatter_type
@@ -73,7 +73,7 @@ module RuboCop
           output = $stdout
         end
 
-        self << formatter_class.new(output)
+        self << formatter_class.new(output, command_line_args)
       end
 
       def close_output_files

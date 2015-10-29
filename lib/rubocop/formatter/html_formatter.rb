@@ -15,7 +15,7 @@ module RuboCop
 
       attr_reader :files, :summary
 
-      def initialize(output)
+      def initialize(output, _command_line_args)
         super
         @files = []
         @summary = OpenStruct.new(offense_count: 0)
