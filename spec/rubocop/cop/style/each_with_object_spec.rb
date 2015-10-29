@@ -70,4 +70,19 @@ describe RuboCop::Cop::Style::EachWithObject do
     inspect_source(cop, '[1, 2, 3].inject { |a, e| a + e }')
     expect(cop.offenses).to be_empty
   end
+
+  it 'ignores inject/reduce with assignment to accumulator param in block' do
+    inspect_source(cop, ['r = [1, 2, 3].reduce(0) do |memo, item|',
+                         '  memo += item > 2 ? item : 0',
+                         '  memo',
+                         'end'])
+    expect(cop.offenses).to be_empty
+  end
+
+  context 'when a simple literal is passed as initial value' do
+    it 'ignores inject/reduce' do
+      inspect_source(cop, 'array.reduce(0) { 1 }')
+      expect(cop.offenses).to be_empty
+    end
+  end
 end

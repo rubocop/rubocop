@@ -1,5 +1,6 @@
 # encoding: utf-8
 
+# rubocop:disable Metrics/ModuleLength
 module RuboCop
   module Cop
     # This module contains a collection of useful utility methods.
@@ -11,6 +12,10 @@ module RuboCop
       EQUALS_ASGN_NODES = [:lvasgn, :ivasgn, :cvasgn, :gvasgn, :casgn, :masgn]
       SHORTHAND_ASGN_NODES = [:op_asgn, :or_asgn, :and_asgn]
       ASGN_NODES = EQUALS_ASGN_NODES + SHORTHAND_ASGN_NODES
+
+      LITERALS = [:str, :dstr, :int, :float, :sym, :dsym, :array,
+                  :hash, :regexp, :nil, :true, :false]
+      BASIC_LITERALS = LITERALS - [:dstr, :dsym, :array, :hash]
 
       # http://phrogz.net/programmingruby/language.html#table_18.4
       # Backtick is added last just to help editors parse this code.
