@@ -63,7 +63,15 @@ module RuboCop
           replacement = (node.type == :and ? '&&' : '||')
           lambda do |corrector|
             [expr1, expr2].each do |expr|
-              _receiver, _method_name, *args = *expr
+              receiver, method_name, *args = *expr
+              if method_name == :!
+                # ! is a special case:
+                # 'x and !obj.method arg' can be auto-corrected if we
+                # recurse down a level and add parens to 'obj.method arg'
+                # Is there any other operator for which this is necessary?
+                expr = receiver
+                _receiver, _method_name, *args = *expr
+              end
               next unless correctable?(expr)
 
               sb = expr.loc.expression.source_buffer

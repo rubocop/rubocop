@@ -231,5 +231,19 @@ describe RuboCop::Cop::Style::AndOr, :config do
       new_source = autocorrect_source(cop, 'b and method a,b')
       expect(new_source).to eq('b && method(a,b)')
     end
+
+    context 'with !obj.method arg on right' do
+      it 'autocorrects "and" with && and adds parens' do
+        new_source = autocorrect_source(cop, 'x and !obj.method arg')
+        expect(new_source).to eq('x && !obj.method(arg)')
+      end
+    end
+
+    context 'with !obj.method arg on left' do
+      it 'autocorrects "and" with && and adds parens' do
+        new_source = autocorrect_source(cop, '!obj.method arg and x')
+        expect(new_source).to eq('!obj.method(arg) && x')
+      end
+    end
   end
 end
