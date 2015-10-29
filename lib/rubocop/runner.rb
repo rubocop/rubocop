@@ -15,13 +15,14 @@ module RuboCop
       end
     end
 
-    attr_reader :errors, :aborting
+    attr_reader :errors, :warnings, :aborting
     alias_method :aborting?, :aborting
 
     def initialize(options, config_store)
       @options = options
       @config_store = config_store
       @errors = []
+      @warnings = []
       @aborting = false
     end
 
@@ -122,7 +123,7 @@ module RuboCop
       # Caching results when a cop has crashed would prevent the crash in the
       # next run, since the cop would not be called then. We want crashes to
       # show up the same in each run.
-      return if errors.any?
+      return if errors.any? || warnings.any?
 
       cache.save(offenses, processed_source.disabled_line_ranges,
                  processed_source.comments)
@@ -177,6 +178,7 @@ module RuboCop
       team = Cop::Team.new(mobilized_cop_classes(config), config, @options)
       offenses = team.inspect_file(processed_source)
       @errors.concat(team.errors)
+      @warnings.concat(team.warnings)
       [offenses, team.updated_source_file?]
     end
 
