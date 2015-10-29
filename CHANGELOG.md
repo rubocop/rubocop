@@ -48,7 +48,7 @@
 * [#2356](https://github.com/bbatsov/rubocop/pull/2356): `Style/Encoding` will now place the encoding comment on the second line if the first line is a shebang. ([@rrosenblum][])
 * `Style/InitialIndentation` cop doesn't error out when a line begins with an integer literal. ([@alexdowad][])
 * [#2296](https://github.com/bbatsov/rubocop/issues/2296): In `Style/DotPosition`, don't "correct" (and break) a method call which has a line comment (or blank line) between the dot and the selector. ([@alexdowad][])
-* Default rubocop cache dir moved to per-user folders. (```/tmp/rubocop_cache``` -> ```/tmp/$username/rubocop_cache```) ([@br3nda][])
+* Default rubocop cache dir moved to per-user folders. (`/tmp/rubocop_cache` -> `/tmp/$username/rubocop_cache`) ([@br3nda][])
 
 ## 0.34.2 (21/09/2015)
 
