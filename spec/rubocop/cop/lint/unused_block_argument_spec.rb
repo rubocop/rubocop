@@ -113,7 +113,7 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
         end
       end
 
-      context 'and an arguments is unused' do
+      context 'and an argument is unused' do
         let(:source) { <<-END }
           -> (foo, bar) { puts bar }
         END

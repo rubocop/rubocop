@@ -8,7 +8,7 @@ module RuboCop
       def check_negative_conditional(node)
         condition, _body, _rest = *node
 
-        # Look at last expression of contents if there's a parenthesis
+        # Look at last expression of contents if there are parentheses
         # around condition.
         condition = condition.children.last while condition.type == :begin
         return unless condition.type == :send
