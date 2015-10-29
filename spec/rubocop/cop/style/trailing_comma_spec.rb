@@ -413,6 +413,18 @@ describe RuboCop::Cop::Style::TrailingComma, :config do
                                   '              d: 1,',
                                   '           )'].join("\n"))
       end
+
+      it 'accepts a method with a single multiline method call arg' \
+         ' and no trailing comma' do
+        inspect_source(cop, <<-CODE)
+          some_method(
+            SomeObject
+              .method
+              .method
+          )
+        CODE
+        expect(cop.offenses).to be_empty
+      end
     end
 
     context 'when EnforcedStyleForMultiline is consistent_comma' do
@@ -611,6 +623,18 @@ describe RuboCop::Cop::Style::TrailingComma, :config do
                                   '              c: 0,',
                                   '              d: 1,',
                                   '           )'].join("\n"))
+      end
+
+      it 'accepts a method with a single multiline method call arg ' \
+         'and no trailing comma' do
+        inspect_source(cop, <<-CODE)
+          some_method(
+            SomeObject
+              .method
+              .method
+          )
+        CODE
+        expect(cop.offenses).to be_empty
       end
     end
   end

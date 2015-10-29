@@ -68,7 +68,6 @@ module RuboCop
                 node.loc.end.begin_pos)
         end
 
-        # rubocop:disable Metrics/MethodLength
         def check(node, items, kind, begin_pos, end_pos)
           sb = items.first.loc.expression.source_buffer
 
@@ -77,10 +76,9 @@ module RuboCop
           return if heredoc?(after_last_item.source)
 
           comma_offset = after_last_item.source =~ /,/
-          should_have_comma =
-            [:comma, :consistent_comma].include?(style) && multiline?(node)
+
           if comma_offset && !inside_comment?(after_last_item, comma_offset)
-            unless should_have_comma
+            unless should_have_comma?(style, node, items)
               extra_info = case style
                            when :comma
                              ', unless each item is on its own line'
@@ -92,11 +90,16 @@ module RuboCop
               avoid_comma(kind, after_last_item.begin_pos + comma_offset, sb,
                           extra_info)
             end
-          elsif should_have_comma
+          elsif should_have_comma?(style, node, items)
             put_comma(items, kind, sb)
           end
         end
-        # rubocop:enable Metrics/MethodLength
+
+        def should_have_comma?(style, node, items)
+          [:comma, :consistent_comma].include?(style) &&
+            multiline?(node) &&
+            (items.size > 1 || items.last.hash_type?)
+        end
 
         def inside_comment?(range, comma_offset)
           processed_source.comments.any? do |comment|
