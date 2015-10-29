@@ -26,6 +26,7 @@
 * [#2369](https://github.com/bbatsov/rubocop/issues/2369): `Style/TrailingComma` doesn't add a trailing comma to a multiline method chain which is the only arg to a method call. ([@alexdowad][])
 * `CircularArgumentReference` cop updated to lint for ordinal circular argument references on top of optional keyword arguments. ([@maxjacobson][])
 * Added ability to download shared rubocop config files from remote urls. ([@ptrippett][])
+* [#1601](https://github.com/bbatsov/rubocop/issues/1601): Add `IgnoreEmptyMethods` config parameter for `Lint/UnusedMethodArgument` and `IgnoreEmptyBlocks` config parameter for `Lint/UnusedBlockArgument` cops. ([@alexdowad][])
 
 ### Bug Fixes
 

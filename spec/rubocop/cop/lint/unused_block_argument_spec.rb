@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Lint::UnusedBlockArgument do
+describe RuboCop::Cop::Lint::UnusedBlockArgument, :config do
   subject(:cop) { described_class.new }
 
   context 'inspection' do
@@ -270,6 +270,31 @@ describe RuboCop::Cop::Lint::UnusedBlockArgument do
       SOURCE
 
       expect(autocorrect_source(cop, original_source)).to eq(original_source)
+    end
+  end
+
+  context 'when IgnoreEmptyBlocks config parameter is set' do
+    subject(:cop) { described_class.new(config) }
+    let(:cop_config) { { 'IgnoreEmptyBlocks' => true } }
+
+    it 'accepts an empty block with a single unused parameter' do
+      inspect_source(cop, '->(arg) { }')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense for a non-empty block with an unused parameter' do
+      inspect_source(cop, '->(arg) { 1 }')
+      expect(cop.offenses.size).to eq 1
+    end
+
+    it 'accepts an empty block with multiple unused parameters' do
+      inspect_source(cop, '->(arg1, arg2, *others) { }')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense for a non-empty block with multiple unused args' do
+      inspect_source(cop, '->(arg1, arg2, *others) { 1 }')
+      expect(cop.offenses.size).to eq 3
     end
   end
 end

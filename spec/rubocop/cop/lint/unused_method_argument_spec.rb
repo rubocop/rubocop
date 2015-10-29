@@ -4,7 +4,9 @@ require 'spec_helper'
 
 describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
   subject(:cop) { described_class.new(config) }
-  let(:cop_config) { { 'AllowUnusedKeywordArguments' => false } }
+  let(:cop_config) do
+    { 'AllowUnusedKeywordArguments' => false, 'IgnoreEmptyMethods' => false }
+  end
 
   describe 'inspection' do
     before do
@@ -326,6 +328,38 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       it 'ignores that since modifying the name changes the method interface' do
         expect(corrected_source).to eq(source)
       end
+    end
+  end
+
+  context 'when IgnoreEmptyMethods config parameter is set' do
+    let(:cop_config) { { 'IgnoreEmptyMethods' => true } }
+
+    it 'accepts an empty method with a single unused parameter' do
+      inspect_source(cop, ['def method(arg)',
+                           'end'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense for a non-empty method with a single unused ' \
+        'parameter' do
+      inspect_source(cop, ['def method(arg)',
+                           '  1',
+                           'end'])
+      expect(cop.offenses.size).to eq 1
+    end
+
+    it 'accepts an empty method with multiple unused parameters' do
+      inspect_source(cop, ['def method(a, b, *others)',
+                           'end'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense for a non-empty method with multiple unused ' \
+       'parameters' do
+      inspect_source(cop, ['def method(a, b, *others)',
+                           '  1',
+                           'end'])
+      expect(cop.offenses.size).to eq 3
     end
   end
 end

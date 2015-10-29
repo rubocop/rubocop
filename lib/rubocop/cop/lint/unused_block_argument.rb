@@ -16,6 +16,12 @@ module RuboCop
 
         def check_argument(variable)
           return unless variable.block_argument?
+
+          if cop_config['IgnoreEmptyBlocks']
+            _send, _args, body = *variable.scope.node
+            return if body.nil?
+          end
+
           super
         end
 
