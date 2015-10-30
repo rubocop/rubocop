@@ -49,7 +49,7 @@ module RuboCop
     #
     # The Cop class is meant to be extended.
     #
-    # Cops track offenses and can autocorrect them of the fly.
+    # Cops track offenses and can autocorrect them on the fly.
     #
     # A commissioner object is responsible for traversing the AST and invoking
     # the specific callbacks on each cop.
