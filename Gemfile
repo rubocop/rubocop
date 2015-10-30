@@ -7,6 +7,7 @@ gemspec
 group :test do
   gem 'coveralls', require: false
   gem 'safe_yaml', require: false
+  gem 'webmock', require: false
 end
 
 local_gemfile = 'Gemfile.local'

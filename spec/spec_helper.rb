@@ -5,6 +5,8 @@ require 'support/coverage'
 
 require 'rubocop'
 
+require 'webmock/rspec'
+
 # Requires supporting files with custom matchers and macros, etc,
 # in ./support/ and its subdirectories.
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
@@ -48,3 +50,6 @@ end
 
 # Disable colors in specs
 Rainbow.enabled = false
+
+# Disable network connections
+WebMock.disable_net_connect!

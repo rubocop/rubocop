@@ -304,6 +304,22 @@ describe RuboCop::ConfigLoader do
           .to be_superset(expected.to_set)
       end
     end
+
+    context 'when a file inherits from a url' do
+      let(:file_path) { '.rubocop.yml' }
+
+      before do
+        stub_request(:get, /example.com/)
+          .to_return(status: 200, body: "Style/Encoding:\n    Enabled: true")
+
+        create_file('~/.rubocop.yml', [''])
+        create_file(file_path, ['inherit_from: http://example.com/rubocop.yml'])
+      end
+
+      it 'does not fail to load the resulting path' do
+        expect { configuration_from_file }.not_to raise_error
+      end
+    end
   end
 
   describe '.load_file', :isolated_environment do
