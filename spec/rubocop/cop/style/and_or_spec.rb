@@ -124,10 +124,10 @@ describe RuboCop::Cop::Style::AndOr, :config do
       expect(new_source).to eq("teststring.include?('b') || (x = y)")
     end
 
-    it 'leaves *and* as is if auto-correction changes the meaning' do
+    it 'autocorrects "and" with an assignment and return on either side' do
       src = 'x = a + b and return x'
       new_source = autocorrect_source(cop, src)
-      expect(new_source).to eq(src)
+      expect(new_source).to eq('(x = a + b) && (return x)')
     end
 
     it 'warns on short-circuit (and)' do

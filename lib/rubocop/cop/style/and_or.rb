@@ -65,8 +65,10 @@ module RuboCop
             [expr1, expr2].each do |expr|
               if expr.send_type?
                 correct_send(expr, corrector)
+              elsif expr.return_type?
+                correct_other(expr, corrector)
               elsif ASGN_NODES.include?(expr.type)
-                correct_assign(expr, corrector)
+                correct_other(expr, corrector)
               end
             end
             corrector.replace(node.loc.operator, replacement)
@@ -92,9 +94,8 @@ module RuboCop
           corrector.insert_after(args.last.loc.expression, ')')
         end
 
-        def correct_assign(node, corrector)
+        def correct_other(node, corrector)
           return unless node.loc.expression.begin.source != '('
-
           corrector.insert_before(node.loc.expression, '(')
           corrector.insert_after(node.loc.expression, ')')
         end
