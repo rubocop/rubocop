@@ -18,6 +18,7 @@ RSpec.configure do |config|
   config.run_all_when_everything_filtered = true
 
   config.order = :random
+  Kernel.srand config.seed
 
   config.filter_run_excluding ruby: ->(v) { !RUBY_VERSION.start_with?(v.to_s) }
 
