@@ -112,10 +112,16 @@ describe RuboCop::Cop::Style::AndOr, :config do
                                 'end'].join("\n"))
     end
 
-    it 'leaves *or* as is if auto-correction changes the meaning' do
+    it 'autocorrects "or" with an assignment on the left' do
       src = "x = y or teststring.include? 'b'"
       new_source = autocorrect_source(cop, src)
-      expect(new_source).to eq(src)
+      expect(new_source).to eq("(x = y) || teststring.include?('b')")
+    end
+
+    it 'autocorrects "or" with an assignment on the right' do
+      src = "teststring.include? 'b' or x = y"
+      new_source = autocorrect_source(cop, src)
+      expect(new_source).to eq("teststring.include?('b') || (x = y)")
     end
 
     it 'leaves *and* as is if auto-correction changes the meaning' do
