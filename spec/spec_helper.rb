@@ -36,11 +36,13 @@ RSpec.configure do |config|
   config.filter_run_excluding broken: broken_filter
 
   config.expect_with :rspec do |expectations|
+    expectations.include_chain_clauses_in_custom_matcher_descriptions = true
     expectations.syntax = :expect # Disable `should`
   end
 
   config.mock_with :rspec do |mocks|
     mocks.syntax = :expect # Disable `should_receive` and `stub`
+    mocks.verify_partial_doubles = true
   end
 end
 
