@@ -133,7 +133,7 @@ module RuboCop
         end
 
         def body_index
-          branch_point_node.children.index(branch_body_node)
+          branch_point_node.children.index { |n| n.equal?(branch_body_node) }
         end
 
         def set_branch_point_and_body_nodes!

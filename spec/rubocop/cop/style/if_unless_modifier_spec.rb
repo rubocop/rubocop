@@ -249,4 +249,64 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
                          'end.inspect'])
     expect(cop.messages).to be_empty
   end
+
+  it "doesn't break if-end when used as RHS of local var assignment" do
+    corrected = autocorrect_source(cop, ['a = if b',
+                                         '  1',
+                                         'end'])
+    expect(corrected).to eq 'a = (1 if b)'
+  end
+
+  it "doesn't break if-end when used as RHS of instance var assignment" do
+    corrected = autocorrect_source(cop, ['@a = if b',
+                                         '  1',
+                                         'end'])
+    expect(corrected).to eq '@a = (1 if b)'
+  end
+
+  it "doesn't break if-end when used as RHS of class var assignment" do
+    corrected = autocorrect_source(cop, ['@@a = if b',
+                                         '  1',
+                                         'end'])
+    expect(corrected).to eq '@@a = (1 if b)'
+  end
+
+  it "doesn't break if-end when used as RHS of constant assignment" do
+    corrected = autocorrect_source(cop, ['A = if b',
+                                         '  1',
+                                         'end'])
+    expect(corrected).to eq 'A = (1 if b)'
+  end
+
+  it "doesn't break if-end when used as RHS of binary arithmetic" do
+    corrected = autocorrect_source(cop, ['a + if b',
+                                         '  1',
+                                         'end'])
+    expect(corrected).to eq 'a + (1 if b)'
+  end
+
+  it 'accepts if-end when used as LHS of binary arithmetic' do
+    inspect_source(cop, ['if test',
+                         '  1',
+                         'end + 2'])
+    expect(cop.messages).to be_empty
+  end
+
+  context 'if-end is argument to a parenthesized method call' do
+    it "doesn't add redundant parentheses" do
+      corrected = autocorrect_source(cop, ['puts("string", if a',
+                                           '  1',
+                                           'end)'])
+      expect(corrected).to eq 'puts("string", 1 if a)'
+    end
+  end
+
+  context 'if-end is argument to a non-parenthesized method call' do
+    it 'adds parentheses so as not to change meaning' do
+      corrected = autocorrect_source(cop, ['puts "string", if a',
+                                           '  1',
+                                           'end'])
+      expect(corrected).to eq 'puts "string", (1 if a)'
+    end
+  end
 end
