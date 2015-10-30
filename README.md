@@ -97,13 +97,13 @@ specific RuboCop release.**
 
 **RuboCop**'s installation is pretty standard:
 
-```
+```sh
 $ gem install rubocop
 ```
 
 If you'd rather install RuboCop using `bundler`, don't require it in your `Gemfile`:
 
-```
+```rb
 gem 'rubocop', require: false
 ```
 
@@ -112,13 +112,13 @@ gem 'rubocop', require: false
 Running `rubocop` with no arguments will check all Ruby source files
 in the current directory:
 
-```
+```sh
 $ rubocop
 ```
 
 Alternatively you can pass `rubocop` a list of files and directories to check:
 
-```
+```sh
 $ rubocop app spec lib/something.rb
 ```
 
@@ -158,7 +158,7 @@ test.rb:4:5: W: end at 4, 4 is not aligned with if at 2, 2
 
 For more details check the available command-line options:
 
-```
+```sh
 $ rubocop -h
 ```
 
@@ -208,7 +208,7 @@ code. RuboCop implements in a portable way all built-in MRI lint
 checks (`ruby -wc`) and adds a lot of extra lint checks of its
 own. You can run only the lint cops like this:
 
-```
+```sh
 $ rubocop -l
 ```
 
@@ -231,7 +231,7 @@ Rails cops are specific to the Ruby on Rails framework. Unlike style
 and lint cops they are not used by default and you have to request them
 specifically:
 
-```
+```sh
 $ rubocop -R
 ```
 
@@ -527,7 +527,7 @@ You can enable multiple formatters at the same time by specifying `-f/--format` 
 The `-o/--out` option applies to the previously specified `-f/--format`,
 or the default `progress` format if no `-f/--format` is specified before the `-o/--out` option.
 
-```bash
+```sh
 # Simple format to $stdout.
 $ rubocop --format simple
 
@@ -562,7 +562,7 @@ and at the end it displays all detected offenses in the `clang` format.
 A `.` represents a clean file, and each of the capital letters means
 the severest offense (convention, warning, error or fatal) found in a file.
 
-```
+```sh
 $ rubocop
 Inspecting 26 files
 ..W.C....C..CWCW.C...WC.CC
@@ -582,7 +582,7 @@ lib/foo.rb:6:5: C: Missing top-level class documentation comment.
 
 The `clang` formatter displays the offenses in a manner similar to `clang`:
 
-```
+```sh
 $ rubocop test.rb
 Inspecting 1 file
 W
@@ -611,7 +611,7 @@ The `fuubar` style formatter displays a progress bar
 and shows details of offenses in the `clang` format as soon as they are detected.
 This is inspired by the [Fuubar](https://github.com/jeffkreeftmeijer/fuubar) formatter for RSpec.
 
-```
+```sh
 $ rubocop --format fuubar
 lib/foo.rb.rb:1:1: C: Use snake_case for methods and variables.
 def badName
@@ -628,7 +628,7 @@ lib/bar.rb:13:14: W: File.exists? is deprecated in favor of File.exist?.
 
 The `emacs` formatter displays the offenses in a format suitable for consumption by `Emacs` (and possibly other tools).
 
-```
+```sh
 $ rubocop --format emacs test.rb
 /Users/bozhidar/projects/test.rb:1:1: C: Use snake_case for methods and variables.
 /Users/bozhidar/projects/test.rb:2:3: C: Favor modifier if/unless usage when you have a single-line body. Another good alternative is the usage of control flow &&/||.
@@ -639,7 +639,7 @@ $ rubocop --format emacs test.rb
 
 The name of the formatter says it all :-)
 
-```
+```sh
 $ rubocop --format simple test.rb
 == test.rb ==
 C:  1:  5: Use snake_case for method names.
@@ -658,7 +658,7 @@ Sometimes you might want to just open all files with offenses in your
 favorite editor. This formatter outputs just the names of the files
 with offenses in them and makes it possible to do something like:
 
-```
+```sh
 $ rubocop --format files | xargs vim
 ```
 
@@ -723,7 +723,7 @@ see where most of your style cleanup is going to be spent.
 With this in mind, you can use the offense count formatter to outline the offended
 cops and the number of offenses found for each by running:
 
-```
+```sh
 $ rubocop --format offenses
 
 87   Documentation
@@ -745,7 +745,7 @@ $ rubocop --format offenses
 
 Useful for CI environments. It will create an HTML report like [this](http://f.cl.ly/items/0M3029412x3O091a1X1R/expected.html).
 
-```
+```sh
 $ rubocop --format html -o rubocop.html
 ```
 
@@ -976,7 +976,7 @@ You can tell RuboCop to use your custom formatter with a combination of
 For example, when you have defined `MyCustomFormatter` in
 `./path/to/my_custom_formatter.rb`, you would type this command:
 
-```
+```sh
 $ rubocop --require ./path/to/my_custom_formatter --format MyCustomFormatter
 ```
 
