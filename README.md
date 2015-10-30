@@ -171,6 +171,7 @@ Command flag              | Description
 `-C/--cache`              | Store and reuse results for faster operation.
 `-d/--debug`              | Displays some extra debug output.
 `-D/--display-cop-names`  | Displays cop names in offense messages.
+`-E/--extra-details`      | Displays extra details in offense messages.
 `-c/--config`             | Run with specified config file.
 `-f/--format`             | Choose a formatter.
 `-o/--out`                | Write output to a file instead of STDOUT.
@@ -441,6 +442,20 @@ configuration.
 ```yaml
 Metrics/CyclomaticComplexity:
   Severity: warning
+```
+
+## Details 
+
+Individual cops can be embellished with extra details in offense messages:
+
+```yaml
+Metrics/LineLength:
+  Details: >-
+    If lines are too short, text becomes hard to read because you must
+    constantly jump from one line to the next while reading. If lines are too
+    long, the line jumping becomes too hard because you "lose the line" while
+    going back to the start of the next line.  80 characters is a good
+    compromise.
 ```
 
 #### AutoCorrect

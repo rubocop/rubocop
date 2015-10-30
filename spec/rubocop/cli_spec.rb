@@ -1654,6 +1654,27 @@ describe RuboCop::CLI, :isolated_environment do
       end
     end
 
+    describe '-E/--extra-details' do
+      it 'shows extra details' do
+        create_file('example1.rb', 'puts 0 # rubocop:disable NumericLiterals ')
+        create_file('.rubocop.yml',
+                    ['TrailingWhitespace:',
+                     '  Details: Trailing space is just sloppy.'])
+        file = abs('example1.rb')
+
+        expect(cli.run(['--format', 'emacs', '--extra-details',
+                        'example1.rb'])).to eq(1)
+        expect($stdout.string)
+          .to eq(["#{file}:1:8: W: Unnecessary " \
+                  'disabling of NumericLiterals . ',
+                  "#{file}:1:41: C: Trailing " \
+                  'whitespace detected. Trailing space is just sloppy.',
+                  ''].join("\n"))
+
+        expect($stderr.string).to eq('')
+      end
+    end
+
     describe '-S/--display-style-guide' do
       it 'shows style guide entry' do
         create_file('example1.rb', 'puts 0 ')

@@ -116,6 +116,7 @@ module RuboCop
       option(opts, '-C', '--cache FLAG')
       option(opts, '-d', '--debug')
       option(opts, '-D', '--display-cop-names')
+      option(opts, '-E', '--extra-details')
       option(opts, '-S', '--display-style-guide')
       option(opts, '-R', '--rails')
       option(opts, '-l', '--lint') do
@@ -266,6 +267,7 @@ module RuboCop
       debug:                'Display debug info.',
       display_cop_names:    'Display cop names in offense messages.',
       display_style_guide:  'Display style guide URLs in offense messages.',
+      extra_details:        'Display extra details in offense messages.',
       rails:                'Run extra Rails cops.',
       lint:                 'Run only lint cops.',
       list_target_files:    'List all files RuboCop will inspect.',
