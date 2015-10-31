@@ -22,22 +22,11 @@ module RuboCop
       class DoubleNegation < Cop
         MSG = 'Avoid the use of double negation (`!!`).'
 
+        def_node_matcher :double_negative?, '(send (send _ :!) :!)'
+
         def on_send(node)
-          return unless not_node?(node)
-
-          receiver, _method_name, *_args = *node
-
-          add_offense(node, :selector) if not_node?(receiver)
-        end
-
-        private
-
-        def not_node?(node)
-          _receiver, method_name, *args = *node
-
-          # ! does not take any arguments
-          args.empty? && method_name == :! &&
-            node.loc.selector.is?('!')
+          return unless double_negative?(node) && node.loc.selector.is?('!')
+          add_offense(node, :selector)
         end
       end
     end
