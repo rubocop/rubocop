@@ -41,7 +41,11 @@ module RuboCop
         if @cop_disabled_line_ranges.any? &&
            # Don't check unneeded disable if --only or --except option is
            # given, because these options override configuration.
-           (@options[:except] || []).empty? && (@options[:only] || []).empty?
+           (@options[:except] || []).empty? &&
+           (@options[:only] || []).empty? &&
+           # And not if --auto-correct is given, because line numbers might
+           # have changed and @cop_disabled_line_ranges can't be trusted.
+           !@options[:auto_correct]
           config = @config_store.for(file)
           if config['Lint/UnneededDisable']['Enabled']
             cop = Cop::Lint::UnneededDisable.new(config, @options)
