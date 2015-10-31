@@ -5,8 +5,10 @@ module RuboCop
     module Style
       # This cop looks for uses of Perl-style global variables.
       class SpecialGlobalVars < Cop
-        MSG_BOTH = 'Prefer `%s` from the English library, or `%s` over `%s`.'
-        MSG_ENGLISH = 'Prefer `%s` from the English library over `%s`.'
+        MSG_BOTH = 'Prefer `%s` from the stdlib \'English\' module, ' \
+        'or `%s` over `%s`.'
+        MSG_ENGLISH = 'Prefer `%s` from the stdlib \'English\' module ' \
+        'over `%s`.'
         MSG_REGULAR = 'Prefer `%s` over `%s`.'
 
         PREFERRED_VARS = {
