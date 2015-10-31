@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-# rubocop:disable Metrics/LineLength, Lint/UnusedMethodArgument
+# rubocop:disable Metrics/LineLength
 
 module RuboCop
   module Formatter

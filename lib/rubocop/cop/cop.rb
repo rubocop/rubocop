@@ -208,12 +208,12 @@ module RuboCop
       end
 
       def style_guide_url
-        url = cop_config && cop_config['StyleGuide']
+        url = cop_config['StyleGuide']
         (url.nil? || url.empty?) ? nil : url
       end
 
       def reference_url
-        url = cop_config && cop_config['Reference']
+        url = cop_config['Reference']
         (url.nil? || url.empty?) ? nil : url
       end
 
@@ -235,7 +235,7 @@ module RuboCop
       end
 
       def file_name_matches_any?(file, parameter, default_result)
-        patterns = cop_config && cop_config[parameter]
+        patterns = cop_config[parameter]
         return default_result unless patterns
         path = nil
         patterns.any? do |pattern|
@@ -258,7 +258,7 @@ module RuboCop
       end
 
       def custom_severity
-        severity = cop_config && cop_config['Severity']
+        severity = cop_config['Severity']
         return unless severity
 
         if Severity::NAMES.include?(severity.to_sym)

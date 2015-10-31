@@ -858,9 +858,14 @@ Lint/DefEndAlignment:
     - def
   AutoCorrect: false
 
+# Checks for unused block arguments
+Lint/UnusedBlockArgument:
+  IgnoreEmptyBlocks: true
+
 # Checks for unused method arguments.  
 Lint/UnusedMethodArgument:
   AllowUnusedKeywordArguments: false
+  IgnoreEmptyMethods: true
 
 ##################### Rails ##################################
 

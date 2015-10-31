@@ -192,12 +192,12 @@ describe RuboCop::Cop::Style::AndOr, :config do
       expect(new_source).to eq('obj.method(a,b) || b')
     end
 
-    it 'auto-corrects "or" with || and doesn\'t add extra parenthesis' do
+    it 'auto-corrects "or" with || and doesn\'t add extra parentheses' do
       new_source = autocorrect_source(cop, 'method(a, b) or b')
       expect(new_source).to eq('method(a, b) || b')
     end
 
-    it 'auto-corrects "or" with || and add parenthesis on left expr' do
+    it 'auto-corrects "or" with || and adds parentheses to expr' do
       new_source = autocorrect_source(cop, 'b or method a,b')
       expect(new_source).to eq('b || method(a,b)')
     end
@@ -222,12 +222,12 @@ describe RuboCop::Cop::Style::AndOr, :config do
       expect(new_source).to eq('obj.method(a,b) && b')
     end
 
-    it 'auto-corrects "and" with && and doesn\'t add extra parenthesis' do
+    it 'auto-corrects "and" with && and doesn\'t add extra parentheses' do
       new_source = autocorrect_source(cop, 'method(a, b) and b')
       expect(new_source).to eq('method(a, b) && b')
     end
 
-    it 'auto-corrects "and" with && and add parenthesis on left expr' do
+    it 'auto-corrects "and" with && and adds parentheses to expr' do
       new_source = autocorrect_source(cop, 'b and method a,b')
       expect(new_source).to eq('b && method(a,b)')
     end

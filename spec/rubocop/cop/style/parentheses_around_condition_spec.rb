@@ -87,7 +87,7 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
     expect(cop.offenses).to be_empty
   end
 
-  it 'is not confused by leading parenthesis in subexpression' do
+  it 'is not confused by leading parentheses in subexpression' do
     inspect_source(cop, '(a > b) && other ? one : two')
     expect(cop.offenses).to be_empty
   end
