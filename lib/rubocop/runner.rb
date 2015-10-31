@@ -83,9 +83,15 @@ module RuboCop
         file_started(file, disabled_line_ranges, comments)
       else
         processed_source = get_processed_source(file)
-        file_started(file, processed_source.disabled_line_ranges,
-                     processed_source.comments)
-        offenses = do_inspection_loop(file, processed_source)
+        # Use delegators for objects sent to the formatters. These can be
+        # updated when the file is re-inspected.
+        disabled_line_ranges =
+          SimpleDelegator.new(processed_source.disabled_line_ranges)
+        comments = SimpleDelegator.new(processed_source.comments)
+
+        file_started(file, disabled_line_ranges, comments)
+        offenses = do_inspection_loop(file, processed_source,
+                                      disabled_line_ranges, comments)
         save_in_cache(cache, offenses, processed_source)
       end
 
@@ -129,7 +135,8 @@ module RuboCop
                  processed_source.comments)
     end
 
-    def do_inspection_loop(file, processed_source)
+    def do_inspection_loop(file, processed_source, disabled_line_ranges,
+                           comments)
       offenses = []
 
       # Keep track of the state of the source. If a cop modifies the source
@@ -156,6 +163,10 @@ module RuboCop
         break unless updated_source_file
 
         processed_source = get_processed_source(file)
+
+        # Update delegators with new objects.
+        disabled_line_ranges.__setobj__(processed_source.disabled_line_ranges)
+        comments.__setobj__(processed_source.comments)
       end
 
       offenses
