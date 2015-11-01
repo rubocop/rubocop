@@ -47,7 +47,7 @@ module RuboCop
         def check_slash_literal(node)
           return if style == :slashes && !contains_disallowed_slash?(node)
           return if style == :mixed &&
-                    single_line?(node) &&
+                    node.single_line? &&
                     !contains_disallowed_slash?(node)
 
           add_offense(node, :expression, MSG_USE_PERCENT_R)
@@ -81,10 +81,6 @@ module RuboCop
 
         def slash_literal?(node)
           node.loc.begin.source == '/'
-        end
-
-        def single_line?(node)
-          !node.multiline?
         end
 
         def preferred_delimiters

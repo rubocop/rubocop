@@ -13,5 +13,9 @@ module Astrolabe
       expr = loc.expression
       expr && (expr.first_line != expr.last_line)
     end
+
+    def single_line?
+      !multiline?
+    end
   end
 end
