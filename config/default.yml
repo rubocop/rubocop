@@ -527,6 +527,7 @@ Style/MethodDefParentheses:
   SupportedStyles:
     - require_parentheses
     - require_no_parentheses
+    - require_no_parentheses_except_multiline
 
 Style/MethodName:
   EnforcedStyle: snake_case

@@ -47,7 +47,7 @@ module RuboCop
         def check_backtick_literal(node)
           return if style == :backticks && !contains_disallowed_backtick?(node)
           return if style == :mixed &&
-                    single_line?(node) &&
+                    node.single_line? &&
                     !contains_disallowed_backtick?(node)
 
           add_offense(node, :expression, MSG_USE_PERCENT_X)
@@ -56,7 +56,7 @@ module RuboCop
         def check_percent_x_literal(node)
           return if style == :backticks && contains_disallowed_backtick?(node)
           return if style == :percent_x
-          return if style == :mixed && multi_line?(node)
+          return if style == :mixed && node.multiline?
           return if style == :mixed && contains_disallowed_backtick?(node)
 
           add_offense(node, :expression, MSG_USE_BACKTICKS)
@@ -85,14 +85,6 @@ module RuboCop
 
         def backtick_literal?(node)
           node.loc.begin.source == '`'
-        end
-
-        def single_line?(node)
-          !multi_line?(node)
-        end
-
-        def multi_line?(node)
-          block_length(node) > 1
         end
 
         def preferred_delimiters

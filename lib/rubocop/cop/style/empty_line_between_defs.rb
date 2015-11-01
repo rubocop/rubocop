@@ -16,7 +16,7 @@ module RuboCop
 
           return unless nodes.all?(&method(:def_node?))
           return if blank_lines_between?(*nodes)
-          return if nodes.all?(&method(:single_line_def?)) &&
+          return if nodes.all?(&:single_line?) &&
                     cop_config['AllowAdjacentOneLineDefs']
 
           add_offense(node, :keyword)
@@ -43,10 +43,6 @@ module RuboCop
           line_range = def_end(first_def_node)..(def_start(second_def_node) - 2)
 
           processed_source.lines[line_range]
-        end
-
-        def single_line_def?(node)
-          def_start(node) == def_end(node)
         end
 
         def def_start(node)

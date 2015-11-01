@@ -156,7 +156,7 @@ module RuboCop
         def on_hash(node)
           return if ignored_node?(node)
           return if node.children.empty?
-          return unless multiline?(node)
+          return unless node.multiline?
 
           @alignment_for_hash_rockets ||=
             new_alignment('EnforcedHashRocketStyle')
@@ -199,17 +199,6 @@ module RuboCop
 
         def explicit_hash?(node)
           node.loc.begin
-        end
-
-        # Returns true if the hash spans multiple lines
-        def multiline?(node)
-          return false unless node.loc.expression.source.include?("\n")
-
-          return false if node.children[1..-1].all? do |child|
-            !begins_its_line?(child.loc.expression)
-          end
-
-          true
         end
 
         def alignment_for(pair)
