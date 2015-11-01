@@ -251,5 +251,19 @@ describe RuboCop::Cop::Style::AndOr, :config do
         expect(new_source).to eq('!obj.method(arg) && x')
       end
     end
+
+    context 'with `not` expression on right' do
+      it 'autocorrects "and" with && and adds parens' do
+        new_source = autocorrect_source(cop, 'x and not arg')
+        expect(new_source).to eq('x && (not arg)')
+      end
+    end
+
+    context 'with `not` expression on left' do
+      it 'autocorrects "and" with && and adds parens' do
+        new_source = autocorrect_source(cop, 'not arg and x')
+        expect(new_source).to eq('(not arg) && x')
+      end
+    end
   end
 end

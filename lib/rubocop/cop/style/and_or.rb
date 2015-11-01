@@ -81,9 +81,16 @@ module RuboCop
             # ! is a special case:
             # 'x and !obj.method arg' can be auto-corrected if we
             # recurse down a level and add parens to 'obj.method arg'
-            # Is there any other operator for which this is necessary?
-            node = receiver
-            _receiver, _method_name, *args = *node
+            # however, 'not x' also parses as (send x :!)
+
+            if node.loc.selector.source == '!'
+              node = receiver
+              _receiver, _method_name, *args = *node
+            elsif node.loc.selector.source == 'not'
+              return correct_other(node, corrector)
+            else
+              fail 'unrecognized unary negation operator'
+            end
           end
           return unless correctable_send?(node)
 
