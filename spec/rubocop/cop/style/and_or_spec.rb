@@ -112,16 +112,22 @@ describe RuboCop::Cop::Style::AndOr, :config do
                                 'end'].join("\n"))
     end
 
-    it 'leaves *or* as is if auto-correction changes the meaning' do
+    it 'autocorrects "or" with an assignment on the left' do
       src = "x = y or teststring.include? 'b'"
       new_source = autocorrect_source(cop, src)
-      expect(new_source).to eq(src)
+      expect(new_source).to eq("(x = y) || teststring.include?('b')")
     end
 
-    it 'leaves *and* as is if auto-correction changes the meaning' do
+    it 'autocorrects "or" with an assignment on the right' do
+      src = "teststring.include? 'b' or x = y"
+      new_source = autocorrect_source(cop, src)
+      expect(new_source).to eq("teststring.include?('b') || (x = y)")
+    end
+
+    it 'autocorrects "and" with an assignment and return on either side' do
       src = 'x = a + b and return x'
       new_source = autocorrect_source(cop, src)
-      expect(new_source).to eq(src)
+      expect(new_source).to eq('(x = a + b) && (return x)')
     end
 
     it 'warns on short-circuit (and)' do
@@ -230,6 +236,34 @@ describe RuboCop::Cop::Style::AndOr, :config do
     it 'auto-corrects "and" with && and adds parentheses to expr' do
       new_source = autocorrect_source(cop, 'b and method a,b')
       expect(new_source).to eq('b && method(a,b)')
+    end
+
+    context 'with !obj.method arg on right' do
+      it 'autocorrects "and" with && and adds parens' do
+        new_source = autocorrect_source(cop, 'x and !obj.method arg')
+        expect(new_source).to eq('x && !obj.method(arg)')
+      end
+    end
+
+    context 'with !obj.method arg on left' do
+      it 'autocorrects "and" with && and adds parens' do
+        new_source = autocorrect_source(cop, '!obj.method arg and x')
+        expect(new_source).to eq('!obj.method(arg) && x')
+      end
+    end
+
+    context 'with `not` expression on right' do
+      it 'autocorrects "and" with && and adds parens' do
+        new_source = autocorrect_source(cop, 'x and not arg')
+        expect(new_source).to eq('x && (not arg)')
+      end
+    end
+
+    context 'with `not` expression on left' do
+      it 'autocorrects "and" with && and adds parens' do
+        new_source = autocorrect_source(cop, 'not arg and x')
+        expect(new_source).to eq('(not arg) && x')
+      end
     end
   end
 end
