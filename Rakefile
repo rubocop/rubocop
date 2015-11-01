@@ -37,8 +37,6 @@ rescue LoadError
   warn 'Coveralls rake task is not loaded. Only for test'
 end
 
-RuboCop::RakeTask.new
-
 task :console do
   require 'irb'
   require 'irb/completion'
