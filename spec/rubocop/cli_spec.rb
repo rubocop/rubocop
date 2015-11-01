@@ -2374,6 +2374,26 @@ describe RuboCop::CLI, :isolated_environment do
                 ''].join("\n"))
     end
 
+    context 'when --auto-correct is given' do
+      it 'does not trigger UnneededDisable due to lines moving around' do
+        src = ['a = 1 # rubocop:disable Lint/UselessAssignment']
+        create_file('example.rb', src)
+        create_file('.rubocop.yml', ['Style/Encoding:',
+                                     '  Enabled: true'])
+        expect(cli.run(['--format', 'offenses', '-a', 'example.rb'])).to eq(0)
+        expect($stdout.string).to eq(['',
+                                      '1  Style/Encoding',
+                                      '--',
+                                      '1  Total',
+                                      '',
+                                      ''].join("\n"))
+        expect(IO.read('example.rb'))
+          .to eq(['# encoding: utf-8',
+                  'a = 1 # rubocop:disable Lint/UselessAssignment',
+                  ''].join("\n"))
+      end
+    end
+
     it 'can disable selected cops in a code section' do
       create_file('example.rb',
                   ['# encoding: utf-8',
