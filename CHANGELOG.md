@@ -65,6 +65,7 @@
 * [#2003](https://github.com/bbatsov/rubocop/issues/2003): Make `Lint/UnneededDisable` work with `--auto-correct`. ([@jonas054][])
 * Default RuboCop cache dir moved to per-user folders. ([@br3nda][])
 * [#2393](https://github.com/bbatsov/rubocop/pull/2393): `Style/MethodCallParentheses` doesn't fail on `obj.method ||= func()`. ([@alexdowad][])
+* [#2344](https://github.com/bbatsov/rubocop/pull/2344): When autocorrecting, `Style/ParallelAssignment` reorders assignment statements, if necessary, to avoid breaking code. ([@alexdowad][])
 
 ## 0.34.2 (21/09/2015)
 

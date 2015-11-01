@@ -37,6 +37,8 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
   it_behaves_like('offenses', 'a, b = 1, 2 while something')
   it_behaves_like('offenses', 'a, b = 1, 2 until something')
   it_behaves_like('offenses', "a, b = 1, 2 rescue 'Error'")
+  it_behaves_like('offenses', 'a, b = 1, a')
+  it_behaves_like('offenses', 'a, b = a, b')
   it_behaves_like('offenses',
                   'a, b = foo.map { |e| e.id }, bar.map { |e| e.id }')
   it_behaves_like('offenses', ['array = [1, 2, 3]',
@@ -68,6 +70,8 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
   it_behaves_like('allowed', 'a, *b = [1, 2, 3]')
   it_behaves_like('allowed', '*a, b = [1, 2, 3]')
   it_behaves_like('allowed', 'a, b = b, a')
+  it_behaves_like('allowed', 'a, b, c = b, c, a')
+  it_behaves_like('allowed', 'a, b = (a + b), (a - b)')
   it_behaves_like('allowed', 'a, b = foo.map { |e| e.id }')
   it_behaves_like('allowed', 'a, b = foo()')
   it_behaves_like('allowed', 'a, b = *foo')
@@ -158,7 +162,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
                                   'end'].join("\n"))
       end
 
-      it 'when when using nested indentation' do
+      it 'when using nested indentation' do
         new_source = autocorrect_source(cop, ['def foo',
                                               '  if true',
                                               '    a, b, c = 1, 2, 3',
@@ -228,7 +232,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
                                   'end'].join("\n"))
       end
 
-      it 'when the expression uses a modifie while statement' do
+      it 'when the expression uses a modifier while statement' do
         new_source = autocorrect_source(cop, 'a, b = 1, 2 while foo')
 
         expect(new_source).to eq(['while foo',
@@ -308,6 +312,16 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
                                   '    foo',
                                   '  end',
                                   'end'].join("\n"))
+      end
+
+      it 'when assignments must be reordered to avoid changing meaning' do
+        new_source = autocorrect_source(cop, ['a, b, c, d = 1, a + 1, b + 1, ' \
+          'a + b + c'])
+
+        expect(new_source).to eq(['d = a + b + c',
+                                  'c = b + 1',
+                                  'b = a + 1',
+                                  'a = 1'].join("\n"))
       end
     end
 
