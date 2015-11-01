@@ -56,7 +56,7 @@ module RuboCop
         def check_percent_r_literal(node)
           return if style == :slashes && contains_disallowed_slash?(node)
           return if style == :percent_r
-          return if style == :mixed && multi_line?(node)
+          return if style == :mixed && node.multiline?
           return if style == :mixed && contains_disallowed_slash?(node)
 
           add_offense(node, :expression, MSG_USE_SLASHES)
@@ -84,11 +84,7 @@ module RuboCop
         end
 
         def single_line?(node)
-          !multi_line?(node)
-        end
-
-        def multi_line?(node)
-          block_length(node) > 1
+          !node.multiline?
         end
 
         def preferred_delimiters
