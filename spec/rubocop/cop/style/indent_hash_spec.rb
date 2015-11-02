@@ -6,7 +6,8 @@ describe RuboCop::Cop::Style::IndentHash do
   subject(:cop) { described_class.new(config) }
   let(:config) do
     supported_styles = {
-      'SupportedStyles' => %w(special_inside_parentheses consistent)
+      'SupportedStyles' => %w(special_inside_parentheses consistent
+                              align_braces)
     }
     RuboCop::Config.new('Style/AlignHash' => align_hash_config,
                         'Style/IndentHash' =>
@@ -239,7 +240,7 @@ describe RuboCop::Cop::Style::IndentHash do
           expect(cop.offenses).to be_empty
         end
 
-        it 'registers an offense for incorrect indentation' do
+        it "registers an offense for 'consistent' indentation" do
           inspect_source(cop,
                          ['func({',
                           '  a: 1',
@@ -247,11 +248,25 @@ describe RuboCop::Cop::Style::IndentHash do
           expect(cop.messages)
             .to eq(['Use 2 spaces for indentation in a hash, relative to the' \
                     ' first position after the preceding left parenthesis.',
-
                     'Indent the right brace the same as the first position ' \
                     'after the preceding left parenthesis.'])
           expect(cop.config_to_allow_offenses)
             .to eq('EnforcedStyle' => 'consistent')
+        end
+
+        it "registers an offense for 'align_braces' indentation" do
+          inspect_source(cop,
+                         ['var = {',
+                          '        a: 1',
+                          '      }'])
+          # since there are no parens, warning message is for 'consistent' style
+          expect(cop.messages)
+            .to eq(['Use 2 spaces for indentation in a hash, relative to the' \
+                    ' start of the line where the left curly brace is.',
+                    'Indent the right brace the same as the start of the ' \
+                    'line where the left brace is.'])
+          expect(cop.config_to_allow_offenses)
+            .to eq('EnforcedStyle' => 'align_braces')
         end
 
         it 'auto-corrects incorrectly indented first pair' do
@@ -319,7 +334,8 @@ describe RuboCop::Cop::Style::IndentHash do
                     'Indent the right brace the same as the start of the ' \
                     'line where the left brace is.'])
           expect(cop.config_to_allow_offenses)
-            .to eq('EnforcedStyle' => 'special_inside_parentheses')
+            .to eq('EnforcedStyle' => %w(special_inside_parentheses
+                                         align_braces))
         end
 
         it 'accepts normal indentation for second argument' do
@@ -362,6 +378,97 @@ describe RuboCop::Cop::Style::IndentHash do
         expect(cop.highlights).to eq(['a: 1'])
         expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
       end
+    end
+  end
+
+  context 'when EnforcedStyle is align_braces' do
+    let(:cop_config) { { 'EnforcedStyle' => 'align_braces' } }
+
+    it 'accepts correctly indented first pair' do
+      inspect_source(cop,
+                     ['a = {',
+                      '      a: 1',
+                      '    }'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts several pairs per line' do
+      inspect_source(cop,
+                     ['a = {',
+                      '      a: 1, b: 2',
+                      '    }'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts a first pair on the same line as the left brace' do
+      inspect_source(cop,
+                     ['a = { "a" => 1,',
+                      '      "b" => 2 }'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts single line hash' do
+      inspect_source(cop,
+                     'a = { a: 1, b: 2 }')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts an empty hash' do
+      inspect_source(cop,
+                     'a = {}')
+      expect(cop.offenses).to be_empty
+    end
+
+    context "when 'consistent' style is used" do
+      it 'registers an offense for incorrect indentation' do
+        inspect_source(cop,
+                       ['func({',
+                        '  a: 1',
+                        '})'])
+        expect(cop.messages)
+          .to eq(['Use 2 spaces for indentation in a hash, relative to the' \
+                  ' position of the opening brace.',
+                  'Indent the right brace the same as the left brace.'])
+        expect(cop.config_to_allow_offenses)
+          .to eq('EnforcedStyle' => 'consistent')
+      end
+
+      it 'auto-corrects incorrectly indented first pair' do
+        corrected = autocorrect_source(cop, ['var = {',
+                                             '  a: 1',
+                                             '}'])
+        expect(corrected).to eq ['var = {',
+                                 '        a: 1',
+                                 '      }'].join("\n")
+      end
+    end
+
+    context "when 'special_inside_parentheses' style is used" do
+      it 'registers an offense for incorrect indentation' do
+        inspect_source(cop,
+                       ['var = {',
+                        '  a: 1',
+                        '}',
+                        'func({',
+                        '       a: 1',
+                        '     })'])
+        expect(cop.messages)
+          .to eq(['Use 2 spaces for indentation in a hash, relative to the' \
+                  ' position of the opening brace.',
+                  'Indent the right brace the same as the left brace.'])
+        expect(cop.config_to_allow_offenses)
+          .to eq('EnforcedStyle' => 'special_inside_parentheses')
+      end
+    end
+
+    it 'registers an offense for incorrectly indented }' do
+      inspect_source(cop,
+                     ['a << {',
+                      '  }'])
+      expect(cop.highlights).to eq(['}'])
+      expect(cop.messages)
+        .to eq(['Indent the right brace the same as the left brace.'])
+      expect(cop.config_to_allow_offenses).to be_empty
     end
   end
 end

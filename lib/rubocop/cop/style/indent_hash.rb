@@ -7,14 +7,37 @@ module RuboCop
       # where the opening brace and the first key are on separate lines. The
       # other keys' indentations are handled by the AlignHash cop.
       #
-      # Hash literals that are arguments in a method call with parentheses, and
-      # where the opening curly brace of the hash is on the same line as the
-      # opening parenthesis of the method call, shall have their first key
-      # indented one step (two spaces) more than the position inside the
-      # opening parenthesis.
+      # By default, Hash literals that are arguments in a method call with
+      # parentheses, and where the opening curly brace of the hash is on the
+      # same line as the opening parenthesis of the method call, shall have
+      # their first key indented one step (two spaces) more than the position
+      # inside the opening parenthesis.
       #
       # Other hash literals shall have their first key indented one step more
       # than the start of the line where the opening curly brace is.
+      #
+      # This default style is called 'special_inside_parentheses'. Alternative
+      # styles are 'consistent' and 'align_braces'. Here are examples:
+      #
+      #     # special_inside_parentheses
+      #     hash = {
+      #       key: :value
+      #     }
+      #     but_in_a_method_call({
+      #                            its_like: :this
+      #                          })
+      #     # consistent
+      #     hash = {
+      #       key: :value
+      #     }
+      #     and_in_a_method_call({
+      #       no: :difference
+      #     })
+      #     # align_braces
+      #     and_now_for_something = {
+      #                               completely: :different
+      #                             }
+      #
       class IndentHash < Cop
         include AutocorrectAlignment
         include ConfigurableEnforcedStyle
@@ -62,13 +85,16 @@ module RuboCop
         end
 
         def check_right_brace(right_brace, left_brace, left_parenthesis)
+          # if the right brace is on the same line as the last value, accept
           return if right_brace.source_line[0...right_brace.column] =~ /\S/
 
           expected_column = base_column(left_brace, left_parenthesis)
           @column_delta = expected_column - right_brace.column
           return if @column_delta == 0
 
-          msg = if style == :special_inside_parentheses && left_parenthesis
+          msg = if style == :align_braces
+                  'Indent the right brace the same as the left brace.'
+                elsif style == :special_inside_parentheses && left_parenthesis
                   'Indent the right brace the same as the first position ' \
                   'after the preceding left parenthesis.'
                 else
@@ -93,15 +119,24 @@ module RuboCop
         end
 
         def check_first_pair(first_pair, left_brace, left_parenthesis, offset)
-          column = first_pair.loc.expression.column
+          actual_column = first_pair.loc.expression.column
           expected_column = base_column(left_brace, left_parenthesis) +
                             configured_indentation_width + offset
-          @column_delta = expected_column - column
+          @column_delta = expected_column - actual_column
 
           if @column_delta == 0
-            correct_style_detected
+            # which column was actually used as 'base column' for indentation?
+            # (not the column which we think should be the 'base column',
+            # but the one which has actually been used for that purpose)
+            base_column = actual_column - configured_indentation_width - offset
+            styles = detected_styles(base_column, left_parenthesis, left_brace)
+            if styles.size > 1
+              ambiguous_style_detected(*styles)
+            else
+              correct_style_detected
+            end
           else
-            incorrect_style_detected(column, offset, first_pair,
+            incorrect_style_detected(actual_column, offset, first_pair,
                                      left_parenthesis, left_brace)
           end
         end
@@ -110,17 +145,29 @@ module RuboCop
                                      left_parenthesis, left_brace)
           add_offense(first_pair, :expression,
                       message(base_description(left_parenthesis))) do
-            if column == unexpected_column(left_brace, left_parenthesis,
-                                           offset)
-              opposite_style_detected
-            else
-              unrecognized_style_detected
-            end
+            base_column = column - configured_indentation_width - offset
+            styles = detected_styles(base_column, left_parenthesis, left_brace)
+            ambiguous_style_detected(*styles)
           end
         end
 
+        def detected_styles(column, left_parenthesis, left_brace)
+          styles = []
+          if column == (left_brace.source_line =~ /\S/)
+            styles << :consistent
+            styles << :special_inside_parentheses unless left_parenthesis
+          end
+          if left_parenthesis && column == left_parenthesis.column + 1
+            styles << :special_inside_parentheses
+          end
+          styles << :align_braces if column == left_brace.column
+          styles
+        end
+
         def base_column(left_brace, left_parenthesis)
-          if left_parenthesis && style == :special_inside_parentheses
+          if style == :align_braces
+            left_brace.column
+          elsif left_parenthesis && style == :special_inside_parentheses
             left_parenthesis.column + 1
           else
             left_brace.source_line =~ /\S/
@@ -129,30 +176,13 @@ module RuboCop
 
         # Returns the description of what the correct indentation is based on.
         def base_description(left_parenthesis)
-          if left_parenthesis && style == :special_inside_parentheses
+          if style == :align_braces
+            'the position of the opening brace'
+          elsif left_parenthesis && style == :special_inside_parentheses
             'the first position after the preceding left parenthesis'
           else
             'the start of the line where the left curly brace is'
           end
-        end
-
-        # Returns the "unexpected column", which is the column that would be
-        # correct if the configuration was changed.
-        def unexpected_column(left_brace, left_parenthesis, offset)
-          # Set a crazy value by default, indicating that there's no other
-          # configuration that can be chosen to make the used indentation
-          # accepted.
-          unexpected_base_column = -1000
-
-          if left_parenthesis
-            unexpected_base_column = if style == :special_inside_parentheses
-                                       left_brace.source_line =~ /\S/
-                                     else
-                                       left_parenthesis.column + 1
-                                     end
-          end
-
-          unexpected_base_column + configured_indentation_width + offset
         end
 
         def message(base_description)

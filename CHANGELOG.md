@@ -31,6 +31,7 @@
 * [#2173](https://github.com/bbatsov/rubocop/issues/2173): `Style/AlignParameters` also checks parameter alignment for method definitions. ([@alexdowad][])
 * [#1825](https://github.com/bbatsov/rubocop/issues/1825): New `NameWhitelist` configuration parameter for `Style/PredicateName` can be used to suppress errors on known-good predicate names. ([@alexdowad][])
 * `Style/Documentation` recognizes 'Constant = Class.new' as a class definition. ([@alexdowad][])
+* [#1608](https://github.com/bbatsov/rubocop/issues/1608): Add new 'align_braces' style for `Style/IndentHash`. ([@alexdowad][])
 
 ### Bug Fixes
 
