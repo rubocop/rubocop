@@ -23,9 +23,8 @@ module RuboCop
         attr_accessor :config_to_allow_offenses
       end
 
-      def file_started(_file, file_info)
-        @exclude_limit_option =
-          file_info.fetch(:cli_options, {})[:exclude_limit]
+      def file_started(_file, _file_info)
+        @exclude_limit_option = @options[:exclude_limit]
         @exclude_limit = (
           @exclude_limit_option ||
           RuboCop::Options::DEFAULT_MAXIMUM_EXCLUSION_ITEMS).to_i

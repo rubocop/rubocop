@@ -9,7 +9,11 @@ module RuboCop
       def rainbow
         @rainbow ||= begin
           rainbow = Rainbow.new
-          rainbow.enabled = false unless output.tty?
+          if options[:color]
+            rainbow.enabled = true
+          elsif !output.tty?
+            rainbow.enabled = false
+          end
           rainbow
         end
       end

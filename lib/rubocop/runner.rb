@@ -107,7 +107,6 @@ module RuboCop
       formatter_set.file_started(file,
                                  cop_disabled_line_ranges: disabled_line_ranges,
                                  comments: comments,
-                                 cli_options: @options,
                                  config_store: @config_store)
     end
 
@@ -234,7 +233,7 @@ module RuboCop
 
     def formatter_set
       @formatter_set ||= begin
-        set = Formatter::FormatterSet.new
+        set = Formatter::FormatterSet.new(@options)
         pairs = @options[:formatters] || [[Options::DEFAULT_FORMATTER]]
         pairs.each do |formatter_key, output_path|
           set.add_formatter(formatter_key, output_path)

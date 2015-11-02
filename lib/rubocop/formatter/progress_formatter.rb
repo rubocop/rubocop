@@ -11,9 +11,9 @@ module RuboCop
       DOT = '.'.freeze
       GREEN_DOT = Rainbow(DOT).green.freeze
 
-      def initialize(output)
+      def initialize(output, options = {})
         super
-        @dot = @output.tty? ? GREEN_DOT : DOT
+        @dot = @output.tty? || options[:color] ? GREEN_DOT : DOT
       end
 
       def started(target_files)
