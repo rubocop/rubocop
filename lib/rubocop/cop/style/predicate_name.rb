@@ -27,6 +27,7 @@ module RuboCop
             method_name = method_name.to_s
             next unless method_name.start_with?(prefix)
             next if method_name == expected_name(method_name, prefix)
+            next if predicate_whitelist.include?(method_name)
             add_offense(
               node,
               :name,
@@ -55,6 +56,10 @@ module RuboCop
 
         def predicate_prefixes
           cop_config['NamePrefix']
+        end
+
+        def predicate_whitelist
+          cop_config['NameWhitelist']
         end
       end
     end

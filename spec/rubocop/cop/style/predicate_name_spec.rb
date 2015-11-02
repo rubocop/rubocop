@@ -54,4 +54,18 @@ describe RuboCop::Cop::Style::PredicateName, :config do
       expect(cop.offenses).to be_empty
     end
   end
+
+  context 'with whitelisted predicate names' do
+    let(:cop_config) do
+      { 'NamePrefix' => %w(is_), 'NamePrefixBlacklist' => %w(is_),
+        'NameWhitelist' => %w(is_a?) }
+    end
+
+    it 'accepts method name which is in whitelist' do
+      inspect_source(cop, ['def is_a?',
+                           '  # ...',
+                           'end'])
+      expect(cop.offenses).to be_empty
+    end
+  end
 end

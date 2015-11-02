@@ -586,6 +586,10 @@ Style/PredicateName:
     - is_
     - has_
     - have_
+  # Predicate names which, despite having a blacklisted prefix, or no ?,
+  # should still be accepted
+  NameWhitelist:
+    - is_a?
 
 Style/RaiseArgs:
   EnforcedStyle: exploded

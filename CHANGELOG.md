@@ -29,6 +29,7 @@
 * [#1601](https://github.com/bbatsov/rubocop/issues/1601): Add `IgnoreEmptyMethods` config parameter for `Lint/UnusedMethodArgument` and `IgnoreEmptyBlocks` config parameter for `Lint/UnusedBlockArgument` cops. ([@alexdowad][])
 * [#1729](https://github.com/bbatsov/rubocop/issues/1729): `Style/MethodDefParentheses` supports new 'require_no_parentheses_except_multiline' style. ([@alexdowad][])
 * [#2173](https://github.com/bbatsov/rubocop/issues/2173): `Style/AlignParameters` also checks parameter alignment for method definitions. ([@alexdowad][])
+* [#1825](https://github.com/bbatsov/rubocop/issues/1825): New `NameWhitelist` configuration parameter for `Style/PredicateName` can be used to suppress errors on known-good predicate names. ([@alexdowad][])
 
 ### Bug Fixes
 
