@@ -3,6 +3,7 @@
 require 'digest/md5'
 require 'find'
 require 'tmpdir'
+require 'etc'
 
 module RuboCop
   # Provides functionality for caching rubocop runs.
@@ -78,7 +79,7 @@ module RuboCop
 
     def self.cache_root(config_store)
       root = config_store.for('.')['AllCops']['CacheRootDirectory']
-      root = Dir.tmpdir if root == '/tmp'
+      root = File.join(Dir.tmpdir, Etc.getlogin) if root == '/tmp'
       File.join(root, 'rubocop_cache')
     end
 
