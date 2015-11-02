@@ -56,9 +56,7 @@ module RuboCop
           cfg = self.class.config_to_allow_offenses[cop_name]
           cfg ||= {}
           output_cop_comments(output, cfg, cop_name, offense_count)
-          output.puts "#{cop_name}:"
-          cfg.each { |key, value| output.puts "  #{key}: #{value}" }
-          output_offending_files(output, cfg, cop_name)
+          output_cop_config(output, cfg, cop_name)
         end
         puts "Created #{output.path}."
         puts "Run `rubocop --config #{output.path}`, or"
@@ -80,6 +78,15 @@ module RuboCop
         return if params.empty?
 
         output.puts "# Configuration parameters: #{params.join(', ')}."
+      end
+
+      def output_cop_config(output, cfg, cop_name)
+        output.puts "#{cop_name}:"
+        cfg.each do |key, value|
+          value = value[0] if value.is_a?(Array)
+          output.puts "  #{key}: #{value}"
+        end
+        output_offending_files(output, cfg, cop_name)
       end
 
       def output_offending_files(output, cfg, cop_name)
