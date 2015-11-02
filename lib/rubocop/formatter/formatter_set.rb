@@ -30,6 +30,10 @@ module RuboCop
         end
       end
 
+      def initialize(options = {})
+        @options = options # CLI options
+      end
+
       def file_started(file, options)
         @options = options[:cli_options]
         @config_store = options[:config_store]
@@ -59,7 +63,7 @@ module RuboCop
           output = $stdout
         end
 
-        self << formatter_class.new(output)
+        self << formatter_class.new(output, @options)
       end
 
       def close_output_files

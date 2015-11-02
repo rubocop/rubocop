@@ -235,7 +235,7 @@ module RuboCop
 
     def formatter_set
       @formatter_set ||= begin
-        set = Formatter::FormatterSet.new
+        set = Formatter::FormatterSet.new(@options)
         pairs = @options[:formatters] || [['progress']]
         pairs.each do |formatter_key, output_path|
           set.add_formatter(formatter_key, output_path)

@@ -62,7 +62,13 @@ module RuboCop
 
       @config_store.options_config = @options[:config] if @options[:config]
 
-      Rainbow.enabled = false unless @options[:color]
+      if @options[:color]
+        # color output explicitly forced on
+        Rainbow.enabled = true
+      elsif @options[:color] == false
+        # color output explicitly forced off
+        Rainbow.enabled = false
+      end
     end
 
     def handle_exiting_options

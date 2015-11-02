@@ -24,14 +24,12 @@ module RuboCop
         attr_accessor :config_to_allow_offenses, :detected_styles
       end
 
-      def file_started(_file, file_info)
-        @exclude_limit_option =
-          file_info.fetch(:cli_options, {})[:exclude_limit]
+      def file_started(_file, _file_info)
+        @exclude_limit_option = @options[:exclude_limit]
         @exclude_limit = (
           @exclude_limit_option ||
           RuboCop::Options::DEFAULT_MAXIMUM_EXCLUSION_ITEMS).to_i
-        @show_offense_counts =
-          !file_info.fetch(:cli_options, {})[:no_offense_counts]
+        @show_offense_counts = !@options[:no_offense_counts]
       end
 
       def file_finished(file, offenses)

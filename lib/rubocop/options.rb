@@ -126,8 +126,7 @@ module RuboCop
       end
       option(opts, '-a', '--auto-correct')
 
-      @options[:color] = true
-      option(opts, '-n', '--no-color') { @options[:color] = false }
+      option(opts, '-n', '--[no-]color') { |c| @options[:color] = c }
 
       option(opts, '-v', '--version')
       option(opts, '-V', '--verbose-version')
@@ -153,7 +152,7 @@ module RuboCop
     # e.g. [..., '--auto-correct', ...] to :auto_correct.
     def long_opt_symbol(args)
       long_opt = args.find { |arg| arg.start_with?('--') }
-      long_opt[2..-1].sub(/ .*/, '').tr('-', '_').to_sym
+      long_opt[2..-1].sub(/ .*/, '').tr('-', '_').gsub(/[\[\]]/, '').to_sym
     end
   end
 
@@ -272,7 +271,7 @@ module RuboCop
       lint:                 'Run only lint cops.',
       list_target_files:    'List all files RuboCop will inspect.',
       auto_correct:         'Auto-correct offenses.',
-      no_color:             'Disable color output.',
+      no_color:             'Force color output on or off.',
       version:              'Display version.',
       verbose_version:      'Display verbose version.',
       stdin:                ['Pipe source from STDIN.',

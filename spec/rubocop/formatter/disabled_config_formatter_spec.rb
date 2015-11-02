@@ -122,40 +122,39 @@ module RuboCop
                                        ''].flatten.join("\n"))
         end
 
-        it 'can be configured to set the exclusion list limit' do
-          exclusion_list = []
-          file_list = []
-          options = {
-            cli_options: {
-              exclude_limit: 5
-            }
-          }
+        context 'when exclude_limit option is passed into constructor' do
+          let(:formatter) { described_class.new(output, exclude_limit: 5) }
 
-          15.times do |index|
-            file_name = format('test_%02d.rb', index)
-            formatter.file_started(file_name, options)
-            formatter.file_finished(file_name, offenses)
-            file_list << file_name
-            exclusion_list << "    - '#{file_name}'"
+          it 'respects the exclusion list limit' do
+            exclusion_list = []
+            file_list = []
+
+            15.times do |index|
+              file_name = format('test_%02d.rb', index)
+              formatter.file_started(file_name, {})
+              formatter.file_finished(file_name, offenses)
+              file_list << file_name
+              exclusion_list << "    - '#{file_name}'"
+            end
+
+            file_list << 'test.rb'
+            formatter.file_started('test.rb', {})
+            formatter.file_finished('test.rb', [offenses.first])
+            formatter.finished(file_list)
+            expect(output.string).to eq(format(described_class::HEADING,
+                                               'rubocop --auto-gen-config ' \
+                                               '--exclude-limit 5') +
+                                        ['',
+                                         '',
+                                         '# Offense count: 16',
+                                         'Cop1:',
+                                         '  Enabled: false',
+                                         '',
+                                         '# Offense count: 15',
+                                         'Cop2:',
+                                         '  Enabled: false',
+                                         ''].flatten.join("\n"))
           end
-
-          file_list << 'test.rb'
-          formatter.file_started('test.rb', options)
-          formatter.file_finished('test.rb', [offenses.first])
-          formatter.finished(file_list)
-          expect(output.string).to eq(format(described_class::HEADING,
-                                             'rubocop --auto-gen-config ' \
-                                             '--exclude-limit 5') +
-                                      ['',
-                                       '',
-                                       '# Offense count: 16',
-                                       'Cop1:',
-                                       '  Enabled: false',
-                                       '',
-                                       '# Offense count: 15',
-                                       'Cop2:',
-                                       '  Enabled: false',
-                                       ''].flatten.join("\n"))
         end
       end
     end
