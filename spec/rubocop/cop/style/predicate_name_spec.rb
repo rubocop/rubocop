@@ -5,7 +5,7 @@ require 'spec_helper'
 describe RuboCop::Cop::Style::PredicateName, :config do
   subject(:cop) { described_class.new(config) }
 
-  context 'with blacklisted prefices' do
+  context 'with blacklisted prefixes' do
     let(:cop_config) do
       { 'NamePrefix' => %w(has_ is_),
         'NamePrefixBlacklist' => %w(has_ is_) }
@@ -29,7 +29,7 @@ describe RuboCop::Cop::Style::PredicateName, :config do
       expect(cop.offenses).to be_empty
     end
 
-    context 'with blacklisted prefices' do
+    context 'with blacklisted prefixes' do
       let(:cop_config) do
         { 'NamePrefix' => %w(has_ is_), 'NamePrefixBlacklist' => [] }
       end

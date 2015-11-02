@@ -576,12 +576,12 @@ Style/PercentQLiterals:
     - upper_case_q # Always use %Q
 
 Style/PredicateName:
-  # Predicate name prefices.
+  # Predicate name prefixes.
   NamePrefix:
     - is_
     - has_
     - have_
-  # Predicate name prefices that should be removed.
+  # Predicate name prefixes that should be removed.
   NamePrefixBlacklist:
     - is_
     - has_
