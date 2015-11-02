@@ -31,7 +31,7 @@ describe RuboCop::Cop::Style::IndentHash do
       expect(cop.messages)
         .to eq(['Indent the right brace the same as the start of the line ' \
                 'where the left brace is.'])
-      expect(cop.config_to_allow_offenses).to eq(nil)
+      expect(cop.config_to_allow_offenses).to be_empty
     end
   end
 

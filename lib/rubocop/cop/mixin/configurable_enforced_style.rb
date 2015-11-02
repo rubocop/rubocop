@@ -5,7 +5,8 @@ module RuboCop
     # Handles `EnforcedStyle` configuration parameters.
     module ConfigurableEnforcedStyle
       def unexpected_style_detected(style)
-        self.config_to_allow_offenses ||= { parameter_name => style.to_s }
+        return if config_to_allow_offenses['Enabled'] == false
+        config_to_allow_offenses[parameter_name] ||= style.to_s
         return unless config_to_allow_offenses['Enabled'] ||
                       config_to_allow_offenses[parameter_name] != style.to_s
         conflicting_styles_detected
@@ -18,7 +19,7 @@ module RuboCop
       def correct_style_detected
         # Enabled:true indicates, later when the opposite style is detected,
         # that the correct style is used somewhere.
-        self.config_to_allow_offenses ||= { 'Enabled' => true }
+        config_to_allow_offenses['Enabled'] ||= true
         conflicting_styles_detected if config_to_allow_offenses[parameter_name]
       end
 
