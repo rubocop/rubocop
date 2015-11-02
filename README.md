@@ -1,12 +1,12 @@
 [![Gem Version](https://badge.fury.io/rb/rubocop.svg)](http://badge.fury.io/rb/rubocop)
 [![Dependency Status](https://gemnasium.com/bbatsov/rubocop.svg)](https://gemnasium.com/bbatsov/rubocop)
 [![Build Status](https://travis-ci.org/bbatsov/rubocop.svg?branch=master)](https://travis-ci.org/bbatsov/rubocop)
-[![Coverage Status](http://img.shields.io/coveralls/bbatsov/rubocop/master.svg)](https://coveralls.io/r/bbatsov/rubocop)
+[![Coverage Status](https://img.shields.io/coveralls/bbatsov/rubocop/master.svg)](https://coveralls.io/r/bbatsov/rubocop)
 [![Code Climate](https://codeclimate.com/github/bbatsov/rubocop/badges/gpa.svg)](https://codeclimate.com/github/bbatsov/rubocop)
 [![Inline docs](http://inch-ci.org/github/bbatsov/rubocop.svg)](http://inch-ci.org/github/bbatsov/rubocop)
 
 <p align="center">
-  <img src="https://raw.github.com/bbatsov/rubocop/master/logo/rubo-logo-horizontal.png" alt="RuboCop Logo"/>
+  <img src="https://raw.githubusercontent.com/bbatsov/rubocop/master/logo/rubo-logo-horizontal.png" alt="RuboCop Logo"/>
 </p>
 
 > Role models are important. <br/>
@@ -26,9 +26,9 @@ automatically fix some of the problems for you.
 
 You can support my work on RuboCop via
 [Salt](https://salt.bountysource.com/teams/rubocop) and
-[Gratipay](https://www.gratipay.com/rubocop).
+[Gratipay](https://gratipay.com/rubocop/).
 
-[![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.1.3/dist/gratipay.png)](https://gratipay.com/rubocop)
+[![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.1.3/dist/gratipay.png)](https://gratipay.com/rubocop/)
 
 **This documentation tracks the `master` branch of RuboCop. Some of
 the features and settings discussed here might not be available in
@@ -626,7 +626,7 @@ test.rb:4:5: W: end at 4, 4 is not aligned with if at 2, 2
 
 The `fuubar` style formatter displays a progress bar
 and shows details of offenses in the `clang` format as soon as they are detected.
-This is inspired by the [Fuubar](https://github.com/jeffkreeftmeijer/fuubar) formatter for RSpec.
+This is inspired by the [Fuubar](https://github.com/thekompanee/fuubar) formatter for RSpec.
 
 ```sh
 $ rubocop --format fuubar
@@ -785,7 +785,7 @@ RuboCop supports the following Ruby implementations:
 Emacs interface for RuboCop. It allows you to run RuboCop inside Emacs
 and quickly jump between problems in your code.
 
-[flycheck](https://github.com/lunaryorn/flycheck) > 0.9 also supports
+[flycheck](https://github.com/flycheck/flycheck) > 0.9 also supports
 RuboCop and uses it by default when available.
 
 ### Vim
@@ -804,7 +804,7 @@ useful.
 
 ### Brackets
 
-The [brackets-rubocop](https://github.com/smockle/brackets-rubocop)
+The [brackets-rubocop](https://github.com/smockle-archive/brackets-rubocop)
 extension displays RuboCop results in Brackets.
 It can be installed via the extension manager in Brackets.
 
@@ -820,7 +820,7 @@ The [atom-lint](https://github.com/yujinakayama/atom-lint) package
 runs RuboCop and highlights the offenses in Atom.
 
 You can also use the [linter-rubocop](https://github.com/AtomLinter/linter-rubocop)
-plugin for Atom's [linter](https://github.com/AtomLinter/Linter).
+plugin for Atom's [linter](https://github.com/atom-community/linter).
 
 ### LightTable
 
@@ -982,9 +982,9 @@ or implement all formatter API methods by duck typing.
 
 Please see the documents below for more formatter API details.
 
-* [RuboCop::Formatter::BaseFormatter](http://rubydoc.info/gems/rubocop/RuboCop/Formatter/BaseFormatter)
-* [RuboCop::Cop::Offense](http://rubydoc.info/gems/rubocop/RuboCop/Cop/Offense)
-* [Parser::Source::Range](http://rubydoc.info/github/whitequark/parser/Parser/Source/Range)
+* [RuboCop::Formatter::BaseFormatter](http://www.rubydoc.info/gems/rubocop/RuboCop/Formatter/BaseFormatter)
+* [RuboCop::Cop::Offense](http://www.rubydoc.info/gems/rubocop/RuboCop/Cop/Offense)
+* [Parser::Source::Range](http://www.rubydoc.info/github/whitequark/parser/Parser/Source/Range)
 
 #### Using Custom Formatter in Command Line
 
@@ -1016,7 +1016,7 @@ The logo is licensed under a
 
 ## Contributors
 
-Here's a [list](https://github.com/bbatsov/rubocop/contributors) of
+Here's a [list](https://github.com/bbatsov/rubocop/graphs/contributors) of
 all the people who have contributed to the development of RuboCop.
 
 I'm extremely grateful to each and every one of them!
@@ -1033,9 +1033,9 @@ welcome. GitHub pull requests are even better! :-)
 
 You can also support my work on RuboCop via
 [Salt](https://salt.bountysource.com/teams/rubocop) and
-[Gratipay](https://www.gratipay.com/rubocop).
+[Gratipay](https://gratipay.com/rubocop/).
 
-[![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.1.3/dist/gratipay.png)](https://gratipay.com/rubocop)
+[![Support via Gratipay](https://cdn.rawgit.com/gratipay/gratipay-badge/2.1.3/dist/gratipay.png)](https://gratipay.com/rubocop/)
 
 ## Mailing List
 
