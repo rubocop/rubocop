@@ -190,6 +190,94 @@ describe RuboCop::Cop::Style::AlignParameters do
       expect(cop.offenses).to be_empty
     end
 
+    context 'method definitions' do
+      it 'registers an offense for parameters with single indent' do
+        inspect_source(cop, ['def method(a,',
+                             '  b)',
+                             'end'])
+        expect(cop.offenses.size).to eq 1
+        expect(cop.offenses.first.to_s).to match(/method definition/)
+      end
+
+      it 'registers an offense for parameters with double indent' do
+        inspect_source(cop, ['def method(a,',
+                             '    b)',
+                             'end'])
+        expect(cop.offenses.size).to eq 1
+      end
+
+      it 'accepts parameter lists on a single line' do
+        inspect_source(cop, ['def method(a, b)',
+                             'end'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'accepts proper indentation' do
+        inspect_source(cop, ['def method(a,',
+                             '           b)',
+                             'end'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'accepts the first parameter being on a new row' do
+        inspect_source(cop, ['def method(',
+                             '  a,',
+                             '  b)',
+                             'end'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'accepts a method definition without parameters' do
+        inspect_source(cop, ['def method',
+                             'end'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it "doesn't get confused by splat" do
+        inspect_source(cop, ['def func2(a,',
+                             '         *b,',
+                             '          c)',
+                             'end'])
+        expect(cop.offenses.size).to eq 1
+        expect(cop.highlights).to eq(['*b'])
+      end
+
+      it 'auto-corrects alignment' do
+        new_source = autocorrect_source(cop, ['def method(a,',
+                                              '    b)',
+                                              'end'])
+        expect(new_source).to eq(['def method(a,',
+                                  '           b)',
+                                  'end'].join("\n"))
+      end
+
+      context 'defining self.method' do
+        it 'registers an offense for parameters with single indent' do
+          inspect_source(cop, ['def self.method(a,',
+                               '  b)',
+                               'end'])
+          expect(cop.offenses.size).to eq 1
+          expect(cop.offenses.first.to_s).to match(/method definition/)
+        end
+
+        it 'accepts proper indentation' do
+          inspect_source(cop, ['def self.method(a,',
+                               '                b)',
+                               'end'])
+          expect(cop.offenses).to be_empty
+        end
+
+        it 'auto-corrects alignment' do
+          new_source = autocorrect_source(cop, ['def self.method(a,',
+                                                '    b)',
+                                                'end'])
+          expect(new_source).to eq(['def self.method(a,',
+                                    '                b)',
+                                    'end'].join("\n"))
+        end
+      end
+    end
+
     context 'assigned methods' do
       it 'accepts the first parameter being on a new row' do
         inspect_source(cop, [' assigned_value = match(',
@@ -385,6 +473,94 @@ describe RuboCop::Cop::Style::AlignParameters do
         ]
         expect(autocorrect_source(cop, original_source))
           .to eq(correct_source.join("\n"))
+      end
+    end
+
+    context 'method definitions' do
+      it 'registers an offense for parameters aligned to first param' do
+        inspect_source(cop, ['def method(a,',
+                             '           b)',
+                             'end'])
+        expect(cop.offenses.size).to eq 1
+        expect(cop.offenses.first.to_s).to match(/method definition/)
+      end
+
+      it 'registers an offense for parameters with double indent' do
+        inspect_source(cop, ['def method(a,',
+                             '    b)',
+                             'end'])
+        expect(cop.offenses.size).to eq 1
+      end
+
+      it 'accepts parameter lists on a single line' do
+        inspect_source(cop, ['def method(a, b)',
+                             'end'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'accepts proper indentation' do
+        inspect_source(cop, ['def method(a,',
+                             '  b)',
+                             'end'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'accepts the first parameter being on a new row' do
+        inspect_source(cop, ['def method(',
+                             '  a,',
+                             '  b)',
+                             'end'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'accepts a method definition without parameters' do
+        inspect_source(cop, ['def method',
+                             'end'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it "doesn't get confused by splat" do
+        inspect_source(cop, ['def func2(a,',
+                             '         *b,',
+                             '          c)',
+                             'end'])
+        expect(cop.offenses).not_to be_empty
+        expect(cop.highlights).to include '*b'
+      end
+
+      it 'auto-corrects alignment' do
+        new_source = autocorrect_source(cop, ['def method(a,',
+                                              '    b)',
+                                              'end'])
+        expect(new_source).to eq(['def method(a,',
+                                  '  b)',
+                                  'end'].join("\n"))
+      end
+
+      context 'defining self.method' do
+        it 'registers an offense for parameters aligned to first param' do
+          inspect_source(cop, ['def self.method(a,',
+                               '                b)',
+                               'end'])
+          expect(cop.offenses.size).to eq 1
+          expect(cop.offenses.first.to_s).to match(/method definition/)
+        end
+
+        it 'accepts proper indentation' do
+          inspect_source(cop, ['def self.method(a,',
+                               '  b)',
+                               'end'])
+          expect(cop.offenses).to be_empty
+        end
+
+        it 'auto-corrects alignment' do
+          new_source = autocorrect_source(cop, ['def self.method(a,',
+                                                '    b)',
+                                                'end'])
+          expect(new_source).to eq(['def self.method(a,',
+                                    '  b)',
+                                    'end'].join("\n"))
+        end
       end
     end
 
