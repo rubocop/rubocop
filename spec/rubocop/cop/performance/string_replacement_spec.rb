@@ -244,6 +244,12 @@ describe RuboCop::Cop::Performance::StringReplacement do
       expect(cop.messages).to be_empty
     end
 
+    it 'allows regex containing a .' do
+      inspect_source(cop, %('abc'.gsub(/./, 'a')))
+
+      expect(cop.messages).to be_empty
+    end
+
     it 'allows regex containing a |' do
       inspect_source(cop, %('abc'.gsub(/a|b/, 'd')))
 

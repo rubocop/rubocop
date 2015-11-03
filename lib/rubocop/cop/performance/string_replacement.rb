@@ -20,7 +20,7 @@ module RuboCop
       #   'a b c'.delete(' ')
       class StringReplacement < Cop
         MSG = 'Use `%s` instead of `%s`.'
-        DETERMINISTIC_REGEX = /^[\w\s\-,."']+$/.freeze
+        DETERMINISTIC_REGEX = /^[\w\s\-,"']+$/.freeze
         REGEXP_CONSTRUCTOR_METHODS = [:new, :compile].freeze
         GSUB_METHODS = [:gsub, :gsub!].freeze
         DETERMINISTIC_TYPES = [:regexp, :str, :send].freeze
