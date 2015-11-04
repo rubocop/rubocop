@@ -64,6 +64,7 @@
 * [#2323](https://github.com/bbatsov/rubocop/issues/2323): `Style/IfUnlessModifier` cop parenthesizes autocorrected code when necessary due to operator precedence, to avoid changing its meaning. ([@alexdowad][])
 * [#2003](https://github.com/bbatsov/rubocop/issues/2003): Make `Lint/UnneededDisable` work with `--auto-correct`. ([@jonas054][])
 * Default RuboCop cache dir moved to per-user folders. ([@br3nda][])
+* [#2393](https://github.com/bbatsov/rubocop/pull/2393): `Style/MethodCallParentheses` doesn't fail on `obj.method ||= func()`. ([@alexdowad][])
 
 ## 0.34.2 (21/09/2015)
 

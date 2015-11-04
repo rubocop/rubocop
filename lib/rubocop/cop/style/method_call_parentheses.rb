@@ -37,6 +37,14 @@ module RuboCop
               mlhs_node, _mrhs_node = *asgn_node
               asgn_node = mlhs_node.children[node.sibling_index]
             end
+            # `obj.method = value` parses as (send ... :method= ...), and will
+            # not be returned as an `asgn_node` here
+            # however, `obj.method ||= value` parses as (or-asgn (send ...) ...)
+            # which IS an `asgn_node`
+            if asgn_node.or_asgn_type? || asgn_node.and_asgn_type?
+              asgn_node, _value = *asgn_node
+              return false if asgn_node.send_type?
+            end
 
             asgn_node.loc.name.source == method_name.to_s
           end
