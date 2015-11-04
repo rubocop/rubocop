@@ -38,7 +38,8 @@ module RuboCop
               asgn_node = mlhs_node.children[node.sibling_index]
             end
 
-            asgn_node.loc.name.source == method_name.to_s
+            asgn_node.loc.respond_to?(:name) &&
+              (asgn_node.loc.name.source == method_name.to_s)
           end
         end
       end
