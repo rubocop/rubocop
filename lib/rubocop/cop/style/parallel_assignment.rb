@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'tsort'
+
 module RuboCop
   module Cop
     module Style
@@ -45,21 +47,27 @@ module RuboCop
           # allow mass assignment when using splat
           return if (left_elements + right_elements).any?(&:splat_type?)
 
-          # a, b = b, a
-          return if swapping_variables?(left_elements, right_elements)
+          order = find_valid_order(left_elements, right_elements)
+          # For `a, b = b, a` or similar, there is no valid order
+          return if order.nil?
 
           add_offense(node, :expression)
         end
 
         def autocorrect(node)
           lambda do |corrector|
+            left, right = *node
+            left_elements = *left
+            right_elements = [*right].compact
+            order = find_valid_order(left_elements, right_elements)
+
             assignment_corrector =
               if modifier_statement?(node.parent)
-                ModifierCorrector.new(node, config)
+                ModifierCorrector.new(node, config, order)
               elsif rescue_modifier?(node.parent)
-                RescueCorrector.new(node, config)
+                RescueCorrector.new(node, config, order)
               else
-                GenericCorrector.new(node, config)
+                GenericCorrector.new(node, config, order)
               end
 
             corrector.replace(assignment_corrector.correction_range,
@@ -69,10 +77,45 @@ module RuboCop
 
         private
 
-        def swapping_variables?(left_elements, right_elements)
-          left_elements.any? do |le|
-            right_elements.any? do |re|
-              re.loc.expression.is?(le.loc.expression.source)
+        def find_valid_order(left_elements, right_elements)
+          # arrange left_elements in an order such that no corresponding right
+          # element refers to a left element earlier in the sequence
+          # this can be done using an algorithm called a "topological sort"
+          # fortunately for us, Ruby's stdlib contains an implementation
+          assignments = left_elements.zip(right_elements)
+
+          begin
+            AssignmentSorter.new(assignments).tsort
+          rescue TSort::Cyclic
+            nil
+          end
+        end
+
+        # Helper class necessitated by silly design of TSort prior to Ruby 2.1
+        # Newer versions have a better API, but that doesn't help us
+        class AssignmentSorter
+          include TSort
+          extend RuboCop::NodePattern::Macros
+
+          def_node_matcher :var_name, '{(casgn _ $_) (_ $_)}'
+          def_node_search :uses_var?, '{({lvar ivar cvar gvar} %) (const _ %)}'
+
+          def initialize(assignments)
+            @assignments = assignments
+          end
+
+          def tsort_each_node
+            @assignments.each { |a| yield a }
+          end
+
+          def tsort_each_child(assignment)
+            # yield all the assignments which must come after `assignment`
+            # (due to dependencies on the previous value of the assigned var)
+            my_lhs, _my_rhs = *assignment
+
+            @assignments.each do |other|
+              _other_lhs, other_rhs = *other
+              yield other if uses_var?(other_rhs, var_name(my_lhs))
             end
           end
         end
@@ -101,9 +144,10 @@ module RuboCop
 
           attr_reader :config, :node, :correction, :correction_range
 
-          def initialize(node, config)
+          def initialize(node, config, new_elements)
             @node = node
             @config = config
+            @new_elements = new_elements
           end
 
           def correction
@@ -117,11 +161,9 @@ module RuboCop
           protected
 
           def assignment
-            left, right = *node
-            l_vars = extract_sources(left)
-            r_vars = extract_sources(right)
-            groups = l_vars.zip(r_vars)
-            groups.map { |pair| pair.join(' = ') }
+            @new_elements.map do |lhs, rhs|
+              "#{lhs.loc.expression.source} = #{rhs.loc.expression.source}"
+            end
           end
 
           private
