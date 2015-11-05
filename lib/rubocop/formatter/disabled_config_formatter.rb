@@ -33,11 +33,11 @@ module RuboCop
 
       def file_finished(file, offenses)
         @cops_with_offenses ||= Hash.new(0)
-        @files_with_offences ||= {}
+        @files_with_offenses ||= {}
         offenses.each do |o|
           @cops_with_offenses[o.cop_name] += 1
-          @files_with_offences[o.cop_name] ||= []
-          @files_with_offences[o.cop_name] << file
+          @files_with_offenses[o.cop_name] ||= []
+          @files_with_offenses[o.cop_name] << file
         end
       end
 
@@ -92,7 +92,7 @@ module RuboCop
       def output_offending_files(output, cfg, cop_name)
         return unless cfg.empty?
 
-        offending_files = @files_with_offences[cop_name].uniq.sort
+        offending_files = @files_with_offenses[cop_name].uniq.sort
         if offending_files.count > @exclude_limit
           output.puts '  Enabled: false'
         else

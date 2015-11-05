@@ -2149,7 +2149,7 @@ describe RuboCop::CLI, :isolated_environment do
           .to eq('1 file inspected, no offenses detected' \
                  "\n")
       end
-      it 'succeeds when there is only a disabled offence' do
+      it 'succeeds when there is only a disabled offense' do
         create_file(target_file, ['# encoding: utf-8',
                                   'def f',
                                   ' x # rubocop:disable Style/IndentationWidth',
