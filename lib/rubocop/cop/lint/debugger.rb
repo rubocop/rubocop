@@ -7,71 +7,17 @@ module RuboCop
       class Debugger < Cop
         MSG = 'Remove debugger entry point `%s`.'
 
-        # debugger call node
-        #
-        # (send nil :debugger)
-        DEBUGGER_NODE = s(:send, nil, :debugger)
-
-        # byebug call node
-        #
-        # (send nil :byebug)
-        BYEBUG_NODE = s(:send, nil, :byebug)
-
-        # binding.pry node
-        #
-        # (send
-        #   (send nil :binding) :pry)
-        PRY_NODE = s(:send, s(:send, nil, :binding), :pry)
-
-        # binding.remote_pry node
-        #
-        # (send
-        #   (send nil :binding) :remote_pry)
-        REMOTE_PRY_NODE = s(:send, s(:send, nil, :binding), :remote_pry)
-
-        # binding.pry_remote node
-        #
-        # (send
-        #   (send nil :binding) :pry_remote)
-        PRY_REMOTE_NODE = s(:send, s(:send, nil, :binding), :pry_remote)
-
-        # Pry.rescue
-        #
-        # (send
-        #   (const nil :Pry) :rescue)
-        PRY_RESCUE = s(:send, s('const', nil, :Pry), :rescue)
-
-        # save_and_open_page
-        #
-        # (send nil :save_and_open_page)
-        CAPYBARA_SAVE_PAGE = s(:send, nil, :save_and_open_page)
-
-        # save_and_open_screenshot
-        #
-        # (send nil :save_and_open_screenshot)
-        CAPYBARA_SAVE_OPEN_SCREENSHOT = s(:send, nil, :save_and_open_screenshot)
-
-        # save_screenshot
-        #
-        # (send nil :save_screenshot)
-        CAPYBARA_SAVE_SCREENSHOT = s(:send, nil, :save_screenshot)
-
-        DEBUGGER_NODES = [
-          DEBUGGER_NODE,
-          BYEBUG_NODE,
-          PRY_NODE,
-          REMOTE_PRY_NODE,
-          PRY_REMOTE_NODE,
-          PRY_RESCUE,
-          CAPYBARA_SAVE_PAGE,
-          CAPYBARA_SAVE_OPEN_SCREENSHOT,
-          CAPYBARA_SAVE_SCREENSHOT
-        ]
+        def_node_matcher :debugger_call?,
+                         '{(send nil {:debugger :byebug} ...)
+                           (send (send nil :binding)
+                             {:pry :remote_pry :pry_remote} ...)
+                           (send (const nil :Pry) :rescue ...)
+                           (send nil {:save_and_open_page
+                                      :save_and_open_screenshot
+                                      :save_screenshot} ...)}'
 
         def on_send(node)
-          receiver, method_name, *_args = *node
-          node_without_args = self.class.s(:send, receiver, method_name)
-          return unless DEBUGGER_NODES.include? node_without_args
+          return unless debugger_call?(node)
           add_offense(node,
                       :expression,
                       format(MSG, node.loc.expression.source))
