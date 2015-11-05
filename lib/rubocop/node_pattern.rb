@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 # rubocop:disable Metrics/ClassLength
+# rubocop:disable Metrics/CyclomaticComplexity
 
 module RuboCop
   # This class performs a pattern-matching operation on an AST node.
@@ -82,74 +83,209 @@ module RuboCop
     class Compiler
       RSYM      = %r{:(?:[\w+-@_*/?!<>~|%^]+|==|\[\]=?)}
       ID_CHAR   = /[a-zA-Z_]/
-      META_CHAR = /\(|\)|\{|\}|\[|\]|\$|\!|\.\.\./
+      META_CHAR = /\(|\)|\{|\}|\[|\]|\$\.\.\.|\$|\!|\.\.\./
       TOKEN     = /\G(?:\s+|#{META_CHAR}|#{ID_CHAR}+\??|%\d*|\d+|#{RSYM}|.)/
 
-      META      = /\A#{META_CHAR}\Z/
       NODE      = /\A#{ID_CHAR}+\Z/
       PREDICATE = /\A#{ID_CHAR}+\?\Z/
       LITERAL   = /\A(?:#{RSYM}|\d+|nil)\Z/
       WILDCARD  = /\A_#{ID_CHAR}*\Z/
       PARAM     = /\A%\d*\Z/
+      CLOSING   = /\A(?:\)|\}|\])\Z/
 
-      # Rather than using (explicit) recursion for nested patterns, we
-      # use a state machine with a stack, and run over the tokens in the
-      # pattern from left to right, updating state variables as we go.
+      attr_reader :match_code
 
       def initialize(str, node_var = 'node0')
         @string   = str
-        @stack    = []    # when entering (), [], or {}, push state on the stack
 
-        @temps    = 0     # avoid name clashes between temp variables
-        @index    = nil   # which position the match is at in ()
-        @context  = :root
-        @node     = node_var
-        @negated  = false # just saw a !
+        @temps    = 0  # avoid name clashes between temp variables
+        @captures = 0  # number of captures seen
+        @unify    = {} # named wildcard -> temp variable number
+        @params   = 0  # highest % (param) number seen
 
-        @captures = 0     # number of captures seen
-        @capture  = false # just saw a $
-        @cstack   = []    # used only when processing {}
-
-        @terms    = []    # used when building up a && or || expression
-        @unify    = {}    # named wildcard -> temp variable number
-        @params   = 0     # highest % (param) number seen
-
-        run
+        run(node_var)
       end
 
-      def run
-        @string.scan(TOKEN) do |token|
-          case token
-          when /^\s+/ # do nothing
-          when META then meta_token(token)
-          when WILDCARD then wildcard(token[1..-1])
-          when LITERAL then atom("(#{current_value} == #{token})")
-          when PREDICATE then atom("(#{current_node}.#{token})")
-          when NODE then atom("((temp=#{current_node}) && temp.#{token}_type?)")
-          when PARAM then param(token[1..-1])
-          else fail_due_to("invalid token #{token.inspect}")
+      def run(node_var)
+        tokens = @string.scan(TOKEN)
+        tokens.reject! { |token| token =~ /\A\s+\Z/ }
+        @match_code = compile_expr(tokens, node_var, false)
+        fail_due_to('unbalanced pattern') unless tokens.empty?
+      end
+
+      def compile_expr(tokens, cur_node, seq_head)
+        token = tokens.shift
+        case token
+        when '('       then compile_seq(tokens, cur_node, seq_head)
+        when '{'       then compile_union(tokens, cur_node, seq_head)
+        when '['       then compile_intersect(tokens, cur_node, seq_head)
+        when '!'       then compile_negation(tokens, cur_node, seq_head)
+        when '$'       then compile_capture(tokens, cur_node, seq_head)
+        when WILDCARD  then compile_wildcard(cur_node, token[1..-1], seq_head)
+        when LITERAL   then compile_literal(cur_node, token, seq_head)
+        when PREDICATE then compile_predicate(cur_node, token, seq_head)
+        when NODE      then compile_nodetype(cur_node, token)
+        when PARAM     then compile_param(cur_node, token[1..-1], seq_head)
+        when CLOSING   then fail_due_to("#{token} in invalid position")
+        when nil       then fail_due_to('pattern ended prematurely')
+        else fail_due_to("invalid token #{token.inspect}")
+        end
+      end
+
+      def compile_seq(tokens, cur_node, seq_head)
+        fail_due_to('empty parentheses') if tokens.first == ')'
+        fail_due_to('parentheses at sequence head') if seq_head
+
+        init = "temp#{@temps += 1} = #{cur_node}"
+        cur_node = "temp#{@temps}"
+        terms = compile_seq_terms(tokens, cur_node)
+
+        join_terms(init, terms, ' && ')
+      end
+
+      def compile_seq_terms(tokens, cur_node)
+        terms = []
+        index = nil
+        until tokens.first == ')'
+          if tokens.first == '...'
+            return compile_ellipsis(tokens, cur_node, terms, index || 0)
+          elsif tokens.first == '$...'
+            return compile_capt_ellip(tokens, cur_node, terms, index || 0)
+          elsif index.nil?
+            terms << compile_expr(tokens, cur_node, true)
+            index = 0
+          else
+            child_node = "#{cur_node}.children[#{index}]"
+            terms << compile_expr(tokens, child_node, false)
+            index += 1
           end
         end
-
-        fail_due_to('unbalanced pattern') unless @stack.empty?
+        terms << "(#{cur_node}.children.size == #{index})"
+        tokens.shift # drop concluding )
+        terms
       end
 
-      def meta_token(token)
-        case token
-        when '(' then opening_paren
-        when ')' then closing_paren
-        when '{' then opening_curly
-        when '}' then closing_curly
-        when '[' then opening_square
-        when ']' then closing_square
-        when '$' then capture
-        when '!' then negate
-        when '...' then goto_last_child
+      def compile_ellipsis(tokens, cur_node, terms, index)
+        if (term = compile_seq_tail(tokens, "#{cur_node}.children.last"))
+          terms << "(#{cur_node}.children.size > #{index})"
+          terms << term
+        elsif index > 0
+          terms << "(#{cur_node}.children.size >= #{index})"
+        end
+        terms
+      end
+
+      def compile_capt_ellip(tokens, cur_node, terms, index)
+        capture = next_capture
+        if (term = compile_seq_tail(tokens, "#{cur_node}.children.last"))
+          terms << "(#{cur_node}.children.size > #{index})"
+          terms << term
+          terms << "(#{capture} = #{cur_node}.children[#{index}..-2])"
+        else
+          terms << "(#{cur_node}.children.size >= #{index})" if index > 0
+          terms << "(#{capture} = #{cur_node}.children[#{index}..-1])"
+        end
+        terms
+      end
+
+      def compile_seq_tail(tokens, cur_node)
+        tokens.shift
+        if tokens.first == ')'
+          tokens.shift
+          nil
+        else
+          expr = compile_expr(tokens, cur_node, false)
+          fail_due_to('missing )') unless tokens.shift == ')'
+          expr
         end
       end
 
-      def emit_match_code
-        @terms.empty? ? 'true' : @terms.join(' && ')
+      def compile_union(tokens, cur_node, seq_head)
+        fail_due_to('empty union') if tokens.first == '}'
+
+        init = "temp#{@temps += 1} = #{cur_node}"
+        cur_node = "temp#{@temps}"
+
+        terms = []
+        captures_before = @captures
+        terms << compile_expr(tokens, cur_node, seq_head)
+        captures_after = @captures
+
+        until tokens.first == '}'
+          @captures = captures_before
+          terms << compile_expr(tokens, cur_node, seq_head)
+          if @captures != captures_after
+            fail_due_to('each branch of {} must have same # of captures')
+          end
+        end
+        tokens.shift
+
+        join_terms(init, terms, ' || ')
+      end
+
+      def compile_intersect(tokens, cur_node, seq_head)
+        fail_due_to('empty intersection') if tokens.first == ']'
+
+        init = "temp#{@temps += 1} = #{cur_node}"
+        cur_node = "temp#{@temps}"
+
+        terms = []
+        until tokens.first == ']'
+          terms << compile_expr(tokens, cur_node, seq_head)
+        end
+        tokens.shift
+
+        join_terms(init, terms, ' && ')
+      end
+
+      def compile_capture(tokens, cur_node, seq_head)
+        "(#{next_capture} = #{cur_node}#{'.type' if seq_head}; " <<
+          compile_expr(tokens, cur_node, seq_head) <<
+          ')'
+      end
+
+      def compile_negation(tokens, cur_node, seq_head)
+        '(!' << compile_expr(tokens, cur_node, seq_head) << ')'
+      end
+
+      def compile_wildcard(cur_node, name, seq_head)
+        if name.empty?
+          'true'
+        elsif @unify.key?(name)
+          # we have already seen a wildcard with this name before
+          # so the value it matched the first time will already be stored
+          # in a temp. check if this value matches the one stored in the temp
+          "(#{cur_node}#{'.type' if seq_head} == temp#{@unify[name]})"
+        else
+          n = @unify[name] = (@temps += 1)
+          "(temp#{n} = #{cur_node}#{'.type' if seq_head}; true)"
+        end
+      end
+
+      def compile_literal(cur_node, literal, seq_head)
+        "(#{cur_node}#{'.type' if seq_head} == #{literal})"
+      end
+
+      def compile_predicate(cur_node, predicate, seq_head)
+        "(#{cur_node}#{'.type' if seq_head}.#{predicate})"
+      end
+
+      def compile_nodetype(cur_node, type)
+        "(#{cur_node} && #{cur_node}.#{type}_type?)"
+      end
+
+      def compile_param(cur_node, number, seq_head)
+        number = number.empty? ? 1 : Integer(number)
+        @params = number if number > @params
+        "(#{cur_node}#{'.type' if seq_head} == param#{number})"
+      end
+
+      def next_capture
+        "capture#{@captures += 1}"
+      end
+
+      def join_terms(init, terms, operator)
+        '(' << init << ';' << terms.join(operator) << ')'
       end
 
       def emit_capture_list
@@ -177,229 +313,9 @@ module RuboCop
 
       def emit_method_code
         <<-CODE
-          return nil unless #{emit_match_code}
+          return nil unless #{@match_code}
           block_given? ? yield(#{emit_capture_list}) : (return #{emit_retval})
         CODE
-      end
-
-      def opening_paren
-        if @context != :root && @index == 0
-          # ((...) ...) is invalid, since you cannot destructure a node TYPE,
-          # you can only destructure child nodes
-          # ({(...) ...} ...) is equally invalid, since that would also mean
-          # trying to destructure a node type
-          fail_due_to('parentheses in invalid position')
-        end
-        enter_new_context(:sequence)
-      end
-
-      def closing_paren
-        # when entering (), @terms is initialized with a single entry, so if
-        # the parens are empty, there will be only 1 item in @terms
-        fail_due_to('empty parentheses') if @terms.one?
-        fail_due_to('! before )') if @negated
-
-        if @context != :last_child
-          # when inside ( ), context will be either :sequence or :last_child
-          # :last_child indicates that we have seen a ... token, which makes
-          # us jump to the last child of the destructured node
-          # if the ( ) is nested properly, context should be :sequence here
-          fail_due_to('unbalanced parentheses') if @context != :sequence
-          fail_due_to('$ before )') if @capture
-          # since we haven't seen a ..., add a check that there are no
-          # remaining children
-          add_term "(#{@node}.children.size == #{@index - 1})"
-        else
-          @terms << "(#{@node}.children.size >= #{@index - 1})" if @index > 1
-
-          if @capture
-            # we have a $... pattern, so capture all the remaining children
-            @terms << "(capture#{@captures} = " \
-              "#{@node}.children[#{@index - 1}..-1])"
-            @capture = false
-          end
-        end
-
-        leave_context("(#{@terms.join(' && ')})")
-      end
-
-      def opening_curly
-        fail_due_to('nested curly braces') if @context == :union
-        enter_new_context(:union)
-      end
-
-      def closing_curly
-        fail_due_to('unbalanced curly braces') if @context != :union
-        # when entering a { }, @terms is initialized with a single
-        # expression which stores the current node in a temp variable
-        # so if the { } is empty, @terms.size will be 1 right here
-        fail_due_to('empty set') if @terms.one?
-        fail_due_to('! before }') if @negated
-        leave_context("(#{@terms.shift}; #{@terms.join(' || ')})")
-      end
-
-      def opening_square
-        fail_due_to('nested square brackets') if @context == :intersection
-        enter_new_context(:intersection)
-      end
-
-      def closing_square
-        fail_due_to('unbalanced square brackets') if @context != :intersection
-        fail_due_to('empty square brackets') if @terms.one?
-        fail_due_to('! before ]') if @negated
-        leave_context("(#{@terms.join(' && ')})")
-      end
-
-      def capture
-        fail_due_to('$ after !') if @negated # $! is OK, but not !$
-        fail_due_to('use $[], not [$]') if @context == :intersection
-        # check if we are in ( ) and have seen a $... earlier
-        # if so, it will capture all the children but the last, and the
-        # following part will capture the last child
-        maybe_capture_intervening_children
-        fail_due_to('repeated $') if @capture
-        @captures += 1
-        @capture = true
-      end
-
-      def negate
-        fail_due_to('repeated !') if @negated
-        @negated = true
-      end
-
-      def wildcard(name)
-        fail_due_to('_ inside { ... }') if @context == :union
-        fail_due_to('_ inside [ ... ]') if @context == :intersection
-        if name.empty?
-          atom('true')
-        elsif @unify.key?(name)
-          # we have already seen a wildcard with this name before
-          # so the value it matched the first time will already be stored
-          # in a temp. check if this value matches the one stored in the temp
-          atom("(#{current_value} == temp#{@unify[name]})")
-        else
-          n = @unify[name] = (@temps += 1)
-          atom("(temp#{n} = #{current_value}; true)")
-        end
-      end
-
-      def atom(term)
-        maybe_capture_intervening_children
-        if @context == :last_child
-          # this is AFTER a ...
-          # so make sure that there are enough children for it to match,
-          # without rematching one of the children which already matched
-          @terms << "(#{@node}.children.size > #{@index - 1})" if @index > 1
-        end
-        add_term term
-        @index += 1 if @context == :sequence
-      end
-
-      def param(number)
-        number = number.empty? ? 1 : Integer(number)
-        @params = number if number > @params
-        atom("(#{current_value} == param#{number})")
-      end
-
-      def goto_last_child
-        fail_due_to('... repeated') if @context == :last_child
-        fail_due_to('... used outside of parens') unless @context == :sequence
-        fail_due_to('! before ...') if @negated
-        # set @capture to a special value to indicate that we have seen $...
-        @capture = :children if @capture
-        @context = :last_child
-      end
-
-      def enter_new_context(context)
-        # just entering (), [], or {}
-        # does this pattern appear after ...? if so capture intervening children
-        maybe_capture_intervening_children
-
-        if @context == :last_child && @index > 1
-          @terms << "(#{@node}.children.size > #{@index - 1})"
-        end
-        term = "(node#{@temps += 1} = #{current_node})"
-
-        # store state machine vars on the stack
-        @stack.push([@node, @index, @terms, @negated, @capture, @captures,
-                     @context])
-
-        # "stack frame" -- second slot, which is initialized to 'nil',
-        # is a "local variable" used for processing captures within each
-        # branch of a {}
-        # it stores the value of @captures after processing the first branch
-        @cstack.push([@captures, nil]) if context == :union
-
-        # re-initialize state machine vars for new context
-        @context = context
-        @terms = [term]
-        @node = "node#{@temps}"
-        @negated = @capture = false
-        @index = 0 if context == :sequence
-      end
-
-      def leave_context(term)
-        fail_due_to('unbalanced pattern') if @stack.empty?
-
-        _, @captures = @cstack.pop if @context == :union
-
-        # why do we pop 'captures' off the stack, but don't store it in
-        # @captures? we want to know what @captures was before entering this
-        # context, IN CASE it was captured
-        # for example, if compiling $(send $...), @captures will be different
-        # after processing the children, due to the $...
-        # but we need to know the capture # for the OUTER capture
-        @node, @index, @terms, @negated, @capture, captures, @context =
-          @stack.pop
-        add_term(term, captures)
-        @index += 1 if @context == :sequence
-      end
-
-      def maybe_capture_intervening_children
-        # if $... is followed by a final pattern, gather up all the intervening
-        # children into a capture before generating code for that pattern
-        return unless @context == :last_child && @capture == :children
-        @terms << "(capture#{@captures} = #{@node}.children[#{@index - 1}..-2])"
-        @capture = false
-      end
-
-      def add_term(term, capture_n = @captures)
-        ((term = "(!#{term})") && (@negated = false)) if @negated
-        if @capture
-          term = "((#{term}) && (capture#{capture_n} = #{current_value}; true))"
-          @capture = false
-        end
-        @terms << term
-
-        return unless @context == :union
-        # we push a "frame" on cstack for each nested {}
-        # this enables us to check after each branch to ensure that they all
-        # have the same number of captures
-        previous_captures, union_captures = @cstack.last
-        if !union_captures
-          @cstack.last[1] = @captures
-        elsif union_captures != @captures
-          fail_due_to('each branch of {} must have same # of captures')
-        end
-        @captures = previous_captures
-      end
-
-      def current_node
-        if @context == :last_child
-          "#{@node}.children.last"
-        elsif @context == :sequence && @index > 0
-          "#{@node}.children[#{@index - 1}]"
-        else
-          @node
-        end
-      end
-
-      def current_value
-        if @context == :sequence && @index == 0
-          "#{@node}.type"
-        else
-          current_node
-        end
       end
 
       def fail_due_to(message)
@@ -444,7 +360,7 @@ module RuboCop
           def #{method_name}(node0#{compiler.emit_trailing_param_list})
             #{prelude}
             node0.each_node do |node|
-              if #{compiler.emit_match_code}
+              if #{compiler.match_code}
                 #{on_match}
               end
             end

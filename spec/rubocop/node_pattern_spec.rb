@@ -267,11 +267,6 @@ describe RuboCop::NodePattern do
         it_behaves_like :matching
       end
 
-      context 'containing a wildcard' do
-        let(:pattern) { '{1 _}' }
-        it_behaves_like :invalid
-      end
-
       context 'containing multiple []' do
         let(:pattern) { '{[(int odd?) int] [!nil float]}' }
 
@@ -302,11 +297,6 @@ describe RuboCop::NodePattern do
       let(:pattern) { '{(send int ...) (send const ...)}' }
       let(:ruby) { 'Const.method' }
       it_behaves_like :matching
-    end
-
-    context 'with a nested set' do
-      let(:pattern) { '{{1 2}}' }
-      it_behaves_like :invalid
     end
   end
 
@@ -439,6 +429,13 @@ describe RuboCop::NodePattern do
       let(:ruby) { '5 + 4' }
       let(:captured_vals) { [[s(:int, 5), :+], s(:int, 4)] }
       it_behaves_like :multiple_capture
+    end
+
+    context 'at the very beginning of a sequence' do
+      let(:pattern) { '($... (int 1))' }
+      let(:ruby) { '10 * 1' }
+      let(:captured_val) { [s(:int, 10), :*] }
+      it_behaves_like :single_capture
     end
   end
 
@@ -597,6 +594,12 @@ describe RuboCop::NodePattern do
       let(:ruby) { '[1,2].zip([3,4])' }
       it_behaves_like :nonmatching
     end
+
+    context 'at the very beginning of a sequence' do
+      let(:pattern) { '(... (int 1))' }
+      let(:ruby) { '10 * 1' }
+      it_behaves_like :matching
+    end
   end
 
   describe 'predicates' do
@@ -607,7 +610,8 @@ describe RuboCop::NodePattern do
     end
 
     context 'at head position of a sequence' do
-      let(:pattern) { '(send_type? int ...)' }
+      # called on the type symbol
+      let(:pattern) { '(!nil? int ...)' }
       let(:ruby) { '1.inc' }
       it_behaves_like :matching
     end
@@ -762,11 +766,6 @@ describe RuboCop::NodePattern do
       it_behaves_like :invalid
     end
 
-    context 'with double negation' do
-      let(:pattern) { '(send !!const)' }
-      it_behaves_like :invalid
-    end
-
     context 'with negated ellipsis' do
       let(:pattern) { '(send !...)' }
       it_behaves_like :invalid
@@ -774,16 +773,6 @@ describe RuboCop::NodePattern do
 
     context 'with doubled ellipsis' do
       let(:pattern) { '(send ... ...)' }
-      it_behaves_like :invalid
-    end
-
-    context 'with a wildcard inside []' do
-      let(:pattern) { '[_x _y]' }
-      it_behaves_like :invalid
-    end
-
-    context 'with a capture directly inside []' do
-      let(:pattern) { '[!nil $send]' }
       it_behaves_like :invalid
     end
   end
