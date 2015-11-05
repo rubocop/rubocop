@@ -20,7 +20,7 @@ module RuboCop
           _receiver, method_name, *args = *node
           return if args.empty?
           return if operator?(method_name)
-          return if method_name.to_s.end_with?('=')
+          return if node.asgn_method_call?
 
           # Setter calls with parentheses are parsed this way. The parentheses
           # belong to the argument, not the send node.

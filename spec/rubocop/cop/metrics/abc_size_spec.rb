@@ -41,7 +41,7 @@ describe RuboCop::Cop::Metrics::AbcSize, :config do
                            'end'])
       expect(cop.messages)
         .to eq(['Assignment Branch Condition size for method_name is too ' \
-                'high. [2/0]'])
+                'high. [1.41/0]'])
       expect(cop.config_to_allow_offenses).to eq('Max' => 2)
     end
 

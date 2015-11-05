@@ -161,17 +161,7 @@ module RuboCop
         end
 
         def assignment?(node)
-          node.each_ancestor.find do |a|
-            case a.type
-            when :send
-              _receiver, method_name, *_args = *a
-              # The []= operator is the only assignment operator that is parsed
-              # as a :send node.
-              method_name == :[]=
-            when *ASGN_NODES
-              true
-            end
-          end
+          node.each_ancestor.find(&:assignment?)
         end
 
         def not_for_this_cop?(node)

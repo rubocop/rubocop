@@ -41,7 +41,7 @@ module RuboCop
           first_arg, = *args
           accumulator_var, = *first_arg
           return if body.each_descendant.any? do |n|
-            next unless ASGN_NODES.include?(n.type)
+            next unless n.assignment?
             lhs, _rhs = *n
             lhs.equal?(accumulator_var)
           end

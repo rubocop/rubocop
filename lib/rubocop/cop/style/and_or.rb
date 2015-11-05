@@ -67,7 +67,7 @@ module RuboCop
                 correct_send(expr, corrector)
               elsif expr.return_type?
                 correct_other(expr, corrector)
-              elsif ASGN_NODES.include?(expr.type)
+              elsif expr.assignment?
                 correct_other(expr, corrector)
               end
             end

@@ -21,7 +21,7 @@ module RuboCop
           condition = 0
 
           node.each_node do |child|
-            if ASGN_NODES.include?(child.type)
+            if child.assignment?
               assignment += 1
             elsif BRANCH_NODES.include?(child.type)
               branch += 1
