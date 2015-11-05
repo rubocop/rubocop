@@ -730,6 +730,69 @@ describe RuboCop::NodePattern do
     end
   end
 
+  describe 'caret (ascend)' do
+    let(:root_node) do
+      buffer = Parser::Source::Buffer.new('(string)', 1)
+      buffer.source = ruby
+      builder = Astrolabe::Builder.new
+      Parser::CurrentRuby.new(builder).parse(buffer)
+    end
+
+    context 'used with a node type' do
+      let(:ruby) { '1.inc' }
+      let(:node) { root_node.children[0] }
+
+      context 'which matches' do
+        let(:pattern) { '^send' }
+        it_behaves_like :matching
+      end
+
+      context "which doesn't match" do
+        let(:pattern) { '^const' }
+        it_behaves_like :nonmatching
+      end
+    end
+
+    context 'repeated twice' do
+      # ascends to grandparent node
+      let(:pattern) { '^^block' }
+      let(:ruby) { '1.inc { something }' }
+      let(:node) { root_node.children[0].children[0] }
+      it_behaves_like :matching
+    end
+
+    context 'inside an intersection' do
+      let(:pattern) { '^[!nil send ^(block ...)]' }
+      let(:ruby) { '1.inc { something }' }
+      let(:node) { root_node.children[0].children[0] }
+      it_behaves_like :matching
+    end
+
+    context 'inside a union' do
+      let(:pattern) { '{^send ^^send}' }
+      let(:ruby) { '"str".concat(local += "abc")' }
+      let(:node) { root_node.children[2].children[2] }
+    end
+
+    # NOTE!! a pitfall of doing this is that unification is done using #==
+    # This means that 'identical' AST nodes, which are not really identical
+    # because they have different metadata, will still unify
+    context 'using unification to match self within parent' do
+      let(:pattern) { '[_self ^(send _ _ _self)]' }
+      let(:ruby) { '1 + 2' }
+
+      context 'with self in the right position' do
+        let(:node) { root_node.children[2] }
+        it_behaves_like :matching
+      end
+
+      context 'with self in the wrong position' do
+        let(:node) { root_node.children[0] }
+        it_behaves_like :nonmatching
+      end
+    end
+  end
+
   describe 'bad syntax' do
     context 'with empty parentheses' do
       let(:pattern) { '()' }

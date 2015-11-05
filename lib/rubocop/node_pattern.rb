@@ -56,6 +56,8 @@ module RuboCop
   #                        # it will be compared to the corresponding value in
   #                        # the AST using #==
   #                        # a bare '%' is the same as '%1'
+  #    '^^send'            # each ^ ascends one level in the AST
+  #                        # so this matches against the grandparent node
   #
   # You can nest arbitrarily deep:
   #
@@ -83,7 +85,7 @@ module RuboCop
     class Compiler
       RSYM      = %r{:(?:[\w+-@_*/?!<>~|%^]+|==|\[\]=?)}
       ID_CHAR   = /[a-zA-Z_]/
-      META_CHAR = /\(|\)|\{|\}|\[|\]|\$\.\.\.|\$|\!|\.\.\./
+      META_CHAR = /\(|\)|\{|\}|\[|\]|\$\.\.\.|\$|!|\^|\.\.\./
       TOKEN     = /\G(?:\s+|#{META_CHAR}|#{ID_CHAR}+\??|%\d*|\d+|#{RSYM}|.)/
 
       NODE      = /\A#{ID_CHAR}+\Z/
@@ -121,6 +123,7 @@ module RuboCop
         when '['       then compile_intersect(tokens, cur_node, seq_head)
         when '!'       then compile_negation(tokens, cur_node, seq_head)
         when '$'       then compile_capture(tokens, cur_node, seq_head)
+        when '^'       then compile_ascend(tokens, cur_node, seq_head)
         when WILDCARD  then compile_wildcard(cur_node, token[1..-1], seq_head)
         when LITERAL   then compile_literal(cur_node, token, seq_head)
         when PREDICATE then compile_predicate(cur_node, token, seq_head)
@@ -246,6 +249,12 @@ module RuboCop
 
       def compile_negation(tokens, cur_node, seq_head)
         '(!' << compile_expr(tokens, cur_node, seq_head) << ')'
+      end
+
+      def compile_ascend(tokens, cur_node, seq_head)
+        "(#{cur_node}.parent && " <<
+          compile_expr(tokens, "#{cur_node}.parent", seq_head) <<
+          ')'
       end
 
       def compile_wildcard(cur_node, name, seq_head)
