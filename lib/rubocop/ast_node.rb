@@ -12,11 +12,10 @@ module Astrolabe
     # def_matcher can be used to define a pattern-matching method on Node:
     class << self
       extend RuboCop::NodePattern::Macros
-      NODE_EIGENCLASS = self
 
       # define both Node.method_name(node), and also node.method_name
       def def_matcher(method_name, pattern_str)
-        NODE_EIGENCLASS.def_node_matcher method_name, pattern_str
+        singleton_class.def_node_matcher method_name, pattern_str
         class_eval("def #{method_name}; Node.#{method_name}(self); end")
       end
     end
@@ -24,6 +23,8 @@ module Astrolabe
     ## Destructuring
 
     def_matcher :method_name, '{(send _ $_ ...) (block (send _ $_ ...) ...)}'
+    # Note: for masgn, #asgn_rhs will be an array node
+    def_matcher :asgn_rhs, '[assignment? (... $_)]'
 
     ## Predicates
 

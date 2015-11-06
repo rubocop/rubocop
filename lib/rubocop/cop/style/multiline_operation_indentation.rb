@@ -98,7 +98,7 @@ module RuboCop
             article = kw =~ /^[iu]/ ? 'an' : 'a'
             "a #{kind} in #{article} `#{kw}` statement"
           else
-            'an expression' + (assignment?(node) ? ' in an assignment' : '')
+            'an expression' + (assignment_rhs?(node) ? ' in an assignment' : '')
           end
         end
 
@@ -142,7 +142,7 @@ module RuboCop
 
         def should_align?(node, given_style)
           given_style == :aligned && (kw_node_with_special_indentation(node) ||
-                                      assignment?(node))
+                                      assignment_rhs?(node))
         end
 
         def kw_node_with_special_indentation(node)
@@ -160,8 +160,13 @@ module RuboCop
           end
         end
 
-        def assignment?(node)
-          node.each_ancestor.find(&:assignment?)
+        def assignment_rhs?(node)
+          node.ancestors.unshift(node).each_cons(2).any? do |child, parent|
+            return true if parent.asgn_rhs.equal?(child)
+            grandparent = parent.parent
+            return true if grandparent && grandparent.masgn_type? &&
+                           grandparent.asgn_rhs.equal?(parent)
+          end
         end
 
         def not_for_this_cop?(node)

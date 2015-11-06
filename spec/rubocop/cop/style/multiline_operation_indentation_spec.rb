@@ -168,6 +168,23 @@ describe RuboCop::Cop::Style::MultilineOperationIndentation do
       expect(cop.messages).to eq(['Use 2 (not 6) spaces for indenting an ' \
                                   'expression spanning multiple lines.'])
     end
+
+    it 'registers an offense for aligned code on LHS of assignment' do
+      inspect_source(cop, ['def config_to_allow_offenses',
+                           '  Formatter::DisabledConfigFormatter',
+                           '  .config_to_allow_offenses[cop_name] ||= {}',
+                           'end'])
+      expect(cop.messages).to eq(['Use 2 (not 0) spaces for indenting an ' \
+        'expression spanning multiple lines.'])
+    end
+
+    it 'registers an offense for a method call where the receiver and ' \
+       'selector are on different lines, without indentation' do
+      inspect_source(cop, ['Formatter::DisabledConfigFormatter',
+                           '.config_to_allow_offenses[cop_name] ||= {}'])
+      expect(cop.messages).to eq(['Use 2 (not 0) spaces for indenting an ' \
+        'expression spanning multiple lines.'])
+    end
   end
 
   context 'when EnforcedStyle is aligned' do
