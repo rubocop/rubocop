@@ -23,13 +23,12 @@ module RuboCop
       end
 
       def on_send(node)
-        _receiver, method_name, *_, rhs = *node
-
         # we only want to indent relative to the receiver
         # when the method called looks like a setter
-        return unless method_name.to_s.end_with?('=')
+        return unless node.asgn_method_call?
 
         # This will match if, case, begin, blocks, etc.
+        rhs = node.children.last
         check_assignment(node, rhs) if rhs.is_a?(AST::Node)
       end
     end

@@ -188,8 +188,7 @@ module RuboCop
           if node.parent.begin_type?
             return_value_used?(node.parent)
           else
-            Util::ASGN_NODES.include?(node.parent.type) ||
-              node.parent.send_type?
+            node.parent.assignment? || node.parent.send_type?
           end
         end
 

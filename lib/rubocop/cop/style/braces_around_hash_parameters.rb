@@ -15,7 +15,7 @@ module RuboCop
           _receiver, method_name, *args = *node
 
           # Discard attr writer methods.
-          return if method_name.to_s.end_with?('=')
+          return if node.asgn_method_call?
           # Discard operator methods.
           return if operator?(method_name)
 
