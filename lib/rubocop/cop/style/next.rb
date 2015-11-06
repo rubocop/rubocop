@@ -98,6 +98,24 @@ module RuboCop
           offense_begin_pos = offense_node.loc.expression.begin
           offense_begin_pos.join(condition_expression.loc.expression)
         end
+
+        def autocorrect(node)
+          lambda do |corrector|
+            cond, if_body, else_body = *node
+            if if_body.nil?
+              opposite_kw = 'if'
+              body = else_body
+            else
+              opposite_kw = 'unless'
+              body = if_body
+            end
+            next_code = 'next ' << opposite_kw << ' ' <<
+                        cond.loc.expression.source << "\n"
+            corrector.insert_before(node.loc.expression, next_code)
+            corrector.replace(node.loc.expression,
+                              body.loc.expression.source)
+          end
+        end
       end
     end
   end
