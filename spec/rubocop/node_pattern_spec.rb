@@ -793,6 +793,34 @@ describe RuboCop::NodePattern do
     end
   end
 
+  describe 'funcalls' do
+    module RuboCop
+      class NodePattern
+        def goodmatch(_arg1)
+          true
+        end
+
+        def badmatch(_arg1)
+          false
+        end
+
+        def witharg(_arg1, arg2)
+          arg2
+        end
+
+        def withargs(_arg1, _arg2, arg3)
+          arg3
+        end
+      end
+    end
+
+    context 'without extra arguments' do
+      let(:pattern) { '(lvasgn #goodmatch ...)' }
+      let(:ruby) { 'a = 1' }
+      it_behaves_like :matching
+    end
+  end
+
   describe 'bad syntax' do
     context 'with empty parentheses' do
       let(:pattern) { '()' }

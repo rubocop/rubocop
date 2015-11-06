@@ -58,6 +58,9 @@ module RuboCop
   #                        # a bare '%' is the same as '%1'
   #    '^^send'            # each ^ ascends one level in the AST
   #                        # so this matches against the grandparent node
+  #    '#method'           # we call this a 'funcall'; it calls a method in the
+  #                        # context where a pattern-matching method is defined
+  #                        # if that returns a truthy value, the match succeeds
   #
   # You can nest arbitrarily deep:
   #
@@ -86,12 +89,14 @@ module RuboCop
       RSYM      = %r{:(?:[\w+-@_*/?!<>~|%^]+|==|\[\]=?)}
       ID_CHAR   = /[a-zA-Z_]/
       META_CHAR = /\(|\)|\{|\}|\[|\]|\$\.\.\.|\$|!|\^|\.\.\./
-      TOKEN     = /\G(?:\s+|#{META_CHAR}|#{ID_CHAR}+\??|%\d*|\d+|#{RSYM}|.)/
+      TOKEN     =
+        /\G(?:\s+|#{META_CHAR}|\#?#{ID_CHAR}+[\!\?]?|%\d*|\d+|#{RSYM}|.)/
 
       NODE      = /\A#{ID_CHAR}+\Z/
       PREDICATE = /\A#{ID_CHAR}+\?\Z/
-      LITERAL   = /\A(?:#{RSYM}|\d+|nil)\Z/
       WILDCARD  = /\A_#{ID_CHAR}*\Z/
+      FUNCALL   = /\A\##{ID_CHAR}+[\!\?]?\Z/
+      LITERAL   = /\A(?:#{RSYM}|\d+|nil)\Z/
       PARAM     = /\A%\d*\Z/
       CLOSING   = /\A(?:\)|\}|\])\Z/
 
@@ -125,6 +130,7 @@ module RuboCop
         when '$'       then compile_capture(tokens, cur_node, seq_head)
         when '^'       then compile_ascend(tokens, cur_node, seq_head)
         when WILDCARD  then compile_wildcard(cur_node, token[1..-1], seq_head)
+        when FUNCALL   then compile_funcall(cur_node, token[1..-1], seq_head)
         when LITERAL   then compile_literal(cur_node, token, seq_head)
         when PREDICATE then compile_predicate(cur_node, token, seq_head)
         when NODE      then compile_nodetype(cur_node, token)
@@ -277,6 +283,12 @@ module RuboCop
 
       def compile_predicate(cur_node, predicate, seq_head)
         "(#{cur_node}#{'.type' if seq_head}.#{predicate})"
+      end
+
+      def compile_funcall(cur_node, method_name, seq_head)
+        # call a method in the context which this pattern-matching
+        # code is used in. pass target value as an argument
+        "(#{method_name}(#{cur_node}#{'.type' if seq_head}))"
       end
 
       def compile_nodetype(cur_node, type)
