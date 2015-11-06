@@ -7,6 +7,8 @@ describe RuboCop::Cop::Style::Next, :config do
   let(:cop_config) { { 'MinBodyLength' => 1 } }
 
   shared_examples 'iterators' do |condition|
+    let(:opposite) { condition == 'if' ? 'unless' : 'if' }
+
     it "registers an offense for #{condition} inside of downto" do
       inspect_source(cop, ['3.downto(1) do',
                            "  #{condition} o == 1",
@@ -16,6 +18,18 @@ describe RuboCop::Cop::Style::Next, :config do
 
       expect(cop.messages).to eq(['Use `next` to skip iteration.'])
       expect(cop.highlights).to eq(["#{condition} o == 1"])
+    end
+
+    it "autocorrects #{condition} inside of downto" do
+      new_source = autocorrect_source(cop, ['3.downto(1) do',
+                                            "  #{condition} o == 1",
+                                            '    puts o',
+                                            '  end',
+                                            'end'])
+      expect(new_source).to eq(['3.downto(1) do',
+                                "  next #{opposite} o == 1",
+                                'puts o', # another cop can fix indentation
+                                'end'].join("\n"))
     end
 
     it "registers an offense for #{condition} inside of each" do
@@ -29,6 +43,18 @@ describe RuboCop::Cop::Style::Next, :config do
       expect(cop.highlights).to eq(["#{condition} o == 1"])
     end
 
+    it "autocorrects #{condition} inside of each" do
+      new_source = autocorrect_source(cop, ['[].each do |o|',
+                                            "  #{condition} o == 1",
+                                            '    puts o',
+                                            '  end',
+                                            'end'])
+      expect(new_source).to eq(['[].each do |o|',
+                                "  next #{opposite} o == 1",
+                                'puts o', # another cop can fix indentation
+                                'end'].join("\n"))
+    end
+
     it "registers an offense for #{condition} inside of each_with_object" do
       inspect_source(cop, ['[].each_with_object({}) do |o, a|',
                            "  #{condition} o == 1",
@@ -40,7 +66,7 @@ describe RuboCop::Cop::Style::Next, :config do
       expect(cop.highlights).to eq(["#{condition} o == 1"])
     end
 
-    it "registers an offense for #{condition}  inside of for" do
+    it "registers an offense for #{condition} inside of for" do
       inspect_source(cop, ['for o in 1..3 do',
                            "  #{condition} o == 1",
                            '    puts o',
@@ -49,6 +75,18 @@ describe RuboCop::Cop::Style::Next, :config do
 
       expect(cop.messages).to eq(['Use `next` to skip iteration.'])
       expect(cop.highlights).to eq(["#{condition} o == 1"])
+    end
+
+    it "autocorrects #{condition} inside of for" do
+      new_source = autocorrect_source(cop, ['for o in 1..3 do',
+                                            "  #{condition} o == 1",
+                                            '    puts o',
+                                            '  end',
+                                            'end'])
+      expect(new_source).to eq(['for o in 1..3 do',
+                                "  next #{opposite} o == 1",
+                                'puts o', # another cop can fix indentation
+                                'end'].join("\n"))
     end
 
     it "registers an offense for #{condition} inside of loop" do
