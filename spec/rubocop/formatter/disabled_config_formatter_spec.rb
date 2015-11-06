@@ -50,7 +50,7 @@ module RuboCop
                     ''].join("\n"))
         end
 
-        it 'displays a file exclusion list up to a maximum of 15 offences' do
+        it 'displays a file exclusion list up to a maximum of 15 offenses' do
           exclusion_list = []
           file_list = []
 

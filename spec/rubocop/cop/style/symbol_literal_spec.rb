@@ -5,7 +5,7 @@ require 'spec_helper'
 describe RuboCop::Cop::Style::SymbolLiteral do
   subject(:cop) { described_class.new }
 
-  it 'registers an offence for word-line symbols using string syntax' do
+  it 'registers an offense for word-line symbols using string syntax' do
     inspect_source(cop, 'x = { :"test" => 0 }')
     expect(cop.offenses.size).to eq(1)
   end

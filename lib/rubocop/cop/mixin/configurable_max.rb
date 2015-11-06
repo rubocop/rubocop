@@ -6,7 +6,7 @@ module RuboCop
     # appropriate value with --auto-gen-config.
     module ConfigurableMax
       def max=(value)
-        cfg = self.config_to_allow_offenses ||= {}
+        cfg = config_to_allow_offenses
         value = [cfg[parameter_name], value].max if cfg[parameter_name]
         cfg[parameter_name] = value
       end

@@ -185,7 +185,8 @@ module RuboCop
       end
 
       def config_to_allow_offenses
-        Formatter::DisabledConfigFormatter.config_to_allow_offenses[cop_name]
+        Formatter::DisabledConfigFormatter
+          .config_to_allow_offenses[cop_name] ||= {}
       end
 
       def config_to_allow_offenses=(hash)

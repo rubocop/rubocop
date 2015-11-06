@@ -33,11 +33,11 @@ module RuboCop
 
       def file_finished(file, offenses)
         @cops_with_offenses ||= Hash.new(0)
-        @files_with_offences ||= {}
+        @files_with_offenses ||= {}
         offenses.each do |o|
           @cops_with_offenses[o.cop_name] += 1
-          @files_with_offences[o.cop_name] ||= []
-          @files_with_offences[o.cop_name] << file
+          @files_with_offenses[o.cop_name] ||= []
+          @files_with_offenses[o.cop_name] << file
         end
       end
 
@@ -56,9 +56,7 @@ module RuboCop
           cfg = self.class.config_to_allow_offenses[cop_name]
           cfg ||= {}
           output_cop_comments(output, cfg, cop_name, offense_count)
-          output.puts "#{cop_name}:"
-          cfg.each { |key, value| output.puts "  #{key}: #{value}" }
-          output_offending_files(output, cfg, cop_name)
+          output_cop_config(output, cfg, cop_name)
         end
         puts "Created #{output.path}."
         puts "Run `rubocop --config #{output.path}`, or"
@@ -82,10 +80,19 @@ module RuboCop
         output.puts "# Configuration parameters: #{params.join(', ')}."
       end
 
+      def output_cop_config(output, cfg, cop_name)
+        output.puts "#{cop_name}:"
+        cfg.each do |key, value|
+          value = value[0] if value.is_a?(Array)
+          output.puts "  #{key}: #{value}"
+        end
+        output_offending_files(output, cfg, cop_name)
+      end
+
       def output_offending_files(output, cfg, cop_name)
         return unless cfg.empty?
 
-        offending_files = @files_with_offences[cop_name].uniq.sort
+        offending_files = @files_with_offenses[cop_name].uniq.sort
         if offending_files.count > @exclude_limit
           output.puts '  Enabled: false'
         else

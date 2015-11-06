@@ -494,6 +494,7 @@ Style/IndentHash:
   SupportedStyles:
     - special_inside_parentheses
     - consistent
+    - align_braces
 
 Style/LambdaCall:
   EnforcedStyle: call

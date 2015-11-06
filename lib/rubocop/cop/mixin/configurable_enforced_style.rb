@@ -4,32 +4,75 @@ module RuboCop
   module Cop
     # Handles `EnforcedStyle` configuration parameters.
     module ConfigurableEnforcedStyle
-      def unexpected_style_detected(style)
-        self.config_to_allow_offenses ||= { parameter_name => style.to_s }
-        return unless config_to_allow_offenses['Enabled'] ||
-                      config_to_allow_offenses[parameter_name] != style.to_s
-        conflicting_styles_detected
-      end
-
       def opposite_style_detected
-        unexpected_style_detected(alternative_style)
+        style_detected(alternative_style)
       end
 
       def correct_style_detected
-        # Enabled:true indicates, later when the opposite style is detected,
-        # that the correct style is used somewhere.
-        self.config_to_allow_offenses ||= { 'Enabled' => true }
-        conflicting_styles_detected if config_to_allow_offenses[parameter_name]
+        style_detected(style)
       end
 
-      def conflicting_styles_detected
+      def unexpected_style_detected(unexpected)
+        style_detected(unexpected)
+      end
+
+      def ambiguous_style_detected(*possibilities)
+        style_detected(possibilities)
+      end
+
+      def style_detected(detected)
+        # `detected` can be a single style, or an Array of possible styles
+        # (if there is more than one which matches the observed code)
+
+        return if no_acceptable_style?
+
+        if detected.is_a?(Array)
+          detected.map!(&:to_s)
+        else
+          detected = detected.to_s
+        end
+
+        if !detected_style # we haven't observed any specific style yet
+          self.detected_style = detected
+        elsif detected_style.is_a?(Array)
+          self.detected_style &= [*detected]
+        elsif detected.is_a?(Array)
+          no_acceptable_style! unless detected.include?(detected_style)
+        else
+          no_acceptable_style! unless detected_style == detected
+        end
+      end
+
+      def no_acceptable_style?
+        config_to_allow_offenses['Enabled'] == false
+      end
+
+      def no_acceptable_style!
         self.config_to_allow_offenses = { 'Enabled' => false }
       end
 
-      def unrecognized_style_detected
-        # All we can do is to disable.
-        self.config_to_allow_offenses = { 'Enabled' => false }
+      def detected_style
+        config_to_allow_offenses[parameter_name]
       end
+
+      def detected_style=(style)
+        if style.nil?
+          no_acceptable_style!
+        elsif style.is_a?(Array)
+          if style.empty?
+            no_acceptable_style!
+          elsif style.one?
+            config_to_allow_offenses[parameter_name] = style[0]
+          else
+            config_to_allow_offenses[parameter_name] = style
+          end
+        else
+          config_to_allow_offenses[parameter_name] = style
+        end
+      end
+
+      alias_method :conflicting_styles_detected, :no_acceptable_style!
+      alias_method :unrecognized_style_detected, :no_acceptable_style!
 
       def style
         s = cop_config[parameter_name]

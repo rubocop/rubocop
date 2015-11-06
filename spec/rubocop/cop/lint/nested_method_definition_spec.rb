@@ -21,14 +21,14 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
     expect(cop.offenses.size).to eq(1)
   end
 
-  it 'registers an offence for a nested method definition inside lambda' do
+  it 'registers an offense for a nested method definition inside lambda' do
     inspect_source(cop, ['def foo',
                          '  bar = -> { def baz; puts; end }',
                          'end'])
     expect(cop.offenses.size).to eq(1)
   end
 
-  it 'does not register an offence for a lambda definition inside method' do
+  it 'does not register an offense for a lambda definition inside method' do
     inspect_source(cop, ['def foo',
                          '  bar = -> { puts  }',
                          '  bar.call',
