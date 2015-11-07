@@ -7,14 +7,15 @@ module RuboCop
       class Debugger < Cop
         MSG = 'Remove debugger entry point `%s`.'
 
-        def_node_matcher :debugger_call?,
-                         '{(send nil {:debugger :byebug} ...)
-                           (send (send nil :binding)
-                             {:pry :remote_pry :pry_remote} ...)
-                           (send (const nil :Pry) :rescue ...)
-                           (send nil {:save_and_open_page
-                                      :save_and_open_screenshot
-                                      :save_screenshot} ...)}'
+        def_node_matcher :debugger_call?, <<-END
+          {(send nil {:debugger :byebug} ...)
+           (send (send nil :binding)
+             {:pry :remote_pry :pry_remote} ...)
+           (send (const nil :Pry) :rescue ...)
+           (send nil {:save_and_open_page
+                      :save_and_open_screenshot
+                      :save_screenshot} ...)}
+        END
 
         def on_send(node)
           return unless debugger_call?(node)
