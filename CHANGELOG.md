@@ -11,6 +11,7 @@
 * [#2361](https://github.com/bbatsov/rubocop/pull/2361): `Style/MultilineAssignmentLayout` cop checks for a newline after the assignment operator in a multi-line assignment. ([@panthomakos][])
 * [#2462](https://github.com/bbatsov/rubocop/issues/2462): `Lint/UselessAccessModifier` can catch more types of useless access modifiers. ([@alexdowad][])
 * [#1677](https://github.com/bbatsov/rubocop/issues/1677): Add new `Performance/Casecmp` cop. ([@alexdowad][])
+* [#1677](https://github.com/bbatsov/rubocop/issues/1677): Add new `Performance/RangeInclude` cop. ([@alexdowad][])
 
 ### Bug Fixes
 

@@ -1129,6 +1129,11 @@ Performance/FlatMap:
   # This can be dangerous since `flat_map` will only flatten 1 level, and
   # `flatten` without any parameters can flatten multiple levels.
 
+Performance/RangeInclude:
+  Description: 'Use `Range#cover?` instead of `Range#include?`.'
+  Reference: 'https://github.com/JuanitoFatas/fast-ruby#cover-vs-include-code'
+  Enabled: true
+
 Performance/ReverseEach:
   Description: 'Use `reverse_each` instead of `reverse.each`.'
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#enumerablereverseeach-vs-enumerablereverse_each-code'
