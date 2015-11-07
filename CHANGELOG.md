@@ -12,6 +12,7 @@
 * [#2462](https://github.com/bbatsov/rubocop/issues/2462): `Lint/UselessAccessModifier` can catch more types of useless access modifiers. ([@alexdowad][])
 * [#1677](https://github.com/bbatsov/rubocop/issues/1677): Add new `Performance/Casecmp` cop. ([@alexdowad][])
 * [#1677](https://github.com/bbatsov/rubocop/issues/1677): Add new `Performance/RangeInclude` cop. ([@alexdowad][])
+* [#1677](https://github.com/bbatsov/rubocop/issues/1677): Add new `Performance/RedundantSortBy` cop. ([@alexdowad][])
 
 ### Bug Fixes
 

@@ -1134,6 +1134,10 @@ Performance/RangeInclude:
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#cover-vs-include-code'
   Enabled: true
 
+Performance/RedundantSortBy:
+  Description: 'Use `sort` instead of `sort_by { |x| x }`.'
+  Enabled: true
+
 Performance/ReverseEach:
   Description: 'Use `reverse_each` instead of `reverse.each`.'
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#enumerablereverseeach-vs-enumerablereverse_each-code'
