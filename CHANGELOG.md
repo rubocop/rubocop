@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.35.0 (07/11/2015)
+
 ### New features
 
 * [#2028](https://github.com/bbatsov/rubocop/issues/2028): New config `ExtraDetails` supports addition of `Details` param to all cops to allow extra details on offense to be displayed. ([@tansaku][])
