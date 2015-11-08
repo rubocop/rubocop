@@ -22,6 +22,10 @@ module Astrolabe
       end
     end
 
+    def source
+      loc.expression.source
+    end
+
     ## Destructuring
 
     def_matcher :receiver,    '{(send $_ ...) (block (send $_ ...) ...)}'
