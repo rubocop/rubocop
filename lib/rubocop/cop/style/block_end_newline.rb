@@ -33,7 +33,7 @@ module RuboCop
           return if do_loc.line == end_loc.line # Ignore one-liners.
 
           # If the end is on its own line, there is no offense
-          return if /^\s*#{end_loc.source}/.match(end_loc.source_line)
+          return if end_loc.source_line =~ /^\s*#{end_loc.source}/
 
           msg = format(MSG, end_loc.line, end_loc.column + 1)
           add_offense(node, end_loc, msg)
