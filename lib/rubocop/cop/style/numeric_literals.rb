@@ -52,7 +52,7 @@ module RuboCop
         end
 
         def format_number(node)
-          int_part, float_part = node.loc.expression.source.split('.')
+          int_part, float_part = node.source.split('.')
           int_part = int_part.to_i
           formatted_int = int_part
                           .abs
@@ -70,7 +70,7 @@ module RuboCop
         end
 
         def integer_part(node)
-          node.loc.expression.source.sub(/^[+-]/, '').split('.').first
+          node.source.sub(/^[+-]/, '').split('.').first
         end
 
         def min_digits

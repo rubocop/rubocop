@@ -7,7 +7,7 @@ module RuboCop
       include StringHelp
 
       def wrong_quotes?(node, style)
-        src = node.loc.expression.source
+        src = node.source
         return false if src.start_with?('%') || src.start_with?('?')
         if style == :single_quotes
           src !~ /'/ && src !~ StringHelp::ESCAPED_CHAR_REGEXP

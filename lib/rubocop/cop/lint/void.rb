@@ -51,8 +51,7 @@ module RuboCop
 
         def check_for_literal(node)
           return unless LITERALS.include?(node.type)
-          add_offense(node, :expression,
-                      format(LIT_MSG, node.loc.expression.source))
+          add_offense(node, :expression, format(LIT_MSG, node.source))
         end
       end
     end

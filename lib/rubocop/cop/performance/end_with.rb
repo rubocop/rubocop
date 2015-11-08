@@ -44,7 +44,7 @@ module RuboCop
             regex_str.gsub!('\t', "\t")
 
             lambda do |corrector|
-              new_source = receiver.loc.expression.source + '.end_with?(' +
+              new_source = receiver.source + '.end_with?(' +
                            escape(regex_str) + ')'
               corrector.replace(node.loc.expression, new_source)
             end

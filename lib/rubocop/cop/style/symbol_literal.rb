@@ -16,18 +16,14 @@ module RuboCop
         MSG = 'Do not use strings for word-like symbol literals.'
 
         def on_sym(node)
-          sym_name = node.loc.expression.source
-
-          return unless sym_name =~ /\A:["'][A-Za-z_]\w*["']\z/
+          return unless node.source =~ /\A:["'][A-Za-z_]\w*["']\z/
 
           add_offense(node, :expression)
         end
 
         def autocorrect(node)
           lambda do |corrector|
-            current_name = node.loc.expression.source
-            corrector.replace(node.loc.expression,
-                              current_name.delete(%q('")))
+            corrector.replace(node.loc.expression, node.source.delete(%q('")))
           end
         end
       end

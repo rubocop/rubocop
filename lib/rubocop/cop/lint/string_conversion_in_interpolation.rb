@@ -37,7 +37,7 @@ module RuboCop
             corrector.replace(
               node.loc.expression,
               if receiver
-                receiver.loc.expression.source
+                receiver.source
               else
                 'self'
               end

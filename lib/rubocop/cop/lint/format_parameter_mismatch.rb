@@ -65,7 +65,7 @@ module RuboCop
                             receiver_node
                           end
 
-          relevant_node.loc.expression.source.scan(NAMED_FIELD_REGEX).size > 0
+          relevant_node.source.scan(NAMED_FIELD_REGEX).size > 0
         end
 
         def node_with_splat_args?(node)
@@ -79,7 +79,7 @@ module RuboCop
         def heredoc?(node)
           _receiver, _name, args = *node
 
-          args.loc.expression.source[0, 2] == SHOVEL
+          args.source[0, 2] == SHOVEL
         end
 
         def literal?(node)

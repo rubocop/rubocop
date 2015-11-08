@@ -40,7 +40,7 @@ module RuboCop
         end
 
         def autocorrected_value(node)
-          node.str_type? ? node.children.last : node.loc.expression.source
+          node.str_type? ? node.children.last : node.source
         end
       end
     end

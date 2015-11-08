@@ -31,7 +31,7 @@ module RuboCop
         private
 
         def check(node)
-          expression = node.loc.expression.source
+          expression = node.source
           op = node.loc.operator.source
           escaped_op = op.gsub(/\./, '\.')
 
@@ -44,7 +44,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          expression = node.loc.expression.source
+          expression = node.source
           operator = node.loc.operator.source
           operator_escaped = operator.gsub(/\./, '\.')
 

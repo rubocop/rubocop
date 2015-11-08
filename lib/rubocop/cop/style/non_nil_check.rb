@@ -84,7 +84,7 @@ module RuboCop
         end
 
         def autocorrect_comparison(node)
-          expr = node.loc.expression.source
+          expr = node.source
 
           new_code =
             if include_semantic_changes?
@@ -104,8 +104,7 @@ module RuboCop
           lambda do |corrector|
             receiver, _method, _args = *inner_node
             if receiver
-              corrector.replace(node.loc.expression,
-                                receiver.loc.expression.source)
+              corrector.replace(node.loc.expression, receiver.source)
             else
               corrector.replace(node.loc.expression, 'self')
             end

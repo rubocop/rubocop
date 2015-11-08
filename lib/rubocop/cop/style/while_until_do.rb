@@ -14,7 +14,7 @@ module RuboCop
         end
 
         def handle(node)
-          length = node.loc.expression.source.lines.to_a.size
+          length = node.source.lines.to_a.size
           return unless length > 1
           return unless node.loc.begin && node.loc.begin.is?('do')
 

@@ -59,7 +59,7 @@ module RuboCop
                         end
 
           first_range = Parser::Source::Range.new(
-            receiver.loc.expression.source,
+            receiver.source,
             receiver.loc.end.end_pos,
             receiver.loc.end.end_pos).join(node.loc.selector)
 

@@ -12,12 +12,12 @@ module RuboCop
         def offense?(node)
           # we don't register an offense for things like ?\C-\M-d
           node.loc.begin.is?('?') &&
-            node.loc.expression.source.size.between?(2, 3)
+            node.source.size.between?(2, 3)
         end
 
         def autocorrect(node)
           lambda do |corrector|
-            string = node.loc.expression.source[1..-1]
+            string = node.source[1..-1]
 
             if string.length == 1 # normal character
               corrector.replace(node.loc.expression, "'#{string}'")

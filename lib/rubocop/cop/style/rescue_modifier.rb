@@ -26,9 +26,9 @@ module RuboCop
 
           correction =
             "begin\n" <<
-            indentation(node) << operation.loc.expression.source <<
+            indentation(node) << operation.source <<
             "\n#{offset(node)}rescue\n" <<
-            indentation(node) << rescue_args.loc.expression.source <<
+            indentation(node) << rescue_args.source <<
             "\n#{offset(node)}end"
           range = Parser::Source::Range.new(node.loc.expression.source_buffer,
                                             node.loc.expression.begin_pos,

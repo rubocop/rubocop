@@ -58,8 +58,7 @@ module RuboCop
           cond, body, _else = if_node_parts(node)
 
           oneline =
-            "#{body.loc.expression.source} #{node.loc.keyword.source} " +
-            cond.loc.expression.source
+            "#{body.source} #{node.loc.keyword.source} " + cond.source
           first_line_comment = processed_source.comments.find do |c|
             c.loc.line == node.loc.line
           end

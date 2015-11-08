@@ -21,7 +21,7 @@ module RuboCop
         end
 
         def code_length(node)
-          lines = node.loc.expression.source.lines.to_a[1..-2] || []
+          lines = node.source.lines.to_a[1..-2] || []
 
           lines.count { |line| !irrelevant_line(line) }
         end

@@ -19,9 +19,7 @@ module RuboCop
 
         def autocorrect(node)
           cond, body = *node
-          oneline = "#{body.loc.expression.source} " \
-                    "#{node.loc.keyword.source} " +
-                    cond.loc.expression.source
+          oneline = "#{body.source} #{node.loc.keyword.source} " + cond.source
           ->(corrector) { corrector.replace(node.loc.expression, oneline) }
         end
 

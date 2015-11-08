@@ -18,7 +18,7 @@ module RuboCop
           _receiver, method_name, *_args = *node
 
           return unless method_name == :!
-          return unless node.loc.expression.source =~ /^!\s+\w+/
+          return unless node.source =~ /^!\s+\w+/
 
           # TODO: Improve source range to highlight the redundant whitespace.
           add_offense(node, :selector)

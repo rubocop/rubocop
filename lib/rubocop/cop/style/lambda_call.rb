@@ -41,7 +41,7 @@ module RuboCop
             if style == :call
               receiver_node, = *node
               expr = node.loc.expression
-              receiver = receiver_node.loc.expression.source
+              receiver = receiver_node.source
               replacement = expr.source.sub("#{receiver}.", "#{receiver}.call")
               corrector.replace(expr, replacement)
             else

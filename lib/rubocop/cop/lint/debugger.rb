@@ -19,9 +19,7 @@ module RuboCop
 
         def on_send(node)
           return unless debugger_call?(node)
-          add_offense(node,
-                      :expression,
-                      format(MSG, node.loc.expression.source))
+          add_offense(node, :expression, format(MSG, node.source))
         end
       end
     end
