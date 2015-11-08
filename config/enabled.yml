@@ -1143,6 +1143,11 @@ Performance/RangeInclude:
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#cover-vs-include-code'
   Enabled: true
 
+Performance/RedundantMerge:
+  Description: 'Use Hash#[]=, rather than Hash#merge! with a single key-value pair.'
+  Reference: 'https://github.com/JuanitoFatas/fast-ruby#hashmerge-vs-hash-code'
+  Enabled: true
+
 Performance/RedundantSortBy:
   Description: 'Use `sort` instead of `sort_by { |x| x }`.'
   Enabled: true

@@ -16,6 +16,7 @@
 * [#1677](https://github.com/bbatsov/rubocop/issues/1677): Add new `Performance/LstripRstrip` cop. ([@alexdowad][])
 * [#1677](https://github.com/bbatsov/rubocop/issues/1677): Add new `Performance/StartWith` cop. ([@alexdowad][])
 * [#1677](https://github.com/bbatsov/rubocop/issues/1677): Add new `Performance/EndWith` cop. ([@alexdowad][])
+* [#1677](https://github.com/bbatsov/rubocop/issues/1677): Add new `Performance/RedundantMerge` cop. ([@alexdowad][])
 
 ### Bug Fixes
 
