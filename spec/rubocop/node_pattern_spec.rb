@@ -647,6 +647,21 @@ describe RuboCop::NodePattern do
       let(:ruby) { '1.inc' }
       it_behaves_like :nonmatching
     end
+
+    context 'with one extra argument' do
+      let(:pattern) { '(send (int equal?(%1)) ...)' }
+      let(:ruby) { '1 + 2' }
+
+      context 'for which the predicate is true' do
+        let(:params) { [1] }
+        it_behaves_like :matching
+      end
+
+      context 'for which the predicate is false' do
+        let(:params) { [2] }
+        it_behaves_like :nonmatching
+      end
+    end
   end
 
   describe 'params' do

@@ -61,6 +61,8 @@ module RuboCop
   #    '#method'           # we call this a 'funcall'; it calls a method in the
   #                        # context where a pattern-matching method is defined
   #                        # if that returns a truthy value, the match succeeds
+  #    'equal?(%1)'        # predicates can be given 1 or more extra args
+  #    '#method(%0, 1)'    # funcalls can also be given 1 or more extra args
   #
   # You can nest arbitrarily deep:
   #
@@ -90,12 +92,12 @@ module RuboCop
       ID_CHAR   = /[a-zA-Z_]/
       META_CHAR = /\(|\)|\{|\}|\[|\]|\$\.\.\.|\$|!|\^|\.\.\./
       TOKEN     =
-        /\G(?:[\s,]+|#{META_CHAR}|\#?#{ID_CHAR}+[\!\?]?|%\d*|\d+|#{RSYM}|.)/
+        /\G(?:[\s,]+|#{META_CHAR}|\#?#{ID_CHAR}+[\!\?]?\(?|%\d*|\d+|#{RSYM}|.)/
 
       NODE      = /\A#{ID_CHAR}+\Z/
-      PREDICATE = /\A#{ID_CHAR}+\?\Z/
+      PREDICATE = /\A#{ID_CHAR}+\?\(?\Z/
       WILDCARD  = /\A_#{ID_CHAR}*\Z/
-      FUNCALL   = /\A\##{ID_CHAR}+[\!\?]?\Z/
+      FUNCALL   = /\A\##{ID_CHAR}+[\!\?]?\(?\Z/
       LITERAL   = /\A(?:#{RSYM}|\d+|nil)\Z/
       PARAM     = /\A%\d*\Z/
       CLOSING   = /\A(?:\)|\}|\])\Z/
@@ -130,9 +132,9 @@ module RuboCop
         when '$'       then compile_capture(tokens, cur_node, seq_head)
         when '^'       then compile_ascend(tokens, cur_node, seq_head)
         when WILDCARD  then compile_wildcard(cur_node, token[1..-1], seq_head)
-        when FUNCALL   then compile_funcall(cur_node, token[1..-1], seq_head)
+        when FUNCALL   then compile_funcall(tokens, cur_node, token, seq_head)
         when LITERAL   then compile_literal(cur_node, token, seq_head)
-        when PREDICATE then compile_predicate(cur_node, token, seq_head)
+        when PREDICATE then compile_predicate(tokens, cur_node, token, seq_head)
         when NODE      then compile_nodetype(cur_node, token)
         when PARAM     then compile_param(cur_node, token[1..-1], seq_head)
         when CLOSING   then fail_due_to("#{token} in invalid position")
@@ -281,14 +283,27 @@ module RuboCop
         "(#{cur_node}#{'.type' if seq_head} == #{literal})"
       end
 
-      def compile_predicate(cur_node, predicate, seq_head)
-        "(#{cur_node}#{'.type' if seq_head}.#{predicate})"
+      def compile_predicate(tokens, cur_node, predicate, seq_head)
+        if predicate.end_with?('(')
+          args = compile_args(tokens)
+          predicate = predicate[0..-2] # drop the trailing (
+          "(#{cur_node}#{'.type' if seq_head}.#{predicate}(#{args.join(',')}))"
+        else
+          "(#{cur_node}#{'.type' if seq_head}.#{predicate})"
+        end
       end
 
-      def compile_funcall(cur_node, method_name, seq_head)
+      def compile_funcall(tokens, cur_node, method, seq_head)
         # call a method in the context which this pattern-matching
         # code is used in. pass target value as an argument
-        "(#{method_name}(#{cur_node}#{'.type' if seq_head}))"
+        method = method[1..-1] # drop the leading #
+        if method.end_with?('(')
+          args = compile_args(tokens)
+          method = method[0..-2] # drop the trailing (
+          "(#{method}(#{cur_node}#{'.type' if seq_head}),#{args.join(',')})"
+        else
+          "(#{method}(#{cur_node}#{'.type' if seq_head}))"
+        end
       end
 
       def compile_nodetype(cur_node, type)
@@ -296,13 +311,38 @@ module RuboCop
       end
 
       def compile_param(cur_node, number, seq_head)
-        number = number.empty? ? 1 : Integer(number)
-        @params = number if number > @params
-        "(#{cur_node}#{'.type' if seq_head} == param#{number})"
+        "(#{cur_node}#{'.type' if seq_head} == #{get_param(number)})"
+      end
+
+      def compile_args(tokens)
+        args = []
+        args << compile_arg(tokens.shift) until tokens.first == ')'
+        tokens.shift # drop the )
+        args
+      end
+
+      def compile_arg(token)
+        case token
+        when WILDCARD  then
+          name   = token[1..-1]
+          number = @unify[name] || fail_due_to('invalid in arglist: ' + token)
+          "temp#{number}"
+        when LITERAL   then token
+        when PARAM     then get_param(token[1..-1])
+        when CLOSING   then fail_due_to("#{token} in invalid position")
+        when nil       then fail_due_to('pattern ended prematurely')
+        else fail_due_to("invalid token in arglist: #{token.inspect}")
+        end
       end
 
       def next_capture
         "capture#{@captures += 1}"
+      end
+
+      def get_param(number)
+        number = number.empty? ? 1 : Integer(number)
+        @params = number if number > @params
+        "param#{number}"
       end
 
       def join_terms(init, terms, operator)
