@@ -86,11 +86,11 @@ module RuboCop
     # @private
     # Builds Ruby code which implements a pattern
     class Compiler
-      RSYM      = %r{:(?:[\w+-@_*/?!<>~|%^]+|==|\[\]=?)}
+      RSYM      = %r{:(?:[\w+@_*/?!<>~|%^-]+|==|=~|\[\]=?)}
       ID_CHAR   = /[a-zA-Z_]/
       META_CHAR = /\(|\)|\{|\}|\[|\]|\$\.\.\.|\$|!|\^|\.\.\./
       TOKEN     =
-        /\G(?:\s+|#{META_CHAR}|\#?#{ID_CHAR}+[\!\?]?|%\d*|\d+|#{RSYM}|.)/
+        /\G(?:[\s,]+|#{META_CHAR}|\#?#{ID_CHAR}+[\!\?]?|%\d*|\d+|#{RSYM}|.)/
 
       NODE      = /\A#{ID_CHAR}+\Z/
       PREDICATE = /\A#{ID_CHAR}+\?\Z/
@@ -115,7 +115,7 @@ module RuboCop
 
       def run(node_var)
         tokens = @string.scan(TOKEN)
-        tokens.reject! { |token| token =~ /\A\s+\Z/ }
+        tokens.reject! { |token| token =~ /\A[\s,]+\Z/ }
         @match_code = compile_expr(tokens, node_var, false)
         fail_due_to('unbalanced pattern') unless tokens.empty?
       end
