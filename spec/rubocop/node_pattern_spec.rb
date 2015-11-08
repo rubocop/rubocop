@@ -3,13 +3,14 @@
 require 'spec_helper'
 
 describe RuboCop::NodePattern do
-  let(:node) do
+  let(:root_node) do
     buffer = Parser::Source::Buffer.new('(string)', 1)
     buffer.source = ruby
     builder = Astrolabe::Builder.new
     Parser::CurrentRuby.new(builder).parse(buffer)
   end
 
+  let(:node) { root_node }
   let(:params) { [] }
 
   shared_examples :matching do
@@ -743,16 +744,25 @@ describe RuboCop::NodePattern do
       let(:ruby) { '20' }
       it_behaves_like :matching
     end
+
+    context 'param number zero' do
+      # refers to original target node passed to #match
+      let(:pattern) { '^(send %0 :+ (int 2))' }
+      let(:ruby) { '1 + 2' }
+
+      context 'in a position which matches original target node' do
+        let(:node) { root_node.children[0] }
+        it_behaves_like :matching
+      end
+
+      context 'in a position which does not match original target node' do
+        let(:node) { root_node.children[2] }
+        it_behaves_like :nonmatching
+      end
+    end
   end
 
   describe 'caret (ascend)' do
-    let(:root_node) do
-      buffer = Parser::Source::Buffer.new('(string)', 1)
-      buffer.source = ruby
-      builder = Astrolabe::Builder.new
-      Parser::CurrentRuby.new(builder).parse(buffer)
-    end
-
     context 'used with a node type' do
       let(:ruby) { '1.inc' }
       let(:node) { root_node.children[0] }

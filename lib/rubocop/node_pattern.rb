@@ -56,6 +56,11 @@ module RuboCop
   #                        # it will be compared to the corresponding value in
   #                        # the AST using #==
   #                        # a bare '%' is the same as '%1'
+  #                        # the number of extra parameters passed to #match
+  #                        # must equal the highest % value in the pattern
+  #                        # for consistency, %0 is the 'root node' which is
+  #                        # passed as the 1st argument to #match, where the
+  #                        # matching process starts
   #    '^^send'            # each ^ ascends one level in the AST
   #                        # so this matches against the grandparent node
   #    '#method'           # we call this a 'funcall'; it calls a method in the
@@ -106,6 +111,7 @@ module RuboCop
 
       def initialize(str, node_var = 'node0')
         @string   = str
+        @root     = node_var
 
         @temps    = 0  # avoid name clashes between temp variables
         @captures = 0  # number of captures seen
@@ -342,7 +348,7 @@ module RuboCop
       def get_param(number)
         number = number.empty? ? 1 : Integer(number)
         @params = number if number > @params
-        "param#{number}"
+        number.zero? ? @root : "param#{number}"
       end
 
       def join_terms(init, terms, operator)
