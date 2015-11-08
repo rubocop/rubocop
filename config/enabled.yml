@@ -1161,6 +1161,11 @@ Performance/Size:
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#arraycount-vs-arraysize-code'
   Enabled: true
 
+Performance/StartWith:
+  Description: 'Use `start_with?` instead of a regex match anchored to the beginning of a string.'
+  Reference: 'https://github.com/JuanitoFatas/fast-ruby#stringmatch-vs-stringstart_withstringend_with-code-start-code-end'
+  Enabled: true
+
 Performance/StringReplacement:
   Description: >-
                   Use `tr` instead of `gsub` when you are replacing the same

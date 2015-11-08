@@ -14,6 +14,7 @@
 * [#1677](https://github.com/bbatsov/rubocop/issues/1677): Add new `Performance/RangeInclude` cop. ([@alexdowad][])
 * [#1677](https://github.com/bbatsov/rubocop/issues/1677): Add new `Performance/RedundantSortBy` cop. ([@alexdowad][])
 * [#1677](https://github.com/bbatsov/rubocop/issues/1677): Add new `Performance/LstripRstrip` cop. ([@alexdowad][])
+* [#1677](https://github.com/bbatsov/rubocop/issues/1677): Add new `Performance/StartWith` cop. ([@alexdowad][])
 
 ### Bug Fixes
 
