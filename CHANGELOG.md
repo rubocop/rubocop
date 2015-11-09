@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug Fixes
+
+* [#2407](https://github.com/bbatsov/rubocop/issues/2407): Use `Process.uid` rather than `Etc.getlogin` for simplicity and compatibility. ([@jujugrrr][])
+
 ## 0.35.0 (07/11/2015)
 
 ### New features
@@ -1708,3 +1712,4 @@
 [@tansaku]: https://github.com/tansaku
 [@ptrippett]: https://github.com/ptrippett
 [@br3nda]: https://github.com/br3nda
+[@jujugrrr]: https://github.com/jujugrrr
