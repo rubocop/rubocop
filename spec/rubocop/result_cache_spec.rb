@@ -124,4 +124,22 @@ describe RuboCop::ResultCache, :isolated_environment do
         .to eq("Removing the 2 oldest files from #{cache_root}\n")
     end
   end
+
+  describe '.cache_root' do
+    subject { described_class.cache_root(config_store) }
+    before do
+      allow(config_store).to receive(:for).with('.') {
+        { 'AllCops' => { 'CacheRootDirectory' => '/tmp' } }
+      }
+    end
+    context 'Etc.getlogin is non-nil' do
+      before { expect(Etc).to receive(:getlogin) { 'foo' } }
+      it { is_expected.to eq '/tmp/foo/rubocop_cache' }
+    end
+
+    context 'Etc.getlogin is nil' do
+      before { expect(Etc).to receive(:getlogin) { nil } }
+      it { is_expected.to eq '/tmp/rubocop_cache' }
+    end
+  end
 end
