@@ -97,7 +97,7 @@ module RuboCop
     # @private
     # Builds Ruby code which implements a pattern
     class Compiler
-      RSYM      = %r{:(?:[\w+@_*/?!<>~|%^-]+|==|=~|\[\]=?)}
+      RSYM      = %r{:(?:[\w+@_*/?!<>=~|%^-]+|\[\]=?)}
       ID_CHAR   = /[a-zA-Z_]/
       META_CHAR = /\(|\)|\{|\}|\[|\]|\$\.\.\.|\$|!|\^|\.\.\./
       TOKEN     =
