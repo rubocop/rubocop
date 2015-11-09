@@ -19,6 +19,7 @@
 * [#1677](https://github.com/bbatsov/rubocop/issues/1677): Add new `Performance/RedundantMerge` cop. ([@alexdowad][])
 * `Lint/Debugger` cop can now auto-correct offenses. ([@alexdowad][])
 * [#1677](https://github.com/bbatsov/rubocop/issues/1677): Add new `Performance/RedundantMatch` cop. ([@alexdowad][])
+* [#1677](https://github.com/bbatsov/rubocop/issues/1677): Add new `Performance/RedundantBlockCall` cop. ([@alexdowad][])
 
 ### Bug Fixes
 

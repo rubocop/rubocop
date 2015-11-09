@@ -53,14 +53,13 @@ module RuboCop
 
         private
 
-        def check(node, &block)
+        def check(node)
           receiver, method_name, *_args = *node
 
           DEPRECATED_METHODS_OBJECT.each do |data|
             next unless data.class_nodes.include?(receiver)
             next unless method_name == data.deprecated_method
-
-            block.call(data)
+            yield data
           end
         end
 
