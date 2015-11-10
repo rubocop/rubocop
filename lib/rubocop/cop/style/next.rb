@@ -102,13 +102,13 @@ module RuboCop
         def autocorrect(node)
           lambda do |corrector|
             cond, if_body, else_body = *node
-            if if_body.nil?
-              opposite_kw = 'if'
-              body = else_body
-            else
-              opposite_kw = 'unless'
-              body = if_body
-            end
+            body = if if_body.nil?
+                     opposite_kw = 'if'
+                     else_body
+                   else
+                     opposite_kw = 'unless'
+                     if_body
+                   end
             next_code = 'next ' << opposite_kw << ' ' <<
                         cond.loc.expression.source << "\n"
             corrector.insert_before(node.loc.expression, next_code)

@@ -95,11 +95,11 @@ module RuboCop
         def autocorrect(node)
           return if contains_backtick?(node)
 
-          if backtick_literal?(node)
-            replacement = ['%x', ''].zip(preferred_delimiters).map(&:join)
-          else
-            replacement = %w(` `)
-          end
+          replacement = if backtick_literal?(node)
+                          ['%x', ''].zip(preferred_delimiters).map(&:join)
+                        else
+                          %w(` `)
+                        end
 
           lambda do |corrector|
             corrector.replace(node.loc.begin, replacement.first)
