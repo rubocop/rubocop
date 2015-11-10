@@ -79,7 +79,7 @@ module RuboCop
 
     def self.cache_root(config_store)
       root = config_store.for('.')['AllCops']['CacheRootDirectory']
-      root = File.join(Dir.tmpdir, Etc.getlogin) if root == '/tmp'
+      root = File.join(Dir.tmpdir, Process.uid.to_s) if root == '/tmp'
       File.join(root, 'rubocop_cache')
     end
 
