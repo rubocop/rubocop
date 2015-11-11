@@ -66,7 +66,11 @@ module RuboCop
           return if elsif?(node)
           _condition, if_branch, else_branch = *node
           elsif_branches, else_branch = expand_elses(else_branch)
+          # return if any branch is empty. An empty branch can be an `if`
+          # without an `else`, or a branch that contains only comments.
           return if [if_branch, *elsif_branches, else_branch].any?(&:nil?)
+          # Take the last line of the branch if the branch contains more than
+          # one statement.
           *_, if_branch = *if_branch if if_branch.begin_type?
           return unless assignment_type?(if_branch)
           return unless types_match?(if_branch, *elsif_branches, else_branch)
@@ -82,6 +86,8 @@ module RuboCop
         def on_case(node)
           return unless node.loc.else
           _condition, *when_branches, else_branch = *node
+          # Take the last line of the branch if the branch contains more than
+          # one statement.
           *_, else_branch = *else_branch if else_branch.begin_type?
           when_branches = expand_when_branches(when_branches)
           return unless assignment_type?(else_branch)
@@ -108,6 +114,10 @@ module RuboCop
 
         private
 
+        # `elsif` branches show up in the `node` as an `else`. We need
+        # to recursively iterate over all `else` branches and consider all
+        # but the last `node` an `elsif` branch and consider the last `node`
+        # the actual `else` branch.
         def expand_elses(branch)
           elsif_branches = expand_elsif(branch)
           else_branch = elsif_branches.any? ? elsif_branches.pop : branch
@@ -142,6 +152,8 @@ module RuboCop
           nodes.all? { |node| node.type == first_type }
         end
 
+        # The shovel operator `<<` does not have its own type. It is a `send`
+        # type.
         def assignment_type?(branch)
           return true if ASSIGNMENT_TYPES.include?(branch.type)
 
@@ -153,6 +165,8 @@ module RuboCop
           false
         end
 
+        # `when` nodes contain the entire branch including the condition.
+        # We only need the contents of the branch, not the condition.
         def expand_when_branches(when_branches)
           when_branches.map do |branch|
             when_branch = branch.children[1]
@@ -161,6 +175,13 @@ module RuboCop
           end
         end
 
+        # If `Metrics/LineLength` is enabled, we do not want to introduce an
+        # offense by auto-correcting this cop. Find the max configured line
+        # length. Find the longest line of condition. Remove the assignment
+        # from lines that contain the offending assignment because after
+        # correcting, this will not be on the line anymore. Check if the length
+        # of the longest line + the length of the corrected assignment is
+        # greater than the max configured line length
         def correction_exceeds_line_limit?(node, variable, operator)
           return false unless config.for_cop('Metrics/LineLength')['Enabled']
           assignment = "#{variable} #{operator} "
@@ -177,6 +198,9 @@ module RuboCop
           _condition, if_branch, else_branch = *node
           *_, if_branch = *if_branch if if_branch.begin_type?
           variable, *_operator, if_assignment = *if_branch
+
+          # For send types, the variable will be `(send nil :var)`. Expanding
+          # it will set `variable = nil` and `alternate = :var`.
           variable, alternate = *variable
           variable ||= alternate
           elsif_branches, else_branch = expand_elses(else_branch)
@@ -199,6 +223,8 @@ module RuboCop
           when_branches = expand_when_branches(when_branches)
 
           variable, *_operator, else_assignment = *else_branch
+          # For send types, the variable will be `(send nil :var)`. Expanding
+          # it will set `variable = nil` and `alternate = :var`.
           variable, alternate = *variable
           variable ||= alternate
 
@@ -224,6 +250,8 @@ module RuboCop
           *_, if_branch = *if_branch if if_branch.begin_type?
           *_, else_branch = *else_branch if else_branch.begin_type?
           variable, *_operator, if_assignment = *if_branch
+          # For send types, the variable will be `(send nil :var)`. Expanding
+          # it will set `variable = nil` and `alternate = :var`.
           variable, alternate = *variable
           variable ||= alternate
           _else_variable, *_operator, else_assignment = *else_branch
