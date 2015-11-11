@@ -60,6 +60,9 @@ module RuboCop
         IF = 'if'.freeze
         ELSIF = 'elsif'.freeze
         UNLESS = 'unless'.freeze
+        LINE_LENGTH = 'Metrics/LineLength'.freeze
+        ENABLED = 'Enabled'.freeze
+        MAX = 'Max'.freeze
 
         def on_if(node)
           return if ternary_op?(node)
@@ -183,10 +186,10 @@ module RuboCop
         # of the longest line + the length of the corrected assignment is
         # greater than the max configured line length
         def correction_exceeds_line_limit?(node, variable, operator)
-          return false unless config.for_cop('Metrics/LineLength')['Enabled']
+          return false unless config.for_cop(LINE_LENGTH)[ENABLED]
           assignment = "#{variable} #{operator} "
           assignment_regex = /#{variable}\s*#{operator}\s*/
-          max_line_length = config.for_cop('Metrics/LineLength')['Max']
+          max_line_length = config.for_cop(LINE_LENGTH)[MAX]
           lines = node.loc.expression.source.lines.map do |line|
             line.chomp.sub(assignment_regex, '')
           end
