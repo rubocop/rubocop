@@ -30,13 +30,6 @@ task default: [:spec, :internal_investigation]
 require 'yard'
 YARD::Rake::YardocTask.new
 
-begin
-  require 'coveralls/rake/task'
-  Coveralls::RakeTask.new
-rescue LoadError
-  warn 'Coveralls rake task is not loaded. Only for test'
-end
-
 task :console do
   require 'irb'
   require 'irb/completion'

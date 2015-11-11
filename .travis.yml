@@ -24,5 +24,7 @@ install:
   - bundle install --retry=3
 script:
   - bundle exec rspec
-  - "[[ `ruby -v` =~ ^jruby ]] || bundle exec rake coveralls:push"
   - bundle exec rubocop
+addons:
+  code_climate:
+    repo_token: a11b66bfbb1acdf220d5cb317b2e945a986fd85adebe29a76d411ad6d74ec31f

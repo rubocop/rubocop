@@ -43,9 +43,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('powerpack', '~> 0.1')
   s.add_runtime_dependency('astrolabe', '~> 1.3')
   s.add_runtime_dependency('ruby-progressbar', '~> 1.7')
-  # Pinning tins due to 1.7.0 incompatibility with Ruby < 2.0
-  # https://github.com/flori/tins/blob/v1.7.0/tins.gemspec#L19
-  s.add_runtime_dependency('tins', '<= 1.6.0')
   s.add_development_dependency('rake', '~> 10.1')
   s.add_development_dependency('rspec', '~> 3.3.0')
   s.add_development_dependency('yard', '~> 0.8')
