@@ -4,8 +4,13 @@ source 'https://rubygems.org'
 
 gemspec
 
+gem 'rake', '~> 10.1'
+gem 'rspec', '~> 3.3.0'
+gem 'yard', '~> 0.8'
+gem 'simplecov', '~> 0.10'
+
 group :test do
-  gem 'coveralls', require: false
+  gem 'codeclimate-test-reporter', require: false
   gem 'safe_yaml', require: false
   gem 'webmock', require: false
 end
