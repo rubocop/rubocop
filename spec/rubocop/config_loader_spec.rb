@@ -282,23 +282,31 @@ describe RuboCop::ConfigLoader do
         create_file('somegemname/config/rubocop.yml',
                     ['Metrics/MethodLength:',
                      '  Enabled: false',
-                     '  Max: 200'
+                     '  Max: 200',
+                     '  CountComments: false'
+                    ])
+        create_file('local.yml',
+                    ['Metrics/MethodLength:',
+                     '  CountComments: true'
                     ])
         create_file(file_path,
                     ['inherit_gem:',
                      '  somegemname: config/rubocop.yml',
+                     '',
+                     'inherit_from: local.yml',
                      '',
                      'Metrics/MethodLength:',
                      '  Enabled: true'
                     ])
       end
 
-      it 'returns values from the gem config' do
+      it 'returns values from the gem config with local overrides' do
         mock_spec = Struct.new(:gem_dir).new('somegemname')
         expect(Gem::Specification).to receive(:find_by_name)
           .at_least(:once).with('somegemname').and_return(mock_spec)
 
         expected = { 'Enabled' => true,        # overridden in .rubocop.yml
+                     'CountComments' => true,  # overridden in local.yml
                      'Max' => 200 }            # inherited from somegem
         expect(configuration_from_file['Metrics/MethodLength'].to_set)
           .to be_superset(expected.to_set)
