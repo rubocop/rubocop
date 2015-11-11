@@ -175,7 +175,8 @@ module RuboCop
       def resolve_inheritance_from_gems(hash, gems)
         (gems || {}).each_pair do |gem_name, config_path|
           hash['inherit_from'] = Array(hash['inherit_from'])
-          hash['inherit_from'] << gem_config_path(gem_name, config_path)
+          # Put gem configuration first so local configuration overrides it.
+          hash['inherit_from'].unshift gem_config_path(gem_name, config_path)
         end
       end
 

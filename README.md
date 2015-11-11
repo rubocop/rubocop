@@ -329,7 +329,6 @@ key and the relative path within the gem as the value:
 
 ```yaml
 inherit_gem:
-  rubocop: config/default.yml
   my-shared-gem: .rubocop.yml
   cucumber: conf/rubocop.yml
 ```
