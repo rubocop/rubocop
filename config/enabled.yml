@@ -153,6 +153,13 @@ Style/CommentIndentation:
   Description: 'Indentation of comments.'
   Enabled: true
 
+Style/ConditionalAssignment:
+  Description: >-
+                 Use the return value of `if` and `case` statements for
+                 assignment to a variable instead of assigning that variable
+                 inside of each branch.
+  Enabled: true
+
 Style/ConstantName:
   Description: 'Constants should use SCREAMING_SNAKE_CASE.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#screaming-snake-case'

@@ -356,15 +356,15 @@ module RuboCop
       # yield all descendants which match.
       def def_node_search(method_name, pattern_str)
         compiler = RuboCop::NodePattern::Compiler.new(pattern_str, 'node')
-        if method_name.to_s.end_with?('?')
-          on_match = 'return true'
-          prelude = ''
-        else
-          yieldval = compiler.emit_capture_list
-          yieldval = 'node' if yieldval.empty?
-          on_match = "yield(#{yieldval})"
-          prelude = "return enum_for(:#{method_name},node0) unless block_given?"
-        end
+        prelude = if method_name.to_s.end_with?('?')
+                    on_match = 'return true'
+                    ''
+                  else
+                    yieldval = compiler.emit_capture_list
+                    yieldval = 'node' if yieldval.empty?
+                    on_match = "yield(#{yieldval})"
+                    "return enum_for(:#{method_name},node0) unless block_given?"
+                  end
         src = <<-END
           def #{method_name}(node0#{compiler.emit_trailing_param_list})
             #{prelude}

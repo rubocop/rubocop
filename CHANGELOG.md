@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#2416](https://github.com/bbatsov/rubocop/pull/2416): New cop `Style/ConditionalAssignment` checks for assignment of the same variable in all branches of conditionals and replaces them with a single assignment to the return of the conditional. ([@rrosenblum][])
+
 ## 0.35.1 (10/11/2015)
 
 ### Bug Fixes
