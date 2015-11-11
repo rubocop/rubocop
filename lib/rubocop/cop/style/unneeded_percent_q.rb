@@ -37,13 +37,22 @@ module RuboCop
           if src.start_with?(PERCENT_Q) && src =~ STRING_INTERPOLATION_REGEXP
             return
           end
+          if src.start_with?(PERCENT_CAPITAL_Q) &&
+             src.include?(QUOTE) && src =~ STRING_INTERPOLATION_REGEXP
+            return
+          end
 
+          add_offense(node, :expression)
+        end
+
+        def message(node)
+          src = node.loc.expression.source
           extra = if src.start_with?(PERCENT_CAPITAL_Q)
                     DYNAMIC_MSG
                   else
                     EMPTY
                   end
-          add_offense(node, :expression, format(MSG, src[0, 2], extra))
+          format(MSG, src[0, 2], extra)
         end
 
         def autocorrect(node)

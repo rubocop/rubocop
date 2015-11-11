@@ -9,6 +9,7 @@
 ### Bug Fixes
 
 * [#2411](https://github.com/bbatsov/rubocop/issues/2411): Make local inherited configuration override configuration loaded from gems. ([@jonas054][])
+* [#2413](https://github.com/bbatsov/rubocop/issues/2413): Allow `%Q` for dynamic strings with double quotes inside them. ([@jonas054][])
 
 ## 0.35.1 (10/11/2015)
 

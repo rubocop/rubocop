@@ -107,7 +107,7 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
     end
 
     it 'accepts a dynamic %Q string with double quotes' do
-      inspect_source(cop, '%Q("hi\#{4}")')
+      inspect_source(cop, '%Q("hi#{4}")')
 
       expect(cop.messages).to be_empty
     end
