@@ -70,6 +70,15 @@ describe RuboCop::Cop::Style::FileName do
     end
   end
 
+  context 'with non-snake-case file names with a shebang' do
+    let(:filename) { '/some/dir/test-case' }
+    let(:source) { ['#!/usr/bin/env ruby', 'print 1'] }
+
+    it 'does not report an offense' do
+      expect(cop.offenses).to be_empty
+    end
+  end
+
   context 'when the file is specified in AllCops/Include' do
     let(:includes) { ['**/Gemfile'] }
 
