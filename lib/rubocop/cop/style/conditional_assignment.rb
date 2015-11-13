@@ -3,6 +3,83 @@
 module RuboCop
   module Cop
     module Style
+      # Helper module to provide common methods to classes needed for the
+      # ConditionalAssignment Cop.
+      module ConditionalAssignmentHelper
+        # `elsif` branches show up in the `node` as an `else`. We need
+        # to recursively iterate over all `else` branches and consider all
+        # but the last `node` an `elsif` branch and consider the last `node`
+        # the actual `else` branch.
+        def expand_elses(branch)
+          elsif_branches = expand_elsif(branch)
+          else_branch = elsif_branches.any? ? elsif_branches.pop : branch
+          [elsif_branches, else_branch]
+        end
+
+        # `when` nodes contain the entire branch including the condition.
+        # We only need the contents of the branch, not the condition.
+        def expand_when_branches(when_branches)
+          when_branches.map do |branch|
+            branch.children[1]
+          end
+        end
+
+        def correct_branches(corrector, branches)
+          branches.each do |branch|
+            *_, assignment = *branch
+            corrector.replace(branch.loc.expression, assignment.source)
+          end
+        end
+
+        def tail(branch)
+          branch.begin_type? ? [*branch].last : branch
+        end
+
+        def lhs(node)
+          case node.type
+          when :send
+            lhs_for_send(node)
+          when :op_asgn
+            "#{node.children[0].source} #{node.children[1]}= "
+          when :and_asgn
+            "#{node.children[0].source} &&= "
+          when :or_asgn
+            "#{node.children[0].source} ||= "
+          when *ConditionalAssignment::VARIABLE_ASSIGNMENT_TYPES
+            "#{node.children[0]} = "
+          else
+            node.source
+          end
+        end
+
+        private
+
+        def expand_elsif(node, elsif_branches = [])
+          return [] if node.nil? || !node.if_type?
+          _condition, elsif_branch, else_branch = *node
+          elsif_branches << elsif_branch
+          if else_branch && else_branch.if_type?
+            expand_elsif(else_branch, elsif_branches)
+          else
+            elsif_branches << else_branch
+          end
+          elsif_branches
+        end
+
+        def lhs_for_send(node)
+          receiver = node.receiver.nil? ? '' : node.receiver.source
+
+          if node.method_name == :[]=
+            indices = node.children[2...-1].map(&:source).join(', ')
+            "#{receiver}[#{indices}] = "
+          elsif node.method_name.to_s.end_with?('=')
+            "#{receiver}.#{node.method_name.to_s[0...-1]} = "
+          else
+            "#{receiver} #{node.method_name} "
+          end
+        end
+      end
+
       # Check for `if` and `case` statements where each branch is used for
       # assignment to the same variable when using the return of the
       # condition can be used instead.
@@ -53,98 +130,98 @@ module RuboCop
       #          end
       class ConditionalAssignment < Cop
         include IfNode
+        include ConditionalAssignmentHelper
 
         MSG = 'Use the return of the conditional for variable assignment.'
-
+        VARIABLE_ASSIGNMENT_TYPES =
+          [:casgn, :cvasgn, :gvasgn, :ivasgn, :lvasgn].freeze
+        ASSIGNMENT_TYPES =
+          VARIABLE_ASSIGNMENT_TYPES + [:and_asgn, :or_asgn, :op_asgn].freeze
         IF = 'if'.freeze
-        ELSIF = 'elsif'.freeze
         UNLESS = 'unless'.freeze
+        EQUAL = '='.freeze
         LINE_LENGTH = 'Metrics/LineLength'.freeze
         INDENTATION_WIDTH = 'Style/IndentationWidth'.freeze
         ENABLED = 'Enabled'.freeze
         MAX = 'Max'.freeze
+        SINGLE_LINE_CONDITIONS_ONLY = 'SingleLineConditionsOnly'.freeze
         WIDTH = 'Width'.freeze
-
-        def on_if(node)
-          return if ternary_op?(node)
-          return if elsif?(node)
-
-          _condition, if_branch, else_branch = *node
-          branches = expand_elses(else_branch).unshift(if_branch)
-
-          # return if any branch is empty. An empty branch can be an `if`
-          # without an `else`, or a branch that contains only comments.
-          return if branches.any?(&:nil?)
-
-          check_node(node, branches)
-        end
-
-        def on_case(node)
-          return unless node.loc.else
-          _condition, *when_branches, else_branch = *node
-          return unless else_branch # empty else
-
-          when_branches = expand_when_branches(when_branches)
-
-          check_node(node, when_branches.push(else_branch))
-        end
-
-        def autocorrect(node)
-          case node.loc.keyword.source
-          when IF
-            if_correction(node)
-          when UNLESS
-            unless_correction(node)
-          else
-            case_correction(node)
-          end
-        end
-
-        private
-
-        def check_node(node, branches)
-          return unless branches.all?
-
-          # Take the last line of each branch if the branch contains more than
-          # one statement.
-          branches = branches.map { |branch| tail(branch) }
-
-          return unless branches.all? { |branch| assignment_type?(branch) }
-          return if branches.any?(&:masgn_type?)
-          return unless lhs_all_match?(branches)
-          return if correction_exceeds_line_limit?(node, branches)
-
-          add_offense(node, :expression)
-        end
-
-        # `elsif` branches show up in the if node as nested `else` branches. We
-        # need to recursively iterate over all `else` branches.
-        def expand_elses(branch)
-          if branch.nil?
-            [nil]
-          elsif branch.if_type?
-            _condition, elsif_branch, else_branch = *branch
-            expand_elses(else_branch).unshift(tail(elsif_branch))
-          else
-            [tail(branch)]
-          end
-        end
+        COMPARISONS = [:==, :!=].freeze
 
         def lhs_all_match?(branches)
           first_lhs = lhs(branches.first)
           branches.all? { |branch| lhs(branch) == first_lhs }
         end
 
+        def on_if(node)
+          return if ternary_op?(node)
+          return if elsif?(node)
+
+          _condition, if_branch, else_branch = *node
+          elsif_branches, else_branch = expand_elses(else_branch)
+          return unless else_branch # empty else
+
+          branches = [if_branch, *elsif_branches, else_branch]
+
+          check_node(node, branches)
+        end
+
+        def on_case(node)
+          _condition, *when_branches, else_branch = *node
+          return unless else_branch # empty else
+
+          when_branches = expand_when_branches(when_branches)
+          branches = [*when_branches, else_branch]
+
+          check_node(node, branches)
+        end
+
+        def autocorrect(node)
+          case node.loc.keyword.source
+          when IF
+            IfCorrector.correct(node)
+          when UNLESS
+            UnlessCorrector.correct(node)
+          else
+            CaseCorrector.correct(node)
+          end
+        end
+
+        private
+
+        def assignment_types_match?(*nodes)
+          return unless assignment_type?(nodes.first)
+          first_type = nodes.first.type
+          nodes.all? { |node| node.type == first_type }
+        end
+
         # The shovel operator `<<` does not have its own type. It is a `send`
         # type.
         def assignment_type?(branch)
-          branch.assignment? || (branch.send_type? && branch.method_name == :<<)
+          return true if ASSIGNMENT_TYPES.include?(branch.type)
+
+          if branch.send_type?
+            _variable, method, = *branch
+            return true if [:[]=, :<<].include?(method)
+            if method.to_s.end_with?(EQUAL) && !COMPARISONS.include?(method)
+              return true
+            end
+          end
+
+          false
         end
 
-        # `when` nodes contain the entire branch including the condition.
-        # We only need the contents of the branch, not the condition.
-        def expand_when_branches(when_branches)
-          when_branches.map { |branch| tail(branch.children[1]) }
+        def check_node(node, branches)
+          return unless branches.all?
+          last_statements = branches.map { |branch| tail(branch) }
+          return unless lhs_all_match?(last_statements)
+          return if last_statements.any?(&:masgn_type?)
+          return unless assignment_types_match?(*last_statements)
+
+          return if single_line_conditions_only? && branches.any?(&:begin_type?)
+          return if correction_exceeds_line_limit?(node, branches)
+
+          add_offense(node, :expression)
         end
 
         # If `Metrics/LineLength` is enabled, we do not want to introduce an
@@ -156,21 +233,17 @@ module RuboCop
         # greater than the max configured line length
         def correction_exceeds_line_limit?(node, branches)
           return false unless config.for_cop(LINE_LENGTH)[ENABLED]
-          max_line_length   = config.for_cop(LINE_LENGTH)[MAX]
+          assignment = lhs(tail(branches[0]))
+          assignment_regex = /#{assignment.gsub(' ', '\s*')}/
+          max_line_length = config.for_cop(LINE_LENGTH)[MAX]
           indentation_width = config.for_cop(INDENTATION_WIDTH)[WIDTH] || 2
-          lhs_length        = lhs(branches[0]).length
-          right_hand_sides  = branches.map { |branch| branch.children.last }
-
-          # first check the assignments at the end of each branch
-          # (the lines which will be rewritten when autocorrecting)
           return true if longest_rhs(branches) + indentation_width +
-                         lhs_length > max_line_length
-
-          # then check all the others (which will not be rewritten)
-          lines_with_numbers(node).any? do |str, lineno|
-            next if right_hand_sides.any? { |val| val.loc.line == lineno }
-            str.length + lhs_length > max_line_length
+                         assignment.length > max_line_length
+          lines = node.source.lines.map do |line|
+            line.chomp.sub(assignment_regex, '')
           end
+          longest_line = lines.max_by(&:length)
+          (longest_line + assignment).length > max_line_length
         end
 
         def longest_rhs(branches)
@@ -182,92 +255,79 @@ module RuboCop
           node.source.lines.zip(line_nos)
         end
 
-        def if_correction(node)
-          _condition, if_branch, else_branch = *node
-          if_branch = tail(if_branch)
+        def single_line_conditions_only?
+          cop_config[SINGLE_LINE_CONDITIONS_ONLY]
+        end
+      end
 
-          if_lhs, if_rhs = assignment(if_branch)
-          else_branches = expand_elses(else_branch)
+      # Corrector to correct conditional assignment in `if` statements.
+      class IfCorrector
+        class << self
+          include ConditionalAssignmentHelper
 
-          lambda do |corrector|
-            corrector.insert_before(node.loc.expression, if_lhs)
-            corrector.replace(if_branch.loc.expression, if_rhs.source)
-            correct_branches(corrector, else_branches)
+          def correct(node)
+            _condition, if_branch, else_branch = *node
+            if_branch = tail(if_branch)
+            _variable, *_operator, if_assignment = *if_branch
+            elsif_branches, else_branch = expand_elses(else_branch)
+            elsif_branches.map! { |branch| tail(branch) }
+            else_branch = tail(else_branch)
+            _else_variable, *_operator, else_assignment = *else_branch
+
+            lambda do |corrector|
+              corrector.insert_before(node.loc.expression, lhs(if_branch))
+              corrector.replace(if_branch.loc.expression, if_assignment.source)
+              correct_branches(corrector, elsif_branches)
+              corrector.replace(else_branch.loc.expression,
+                                else_assignment.source)
+            end
           end
         end
+      end
 
-        def case_correction(node)
-          _condition, *when_branches, else_branch = *node
-          else_branch   = tail(else_branch)
-          when_branches = expand_when_branches(when_branches)
+      # Corrector to correct conditional assignment in `case` statements.
+      class CaseCorrector
+        class << self
+          include ConditionalAssignmentHelper
 
-          lhs, rhs = assignment(else_branch)
+          def correct(node)
+            _condition, *when_branches, else_branch = *node
+            else_branch = tail(else_branch)
+            when_branches = expand_when_branches(when_branches)
+            when_branches.map! do |when_branch|
+              tail(when_branch)
+            end
 
-          lambda do |corrector|
-            corrector.insert_before(node.loc.expression, lhs)
-            correct_branches(corrector, when_branches)
-            corrector.replace(else_branch.loc.expression, rhs.source)
+            _variable, *_operator, else_assignment = *else_branch
+
+            lambda do |corrector|
+              corrector.insert_before(node.loc.expression, lhs(else_branch))
+              correct_branches(corrector, when_branches)
+              corrector.replace(else_branch.loc.expression,
+                                else_assignment.source)
+            end
           end
         end
+      end
 
-        def correct_branches(corrector, branches)
-          branches.each do |branch|
-            rhs = branch.children.last
-            corrector.replace(branch.loc.expression, rhs.source)
-          end
-        end
+      # Corrector to correct conditional assignment in `unless` statements.
+      class UnlessCorrector
+        class << self
+          include ConditionalAssignmentHelper
 
-        def unless_correction(node)
-          _condition, else_branch, if_branch = *node
-          if_branch   = tail(if_branch)
-          else_branch = tail(else_branch)
+          def correct(node)
+            _condition, else_branch, if_branch = *node
+            if_branch = tail(if_branch)
+            else_branch = tail(else_branch)
+            _variable, *_operator, if_assignment = *if_branch
+            _else_variable, *_operator, else_assignment = *else_branch
 
-          if_lhs, if_rhs = assignment(if_branch)
-          _, else_rhs    = assignment(else_branch)
-
-          lambda do |corrector|
-            corrector.insert_before(node.loc.expression, if_lhs)
-            corrector.replace(if_branch.loc.expression, if_rhs.source)
-            corrector.replace(else_branch.loc.expression, else_rhs.source)
-          end
-        end
-
-        def assignment(node)
-          [lhs(node), node.children.last]
-        end
-
-        def lhs(node)
-          if node.send_type?
-            lhs_for_send(node)
-          elsif node.op_asgn_type?
-            "#{node.children[0].source} #{node.children[1]}= "
-          elsif node.and_asgn_type?
-            "#{node.children[0].source} &&= "
-          elsif node.or_asgn_type?
-            "#{node.children[0].source} ||= "
-          else
-            "#{node.children[0]} = "
-          end
-        end
-
-        def lhs_for_send(node)
-          receiver = node.receiver.nil? ? '' : node.receiver.source
-
-          if node.method_name == :[]=
-            indices = node.children[2...-1].map(&:source).join(', ')
-            "#{receiver}[#{indices}] = "
-          elsif node.method_name.to_s.end_with?('=')
-            "#{receiver}.#{node.method_name.to_s[0...-1]} = "
-          else
-            "#{receiver} #{node.method_name} "
-          end
-        end
-
-        def tail(node)
-          if node && node.begin_type?
-            node.children.last
-          else
-            node
+            lambda do |corrector|
+              corrector.insert_before(node.loc.expression, lhs(if_branch))
+              corrector.replace(if_branch.loc.expression, if_assignment.source)
+              corrector.replace(else_branch.loc.expression,
+                                else_assignment.source)
+            end
           end
         end
       end

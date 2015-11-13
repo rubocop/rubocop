@@ -43,6 +43,7 @@
 * `Lint/BlockAlignment` aligns block end with unary operators like ~, -, or ! when such operators are applied to the method call taking the block. ([@alexdowad][])
 * [#1460](https://github.com/bbatsov/rubocop/issues/1460): `Style/Alias` supports both `prefer_alias` and `prefer_alias_method` styles. ([@alexdowad][])
 * [#1569](https://github.com/bbatsov/rubocop/issues/1569): New `ExpectMatchingDefinition` config parameter for `Style/FileName` makes it check for a class or module definition in each file which corresponds to the file name and path. ([@alexdowad][])
+* [#2480](https://github.com/bbatsov/rubocop/pull/2480): Add a configuration to `Style/ConditionalAssignment` to check and correct conditionals that contain multiple assignments. ([@rrosenblum][])
 
 ### Bug Fixes
 

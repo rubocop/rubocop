@@ -159,6 +159,9 @@ Style/ConditionalAssignment:
                  assignment to a variable instead of assigning that variable
                  inside of each branch.
   Enabled: true
+  SingleLineConditionsOnly: true
+  # Whether the cop should register offenses for conditionals whose branches
+  # contain more than one statement a piece
 
 Style/ConstantName:
   Description: 'Constants should use SCREAMING_SNAKE_CASE.'
