@@ -6,7 +6,9 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
   subject(:cop) { described_class.new(config) }
   let(:config) do
     RuboCop::Config.new('Style/ConditionalAssignment' => {
-                          'Enabled' => true
+                          'Enabled' => true,
+                          'CheckConditionsWithMultipleAssignments' =>
+                            false
                         },
                         'Metrics/LineLength' => {
                           'Max' => 80,
@@ -22,20 +24,20 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
               'end']
     inspect_source(cop, source)
 
-    expect(cop.messages).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'allows assignment to the result of a ternary operation' do
     source = 'bar = foo? ? "a" : "b"'
     inspect_source(cop, source)
 
-    expect(cop.messages).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'allows modifier if' do
     inspect_source(cop, 'return if a == 1')
 
-    expect(cop.messages).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'allows modifier if inside of if else' do
@@ -47,7 +49,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
     inspect_source(cop, source)
 
-    expect(cop.messages).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   context 'empty branch' do
@@ -59,7 +61,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                 'end']
       inspect_source(cop, source)
 
-      expect(cop.messages).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'allows an empty elsif statement' do
@@ -72,7 +74,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                 'end']
       inspect_source(cop, source)
 
-      expect(cop.messages).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'allows if elsif without else' do
@@ -84,7 +86,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
       inspect_source(cop, source)
 
-      expect(cop.messages).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'allows assignment in if without an else' do
@@ -93,7 +95,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                 'end']
       inspect_source(cop, source)
 
-      expect(cop.messages).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'allows assignment in unless without an else' do
@@ -102,7 +104,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                 'end']
       inspect_source(cop, source)
 
-      expect(cop.messages).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'allows assignment in case when without an else' do
@@ -114,7 +116,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                 'end']
       inspect_source(cop, source)
 
-      expect(cop.messages).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'allows an empty when branch' do
@@ -126,7 +128,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                 'end']
       inspect_source(cop, source)
 
-      expect(cop.messages).to be_empty
+      expect(cop.offenses).to be_empty
     end
   end
 
@@ -138,7 +140,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
               'end']
     inspect_source(cop, source)
 
-    expect(cop.messages).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'allows method calls in if else' do
@@ -149,7 +151,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
               'end']
     inspect_source(cop, source)
 
-    expect(cop.messages).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'allows if elsif else with the same assignment only in if else' do
@@ -162,7 +164,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
               'end']
     inspect_source(cop, source)
 
-    expect(cop.messages).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'allows if elsif else with the same assignment only in if elsif' do
@@ -175,7 +177,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
               'end']
     inspect_source(cop, source)
 
-    expect(cop.messages).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'allows if elsif else with the same assignment only in elsif else' do
@@ -188,7 +190,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
               'end']
     inspect_source(cop, source)
 
-    expect(cop.messages).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'allows assignment using different operators in if else' do
@@ -199,7 +201,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
               'end']
     inspect_source(cop, source)
 
-    expect(cop.messages).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'allows assignment using different operators in if elsif else' do
@@ -212,7 +214,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
               'end']
     inspect_source(cop, source)
 
-    expect(cop.messages).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   it 'allows assignment of different variables in case when else' do
@@ -224,7 +226,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
               'end']
     inspect_source(cop, source)
 
-    expect(cop.messages).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   context 'correction would exceed max line length' do
@@ -239,7 +241,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
       inspect_source(cop, source)
 
-      expect(cop.messages).to be_empty
+      expect(cop.offenses).to be_empty
     end
 
     it 'allows assignment to the same variable in case when else if the ' \
@@ -254,7 +256,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
       inspect_source(cop, source)
 
-      expect(cop.messages).to be_empty
+      expect(cop.offenses).to be_empty
     end
   end
 
@@ -388,6 +390,193 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         .to eq(['Use the return of the conditional for variable assignment.'])
     end
 
+    it 'allows multiple assignment in if else' do
+      source = ['if baz',
+                '  foo = 1',
+                '  bar = 1',
+                'else',
+                '  foo = 2',
+                '  bar = 2',
+                'end']
+      inspect_source(cop, source)
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'allows multiple assignment in if elsif else' do
+      source = ['if baz',
+                '  foo = 1',
+                '  bar = 1',
+                'elsif foobar',
+                '  foo = 2',
+                '  bar = 2',
+                'else',
+                '  foo = 3',
+                '  bar = 3',
+                'end']
+      inspect_source(cop, source)
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'allows multiple assignment in if elsif elsif else' do
+      source = ['if baz',
+                '  foo = 1',
+                '  bar = 1',
+                'elsif foobar',
+                '  foo = 2',
+                '  bar = 2',
+                'elsif barfoo',
+                '  foo = 3',
+                '  bar = 3',
+                'else',
+                '  foo = 4',
+                '  bar = 4',
+                'end']
+      inspect_source(cop, source)
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'register an offense for multiple assignment in if elsif else when ' \
+       'the last assignment is the same and the earlier assignments do not ' \
+       'appear in all branches' do
+      source = ['if baz',
+                '  foo = 1',
+                '  bar = 1',
+                'elsif foobar',
+                '  baz = 2',
+                '  bar = 2',
+                'else',
+                '  boo = 3',
+                '  bar = 3',
+                'end']
+      inspect_source(cop, source)
+
+      expect(cop.messages)
+        .to eq(['Use the return of the conditional for variable assignment.'])
+    end
+
+    it 'register an offense for multiple assignment in case when else when ' \
+       'the last assignment is the same and the earlier assignments do not ' \
+       'appear in all branches' do
+      source = ['case foo',
+                'when foobar',
+                '  baz = 1',
+                '  bar = 1',
+                'when foobaz',
+                '  boo = 2',
+                '  bar = 2',
+                'else',
+                '  faz = 3',
+                '  bar = 3',
+                'end']
+      inspect_source(cop, source)
+
+      expect(cop.messages)
+        .to eq(['Use the return of the conditional for variable assignment.'])
+    end
+
+    it 'allows out of order multiple assignment in if elsif else' do
+      source = ['if baz',
+                '  bar = 1',
+                '  foo = 1',
+                'elsif foobar',
+                '  foo = 2',
+                '  bar = 2',
+                'else',
+                '  foo = 3',
+                '  bar = 3',
+                'end']
+      inspect_source(cop, source)
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'allows multiple assignment in unless else' do
+      source = ['unless baz',
+                '  foo = 1',
+                '  bar = 1',
+                'else',
+                '  foo = 2',
+                '  bar = 2',
+                'end']
+      inspect_source(cop, source)
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'allows multiple assignments in case when with only one when' do
+      source = ['case foo',
+                'when foobar',
+                '  foo = 1',
+                '  bar = 1',
+                'else',
+                '  foo = 3',
+                '  bar = 3',
+                'end']
+      inspect_source(cop, source)
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'allows multiple assignments in case when with multiple whens' do
+      source = ['case foo',
+                'when foobar',
+                '  foo = 1',
+                '  bar = 1',
+                'when foobaz',
+                '  foo = 2',
+                '  bar = 2',
+                'else',
+                '  foo = 3',
+                '  bar = 3',
+                'end']
+      inspect_source(cop, source)
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'allows multiple assignments in case when if there are uniq ' \
+       'variables in the when branches' do
+      source = ['case foo',
+                'when foobar',
+                '  foo = 1',
+                '  baz = 1',
+                '  bar = 1',
+                'when foobaz',
+                '  foo = 2',
+                '  baz = 2',
+                '  bar = 2',
+                'else',
+                '  foo = 3',
+                '  bar = 3',
+                'end']
+      inspect_source(cop, source)
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'register an offense for multiple assignment in if elsif else when ' \
+       'the last assignment is the same and the earlier assignments do not ' \
+       'appear in all branches' do
+      source = ['case foo',
+                'when foobar',
+                '  foo = 1',
+                '  bar = 1',
+                'when foobaz',
+                '  baz = 2',
+                '  bar = 2',
+                'else',
+                '  boo = 3',
+                '  bar = 3',
+                'end']
+      inspect_source(cop, source)
+
+      expect(cop.messages)
+        .to eq(['Use the return of the conditional for variable assignment.'])
+    end
+
     it 'registers an offense in if elsif else with some branches only ' \
         'containing variable assignment and others containing more than ' \
         'variable assignment' do
@@ -438,6 +627,59 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
       expect(cop.messages)
         .to eq(['Use the return of the conditional for variable assignment.'])
+    end
+
+    context 'multiple assignment in only one branch' do
+      it 'registers an offense when multiple assignment is in if' do
+        source = ['if foo',
+                  '  baz = 1',
+                  '  bar = 1',
+                  'elsif foobar',
+                  '  method_call',
+                  '  bar = 2',
+                  'else',
+                  '  other_method',
+                  '  bar = 3',
+                  'end']
+        inspect_source(cop, source)
+
+        expect(cop.messages)
+          .to eq(['Use the return of the conditional for variable assignment.'])
+      end
+
+      it 'registers an offense when multiple assignment is in elsif' do
+        source = ['if foo',
+                  '  method_call',
+                  '  bar = 1',
+                  'elsif foobar',
+                  '  baz = 2',
+                  '  bar = 2',
+                  'else',
+                  '  other_method',
+                  '  bar = 3',
+                  'end']
+        inspect_source(cop, source)
+
+        expect(cop.messages)
+          .to eq(['Use the return of the conditional for variable assignment.'])
+      end
+
+      it 'registers an offense when multiple assignment is in else' do
+        source = ['if foo',
+                  '  method_call',
+                  '  bar = 1',
+                  'elsif foobar',
+                  '  other_method',
+                  '  bar = 2',
+                  'else',
+                  '  baz = 3',
+                  '  bar = 3',
+                  'end']
+        inspect_source(cop, source)
+
+        expect(cop.messages)
+          .to eq(['Use the return of the conditional for variable assignment.'])
+      end
     end
   end
 
@@ -514,7 +756,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
               'end']
     inspect_source(cop, source)
 
-    expect(cop.messages).to be_empty
+    expect(cop.offenses).to be_empty
   end
 
   context 'auto-correct' do
@@ -953,6 +1195,415 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                   'else',
                                   '  method_call',
                                   '  3',
+                                  'end'].join("\n"))
+      end
+    end
+  end
+
+  context 'configured to check conditions with multiple assignment' do
+    subject(:cop) { described_class.new(config) }
+    let(:config) do
+      RuboCop::Config.new('Style/ConditionalAssignment' => {
+                            'Enabled' => true,
+                            'CheckConditionsWithMultipleAssignments' =>
+                              true
+                          },
+                          'Metrics/LineLength' => {
+                            'Max' => 80,
+                            'Enabled' => true
+                          })
+    end
+
+    context 'assignment as the last statement' do
+      it 'registers an offense in if else with more than variable assignment' do
+        source = ['if foo',
+                  '  method_call',
+                  '  bar = 1',
+                  'else',
+                  '  method_call',
+                  '  bar = 2',
+                  'end']
+        inspect_source(cop, source)
+
+        expect(cop.messages)
+          .to eq(['Use the return of the conditional for variable assignment.'])
+      end
+
+      it 'registers an offense in if elsif else with more than ' \
+         'variable assignment' do
+        source = ['if foo',
+                  '  method_call',
+                  '  bar = 1',
+                  'elsif foobar',
+                  '  method_call',
+                  '  bar = 2',
+                  'else',
+                  '  method_call',
+                  '  bar = 3',
+                  'end']
+        inspect_source(cop, source)
+
+        expect(cop.messages)
+          .to eq(['Use the return of the conditional for variable assignment.'])
+      end
+
+      it 'register an offense for multiple assignment in if else' do
+        source = ['if baz',
+                  '  foo = 1',
+                  '  bar = 1',
+                  'else',
+                  '  foo = 2',
+                  '  bar = 2',
+                  'end']
+        inspect_source(cop, source)
+
+        expect(cop.messages)
+          .to eq(['Use the return of the conditional for variable assignment.'])
+      end
+
+      it 'registers an offense for multiple assignment in if elsif else' do
+        source = ['if baz',
+                  '  foo = 1',
+                  '  bar = 1',
+                  'elsif foobar',
+                  '  foo = 2',
+                  '  bar = 2',
+                  'else',
+                  '  foo = 3',
+                  '  bar = 3',
+                  'end']
+        inspect_source(cop, source)
+
+        expect(cop.messages)
+          .to eq(['Use the return of the conditional for variable assignment.'])
+      end
+
+      it 'allows multiple assignment in if elsif elsif else' do
+        source = ['if baz',
+                  '  foo = 1',
+                  '  bar = 1',
+                  'elsif foobar',
+                  '  foo = 2',
+                  '  bar = 2',
+                  'elsif barfoo',
+                  '  foo = 3',
+                  '  bar = 3',
+                  'else',
+                  '  foo = 4',
+                  '  bar = 4',
+                  'end']
+        inspect_source(cop, source)
+
+        expect(cop.messages)
+          .to eq(['Use the return of the conditional for variable assignment.'])
+      end
+
+      it 'allows out of order multiple assignment in if elsif else' do
+        source = ['if baz',
+                  '  bar = 1',
+                  '  foo = 1',
+                  'elsif foobar',
+                  '  foo = 2',
+                  '  bar = 2',
+                  'else',
+                  '  foo = 3',
+                  '  bar = 3',
+                  'end']
+        inspect_source(cop, source)
+
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'allows multiple assignment in unless else' do
+        source = ['unless baz',
+                  '  foo = 1',
+                  '  bar = 1',
+                  'else',
+                  '  foo = 2',
+                  '  bar = 2',
+                  'end']
+        inspect_source(cop, source)
+
+        expect(cop.messages)
+          .to eq(['Use the return of the conditional for variable assignment.'])
+      end
+
+      it 'allows multiple assignments in case when with only one when' do
+        source = ['case foo',
+                  'when foobar',
+                  '  foo = 1',
+                  '  bar = 1',
+                  'else',
+                  '  foo = 3',
+                  '  bar = 3',
+                  'end']
+        inspect_source(cop, source)
+
+        expect(cop.messages)
+          .to eq(['Use the return of the conditional for variable assignment.'])
+      end
+
+      it 'allows multiple assignments in case when with multiple whens' do
+        source = ['case foo',
+                  'when foobar',
+                  '  foo = 1',
+                  '  bar = 1',
+                  'when foobaz',
+                  '  foo = 2',
+                  '  bar = 2',
+                  'else',
+                  '  foo = 3',
+                  '  bar = 3',
+                  'end']
+        inspect_source(cop, source)
+
+        expect(cop.messages)
+          .to eq(['Use the return of the conditional for variable assignment.'])
+      end
+
+      it 'registers an offense in if elsif else with some branches only ' \
+          'containing variable assignment and others containing more than ' \
+          'variable assignment' do
+        source = ['if foo',
+                  '  bar = 1',
+                  'elsif foobar',
+                  '  method_call',
+                  '  bar = 2',
+                  'elsif baz',
+                  '  bar = 3',
+                  'else',
+                  '  method_call',
+                  '  bar = 4',
+                  'end']
+        inspect_source(cop, source)
+
+        expect(cop.messages)
+          .to eq(['Use the return of the conditional for variable assignment.'])
+      end
+
+      it 'registers an offense in unless else with more than ' \
+         'variable assignment' do
+        source = ['unless foo',
+                  '  method_call',
+                  '  bar = 1',
+                  'else',
+                  '  method_call',
+                  '  bar = 2',
+                  'end']
+        inspect_source(cop, source)
+
+        expect(cop.messages)
+          .to eq(['Use the return of the conditional for variable assignment.'])
+      end
+
+      it 'registers an offense in case when else with more than ' \
+         'variable assignment' do
+        source = ['case foo',
+                  'when foobar',
+                  '  method_call',
+                  '  bar = 1',
+                  'else',
+                  '  method_call',
+                  '  bar = 2',
+                  'end']
+
+        inspect_source(cop, source)
+
+        expect(cop.messages)
+          .to eq(['Use the return of the conditional for variable assignment.'])
+      end
+
+      context 'multiple assignment in only one branch' do
+        it 'registers an offense when multiple assignment is in if' do
+          source = ['if foo',
+                    '  baz = 1',
+                    '  bar = 1',
+                    'elsif foobar',
+                    '  method_call',
+                    '  bar = 2',
+                    'else',
+                    '  other_method',
+                    '  bar = 3',
+                    'end']
+          inspect_source(cop, source)
+
+          expect(cop.offenses.size).to eq(1)
+        end
+
+        it 'registers an offense when multiple assignment is in elsif' do
+          source = ['if foo',
+                    '  method_call',
+                    '  bar = 1',
+                    'elsif foobar',
+                    '  baz = 2',
+                    '  bar = 2',
+                    'else',
+                    '  other_method',
+                    '  bar = 3',
+                    'end']
+          inspect_source(cop, source)
+
+          expect(cop.offenses.size).to eq(1)
+        end
+
+        it 'registers an offense when multiple assignment is in else' do
+          source = ['if foo',
+                    '  method_call',
+                    '  bar = 1',
+                    'elsif foobar',
+                    '  other_method',
+                    '  bar = 2',
+                    'else',
+                    '  baz = 3',
+                    '  bar = 3',
+                    'end']
+          inspect_source(cop, source)
+
+          expect(cop.offenses.size).to eq(1)
+        end
+      end
+    end
+
+    context 'auto-correct' do
+      it 'corrects multiple assignment in if else' do
+        source = ['if foo',
+                  '  baz = 1',
+                  '  bar = 1',
+                  'else',
+                  '  baz = 3',
+                  '  bar = 3',
+                  'end']
+        new_source = autocorrect_source(cop, source)
+
+        expect(new_source).to eq(['bar = if foo',
+                                  '  baz = 1',
+                                  '  1',
+                                  'else',
+                                  '  baz = 3',
+                                  '  3',
+                                  'end'].join("\n"))
+      end
+
+      it 'corrects multiple assignment in if elsif else' do
+        source = ['if foo',
+                  '  baz = 1',
+                  '  bar = 1',
+                  'elsif foobar',
+                  '  baz = 2',
+                  '  bar = 2',
+                  'else',
+                  '  baz = 3',
+                  '  bar = 3',
+                  'end']
+        new_source = autocorrect_source(cop, source)
+
+        expect(new_source).to eq(['bar = if foo',
+                                  '  baz = 1',
+                                  '  1',
+                                  'elsif foobar',
+                                  '  baz = 2',
+                                  '  2',
+                                  'else',
+                                  '  baz = 3',
+                                  '  3',
+                                  'end'].join("\n"))
+      end
+
+      it 'corrects multiple assignment in if elsif else with multiple elsifs' do
+        source = ['if foo',
+                  '  baz = 1',
+                  '  bar = 1',
+                  'elsif foobar',
+                  '  baz = 2',
+                  '  bar = 2',
+                  'elsif foobaz',
+                  '  baz = 3',
+                  '  bar = 3',
+                  'else',
+                  '  baz = 4',
+                  '  bar = 4',
+                  'end']
+        new_source = autocorrect_source(cop, source)
+
+        expect(new_source).to eq(['bar = if foo',
+                                  '  baz = 1',
+                                  '  1',
+                                  'elsif foobar',
+                                  '  baz = 2',
+                                  '  2',
+                                  'elsif foobaz',
+                                  '  baz = 3',
+                                  '  3',
+                                  'else',
+                                  '  baz = 4',
+                                  '  4',
+                                  'end'].join("\n"))
+      end
+
+      it 'corrects multiple assignment in case when' do
+        source = ['case foo',
+                  'when foobar',
+                  '  baz = 1',
+                  '  bar = 1',
+                  'else',
+                  '  baz = 2',
+                  '  bar = 2',
+                  'end']
+        new_source = autocorrect_source(cop, source)
+
+        expect(new_source).to eq(['bar = case foo',
+                                  'when foobar',
+                                  '  baz = 1',
+                                  '  1',
+                                  'else',
+                                  '  baz = 2',
+                                  '  2',
+                                  'end'].join("\n"))
+      end
+
+      it 'corrects multiple assignment in case when with multiple whens' do
+        source = ['case foo',
+                  'when foobar',
+                  '  baz = 1',
+                  '  bar = 1',
+                  'when foobaz',
+                  '  baz = 2',
+                  '  bar = 2',
+                  'else',
+                  '  baz = 3',
+                  '  bar = 3',
+                  'end']
+        new_source = autocorrect_source(cop, source)
+
+        expect(new_source).to eq(['bar = case foo',
+                                  'when foobar',
+                                  '  baz = 1',
+                                  '  1',
+                                  'when foobaz',
+                                  '  baz = 2',
+                                  '  2',
+                                  'else',
+                                  '  baz = 3',
+                                  '  3',
+                                  'end'].join("\n"))
+      end
+
+      it 'corrects multiple assignment in unless else' do
+        source = ['unless foo',
+                  '  baz = 1',
+                  '  bar = 1',
+                  'else',
+                  '  baz = 2',
+                  '  bar = 2',
+                  'end']
+        new_source = autocorrect_source(cop, source)
+
+        expect(new_source).to eq(['bar = unless foo',
+                                  '  baz = 1',
+                                  '  1',
+                                  'else',
+                                  '  baz = 2',
+                                  '  2',
                                   'end'].join("\n"))
       end
     end
