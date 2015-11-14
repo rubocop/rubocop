@@ -28,7 +28,7 @@ describe RuboCop::Cop::Style::Next, :config do
                                             'end'])
       expect(new_source).to eq(['3.downto(1) do',
                                 "  next #{opposite} o == 1",
-                                'puts o', # another cop can fix indentation
+                                '    puts o', # another cop can fix indentation
                                 'end'].join("\n"))
     end
 
@@ -51,7 +51,7 @@ describe RuboCop::Cop::Style::Next, :config do
                                             'end'])
       expect(new_source).to eq(['[].each do |o|',
                                 "  next #{opposite} o == 1",
-                                'puts o', # another cop can fix indentation
+                                '    puts o', # another cop can fix indentation
                                 'end'].join("\n"))
     end
 
@@ -85,7 +85,7 @@ describe RuboCop::Cop::Style::Next, :config do
                                             'end'])
       expect(new_source).to eq(['for o in 1..3 do',
                                 "  next #{opposite} o == 1",
-                                'puts o', # another cop can fix indentation
+                                '    puts o', # another cop can fix indentation
                                 'end'].join("\n"))
     end
 
@@ -304,6 +304,25 @@ describe RuboCop::Cop::Style::Next, :config do
         expect(cop.highlights).to eq(["puts o #{condition} o == 1"])
       end
     end
+  end
+
+  it 'keeps comments when autocorrecting' do
+    new_source = autocorrect_source(cop, ['loop do',
+                                          '  if test # keep me',
+                                          '    # keep me',
+                                          '    something # keep me',
+                                          '    # keep me',
+                                          '    ',
+                                          '  end # keep me',
+                                          'end'])
+    expect(new_source).to eq(['loop do',
+                              '  next unless test # keep me',
+                              '    # keep me',
+                              '    something # keep me',
+                              '    # keep me',
+                              '    ',
+                              ' # keep me',
+                              'end'].join("\n"))
   end
 
   it_behaves_like 'iterators', 'if'
