@@ -66,7 +66,7 @@ module RuboCop
         single_line = !comment_only_line?(comment_line_number)
 
         cop_names.each do |cop_name|
-          cop_name = Cop::Cop.qualified_cop_name(cop_name,
+          cop_name = Cop::Cop.qualified_cop_name(cop_name.strip,
                                                  processed_source.buffer.name)
           yield cop_name, disabled, comment_line_number, single_line
         end

@@ -41,7 +41,7 @@ describe RuboCop::Cop::Lint::UnneededDisable do
 
             it 'returns an offense' do
               expect(cop.messages)
-                .to eq(['Unnecessary disabling of Metrics/MethodLength.'])
+                .to eq(['Unnecessary disabling of `Metrics/MethodLength`.'])
             end
 
             it 'gives the right cop name' do
@@ -57,7 +57,7 @@ describe RuboCop::Cop::Lint::UnneededDisable do
 
             it 'returns an offense' do
               expect(cop.messages)
-                .to eq(['Unnecessary disabling of UnknownCop.'])
+                .to eq(['Unnecessary disabling of `UnknownCop` (unknown cop).'])
             end
           end
 
@@ -98,10 +98,27 @@ describe RuboCop::Cop::Lint::UnneededDisable do
                 'Metrics/MethodLength' => [1..Float::INFINITY] }
             end
 
-            it 'returns an offenses' do
+            it 'returns an offense' do
               expect(cop.messages)
-                .to eq(['Unnecessary disabling of Metrics/ClassLength, ' \
-                        'Metrics/MethodLength.'])
+                .to eq(['Unnecessary disabling of `Metrics/ClassLength`, ' \
+                        '`Metrics/MethodLength`.'])
+            end
+          end
+
+          context 'misspelled cops' do
+            let(:source) do
+              '# rubocop:disable Metrics/MethodLenght, KlassLength'
+            end
+            let(:cop_disabled_line_ranges) do
+              { 'KlassLength' => [1..Float::INFINITY],
+                'Metrics/MethodLenght' => [1..Float::INFINITY] }
+            end
+
+            it 'returns an offense' do
+              expect(cop.messages)
+                .to eq(['Unnecessary disabling of `KlassLength` (unknown ' \
+                        'cop), `Metrics/MethodLenght` (did you mean ' \
+                        '`Metrics/MethodLength`?).'])
             end
           end
 
@@ -153,7 +170,7 @@ describe RuboCop::Cop::Lint::UnneededDisable do
 
             it 'returns an offense' do
               expect(cop.messages)
-                .to eq(['Unnecessary disabling of Style/Tab.'])
+                .to eq(['Unnecessary disabling of `Style/Tab`.'])
             end
           end
 
