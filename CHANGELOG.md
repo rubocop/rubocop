@@ -11,6 +11,10 @@
 * [#2411](https://github.com/bbatsov/rubocop/issues/2411): Make local inherited configuration override configuration loaded from gems. ([@jonas054][])
 * [#2413](https://github.com/bbatsov/rubocop/issues/2413): Allow `%Q` for dynamic strings with double quotes inside them. ([@jonas054][])
 
+### Changes
+
+* [#2427](https://github.com/bbatsov/rubocop/pull/2427): Allow non-snake-case file names (e.g. `some-random-script`) for Ruby scripts that have a shebang. ([@sometimesfood][])
+
 ## 0.35.1 (10/11/2015)
 
 ### Bug Fixes
@@ -1724,3 +1728,4 @@
 [@ptrippett]: https://github.com/ptrippett
 [@br3nda]: https://github.com/br3nda
 [@jujugrrr]: https://github.com/jujugrrr
+[@sometimesfood]: https://github.com/sometimesfood
