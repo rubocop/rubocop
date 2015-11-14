@@ -13,6 +13,8 @@ module RuboCop
       # execution. The reason it can't be implemented as a normal cop is that
       # it depends on the results of all other cops to do its work.
       class UnneededDisable < Cop
+        include NameSimilarity
+
         COP_NAME = 'Lint/UnneededDisable'
 
         def check(offenses, cop_disabled_line_ranges, comments)
@@ -62,9 +64,33 @@ module RuboCop
 
         def add_offenses(unneeded_cops)
           unneeded_cops.each do |range, cops|
+            cop_list = cops.sort.map { |c| describe(c) }
             add_offense(range, range,
-                        "Unnecessary disabling of #{cops.sort.join(', ')}.")
+                        "Unnecessary disabling of #{cop_list.join(', ')}.")
           end
+        end
+
+        def describe(cop)
+          if cop == 'all cops'
+            cop
+          elsif all_cop_names.include?(cop)
+            "`#{cop}`"
+          else
+            similar = find_similar_name(cop, [])
+            if similar
+              "`#{cop}` (did you mean `#{similar}`?)"
+            else
+              "`#{cop}` (unknown cop)"
+            end
+          end
+        end
+
+        def collect_variable_like_names(scope)
+          all_cop_names.each { |name| scope << name }
+        end
+
+        def all_cop_names
+          @all_cop_names ||= Cop.all.map(&:cop_name)
         end
       end
     end

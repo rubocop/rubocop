@@ -1629,10 +1629,9 @@ describe RuboCop::CLI, :isolated_environment do
 
         expect(cli.run(['--format', 'emacs', '--display-cop-names',
                         'example1.rb'])).to eq(1)
-        # TODO: Should say "Unnecessary disabling of Style/NumericLiterals."
         expect($stdout.string)
           .to eq(["#{file}:1:8: W: Lint/UnneededDisable: Unnecessary " \
-                  'disabling of NumericLiterals .',
+                  'disabling of `Style/NumericLiterals`.',
                   "#{file}:1:41: C: Style/TrailingWhitespace: Trailing " \
                   'whitespace detected.',
                   ''].join("\n"))
@@ -1650,8 +1649,8 @@ describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(['--format', 'emacs', '--extra-details',
                         'example1.rb'])).to eq(1)
         expect($stdout.string)
-          .to eq(["#{file}:1:8: W: Unnecessary " \
-                  'disabling of NumericLiterals . ',
+          .to eq(["#{file}:1:8: W: Unnecessary disabling of " \
+                  '`Style/NumericLiterals`. ',
                   "#{file}:1:41: C: Trailing " \
                   'whitespace detected. Trailing space is just sloppy.',
                   ''].join("\n"))
@@ -2461,7 +2460,7 @@ describe RuboCop::CLI, :isolated_environment do
                   "#{abs('example.rb')}:3:1: W: Unnecessary disabling of " \
                   'all cops.',
                   "#{abs('example.rb')}:4:12: W: Unnecessary disabling of " \
-                  'Metrics/ClassLength, Metrics/LineLength.',
+                  '`Metrics/ClassLength`, `Metrics/LineLength`.',
                   "#{abs('example.rb')}:5:8: W: Unnecessary disabling of " \
                   'all cops.',
                   ''].join("\n"))
