@@ -15,6 +15,7 @@ require 'rubocop/version'
 
 require 'rubocop/path_util'
 require 'rubocop/string_util'
+require 'rubocop/name_similarity'
 require 'rubocop/node_pattern'
 require 'rubocop/ast_node'
 

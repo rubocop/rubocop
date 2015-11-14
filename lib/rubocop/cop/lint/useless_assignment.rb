@@ -13,8 +13,8 @@ module RuboCop
       # reassignments and properly handles varied cases such as branch, loop,
       # rescue, ensure, etc.
       class UselessAssignment < Cop
+        include NameSimilarity
         MSG = 'Useless assignment to variable - `%s`.'
-        MINIMUM_SIMILARITY_TO_SUGGEST = 0.9
 
         def join_force?(force_class)
           force_class == VariableForce
@@ -75,19 +75,6 @@ module RuboCop
           else
             body_node
           end
-        end
-
-        def find_similar_name(target_name, scope)
-          names = collect_variable_like_names(scope)
-          names.delete(target_name)
-
-          scores = names.each_with_object({}) do |name, hash|
-            score = StringUtil.similarity(target_name, name)
-            hash[name] = score if score >= MINIMUM_SIMILARITY_TO_SUGGEST
-          end
-
-          most_similar_name, _max_score = scores.max_by { |_, score| score }
-          most_similar_name
         end
 
         def collect_variable_like_names(scope)
