@@ -101,20 +101,28 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            cond, if_body, else_body = *node
-            body = if if_body.nil?
-                     opposite_kw = 'if'
-                     else_body
-                   else
-                     opposite_kw = 'unless'
-                     if_body
-                   end
+            cond, if_body, = *node
+            opposite_kw = if_body.nil? ? 'if' : 'unless'
             next_code = 'next ' << opposite_kw << ' ' <<
-                        cond.loc.expression.source << "\n"
+                        cond.loc.expression.source
             corrector.insert_before(node.loc.expression, next_code)
             corrector.replace(node.loc.expression,
-                              body.loc.expression.source)
+                              body_range(node, cond).source)
           end
+        end
+
+        def body_range(node, cond)
+          source_buffer = node.loc.expression.source_buffer
+          end_pos = node.loc.end.begin_pos - node.loc.end.column
+          end_pos -= 1 if end_followed_by_whitespace_only?(source_buffer,
+                                                           node.loc.end.end_pos)
+          Parser::Source::Range.new(source_buffer,
+                                    cond.loc.expression.end_pos,
+                                    end_pos)
+        end
+
+        def end_followed_by_whitespace_only?(source_buffer, end_pos)
+          source_buffer.source[end_pos..-1] =~ /\A\s*$/
         end
       end
     end
