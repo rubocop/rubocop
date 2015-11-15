@@ -7,10 +7,12 @@ describe RuboCop::Cop::Style::FileName do
 
   let(:config) do
     RuboCop::Config.new(
-      { 'AllCops' => { 'Include' => includes } },
+      { 'AllCops' => { 'Include' => includes },
+        'Style/FileName' => cop_config },
       '/some/.rubocop.yml'
     )
   end
+  let(:cop_config) { { 'IgnoreExecutableScripts' => true } }
 
   let(:includes) { [] }
   let(:source) { ['print 1'] }
@@ -76,6 +78,14 @@ describe RuboCop::Cop::Style::FileName do
 
     it 'does not report an offense' do
       expect(cop.offenses).to be_empty
+    end
+
+    context 'when IgnoreExecutableScripts is disabled' do
+      let(:cop_config) { { 'IgnoreExecutableScripts' => false } }
+
+      it 'reports an offense' do
+        expect(cop.offenses.size).to eq(1)
+      end
     end
   end
 

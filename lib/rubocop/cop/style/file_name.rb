@@ -19,7 +19,8 @@ module RuboCop
           return if snake_case?(basename)
 
           first_line = processed_source.lines.first
-          return if shebang?(first_line)
+          return if cop_config['IgnoreExecutableScripts'] &&
+                    shebang?(first_line)
 
           range = source_range(processed_source.buffer, 1, 0)
           add_offense(nil, range)
