@@ -9,6 +9,8 @@ module Astrolabe
   # If any of it is accepted, it can be deleted from here
   #
   class Node
+    COMPARISON_OPERATORS = [:==, :===, :!=, :<=, :>=, :>, :<, :<=>].freeze
+
     # def_matcher can be used to define a pattern-matching method on Node:
     class << self
       extend RuboCop::NodePattern::Macros
@@ -38,7 +40,8 @@ module Astrolabe
     end
 
     def asgn_method_call?
-      method_name != :== && method_name.to_s.end_with?('=')
+      !COMPARISON_OPERATORS.include?(method_name) &&
+        method_name.to_s.end_with?('=')
     end
 
     def_matcher :equals_asgn?, '{lvasgn ivasgn cvasgn gvasgn casgn masgn}'

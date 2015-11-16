@@ -331,6 +331,12 @@ Style/IndentArray:
                  literal.
   Enabled: true
 
+Style/IndentAssignment:
+  Description: >-
+                 Checks the indentation of the first line of the
+                 right-hand-side of a multi-line assignment.
+  Enabled: true
+
 Style/IndentHash:
   Description: 'Checks the indentation of the first key in a hash literal.'
   Enabled: true
