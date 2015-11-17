@@ -52,4 +52,4 @@ end
 Rainbow.enabled = false
 
 # Disable network connections
-WebMock.disable_net_connect!
+WebMock.disable_net_connect!(allow: 'codeclimate.com')
