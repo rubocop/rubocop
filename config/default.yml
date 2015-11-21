@@ -414,6 +414,11 @@ Style/FileName:
   # excludes here.
   Exclude: []
 
+  # With `IgnoreExecutableScripts` set to `true`, this cop does not
+  # report offending filenames for executable scripts (i.e. source
+  # files with a shebang in the first line).
+  IgnoreExecutableScripts: true
+
 Style/FirstParameterIndentation:
   EnforcedStyle: special_for_inner_method_call_in_parentheses
   SupportedStyles:
