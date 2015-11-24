@@ -13,6 +13,7 @@
 * [#2411](https://github.com/bbatsov/rubocop/issues/2411): Make local inherited configuration override configuration loaded from gems. ([@jonas054][])
 * [#2413](https://github.com/bbatsov/rubocop/issues/2413): Allow `%Q` for dynamic strings with double quotes inside them. ([@jonas054][])
 * [#2404](https://github.com/bbatsov/rubocop/issues/2404): `Style/Next` does not remove comments when auto-correcting. ([@lumeet][])
+* `Style/Next` handles auto-correction of nested offenses. ([@lumeet][])
 
 ### Changes
 
