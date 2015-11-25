@@ -325,6 +325,26 @@ describe RuboCop::Cop::Style::Next, :config do
                               'end'].join("\n"))
   end
 
+  it 'handles nested autocorrections' do
+    new_source = autocorrect_source(cop, ['loop do',
+                                          '  if test',
+                                          '    loop do',
+                                          '      if test',
+                                          '        something',
+                                          '      end',
+                                          '    end',
+                                          '  end',
+                                          'end'])
+    expect(new_source).to eq(['loop do',
+                              '  next unless test',
+                              '    loop do', # another cop can fix indentation
+                              '      next unless test',
+                              # another cop can fix indentation
+                              '        something',
+                              '    end',
+                              'end'].join("\n"))
+  end
+
   it_behaves_like 'iterators', 'if'
   it_behaves_like 'iterators', 'unless'
 

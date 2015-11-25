@@ -106,19 +106,25 @@ module RuboCop
             next_code = 'next ' << opposite_kw << ' ' <<
                         cond.loc.expression.source
             corrector.insert_before(node.loc.expression, next_code)
-            corrector.replace(node.loc.expression,
-                              body_range(node, cond).source)
+            corrector.remove(cond_range(node, cond))
+            corrector.remove(end_range(node))
           end
         end
 
-        def body_range(node, cond)
+        def cond_range(node, cond)
+          Parser::Source::Range.new(node.loc.expression.source_buffer,
+                                    node.loc.expression.begin_pos,
+                                    cond.loc.expression.end_pos)
+        end
+
+        def end_range(node)
           source_buffer = node.loc.expression.source_buffer
-          end_pos = node.loc.end.begin_pos - node.loc.end.column
-          end_pos -= 1 if end_followed_by_whitespace_only?(source_buffer,
-                                                           node.loc.end.end_pos)
-          Parser::Source::Range.new(source_buffer,
-                                    cond.loc.expression.end_pos,
-                                    end_pos)
+          end_pos = node.loc.end.end_pos
+          begin_pos = node.loc.end.begin_pos - node.loc.expression.column
+          begin_pos -= 1 if end_followed_by_whitespace_only?(source_buffer,
+                                                             end_pos)
+
+          Parser::Source::Range.new(source_buffer, begin_pos, end_pos)
         end
 
         def end_followed_by_whitespace_only?(source_buffer, end_pos)
