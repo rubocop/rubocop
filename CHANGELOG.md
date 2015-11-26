@@ -16,6 +16,7 @@
 * `Style/Next` handles auto-correction of nested offenses. ([@lumeet][])
 * `Style/VariableInterpolation` now detects non-numeric regex back references. ([@cgriego][])
 * `ProgressFormatter` fully respects the `--no-color` switch. ([@savef][])
+* Replace `Time.zone.current` with `Time.current` on `Rails::TimeZone` cop message. ([@volmer][])
 
 ### Changes
 
@@ -1738,3 +1739,4 @@
 [@sometimesfood]: https://github.com/sometimesfood
 [@cgriego]: https://github.com/cgriego
 [@savef]: https://github.com/savef
+[@volmer]: https://github.com/volmer
