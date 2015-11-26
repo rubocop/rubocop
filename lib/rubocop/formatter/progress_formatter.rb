@@ -13,7 +13,7 @@ module RuboCop
 
       def initialize(output)
         super
-        @dot = @output.tty? ? GREEN_DOT : DOT
+        @dot = (@output.tty? && Rainbow.enabled) ? GREEN_DOT : DOT
       end
 
       def started(target_files)
