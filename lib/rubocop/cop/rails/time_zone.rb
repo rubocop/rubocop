@@ -43,7 +43,7 @@ module RuboCop
         DANGEROUS_METHODS = [:now, :local, :new, :strftime,
                              :parse, :at, :current]
 
-        ACCEPTED_METHODS = [:current, :in_time_zone, :utc, :getlocal,
+        ACCEPTED_METHODS = [:in_time_zone, :utc, :getlocal,
                             :iso8601, :jisx0301, :rfc3339,
                             :to_i, :to_f]
 
@@ -151,12 +151,13 @@ module RuboCop
         end
 
         def good_methods
-          style == :strict ? [:zone] : [:zone] + ACCEPTED_METHODS
+          style == :strict ? [:zone] : [:zone, :current] + ACCEPTED_METHODS
         end
 
         def acceptable_methods(klass, method_name, node)
           acceptable = [
-            "`Time.zone.#{safe_method(method_name, node)}`"
+            "`Time.zone.#{safe_method(method_name, node)}`",
+            "`#{klass}.current`"
           ]
 
           ACCEPTED_METHODS.each do |am|

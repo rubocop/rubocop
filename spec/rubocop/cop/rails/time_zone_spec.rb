@@ -176,6 +176,7 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
 
         expect(cop.offenses.first.message).to include('Use one of')
         expect(cop.offenses.first.message).to include('`Time.zone.now`')
+        expect(cop.offenses.first.message).to include("`#{klass}.current`")
 
         described_class::ACCEPTED_METHODS.each do |a_method|
           expect(cop.offenses.first.message)
