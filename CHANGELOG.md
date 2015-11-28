@@ -14,6 +14,7 @@
 * [#2413](https://github.com/bbatsov/rubocop/issues/2413): Allow `%Q` for dynamic strings with double quotes inside them. ([@jonas054][])
 * [#2404](https://github.com/bbatsov/rubocop/issues/2404): `Style/Next` does not remove comments when auto-correcting. ([@lumeet][])
 * `Style/Next` handles auto-correction of nested offenses. ([@lumeet][])
+* `Style/VariableInterpolation` now detects non-numeric regex back references. ([@cgriego][])
 
 ### Changes
 
@@ -1734,3 +1735,4 @@
 [@br3nda]: https://github.com/br3nda
 [@jujugrrr]: https://github.com/jujugrrr
 [@sometimesfood]: https://github.com/sometimesfood
+[@cgriego]: https://github.com/cgriego
