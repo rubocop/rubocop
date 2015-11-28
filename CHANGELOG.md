@@ -15,6 +15,7 @@
 * [#2404](https://github.com/bbatsov/rubocop/issues/2404): `Style/Next` does not remove comments when auto-correcting. ([@lumeet][])
 * `Style/Next` handles auto-correction of nested offenses. ([@lumeet][])
 * `Style/VariableInterpolation` now detects non-numeric regex back references. ([@cgriego][])
+* `ProgressFormatter` fully respects the `--no-color` switch. ([@savef][])
 
 ### Changes
 
@@ -1736,3 +1737,4 @@
 [@jujugrrr]: https://github.com/jujugrrr
 [@sometimesfood]: https://github.com/sometimesfood
 [@cgriego]: https://github.com/cgriego
+[@savef]: https://github.com/savef
