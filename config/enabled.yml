@@ -430,6 +430,7 @@ Style/NegatedWhile:
 
 Style/NestedModifier:
   Description: 'Avoid using nested modifiers.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-nested-modifiers'
   Enabled: true
 
 Style/NestedTernaryOperator:
