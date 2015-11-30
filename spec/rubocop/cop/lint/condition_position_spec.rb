@@ -8,7 +8,7 @@ describe RuboCop::Cop::Lint::ConditionPosition do
   %w(if unless while until).each do |keyword|
     it 'registers an offense for condition on the next line' do
       inspect_source(cop,
-                     ["#{keyword}",
+                     [keyword,
                       'x == 10',
                       'end'
                      ])

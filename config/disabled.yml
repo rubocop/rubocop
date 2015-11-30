@@ -90,10 +90,6 @@ Style/SymbolArray:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-i'
   Enabled: false
 
-Style/UnneededInterpolation:
-  Description: 'Checks for strings that are just an interpolated expression.'
-  Enabled: false
-
 Lint/LiteralInInterpolation:
   Description: 'Avoid interpolating literals in strings'
   AutoCorrect: false

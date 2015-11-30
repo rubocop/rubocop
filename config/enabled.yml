@@ -773,6 +773,10 @@ Style/UnneededCapitalW:
   Description: 'Checks for %W when interpolation is not needed.'
   Enabled: true
 
+Style/UnneededInterpolation:
+  Description: 'Checks for strings that are just an interpolated expression.'
+  Enabled: true
+
 Style/UnneededPercentQ:
   Description: 'Checks for %q/%Q when single quotes or double quotes would do.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-q'

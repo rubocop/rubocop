@@ -37,7 +37,7 @@ describe RuboCop::Cop::Lint::Void do
     it "registers an offense for void var #{var} if not on last line" do
       inspect_source(cop,
                      ["#{var} = 5",
-                      "#{var}",
+                      var,
                       'top'
                      ])
       expect(cop.offenses.size).to eq(1)
@@ -47,7 +47,7 @@ describe RuboCop::Cop::Lint::Void do
   %w(1 2.0 :test /test/ [1] {}).each do |lit|
     it "registers an offense for void lit #{lit} if not on last line" do
       inspect_source(cop,
-                     ["#{lit}",
+                     [lit,
                       'top'
                      ])
       expect(cop.offenses.size).to eq(1)
