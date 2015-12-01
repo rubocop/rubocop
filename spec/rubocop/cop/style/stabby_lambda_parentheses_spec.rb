@@ -28,6 +28,11 @@ describe RuboCop::Cop::Style::StabbyLambdaParentheses, :config do
       inspect_source(cop, '-> { true }')
       expect(cop.offenses).to be_empty
     end
+
+    it 'does not check a method call named lambda' do
+      inspect_source(cop, 'o.lambda')
+      expect(cop.offenses).to be_empty
+    end
   end
 
   context 'require_no_parentheses' do

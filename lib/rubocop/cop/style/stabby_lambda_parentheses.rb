@@ -84,8 +84,8 @@ module RuboCop
         end
 
         def lambda_node?(node)
-          _nil, call = *node
-          call == :lambda
+          receiver, call = *node
+          receiver.nil? && call == :lambda
         end
 
         def node_args(node)
