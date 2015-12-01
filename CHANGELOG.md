@@ -19,6 +19,7 @@
 * `ProgressFormatter` fully respects the `--no-color` switch. ([@savef][])
 * Replace `Time.zone.current` with `Time.current` on `Rails::TimeZone` cop message. ([@volmer][])
 * [#2451](https://github.com/bbatsov/rubocop/issues/2451): `Style/StabbyLambdaParentheses` does not treat method calls named `lambda` as lambdas. ([@domcleal][])
+* [#2463](https://github.com/bbatsov/rubocop/issues/2463): Allow comments before an access modifier. ([@codebeige][])
 
 ### Changes
 
@@ -1743,3 +1744,4 @@
 [@savef]: https://github.com/savef
 [@volmer]: https://github.com/volmer
 [@domcleal]: https://github.com/domcleal
+[@codebeige]: https://github.com/codebeige

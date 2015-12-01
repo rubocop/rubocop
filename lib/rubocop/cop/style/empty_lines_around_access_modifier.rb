@@ -41,6 +41,12 @@ module RuboCop
 
         private
 
+        def previous_line_ignoring_comments(processed_source, send_line)
+          processed_source[0..send_line - 2].reverse.find do |line|
+            !comment_line?(line)
+          end
+        end
+
         def previous_line_empty?(previous_line)
           block_start?(previous_line.lstrip) ||
             class_def?(previous_line.lstrip) ||
@@ -53,7 +59,8 @@ module RuboCop
 
         def empty_lines_around?(node)
           send_line = node.loc.line
-          previous_line = processed_source[send_line - 2]
+          previous_line = previous_line_ignoring_comments(processed_source,
+                                                          send_line)
           next_line = processed_source[send_line]
 
           previous_line_empty?(previous_line) && next_line_empty?(next_line)
