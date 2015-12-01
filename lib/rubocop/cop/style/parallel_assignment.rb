@@ -151,7 +151,7 @@ module RuboCop
           end
 
           def correction
-            "#{assignment.join("\n#{offset(node)}")}"
+            assignment.join("\n#{offset(node)}")
           end
 
           def correction_range

@@ -15,7 +15,7 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBlockBody, :config do
                        ["some_method #{open}",
                         '',
                         '  do_something',
-                        "#{close}"])
+                        close])
         expect(cop.messages)
           .to eq(['Extra empty line detected at block body beginning.'])
       end
@@ -24,9 +24,9 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBlockBody, :config do
         corrected = autocorrect_source(cop,
                                        ["some_method #{open}",
                                         '',
-                                        "#{close}"])
+                                        close])
         expect(corrected).to eq ["some_method #{open}",
-                                 "#{close}"].join("\n")
+                                 close].join("\n")
       end
 
       it 'registers an offense for block body ending with a blank' do
@@ -34,7 +34,7 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBlockBody, :config do
                        ["some_method #{open}",
                         '  do_something',
                         '',
-                        "#{close}"])
+                        close])
         expect(cop.messages)
           .to eq(['Extra empty line detected at block body end.'])
       end
@@ -44,7 +44,7 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBlockBody, :config do
                        ["some_method #{open}",
                         '  ',
                         '  do_something',
-                        "#{close}"])
+                        close])
         expect(cop.offenses).to be_empty
       end
 
@@ -65,7 +65,7 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBlockBody, :config do
         inspect_source(cop,
                        ["some_method #{open}",
                         '  do_something',
-                        "#{close}"])
+                        close])
         expect(cop.messages).to eq(['Empty line missing at block body '\
                                     'beginning.',
                                     'Empty line missing at block body end.'])
@@ -74,22 +74,22 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBlockBody, :config do
       it 'autocorrects block body containing nothing' do
         corrected = autocorrect_source(cop,
                                        ["some_method #{open}",
-                                        "#{close}"])
+                                        close])
         expect(corrected).to eq ["some_method #{open}",
                                  '',
-                                 "#{close}"].join("\n")
+                                 close].join("\n")
       end
 
       it 'autocorrects beginning and end' do
         new_source = autocorrect_source(cop,
                                         ["some_method #{open}",
                                          '  do_something',
-                                         "#{close}"])
+                                         close])
         expect(new_source).to eq(["some_method #{open}",
                                   '',
                                   '  do_something',
                                   '',
-                                  "#{close}"].join("\n"))
+                                  close].join("\n"))
       end
 
       it 'is not fooled by single line blocks' do

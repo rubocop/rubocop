@@ -18,7 +18,7 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
 
     it "should have #{literal} as the message highlight" do
       inspect_source(cop, %("this is the \#{#{literal}}"))
-      expect(cop.highlights).to eq(["#{literal}"])
+      expect(cop.highlights).to eq([literal.to_s])
     end
 
     it "removes interpolation around #{literal}" do
@@ -113,7 +113,7 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
 
     it "should have #{string} in the message highlight" do
       inspect_source(cop, %("this is the \#{#{string}}"))
-      expect(cop.highlights).to eq(["#{string}"])
+      expect(cop.highlights).to eq([string])
     end
 
     it "should remove the interpolation and quotes around #{string}" do
