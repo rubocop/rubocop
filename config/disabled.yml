@@ -4,6 +4,13 @@ Style/AutoResourceCleanup:
   Description: 'Suggests the usage of an auto resource cleanup version of a method (if available).'
   Enabled: false
 
+Style/MultilineArrayBraceLayout:
+  Description: >-
+                 Checks that the closing brace in an array literal is
+                 symmetrical with respect to the opening brace and the
+                 array elements.
+  Enabled: false
+
 Style/CollectionMethods:
   Description: 'Preferred collection methods.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#map-find-select-reduce-size'
