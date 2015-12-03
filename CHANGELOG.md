@@ -191,6 +191,7 @@
 * `Style/Documentation` recognizes 'Constant = Class.new' as a class definition. ([@alexdowad][])
 * [#1608](https://github.com/bbatsov/rubocop/issues/1608): Add new 'align_braces' style for `Style/IndentHash`. ([@alexdowad][])
 * `Style/Next` can autocorrect. ([@alexdowad][])
+* [#2581](https://github.com/bbatsov/rubocop/pull/2581): New cop `Lint/NextWithoutAccumulator` finds bare `next` in `reduce`/`inject` blocks which assigns `nil` to the accumulator. ([@mvidner][])
 
 ### Bug Fixes
 
@@ -1875,3 +1876,4 @@
 [@bfontaine]: https://github.com/bfontaine
 [@jawshooah]: https://github.com/jawshooah
 [@DNNX]: https://github.com/DNNX
+[@mvidner]: https://github.com/mvidner

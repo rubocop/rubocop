@@ -1059,6 +1059,12 @@ Lint/NestedMethodDefinition:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-nested-methods'
   Enabled: true
 
+Lint/NextWithoutAccumulator:
+  Description:  >-
+                  Do not omit the accumulator when calling `next`
+                  in a `reduce`/`inject` block.
+  Enabled: true
+
 Lint/NonLocalExitFromIterator:
   Description: 'Do not use return in iterator to cause non-local exit.'
   Enabled: true
