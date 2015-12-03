@@ -19,13 +19,13 @@ module RuboCop
       end
 
       def initialize(a, b)
-        @longer = if a.size < b.size
-                    @shorter = a
-                    b
-                  else
-                    @shorter = b
-                    a
-                  end
+        if a.size < b.size
+          @shorter = a
+          @longer = b
+        else
+          @shorter = b
+          @longer = a
+        end
       end
 
       def distance
