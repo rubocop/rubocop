@@ -95,6 +95,12 @@ describe RuboCop::Cop::Style::UnneededInterpolation do
     expect(cop.highlights).to eq(['"#{var}"'])
   end
 
+  it 'registers an offense for ["#{@var}"]' do
+    inspect_source(cop, '["#{@var}", \'foo\']')
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.highlights).to eq(['"#{@var}"'])
+  end
+
   it 'accepts strings with characters before the interpolation' do
     inspect_source(cop, '"this is #{@sparta}"')
     expect(cop.offenses).to be_empty
@@ -112,6 +118,11 @@ describe RuboCop::Cop::Style::UnneededInterpolation do
 
   it 'accepts strings implicitly concatenated with an earlier string' do
     inspect_source(cop, %q('this is ' "#{sparta}"))
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'accepts strings that are part of a %W()' do
+    inspect_source(cop, '%W(#{@var} foo)')
     expect(cop.offenses).to be_empty
   end
 

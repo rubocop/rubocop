@@ -16,6 +16,8 @@ module RuboCop
       #   # good if @var is already a String
       #   @var
       class UnneededInterpolation < Cop
+        include PercentLiteral
+
         MSG = 'Prefer `to_s` over string interpolation.'
 
         VARIABLE_INTERPOLATION_TYPES = [
@@ -32,7 +34,8 @@ module RuboCop
         def single_interpolation?(node)
           single_child?(node) &&
             interpolation?(node.children.first) &&
-            !implicit_concatenation?(node)
+            !implicit_concatenation?(node) &&
+            !embedded_in_percent_array?(node)
         end
 
         def single_variable_interpolation?(node)
@@ -53,6 +56,12 @@ module RuboCop
 
         def implicit_concatenation?(node)
           node.parent && node.parent.type == :dstr
+        end
+
+        def embedded_in_percent_array?(node)
+          node.parent &&
+            node.parent.type == :array &&
+            percent_literal?(node.parent)
         end
 
         def autocorrect(node)
