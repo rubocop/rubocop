@@ -91,11 +91,11 @@ module RuboCop
         def autocorrect(node)
           return if contains_slash?(node)
 
-          if slash_literal?(node)
-            replacement = ['%r', ''].zip(preferred_delimiters).map(&:join)
-          else
-            replacement = %w(/ /)
-          end
+          replacement = if slash_literal?(node)
+                          ['%r', ''].zip(preferred_delimiters).map(&:join)
+                        else
+                          %w(/ /)
+                        end
 
           lambda do |corrector|
             corrector.replace(node.loc.begin, replacement.first)
