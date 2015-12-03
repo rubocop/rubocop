@@ -56,6 +56,23 @@ describe RuboCop::Cop::Style::MethodName, :config do
                              'end'])
         expect(cop.offenses).to be_empty
       end
+
+      it "accepts class emitter method in a #{kind}, even when it is " \
+         'defined inside another method' do
+        inspect_source(cop, ['module DPN',
+                             '  module Flow',
+                             '    module BaseFlow',
+                             '      class Start',
+                             '      end',
+                             '      def self.included(base)',
+                             '        def base.Start(aws_env, *args)',
+                             '        end',
+                             '      end',
+                             '    end',
+                             '  end',
+                             'end'])
+        expect(cop.offenses.size).to eq(0)
+      end
     end
   end
 
