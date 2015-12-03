@@ -850,18 +850,18 @@ describe RuboCop::CLI, :isolated_environment do
            'C:  4:  8: Prefer {...} over do...end for single-line blocks.',
            'C:  5: 34: Do not use semicolons to terminate expressions.']
 
-        summary = if RUBY_VERSION >= '2'
-                    src += ['def self.some_method(foo, bar: 1)',
-                            '  log.debug(foo)',
-                            'end']
-                    corrected += ['def self.some_method(foo, bar: 1)',
-                                  '  log.debug(foo)',
-                                  'end']
-                    offenses += ['W:  6: 27: Unused method argument - bar.']
-                    '1 file inspected, 5 offenses detected'
-                  else
-                    '1 file inspected, 4 offenses detected'
-                  end
+        if RUBY_VERSION >= '2'
+          src += ['def self.some_method(foo, bar: 1)',
+                  '  log.debug(foo)',
+                  'end']
+          corrected += ['def self.some_method(foo, bar: 1)',
+                        '  log.debug(foo)',
+                        'end']
+          offenses += ['W:  6: 27: Unused method argument - bar.']
+          summary = '1 file inspected, 5 offenses detected'
+        else
+          summary = '1 file inspected, 4 offenses detected'
+        end
         create_file('example.rb', src)
         expect(cli.run(%w(-a -f simple))).to eq(1)
         expect($stderr.string).to eq('')
