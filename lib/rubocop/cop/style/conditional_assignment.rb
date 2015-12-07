@@ -154,7 +154,6 @@ module RuboCop
         end
 
         def on_if(node)
-          return if ternary_op?(node)
           return if elsif?(node)
 
           _condition, if_branch, else_branch = *node
@@ -177,13 +176,17 @@ module RuboCop
         end
 
         def autocorrect(node)
-          case node.loc.keyword.source
-          when IF
-            IfCorrector.correct(node)
-          when UNLESS
-            UnlessCorrector.correct(node)
+          if ternary_op?(node)
+            TernaryCorrector.correct(node)
           else
-            CaseCorrector.correct(node)
+            case node.loc.keyword.source
+            when IF
+              IfCorrector.correct(node)
+            when UNLESS
+              UnlessCorrector.correct(node)
+            else
+              CaseCorrector.correct(node)
+            end
           end
         end
 
@@ -257,6 +260,29 @@ module RuboCop
 
         def single_line_conditions_only?
           cop_config[SINGLE_LINE_CONDITIONS_ONLY]
+        end
+      end
+
+      # Corrector to correct conditional assignment in ternary conditions.
+      class TernaryCorrector
+        class << self
+          include ConditionalAssignmentHelper
+
+          def correct(node)
+            condition, if_branch, else_branch = *node
+            _if_assignment, if_variable = *if_branch
+            _else_assignment, else_variable = *else_branch
+            condition = condition.source
+            if_variable = if_variable.source
+            else_variable = else_variable.source
+            assignment = lhs(if_branch)
+            correction =
+              "#{assignment}#{condition} ? #{if_variable} : #{else_variable}"
+
+            lambda do |corrector|
+              corrector.replace(node.loc.expression, correction)
+            end
+          end
         end
       end
 

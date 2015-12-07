@@ -69,6 +69,14 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     expect(cop.offenses).to be_empty
   end
 
+  it 'registers an offense for assignment in ternary operation' do
+    source = 'foo? ? bar = "a" : bar = "b"'
+    inspect_source(cop, source)
+
+    expect(cop.messages)
+      .to eq(['Use the return of the conditional for variable assignment.'])
+  end
+
   it 'allows modifier if' do
     inspect_source(cop, 'return if a == 1')
 
@@ -378,6 +386,13 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
   end
 
   shared_examples 'all variable types' do |variable|
+    it 'registers an offense assigning any variable type in ternary' do
+      inspect_source(cop, "foo? ? #{variable} = 1 : #{variable} = 2")
+
+      expect(cop.messages)
+        .to eq(['Use the return of the conditional for variable assignment.'])
+    end
+
     it 'registers an offense assigning any variable type in if else' do
       source = ['if foo',
                 "  #{variable} = 1",
@@ -411,7 +426,14 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
   it_behaves_like('all variable types', '$BAR')
 
   shared_examples 'all assignment types' do |assignment|
-    it "registers and offense for assignment using #{assignment} in if else" do
+    it 'registers an offense for assignment using #{assignment in ternary' do
+      inspect_source(cop, "foo? ? bar #{assignment} 1 : bar #{assignment} 2")
+
+      expect(cop.messages)
+        .to eq(['Use the return of the conditional for variable assignment.'])
+    end
+
+    it "registers an offense for assignment using #{assignment} in if else" do
       source = ['if foo',
                 "  bar #{assignment} 1",
                 'else',
@@ -877,6 +899,18 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
   end
 
   context 'auto-correct' do
+    it 'corrects assignment in ternary operations' do
+      new_source = autocorrect_source(cop, 'foo? ? bar = 1 : bar = 2')
+
+      expect(new_source).to eq('bar = foo? ? 1 : 2')
+    end
+
+    it 'corrects assignment in ternary operations using strings' do
+      new_source = autocorrect_source(cop, 'foo? ? bar = "1" : bar = "2"')
+
+      expect(new_source).to eq('bar = foo? ? "1" : "2"')
+    end
+
     it 'corrects assignment in if else' do
       source = ['if foo',
                 '  bar = 1',
