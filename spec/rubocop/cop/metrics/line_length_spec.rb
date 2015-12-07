@@ -47,11 +47,9 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
     end
 
     context 'and the excessive characters include a complete URL' do
-      # rubocop:disable Metrics/LineLength
       let(:source) { <<-END }
         # See: http://google.com/, http://gmail.com/, https://maps.google.com/, http://plus.google.com/
       END
-      # rubocop:enable Metrics/LineLength
 
       it 'registers an offense for the line' do
         inspect_source(cop, source)
@@ -66,12 +64,10 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
 
     context 'and the excessive characters include part of an URL ' \
             'and another word' do
-      # rubocop:disable Metrics/LineLength
       let(:source) { <<-END }
         # See: https://github.com/bbatsov/rubocop/commit/3b48d8bdf5b1c2e05e35061837309890f04ab08c and
         #   http://google.com/
       END
-      # rubocop:enable Metrics/LineLength
 
       it 'registers an offense for the line' do
         inspect_source(cop, source)
@@ -90,11 +86,9 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
         { 'Max' => 80, 'AllowURI' => true, 'URISchemes' => %w(LDAP) }
       end
 
-      # rubocop:disable Metrics/LineLength
       let(:source) { <<-END }
         xxxxxxxxxxxxxxxxxxxxxxxxxxxxzxxxxxxxxxxx = LDAP::DEFAULT_GROUP_UNIQUE_MEMBER_LIST_KEY
       END
-      # rubocop:enable Metrics/LineLength
 
       it 'does not crash' do
         expect { inspect_source(cop, source) }.not_to raise_error
@@ -102,11 +96,9 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
     end
 
     context 'and the URL does not have a http(s) scheme' do
-      # rubocop:disable Metrics/LineLength
       let(:source) { <<-END }
         xxxxxxxxxxxxxxxxxxxxxxxxxxxxzxxxxxxxxxxx = 'otherprotocol://a.very.long.line.which.violates.LineLength/sadf'
       END
-      # rubocop:enable Metrics/LineLength
 
       it 'rejects the line' do
         inspect_source(cop, source)
@@ -122,6 +114,62 @@ describe RuboCop::Cop::Metrics::LineLength, :config do
           inspect_source(cop, source)
           expect(cop.offenses).to be_empty
         end
+      end
+    end
+  end
+
+  context 'when AllowHeredoc option is enabled' do
+    let(:cop_config) { { 'Max' => 80, 'AllowHeredoc' => true } }
+
+    let(:source) { <<-END }
+      <<-SQL
+        SELECT posts.id, posts.title, users.name FROM posts LEFT JOIN users ON posts.user_id = users.id;
+      SQL
+    END
+
+    it 'accepts long lines in heredocs' do
+      inspect_source(cop, source)
+      expect(cop.offenses).to be_empty
+    end
+
+    context 'when the source has no AST' do
+      let(:source) { '# this results in AST being nil' }
+
+      it 'does not crash' do
+        expect { inspect_source(cop, source) }.not_to raise_error
+      end
+    end
+
+    context 'and only certain heredoc delimiters are whitelisted' do
+      let(:cop_config) do
+        { 'Max' => 80, 'AllowHeredoc' => %w(SQL OK) }
+      end
+
+      let(:source) { <<-END }
+        foo(<<-DOC, <<-SQL, <<-FOO)
+          1st offence: Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          \#{<<-OK}
+            no offence (whitelisted): Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          OK
+          2nd offence: Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        DOC
+          no offence (whitelisted): Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          \#{<<-XXX}
+            no offence (nested inside whitelisted): Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          XXX
+          no offence (whitelisted): Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        SQL
+          3rd offence: Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          \#{<<-SQL}
+            no offence (whitelisted): Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+          SQL
+          4th offence: Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        FOO
+      END
+
+      it 'rejects long lines in heredocs with not whitelisted delimiters' do
+        inspect_source(cop, source)
+        expect(cop.offenses.size).to eq(4)
       end
     end
   end

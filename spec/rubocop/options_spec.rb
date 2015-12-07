@@ -34,7 +34,6 @@ describe RuboCop::Options, :isolated_environment do
         rescue SystemExit # rubocop:disable Lint/HandleExceptions
         end
 
-        # rubocop:disable Metrics/LineLength
         expected_help = <<-END
 Usage: rubocop [options] [file1, file2, ...]
     -L, --list-target-files          List all files RuboCop will inspect.
@@ -94,7 +93,6 @@ Usage: rubocop [options] [file1, file2, ...]
     -s, --stdin                      Pipe source from STDIN.
                                      This is useful for editor integration.
         END
-        # rubocop:enable Metrics/LineLength
 
         expect($stdout.string).to eq(expected_help)
       end
