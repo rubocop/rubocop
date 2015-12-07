@@ -20,6 +20,7 @@
 * Replace `Time.zone.current` with `Time.current` on `Rails::TimeZone` cop message. ([@volmer][])
 * [#2451](https://github.com/bbatsov/rubocop/issues/2451): `Style/StabbyLambdaParentheses` does not treat method calls named `lambda` as lambdas. ([@domcleal][])
 * [#2463](https://github.com/bbatsov/rubocop/issues/2463): Allow comments before an access modifier. ([@codebeige][])
+* [#2471](https://github.com/bbatsov/rubocop/issues/2471): `Style/MethodName` doesn't choke on methods which are defined inside methods. ([@alexdowad][])
 
 ### Changes
 

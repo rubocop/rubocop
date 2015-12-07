@@ -31,6 +31,9 @@ module RuboCop
       # the method has the same name as a class defined in the class/module.
       def class_emitter_method?(node, name)
         return false unless node.defs_type?
+        # a class emitter method may be defined inside `def self.included`,
+        # `def self.extended`, etc.
+        node = node.parent while node.parent && node.parent.defs_type?
         return false unless node.parent
 
         node.parent.children.compact.any? do |c|
