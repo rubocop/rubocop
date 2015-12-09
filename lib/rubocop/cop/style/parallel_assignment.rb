@@ -99,6 +99,7 @@ module RuboCop
 
           def_node_matcher :var_name, '{(casgn _ $_) (_ $_)}'
           def_node_search :uses_var?, '{({lvar ivar cvar gvar} %) (const _ %)}'
+          def_node_search :matching_calls, '(send %1 %2 $...)'
 
           def initialize(assignments)
             @assignments = assignments
@@ -115,7 +116,23 @@ module RuboCop
 
             @assignments.each do |other|
               _other_lhs, other_rhs = *other
-              yield other if uses_var?(other_rhs, var_name(my_lhs))
+              if ((var = var_name(my_lhs)) && uses_var?(other_rhs, var)) ||
+                 (my_lhs.asgn_method_call? && accesses?(other_rhs, my_lhs))
+                yield other
+              end
+            end
+          end
+
+          # `lhs` is an assignment method call like `obj.attr=` or `ary[idx]=`.
+          # Does `rhs` access the same value which is assigned by `lhs`?
+          def accesses?(rhs, lhs)
+            if lhs.method_name == :[]=
+              matching_calls(rhs, lhs.receiver, :[]).any? do |args|
+                args == lhs.method_args
+              end
+            else
+              access_method = lhs.method_name.to_s.chop.to_sym
+              matching_calls(rhs, lhs.receiver, access_method).any?
             end
           end
         end
