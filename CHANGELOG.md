@@ -8,6 +8,7 @@
 * [#2410](https://github.com/bbatsov/rubocop/pull/2410): New cop `Style/IndentAssignment` checks the indentation of the first line of the right-hand-side of a multi-line assignment. ([@panthomakos][])
 * [#2431](https://github.com/bbatsov/rubocop/issues/2431): Add `IgnoreExecutableScripts` option to `Style/FileName`. ([@sometimesfood][])
 * [#2460](https://github.com/bbatsov/rubocop/pull/2460): New cop `Style/UnneededInterpolation` checks for strings that are just an interpolated expression. ([@cgriego][])
+* [#2361](https://github.com/bbatsov/rubocop/pull/2361): `Style/MultilineAssignmentLayout` cop checks for a newline after the assignment operator in a multi-line assignment. ([@panthomakos][])
 
 ### Bug Fixes
 

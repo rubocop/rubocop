@@ -4,22 +4,10 @@ module RuboCop
   module Cop
     # Common functionality for checking assignment nodes.
     module CheckAssignment
-      TYPES = Util::ASGN_NODES - [:casgn, :op_asgn]
-      TYPES.each do |type|
+      Util::ASGN_NODES.each do |type|
         define_method("on_#{type}") do |node|
-          _lhs, rhs = *node
-          check_assignment(node, rhs)
+          check_assignment(node, extract_rhs(node))
         end
-      end
-
-      def on_casgn(node)
-        _scope, _lhs, rhs = *node
-        check_assignment(node, rhs)
-      end
-
-      def on_op_asgn(node)
-        _lhs, _op, rhs = *node
-        check_assignment(node, rhs)
       end
 
       def on_send(node)
@@ -28,8 +16,24 @@ module RuboCop
         return unless node.asgn_method_call?
 
         # This will match if, case, begin, blocks, etc.
-        rhs = node.children.last
+        rhs = extract_rhs(node)
         check_assignment(node, rhs) if rhs.is_a?(AST::Node)
+      end
+
+      private
+
+      def extract_rhs(node)
+        if node.casgn_type?
+          _scope, _lhs, rhs = *node
+        elsif node.op_asgn_type?
+          _lhs, _op, rhs = *node
+        elsif Util::ASGN_NODES.include?(node.type)
+          _lhs, rhs = *node
+        elsif node.send_type?
+          rhs = node.children.last
+        end
+
+        rhs
       end
     end
   end
