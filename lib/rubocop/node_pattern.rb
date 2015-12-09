@@ -315,7 +315,7 @@ module RuboCop
         (1..@params).map { |n| "param#{n}" }.join(',')
       end
 
-      def emit_trailing_param_list
+      def emit_trailing_params
         params = emit_param_list
         params.empty? ? '' : ',' << params
       end
@@ -343,7 +343,7 @@ module RuboCop
       # return the captures, or `true` if there were none.
       def def_node_matcher(method_name, pattern_str)
         compiler = RuboCop::NodePattern::Compiler.new(pattern_str, 'node')
-        src = "def #{method_name}(node" << compiler.emit_trailing_param_list <<
+        src = "def #{method_name}(node" << compiler.emit_trailing_params <<
               ');' << compiler.emit_method_code << ';end'
         class_eval(src)
       end
@@ -363,26 +363,32 @@ module RuboCop
                     yieldval = compiler.emit_capture_list
                     yieldval = 'node' if yieldval.empty?
                     on_match = "yield(#{yieldval})"
-                    "return enum_for(:#{method_name},node0) unless block_given?"
+                    "return enum_for(:#{method_name}, node0" \
+                      "#{compiler.emit_trailing_params}) unless block_given?"
                   end
-        src = <<-END
-          def #{method_name}(node0#{compiler.emit_trailing_param_list})
+        class_eval(node_search_body(method_name, compiler.emit_trailing_params,
+                                    prelude, compiler.match_code, on_match))
+      end
+
+      def node_search_body(method_name, trailing_params, prelude, match_code,
+                           on_match)
+        <<-END
+          def #{method_name}(node0#{trailing_params})
             #{prelude}
             node0.each_node do |node|
-              if #{compiler.match_code}
+              if #{match_code}
                 #{on_match}
               end
             end
             nil
           end
         END
-        class_eval(src)
       end
     end
 
     def initialize(str)
       compiler = Compiler.new(str)
-      src = 'def match(node0' << compiler.emit_trailing_param_list << ');' <<
+      src = 'def match(node0' << compiler.emit_trailing_params << ');' <<
             compiler.emit_method_code << 'end'
       instance_eval(src)
     end
