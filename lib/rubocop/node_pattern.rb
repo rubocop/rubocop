@@ -73,7 +73,7 @@ module RuboCop
   # `#prefix_type?` to the AST node class, then 'prefix' will become usable as
   # a pattern.
   #
-  # Also node that if you need a "guard clause" to protect against possible nils
+  # Also note that if you need a "guard clause" to protect against possible nils
   # in a certain place in the AST, you can do it like this: `[!nil <pattern>]`
   #
   class NodePattern
