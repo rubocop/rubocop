@@ -265,5 +265,13 @@ describe RuboCop::Cop::Style::AndOr, :config do
         expect(new_source).to eq('(not arg) && x')
       end
     end
+
+    context 'with !variable on left' do
+      it "doesn't crash and burn" do
+        # regression test; see GH issue 2482
+        inspect_source(cop, '!var or var.empty?')
+        expect(cop.offenses.size).to eq(1)
+      end
+    end
   end
 end
