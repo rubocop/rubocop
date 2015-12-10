@@ -23,6 +23,7 @@
 * [#2463](https://github.com/bbatsov/rubocop/issues/2463): Allow comments before an access modifier. ([@codebeige][])
 * [#2471](https://github.com/bbatsov/rubocop/issues/2471): `Style/MethodName` doesn't choke on methods which are defined inside methods. ([@alexdowad][])
 * [#2449](https://github.com/bbatsov/rubocop/issues/2449): `Style/StabbyLambdaParentheses` only checks lambdas in the arrow form. ([@lumeet][])
+* [#2456](https://github.com/bbatsov/rubocop/issues/2456): `Lint/NestedMethodDefinition` doesn't register offenses for method definitions inside an eval block (either `instance_eval`, `class_eval`, or `module_eval`). ([@alexdowad][])
 
 ### Changes
 
