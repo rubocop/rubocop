@@ -46,10 +46,12 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
   it_behaves_like('offenses', ['if true',
                                '  a, b = 1, 2',
                                'end'].join("\n"))
-  it_behaves_like('offenses',
-                  'a, b = Float::INFINITY, Float::INFINITY')
-  it_behaves_like('offenses',
-                  'Float::INFINITY, Float::INFINITY = 1, 2')
+  it_behaves_like('offenses', 'a, b = Float::INFINITY, Float::INFINITY')
+  it_behaves_like('offenses', 'Float::INFINITY, Float::INFINITY = 1, 2')
+  it_behaves_like('offenses', 'a[0], a[1] = a[1], a[2]')
+  it_behaves_like('offenses', 'obj.attr1, obj.attr2 = obj.attr3, obj.attr1')
+  it_behaves_like('offenses', 'obj.attr1, ary[0] = ary[1], obj.attr1')
+  it_behaves_like('offenses', 'a[0], a[1] = a[1], b[0]')
 
   shared_examples('allowed') do |source|
     it "allows assignment of: #{source}" do
@@ -85,8 +87,11 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
                               'a, b, c = foo'].join("\n"))
   it_behaves_like('allowed', ['array = [1, 2, 3]',
                               'a, = array'].join("\n"))
-  it_behaves_like('allowed',
-                  'a, b = Float::INFINITY')
+  it_behaves_like('allowed', 'a, b = Float::INFINITY')
+  it_behaves_like('allowed', 'a[0], a[1] = a[1], a[0]')
+  it_behaves_like('allowed', 'obj.attr1, obj.attr2 = obj.attr2, obj.attr1')
+  it_behaves_like('allowed', 'obj.attr1, ary[0] = ary[0], obj.attr1')
+  it_behaves_like('allowed', 'ary[0], ary[1], ary[2] = ary[1], ary[2], ary[0]')
 
   it 'hightlights the entire expression' do
     inspect_source(cop, 'a, b = 1, 2')
