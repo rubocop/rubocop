@@ -85,6 +85,7 @@ module RuboCop
 
             if node.loc.selector.source == '!'
               node = receiver
+              return unless node.send_type?
               _receiver, _method_name, *args = *node
             elsif node.loc.selector.source == 'not'
               return correct_other(node, corrector)
