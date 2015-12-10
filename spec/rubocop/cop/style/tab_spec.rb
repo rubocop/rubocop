@@ -32,6 +32,16 @@ describe RuboCop::Cop::Style::Tab do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts a line which begins with tab in a string' do
+    inspect_source(cop, "x = '\n\thello'")
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'accepts a line which begins with tab in a heredoc' do
+    inspect_source(cop, "x = <<HELLO\n\thello\nHELLO")
+    expect(cop.offenses).to be_empty
+  end
+
   it 'auto-corrects a line indented with tab' do
     new_source = autocorrect_source(cop, ["\tx = 0"])
     expect(new_source).to eq('  x = 0')
