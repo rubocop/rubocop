@@ -346,6 +346,16 @@ describe RuboCop::Cop::Style::TrailingComma, :config do
         expect(cop.offenses).to be_empty
       end
 
+      it 'accepts a trailing comma in a method call with single ' \
+         'line hashes' do
+        inspect_source(cop, ['some_method(',
+                             ' { a: 0, b: 1 },',
+                             ' { a: 1, b: 0 },',
+                             ')'])
+
+        expect(cop.offenses).to be_empty
+      end
+
       it 'accepts a multiline word array' do
         inspect_source(cop, ['ingredients = %w(',
                              '  sausage',
@@ -550,6 +560,16 @@ describe RuboCop::Cop::Style::TrailingComma, :config do
                              '              a: 0,',
                              '              b: 1,',
                              '           )'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'accepts a trailing comma in a method call with single ' \
+         'line hashes' do
+        inspect_source(cop, ['some_method(',
+                             ' { a: 0, b: 1 },',
+                             ' { a: 1, b: 0 },',
+                             ')'])
+
         expect(cop.offenses).to be_empty
       end
 

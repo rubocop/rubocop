@@ -27,6 +27,7 @@
 * [#2464](https://github.com/bbatsov/rubocop/issues/2464): `Style/ParallelAssignment` understands aref and attribute assignments, and doesn't warn if they can't be correctly rearranged into a series of single assignments. ([@alexdowad][])
 * [#2482](https://github.com/bbatsov/rubocop/issues/2482): `Style/AndOr` doesn't raise an exception when trying to autocorrect `!variable or ...`. ([@alexdowad][])
 * [#2446](https://github.com/bbatsov/rubocop/issues/2446): `Style/Tab` doesn't register errors for leading tabs which occur inside a string literal (including heredoc). ([@alexdowad][])
+* [#2452](https://github.com/bbatsov/rubocop/issues/2452): `Style/TrailingComma` incorrectly categorizes single-line hashes in methods calls. ([@panthomakos][])
 
 ### Changes
 

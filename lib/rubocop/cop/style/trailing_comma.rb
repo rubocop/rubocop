@@ -123,7 +123,16 @@ module RuboCop
         def multiline?(node)
           elements = if node.type == :send
                        _receiver, _method_name, *args = *node
-                       args.flat_map { |a| a.type == :hash ? a.children : a }
+                       args.flat_map do |a|
+                         # For each argument, if it is a multi-line hash,
+                         # then promote the hash elements to method arguments
+                         # for the purpose of determining multi-line-ness.
+                         if a.hash_type? && a.loc.first_line != a.loc.last_line
+                           a.children
+                         else
+                           a
+                         end
+                       end
                      else
                        node.children
                      end
