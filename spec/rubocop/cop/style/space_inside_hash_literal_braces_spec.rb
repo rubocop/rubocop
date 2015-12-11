@@ -144,4 +144,12 @@ describe RuboCop::Cop::Style::SpaceInsideHashLiteralBraces, :config do
     inspect_source(cop, 'f(get: "#{x}")')
     expect(cop.offenses).to be_empty
   end
+
+  context 'on Hash[{ x: 1 } => [1]]' do
+    # regression test; see GH issue 2436
+    it 'does not register an offense' do
+      inspect_source(cop, 'Hash[{ x: 1 } => [1]]')
+      expect(cop.offenses).to be_empty
+    end
+  end
 end

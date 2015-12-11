@@ -19,6 +19,8 @@ module RuboCop
           return unless tokens[b_ix].type == :tLBRACE
 
           e_ix = index_of_last_token(node)
+          return unless tokens[e_ix].type == :tRCURLY
+
           check(tokens[b_ix], tokens[b_ix + 1])
           check(tokens[e_ix - 1], tokens[e_ix]) unless b_ix == e_ix - 1
         end
