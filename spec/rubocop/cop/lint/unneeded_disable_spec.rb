@@ -13,7 +13,8 @@ describe RuboCop::Cop::Lint::UnneededDisable do
     let(:processed_source) { RuboCop::ProcessedSource.new(source) }
     let(:comments) { processed_source.comments }
     let(:corrected_source) do
-      RuboCop::Cop::Corrector.new(processed_source.buffer, cop.corrections)
+      RuboCop::Cop::Corrector
+        .new(processed_source.buffer, cop.corrections)
         .rewrite
     end
 

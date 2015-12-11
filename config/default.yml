@@ -595,6 +595,12 @@ Style/MultilineAssignmentLayout:
     # for the set of supported types.
     - new_line
 
+Style/MultilineMethodCallIndentation:
+  EnforcedStyle: aligned
+  SupportedStyles:
+    - aligned
+    - indented
+
 Style/MultilineOperationIndentation:
   EnforcedStyle: aligned
   SupportedStyles:
