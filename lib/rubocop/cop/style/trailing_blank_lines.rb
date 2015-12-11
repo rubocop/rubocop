@@ -42,8 +42,6 @@ module RuboCop
                       message(wanted_blank_lines, blank_lines))
         end
 
-        private
-
         def ends_in_end?(processed_source)
           sb = processed_source.buffer
 
