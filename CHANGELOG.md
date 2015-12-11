@@ -29,6 +29,7 @@
 * [#2482](https://github.com/bbatsov/rubocop/issues/2482): `Style/AndOr` doesn't raise an exception when trying to autocorrect `!variable or ...`. ([@alexdowad][])
 * [#2446](https://github.com/bbatsov/rubocop/issues/2446): `Style/Tab` doesn't register errors for leading tabs which occur inside a string literal (including heredoc). ([@alexdowad][])
 * [#2452](https://github.com/bbatsov/rubocop/issues/2452): `Style/TrailingComma` incorrectly categorizes single-line hashes in methods calls. ([@panthomakos][])
+* [#2441](https://github.com/bbatsov/rubocop/issues/2441): `Style/AlignParameters` doesn't crash if it finds nested offenses. ([@alexdowad][])
 
 ### Changes
 
