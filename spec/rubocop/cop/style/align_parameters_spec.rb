@@ -190,6 +190,21 @@ describe RuboCop::Cop::Style::AlignParameters do
       expect(cop.offenses).to be_empty
     end
 
+    it "doesn't crash and burn when there are nested issues" do
+      # regression test; see GH issue 2441
+      src = ['build(:house,',
+             '  :rooms => [',
+             '    build(:bedroom,',
+             '      :bed => build(:bed,',
+             '        :occupants => [],',
+             '        :size => "king"',
+             '      )',
+             '    )',
+             '  ]',
+             ')']
+      expect { inspect_source(cop, src) }.not_to raise_error
+    end
+
     context 'method definitions' do
       it 'registers an offense for parameters with single indent' do
         inspect_source(cop, ['def method(a,',

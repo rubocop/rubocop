@@ -58,6 +58,10 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
         'class SomeClass',
         '  protected',
         '  attr_accessor :some_property',
+        '  public',
+        '  attr_reader :another_one',
+        '  private',
+        '  attr :yet_again, true',
         'end'
       ]
     end
@@ -111,7 +115,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
       expect(cop.offenses.size).to eq(1)
       expect(cop.offenses.first.message)
         .to eq('Useless `private` access modifier.')
-      expect(cop.offenses.first.line).to eq(2)
+      expect(cop.offenses.first.line).to eq(3)
       expect(cop.highlights).to eq(['private'])
     end
   end
@@ -192,4 +196,167 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
       end
     end
   end
+
+  shared_examples 'at the top of the body' do |keyword|
+    it 'registers an offense for `public`' do
+      src = ["#{keyword} A",
+             '  public',
+             '  def method',
+             '  end',
+             'end']
+      inspect_source(cop, src)
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it "doesn't register an offense for `protected`" do
+      src = ["#{keyword} A",
+             '  protected',
+             '  def method',
+             '  end',
+             'end']
+      inspect_source(cop, src)
+      expect(cop.offenses).to be_empty
+    end
+
+    it "doesn't register an offense for `private`" do
+      src = ["#{keyword} A",
+             '  private',
+             '  def method',
+             '  end',
+             'end']
+      inspect_source(cop, src)
+      expect(cop.offenses).to be_empty
+    end
+  end
+
+  shared_examples 'repeated visibility modifiers' do |keyword, modifier|
+    it "registers an offense when `#{modifier}` is repeated" do
+      src = ["#{keyword} A",
+             "  #{modifier == 'private' ? 'protected' : 'private'}",
+             '  def method1',
+             '  end',
+             "  #{modifier}",
+             "  #{modifier}",
+             '  def method2',
+             '  end',
+             'end']
+      inspect_source(cop, src)
+      expect(cop.offenses.size).to eq(1)
+    end
+  end
+
+  shared_examples 'non-repeated visibility modifiers' do |keyword|
+    it 'registers an offense even when `public` is not repeated' do
+      src = ["#{keyword} A",
+             '  def method1',
+             '  end',
+             '  public',
+             '  def method2',
+             '  end',
+             'end']
+      inspect_source(cop, src)
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it "doesn't register an offense when `protected` is not repeated" do
+      src = ["#{keyword} A",
+             '  def method1',
+             '  end',
+             '  protected',
+             '  def method2',
+             '  end',
+             'end']
+      inspect_source(cop, src)
+      expect(cop.offenses).to be_empty
+    end
+
+    it "doesn't register an offense when `private` is not repeated" do
+      src = ["#{keyword} A",
+             '  def method1',
+             '  end',
+             '  private',
+             '  def method2',
+             '  end',
+             'end']
+      inspect_source(cop, src)
+      expect(cop.offenses).to be_empty
+    end
+  end
+
+  shared_examples 'at the end of the body' do |keyword, modifier|
+    it "registers an offense for trailing `#{modifier}`" do
+      src = ["#{keyword} A",
+             '  def method1',
+             '  end',
+             '  def method2',
+             '  end',
+             "  #{modifier}",
+             'end']
+      inspect_source(cop, src)
+      expect(cop.offenses.size).to eq(1)
+    end
+  end
+
+  shared_examples 'nested in a begin..end block' do |keyword, modifier|
+    it "still flags repeated `#{modifier}`" do
+      src = ["#{keyword} A",
+             "  #{modifier == 'private' ? 'protected' : 'private'}",
+             '  def blah',
+             '  end',
+             '  begin',
+             '    def method1',
+             '    end',
+             "    #{modifier}",
+             "    #{modifier}",
+             '    def method2',
+             '    end',
+             '  end',
+             'end']
+      inspect_source(cop, src)
+      expect(cop.offenses.size).to eq(1)
+    end
+  end
+
+  shared_examples 'unused visibility modifiers' do |keyword|
+    it 'registers an error when visibility is immediately changed ' \
+       'without any intervening defs' do
+      src = ["#{keyword} A",
+             '  private',
+             '  def method1',
+             '  end',
+             '  public', # bad
+             '  private',
+             '  def method2',
+             '  end',
+             'end']
+      inspect_source(cop, src)
+      expect(cop.offenses.size).to eq(1)
+    end
+  end
+
+  it_behaves_like('at the top of the body', 'class')
+  it_behaves_like('repeated visibility modifiers', 'class', 'public')
+  it_behaves_like('repeated visibility modifiers', 'class', 'protected')
+  it_behaves_like('repeated visibility modifiers', 'class', 'private')
+  it_behaves_like('non-repeated visibility modifiers', 'class')
+  it_behaves_like('at the end of the body', 'class', 'public')
+  it_behaves_like('at the end of the body', 'class', 'protected')
+  it_behaves_like('at the end of the body', 'class', 'private')
+  it_behaves_like('nested in a begin..end block', 'class', 'public')
+  it_behaves_like('nested in a begin..end block', 'class', 'protected')
+  it_behaves_like('nested in a begin..end block', 'class', 'private')
+  it_behaves_like('unused visibility modifiers', 'class')
+
+  it_behaves_like('at the top of the body', 'module')
+  it_behaves_like('repeated visibility modifiers', 'module', 'public')
+  it_behaves_like('repeated visibility modifiers', 'module', 'protected')
+  it_behaves_like('repeated visibility modifiers', 'module', 'private')
+  it_behaves_like('non-repeated visibility modifiers', 'module')
+  it_behaves_like('at the end of the body', 'module', 'public')
+  it_behaves_like('at the end of the body', 'module', 'protected')
+  it_behaves_like('at the end of the body', 'module', 'private')
+  it_behaves_like('nested in a begin..end block', 'module', 'public')
+  it_behaves_like('nested in a begin..end block', 'module', 'protected')
+  it_behaves_like('nested in a begin..end block', 'module', 'private')
+  it_behaves_like('unused visibility modifiers', 'module')
 end

@@ -9,6 +9,7 @@
 * [#2431](https://github.com/bbatsov/rubocop/issues/2431): Add `IgnoreExecutableScripts` option to `Style/FileName`. ([@sometimesfood][])
 * [#2460](https://github.com/bbatsov/rubocop/pull/2460): New cop `Style/UnneededInterpolation` checks for strings that are just an interpolated expression. ([@cgriego][])
 * [#2361](https://github.com/bbatsov/rubocop/pull/2361): `Style/MultilineAssignmentLayout` cop checks for a newline after the assignment operator in a multi-line assignment. ([@panthomakos][])
+* [#2462](https://github.com/bbatsov/rubocop/issues/2462): `Lint/UselessAccessModifier` can catch more types of useless access modifiers. ([@alexdowad][])
 
 ### Bug Fixes
 
@@ -28,6 +29,8 @@
 * [#2482](https://github.com/bbatsov/rubocop/issues/2482): `Style/AndOr` doesn't raise an exception when trying to autocorrect `!variable or ...`. ([@alexdowad][])
 * [#2446](https://github.com/bbatsov/rubocop/issues/2446): `Style/Tab` doesn't register errors for leading tabs which occur inside a string literal (including heredoc). ([@alexdowad][])
 * [#2452](https://github.com/bbatsov/rubocop/issues/2452): `Style/TrailingComma` incorrectly categorizes single-line hashes in methods calls. ([@panthomakos][])
+* [#2441](https://github.com/bbatsov/rubocop/issues/2441): `Style/AlignParameters` doesn't crash if it finds nested offenses. ([@alexdowad][])
+* [#2436](https://github.com/bbatsov/rubocop/issues/2436): `Style/SpaceInsideHashLiteralBraces` doesn't mangle a hash literal which is not surrounded by curly braces, but has another hash literal which does as its first key. ([@alexdowad][])
 
 ### Changes
 

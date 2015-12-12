@@ -1,56 +1,82 @@
 # encoding: utf-8
+
 module RuboCop
   module Cop
     module Lint
-      # This cop checks for access modifiers without any code.
+      # This cop checks for redundant access modifiers, including those with
+      # no code, those which are repeated, and leading `public` modifiers in
+      # a class or module body.
       #
       # @example
-      #   class Foo
-      #     private # This is useless
       #
-      #     def self.some_method
+      #   class Foo
+      #     public # this is redundant
+      #
+      #     def method
       #     end
+      #
+      #     private # this is not redundant
+      #     def method2
+      #     end
+      #
+      #     private # this is redundant
       #   end
       class UselessAccessModifier < Cop
-        include AccessModifierNode
-
         MSG = 'Useless `%s` access modifier.'
 
+        def_node_matcher :access_modifier, <<-PATTERN
+          (send nil ${:public :protected :private})
+        PATTERN
+
+        def_node_matcher :method_definition?, <<-PATTERN
+          {def (send nil {:attr :attr_reader :attr_accessor} ...)}
+        PATTERN
+
         def on_class(node)
-          _name, _base_class, body = *node
-          return unless body
+          check_node(node.children[2]) # class bocy
+        end
 
-          body_nodes = body.type == :begin ? body.children : [body]
-
-          body_nodes.each do |child_node|
-            check_for_access_modifier(child_node) ||
-              check_for_instance_method(child_node)
-          end
-
-          add_offense_for_access_modifier
+        def on_module(node)
+          check_node(node.children[1]) # module body
         end
 
         private
 
-        def add_offense_for_access_modifier
-          return unless @access_modifier_node
-
-          _, modifier = *@access_modifier_node
-          message = format(MSG, modifier)
-          add_offense(@access_modifier_node, :expression, message)
+        def check_node(node)
+          return if node.nil?
+          if node.begin_type?
+            check_scope(node)
+          elsif (vis = access_modifier(node))
+            add_offense(node, :expression, format(MSG, vis))
+          end
         end
 
-        def check_for_instance_method(node)
-          return unless node.type == :def || node.type == :send
+        def check_scope(node, cur_vis = :public)
+          unused = nil
 
-          @access_modifier_node = nil
-        end
+          node.children.each do |child|
+            if (new_vis = access_modifier(child))
+              # does this modifier just repeat the existing visibility?
+              if new_vis == cur_vis
+                add_offense(child, :expression, format(MSG, cur_vis))
+              else
+                # was the previous modifier never applied to any defs?
+                add_offense(unused, :expression, format(MSG, cur_vis)) if unused
+                # once we have already warned about a certain modifier, don't
+                # warn again even if it is never applied to any method defs
+                unused = child
+              end
+              cur_vis = new_vis
+            elsif method_definition?(child)
+              unused = nil
+            elsif child.kwbegin_type?
+              cur_vis = check_scope(child, cur_vis)
+            end
+          end
 
-        def check_for_access_modifier(node)
-          return unless modifier_node?(node)
+          add_offense(unused, :expression, format(MSG, cur_vis)) if unused
 
-          add_offense_for_access_modifier
-          @access_modifier_node = node
+          cur_vis
         end
       end
     end

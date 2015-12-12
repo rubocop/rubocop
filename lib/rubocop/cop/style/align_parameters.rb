@@ -25,7 +25,7 @@ module RuboCop
         end
 
         def message(node)
-          type = node.parent.send_type? ? 'call' : 'definition'
+          type = node && node.parent.send_type? ? 'call' : 'definition'
           "Align the parameters of a method #{type} if they span " \
           'more than one line.'
         end
