@@ -31,6 +31,7 @@
 * [#2452](https://github.com/bbatsov/rubocop/issues/2452): `Style/TrailingComma` incorrectly categorizes single-line hashes in methods calls. ([@panthomakos][])
 * [#2441](https://github.com/bbatsov/rubocop/issues/2441): `Style/AlignParameters` doesn't crash if it finds nested offenses. ([@alexdowad][])
 * [#2436](https://github.com/bbatsov/rubocop/issues/2436): `Style/SpaceInsideHashLiteralBraces` doesn't mangle a hash literal which is not surrounded by curly braces, but has another hash literal which does as its first key. ([@alexdowad][])
+* [#2483](https://github.com/bbatsov/rubocop/issues/2483): `Style/Attr` differentiate between attr_accessor and attr_reader. ([@weh][])
 
 ### Changes
 
@@ -1756,3 +1757,4 @@
 [@volmer]: https://github.com/volmer
 [@domcleal]: https://github.com/domcleal
 [@codebeige]: https://github.com/codebeige
+[@weh]: https://github.com/weh
