@@ -43,8 +43,8 @@ module RuboCop
 
         def find_unneeded(comment, offenses, cop, cop_offenses, line_range)
           if all_disabled?(comment)
-            'all cops' if offenses.none? { |o| line_range.include?(o.line) }
-          elsif cop_offenses.none? { |o| line_range.include?(o.line) }
+            'all cops' if offenses.none? { |o| line_range.cover?(o.line) }
+          elsif cop_offenses.none? { |o| line_range.cover?(o.line) }
             cop
           end
         end
@@ -55,7 +55,7 @@ module RuboCop
 
         def ignore_offense?(disabled_ranges, line_range)
           disabled_ranges.any? do |range|
-            range.include?(line_range.min) && range.include?(line_range.max)
+            range.cover?(line_range.min) && range.cover?(line_range.max)
           end
         end
 
