@@ -36,6 +36,8 @@ describe RuboCop::Cop::Lint::UnneededDisable do
             it 'returns an offense' do
               expect(cop.messages)
                 .to eq(['Unnecessary disabling of `Metrics/MethodLength`.'])
+              expect(cop.highlights)
+                .to eq(['# rubocop:disable Metrics/MethodLength'])
             end
 
             it 'gives the right cop name' do
@@ -52,6 +54,8 @@ describe RuboCop::Cop::Lint::UnneededDisable do
             it 'returns an offense' do
               expect(cop.messages)
                 .to eq(['Unnecessary disabling of `UnknownCop` (unknown cop).'])
+              expect(cop.highlights)
+                .to eq(['# rubocop:disable UnknownCop'])
             end
           end
 
@@ -99,6 +103,62 @@ describe RuboCop::Cop::Lint::UnneededDisable do
             end
           end
 
+          context 'multiple cops, and one of them has offenses' do
+            let(:source) do
+              '# rubocop:disable Metrics/MethodLength, Metrics/ClassLength, ' \
+              'Lint/Debugger'
+            end
+            let(:cop_disabled_line_ranges) do
+              { 'Metrics/ClassLength' => [1..Float::INFINITY],
+                'Metrics/MethodLength' => [1..Float::INFINITY],
+                'Lint/Debugger' => [1..Float::INFINITY] }
+            end
+            let(:offenses) do
+              [
+                RuboCop::Cop::Offense.new(:convention,
+                                          OpenStruct.new(line: 7, column: 0),
+                                          'Method has too many lines. [22/20]',
+                                          'Metrics/MethodLength')
+              ]
+            end
+
+            it 'returns an offense' do
+              expect(cop.messages)
+                .to eq(['Unnecessary disabling of `Metrics/ClassLength`.',
+                        'Unnecessary disabling of `Lint/Debugger`.'])
+              expect(cop.highlights).to eq(['Metrics/ClassLength',
+                                            'Lint/Debugger'])
+            end
+          end
+
+          context 'multiple cops, with abbreviated names' do
+            context 'one of them has offenses' do
+              let(:source) do
+                '# rubocop:disable MethodLength, ClassLength, Debugger'
+              end
+              let(:cop_disabled_line_ranges) do
+                { 'Metrics/ClassLength' => [1..Float::INFINITY],
+                  'Metrics/MethodLength' => [1..Float::INFINITY],
+                  'Lint/Debugger' => [1..Float::INFINITY] }
+              end
+              let(:offenses) do
+                [
+                  RuboCop::Cop::Offense.new(:convention,
+                                            OpenStruct.new(line: 7, column: 0),
+                                            'Method has too many lines. [22/20]',
+                                            'Metrics/MethodLength')
+                ]
+              end
+
+              it 'returns an offense' do
+                expect(cop.messages)
+                  .to eq(['Unnecessary disabling of `Metrics/ClassLength`.',
+                          'Unnecessary disabling of `Lint/Debugger`.'])
+                expect(cop.highlights).to eq(['ClassLength', 'Debugger'])
+              end
+            end
+          end
+
           context 'misspelled cops' do
             let(:source) do
               '# rubocop:disable Metrics/MethodLenght, KlassLength'
@@ -128,8 +188,8 @@ describe RuboCop::Cop::Lint::UnneededDisable do
             end
 
             it 'returns an offense' do
-              expect(cop.messages)
-                .to eq(['Unnecessary disabling of all cops.'])
+              expect(cop.messages).to eq(['Unnecessary disabling of all cops.'])
+              expect(cop.highlights).to eq(['# rubocop:disable all'])
             end
           end
         end
@@ -162,6 +222,7 @@ describe RuboCop::Cop::Lint::UnneededDisable do
             it 'returns an offense' do
               expect(cop.messages)
                 .to eq(['Unnecessary disabling of `Style/Tab`.'])
+              expect(cop.highlights).to eq(['# rubocop:disable Style/Tab'])
             end
           end
 

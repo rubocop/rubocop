@@ -43,14 +43,14 @@ module RuboCop
 
         def find_unneeded(comment, offenses, cop, cop_offenses, line_range)
           if all_disabled?(comment)
-            'all cops' if offenses.none? { |o| line_range.cover?(o.line) }
+            'all' if offenses.none? { |o| line_range.cover?(o.line) }
           elsif cop_offenses.none? { |o| line_range.cover?(o.line) }
             cop
           end
         end
 
         def all_disabled?(comment)
-          comment.loc.expression.source =~ /rubocop:disable\s+all\b/
+          comment.text =~ /rubocop:disable\s+all\b/
         end
 
         def ignore_offense?(disabled_ranges, line_range)
@@ -59,18 +59,46 @@ module RuboCop
           end
         end
 
+        def directive_count(comment)
+          match = comment.text.match(CommentConfig::COMMENT_DIRECTIVE_REGEXP)
+          _, cops_string = match.captures
+          cops_string.split(/,\s*/).size
+        end
+
         def add_offenses(unneeded_cops)
           unneeded_cops.each do |comment, cops|
-            range    = comment.loc.expression
-            cop_list = cops.sort.map { |c| describe(c) }
-            add_offense(range, range,
-                        "Unnecessary disabling of #{cop_list.join(', ')}.")
+            if all_disabled?(comment) ||
+               directive_count(comment) == cops.size
+              range    = comment.loc.expression
+              cop_list = cops.sort.map { |c| describe(c) }
+              add_offense(range, range,
+                          "Unnecessary disabling of #{cop_list.join(', ')}.")
+            else
+              cops.each do |cop|
+                range = matching_range(comment.loc.expression, cop) ||
+                        matching_range(comment.loc.expression,
+                                       cop.split('/').last)
+                unless range
+                  fail "Couldn't find #{cop} in comment: #{comment.text}"
+                end
+
+                add_offense(range, range,
+                            "Unnecessary disabling of #{describe(cop)}.")
+              end
+            end
+          end
+        end
+
+        def matching_range(haystack, needle)
+          if offset = (haystack.source =~ Regexp.new(Regexp.escape(needle)))
+            Parser::Source::Range.new(haystack.source_buffer, offset,
+                                      offset + needle.size)
           end
         end
 
         def describe(cop)
-          if cop == 'all cops'
-            cop
+          if cop == 'all'
+            'all cops'
           elsif all_cop_names.include?(cop)
             "`#{cop}`"
           else
