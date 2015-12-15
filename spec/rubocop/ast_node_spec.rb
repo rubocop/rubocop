@@ -140,4 +140,147 @@ describe Astrolabe::Node do
       end
     end
   end
+
+  describe '#pure?' do
+    let(:node) { RuboCop::ProcessedSource.new(src).ast }
+
+    context 'for a method call' do
+      let(:src) { 'obj.method(arg1, arg2)' }
+
+      it 'returns false' do
+        expect(node).not_to be_pure
+      end
+    end
+
+    context 'for an integer literal' do
+      let(:src) { '100' }
+
+      it 'returns true' do
+        expect(node).to be_pure
+      end
+    end
+
+    context 'for an array literal' do
+      context 'with only literal children' do
+        let(:src) { '[1..100, false, :symbol, "string", 1.0]' }
+
+        it 'returns true' do
+          expect(node).to be_pure
+        end
+      end
+
+      context 'which contains a method call' do
+        let(:src) { '[1, 2, 3, 3 + 4]' }
+
+        it 'returns false' do
+          expect(node).not_to be_pure
+        end
+      end
+    end
+
+    context 'for a hash literal' do
+      context 'with only literal children' do
+        let(:src) { '{range: 1..100, bool: false, str: "string", float: 1.0}' }
+
+        it 'returns true' do
+          expect(node).to be_pure
+        end
+      end
+
+      context 'which contains a method call' do
+        let(:src) { '{a: 1, b: 2, c: Kernel.exit}' }
+
+        it 'returns false' do
+          expect(node).not_to be_pure
+        end
+      end
+    end
+
+    context 'for a nested if' do
+      context 'where the innermost descendants are local vars and literals' do
+        let(:src) do
+          ['lvar1, lvar2 = method1, method2',
+           'if $global',
+           '  if @initialized',
+           '    [lvar1, lvar2, true]',
+           '  else',
+           '    :symbol',
+           '  end',
+           'else',
+           '  lvar1',
+           'end'].join("\n")
+        end
+
+        it 'returns true' do
+          if_node = node.children[1]
+          expect(if_node.type).to be :if
+          expect(if_node).to be_pure
+        end
+      end
+
+      context 'where one branch contains a method call' do
+        let(:src) { 'if $DEBUG then puts "hello" else nil end' }
+
+        it 'returns false' do
+          expect(node).not_to be_pure
+        end
+      end
+
+      context 'where one branch contains an assignment statement' do
+        let(:src) { 'if @a then 1 else $global = "str" end' }
+
+        it 'returns false' do
+          expect(node).not_to be_pure
+        end
+      end
+    end
+
+    context 'for an ivar assignment' do
+      let(:src) { '@var = 1' }
+
+      it 'returns false' do
+        expect(node).not_to be_pure
+      end
+    end
+
+    context 'for a gvar assignment' do
+      let(:src) { '$var = 1' }
+
+      it 'returns false' do
+        expect(node).not_to be_pure
+      end
+    end
+
+    context 'for a cvar assignment' do
+      let(:src) { '@@var = 1' }
+
+      it 'returns false' do
+        expect(node).not_to be_pure
+      end
+    end
+
+    context 'for an lvar assignment' do
+      let(:src) { 'var = 1' }
+
+      it 'returns false' do
+        expect(node).not_to be_pure
+      end
+    end
+
+    context 'for a class definition' do
+      let(:src) { 'class C < Super; def method; end end' }
+
+      it 'returns false' do
+        expect(node).not_to be_pure
+      end
+    end
+
+    context 'for a module definition' do
+      let(:src) { 'module M; def method; end end' }
+
+      it 'returns false' do
+        expect(node).not_to be_pure
+      end
+    end
+  end
 end

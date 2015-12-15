@@ -92,5 +92,28 @@ module Astrolabe
         true
       end
     end
+
+    # Some expressions are evaluated for their value, some for their side
+    # effects, and some for both
+    # If we know that expressions are useful only for their return values, and
+    # have no side effects, that means we can reorder them, change the number
+    # of times they are evaluated, or replace them with other expressions which
+    # are equivalent in value
+    # So, is evaluation of this node free of side effects?
+    #
+    def pure?
+      # Be conservative and return false if we're not sure
+      case type
+      when :__FILE__, :__LINE__, :const, :cvar, :defined?, :false, :float,
+           :gvar, :int, :ivar, :lvar, :nil, :str, :sym, :true
+        true
+      when :and, :array, :begin, :case, :dstr, :dsym, :eflipflop, :ensure,
+           :erange, :for, :hash, :if, :iflipflop, :irange, :kwbegin, :not, :or,
+           :pair, :regexp, :until, :until_post, :when, :while, :while_post
+        child_nodes.all?(&:pure?)
+      else
+        false
+      end
+    end
   end
 end
