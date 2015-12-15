@@ -38,35 +38,34 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
      'and the fields do not match' do
     inspect_source(cop, 'Kernel.format("%s %s", 1)')
     expect(cop.offenses.size).to eq(1)
-
-    msg = ['Number arguments (1) to `format` mismatches expected fields (2).']
-    expect(cop.messages).to eq(msg)
+    expect(cop.messages).to eq(
+      ["Number of arguments (1) to `format` doesn't match the number of " \
+       'fields (2).'])
   end
 
   it 'registers an offense when calling Kernel.sprintf ' \
      'and the fields do not match' do
     inspect_source(cop, 'Kernel.sprintf("%s %s", 1)')
     expect(cop.offenses.size).to eq(1)
-
-    msg = ['Number arguments (1) to `sprintf` mismatches expected fields (2).']
-    expect(cop.messages).to eq(msg)
+    expect(cop.messages).to eq(
+      ["Number of arguments (1) to `sprintf` doesn't match the number of " \
+       'fields (2).'])
   end
 
   it 'registers an offense when there are less arguments than expected' do
     inspect_source(cop, 'format("%s %s", 1)')
     expect(cop.offenses.size).to eq(1)
-
-    msg = ['Number arguments (1) to `format` mismatches expected fields (2).']
-    expect(cop.messages).to eq(msg)
+    expect(cop.messages).to eq(
+      ["Number of arguments (1) to `format` doesn't match the number of " \
+       'fields (2).'])
   end
 
   it 'registers an offense when there are more arguments than expected' do
     inspect_source(cop, 'format("%s %s", 1, 2, 3)')
     expect(cop.offenses.size).to eq(1)
-
-    msgs = ['Number arguments (3) to `format` mismatches expected fields (2).']
-    expect(cop.messages)
-      .to eq(msgs)
+    expect(cop.messages).to eq(
+      ["Number of arguments (3) to `format` doesn't match the number of " \
+       'fields (2).'])
   end
 
   it 'does not register an offense when arguments and fields match' do
@@ -87,9 +86,9 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
   it 'registers offense with sprintf' do
     inspect_source(cop, 'sprintf("%s %s", 1, 2, 3)')
     expect(cop.offenses.size).to eq(1)
-
-    msg = ['Number arguments (3) to `sprintf` mismatches expected fields (2).']
-    expect(cop.messages).to eq(msg)
+    expect(cop.messages).to eq(
+      ["Number of arguments (3) to `sprintf` doesn't match the number of " \
+       'fields (2).'])
   end
 
   it 'correctly parses different sprintf formats' do
@@ -101,9 +100,9 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
   it 'registers an offense for String#%' do
     inspect_source(cop, '"%s %s" % [1, 2, 3]')
     expect(cop.offenses.size).to eq(1)
-
-    msg = ['Number arguments (3) to `String#%` mismatches expected fields (2).']
-    expect(cop.messages).to eq(msg)
+    expect(cop.messages).to eq(
+      ["Number of arguments (3) to `String#%` doesn't match the number of " \
+       'fields (2).'])
   end
 
   it 'does not register offense for `String#%` when arguments, fields match' do
