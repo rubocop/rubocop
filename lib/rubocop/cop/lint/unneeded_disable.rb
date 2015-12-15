@@ -18,7 +18,7 @@ module RuboCop
         COP_NAME = 'Lint/UnneededDisable'
 
         def check(offenses, cop_disabled_line_ranges, comments)
-          unneeded_cops = {}
+          unneeded_cops = Hash.new { |h, k| h[k] = Set.new }
           disabled_ranges = cop_disabled_line_ranges[COP_NAME] || [0..0]
 
           cop_disabled_line_ranges.each do |cop, line_ranges|
@@ -32,10 +32,7 @@ module RuboCop
                 next if ignore_offense?(disabled_ranges, line_range)
               end
 
-              if unneeded_cop
-                unneeded_cops[comment.loc.expression] ||= Set.new
-                unneeded_cops[comment.loc.expression].add(unneeded_cop)
-              end
+              unneeded_cops[comment].add(unneeded_cop) if unneeded_cop
             end
           end
 
@@ -63,7 +60,8 @@ module RuboCop
         end
 
         def add_offenses(unneeded_cops)
-          unneeded_cops.each do |range, cops|
+          unneeded_cops.each do |comment, cops|
+            range    = comment.loc.expression
             cop_list = cops.sort.map { |c| describe(c) }
             add_offense(range, range,
                         "Unnecessary disabling of #{cop_list.join(', ')}.")
