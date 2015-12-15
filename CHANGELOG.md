@@ -44,6 +44,7 @@
 * [#2436](https://github.com/bbatsov/rubocop/issues/2436): `Style/SpaceInsideHashLiteralBraces` doesn't mangle a hash literal which is not surrounded by curly braces, but has another hash literal which does as its first key. ([@alexdowad][])
 * [#2483](https://github.com/bbatsov/rubocop/issues/2483): `Style/Attr` differentiate between attr_accessor and attr_reader. ([@weh][])
 * `Style/ConditionalAssignment` doesn't crash if it finds a `case` with an empty branch. ([@lumeet][])
+* [#2506](https://github.com/bbatsov/rubocop/issues/2506): `Lint/FormatParameterMismatch` understands %{} and %<> interpolations. ([@alexdowad][])
 
 ### Changes
 

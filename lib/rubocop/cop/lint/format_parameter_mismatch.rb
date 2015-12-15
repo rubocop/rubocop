@@ -24,6 +24,7 @@ module RuboCop
         PERCENT_PERCENT = '%%'.freeze
         SPLAT = '*'.freeze
         STRING_TYPES = [:str, :dstr].freeze
+        NAMED_INTERPOLATION = /%(?:<\w+>|\{\w+\})/
 
         def on_send(node)
           add_offense(node, :selector) if offending_node?(node)
@@ -114,9 +115,9 @@ module RuboCop
 
         def expected_fields_count(node)
           return :unknown unless node.str_type?
+          return 1 if node.source =~ NAMED_INTERPOLATION
+
           node
-            .loc
-            .expression
             .source
             .scan(FIELD_REGEX)
             .select { |x| x.first != PERCENT_PERCENT }
