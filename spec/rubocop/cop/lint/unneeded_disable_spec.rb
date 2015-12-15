@@ -13,7 +13,7 @@ describe RuboCop::Cop::Lint::UnneededDisable do
     context 'when there are no disabled lines' do
       let(:offenses) { [] }
       let(:cop_disabled_line_ranges) { {} }
-      let(:comments) { {} }
+      let(:comments) { [] }
 
       it 'returns an empty array' do
         expect(cop.offenses).to eq([])
@@ -21,13 +21,7 @@ describe RuboCop::Cop::Lint::UnneededDisable do
     end
 
     context 'when there are disabled lines' do
-      let(:comments) { [OpenStruct.new(loc: loc)] }
-      let(:loc) do
-        OpenStruct.new(line: expression.line,
-                       column: expression.column,
-                       expression: expression)
-      end
-      let(:expression) { OpenStruct.new(line: 1, column: 0, source: source) }
+      let(:comments) { RuboCop::ProcessedSource.new(source).comments }
 
       context 'and there are no offenses' do
         let(:offenses) { [] }
@@ -162,11 +156,8 @@ describe RuboCop::Cop::Lint::UnneededDisable do
           end
 
           context 'that cop but on other lines' do
-            let(:source) { '# rubocop:disable Style/Tab' }
+            let(:source) { ("\n" * 9) << '# rubocop:disable Style/Tab' }
             let(:cop_disabled_line_ranges) { { 'Style/Tab' => [10..12] } }
-            let(:expression) do
-              OpenStruct.new(line: 10, column: 0, source: source)
-            end
 
             it 'returns an offense' do
               expect(cop.messages)
