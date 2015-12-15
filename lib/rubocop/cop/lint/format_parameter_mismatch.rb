@@ -82,15 +82,6 @@ module RuboCop
           args.source[0, 2] == SHOVEL
         end
 
-        def literal?(node)
-          node.int_type? ||
-            node.str_type? ||
-            node.sym_type? ||
-            node.float_type? ||
-            node.dstr_type? ||
-            node.dsym_type?
-        end
-
         def count_matches(node)
           receiver_node, _method_name, *args = *node
 
@@ -99,17 +90,7 @@ module RuboCop
             number_of_expected_fields = expected_fields_count(args.first)
           elsif percent?(node) && args.first.array_type?
             number_of_expected_fields = expected_fields_count(receiver_node)
-
-            first_child_argument = args.first
-            if first_child_argument.array_type?
-              number_of_args_for_format = args.first.child_nodes.size
-            elsif literal?(first_child_argument)
-              number_of_args_for_format = 1
-            else
-              # non-literals might evaluate to an Array, or they might not
-              # so we can't tell just how many format args there will be
-              number_of_args_for_format = :unknown
-            end
+            number_of_args_for_format = args.first.child_nodes.size
           else
             number_of_args_for_format = number_of_expected_fields = :unknown
           end
