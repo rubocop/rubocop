@@ -53,5 +53,44 @@ module Astrolabe
     def_matcher :equals_asgn?, '{lvasgn ivasgn cvasgn gvasgn casgn masgn}'
     def_matcher :shorthand_asgn?, '{op_asgn or_asgn and_asgn}'
     def_matcher :assignment?, '{equals_asgn? shorthand_asgn? asgn_method_call?}'
+
+    # Some expressions are evaluated for their value, some for their side
+    # effects, and some for both
+    # If we know that an expression is useful only for its side effects, that
+    # means we can transform it in ways which preserve the side effects, but
+    # change the return value
+    # So, does the return value of this node matter? If we changed it to
+    # `(...; nil)`, might that affect anything?
+    #
+    def value_used?
+      # Be conservative and return true if we're not sure
+      return false if parent.nil?
+      index = parent.children.index { |child| child.equal?(self) }
+
+      case parent.type
+      when :array, :defined?, :dstr, :dsym, :eflipflop, :erange, :float, :hash,
+           :iflipflop, :irange, :not, :pair, :regexp, :str, :sym, :when, :xstr
+        parent.value_used?
+      when :begin, :kwbegin
+        # the last child node determines the value of the parent
+        index == parent.children.size - 1 ? parent.value_used? : false
+      when :block, :for
+        # `method { |args| body }`
+        # (block <send> <args> <body>)
+        # OR:
+        # `for var in enum; body; end`
+        # (for <var> <enum> <body>)
+        index == 2 ? parent.value_used? : true
+      when :case, :if
+        # (case <condition> <when...>)
+        # (if <condition> <truebranch> <falsebranch>)
+        index == 0 ? true : parent.value_used?
+      when :while, :until, :while_post, :until_post
+        # (while <condition> <body>) -> always evaluates to `nil`
+        index == 0
+      else
+        true
+      end
+    end
   end
 end
