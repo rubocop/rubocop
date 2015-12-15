@@ -4,7 +4,18 @@ require 'spec_helper'
 
 describe RuboCop::Cop::Lint::UnneededDisable do
   describe '.check' do
-    let(:cop) { described_class.new }
+    let(:cop) do
+      cop = described_class.new
+      cop.instance_eval { @options[:auto_correct] = true }
+      cop.processed_source = processed_source
+      cop
+    end
+    let(:processed_source) { RuboCop::ProcessedSource.new(source) }
+    let(:comments) { processed_source.comments }
+    let(:corrected_source) do
+      RuboCop::Cop::Corrector.new(processed_source.buffer, cop.corrections)
+        .rewrite
+    end
 
     before(:each) do
       cop.check(offenses, cop_disabled_line_ranges, comments)
@@ -13,7 +24,7 @@ describe RuboCop::Cop::Lint::UnneededDisable do
     context 'when there are no disabled lines' do
       let(:offenses) { [] }
       let(:cop_disabled_line_ranges) { {} }
-      let(:comments) { [] }
+      let(:source) { '' }
 
       it 'returns an empty array' do
         expect(cop.offenses).to eq([])
@@ -21,14 +32,12 @@ describe RuboCop::Cop::Lint::UnneededDisable do
     end
 
     context 'when there are disabled lines' do
-      let(:comments) { RuboCop::ProcessedSource.new(source).comments }
-
       context 'and there are no offenses' do
         let(:offenses) { [] }
 
         context 'and a comment disables' do
           context 'one cop' do
-            let(:source) { '# rubocop:disable Metrics/MethodLength' }
+            let(:source) { "# rubocop:disable Metrics/MethodLength\n" }
             let(:cop_disabled_line_ranges) do
               { 'Metrics/MethodLength' => [1..Float::INFINITY] }
             end
@@ -42,6 +51,10 @@ describe RuboCop::Cop::Lint::UnneededDisable do
 
             it 'gives the right cop name' do
               expect(cop.name).to eq('Lint/UnneededDisable')
+            end
+
+            it 'autocorrects' do
+              expect(corrected_source).to eq('')
             end
           end
 
@@ -106,28 +119,36 @@ describe RuboCop::Cop::Lint::UnneededDisable do
           context 'multiple cops, and one of them has offenses' do
             let(:source) do
               '# rubocop:disable Metrics/MethodLength, Metrics/ClassLength, ' \
-              'Lint/Debugger'
+              'Lint/Debugger, Lint/AmbiguousOperator'
             end
             let(:cop_disabled_line_ranges) do
               { 'Metrics/ClassLength' => [1..Float::INFINITY],
                 'Metrics/MethodLength' => [1..Float::INFINITY],
-                'Lint/Debugger' => [1..Float::INFINITY] }
+                'Lint/Debugger' => [1..Float::INFINITY],
+                'Lint/AmbiguousOperator' => [1..Float::INFINITY] }
             end
             let(:offenses) do
               [
                 RuboCop::Cop::Offense.new(:convention,
                                           OpenStruct.new(line: 7, column: 0),
-                                          'Method has too many lines. [22/20]',
-                                          'Metrics/MethodLength')
+                                          'Class has too many lines.',
+                                          'Metrics/ClassLength')
               ]
             end
 
             it 'returns an offense' do
               expect(cop.messages)
-                .to eq(['Unnecessary disabling of `Metrics/ClassLength`.',
-                        'Unnecessary disabling of `Lint/Debugger`.'])
-              expect(cop.highlights).to eq(['Metrics/ClassLength',
-                                            'Lint/Debugger'])
+                .to eq(['Unnecessary disabling of `Metrics/MethodLength`.',
+                        'Unnecessary disabling of `Lint/Debugger`.',
+                        'Unnecessary disabling of `Lint/AmbiguousOperator`.'])
+              expect(cop.highlights).to eq(['Metrics/MethodLength',
+                                            'Lint/Debugger',
+                                            'Lint/AmbiguousOperator'])
+            end
+
+            it 'autocorrects' do
+              expect(corrected_source).to eq(
+                '# rubocop:disable Metrics/ClassLength')
             end
           end
 
@@ -145,7 +166,7 @@ describe RuboCop::Cop::Lint::UnneededDisable do
                 [
                   RuboCop::Cop::Offense.new(:convention,
                                             OpenStruct.new(line: 7, column: 0),
-                                            'Method has too many lines. [22/20]',
+                                            'Method has too many lines.',
                                             'Metrics/MethodLength')
                 ]
               end
@@ -154,7 +175,7 @@ describe RuboCop::Cop::Lint::UnneededDisable do
                 expect(cop.messages)
                   .to eq(['Unnecessary disabling of `Metrics/ClassLength`.',
                           'Unnecessary disabling of `Lint/Debugger`.'])
-                expect(cop.highlights).to eq(['ClassLength', 'Debugger'])
+                expect(cop.highlights).to eq(%w(ClassLength Debugger))
               end
             end
           end

@@ -20,6 +20,7 @@
 * `Lint/Debugger` cop can now auto-correct offenses. ([@alexdowad][])
 * [#1677](https://github.com/bbatsov/rubocop/issues/1677): Add new `Performance/RedundantMatch` cop. ([@alexdowad][])
 * [#1677](https://github.com/bbatsov/rubocop/issues/1677): Add new `Performance/RedundantBlockCall` cop. ([@alexdowad][])
+* [#1954](https://github.com/bbatsov/rubocop/issues/1954): `Lint/UnneededDisable` can now autocorrect. ([@alexdowad][])
 
 ### Bug Fixes
 
