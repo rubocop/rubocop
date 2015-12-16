@@ -93,8 +93,10 @@ module RuboCop
         def on_send(node)
           receiver, method_name, *_args = *node
           return unless receiver && receiver.type == :self
-          return if operator?(method_name) || keyword?(method_name) ||
+          return if operator?(method_name) ||
+                    keyword?(method_name) ||
                     constant_name?(method_name) ||
+                    node.asgn_method_call? ||
                     @allowed_send_nodes.include?(node) ||
                     @local_variables.include?(method_name)
 
@@ -114,10 +116,6 @@ module RuboCop
         def on_argument(node)
           name, = *node
           @local_variables << name
-        end
-
-        def operator?(method_name)
-          method_name.to_s =~ /\W/
         end
 
         def keyword?(method_name)
