@@ -199,7 +199,7 @@ describe RuboCop::Cop::Style::Documentation do
         expect(cop.offenses).to be_empty
       end
 
-      it 'ignores sparse comments inside #{keyword} node' do
+      it "ignores sparse comments inside #{keyword} node" do
         inspect_source(cop,
                        ['module TestModule',
                         "  #{keyword} Test",
