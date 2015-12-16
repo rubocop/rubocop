@@ -65,6 +65,7 @@
 * [#2549](https://github.com/bbatsov/rubocop/issues/2549): New `ConsistentQuotesInMultiline` config param for `Style/StringLiterals` forces all literals which are concatenated using \ to use the same quote style. ([@alexdowad][])
 * [#2560](https://github.com/bbatsov/rubocop/issues/2560): `Style/AccessModifierIndentation`, `Style/CaseIndentation`, `Style/FirstParameterIndentation`, `Style/IndentArray`, `Style/IndentAssignment`, `Style/IndentHash`, `Style/MultilineMethodCallIndentation`, and `Style/MultilineOperationIndentation` all have a new `IndentationWidth` parameter which can be used to override the indentation width from `Style/IndentationWidth`. ([@alexdowad][])
 * Add new `Performance/HashEachMethods` cop. ([@ojab][])
+* New cop `Style/FrozenStringLiteralComment` will check for and add the comment `# frozen_string_literal: true` to the top of files. This will help with upgrading to Ruby 3.0. ([@rrosenblum][])
 
 ### Bug Fixes
 
