@@ -23,6 +23,7 @@
 * [#1954](https://github.com/bbatsov/rubocop/issues/1954): `Lint/UnneededDisable` can now autocorrect. ([@alexdowad][])
 * [#2501](https://github.com/bbatsov/rubocop/issues/2501): Add new `Lint/ImplicitStringConcatenation` cop. ([@alexdowad][])
 * Add new `Style/RedundantParentheses` cop. ([@lumeet][])
+* [#1346](https://github.com/bbatsov/rubocop/issues/1346): `Style/SpecialGlobalVars` can be configured to use either `use_english_names` or `use_perl_names` styles. ([@alexdowad][])
 
 ### Bug Fixes
 
