@@ -159,6 +159,7 @@ Style/ConditionalAssignment:
                  assignment to a variable instead of assigning that variable
                  inside of each branch.
   Enabled: true
+  CheckConditionsWithMultipleAssignments: false
 
 Style/ConstantName:
   Description: 'Constants should use SCREAMING_SNAKE_CASE.'
