@@ -54,4 +54,10 @@ describe RuboCop::Cop::Lint::ParenthesesAsGroupedExpression do
     inspect_source(cop, 'a( (b) )')
     expect(cop.offenses).to be_empty
   end
+
+  it "doesn't register an offense for a call with multiple arguments" do
+    # there is no ambiguity here
+    inspect_source(cop, 'assert_equal (0..1.9), acceleration.domain')
+    expect(cop.offenses).to be_empty
+  end
 end

@@ -46,6 +46,7 @@
 * [#2483](https://github.com/bbatsov/rubocop/issues/2483): `Style/Attr` differentiate between attr_accessor and attr_reader. ([@weh][])
 * `Style/ConditionalAssignment` doesn't crash if it finds a `case` with an empty branch. ([@lumeet][])
 * [#2506](https://github.com/bbatsov/rubocop/issues/2506): `Lint/FormatParameterMismatch` understands %{} and %<> interpolations. ([@alexdowad][])
+* [#2145](https://github.com/bbatsov/rubocop/issues/2145): `Lint/ParenthesesAsGroupedExpression` ignores calls with multiple arguments, since they are not ambiguous. ([@alexdowad][])
 
 ### Changes
 

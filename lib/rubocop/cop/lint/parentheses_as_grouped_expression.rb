@@ -13,13 +13,14 @@ module RuboCop
         MSG = '`(...)` interpreted as grouped expression.'
 
         def on_send(node)
-          _receiver, method_name, args = *node
+          _receiver, method_name, *args = *node
           return if operator?(method_name) || node.asgn_method_call?
-          return unless args && args.source.start_with?('(')
+          return unless args.first && args.first.source.start_with?('(')
+          return if args.size > 1
 
           space_length = spaces_before_left_parenthesis(node)
           return unless space_length > 0
-          expr = args.loc.expression
+          expr = args.first.loc.expression
           space_range =
             Parser::Source::Range.new(expr.source_buffer,
                                       expr.begin_pos - space_length,
