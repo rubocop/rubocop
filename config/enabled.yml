@@ -970,6 +970,12 @@ Lint/HandleExceptions:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#dont-hide-exceptions'
   Enabled: true
 
+Lint/ImplicitStringConcatenation:
+  Description: >-
+                 Checks for adjacent string literals on the same line, which
+                 could better be represented as a single string literal.
+  Enabled: true
+
 Lint/InvalidCharacterLiteral:
   Description: >-
                  Checks for invalid character literals with a non-escaped
