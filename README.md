@@ -936,7 +936,7 @@ Each time a file has changed, its offenses will be stored under a new
 key in the cache. This means that the cache will continue to grow
 until we do something to stop it. The configuration parameter
 `AllCops: MaxFilesInCache` sets a limit, and when the number of files
-in the cache exceeds that limit, the oldest files will be automatially
+in the cache exceeds that limit, the oldest files will be automatically
 removed from the cache.
 
 ## Extensions
