@@ -433,6 +433,12 @@ Style/NestedModifier:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-nested-modifiers'
   Enabled: true
 
+Style/NestedParenthesizedCalls:
+  Description: >-
+                 Parenthesize method calls which are nested inside the
+                 argument list of another parenthesized method call.
+  Enabled: true
+
 Style/NestedTernaryOperator:
   Description: 'Use one expression per branch in a ternary operator.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-nested-ternary'
