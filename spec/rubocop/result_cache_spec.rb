@@ -56,6 +56,29 @@ describe RuboCop::ResultCache, :isolated_environment do
           expect(cache2.valid?).to eq(false)
         end
       end
+
+      context 'when a symlink attack is made' do
+        before(:each) do
+          cache.save(offenses, disabled_lines, comments)
+          Find.find(cache_root) do |path|
+            next unless File.basename(path) == '_'
+            FileUtils.rm_rf(path)
+            FileUtils.ln_s('/bin', path)
+          end
+          $stderr = StringIO.new
+        end
+        after(:each) { $stderr = STDERR }
+
+        it 'is stopped' do
+          cache2 = described_class.new(file, options, config_store, cache_root)
+          cache2.save(offenses, disabled_lines, comments)
+          # The cache file has not been created because there was a symlink in
+          # its path.
+          expect(cache2.valid?).to eq(false)
+          expect($stderr.string)
+            .to match(/Warning: .* is a symlink, which is not allowed.\n/)
+        end
+      end
     end
 
     context 'when --format is given' do

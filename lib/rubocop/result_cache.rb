@@ -26,8 +26,13 @@ module RuboCop
     end
 
     def save(offenses, disabled_line_ranges, comments)
-      FileUtils.mkdir_p(File.dirname(@path))
+      dir = File.dirname(@path)
+      FileUtils.mkdir_p(dir)
       preliminary_path = "#{@path}_#{rand(1_000_000_000)}"
+      # RuboCop must be in control of where its cached data is stored. A
+      # symbolic link anywhere in the cache directory tree is an indication
+      # that a symlink attack is being waged.
+      return if any_symlink?(dir)
       File.open(preliminary_path, 'wb') do |f|
         # The Hash[x.sort] call is a trick that converts a Hash with a default
         # block to a Hash without a default block. Thus making it possible to
@@ -76,6 +81,17 @@ module RuboCop
     end
 
     private
+
+    def any_symlink?(path)
+      while path != File.dirname(path)
+        if File.symlink?(path)
+          warn "Warning: #{path} is a symlink, which is not allowed."
+          return true
+        end
+        path = File.dirname(path)
+      end
+      false
+    end
 
     def self.cache_root(config_store)
       root = config_store.for('.')['AllCops']['CacheRootDirectory']
