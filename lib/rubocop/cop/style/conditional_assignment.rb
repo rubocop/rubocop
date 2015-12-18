@@ -89,6 +89,7 @@ module RuboCop
         def on_case(node)
           return unless node.loc.else
           _condition, *when_branches, else_branch = *node
+          return unless else_branch # empty else
           # Take the last line of the branch if the branch contains more than
           # one statement.
           *_, else_branch = *else_branch if else_branch.begin_type?
@@ -151,8 +152,10 @@ module RuboCop
         end
 
         def types_match?(*nodes)
+          return false unless nodes.first
+
           first_type = nodes.first.type
-          nodes.all? { |node| node.type == first_type }
+          nodes.all? { |node| node && node.type == first_type }
         end
 
         # The shovel operator `<<` does not have its own type. It is a `send`
@@ -173,7 +176,8 @@ module RuboCop
         def expand_when_branches(when_branches)
           when_branches.map do |branch|
             when_branch = branch.children[1]
-            *_, when_branch = *when_branch if when_branch.begin_type?
+            *_, when_branch = *when_branch if when_branch &&
+                                              when_branch.begin_type?
             when_branch
           end
         end

@@ -117,12 +117,26 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       expect(cop.messages).to be_empty
     end
 
-    it 'allows an empty when branch' do
+    it 'allows an empty when branch with an else' do
       source = ['case foo',
                 'when "a"',
                 '  # empty',
                 'when "b"',
                 '  bar = 2',
+                'else',
+                '  bar = 3',
+                'end']
+      inspect_source(cop, source)
+
+      expect(cop.messages).to be_empty
+    end
+
+    it 'allows case with an empty else' do
+      source = ['case foo',
+                'when "b"',
+                '  bar = 2',
+                'else',
+                '  # empty',
                 'end']
       inspect_source(cop, source)
 
