@@ -86,11 +86,8 @@ module RuboCop
       def with_cop_error_handling(cop)
         yield
       rescue => e
-        if @options[:raise_error]
-          raise e
-        else
-          @errors[cop] << e
-        end
+        raise e if @options[:raise_error]
+        @errors[cop] << e
       end
     end
   end
