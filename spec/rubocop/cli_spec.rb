@@ -2162,6 +2162,80 @@ describe RuboCop::CLI, :isolated_environment do
         expect(cli.run(['--force-exclusion', target_file])).to eq(0)
       end
     end
+
+    describe '--stdin' do
+      it 'causes source code to be read from stdin' do
+        begin
+          $stdin = StringIO.new('p $/')
+          argv   = ['--only=Style/SpecialGlobalVars',
+                    '--format=simple',
+                    '--stdin',
+                    'fake.rb']
+          expect(cli.run(argv)).to eq(1)
+          expect($stdout.string).to eq([
+            '== fake.rb ==',
+            'C:  1:  3: Prefer $INPUT_RECORD_SEPARATOR or $RS from the ' \
+            "stdlib 'English' module over $/.",
+            '',
+            '1 file inspected, 1 offense detected',
+            ''].join("\n"))
+        ensure
+          $stdin = STDIN
+        end
+      end
+
+      it 'requires a file path' do
+        begin
+          $stdin = StringIO.new('p $/')
+          argv   = ['--only=Style/SpecialGlobalVars',
+                    '--format=simple',
+                    '--stdin']
+          expect(cli.run(argv)).to eq(1)
+          expect($stderr.string).to include(
+            '-s/--stdin requires exactly one path.')
+        ensure
+          $stdin = STDIN
+        end
+      end
+
+      it 'does not accept more than one file path' do
+        begin
+          $stdin = StringIO.new('p $/')
+          argv   = ['--only=Style/SpecialGlobalVars',
+                    '--format=simple',
+                    '--stdin',
+                    'fake1.rb',
+                    'fake2.rb']
+          expect(cli.run(argv)).to eq(1)
+          expect($stderr.string).to include(
+            '-s/--stdin requires exactly one path.')
+        ensure
+          $stdin = STDIN
+        end
+      end
+
+      it 'prints corrected code to stdout if --autocorrect is used' do
+        begin
+          $stdin = StringIO.new('p $/')
+          argv   = ['--auto-correct',
+                    '--only=Style/SpecialGlobalVars',
+                    '--format=simple',
+                    '--stdin',
+                    'fake.rb']
+          expect(cli.run(argv)).to eq(0)
+          expect($stdout.string).to eq([
+            '== fake.rb ==',
+            'C:  1:  3: [Corrected] Prefer $INPUT_RECORD_SEPARATOR or $RS ' \
+            "from the stdlib 'English' module over $/.",
+            '',
+            '1 file inspected, 1 offense detected, 1 offense corrected',
+            '====================',
+            'p $INPUT_RECORD_SEPARATOR'].join("\n"))
+        ensure
+          $stdin = STDIN
+        end
+      end
+    end
   end
 
   context 'when interrupted' do
