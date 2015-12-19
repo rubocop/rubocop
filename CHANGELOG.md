@@ -25,6 +25,7 @@
 * Add new `Style/RedundantParentheses` cop. ([@lumeet][])
 * [#1346](https://github.com/bbatsov/rubocop/issues/1346): `Style/SpecialGlobalVars` can be configured to use either `use_english_names` or `use_perl_names` styles. ([@alexdowad][])
 * [#2426](https://github.com/bbatsov/rubocop/issues/2426): New `Style/NestedParenthesizedCalls` cop checks for non-parenthesized method calls nested inside a parenthesized call, like `method1(method2 arg)`. ([@alexdowad][])
+* [#2502](https://github.com/bbatsov/rubocop/issues/2502): The `--stdin` and `--auto-correct` CLI options can be combined, and if you do so, corrected code is printed to stdout. ([@alexdowad][])
 
 ### Bug Fixes
 
