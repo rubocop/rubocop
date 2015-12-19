@@ -22,8 +22,8 @@ module RuboCop
         def autocorrect(node)
           receiver_node, _method_name, *arg_nodes = *node
           expr = node.loc.expression
-          array = receiver_node.loc.expression.source
-          join_arg  = arg_nodes[0].loc.expression.source
+          array = receiver_node.source
+          join_arg = arg_nodes[0].source
 
           lambda do |corrector|
             corrector.replace(expr, "#{array}.join(#{join_arg})")

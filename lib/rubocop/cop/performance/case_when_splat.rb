@@ -126,7 +126,7 @@ module RuboCop
           _case_branch, *when_branches, _else_branch = *node.parent
           current_index = when_branches.index { |branch| branch == node }
           next_branch = when_branches[current_index + 1]
-          correction = "\n#{offset(node)}#{node.loc.expression.source}"
+          correction = "\n#{offset(node)}#{node.source}"
           range =
             Parser::Source::Range.new(node.parent,
                                       node.loc.expression.begin_pos,
@@ -142,7 +142,7 @@ module RuboCop
         def expand_percent_array(array)
           array_start = array.loc.begin.source
           elements = *array
-          elements = elements.map { |e| e.loc.expression.source }
+          elements = elements.map(&:source)
 
           if array_start.start_with?(PERCENT_W)
             "'#{elements.join("', '")}'"

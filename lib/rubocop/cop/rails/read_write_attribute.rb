@@ -55,17 +55,14 @@ module RuboCop
         def read_attribute_replacement(node)
           _receiver, _method_name, body = *node
 
-          "self[#{body.loc.expression.source}]"
+          "self[#{body.source}]"
         end
 
         def write_attribute_replacement(node)
           _receiver, _method_name, *args = *node
           name, value = *args
 
-          name_source = name.loc.expression.source
-          value_source = value.loc.expression.source
-
-          "self[#{name_source}] = #{value_source}"
+          "self[#{name.source}] = #{value.source}"
         end
       end
     end

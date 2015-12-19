@@ -85,7 +85,7 @@ module RuboCop
 
           def method_arg
             _, _, arg = *method_node
-            arg.loc.expression.source if arg
+            arg.source if arg
           end
 
           # FIXME: use Range#size once Ruby 1.9 support is dropped
@@ -126,7 +126,7 @@ module RuboCop
 
           def shuffle_arg
             _, _, arg = *shuffle_node
-            arg.loc.expression.source if arg
+            arg.source if arg
           end
         end
       end

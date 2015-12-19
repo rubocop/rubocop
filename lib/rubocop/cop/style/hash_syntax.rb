@@ -95,8 +95,7 @@ module RuboCop
 
           return false unless key.sym_type?
 
-          sym_name = key.loc.expression.source
-          valid_19_syntax_symbol?(sym_name)
+          valid_19_syntax_symbol?(key.source)
         end
 
         def valid_19_syntax_symbol?(sym_name)

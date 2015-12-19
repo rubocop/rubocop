@@ -71,7 +71,7 @@ module RuboCop
           special = %w(protected private) # Extra indentation step after these.
           previous_modifier = nil
           members.first.children.each do |m|
-            if modifier_node?(m) && special.include?(m.loc.expression.source)
+            if modifier_node?(m) && special.include?(m.source)
               previous_modifier = m
             elsif previous_modifier
               check_indentation(previous_modifier.loc.expression, m, style)

@@ -24,9 +24,7 @@ module RuboCop
 
       task(name, *args) do |_, task_args|
         RakeFileUtils.send(:verbose, verbose) do
-          if task_block
-            task_block.call(*[self, task_args].slice(0, task_block.arity))
-          end
+          yield(*[self, task_args].slice(0, task_block.arity)) if block_given?
           run_main_task(verbose)
         end
       end
@@ -78,9 +76,7 @@ module RuboCop
         desc 'Auto-correct RuboCop offenses'
 
         task(:auto_correct, *args) do |_, task_args|
-          if task_block
-            task_block.call(*[self, task_args].slice(0, task_block.arity))
-          end
+          yield(*[self, task_args].slice(0, task_block.arity)) if block_given?
           options = full_options.unshift('--auto-correct')
           run_cli(verbose, options)
         end

@@ -39,20 +39,12 @@ module RuboCop
         private
 
         def autocorrect(node)
-          if style == :no_space
-            lambda do |corrector|
-              corrector.replace(
-                range_with_surrounding_space(node.loc.expression),
-                node.loc.expression.source
-              )
-            end
-          elsif style == :space
-            lambda do |corrector|
-              corrector.replace(
-                range_with_surrounding_space(node.loc.expression),
-                " #{node.loc.expression.source} "
-              )
-            end
+          new_source = (style == :no_space) ? node.source : " #{node.source} "
+          lambda do |corrector|
+            corrector.replace(
+              range_with_surrounding_space(node.loc.expression),
+              new_source
+            )
           end
         end
       end

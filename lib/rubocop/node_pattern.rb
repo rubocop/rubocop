@@ -44,20 +44,33 @@ module RuboCop
   #    '(send $... int)'   # capture all children but the last as an array
   #    '(send _x :+ _x)'   # unification is performed on named wildcards
   #                        # (like Prolog variables...)
+  #                        # (#== is used to see if values unify)
   #    '(int odd?)'        # words which end with a ? are predicate methods,
   #                        # are are called on the target to see if it matches
   #                        # any Ruby method which the matched object supports
   #                        # can be used
+  #                        # if a truthy value is returned, the match succeeds
   #    '(int [!1 !2])'     # [] contains multiple patterns, ALL of which must
   #                        # match in that position
-  #                        # ({} is pattern union, [] is intersection)
+  #                        # in other words, while {} is pattern union (logical
+  #                        # OR), [] is intersection (logical AND)
   #    '(send %1 _)'       # % stands for a parameter which must be supplied to
   #                        # #match at matching time
   #                        # it will be compared to the corresponding value in
   #                        # the AST using #==
   #                        # a bare '%' is the same as '%1'
+  #                        # the number of extra parameters passed to #match
+  #                        # must equal the highest % value in the pattern
+  #                        # for consistency, %0 is the 'root node' which is
+  #                        # passed as the 1st argument to #match, where the
+  #                        # matching process starts
   #    '^^send'            # each ^ ascends one level in the AST
   #                        # so this matches against the grandparent node
+  #    '#method'           # we call this a 'funcall'; it calls a method in the
+  #                        # context where a pattern-matching method is defined
+  #                        # if that returns a truthy value, the match succeeds
+  #    'equal?(%1)'        # predicates can be given 1 or more extra args
+  #    '#method(%0, 1)'    # funcalls can also be given 1 or more extra args
   #
   # You can nest arbitrarily deep:
   #
@@ -76,6 +89,7 @@ module RuboCop
   # Also note that if you need a "guard clause" to protect against possible nils
   # in a certain place in the AST, you can do it like this: `[!nil <pattern>]`
   #
+  # The compiler code is very simple; don't be afraid to read through it!
   class NodePattern
     # @private
     Invalid = Class.new(StandardError)
@@ -83,15 +97,17 @@ module RuboCop
     # @private
     # Builds Ruby code which implements a pattern
     class Compiler
-      RSYM      = %r{:(?:[\w+-@_*/?!<>~|%^]+|==|\[\]=?)}
+      RSYM      = %r{:(?:[\w+@_*/?!<>=~|%^-]+|\[\]=?)}
       ID_CHAR   = /[a-zA-Z_]/
       META_CHAR = /\(|\)|\{|\}|\[|\]|\$\.\.\.|\$|!|\^|\.\.\./
-      TOKEN     = /\G(?:\s+|#{META_CHAR}|#{ID_CHAR}+\??|%\d*|\d+|#{RSYM}|.)/
+      TOKEN     =
+        /\G(?:[\s,]+|#{META_CHAR}|\#?#{ID_CHAR}+[\!\?]?\(?|%\d*|\d+|#{RSYM}|.)/
 
       NODE      = /\A#{ID_CHAR}+\Z/
-      PREDICATE = /\A#{ID_CHAR}+\?\Z/
-      LITERAL   = /\A(?:#{RSYM}|\d+|nil)\Z/
+      PREDICATE = /\A#{ID_CHAR}+\?\(?\Z/
       WILDCARD  = /\A_#{ID_CHAR}*\Z/
+      FUNCALL   = /\A\##{ID_CHAR}+[\!\?]?\(?\Z/
+      LITERAL   = /\A(?:#{RSYM}|\d+|nil)\Z/
       PARAM     = /\A%\d*\Z/
       CLOSING   = /\A(?:\)|\}|\])\Z/
 
@@ -99,6 +115,7 @@ module RuboCop
 
       def initialize(str, node_var = 'node0')
         @string   = str
+        @root     = node_var
 
         @temps    = 0  # avoid name clashes between temp variables
         @captures = 0  # number of captures seen
@@ -110,12 +127,18 @@ module RuboCop
 
       def run(node_var)
         tokens = @string.scan(TOKEN)
-        tokens.reject! { |token| token =~ /\A\s+\Z/ }
+        tokens.reject! { |token| token =~ /\A[\s,]+\Z/ } # drop whitespace
         @match_code = compile_expr(tokens, node_var, false)
         fail_due_to('unbalanced pattern') unless tokens.empty?
       end
 
       def compile_expr(tokens, cur_node, seq_head)
+        # read a single pattern-matching expression from the token stream,
+        # return Ruby code which performs the corresponding matching operation
+        # on 'cur_node' (which is Ruby code which evaluates to an AST node)
+        #
+        # the 'pattern-matching' expression may be a composite which
+        # contains an arbitrary number of sub-expressions
         token = tokens.shift
         case token
         when '('       then compile_seq(tokens, cur_node, seq_head)
@@ -125,8 +148,9 @@ module RuboCop
         when '$'       then compile_capture(tokens, cur_node, seq_head)
         when '^'       then compile_ascend(tokens, cur_node, seq_head)
         when WILDCARD  then compile_wildcard(cur_node, token[1..-1], seq_head)
+        when FUNCALL   then compile_funcall(tokens, cur_node, token, seq_head)
         when LITERAL   then compile_literal(cur_node, token, seq_head)
-        when PREDICATE then compile_predicate(cur_node, token, seq_head)
+        when PREDICATE then compile_predicate(tokens, cur_node, token, seq_head)
         when NODE      then compile_nodetype(cur_node, token)
         when PARAM     then compile_param(cur_node, token[1..-1], seq_head)
         when CLOSING   then fail_due_to("#{token} in invalid position")
@@ -139,6 +163,10 @@ module RuboCop
         fail_due_to('empty parentheses') if tokens.first == ')'
         fail_due_to('parentheses at sequence head') if seq_head
 
+        # 'cur_node' is a Ruby expression which evaluates to an AST node,
+        # but we don't know how expensive it is
+        # to be safe, cache the node in a temp variable and then use the
+        # temp variable as 'cur_node'
         init = "temp#{@temps += 1} = #{cur_node}"
         cur_node = "temp#{@temps}"
         terms = compile_seq_terms(tokens, cur_node)
@@ -155,6 +183,9 @@ module RuboCop
           elsif tokens.first == '$...'
             return compile_capt_ellip(tokens, cur_node, terms, index || 0)
           elsif index.nil?
+            # in 'sequence head' position; some expressions are compiled
+            # differently at 'sequence head' (notably 'node type' expressions)
+            # grep for seq_head to see where it makes a difference
             terms << compile_expr(tokens, cur_node, true)
             index = 0
           else
@@ -210,6 +241,10 @@ module RuboCop
         cur_node = "temp#{@temps}"
 
         terms = []
+        # we need to ensure that each branch of the {} contains the same
+        # number of captures (since only one branch of the {} can actually
+        # match, the same variables are used to hold the captures for each
+        # branch)
         captures_before = @captures
         terms << compile_expr(tokens, cur_node, seq_head)
         captures_after = @captures
@@ -275,8 +310,27 @@ module RuboCop
         "(#{cur_node}#{'.type' if seq_head} == #{literal})"
       end
 
-      def compile_predicate(cur_node, predicate, seq_head)
-        "(#{cur_node}#{'.type' if seq_head}.#{predicate})"
+      def compile_predicate(tokens, cur_node, predicate, seq_head)
+        if predicate.end_with?('(') # is there an arglist?
+          args = compile_args(tokens)
+          predicate = predicate[0..-2] # drop the trailing (
+          "(#{cur_node}#{'.type' if seq_head}.#{predicate}(#{args.join(',')}))"
+        else
+          "(#{cur_node}#{'.type' if seq_head}.#{predicate})"
+        end
+      end
+
+      def compile_funcall(tokens, cur_node, method, seq_head)
+        # call a method in the context which this pattern-matching
+        # code is used in. pass target value as an argument
+        method = method[1..-1] # drop the leading #
+        if method.end_with?('(') # is there an arglist?
+          args = compile_args(tokens)
+          method = method[0..-2] # drop the trailing (
+          "(#{method}(#{cur_node}#{'.type' if seq_head}),#{args.join(',')})"
+        else
+          "(#{method}(#{cur_node}#{'.type' if seq_head}))"
+        end
       end
 
       def compile_nodetype(cur_node, type)
@@ -284,13 +338,38 @@ module RuboCop
       end
 
       def compile_param(cur_node, number, seq_head)
-        number = number.empty? ? 1 : Integer(number)
-        @params = number if number > @params
-        "(#{cur_node}#{'.type' if seq_head} == param#{number})"
+        "(#{cur_node}#{'.type' if seq_head} == #{get_param(number)})"
+      end
+
+      def compile_args(tokens)
+        args = []
+        args << compile_arg(tokens.shift) until tokens.first == ')'
+        tokens.shift # drop the )
+        args
+      end
+
+      def compile_arg(token)
+        case token
+        when WILDCARD  then
+          name   = token[1..-1]
+          number = @unify[name] || fail_due_to('invalid in arglist: ' + token)
+          "temp#{number}"
+        when LITERAL   then token
+        when PARAM     then get_param(token[1..-1])
+        when CLOSING   then fail_due_to("#{token} in invalid position")
+        when nil       then fail_due_to('pattern ended prematurely')
+        else fail_due_to("invalid token in arglist: #{token.inspect}")
+        end
       end
 
       def next_capture
         "capture#{@captures += 1}"
+      end
+
+      def get_param(number)
+        number = number.empty? ? 1 : Integer(number)
+        @params = number if number > @params
+        number.zero? ? @root : "param#{number}"
       end
 
       def join_terms(init, terms, operator)

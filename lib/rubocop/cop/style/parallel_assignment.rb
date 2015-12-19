@@ -179,14 +179,14 @@ module RuboCop
 
           def assignment
             @new_elements.map do |lhs, rhs|
-              "#{lhs.loc.expression.source} = #{rhs.loc.expression.source}"
+              "#{lhs.source} = #{rhs.source}"
             end
           end
 
           private
 
           def extract_sources(node)
-            node.children.map { |child| child.loc.expression.source }
+            node.children.map(&:source)
           end
         end
 
@@ -200,7 +200,7 @@ module RuboCop
             "begin\n" <<
               indentation(node) << assignment.join("\n#{indentation(node)}") <<
               "\n#{offset(node)}rescue\n" <<
-              indentation(node) << rescue_result.loc.expression.source <<
+              indentation(node) << rescue_result.source <<
               "\n#{offset(node)}end"
           end
 

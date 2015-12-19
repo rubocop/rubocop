@@ -18,7 +18,7 @@ module RuboCop
         COP_NAME = 'Lint/UnneededDisable'
 
         def check(offenses, cop_disabled_line_ranges, comments)
-          unneeded_cops = {}
+          unneeded_cops = Hash.new { |h, k| h[k] = Set.new }
           disabled_ranges = cop_disabled_line_ranges[COP_NAME] || [0..0]
 
           cop_disabled_line_ranges.each do |cop, line_ranges|
@@ -32,47 +32,105 @@ module RuboCop
                 next if ignore_offense?(disabled_ranges, line_range)
               end
 
-              if unneeded_cop
-                unneeded_cops[comment.loc.expression] ||= Set.new
-                unneeded_cops[comment.loc.expression].add(unneeded_cop)
-              end
+              unneeded_cops[comment].add(unneeded_cop) if unneeded_cop
             end
           end
 
           add_offenses(unneeded_cops)
         end
 
+        def autocorrect(args)
+          lambda do |corrector|
+            ranges, range = *args # ranges are sorted by position
+
+            if range.source =~ /\A#/
+              # eat the entire comment and following newline
+              corrector.remove(range_with_surrounding_space(range, :right))
+            else
+              # is there any cop between this one and the end of the line, which
+              # is NOT being removed?
+              if ranges
+                 .drop_while { |r| !r.equal?(range) }
+                 .each_cons(2)
+                 .map { |r1, r2| r1.end.join(r2.begin).source }
+                 .all? { |intervening| intervening =~ /\A\s*,\s*\Z/ }
+                # this is a trailing cop, so eat the comma on the left
+                range = range_with_surrounding_space(range, :left)
+                range = range_with_surrounding_comma(range, :left)
+              end
+
+              range = range_with_surrounding_comma(range, :right)
+              # eat following spaces up to EOL, but not the newline itself
+              range = range_with_surrounding_space(range, :right, nil, false)
+
+              corrector.remove(range)
+            end
+          end
+        end
+
         private
 
         def find_unneeded(comment, offenses, cop, cop_offenses, line_range)
           if all_disabled?(comment)
-            'all cops' if offenses.none? { |o| line_range.include?(o.line) }
-          elsif cop_offenses.none? { |o| line_range.include?(o.line) }
+            'all' if offenses.none? { |o| line_range.cover?(o.line) }
+          elsif cop_offenses.none? { |o| line_range.cover?(o.line) }
             cop
           end
         end
 
         def all_disabled?(comment)
-          comment.loc.expression.source =~ /rubocop:disable\s+all\b/
+          comment.text =~ /rubocop:disable\s+all\b/
         end
 
         def ignore_offense?(disabled_ranges, line_range)
           disabled_ranges.any? do |range|
-            range.include?(line_range.min) && range.include?(line_range.max)
+            range.cover?(line_range.min) && range.cover?(line_range.max)
           end
+        end
+
+        def directive_count(comment)
+          match = comment.text.match(CommentConfig::COMMENT_DIRECTIVE_REGEXP)
+          _, cops_string = match.captures
+          cops_string.split(/,\s*/).size
         end
 
         def add_offenses(unneeded_cops)
-          unneeded_cops.each do |range, cops|
-            cop_list = cops.sort.map { |c| describe(c) }
-            add_offense(range, range,
-                        "Unnecessary disabling of #{cop_list.join(', ')}.")
+          unneeded_cops.each do |comment, cops|
+            if all_disabled?(comment) ||
+               directive_count(comment) == cops.size
+              location = comment.loc.expression
+              cop_list = cops.sort.map { |c| describe(c) }
+              add_offense([[location], location], location,
+                          "Unnecessary disabling of #{cop_list.join(', ')}.")
+            else
+              cop_ranges = cops.map { |c| [c, cop_range(comment, c)] }
+              cop_ranges.sort_by! { |_, r| r.begin_pos }
+              ranges = cop_ranges.map { |_, r| r }
+
+              cop_ranges.each do |cop, range|
+                add_offense([ranges, range], range,
+                            "Unnecessary disabling of #{describe(cop)}.")
+              end
+            end
           end
         end
 
+        def cop_range(comment, cop)
+          matching_range(comment.loc.expression, cop) ||
+            matching_range(comment.loc.expression, cop.split('/').last) ||
+            fail("Couldn't find #{cop} in comment: #{comment.text}")
+        end
+
+        def matching_range(haystack, needle)
+          offset = (haystack.source =~ Regexp.new(Regexp.escape(needle)))
+          return unless offset
+          Parser::Source::Range.new(haystack.source_buffer, offset,
+                                    offset + needle.size)
+        end
+
         def describe(cop)
-          if cop == 'all cops'
-            cop
+          if cop == 'all'
+            'all cops'
           elsif all_cop_names.include?(cop)
             "`#{cop}`"
           else

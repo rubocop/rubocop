@@ -76,7 +76,7 @@ module RuboCop
           if node.is_a?(String)
             node
           elsif node.respond_to?(:type) && node.type == :str
-            node.loc.expression.source
+            node.source
           end
         end
       end

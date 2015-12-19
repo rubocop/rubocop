@@ -29,7 +29,7 @@ module RuboCop
       private
 
       def rewrite_node(node)
-        ps = ProcessedSource.new(node.loc.expression.source)
+        ps = ProcessedSource.new(node.source)
         c = correction(ps.ast)
         Corrector.new(ps.buffer, [c]).rewrite
       end

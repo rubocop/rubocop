@@ -2286,7 +2286,7 @@ describe RuboCop::CLI, :isolated_environment do
                                'en'])
     expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
     expect($stdout.string)
-      .to eq(["#{abs('example.rb')}:4:1: E: unexpected " \
+      .to eq(["#{abs('example.rb')}:4:2: E: unexpected " \
               'token $end',
               ''].join("\n"))
   end

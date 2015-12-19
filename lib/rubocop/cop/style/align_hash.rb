@@ -77,7 +77,7 @@ module RuboCop
           def deltas_for_first_pair(first_pair, node)
             key_widths = node.children.map do |pair|
               key, _value = *pair
-              key.loc.expression.source.length
+              key.source.length
             end
             @max_key_width = key_widths.max
 
@@ -128,7 +128,7 @@ module RuboCop
 
           def key_end_column(pair)
             key, _value = *pair
-            key.loc.column + key.loc.expression.source.length
+            key.loc.column + key.source.length
           end
 
           def hash_rocket_delta(first_pair, current_separator)

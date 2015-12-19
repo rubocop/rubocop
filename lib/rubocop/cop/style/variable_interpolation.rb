@@ -24,8 +24,7 @@ module RuboCop
 
         def check_for_interpolation(node)
           var_nodes(node.children).each do |v|
-            var = v.loc.expression.source
-
+            var = v.source
             add_offense(v, :expression, format(MSG, var, var))
           end
         end

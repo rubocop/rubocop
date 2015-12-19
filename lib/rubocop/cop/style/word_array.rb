@@ -42,7 +42,7 @@ module RuboCop
 
         def complex_content?(arr_sexp)
           arr_sexp.each do |s|
-            source = s.loc.expression.source
+            source = s.source
             next if source.start_with?('?') # %W(\r \n) can replace [?\r, ?\n]
 
             str_content = Util.strip_quotes(source)

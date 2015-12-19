@@ -54,7 +54,7 @@ module RuboCop
           lambda do |corrector|
             block_method, _args = *node
 
-            if block_method.loc.expression.source == 'lambda'
+            if block_method.source == 'lambda'
               autocorrect_old_to_new(corrector, node)
             else
               autocorrect_new_to_old(corrector, node)
@@ -97,7 +97,7 @@ module RuboCop
         end
 
         def lambda_arg_string(args)
-          args.children.map { |a| a.loc.expression.source }.join(', ')
+          args.children.map(&:source).join(', ')
         end
       end
     end

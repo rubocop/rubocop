@@ -5,7 +5,7 @@
 # situations, it may be necessary to require another library for the duration
 # of one spec
 module HostEnvironmentSimulatorHelper
-  def in_its_own_process_with(*files, &block)
+  def in_its_own_process_with(*files)
     if ::Process.respond_to?(:fork)
       pid = ::Process.fork do
         # Need to write coverage result under different name
@@ -15,7 +15,7 @@ module HostEnvironmentSimulatorHelper
         end
 
         files.each { |file| require file }
-        block.call
+        yield
       end
       ::Process.wait(pid)
 

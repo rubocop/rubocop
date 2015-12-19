@@ -76,7 +76,7 @@ module RuboCop
 
         def node_body(node)
           string_parts = node.children.select { |child| child.type == :str }
-          string_parts.map { |s| s.loc.expression.source }.join
+          string_parts.map(&:source).join
         end
 
         def slash_literal?(node)

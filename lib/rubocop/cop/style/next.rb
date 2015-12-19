@@ -104,8 +104,9 @@ module RuboCop
             cond, if_body, = *node
             opposite_kw = if_body.nil? ? 'if' : 'unless'
             next_code = 'next ' << opposite_kw << ' ' <<
-                        cond.loc.expression.source
+                        cond.source
             corrector.insert_before(node.loc.expression, next_code)
+
             corrector.remove(cond_range(node, cond))
             corrector.remove(end_range(node))
           end

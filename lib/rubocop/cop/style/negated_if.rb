@@ -39,7 +39,7 @@ module RuboCop
               node.loc.keyword.is?('if') ? 'unless' : 'if'
             )
             corrector.replace(condition.loc.expression,
-                              pos_condition.loc.expression.source)
+                              pos_condition.source)
           end
         end
       end

@@ -84,12 +84,12 @@ module RuboCop
 
           operator = outer_keyword == 'if' ? '&&' : '||'
 
-          inner_expr = inner_cond.loc.expression.source
+          inner_expr = inner_cond.source
           inner_expr = "(#{inner_expr})" if inner_cond.or_type?
           inner_expr = "!#{inner_expr}" unless outer_keyword == inner_keyword
 
           "#{outer_node.loc.keyword.source} " \
-          "#{outer_cond.loc.expression.source} #{operator} #{inner_expr}"
+          "#{outer_cond.source} #{operator} #{inner_expr}"
         end
       end
     end

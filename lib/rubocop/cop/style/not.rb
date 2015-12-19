@@ -22,8 +22,7 @@ module RuboCop
         private
 
         def correction(node)
-          old_source = node.loc.expression.source
-          new_source = old_source.sub(/not\s+/, '!')
+          new_source = node.source.sub(/not\s+/, '!')
           ->(corrector) { corrector.replace(node.loc.expression, new_source) }
         end
       end

@@ -13,8 +13,10 @@ module RuboCop
       #
       class FormatParameterMismatch < Cop
         # http://rubular.com/r/CvpbxkcTzy
-        MSG = 'Number arguments (%i) to `%s` mismatches expected fields (%i).'
-        FIELD_REGEX = /(%(([\s#+-0\*])?(\d*)?(.\d+)?(\.)?[bBdiouxXeEfgGaAcps]|%))/.freeze # rubocop:disable Metrics/LineLength
+        MSG = "Number of arguments (%i) to `%s` doesn't match the number of " \
+              'fields (%i).'
+        FIELD_REGEX =
+          /(%(([\s#+-0\*])?(\d*)?(.\d+)?(\.)?[bBdiouxXeEfgGaAcps]|%))/.freeze
         NAMED_FIELD_REGEX = /%\{[_a-zA-Z][_a-zA-Z]+\}/.freeze
         KERNEL = 'Kernel'.freeze
         SHOVEL = '<<'.freeze
@@ -22,6 +24,7 @@ module RuboCop
         PERCENT_PERCENT = '%%'.freeze
         SPLAT = '*'.freeze
         STRING_TYPES = [:str, :dstr].freeze
+        NAMED_INTERPOLATION = /%(?:<\w+>|\{\w+\})/
 
         def on_send(node)
           add_offense(node, :selector) if offending_node?(node)
@@ -65,7 +68,7 @@ module RuboCop
                             receiver_node
                           end
 
-          relevant_node.loc.expression.source.scan(NAMED_FIELD_REGEX).size > 0
+          relevant_node.source.scan(NAMED_FIELD_REGEX).size > 0
         end
 
         def node_with_splat_args?(node)
@@ -79,16 +82,7 @@ module RuboCop
         def heredoc?(node)
           _receiver, _name, args = *node
 
-          args.loc.expression.source[0, 2] == SHOVEL
-        end
-
-        def literal?(node)
-          node.int_type? ||
-            node.str_type? ||
-            node.sym_type? ||
-            node.float_type? ||
-            node.dstr_type? ||
-            node.dsym_type?
+          args.source[0, 2] == SHOVEL
         end
 
         def count_matches(node)
@@ -99,17 +93,7 @@ module RuboCop
             number_of_expected_fields = expected_fields_count(args.first)
           elsif percent?(node) && args.first.array_type?
             number_of_expected_fields = expected_fields_count(receiver_node)
-
-            first_child_argument = args.first
-            if first_child_argument.array_type?
-              number_of_args_for_format = args.first.child_nodes.size
-            elsif literal?(first_child_argument)
-              number_of_args_for_format = 1
-            else
-              # non-literals might evaluate to an Array, or they might not
-              # so we can't tell just how many format args there will be
-              number_of_args_for_format = :unknown
-            end
+            number_of_args_for_format = args.first.child_nodes.size
           else
             number_of_args_for_format = number_of_expected_fields = :unknown
           end
@@ -131,9 +115,9 @@ module RuboCop
 
         def expected_fields_count(node)
           return :unknown unless node.str_type?
+          return 1 if node.source =~ NAMED_INTERPOLATION
+
           node
-            .loc
-            .expression
             .source
             .scan(FIELD_REGEX)
             .select { |x| x.first != PERCENT_PERCENT }

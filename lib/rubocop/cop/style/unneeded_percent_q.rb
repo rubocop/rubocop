@@ -30,7 +30,7 @@ module RuboCop
         private
 
         def check(node)
-          src = node.loc.expression.source
+          src = node.source
           return unless start_with_percent_q_variant?(src)
           return if src.include?(SINGLE_QUOTE) && src.include?(QUOTE)
           return if src =~ StringHelp::ESCAPED_CHAR_REGEXP
@@ -57,7 +57,7 @@ module RuboCop
 
         def autocorrect(node)
           delimiter =
-            node.loc.expression.source =~ /^%Q[^"]+$|'/ ? QUOTE : SINGLE_QUOTE
+            node.source =~ /^%Q[^"]+$|'/ ? QUOTE : SINGLE_QUOTE
           lambda do |corrector|
             corrector.replace(node.loc.begin, delimiter)
             corrector.replace(node.loc.end, delimiter)

@@ -116,7 +116,7 @@ module RuboCop
         end
 
         def block_arg_string(args)
-          args.children.map { |a| a.loc.expression.source }.join(', ')
+          args.children.map(&:source).join(', ')
         end
       end
     end

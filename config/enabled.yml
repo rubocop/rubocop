@@ -970,6 +970,12 @@ Lint/HandleExceptions:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#dont-hide-exceptions'
   Enabled: true
 
+Lint/ImplicitStringConcatenation:
+  Description: >-
+                 Checks for adjacent string literals on the same line, which
+                 could better be represented as a single string literal.
+  Enabled: true
+
 Lint/InvalidCharacterLiteral:
   Description: >-
                  Checks for invalid character literals with a non-escaped
@@ -1087,6 +1093,11 @@ Lint/Void:
 
 ##################### Performance #############################
 
+Performance/Casecmp:
+  Description: 'Use `casecmp` rather than `downcase ==`.'
+  Reference: 'https://github.com/JuanitoFatas/fast-ruby#stringcasecmp-vs-stringdowncase---code'
+  Enabled: true
+
 Performance/CaseWhenSplat:
   Description: >-
                   Place `when` conditions that use splat at the end
@@ -1107,6 +1118,11 @@ Performance/Detect:
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#enumerabledetect-vs-enumerableselectfirst-code'
   Enabled: true
 
+Performance/EndWith:
+  Description: 'Use `end_with?` instead of a regex match anchored to the end of a string.'
+  Reference: 'https://github.com/JuanitoFatas/fast-ruby#stringmatch-vs-stringstart_withstringend_with-code-start-code-end'
+  Enabled: true
+
 Performance/FixedSize:
   Description: 'Do not compute the size of statically sized objects except in constants'
   Enabled: true
@@ -1123,6 +1139,35 @@ Performance/FlatMap:
   # `flatten` being called without any parameters.
   # This can be dangerous since `flat_map` will only flatten 1 level, and
   # `flatten` without any parameters can flatten multiple levels.
+
+Performance/LstripRstrip:
+  Description: 'Use `strip` instead of `lstrip.rstrip`.'
+  Enabled: true
+
+Performance/RangeInclude:
+  Description: 'Use `Range#cover?` instead of `Range#include?`.'
+  Reference: 'https://github.com/JuanitoFatas/fast-ruby#cover-vs-include-code'
+  Enabled: true
+
+Performance/RedundantBlockCall:
+  Description: 'Use `yield` instead of `block.call`.'
+  Reference: 'https://github.com/JuanitoFatas/fast-ruby#proccall-vs-yield-code'
+  Enabled: true
+
+Performance/RedundantMatch:
+  Description: >-
+                  Use `=~` instead of `String#match` or `Regexp#match` in a context where the
+                  returned `MatchData` is not needed.
+  Enabled: true
+
+Performance/RedundantMerge:
+  Description: 'Use Hash#[]=, rather than Hash#merge! with a single key-value pair.'
+  Reference: 'https://github.com/JuanitoFatas/fast-ruby#hashmerge-vs-hash-code'
+  Enabled: true
+
+Performance/RedundantSortBy:
+  Description: 'Use `sort` instead of `sort_by { |x| x }`.'
+  Enabled: true
 
 Performance/ReverseEach:
   Description: 'Use `reverse_each` instead of `reverse.each`.'
@@ -1141,6 +1186,11 @@ Performance/Size:
                   Use `size` instead of `count` for counting
                   the number of elements in `Array` and `Hash`.
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#arraycount-vs-arraysize-code'
+  Enabled: true
+
+Performance/StartWith:
+  Description: 'Use `start_with?` instead of a regex match anchored to the beginning of a string.'
+  Reference: 'https://github.com/JuanitoFatas/fast-ruby#stringmatch-vs-stringstart_withstringend_with-code-start-code-end'
   Enabled: true
 
 Performance/StringReplacement:
