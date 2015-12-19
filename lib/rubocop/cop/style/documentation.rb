@@ -6,7 +6,7 @@ module RuboCop
       # This cop checks for missing top-level documentation of
       # classes and modules. Classes with no body are exempt from the
       # check and so are namespace modules - modules that have nothing in
-      # their bodies except classes or other modules.
+      # their bodies except classes, other modules, or constant definitions.
       #
       # The documentation requirement is annulled if the class or module has
       # a "#:nodoc:" comment next to it. Likewise, "#:nodoc: all" does the
@@ -47,21 +47,16 @@ module RuboCop
           end
         end
 
-        # 'Const = Class.new' or 'Const = Module.new' are module definitions
-        mod_new = '(send (const nil {:Class :Module}) :new ...)'
-        def_node_matcher :module_definition?,
-                         "{class
-                           module
-                           (casgn _ _ {#{mod_new} (block #{mod_new} ...)})}"
+        def_node_matcher :constant_definition?, '{class module casgn}'
 
         def namespace?(body_node)
           return false unless body_node
 
           case body_node.type
           when :begin
-            body_node.children.all? { |node| module_definition?(node) }
+            body_node.children.all? { |node| constant_definition?(node) }
           else
-            module_definition?(body_node)
+            constant_definition?(body_node)
           end
         end
 

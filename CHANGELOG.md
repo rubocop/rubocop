@@ -59,6 +59,7 @@
 
 * [#2427](https://github.com/bbatsov/rubocop/pull/2427): Allow non-snake-case file names (e.g. `some-random-script`) for Ruby scripts that have a shebang. ([@sometimesfood][])
 * [#2430](https://github.com/bbatsov/rubocop/pull/2430): `Lint/UnneededDisable` now adds "unknown cop" to messages if cop names in `rubocop:disable` comments are unrecognized, or "did you mean ..." if they are misspelled names of existing cops. ([@jonas054][])
+* [#947](https://github.com/bbatsov/rubocop/issues/947): `Style/Documentation` considers classes and modules which only define constants to be "namespaces", and doesn't flag them for lack of a documentation comment. ([@alexdowad][])
 
 ## 0.35.1 (10/11/2015)
 

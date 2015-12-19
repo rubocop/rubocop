@@ -13,7 +13,8 @@ describe RuboCop::Cop::Style::Documentation do
   it 'registers an offense for non-empty class' do
     inspect_source(cop,
                    ['class My_Class',
-                    '  TEST = 20',
+                    '  def method',
+                    '  end',
                     'end'
                    ])
     expect(cop.offenses.size).to eq(1)
@@ -26,7 +27,8 @@ describe RuboCop::Cop::Style::Documentation do
                     '# Some company',
                     '',
                     'class My_Class',
-                    '  TEST = 20',
+                    '  def method',
+                    '  end',
                     'end'
                    ])
     expect(cop.offenses.size).to eq(1)
@@ -35,7 +37,8 @@ describe RuboCop::Cop::Style::Documentation do
   it 'registers an offense for non-namespace' do
     inspect_source(cop,
                    ['module My_Class',
-                    '  TEST = 20',
+                    '  def method',
+                    '  end',
                     'end'
                    ])
     expect(cop.offenses.size).to eq(1)
@@ -55,7 +58,8 @@ describe RuboCop::Cop::Style::Documentation do
     inspect_source(cop,
                    ['# class comment',
                     'class My_Class',
-                    '  TEST = 20',
+                    '  def method',
+                    '  end',
                     'end'
                    ])
     expect(cop.offenses).to be_empty
@@ -65,7 +69,8 @@ describe RuboCop::Cop::Style::Documentation do
     inspect_source(cop,
                    ['# OPTIMIZE: Make this faster.',
                     'class My_Class',
-                    '  TEST = 20',
+                    '  def method',
+                    '  end',
                     'end'
                    ])
     expect(cop.offenses.size).to eq(1)
@@ -77,7 +82,8 @@ describe RuboCop::Cop::Style::Documentation do
                    ['# OPTIMIZE: Make this faster.',
                     '# Class comment.',
                     'class My_Class',
-                    '  TEST = 20',
+                    '  def method',
+                    '  end',
                     'end'
                    ])
     expect(cop.offenses).to be_empty
@@ -99,7 +105,8 @@ describe RuboCop::Cop::Style::Documentation do
     inspect_source(cop,
                    ['# class comment',
                     'module My_Class',
-                    '  TEST = 20',
+                    '  def method',
+                    '  end',
                     'end'
                    ])
     expect(cop.offenses).to be_empty
@@ -133,33 +140,25 @@ describe RuboCop::Cop::Style::Documentation do
     expect(cop.offenses).to be_empty
   end
 
-  it 'accepts namespace class which uses Constant = Class.new' do
+  it 'accepts namespace class which defines constants' do
     inspect_source(cop,
                    ['class Test',
                     '  A = Class.new',
                     '  B = Class.new(A)',
                     '  C = Class.new { call_method }',
+                    '  D = 1',
                     'end'])
     expect(cop.offenses).to be_empty
   end
 
-  it 'accepts namespace module which uses Constant = Class.new' do
+  it 'accepts namespace module which defines constants' do
     inspect_source(cop,
                    ['module Test',
                     '  A = Class.new',
                     '  B = Class.new(A)',
                     '  C = Class.new { call_method }',
+                    '  D = 1',
                     'end'])
-    expect(cop.offenses).to be_empty
-  end
-
-  it 'accepts namespace module which uses Constant = Module.new' do
-    inspect_source(cop,
-                   ['module Test',
-                    '  A = Module.new',
-                    '  B = Module.new { call_method }',
-                    'end'
-                   ])
     expect(cop.offenses).to be_empty
   end
 
@@ -179,6 +178,8 @@ describe RuboCop::Cop::Style::Documentation do
                    ['module A # The A Module',
                     '  class B',
                     '    C = 1',
+                    '    def method',
+                    '    end',
                     '  end',
                     'end'
                    ])
@@ -187,12 +188,13 @@ describe RuboCop::Cop::Style::Documentation do
 
   context 'sparse and trailing comments' do
     %w(class module).each do |keyword|
-      it "ingores comments after #{keyword} node end" do
+      it "ignores comments after #{keyword} node end" do
         inspect_source(cop,
                        ['module TestModule',
                         '  # documentation comment',
                         "  #{keyword} Test",
-                        '    TEST = 20',
+                        '    def method',
+                        '    end',
                         '  end # decorating comment',
                         'end'
                        ])
@@ -203,7 +205,8 @@ describe RuboCop::Cop::Style::Documentation do
         inspect_source(cop,
                        ['module TestModule',
                         "  #{keyword} Test",
-                        '    TEST = 20',
+                        '    def method',
+                        '    end',
                         '    # sparse comment',
                         '  end',
                         'end'
@@ -218,7 +221,8 @@ describe RuboCop::Cop::Style::Documentation do
       it "accepts non-namespace #{keyword} without documentation" do
         inspect_source(cop,
                        ["#{keyword} Test #:nodoc:",
-                        '  TEST = 20',
+                        '  def method',
+                        '  end',
                         'end'
                        ])
         expect(cop.offenses).to be_empty
@@ -229,7 +233,8 @@ describe RuboCop::Cop::Style::Documentation do
                        ['module TestModule #:nodoc:',
                         '  TEST = 20',
                         "  #{keyword} Test",
-                        '    TEST = 20',
+                        '    def method',
+                        '    end',
                         '  end',
                         'end'
                        ])
@@ -257,7 +262,8 @@ describe RuboCop::Cop::Style::Documentation do
       it 'accepts non-namespace subclass without documentation' do
         inspect_source(cop,
                        ['class Test < Parent #:nodoc:',
-                        '  TEST = 20',
+                        '  def method',
+                        '  end',
                         'end'
                        ])
         expect(cop.offenses).to be_empty
@@ -268,7 +274,8 @@ describe RuboCop::Cop::Style::Documentation do
                        ['module TestModule #:nodoc:',
                         '  TEST = 20',
                         '  class Test < Parent',
-                        '    TEST = 20',
+                        '    def method',
+                        '    end',
                         '  end',
                         'end'
                        ])
