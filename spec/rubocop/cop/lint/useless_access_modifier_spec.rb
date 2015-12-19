@@ -62,6 +62,8 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
         '  attr_reader :another_one',
         '  private',
         '  attr :yet_again, true',
+        '  protected',
+        '  attr_writer :just_for_good_measure',
         'end'
       ]
     end
