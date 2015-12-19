@@ -53,6 +53,7 @@
 * [#2145](https://github.com/bbatsov/rubocop/issues/2145): `Lint/ParenthesesAsGroupedExpression` ignores calls with multiple arguments, since they are not ambiguous. ([@alexdowad][])
 * [#2484](https://github.com/bbatsov/rubocop/issues/2484): Remove two vulnerabilities in cache handling. ([@jonas054][])
 * [#2517](https://github.com/bbatsov/rubocop/issues/2517): `Lint/UselessAccessModifier` doesn't think that an access modifier applied to `attr_writer` is useless. ([@alexdowad][])
+* [#2518](https://github.com/bbatsov/rubocop/issues/2518): `Style/ConditionalAssignment` doesn't think that branches using `<<` and `[]=` should be combined. ([@alexdowad][])
 
 ### Changes
 

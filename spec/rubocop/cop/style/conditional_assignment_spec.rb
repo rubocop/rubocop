@@ -216,6 +216,17 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     expect(cop.messages).to be_empty
   end
 
+  it 'allows assignment using different (method) operators in if..else' do
+    source = ['if foo',
+              '  bar[index] = 1',
+              'else',
+              '  bar << 2',
+              'end']
+    inspect_source(cop, source)
+
+    expect(cop.messages).to be_empty
+  end
+
   it 'allows assignment using different operators in if elsif else' do
     source = ['if foo',
               '  bar = 1',

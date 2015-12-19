@@ -152,23 +152,24 @@ module RuboCop
         end
 
         def types_match?(*nodes)
-          return false unless nodes.first
+          return false unless nodes.all?
 
           first_type = nodes.first.type
-          nodes.all? { |node| node && node.type == first_type }
+          if first_type == :send
+            first_method = nodes.first.method_name
+            nodes.all? do |node|
+              node.send_type? && node.method_name == first_method
+            end
+          else
+            nodes.all? { |node| node.type == first_type }
+          end
         end
 
         # The shovel operator `<<` does not have its own type. It is a `send`
         # type.
         def assignment_type?(branch)
           return true if ASSIGNMENT_TYPES.include?(branch.type)
-
-          if branch.send_type?
-            _variable, method, = *branch
-            return true if method == :<<
-          end
-
-          false
+          branch.send_type? && branch.method_name == :<<
         end
 
         # `when` nodes contain the entire branch including the condition.
