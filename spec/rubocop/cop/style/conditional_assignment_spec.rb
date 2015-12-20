@@ -964,7 +964,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                   'end'].join("\n"))
       end
 
-      it 'preserves all code before varialbe assignment in case when else' do
+      it 'preserves all code before variable assignment in case when else' do
         source = ['case foo',
                   'when foobar',
                   '  method_call',
