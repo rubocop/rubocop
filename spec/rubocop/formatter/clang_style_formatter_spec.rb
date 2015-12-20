@@ -34,7 +34,7 @@ module RuboCop
           it 'does not display offending source line' do
             cop = Cop::Cop.new
             source_buffer = Parser::Source::Buffer.new('test', 1)
-            source_buffer.source = (['     ', 'yaba']).to_a.join($RS)
+            source_buffer.source = ['     ', 'yaba'].join($RS)
             cop.add_offense(nil,
                             Parser::Source::Range.new(source_buffer, 0, 2),
                             'message 1')
