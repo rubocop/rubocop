@@ -47,12 +47,11 @@ module RuboCop
       def strip_quotes(str)
         if str[0] == '"' || str[0] == "'"
           str[0] = ''
-          str[-1] = ''
         else
           # we're dealing with %q or %Q
           str[0, 3] = ''
-          str[-1] = ''
         end
+        str[-1] = ''
 
         str
       end

@@ -227,6 +227,17 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     expect(cop.messages).to be_empty
   end
 
+  it 'allows aref assignment with different indices in if..else' do
+    source = ['if foo',
+              '  bar[1] = 1',
+              'else',
+              '  bar[2] = 2',
+              'end']
+    inspect_source(cop, source)
+
+    expect(cop.messages).to be_empty
+  end
+
   it 'allows assignment using different operators in if elsif else' do
     source = ['if foo',
               '  bar = 1',
@@ -979,6 +990,69 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                   '  method_call',
                                   '  3',
                                   'end'].join("\n"))
+      end
+
+      context 'aref assignment' do
+        it 'corrects if..else' do
+          new_source = autocorrect_source(cop, ['if something',
+                                                '  array[1] = 1',
+                                                'else',
+                                                '  array[1] = 2',
+                                                'end'])
+          expect(new_source).to eq(['array[1] = if something',
+                                    '  1',
+                                    'else',
+                                    '  2',
+                                    'end'].join("\n"))
+        end
+
+        context 'with different indices' do
+          it "doesn't register an offense" do
+            inspect_source(cop, ['if something',
+                                 '  array[1, 2] = 1',
+                                 'else',
+                                 '  array[1, 3] = 2',
+                                 'end'])
+            expect(cop.offenses).to be_empty
+          end
+        end
+      end
+
+      context 'self.attribute= assignment' do
+        it 'corrects if..else' do
+          new_source = autocorrect_source(cop, ['if something',
+                                                '  self.attribute = 1',
+                                                'else',
+                                                '  self.attribute = 2',
+                                                'end'])
+          expect(new_source).to eq(['self.attribute = if something',
+                                    '  1',
+                                    'else',
+                                    '  2',
+                                    'end'].join("\n"))
+        end
+
+        context 'with different receivers' do
+          it "doesn't register an offense" do
+            inspect_source(cop, ['if something',
+                                 '  obj1.attribute = 1',
+                                 'else',
+                                 '  obj2.attribute = 2',
+                                 'end'])
+            expect(cop.offenses).to be_empty
+          end
+        end
+      end
+
+      context 'multiple assignment' do
+        it "doesn't register an offense" do
+          inspect_source(cop, ['if something',
+                               '  a, b = 1, 2',
+                               'else',
+                               '  a, b = 2, 1',
+                               'end'])
+          expect(cop.offenses).to be_empty
+        end
       end
     end
   end
