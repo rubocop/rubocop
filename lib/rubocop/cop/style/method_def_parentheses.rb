@@ -61,11 +61,10 @@ module RuboCop
         def args_node(def_node)
           if def_node.type == :def
             _method_name, args, _body = *def_node
-            args
           else
             _scope, _method_name, args, _body = *def_node
-            args
           end
+          args
         end
 
         def arguments?(args)

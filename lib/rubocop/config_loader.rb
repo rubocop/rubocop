@@ -62,7 +62,6 @@ module RuboCop
         configs = Array(inherit_from).compact.map do |f|
           if f =~ URI.regexp
             f = RemoteConfig.new(f).file
-            load_file(f)
           else
             f = File.expand_path(f, File.dirname(path))
 
@@ -72,8 +71,8 @@ module RuboCop
             end
 
             print 'Inheriting ' if debug?
-            load_file(f)
           end
+          load_file(f)
         end
 
         configs.compact

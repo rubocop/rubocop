@@ -28,6 +28,7 @@
 * [#2502](https://github.com/bbatsov/rubocop/issues/2502): The `--stdin` and `--auto-correct` CLI options can be combined, and if you do so, corrected code is printed to stdout. ([@alexdowad][])
 * `Style/ConditionalAssignment` works on conditionals with a common aref assignment (like `array[index] = val`) or attribute assignment (like `self.attribute = val`). ([@alexdowad][])
 * [#2476](https://github.com/bbatsov/rubocop/issues/2476): `Style/GuardClause` catches if..else nodes with one branch which terminates the execution of the current scope. ([@alexdowad][])
+* New `Style/IdenticalConditionalBranches` flags `if..else` and `case..when..else` constructs with an identical line at the end of each branch. ([@alexdowad][])
 
 ### Bug Fixes
 
