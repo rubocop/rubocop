@@ -17,6 +17,8 @@ module RuboCop
                   :hash, :regexp, :nil, :true, :false]
       BASIC_LITERALS = LITERALS - [:dstr, :dsym, :array, :hash]
 
+      VARIABLES = [:ivar, :gvar, :cvar, :lvar]
+
       # http://phrogz.net/programmingruby/language.html#table_18.4
       # Backtick is added last just to help editors parse this code.
       OPERATOR_METHODS = %w(
@@ -28,6 +30,18 @@ module RuboCop
 
       def operator?(symbol)
         OPERATOR_METHODS.include?(symbol)
+      end
+
+      def literal?(node)
+        LITERALS.include?(node.type)
+      end
+
+      def variable?(node)
+        VARIABLES.include?(node.type)
+      end
+
+      def constant?(node)
+        node.const_type?
       end
 
       def strip_quotes(str)

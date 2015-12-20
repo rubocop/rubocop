@@ -61,7 +61,7 @@ module RuboCop
           notice_regexp = Regexp.new(notice)
           processed_source.tokens.each do |token|
             break unless token.type == :tCOMMENT
-            notice_found = !((token.text =~ notice_regexp).nil?)
+            notice_found = !(token.text =~ notice_regexp).nil?
             break if notice_found
           end
           notice_found

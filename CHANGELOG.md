@@ -22,6 +22,7 @@
 * [#1677](https://github.com/bbatsov/rubocop/issues/1677): Add new `Performance/RedundantBlockCall` cop. ([@alexdowad][])
 * [#1954](https://github.com/bbatsov/rubocop/issues/1954): `Lint/UnneededDisable` can now autocorrect. ([@alexdowad][])
 * [#2501](https://github.com/bbatsov/rubocop/issues/2501): Add new `Lint/ImplicitStringConcatenation` cop. ([@alexdowad][])
+* Add new `Style/RedundantParentheses` cop. ([@lumeet][])
 
 ### Bug Fixes
 
