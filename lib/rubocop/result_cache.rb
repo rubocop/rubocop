@@ -15,6 +15,7 @@ module RuboCop
       @path = File.join(cache_root, rubocop_checksum, RUBY_VERSION,
                         relevant_options(options),
                         file_checksum(file, config_store))
+      @cached_data = CachedData.new(file)
     end
 
     def valid?
@@ -22,7 +23,7 @@ module RuboCop
     end
 
     def load
-      Marshal.load(IO.binread(@path))
+      @cached_data.from_json(IO.binread(@path))
     end
 
     def save(offenses, disabled_line_ranges, comments)
@@ -33,12 +34,9 @@ module RuboCop
       # symbolic link anywhere in the cache directory tree is an indication
       # that a symlink attack is being waged.
       return if any_symlink?(dir)
+
       File.open(preliminary_path, 'wb') do |f|
-        # The Hash[x.sort] call is a trick that converts a Hash with a default
-        # block to a Hash without a default block. Thus making it possible to
-        # dump.
-        f.write(Marshal.dump([offenses, Hash[disabled_line_ranges.sort],
-                              comments]))
+        f.write(@cached_data.to_json(offenses, disabled_line_ranges, comments))
       end
       # The preliminary path is used so that if there are multiple RuboCop
       # processes trying to save data for the same inspected file
