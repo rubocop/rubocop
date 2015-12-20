@@ -6,10 +6,11 @@ module RuboCop
       # This is actually not a cop and inspects nothing. It just provides
       # methods to repack Parser's diagnostics/errors into RuboCop's offenses.
       module Syntax
-        PseudoSourceRange = Struct.new(:line, :column, :source_line)
+        PseudoSourceRange = Struct.new(:line, :column, :source_line, :begin_pos,
+                                       :end_pos)
 
         COP_NAME = 'Syntax'.freeze
-        ERROR_SOURCE_RANGE = PseudoSourceRange.new(1, 0, '').freeze
+        ERROR_SOURCE_RANGE = PseudoSourceRange.new(1, 0, '', 0, 1).freeze
 
         def self.offenses_from_processed_source(processed_source)
           offenses = []

@@ -352,6 +352,7 @@ require 'rubocop/formatter/file_list_formatter'
 require 'rubocop/formatter/offense_count_formatter'
 require 'rubocop/formatter/formatter_set'
 
+require 'rubocop/cached_data'
 require 'rubocop/config'
 require 'rubocop/config_loader'
 require 'rubocop/config_store'

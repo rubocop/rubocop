@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 describe RuboCop::ResultCache, :isolated_environment do
-  Loc = Struct.new(:column, :line)
-
   include FileHelper
 
   subject(:cache) do
@@ -19,15 +17,31 @@ describe RuboCop::ResultCache, :isolated_environment do
                                'Lint/UselessAssignment')]
   end
   let(:disabled_lines) { { 'Metrics/LineLength' => [4..5] } }
-  let(:comments) { ['# Hello'] }
-  let(:location) { Loc.new(3, 2) }
+  let(:encoding_comment) { '' }
+  let(:comment_text) { '# Hello' }
+  let(:comments) do
+    source_buffer = Parser::Source::Buffer.new(file)
+    source_buffer.source = encoding_comment + comment_text
+    range = Parser::Source::Range.new(source_buffer,
+                                      0,
+                                      source_buffer.source.length)
+    [
+      Parser::Source::Comment.new(range)
+    ]
+  end
+  let(:location) do
+    source_buffer = Parser::Source::Buffer.new(file)
+    source_buffer.read
+    Parser::Source::Range.new(source_buffer, 0, 2)
+  end
 
   def abs(path)
     File.expand_path(path)
   end
 
   before do
-    create_file('example.rb', ['x = 1'])
+    create_file('example.rb', ['# Hello',
+                               'x = 1'])
     allow(config_store).to receive(:for).with('example.rb').and_return({})
   end
 
@@ -40,7 +54,18 @@ describe RuboCop::ResultCache, :isolated_environment do
         saved_offenses, saved_disabled_lines, saved_comments = cache2.load
         expect(saved_offenses).to eq(offenses)
         expect(saved_disabled_lines).to eq(disabled_lines)
-        expect(saved_comments).to eq(comments)
+        # The new Comment objects that have been created from cached data are
+        # equivalent to the saved ones, but comparing them with the == operator
+        # still gives false. That's because they refer to locations in
+        # different source buffers. So we compare them attribute by attribute.
+        expect(saved_comments.size).to eq(comments.size)
+        comments.each_index do |ix|
+          c1 = comments[ix]
+          c2 = saved_comments[ix]
+          expect(c2.text).to eq(c1.text)
+          expect(c2.loc.expression.begin_pos).to eq(c1.loc.expression.begin_pos)
+          expect(c2.loc.expression.end_pos).to eq(c1.loc.expression.end_pos)
+        end
       end
     end
 
@@ -54,6 +79,29 @@ describe RuboCop::ResultCache, :isolated_environment do
           create_file('example.rb', ['x = 2'])
           cache2 = described_class.new(file, options, config_store, cache_root)
           expect(cache2.valid?).to eq(false)
+        end
+      end
+
+      context 'when a symlink attack is made' do
+        before(:each) do
+          cache.save(offenses, disabled_lines, comments)
+          Find.find(cache_root) do |path|
+            next unless File.basename(path) == '_'
+            FileUtils.rm_rf(path)
+            FileUtils.ln_s('/bin', path)
+          end
+          $stderr = StringIO.new
+        end
+        after(:each) { $stderr = STDERR }
+
+        it 'is stopped' do
+          cache2 = described_class.new(file, options, config_store, cache_root)
+          cache2.save(offenses, disabled_lines, comments)
+          # The cache file has not been created because there was a symlink in
+          # its path.
+          expect(cache2.valid?).to eq(false)
+          expect($stderr.string)
+            .to match(/Warning: .* is a symlink, which is not allowed.\n/)
         end
       end
     end
@@ -84,7 +132,8 @@ describe RuboCop::ResultCache, :isolated_environment do
 
   describe '#save' do
     context 'when the default internal encoding is UTF-8' do
-      let(:comments) { ["# Hello \xF0"] }
+      let(:encoding_comment) { "# encoding: iso-8859-1\n" }
+      let(:comment_text) { "# Hello \xF0" }
       before(:each) { Encoding.default_internal = Encoding::UTF_8 }
       after(:each) { Encoding.default_internal = nil }
 

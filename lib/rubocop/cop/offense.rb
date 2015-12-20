@@ -90,6 +90,9 @@ module RuboCop
       end
 
       # @api private
+      attr_reader :status
+
+      # @api private
       def line
         location.line
       end
