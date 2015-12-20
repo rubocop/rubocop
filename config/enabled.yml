@@ -325,6 +325,13 @@ Style/IndentationWidth:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#spaces-indentation'
   Enabled: true
 
+Style/IdenticalConditionalBranches:
+  Description: >-
+                 Checks that conditional statements do not have an identical
+                 line at the end of each branch, which can validly be moved
+                 out of the conditional.
+  Enabled: true
+
 Style/IndentArray:
   Description: >-
                  Checks the indentation of the first element in an array
@@ -431,6 +438,12 @@ Style/NegatedWhile:
 Style/NestedModifier:
   Description: 'Avoid using nested modifiers.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-nested-modifiers'
+  Enabled: true
+
+Style/NestedParenthesizedCalls:
+  Description: >-
+                 Parenthesize method calls which are nested inside the
+                 argument list of another parenthesized method call.
   Enabled: true
 
 Style/NestedTernaryOperator:

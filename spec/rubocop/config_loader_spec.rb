@@ -275,6 +275,21 @@ describe RuboCop::ConfigLoader do
       end
     end
 
+    context 'when a file inherits from the rubocop gem' do
+      let(:file_path) { '.rubocop.yml' }
+
+      before do
+        create_file(file_path,
+                    ['inherit_gem:',
+                     '  rubocop: config/default.yml'
+                    ])
+      end
+
+      it 'fails to load' do
+        expect { configuration_from_file }.to raise_error(ArgumentError)
+      end
+    end
+
     context 'when a file inherits from a known gem' do
       let(:file_path) { '.rubocop.yml' }
 

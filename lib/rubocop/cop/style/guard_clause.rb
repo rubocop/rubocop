@@ -24,6 +24,17 @@ module RuboCop
       #   def test
       #     work if something
       #   end
+      #
+      #   # bad
+      #   if something
+      #     raise 'exception'
+      #   else
+      #     ok
+      #   end
+      #
+      #   # good
+      #   raise 'exception' if something
+      #   ok
       class GuardClause < Cop
         include ConfigurableEnforcedStyle
         include IfNode
@@ -32,27 +43,47 @@ module RuboCop
         MSG = 'Use a guard clause instead of wrapping the code inside a ' \
               'conditional expression.'
 
+        def_node_matcher :control_flow_exit?, <<-PATTERN
+          {(send nil {:raise :fail} ...) return break next}
+        PATTERN
+
         def on_def(node)
           _, _, body = *node
           return unless body
 
           if if?(body)
-            check_if_node(body)
-          elsif body.type == :begin
-            expressions = *body
-            last_expr = expressions.last
-
-            check_if_node(last_expr) if if?(last_expr)
+            check_trailing_if(body)
+          elsif body.begin_type?
+            last_expr = body.children.last
+            check_trailing_if(last_expr) if if?(last_expr)
           end
+        end
+
+        def on_if(node)
+          _cond, body, else_body = *node
+
+          return unless body && else_body
+          # discard modifier ifs and ternary_ops
+          return if modifier_if?(node) || ternary_op?(node) || elsif?(node)
+
+          return unless control_flow_exit?(body) ||
+                        control_flow_exit?(else_body)
+          return if line_too_long_when_corrected?(node)
+
+          add_offense(node, :keyword, MSG)
         end
 
         private
 
-        def if?(body)
-          body && body.type == :if
+        def if?(node)
+          node && node.if_type?
         end
 
-        def check_if_node(node)
+        def elsif?(node)
+          node.children.last.if_type?
+        end
+
+        def check_trailing_if(node)
           _cond, body, else_body = *node
 
           return if body && else_body
@@ -62,6 +93,18 @@ module RuboCop
           return unless min_body_length?(node)
 
           add_offense(node, :keyword, MSG)
+        end
+
+        def line_too_long_when_corrected?(node)
+          cond, body, else_body = *node
+          max    = config.for_cop('Metrics/LineLength')['Max']
+          indent = node.loc.column
+
+          if control_flow_exit?(body)
+            indent + (body.source + ' if ' + cond.source).length > max
+          else
+            indent + (else_body.source + ' unless ' + cond.source).length > max
+          end
         end
       end
     end

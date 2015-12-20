@@ -26,6 +26,7 @@ module RuboCop
       all_passed = runner.run(paths)
       display_warning_summary(runner.warnings)
       display_error_summary(runner.errors)
+      maybe_print_corrected_source
 
       all_passed && !runner.aborting? && runner.errors.empty? ? 0 : 1
     rescue Cop::AmbiguousCopName => e
@@ -122,6 +123,17 @@ module RuboCop
         Mention the following information in the issue report:
         #{RuboCop::Version.version(true)}
       END
+    end
+
+    def maybe_print_corrected_source
+      # If we are asked to autocorrect source code read from stdin, the only
+      # reasonable place to write it is to stdout
+      # Unfortunately, we also write other information to stdout
+      # So a delimiter is needed for tools to easily identify where the
+      # autocorrected source begins
+      return unless @options[:stdin] && @options[:auto_correct]
+      puts '=' * 20
+      print @options[:stdin]
     end
   end
 end

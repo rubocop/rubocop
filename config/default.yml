@@ -662,6 +662,12 @@ Style/SingleLineBlockParams:
 Style/SingleLineMethods:
   AllowIfMethodIsEmpty: true
 
+Style/SpecialGlobalVars:
+  EnforcedStyle: use_english_names
+  SupportedStyles:
+    - use_perl_names
+    - use_english_names
+
 Style/StabbyLambdaParentheses:
   EnforcedStyle: require_parentheses
   SupportedStyles:

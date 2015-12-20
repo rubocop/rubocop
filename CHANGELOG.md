@@ -23,6 +23,12 @@
 * [#1954](https://github.com/bbatsov/rubocop/issues/1954): `Lint/UnneededDisable` can now autocorrect. ([@alexdowad][])
 * [#2501](https://github.com/bbatsov/rubocop/issues/2501): Add new `Lint/ImplicitStringConcatenation` cop. ([@alexdowad][])
 * Add new `Style/RedundantParentheses` cop. ([@lumeet][])
+* [#1346](https://github.com/bbatsov/rubocop/issues/1346): `Style/SpecialGlobalVars` can be configured to use either `use_english_names` or `use_perl_names` styles. ([@alexdowad][])
+* [#2426](https://github.com/bbatsov/rubocop/issues/2426): New `Style/NestedParenthesizedCalls` cop checks for non-parenthesized method calls nested inside a parenthesized call, like `method1(method2 arg)`. ([@alexdowad][])
+* [#2502](https://github.com/bbatsov/rubocop/issues/2502): The `--stdin` and `--auto-correct` CLI options can be combined, and if you do so, corrected code is printed to stdout. ([@alexdowad][])
+* `Style/ConditionalAssignment` works on conditionals with a common aref assignment (like `array[index] = val`) or attribute assignment (like `self.attribute = val`). ([@alexdowad][])
+* [#2476](https://github.com/bbatsov/rubocop/issues/2476): `Style/GuardClause` catches if..else nodes with one branch which terminates the execution of the current scope. ([@alexdowad][])
+* New `Style/IdenticalConditionalBranches` flags `if..else` and `case..when..else` constructs with an identical line at the end of each branch. ([@alexdowad][])
 
 ### Bug Fixes
 
@@ -49,11 +55,15 @@
 * [#2506](https://github.com/bbatsov/rubocop/issues/2506): `Lint/FormatParameterMismatch` understands %{} and %<> interpolations. ([@alexdowad][])
 * [#2145](https://github.com/bbatsov/rubocop/issues/2145): `Lint/ParenthesesAsGroupedExpression` ignores calls with multiple arguments, since they are not ambiguous. ([@alexdowad][])
 * [#2484](https://github.com/bbatsov/rubocop/issues/2484): Remove two vulnerabilities in cache handling. ([@jonas054][])
+* [#2517](https://github.com/bbatsov/rubocop/issues/2517): `Lint/UselessAccessModifier` doesn't think that an access modifier applied to `attr_writer` is useless. ([@alexdowad][])
+* [#2518](https://github.com/bbatsov/rubocop/issues/2518): `Style/ConditionalAssignment` doesn't think that branches using `<<` and `[]=` should be combined. ([@alexdowad][])
 
 ### Changes
 
 * [#2427](https://github.com/bbatsov/rubocop/pull/2427): Allow non-snake-case file names (e.g. `some-random-script`) for Ruby scripts that have a shebang. ([@sometimesfood][])
 * [#2430](https://github.com/bbatsov/rubocop/pull/2430): `Lint/UnneededDisable` now adds "unknown cop" to messages if cop names in `rubocop:disable` comments are unrecognized, or "did you mean ..." if they are misspelled names of existing cops. ([@jonas054][])
+* [#947](https://github.com/bbatsov/rubocop/issues/947): `Style/Documentation` considers classes and modules which only define constants to be "namespaces", and doesn't flag them for lack of a documentation comment. ([@alexdowad][])
+* [#2467](https://github.com/bbatsov/rubocop/issues/2467): Explicitly inheriting configuration from the rubocop gem in .rubocop.yml is not allowed. ([@alexdowad][])
 
 ## 0.35.1 (10/11/2015)
 

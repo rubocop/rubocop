@@ -169,4 +169,28 @@ describe RuboCop::Cop::Style::GuardClause, :config do
         .to raise_error('MinBodyLength needs to be a positive integer!')
     end
   end
+
+  shared_examples 'on if nodes with a branch which exits current scope' do |kw|
+    context "with #{kw} in the if branch" do
+      inspect_source(cop, ['if something',
+                           "  #{kw}",
+                           'else',
+                           '  puts "hello"',
+                           'end'])
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.messages).to eq(['Use a guard clause instead of wrapping ' \
+                                  'the code inside a conditional expression.'])
+    end
+
+    context "with #{kw} in the else branch" do
+      inspect_source(cop, ['if something',
+                           ' puts "hello"',
+                           'else',
+                           "  #{kw}",
+                           'end'])
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.messages).to eq(['Use a guard clause instead of wrapping ' \
+                                  'the code inside a conditional expression.'])
+    end
+  end
 end

@@ -62,7 +62,6 @@ module RuboCop
         configs = Array(inherit_from).compact.map do |f|
           if f =~ URI.regexp
             f = RemoteConfig.new(f).file
-            load_file(f)
           else
             f = File.expand_path(f, File.dirname(path))
 
@@ -72,8 +71,8 @@ module RuboCop
             end
 
             print 'Inheriting ' if debug?
-            load_file(f)
           end
+          load_file(f)
         end
 
         configs.compact
@@ -174,6 +173,11 @@ module RuboCop
 
       def resolve_inheritance_from_gems(hash, gems)
         (gems || {}).each_pair do |gem_name, config_path|
+          if gem_name == 'rubocop'
+            fail ArgumentError,
+                 "can't inherit configuration from the rubocop gem"
+          end
+
           hash['inherit_from'] = Array(hash['inherit_from'])
           # Put gem configuration first so local configuration overrides it.
           hash['inherit_from'].unshift gem_config_path(gem_name, config_path)

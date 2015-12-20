@@ -29,7 +29,7 @@ module RuboCop
         PATTERN
 
         def_node_matcher :method_definition?, <<-PATTERN
-          {def (send nil {:attr :attr_reader :attr_accessor} ...)}
+          {def (send nil {:attr :attr_reader :attr_writer :attr_accessor} ...)}
         PATTERN
 
         def on_class(node)

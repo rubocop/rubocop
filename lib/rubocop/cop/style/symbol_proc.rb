@@ -54,11 +54,10 @@ module RuboCop
 
             if super?(block_send_or_super)
               args = *block_send_or_super
-              autocorrect_method(corrector, node, args, method_name)
             else
               _breceiver, _bmethod_name, *args = *block_send_or_super
-              autocorrect_method(corrector, node, args, method_name)
             end
+            autocorrect_method(corrector, node, args, method_name)
           end
         end
 
