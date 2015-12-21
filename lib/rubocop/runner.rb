@@ -121,7 +121,9 @@ module RuboCop
         # need to do that processing and can not use caching.
         !@options[:auto_gen_config] &&
         # Auto-correction needs a full run. It can not use cached results.
-        !@options[:auto_correct]
+        !@options[:auto_correct] &&
+        # We can't cache results from code which is piped in to stdin
+        !@options[:stdin]
     end
 
     def save_in_cache(cache, offenses, processed_source)
