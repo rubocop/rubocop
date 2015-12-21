@@ -460,7 +460,7 @@ Metrics/CyclomaticComplexity:
   Severity: warning
 ```
 
-## Details 
+## Details
 
 Individual cops can be embellished with extra details in offense messages:
 
@@ -815,11 +815,8 @@ Installation instructions can be found [here](https://github.com/mrdougal/textma
 
 ### Atom
 
-The [atom-lint](https://github.com/yujinakayama/atom-lint) package
-runs RuboCop and highlights the offenses in Atom.
-
-You can also use the [linter-rubocop](https://github.com/AtomLinter/linter-rubocop)
-plugin for Atom's [linter](https://github.com/atom-community/linter).
+The [linter-rubocop](https://github.com/AtomLinter/linter-rubocop) plugin for Atom's
+[linter](https://github.com/AtomLinter/Linter) runs RuboCop and highlights the offenses in Atom.
 
 ### LightTable
 
