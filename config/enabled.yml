@@ -978,6 +978,12 @@ Lint/Eval:
   Description: 'The use of eval represents a serious security risk.'
   Enabled: true
 
+Lint/FloatOutOfRange:
+  Description: >-
+                 Catches floating-point literals too large or small for Ruby to
+                 represent.
+  Enabled: true
+
 Lint/FormatParameterMismatch:
   Description: 'The number of parameters to format/sprint must match the fields.'
   Enabled: true
