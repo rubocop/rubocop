@@ -24,6 +24,7 @@ module RuboCop
 
           _model, first_method = *receiver
           return unless SCOPE_METHODS.include?(first_method)
+          return if method_chain(node).any? { |m| ignored_by_find_each?(m) }
 
           add_offense(node, node.loc.selector, MSG)
         end
@@ -32,6 +33,25 @@ module RuboCop
           each_loc = node.loc.selector
 
           ->(corrector) { corrector.replace(each_loc, 'find_each') }
+        end
+
+        private
+
+        def method_chain(node)
+          if (node.send_type? || node.block_type?) && !node.receiver.nil?
+            if node.parent
+              method_chain(node.parent) << node.method_name
+            else
+              [node.method_name]
+            end
+          else
+            []
+          end
+        end
+
+        def ignored_by_find_each?(relation_method)
+          # Active Record's #find_each ignores various extra parameters
+          [:order, :limit, :select].include?(relation_method)
         end
       end
     end

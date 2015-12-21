@@ -6,11 +6,29 @@ describe RuboCop::Cop::Rails::FindEach do
   subject(:cop) { described_class.new }
 
   shared_examples 'register_offense' do |scope|
-    it "when using #{scope}.each" do
+    it "registers an offense when using #{scope}.each" do
       inspect_source(cop, "User.#{scope}.each { |u| u.something }")
 
-      expect(cop.messages)
-        .to eq(['Use `find_each` instead of `each`.'])
+      expect(cop.messages).to eq(['Use `find_each` instead of `each`.'])
+    end
+
+    it "does not register an offense when using #{scope}.order(...).each" do
+      inspect_source(cop, "User.#{scope}.order(:name).each { |u| u.something }")
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it "does not register an offense when using #{scope}.limit(...).each" do
+      inspect_source(cop, "User.#{scope}.limit(10).each { |u| u.something }")
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it "does not register an offense when using #{scope}.select(...).each" do
+      inspect_source(cop, "User.#{scope}.select(:name, :age).each " \
+                          '{ |u| u.something }')
+
+      expect(cop.offenses).to be_empty
     end
   end
 
@@ -24,10 +42,7 @@ describe RuboCop::Cop::Rails::FindEach do
   end
 
   it 'auto-corrects each to find_each' do
-    new_source = autocorrect_source(
-      cop,
-      'User.all.each { |u| u.x }'
-    )
+    new_source = autocorrect_source(cop, 'User.all.each { |u| u.x }')
 
     expect(new_source).to eq('User.all.find_each { |u| u.x }')
   end

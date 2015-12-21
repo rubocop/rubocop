@@ -58,6 +58,7 @@
 * [#2517](https://github.com/bbatsov/rubocop/issues/2517): `Lint/UselessAccessModifier` doesn't think that an access modifier applied to `attr_writer` is useless. ([@alexdowad][])
 * [#2518](https://github.com/bbatsov/rubocop/issues/2518): `Style/ConditionalAssignment` doesn't think that branches using `<<` and `[]=` should be combined. ([@alexdowad][])
 * `CharacterLiteral` auto-corrector now properly corrects `?'`. ([@bfontaine][])
+* [#2313](https://github.com/bbatsov/rubocop/issues/2313): `Rails/FindEach` doesn't break code which uses `order(...).each`, `limit(...).each`, and so on. ([@alexdowad][])
 
 ### Changes
 
@@ -65,6 +66,7 @@
 * [#2430](https://github.com/bbatsov/rubocop/pull/2430): `Lint/UnneededDisable` now adds "unknown cop" to messages if cop names in `rubocop:disable` comments are unrecognized, or "did you mean ..." if they are misspelled names of existing cops. ([@jonas054][])
 * [#947](https://github.com/bbatsov/rubocop/issues/947): `Style/Documentation` considers classes and modules which only define constants to be "namespaces", and doesn't flag them for lack of a documentation comment. ([@alexdowad][])
 * [#2467](https://github.com/bbatsov/rubocop/issues/2467): Explicitly inheriting configuration from the rubocop gem in .rubocop.yml is not allowed. ([@alexdowad][])
+* [#2322](https://github.com/bbatsov/rubocop/issues/2322): Output of --auto-gen-config shows content of default config parameters which are Arrays; this is especially useful for SupportedStyles. ([@alexdowad][])
 
 ## 0.35.1 (10/11/2015)
 

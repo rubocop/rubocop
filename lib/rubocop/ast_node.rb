@@ -68,16 +68,14 @@ module Astrolabe
       index = parent.children.index { |child| child.equal?(self) }
 
       case parent.type
-      when :array, :defined?, :dstr, :dsym, :eflipflop, :erange, :float, :hash,
-           :iflipflop, :irange, :not, :pair, :regexp, :str, :sym, :when, :xstr
+      when :array, :block, :defined?, :dstr, :dsym, :eflipflop, :erange, :float,
+           :hash, :iflipflop, :irange, :not, :pair, :regexp, :str, :sym, :when,
+           :xstr
         parent.value_used?
       when :begin, :kwbegin
         # the last child node determines the value of the parent
         index == parent.children.size - 1 ? parent.value_used? : false
-      when :block, :for
-        # `method { |args| body }`
-        # (block <send> <args> <body>)
-        # OR:
+      when :for
         # `for var in enum; body; end`
         # (for <var> <enum> <body>)
         index == 2 ? parent.value_used? : true
