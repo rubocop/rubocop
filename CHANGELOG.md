@@ -57,6 +57,7 @@
 * [#2484](https://github.com/bbatsov/rubocop/issues/2484): Remove two vulnerabilities in cache handling. ([@jonas054][])
 * [#2517](https://github.com/bbatsov/rubocop/issues/2517): `Lint/UselessAccessModifier` doesn't think that an access modifier applied to `attr_writer` is useless. ([@alexdowad][])
 * [#2518](https://github.com/bbatsov/rubocop/issues/2518): `Style/ConditionalAssignment` doesn't think that branches using `<<` and `[]=` should be combined. ([@alexdowad][])
+* `CharacterLiteral` auto-corrector now properly corrects `?'`. ([@bfontaine][])
 
 ### Changes
 
@@ -1785,3 +1786,4 @@
 [@domcleal]: https://github.com/domcleal
 [@codebeige]: https://github.com/codebeige
 [@weh]: https://github.com/weh
+[@bfontaine]: https://github.com/bfontaine
