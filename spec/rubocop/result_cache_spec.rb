@@ -177,7 +177,7 @@ end
 
 describe RuboCop::ResultCache, :isolated_environment do
   let(:config_store) { double('config_store') }
-  let(:tmpdir) { Dir.tmpdir }
+  let(:tmpdir) { File.realpath(Dir.tmpdir) }
   let(:puid) { Process.uid.to_s }
 
   describe 'the cache path when using a temp directory' do
