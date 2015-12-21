@@ -93,7 +93,10 @@ module RuboCop
 
     def self.cache_root(config_store)
       root = config_store.for('.')['AllCops']['CacheRootDirectory']
-      root = File.join(Dir.tmpdir, Process.uid.to_s) if root == '/tmp'
+      if root == '/tmp'
+        tmpdir = File.realpath(Dir.tmpdir)
+        root = File.join(tmpdir, Process.uid.to_s)
+      end
       File.join(root, 'rubocop_cache')
     end
 
