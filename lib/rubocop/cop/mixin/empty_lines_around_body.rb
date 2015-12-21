@@ -44,6 +44,8 @@ module RuboCop
             else
               check_for_empty_lines(start_line, end_line)
             end
+          when :body_start_only
+            check_for_leading_nonempty_line(start_line, end_line)
           end
         end
 
@@ -55,6 +57,11 @@ module RuboCop
         def check_for_nonempty_lines(start_line, end_line)
           check_start(start_line, MSG_MISSING, 1) { |line| !line.empty? }
           check_end(end_line - 2, MSG_MISSING, 2) { |line| !line.empty? }
+        end
+
+        def check_for_leading_nonempty_line(start_line, end_line)
+          check_start(start_line, MSG_MISSING, 1) { |line| !line.empty? }
+          check_end(end_line - 2, MSG_EXTRA, 1, &:empty?)
         end
 
         def check_start(line, msg, offset, &block)

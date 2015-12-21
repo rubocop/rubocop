@@ -387,6 +387,7 @@ Style/EmptyLinesAroundBlockBody:
     - empty_lines
     - no_empty_lines
     - top_level_only
+    - body_start_only
 
 Style/EmptyLinesAroundClassBody:
   EnforcedStyle: no_empty_lines
@@ -394,6 +395,7 @@ Style/EmptyLinesAroundClassBody:
     - empty_lines
     - no_empty_lines
     - top_level_only
+    - body_start_only
 
 Style/EmptyLinesAroundModuleBody:
   EnforcedStyle: no_empty_lines
@@ -401,6 +403,7 @@ Style/EmptyLinesAroundModuleBody:
     - empty_lines
     - no_empty_lines
     - top_level_only
+    - body_start_only
 
 # Checks whether the source file has a utf-8 encoding comment or not
 # AutoCorrectEncodingComment must match the regex

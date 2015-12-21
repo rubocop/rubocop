@@ -158,5 +158,46 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBlockBody, :config do
                                   'end'].join("\n"))
       end
     end
+
+    context "when EnforcedStyle is body_start_only for #{open} #{close}" do
+      let(:cop_config) { { 'EnforcedStyle' => 'body_start_only' } }
+
+      it 'registers an offense for block body not starting with a blank' do
+        inspect_source(cop,
+                       ["some_method #{open}",
+                        '  do_something',
+                        close])
+        expect(cop.messages).to eq(['Empty line missing at block body '\
+                                    'beginning.'])
+      end
+
+      it 'autocorrects block body containing nothing' do
+        corrected = autocorrect_source(cop,
+                                       ["some_method #{open}",
+                                        close])
+        expect(corrected).to eq ["some_method #{open}",
+                                 '',
+                                 close].join("\n")
+      end
+
+      it 'autocorrects beginning and end' do
+        new_source = autocorrect_source(cop,
+                                        ["some_method #{open}",
+                                         '  do_something',
+                                         '',
+                                         close])
+        expect(new_source).to eq(["some_method #{open}",
+                                  '',
+                                  '  do_something',
+                                  close].join("\n"))
+      end
+
+      it 'is not fooled by single line blocks' do
+        inspect_source(cop,
+                       ["some_method #{open} do_something #{close}",
+                        'something_else'])
+        expect(cop.offenses).to be_empty
+      end
+    end
   end
 end

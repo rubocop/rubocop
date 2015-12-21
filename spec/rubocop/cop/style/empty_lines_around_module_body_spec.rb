@@ -135,4 +135,40 @@ describe RuboCop::Cop::Style::EmptyLinesAroundModuleBody, :config do
                                 'end'].join("\n"))
     end
   end
+
+  context 'when EnforcedStyle is body_start_only' do
+    let(:cop_config) { { 'EnforcedStyle' => 'body_start_only' } }
+
+    it 'registers an offense for module body not starting with a blank' do
+      inspect_source(cop,
+                     ['module SomeModule',
+                      '  do_something',
+                      'end'])
+      expect(cop.messages).to eq(
+        ['Empty line missing at module body beginning.'])
+    end
+
+    it 'registers an offense for module body ending with a blank' do
+      inspect_source(cop,
+                     ['module SomeModule',
+                      '',
+                      '  do_something',
+                      '',
+                      'end'])
+      expect(cop.messages).to eq(
+        ['Extra empty line detected at module body end.'])
+    end
+
+    it 'autocorrects beginning and end' do
+      new_source = autocorrect_source(cop,
+                                      ['module SomeModule',
+                                       '  do_something',
+                                       '',
+                                       'end'])
+      expect(new_source).to eq(['module SomeModule',
+                                '',
+                                '  do_something',
+                                'end'].join("\n"))
+    end
+  end
 end
