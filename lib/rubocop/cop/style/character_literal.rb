@@ -19,10 +19,12 @@ module RuboCop
           lambda do |corrector|
             string = node.source[1..-1]
 
-            if string.length == 1 # normal character
-              corrector.replace(node.loc.expression, "'#{string}'")
-            elsif string.length == 2 # special character like \n
+            # special character like \n
+            # or ' which needs to use "" or be escaped.
+            if string.length == 2 || string == "'"
               corrector.replace(node.loc.expression, %("#{string}"))
+            elsif string.length == 1 # normal character
+              corrector.replace(node.loc.expression, "'#{string}'")
             end
           end
         end

@@ -34,4 +34,9 @@ describe RuboCop::Cop::Style::CharacterLiteral do
     new_source = autocorrect_source(cop, 'x = ?\n')
     expect(new_source).to eq('x = "\\n"')
   end
+
+  it 'auto-corrects ?\' to "\'"' do
+    new_source = autocorrect_source(cop, 'x = ?\'')
+    expect(new_source).to eq('x = "\'"')
+  end
 end
