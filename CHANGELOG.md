@@ -49,6 +49,7 @@
 * [#2480](https://github.com/bbatsov/rubocop/pull/2480): Allow `Style/ConditionalAssignment` to correct comparable methods. ([@rrosenblum][])
 * [#1633](https://github.com/bbatsov/rubocop/issues/1633): New cop `Style/MultilineMethodCallIndentation` takes over the responsibility for checking alignment of methods from the `Style/MultilineOperationIndentation` cop. ([@jonas054][])
 * [#2472](https://github.com/bbatsov/rubocop/pull/2472): New cop `Style/MultilineArrayBraceLayout` checks that the closing brace in an array literal is symmetrical with respect to the opening brace and the array elements. ([@panthomakos][])
+* [#1568](https://github.com/bbatsov/rubocop/issues/1568): Add `top_level_only` style to `Style/EmptyLinesAroundBlockBody`, `Style/EmptyLinesAroundClassBody`, and `Style/EmptyLinesAroundModuleBody`. ([@alexdowad][])
 
 ### Bug Fixes
 
