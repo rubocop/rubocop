@@ -29,7 +29,7 @@ module RuboCop
           _, method_name, method_arg = *method
 
           return unless METHODS.include? method_name
-          return if method_arg && BASIC_LITERALS.include?(method_arg.type)
+          return if method_arg && method_arg.basic_literal?
 
           return_value = return_value(body)
           return unless return_value

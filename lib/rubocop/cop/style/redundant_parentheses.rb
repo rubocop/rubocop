@@ -14,13 +14,15 @@ module RuboCop
       #   x if y.z.nil?
       #
       class RedundantParentheses < Cop
+        ALLOWED_LITERALS = [:irange, :erange].freeze
+
         def on_begin(node)
           return unless parentheses?(node)
 
           child_node = node.children.first
-          return offense(node, 'a literal') if literal?(child_node)
-          return offense(node, 'a variable') if variable?(child_node)
-          return offense(node, 'a constant') if constant?(child_node)
+          return offense(node, 'a literal') if disallowed_literal?(child_node)
+          return offense(node, 'a variable') if child_node.variable?
+          return offense(node, 'a constant') if child_node.const_type?
           return unless method_call_with_redundant_parentheses?(child_node)
 
           offense(node, 'a method call')
@@ -32,6 +34,10 @@ module RuboCop
 
         def parentheses?(node)
           node.loc.begin && node.loc.begin.is?('('.freeze)
+        end
+
+        def disallowed_literal?(node)
+          node.literal? && !ALLOWED_LITERALS.include?(node.type)
         end
 
         def method_call_with_redundant_parentheses?(node)

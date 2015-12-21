@@ -18,15 +18,10 @@ module RuboCop
       class InfiniteLoop < Cop
         MSG = 'Use `Kernel#loop` for infinite loops.'
 
-        TRUTHY_LITERALS = [:str, :dstr, :int, :float, :array,
-                           :hash, :regexp, :true]
-
-        FALSEY_LITERALS = [:nil, :false]
-
         def on_while(node)
           condition, = *node
 
-          return unless TRUTHY_LITERALS.include?(condition.type)
+          return unless condition.truthy_literal?
 
           add_offense(node, :keyword)
         end
@@ -34,7 +29,7 @@ module RuboCop
         def on_until(node)
           condition, = *node
 
-          return unless FALSEY_LITERALS.include?(condition.type)
+          return unless condition.falsey_literal?
 
           add_offense(node, :keyword)
         end

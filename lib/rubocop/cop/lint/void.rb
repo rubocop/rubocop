@@ -11,9 +11,6 @@ module RuboCop
         LIT_MSG = 'Literal `%s` used in void context.'
 
         OPS = %w(* / % + - == === != < > <= >= <=>)
-        VARS = [:ivar, :lvar, :cvar, :const]
-        LITERALS = [:str, :dstr, :int, :float, :array,
-                    :hash, :regexp, :nil, :true, :false, :sym]
 
         def on_begin(node)
           check_begin(node)
@@ -45,12 +42,12 @@ module RuboCop
         end
 
         def check_for_var(node)
-          return unless VARS.include?(node.type)
+          return unless node.variable? || node.const_type?
           add_offense(node, :name, format(VAR_MSG, node.loc.name.source))
         end
 
         def check_for_literal(node)
-          return unless LITERALS.include?(node.type)
+          return unless node.literal?
           add_offense(node, :expression, format(LIT_MSG, node.source))
         end
       end
