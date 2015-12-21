@@ -73,11 +73,19 @@ module RuboCop
         return unless default_cfg
 
         params = default_cfg.keys -
-                 %w(Description StyleGuide Reference Enabled) -
+                 %w(Description StyleGuide Reference Enabled Exclude) -
                  cfg.keys
         return if params.empty?
 
         output.puts "# Configuration parameters: #{params.join(', ')}."
+
+        params.each do |param|
+          value = default_cfg[param]
+          if value.is_a?(Array)
+            next if value.empty?
+            output.puts "# #{param}: #{value.join(', ')}"
+          end
+        end
       end
 
       def output_cop_config(output, cfg, cop_name)
