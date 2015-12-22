@@ -33,7 +33,7 @@ module RuboCop
         PATTERN
 
         def on_class(node)
-          check_node(node.children[2]) # class bocy
+          check_node(node.children[2]) # class body
         end
 
         def on_module(node)
