@@ -5,7 +5,7 @@ require 'rainbow'
 
 require 'English'
 require 'set'
-require 'ast/sexp'
+require 'astrolabe/sexp'
 require 'powerpack/enumerable/drop_last'
 require 'powerpack/hash/symbolize_keys'
 require 'powerpack/string/blank'

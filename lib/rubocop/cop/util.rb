@@ -6,7 +6,7 @@ module RuboCop
     # This module contains a collection of useful utility methods.
     module Util
       include PathUtil
-      extend AST::Sexp
+      extend Astrolabe::Sexp
 
       PROC_NEW_NODE = s(:send, s(:const, nil, :Proc), :new)
       EQUALS_ASGN_NODES = [:lvasgn, :ivasgn, :cvasgn, :gvasgn, :casgn, :masgn]
