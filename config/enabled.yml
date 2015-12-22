@@ -938,7 +938,7 @@ Lint/DeprecatedClassMethods:
   Enabled: true
 
 Lint/DuplicateMethods:
-  Description: 'Check for duplicate methods calls.'
+  Description: 'Check for duplicate method definitions.'
   Enabled: true
 
 Lint/DuplicatedKey:

@@ -9,6 +9,8 @@ module Astrolabe
   # If any of it is accepted, it can be deleted from here
   #
   class Node
+    include Astrolabe::Sexp
+
     COMPARISON_OPERATORS = [:==, :===, :!=, :<=, :>=, :>, :<, :<=>].freeze
 
     TRUTHY_LITERALS = [:str, :dstr, :xstr, :int, :float, :sym, :dsym, :array,
@@ -43,6 +45,65 @@ module Astrolabe
     def_matcher :method_args, '{(send _ _ $...) (block (send _ _ $...) ...)}'
     # Note: for masgn, #asgn_rhs will be an array node
     def_matcher :asgn_rhs, '[assignment? (... $_)]'
+
+    def const_name
+      return unless const_type?
+      namespace, name = *self
+      if namespace && !namespace.cbase_type?
+        "#{namespace.const_name}::#{name}"
+      else
+        name.to_s
+      end
+    end
+
+    def_matcher :defined_module0, <<-PATTERN
+      {(class (const $_ $_) ...)
+       (module (const $_ $_) ...)
+       (casgn $_ $_        (send (const nil {:Class :Module}) :new ...))
+       (casgn $_ $_ (block (send (const nil {:Class :Module}) :new ...) ...))}
+    PATTERN
+    private :defined_module0
+
+    def defined_module
+      namespace, name = *defined_module0
+      s(:const, namespace, name) if name
+    end
+
+    def defined_module_name
+      (const = defined_module) && const.const_name
+    end
+
+    ## Searching the AST
+
+    def parent_module_name
+      # what class or module is this method/constant/etc definition in?
+      # returns nil if answer cannot be determined
+      ancestors = each_ancestor(:class, :module, :sclass, :casgn, :block)
+      result    = ancestors.map do |ancestor|
+        case ancestor.type
+        when :class, :module, :casgn
+          # TODO: if constant name has cbase (leading ::), then we don't need
+          # to keep traversing up through nested classes/modules
+          ancestor.defined_module_name
+        when :sclass
+          obj = ancestor.children[0]
+          # TODO: look for constant definition and see if it is nested
+          # inside a class or module
+          return "#<Class:#{obj.const_name}>" if obj.const_type?
+          return "#<Class:#{ancestor.parent_module_name}>" if obj.self_type?
+          return nil
+        else # block
+          # Known DSL methods which eval body inside an anonymous class/module
+          return nil if [:describe, :it].include?(ancestor.method_name) &&
+                        ancestor.receiver.nil?
+          if ancestor.method_name == :class_eval
+            return nil unless ancestor.receiver.const_type?
+            ancestor.receiver.const_name
+          end
+        end
+      end.compact.reverse.join('::')
+      result.empty? ? 'Object' : result
+    end
 
     ## Predicates
 
@@ -87,6 +148,15 @@ module Astrolabe
     def reference?
       REFERENCES.include?(type)
     end
+
+    def_matcher :class_constructor?, <<-PATTERN
+      {       (send (const nil {:Class :Module}) :new ...)
+       (block (send (const nil {:Class :Module}) :new ...) ...)}
+    PATTERN
+
+    def_matcher :module_definition?, <<-PATTERN
+      {class module (casgn _ _ class_constructor?)}
+    PATTERN
 
     # Some expressions are evaluated for their value, some for their side
     # effects, and some for both
