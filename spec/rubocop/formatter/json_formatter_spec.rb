@@ -43,8 +43,8 @@ module RuboCop
         formatter.file_started(files[0], {})
         expect(summary[:offense_count]).to eq(0)
         formatter.file_finished(files[0], [
-          double('offense1'), double('offense2')
-        ])
+                                  double('offense1'), double('offense2')
+                                ])
         expect(summary[:offense_count]).to eq(2)
       end
 

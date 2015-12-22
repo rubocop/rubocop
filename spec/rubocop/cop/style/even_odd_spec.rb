@@ -147,12 +147,12 @@ describe RuboCop::Cop::Style::EvenOdd do
 
   it 'converts complex examples' do
     corrected = autocorrect_source(cop, [
-      'if (y % 2) != 1',
-      '  method == :== ? :even : :odd',
-      'elsif x % 2 == 1',
-      '  method == :== ? :odd : :even',
-      'end'
-    ])
+                                     'if (y % 2) != 1',
+                                     '  method == :== ? :even : :odd',
+                                     'elsif x % 2 == 1',
+                                     '  method == :== ? :odd : :even',
+                                     'end'
+                                   ])
     expect(corrected).to eq([
       'if y.even?',
       '  method == :== ? :even : :odd',

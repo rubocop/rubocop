@@ -51,11 +51,11 @@ module RuboCop
 
         # Anything *not* in this set is provided by the English library.
         NON_ENGLISH_VARS = Set.new([
-          '$LOAD_PATH',
-          '$LOADED_FEATURES',
-          '$PROGRAM_NAME',
-          'ARGV'
-        ])
+                                     '$LOAD_PATH',
+                                     '$LOADED_FEATURES',
+                                     '$PROGRAM_NAME',
+                                     'ARGV'
+                                   ])
 
         def on_gvar(node)
           global_var, = *node

@@ -91,17 +91,17 @@ describe RuboCop::TargetFinder, :isolated_environment do
             'and they are explicitly passed as arguments' do
       before do
         create_file('.rubocop.yml', [
-          'AllCops:',
-          '  Exclude:',
-          '    - dir1/ruby1.rb',
-          "    - 'dir2/*'"
-        ])
+                      'AllCops:',
+                      '  Exclude:',
+                      '    - dir1/ruby1.rb',
+                      "    - 'dir2/*'"
+                    ])
 
         create_file('dir1/.rubocop.yml', [
-          'AllCops:',
-          '  Exclude:',
-          '    - executable'
-        ])
+                      'AllCops:',
+                      '  Exclude:',
+                      '    - executable'
+                    ])
       end
 
       let(:args) do

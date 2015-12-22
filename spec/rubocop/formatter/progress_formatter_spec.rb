@@ -104,40 +104,43 @@ module RuboCop
           line_length = source[0].length + 1
 
           formatter.file_started(files[0], {})
-          formatter.file_finished(files[0], [
-            Cop::Offense.new(
-              :convention,
-              Parser::Source::Range.new(source_buffer,
-                                        line_length + 2,
-                                        line_length + 3),
-              'foo',
-              'Cop'
-            )
-          ])
+          formatter.file_finished(
+            files[0],
+            [
+              Cop::Offense.new(
+                :convention,
+                Parser::Source::Range.new(source_buffer,
+                                          line_length + 2,
+                                          line_length + 3),
+                'foo',
+                'Cop'
+              )
+            ])
 
           formatter.file_started(files[1], {})
-          formatter.file_finished(files[1], [
-          ])
+          formatter.file_finished(files[1], [])
 
           formatter.file_started(files[2], {})
-          formatter.file_finished(files[2], [
-            Cop::Offense.new(
-              :error,
-              Parser::Source::Range.new(source_buffer,
-                                        4 * line_length + 1,
-                                        4 * line_length + 2),
-              'bar',
-              'Cop'
-            ),
-            Cop::Offense.new(
-              :convention,
-              Parser::Source::Range.new(source_buffer,
-                                        5 * line_length,
-                                        5 * line_length + 1),
-              'foo',
-              'Cop'
-            )
-          ])
+          formatter.file_finished(
+            files[2],
+            [
+              Cop::Offense.new(
+                :error,
+                Parser::Source::Range.new(source_buffer,
+                                          4 * line_length + 1,
+                                          4 * line_length + 2),
+                'bar',
+                'Cop'
+              ),
+              Cop::Offense.new(
+                :convention,
+                Parser::Source::Range.new(source_buffer,
+                                          5 * line_length,
+                                          5 * line_length + 1),
+                'foo',
+                'Cop'
+              )
+            ])
         end
 
         it 'reports all detected offenses for all failed files' do
