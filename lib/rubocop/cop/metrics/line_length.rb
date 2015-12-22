@@ -13,8 +13,13 @@ module RuboCop
         MSG = 'Line is too long. [%d/%d]'
 
         def investigate(processed_source)
+          heredocs = extract_heredocs(processed_source.ast) if allow_heredoc?
           processed_source.lines.each_with_index do |line, index|
             next unless line.length > max
+
+            if allow_heredoc?
+              next if line_in_whitelisted_heredoc?(heredocs, index.succ)
+            end
 
             if allow_uri?
               uri_range = find_excessive_uri_range(line)
@@ -38,6 +43,31 @@ module RuboCop
 
         def max
           cop_config['Max']
+        end
+
+        def allow_heredoc?
+          allowed_heredoc
+        end
+
+        def allowed_heredoc
+          cop_config['AllowHeredoc']
+        end
+
+        def extract_heredocs(ast)
+          return [] unless ast
+          ast.each_node.with_object([]) do |node, heredocs|
+            next unless node.location.is_a?(Parser::Source::Map::Heredoc)
+            body = node.location.heredoc_body
+            delimiter = node.location.heredoc_end.source.strip
+            heredocs << [body.first_line...body.last_line, delimiter]
+          end
+        end
+
+        def line_in_whitelisted_heredoc?(heredocs, line_number)
+          heredocs.any? do |range, delimiter|
+            range.cover?(line_number) &&
+              (allowed_heredoc == true || allowed_heredoc.include?(delimiter))
+          end
         end
 
         def allow_uri?

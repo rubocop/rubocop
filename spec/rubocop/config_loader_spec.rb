@@ -195,6 +195,7 @@ describe RuboCop::ConfigLoader do
               'https://github.com/bbatsov/ruby-style-guide#80-character-limits',
               'Enabled' => true,
               'Max' => 77,
+              'AllowHeredoc' => true,
               'AllowURI' => true,
               'URISchemes' => %w(http https)
             },
