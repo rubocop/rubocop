@@ -336,6 +336,21 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
     end
   end
 
+  shared_examples 'access modifiers with argument' do |keyword|
+    it "doesn't register an offense" do
+      src = ["#{keyword} A",
+             '  def method1',
+             '  end',
+             '  private :method1',
+             '  def method2',
+             '  end',
+             '  public :method2',
+             'end']
+      inspect_source(cop, src)
+      expect(cop.offenses).to be_empty
+    end
+  end
+
   it_behaves_like('at the top of the body', 'class')
   it_behaves_like('repeated visibility modifiers', 'class', 'public')
   it_behaves_like('repeated visibility modifiers', 'class', 'protected')
