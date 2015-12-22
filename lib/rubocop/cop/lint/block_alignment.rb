@@ -132,9 +132,6 @@ module RuboCop
           end
         end
 
-        def message
-        end
-
         def block_is_on_next_line?(begin_node, block_node)
           begin_node.loc.line != block_node.loc.line
         end
