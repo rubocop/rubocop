@@ -499,6 +499,25 @@ Style/IndentationWidth:
   # Number of spaces for each indentation level.
   Width: 2
 
+# Checks the indentation of the first element in an array literal.
+Style/IndentArray:
+  # The value `special_inside_parentheses` means that array literals with
+  # brackets that have their opening bracket on the same line as a surrounding
+  # opening round parenthesis, shall have their first element indented relative
+  # to the first position inside the parenthesis.
+  #
+  # The value `consistent` means that the indentation of the first element shall
+  # always be relative to the first position of the line where the opening
+  # bracket is.
+  #
+  # The value `align_brackets` means that the indentation of the first element
+  # shall always be relative to the position of the opening bracket.
+  EnforcedStyle: special_inside_parentheses
+  SupportedStyles:
+    - special_inside_parentheses
+    - consistent
+    - align_brackets
+
 # Checks the indentation of the first key in a hash literal.
 Style/IndentHash:
   # The value `special_inside_parentheses` means that hash literals with braces
@@ -917,7 +936,7 @@ Lint/DefEndAlignment:
 Lint/UnusedBlockArgument:
   IgnoreEmptyBlocks: true
 
-# Checks for unused method arguments.  
+# Checks for unused method arguments.
 Lint/UnusedMethodArgument:
   AllowUnusedKeywordArguments: false
   IgnoreEmptyMethods: true
