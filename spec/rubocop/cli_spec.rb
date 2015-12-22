@@ -3465,6 +3465,21 @@ describe RuboCop::CLI, :isolated_environment do
                 ''].join("\n"))
     end
 
+    it 'prints a warning for an unrecognized EnforcedStyle' do
+      create_file('example/example1.rb', ['# encoding: utf-8',
+                                          'puts "hello"'])
+      create_file('example/.rubocop.yml', ['Style/BracesAroundHashParameters:',
+                                           '  EnforcedStyle: context'])
+
+      expect(cli.run(%w(--format simple example))).to eq(1)
+      expect($stderr.string)
+        .to eq(["Warning: invalid EnforcedStyle 'context' for " \
+                'Style/BracesAroundHashParameters found in ' +
+                abs('example/.rubocop.yml'),
+                'Valid choices are: braces, no_braces, context_dependent',
+                ''].join("\n"))
+    end
+
     it 'works when a configuration file passed by -c specifies Exclude ' \
        'with regexp' do
       create_file('example/example1.rb', ['# encoding: utf-8',

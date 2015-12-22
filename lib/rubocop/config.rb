@@ -114,6 +114,7 @@ module RuboCop
       end
 
       validate_parameter_names(valid_cop_names)
+      validate_enforced_styles(valid_cop_names)
     end
 
     def file_to_include?(file)
@@ -196,6 +197,19 @@ module RuboCop
           fail ValidationError,
                "unrecognized parameter #{name}:#{param} found in #{loaded_path}"
         end
+      end
+    end
+
+    def validate_enforced_styles(valid_cop_names)
+      valid_cop_names.each do |name|
+        next unless (style = self[name]['EnforcedStyle'])
+        valid = ConfigLoader.default_configuration[name]['SupportedStyles']
+        next if valid.include?(style)
+
+        msg = "invalid EnforcedStyle '#{style}' for #{name} found in " \
+              "#{loaded_path}\n" \
+              "Valid choices are: #{valid.join(', ')}"
+        fail ValidationError, msg
       end
     end
   end

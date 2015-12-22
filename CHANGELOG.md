@@ -33,6 +33,7 @@
 * [#207](https://github.com/bbatsov/rubocop/issues/207): Add new `Lint/FloatOutOfRange` cop which catches floating-point literals which are too large or too small for Ruby to represent. ([@alexdowad][])
 * `Style/GuardClause` doesn't report offenses in places where correction would make a line too long. ([@alexdowad][])
 * `Lint/DuplicateMethods` can find duplicate method definitions in many more circumstances, even across multiple files; however, it ignores definitions inside `if` or something which could be a DSL method. ([@alexdowad][])
+* A warning is printed if an invalid `EnforcedStyle` is configured. ([@alexdowad][])
 
 ### Bug Fixes
 
