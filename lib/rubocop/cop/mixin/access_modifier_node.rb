@@ -30,20 +30,11 @@ module RuboCop
       def class_or_module_parent?(node)
         node.each_ancestor do |a|
           if a.type == :block
-            return true if class_constructor?(a)
+            return true if a.class_constructor?
           elsif a.type != :begin
             return [:casgn, :sclass, :class, :module].include?(a.type)
           end
         end
-      end
-
-      # Returns true when the block node looks like Class or Module.new do ... .
-      def class_constructor?(block_node)
-        send_node = block_node.children.first
-        receiver_node, method_name, = *send_node
-        return false unless method_name == :new
-        return false unless receiver_node
-        %w(Class Module).include?(receiver_node.const_name)
       end
     end
   end
