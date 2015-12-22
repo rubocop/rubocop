@@ -9,9 +9,6 @@ module RuboCop
       #
       #   "result is #{10}"
       class LiteralInInterpolation < Cop
-        LITERALS = [:str, :dstr, :int, :float, :array,
-                    :hash, :regexp, :nil, :true, :false]
-
         MSG = 'Literal interpolation detected.'
 
         def on_dstr(node)
@@ -19,7 +16,7 @@ module RuboCop
             final_node = begin_node.children.last
             next unless final_node
             next if special_keyword?(final_node)
-            next unless LITERALS.include?(final_node.type)
+            next unless final_node.literal?
 
             add_offense(final_node, :expression)
           end

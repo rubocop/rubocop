@@ -5,7 +5,6 @@ module RuboCop
     module Style
       # This cop checks for variable interpolation (like "#@ivar").
       class VariableInterpolation < Cop
-        VAR_TYPES = [:ivar, :cvar, :gvar, :nth_ref, :back_ref]
         MSG = 'Replace interpolated variable `%s` with expression `#{%s}`.'
 
         def on_dstr(node)
@@ -35,7 +34,7 @@ module RuboCop
         end
 
         def var_nodes(nodes)
-          nodes.select { |n| VAR_TYPES.include?(n.type) }
+          nodes.select { |n| n.variable? || n.reference? }
         end
       end
     end

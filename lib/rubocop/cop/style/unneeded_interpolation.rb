@@ -20,11 +20,6 @@ module RuboCop
 
         MSG = 'Prefer `to_s` over string interpolation.'
 
-        VARIABLE_INTERPOLATION_TYPES = [
-          :ivar, :cvar, :gvar,
-          :back_ref, :nth_ref
-        ].freeze
-
         def on_dstr(node)
           add_offense(node, :expression, MSG) if single_interpolation?(node)
         end
@@ -51,7 +46,7 @@ module RuboCop
         end
 
         def variable_interpolation?(node)
-          VARIABLE_INTERPOLATION_TYPES.include?(node.type)
+          node.variable? || node.reference?
         end
 
         def implicit_concatenation?(node)

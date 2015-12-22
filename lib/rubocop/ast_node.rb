@@ -11,6 +11,16 @@ module Astrolabe
   class Node
     COMPARISON_OPERATORS = [:==, :===, :!=, :<=, :>=, :>, :<, :<=>].freeze
 
+    TRUTHY_LITERALS = [:str, :dstr, :xstr, :int, :float, :sym, :dsym, :array,
+                       :hash, :regexp, :true, :irange, :erange].freeze
+    FALSEY_LITERALS = [:false, :nil].freeze
+    LITERALS = (TRUTHY_LITERALS + FALSEY_LITERALS).freeze
+    BASIC_LITERALS = LITERALS - [:dstr, :xstr, :dsym, :array, :hash, :irange,
+                                 :erange].freeze
+
+    VARIABLES = [:ivar, :gvar, :cvar, :lvar].freeze
+    REFERENCES = [:nth_ref, :back_ref].freeze
+
     # def_matcher can be used to define a pattern-matching method on Node:
     class << self
       extend RuboCop::NodePattern::Macros
@@ -53,6 +63,30 @@ module Astrolabe
     def_matcher :equals_asgn?, '{lvasgn ivasgn cvasgn gvasgn casgn masgn}'
     def_matcher :shorthand_asgn?, '{op_asgn or_asgn and_asgn}'
     def_matcher :assignment?, '{equals_asgn? shorthand_asgn? asgn_method_call?}'
+
+    def literal?
+      LITERALS.include?(type)
+    end
+
+    def basic_literal?
+      BASIC_LITERALS.include?(type)
+    end
+
+    def truthy_literal?
+      TRUTHY_LITERALS.include?(type)
+    end
+
+    def falsey_literal?
+      FALSEY_LITERALS.include?(type)
+    end
+
+    def variable?
+      VARIABLES.include?(type)
+    end
+
+    def reference?
+      REFERENCES.include?(type)
+    end
 
     # Some expressions are evaluated for their value, some for their side
     # effects, and some for both

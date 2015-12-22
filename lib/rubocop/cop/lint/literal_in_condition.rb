@@ -62,7 +62,7 @@ module RuboCop
           cond, = *node
 
           # if the cond node is literal we obviously have a problem
-          if literal?(cond)
+          if cond.literal?
             add_offense(cond, :expression)
           else
             # alternatively we have to consider a logical node with a
@@ -79,15 +79,11 @@ module RuboCop
           method_name == :!
         end
 
-        def literal?(node)
-          LITERALS.include?(node.type)
-        end
-
         def basic_literal?(node)
           if node && node.type == :array
             primitive_array?(node)
           else
-            BASIC_LITERALS.include?(node.type)
+            node.basic_literal?
           end
         end
 
@@ -114,7 +110,7 @@ module RuboCop
         end
 
         def handle_node(node)
-          if literal?(node)
+          if node.literal?
             add_offense(node, :expression)
           elsif [:send, :and, :or, :begin].include?(node.type)
             check_node(node)

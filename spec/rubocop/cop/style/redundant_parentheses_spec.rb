@@ -58,4 +58,14 @@ describe RuboCop::Cop::Style::RedundantParentheses do
     inspect_source(cop, '(a)...(b)')
     expect(cop.offenses).to be_empty
   end
+
+  it 'accepts parentheses around an irange' do
+    inspect_source(cop, '(a..b)')
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'accepts parentheses around an erange' do
+    inspect_source(cop, '(a...b)')
+    expect(cop.offenses).to be_empty
+  end
 end

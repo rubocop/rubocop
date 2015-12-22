@@ -136,6 +136,11 @@ describe RuboCop::Cop::Style::UnneededInterpolation do
     expect(corrected).to eq '@var.to_s'
   end
 
+  it 'autocorrects "#{var}"' do
+    corrected = autocorrect_source(cop, ['var = 1; "#{var}"'])
+    expect(corrected).to eq 'var = 1; var.to_s'
+  end
+
   it 'autocorrects "#{@var}"' do
     corrected = autocorrect_source(cop, ['"#{@var}"'])
     expect(corrected).to eq '@var.to_s'
