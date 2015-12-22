@@ -18,7 +18,7 @@ module RuboCop
 
         def on_block(node)
           return if ignored_node?(node)
-          check_block_alignment(node, node)
+          check_block_alignment(start_for_block_node(node), node)
         end
 
         def on_and(node)
@@ -94,6 +94,20 @@ module RuboCop
           [receiver, args].find do |subnode|
             subnode && [:block, :send].include?(subnode.type)
           end
+        end
+
+        def start_for_block_node(block_node)
+          # Which node should we align the 'end' with?
+          result = block_node
+
+          while result.parent &&
+                (result.parent.splat_type? ||
+                (result.parent.send_type? &&
+                  !operator?(result.parent.method_name)))
+            result = result.parent
+          end
+
+          result
         end
 
         def check_block_alignment(start_node, block_node)
