@@ -170,8 +170,8 @@ describe RuboCop::Cop::Style::GuardClause, :config do
     end
   end
 
-  shared_examples 'on if nodes with a branch which exits current scope' do |kw|
-    context "with #{kw} in the if branch" do
+  shared_examples 'on if nodes which exit current scope' do |kw|
+    it "registers an error with #{kw} in the if branch" do
       inspect_source(cop, ['if something',
                            "  #{kw}",
                            'else',
@@ -182,7 +182,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
                                   'the code inside a conditional expression.'])
     end
 
-    context "with #{kw} in the else branch" do
+    it "registers an error with #{kw} in the else branch" do
       inspect_source(cop, ['if something',
                            ' puts "hello"',
                            'else',
@@ -193,4 +193,9 @@ describe RuboCop::Cop::Style::GuardClause, :config do
                                   'the code inside a conditional expression.'])
     end
   end
+
+  include_examples('on if nodes which exit current scope', 'return')
+  include_examples('on if nodes which exit current scope', 'next')
+  include_examples('on if nodes which exit current scope', 'break')
+  include_examples('on if nodes which exit current scope', 'raise "error"')
 end
