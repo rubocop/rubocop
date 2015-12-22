@@ -1,6 +1,5 @@
 # encoding: utf-8
 
-# rubocop:disable Metrics/ModuleLength
 module RuboCop
   module Cop
     # This module contains a collection of useful utility methods.
@@ -57,24 +56,6 @@ module RuboCop
                        end
 
         source_range.begin.line..source_range.end.line
-      end
-
-      def const_name(node)
-        return nil if node.nil? || node.type != :const
-
-        const_names = []
-        const_node = node
-
-        loop do
-          namespace_node, name = *const_node
-          const_names << name
-          break unless namespace_node
-          break unless namespace_node.is_a?(Parser::AST::Node)
-          break if namespace_node.type == :cbase
-          const_node = namespace_node
-        end
-
-        const_names.reverse.join('::')
       end
 
       def command?(name, node)

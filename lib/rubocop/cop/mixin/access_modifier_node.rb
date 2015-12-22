@@ -42,7 +42,8 @@ module RuboCop
         send_node = block_node.children.first
         receiver_node, method_name, = *send_node
         return false unless method_name == :new
-        %w(Class Module).include?(Util.const_name(receiver_node))
+        return false unless receiver_node
+        %w(Class Module).include?(receiver_node.const_name)
       end
     end
   end
