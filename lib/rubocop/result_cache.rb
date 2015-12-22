@@ -78,6 +78,15 @@ module RuboCop
       end
     end
 
+    def self.cache_root(config_store)
+      root = config_store.for('.')['AllCops']['CacheRootDirectory']
+      if root == '/tmp'
+        tmpdir = File.realpath(Dir.tmpdir)
+        root = File.join(tmpdir, Process.uid.to_s)
+      end
+      File.join(root, 'rubocop_cache')
+    end
+
     private
 
     def any_symlink?(path)
@@ -89,15 +98,6 @@ module RuboCop
         path = File.dirname(path)
       end
       false
-    end
-
-    def self.cache_root(config_store)
-      root = config_store.for('.')['AllCops']['CacheRootDirectory']
-      if root == '/tmp'
-        tmpdir = File.realpath(Dir.tmpdir)
-        root = File.join(tmpdir, Process.uid.to_s)
-      end
-      File.join(root, 'rubocop_cache')
     end
 
     def file_checksum(file, config_store)
