@@ -50,6 +50,24 @@ describe RuboCop::Cop::Style::GuardClause, :config do
     expect(cop.highlights).to eq(%w(if unless))
   end
 
+  it 'does not report an offense if corrected code would exceed line length' do
+    inspect_source(cop,
+                   ['def func',
+                    '  test',
+                    '  if something_quite_long_right_here_is_that_ok?',
+                    '    do_this_and_that_and_the_other_thing!',
+                    '  end',
+                    'end',
+                    '',
+                    'def func',
+                    '  test',
+                    '  unless something_quite_long_right_here_is_that_ok?',
+                    '    do_this_and_that_and_the_other_thing!',
+                    '  end',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'accepts a method which body is if / unless with else' do
     inspect_source(cop,
                    ['def func',
