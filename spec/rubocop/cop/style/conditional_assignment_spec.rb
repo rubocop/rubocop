@@ -73,8 +73,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     source = 'foo? ? bar = "a" : bar = "b"'
     inspect_source(cop, source)
 
-    expect(cop.messages)
-      .to eq(['Use the return of the conditional for variable assignment.'])
+    expect(cop.messages).to eq([described_class::MSG])
   end
 
   it 'allows modifier if' do
@@ -96,7 +95,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
   end
 
   shared_examples 'comparison methods' do |method|
-    it 'allows comparison methods in if else' do
+    it 'registers an offense for comparison methods in if else' do
       source = ['if foo',
                 "  a #{method} b",
                 'else',
@@ -105,20 +104,32 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
       inspect_source(cop, source)
 
-      expect(cop.offenses).to be_empty
+      expect(cop.messages).to eq([described_class::MSG])
     end
 
-    it 'allows comparison methods in case when' do
-      source = ['case foo',
-                'when bar',
+    it 'registers an offense for comparison methods in unless else' do
+      source = ['unless foo',
                 "  a #{method} b",
                 'else',
-                " a #{method} d",
+                "  a #{method} d",
                 'end']
 
       inspect_source(cop, source)
 
-      expect(cop.offenses).to be_empty
+      expect(cop.messages).to eq([described_class::MSG])
+    end
+
+    it 'registers an offense for comparison methods in case when' do
+      source = ['case foo',
+                'when bar',
+                "  a #{method} b",
+                'else',
+                "  a #{method} d",
+                'end']
+
+      inspect_source(cop, source)
+
+      expect(cop.messages).to eq([described_class::MSG])
     end
   end
 
@@ -389,8 +400,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     it 'registers an offense assigning any variable type in ternary' do
       inspect_source(cop, "foo? ? #{variable} = 1 : #{variable} = 2")
 
-      expect(cop.messages)
-        .to eq(['Use the return of the conditional for variable assignment.'])
+      expect(cop.messages).to eq([described_class::MSG])
     end
 
     it 'registers an offense assigning any variable type in if else' do
@@ -401,8 +411,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                 'end']
       inspect_source(cop, source)
 
-      expect(cop.messages)
-        .to eq(['Use the return of the conditional for variable assignment.'])
+      expect(cop.messages).to eq([described_class::MSG])
     end
 
     it 'registers an offense assigning any variable type in case when' do
@@ -414,8 +423,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                 'end']
       inspect_source(cop, source)
 
-      expect(cop.messages)
-        .to eq(['Use the return of the conditional for variable assignment.'])
+      expect(cop.messages).to eq([described_class::MSG])
     end
   end
 
@@ -429,8 +437,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     it 'registers an offense for assignment using #{assignment in ternary' do
       inspect_source(cop, "foo? ? bar #{assignment} 1 : bar #{assignment} 2")
 
-      expect(cop.messages)
-        .to eq(['Use the return of the conditional for variable assignment.'])
+      expect(cop.messages).to eq([described_class::MSG])
     end
 
     it "registers an offense for assignment using #{assignment} in if else" do
@@ -441,8 +448,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                 'end']
       inspect_source(cop, source)
 
-      expect(cop.messages)
-        .to eq(['Use the return of the conditional for variable assignment.'])
+      expect(cop.messages).to eq([described_class::MSG])
     end
 
     it "registers an offense for assignment using #{assignment} in case when" do
@@ -454,8 +460,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                 'end']
       inspect_source(cop, source)
 
-      expect(cop.messages)
-        .to eq(['Use the return of the conditional for variable assignment.'])
+      expect(cop.messages).to eq([described_class::MSG])
     end
   end
 
@@ -476,8 +481,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
               'end']
     inspect_source(cop, source)
 
-    expect(cop.messages)
-      .to eq(['Use the return of the conditional for variable assignment.'])
+    expect(cop.messages).to eq([described_class::MSG])
   end
 
   it 'registers an offense for assignment in if elsif else' do
@@ -492,8 +496,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
               'end']
     inspect_source(cop, source)
 
-    expect(cop.messages)
-      .to eq(['Use the return of the conditional for variable assignment.'])
+    expect(cop.messages).to eq([described_class::MSG])
   end
 
   context 'assignment as the last statement' do
@@ -816,8 +819,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
               'end']
     inspect_source(cop, source)
 
-    expect(cop.messages)
-      .to eq(['Use the return of the conditional for variable assignment.'])
+    expect(cop.messages).to eq([described_class::MSG])
   end
 
   it 'registers an offense for assignment in if elsif else' do
@@ -832,8 +834,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
               'end']
     inspect_source(cop, source)
 
-    expect(cop.messages)
-      .to eq(['Use the return of the conditional for variable assignment.'])
+    expect(cop.messages).to eq([described_class::MSG])
   end
 
   it 'registers an offense for assignment in unless else' do
@@ -844,8 +845,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
               'end']
     inspect_source(cop, source)
 
-    expect(cop.messages)
-      .to eq(['Use the return of the conditional for variable assignment.'])
+    expect(cop.messages).to eq([described_class::MSG])
   end
 
   it 'registers an offense for assignment in case when then else' do
@@ -855,8 +855,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
               'end']
     inspect_source(cop, source)
 
-    expect(cop.messages)
-      .to eq(['Use the return of the conditional for variable assignment.'])
+    expect(cop.messages).to eq([described_class::MSG])
   end
 
   it 'registers an offense for assignment in case with when when else' do
@@ -870,8 +869,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
               'end']
     inspect_source(cop, source)
 
-    expect(cop.messages)
-      .to eq(['Use the return of the conditional for variable assignment.'])
+    expect(cop.messages).to eq([described_class::MSG])
   end
 
   it 'allows different assignment types in case with when when else' do
@@ -899,6 +897,68 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
   end
 
   context 'auto-correct' do
+    shared_examples 'comparison correction' do |method|
+      it 'corrects comparison methods in if elsif else' do
+        source = ['if foo',
+                  "  a #{method} b",
+                  'elsif bar',
+                  "  a #{method} c",
+                  'else',
+                  "  a #{method} d",
+                  'end']
+
+        new_source = autocorrect_source(cop, source)
+
+        expect(new_source).to eq(["a #{method} if foo",
+                                  '  b',
+                                  'elsif bar',
+                                  '  c',
+                                  'else',
+                                  '  d',
+                                  'end'].join("\n"))
+      end
+
+      it 'registers an offense for comparison methods in unless else' do
+        source = ['unless foo',
+                  "  a #{method} b",
+                  'else',
+                  "  a #{method} d",
+                  'end']
+
+        new_source = autocorrect_source(cop, source)
+
+        expect(new_source).to eq(["a #{method} unless foo",
+                                  '  b',
+                                  'else',
+                                  '  d',
+                                  'end'].join("\n"))
+      end
+
+      it 'registers an offense for comparison methods in case when' do
+        source = ['case foo',
+                  'when bar',
+                  "  a #{method} b",
+                  'else',
+                  "  a #{method} d",
+                  'end']
+
+        new_source = autocorrect_source(cop, source)
+
+        expect(new_source).to eq(["a #{method} case foo",
+                                  'when bar',
+                                  '  b',
+                                  'else',
+                                  '  d',
+                                  'end'].join("\n"))
+      end
+    end
+
+    it_behaves_like('comparison correction', '==')
+    it_behaves_like('comparison correction', '!=')
+    it_behaves_like('comparison correction', '=~')
+    it_behaves_like('comparison correction', '!~')
+    it_behaves_like('comparison correction', '<=>')
+
     it 'corrects assignment in ternary operations' do
       new_source = autocorrect_source(cop, 'foo? ? bar = 1 : bar = 2')
 
@@ -1368,8 +1428,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                   'end']
         inspect_source(cop, source)
 
-        expect(cop.messages)
-          .to eq(['Use the return of the conditional for variable assignment.'])
+        expect(cop.messages).to eq([described_class::MSG])
       end
 
       it 'registers an offense in if elsif else with more than ' \
@@ -1386,8 +1445,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                   'end']
         inspect_source(cop, source)
 
-        expect(cop.messages)
-          .to eq(['Use the return of the conditional for variable assignment.'])
+        expect(cop.messages).to eq([described_class::MSG])
       end
 
       it 'register an offense for multiple assignment in if else' do
@@ -1400,8 +1458,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                   'end']
         inspect_source(cop, source)
 
-        expect(cop.messages)
-          .to eq(['Use the return of the conditional for variable assignment.'])
+        expect(cop.messages).to eq([described_class::MSG])
       end
 
       it 'registers an offense for multiple assignment in if elsif else' do
@@ -1417,8 +1474,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                   'end']
         inspect_source(cop, source)
 
-        expect(cop.messages)
-          .to eq(['Use the return of the conditional for variable assignment.'])
+        expect(cop.messages).to eq([described_class::MSG])
       end
 
       it 'allows multiple assignment in if elsif elsif else' do
@@ -1437,8 +1493,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                   'end']
         inspect_source(cop, source)
 
-        expect(cop.messages)
-          .to eq(['Use the return of the conditional for variable assignment.'])
+        expect(cop.messages).to eq([described_class::MSG])
       end
 
       it 'allows out of order multiple assignment in if elsif else' do
@@ -1467,8 +1522,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                   'end']
         inspect_source(cop, source)
 
-        expect(cop.messages)
-          .to eq(['Use the return of the conditional for variable assignment.'])
+        expect(cop.messages).to eq([described_class::MSG])
       end
 
       it 'allows multiple assignments in case when with only one when' do
@@ -1482,8 +1536,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                   'end']
         inspect_source(cop, source)
 
-        expect(cop.messages)
-          .to eq(['Use the return of the conditional for variable assignment.'])
+        expect(cop.messages).to eq([described_class::MSG])
       end
 
       it 'allows multiple assignments in case when with multiple whens' do
@@ -1500,8 +1553,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                   'end']
         inspect_source(cop, source)
 
-        expect(cop.messages)
-          .to eq(['Use the return of the conditional for variable assignment.'])
+        expect(cop.messages).to eq([described_class::MSG])
       end
 
       it 'registers an offense in if elsif else with some branches only ' \
@@ -1520,8 +1572,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                   'end']
         inspect_source(cop, source)
 
-        expect(cop.messages)
-          .to eq(['Use the return of the conditional for variable assignment.'])
+        expect(cop.messages).to eq([described_class::MSG])
       end
 
       it 'registers an offense in unless else with more than ' \
@@ -1535,8 +1586,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                   'end']
         inspect_source(cop, source)
 
-        expect(cop.messages)
-          .to eq(['Use the return of the conditional for variable assignment.'])
+        expect(cop.messages).to eq([described_class::MSG])
       end
 
       it 'registers an offense in case when else with more than ' \
@@ -1552,8 +1602,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
         inspect_source(cop, source)
 
-        expect(cop.messages)
-          .to eq(['Use the return of the conditional for variable assignment.'])
+        expect(cop.messages).to eq([described_class::MSG])
       end
 
       context 'multiple assignment in only one branch' do
@@ -1632,8 +1681,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                 'end']
       inspect_source(cop, source)
 
-      expect(cop.messages)
-        .to eq(['Use the return of the conditional for variable assignment.'])
+      expect(cop.messages).to eq([described_class::MSG])
     end
 
     context 'auto-correct' do

@@ -6,6 +6,8 @@ module RuboCop
       # Helper module to provide common methods to classes needed for the
       # ConditionalAssignment Cop.
       module ConditionalAssignmentHelper
+        EQUAL = '='.freeze
+
         # `elsif` branches show up in the `node` as an `else`. We need
         # to recursively iterate over all `else` branches and consider all
         # but the last `node` an `elsif` branch and consider the last `node`
@@ -19,9 +21,7 @@ module RuboCop
         # `when` nodes contain the entire branch including the condition.
         # We only need the contents of the branch, not the condition.
         def expand_when_branches(when_branches)
-          when_branches.map do |branch|
-            branch.children[1]
-          end
+          when_branches.map { |branch| branch.children[1] }
         end
 
         def correct_branches(corrector, branches)
@@ -72,8 +72,9 @@ module RuboCop
           if node.method_name == :[]=
             indices = node.children[2...-1].map(&:source).join(', ')
             "#{receiver}[#{indices}] = "
-          elsif node.method_name.to_s.end_with?('=')
-            "#{receiver}.#{node.method_name.to_s[0...-1]} = "
+          elsif node.method_name.to_s.end_with?(EQUAL) &&
+                ![:!=, :==].include?(node.method_name)
+            "#{receiver}.#{node.method_name[0...-1]} = "
           else
             "#{receiver} #{node.method_name} "
           end
@@ -132,21 +133,21 @@ module RuboCop
         include IfNode
         include ConditionalAssignmentHelper
 
-        MSG = 'Use the return of the conditional for variable assignment.'
+        MSG = 'Use the return of the conditional for variable assignment ' \
+              'and comparison.'
         VARIABLE_ASSIGNMENT_TYPES =
           [:casgn, :cvasgn, :gvasgn, :ivasgn, :lvasgn].freeze
         ASSIGNMENT_TYPES =
           VARIABLE_ASSIGNMENT_TYPES + [:and_asgn, :or_asgn, :op_asgn].freeze
         IF = 'if'.freeze
         UNLESS = 'unless'.freeze
-        EQUAL = '='.freeze
         LINE_LENGTH = 'Metrics/LineLength'.freeze
         INDENTATION_WIDTH = 'Style/IndentationWidth'.freeze
         ENABLED = 'Enabled'.freeze
         MAX = 'Max'.freeze
         SINGLE_LINE_CONDITIONS_ONLY = 'SingleLineConditionsOnly'.freeze
         WIDTH = 'Width'.freeze
-        COMPARISONS = [:==, :!=].freeze
+        METHODS = [:[]=, :<<, :=~, :!~, :<=>].freeze
 
         def lhs_all_match?(branches)
           first_lhs = lhs(branches.first)
@@ -205,10 +206,8 @@ module RuboCop
 
           if branch.send_type?
             _variable, method, = *branch
-            return true if [:[]=, :<<].include?(method)
-            if method.to_s.end_with?(EQUAL) && !COMPARISONS.include?(method)
-              return true
-            end
+            return true if METHODS.include?(method)
+            return true if method.to_s.end_with?(EQUAL)
           end
 
           false
@@ -320,10 +319,7 @@ module RuboCop
             _condition, *when_branches, else_branch = *node
             else_branch = tail(else_branch)
             when_branches = expand_when_branches(when_branches)
-            when_branches.map! do |when_branch|
-              tail(when_branch)
-            end
-
+            when_branches.map! { |when_branch| tail(when_branch) }
             _variable, *_operator, else_assignment = *else_branch
 
             lambda do |corrector|

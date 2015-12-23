@@ -156,8 +156,8 @@ Style/CommentIndentation:
 Style/ConditionalAssignment:
   Description: >-
                  Use the return value of `if` and `case` statements for
-                 assignment to a variable instead of assigning that variable
-                 inside of each branch.
+                 assignment to a variable and variable comparison instead
+                 of assigning that variable inside of each branch.
   Enabled: true
   SingleLineConditionsOnly: true
   # Whether the cop should register offenses for conditionals whose branches

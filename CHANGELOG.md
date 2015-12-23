@@ -45,6 +45,7 @@
 * [#1569](https://github.com/bbatsov/rubocop/issues/1569): New `ExpectMatchingDefinition` config parameter for `Style/FileName` makes it check for a class or module definition in each file which corresponds to the file name and path. ([@alexdowad][])
 * [#2480](https://github.com/bbatsov/rubocop/pull/2480): Add a configuration to `Style/ConditionalAssignment` to check and correct conditionals that contain multiple assignments. ([@rrosenblum][])
 * [#2480](https://github.com/bbatsov/rubocop/pull/2480): Allow `Style/ConditionalAssignment` to correct assignment in ternary operations. ([@rrosenblum][])
+* [#2480](https://github.com/bbatsov/rubocop/pull/2480): Allow `Style/ConditionalAssignment` to correct comparable methods. ([@rrosenblum][])
 
 ### Bug Fixes
 
