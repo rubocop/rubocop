@@ -104,7 +104,7 @@ module RuboCop
 
     def toplevel_dirs(base_dir, flags)
       Dir.glob(File.join(base_dir, '*'), flags).select do |dir|
-        File.directory?(dir) && !(dir.end_with?('/.') || dir.end_with?('/..'))
+        File.directory?(dir) && !dir.end_with?('/.', '/..')
       end
     end
 
