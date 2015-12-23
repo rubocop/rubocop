@@ -37,6 +37,7 @@
 * [#1367](https://github.com/bbatsov/rubocop/issues/1367): New `Lint/IneffectiveAccessModifier` checks for access modifiers which are erroneously applied to a singleton method, where they have no effect. ([@alexdowad][])
 * [#1614](https://github.com/bbatsov/rubocop/issues/1614): `Lint/BlockAlignment` aligns block end with splat operator when applied to a splatted method call. ([@alexdowad][])
 * [#2263](https://github.com/bbatsov/rubocop/issues/2263): Warn if `task.options = %w(--format ...)` is used when configuring `RuboCop::RakeTask`; this should be `task.formatters = ...` instead. ([@alexdowad][])
+* [#2511](https://github.com/bbatsov/rubocop/issues/2511): `--no-offense-counts` CLI option suppresses the inclusion of offense count lines in auto-generated config. ([@alexdowad][])
 
 ### Bug Fixes
 
