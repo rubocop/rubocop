@@ -50,6 +50,24 @@ describe RuboCop::Cop::Style::GuardClause, :config do
     expect(cop.highlights).to eq(%w(if unless))
   end
 
+  it 'does not report an offense if corrected code would exceed line length' do
+    inspect_source(cop,
+                   ['def func',
+                    '  test',
+                    '  if something_quite_long_right_here_is_that_ok?',
+                    '    do_this_and_that_and_the_other_thing!',
+                    '  end',
+                    'end',
+                    '',
+                    'def func',
+                    '  test',
+                    '  unless something_quite_long_right_here_is_that_ok?',
+                    '    do_this_and_that_and_the_other_thing!',
+                    '  end',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'accepts a method which body is if / unless with else' do
     inspect_source(cop,
                    ['def func',
@@ -170,8 +188,8 @@ describe RuboCop::Cop::Style::GuardClause, :config do
     end
   end
 
-  shared_examples 'on if nodes with a branch which exits current scope' do |kw|
-    context "with #{kw} in the if branch" do
+  shared_examples 'on if nodes which exit current scope' do |kw|
+    it "registers an error with #{kw} in the if branch" do
       inspect_source(cop, ['if something',
                            "  #{kw}",
                            'else',
@@ -182,7 +200,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
                                   'the code inside a conditional expression.'])
     end
 
-    context "with #{kw} in the else branch" do
+    it "registers an error with #{kw} in the else branch" do
       inspect_source(cop, ['if something',
                            ' puts "hello"',
                            'else',
@@ -193,4 +211,9 @@ describe RuboCop::Cop::Style::GuardClause, :config do
                                   'the code inside a conditional expression.'])
     end
   end
+
+  include_examples('on if nodes which exit current scope', 'return')
+  include_examples('on if nodes which exit current scope', 'next')
+  include_examples('on if nodes which exit current scope', 'break')
+  include_examples('on if nodes which exit current scope', 'raise "error"')
 end

@@ -49,6 +49,30 @@ module RuboCop
               .to include(': [Corrected] This is a message.')
           end
         end
+
+        context 'when the offense message contains a newline' do
+          let(:file) { '/path/to/file' }
+
+          let(:offense) do
+            Cop::Offense.new(:error, location,
+                             "unmatched close parenthesis: /\n   world " \
+                             "# Some comment containing a )\n/",
+                             'CopName', :uncorrected)
+          end
+
+          let(:location) do
+            source_buffer = Parser::Source::Buffer.new('test', 1)
+            source_buffer.source = "a\n"
+            Parser::Source::Range.new(source_buffer, 0, 1)
+          end
+
+          it 'strips newlines out of the error message' do
+            formatter.file_finished(file, [offense])
+            expect(output.string).to eq(
+              '/path/to/file:1:1: E: unmatched close parenthesis: /    ' \
+              "world # Some comment containing a ) /\n")
+          end
+        end
       end
 
       describe '#finished' do

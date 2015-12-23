@@ -29,7 +29,7 @@ module RuboCop
 
         def on_block(node)
           _method, _args, body = *node
-          check_body(body, node) if class_constructor?(node)
+          check_body(body, node) if node.class_constructor?
         end
 
         private

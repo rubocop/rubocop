@@ -31,6 +31,12 @@
 * [#2476](https://github.com/bbatsov/rubocop/issues/2476): `Style/GuardClause` catches if..else nodes with one branch which terminates the execution of the current scope. ([@alexdowad][])
 * New `Style/IdenticalConditionalBranches` flags `if..else` and `case..when..else` constructs with an identical line at the end of each branch. ([@alexdowad][])
 * [#207](https://github.com/bbatsov/rubocop/issues/207): Add new `Lint/FloatOutOfRange` cop which catches floating-point literals which are too large or too small for Ruby to represent. ([@alexdowad][])
+* `Style/GuardClause` doesn't report offenses in places where correction would make a line too long. ([@alexdowad][])
+* `Lint/DuplicateMethods` can find duplicate method definitions in many more circumstances, even across multiple files; however, it ignores definitions inside `if` or something which could be a DSL method. ([@alexdowad][])
+* A warning is printed if an invalid `EnforcedStyle` is configured. ([@alexdowad][])
+* [#1367](https://github.com/bbatsov/rubocop/issues/1367): New `Lint/IneffectiveAccessModifier` checks for access modifiers which are erroneously applied to a singleton method, where they have no effect. ([@alexdowad][])
+* [#1614](https://github.com/bbatsov/rubocop/issues/1614): `Lint/BlockAlignment` aligns block end with splat operator when applied to a splatted method call. ([@alexdowad][])
+* [#2263](https://github.com/bbatsov/rubocop/issues/2263): Warn if `task.options = %w(--format ...)` is used when configuring `RuboCop::RakeTask`; this should be `task.formatters = ...` instead. ([@alexdowad][])
 
 ### Bug Fixes
 
@@ -61,6 +67,8 @@
 * [#2518](https://github.com/bbatsov/rubocop/issues/2518): `Style/ConditionalAssignment` doesn't think that branches using `<<` and `[]=` should be combined. ([@alexdowad][])
 * `CharacterLiteral` auto-corrector now properly corrects `?'`. ([@bfontaine][])
 * [#2313](https://github.com/bbatsov/rubocop/issues/2313): `Rails/FindEach` doesn't break code which uses `order(...).each`, `limit(...).each`, and so on. ([@alexdowad][])
+* [#1938](https://github.com/bbatsov/rubocop/issues/1938): `Rails/FindBy` doesn't autocorrect `where(...).first` to `find_by`, since the returned record is often different. ([@alexdowad][])
+* [#1801](https://github.com/bbatsov/rubocop/issues/1801): `EmacsFormatter` strips newlines out of error messages, if there are any. ([@alexdowad][])
 
 ### Changes
 
@@ -69,6 +77,8 @@
 * [#947](https://github.com/bbatsov/rubocop/issues/947): `Style/Documentation` considers classes and modules which only define constants to be "namespaces", and doesn't flag them for lack of a documentation comment. ([@alexdowad][])
 * [#2467](https://github.com/bbatsov/rubocop/issues/2467): Explicitly inheriting configuration from the rubocop gem in .rubocop.yml is not allowed. ([@alexdowad][])
 * [#2322](https://github.com/bbatsov/rubocop/issues/2322): Output of --auto-gen-config shows content of default config parameters which are Arrays; this is especially useful for SupportedStyles. ([@alexdowad][])
+* [#1566](https://github.com/bbatsov/rubocop/issues/1566): When autocorrecting on Windows, line endings are not converted to "\r\n" in untouched portions of the source files; corrected portions may use "\n" rather than "\r\n". ([@alexdowad][])
+* New `rake repl` task can be used for experimentation when working on RuboCop. ([@alexdowad][])
 
 ## 0.35.1 (10/11/2015)
 

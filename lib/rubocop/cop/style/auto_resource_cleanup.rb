@@ -17,7 +17,6 @@ module RuboCop
       #     ...
       #   end
       class AutoResourceCleanup < Cop
-        include AST::Sexp
         MSG = 'Use the block version of `%s.%s`.'
 
         TARGET_METHODS = [

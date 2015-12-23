@@ -30,12 +30,12 @@ task default: [:spec, :internal_investigation]
 require 'yard'
 YARD::Rake::YardocTask.new
 
-task :console do
-  require 'irb'
-  require 'irb/completion'
+desc 'Open a REPL for experimentation'
+task :repl do
+  require 'pry'
   require 'rubocop'
   ARGV.clear
-  IRB.start
+  RuboCop.pry
 end
 
 desc 'Benchmark a cop on given source file/dir'

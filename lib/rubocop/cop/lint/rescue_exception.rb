@@ -17,7 +17,7 @@ module RuboCop
         end
 
         def targets_exception?(rescue_arg_node)
-          Util.const_name(rescue_arg_node) == 'Exception'
+          rescue_arg_node.const_name == 'Exception'
         end
       end
     end

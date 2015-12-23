@@ -91,20 +91,26 @@ module RuboCop
           return if modifier_if?(node) || ternary_op?(node)
           # discard short ifs
           return unless min_body_length?(node)
+          return if line_too_long_when_corrected?(node)
 
           add_offense(node, :keyword, MSG)
         end
 
         def line_too_long_when_corrected?(node)
           cond, body, else_body = *node
-          max    = config.for_cop('Metrics/LineLength')['Max']
-          indent = node.loc.column
 
-          if control_flow_exit?(body)
-            indent + (body.source + ' if ' + cond.source).length > max
+          if control_flow_exit?(body) || else_body.nil?
+            line_too_long?(node, body, 'if', cond)
           else
-            indent + (else_body.source + ' unless ' + cond.source).length > max
+            line_too_long?(node, else_body, 'unless', cond)
           end
+        end
+
+        def line_too_long?(node, body, keyword, condition)
+          max    = config.for_cop('Metrics/LineLength')['Max'] || 80
+          indent = node.loc.column
+          # 2 is for spaces on left and right of keyword
+          indent + (body.source + keyword + condition.source).length + 2 > max
         end
       end
     end

@@ -69,6 +69,23 @@ describe RuboCop::RakeTask do
       Rake::Task['rubocop'].execute
     end
 
+    it 'warns if --format is put in options' do
+      RuboCop::RakeTask.new do |task|
+        task.options = ['--format', 'json']
+        task.patterns = ['no_such_file*']
+      end
+
+      Rake::Task['rubocop'].execute
+
+      # `rstrip` is because MRI 1.9.3 differs in behavior as regards newlines
+      # printed by `Kernel#warn`.
+      expect($stderr.string.rstrip).to eq(
+        'Warning: To set a custom formatter for RuboCop::RakeTask, use ' \
+        "formatters rather than options = [\"--format\", ...].\nSee " \
+        'https://github.com/bbatsov/rubocop#rake-integration for more ' \
+        'details.')
+    end
+
     it 'will not error when result is not 0 and fail_on_error is false' do
       RuboCop::RakeTask.new do |task|
         task.fail_on_error = false

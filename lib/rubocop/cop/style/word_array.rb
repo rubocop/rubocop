@@ -17,9 +17,10 @@ module RuboCop
 
         def on_array(node)
           array_elems = node.children
-          return unless array_of?(:str, node) &&
+          return unless bracketed_array_of?(:str, node) &&
                         !complex_content?(array_elems) &&
-                        array_elems.size > min_size && !comments_in_array?(node)
+                        array_elems.size > min_size &&
+                        !comments_in_array?(node)
 
           add_offense(node, :expression) { self.max = array_elems.size }
         end

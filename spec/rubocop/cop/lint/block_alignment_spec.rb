@@ -542,4 +542,16 @@ describe RuboCop::Cop::Lint::BlockAlignment do
       expect(cop.offenses.size).to eq 2
     end
   end
+
+  context 'on a splatted method call' do
+    it 'aligns end with the splat operator' do
+      inspect_source(cop,
+                     ['def get_gems_by_name',
+                      '  @gems ||= Hash[*get_latest_gems.map { |gem|',
+                      '                   [gem.name, gem, gem.full_name, gem]',
+                      '                 }.flatten]',
+                      'end'])
+      expect(cop.offenses).to be_empty
+    end
+  end
 end

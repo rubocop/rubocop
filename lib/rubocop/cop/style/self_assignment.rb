@@ -13,8 +13,6 @@ module RuboCop
       #   # good
       #   x += 1
       class SelfAssignment < Cop
-        include AST::Sexp
-
         MSG = 'Use self-assignment shorthand `%s=`.'
         OPS = [:+, :-, :*, :**, :/, :|, :&]
 

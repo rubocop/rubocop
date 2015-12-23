@@ -23,14 +23,15 @@ describe RuboCop::Cop::Rails::FindBy do
     expect(cop.messages).to be_empty
   end
 
-  shared_examples 'corrects' do |selector|
-    it "where#{selector} to find_by" do
-      new_source = autocorrect_source(cop, "User.where(id: x).#{selector}")
+  it 'autocorrects where.take to find_by' do
+    new_source = autocorrect_source(cop, 'User.where(id: x).take')
 
-      expect(new_source).to eq('User.find_by(id: x)')
-    end
+    expect(new_source).to eq('User.find_by(id: x)')
   end
 
-  it_behaves_like('corrects', 'first')
-  it_behaves_like('corrects', 'take')
+  it 'does not autocorrect where.first' do
+    new_source = autocorrect_source(cop, 'User.where(id: x).first')
+
+    expect(new_source).to eq('User.where(id: x).first')
+  end
 end

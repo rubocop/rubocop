@@ -18,7 +18,7 @@ module RuboCop
 
         def on_block(node)
           return if ignored_node?(node)
-          check_block_alignment(node, node)
+          check_block_alignment(start_for_block_node(node), node)
         end
 
         def on_and(node)
@@ -96,6 +96,20 @@ module RuboCop
           end
         end
 
+        def start_for_block_node(block_node)
+          # Which node should we align the 'end' with?
+          result = block_node
+
+          while result.parent &&
+                (result.parent.splat_type? ||
+                (result.parent.send_type? &&
+                  !operator?(result.parent.method_name)))
+            result = result.parent
+          end
+
+          result
+        end
+
         def check_block_alignment(start_node, block_node)
           end_loc = block_node.loc.end
           return unless begins_its_line?(end_loc)
@@ -130,9 +144,6 @@ module RuboCop
           else
             " or `#{match[0]}` at #{do_loc.line}, #{indentation_of_do_line}"
           end
-        end
-
-        def message
         end
 
         def block_is_on_next_line?(begin_node, block_node)

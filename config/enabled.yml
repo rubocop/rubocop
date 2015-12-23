@@ -938,7 +938,7 @@ Lint/DeprecatedClassMethods:
   Enabled: true
 
 Lint/DuplicateMethods:
-  Description: 'Check for duplicate methods calls.'
+  Description: 'Check for duplicate method definitions.'
   Enabled: true
 
 Lint/DuplicatedKey:
@@ -997,6 +997,12 @@ Lint/ImplicitStringConcatenation:
   Description: >-
                  Checks for adjacent string literals on the same line, which
                  could better be represented as a single string literal.
+  Enabled: true
+
+Lint/IneffectiveAccessModifier:
+  Description: >-
+                 Checks for attempts to use `private` or `protected` to set
+                 the visibility of a class method, which does not work.
   Enabled: true
 
 Lint/InvalidCharacterLiteral:

@@ -15,7 +15,7 @@ module RuboCop
         def on_array(node)
           # %i and %I were introduced in Ruby 2.0
           return if RUBY_VERSION < '2.0.0'
-          add_offense(node, :expression) if array_of?(:sym, node)
+          add_offense(node, :expression) if bracketed_array_of?(:sym, node)
         end
       end
     end

@@ -65,8 +65,9 @@ module RuboCop
     #     end
     #   end
     class Cop
-      extend AST::Sexp
+      extend Astrolabe::Sexp
       extend NodePattern::Macros
+      include Astrolabe::Sexp
       include Util
       include IgnoredNode
       include AutocorrectLogic

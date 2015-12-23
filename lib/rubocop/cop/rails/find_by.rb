@@ -17,23 +17,28 @@ module RuboCop
         MSG = 'Use `find_by` instead of `where.%s`.'
         TARGET_SELECTORS = [:first, :take]
 
+        def_node_matcher :where_first, <<-PATTERN
+          (send $(send _ :where ...) ${:first :take})
+        PATTERN
+
         def on_send(node)
-          receiver, second_method, _selector = *node
-          return unless TARGET_SELECTORS.include?(second_method)
-          return if receiver.nil?
-          _scope, first_method = *receiver
-          return unless first_method == :where
-          begin_of_offense = receiver.loc.selector.begin_pos
-          end_of_offense = node.loc.selector.end_pos
+          return unless (recv_and_method = where_first(node))
+          receiver, second_method = *recv_and_method
+
           range = Parser::Source::Range.new(node.loc.expression.source_buffer,
-                                            begin_of_offense,
-                                            end_of_offense)
+                                            receiver.loc.selector.begin_pos,
+                                            node.loc.selector.end_pos)
 
           add_offense(node, range, format(MSG, second_method))
         end
 
         def autocorrect(node)
-          receiver, = *node
+          receiver, second_method = where_first(node)
+          # Don't autocorrect where(...).first, because it can return different
+          # results from find_by. (They order records differently, so the
+          # 'first' record can be different.)
+          return if second_method == :first
+
           where_loc = receiver.loc.selector
           first_loc = Parser::Source::Range.new(
             node.loc.expression.source_buffer,

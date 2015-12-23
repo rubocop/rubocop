@@ -8,6 +8,7 @@ gem 'rake', '~> 10.1'
 gem 'rspec', '~> 3.4.0'
 gem 'yard', '~> 0.8'
 gem 'simplecov', '~> 0.10'
+gem 'pry'
 
 group :test do
   gem 'codeclimate-test-reporter', require: false

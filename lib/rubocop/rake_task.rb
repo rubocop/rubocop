@@ -45,8 +45,20 @@ module RuboCop
 
       cli = CLI.new
       puts 'Running RuboCop...' if verbose
+      check_options
       result = cli.run(options)
       abort('RuboCop failed!') if result != 0 && fail_on_error
+    end
+
+    def check_options
+      if (opt = options.find { |option| %w(-f --format).include?(option) })
+        warn "#{Rainbow('Warning:').red} To set a custom formatter for " \
+             "#{Rainbow('RuboCop::RakeTask').yellow}, use " \
+             "#{Rainbow('formatters').yellow} rather than " \
+             "#{Rainbow("options = [#{opt.inspect}, ...]").yellow}."
+        url = 'https://github.com/bbatsov/rubocop#rake-integration'
+        warn "See #{Rainbow(url).underline} for more details.\n\n"
+      end
     end
 
     def full_options
