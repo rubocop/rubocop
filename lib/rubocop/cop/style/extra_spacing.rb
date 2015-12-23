@@ -20,27 +20,28 @@ module RuboCop
       class ExtraSpacing < Cop
         include PrecedingFollowingAlignment
 
-        MSG = 'Unnecessary spacing detected.'
+        MSG_UNNECESSARY = 'Unnecessary spacing detected.'
+        MSG_UNALIGNED_ASGN = '`=` is not aligned with the previous assignment.'
 
         def investigate(processed_source)
           ast = processed_source.ast
 
+          asgn_lines = processed_source
+                       .tokens
+                       .select { |t| equal_sign?(t) }
+                       .map { |t| t.pos.line }
+
           processed_source.tokens.each_cons(2) do |t1, t2|
             next if t2.type == :tNL
             next if t1.pos.line != t2.pos.line
-            next if t2.pos.begin_pos - 1 <= t1.pos.end_pos
-            next if allow_for_alignment? && aligned_token?(t2)
 
-            start_pos = t1.pos.end_pos
-            next if ignored_ranges(ast).find { |r| r.include?(start_pos) }
-
-            end_pos = t2.pos.begin_pos - 1
-            range = Parser::Source::Range.new(processed_source.buffer,
-                                              start_pos, end_pos)
-            # Unary + doesn't appear as a token and needs special handling.
-            next if unary_plus_non_offense?(range)
-
-            add_offense(range, range, MSG)
+            if force_equal_sign_alignment? &&
+               equal_sign?(t2) &&
+               asgn_lines.include?(t2.pos.line - 1)
+              check_assignment(t2)
+            else
+              check_other(t1, t2, ast)
+            end
           end
         end
 
@@ -49,6 +50,29 @@ module RuboCop
         end
 
         private
+
+        def check_assignment(token)
+          # minus 2 is because pos.line is zero-based
+          line = processed_source.lines[token.pos.line - 2]
+          return if aligned_assignment?(token.pos, line)
+          add_offense(token.pos, token.pos, MSG_UNALIGNED_ASGN)
+        end
+
+        def check_other(t1, t2, ast)
+          return if t2.pos.begin_pos - 1 <= t1.pos.end_pos
+          return if allow_for_alignment? && aligned_token?(t2)
+
+          start_pos = t1.pos.end_pos
+          return if ignored_ranges(ast).find { |r| r.include?(start_pos) }
+
+          end_pos = t2.pos.begin_pos - 1
+          range = Parser::Source::Range.new(processed_source.buffer,
+                                            start_pos, end_pos)
+          # Unary + doesn't appear as a token and needs special handling.
+          return if unary_plus_non_offense?(range)
+
+          add_offense(range, range, MSG_UNNECESSARY)
+        end
 
         def aligned_token?(token)
           if token.type == :tCOMMENT
@@ -92,6 +116,14 @@ module RuboCop
 
         def comment_column(ix)
           processed_source.comments[ix].loc.column
+        end
+
+        def force_equal_sign_alignment?
+          cop_config['ForceEqualSignAlignment']
+        end
+
+        def equal_sign?(token)
+          token.type == :tEQL || token.type == :tOP_ASGN
         end
       end
     end

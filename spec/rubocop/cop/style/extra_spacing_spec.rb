@@ -183,7 +183,9 @@ describe RuboCop::Cop::Style::ExtraSpacing, :config do
   }
 
   context 'when AllowForAlignment is true' do
-    let(:cop_config) { { 'AllowForAlignment' => true } }
+    let(:cop_config) do
+      { 'AllowForAlignment' => true, 'ForceEqualSignAlignment' => false }
+    end
 
     include_examples 'common behavior'
 
@@ -200,7 +202,9 @@ describe RuboCop::Cop::Style::ExtraSpacing, :config do
   end
 
   context 'when AllowForAlignment is false' do
-    let(:cop_config) { { 'AllowForAlignment' => false } }
+    let(:cop_config) do
+      { 'AllowForAlignment' => false, 'ForceEqualSignAlignment' => false }
+    end
 
     include_examples 'common behavior'
 
@@ -213,6 +217,38 @@ describe RuboCop::Cop::Style::ExtraSpacing, :config do
           end
         end
       end
+    end
+  end
+
+  context 'when ForceEqualSignAlignment is true' do
+    let(:cop_config) do
+      { 'AllowForAlignment' => true, 'ForceEqualSignAlignment' => true }
+    end
+
+    it 'registers an offense if consecutive assignments are not aligned' do
+      inspect_source(cop, ['a = 1',
+                           'bb = 2',
+                           'ccc = 3'])
+      expect(cop.offenses.size).to eq(2)
+      expect(cop.messages).to eq(
+        ['`=` is not aligned with the previous assignment.',
+         '`=` is not aligned with the previous assignment.'])
+    end
+
+    it 'does not register an offense if assignments are separated by blanks' do
+      inspect_source(cop, ['a = 1',
+                           '',
+                           'bb = 2',
+                           '',
+                           'ccc = 3'])
+      expect(cop.offenses.size).to eq(0)
+    end
+
+    it 'does not register an offense if assignments are aligned' do
+      inspect_source(cop, ['a   = 1',
+                           'bb  = 2',
+                           'ccc = 3'])
+      expect(cop.offenses.size).to eq(0)
     end
   end
 end

@@ -408,6 +408,8 @@ Style/ExtraSpacing:
   # things with the previous or next line, not counting empty lines or comment
   # lines.
   AllowForAlignment: true
+  # When true, forces the alignment of = in assignments on consecutive lines.
+  ForceEqualSignAlignment: false
 
 Style/FileName:
   # File names listed in AllCops:Include are excluded by default. Add extra
