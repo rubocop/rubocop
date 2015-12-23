@@ -127,13 +127,9 @@ module RuboCop
         end
 
         def comment_lines
-          @comment_lines ||=
-            begin
-              whole_line_comments = processed_source.comments.select do |c|
-                begins_its_line?(c.loc.expression)
-              end
-              whole_line_comments.map { |c| c.loc.line }
-            end
+          @comment_lines ||= processed_source.comments.map(&:loc).select do |r|
+            begins_its_line?(r.expression)
+          end.map(&:line)
         end
 
         def aligned_words?(token, line)
