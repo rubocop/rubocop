@@ -13,7 +13,7 @@ module RuboCop
 
           output.printf("%s:%d:%d: %s: %s\n",
                         file, o.line, o.real_column, o.severity.code,
-                        message)
+                        message.tr("\n", ' '))
         end
       end
     end
