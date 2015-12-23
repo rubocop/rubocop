@@ -229,10 +229,11 @@ describe RuboCop::Cop::Style::ExtraSpacing, :config do
       inspect_source(cop, ['a = 1',
                            'bb = 2',
                            'ccc = 3'])
-      expect(cop.offenses.size).to eq(2)
+      expect(cop.offenses.size).to eq(3)
       expect(cop.messages).to eq(
-        ['`=` is not aligned with the previous assignment.',
-         '`=` is not aligned with the previous assignment.'])
+        ['`=` is not aligned with the following assignment.',
+         '`=` is not aligned with the preceding assignment.',
+         '`=` is not aligned with the preceding assignment.'])
     end
 
     it 'does not register an offense if assignments are separated by blanks' do
@@ -249,6 +250,74 @@ describe RuboCop::Cop::Style::ExtraSpacing, :config do
                            'bb  = 2',
                            'ccc = 3'])
       expect(cop.offenses.size).to eq(0)
+    end
+
+    it 'autocorrects consecutive assignments which are not aligned' do
+      new_source = autocorrect_source(cop, ['a = 1',
+                                            'bb = 2',
+                                            'ccc = 3',
+                                            '',
+                                            'abcde        = 1',
+                                            'a                 = 2',
+                                            'abc = 3'])
+      expect(new_source).to eq(['a   = 1',
+                                'bb  = 2',
+                                'ccc = 3',
+                                '',
+                                'abcde = 1',
+                                'a     = 2',
+                                'abc   = 3'].join("\n"))
+    end
+
+    it 'autocorrects consecutive operator assignments which are not aligned' do
+      new_source = autocorrect_source(cop, ['a += 1',
+                                            'bb = 2',
+                                            'ccc <<= 3',
+                                            '',
+                                            'abcde        = 1',
+                                            'a                 *= 2',
+                                            'abc ||= 3'])
+      expect(new_source).to eq(['a    += 1',
+                                'bb    = 2',
+                                'ccc <<= 3',
+                                '',
+                                'abcde = 1',
+                                'a    *= 2',
+                                'abc ||= 3'].join("\n"))
+    end
+
+    it 'autocorrects consecutive aref assignments which are not aligned' do
+      new_source = autocorrect_source(cop, ['a[1] = 1',
+                                            'bb[2,3] = 2',
+                                            'ccc[:key] = 3',
+                                            '',
+                                            'abcde[0]        = 1',
+                                            'a                 = 2',
+                                            'abc += 3'])
+      expect(new_source).to eq(['a[1]      = 1',
+                                'bb[2,3]   = 2',
+                                'ccc[:key] = 3',
+                                '',
+                                'abcde[0] = 1',
+                                'a        = 2',
+                                'abc     += 3'].join("\n"))
+    end
+
+    it 'autocorrects consecutive attribute assignments which are not aligned' do
+      new_source = autocorrect_source(cop, ['a.attr = 1',
+                                            'bb &&= 2',
+                                            'ccc.s = 3',
+                                            '',
+                                            'abcde.blah        = 1',
+                                            'a.attribute_name              = 2',
+                                            'abc[1] = 3'])
+      expect(new_source).to eq(['a.attr = 1',
+                                'bb   &&= 2',
+                                'ccc.s  = 3',
+                                '',
+                                'abcde.blah       = 1',
+                                'a.attribute_name = 2',
+                                'abc[1]           = 3'].join("\n"))
     end
   end
 end
