@@ -38,6 +38,7 @@
 * [#1614](https://github.com/bbatsov/rubocop/issues/1614): `Lint/BlockAlignment` aligns block end with splat operator when applied to a splatted method call. ([@alexdowad][])
 * [#2263](https://github.com/bbatsov/rubocop/issues/2263): Warn if `task.options = %w(--format ...)` is used when configuring `RuboCop::RakeTask`; this should be `task.formatters = ...` instead. ([@alexdowad][])
 * [#2511](https://github.com/bbatsov/rubocop/issues/2511): `--no-offense-counts` CLI option suppresses the inclusion of offense count lines in auto-generated config. ([@alexdowad][])
+* [#2504](https://github.com/bbatsov/rubocop/issues/2504): New `AllowForAlignment` config parameter for `Style/SingleSpaceBeforeFirstArg` allows the insertion of extra spaces before the first argument if it aligns it with something on the preceding or following line. ([@alexdowad][])
 
 ### Bug Fixes
 

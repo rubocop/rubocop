@@ -662,6 +662,12 @@ Style/SingleLineBlockParams:
 Style/SingleLineMethods:
   AllowIfMethodIsEmpty: true
 
+Style/SingleSpaceBeforeFirstArg:
+  # When true, allows most uses of extra spacing if the intent is to align
+  # things with the previous or next line, not counting empty lines or comment
+  # lines.
+  AllowForAlignment: true
+
 Style/SpecialGlobalVars:
   EnforcedStyle: use_english_names
   SupportedStyles:

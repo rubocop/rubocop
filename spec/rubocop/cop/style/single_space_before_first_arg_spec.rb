@@ -2,8 +2,9 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::SingleSpaceBeforeFirstArg do
-  subject(:cop) { described_class.new }
+describe RuboCop::Cop::Style::SingleSpaceBeforeFirstArg, :config do
+  subject(:cop) { described_class.new(config) }
+  let(:cop_config) { { 'AllowForAlignment' => true } }
 
   context 'for method calls without parentheses' do
     it 'registers an offense for method call with two spaces before the ' \
@@ -45,6 +46,30 @@ describe RuboCop::Cop::Style::SingleSpaceBeforeFirstArg do
       inspect_source(cop, ['something \\',
                            '  x'])
       expect(cop.offenses).to be_empty
+    end
+
+    context 'when AllowForAlignment is true' do
+      it 'accepts method calls with aligned first arguments' do
+        inspect_source(cop, ['form.inline_input   :full_name,     as: :string',
+                             'form.disabled_input :password,      as: :passwd',
+                             'form.masked_input   :zip_code,      as: :string',
+                             'form.masked_input   :email_address, as: :email',
+                             'form.masked_input   :phone_number,  as: :tel'])
+        expect(cop.offenses).to be_empty
+      end
+    end
+
+    context 'when AllowForAlignment is false' do
+      let(:cop_config) { { 'AllowForAlignment' => false } }
+
+      it 'does not accept method calls with aligned first arguments' do
+        inspect_source(cop, ['form.inline_input   :full_name,     as: :string',
+                             'form.disabled_input :password,      as: :passwd',
+                             'form.masked_input   :zip_code,      as: :string',
+                             'form.masked_input   :email_address, as: :email',
+                             'form.masked_input   :phone_number,  as: :tel'])
+        expect(cop.offenses.size).to eq(4)
+      end
     end
   end
 
