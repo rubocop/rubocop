@@ -37,6 +37,26 @@ describe RuboCop::Cop::Style::RescueEnsureAlignment do
                                     ' `end` at 5, 0.'])
       end
 
+      it 'registers an offense when used with class' do
+        inspect_source(cop, ['class C',
+                             '  something',
+                             "    #{keyword}",
+                             '    error',
+                             'end'])
+        expect(cop.messages).to eq(["`#{keyword}` at 3, 4 is not aligned with" \
+                                    ' `end` at 5, 0.'])
+      end
+
+      it 'registers an offense when used with module' do
+        inspect_source(cop, ['module M',
+                             '  something',
+                             "    #{keyword}",
+                             '    error',
+                             'end'])
+        expect(cop.messages).to eq(["`#{keyword}` at 3, 4 is not aligned with" \
+                                    ' `end` at 5, 0.'])
+      end
+
       it 'accepts rescue and ensure on the same line' do
         inspect_source(cop, 'begin; puts 1; rescue; ensure; puts 2; end')
 
