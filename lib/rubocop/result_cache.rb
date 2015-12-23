@@ -68,7 +68,7 @@ module RuboCop
         end
         sorted = files.sort_by { |path| File.mtime(path) }
         begin
-          sorted[0, remove_count].each { |path| File.delete(path) }
+          File.delete(*sorted[0, remove_count])
           dirs.each { |dir| Dir.rmdir(dir) if Dir["#{dir}/*"].empty? }
         rescue Errno::ENOENT
           # This can happen if parallel RuboCop invocations try to remove the
