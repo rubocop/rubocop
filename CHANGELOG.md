@@ -67,6 +67,7 @@
 * [#2518](https://github.com/bbatsov/rubocop/issues/2518): `Style/ConditionalAssignment` doesn't think that branches using `<<` and `[]=` should be combined. ([@alexdowad][])
 * `CharacterLiteral` auto-corrector now properly corrects `?'`. ([@bfontaine][])
 * [#2313](https://github.com/bbatsov/rubocop/issues/2313): `Rails/FindEach` doesn't break code which uses `order(...).each`, `limit(...).each`, and so on. ([@alexdowad][])
+* [#1938](https://github.com/bbatsov/rubocop/issues/1938): `Rails/FindBy` doesn't autocorrect `where(...).first` to `find_by`, since the returned record is often different. ([@alexdowad][])
 
 ### Changes
 
