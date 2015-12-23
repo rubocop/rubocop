@@ -57,14 +57,9 @@ module RuboCop
         def ignored_ranges(ast)
           return [] unless ast
 
-          @ignored_ranges ||= begin
-            ranges = []
-            on_node(:pair, ast) do |pair|
-              key, value = *pair
-              r = key.loc.expression.end_pos...value.loc.expression.begin_pos
-              ranges << r
-            end
-            ranges
+          @ignored_ranges ||= on_node(:pair, ast).map do |pair|
+            key, value = *pair
+            key.loc.expression.end_pos...value.loc.expression.begin_pos
           end
         end
 

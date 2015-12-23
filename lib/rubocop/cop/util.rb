@@ -91,14 +91,15 @@ module RuboCop
         node.loc.respond_to?(:end) && node.loc.end
       end
 
-      def on_node(syms, sexp, excludes = [])
-        yield sexp if Array(syms).include?(sexp.type)
+      def on_node(syms, sexp, excludes = [], &block)
+        return to_enum(:on_node, syms, sexp, excludes) unless block_given?
 
+        yield sexp if Array(syms).include?(sexp.type)
         return if Array(excludes).include?(sexp.type)
 
         sexp.children.each do |elem|
           next unless elem.is_a?(Parser::AST::Node)
-          on_node(syms, elem, excludes) { |s| yield s }
+          on_node(syms, elem, excludes, &block)
         end
       end
 
