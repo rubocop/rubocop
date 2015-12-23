@@ -297,14 +297,17 @@ describe RuboCop::Cop::Lint::BlockAlignment do
                 ' `f = [5, 6].map do |i|` at 2, 0.'])
     end
 
-    it 'can not auto-correct' do
+    it 'auto-corrects' do
       src = ['e,',
              'f = [5, 6].map do |i|',
              '  i - 5',
              '    end']
-
+      corrected = ['e,',
+                   'f = [5, 6].map do |i|',
+                   '  i - 5',
+                   'end']
       new_source = autocorrect_source(cop, src)
-      expect(new_source).to eq(src.join("\n"))
+      expect(new_source).to eq(corrected.join("\n"))
     end
   end
 
@@ -552,6 +555,106 @@ describe RuboCop::Cop::Lint::BlockAlignment do
                       '                 }.flatten]',
                       'end'])
       expect(cop.offenses).to be_empty
+    end
+
+    it 'autocorrects' do
+      source = ['def get_gems_by_name',
+                '  @gems ||= Hash[*get_latest_gems.map { |gem|',
+                '                   [gem.name, gem, gem.full_name, gem]',
+                '              }.flatten]',
+                'end']
+      corrected = ['def get_gems_by_name',
+                   '  @gems ||= Hash[*get_latest_gems.map { |gem|',
+                   '                   [gem.name, gem, gem.full_name, gem]',
+                   '                 }.flatten]',
+                   'end']
+
+      new_source = autocorrect_source(cop, source)
+      expect(new_source).to eq(corrected.join("\n"))
+    end
+  end
+
+  context 'on a bit-flipped method call' do
+    it 'aligns end with the ~ operator' do
+      inspect_source(cop,
+                     ['def abc',
+                      '  @abc ||= A[~xyz { |x|',
+                      '               x',
+                      '             }.flatten]',
+                      'end'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'autocorrects' do
+      source = ['def abc',
+                '  @abc ||= A[~xyz { |x|',
+                '               x',
+                '                        }.flatten]',
+                'end']
+      corrected = ['def abc',
+                   '  @abc ||= A[~xyz { |x|',
+                   '               x',
+                   '             }.flatten]',
+                   'end']
+
+      new_source = autocorrect_source(cop, source)
+      expect(new_source).to eq(corrected.join("\n"))
+    end
+  end
+
+  context 'on a logically negated method call' do
+    it 'aligns end with the ! operator' do
+      inspect_source(cop,
+                     ['def abc',
+                      '  @abc ||= A[!xyz { |x|',
+                      '               x',
+                      '             }.flatten]',
+                      'end'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'autocorrects' do
+      source = ['def abc',
+                '  @abc ||= A[!xyz { |x|',
+                '               x',
+                '}.flatten]',
+                'end']
+      corrected = ['def abc',
+                   '  @abc ||= A[!xyz { |x|',
+                   '               x',
+                   '             }.flatten]',
+                   'end']
+
+      new_source = autocorrect_source(cop, source)
+      expect(new_source).to eq(corrected.join("\n"))
+    end
+  end
+
+  context 'on an arithmetically negated method call' do
+    it 'aligns end with the - operator' do
+      inspect_source(cop,
+                     ['def abc',
+                      '  @abc ||= A[-xyz { |x|',
+                      '               x',
+                      '             }.flatten]',
+                      'end'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'autocorrects' do
+      source = ['def abc',
+                '  @abc ||= A[-xyz { |x|',
+                '               x',
+                '                  }.flatten]',
+                'end']
+      corrected = ['def abc',
+                   '  @abc ||= A[-xyz { |x|',
+                   '               x',
+                   '             }.flatten]',
+                   'end']
+
+      new_source = autocorrect_source(cop, source)
+      expect(new_source).to eq(corrected.join("\n"))
     end
   end
 end
