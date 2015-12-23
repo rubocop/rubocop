@@ -70,7 +70,7 @@ module RuboCop
         end
 
         def start_with_percent_q_variant?(string)
-          string.start_with?(PERCENT_Q) || string.start_with?(PERCENT_CAPITAL_Q)
+          string.start_with?(PERCENT_Q, PERCENT_CAPITAL_Q)
         end
       end
     end

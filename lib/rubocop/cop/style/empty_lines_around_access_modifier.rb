@@ -67,7 +67,7 @@ module RuboCop
         end
 
         def class_def?(line)
-          %w(class module).any? { |keyword| line.start_with?(keyword) }
+          line.start_with?('class', 'module')
         end
 
         def block_start?(line)
