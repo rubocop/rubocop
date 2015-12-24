@@ -75,11 +75,11 @@ module RuboCop
             "match Notice /#{notice}/" unless autocorrect_notice =~ regex
 
           lambda do |corrector|
-            if token.nil?
-              range = Parser::Source::Range.new('', 0, 0)
-            else
-              range = token.pos
-            end
+            range = if token.nil?
+                      Parser::Source::Range.new('', 0, 0)
+                    else
+                      token.pos
+                    end
             corrector.insert_before(range, "#{autocorrect_notice}\n")
           end
         end

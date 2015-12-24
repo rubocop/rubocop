@@ -23,11 +23,11 @@ module RuboCop
         def on_method_def(_node, _method_name, _args, body)
           return unless body
 
-          if body.type == :begin
-            expression = body.children
-          else
-            expression = body
-          end
+          expression = if body.type == :begin
+                         body.children
+                       else
+                         body
+                       end
 
           last_expr = expression.is_a?(Array) ? expression.last : expression
 

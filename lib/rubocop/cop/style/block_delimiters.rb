@@ -146,11 +146,11 @@ module RuboCop
           block_length = Util.block_length(node)
           block_begin = node.loc.begin.source
 
-          if block_length > 0
-            block_begin == (return_value_chaining?(node) ? '{' : 'do')
-          else
-            block_begin == '{'
-          end
+          block_begin == if block_length > 0
+                           (return_value_chaining?(node) ? '{' : 'do')
+                         else
+                           '{'
+                         end
         end
 
         def return_value_chaining?(node)
