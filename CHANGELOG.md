@@ -88,6 +88,7 @@
 * [#1566](https://github.com/bbatsov/rubocop/issues/1566): When autocorrecting on Windows, line endings are not converted to "\r\n" in untouched portions of the source files; corrected portions may use "\n" rather than "\r\n". ([@alexdowad][])
 * New `rake repl` task can be used for experimentation when working on RuboCop. ([@alexdowad][])
 * `Lint/SpaceBeforeFirstArg` cop has been removed, since it just duplicates `Style/SingleSpaceBeforeFirstArg`. ([@alexdowad][])
+* `Style/SingleSpaceBeforeFirstArg` cop has been renamed to `Style/SpaceBeforeFirstArg`, which more accurately reflects what it now does. ([@alexdowad][])
 
 ## 0.35.1 (10/11/2015)
 

@@ -15,7 +15,7 @@ module RuboCop
       #   something  x
       #   something   y, z
       #
-      class SingleSpaceBeforeFirstArg < Cop
+      class SpaceBeforeFirstArg < Cop
         include PrecedingFollowingAlignment
 
         MSG = 'Put one space between the method name and the first argument.'

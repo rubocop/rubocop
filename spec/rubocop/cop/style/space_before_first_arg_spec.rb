@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::SingleSpaceBeforeFirstArg, :config do
+describe RuboCop::Cop::Style::SpaceBeforeFirstArg, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) { { 'AllowForAlignment' => true } }
 
