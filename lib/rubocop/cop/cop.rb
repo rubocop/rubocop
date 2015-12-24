@@ -199,7 +199,7 @@ module RuboCop
         self.class.cop_name
       end
 
-      alias_method :name, :cop_name
+      alias name cop_name
 
       def relevant_file?(file)
         file_name_matches_any?(file, 'Include', true) &&

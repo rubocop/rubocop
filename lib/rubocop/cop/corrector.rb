@@ -79,6 +79,17 @@ module RuboCop
       def replace(range, content)
         @source_rewriter.replace(range, content)
       end
+
+      # Removes `size` characters prior to the source range.
+      #
+      # @param [Parser::Source::Range] range
+      # @param [Integer] size
+      def remove_preceding(range, size)
+        to_remove = Parser::Source::Range.new(range.source_buffer,
+                                              range.begin_pos - size,
+                                              range.begin_pos)
+        @source_rewriter.remove(to_remove)
+      end
     end
   end
 end

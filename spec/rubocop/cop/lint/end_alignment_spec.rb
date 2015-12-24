@@ -142,7 +142,7 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
       include_examples 'misaligned', '', 'var = unless', 'test',     '      end'
       include_examples 'misaligned', '', 'var = while',  'test',     '      end'
       include_examples 'misaligned', '', 'var = until',  'test',     '      end'
-      include_examples 'misaligned', '', 'var = until',  'test',   '      end.j'
+      include_examples 'misaligned', '', 'var = until',  'test',     '    end.j'
       include_examples 'misaligned', '', 'var = case',   'a when b', '      end'
 
       include_examples 'aligned', '@var = if',  'test', 'end'

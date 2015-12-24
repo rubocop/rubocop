@@ -73,7 +73,7 @@ module RuboCop
         end
 
         def ancestor_node(node)
-          node.each_ancestor(:kwbegin, :def, :defs).first
+          node.each_ancestor(:kwbegin, :def, :defs, :class, :module).first
         end
       end
     end

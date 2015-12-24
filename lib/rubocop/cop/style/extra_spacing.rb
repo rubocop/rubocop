@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'set'
+
 module RuboCop
   module Cop
     module Style
@@ -18,34 +20,89 @@ module RuboCop
       #   set_app("RuboCop")
       #   website  = "https://github.com/bbatsov/rubocop"
       class ExtraSpacing < Cop
-        MSG = 'Unnecessary spacing detected.'
+        include PrecedingFollowingAlignment
+
+        MSG_UNNECESSARY = 'Unnecessary spacing detected.'
+        MSG_UNALIGNED_ASGN = '`=` is not aligned with the %s assignment.'
 
         def investigate(processed_source)
           ast = processed_source.ast
 
+          if force_equal_sign_alignment?
+            @asgn_tokens = processed_source.tokens.select { |t| equal_sign?(t) }
+            # Only attempt to align the first = on each line
+            @asgn_tokens = Set.new(@asgn_tokens.uniq { |t| t.pos.line })
+            @asgn_lines  = @asgn_tokens.map { |t| t.pos.line }
+            # Don't attempt to correct the same = more than once
+            @corrected   = Set.new
+          end
+
           processed_source.tokens.each_cons(2) do |t1, t2|
             next if t2.type == :tNL
-            next if t1.pos.line != t2.pos.line
-            next if t2.pos.begin_pos - 1 <= t1.pos.end_pos
-            next if allow_for_alignment? && aligned_with_something?(t2)
-            start_pos = t1.pos.end_pos
-            next if ignored_ranges(ast).find { |r| r.include?(start_pos) }
 
-            end_pos = t2.pos.begin_pos - 1
-            range = Parser::Source::Range.new(processed_source.buffer,
-                                              start_pos, end_pos)
-            # Unary + doesn't appear as a token and needs special handling.
-            next if unary_plus_non_offense?(range)
-
-            add_offense(range, range, MSG)
+            if force_equal_sign_alignment? &&
+               @asgn_tokens.include?(t2) &&
+               (@asgn_lines.include?(t2.pos.line - 1) ||
+                @asgn_lines.include?(t2.pos.line + 1))
+              check_assignment(t2)
+            else
+              check_other(t1, t2, ast)
+            end
           end
         end
 
-        def autocorrect(range)
-          ->(corrector) { corrector.remove(range) }
+        def correct(range)
+          return :uncorrected unless autocorrect?
+
+          if range.source.end_with?('=')
+            align_equal_sign(range)
+          else
+            correction { |corrector| corrector.remove(range) }
+          end
+          :corrected
+        end
+
+        def support_autocorrect?
+          true
         end
 
         private
+
+        def check_assignment(token)
+          # minus 2 is because pos.line is zero-based
+          line = processed_source.lines[token.pos.line - 2]
+          return if aligned_assignment?(token.pos, line)
+
+          preceding  = @asgn_lines.include?(token.pos.line - 1)
+          align_with = preceding ? 'preceding' : 'following'
+          message    = format(MSG_UNALIGNED_ASGN, align_with)
+          add_offense(token.pos, token.pos, message)
+        end
+
+        def check_other(t1, t2, ast)
+          return if t1.pos.line != t2.pos.line
+          return if t2.pos.begin_pos - 1 <= t1.pos.end_pos
+          return if allow_for_alignment? && aligned_token?(t2)
+
+          start_pos = t1.pos.end_pos
+          return if ignored_ranges(ast).find { |r| r.include?(start_pos) }
+
+          end_pos = t2.pos.begin_pos - 1
+          range = Parser::Source::Range.new(processed_source.buffer,
+                                            start_pos, end_pos)
+          # Unary + doesn't appear as a token and needs special handling.
+          return if unary_plus_non_offense?(range)
+
+          add_offense(range, range, MSG_UNNECESSARY)
+        end
+
+        def aligned_token?(token)
+          if token.type == :tCOMMENT
+            aligned_comments?(token)
+          else
+            aligned_with_something?(token.pos)
+          end
+        end
 
         def unary_plus_non_offense?(range)
           range.resize(range.size + 1).source =~ /^ ?\+$/
@@ -57,33 +114,10 @@ module RuboCop
         def ignored_ranges(ast)
           return [] unless ast
 
-          @ignored_ranges ||= begin
-            ranges = []
-            on_node(:pair, ast) do |pair|
-              key, value = *pair
-              r = key.loc.expression.end_pos...value.loc.expression.begin_pos
-              ranges << r
-            end
-            ranges
+          @ignored_ranges ||= on_node(:pair, ast).map do |pair|
+            key, value = *pair
+            key.loc.expression.end_pos...value.loc.expression.begin_pos
           end
-        end
-
-        def allow_for_alignment?
-          cop_config['AllowForAlignment']
-        end
-
-        def aligned_with_something?(token)
-          return aligned_comments?(token) if token.type == :tCOMMENT
-
-          pre = (token.pos.line - 2).downto(0)
-          post = token.pos.line.upto(processed_source.lines.size - 1)
-          return true if aligned_with?(pre, token) || aligned_with?(post, token)
-
-          # If no aligned token was found, search for an aligned token on the
-          # nearest line with the same indentation as the checked line.
-          base_indentation = processed_source.lines[token.pos.line - 1] =~ /\S/
-          aligned_with?(pre, token, base_indentation) ||
-            aligned_with?(post, token, base_indentation)
         end
 
         def aligned_comments?(token)
@@ -106,47 +140,57 @@ module RuboCop
           processed_source.comments[ix].loc.column
         end
 
-        # Returns true if the previous or next line, not counting empty or
-        # comment lines, contains a token that's aligned with the given
-        # token. If base_indentation is given, lines with different indentation
-        # than the base indentation are also skipped.
-        def aligned_with?(indices_to_check, token, base_indentation = nil)
-          indices_to_check.each do |ix|
-            next if comment_lines.include?(ix + 1)
-            line = processed_source.lines[ix]
-            next if line.strip.empty?
-            if base_indentation
-              indentation = line =~ /\S/
-              next if indentation != base_indentation
+        def force_equal_sign_alignment?
+          cop_config['ForceEqualSignAlignment']
+        end
+
+        def equal_sign?(token)
+          token.type == :tEQL || token.type == :tOP_ASGN
+        end
+
+        def align_equal_sign(range)
+          lines  = contiguous_assignment_lines(range)
+          tokens = @asgn_tokens.select { |t| lines.include?(t.pos.line) }
+
+          columns  = tokens.map { |t| align_column(t) }
+          align_to = columns.max
+
+          tokens.each do |token|
+            next unless @corrected.add?(token)
+            diff = align_to - token.pos.last_column
+
+            if diff > 0
+              correction { |corr| corr.insert_before(token.pos, ' ' * diff) }
+            elsif diff < 0
+              correction { |corr| corr.remove_preceding(token.pos, -diff) }
             end
-            return (aligned_words?(token, line) ||
-                    aligned_assignments?(token, line) ||
-                    aligned_same_character?(token, line))
           end
-          false # No line to check was found.
         end
 
-        def comment_lines
-          @comment_lines ||=
-            begin
-              whole_line_comments = processed_source.comments.select do |c|
-                begins_its_line?(c.loc.expression)
-              end
-              whole_line_comments.map { |c| c.loc.line }
-            end
+        def contiguous_assignment_lines(range)
+          result = [range.line]
+
+          range.line.downto(1) do |lineno|
+            @asgn_lines.include?(lineno) ? result << lineno : break
+          end
+          range.line.upto(processed_source.lines.size) do |lineno|
+            @asgn_lines.include?(lineno) ? result << lineno : break
+          end
+
+          result.sort!
         end
 
-        def aligned_words?(token, line)
-          line[token.pos.column - 1, 2] =~ /\s\S/
+        def align_column(asgn_token)
+          # if we removed unneeded spaces from the beginning of this =,
+          # what column would it end from?
+          line    = processed_source.lines[asgn_token.pos.line - 1]
+          leading = line[0...asgn_token.pos.column]
+          spaces  = leading.size - (leading =~ / *\Z/)
+          asgn_token.pos.last_column - spaces + 1
         end
 
-        def aligned_assignments?(token, line)
-          token.type == :tOP_ASGN &&
-            line[token.pos.column + token.text.length] == '='
-        end
-
-        def aligned_same_character?(token, line)
-          line[token.pos.column] == token.text.to_s[0]
+        def correction(&block)
+          @corrections << block
         end
       end
     end

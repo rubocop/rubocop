@@ -37,6 +37,12 @@
 * [#1367](https://github.com/bbatsov/rubocop/issues/1367): New `Lint/IneffectiveAccessModifier` checks for access modifiers which are erroneously applied to a singleton method, where they have no effect. ([@alexdowad][])
 * [#1614](https://github.com/bbatsov/rubocop/issues/1614): `Lint/BlockAlignment` aligns block end with splat operator when applied to a splatted method call. ([@alexdowad][])
 * [#2263](https://github.com/bbatsov/rubocop/issues/2263): Warn if `task.options = %w(--format ...)` is used when configuring `RuboCop::RakeTask`; this should be `task.formatters = ...` instead. ([@alexdowad][])
+* [#2511](https://github.com/bbatsov/rubocop/issues/2511): `--no-offense-counts` CLI option suppresses the inclusion of offense count lines in auto-generated config. ([@alexdowad][])
+* [#2504](https://github.com/bbatsov/rubocop/issues/2504): New `AllowForAlignment` config parameter for `Style/SingleSpaceBeforeFirstArg` allows the insertion of extra spaces before the first argument if it aligns it with something on the preceding or following line. ([@alexdowad][])
+* [#2478](https://github.com/bbatsov/rubocop/issues/2478): `Style/ExtraSpacing` has new `ForceEqualSignAlignment` config parameter which forces = signs on consecutive lines to be aligned, and it can auto-correct. ([@alexdowad][])
+* `Lint/BlockAlignment` aligns block end with unary operators like ~, -, or ! when such operators are applied to the method call taking the block. ([@alexdowad][])
+* [#1460](https://github.com/bbatsov/rubocop/issues/1460): `Style/Alias` supports both `prefer_alias` and `prefer_alias_method` styles. ([@alexdowad][])
+* [#1569](https://github.com/bbatsov/rubocop/issues/1569): New `ExpectMatchingDefinition` config parameter for `Style/FileName` makes it check for a class or module definition in each file which corresponds to the file name and path. ([@alexdowad][])
 
 ### Bug Fixes
 
@@ -69,6 +75,8 @@
 * [#2313](https://github.com/bbatsov/rubocop/issues/2313): `Rails/FindEach` doesn't break code which uses `order(...).each`, `limit(...).each`, and so on. ([@alexdowad][])
 * [#1938](https://github.com/bbatsov/rubocop/issues/1938): `Rails/FindBy` doesn't autocorrect `where(...).first` to `find_by`, since the returned record is often different. ([@alexdowad][])
 * [#1801](https://github.com/bbatsov/rubocop/issues/1801): `EmacsFormatter` strips newlines out of error messages, if there are any. ([@alexdowad][])
+* [#2534](https://github.com/bbatsov/rubocop/issues/2534): `Style/RescueEnsureAlignment` works on `rescue` nested inside a `class` or `module` block. ([@alexdowad][])
+* `Lint/BlockAlignment` does not refer to a block terminator as `end` when it is actually `}`. ([@alexdowad][])
 
 ### Changes
 
@@ -79,6 +87,8 @@
 * [#2322](https://github.com/bbatsov/rubocop/issues/2322): Output of --auto-gen-config shows content of default config parameters which are Arrays; this is especially useful for SupportedStyles. ([@alexdowad][])
 * [#1566](https://github.com/bbatsov/rubocop/issues/1566): When autocorrecting on Windows, line endings are not converted to "\r\n" in untouched portions of the source files; corrected portions may use "\n" rather than "\r\n". ([@alexdowad][])
 * New `rake repl` task can be used for experimentation when working on RuboCop. ([@alexdowad][])
+* `Lint/SpaceBeforeFirstArg` cop has been removed, since it just duplicates `Style/SingleSpaceBeforeFirstArg`. ([@alexdowad][])
+* `Style/SingleSpaceBeforeFirstArg` cop has been renamed to `Style/SpaceBeforeFirstArg`, which more accurately reflects what it now does. ([@alexdowad][])
 
 ## 0.35.1 (10/11/2015)
 

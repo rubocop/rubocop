@@ -29,6 +29,8 @@ module RuboCop
         @exclude_limit = (
           @exclude_limit_option ||
           RuboCop::Options::DEFAULT_MAXIMUM_EXCLUSION_ITEMS).to_i
+        @show_offense_counts =
+          !file_info.fetch(:cli_options, {})[:no_offense_counts]
       end
 
       def file_finished(file, offenses)
@@ -64,7 +66,7 @@ module RuboCop
       end
 
       def output_cop_comments(output, cfg, cop_name, offense_count)
-        output.puts "# Offense count: #{offense_count}"
+        output.puts "# Offense count: #{offense_count}" if @show_offense_counts
         if COPS[cop_name] && COPS[cop_name].first.new.support_autocorrect?
           output.puts '# Cop supports --auto-correct.'
         end

@@ -183,7 +183,9 @@ describe RuboCop::Cop::Style::ExtraSpacing, :config do
   }
 
   context 'when AllowForAlignment is true' do
-    let(:cop_config) { { 'AllowForAlignment' => true } }
+    let(:cop_config) do
+      { 'AllowForAlignment' => true, 'ForceEqualSignAlignment' => false }
+    end
 
     include_examples 'common behavior'
 
@@ -200,7 +202,9 @@ describe RuboCop::Cop::Style::ExtraSpacing, :config do
   end
 
   context 'when AllowForAlignment is false' do
-    let(:cop_config) { { 'AllowForAlignment' => false } }
+    let(:cop_config) do
+      { 'AllowForAlignment' => false, 'ForceEqualSignAlignment' => false }
+    end
 
     include_examples 'common behavior'
 
@@ -213,6 +217,107 @@ describe RuboCop::Cop::Style::ExtraSpacing, :config do
           end
         end
       end
+    end
+  end
+
+  context 'when ForceEqualSignAlignment is true' do
+    let(:cop_config) do
+      { 'AllowForAlignment' => true, 'ForceEqualSignAlignment' => true }
+    end
+
+    it 'registers an offense if consecutive assignments are not aligned' do
+      inspect_source(cop, ['a = 1',
+                           'bb = 2',
+                           'ccc = 3'])
+      expect(cop.offenses.size).to eq(3)
+      expect(cop.messages).to eq(
+        ['`=` is not aligned with the following assignment.',
+         '`=` is not aligned with the preceding assignment.',
+         '`=` is not aligned with the preceding assignment.'])
+    end
+
+    it 'does not register an offense if assignments are separated by blanks' do
+      inspect_source(cop, ['a = 1',
+                           '',
+                           'bb = 2',
+                           '',
+                           'ccc = 3'])
+      expect(cop.offenses.size).to eq(0)
+    end
+
+    it 'does not register an offense if assignments are aligned' do
+      inspect_source(cop, ['a   = 1',
+                           'bb  = 2',
+                           'ccc = 3'])
+      expect(cop.offenses.size).to eq(0)
+    end
+
+    it 'autocorrects consecutive assignments which are not aligned' do
+      new_source = autocorrect_source(cop, ['a = 1',
+                                            'bb = 2',
+                                            'ccc = 3',
+                                            '',
+                                            'abcde        = 1',
+                                            'a                 = 2',
+                                            'abc = 3'])
+      expect(new_source).to eq(['a   = 1',
+                                'bb  = 2',
+                                'ccc = 3',
+                                '',
+                                'abcde = 1',
+                                'a     = 2',
+                                'abc   = 3'].join("\n"))
+    end
+
+    it 'autocorrects consecutive operator assignments which are not aligned' do
+      new_source = autocorrect_source(cop, ['a += 1',
+                                            'bb = 2',
+                                            'ccc <<= 3',
+                                            '',
+                                            'abcde        = 1',
+                                            'a                 *= 2',
+                                            'abc ||= 3'])
+      expect(new_source).to eq(['a    += 1',
+                                'bb    = 2',
+                                'ccc <<= 3',
+                                '',
+                                'abcde = 1',
+                                'a    *= 2',
+                                'abc ||= 3'].join("\n"))
+    end
+
+    it 'autocorrects consecutive aref assignments which are not aligned' do
+      new_source = autocorrect_source(cop, ['a[1] = 1',
+                                            'bb[2,3] = 2',
+                                            'ccc[:key] = 3',
+                                            '',
+                                            'abcde[0]        = 1',
+                                            'a                 = 2',
+                                            'abc += 3'])
+      expect(new_source).to eq(['a[1]      = 1',
+                                'bb[2,3]   = 2',
+                                'ccc[:key] = 3',
+                                '',
+                                'abcde[0] = 1',
+                                'a        = 2',
+                                'abc     += 3'].join("\n"))
+    end
+
+    it 'autocorrects consecutive attribute assignments which are not aligned' do
+      new_source = autocorrect_source(cop, ['a.attr = 1',
+                                            'bb &&= 2',
+                                            'ccc.s = 3',
+                                            '',
+                                            'abcde.blah        = 1',
+                                            'a.attribute_name              = 2',
+                                            'abc[1] = 3'])
+      expect(new_source).to eq(['a.attr = 1',
+                                'bb   &&= 2',
+                                'ccc.s  = 3',
+                                '',
+                                'abcde.blah       = 1',
+                                'a.attribute_name = 2',
+                                'abc[1]           = 3'].join("\n"))
     end
   end
 end

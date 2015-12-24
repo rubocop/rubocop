@@ -72,6 +72,12 @@ Style/AccessModifierIndentation:
     - outdent
     - indent
 
+Style/Alias:
+  EnforcedStyle: prefer_alias
+  SupportedStyles:
+    - prefer_alias
+    - prefer_alias_method
+
 # Align the elements of a hash literal if they span more than one line.
 Style/AlignHash:
   # Alignment of entries using hash rocket as separator. Valid values are:
@@ -408,11 +414,18 @@ Style/ExtraSpacing:
   # things with the previous or next line, not counting empty lines or comment
   # lines.
   AllowForAlignment: true
+  # When true, forces the alignment of = in assignments on consecutive lines.
+  ForceEqualSignAlignment: false
 
 Style/FileName:
   # File names listed in AllCops:Include are excluded by default. Add extra
   # excludes here.
   Exclude: []
+  # When true, requires that each source file should define a class or module
+  # with a name which matches the file name (converted to ... case).
+  # It further expects it to be nested inside modules which match the names
+  # of subdirectories in its path.
+  ExpectMatchingDefinition: false
 
   # With `IgnoreExecutableScripts` set to `true`, this cop does not
   # report offending filenames for executable scripts (i.e. source
@@ -661,6 +674,12 @@ Style/SingleLineBlockParams:
 
 Style/SingleLineMethods:
   AllowIfMethodIsEmpty: true
+
+Style/SpaceBeforeFirstArg:
+  # When true, allows most uses of extra spacing if the intent is to align
+  # things with the previous or next line, not counting empty lines or comment
+  # lines.
+  AllowForAlignment: true
 
 Style/SpecialGlobalVars:
   EnforcedStyle: use_english_names

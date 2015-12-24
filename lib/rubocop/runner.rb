@@ -16,7 +16,7 @@ module RuboCop
     end
 
     attr_reader :errors, :warnings, :aborting
-    alias_method :aborting?, :aborting
+    alias aborting? aborting
 
     def initialize(options, config_store)
       @options = options

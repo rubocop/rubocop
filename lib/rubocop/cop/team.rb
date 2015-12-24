@@ -6,7 +6,7 @@ module RuboCop
     class Team
       attr_reader :errors, :warnings, :updated_source_file
 
-      alias_method :updated_source_file?, :updated_source_file
+      alias updated_source_file? updated_source_file
 
       def initialize(cop_classes, config, options = nil)
         @cop_classes = cop_classes
