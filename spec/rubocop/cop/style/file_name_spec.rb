@@ -12,7 +12,9 @@ describe RuboCop::Cop::Style::FileName do
       '/some/.rubocop.yml'
     )
   end
-  let(:cop_config) { { 'IgnoreExecutableScripts' => true } }
+  let(:cop_config) do
+    { 'IgnoreExecutableScripts' => true, 'ExpectMatchingDefinition' => false }
+  end
 
   let(:includes) { [] }
   let(:source) { ['print 1'] }
@@ -98,6 +100,124 @@ describe RuboCop::Cop::Style::FileName do
       it 'does not report an offense' do
         expect(cop.offenses).to be_empty
       end
+    end
+  end
+
+  context 'when ExpectMatchingDefinition is true' do
+    let(:cop_config) do
+      { 'IgnoreExecutableScripts' => true, 'ExpectMatchingDefinition' => true }
+    end
+
+    context 'on a file which defines no class or module at all' do
+      %w(lib src test spec).each do |dir|
+        context "under #{dir}" do
+          let(:filename) { "/some/dir/#{dir}/file/test_case.rb" }
+
+          it 'registers an offense' do
+            expect(cop.offenses.size).to eq(1)
+            expect(cop.messages).to eq(['test_case.rb should define a class ' \
+                                        'or module called `File::TestCase`.'])
+          end
+        end
+      end
+
+      context 'under some other random directory' do
+        let(:filename) { '/some/other/dir/test_case.rb' }
+
+        it 'registers an offense' do
+          expect(cop.offenses.size).to eq(1)
+          expect(cop.messages).to eq(['test_case.rb should define a class ' \
+                                      'or module called `TestCase`.'])
+        end
+      end
+    end
+
+    shared_examples 'matching module or class' do
+      %w(lib src test spec).each do |dir|
+        context "in a matching directory under #{dir}" do
+          let(:filename) { "/some/dir/#{dir}/a/b.rb" }
+
+          it 'does not register an offense' do
+            expect(cop.offenses).to be_empty
+          end
+        end
+
+        context "in a non-matching directory under #{dir}" do
+          let(:filename) { "/some/dir/#{dir}/c/b.rb" }
+
+          it 'registers an offense' do
+            expect(cop.offenses.size).to eq(1)
+            expect(cop.messages).to eq(['b.rb should define a class ' \
+                                        'or module called `C::B`.'])
+          end
+        end
+      end
+
+      context 'in a directory elsewhere which only matches the module name' do
+        let(:filename) { '/some/dir/b.rb' }
+
+        it 'does not register an offense' do
+          expect(cop.offenses).to be_empty
+        end
+      end
+
+      context 'in a directory elsewhere which does not match the module name' do
+        let(:filename) { '/some/dir/e.rb' }
+
+        it 'registers an offense' do
+          expect(cop.offenses.size).to eq(1)
+          expect(cop.messages).to eq(['e.rb should define a class ' \
+                                      'or module called `E`.'])
+        end
+      end
+    end
+
+    context 'on a file which defines a nested module' do
+      let(:source) do
+        ['module A',
+         '  module B',
+         '  end',
+         'end']
+      end
+
+      include_examples 'matching module or class'
+    end
+
+    context 'on a file which defines a nested class' do
+      let(:source) do
+        ['module A',
+         '  class B',
+         '  end',
+         'end']
+      end
+
+      include_examples 'matching module or class'
+    end
+
+    context 'on a file which uses Name::Spaced::Module syntax' do
+      let(:source) do
+        ['begin',
+         '  module A::B',
+         '  end',
+         'end']
+      end
+
+      include_examples 'matching module or class'
+    end
+
+    context 'on a file which defines multiple classes' do
+      let(:source) do
+        ['class X',
+         'end',
+         'module M',
+         'end',
+         'class A',
+         '  class B',
+         '  end',
+         'end']
+      end
+
+      include_examples 'matching module or class'
     end
   end
 end
