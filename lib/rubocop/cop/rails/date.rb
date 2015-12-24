@@ -40,8 +40,8 @@ module RuboCop
 
         MSG = 'Do not use `%s` without zone. Use `%s` instead.'
 
-        MSG_SEND =  'Do not use `%s` on Date objects, ' \
-                    'because they know nothing about the time zone in use.'
+        MSG_SEND = 'Do not use `%s` on Date objects, ' \
+                   'because they know nothing about the time zone in use.'
 
         BAD_DAYS = [:today, :current, :yesterday, :tomorrow]
 

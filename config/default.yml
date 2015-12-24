@@ -757,9 +757,10 @@ Style/SpaceAroundEqualsInParameterDefault:
     - no_space
 
 Style/SpaceAroundOperators:
-  MultiSpaceAllowedForOperators:
-    - '='
-    - '=>'
+  # When true, allows most uses of extra spacing if the intent is to align
+  # with an operator on the previous or next line, not counting empty lines
+  # or comment lines.
+  AllowForAlignment: true
 
 Style/SpaceBeforeBlockBraces:
   EnforcedStyle: space

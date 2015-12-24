@@ -935,8 +935,7 @@ describe RuboCop::CLI, :isolated_environment do
                   '',
                   '# Offense count: 1',
                   '# Cop supports --auto-correct.',
-                  '# Configuration parameters: MultiSpaceAllowedForOperators.',
-                  '# MultiSpaceAllowedForOperators: =, =>',
+                  '# Configuration parameters: AllowForAlignment.',
                   'Style/SpaceAroundOperators:',
                   '  Exclude:',
                   "    - 'example1.rb'",
@@ -1061,8 +1060,7 @@ describe RuboCop::CLI, :isolated_environment do
            '',
            '# Offense count: 1',
            '# Cop supports --auto-correct.',
-           '# Configuration parameters: MultiSpaceAllowedForOperators.',
-           '# MultiSpaceAllowedForOperators: =, =>',
+           '# Configuration parameters: AllowForAlignment.',
            'Style/SpaceAroundOperators:',
            '  Exclude:',
            "    - 'example1.rb'",
@@ -1144,8 +1142,7 @@ describe RuboCop::CLI, :isolated_environment do
            '',
            '# Offense count: 1',
            '# Cop supports --auto-correct.',
-           '# Configuration parameters: MultiSpaceAllowedForOperators.',
-           '# MultiSpaceAllowedForOperators: =, =>',
+           '# Configuration parameters: AllowForAlignment.',
            'Style/SpaceAroundOperators:',
            '  Exclude:',
            "    - 'example1.rb'",
@@ -1336,8 +1333,7 @@ describe RuboCop::CLI, :isolated_environment do
            "    - 'example2.rb'",
            '',
            '# Cop supports --auto-correct.',
-           '# Configuration parameters: MultiSpaceAllowedForOperators.',
-           '# MultiSpaceAllowedForOperators: =, =>',
+           '# Configuration parameters: AllowForAlignment.',
            'Style/SpaceAroundOperators:',
            '  Exclude:',
            "    - 'example1.rb'",
@@ -3018,6 +3014,19 @@ describe RuboCop::CLI, :isolated_environment do
                     '',
                     '1 file inspected, 2 offenses detected',
                     ''].join("\n"))
+        end
+      end
+
+      context 'when obsolete MultiSpaceAllowedForOperators param is used' do
+        it 'displays a warning' do
+          create_file('.rubocop.yml', ['Style/SpaceAroundOperators:',
+                                       '  MultiSpaceAllowedForOperators:',
+                                       '    - "="'])
+          expect(cli.run([])).to eq(1)
+          expect($stderr.string).to include('obsolete parameter ' \
+                                            'MultiSpaceAllowedForOperators ' \
+                                            '(for Style/SpaceAroundOperators)' \
+                                            ' found')
         end
       end
     end

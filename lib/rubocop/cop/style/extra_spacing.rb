@@ -82,7 +82,7 @@ module RuboCop
         def check_other(t1, t2, ast)
           return if t1.pos.line != t2.pos.line
           return if t2.pos.begin_pos - 1 <= t1.pos.end_pos
-          return if allow_for_alignment? && aligned_token?(t2)
+          return if allow_for_alignment? && aligned_tok?(t2)
 
           start_pos = t1.pos.end_pos
           return if ignored_ranges(ast).find { |r| r.include?(start_pos) }
@@ -96,7 +96,7 @@ module RuboCop
           add_offense(range, range, MSG_UNNECESSARY)
         end
 
-        def aligned_token?(token)
+        def aligned_tok?(token)
           if token.type == :tCOMMENT
             aligned_comments?(token)
           else

@@ -294,8 +294,15 @@ describe RuboCop::Cop::Style::SpaceAroundOperators, :config do
     end
 
     it 'registers an offense for various assignments without space' do
-      inspect_source(cop, ['x||=0', 'y&&=0', 'z*=2',
-                           '@a=0', '@@a=0', 'a,b=0', 'A=0', 'x[3]=0', '$A=0'])
+      inspect_source(cop, ['x||=0',
+                           'y&&=0',
+                           'z*=2',
+                           '@a=0',
+                           '@@a=0',
+                           'a,b=0',
+                           'A=0',
+                           'x[3]=0',
+                           '$A=0'])
       expect(cop.messages)
         .to eq(['Surrounding space missing for operator `||=`.',
                 'Surrounding space missing for operator `&&=`.',
@@ -339,29 +346,20 @@ describe RuboCop::Cop::Style::SpaceAroundOperators, :config do
   end
 
   describe 'extra space around operators' do
-    before do
-      # Don't accept multiple spaces around `=` in these tests.
-      cop_config['MultiSpaceAllowedForOperators'] = []
-    end
-
     it 'registers an offense for assignment with many spaces on either side' do
-      inspect_source(cop, ['x  = 0', 'y +=  0', 'z[0]  =  0'])
+      inspect_source(cop, ['x   = 0',
+                           'y +=   0',
+                           'z[0]  =  0'])
       expect(cop.messages)
         .to eq(['Operator `=` should be surrounded with a single space.',
                 'Operator `+=` should be surrounded with a single space.',
                 'Operator `=` should be surrounded with a single space.'])
     end
 
-    it 'accepts assignment with many spaces on either side, if so configured' do
-      cop_config['MultiSpaceAllowedForOperators'] = ['=']
-
-      inspect_source(cop, ['x  = 0', 'y +=  0', 'z[0]  =  0'])
-      expect(cop.messages)
-        .to eq(['Operator `+=` should be surrounded with a single space.'])
-    end
-
     it 'auto-corrects assignment with too many spaces on either side' do
-      new_source = autocorrect_source(cop, ['x  = 0', 'y =  0', 'z  =   0'])
+      new_source = autocorrect_source(cop, ['x  = 0',
+                                            'y =   0',
+                                            'z  =   0'])
       expect(new_source).to eq(['x = 0', 'y = 0', 'z = 0'].join("\n"))
     end
 
@@ -395,7 +393,7 @@ describe RuboCop::Cop::Style::SpaceAroundOperators, :config do
 
     def check_modifier(keyword)
       src = ["a =  1 #{keyword} condition",
-             'c =  2']
+             'c =   2']
       inspect_source(cop, src)
       expect(cop.offenses.map(&:line)).to eq([1, 2])
       expect(cop.messages).to eq(
@@ -403,11 +401,13 @@ describe RuboCop::Cop::Style::SpaceAroundOperators, :config do
 
       new_source = autocorrect_source(cop, src)
       expect(new_source)
-        .to eq(src.map { |line| line.sub(' =  ', ' = ') }.join("\n"))
+        .to eq(src.map { |line| line.sub(/\s*=\s*/, ' = ') }.join("\n"))
     end
 
     it 'registers an offense for binary operators that could be unary' do
-      inspect_source(cop, ['a -  3', 'x &  0xff', 'z +  0'])
+      inspect_source(cop, ['a -  3',
+                           'x &   0xff',
+                           'z +  0'])
       expect(cop.messages).to eq(
         ['Operator `-` should be surrounded with a single space.',
          'Operator `&` should be surrounded with a single space.',
@@ -415,7 +415,9 @@ describe RuboCop::Cop::Style::SpaceAroundOperators, :config do
     end
 
     it 'auto-corrects missing space in binary operators that could be unary' do
-      new_source = autocorrect_source(cop, ['a -  3', 'x &  0xff', 'z +  0'])
+      new_source = autocorrect_source(cop, ['a -  3',
+                                            'x &   0xff',
+                                            'z +  0'])
       expect(new_source).to eq(['a - 3', 'x & 0xff', 'z + 0'].join("\n"))
     end
 
@@ -480,9 +482,15 @@ describe RuboCop::Cop::Style::SpaceAroundOperators, :config do
     end
 
     it 'registers an offense for various assignments with too many spaces' do
-      inspect_source(cop, ['x ||=  0', 'y  &&=  0', 'z  *=   2',
-                           '@a  = 0', '@@a  = 0', 'a,b   =   0',
-                           'A  = 0', 'x[3]   = 0', '$A   =   0'])
+      inspect_source(cop, ['x ||=  0',
+                           'y  &&=  0',
+                           'z  *=   2',
+                           '@a   = 0',
+                           '@@a   = 0',
+                           'a,b    =   0',
+                           'A  = 0',
+                           'x[3]   = 0',
+                           '$A    =   0'])
       expect(cop.messages)
         .to eq(['Operator `||=` should be surrounded with a single space.',
                 'Operator `&&=` should be surrounded with a single space.',

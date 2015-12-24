@@ -112,6 +112,7 @@ module RuboCop
                               "#{loaded_path}").yellow
       end
 
+      reject_obsolete_parameters
       validate_parameter_names(valid_cop_names)
       validate_enforced_styles(valid_cop_names)
     end
@@ -206,6 +207,22 @@ module RuboCop
               "#{loaded_path}\n" \
               "Valid choices are: #{valid.join(', ')}"
         fail ValidationError, msg
+      end
+    end
+
+    def reject_obsolete_parameters
+      check_obsolete_parameter('Style/SpaceAroundOperators',
+                               'MultiSpaceAllowedForOperators',
+                               'If your intention was to allow extra spaces ' \
+                               'for alignment, please use AllowForAlignment: ' \
+                               'true instead.')
+    end
+
+    def check_obsolete_parameter(cop, parameter, alternative = nil)
+      if key?(cop) && self[cop].key?(parameter)
+        fail ValidationError, "obsolete parameter #{parameter} (for #{cop}) " \
+                              "found in #{loaded_path}" \
+                              "#{"\n" if alternative}#{alternative}"
       end
     end
   end
