@@ -98,10 +98,10 @@ module RuboCop
                                         "operator `#{op.source}`.")
           elsif excess_leading_space?(op, with_space)
             add_offense(with_space, op, "Operator `#{op.source}` should be " \
-                                        'surrounded with a single space.')
+                                        'surrounded by a single space.')
           elsif excess_trailing_space?(right_operand, with_space)
             add_offense(with_space, op, "Operator `#{op.source}` should be " \
-                                        'surrounded with a single space.')
+                                        'surrounded by a single space.')
           end
         end
 

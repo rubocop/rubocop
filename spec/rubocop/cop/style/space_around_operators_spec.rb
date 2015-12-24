@@ -351,9 +351,9 @@ describe RuboCop::Cop::Style::SpaceAroundOperators, :config do
                            'y +=   0',
                            'z[0]  =  0'])
       expect(cop.messages)
-        .to eq(['Operator `=` should be surrounded with a single space.',
-                'Operator `+=` should be surrounded with a single space.',
-                'Operator `=` should be surrounded with a single space.'])
+        .to eq(['Operator `=` should be surrounded by a single space.',
+                'Operator `+=` should be surrounded by a single space.',
+                'Operator `=` should be surrounded by a single space.'])
     end
 
     it 'auto-corrects assignment with too many spaces on either side' do
@@ -366,8 +366,8 @@ describe RuboCop::Cop::Style::SpaceAroundOperators, :config do
     it 'registers an offense for ternary operator with too many spaces' do
       inspect_source(cop, 'x == 0  ? 1 :  2')
       expect(cop.messages).to eq(
-        ['Operator `?` should be surrounded with a single space.',
-         'Operator `:` should be surrounded with a single space.'])
+        ['Operator `?` should be surrounded by a single space.',
+         'Operator `:` should be surrounded by a single space.'])
     end
 
     it 'auto-corrects a ternary operator too many spaces' do
@@ -397,7 +397,7 @@ describe RuboCop::Cop::Style::SpaceAroundOperators, :config do
       inspect_source(cop, src)
       expect(cop.offenses.map(&:line)).to eq([1, 2])
       expect(cop.messages).to eq(
-        ['Operator `=` should be surrounded with a single space.'] * 2)
+        ['Operator `=` should be surrounded by a single space.'] * 2)
 
       new_source = autocorrect_source(cop, src)
       expect(new_source)
@@ -409,9 +409,9 @@ describe RuboCop::Cop::Style::SpaceAroundOperators, :config do
                            'x &   0xff',
                            'z +  0'])
       expect(cop.messages).to eq(
-        ['Operator `-` should be surrounded with a single space.',
-         'Operator `&` should be surrounded with a single space.',
-         'Operator `+` should be surrounded with a single space.'])
+        ['Operator `-` should be surrounded by a single space.',
+         'Operator `&` should be surrounded by a single space.',
+         'Operator `+` should be surrounded by a single space.'])
     end
 
     it 'auto-corrects missing space in binary operators that could be unary' do
@@ -424,7 +424,7 @@ describe RuboCop::Cop::Style::SpaceAroundOperators, :config do
     it 'registers an offense for arguments to a method' do
       inspect_source(cop, 'puts 1 +  2')
       expect(cop.messages).to eq(
-        ['Operator `+` should be surrounded with a single space.'])
+        ['Operator `+` should be surrounded by a single space.'])
     end
 
     it 'auto-corrects missing space in arguments to a method' do
@@ -437,18 +437,18 @@ describe RuboCop::Cop::Style::SpaceAroundOperators, :config do
                      ['x +=  a  + b -  c  * d /  e  % f  ^ g   | h &  i  ||  j',
                       'y  -=  k   &&        l'])
       expect(cop.messages)
-        .to eq(['Operator `+=` should be surrounded with a single space.',
-                'Operator `+` should be surrounded with a single space.',
-                'Operator `-` should be surrounded with a single space.',
-                'Operator `*` should be surrounded with a single space.',
-                'Operator `/` should be surrounded with a single space.',
-                'Operator `%` should be surrounded with a single space.',
-                'Operator `^` should be surrounded with a single space.',
-                'Operator `|` should be surrounded with a single space.',
-                'Operator `&` should be surrounded with a single space.',
-                'Operator `||` should be surrounded with a single space.',
-                'Operator `-=` should be surrounded with a single space.',
-                'Operator `&&` should be surrounded with a single space.'])
+        .to eq(['Operator `+=` should be surrounded by a single space.',
+                'Operator `+` should be surrounded by a single space.',
+                'Operator `-` should be surrounded by a single space.',
+                'Operator `*` should be surrounded by a single space.',
+                'Operator `/` should be surrounded by a single space.',
+                'Operator `%` should be surrounded by a single space.',
+                'Operator `^` should be surrounded by a single space.',
+                'Operator `|` should be surrounded by a single space.',
+                'Operator `&` should be surrounded by a single space.',
+                'Operator `||` should be surrounded by a single space.',
+                'Operator `-=` should be surrounded by a single space.',
+                'Operator `&&` should be surrounded by a single space.'])
     end
 
     it 'auto-corrects missing space' do
@@ -464,21 +464,21 @@ describe RuboCop::Cop::Style::SpaceAroundOperators, :config do
     it 'registers an offense for a setter call with too many spaces' do
       inspect_source(cop, 'x.y  =  2')
       expect(cop.messages).to eq(
-        ['Operator `=` should be surrounded with a single space.'])
+        ['Operator `=` should be surrounded by a single space.'])
     end
 
     it 'registers an offense for a hash rocket with too many spaces' do
       inspect_source(cop, '{ 1  =>   2, a: b }')
       expect(cop.messages).to eq(
-        ['Operator `=>` should be surrounded with a single space.'])
+        ['Operator `=>` should be surrounded by a single space.'])
     end
 
     it 'registers an offense for match operators with too many spaces' do
       inspect_source(cop, ['x  =~ /abc/',
                            'y !~   /abc/'])
       expect(cop.messages)
-        .to eq(['Operator `=~` should be surrounded with a single space.',
-                'Operator `!~` should be surrounded with a single space.'])
+        .to eq(['Operator `=~` should be surrounded by a single space.',
+                'Operator `!~` should be surrounded by a single space.'])
     end
 
     it 'registers an offense for various assignments with too many spaces' do
@@ -492,30 +492,30 @@ describe RuboCop::Cop::Style::SpaceAroundOperators, :config do
                            'x[3]   = 0',
                            '$A    =   0'])
       expect(cop.messages)
-        .to eq(['Operator `||=` should be surrounded with a single space.',
-                'Operator `&&=` should be surrounded with a single space.',
-                'Operator `*=` should be surrounded with a single space.',
-                'Operator `=` should be surrounded with a single space.',
-                'Operator `=` should be surrounded with a single space.',
-                'Operator `=` should be surrounded with a single space.',
-                'Operator `=` should be surrounded with a single space.',
-                'Operator `=` should be surrounded with a single space.',
-                'Operator `=` should be surrounded with a single space.'])
+        .to eq(['Operator `||=` should be surrounded by a single space.',
+                'Operator `&&=` should be surrounded by a single space.',
+                'Operator `*=` should be surrounded by a single space.',
+                'Operator `=` should be surrounded by a single space.',
+                'Operator `=` should be surrounded by a single space.',
+                'Operator `=` should be surrounded by a single space.',
+                'Operator `=` should be surrounded by a single space.',
+                'Operator `=` should be surrounded by a single space.',
+                'Operator `=` should be surrounded by a single space.'])
     end
 
     it 'registers an offense for equality operators with too many spaces' do
       inspect_source(cop, ['x  ==  0', 'y   != 0', 'Hash   ===   z'])
       expect(cop.messages)
-        .to eq(['Operator `==` should be surrounded with a single space.',
-                'Operator `!=` should be surrounded with a single space.',
-                'Operator `===` should be surrounded with a single space.'])
+        .to eq(['Operator `==` should be surrounded by a single space.',
+                'Operator `!=` should be surrounded by a single space.',
+                'Operator `===` should be surrounded by a single space.'])
     end
 
     it 'registers an offense for - with too many spaces with ' \
        'negative lhs operand' do
       inspect_source(cop, '-1  - arg')
       expect(cop.messages)
-        .to eq(['Operator `-` should be surrounded with a single space.'])
+        .to eq(['Operator `-` should be surrounded by a single space.'])
     end
 
     it 'registers an offense for inheritance < with too many spaces' do
@@ -523,7 +523,7 @@ describe RuboCop::Cop::Style::SpaceAroundOperators, :config do
                      ['class ShowSourceTestClass  <  ShowSourceTestSuperClass',
                       'end'])
       expect(cop.messages)
-        .to eq(['Operator `<` should be surrounded with a single space.'])
+        .to eq(['Operator `<` should be surrounded by a single space.'])
     end
 
     it 'registers an offense for hash rocket with too many spaces at rescue' do
@@ -531,7 +531,7 @@ describe RuboCop::Cop::Style::SpaceAroundOperators, :config do
                            'rescue Exception   =>      e',
                            'end'])
       expect(cop.messages)
-        .to eq(['Operator `=>` should be surrounded with a single space.'])
+        .to eq(['Operator `=>` should be surrounded by a single space.'])
     end
   end
 end
