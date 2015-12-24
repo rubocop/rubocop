@@ -51,6 +51,7 @@
 * [#2472](https://github.com/bbatsov/rubocop/pull/2472): New cop `Style/MultilineArrayBraceLayout` checks that the closing brace in an array literal is symmetrical with respect to the opening brace and the array elements. ([@panthomakos][])
 * [#1543](https://github.com/bbatsov/rubocop/issues/1543): `Style/WordArray` has both `percent` and `brackets` (which enforces the use of bracketed arrays for strings) styles. ([@alexdowad][])
 * `Style/SpaceAroundOperators` has `AllowForAlignment` config parameter which allows extra spaces on the left if they serve to align the operator with another. ([@alexdowad][])
+* `Style/SymbolArray` has both `percent` and `brackets` (which enforces the user of bracketed arrays for symbols) styles. ([@alexdowad][])
 
 ### Bug Fixes
 
