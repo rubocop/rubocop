@@ -72,6 +72,12 @@ Style/AccessModifierIndentation:
     - outdent
     - indent
 
+Style/Alias:
+  EnforcedStyle: prefer_alias
+  SupportedStyles:
+    - prefer_alias
+    - prefer_alias_method
+
 # Align the elements of a hash literal if they span more than one line.
 Style/AlignHash:
   # Alignment of entries using hash rocket as separator. Valid values are:

@@ -20,8 +20,8 @@ module RuboCop
       attr_writer :root_level # The upwards search is stopped at this level.
       attr_writer :default_configuration
 
-      alias_method :debug?, :debug
-      alias_method :auto_gen_config?, :auto_gen_config
+      alias debug? debug
+      alias auto_gen_config? auto_gen_config
 
       def load_file(path)
         path = File.absolute_path(path)

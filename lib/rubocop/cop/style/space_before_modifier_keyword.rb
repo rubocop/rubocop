@@ -15,8 +15,8 @@ module RuboCop
           left_of_kw = Parser::Source::Range.new(kw.source_buffer, b - 1, b)
           add_offense(node, left_of_kw) unless left_of_kw.is?(' ')
         end
-        alias_method :on_while, :on_if
-        alias_method :on_until, :on_if
+        alias on_while on_if
+        alias on_until on_if
 
         private
 

@@ -119,7 +119,7 @@ module RuboCop
           check_indentation(base.loc, body)
         end
 
-        alias_method :on_until, :on_while
+        alias on_until on_while
 
         def on_case(node)
           _condition, *branches = *node

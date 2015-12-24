@@ -50,7 +50,7 @@ module RuboCop
           offense_node = offense_node(body)
           add_offense(offense_node, offense_location(offense_node), MSG)
         end
-        alias_method :on_until, :on_while
+        alias on_until on_while
 
         def on_for(node)
           _, _, body = *node

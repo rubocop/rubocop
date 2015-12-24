@@ -58,7 +58,7 @@ module RuboCop
           allow_self(lhs)
         end
 
-        alias_method :on_and_asgn, :on_or_asgn
+        alias on_and_asgn on_or_asgn
 
         def on_op_asgn(node)
           lhs, _op, _rhs = *node

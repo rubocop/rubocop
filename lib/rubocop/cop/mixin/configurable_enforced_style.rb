@@ -71,8 +71,8 @@ module RuboCop
         end
       end
 
-      alias_method :conflicting_styles_detected, :no_acceptable_style!
-      alias_method :unrecognized_style_detected, :no_acceptable_style!
+      alias conflicting_styles_detected no_acceptable_style!
+      alias unrecognized_style_detected no_acceptable_style!
 
       def style
         s = cop_config[parameter_name]
