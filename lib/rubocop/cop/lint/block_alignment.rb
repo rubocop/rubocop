@@ -12,7 +12,7 @@ module RuboCop
       #     i
       #   end
       class BlockAlignment < Cop
-        MSG = '`end` at %d, %d is not aligned with `%s` at %d, %d%s.'
+        MSG = '`%s` at %d, %d is not aligned with `%s` at %d, %d%s.'
 
         def on_block(node)
           check_block_alignment(start_for_block_node(node), node)
@@ -67,7 +67,7 @@ module RuboCop
 
           add_offense(block_node,
                       end_loc,
-                      format(MSG, end_loc.line, end_loc.column,
+                      format(MSG, end_loc.source, end_loc.line, end_loc.column,
                              start_loc.source.lines.to_a.first.chomp,
                              start_loc.line, start_loc.column,
                              alt_start_msg(match, start_loc, do_loc,

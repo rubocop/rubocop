@@ -74,6 +74,7 @@
 * [#1938](https://github.com/bbatsov/rubocop/issues/1938): `Rails/FindBy` doesn't autocorrect `where(...).first` to `find_by`, since the returned record is often different. ([@alexdowad][])
 * [#1801](https://github.com/bbatsov/rubocop/issues/1801): `EmacsFormatter` strips newlines out of error messages, if there are any. ([@alexdowad][])
 * [#2534](https://github.com/bbatsov/rubocop/issues/2534): `Style/RescueEnsureAlignment` works on `rescue` nested inside a `class` or `module` block. ([@alexdowad][])
+* `Lint/BlockAlignment` does not refer to a block terminator as `end` when it is actually `}`. ([@alexdowad][])
 
 ### Changes
 

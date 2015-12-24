@@ -657,4 +657,15 @@ describe RuboCop::Cop::Lint::BlockAlignment do
       expect(new_source).to eq(corrected.join("\n"))
     end
   end
+
+  context 'when the block is terminated by }' do
+    it 'mentions } (not end) in the message' do
+      inspect_source(cop,
+                     ['test {',
+                      '  }'
+                     ])
+      expect(cop.messages)
+        .to eq(['`}` at 2, 2 is not aligned with `test {` at 1, 0.'])
+    end
+  end
 end
