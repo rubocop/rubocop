@@ -475,8 +475,11 @@ module RuboCop
 
     def initialize(str)
       compiler = Compiler.new(str)
-      src = 'def match(node0' << compiler.emit_trailing_params << ');' <<
-            compiler.emit_method_code << 'end'
+      src = 'def match(node0' <<
+            compiler.emit_trailing_params <<
+            ');' <<
+            compiler.emit_method_code <<
+            'end'
       instance_eval(src)
     end
   end
