@@ -161,8 +161,25 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
     expect(cop.offenses).to be_empty
   end
 
-  it 'ignores dynamic widths' do
+  it 'accepts an extra argument for dynamic width' do
     inspect_source(cop, 'format("%*d", max_width, id)')
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'registers an offense if extra argument for dynamic width not given' do
+    inspect_source(cop, 'format("%*d", id)')
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.messages).to eq(["Number of arguments (1) to `format` doesn't " \
+                                'match the number of fields (2).'])
+  end
+
+  it 'accepts an extra arg for dynamic width with other preceding flags' do
+    inspect_source(cop, 'format("%0*x", max_width, id)')
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'accepts an extra arg for dynamic width with other following flags' do
+    inspect_source(cop, 'format("%*0x", max_width, id)')
     expect(cop.offenses).to be_empty
   end
 
@@ -287,5 +304,7 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
       .to eq(1)
     expect('%+g:% g:%-g'.scan(described_class::FIELD_REGEX).size)
       .to eq(3)
+    expect('%+-d'.scan(described_class::FIELD_REGEX).size) # multiple flags
+      .to eq(1)
   end
 end
