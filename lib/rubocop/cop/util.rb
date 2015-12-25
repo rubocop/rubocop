@@ -173,6 +173,35 @@ module RuboCop
         size = 0 if size < 0
         size
       end
+
+      # If converting a string to Ruby string literal source code, must
+      # double quotes be used?
+      def double_quotes_required?(string)
+        # Double quotes are required for strings which either:
+        # - Contain single quotes
+        # - Contain non-printable characters, which must use an escape
+
+        # Regex matches IF there is a ' or there is a \\ in the string that is
+        # not preceded/followed by another \\ (e.g. "\\x34") but not "\\\\".
+        string.inspect =~ /'|(?<! \\) \\{2}* \\ (?![\\"])/x
+      end
+
+      # If double quoted string literals are found in Ruby code, and they are
+      # not the preferred style, should they be flagged?
+      def double_quotes_acceptable?(string)
+        # If a string literal contains hard-to-type characters which would
+        # not appear on a "normal" keyboard, then double-quotes are acceptable
+        double_quotes_required?(string) ||
+          string.codepoints.any? { |cp| cp < 32 || cp > 126 }
+      end
+
+      def to_string_literal(string)
+        if double_quotes_required?(string)
+          string.inspect
+        else
+          "'#{string.gsub('\\') { '\\\\' }}'"
+        end
+      end
     end
   end
 end

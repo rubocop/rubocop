@@ -45,23 +45,9 @@ module RuboCop
 
             lambda do |corrector|
               new_source = receiver.source + '.start_with?(' +
-                           escape(regex_str) + ')'
+                           to_string_literal(regex_str) + ')'
               corrector.replace(node.loc.expression, new_source)
             end
-          end
-        end
-
-        def require_double_quotes?(string)
-          string.inspect.include?(SINGLE_QUOTE) ||
-            StringHelp::ESCAPED_CHAR_REGEXP =~ string ||
-            string =~ /[\n\t]/
-        end
-
-        def escape(string)
-          if require_double_quotes?(string)
-            string.inspect
-          else
-            "'#{string}'"
           end
         end
       end

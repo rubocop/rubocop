@@ -64,7 +64,7 @@ module RuboCop
             corrector.replace(node.loc.selector, replacement_method)
             unless first_param.str_type?
               corrector.replace(first_param.loc.expression,
-                                escape(first_source))
+                                to_string_literal(first_source))
             end
 
             if second_source.empty? && first_source.length == 1
@@ -154,19 +154,6 @@ module RuboCop
 
         def bang_method?(method)
           method.to_s.end_with?(BANG)
-        end
-
-        def escape(string)
-          if require_double_quotes?(string)
-            string.inspect
-          else
-            "'#{string}'"
-          end
-        end
-
-        def require_double_quotes?(string)
-          string.inspect.include?(SINGLE_QUOTE) ||
-            StringHelp::ESCAPED_CHAR_REGEXP =~ string
         end
 
         def method_suffix(node)

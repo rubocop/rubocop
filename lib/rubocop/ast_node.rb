@@ -49,6 +49,7 @@ module Astrolabe
     def_matcher :method_args, '{(send _ _ $...) (block (send _ _ $...) ...)}'
     # Note: for masgn, #asgn_rhs will be an array node
     def_matcher :asgn_rhs, '[assignment? (... $_)]'
+    def_matcher :str_content, '(str $_)'
 
     def const_name
       return unless const_type?

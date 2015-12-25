@@ -1371,7 +1371,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
     let(:source) do
       [
         'def some_method',
-        "  /(?<foo>\w+)/ =~ 'FOO'",
+        "  /(?<foo>\\w+)/ =~ 'FOO'",
         'end'
       ]
     end
@@ -1382,7 +1382,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
       expect(cop.offenses.first.message)
         .to eq('Useless assignment to variable - `foo`.')
       expect(cop.offenses.first.line).to eq(2)
-      expect(cop.highlights).to eq(["/(?<foo>\w+)/"])
+      expect(cop.highlights).to eq(['/(?<foo>\w+)/'])
     end
 
     # MRI 2.0 accepts this case, but I have no idea why it does so
@@ -1411,7 +1411,7 @@ describe RuboCop::Cop::Lint::UselessAssignment do
       [
         'def some_method',
         "  foo = 'some string'",
-        "  /(?<foo>\w+)/ =~ foo",
+        '  /(?<foo>\w+)/ =~ foo',
         '  puts foo',
         'end'
       ]
