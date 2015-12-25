@@ -23,15 +23,18 @@ module Astrolabe
     VARIABLES = [:ivar, :gvar, :cvar, :lvar].freeze
     REFERENCES = [:nth_ref, :back_ref].freeze
 
-    # def_matcher can be used to define a pattern-matching method on Node:
+    # def_matcher can be used to define a pattern-matching method on Node
     class << self
-      extend RuboCop::NodePattern::Macros
+      def def_matcher(method_name, pattern_str)
+        compiler = RuboCop::NodePattern::Compiler.new(pattern_str, 'self')
+        src = "def #{method_name}(" <<
+              compiler.emit_param_list <<
+              ');' <<
+              compiler.emit_method_code <<
+              ';end'
 
-      # define both Node.method_name(node), and also node.method_name
-      def def_matcher(method_name, pattern)
-        filename, lineno = *caller.first.split(':')
-        singleton_class.def_node_matcher(method_name, pattern, filename, lineno)
-        class_eval("def #{method_name}; Node.#{method_name}(self); end")
+        file, lineno = *caller.first.split(':')
+        class_eval(src, file, lineno.to_i)
       end
     end
 

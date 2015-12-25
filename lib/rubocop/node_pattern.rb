@@ -420,7 +420,7 @@ module RuboCop
       # yield to the block (passing any captures as block arguments).
       # If the node matches, and no block is provided, the new method will
       # return the captures, or `true` if there were none.
-      def def_node_matcher(method_name, pattern_str, file = nil, lineno = nil)
+      def def_node_matcher(method_name, pattern_str)
         compiler = RuboCop::NodePattern::Compiler.new(pattern_str, 'node')
         src = "def #{method_name}(node" <<
               compiler.emit_trailing_params <<
@@ -428,7 +428,7 @@ module RuboCop
               compiler.emit_method_code <<
               ';end'
 
-        file, lineno = *caller.first.split(':') unless file && lineno
+        file, lineno = *caller.first.split(':')
         class_eval(src, file, lineno.to_i)
       end
 
