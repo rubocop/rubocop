@@ -28,8 +28,9 @@ module Astrolabe
       extend RuboCop::NodePattern::Macros
 
       # define both Node.method_name(node), and also node.method_name
-      def def_matcher(method_name, pattern_str)
-        singleton_class.def_node_matcher method_name, pattern_str
+      def def_matcher(method_name, pattern)
+        filename, lineno = *caller.first.split(':')
+        singleton_class.def_node_matcher(method_name, pattern, filename, lineno)
         class_eval("def #{method_name}; Node.#{method_name}(self); end")
       end
     end
