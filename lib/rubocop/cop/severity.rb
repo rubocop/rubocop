@@ -55,11 +55,11 @@ module RuboCop
 
       # @api private
       def ==(other)
-        if other.is_a?(Symbol)
-          @name == other
-        else
-          @name == other.name
-        end
+        @name == if other.is_a?(Symbol)
+                   other
+                 else
+                   other.name
+                 end
       end
 
       # @api private
