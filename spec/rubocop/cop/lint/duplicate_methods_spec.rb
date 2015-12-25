@@ -142,9 +142,9 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
                       '  end',
                       'end'], 'dups.rb')
       expect(cop.offenses.size).to eq(2)
-      expect(cop.messages).to match_array([
-        'Method `A#any_method` is defined at both dups.rb:8 and dups.rb:11.',
-        'Method `A#some_method` is defined at both dups.rb:2 and dups.rb:5.'])
+      expect(cop.messages).to match_array(
+        ['Method `A#any_method` is defined at both dups.rb:8 and dups.rb:11.',
+         'Method `A#some_method` is defined at both dups.rb:2 and dups.rb:5.'])
     end
 
     it 'registers an offense for a duplicate instance method in separate ' \
@@ -210,8 +210,8 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
                       '  end',
                       'end'], 'test.rb')
       expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq([
-        'Method `A.some_method` is defined at both test.rb:3 and test.rb:6.'])
+      expect(cop.messages).to eq(
+        ['Method `A.some_method` is defined at both test.rb:3 and test.rb:6.'])
     end
 
     it 'understands nested modules' do
@@ -231,9 +231,10 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
                       '  end',
                       'end'], 'test.rb')
       expect(cop.offenses.size).to eq(2)
-      expect(cop.messages).to eq([
-        'Method `B::A#some_method` is defined at both test.rb:3 and test.rb:6.',
-        'Method `B::A.another` is defined at both test.rb:9 and test.rb:11.'])
+      expect(cop.messages).to eq(
+        ['Method `B::A#some_method` is defined at both test.rb:3 and ' \
+         'test.rb:6.',
+         'Method `B::A.another` is defined at both test.rb:9 and test.rb:11.'])
     end
 
     it "doesn't register an offense when class << exp is used" do
@@ -283,8 +284,8 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
                     '  end',
                     'end'], 'test.rb')
     expect(cop.offenses.size).to eq(1)
-    expect(cop.messages).to eq([
-      'Method `A.some_method` is defined at both test.rb:2 and test.rb:5.'])
+    expect(cop.messages).to eq(
+      ['Method `A.some_method` is defined at both test.rb:2 and test.rb:5.'])
   end
 
   it 'ignores method definitions in RSpec `describe` blocks' do

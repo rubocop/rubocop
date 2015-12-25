@@ -367,9 +367,8 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
     it 'registers an offense for multi-line chained do-end blocks' do
       inspect_source(cop, ['each do |x|',
                            'end.map(&:to_s)'])
-      expect(cop.messages)
-        .to eq([
-          'Prefer `{...}` over `do...end` for multi-line chained blocks.'])
+      expect(cop.messages).to eq(
+        ['Prefer `{...}` over `do...end` for multi-line chained blocks.'])
     end
 
     it 'auto-corrects do-end for chained blocks' do

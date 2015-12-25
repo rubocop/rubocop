@@ -25,10 +25,10 @@ describe RuboCop::Config do
     context 'when the configuration includes any unrecognized cop name' do
       before do
         create_file(configuration_path, [
-          'LyneLenth:',
-          '  Enabled: true',
-          '  Max: 100'
-        ])
+                      'LyneLenth:',
+                      '  Enabled: true',
+                      '  Max: 100'
+                    ])
       end
 
       it 'raises validation error' do
@@ -53,9 +53,9 @@ describe RuboCop::Config do
     context 'when the configuration is in the base RuboCop config folder' do
       before do
         create_file(configuration_path, [
-          'InvalidProperty:',
-          '  Enabled: true'
-        ])
+                      'InvalidProperty:',
+                      '  Enabled: true'
+                    ])
         stub_const('RuboCop::ConfigLoader::RUBOCOP_HOME', rubocop_home_path)
       end
 
@@ -70,10 +70,10 @@ describe RuboCop::Config do
     context 'when the configuration includes any unrecognized parameter' do
       before do
         create_file(configuration_path, [
-          'Metrics/LineLength:',
-          '  Enabled: true',
-          '  Min: 10'
-        ])
+                      'Metrics/LineLength:',
+                      '  Enabled: true',
+                      '  Min: 10'
+                    ])
       end
 
       it 'raises validation error' do
@@ -88,14 +88,14 @@ describe RuboCop::Config do
       # configuration, but are nonetheless allowed for any cop.
       before do
         create_file(configuration_path, [
-          'Metrics/ModuleLength:',
-          '  Exclude:',
-          '    - lib/file.rb',
-          '  Include:',
-          '    - lib/file.xyz',
-          '  Severity: warning',
-          '  StyleGuide: https://example.com/some-style.html'
-        ])
+                      'Metrics/ModuleLength:',
+                      '  Exclude:',
+                      '    - lib/file.rb',
+                      '  Include:',
+                      '    - lib/file.xyz',
+                      '  Severity: warning',
+                      '  StyleGuide: https://example.com/some-style.html'
+                    ])
       end
 
       it 'does not raise validation error' do
@@ -248,9 +248,9 @@ describe RuboCop::Config do
 
       it 'returns the Include value' do
         expect(patterns_to_include).to eq([
-          '**/Gemfile',
-          'config/unicorn.rb.example'
-        ])
+                                            '**/Gemfile',
+                                            'config/unicorn.rb.example'
+                                          ])
       end
     end
   end

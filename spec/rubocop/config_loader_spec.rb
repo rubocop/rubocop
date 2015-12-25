@@ -355,9 +355,9 @@ describe RuboCop::ConfigLoader do
 
     it 'returns a configuration loaded from the passed path' do
       create_file(configuration_path, [
-        'Style/Encoding:',
-        '  Enabled: true'
-      ])
+                    'Style/Encoding:',
+                    '  Enabled: true'
+                  ])
       configuration = load_file
       expect(configuration['Style/Encoding']).to eq(
         'Enabled' => true
@@ -380,9 +380,9 @@ describe RuboCop::ConfigLoader do
     context 'when SafeYAML is required' do
       before do
         create_file(configuration_path, [
-          'Style/WordArray:',
-          "  WordRegex: !ruby/regexp '/\\A[\\p{Word}]+\\z/'"
-        ])
+                      'Style/WordArray:',
+                      "  WordRegex: !ruby/regexp '/\\A[\\p{Word}]+\\z/'"
+                    ])
       end
 
       context 'when it is fully required' do
@@ -447,9 +447,9 @@ describe RuboCop::ConfigLoader do
     context 'when a config file which does not mention SymbolArray exists' do
       it 'is disabled' do
         create_file('.rubocop.yml', [
-          'Metrics/LineLength:',
-          '  Max: 80'
-        ])
+                      'Metrics/LineLength:',
+                      '  Max: 80'
+                    ])
         expect(config.cop_enabled?('Style/SymbolArray')).to be_falsey
       end
     end
@@ -457,9 +457,9 @@ describe RuboCop::ConfigLoader do
     context 'when a config file which explicitly enables SymbolArray exists' do
       it 'is enabled' do
         create_file('.rubocop.yml', [
-          'Style/SymbolArray:',
-          '  Enabled: true'
-        ])
+                      'Style/SymbolArray:',
+                      '  Enabled: true'
+                    ])
         expect(config.cop_enabled?('Style/SymbolArray')).to be_truthy
       end
     end

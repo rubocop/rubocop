@@ -46,9 +46,9 @@ describe RuboCop::Cop::Team do
 
     before do
       create_file(file_path, [
-        '#' * 90,
-        'puts test;'
-      ])
+                    '#' * 90,
+                    'puts test;'
+                  ])
     end
 
     it 'returns offenses' do
@@ -59,10 +59,10 @@ describe RuboCop::Cop::Team do
     context 'when Parser reports non-fatal warning for the file' do
       before do
         create_file(file_path, [
-          '# encoding: utf-8',
-          '#' * 90,
-          'puts *test'
-        ])
+                      '# encoding: utf-8',
+                      '#' * 90,
+                      'puts *test'
+                    ])
       end
 
       let(:cop_names) { offenses.map(&:cop_name) }
@@ -81,9 +81,9 @@ describe RuboCop::Cop::Team do
 
       before do
         create_file(file_path, [
-          '# encoding: utf-8',
-          'puts "string"'
-        ])
+                      '# encoding: utf-8',
+                      'puts "string"'
+                    ])
       end
 
       it 'does autocorrection' do

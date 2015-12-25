@@ -14,21 +14,21 @@ module RuboCop
 
         before do
           create_file('1_offense.rb', [
-            '# encoding: utf-8',
-            '#' * 90
-          ])
+                        '# encoding: utf-8',
+                        '#' * 90
+                      ])
 
           create_file('4_offenses.rb', [
-            '# encoding: utf-8',
-            'puts x ',
-            'test;',
-            'top;',
-            '#' * 90
-          ])
+                        '# encoding: utf-8',
+                        'puts x ',
+                        'test;',
+                        'top;',
+                        '#' * 90
+                      ])
 
           create_file('no_offense.rb', [
-            '# encoding: utf-8'
-          ])
+                        '# encoding: utf-8'
+                      ])
 
           allow(SimpleTextFormatter).to receive(:new).and_return(formatter)
           $stdout = StringIO.new

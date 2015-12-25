@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#2529](https://github.com/bbatsov/rubocop/pull/2529): Add EnforcedStyle config parameter to IndentArray. ([@jawshooah][])
 * [#2479](https://github.com/bbatsov/rubocop/pull/2479): Add option `AllowHeredoc` to `Metrics/LineLength`. ([@fphilipe][])
 * [#2416](https://github.com/bbatsov/rubocop/pull/2416): New cop `Style/ConditionalAssignment` checks for assignment of the same variable in all branches of conditionals and replaces them with a single assignment to the return of the conditional. ([@rrosenblum][])
 * [#2410](https://github.com/bbatsov/rubocop/pull/2410): New cop `Style/IndentAssignment` checks the indentation of the first line of the right-hand-side of a multi-line assignment. ([@panthomakos][])
@@ -1814,3 +1815,4 @@
 [@codebeige]: https://github.com/codebeige
 [@weh]: https://github.com/weh
 [@bfontaine]: https://github.com/bfontaine
+[@jawshooah]: https://github.com/jawshooah
