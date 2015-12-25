@@ -11,16 +11,17 @@ describe RuboCop::Cop::Performance::StartWith do
       expect(new_source).to eq "str.start_with?('abc')"
     end
 
-    it "autocorrects #{method} /\\A\\n/" do
-      new_source = autocorrect_source(cop, "str#{method} /\\A\\n/")
-      expect(new_source).to eq 'str.start_with?("\n")'
+    # escapes like "\n"
+    # note that "\b" is a literal backspace char in a double-quoted string...
+    # but in a regex, it's an anchor on a word boundary
+    %w(a e f r t v).each do |str|
+      it "autocorrects #{method} /\\A\\#{str}/" do
+        new_source = autocorrect_source(cop, "str#{method} /\\A\\#{str}/")
+        expect(new_source).to eq %{str.start_with?("\\#{str}")}
+      end
     end
 
-    it "autocorrects #{method} /\\A\\t/" do
-      new_source = autocorrect_source(cop, "str#{method} /\\A\\t/")
-      expect(new_source).to eq 'str.start_with?("\t")'
-    end
-
+    # regexp metacharacters
     %w(. * ? $ ^ |).each do |str|
       it "autocorrects #{method} /\\A\\#{str}/" do
         new_source = autocorrect_source(cop, "str#{method} /\\A\\#{str}/")
@@ -33,11 +34,32 @@ describe RuboCop::Cop::Performance::StartWith do
       end
     end
 
+    # character classes, anchors
+    %w(w W s S d D A Z z G b B).each do |str|
+      it "doesn't register an error for #{method} /\\A\\#{str}/" do
+        inspect_source(cop, "str#{method} /\\A\\#{str}/")
+        expect(cop.messages).to be_empty
+      end
+    end
+
+    # characters with no special meaning whatsoever
+    %w(h i j l m o q y).each do |str|
+      it "autocorrects #{method} /\\A\\#{str}/" do
+        new_source = autocorrect_source(cop, "str#{method} /\\A\\#{str}/")
+        expect(new_source).to eq "str.start_with?('#{str}')"
+      end
+    end
+
     it "formats the error message correctly for #{method} /\\Aabc/" do
       inspect_source(cop, "str#{method} /\\Aabc/")
       expect(cop.messages).to eq(['Use `String#start_with?` instead of a ' \
                                   'regex match anchored to the beginning of ' \
                                   'the string.'])
+    end
+
+    it "autocorrects #{method} /\\A\\\\/" do
+      new_source = autocorrect_source(cop, "str#{method} /\\A\\\\/")
+      expect(new_source).to eq("str.start_with?('\\\\')")
     end
   end
 

@@ -28,7 +28,7 @@ module RuboCop
           # is this regexp 'literal' in the sense of only matching literal
           # chars, rather than using metachars like . and * and so on?
           # also, is it anchored at the end of the string?
-          regex_str =~ /\A(?:[\w\s\-,"']|\\[.*?\[\]{}()|^$nt])+\\Z\Z/
+          regex_str =~ /\A(?:#{LITERAL_REGEX})+\\z\z/
         end
 
         def on_send(node)
@@ -39,9 +39,7 @@ module RuboCop
           redundant_regex?(node) do |receiver, regex_str|
             receiver, regex_str = regex_str, receiver if receiver.is_a?(String)
             regex_str = regex_str[0..-3] # drop \Z anchor
-            regex_str.gsub!(/\\([.*?\[\]{}()|^$])/, '\1')
-            regex_str.gsub!('\n', "\n")
-            regex_str.gsub!('\t', "\t")
+            regex_str = interpret_string_escapes(regex_str)
 
             lambda do |corrector|
               new_source = receiver.source + '.end_with?(' +

@@ -96,6 +96,7 @@
 * `Lint/SpaceBeforeFirstArg` cop has been removed, since it just duplicates `Style/SingleSpaceBeforeFirstArg`. ([@alexdowad][])
 * `Style/SingleSpaceBeforeFirstArg` cop has been renamed to `Style/SpaceBeforeFirstArg`, which more accurately reflects what it now does. ([@alexdowad][])
 * `Style/UnneededPercentQ` reports `%q()` strings with what only appears to be an escape, but is not really (there are no escapes in `%q()` strings). ([@alexdowad][])
+* `Performance/StringReplacement`, `Performance\StartWith`, and `Performance\EndWith` more accurately identify code which can be improved. ([@alexdowad][])
 
 ## 0.35.1 (10/11/2015)
 

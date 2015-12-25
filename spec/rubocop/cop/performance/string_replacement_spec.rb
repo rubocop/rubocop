@@ -124,52 +124,23 @@ describe RuboCop::Cop::Performance::StringReplacement do
 
   describe 'deterministic regex' do
     describe 'regex literal' do
-      it 'registers an offense when only using word characters' do
-        inspect_source(cop, "'abc'.gsub(/a/, '1')")
-
-        expect(cop.messages).to eq(['Use `tr` instead of `gsub`.'])
-      end
-
-      it 'registers an offense when using single quote' do
-        inspect_source(cop, "'abc'.gsub(/'/, '')")
-
-        expect(cop.messages).to eq(['Use `delete` instead of `gsub`.'])
-      end
-
-      it 'registers an offense when using double quote' do
-        inspect_source(cop, %('abc'.gsub(/"/, '')))
-
-        expect(cop.messages).to eq(['Use `delete` instead of `gsub`.'])
-      end
-
       it 'registers an offense when using space' do
         inspect_source(cop, %('abc'.gsub(/ /, '')))
 
         expect(cop.messages).to eq(['Use `delete` instead of `gsub`.'])
       end
 
-      it 'registers an offense when using comma' do
-        inspect_source(cop, %('abc'.gsub(/,/, '')))
+      %w(a b c ' " % ! = < > # & ; : ` ~ 1 2 3 - _ , \r \\\\ \y \u1234
+         \x65).each do |str|
+        it "registers an offense when replacing #{str} with a literal" do
+          inspect_source(cop, "'abc'.gsub(/#{str}/, 'a')")
+          expect(cop.messages).to eq(['Use `tr` instead of `gsub`.'])
+        end
 
-        expect(cop.messages).to eq(['Use `delete` instead of `gsub`.'])
-      end
-
-      it 'registers an offense when using underscore' do
-        inspect_source(cop, %('abc'.gsub(/_/, '')))
-
-        expect(cop.messages).to eq(['Use `delete` instead of `gsub`.'])
-      end
-
-      it 'registers an offense when using dash' do
-        inspect_source(cop, %('abc'.gsub(/-/, '')))
-
-        expect(cop.messages).to eq(['Use `delete` instead of `gsub`.'])
-      end
-
-      it 'registers an offense when using numbers' do
-        inspect_source(cop, %('123'.gsub(/1/, 'a')))
-
-        expect(cop.messages).to eq(['Use `tr` instead of `gsub`.'])
+        it "registers an offense when deleting #{str}" do
+          inspect_source(cop, "'abc'.gsub(/#{str}/, '')")
+          expect(cop.messages).to eq(['Use `delete` instead of `gsub`.'])
+        end
       end
 
       it 'allows deterministic regex when the length of the pattern ' \
@@ -179,7 +150,7 @@ describe RuboCop::Cop::Performance::StringReplacement do
         expect(cop.messages).to be_empty
       end
 
-      it 'regeisters an offense when escape characters in regex' do
+      it 'registers an offense when escape characters in regex' do
         inspect_source(cop, %('abc'.gsub(/\n/, ',')))
 
         expect(cop.messages).to eq(['Use `tr` instead of `gsub`.'])
