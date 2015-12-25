@@ -117,9 +117,10 @@ module RuboCop
 
         def autocorrect(range)
           lambda do |corrector|
-            case range.source
-            when /\*\*/
+            if range.source =~ /\*\*/
               corrector.replace(range, '**')
+            elsif range.source.end_with?("\n")
+              corrector.replace(range, " #{range.source.strip}\n")
             else
               corrector.replace(range, " #{range.source.strip} ")
             end

@@ -343,6 +343,22 @@ describe RuboCop::Cop::Style::SpaceAroundOperators, :config do
       expect(cop.messages)
         .to eq(['Surrounding space missing for operator `=>`.'])
     end
+
+    it "doesn't eat a newline when auto-correcting" do
+      new_source = autocorrect_source(cop, ["'Here is a'+",
+                                            "'joined string'+",
+                                            "'across three lines'"])
+      expect(new_source).to eq(["'Here is a' +",
+                                "'joined string' +",
+                                "'across three lines'"].join("\n"))
+    end
+
+    it "doesn't register an offense for operators with newline on right" do
+      inspect_source(cop, ["'Here is a' +",
+                           "'joined string' +",
+                           "'across three lines'"])
+      expect(cop.offenses).to be_empty
+    end
   end
 
   describe 'extra space around operators' do
