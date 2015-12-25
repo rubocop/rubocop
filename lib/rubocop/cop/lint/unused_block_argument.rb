@@ -35,7 +35,7 @@ module RuboCop
           scope = variable.scope
           all_arguments = scope.variables.each_value.select(&:block_argument?)
 
-          message << if lambda?(scope.node)
+          message << if scope.node.lambda?
                        message_for_lambda(variable, all_arguments)
                      else
                        message_for_normal_block(variable, all_arguments)

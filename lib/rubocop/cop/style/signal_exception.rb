@@ -77,7 +77,7 @@ module RuboCop
         end
 
         def command_or_kernel_call?(name, node)
-          command?(name, node) || kernel_call?(name, node)
+          node.command?(name) || kernel_call?(name, node)
         end
 
         def kernel_call?(name, node)

@@ -24,7 +24,7 @@ module RuboCop
         private
 
         def flow_command?(node)
-          FLOW_COMMANDS.any? { |c| command?(c, node) }
+          FLOW_COMMANDS.any? { |c| node.command?(c) }
         end
       end
     end

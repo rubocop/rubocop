@@ -153,6 +153,15 @@ module Astrolabe
       REFERENCES.include?(type)
     end
 
+    def_matcher :command?, '(send nil %1 ...)'
+    def_matcher :lambda?,  '(block (send nil :lambda) ...)'
+    def_matcher :proc?, <<-PATTERN
+      {(block (send nil :proc) ...)
+       (block (send (const nil :Proc) :new) ...)
+       (send (const nil :Proc) :new)}
+    PATTERN
+    def_matcher :lambda_or_proc?, '{lambda? proc?}'
+
     def_matcher :class_constructor?, <<-PATTERN
       {       (send (const nil {:Class :Module}) :new ...)
        (block (send (const nil {:Class :Module}) :new ...) ...)}

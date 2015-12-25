@@ -42,7 +42,7 @@ module RuboCop
             send_node, args_node, _body_node = *block_node
 
             # `return` does not exit to outside of lambda block, this is safe.
-            break if lambda?(send_node)
+            break if block_node.lambda?
             # if a proc is passed to `Module#define_method`, `return` will not
             # cause a non-local exit error
             break if define_method?(send_node)
@@ -62,11 +62,6 @@ module RuboCop
         def chained_send?(send_node)
           receiver_node, _selector_node = *send_node
           !receiver_node.nil?
-        end
-
-        def lambda?(send_node)
-          receiver_node, selector_node = *send_node
-          receiver_node.nil? && selector_node == :lambda
         end
 
         def define_method?(send_node)

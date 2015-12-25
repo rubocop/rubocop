@@ -7,7 +7,6 @@ module RuboCop
       include PathUtil
       extend Astrolabe::Sexp
 
-      PROC_NEW_NODE = s(:send, s(:const, nil, :Proc), :new)
       EQUALS_ASGN_NODES = [:lvasgn, :ivasgn, :cvasgn, :gvasgn, :casgn, :masgn]
       SHORTHAND_ASGN_NODES = [:op_asgn, :or_asgn, :and_asgn]
       ASGN_NODES = EQUALS_ASGN_NODES + SHORTHAND_ASGN_NODES
@@ -56,35 +55,6 @@ module RuboCop
                        end
 
         source_range.begin.line..source_range.end.line
-      end
-
-      def command?(name, node)
-        return unless node.type == :send
-
-        receiver, method_name, _args = *node
-
-        # commands have no explicit receiver
-        !receiver && method_name == name
-      end
-
-      def lambda?(node)
-        fail 'Not a block node' unless node.type == :block
-
-        send_node, _block_args, _block_body = *node
-
-        command?(:lambda, send_node)
-      end
-
-      def proc?(node)
-        fail 'Not a block node' unless node.type == :block
-
-        send_node, _block_args, _block_body = *node
-
-        command?(:proc, send_node) || send_node == PROC_NEW_NODE
-      end
-
-      def lambda_or_proc?(node)
-        lambda?(node) || proc?(node)
       end
 
       def parentheses?(node)

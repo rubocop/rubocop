@@ -17,7 +17,7 @@ module RuboCop
         MSG = 'Use `lambda`/`proc` instead of a plain method call.'
 
         def on_send(node)
-          return unless command?(:scope, node)
+          return unless node.command?(:scope)
 
           _receiver, _method_name, *args = *node
 
