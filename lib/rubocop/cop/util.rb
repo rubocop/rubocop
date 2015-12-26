@@ -173,8 +173,8 @@ module RuboCop
       end
 
       def within_node?(inner, outer)
-        o = outer.loc.expression
-        i = inner.loc.expression
+        o = outer.is_a?(Astrolabe::Node) ? outer.loc.expression : outer
+        i = inner.is_a?(Astrolabe::Node) ? inner.loc.expression : inner
         i.begin_pos >= o.begin_pos && i.end_pos <= o.end_pos
       end
 

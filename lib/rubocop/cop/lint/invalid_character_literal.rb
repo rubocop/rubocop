@@ -27,7 +27,8 @@ module RuboCop
         end
 
         def alternative_message(diagnostic)
-          diagnostic.message
+          diagnostic
+            .message
             .capitalize
             .gsub('character syntax', 'character literal')
         end

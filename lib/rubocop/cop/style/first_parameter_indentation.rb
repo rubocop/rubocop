@@ -94,7 +94,8 @@ module RuboCop
         # line.
         def previous_code_line(line_number)
           @comment_lines ||=
-            processed_source.comments
+            processed_source
+            .comments
             .select { |c| begins_its_line?(c.loc.expression) }
             .map { |c| c.loc.line }
 

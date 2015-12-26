@@ -47,6 +47,7 @@
 * [#2480](https://github.com/bbatsov/rubocop/pull/2480): Add a configuration to `Style/ConditionalAssignment` to check and correct conditionals that contain multiple assignments. ([@rrosenblum][])
 * [#2480](https://github.com/bbatsov/rubocop/pull/2480): Allow `Style/ConditionalAssignment` to correct assignment in ternary operations. ([@rrosenblum][])
 * [#2480](https://github.com/bbatsov/rubocop/pull/2480): Allow `Style/ConditionalAssignment` to correct comparable methods. ([@rrosenblum][])
+* [#1633](https://github.com/bbatsov/rubocop/issues/1633): New cop `Style/MultilineMethodCallIndentation` takes over the responsibility for checking alignment of methods from the `Style/MultilineOperationIndentation` cop. ([@jonas054][])
 
 ### Bug Fixes
 
