@@ -2829,15 +2829,15 @@ describe RuboCop::CLI, :isolated_environment do
         source = ['# encoding: utf-8',
                   'read_attribute(:test)']
         create_file('dir1/app/models/example1.rb', source)
-        create_file('dir1/.rubocop.yml', ['AllCops:',
-                                          '  RunRailsCops: true',
+        create_file('dir1/.rubocop.yml', ['Rails:',
+                                          '  Enabled: true',
                                           '',
                                           'Rails/ReadWriteAttribute:',
                                           '  Include:',
                                           '    - app/models/**/*.rb'])
         create_file('dir2/app/models/example2.rb', source)
-        create_file('dir2/.rubocop.yml', ['AllCops:',
-                                          '  RunRailsCops: false',
+        create_file('dir2/.rubocop.yml', ['Rails:',
+                                          '  Enabled: false',
                                           '',
                                           'Rails/ReadWriteAttribute:',
                                           '  Include:',
@@ -2855,11 +2855,21 @@ describe RuboCop::CLI, :isolated_environment do
       it 'with configuration option false but -R given runs rails cops' do
         create_file('app/models/example1.rb', ['# encoding: utf-8',
                                                'read_attribute(:test)'])
-        create_file('.rubocop.yml', ['AllCops:',
-                                     '  RunRailsCops: false'])
+        create_file('.rubocop.yml', ['Rails:',
+                                     '  Enabled: false'])
         expect(cli.run(['--format', 'simple', '-R', 'app/models/example1.rb']))
           .to eq(1)
         expect($stdout.string).to include('Prefer self[:attr]')
+      end
+
+      context 'with obsolete RunRailsCops config option' do
+        it 'prints a warning' do
+          create_file('.rubocop.yml', ['AllCops:',
+                                       '  RunRailsCops: false'])
+          expect(cli.run([])).to eq(1)
+          expect($stderr.string).to include('obsolete parameter RunRailsCops ' \
+                                            '(for AllCops) found')
+        end
       end
     end
 
@@ -2887,8 +2897,8 @@ describe RuboCop::CLI, :isolated_environment do
         # The .rubocop.yml file inherits from default.yml where the Include
         # config parameter is set for the rails cops. The paths are interpreted
         # as relative to dir1 because .rubocop.yml is placed there.
-        create_file('dir1/.rubocop.yml', ['AllCops:',
-                                          '  RunRailsCops: true',
+        create_file('dir1/.rubocop.yml', ['Rails:',
+                                          '  Enabled: true',
                                           '',
                                           'Rails/ReadWriteAttribute:',
                                           '  Exclude:',

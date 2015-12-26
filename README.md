@@ -239,8 +239,8 @@ $ rubocop -R
 or add the following directive to your `.rubocop.yml`:
 
 ```yaml
-AllCops:
-  RunRailsCops: true
+Rails:
+  Enabled: true
 ```
 
 ## Configuration

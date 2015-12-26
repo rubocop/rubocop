@@ -11,7 +11,7 @@ describe 'RuboCop Project' do
     end
 
     it 'has configuration for all cops' do
-      expect(default_config.keys).to match_array((['AllCops'] + cop_names))
+      expect(default_config.keys).to match_array(%w(AllCops Rails) + cop_names)
     end
 
     it 'has a nicely formatted description for all cops' do

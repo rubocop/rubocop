@@ -105,10 +105,6 @@ module RuboCop
         cop_type == :lint
       end
 
-      def self.rails?
-        cop_type == :rails
-      end
-
       def initialize(config = nil, options = nil)
         @config = config || Config.new
         @options = options || { debug: false }

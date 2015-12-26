@@ -228,6 +228,9 @@ module RuboCop
                                'If your intention was to allow extra spaces ' \
                                'for alignment, please use AllowForAlignment: ' \
                                'true instead.')
+      check_obsolete_parameter('AllCops', 'RunRailsCops',
+                               "Use the following configuration instead:\n" \
+                               "Rails:\n  Enabled: true")
     end
 
     def check_obsolete_parameter(cop, parameter, alternative = nil)
