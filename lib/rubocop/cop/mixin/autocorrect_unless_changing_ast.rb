@@ -46,7 +46,7 @@ module RuboCop
       #
       class InlineBeginNodes < Parser::AST::Processor
         def on_begin(node)
-          node.children.one? ? node.children[0] : node
+          node.children.one? ? process(node.children[0]) : super
         end
       end
 
