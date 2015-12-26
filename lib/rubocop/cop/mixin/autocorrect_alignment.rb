@@ -74,7 +74,7 @@ module RuboCop
       def autocorrect_line(corrector, line_begin_pos, expr, column_delta,
                            heredoc_ranges)
         range = calculate_range(expr, line_begin_pos, column_delta)
-        # We must not change indentation of heredoc stings.
+        # We must not change indentation of heredoc strings.
         return if heredoc_ranges.any? { |h| within?(range, h) }
 
         if column_delta > 0
