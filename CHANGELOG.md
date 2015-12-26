@@ -89,6 +89,7 @@
 * [#2540](https://github.com/bbatsov/rubocop/issues/2540): `Lint/FormatParameterMismatch` understands format specifiers with multiple flags. ([@alexdowad][])
 * [#2538](https://github.com/bbatsov/rubocop/issues/2538): `Style/SpaceAroundOperators` doesn't eat newlines. ([@alexdowad][])
 * [#2531](https://github.com/bbatsov/rubocop/issues/2531): `Style/AndOr` autocorrects in cases where parentheses must be added, even inside a nested begin node. ([@alexdowad][])
+* [#2450](https://github.com/bbatsov/rubocop/issues/2450): `Style/Next` adjusts indentation when auto-correcting, to avoid introducing new offenses. ([@alexdowad][])
 
 ### Changes
 
