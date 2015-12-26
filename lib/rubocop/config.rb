@@ -3,6 +3,8 @@
 require 'delegate'
 require 'pathname'
 
+# rubocop:disable Metrics/ClassLength
+
 module RuboCop
   # This class represents the configuration of the RuboCop application
   # and all its cops. A Config is associated with a YAML configuration
@@ -78,6 +80,16 @@ module RuboCop
     end
 
     def cop_enabled?(cop)
+      department = if cop.respond_to?(:cop_type)
+                     cop.cop_type.to_s.capitalize
+                   else
+                     cop.split('/')[-2]
+                   end
+
+      if (dept_config = self[department])
+        return false if dept_config['Enabled'] == false
+      end
+
       for_cop(cop).empty? || for_cop(cop)['Enabled']
     end
 

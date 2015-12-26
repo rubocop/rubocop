@@ -329,4 +329,38 @@ describe RuboCop::Config do
       end
     end
   end
+
+  describe '#cop_enabled?' do
+    context 'when an entire cop type is disabled' do
+      context 'but an individual cop is enabled' do
+        let(:hash) do
+          {
+            'Style' => { 'Enabled' => false },
+            'Style/TrailingWhitespace' => { 'Enabled' => true }
+          }
+        end
+
+        it 'still disables the cop' do
+          cop_class = RuboCop::Cop::Style::TrailingWhitespace
+          expect(configuration.cop_enabled?(cop_class)).to be false
+        end
+      end
+    end
+
+    context 'when an entire cop type is enabled' do
+      context 'but an individual cop is disabled' do
+        let(:hash) do
+          {
+            'Style' => { 'Enabled' => true },
+            'Style/TrailingWhitespace' => { 'Enabled' => false }
+          }
+        end
+
+        it 'still disables the cop' do
+          cop_class = RuboCop::Cop::Style::TrailingWhitespace
+          expect(configuration.cop_enabled?(cop_class)).to be false
+        end
+      end
+    end
+  end
 end

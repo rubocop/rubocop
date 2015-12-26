@@ -52,6 +52,7 @@
 * [#1543](https://github.com/bbatsov/rubocop/issues/1543): `Style/WordArray` has both `percent` and `brackets` (which enforces the use of bracketed arrays for strings) styles. ([@alexdowad][])
 * `Style/SpaceAroundOperators` has `AllowForAlignment` config parameter which allows extra spaces on the left if they serve to align the operator with another. ([@alexdowad][])
 * `Style/SymbolArray` has both `percent` and `brackets` (which enforces the user of bracketed arrays for symbols) styles. ([@alexdowad][])
+* [#2343](https://github.com/bbatsov/rubocop/issues/2343): Entire cop types (or "departments") can be disabled using in .rubocop.yml using config like `Style: Enabled: false`. ([@alexdowad][])
 
 ### Bug Fixes
 
