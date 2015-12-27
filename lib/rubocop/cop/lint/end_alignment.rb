@@ -21,28 +21,28 @@ module RuboCop
         include IfNode
 
         def on_class(node)
-          check_offset_of_node(node)
+          check_end_kw_in_node(node)
         end
 
         def on_module(node)
-          check_offset_of_node(node)
+          check_end_kw_in_node(node)
         end
 
         def on_if(node)
-          check_offset_of_node(node) unless ternary_op?(node)
+          check_end_kw_in_node(node) unless ternary_op?(node)
         end
 
         def on_while(node)
-          check_offset_of_node(node)
+          check_end_kw_in_node(node)
         end
 
         def on_until(node)
-          check_offset_of_node(node)
+          check_end_kw_in_node(node)
         end
 
         def on_case(node)
           return check_asgn_alignment(node.parent, node) if argument_case?(node)
-          check_offset_of_node(node)
+          check_end_kw_in_node(node)
         end
 
         private
@@ -60,18 +60,17 @@ module RuboCop
 
         def check_asgn_alignment(outer_node, inner_node)
           expr = outer_node.loc.expression
-          if variable_alignment?(expr, inner_node, style)
+
+          align_with = { keyword: inner_node.loc.keyword }
+
+          if !line_break_before_keyword?(expr, inner_node)
             range = Parser::Source::Range.new(expr.source_buffer,
                                               expr.begin_pos,
                                               inner_node.loc.keyword.end_pos)
-            offset =
-              inner_node.loc.keyword.column - outer_node.loc.expression.column
-          else
-            range = inner_node.loc.keyword
-            offset = 0
+            align_with[:variable] = range
           end
 
-          check_offset(inner_node, range.source, offset)
+          check_end_kw_alignment(inner_node, align_with)
           ignore_node(inner_node) # Don't check again.
         end
 
