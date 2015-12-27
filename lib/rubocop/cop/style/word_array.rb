@@ -37,6 +37,10 @@ module RuboCop
             @interpolated = false
             contents = autocorrect_words(node.children, node.loc.line)
 
+            # TODO: this works if the default WordRegex parameter is used
+            # However, if a custom WordRegex is used, our method of determining
+            # whether %w or %W should be used is not robust enough
+            # (It doesn't check for escapes)
             char = @interpolated ? 'W' : 'w'
 
             lambda do |corrector|
