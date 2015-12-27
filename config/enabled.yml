@@ -1279,6 +1279,11 @@ Rails/ReadWriteAttribute:
                  write_attribute(:attr, val).
   Enabled: true
 
+Rails/SafeNavigationOperator:
+  Description: 'Prefer `&.` over `ActiveSupport#try!`.'
+  StyleGuide: 'https://github.com/bbatsov/rails-style-guide#try-bang'
+  Enabled: true
+
 Rails/ScopeArgs:
   Description: 'Checks the arguments of ActiveRecord scopes.'
   Enabled: true
