@@ -5,44 +5,59 @@ module RuboCop
     module Lint
       # This cop checks whether the end keywords are aligned properly.
       #
-      # Two modes are supported through the AlignWith configuration
-      # parameter. If it's set to `keyword` (which is the default), the `end`
-      # shall be aligned with the start of the keyword (if, class, etc.). If
-      # it's set to `variable` the `end` shall be aligned with the
+      # Three modes are supported through the `AlignWith` configuration
+      # parameter:
+      #
+      # If it's set to `keyword` (which is the default), the `end`
+      # shall be aligned with the start of the keyword (if, class, etc.).
+      #
+      # If it's set to `variable` the `end` shall be aligned with the
       # left-hand-side of the variable assignment, if there is one.
       #
-      # @example
+      # If it's set to `start_of_line`, the `end` shall be aligned with the
+      # start of the line where the matching keyword appears.
       #
+      # @example
+      #   @good
+      #   # keyword style
       #   variable = if true
       #              end
+      #
+      #   # variable style
+      #   variable = if true
+      #   end
+      #
+      #   # start_of_line style
+      #   puts(if true
+      #   end)
       class EndAlignment < Cop
         include CheckAssignment
         include EndKeywordAlignment
         include IfNode
 
         def on_class(node)
-          check_end_kw_in_node(node)
+          check_other_alignment(node)
         end
 
         def on_module(node)
-          check_end_kw_in_node(node)
+          check_other_alignment(node)
         end
 
         def on_if(node)
-          check_end_kw_in_node(node) unless ternary_op?(node)
+          check_other_alignment(node) unless ternary_op?(node)
         end
 
         def on_while(node)
-          check_end_kw_in_node(node)
+          check_other_alignment(node)
         end
 
         def on_until(node)
-          check_end_kw_in_node(node)
+          check_other_alignment(node)
         end
 
         def on_case(node)
           return check_asgn_alignment(node.parent, node) if argument_case?(node)
-          check_end_kw_in_node(node)
+          check_other_alignment(node)
         end
 
         private
@@ -61,17 +76,30 @@ module RuboCop
         def check_asgn_alignment(outer_node, inner_node)
           expr = outer_node.loc.expression
 
-          align_with = { keyword: inner_node.loc.keyword }
+          align_with = {
+            keyword: inner_node.loc.keyword,
+            start_of_line: start_line_range(outer_node)
+          }
 
-          if !line_break_before_keyword?(expr, inner_node)
-            range = Parser::Source::Range.new(expr.source_buffer,
-                                              expr.begin_pos,
-                                              inner_node.loc.keyword.end_pos)
-            align_with[:variable] = range
-          end
+          align_with[:variable] =
+            if !line_break_before_keyword?(expr, inner_node)
+              Parser::Source::Range.new(expr.source_buffer,
+                                        expr.begin_pos,
+                                        inner_node.loc.keyword.end_pos)
+            else
+              inner_node.loc.keyword
+            end
 
           check_end_kw_alignment(inner_node, align_with)
           ignore_node(inner_node) # Don't check again.
+        end
+
+        def check_other_alignment(node)
+          align_with = {
+            keyword: node.loc.keyword,
+            start_of_line: start_line_range(node)
+          }
+          check_end_kw_alignment(node, align_with)
         end
 
         def autocorrect(node)
@@ -79,14 +107,28 @@ module RuboCop
         end
 
         def alignment_node(node)
-          return node unless style == :variable
-          return node.parent if argument_case?(node)
-
-          node.each_ancestor(:lvasgn).first
+          if style == :keyword
+            node
+          elsif style == :variable
+            return node.parent if argument_case?(node)
+            node.each_ancestor(:lvasgn).first
+          else
+            start_line_range(node)
+          end
         end
 
         def argument_case?(node)
           node.case_type? && node.parent && node.parent.send_type?
+        end
+
+        def start_line_range(node)
+          expr   = node.loc.expression
+          buffer = expr.source_buffer
+          source = buffer.source_line(expr.line)
+          range  = buffer.line_range(expr.line)
+          Parser::Source::Range.new(buffer,
+                                    range.begin_pos + (source =~ /\S/),
+                                    range.begin_pos + (source =~ /\s*\z/))
         end
       end
     end

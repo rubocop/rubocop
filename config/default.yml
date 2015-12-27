@@ -933,10 +933,13 @@ Lint/EndAlignment:
   # The value `variable` means that in assignments, `end` should be aligned
   # with the start of the variable on the left hand side of `=`. In all other
   # situations, `end` should still be aligned with the keyword.
+  # The value `start_of_line` means that `end` should be aligned with the start
+  # of the line which the matching keyword appears on.
   AlignWith: keyword
   SupportedStyles:
     - keyword
     - variable
+    - start_of_line
   AutoCorrect: false
 
 Lint/DefEndAlignment:

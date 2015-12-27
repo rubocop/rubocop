@@ -48,7 +48,7 @@ module RuboCop
         rhs.loc.line > whole_expression.line
       end
 
-      def align(node, alignment_node)
+      def align(node, align_to)
         source_buffer = node.loc.expression.source_buffer
         begin_pos = node.loc.end.begin_pos
         whitespace = Parser::Source::Range.new(source_buffer,
@@ -56,7 +56,13 @@ module RuboCop
                                                begin_pos)
         return false unless whitespace.source.strip.empty?
 
-        column = alignment_node ? alignment_node.loc.expression.column : 0
+        column = if !align_to
+                   0
+                 elsif align_to.respond_to?(:loc)
+                   align_to.loc.expression.column
+                 else
+                   align_to.column
+                 end
 
         ->(corrector) { corrector.replace(whitespace, ' ' * column) }
       end
