@@ -334,8 +334,7 @@ describe RuboCop::Cop::Style::IndentHash do
                     'Indent the right brace the same as the start of the ' \
                     'line where the left brace is.'])
           expect(cop.config_to_allow_offenses)
-            .to eq('EnforcedStyle' => %w(special_inside_parentheses
-                                         align_braces))
+            .to eq('EnforcedStyle' => 'special_inside_parentheses')
         end
 
         it 'accepts normal indentation for second argument' do

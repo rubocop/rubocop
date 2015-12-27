@@ -48,23 +48,24 @@ module RuboCop
       end
 
       def no_acceptable_style!
+        @detected_style = []
         self.config_to_allow_offenses = { 'Enabled' => false }
       end
 
       def detected_style
-        config_to_allow_offenses[parameter_name]
+        @detected_style ||= nil
       end
 
       def detected_style=(style)
+        @detected_style = style
+
         if style.nil?
           no_acceptable_style!
         elsif style.is_a?(Array)
           if style.empty?
             no_acceptable_style!
-          elsif style.one?
-            config_to_allow_offenses[parameter_name] = style[0]
           else
-            config_to_allow_offenses[parameter_name] = style
+            config_to_allow_offenses[parameter_name] = style[0]
           end
         else
           config_to_allow_offenses[parameter_name] = style
