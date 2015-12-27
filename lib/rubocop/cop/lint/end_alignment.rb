@@ -41,10 +41,7 @@ module RuboCop
         end
 
         def on_case(node)
-          if argument_case?(node)
-            return check_alignment(node.ancestors.first, node)
-          end
-
+          return check_asgn_alignment(node.parent, node) if argument_case?(node)
           check_offset_of_node(node)
         end
 
@@ -54,17 +51,14 @@ module RuboCop
           # If there are method calls chained to the right hand side of the
           # assignment, we let rhs be the receiver of those method calls before
           # we check if it's an if/unless/while/until.
-          rhs = first_part_of_call_chain(rhs)
-
-          return unless rhs
-
+          return unless (rhs = first_part_of_call_chain(rhs))
           return unless [:if, :while, :until, :case].include?(rhs.type)
           return if ternary_op?(rhs)
 
-          check_alignment(node, rhs)
+          check_asgn_alignment(node, rhs)
         end
 
-        def check_alignment(outer_node, inner_node)
+        def check_asgn_alignment(outer_node, inner_node)
           expr = outer_node.loc.expression
           if variable_alignment?(expr, inner_node, style)
             range = Parser::Source::Range.new(expr.source_buffer,
@@ -87,14 +81,13 @@ module RuboCop
 
         def alignment_node(node)
           return node unless style == :variable
-          return node.ancestors.first if argument_case?(node)
+          return node.parent if argument_case?(node)
 
           node.each_ancestor(:lvasgn).first
         end
 
         def argument_case?(node)
-          node.case_type? && !node.ancestors.empty? &&
-            node.ancestors.first.send_type?
+          node.case_type? && node.parent && node.parent.send_type?
         end
       end
     end
