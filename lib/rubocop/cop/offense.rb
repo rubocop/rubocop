@@ -59,7 +59,7 @@ module RuboCop
       def corrected
         @status == :unsupported ? nil : @status == :corrected
       end
-      alias corrected? corrected
+      alias_method :corrected?, :corrected
 
       # @api public
       #
@@ -121,7 +121,7 @@ module RuboCop
         end
       end
 
-      alias eql? ==
+      alias_method :eql?, :==
 
       def hash
         COMPARISON_ATTRIBUTES.reduce(0) do |hash, attribute|

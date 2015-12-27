@@ -18,7 +18,7 @@ module RuboCop
         def on_str(node)
           process(node, '%', '%Q', '%q')
         end
-        alias on_dstr on_str
+        alias_method :on_dstr, :on_str
 
         def on_sym(node)
           process(node, '%s')
