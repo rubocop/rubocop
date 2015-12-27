@@ -172,6 +172,82 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts writer nested within a module' do
+    inspect_source(cop,
+                   ['module Foo',
+                    '  begin',
+                    '    if RUBY_VERSION > "2.0"',
+                    '      def bar=(bar)',
+                    '        @bar = bar',
+                    '      end',
+                    '    end',
+                    '  end',
+                    'end'])
+
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'accepts reader nested within a module' do
+    inspect_source(cop,
+                   ['module Foo',
+                    '  begin',
+                    '    if RUBY_VERSION > "2.0"',
+                    '      def bar',
+                    '        @bar',
+                    '      end',
+                    '    end',
+                    '  end',
+                    'end'])
+
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'accepts writer nested within an instance_eval call' do
+    inspect_source(cop,
+                   ['something.instance_eval do',
+                    '  begin',
+                    '    if RUBY_VERSION > "2.0"',
+                    '      def bar=(bar)',
+                    '        @bar = bar',
+                    '      end',
+                    '    end',
+                    '  end',
+                    'end'])
+
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'accepts reader nested within an instance_eval calll' do
+    inspect_source(cop,
+                   ['something.instance_eval do',
+                    '  begin',
+                    '    if RUBY_VERSION > "2.0"',
+                    '      def bar',
+                    '        @bar',
+                    '      end',
+                    '    end',
+                    '  end',
+                    'end'])
+
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'flags a reader inside a class, inside an instance_eval call' do
+    inspect_source(cop,
+                   ['something.instance_eval do',
+                    '  class << @blah',
+                    '    begin',
+                    '      def bar',
+                    '        @bar',
+                    '      end',
+                    '    end',
+                    '  end',
+                    'end'])
+
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.messages).to eq(
+      ['Use `attr_reader` to define trivial reader methods.'])
+  end
   context 'exact name match disabled' do
     let(:cop_config) { { 'ExactNameMatch' => false } }
 

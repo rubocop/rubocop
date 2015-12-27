@@ -9,13 +9,13 @@ module RuboCop
         MSG = 'Use `attr_%s` to define trivial %s methods.'
 
         def on_def(node)
-          return if in_module?(node)
+          return if in_module_or_instance_eval?(node)
           method_name, args, body = *node
           on_method_def(node, method_name, args, body)
         end
 
         def on_defs(node)
-          return if in_module?(node)
+          return if in_module_or_instance_eval?(node)
           return if ignore_class_methods?
           _scope, method_name, args, body = *node
           on_method_def(node, method_name, args, body)
@@ -23,10 +23,18 @@ module RuboCop
 
         private
 
-        def in_module?(node)
-          pnode = node.parent
-          pnode = pnode.parent if pnode && pnode.type == :begin
-          !pnode.nil? && pnode.type == :module
+        def in_module_or_instance_eval?(node)
+          node.each_ancestor(:block, :class, :sclass, :module).each do |pnode|
+            case pnode.type
+            when :class, :sclass
+              return false
+            when :module
+              return true
+            else
+              return true if pnode.method_name == :instance_eval
+            end
+          end
+          false
         end
 
         def on_method_def(node, method_name, args, body)
