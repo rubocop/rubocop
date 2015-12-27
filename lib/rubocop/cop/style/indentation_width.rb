@@ -82,9 +82,8 @@ module RuboCop
 
         def on_send(node)
           super
-          receiver, method_name, *args = *node
-          return unless modifier_and_def_on_same_line?(receiver, method_name,
-                                                       args)
+          return unless modifier_and_def_on_same_line?(node)
+          _, _, *args = *node
 
           *_, body = *args.first
 
