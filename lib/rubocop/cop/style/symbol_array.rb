@@ -23,6 +23,7 @@ module RuboCop
 
           if bracketed_array_of?(:sym, node)
             return if comments_in_array?(node)
+            return if symbols_contain_spaces?(node)
             style_detected(:brackets)
             add_offense(node, :expression, PERCENT_MSG) if style == :percent
           elsif node.loc.begin && node.loc.begin.source =~ /\A%[iI]/
@@ -39,6 +40,13 @@ module RuboCop
 
           comments.any? do |comment|
             !(comment.loc.expression.to_a & array_range).empty?
+          end
+        end
+
+        def symbols_contain_spaces?(node)
+          node.children.any? do |sym|
+            content, = *sym
+            content =~ / /
           end
         end
       end

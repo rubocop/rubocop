@@ -29,6 +29,11 @@ describe RuboCop::Cop::Style::SymbolArray, :config do
       expect(cop.offenses).to be_empty
     end
 
+    it 'does not reg an offense if symbol contains whitespace', ruby: 2 do
+      inspect_source(cop, '[:one, :two, :"space here"]')
+      expect(cop.offenses).to be_empty
+    end
+
     it 'does nothing on Ruby 1.9', ruby: 1.9 do
       inspect_source(cop, '[:one, :two, :three]')
       expect(cop.offenses).to be_empty
