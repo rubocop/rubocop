@@ -27,6 +27,10 @@
 * [#2631](https://github.com/bbatsov/rubocop/issues/2631): `Style/Encoding` can remove unneeded encoding comment when autocorrecting with `when_needed` style. ([@alexdowad][])
 * [#2860](https://github.com/bbatsov/rubocop/issues/2860): Fix false positive in `Rails/Date` when `to_time` is chained with safe method. ([@palkan][])
 
+### Changes
+
+* [#2629](https://github.com/bbatsov/rubocop/pull/2629): Change the offense range for metrics cops to default to `expression` instead of `keyword` (the offense now spans the entire method, class, or module). ([@rrosenblum][])
+
 ## 0.37.2 (11/02/2016)
 
 ### Bug fixes
