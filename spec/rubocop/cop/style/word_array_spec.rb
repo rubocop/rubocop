@@ -213,5 +213,10 @@ describe RuboCop::Cop::Style::WordArray, :config do
       new_source = autocorrect_source(cop, "['hi there', 'something\telse']")
       expect(new_source).to eq("['hi there', 'something\telse']")
     end
+
+    it "doesn't break when words contain delimiters" do
+      new_source = autocorrect_source(cop, "[')', ']']")
+      expect(new_source).to eq('%w(\\) ])')
+    end
   end
 end

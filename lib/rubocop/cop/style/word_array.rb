@@ -86,7 +86,9 @@ module RuboCop
             line_breaks = "\n" * number_of_line_breaks
             previous_node_line_number = node.loc.line
             content = node.children[0]
-            line_breaks + (escape ? escape_string(content) : content)
+            content = escape ? escape_string(content) : content
+            content.gsub!(/\)/, '\\)')
+            line_breaks + content
           end.join(' ')
         end
 
