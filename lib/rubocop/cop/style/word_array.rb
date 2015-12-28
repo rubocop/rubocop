@@ -33,21 +33,16 @@ module RuboCop
         end
 
         def autocorrect(node)
+          words = node.children
           if style == :percent
-            @interpolated = false
-            contents = autocorrect_words(node.children, node.loc.line)
-
-            # TODO: this works if the default WordRegex parameter is used
-            # However, if a custom WordRegex is used, our method of determining
-            # whether %w or %W should be used is not robust enough
-            # (It doesn't check for escapes)
-            char = @interpolated ? 'W' : 'w'
-
+            escape = words.any? { |w| double_quotes_required?(w.children[0]) }
+            char = escape ? 'W' : 'w'
+            contents = autocorrect_words(words, escape, node.loc.line)
             lambda do |corrector|
               corrector.replace(node.loc.expression, "%#{char}(#{contents})")
             end
           else
-            words = node.children.map { |c| to_string_literal(c.children[0]) }
+            words = words.map { |w| to_string_literal(w.children[0]) }
             lambda do |corrector|
               corrector.replace(node.loc.expression, "[#{words.join(', ')}]")
             end
@@ -84,32 +79,19 @@ module RuboCop
           cop_config['WordRegex']
         end
 
-        def autocorrect_words(word_nodes, base_line_number)
+        def autocorrect_words(word_nodes, escape, base_line_number)
           previous_node_line_number = base_line_number
           word_nodes.map do |node|
             number_of_line_breaks = node.loc.line - previous_node_line_number
             line_breaks = "\n" * number_of_line_breaks
             previous_node_line_number = node.loc.line
-
-            line_breaks + source_for(node)
+            content = node.children[0]
+            line_breaks + (escape ? escape_string(content) : content)
           end.join(' ')
         end
 
-        def source_for(str_node)
-          if character_literal?(str_node)
-            @interpolated = true
-            begin_pos = str_node.loc.expression.begin_pos + QUESTION_MARK_SIZE
-            end_pos = str_node.loc.expression.end_pos
-          else
-            begin_pos = str_node.loc.begin.end_pos
-            end_pos = str_node.loc.end.begin_pos
-          end
-          Parser::Source::Range.new(str_node.loc.expression.source_buffer,
-                                    begin_pos, end_pos).source
-        end
-
-        def character_literal?(node)
-          node.loc.end.nil?
+        def escape_string(string)
+          string.inspect[1..-2].tap { |s| s.gsub!(/\\"/, '"') }
         end
 
         def style_detected(style, ary_size)

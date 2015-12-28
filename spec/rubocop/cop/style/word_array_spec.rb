@@ -13,28 +13,24 @@ describe RuboCop::Cop::Style::WordArray, :config do
     end
 
     it 'registers an offense for arrays of single quoted strings' do
-      inspect_source(cop,
-                     "['one', 'two', 'three']")
+      inspect_source(cop, "['one', 'two', 'three']")
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Use `%w` or `%W` for an array of words.'])
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'brackets')
     end
 
     it 'registers an offense for arrays of double quoted strings' do
-      inspect_source(cop,
-                     '["one", "two", "three"]')
+      inspect_source(cop, '["one", "two", "three"]')
       expect(cop.offenses.size).to eq(1)
     end
 
     it 'registers an offense for arrays of unicode word characters' do
-      inspect_source(cop,
-                     '["ВУЗ", "вуз", "中文网"]')
+      inspect_source(cop, '["ВУЗ", "вуз", "中文网"]')
       expect(cop.offenses.size).to eq(1)
     end
 
     it 'registers an offense for arrays with character constants' do
-      inspect_source(cop,
-                     '["one", ?\n]')
+      inspect_source(cop, '["one", ?\n]')
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -43,41 +39,44 @@ describe RuboCop::Cop::Style::WordArray, :config do
       expect(cop.offenses.size).to eq(1)
     end
 
+    it 'registers an offense for strings with newline and tab escapes' do
+      inspect_source(cop, %(["one\\n", "hi\\tthere"]))
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it 'uses %W when autocorrecting strings with newlines and tabs' do
+      new_source = autocorrect_source(cop, %(["one\\n", "hi\\tthere"]))
+      expect(new_source).to eq('%W(one\\n hi\\tthere)')
+    end
+
     it 'does not register an offense for array of non-words' do
-      inspect_source(cop,
-                     '["one space", "two", "three"]')
+      inspect_source(cop, '["one space", "two", "three"]')
       expect(cop.offenses).to be_empty
     end
 
     it 'does not register an offense for array containing non-string' do
-      inspect_source(cop,
-                     '["one", "two", 3]')
+      inspect_source(cop, '["one", "two", 3]')
       expect(cop.offenses).to be_empty
     end
 
     it 'does not register an offense for array starting with %w' do
-      inspect_source(cop,
-                     '%w(one two three)')
+      inspect_source(cop, '%w(one two three)')
       expect(cop.offenses).to be_empty
     end
 
     it 'does not register an offense for array with one element' do
-      inspect_source(cop,
-                     '["three"]')
+      inspect_source(cop, '["three"]')
       expect(cop.offenses).to be_empty
     end
 
     it 'does not register an offense for array with empty strings' do
-      inspect_source(cop,
-                     '["", "two", "three"]')
+      inspect_source(cop, '["", "two", "three"]')
       expect(cop.offenses).to be_empty
     end
 
     it 'does not register offense for array with allowed number of strings' do
       cop_config['MinSize'] = 4
-
-      inspect_source(cop,
-                     '["one", "two", "three"]')
+      inspect_source(cop, '["one", "two", "three"]')
       expect(cop.offenses).to be_empty
     end
 
@@ -190,6 +189,20 @@ describe RuboCop::Cop::Style::WordArray, :config do
     it 'auto-corrects an array of email addresses' do
       new_source = autocorrect_source(cop, "['a@example.com', 'b@example.com']")
       expect(new_source).to eq('%w(a@example.com b@example.com)')
+    end
+  end
+
+  context 'with a WordRegex configuration which accepts almost anything' do
+    let(:cop_config) { { 'MinSize' => 0, 'WordRegex' => /\S+/ } }
+
+    it 'uses %W when autocorrecting strings with non-printable chars' do
+      new_source = autocorrect_source(cop, '["\x1f\x1e", "hello"]')
+      expect(new_source).to eq('%W(\u001F\u001E hello)')
+    end
+
+    it 'uses %w for strings which only appear to have an escape' do
+      new_source = autocorrect_source(cop, "['hi\\tthere', 'again\\n']")
+      expect(new_source).to eq('%w(hi\\tthere again\\n)')
     end
   end
 
