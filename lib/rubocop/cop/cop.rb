@@ -157,7 +157,7 @@ module RuboCop
       end
 
       def add_offense(node, loc, message = nil, severity = nil)
-        location = loc.is_a?(Symbol) ? node.loc.send(loc) : loc
+        location = loc.is_a?(Symbol) ? node.loc.public_send(loc) : loc
 
         # Don't include the same location twice for one cop.
         return if @offenses.any? { |o| o.location == location }
