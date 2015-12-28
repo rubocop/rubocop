@@ -61,8 +61,7 @@ module RuboCop
     end
 
     def deprecation_check
-      all_cops = self['AllCops']
-      return unless all_cops
+      return unless (all_cops = self['AllCops'])
 
       %w(Exclude Include).each do |key|
         plural = "#{key}s"
@@ -137,12 +136,9 @@ module RuboCop
     # Returns true if there's a chance that an Include pattern matches hidden
     # files, false if that's definitely not possible.
     def possibly_include_hidden?
-      if @possibly_include_hidden.nil?
-        @possibly_include_hidden = patterns_to_include.any? do |s|
-          s.is_a?(Regexp) || s.start_with?('.') || s.include?('/.')
-        end
+      @possibly_include_hidden ||= patterns_to_include.any? do |s|
+        s.is_a?(Regexp) || s.start_with?('.') || s.include?('/.')
       end
-      @possibly_include_hidden
     end
 
     def file_to_exclude?(file)
