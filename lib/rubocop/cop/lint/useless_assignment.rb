@@ -1,4 +1,5 @@
 # encoding: utf-8
+# frozen_string_literal: true
 
 module RuboCop
   module Cop
@@ -47,7 +48,7 @@ module RuboCop
         def message_for_useless_assignment(assignment)
           variable = assignment.variable
 
-          message = format(MSG, variable.name)
+          message = format(MSG, variable.name).dup
 
           if assignment.multiple_assignment?
             message << " Use `_` or `_#{variable.name}` as a variable name " \

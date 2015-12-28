@@ -1,4 +1,5 @@
 # encoding: utf-8
+# frozen_string_literal: true
 
 require 'rubocop/formatter/colorizable'
 require 'rubocop/formatter/text_util'
@@ -47,16 +48,17 @@ module RuboCop
       end
 
       def report_summary(file_count, offense_count, correction_count)
-        summary = pluralize(file_count, 'file')
+        summary = pluralize(file_count, 'file').dup
         summary << ' inspected, '
 
-        offenses_text = pluralize(offense_count, 'offense', no_for_zero: true)
+        offenses_text =
+          pluralize(offense_count, 'offense', no_for_zero: true).dup
         offenses_text << ' detected'
         summary << colorize(offenses_text, offense_count.zero? ? :green : :red)
 
         if correction_count > 0
           summary << ', '
-          correction_text = pluralize(correction_count, 'offense')
+          correction_text = pluralize(correction_count, 'offense').dup
           correction_text << ' corrected'
           color = correction_count == offense_count ? :green : :cyan
           summary << colorize(correction_text, color)
@@ -94,7 +96,8 @@ module RuboCop
       end
 
       def message(offense)
-        message = offense.corrected? ? green('[Corrected] ') : ''
+        message =
+          (offense.corrected? ? green('[Corrected] ') : '').dup
         message << annotate_message(offense.message)
       end
     end

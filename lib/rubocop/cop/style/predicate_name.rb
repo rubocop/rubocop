@@ -1,4 +1,5 @@
 # encoding: utf-8
+# frozen_string_literal: true
 
 module RuboCop
   module Cop
@@ -40,8 +41,8 @@ module RuboCop
           new_name = if prefix_blacklist.include?(prefix)
                        method_name.sub(prefix, '')
                      else
-                       method_name.dup
-                     end
+                       method_name
+                     end.dup
           new_name << '?' unless method_name.end_with?('?')
           new_name
         end
