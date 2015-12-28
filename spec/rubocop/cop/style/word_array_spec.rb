@@ -192,4 +192,13 @@ describe RuboCop::Cop::Style::WordArray, :config do
       expect(new_source).to eq('%w(a@example.com b@example.com)')
     end
   end
+
+  context 'with a treacherous WordRegex configuration' do
+    let(:cop_config) { { 'MinSize' => 0, 'WordRegex' => /[\w \[\]\(\)]/ } }
+
+    it "doesn't break when words contain whitespace" do
+      new_source = autocorrect_source(cop, "['hi there', 'something\telse']")
+      expect(new_source).to eq("['hi there', 'something\telse']")
+    end
+  end
 end
