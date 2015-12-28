@@ -8,7 +8,7 @@ describe RuboCop::Cop::Style::WordArray, :config do
   context 'when EnforcedStyle is percent' do
     let(:cop_config) do
       { 'MinSize' => 0,
-        'WordRegex' => /\A[\p{Word}]+\z/,
+        'WordRegex' => /\A[\p{Word}\n\t]+\z/,
         'EnforcedStyle' => 'percent' }
     end
 
@@ -35,6 +35,11 @@ describe RuboCop::Cop::Style::WordArray, :config do
     it 'registers an offense for arrays with character constants' do
       inspect_source(cop,
                      '["one", ?\n]')
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it 'registers an offense for strings with embedded newlines and tabs' do
+      inspect_source(cop, %(["one\n", "hi\tthere"]))
       expect(cop.offenses.size).to eq(1)
     end
 

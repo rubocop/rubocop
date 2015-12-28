@@ -875,7 +875,7 @@ Style/WordArray:
     - brackets
   MinSize: 0
   # The regular expression WordRegex decides what is considered a word.
-  WordRegex: !ruby/regexp '/\A[\p{Word}]+\z/'
+  WordRegex: !ruby/regexp '/\A[\p{Word}\n\t]+\z/'
 
 ##################### Metrics ##################################
 
