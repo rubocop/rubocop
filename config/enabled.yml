@@ -1282,6 +1282,7 @@ Rails/ReadWriteAttribute:
 Rails/SafeNavigationOperator:
   Description: 'Prefer `&.` over `ActiveSupport#try!`.'
   StyleGuide: 'https://github.com/bbatsov/rails-style-guide#try-bang'
+  CaptureTry: false
   Enabled: true
 
 Rails/ScopeArgs:
