@@ -89,13 +89,9 @@ module RuboCop
       def heredoc_ranges(arg)
         return [] unless arg.is_a?(Parser::AST::Node)
 
-        heredoc_ranges = []
-        arg.each_node(:dstr) do |n|
-          if n.loc.respond_to?(:heredoc_body)
-            heredoc_ranges << n.loc.heredoc_body.join(n.loc.heredoc_end)
-          end
-        end
-        heredoc_ranges
+        arg.each_node(:dstr)
+           .select { |n| n.loc.respond_to?(:heredoc_body) }
+           .map { |n| n.loc.heredoc_body.join(n.loc.heredoc_end) }
       end
 
       def block_comment_within?(expr)
@@ -133,11 +129,10 @@ module RuboCop
       end
 
       def each_line(expr)
-        offset = 0
+        line_begin_pos = expr.begin_pos
         expr.source.each_line do |line|
-          line_begin_pos = expr.begin_pos + offset
           yield line_begin_pos
-          offset += line.length
+          line_begin_pos += line.length
         end
       end
     end
