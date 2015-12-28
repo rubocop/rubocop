@@ -49,6 +49,31 @@ module RuboCop
             content =~ / /
           end
         end
+
+        def autocorrect(node)
+          syms = node.children.map { |c| c.children[0].to_s }
+          corrected = if style == :percent
+                        escape = syms.any? { |s| double_quotes_required?(s) }
+                        syms = syms.map { |s| escape_string(s) } if escape
+                        syms = syms.map { |s| s.gsub(/\)/, '\\)') }
+                        if escape
+                          "%I(#{syms.join(' ')})"
+                        else
+                          "%i(#{syms.join(' ')})"
+                        end
+                      else
+                        syms = syms.map { |s| to_symbol_literal(s) }
+                        "[#{syms.join(', ')}]"
+                      end
+
+          lambda do |corrector|
+            corrector.replace(node.loc.expression, corrected)
+          end
+        end
+
+        def escape_string(string)
+          string.inspect[1..-2].tap { |s| s.gsub!(/\\"/, '"') }
+        end
       end
     end
   end

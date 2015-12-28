@@ -94,6 +94,7 @@
 * [#2450](https://github.com/bbatsov/rubocop/issues/2450): `Style/Next` adjusts indentation when auto-correcting, to avoid introducing new offenses. ([@alexdowad][])
 * [#2066](https://github.com/bbatsov/rubocop/issues/2066): `Style/TrivialAccessors` doesn't flag what appear to be trivial accessor method definitions, if they are nested inside a call to `instance_eval`. ([@alexdowad][])
 * `Style/SymbolArray` doesn't flag arrays of symbols if a symbol contains a space character. ([@alexdowad][])
+* `Style/SymbolArray` can auto-correct offenses. ([@alexdowad][])
 
 ### Changes
 

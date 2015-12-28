@@ -221,6 +221,14 @@ module RuboCop
         end
       end
 
+      def to_symbol_literal(string)
+        if string =~ /\s/ || double_quotes_required?(string)
+          ":#{to_string_literal(string)}"
+        else
+          ":#{string}"
+        end
+      end
+
       # Take a string with embedded escapes, and convert the escapes as the Ruby
       # interpreter would when reading a double-quoted string literal.
       # For example, "\\n" will be converted to "\n".
