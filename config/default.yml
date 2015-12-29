@@ -423,7 +423,11 @@ Style/FileName:
   # It further expects it to be nested inside modules which match the names
   # of subdirectories in its path.
   ExpectMatchingDefinition: false
-
+  # If non-nil, expect all source file names to match the following regex.
+  # Only the file name itself is matched, not the entire file path.
+  # Use anchors as necessary if you want to match the entire name rather than
+  # just a part of it.
+  Regex: ~
   # With `IgnoreExecutableScripts` set to `true`, this cop does not
   # report offending filenames for executable scripts (i.e. source
   # files with a shebang in the first line).

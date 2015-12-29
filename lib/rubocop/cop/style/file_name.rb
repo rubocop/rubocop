@@ -11,6 +11,7 @@ module RuboCop
       class FileName < Cop
         MSG_SNAKE_CASE = 'Use snake_case for source file names.'
         MSG_NO_DEFINITION = '%s should define a class or module called `%s`.'
+        MSG_REGEX = '`%s` should match `%s`.'
 
         SNAKE_CASE = /^[\da-z_]+$/
 
@@ -18,24 +19,25 @@ module RuboCop
           file_path = processed_source.buffer.name
           return if config.file_to_include?(file_path)
 
-          basename = File.basename(file_path).sub(/\.[^\.]+$/, '')
-          if snake_case?(basename)
+          basename = File.basename(file_path)
+          if filename_good?(basename)
             return unless expect_matching_definition?
             return if find_class_or_module(processed_source.ast,
                                            to_namespace(file_path))
             range = source_range(processed_source.buffer, 1, 0)
             msg   = format(MSG_NO_DEFINITION,
-                           File.basename(file_path),
+                           basename,
                            to_namespace(file_path).join('::'))
-            add_offense(nil, range, msg)
           else
             first_line = processed_source.lines.first
             return if cop_config['IgnoreExecutableScripts'] &&
                       shebang?(first_line)
 
             range = source_range(processed_source.buffer, 1, 0)
-            add_offense(nil, range, MSG_SNAKE_CASE)
+            msg = regex ? format(MSG_REGEX, basename, regex) : MSG_SNAKE_CASE
           end
+
+          add_offense(nil, range, msg)
         end
 
         private
@@ -50,6 +52,15 @@ module RuboCop
 
         def expect_matching_definition?
           cop_config['ExpectMatchingDefinition']
+        end
+
+        def regex
+          cop_config['Regex']
+        end
+
+        def filename_good?(basename)
+          basename = basename.sub(/\.[^\.]+$/, '')
+          regex ? basename =~ regex : snake_case?(basename)
         end
 
         def find_class_or_module(node, namespace)
