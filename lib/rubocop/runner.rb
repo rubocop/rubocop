@@ -241,10 +241,6 @@ module RuboCop
           set.add_formatter(formatter_key, output_path)
         end
         set
-      rescue => error
-        warn error.message
-        $stderr.puts error.backtrace
-        exit(1)
       end
     end
 

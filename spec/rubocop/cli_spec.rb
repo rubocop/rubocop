@@ -81,8 +81,8 @@ describe RuboCop::CLI, :isolated_environment do
 
     describe '--version' do
       it 'exits cleanly' do
-        expect { cli.run ['-v'] }.to exit_with_code(0)
-        expect { cli.run ['--version'] }.to exit_with_code(0)
+        expect(cli.run(['-v'])).to eq(0)
+        expect(cli.run(['--version'])).to eq(0)
         expect($stdout.string).to eq((RuboCop::Version::STRING + "\n") * 2)
       end
     end
@@ -1840,7 +1840,7 @@ describe RuboCop::CLI, :isolated_environment do
       before do
         create_file('.rubocop.yml', ['Metrics/LineLength:',
                                      '  Max: 110'])
-        expect { cli.run ['--show-cops'] + cop_list }.to exit_with_code(0)
+        expect(cli.run(['--show-cops'] + cop_list)).to eq(0)
       end
 
       context 'with no args' do
@@ -2062,8 +2062,7 @@ describe RuboCop::CLI, :isolated_environment do
 
         context 'when unknown format name is specified' do
           it 'aborts with error message' do
-            expect { cli.run(['--format', 'unknown', 'example.rb']) }
-              .to exit_with_code(1)
+            expect(cli.run(['--format', 'unknown', 'example.rb'])).to eq(1)
             expect($stderr.string)
               .to include('No formatter for "unknown"')
           end
@@ -2072,8 +2071,7 @@ describe RuboCop::CLI, :isolated_environment do
         context 'when ambiguous format name is specified' do
           it 'aborts with error message' do
             # Both 'files' and 'fuubar' start with an 'f'.
-            expect { cli.run(['--format', 'f', 'example.rb']) }
-              .to exit_with_code(1)
+            expect(cli.run(['--format', 'f', 'example.rb'])).to eq(1)
             expect($stderr.string)
               .to include('Cannot determine formatter for "f"')
           end
@@ -2117,7 +2115,7 @@ describe RuboCop::CLI, :isolated_environment do
         context 'when unknown class name is specified' do
           it 'aborts with error message' do
             args = '--format UnknownFormatter example.rb'
-            expect { cli.run(args.split) }.to exit_with_code(1)
+            expect(cli.run(args.split)).to eq(1)
             expect($stderr.string).to include('UnknownFormatter')
           end
         end
@@ -3679,11 +3677,10 @@ describe RuboCop::CLI, :isolated_environment do
       end
 
       it 'prints a warning when --auto-gen-config is set' do
-        expect { cli.run(%w(-c .rubocop.yml --auto-gen-config)) }
-          .to exit_with_code(1)
+        expect(cli.run(%w(-c .rubocop.yml --auto-gen-config))).to eq(1)
         expect($stderr.string)
-          .to eq(['Attention: rubocop-todo.yml has been renamed to ' \
-                  '.rubocop_todo.yml',
+          .to eq(['Error: rubocop-todo.yml is obsolete; it must be called ' \
+                  '.rubocop_todo.yml instead',
                   ''].join("\n"))
       end
     end

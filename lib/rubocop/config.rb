@@ -14,7 +14,7 @@ module RuboCop
   class Config < DelegateClass(Hash)
     include PathUtil
 
-    class ValidationError < StandardError; end
+    class ValidationError < RuboCop::Error; end
 
     COMMON_PARAMS = %w(Exclude Include Severity AutoCorrect StyleGuide Details)
 
