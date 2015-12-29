@@ -360,7 +360,7 @@ describe RuboCop::Cop::Style::AlignParameters do
       src = ['class MyModel < ActiveRecord::Base',
              '  has_many :other_models,',
              '    class_name: "legacy_name",',
-             '    order: "#{leagacy_name.table_name}.published DESC"',
+             '    order: "#{legacy_name.table_name}.published DESC"',
              '',
              'end']
       new_source = autocorrect_source(cop, src)
@@ -368,7 +368,7 @@ describe RuboCop::Cop::Style::AlignParameters do
         .to eq ['class MyModel < ActiveRecord::Base',
                 '  has_many :other_models,',
                 '           class_name: "legacy_name",',
-                '           order: "#{leagacy_name.table_name}.published DESC"',
+                '           order: "#{legacy_name.table_name}.published DESC"',
                 '',
                 'end'].join("\n")
     end

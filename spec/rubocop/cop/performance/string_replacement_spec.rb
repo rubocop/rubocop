@@ -315,7 +315,7 @@ describe RuboCop::Cop::Performance::StringReplacement do
     expect(cop.messages).to eq(['Use `tr` instead of `gsub`.'])
   end
 
-  it 'regeisters an offense when using escape characters in the pattern' do
+  it 'registers an offense when using escape characters in the pattern' do
     inspect_source(cop, "'abc'.gsub('\n', ',')")
 
     expect(cop.messages).to eq(['Use `tr` instead of `gsub`.'])

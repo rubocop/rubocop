@@ -133,7 +133,7 @@ describe RuboCop::Config do
         configuration.make_excludes_absolute
       end
 
-      it 'should generate valid absulute directory' do
+      it 'should generate valid absolute directory' do
         expect(configuration['AllCops']['Exclude'])
           .to eq [
             '/home/foo/project/config/environment',

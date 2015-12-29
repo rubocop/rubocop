@@ -43,7 +43,7 @@ describe RuboCop::Cop::Style::CommentAnnotation, :config do
       expect(cop.highlights).to eq(['TODO:'])
     end
 
-    it 'autocrrects' do
+    it 'autocorrects' do
       corrected = autocorrect_source(cop, '# TODO:make better')
       expect(corrected).to eq('# TODO: make better')
     end

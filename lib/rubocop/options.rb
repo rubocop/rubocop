@@ -159,7 +159,7 @@ module RuboCop
     end
   end
 
-  # Validates option arguments and the options' compatibilty with each other.
+  # Validates option arguments and the options' compatibility with each other.
   class OptionsValidator
     # Cop name validation must be done later than option parsing, so it's not
     # called from within Options.

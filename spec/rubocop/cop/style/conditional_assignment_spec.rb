@@ -732,7 +732,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       expect(cop.offenses).to be_empty
     end
 
-    it 'allows vairable assignment in unless else with more than ' \
+    it 'allows variable assignment in unless else with more than ' \
        'variable assignment' do
       source = ['unless foo',
                 '  method_call',

@@ -279,7 +279,7 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
       inspect_source(cop,
                      ['a.',
                       '  b + c',   # b is indented relative to a
-                      '      .d']) # .d is alignend with c
+                      '      .d']) # .d is aligned with c
       expect(cop.offenses).to be_empty
     end
 
@@ -303,7 +303,7 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
       expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'indented')
     end
 
-    it 'falls back to indentation in complcated cases' do
+    it 'falls back to indentation in complicated cases' do
       inspect_source(cop,
                      # There are two method call chains here. The last one is
                      # an argument to the first, and they both start on the

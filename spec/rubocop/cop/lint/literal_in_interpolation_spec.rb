@@ -83,7 +83,7 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
       expect(cop.offenses).to be_empty
     end
 
-    it "does not try to autocrrect strings like #{keyword}" do
+    it "does not try to autocorrect strings like #{keyword}" do
       corrected = autocorrect_source(cop, %("this is the \#{#{keyword}} silly"))
 
       expect(corrected).to eq(%("this is the \#{#{keyword}} silly"))
