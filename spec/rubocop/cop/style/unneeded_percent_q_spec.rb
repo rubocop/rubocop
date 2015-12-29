@@ -33,10 +33,24 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
       expect(cop.messages).to be_empty
     end
 
-    it 'accepts a string with a tab character' do
+    it 'registers an offense for a string with single quotes and what appears' \
+       ' to be an escape' do
+      # There is no such thing as escapes in a %q() string
+      # So this can just as well be written with double quotes
       inspect_source(cop, "%q('hi\\t')")
 
-      expect(cop.messages).to be_empty
+      expect(cop.messages).to eq(['Use `%q` only for strings that contain ' \
+                                  'both single quotes and double quotes.'])
+    end
+
+    it 'registers an offense for a string with double quotes and what appears' \
+       ' to be an escape' do
+      # There is no such thing as escapes in a %q() string
+      # So this can just as well be written with single quotes
+      inspect_source(cop, '%q("hi\\t")')
+
+      expect(cop.messages).to eq(['Use `%q` only for strings that contain ' \
+                                  'both single quotes and double quotes.'])
     end
 
     it 'accepts regular expressions starting with %q' do
@@ -100,7 +114,7 @@ describe RuboCop::Cop::Style::UnneededPercentQ do
       expect(cop.messages).to be_empty
     end
 
-    it 'accepts a string with double quotes and tab character' do
+    it 'accepts a string with double quotes and an escape' do
       inspect_source(cop, '%Q("\\thi")')
 
       expect(cop.messages).to be_empty

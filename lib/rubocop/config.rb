@@ -3,6 +3,8 @@
 require 'delegate'
 require 'pathname'
 
+# rubocop:disable Metrics/ClassLength
+
 module RuboCop
   # This class represents the configuration of the RuboCop application
   # and all its cops. A Config is associated with a YAML configuration
@@ -12,7 +14,7 @@ module RuboCop
   class Config < DelegateClass(Hash)
     include PathUtil
 
-    class ValidationError < StandardError; end
+    class ValidationError < RuboCop::Error; end
 
     COMMON_PARAMS = %w(Exclude Include Severity AutoCorrect StyleGuide Details)
 
@@ -61,8 +63,7 @@ module RuboCop
     end
 
     def deprecation_check
-      all_cops = self['AllCops']
-      return unless all_cops
+      return unless (all_cops = self['AllCops'])
 
       %w(Exclude Include).each do |key|
         plural = "#{key}s"
@@ -79,13 +80,17 @@ module RuboCop
     end
 
     def cop_enabled?(cop)
-      for_cop(cop).empty? || for_cop(cop)['Enabled']
-    end
+      department = if cop.respond_to?(:cop_type)
+                     cop.cop_type.to_s.capitalize
+                   else
+                     cop.split('/')[-2]
+                   end
 
-    def warn_unless_valid
-      validate
-    rescue Config::ValidationError => e
-      warn Rainbow.new.wrap("Warning: #{e.message}").red
+      if (dept_config = self[department])
+        return false if dept_config['Enabled'] == false
+      end
+
+      for_cop(cop).empty? || for_cop(cop)['Enabled']
     end
 
     def add_missing_namespaces
@@ -98,7 +103,6 @@ module RuboCop
       end
     end
 
-    # TODO: This should be a private method
     def validate
       # Don't validate RuboCop's own files. Avoids infinite recursion.
       base_config_path = File.expand_path(File.join(ConfigLoader::RUBOCOP_HOME,
@@ -110,9 +114,17 @@ module RuboCop
       end
 
       invalid_cop_names.each do |name|
-        fail ValidationError, "unrecognized cop #{name} found in #{loaded_path}"
+        if name == 'Syntax'
+          fail ValidationError,
+               "configuration for Syntax cop found in #{loaded_path}\n" \
+               'This cop cannot be configured.'
+        end
+
+        warn Rainbow.new.wrap("Warning: unrecognized cop #{name} found in " \
+                              "#{loaded_path}").yellow
       end
 
+      reject_obsolete_parameters
       validate_parameter_names(valid_cop_names)
       validate_enforced_styles(valid_cop_names)
     end
@@ -137,12 +149,9 @@ module RuboCop
     # Returns true if there's a chance that an Include pattern matches hidden
     # files, false if that's definitely not possible.
     def possibly_include_hidden?
-      if @possibly_include_hidden.nil?
-        @possibly_include_hidden = patterns_to_include.any? do |s|
-          s.is_a?(Regexp) || s.start_with?('.') || s.include?('/.')
-        end
+      @possibly_include_hidden ||= patterns_to_include.any? do |s|
+        s.is_a?(Regexp) || s.start_with?('.') || s.include?('/.')
       end
-      @possibly_include_hidden
     end
 
     def file_to_exclude?(file)
@@ -194,8 +203,8 @@ module RuboCop
           next if COMMON_PARAMS.include?(param) ||
                   ConfigLoader.default_configuration[name].key?(param)
 
-          fail ValidationError,
-               "unrecognized parameter #{name}:#{param} found in #{loaded_path}"
+          warn Rainbow.new.wrap("Warning: unrecognized parameter #{name}:" \
+                                "#{param} found in #{loaded_path}").yellow
         end
       end
     end
@@ -210,6 +219,25 @@ module RuboCop
               "#{loaded_path}\n" \
               "Valid choices are: #{valid.join(', ')}"
         fail ValidationError, msg
+      end
+    end
+
+    def reject_obsolete_parameters
+      check_obsolete_parameter('Style/SpaceAroundOperators',
+                               'MultiSpaceAllowedForOperators',
+                               'If your intention was to allow extra spaces ' \
+                               'for alignment, please use AllowForAlignment: ' \
+                               'true instead.')
+      check_obsolete_parameter('AllCops', 'RunRailsCops',
+                               "Use the following configuration instead:\n" \
+                               "Rails:\n  Enabled: true")
+    end
+
+    def check_obsolete_parameter(cop, parameter, alternative = nil)
+      if key?(cop) && self[cop].key?(parameter)
+        fail ValidationError, "obsolete parameter #{parameter} (for #{cop}) " \
+                              "found in #{loaded_path}" \
+                              "#{"\n" if alternative}#{alternative}"
       end
     end
   end

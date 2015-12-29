@@ -43,7 +43,7 @@ module RuboCop
           lambda do |corrector|
             ranges, range = *args # ranges are sorted by position
 
-            if range.source =~ /\A#/
+            if range.source.start_with?('#')
               # eat the entire comment and following newline
               corrector.remove(range_with_surrounding_space(range, :right))
             else

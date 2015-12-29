@@ -6,33 +6,66 @@ module RuboCop
       # Checks that operators have space around them, except for **
       # which should not have surrounding space.
       class SpaceAroundOperators < Cop
-        TYPES = %w(and or class) + ASGN_NODES
-
-        TYPES.each { |t| define_method(:"on_#{t}") { |node| check(node) } }
+        include PrecedingFollowingAlignment
 
         def on_pair(node)
-          check(node) if node.loc.operator.is?('=>')
+          if node.loc.operator.is?('=>')
+            _, right = *node
+            check_operator(node.loc.operator, right.loc.expression)
+          end
         end
 
         def on_if(node)
           return unless node.loc.respond_to?(:question)
+          _, if_branch, else_branch = *node
 
-          check_operator(node.loc.question)
-          check_operator(node.loc.colon)
+          check_operator(node.loc.question, if_branch.loc.expression)
+          check_operator(node.loc.colon, else_branch.loc.expression)
         end
 
         def on_resbody(node)
-          check_operator(node.loc.assoc) if node.loc.assoc
+          if node.loc.assoc
+            _, variable, = *node
+            check_operator(node.loc.assoc, variable.loc.expression)
+          end
         end
 
         def on_send(node)
-          if node.loc.operator
-            check(node)
+          if node.loc.operator # aref assignment, attribute assignment
+            on_special_asgn(node)
           elsif !unary_operation?(node) && !called_with_dot?(node)
             op = node.loc.selector
-            check_operator(op) if operator?(op)
+            if operator?(op)
+              _, _, right, = *node
+              check_operator(node.loc.selector, right.loc.expression)
+            end
           end
         end
+
+        def on_binary(node)
+          _, right, = *node
+          return if right.nil?
+          check_operator(node.loc.operator, right.loc.expression)
+        end
+
+        def on_special_asgn(node)
+          return unless node.loc.operator
+          _, _, right, = *node
+          check_operator(node.loc.operator, right.loc.expression)
+        end
+
+        alias on_or       on_binary
+        alias on_and      on_binary
+        alias on_lvasgn   on_binary
+        alias on_masgn    on_binary
+        alias on_casgn    on_special_asgn
+        alias on_ivasgn   on_binary
+        alias on_cvasgn   on_binary
+        alias on_gvasgn   on_binary
+        alias on_class    on_binary
+        alias on_or_asgn  on_binary
+        alias on_and_asgn on_binary
+        alias on_op_asgn  on_special_asgn
 
         private
 
@@ -51,11 +84,7 @@ module RuboCop
           node.loc.dot
         end
 
-        def check(node)
-          check_operator(node.loc.operator) if node.loc.operator
-        end
-
-        def check_operator(op)
+        def check_operator(op, right_operand)
           with_space = range_with_surrounding_space(op)
           return if with_space.source.start_with?("\n")
 
@@ -65,27 +94,33 @@ module RuboCop
                           'Space around operator `**` detected.')
             end
           elsif with_space.source !~ /^\s.*\s$/
-            add_offense(with_space, op,
-                        'Surrounding space missing for operator' \
-                        " `#{op.source}`.")
-          elsif with_space.source =~ /(^  |  $)/ && !multi_space_operator?(op)
-            add_offense(with_space, op,
-                        "Operator `#{op.source}` should be surrounded" \
-                        ' with a single space.')
+            add_offense(with_space, op, 'Surrounding space missing for ' \
+                                        "operator `#{op.source}`.")
+          elsif excess_leading_space?(op, with_space)
+            add_offense(with_space, op, "Operator `#{op.source}` should be " \
+                                        'surrounded by a single space.')
+          elsif excess_trailing_space?(right_operand, with_space)
+            add_offense(with_space, op, "Operator `#{op.source}` should be " \
+                                        'surrounded by a single space.')
           end
         end
 
-        def multi_space_operator?(op)
-          cop_config['MultiSpaceAllowedForOperators'].any? do |multi_space_op|
-            op.is?(multi_space_op)
-          end
+        def excess_leading_space?(op, with_space)
+          with_space.source =~ /^  / &&
+            (!allow_for_alignment? || !aligned_with_operator?(op))
+        end
+
+        def excess_trailing_space?(right_operand, with_space)
+          with_space.source =~ /  $/ &&
+            (!allow_for_alignment? || !aligned_with_something?(right_operand))
         end
 
         def autocorrect(range)
           lambda do |corrector|
-            case range.source
-            when /\*\*/
+            if range.source =~ /\*\*/
               corrector.replace(range, '**')
+            elsif range.source.end_with?("\n")
+              corrector.replace(range, " #{range.source.strip}\n")
             else
               corrector.replace(range, " #{range.source.strip} ")
             end

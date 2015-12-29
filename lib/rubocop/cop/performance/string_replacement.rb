@@ -20,7 +20,7 @@ module RuboCop
       #   'a b c'.delete(' ')
       class StringReplacement < Cop
         MSG = 'Use `%s` instead of `%s`.'
-        DETERMINISTIC_REGEX = /^[\w\s\-,"']+$/.freeze
+        DETERMINISTIC_REGEX = /\A(?:#{LITERAL_REGEX})+\Z/
         REGEXP_CONSTRUCTOR_METHODS = [:new, :compile].freeze
         GSUB_METHODS = [:gsub, :gsub!].freeze
         DETERMINISTIC_TYPES = [:regexp, :str, :send].freeze
@@ -43,6 +43,9 @@ module RuboCop
           if regex?(first_param)
             return unless first_source =~ DETERMINISTIC_REGEX
             return if options
+            # This must be done after checking DETERMINISTIC_REGEX
+            # Otherwise things like \s will trip us up
+            first_source = interpret_string_escapes(first_source)
           end
 
           return if first_source.length != 1
@@ -64,7 +67,7 @@ module RuboCop
             corrector.replace(node.loc.selector, replacement_method)
             unless first_param.str_type?
               corrector.replace(first_param.loc.expression,
-                                escape(first_source))
+                                to_string_literal(first_source))
             end
 
             if second_source.empty? && first_source.length == 1
@@ -83,7 +86,6 @@ module RuboCop
           case first_param.type
           when :regexp, :send
             return nil unless regex?(first_param)
-
             source, options = extract_source(first_param)
           when :str
             source, = *first_param
@@ -154,19 +156,6 @@ module RuboCop
 
         def bang_method?(method)
           method.to_s.end_with?(BANG)
-        end
-
-        def escape(string)
-          if require_double_quotes?(string)
-            string.inspect
-          else
-            "'#{string}'"
-          end
-        end
-
-        def require_double_quotes?(string)
-          string.inspect.include?(SINGLE_QUOTE) ||
-            StringHelp::ESCAPED_CHAR_REGEXP =~ string
         end
 
         def method_suffix(node)

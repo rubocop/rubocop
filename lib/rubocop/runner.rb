@@ -188,11 +188,17 @@ module RuboCop
 
     def inspect_file(processed_source)
       config = @config_store.for(processed_source.path)
+      enable_rails_cops(config) if @options[:rails]
       team = Cop::Team.new(mobilized_cop_classes(config), config, @options)
       offenses = team.inspect_file(processed_source)
       @errors.concat(team.errors)
       @warnings.concat(team.warnings)
       [offenses, team.updated_source_file?]
+    end
+
+    def enable_rails_cops(config)
+      config['Rails'] ||= {}
+      config['Rails']['Enabled'] = true
     end
 
     def mobilized_cop_classes(config)
@@ -221,13 +227,6 @@ module RuboCop
       if style_guide_cops_only?(config)
         cop_classes.select! { |cop| config.for_cop(cop)['StyleGuide'] }
       end
-
-      # filter out Rails cops unless requested
-      cop_classes.reject!(&:rails?) unless run_rails_cops?(config)
-    end
-
-    def run_rails_cops?(config)
-      @options[:rails] || config['AllCops']['RunRailsCops']
     end
 
     def style_guide_cops_only?(config)
@@ -242,10 +241,6 @@ module RuboCop
           set.add_formatter(formatter_key, output_path)
         end
         set
-      rescue => error
-        warn error.message
-        $stderr.puts error.backtrace
-        exit(1)
       end
     end
 

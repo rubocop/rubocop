@@ -16,7 +16,7 @@ module RuboCop
         TARGET_NODE = s(:const, nil, :RuntimeError)
 
         def on_send(node)
-          return unless command?(:raise, node) || command?(:fail, node)
+          return unless node.command?(:raise) || node.command?(:fail)
 
           _receiver, _selector, *args = *node
 

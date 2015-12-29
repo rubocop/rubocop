@@ -23,26 +23,23 @@ module RuboCop
         MSG = '`end` at %d, %d is not aligned with `%s` at %d, %d.'
 
         def on_method_def(node, _method_name, _args, _body)
-          check_offset_of_node(node)
+          check_end_kw_in_node(node)
         end
 
         def on_send(node)
-          receiver, method_name, *args = *node
-          return unless modifier_and_def_on_same_line?(receiver, method_name,
-                                                       args)
+          return unless modifier_and_def_on_same_line?(node)
+          _, _, method_def = *node
+          expr = node.loc.expression
 
-          method_def = args.first
-          if style == :start_of_line
-            expr = node.loc.expression
-            range = Parser::Source::Range.new(expr.source_buffer,
-                                              expr.begin_pos,
-                                              method_def.loc.keyword.end_pos)
-            check_offset(method_def, range.source,
-                         method_def.loc.keyword.begin_pos - expr.begin_pos)
-          else
-            check_offset(method_def, 'def', 0)
-          end
+          line_start = Parser::Source::Range.new(expr.source_buffer,
+                                                 expr.begin_pos,
+                                                 method_def.loc.keyword.end_pos)
+          align_with = {
+            def: method_def.loc.keyword,
+            start_of_line: line_start
+          }
 
+          check_end_kw_alignment(method_def, align_with)
           ignore_node(method_def) # Don't check the same `end` again.
         end
 

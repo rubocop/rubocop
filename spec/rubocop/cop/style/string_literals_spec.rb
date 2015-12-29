@@ -130,6 +130,24 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
       new_source = autocorrect_source(cop, 's = "abc"')
       expect(new_source).to eq("s = 'abc'")
     end
+
+    it 'registers an offense for "\""' do
+      inspect_source(cop, '"\\""')
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.messages).to eq(['Prefer single-quoted strings when you ' \
+                                  "don't need string interpolation or " \
+                                  'special symbols.'])
+    end
+
+    it 'registers an offense for hello... using hex escapes' do
+      inspect_source(cop, '"\\x68\\x65\\x6c\\x6c\\x6f"')
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it 'autocorrects hello... using hex escapes' do
+      new_source = autocorrect_source(cop, '"\\x68\\x65\\x6c\\x6c\\x6f"')
+      expect(new_source).to eq("'hello'")
+    end
   end
 
   context 'configured with double quotes preferred' do

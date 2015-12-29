@@ -226,6 +226,11 @@ configuration parameter called `Max` and when running
 `rubocop --auto-gen-config`, this parameter will be set to the highest value
 found for the inspected code.
 
+#### Performance
+
+Performance cops catch Ruby idioms which are known to be slower than another
+equivalent (and equally readable) idiom.
+
 #### Rails
 
 Rails cops are specific to the Ruby on Rails framework. Unlike style
@@ -239,8 +244,8 @@ $ rubocop -R
 or add the following directive to your `.rubocop.yml`:
 
 ```yaml
-AllCops:
-  RunRailsCops: true
+Rails:
+  Enabled: true
 ```
 
 ## Configuration

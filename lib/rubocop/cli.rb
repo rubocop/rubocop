@@ -6,6 +6,8 @@ module RuboCop
   class CLI
     include Formatter::TextUtil
 
+    class Finished < Exception; end
+
     attr_reader :options, :config_store
 
     def initialize
@@ -29,10 +31,11 @@ module RuboCop
       maybe_print_corrected_source
 
       all_passed && !runner.aborting? && runner.errors.empty? ? 0 : 1
-    rescue Cop::AmbiguousCopName => e
-      $stderr.puts "Ambiguous cop name #{e.message} needs namespace " \
-                   'qualifier.'
+    rescue RuboCop::Error => e
+      $stderr.puts Rainbow.new.wrap('Error: ' << e.message).red
       return 1
+    rescue Finished
+      return 0
     rescue StandardError, SyntaxError => e
       $stderr.puts e.message
       $stderr.puts e.backtrace
@@ -68,7 +71,7 @@ module RuboCop
       puts RuboCop::Version.version(false) if @options[:version]
       puts RuboCop::Version.version(true) if @options[:verbose_version]
       print_available_cops if @options[:show_cops]
-      exit(0)
+      fail Finished
     end
 
     def print_available_cops

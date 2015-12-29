@@ -90,6 +90,19 @@ module RuboCop
                                               range.begin_pos)
         @source_rewriter.remove(to_remove)
       end
+
+      # Removes `size` characters from the beginning of the given range.
+      # If `size` is greater than the size of `range`, the removed region can
+      # overrun the end of `range`.
+      #
+      # @param [Parser::Source::Range] range
+      # @param [Integer] size
+      def remove_leading(range, size)
+        to_remove = Parser::Source::Range.new(range.source_buffer,
+                                              range.begin_pos,
+                                              range.begin_pos + size)
+        @source_rewriter.remove(to_remove)
+      end
     end
   end
 end

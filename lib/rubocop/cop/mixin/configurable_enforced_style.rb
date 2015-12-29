@@ -48,23 +48,24 @@ module RuboCop
       end
 
       def no_acceptable_style!
+        @detected_style = []
         self.config_to_allow_offenses = { 'Enabled' => false }
       end
 
       def detected_style
-        config_to_allow_offenses[parameter_name]
+        @detected_style ||= nil
       end
 
       def detected_style=(style)
+        @detected_style = style
+
         if style.nil?
           no_acceptable_style!
         elsif style.is_a?(Array)
           if style.empty?
             no_acceptable_style!
-          elsif style.one?
-            config_to_allow_offenses[parameter_name] = style[0]
           else
-            config_to_allow_offenses[parameter_name] = style
+            config_to_allow_offenses[parameter_name] = style[0]
           end
         else
           config_to_allow_offenses[parameter_name] = style
@@ -75,21 +76,21 @@ module RuboCop
       alias unrecognized_style_detected no_acceptable_style!
 
       def style
-        s = cop_config[parameter_name]
-        if cop_config['SupportedStyles'].include?(s)
-          s.to_sym
-        else
-          fail "Unknown style #{s} selected!"
-        end
+        s = cop_config[parameter_name].to_sym
+        return s if supported_styles.include?(s)
+        fail "Unknown style #{s} selected!"
       end
 
       def alternative_style
-        a = cop_config['SupportedStyles'].map(&:to_sym)
-        if a.size != 2
+        if supported_styles.size != 2
           fail 'alternative_style can only be used when there are exactly ' \
                '2 SupportedStyles'
         end
-        style == a.first ? a.last : a.first
+        (supported_styles - [style]).first
+      end
+
+      def supported_styles
+        @supported_styles ||= cop_config['SupportedStyles'].map(&:to_sym)
       end
 
       def parameter_name

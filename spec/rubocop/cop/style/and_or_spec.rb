@@ -273,5 +273,35 @@ describe RuboCop::Cop::Style::AndOr, :config do
         expect(cop.offenses.size).to eq(1)
       end
     end
+
+    context 'within a nested begin node' do
+      # regression test; see GH issue 2531
+      it 'autocorrects "and" with && and adds parens' do
+        new_source = autocorrect_source(cop, ['def x',
+                                              'end',
+                                              '',
+                                              'def y',
+                                              '  a = b and a.c',
+                                              'end'])
+        expect(new_source).to eq(['def x',
+                                  'end',
+                                  '',
+                                  'def y',
+                                  '  (a = b) && a.c',
+                                  'end'].join("\n"))
+      end
+    end
+
+    context 'within a nested begin node with one child only' do
+      # regression test; see GH issue 2531
+      it 'autocorrects "and" with && and adds parens' do
+        new_source = autocorrect_source(cop, ['(def y',
+                                              '  a = b and a.c',
+                                              'end)'])
+        expect(new_source).to eq(['(def y',
+                                  '  (a = b) && a.c',
+                                  'end)'].join("\n"))
+      end
+    end
   end
 end

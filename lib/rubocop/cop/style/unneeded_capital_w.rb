@@ -19,7 +19,7 @@ module RuboCop
         def on_percent_literal(node)
           requires_interpolation = node.children.any? do |string|
             string.type == :dstr ||
-              string.source =~ StringHelp::ESCAPED_CHAR_REGEXP
+              double_quotes_acceptable?(string.str_content)
           end
           add_offense(node, :expression) unless requires_interpolation
         end

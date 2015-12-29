@@ -3,37 +3,56 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for array literals made up of word-like
+      # This cop can check for array literals made up of word-like
       # strings, that are not using the %w() syntax.
+      #
+      # Alternatively, it can check for uses of the %w() syntax, in projects
+      # which do not want to include that syntax.
       class WordArray < Cop
         include ArraySyntax
-        # The parameter is called MinSize (meaning the minimum array size for
-        # which an offense can be registered), but essentially it's a Max
-        # parameter (the maximum number of something that's allowed).
-        include ConfigurableMax
 
-        MSG = 'Use `%w` or `%W` for array of words.'
+        PERCENT_MSG = 'Use `%w` or `%W` for an array of words.'
+        ARRAY_MSG = 'Use `[]` for an array of words.'
         QUESTION_MARK_SIZE = '?'.size
 
         def on_array(node)
           array_elems = node.children
-          return unless bracketed_array_of?(:str, node) &&
-                        !complex_content?(array_elems) &&
-                        array_elems.size > min_size &&
-                        !comments_in_array?(node)
 
-          add_offense(node, :expression) { self.max = array_elems.size }
+          if bracketed_array_of?(:str, node)
+            return if complex_content?(array_elems) ||
+                      comments_in_array?(node)
+            style_detected(:brackets, array_elems.size)
+
+            if style == :percent && array_elems.size >= min_size
+              add_offense(node, :expression, PERCENT_MSG)
+            end
+          elsif node.loc.begin && node.loc.begin.source =~ /\A%[wW]/
+            style_detected(:percent, array_elems.size)
+            add_offense(node, :expression, ARRAY_MSG) if style == :brackets
+          end
+        end
+
+        def autocorrect(node)
+          words = node.children
+          if style == :percent
+            escape = words.any? { |w| double_quotes_required?(w.children[0]) }
+            char = escape ? 'W' : 'w'
+            contents = autocorrect_words(words, escape, node.loc.line)
+            lambda do |corrector|
+              corrector.replace(node.loc.expression, "%#{char}(#{contents})")
+            end
+          else
+            words = words.map { |w| to_string_literal(w.children[0]) }
+            lambda do |corrector|
+              corrector.replace(node.loc.expression, "[#{words.join(', ')}]")
+            end
+          end
         end
 
         private
 
-        def parameter_name
-          'MinSize'
-        end
-
         def comments_in_array?(node)
           comments = processed_source.comments
-
           array_range = node.loc.expression.to_a
 
           comments.any? do |comment|
@@ -41,16 +60,15 @@ module RuboCop
           end
         end
 
-        def complex_content?(arr_sexp)
-          arr_sexp.each do |s|
-            source = s.source
-            next if source.start_with?('?') # %W(\r \n) can replace [?\r, ?\n]
-
-            str_content = Util.strip_quotes(source)
-            return true unless str_content =~ word_regex
+        def complex_content?(strings)
+          strings.any? do |s|
+            string = s.str_content
+            string !~ word_regex || string =~ / /
           end
+        end
 
-          false
+        def style
+          cop_config['EnforcedStyle'].to_sym
         end
 
         def min_size
@@ -61,43 +79,46 @@ module RuboCop
           cop_config['WordRegex']
         end
 
-        def autocorrect(node)
-          @interpolated = false
-          contents = autocorrect_words(node.children, node.loc.line)
-
-          char = @interpolated ? 'W' : 'w'
-
-          lambda do |corrector|
-            corrector.replace(node.loc.expression, "%#{char}(#{contents})")
-          end
-        end
-
-        def autocorrect_words(word_nodes, base_line_number)
+        def autocorrect_words(word_nodes, escape, base_line_number)
           previous_node_line_number = base_line_number
           word_nodes.map do |node|
             number_of_line_breaks = node.loc.line - previous_node_line_number
             line_breaks = "\n" * number_of_line_breaks
             previous_node_line_number = node.loc.line
-
-            line_breaks + source_for(node)
+            content = node.children[0]
+            content = escape ? escape_string(content) : content
+            content.gsub!(/\)/, '\\)')
+            line_breaks + content
           end.join(' ')
         end
 
-        def source_for(str_node)
-          if character_literal?(str_node)
-            @interpolated = true
-            begin_pos = str_node.loc.expression.begin_pos + QUESTION_MARK_SIZE
-            end_pos = str_node.loc.expression.end_pos
-          else
-            begin_pos = str_node.loc.begin.end_pos
-            end_pos = str_node.loc.end.begin_pos
-          end
-          Parser::Source::Range.new(str_node.loc.expression.source_buffer,
-                                    begin_pos, end_pos).source
+        def escape_string(string)
+          string.inspect[1..-2].tap { |s| s.gsub!(/\\"/, '"') }
         end
 
-        def character_literal?(node)
-          node.loc.end.nil?
+        def style_detected(style, ary_size)
+          cfg = config_to_allow_offenses
+          return if cfg['Enabled'] == false
+
+          @largest_brackets ||= -Float::INFINITY
+          @smallest_percent ||= Float::INFINITY
+
+          if style == :percent
+            @smallest_percent = ary_size if ary_size < @smallest_percent
+          else
+            @largest_brackets = ary_size if ary_size > @largest_brackets
+          end
+
+          if cfg['EnforcedStyle'] == style.to_s
+            # do nothing
+          elsif cfg['EnforcedStyle'].nil?
+            cfg['EnforcedStyle'] = style.to_s
+          elsif @smallest_percent <= @largest_brackets
+            self.config_to_allow_offenses = { 'Enabled' => false }
+          else
+            cfg['EnforcedStyle'] = 'percent'
+            cfg['MinSize'] = @largest_brackets + 1
+          end
         end
       end
     end

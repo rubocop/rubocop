@@ -33,12 +33,10 @@ module RuboCop
           src = node.source
           return unless start_with_percent_q_variant?(src)
           return if src.include?(SINGLE_QUOTE) && src.include?(QUOTE)
-          return if src =~ StringHelp::ESCAPED_CHAR_REGEXP
           if src.start_with?(PERCENT_Q) && src =~ STRING_INTERPOLATION_REGEXP
             return
           end
-          if src.start_with?(PERCENT_CAPITAL_Q) &&
-             src.include?(QUOTE) && src =~ STRING_INTERPOLATION_REGEXP
+          if src.start_with?(PERCENT_CAPITAL_Q) && acceptable_capital_q?(node)
             return
           end
 
@@ -71,6 +69,13 @@ module RuboCop
 
         def start_with_percent_q_variant?(string)
           string.start_with?(PERCENT_Q, PERCENT_CAPITAL_Q)
+        end
+
+        def acceptable_capital_q?(node)
+          src = node.source
+          src.include?(QUOTE) &&
+            (src =~ STRING_INTERPOLATION_REGEXP ||
+            (node.str_type? && double_quotes_acceptable?(node.str_content)))
         end
       end
     end

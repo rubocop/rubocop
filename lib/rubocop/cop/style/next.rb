@@ -31,6 +31,12 @@ module RuboCop
                        :map, :reduce, :reject, :reject!, :reverse_each, :select,
                        :select!, :times, :upto].freeze
 
+        def investigate(_processed_source)
+          # When correcting nested offenses, we need to keep track of how much
+          # we have adjusted the indentation of each line
+          @reindented_lines = Hash.new(0)
+        end
+
         def on_block(node)
           block_owner, _, body = *node
           return unless block_owner.send_type?
@@ -102,6 +108,7 @@ module RuboCop
         def autocorrect(node)
           lambda do |corrector|
             cond, if_body, = *node
+
             opposite_kw = if_body.nil? ? 'if' : 'unless'
             next_code = 'next ' << opposite_kw << ' ' <<
                         cond.source
@@ -109,6 +116,11 @@ module RuboCop
 
             corrector.remove(cond_range(node, cond))
             corrector.remove(end_range(node))
+
+            # end_range starts with the final newline of the if body
+            reindent_lines = (node.loc.expression.line + 1)...node.loc.end.line
+            reindent_lines = reindent_lines.to_a - heredoc_lines(node)
+            reindent(reindent_lines, cond, corrector)
           end
         end
 
@@ -130,6 +142,43 @@ module RuboCop
 
         def end_followed_by_whitespace_only?(source_buffer, end_pos)
           source_buffer.source[end_pos..-1] =~ /\A\s*$/
+        end
+
+        # Adjust indentation of `lines` to match `node`
+        def reindent(lines, node, corrector)
+          range  = node.loc.expression
+          buffer = range.source_buffer
+
+          target_indent = range.source_line =~ /\S/
+
+          # Skip blank lines
+          lines.reject! { |lineno| buffer.source_line(lineno) =~ /\A\s*\z/ }
+          return if lines.empty?
+
+          actual_indent = lines.map do |lineno|
+            buffer.source_line(lineno) =~ /\S/
+          end.min
+
+          delta = actual_indent - target_indent
+          lines.each do |lineno|
+            adjustment = delta
+            adjustment += @reindented_lines[lineno]
+            @reindented_lines[lineno] = adjustment
+
+            if adjustment > 0
+              corrector.remove_leading(buffer.line_range(lineno), adjustment)
+            elsif adjustment < 0
+              corrector.insert_before(buffer.line_range(lineno),
+                                      ' ' * -adjustment)
+            end
+          end
+        end
+
+        def heredoc_lines(node)
+          node.each_node(:dstr)
+              .select { |n| n.loc.respond_to?(:heredoc_body) }
+              .map { |n| n.loc.heredoc_body }
+              .flat_map { |b| (b.line...b.last_line).to_a }
         end
       end
     end

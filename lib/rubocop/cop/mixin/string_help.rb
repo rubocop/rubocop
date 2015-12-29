@@ -7,10 +7,6 @@ module RuboCop
     # adding offenses for the faulty string nodes, and with filtering out
     # nodes.
     module StringHelp
-      # Regex matches IF there is a ' or there is a \\ in the string that is
-      # not preceded/followed by another \\ (e.g. "\\x34") but not "\\\\".
-      ESCAPED_CHAR_REGEXP = /(?<! \\) \\{2}* \\ (?! \\)/x
-
       def on_str(node)
         # Constants like __FILE__ are handled as strings,
         # but don't respond to begin.

@@ -6,7 +6,7 @@ module RuboCop
       # This cop checks for uses of Module#attr.
       class Attr < Cop
         def on_send(node)
-          return unless command?(:attr, node)
+          return unless node.command?(:attr)
           _receiver, _method_name, *args = *node
           msg = "Do not use `attr`. Use `#{replacement_method(node)}` instead."
 

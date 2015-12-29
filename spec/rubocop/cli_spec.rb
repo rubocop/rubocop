@@ -81,8 +81,8 @@ describe RuboCop::CLI, :isolated_environment do
 
     describe '--version' do
       it 'exits cleanly' do
-        expect { cli.run ['-v'] }.to exit_with_code(0)
-        expect { cli.run ['--version'] }.to exit_with_code(0)
+        expect(cli.run(['-v'])).to eq(0)
+        expect(cli.run(['--version'])).to eq(0)
         expect($stdout.string).to eq((RuboCop::Version::STRING + "\n") * 2)
       end
     end
@@ -530,7 +530,7 @@ describe RuboCop::CLI, :isolated_environment do
                   "#{e}:3:3: C: [Corrected] Keep a blank line before and " \
                   'after `private`.',
                   "#{e}:4:7: C: [Corrected] Use `%w` or `%W` " \
-                  'for array of words.',
+                  'for an array of words.',
                   "#{e}:4:8: C: [Corrected] Prefer single-quoted strings " \
                   "when you don't need string interpolation or special " \
                   'symbols.',
@@ -540,7 +540,7 @@ describe RuboCop::CLI, :isolated_environment do
                   "#{e}:4:21: C: [Corrected] Avoid comma after the last item " \
                   'of an array.',
                   "#{e}:5:7: C: [Corrected] Use `%w` or `%W` " \
-                  'for array of words.',
+                  'for an array of words.',
                   "#{e}:5:8: C: [Corrected] Prefer single-quoted strings " \
                   "when you don't need string interpolation or special " \
                   'symbols.',
@@ -834,21 +834,18 @@ describe RuboCop::CLI, :isolated_environment do
 
       it 'does not say [Corrected] if correction was avoided' do
         src = ['# encoding: utf-8',
-               'a = c and b',
                'not a && b',
                'func a do b end',
                "Signal.trap('TERM') { system(cmd); exit }"]
         corrected = ['# encoding: utf-8',
-                     'a = c and b',
                      'not a && b',
                      'func a do b end',
                      "Signal.trap('TERM') { system(cmd); exit }"]
         offenses =
           ['== example.rb ==',
-           'C:  2:  7: Use && instead of and.',
-           'C:  3:  1: Use ! instead of not.',
-           'C:  4:  8: Prefer {...} over do...end for single-line blocks.',
-           'C:  5: 34: Do not use semicolons to terminate expressions.']
+           'C:  2:  1: Use ! instead of not.',
+           'C:  3:  8: Prefer {...} over do...end for single-line blocks.',
+           'C:  4: 34: Do not use semicolons to terminate expressions.']
 
         if RUBY_VERSION >= '2'
           src += ['def self.some_method(foo, bar: 1)',
@@ -857,10 +854,10 @@ describe RuboCop::CLI, :isolated_environment do
           corrected += ['def self.some_method(foo, bar: 1)',
                         '  log.debug(foo)',
                         'end']
-          offenses += ['W:  6: 27: Unused method argument - bar.']
-          summary = '1 file inspected, 5 offenses detected'
-        else
+          offenses += ['W:  5: 27: Unused method argument - bar.']
           summary = '1 file inspected, 4 offenses detected'
+        else
+          summary = '1 file inspected, 3 offenses detected'
         end
         create_file('example.rb', src)
         expect(cli.run(%w(-a -f simple))).to eq(1)
@@ -935,8 +932,7 @@ describe RuboCop::CLI, :isolated_environment do
                   '',
                   '# Offense count: 1',
                   '# Cop supports --auto-correct.',
-                  '# Configuration parameters: MultiSpaceAllowedForOperators.',
-                  '# MultiSpaceAllowedForOperators: =, =>',
+                  '# Configuration parameters: AllowForAlignment.',
                   'Style/SpaceAroundOperators:',
                   '  Exclude:',
                   "    - 'example1.rb'",
@@ -1061,8 +1057,7 @@ describe RuboCop::CLI, :isolated_environment do
            '',
            '# Offense count: 1',
            '# Cop supports --auto-correct.',
-           '# Configuration parameters: MultiSpaceAllowedForOperators.',
-           '# MultiSpaceAllowedForOperators: =, =>',
+           '# Configuration parameters: AllowForAlignment.',
            'Style/SpaceAroundOperators:',
            '  Exclude:',
            "    - 'example1.rb'",
@@ -1144,8 +1139,7 @@ describe RuboCop::CLI, :isolated_environment do
            '',
            '# Offense count: 1',
            '# Cop supports --auto-correct.',
-           '# Configuration parameters: MultiSpaceAllowedForOperators.',
-           '# MultiSpaceAllowedForOperators: =, =>',
+           '# Configuration parameters: AllowForAlignment.',
            'Style/SpaceAroundOperators:',
            '  Exclude:',
            "    - 'example1.rb'",
@@ -1336,8 +1330,7 @@ describe RuboCop::CLI, :isolated_environment do
            "    - 'example2.rb'",
            '',
            '# Cop supports --auto-correct.',
-           '# Configuration parameters: MultiSpaceAllowedForOperators.',
-           '# MultiSpaceAllowedForOperators: =, =>',
+           '# Configuration parameters: AllowForAlignment.',
            'Style/SpaceAroundOperators:',
            '  Exclude:',
            "    - 'example1.rb'",
@@ -1847,7 +1840,7 @@ describe RuboCop::CLI, :isolated_environment do
       before do
         create_file('.rubocop.yml', ['Metrics/LineLength:',
                                      '  Max: 110'])
-        expect { cli.run ['--show-cops'] + cop_list }.to exit_with_code(0)
+        expect(cli.run(['--show-cops'] + cop_list)).to eq(0)
       end
 
       context 'with no args' do
@@ -2069,8 +2062,7 @@ describe RuboCop::CLI, :isolated_environment do
 
         context 'when unknown format name is specified' do
           it 'aborts with error message' do
-            expect { cli.run(['--format', 'unknown', 'example.rb']) }
-              .to exit_with_code(1)
+            expect(cli.run(['--format', 'unknown', 'example.rb'])).to eq(1)
             expect($stderr.string)
               .to include('No formatter for "unknown"')
           end
@@ -2079,8 +2071,7 @@ describe RuboCop::CLI, :isolated_environment do
         context 'when ambiguous format name is specified' do
           it 'aborts with error message' do
             # Both 'files' and 'fuubar' start with an 'f'.
-            expect { cli.run(['--format', 'f', 'example.rb']) }
-              .to exit_with_code(1)
+            expect(cli.run(['--format', 'f', 'example.rb'])).to eq(1)
             expect($stderr.string)
               .to include('Cannot determine formatter for "f"')
           end
@@ -2124,7 +2115,7 @@ describe RuboCop::CLI, :isolated_environment do
         context 'when unknown class name is specified' do
           it 'aborts with error message' do
             args = '--format UnknownFormatter example.rb'
-            expect { cli.run(args.split) }.to exit_with_code(1)
+            expect(cli.run(args.split)).to eq(1)
             expect($stderr.string).to include('UnknownFormatter')
           end
         end
@@ -2836,15 +2827,15 @@ describe RuboCop::CLI, :isolated_environment do
         source = ['# encoding: utf-8',
                   'read_attribute(:test)']
         create_file('dir1/app/models/example1.rb', source)
-        create_file('dir1/.rubocop.yml', ['AllCops:',
-                                          '  RunRailsCops: true',
+        create_file('dir1/.rubocop.yml', ['Rails:',
+                                          '  Enabled: true',
                                           '',
                                           'Rails/ReadWriteAttribute:',
                                           '  Include:',
                                           '    - app/models/**/*.rb'])
         create_file('dir2/app/models/example2.rb', source)
-        create_file('dir2/.rubocop.yml', ['AllCops:',
-                                          '  RunRailsCops: false',
+        create_file('dir2/.rubocop.yml', ['Rails:',
+                                          '  Enabled: false',
                                           '',
                                           'Rails/ReadWriteAttribute:',
                                           '  Include:',
@@ -2862,11 +2853,21 @@ describe RuboCop::CLI, :isolated_environment do
       it 'with configuration option false but -R given runs rails cops' do
         create_file('app/models/example1.rb', ['# encoding: utf-8',
                                                'read_attribute(:test)'])
-        create_file('.rubocop.yml', ['AllCops:',
-                                     '  RunRailsCops: false'])
+        create_file('.rubocop.yml', ['Rails:',
+                                     '  Enabled: false'])
         expect(cli.run(['--format', 'simple', '-R', 'app/models/example1.rb']))
           .to eq(1)
         expect($stdout.string).to include('Prefer self[:attr]')
+      end
+
+      context 'with obsolete RunRailsCops config option' do
+        it 'prints a warning' do
+          create_file('.rubocop.yml', ['AllCops:',
+                                       '  RunRailsCops: false'])
+          expect(cli.run([])).to eq(1)
+          expect($stderr.string).to include('obsolete parameter RunRailsCops ' \
+                                            '(for AllCops) found')
+        end
       end
     end
 
@@ -2894,8 +2895,8 @@ describe RuboCop::CLI, :isolated_environment do
         # The .rubocop.yml file inherits from default.yml where the Include
         # config parameter is set for the rails cops. The paths are interpreted
         # as relative to dir1 because .rubocop.yml is placed there.
-        create_file('dir1/.rubocop.yml', ['AllCops:',
-                                          '  RunRailsCops: true',
+        create_file('dir1/.rubocop.yml', ['Rails:',
+                                          '  Enabled: true',
                                           '',
                                           'Rails/ReadWriteAttribute:',
                                           '  Exclude:',
@@ -3018,6 +3019,19 @@ describe RuboCop::CLI, :isolated_environment do
                     '',
                     '1 file inspected, 2 offenses detected',
                     ''].join("\n"))
+        end
+      end
+
+      context 'when obsolete MultiSpaceAllowedForOperators param is used' do
+        it 'displays a warning' do
+          create_file('.rubocop.yml', ['Style/SpaceAroundOperators:',
+                                       '  MultiSpaceAllowedForOperators:',
+                                       '    - "="'])
+          expect(cli.run([])).to eq(1)
+          expect($stderr.string).to include('obsolete parameter ' \
+                                            'MultiSpaceAllowedForOperators ' \
+                                            '(for Style/SpaceAroundOperators)' \
+                                            ' found')
         end
       end
     end
@@ -3266,7 +3280,7 @@ describe RuboCop::CLI, :isolated_environment do
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(0)
     end
 
-    it 'cannot disable Syntax offenses with fatal/error severity' do
+    it 'cannot disable Syntax offenses' do
       create_file('example.rb', 'class Test')
       create_file('.rubocop.yml', ['Style/Encoding:',
                                    '  Enabled: false',
@@ -3275,7 +3289,9 @@ describe RuboCop::CLI, :isolated_environment do
                                    '  Enabled: false'
                                   ])
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
-      expect($stdout.string).to include('unexpected token $end')
+      expect($stderr.string).to include(
+        'Error: configuration for Syntax cop found')
+      expect($stderr.string).to include('This cop cannot be configured.')
     end
 
     it 'can be configured to merge a parameter that is a hash' do
@@ -3561,7 +3577,7 @@ describe RuboCop::CLI, :isolated_environment do
                 ''].join("\n"))
     end
 
-    it 'prints a warning for an unrecognized EnforcedStyle' do
+    it 'prints an error message for an unrecognized EnforcedStyle' do
       create_file('example/example1.rb', ['# encoding: utf-8',
                                           'puts "hello"'])
       create_file('example/.rubocop.yml', ['Style/BracesAroundHashParameters:',
@@ -3569,7 +3585,7 @@ describe RuboCop::CLI, :isolated_environment do
 
       expect(cli.run(%w(--format simple example))).to eq(1)
       expect($stderr.string)
-        .to eq(["Warning: invalid EnforcedStyle 'context' for " \
+        .to eq(["Error: invalid EnforcedStyle 'context' for " \
                 'Style/BracesAroundHashParameters found in ' +
                 abs('example/.rubocop.yml'),
                 'Valid choices are: braces, no_braces, context_dependent',
@@ -3661,11 +3677,10 @@ describe RuboCop::CLI, :isolated_environment do
       end
 
       it 'prints a warning when --auto-gen-config is set' do
-        expect { cli.run(%w(-c .rubocop.yml --auto-gen-config)) }
-          .to exit_with_code(1)
+        expect(cli.run(%w(-c .rubocop.yml --auto-gen-config))).to eq(1)
         expect($stderr.string)
-          .to eq(['Attention: rubocop-todo.yml has been renamed to ' \
-                  '.rubocop_todo.yml',
+          .to eq(['Error: rubocop-todo.yml is obsolete; it must be called ' \
+                  '.rubocop_todo.yml instead',
                   ''].join("\n"))
       end
     end

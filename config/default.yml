@@ -27,9 +27,6 @@ AllCops:
     - '**/Vagabondfile'
   Exclude:
     - 'vendor/**/*'
-  # By default, the rails cops are not run. Override in project or home
-  # directory .rubocop.yml files, or by giving the -R/--rails option.
-  RunRailsCops: false
   # Cop names are not displayed in offense messages by default. Change behavior
   # by overriding DisplayCopNames, or by giving the -D/--display-cop-names
   # option.
@@ -757,9 +754,10 @@ Style/SpaceAroundEqualsInParameterDefault:
     - no_space
 
 Style/SpaceAroundOperators:
-  MultiSpaceAllowedForOperators:
-    - '='
-    - '=>'
+  # When true, allows most uses of extra spacing if the intent is to align
+  # with an operator on the previous or next line, not counting empty lines
+  # or comment lines.
+  AllowForAlignment: true
 
 Style/SpaceBeforeBlockBraces:
   EnforcedStyle: space
@@ -789,6 +787,12 @@ Style/SpaceInsideStringInterpolation:
   SupportedStyles:
     - space
     - no_space
+
+Style/SymbolArray:
+  EnforcedStyle: percent
+  SupportedStyles:
+    - percent
+    - brackets
 
 Style/SymbolProc:
   # A list of method names to be ignored by the check.
@@ -865,9 +869,13 @@ Style/WhileUntilModifier:
   MaxLineLength: 80
 
 Style/WordArray:
+  EnforcedStyle: percent
+  SupportedStyles:
+    - percent
+    - brackets
   MinSize: 0
   # The regular expression WordRegex decides what is considered a word.
-  WordRegex: !ruby/regexp '/\A[\p{Word}]+\z/'
+  WordRegex: !ruby/regexp '/\A[\p{Word}\n\t]+\z/'
 
 ##################### Metrics ##################################
 
@@ -925,10 +933,13 @@ Lint/EndAlignment:
   # The value `variable` means that in assignments, `end` should be aligned
   # with the start of the variable on the left hand side of `=`. In all other
   # situations, `end` should still be aligned with the keyword.
+  # The value `start_of_line` means that `end` should be aligned with the start
+  # of the line which the matching keyword appears on.
   AlignWith: keyword
   SupportedStyles:
     - keyword
     - variable
+    - start_of_line
   AutoCorrect: false
 
 Lint/DefEndAlignment:

@@ -8,7 +8,7 @@ module RuboCop
         MSG = 'Prefer `has_many :through` to `has_and_belongs_to_many`.'
 
         def on_send(node)
-          return unless command?(:has_and_belongs_to_many, node)
+          return unless node.command?(:has_and_belongs_to_many)
           add_offense(node, :selector)
         end
       end

@@ -16,13 +16,12 @@ module RuboCop
         MSG = "Number of arguments (%i) to `%s` doesn't match the number of " \
               'fields (%i).'
         FIELD_REGEX =
-          /(%(([\s#+-0\*])?(\d*)?(.\d+)?(\.)?[bBdiouxXeEfgGaAcps]|%))/.freeze
+          /(%(([\s#+-0\*]*)(\d*)?(.\d+)?[bBdiouxXeEfgGaAcps]|%))/.freeze
         NAMED_FIELD_REGEX = /%\{[_a-zA-Z][_a-zA-Z]+\}/.freeze
         KERNEL = 'Kernel'.freeze
         SHOVEL = '<<'.freeze
         PERCENT = '%'.freeze
         PERCENT_PERCENT = '%%'.freeze
-        SPLAT = '*'.freeze
         STRING_TYPES = [:str, :dstr].freeze
         NAMED_INTERPOLATION = /%(?:<\w+>|\{\w+\})/
 
@@ -121,7 +120,7 @@ module RuboCop
             .source
             .scan(FIELD_REGEX)
             .select { |x| x.first != PERCENT_PERCENT }
-            .reduce(0) { |a, e| a + (e[2] == SPLAT ? 2 : 1) }
+            .reduce(0) { |a, e| a + (e[2] =~ /\*/ ? 2 : 1) }
         end
 
         def format?(node)

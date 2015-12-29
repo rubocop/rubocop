@@ -272,8 +272,7 @@ describe RuboCop::Cop::Style::IndentArray do
                     'Indent the right bracket the same as the start of the ' \
                     'line where the left bracket is.'])
           expect(cop.config_to_allow_offenses)
-            .to eq('EnforcedStyle' => %w(special_inside_parentheses
-                                         align_brackets))
+            .to eq('EnforcedStyle' => 'special_inside_parentheses')
         end
 
         it 'accepts normal indentation for second argument' do

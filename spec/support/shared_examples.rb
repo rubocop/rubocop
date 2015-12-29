@@ -43,7 +43,13 @@ shared_examples_for 'misaligned' do |prefix, alignment_base, arg, end_kw, name|
     regexp = /`end` at 2, \d+ is not aligned with `#{alignment_base}` at 1,/
     expect(cop.messages.first).to match(regexp)
     expect(cop.highlights.first).to eq('end')
-    expect(cop.config_to_allow_offenses).to eq('AlignWith' => opposite)
+
+    other_styles = (cop.supported_styles - [cop.style]).map(&:to_s)
+    # In some cases, the code under test will happen to match an alternative
+    # style. In other cases, it won't match any style at all
+    expect(cop.config_to_allow_offenses).to(
+      eq('Enabled' => false).or(
+        satisfy { |h| other_styles.include?(h['AlignWith']) }))
   end
 
   it "auto-corrects mismatched #{name} ... end" do

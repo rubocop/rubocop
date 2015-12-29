@@ -23,14 +23,18 @@ module Astrolabe
     VARIABLES = [:ivar, :gvar, :cvar, :lvar].freeze
     REFERENCES = [:nth_ref, :back_ref].freeze
 
-    # def_matcher can be used to define a pattern-matching method on Node:
+    # def_matcher can be used to define a pattern-matching method on Node
     class << self
-      extend RuboCop::NodePattern::Macros
-
-      # define both Node.method_name(node), and also node.method_name
       def def_matcher(method_name, pattern_str)
-        singleton_class.def_node_matcher method_name, pattern_str
-        class_eval("def #{method_name}; Node.#{method_name}(self); end")
+        compiler = RuboCop::NodePattern::Compiler.new(pattern_str, 'self')
+        src = "def #{method_name}(" <<
+              compiler.emit_param_list <<
+              ');' <<
+              compiler.emit_method_code <<
+              ';end'
+
+        file, lineno = *caller.first.split(':')
+        class_eval(src, file, lineno.to_i)
       end
     end
 
@@ -45,6 +49,7 @@ module Astrolabe
     def_matcher :method_args, '{(send _ _ $...) (block (send _ _ $...) ...)}'
     # Note: for masgn, #asgn_rhs will be an array node
     def_matcher :asgn_rhs, '[assignment? (... $_)]'
+    def_matcher :str_content, '(str $_)'
 
     def const_name
       return unless const_type?
@@ -148,6 +153,15 @@ module Astrolabe
     def reference?
       REFERENCES.include?(type)
     end
+
+    def_matcher :command?, '(send nil %1 ...)'
+    def_matcher :lambda?,  '(block (send nil :lambda) ...)'
+    def_matcher :proc?, <<-PATTERN
+      {(block (send nil :proc) ...)
+       (block (send (const nil :Proc) :new) ...)
+       (send (const nil :Proc) :new)}
+    PATTERN
+    def_matcher :lambda_or_proc?, '{lambda? proc?}'
 
     def_matcher :class_constructor?, <<-PATTERN
       {       (send (const nil {:Class :Module}) :new ...)

@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    class AmbiguousCopName < Exception; end
+    class AmbiguousCopName < RuboCop::Error; end
 
     # Store for all cops with helper functions
     class CopStore < ::Array
@@ -32,7 +32,8 @@ module RuboCop
         case found_ns.size
         when 0 then name # No namespace found. Deal with it later in caller.
         when 1 then cop_name_with_namespace(name, origin, basename, found_ns[0])
-        else fail AmbiguousCopName, "`#{basename}` used in #{origin}"
+        else fail AmbiguousCopName, "Ambiguous cop name `#{basename}` used in" \
+                                    "#{origin} needs namespace qualifier."
         end
       end
 
@@ -103,10 +104,6 @@ module RuboCop
 
       def self.lint?
         cop_type == :lint
-      end
-
-      def self.rails?
-        cop_type == :rails
       end
 
       def initialize(config = nil, options = nil)

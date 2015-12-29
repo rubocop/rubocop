@@ -10,7 +10,7 @@ module RuboCop
         src = node.source
         return false if src.start_with?('%', '?')
         if style == :single_quotes
-          src !~ /'/ && src !~ StringHelp::ESCAPED_CHAR_REGEXP
+          src !~ /'/ && !double_quotes_acceptable?(node.str_content)
         else
           src !~ /" | \\ | \#/x
         end
@@ -18,9 +18,12 @@ module RuboCop
 
       def autocorrect(node)
         lambda do |corrector|
-          replacement = node.loc.begin.is?('"') ? "'" : '"'
-          corrector.replace(node.loc.begin, replacement)
-          corrector.replace(node.loc.end, replacement)
+          str = node.str_content
+          if style == :single_quotes
+            corrector.replace(node.loc.expression, to_string_literal(str))
+          else
+            corrector.replace(node.loc.expression, str.inspect)
+          end
         end
       end
     end

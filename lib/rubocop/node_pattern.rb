@@ -422,9 +422,14 @@ module RuboCop
       # return the captures, or `true` if there were none.
       def def_node_matcher(method_name, pattern_str)
         compiler = RuboCop::NodePattern::Compiler.new(pattern_str, 'node')
-        src = "def #{method_name}(node" << compiler.emit_trailing_params <<
-              ');' << compiler.emit_method_code << ';end'
-        class_eval(src)
+        src = "def #{method_name}(node" <<
+              compiler.emit_trailing_params <<
+              ');' <<
+              compiler.emit_method_code <<
+              ';end'
+
+        file, lineno = *caller.first.split(':')
+        class_eval(src, file, lineno.to_i)
       end
 
       # Define a method which recurses over the descendants of an AST node,
@@ -445,8 +450,11 @@ module RuboCop
           prelude = "return enum_for(:#{method_name}, node0" \
           "#{compiler.emit_trailing_params}) unless block_given?"
         end
-        class_eval(node_search_body(method_name, compiler.emit_trailing_params,
-                                    prelude, compiler.match_code, on_match))
+
+        src = node_search_body(method_name, compiler.emit_trailing_params,
+                               prelude, compiler.match_code, on_match)
+        filename, lineno = *caller.first.split(':')
+        class_eval(src, filename, lineno.to_i)
       end
 
       def node_search_body(method_name, trailing_params, prelude, match_code,
@@ -467,8 +475,11 @@ module RuboCop
 
     def initialize(str)
       compiler = Compiler.new(str)
-      src = 'def match(node0' << compiler.emit_trailing_params << ');' <<
-            compiler.emit_method_code << 'end'
+      src = 'def match(node0' <<
+            compiler.emit_trailing_params <<
+            ');' <<
+            compiler.emit_method_code <<
+            'end'
       instance_eval(src)
     end
   end

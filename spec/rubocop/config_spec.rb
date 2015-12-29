@@ -29,12 +29,16 @@ describe RuboCop::Config do
                       '  Enabled: true',
                       '  Max: 100'
                     ])
+        $stderr = StringIO.new
       end
 
-      it 'raises validation error' do
-        expect { configuration.validate }
-          .to raise_error(described_class::ValidationError,
-                          /^unrecognized cop LyneLenth/)
+      after do
+        $stderr = STDERR
+      end
+
+      it 'prints a warning message' do
+        configuration # ConfigLoader.load_file will validate config
+        expect($stderr.string).to match(/unrecognized cop LyneLenth/)
       end
     end
 
@@ -74,12 +78,17 @@ describe RuboCop::Config do
                       '  Enabled: true',
                       '  Min: 10'
                     ])
+        $stderr = StringIO.new
       end
 
-      it 'raises validation error' do
-        expect { configuration.validate }
-          .to raise_error(described_class::ValidationError,
-                          %r{^unrecognized parameter Metrics/LineLength:Min})
+      after do
+        $stderr = STDERR
+      end
+
+      it 'prints a warning message' do
+        configuration # ConfigLoader.load_file will validate config
+        expect($stderr.string).to match(
+          %r{unrecognized parameter Metrics/LineLength:Min})
       end
     end
 
@@ -152,7 +161,7 @@ describe RuboCop::Config do
         configuration.make_excludes_absolute
       end
 
-      it 'should generate valid absulute directory' do
+      it 'should generate valid absolute directory' do
         expect(configuration['AllCops']['Exclude'])
           .to eq [
             '/home/foo/project/config/environment',
@@ -316,6 +325,40 @@ describe RuboCop::Config do
           expect do |b|
             configuration.deprecation_check(&b)
           end.to yield_with_args(String)
+        end
+      end
+    end
+  end
+
+  describe '#cop_enabled?' do
+    context 'when an entire cop type is disabled' do
+      context 'but an individual cop is enabled' do
+        let(:hash) do
+          {
+            'Style' => { 'Enabled' => false },
+            'Style/TrailingWhitespace' => { 'Enabled' => true }
+          }
+        end
+
+        it 'still disables the cop' do
+          cop_class = RuboCop::Cop::Style::TrailingWhitespace
+          expect(configuration.cop_enabled?(cop_class)).to be false
+        end
+      end
+    end
+
+    context 'when an entire cop type is enabled' do
+      context 'but an individual cop is disabled' do
+        let(:hash) do
+          {
+            'Style' => { 'Enabled' => true },
+            'Style/TrailingWhitespace' => { 'Enabled' => false }
+          }
+        end
+
+        it 'still disables the cop' do
+          cop_class = RuboCop::Cop::Style::TrailingWhitespace
+          expect(configuration.cop_enabled?(cop_class)).to be false
         end
       end
     end
