@@ -30,7 +30,7 @@ module RuboCop
 
           return if start_line == end_line
 
-          check_source(start_line, end_line)
+          check_source(node, start_line, end_line)
         end
       end
     end

@@ -99,5 +99,105 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBlockBody, :config do
         expect(cop.offenses).to be_empty
       end
     end
+
+    context "when EnforcedStyle is top_level_only for #{open} #{close} block" do
+      let(:cop_config) { { 'EnforcedStyle' => 'top_level_only' } }
+
+      it 'does not register an offense for top-level block body starting or ' \
+         'ending with a blank' do
+        inspect_source(cop,
+                       ["some_method #{open}",
+                        '',
+                        '  do_something',
+                        '',
+                        close])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'registers an offense for nested block body starting or ' \
+         'ending with a blank' do
+        inspect_source(cop,
+                       ['class A',
+                        "  some_method #{open}",
+                        '',
+                        '    do_something',
+                        '',
+                        "  #{close}",
+                        'end'])
+        expect(cop.messages).to eq(['Extra empty line detected at block body '\
+                                    'beginning.',
+                                    'Extra empty line detected at block body '\
+                                    'end.'])
+      end
+
+      it 'auto-corrects top-level block body' do
+        new_source = autocorrect_source(cop,
+                                        ["some_method #{open}",
+                                         '  do_something',
+                                         close])
+        expect(new_source).to eq(["some_method #{open}",
+                                  '',
+                                  '  do_something',
+                                  '',
+                                  close].join("\n"))
+      end
+
+      it 'auto-corrects nested block body' do
+        new_source = autocorrect_source(cop,
+                                        ['class A',
+                                         "  some_method #{open}",
+                                         '',
+                                         '    do_something',
+                                         '',
+                                         "  #{close}",
+                                         'end'])
+        expect(new_source).to eq(['class A',
+                                  "  some_method #{open}",
+                                  '    do_something',
+                                  "  #{close}",
+                                  'end'].join("\n"))
+      end
+    end
+
+    context "when EnforcedStyle is body_start_only for #{open} #{close}" do
+      let(:cop_config) { { 'EnforcedStyle' => 'body_start_only' } }
+
+      it 'registers an offense for block body not starting with a blank' do
+        inspect_source(cop,
+                       ["some_method #{open}",
+                        '  do_something',
+                        close])
+        expect(cop.messages).to eq(['Empty line missing at block body '\
+                                    'beginning.'])
+      end
+
+      it 'autocorrects block body containing nothing' do
+        corrected = autocorrect_source(cop,
+                                       ["some_method #{open}",
+                                        close])
+        expect(corrected).to eq ["some_method #{open}",
+                                 '',
+                                 close].join("\n")
+      end
+
+      it 'autocorrects beginning and end' do
+        new_source = autocorrect_source(cop,
+                                        ["some_method #{open}",
+                                         '  do_something',
+                                         '',
+                                         close])
+        expect(new_source).to eq(["some_method #{open}",
+                                  '',
+                                  '  do_something',
+                                  close].join("\n"))
+      end
+
+      it 'is not fooled by single line blocks' do
+        inspect_source(cop,
+                       ["some_method #{open} do_something #{close}",
+                        'something_else'])
+        expect(cop.offenses).to be_empty
+      end
+    end
   end
 end

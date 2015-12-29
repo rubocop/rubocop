@@ -132,4 +132,118 @@ describe RuboCop::Cop::Style::EmptyLinesAroundClassBody, :config do
                                 'end'].join("\n"))
     end
   end
+
+  context 'when EnforcedStyle is top_level_only' do
+    let(:cop_config) { { 'EnforcedStyle' => 'top_level_only' } }
+
+    it 'registers an offense for top-level class with no blanks' do
+      inspect_source(cop, ['class A',
+                           '  def method',
+                           '  end',
+                           'end'])
+      expect(cop.offenses.size).to eq(2)
+      expect(cop.messages).to eq([
+        'Empty line missing at class body beginning.',
+        'Empty line missing at class body end.'])
+    end
+
+    it 'does not register offense for nested class with no blanks' do
+      inspect_source(cop, ['class A',
+                           '',
+                           '  class B',
+                           '    def method',
+                           '    end',
+                           '  end',
+                           '',
+                           'end'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'autocorrects top-level class' do
+      new_source = autocorrect_source(cop, ['class A',
+                                            '  def method',
+                                            '  end',
+                                            'end'])
+      expect(new_source).to eq(['class A',
+                                '',
+                                '  def method',
+                                '  end',
+                                '',
+                                'end'].join("\n"))
+    end
+
+    it 'autocorrects nested class' do
+      new_source = autocorrect_source(cop, ['class A',
+                                            '  class B',
+                                            '',
+                                            '    def method',
+                                            '    end',
+                                            '',
+                                            '  end',
+                                            'end'])
+      expect(new_source).to eq(['class A',
+                                '',
+                                '  class B',
+                                '    def method',
+                                '    end',
+                                '  end',
+                                '',
+                                'end'].join("\n"))
+    end
+  end
+
+  context 'when EnforcedStyle is empty_lines' do
+    let(:cop_config) { { 'EnforcedStyle' => 'body_start_only' } }
+
+    it 'registers an offense for class body not starting with a blank' do
+      inspect_source(cop,
+                     ['class SomeClass',
+                      '  do_something',
+                      'end'])
+      expect(cop.messages).to eq(
+        ['Empty line missing at class body beginning.'])
+    end
+
+    it 'autocorrects class body containing nothing' do
+      corrected = autocorrect_source(cop,
+                                     ['class SomeClass',
+                                      'end'])
+      expect(corrected).to eq ['class SomeClass',
+                               '',
+                               'end'].join("\n")
+    end
+
+    it 'autocorrects beginning and end' do
+      new_source = autocorrect_source(cop,
+                                      ['class SomeClass',
+                                       '  do_something',
+                                       '',
+                                       'end'])
+      expect(new_source).to eq(['class SomeClass',
+                                '',
+                                '  do_something',
+                                'end'].join("\n"))
+    end
+
+    it 'registers offense for singleton class body not starting with a blank' do
+      inspect_source(cop,
+                     ['class << self',
+                      '  do_something',
+                      'end'])
+      expect(cop.messages).to eq(
+        ['Empty line missing at class body beginning.'])
+    end
+
+    it 'autocorrects beginning and end' do
+      new_source = autocorrect_source(cop,
+                                      ['class << self',
+                                       '  do_something',
+                                       '',
+                                       'end'])
+      expect(new_source).to eq(['class << self',
+                                '',
+                                '  do_something',
+                                'end'].join("\n"))
+    end
+  end
 end

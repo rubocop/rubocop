@@ -386,18 +386,24 @@ Style/EmptyLinesAroundBlockBody:
   SupportedStyles:
     - empty_lines
     - no_empty_lines
+    - top_level_only
+    - body_start_only
 
 Style/EmptyLinesAroundClassBody:
   EnforcedStyle: no_empty_lines
   SupportedStyles:
     - empty_lines
     - no_empty_lines
+    - top_level_only
+    - body_start_only
 
 Style/EmptyLinesAroundModuleBody:
   EnforcedStyle: no_empty_lines
   SupportedStyles:
     - empty_lines
     - no_empty_lines
+    - top_level_only
+    - body_start_only
 
 # Checks whether the source file has a utf-8 encoding comment or not
 # AutoCorrectEncodingComment must match the regex

@@ -217,5 +217,9 @@ module Astrolabe
         false
       end
     end
+
+    def top_level?
+      parent.nil? || (parent.begin_type? && parent.top_level?)
+    end
   end
 end
