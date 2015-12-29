@@ -96,6 +96,7 @@
 * `Style/SymbolArray` doesn't flag arrays of symbols if a symbol contains a space character. ([@alexdowad][])
 * `Style/SymbolArray` can auto-correct offenses. ([@alexdowad][])
 * [#2546](https://github.com/bbatsov/rubocop/issues/2546): Report when two `rubocop:disable` comments (not the single line kind) for a given cop apppear in a file with no `rubocop:enable` in between. ([@jonas054][])
+* [#2552](https://github.com/bbatsov/rubocop/issues/2552): `Style/Encoding` can auto-correct files with a blank first line. ([@alexdowad][])
 
 ### Changes
 
