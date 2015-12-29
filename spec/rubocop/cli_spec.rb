@@ -3266,7 +3266,7 @@ describe RuboCop::CLI, :isolated_environment do
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(0)
     end
 
-    it 'cannot disable Syntax offenses with fatal/error severity' do
+    it 'cannot disable Syntax offenses' do
       create_file('example.rb', 'class Test')
       create_file('.rubocop.yml', ['Style/Encoding:',
                                    '  Enabled: false',
@@ -3275,7 +3275,9 @@ describe RuboCop::CLI, :isolated_environment do
                                    '  Enabled: false'
                                   ])
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
-      expect($stdout.string).to include('unexpected token $end')
+      expect($stderr.string).to include(
+        'Error: configuration for Syntax cop found')
+      expect($stderr.string).to include('This cop cannot be configured.')
     end
 
     it 'can be configured to merge a parameter that is a hash' do
@@ -3561,7 +3563,7 @@ describe RuboCop::CLI, :isolated_environment do
                 ''].join("\n"))
     end
 
-    it 'prints a warning for an unrecognized EnforcedStyle' do
+    it 'prints an error message for an unrecognized EnforcedStyle' do
       create_file('example/example1.rb', ['# encoding: utf-8',
                                           'puts "hello"'])
       create_file('example/.rubocop.yml', ['Style/BracesAroundHashParameters:',
@@ -3569,7 +3571,7 @@ describe RuboCop::CLI, :isolated_environment do
 
       expect(cli.run(%w(--format simple example))).to eq(1)
       expect($stderr.string)
-        .to eq(["Warning: invalid EnforcedStyle 'context' for " \
+        .to eq(["Error: invalid EnforcedStyle 'context' for " \
                 'Style/BracesAroundHashParameters found in ' +
                 abs('example/.rubocop.yml'),
                 'Valid choices are: braces, no_braces, context_dependent',

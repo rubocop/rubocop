@@ -40,7 +40,7 @@ module RuboCop
         end
 
         config.add_missing_namespaces
-        config.warn_unless_valid
+        config.validate
         config.make_excludes_absolute
         config
       end

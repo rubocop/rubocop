@@ -81,12 +81,6 @@ module RuboCop
       for_cop(cop).empty? || for_cop(cop)['Enabled']
     end
 
-    def warn_unless_valid
-      validate
-    rescue Config::ValidationError => e
-      warn Rainbow.new.wrap("Warning: #{e.message}").red
-    end
-
     def add_missing_namespaces
       keys.each do |k|
         q = Cop::Cop.qualified_cop_name(k, loaded_path)
@@ -97,7 +91,6 @@ module RuboCop
       end
     end
 
-    # TODO: This should be a private method
     def validate
       # Don't validate RuboCop's own files. Avoids infinite recursion.
       base_config_path = File.expand_path(File.join(ConfigLoader::RUBOCOP_HOME,
@@ -109,7 +102,14 @@ module RuboCop
       end
 
       invalid_cop_names.each do |name|
-        fail ValidationError, "unrecognized cop #{name} found in #{loaded_path}"
+        if name == 'Syntax'
+          fail ValidationError,
+               "configuration for Syntax cop found in #{loaded_path}\n" \
+               'This cop cannot be configured.'
+        end
+
+        warn Rainbow.new.wrap("Warning: unrecognized cop #{name} found in " \
+                              "#{loaded_path}").yellow
       end
 
       validate_parameter_names(valid_cop_names)
@@ -190,8 +190,8 @@ module RuboCop
           next if COMMON_PARAMS.include?(param) ||
                   ConfigLoader.default_configuration[name].key?(param)
 
-          fail ValidationError,
-               "unrecognized parameter #{name}:#{param} found in #{loaded_path}"
+          warn Rainbow.new.wrap("Warning: unrecognized parameter #{name}:" \
+                                "#{param} found in #{loaded_path}").yellow
         end
       end
     end

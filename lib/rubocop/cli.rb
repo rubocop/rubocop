@@ -33,6 +33,9 @@ module RuboCop
       $stderr.puts "Ambiguous cop name #{e.message} needs namespace " \
                    'qualifier.'
       return 1
+    rescue Config::ValidationError => e
+      $stderr.puts Rainbow.new.wrap("Error: " << e.message).red
+      return 1
     rescue StandardError, SyntaxError => e
       $stderr.puts e.message
       $stderr.puts e.backtrace

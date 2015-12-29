@@ -29,12 +29,16 @@ describe RuboCop::Config do
                       '  Enabled: true',
                       '  Max: 100'
                     ])
+        $stderr = StringIO.new
       end
 
-      it 'raises validation error' do
-        expect { configuration.validate }
-          .to raise_error(described_class::ValidationError,
-                          /^unrecognized cop LyneLenth/)
+      after do
+        $stderr = STDERR
+      end
+
+      it 'prints a warning message' do
+        configuration # ConfigLoader.load_file will validate config
+        expect($stderr.string).to match(/unrecognized cop LyneLenth/)
       end
     end
 
@@ -74,12 +78,17 @@ describe RuboCop::Config do
                       '  Enabled: true',
                       '  Min: 10'
                     ])
+        $stderr = StringIO.new
       end
 
-      it 'raises validation error' do
-        expect { configuration.validate }
-          .to raise_error(described_class::ValidationError,
-                          %r{^unrecognized parameter Metrics/LineLength:Min})
+      after do
+        $stderr = STDERR
+      end
+
+      it 'prints a warning message' do
+        configuration # ConfigLoader.load_file will validate config
+        expect($stderr.string).to match(
+          %r{unrecognized parameter Metrics/LineLength:Min})
       end
     end
 
