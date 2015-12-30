@@ -5,7 +5,6 @@ require 'optparse'
 module RuboCop
   # This class handles command line options.
   class Options
-    DEFAULT_FORMATTER = 'progress'
     EXITING_OPTIONS = [:version, :verbose_version, :show_cops]
     DEFAULT_MAXIMUM_EXCLUSION_ITEMS = 15
 
@@ -70,11 +69,7 @@ module RuboCop
     def add_configuration_options(opts, args)
       option(opts, '-c', '--config FILE')
 
-      option(opts, '--auto-gen-config') do
-        @options[:formatters] = [[DEFAULT_FORMATTER],
-                                 [Formatter::DisabledConfigFormatter,
-                                  ConfigLoader::AUTO_GENERATED_FILE]]
-      end
+      option(opts, '--auto-gen-config')
 
       option(opts, '--exclude-limit COUNT') do
         @validator.validate_exclude_limit_option(args)
@@ -94,8 +89,11 @@ module RuboCop
       end
 
       option(opts, '-o', '--out FILE') do |path|
-        @options[:formatters] ||= [[DEFAULT_FORMATTER]]
-        @options[:formatters].last << path
+        if @options[:formatters]
+          @options[:formatters].last << path
+        else
+          @options[:output_path] = path
+        end
       end
     end
 

@@ -55,6 +55,7 @@
 * [#2343](https://github.com/bbatsov/rubocop/issues/2343): Entire cop types (or "departments") can be disabled using in .rubocop.yml using config like `Style: Enabled: false`. ([@alexdowad][])
 * [#2399](https://github.com/bbatsov/rubocop/issues/2399): New `start_of_line` style for `Lint/EndAlignment` aligns a closing `end` keyword with the start of the line where the opening keyword appears. ([@alexdowad][])
 * [#1545](https://github.com/bbatsov/rubocop/issues/1545): New `Regex` config parameter for `Style/FileName` allows user to provide their own regex for validating file names. ([@alexdowad][])
+* [#2253](https://github.com/bbatsov/rubocop/issues/2253): New `DefaultFormatter` config parameter can be used to set formatter from within .rubocop.yml. ([@alexdowad][])
 
 ### Bug Fixes
 

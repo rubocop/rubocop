@@ -22,6 +22,7 @@ module RuboCop
     def run(args = ARGV)
       @options, paths = Options.new.parse(args)
       act_on_options
+      apply_default_formatter
 
       runner = Runner.new(@options, @config_store)
       trap_interrupt(runner)
@@ -72,6 +73,21 @@ module RuboCop
       puts RuboCop::Version.version(true) if @options[:verbose_version]
       print_available_cops if @options[:show_cops]
       fail Finished
+    end
+
+    def apply_default_formatter
+      # This must be done after the options have already been processed,
+      # because they can affect how ConfigStore behaves
+      @options[:formatters] ||= begin
+        cfg = @config_store.for(Dir.pwd)['AllCops']
+        formatter = (cfg && cfg['DefaultFormatter']) || 'progress'
+        [[formatter, @options[:output_path]]]
+      end
+
+      if @options[:auto_gen_config]
+        @options[:formatters] << [Formatter::DisabledConfigFormatter,
+                                  ConfigLoader::AUTO_GENERATED_FILE]
+      end
     end
 
     def print_available_cops

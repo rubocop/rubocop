@@ -3135,6 +3135,21 @@ describe RuboCop::CLI, :isolated_environment do
                 ''].join("\n"))
     end
 
+    it 'uses the DefaultFormatter if another formatter is not specified' do
+      source = ['# encoding: utf-8',
+                'x = 0 ',
+                'puts x']
+      create_file('example1.rb', source)
+      create_file('.rubocop.yml', ['AllCops:',
+                                   '  DefaultFormatter: offenses'])
+
+      expect(cli.run([])).to eq(1)
+      expect($stdout.string.strip)
+        .to eq(['1  Style/TrailingWhitespace',
+                '--',
+                '1  Total'].join("\n"))
+    end
+
     it 'finds included files' do
       create_file('file.rb', 'x=0') # Included by default
       create_file('example', 'x=0')

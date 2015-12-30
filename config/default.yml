@@ -27,6 +27,8 @@ AllCops:
     - '**/Vagabondfile'
   Exclude:
     - 'vendor/**/*'
+  # Default formatter will be used if no -f/--format option is given.
+  DefaultFormatter: progress
   # Cop names are not displayed in offense messages by default. Change behavior
   # by overriding DisplayCopNames, or by giving the -D/--display-cop-names
   # option.

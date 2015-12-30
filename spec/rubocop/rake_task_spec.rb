@@ -1,9 +1,12 @@
 # encoding: utf-8
 
 require 'spec_helper'
+require 'support/file_helper'
 require 'rubocop/rake_task'
 
 describe RuboCop::RakeTask do
+  include FileHelper
+
   describe 'defining tasks' do
     it 'creates a rubocop task' do
       RuboCop::RakeTask.new
@@ -87,6 +90,26 @@ describe RuboCop::RakeTask do
       allow(RuboCop::CLI).to receive(:new) { cli }
 
       expect { Rake::Task['rubocop'].execute }.to raise_error(SystemExit)
+    end
+
+    it 'uses the default formatter from .rubocop.yml if no formatter ' \
+       'option is given', :isolated_environment do
+      create_file('.rubocop.yml', ['AllCops:',
+                                   '  DefaultFormatter: offenses'])
+      create_file('test.rb', '$:')
+
+      RuboCop::RakeTask.new do |task|
+        task.options = ['test.rb']
+      end
+
+      expect { Rake::Task['rubocop'].execute }.to raise_error(SystemExit)
+
+      expect($stdout.string.strip).to eq(['Running RuboCop...',
+                                          '',
+                                          '1  Style/SpecialGlobalVars',
+                                          '--',
+                                          '1  Total'].join("\n"))
+      expect($stderr.string.strip).to eq 'RuboCop failed!'
     end
 
     context 'auto_correct' do
