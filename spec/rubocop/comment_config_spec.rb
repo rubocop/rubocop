@@ -12,33 +12,43 @@ describe RuboCop::CommentConfig do
         '',
         '# rubocop:disable Metrics/MethodLength',
         'def some_method',
-        "  puts 'foo'",
+        "  puts 'foo'",                                      # 5
         'end',
         '# rubocop:enable Metrics/MethodLength',
         '',
         '# rubocop:disable all',
-        'some_method',
+        'some_method',                                       # 10
         '# rubocop:enable all',
         '',
         "code = 'This is evil.'",
         'eval(code) # rubocop:disable Lint/Eval',
-        "puts 'This is not evil.'",
+        "puts 'This is not evil.'",                          # 15
         '',
         'def some_method',
         "  puts 'Disabling indented single line' # rubocop:disable " \
         'Metrics/LineLength',
         'end',
-        '',
+        '',                                                  # 20
         'string = <<END',
         'This is a string not a real comment # rubocop:disable Style/Loop',
         'END',
         '',
-        'foo # rubocop:disable Style/MethodCallParentheses',
+        'foo # rubocop:disable Style/MethodCallParentheses', # 25
         '',
         '# rubocop:enable Lint/Void',
         '',
         '# rubocop:disable Style/For',
-        'foo'
+        'foo',                                               # 30
+        '',
+        'class One',
+        '  # rubocop:disable Style/ClassVars',
+        '  @@class_var = 1',
+        'end',                                               # 35
+        '',
+        'class Two',
+        '  # rubocop:disable Style/ClassVars',
+        '  @@class_var = 2',
+        'end'                                                # 40
       ]
     end
 
@@ -105,6 +115,11 @@ describe RuboCop::CommentConfig do
     it 'does not confuse a cop name including "all" with all cops' do
       alias_disabled_lines = disabled_lines_of_cop('Alias')
       expect(alias_disabled_lines).not_to include(25)
+    end
+
+    it 'can handle double disable of one cop' do
+      expect(disabled_lines_of_cop('Style/ClassVars'))
+        .to eq([9, 10, 11] + (33..40).to_a)
     end
   end
 end

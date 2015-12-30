@@ -35,6 +35,12 @@ module RuboCop
         if single_line
           disabled_line_ranges[cop_name] << (line..line) if disabled
         elsif disabled
+          if disablement_start_line_numbers[cop_name]
+            # Cop already disabled on this line, so we end the current disabled
+            # range before we start a new range.
+            start_line = disablement_start_line_numbers.delete(cop_name)
+            disabled_line_ranges[cop_name] << (start_line..line)
+          end
           disablement_start_line_numbers[cop_name] = line
         else
           start_line = disablement_start_line_numbers.delete(cop_name)

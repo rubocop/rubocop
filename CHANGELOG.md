@@ -95,6 +95,7 @@
 * [#2066](https://github.com/bbatsov/rubocop/issues/2066): `Style/TrivialAccessors` doesn't flag what appear to be trivial accessor method definitions, if they are nested inside a call to `instance_eval`. ([@alexdowad][])
 * `Style/SymbolArray` doesn't flag arrays of symbols if a symbol contains a space character. ([@alexdowad][])
 * `Style/SymbolArray` can auto-correct offenses. ([@alexdowad][])
+* [#2546](https://github.com/bbatsov/rubocop/issues/2546): Report when two `rubocop:disable` comments (not the single line kind) for a given cop apppear in a file with no `rubocop:enable` in between. ([@jonas054][])
 
 ### Changes
 
