@@ -217,6 +217,51 @@ describe RuboCop::Cop::Lint::UnneededDisable do
         end
       end
 
+      context 'and there are two offenses' do
+        let(:message) do
+          'Replace class var @@class_var with a class instance var.'
+        end
+        let(:cop_name) { 'Style/ClassVars' }
+        let(:offenses) do
+          [
+            RuboCop::Cop::Offense.new(:convention,
+                                      OpenStruct.new(line: 3, column: 3),
+                                      message,
+                                      cop_name),
+            RuboCop::Cop::Offense.new(:convention,
+                                      OpenStruct.new(line: 8, column: 3),
+                                      message,
+                                      cop_name)
+          ]
+        end
+
+        context 'and a comment disables' do
+          context 'one cop twice' do
+            let(:source) do
+              ['class One',
+               '  # rubocop:disable Style/ClassVars',
+               '  @@class_var = 1',
+               'end',
+               '',
+               'class Two',
+               '  # rubocop:disable Style/ClassVars',
+               '  @@class_var = 2',
+               'end'].join("\n")
+            end
+            let(:cop_disabled_line_ranges) do
+              { 'Style/ClassVars' => [2..7, 7..9] }
+            end
+
+            it 'returns an offense' do
+              expect(cop.messages)
+                .to eq(['Unnecessary disabling of `Style/ClassVars`.'])
+              expect(cop.highlights)
+                .to eq(['# rubocop:disable Style/ClassVars'])
+            end
+          end
+        end
+      end
+
       context 'and there is an offense' do
         let(:offenses) do
           [

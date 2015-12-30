@@ -22,6 +22,16 @@ module RuboCop
           disabled_ranges = cop_disabled_line_ranges[COP_NAME] || [0..0]
 
           cop_disabled_line_ranges.each do |cop, line_ranges|
+            line_ranges.each_cons(2) do |previous_range, range|
+              next if previous_range.end != range.begin
+
+              # If a cop is disabled in a range that begins on the same line as
+              # the end of the previous range, it means that the cop was
+              # already disabled by an earlier comment. So it's unneeded
+              # whether there are offenses or not.
+              comment = comments.find { |c| c.loc.line == range.begin }
+              unneeded_cops[comment].add(cop)
+            end
             cop_offenses = offenses.select { |o| o.cop_name == cop }
             line_ranges.each do |line_range|
               comment = comments.find { |c| c.loc.line == line_range.begin }
