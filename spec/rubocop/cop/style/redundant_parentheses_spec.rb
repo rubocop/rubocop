@@ -30,6 +30,10 @@ describe RuboCop::Cop::Style::RedundantParentheses do
   it_behaves_like 'redundant', '(true)', 'true', 'a literal'
   it_behaves_like 'redundant', '(false)', 'false', 'a literal'
   it_behaves_like 'redundant', '(/regexp/)', '/regexp/', 'a literal'
+  if RUBY_VERSION >= '2.1'
+    it_behaves_like 'redundant', '(1i)', '1i', 'a literal'
+    it_behaves_like 'redundant', '(1r)', '1r', 'a literal'
+  end
 
   it_behaves_like 'redundant', 'x = 1; (x)', 'x = 1; x', 'a variable', '(x)'
   it_behaves_like 'redundant', '(@x)', '@x', 'a variable'

@@ -14,7 +14,8 @@ module Astrolabe
     COMPARISON_OPERATORS = [:==, :===, :!=, :<=, :>=, :>, :<, :<=>].freeze
 
     TRUTHY_LITERALS = [:str, :dstr, :xstr, :int, :float, :sym, :dsym, :array,
-                       :hash, :regexp, :true, :irange, :erange].freeze
+                       :hash, :regexp, :true, :irange, :erange, :complex,
+                       :rational].freeze
     FALSEY_LITERALS = [:false, :nil].freeze
     LITERALS = (TRUTHY_LITERALS + FALSEY_LITERALS).freeze
     BASIC_LITERALS = LITERALS - [:dstr, :xstr, :dsym, :array, :hash, :irange,
