@@ -61,8 +61,8 @@ module RuboCop
           output_cop_config(output, cfg, cop_name)
         end
         puts "Created #{output.path}."
-        puts "Run `rubocop --config #{output.path}`, or"
-        puts "add inherit_from: #{output.path} in a .rubocop.yml file."
+        puts "Run `rubocop --config #{output.path}`, or add `inherit_from: " \
+             "#{output.path}` in a .rubocop.yml file."
       end
 
       def output_cop_comments(output, cfg, cop_name, offense_count)

@@ -46,8 +46,8 @@ module RuboCop
                                        ''].join("\n"))
           expect($stdout.string)
             .to eq(['Created .rubocop_todo.yml.',
-                    'Run `rubocop --config .rubocop_todo.yml`, or',
-                    'add inherit_from: .rubocop_todo.yml in a .rubocop.yml ' \
+                    'Run `rubocop --config .rubocop_todo.yml`, or ' \
+                    'add `inherit_from: .rubocop_todo.yml` in a .rubocop.yml ' \
                     'file.',
                     ''].join("\n"))
         end

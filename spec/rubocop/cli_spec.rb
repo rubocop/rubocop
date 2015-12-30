@@ -1002,8 +1002,8 @@ describe RuboCop::CLI, :isolated_environment do
         expect($stderr.string).to eq('')
         expect($stdout.string)
           .to include(['Created .rubocop_todo.yml.',
-                       'Run `rubocop --config .rubocop_todo.yml`, or',
-                       'add inherit_from: .rubocop_todo.yml in a ' \
+                       'Run `rubocop --config .rubocop_todo.yml`, or ' \
+                       'add `inherit_from: .rubocop_todo.yml` in a ' \
                        '.rubocop.yml file.',
                        ''].join("\n"))
         expected =
@@ -1282,8 +1282,8 @@ describe RuboCop::CLI, :isolated_environment do
         expect($stderr.string).to eq('')
         expect($stdout.string)
           .to include(['Created .rubocop_todo.yml.',
-                       'Run `rubocop --config .rubocop_todo.yml`, or',
-                       'add inherit_from: .rubocop_todo.yml in a ' \
+                       'Run `rubocop --config .rubocop_todo.yml`, or ' \
+                       'add `inherit_from: .rubocop_todo.yml` in a ' \
                        '.rubocop.yml file.',
                        ''].join("\n"))
         expected =

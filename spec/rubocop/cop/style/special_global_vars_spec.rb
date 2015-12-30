@@ -63,6 +63,17 @@ describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
       new_source = autocorrect_source(cop, '"#$:"')
       expect(new_source).to eq('"#{$LOAD_PATH}"')
     end
+
+    it 'generates correct auto-config when Perl variable names are used' do
+      inspect_source(cop, '$0')
+      expect(cop.config_to_allow_offenses).to eq(
+        'EnforcedStyle' => 'use_perl_names')
+    end
+
+    it 'generates correct auto-config when mixed styles are used' do
+      inspect_source(cop, '$!; $ERROR_INFO')
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+    end
   end
 
   context 'when style is use_perl_names' do
