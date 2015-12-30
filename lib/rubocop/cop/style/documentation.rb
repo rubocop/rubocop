@@ -16,6 +16,8 @@ module RuboCop
 
         MSG = 'Missing top-level %s documentation comment.'
 
+        def_node_matcher :constant_definition?, '{class module casgn}'
+
         def investigate(processed_source)
           ast = processed_source.ast
           return unless ast
@@ -46,8 +48,6 @@ module RuboCop
             add_offense(node, :keyword, format(MSG, node.type.to_s))
           end
         end
-
-        def_node_matcher :constant_definition?, '{class module casgn}'
 
         def namespace?(body_node)
           return false unless body_node

@@ -18,11 +18,11 @@ module RuboCop
       #   # require_parentheses - good
       #   ->a,b,c { a + b + c}
       class StabbyLambdaParentheses < Cop
+        include ConfigurableEnforcedStyle
+
         MSG_REQUIRE = 'Wrap stabby lambda arguments with parentheses.'
         MSG_NO_REQUIRE = 'Do not wrap stabby lambda arguments with parentheses.'
         ARROW = '->'.freeze
-
-        include ConfigurableEnforcedStyle
 
         def on_send(node)
           return unless arrow_lambda_with_args?(node)

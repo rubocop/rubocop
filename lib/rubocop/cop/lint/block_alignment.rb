@@ -14,12 +14,6 @@ module RuboCop
       class BlockAlignment < Cop
         MSG = '`%s` at %d, %d is not aligned with `%s` at %d, %d%s.'
 
-        def on_block(node)
-          check_block_alignment(start_for_block_node(node), node)
-        end
-
-        private
-
         def_node_matcher :block_end_align_target?, <<-PATTERN
           {assignment?
            splat
@@ -28,6 +22,12 @@ module RuboCop
            (send _ :<<  ...)
            (send equal?(%1) !:[] ...)}
         PATTERN
+
+        def on_block(node)
+          check_block_alignment(start_for_block_node(node), node)
+        end
+
+        private
 
         def start_for_block_node(block_node)
           # Which node should we align the 'end' with?

@@ -13,6 +13,18 @@ module RuboCop
       TEMPLATE_PATH =
         File.expand_path('../../../../assets/output.html.erb', __FILE__)
 
+      Color = Struct.new(:red, :green, :blue, :alpha) do
+        def to_s
+          "rgba(#{values.join(', ')})"
+        end
+
+        def fade_out(amount)
+          dup.tap do |color|
+            color.alpha -= amount
+          end
+        end
+      end
+
       attr_reader :files, :summary
 
       def initialize(output)
@@ -44,18 +56,6 @@ module RuboCop
         html = erb.result(context.binding)
 
         output.write html
-      end
-
-      Color = Struct.new(:red, :green, :blue, :alpha) do
-        def to_s
-          "rgba(#{values.join(', ')})"
-        end
-
-        def fade_out(amount)
-          dup.tap do |color|
-            color.alpha -= amount
-          end
-        end
       end
 
       # This class provides helper methods used in the ERB template.

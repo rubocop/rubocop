@@ -8,43 +8,8 @@ require 'etc'
 module RuboCop
   # Provides functionality for caching rubocop runs.
   class ResultCache
-    # Include the user name in the path as a simple means of avoiding write
-    # collisions.
-    def initialize(file, options, config_store, cache_root = nil)
-      cache_root ||= ResultCache.cache_root(config_store)
-      @path = File.join(cache_root, rubocop_checksum, RUBY_VERSION,
-                        relevant_options(options),
-                        file_checksum(file, config_store))
-      @cached_data = CachedData.new(file)
-    end
-
-    def valid?
-      File.exist?(@path)
-    end
-
-    def load
-      @cached_data.from_json(IO.binread(@path))
-    end
-
-    def save(offenses, disabled_line_ranges, comments)
-      dir = File.dirname(@path)
-      FileUtils.mkdir_p(dir)
-      preliminary_path = "#{@path}_#{rand(1_000_000_000)}"
-      # RuboCop must be in control of where its cached data is stored. A
-      # symbolic link anywhere in the cache directory tree is an indication
-      # that a symlink attack is being waged.
-      return if any_symlink?(dir)
-
-      File.open(preliminary_path, 'wb') do |f|
-        f.write(@cached_data.to_json(offenses, disabled_line_ranges, comments))
-      end
-      # The preliminary path is used so that if there are multiple RuboCop
-      # processes trying to save data for the same inspected file
-      # simultaneously, the only problem we run in to is a competition who gets
-      # to write to the final file. The contents are the same, so no corruption
-      # of data should occur.
-      FileUtils.mv(preliminary_path, @path)
-    end
+    NON_CHANGING = [:color, :format, :formatters, :out, :debug, :fail_level,
+                    :cache, :fail_fast, :stdin]
 
     # Remove old files so that the cache doesn't grow too big. When the
     # threshold MaxFilesInCache has been exceeded, the oldest 50% all the files
@@ -87,6 +52,44 @@ module RuboCop
       File.join(root, 'rubocop_cache')
     end
 
+    # Include the user name in the path as a simple means of avoiding write
+    # collisions.
+    def initialize(file, options, config_store, cache_root = nil)
+      cache_root ||= ResultCache.cache_root(config_store)
+      @path = File.join(cache_root, rubocop_checksum, RUBY_VERSION,
+                        relevant_options(options),
+                        file_checksum(file, config_store))
+      @cached_data = CachedData.new(file)
+    end
+
+    def valid?
+      File.exist?(@path)
+    end
+
+    def load
+      @cached_data.from_json(IO.binread(@path))
+    end
+
+    def save(offenses, disabled_line_ranges, comments)
+      dir = File.dirname(@path)
+      FileUtils.mkdir_p(dir)
+      preliminary_path = "#{@path}_#{rand(1_000_000_000)}"
+      # RuboCop must be in control of where its cached data is stored. A
+      # symbolic link anywhere in the cache directory tree is an indication
+      # that a symlink attack is being waged.
+      return if any_symlink?(dir)
+
+      File.open(preliminary_path, 'wb') do |f|
+        f.write(@cached_data.to_json(offenses, disabled_line_ranges, comments))
+      end
+      # The preliminary path is used so that if there are multiple RuboCop
+      # processes trying to save data for the same inspected file
+      # simultaneously, the only problem we run in to is a competition who gets
+      # to write to the final file. The contents are the same, so no corruption
+      # of data should occur.
+      FileUtils.mv(preliminary_path, @path)
+    end
+
     private
 
     def any_symlink?(path)
@@ -125,9 +128,6 @@ module RuboCop
           Digest::MD5.hexdigest(source.join)
         end
     end
-
-    NON_CHANGING = [:color, :format, :formatters, :out, :debug, :fail_level,
-                    :cache, :fail_fast, :stdin]
 
     # Return the options given at invocation, minus the ones that have no
     # effect on which offenses and disabled line ranges are found, and thus
