@@ -8,8 +8,7 @@ module RuboCop
     class CopStore < ::Array
       # @return [Array<String>] list of types for current cops.
       def types
-        @types = map(&:cop_type).uniq! unless defined? @types
-        @types
+        @types ||= map(&:cop_type).uniq!
       end
 
       # @return [Array<Cop>] Cops for that specific type.
@@ -106,6 +105,15 @@ module RuboCop
         cop_type == :lint
       end
 
+      # Returns true if the cop name or the cop namespace matches any of the
+      # given names.
+      def self.match?(given_names)
+        return false unless given_names
+
+        given_names.include?(cop_name) ||
+          given_names.include?(cop_type.to_s.capitalize)
+      end
+
       def initialize(config = nil, options = nil)
         @config = config || Config.new
         @options = options || { debug: false }
@@ -140,15 +148,6 @@ module RuboCop
       def extra_details?
         @options[:extra_details] ||
           config['AllCops'] && config['AllCops']['ExtraDetails']
-      end
-
-      # Returns true if the cop name or the cop namespace matches any of the
-      # given names.
-      def self.match?(given_names)
-        return false unless given_names
-
-        given_names.include?(cop_name) ||
-          given_names.include?(cop_type.to_s.capitalize)
       end
 
       def message(_node = nil)

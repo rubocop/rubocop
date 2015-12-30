@@ -9,13 +9,6 @@ Style/AutoResourceCleanup:
   Description: 'Suggests the usage of an auto resource cleanup version of a method (if available).'
   Enabled: false
 
-Style/MultilineArrayBraceLayout:
-  Description: >-
-                 Checks that the closing brace in an array literal is
-                 symmetrical with respect to the opening brace and the
-                 array elements.
-  Enabled: false
-
 Style/CollectionMethods:
   Description: 'Preferred collection methods.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#map-find-select-reduce-size'
@@ -28,10 +21,6 @@ Style/Copyright:
 Style/Encoding:
   Description: 'Use UTF-8 as the source file encoding.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#utf-8'
-  Enabled: false
-
-Style/InlineComment:
-  Description: 'Avoid inline comments.'
   Enabled: false
 
 Style/FirstArrayElementLineBreak:
@@ -58,6 +47,10 @@ Style/FirstMethodParameterLineBreak:
                  multi-line method parameter definition.
   Enabled: false
 
+Style/InlineComment:
+  Description: 'Avoid inline comments.'
+  Enabled: false
+
 Style/MethodCalledOnDoEndBlock:
   Description: 'Avoid chaining a method call on a do...end block.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#single-line-blocks'
@@ -79,6 +72,13 @@ Style/MissingElse:
     - if
     - case
     - both
+
+Style/MultilineArrayBraceLayout:
+  Description: >-
+                 Checks that the closing brace in an array literal is
+                 symmetrical with respect to the opening brace and the
+                 array elements.
+  Enabled: false
 
 Style/MultilineAssignmentLayout:
   Description: 'Check for a newline after the assignment operator in multi-line assignments.'

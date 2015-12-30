@@ -50,6 +50,20 @@ module RuboCop
       #   'LineLength'
       attr_reader :cop_name
 
+      # @api private
+      attr_reader :status
+
+      # @api private
+      def initialize(severity, location, message, cop_name,
+                     status = :uncorrected)
+        @severity = RuboCop::Cop::Severity.new(severity)
+        @location = location
+        @message = message.freeze
+        @cop_name = cop_name.freeze
+        @status = status
+        freeze
+      end
+
       # @api public
       #
       # @!attribute [r] corrected
@@ -72,25 +86,11 @@ module RuboCop
       end
 
       # @api private
-      def initialize(severity, location, message, cop_name,
-                     status = :uncorrected)
-        @severity = RuboCop::Cop::Severity.new(severity)
-        @location = location
-        @message = message.freeze
-        @cop_name = cop_name.freeze
-        @status = status
-        freeze
-      end
-
-      # @api private
       # This is just for debugging purpose.
       def to_s
         format('%s:%3d:%3d: %s',
                severity.code, line, real_column, message)
       end
-
-      # @api private
-      attr_reader :status
 
       # @api private
       def line

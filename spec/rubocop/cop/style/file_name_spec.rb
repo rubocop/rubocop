@@ -13,7 +13,11 @@ describe RuboCop::Cop::Style::FileName do
     )
   end
   let(:cop_config) do
-    { 'IgnoreExecutableScripts' => true, 'ExpectMatchingDefinition' => false }
+    {
+      'IgnoreExecutableScripts' => true,
+      'ExpectMatchingDefinition' => false,
+      'Regex' => nil
+    }
   end
 
   let(:includes) { [] }
@@ -218,6 +222,28 @@ describe RuboCop::Cop::Style::FileName do
       end
 
       include_examples 'matching module or class'
+    end
+  end
+
+  context 'when Regex is set' do
+    let(:cop_config) { { 'Regex' => /\A[aeiou]\z/i } }
+
+    context 'with a matching name' do
+      let(:filename) { 'a.rb' }
+
+      it 'does not register an offense' do
+        expect(cop.offenses).to be_empty
+      end
+    end
+
+    context 'with a non-matching name' do
+      let(:filename) { 'z.rb' }
+
+      it 'registers an offense' do
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.messages).to eq(
+          ['`z.rb` should match `(?i-mx:\\A[aeiou]\\z)`.'])
+      end
     end
   end
 end

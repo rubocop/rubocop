@@ -1438,9 +1438,7 @@ describe RuboCop::CLI, :isolated_environment do
           # to the fact that we haven't supplied any default configuration for
           # rubocop_ext in this example.
           expect(output)
-            .to eq(['Warning: unrecognized cop Style/SomeCop found in ' \
-                    "#{abs('.rubocop.yml')}",
-                    'Inspecting 2 files',
+            .to eq(['Inspecting 2 files',
                     '..',
                     '',
                     '2 files inspected, no offenses detected',

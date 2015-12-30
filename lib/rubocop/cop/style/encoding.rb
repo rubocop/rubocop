@@ -6,7 +6,7 @@ module RuboCop
       # This cop checks whether the source file has a utf-8 encoding
       # comment or not. This check makes sense only for code that
       # should support Ruby 1.9, since in 2.0+ utf-8 is the default
-      # source file encoding. There are two style:
+      # source file encoding. There are two styles:
       #
       # when_needed - only enforce an encoding comment if there are non ASCII
       #               characters, otherwise report an offense
@@ -29,18 +29,14 @@ module RuboCop
           return unless message
 
           range = source_range(processed_source.buffer, line_number + 1, 0)
-          add_offense(processed_source.tokens.first, range, message)
+          add_offense(range, range, message)
         end
 
-        def autocorrect(node)
+        def autocorrect(range)
           encoding = cop_config[AUTO_CORRECT_ENCODING_COMMENT]
           if encoding && encoding =~ ENCODING_PATTERN
             lambda do |corrector|
-              if encoding_line_number(processed_source) == 0
-                corrector.insert_before(node.pos, "#{encoding}\n")
-              else
-                corrector.insert_after(node.pos, "\n#{encoding}")
-              end
+              corrector.insert_before(range, "#{encoding}\n")
             end
           else
             fail "#{encoding} does not match #{ENCODING_PATTERN}"

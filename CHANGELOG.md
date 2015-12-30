@@ -54,6 +54,7 @@
 * `Style/SymbolArray` has both `percent` and `brackets` (which enforces the user of bracketed arrays for symbols) styles. ([@alexdowad][])
 * [#2343](https://github.com/bbatsov/rubocop/issues/2343): Entire cop types (or "departments") can be disabled using in .rubocop.yml using config like `Style: Enabled: false`. ([@alexdowad][])
 * [#2399](https://github.com/bbatsov/rubocop/issues/2399): New `start_of_line` style for `Lint/EndAlignment` aligns a closing `end` keyword with the start of the line where the opening keyword appears. ([@alexdowad][])
+* [#1545](https://github.com/bbatsov/rubocop/issues/1545): New `Regex` config parameter for `Style/FileName` allows user to provide their own regex for validating file names. ([@alexdowad][])
 
 ### Bug Fixes
 
@@ -96,6 +97,7 @@
 * `Style/SymbolArray` doesn't flag arrays of symbols if a symbol contains a space character. ([@alexdowad][])
 * `Style/SymbolArray` can auto-correct offenses. ([@alexdowad][])
 * [#2546](https://github.com/bbatsov/rubocop/issues/2546): Report when two `rubocop:disable` comments (not the single line kind) for a given cop apppear in a file with no `rubocop:enable` in between. ([@jonas054][])
+* [#2552](https://github.com/bbatsov/rubocop/issues/2552): `Style/Encoding` can auto-correct files with a blank first line. ([@alexdowad][])
 
 ### Changes
 
@@ -112,6 +114,8 @@
 * `Performance/StringReplacement`, `Performance\StartWith`, and `Performance\EndWith` more accurately identify code which can be improved. ([@alexdowad][])
 * The `MultiSpaceAllowedForOperators` config parameter for `Style/SpaceAroundOperators` has been removed, as it is made redundant by `AllowForAlignment`. If someone attempts to use it, config validation will fail with a helpful message. ([@alexdowad][])
 * The `RunRailsCops` config parameter in .rubocop.yml is now obsolete. If someone attempts to use it, config validation will fail with a helpful message. ([@alexdowad][])
+* If .rubocop.yml contains configuration for a custom cop, no warning regarding "unknown cop" will be printed. The custom cop must inherit from RuboCop::Cop::Cop, and must be loaded into memory for this to work. ([@alexdowad][])
+* [#2102](https://github.com/bbatsov/rubocop/issues/2102): If .rubocop.yml exists in the working directory when running --auto-gen-config, any `Exclude` config parameters in .rubocop.yml will be merged into the generated .rubocop_todo.yml. ([@alexdowad][])
 
 ## 0.35.1 (10/11/2015)
 

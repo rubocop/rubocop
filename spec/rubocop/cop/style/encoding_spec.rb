@@ -178,6 +178,16 @@ describe RuboCop::Cop::Style::Encoding, :config do
                                     'def foo',
                                     'end'].join("\n"))
         end
+
+        it "doesn't infinite-loop when the first line is blank" do
+          new_source = autocorrect_source(cop, ['',
+                                                'module Toto',
+                                                'end'])
+          expect(new_source).to eq(['# encoding: utf-8',
+                                    '',
+                                    'module Toto',
+                                    'end'].join("\n"))
+        end
       end
 
       context 'invalid auto correct comment' do

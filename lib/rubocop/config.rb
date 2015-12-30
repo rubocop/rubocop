@@ -120,6 +120,9 @@ module RuboCop
                'This cop cannot be configured.'
         end
 
+        # There could be a custom cop with this name. If so, don't warn
+        next if Cop::Cop.all.any? { |c| c.match?([name]) }
+
         warn Rainbow.new.wrap("Warning: unrecognized cop #{name} found in " \
                               "#{loaded_path}").yellow
       end

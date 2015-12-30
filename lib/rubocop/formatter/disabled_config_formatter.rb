@@ -55,8 +55,8 @@ module RuboCop
 
         @cops_with_offenses.sort.each do |cop_name, offense_count|
           output.puts
-          cfg = self.class.config_to_allow_offenses[cop_name]
-          cfg ||= {}
+          cfg = self.class.config_to_allow_offenses[cop_name] || {}
+
           output_cop_comments(output, cfg, cop_name, offense_count)
           output_cop_config(output, cfg, cop_name)
         end
@@ -114,13 +114,17 @@ module RuboCop
         require 'pathname'
         parent = Pathname.new(Dir.pwd)
 
-        # Exclude properties in .rubocop_todo.yml override default ones, so in
-        # order to retain the default excludes we must copy them.
-        default_cfg = RuboCop::ConfigLoader.default_configuration[cop_name]
-        default_excludes = default_cfg ? default_cfg['Exclude'] || [] : []
+        # Exclude properties in .rubocop_todo.yml override default ones, as well
+        # as any custom excludes in .rubocop.yml, so in order to retain those
+        # excludes we must copy them.
+        # There can be multiple .rubocop.yml files in subdirectories, but we
+        # just look at the current working directory
+        config = ConfigStore.new.for(parent)
+        cfg = config[cop_name] || {}
+        excludes = ((cfg['Exclude'] || []) + offending_files).uniq
 
         output.puts '  Exclude:'
-        (default_excludes + offending_files).each do |file|
+        excludes.each do |file|
           file_path = Pathname.new(file)
           begin
             relative = file_path.relative_path_from(parent)

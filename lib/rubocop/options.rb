@@ -161,10 +161,6 @@ module RuboCop
 
   # Validates option arguments and the options' compatibilty with each other.
   class OptionsValidator
-    def initialize(options)
-      @options = options
-    end
-
     # Cop name validation must be done later than option parsing, so it's not
     # called from within Options.
     def self.validate_cop_list(names)
@@ -178,6 +174,10 @@ module RuboCop
 
         fail ArgumentError, "Unrecognized cop or namespace: #{name}."
       end
+    end
+
+    def initialize(options)
+      @options = options
     end
 
     def validate_compatibility

@@ -16,6 +16,10 @@ module RuboCop
       class RedundantParentheses < Cop
         ALLOWED_LITERALS = [:irange, :erange].freeze
 
+        def_node_matcher :square_brackets?, '(send (send _recv _msg) :[] ...)'
+        def_node_matcher :range_end?, '^^{irange erange}'
+        def_node_matcher :method_node_and_args, '$(send _recv _msg $...)'
+
         def on_begin(node)
           return unless parentheses?(node)
 
@@ -41,18 +45,13 @@ module RuboCop
         end
 
         def method_call_with_redundant_parentheses?(node)
-          return false unless method_call?(node)
+          return false unless node.send_type?
           return false if range_end?(node)
 
           send_node, args = method_node_and_args(node)
 
           send_node.loc.begin || args.empty? || square_brackets?(send_node)
         end
-
-        def_node_matcher :method_call?, '(send _recv _msg ...)'
-        def_node_matcher :square_brackets?, '(send (send _recv _msg) :[] ...)'
-        def_node_matcher :range_end?, '^^{irange erange}'
-        def_node_matcher :method_node_and_args, '$(send _recv _msg $...)'
 
         def autocorrect(node)
           lambda do |corrector|
