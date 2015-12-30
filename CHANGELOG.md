@@ -115,6 +115,7 @@
 * The `MultiSpaceAllowedForOperators` config parameter for `Style/SpaceAroundOperators` has been removed, as it is made redundant by `AllowForAlignment`. If someone attempts to use it, config validation will fail with a helpful message. ([@alexdowad][])
 * The `RunRailsCops` config parameter in .rubocop.yml is now obsolete. If someone attempts to use it, config validation will fail with a helpful message. ([@alexdowad][])
 * If .rubocop.yml contains configuration for a custom cop, no warning regarding "unknown cop" will be printed. The custom cop must inherit from RuboCop::Cop::Cop, and must be loaded into memory for this to work. ([@alexdowad][])
+* [#2102](https://github.com/bbatsov/rubocop/issues/2102): If .rubocop.yml exists in the working directory when running --auto-gen-config, any `Exclude` config parameters in .rubocop.yml will be merged into the generated .rubocop_todo.yml. ([@alexdowad][])
 
 ## 0.35.1 (10/11/2015)
 

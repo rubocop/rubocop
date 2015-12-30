@@ -4,7 +4,9 @@ require 'spec_helper'
 
 module RuboCop
   module Formatter
-    describe DisabledConfigFormatter do
+    describe DisabledConfigFormatter, :isolated_environment do
+      include FileHelper
+
       subject(:formatter) { described_class.new(output) }
       let(:output) do
         o = StringIO.new
@@ -48,6 +50,37 @@ module RuboCop
                     'add inherit_from: .rubocop_todo.yml in a .rubocop.yml ' \
                     'file.',
                     ''].join("\n"))
+        end
+
+        it 'merges in excludes from .rubocop.yml' do
+          create_file('.rubocop.yml', ['Cop1:',
+                                       '  Exclude:',
+                                       '    - Gemfile',
+                                       'Cop2:',
+                                       '  Exclude:',
+                                       '    - "**/*.blah"'])
+          formatter.file_started('test_a.rb', {})
+          formatter.file_finished('test_a.rb', offenses)
+          formatter.file_started('test_b.rb', {})
+          formatter.file_finished('test_b.rb', [offenses.first])
+          formatter.finished(['test_a.rb', 'test_b.rb'])
+          expect(output.string).to eq(format(described_class::HEADING,
+                                             'rubocop --auto-gen-config') +
+                                      ['',
+                                       '',
+                                       '# Offense count: 2',
+                                       'Cop1:',
+                                       '  Exclude:',
+                                       "    - 'Gemfile'",
+                                       "    - 'test_a.rb'",
+                                       "    - 'test_b.rb'",
+                                       '',
+                                       '# Offense count: 1',
+                                       'Cop2:',
+                                       '  Exclude:',
+                                       "    - '**/*.blah'",
+                                       "    - 'test_a.rb'",
+                                       ''].join("\n"))
         end
 
         it 'displays a file exclusion list up to a maximum of 15 offenses' do
