@@ -8,8 +8,7 @@ module RuboCop
     class CopStore < ::Array
       # @return [Array<String>] list of types for current cops.
       def types
-        @types = map(&:cop_type).uniq! unless defined? @types
-        @types
+        @types ||= map(&:cop_type).uniq!
       end
 
       # @return [Array<Cop>] Cops for that specific type.
