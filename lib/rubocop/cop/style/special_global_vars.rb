@@ -14,47 +14,46 @@ module RuboCop
         MSG_REGULAR = 'Prefer `%s` over `%s`.'
 
         ENGLISH_VARS = {
-          '$:' => ['$LOAD_PATH'],
-          '$"' => ['$LOADED_FEATURES'],
-          '$0' => ['$PROGRAM_NAME'],
-          '$!' => ['$ERROR_INFO'],
-          '$@' => ['$ERROR_POSITION'],
-          '$;' => ['$FIELD_SEPARATOR', '$FS'],
-          '$,' => ['$OUTPUT_FIELD_SEPARATOR', '$OFS'],
-          '$/' => ['$INPUT_RECORD_SEPARATOR', '$RS'],
-          '$\\' => ['$OUTPUT_RECORD_SEPARATOR', '$ORS'],
-          '$.' => ['$INPUT_LINE_NUMBER', '$NR'],
-          '$_' => ['$LAST_READ_LINE'],
-          '$>' => ['$DEFAULT_OUTPUT'],
-          '$<' => ['$DEFAULT_INPUT'],
-          '$$' => ['$PROCESS_ID', '$PID'],
-          '$?' => ['$CHILD_STATUS'],
-          '$~' => ['$LAST_MATCH_INFO'],
-          '$=' => ['$IGNORECASE'],
-          '$*' => ['$ARGV', 'ARGV'],
-          '$&' => ['$MATCH'],
-          '$`' => ['$PREMATCH'],
-          '$\'' => ['$POSTMATCH'],
-          '$+' => ['$LAST_PAREN_MATCH']
-        }.symbolize_keys
+          :$: => [:$LOAD_PATH],
+          :$" => [:$LOADED_FEATURES],
+          :$0 => [:$PROGRAM_NAME],
+          :$! => [:$ERROR_INFO],
+          :$@ => [:$ERROR_POSITION],
+          :$; => [:$FIELD_SEPARATOR, :$FS],
+          :$, => [:$OUTPUT_FIELD_SEPARATOR, :$OFS],
+          :$/ => [:$INPUT_RECORD_SEPARATOR, :$RS],
+          :$\ => [:$OUTPUT_RECORD_SEPARATOR, :$ORS],
+          :$. => [:$INPUT_LINE_NUMBER, :$NR],
+          :$_ => [:$LAST_READ_LINE],
+          :$> => [:$DEFAULT_OUTPUT],
+          :$< => [:$DEFAULT_INPUT],
+          :$$ => [:$PROCESS_ID, :$PID],
+          :$? => [:$CHILD_STATUS],
+          :$~ => [:$LAST_MATCH_INFO],
+          :$= => [:$IGNORECASE],
+          :$* => [:$ARGV, :ARGV],
+          :$& => [:$MATCH],
+          :$` => [:$PREMATCH],
+          :$' => [:$POSTMATCH],
+          :$+ => [:$LAST_PAREN_MATCH]
+        }
 
         PERL_VARS =
-          Hash[ENGLISH_VARS.flat_map { |k, vs| vs.map { |v| [v, [k.to_s]] } }]
-          .symbolize_keys
+          Hash[ENGLISH_VARS.flat_map { |k, vs| vs.map { |v| [v, [k]] } }]
 
         ENGLISH_VARS.merge!(
-          Hash[ENGLISH_VARS.values.flat_map { |vs| vs.map { |v| [v, [v]] } }])
+          Hash[ENGLISH_VARS.flat_map { |_, vs| vs.map { |v| [v, [v]] } }])
         PERL_VARS.merge!(
-          Hash[PERL_VARS.values.flat_map { |vs| vs.map { |v| [v, [v]] } }])
+          Hash[PERL_VARS.flat_map { |_, vs| vs.map { |v| [v, [v]] } }])
         ENGLISH_VARS.freeze
         PERL_VARS.freeze
 
         # Anything *not* in this set is provided by the English library.
         NON_ENGLISH_VARS = Set.new([
-                                     '$LOAD_PATH',
-                                     '$LOADED_FEATURES',
-                                     '$PROGRAM_NAME',
-                                     'ARGV'
+                                     :$LOAD_PATH,
+                                     :$LOADED_FEATURES,
+                                     :$PROGRAM_NAME,
+                                     :ARGV
                                    ])
 
         def on_gvar(node)
@@ -116,7 +115,7 @@ module RuboCop
               end
             else
               corrector.replace(node.loc.expression,
-                                preferred_names(global_var).first)
+                                preferred_names(global_var).first.to_s)
             end
           end
         end
