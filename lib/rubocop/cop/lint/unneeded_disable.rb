@@ -106,6 +106,8 @@ module RuboCop
 
         def add_offenses(unneeded_cops)
           unneeded_cops.each do |comment, cops|
+            # Is the entire rubocop:disable line useless, or should just
+            # some of the mentioned cops be removed?
             if all_disabled?(comment) ||
                directive_count(comment) == cops.size
               location = comment.loc.expression
