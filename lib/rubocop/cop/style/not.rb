@@ -10,11 +10,7 @@ module RuboCop
         MSG = 'Use `!` instead of `not`.'
 
         def on_send(node)
-          _receiver, method_name, *args = *node
-
-          # not does not take any arguments
-          return unless args.empty? && method_name == :! &&
-                        node.loc.selector.is?('not')
+          return unless node.keyword_not?
 
           add_offense(node, :selector)
         end
