@@ -8,7 +8,7 @@ module Astrolabe
   # Contribute as much of this as possible to the `astrolabe` gem
   # If any of it is accepted, it can be deleted from here
   #
-  class Node
+  class Node # rubocop:disable Metrics/ClassLength
     include Astrolabe::Sexp
 
     COMPARISON_OPERATORS = [:==, :===, :!=, :<=, :>=, :>, :<, :<=>].freeze
@@ -23,6 +23,12 @@ module Astrolabe
 
     VARIABLES = [:ivar, :gvar, :cvar, :lvar].freeze
     REFERENCES = [:nth_ref, :back_ref].freeze
+    KEYWORDS = [:alias, :and, :break, :case, :class, :def, :defs, :defined?,
+                :kwbegin, :do, :else, :ensure, :for, :if, :module, :next, :not,
+                :or, :postexe, :redo, :rescue, :retry, :return, :self, :super,
+                :zsuper, :then, :undef, :until, :when, :while, :yield].freeze
+    OPERATOR_KEYWORDS = [:and, :or].freeze
+    SPECIAL_KEYWORDS = %w(__FILE__ __LINE__ __ENCODING__).freeze
 
     # def_matcher can be used to define a pattern-matching method on Node
     class << self
@@ -153,6 +159,22 @@ module Astrolabe
 
     def reference?
       REFERENCES.include?(type)
+    end
+
+    def keyword?
+      return true if special_keyword? || keyword_not?
+      return false unless KEYWORDS.include?(type)
+
+      !OPERATOR_KEYWORDS.include?(type) || loc.operator.is?(type.to_s)
+    end
+
+    def special_keyword?
+      SPECIAL_KEYWORDS.include?(source)
+    end
+
+    def keyword_not?
+      _receiver, method_name, *args = *self
+      args.empty? && method_name == :! && loc.selector.is?('not'.freeze)
     end
 
     def_matcher :command?, '(send nil %1 ...)'
