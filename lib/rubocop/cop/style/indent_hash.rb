@@ -71,7 +71,7 @@ module RuboCop
           first_pair = hash_node.children.first
           if first_pair
             left_brace = hash_node.loc.begin
-            return if first_pair.loc.expression.line == left_brace.line
+            return if first_pair.source_range.line == left_brace.line
 
             if separator_style?(first_pair)
               check_based_on_longest_key(hash_node.children, left_brace,
@@ -112,14 +112,14 @@ module RuboCop
 
         def check_based_on_longest_key(pairs, left_brace, left_parenthesis)
           key_lengths = pairs.map do |pair|
-            pair.children.first.loc.expression.length
+            pair.children.first.source_range.length
           end
           check_first_pair(pairs.first, left_brace, left_parenthesis,
                            key_lengths.max - key_lengths.first)
         end
 
         def check_first_pair(first_pair, left_brace, left_parenthesis, offset)
-          actual_column = first_pair.loc.expression.column
+          actual_column = first_pair.source_range.column
           expected_column = base_column(left_brace, left_parenthesis) +
                             configured_indentation_width + offset
           @column_delta = expected_column - actual_column

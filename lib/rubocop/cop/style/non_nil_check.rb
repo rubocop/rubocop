@@ -96,7 +96,7 @@ module RuboCop
           return if expr == new_code
 
           lambda do |corrector|
-            corrector.replace(node.loc.expression, new_code)
+            corrector.replace(node.source_range, new_code)
           end
         end
 
@@ -104,9 +104,9 @@ module RuboCop
           lambda do |corrector|
             receiver, _method, _args = *inner_node
             if receiver
-              corrector.replace(node.loc.expression, receiver.source)
+              corrector.replace(node.source_range, receiver.source)
             else
-              corrector.replace(node.loc.expression, 'self')
+              corrector.replace(node.source_range, 'self')
             end
           end
         end

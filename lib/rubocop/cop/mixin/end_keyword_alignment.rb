@@ -49,7 +49,7 @@ module RuboCop
       end
 
       def align(node, align_to)
-        source_buffer = node.loc.expression.source_buffer
+        source_buffer = node.source_range.source_buffer
         begin_pos = node.loc.end.begin_pos
         whitespace = Parser::Source::Range.new(source_buffer,
                                                begin_pos - node.loc.end.column,
@@ -59,7 +59,7 @@ module RuboCop
         column = if !align_to
                    0
                  elsif align_to.respond_to?(:loc)
-                   align_to.loc.expression.column
+                   align_to.source_range.column
                  else
                    align_to.column
                  end

@@ -30,7 +30,7 @@ module RuboCop
         def autocorrect(node)
           lambda do |corrector|
             unless arguments?(node.children)
-              corrector.replace(node.loc.expression, 'nil')
+              corrector.replace(node.source_range, 'nil')
               next
             end
 
@@ -50,13 +50,13 @@ module RuboCop
         end
 
         def add_brackets(corrector, node)
-          kids = node.children.map { |child| child.loc.expression }
+          kids = node.children.map(&:source_range)
           corrector.insert_before(kids.first, '[')
           corrector.insert_after(kids.last, ']')
         end
 
         def add_braces(corrector, node)
-          kids = node.children.map { |child| child.loc.expression }
+          kids = node.children.map(&:source_range)
           corrector.insert_before(kids.first, '{')
           corrector.insert_after(kids.last, '}')
         end

@@ -69,13 +69,13 @@ module RuboCop
 
           # The node must begin inside the parent, otherwise node is the first
           # part of a chained method call.
-          node.loc.expression.begin_pos > parent.loc.expression.begin_pos
+          node.source_range.begin_pos > parent.source_range.begin_pos
         end
 
         def base_range(send_node, arg_node)
           Parser::Source::Range.new(processed_source.buffer,
-                                    send_node.loc.expression.begin_pos,
-                                    arg_node.loc.expression.begin_pos)
+                                    send_node.source_range.begin_pos,
+                                    arg_node.source_range.begin_pos)
         end
 
         # Returns the column of the given range. For single line ranges, this

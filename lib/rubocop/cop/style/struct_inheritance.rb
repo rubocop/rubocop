@@ -19,7 +19,7 @@ module RuboCop
           _name, superclass, _body = *node
           return unless struct_constructor?(superclass)
 
-          add_offense(node, superclass.loc.expression, MSG)
+          add_offense(node, superclass.source_range, MSG)
         end
 
         private

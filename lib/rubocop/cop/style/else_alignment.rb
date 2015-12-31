@@ -59,7 +59,7 @@ module RuboCop
 
         def base_range(node, base)
           if base
-            base.loc.expression
+            base.source_range
           else
             base = node
             until %w(if unless).include?(base.loc.keyword.source)

@@ -20,7 +20,7 @@ module RuboCop
 
           space_length = spaces_before_left_parenthesis(node)
           return unless space_length > 0
-          expr = args.first.loc.expression
+          expr = args.first.source_range
           space_range =
             Parser::Source::Range.new(expr.source_buffer,
                                       expr.begin_pos - space_length,

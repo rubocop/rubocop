@@ -116,7 +116,7 @@ module RuboCop
 
           @ignored_ranges ||= on_node(:pair, ast).map do |pair|
             key, value = *pair
-            key.loc.expression.end_pos...value.loc.expression.begin_pos
+            key.source_range.end_pos...value.source_range.begin_pos
           end
         end
 

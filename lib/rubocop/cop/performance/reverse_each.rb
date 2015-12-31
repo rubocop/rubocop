@@ -22,7 +22,7 @@ module RuboCop
           _, first_method = *receiver
           return unless first_method == :reverse
 
-          source_buffer = node.loc.expression.source_buffer
+          source_buffer = node.source_range.source_buffer
           location_of_reverse = receiver.loc.selector.begin_pos
           end_location = node.loc.selector.end_pos
 

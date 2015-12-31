@@ -17,21 +17,21 @@ module RuboCop
                     !any_pairs_on_the_same_line?(node.parent)
 
           _, right = *node
-          check_operator(node.loc.operator, right.loc.expression)
+          check_operator(node.loc.operator, right.source_range)
         end
 
         def on_if(node)
           return unless node.loc.respond_to?(:question)
           _, if_branch, else_branch = *node
 
-          check_operator(node.loc.question, if_branch.loc.expression)
-          check_operator(node.loc.colon, else_branch.loc.expression)
+          check_operator(node.loc.question, if_branch.source_range)
+          check_operator(node.loc.colon, else_branch.source_range)
         end
 
         def on_resbody(node)
           if node.loc.assoc
             _, variable, = *node
-            check_operator(node.loc.assoc, variable.loc.expression)
+            check_operator(node.loc.assoc, variable.source_range)
           end
         end
 
@@ -42,7 +42,7 @@ module RuboCop
             op = node.loc.selector
             if operator?(op)
               _, _, right, = *node
-              check_operator(node.loc.selector, right.loc.expression)
+              check_operator(node.loc.selector, right.source_range)
             end
           end
         end
@@ -50,13 +50,13 @@ module RuboCop
         def on_binary(node)
           _, right, = *node
           return if right.nil?
-          check_operator(node.loc.operator, right.loc.expression)
+          check_operator(node.loc.operator, right.source_range)
         end
 
         def on_special_asgn(node)
           return unless node.loc.operator
           _, _, right, = *node
-          check_operator(node.loc.operator, right.loc.expression)
+          check_operator(node.loc.operator, right.source_range)
         end
 
         alias on_or       on_binary
@@ -79,10 +79,9 @@ module RuboCop
         end
 
         def unary_operation?(node)
-          whole = node.loc.expression
-          selector = node.loc.selector
-          return unless selector
-          operator?(selector) && whole.begin_pos == selector.begin_pos
+          return unless (selector = node.loc.selector)
+          operator?(selector) &&
+            node.source_range.begin_pos == selector.begin_pos
         end
 
         def called_with_dot?(node)

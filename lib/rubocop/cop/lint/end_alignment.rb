@@ -74,7 +74,7 @@ module RuboCop
         end
 
         def check_asgn_alignment(outer_node, inner_node)
-          expr = outer_node.loc.expression
+          expr = outer_node.source_range
 
           align_with = {
             keyword: inner_node.loc.keyword,
@@ -122,7 +122,7 @@ module RuboCop
         end
 
         def start_line_range(node)
-          expr   = node.loc.expression
+          expr   = node.source_range
           buffer = expr.source_buffer
           source = buffer.source_line(expr.line)
           range  = buffer.line_range(expr.line)

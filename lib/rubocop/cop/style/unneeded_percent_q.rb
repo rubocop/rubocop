@@ -44,7 +44,7 @@ module RuboCop
         end
 
         def message(node)
-          src = node.loc.expression.source
+          src = node.source
           extra = if src.start_with?(PERCENT_CAPITAL_Q)
                     DYNAMIC_MSG
                   else

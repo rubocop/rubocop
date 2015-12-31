@@ -71,7 +71,7 @@ module RuboCop
           first_elem = array_node.children.first
           if first_elem
             left_bracket = array_node.loc.begin
-            return if first_elem.loc.expression.line == left_bracket.line
+            return if first_elem.source_range.line == left_bracket.line
             check_first_elem(first_elem, left_bracket, left_parenthesis, 0)
           end
 
@@ -100,7 +100,7 @@ module RuboCop
         end
 
         def check_first_elem(first_elem, left_bracket, left_parenthesis, offset)
-          actual_column = first_elem.loc.expression.column
+          actual_column = first_elem.source_range.column
           expected_column = base_column(left_bracket, left_parenthesis) +
                             configured_indentation_width + offset
           @column_delta = expected_column - actual_column

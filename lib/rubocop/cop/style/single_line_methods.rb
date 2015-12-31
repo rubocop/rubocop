@@ -31,16 +31,16 @@ module RuboCop
         def autocorrect(node)
           body = @body
           eol_comment = processed_source.comments.find do |c|
-            c.loc.line == node.loc.expression.line
+            c.loc.line == node.source_range.line
           end
           lambda do |corrector|
             if body
               if body.type == :begin
                 body.children.each do |part|
-                  break_line_before(part.loc.expression, node, corrector, 1)
+                  break_line_before(part.source_range, node, corrector, 1)
                 end
               else
-                break_line_before(body.loc.expression, node, corrector, 1)
+                break_line_before(body.source_range, node, corrector, 1)
               end
             end
 
@@ -60,9 +60,8 @@ module RuboCop
 
         def move_comment(eol_comment, node, corrector)
           text = eol_comment.loc.expression.source
-          corrector.insert_before(node.loc.expression,
-                                  text + "\n" +
-                                  ' ' * node.loc.keyword.column)
+          corrector.insert_before(node.source_range,
+                                  text + "\n" + (' ' * node.loc.keyword.column))
           corrector.remove(eol_comment.loc.expression)
         end
       end

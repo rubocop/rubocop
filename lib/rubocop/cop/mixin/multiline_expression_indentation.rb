@@ -33,7 +33,7 @@ module RuboCop
       def right_hand_side(send_node)
         _, method_name, *args = *send_node
         if operator?(method_name) && args.any?
-          args.first.loc.expression # not used for method calls
+          args.first.source_range # not used for method calls
         else
           dot = send_node.loc.dot
           selector = send_node.loc.selector
@@ -72,7 +72,7 @@ module RuboCop
       end
 
       def indentation(node)
-        node.loc.expression.source_line =~ /\S/
+        node.source_range.source_line =~ /\S/
       end
 
       def operation_description(node, rhs)
@@ -163,7 +163,7 @@ module RuboCop
         a = ancestor.loc
         return false unless ancestor.type == :send && a.begin &&
                             a.begin.is?('(')
-        n = node.loc.expression
+        n = node.source_range
         n.begin_pos > a.begin.begin_pos && n.end_pos < a.end.end_pos
       end
     end

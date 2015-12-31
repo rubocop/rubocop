@@ -35,7 +35,7 @@ module RuboCop
           lambda do |corrector|
             receiver, _method_name, *_args = *node
             corrector.replace(
-              node.loc.expression,
+              node.source_range,
               if receiver
                 receiver.source
               else

@@ -64,7 +64,7 @@ module RuboCop
         end
 
         def add_offense_for_expression(node, expr, msg)
-          expression = expr.loc.expression
+          expression = expr.source_range
           range = Parser::Source::Range.new(expression.source_buffer,
                                             expression.begin_pos,
                                             expression.end_pos)
@@ -78,7 +78,7 @@ module RuboCop
             unless args.children.empty? ||
                    args.loc.end.line == node.loc.begin.line
               autocorrect_arguments(corrector, node, args, block_body)
-              expr_before_body = args.loc.expression.end
+              expr_before_body = args.source_range.end
             end
 
             return unless block_body
@@ -92,11 +92,11 @@ module RuboCop
 
         def autocorrect_arguments(corrector, node, args, block_body)
           end_pos = if block_body
-                      block_body.loc.expression.begin_pos
+                      block_body.source_range.begin_pos
                     else
                       node.loc.end.begin.begin_pos - 1
                     end
-          range = Parser::Source::Range.new(args.loc.expression.source_buffer,
+          range = Parser::Source::Range.new(args.source_range.source_buffer,
                                             node.loc.begin.end.begin_pos,
                                             end_pos)
           corrector.replace(range, " |#{block_arg_string(args)}|")
@@ -109,9 +109,9 @@ module RuboCop
                          block_body
                        end
 
-          block_start_col = node.loc.expression.column
+          block_start_col = node.source_range.column
 
-          corrector.insert_before(first_node.loc.expression,
+          corrector.insert_before(first_node.source_range,
                                   "\n  #{' ' * block_start_col}")
         end
 

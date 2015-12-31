@@ -29,9 +29,8 @@ module RuboCop
 
         # switch `raise RuntimeError, 'message'` to `raise 'message'`
         def autocorrect(node)
-          start_range = node.loc.expression.begin
-          no_comma = range_with_surrounding_comma(node.loc.expression.end,
-                                                  :right)
+          start_range = node.source_range.begin
+          no_comma = range_with_surrounding_comma(node.source_range.end, :right)
           comma_range = start_range.join(no_comma)
           final_range = range_with_surrounding_space(comma_range, :right)
           ->(corrector) { corrector.replace(final_range, '') }

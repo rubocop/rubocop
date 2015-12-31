@@ -36,7 +36,7 @@ module RuboCop
             # `"abc\ndef"` also -> (dstr (str "abc") (str "def"))
             next unless child1.source[-1] == ending_delimiter(child1)
 
-            range   = child1.loc.expression.join(child2.loc.expression)
+            range   = child1.source_range.join(child2.source_range)
             message = format(MSG, display_str(child1), display_str(child2))
             if node.parent && node.parent.array_type?
               message << FOR_ARRAY

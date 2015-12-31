@@ -21,7 +21,7 @@ module RuboCop
 
         indentation = node.loc.keyword.column
         kw_length = node.loc.keyword.size
-        cond_length = cond.loc.expression.size
+        cond_length = cond.source_range.size
         space = 1
         total = indentation + body_length + space + kw_length + space +
                 cond_length
@@ -39,15 +39,15 @@ module RuboCop
       end
 
       def body_length(body)
-        if body && body.loc.expression
-          body.loc.expression.size
+        if body && body.source_range
+          body.source_range.size
         else
           0
         end
       end
 
       def body_has_comment?(body)
-        comment_lines.include?(body.loc.expression.line)
+        comment_lines.include?(body.source_range.line)
       end
 
       def end_keyword_has_comment?(node)

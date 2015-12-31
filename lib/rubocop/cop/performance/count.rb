@@ -36,9 +36,9 @@ module RuboCop
           return if params && !params.block_pass_type?
           return if node.parent && node.parent.block_type?
 
-          range = Parser::Source::Range.new(node.loc.expression.source_buffer,
+          range = Parser::Source::Range.new(node.source_range.source_buffer,
                                             selector_loc.begin_pos,
-                                            node.loc.expression.end_pos)
+                                            node.source_range.end_pos)
 
           add_offense(node, range, format(MSG, selector, counter))
         end
@@ -48,9 +48,9 @@ module RuboCop
 
           return if selector == :reject
 
-          range = Parser::Source::Range.new(node.loc.expression.source_buffer,
+          range = Parser::Source::Range.new(node.source_range.source_buffer,
                                             node.loc.dot.begin_pos,
-                                            node.loc.expression.end_pos)
+                                            node.source_range.end_pos)
 
           lambda do |corrector|
             corrector.remove(range)

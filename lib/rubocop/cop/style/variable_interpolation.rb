@@ -29,8 +29,9 @@ module RuboCop
         end
 
         def autocorrect(node)
-          expr = node.loc.expression
-          ->(corrector) { corrector.replace(expr, "{#{expr.source}}") }
+          lambda do |corrector|
+            corrector.replace(node.source_range, "{#{node.source}}")
+          end
         end
 
         def var_nodes(nodes)

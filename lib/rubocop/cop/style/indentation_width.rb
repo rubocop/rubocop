@@ -74,7 +74,7 @@ module RuboCop
             if modifier_node?(m) && special.include?(m.source)
               previous_modifier = m
             elsif previous_modifier
-              check_indentation(previous_modifier.loc.expression, m, style)
+              check_indentation(previous_modifier.source_range, m, style)
               previous_modifier = nil
             end
           end
@@ -95,7 +95,7 @@ module RuboCop
                   end
           base = style == 'def' ? args.first : node
 
-          check_indentation(base.loc.expression, body)
+          check_indentation(base.source_range, body)
           ignore_node(args.first)
         end
 
@@ -113,7 +113,7 @@ module RuboCop
 
           _condition, body = *node
           return unless node.loc.keyword.begin_pos ==
-                        node.loc.expression.begin_pos
+                        node.source_range.begin_pos
 
           check_indentation(base.loc, body)
         end
@@ -233,7 +233,7 @@ module RuboCop
         # Returns true if the given node is within another node that has
         # already been marked for auto-correction by this cop.
         def other_offense_in_same_range?(node)
-          expr = node.loc.expression
+          expr = node.source_range
           @offense_ranges ||= []
 
           return true if @offense_ranges.any? { |r| within?(expr, r) }
@@ -252,7 +252,7 @@ module RuboCop
 
           # Don't check indentation if the line doesn't start with the body.
           # For example, lines like "else do_something".
-          first_char_pos_on_line = body_node.loc.expression.source_line =~ /\S/
+          first_char_pos_on_line = body_node.source_range.source_line =~ /\S/
           return false unless body_node.loc.column == first_char_pos_on_line
 
           if [:rescue, :ensure].include?(body_node.type)
@@ -264,7 +264,7 @@ module RuboCop
         end
 
         def offending_range(body_node, indentation)
-          expr = body_node.loc.expression
+          expr = body_node.source_range
           begin_pos = expr.begin_pos
           ind = expr.begin_pos - indentation
           pos = indentation >= 0 ? ind..begin_pos : begin_pos..ind

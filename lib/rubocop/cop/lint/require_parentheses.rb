@@ -44,10 +44,10 @@ module RuboCop
           condition, = *arg
           return unless offense?(condition)
 
-          expr = node.loc.expression
+          expr = node.source_range
           range = Parser::Source::Range.new(expr.source_buffer,
                                             expr.begin_pos,
-                                            condition.loc.expression.end_pos)
+                                            condition.source_range.end_pos)
           add_offense(range, range)
         end
 

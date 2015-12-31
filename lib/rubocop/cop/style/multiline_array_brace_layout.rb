@@ -67,8 +67,8 @@ module RuboCop
             end
           else
             range = Parser::Source::Range.new(
-              node.loc.expression.source_buffer,
-              node.children.last.loc.expression.end_pos,
+              node.source_range.source_buffer,
+              node.children.last.source_range.end_pos,
               node.loc.end.begin_pos)
 
             ->(corrector) { corrector.remove(range) }

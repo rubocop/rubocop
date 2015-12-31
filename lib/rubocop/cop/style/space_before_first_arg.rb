@@ -28,7 +28,7 @@ module RuboCop
           return if operator?(method_name)
           return if node.asgn_method_call?
 
-          arg1 = args.first.loc.expression
+          arg1 = args.first.source_range
           return if arg1.line > node.loc.line
           return if allow_for_alignment? && aligned_with_something?(arg1)
 

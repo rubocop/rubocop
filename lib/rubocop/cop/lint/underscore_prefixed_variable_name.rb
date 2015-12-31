@@ -26,7 +26,7 @@ module RuboCop
           node = variable.declaration_node
 
           location = if node.type == :match_with_lvasgn
-                       node.children.first.loc.expression
+                       node.children.first.source_range
                      else
                        node.loc.name
                      end

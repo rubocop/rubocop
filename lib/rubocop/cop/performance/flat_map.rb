@@ -36,7 +36,7 @@ module RuboCop
             return unless flatten_level == 1
           end
 
-          range = Parser::Source::Range.new(node.loc.expression.source_buffer,
+          range = Parser::Source::Range.new(node.source_range.source_buffer,
                                             expression.loc.selector.begin_pos,
                                             node.loc.selector.end_pos)
 
@@ -51,9 +51,9 @@ module RuboCop
           array, = *receiver
 
           lambda do |corrector|
-            range = Parser::Source::Range.new(node.loc.expression.source_buffer,
+            range = Parser::Source::Range.new(node.source_range.source_buffer,
                                               node.loc.dot.begin_pos,
-                                              node.loc.expression.end_pos)
+                                              node.source_range.end_pos)
 
             corrector.remove(range)
             corrector.replace(array.loc.selector, 'flat_map')

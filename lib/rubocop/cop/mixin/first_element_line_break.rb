@@ -6,7 +6,7 @@ module RuboCop
     # element in a multi-line collection.
     module FirstElementLineBreak
       def autocorrect(node)
-        ->(corrector) { corrector.insert_before(node.loc.expression, "\n") }
+        ->(corrector) { corrector.insert_before(node.source_range, "\n") }
       end
 
       private
@@ -20,7 +20,7 @@ module RuboCop
       end
 
       def method_uses_parens?(node, limit)
-        source = node.loc.expression.source_line[0...limit.loc.column]
+        source = node.source_range.source_line[0...limit.loc.column]
         source =~ /\s*\(\s*$/
       end
 

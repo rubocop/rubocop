@@ -33,8 +33,8 @@ module RuboCop
 
         def check_and_or(node)
           lhs, rhs = *node
-          range = offending_range(node, lhs, rhs.loc.expression, style)
-          check(range, node, lhs, rhs.loc.expression)
+          range = offending_range(node, lhs, rhs.source_range, style)
+          check(range, node, lhs, rhs.source_range)
         end
 
         def offending_range(node, lhs, rhs, given_style)

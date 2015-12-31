@@ -39,7 +39,7 @@ module RuboCop
         def base_column(node, args)
           if fixed_indentation?
             lineno = target_method_lineno(node)
-            line = node.loc.expression.source_buffer.source_line(lineno)
+            line = node.source_range.source_buffer.source_line(lineno)
             indentation_of_line = /\S.*/.match(line).begin(0)
             indentation_of_line + configured_indentation_width
           else

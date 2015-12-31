@@ -25,7 +25,7 @@ module RuboCop
           return unless (recv_and_method = where_first(node))
           receiver, second_method = *recv_and_method
 
-          range = Parser::Source::Range.new(node.loc.expression.source_buffer,
+          range = Parser::Source::Range.new(node.source_range.source_buffer,
                                             receiver.loc.selector.begin_pos,
                                             node.loc.selector.end_pos)
 
@@ -41,7 +41,7 @@ module RuboCop
 
           where_loc = receiver.loc.selector
           first_loc = Parser::Source::Range.new(
-            node.loc.expression.source_buffer,
+            node.source_range.source_buffer,
             node.loc.dot.begin_pos,
             node.loc.selector.end_pos
           )

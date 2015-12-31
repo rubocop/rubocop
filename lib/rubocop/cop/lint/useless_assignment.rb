@@ -35,7 +35,7 @@ module RuboCop
             message = message_for_useless_assignment(assignment)
 
             location = if assignment.regexp_named_capture?
-                         assignment.node.children.first.loc.expression
+                         assignment.node.children.first.source_range
                        else
                          assignment.node.loc.name
                        end

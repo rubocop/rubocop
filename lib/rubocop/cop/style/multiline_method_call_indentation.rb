@@ -83,18 +83,18 @@ module RuboCop
             when :for                then _, expression, = *n
             when :return             then expression, = *n
             end
-            return expression.loc.expression
+            return expression.source_range
           end
 
           # a = b
           #     .c
           n = part_of_assignment_rhs(lhs, rhs)
-          return assignment_rhs(n).loc.expression if n
+          return assignment_rhs(n).source_range if n
 
           # a + b
           #     .c
           n = operation_rhs(lhs)
-          return n.loc.expression if n
+          return n.source_range if n
         end
 
         # a.b

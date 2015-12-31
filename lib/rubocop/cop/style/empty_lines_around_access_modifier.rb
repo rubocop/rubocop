@@ -25,8 +25,8 @@ module RuboCop
 
             line = Parser::Source::Range.new(
               processed_source.buffer,
-              node.loc.expression.begin_pos - node.loc.column,
-              node.loc.expression.end_pos
+              node.source_range.begin_pos - node.loc.column,
+              node.source_range.end_pos
             )
 
             unless previous_line_empty?(previous_line)

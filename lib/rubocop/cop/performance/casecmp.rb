@@ -29,7 +29,7 @@ module RuboCop
 
         def autocorrect(node)
           receiver, _method, arg = *node
-          range = Parser::Source::Range.new(node.loc.expression.source_buffer,
+          range = Parser::Source::Range.new(node.source_range.source_buffer,
                                             receiver.loc.selector.begin_pos,
                                             arg.loc.begin.begin_pos)
 
@@ -43,7 +43,7 @@ module RuboCop
               corrector.replace(range, 'casecmp(')
             else
               corrector.replace(range, 'casecmp(')
-              corrector.insert_after(arg.loc.expression, ')')
+              corrector.insert_after(arg.source_range, ')')
             end
           end
         end

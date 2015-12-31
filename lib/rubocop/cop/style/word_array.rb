@@ -39,12 +39,12 @@ module RuboCop
             char = escape ? 'W' : 'w'
             contents = autocorrect_words(words, escape, node.loc.line)
             lambda do |corrector|
-              corrector.replace(node.loc.expression, "%#{char}(#{contents})")
+              corrector.replace(node.source_range, "%#{char}(#{contents})")
             end
           else
             words = words.map { |w| to_string_literal(w.children[0]) }
             lambda do |corrector|
-              corrector.replace(node.loc.expression, "[#{words.join(', ')}]")
+              corrector.replace(node.source_range, "[#{words.join(', ')}]")
             end
           end
         end
@@ -53,7 +53,7 @@ module RuboCop
 
         def comments_in_array?(node)
           comments = processed_source.comments
-          array_range = node.loc.expression.to_a
+          array_range = node.source_range.to_a
 
           comments.any? do |comment|
             !(comment.loc.expression.to_a & array_range).empty?

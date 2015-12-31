@@ -27,7 +27,7 @@ module RuboCop
 
         def autocorrect(node)
           correction = "#{base_number(node)}.#{offense_type(node)}?"
-          ->(corrector) { corrector.replace(node.loc.expression, correction) }
+          ->(corrector) { corrector.replace(node.source_range, correction) }
         end
 
         private

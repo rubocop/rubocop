@@ -38,13 +38,13 @@ module RuboCop
           return if body.nil? # Empty class etc.
 
           modifiers = body.children.select { |c| modifier_node?(c) }
-          class_column = node.loc.expression.column
+          class_column = node.source_range.column
 
           modifiers.each { |modifier| check_modifier(modifier, class_column) }
         end
 
         def check_modifier(send_node, class_start_col)
-          access_modifier_start_col = send_node.loc.expression.column
+          access_modifier_start_col = send_node.source_range.column
           offset = access_modifier_start_col - class_start_col
 
           @column_delta = expected_indent_offset - offset

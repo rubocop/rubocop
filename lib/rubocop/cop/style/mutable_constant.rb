@@ -26,7 +26,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          expr = node.loc.expression
+          expr = node.source_range
           ->(corrector) { corrector.replace(expr, "#{expr.source}.freeze") }
         end
       end

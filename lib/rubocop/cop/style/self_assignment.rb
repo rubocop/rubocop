@@ -84,7 +84,7 @@ module RuboCop
         def apply_autocorrect(node, rhs, operator, new_rhs)
           lambda do |corrector|
             corrector.insert_before(node.loc.operator, operator)
-            corrector.replace(rhs.loc.expression, new_rhs.source)
+            corrector.replace(rhs.source_range, new_rhs.source)
           end
         end
       end

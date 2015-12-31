@@ -17,10 +17,10 @@ module RuboCop
             backref, = *node
             parent_type = node.parent ? node.parent.type : nil
             if [:dstr, :xstr, :regexp].include?(parent_type)
-              corrector.replace(node.loc.expression,
+              corrector.replace(node.source_range,
                                 "{Regexp.last_match(#{backref})}")
             else
-              corrector.replace(node.loc.expression,
+              corrector.replace(node.source_range,
                                 "Regexp.last_match(#{backref})")
             end
           end

@@ -44,7 +44,7 @@ module RuboCop
             lambda do |corrector|
               new_source = receiver.source + '.end_with?(' +
                            to_string_literal(regex_str) + ')'
-              corrector.replace(node.loc.expression, new_source)
+              corrector.replace(node.source_range, new_source)
             end
           end
         end

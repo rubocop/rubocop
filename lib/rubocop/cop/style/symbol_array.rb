@@ -36,7 +36,7 @@ module RuboCop
 
         def comments_in_array?(node)
           comments = processed_source.comments
-          array_range = node.loc.expression.to_a
+          array_range = node.source_range.to_a
 
           comments.any? do |comment|
             !(comment.loc.expression.to_a & array_range).empty?
@@ -67,7 +67,7 @@ module RuboCop
                       end
 
           lambda do |corrector|
-            corrector.replace(node.loc.expression, corrected)
+            corrector.replace(node.source_range, corrected)
           end
         end
 

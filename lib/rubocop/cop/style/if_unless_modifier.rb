@@ -50,7 +50,7 @@ module RuboCop
         end
 
         def method_uses_parens?(node, limit)
-          source = node.loc.expression.source_line[0...limit.loc.column]
+          source = node.source_range.source_line[0...limit.loc.column]
           source =~ /\s*\(\s*$/
         end
 
@@ -67,7 +67,7 @@ module RuboCop
           end
           oneline = "(#{oneline})" if parenthesize?(node)
 
-          ->(corrector) { corrector.replace(node.loc.expression, oneline) }
+          ->(corrector) { corrector.replace(node.source_range, oneline) }
         end
       end
     end

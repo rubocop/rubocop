@@ -27,7 +27,7 @@ module RuboCop
           if current.loc.line > prev_line && start_of_line?(current.loc)
             @column_delta = base_column - current.loc.column
             if @column_delta != 0
-              expr = current.loc.expression
+              expr = current.source_range
               if offenses.any? { |o| within?(expr, o.location) }
                 # If this offense is within a line range that is already being
                 # realigned by autocorrect, we report the offense without

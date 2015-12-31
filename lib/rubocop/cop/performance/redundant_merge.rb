@@ -33,7 +33,7 @@ module RuboCop
           redundant_merge(node) do |receiver, pairs|
             lambda do |corrector|
               new_source = to_assignments(receiver, pairs).join("\n")
-              corrector.replace(node.loc.expression, new_source)
+              corrector.replace(node.source_range, new_source)
             end
           end
         end

@@ -49,7 +49,7 @@ module RuboCop
           end
 
           lambda do |corrector|
-            corrector.replace(node.loc.expression, delegation.join(', '))
+            corrector.replace(node.source_range, delegation.join(', '))
           end
         end
 

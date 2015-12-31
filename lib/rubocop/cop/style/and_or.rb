@@ -95,17 +95,17 @@ module RuboCop
           end
           return unless correctable_send?(node)
 
-          sb = node.loc.expression.source_buffer
+          sb = node.source_range.source_buffer
           begin_paren = node.loc.selector.end_pos
           range = Parser::Source::Range.new(sb, begin_paren, begin_paren + 1)
           corrector.replace(range, '(')
-          corrector.insert_after(args.last.loc.expression, ')')
+          corrector.insert_after(args.last.source_range, ')')
         end
 
         def correct_other(node, corrector)
-          return unless node.loc.expression.begin.source != '('
-          corrector.insert_before(node.loc.expression, '(')
-          corrector.insert_after(node.loc.expression, ')')
+          return unless node.source_range.begin.source != '('
+          corrector.insert_before(node.source_range, '(')
+          corrector.insert_after(node.source_range, ')')
         end
 
         def correctable_send?(node)
