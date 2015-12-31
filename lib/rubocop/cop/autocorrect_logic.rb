@@ -2,7 +2,7 @@
 
 module RuboCop
   module Cop
-    # This module encapsulates the logic for autocorrect behaviour for a cop
+    # This module encapsulates the logic for autocorrect behavior for a cop.
     module AutocorrectLogic
       def autocorrect?
         autocorrect_requested? && support_autocorrect? && autocorrect_enabled?

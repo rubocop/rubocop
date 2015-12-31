@@ -36,7 +36,7 @@ AllCops:
   # -S/--display-style-guide option.
   DisplayStyleGuide: false
   # Extra details are not displayed in offense messages by default. Change
-  # behaviour by overriding ExtraDetails, or by giving the
+  # behavior by overriding ExtraDetails, or by giving the
   # -E/--extra-details option.
   ExtraDetails: false
   # Additional cops that do not reference a style guide rule may be enabled by

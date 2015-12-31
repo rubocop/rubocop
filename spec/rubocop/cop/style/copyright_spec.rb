@@ -93,7 +93,7 @@ describe RuboCop::Cop::Style::Copyright, :config do
       end.to raise_error(RuboCop::Warning)
     end
 
-    it 'failes to autocorrect if no AutocorrectNotice is given' do
+    it 'fails to autocorrect if no AutocorrectNotice is given' do
       # cop_config['AutocorrectNotice'] = '# Copyleft (c) 2015 Acme Inc.'
       expect do
         autocorrect_source(cop, source)

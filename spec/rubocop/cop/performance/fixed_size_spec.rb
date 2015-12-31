@@ -39,7 +39,7 @@ describe RuboCop::Cop::Performance::FixedSize do
         expect(cop.messages).to eq([described_class::MSG])
       end
 
-      it "accepts calling #{method} on a double qouted string that " \
+      it "accepts calling #{method} on a double quoted string that " \
          'contains interpolation' do
         inspect_source(cop, "\"\#{foo}\".#{method}")
 

@@ -51,7 +51,7 @@ module RuboCop
         end
 
         # We let AutocorrectUnlessChangingAST#autocorrect work with the send
-        # node, becuase that context is needed. When parsing the code to see if
+        # node, because that context is needed. When parsing the code to see if
         # the AST has changed, a braceless hash would not be parsed as a hash
         # otherwise.
         def correction(send_node)

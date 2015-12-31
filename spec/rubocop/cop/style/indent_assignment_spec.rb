@@ -32,7 +32,7 @@ describe RuboCop::Cop::Style::IndentAssignment, :config do
     expect(cop.offenses).to be_empty
   end
 
-  it 'registers an offense for mutli-lhs' do
+  it 'registers an offense for multi-lhs' do
     inspect_source(cop, ['a,',
                          'b =',
                          'if b ; end'])

@@ -128,7 +128,7 @@ module RuboCop
       private
 
       # Returns a new hash where the parameters of the given config hash have
-      # been replaced by parmeters returned by the given block.
+      # been replaced by parameters returned by the given block.
       def transform(config)
         Hash[config.map { |cop, params| [cop, yield(params)] }]
       end

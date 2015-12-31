@@ -148,7 +148,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
         expect(cop.messages).to eq(['Use hash rockets syntax.'])
       end
 
-      it 'regeisters an offense when using hash rockets ' \
+      it 'registers an offense when using hash rockets ' \
         'and no elements have a symbol value' do
         inspect_source(cop, 'x = { :a => 1, :b => 2 }')
         expect(cop.messages)
@@ -156,7 +156,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
                   'Use the new Ruby 1.9 hash syntax.'])
       end
 
-      it 'regeisters an offense for hashes with elements on multiple lines' do
+      it 'registers an offense for hashes with elements on multiple lines' do
         inspect_source(cop, "x = { a: :b,\n c: :d }")
         expect(cop.messages)
           .to eq(['Use hash rockets syntax.', 'Use hash rockets syntax.'])

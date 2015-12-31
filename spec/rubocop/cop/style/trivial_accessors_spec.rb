@@ -89,7 +89,7 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
   it 'accepts non-trivial reader' do
     inspect_source(cop,
                    ['def test',
-                    '  some_funciton_call',
+                    '  some_function_call',
                     '  @test',
                     'end'])
     expect(cop.offenses).to be_empty
@@ -98,7 +98,7 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
   it 'accepts non-trivial writer' do
     inspect_source(cop,
                    ['def test(val)',
-                    '  some_funciton_call(val)',
+                    '  some_function_call(val)',
                     '  @test = val',
                     '  log(val)',
                     'end'])

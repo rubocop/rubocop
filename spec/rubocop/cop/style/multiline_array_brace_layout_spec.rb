@@ -5,7 +5,7 @@ require 'spec_helper'
 describe RuboCop::Cop::Style::MultilineArrayBraceLayout do
   subject(:cop) { described_class.new }
 
-  it 'ignores implict arrays' do
+  it 'ignores implicit arrays' do
     inspect_source(cop, ['foo = a,',
                          'b'])
 
