@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-require 'parser/current'
+require 'parser'
 require 'rainbow'
 
 require 'English'

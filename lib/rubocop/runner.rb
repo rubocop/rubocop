@@ -261,8 +261,13 @@ module RuboCop
     end
 
     def get_processed_source(file)
-      return ProcessedSource.new(@options[:stdin], file) if @options[:stdin]
-      ProcessedSource.from_file(file)
+      ruby_version = @config_store.for(file)['AllCops']['TargetRubyVersion']
+
+      if @options[:stdin]
+        ProcessedSource.new(@options[:stdin], ruby_version, file)
+      else
+        ProcessedSource.from_file(file, ruby_version)
+      end
     end
   end
 end

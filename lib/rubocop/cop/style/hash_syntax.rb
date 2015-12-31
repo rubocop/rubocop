@@ -104,8 +104,8 @@ module RuboCop
           # Most hash keys can be matched against a simple regex.
           return true if sym_name =~ /\A[_a-z]\w*[?!]?\z/i
 
-          # For more complicated hash keys, let the Parser validate the syntax.
-          RuboCop::ProcessedSource.new("{ #{sym_name}: :foo }").valid_syntax?
+          # For more complicated hash keys, let the parser validate the syntax.
+          parse("{ #{sym_name}: :foo }").valid_syntax?
         end
 
         def check(pairs, delim, msg)

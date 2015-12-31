@@ -191,6 +191,14 @@ module RuboCop
           hash
       end
 
+      def target_ruby_version
+        @config['AllCops'] && @config['AllCops']['TargetRubyVersion']
+      end
+
+      def parse(source)
+        ProcessedSource.new(source, target_ruby_version)
+      end
+
       def cop_name
         self.class.cop_name
       end

@@ -48,6 +48,7 @@ specific RuboCop release.**
     - [Defaults](#defaults)
     - [Including/Excluding files](#includingexcluding-files)
     - [Generic configuration parameters](#generic-configuration-parameters)
+    - [Setting the target Ruby version](#setting-the-target-ruby-version)
     - [Automatically Generated Configuration](#automatically-generated-configuration)
 - [Disabling Cops within Source Code](#disabling-cops-within-source-code)
 - [Formatters](#formatters)
@@ -488,6 +489,20 @@ disabled. For example:
 ```yaml
 Style/PerlBackrefs:
   AutoCorrect: false
+```
+
+### Setting the target Ruby version
+
+Some checks are dependent on the version of the Ruby interpreter which the
+inspected code must run on. For example, using Ruby 2.0+ keyword arguments
+rather than an options hash can help make your code shorter and more
+expressive... _unless_ it must run on Ruby 1.9.
+
+Let RuboCop know the oldest version of Ruby which your project supports with:
+
+```yaml
+AllCops:
+  TargetRubyVersion: 1.9
 ```
 
 ### Automatically Generated Configuration

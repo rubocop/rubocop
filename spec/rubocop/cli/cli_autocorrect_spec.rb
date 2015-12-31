@@ -811,29 +811,26 @@ describe RuboCop::CLI, :isolated_environment do
     src = ['# encoding: utf-8',
            'not a && b',
            'func a do b end',
-           "Signal.trap('TERM') { system(cmd); exit }"]
+           "Signal.trap('TERM') { system(cmd); exit }",
+           'def self.some_method(foo, bar: 1)',
+           '  log.debug(foo)',
+           'end']
     corrected = ['# encoding: utf-8',
                  'not a && b',
                  'func a do b end',
-                 "Signal.trap('TERM') { system(cmd); exit }"]
+                 "Signal.trap('TERM') { system(cmd); exit }",
+                 'def self.some_method(foo, bar: 1)',
+                 '  log.debug(foo)',
+                 'end']
     offenses =
       ['== example.rb ==',
        'C:  2:  1: Use ! instead of not.',
        'C:  3:  8: Prefer {...} over do...end for single-line blocks.',
-       'C:  4: 34: Do not use semicolons to terminate expressions.']
-
-    if RUBY_VERSION >= '2'
-      src += ['def self.some_method(foo, bar: 1)',
-              '  log.debug(foo)',
-              'end']
-      corrected += ['def self.some_method(foo, bar: 1)',
-                    '  log.debug(foo)',
-                    'end']
-      offenses += ['W:  5: 27: Unused method argument - bar.']
-      summary = '1 file inspected, 4 offenses detected'
-    else
-      summary = '1 file inspected, 3 offenses detected'
-    end
+       'C:  4: 34: Do not use semicolons to terminate expressions.',
+       'W:  5: 27: Unused method argument - bar.']
+    summary = '1 file inspected, 4 offenses detected'
+    create_file('.rubocop.yml', ['AllCops:',
+                                 '  TargetRubyVersion: 2.0'])
     create_file('example.rb', src)
     expect(cli.run(%w(-a -f simple))).to eq(1)
     expect($stderr.string).to eq('')

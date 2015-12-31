@@ -22,16 +22,6 @@ RSpec.configure do |config|
   config.order = :random
   Kernel.srand config.seed
 
-  config.filter_run_excluding ruby: ->(v) { !RUBY_VERSION.start_with?(v.to_s) }
-
-  ruby_version = Gem::Version.new(RUBY_VERSION)
-  config.filter_run_excluding ruby_less_than: (lambda do |v|
-    ruby_version >= Gem::Version.new(v)
-  end)
-  config.filter_run_excluding ruby_greater_than_or_equal: (lambda do |v|
-    ruby_version < Gem::Version.new(v)
-  end)
-
   broken_filter = lambda do |v|
     v.is_a?(Symbol) ? RUBY_ENGINE == v.to_s : v
   end

@@ -49,7 +49,7 @@ describe RuboCop::Config do
 
       it 'raises validation error' do
         expect { configuration.validate }
-          .to raise_error(described_class::ValidationError,
+          .to raise_error(RuboCop::ValidationError,
                           %r{^empty section Metrics/LineLength})
       end
     end

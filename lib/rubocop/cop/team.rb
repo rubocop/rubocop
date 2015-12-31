@@ -14,6 +14,8 @@ module RuboCop
         @options = options || { auto_correct: false, debug: false }
         @errors = []
         @warnings = []
+
+        validate_config
       end
 
       def autocorrect?
@@ -96,6 +98,12 @@ module RuboCop
           corrector.rewrite
         else
           buffer.source
+        end
+      end
+
+      def validate_config
+        cops.each do |cop|
+          cop.validate_config if cop.respond_to?(:validate_config)
         end
       end
 

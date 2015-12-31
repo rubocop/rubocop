@@ -51,3 +51,31 @@ shared_context 'config', :config do
     RuboCop::Config.new(hash, "#{Dir.pwd}/.rubocop.yml")
   end
 end
+
+shared_context 'ruby 1.9', :ruby19 do
+  let(:ruby_version) { 1.9 }
+  let(:config) do
+    super().tap { |hash| hash['AllCops'] = { 'TargetRubyVersion' => 1.9 } }
+  end
+end
+
+shared_context 'ruby 2.0', :ruby20 do
+  let(:ruby_version) { 2.0 }
+  let(:config) do
+    super().tap { |hash| hash['AllCops'] = { 'TargetRubyVersion' => 2.0 } }
+  end
+end
+
+shared_context 'ruby 2.1', :ruby21 do
+  let(:ruby_version) { 2.1 }
+  let(:config) do
+    super().tap { |hash| hash['AllCops'] = { 'TargetRubyVersion' => 2.1 } }
+  end
+end
+
+shared_context 'ruby 2.2', :ruby22 do
+  let(:ruby_version) { 2.2 }
+  let(:config) do
+    super().tap { |hash| hash['AllCops'] = { 'TargetRubyVersion' => 2.2 } }
+  end
+end

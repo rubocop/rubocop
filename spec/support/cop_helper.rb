@@ -3,6 +3,10 @@
 require 'tempfile'
 
 module CopHelper
+  extend RSpec::SharedContext
+
+  let(:ruby_version) { 2.2 }
+
   def inspect_source_file(cop, source)
     Tempfile.open('tmp') { |f| inspect_source(cop, source, f) }
   end
@@ -27,7 +31,7 @@ module CopHelper
       file = file.path
     end
 
-    RuboCop::ProcessedSource.new(source, file)
+    RuboCop::ProcessedSource.new(source, ruby_version, file)
   end
 
   def autocorrect_source_file(cop, source)
