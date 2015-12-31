@@ -12,6 +12,7 @@ module CopHelper
       fail "Don't use an array for a single line of code: #{source}"
     end
     RuboCop::Formatter::DisabledConfigFormatter.config_to_allow_offenses = {}
+    RuboCop::Formatter::DisabledConfigFormatter.detected_styles = {}
     processed_source = parse_source(source, file)
     fail 'Error parsing example code' unless processed_source.valid_syntax?
     _investigate(cop, processed_source)

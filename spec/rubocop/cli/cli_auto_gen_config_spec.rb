@@ -475,5 +475,19 @@ describe RuboCop::CLI, :isolated_environment do
         end
       end
     end
+
+    it 'disables cop if different styles appear in different files' do
+      create_file('example1.rb', ['$!'])
+      create_file('example2.rb', ['$ERROR_INFO'])
+      expect(cli.run(['--auto-gen-config'])).to eq(1)
+      expect(IO.readlines('.rubocop_todo.yml')[8..-1].join)
+        .to eq(['# Offense count: 1',
+                '# Cop supports --auto-correct.',
+                '# Configuration parameters: EnforcedStyle, SupportedStyles.',
+                '# SupportedStyles: use_perl_names, use_english_names',
+                'Style/SpecialGlobalVars:',
+                '  Enabled: false',
+                ''].join("\n"))
+    end
   end
 end

@@ -16,11 +16,12 @@ module RuboCop
         .join("\n")
 
       @config_to_allow_offenses = {}
+      @detected_styles = {}
 
       COPS = Cop::Cop.all.group_by(&:cop_name)
 
       class << self
-        attr_accessor :config_to_allow_offenses
+        attr_accessor :config_to_allow_offenses, :detected_styles
       end
 
       def file_started(_file, file_info)
