@@ -591,10 +591,6 @@ describe RuboCop::CLI, :isolated_environment do
                                           '',
                                           'Rails/ReadWriteAttribute:',
                                           '  Exclude:',
-                                          '    - "**/example2.rb"',
-                                          '',
-                                          'Rails/DefaultScope:',
-                                          '  Exclude:',
                                           '    - "**/example2.rb"'])
         # No .rubocop.yml file in dir2 means that the paths from default.yml
         # are interpreted as relative to the current directory, so they don't
@@ -606,10 +602,8 @@ describe RuboCop::CLI, :isolated_environment do
           .to eq(['== dir1/app/models/example1.rb ==',
                   'C:  2:  1: Prefer self[:attr] over read_attribute' \
                   '(:attr).',
-                  'C:  3: 15: default_scope expects a block as its sole' \
-                  ' argument.',
                   '',
-                  '4 files inspected, 2 offenses detected',
+                  '4 files inspected, 1 offense detected',
                   ''].join("\n"))
       end
     end

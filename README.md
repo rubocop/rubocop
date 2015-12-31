@@ -411,7 +411,7 @@ paths match `app/models/*.rb`). All cops support the
 `Include` param.
 
 ```yaml
-Rails/DefaultScope:
+Rails/HasAndBelongsToMany:
   Include:
     - app/models/*.rb
 ```
@@ -421,7 +421,7 @@ instance you might want to run some cop only on a specific file). All cops suppo
 `Exclude` param.
 
 ```yaml
-Rails/DefaultScope:
+Rails/HasAndBelongsToMany:
   Exclude:
     - app/models/problematic.rb
 ```

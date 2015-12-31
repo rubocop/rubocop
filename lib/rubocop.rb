@@ -339,7 +339,6 @@ require 'rubocop/cop/style/word_array'
 
 require 'rubocop/cop/rails/action_filter'
 require 'rubocop/cop/rails/date'
-require 'rubocop/cop/rails/default_scope'
 require 'rubocop/cop/rails/delegate'
 require 'rubocop/cop/rails/find_by'
 require 'rubocop/cop/rails/find_each'

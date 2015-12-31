@@ -989,10 +989,6 @@ Rails/Date:
     - strict
     - flexible
 
-Rails/DefaultScope:
-  Include:
-    - app/models/**/*.rb
-
 Rails/FindBy:
   Include:
     - app/models/**/*.rb
