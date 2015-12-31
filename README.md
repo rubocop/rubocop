@@ -778,6 +778,19 @@ $ rubocop --format offenses
 134  Total
 ```
 
+### Worst Offenders Formatter
+
+Similar to the Offense Count formatter, but lists the files which need the most attention:
+
+```sh
+$ rubocop --format worst
+
+89  this/file/is/really/bad.rb
+2   much/better.rb
+--
+91  Total
+```
+
 ### HTML Formatter
 
 Useful for CI environments. It will create an HTML report like [this](http://f.cl.ly/items/0M3029412x3O091a1X1R/expected.html).

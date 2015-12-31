@@ -18,7 +18,8 @@ module RuboCop
         'html'     => HTMLFormatter,
         'files'    => FileListFormatter,
         'offenses' => OffenseCountFormatter,
-        'disabled' => DisabledLinesFormatter
+        'disabled' => DisabledLinesFormatter,
+        'worst'    => WorstOffendersFormatter
       }
 
       FORMATTER_APIS = [:started, :finished]
