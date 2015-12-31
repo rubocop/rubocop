@@ -8,6 +8,7 @@ module RuboCop
       class ParenthesesAroundCondition < Cop
         include IfNode
         include SafeAssignment
+        include Parentheses
 
         def on_if(node)
           return if ternary_op?(node)
@@ -31,7 +32,7 @@ module RuboCop
           # handle `if (something rescue something_else) ...`
           return if modifier_op?(cond.children.first)
           # check if there's any whitespace between the keyword and the cond
-          return if parens_required?(node)
+          return if parens_required?(node.children.first)
           # allow safe assignment
           return if safe_assignment?(cond) && safe_assignment_allowed?
 
@@ -46,25 +47,10 @@ module RuboCop
             node.loc.end.nil?
         end
 
-        def parens_required?(node)
-          exp = node.loc.expression
-          kw = node.loc.keyword
-          kw_offset = kw.begin_pos - exp.begin_pos
-
-          exp.source[kw_offset..-1].start_with?(kw.source + '(')
-        end
-
         def message(node)
           kw = node.loc.keyword.source
           article = kw == 'while' ? 'a' : 'an'
           "Don't use parentheses around the condition of #{article} `#{kw}`."
-        end
-
-        def autocorrect(node)
-          lambda do |corrector|
-            corrector.remove(node.loc.begin)
-            corrector.remove(node.loc.end)
-          end
         end
       end
     end

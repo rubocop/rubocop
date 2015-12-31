@@ -76,7 +76,8 @@ module RuboCop
       end
 
       def parentheses?(node)
-        node.loc.respond_to?(:end) && node.loc.end
+        node.loc.respond_to?(:end) && node.loc.end &&
+          node.loc.end.is?(')'.freeze)
       end
 
       def on_node(syms, sexp, excludes = [], &block)
