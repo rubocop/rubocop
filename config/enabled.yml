@@ -307,6 +307,10 @@ Style/HashSyntax:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#hash-literals'
   Enabled: true
 
+Style/IfInsideElse:
+  Description: 'Finds if nodes inside else, which can be converted to elsif.'
+  Enabled: true
+
 Style/IfUnlessModifier:
   Description: >-
                  Favor modifier if/unless usage when you have a

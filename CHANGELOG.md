@@ -57,6 +57,7 @@
 * [#1545](https://github.com/bbatsov/rubocop/issues/1545): New `Regex` config parameter for `Style/FileName` allows user to provide their own regex for validating file names. ([@alexdowad][])
 * [#2253](https://github.com/bbatsov/rubocop/issues/2253): New `DefaultFormatter` config parameter can be used to set formatter from within .rubocop.yml. ([@alexdowad][])
 * [#2481](https://github.com/bbatsov/rubocop/issues/2481): New `WorstOffendersFormatter` prints a list of files with offenses (and offense counts), showing the files with the most offenses first. ([@alexdowad][])
+* New `IfInsideElse` cop catches `if..end` nodes which can be converted into an `elsif` instead, reducing the nesting level. ([@alexdowad][])
 
 ### Bug Fixes
 

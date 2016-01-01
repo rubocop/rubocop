@@ -81,8 +81,8 @@ module RuboCop
           unless range.source == "\n"
             corrector.insert_before(range, ' ' * column_delta)
           end
-        else
-          remove(range, corrector) if range.source =~ /\A[ \t]+\z/
+        elsif range.source =~ /\A[ \t]+\z/
+          remove(range, corrector)
         end
       end
 

@@ -32,8 +32,8 @@ module RuboCop
           message = MSG
           if cop_config['EnabledForFlattenWithoutParams'] && flatten_level.nil?
             message = MSG + FLATTEN_MULTIPLE_LEVELS
-          else
-            return unless flatten_level == 1
+          elsif flatten_level != 1
+            return
           end
 
           range = Parser::Source::Range.new(node.source_range.source_buffer,
