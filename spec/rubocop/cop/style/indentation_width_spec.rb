@@ -597,14 +597,6 @@ describe RuboCop::Cop::Style::IndentationWidth do
 
           include_examples 'assignment and if with keyword alignment'
         end
-
-        context 'when alignment style is keyword by default' do
-          let(:end_alignment_config) do
-            { 'Enabled' => false, 'AlignWith' => 'variable' }
-          end
-
-          include_examples 'assignment and if with keyword alignment'
-        end
       end
 
       it 'accepts an if/else branches with rescue clauses' do

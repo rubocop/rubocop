@@ -26,7 +26,7 @@ module RuboCop
 
       def space_required_after_lcurly?
         cfg = config.for_cop('Style/SpaceInsideBlockBraces')
-        style = cfg['Enabled'] ? cfg['EnforcedStyle'] : 'space'
+        style = cfg['EnforcedStyle'] || 'space'
         style == 'space'
       end
 
