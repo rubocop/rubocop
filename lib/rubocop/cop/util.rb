@@ -157,8 +157,7 @@ module RuboCop
       end
 
       def begins_its_line?(range)
-        source_before_range = range.source_buffer.source[0...range.begin_pos]
-        source_before_range.rpartition("\n").last.strip.empty?
+        (range.source_line =~ /\S/) == range.column
       end
 
       def within_node?(inner, outer)
