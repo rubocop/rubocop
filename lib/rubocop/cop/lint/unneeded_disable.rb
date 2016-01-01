@@ -35,12 +35,12 @@ module RuboCop
 
             line_ranges.each do |line_range|
               comment = comments.find { |c| c.loc.line == line_range.begin }
-              unneeded_cop = find_unneeded(comment, offenses, cop, line_range)
 
               unless all_disabled?(comment)
                 next if ignore_offense?(disabled_ranges, line_range)
               end
 
+              unneeded_cop = find_unneeded(comment, offenses, cop, line_range)
               unneeded_cops[comment].add(unneeded_cop) if unneeded_cop
             end
           end
