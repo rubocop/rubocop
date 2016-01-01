@@ -16,7 +16,7 @@ module RuboCop
     AUTO_GENERATED_FILE = '.rubocop_todo.yml'
 
     class << self
-      attr_accessor :debug, :auto_gen_config, :exclude_limit
+      attr_accessor :debug, :auto_gen_config
       attr_writer :root_level # The upwards search is stopped at this level.
       attr_writer :default_configuration
 

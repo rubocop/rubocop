@@ -59,7 +59,6 @@ module RuboCop
 
       ConfigLoader.debug = @options[:debug]
       ConfigLoader.auto_gen_config = @options[:auto_gen_config]
-      ConfigLoader.exclude_limit = @options[:exclude_limit]
 
       @config_store.options_config = @options[:config] if @options[:config]
 
