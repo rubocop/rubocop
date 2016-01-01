@@ -60,7 +60,7 @@ module RuboCop
 
           def all_have_same_separator?(node)
             first_separator = node.children.first.loc.operator.source
-            node.children[1..-1].all? do |pair|
+            node.children.butfirst.all? do |pair|
               pair.loc.operator.is?(first_separator)
             end
           end

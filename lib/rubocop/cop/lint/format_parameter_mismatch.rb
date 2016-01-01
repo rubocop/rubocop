@@ -75,7 +75,7 @@ module RuboCop
 
           _receiver_node, _method_name, *args = *node
 
-          args[1..-1].any? { |arg| arg.type == :splat }
+          args.butfirst.any? { |arg| arg.type == :splat }
         end
 
         def heredoc?(node)

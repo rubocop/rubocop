@@ -5,7 +5,7 @@ module RuboCop
     # Common functionality for checking hash nodes.
     module HashNode
       def any_pairs_on_the_same_line?(node)
-        node.children[1..-1].any? do |pair|
+        node.children.butfirst.any? do |pair|
           !Util.begins_its_line?(pair.loc.expression)
         end
       end

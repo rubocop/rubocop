@@ -75,7 +75,7 @@ module RuboCop
         end
 
         def check_each_arg(args)
-          args.children[1..-1].each do |arg|
+          args.children.butfirst.each do |arg|
             expr = arg.loc.expression
             check_no_space(range_with_surrounding_space(expr, :left).begin_pos,
                            expr.begin_pos - 1, 'Extra space before')
