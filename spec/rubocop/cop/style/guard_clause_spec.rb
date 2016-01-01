@@ -68,6 +68,24 @@ describe RuboCop::Cop::Style::GuardClause, :config do
     expect(cop.offenses).to be_empty
   end
 
+  it "doesn't report an offense if condition has multiple lines" do
+    inspect_source(cop,
+                   ['def func',
+                    '  if something &&',
+                    '       something_else',
+                    '    work',
+                    '  end',
+                    'end',
+                    '',
+                    'def func',
+                    '  unless something &&',
+                    '           something_else',
+                    '    work',
+                    '  end',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'accepts a method which body is if / unless with else' do
     inspect_source(cop,
                    ['def func',
@@ -150,7 +168,7 @@ describe RuboCop::Cop::Style::GuardClause, :config do
       { 'MinBodyLength' => 4 }
     end
 
-    it 'accepts a method whose body has 3 line' do
+    it 'accepts a method whose body has 3 lines' do
       inspect_source(cop,
                      ['def func',
                       '  if something',
@@ -209,6 +227,36 @@ describe RuboCop::Cop::Style::GuardClause, :config do
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(['Use a guard clause instead of wrapping ' \
                                   'the code inside a conditional expression.'])
+    end
+
+    it "doesn't register an error if condition has multiple lines" do
+      inspect_source(cop, ['if something &&',
+                           '     something_else',
+                           "  #{kw}",
+                           'else',
+                           '  puts "hello"',
+                           'end'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it "doesn't register an error if control flow expr has multiple lines" do
+      inspect_source(cop, ['if something',
+                           "  #{kw} 'blah blah blah' \\",
+                           "        'blah blah blah'",
+                           'else',
+                           '  puts "hello"',
+                           'end'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an error if non-control-flow branch has multiple lines' do
+      inspect_source(cop, ['if something',
+                           "  #{kw}",
+                           'else',
+                           '  puts "hello" \\',
+                           '       "blah blah blah"',
+                           'end'])
+      expect(cop.offenses.size).to eq(1)
     end
   end
 
