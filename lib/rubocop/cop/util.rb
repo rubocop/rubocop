@@ -160,6 +160,11 @@ module RuboCop
         (range.source_line =~ /\S/) == range.column
       end
 
+      def ends_its_line?(range)
+        line = range.source_buffer.source_line(range.last_line)
+        (line =~ /\s*\z/) == range.last_column
+      end
+
       def within_node?(inner, outer)
         o = outer.is_a?(Astrolabe::Node) ? outer.source_range : outer
         i = inner.is_a?(Astrolabe::Node) ? inner.source_range : inner

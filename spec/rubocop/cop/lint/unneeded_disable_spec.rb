@@ -153,6 +153,35 @@ describe RuboCop::Cop::Lint::UnneededDisable do
             end
           end
 
+          context 'multiple cops, and the leftmost one has no offenses' do
+            let(:source) do
+              '# rubocop:disable Metrics/ClassLength, Metrics/MethodLength'
+            end
+            let(:cop_disabled_line_ranges) do
+              { 'Metrics/ClassLength' => [1..Float::INFINITY],
+                'Metrics/MethodLength' => [1..Float::INFINITY] }
+            end
+            let(:offenses) do
+              [
+                RuboCop::Cop::Offense.new(:convention,
+                                          OpenStruct.new(line: 7, column: 0),
+                                          'Method has too many lines.',
+                                          'Metrics/MethodLength')
+              ]
+            end
+
+            it 'returns an offense' do
+              expect(cop.messages)
+                .to eq(['Unnecessary disabling of `Metrics/ClassLength`.'])
+              expect(cop.highlights).to eq(['Metrics/ClassLength'])
+            end
+
+            it 'autocorrects' do
+              expect(corrected_source).to eq(
+                '# rubocop:disable Metrics/MethodLength')
+            end
+          end
+
           context 'multiple cops, with abbreviated names' do
             context 'one of them has offenses' do
               let(:source) do
