@@ -16,19 +16,6 @@ describe RuboCop::ResultCache, :isolated_environment do
     [RuboCop::Cop::Offense.new(:warning, location, 'unused var',
                                'Lint/UselessAssignment')]
   end
-  let(:disabled_lines) { { 'Metrics/LineLength' => [4..5] } }
-  let(:encoding_comment) { '' }
-  let(:comment_text) { '# Hello' }
-  let(:comments) do
-    source_buffer = Parser::Source::Buffer.new(file)
-    source_buffer.source = encoding_comment + comment_text
-    range = Parser::Source::Range.new(source_buffer,
-                                      0,
-                                      source_buffer.source.length)
-    [
-      Parser::Source::Comment.new(range)
-    ]
-  end
   let(:location) do
     source_buffer = Parser::Source::Buffer.new(file)
     source_buffer.read
@@ -48,24 +35,11 @@ describe RuboCop::ResultCache, :isolated_environment do
   describe 'cached result that was saved with no command line option' do
     shared_examples 'valid' do
       it 'is valid and can be loaded' do
-        cache.save(offenses, disabled_lines, comments)
+        cache.save(offenses)
         cache2 = described_class.new(file, options2, config_store, cache_root)
         expect(cache2.valid?).to eq(true)
-        saved_offenses, saved_disabled_lines, saved_comments = cache2.load
+        saved_offenses = cache2.load
         expect(saved_offenses).to eq(offenses)
-        expect(saved_disabled_lines).to eq(disabled_lines)
-        # The new Comment objects that have been created from cached data are
-        # equivalent to the saved ones, but comparing them with the == operator
-        # still gives false. That's because they refer to locations in
-        # different source buffers. So we compare them attribute by attribute.
-        expect(saved_comments.size).to eq(comments.size)
-        comments.each_index do |ix|
-          c1 = comments[ix]
-          c2 = saved_comments[ix]
-          expect(c2.text).to eq(c1.text)
-          expect(c2.loc.expression.begin_pos).to eq(c1.loc.expression.begin_pos)
-          expect(c2.loc.expression.end_pos).to eq(c1.loc.expression.end_pos)
-        end
       end
     end
 
@@ -75,7 +49,7 @@ describe RuboCop::ResultCache, :isolated_environment do
 
       context 'when file contents have changed' do
         it 'is invalid' do
-          cache.save(offenses, disabled_lines, comments)
+          cache.save(offenses)
           create_file('example.rb', ['x = 2'])
           cache2 = described_class.new(file, options, config_store, cache_root)
           expect(cache2.valid?).to eq(false)
@@ -84,7 +58,7 @@ describe RuboCop::ResultCache, :isolated_environment do
 
       context 'when a symlink attack is made' do
         before(:each) do
-          cache.save(offenses, disabled_lines, comments)
+          cache.save(offenses)
           Find.find(cache_root) do |path|
             next unless File.basename(path) == '_'
             FileUtils.rm_rf(path)
@@ -96,7 +70,7 @@ describe RuboCop::ResultCache, :isolated_environment do
 
         it 'is stopped' do
           cache2 = described_class.new(file, options, config_store, cache_root)
-          cache2.save(offenses, disabled_lines, comments)
+          cache2.save(offenses)
           # The cache file has not been created because there was a symlink in
           # its path.
           expect(cache2.valid?).to eq(false)
@@ -113,7 +87,7 @@ describe RuboCop::ResultCache, :isolated_environment do
 
     context 'when --only is given' do
       it 'is invalid' do
-        cache.save(offenses, disabled_lines, comments)
+        cache.save(offenses)
         cache2 = described_class.new(file, { only: ['Metrics/LineLength'] },
                                      config_store, cache_root)
         expect(cache2.valid?).to eq(false)
@@ -122,7 +96,7 @@ describe RuboCop::ResultCache, :isolated_environment do
 
     context 'when --display-cop-names is given' do
       it 'is invalid' do
-        cache.save(offenses, disabled_lines, comments)
+        cache.save(offenses)
         cache2 = described_class.new(file, { display_cop_names: true },
                                      config_store, cache_root)
         expect(cache2.valid?).to eq(false)
@@ -132,13 +106,15 @@ describe RuboCop::ResultCache, :isolated_environment do
 
   describe '#save' do
     context 'when the default internal encoding is UTF-8' do
-      let(:encoding_comment) { "# encoding: iso-8859-1\n" }
-      let(:comment_text) { "# Hello \xF0" }
+      let(:offenses) do
+        [RuboCop::Cop::Offense.new(:warning, location, "unused var \xF0",
+                                   'Lint/UselessAssignment')]
+      end
       before(:each) { Encoding.default_internal = Encoding::UTF_8 }
       after(:each) { Encoding.default_internal = nil }
 
       it 'writes non UTF-8 encodable data to file with no exception' do
-        cache.save(offenses, disabled_lines, comments)
+        cache.save(offenses)
       end
     end
   end
@@ -157,14 +133,14 @@ describe RuboCop::ResultCache, :isolated_environment do
     end
 
     it 'removes the oldest files in the cache if needed' do
-      cache.save(offenses, disabled_lines, comments)
+      cache.save(offenses)
       cache2 = described_class.new('other.rb', options, config_store,
                                    cache_root)
       expect(Dir["#{cache_root}/*/*/_/*"].size).to eq(1)
       cache.class.cleanup(config_store, :verbose, cache_root)
       expect($stdout.string).to eq('')
 
-      cache2.save(offenses, disabled_lines, comments)
+      cache2.save(offenses)
       underscore_dir = Dir["#{cache_root}/*/*/_"].first
       expect(Dir["#{underscore_dir}/*"].size).to eq(2)
       cache.class.cleanup(config_store, :verbose, cache_root)

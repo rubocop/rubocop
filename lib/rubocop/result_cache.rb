@@ -70,7 +70,7 @@ module RuboCop
       @cached_data.from_json(IO.binread(@path))
     end
 
-    def save(offenses, disabled_line_ranges, comments)
+    def save(offenses)
       dir = File.dirname(@path)
       FileUtils.mkdir_p(dir)
       preliminary_path = "#{@path}_#{rand(1_000_000_000)}"
@@ -80,7 +80,7 @@ module RuboCop
       return if any_symlink?(dir)
 
       File.open(preliminary_path, 'wb') do |f|
-        f.write(@cached_data.to_json(offenses, disabled_line_ranges, comments))
+        f.write(@cached_data.to_json(offenses))
       end
       # The preliminary path is used so that if there are multiple RuboCop
       # processes trying to save data for the same inspected file
