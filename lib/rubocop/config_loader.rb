@@ -23,6 +23,10 @@ module RuboCop
       alias debug? debug
       alias auto_gen_config? auto_gen_config
 
+      def clear_options
+        @debug = @auto_gen_config = @root_level = nil
+      end
+
       def load_file(path)
         path = File.absolute_path(path)
         hash = load_yaml_configuration(path)
