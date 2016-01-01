@@ -32,11 +32,10 @@ module RuboCop
               comment = comments.find { |c| c.loc.line == range.begin }
               unneeded_cops[comment].add(cop)
             end
-            cop_offenses = offenses.select { |o| o.cop_name == cop }
+
             line_ranges.each do |line_range|
               comment = comments.find { |c| c.loc.line == line_range.begin }
-              unneeded_cop = find_unneeded(comment, offenses, cop, cop_offenses,
-                                           line_range)
+              unneeded_cop = find_unneeded(comment, offenses, cop, line_range)
 
               unless all_disabled?(comment)
                 next if ignore_offense?(disabled_ranges, line_range)
@@ -80,11 +79,12 @@ module RuboCop
 
         private
 
-        def find_unneeded(comment, offenses, cop, cop_offenses, line_range)
+        def find_unneeded(comment, offenses, cop, line_range)
           if all_disabled?(comment)
             'all' if offenses.none? { |o| line_range.cover?(o.line) }
-          elsif cop_offenses.none? { |o| line_range.cover?(o.line) }
-            cop
+          else
+            cop_offenses = offenses.select { |o| o.cop_name == cop }
+            cop if cop_offenses.none? { |o| line_range.cover?(o.line) }
           end
         end
 
