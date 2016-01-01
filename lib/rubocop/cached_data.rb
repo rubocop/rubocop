@@ -41,9 +41,9 @@ module RuboCop
 
     # Restore an offense object loaded from a JSON file.
     def deserialize_offenses(offenses)
+      source_buffer = Parser::Source::Buffer.new(@filename)
+      source_buffer.read
       offenses.map! do |o|
-        source_buffer = Parser::Source::Buffer.new(@filename)
-        source_buffer.read
         location = Parser::Source::Range.new(source_buffer,
                                              o['location']['begin_pos'],
                                              o['location']['end_pos'])
