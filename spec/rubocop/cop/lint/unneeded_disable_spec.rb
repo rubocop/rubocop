@@ -210,6 +210,33 @@ describe RuboCop::Cop::Lint::UnneededDisable do
             end
           end
 
+          context 'comment is not at the beginning of the file' do
+            context 'and not all cops have offenses' do
+              let(:source) do
+                ['puts 1',
+                 '# rubocop:disable MethodLength, ClassLength'].join("\n")
+              end
+              let(:cop_disabled_line_ranges) do
+                { 'Metrics/ClassLength' => [2..Float::INFINITY],
+                  'Metrics/MethodLength' => [2..Float::INFINITY] }
+              end
+              let(:offenses) do
+                [
+                  RuboCop::Cop::Offense.new(:convention,
+                                            OpenStruct.new(line: 7, column: 0),
+                                            'Method has too many lines.',
+                                            'Metrics/MethodLength')
+                ]
+              end
+
+              it 'registers an offense' do
+                expect(cop.messages).to eq(
+                  ['Unnecessary disabling of `Metrics/ClassLength`.'])
+                expect(cop.highlights).to eq(['ClassLength'])
+              end
+            end
+          end
+
           context 'misspelled cops' do
             let(:source) do
               '# rubocop:disable Metrics/MethodLenght, KlassLength'

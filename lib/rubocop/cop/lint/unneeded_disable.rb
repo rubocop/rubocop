@@ -133,6 +133,7 @@ module RuboCop
         def matching_range(haystack, needle)
           offset = (haystack.source =~ Regexp.new(Regexp.escape(needle)))
           return unless offset
+          offset += haystack.begin_pos
           Parser::Source::Range.new(haystack.source_buffer, offset,
                                     offset + needle.size)
         end
