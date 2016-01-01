@@ -31,6 +31,8 @@ module RuboCop
         # Common functionality for the styles where not only keys, but also
         # values are aligned.
         class AlignmentOfValues
+          include HashNode # any_pairs_on_the_same_line?
+
           def checkable_layout(node)
             !any_pairs_on_the_same_line?(node) && all_have_same_separator?(node)
           end
@@ -53,12 +55,6 @@ module RuboCop
               0 # Colon follows directly after key
             else
               hash_rocket_delta(first_pair, current_separator) - key_delta
-            end
-          end
-
-          def any_pairs_on_the_same_line?(node)
-            node.children[1..-1].any? do |pair|
-              !Util.begins_its_line?(pair.loc.expression)
             end
           end
 

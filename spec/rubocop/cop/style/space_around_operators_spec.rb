@@ -2,10 +2,13 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::SpaceAroundOperators, :config do
+describe RuboCop::Cop::Style::SpaceAroundOperators do
   subject(:cop) { described_class.new(config) }
-
-  let(:cop_config) { {} }
+  let(:config) do
+    RuboCop::Config
+      .new('Style/AlignHash' => { 'EnforcedHashRocketStyle' => hash_style })
+  end
+  let(:hash_style) { 'key' }
 
   it 'accepts operator surrounded by tabs' do
     inspect_source(cop, "a\t+\tb")
@@ -279,10 +282,52 @@ describe RuboCop::Cop::Style::SpaceAroundOperators, :config do
         ['Surrounding space missing for operator `=`.'])
     end
 
-    it 'registers an offense for a hash rocket without spaces' do
-      inspect_source(cop, '{ 1=>2, a: b }')
-      expect(cop.messages).to eq(
-        ['Surrounding space missing for operator `=>`.'])
+    context 'when a hash literal is on a single line' do
+      before(:each) { inspect_source(cop, '{ 1=>2, a: b }') }
+
+      context 'and Style/AlignHash:EnforcedHashRocketStyle is key' do
+        let(:hash_style) { 'key' }
+
+        it 'registers an offense for a hash rocket without spaces' do
+          expect(cop.messages)
+            .to eq(['Surrounding space missing for operator `=>`.'])
+        end
+      end
+
+      context 'and Style/AlignHash:EnforcedHashRocketStyle is table' do
+        let(:hash_style) { 'table' }
+
+        it 'registers an offense for a hash rocket without spaces' do
+          expect(cop.messages)
+            .to eq(['Surrounding space missing for operator `=>`.'])
+        end
+      end
+    end
+
+    context 'when a hash literal is on multiple lines' do
+      before(:each) do
+        inspect_source(cop, ['{',
+                             '  1=>2,',
+                             '  a: b',
+                             '}'])
+      end
+
+      context 'and Style/AlignHash:EnforcedHashRocketStyle is key' do
+        let(:hash_style) { 'key' }
+
+        it 'registers an offense for a hash rocket without spaces' do
+          expect(cop.messages)
+            .to eq(['Surrounding space missing for operator `=>`.'])
+        end
+      end
+
+      context 'and Style/AlignHash:EnforcedHashRocketStyle is table' do
+        let(:hash_style) { 'table' }
+
+        it "doesn't register an offense for a hash rocket without spaces" do
+          expect(cop.offenses).to be_empty
+        end
+      end
     end
 
     it 'registers an offense for match operators without space' do

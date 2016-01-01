@@ -7,12 +7,17 @@ module RuboCop
       # which should not have surrounding space.
       class SpaceAroundOperators < Cop
         include PrecedingFollowingAlignment
+        include HashNode # any_pairs_on_the_same_line?
 
         def on_pair(node)
-          if node.loc.operator.is?('=>')
-            _, right = *node
-            check_operator(node.loc.operator, right.loc.expression)
-          end
+          return unless node.loc.operator.is?('=>')
+
+          align_hash_config = config.for_cop('Style/AlignHash')
+          return if align_hash_config['EnforcedHashRocketStyle'] == 'table' &&
+                    !any_pairs_on_the_same_line?(node.parent)
+
+          _, right = *node
+          check_operator(node.loc.operator, right.loc.expression)
         end
 
         def on_if(node)
