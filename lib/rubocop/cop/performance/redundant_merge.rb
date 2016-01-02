@@ -11,6 +11,8 @@ module RuboCop
       #   hash.merge!({'key' => 'value'})
       #   hash.merge!(a: 1, b: 2)
       class RedundantMerge < Cop
+        include IfNode
+
         AREF_ASGN = '%s[%s] = %s'
         MSG = 'Use `%s` instead of `%s`.'
 
@@ -33,6 +35,21 @@ module RuboCop
           redundant_merge(node) do |receiver, pairs|
             lambda do |corrector|
               new_source = to_assignments(receiver, pairs).join("\n")
+
+              parent = node.parent
+              if parent && pairs.size > 1
+                if parent.if_type? && modifier_if?(parent)
+                  cond, = *parent
+                  padding = "\n" << (' ' * indent_width)
+                  new_source.gsub!(/\n/, padding)
+                  new_source = parent.loc.keyword.source << ' ' <<
+                               cond.source << padding << leading_spaces(node) <<
+                               new_source << "\n" << leading_spaces(node) <<
+                               'end'
+                  node = parent
+                end
+              end
+
               corrector.replace(node.source_range, new_source)
             end
           end
@@ -51,6 +68,14 @@ module RuboCop
 
             format(AREF_ASGN, receiver.source, key_src, value.source)
           end
+        end
+
+        def leading_spaces(node)
+          node.source_range.source_line[/\A\s*/]
+        end
+
+        def indent_width
+          @config.for_cop('IndentationWidth')['Width'] || 2
         end
       end
     end
