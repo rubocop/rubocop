@@ -32,10 +32,6 @@ module RuboCop
       end
 
       def aligned_with_line?(line_nos, range, indent = nil)
-        comment_lines = processed_source.comments.map(&:loc).select do |r|
-          begins_its_line?(r.expression)
-        end.map(&:line)
-
         line_nos.each do |lineno|
           next if comment_lines.include?(lineno + 1)
           line = processed_source.lines[lineno]
@@ -44,6 +40,12 @@ module RuboCop
           return yield(range, line)
         end
         false
+      end
+
+      def comment_lines
+        @comment_lines ||= processed_source.comments.map(&:loc).select do |r|
+          begins_its_line?(r.expression)
+        end.map(&:line)
       end
 
       def aligned_token?(range, line)
