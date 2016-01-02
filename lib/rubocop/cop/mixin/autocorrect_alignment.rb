@@ -24,7 +24,8 @@ module RuboCop
         base_column ||= items.first.loc.column unless items.empty?
         prev_line = -1
         items.each do |current|
-          if current.loc.line > prev_line && start_of_line?(current.loc)
+          if current.loc.line > prev_line &&
+             begins_its_line?(current.source_range)
             @column_delta = base_column - current.loc.column
             if @column_delta != 0
               expr = current.source_range
@@ -42,10 +43,6 @@ module RuboCop
           end
           prev_line = current.loc.line
         end
-      end
-
-      def start_of_line?(loc)
-        loc.expression.source_line[0...loc.column].blank?
       end
 
       def autocorrect(arg)
