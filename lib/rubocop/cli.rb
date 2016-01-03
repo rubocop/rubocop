@@ -100,7 +100,7 @@ module RuboCop
         puts '# Supports --auto-correct' if cop.new.support_autocorrect?
         puts "#{cop.cop_name}:"
         cnf = @config_store.for(Dir.pwd.to_s).for_cop(cop)
-        puts cnf.to_yaml.lines.to_a[1..-1].map { |line| '  ' + line }
+        puts cnf.to_yaml.lines.to_a.butfirst.map { |line| '  ' + line }
         puts
       end
     end

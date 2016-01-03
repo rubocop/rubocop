@@ -106,6 +106,42 @@ describe RuboCop::CLI, :isolated_environment do
         expect(IO.read('example.rb')).to eq(source.join("\n") + "\n")
       end
 
+      it 'does not correct SpaceAroundOperators in a hash that would be ' \
+         'changed back' do
+        create_file('.rubocop.yml', ['Style/HashSyntax:',
+                                     '  EnforcedStyle: hash_rockets',
+                                     '',
+                                     'Style/AlignHash:',
+                                     '  EnforcedHashRocketStyle: table'])
+        source = ['a = { 1=>2, a => b }',
+                  'hash = {',
+                  '  :alice => {',
+                  '    :age  => 23,',
+                  "    :role => 'Director'",
+                  '  },',
+                  '  :bob   => {',
+                  '    :age  => 25,',
+                  "    :role => 'Consultant'",
+                  '  }',
+                  '}']
+        create_file('example.rb', source)
+        expect(cli.run(['--auto-correct'])).to eq(1)
+
+        # 1=>2 is changed to 1 => 2. The rest is unchanged.
+        # SpaceAroundOperators leaves it to AlignHash when the style is table.
+        expect(IO.read('example.rb')).to eq(['a = { 1 => 2, a => b }',
+                                             'hash = {',
+                                             '  :alice => {',
+                                             '    :age  => 23,',
+                                             "    :role => 'Director'",
+                                             '  },',
+                                             '  :bob   => {',
+                                             '    :age  => 25,',
+                                             "    :role => 'Consultant'",
+                                             '  }',
+                                             '}'].join("\n") + "\n")
+      end
+
       it 'corrects IndentationWidth, RedundantBegin, and ' \
          'RescueEnsureAlignment offenses' do
         source = ['def verify_section',

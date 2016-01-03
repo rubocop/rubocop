@@ -31,6 +31,8 @@ module RuboCop
         # Common functionality for the styles where not only keys, but also
         # values are aligned.
         class AlignmentOfValues
+          include HashNode # any_pairs_on_the_same_line?
+
           def checkable_layout(node)
             !any_pairs_on_the_same_line?(node) && all_have_same_separator?(node)
           end
@@ -56,15 +58,9 @@ module RuboCop
             end
           end
 
-          def any_pairs_on_the_same_line?(node)
-            node.children[1..-1].any? do |pair|
-              !Util.begins_its_line?(pair.loc.expression)
-            end
-          end
-
           def all_have_same_separator?(node)
             first_separator = node.children.first.loc.operator.source
-            node.children[1..-1].all? do |pair|
+            node.children.butfirst.all? do |pair|
               pair.loc.operator.is?(first_separator)
             end
           end
