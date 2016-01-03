@@ -198,7 +198,7 @@ You can also load [custom cops](#custom-cops).
 #### Style
 
 Most of the cops in RuboCop are so called style cops that check for
-stylistics problems in your code. Almost all of the them are based on
+stylistic problems in your code. Almost all of the them are based on
 the Ruby Style Guide. Many of the style cops have configurations
 options allowing them to support different popular coding
 conventions.
