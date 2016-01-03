@@ -118,9 +118,9 @@ module RuboCop
             end_pos = if node.loc.end
                         node.loc.end.begin_pos
                       else
-                        node.loc.expression.end_pos + 1
+                        node.source_range.end_pos + 1
                       end
-            range = Parser::Source::Range.new(node.loc.expression.source_buffer,
+            range = Parser::Source::Range.new(node.source_range.source_buffer,
                                               node.loc.else.begin_pos,
                                               end_pos)
             corrector.remove(range)

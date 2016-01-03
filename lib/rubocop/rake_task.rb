@@ -45,26 +45,14 @@ module RuboCop
 
       cli = CLI.new
       puts 'Running RuboCop...' if verbose
-      check_options
       result = cli.run(options)
       abort('RuboCop failed!') if result != 0 && fail_on_error
     end
 
-    def check_options
-      if (opt = options.find { |option| %w(-f --format).include?(option) })
-        warn "#{Rainbow('Warning:').red} To set a custom formatter for " \
-             "#{Rainbow('RuboCop::RakeTask').yellow}, use " \
-             "#{Rainbow('formatters').yellow} rather than " \
-             "#{Rainbow("options = [#{opt.inspect}, ...]").yellow}."
-        url = 'https://github.com/bbatsov/rubocop#rake-integration'
-        warn "See #{Rainbow(url).underline} for more details.\n\n"
-      end
-    end
-
     def full_options
       [].tap do |result|
-        result.concat(formatters.map { |f| ['--format', f] }.flatten)
-        result.concat(requires.map { |r| ['--require', r] }.flatten)
+        result.concat(formatters.flat_map { |f| ['--format', f] })
+        result.concat(requires.flat_map { |r| ['--require', r] })
         result.concat(options)
         result.concat(patterns)
       end
@@ -80,7 +68,7 @@ module RuboCop
       @patterns = []
       @requires = []
       @options = []
-      @formatters = [RuboCop::Options::DEFAULT_FORMATTER]
+      @formatters = []
     end
 
     def setup_subtasks(name, *args, &task_block)

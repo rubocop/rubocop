@@ -26,12 +26,13 @@ module RuboCop
                         '#' * 90
                       ])
 
-          create_file('no_offense.rb', [
-                        '# encoding: utf-8'
-                      ])
+          create_file('no_offense.rb', '# encoding: utf-8')
 
           allow(SimpleTextFormatter).to receive(:new).and_return(formatter)
           $stdout = StringIO.new
+          # avoid intermittent failure caused when another test set global
+          # options on ConfigLoader
+          ConfigLoader.clear_options
         end
 
         after do

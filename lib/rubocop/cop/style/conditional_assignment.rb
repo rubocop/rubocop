@@ -27,7 +27,7 @@ module RuboCop
         def correct_branches(corrector, branches)
           branches.each do |branch|
             *_, assignment = *branch
-            corrector.replace(branch.loc.expression, assignment.source)
+            corrector.replace(branch.source_range, assignment.source)
           end
         end
 
@@ -279,7 +279,7 @@ module RuboCop
               "#{assignment}#{condition} ? #{if_variable} : #{else_variable}"
 
             lambda do |corrector|
-              corrector.replace(node.loc.expression, correction)
+              corrector.replace(node.source_range, correction)
             end
           end
         end
@@ -300,10 +300,10 @@ module RuboCop
             _else_variable, *_operator, else_assignment = *else_branch
 
             lambda do |corrector|
-              corrector.insert_before(node.loc.expression, lhs(if_branch))
-              corrector.replace(if_branch.loc.expression, if_assignment.source)
+              corrector.insert_before(node.source_range, lhs(if_branch))
+              corrector.replace(if_branch.source_range, if_assignment.source)
               correct_branches(corrector, elsif_branches)
-              corrector.replace(else_branch.loc.expression,
+              corrector.replace(else_branch.source_range,
                                 else_assignment.source)
             end
           end
@@ -323,9 +323,9 @@ module RuboCop
             _variable, *_operator, else_assignment = *else_branch
 
             lambda do |corrector|
-              corrector.insert_before(node.loc.expression, lhs(else_branch))
+              corrector.insert_before(node.source_range, lhs(else_branch))
               correct_branches(corrector, when_branches)
-              corrector.replace(else_branch.loc.expression,
+              corrector.replace(else_branch.source_range,
                                 else_assignment.source)
             end
           end
@@ -345,9 +345,9 @@ module RuboCop
             _else_variable, *_operator, else_assignment = *else_branch
 
             lambda do |corrector|
-              corrector.insert_before(node.loc.expression, lhs(if_branch))
-              corrector.replace(if_branch.loc.expression, if_assignment.source)
-              corrector.replace(else_branch.loc.expression,
+              corrector.insert_before(node.source_range, lhs(if_branch))
+              corrector.replace(if_branch.source_range, if_assignment.source)
+              corrector.replace(else_branch.source_range,
                                 else_assignment.source)
             end
           end

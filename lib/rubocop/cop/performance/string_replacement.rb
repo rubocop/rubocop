@@ -66,7 +66,7 @@ module RuboCop
           lambda do |corrector|
             corrector.replace(node.loc.selector, replacement_method)
             unless first_param.str_type?
-              corrector.replace(first_param.loc.expression,
+              corrector.replace(first_param.source_range,
                                 to_string_literal(first_source))
             end
 
@@ -131,9 +131,9 @@ module RuboCop
         end
 
         def range(node)
-          Parser::Source::Range.new(node.loc.expression.source_buffer,
+          Parser::Source::Range.new(node.source_range.source_buffer,
                                     node.loc.selector.begin_pos,
-                                    node.loc.expression.end_pos)
+                                    node.source_range.end_pos)
         end
 
         def replacement_method(method, first_source, second_source)
@@ -164,9 +164,9 @@ module RuboCop
 
         def remove_second_param(corrector, node, first_param)
           end_range =
-            Parser::Source::Range.new(node.loc.expression.source_buffer,
-                                      first_param.loc.expression.end_pos,
-                                      node.loc.expression.end_pos)
+            Parser::Source::Range.new(node.source_range.source_buffer,
+                                      first_param.source_range.end_pos,
+                                      node.source_range.end_pos)
 
           corrector.replace(end_range, method_suffix(node))
         end

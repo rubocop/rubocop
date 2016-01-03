@@ -15,8 +15,8 @@ module RuboCop
 
         def autocorrect(node)
           _receiver, _method_name, attr_name, setter = *node
-          node_expr = node.loc.expression
-          attr_expr = attr_name.loc.expression
+          node_expr = node.source_range
+          attr_expr = attr_name.source_range
 
           if setter && (setter.true_type? || setter.false_type?)
             remove = Parser::Source::Range.new(node_expr.source_buffer,

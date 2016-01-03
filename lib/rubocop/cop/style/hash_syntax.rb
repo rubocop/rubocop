@@ -104,15 +104,15 @@ module RuboCop
           # Most hash keys can be matched against a simple regex.
           return true if sym_name =~ /\A[_a-z]\w*[?!]?\z/i
 
-          # For more complicated hash keys, let the Parser validate the syntax.
-          RuboCop::ProcessedSource.new("{ #{sym_name}: :foo }").valid_syntax?
+          # For more complicated hash keys, let the parser validate the syntax.
+          parse("{ #{sym_name}: :foo }").valid_syntax?
         end
 
         def check(pairs, delim, msg)
           pairs.each do |pair|
             if pair.loc.operator && pair.loc.operator.is?(delim)
               add_offense(pair,
-                          pair.loc.expression.begin.join(pair.loc.operator),
+                          pair.source_range.begin.join(pair.loc.operator),
                           msg) do
                 opposite_style_detected
               end
@@ -123,7 +123,7 @@ module RuboCop
         end
 
         def autocorrect_ruby19(corrector, node)
-          key = node.children.first.loc.expression
+          key = node.children.first.source_range
           op = node.loc.operator
 
           range = Parser::Source::Range.new(key.source_buffer,
@@ -134,7 +134,7 @@ module RuboCop
         end
 
         def autocorrect_hash_rockets(corrector, node)
-          key = node.children.first.loc.expression
+          key = node.children.first.source_range
           op = node.loc.operator
 
           corrector.insert_after(key, ' => ')

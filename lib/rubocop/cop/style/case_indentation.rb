@@ -64,7 +64,7 @@ module RuboCop
 
         def autocorrect(node)
           when_column = node.location.keyword.column
-          source_buffer = node.loc.expression.source_buffer
+          source_buffer = node.source_range.source_buffer
           begin_pos = node.loc.keyword.begin_pos
           whitespace = Parser::Source::Range.new(source_buffer,
                                                  begin_pos - when_column,

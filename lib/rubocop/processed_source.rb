@@ -9,19 +9,22 @@ module RuboCop
   # It also provides a convenient way to access source lines.
   class ProcessedSource
     STRING_SOURCE_NAME = '(string)'
+
     attr_reader :path, :buffer, :ast, :comments, :tokens, :diagnostics,
                 :parser_error, :raw_source
 
-    def self.from_file(path)
+    def self.from_file(path, ruby_version = nil)
       file = File.read(path)
-      new(file, path)
+      new(file, ruby_version, path)
     rescue Errno::ENOENT
       abort("#{Rainbow('rubocop: No such file or directory').red} -- #{path}")
     rescue => ex
       abort("#{Rainbow("rubocop: #{ex.message}").red} -- #{path}")
     end
 
-    def initialize(source, path = nil)
+    def initialize(source, ruby_version = nil, path = nil)
+      ruby_version ||= RUBY_VERSION[0..2]
+
       # In Ruby 2, source code encoding defaults to UTF-8. We follow the same
       # principle regardless of which Ruby version we're running under.
       # Encoding comments will override this setting.
@@ -30,7 +33,7 @@ module RuboCop
       @raw_source = source
       @path = path
       @diagnostics = []
-      parse(source)
+      parse(source, ruby_version)
     end
 
     def comment_config
@@ -72,7 +75,7 @@ module RuboCop
 
     private
 
-    def parse(source)
+    def parse(source, ruby_version)
       buffer_name = @path || STRING_SOURCE_NAME
       @buffer = Parser::Source::Buffer.new(buffer_name, 1)
 
@@ -83,7 +86,7 @@ module RuboCop
         return
       end
 
-      parser = create_parser
+      parser = create_parser(ruby_version)
 
       begin
         @ast, @comments, tokens = parser.tokenize(@buffer)
@@ -94,10 +97,32 @@ module RuboCop
       @tokens = tokens.map { |t| Token.from_parser_token(t) } if tokens
     end
 
-    def create_parser
+    def parser_class(ruby_version)
+      case ruby_version.to_s
+      when '1.9'
+        require 'parser/ruby19'
+        Parser::Ruby19
+      when '2.0'
+        require 'parser/ruby20'
+        Parser::Ruby20
+      when '2.1'
+        require 'parser/ruby21'
+        Parser::Ruby21
+      when '2.2'
+        require 'parser/ruby22'
+        Parser::Ruby22
+      when '2.3'
+        require 'parser/ruby23'
+        Parser::Ruby23
+      else
+        fail ArgumentError, "Unknown Ruby version: #{ruby_version.inspect}"
+      end
+    end
+
+    def create_parser(ruby_version)
       builder = Astrolabe::Builder.new
 
-      Parser::CurrentRuby.new(builder).tap do |parser|
+      parser_class(ruby_version).new(builder).tap do |parser|
         # On JRuby and Rubinius, there's a risk that we hang in tokenize() if we
         # don't set the all errors as fatal flag. The problem is caused by a bug
         # in Racc that is discussed in issue #93 of the whitequark/parser

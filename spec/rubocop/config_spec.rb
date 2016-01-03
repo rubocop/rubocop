@@ -10,12 +10,6 @@ describe RuboCop::Config do
   let(:loaded_path) { 'example/.rubocop.yml' }
 
   describe '#validate', :isolated_environment do
-    # TODO: Because Config.load_file now outputs the validation warning,
-    #       it is inserting text into the rspec test output here.
-    #       The next 2 lines should be removed eventually.
-    before(:each) { $stderr = StringIO.new }
-    after(:each) { $stderr = STDERR }
-
     subject(:configuration) do
       RuboCop::ConfigLoader.load_file(configuration_path)
     end
@@ -49,7 +43,7 @@ describe RuboCop::Config do
 
       it 'raises validation error' do
         expect { configuration.validate }
-          .to raise_error(described_class::ValidationError,
+          .to raise_error(RuboCop::ValidationError,
                           %r{^empty section Metrics/LineLength})
       end
     end

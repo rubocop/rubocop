@@ -41,14 +41,14 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
         expect(cop.messages).to be_empty
       end
 
-      context 'ruby < 2.2', ruby_less_than: 2.2 do
+      context 'ruby < 2.2', :ruby21 do
         it 'accepts hash rockets when symbol keys have string in them' do
           inspect_source(cop, 'x = { :"string" => 0 }')
           expect(cop.messages).to be_empty
         end
       end
 
-      context 'ruby >= 2.2', ruby_greater_than_or_equal: 2.2 do
+      context 'ruby >= 2.2', :ruby22 do
         it 'registers an offense when symbol keys have strings in them' do
           inspect_source(cop, 'x = { :"string" => 0 }')
           expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
@@ -292,7 +292,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
         expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
       end
 
-      context 'ruby < 2.2', ruby_less_than: 2.2 do
+      context 'ruby < 2.2', :ruby21 do
         it 'accepts hash rockets when keys have whitespaces in them' do
           inspect_source(cop, 'x = { :"t o" => 0, :b => 1 }')
           expect(cop.messages).to be_empty
@@ -328,7 +328,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
         end
       end
 
-      context 'ruby >= 2.2', ruby_greater_than_or_equal: 2.2 do
+      context 'ruby >= 2.2', :ruby22 do
         it 'registers an offense when keys have whitespaces in them' do
           inspect_source(cop, 'x = { :"t o" => 0 }')
           expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
@@ -428,7 +428,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
         expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
       end
 
-      context 'ruby < 2.2', ruby_less_than: 2.2 do
+      context 'ruby < 2.2', :ruby21 do
         it 'accepts hash rockets when keys have whitespaces in them' do
           inspect_source(cop, 'x = { :"t o" => 0, :b => 1 }')
           expect(cop.messages).to be_empty
@@ -464,7 +464,7 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
         end
       end
 
-      context 'ruby >= 2.2', ruby_greater_than_or_equal: 2.2 do
+      context 'ruby >= 2.2', :ruby22 do
         it 'registers an offense when keys have whitespaces in them' do
           inspect_source(cop, 'x = { :"t o" => 0 }')
           expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])

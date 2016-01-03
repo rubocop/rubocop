@@ -27,9 +27,9 @@ module RuboCop
           length = lambda_length(node)
 
           if selector != '->' && length == 1
-            add_offense_for_single_line(node, block_method.loc.expression, args)
+            add_offense_for_single_line(node, block_method.source_range, args)
           elsif selector == '->' && length > 1
-            add_offense(node, block_method.loc.expression, MULTI_MSG)
+            add_offense(node, block_method.source_range, MULTI_MSG)
           end
         end
 
@@ -69,8 +69,8 @@ module RuboCop
           if needs_whitespace?(block_method, args, node)
             corrector.insert_before(node.loc.begin, ' ')
           end
-          corrector.replace(block_method.loc.expression, 'lambda')
-          corrector.remove(args.loc.expression) if args.loc.expression
+          corrector.replace(block_method.source_range, 'lambda')
+          corrector.remove(args.source_range) if args.source_range
           return if args.children.empty?
           arg_str = " |#{lambda_arg_string(args)}|"
           corrector.insert_after(node.loc.begin, arg_str)
@@ -78,12 +78,12 @@ module RuboCop
 
         def autocorrect_old_to_new(corrector, node)
           block_method, args = *node
-          corrector.replace(block_method.loc.expression, '->')
+          corrector.replace(block_method.source_range, '->')
           return if args.children.empty?
 
           arg_str = "(#{lambda_arg_string(args)})"
           whitespace_and_old_args = node.loc.begin.end.join(args.loc.end)
-          corrector.insert_after(block_method.loc.expression, arg_str)
+          corrector.insert_after(block_method.source_range, arg_str)
           corrector.remove(whitespace_and_old_args)
         end
 

@@ -20,7 +20,7 @@ module RuboCop
           end
 
           def deltas(first_pair, current_pair)
-            if Util.begins_its_line?(current_pair.loc.expression)
+            if Util.begins_its_line?(current_pair.source_range)
               { key: first_pair.loc.column - current_pair.loc.column }
             else
               {}
@@ -217,11 +217,11 @@ module RuboCop
 
           lambda do |corrector|
             if value.nil?
-              adjust(corrector, key_delta, node.loc.expression)
+              adjust(corrector, key_delta, node.source_range)
             else
-              adjust(corrector, key_delta, key.loc.expression)
+              adjust(corrector, key_delta, key.source_range)
               adjust(corrector, separator_delta, node.loc.operator)
-              adjust(corrector, value_delta, value.loc.expression)
+              adjust(corrector, value_delta, value.source_range)
             end
           end
         end

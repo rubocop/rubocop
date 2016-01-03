@@ -27,6 +27,8 @@ AllCops:
     - '**/Vagabondfile'
   Exclude:
     - 'vendor/**/*'
+  # Default formatter will be used if no -f/--format option is given.
+  DefaultFormatter: progress
   # Cop names are not displayed in offense messages by default. Change behavior
   # by overriding DisplayCopNames, or by giving the -D/--display-cop-names
   # option.
@@ -61,6 +63,9 @@ AllCops:
   # which is "/tmp" on Unix-like systems, but could be something else on other
   # systems.
   CacheRootDirectory: /tmp
+  # What version of the Ruby interpreter is the inspected code intended to
+  # run on? (If there is more than one, set this to the lowest version.)
+  TargetRubyVersion: 1.9
 
 # Indent private/protected/public as deep as method definitions
 Style/AccessModifierIndentation:
@@ -986,10 +991,6 @@ Rails/Date:
   SupportedStyles:
     - strict
     - flexible
-
-Rails/DefaultScope:
-  Include:
-    - app/models/**/*.rb
 
 Rails/FindBy:
   Include:

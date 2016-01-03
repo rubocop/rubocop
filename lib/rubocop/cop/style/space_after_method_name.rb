@@ -20,7 +20,7 @@ module RuboCop
 
         def on_method_def(_node, _method_name, args, _body)
           return unless args.loc.begin && args.loc.begin.is?('(')
-          expr = args.loc.expression
+          expr = args.source_range
           pos_before_left_paren = Parser::Source::Range.new(expr.source_buffer,
                                                             expr.begin_pos - 1,
                                                             expr.begin_pos)

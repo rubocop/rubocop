@@ -57,7 +57,7 @@ describe RuboCop::Cop::Lint::CircularArgumentReference do
   end
 
   describe 'circular argument references in keyword arguments' do
-    context 'ruby < 2.0, which has no keyword arguments', ruby_less_than: 2.0 do
+    context 'ruby < 2.0, which has no keyword arguments', :ruby19 do
       let(:source) do
         [
           'def some_method(some_arg: some_method)',
@@ -73,7 +73,7 @@ describe RuboCop::Cop::Lint::CircularArgumentReference do
       end
     end
 
-    context 'ruby >= 2.0', ruby_greater_than_or_equal: 2.0 do
+    context 'ruby >= 2.0', :ruby20 do
       before(:each) do
         inspect_source(cop, source)
       end

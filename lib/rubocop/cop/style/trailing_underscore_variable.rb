@@ -31,9 +31,9 @@ module RuboCop
           return if first_offense.nil?
 
           range =
-            Parser::Source::Range.new(node.loc.expression.source_buffer,
-                                      first_offense.loc.expression.begin_pos,
-                                      variables.last.loc.expression.end_pos)
+            Parser::Source::Range.new(node.source_range.source_buffer,
+                                      first_offense.source_range.begin_pos,
+                                      variables.last.source_range.end_pos)
           add_offense(node, range)
         end
 
@@ -43,15 +43,15 @@ module RuboCop
           first_offense = find_first_offense(variables)
 
           end_position =
-            if first_offense.loc.expression == variables.first.loc.expression
-              right.loc.expression.begin_pos
+            if first_offense.source_range == variables.first.source_range
+              right.source_range.begin_pos
             else
               node.loc.operator.begin_pos
             end
 
           range =
-            Parser::Source::Range.new(node.loc.expression.source_buffer,
-                                      first_offense.loc.expression.begin_pos,
+            Parser::Source::Range.new(node.source_range.source_buffer,
+                                      first_offense.source_range.begin_pos,
                                       end_position)
 
           ->(corrector) { corrector.remove(range) unless range.nil? }

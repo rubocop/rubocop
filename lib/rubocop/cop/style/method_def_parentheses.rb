@@ -32,7 +32,7 @@ module RuboCop
               corrector.replace(node.loc.begin, ' ')
               corrector.remove(node.loc.end)
             else
-              args_expr = args_node(node).loc.expression
+              args_expr = args_node(node).source_range
               args_with_space = range_with_surrounding_space(args_expr, :left)
               just_space = Parser::Source::Range.new(args_expr.source_buffer,
                                                      args_with_space.begin_pos,
@@ -46,7 +46,7 @@ module RuboCop
         private
 
         def missing_parentheses(node, args)
-          add_offense(node, args.loc.expression,
+          add_offense(node, args.source_range,
                       'Use def with parentheses when there are parameters.') do
             unexpected_style_detected(:require_no_parentheses)
           end

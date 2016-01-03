@@ -51,7 +51,7 @@ module RuboCop
           end_loc = block_node.loc.end
           return unless begins_its_line?(end_loc)
 
-          start_loc = start_node.loc.expression
+          start_loc = start_node.source_range
           return unless start_loc.column != end_loc.column
 
           do_loc = block_node.loc.begin # Actually it's either do or {.
@@ -85,10 +85,10 @@ module RuboCop
 
         def autocorrect(node)
           ancestor_node = start_for_block_node(node)
-          source = node.loc.expression.source_buffer
+          source = node.source_range.source_buffer
 
           lambda do |corrector|
-            start_col = (ancestor_node || node).loc.expression.column
+            start_col = (ancestor_node || node).source_range.column
             starting_position_of_block_end = node.loc.end.begin_pos
             end_col = node.loc.end.column
 

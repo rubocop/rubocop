@@ -24,7 +24,7 @@ module RuboCop
 
         def on_block(node)
           redundant_sort_by(node) do |send, var_name|
-            range = Parser::Source::Range.new(node.loc.expression.source_buffer,
+            range = Parser::Source::Range.new(node.source_range.source_buffer,
                                               send.loc.selector.begin_pos,
                                               node.loc.end.end_pos)
             add_offense(node, range, format(MSG, var_name, var_name))
@@ -33,7 +33,7 @@ module RuboCop
 
         def autocorrect(node)
           send, = *node
-          range = Parser::Source::Range.new(node.loc.expression.source_buffer,
+          range = Parser::Source::Range.new(node.source_range.source_buffer,
                                             send.loc.selector.begin_pos,
                                             node.loc.end.end_pos)
           ->(corrector) { corrector.replace(range, 'sort') }

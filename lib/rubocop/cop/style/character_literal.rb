@@ -22,9 +22,9 @@ module RuboCop
             # special character like \n
             # or ' which needs to use "" or be escaped.
             if string.length == 2 || string == "'"
-              corrector.replace(node.loc.expression, %("#{string}"))
+              corrector.replace(node.source_range, %("#{string}"))
             elsif string.length == 1 # normal character
-              corrector.replace(node.loc.expression, "'#{string}'")
+              corrector.replace(node.source_range, "'#{string}'")
             end
           end
         end

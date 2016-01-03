@@ -29,9 +29,9 @@ module RuboCop
 
         def check(arg, args)
           if style == :braces && !braces?(arg)
-            add_offense(arg.parent, arg.loc.expression, format(MSG, 'Missing'))
+            add_offense(arg.parent, arg.source_range, format(MSG, 'Missing'))
           elsif style == :no_braces && braces?(arg)
-            add_offense(arg.parent, arg.loc.expression,
+            add_offense(arg.parent, arg.source_range,
                         format(MSG, 'Redundant'))
           elsif style == :context_dependent
             check_context_dependent(arg, args)
@@ -42,11 +42,11 @@ module RuboCop
           braces_around_2nd_from_end = args.length > 1 && args[-2].type == :hash
           if braces?(arg)
             unless braces_around_2nd_from_end
-              add_offense(arg.parent, arg.loc.expression,
+              add_offense(arg.parent, arg.source_range,
                           format(MSG, 'Redundant'))
             end
           elsif braces_around_2nd_from_end
-            add_offense(arg.parent, arg.loc.expression, format(MSG, 'Missing'))
+            add_offense(arg.parent, arg.source_range, format(MSG, 'Missing'))
           end
         end
 
@@ -85,8 +85,8 @@ module RuboCop
         end
 
         def add_braces(corrector, node)
-          corrector.insert_before(node.loc.expression, '{')
-          corrector.insert_after(node.loc.expression, '}')
+          corrector.insert_before(node.source_range, '{')
+          corrector.insert_after(node.source_range, '}')
         end
 
         def non_empty_hash?(arg)

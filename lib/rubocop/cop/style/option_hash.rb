@@ -23,8 +23,6 @@ module RuboCop
         MSG = 'Prefer keyword arguments to options hashes.'
 
         def on_args(node)
-          return unless supports_keyword_arguments?
-
           *_but_last, last_arg = *node
 
           # asserting that there was an argument at all
@@ -48,11 +46,18 @@ module RuboCop
           add_offense(last_arg, :expression, MSG)
         end
 
-        private
-
-        def supports_keyword_arguments?
-          RUBY_VERSION >= '2.0.0'
+        def validate_config
+          if target_ruby_version < 2.0
+            fail ValidationError, 'The `Style/OptionHash` cop is only ' \
+                                  'compatible with Ruby 2.0 and up, but the ' \
+                                  'target Ruby version for your project is ' \
+                                  "1.9.\nPlease disable this cop or adjust " \
+                                  'the `TargetRubyVersion` parameter in your ' \
+                                  'configuration.'
+          end
         end
+
+        private
 
         def name_in_suspicious_param_names?(arg_name)
           cop_config.key?('SuspiciousParamNames') &&

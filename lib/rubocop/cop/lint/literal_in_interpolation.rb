@@ -23,9 +23,8 @@ module RuboCop
         end
 
         def autocorrect(node)
-          expr = node.parent.loc.expression
           value = autocorrected_value(node)
-          ->(corrector) { corrector.replace(expr, value) }
+          ->(corrector) { corrector.replace(node.parent.source_range, value) }
         end
 
         private
@@ -33,7 +32,7 @@ module RuboCop
         def special_keyword?(node)
           # handle strings like __FILE__
           (node.type == :str && !node.loc.respond_to?(:begin)) ||
-            node.loc.expression.is?('__LINE__')
+            node.source_range.is?('__LINE__')
         end
 
         def autocorrected_value(node)

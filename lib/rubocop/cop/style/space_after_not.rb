@@ -30,7 +30,7 @@ module RuboCop
             space_range =
               Parser::Source::Range.new(node.loc.selector.source_buffer,
                                         node.loc.selector.end_pos,
-                                        receiver.loc.expression.begin_pos)
+                                        receiver.source_range.begin_pos)
             corrector.remove(space_range)
           end
         end

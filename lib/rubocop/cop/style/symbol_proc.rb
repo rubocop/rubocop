@@ -35,7 +35,7 @@ module RuboCop
 
           _receiver, method_name, _args = *block_body
 
-          sb = node.loc.expression.source_buffer
+          sb = node.source_range.source_buffer
           block_start = node.loc.begin.begin_pos
           block_end = node.loc.end.end_pos
           range = Parser::Source::Range.new(sb, block_start, block_end)
@@ -74,13 +74,13 @@ module RuboCop
         end
 
         def autocorrect_with_args(corrector, node, args, method_name)
-          corrector.insert_after(args.last.loc.expression, ", &:#{method_name}")
+          corrector.insert_after(args.last.source_range, ", &:#{method_name}")
           corrector.remove(block_range_with_space(node))
         end
 
         def block_range_with_space(node)
           block_range =
-            Parser::Source::Range.new(node.loc.expression.source_buffer,
+            Parser::Source::Range.new(node.source_range.source_buffer,
                                       begin_pos_for_replacement(node),
                                       node.loc.end.end_pos)
           range_with_surrounding_space(block_range, :left)
@@ -88,7 +88,7 @@ module RuboCop
 
         def begin_pos_for_replacement(node)
           block_send_or_super, _block_args, _block_body = *node
-          expr = block_send_or_super.loc.expression
+          expr = block_send_or_super.source_range
 
           if (paren_pos = (expr.source =~ /\(\s*\)$/))
             expr.begin_pos + paren_pos

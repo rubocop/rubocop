@@ -29,7 +29,7 @@ module RuboCop
         def on_send(node)
           return unless modifier_and_def_on_same_line?(node)
           _, _, method_def = *node
-          expr = node.loc.expression
+          expr = node.source_range
 
           line_start = Parser::Source::Range.new(expr.source_buffer,
                                                  expr.begin_pos,

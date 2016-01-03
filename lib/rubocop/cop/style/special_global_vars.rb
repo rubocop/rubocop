@@ -107,14 +107,14 @@ module RuboCop
 
             if [:dstr, :xstr, :regexp].include?(parent_type)
               if style == :use_english_names
-                corrector.replace(node.loc.expression,
+                corrector.replace(node.source_range,
                                   "{#{preferred_names(global_var).first}}")
               else
-                corrector.replace(node.loc.expression,
+                corrector.replace(node.source_range,
                                   "##{preferred_names(global_var).first}")
               end
             else
-              corrector.replace(node.loc.expression,
+              corrector.replace(node.source_range,
                                 preferred_names(global_var).first.to_s)
             end
           end

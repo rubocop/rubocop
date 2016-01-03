@@ -20,7 +20,7 @@ module RuboCop
         def autocorrect(node)
           cond, body = *node
           oneline = "#{body.source} #{node.loc.keyword.source} " + cond.source
-          ->(corrector) { corrector.replace(node.loc.expression, oneline) }
+          ->(corrector) { corrector.replace(node.source_range, oneline) }
         end
 
         private

@@ -32,7 +32,7 @@ module RuboCop
           elsif node.children.none? { |arg| bareword?(arg) }
             existing_args  = node.children.map(&:source).join(' ')
             preferred_args = node.children.map { |a| a.source[1..-1] }.join(' ')
-            arg_ranges     = node.children.map { |a| a.loc.expression }
+            arg_ranges     = node.children.map(&:source_range)
             msg            = format(MSG_SYMBOL_ARGS, preferred_args,
                                     existing_args)
             add_offense(node, arg_ranges.reduce(&:join), msg)
@@ -82,7 +82,7 @@ module RuboCop
           lambda do |corrector|
             new, old = *node.method_args
             replacement = "alias #{new.children.first} #{old.children.first}"
-            corrector.replace(node.loc.expression, replacement)
+            corrector.replace(node.source_range, replacement)
           end
         end
 
@@ -91,15 +91,15 @@ module RuboCop
             new, old = *node
             replacement = "alias_method :#{new.children.first}, " \
                           ":#{old.children.first}"
-            corrector.replace(node.loc.expression, replacement)
+            corrector.replace(node.source_range, replacement)
           end
         end
 
         def correct_alias_with_symbol_args(node)
           lambda do |corrector|
             new, old = *node
-            corrector.replace(new.loc.expression, new.children.first.to_s)
-            corrector.replace(old.loc.expression, old.children.first.to_s)
+            corrector.replace(new.source_range, new.children.first.to_s)
+            corrector.replace(old.source_range, old.children.first.to_s)
           end
         end
       end

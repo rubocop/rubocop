@@ -48,16 +48,16 @@ module RuboCop
       end
 
       def no_acceptable_style!
-        @detected_style = []
         self.config_to_allow_offenses = { 'Enabled' => false }
+        Formatter::DisabledConfigFormatter.detected_styles[cop_name] = []
       end
 
       def detected_style
-        @detected_style ||= nil
+        Formatter::DisabledConfigFormatter.detected_styles[cop_name] ||= nil
       end
 
       def detected_style=(style)
-        @detected_style = style
+        Formatter::DisabledConfigFormatter.detected_styles[cop_name] = style
 
         if style.nil?
           no_acceptable_style!

@@ -5,7 +5,7 @@ require 'spec_helper'
 describe RuboCop::ProcessedSource do
   include FileHelper
 
-  subject(:processed_source) { described_class.new(source, path) }
+  subject(:processed_source) { described_class.new(source, nil, path) }
 
   let(:source) { <<-END.strip_indent }
     # encoding: utf-8

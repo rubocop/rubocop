@@ -16,12 +16,12 @@ module RuboCop
       end
 
       def index_of_first_token(node)
-        b = node.loc.expression.begin
+        b = node.source_range.begin
         token_table[b.line][b.column]
       end
 
       def index_of_last_token(node)
-        e = node.loc.expression.end
+        e = node.source_range.end
         (0...e.column).to_a.reverse_each do |c|
           ix = token_table[e.line][c]
           return ix if ix

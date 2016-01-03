@@ -50,7 +50,7 @@ module RuboCop
 
           lambda do |corrector|
             corrector.replace(
-              node.loc.expression,
+              node.source_range,
               expression
                 .sub(/\s+#{operator_escaped}/, operator)
                 .sub(/#{operator_escaped}\s+/, operator)

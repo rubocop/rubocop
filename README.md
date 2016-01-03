@@ -48,6 +48,7 @@ specific RuboCop release.**
     - [Defaults](#defaults)
     - [Including/Excluding files](#includingexcluding-files)
     - [Generic configuration parameters](#generic-configuration-parameters)
+    - [Setting the target Ruby version](#setting-the-target-ruby-version)
     - [Automatically Generated Configuration](#automatically-generated-configuration)
 - [Disabling Cops within Source Code](#disabling-cops-within-source-code)
 - [Formatters](#formatters)
@@ -197,7 +198,7 @@ You can also load [custom cops](#custom-cops).
 #### Style
 
 Most of the cops in RuboCop are so called style cops that check for
-stylistics problems in your code. Almost all of the them are based on
+stylistic problems in your code. Almost all of the them are based on
 the Ruby Style Guide. Many of the style cops have configurations
 options allowing them to support different popular coding
 conventions.
@@ -411,7 +412,7 @@ paths match `app/models/*.rb`). All cops support the
 `Include` param.
 
 ```yaml
-Rails/DefaultScope:
+Rails/HasAndBelongsToMany:
   Include:
     - app/models/*.rb
 ```
@@ -421,7 +422,7 @@ instance you might want to run some cop only on a specific file). All cops suppo
 `Exclude` param.
 
 ```yaml
-Rails/DefaultScope:
+Rails/HasAndBelongsToMany:
   Exclude:
     - app/models/problematic.rb
 ```
@@ -466,7 +467,7 @@ Metrics/CyclomaticComplexity:
   Severity: warning
 ```
 
-## Details
+#### Details
 
 Individual cops can be embellished with extra details in offense messages:
 
@@ -488,6 +489,20 @@ disabled. For example:
 ```yaml
 Style/PerlBackrefs:
   AutoCorrect: false
+```
+
+### Setting the target Ruby version
+
+Some checks are dependent on the version of the Ruby interpreter which the
+inspected code must run on. For example, using Ruby 2.0+ keyword arguments
+rather than an options hash can help make your code shorter and more
+expressive... _unless_ it must run on Ruby 1.9.
+
+Let RuboCop know the oldest version of Ruby which your project supports with:
+
+```yaml
+AllCops:
+  TargetRubyVersion: 1.9
 ```
 
 ### Automatically Generated Configuration
@@ -761,6 +776,19 @@ $ rubocop --format offenses
 1    ColonMethodCall
 --
 134  Total
+```
+
+### Worst Offenders Formatter
+
+Similar to the Offense Count formatter, but lists the files which need the most attention:
+
+```sh
+$ rubocop --format worst
+
+89  this/file/is/really/bad.rb
+2   much/better.rb
+--
+91  Total
 ```
 
 ### HTML Formatter

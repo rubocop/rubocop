@@ -58,7 +58,7 @@ module RuboCop
 
           unless variable
             fail "Assigning to undeclared local variable \"#{name}\" " \
-                 "at #{node.loc.expression}, #{node.inspect}"
+                 "at #{node.source_range}, #{node.inspect}"
           end
 
           variable.assign(node)

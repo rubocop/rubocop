@@ -26,8 +26,7 @@ module RuboCop
                     parenthesized_call?(nested) ||
                     operator?(nested.method_name) ||
                     rspec_matcher?(node, nested)
-            add_offense(nested, nested.loc.expression,
-                        format(MSG, nested.source))
+            add_offense(nested, nested.source_range, format(MSG, nested.source))
           end
         end
 

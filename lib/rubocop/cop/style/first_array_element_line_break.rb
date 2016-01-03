@@ -32,7 +32,7 @@ module RuboCop
         private
 
         def assignment_on_same_line?(node)
-          source = node.loc.expression.source_line[0...node.loc.column]
+          source = node.source_range.source_line[0...node.loc.column]
           source =~ /\s*\=\s*$/
         end
       end

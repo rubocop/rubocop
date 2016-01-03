@@ -67,7 +67,7 @@ module RuboCop
                        when Parser::Source::Range
                          arg
                        when Parser::AST::Node
-                         arg.loc.expression
+                         arg.source_range
                        else
                          fail ArgumentError, "Invalid argument #{arg}"
                        end
@@ -162,8 +162,8 @@ module RuboCop
       end
 
       def within_node?(inner, outer)
-        o = outer.is_a?(Astrolabe::Node) ? outer.loc.expression : outer
-        i = inner.is_a?(Astrolabe::Node) ? inner.loc.expression : inner
+        o = outer.is_a?(Astrolabe::Node) ? outer.source_range : outer
+        i = inner.is_a?(Astrolabe::Node) ? inner.source_range : inner
         i.begin_pos >= o.begin_pos && i.end_pos <= o.end_pos
       end
 

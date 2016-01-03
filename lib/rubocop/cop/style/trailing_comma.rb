@@ -48,7 +48,7 @@ module RuboCop
           return unless brackets?(node)
 
           check(node, args, 'parameter of %s method call',
-                args.last.loc.expression.end_pos, node.loc.expression.end_pos)
+                args.last.source_range.end_pos, node.source_range.end_pos)
         end
 
         private
@@ -64,12 +64,12 @@ module RuboCop
           return unless brackets?(node)
 
           check(node, node.children, kind,
-                node.children.last.loc.expression.end_pos,
+                node.children.last.source_range.end_pos,
                 node.loc.end.begin_pos)
         end
 
         def check(node, items, kind, begin_pos, end_pos)
-          sb = items.first.loc.expression.source_buffer
+          sb = items.first.source_range.source_buffer
 
           after_last_item = Parser::Source::Range.new(sb, begin_pos, end_pos)
 
@@ -142,7 +142,7 @@ module RuboCop
           # expression can not be multiline.
           return if elements.empty?
 
-          items = elements.map { |e| e.loc.expression }
+          items = elements.map(&:source_range)
           if style == :consistent_comma
             items.each_cons(2).any? { |a, b| !on_same_line?(a, b) }
           else
@@ -168,7 +168,7 @@ module RuboCop
           last_item = items.last
           return if last_item.type == :block_pass
 
-          last_expr = last_item.loc.expression
+          last_expr = last_item.source_range
           ix = last_expr.source.rindex("\n") || 0
           ix += last_expr.source[ix..-1] =~ /\S/
           range = Parser::Source::Range.new(sb, last_expr.begin_pos + ix,

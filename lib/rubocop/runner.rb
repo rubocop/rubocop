@@ -76,37 +76,50 @@ module RuboCop
 
     def process_file(file)
       puts "Scanning #{file}" if @options[:debug]
+      file_started(file)
 
       cache = ResultCache.new(file, @options, @config_store) if cached_run?
       if cache && cache.valid?
         offenses, disabled_line_ranges, comments = cache.load
-        file_started(file, disabled_line_ranges, comments)
       else
-        processed_source = get_processed_source(file)
+        source = get_processed_source(file)
         # Use delegators for objects sent to the formatters. These can be
         # updated when the file is re-inspected.
-        disabled_line_ranges =
-          SimpleDelegator.new(processed_source.disabled_line_ranges)
-        comments = SimpleDelegator.new(processed_source.comments)
+        disabled_line_ranges = SimpleDelegator.new(source.disabled_line_ranges)
+        comments = SimpleDelegator.new(source.comments)
 
-        file_started(file, disabled_line_ranges, comments)
-        offenses = do_inspection_loop(file, processed_source,
+        offenses = do_inspection_loop(file, source,
                                       disabled_line_ranges, comments)
-        save_in_cache(cache, offenses, processed_source)
+        save_in_cache(cache, offenses, source)
       end
 
-      offenses = formatter_set.file_finished(file, offenses.compact.sort.freeze)
-
+      offenses = add_unneeded_disables(file, offenses.compact.sort,
+                                       disabled_line_ranges, comments).freeze
+      formatter_set.file_finished(file, offenses)
       offenses
     rescue InfiniteCorrectionLoop => e
       formatter_set.file_finished(file, e.offenses.compact.sort.freeze)
       raise
     end
 
-    def file_started(file, disabled_line_ranges, comments)
+    def add_unneeded_disables(file, offenses, disabled_ranges, comments)
+      if disabled_ranges.any? &&
+         # Don't check unneeded disable if --only or --except option is
+         # given, because these options override configuration.
+         (@options[:except] || []).empty? && (@options[:only] || []).empty?
+        config = @config_store.for(file)
+        if config['Lint/UnneededDisable']['Enabled']
+          cop = Cop::Lint::UnneededDisable.new(config, @options)
+          cop.check(offenses, disabled_ranges, comments)
+          offenses += cop.offenses
+        end
+      end
+
+      offenses.sort.reject(&:disabled?)
+    end
+
+    def file_started(file)
       formatter_set.file_started(file,
-                                 cop_disabled_line_ranges: disabled_line_ranges,
-                                 comments: comments,
                                  cli_options: @options,
                                  config_store: @config_store)
     end
@@ -236,7 +249,7 @@ module RuboCop
     def formatter_set
       @formatter_set ||= begin
         set = Formatter::FormatterSet.new
-        pairs = @options[:formatters] || [[Options::DEFAULT_FORMATTER]]
+        pairs = @options[:formatters] || [['progress']]
         pairs.each do |formatter_key, output_path|
           set.add_formatter(formatter_key, output_path)
         end
@@ -261,8 +274,13 @@ module RuboCop
     end
 
     def get_processed_source(file)
-      return ProcessedSource.new(@options[:stdin], file) if @options[:stdin]
-      ProcessedSource.from_file(file)
+      ruby_version = @config_store.for(file)['AllCops']['TargetRubyVersion']
+
+      if @options[:stdin]
+        ProcessedSource.new(@options[:stdin], ruby_version, file)
+      else
+        ProcessedSource.from_file(file, ruby_version)
+      end
     end
   end
 end

@@ -33,7 +33,7 @@ module RuboCop
 
           range = Parser::Source::Range.new(receiver.loc.end.source_buffer,
                                             receiver.loc.end.begin_pos,
-                                            node.loc.expression.end_pos)
+                                            node.source_range.end_pos)
           add_offense(nil, range)
         end
       end

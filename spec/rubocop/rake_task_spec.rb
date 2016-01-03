@@ -1,9 +1,12 @@
 # encoding: utf-8
 
 require 'spec_helper'
+require 'support/file_helper'
 require 'rubocop/rake_task'
 
 describe RuboCop::RakeTask do
+  include FileHelper
+
   describe 'defining tasks' do
     it 'creates a rubocop task' do
       RuboCop::RakeTask.new
@@ -47,7 +50,7 @@ describe RuboCop::RakeTask do
 
       cli = double('cli', run: 0)
       allow(RuboCop::CLI).to receive(:new) { cli }
-      expect(cli).to receive(:run).with(['--format', 'progress'])
+      expect(cli).to receive(:run).with([])
 
       Rake::Task['rubocop'].execute
     end
@@ -67,23 +70,6 @@ describe RuboCop::RakeTask do
       expect(cli).to receive(:run).with(options)
 
       Rake::Task['rubocop'].execute
-    end
-
-    it 'warns if --format is put in options' do
-      RuboCop::RakeTask.new do |task|
-        task.options = ['--format', 'json']
-        task.patterns = ['no_such_file*']
-      end
-
-      Rake::Task['rubocop'].execute
-
-      # `rstrip` is because MRI 1.9.3 differs in behavior as regards newlines
-      # printed by `Kernel#warn`.
-      expect($stderr.string.rstrip).to eq(
-        'Warning: To set a custom formatter for RuboCop::RakeTask, use ' \
-        "formatters rather than options = [\"--format\", ...].\nSee " \
-        'https://github.com/bbatsov/rubocop#rake-integration for more ' \
-        'details.')
     end
 
     it 'will not error when result is not 0 and fail_on_error is false' do
@@ -106,13 +92,33 @@ describe RuboCop::RakeTask do
       expect { Rake::Task['rubocop'].execute }.to raise_error(SystemExit)
     end
 
+    it 'uses the default formatter from .rubocop.yml if no formatter ' \
+       'option is given', :isolated_environment do
+      create_file('.rubocop.yml', ['AllCops:',
+                                   '  DefaultFormatter: offenses'])
+      create_file('test.rb', '$:')
+
+      RuboCop::RakeTask.new do |task|
+        task.options = ['test.rb']
+      end
+
+      expect { Rake::Task['rubocop'].execute }.to raise_error(SystemExit)
+
+      expect($stdout.string.strip).to eq(['Running RuboCop...',
+                                          '',
+                                          '1  Style/SpecialGlobalVars',
+                                          '--',
+                                          '1  Total'].join("\n"))
+      expect($stderr.string.strip).to eq 'RuboCop failed!'
+    end
+
     context 'auto_correct' do
       it 'runs with --auto-correct' do
         RuboCop::RakeTask.new
 
         cli = double('cli', run: 0)
         allow(RuboCop::CLI).to receive(:new) { cli }
-        options = ['--auto-correct', '--format', 'progress']
+        options = ['--auto-correct']
         expect(cli).to receive(:run).with(options)
 
         Rake::Task['rubocop:auto_correct'].execute

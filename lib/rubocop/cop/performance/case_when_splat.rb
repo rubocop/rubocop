@@ -71,7 +71,7 @@ module RuboCop
             end
 
           splat_offenses(when_conditions).reverse_each do |condition|
-            range = condition.parent.loc.keyword.join(condition.loc.expression)
+            range = condition.parent.loc.keyword.join(condition.source_range)
             variable, = *condition
             message = variable.array_type? ? ARRAY_MSG : MSG
             add_offense(condition.parent, range, message)
@@ -116,7 +116,7 @@ module RuboCop
               corrector.remove(variable.loc.begin)
               corrector.remove(variable.loc.end)
             else
-              corrector.replace(condition.loc.expression,
+              corrector.replace(condition.source_range,
                                 expand_percent_array(variable))
             end
           end
@@ -129,13 +129,12 @@ module RuboCop
           correction = "\n#{offset(node)}#{node.source}"
           range =
             Parser::Source::Range.new(node.parent,
-                                      node.loc.expression.begin_pos,
-                                      next_branch.loc.expression.begin_pos)
+                                      node.source_range.begin_pos,
+                                      next_branch.source_range.begin_pos)
 
           lambda do |corrector|
             corrector.remove(range)
-            corrector.insert_after(when_branches.last.loc.expression,
-                                   correction)
+            corrector.insert_after(when_branches.last.source_range, correction)
           end
         end
 

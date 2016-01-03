@@ -1245,10 +1245,6 @@ Rails/Date:
                   such as Date.today, Date.current etc.
   Enabled: true
 
-Rails/DefaultScope:
-  Description: 'Checks if the argument passed to default_scope is a block.'
-  Enabled: true
-
 Rails/Delegate:
   Description: 'Prefer delegate method for delegations.'
   Enabled: true

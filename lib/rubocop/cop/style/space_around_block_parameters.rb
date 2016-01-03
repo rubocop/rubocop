@@ -24,7 +24,7 @@ module RuboCop
           check_inside_pipes(args.children, opening_pipe, closing_pipe)
 
           if body
-            check_space(closing_pipe.end_pos, body.loc.expression.begin_pos,
+            check_space(closing_pipe.end_pos, body.source_range.begin_pos,
                         closing_pipe, 'after closing `|`')
           end
 
@@ -46,8 +46,8 @@ module RuboCop
         end
 
         def check_no_space_style_inside_pipes(args, opening_pipe, closing_pipe)
-          first = args.first.loc.expression
-          last = args.last.loc.expression
+          first = args.first.source_range
+          last = args.last.source_range
 
           check_no_space(opening_pipe.end_pos, first.begin_pos,
                          'Space before first')
@@ -56,8 +56,8 @@ module RuboCop
         end
 
         def check_space_style_inside_pipes(args, opening_pipe, closing_pipe)
-          first = args.first.loc.expression
-          last = args.last.loc.expression
+          first = args.first.source_range
+          last = args.last.source_range
           last_end_pos = last_end_pos_inside_pipes(last.end_pos)
 
           check_space(opening_pipe.end_pos, first.begin_pos, first,
@@ -76,7 +76,7 @@ module RuboCop
 
         def check_each_arg(args)
           args.children.butfirst.each do |arg|
-            expr = arg.loc.expression
+            expr = arg.source_range
             check_no_space(range_with_surrounding_space(expr, :left).begin_pos,
                            expr.begin_pos - 1, 'Extra space before')
           end

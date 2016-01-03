@@ -33,7 +33,7 @@ module RuboCop
           return unless node.loc.operator
           return if node.loc.operator.line == rhs.loc.line
 
-          base = node.loc.expression.column
+          base = node.source_range.column
           check_alignment([rhs], base + configured_indentation_width)
         end
       end

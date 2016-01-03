@@ -32,7 +32,7 @@ module RuboCop
         private
 
         def check_inside(node, left_brace, right_brace)
-          sb = node.loc.expression.source_buffer
+          sb = node.source_range.source_buffer
 
           if left_brace.end_pos == right_brace.begin_pos
             adjacent_braces(sb, left_brace, right_brace)

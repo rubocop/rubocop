@@ -48,7 +48,7 @@ module RuboCop
           new_source = 'yield'
           new_source << ' ' unless args.empty?
           new_source << args.map(&:source).join(', ')
-          ->(corrector) { corrector.replace(node.loc.expression, new_source) }
+          ->(corrector) { corrector.replace(node.source_range, new_source) }
         end
       end
     end

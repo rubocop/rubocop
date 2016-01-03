@@ -31,7 +31,7 @@ module RuboCop
           return unless method_name == :each && args.empty?
 
           if style == :for
-            end_pos = method.loc.expression.end_pos
+            end_pos = method.source_range.end_pos
             range = Parser::Source::Range.new(processed_source.buffer,
                                               end_pos - EACH_LENGTH,
                                               end_pos)

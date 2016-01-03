@@ -42,7 +42,7 @@ module RuboCop
           # register an offense in that case
           receiver, _method, arg = *node
           new_source = receiver.source + ' =~ ' + arg.source
-          ->(corrector) { corrector.replace(node.loc.expression, new_source) }
+          ->(corrector) { corrector.replace(node.source_range, new_source) }
         end
       end
     end

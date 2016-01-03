@@ -57,9 +57,9 @@ module RuboCop
           end
 
           def source_range
-            Parser::Source::Range.new(shuffle_node.loc.expression.source_buffer,
+            Parser::Source::Range.new(shuffle_node.source_range.source_buffer,
                                       shuffle_node.loc.selector.begin_pos,
-                                      method_node.loc.expression.end_pos)
+                                      method_node.source_range.end_pos)
           end
 
           private

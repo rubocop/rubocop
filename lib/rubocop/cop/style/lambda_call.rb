@@ -40,10 +40,9 @@ module RuboCop
           lambda do |corrector|
             if style == :call
               receiver_node, = *node
-              expr = node.loc.expression
               receiver = receiver_node.source
-              replacement = expr.source.sub("#{receiver}.", "#{receiver}.call")
-              corrector.replace(expr, replacement)
+              replacement = node.source.sub("#{receiver}.", "#{receiver}.call")
+              corrector.replace(node.source_range, replacement)
             else
               corrector.remove(node.loc.selector)
             end

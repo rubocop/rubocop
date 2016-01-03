@@ -20,9 +20,9 @@ module RuboCop
         lambda do |corrector|
           str = node.str_content
           if style == :single_quotes
-            corrector.replace(node.loc.expression, to_string_literal(str))
+            corrector.replace(node.source_range, to_string_literal(str))
           else
-            corrector.replace(node.loc.expression, str.inspect)
+            corrector.replace(node.source_range, str.inspect)
           end
         end
       end

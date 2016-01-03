@@ -1,6 +1,7 @@
 # encoding: utf-8
 
 require 'spec_helper'
+require 'parser/current'
 
 describe RuboCop::NodePattern do
   let(:root_node) do

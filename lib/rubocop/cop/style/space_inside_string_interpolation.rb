@@ -22,7 +22,7 @@ module RuboCop
             final_node = begin_node.children.last
             next unless final_node
 
-            interp = final_node.loc.expression
+            interp = final_node.source_range
             interp_with_surrounding_space = range_with_surrounding_space(interp)
             if style == :no_space
               if interp_with_surrounding_space != interp
@@ -41,10 +41,8 @@ module RuboCop
         def autocorrect(node)
           new_source = (style == :no_space) ? node.source : " #{node.source} "
           lambda do |corrector|
-            corrector.replace(
-              range_with_surrounding_space(node.loc.expression),
-              new_source
-            )
+            corrector.replace(range_with_surrounding_space(node.source_range),
+                              new_source)
           end
         end
       end

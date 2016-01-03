@@ -20,7 +20,15 @@ module RuboCop
          RuboCop::Cop::Offense.new(:convention, location, 'message', 'Cop2')]
       end
       let(:location) { OpenStruct.new(line: 1, column: 5) }
-      before { $stdout = StringIO.new }
+
+      before(:each) do
+        $stderr = StringIO.new
+        $stdout = StringIO.new
+      end
+      after(:each) do
+        $stderr = STDERR
+        $stdout = STDOUT
+      end
 
       describe '#finished' do
         it 'displays YAML configuration disabling all cops with offenses' do

@@ -14,9 +14,8 @@ module RuboCop
   class Config < DelegateClass(Hash)
     include PathUtil
 
-    class ValidationError < RuboCop::Error; end
-
     COMMON_PARAMS = %w(Exclude Include Severity AutoCorrect StyleGuide Details)
+    KNOWN_RUBIES = [1.9, 2.0, 2.1, 2.2, 2.3].freeze
 
     attr_reader :loaded_path
 
@@ -128,6 +127,7 @@ module RuboCop
       end
 
       reject_obsolete_parameters
+      check_target_ruby
       validate_parameter_names(valid_cop_names)
       validate_enforced_styles(valid_cop_names)
     end
@@ -241,6 +241,18 @@ module RuboCop
         fail ValidationError, "obsolete parameter #{parameter} (for #{cop}) " \
                               "found in #{loaded_path}" \
                               "#{"\n" if alternative}#{alternative}"
+      end
+    end
+
+    def check_target_ruby
+      target = self['AllCops'] && self['AllCops']['TargetRubyVersion']
+      return unless target
+
+      unless KNOWN_RUBIES.include?(target)
+        fail ValidationError, "Unknown Ruby version #{target.inspect} found " \
+                              'in `TargetRubyVersion` parameter (in ' \
+                              "#{loaded_path}).\nKnown versions: " \
+                              "#{KNOWN_RUBIES.join(', ')}"
       end
     end
   end

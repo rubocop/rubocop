@@ -101,8 +101,8 @@ module RuboCop
 
         def offense_location(offense_node)
           condition_expression, = *offense_node
-          offense_begin_pos = offense_node.loc.expression.begin
-          offense_begin_pos.join(condition_expression.loc.expression)
+          offense_begin_pos = offense_node.source_range.begin
+          offense_begin_pos.join(condition_expression.source_range)
         end
 
         def autocorrect(node)
@@ -112,28 +112,28 @@ module RuboCop
             opposite_kw = if_body.nil? ? 'if' : 'unless'
             next_code = 'next ' << opposite_kw << ' ' <<
                         cond.source
-            corrector.insert_before(node.loc.expression, next_code)
+            corrector.insert_before(node.source_range, next_code)
 
             corrector.remove(cond_range(node, cond))
             corrector.remove(end_range(node))
 
             # end_range starts with the final newline of the if body
-            reindent_lines = (node.loc.expression.line + 1)...node.loc.end.line
+            reindent_lines = (node.source_range.line + 1)...node.loc.end.line
             reindent_lines = reindent_lines.to_a - heredoc_lines(node)
             reindent(reindent_lines, cond, corrector)
           end
         end
 
         def cond_range(node, cond)
-          Parser::Source::Range.new(node.loc.expression.source_buffer,
-                                    node.loc.expression.begin_pos,
-                                    cond.loc.expression.end_pos)
+          Parser::Source::Range.new(node.source_range.source_buffer,
+                                    node.source_range.begin_pos,
+                                    cond.source_range.end_pos)
         end
 
         def end_range(node)
-          source_buffer = node.loc.expression.source_buffer
+          source_buffer = node.source_range.source_buffer
           end_pos = node.loc.end.end_pos
-          begin_pos = node.loc.end.begin_pos - node.loc.expression.column
+          begin_pos = node.loc.end.begin_pos - node.source_range.column
           begin_pos -= 1 if end_followed_by_whitespace_only?(source_buffer,
                                                              end_pos)
 
@@ -146,7 +146,7 @@ module RuboCop
 
         # Adjust indentation of `lines` to match `node`
         def reindent(lines, node, corrector)
-          range  = node.loc.expression
+          range  = node.source_range
           buffer = range.source_buffer
 
           target_indent = range.source_line =~ /\S/

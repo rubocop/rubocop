@@ -16,12 +16,16 @@ module RuboCop
     AUTO_GENERATED_FILE = '.rubocop_todo.yml'
 
     class << self
-      attr_accessor :debug, :auto_gen_config, :exclude_limit
+      attr_accessor :debug, :auto_gen_config
       attr_writer :root_level # The upwards search is stopped at this level.
       attr_writer :default_configuration
 
       alias debug? debug
       alias auto_gen_config? auto_gen_config
+
+      def clear_options
+        @debug = @auto_gen_config = @root_level = nil
+      end
 
       def load_file(path)
         path = File.absolute_path(path)

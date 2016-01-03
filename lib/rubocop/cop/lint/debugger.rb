@@ -29,9 +29,9 @@ module RuboCop
             if pry_rescue?(node)
               block = node.parent
               body  = block.children[2] # (block <send> <parameters> <body>)
-              corrector.replace(block.loc.expression, body.source)
+              corrector.replace(block.source_range, body.source)
             else
-              range = node.loc.expression
+              range = node.source_range
               range = range_with_surrounding_space(range, :left, nil, false)
               range = range_with_surrounding_space(range, :right, nil, true)
               corrector.remove(range)

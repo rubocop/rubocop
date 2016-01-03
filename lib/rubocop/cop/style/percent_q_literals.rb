@@ -29,15 +29,14 @@ module RuboCop
         def check(node, msg)
           # Report offense only if changing case doesn't change semantics,
           # i.e., if the string would become dynamic or has special characters.
-          return if node.children !=
-                    ProcessedSource.new(corrected(node.source)).ast.children
+          return if node.children != parse(corrected(node.source)).ast.children
 
           add_offense(node, :begin, msg)
         end
 
         def autocorrect(node)
           lambda do |corrector|
-            corrector.replace(node.loc.expression, corrected(node.source))
+            corrector.replace(node.source_range, corrected(node.source))
           end
         end
 

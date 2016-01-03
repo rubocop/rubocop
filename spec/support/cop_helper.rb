@@ -3,6 +3,10 @@
 require 'tempfile'
 
 module CopHelper
+  extend RSpec::SharedContext
+
+  let(:ruby_version) { 2.2 }
+
   def inspect_source_file(cop, source)
     Tempfile.open('tmp') { |f| inspect_source(cop, source, f) }
   end
@@ -12,6 +16,7 @@ module CopHelper
       fail "Don't use an array for a single line of code: #{source}"
     end
     RuboCop::Formatter::DisabledConfigFormatter.config_to_allow_offenses = {}
+    RuboCop::Formatter::DisabledConfigFormatter.detected_styles = {}
     processed_source = parse_source(source, file)
     fail 'Error parsing example code' unless processed_source.valid_syntax?
     _investigate(cop, processed_source)
@@ -26,7 +31,7 @@ module CopHelper
       file = file.path
     end
 
-    RuboCop::ProcessedSource.new(source, file)
+    RuboCop::ProcessedSource.new(source, ruby_version, file)
   end
 
   def autocorrect_source_file(cop, source)

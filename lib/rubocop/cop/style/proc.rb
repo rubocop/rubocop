@@ -22,7 +22,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          ->(corrector) { corrector.replace(node.loc.expression, 'proc') }
+          ->(corrector) { corrector.replace(node.source_range, 'proc') }
         end
       end
     end

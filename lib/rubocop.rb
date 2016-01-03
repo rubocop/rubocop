@@ -1,6 +1,6 @@
 # encoding: utf-8
 
-require 'parser/current'
+require 'parser'
 require 'rainbow'
 
 require 'English'
@@ -339,7 +339,6 @@ require 'rubocop/cop/style/word_array'
 
 require 'rubocop/cop/rails/action_filter'
 require 'rubocop/cop/rails/date'
-require 'rubocop/cop/rails/default_scope'
 require 'rubocop/cop/rails/delegate'
 require 'rubocop/cop/rails/find_by'
 require 'rubocop/cop/rails/find_each'
@@ -363,6 +362,7 @@ require 'rubocop/formatter/json_formatter'
 require 'rubocop/formatter/html_formatter'
 require 'rubocop/formatter/file_list_formatter'
 require 'rubocop/formatter/offense_count_formatter'
+require 'rubocop/formatter/worst_offenders_formatter'
 require 'rubocop/formatter/formatter_set'
 
 require 'rubocop/cached_data'

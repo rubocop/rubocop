@@ -149,7 +149,7 @@ module RuboCop
           end
 
           lambda do |corrector|
-            corrector.replace(node.loc.expression, accessor(kind, method_name))
+            corrector.replace(node.source_range, accessor(kind, method_name))
           end
         end
 
@@ -163,7 +163,7 @@ module RuboCop
           lambda do |corrector|
             indent = ' ' * node.loc.column
             corrector.replace(
-              node.loc.expression,
+              node.source_range,
               ['class << self',
                "#{indent}  #{accessor(kind, method_name)}",
                "#{indent}end"].join("\n")

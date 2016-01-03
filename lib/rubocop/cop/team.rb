@@ -14,6 +14,8 @@ module RuboCop
         @options = options || { auto_correct: false, debug: false }
         @errors = []
         @warnings = []
+
+        validate_config
       end
 
       def autocorrect?
@@ -38,9 +40,8 @@ module RuboCop
       end
 
       def cops
-        @cops ||= @cop_classes.each_with_object([]) do |cop_class, instances|
-          next unless cop_enabled?(cop_class)
-          instances << cop_class.new(@config, @options)
+        @cops ||= @cop_classes.select { |c| cop_enabled?(c) }.map do |cop_class|
+          cop_class.new(@config, @options)
         end
       end
 
@@ -96,6 +97,12 @@ module RuboCop
           corrector.rewrite
         else
           buffer.source
+        end
+      end
+
+      def validate_config
+        cops.each do |cop|
+          cop.validate_config if cop.respond_to?(:validate_config)
         end
       end
 

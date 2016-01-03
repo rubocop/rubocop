@@ -18,7 +18,8 @@ module RuboCop
         'html'     => HTMLFormatter,
         'files'    => FileListFormatter,
         'offenses' => OffenseCountFormatter,
-        'disabled' => DisabledLinesFormatter
+        'disabled' => DisabledLinesFormatter,
+        'worst'    => WorstOffendersFormatter
       }
 
       FORMATTER_APIS = [:started, :finished]
@@ -30,27 +31,12 @@ module RuboCop
       end
 
       def file_started(file, options)
-        @cop_disabled_line_ranges = options[:cop_disabled_line_ranges]
-        @comments = options[:comments]
         @options = options[:cli_options]
         @config_store = options[:config_store]
         each { |f| f.file_started(file, options) }
       end
 
       def file_finished(file, offenses)
-        if @cop_disabled_line_ranges.any? &&
-           # Don't check unneeded disable if --only or --except option is
-           # given, because these options override configuration.
-           (@options[:except] || []).empty? && (@options[:only] || []).empty?
-          config = @config_store.for(file)
-          if config['Lint/UnneededDisable']['Enabled']
-            cop = Cop::Lint::UnneededDisable.new(config, @options)
-            cop.check(offenses, @cop_disabled_line_ranges, @comments)
-            offenses += cop.offenses
-          end
-        end
-
-        offenses = offenses.sort.reject(&:disabled?)
         each { |f| f.file_finished(file, offenses) }
         offenses
       end

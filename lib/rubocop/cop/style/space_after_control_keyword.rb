@@ -12,10 +12,9 @@ module RuboCop
         def on_keyword(node)
           return if node.loc.is_a?(Parser::Source::Map::Ternary)
 
-          exp = node.loc.expression
           kw = node.loc.keyword
-          kw_offset = kw.begin_pos - exp.begin_pos
-          return unless exp.source[kw_offset..-1].start_with?(kw.source + '(')
+          kw_offset = kw.begin_pos - node.source_range.begin_pos
+          return unless node.source[kw_offset..-1].start_with?(kw.source + '(')
 
           add_offense(node, kw)
         end
