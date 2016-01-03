@@ -1,4 +1,5 @@
 # encoding: utf-8
+# frozen_string_literal: true
 
 # Coverage support needs to be required *before* the RuboCop code is required!
 require 'support/coverage'
