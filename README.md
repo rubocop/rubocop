@@ -467,7 +467,7 @@ Metrics/CyclomaticComplexity:
   Severity: warning
 ```
 
-## Details
+#### Details
 
 Individual cops can be embellished with extra details in offense messages:
 
