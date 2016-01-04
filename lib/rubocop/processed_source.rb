@@ -24,7 +24,9 @@ module RuboCop
       # In Ruby 2, source code encoding defaults to UTF-8. We follow the same
       # principle regardless of which Ruby version we're running under.
       # Encoding comments will override this setting.
-      source.force_encoding(Encoding::UTF_8)
+      unless source.encoding == Encoding::UTF_8
+        source.force_encoding(Encoding::UTF_8)
+      end
 
       @raw_source = source
       @path = path
