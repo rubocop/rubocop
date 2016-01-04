@@ -107,6 +107,7 @@
 * [#2569](https://github.com/bbatsov/rubocop/issues/2569): `Style/MethodCallParentheses` doesn't register warnings for `object.()` syntax, since it is handled by `Style/LambdaCall`. ([@alexdowad][])
 * [#2570](https://github.com/bbatsov/rubocop/issues/2570): `Performance/RedundantMerge` doesn't break code with a modifier `if` when autocorrecting. ([@alexdowad][])
 * `Performance/RedundantMerge` doesn't break code with a modifier `while` or `until` when autocorrecting. ([@alexdowad][])
+* [#2574](https://github.com/bbatsov/rubocop/issues/2574): `variable` style for `Lint/EndAlignment` is working again. ([@alexdowad][])
 
 ### Changes
 
