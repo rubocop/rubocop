@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'json'
+
 module RuboCop
   # Converts RuboCop objects to and from the serialization format JSON.
   class CachedData
