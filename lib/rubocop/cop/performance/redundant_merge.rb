@@ -11,14 +11,11 @@ module RuboCop
       #   hash.merge!({'key' => 'value'})
       #   hash.merge!(a: 1, b: 2)
       class RedundantMerge < Cop
-        include IfNode
-
         AREF_ASGN = '%s[%s] = %s'
         MSG = 'Use `%s` instead of `%s`.'
 
-        def_node_matcher :redundant_merge, <<-END
-          (send $_ :merge! (hash $...))
-        END
+        def_node_matcher :redundant_merge, '(send $_ :merge! (hash $...))'
+        def_node_matcher :modifier_flow_control, '[{if while until} #modifier?]'
 
         def on_send(node)
           redundant_merge(node) do |receiver, pairs|
@@ -38,7 +35,7 @@ module RuboCop
 
               parent = node.parent
               if parent && pairs.size > 1
-                if parent.if_type? && modifier_if?(parent)
+                if modifier_flow_control(parent)
                   cond, = *parent
                   padding = "\n" << (' ' * indent_width)
                   new_source.gsub!(/\n/, padding)
@@ -76,6 +73,10 @@ module RuboCop
 
         def indent_width
           @config.for_cop('IndentationWidth')['Width'] || 2
+        end
+
+        def modifier?(node)
+          node.loc.respond_to?(:end) && node.loc.end.nil?
         end
       end
     end
