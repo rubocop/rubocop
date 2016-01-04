@@ -999,6 +999,8 @@ other cop.
 
 * [rubocop-rspec](https://github.com/nevir/rubocop-rspec) -
   RSpec-specific analysis
+* [rubocop-cask](https://github.com/caskroom/rubocop-cask) - Analysis
+  for Homebrew-Cask files.
 
 ### Custom Formatters
 
