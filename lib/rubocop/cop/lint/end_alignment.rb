@@ -114,7 +114,7 @@ module RuboCop
             return node.parent if argument_case?(node)
             # Fall back to 'keyword' style if this node is not on the RHS
             # of an assignment
-            node.each_ancestor(:lvasgn).first || node
+            node.ancestors.find(&:assignment?) || node
           else
             start_line_range(node)
           end

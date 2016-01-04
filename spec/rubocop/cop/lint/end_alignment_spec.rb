@@ -247,6 +247,17 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
       include_examples 'aligned', 'var += if',  'test', 'end'
       include_examples 'aligned', 'h[k] = if',  'test', 'end'
       include_examples 'aligned', 'h.k = if',   'test', 'end'
+
+      include_examples 'misaligned', '', '@var = if',  'test',    '      end'
+      include_examples 'misaligned', '', '@@var = if', 'test',    '      end'
+      include_examples 'misaligned', '', '$var = if',  'test',    '      end'
+      include_examples 'misaligned', '', 'CNST = if',  'test',    '      end'
+      include_examples 'misaligned', '', 'a, b = if',  'test',    '      end'
+      include_examples 'misaligned', '', 'var ||= if', 'test',    '      end'
+      include_examples 'misaligned', '', 'var &&= if', 'test',    '      end'
+      include_examples 'misaligned', '', 'var += if',  'test',    '      end'
+      include_examples 'misaligned', '', 'h[k] = if',  'test',    '      end'
+      include_examples 'misaligned', '', 'h.k = if',   'test',    '      end'
     end
   end
 
