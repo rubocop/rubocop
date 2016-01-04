@@ -17,8 +17,7 @@ describe RuboCop::Cop::VariableForce::Locatable do
   end
 
   let(:ast) do
-    processed_source = RuboCop::ProcessedSource.new(source)
-    processed_source.ast
+    RuboCop::ProcessedSource.new(source, ruby_version).ast
   end
 
   let(:def_node) { ast.each_node.find(&:def_type?) }

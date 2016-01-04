@@ -22,7 +22,7 @@ describe RuboCop::Cop::VariableForce::Scope do
   end
 
   let(:ast) do
-    ast = RuboCop::ProcessedSource.new(source).ast
+    ast = RuboCop::ProcessedSource.new(source, ruby_version).ast
     RuboCop::Cop::VariableForce.wrap_with_top_level_scope_node(ast)
   end
 

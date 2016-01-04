@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::Lambda do
-  subject(:cop) { described_class.new }
+describe RuboCop::Cop::Style::Lambda, :config do
+  subject(:cop) { described_class.new(config) }
 
   it 'registers an offense for an old single-line lambda call' do
     inspect_source(cop, 'f = lambda { |x| x }')

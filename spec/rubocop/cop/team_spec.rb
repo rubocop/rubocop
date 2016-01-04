@@ -7,6 +7,7 @@ describe RuboCop::Cop::Team do
   let(:cop_classes) { RuboCop::Cop::Cop.non_rails }
   let(:config) { RuboCop::ConfigLoader.default_configuration }
   let(:options) { nil }
+  let(:ruby_version) { RuboCop::Config::KNOWN_RUBIES.last }
 
   describe '#autocorrect?' do
     subject { team.autocorrect? }
@@ -41,7 +42,8 @@ describe RuboCop::Cop::Team do
 
     let(:file_path) { '/tmp/example.rb' }
     let(:offenses) do
-      team.inspect_file(RuboCop::ProcessedSource.from_file(file_path))
+      source = RuboCop::ProcessedSource.from_file(file_path, ruby_version)
+      team.inspect_file(source)
     end
 
     before do
@@ -87,7 +89,8 @@ describe RuboCop::Cop::Team do
       end
 
       it 'does autocorrection' do
-        team.inspect_file(RuboCop::ProcessedSource.from_file(file_path))
+        source = RuboCop::ProcessedSource.from_file(file_path, ruby_version)
+        team.inspect_file(source)
         corrected_source = File.read(file_path)
         expect(corrected_source).to eq([
           '# encoding: utf-8',

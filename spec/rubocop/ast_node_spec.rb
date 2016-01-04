@@ -36,7 +36,7 @@ describe Astrolabe::Node do
   end
 
   describe '#value_used?' do
-    let(:node) { RuboCop::ProcessedSource.new(src).ast }
+    let(:node) { RuboCop::ProcessedSource.new(src, ruby_version).ast }
 
     before(:all) do
       module Astrolabe
@@ -142,7 +142,7 @@ describe Astrolabe::Node do
   end
 
   describe '#pure?' do
-    let(:node) { RuboCop::ProcessedSource.new(src).ast }
+    let(:node) { RuboCop::ProcessedSource.new(src, ruby_version).ast }
 
     context 'for a method call' do
       let(:src) { 'obj.method(arg1, arg2)' }

@@ -8,7 +8,10 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
   context 'configured to enforce ruby19 style' do
     context 'with SpaceAroundOperators enabled' do
       let(:config) do
-        RuboCop::Config.new('Style/HashSyntax' => {
+        RuboCop::Config.new('AllCops' => {
+                              'TargetRubyVersion' => ruby_version
+                            },
+                            'Style/HashSyntax' => {
                               'EnforcedStyle'   => 'ruby19',
                               'SupportedStyles' => %w(ruby19 hash_rockets),
                               'UseHashRocketsWithSymbolValues' => false
@@ -95,7 +98,10 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
 
     context 'with SpaceAroundOperators disabled' do
       let(:config) do
-        RuboCop::Config.new('Style/HashSyntax' => {
+        RuboCop::Config.new('AllCops' => {
+                              'TargetRubyVersion' => ruby_version
+                            },
+                            'Style/HashSyntax' => {
                               'EnforcedStyle'   => 'ruby19',
                               'SupportedStyles' => %w(ruby19 hash_rockets),
                               'UseHashRocketsWithSymbolValues' => false
@@ -188,12 +194,12 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
   end
 
   context 'configured to enforce hash rockets style' do
-    let(:config) do
-      RuboCop::Config.new('Style/HashSyntax' => {
-                            'EnforcedStyle' => 'hash_rockets',
-                            'SupportedStyles' => %w(ruby19 hash_rockets),
-                            'UseHashRocketsWithSymbolValues' => false
-                          })
+    let(:cop_config) do
+      {
+        'EnforcedStyle' => 'hash_rockets',
+        'SupportedStyles' => %w(ruby19 hash_rockets),
+        'UseHashRocketsWithSymbolValues' => false
+      }
     end
 
     it 'registers offense for Ruby 1.9 style' do
@@ -229,12 +235,12 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
     end
 
     context 'UseHashRocketsWithSymbolValues has no impact' do
-      let(:config) do
-        RuboCop::Config.new('Style/HashSyntax' => {
-                              'EnforcedStyle' => 'hash_rockets',
-                              'SupportedStyles' => %w(ruby19 hash_rockets),
-                              'UseHashRocketsWithSymbolValues' => true
-                            })
+      let(:cop_config) do
+        {
+          'EnforcedStyle' => 'hash_rockets',
+          'SupportedStyles' => %w(ruby19 hash_rockets),
+          'UseHashRocketsWithSymbolValues' => true
+        }
       end
 
       it 'does not register an offense when there is a symbol value' do

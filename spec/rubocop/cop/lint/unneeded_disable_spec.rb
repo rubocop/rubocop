@@ -10,7 +10,9 @@ describe RuboCop::Cop::Lint::UnneededDisable do
       cop.processed_source = processed_source
       cop
     end
-    let(:processed_source) { RuboCop::ProcessedSource.new(source) }
+    let(:processed_source) do
+      RuboCop::ProcessedSource.new(source, ruby_version)
+    end
     let(:comments) { processed_source.comments }
     let(:corrected_source) do
       RuboCop::Cop::Corrector
