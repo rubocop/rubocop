@@ -64,6 +64,7 @@
 * [#1725](https://github.com/bbatsov/rubocop/issues/1725): --color CLI option forces color output, even when not printing to a TTY. ([@alexdowad][])
 * [#2549](https://github.com/bbatsov/rubocop/issues/2549): New `ConsistentQuotesInMultiline` config param for `Style/StringLiterals` forces all literals which are concatenated using \ to use the same quote style. ([@alexdowad][])
 * [#2560](https://github.com/bbatsov/rubocop/issues/2560): `Style/AccessModifierIndentation`, `Style/CaseIndentation`, `Style/FirstParameterIndentation`, `Style/IndentArray`, `Style/IndentAssignment`, `Style/IndentHash`, `Style/MultilineMethodCallIndentation`, and `Style/MultilineOperationIndentation` all have a new `IndentationWidth` parameter which can be used to override the indentation width from `Style/IndentationWidth`. ([@alexdowad][])
+* Add new `Performance/HashEachMethods` cop. ([@ojab][])
 
 ### Bug Fixes
 
