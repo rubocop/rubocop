@@ -7,21 +7,22 @@ module RuboCop
       # Do not compute the size of statically sized objects.
       class FixedSize < Cop
         MSG = 'Do not compute the size of statically sized objects.'.freeze
-        COUNTERS = [:count, :length, :size].freeze
-        STATIC_SIZED_TYPES = [:array, :hash, :str, :sym].freeze
+
+        def_node_matcher :counter, <<-MATCHER
+          (send ${array hash str sym} {:count :length :size} $...)
+        MATCHER
 
         def on_send(node)
-          variable, method, arg = *node
-          return unless variable
-          return unless COUNTERS.include?(method)
-          return unless STATIC_SIZED_TYPES.include?(variable.type)
-          return if contains_splat?(variable)
-          return if contains_double_splat?(variable)
-          return if string_argument?(arg)
-          if node.parent
-            return if node.parent.casgn_type? || node.parent.block_type?
+          counter(node) do |variable, arg|
+            return if contains_splat?(variable)
+            return if contains_double_splat?(variable)
+            return if !arg.nil? && string_argument?(arg.first)
+            if node.parent
+              return if node.parent.casgn_type? || node.parent.block_type?
+            end
+
+            add_offense(node, :expression)
           end
-          add_offense(node, :expression)
         end
 
         private
