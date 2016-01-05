@@ -33,24 +33,13 @@ describe RuboCop::ProcessedSource do
       it "sets the file path to the instance's #path" do
         expect(processed_source.path).to eq(path)
       end
-
-      it 'aborts when parsing raises an error' do
-        allow_any_instance_of(described_class)
-          .to receive(:parse).and_raise(
-            Encoding::CompatibilityError.new('incompatible character encodings')
-          )
-        allow(described_class).to receive(:abort)
-          .with(/incompatible character encodings/).once
-
-        described_class.from_file(path, ruby_version)
-      end
     end
 
-    it 'aborts when the file does not exist' do
-      allow(described_class).to receive(:abort)
-        .with(/No such file or directory/).once
-
-      described_class.from_file('foo', ruby_version)
+    it 'raises RuboCop::Error when the file does not exist' do
+      expect do
+        described_class.from_file('foo', ruby_version)
+      end.to raise_error(RuboCop::Error)
+        .with_message(/No such file or directory/)
     end
   end
 

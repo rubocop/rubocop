@@ -17,9 +17,7 @@ module RuboCop
       file = File.read(path)
       new(file, ruby_version, path)
     rescue Errno::ENOENT
-      abort("#{Rainbow('rubocop: No such file or directory').red} -- #{path}")
-    rescue => ex
-      abort("#{Rainbow("rubocop: #{ex.message}").red} -- #{path}")
+      raise RuboCop::Error, "No such file or directory: #{path}"
     end
 
     def initialize(source, ruby_version, path = nil)
