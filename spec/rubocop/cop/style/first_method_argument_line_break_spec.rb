@@ -29,7 +29,7 @@ describe RuboCop::Cop::Style::FirstMethodArgumentLineBreak do
     end
   end
 
-  context 'arg spanning multiple lines' do
+  context 'hash arg spanning multiple lines' do
     let(:source) do
       ['something(3, bar: 1,',
        'baz: 2)']
@@ -49,6 +49,30 @@ describe RuboCop::Cop::Style::FirstMethodArgumentLineBreak do
       expect(new_source).to eq(
         "something(\n" \
         "3, bar: 1,\n" \
+        'baz: 2)')
+    end
+  end
+
+  context 'hash arg without a line break before the first pair' do
+    let(:source) do
+      ['something(bar: 1,',
+       'baz: 2)']
+    end
+
+    it 'detects the offense' do
+      inspect_source(cop, source)
+
+      expect(cop.offenses.length).to eq(1)
+      expect(cop.offenses.first.line).to eq(1)
+      expect(cop.highlights).to eq(['bar: 1'])
+    end
+
+    it 'autocorrects the offense' do
+      new_source = autocorrect_source(cop, source)
+
+      expect(new_source).to eq(
+        "something(\n" \
+        "bar: 1,\n" \
         'baz: 2)')
     end
   end
