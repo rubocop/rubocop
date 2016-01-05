@@ -323,7 +323,7 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
                                 'end'].join("\n"))
     end
 
-    context 'ruby >= 2.0', ruby_greater_than_or_equal: 2.0 do
+    context 'ruby >= 2.0', :ruby20 do
       it 'corrects splat on array literals using %i' do
         new_source = autocorrect_source(cop, ['case foo',
                                               'when *%i(first second)',
