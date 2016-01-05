@@ -24,6 +24,8 @@ module RuboCop
       before(:each) do
         $stderr = StringIO.new
         $stdout = StringIO.new
+        # Avoid intermittent failure when another test set ConfigLoader options
+        ConfigLoader.clear_options
       end
       after(:each) do
         $stderr = STDERR
