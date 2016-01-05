@@ -6,7 +6,7 @@ module RuboCop
     module StringLiteralsHelp
       include StringHelp
 
-      def wrong_quotes?(node, style)
+      def wrong_quotes?(node)
         src = node.source
         return false if src.start_with?('%', '?')
         if style == :single_quotes
