@@ -10,7 +10,9 @@ describe RuboCop::Cop::Lint::UnneededDisable do
       cop.processed_source = processed_source
       cop
     end
-    let(:processed_source) { RuboCop::ProcessedSource.new(source) }
+    let(:processed_source) do
+      RuboCop::ProcessedSource.new(source, ruby_version)
+    end
     let(:comments) { processed_source.comments }
     let(:corrected_source) do
       RuboCop::Cop::Corrector
@@ -153,6 +155,35 @@ describe RuboCop::Cop::Lint::UnneededDisable do
             end
           end
 
+          context 'multiple cops, and the leftmost one has no offenses' do
+            let(:source) do
+              '# rubocop:disable Metrics/ClassLength, Metrics/MethodLength'
+            end
+            let(:cop_disabled_line_ranges) do
+              { 'Metrics/ClassLength' => [1..Float::INFINITY],
+                'Metrics/MethodLength' => [1..Float::INFINITY] }
+            end
+            let(:offenses) do
+              [
+                RuboCop::Cop::Offense.new(:convention,
+                                          OpenStruct.new(line: 7, column: 0),
+                                          'Method has too many lines.',
+                                          'Metrics/MethodLength')
+              ]
+            end
+
+            it 'returns an offense' do
+              expect(cop.messages)
+                .to eq(['Unnecessary disabling of `Metrics/ClassLength`.'])
+              expect(cop.highlights).to eq(['Metrics/ClassLength'])
+            end
+
+            it 'autocorrects' do
+              expect(corrected_source).to eq(
+                '# rubocop:disable Metrics/MethodLength')
+            end
+          end
+
           context 'multiple cops, with abbreviated names' do
             context 'one of them has offenses' do
               let(:source) do
@@ -177,6 +208,33 @@ describe RuboCop::Cop::Lint::UnneededDisable do
                   .to eq(['Unnecessary disabling of `Metrics/ClassLength`.',
                           'Unnecessary disabling of `Lint/Debugger`.'])
                 expect(cop.highlights).to eq(%w(ClassLength Debugger))
+              end
+            end
+          end
+
+          context 'comment is not at the beginning of the file' do
+            context 'and not all cops have offenses' do
+              let(:source) do
+                ['puts 1',
+                 '# rubocop:disable MethodLength, ClassLength'].join("\n")
+              end
+              let(:cop_disabled_line_ranges) do
+                { 'Metrics/ClassLength' => [2..Float::INFINITY],
+                  'Metrics/MethodLength' => [2..Float::INFINITY] }
+              end
+              let(:offenses) do
+                [
+                  RuboCop::Cop::Offense.new(:convention,
+                                            OpenStruct.new(line: 7, column: 0),
+                                            'Method has too many lines.',
+                                            'Metrics/MethodLength')
+                ]
+              end
+
+              it 'registers an offense' do
+                expect(cop.messages).to eq(
+                  ['Unnecessary disabling of `Metrics/ClassLength`.'])
+                expect(cop.highlights).to eq(['ClassLength'])
               end
             end
           end

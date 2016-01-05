@@ -31,10 +31,10 @@ module RuboCop
 
           if ternary_op?(args.first)
             check_ternary(args.first, node)
-          else
+          elsif predicate?(method_name)
             # We're only checking predicate methods. There would be false
             # positives otherwise.
-            check_send(args.last, node) if predicate?(method_name)
+            check_send(args.last, node)
           end
         end
 

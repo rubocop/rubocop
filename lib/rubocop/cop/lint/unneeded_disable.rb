@@ -58,12 +58,9 @@ module RuboCop
             else
               # is there any cop between this one and the end of the line, which
               # is NOT being removed?
-              if ranges
-                 .drop_while { |r| !r.equal?(range) }
-                 .each_cons(2)
-                 .map { |r1, r2| r1.end.join(r2.begin).source }
-                 .all? { |intervening| intervening =~ /\A\s*,\s*\Z/ }
-                # this is a trailing cop, so eat the comma on the left
+
+              if ends_its_line?(ranges.last) && trailing_range?(ranges, range)
+                # eat the comma on the left
                 range = range_with_surrounding_space(range, :left)
                 range = range_with_surrounding_comma(range, :left)
               end
@@ -136,8 +133,17 @@ module RuboCop
         def matching_range(haystack, needle)
           offset = (haystack.source =~ Regexp.new(Regexp.escape(needle)))
           return unless offset
+          offset += haystack.begin_pos
           Parser::Source::Range.new(haystack.source_buffer, offset,
                                     offset + needle.size)
+        end
+
+        def trailing_range?(ranges, range)
+          ranges
+            .drop_while { |r| !r.equal?(range) }
+            .each_cons(2)
+            .map { |r1, r2| r1.end.join(r2.begin).source }
+            .all? { |intervening| intervening =~ /\A\s*,\s*\Z/ }
         end
 
         def describe(cop)

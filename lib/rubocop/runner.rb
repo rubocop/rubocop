@@ -80,21 +80,14 @@ module RuboCop
 
       cache = ResultCache.new(file, @options, @config_store) if cached_run?
       if cache && cache.valid?
-        offenses, disabled_line_ranges, comments = cache.load
+        offenses = cache.load
       else
         source = get_processed_source(file)
-        # Use delegators for objects sent to the formatters. These can be
-        # updated when the file is re-inspected.
-        disabled_line_ranges = SimpleDelegator.new(source.disabled_line_ranges)
-        comments = SimpleDelegator.new(source.comments)
-
-        offenses = do_inspection_loop(file, source,
-                                      disabled_line_ranges, comments)
-        save_in_cache(cache, offenses, source)
+        source, offenses = do_inspection_loop(file, source)
+        offenses = add_unneeded_disables(file, offenses.compact.sort, source)
+        save_in_cache(cache, offenses)
       end
 
-      offenses = add_unneeded_disables(file, offenses.compact.sort,
-                                       disabled_line_ranges, comments).freeze
       formatter_set.file_finished(file, offenses)
       offenses
     rescue InfiniteCorrectionLoop => e
@@ -102,20 +95,20 @@ module RuboCop
       raise
     end
 
-    def add_unneeded_disables(file, offenses, disabled_ranges, comments)
-      if disabled_ranges.any? &&
+    def add_unneeded_disables(file, offenses, source)
+      if source.disabled_line_ranges.any? &&
          # Don't check unneeded disable if --only or --except option is
          # given, because these options override configuration.
          (@options[:except] || []).empty? && (@options[:only] || []).empty?
         config = @config_store.for(file)
         if config['Lint/UnneededDisable']['Enabled']
           cop = Cop::Lint::UnneededDisable.new(config, @options)
-          cop.check(offenses, disabled_ranges, comments)
+          cop.check(offenses, source.disabled_line_ranges, source.comments)
           offenses += cop.offenses
         end
       end
 
-      offenses.sort.reject(&:disabled?)
+      offenses.sort.reject(&:disabled?).freeze
     end
 
     def file_started(file)
@@ -139,19 +132,17 @@ module RuboCop
         !@options[:stdin]
     end
 
-    def save_in_cache(cache, offenses, processed_source)
+    def save_in_cache(cache, offenses)
       return unless cache
       # Caching results when a cop has crashed would prevent the crash in the
       # next run, since the cop would not be called then. We want crashes to
       # show up the same in each run.
       return if errors.any? || warnings.any?
 
-      cache.save(offenses, processed_source.disabled_line_ranges,
-                 processed_source.comments)
+      cache.save(offenses)
     end
 
-    def do_inspection_loop(file, processed_source, disabled_line_ranges,
-                           comments)
+    def do_inspection_loop(file, processed_source)
       offenses = []
 
       # Keep track of the state of the source. If a cop modifies the source
@@ -178,13 +169,9 @@ module RuboCop
         break unless updated_source_file
 
         processed_source = get_processed_source(file)
-
-        # Update delegators with new objects.
-        disabled_line_ranges.__setobj__(processed_source.disabled_line_ranges)
-        comments.__setobj__(processed_source.comments)
       end
 
-      offenses
+      [processed_source, offenses]
     end
 
     # Check whether a run created source identical to a previous run, which
@@ -248,7 +235,7 @@ module RuboCop
 
     def formatter_set
       @formatter_set ||= begin
-        set = Formatter::FormatterSet.new
+        set = Formatter::FormatterSet.new(@options)
         pairs = @options[:formatters] || [['progress']]
         pairs.each do |formatter_key, output_path|
           set.add_formatter(formatter_key, output_path)

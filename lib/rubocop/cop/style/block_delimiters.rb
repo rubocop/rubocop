@@ -33,7 +33,7 @@ module RuboCop
         private
 
         def line_count_based_message(node)
-          block_length = Util.block_length(node)
+          block_length = block_length(node)
 
           if block_length > 0
             'Avoid using `{...}` for multi-line blocks.'
@@ -53,7 +53,7 @@ module RuboCop
         end
 
         def braces_for_chaining_message(node)
-          block_length = Util.block_length(node)
+          block_length = block_length(node)
 
           if block_length > 0
             if return_value_chaining?(node)
@@ -119,7 +119,7 @@ module RuboCop
         end
 
         def line_count_based_block_style?(node)
-          block_length = Util.block_length(node)
+          block_length = block_length(node)
           block_begin = node.loc.begin.source
 
           if block_length > 0
@@ -143,7 +143,7 @@ module RuboCop
         end
 
         def braces_for_chaining_style?(node)
-          block_length = Util.block_length(node)
+          block_length = block_length(node)
           block_begin = node.loc.begin.source
 
           block_begin == if block_length > 0

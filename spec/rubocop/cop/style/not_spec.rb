@@ -2,8 +2,8 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::Not do
-  subject(:cop) { described_class.new }
+describe RuboCop::Cop::Style::Not, :config do
+  subject(:cop) { described_class.new(config) }
 
   it 'registers an offense for not' do
     inspect_source(cop, 'not test')

@@ -5,7 +5,8 @@ require 'spec_helper'
 describe RuboCop::ProcessedSource do
   include FileHelper
 
-  subject(:processed_source) { described_class.new(source, nil, path) }
+  subject(:processed_source) { described_class.new(source, ruby_version, path) }
+  let(:ruby_version) { RuboCop::Config::KNOWN_RUBIES.last }
 
   let(:source) { <<-END.strip_indent }
     # encoding: utf-8
@@ -23,7 +24,7 @@ describe RuboCop::ProcessedSource do
         create_file(path, 'foo')
       end
 
-      let(:processed_source) { described_class.from_file(path) }
+      let(:processed_source) { described_class.from_file(path, ruby_version) }
 
       it 'returns an instance of ProcessedSource' do
         expect(processed_source).to be_a(described_class)
@@ -41,7 +42,7 @@ describe RuboCop::ProcessedSource do
         allow(described_class).to receive(:abort)
           .with(/incompatible character encodings/).once
 
-        described_class.from_file(path)
+        described_class.from_file(path, ruby_version)
       end
     end
 
@@ -49,7 +50,7 @@ describe RuboCop::ProcessedSource do
       allow(described_class).to receive(:abort)
         .with(/No such file or directory/).once
 
-      described_class.from_file('foo')
+      described_class.from_file('foo', ruby_version)
     end
   end
 

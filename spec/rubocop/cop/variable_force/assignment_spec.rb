@@ -6,8 +6,7 @@ describe RuboCop::Cop::VariableForce::Assignment do
   include AST::Sexp
 
   let(:ast) do
-    processed_source = RuboCop::ProcessedSource.new(source)
-    processed_source.ast
+    RuboCop::ProcessedSource.new(source, ruby_version).ast
   end
 
   let(:source) do

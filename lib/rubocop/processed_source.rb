@@ -13,7 +13,7 @@ module RuboCop
     attr_reader :path, :buffer, :ast, :comments, :tokens, :diagnostics,
                 :parser_error, :raw_source
 
-    def self.from_file(path, ruby_version = nil)
+    def self.from_file(path, ruby_version)
       file = File.read(path)
       new(file, ruby_version, path)
     rescue Errno::ENOENT
@@ -22,9 +22,7 @@ module RuboCop
       abort("#{Rainbow("rubocop: #{ex.message}").red} -- #{path}")
     end
 
-    def initialize(source, ruby_version = nil, path = nil)
-      ruby_version ||= RUBY_VERSION[0..2]
-
+    def initialize(source, ruby_version, path = nil)
       # In Ruby 2, source code encoding defaults to UTF-8. We follow the same
       # principle regardless of which Ruby version we're running under.
       # Encoding comments will override this setting.
@@ -98,20 +96,20 @@ module RuboCop
     end
 
     def parser_class(ruby_version)
-      case ruby_version.to_s
-      when '1.9'
+      case ruby_version
+      when 1.9
         require 'parser/ruby19'
         Parser::Ruby19
-      when '2.0'
+      when 2.0
         require 'parser/ruby20'
         Parser::Ruby20
-      when '2.1'
+      when 2.1
         require 'parser/ruby21'
         Parser::Ruby21
-      when '2.2'
+      when 2.2
         require 'parser/ruby22'
         Parser::Ruby22
-      when '2.3'
+      when 2.3
         require 'parser/ruby23'
         Parser::Ruby23
       else

@@ -32,6 +32,22 @@ describe RuboCop::Cop::Performance::RedundantMerge do
     end
   end
 
+  %w(if unless while until).each do |kw|
+    context "when there is a modifier #{kw}, and more than 1 pair" do
+      it "autocorrects it to an #{kw} block" do
+        new_source = autocorrect_source(
+          cop,
+          ['hash = {}',
+           "hash.merge!(a: 1, b: 2) #{kw} condition1 && condition2"])
+        expect(new_source).to eq(['hash = {}',
+                                  "#{kw} condition1 && condition2",
+                                  '  hash[:a] = 1',
+                                  '  hash[:b] = 2',
+                                  'end'].join("\n"))
+      end
+    end
+  end
+
   it "doesn't register an error when return value is used" do
     inspect_source(cop, ['variable = hash.merge!(a: 1)',
                          'puts variable'])

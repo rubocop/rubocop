@@ -80,6 +80,46 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
     include_examples 'misaligned', '', 'puts 1; case a when b', '', '  end'
   end
 
+  context 'when AlignWith is variable' do
+    # same as 'AlignWith' => 'keyword', as long as assignments or `case`
+    # are not involved
+    let(:cop_config) do
+      { 'AlignWith' => 'variable', 'AutoCorrect' => true }
+    end
+
+    include_examples 'misaligned', '', 'class',  'Test',      '  end'
+    include_examples 'misaligned', '', 'module', 'Test',      '  end'
+    include_examples 'misaligned', '', 'if',     'test',      '  end'
+    include_examples 'misaligned', '', 'unless', 'test',      '  end'
+    include_examples 'misaligned', '', 'while',  'test',      '  end'
+    include_examples 'misaligned', '', 'until',  'test',      '  end'
+    include_examples 'misaligned', '', 'case',   'a when b',  '  end'
+
+    include_examples 'aligned', 'class',  'Test',      'end'
+    include_examples 'aligned', 'module', 'Test',      'end'
+    include_examples 'aligned', 'if',     'test',      'end'
+    include_examples 'aligned', 'unless', 'test',      'end'
+    include_examples 'aligned', 'while',  'test',      'end'
+    include_examples 'aligned', 'until',  'test',      'end'
+    include_examples 'aligned', 'case',   'a when b',  'end'
+
+    include_examples 'misaligned', 'puts 1; ', 'class',  'Test',      'end'
+    include_examples 'misaligned', 'puts 1; ', 'module', 'Test',      'end'
+    include_examples 'misaligned', 'puts 1; ', 'if',     'test',      'end'
+    include_examples 'misaligned', 'puts 1; ', 'unless', 'test',      'end'
+    include_examples 'misaligned', 'puts 1; ', 'while',  'test',      'end'
+    include_examples 'misaligned', 'puts 1; ', 'until',  'test',      'end'
+    include_examples 'misaligned', 'puts 1; ', 'case',   'a when b',  'end'
+
+    include_examples 'aligned', 'puts 1; class',  'Test',     '        end'
+    include_examples 'aligned', 'puts 1; module', 'Test',     '        end'
+    include_examples 'aligned', 'puts 1; if',     'Test',     '        end'
+    include_examples 'aligned', 'puts 1; unless', 'Test',     '        end'
+    include_examples 'aligned', 'puts 1; while',  'Test',     '        end'
+    include_examples 'aligned', 'puts 1; until',  'Test',     '        end'
+    include_examples 'aligned', 'puts 1; case',   'a when b', '        end'
+  end
+
   context 'correct + opposite' do
     let(:source) do
       ['x = if a',
@@ -207,6 +247,17 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
       include_examples 'aligned', 'var += if',  'test', 'end'
       include_examples 'aligned', 'h[k] = if',  'test', 'end'
       include_examples 'aligned', 'h.k = if',   'test', 'end'
+
+      include_examples 'misaligned', '', '@var = if',  'test',    '      end'
+      include_examples 'misaligned', '', '@@var = if', 'test',    '      end'
+      include_examples 'misaligned', '', '$var = if',  'test',    '      end'
+      include_examples 'misaligned', '', 'CNST = if',  'test',    '      end'
+      include_examples 'misaligned', '', 'a, b = if',  'test',    '      end'
+      include_examples 'misaligned', '', 'var ||= if', 'test',    '      end'
+      include_examples 'misaligned', '', 'var &&= if', 'test',    '      end'
+      include_examples 'misaligned', '', 'var += if',  'test',    '      end'
+      include_examples 'misaligned', '', 'h[k] = if',  'test',    '      end'
+      include_examples 'misaligned', '', 'h.k = if',   'test',    '      end'
     end
   end
 

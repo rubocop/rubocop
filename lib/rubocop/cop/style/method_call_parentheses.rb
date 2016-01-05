@@ -16,6 +16,7 @@ module RuboCop
           return if method_name =~ /\A[A-Z]/
           return unless args.empty? && node.loc.begin
           return if same_name_assignment?(node)
+          return if lambda_call_syntax?(node)
 
           add_offense(node, :begin)
         end
@@ -48,6 +49,11 @@ module RuboCop
 
             asgn_node.loc.name.source == method_name.to_s
           end
+        end
+
+        # don't check `lambda.()` syntax; the Style/LambdaCall cop does that
+        def lambda_call_syntax?(node)
+          node.method_name == :call && node.loc.selector.nil?
         end
       end
     end

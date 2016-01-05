@@ -97,6 +97,7 @@ module RuboCop
         def check_other_alignment(node)
           align_with = {
             keyword: node.loc.keyword,
+            variable: node.loc.keyword,
             start_of_line: start_line_range(node)
           }
           check_end_kw_alignment(node, align_with)
@@ -111,7 +112,9 @@ module RuboCop
             node
           elsif style == :variable
             return node.parent if argument_case?(node)
-            node.each_ancestor(:lvasgn).first
+            # Fall back to 'keyword' style if this node is not on the RHS
+            # of an assignment
+            node.ancestors.find(&:assignment?) || node
           else
             start_line_range(node)
           end

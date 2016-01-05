@@ -6,6 +6,7 @@ AllCops:
   Exclude:
     - 'vendor/**/*'
     - 'spec/fixtures/**/*'
+  TargetRubyVersion: 1.9
 
 Style/Encoding:
   Enabled: true

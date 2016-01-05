@@ -25,6 +25,12 @@ describe RuboCop::Cop::Style::MethodCallParentheses do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts special lambda call syntax' do
+    # Style/LambdaCall checks for this syntax
+    inspect_source(cop, 'thing.()')
+    expect(cop.offenses).to be_empty
+  end
+
   context 'assignment to a variable with the same name' do
     it 'accepts parens in local variable assignment ' do
       inspect_source(cop, 'test = test()')

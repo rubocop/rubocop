@@ -90,7 +90,7 @@ Usage: rubocop [options] [file1, file2, ...]
     -R, --rails                      Run extra Rails cops.
     -l, --lint                       Run only lint cops.
     -a, --auto-correct               Auto-correct offenses.
-    -n, --no-color                   Disable color output.
+    -n, --[no-]color                 Force color output on or off.
     -v, --version                    Display version.
     -V, --verbose-version            Display verbose version.
     -s, --stdin                      Pipe source from STDIN.

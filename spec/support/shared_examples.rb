@@ -40,7 +40,8 @@ shared_examples_for 'misaligned' do |prefix, alignment_base, arg, end_kw, name|
   it "registers an offense for mismatched #{name} ... end" do
     inspect_source(cop, source)
     expect(cop.offenses.size).to eq(1)
-    regexp = /`end` at 2, \d+ is not aligned with `#{alignment_base}` at 1,/
+    base_regexp = Regexp.escape(alignment_base)
+    regexp = /`end` at 2, \d+ is not aligned with `#{base_regexp}` at 1,/
     expect(cop.messages.first).to match(regexp)
     expect(cop.highlights.first).to eq('end')
 

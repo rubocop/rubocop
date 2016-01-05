@@ -11,7 +11,7 @@ module RuboCop
       class SingleLineBlockParams < Cop
         def on_block(node)
           # we care only for single line blocks
-          return unless Util.block_length(node) == 0
+          return unless block_length(node) == 0
 
           method_node, args_node, _body_node = *node
           receiver, method_name, _method_args = *method_node

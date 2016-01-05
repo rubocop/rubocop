@@ -11,8 +11,10 @@ module RuboCop
         end
       end
 
+      let(:options) { {} }
+
       let(:formatter) do
-        formatter_class.new(output)
+        formatter_class.new(output, options)
       end
 
       let(:output) { double('output') }
@@ -46,7 +48,7 @@ module RuboCop
               allow(output).to receive(:tty?).and_return(true)
             end
 
-            it 'colorize the passed string' do
+            it 'colorizes the passed string' do
               is_expected.to eq("\e[31mfoo\e[0m")
             end
           end
@@ -57,6 +59,18 @@ module RuboCop
             end
 
             include_examples 'does nothing'
+          end
+
+          context 'and output is not a tty, but --color option was provided' do
+            let(:options) { { color: true } }
+
+            before do
+              allow(output).to receive(:tty?).and_return(false)
+            end
+
+            it 'colorizes the passed string' do
+              is_expected.to eq("\e[31mfoo\e[0m")
+            end
           end
         end
 

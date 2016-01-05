@@ -105,8 +105,8 @@ module RuboCop
 
           if style == :percent
             @smallest_percent = ary_size if ary_size < @smallest_percent
-          else
-            @largest_brackets = ary_size if ary_size > @largest_brackets
+          elsif ary_size > @largest_brackets
+            @largest_brackets = ary_size
           end
 
           if cfg['EnforcedStyle'] == style.to_s

@@ -57,6 +57,8 @@
 * [#1545](https://github.com/bbatsov/rubocop/issues/1545): New `Regex` config parameter for `Style/FileName` allows user to provide their own regex for validating file names. ([@alexdowad][])
 * [#2253](https://github.com/bbatsov/rubocop/issues/2253): New `DefaultFormatter` config parameter can be used to set formatter from within .rubocop.yml. ([@alexdowad][])
 * [#2481](https://github.com/bbatsov/rubocop/issues/2481): New `WorstOffendersFormatter` prints a list of files with offenses (and offense counts), showing the files with the most offenses first. ([@alexdowad][])
+* New `IfInsideElse` cop catches `if..end` nodes which can be converted into an `elsif` instead, reducing the nesting level. ([@alexdowad][])
+* [#1725](https://github.com/bbatsov/rubocop/issues/1725): --color CLI option forces color output, even when not printing to a TTY. ([@alexdowad][])
 
 ### Bug Fixes
 
@@ -102,6 +104,11 @@
 * [#2552](https://github.com/bbatsov/rubocop/issues/2552): `Style/Encoding` can auto-correct files with a blank first line. ([@alexdowad][])
 * [#2556](https://github.com/bbatsov/rubocop/issues/2556): `Style/SpecialGlobalVariables` generates auto-config correctly. ([@alexdowad][])
 * [#2565](https://github.com/bbatsov/rubocop/issues/2565): Let `Style/SpaceAroundOperators` leave spacing around `=>` to `Style/AlignHash`. ([@jonas054][])
+* [#2569](https://github.com/bbatsov/rubocop/issues/2569): `Style/MethodCallParentheses` doesn't register warnings for `object.()` syntax, since it is handled by `Style/LambdaCall`. ([@alexdowad][])
+* [#2570](https://github.com/bbatsov/rubocop/issues/2570): `Performance/RedundantMerge` doesn't break code with a modifier `if` when autocorrecting. ([@alexdowad][])
+* `Performance/RedundantMerge` doesn't break code with a modifier `while` or `until` when autocorrecting. ([@alexdowad][])
+* [#2574](https://github.com/bbatsov/rubocop/issues/2574): `variable` style for `Lint/EndAlignment` is working again. ([@alexdowad][])
+* `Lint/EndAlignment` can autocorrect offenses on the RHS of an assignment to an instance variable, class variable, constant, and so on; previously, it only worked if the LHS was a local variable. ([@alexdowad][])
 
 ### Changes
 
@@ -122,6 +129,7 @@
 * [#2102](https://github.com/bbatsov/rubocop/issues/2102): If .rubocop.yml exists in the working directory when running --auto-gen-config, any `Exclude` config parameters in .rubocop.yml will be merged into the generated .rubocop_todo.yml. ([@alexdowad][])
 * [#1895](https://github.com/bbatsov/rubocop/issues/1895): Remove `Rails/DefaultScope` cop. ([@alexdowad][])
 * [#2550](https://github.com/bbatsov/rubocop/issues/2550): New `TargetRubyVersion` configuration parameter can be used to specify which version of the Ruby interpreter the inspected code is intended to run on. ([@alexdowad][])
+* [#2557](https://github.com/bbatsov/rubocop/issues/2557): `Style/GuardClause` does not warn about `if` nodes whose condition spans multiple lines. ([@alexdowad][])
 
 ## 0.35.1 (10/11/2015)
 

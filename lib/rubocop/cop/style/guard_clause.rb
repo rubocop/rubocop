@@ -43,8 +43,8 @@ module RuboCop
         MSG = 'Use a guard clause instead of wrapping the code inside a ' \
               'conditional expression.'
 
-        def_node_matcher :control_flow_exit?, <<-PATTERN
-          {(send nil {:raise :fail} ...) return break next}
+        def_node_matcher :single_line_control_flow_exit?, <<-PATTERN
+          [{(send nil {:raise :fail} ...) return break next} single_line?]
         PATTERN
 
         def on_def(node)
@@ -60,14 +60,15 @@ module RuboCop
         end
 
         def on_if(node)
-          _cond, body, else_body = *node
+          cond, body, else_body = *node
 
           return unless body && else_body
           # discard modifier ifs and ternary_ops
           return if modifier_if?(node) || ternary_op?(node) || elsif?(node)
 
-          return unless control_flow_exit?(body) ||
-                        control_flow_exit?(else_body)
+          return unless single_line_control_flow_exit?(body) ||
+                        single_line_control_flow_exit?(else_body)
+          return if cond.multiline?
           return if line_too_long_when_corrected?(node)
 
           add_offense(node, :keyword, MSG)
@@ -84,11 +85,12 @@ module RuboCop
         end
 
         def check_trailing_if(node)
-          _cond, body, else_body = *node
+          cond, body, else_body = *node
 
           return if body && else_body
           # discard modifier ifs and ternary_ops
           return if modifier_if?(node) || ternary_op?(node)
+          return if cond.multiline?
           # discard short ifs
           return unless min_body_length?(node)
           return if line_too_long_when_corrected?(node)
@@ -99,7 +101,7 @@ module RuboCop
         def line_too_long_when_corrected?(node)
           cond, body, else_body = *node
 
-          if control_flow_exit?(body) || else_body.nil?
+          if single_line_control_flow_exit?(body) || !else_body
             line_too_long?(node, body, 'if', cond)
           else
             line_too_long?(node, else_body, 'unless', cond)
