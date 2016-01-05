@@ -111,8 +111,7 @@ module RuboCop
             cond, if_body, = *node
 
             opposite_kw = if_body.nil? ? 'if' : 'unless'
-            next_code = 'next ' << opposite_kw << ' ' <<
-                        cond.source
+            next_code = "next #{opposite_kw} #{cond.source}"
             corrector.insert_before(node.source_range, next_code)
 
             corrector.remove(cond_range(node, cond))

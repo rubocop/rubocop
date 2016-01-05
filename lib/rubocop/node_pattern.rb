@@ -279,19 +279,17 @@ module RuboCop
       end
 
       def compile_capture(tokens, cur_node, seq_head)
-        "(#{next_capture} = #{cur_node}#{'.type' if seq_head}; " <<
-          compile_expr(tokens, cur_node, seq_head) <<
-          ')'
+        "(#{next_capture} = #{cur_node}#{'.type' if seq_head}; " \
+          "#{compile_expr(tokens, cur_node, seq_head)})"
       end
 
       def compile_negation(tokens, cur_node, seq_head)
-        '(!' << compile_expr(tokens, cur_node, seq_head) << ')'
+        "(!#{compile_expr(tokens, cur_node, seq_head)})"
       end
 
       def compile_ascend(tokens, cur_node, seq_head)
-        "(#{cur_node}.parent && " <<
-          compile_expr(tokens, "#{cur_node}.parent", seq_head) <<
-          ')'
+        "(#{cur_node}.parent && " \
+          "#{compile_expr(tokens, "#{cur_node}.parent", seq_head)})"
       end
 
       def compile_wildcard(cur_node, name, seq_head)
@@ -375,7 +373,7 @@ module RuboCop
       end
 
       def join_terms(init, terms, operator)
-        '(' << init << ';' << terms.join(operator) << ')'
+        "(#{init};#{terms.join(operator)})"
       end
 
       def emit_capture_list
@@ -398,7 +396,7 @@ module RuboCop
 
       def emit_trailing_params
         params = emit_param_list
-        params.empty? ? '' : ',' << params
+        params.empty? ? '' : ",#{params}"
       end
 
       def emit_method_code
@@ -424,11 +422,9 @@ module RuboCop
       # return the captures, or `true` if there were none.
       def def_node_matcher(method_name, pattern_str)
         compiler = RuboCop::NodePattern::Compiler.new(pattern_str, 'node')
-        src = "def #{method_name}(node" <<
-              compiler.emit_trailing_params <<
-              ');' <<
-              compiler.emit_method_code <<
-              ';end'
+        src = "def #{method_name}(node" \
+              "#{compiler.emit_trailing_params});" \
+              "#{compiler.emit_method_code};end"
 
         file, lineno = *caller.first.split(':')
         class_eval(src, file, lineno.to_i)
@@ -477,11 +473,8 @@ module RuboCop
 
     def initialize(str)
       compiler = Compiler.new(str)
-      src = 'def match(node0' <<
-            compiler.emit_trailing_params <<
-            ');' <<
-            compiler.emit_method_code <<
-            'end'
+      src = "def match(node0#{compiler.emit_trailing_params});" \
+            "#{compiler.emit_method_code}end"
       instance_eval(src)
     end
   end

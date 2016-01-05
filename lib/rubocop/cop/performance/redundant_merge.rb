@@ -38,7 +38,7 @@ module RuboCop
               if parent && pairs.size > 1
                 if modifier_flow_control(parent)
                   cond, = *parent
-                  padding = "\n" << (' ' * indent_width)
+                  padding = "\n#{' ' * indent_width}"
                   new_source.gsub!(/\n/, padding)
                   new_source = parent.loc.keyword.source << ' ' <<
                                cond.source << padding << leading_spaces(node) <<
@@ -59,7 +59,7 @@ module RuboCop
           pairs.map do |pair|
             key, value = *pair
             key_src = if key.sym_type? && !key.source.start_with?(':')
-                        ':' << key.source
+                        ":#{key.source}"
                       else
                         key.source
                       end

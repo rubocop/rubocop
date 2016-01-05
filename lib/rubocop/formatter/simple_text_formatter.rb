@@ -86,7 +86,7 @@ module RuboCop
 
       def message(offense)
         message = offense.corrected? ? green('[Corrected] ') : ''
-        message << annotate_message(offense.message)
+        "#{message}#{annotate_message(offense.message)}"
       end
 
       # A helper class for building the report summary text.
