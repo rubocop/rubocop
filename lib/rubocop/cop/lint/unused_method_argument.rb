@@ -18,10 +18,9 @@ module RuboCop
           return if variable.keyword_argument? &&
                     cop_config['AllowUnusedKeywordArguments']
 
-          if cop_config['IgnoreEmptyMethods']
-            _name, _args, body = *variable.scope.node
-            return if body.nil?
-          end
+          _name, _args, body = *variable.scope.node
+          return if cop_config['IgnoreEmptyMethods'] && body.nil?
+          return if variable.name == :block && yield_called?(body)
 
           super
         end
@@ -44,6 +43,15 @@ module RuboCop
           end
 
           message
+        end
+
+        private
+
+        def yield_called?(node)
+          return false if node.nil?
+          return true if node.respond_to?(:yield_type?) && node.yield_type?
+          return true if node.each_node(:yield).any?
+          false
         end
       end
     end

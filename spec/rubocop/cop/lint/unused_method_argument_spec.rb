@@ -223,6 +223,91 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
         end
       end
     end
+
+    context 'in a method calling `yield`' do
+      context 'when the method only calls yield' do
+        let(:source) { <<-END }
+          def some_method(&block)
+            yield
+          end
+        END
+
+        it 'accepts &block' do
+          expect(cop.offenses).to be_empty
+        end
+      end
+
+      context 'when the method uselessly assigns the result of yield' do
+        let(:source) { <<-END }
+          def some_method(&block)
+            result = yield
+          end
+        END
+
+        it 'accepts &block' do
+          expect(cop.offenses).to be_empty
+        end
+      end
+
+      context 'when the method does things other than calling yield' do
+        context 'when other arguments are used' do
+          let(:source) { <<-END }
+            def some_method(foo, &block)
+              something(foo)
+              yield
+              something_else
+            end
+          END
+
+          it 'accepts &block' do
+            expect(cop.offenses).to be_empty
+          end
+        end
+
+        context 'when other arguments are not used' do
+          let(:source) { <<-END }
+            def some_method(foo, &block)
+              something
+              yield
+              something_else
+            end
+          END
+
+          it 'accepts &block' do
+            expect(cop.offenses.first.line).to eq(1)
+            expect(cop.highlights).to eq(['foo'])
+          end
+        end
+      end
+
+      context 'when the method calls yield with an argument' do
+        let(:source) { <<-END }
+          def some_method(foo, &block)
+            something
+            yield(foo)
+            something_else
+          end
+        END
+
+        it 'accepts &block' do
+          expect(cop.offenses).to be_empty
+        end
+      end
+
+      context 'when the method assigns the return of yield to a variable' do
+        let(:source) { <<-END }
+          def some_method(foo, &block)
+            something(foo)
+            result = yield
+            something_else(result)
+          end
+        END
+
+        it 'accepts &block' do
+          expect(cop.offenses).to be_empty
+        end
+      end
+    end
   end
 
   describe 'auto-correction' do
