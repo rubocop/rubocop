@@ -59,6 +59,11 @@ module RuboCop
           _string, method, first_param, second_param = *node
           first_source, = first_source(first_param)
           second_source, = *second_param
+
+          if regex?(first_param)
+            first_source = interpret_string_escapes(first_source)
+          end
+
           replacement_method = replacement_method(method,
                                                   first_source,
                                                   second_source)

@@ -429,6 +429,12 @@ describe RuboCop::Cop::Performance::StringReplacement do
 
         expect(new_source).to eq("'abc'.delete! 'a'")
       end
+
+      it 'corrects when a regexp contains escapes' do
+        new_source = autocorrect_source(cop, "'abc'.gsub(/\\n/, '')")
+
+        expect(new_source).to eq(%('abc'.delete("\\n")))
+      end
     end
   end
 end

@@ -109,6 +109,7 @@
 * `Performance/RedundantMerge` doesn't break code with a modifier `while` or `until` when autocorrecting. ([@alexdowad][])
 * [#2574](https://github.com/bbatsov/rubocop/issues/2574): `variable` style for `Lint/EndAlignment` is working again. ([@alexdowad][])
 * `Lint/EndAlignment` can autocorrect offenses on the RHS of an assignment to an instance variable, class variable, constant, and so on; previously, it only worked if the LHS was a local variable. ([@alexdowad][])
+* [#2580](https://github.com/bbatsov/rubocop/issues/2580): `Style/StringReplacement` doesn't break code when autocorrection involves a regex with embedded escapes (like /\n/). ([@alexdowad][])
 
 ### Changes
 
