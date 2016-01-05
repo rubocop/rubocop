@@ -22,7 +22,8 @@ module RuboCop
         KIND = 'module'
 
         def on_module(node)
-          check(node)
+          _name, body = *node
+          check(node, body)
         end
       end
     end

@@ -71,13 +71,10 @@ describe RuboCop::Cop::Style::EmptyLinesAroundBlockBody, :config do
                                     'Empty line missing at block body end.'])
       end
 
-      it 'autocorrects block body containing nothing' do
-        corrected = autocorrect_source(cop,
-                                       ["some_method #{open}",
-                                        close])
-        expect(corrected).to eq ["some_method #{open}",
-                                 '',
-                                 close].join("\n")
+      it 'ignores block with an empty body' do
+        source = "some_method #{open}\n#{close}"
+        corrected = autocorrect_source(cop, source)
+        expect(corrected).to eq(source)
       end
 
       it 'autocorrects beginning and end' do

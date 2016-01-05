@@ -130,6 +130,7 @@
 * [#1895](https://github.com/bbatsov/rubocop/issues/1895): Remove `Rails/DefaultScope` cop. ([@alexdowad][])
 * [#2550](https://github.com/bbatsov/rubocop/issues/2550): New `TargetRubyVersion` configuration parameter can be used to specify which version of the Ruby interpreter the inspected code is intended to run on. ([@alexdowad][])
 * [#2557](https://github.com/bbatsov/rubocop/issues/2557): `Style/GuardClause` does not warn about `if` nodes whose condition spans multiple lines. ([@alexdowad][])
+* `Style/EmptyLinesAroundClassBody`, `Style/EmptyLinesAroundModuleBody`, and `Style/EmptyLinesAroundBlockBody` accept an empty body with no blank line, even if configured to `empty_lines` style. This is because the empty lines only serve to provide a break between the header, body, and footer, and are redundant if there is no body. ([@alexdowad][])
 
 ## 0.35.1 (10/11/2015)
 

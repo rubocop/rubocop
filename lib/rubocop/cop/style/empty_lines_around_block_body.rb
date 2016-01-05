@@ -19,12 +19,15 @@ module RuboCop
         KIND = 'block'
 
         def on_block(node)
-          check(node)
+          _send, _args, body = *node
+          check(node, body)
         end
 
         private
 
-        def check(node)
+        def check(node, body)
+          return unless body || style == :no_empty_lines
+
           start_line = node.loc.begin.line
           end_line = node.loc.end.line
 
