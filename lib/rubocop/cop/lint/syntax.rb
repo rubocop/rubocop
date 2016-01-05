@@ -20,17 +20,19 @@ module RuboCop
           end
 
           processed_source.diagnostics.each do |diagnostic|
-            offenses << offense_from_diagnostic(diagnostic)
+            offenses << offense_from_diagnostic(diagnostic,
+                                                processed_source.ruby_version)
           end
 
           offenses
         end
 
-        def self.offense_from_diagnostic(diagnostic)
+        def self.offense_from_diagnostic(diagnostic, ruby_version)
           Offense.new(
             diagnostic.level,
             diagnostic.location,
-            diagnostic.message,
+            "#{diagnostic.message}\n(Using Ruby #{ruby_version} parser; " \
+            'configure using `TargetRubyVersion` parameter, under `AllCops`)',
             COP_NAME
           )
         end

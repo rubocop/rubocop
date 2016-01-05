@@ -11,7 +11,7 @@ module RuboCop
     STRING_SOURCE_NAME = '(string)'
 
     attr_reader :path, :buffer, :ast, :comments, :tokens, :diagnostics,
-                :parser_error, :raw_source
+                :parser_error, :raw_source, :ruby_version
 
     def self.from_file(path, ruby_version)
       file = File.read(path)
@@ -31,6 +31,8 @@ module RuboCop
       @raw_source = source
       @path = path
       @diagnostics = []
+      @ruby_version = ruby_version
+
       parse(source, ruby_version)
     end
 
