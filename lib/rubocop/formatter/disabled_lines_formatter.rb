@@ -1,5 +1,6 @@
 # encoding: utf-8
-# frozen_string_literal: false
+# frozen_string_literal: true
+
 module RuboCop
   module Formatter
     # A basic formatter that displays the lines disabled
