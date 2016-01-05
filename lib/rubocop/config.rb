@@ -1,6 +1,5 @@
 # encoding: utf-8
 
-require 'delegate'
 require 'pathname'
 
 # rubocop:disable Metrics/ClassLength
@@ -11,7 +10,7 @@ module RuboCop
   # file from which it was read. Several different Configs can be used
   # during a run of the rubocop program, if files in several
   # directories are inspected.
-  class Config < DelegateClass(Hash)
+  class Config < Hash
     include PathUtil
 
     COMMON_PARAMS = %w(Exclude Include Severity AutoCorrect StyleGuide Details)
@@ -24,11 +23,7 @@ module RuboCop
       @for_cop = Hash.new do |h, cop|
         h[cop] = self[Cop::Cop.qualified_cop_name(cop, loaded_path)] || {}
       end
-      super(hash)
-    end
-
-    def to_s
-      @to_s ||= __getobj__.to_s
+      replace(hash)
     end
 
     def make_excludes_absolute
@@ -122,8 +117,8 @@ module RuboCop
         # There could be a custom cop with this name. If so, don't warn
         next if Cop::Cop.all.any? { |c| c.match?([name]) }
 
-        warn Rainbow.new.wrap("Warning: unrecognized cop #{name} found in " \
-                              "#{loaded_path}").yellow
+        warn Rainbow("Warning: unrecognized cop #{name} found in " \
+                     "#{loaded_path}").yellow
       end
 
       reject_obsolete_parameters
@@ -206,8 +201,8 @@ module RuboCop
           next if COMMON_PARAMS.include?(param) ||
                   ConfigLoader.default_configuration[name].key?(param)
 
-          warn Rainbow.new.wrap("Warning: unrecognized parameter #{name}:" \
-                                "#{param} found in #{loaded_path}").yellow
+          warn Rainbow("Warning: unrecognized parameter #{name}:#{param} " \
+                       "found in #{loaded_path}").yellow
         end
       end
     end
