@@ -1237,6 +1237,10 @@ Performance/StringReplacement:
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#stringgsub-vs-stringtr-code'
   Enabled: true
 
+Performance/TimesMap:
+  Description: 'Checks for .times.map calls.'
+  Enabled: true
+
 ##################### Rails ##################################
 
 Rails/ActionFilter:
