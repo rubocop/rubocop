@@ -65,7 +65,7 @@ AllCops:
   CacheRootDirectory: /tmp
   # What version of the Ruby interpreter is the inspected code intended to
   # run on? (If there is more than one, set this to the lowest version.)
-  TargetRubyVersion: 1.9
+  TargetRubyVersion: 2.0
 
 # Indent private/protected/public as deep as method definitions
 Style/AccessModifierIndentation:
