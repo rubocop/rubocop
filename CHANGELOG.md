@@ -110,6 +110,7 @@
 * [#2574](https://github.com/bbatsov/rubocop/issues/2574): `variable` style for `Lint/EndAlignment` is working again. ([@alexdowad][])
 * `Lint/EndAlignment` can autocorrect offenses on the RHS of an assignment to an instance variable, class variable, constant, and so on; previously, it only worked if the LHS was a local variable. ([@alexdowad][])
 * [#2580](https://github.com/bbatsov/rubocop/issues/2580): `Style/StringReplacement` doesn't break code when autocorrection involves a regex with embedded escapes (like /\n/). ([@alexdowad][])
+* [#2582](https://github.com/bbatsov/rubocop/issues/2582): `Style/AlignHash` doesn't move a key so far left that it goes onto the previous line (in an attempt to align). ([@alexdowad][])
 
 ### Changes
 

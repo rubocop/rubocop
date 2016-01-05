@@ -214,6 +214,8 @@ module RuboCop
           value_delta     = @column_deltas[:value] || 0
 
           key, value = *node
+          key_column = key.source_range.column
+          key_delta = -key_column if key_delta < -key_column
 
           lambda do |corrector|
             if value.nil?

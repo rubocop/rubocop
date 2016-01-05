@@ -449,6 +449,20 @@ describe RuboCop::Cop::Style::AlignHash, :config do
                                 '         bb => 1,',
                                 '        ccc => 2 }'].join("\n"))
     end
+
+    it "doesn't break code by moving long keys too far left" do
+      # regression test; see GH issue 2582
+      new_source = autocorrect_source(cop, ['{',
+                                            '  sjtjo: sjtjo,',
+                                            '  too_ono_ilitjion_tofotono_o: ' \
+                                            'too_ono_ilitjion_tofotono_o,',
+                                            '}'])
+      expect(new_source).to eq(['{',
+                                '  sjtjo: sjtjo,',
+                                'too_ono_ilitjion_tofotono_o: ' \
+                                'too_ono_ilitjion_tofotono_o,',
+                                '}'].join("\n"))
+    end
   end
 
   context 'with different settings for => and :' do
