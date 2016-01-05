@@ -733,6 +733,9 @@ Style/StringLiterals:
   SupportedStyles:
     - single_quotes
     - double_quotes
+  # If true, strings which span multiple lines using \ for continuation must
+  # use the same type of quotes on each line.
+  ConsistentQuotesInMultiline: false
 
 Style/StringLiteralsInInterpolation:
   EnforcedStyle: single_quotes

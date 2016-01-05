@@ -17,6 +17,8 @@ module RuboCop
       end
 
       def autocorrect(node)
+        return if node.dstr_type?
+
         lambda do |corrector|
           str = node.str_content
           if style == :single_quotes
