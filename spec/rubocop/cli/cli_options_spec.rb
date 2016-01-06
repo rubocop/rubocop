@@ -164,9 +164,6 @@ describe RuboCop::CLI, :isolated_environment do
         output =
           `ruby -I . #{rubocop} --require redirect.rb --only Style/SomeCop`
         expect($CHILD_STATUS.success?).to be_truthy
-        # The warning about the unrecognized cop is expected. It's given due
-        # to the fact that we haven't supplied any default configuration for
-        # rubocop_ext in this example.
         expect(output)
           .to eq(['Inspecting 2 files',
                   '..',
