@@ -556,7 +556,7 @@ describe RuboCop::CLI, :isolated_environment do
         it 'prints a warning' do
           create_file('.rubocop.yml', ['AllCops:',
                                        '  RunRailsCops: false'])
-          expect(cli.run([])).to eq(1)
+          expect(cli.run([])).to eq(2)
           expect($stderr.string).to include('obsolete parameter RunRailsCops ' \
                                             '(for AllCops) found')
         end
@@ -713,7 +713,7 @@ describe RuboCop::CLI, :isolated_environment do
           create_file('.rubocop.yml', ['Style/SpaceAroundOperators:',
                                        '  MultiSpaceAllowedForOperators:',
                                        '    - "="'])
-          expect(cli.run([])).to eq(1)
+          expect(cli.run([])).to eq(2)
           expect($stderr.string).to include('obsolete parameter ' \
                                             'MultiSpaceAllowedForOperators ' \
                                             '(for Style/SpaceAroundOperators)' \
@@ -989,7 +989,7 @@ describe RuboCop::CLI, :isolated_environment do
                                    'Syntax:',
                                    '  Enabled: false'
                                   ])
-      expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
+      expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(2)
       expect($stderr.string).to include(
         'Error: configuration for Syntax cop found')
       expect($stderr.string).to include('This cop cannot be configured.')
@@ -1284,7 +1284,7 @@ describe RuboCop::CLI, :isolated_environment do
       create_file('example/.rubocop.yml', ['Style/BracesAroundHashParameters:',
                                            '  EnforcedStyle: context'])
 
-      expect(cli.run(%w(--format simple example))).to eq(1)
+      expect(cli.run(%w(--format simple example))).to eq(2)
       expect($stderr.string)
         .to eq(["Error: invalid EnforcedStyle 'context' for " \
                 'Style/BracesAroundHashParameters found in ' +
@@ -1378,7 +1378,7 @@ describe RuboCop::CLI, :isolated_environment do
       end
 
       it 'prints a warning when --auto-gen-config is set' do
-        expect(cli.run(%w(-c .rubocop.yml --auto-gen-config))).to eq(1)
+        expect(cli.run(%w(-c .rubocop.yml --auto-gen-config))).to eq(2)
         expect($stderr.string)
           .to eq(['Error: rubocop-todo.yml is obsolete; it must be called ' \
                   '.rubocop_todo.yml instead',
@@ -1429,7 +1429,7 @@ describe RuboCop::CLI, :isolated_environment do
       it 'fails with an error message' do
         create_file('.rubocop.yml', ['AllCops:',
                                      '  TargetRubyVersion: 2.4'])
-        expect(cli.run([])).to eq(1)
+        expect(cli.run([])).to eq(2)
         expect($stderr.string.strip).to match(
           /\AError: Unknown Ruby version 2.4 found in `TargetRubyVersion`/)
         expect($stderr.string.strip).to match(
@@ -1444,7 +1444,7 @@ describe RuboCop::CLI, :isolated_environment do
                                      '  TargetRubyVersion: 1.9',
                                      'Style/OptionHash:',
                                      '  Enabled: true'])
-        expect(cli.run(['example1.rb'])).to eq(1)
+        expect(cli.run(['example1.rb'])).to eq(2)
         expect($stderr.string.strip).to eq(
           ['Error: The `Style/OptionHash` cop is only compatible with Ruby ' \
            '2.0 and up, but the target Ruby version for your project is 1.9.',
@@ -1461,7 +1461,7 @@ describe RuboCop::CLI, :isolated_environment do
                                      'Style/SymbolArray:',
                                      '  EnforcedStyle: percent',
                                      '  Enabled: true'])
-        expect(cli.run(['example1.rb'])).to eq(1)
+        expect(cli.run(['example1.rb'])).to eq(2)
         expect($stderr.string.strip).to eq(
           ['Error: The default `percent` style for the `Style/SymbolArray` ' \
            'cop is only compatible with Ruby 2.0 and up, but the target Ruby' \
@@ -1479,7 +1479,7 @@ describe RuboCop::CLI, :isolated_environment do
         create_file('example1.rb', "puts 'hello'")
         create_file('.rubocop.yml', ['Style/TrailingComma:',
                                      '  Enabled: true'])
-        expect(cli.run(['example1.rb'])).to eq(1)
+        expect(cli.run(['example1.rb'])).to eq(2)
         expect($stderr.string.strip).to eq(
           ['Error: The `Style/TrailingComma` cop no longer exists. Please ' \
            'use `Style/TrailingCommaInLiteral` and/or ' \
