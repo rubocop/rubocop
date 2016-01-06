@@ -67,6 +67,7 @@
 
 ### Bug Fixes
 
+* [#2594](https://github.com/bbatsov/rubocop/issues/2594): `Style/EmptyLiteral` autocorrector respects `Style/StringLiterals:EnforcedStyle` config. ([@DNNX][])
 * [#2411](https://github.com/bbatsov/rubocop/issues/2411): Make local inherited configuration override configuration loaded from gems. ([@jonas054][])
 * [#2413](https://github.com/bbatsov/rubocop/issues/2413): Allow `%Q` for dynamic strings with double quotes inside them. ([@jonas054][])
 * [#2404](https://github.com/bbatsov/rubocop/issues/2404): `Style/Next` does not remove comments when auto-correcting. ([@lumeet][])
