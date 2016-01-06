@@ -103,26 +103,12 @@ module RuboCop
                                                     'config'))
       return if File.expand_path(loaded_path).start_with?(base_config_path)
 
-      reject_obsolete_cops
-
       valid_cop_names, invalid_cop_names = keys.partition do |key|
         ConfigLoader.default_configuration.key?(key)
       end
 
-      invalid_cop_names.each do |name|
-        if name == 'Syntax'
-          fail ValidationError,
-               "configuration for Syntax cop found in #{loaded_path}\n" \
-               'This cop cannot be configured.'
-        end
-
-        # There could be a custom cop with this name. If so, don't warn
-        next if Cop::Cop.all.any? { |c| c.match?([name]) }
-
-        warn Rainbow("Warning: unrecognized cop #{name} found in " \
-                     "#{loaded_path}").yellow
-      end
-
+      reject_obsolete_cops
+      warn_about_unrecognized_cops(invalid_cop_names)
       reject_obsolete_parameters
       check_target_ruby
       validate_parameter_names(valid_cop_names)
@@ -190,6 +176,22 @@ module RuboCop
     end
 
     private
+
+    def warn_about_unrecognized_cops(invalid_cop_names)
+      invalid_cop_names.each do |name|
+        if name == 'Syntax'
+          fail ValidationError,
+               "configuration for Syntax cop found in #{loaded_path}\n" \
+               'This cop cannot be configured.'
+        end
+
+        # There could be a custom cop with this name. If so, don't warn
+        next if Cop::Cop.all.any? { |c| c.match?([name]) }
+
+        warn Rainbow("Warning: unrecognized cop #{name} found in " \
+                     "#{loaded_path}").yellow
+      end
+    end
 
     def validate_section_presence(name)
       return unless key?(name) && self[name].nil?
