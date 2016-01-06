@@ -1,5 +1,7 @@
 # encoding: utf-8
 
+require 'set'
+
 module RuboCop
   module Cop
     module Style
@@ -11,11 +13,14 @@ module RuboCop
         def investigate(processed_source)
           return if processed_source.tokens.empty?
 
+          lines = Set.new
+          processed_source.tokens.each do |token|
+            lines << token.pos.line
+          end
+
           prev_line = 1
 
-          processed_source.tokens.sort_by { |t| t.pos.line }.each do |token|
-            cur_line = token.pos.line
-
+          lines.sort.each do |cur_line|
             line_diff = cur_line - prev_line
 
             if line_diff > LINE_OFFSET
