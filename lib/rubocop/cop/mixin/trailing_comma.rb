@@ -14,8 +14,7 @@ module RuboCop
       end
 
       def check(node, items, kind, begin_pos, end_pos)
-        sb = items.first.source_range.source_buffer
-
+        sb = node.source_range.source_buffer
         after_last_item = Parser::Source::Range.new(sb, begin_pos, end_pos)
 
         return if heredoc?(after_last_item.source)
@@ -23,7 +22,7 @@ module RuboCop
         comma_offset = after_last_item.source =~ /,/
 
         if comma_offset && !inside_comment?(after_last_item, comma_offset)
-          unless should_have_comma?(style, node, items)
+          unless should_have_comma?(style, node)
             extra_info = case style
                          when :comma
                            ', unless each item is on its own line'
@@ -35,15 +34,14 @@ module RuboCop
             avoid_comma(kind, after_last_item.begin_pos + comma_offset, sb,
                         extra_info)
           end
-        elsif should_have_comma?(style, node, items)
+        elsif should_have_comma?(style, node)
           put_comma(items, kind, sb)
         end
       end
 
-      def should_have_comma?(style, node, items)
+      def should_have_comma?(style, node)
         [:comma, :consistent_comma].include?(style) &&
-          multiline?(node) &&
-          (items.size > 1 || items.last.hash_type?)
+          multiline?(node)
       end
 
       def inside_comment?(range, comma_offset)
@@ -89,7 +87,7 @@ module RuboCop
 
         items = elements.map(&:source_range)
         if style == :consistent_comma
-          items.each_cons(2).any? { |a, b| !on_same_line?(a, b) }
+          items.one? || items.each_cons(2).any? { |a, b| !on_same_line?(a, b) }
         else
           items << node.loc.end
           items.each_cons(2).all? { |a, b| !on_same_line?(a, b) }

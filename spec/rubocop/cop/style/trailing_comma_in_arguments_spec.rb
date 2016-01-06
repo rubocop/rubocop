@@ -190,15 +190,10 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
                                   '           )'].join("\n"))
       end
 
-      it 'accepts a method with a single multiline method call arg' \
-         ' and no trailing comma' do
-        inspect_source(cop, <<-CODE)
-          some_method(
-            SomeObject
-              .method
-              .method
-          )
-        CODE
+      it 'accepts a multiline call with a single argument and trailing comma' do
+        inspect_source(cop, ['method(',
+                             '  1,',
+                             ')'])
         expect(cop.offenses).to be_empty
       end
     end
@@ -283,11 +278,10 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       it 'accepts missing comma after a heredoc' do
         # A heredoc that's the last item in a literal or parameter list can not
         # have a trailing comma. It's a syntax error.
-        inspect_source(cop, ['route(help: {',
-                             "  'auth' => <<-HELP.chomp",
+        inspect_source(cop, ['route(1, <<-HELP.chomp',
                              '...',
                              'HELP',
-                             '})'])
+                             ')'])
         expect(cop.offenses).to be_empty
       end
 
@@ -307,15 +301,10 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
                                   '           )'].join("\n"))
       end
 
-      it 'accepts a method with a single multiline method call arg ' \
-         'and no trailing comma' do
-        inspect_source(cop, <<-CODE)
-          some_method(
-            SomeObject
-              .method
-              .method
-          )
-        CODE
+      it 'accepts a multiline call with a single argument and trailing comma' do
+        inspect_source(cop, ['method(',
+                             '  1,',
+                             ')'])
         expect(cop.offenses).to be_empty
       end
     end

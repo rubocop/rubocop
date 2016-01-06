@@ -287,6 +287,20 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
                                   '        c: 3333,',
                                   '}'].join("\n"))
       end
+
+      it 'accepts a multiline array with a single item and trailing comma' do
+        inspect_source(cop, ['foo = [',
+                             '  1,',
+                             ']'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'accepts a multiline hash with a single pair and trailing comma' do
+        inspect_source(cop, ['bar = {',
+                             '  a: 123,',
+                             '}'])
+        expect(cop.offenses).to be_empty
+      end
     end
 
     context 'when EnforcedStyleForMultiline is consistent_comma' do
@@ -407,6 +421,20 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
                                   '        b: 2020,',
                                   '        c: 3333,',
                                   '}'].join("\n"))
+      end
+
+      it 'accepts a multiline array with a single item and trailing comma' do
+        inspect_source(cop, ['foo = [',
+                             '  1,',
+                             ']'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'accepts a multiline hash with a single pair and trailing comma' do
+        inspect_source(cop, ['bar = {',
+                             '  a: 123,',
+                             '}'])
+        expect(cop.offenses).to be_empty
       end
     end
   end

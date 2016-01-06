@@ -114,6 +114,7 @@
 * [#2580](https://github.com/bbatsov/rubocop/issues/2580): `Style/StringReplacement` doesn't break code when autocorrection involves a regex with embedded escapes (like /\n/). ([@alexdowad][])
 * [#2582](https://github.com/bbatsov/rubocop/issues/2582): `Style/AlignHash` doesn't move a key so far left that it goes onto the previous line (in an attempt to align). ([@alexdowad][])
 * [#2588](https://github.com/bbatsov/rubocop/issues/2588): `Style/SymbolProc` doesn't break code when autocorrecting a method call with a trailing comma in the argument list. ([@alexdowad][])
+* [#2448](https://github.com/bbatsov/rubocop/issues/2448): `Style/TrailingCommaInArguments` and `Style/TrailingCommaInLiteral` don't special-case single-item lists in a way which contradicts the documentation. ([@alexdowad][])
 
 ### Changes
 
