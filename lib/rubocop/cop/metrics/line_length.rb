@@ -102,7 +102,7 @@ module RuboCop
         end
 
         def uri_regexp
-          URI.regexp(cop_config['URISchemes'])
+          @regexp ||= URI.regexp(cop_config['URISchemes'])
         end
       end
     end
