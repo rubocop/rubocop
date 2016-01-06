@@ -1472,4 +1472,20 @@ describe RuboCop::CLI, :isolated_environment do
       end
     end
   end
+
+  describe 'obsolete cops' do
+    context 'when configuration for TrailingComma is given' do
+      it 'fails with an error message' do
+        create_file('example1.rb', "puts 'hello'")
+        create_file('.rubocop.yml', ['Style/TrailingComma:',
+                                     '  Enabled: true'])
+        expect(cli.run(['example1.rb'])).to eq(1)
+        expect($stderr.string.strip).to eq(
+          ['Error: The `Style/TrailingComma` cop no longer exists. Please ' \
+           'use `Style/TrailingCommaInLiteral` and/or ' \
+           '`Style/TrailingCommaInArguments` instead.',
+           "(configuration found in #{abs('.rubocop.yml')})"].join("\n"))
+      end
+    end
+  end
 end

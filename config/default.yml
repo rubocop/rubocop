@@ -846,11 +846,22 @@ Style/TrailingBlankLines:
     - final_newline
     - final_blank_line
 
-Style/TrailingComma:
-  # If EnforcedStyleForMultiline is comma, the cop requires a comma after the
-  # last item of a list, but only for lists where each item is on its own line.
-  # If EnforcedStyleForMultiline is consistent_comma, the cop requires a comma
-  # after the last item of a list, for all lists.
+Style/TrailingCommaInArguments:
+  # If `comma`, the cop requires a comma after the last argument, but only for
+  # parenthesized method calls where each argument is on its own line.
+  # If `consistent_comma`, the cop requires a comma after the last argument,
+  # for all parenthesized method calls with arguments.
+  EnforcedStyleForMultiline: no_comma
+  SupportedStyles:
+    - comma
+    - consistent_comma
+    - no_comma
+
+Style/TrailingCommaInLiteral:
+  # If `comma`, the cop requires a comma after the last item in an array or
+  # hash, but only when each item is on its own line.
+  # If `consistent_comma`, the cop requires a comma after the last item of all
+  # non-empty array and hash literals.
   EnforcedStyleForMultiline: no_comma
   SupportedStyles:
     - comma

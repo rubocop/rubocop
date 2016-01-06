@@ -103,6 +103,8 @@ module RuboCop
                                                     'config'))
       return if File.expand_path(loaded_path).start_with?(base_config_path)
 
+      reject_obsolete_cops
+
       valid_cop_names, invalid_cop_names = keys.partition do |key|
         ConfigLoader.default_configuration.key?(key)
       end
@@ -236,6 +238,16 @@ module RuboCop
         fail ValidationError, "obsolete parameter #{parameter} (for #{cop}) " \
                               "found in #{loaded_path}" \
                               "#{"\n" if alternative}#{alternative}"
+      end
+    end
+
+    def reject_obsolete_cops
+      if key?('Style/TrailingComma')
+        fail ValidationError, 'The `Style/TrailingComma` cop no longer ' \
+                              'exists. Please use ' \
+                              '`Style/TrailingCommaInLiteral` and/or ' \
+                              "`Style/TrailingCommaInArguments` instead.\n" \
+                              "(configuration found in #{loaded_path})"
       end
     end
 
