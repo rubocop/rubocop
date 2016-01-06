@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::FirstParameterIndentation, :config do
+describe RuboCop::Cop::Style::FirstParameterIndentation do
   subject(:cop) { described_class.new(config) }
   let(:config) do
     RuboCop::Config
@@ -202,6 +202,37 @@ describe RuboCop::Cop::Style::FirstParameterIndentation, :config do
 
     context 'when IndentationWidth:Width is 4' do
       let(:indentation_width) { 4 }
+
+      it 'auto-corrects an over-indented first parameter' do
+        new_source = autocorrect_source(cop, ['run(',
+                                              '        :foo,',
+                                              '    bar: 3)'])
+        expect(new_source).to eq(['run(',
+                                  '    :foo,',
+                                  '    bar: 3)'].join("\n"))
+      end
+    end
+
+    context 'when indentation width is overridden for this cop only' do
+      let(:config) do
+        RuboCop::Config
+          .new('Style/FirstParameterIndentation' => {
+                 'EnforcedStyle' => style,
+                 'SupportedStyles' =>
+                   %w(consistent special_for_inner_method_call
+                      special_for_inner_method_call_in_parentheses),
+                 'IndentationWidth' => 4
+               },
+               'Style/IndentationWidth' => { 'Width' => 2 })
+      end
+
+      it 'accepts a correctly indented first parameter' do
+        inspect_source(cop, ['run(',
+                             '    :foo,',
+                             '    bar: 3',
+                             ')'])
+        expect(cop.offenses).to be_empty
+      end
 
       it 'auto-corrects an over-indented first parameter' do
         new_source = autocorrect_source(cop, ['run(',

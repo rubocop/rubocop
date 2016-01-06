@@ -10,10 +10,12 @@ describe RuboCop::Cop::Style::IndentArray do
                               align_brackets)
     }
     RuboCop::Config.new('Style/IndentArray' =>
-                        cop_config.merge(supported_styles),
+                        cop_config.merge(supported_styles).merge(
+                          'IndentationWidth' => cop_indent),
                         'Style/IndentationWidth' => { 'Width' => 2 })
   end
   let(:cop_config) { { 'EnforcedStyle' => 'special_inside_parentheses' } }
+  let(:cop_indent) { nil } # use indent from Style/IndentationWidth
 
   context 'when array is operand' do
     it 'accepts correctly indented first element' do
@@ -51,6 +53,27 @@ describe RuboCop::Cop::Style::IndentArray do
         .to eq(['Indent the right bracket the same as the start of the line ' \
                 'where the left bracket is.'])
       expect(cop.config_to_allow_offenses).to be_empty
+    end
+
+    context 'when indentation width is overridden for this cop' do
+      let(:cop_indent) { 4 }
+
+      it 'accepts correctly indented first element' do
+        inspect_source(cop,
+                       ['a << [',
+                        '    1',
+                        ']'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'registers an offense for incorrectly indented first element' do
+        inspect_source(cop,
+                       ['a << [',
+                        '  1',
+                        ']'])
+        expect(cop.highlights).to eq(['1'])
+        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+      end
     end
   end
 
@@ -418,6 +441,27 @@ describe RuboCop::Cop::Style::IndentArray do
       expect(cop.messages)
         .to eq(['Indent the right bracket the same as the left bracket.'])
       expect(cop.config_to_allow_offenses).to be_empty
+    end
+
+    context 'when indentation width is overridden for this cop' do
+      let(:cop_indent) { 4 }
+
+      it 'accepts correctly indented first element' do
+        inspect_source(cop,
+                       ['a = [',
+                        '        1',
+                        '    ]'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'autocorrects indentation which does not match IndentationWidth' do
+        new_source = autocorrect_source(cop, ['a = [',
+                                              '      1',
+                                              '    ]'])
+        expect(new_source).to eq(['a = [',
+                                  '        1',
+                                  '    ]'].join("\n"))
+      end
     end
   end
 end

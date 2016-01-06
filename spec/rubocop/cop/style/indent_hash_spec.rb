@@ -11,7 +11,8 @@ describe RuboCop::Cop::Style::IndentHash do
     }
     RuboCop::Config.new('Style/AlignHash' => align_hash_config,
                         'Style/IndentHash' =>
-                        cop_config.merge(supported_styles),
+                        cop_config.merge(supported_styles).merge(
+                          'IndentationWidth' => cop_indent),
                         'Style/IndentationWidth' => { 'Width' => 2 })
   end
   let(:align_hash_config) do
@@ -22,6 +23,7 @@ describe RuboCop::Cop::Style::IndentHash do
     }
   end
   let(:cop_config) { { 'EnforcedStyle' => 'special_inside_parentheses' } }
+  let(:cop_indent) { nil } # use indentation width from Style/IndentationWidth
 
   shared_examples 'right brace' do
     it 'registers an offense for incorrectly indented }' do
@@ -211,6 +213,31 @@ describe RuboCop::Cop::Style::IndentHash do
       inspect_source(cop,
                      'a = {}')
       expect(cop.offenses).to be_empty
+    end
+
+    context 'when indentation width is overridden for this cop' do
+      let(:cop_indent) { 3 }
+
+      it 'auto-corrects incorrectly indented first pair' do
+        corrected = autocorrect_source(cop, ['a = {',
+                                             '    a: 1,',
+                                             '  b: 2,',
+                                             ' c: 3',
+                                             '}'])
+        expect(corrected).to eq ['a = {',
+                                 '   a: 1,',
+                                 '  b: 2,',
+                                 ' c: 3',
+                                 '}'].join("\n")
+      end
+
+      it 'accepts correctly indented first pair' do
+        inspect_source(cop,
+                       ['a = {',
+                        '   a: 1',
+                        '}'])
+        expect(cop.offenses).to be_empty
+      end
     end
   end
 

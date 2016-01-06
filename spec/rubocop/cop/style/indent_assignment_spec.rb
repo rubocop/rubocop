@@ -5,8 +5,12 @@ require 'spec_helper'
 describe RuboCop::Cop::Style::IndentAssignment, :config do
   subject(:cop) { described_class.new(config) }
   let(:config) do
-    RuboCop::Config.new('Style/IndentationWidth' => { 'Width' => 2 })
+    RuboCop::Config.new('Style/IndentAssignment' => {
+                          'IndentationWidth' => cop_indent
+                        },
+                        'Style/IndentationWidth' => { 'Width' => 2 })
   end
+  let(:cop_indent) { nil } # use indentation with from Style/IndentationWidth
 
   it 'registers an offense for incorrectly indented rhs' do
     inspect_source(cop, ['a =',
@@ -57,5 +61,26 @@ describe RuboCop::Cop::Style::IndentAssignment, :config do
     expect(new_source)
       .to eq(['a =',
               '  if b ; end'].join("\n"))
+  end
+
+  context 'when indentation width is overridden for this cop only' do
+    let(:cop_indent) { 7 }
+
+    it 'allows a properly indented rhs' do
+      inspect_source(cop, ['a =',
+                           '       if b ; end'])
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'auto-corrects indentation' do
+      new_source = autocorrect_source(
+        cop, ['a =',
+              '  if b ; end'])
+
+      expect(new_source)
+        .to eq(['a =',
+                '       if b ; end'].join("\n"))
+    end
   end
 end

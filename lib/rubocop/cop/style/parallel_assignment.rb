@@ -188,6 +188,10 @@ module RuboCop
           def extract_sources(node)
             node.children.map(&:source)
           end
+
+          def cop_config
+            @config.for_cop('Style/ParallelAssignment')
+          end
         end
 
         # An internal class for correcting parallel assignment

@@ -9,7 +9,8 @@ module RuboCop
       SPACE = ' '.freeze
 
       def configured_indentation_width
-        config.for_cop('IndentationWidth')['Width']
+        cop_config['IndentationWidth'] ||
+          config.for_cop('IndentationWidth')['Width']
       end
 
       def indentation(node)

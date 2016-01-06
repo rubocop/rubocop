@@ -238,6 +238,23 @@ describe RuboCop::Cop::Style::AccessModifierIndentation do
         expect(cop.offenses).to be_empty
       end
     end
+
+    context 'when indentation width is overridden for this cop only' do
+      let(:cop_config) do
+        { 'EnforcedStyle' => 'indent', 'IndentationWidth' => 4 }
+      end
+
+      it 'accepts properly indented private' do
+        inspect_source(cop,
+                       ['class Test',
+                        '',
+                        '    private',
+                        '',
+                        '  def test; end',
+                        'end'])
+        expect(cop.offenses).to be_empty
+      end
+    end
   end
 
   context 'when EnforcedStyle is set to outdent' do
