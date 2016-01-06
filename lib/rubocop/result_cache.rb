@@ -12,8 +12,8 @@ module RuboCop
                     :cache, :fail_fast, :stdin]
 
     # Remove old files so that the cache doesn't grow too big. When the
-    # threshold MaxFilesInCache has been exceeded, the oldest 50% all the files
-    # in the cache are removed. The reason for removing so much is that
+    # threshold MaxFilesInCache has been exceeded, the oldest 50% of all the
+    # files in the cache are removed. The reason for removing so much is that
     # cleaning should be done relatively seldom, since there is a slight risk
     # that some other RuboCop process was just about to read the file, when
     # there's parallel execution and the cache is shared.
@@ -47,13 +47,12 @@ module RuboCop
       root = config_store.for('.')['AllCops']['CacheRootDirectory']
       if root == '/tmp'
         tmpdir = File.realpath(Dir.tmpdir)
+        # Include user ID in the path to make sure the user has write access.
         root = File.join(tmpdir, Process.uid.to_s)
       end
       File.join(root, 'rubocop_cache')
     end
 
-    # Include the user name in the path as a simple means of avoiding write
-    # collisions.
     def initialize(file, options, config_store, cache_root = nil)
       cache_root ||= ResultCache.cache_root(config_store)
       @path = File.join(cache_root, rubocop_checksum, RUBY_VERSION,
