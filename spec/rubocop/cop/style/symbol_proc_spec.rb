@@ -148,4 +148,15 @@ describe RuboCop::Cop::Style::SymbolProc, :config do
       expect(corrected).to eq 'super(&:test)'
     end
   end
+
+  it 'auto-corrects correctly when args have a trailing comma' do
+    corrected = autocorrect_source(cop, ['mail(',
+                                         "  to: 'foo',",
+                                         "  subject: 'bar',",
+                                         ') { |format| format.text }'])
+    expect(corrected).to eq(['mail(',
+                             "  to: 'foo',",
+                             "  subject: 'bar', &:text",
+                             ')'].join("\n"))
+  end
 end
