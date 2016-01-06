@@ -59,6 +59,7 @@
 * [#2481](https://github.com/bbatsov/rubocop/issues/2481): New `WorstOffendersFormatter` prints a list of files with offenses (and offense counts), showing the files with the most offenses first. ([@alexdowad][])
 * New `IfInsideElse` cop catches `if..end` nodes which can be converted into an `elsif` instead, reducing the nesting level. ([@alexdowad][])
 * [#1725](https://github.com/bbatsov/rubocop/issues/1725): --color CLI option forces color output, even when not printing to a TTY. ([@alexdowad][])
+* [#2584](https://github.com/bbatsov/rubocop/pull/2584): `Lint/UnusedMethodArgument` will not register an offense for a method that takes in `&block` as an argument and calls `yield` in the method. ([@rrosenblum][])
 
 ### Bug Fixes
 
