@@ -41,43 +41,37 @@ module RuboCop
       class IndentHash < Cop
         include AutocorrectAlignment
         include ConfigurableEnforcedStyle
+        include ArrayHashIndentation
 
         def on_hash(node)
-          left_brace = node.loc.begin
-          check(node, left_brace, nil) if left_brace
+          check(node, nil) if node.loc.begin
         end
 
         def on_send(node)
-          _receiver, _method_name, *args = *node
-          left_parenthesis = node.loc.begin
-          return unless left_parenthesis
-
-          args.each do |arg|
-            on_node(:hash, arg, :send) do |hash_node|
-              left_brace = hash_node.loc.begin
-              if left_brace && left_brace.line == left_parenthesis.line
-                check(hash_node, left_brace, left_parenthesis)
-                ignore_node(hash_node)
-              end
-            end
+          each_argument_node(node, :hash) do |hash_node, left_parenthesis|
+            check(hash_node, left_parenthesis)
           end
         end
 
         private
 
-        def check(hash_node, left_brace, left_parenthesis)
+        def brace_alignment_style
+          :align_braces
+        end
+
+        def check(hash_node, left_parenthesis)
           return if ignored_node?(hash_node)
 
+          left_brace = hash_node.loc.begin
           first_pair = hash_node.children.first
           if first_pair
-            left_brace = hash_node.loc.begin
             return if first_pair.source_range.line == left_brace.line
 
             if separator_style?(first_pair)
               check_based_on_longest_key(hash_node.children, left_brace,
                                          left_parenthesis)
             else
-              check_first_pair(first_pair, left_brace, left_parenthesis, 0)
+              check_first(first_pair, left_brace, left_parenthesis, 0)
             end
           end
 
@@ -114,64 +108,8 @@ module RuboCop
           key_lengths = pairs.map do |pair|
             pair.children.first.source_range.length
           end
-          check_first_pair(pairs.first, left_brace, left_parenthesis,
-                           key_lengths.max - key_lengths.first)
-        end
-
-        def check_first_pair(first_pair, left_brace, left_parenthesis, offset)
-          actual_column = first_pair.source_range.column
-          expected_column = base_column(left_brace, left_parenthesis) +
-                            configured_indentation_width + offset
-          @column_delta = expected_column - actual_column
-
-          if @column_delta == 0
-            # which column was actually used as 'base column' for indentation?
-            # (not the column which we think should be the 'base column',
-            # but the one which has actually been used for that purpose)
-            base_column = actual_column - configured_indentation_width - offset
-            styles = detected_styles(base_column, left_parenthesis, left_brace)
-            if styles.size > 1
-              ambiguous_style_detected(*styles)
-            else
-              correct_style_detected
-            end
-          else
-            incorrect_style_detected(actual_column, offset, first_pair,
-                                     left_parenthesis, left_brace)
-          end
-        end
-
-        def incorrect_style_detected(column, offset, first_pair,
-                                     left_parenthesis, left_brace)
-          add_offense(first_pair, :expression,
-                      message(base_description(left_parenthesis))) do
-            base_column = column - configured_indentation_width - offset
-            styles = detected_styles(base_column, left_parenthesis, left_brace)
-            ambiguous_style_detected(*styles)
-          end
-        end
-
-        def detected_styles(column, left_parenthesis, left_brace)
-          styles = []
-          if column == (left_brace.source_line =~ /\S/)
-            styles << :consistent
-            styles << :special_inside_parentheses unless left_parenthesis
-          end
-          if left_parenthesis && column == left_parenthesis.column + 1
-            styles << :special_inside_parentheses
-          end
-          styles << :align_braces if column == left_brace.column
-          styles
-        end
-
-        def base_column(left_brace, left_parenthesis)
-          if style == :align_braces
-            left_brace.column
-          elsif left_parenthesis && style == :special_inside_parentheses
-            left_parenthesis.column + 1
-          else
-            left_brace.source_line =~ /\S/
-          end
+          check_first(pairs.first, left_brace, left_parenthesis,
+                      key_lengths.max - key_lengths.first)
         end
 
         # Returns the description of what the correct indentation is based on.
