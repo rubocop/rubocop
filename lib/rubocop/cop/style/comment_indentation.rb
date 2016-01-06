@@ -51,14 +51,11 @@ module RuboCop
         end
 
         def less_indented?(line)
-          keyword = 'end\b'
-          bracket = '[}\]]'
-          line =~ /^\s*(#{keyword}|#{bracket})/
+          line =~ /^\s*(end\b|[\}\]])/
         end
 
         def two_alternatives?(line)
-          keyword = '(else|elsif|when|rescue|ensure)\b'
-          line =~ /^\s*#{keyword}/
+          line =~ /^\s*(else|elsif|when|rescue|ensure)\b/
         end
       end
     end
