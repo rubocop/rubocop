@@ -41,38 +41,32 @@ module RuboCop
       class IndentArray < Cop
         include AutocorrectAlignment
         include ConfigurableEnforcedStyle
+        include ArrayHashIndentation
 
         def on_array(node)
-          left_bracket = node.loc.begin
-          check(node, left_bracket, nil) if left_bracket
+          check(node, nil) if node.loc.begin
         end
 
         def on_send(node)
-          _receiver, _method_name, *args = *node
-          left_parenthesis = node.loc.begin
-          return unless left_parenthesis
-
-          args.each do |arg|
-            on_node(:array, arg, :send) do |array_node|
-              left_bracket = array_node.loc.begin
-              if left_bracket && left_bracket.line == left_parenthesis.line
-                check(array_node, left_bracket, left_parenthesis)
-                ignore_node(array_node)
-              end
-            end
+          each_argument_node(node, :array) do |array_node, left_parenthesis|
+            check(array_node, left_parenthesis)
           end
         end
 
         private
 
-        def check(array_node, left_bracket, left_parenthesis)
+        def brace_alignment_style
+          :align_brackets
+        end
+
+        def check(array_node, left_parenthesis)
           return if ignored_node?(array_node)
 
+          left_bracket = array_node.loc.begin
           first_elem = array_node.children.first
           if first_elem
-            left_bracket = array_node.loc.begin
             return if first_elem.source_range.line == left_bracket.line
-            check_first_elem(first_elem, left_bracket, left_parenthesis, 0)
+            check_first(first_elem, left_bracket, left_parenthesis, 0)
           end
 
           check_right_bracket(array_node.loc.end, left_bracket,
@@ -97,64 +91,6 @@ module RuboCop
                   ' where the left bracket is.'
                 end
           add_offense(right_bracket, right_bracket, msg)
-        end
-
-        def check_first_elem(first_elem, left_bracket, left_parenthesis, offset)
-          actual_column = first_elem.source_range.column
-          expected_column = base_column(left_bracket, left_parenthesis) +
-                            configured_indentation_width + offset
-          @column_delta = expected_column - actual_column
-
-          if @column_delta == 0
-            # which column was actually used as 'base column' for indentation?
-            # (not the column which we think should be the 'base column',
-            # but the one which has actually been used for that purpose)
-            base_column = actual_column - configured_indentation_width - offset
-            styles = detected_styles(base_column, left_parenthesis,
-                                     left_bracket)
-            if styles.size > 1
-              ambiguous_style_detected(*styles)
-            else
-              correct_style_detected
-            end
-          else
-            incorrect_style_detected(actual_column, offset, first_elem,
-                                     left_parenthesis, left_bracket)
-          end
-        end
-
-        def incorrect_style_detected(column, offset, first_elem,
-                                     left_parenthesis, left_bracket)
-          add_offense(first_elem, :expression,
-                      message(base_description(left_parenthesis))) do
-            base_column = column - configured_indentation_width - offset
-            styles = detected_styles(base_column, left_parenthesis,
-                                     left_bracket)
-            ambiguous_style_detected(*styles)
-          end
-        end
-
-        def detected_styles(column, left_parenthesis, left_bracket)
-          styles = []
-          if column == (left_bracket.source_line =~ /\S/)
-            styles << :consistent
-            styles << :special_inside_parentheses unless left_parenthesis
-          end
-          if left_parenthesis && column == left_parenthesis.column + 1
-            styles << :special_inside_parentheses
-          end
-          styles << :align_brackets if column == left_bracket.column
-          styles
-        end
-
-        def base_column(left_bracket, left_parenthesis)
-          if style == :align_brackets
-            left_bracket.column
-          elsif left_parenthesis && style == :special_inside_parentheses
-            left_parenthesis.column + 1
-          else
-            left_bracket.source_line =~ /\S/
-          end
         end
 
         # Returns the description of what the correct indentation is based on.
