@@ -97,7 +97,7 @@ module RuboCop
       context 'when any offenses are detected' do
         before do
           source_buffer = Parser::Source::Buffer.new('test', 1)
-          source = 9.times.map do |index|
+          source = Array.new(9) do |index|
             "This is line #{index + 1}."
           end
           source_buffer.source = source.join("\n")
