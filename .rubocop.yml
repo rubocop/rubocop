@@ -6,6 +6,7 @@ AllCops:
   Exclude:
     - 'vendor/**/*'
     - 'spec/fixtures/**/*'
+    - 'tmp/**/*'
   TargetRubyVersion: 1.9
 
 Style/Encoding:
