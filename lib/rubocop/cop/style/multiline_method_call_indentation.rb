@@ -34,6 +34,15 @@ module RuboCop
         include AutocorrectAlignment
         include MultilineExpressionIndentation
 
+        def validate_config
+          if style == :aligned && cop_config['IndentationWidth']
+            fail ValidationError, 'The `Style/MultilineMethodCallIndentation`' \
+                                  ' cop only accepts an `IndentationWidth` ' \
+                                  'configuration parameter when ' \
+                                  '`EnforcedStyle` is `indented`.'
+          end
+        end
+
         private
 
         def relevant_node?(send_node)

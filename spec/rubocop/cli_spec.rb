@@ -722,6 +722,36 @@ describe RuboCop::CLI, :isolated_environment do
       end
     end
 
+    context 'when MultilineMethodCallIndentation is used with aligned ' \
+            'style and IndentationWidth parameter' do
+      it 'fails with an error message' do
+        create_file('example.rb', 'puts 1')
+        create_file('.rubocop.yml', ['Style/MultilineMethodCallIndentation:',
+                                     '  EnforcedStyle: aligned',
+                                     '  IndentationWidth: 1'])
+        expect(cli.run(['example.rb'])).to eq(2)
+        expect($stderr.string.strip).to eq(
+          'Error: The `Style/MultilineMethodCallIndentation` cop only accepts' \
+          ' an `IndentationWidth` configuration parameter when ' \
+          '`EnforcedStyle` is `indented`.')
+      end
+    end
+
+    context 'when MultilineOperationIndentation is used with aligned ' \
+            'style and IndentationWidth parameter' do
+      it 'fails with an error message' do
+        create_file('example.rb', 'puts 1')
+        create_file('.rubocop.yml', ['Style/MultilineOperationIndentation:',
+                                     '  EnforcedStyle: aligned',
+                                     '  IndentationWidth: 1'])
+        expect(cli.run(['example.rb'])).to eq(2)
+        expect($stderr.string.strip).to eq(
+          'Error: The `Style/MultilineOperationIndentation` cop only accepts' \
+          ' an `IndentationWidth` configuration parameter when ' \
+          '`EnforcedStyle` is `indented`.')
+      end
+    end
+
     it 'allows the default configuration file as the -c argument' do
       create_file('example.rb', ['# encoding: utf-8',
                                  'x = 0',
