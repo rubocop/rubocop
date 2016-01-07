@@ -707,18 +707,18 @@ describe RuboCop::CLI, :isolated_environment do
                     ''].join("\n"))
         end
       end
+    end
 
-      context 'when obsolete MultiSpaceAllowedForOperators param is used' do
-        it 'displays a warning' do
-          create_file('.rubocop.yml', ['Style/SpaceAroundOperators:',
-                                       '  MultiSpaceAllowedForOperators:',
-                                       '    - "="'])
-          expect(cli.run([])).to eq(2)
-          expect($stderr.string).to include('obsolete parameter ' \
-                                            'MultiSpaceAllowedForOperators ' \
-                                            '(for Style/SpaceAroundOperators)' \
-                                            ' found')
-        end
+    context 'when obsolete MultiSpaceAllowedForOperators param is used' do
+      it 'displays a warning' do
+        create_file('.rubocop.yml', ['Style/SpaceAroundOperators:',
+                                     '  MultiSpaceAllowedForOperators:',
+                                     '    - "="'])
+        expect(cli.run([])).to eq(2)
+        expect($stderr.string).to include('obsolete parameter ' \
+                                          'MultiSpaceAllowedForOperators ' \
+                                          '(for Style/SpaceAroundOperators)' \
+                                          ' found')
       end
     end
 
