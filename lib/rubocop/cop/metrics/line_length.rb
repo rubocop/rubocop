@@ -88,18 +88,9 @@ module RuboCop
 
         def match_uris(string)
           matches = []
-          unscanned_position = 0
-
-          loop do
-            match_data = string.match(uri_regexp, unscanned_position)
-            break unless match_data
-
-            uri_ish_string = match_data[0]
-            matches << match_data if valid_uri?(uri_ish_string)
-
-            _, unscanned_position = match_data.offset(0)
+          string.scan(uri_regexp) do
+            matches << $LAST_MATCH_INFO if valid_uri?($LAST_MATCH_INFO[0])
           end
-
           matches
         end
 
@@ -111,7 +102,7 @@ module RuboCop
         end
 
         def uri_regexp
-          URI.regexp(cop_config['URISchemes'])
+          @regexp ||= URI.regexp(cop_config['URISchemes'])
         end
       end
     end

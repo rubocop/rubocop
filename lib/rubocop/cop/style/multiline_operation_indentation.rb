@@ -25,6 +25,15 @@ module RuboCop
           check_and_or(node)
         end
 
+        def validate_config
+          if style == :aligned && cop_config['IndentationWidth']
+            fail ValidationError, 'The `Style/MultilineOperationIndentation`' \
+                                  ' cop only accepts an `IndentationWidth` ' \
+                                  'configuration parameter when ' \
+                                  '`EnforcedStyle` is `indented`.'
+          end
+        end
+
         private
 
         def relevant_node?(node)

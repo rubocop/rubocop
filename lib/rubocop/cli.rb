@@ -34,13 +34,13 @@ module RuboCop
       all_passed && !runner.aborting? && runner.errors.empty? ? 0 : 1
     rescue RuboCop::Error => e
       $stderr.puts Rainbow("Error: #{e.message}").red
-      return 1
+      return 2
     rescue Finished
       return 0
     rescue StandardError, SyntaxError => e
       $stderr.puts e.message
       $stderr.puts e.backtrace
-      return 1
+      return 2
     end
 
     def trap_interrupt(runner)

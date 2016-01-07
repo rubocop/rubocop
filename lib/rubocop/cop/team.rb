@@ -82,9 +82,8 @@ module RuboCop
       # re-running of auto-corrections will make sure that the full set of
       # auto-corrections is tried again after this method has finished.
       def autocorrect_one_cop(buffer, cops)
-        cop_with_corrections = cops.find do |cop|
-          cop.relevant_file?(buffer.name) && cop.corrections.any?
-        end
+        cop_with_corrections = cops.find { |cop| cop.corrections.any? }
+
         if cop_with_corrections
           corrections = cop_with_corrections.corrections
           # Be extra careful if there are tabs in the source and just correct

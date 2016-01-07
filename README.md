@@ -75,6 +75,7 @@ specific RuboCop release.**
 - [Git pre-commit hook integration](#git-pre-commit-hook-integration)
 - [Guard integration](#guard-integration)
 - [Rake integration](#rake-integration)
+- [Exit codes](#exit-codes)
 - [Caching](#caching)
     - [Cache Validity](#cache-validity)
     - [Enabling and Disabling the Cache](#enabling-and-disabling-the-cache)
@@ -813,6 +814,7 @@ RuboCop supports the following Ruby implementations:
 * MRI 2.0
 * MRI 2.1
 * MRI 2.2
+* MRI 2.3
 * JRuby in 1.9 mode
 * Rubinius 2.0+
 
@@ -893,7 +895,6 @@ like
 allows you to automatically check Ruby code style with RuboCop when
 files are modified.
 
-
 ## Rake integration
 
 To use RuboCop in your `Rakefile` add the following:
@@ -925,6 +926,18 @@ RuboCop::RakeTask.new(:rubocop) do |task|
   task.fail_on_error = false
 end
 ```
+
+## Exit codes
+
+RuboCop exits with the following status codes:
+
+- 0 if no offenses are found, or if the severity of all offenses are less than
+  `--fail-level`. (By default, if you use `--auto-correct`, offenses which are
+  auto-corrected do not cause RuboCop to fail.)
+- 1 if one or more offenses equal or greater to `--fail-level` are found. (By
+  default, this is any offense which is not auto-corrected.)
+- 2 if RuboCop terminates abnormally due to invalid configuration, invalid CLI
+  options, or an internal error.
 
 ## Caching
 
@@ -1012,7 +1025,7 @@ other cop.
 
 You can customize RuboCop's output format with custom formatters.
 
-#### Creating Custom Formatter
+#### Creating a Custom Formatter
 
 To implement a custom formatter, you need to subclass
 `RuboCop::Formatter::BaseFormatter` and override some methods,
@@ -1024,7 +1037,7 @@ Please see the documents below for more formatter API details.
 * [RuboCop::Cop::Offense](http://www.rubydoc.info/gems/rubocop/RuboCop/Cop/Offense)
 * [Parser::Source::Range](http://www.rubydoc.info/github/whitequark/parser/Parser/Source/Range)
 
-#### Using Custom Formatter in Command Line
+#### Using a Custom Formatter from the Command Line
 
 You can tell RuboCop to use your custom formatter with a combination of
 `--format` and `--require` option.

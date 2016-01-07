@@ -113,14 +113,14 @@ describe RuboCop::CLI, :isolated_environment do
         create_file('example.rb', ['if x== 0 ',
                                    "\ty",
                                    'end'])
-        expect(cli.run(['--only', 'Style/123'])).to eq(1)
+        expect(cli.run(['--only', 'Style/123'])).to eq(2)
         expect($stderr.string)
           .to include('Unrecognized cop or namespace: Style/123.')
       end
 
       it 'exits with error if an empty string is given' do
         create_file('example.rb', 'x')
-        expect(cli.run(['--only', ''])).to eq(1)
+        expect(cli.run(['--only', ''])).to eq(2)
         expect($stderr.string).to include('Unrecognized cop or namespace: .')
       end
 
@@ -137,7 +137,7 @@ describe RuboCop::CLI, :isolated_environment do
           create_file('example.rb', ['if x== 0 ',
                                      "\ty",
                                      'end'])
-          expect(cli.run(['--only', 'UnneededDisable'])).to eq(1)
+          expect(cli.run(['--only', 'UnneededDisable'])).to eq(2)
           expect($stderr.string)
             .to include('Lint/UnneededDisable can not be used with --only.')
         end
@@ -310,21 +310,21 @@ describe RuboCop::CLI, :isolated_environment do
         create_file('example.rb', ['if x== 0 ',
                                    "\ty",
                                    'end'])
-        expect(cli.run(['--except', 'Style/123'])).to eq(1)
+        expect(cli.run(['--except', 'Style/123'])).to eq(2)
         expect($stderr.string)
           .to include('Unrecognized cop or namespace: Style/123.')
       end
 
       it 'exits with error if an empty string is given' do
         create_file('example.rb', 'x')
-        expect(cli.run(['--except', ''])).to eq(1)
+        expect(cli.run(['--except', ''])).to eq(2)
         expect($stderr.string).to include('Unrecognized cop or namespace: .')
       end
 
       %w(Syntax Lint/Syntax).each do |name|
         it "exits with error if #{name} is given" do
           create_file('example.rb', 'x ')
-          expect(cli.run(['--except', name])).to eq(1)
+          expect(cli.run(['--except', name])).to eq(2)
           expect($stderr.string)
             .to include('Syntax checking can not be turned off.')
         end
@@ -787,7 +787,7 @@ describe RuboCop::CLI, :isolated_environment do
 
       context 'when unknown format name is specified' do
         it 'aborts with error message' do
-          expect(cli.run(['--format', 'unknown', 'example.rb'])).to eq(1)
+          expect(cli.run(['--format', 'unknown', 'example.rb'])).to eq(2)
           expect($stderr.string)
             .to include('No formatter for "unknown"')
         end
@@ -796,7 +796,7 @@ describe RuboCop::CLI, :isolated_environment do
       context 'when ambiguous format name is specified' do
         it 'aborts with error message' do
           # Both 'files' and 'fuubar' start with an 'f'.
-          expect(cli.run(['--format', 'f', 'example.rb'])).to eq(1)
+          expect(cli.run(['--format', 'f', 'example.rb'])).to eq(2)
           expect($stderr.string)
             .to include('Cannot determine formatter for "f"')
         end
@@ -840,7 +840,7 @@ describe RuboCop::CLI, :isolated_environment do
       context 'when unknown class name is specified' do
         it 'aborts with error message' do
           args = '--format UnknownFormatter example.rb'
-          expect(cli.run(args.split)).to eq(1)
+          expect(cli.run(args.split)).to eq(2)
           expect($stderr.string).to include('UnknownFormatter')
         end
       end
@@ -1014,7 +1014,7 @@ describe RuboCop::CLI, :isolated_environment do
         argv   = ['--only=Style/SpecialGlobalVars',
                   '--format=simple',
                   '--stdin']
-        expect(cli.run(argv)).to eq(1)
+        expect(cli.run(argv)).to eq(2)
         expect($stderr.string).to include(
           '-s/--stdin requires exactly one path.')
       ensure
@@ -1030,7 +1030,7 @@ describe RuboCop::CLI, :isolated_environment do
                   '--stdin',
                   'fake1.rb',
                   'fake2.rb']
-        expect(cli.run(argv)).to eq(1)
+        expect(cli.run(argv)).to eq(2)
         expect($stderr.string).to include(
           '-s/--stdin requires exactly one path.')
       ensure
