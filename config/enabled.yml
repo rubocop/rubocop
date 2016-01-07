@@ -1060,6 +1060,12 @@ Lint/ParenthesesAsGroupedExpression:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#parens-no-spaces'
   Enabled: true
 
+Lint/RandOne:
+  Description: >-
+                 Checks for `rand(1)` calls. Such calls always return `0`
+                 and most likely a mistake.
+  Enabled: true
+
 Lint/RequireParentheses:
   Description: >-
                  Use parentheses in the method call to avoid confusion
