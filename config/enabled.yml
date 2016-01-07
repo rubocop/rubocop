@@ -1159,6 +1159,12 @@ Performance/Detect:
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#enumerabledetect-vs-enumerableselectfirst-code'
   Enabled: true
 
+Performance/DoubleStartEndWith:
+  Description: >-
+                  Use `str.{start,end}_with?(x, ..., y, ...)`
+                  instead of `str.{start,end}_with?(x, ...) || str.{start,end}_with?(y, ...)`.
+  Enabled: true
+
 Performance/EndWith:
   Description: 'Use `end_with?` instead of a regex match anchored to the end of a string.'
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#stringmatch-vs-stringstart_withstringend_with-code-start-code-end'
