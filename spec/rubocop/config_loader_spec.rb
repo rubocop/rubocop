@@ -344,6 +344,18 @@ describe RuboCop::ConfigLoader do
         expect { configuration_from_file }.not_to raise_error
       end
     end
+
+    context 'when a file inherits from a non http/https url' do
+      let(:file_path) { '.rubocop.yml' }
+
+      before do
+        create_file(file_path, ['inherit_from: c:\\\\foo\\bar.yml'])
+      end
+
+      it 'fails to load the resulting path' do
+        expect { configuration_from_file }.to raise_error(Errno::ENOENT)
+      end
+    end
   end
 
   describe '.load_file', :isolated_environment do
