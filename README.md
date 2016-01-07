@@ -303,10 +303,16 @@ inherit_from:
 
 The optional `inherit_from` directive can contain a full url to a remote
 file. This makes it possible to have common project settings stored on a http
-server and shared between many projects. You can inherit from both remote and
-local files in the same config.
+server and shared between many projects.
 
-The same inheritance rules apply to remote URLs and inheriting from local
+The remote config file is cached locally and is only updated if:
+
+- The file does not exist.
+- The file has not been updated in the last 24 hours.
+- The remote copy has a newer modification time than the local copy.
+
+You can inherit from both remote and local files in the same config and the
+same inheritance rules apply to remote URLs and inheriting from local
 files where the first file in the list has the lowest precedence and the
 last one has the highest. The format for multiple inheritance using URLs is:
 
