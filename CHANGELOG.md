@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#XXX](https://github.com/bbatsov/rubocop/pull/XXX): New cop `Rails/SafeNavigationOperator` checks for the use of `#try!` and instead encourages changing it to Ruby 2.3's safe navigation operator - `&.` (enabled by default). ([@syndbg][])
 * [#2529](https://github.com/bbatsov/rubocop/pull/2529): Add EnforcedStyle config parameter to IndentArray. ([@jawshooah][])
 * [#2479](https://github.com/bbatsov/rubocop/pull/2479): Add option `AllowHeredoc` to `Metrics/LineLength`. ([@fphilipe][])
 * [#2416](https://github.com/bbatsov/rubocop/pull/2416): New cop `Style/ConditionalAssignment` checks for assignment of the same variable in all branches of conditionals and replaces them with a single assignment to the return of the conditional. ([@rrosenblum][])
