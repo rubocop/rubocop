@@ -75,6 +75,7 @@ specific RuboCop release.**
 - [Git pre-commit hook integration](#git-pre-commit-hook-integration)
 - [Guard integration](#guard-integration)
 - [Rake integration](#rake-integration)
+- [Exit codes](#exit-codes)
 - [Caching](#caching)
     - [Cache Validity](#cache-validity)
     - [Enabling and Disabling the Cache](#enabling-and-disabling-the-cache)
@@ -894,7 +895,6 @@ like
 allows you to automatically check Ruby code style with RuboCop when
 files are modified.
 
-
 ## Rake integration
 
 To use RuboCop in your `Rakefile` add the following:
@@ -926,6 +926,18 @@ RuboCop::RakeTask.new(:rubocop) do |task|
   task.fail_on_error = false
 end
 ```
+
+## Exit codes
+
+RuboCop exits with the following status codes:
+
+- 0 if no offenses are found, or if the severity of all offenses are less than
+  `--fail-level`. (By default, if you use `--auto-correct`, offenses which are
+  auto-corrected do not cause RuboCop to fail.)
+- 1 if one or more offenses equal or greater to `--fail-level` are found. (By
+  default, this is any offense which is not auto-corrected.)
+- 2 if RuboCop terminates abnormally due to invalid configuration, invalid CLI
+  options, or an internal error.
 
 ## Caching
 
