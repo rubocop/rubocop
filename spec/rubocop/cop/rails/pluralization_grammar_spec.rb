@@ -53,10 +53,10 @@ describe RuboCop::Cop::Rails::PluralizationGrammar do
 
     context "when #{method_name} is called on any other literal number" do
       [-rand(2..1000),
-       rand(-1.0...0),
+       rand(-1.0..0),
        -1,
        0,
-       rand(0...1.0),
+       rand(0..1.0),
        rand(2..1000)].each do |plural_number|
         context "when using the plural form ##{method_name}s" do
           let(:source) { "#{plural_number}.#{method_name}s" }
