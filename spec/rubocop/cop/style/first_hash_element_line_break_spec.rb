@@ -53,7 +53,7 @@ describe RuboCop::Cop::Style::FirstHashElementLineBreak do
     end
   end
 
-  it 'ignores implicit hashes in method calls if properly formatted' do
+  it 'ignores implicit hashes in method calls with parens' do
     inspect_source(
       cop,
       ['method(',
@@ -72,27 +72,14 @@ describe RuboCop::Cop::Style::FirstHashElementLineBreak do
     expect(cop.offenses).to be_empty
   end
 
-  context 'implicit hash in method call that is improperly formatted' do
-    let(:source) do
+  it 'ignores implicit hashes in method calls that are improperly formatted' do
+    # These are covered by Style/FirstMethodArgumentLineBreak
+    inspect_source(
+      cop,
       ['method(foo: 1,',
-       '  bar: 2)']
-    end
+       '  bar: 2)'])
 
-    it 'detects the offense' do
-      inspect_source(cop, source)
-
-      expect(cop.offenses.length).to eq(1)
-      expect(cop.offenses.first.line).to eq(1)
-      expect(cop.highlights).to eq(['foo: 1'])
-    end
-
-    it 'autocorrects the offense' do
-      new_source = autocorrect_source(cop, source)
-      expect(new_source).to eq(
-        "method(\n" \
-        "foo: 1,\n" \
-        '  bar: 2)')
-    end
+    expect(cop.offenses).to be_empty
   end
 
   it 'ignores elements listed on a single line' do

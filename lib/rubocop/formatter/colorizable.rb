@@ -11,7 +11,7 @@ module RuboCop
           rainbow = Rainbow.new
           if options[:color]
             rainbow.enabled = true
-          elsif !output.tty?
+          elsif options[:color] == false || !output.tty?
             rainbow.enabled = false
           end
           rainbow

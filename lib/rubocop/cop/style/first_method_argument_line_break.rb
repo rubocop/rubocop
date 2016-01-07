@@ -29,6 +29,18 @@ module RuboCop
         def on_send(node)
           _receiver, _name, *args = *node
 
+          # If there is a trailing hash arg without explicit braces, like this:
+          #
+          #    method(1, 'key1' => value1, 'key2' => value2)
+          #
+          # ...then each key/value pair is treated as a method 'argument'
+          # when determining where line breaks should appear.
+          if (last_arg = args.last)
+            if last_arg.hash_type? && !last_arg.loc.begin # no explicit {
+              args = args.concat(args.pop.children)
+            end
+          end
+
           check_method_line_break(node, args)
         end
       end

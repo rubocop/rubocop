@@ -6,7 +6,7 @@ module RuboCop
     module StringLiteralsHelp
       include StringHelp
 
-      def wrong_quotes?(node, style)
+      def wrong_quotes?(node)
         src = node.source
         return false if src.start_with?('%', '?')
         if style == :single_quotes
@@ -17,6 +17,8 @@ module RuboCop
       end
 
       def autocorrect(node)
+        return if node.dstr_type?
+
         lambda do |corrector|
           str = node.str_content
           if style == :single_quotes

@@ -151,7 +151,8 @@ describe RuboCop::CLI, :isolated_environment do
     expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(1)
     expect($stdout.string)
       .to eq(["#{abs('example.rb')}:4:2: E: unexpected " \
-              'token $end',
+              'token $end (Using Ruby 2.0 parser; configure using ' \
+              '`TargetRubyVersion` parameter, under `AllCops`)',
               ''].join("\n"))
   end
 
@@ -1468,6 +1469,22 @@ describe RuboCop::CLI, :isolated_environment do
            'Please either disable this cop, configure it to use `array` ' \
            'style, or adjust the `TargetRubyVersion` parameter in your ' \
            'configuration.'].join("\n"))
+      end
+    end
+  end
+
+  describe 'obsolete cops' do
+    context 'when configuration for TrailingComma is given' do
+      it 'fails with an error message' do
+        create_file('example1.rb', "puts 'hello'")
+        create_file('.rubocop.yml', ['Style/TrailingComma:',
+                                     '  Enabled: true'])
+        expect(cli.run(['example1.rb'])).to eq(1)
+        expect($stderr.string.strip).to eq(
+          ['Error: The `Style/TrailingComma` cop no longer exists. Please ' \
+           'use `Style/TrailingCommaInLiteral` and/or ' \
+           '`Style/TrailingCommaInArguments` instead.',
+           "(configuration found in #{abs('.rubocop.yml')})"].join("\n"))
       end
     end
   end

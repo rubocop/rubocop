@@ -8,8 +8,7 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
   context 'configured with single quotes preferred' do
     let(:cop_config) { { 'EnforcedStyle' => 'single_quotes' } }
 
-    it 'registers offense for double quotes when single quotes ' \
-       'suffice' do
+    it 'registers offense for double quotes when single quotes suffice' do
       inspect_source(cop, ['s = "abc"',
                            'x = "a\\\\b"',
                            'y ="\\\\b"',
@@ -242,6 +241,92 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
     it 'fails' do
       expect { inspect_source(cop, 'a = "b"') }
         .to raise_error(RuntimeError)
+    end
+  end
+
+  context 'when ConsistentQuotesInMultiline is true' do
+    context 'and EnforcedStyle is single_quotes' do
+      let(:cop_config) do
+        {
+          'ConsistentQuotesInMultiline' => true,
+          'EnforcedStyle' => 'single_quotes'
+        }
+      end
+
+      it 'accepts continued strings using all single quotes' do
+        inspect_source(cop, ["'abc' \\",
+                             "'def'"])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'registers an offense for mixed quote styles in a continued string' do
+        inspect_source(cop, ["'abc' \\",
+                             '"def"'])
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.messages).to eq(['Inconsistent quote style.'])
+        expect(cop.highlights).to eq(["'abc' \\\n\"def\""])
+      end
+
+      it 'registers an offense for unneeded double quotes in continuation' do
+        inspect_source(cop, ['"abc" \\',
+                             '"def"'])
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.messages).to eq(['Prefer single-quoted strings when you ' \
+                                    "don't need string interpolation or " \
+                                    'special symbols.'])
+        expect(cop.highlights).to eq(["\"abc\" \\\n\"def\""])
+      end
+
+      it "doesn't register offense for double quotes with interpolation" do
+        inspect_source(cop, ['"abc" \\',
+                             '"def#{1}"'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it "doesn't register offense for double quotes with embedded single" do
+        inspect_source(cop, ['"abc\'" \\',
+                             '"def"'])
+        expect(cop.offenses).to be_empty
+      end
+    end
+
+    context 'and EnforcedStyle is double_quotes' do
+      let(:cop_config) do
+        {
+          'ConsistentQuotesInMultiline' => true,
+          'EnforcedStyle' => 'double_quotes'
+        }
+      end
+
+      it 'accepts continued strings using all double quotes' do
+        inspect_source(cop, ['"abc" \\',
+                             '"def"'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'registers an offense for mixed quote styles in a continued string' do
+        inspect_source(cop, ["'abc' \\",
+                             '"def"'])
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.messages).to eq(['Inconsistent quote style.'])
+        expect(cop.highlights).to eq(["'abc' \\\n\"def\""])
+      end
+
+      it 'registers an offense for unneeded single quotes in continuation' do
+        inspect_source(cop, ["'abc' \\",
+                             "'def'"])
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.messages).to eq(['Prefer double-quoted strings unless you ' \
+                                    'need single quotes to avoid extra ' \
+                                    'backslashes for escaping.'])
+        expect(cop.highlights).to eq(["'abc' \\\n'def'"])
+      end
+
+      it "doesn't register offense for single quotes with embedded double" do
+        inspect_source(cop, ["'abc\"' \\",
+                             "'def'"])
+        expect(cop.offenses).to be_empty
+      end
     end
   end
 end

@@ -80,13 +80,10 @@ describe RuboCop::Cop::Style::EmptyLinesAroundClassBody, :config do
                                   'Empty line missing at class body end.'])
     end
 
-    it 'autocorrects class body containing nothing' do
-      corrected = autocorrect_source(cop,
-                                     ['class SomeClass',
-                                      'end'])
-      expect(corrected).to eq ['class SomeClass',
-                               '',
-                               'end'].join("\n")
+    it 'ignores classes with an empty body' do
+      source = "class SomeClass\nend"
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq(source)
     end
 
     it 'autocorrects beginning and end' do
@@ -111,13 +108,10 @@ describe RuboCop::Cop::Style::EmptyLinesAroundClassBody, :config do
                                   'Empty line missing at class body end.'])
     end
 
-    it 'autocorrects singleton class body containing nothing' do
-      corrected = autocorrect_source(cop,
-                                     ['class << self',
-                                      'end'])
-      expect(corrected).to eq ['class << self',
-                               '',
-                               'end'].join("\n")
+    it 'ignores singleton classes with an empty body' do
+      source = "class << self\nend"
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq(source)
     end
 
     it 'autocorrects beginning and end' do

@@ -21,8 +21,8 @@ module RuboCop
 
         private
 
-        def on_method_def(node, _method_name, _args, _body)
-          check(node)
+        def on_method_def(node, _method_name, _args, body)
+          check(node, body)
         end
 
         # Override ConfigurableEnforcedStyle#style and hard-code

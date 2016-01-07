@@ -1,6 +1,5 @@
 # encoding: utf-8
 
-require 'delegate'
 require 'pathname'
 
 # rubocop:disable Metrics/ClassLength
@@ -11,7 +10,7 @@ module RuboCop
   # file from which it was read. Several different Configs can be used
   # during a run of the rubocop program, if files in several
   # directories are inspected.
-  class Config < DelegateClass(Hash)
+  class Config < Hash
     include PathUtil
 
     COMMON_PARAMS = %w(Exclude Include Severity AutoCorrect StyleGuide Details)
@@ -24,11 +23,7 @@ module RuboCop
       @for_cop = Hash.new do |h, cop|
         h[cop] = self[Cop::Cop.qualified_cop_name(cop, loaded_path)] || {}
       end
-      super(hash)
-    end
-
-    def to_s
-      @to_s ||= __getobj__.to_s
+      replace(hash)
     end
 
     def make_excludes_absolute
@@ -112,20 +107,8 @@ module RuboCop
         ConfigLoader.default_configuration.key?(key)
       end
 
-      invalid_cop_names.each do |name|
-        if name == 'Syntax'
-          fail ValidationError,
-               "configuration for Syntax cop found in #{loaded_path}\n" \
-               'This cop cannot be configured.'
-        end
-
-        # There could be a custom cop with this name. If so, don't warn
-        next if Cop::Cop.all.any? { |c| c.match?([name]) }
-
-        warn Rainbow.new.wrap("Warning: unrecognized cop #{name} found in " \
-                              "#{loaded_path}").yellow
-      end
-
+      reject_obsolete_cops
+      warn_about_unrecognized_cops(invalid_cop_names)
       reject_obsolete_parameters
       check_target_ruby
       validate_parameter_names(valid_cop_names)
@@ -194,6 +177,22 @@ module RuboCop
 
     private
 
+    def warn_about_unrecognized_cops(invalid_cop_names)
+      invalid_cop_names.each do |name|
+        if name == 'Syntax'
+          fail ValidationError,
+               "configuration for Syntax cop found in #{loaded_path}\n" \
+               'This cop cannot be configured.'
+        end
+
+        # There could be a custom cop with this name. If so, don't warn
+        next if Cop::Cop.all.any? { |c| c.match?([name]) }
+
+        warn Rainbow("Warning: unrecognized cop #{name} found in " \
+                     "#{loaded_path}").yellow
+      end
+    end
+
     def validate_section_presence(name)
       return unless key?(name) && self[name].nil?
       fail ValidationError, "empty section #{name} found in #{loaded_path}"
@@ -206,8 +205,8 @@ module RuboCop
           next if COMMON_PARAMS.include?(param) ||
                   ConfigLoader.default_configuration[name].key?(param)
 
-          warn Rainbow.new.wrap("Warning: unrecognized parameter #{name}:" \
-                                "#{param} found in #{loaded_path}").yellow
+          warn Rainbow("Warning: unrecognized parameter #{name}:#{param} " \
+                       "found in #{loaded_path}").yellow
         end
       end
     end
@@ -241,6 +240,16 @@ module RuboCop
         fail ValidationError, "obsolete parameter #{parameter} (for #{cop}) " \
                               "found in #{loaded_path}" \
                               "#{"\n" if alternative}#{alternative}"
+      end
+    end
+
+    def reject_obsolete_cops
+      if key?('Style/TrailingComma')
+        fail ValidationError, 'The `Style/TrailingComma` cop no longer ' \
+                              'exists. Please use ' \
+                              '`Style/TrailingCommaInLiteral` and/or ' \
+                              "`Style/TrailingCommaInArguments` instead.\n" \
+                              "(configuration found in #{loaded_path})"
       end
     end
 

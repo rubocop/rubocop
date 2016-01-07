@@ -67,7 +67,7 @@ describe RuboCop::Cop::Style::OptionalArguments do
   end
 
   context 'named params' do
-    context 'with default values', ruby_greater_than_or_equal: 2.0 do
+    context 'with default values', :ruby20 do
       it 'allows optional arguments before an optional named argument' do
         inspect_source(cop, ['def foo(a = 1, b: 2)',
                              'end'])
@@ -76,7 +76,7 @@ describe RuboCop::Cop::Style::OptionalArguments do
       end
     end
 
-    context 'required params', ruby_greater_than_or_equal: 2.1 do
+    context 'required params', :ruby21 do
       it 'registers an offense for optional arguments that come before ' \
          'required arguments where there are name arguments' do
         inspect_source(cop, ['def foo(a = 1, b, c:, d: 4)',

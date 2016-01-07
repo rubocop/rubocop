@@ -26,11 +26,7 @@ module RuboCop
 
       def inside_interpolation?(node)
         # A :begin node inside a :dstr node is an interpolation.
-        begin_found = false
-        node.each_ancestor.any? do |a|
-          begin_found = true if a.type == :begin
-          begin_found && a.type == :dstr
-        end
+        node.ancestors.drop_while { |a| !a.begin_type? }.any?(&:dstr_type?)
       end
     end
   end

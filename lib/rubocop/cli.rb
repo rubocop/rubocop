@@ -33,7 +33,7 @@ module RuboCop
 
       all_passed && !runner.aborting? && runner.errors.empty? ? 0 : 1
     rescue RuboCop::Error => e
-      $stderr.puts Rainbow.new.wrap('Error: ' << e.message).red
+      $stderr.puts Rainbow("Error: #{e.message}").red
       return 1
     rescue Finished
       return 0

@@ -22,10 +22,14 @@ module RuboCop
 
         private
 
-        def check(node)
+        def check(node, body)
+          # When style is `empty_lines`, if the body is empty, we don't enforce
+          # the presence OR absence of an empty line
+          # But if style is `no_empty_lines`, there must not be an empty line
+          return unless body || style == :no_empty_lines
+
           start_line = node.loc.keyword.line
           end_line = node.loc.end.line
-
           return if start_line == end_line
 
           check_source(start_line, end_line)

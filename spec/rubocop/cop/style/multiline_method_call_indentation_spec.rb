@@ -8,11 +8,13 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
     merged = RuboCop::ConfigLoader
              .default_configuration['Style/MultilineMethodCallIndentation']
              .merge(cop_config)
+             .merge('IndentationWidth' => cop_indent)
     RuboCop::Config
       .new('Style/MultilineMethodCallIndentation' => merged,
            'Style/IndentationWidth' => { 'Width' => indentation_width })
   end
   let(:indentation_width) { 2 }
+  let(:cop_indent) { nil } # use indentation width from Style/IndentationWidth
 
   shared_examples 'common' do
     it 'accepts indented methods in LHS of []= assignment' do
@@ -634,6 +636,86 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
                                 '    b',
                                 '  something',
                                 'end'].join("\n"))
+    end
+
+    context 'when indentation width is overridden for this cop' do
+      let(:cop_indent) { 7 }
+
+      it 'accepts indented methods' do
+        inspect_source(cop,
+                       ['User.a',
+                        '       .c',
+                        '       .b'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'accepts correctly indented methods in operation' do
+        inspect_source(cop, ['        1 + a',
+                             '               .b',
+                             '               .c'])
+        expect(cop.offenses).to be_empty
+        expect(cop.highlights).to be_empty
+      end
+
+      it 'accepts indented methods in if condition' do
+        inspect_source(cop,
+                       ['if a.',
+                        '         b',
+                        '  something',
+                        'end'])
+        expect(cop.messages).to be_empty
+      end
+
+      it 'accepts indentation of assignment' do
+        inspect_source(cop,
+                       ['formatted_int = int_part',
+                        '       .abs',
+                        '       .to_s',
+                        '       .reverse'])
+        expect(cop.messages).to be_empty
+      end
+
+      [
+        %w(an if),
+        %w(an unless),
+        %w(a while),
+        %w(an until)
+      ].each do |article, keyword|
+        it "accepts indentation of #{keyword} condition which is offset " \
+           'by a single normal indentation step' do
+          # normal code indentation is 2 spaces, and we have configured
+          # multiline method indentation to 7 spaces
+          # so in this case, 9 spaces are required
+          inspect_source(cop,
+                         ["#{keyword} receiver.",
+                          '         nil? &&',
+                          '         !args.empty?',
+                          'end'])
+          expect(cop.messages).to be_empty
+        end
+
+        it "registers an offense for a 4 space indentation of #{keyword} " \
+           'condition' do
+          inspect_source(cop,
+                         ["#{keyword} receiver",
+                          '    .nil? &&',
+                          '    !args.empty?',
+                          'end'])
+          expect(cop.highlights).to eq(['.nil?'])
+          expect(cop.messages).to eq(['Use 9 (not 4) spaces for indenting a ' \
+                                      "condition in #{article} `#{keyword}` " \
+                                      'statement spanning multiple lines.'])
+        end
+
+        it "accepts indented methods in #{keyword} body" do
+          inspect_source(cop,
+                         ["#{keyword} a",
+                          '  something.',
+                          '         something_else',
+                          'end'])
+          expect(cop.highlights).to be_empty
+        end
+      end
     end
   end
 end

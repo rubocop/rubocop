@@ -332,7 +332,7 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     it_behaves_like(:escape_characters, '%x')
     it_behaves_like(:escape_characters, '%r')
 
-    context 'symbol array', ruby_greater_than_or_equal: 2.0 do
+    context 'symbol array', :ruby20 do
       it_behaves_like(:escape_characters, '%i')
     end
   end

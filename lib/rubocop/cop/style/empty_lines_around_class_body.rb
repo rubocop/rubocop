@@ -22,11 +22,13 @@ module RuboCop
         KIND = 'class'
 
         def on_class(node)
-          check(node)
+          _name, _superclass, body = *node
+          check(node, body)
         end
 
         def on_sclass(node)
-          check(node)
+          _obj, body = *node
+          check(node, body)
         end
       end
     end

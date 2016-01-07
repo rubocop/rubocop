@@ -49,8 +49,13 @@ module RuboCop
       end
 
       def correct_indentation(node)
-        multiplier = kw_node_with_special_indentation(node) ? 2 : 1
-        configured_indentation_width * multiplier
+        if kw_node_with_special_indentation(node)
+          # This cop could have its own IndentationWidth configuration
+          configured_indentation_width +
+            @config.for_cop('Style/IndentationWidth')['Width']
+        else
+          configured_indentation_width
+        end
       end
 
       def check(range, node, lhs, rhs)

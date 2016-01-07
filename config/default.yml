@@ -73,6 +73,9 @@ Style/AccessModifierIndentation:
   SupportedStyles:
     - outdent
     - indent
+  # By default, the indentation width from Style/IndentationWidth is used
+  # But it can be overridden by setting this parameter
+  IndentationWidth: ~
 
 Style/Alias:
   EnforcedStyle: prefer_alias
@@ -271,6 +274,10 @@ Style/CaseIndentation:
     - case
     - end
   IndentOneStep: false
+  # By default, the indentation width from Style/IndentationWidth is used
+  # But it can be overridden by setting this parameter
+  # This only matters if IndentOneStep is true
+  IndentationWidth: ~
 
 Style/ClassAndModuleChildren:
   # Checks the style of children definitions at classes and modules.
@@ -452,6 +459,9 @@ Style/FirstParameterIndentation:
     # Same as special_for_inner_method_call except that the special rule only
     # applies if the outer method call encloses its arguments in parentheses.
     - special_for_inner_method_call_in_parentheses
+  # By default, the indentation width from Style/IndentationWidth is used
+  # But it can be overridden by setting this parameter
+  IndentationWidth: ~
 
 # Checks use of for or each in multiline loops.
 Style/For:
@@ -523,6 +533,15 @@ Style/IndentArray:
     - special_inside_parentheses
     - consistent
     - align_brackets
+  # By default, the indentation width from Style/IndentationWidth is used
+  # But it can be overridden by setting this parameter
+  IndentationWidth: ~
+
+# Checks the indentation of assignment RHS, when on a different line from LHS
+Style/IndentAssignment:
+  # By default, the indentation width from Style/IndentationWidth is used
+  # But it can be overridden by setting this parameter
+  IndentationWidth: ~
 
 # Checks the indentation of the first key in a hash literal.
 Style/IndentHash:
@@ -542,6 +561,9 @@ Style/IndentHash:
     - special_inside_parentheses
     - consistent
     - align_braces
+  # By default, the indentation width from Style/IndentationWidth is used
+  # But it can be overridden by setting this parameter
+  IndentationWidth: ~
 
 Style/LambdaCall:
   EnforcedStyle: call
@@ -606,12 +628,18 @@ Style/MultilineMethodCallIndentation:
   SupportedStyles:
     - aligned
     - indented
+  # By default, the indentation width from Style/IndentationWidth is used
+  # But it can be overridden by setting this parameter
+  IndentationWidth: ~
 
 Style/MultilineOperationIndentation:
   EnforcedStyle: aligned
   SupportedStyles:
     - aligned
     - indented
+  # By default, the indentation width from Style/IndentationWidth is used
+  # But it can be overridden by setting this parameter
+  IndentationWidth: ~
 
 Style/NumericLiterals:
   MinDigits: 5
@@ -733,6 +761,9 @@ Style/StringLiterals:
   SupportedStyles:
     - single_quotes
     - double_quotes
+  # If true, strings which span multiple lines using \ for continuation must
+  # use the same type of quotes on each line.
+  ConsistentQuotesInMultiline: false
 
 Style/StringLiteralsInInterpolation:
   EnforcedStyle: single_quotes
@@ -815,11 +846,22 @@ Style/TrailingBlankLines:
     - final_newline
     - final_blank_line
 
-Style/TrailingComma:
-  # If EnforcedStyleForMultiline is comma, the cop requires a comma after the
-  # last item of a list, but only for lists where each item is on its own line.
-  # If EnforcedStyleForMultiline is consistent_comma, the cop requires a comma
-  # after the last item of a list, for all lists.
+Style/TrailingCommaInArguments:
+  # If `comma`, the cop requires a comma after the last argument, but only for
+  # parenthesized method calls where each argument is on its own line.
+  # If `consistent_comma`, the cop requires a comma after the last argument,
+  # for all parenthesized method calls with arguments.
+  EnforcedStyleForMultiline: no_comma
+  SupportedStyles:
+    - comma
+    - consistent_comma
+    - no_comma
+
+Style/TrailingCommaInLiteral:
+  # If `comma`, the cop requires a comma after the last item in an array or
+  # hash, but only when each item is on its own line.
+  # If `consistent_comma`, the cop requires a comma after the last item of all
+  # non-empty array and hash literals.
   EnforcedStyleForMultiline: no_comma
   SupportedStyles:
     - comma

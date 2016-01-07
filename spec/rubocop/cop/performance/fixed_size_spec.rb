@@ -177,7 +177,7 @@ describe RuboCop::Cop::Performance::FixedSize do
         expect(cop.messages).to be_empty
       end
 
-      context 'ruby >= 2.0', ruby_greater_than_or_equal: 2.0 do
+      context 'ruby >= 2.0', :ruby20 do
         it "accepts calling #{method} on a hash that contains a double splat" do
           inspect_source(cop, "{a: 1, **foo}.#{method}")
 

@@ -11,15 +11,13 @@ module RuboCop
     STRING_SOURCE_NAME = '(string)'
 
     attr_reader :path, :buffer, :ast, :comments, :tokens, :diagnostics,
-                :parser_error, :raw_source
+                :parser_error, :raw_source, :ruby_version
 
     def self.from_file(path, ruby_version)
       file = File.read(path)
       new(file, ruby_version, path)
     rescue Errno::ENOENT
-      abort("#{Rainbow('rubocop: No such file or directory').red} -- #{path}")
-    rescue => ex
-      abort("#{Rainbow("rubocop: #{ex.message}").red} -- #{path}")
+      raise RuboCop::Error, "No such file or directory: #{path}"
     end
 
     def initialize(source, ruby_version, path = nil)
@@ -31,6 +29,8 @@ module RuboCop
       @raw_source = source
       @path = path
       @diagnostics = []
+      @ruby_version = ruby_version
+
       parse(source, ruby_version)
     end
 

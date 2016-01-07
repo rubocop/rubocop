@@ -8,6 +8,28 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include StringLiteralsHelp
 
+        MSG_INCONSISTENT = 'Inconsistent quote style.'
+
+        def on_dstr(node)
+          # Strings which are continued across multiple lines using \
+          # are parsed as a `dstr` node with `str` children
+          # If one part of that continued string contains interpolations,
+          # then it will be parsed as a nested `dstr` node
+          return unless consistent_multiline?
+
+          children = node.children
+          return unless children.all? { |c| c.str_type? || c.dstr_type? }
+
+          quote_styles = children.map { |c| c.loc.begin.source }.uniq
+          if quote_styles.size > 1
+            add_offense(node, :expression, MSG_INCONSISTENT)
+          else
+            check_multiline_quote_style(node, quote_styles[0])
+          end
+
+          ignore_node(node)
+        end
+
         private
 
         def message(*)
@@ -25,7 +47,24 @@ module RuboCop
           # for this cop.
           return false if inside_interpolation?(node)
 
-          wrong_quotes?(node, style)
+          wrong_quotes?(node)
+        end
+
+        def consistent_multiline?
+          cop_config['ConsistentQuotesInMultiline']
+        end
+
+        def check_multiline_quote_style(node, quote)
+          range = node.source_range
+          children = node.children
+          if quote == "'" && style == :double_quotes
+            add_offense(node, range) if children.all? { |c| wrong_quotes?(c) }
+          elsif quote == '"' && style == :single_quotes
+            if children.none?(&:dstr_type?) &&
+               children.none? { |c| double_quotes_acceptable?(c.str_content) }
+              add_offense(node, range)
+            end
+          end
         end
       end
     end

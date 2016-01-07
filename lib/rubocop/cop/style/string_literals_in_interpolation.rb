@@ -22,7 +22,7 @@ module RuboCop
           # offense for this cop.
           return false unless inside_interpolation?(node)
 
-          wrong_quotes?(node, style)
+          wrong_quotes?(node)
         end
       end
     end

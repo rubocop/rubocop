@@ -335,6 +335,30 @@ describe RuboCop::Cop::Style::CaseIndentation do
                                    ''].join("\n"))
         end
       end
+
+      context 'when indentation width is overridden for this cop only' do
+        let(:cop_config) do
+          {
+            'IndentWhenRelativeTo' => 'case',
+            'IndentOneStep' => true,
+            'IndentationWidth' => 5
+          }
+        end
+
+        let(:source) do
+          ['output = case variable',
+           "              when 'value1'",
+           "             'output1'",
+           '              else',
+           "             'output2'",
+           '         end']
+        end
+
+        it 'respects cop-specific IndentationWidth' do
+          inspect_source(cop, source)
+          expect(cop.offenses).to be_empty
+        end
+      end
     end
   end
 

@@ -75,5 +75,11 @@ describe RuboCop::Cop::Style::EmptyLinesAroundModuleBody, :config do
                                 '',
                                 'end'].join("\n"))
     end
+
+    it 'ignores modules with an empty body' do
+      source = "module A\nend"
+      corrected = autocorrect_source(cop, source)
+      expect(corrected).to eq(source)
+    end
   end
 end

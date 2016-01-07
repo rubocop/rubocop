@@ -24,8 +24,8 @@ describe RuboCop::ConfigStore do
 
   describe '.for' do
     it 'always uses config specified in command line' do
-      config_store.options_config = :options_config
-      expect(config_store.for('file1')).to eq('merged options_config')
+      config_store.options_config = { options_config: true }
+      expect(config_store.for('file1')).to eq('merged {:options_config=>true}')
     end
 
     context 'when no config specified in command line' do

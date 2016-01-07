@@ -213,7 +213,7 @@ describe RuboCop::Cop::Style::AlignHash, :config do
                                  '         c: 3 }'].join("\n"))
     end
 
-    context 'ruby >= 2.0', ruby_greater_than_or_equal: 2.0 do
+    context 'ruby >= 2.0', :ruby20 do
       it 'auto-corrects alignment when using double splat ' \
          'in an explicit hash' do
         new_source = autocorrect_source(cop, ["Hash(foo: 'bar',",
@@ -287,7 +287,7 @@ describe RuboCop::Cop::Style::AlignHash, :config do
       expect(cop.offenses).to be_empty
     end
 
-    context 'ruby >= 2.0', ruby_greater_than_or_equal: 2.0 do
+    context 'ruby >= 2.0', :ruby20 do
       it 'accepts hashes that use different separators and double splats' do
         inspect_source(cop, ['hash = {',
                              '  a: 1,',
@@ -423,7 +423,7 @@ describe RuboCop::Cop::Style::AlignHash, :config do
       expect(cop.offenses.size).to eq(1)
     end
 
-    context 'ruby >= 2.0', ruby_greater_than_or_equal: 2.0 do
+    context 'ruby >= 2.0', :ruby20 do
       it 'accepts hashes with different separators' do
         inspect_source(cop, ['{a: 1,',
                              "  'b' => 2,",
@@ -448,6 +448,20 @@ describe RuboCop::Cop::Style::AlignHash, :config do
                                 'hash2 = { a => 0,',
                                 '         bb => 1,',
                                 '        ccc => 2 }'].join("\n"))
+    end
+
+    it "doesn't break code by moving long keys too far left" do
+      # regression test; see GH issue 2582
+      new_source = autocorrect_source(cop, ['{',
+                                            '  sjtjo: sjtjo,',
+                                            '  too_ono_ilitjion_tofotono_o: ' \
+                                            'too_ono_ilitjion_tofotono_o,',
+                                            '}'])
+      expect(new_source).to eq(['{',
+                                '  sjtjo: sjtjo,',
+                                'too_ono_ilitjion_tofotono_o: ' \
+                                'too_ono_ilitjion_tofotono_o,',
+                                '}'].join("\n"))
     end
   end
 
