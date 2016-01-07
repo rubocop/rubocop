@@ -150,6 +150,10 @@ module RuboCop
         pos
       end
 
+      def match_at(range, regexp)
+        range.source_buffer.source.match(regexp, range.begin_pos)
+      end
+
       def directions(side)
         if side == :both
           [true, true]

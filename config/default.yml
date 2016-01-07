@@ -814,7 +814,12 @@ Style/SpaceAroundOperators:
 
 Style/SpaceBeforeBlockBraces:
   EnforcedStyle: space
+  EnforcedStyleAfterStabbyArrow: inherit
   SupportedStyles:
+    - space
+    - no_space
+  SupportedStylesAfterStabbyArrow:
+    - inherit
     - space
     - no_space
 

@@ -9,6 +9,9 @@ module RuboCop
       class SpaceBeforeBlockBraces < Cop
         include ConfigurableEnforcedStyle
 
+        ARROW = '->'.freeze
+        RIGHT_AFTER_ARROW = /\G(?<=#{Regexp.quote(ARROW)})/
+
         def on_block(node)
           return if node.loc.begin.is?('do') # No braces.
 
@@ -26,14 +29,69 @@ module RuboCop
           used_style =
             space_plus_brace.source.start_with?('{') ? :no_space : :space
 
+          self.stabby_arrow_style_applied =
+            match_at(space_plus_brace, RIGHT_AFTER_ARROW) &&
+            style_after_stabby_arrow != style
+
           case used_style
-          when style  then correct_style_detected
-          when :space then space_detected(left_brace, space_plus_brace)
-          else             space_missing(left_brace)
+          when enforced_style
+            correct_style_detected
+          when :space
+            space_detected(left_brace, space_plus_brace)
+          else
+            space_missing(left_brace)
           end
         end
 
         private
+
+        attr_accessor :stabby_arrow_style_applied
+
+        def enforced_style
+          if stabby_arrow_style_applied
+            style_after_stabby_arrow
+          else
+            style
+          end
+        end
+
+        def style_after_stabby_arrow
+          @style_after_stabby_arrow ||=
+            case s = cop_config['EnforcedStyleAfterStabbyArrow'].to_sym
+            when :inherit
+              style
+            when *supported_styles_after_stabby_arrow
+              s
+            else
+              fail "Unknown style #{s} " \
+                   'for EnforcedStyleAfterStabbyArrow selected!'
+            end
+        end
+
+        def supported_styles_after_stabby_arrow
+          @supported_styles_after_stabby_arrow ||=
+            cop_config['SupportedStylesAfterStabbyArrow'].map(&:to_sym)
+        end
+
+        def opposite_style_detected
+          if stabby_arrow_style_applied
+            config_to_allow_offenses['EnforcedStyleAfterStabbyArrow'] =
+              (supported_styles_after_stabby_arrow -
+               [style_after_stabby_arrow]).map(&:to_s)
+            style_detected(style)
+          else
+            super
+          end
+        end
+
+        def correct_style_detected
+          if stabby_arrow_style_applied
+            config_to_allow_offenses['EnforcedStyleAfterStabbyArrow'] =
+              (supported_styles_after_stabby_arrow -
+               [style]).map(&:to_s)
+          end
+          super
+        end
 
         def space_missing(left_brace)
           add_offense(left_brace, left_brace,
