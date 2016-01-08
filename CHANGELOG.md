@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#2598](https://github.com/bbatsov/rubocop/pull/2598): New cop `Lint/RandOne` checks for `rand(1)`, `Kernel.rand(1.0)` and similar calls. Such call are most likely a mistake because they always return `0`. ([@DNNX][])
 * [#2590](https://github.com/bbatsov/rubocop/pull/2590): New cop `Performance/DoubleStartEndWith` checks for two `start_with?` (or `end_with?`) calls joined by `||` with the same receiver, like `str.start_with?('x') || str.start_with?('y')` and suggests using one call instead: `str.start_with?('x', 'y')`. ([@DNNX][])
 * [#2583](https://github.com/bbatsov/rubocop/pull/2583): New cop `Performance/TimesMap` checks for `x.times.map{}` and suggests replacing them with `Array.new(x){}`. ([@DNNX][])
 * [#2529](https://github.com/bbatsov/rubocop/pull/2529): Add EnforcedStyle config parameter to IndentArray. ([@jawshooah][])
@@ -118,6 +119,7 @@
 * [#2588](https://github.com/bbatsov/rubocop/issues/2588): `Style/SymbolProc` doesn't break code when autocorrecting a method call with a trailing comma in the argument list. ([@alexdowad][])
 * [#2448](https://github.com/bbatsov/rubocop/issues/2448): `Style/TrailingCommaInArguments` and `Style/TrailingCommaInLiteral` don't special-case single-item lists in a way which contradicts the documentation. ([@alexdowad][])
 * Fix for remote config files to only load from on http and https URLs. ([@ptrippett][])
+* [#2604](https://github.com/bbatsov/rubocop/issues/2604): `Style/FileName` doesn't fail on empty files when `ExpectMatchingDefinition` is true. ([@alexdowad][])
 
 ### Changes
 
