@@ -136,6 +136,17 @@ describe RuboCop::Cop::Style::FileName do
       end
     end
 
+    context 'on an empty file' do
+      let(:source) { '' }
+      let(:filename) { '/lib/rubocop/blah.rb' }
+
+      it 'registers an offense' do
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.messages).to eq(['blah.rb should define a class ' \
+                                    'or module called `Rubocop::Blah`.'])
+      end
+    end
+
     shared_examples 'matching module or class' do
       %w(lib src test spec).each do |dir|
         context "in a matching directory under #{dir}" do

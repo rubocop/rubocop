@@ -64,6 +64,7 @@ module RuboCop
         end
 
         def find_class_or_module(node, namespace)
+          return nil if node.nil?
           name = namespace.pop
 
           on_node([:class, :module, :casgn], node) do |child|
