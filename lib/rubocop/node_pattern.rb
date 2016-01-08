@@ -97,17 +97,17 @@ module RuboCop
     # @private
     # Builds Ruby code which implements a pattern
     class Compiler
-      RSYM      = %r{:(?:[\w+@_*/?!<>=~|%^-]+|\[\]=?)}
-      ID_CHAR   = /[a-zA-Z_]/
-      META_CHAR = /\(|\)|\{|\}|\[|\]|\$\.\.\.|\$|!|\^|\.\.\./
-      TOKEN     =
-        /\G(?:[\s,]+|#{META_CHAR}|\#?#{ID_CHAR}+[\!\?]?\(?|%\d*|\d+|#{RSYM}|.)/
+      RSYM    = %r{:(?:[\w+@_*/?!<>=~|%^-]+|\[\]=?)}
+      ID_CHAR = /[a-zA-Z_]/
+      META    = /\(|\)|\{|\}|\[|\]|\$\.\.\.|\$|!|\^|\.\.\./
+      TOKEN   =
+        /\G(?:[\s,]+|#{META}|\#?#{ID_CHAR}+[\!\?]?\(?|%\d*|-?\d+|#{RSYM}|.)/
 
       NODE      = /\A#{ID_CHAR}+\Z/
       PREDICATE = /\A#{ID_CHAR}+\?\(?\Z/
       WILDCARD  = /\A_#{ID_CHAR}*\Z/
       FUNCALL   = /\A\##{ID_CHAR}+[\!\?]?\(?\Z/
-      LITERAL   = /\A(?:#{RSYM}|\d+|nil)\Z/
+      LITERAL   = /\A(?:#{RSYM}|-?\d+|nil)\Z/
       PARAM     = /\A%\d*\Z/
       CLOSING   = /\A(?:\)|\}|\])\Z/
 

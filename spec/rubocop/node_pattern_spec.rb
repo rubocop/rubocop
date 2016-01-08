@@ -86,6 +86,14 @@ describe RuboCop::NodePattern do
     end
   end
 
+  describe 'literals' do
+    context 'negative integer literals' do
+      let(:pattern) { '(int -100)' }
+      let(:ruby) { '-100' }
+      it_behaves_like :matching
+    end
+  end
+
   describe 'simple sequence' do
     let(:pattern) { '(send int :+ int)' }
 
