@@ -100,14 +100,15 @@ module RuboCop
       RSYM    = %r{:(?:[\w+@_*/?!<>=~|%^-]+|\[\]=?)}
       ID_CHAR = /[a-zA-Z_]/
       META    = /\(|\)|\{|\}|\[|\]|\$\.\.\.|\$|!|\^|\.\.\./
+      NUMBER  = /-?\d+(?:\.\d+)?/
       TOKEN   =
-        /\G(?:[\s,]+|#{META}|\#?#{ID_CHAR}+[\!\?]?\(?|%\d*|-?\d+|#{RSYM}|.)/
+        /\G(?:[\s,]+|#{META}|\#?#{ID_CHAR}+[\!\?]?\(?|%\d*|#{NUMBER}|#{RSYM}|.)/
 
       NODE      = /\A#{ID_CHAR}+\Z/
       PREDICATE = /\A#{ID_CHAR}+\?\(?\Z/
       WILDCARD  = /\A_#{ID_CHAR}*\Z/
       FUNCALL   = /\A\##{ID_CHAR}+[\!\?]?\(?\Z/
-      LITERAL   = /\A(?:#{RSYM}|-?\d+|nil)\Z/
+      LITERAL   = /\A(?:#{RSYM}|#{NUMBER}|nil)\Z/
       PARAM     = /\A%\d*\Z/
       CLOSING   = /\A(?:\)|\}|\])\Z/
 

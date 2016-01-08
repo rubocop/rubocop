@@ -92,6 +92,18 @@ describe RuboCop::NodePattern do
       let(:ruby) { '-100' }
       it_behaves_like :matching
     end
+
+    context 'positive float literals' do
+      let(:pattern) { '(float 1.0)' }
+      let(:ruby) { '1.0' }
+      it_behaves_like :matching
+    end
+
+    context 'negative float literals' do
+      let(:pattern) { '(float -2.5)' }
+      let(:ruby) { '-2.5' }
+      it_behaves_like :matching
+    end
   end
 
   describe 'simple sequence' do
