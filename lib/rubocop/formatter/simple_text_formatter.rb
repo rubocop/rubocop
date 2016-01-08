@@ -9,7 +9,7 @@ module RuboCop
     # Offenses are displayed at compact form - just the
     # location of the problem and the associated message.
     class SimpleTextFormatter < BaseFormatter
-      include Colorizable, PathUtil, TextUtil
+      include Colorizable, PathUtil
 
       COLOR_FOR_SEVERITY = {
         refactor:   :yellow,
@@ -47,23 +47,13 @@ module RuboCop
       end
 
       def report_summary(file_count, offense_count, correction_count)
-        summary = pluralize(file_count, 'file')
-        summary << ' inspected, '
-
-        offenses_text = pluralize(offense_count, 'offense', no_for_zero: true)
-        offenses_text << ' detected'
-        summary << colorize(offenses_text, offense_count.zero? ? :green : :red)
-
-        if correction_count > 0
-          summary << ', '
-          correction_text = pluralize(correction_count, 'offense')
-          correction_text << ' corrected'
-          color = correction_count == offense_count ? :green : :cyan
-          summary << colorize(correction_text, color)
-        end
+        report = Report.new(file_count,
+                            offense_count,
+                            correction_count,
+                            rainbow)
 
         output.puts
-        output.puts summary
+        output.puts report.summary
       end
 
       private
@@ -96,6 +86,48 @@ module RuboCop
       def message(offense)
         message = offense.corrected? ? green('[Corrected] ') : ''
         message << annotate_message(offense.message)
+      end
+
+      # A helper class for building the report summary text.
+      class Report
+        include Colorizable, TextUtil
+
+        def initialize(file_count, offense_count, correction_count, rainbow)
+          @file_count = file_count
+          @offense_count = offense_count
+          @correction_count = correction_count
+          @rainbow = rainbow
+        end
+
+        def summary
+          if @correction_count > 0
+            "#{files} inspected, #{offenses} detected, #{corrections} corrected"
+          else
+            "#{files} inspected, #{offenses} detected"
+          end
+        end
+
+        private
+
+        attr_reader :rainbow
+
+        def files
+          pluralize(@file_count, 'file')
+        end
+
+        def offenses
+          text = pluralize(@offense_count, 'offense', no_for_zero: true)
+          color = @offense_count.zero? ? :green : :red
+
+          colorize(text, color)
+        end
+
+        def corrections
+          text = pluralize(@correction_count, 'offense')
+          color = @correction_count == @offense_count ? :green : :cyan
+
+          colorize(text, color)
+        end
       end
     end
   end
