@@ -54,9 +54,23 @@ module RuboCop
                    return if first_arg_in_method_call_without_parentheses?(node)
                    '{}'
                  when STR_NODE
-                   "''"
+                   if enforce_double_quotes?
+                     '""'
+                   else
+                     "''"
+                   end
                  end
           ->(corrector) { corrector.replace(node.source_range, name) }
+        end
+
+        private
+
+        def enforce_double_quotes?
+          string_literals_config['EnforcedStyle'] == 'double_quotes'
+        end
+
+        def string_literals_config
+          config.for_cop('Style/StringLiterals')
         end
 
         def first_arg_in_method_call_without_parentheses?(node)

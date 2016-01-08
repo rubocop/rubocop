@@ -113,5 +113,22 @@ describe RuboCop::Cop::Style::EmptyLiteral do
       new_source = autocorrect_source(cop, 'test = String.new')
       expect(new_source).to eq("test = ''")
     end
+
+    context 'when double-quoted string literals are preferred' do
+      let(:config) do
+        RuboCop::Config.new(
+          'Style/StringLiterals' =>
+            {
+              'EnforcedStyle' => 'double_quotes'
+            }
+        )
+      end
+      subject(:cop) { described_class.new(config) }
+
+      it 'auto-corrects String.new to a double-quoted empty string literal' do
+        new_source = autocorrect_source(cop, 'test = String.new')
+        expect(new_source).to eq('test = ""')
+      end
+    end
   end
 end
