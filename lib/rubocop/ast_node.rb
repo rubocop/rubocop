@@ -25,11 +25,11 @@ module RuboCop
 
     TRUTHY_LITERALS = [:str, :dstr, :xstr, :int, :float, :sym, :dsym, :array,
                        :hash, :regexp, :true, :irange, :erange, :complex,
-                       :rational].freeze
+                       :rational, :regopt].freeze
     FALSEY_LITERALS = [:false, :nil].freeze
     LITERALS = (TRUTHY_LITERALS + FALSEY_LITERALS).freeze
     BASIC_LITERALS = LITERALS - [:dstr, :xstr, :dsym, :array, :hash, :irange,
-                                 :erange].freeze
+                                 :erange, :regexp].freeze
     MUTABLE_LITERALS = [:str, :dstr, :xstr, :array, :hash].freeze
     IMMUTABLE_LITERALS = (LITERALS - MUTABLE_LITERALS).freeze
 
