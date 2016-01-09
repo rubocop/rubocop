@@ -12,7 +12,7 @@ module RuboCop
       #   # good
       #   !something
       class SpaceAfterNot < Cop
-        MSG = 'Do not leave space between `!` and its argument.'
+        MSG = 'Do not leave space between `!` and its argument.'.freeze
 
         def on_send(node)
           _receiver, method_name, *_args = *node

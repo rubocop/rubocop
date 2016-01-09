@@ -180,7 +180,7 @@ describe RuboCop::Cop::Style::ExtraSpacing, :config do
       "                                            name:   'Carrier',",
       '                                            values: %w{verizon})'
     ]
-  }
+  }.freeze
 
   context 'when AllowForAlignment is true' do
     let(:cop_config) do

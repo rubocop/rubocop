@@ -20,7 +20,7 @@ module RuboCop
         include OnMethodDef
         include EndKeywordAlignment
 
-        MSG = '`end` at %d, %d is not aligned with `%s` at %d, %d.'
+        MSG = '`end` at %d, %d is not aligned with `%s` at %d, %d.'.freeze
 
         def on_method_def(node, _method_name, _args, _body)
           check_end_kw_in_node(node)

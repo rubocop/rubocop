@@ -7,7 +7,7 @@ module RuboCop
       class RescueModifier < Cop
         include AutocorrectAlignment
 
-        MSG = 'Avoid using `rescue` in its modifier form.'
+        MSG = 'Avoid using `rescue` in its modifier form.'.freeze
 
         def investigate(processed_source)
           @modifier_locations = processed_source

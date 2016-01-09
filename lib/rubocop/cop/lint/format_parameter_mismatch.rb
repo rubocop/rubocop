@@ -14,7 +14,7 @@ module RuboCop
       class FormatParameterMismatch < Cop
         # http://rubular.com/r/CvpbxkcTzy
         MSG = "Number of arguments (%i) to `%s` doesn't match the number of " \
-              'fields (%i).'
+              'fields (%i).'.freeze
         FIELD_REGEX =
           /(%(([\s#+-0\*]*)(\d*)?(.\d+)?[bBdiouxXeEfgGaAcps]|%))/.freeze
         NAMED_FIELD_REGEX = /%\{[_a-zA-Z][_a-zA-Z]+\}/.freeze

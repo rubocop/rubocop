@@ -14,7 +14,7 @@ module RuboCop
       #   @good
       #   'abc'.strip
       class LstripRstrip < Cop
-        MSG = 'Use `strip` instead of `%s.%s`.'
+        MSG = 'Use `strip` instead of `%s.%s`.'.freeze
 
         def_node_matcher :lstrip_rstrip, <<-END
           {(send $(send _ $:rstrip) $:lstrip)

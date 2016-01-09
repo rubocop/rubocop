@@ -24,7 +24,7 @@ module RuboCop
       # TODO: Add advanced detection of variables that could
       # have been assigned to an array or a hash.
       class Size < Cop
-        MSG = 'Use `size` instead of `count`.'
+        MSG = 'Use `size` instead of `count`.'.freeze
 
         def on_send(node)
           receiver, method, args = *node

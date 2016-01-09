@@ -7,8 +7,9 @@ module RuboCop
       class SignalException < Cop
         include ConfigurableEnforcedStyle
 
-        FAIL_MSG = 'Use `fail` instead of `raise` to signal exceptions.'
-        RAISE_MSG = 'Use `raise` instead of `fail` to rethrow exceptions.'
+        FAIL_MSG = 'Use `fail` instead of `raise` to signal exceptions.'.freeze
+        RAISE_MSG = 'Use `raise` instead of `fail` to ' \
+                    'rethrow exceptions.'.freeze
 
         def on_rescue(node)
           return unless style == :semantic

@@ -15,7 +15,7 @@ module RuboCop
       #     ('a'..'z').cover?('yellow') # => true
       #
       class RangeInclude < Cop
-        MSG = 'Use `Range#cover?` instead of `Range#include?`.'
+        MSG = 'Use `Range#cover?` instead of `Range#include?`.'.freeze
 
         # TODO: If we traced out assignments of variables to their uses, we
         # might pick up on a few more instances of this issue

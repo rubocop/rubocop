@@ -9,7 +9,7 @@ module RuboCop
       # like #++, #--, #:nodoc, etc. Neither is it required for
       # =begin/=end comments.
       class LeadingCommentSpace < Cop
-        MSG = 'Missing space after #.'
+        MSG = 'Missing space after #.'.freeze
 
         def investigate(processed_source)
           processed_source.comments.each do |comment|

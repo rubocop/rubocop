@@ -10,7 +10,7 @@ module RuboCop
       #
       #   puts (x + y)
       class ParenthesesAsGroupedExpression < Cop
-        MSG = '`(...)` interpreted as grouped expression.'
+        MSG = '`(...)` interpreted as grouped expression.'.freeze
 
         def on_send(node)
           _receiver, method_name, *args = *node

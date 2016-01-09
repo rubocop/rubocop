@@ -8,7 +8,7 @@ module RuboCop
       class NegatedIf < Cop
         include NegativeConditional
 
-        MSG = 'Favor `%s` over `%s` for negative conditions.'
+        MSG = 'Favor `%s` over `%s` for negative conditions.'.freeze
 
         def on_if(node)
           return unless node.loc.respond_to?(:keyword)

@@ -11,8 +11,8 @@ module RuboCop
       #   hash.merge!({'key' => 'value'})
       #   hash.merge!(a: 1, b: 2)
       class RedundantMerge < Cop
-        AREF_ASGN = '%s[%s] = %s'
-        MSG = 'Use `%s` instead of `%s`.'
+        AREF_ASGN = '%s[%s] = %s'.freeze
+        MSG = 'Use `%s` instead of `%s`.'.freeze
 
         def_node_matcher :redundant_merge, '(send $_ :merge! (hash $...))'
         def_node_matcher :modifier_flow_control, '[{if while until} #modifier?]'

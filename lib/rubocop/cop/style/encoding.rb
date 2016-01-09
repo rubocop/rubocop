@@ -14,8 +14,8 @@ module RuboCop
       class Encoding < Cop
         include ConfigurableEnforcedStyle
 
-        MSG_MISSING = 'Missing utf-8 encoding comment.'
-        MSG_UNNECESSARY = 'Unnecessary utf-8 encoding comment.'
+        MSG_MISSING = 'Missing utf-8 encoding comment.'.freeze
+        MSG_UNNECESSARY = 'Unnecessary utf-8 encoding comment.'.freeze
         ENCODING_PATTERN = /#.*coding\s?[:=]\s?(?:UTF|utf)-8/.freeze
         AUTO_CORRECT_ENCODING_COMMENT = 'AutoCorrectEncodingComment'.freeze
         SHEBANG = '#!'.freeze

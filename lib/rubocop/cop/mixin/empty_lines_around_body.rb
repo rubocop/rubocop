@@ -8,8 +8,8 @@ module RuboCop
       module EmptyLinesAroundBody
         include ConfigurableEnforcedStyle
 
-        MSG_EXTRA = 'Extra empty line detected at %s body %s.'
-        MSG_MISSING = 'Empty line missing at %s body %s.'
+        MSG_EXTRA = 'Extra empty line detected at %s body %s.'.freeze
+        MSG_MISSING = 'Empty line missing at %s body %s.'.freeze
 
         def autocorrect(range)
           lambda do |corrector|

@@ -9,7 +9,7 @@ module RuboCop
       # types, so we consider only cases when the first argument is an
       # array literal or the second is a string literal.
       class ArrayJoin < Cop
-        MSG = 'Favor `Array#join` over `Array#*`.'
+        MSG = 'Favor `Array#join` over `Array#*`.'.freeze
 
         def on_send(node)
           receiver_node, method_name, *arg_nodes = *node

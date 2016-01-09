@@ -7,7 +7,7 @@ module RuboCop
       class ClassCheck < Cop
         include ConfigurableEnforcedStyle
 
-        MSG = 'Prefer `Object#%s` over `Object#%s`.'
+        MSG = 'Prefer `Object#%s` over `Object#%s`.'.freeze
 
         def on_send(node)
           _receiver, method_name, *_args = *node

@@ -13,8 +13,8 @@ module RuboCop
       #   # good
       #   x += 1
       class SelfAssignment < Cop
-        MSG = 'Use self-assignment shorthand `%s=`.'
-        OPS = [:+, :-, :*, :**, :/, :|, :&]
+        MSG = 'Use self-assignment shorthand `%s=`.'.freeze
+        OPS = [:+, :-, :*, :**, :/, :|, :&].freeze
 
         def on_lvasgn(node)
           check(node, :lvar)

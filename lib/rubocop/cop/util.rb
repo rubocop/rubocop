@@ -8,16 +8,17 @@ module RuboCop
       include PathUtil
       extend Astrolabe::Sexp
 
-      EQUALS_ASGN_NODES = [:lvasgn, :ivasgn, :cvasgn, :gvasgn, :casgn, :masgn]
-      SHORTHAND_ASGN_NODES = [:op_asgn, :or_asgn, :and_asgn]
-      ASGN_NODES = EQUALS_ASGN_NODES + SHORTHAND_ASGN_NODES
+      EQUALS_ASGN_NODES = [:lvasgn, :ivasgn, :cvasgn, :gvasgn,
+                           :casgn, :masgn].freeze
+      SHORTHAND_ASGN_NODES = [:op_asgn, :or_asgn, :and_asgn].freeze
+      ASGN_NODES = (EQUALS_ASGN_NODES + SHORTHAND_ASGN_NODES).freeze
 
       # http://phrogz.net/programmingruby/language.html#table_18.4
       # Backtick is added last just to help editors parse this code.
       OPERATOR_METHODS = %w(
         | ^ & <=> == === =~ > >= < <= << >>
         + - * / % ** ~ +@ -@ [] []= ! != !~
-      ).map(&:to_sym) + [:'`']
+      ).map(&:to_sym).push(:'`').freeze
 
       STRING_ESCAPES = {
         '\a' => "\a", '\b' => "\b", '\e' => "\e", '\f' => "\f", '\n' => "\n",

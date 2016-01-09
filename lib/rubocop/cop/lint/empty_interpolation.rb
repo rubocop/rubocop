@@ -9,7 +9,7 @@ module RuboCop
       #
       #   "result is #{}"
       class EmptyInterpolation < Cop
-        MSG = 'Empty interpolation detected.'
+        MSG = 'Empty interpolation detected.'.freeze
 
         def on_dstr(node)
           node.children.select { |n| n.type == :begin }.each do |begin_node|

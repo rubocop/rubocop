@@ -14,7 +14,7 @@ module RuboCop
       #     t.object_id
       #   end
       class MultilineBlockChain < Cop
-        MSG = 'Avoid multi-line chains of blocks.'
+        MSG = 'Avoid multi-line chains of blocks.'.freeze
 
         def on_block(node)
           method, _args, _body = *node

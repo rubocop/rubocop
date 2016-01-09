@@ -7,10 +7,10 @@ module RuboCop
       # The check are based on the presence of flow of control
       # statement in non-final position in *begin*(implicit) blocks.
       class UnreachableCode < Cop
-        MSG = 'Unreachable code detected.'
+        MSG = 'Unreachable code detected.'.freeze
 
-        NODE_TYPES = [:return, :next, :break, :retry, :redo]
-        FLOW_COMMANDS = [:throw, :raise, :fail]
+        NODE_TYPES = [:return, :next, :break, :retry, :redo].freeze
+        FLOW_COMMANDS = [:throw, :raise, :fail].freeze
 
         def on_begin(node)
           expressions = *node

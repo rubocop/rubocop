@@ -26,7 +26,7 @@ module RuboCop
         include AutocorrectAlignment
 
         MSG = 'Indent the first line of the right-hand-side of a ' \
-              'multi-line assignment.'
+              'multi-line assignment.'.freeze
 
         def check_assignment(node, rhs)
           return unless rhs

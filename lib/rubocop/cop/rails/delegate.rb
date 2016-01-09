@@ -29,7 +29,7 @@ module RuboCop
       #     foo.bar
       #   end
       class Delegate < Cop
-        MSG = 'Use `delegate` to define delegations.'
+        MSG = 'Use `delegate` to define delegations.'.freeze
 
         def on_def(node)
           method_name, args, body = *node

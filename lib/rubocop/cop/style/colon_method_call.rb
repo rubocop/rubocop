@@ -6,10 +6,10 @@ module RuboCop
       # This cop checks for methods invoked via the :: operator instead
       # of the . operator (like FileUtils::rmdir instead of FileUtils.rmdir).
       class ColonMethodCall < Cop
-        MSG = 'Do not use `::` for method calls.'
+        MSG = 'Do not use `::` for method calls.'.freeze
 
         JAVA_TYPES = [:byte, :boolean, :byte, :short, :char,
-                      :int, :long, :float, :double]
+                      :int, :long, :float, :double].freeze
 
         JAVA_TYPE_NODES =
           JAVA_TYPES.map { |t| s(:send, s(:const, nil, :Java), t) }

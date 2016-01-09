@@ -20,7 +20,7 @@ module RuboCop
       # As you're unlikely to write code that can accept values of any type
       # this is rarely a problem in practice.
       class DoubleNegation < Cop
-        MSG = 'Avoid the use of double negation (`!!`).'
+        MSG = 'Avoid the use of double negation (`!!`).'.freeze
 
         def_node_matcher :double_negative?, '(send (send _ :!) :!)'
 

@@ -21,10 +21,10 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         NESTED_MSG = 'Use nested module/class definitions instead of ' \
-                     'compact style.'
+                     'compact style.'.freeze
 
         COMPACT_MSG = 'Use compact module/class definition instead of ' \
-                      'nested style.'
+                      'nested style.'.freeze
 
         def on_class(node)
           _name, _superclass, body = *node

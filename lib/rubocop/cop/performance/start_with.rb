@@ -16,7 +16,7 @@ module RuboCop
       #   'abc' =~ /\A\w*/
       class StartWith < Cop
         MSG = 'Use `String#start_with?` instead of a regex match anchored to ' \
-              'the beginning of the string.'
+              'the beginning of the string.'.freeze
         SINGLE_QUOTE = "'".freeze
 
         def_node_matcher :redundant_regex?, <<-END

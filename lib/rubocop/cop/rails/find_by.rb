@@ -14,8 +14,8 @@ module RuboCop
       #   # good
       #   User.find_by(name: 'Bruce')
       class FindBy < Cop
-        MSG = 'Use `find_by` instead of `where.%s`.'
-        TARGET_SELECTORS = [:first, :take]
+        MSG = 'Use `find_by` instead of `where.%s`.'.freeze
+        TARGET_SELECTORS = [:first, :take].freeze
 
         def_node_matcher :where_first, <<-PATTERN
           (send $(send _ :where ...) ${:first :take})

@@ -13,9 +13,9 @@ module RuboCop
       #  # good
       #  if x.nil?
       class NilComparison < Cop
-        MSG = 'Prefer the use of the `nil?` predicate.'
+        MSG = 'Prefer the use of the `nil?` predicate.'.freeze
 
-        OPS = [:==, :===]
+        OPS = [:==, :===].freeze
 
         NIL_NODE = s(:nil)
 

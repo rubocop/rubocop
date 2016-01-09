@@ -9,7 +9,8 @@ module RuboCop
       class AbcSize < Cop
         include MethodComplexity
 
-        MSG = 'Assignment Branch Condition size for %s is too high. [%.4g/%.4g]'
+        MSG = 'Assignment Branch Condition size for %s is too high. ' \
+              '[%.4g/%.4g]'.freeze
         BRANCH_NODES = [:send].freeze
         CONDITION_NODES = CyclomaticComplexity::COUNTED_NODES.freeze
 

@@ -5,7 +5,7 @@ module RuboCop
     module Style
       # Here we check if modifier keywords are preceded by a space.
       class SpaceBeforeModifierKeyword < Cop
-        MSG = 'Put a space before the modifier keyword.'
+        MSG = 'Put a space before the modifier keyword.'.freeze
 
         def on_if(node)
           return unless modifier?(node)

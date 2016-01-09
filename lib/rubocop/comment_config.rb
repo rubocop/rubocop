@@ -4,7 +4,7 @@ module RuboCop
   # This class parses the special `rubocop:disable` comments in a source
   # and provides a way to check if each cop is enabled at arbitrary line.
   class CommentConfig
-    UNNEEDED_DISABLE = 'Lint/UnneededDisable'
+    UNNEEDED_DISABLE = 'Lint/UnneededDisable'.freeze
     COMMENT_DIRECTIVE_REGEXP = Regexp.new(
       '\A# rubocop : ((?:dis|en)able)\b ((?:[\w/]+,? )+)'.gsub(' ', '\s*')
     )

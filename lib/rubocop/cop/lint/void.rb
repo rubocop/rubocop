@@ -6,11 +6,11 @@ module RuboCop
       # This cop checks for operators, variables and literals used
       # in void context.
       class Void < Cop
-        OP_MSG = 'Operator `%s` used in void context.'
-        VAR_MSG = 'Variable `%s` used in void context.'
-        LIT_MSG = 'Literal `%s` used in void context.'
+        OP_MSG = 'Operator `%s` used in void context.'.freeze
+        VAR_MSG = 'Variable `%s` used in void context.'.freeze
+        LIT_MSG = 'Literal `%s` used in void context.'.freeze
 
-        OPS = %w(* / % + - == === != < > <= >= <=>)
+        OPS = %w(* / % + - == === != < > <= >= <=>).freeze
 
         def on_begin(node)
           check_begin(node)

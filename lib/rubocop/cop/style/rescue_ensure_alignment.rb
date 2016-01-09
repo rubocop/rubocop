@@ -22,7 +22,7 @@ module RuboCop
       #     puts 'error'
       #   end
       class RescueEnsureAlignment < Cop
-        MSG = '`%s` at %d, %d is not aligned with `end` at %d, %d.'
+        MSG = '`%s` at %d, %d is not aligned with `end` at %d, %d.'.freeze
 
         def on_resbody(node)
           check(node) unless modifier?(node)

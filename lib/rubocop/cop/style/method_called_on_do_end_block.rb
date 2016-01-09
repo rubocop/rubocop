@@ -13,7 +13,7 @@ module RuboCop
       #     b
       #   end.c
       class MethodCalledOnDoEndBlock < Cop
-        MSG = 'Avoid chaining a method call on a do...end block.'
+        MSG = 'Avoid chaining a method call on a do...end block.'.freeze
 
         def on_block(node)
           method, _args, _body = *node

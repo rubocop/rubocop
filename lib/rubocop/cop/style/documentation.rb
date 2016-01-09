@@ -14,7 +14,7 @@ module RuboCop
       class Documentation < Cop
         include AnnotationComment
 
-        MSG = 'Missing top-level %s documentation comment.'
+        MSG = 'Missing top-level %s documentation comment.'.freeze
 
         def_node_matcher :constant_definition?, '{class module casgn}'
 

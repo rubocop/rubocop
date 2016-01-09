@@ -12,7 +12,7 @@ module RuboCop
         include AutocorrectAlignment
         include CheckAssignment
 
-        MSG = 'Align `%s` with `%s`.'
+        MSG = 'Align `%s` with `%s`.'.freeze
 
         def on_if(node, base = nil)
           return if ignored_node?(node)

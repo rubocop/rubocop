@@ -19,7 +19,7 @@ module RuboCop
       #     i.to_s
       #   end
       class TimesMap < Cop
-        MSG = 'Use `Array.new` with a block instead of `.times.%s`.'
+        MSG = 'Use `Array.new` with a block instead of `.times.%s`.'.freeze
 
         def on_send(node)
           check(node)

@@ -8,9 +8,9 @@ module RuboCop
         include AutocorrectUnlessChangingAST
         include ConfigurableEnforcedStyle
 
-        MSG = 'Use `%s` instead of `%s`.'
+        MSG = 'Use `%s` instead of `%s`.'.freeze
 
-        OPS = { 'and' => '&&', 'or' => '||' }
+        OPS = { 'and' => '&&', 'or' => '||' }.freeze
 
         def on_and(node)
           process_logical_op(node) if style == :always

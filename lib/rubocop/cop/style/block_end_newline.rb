@@ -25,7 +25,7 @@ module RuboCop
       #     foo(i)
       #   }
       class BlockEndNewline < Cop
-        MSG = 'Expression at %d, %d should be on its own line.'
+        MSG = 'Expression at %d, %d should be on its own line.'.freeze
 
         def on_block(node)
           end_loc = node.loc.end

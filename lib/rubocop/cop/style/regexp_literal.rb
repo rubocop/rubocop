@@ -31,8 +31,8 @@ module RuboCop
       class RegexpLiteral < Cop
         include ConfigurableEnforcedStyle
 
-        MSG_USE_SLASHES = 'Use `//` around regular expression.'
-        MSG_USE_PERCENT_R = 'Use `%r` around regular expression.'
+        MSG_USE_SLASHES = 'Use `//` around regular expression.'.freeze
+        MSG_USE_PERCENT_R = 'Use `%r` around regular expression.'.freeze
 
         def on_regexp(node)
           if slash_literal?(node)

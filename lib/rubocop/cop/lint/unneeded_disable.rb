@@ -15,7 +15,7 @@ module RuboCop
       class UnneededDisable < Cop
         include NameSimilarity
 
-        COP_NAME = 'Lint/UnneededDisable'
+        COP_NAME = 'Lint/UnneededDisable'.freeze
 
         def check(offenses, cop_disabled_line_ranges, comments)
           unneeded_cops = Hash.new { |h, k| h[k] = Set.new }

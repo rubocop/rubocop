@@ -17,7 +17,8 @@ module RuboCop
       #   @good
       #   0
       class RandOne < Cop
-        MSG = '`%s` always returns `0`. Perhaps you meant `rand(2)` or `rand`?'
+        MSG = '`%s` always returns `0`. ' \
+              'Perhaps you meant `rand(2)` or `rand`?'.freeze
 
         def_node_matcher :rand_one?, <<-PATTERN
           (send {(const nil :Kernel) nil} :rand {(int {-1 1}) (float {-1.0 1.0})})

@@ -20,7 +20,7 @@ module RuboCop
       #     ...
       #   end
       class OptionHash < Cop
-        MSG = 'Prefer keyword arguments to options hashes.'
+        MSG = 'Prefer keyword arguments to options hashes.'.freeze
 
         def on_args(node)
           *_but_last, last_arg = *node

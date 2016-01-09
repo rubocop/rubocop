@@ -10,7 +10,7 @@ module RuboCop
       class ParameterLists < Cop
         include ConfigurableMax
 
-        MSG = 'Avoid parameter lists longer than %d parameters.'
+        MSG = 'Avoid parameter lists longer than %d parameters.'.freeze
 
         def on_args(node)
           count = args_count(node)

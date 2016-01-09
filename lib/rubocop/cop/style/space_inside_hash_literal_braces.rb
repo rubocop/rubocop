@@ -9,7 +9,7 @@ module RuboCop
         include SurroundingSpace
         include ConfigurableEnforcedStyle
 
-        MSG = 'Space inside %s.'
+        MSG = 'Space inside %s.'.freeze
 
         def on_hash(node)
           b_ix = index_of_first_token(node)

@@ -17,7 +17,7 @@ module RuboCop
         include EmptyLinesAroundBody
         include OnMethodDef
 
-        KIND = 'method'
+        KIND = 'method'.freeze
 
         private
 

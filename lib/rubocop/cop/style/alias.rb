@@ -10,9 +10,9 @@ module RuboCop
       class Alias < Cop
         include ConfigurableEnforcedStyle
 
-        MSG_ALIAS = 'Use `alias_method` instead of `alias`.'
-        MSG_ALIAS_METHOD = 'Use `alias` instead of `alias_method` %s.'
-        MSG_SYMBOL_ARGS  = 'Use `alias %s` instead of `alias %s`.'
+        MSG_ALIAS = 'Use `alias_method` instead of `alias`.'.freeze
+        MSG_ALIAS_METHOD = 'Use `alias` instead of `alias_method` %s.'.freeze
+        MSG_SYMBOL_ARGS  = 'Use `alias %s` instead of `alias %s`.'.freeze
 
         def on_send(node)
           return unless node.method_name == :alias_method && node.receiver.nil?

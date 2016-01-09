@@ -19,11 +19,11 @@ module RuboCop
       #   ]
       class ImplicitStringConcatenation < Cop
         MSG = 'Combine %s and %s into a single string literal, rather than ' \
-              'using implicit string concatenation.'
+              'using implicit string concatenation.'.freeze
         FOR_ARRAY = ' Or, if they were intended to be separate array ' \
-                    'elements, separate them with a comma.'
+                    'elements, separate them with a comma.'.freeze
         FOR_METHOD = ' Or, if they were intended to be separate method ' \
-                     'arguments, separate them with a comma.'
+                     'arguments, separate them with a comma.'.freeze
 
         def on_dstr(node)
           node.children.each_cons(2) do |child1, child2|

@@ -13,7 +13,7 @@ module RuboCop
       #   # good
       #   CONST = [1, 2, 3].freeze
       class MutableConstant < Cop
-        MSG = 'Freeze mutable objects assigned to constants.'
+        MSG = 'Freeze mutable objects assigned to constants.'.freeze
 
         MUTABLE_TYPES = [:array, :hash, :str, :dstr].freeze
 

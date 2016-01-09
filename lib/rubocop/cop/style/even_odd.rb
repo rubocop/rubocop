@@ -14,7 +14,7 @@ module RuboCop
       #   # good
       #   if x.even?
       class EvenOdd < Cop
-        MSG = 'Replace with `Fixnum#%s?`.'
+        MSG = 'Replace with `Fixnum#%s?`.'.freeze
 
         ZERO = s(:int, 0)
         ONE = s(:int, 1)

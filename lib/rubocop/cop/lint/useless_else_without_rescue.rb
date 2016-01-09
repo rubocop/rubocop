@@ -14,7 +14,7 @@ module RuboCop
       class UselessElseWithoutRescue < Cop
         include ParserDiagnostic
 
-        MSG = '`else` without `rescue` is useless.'
+        MSG = '`else` without `rescue` is useless.'.freeze
 
         private
 

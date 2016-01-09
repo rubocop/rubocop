@@ -6,9 +6,9 @@ module RuboCop
       # This cop checks for uses of the deprecated methods Hash#has_key?
       # and Hash#has_value?
       class DeprecatedHashMethods < Cop
-        MSG = '`Hash#%s` is deprecated in favor of `Hash#%s`.'
+        MSG = '`Hash#%s` is deprecated in favor of `Hash#%s`.'.freeze
 
-        DEPRECATED_METHODS = [:has_key?, :has_value?]
+        DEPRECATED_METHODS = [:has_key?, :has_value?].freeze
 
         def on_send(node)
           _receiver, method_name, *args = *node

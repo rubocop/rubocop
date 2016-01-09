@@ -16,7 +16,7 @@ module RuboCop
       class NestedModifier < Cop
         include IfNode
 
-        MSG = 'Avoid using nested modifiers.'
+        MSG = 'Avoid using nested modifiers.'.freeze
 
         def on_while(node)
           check(node)

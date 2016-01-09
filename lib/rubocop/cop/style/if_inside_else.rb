@@ -30,7 +30,7 @@ module RuboCop
       class IfInsideElse < Cop
         include IfNode
 
-        MSG = 'Convert `if` nested inside `else` to `elsif`.'
+        MSG = 'Convert `if` nested inside `else` to `elsif`.'.freeze
 
         def on_if(node)
           _cond, _if_branch, else_branch = *node

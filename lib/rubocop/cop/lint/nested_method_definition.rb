@@ -19,7 +19,7 @@ module RuboCop
         extend RuboCop::NodePattern::Macros
 
         MSG = 'Method definitions must not be nested. ' \
-              'Use `lambda` instead.'
+              'Use `lambda` instead.'.freeze
 
         def_node_matcher :eval_call?, <<-PATTERN
           (block (send _ {:instance_eval :class_eval :module_eval} ...) ...)

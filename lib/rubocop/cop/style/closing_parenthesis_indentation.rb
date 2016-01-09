@@ -30,8 +30,8 @@ module RuboCop
         include OnMethodDef
 
         MSG_INDENT =
-          'Indent `)` the same as the start of the line where `(` is.'
-        MSG_ALIGN = 'Align `)` with `(`.'
+          'Indent `)` the same as the start of the line where `(` is.'.freeze
+        MSG_ALIGN = 'Align `)` with `(`.'.freeze
 
         def on_send(node)
           _receiver, _method_name, *args = *node

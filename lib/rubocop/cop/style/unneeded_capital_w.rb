@@ -7,8 +7,8 @@ module RuboCop
       class UnneededCapitalW < Cop
         include PercentLiteral
 
-        MSG =
-          'Do not use `%W` unless interpolation is needed.  If not, use `%w`.'
+        MSG = 'Do not use `%W` unless interpolation is needed. ' \
+              'If not, use `%w`.'.freeze
 
         def on_array(node)
           process(node, '%W')

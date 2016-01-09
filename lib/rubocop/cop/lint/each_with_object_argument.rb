@@ -13,7 +13,7 @@ module RuboCop
       #
       #   sum = numbers.each_with_object(0) { |e, a| a += e }
       class EachWithObjectArgument < Cop
-        MSG = 'The argument to each_with_object can not be immutable.'
+        MSG = 'The argument to each_with_object can not be immutable.'.freeze
 
         def on_send(node)
           _receiver, method_name, *args = *node

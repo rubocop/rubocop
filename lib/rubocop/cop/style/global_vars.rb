@@ -10,7 +10,7 @@ module RuboCop
       #
       # Note that backreferences like $1, $2, etc are not global variables.
       class GlobalVars < Cop
-        MSG = 'Do not introduce global variables.'
+        MSG = 'Do not introduce global variables.'.freeze
 
         # predefined global variables their English aliases
         # http://www.zenspider.com/Languages/Ruby/QuickRef.html

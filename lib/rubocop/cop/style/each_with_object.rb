@@ -17,8 +17,8 @@ module RuboCop
       #   # good
       #   [1, 2].each_with_object({}) { |e, a| a[e] = e }
       class EachWithObject < Cop
-        MSG = 'Use `each_with_object` instead of `%s`.'
-        METHODS = [:inject, :reduce]
+        MSG = 'Use `each_with_object` instead of `%s`.'.freeze
+        METHODS = [:inject, :reduce].freeze
 
         def on_block(node)
           method, args, body = *node

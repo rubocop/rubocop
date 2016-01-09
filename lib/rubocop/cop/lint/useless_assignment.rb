@@ -14,7 +14,7 @@ module RuboCop
       # rescue, ensure, etc.
       class UselessAssignment < Cop
         include NameSimilarity
-        MSG = 'Useless assignment to variable - `%s`.'
+        MSG = 'Useless assignment to variable - `%s`.'.freeze
 
         def join_force?(force_class)
           force_class == VariableForce

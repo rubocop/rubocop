@@ -25,7 +25,7 @@ module RuboCop
       class ParallelAssignment < Cop
         include IfNode
 
-        MSG = 'Do not use parallel assignment.'
+        MSG = 'Do not use parallel assignment.'.freeze
 
         def on_masgn(node)
           left, right = *node

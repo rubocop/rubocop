@@ -490,7 +490,7 @@ describe RuboCop::CLI, :isolated_environment do
                                          'class Dsl',
                                          '  private',
                                          '',
-                                         '  A = %w(git path)',
+                                         '  A = %w(git path).freeze',
                                          'end',
                                          ''].join("\n"))
     e = abs('example.rb')
@@ -504,6 +504,8 @@ describe RuboCop::CLI, :isolated_environment do
               "#{e}:3:3: W: Useless `private` access modifier.",
               "#{e}:3:3: C: [Corrected] Keep a blank line before and " \
               'after `private`.',
+              "#{e}:4:7: C: [Corrected] Freeze mutable objects assigned " \
+              'to constants.',
               "#{e}:4:7: C: [Corrected] Use `%w` or `%W` " \
               'for an array of words.',
               "#{e}:4:8: C: [Corrected] Prefer single-quoted strings " \
@@ -514,6 +516,8 @@ describe RuboCop::CLI, :isolated_environment do
               'symbols.',
               "#{e}:4:21: C: [Corrected] Avoid comma after the last item " \
               'of an array.',
+              "#{e}:5:7: C: [Corrected] Freeze mutable objects assigned " \
+              'to constants.',
               "#{e}:5:7: C: [Corrected] Use `%w` or `%W` " \
               'for an array of words.',
               "#{e}:5:8: C: [Corrected] Prefer single-quoted strings " \
@@ -803,7 +807,7 @@ describe RuboCop::CLI, :isolated_environment do
               '            match_for_should_not: :match_when_negated,',
               '      failure_message_for_should: :failure_message,',
               '  failure_message_for_should_not: :failure_message_when',
-              '}',
+              '}.freeze',
               ''].join("\n"))
   end
 

@@ -7,7 +7,7 @@ module RuboCop
       class SpaceAfterColon < Cop
         include IfNode
 
-        MSG = 'Space missing after colon.'
+        MSG = 'Space missing after colon.'.freeze
 
         def on_pair(node)
           oper = node.loc.operator

@@ -9,7 +9,8 @@ module RuboCop
       class IfUnlessModifier < Cop
         include StatementModifier
 
-        ASSIGNMENT_TYPES = [:lvasgn, :casgn, :cvasgn, :gvasgn, :ivasgn, :masgn]
+        ASSIGNMENT_TYPES = [:lvasgn, :casgn, :cvasgn,
+                            :gvasgn, :ivasgn, :masgn].freeze
 
         def message(keyword)
           "Favor modifier `#{keyword}` usage when having a single-line body." \

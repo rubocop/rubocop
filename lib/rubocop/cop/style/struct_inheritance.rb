@@ -13,7 +13,7 @@ module RuboCop
       #   # good
       #   Person = Struct.new(:first_name, :last_name)
       class StructInheritance < Cop
-        MSG = "Don't extend an instance initialized by `Struct.new`."
+        MSG = "Don't extend an instance initialized by `Struct.new`.".freeze
 
         def on_class(node)
           _name, superclass, _body = *node

@@ -20,9 +20,9 @@ module RuboCop
         'offenses' => OffenseCountFormatter,
         'disabled' => DisabledLinesFormatter,
         'worst'    => WorstOffendersFormatter
-      }
+      }.freeze
 
-      FORMATTER_APIS = [:started, :finished]
+      FORMATTER_APIS = [:started, :finished].freeze
 
       FORMATTER_APIS.each do |method_name|
         define_method(method_name) do |*args|

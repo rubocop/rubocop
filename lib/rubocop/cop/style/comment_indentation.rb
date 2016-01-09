@@ -7,7 +7,7 @@ module RuboCop
       class CommentIndentation < Cop
         include AutocorrectAlignment
 
-        MSG = 'Incorrect indentation detected (column %d instead of %d).'
+        MSG = 'Incorrect indentation detected (column %d instead of %d).'.freeze
 
         def investigate(processed_source)
           processed_source.comments.each { |comment| check(comment) }

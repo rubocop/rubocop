@@ -9,7 +9,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include AutocorrectUnlessChangingAST
 
-        MSG = '%s curly braces around a hash parameter.'
+        MSG = '%s curly braces around a hash parameter.'.freeze
 
         def on_send(node)
           _receiver, method_name, *args = *node

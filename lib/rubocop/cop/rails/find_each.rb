@@ -13,9 +13,9 @@ module RuboCop
       #   # good
       #   User.all.find_each
       class FindEach < Cop
-        MSG = 'Use `find_each` instead of `each`.'
+        MSG = 'Use `find_each` instead of `each`.'.freeze
 
-        SCOPE_METHODS = [:all, :where]
+        SCOPE_METHODS = [:all, :where].freeze
 
         def on_send(node)
           receiver, second_method, _selector = *node

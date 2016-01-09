@@ -13,10 +13,10 @@ module RuboCop
       #   @bad
       #   method1(method2 arg, method3, arg)
       class NestedParenthesizedCalls < Cop
-        MSG = 'Add parentheses to nested method call `%s`.'
+        MSG = 'Add parentheses to nested method call `%s`.'.freeze
         RSPEC_MATCHERS = [:be, :eq, :eql, :equal, :be_kind_of, :be_instance_of,
                           :respond_to, :be_between, :match, :be_within,
-                          :start_with, :end_with, :include, :raise_error]
+                          :start_with, :end_with, :include, :raise_error].freeze
 
         def on_send(node)
           return unless parenthesized_call?(node)

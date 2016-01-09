@@ -24,7 +24,7 @@ module RuboCop
       #   str.end_with?(var1, var2)
       class DoubleStartEndWith < Cop
         MSG = 'Use `%{receiver}.%{method}(%{combined_args})` ' \
-              'instead of `%{original_code}`.'
+              'instead of `%{original_code}`.'.freeze
 
         def on_or(node)
           receiver,

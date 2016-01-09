@@ -36,9 +36,10 @@ module RuboCop
       #     bar(i)
       #   }
       class MultilineBlockLayout < Cop
-        MSG = 'Block body expression is on the same line as the block start.'
+        MSG = 'Block body expression is on the same line as ' \
+              'the block start.'.freeze
         ARG_MSG = 'Block argument expression is not on the same line as the ' \
-                  'block start.'
+                  'block start.'.freeze
 
         def on_block(node)
           end_loc = node.loc.end

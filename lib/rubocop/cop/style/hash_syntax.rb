@@ -12,9 +12,9 @@ module RuboCop
       class HashSyntax < Cop
         include ConfigurableEnforcedStyle
 
-        MSG_19 = 'Use the new Ruby 1.9 hash syntax.'
-        MSG_RUBY19_NO_MIXED_KEYS = "Don't mix styles in the same hash."
-        MSG_HASH_ROCKETS = 'Use hash rockets syntax.'
+        MSG_19 = 'Use the new Ruby 1.9 hash syntax.'.freeze
+        MSG_RUBY19_NO_MIXED_KEYS = "Don't mix styles in the same hash.".freeze
+        MSG_HASH_ROCKETS = 'Use hash rockets syntax.'.freeze
 
         @force_hash_rockets = false
 

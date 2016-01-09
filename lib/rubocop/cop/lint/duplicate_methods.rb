@@ -16,7 +16,7 @@ module RuboCop
       #     2
       #   end
       class DuplicateMethods < Cop
-        MSG = 'Method `%s` is defined at both %s and %s.'
+        MSG = 'Method `%s` is defined at both %s and %s.'.freeze
 
         def initialize(config = nil, options = nil)
           super

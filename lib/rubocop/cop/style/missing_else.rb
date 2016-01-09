@@ -32,9 +32,10 @@ module RuboCop
         include OnNormalIfUnless
         include ConfigurableEnforcedStyle
 
-        MSG = '`%s` condition requires an `else`-clause.'
-        MSG_NIL = '`%s` condition requires an `else`-clause with `nil` in it.'
-        MSG_EMPTY = '`%s` condition requires an empty `else`-clause.'
+        MSG = '`%s` condition requires an `else`-clause.'.freeze
+        MSG_NIL = '`%s` condition requires an `else`-clause with ' \
+                  '`nil` in it.'.freeze
+        MSG_EMPTY = '`%s` condition requires an empty `else`-clause.'.freeze
 
         def on_normal_if_unless(node)
           unless_else_cop = config.for_cop('Style/UnlessElse')

@@ -18,7 +18,8 @@ module RuboCop
       class SpaceBeforeFirstArg < Cop
         include PrecedingFollowingAlignment
 
-        MSG = 'Put one space between the method name and the first argument.'
+        MSG = 'Put one space between the method name and ' \
+              'the first argument.'.freeze
 
         def on_send(node)
           return if parentheses?(node)

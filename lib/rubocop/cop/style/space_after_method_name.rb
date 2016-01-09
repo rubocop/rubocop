@@ -16,7 +16,7 @@ module RuboCop
         include OnMethodDef
 
         MSG = 'Do not put a space between a method name and the opening ' \
-              'parenthesis.'
+              'parenthesis.'.freeze
 
         def on_method_def(_node, _method_name, args, _body)
           return unless args.loc.begin && args.loc.begin.is?('(')

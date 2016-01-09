@@ -20,7 +20,8 @@ module RuboCop
       #              'bala'
       #
       class LineEndConcatenation < Cop
-        MSG = 'Use `\\` instead of `+` or `<<` to concatenate those strings.'
+        MSG = 'Use `\\` instead of `+` or `<<` to concatenate ' \
+              'those strings.'.freeze
         CONCAT_TOKEN_TYPES = [:tPLUS, :tLSHFT].freeze
         SIMPLE_STRING_TOKEN_TYPE = :tSTRING
         COMPLEX_STRING_EDGE_TOKEN_TYPES = [:tSTRING_BEG, :tSTRING_END].freeze

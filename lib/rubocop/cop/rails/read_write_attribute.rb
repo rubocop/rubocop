@@ -16,7 +16,7 @@ module RuboCop
       #   x = self[:attr]
       #   self[:attr] = val
       class ReadWriteAttribute < Cop
-        MSG = 'Prefer `%s` over `%s`.'
+        MSG = 'Prefer `%s` over `%s`.'.freeze
 
         def on_send(node)
           receiver, method_name, *_args = *node

@@ -10,9 +10,9 @@ module RuboCop
       # @example
       #   hash = { food: 'apple', food: 'orange' }
       class DuplicatedKey < Cop
-        MSG = 'Duplicated key in hash literal.'
+        MSG = 'Duplicated key in hash literal.'.freeze
 
-        LITERALS = [:sym, :str, :float, :int]
+        LITERALS = [:sym, :str, :float, :int].freeze
 
         def on_hash(node)
           keys = []

@@ -29,8 +29,8 @@ module RuboCop
       class CommandLiteral < Cop
         include ConfigurableEnforcedStyle
 
-        MSG_USE_BACKTICKS = 'Use backticks around command string.'
-        MSG_USE_PERCENT_X = 'Use `%x` around command string.'
+        MSG_USE_BACKTICKS = 'Use backticks around command string.'.freeze
+        MSG_USE_PERCENT_X = 'Use `%x` around command string.'.freeze
 
         def on_xstr(node)
           return if heredoc_literal?(node)

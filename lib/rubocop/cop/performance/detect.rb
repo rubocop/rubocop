@@ -18,11 +18,11 @@ module RuboCop
       #   [].detect { |item| true }
       #   [].reverse.detect { |item| true }
       class Detect < Cop
-        MSG = 'Use `%s` instead of `%s.%s`.'
-        REVERSE_MSG = 'Use `reverse.%s` instead of `%s.%s`.'
+        MSG = 'Use `%s` instead of `%s.%s`.'.freeze
+        REVERSE_MSG = 'Use `reverse.%s` instead of `%s.%s`.'.freeze
 
-        SELECT_METHODS = [:select, :find_all]
-        DANGEROUS_METHODS = [:first, :last]
+        SELECT_METHODS = [:select, :find_all].freeze
+        DANGEROUS_METHODS = [:first, :last].freeze
 
         def on_send(node)
           receiver, second_method = *node

@@ -5,7 +5,7 @@ module RuboCop
     module Rails
       # This cop checks for the use of the has_and_belongs_to_many macro.
       class HasAndBelongsToMany < Cop
-        MSG = 'Prefer `has_many :through` to `has_and_belongs_to_many`.'
+        MSG = 'Prefer `has_many :through` to `has_and_belongs_to_many`.'.freeze
 
         def on_send(node)
           return unless node.command?(:has_and_belongs_to_many)

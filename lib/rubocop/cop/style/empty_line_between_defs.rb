@@ -7,7 +7,7 @@ module RuboCop
       # separated by empty lines.
       class EmptyLineBetweenDefs < Cop
         include OnMethodDef
-        MSG = 'Use empty lines between method definitions.'
+        MSG = 'Use empty lines between method definitions.'.freeze
 
         def on_method_def(node, _method_name, _args, _body)
           return unless node.parent && node.parent.begin_type?

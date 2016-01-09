@@ -69,7 +69,7 @@ module RuboCop
         include OnNormalIfUnless
         include ConfigurableEnforcedStyle
 
-        MSG = 'Redundant `else`-clause.'
+        MSG = 'Redundant `else`-clause.'.freeze
 
         def on_normal_if_unless(node)
           check(node, if_else_clause(node))

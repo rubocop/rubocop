@@ -13,8 +13,8 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include ArraySyntax
 
-        PERCENT_MSG = 'Use `%i` or `%I` for an array of symbols.'
-        ARRAY_MSG = 'Use `[]` for an array of symbols.'
+        PERCENT_MSG = 'Use `%i` or `%I` for an array of symbols.'.freeze
+        ARRAY_MSG = 'Use `[]` for an array of symbols.'.freeze
 
         def on_array(node)
           if bracketed_array_of?(:sym, node)

@@ -12,7 +12,7 @@ module RuboCop
       #   # good
       #   something.map(&:upcase)
       class SymbolProc < Cop
-        MSG = 'Pass `&:%s` as an argument to `%s` instead of a block.'
+        MSG = 'Pass `&:%s` as an argument to `%s` instead of a block.'.freeze
 
         PROC_NODE = s(:send, s(:const, nil, :Proc), :new)
 

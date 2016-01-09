@@ -10,10 +10,10 @@ module RuboCop
   # during a run of the rubocop program, if files in several
   # directories are inspected.
   class ConfigLoader
-    DOTFILE = '.rubocop.yml'
+    DOTFILE = '.rubocop.yml'.freeze
     RUBOCOP_HOME = File.realpath(File.join(File.dirname(__FILE__), '..', '..'))
     DEFAULT_FILE = File.join(RUBOCOP_HOME, 'config', 'default.yml')
-    AUTO_GENERATED_FILE = '.rubocop_todo.yml'
+    AUTO_GENERATED_FILE = '.rubocop_todo.yml'.freeze
 
     class << self
       attr_accessor :debug, :auto_gen_config

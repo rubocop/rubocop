@@ -6,7 +6,7 @@ module RuboCop
       # This cop looks for uses of Perl-style regexp match
       # backreferences like $1, $2, etc.
       class PerlBackrefs < Cop
-        MSG = 'Avoid the use of Perl-style backrefs.'
+        MSG = 'Avoid the use of Perl-style backrefs.'.freeze
 
         def on_nth_ref(node)
           add_offense(node, :expression)

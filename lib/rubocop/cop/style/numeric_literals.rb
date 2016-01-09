@@ -12,7 +12,7 @@ module RuboCop
         include ConfigurableMax
 
         MSG = 'Separate every 3 digits in the integer portion of a number ' \
-              'with underscores(_).'
+              'with underscores(_).'.freeze
 
         def on_int(node)
           check(node)

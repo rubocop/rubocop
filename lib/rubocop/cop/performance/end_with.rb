@@ -16,7 +16,7 @@ module RuboCop
       #   'abc' =~ /\w*\Z/
       class EndWith < Cop
         MSG = 'Use `String#end_with?` instead of a regex match anchored to ' \
-              'the end of the string.'
+              'the end of the string.'.freeze
         SINGLE_QUOTE = "'".freeze
 
         def_node_matcher :redundant_regex?, <<-END

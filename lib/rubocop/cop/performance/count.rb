@@ -24,10 +24,10 @@ module RuboCop
       #   Model.select('field AS field_one').count
       #   Model.select(:value).count
       class Count < Cop
-        MSG = 'Use `count` instead of `%s...%s`.'
+        MSG = 'Use `count` instead of `%s...%s`.'.freeze
 
-        SELECTORS = [:reject, :select]
-        COUNTERS = [:count, :length, :size]
+        SELECTORS = [:reject, :select].freeze
+        COUNTERS = [:count, :length, :size].freeze
 
         def on_send(node)
           selector, selector_loc, params, counter = parse(node)

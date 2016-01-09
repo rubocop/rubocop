@@ -19,7 +19,7 @@ module RuboCop
       #   'abc'.tr('b', 'd')
       #   'a b c'.delete(' ')
       class StringReplacement < Cop
-        MSG = 'Use `%s` instead of `%s`.'
+        MSG = 'Use `%s` instead of `%s`.'.freeze
         DETERMINISTIC_REGEX = /\A(?:#{LITERAL_REGEX})+\Z/
         REGEXP_CONSTRUCTOR_METHODS = [:new, :compile].freeze
         GSUB_METHODS = [:gsub, :gsub!].freeze

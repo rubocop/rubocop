@@ -22,8 +22,8 @@ module RuboCop
       class ExtraSpacing < Cop
         include PrecedingFollowingAlignment
 
-        MSG_UNNECESSARY = 'Unnecessary spacing detected.'
-        MSG_UNALIGNED_ASGN = '`=` is not aligned with the %s assignment.'
+        MSG_UNNECESSARY = 'Unnecessary spacing detected.'.freeze
+        MSG_UNALIGNED_ASGN = '`=` is not aligned with the %s assignment.'.freeze
 
         def investigate(processed_source)
           ast = processed_source.ast
