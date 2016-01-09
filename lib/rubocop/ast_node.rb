@@ -20,6 +20,8 @@ module Astrolabe
     LITERALS = (TRUTHY_LITERALS + FALSEY_LITERALS).freeze
     BASIC_LITERALS = LITERALS - [:dstr, :xstr, :dsym, :array, :hash, :irange,
                                  :erange].freeze
+    MUTABLE_LITERALS = [:str, :dstr, :xstr, :array, :hash].freeze
+    IMMUTABLE_LITERALS = (LITERALS - MUTABLE_LITERALS).freeze
 
     VARIABLES = [:ivar, :gvar, :cvar, :lvar].freeze
     REFERENCES = [:nth_ref, :back_ref].freeze
@@ -155,6 +157,14 @@ module Astrolabe
 
     def falsey_literal?
       FALSEY_LITERALS.include?(type)
+    end
+
+    def mutable_literal?
+      MUTABLE_LITERALS.include?(type)
+    end
+
+    def immutable_literal?
+      IMMUTABLE_LITERALS.include?(type)
     end
 
     def variable?
