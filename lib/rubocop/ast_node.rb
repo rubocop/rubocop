@@ -21,7 +21,7 @@ module RuboCop
   class Node < Parser::AST::Node # rubocop:disable Metrics/ClassLength
     include RuboCop::Sexp
 
-    COMPARISON_OPERATORS = [:==, :===, :!=, :<=, :>=, :>, :<, :<=>].freeze
+    COMPARISON_OPERATORS = [:!, :==, :===, :!=, :<=, :>=, :>, :<, :<=>].freeze
 
     TRUTHY_LITERALS = [:str, :dstr, :xstr, :int, :float, :sym, :dsym, :array,
                        :hash, :regexp, :true, :irange, :erange, :complex,
@@ -389,11 +389,9 @@ module RuboCop
           children.all?(&recursive_kind)
         when :send
           receiver, method_name, *args = *self
-          case method_name
-          when :!, *COMPARISON_OPERATORS
+          COMPARISON_OPERATORS.include?(method_name) &&
             receiver.send(recursive_kind) &&
-              args.all?(&recursive_kind)
-          end
+            args.all?(&recursive_kind)
         else
           send(kind_filter)
         end
