@@ -195,8 +195,8 @@ module RuboCop
         @config['AllCops'] && @config['AllCops']['TargetRubyVersion']
       end
 
-      def parse(source)
-        ProcessedSource.new(source, target_ruby_version)
+      def parse(source, path = nil)
+        ProcessedSource.new(source, target_ruby_version, path)
       end
 
       def cop_name

@@ -303,5 +303,20 @@ describe RuboCop::Cop::Style::AndOr, :config do
                                   'end)'].join("\n"))
       end
     end
+
+    context 'with a file which contains __FILE__' do
+      let(:source) do
+        ["APP_ROOT = Pathname.new File.expand_path('../../', __FILE__)",
+         "system('bundle check') or system!('bundle install')"]
+      end
+
+      # regression test; see GH issue 2609
+      it 'autocorrects "or" with ||' do
+        new_source = autocorrect_source(cop, source)
+        expect(new_source).to eq(
+          ["APP_ROOT = Pathname.new File.expand_path('../../', __FILE__)",
+           "system('bundle check') || system!('bundle install')"].join("\n"))
+      end
+    end
   end
 end
