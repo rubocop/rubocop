@@ -11,6 +11,7 @@
 * [#2630](https://github.com/bbatsov/rubocop/issues/2630): Take frozen string literals into account in `Style/MutableConstant`. ([@segiddins][])
 * [#2642](https://github.com/bbatsov/rubocop/issues/2642): Support assignment via `||=` in `Style/MutableConstant`. ([@segiddins][])
 * [#2646](https://github.com/bbatsov/rubocop/issues/2646): Fix auto-correcting assignment to a constant in `Style/ConditionalAssignment`. ([@segiddins][])
+* [#2614](https://github.com/bbatsov/rubocop/issues/2614): Check for zero return value from `casecmp` in `Performance/casecmp`. ([@segiddins][])
 
 ### Changes
 

@@ -40,11 +40,13 @@ module RuboCop
             # or if method call already used parens, again, don't add more
             if arg.loc.begin.source == '('
               corrector.replace(range, 'casecmp')
+              corrector.insert_after(arg.source_range, '.zero?')
             elsif range.source =~ /\(/
               corrector.replace(range, 'casecmp(')
+              corrector.insert_after(node.source_range, '.zero?')
             else
               corrector.replace(range, 'casecmp(')
-              corrector.insert_after(arg.source_range, ')')
+              corrector.insert_after(arg.source_range, ').zero?')
             end
           end
         end

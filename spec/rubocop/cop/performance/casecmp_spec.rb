@@ -9,27 +9,27 @@ describe RuboCop::Cop::Performance::Casecmp do
   shared_examples 'selectors' do |selector|
     it "autocorrects str.#{selector} ==" do
       new_source = autocorrect_source(cop, "str.#{selector} == 'string'")
-      expect(new_source).to eq "str.casecmp('string')"
+      expect(new_source).to eq "str.casecmp('string').zero?"
     end
 
     it "autocorrects str.#{selector} == with parens around arg" do
       new_source = autocorrect_source(cop, "str.#{selector} == ('string')")
-      expect(new_source).to eq "str.casecmp('string')"
+      expect(new_source).to eq "str.casecmp('string').zero?"
     end
 
     it "autocorrects str.#{selector}.eql? without parens" do
       new_source = autocorrect_source(cop, "str.#{selector}.eql? 'string'")
-      expect(new_source).to eq "str.casecmp('string')"
+      expect(new_source).to eq "str.casecmp('string').zero?"
     end
 
     it "autocorrects str.#{selector}.eql? with parens" do
       new_source = autocorrect_source(cop, "str.#{selector}.eql?('string')")
-      expect(new_source).to eq "str.casecmp('string')"
+      expect(new_source).to eq "str.casecmp('string').zero?"
     end
 
     it "autocorrects str.#{selector}.eql? with parens and funny spacing" do
       new_source = autocorrect_source(cop, "str.#{selector}.eql? ( 'string' )")
-      expect(new_source).to eq "str.casecmp( 'string' )"
+      expect(new_source).to eq "str.casecmp( 'string' ).zero?"
     end
 
     it "formats the error message correctly for str.#{selector} ==" do
