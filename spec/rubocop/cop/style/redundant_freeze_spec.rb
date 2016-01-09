@@ -20,6 +20,7 @@ describe RuboCop::Cop::Style::RedundantFreeze do
   it_behaves_like :immutable_objects, '1'
   it_behaves_like :immutable_objects, '1.5'
   it_behaves_like :immutable_objects, ':sym'
+  it_behaves_like :immutable_objects, ':""'
 
   shared_examples :mutable_objects do |o|
     it "allows #{o} with freeze" do

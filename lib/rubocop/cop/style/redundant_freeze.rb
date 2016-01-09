@@ -14,7 +14,7 @@ module RuboCop
       class RedundantFreeze < Cop
         MSG = 'Freezing immutable objects is pointless.'.freeze
 
-        TARGET_NODES = [:int, :float, :sym].freeze
+        TARGET_NODES = [:int, :float, :sym, :dsym].freeze
 
         def on_send(node)
           receiver, method_name, *args = *node

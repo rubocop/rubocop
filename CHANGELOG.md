@@ -121,6 +121,7 @@
 * [#2448](https://github.com/bbatsov/rubocop/issues/2448): `Style/TrailingCommaInArguments` and `Style/TrailingCommaInLiteral` don't special-case single-item lists in a way which contradicts the documentation. ([@alexdowad][])
 * Fix for remote config files to only load from on http and https URLs. ([@ptrippett][])
 * [#2604](https://github.com/bbatsov/rubocop/issues/2604): `Style/FileName` doesn't fail on empty files when `ExpectMatchingDefinition` is true. ([@alexdowad][])
+* `Style/RedundantFreeze` registers offences for frozen dynamic symbols. ([@segiddins][])
 
 ### Changes
 
