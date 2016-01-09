@@ -269,14 +269,17 @@ module RuboCop
 
           def correct(node)
             condition, if_branch, else_branch = *node
-            _if_assignment, if_variable = *if_branch
-            _else_assignment, else_variable = *else_branch
+            _variable, *_operator, if_rhs = *if_branch
+            _else_variable, *_operator, else_rhs = *else_branch
             condition = condition.source
-            if_variable = if_variable.source
-            else_variable = else_variable.source
-            assignment = lhs(if_branch)
-            correction =
-              "#{assignment}#{condition} ? #{if_variable} : #{else_variable}"
+            if_rhs = if_rhs.source
+            else_rhs = else_rhs.source
+
+            ternary = "#{condition} ? #{if_rhs} : #{else_rhs}"
+            if if_branch.send_type? && if_branch.method_name != :[]=
+              ternary = "(#{ternary})"
+            end
+            correction = "#{lhs(if_branch)}#{ternary}"
 
             lambda do |corrector|
               corrector.replace(node.source_range, correction)
