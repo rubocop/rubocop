@@ -501,7 +501,7 @@ module RuboCop
       # Be conservative and return false if we're not sure
       case type
       when :__FILE__, :__LINE__, :const, :cvar, :defined?, :false, :float,
-           :gvar, :int, :ivar, :lvar, :nil, :str, :sym, :true
+           :gvar, :int, :ivar, :lvar, :nil, :str, :sym, :true, :regopt
         true
       when :and, :array, :begin, :case, :dstr, :dsym, :eflipflop, :ensure,
            :erange, :for, :hash, :if, :iflipflop, :irange, :kwbegin, :not, :or,

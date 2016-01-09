@@ -283,5 +283,32 @@ describe RuboCop::Node do
         expect(node).not_to be_pure
       end
     end
+
+    context 'for a regexp' do
+      let(:opts) { '' }
+      let(:body) { '' }
+      let(:src) { "/#{body}/#{opts}" }
+
+      context 'with interpolated segments' do
+        let(:body) { '#{x}' }
+        it 'returns false' do
+          expect(node).not_to be_pure
+        end
+      end
+
+      context 'with no interpolation' do
+        let(:src) { URI.regexp.inspect }
+        it 'returns true' do
+          expect(node).to be_pure
+        end
+      end
+
+      context 'with options' do
+        let(:opts) { 'oix' }
+        it 'returns true' do
+          expect(node).to be_pure
+        end
+      end
+    end
   end
 end
