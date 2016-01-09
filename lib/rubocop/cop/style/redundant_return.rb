@@ -23,7 +23,7 @@ module RuboCop
       class RedundantReturn < Cop
         include OnMethodDef
 
-        MSG = 'Redundant `return` detected.'
+        MSG = 'Redundant `return` detected.'.freeze
 
         private
 

@@ -30,22 +30,24 @@ module RuboCop
       class TimeZone < Cop
         include ConfigurableEnforcedStyle
 
-        MSG = 'Do not use `%s` without zone. Use `%s` instead.'
+        MSG = 'Do not use `%s` without zone. Use `%s` instead.'.freeze
 
-        MSG_ACCEPTABLE = 'Do not use `%s` without zone. Use one of %s instead.'
+        MSG_ACCEPTABLE = 'Do not use `%s` without zone. ' \
+                         'Use one of %s instead.'.freeze
 
-        MSG_LOCALTIME = 'Do not use `Time.localtime` without offset or zone.'
+        MSG_LOCALTIME = 'Do not use `Time.localtime` without ' \
+                        'offset or zone.'.freeze
 
-        MSG_CURRENT = 'Do not use `%s`. Use `Time.zone.now` instead.'
+        MSG_CURRENT = 'Do not use `%s`. Use `Time.zone.now` instead.'.freeze
 
-        TIMECLASS = [:Time, :DateTime]
+        TIMECLASS = [:Time, :DateTime].freeze
 
         DANGEROUS_METHODS = [:now, :local, :new, :strftime,
-                             :parse, :at, :current]
+                             :parse, :at, :current].freeze
 
         ACCEPTED_METHODS = [:in_time_zone, :utc, :getlocal,
                             :iso8601, :jisx0301, :rfc3339,
-                            :to_i, :to_f]
+                            :to_i, :to_f].freeze
 
         def on_const(node)
           mod, klass = *node

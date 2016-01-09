@@ -12,7 +12,7 @@ module RuboCop
       class CollectionMethods < Cop
         include MethodPreference
 
-        MSG = 'Prefer `%s` over `%s`.'
+        MSG = 'Prefer `%s` over `%s`.'.freeze
 
         def on_block(node)
           method, _args, _body = *node

@@ -7,7 +7,7 @@ module RuboCop
       class BarePercentLiterals < Cop
         include ConfigurableEnforcedStyle
 
-        MSG = 'Use `%%%s` instead of `%%%s`.'
+        MSG = 'Use `%%%s` instead of `%%%s`.'.freeze
 
         def on_dstr(node)
           check(node)

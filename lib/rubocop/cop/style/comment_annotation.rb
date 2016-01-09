@@ -10,9 +10,9 @@ module RuboCop
 
         MSG = 'Annotation keywords like `%s` should be all upper case, ' \
               'followed by a colon, and a space, ' \
-              'then a note describing the problem.'
+              'then a note describing the problem.'.freeze
         MISSING_NOTE = 'Annotation comment, with keyword `%s`, ' \
-                       'is missing a note.'
+                       'is missing a note.'.freeze
 
         def investigate(processed_source)
           processed_source.comments.each_with_index do |comment, ix|

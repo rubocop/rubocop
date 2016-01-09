@@ -13,7 +13,7 @@ module RuboCop
       #   # good
       #   :symbol
       class SymbolLiteral < Cop
-        MSG = 'Do not use strings for word-like symbol literals.'
+        MSG = 'Do not use strings for word-like symbol literals.'.freeze
 
         def on_sym(node)
           return unless node.source =~ /\A:["'][A-Za-z_]\w*["']\z/

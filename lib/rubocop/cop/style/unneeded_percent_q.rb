@@ -6,8 +6,9 @@ module RuboCop
       # This cop checks for usage of the %q/%Q syntax when '' or "" would do.
       class UnneededPercentQ < Cop
         MSG = 'Use `%s` only for strings that contain both single quotes and ' \
-              'double quotes%s.'
-        DYNAMIC_MSG = ', or for dynamic strings that contain double quotes'
+              'double quotes%s.'.freeze
+        DYNAMIC_MSG = ', or for dynamic strings that contain ' \
+                      'double quotes'.freeze
         SINGLE_QUOTE = "'".freeze
         QUOTE = '"'.freeze
         EMPTY = ''.freeze

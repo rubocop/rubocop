@@ -13,7 +13,7 @@ module RuboCop
           class:  0..1,
           sclass: 0..0,
           block:  0..0
-        }
+        }.freeze
 
         attr_reader :node, :variables
 

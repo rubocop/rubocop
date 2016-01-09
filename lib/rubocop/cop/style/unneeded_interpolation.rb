@@ -18,7 +18,7 @@ module RuboCop
       class UnneededInterpolation < Cop
         include PercentLiteral
 
-        MSG = 'Prefer `to_s` over string interpolation.'
+        MSG = 'Prefer `to_s` over string interpolation.'.freeze
 
         def on_dstr(node)
           add_offense(node, :expression, MSG) if single_interpolation?(node)

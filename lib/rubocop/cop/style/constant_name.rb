@@ -9,7 +9,7 @@ module RuboCop
       # To avoid false positives, it ignores cases in which we cannot know
       # for certain the type of value that would be assigned to a constant.
       class ConstantName < Cop
-        MSG = 'Use SCREAMING_SNAKE_CASE for constants.'
+        MSG = 'Use SCREAMING_SNAKE_CASE for constants.'.freeze
         SNAKE_CASE = /^[\dA-Z_]+$/
 
         def on_casgn(node)

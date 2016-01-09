@@ -7,7 +7,8 @@ module RuboCop
       class CharacterLiteral < Cop
         include StringHelp
 
-        MSG = 'Do not use the character literal - use string literal instead.'
+        MSG = 'Do not use the character literal - ' \
+              'use string literal instead.'.freeze
 
         def offense?(node)
           # we don't register an offense for things like ?\C-\M-d

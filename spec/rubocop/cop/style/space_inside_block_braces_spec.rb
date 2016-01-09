@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
-  SUPPORTED_STYLES = %w(space no_space)
+  SUPPORTED_STYLES = %w(space no_space).freeze
 
   subject(:cop) { described_class.new(config) }
   let(:config) do

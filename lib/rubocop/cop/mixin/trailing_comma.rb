@@ -7,7 +7,7 @@ module RuboCop
     module TrailingComma
       include ConfigurableEnforcedStyle
 
-      MSG = '%s comma after the last %s'
+      MSG = '%s comma after the last %s'.freeze
 
       def parameter_name
         'EnforcedStyleForMultiline'

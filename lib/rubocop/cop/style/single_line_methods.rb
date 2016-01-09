@@ -9,7 +9,7 @@ module RuboCop
         include AutocorrectAlignment
         include OnMethodDef
 
-        MSG = 'Avoid single-line method definitions.'
+        MSG = 'Avoid single-line method definitions.'.freeze
 
         def allow_empty?
           cop_config['AllowIfMethodIsEmpty']

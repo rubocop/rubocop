@@ -12,7 +12,7 @@ module RuboCop
       #     i
       #   end
       class BlockAlignment < Cop
-        MSG = '`%s` at %d, %d is not aligned with `%s` at %d, %d%s.'
+        MSG = '`%s` at %d, %d is not aligned with `%s` at %d, %d%s.'.freeze
 
         def_node_matcher :block_end_align_target?, <<-PATTERN
           {assignment?

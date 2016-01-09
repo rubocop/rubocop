@@ -5,9 +5,9 @@ module RuboCop
     module Style
       # Checks for various control keywords missing a space after them.
       class SpaceAfterControlKeyword < Cop
-        MSG = 'Use space after control keywords.'
+        MSG = 'Use space after control keywords.'.freeze
         # elsif and unless are handled by on_if.
-        KEYWORDS = %w(if case when while until)
+        KEYWORDS = %w(if case when while until).freeze
 
         def on_keyword(node)
           return if node.loc.is_a?(Parser::Source::Map::Ternary)

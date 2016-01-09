@@ -27,11 +27,11 @@ module RuboCop
           end
         end
 
-        MSG = '`%s` is deprecated in favor of `%s`.'
+        MSG = '`%s` is deprecated in favor of `%s`.'.freeze
         DEPRECATED_METHODS_OBJECT = [
           DeprecatedClassMethod.new(:File, :exists?, :exist?),
           DeprecatedClassMethod.new(:Dir, :exists?, :exist?)
-        ]
+        ].freeze
 
         def on_send(node)
           check(node) do |data|

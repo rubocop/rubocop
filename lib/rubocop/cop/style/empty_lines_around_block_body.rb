@@ -16,7 +16,7 @@ module RuboCop
       class EmptyLinesAroundBlockBody < Cop
         include EmptyLinesAroundBody
 
-        KIND = 'block'
+        KIND = 'block'.freeze
 
         def on_block(node)
           _send, _args, body = *node

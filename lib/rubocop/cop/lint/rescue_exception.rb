@@ -6,7 +6,7 @@ module RuboCop
       # This cop checks for *rescue* blocks targeting the Exception class.
       class RescueException < Cop
         MSG = 'Avoid rescuing the `Exception` class. ' \
-              'Perhaps you meant to rescue `StandardError`?'
+              'Perhaps you meant to rescue `StandardError`?'.freeze
 
         def on_resbody(node)
           return unless node.children.first

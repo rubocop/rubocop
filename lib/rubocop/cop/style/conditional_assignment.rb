@@ -134,7 +134,7 @@ module RuboCop
         include ConditionalAssignmentHelper
 
         MSG = 'Use the return of the conditional for variable assignment ' \
-              'and comparison.'
+              'and comparison.'.freeze
         VARIABLE_ASSIGNMENT_TYPES =
           [:casgn, :cvasgn, :gvasgn, :ivasgn, :lvasgn].freeze
         ASSIGNMENT_TYPES =

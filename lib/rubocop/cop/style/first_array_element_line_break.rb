@@ -21,7 +21,7 @@ module RuboCop
         include FirstElementLineBreak
 
         MSG = 'Add a line break before the first element of a ' \
-              'multi-line array.'
+              'multi-line array.'.freeze
 
         def on_array(node)
           return if !node.loc.begin && !assignment_on_same_line?(node)

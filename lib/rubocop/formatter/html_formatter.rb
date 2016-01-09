@@ -68,7 +68,7 @@ module RuboCop
           warning:    Color.new(0x96, 0x28, 0xEF, 1.0),
           error:      Color.new(0xD2, 0x32, 0x2D, 1.0),
           fatal:      Color.new(0xD2, 0x32, 0x2D, 1.0)
-        }
+        }.freeze
 
         LOGO_IMAGE_PATH =
           File.expand_path('../../../../assets/logo.png', __FILE__)

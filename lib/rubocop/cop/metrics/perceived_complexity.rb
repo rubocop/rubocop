@@ -30,8 +30,9 @@ module RuboCop
         include MethodComplexity
         include IfNode
 
-        MSG = 'Perceived complexity for %s is too high. [%d/%d]'
-        COUNTED_NODES = [:if, :case, :while, :until, :for, :rescue, :and, :or]
+        MSG = 'Perceived complexity for %s is too high. [%d/%d]'.freeze
+        COUNTED_NODES = [:if, :case, :while, :until,
+                         :for, :rescue, :and, :or].freeze
 
         private
 

@@ -15,7 +15,7 @@ module RuboCop
         NESTING_BLOCKS = [
           :case, :if, :while, :while_post,
           :until, :until_post, :for, :resbody
-        ]
+        ].freeze
 
         def investigate(processed_source)
           return unless processed_source.ast

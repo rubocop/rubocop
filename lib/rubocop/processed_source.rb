@@ -8,7 +8,7 @@ module RuboCop
   # and other information such as disabled lines for cops.
   # It also provides a convenient way to access source lines.
   class ProcessedSource
-    STRING_SOURCE_NAME = '(string)'
+    STRING_SOURCE_NAME = '(string)'.freeze
 
     attr_reader :path, :buffer, :ast, :comments, :tokens, :diagnostics,
                 :parser_error, :raw_source, :ruby_version

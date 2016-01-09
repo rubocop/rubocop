@@ -17,11 +17,11 @@ module RuboCop
       #     ...
       #   end
       class AutoResourceCleanup < Cop
-        MSG = 'Use the block version of `%s.%s`.'
+        MSG = 'Use the block version of `%s.%s`.'.freeze
 
         TARGET_METHODS = [
           [:File, :open]
-        ]
+        ].freeze
 
         def on_send(node)
           receiver_node, method_name, *arg_nodes = *node

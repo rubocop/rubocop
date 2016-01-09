@@ -6,7 +6,7 @@ module RuboCop
     # kinds of brackets.
     module SpaceInside
       include SurroundingSpace
-      MSG = 'Space inside %s detected.'
+      MSG = 'Space inside %s detected.'.freeze
 
       def investigate(processed_source)
         @processed_source = processed_source

@@ -8,12 +8,12 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         MSG_BOTH = 'Prefer `%s` from the stdlib \'English\' module, ' \
-        'or `%s` over `%s`.'
+        'or `%s` over `%s`.'.freeze
         MSG_ENGLISH = 'Prefer `%s` from the stdlib \'English\' module ' \
-        'over `%s`.'
-        MSG_REGULAR = 'Prefer `%s` over `%s`.'
+        'over `%s`.'.freeze
+        MSG_REGULAR = 'Prefer `%s` over `%s`.'.freeze
 
-        ENGLISH_VARS = {
+        ENGLISH_VARS = { # rubocop:disable Style/MutableConstant
           :$: => [:$LOAD_PATH],
           :$" => [:$LOADED_FEATURES],
           :$0 => [:$PROGRAM_NAME],
@@ -45,8 +45,8 @@ module RuboCop
           Hash[ENGLISH_VARS.flat_map { |_, vs| vs.map { |v| [v, [v]] } }])
         PERL_VARS.merge!(
           Hash[PERL_VARS.flat_map { |_, vs| vs.map { |v| [v, [v]] } }])
-        ENGLISH_VARS.freeze
-        PERL_VARS.freeze
+        ENGLISH_VARS.each { |_, v| v.freeze }.freeze
+        PERL_VARS.each { |_, v| v.freeze }.freeze
 
         # Anything *not* in this set is provided by the English library.
         NON_ENGLISH_VARS = Set.new([
@@ -54,7 +54,7 @@ module RuboCop
                                      :$LOADED_FEATURES,
                                      :$PROGRAM_NAME,
                                      :ARGV
-                                   ])
+                                   ]).freeze
 
         def on_gvar(node)
           global_var, = *node

@@ -5,7 +5,7 @@ module RuboCop
     module Style
       # This cop checks for Windows-style line endings in the source code.
       class EndOfLine < Cop
-        MSG = 'Carriage return character detected.'
+        MSG = 'Carriage return character detected.'.freeze
 
         def investigate(processed_source)
           last_token = processed_source.tokens.last

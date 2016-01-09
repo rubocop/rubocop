@@ -10,7 +10,7 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include AccessModifierNode
 
-        MSG = '%s access modifiers like `%s`.'
+        MSG = '%s access modifiers like `%s`.'.freeze
 
         def on_class(node)
           _name, _base_class, body = *node

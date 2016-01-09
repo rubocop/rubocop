@@ -6,13 +6,15 @@ module RuboCop
       # This cop makes sure that certain operator methods have their sole
       # parameter named `other`.
       class OpMethod < Cop
-        MSG = 'When defining the `%s` operator, name its argument `other`.'
+        MSG = 'When defining the `%s` operator, ' \
+              'name its argument `other`.'.freeze
 
-        OP_LIKE_METHODS = [:eql?, :equal?]
+        OP_LIKE_METHODS = [:eql?, :equal?].freeze
 
-        BLACKLISTED = [:+@, :-@, :[], :[]=, :<<]
+        BLACKLISTED = [:+@, :-@, :[], :[]=, :<<].freeze
 
-        TARGET_ARGS = [s(:args, s(:arg, :other)), s(:args, s(:arg, :_other))]
+        TARGET_ARGS = [s(:args, s(:arg, :other)),
+                       s(:args, s(:arg, :_other))].freeze
 
         def on_def(node)
           name, args, _body = *node

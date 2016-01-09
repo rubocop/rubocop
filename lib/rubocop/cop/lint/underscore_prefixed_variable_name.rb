@@ -6,7 +6,7 @@ module RuboCop
       # This cop checks for underscore-prefixed variables that are actually
       # used.
       class UnderscorePrefixedVariableName < Cop
-        MSG = 'Do not use prefix `_` for a variable that is used.'
+        MSG = 'Do not use prefix `_` for a variable that is used.'.freeze
 
         def join_force?(force_class)
           force_class == VariableForce

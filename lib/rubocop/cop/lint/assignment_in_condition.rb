@@ -8,8 +8,8 @@ module RuboCop
       class AssignmentInCondition < Cop
         include SafeAssignment
 
-        MSG = 'Assignment in condition - you probably meant to use `==`.'
-        ASGN_TYPES = [:begin, *EQUALS_ASGN_NODES, :send]
+        MSG = 'Assignment in condition - you probably meant to use `==`.'.freeze
+        ASGN_TYPES = [:begin, *EQUALS_ASGN_NODES, :send].freeze
 
         def on_if(node)
           check(node)

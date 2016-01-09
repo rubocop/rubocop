@@ -18,7 +18,7 @@ module RuboCop
         include AccessModifierNode
         include ConfigurableEnforcedStyle
 
-        MSG = 'Inconsistent indentation detected.'
+        MSG = 'Inconsistent indentation detected.'.freeze
 
         def on_begin(node)
           check(node)

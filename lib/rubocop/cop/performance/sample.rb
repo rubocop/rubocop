@@ -25,7 +25,7 @@ module RuboCop
       #   [1, 2, 3].shuffle[foo, bar]
       #   [1, 2, 3].shuffle(random: Random.new)
       class Sample < Cop
-        MSG = 'Use `%<correct>s` instead of `%<incorrect>s`.'
+        MSG = 'Use `%<correct>s` instead of `%<incorrect>s`.'.freeze
 
         def on_send(node)
           analyzer = ShuffleAnalyzer.new(node)

@@ -5,7 +5,7 @@ module RuboCop
     # Common functionality for cops checking for space before
     # punctuation.
     module SpaceBeforePunctuation
-      MSG = 'Space found before %s.'
+      MSG = 'Space found before %s.'.freeze
 
       def investigate(processed_source)
         processed_source.tokens.each_cons(2) do |t1, t2|

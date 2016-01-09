@@ -9,7 +9,7 @@ module RuboCop
         include OnNormalIfUnless
 
         MSG = 'Favor the ternary operator (`?:`) ' \
-              'over `%s/then/else/end` constructs.'
+              'over `%s/then/else/end` constructs.'.freeze
 
         def on_normal_if_unless(node)
           exp = node.source

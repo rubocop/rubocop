@@ -5,7 +5,7 @@ module RuboCop
     module Lint
       # This cop checks for calls to debugger or pry.
       class Debugger < Cop
-        MSG = 'Remove debugger entry point `%s`.'
+        MSG = 'Remove debugger entry point `%s`.'.freeze
 
         def_node_matcher :debugger_call?, <<-END
           {(send nil {:debugger :byebug} ...)

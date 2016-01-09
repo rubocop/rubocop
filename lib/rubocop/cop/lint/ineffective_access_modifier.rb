@@ -38,10 +38,11 @@ module RuboCop
       #   end
       class IneffectiveAccessModifier < Cop
         MSG = '`%s` (on line %d) does not make singleton methods %s. ' \
-              'Use %s instead.'
+              'Use %s instead.'.freeze
         ALTERNATIVE_PRIVATE = '`private_class_method` or `private` inside a ' \
-                              '`class << self` block'
-        ALTERNATIVE_PROTECTED = '`protected` inside a `class << self` block'
+                              '`class << self` block'.freeze
+        ALTERNATIVE_PROTECTED = '`protected` inside a `class << self` ' \
+                                'block'.freeze
 
         def_node_matcher :access_modifier, <<-PATTERN
           (send nil ${:public :protected :private})

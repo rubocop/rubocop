@@ -14,7 +14,7 @@ module RuboCop
       #   @good
       #   'abc'.casecmp('ABC')
       class Casecmp < Cop
-        MSG = 'Use `casecmp` instead of `%s %s`.'
+        MSG = 'Use `casecmp` instead of `%s %s`.'.freeze
 
         def_node_matcher :downcase_eq, <<-END
           (send $(send _ ${:downcase :upcase}) ${:== :eql?} _)

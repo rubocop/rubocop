@@ -6,9 +6,9 @@ module RuboCop
       # This cop checks for the use of a method, the result of which
       # would be a literal, like an empty array, hash or string.
       class EmptyLiteral < Cop
-        ARR_MSG = 'Use array literal `[]` instead of `Array.new`.'
-        HASH_MSG = 'Use hash literal `{}` instead of `Hash.new`.'
-        STR_MSG = "Use string literal `''` instead of `String.new`."
+        ARR_MSG = 'Use array literal `[]` instead of `Array.new`.'.freeze
+        HASH_MSG = 'Use hash literal `{}` instead of `Hash.new`.'.freeze
+        STR_MSG = "Use string literal `''` instead of `String.new`.".freeze
 
         # Empty array node
         #

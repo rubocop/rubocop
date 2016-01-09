@@ -13,7 +13,7 @@ module RuboCop
       #   # good
       #   [].reverse_each
       class ReverseEach < Cop
-        MSG = 'Use `reverse_each` instead of `reverse.each`.'
+        MSG = 'Use `reverse_each` instead of `reverse.each`.'.freeze
 
         def on_send(node)
           receiver, second_method = *node

@@ -22,11 +22,11 @@ module RuboCop
                                       week: :weeks,
                                       fortnight: :fortnights,
                                       month: :months,
-                                      year: :years }
+                                      year: :years }.freeze
 
         PLURAL_DURATION_METHODS = SINGULAR_DURATION_METHODS.invert
 
-        MSG = 'Prefer `%s.%s`.'
+        MSG = 'Prefer `%s.%s`.'.freeze
 
         def on_send(node)
           receiver, method_name, *_args = *node

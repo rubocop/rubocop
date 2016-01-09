@@ -6,7 +6,7 @@ module RuboCop
       # This cop checks for multi-line ternary op expressions.
       class MultilineTernaryOperator < Cop
         MSG = 'Avoid multi-line ?: (the ternary operator);' \
-              ' use `if`/`unless` instead.'
+              ' use `if`/`unless` instead.'.freeze
 
         def on_if(node)
           _condition, _if_branch, else_branch = *node

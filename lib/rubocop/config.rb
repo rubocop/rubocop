@@ -13,7 +13,8 @@ module RuboCop
   class Config < Hash
     include PathUtil
 
-    COMMON_PARAMS = %w(Exclude Include Severity AutoCorrect StyleGuide Details)
+    COMMON_PARAMS = %w(Exclude Include Severity
+                       AutoCorrect StyleGuide Details).freeze
     KNOWN_RUBIES = [1.9, 2.0, 2.1, 2.2, 2.3].freeze
 
     attr_reader :loaded_path

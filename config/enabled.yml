@@ -436,6 +436,10 @@ Style/MultilineTernaryOperator:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-multiline-ternary'
   Enabled: true
 
+Style/MutableConstant:
+  Description: 'Do not assign mutable objects to constants.'
+  Enabled: true
+
 Style/NegatedIf:
   Description: >-
                  Favor unless over if for negative conditions

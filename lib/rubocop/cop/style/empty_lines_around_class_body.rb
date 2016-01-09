@@ -19,7 +19,7 @@ module RuboCop
       class EmptyLinesAroundClassBody < Cop
         include EmptyLinesAroundBody
 
-        KIND = 'class'
+        KIND = 'class'.freeze
 
         def on_class(node)
           _name, _superclass, body = *node

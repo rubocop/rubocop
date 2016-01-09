@@ -41,7 +41,7 @@ module RuboCop
         include MinBodyLength
 
         MSG = 'Use a guard clause instead of wrapping the code inside a ' \
-              'conditional expression.'
+              'conditional expression.'.freeze
 
         def_node_matcher :single_line_control_flow_exit?, <<-PATTERN
           [{(send nil {:raise :fail} ...) return break next} single_line?]

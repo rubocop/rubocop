@@ -7,7 +7,7 @@ module RuboCop
     module Style
       # This cops checks for two or more consecutive blank lines.
       class EmptyLines < Cop
-        MSG = 'Extra blank line detected.'
+        MSG = 'Extra blank line detected.'.freeze
         LINE_OFFSET = 2
 
         def investigate(processed_source)

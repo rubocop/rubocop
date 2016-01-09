@@ -139,7 +139,7 @@ module RuboCop
         end
 
         MSG = 'Align the elements of a hash literal if they span more than ' \
-              'one line.'
+              'one line.'.freeze
 
         def on_send(node)
           return unless (last_child = node.children.last) &&

@@ -18,7 +18,7 @@ module RuboCop
       #   # good
       #   'a'..'z'
       class SpaceInsideRangeLiteral < Cop
-        MSG = 'Space inside range literal.'
+        MSG = 'Space inside range literal.'.freeze
 
         def on_irange(node)
           check(node)

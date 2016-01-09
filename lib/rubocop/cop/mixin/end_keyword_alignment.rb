@@ -6,7 +6,7 @@ module RuboCop
     module EndKeywordAlignment
       include ConfigurableEnforcedStyle
 
-      MSG = '`end` at %d, %d is not aligned with `%s` at %d, %d.'
+      MSG = '`end` at %d, %d is not aligned with `%s` at %d, %d.'.freeze
 
       private
 

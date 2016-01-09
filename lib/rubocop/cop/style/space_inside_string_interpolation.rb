@@ -14,8 +14,8 @@ module RuboCop
       class SpaceInsideStringInterpolation < Cop
         include ConfigurableEnforcedStyle
 
-        NO_SPACE_MSG = 'Space inside string interpolation detected.'
-        SPACE_MSG = 'Missing space around string interpolation detected.'
+        NO_SPACE_MSG = 'Space inside string interpolation detected.'.freeze
+        SPACE_MSG = 'Missing space around string interpolation detected.'.freeze
 
         def on_dstr(node)
           node.children.select { |n| n.type == :begin }.each do |begin_node|

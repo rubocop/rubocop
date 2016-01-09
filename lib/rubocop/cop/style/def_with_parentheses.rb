@@ -10,7 +10,7 @@ module RuboCop
         include OnMethodDef
 
         MSG = "Omit the parentheses in defs when the method doesn't accept " \
-              'any arguments.'
+              'any arguments.'.freeze
 
         def on_method_def(node, _method_name, args, _body)
           start_line = node.loc.keyword.line

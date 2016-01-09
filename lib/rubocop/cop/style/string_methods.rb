@@ -8,7 +8,7 @@ module RuboCop
       class StringMethods < Cop
         include MethodPreference
 
-        MSG = 'Prefer `%s` over `%s`.'
+        MSG = 'Prefer `%s` over `%s`.'.freeze
 
         def on_send(node)
           _receiver, method_name, *_args = *node

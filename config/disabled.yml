@@ -85,10 +85,6 @@ Style/MultilineAssignmentLayout:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#indent-conditional-assignment'
   Enabled: false
 
-Style/MutableConstant:
-  Description: 'Do not assign mutable objects to constants.'
-  Enabled: false
-
 Style/OptionHash:
   Description: "Don't use option hashes when you can use keyword arguments."
   Enabled: false

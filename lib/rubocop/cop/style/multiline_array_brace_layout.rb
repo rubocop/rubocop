@@ -39,11 +39,11 @@ module RuboCop
       class MultilineArrayBraceLayout < Cop
         SAME_LINE_MESSAGE = 'Closing array brace must be on the same line as ' \
           'the last array element when opening brace is on the same line as ' \
-          'the first array element.'
+          'the first array element.'.freeze
 
         NEW_LINE_MESSAGE = 'Closing array brace must be on the line after ' \
           'the last array element when opening brace is on a separate line ' \
-          'from the first array element.'
+          'from the first array element.'.freeze
 
         def on_array(node)
           return unless node.loc.begin # Ignore implicit arrays.

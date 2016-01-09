@@ -31,7 +31,7 @@ module RuboCop
         include FirstElementLineBreak
 
         MSG = 'Add a line break before the first parameter of a ' \
-              'multi-line method parameter list.'
+              'multi-line method parameter list.'.freeze
 
         def on_method_def(node, _method_name, args, _body)
           check_method_line_break(node, args.to_a)

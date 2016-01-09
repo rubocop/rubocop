@@ -11,7 +11,7 @@ module RuboCop
       #
       #   raise RuntimeError, 'message'
       class RedundantException < Cop
-        MSG = 'Redundant `RuntimeError` argument can be removed.'
+        MSG = 'Redundant `RuntimeError` argument can be removed.'.freeze
 
         TARGET_NODE = s(:const, nil, :RuntimeError)
 

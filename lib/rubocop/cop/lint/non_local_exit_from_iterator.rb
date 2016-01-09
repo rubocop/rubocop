@@ -34,7 +34,8 @@ module RuboCop
       #
       class NonLocalExitFromIterator < Cop
         MSG = 'Non-local exit from iterator, without return value. ' \
-          '`next`, `break`, `Array#find`, `Array#any?`, etc. is preferred.'
+              '`next`, `break`, `Array#find`, `Array#any?`, etc. ' \
+              'is preferred.'.freeze
 
         def on_return(return_node)
           return if return_value?(return_node)

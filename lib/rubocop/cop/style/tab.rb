@@ -7,7 +7,7 @@ module RuboCop
     module Style
       # This cop checks for tabs inside the source code.
       class Tab < Cop
-        MSG = 'Tab detected.'
+        MSG = 'Tab detected.'.freeze
 
         def investigate(processed_source)
           str_lines = string_literal_lines(processed_source.ast)

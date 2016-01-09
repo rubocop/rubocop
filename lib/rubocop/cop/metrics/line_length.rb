@@ -10,7 +10,7 @@ module RuboCop
       class LineLength < Cop
         include ConfigurableMax
 
-        MSG = 'Line is too long. [%d/%d]'
+        MSG = 'Line is too long. [%d/%d]'.freeze
 
         def investigate(processed_source)
           heredocs = extract_heredocs(processed_source.ast) if allow_heredoc?

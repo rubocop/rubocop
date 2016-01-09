@@ -16,7 +16,7 @@ module RuboCop
       #     work
       #   end
       class InfiniteLoop < Cop
-        MSG = 'Use `Kernel#loop` for infinite loops.'
+        MSG = 'Use `Kernel#loop` for infinite loops.'.freeze
 
         def on_while(node)
           condition, = *node

@@ -24,7 +24,7 @@ module RuboCop
         include FirstElementLineBreak
 
         MSG = 'Add a line break before the first argument of a ' \
-              'multi-line method argument list.'
+              'multi-line method argument list.'.freeze
 
         def on_send(node)
           _receiver, _name, *args = *node

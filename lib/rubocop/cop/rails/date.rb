@@ -38,12 +38,12 @@ module RuboCop
       class Date < Cop
         include ConfigurableEnforcedStyle
 
-        MSG = 'Do not use `%s` without zone. Use `%s` instead.'
+        MSG = 'Do not use `%s` without zone. Use `%s` instead.'.freeze
 
-        MSG_SEND = 'Do not use `%s` on Date objects, ' \
-                   'because they know nothing about the time zone in use.'
+        MSG_SEND = 'Do not use `%s` on Date objects, because they ' \
+                   'know nothing about the time zone in use.'.freeze
 
-        BAD_DAYS = [:today, :current, :yesterday, :tomorrow]
+        BAD_DAYS = [:today, :current, :yesterday, :tomorrow].freeze
 
         def on_const(node)
           mod, klass = *node.children

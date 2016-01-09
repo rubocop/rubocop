@@ -9,9 +9,11 @@ module RuboCop
       class Lambda < Cop
         include AutocorrectUnlessChangingAST
 
-        SINGLE_MSG = 'Use the new lambda literal syntax `->(params) {...}`.'
-        SINGLE_NO_ARG_MSG = 'Use the new lambda literal syntax `-> {...}`.'
-        MULTI_MSG = 'Use the `lambda` method for multi-line lambdas.'
+        SINGLE_MSG = 'Use the new lambda literal syntax ' \
+                     '`->(params) {...}`.'.freeze
+        SINGLE_NO_ARG_MSG = 'Use the new lambda literal syntax ' \
+                            '`-> {...}`.'.freeze
+        MULTI_MSG = 'Use the `lambda` method for multi-line lambdas.'.freeze
 
         TARGET = s(:send, nil, :lambda)
 

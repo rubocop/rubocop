@@ -26,7 +26,7 @@ module RuboCop
       class IdenticalConditionalBranches < Cop
         include IfNode
 
-        MSG = 'Move `%s` out of the conditional.'
+        MSG = 'Move `%s` out of the conditional.'.freeze
 
         def on_if(node)
           return if elsif?(node)

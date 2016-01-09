@@ -7,11 +7,11 @@ module RuboCop
       include Comparable
 
       # @api private
-      NAMES = [:refactor, :convention, :warning, :error, :fatal]
+      NAMES = [:refactor, :convention, :warning, :error, :fatal].freeze
 
       # @api private
       CODE_TABLE = { R: :refactor, C: :convention,
-                     W: :warning, E: :error, F: :fatal }
+                     W: :warning, E: :error, F: :fatal }.freeze
 
       # @api public
       #

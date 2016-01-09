@@ -11,8 +11,8 @@ module RuboCop
       class WordArray < Cop
         include ArraySyntax
 
-        PERCENT_MSG = 'Use `%w` or `%W` for an array of words.'
-        ARRAY_MSG = 'Use `[]` for an array of words.'
+        PERCENT_MSG = 'Use `%w` or `%W` for an array of words.'.freeze
+        ARRAY_MSG = 'Use `[]` for an array of words.'.freeze
         QUESTION_MARK_SIZE = '?'.size
 
         def on_array(node)

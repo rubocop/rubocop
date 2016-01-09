@@ -5,7 +5,8 @@ module RuboCop
     module Style
       # This cop checks for unwanted parentheses in parameterless method calls.
       class MethodCallParentheses < Cop
-        MSG = 'Do not use parentheses for method calls with no arguments.'
+        MSG = 'Do not use parentheses for method calls with ' \
+              'no arguments.'.freeze
 
         ASGN_NODES = [:lvasgn, :masgn] + Util::SHORTHAND_ASGN_NODES
 

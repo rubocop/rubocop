@@ -43,7 +43,7 @@ module RuboCop
       # We allow uses of `self` with operators because it would be awkward
       # otherwise.
       class RedundantSelf < Cop
-        MSG = 'Redundant `self` detected.'
+        MSG = 'Redundant `self` detected.'.freeze
 
         def initialize(config = nil, options = nil)
           super

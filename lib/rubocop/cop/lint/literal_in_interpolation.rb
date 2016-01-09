@@ -9,7 +9,7 @@ module RuboCop
       #
       #   "result is #{10}"
       class LiteralInInterpolation < Cop
-        MSG = 'Literal interpolation detected.'
+        MSG = 'Literal interpolation detected.'.freeze
 
         def on_dstr(node)
           node.children.select { |n| n.type == :begin }.each do |begin_node|

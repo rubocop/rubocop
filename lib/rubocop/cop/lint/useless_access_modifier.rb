@@ -22,7 +22,7 @@ module RuboCop
       #     private # this is redundant
       #   end
       class UselessAccessModifier < Cop
-        MSG = 'Useless `%s` access modifier.'
+        MSG = 'Useless `%s` access modifier.'.freeze
 
         def_node_matcher :access_modifier, <<-PATTERN
           (send nil ${:public :protected :private})

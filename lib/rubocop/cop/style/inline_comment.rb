@@ -5,7 +5,7 @@ module RuboCop
     module Style
       # This cop checks for inline comments.
       class InlineComment < Cop
-        MSG = 'Avoid inline comments.'
+        MSG = 'Avoid inline comments.'.freeze
 
         def investigate(processed_source)
           processed_source.comments.each do |comment|

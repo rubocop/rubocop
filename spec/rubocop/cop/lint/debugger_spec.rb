@@ -28,7 +28,7 @@ describe RuboCop::Cop::Lint::Debugger do
 
   ALL_COMMANDS = %w(debugger byebug pry remote_pry pry_remote
                     save_and_open_page save_and_open_screenshot
-                    save_screenshot)
+                    save_screenshot).freeze
 
   ALL_COMMANDS.each do |src|
     include_examples 'non-debugger', "a #{src} in comments", "# #{src}"

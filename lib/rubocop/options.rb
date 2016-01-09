@@ -5,7 +5,7 @@ require 'optparse'
 module RuboCop
   # This class handles command line options.
   class Options
-    EXITING_OPTIONS = [:version, :verbose_version, :show_cops]
+    EXITING_OPTIONS = [:version, :verbose_version, :show_cops].freeze
     DEFAULT_MAXIMUM_EXCLUSION_ITEMS = 15
 
     def initialize
@@ -276,6 +276,6 @@ module RuboCop
       verbose_version:      'Display verbose version.',
       stdin:                ['Pipe source from STDIN.',
                              'This is useful for editor integration.']
-    }
+    }.freeze
   end
 end

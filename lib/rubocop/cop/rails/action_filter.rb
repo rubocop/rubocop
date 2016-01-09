@@ -10,7 +10,7 @@ module RuboCop
       class ActionFilter < Cop
         include ConfigurableEnforcedStyle
 
-        MSG = 'Prefer `%s` over `%s`.'
+        MSG = 'Prefer `%s` over `%s`.'.freeze
 
         FILTER_METHODS = [
           :after_filter,
@@ -26,7 +26,7 @@ module RuboCop
           :skip_around_filter,
           :skip_before_filter,
           :skip_filter
-        ]
+        ].freeze
 
         ACTION_METHODS = [
           :after_action,
@@ -42,7 +42,7 @@ module RuboCop
           :skip_around_action,
           :skip_before_action,
           :skip_action_callback
-        ]
+        ].freeze
 
         def on_block(node)
           method, _args, _body = *node
