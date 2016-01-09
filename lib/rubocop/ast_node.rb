@@ -28,8 +28,9 @@ module RuboCop
                        :rational, :regopt].freeze
     FALSEY_LITERALS = [:false, :nil].freeze
     LITERALS = (TRUTHY_LITERALS + FALSEY_LITERALS).freeze
-    BASIC_LITERALS = LITERALS - [:dstr, :xstr, :dsym, :array, :hash, :irange,
-                                 :erange, :regexp].freeze
+    COMPOSITE_LITERALS = [:dstr, :xstr, :dsym, :array, :hash, :irange,
+                          :erange, :regexp].freeze
+    BASIC_LITERALS = (LITERALS - COMPOSITE_LITERALS).freeze
     MUTABLE_LITERALS = [:str, :dstr, :xstr, :array, :hash].freeze
     IMMUTABLE_LITERALS = (LITERALS - MUTABLE_LITERALS).freeze
 
@@ -379,24 +380,23 @@ module RuboCop
       IMMUTABLE_LITERALS.include?(type)
     end
 
-    def recursive_basic_literal?
-      case type
-      when :array, :regexp, :begin, *OPERATOR_KEYWORDS
-        children.all?(&:recursive_basic_literal?)
-      when :hash
-        hash_pairs = *self
-        hash_pairs.all? do |(key, value)|
-          key.recursive_basic_literal? && value.recursive_basic_literal?
+    [:literal, :basic_literal].each do |kind|
+      recursive_kind = :"recursive_#{kind}?"
+      kind_filter = :"#{kind}?"
+      define_method(recursive_kind) do
+        case type
+        when :begin, :pair, *OPERATOR_KEYWORDS, *COMPOSITE_LITERALS
+          children.all?(&recursive_kind)
+        when :send
+          receiver, method_name, *args = *self
+          case method_name
+          when :!, *COMPARISON_OPERATORS
+            receiver.send(recursive_kind) &&
+              args.all?(&recursive_kind)
+          end
+        else
+          send(kind_filter)
         end
-      when :send
-        receiver, method_name, *args = *self
-        case method_name
-        when :!, *COMPARISON_OPERATORS
-          receiver.recursive_basic_literal? &&
-            args.all?(&:recursive_basic_literal?)
-        end
-      when *Astrolabe::Node::BASIC_LITERALS
-        true
       end
     end
 

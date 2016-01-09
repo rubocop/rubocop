@@ -13,20 +13,13 @@ module RuboCop
       class DuplicatedKey < Cop
         MSG = 'Duplicated key in hash literal.'.freeze
 
-        LITERALS = [:sym, :str, :float, :int].freeze
-
         def on_hash(node)
           keys = []
 
           hash_pairs = *node
           hash_pairs.each do |pair|
             key, _value = *pair
-            if keys.include?(key) && LITERALS.include?(key.type)
-              add_offense(key, :expression)
-            elsif keys.include?(key) && key.type == :array
-              key.children.each do |child|
-                return false unless LITERALS.include?(child.type)
-              end
+            if keys.include?(key) && key.recursive_basic_literal?
               add_offense(key, :expression)
             end
             keys << key
