@@ -379,6 +379,27 @@ module RuboCop
       IMMUTABLE_LITERALS.include?(type)
     end
 
+    def recursive_basic_literal?
+      case type
+      when :array, :regexp, :begin, *OPERATOR_KEYWORDS
+        children.all?(&:recursive_basic_literal?)
+      when :hash
+        hash_pairs = *self
+        hash_pairs.all? do |(key, value)|
+          key.recursive_basic_literal? && value.recursive_basic_literal?
+        end
+      when :send
+        receiver, method_name, *args = *self
+        case method_name
+        when :!, *COMPARISON_OPERATORS
+          receiver.recursive_basic_literal? &&
+            args.all?(&:recursive_basic_literal?)
+        end
+      when *Astrolabe::Node::BASIC_LITERALS
+        true
+      end
+    end
+
     def variable?
       VARIABLES.include?(type)
     end
