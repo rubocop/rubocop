@@ -122,6 +122,8 @@
 * Fix for remote config files to only load from on http and https URLs. ([@ptrippett][])
 * [#2604](https://github.com/bbatsov/rubocop/issues/2604): `Style/FileName` doesn't fail on empty files when `ExpectMatchingDefinition` is true. ([@alexdowad][])
 * `Style/RedundantFreeze` registers offences for frozen dynamic symbols. ([@segiddins][])
+* [#2609](https://github.com/bbatsov/rubocop/issues/2609): All cops which rely on the `AutocorrectUnlessChangingAST` module can now autocorrect files which contain `__FILE__`. ([@alexdowad][])
+* [#2608](https://github.com/bbatsov/rubocop/issues/2608): `Style/ConditionalAssignment` can autocorrect `=~` within a ternary expression. ([@alexdowad][])
 
 ### Changes
 

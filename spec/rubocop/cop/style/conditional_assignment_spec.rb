@@ -971,6 +971,21 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       expect(new_source).to eq('bar = foo? ? "1" : "2"')
     end
 
+    it 'corrects =~ in ternary operations' do
+      new_source = autocorrect_source(cop, 'foo? ? bar =~ /a/ : bar =~ /b/')
+      expect(new_source).to eq('bar =~ (foo? ? /a/ : /b/)')
+    end
+
+    it 'corrects aref assignment in ternary operations' do
+      new_source = autocorrect_source(cop, 'foo? ? bar[1] = 1 : bar[1] = 2')
+      expect(new_source).to eq('bar[1] = foo? ? 1 : 2')
+    end
+
+    it 'corrects << in ternary operations' do
+      new_source = autocorrect_source(cop, 'foo? ? bar << 1 : bar << 2')
+      expect(new_source).to eq('bar << (foo? ? 1 : 2)')
+    end
+
     it 'corrects assignment in if else' do
       source = ['if foo',
                 '  bar = 1',

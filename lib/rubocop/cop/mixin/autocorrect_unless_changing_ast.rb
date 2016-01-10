@@ -16,7 +16,7 @@ module RuboCop
         pre = current_buffer_src[0...replaced_range.begin_pos]
         post = current_buffer_src[replaced_range.end_pos..-1]
         new_buffer_src = pre + rewrite_node(node) + post
-        new_processed_src = parse(new_buffer_src)
+        new_processed_src = parse(new_buffer_src, processed_source.buffer.name)
 
         # Make the correction only if it doesn't change the AST for the buffer.
         return if !new_processed_src.ast ||
