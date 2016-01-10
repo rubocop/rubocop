@@ -54,7 +54,7 @@ module RuboCop
           # return to skip all descendant nodes
           return if result == :skip_children
           node.children.each do |child|
-            traverse_node(child, types, &block) if child.is_a?(Astrolabe::Node)
+            traverse_node(child, types, &block) if child.is_a?(Node)
           end
         end
       end

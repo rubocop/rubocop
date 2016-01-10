@@ -4,7 +4,7 @@ module RuboCop
   module Cop
     # Common functionality for checking modifier nodes.
     module AccessModifierNode
-      extend Astrolabe::Sexp
+      extend RuboCop::Sexp
 
       PRIVATE_NODE = s(:send, nil, :private)
       PROTECTED_NODE = s(:send, nil, :protected)

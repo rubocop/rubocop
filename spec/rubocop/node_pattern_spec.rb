@@ -7,7 +7,7 @@ describe RuboCop::NodePattern do
   let(:root_node) do
     buffer = Parser::Source::Buffer.new('(string)', 1)
     buffer.source = ruby
-    builder = Astrolabe::Builder.new
+    builder = RuboCop::Node::Builder.new
     Parser::CurrentRuby.new(builder).parse(buffer)
   end
 

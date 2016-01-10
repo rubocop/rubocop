@@ -9,7 +9,7 @@ module RuboCop
         # This class exists to add abstraction and clean naming to the
         # objects that are going to be operated on.
         class DeprecatedClassMethod
-          include Astrolabe::Sexp
+          include RuboCop::Sexp
 
           attr_reader :class_constant, :deprecated_method, :replacement_method
 

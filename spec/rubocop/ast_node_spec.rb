@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe Astrolabe::Node do
+describe RuboCop::Node do
   describe '#asgn_method_call?' do
     it 'does not match ==' do
       parsed = parse_source('Object.new == value')
@@ -39,7 +39,7 @@ describe Astrolabe::Node do
     let(:node) { RuboCop::ProcessedSource.new(src, ruby_version).ast }
 
     before(:all) do
-      module Astrolabe
+      module RuboCop
         class Node
           # Let's make our predicate matchers read better
           def used?
