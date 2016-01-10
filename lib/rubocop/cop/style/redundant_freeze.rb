@@ -14,13 +14,13 @@ module RuboCop
       class RedundantFreeze < Cop
         MSG = 'Freezing immutable objects is pointless.'.freeze
 
-        TARGET_NODES = [:int, :float, :sym, :dsym].freeze
-
         def on_send(node)
           receiver, method_name, *args = *node
 
-          return unless receiver && TARGET_NODES.include?(receiver.type)
-          return unless method_name == :freeze && args.empty?
+          return unless receiver &&
+                        method_name == :freeze &&
+                        args.empty? &&
+                        receiver.immutable_literal?
 
           add_offense(node, :expression)
         end

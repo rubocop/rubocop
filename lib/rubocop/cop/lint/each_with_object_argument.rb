@@ -21,7 +21,7 @@ module RuboCop
           return unless args.length == 1
 
           arg = args.first
-          add_offense(node, :expression) if arg.int_type? || arg.float_type?
+          add_offense(node, :expression) if arg.immutable_literal?
         end
       end
     end

@@ -15,12 +15,10 @@ module RuboCop
       class MutableConstant < Cop
         MSG = 'Freeze mutable objects assigned to constants.'.freeze
 
-        MUTABLE_TYPES = [:array, :hash, :str, :dstr].freeze
-
         def on_casgn(node)
           _scope, _const_name, value = *node
 
-          return if value && !MUTABLE_TYPES.include?(value.type)
+          return if value && !value.mutable_literal?
 
           add_offense(value, :expression)
         end
