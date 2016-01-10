@@ -78,6 +78,11 @@ describe RuboCop::Cop::Performance::RedundantMatch do
     expect(cop.messages).to be_empty
   end
 
+  it 'does not register an error when there is no receiver to the match call' do
+    inspect_source(cop, 'match("bar")')
+    expect(cop.messages).to be_empty
+  end
+
   it 'formats error message correctly for something if str.match(/regex/)' do
     inspect_source(cop, 'something if str.match(/regex/)')
     expect(cop.messages).to eq(['Use `=~` in places where the `MatchData` ' \
