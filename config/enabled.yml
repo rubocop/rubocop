@@ -1197,6 +1197,14 @@ Performance/FlatMap:
   # This can be dangerous since `flat_map` will only flatten 1 level, and
   # `flatten` without any parameters can flatten multiple levels.
 
+Performance/HashEachMethods:
+  Description: >-
+                 Use `Hash#each_key` and `Hash#each_value` instead of
+                 `Hash#keys.each` and `Hash#values.each`.
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#hash-each'
+  Enabled: true
+  AutoCorrect: false
+
 Performance/LstripRstrip:
   Description: 'Use `strip` instead of `lstrip.rstrip`.'
   Enabled: true

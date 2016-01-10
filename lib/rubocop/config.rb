@@ -28,7 +28,7 @@ module RuboCop
     end
 
     def make_excludes_absolute
-      keys.each do |key|
+      each_key do |key|
         validate_section_presence(key)
         next unless self[key]['Exclude']
 
