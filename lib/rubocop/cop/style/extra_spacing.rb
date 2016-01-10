@@ -51,19 +51,14 @@ module RuboCop
           end
         end
 
-        def correct(range)
-          return :uncorrected unless autocorrect?
-
-          if range.source.end_with?('=')
-            align_equal_sign(range)
-          else
-            correction { |corrector| corrector.remove(range) }
+        def autocorrect(range)
+          lambda do |corrector|
+            if range.source.end_with?('=')
+              align_equal_sign(range, corrector)
+            else
+              corrector.remove(range)
+            end
           end
-          :corrected
-        end
-
-        def support_autocorrect?
-          true
         end
 
         private
@@ -148,7 +143,7 @@ module RuboCop
           token.type == :tEQL || token.type == :tOP_ASGN
         end
 
-        def align_equal_sign(range)
+        def align_equal_sign(range, corrector)
           lines  = contiguous_assignment_lines(range)
           tokens = @asgn_tokens.select { |t| lines.include?(t.pos.line) }
 
@@ -160,9 +155,9 @@ module RuboCop
             diff = align_to - token.pos.last_column
 
             if diff > 0
-              correction { |corr| corr.insert_before(token.pos, ' ' * diff) }
+              corrector.insert_before(token.pos, ' ' * diff)
             elsif diff < 0
-              correction { |corr| corr.remove_preceding(token.pos, -diff) }
+              corrector.remove_preceding(token.pos, -diff)
             end
           end
         end
@@ -187,10 +182,6 @@ module RuboCop
           leading = line[0...asgn_token.pos.column]
           spaces  = leading.size - (leading =~ / *\Z/)
           asgn_token.pos.last_column - spaces + 1
-        end
-
-        def correction(&block)
-          @corrections << block
         end
       end
     end
