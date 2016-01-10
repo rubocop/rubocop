@@ -17,6 +17,16 @@ describe RuboCop::Cop::Performance::Casecmp do
       expect(new_source).to eq "str.casecmp('string').zero?"
     end
 
+    it "autocorrects str.#{selector} !=" do
+      new_source = autocorrect_source(cop, "str.#{selector} != 'string'")
+      expect(new_source).to eq "!str.casecmp('string').zero?"
+    end
+
+    it "autocorrects str.#{selector} != with parens around arg" do
+      new_source = autocorrect_source(cop, "str.#{selector} != ('string')")
+      expect(new_source).to eq "!str.casecmp('string').zero?"
+    end
+
     it "autocorrects str.#{selector}.eql? without parens" do
       new_source = autocorrect_source(cop, "str.#{selector}.eql? 'string'")
       expect(new_source).to eq "str.casecmp('string').zero?"
