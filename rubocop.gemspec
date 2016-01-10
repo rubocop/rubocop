@@ -41,7 +41,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('rainbow', '>= 1.99.1', '< 3.0')
   s.add_runtime_dependency('parser', '>= 2.3.0.pre.5', '< 3.0')
   s.add_runtime_dependency('powerpack', '~> 0.1')
-  s.add_runtime_dependency('astrolabe', '~> 1.3')
   s.add_runtime_dependency('ruby-progressbar', '~> 1.7')
 
   s.add_development_dependency('bundler', '~> 1.3')

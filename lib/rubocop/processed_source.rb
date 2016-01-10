@@ -1,6 +1,5 @@
 # encoding: utf-8
 
-require 'astrolabe/builder'
 require 'digest/md5'
 
 module RuboCop
@@ -118,7 +117,7 @@ module RuboCop
     end
 
     def create_parser(ruby_version)
-      builder = Astrolabe::Builder.new
+      builder = RuboCop::Node::Builder.new
 
       parser_class(ruby_version).new(builder).tap do |parser|
         # On JRuby and Rubinius, there's a risk that we hang in tokenize() if we

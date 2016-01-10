@@ -6,7 +6,7 @@ module RuboCop
     # This module contains a collection of useful utility methods.
     module Util
       include PathUtil
-      extend Astrolabe::Sexp
+      extend RuboCop::Sexp
 
       EQUALS_ASGN_NODES = [:lvasgn, :ivasgn, :cvasgn, :gvasgn,
                            :casgn, :masgn].freeze
@@ -167,8 +167,8 @@ module RuboCop
       end
 
       def within_node?(inner, outer)
-        o = outer.is_a?(Astrolabe::Node) ? outer.source_range : outer
-        i = inner.is_a?(Astrolabe::Node) ? inner.source_range : inner
+        o = outer.is_a?(Node) ? outer.source_range : outer
+        i = inner.is_a?(Node) ? inner.source_range : inner
         i.begin_pos >= o.begin_pos && i.end_pos <= o.end_pos
       end
 

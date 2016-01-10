@@ -59,7 +59,7 @@ module RuboCop
         if root_node.begin_type?
           root_node
         else
-          Astrolabe::Node.new(:begin, [root_node])
+          Node.new(:begin, [root_node])
         end
       end
 
