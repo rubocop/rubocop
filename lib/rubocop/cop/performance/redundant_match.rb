@@ -24,7 +24,7 @@ module RuboCop
         # a string or regexp literal on one side or the other
         def_node_matcher :match_call?, <<-END
           {(send {str regexp} :match _)
-           (send _ :match {str regexp})}
+           (send !nil :match {str regexp})}
         END
 
         def_node_matcher :only_truthiness_matters?, <<-END
