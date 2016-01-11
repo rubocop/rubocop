@@ -1,5 +1,5 @@
 # encoding: utf-8
-# frozen_string_literal: false
+# frozen_string_literal: true
 
 module RuboCop
   # `RuboCop::Node` is a subclass of `Parser::AST::Node`. It provides access to
@@ -46,11 +46,9 @@ module RuboCop
     class << self
       def def_matcher(method_name, pattern_str)
         compiler = RuboCop::NodePattern::Compiler.new(pattern_str, 'self')
-        src = "def #{method_name}(" <<
-              compiler.emit_param_list <<
-              ');' <<
-              compiler.emit_method_code <<
-              ';end'
+        src = "def #{method_name}(" \
+              "#{compiler.emit_param_list});" \
+              "#{compiler.emit_method_code};end"
 
         file, lineno = *caller.first.split(':')
         class_eval(src, file, lineno.to_i)

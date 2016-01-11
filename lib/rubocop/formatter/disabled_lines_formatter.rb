@@ -1,5 +1,6 @@
 # encoding: utf-8
-# frozen_string_literal: false
+# frozen_string_literal: true
+
 module RuboCop
   module Formatter
     # A basic formatter that displays the lines disabled
@@ -34,7 +35,7 @@ module RuboCop
           disabled_cops.each do |cop, line_ranges|
             line_ranges.each do |line_range|
               file = cyan(smart_path(file))
-              summary << "#{file}:#{line_range}: #{cop}\n"
+              summary += "#{file}:#{line_range}: #{cop}\n"
             end
           end
         end

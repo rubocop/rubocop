@@ -1,5 +1,5 @@
 # encoding: utf-8
-# frozen_string_literal: false
+# frozen_string_literal: true
 
 module RuboCop
   module Cop
@@ -27,7 +27,8 @@ module RuboCop
         end
 
         def message(variable)
-          message = "Unused #{variable_type(variable)} - `#{variable.name}`."
+          message = String.new("Unused #{variable_type(variable)} - " \
+                               "`#{variable.name}`.")
 
           return message if variable.explicit_block_local_variable?
 
@@ -66,7 +67,7 @@ module RuboCop
         end
 
         def message_for_lambda(variable, all_arguments)
-          message = message_for_underscore_prefix(variable)
+          message = String.new(message_for_underscore_prefix(variable))
 
           if all_arguments.none?(&:referenced?)
             message << ' Also consider using a proc without arguments ' \

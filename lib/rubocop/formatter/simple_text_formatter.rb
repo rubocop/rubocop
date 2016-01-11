@@ -1,5 +1,5 @@
 # encoding: utf-8
-# frozen_string_literal: false
+# frozen_string_literal: true
 
 require 'rubocop/formatter/colorizable'
 require 'rubocop/formatter/text_util'
@@ -86,7 +86,7 @@ module RuboCop
 
       def message(offense)
         message = offense.corrected? ? green('[Corrected] ') : ''
-        message << annotate_message(offense.message)
+        "#{message}#{annotate_message(offense.message)}"
       end
 
       # A helper class for building the report summary text.

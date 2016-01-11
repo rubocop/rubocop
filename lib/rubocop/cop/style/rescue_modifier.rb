@@ -1,5 +1,5 @@
 # encoding: utf-8
-# frozen_string_literal: false
+# frozen_string_literal: true
 
 module RuboCop
   module Cop
@@ -27,10 +27,10 @@ module RuboCop
           *_, rescue_args = *rescue_modifier
 
           correction =
-            "begin\n" <<
-            indentation(node) << operation.source <<
-            "\n#{offset(node)}rescue\n" <<
-            indentation(node) << rescue_args.source <<
+            "begin\n" \
+            "#{indentation(node)}#{operation.source}" \
+            "\n#{offset(node)}rescue\n" \
+            "#{indentation(node)}#{rescue_args.source}" \
             "\n#{offset(node)}end"
           range = Parser::Source::Range.new(node.source_range.source_buffer,
                                             node.source_range.begin_pos,

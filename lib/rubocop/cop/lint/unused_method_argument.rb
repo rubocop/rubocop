@@ -1,5 +1,5 @@
 # encoding: utf-8
-# frozen_string_literal: false
+# frozen_string_literal: true
 
 module RuboCop
   module Cop
@@ -28,7 +28,7 @@ module RuboCop
         end
 
         def message(variable)
-          message = "Unused method argument - `#{variable.name}`."
+          message = String.new("Unused method argument - `#{variable.name}`.")
 
           unless variable.keyword_argument?
             message << " If it's necessary, use `_` or `_#{variable.name}` " \

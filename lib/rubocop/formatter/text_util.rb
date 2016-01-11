@@ -1,5 +1,5 @@
 # encoding: utf-8
-# frozen_string_literal: false
+# frozen_string_literal: true
 
 module RuboCop
   module Formatter
@@ -8,16 +8,13 @@ module RuboCop
       module_function
 
       def pluralize(number, thing, options = {})
-        text = if number == 0 && options[:no_for_zero]
-                 'no'
-               else
-                 number.to_s
-               end
-
-        text << " #{thing}"
-        text << 's' unless number == 1
-
-        text
+        if number == 0 && options[:no_for_zero]
+          "no #{thing}s"
+        elsif number == 1
+          "1 #{thing}"
+        else
+          "#{number} #{thing}s"
+        end
       end
     end
   end
