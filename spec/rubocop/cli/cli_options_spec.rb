@@ -730,7 +730,7 @@ describe RuboCop::CLI, :isolated_environment do
                     ' ^',
                     'example2.rb:3:1: C: Inconsistent indentation ' \
                     'detected.',
-                    'def a',
+                    'def a ...',
                     '^^^^^',
                     'example2.rb:4:1: C: Use 2 (not 3) spaces for ' \
                     'indentation.',
