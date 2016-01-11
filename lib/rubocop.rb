@@ -1,4 +1,5 @@
 # encoding: utf-8
+# frozen_string_literal: true
 
 require 'parser'
 require 'rainbow'
@@ -227,6 +228,7 @@ require 'rubocop/cop/style/first_parameter_indentation'
 require 'rubocop/cop/style/flip_flop'
 require 'rubocop/cop/style/for'
 require 'rubocop/cop/style/format_string'
+require 'rubocop/cop/style/frozen_string_literal_comment'
 require 'rubocop/cop/style/global_vars'
 require 'rubocop/cop/style/guard_clause'
 require 'rubocop/cop/style/hash_syntax'

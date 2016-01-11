@@ -1,4 +1,5 @@
 # encoding: utf-8
+# frozen_string_literal: true
 
 require 'spec_helper'
 
@@ -91,19 +92,21 @@ describe RuboCop::ProcessedSource do
       end
     end
 
-    context 'when the source lacks encoding comment and is really utf-8 ' \
-            'encoded but has been read as US-ASCII' do
-      let(:source) do
-        # When files are read into RuboCop, the encoding of source code lacking
-        # an encoding comment will default to the external encoding, which
-        # could for example be US-ASCII if the LC_ALL environment variable is
-        # set to "C".
-        '号码 = 3'.force_encoding('US-ASCII')
-      end
+    if RUBY_VERSION < '2.3.0'
+      context 'when the source lacks encoding comment and is really utf-8 ' \
+              'encoded but has been read as US-ASCII' do
+        let(:source) do
+          # When files are read into RuboCop, the encoding of source code
+          # lacking an encoding comment will default to the external encoding,
+          # which could for example be US-ASCII if the LC_ALL environment
+          # variable is set to "C".
+          '号码 = 3'.force_encoding('US-ASCII')
+        end
 
-      it 'is nil' do
-        # ProcessedSource#parse sets UTF-8 as default encoding, so no error.
-        expect(processed_source.parser_error).to be_nil
+        it 'is nil' do
+          # ProcessedSource#parse sets UTF-8 as default encoding, so no error.
+          expect(processed_source.parser_error).to be_nil
+        end
       end
     end
 

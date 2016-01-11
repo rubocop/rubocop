@@ -265,6 +265,12 @@ Style/FileName:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#snake-case-files'
   Enabled: true
 
+Style/FrozenStringLiteralComment:
+  Description: >-
+                 Add the frozen_string_literal comment to the top of files
+                 to help transition from Ruby 2.3.0 to Ruby 3.0.
+  Enabled: false
+
 Style/InitialIndentation:
   Description: >-
     Checks the indentation of the first non-blank non-comment line in a file.

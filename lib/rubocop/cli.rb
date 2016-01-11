@@ -1,4 +1,5 @@
 # encoding: utf-8
+# frozen_string_literal: false
 
 module RuboCop
   # The CLI is a class responsible of handling all the command line interface

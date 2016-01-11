@@ -1,4 +1,5 @@
 # encoding: utf-8
+# frozen_string_literal: true
 
 # Force JRuby not to select the current working directory
 # as a temporary directory on Travis CI.

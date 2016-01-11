@@ -1,4 +1,5 @@
 # encoding: utf-8
+# frozen_string_literal: true
 
 # RuboCop can be run in contexts where unexpected other libraries are included,
 # which may interfere with its normal behavior. In order to test those
