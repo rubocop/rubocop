@@ -11,6 +11,3 @@ AllCops:
 
 Style/Encoding:
   Enabled: true
-
-Style/FrozenStringLiteralComment:
-  Enabled: true
