@@ -72,4 +72,20 @@ describe RuboCop::Cop::Lint::Void do
                    ])
     expect(cop.offenses).to be_empty
   end
+
+  it 'accepts backtick commands' do
+    inspect_source(cop,
+                   ['`touch x`',
+                    'nil'
+                   ])
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'accepts percent-x commands' do
+    inspect_source(cop,
+                   ['%x(touch x)',
+                    'nil'
+                   ])
+    expect(cop.offenses).to be_empty
+  end
 end
