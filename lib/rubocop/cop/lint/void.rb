@@ -49,6 +49,8 @@ module RuboCop
 
         def check_for_literal(node)
           return unless node.literal?
+          return if node.xstr_type?
+
           add_offense(node, :expression, format(LIT_MSG, node.source))
         end
       end
