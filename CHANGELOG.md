@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.36.0 (14/01/2016)
+
 ### New features
 
 * [#2598](https://github.com/bbatsov/rubocop/pull/2598): New cop `Lint/RandOne` checks for `rand(1)`, `Kernel.rand(1.0)` and similar calls. Such call are most likely a mistake because they always return `0`. ([@DNNX][])
