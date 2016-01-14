@@ -6,6 +6,11 @@
 
 * Add new `Style/SpaceAroundKeyword` cop. ([@lumeet][])
 
+### Bug fixes
+
+* [#2630](https://github.com/bbatsov/rubocop/issues/2630): Take frozen string literals into account in `Style/MutableConstant`. ([@segiddins][])
+* [#2642](https://github.com/bbatsov/rubocop/issues/2642): Support assignment via `||=` in `Style/MutableConstant`. ([@segiddins][])
+
 ### Changes
 
 * Remove `Style/SpaceAfterControlKeyword` and `Style/SpaceBeforeModifierKeyword` as the more generic `Style/SpaceAroundKeyword` handles the same cases. ([@lumeet][])

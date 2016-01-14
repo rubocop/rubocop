@@ -6,15 +6,35 @@ require 'spec_helper'
 describe RuboCop::Cop::Style::MutableConstant do
   subject(:cop) { described_class.new }
 
+  let(:prefix) { nil }
+
   shared_examples :mutable_objects do |o|
-    it "registers an offense for #{o} assigned to a constant" do
-      inspect_source(cop, "CONST = #{o}")
-      expect(cop.offenses.size).to eq(1)
+    context 'when assigning with =' do
+      it "registers an offense for #{o} assigned to a constant" do
+        source = [prefix, "CONST = #{o}"].compact.join("\n")
+        inspect_source(cop, source)
+        expect(cop.offenses.size).to eq(1)
+      end
+
+      it 'auto-corrects by adding .freeze' do
+        source = [prefix, "CONST = #{o}"].compact.join("\n")
+        new_source = autocorrect_source(cop, source)
+        expect(new_source).to eq("#{source}.freeze")
+      end
     end
 
-    it 'auto-corrects by adding .freeze' do
-      new_source = autocorrect_source(cop, "CONST = #{o}")
-      expect(new_source).to eq("CONST = #{o}.freeze")
+    context 'when assigning with ||=' do
+      it "registers an offense for #{o} assigned to a constant" do
+        source = [prefix, "CONST ||= #{o}"].compact.join("\n")
+        inspect_source(cop, source)
+        expect(cop.offenses.size).to eq(1)
+      end
+
+      it 'auto-corrects by adding .freeze' do
+        source = [prefix, "CONST ||= #{o}"].compact.join("\n")
+        new_source = autocorrect_source(cop, source)
+        expect(new_source).to eq("#{source}.freeze")
+      end
     end
   end
 
@@ -25,7 +45,14 @@ describe RuboCop::Cop::Style::MutableConstant do
 
   shared_examples :immutable_objects do |o|
     it "allows #{o} to be assigned to a constant" do
-      inspect_source(cop, "CONST = #{o}")
+      source = [prefix, "CONST = #{o}"].compact.join("\n")
+      inspect_source(cop, source)
+      expect(cop.offenses).to be_empty
+    end
+
+    it "allows #{o} to be ||= to a constant" do
+      source = [prefix, "CONST ||= #{o}"].compact.join("\n")
+      inspect_source(cop, source)
       expect(cop.offenses).to be_empty
     end
   end
@@ -37,5 +64,43 @@ describe RuboCop::Cop::Style::MutableConstant do
   it 'allows method call assignments' do
     inspect_source(cop, 'TOP_TEST = Something.new')
     expect(cop.offenses).to be_empty
+  end
+
+  context 'when the constant is a frozen string literal' do
+    context 'when the target ruby version >= 3.0' do
+      let(:ruby_version) { 3.0 }
+
+      context 'when the frozen string literal comment is missing' do
+        it_behaves_like :immutable_objects, '"#{a}"'
+      end
+
+      context 'when the frozen string literal comment is true' do
+        let(:prefix) { '# frozen_string_literal: true' }
+        it_behaves_like :immutable_objects, '"#{a}"'
+      end
+
+      context 'when the frozen string literal comment is false' do
+        let(:prefix) { '# frozen_string_literal: false' }
+        it_behaves_like :immutable_objects, '"#{a}"'
+      end
+    end if RuboCop::Config::KNOWN_RUBIES.include?(3.0)
+
+    context 'when the target ruby version >= 2.3' do
+      let(:ruby_version) { 2.3 }
+
+      context 'when the frozen string literal comment is missing' do
+        it_behaves_like :mutable_objects, '"#{a}"'
+      end
+
+      context 'when the frozen string literal comment is true' do
+        let(:prefix) { '# frozen_string_literal: true' }
+        it_behaves_like :immutable_objects, '"#{a}"'
+      end
+
+      context 'when the frozen string literal comment is false' do
+        let(:prefix) { '# frozen_string_literal: false' }
+        it_behaves_like :mutable_objects, '"#{a}"'
+      end
+    end
   end
 end

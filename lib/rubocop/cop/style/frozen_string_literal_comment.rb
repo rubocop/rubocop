@@ -11,10 +11,9 @@ module RuboCop
       # comment. The frozen string literal comment is only valid in Ruby 2.3+.
       class FrozenStringLiteralComment < Cop
         include ConfigurableEnforcedStyle
+        include FrozenStringLiteral
 
         MSG = 'Missing frozen string literal comment.'.freeze
-        FROZEN_STRING_LITERAL = '# frozen_string_literal:'.freeze
-        FROZEN_STRING_LITERAL_ENABLED = '# frozen_string_literal: true'.freeze
         SHEBANG = '#!'.freeze
 
         def_node_matcher :frozen_strings, '{(send {dstr str} :<< ...)
@@ -51,15 +50,6 @@ module RuboCop
         end
 
         private
-
-        def frozen_string_literal_comment_exists?(processed_source)
-          first_three_lines =
-            [processed_source[0], processed_source[1], processed_source[2]]
-          first_three_lines.compact!
-          first_three_lines.any? do |line|
-            line.start_with?(FROZEN_STRING_LITERAL)
-          end
-        end
 
         def last_special_comment(processed_source)
           token_number = 0
