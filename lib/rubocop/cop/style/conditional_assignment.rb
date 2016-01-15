@@ -46,6 +46,8 @@ module RuboCop
             "#{node.children[0].source} &&= "
           when :or_asgn
             "#{node.children[0].source} ||= "
+          when :casgn
+            "#{node.children[1]} = "
           when *ConditionalAssignment::VARIABLE_ASSIGNMENT_TYPES
             "#{node.children[0]} = "
           else
