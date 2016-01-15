@@ -2,6 +2,14 @@
 
 ## master (unreleased)
 
+### New features
+
+* Add new `Style/SpaceAroundKeyword` cop. ([@lumeet][])
+
+### Changes
+
+* Remove `Style/SpaceAfterControlKeyword` and `Style/SpaceBeforeModifierKeyword` as the more generic `Style/SpaceAroundKeyword` handles the same cases. ([@lumeet][])
+
 ## 0.36.0 (14/01/2016)
 
 ### New features
