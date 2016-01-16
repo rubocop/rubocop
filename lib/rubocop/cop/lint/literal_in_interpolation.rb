@@ -17,6 +17,7 @@ module RuboCop
             final_node = begin_node.children.last
             next unless final_node
             next if special_keyword?(final_node)
+            next if final_node.xstr_type?
             next unless final_node.literal?
 
             add_offense(final_node, :expression)

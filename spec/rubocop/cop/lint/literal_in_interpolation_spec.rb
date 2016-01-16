@@ -11,6 +11,11 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts interpolation of xstr' do
+    inspect_source(cop, '"this is #{`a`} silly"')
+    expect(cop.offenses).to be_empty
+  end
+
   shared_examples 'literal interpolation' do |literal|
     it "registers an offense for #{literal} in interpolation" do
       inspect_source(cop, %("this is the \#{#{literal}}"))
