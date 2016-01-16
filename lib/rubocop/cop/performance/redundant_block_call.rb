@@ -37,6 +37,7 @@ module RuboCop
 
         def on_def(node)
           blockarg_def(node) do |argname, body|
+            next unless body
             blockarg_calls(body, argname) do |blockcall|
               add_offense(blockcall, :expression, format(MSG, argname))
             end
