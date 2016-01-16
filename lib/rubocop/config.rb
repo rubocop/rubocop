@@ -259,7 +259,7 @@ module RuboCop
       target = self['AllCops'] && self['AllCops']['TargetRubyVersion']
       return unless target
 
-      unless KNOWN_RUBIES.any? { |ruby| Regexp.new(ruby) =~ target.to_s }
+      unless KNOWN_RUBIES.any? { |ruby| /^#{(ruby)}/ =~ target.to_s }
         fail ValidationError, "Unknown Ruby version #{target.inspect} found " \
                               'in `TargetRubyVersion` parameter (in ' \
                               "#{loaded_path}).\nKnown versions: " \
