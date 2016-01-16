@@ -16,17 +16,32 @@ module RuboCop
       class MutableConstant < Cop
         MSG = 'Freeze mutable objects assigned to constants.'.freeze
 
+        include FrozenStringLiteral
+
         def on_casgn(node)
           _scope, _const_name, value = *node
+          on_assignment(value)
+        end
 
-          return if value && !value.mutable_literal?
-
-          add_offense(value, :expression)
+        def on_or_asgn(node)
+          lhs, value = *node
+          on_assignment(value) if lhs && lhs.type == :casgn
         end
 
         def autocorrect(node)
           expr = node.source_range
           ->(corrector) { corrector.replace(expr, "#{expr.source}.freeze") }
+        end
+
+        private
+
+        def on_assignment(value)
+          return unless value
+          return unless value.mutable_literal?
+          return if FROZEN_STRING_LITERAL_TYPES.include?(value.type) &&
+                    frozen_string_literals_enabled?(processed_source)
+
+          add_offense(value, :expression)
         end
       end
     end
