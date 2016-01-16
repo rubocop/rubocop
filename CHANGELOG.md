@@ -11,6 +11,7 @@
 * [#2630](https://github.com/bbatsov/rubocop/issues/2630): Take frozen string literals into account in `Style/MutableConstant`. ([@segiddins][])
 * [#2642](https://github.com/bbatsov/rubocop/issues/2642): Support assignment via `||=` in `Style/MutableConstant`. ([@segiddins][])
 * [#2646](https://github.com/bbatsov/rubocop/issues/2646): Fix auto-correcting assignment to a constant in `Style/ConditionalAssignment`. ([@segiddins][])
+* [#2641](https://github.com/bbatsov/rubocop/issues/2641): Fix crashing on empty methods with block args in `Perfomance/RedundantBlockCall`. ([@segiddins][])
 
 ### Changes
 
