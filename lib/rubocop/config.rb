@@ -268,7 +268,7 @@ module RuboCop
     end
 
     def matches_known_versions?(target)
-      KNOWN_RUBIES.any? { |ruby| /^#{(ruby)}/ =~ target.to_s }
+      KNOWN_RUBIES.any? { |ruby| /^#{ruby}/ =~ target.to_s }
     end
   end
 end
