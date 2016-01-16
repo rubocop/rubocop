@@ -435,33 +435,60 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
   it_behaves_like('all variable types', '$BAR')
 
   shared_examples 'all assignment types' do |assignment|
-    it 'registers an offense for assignment using #{assignment in ternary' do
-      inspect_source(cop, "foo? ? bar #{assignment} 1 : bar #{assignment} 2")
+    { 'local variable' => 'bar',
+      'constant' => 'CONST',
+      'class variable' => '@@cvar',
+      'instance variable' => '@ivar',
+      'global variable' => '$gvar' }.each do |type, name|
+      context "for a #{type} lval" do
+        it "registers an offense for assignment using #{assignment} " \
+           'in ternary' do
+          source = "foo? ? #{name} #{assignment} 1 : #{name} #{assignment} 2"
+          inspect_source(cop, source)
 
-      expect(cop.messages).to eq([described_class::MSG])
-    end
+          expect(cop.messages).to eq([described_class::MSG])
+        end
 
-    it "registers an offense for assignment using #{assignment} in if else" do
-      source = ['if foo',
-                "  bar #{assignment} 1",
-                'else',
-                "  bar #{assignment} 2",
-                'end']
-      inspect_source(cop, source)
+        it "registers an offense for assignment using #{assignment} in " \
+        'if else' do
+          source = ['if foo',
+                    "  #{name} #{assignment} 1",
+                    'else',
+                    "  #{name} #{assignment} 2",
+                    'end']
+          inspect_source(cop, source)
 
-      expect(cop.messages).to eq([described_class::MSG])
-    end
+          expect(cop.messages).to eq([described_class::MSG])
+        end
 
-    it "registers an offense for assignment using #{assignment} in case when" do
-      source = ['case foo',
-                'when "a"',
-                "  bar #{assignment} 1",
-                'else',
-                "  bar #{assignment} 2",
-                'end']
-      inspect_source(cop, source)
+        it "registers an offense for assignment using #{assignment} in "\
+        ' case when' do
+          source = ['case foo',
+                    'when "a"',
+                    "  #{name} #{assignment} 1",
+                    'else',
+                    "  #{name} #{assignment} 2",
+                    'end']
+          inspect_source(cop, source)
 
-      expect(cop.messages).to eq([described_class::MSG])
+          expect(cop.messages).to eq([described_class::MSG])
+        end
+
+        it "autocorrects for assignment using #{assignment} in if else" do
+          source = ['if foo',
+                    "  #{name} #{assignment} 1",
+                    'else',
+                    "  #{name} #{assignment} 2",
+                    'end']
+          new_source = autocorrect_source(cop, source)
+
+          expect(new_source).to eq ["#{name} #{assignment} if foo",
+                                    '  1',
+                                    'else',
+                                    '  2',
+                                    'end'].join("\n")
+        end
+      end
     end
   end
 
