@@ -13,6 +13,7 @@
 * [#2646](https://github.com/bbatsov/rubocop/issues/2646): Fix auto-correcting assignment to a constant in `Style/ConditionalAssignment`. ([@segiddins][])
 * [#2614](https://github.com/bbatsov/rubocop/issues/2614): Check for zero return value from `casecmp` in `Performance/casecmp`. ([@segiddins][])
 * [#2647](https://github.com/bbatsov/rubocop/issues/2647): Allow `xstr` interpolations in `Lint/LiteralInInterpolation`. ([@segiddins][])
+* Report a violation when `freeze` is called on a frozen string literal in `Style/RedundantFreeze`. ([@segiddins][])
 
 ### Changes
 
