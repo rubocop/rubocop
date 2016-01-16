@@ -326,7 +326,7 @@ module RuboCop
           # Known DSL methods which eval body inside an anonymous class/module
           return nil if [:describe, :it].include?(ancestor.method_name) &&
                         ancestor.receiver.nil?
-          if ancestor.method_name == :class_eval
+          if ancestor.method_name == :class_eval && ancestor.receiver
             return nil unless ancestor.receiver.const_type?
             ancestor.receiver.const_name
           end

@@ -289,6 +289,22 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
       ['Method `A.some_method` is defined at both test.rb:2 and test.rb:5.'])
   end
 
+  it 'handles class_eval with implicit receiver' do
+    inspect_source(cop, ['module A',
+                         '  class_eval do',
+                         '    def some_method',
+                         '      implement 1',
+                         '    end',
+                         '    def some_method',
+                         '      implement 2',
+                         '    end',
+                         '  end',
+                         'end'], 'test.rb')
+    expect(cop.offenses.size).to eq(1)
+    expect(cop.messages).to eq(
+      ['Method `A#some_method` is defined at both test.rb:3 and test.rb:6.'])
+  end
+
   it 'ignores method definitions in RSpec `describe` blocks' do
     inspect_source(cop,
                    ['describe "something" do',
