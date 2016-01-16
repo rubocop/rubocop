@@ -34,6 +34,12 @@ describe RuboCop::ProcessedSource do
       it "sets the file path to the instance's #path" do
         expect(processed_source.path).to eq(path)
       end
+
+      it 'handles a ruby version from RUBY_VERSION' do
+        processed_source = described_class.new(source, RUBY_VERSION, path)
+
+        expect(processed_source).to be_a(described_class)
+      end
     end
 
     it 'raises RuboCop::Error when the file does not exist' do

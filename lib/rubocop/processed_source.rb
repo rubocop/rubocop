@@ -98,20 +98,20 @@ module RuboCop
     end
 
     def parser_class(ruby_version)
-      case ruby_version
-      when 1.9
+      case ruby_version.to_s
+      when /1.9/
         require 'parser/ruby19'
         Parser::Ruby19
-      when 2.0
+      when /2.0/
         require 'parser/ruby20'
         Parser::Ruby20
-      when 2.1
+      when /2.1/
         require 'parser/ruby21'
         Parser::Ruby21
-      when 2.2
+      when /2.2/
         require 'parser/ruby22'
         Parser::Ruby22
-      when 2.3
+      when /2.3/
         require 'parser/ruby23'
         Parser::Ruby23
       else
