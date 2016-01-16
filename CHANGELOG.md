@@ -15,6 +15,7 @@
 * [#2647](https://github.com/bbatsov/rubocop/issues/2647): Allow `xstr` interpolations in `Lint/LiteralInInterpolation`. ([@segiddins][])
 * Report a violation when `freeze` is called on a frozen string literal in `Style/RedundantFreeze`. ([@segiddins][])
 * [#2641](https://github.com/bbatsov/rubocop/issues/2641): Fix crashing on empty methods with block args in `Perfomance/RedundantBlockCall`. ([@segiddins][])
+* `Lint/DuplicateMethods` doesn't crash when `class_eval` is used with an implicit receiver. ([@lumeet][])
 
 ### Changes
 
