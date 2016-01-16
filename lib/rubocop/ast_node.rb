@@ -42,6 +42,8 @@ module RuboCop
     OPERATOR_KEYWORDS = [:and, :or].freeze
     SPECIAL_KEYWORDS = %w(__FILE__ __LINE__ __ENCODING__).freeze
 
+    RSPEC_METHODS = [:describe, :it].freeze
+
     # def_matcher can be used to define a pattern-matching method on Node
     class << self
       def def_matcher(method_name, pattern_str)
@@ -323,9 +325,7 @@ module RuboCop
           return "#<Class:#{ancestor.parent_module_name}>" if obj.self_type?
           return nil
         else # block
-          # Known DSL methods which eval body inside an anonymous class/module
-          return nil if [:describe, :it].include?(ancestor.method_name) &&
-                        ancestor.receiver.nil?
+          return nil if ancestor.known_dsl?
           if ancestor.method_name == :class_eval && ancestor.receiver
             return nil unless ancestor.receiver.const_type?
             ancestor.receiver.const_name
@@ -479,6 +479,11 @@ module RuboCop
       else
         false
       end
+    end
+
+    # Known DSL methods which eval body inside an anonymous class/module
+    def known_dsl?
+      RSPEC_METHODS.include?(method_name) && receiver.nil?
     end
 
     protected
