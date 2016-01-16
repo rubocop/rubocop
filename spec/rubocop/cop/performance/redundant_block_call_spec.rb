@@ -40,6 +40,12 @@ describe RuboCop::Cop::Performance::RedundantBlockCall do
     expect(cop.messages).to be_empty
   end
 
+  it "doesn't register an error when block arg is unused" do
+    inspect_source(cop, ['def method(&block)',
+                         'end'])
+    expect(cop.messages).to be_empty
+  end
+
   it 'formats the error message for func.call(1) correctly' do
     inspect_source(cop, ['def method(&func)',
                          '  func.call(1)',
