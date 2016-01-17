@@ -39,9 +39,9 @@ module RuboCop
         def on_send(node)
           if node.loc.operator # aref assignment, attribute assignment
             on_special_asgn(node)
-          elsif !unary_operation?(node) && !called_with_dot?(node)
+          elsif !node.unary_operation? && !called_with_dot?(node)
             op = node.loc.selector
-            if operator?(op)
+            if operator?(op.source.to_sym)
               _, _, right, = *node
               check_operator(node.loc.selector, right.source_range)
             end
@@ -74,16 +74,6 @@ module RuboCop
         alias on_op_asgn  on_special_asgn
 
         private
-
-        def operator?(range)
-          range.source !~ /^\[|\w/
-        end
-
-        def unary_operation?(node)
-          return unless (selector = node.loc.selector)
-          operator?(selector) &&
-            node.source_range.begin_pos == selector.begin_pos
-        end
 
         def called_with_dot?(node)
           node.loc.dot

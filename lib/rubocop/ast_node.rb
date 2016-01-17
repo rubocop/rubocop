@@ -403,6 +403,18 @@ module RuboCop
       args.empty? && method_name == :! && loc.selector.is?('not'.freeze)
     end
 
+    def unary_operation?
+      return false unless loc.respond_to?(:selector) && loc.selector
+      Cop::Util.operator?(loc.selector.source.to_sym) &&
+        source_range.begin_pos == loc.selector.begin_pos
+    end
+
+    def chained?
+      return false if parent.nil? || !parent.send_type?
+      receiver, _method_name, *_args = *parent
+      equal?(receiver)
+    end
+
     def_matcher :command?, '(send nil %1 ...)'
     def_matcher :lambda?,  '(block (send nil :lambda) ...)'
     def_matcher :proc?, <<-PATTERN
