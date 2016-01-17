@@ -86,7 +86,19 @@
     -webkit-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
     }
-    #offenses .offense-box .box-title h3 {
+    .fixed .box-title {
+    position: fixed;
+    top: 0;
+    z-index: 10;
+    width: 100%;
+    }
+    .box-title-placeholder {
+    display: none;
+    }
+    .fixed .box-title-placeholder {
+    display: block;
+    }
+    #offenses .offense-box .box-title h3, #offenses .offense-box .box-title-placeholder h3 {
     color: #33353f;
     background-color: #f6f6f6;
     font-size: 2rem;
@@ -182,6 +194,47 @@
     text-align: right;
     }
     </style>
+
+    <script>
+    (function() {
+      // floating headers. requires classList support.
+      if (!('classList' in document.createElement("_"))) return;
+
+      var loaded = false,
+        boxes,
+        boxPositions;
+
+      window.onload = function() {
+        var scrollY = window.scrollY;
+        boxes = document.querySelectorAll('.offense-box');
+        boxPositions = [];
+        for (var i = 0; i < boxes.length; i++)
+          // need to add scrollY because the page might be somewhere other than the top when loaded.
+          boxPositions[i] = boxes[i].getBoundingClientRect().top + scrollY;
+        loaded = true;
+      };
+
+      window.onscroll = function() {
+        if (!loaded) return;
+        var i,
+          idx,
+          scrollY = window.scrollY;
+        for (i = 0; i < boxPositions.length; i++) {
+          if (scrollY <= boxPositions[i]) {
+            idx = i;
+            break;
+          }
+        }
+        if (typeof idx == 'undefined') idx = boxes.length;
+        if (idx > 0)
+          boxes[idx - 1].classList.add('fixed');
+        for (i = 0; i < boxes.length; i++) {
+          if (i < idx) continue;
+          boxes[i].classList.remove('fixed');
+        }
+      };
+    })();
+    </script>
   </head>
   <body>
     <div id="header">
@@ -318,6 +371,7 @@ TvFXMeuCkZPcaEBLqvgPBhCuiZo8+sAAAAAASUVORK5CYII=
       
       
       <div class="offense-box">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
         <div class="box-title"><h3>app/controllers/application_controller.rb - 1 offense</h3></div>
         <div class="offense-reports">
           
@@ -338,6 +392,7 @@ TvFXMeuCkZPcaEBLqvgPBhCuiZo8+sAAAAAASUVORK5CYII=
       
       
       <div class="offense-box">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
         <div class="box-title"><h3>app/controllers/books_controller.rb - 8 offenses</h3></div>
         <div class="offense-reports">
           
@@ -435,6 +490,7 @@ TvFXMeuCkZPcaEBLqvgPBhCuiZo8+sAAAAAASUVORK5CYII=
       
       
       <div class="offense-box">
+        <div class="box-title-placeholder"><h3>&nbsp;</h3></div>
         <div class="box-title"><h3>app/models/book.rb - 6 offenses</h3></div>
         <div class="offense-reports">
           

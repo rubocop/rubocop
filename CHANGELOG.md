@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#2657](https://github.com/bbatsov/rubocop/pull/2657): Floating headers in HTML output. ([@mattparlane][])
+
 ## 0.36.0 (14/01/2016)
 
 ### New features
