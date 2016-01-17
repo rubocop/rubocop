@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#2657](https://github.com/bbatsov/rubocop/pull/2657): Floating headers in HTML output. ([@mattparlane][])
 * Add new `Style/SpaceAroundKeyword` cop. ([@lumeet][])
 
 ### Bug fixes
@@ -1902,3 +1903,4 @@
 [@jawshooah]: https://github.com/jawshooah
 [@DNNX]: https://github.com/DNNX
 [@mvidner]: https://github.com/mvidner
+[@mattparlane]: https://github.com/mattparlane
