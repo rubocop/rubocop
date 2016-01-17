@@ -35,9 +35,16 @@ module RuboCop
           return offense(node, 'a literal') if disallowed_literal?(child_node)
           return offense(node, 'a variable') if child_node.variable?
           return offense(node, 'a constant') if child_node.const_type?
-          return unless method_call_with_redundant_parentheses?(child_node)
+          check_send(child_node, node) if child_node.send_type?
+        end
 
-          offense(node, 'a method call')
+        def check_send(child_node, node)
+          if child_node.unary_operation?
+            offense(node, 'an unary operation') unless node.chained?
+          else
+            return unless method_call_with_redundant_parentheses?(child_node)
+            offense(node, 'a method call')
+          end
         end
 
         def offense(node, msg)

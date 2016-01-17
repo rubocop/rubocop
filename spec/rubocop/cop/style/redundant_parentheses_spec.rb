@@ -92,6 +92,12 @@ describe RuboCop::Cop::Style::RedundantParentheses do
   it_behaves_like 'redundant', '("x".to_sym)', '"x".to_sym', 'a method call'
   it_behaves_like 'redundant', '(x[:y])', 'x[:y]', 'a method call'
 
+  it_behaves_like 'redundant', '(!x)', '!x', 'an unary operation'
+  it_behaves_like 'redundant', '(~x)', '~x', 'an unary operation'
+  it_behaves_like 'redundant', '(-x)', '-x', 'an unary operation'
+  it_behaves_like 'redundant', '(+x)', '+x', 'an unary operation'
+  it_behaves_like 'plausible', '(!x).y'
+
   it 'accepts parentheses around a method call with unparenthesized ' \
      'arguments' do
     inspect_source(cop, '(a 1, 2) && (1 + 1)')
