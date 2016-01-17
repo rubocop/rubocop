@@ -24,16 +24,9 @@ module RuboCop
           return if modifier_if?(node)
           return if elsif?(node)
           return if if_else?(node)
-          return if chained?(node)
+          return if node.chained?
           return unless fit_within_line_as_modifier_form?(node)
           add_offense(node, :keyword, message(node.loc.keyword.source))
-        end
-
-        def chained?(node)
-          # Don't register offense for `if ... end.method`
-          return false if node.parent.nil? || !node.parent.send_type?
-          receiver = node.parent.children[0]
-          node.equal?(receiver)
         end
 
         def parenthesize?(node)
