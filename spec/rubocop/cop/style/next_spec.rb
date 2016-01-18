@@ -295,14 +295,26 @@ describe RuboCop::Cop::Style::Next, :config do
       let(:cop_config) do
         { 'EnforcedStyle' => 'always' }
       end
+      let(:opposite) { condition == 'if' ? 'unless' : 'if' }
+      let(:source) do
+        ['[].each do |o|',
+         "  puts o #{condition} o == 1 # comment",
+         'end']
+      end
 
       it "registers an offense for modifier #{condition}" do
-        inspect_source(cop, ['[].each do |o|',
-                             "  puts o #{condition} o == 1",
-                             'end'])
+        inspect_source(cop, source)
 
         expect(cop.messages).to eq(['Use `next` to skip iteration.'])
         expect(cop.highlights).to eq(["puts o #{condition} o == 1"])
+      end
+
+      it "auto-corrects modifier #{condition}" do
+        corrected = autocorrect_source(cop, source)
+        expect(corrected).to eq(['[].each do |o|',
+                                 "  next #{opposite} o == 1",
+                                 '  puts o # comment',
+                                 'end'].join("\n"))
       end
     end
   end

@@ -108,20 +108,41 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
-            cond, if_body, = *node
-
-            opposite_kw = if_body.nil? ? 'if' : 'unless'
-            next_code = "next #{opposite_kw} #{cond.source}"
-            corrector.insert_before(node.source_range, next_code)
-
-            corrector.remove(cond_range(node, cond))
-            corrector.remove(end_range(node))
-
-            # end_range starts with the final newline of the if body
-            reindent_lines = (node.source_range.line + 1)...node.loc.end.line
-            reindent_lines = reindent_lines.to_a - heredoc_lines(node)
-            reindent(reindent_lines, cond, corrector)
+            if modifier_if?(node)
+              autocorrect_modifier(corrector, node)
+            else
+              autocorrect_block(corrector, node)
+            end
           end
+        end
+
+        def autocorrect_modifier(corrector, node)
+          cond, if_body, else_body = *node
+          body = if_body || else_body
+
+          replacement = "next #{opposite_kw(if_body)} #{cond.source}\n" \
+                        "#{' ' * node.source_range.column}#{body.source}"
+
+          corrector.replace(node.source_range, replacement)
+        end
+
+        def autocorrect_block(corrector, node)
+          cond, if_body, = *node
+
+          next_code = "next #{opposite_kw(if_body)} #{cond.source}"
+          corrector.insert_before(node.source_range, next_code)
+
+          corrector.remove(cond_range(node, cond))
+          corrector.remove(end_range(node))
+
+          # end_range starts with the final newline of the if body
+          reindent_lines = (node.source_range.line + 1)...node.loc.end.line
+          reindent_lines = reindent_lines.to_a - heredoc_lines(node)
+          reindent(reindent_lines, cond, corrector)
+        end
+
+        def opposite_kw(if_body)
+          if_body.nil? ? 'if' : 'unless'
         end
 
         def cond_range(node, cond)

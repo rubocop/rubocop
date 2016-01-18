@@ -17,6 +17,7 @@
 * [#2641](https://github.com/bbatsov/rubocop/issues/2641): Fix crashing on empty methods with block args in `Perfomance/RedundantBlockCall`. ([@segiddins][])
 * `Lint/DuplicateMethods` doesn't crash when `class_eval` is used with an implicit receiver. ([@lumeet][])
 * [#2654](https://github.com/bbatsov/rubocop/issues/2654): Fix handling of unary operations in `Style/RedundantParentheses`. ([@lumeet][])
+* [#2661](https://github.com/bbatsov/rubocop/issues/2661): `Style/Next` doesn't crash when auto-correcting modifier `if/unless`. ([@lumeet][])
 
 ### Changes
 
