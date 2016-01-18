@@ -13,7 +13,7 @@ module RuboCop
       #   'abc'.upcase.eql? 'ABC'
       #
       #   @good
-      #   'abc'.casecmp('ABC')
+      #   'abc'.casecmp('ABC').zero?
       class Casecmp < Cop
         MSG = 'Use `casecmp` instead of `%s %s`.'.freeze
 
