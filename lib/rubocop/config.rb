@@ -34,7 +34,7 @@ module RuboCop
         next unless self[key]['Exclude']
 
         self[key]['Exclude'].map! do |exclude_elem|
-          if exclude_elem.is_a?(String) && !exclude_elem.start_with?('/')
+          if exclude_elem.is_a?(String) && !absolute?(exclude_elem)
             File.expand_path(File.join(base_dir_for_path_parameters,
                                        exclude_elem))
           else
@@ -51,7 +51,7 @@ module RuboCop
       self['AllCops'] ||= {}
       excludes = self['AllCops']['Exclude'] ||= []
       highest_config['AllCops']['Exclude'].each do |path|
-        unless path.is_a?(Regexp) || path.start_with?('/')
+        unless path.is_a?(Regexp) || absolute?(path)
           path = File.join(File.dirname(highest_config.loaded_path), path)
         end
         excludes << path unless excludes.include?(path)

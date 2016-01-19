@@ -18,6 +18,7 @@
 * `Lint/DuplicateMethods` doesn't crash when `class_eval` is used with an implicit receiver. ([@lumeet][])
 * [#2654](https://github.com/bbatsov/rubocop/issues/2654): Fix handling of unary operations in `Style/RedundantParentheses`. ([@lumeet][])
 * [#2661](https://github.com/bbatsov/rubocop/issues/2661): `Style/Next` doesn't crash when auto-correcting modifier `if/unless`. ([@lumeet][])
+* [#2665](https://github.com/bbatsov/rubocop/pull/2665): Make specs pass when running on Windows. ([@jonas054][])
 
 ### Changes
 

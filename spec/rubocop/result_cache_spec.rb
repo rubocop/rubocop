@@ -59,6 +59,12 @@ describe RuboCop::ResultCache, :isolated_environment do
 
       context 'when a symlink attack is made' do
         before(:each) do
+          # Avoid getting "symlink() function is unimplemented on this
+          # machine" on Windows.
+          if RUBY_PLATFORM =~ /cygwin|mswin|mingw|bccwin|wince|emx/
+            skip 'Symlinks not implemented on Windows'
+          end
+
           cache.save(offenses)
           Find.find(cache_root) do |path|
             next unless File.basename(path) == '_'

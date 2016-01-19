@@ -55,5 +55,10 @@ module RuboCop
     def hidden?(path_component)
       path_component =~ /^\.[^.]/
     end
+
+    # Returns true for an absolute Unix or Windows path.
+    def absolute?(path)
+      path =~ %r{\A([A-Z]:)?/}
+    end
   end
 end
