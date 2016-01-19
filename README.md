@@ -398,7 +398,7 @@ AllCops:
 Files and directories are specified relative to the `.rubocop.yml` file.
 
 **Note**: Patterns that are just a file name, e.g. `Rakefile`, will match
-that file name in any directory, but this pattern style deprecated. The
+that file name in any directory, but this pattern style is deprecated. The
 correct way to match the file in any directory, including the current, is
 `**/Rakefile`.
 
