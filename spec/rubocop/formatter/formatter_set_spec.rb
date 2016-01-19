@@ -63,8 +63,11 @@ module RuboCop
             expect(formatter_set.first.output.path).to eq(output_path)
           end
 
-          it "creates parent directories if they don't exist" do
-            Dir.mktmpdir do |tmpdir|
+          context "when parent directories don't exist" do
+            let(:tmpdir) { Dir.mktmpdir }
+            after { FileUtils.rm_rf(tmpdir) }
+
+            it 'creates them' do
               output_path = File.join(tmpdir, 'path/does/not/exist')
               formatter_set.add_formatter('simple', output_path)
               expect(formatter_set.first.output.class).to eq(File)
