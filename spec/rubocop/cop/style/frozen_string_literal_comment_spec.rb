@@ -246,81 +246,16 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
             expect(cop.offenses).to be_empty
           end
 
-          it 'registers an offense when freezing a string' do
+          it 'accepts freezing a string' do
             inspect_source(cop, '"x".freeze')
 
-            expect(cop.messages)
-              .to eq(['Missing frozen string literal comment.'])
+            expect(cop.offenses).to be_empty
           end
 
-          it 'registers an offense when << is called on a string literal' do
+          it 'accepts when << is called on a string literal' do
             inspect_source(cop, '"x" << "y"')
 
-            expect(cop.messages)
-              .to eq(['Missing frozen string literal comment.'])
-          end
-
-          it 'registers an offense when freezing a string with interpolation' do
-            inspect_source(cop, '"#{foo}bar".freeze')
-
-            expect(cop.messages)
-              .to eq(['Missing frozen string literal comment.'])
-          end
-
-          it 'registers an offense when shovel is called on a string ' \
-             'with interpolation' do
-            inspect_source(cop, '"#{foo}bar" << "baz"')
-
-            expect(cop.messages)
-              .to eq(['Missing frozen string literal comment.'])
-          end
-
-          context 'auto-correct' do
-            it 'adds a frozen string literal comment to a file that freezes ' \
-               'a string' do
-              new_source = autocorrect_source(cop, '"x".freeze')
-
-              expect(new_source).to eq(['# frozen_string_literal: true',
-                                        '"x".freeze'].join("\n"))
-            end
-
-            it 'adds a frozen string literal comment to a file that calls ' \
-               'shovel on a string' do
-              new_source = autocorrect_source(cop, '"x" << "y"')
-
-              expect(new_source).to eq(['# frozen_string_literal: true',
-                                        '"x" << "y"'].join("\n"))
-            end
-          end
-
-          it 'adds a frozen string literal comment after a shebang' do
-            new_source = autocorrect_source(cop, ['#!/usr/bin/env ruby',
-                                                  'foo = "x".freeze'])
-
-            expect(new_source).to eq(['#!/usr/bin/env ruby',
-                                      '# frozen_string_literal: true',
-                                      'foo = "x".freeze'].join("\n"))
-          end
-
-          it 'adds a frozen string literal comment after an encoding comment' do
-            new_source = autocorrect_source(cop, ['# encoding: utf-8',
-                                                  'FOO = "x".freeze'])
-
-            expect(new_source).to eq(['# encoding: utf-8',
-                                      '# frozen_string_literal: true',
-                                      'FOO = "x".freeze'].join("\n"))
-          end
-
-          it 'adds a frozen string literal comment after a shebang and ' \
-             'encoding comment' do
-            new_source = autocorrect_source(cop, ['#!/usr/bin/env ruby',
-                                                  '# encoding: utf-8',
-                                                  '$foo = "x".freeze'])
-
-            expect(new_source).to eq(['#!/usr/bin/env ruby',
-                                      '# encoding: utf-8',
-                                      '# frozen_string_literal: true',
-                                      '$foo = "x".freeze'].join("\n"))
+            expect(cop.offenses).to be_empty
           end
         end
 

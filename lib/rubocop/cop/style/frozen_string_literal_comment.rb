@@ -29,8 +29,8 @@ module RuboCop
         end
 
         def on_send(node)
-          return if target_ruby_version < 2.3 && RUBY_VERSION < '2.3.0'
           return unless style == :when_needed
+          return if target_ruby_version < 2.3
           return if frozen_string_literal_comment_exists?(processed_source)
 
           frozen_strings(node) { offense(processed_source) }

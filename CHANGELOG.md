@@ -25,6 +25,7 @@
 
 * Remove `Style/SpaceAfterControlKeyword` and `Style/SpaceBeforeModifierKeyword` as the more generic `Style/SpaceAroundKeyword` handles the same cases. ([@lumeet][])
 * Handle comparisons with `!=` in `Performance/casecmp`. ([@segiddins][])
+* [#2684](https://github.com/bbatsov/rubocop/pull/2684): Do not base `Style/FrozenStringLiteralComment` on the version of Ruby that is running. ([@rrosenblum][])
 
 ## 0.36.0 (14/01/2016)
 
