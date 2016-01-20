@@ -23,6 +23,7 @@ module RuboCop
 
           lambda do |corrector|
             corrector.remove(eq_begin)
+            # rubocop:disable Style/ZeroLengthPredicate
             unless contents.length == 0
               corrector.replace(contents,
                                 contents.source
@@ -30,6 +31,7 @@ module RuboCop
                                   .gsub(/\n\n/, "\n#\n")
                                   .gsub(/\n(?=[^\z#])/, "\n# "))
             end
+            # rubocop:enable Style/ZeroLengthPredicate
             corrector.remove(eq_end)
           end
         end

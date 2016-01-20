@@ -68,7 +68,7 @@ module RuboCop
                             receiver_node
                           end
 
-          relevant_node.source.scan(NAMED_FIELD_REGEX).size > 0
+          !relevant_node.source.scan(NAMED_FIELD_REGEX).empty?
         end
 
         def node_with_splat_args?(node)

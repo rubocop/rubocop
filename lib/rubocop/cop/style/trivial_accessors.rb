@@ -85,7 +85,7 @@ module RuboCop
         end
 
         def looks_like_trivial_reader?(args, body)
-          args.children.size == 0 && body && body.type == :ivar
+          args.children.empty? && body && body.type == :ivar
         end
 
         def trivial_writer?(method_name, args, body)
