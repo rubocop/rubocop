@@ -25,6 +25,10 @@ module RuboCop
       #   end
       class RedundantBlockCall < Cop
         MSG = 'Use `yield` instead of `%s.call`.'.freeze
+        YIELD = 'yield'.freeze
+        OPEN_PAREN = '('.freeze
+        CLOSE_PAREN = ')'.freeze
+        SPACE = ' '.freeze
 
         def_node_matcher :blockarg_def, <<-END
           {(def  _   (args ... (blockarg $_)) $_)
@@ -47,18 +51,18 @@ module RuboCop
         # offenses are registered on the `block.call` nodes
         def autocorrect(node)
           _receiver, _method, *args = *node
-          new_source = 'yield'
+          new_source = String.new(YIELD)
           unless args.empty?
             new_source += if parentheses?(node)
-                            '('
+                            OPEN_PAREN
                           else
-                            ' '
+                            SPACE
                           end
 
-            new_source += args.map(&:source).join(', ')
+            new_source << args.map(&:source).join(', ')
           end
 
-          new_source += ')' if parentheses?(node)
+          new_source << CLOSE_PAREN if parentheses?(node)
           ->(corrector) { corrector.replace(node.source_range, new_source) }
         end
       end
