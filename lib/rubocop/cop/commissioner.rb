@@ -14,7 +14,7 @@ module RuboCop
         Parser::Meta::NODE_TYPES.map { |type| "on_#{type}" }
       end
 
-      def initialize(cops, forces, options = {})
+      def initialize(cops, forces = [], options = {})
         @cops = cops
         @forces = forces
         @options = options

@@ -33,10 +33,31 @@ module RuboCop
           return Lint::Syntax.offenses_from_processed_source(processed_source)
         end
 
-        commissioner = Commissioner.new(cops, forces)
-        offenses = commissioner.investigate(processed_source)
-        process_commissioner_errors(processed_source.path, commissioner.errors)
-        autocorrect(processed_source.buffer, cops)
+        # The autocorrection process may have to be repeated multiple times
+        # until there are no corrections left to perform
+        # To speed things up, run auto-correcting cops by themselves, and only
+        # run the other cops when no corrections are left
+        autocorrect_cops, other_cops = cops.partition(&:autocorrect?)
+        offenses = []
+        errors = {}
+
+        if autocorrect_cops.any?
+          commissioner = Commissioner.new(autocorrect_cops,
+                                          forces_for(autocorrect_cops))
+          offenses = commissioner.investigate(processed_source)
+          if autocorrect(processed_source.buffer, autocorrect_cops)
+            # We corrected some errors. Another round of inspection will be
+            # done, and any other offenses will be caught then, so we don't
+            # need to continue.
+            return offenses
+          end
+          errors = commissioner.errors
+        end
+
+        commissioner = Commissioner.new(other_cops, forces_for(other_cops))
+        offenses.concat(commissioner.investigate(processed_source))
+        errors.merge!(commissioner.errors)
+        process_commissioner_errors(processed_source.path, errors)
         offenses
       end
 
@@ -47,7 +68,11 @@ module RuboCop
       end
 
       def forces
-        @forces ||= Force.all.each_with_object([]) do |force_class, forces|
+        @forces ||= forces_for(cops)
+      end
+
+      def forces_for(cops)
+        Force.all.each_with_object([]) do |force_class, forces|
           joining_cops = cops.select { |cop| cop.join_force?(force_class) }
           next if joining_cops.empty?
           forces << force_class.new(joining_cops)
