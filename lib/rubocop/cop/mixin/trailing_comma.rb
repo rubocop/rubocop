@@ -65,6 +65,11 @@ module RuboCop
       # on different lines, and each item within is on its own line, and the
       # closing bracket is on its own line.
       def multiline?(node)
+        if node.type == :array || node.type == :hash
+          # Checks if start and end of brackets are on same line
+          return false if node.source_range.first_line == node.source_range.last_line
+        end
+
         elements = if node.type == :send
                      _receiver, _method_name, *args = *node
                      args.flat_map do |a|
