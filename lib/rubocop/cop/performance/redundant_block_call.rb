@@ -48,8 +48,17 @@ module RuboCop
         def autocorrect(node)
           _receiver, _method, *args = *node
           new_source = 'yield'
-          new_source += ' ' unless args.empty?
-          new_source += args.map(&:source).join(', ')
+          unless args.empty?
+            new_source += if parentheses?(node)
+                            '('
+                          else
+                            ' '
+                          end
+
+            new_source += args.map(&:source).join(', ')
+          end
+
+          new_source += ')' if parentheses?(node)
           ->(corrector) { corrector.replace(node.source_range, new_source) }
         end
       end
