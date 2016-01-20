@@ -42,6 +42,14 @@ describe RuboCop::Cop::Performance::TimesMap do
         expect(cop.offenses).to be_empty
       end
     end
+
+    context 'called on nothing' do
+      let(:source) { 'times.map { |i| i.to_s }' }
+
+      it "doesn't register an offense" do
+        expect(cop.offenses).to be_empty
+      end
+    end
   end
 
   context '.times.collect' do
@@ -71,6 +79,14 @@ describe RuboCop::Cop::Performance::TimesMap do
 
     context 'without a block' do
       let(:source) { '4.times.collect' }
+
+      it "doesn't register an offense" do
+        expect(cop.offenses).to be_empty
+      end
+    end
+
+    context 'called on nothing' do
+      let(:source) { 'times.collect { |i| i.to_s }' }
 
       it "doesn't register an offense" do
         expect(cop.offenses).to be_empty
