@@ -26,11 +26,14 @@ module RuboCop
 
         def on_send(node)
           zero_length_predicate = zero_length_predicate(node)
+
           if zero_length_predicate
             add_offense(node, :expression,
                         format(ZERO_MSG, *zero_length_predicate))
           end
+
           nonzero_length_predicate = nonzero_length_predicate(node)
+
           if nonzero_length_predicate
             add_offense(node, :expression,
                         format(NONZERO_MSG, *nonzero_length_predicate))
