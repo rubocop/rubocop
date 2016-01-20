@@ -36,7 +36,7 @@ module RuboCop
           begin_pos = sb.source.length - whitespace_at_end.length
           autocorrect_range = Parser::Source::Range.new(sb, begin_pos,
                                                         sb.source.length)
-          begin_pos += 1 unless whitespace_at_end.length == 0
+          begin_pos += 1 unless whitespace_at_end.empty?
           report_range = Parser::Source::Range.new(sb, begin_pos,
                                                    sb.source.length)
           add_offense(autocorrect_range, report_range,

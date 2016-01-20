@@ -69,7 +69,7 @@ module RuboCop
         end
 
         def arguments?(args)
-          args.children.size > 0
+          !args.children.empty?
         end
 
         def parentheses?(args)

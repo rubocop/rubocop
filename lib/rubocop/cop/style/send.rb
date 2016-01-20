@@ -11,7 +11,7 @@ module RuboCop
 
         def on_send(node)
           _receiver, method_name, *args = *node
-          return unless method_name == :send && args.length > 0
+          return unless method_name == :send && !args.empty?
           add_offense(node, :selector)
         end
       end
