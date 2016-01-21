@@ -424,6 +424,18 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
                                   '}'].join("\n"))
       end
 
+      it 'accepts a signle line array with a single item' \
+         'and without trailing comma' do
+        inspect_source(cop, 'VALUES = [1001]')
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'accepts a single line hash with a single pair' \
+         'and without trailing comma' do
+        inspect_source(cop, 'MAP = { a: 1001 }')
+        expect(cop.offenses).to be_empty
+      end
+
       it 'accepts a multiline array with a single item and trailing comma' do
         inspect_source(cop, ['foo = [',
                              '  1,',

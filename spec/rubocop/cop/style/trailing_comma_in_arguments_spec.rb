@@ -302,6 +302,12 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
                                   '           )'].join("\n"))
       end
 
+      it 'accepts a single line call with a single argument and' \
+         'without trailing comma' do
+        inspect_source(cop, 'some_method(a)')
+        expect(cop.offenses).to be_empty
+      end
+
       it 'accepts a multiline call with a single argument and trailing comma' do
         inspect_source(cop, ['method(',
                              '  1,',
