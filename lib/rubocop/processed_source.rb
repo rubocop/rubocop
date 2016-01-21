@@ -95,6 +95,7 @@ module RuboCop
 
       begin
         @ast, @comments, tokens = parser.tokenize(@buffer)
+        @ast.complete! if @ast
       rescue Parser::SyntaxError # rubocop:disable Lint/HandleExceptions
         # All errors are in diagnostics. No need to handle exception.
       end
