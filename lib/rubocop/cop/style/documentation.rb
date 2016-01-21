@@ -20,15 +20,9 @@ module RuboCop
         def_node_matcher :constant_definition?, '{class module casgn}'
 
         def investigate(processed_source)
-          ast = processed_source.ast
-          return unless ast
-
-          ast_with_comments = Parser::Source::Comment.associate(
-            ast,
-            processed_source.comments
-          )
-
-          check(ast, ast_with_comments)
+          return unless processed_source.ast
+          return unless processed_source.ast_with_comments
+          check(processed_source.ast, processed_source.ast_with_comments)
         end
 
         private
