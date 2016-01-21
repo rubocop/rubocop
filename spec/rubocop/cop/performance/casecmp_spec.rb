@@ -73,8 +73,88 @@ describe RuboCop::Cop::Performance::Casecmp do
       expect(new_source).to eq('str.casecmp(other.method { |o| o.to_s }).zero?')
     end
 
+    it "autocorrects == str.#{selector}" do
+      new_source = autocorrect_source(cop, "'string' == str.#{selector}")
+      expect(new_source).to eq "str.casecmp('string').zero?"
+    end
+
+    it "autocorrects string with parens == str.#{selector}" do
+      new_source = autocorrect_source(cop, "('string') == str.#{selector}")
+      expect(new_source).to eq "str.casecmp('string').zero?"
+    end
+
+    it "autocorrects string != str.#{selector}" do
+      new_source = autocorrect_source(cop, "'string' != str.#{selector}")
+      expect(new_source).to eq "!str.casecmp('string').zero?"
+    end
+
+    it 'autocorrects string with parens and funny spacing ' \
+       "eql? str.#{selector}" do
+      new_source = autocorrect_source(cop, "( 'string' ).eql? str.#{selector}")
+      expect(new_source).to eq "str.casecmp( 'string' ).zero?"
+    end
+
+    it "autocorrects a method call == str.#{selector}" do
+      new_source = autocorrect_source(cop, "other.join == str.#{selector}")
+      expect(new_source).to eq('str.casecmp(other.join).zero?')
+    end
+
+    it "autocorrects a method call with params == str.#{selector}" do
+      new_source = autocorrect_source(cop,
+                                      "other.join(', ') == str.#{selector}")
+      expect(new_source).to eq("str.casecmp(other.join(', ')).zero?")
+    end
+
+    it "autocorrects a method call with a block == str.#{selector}" do
+      source = "other.method { |o| o.to_s } == str.#{selector}"
+      new_source = autocorrect_source(cop, source)
+      expect(new_source).to eq('str.casecmp(other.method { |o| o.to_s }).zero?')
+    end
+
+    it "autocorrects string.eql? str.#{selector} without parens " do
+      new_source = autocorrect_source(cop, "'string'.eql? str.#{selector}")
+      expect(new_source).to eq "str.casecmp('string').zero?"
+    end
+
+    it "autocorrects string.eql? str.#{selector} with parens " do
+      new_source = autocorrect_source(cop, "'string'.eql?(str.#{selector})")
+      expect(new_source).to eq "str.casecmp('string').zero?"
+    end
+
+    it "autocorrects variable == str.#{selector}" do
+      new_source = autocorrect_source(cop, ['other = "a"',
+                                            "other == str.#{selector}"])
+      expect(new_source).to eq(['other = "a"',
+                                'str.casecmp(other).zero?'].join("\n"))
+    end
+
+    it "autocorrects obj.#{selector} == str.#{selector}" do
+      new_source = autocorrect_source(cop, "obj.#{selector} == str.#{selector}")
+      expect(new_source).to eq "obj.casecmp(str.#{selector}).zero?"
+    end
+
+    it "autocorrects obj.#{selector} eql? str.#{selector}" do
+      new_source = autocorrect_source(cop,
+                                      "obj.#{selector}.eql? str.#{selector}")
+      expect(new_source).to eq "obj.casecmp(str.#{selector}).zero?"
+    end
+
     it "formats the error message correctly for str.#{selector} ==" do
       inspect_source(cop, "str.#{selector} == 'string'")
+      expect(cop.highlights).to eq(["#{selector} =="])
+      expect(cop.messages).to eq(["Use `casecmp` instead of `#{selector} ==`."])
+    end
+
+    it "formats the error message correctly for == str.#{selector}" do
+      inspect_source(cop, "'string' == str.#{selector}")
+      expect(cop.highlights).to eq(["== str.#{selector}"])
+      expect(cop.messages).to eq(["Use `casecmp` instead of `== #{selector}`."])
+    end
+
+    it 'formats the error message correctly for ' \
+       "obj.#{selector} == str.#{selector}" do
+      inspect_source(cop, "obj.#{selector} == str.#{selector}")
+      expect(cop.highlights).to eq(["obj.#{selector} == str.#{selector}"])
       expect(cop.messages).to eq(["Use `casecmp` instead of `#{selector} ==`."])
     end
   end
