@@ -26,6 +26,11 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts single item Array literal without trailing comma' do
+      inspect_source(cop, 'VALUES = [1001]')
+      expect(cop.offenses).to be_empty
+    end
+
     it 'accepts empty Array literal' do
       inspect_source(cop, 'VALUES = []')
       expect(cop.offenses).to be_empty
@@ -42,6 +47,11 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
 
     it 'accepts Hash literal without trailing comma' do
       inspect_source(cop, 'MAP = { a: 1001, b: 2020, c: 3333 }')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts single item Hash literal without trailing comma' do
+      inspect_source(cop, 'MAP = { a: 1001 }')
       expect(cop.offenses).to be_empty
     end
 
