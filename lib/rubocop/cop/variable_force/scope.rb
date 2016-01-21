@@ -19,8 +19,8 @@ module RuboCop
         attr_reader :node, :variables
 
         def initialize(node)
-          # Accept begin node for top level scope.
-          unless SCOPE_TYPES.include?(node.type) || node.type == :begin
+          # Accept any node type for top level scope
+          unless SCOPE_TYPES.include?(node.type) || !node.parent
             fail ArgumentError,
                  "Node type must be any of #{SCOPE_TYPES}, " \
                  "passed #{node.type}"
@@ -43,13 +43,12 @@ module RuboCop
 
         def body_node
           child_index = case @node.type
-                        when :begin               then 0
                         when :module, :sclass     then 1
                         when :def, :class, :block then 2
                         when :defs                then 3
                         end
 
-          @node.children[child_index]
+          child_index ? @node.children[child_index] : @node
         end
 
         def each_node(&block)
@@ -60,6 +59,8 @@ module RuboCop
         private
 
         def scan_node(node, &block)
+          yield node unless node.parent
+
           node.each_child_node do |child_node|
             next if belong_to_another_scope?(child_node)
             yield child_node

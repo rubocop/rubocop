@@ -4,7 +4,7 @@
 require 'spec_helper'
 
 describe RuboCop::Cop::VariableForce::Assignment do
-  include AST::Sexp
+  include RuboCop::Sexp
 
   let(:ast) do
     RuboCop::ProcessedSource.new(source, ruby_version).ast
