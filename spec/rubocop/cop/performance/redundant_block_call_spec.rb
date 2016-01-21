@@ -52,4 +52,31 @@ describe RuboCop::Cop::Performance::RedundantBlockCall do
                          'end'])
     expect(cop.messages).to eq(['Use `yield` instead of `func.call`.'])
   end
+
+  it 'autocorrects using parentheses when block.call uses parentheses' do
+    new_source = autocorrect_source(cop, ['def method(&block)',
+                                          '  block.call(a, b)',
+                                          'end'])
+
+    expect(new_source).to eq(['def method(&block)',
+                              '  yield(a, b)',
+                              'end'].join("\n"))
+  end
+
+  it 'autocorrects when the result of the call is used in a scope that ' \
+     'requires parentheses' do
+    source = ['def method(&block)',
+              '  each_with_object({}) do |(key, value), acc|',
+              '    acc.merge!(block.call(key) => rhs[value])',
+              '  end',
+              'end']
+
+    new_source = autocorrect_source(cop, source)
+
+    expect(new_source).to eq(['def method(&block)',
+                              '  each_with_object({}) do |(key, value), acc|',
+                              '    acc.merge!(yield(key) => rhs[value])',
+                              '  end',
+                              'end'].join("\n"))
+  end
 end
