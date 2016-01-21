@@ -33,15 +33,14 @@ module RuboCop
         private
 
         def check(node)
-          map_or_collect = times_map_call(node)
-          if map_or_collect
+          times_map_call(node) do |map_or_collect|
             add_offense(node, :expression, format(MSG, map_or_collect))
           end
         end
 
         def_node_matcher :times_map_call, <<-END
-          {(block (send (send _ :times) ${:map :collect}) ...)
-           (send (send _ :times) ${:map :collect} (block_pass ...))}
+          {(block (send (send !nil :times) ${:map :collect}) ...)
+           (send (send !nil :times) ${:map :collect} (block_pass ...))}
         END
       end
     end
