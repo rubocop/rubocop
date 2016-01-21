@@ -109,6 +109,15 @@ If you'd rather install RuboCop using `bundler`, don't require it in your `Gemfi
 gem 'rubocop', require: false
 ```
 
+RuboCop's development is moving at a very rapid pace and there are
+often backward-incompatible changes between minor releases (since we
+haven't reached version 1.0 yet). To prevent an unwanted RuboCop update you
+might want to use a convervative version locking in your `Gemfile`:
+
+```rb
+gem 'rubocop', '~> 0.36.0', require: false
+```
+
 ## Basic Usage
 
 Running `rubocop` with no arguments will check all Ruby source files
