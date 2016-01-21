@@ -127,7 +127,8 @@ describe RuboCop::ProcessedSource do
     end
 
     it 'has same number of elements as line count' do
-      expect(processed_source.lines.size).to eq(5)
+      # Since the source has a trailing newline, there is a final empty line
+      expect(processed_source.lines.size).to eq(6)
     end
 
     it 'contains lines as string without linefeed' do
