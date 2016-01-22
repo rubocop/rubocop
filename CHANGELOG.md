@@ -24,6 +24,7 @@
 * [#2689](https://github.com/bbatsov/rubocop/pull/2689): Change `Performance/RedundantBlockCall` to respect parentheses usage. ([@rrosenblum][])
 * [#2694](https://github.com/bbatsov/rubocop/issues/2694): Fix caching when using a different JSON gem such as Oj. ([@stormbreakerbg][])
 * [#2707](https://github.com/bbatsov/rubocop/pull/2707): Change `Lint/NestedMethodDefinition` to respect `Class.new` and `Module.new`. ([@owst][])
+* [#2701](https://github.com/bbatsov/rubocop/pull/2701): Do not consider assignments to the same variable as useless if later assignments are within a loop. ([@owst][])
 
 ### Changes
 

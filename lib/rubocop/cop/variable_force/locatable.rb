@@ -16,6 +16,12 @@ module RuboCop
         ENSURE_TYPE = :ensure
         ENSURE_INDEX_OF_ENSURE_NODE = 1
 
+        FOR_LOOP_TYPE = :for
+        FOR_LOOP_CHILD_INDEX = 2
+
+        NON_FOR_LOOP_TYPES = LOOP_TYPES - [FOR_LOOP_TYPE]
+        NON_FOR_LOOP_TYPES_CHILD_INDEX = 1
+
         def node
           fail '#node must be declared!'
         end
@@ -84,6 +90,7 @@ module RuboCop
           when RESCUE_TYPE             then rescue_body_name
           when ENSURE_TYPE             then ensure_body_name
           when *LOGICAL_OPERATOR_TYPES then logical_operator_body_name
+          when *LOOP_TYPES             then loop_body_name
           else fail InvalidBranchBodyError
           end
         rescue InvalidBranchBodyError
@@ -133,6 +140,14 @@ module RuboCop
           end
         end
 
+        def loop_body_name
+          loop_indices = [FOR_LOOP_CHILD_INDEX, NON_FOR_LOOP_TYPES_CHILD_INDEX]
+
+          fail InvalidBranchBodyError unless loop_indices.include?(body_index)
+
+          'main'
+        end
+
         def body_index
           branch_point_node.children.index { |n| n.equal?(branch_body_node) }
         end
@@ -162,10 +177,14 @@ module RuboCop
             true
           when ENSURE_TYPE
             child_index != ENSURE_INDEX_OF_ENSURE_NODE
+          when FOR_LOOP_TYPE
+            child_index == FOR_LOOP_CHILD_INDEX
           when *BRANCH_TYPES
             child_index != CONDITION_INDEX_OF_BRANCH_NODE
           when *LOGICAL_OPERATOR_TYPES
             child_index != LEFT_SIDE_INDEX_OF_LOGICAL_OPERATOR_NODE
+          when *NON_FOR_LOOP_TYPES
+            child_index == NON_FOR_LOOP_TYPES_CHILD_INDEX
           else
             false
           end

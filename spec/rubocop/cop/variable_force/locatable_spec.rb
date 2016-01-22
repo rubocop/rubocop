@@ -22,7 +22,8 @@ describe RuboCop::Cop::VariableForce::Locatable do
   end
 
   let(:def_node) { ast.each_node.find(&:def_type?) }
-  let(:lvasgn_node) { ast.each_node.find(&:lvasgn_type?) }
+  let(:lvasgn_nodes) { ast.each_node.select(&:lvasgn_type?) }
+  let(:lvasgn_node) { lvasgn_nodes.first }
 
   let(:scope) { RuboCop::Cop::VariableForce::Scope.new(def_node) }
   let(:assignment) { LocatableObject.new(lvasgn_node, scope) }
@@ -347,6 +348,92 @@ describe RuboCop::Cop::VariableForce::Locatable do
         expect(assignment.branch_point_node).to be_nil
       end
     end
+
+    context 'loops' do
+      context 'when it is inside of an until loop' do
+        let(:source) do
+          <<-END
+          def some_method(flag)
+            until flag > 10
+              foo = 1
+            end
+          end
+          END
+        end
+
+        it 'returns the until node' do
+          expect(assignment.branch_point_node.type).to eq(:until)
+        end
+
+        context 'which is written in post form' do
+          let(:source) do
+            <<-END
+            def some_method(flag)
+              begin
+                foo = 1
+              end until flag < 10
+            end
+            END
+          end
+
+          it 'returns the post until node' do
+            expect(assignment.branch_point_node.type).to eq(:until_post)
+          end
+        end
+      end
+
+      context 'when it is inside of a while loop' do
+        let(:source) do
+          <<-END
+          def some_method(flag)
+            while flag < 10
+              foo = 1
+            end
+          end
+          END
+        end
+
+        it 'returns the while node' do
+          expect(assignment.branch_point_node.type).to eq(:while)
+        end
+
+        context 'which is written in post form' do
+          let(:source) do
+            <<-END
+          def some_method(flag)
+            begin
+              foo = 1
+            end while flag < 10
+          end
+            END
+          end
+
+          it 'returns the post while node' do
+            expect(assignment.branch_point_node.type).to eq(:while_post)
+          end
+        end
+      end
+
+      context 'when it is inside of a for loop' do
+        # The body assignment is last, since the loop variable bar has an
+        # assignment too.
+        let(:lvasgn_node) { lvasgn_nodes.last }
+
+        let(:source) do
+          <<-END
+          def some_method(flag)
+            for bar in [flag]
+              foo = 1
+            end
+          end
+          END
+        end
+
+        it 'returns the for node' do
+          expect(assignment.branch_point_node.type).to eq(:for)
+        end
+      end
+    end
   end
 
   describe '#branch_body_node' do
@@ -479,6 +566,92 @@ describe RuboCop::Cop::VariableForce::Locatable do
 
       it 'returns the body node' do
         expect(assignment.branch_body_node.type).to eq(:lvasgn)
+      end
+    end
+
+    context 'loops' do
+      context 'when it is inside of an until loop' do
+        let(:source) do
+          <<-END
+          def some_method(flag)
+            until flag > 10
+              foo = 1
+            end
+          end
+          END
+        end
+
+        it 'returns the body node' do
+          expect(assignment.branch_body_node.type).to eq(:lvasgn)
+        end
+
+        context 'which is written in post form' do
+          let(:source) do
+            <<-END
+            def some_method(flag)
+              begin
+                foo = 1
+              end until flag < 10
+            end
+            END
+          end
+
+          it 'returns the body node' do
+            expect(assignment.branch_body_node.type).to eq(:kwbegin)
+          end
+        end
+      end
+
+      context 'when it is inside of a while loop' do
+        let(:source) do
+          <<-END
+          def some_method(flag)
+            while flag < 10
+              foo = 1
+            end
+          end
+          END
+        end
+
+        it 'returns the body node' do
+          expect(assignment.branch_body_node.type).to eq(:lvasgn)
+        end
+
+        context 'which is written in post form' do
+          let(:source) do
+            <<-END
+          def some_method(flag)
+            begin
+              foo = 1
+            end while flag < 10
+          end
+            END
+          end
+
+          it 'returns the body node' do
+            expect(assignment.branch_body_node.type).to eq(:kwbegin)
+          end
+        end
+      end
+
+      context 'when it is inside of a for loop' do
+        # The body assignment is last, since the loop variable bar has an
+        # assignment too.
+        let(:lvasgn_node) { lvasgn_nodes.last }
+
+        let(:source) do
+          <<-END
+          def some_method(flag)
+            for bar in [flag]
+              foo = 1
+            end
+          end
+          END
+        end
+
+        it 'returns the body node' do
+          expect(assignment.branch_body_node.type).to eq(:lvasgn)
+        end
       end
     end
   end
@@ -709,6 +882,92 @@ describe RuboCop::Cop::VariableForce::Locatable do
 
       it 'returns BRANCHNODEID_ensure_main' do
         expect(assignment.branch_id).to match(/^\d+_ensure_main/)
+      end
+    end
+
+    context 'loops' do
+      context 'when it is inside of an until loop' do
+        let(:source) do
+          <<-END
+          def some_method(flag)
+            until flag > 10
+              foo = 1
+            end
+          end
+          END
+        end
+
+        it 'returns the BRANCHNODEID_until_main' do
+          expect(assignment.branch_id).to match(/^\d+_until_main/)
+        end
+
+        context 'which is written in post form' do
+          let(:source) do
+            <<-END
+            def some_method(flag)
+              begin
+                foo = 1
+              end until flag < 10
+            end
+            END
+          end
+
+          it 'returns BRANCHNODEID_until_post_main' do
+            expect(assignment.branch_id).to match(/^\d+_until_post_main/)
+          end
+        end
+      end
+
+      context 'when it is inside of a while loop' do
+        let(:source) do
+          <<-END
+          def some_method(flag)
+            while flag < 10
+              foo = 1
+            end
+          end
+          END
+        end
+
+        it 'returns BRANCHNODEID_while_main' do
+          expect(assignment.branch_id).to match(/^\d+_while_main/)
+        end
+
+        context 'which is written in post form' do
+          let(:source) do
+            <<-END
+          def some_method(flag)
+            begin
+              foo = 1
+            end while flag < 10
+          end
+            END
+          end
+
+          it 'returns BRANCHNODEID_while_post_main' do
+            expect(assignment.branch_id).to match(/^\d+_while_post_main/)
+          end
+        end
+      end
+
+      context 'when it is inside of a for loop' do
+        # The body assignment is last, since the loop variable bar has an
+        # assignment too.
+        let(:lvasgn_node) { lvasgn_nodes.last }
+
+        let(:source) do
+          <<-END
+          def some_method(flag)
+            for bar in [flag]
+              foo = 1
+            end
+          end
+          END
+        end
+
+        it 'returns BRANCHNODEID_for_main' do
+          expect(assignment.branch_id).to match(/^\d+_for_main/)
+        end
       end
     end
   end
