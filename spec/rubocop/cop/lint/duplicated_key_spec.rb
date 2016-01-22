@@ -56,28 +56,49 @@ describe RuboCop::Cop::Lint::DuplicatedKey do
     end
   end
 
-  context 'when the keys are method calls' do
-    let(:source) do
-      'hash = { [some_method_call] => 1, [some_method_call] => 4 }'
+  shared_examples :duplicated_literal_key do |key|
+    it "registers an offense for duplicated `#{key}` hash keys" do
+      inspect_source(cop, "hash = { #{key} => 1, #{key} => 4}")
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.offenses.first.message)
+        .to eq('Duplicated key in hash literal.')
+      expect(cop.highlights).to eq [key]
     end
+  end
 
-    it 'does not register an offense, because the result may be different' do
-      inspect_source(cop, source)
+  it_behaves_like :duplicated_literal_key, '!true'
+  it_behaves_like :duplicated_literal_key, '"#{2}"'
+  it_behaves_like :duplicated_literal_key, '(1)'
+  it_behaves_like :duplicated_literal_key, '(false && true)'
+  it_behaves_like :duplicated_literal_key, '(false <=> true)'
+  it_behaves_like :duplicated_literal_key, '(false or true)'
+  it_behaves_like :duplicated_literal_key, '[1, 2, 3]'
+  it_behaves_like :duplicated_literal_key, '{ :a => 1, :b => 2 }'
+  it_behaves_like :duplicated_literal_key, '{ a: 1, b: 2 }'
+  it_behaves_like :duplicated_literal_key, '/./'
+  it_behaves_like :duplicated_literal_key, '%r{abx}ixo'
+  it_behaves_like :duplicated_literal_key, '1.0'
+  it_behaves_like :duplicated_literal_key, '1'
+  it_behaves_like :duplicated_literal_key, 'false'
+  it_behaves_like :duplicated_literal_key, 'nil'
+  it_behaves_like :duplicated_literal_key, "'str'"
+
+  shared_examples :duplicated_non_literal_key do |key|
+    it "does not register an offense for duplicated `#{key}` hash keys" do
+      inspect_source(cop, "hash = { #{key} => 1, #{key} => 4}")
       expect(cop.offenses).to be_empty
     end
   end
 
-  context 'when the keys are collections of literals' do
-    let(:source) do
-      'hash = { [1, 2] => 1, [1, 2] => 4 }'
-    end
-
-    it 'registers an offense' do
-      inspect_source(cop, source)
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.offenses.first.message)
-        .to eq('Duplicated key in hash literal.')
-      expect(cop.highlights).to eq ['[1, 2]']
-    end
-  end
+  it_behaves_like :duplicated_non_literal_key, '"#{some_method_call}"'
+  it_behaves_like :duplicated_non_literal_key, '(x && false)'
+  it_behaves_like :duplicated_non_literal_key, '(x == false)'
+  it_behaves_like :duplicated_non_literal_key, '(x or false)'
+  it_behaves_like :duplicated_non_literal_key, '[some_method_call]'
+  it_behaves_like :duplicated_non_literal_key, '{ :sym => some_method_call }'
+  it_behaves_like :duplicated_non_literal_key, '{ some_method_call => :sym }'
+  it_behaves_like :duplicated_non_literal_key, '/.#{some_method_call}/'
+  it_behaves_like :duplicated_non_literal_key, '%r{abx#{foo}}ixo'
+  it_behaves_like :duplicated_non_literal_key, 'some_method_call'
+  it_behaves_like :duplicated_non_literal_key, 'some_method_call(x, y)'
 end

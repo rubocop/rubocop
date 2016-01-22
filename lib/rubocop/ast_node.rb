@@ -21,15 +21,16 @@ module RuboCop
   class Node < Parser::AST::Node # rubocop:disable Metrics/ClassLength
     include RuboCop::Sexp
 
-    COMPARISON_OPERATORS = [:==, :===, :!=, :<=, :>=, :>, :<, :<=>].freeze
+    COMPARISON_OPERATORS = [:!, :==, :===, :!=, :<=, :>=, :>, :<, :<=>].freeze
 
     TRUTHY_LITERALS = [:str, :dstr, :xstr, :int, :float, :sym, :dsym, :array,
                        :hash, :regexp, :true, :irange, :erange, :complex,
-                       :rational].freeze
+                       :rational, :regopt].freeze
     FALSEY_LITERALS = [:false, :nil].freeze
     LITERALS = (TRUTHY_LITERALS + FALSEY_LITERALS).freeze
-    BASIC_LITERALS = LITERALS - [:dstr, :xstr, :dsym, :array, :hash, :irange,
-                                 :erange].freeze
+    COMPOSITE_LITERALS = [:dstr, :xstr, :dsym, :array, :hash, :irange,
+                          :erange, :regexp].freeze
+    BASIC_LITERALS = (LITERALS - COMPOSITE_LITERALS).freeze
     MUTABLE_LITERALS = [:str, :dstr, :xstr, :array, :hash].freeze
     IMMUTABLE_LITERALS = (LITERALS - MUTABLE_LITERALS).freeze
 
@@ -379,6 +380,24 @@ module RuboCop
       IMMUTABLE_LITERALS.include?(type)
     end
 
+    [:literal, :basic_literal].each do |kind|
+      recursive_kind = :"recursive_#{kind}?"
+      kind_filter = :"#{kind}?"
+      define_method(recursive_kind) do
+        case type
+        when :begin, :pair, *OPERATOR_KEYWORDS, *COMPOSITE_LITERALS
+          children.all?(&recursive_kind)
+        when :send
+          receiver, method_name, *args = *self
+          COMPARISON_OPERATORS.include?(method_name) &&
+            receiver.send(recursive_kind) &&
+            args.all?(&recursive_kind)
+        else
+          send(kind_filter)
+        end
+      end
+    end
+
     def variable?
       VARIABLES.include?(type)
     end
@@ -482,7 +501,7 @@ module RuboCop
       # Be conservative and return false if we're not sure
       case type
       when :__FILE__, :__LINE__, :const, :cvar, :defined?, :false, :float,
-           :gvar, :int, :ivar, :lvar, :nil, :str, :sym, :true
+           :gvar, :int, :ivar, :lvar, :nil, :str, :sym, :true, :regopt
         true
       when :and, :array, :begin, :case, :dstr, :dsym, :eflipflop, :ensure,
            :erange, :for, :hash, :if, :iflipflop, :irange, :kwbegin, :not, :or,
