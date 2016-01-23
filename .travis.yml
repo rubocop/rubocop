@@ -10,7 +10,7 @@ rvm:
   - ruby-head
   - jruby-19mode
   - jruby-9.0.1.0
-  - rbx-2
+  - rbx-3
 env:
   # this doesn't do anything for MRI or RBX, but it doesn't hurt them either
   # for JRuby, it enables us to get more accurate coverage data
@@ -18,7 +18,7 @@ env:
 matrix:
   allow_failures:
     - rvm: ruby-head
-    - rvm: rbx-2
+    - rvm: rbx-3
   fast_finish: true
 before_install: gem update --remote bundler
 install:
