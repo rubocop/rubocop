@@ -22,6 +22,7 @@
 * [#2665](https://github.com/bbatsov/rubocop/pull/2665): Make specs pass when running on Windows. ([@jonas054][])
 * [#2691](https://github.com/bbatsov/rubocop/pull/2691): Do not register an offense in `Performance/TimesMap` for calling `map` or `collect` on a variable named `times`. ([@rrosenblum][])
 * [#2689](https://github.com/bbatsov/rubocop/pull/2689): Change `Performance/RedundantBlockCall` to respect parentheses usage. ([@rrosenblum][])
+* [#2694](https://github.com/bbatsov/rubocop/issues/2694): Fix caching when using a different JSON gem such as Oj. ([@stormbreakerbg][])
 
 ### Changes
 
@@ -1909,3 +1910,4 @@
 [@mvidner]: https://github.com/mvidner
 [@mattparlane]: https://github.com/mattparlane
 [@drenmi]: https://github.com/drenmi
+[@stormbreakerbg]: https://github.com/stormbreakerbg

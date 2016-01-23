@@ -31,7 +31,10 @@ module RuboCop
                 end
 
       {
-        severity: offense.severity,
+        # Calling #to_s here ensures that the serialization works when using
+        # other json serializers such as Oj. Some of these gems do not call
+        # #to_s implicitly.
+        severity: offense.severity.to_s,
         location: {
           begin_pos: offense.location.begin_pos,
           end_pos: offense.location.end_pos
