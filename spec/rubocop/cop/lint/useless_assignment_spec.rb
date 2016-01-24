@@ -616,6 +616,103 @@ describe RuboCop::Cop::Lint::UselessAssignment do
     include_examples 'mimics MRI 2.1'
   end
 
+  context 'when a variable is reassigned in a loop' do
+    context 'while loop' do
+      let(:source) do
+        [
+          'def while(param)',
+          '  ret = 1',
+          '',
+          '  while param != 10',
+          '    param += 2',
+          '    ret = param + 1',
+          '  end',
+          '',
+          '  ret',
+          'end'
+        ]
+      end
+
+      include_examples 'accepts'
+    end
+
+    context 'post while loop' do
+      let(:source) do
+        [
+          'def post_while(param)',
+          '  ret = 1',
+          '',
+          '  begin',
+          '    param += 2',
+          '    ret = param + 1',
+          '  end while param < 40',
+          '',
+          '  ret',
+          'end'
+        ]
+      end
+
+      include_examples 'accepts'
+    end
+
+    context 'until loop' do
+      let(:source) do
+        [
+          'def until(param)',
+          '  ret = 1',
+          '',
+          '  until param == 10',
+          '    param += 2',
+          '    ret = param + 1',
+          '  end',
+          '',
+          '  ret',
+          'end'
+        ]
+      end
+
+      include_examples 'accepts'
+    end
+
+    context 'post until loop' do
+      let(:source) do
+        [
+          'def post_until(param)',
+          '  ret = 1',
+          '',
+          '  begin',
+          '    param += 2',
+          '    ret = param + 1',
+          '  end until param == 10',
+          '',
+          '  ret',
+          'end'
+        ]
+      end
+
+      include_examples 'accepts'
+    end
+
+    context 'for loop' do
+      let(:source) do
+        [
+          'def for(param)',
+          '  ret = 1',
+          '',
+          '  for x in param...10',
+          '    param += x',
+          '    ret = param + 1',
+          '  end',
+          '',
+          '  ret',
+          'end'
+        ]
+      end
+
+      include_examples 'accepts'
+    end
+  end
+
   context 'when a variable is assigned in each branch of if ' \
           'and referenced after the branching' do
     let(:source) do
