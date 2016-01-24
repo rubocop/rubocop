@@ -59,8 +59,13 @@ describe RuboCop::Cop::Style::NestedModifier do
   end
 
   it 'adds parentheses when needed in auto-correction' do
-    corrected = autocorrect_source(cop, 'something if a || b if c')
-    expect(corrected).to eq 'something if c && (a || b)'
+    corrected = autocorrect_source(cop, 'something if a || b if c || d')
+    expect(corrected).to eq 'something if (c || d) && (a || b)'
+  end
+
+  it 'does not add redundant parentheses in auto-correction' do
+    corrected = autocorrect_source(cop, 'something if a unless c || d')
+    expect(corrected).to eq 'something unless c || d || !a'
   end
 
   context 'while' do
