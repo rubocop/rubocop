@@ -16,7 +16,7 @@ module RuboCop
 
     COMMON_PARAMS = %w(Exclude Include Severity
                        AutoCorrect StyleGuide Details).freeze
-    KNOWN_RUBIES = [1.9, 2.0, 2.1, 2.2, 2.3].freeze
+    KNOWN_RUBIES = %w(1.9 2.0 2.1 2.2 2.3).freeze
 
     attr_reader :loaded_path
 
@@ -259,12 +259,16 @@ module RuboCop
       target = self['AllCops'] && self['AllCops']['TargetRubyVersion']
       return unless target
 
-      unless KNOWN_RUBIES.include?(target)
+      unless matches_known_versions?(target)
         fail ValidationError, "Unknown Ruby version #{target.inspect} found " \
                               'in `TargetRubyVersion` parameter (in ' \
                               "#{loaded_path}).\nKnown versions: " \
                               "#{KNOWN_RUBIES.join(', ')}"
       end
+    end
+
+    def matches_known_versions?(target)
+      KNOWN_RUBIES.any? { |ruby| /^#{ruby}/ =~ target.to_s }
     end
   end
 end
