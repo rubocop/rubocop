@@ -26,6 +26,7 @@
 * [#2707](https://github.com/bbatsov/rubocop/pull/2707): Change `Lint/NestedMethodDefinition` to respect `Class.new` and `Module.new`. ([@owst][])
 * [#2701](https://github.com/bbatsov/rubocop/pull/2701): Do not consider assignments to the same variable as useless if later assignments are within a loop. ([@owst][])
 * [#2696](https://github.com/bbatsov/rubocop/issues/2696): `Style/NestedModifier` adds parentheses around a condition when needed. ([@lumeet][])
+* [#2666](https://github.com/bbatsov/rubocop/issues/2666): Fix bug when auto-correcting symbol literals in `Lint/LiteralInInterpolation`. ([@lumeet][])
 
 ### Changes
 
