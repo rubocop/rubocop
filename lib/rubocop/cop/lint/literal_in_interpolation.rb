@@ -38,7 +38,23 @@ module RuboCop
         end
 
         def autocorrected_value(node)
-          node.str_type? ? node.children.last : node.source
+          case node.type
+          when :str
+            node.children.last
+          when :sym
+            autocorrected_value_for_symbol(node)
+          else
+            node.source
+          end
+        end
+
+        def autocorrected_value_for_symbol(node)
+          end_pos =
+            node.loc.end ? node.loc.end.begin_pos : node.loc.expression.end_pos
+
+          Parser::Source::Range.new(node.source_range.source_buffer,
+                                    node.loc.begin.end_pos,
+                                    end_pos).source
         end
       end
     end

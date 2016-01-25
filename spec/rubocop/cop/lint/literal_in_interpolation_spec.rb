@@ -16,7 +16,7 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
     expect(cop.offenses).to be_empty
   end
 
-  shared_examples 'literal interpolation' do |literal|
+  shared_examples 'literal interpolation' do |literal, expected = literal|
     it "registers an offense for #{literal} in interpolation" do
       inspect_source(cop, %("this is the \#{#{literal}}"))
       expect(cop.offenses.size).to eq(1)
@@ -29,20 +29,20 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
 
     it "removes interpolation around #{literal}" do
       corrected = autocorrect_source(cop, %("this is the \#{#{literal}}"))
-      expect(corrected).to eq(%("this is the #{literal}"))
+      expect(corrected).to eq(%("this is the #{expected}"))
     end
 
     it "removes interpolation around #{literal} when there is more text" do
       corrected =
         autocorrect_source(cop, %("this is the \#{#{literal}} literally"))
-      expect(corrected).to eq(%("this is the #{literal} literally"))
+      expect(corrected).to eq(%("this is the #{expected} literally"))
     end
 
     it "removes interpolation around multiple #{literal}" do
       corrected =
         autocorrect_source(cop,
                            %("some \#{#{literal}} with \#{#{literal}} too"))
-      expect(corrected).to eq(%("some #{literal} with #{literal} too"))
+      expect(corrected).to eq(%("some #{expected} with #{expected} too"))
     end
 
     context 'when there is non-literal and literal interpolation' do
@@ -50,7 +50,7 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
         it 'only remove interpolation around literal' do
           corrected =
             autocorrect_source(cop, %("this is \#{#{literal}} with \#{a} now"))
-          expect(corrected).to eq(%("this is #{literal} with \#{a} now"))
+          expect(corrected).to eq(%("this is #{expected} with \#{a} now"))
         end
       end
 
@@ -58,7 +58,7 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
         it 'only remove interpolation around literal' do
           corrected =
             autocorrect_source(cop, %("this is \#{a} with \#{#{literal}} now"))
-          expect(corrected).to eq(%("this is \#{a} with #{literal} now"))
+          expect(corrected).to eq(%("this is \#{a} with #{expected} now"))
         end
       end
     end
@@ -77,11 +77,13 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
   it_behaves_like('literal interpolation', 0xaabb)
   it_behaves_like('literal interpolation', 0377)
   it_behaves_like('literal interpolation', 2.0)
-  it_behaves_like('literal interpolation', [])
-  it_behaves_like('literal interpolation', [1])
+  it_behaves_like('literal interpolation', '[]')
+  it_behaves_like('literal interpolation', '[1]')
   it_behaves_like('literal interpolation', true)
   it_behaves_like('literal interpolation', false)
   it_behaves_like('literal interpolation', 'nil')
+  it_behaves_like('literal interpolation', ':symbol', 'symbol')
+  it_behaves_like('literal interpolation', ':"symbol"', 'symbol')
 
   shared_examples 'special keywords' do |keyword|
     it "accepts strings like #{keyword}" do
