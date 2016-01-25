@@ -98,6 +98,14 @@ describe RuboCop::Cop::Style::IndentationConsistency, :config do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts if/elsif/else/end with fullwidth characters' do
+      inspect_source(cop,
+                     ["p 'Ｒｕｂｙ', if a then b",
+                      '                        c',
+                      '              end'])
+      expect(cop.offenses).to be_empty
+    end
+
     it 'accepts an empty if' do
       inspect_source(cop,
                      ['if a',

@@ -86,7 +86,7 @@ module RuboCop
           if source.include?("\n")
             previous_code_line(range.line + source.count("\n") + 1) =~ /\S/
           else
-            range.column
+            display_column(range)
           end
         end
 

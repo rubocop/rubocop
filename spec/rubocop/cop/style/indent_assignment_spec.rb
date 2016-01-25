@@ -37,6 +37,13 @@ describe RuboCop::Cop::Style::IndentAssignment, :config do
     expect(cop.offenses).to be_empty
   end
 
+  it 'allows a properly indented rhs with fullwidth characters' do
+    inspect_source(cop, ["f 'Ｒｕｂｙ', a =",
+                         '                b'])
+
+    expect(cop.offenses).to be_empty
+  end
+
   it 'registers an offense for multi-lhs' do
     inspect_source(cop, ['a,',
                          'b =',
