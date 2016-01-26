@@ -19,30 +19,28 @@ module RuboCop
 
         def_node_matcher :constant_definition?, '{class module casgn}'
 
-        def investigate(processed_source)
-          return unless processed_source.ast
-          return unless processed_source.ast_with_comments
-          check(processed_source.ast, processed_source.ast_with_comments)
+        def on_class(node)
+          _name, _superclass, body = *node
+          return unless body
+          return if namespace?(body)
+
+          ast_with_comments = processed_source.ast_with_comments
+          return if associated_comment?(node, ast_with_comments)
+          return if nodoc?(node, ast_with_comments)
+          add_offense(node, :keyword, format(MSG, :class))
+        end
+
+        def on_module(node)
+          _name, body = *node
+          return if namespace?(body)
+
+          ast_with_comments = processed_source.ast_with_comments
+          return if associated_comment?(node, ast_with_comments)
+          return if nodoc?(node, ast_with_comments)
+          add_offense(node, :keyword, format(MSG, :module))
         end
 
         private
-
-        def check(ast, ast_with_comments)
-          ast.each_node(:class, :module) do |node|
-            case node.type
-            when :class
-              _name, _superclass, body = *node
-            when :module
-              _name, body = *node
-            end
-
-            next if node.type == :class && !body
-            next if namespace?(body)
-            next if associated_comment?(node, ast_with_comments)
-            next if nodoc?(node, ast_with_comments)
-            add_offense(node, :keyword, format(MSG, node.type.to_s))
-          end
-        end
 
         def namespace?(body_node)
           return false unless body_node
