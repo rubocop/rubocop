@@ -99,7 +99,7 @@ module RuboCop
       end
 
       def self.cop_type
-        name.to_s.split('::')[-2].downcase.to_sym
+        @cop_type ||= name.split('::')[-2].downcase.to_sym
       end
 
       def self.lint?
