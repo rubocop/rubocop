@@ -69,8 +69,6 @@ module RuboCop
         end
 
         def preceding_comments(node, ast_with_comments)
-          return [] unless node && ast_with_comments
-
           ast_with_comments[node].select { |c| c.loc.line < node.loc.line }
         end
 
