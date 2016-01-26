@@ -57,23 +57,17 @@ module RuboCop
         MSG = 'Place `when` conditions with a splat ' \
               'at the end of the `when` branches.'.freeze
         ARRAY_MSG = 'Do not expand array literals in `when` conditions.'.freeze
-        OPEN_BRACKET = '['.freeze
         PERCENT_W = '%w'.freeze
         PERCENT_CAPITAL_W = '%W'.freeze
         PERCENT_I = '%i'.freeze
         PERCENT_CAPITAL_I = '%I'.freeze
 
-        def initialize(*)
-          super
-          @reordered_splat_condition = false
-        end
-
         def on_case(node)
           _case_branch, *when_branches, _else_branch = *node
           when_conditions =
             when_branches.each_with_object([]) do |branch, conditions|
-              condition, = *branch
-              conditions << condition
+              *condition, _ = *branch
+              condition.each { |c| conditions << c }
             end
 
           splat_offenses(when_conditions).reverse_each do |condition|
@@ -85,18 +79,73 @@ module RuboCop
         end
 
         def autocorrect(node)
-          condition, = *node
-          variable, = *condition
-          if variable.array_type?
-            correct_array_literal(condition, variable)
-          else
-            return if @reordered_splat_condition
-            @reordered_splat_condition = true
-            reorder_splat_condition(node)
+          *conditions, _body = *node
+
+          new_condition =
+            conditions.each_with_object([]) do |condition, correction|
+              variable, = *condition
+              if variable.respond_to?(:array_type?) && variable.array_type?
+                correction << expand_percent_array(variable)
+                next
+              end
+
+              correction << condition.source
+            end
+          new_condition = new_condition.join(', ')
+
+          lambda do |corrector|
+            if needs_reorder?(conditions)
+              reorder_condition(corrector, node, new_condition)
+            else
+              inline_fix_branch(corrector, node, conditions, new_condition)
+            end
           end
         end
 
         private
+
+        def inline_fix_branch(corrector, node, conditions, new_condition)
+          range =
+            Parser::Source::Range.new(node.loc.expression.source_buffer,
+                                      conditions[0].loc.expression.begin_pos,
+                                      conditions[-1].loc.expression.end_pos)
+          corrector.replace(range, new_condition)
+        end
+
+        def reorder_condition(corrector, node, new_condition)
+          *_conditions, body = *node
+          parent = node.parent
+          _case_branch, *when_branches, _else_branch = *parent
+          current_index = when_branches.index { |branch| branch == node }
+          next_branch = when_branches[current_index + 1]
+          range = Parser::Source::Range.new(parent,
+                                            node.source_range.begin_pos,
+                                            next_branch.source_range.begin_pos)
+
+          corrector.remove(range)
+
+          correction = if same_line?(node, body)
+                         new_condition_with_then(node, new_condition)
+                       else
+                         new_branch_without_then(node, body, new_condition)
+                       end
+
+          corrector.insert_after(when_branches.last.source_range, correction)
+        end
+
+        def same_line?(node, other)
+          node.loc.first_line == other.loc.first_line
+        end
+
+        def new_condition_with_then(node, new_condition)
+          "\n#{' ' * node.loc.column}when " \
+            "#{new_condition} then #{node.children.last.source}"
+        end
+
+        def new_branch_without_then(node, body, new_condition)
+          "\n#{' ' * node.loc.column}when #{new_condition}\n" \
+            "#{' ' * body.loc.column}#{node.children.last.source}"
+        end
 
         def splat_offenses(when_conditions)
           found_non_splat = false
@@ -115,34 +164,10 @@ module RuboCop
             !condition.splat_type?
         end
 
-        def correct_array_literal(condition, variable)
-          lambda do |corrector|
-            array_start = variable.loc.begin.source
-
-            if array_start.start_with?(OPEN_BRACKET)
-              corrector.remove(condition.loc.operator)
-              corrector.remove(variable.loc.begin)
-              corrector.remove(variable.loc.end)
-            else
-              corrector.replace(condition.source_range,
-                                expand_percent_array(variable))
-            end
-          end
-        end
-
-        def reorder_splat_condition(node)
-          _case_branch, *when_branches, _else_branch = *node.parent
-          current_index = when_branches.index { |branch| branch == node }
-          next_branch = when_branches[current_index + 1]
-          correction = "\n#{offset(node)}#{node.source}"
-          range =
-            Parser::Source::Range.new(node.parent,
-                                      node.source_range.begin_pos,
-                                      next_branch.source_range.begin_pos)
-
-          lambda do |corrector|
-            corrector.remove(range)
-            corrector.insert_after(when_branches.last.source_range, correction)
+        def needs_reorder?(conditions)
+          conditions.any? do |condition|
+            variable, = *condition
+            condition.splat_type? && !(variable && variable.array_type?)
           end
         end
 
@@ -159,6 +184,8 @@ module RuboCop
             ":#{elements.join(', :')}"
           elsif array_start.start_with?(PERCENT_CAPITAL_I)
             %(:"#{elements.join('", :"')}")
+          else
+            elements.join(', ')
           end
         end
       end
