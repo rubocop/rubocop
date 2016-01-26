@@ -21,7 +21,7 @@ module RuboCop
         check_assignment(node, rhs) if rhs.is_a?(AST::Node)
       end
 
-      private
+      module_function
 
       def extract_rhs(node)
         if node.casgn_type?
