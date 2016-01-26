@@ -26,7 +26,7 @@ module RuboCop
       def line_numbers_of_inner_thing(node, type)
         line_numbers = Set.new
 
-        node.each_descendant(:module, type) do |inner_node|
+        node.each_descendant(type) do |inner_node|
           line_range = line_range(inner_node)
           line_numbers.merge(line_range)
         end
