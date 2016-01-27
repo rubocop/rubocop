@@ -201,7 +201,7 @@ module RuboCop
       end
 
       def cop_name
-        self.class.cop_name
+        @cop_name ||= self.class.cop_name
       end
 
       alias name cop_name
