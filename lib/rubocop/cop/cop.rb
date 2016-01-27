@@ -128,7 +128,7 @@ module RuboCop
       end
 
       def cop_config
-        @config.for_cop(self)
+        @cop_config ||= @config.for_cop(self)
       end
 
       def debug?
