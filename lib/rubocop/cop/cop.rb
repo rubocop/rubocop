@@ -95,7 +95,7 @@ module RuboCop
       end
 
       def self.cop_name
-        @cop_name ||= name.to_s.split('::').last(2).join('/')
+        @cop_name ||= name.split('::').last(2).join('/')
       end
 
       def self.cop_type
