@@ -1026,6 +1026,12 @@ Lint/UnusedMethodArgument:
   AllowUnusedKeywordArguments: false
   IgnoreEmptyMethods: true
 
+##################### Performance ############################
+
+Performance/RedundantMerge:
+  # Max number of key-value pairs to consider an offense
+  MaxKeyValuePairs: 2
+
 ##################### Rails ##################################
 
 Rails/ActionFilter:

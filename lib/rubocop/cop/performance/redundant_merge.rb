@@ -23,6 +23,7 @@ module RuboCop
           redundant_merge(node) do |receiver, pairs|
             next if node.value_used?
             next if pairs.size > 1 && !receiver.pure?
+            next if pairs.size > max_key_value_pairs
 
             assignments = to_assignments(receiver, pairs).join('; ')
             message = format(MSG, assignments, node.source)
@@ -79,6 +80,10 @@ module RuboCop
 
         def modifier?(node)
           node.loc.respond_to?(:end) && node.loc.end.nil?
+        end
+
+        def max_key_value_pairs
+          cop_config['MaxKeyValuePairs'].to_i
         end
       end
     end
