@@ -42,6 +42,37 @@ describe RuboCop::Cop::Performance::Casecmp do
       expect(new_source).to eq "str.casecmp( 'string' ).zero?"
     end
 
+    it "autocorrects str.#{selector} == a variable" do
+      new_source = autocorrect_source(cop, ['other = "a"',
+                                            "str.#{selector} == other"])
+      expect(new_source).to eq(['other = "a"',
+                                'str.casecmp(other).zero?'].join("\n"))
+    end
+
+    it "autocorrects str.#{selector} == a method" do
+      new_source = autocorrect_source(cop, "str.#{selector} == method(foo)")
+      expect(new_source).to eq('str.casecmp(method(foo)).zero?')
+    end
+
+    it "autocorrects str.#{selector} == a method call on a variable" do
+      new_source = autocorrect_source(cop, "str.#{selector} == other.join")
+      expect(new_source).to eq('str.casecmp(other.join).zero?')
+    end
+
+    it "autocorrects str.#{selector} == a method call on a variable " \
+       'with params' do
+      new_source = autocorrect_source(cop,
+                                      "str.#{selector} == other.join(', ')")
+      expect(new_source).to eq("str.casecmp(other.join(', ')).zero?")
+    end
+
+    it "autocorrects str.#{selector} == a method call on a variable " \
+       'with a block' do
+      source = "str.#{selector} == other.method { |o| o.to_s }"
+      new_source = autocorrect_source(cop, source)
+      expect(new_source).to eq('str.casecmp(other.method { |o| o.to_s }).zero?')
+    end
+
     it "formats the error message correctly for str.#{selector} ==" do
       inspect_source(cop, "str.#{selector} == 'string'")
       expect(cop.messages).to eq(["Use `casecmp` instead of `#{selector} ==`."])

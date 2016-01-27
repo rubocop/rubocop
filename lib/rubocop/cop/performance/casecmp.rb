@@ -32,13 +32,16 @@ module RuboCop
           receiver, method, arg = *node
           range = Parser::Source::Range.new(node.source_range.source_buffer,
                                             receiver.loc.selector.begin_pos,
-                                            arg.loc.begin.begin_pos)
+                                            arg.loc.expression.begin_pos)
 
           lambda do |corrector|
             # we want resulting call to be parenthesized
             # if arg already includes one or more sets of parens, don't add more
             # or if method call already used parens, again, don't add more
-            if arg.loc.begin.source == '('
+            if arg.send_type?
+              corrector.replace(range, 'casecmp(')
+              corrector.insert_after(arg.source_range, ').zero?')
+            elsif parentheses?(arg)
               corrector.replace(range, 'casecmp')
               corrector.insert_after(arg.source_range, '.zero?')
             elsif range.source =~ /\(/

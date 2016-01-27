@@ -27,6 +27,7 @@
 * [#2701](https://github.com/bbatsov/rubocop/pull/2701): Do not consider assignments to the same variable as useless if later assignments are within a loop. ([@owst][])
 * [#2696](https://github.com/bbatsov/rubocop/issues/2696): `Style/NestedModifier` adds parentheses around a condition when needed. ([@lumeet][])
 * [#2666](https://github.com/bbatsov/rubocop/issues/2666): Fix bug when auto-correcting symbol literals in `Lint/LiteralInInterpolation`. ([@lumeet][])
+* [#2664](https://github.com/bbatsov/rubocop/issues/2664): `Performance/Casecmp` can auto-correct case comparison to variables and method calls without error. ([@rrosenblum][])
 
 ### Changes
 
