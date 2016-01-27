@@ -269,8 +269,6 @@ module RuboCop
     def each_node(*types, &block)
       return to_enum(__method__, *types) unless block_given?
 
-      types.flatten!
-
       yield self if types.empty? || types.include?(type)
 
       if types.empty?
