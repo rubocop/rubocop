@@ -56,7 +56,7 @@ module RuboCop
 
     def initialize(file, options, config_store, cache_root = nil)
       cache_root ||= ResultCache.cache_root(config_store)
-      @path = File.join(cache_root, rubocop_checksum, RUBY_VERSION,
+      @path = File.join(cache_root, rubocop_checksum,
                         relevant_options(options),
                         file_checksum(file, config_store))
       @cached_data = CachedData.new(file)

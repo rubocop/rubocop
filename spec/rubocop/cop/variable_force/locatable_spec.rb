@@ -4,7 +4,7 @@
 require 'spec_helper'
 
 describe RuboCop::Cop::VariableForce::Locatable do
-  include AST::Sexp
+  include RuboCop::Sexp
 
   class LocatableObject
     include RuboCop::Cop::VariableForce::Locatable

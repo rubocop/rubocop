@@ -21,6 +21,7 @@ require 'rubocop/node_pattern'
 require 'rubocop/ast_node/sexp'
 require 'rubocop/ast_node'
 require 'rubocop/ast_node/builder'
+require 'rubocop/ast_node/traversal'
 require 'rubocop/error'
 require 'rubocop/warning'
 

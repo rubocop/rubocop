@@ -143,12 +143,12 @@ describe RuboCop::ResultCache, :isolated_environment do
       cache.save(offenses)
       cache2 = described_class.new('other.rb', options, config_store,
                                    cache_root)
-      expect(Dir["#{cache_root}/*/*/_/*"].size).to eq(1)
+      expect(Dir["#{cache_root}/*/_/*"].size).to eq(1)
       cache.class.cleanup(config_store, :verbose, cache_root)
       expect($stdout.string).to eq('')
 
       cache2.save(offenses)
-      underscore_dir = Dir["#{cache_root}/*/*/_"].first
+      underscore_dir = Dir["#{cache_root}/*/_"].first
       expect(Dir["#{underscore_dir}/*"].size).to eq(2)
       cache.class.cleanup(config_store, :verbose, cache_root)
       expect(File.exist?(underscore_dir)).to be_falsey

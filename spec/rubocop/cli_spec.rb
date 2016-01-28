@@ -1515,7 +1515,8 @@ describe RuboCop::CLI, :isolated_environment do
           ['Error: The `Style/TrailingComma` cop no longer exists. Please ' \
            'use `Style/TrailingCommaInLiteral` and/or ' \
            '`Style/TrailingCommaInArguments` instead.',
-           "(configuration found in #{abs('.rubocop.yml')})"].join("\n"))
+           "(obsolete configuration found in #{abs('.rubocop.yml')}, " \
+           'please update it)'].join("\n"))
       end
     end
   end

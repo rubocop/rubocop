@@ -71,7 +71,7 @@ module RuboCop
       # `ident` type node and fixed to the appropriate type later.
       # So, the #parent attribute needs to be mutable.
       each_child_node do |child_node|
-        child_node.parent = self
+        child_node.parent = self unless child_node.complete?
       end
     end
 
@@ -93,7 +93,27 @@ module RuboCop
       @mutable_attributes[:parent] = node
     end
 
+    def complete!
+      @mutable_attributes.freeze
+      each_child_node(&:complete!)
+    end
+
+    def complete?
+      @mutable_attributes.frozen?
+    end
+
     protected :parent=
+
+    # Override `AST::Node#updated` so that `AST::Processor` does not try to
+    # mutate our ASTs. Since we keep references from children to parents and
+    # not just the other way around, we cannot update an AST and share identical
+    # subtrees. Rather, the entire AST must be copied any time any part of it
+    # is changed.
+    #
+    def updated(type = nil, children = nil, properties = {})
+      properties[:location] ||= @location
+      Node.new(type || @type, children || @children, properties)
+    end
 
     # Returns the index of the receiver node in its siblings.
     #
@@ -248,8 +268,6 @@ module RuboCop
     # @return [Enumerator] if no block is given
     def each_node(*types, &block)
       return to_enum(__method__, *types) unless block_given?
-
-      types.flatten!
 
       yield self if types.empty? || types.include?(type)
 

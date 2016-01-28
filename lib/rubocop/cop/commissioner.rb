@@ -5,25 +5,16 @@ module RuboCop
   module Cop
     # Commissioner class is responsible for processing the AST and delegating
     # work to the specified cops.
-    class Commissioner < Parser::AST::Processor
+    class Commissioner
+      include RuboCop::Node::Traversal
+
       attr_reader :errors
 
       def self.callback_methods
         Parser::Meta::NODE_TYPES.map { |type| "on_#{type}" }
       end
 
-      # Methods that are not defined in Parser::AST::Processor
-      # won't have a `super` to call. So we should not attempt
-      # to invoke `super` when defining them.
-      def self.call_super(callback)
-        if Parser::AST::Processor.method_defined?(callback)
-          'super'
-        else
-          ''
-        end
-      end
-
-      def initialize(cops, forces, options = {})
+      def initialize(cops, forces = [], options = {})
         @cops = cops
         @forces = forces
         @options = options
@@ -31,6 +22,7 @@ module RuboCop
       end
 
       callback_methods.each do |callback|
+        next unless RuboCop::Node::Traversal.method_defined?(callback)
         class_eval <<-EOS, __FILE__, __LINE__
           def #{callback}(node)
             @cops.each do |cop|
@@ -40,7 +32,8 @@ module RuboCop
               end
             end
 
-            #{call_super(callback)}
+            #{!RuboCop::Node::Traversal::NO_CHILD_NODES.include?(callback) &&
+              'super'}
           end
         EOS
       end
@@ -51,7 +44,7 @@ module RuboCop
         prepare(processed_source)
         invoke_custom_processing(@cops, processed_source)
         invoke_custom_processing(@forces, processed_source)
-        process(processed_source.ast) if processed_source.ast
+        walk(processed_source.ast) if processed_source.ast
         @cops.flat_map(&:offenses)
       end
 

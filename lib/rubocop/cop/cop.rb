@@ -95,11 +95,11 @@ module RuboCop
       end
 
       def self.cop_name
-        @cop_name ||= name.to_s.split('::').last(2).join('/')
+        @cop_name ||= name.split('::').last(2).join('/')
       end
 
       def self.cop_type
-        name.to_s.split('::')[-2].downcase.to_sym
+        @cop_type ||= name.split('::')[-2].downcase.to_sym
       end
 
       def self.lint?
@@ -128,7 +128,7 @@ module RuboCop
       end
 
       def cop_config
-        @config.for_cop(self)
+        @cop_config ||= @config.for_cop(self)
       end
 
       def debug?
@@ -201,7 +201,7 @@ module RuboCop
       end
 
       def cop_name
-        self.class.cop_name
+        @cop_name ||= self.class.cop_name
       end
 
       alias name cop_name

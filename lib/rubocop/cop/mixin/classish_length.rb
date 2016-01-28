@@ -13,8 +13,7 @@ module RuboCop
         body_line_numbers = line_range(node).to_a[1...-1]
 
         target_line_numbers = body_line_numbers -
-                              line_numbers_of_inner_thing(node, :module) -
-                              line_numbers_of_inner_thing(node, :class)
+                              line_numbers_of_inner_nodes(node, :module, :class)
 
         target_line_numbers.reduce(0) do |length, line_number|
           source_line = processed_source[line_number]
@@ -23,10 +22,10 @@ module RuboCop
         end
       end
 
-      def line_numbers_of_inner_thing(node, type)
+      def line_numbers_of_inner_nodes(node, *types)
         line_numbers = Set.new
 
-        node.each_descendant(:module, type) do |inner_node|
+        node.each_descendant(*types) do |inner_node|
           line_range = line_range(inner_node)
           line_numbers.merge(line_range)
         end

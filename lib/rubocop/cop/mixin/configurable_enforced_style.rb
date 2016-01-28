@@ -77,9 +77,13 @@ module RuboCop
       alias unrecognized_style_detected no_acceptable_style!
 
       def style
-        s = cop_config[parameter_name].to_sym
-        return s if supported_styles.include?(s)
-        fail "Unknown style #{s} selected!"
+        @enforced_style ||= begin
+          s = cop_config[parameter_name].to_sym
+          unless supported_styles.include?(s)
+            fail "Unknown style #{s} selected!"
+          end
+          s
+        end
       end
 
       def alternative_style

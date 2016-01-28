@@ -56,14 +56,6 @@ module RuboCop
 
       SEND_TYPE = :send
 
-      def self.wrap_with_top_level_scope_node(root_node)
-        if root_node.begin_type?
-          root_node
-        else
-          Node.new(:begin, [root_node])
-        end
-      end
-
       def variable_table
         @variable_table ||= VariableTable.new(self)
       end
@@ -73,10 +65,9 @@ module RuboCop
         root_node = processed_source.ast
         return unless root_node
 
-        # Wrap the root node with begin node if it's a standalone node.
-        root_node = self.class.wrap_with_top_level_scope_node(root_node)
-
-        inspect_variables_in_scope(root_node)
+        variable_table.push_scope(root_node)
+        process_node(root_node)
+        variable_table.pop_scope
       end
 
       # This is called for each scope recursively.

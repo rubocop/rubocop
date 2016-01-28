@@ -19,36 +19,28 @@ module RuboCop
 
         def_node_matcher :constant_definition?, '{class module casgn}'
 
-        def investigate(processed_source)
-          ast = processed_source.ast
-          return unless ast
+        def on_class(node)
+          _name, _superclass, body = *node
+          return unless body
+          return if namespace?(body)
 
-          ast_with_comments = Parser::Source::Comment.associate(
-            ast,
-            processed_source.comments
-          )
+          ast_with_comments = processed_source.ast_with_comments
+          return if associated_comment?(node, ast_with_comments)
+          return if nodoc_comment?(node, ast_with_comments)
+          add_offense(node, :keyword, format(MSG, :class))
+        end
 
-          check(ast, ast_with_comments)
+        def on_module(node)
+          _name, body = *node
+          return if namespace?(body)
+
+          ast_with_comments = processed_source.ast_with_comments
+          return if associated_comment?(node, ast_with_comments)
+          return if nodoc_comment?(node, ast_with_comments)
+          add_offense(node, :keyword, format(MSG, :module))
         end
 
         private
-
-        def check(ast, ast_with_comments)
-          ast.each_node(:class, :module) do |node|
-            case node.type
-            when :class
-              _name, _superclass, body = *node
-            when :module
-              _name, body = *node
-            end
-
-            next if node.type == :class && !body
-            next if namespace?(body)
-            next if associated_comment?(node, ast_with_comments)
-            next if nodoc?(node, ast_with_comments)
-            add_offense(node, :keyword, format(MSG, node.type.to_s))
-          end
-        end
 
         def namespace?(body_node)
           return false unless body_node
@@ -77,8 +69,6 @@ module RuboCop
         end
 
         def preceding_comments(node, ast_with_comments)
-          return [] unless node && ast_with_comments
-
           ast_with_comments[node].select { |c| c.loc.line < node.loc.line }
         end
 
@@ -93,7 +83,7 @@ module RuboCop
         # proceeds to check its ancestors for :nodoc: all.
         # Note: How end-of-line comments are associated with code changed in
         # parser-2.2.0.4.
-        def nodoc?(node, ast_with_comments, require_all = false)
+        def nodoc_comment?(node, ast_with_comments, require_all = false)
           return false unless node
           nodoc_node = node.children.first
           return false unless nodoc_node
@@ -104,7 +94,7 @@ module RuboCop
             return true if comment.text =~ regex
           end
 
-          nodoc?(node.ancestors.first, ast_with_comments, true)
+          nodoc_comment?(node.ancestors.first, ast_with_comments, true)
         end
       end
     end

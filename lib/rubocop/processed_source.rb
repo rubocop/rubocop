@@ -44,11 +44,16 @@ module RuboCop
       comment_config.cop_disabled_line_ranges
     end
 
+    def ast_with_comments
+      return if !ast || !comments
+      @ast_with_comments ||= Parser::Source::Comment.associate(ast, comments)
+    end
+
     # Returns the source lines, line break characters removed, excluding a
     # possible __END__ and everything that comes after.
     def lines
       @lines ||= begin
-        all_lines = raw_source.lines.map(&:chomp)
+        all_lines = @buffer.source_lines
         last_token_line = tokens.any? ? tokens.last.pos.line : all_lines.size
         result = []
         all_lines.each_with_index do |line, ix|
@@ -90,6 +95,7 @@ module RuboCop
 
       begin
         @ast, @comments, tokens = parser.tokenize(@buffer)
+        @ast.complete! if @ast
       rescue Parser::SyntaxError # rubocop:disable Lint/HandleExceptions
         # All errors are in diagnostics. No need to handle exception.
       end

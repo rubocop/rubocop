@@ -17,6 +17,27 @@ module RuboCop
     COMMON_PARAMS = %w(Exclude Include Severity
                        AutoCorrect StyleGuide Details).freeze
     KNOWN_RUBIES = [1.9, 2.0, 2.1, 2.2, 2.3].freeze
+    OBSOLETE_COPS = {
+      'Style/TrailingComma' =>
+        'The `Style/TrailingComma` cop no longer exists. Please use ' \
+        '`Style/TrailingCommaInLiteral` and/or ' \
+        '`Style/TrailingCommaInArguments` instead.',
+      'Rails/DefaultScope' =>
+        'The `Rails/DefaultScope` cop no longer exists.',
+      'Style/SingleSpaceBeforeFirstArg' =>
+        'The `Style/SingleSpaceBeforeFirstArg` cop has been renamed to ' \
+        '`Style/SpaceBeforeFirstArg. ',
+      'Lint/SpaceBeforeFirstArg' =>
+        'The `Lint/SpaceBeforeFirstArg` cop has been removed, since it was a ' \
+        'duplicate of `Style/SpaceBeforeFirstArg`. Please use ' \
+        '`Style/SpaceBeforeFirstArg` instead.',
+      'Style/SpaceAfterControlKeyword' =>
+        'The `Style/SpaceAfterControlKeyword` cop has been removed. Please ' \
+        'use `Style/SpaceAroundKeyword` instead.',
+      'Style/SpaceBeforeModifierKeyword' =>
+        'The `Style/SpaceBeforeModifierKeyword` cop has been removed. Please ' \
+        'use `Style/SpaceAroundKeyword` instead.'
+    }.freeze
 
     attr_reader :loaded_path
 
@@ -246,12 +267,11 @@ module RuboCop
     end
 
     def reject_obsolete_cops
-      if key?('Style/TrailingComma')
-        fail ValidationError, 'The `Style/TrailingComma` cop no longer ' \
-                              'exists. Please use ' \
-                              '`Style/TrailingCommaInLiteral` and/or ' \
-                              "`Style/TrailingCommaInArguments` instead.\n" \
-                              "(configuration found in #{loaded_path})"
+      OBSOLETE_COPS.each do |cop_name, message|
+        next unless key?(cop_name) || key?(cop_name.split('/').last)
+        message += "\n(obsolete configuration found in #{loaded_path}, please" \
+                   ' update it)'
+        fail ValidationError, message
       end
     end
 
