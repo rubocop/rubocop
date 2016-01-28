@@ -7,8 +7,8 @@ module RuboCop
     attr_reader :pos, :type, :text
 
     def self.from_parser_token(parser_token)
-      type, details = *parser_token
-      text, range = *details
+      type, details = parser_token
+      text, range = details
       new(range, type, text)
     end
 
