@@ -26,7 +26,7 @@ module RuboCop
 
           ast_with_comments = processed_source.ast_with_comments
           return if associated_comment?(node, ast_with_comments)
-          return if nodoc?(node, ast_with_comments)
+          return if nodoc_comment?(node, ast_with_comments)
           add_offense(node, :keyword, format(MSG, :class))
         end
 
@@ -36,7 +36,7 @@ module RuboCop
 
           ast_with_comments = processed_source.ast_with_comments
           return if associated_comment?(node, ast_with_comments)
-          return if nodoc?(node, ast_with_comments)
+          return if nodoc_comment?(node, ast_with_comments)
           add_offense(node, :keyword, format(MSG, :module))
         end
 
@@ -83,7 +83,7 @@ module RuboCop
         # proceeds to check its ancestors for :nodoc: all.
         # Note: How end-of-line comments are associated with code changed in
         # parser-2.2.0.4.
-        def nodoc?(node, ast_with_comments, require_all = false)
+        def nodoc_comment?(node, ast_with_comments, require_all = false)
           return false unless node
           nodoc_node = node.children.first
           return false unless nodoc_node
@@ -94,7 +94,7 @@ module RuboCop
             return true if comment.text =~ regex
           end
 
-          nodoc?(node.ancestors.first, ast_with_comments, true)
+          nodoc_comment?(node.ancestors.first, ast_with_comments, true)
         end
       end
     end
