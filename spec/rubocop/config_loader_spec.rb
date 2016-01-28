@@ -453,7 +453,8 @@ describe RuboCop::ConfigLoader do
 
     context 'when no config file exists for the target file' do
       it 'is disabled' do
-        expect(config.cop_enabled?('Style/SymbolArray')).to be_falsey
+        expect(
+          config.cop_enabled?(RuboCop::Cop::Style::SymbolArray)).to be_falsey
       end
     end
 
@@ -463,7 +464,8 @@ describe RuboCop::ConfigLoader do
                       'Metrics/LineLength:',
                       '  Max: 80'
                     ])
-        expect(config.cop_enabled?('Style/SymbolArray')).to be_falsey
+        expect(
+          config.cop_enabled?(RuboCop::Cop::Style::SymbolArray)).to be_falsey
       end
     end
 
@@ -473,7 +475,8 @@ describe RuboCop::ConfigLoader do
                       'Style/SymbolArray:',
                       '  Enabled: true'
                     ])
-        expect(config.cop_enabled?('Style/SymbolArray')).to be_truthy
+        expect(
+          config.cop_enabled?(RuboCop::Cop::Style::SymbolArray)).to be_truthy
       end
     end
   end
