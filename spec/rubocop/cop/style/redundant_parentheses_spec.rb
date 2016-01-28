@@ -143,4 +143,16 @@ describe RuboCop::Cop::Style::RedundantParentheses do
     inspect_source(cop, 'if x; y else (1)end')
     expect(cop.offenses).to be_empty
   end
+
+  context 'when a hash literal is the first argument in a method call' do
+    it 'accepts parentheses if the argument list is not parenthesized ' do
+      inspect_source(cop, 'x ({ y: 1 }), z')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense if the argument list is parenthesized ' do
+      inspect_source(cop, 'x(({ y: 1 }), z)')
+      expect(cop.offenses.size).to eq 1
+    end
+  end
 end
