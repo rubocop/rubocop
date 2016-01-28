@@ -143,8 +143,6 @@ module RuboCop
     def each_ancestor(*types, &block)
       return to_enum(__method__, *types) unless block_given?
 
-      types.flatten!
-
       if types.empty?
         visit_ancestors(&block)
       else
@@ -186,8 +184,6 @@ module RuboCop
     def each_child_node(*types)
       return to_enum(__method__, *types) unless block_given?
 
-      types.flatten!
-
       children.each do |child|
         next unless child.is_a?(Node)
         yield child if types.empty? || types.include?(child.type)
@@ -224,8 +220,6 @@ module RuboCop
     # @return [Enumerator] if no block is given
     def each_descendant(*types, &block)
       return to_enum(__method__, *types) unless block_given?
-
-      types.flatten!
 
       if types.empty?
         visit_descendants(&block)
