@@ -26,7 +26,8 @@ module RuboCop
             next if nested.method_args.empty? ||
                     parenthesized_call?(nested) ||
                     operator?(nested.method_name) ||
-                    rspec_matcher?(node, nested)
+                    rspec_matcher?(node, nested) ||
+                    nested.asgn_method_call?
             add_offense(nested, nested.source_range, format(MSG, nested.source))
           end
         end

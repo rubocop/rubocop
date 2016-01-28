@@ -76,4 +76,12 @@ describe RuboCop::Cop::Style::NestedParenthesizedCalls do
       expect(cop.offenses).to be_empty
     end
   end
+
+  context 'on a call to a setter method' do
+    let(:source) { 'expect(object1.attr = 1).to eq 1' }
+
+    it "doesn't register an offense" do
+      expect(cop.offenses).to be_empty
+    end
+  end
 end
