@@ -361,7 +361,7 @@ module RuboCop
 
     def asgn_method_call?
       !COMPARISON_OPERATORS.include?(method_name) &&
-        method_name.to_s.end_with?('=')
+        method_name.to_s.end_with?('='.freeze)
     end
 
     def_matcher :equals_asgn?, '{lvasgn ivasgn cvasgn gvasgn casgn masgn}'
