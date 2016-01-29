@@ -22,7 +22,8 @@ module RuboCop
         return unless end_loc # Discard modifier forms of if/while/until.
 
         matching = align_ranges.select do |_, range|
-          range.line == end_loc.line || range.column == end_loc.column
+          range.line == end_loc.line ||
+            effective_column(range) == end_loc.column
         end
 
         if matching.key?(style)

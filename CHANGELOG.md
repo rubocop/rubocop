@@ -30,6 +30,7 @@
 * [#2666](https://github.com/bbatsov/rubocop/issues/2666): Fix bug when auto-correcting symbol literals in `Lint/LiteralInInterpolation`. ([@lumeet][])
 * [#2664](https://github.com/bbatsov/rubocop/issues/2664): `Performance/Casecmp` can auto-correct case comparison to variables and method calls without error. ([@rrosenblum][])
 * [#2729](https://github.com/bbatsov/rubocop/issues/2729): Fix handling of hash literal as the first argument in `Style/RedundantParentheses`. ([@lumeet][])
+* [#2703](https://github.com/bbatsov/rubocop/issues/2703): Handle byte order mark in `Style/IndentationWidth`, `Style/ElseAlignment`, `Lint/EndAlignment`, and `Lint/DefEndAlignment`. ([@jonas054][])
 
 ### Changes
 

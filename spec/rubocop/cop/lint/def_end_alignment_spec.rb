@@ -19,6 +19,8 @@ describe RuboCop::Cop::Lint::DefEndAlignment, :config do
      '    end']
   end
 
+  BOM = "\xef\xbb\xbf".freeze
+
   context 'when AlignWith is start_of_line' do
     let(:cop_config) do
       { 'AlignWith' => 'start_of_line', 'AutoCorrect' => true }
@@ -27,8 +29,9 @@ describe RuboCop::Cop::Lint::DefEndAlignment, :config do
     include_examples 'misaligned', '', 'def', 'test',      '  end'
     include_examples 'misaligned', '', 'def', 'Test.test', '  end', 'defs'
 
-    include_examples 'aligned', 'def', 'test',      'end'
-    include_examples 'aligned', 'def', 'Test.test', 'end', 'defs'
+    include_examples 'aligned', "#{BOM}def", 'test',      'end'
+    include_examples 'aligned', 'def',       'test',      'end'
+    include_examples 'aligned', 'def',       'Test.test', 'end', 'defs'
 
     context 'in ruby 2.1 or later' do
       include_examples 'aligned', 'foo def', 'test', 'end'
