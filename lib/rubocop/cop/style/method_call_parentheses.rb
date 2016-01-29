@@ -35,7 +35,7 @@ module RuboCop
         def same_name_assignment?(node)
           _receiver, method_name, *_args = *node
 
-          node.each_ancestor(ASGN_NODES).any? do |asgn_node|
+          node.each_ancestor(*ASGN_NODES).any? do |asgn_node|
             if asgn_node.masgn_type?
               mlhs_node, _mrhs_node = *asgn_node
               asgn_node = mlhs_node.children[node.sibling_index]
