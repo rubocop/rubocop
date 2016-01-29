@@ -38,6 +38,8 @@ module RuboCop
       #       :b
       #     ]
       class MultilineArrayBraceLayout < Cop
+        include MultilineLiteralBraceLayout
+
         SAME_LINE_MESSAGE = 'Closing array brace must be on the same line as ' \
           'the last array element when opening brace is on the same line as ' \
           'the first array element.'.freeze
@@ -47,47 +49,7 @@ module RuboCop
           'from the first array element.'.freeze
 
         def on_array(node)
-          return unless node.loc.begin # Ignore implicit arrays.
-          return if node.children.empty? # Ignore empty arrays.
-
-          if opening_brace_on_same_line?(node)
-            return if closing_brace_on_same_line?(node)
-
-            add_offense(node, :expression, SAME_LINE_MESSAGE)
-          else
-            return unless closing_brace_on_same_line?(node)
-
-            add_offense(node, :expression, NEW_LINE_MESSAGE)
-          end
-        end
-
-        def autocorrect(node)
-          if closing_brace_on_same_line?(node)
-            lambda do |corrector|
-              corrector.insert_before(node.loc.end, "\n".freeze)
-            end
-          else
-            range = Parser::Source::Range.new(
-              node.source_range.source_buffer,
-              node.children.last.source_range.end_pos,
-              node.loc.end.begin_pos)
-
-            ->(corrector) { corrector.remove(range) }
-          end
-        end
-
-        private
-
-        # This method depends on the fact that we have guarded
-        # against implicit and empty arrays.
-        def opening_brace_on_same_line?(node)
-          node.loc.begin.line == node.children.first.loc.first_line
-        end
-
-        # This method depends on the fact that we have guarded
-        # against implicit and empty arrays.
-        def closing_brace_on_same_line?(node)
-          node.loc.end.line == node.children.last.loc.last_line
+          check_brace_layout(node)
         end
       end
     end
