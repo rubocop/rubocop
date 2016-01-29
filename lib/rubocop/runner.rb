@@ -181,7 +181,7 @@ module RuboCop
       checksum = processed_source.checksum
 
       if @processed_sources.include?(checksum)
-        fail InfiniteCorrectionLoop.new(processed_source.path, offenses)
+        raise InfiniteCorrectionLoop.new(processed_source.path, offenses)
       end
 
       @processed_sources << checksum

@@ -71,7 +71,7 @@ module RuboCop
                        when Parser::AST::Node
                          arg.source_range
                        else
-                         fail ArgumentError, "Invalid argument #{arg}"
+                         raise ArgumentError, "Invalid argument #{arg}"
                        end
 
         source_range.begin.line..source_range.end.line

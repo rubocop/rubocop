@@ -234,7 +234,7 @@ module RuboCop
           when 'key'       then KeyAlignment.new
           when 'table'     then TableAlignment.new
           when 'separator' then SeparatorAlignment.new
-          else fail "Unknown #{key}: #{cop_config[key]}"
+          else raise "Unknown #{key}: #{cop_config[key]}"
           end
         end
 

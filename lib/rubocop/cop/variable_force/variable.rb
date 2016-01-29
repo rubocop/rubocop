@@ -17,9 +17,9 @@ module RuboCop
 
         def initialize(name, declaration_node, scope)
           unless VARIABLE_DECLARATION_TYPES.include?(declaration_node.type)
-            fail ArgumentError,
-                 "Node type must be any of #{VARIABLE_DECLARATION_TYPES}, " \
-                 "passed #{declaration_node.type}"
+            raise ArgumentError,
+                  "Node type must be any of #{VARIABLE_DECLARATION_TYPES}, " \
+                  "passed #{declaration_node.type}"
           end
 
           @name = name.to_sym

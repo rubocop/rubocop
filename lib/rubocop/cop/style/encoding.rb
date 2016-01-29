@@ -40,7 +40,7 @@ module RuboCop
               corrector.insert_before(range, "#{encoding}\n")
             end
           else
-            fail "#{encoding} does not match #{ENCODING_PATTERN}"
+            raise "#{encoding} does not match #{ENCODING_PATTERN}"
           end
         end
 

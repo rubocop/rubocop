@@ -78,7 +78,7 @@ module RuboCop
       puts RuboCop::Version.version(false) if @options[:version]
       puts RuboCop::Version.version(true) if @options[:verbose_version]
       print_available_cops if @options[:show_cops]
-      fail Finished
+      raise Finished
     end
 
     def apply_default_formatter

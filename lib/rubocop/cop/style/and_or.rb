@@ -91,7 +91,7 @@ module RuboCop
             elsif node.loc.selector.source == 'not'
               return correct_other(node, corrector)
             else
-              fail 'unrecognized unary negation operator'
+              raise 'unrecognized unary negation operator'
             end
           end
           return unless correctable_send?(node)

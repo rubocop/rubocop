@@ -21,9 +21,9 @@ module RuboCop
         def initialize(node)
           # Accept any node type for top level scope
           unless SCOPE_TYPES.include?(node.type) || !node.parent
-            fail ArgumentError,
-                 "Node type must be any of #{SCOPE_TYPES}, " \
-                 "passed #{node.type}"
+            raise ArgumentError,
+                  "Node type must be any of #{SCOPE_TYPES}, " \
+                  "passed #{node.type}"
           end
           @node = node
           @variables = {}

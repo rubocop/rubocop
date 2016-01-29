@@ -31,7 +31,7 @@ module RuboCop
 
         def validate_config
           if style == :percent && target_ruby_version < 2.0
-            fail ValidationError, 'The default `percent` style for the ' \
+            raise ValidationError, 'The default `percent` style for the ' \
                                   '`Style/SymbolArray` cop is only compatible' \
                                   ' with Ruby 2.0 and up, but the target Ruby' \
                                   " version for your project is 1.9.\nPlease " \

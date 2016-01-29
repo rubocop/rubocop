@@ -278,7 +278,7 @@ describe RuboCop::CLI, :isolated_environment do
               'elsif baz',
               '  other_thing',
               'else',
-              '  fail',
+              '  raise',
               'end']
     create_file('example.rb', source)
     expect(cli.run(%w(--only IndentationWidth --auto-correct))).to eq(0)
@@ -287,7 +287,7 @@ describe RuboCop::CLI, :isolated_environment do
                  'elsif baz',
                  '  other_thing',
                  'else',
-                 '  fail',
+                 '  raise',
                  'end',
                  ''].join("\n")
     expect(IO.read('example.rb')).to eq(corrected)
@@ -576,19 +576,19 @@ describe RuboCop::CLI, :isolated_environment do
                                   ''].join("\n"))
   end
 
-  # In this example, the auto-correction (changing "raise" to "fail")
+  # In this example, the auto-correction (changing "fail" to "raise")
   # creates a new problem (alignment of parameters), which is also
   # corrected automatically.
   it 'can correct a problems and the problem it creates' do
     create_file('example.rb',
                 ['# encoding: utf-8',
-                 'raise NotImplementedError,',
-                 "      'Method should be overridden in child classes'"])
+                 'fail NotImplementedError,',
+                 "     'Method should be overridden in child classes'"])
     expect(cli.run(['--auto-correct'])).to eq(0)
     expect(IO.read('example.rb'))
       .to eq(['# encoding: utf-8',
-              'fail NotImplementedError,',
-              "     'Method should be overridden in child classes'",
+              'raise NotImplementedError,',
+              "      'Method should be overridden in child classes'",
               ''].join("\n"))
     expect($stdout.string)
       .to eq(['Inspecting 1 file',
@@ -596,14 +596,14 @@ describe RuboCop::CLI, :isolated_environment do
               '',
               'Offenses:',
               '',
-              'example.rb:2:1: C: [Corrected] Use fail instead of ' \
-              'raise to signal exceptions.',
-              'raise NotImplementedError,',
-              '^^^^^',
-              'example.rb:3:7: C: [Corrected] Align the parameters of a ' \
+              'example.rb:2:1: C: [Corrected] Always use raise ' \
+              'to signal exceptions.',
+              'fail NotImplementedError,',
+              '^^^^',
+              'example.rb:3:6: C: [Corrected] Align the parameters of a ' \
               'method call if they span more than one line.',
-              "      'Method should be overridden in child classes'",
-              '      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',
+              "     'Method should be overridden in child classes'",
+              '     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^',
               '',
               '1 file inspected, 2 offenses detected, 2 offenses ' \
               'corrected',

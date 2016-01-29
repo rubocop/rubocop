@@ -179,7 +179,7 @@ module RuboCop
               when 'no_offense.rb'
                 expect(offenses).to be_empty
               else
-                fail
+                raise
               end
               expect(offenses.all? { |o| o.is_a?(RuboCop::Cop::Offense) })
                 .to be_truthy

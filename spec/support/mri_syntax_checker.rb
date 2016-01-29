@@ -43,7 +43,7 @@ module MRISyntaxChecker
   end
 
   def check_syntax(source)
-    fail 'Must be running with MRI' unless RUBY_ENGINE == 'ruby'
+    raise 'Must be running with MRI' unless RUBY_ENGINE == 'ruby'
 
     stdin, stderr, thread = nil
 

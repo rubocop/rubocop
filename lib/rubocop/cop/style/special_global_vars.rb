@@ -89,7 +89,7 @@ module RuboCop
             elsif !english.empty?
               format(MSG_ENGLISH, english_msg, global_var)
             else
-              fail 'Bug in SpecialGlobalVars - global var w/o preferred vars!'
+              raise 'Bug in SpecialGlobalVars - global var w/o preferred vars!'
             end
           else
             format(MSG_REGULAR, preferred_names(global_var).first, global_var)

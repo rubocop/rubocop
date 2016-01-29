@@ -57,7 +57,7 @@ task :bench_cop, [:cop, :srcpath, :times] do |_task, args|
                   klass.cop_name[/[a-zA-Z]+$/] == cop_name
                 end
               end
-  fail "No such cop: #{cop_name}" if cop_class.nil?
+  raise "No such cop: #{cop_name}" if cop_class.nil?
 
   config = ConfigLoader.load_file(ConfigLoader::DEFAULT_FILE)
   cop = cop_class.new(config)

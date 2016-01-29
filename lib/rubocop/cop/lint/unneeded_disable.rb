@@ -128,7 +128,7 @@ module RuboCop
         def cop_range(comment, cop)
           matching_range(comment.loc.expression, cop) ||
             matching_range(comment.loc.expression, cop.split('/').last) ||
-            fail("Couldn't find #{cop} in comment: #{comment.text}")
+            raise("Couldn't find #{cop} in comment: #{comment.text}")
         end
 
         def matching_range(haystack, needle)

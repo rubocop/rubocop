@@ -121,7 +121,7 @@ module RuboCop
         require 'parser/ruby23'
         Parser::Ruby23
       else
-        fail ArgumentError, "Unknown Ruby version: #{ruby_version.inspect}"
+        raise ArgumentError, "Unknown Ruby version: #{ruby_version.inspect}"
       end
     end
 

@@ -383,7 +383,7 @@ describe RuboCop::CLI, :isolated_environment do
     context 'via the cli option' do
       describe '--only-guide-cops' do
         it 'skips cops that have no link to a style guide' do
-          create_file('example.rb', 'fail')
+          create_file('example.rb', 'raise')
           create_file('.rubocop.yml', ['Metrics/LineLength:',
                                        '  Enabled: true',
                                        '  StyleGuide: ~',
@@ -394,7 +394,7 @@ describe RuboCop::CLI, :isolated_environment do
         end
 
         it 'runs cops for rules that link to a style guide' do
-          create_file('example.rb', 'fail')
+          create_file('example.rb', 'raise')
           create_file('.rubocop.yml', ['Metrics/LineLength:',
                                        '  Enabled: true',
                                        '  StyleGuide: "http://an.example/url"',
@@ -405,14 +405,14 @@ describe RuboCop::CLI, :isolated_environment do
 
           expect($stdout.string)
             .to eq(['== example.rb ==',
-                    'C:  1:  3: Line is too long. [4/2]',
+                    'C:  1:  3: Line is too long. [5/2]',
                     '',
                     '1 file inspected, 1 offense detected',
                     ''].join("\n"))
         end
 
         it 'overrides configuration of AllCops/StyleGuideCopsOnly' do
-          create_file('example.rb', 'fail')
+          create_file('example.rb', 'raise')
           create_file('.rubocop.yml', ['AllCops:',
                                        '  StyleGuideCopsOnly: false',
                                        'Metrics/LineLength:',
@@ -428,7 +428,7 @@ describe RuboCop::CLI, :isolated_environment do
 
     context 'via the config' do
       before do
-        create_file('example.rb', 'do_something or fail')
+        create_file('example.rb', 'do_something or raise')
         create_file('.rubocop.yml',
                     ['AllCops:',
                      "  StyleGuideCopsOnly: #{guide_cops_only}",

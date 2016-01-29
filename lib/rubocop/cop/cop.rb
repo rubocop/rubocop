@@ -32,8 +32,9 @@ module RuboCop
         case found_ns.size
         when 0 then name # No namespace found. Deal with it later in caller.
         when 1 then cop_name_with_namespace(name, origin, basename, found_ns[0])
-        else fail AmbiguousCopName, "Ambiguous cop name `#{basename}` used in" \
-                                    "#{origin} needs namespace qualifier."
+        else raise AmbiguousCopName,
+                   "Ambiguous cop name `#{basename}` used in" \
+                   "#{origin} needs namespace qualifier."
         end
       end
 

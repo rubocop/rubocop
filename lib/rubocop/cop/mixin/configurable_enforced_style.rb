@@ -80,7 +80,7 @@ module RuboCop
         @enforced_style ||= begin
           s = cop_config[parameter_name].to_sym
           unless supported_styles.include?(s)
-            fail "Unknown style #{s} selected!"
+            raise "Unknown style #{s} selected!"
           end
           s
         end
@@ -88,7 +88,7 @@ module RuboCop
 
       def alternative_style
         if supported_styles.size != 2
-          fail 'alternative_style can only be used when there are exactly ' \
+          raise 'alternative_style can only be used when there are exactly ' \
                '2 SupportedStyles'
         end
         (supported_styles - [style]).first

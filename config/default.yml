@@ -733,7 +733,7 @@ Style/Semicolon:
   AllowAsExpressionSeparator: false
 
 Style/SignalException:
-  EnforcedStyle: semantic
+  EnforcedStyle: only_raise
   SupportedStyles:
     - only_raise
     - only_fail

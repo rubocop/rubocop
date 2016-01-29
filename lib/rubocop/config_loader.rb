@@ -150,7 +150,7 @@ module RuboCop
         puts "configuration from #{absolute_path}" if debug?
 
         unless hash.is_a?(Hash)
-          fail(TypeError, "Malformed configuration in #{absolute_path}")
+          raise(TypeError, "Malformed configuration in #{absolute_path}")
         end
 
         hash
@@ -179,8 +179,8 @@ module RuboCop
       def resolve_inheritance_from_gems(hash, gems)
         (gems || {}).each_pair do |gem_name, config_path|
           if gem_name == 'rubocop'
-            fail ArgumentError,
-                 "can't inherit configuration from the rubocop gem"
+            raise ArgumentError,
+                  "can't inherit configuration from the rubocop gem"
           end
 
           hash['inherit_from'] = Array(hash['inherit_from'])
@@ -214,8 +214,9 @@ module RuboCop
       end
 
       def old_auto_config_file_warning
-        fail RuboCop::Error, 'rubocop-todo.yml is obsolete; it must be called' \
-                             " #{AUTO_GENERATED_FILE} instead"
+        raise RuboCop::Error,
+              'rubocop-todo.yml is obsolete; it must be called' \
+              " #{AUTO_GENERATED_FILE} instead"
       end
     end
   end

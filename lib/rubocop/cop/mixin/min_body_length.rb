@@ -13,7 +13,7 @@ module RuboCop
         length = cop_config['MinBodyLength'] || 1
         return length if length.is_a?(Integer) && length > 0
 
-        fail 'MinBodyLength needs to be a positive integer!'
+        raise 'MinBodyLength needs to be a positive integer!'
       end
     end
   end

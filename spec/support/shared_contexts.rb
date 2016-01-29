@@ -39,7 +39,7 @@ shared_context 'config', :config do
   let(:config) do
     # Module#<
     unless described_class < RuboCop::Cop::Cop
-      fail '`config` must be used in `describe SomeCopClass do .. end`'
+      raise '`config` must be used in `describe SomeCopClass do .. end`'
     end
 
     hash = { 'AllCops' => { 'TargetRubyVersion' => ruby_version } }

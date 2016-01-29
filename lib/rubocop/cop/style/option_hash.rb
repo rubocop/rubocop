@@ -49,7 +49,7 @@ module RuboCop
 
         def validate_config
           if target_ruby_version < 2.0
-            fail ValidationError, 'The `Style/OptionHash` cop is only ' \
+            raise ValidationError, 'The `Style/OptionHash` cop is only ' \
                                   'compatible with Ruby 2.0 and up, but the ' \
                                   'target Ruby version for your project is ' \
                                   "1.9.\nPlease disable this cop or adjust " \

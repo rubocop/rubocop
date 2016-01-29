@@ -14,12 +14,12 @@ module CopHelper
 
   def inspect_source(cop, source, file = nil)
     if source.is_a?(Array) && source.size == 1
-      fail "Don't use an array for a single line of code: #{source}"
+      raise "Don't use an array for a single line of code: #{source}"
     end
     RuboCop::Formatter::DisabledConfigFormatter.config_to_allow_offenses = {}
     RuboCop::Formatter::DisabledConfigFormatter.detected_styles = {}
     processed_source = parse_source(source, file)
-    fail 'Error parsing example code' unless processed_source.valid_syntax?
+    raise 'Error parsing example code' unless processed_source.valid_syntax?
     _investigate(cop, processed_source)
   end
 

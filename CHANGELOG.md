@@ -34,6 +34,7 @@
 * Remove `Style/SpaceAfterControlKeyword` and `Style/SpaceBeforeModifierKeyword` as the more generic `Style/SpaceAroundKeyword` handles the same cases. ([@lumeet][])
 * Handle comparisons with `!=` in `Performance/casecmp`. ([@segiddins][])
 * [#2684](https://github.com/bbatsov/rubocop/pull/2684): Do not base `Style/FrozenStringLiteralComment` on the version of Ruby that is running. ([@rrosenblum][])
+* [#2732](https://github.com/bbatsov/rubocop/issues/2732): Change the default style of `Style/SignalException` to `only_raise`. ([@bbatsov][])
 
 ## 0.36.0 (14/01/2016)
 

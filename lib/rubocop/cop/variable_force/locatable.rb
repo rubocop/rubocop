@@ -23,11 +23,11 @@ module RuboCop
         NON_FOR_LOOP_TYPES_CHILD_INDEX = 1
 
         def node
-          fail '#node must be declared!'
+          raise '#node must be declared!'
         end
 
         def scope
-          fail '#scope must be declared!'
+          raise '#scope must be declared!'
         end
 
         def inside_of_branch?
@@ -91,7 +91,7 @@ module RuboCop
           when ENSURE_TYPE             then ensure_body_name
           when *LOGICAL_OPERATOR_TYPES then logical_operator_body_name
           when *LOOP_TYPES             then loop_body_name
-          else fail InvalidBranchBodyError
+          else raise InvalidBranchBodyError
           end
         rescue InvalidBranchBodyError
           raise InvalidBranchBodyError,
@@ -104,7 +104,7 @@ module RuboCop
           case body_index
           when 1 then 'true'
           when 2 then 'false'
-          else fail InvalidBranchBodyError
+          else raise InvalidBranchBodyError
           end
         end
 
@@ -119,7 +119,7 @@ module RuboCop
         def logical_operator_body_name
           case body_index
           when 1 then 'right'
-          else fail InvalidBranchBodyError
+          else raise InvalidBranchBodyError
           end
         end
 
@@ -136,14 +136,14 @@ module RuboCop
         def ensure_body_name
           case body_index
           when 0 then 'main'
-          else fail InvalidBranchBodyError
+          else raise InvalidBranchBodyError
           end
         end
 
         def loop_body_name
           loop_indices = [FOR_LOOP_CHILD_INDEX, NON_FOR_LOOP_TYPES_CHILD_INDEX]
 
-          fail InvalidBranchBodyError unless loop_indices.include?(body_index)
+          raise InvalidBranchBodyError unless loop_indices.include?(body_index)
 
           'main'
         end

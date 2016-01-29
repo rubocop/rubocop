@@ -407,7 +407,7 @@ module RuboCop
       end
 
       def fail_due_to(message)
-        fail Invalid, "Couldn't compile due to #{message}. Pattern: #{@string}"
+        raise Invalid, "Couldn't compile due to #{message}. Pattern: #{@string}"
       end
     end
 

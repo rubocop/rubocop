@@ -146,7 +146,7 @@ module RuboCop
           case cop_config['EnforcedStyleForEmptyBraces']
           when 'space'    then :space
           when 'no_space' then :no_space
-          else fail 'Unknown EnforcedStyleForEmptyBraces selected!'
+          else raise 'Unknown EnforcedStyleForEmptyBraces selected!'
           end
         end
 

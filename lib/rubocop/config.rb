@@ -199,9 +199,9 @@ module RuboCop
     def warn_about_unrecognized_cops(invalid_cop_names)
       invalid_cop_names.each do |name|
         if name == 'Syntax'
-          fail ValidationError,
-               "configuration for Syntax cop found in #{loaded_path}\n" \
-               'This cop cannot be configured.'
+          raise ValidationError,
+                "configuration for Syntax cop found in #{loaded_path}\n" \
+                'This cop cannot be configured.'
         end
 
         # There could be a custom cop with this name. If so, don't warn
@@ -214,7 +214,7 @@ module RuboCop
 
     def validate_section_presence(name)
       return unless key?(name) && self[name].nil?
-      fail ValidationError, "empty section #{name} found in #{loaded_path}"
+      raise ValidationError, "empty section #{name} found in #{loaded_path}"
     end
 
     def validate_parameter_names(valid_cop_names)
@@ -239,7 +239,7 @@ module RuboCop
         msg = "invalid EnforcedStyle '#{style}' for #{name} found in " \
               "#{loaded_path}\n" \
               "Valid choices are: #{valid.join(', ')}"
-        fail ValidationError, msg
+        raise ValidationError, msg
       end
     end
 
@@ -256,7 +256,7 @@ module RuboCop
 
     def check_obsolete_parameter(cop, parameter, alternative = nil)
       if key?(cop) && self[cop].key?(parameter)
-        fail ValidationError, "obsolete parameter #{parameter} (for #{cop}) " \
+        raise ValidationError, "obsolete parameter #{parameter} (for #{cop}) " \
                               "found in #{loaded_path}" \
                               "#{"\n" if alternative}#{alternative}"
       end
@@ -267,7 +267,7 @@ module RuboCop
         next unless key?(cop_name) || key?(cop_name.split('/').last)
         message += "\n(obsolete configuration found in #{loaded_path}, please" \
                    ' update it)'
-        fail ValidationError, message
+        raise ValidationError, message
       end
     end
 
@@ -276,7 +276,7 @@ module RuboCop
       return unless target
 
       unless KNOWN_RUBIES.include?(target)
-        fail ValidationError, "Unknown Ruby version #{target.inspect} found " \
+        raise ValidationError, "Unknown Ruby version #{target.inspect} found " \
                               'in `TargetRubyVersion` parameter (in ' \
                               "#{loaded_path}).\nKnown versions: " \
                               "#{KNOWN_RUBIES.join(', ')}"

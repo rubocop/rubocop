@@ -23,7 +23,7 @@ module RuboCop
       @validator.validate_compatibility
 
       if @options[:stdin] && !args.one?
-        fail ArgumentError, '-s/--stdin requires exactly one path.'
+        raise ArgumentError, '-s/--stdin requires exactly one path.'
       end
 
       [@options, args]
@@ -170,7 +170,7 @@ module RuboCop
         next if namespaces.include?(name)
         next if %w(Syntax Lint/Syntax).include?(name)
 
-        fail ArgumentError, "Unrecognized cop or namespace: #{name}."
+        raise ArgumentError, "Unrecognized cop or namespace: #{name}."
       end
     end
 
@@ -181,36 +181,36 @@ module RuboCop
     def validate_compatibility
       if @options.key?(:only) &&
          (@options[:only] & %w(Lint/UnneededDisable UnneededDisable)).any?
-        fail ArgumentError, 'Lint/UnneededDisable can not be used with --only.'
+        raise ArgumentError, 'Lint/UnneededDisable can not be used with --only.'
       end
       if @options.key?(:except) &&
          (@options[:except] & %w(Lint/Syntax Syntax)).any?
-        fail ArgumentError, 'Syntax checking can not be turned off.'
+        raise ArgumentError, 'Syntax checking can not be turned off.'
       end
       if @options.key?(:cache) && !%w(true false).include?(@options[:cache])
-        fail ArgumentError, '-C/--cache argument must be true or false'
+        raise ArgumentError, '-C/--cache argument must be true or false'
       end
       if @options.key?(:no_offense_counts) && !@options.key?(:auto_gen_config)
-        fail ArgumentError, '--no-offense-counts can only be used together ' \
+        raise ArgumentError, '--no-offense-counts can only be used together ' \
                             'with --auto-gen-config.'
       end
       return if (incompat = @options.keys & Options::EXITING_OPTIONS).size <= 1
-      fail ArgumentError, "Incompatible cli options: #{incompat.inspect}"
+      raise ArgumentError, "Incompatible cli options: #{incompat.inspect}"
     end
 
     def validate_exclude_limit_option(args)
       if @options[:exclude_limit] !~ /^\d+$/
         # Emulate OptionParser's behavior to make failures consistent regardless
         # of option order.
-        fail OptionParser::MissingArgument
+        raise OptionParser::MissingArgument
       end
 
       # --exclude-limit is valid if there's a parsed or yet unparsed
       # --auto-gen-config.
       return if @options[:auto_gen_config] || args.include?('--auto-gen-config')
 
-      fail ArgumentError,
-           '--exclude-limit can only be used with --auto-gen-config.'
+      raise ArgumentError,
+            '--exclude-limit can only be used with --auto-gen-config.'
     end
   end
 

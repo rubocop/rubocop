@@ -18,9 +18,9 @@ module RuboCop
 
         def initialize(node, scope)
           unless VARIABLE_REFERENCE_TYPES.include?(node.type)
-            fail ArgumentError,
-                 "Node type must be any of #{VARIABLE_REFERENCE_TYPES}, " \
-                 "passed #{node.type}"
+            raise ArgumentError,
+                  "Node type must be any of #{VARIABLE_REFERENCE_TYPES}, " \
+                  "passed #{node.type}"
           end
 
           @node = node
