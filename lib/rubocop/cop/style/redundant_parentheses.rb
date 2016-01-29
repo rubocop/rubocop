@@ -28,22 +28,28 @@ module RuboCop
 
           child_node = node.children.first
           return if keyword_ancestor?(node) && parens_required?(node)
+          return if child_node.hash_type? && first_argument?(node) &&
+                    !parentheses?(node.parent)
 
-          if keyword_with_redundant_parentheses?(child_node)
-            return offense(node, 'a keyword')
-          end
-          return offense(node, 'a literal') if disallowed_literal?(child_node)
-          return offense(node, 'a variable') if child_node.variable?
-          return offense(node, 'a constant') if child_node.const_type?
-          check_send(child_node, node) if child_node.send_type?
+          check(node, child_node)
         end
 
-        def check_send(child_node, node)
-          if child_node.unary_operation?
-            offense(node, 'an unary operation') unless node.chained?
+        def check(begin_node, node)
+          if keyword_with_redundant_parentheses?(node)
+            return offense(begin_node, 'a keyword')
+          end
+          return offense(begin_node, 'a literal') if disallowed_literal?(node)
+          return offense(begin_node, 'a variable') if node.variable?
+          return offense(begin_node, 'a constant') if node.const_type?
+          check_send(begin_node, node) if node.send_type?
+        end
+
+        def check_send(begin_node, node)
+          if node.unary_operation?
+            offense(begin_node, 'an unary operation') unless begin_node.chained?
           else
-            return unless method_call_with_redundant_parentheses?(child_node)
-            offense(node, 'a method call')
+            return unless method_call_with_redundant_parentheses?(node)
+            offense(begin_node, 'a method call')
           end
         end
 
@@ -80,6 +86,14 @@ module RuboCop
           send_node, args = method_node_and_args(node)
 
           args.empty? || parentheses?(send_node) || square_brackets?(send_node)
+        end
+
+        def first_argument?(node)
+          send_node = node.parent
+          return false unless send_node && send_node.send_type?
+
+          _receiver, _method_name, *args = *send_node
+          node == args.first
         end
       end
     end
