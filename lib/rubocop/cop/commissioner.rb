@@ -11,7 +11,7 @@ module RuboCop
       attr_reader :errors
 
       def self.callback_methods
-        Parser::Meta::NODE_TYPES.map { |type| "on_#{type}" }
+        Parser::Meta::NODE_TYPES.map { |type| :"on_#{type}" }
       end
 
       def initialize(cops, forces = [], options = {})
@@ -19,6 +19,14 @@ module RuboCop
         @forces = forces
         @options = options
         reset_errors
+      end
+
+      # In the dynamically generated methods below, a call to `super` is used
+      # to continue iterating over the children of a node.
+      # However, if we know that a certain node type (like `int`) never has
+      # child nodes, there is no reason to pay the cost of calling `super`.
+      no_child_callbacks = Node::Traversal::NO_CHILD_NODES.map do |type|
+        :"on_#{type}"
       end
 
       callback_methods.each do |callback|
@@ -32,8 +40,7 @@ module RuboCop
               end
             end
 
-            #{!RuboCop::Node::Traversal::NO_CHILD_NODES.include?(callback) &&
-              'super'}
+            #{!no_child_callbacks.include?(callback) && 'super'}
           end
         EOS
       end
