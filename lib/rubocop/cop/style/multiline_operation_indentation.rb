@@ -53,7 +53,7 @@ module RuboCop
           return false if not_for_this_cop?(node)
 
           correct_column = if should_align?(node, rhs, given_style)
-                             lhs.loc.column
+                             node.loc.column
                            else
                              indentation(lhs) + correct_indentation(node)
                            end
@@ -62,8 +62,14 @@ module RuboCop
         end
 
         def should_align?(node, rhs, given_style)
+          assignment_node = part_of_assignment_rhs(node, rhs)
+          if assignment_node
+            assignment_rhs = CheckAssignment.extract_rhs(assignment_node)
+            return true if begins_its_line?(assignment_rhs.source_range)
+          end
+
           given_style == :aligned && (kw_node_with_special_indentation(node) ||
-                                      part_of_assignment_rhs(node, rhs) ||
+                                      assignment_node ||
                                       argument_in_method_call(node))
         end
 

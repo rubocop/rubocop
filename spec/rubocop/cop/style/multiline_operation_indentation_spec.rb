@@ -105,6 +105,22 @@ describe RuboCop::Cop::Style::MultilineOperationIndentation do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts two spaces indentation in assignment of local variable' do
+      inspect_source(cop,
+                     ['a =',
+                      "  'foo' +",
+                      "  'bar'"])
+      expect(cop.messages).to be_empty
+    end
+
+    it 'accepts two spaces indentation in assignment of array element' do
+      inspect_source(cop,
+                     ["a['test'] =",
+                      "  'foo' +",
+                      "  'bar'"])
+      expect(cop.messages).to be_empty
+    end
+
     it 'accepts two spaces indentation of second line' do
       inspect_source(cop,
                      ['   a ||',
