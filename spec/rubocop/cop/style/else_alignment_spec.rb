@@ -92,6 +92,22 @@ describe RuboCop::Cop::Style::ElseAlignment do
       expect(cop.offenses).to be_empty
     end
 
+    context 'for a file with byte order mark' do
+      let(:bom) { "\xef\xbb\xbf" }
+
+      it 'accepts a correctly aligned if/elsif/else/end' do
+        inspect_source(cop,
+                       ["#{bom}if a1",
+                        '  b1',
+                        'elsif a2',
+                        '  b2',
+                        'else',
+                        '  c',
+                        'end'])
+        expect(cop.offenses).to be_empty
+      end
+    end
+
     context 'with assignment' do
       context 'when alignment style is variable' do
         context 'and end is aligned with variable' do

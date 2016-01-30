@@ -8,6 +8,7 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
   let(:cop_config) do
     { 'AlignWith' => 'keyword', 'AutoCorrect' => true }
   end
+  BOM = "\xef\xbb\xbf".freeze
 
   include_examples 'misaligned', '', 'class',  'Test',      '  end'
   include_examples 'misaligned', '', 'module', 'Test',      '  end'
@@ -16,6 +17,8 @@ describe RuboCop::Cop::Lint::EndAlignment, :config do
   include_examples 'misaligned', '', 'while',  'test',      '  end'
   include_examples 'misaligned', '', 'until',  'test',      '  end'
   include_examples 'misaligned', '', 'case',   'a when b',  '  end'
+
+  include_examples 'aligned', "#{BOM}class", 'Test', 'end'
 
   include_examples 'aligned', 'class',  'Test',      'end'
   include_examples 'aligned', 'module', 'Test',      'end'

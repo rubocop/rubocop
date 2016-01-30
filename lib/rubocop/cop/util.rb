@@ -9,6 +9,8 @@ module RuboCop
       include PathUtil
       extend RuboCop::Sexp
 
+      BYTE_ORDER_MARK = 0xfeff # The Unicode codepoint
+
       EQUALS_ASGN_NODES = [:lvasgn, :ivasgn, :cvasgn, :gvasgn,
                            :casgn, :masgn].freeze
       SHORTHAND_ASGN_NODES = [:op_asgn, :or_asgn, :and_asgn].freeze
@@ -112,6 +114,19 @@ module RuboCop
         end_pos = begin_pos + length
 
         Parser::Source::Range.new(source_buffer, begin_pos, end_pos)
+      end
+
+      # Returns the column attribute of the range, except if the range is on
+      # the first line and there's a byte order mark at the beginning of that
+      # line, in which case 1 is subtracted from the column value. This gives
+      # the column as it appears when viewing the file in an editor.
+      def effective_column(range)
+        if range.line == 1 &&
+           @processed_source.raw_source.codepoints.first == BYTE_ORDER_MARK
+          range.column - 1
+        else
+          range.column
+        end
       end
 
       def range_with_surrounding_comma(range, side = :both, buffer = nil)

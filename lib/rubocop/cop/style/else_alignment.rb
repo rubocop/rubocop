@@ -99,7 +99,7 @@ module RuboCop
         def check_alignment(base_range, else_range)
           return unless begins_its_line?(else_range)
 
-          @column_delta = base_range.column - else_range.column
+          @column_delta = effective_column(base_range) - else_range.column
           return if @column_delta == 0
 
           add_offense(else_range, else_range,

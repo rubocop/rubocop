@@ -22,6 +22,18 @@ describe RuboCop::Cop::Style::IndentationWidth do
   context 'with Width set to 4' do
     let(:cop_config) { { 'Width' => 4 } }
 
+    context 'for a file with byte order mark' do
+      let(:bom) { "\xef\xbb\xbf" }
+
+      it 'accepts correctly indented method definition' do
+        inspect_source(cop, ["#{bom}class Test",
+                             '    def method',
+                             '    end',
+                             'end'])
+        expect(cop.offenses).to be_empty
+      end
+    end
+
     context 'with if statement' do
       it 'registers an offense for bad indentation of an if body' do
         inspect_source(cop,
