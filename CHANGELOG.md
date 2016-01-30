@@ -31,6 +31,7 @@
 * [#2664](https://github.com/bbatsov/rubocop/issues/2664): `Performance/Casecmp` can auto-correct case comparison to variables and method calls without error. ([@rrosenblum][])
 * [#2729](https://github.com/bbatsov/rubocop/issues/2729): Fix handling of hash literal as the first argument in `Style/RedundantParentheses`. ([@lumeet][])
 * [#2703](https://github.com/bbatsov/rubocop/issues/2703): Handle byte order mark in `Style/IndentationWidth`, `Style/ElseAlignment`, `Lint/EndAlignment`, and `Lint/DefEndAlignment`. ([@jonas054][])
+* [#2710](https://github.com/bbatsov/rubocop/pull/2710): Fix handling of fullwidth characters in some cops. ([@seikichi][])
 
 ### Changes
 
@@ -1921,3 +1922,4 @@
 [@drenmi]: https://github.com/drenmi
 [@stormbreakerbg]: https://github.com/stormbreakerbg
 [@owst]: https://github.com/owst
+[@seikichi]: https://github.com/seikichi

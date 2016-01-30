@@ -318,6 +318,13 @@ describe RuboCop::Cop::Style::FirstParameterIndentation do
                                ')'])
           expect(cop.offenses).to be_empty
         end
+
+        it 'accepts a correctly indented first parameter with fullwidth ' \
+           'characters' do
+          inspect_source(cop, ["puts('Ｒｕｂｙ', f(",
+                               '                   a))'])
+          expect(cop.offenses).to be_empty
+        end
       end
 
       context 'without outer parentheses' do

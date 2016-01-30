@@ -44,7 +44,7 @@ module RuboCop
             indentation_of_line = /\S.*/.match(line).begin(0)
             indentation_of_line + configured_indentation_width
           else
-            args.first.loc.column
+            display_column(args.first.source_range)
           end
         end
 

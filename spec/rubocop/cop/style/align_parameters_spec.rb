@@ -47,6 +47,12 @@ describe RuboCop::Cop::Style::AlignParameters do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts correctly aligned parameters with fullwidth characters' do
+      inspect_source(cop, ["f 'Ｒｕｂｙ', g(a,",
+                           '                b)'])
+      expect(cop.offenses).to be_empty
+    end
+
     it 'accepts calls that only span one line' do
       inspect_source(cop, 'find(path, s, @special[sexp[0]])')
       expect(cop.offenses).to be_empty

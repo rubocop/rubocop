@@ -22,13 +22,20 @@ module RuboCop
         SPACE * node.loc.column
       end
 
+      def display_column(range)
+        line = processed_source.lines[range.line - 1]
+        line[0, range.column].display_width
+      end
+
       def check_alignment(items, base_column = nil)
-        base_column ||= items.first.loc.column unless items.empty?
+        unless items.empty?
+          base_column ||= display_column(items.first.source_range)
+        end
         prev_line = -1
         items.each do |current|
           if current.loc.line > prev_line &&
              begins_its_line?(current.source_range)
-            @column_delta = base_column - current.loc.column
+            @column_delta = base_column - display_column(current.source_range)
             if @column_delta != 0
               expr = current.source_range
               if offenses.any? { |o| within?(expr, o.location) }

@@ -40,6 +40,12 @@ describe RuboCop::Cop::Style::AlignArray do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts aligned array with fullwidth characters' do
+    inspect_source(cop, ["puts 'Ｒｕｂｙ', [ a,",
+                         '                   b ]'])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'auto-corrects alignment' do
     new_source = autocorrect_source(cop, ['array = [',
                                           '  a,',

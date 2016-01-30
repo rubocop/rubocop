@@ -11,6 +11,7 @@ require 'powerpack/enumerable/drop_last'
 require 'powerpack/hash/symbolize_keys'
 require 'powerpack/string/blank'
 require 'powerpack/string/strip_indent'
+require 'unicode/display_width'
 
 require 'rubocop/version'
 
