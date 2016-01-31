@@ -112,8 +112,9 @@ module RuboCop
         def line_too_long?(node, body, keyword, condition)
           max    = config.for_cop('Metrics/LineLength')['Max'] || 80
           indent = node.loc.column
+          source = body && body.source || ''
           # 2 is for spaces on left and right of keyword
-          indent + (body.source + keyword + condition.source).length + 2 > max
+          indent + (source + keyword + condition.source).length + 2 > max
         end
       end
     end
