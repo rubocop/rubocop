@@ -217,6 +217,11 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
                                             '  baz',
                                             'end'])
 
+      # CaseWhenSplat requires multiple rounds of correction to avoid
+      # "clobbering errors" from Source::Rewriter
+      cop = described_class.new
+      new_source = autocorrect_source(cop, new_source)
+
       expect(new_source).to eq(['case foo',
                                 'when 5',
                                 '  baz',
@@ -239,6 +244,11 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
                                             'when 6',
                                             '  baz',
                                             'end'])
+
+      # CaseWhenSplat requires multiple rounds of correction to avoid
+      # "clobbering errors" from Source::Rewriter
+      cop = described_class.new
+      new_source = autocorrect_source(cop, new_source)
 
       expect(new_source).to eq(['case foo',
                                 'when 3',

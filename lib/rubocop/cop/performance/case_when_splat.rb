@@ -63,6 +63,11 @@ module RuboCop
         PERCENT_I = '%i'.freeze
         PERCENT_CAPITAL_I = '%I'.freeze
 
+        def initialize(*)
+          super
+          @reordered_splat_condition = false
+        end
+
         def on_case(node)
           _case_branch, *when_branches, _else_branch = *node
           when_conditions =
@@ -85,6 +90,8 @@ module RuboCop
           if variable.array_type?
             correct_array_literal(condition, variable)
           else
+            return if @reordered_splat_condition
+            @reordered_splat_condition = true
             reorder_splat_condition(node)
           end
         end
