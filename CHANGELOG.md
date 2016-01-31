@@ -10,6 +10,7 @@
 
 ### Bug fixes
 
+* [#2674](https://github.com/bbatsov/rubocop/issues/2674): Also check for Hash#update alias in `Performance/RedundantMerge`. ([@drenmi][])
 * [#2630](https://github.com/bbatsov/rubocop/issues/2630): Take frozen string literals into account in `Style/MutableConstant`. ([@segiddins][])
 * [#2642](https://github.com/bbatsov/rubocop/issues/2642): Support assignment via `||=` in `Style/MutableConstant`. ([@segiddins][])
 * [#2646](https://github.com/bbatsov/rubocop/issues/2646): Fix auto-correcting assignment to a constant in `Style/ConditionalAssignment`. ([@segiddins][])
