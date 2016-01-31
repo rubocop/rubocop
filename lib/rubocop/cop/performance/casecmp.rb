@@ -9,11 +9,11 @@ module RuboCop
       #
       # @example
       #   @bad
-      #   'abc'.downcase == 'ABC'
-      #   'abc'.upcase.eql? 'ABC'
+      #   'aBc'.downcase == 'abc'
+      #   'aBc'.upcase.eql? 'ABC'
       #
       #   @good
-      #   'abc'.casecmp('ABC').zero?
+      #   'aBc'.casecmp('ABC').zero?
       class Casecmp < Cop
         MSG = 'Use `casecmp` instead of `%s %s`.'.freeze
 
