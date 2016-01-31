@@ -3,8 +3,12 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Performance::RedundantMerge do
-  subject(:cop) { described_class.new }
+describe RuboCop::Cop::Performance::RedundantMerge, :config do
+  subject(:cop) { described_class.new(config) }
+
+  let(:cop_config) do
+    { 'MaxKeyValuePairs' => 2 }
+  end
 
   shared_examples 'redundant_merge' do |method|
     it "autocorrects hash.#{method}(a: 1)" do
@@ -60,6 +64,18 @@ describe RuboCop::Cop::Performance::RedundantMerge do
       inspect_source(cop, "hash.#{method}(a: 1)")
       expect(cop.messages).to eq(
         ["Use `hash[:a] = 1` instead of `hash.#{method}(a: 1)`."])
+    end
+
+    context 'with MaxKeyValuePairs of 1' do
+      let(:cop_config) do
+        { 'MaxKeyValuePairs' => 1 }
+      end
+
+      it "doesn't register errors for multi-value hash merges" do
+        inspect_source(cop, ['hash = {}',
+                             "hash.#{method}(a: 1, b: 2)"])
+        expect(cop.offenses).to be_empty
+      end
     end
   end
 
