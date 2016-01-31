@@ -1238,7 +1238,7 @@ Performance/RedundantMatch:
   Enabled: true
 
 Performance/RedundantMerge:
-  Description: 'Use Hash#[]=, rather than Hash#merge! with a single key-value pair.'
+  Description: 'Use Hash#[]=, rather than Hash#merge! or Hash#update with a single key-value pair.'
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#hashmerge-vs-hash-code'
   Enabled: true
 

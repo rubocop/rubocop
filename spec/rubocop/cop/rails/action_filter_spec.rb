@@ -49,7 +49,7 @@ describe RuboCop::Cop::Rails::ActionFilter, :config do
 
   context 'when style is action' do
     before do
-      cop_config.update('EnforcedStyle' => 'action')
+      cop_config['EnforcedStyle'] = 'action'
     end
 
     described_class::FILTER_METHODS.each do |method|
@@ -79,7 +79,7 @@ describe RuboCop::Cop::Rails::ActionFilter, :config do
 
   context 'when style is filter' do
     before do
-      cop_config.update('EnforcedStyle' => 'filter')
+      cop_config['EnforcedStyle'] = 'filter'
     end
 
     described_class::ACTION_METHODS.each do |method|

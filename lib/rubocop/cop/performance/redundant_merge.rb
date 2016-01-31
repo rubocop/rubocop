@@ -15,7 +15,8 @@ module RuboCop
         AREF_ASGN = '%s[%s] = %s'.freeze
         MSG = 'Use `%s` instead of `%s`.'.freeze
 
-        def_node_matcher :redundant_merge, '(send $_ :merge! (hash $...))'
+        def_node_matcher :redundant_merge,
+                         '(send $_ {:merge! :update} (hash $...))'
         def_node_matcher :modifier_flow_control, '[{if while until} #modifier?]'
 
         def on_send(node)
