@@ -36,6 +36,7 @@
 * [#2710](https://github.com/bbatsov/rubocop/pull/2710): Fix handling of fullwidth characters in some cops. ([@seikichi][])
 * [#2690](https://github.com/bbatsov/rubocop/issues/2690): Fix alignment of operands that are part of an assignment in `Style/MultilineOperationIndentation`. ([@jonas054][])
 * [#2228](https://github.com/bbatsov/rubocop/issues/2228): Use the config of a related cop whether it's enabled or not. ([@madwort][])
+* [#2721](https://github.com/bbatsov/rubocop/issues/2721): Do not register an offense for constants wrapped in parentheses passed to `rescue` in `Style/RedundantParentheses`. ([@rrosenblum][])
 
 ### Changes
 

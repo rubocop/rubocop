@@ -31,6 +31,7 @@ module RuboCop
           return if child_node.hash_type? && first_argument?(node) &&
                     !parentheses?(node.parent)
 
+          return if rescue?(node)
           check(node, child_node)
         end
 
@@ -94,6 +95,10 @@ module RuboCop
 
           _receiver, _method_name, *args = *send_node
           node == args.first
+        end
+
+        def rescue?(node)
+          node.parent && node.parent.array_type?
         end
       end
     end

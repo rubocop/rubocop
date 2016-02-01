@@ -155,4 +155,23 @@ describe RuboCop::Cop::Style::RedundantParentheses do
       expect(cop.offenses.size).to eq 1
     end
   end
+
+  it 'accepts parentheses around the error passed to rescue' do
+    inspect_source(cop, ['begin',
+                         '  some_method',
+                         'rescue(StandardError)',
+                         'end'])
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'accepts parentheses around a constant passed to when' do
+    source = ['case foo',
+              'when(Const)',
+              '  bar',
+              'end']
+
+    inspect_source(cop, source)
+
+    expect(cop.offenses).to be_empty
+  end
 end
