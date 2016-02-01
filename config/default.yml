@@ -966,7 +966,7 @@ Metrics/CyclomaticComplexity:
 Metrics/LineLength:
   Max: 80
   # To make it possible to copy or click on URIs in the code, we allow lines
-  # contaning a URI to be longer than Max.
+  # containing a URI to be longer than Max.
   AllowHeredoc: true
   AllowURI: true
   URISchemes:
@@ -1046,7 +1046,7 @@ Rails/Date:
   # The value `strict` disallows usage of `Date.today`, `Date.current`,
   # `Date#to_time` etc.
   # The value `flexible` allows usage of `Date.current`, `Date.yesterday`, etc
-  # (but not `Date.today`) which are overriden by ActiveSupport to handle current
+  # (but not `Date.today`) which are overridden by ActiveSupport to handle current
   # time zone.
   EnforcedStyle: flexible
   SupportedStyles:
