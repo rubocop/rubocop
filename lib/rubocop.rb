@@ -366,6 +366,7 @@ require 'rubocop/cop/rails/read_write_attribute'
 require 'rubocop/cop/rails/scope_args'
 require 'rubocop/cop/rails/time_zone'
 require 'rubocop/cop/rails/validation'
+require 'rubocop/cop/rails/try'
 
 require 'rubocop/formatter/base_formatter'
 require 'rubocop/formatter/simple_text_formatter'

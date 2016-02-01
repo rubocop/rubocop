@@ -1337,3 +1337,7 @@ Rails/TimeZone:
 Rails/Validation:
   Description: 'Use validates :attribute, hash of validations.'
   Enabled: true
+
+Rails/Try:
+  Description: 'Prefer to use the safe navigator instead of try'
+  Enabled: true
