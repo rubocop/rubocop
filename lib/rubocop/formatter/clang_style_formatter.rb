@@ -22,13 +22,12 @@ module RuboCop
             next if source_line.blank?
 
             if location.first_line == location.last_line
-              column_length = location.column_range.count
               output.puts(source_line)
             else
-              column_length = location.source_line.length - location.column
               output.puts("#{source_line} #{ELLIPSES}")
             end
-            output.puts("#{' ' * location.column}#{'^' * column_length}")
+            output.puts("#{' ' * o.highlighted_area.begin_pos}" \
+                        "#{'^' * o.highlighted_area.size}")
           rescue IndexError
             # range is not on a valid line; perhaps the source file is empty
           end
