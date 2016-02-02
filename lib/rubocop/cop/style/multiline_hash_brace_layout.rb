@@ -21,22 +21,22 @@ module RuboCop
       #     # bad
       #     { a: 'a',
       #       b: 'b'
-      #     ]
+      #     }
       #
       #     # bad
-      #     [
+      #     {
       #       a: 'a',
-      #       b: 'b' ]
+      #       b: 'b' }
       #
       #     # good
-      #     [ a: 'a',
-      #       b: 'b' ]
+      #     { a: 'a',
+      #       b: 'b' }
       #
       #     #good
-      #     [
+      #     {
       #       a: 'a',
       #       b: 'b'
-      #     ]
+      #     }
       class MultilineHashBraceLayout < Cop
         include MultilineLiteralBraceLayout
 
