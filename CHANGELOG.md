@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#2620](https://github.com/bbatsov/rubocop/pull/2620): New cop `Style/ZeroLengthPredicate` checks for `object.size == 0` and variants, and suggests replacing them with an appropriate `empty?` predicate. ([@drenmi][])
 * [#2657](https://github.com/bbatsov/rubocop/pull/2657): Floating headers in HTML output. ([@mattparlane][])
 * Add new `Style/SpaceAroundKeyword` cop. ([@lumeet][])
 * [#2745](https://github.com/bbatsov/rubocop/pull/2745): New cop `Style/MultilineHashBraceLayout` checks that the closing brace in a hash literal is symmetrical with respect to the opening brace and the hash elements. ([@panthomakos][])
@@ -49,10 +50,10 @@
 
 ### New features
 
-* [#2620](https://github.com/bbatsov/rubocop/pull/2620): New cop `Style/ZeroLengthPredicate` checks for `object.size == 0` and variants, and suggests replacing them with an appropriate `empty?` predicate. ([@drenmi][])
 * [#2598](https://github.com/bbatsov/rubocop/pull/2598): New cop `Lint/RandOne` checks for `rand(1)`, `Kernel.rand(1.0)` and similar calls. Such call are most likely a mistake because they always return `0`. ([@DNNX][])
 * [#2590](https://github.com/bbatsov/rubocop/pull/2590): New cop `Performance/DoubleStartEndWith` checks for two `start_with?` (or `end_with?`) calls joined by `||` with the same receiver, like `str.start_with?('x') || str.start_with?('y')` and suggests using one call instead: `str.start_with?('x', 'y')`. ([@DNNX][])
 * [#2583](https://github.com/bbatsov/rubocop/pull/2583): New cop `Performance/TimesMap` checks for `x.times.map{}` and suggests replacing them with `Array.new(x){}`. ([@DNNX][])
+* [#2581](https://github.com/bbatsov/rubocop/pull/2581): New cop `Lint/NextWithoutAccumulator` finds bare `next` in `reduce`/`inject` blocks which assigns `nil` to the accumulator. ([@mvidner][])
 * [#2529](https://github.com/bbatsov/rubocop/pull/2529): Add EnforcedStyle config parameter to IndentArray. ([@jawshooah][])
 * [#2479](https://github.com/bbatsov/rubocop/pull/2479): Add option `AllowHeredoc` to `Metrics/LineLength`. ([@fphilipe][])
 * [#2416](https://github.com/bbatsov/rubocop/pull/2416): New cop `Style/ConditionalAssignment` checks for assignment of the same variable in all branches of conditionals and replaces them with a single assignment to the return of the conditional. ([@rrosenblum][])
@@ -237,7 +238,6 @@
 * `Style/Documentation` recognizes 'Constant = Class.new' as a class definition. ([@alexdowad][])
 * [#1608](https://github.com/bbatsov/rubocop/issues/1608): Add new 'align_braces' style for `Style/IndentHash`. ([@alexdowad][])
 * `Style/Next` can autocorrect. ([@alexdowad][])
-* [#2581](https://github.com/bbatsov/rubocop/pull/2581): New cop `Lint/NextWithoutAccumulator` finds bare `next` in `reduce`/`inject` blocks which assigns `nil` to the accumulator. ([@mvidner][])
 
 ### Bug Fixes
 
@@ -528,13 +528,13 @@
 * [#1806](https://github.com/bbatsov/rubocop/issues/1806): Require a newer version of `parser` and use its corrected solution for comment association in `Style/Documentation`. ([@jonas054][])
 * [#1792](https://github.com/bbatsov/rubocop/issues/1792): Fix bugs in `Sample` that did not account for array selectors with a range and passing random to shuffle. ([@rrosenblum][])
 * [#1770](https://github.com/bbatsov/rubocop/pull/1770): Add more acceptable methods to `Rails/TimeZone` (`utc`, `localtime`, `to_i`, `iso8601` etc). ([@palkan][])
+* [#1767](https://github.com/bbatsov/rubocop/pull/1767): Do not register offenses on non-enumerable select/find_all by `Performance/Detect`. ([@palkan][])
 * [#1795](https://github.com/bbatsov/rubocop/pull/1795): Fix bug in `TrailingBlankLines` that caused a crash for files containing only newlines. ([@renuo][])
 
 ## 0.30.0 (06/04/2015)
 
 ### New features
 
-* [#1767](https://github.com/bbatsov/rubocop/pull/1767): Do not register offenses on non-enumerable select/find_all by `Performance/Detect`. ([@palkan][])
 * [#1600](https://github.com/bbatsov/rubocop/issues/1600): Add `line_count_based` and `semantic` styles to the `BlockDelimiters` (formerly `Blocks`) cop. ([@clowder][], [@mudge][])
 * [#1712](https://github.com/bbatsov/rubocop/pull/1712): Set `Offense#corrected?` to `true`, `false`, or `nil` when it was, wasn't, or can't be auto-corrected, respectively. ([@vassilevsky][])
 * [#1669](https://github.com/bbatsov/rubocop/pull/1669): Add command-line switch `--display-style-guide`. ([@marxarelli][])
