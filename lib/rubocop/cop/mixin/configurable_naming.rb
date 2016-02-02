@@ -9,7 +9,7 @@ module RuboCop
       include ConfigurableEnforcedStyle
 
       SNAKE_CASE = /^@{0,2}[\da-z_]+[!?=]?$/
-      CAMEL_CASE = /^@{0,2}[a-z][\da-zA-Z]+[!?=]?$/
+      CAMEL_CASE = /^@{0,2}_?[a-z][\da-zA-Z]+[!?=]?$/
 
       def check_name(node, name, name_range)
         return if operator?(name)
