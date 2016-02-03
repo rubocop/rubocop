@@ -120,6 +120,7 @@ describe RuboCop::Cop::Style::SpaceAroundKeyword do
   it_behaves_like 'missing after', 'next', 'next""', 'next ""'
   it_behaves_like 'accept after', '(', 'next(1)'
   it_behaves_like 'missing after', 'not', 'not""', 'not ""'
+  it_behaves_like 'accept after', '(', 'not(1)'
   it_behaves_like 'missing before', 'or', '1or 2', '1 or 2'
   it_behaves_like 'missing after', 'or', '1 or(2)', '1 or (2)'
 
