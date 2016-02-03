@@ -81,10 +81,11 @@ module RuboCop
                      node.children
                    end
 
-        # Without this check, Foo.new({}) is considered multiline, which
+        # No need to process anything if the whole node is not multiline
+        # Without the 2nd check, Foo.new({}) is considered multiline, which
         # it should not be. Essentially, if there are no elements, the
         # expression can not be multiline.
-        return if elements.empty?
+        return if !node.multiline? || elements.empty?
 
         items = elements.map(&:source_range)
         if style == :consistent_comma

@@ -39,6 +39,7 @@
 * [#2690](https://github.com/bbatsov/rubocop/issues/2690): Fix alignment of operands that are part of an assignment in `Style/MultilineOperationIndentation`. ([@jonas054][])
 * [#2228](https://github.com/bbatsov/rubocop/issues/2228): Use the config of a related cop whether it's enabled or not. ([@madwort][])
 * [#2721](https://github.com/bbatsov/rubocop/issues/2721): Do not register an offense for constants wrapped in parentheses passed to `rescue` in `Style/RedundantParentheses`. ([@rrosenblum][])
+* [#2742](https://github.com/bbatsov/rubocop/issues/2742): Fix `Style/TrailingCommaInArguments` & `Style/TrailingCommaInLiteral` for inline single element arrays. ([@annih][])
 
 ### Changes
 
@@ -1930,3 +1931,4 @@
 [@owst]: https://github.com/owst
 [@seikichi]: https://github.com/seikichi
 [@madwort]: https://github.com/madwort
+[@annih]: https://github.com/annih
