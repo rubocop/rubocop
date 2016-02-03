@@ -64,6 +64,12 @@ describe RuboCop::Cop::Style::VariableName, :config do
       expect(cop.highlights).to eq(['funnyArg'])
     end
 
+    it 'registers an offense for camel case local variables marked as unused' do
+      inspect_source(cop, '_myLocal = 1')
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.highlights).to eq(['_myLocal'])
+    end
+
     include_examples 'always accepted'
   end
 
@@ -104,6 +110,11 @@ describe RuboCop::Cop::Style::VariableName, :config do
       inspect_source(cop, 'def method(funny_arg); end')
       expect(cop.offenses.size).to eq(1)
       expect(cop.highlights).to eq(['funny_arg'])
+    end
+
+    it 'accepts camel case local variables marked as unused' do
+      inspect_source(cop, '_myLocal = 1')
+      expect(cop.offenses).to be_empty
     end
 
     include_examples 'always accepted'
