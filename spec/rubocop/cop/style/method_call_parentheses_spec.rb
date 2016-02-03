@@ -32,6 +32,11 @@ describe RuboCop::Cop::Style::MethodCallParentheses do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts parens after not' do
+    inspect_source(cop, 'not(something)')
+    expect(cop.offenses).to be_empty
+  end
+
   context 'assignment to a variable with the same name' do
     it 'accepts parens in local variable assignment ' do
       inspect_source(cop, 'test = test()')

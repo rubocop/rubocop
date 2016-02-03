@@ -19,6 +19,7 @@ module RuboCop
           return unless args.empty? && node.loc.begin
           return if same_name_assignment?(node)
           return if lambda_call_syntax?(node)
+          return if node.keyword_not?
 
           add_offense(node, :begin)
         end
