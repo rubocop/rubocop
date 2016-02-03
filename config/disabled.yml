@@ -92,6 +92,13 @@ Style/MultilineHashBraceLayout:
                  hash elements.
   Enabled: false
 
+Style/MultilineMethodDefinitionBraceLayout:
+  Description: >-
+                 Checks that the closing brace in a method definition is
+                 symmetrical with respect to the opening brace and the
+                 method parameters.
+  Enabled: false
+
 Style/OptionHash:
   Description: "Don't use option hashes when you can use keyword arguments."
   Enabled: false
