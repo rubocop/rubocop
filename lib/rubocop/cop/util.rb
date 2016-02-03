@@ -129,8 +129,8 @@ module RuboCop
         end
       end
 
-      def range_with_surrounding_comma(range, side = :both, buffer = nil)
-        buffer ||= @processed_source.buffer
+      def range_with_surrounding_comma(range, side = :both)
+        buffer = @processed_source.buffer
         src = buffer.source
 
         go_left, go_right = directions(side)
@@ -143,9 +143,8 @@ module RuboCop
         Parser::Source::Range.new(buffer, begin_pos, end_pos)
       end
 
-      def range_with_surrounding_space(range, side = :both, buffer = nil,
-                                       with_newline = true)
-        buffer ||= @processed_source.buffer
+      def range_with_surrounding_space(range, side = :both, with_newline = true)
+        buffer = @processed_source.buffer
         src = buffer.source
 
         go_left, go_right = directions(side)

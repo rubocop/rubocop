@@ -68,7 +68,7 @@ module RuboCop
 
               range = range_with_surrounding_comma(range, :right)
               # eat following spaces up to EOL, but not the newline itself
-              range = range_with_surrounding_space(range, :right, nil, false)
+              range = range_with_surrounding_space(range, :right, false)
 
               corrector.remove(range)
             end
