@@ -20,8 +20,6 @@ module RuboCop
       #   'abc'.casecmp('abc').zero?
       #   'abc'.casecmp('ABC'.downcase).zero?
       class Casecmp < Cop
-        include IgnoredNode
-
         MSG = 'Use `casecmp` instead of `%s %s`.'.freeze
         CASE_METHODS = [:downcase, :upcase].freeze
 
