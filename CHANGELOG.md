@@ -9,10 +9,10 @@
 * [#2620](https://github.com/bbatsov/rubocop/pull/2620): New cop `Style/ZeroLengthPredicate` checks for `object.size == 0` and variants, and suggests replacing them with an appropriate `empty?` predicate. ([@drenmi][])
 * [#2657](https://github.com/bbatsov/rubocop/pull/2657): Floating headers in HTML output. ([@mattparlane][])
 * Add new `Style/SpaceAroundKeyword` cop. ([@lumeet][])
-* [#2745](https://github.com/bbatsov/rubocop/pull/2745): New cop `Style/MultilineHashBraceLayout` checks that the closing brace in a hash literal is symmetrical with respect to the opening brace and the hash elements. ([@panthomakos][])
-* [#2761](https://github.com/bbatsov/rubocop/pull/2761): New cop `Style/MultilineMethodDefinitionBraceLayout` checks that the closing brace in a method definition is symmetrical with respect to the opening brace and the method parameters. ([@panthomakos][])
+* [#2745](https://github.com/bbatsov/rubocop/pull/2745): New cop `Style/MultilineHashBraceLayout` checks that the opening and closing braces in a hash literal either both reside on separate lines relative to the hash elements, or that they both reside on a line with hash elements. ([@panthomakos][])
+* [#2761](https://github.com/bbatsov/rubocop/pull/2761): New cop `Style/MultilineMethodDefinitionBraceLayout` checks that the opening and closing braces in a method definition either both reside on separate lines relative to the method parameters, or that they both reside on a line with method parameters. ([@panthomakos][])
 * [#2699](https://github.com/bbatsov/rubocop/pull/2699): `Performance/Casecmp` can register offenses when `str.downcase` or `str.upcase` are passed to an equality method. ([@rrosenblum][])
-* [#2766](https://github.com/bbatsov/rubocop/pull/2766): New cop `Style/MultilineMethodCallBraceLayout` checks that the closing brace in a method call is symmetrical with respect to the opening brace and the method arguments. ([@panthomakos][])
+* [#2766](https://github.com/bbatsov/rubocop/pull/2766): New cop `Style/MultilineMethodCallBraceLayout` checks that the opening and closing braces in a method call either both reside on separate lines relative to the method arguments, or that they both reside on a line with method arguments. ([@panthomakos][])
 
 ### Bug fixes
 
