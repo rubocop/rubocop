@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.37.0 (04/02/2016)
+
 ### New features
 
 * [#2620](https://github.com/bbatsov/rubocop/pull/2620): New cop `Style/ZeroLengthPredicate` checks for `object.size == 0` and variants, and suggests replacing them with an appropriate `empty?` predicate. ([@drenmi][])
