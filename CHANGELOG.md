@@ -10,6 +10,7 @@
 * [#2745](https://github.com/bbatsov/rubocop/pull/2745): New cop `Style/MultilineHashBraceLayout` checks that the closing brace in a hash literal is symmetrical with respect to the opening brace and the hash elements. ([@panthomakos][])
 * [#2761](https://github.com/bbatsov/rubocop/pull/2761): New cop `Style/MultilineMethodDefinitionBraceLayout` checks that the closing brace in a method definition is symmetrical with respect to the opening brace and the method parameters. ([@panthomakos][])
 * [#2699](https://github.com/bbatsov/rubocop/pull/2699): `Performance/Casecmp` can register offenses when `str.downcase` or `str.upcase` are passed to an equality method. ([@rrosenblum][])
+* [#2766](https://github.com/bbatsov/rubocop/pull/2766): New cop `Style/MultilineMethodCallBraceLayout` checks that the closing brace in a method call is symmetrical with respect to the opening brace and the method arguments. ([@panthomakos][])
 
 ### Bug fixes
 
