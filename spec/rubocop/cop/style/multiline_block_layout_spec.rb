@@ -207,4 +207,14 @@ describe RuboCop::Cop::Style::MultilineBlockLayout do
                               '  play_with(x, y)',
                               'end'].join("\n"))
   end
+
+  it 'auto-corrects a line break within destructured arguments' do
+    new_source = autocorrect_source(cop,
+                                    ['test do |(x,',
+                                     '  y)| play_with(x, y)',
+                                     'end'])
+    expect(new_source).to eq(['test do |(x, y)|',
+                              '  play_with(x, y)',
+                              'end'].join("\n"))
+  end
 end

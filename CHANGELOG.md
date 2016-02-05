@@ -5,6 +5,7 @@
 ### New features
 
 * [#2798](https://github.com/bbatsov/rubocop/pull/2798): `Rails/FindEach` cop works with `where.not`. ([@pocke][])
+* `Style/MultilineBlockLayout` can correct offenses which involve argument destructuring. ([@alexdowad][])
 
 ### Bug fixes
 

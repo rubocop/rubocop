@@ -116,7 +116,13 @@ module RuboCop
         end
 
         def block_arg_string(args)
-          args.children.map(&:source).join(', ')
+          args.children.map do |arg|
+            if arg.mlhs_type?
+              "(#{block_arg_string(arg)})"
+            else
+              arg.source
+            end
+          end.join(', ')
         end
       end
     end
