@@ -53,8 +53,7 @@ module RuboCop
           _block_start, args, last_expression = node.children
 
           unless args.children.empty?
-            line = args.loc.end.nil? ? args.loc.line : args.loc.end.line
-            if do_loc.line != line
+            if do_loc.line != args.loc.last_line
               add_offense_for_expression(node, args, ARG_MSG)
             end
           end
@@ -77,8 +76,7 @@ module RuboCop
         def autocorrect(node)
           lambda do |corrector|
             _method, args, block_body = *node
-            unless args.children.empty? ||
-                   args.loc.end.line == node.loc.begin.line
+            unless args.children.empty? || args.loc.last_line == node.loc.line
               autocorrect_arguments(corrector, node, args, block_body)
               expr_before_body = args.source_range.end
             end
