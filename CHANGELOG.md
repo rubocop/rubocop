@@ -13,6 +13,7 @@
 * [#2781](https://github.com/bbatsov/rubocop/issues/2781): `Performance/RedundantMerge` doesn't flag calls to `#update`, since many classes have methods by this name (not only `Hash`). ([@alexdowad][])
 * [#2780](https://github.com/bbatsov/rubocop/issues/2780): `Lint/DuplicateMethods` does not flag method definitions inside dynamic `Class.new` blocks. ([@alexdowad][])
 * [#2775](https://github.com/bbatsov/rubocop/issues/2775): `Style/SpaceAroundKeyword` doesn't flag `yield.method`. ([@alexdowad][])
+* [#2774](https://github.com/bbatsov/rubocop/issues/2774): `Style/SpaceAroundOperators` doesn't flag calls to `#[]`. ([@alexdowad][])
 
 ## 0.37.0 (04/02/2016)
 

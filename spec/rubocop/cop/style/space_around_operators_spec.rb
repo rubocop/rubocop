@@ -152,8 +152,13 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
     expect(cop.messages).to eq([])
   end
 
-  it 'accepts [] without space' do
+  it 'accepts [arg] without space' do
     inspect_source(cop, 'files[2]')
+    expect(cop.messages).to eq([])
+  end
+
+  it 'accepts [] without space' do
+    inspect_source(cop, 'files[]')
     expect(cop.messages).to eq([])
   end
 
