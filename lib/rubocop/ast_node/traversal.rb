@@ -149,7 +149,8 @@ module RuboCop
 
       def on_block(node)
         children = node.children
-        on_send(children[0])
+        child = children[0]
+        send(:"on_#{child.type}", child) # can be send, zsuper...
         on_args(children[1])
         return unless (child = children[2])
         send(:"on_#{child.type}", child)

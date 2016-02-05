@@ -9,6 +9,7 @@
 ### Bug fixes
 
 * Fix auto-correction of `not` with parentheses in `Style/Not`. ([@lumeet][])
+* [#2784](https://github.com/bbatsov/rubocop/issues/2784): RuboCop can inspect `super { ... }` and `super(arg) { ... }`. ([@alexdowad][])
 
 ## 0.37.0 (04/02/2016)
 

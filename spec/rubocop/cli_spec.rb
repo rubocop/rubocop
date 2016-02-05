@@ -121,15 +121,39 @@ describe RuboCop::CLI, :isolated_environment do
     end
   end
 
-  it 'checks a given correct file and returns 0' do
-    create_file('example.rb', ['# encoding: utf-8',
-                               'x = 0',
-                               'puts x'])
-    expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(0)
-    expect($stdout.string)
-      .to eq(['',
-              '1 file inspected, no offenses detected',
-              ''].join("\n"))
+  context 'when checking a correct file' do
+    it 'returns 0' do
+      create_file('example.rb', ['# encoding: utf-8',
+                                 'x = 0',
+                                 'puts x'])
+      expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(0)
+      expect($stdout.string)
+        .to eq(['',
+                '1 file inspected, no offenses detected',
+                ''].join("\n"))
+    end
+
+    context 'when super is used with a block' do
+      it 'still returns 0' do
+        create_file('example.rb', ['# encoding: utf-8',
+                                   '# frozen_string_literal: true',
+                                   '# this is a class',
+                                   'class Thing',
+                                   '  def super_with_block',
+                                   '    super { |response| }',
+                                   '  end',
+                                   '',
+                                   '  def and_with_args',
+                                   '    super(arg1, arg2) { |response| }',
+                                   '  end',
+                                   'end'])
+        expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(0)
+        expect($stdout.string)
+          .to eq(['',
+                  '1 file inspected, no offenses detected',
+                  ''].join("\n"))
+      end
+    end
   end
 
   it 'checks a given file with faults and returns 1' do
