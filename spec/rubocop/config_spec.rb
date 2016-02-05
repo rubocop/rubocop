@@ -49,6 +49,17 @@ describe RuboCop::Config do
       end
     end
 
+    context 'when the empty section is AllCops' do
+      before do
+        create_file(configuration_path, ['AllCops:'])
+      end
+
+      it 'raises validation error' do
+        expect { configuration.validate }
+          .to raise_error(RuboCop::ValidationError, /^empty section AllCops/)
+      end
+    end
+
     context 'when the configuration is in the base RuboCop config folder' do
       before do
         create_file(configuration_path, [
