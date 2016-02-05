@@ -155,6 +155,7 @@ describe RuboCop::Cop::Style::SpaceAroundKeyword do
   it_behaves_like 'accept after', '\n', "test do\nend"
   it_behaves_like 'accept around', '()', '(next)'
   it_behaves_like 'accept before', '!', '!yield'
+  it_behaves_like 'accept after', '.', 'yield.method'
 
   # Style/SpaceAroundBlockParameters
   it_behaves_like 'accept before', '|', 'loop { |x|break }'

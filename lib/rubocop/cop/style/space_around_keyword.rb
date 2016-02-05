@@ -170,7 +170,7 @@ module RuboCop
           return false unless char
           return false if accept_left_parenthesis?(range) && char == '('.freeze
 
-          char !~ /[\s;,#\\\)\}\]]/
+          char !~ /[\s;,#\\\)\}\]\.]/
         end
 
         def accept_left_parenthesis?(range)

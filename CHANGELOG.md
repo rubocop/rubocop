@@ -12,6 +12,7 @@
 * [#2784](https://github.com/bbatsov/rubocop/issues/2784): RuboCop can inspect `super { ... }` and `super(arg) { ... }`. ([@alexdowad][])
 * [#2781](https://github.com/bbatsov/rubocop/issues/2781): `Performance/RedundantMerge` doesn't flag calls to `#update`, since many classes have methods by this name (not only `Hash`). ([@alexdowad][])
 * [#2780](https://github.com/bbatsov/rubocop/issues/2780): `Lint/DuplicateMethods` does not flag method definitions inside dynamic `Class.new` blocks. ([@alexdowad][])
+* [#2775](https://github.com/bbatsov/rubocop/issues/2775): `Style/SpaceAroundKeyword` doesn't flag `yield.method`. ([@alexdowad][])
 
 ## 0.37.0 (04/02/2016)
 
