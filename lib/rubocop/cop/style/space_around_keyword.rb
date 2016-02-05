@@ -167,7 +167,7 @@ module RuboCop
         def space_after_missing?(range)
           pos = range.end_pos
           char = range.source_buffer.source[pos]
-          return false unless range.source_buffer.source[pos]
+          return false unless char
           return false if accept_left_parenthesis?(range) && char == '('.freeze
 
           char !~ /[\s;,#\\\)\}\]]/
