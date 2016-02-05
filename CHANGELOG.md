@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* Fix auto-correction of `not` with parentheses in `Style/Not`. ([@lumeet][])
+
 ## 0.37.0 (04/02/2016)
 
 ### New features

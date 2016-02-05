@@ -21,6 +21,11 @@ describe RuboCop::Cop::Style::Not, :config do
     expect(new_source).to eq('x = 10 if !y')
   end
 
+  it 'auto-corrects "not" followed by parens with !' do
+    new_source = autocorrect_source(cop, 'not(test)')
+    expect(new_source).to eq('!(test)')
+  end
+
   it 'leaves "not" as is if auto-correction changes the meaning' do
     src = 'not x < y'
     new_source = autocorrect_source(cop, src)
