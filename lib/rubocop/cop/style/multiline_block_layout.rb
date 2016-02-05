@@ -77,7 +77,7 @@ module RuboCop
           lambda do |corrector|
             _method, args, block_body = *node
             unless args.children.empty? || args.loc.last_line == node.loc.line
-              autocorrect_arguments(corrector, node, args, block_body)
+              autocorrect_arguments(corrector, node, args)
               expr_before_body = args.source_range.end
             end
 
@@ -90,12 +90,10 @@ module RuboCop
           end
         end
 
-        def autocorrect_arguments(corrector, node, args, block_body)
-          end_pos = if block_body
-                      block_body.source_range.begin_pos
-                    else
-                      node.loc.end.begin_pos - 1
-                    end
+        def autocorrect_arguments(corrector, node, args)
+          end_pos =
+            range_with_surrounding_space(args.source_range, :right, false)
+            .end_pos
           range = Parser::Source::Range.new(args.source_range.source_buffer,
                                             node.loc.begin.end.begin_pos,
                                             end_pos)
