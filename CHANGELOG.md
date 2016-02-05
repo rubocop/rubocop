@@ -18,6 +18,7 @@
 * [#2772](https://github.com/bbatsov/rubocop/issues/2772): RuboCop doesn't crash when `AllCops` section in configuration file is empty (rather, it displays a warning as intended). ([@alexdowad][])
 * [#2737](https://github.com/bbatsov/rubocop/issues/2737): `Style/GuardClause` handles `elsif` clauses correctly. ([@alexdowad][])
 * [#2735](https://github.com/bbatsov/rubocop/issues/2735): `Style/MultilineBlockLayout` doesn't cause an infinite loop by moving `end` onto the same line as the block args. ([@alexdowad][])
+* [#2715](https://github.com/bbatsov/rubocop/issues/2715): `Performance/RedundantMatch` doesn't flag calls to `#match` which take a block. ([@alexdowad][])
 
 ## 0.37.0 (04/02/2016)
 

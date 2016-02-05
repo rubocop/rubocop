@@ -34,7 +34,8 @@ module RuboCop
 
         def on_send(node)
           return unless match_call?(node) &&
-                        (!node.value_used? || only_truthiness_matters?(node))
+                        (!node.value_used? || only_truthiness_matters?(node)) &&
+                        !(node.parent && node.parent.block_type?)
           add_offense(node, :expression, MSG)
         end
 
