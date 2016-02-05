@@ -38,7 +38,11 @@ module RuboCop
 
         def find_nested_defs(node, &block)
           node.each_child_node do |child|
-            if child.def_type? || child.defs_type?
+            if child.def_type?
+              yield child
+            elsif child.defs_type?
+              subject, = *child
+              next if subject.lvar_type?
               yield child
             elsif !(eval_call?(child) || class_or_module_new_call?(child))
               find_nested_defs(child, &block)
