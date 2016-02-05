@@ -82,7 +82,9 @@ module RuboCop
         end
 
         def elsif?(node)
-          node.children.last.if_type?
+          return false unless node.parent && node.parent.if_type?
+          _condition, _if_branch, else_branch = *node.parent
+          else_branch.equal?(node)
         end
 
         def check_trailing_if(node)

@@ -80,9 +80,9 @@ module RuboCop
           key.start_with?(specified_key)
         end
 
-        if matching_keys.empty?
-          raise %(No formatter for "#{specified_key}")
-        elsif matching_keys.size > 1
+        raise %(No formatter for "#{specified_key}") if matching_keys.empty?
+
+        if matching_keys.size > 1
           raise %(Cannot determine formatter for "#{specified_key}")
         end
 

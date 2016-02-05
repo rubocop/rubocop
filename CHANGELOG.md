@@ -15,6 +15,7 @@
 * [#2775](https://github.com/bbatsov/rubocop/issues/2775): `Style/SpaceAroundKeyword` doesn't flag `yield.method`. ([@alexdowad][])
 * [#2774](https://github.com/bbatsov/rubocop/issues/2774): `Style/SpaceAroundOperators` doesn't flag calls to `#[]`. ([@alexdowad][])
 * [#2772](https://github.com/bbatsov/rubocop/issues/2772): RuboCop doesn't crash when `AllCops` section in configuration file is empty (rather, it displays a warning as intended). ([@alexdowad][])
+* [#2737](https://github.com/bbatsov/rubocop/issues/2737): `Style/GuardClause` handles `elsif` clauses correctly. ([@alexdowad][])
 
 ## 0.37.0 (04/02/2016)
 
