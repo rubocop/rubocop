@@ -97,7 +97,7 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
     end
   end
 
-  context 'when consecutive access modifiers' do
+  context 'when there are consecutive access modifiers' do
     let(:source) do
       [
         'class SomeClass',
