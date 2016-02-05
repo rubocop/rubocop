@@ -21,6 +21,7 @@
 * [#2715](https://github.com/bbatsov/rubocop/issues/2715): `Performance/RedundantMatch` doesn't flag calls to `#match` which take a block. ([@alexdowad][])
 * [#2704](https://github.com/bbatsov/rubocop/issues/2704): `Lint/NestedMethodDefinition` doesn't flag singleton defs which define a method on the value of a local variable. ([@alexdowad][])
 * [#2660](https://github.com/bbatsov/rubocop/issues/2660): `Style/TrailingUnderscoreVariable` shows recommended code in its offense message. ([@alexdowad][])
+* [#2671](https://github.com/bbatsov/rubocop/issues/2671): `Style/WordArray` doesn't attempt to inspect strings with invalid encoding, to avoid failing with an encoding error. ([@alexdowad][])
 
 ## 0.37.0 (04/02/2016)
 

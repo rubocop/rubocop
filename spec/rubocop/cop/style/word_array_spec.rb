@@ -177,6 +177,21 @@ describe RuboCop::Cop::Style::WordArray, :config do
       new_source = autocorrect_source(cop, '%W(\\n \\t \\b \\v \\f)')
       expect(new_source).to eq('["\n", "\t", "\b", "\v", "\f"]')
     end
+
+    it "doesn't fail on strings which are not valid UTF-8" do
+      # Regression test, see GH issue 2671
+      inspect_source(cop, ['["\xC0",',
+                           ' "\xC2\x4a",',
+                           ' "\xC2\xC2",',
+                           ' "\x4a\x82",',
+                           ' "\x82\x82",',
+                           ' "\xe1\x82\x4a",',
+                           ']'])
+      # Currently, this cop completely ignores strings with invalid encoding
+      # If it could handle them and still report an offense when appropriate,
+      # that would be even better
+      expect(cop.offenses).to be_empty
+    end
   end
 
   context 'with a custom WordRegex configuration' do
