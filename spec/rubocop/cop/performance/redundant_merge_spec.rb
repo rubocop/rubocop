@@ -10,75 +10,70 @@ describe RuboCop::Cop::Performance::RedundantMerge, :config do
     { 'MaxKeyValuePairs' => 2 }
   end
 
-  shared_examples 'redundant_merge' do |method|
-    it "autocorrects hash.#{method}(a: 1)" do
-      new_source = autocorrect_source(cop, "hash.#{method}(a: 1)")
-      expect(new_source).to eq 'hash[:a] = 1'
-    end
+  it 'autocorrects hash.merge!(a: 1)' do
+    new_source = autocorrect_source(cop, 'hash.merge!(a: 1)')
+    expect(new_source).to eq 'hash[:a] = 1'
+  end
 
-    it "autocorrects hash.#{method}('abc' => 'value')" do
-      new_source = autocorrect_source(cop, "hash.#{method}('abc' => 'value')")
-      expect(new_source).to eq "hash['abc'] = 'value'"
-    end
+  it 'autocorrects hash.merge!("abc" => "value")' do
+    new_source = autocorrect_source(cop, 'hash.merge!("abc" => "value")')
+    expect(new_source).to eq 'hash["abc"] = "value"'
+  end
 
-    context 'when receiver is a local variable' do
-      it "autocorrects hash.#{method}(a: 1, b: 2)" do
-        new_source = autocorrect_source(cop, ['hash = {}',
-                                              "hash.#{method}(a: 1, b: 2)"])
+  context 'when receiver is a local variable' do
+    it 'autocorrects hash.merge!(a: 1, b: 2)' do
+      new_source = autocorrect_source(cop, ['hash = {}',
+                                            'hash.merge!(a: 1, b: 2)'])
+      expect(new_source).to eq(['hash = {}',
+                                'hash[:a] = 1',
+                                'hash[:b] = 2'].join("\n"))
+    end
+  end
+
+  context 'when receiver is a method call' do
+    it "doesn't autocorrect hash.merge!(a: 1, b: 2)" do
+      new_source = autocorrect_source(cop, 'hash.merge!(a: 1, b: 2)')
+      expect(new_source).to eq('hash.merge!(a: 1, b: 2)')
+    end
+  end
+
+  %w(if unless while until).each do |kw|
+    context "when there is a modifier #{kw}, and more than 1 pair" do
+      it "autocorrects it to an #{kw} block" do
+        new_source = autocorrect_source(
+          cop,
+          ['hash = {}',
+           "hash.merge!(a: 1, b: 2) #{kw} condition1 && condition2"])
         expect(new_source).to eq(['hash = {}',
-                                  'hash[:a] = 1',
-                                  'hash[:b] = 2'].join("\n"))
-      end
-    end
-
-    context 'when receiver is a method call' do
-      it "doesn't autocorrect hash.#{method}(a: 1, b: 2)" do
-        new_source = autocorrect_source(cop, "hash.#{method}(a: 1, b: 2)")
-        expect(new_source).to eq("hash.#{method}(a: 1, b: 2)")
-      end
-    end
-
-    %w(if unless while until).each do |kw|
-      context "when there is a modifier #{kw}, and more than 1 pair" do
-        it "autocorrects it to an #{kw} block" do
-          new_source = autocorrect_source(
-            cop,
-            ['hash = {}',
-             "hash.#{method}(a: 1, b: 2) #{kw} condition1 && condition2"])
-          expect(new_source).to eq(['hash = {}',
-                                    "#{kw} condition1 && condition2",
-                                    '  hash[:a] = 1',
-                                    '  hash[:b] = 2',
-                                    'end'].join("\n"))
-        end
-      end
-    end
-
-    it "doesn't register an error when return value is used" do
-      inspect_source(cop, ["variable = hash.#{method}(a: 1)",
-                           'puts variable'])
-      expect(cop.offenses).to be_empty
-    end
-
-    it "formats the error message correctly for hash.#{method}(a: 1)" do
-      inspect_source(cop, "hash.#{method}(a: 1)")
-      expect(cop.messages).to eq(
-        ["Use `hash[:a] = 1` instead of `hash.#{method}(a: 1)`."])
-    end
-
-    context 'with MaxKeyValuePairs of 1' do
-      let(:cop_config) do
-        { 'MaxKeyValuePairs' => 1 }
-      end
-
-      it "doesn't register errors for multi-value hash merges" do
-        inspect_source(cop, ['hash = {}',
-                             "hash.#{method}(a: 1, b: 2)"])
-        expect(cop.offenses).to be_empty
+                                  "#{kw} condition1 && condition2",
+                                  '  hash[:a] = 1',
+                                  '  hash[:b] = 2',
+                                  'end'].join("\n"))
       end
     end
   end
 
-  it_behaves_like('redundant_merge', 'merge!')
-  it_behaves_like('redundant_merge', 'update')
+  it "doesn't register an error when return value is used" do
+    inspect_source(cop, ['variable = hash.merge!(a: 1)',
+                         'puts variable'])
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'formats the error message correctly for hash.merge!(a: 1)' do
+    inspect_source(cop, 'hash.merge!(a: 1)')
+    expect(cop.messages).to eq(
+      ['Use `hash[:a] = 1` instead of `hash.merge!(a: 1)`.'])
+  end
+
+  context 'with MaxKeyValuePairs of 1' do
+    let(:cop_config) do
+      { 'MaxKeyValuePairs' => 1 }
+    end
+
+    it "doesn't register errors for multi-value hash merges" do
+      inspect_source(cop, ['hash = {}',
+                           'hash.merge!(a: 1, b: 2)'])
+      expect(cop.offenses).to be_empty
+    end
+  end
 end
