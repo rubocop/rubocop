@@ -94,7 +94,7 @@ module RuboCop
           end_pos = if block_body
                       block_body.source_range.begin_pos
                     else
-                      node.loc.end.begin.begin_pos - 1
+                      node.loc.end.begin_pos - 1
                     end
           range = Parser::Source::Range.new(args.source_range.source_buffer,
                                             node.loc.begin.end.begin_pos,
