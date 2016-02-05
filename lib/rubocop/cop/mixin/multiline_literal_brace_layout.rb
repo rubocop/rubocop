@@ -3,8 +3,9 @@
 
 module RuboCop
   module Cop
-    # Common functionality for checking that the closing brace of a literal is
-    # symmetrical with respect to the opening brace and contained elements.
+    # Common functionality for checking that the opening and closing braces
+    # of a literal either both reside on separate lines relative to their
+    # elements, or that they both reside on a line with their elements.
     module MultilineLiteralBraceLayout
       def check_brace_layout(node)
         return unless node.loc.begin # Ignore implicit literals.

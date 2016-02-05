@@ -75,9 +75,10 @@ Style/MissingElse:
 
 Style/MultilineArrayBraceLayout:
   Description: >-
-                 Checks that the closing brace in an array literal is
-                 symmetrical with respect to the opening brace and the
-                 array elements.
+                 Checks that the opening and closing braces in an array
+                 literal either both reside on separate lines relative to
+                 the array elements, or that they both reside on a line
+                 with array elements.
   Enabled: false
 
 Style/MultilineAssignmentLayout:
@@ -87,23 +88,26 @@ Style/MultilineAssignmentLayout:
 
 Style/MultilineHashBraceLayout:
   Description: >-
-                 Checks that the closing brace in a hash literal is
-                 symmetrical with respect to the opening brace and the
-                 hash elements.
+                 Checks that the opening and closing braces in a hash
+                 literal either both reside on separate lines relative to
+                 the hash elements, or that they both reside on a line
+                 with hash elements.
   Enabled: false
 
 Style/MultilineMethodCallBraceLayout:
   Description: >-
-                 Checks that the closing brace in a method call is
-                 symmetrical with respect to the opening brace and the
-                 method arguments.
+                 Checks that the opening and closing braces in a method
+                 call either both reside on separate lines relative to
+                 the method arguments, or that they both reside on a line
+                 with method arguments.
   Enabled: false
 
 Style/MultilineMethodDefinitionBraceLayout:
   Description: >-
-                 Checks that the closing brace in a method definition is
-                 symmetrical with respect to the opening brace and the
-                 method parameters.
+                 Checks that the opening and closing braces in a method
+                 definition either both reside on separate lines relative to
+                 the method parameters, or that they both reside on a line
+                 with method parameters.
   Enabled: false
 
 Style/OptionHash:
