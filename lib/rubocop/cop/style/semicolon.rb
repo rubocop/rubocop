@@ -52,6 +52,8 @@ module RuboCop
 
         def convention_on(line, column, last_on_line)
           range = source_range(@processed_source.buffer, line, column)
+          # Don't attempt to autocorrect if semicolon is separating statements
+          # on the same line
           add_offense(last_on_line ? range : nil, range)
         end
 
