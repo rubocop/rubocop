@@ -34,7 +34,7 @@ describe RuboCop::Cop::Performance::RedundantMatch do
                               'end'].join("\n"))
   end
 
-  it 'autocorrects .match in condition condition' do
+  it 'autocorrects .match in until condition' do
     new_source = autocorrect_source(cop, ['until str.match(/regex/)',
                                           '  do_something',
                                           'end'])
