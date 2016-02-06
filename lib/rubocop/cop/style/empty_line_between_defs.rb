@@ -7,20 +7,26 @@ module RuboCop
       # This cop checks whether method definitions are
       # separated by empty lines.
       class EmptyLineBetweenDefs < Cop
-        include OnMethodDef
         MSG = 'Use empty lines between method definitions.'.freeze
 
-        def on_method_def(node, _method_name, _args, _body)
-          return unless node.parent && node.parent.begin_type?
+        # We operate on `begin` nodes, instead of using `OnMethodDef`,
+        # so that we can walk over pairs of consecutive nodes and
+        # efficiently access a node's predecessor; #prev_node ends up
+        # doing a linear scan over siblings, so we don't want to call
+        # it on each def.
+        def on_begin(node)
+          node.children.each_cons(2) do |prev, n|
+            nodes = [prev, n]
+            check_defs(nodes) if nodes.all?(&method(:def_node?))
+          end
+        end
 
-          nodes = [prev_node(node), node]
-
-          return unless nodes.all?(&method(:def_node?))
+        def check_defs(nodes)
           return if blank_lines_between?(*nodes)
           return if nodes.all?(&:single_line?) &&
                     cop_config['AllowAdjacentOneLineDefs']
 
-          add_offense(node, :keyword)
+          add_offense(nodes.last, :keyword)
         end
 
         private
