@@ -448,12 +448,9 @@ describe RuboCop::CLI, :isolated_environment do
     expect($stdout.string)
       .to eq(["#{e}:2:35: C: [Corrected] Redundant curly braces around " \
               'a hash parameter.',
-              "#{e}:2:35: C: [Corrected] Use the new Ruby 1.9 hash " \
-              'syntax.',
               # TODO: Don't report that a problem is corrected when it
               # actually went away due to another correction.
               "#{e}:2:35: C: [Corrected] Space inside { missing.",
-              # TODO: Don't report duplicates (HashSyntax in this case).
               "#{e}:2:36: C: [Corrected] Use the new Ruby 1.9 hash " \
               'syntax.',
               "#{e}:2:50: C: [Corrected] Space inside } missing.",
@@ -503,8 +500,6 @@ describe RuboCop::CLI, :isolated_environment do
               "#{e}:3:1: C: [Corrected] Keep a blank line before and " \
               'after `private`.',
               "#{e}:3:3: W: Useless `private` access modifier.",
-              "#{e}:3:3: C: [Corrected] Keep a blank line before and " \
-              'after `private`.',
               "#{e}:4:7: C: [Corrected] Freeze mutable objects assigned " \
               'to constants.',
               "#{e}:4:7: C: [Corrected] Use `%w` or `%W` " \
@@ -517,8 +512,6 @@ describe RuboCop::CLI, :isolated_environment do
               'symbols.',
               "#{e}:4:21: C: [Corrected] Avoid comma after the last item " \
               'of an array.',
-              "#{e}:5:7: C: [Corrected] Freeze mutable objects assigned " \
-              'to constants.',
               "#{e}:5:7: C: [Corrected] Use `%w` or `%W` " \
               'for an array of words.',
               "#{e}:5:8: C: [Corrected] Prefer single-quoted strings " \
@@ -565,13 +558,13 @@ describe RuboCop::CLI, :isolated_environment do
                                          'end',
                                          ''].join("\n"))
     expect($stdout.string).to eq(['',
-                                  '10  Style/TrailingWhitespace',
+                                  '6   Style/TrailingWhitespace',
                                   '3   Style/Semicolon',
-                                  '3   Style/SingleLineMethods',
+                                  '2   Style/SingleLineMethods',
                                   '1   Style/DefWithParentheses',
                                   '1   Style/EmptyLineBetweenDefs',
                                   '--',
-                                  '18  Total',
+                                  '13  Total',
                                   '',
                                   ''].join("\n"))
   end
