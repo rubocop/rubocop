@@ -17,19 +17,7 @@ Gem::Specification.new do |s|
   EOF
 
   s.email = 'rubocop@googlegroups.com'
-  s.files = `git ls-files`.split($RS).reject do |file|
-    file =~ %r{^(?:
-    spec/.*
-    |Gemfile
-    |Rakefile
-    |\.rspec
-    |\.gitignore
-    |\.rubocop.yml
-    |\.rubocop_todo.yml
-    |\.travis.yml
-    |.*\.eps
-    )$}x
-  end
+  s.files = `git ls-files lib bin LICENSE.txt README.md`.split($RS)
   s.test_files = []
   s.executables = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
   s.extra_rdoc_files = ['LICENSE.txt', 'README.md']
