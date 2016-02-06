@@ -18,13 +18,10 @@ Gem::Specification.new do |s|
 
   s.email = 'rubocop@googlegroups.com'
   s.files = `git ls-files lib bin LICENSE.txt README.md`.split($RS)
-  s.test_files = []
   s.executables = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
   s.extra_rdoc_files = ['LICENSE.txt', 'README.md']
   s.homepage = 'http://github.com/bbatsov/rubocop'
   s.licenses = ['MIT']
-  s.require_paths = ['lib']
-  s.rubygems_version = '1.8.23'
   s.summary = 'Automatic Ruby code style checking tool.'
 
   s.add_runtime_dependency('rainbow', '>= 1.99.1', '< 3.0')
