@@ -16,7 +16,7 @@ module RuboCop
       class FindEach < Cop
         MSG = 'Use `find_each` instead of `each`.'.freeze
 
-        SCOPE_METHODS = [:all, :where].freeze
+        SCOPE_METHODS = [:all, :where, :not].freeze
 
         def on_send(node)
           receiver, second_method, _selector = *node

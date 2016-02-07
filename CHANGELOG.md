@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* [#2798](https://github.com/bbatsov/rubocop/pull/2798): `Rails/FindEach` cop works with `where.not`. ([@pocke][])
+
 ### Bug fixes
 
 * Fix auto-correction of `not` with parentheses in `Style/Not`. ([@lumeet][])
@@ -1943,3 +1947,4 @@
 [@madwort]: https://github.com/madwort
 [@annih]: https://github.com/annih
 [@mmcguinn]: https://github.com/mmcguinn
+[@pocke]: https://github.com/pocke
