@@ -8,6 +8,9 @@ module RuboCop
       # ConditionalAssignment Cop.
       module ConditionalAssignmentHelper
         EQUAL = '='.freeze
+        END_ALIGNMENT = 'Lint/EndAlignment'.freeze
+        ALIGN_WITH = 'AlignWith'.freeze
+        KEYWORD = 'keyword'.freeze
 
         # `elsif` branches show up in the `node` as an `else`. We need
         # to recursively iterate over all `else` branches and consider all
@@ -52,6 +55,16 @@ module RuboCop
             "#{node.children[0]} = "
           else
             node.source
+          end
+        end
+
+        def indent(cop, source)
+          if cop.config[END_ALIGNMENT] &&
+             cop.config[END_ALIGNMENT][ALIGN_WITH] &&
+             cop.config[END_ALIGNMENT][ALIGN_WITH] == KEYWORD
+            ' ' * source.length
+          else
+            ''
           end
         end
 
@@ -185,11 +198,11 @@ module RuboCop
           else
             case node.loc.keyword.source
             when IF
-              IfCorrector.correct(node)
+              IfCorrector.correct(self, node)
             when UNLESS
-              UnlessCorrector.correct(node)
+              UnlessCorrector.correct(self, node)
             else
-              CaseCorrector.correct(node)
+              CaseCorrector.correct(self, node)
             end
           end
         end
@@ -296,7 +309,7 @@ module RuboCop
         class << self
           include ConditionalAssignmentHelper
 
-          def correct(node)
+          def correct(cop, node)
             _condition, if_branch, else_branch = *node
             if_branch = tail(if_branch)
             _variable, *_operator, if_assignment = *if_branch
@@ -311,6 +324,7 @@ module RuboCop
               correct_branches(corrector, elsif_branches)
               corrector.replace(else_branch.source_range,
                                 else_assignment.source)
+              corrector.insert_before(node.loc.end, indent(cop, lhs(if_branch)))
             end
           end
         end
@@ -321,7 +335,7 @@ module RuboCop
         class << self
           include ConditionalAssignmentHelper
 
-          def correct(node)
+          def correct(cop, node)
             _condition, *when_branches, else_branch = *node
             else_branch = tail(else_branch)
             when_branches = expand_when_branches(when_branches)
@@ -333,6 +347,9 @@ module RuboCop
               correct_branches(corrector, when_branches)
               corrector.replace(else_branch.source_range,
                                 else_assignment.source)
+
+              corrector.insert_before(node.loc.end,
+                                      indent(cop, lhs(else_branch)))
             end
           end
         end
@@ -343,7 +360,7 @@ module RuboCop
         class << self
           include ConditionalAssignmentHelper
 
-          def correct(node)
+          def correct(cop, node)
             _condition, else_branch, if_branch = *node
             if_branch = tail(if_branch)
             else_branch = tail(else_branch)
@@ -355,6 +372,7 @@ module RuboCop
               corrector.replace(if_branch.source_range, if_assignment.source)
               corrector.replace(else_branch.source_range,
                                 else_assignment.source)
+              corrector.insert_before(node.loc.end, indent(cop, lhs(if_branch)))
             end
           end
         end

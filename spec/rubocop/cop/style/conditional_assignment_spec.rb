@@ -10,6 +10,10 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                           'Enabled' => true,
                           'SingleLineConditionsOnly' => true
                         },
+                        'Lint/EndAlignment' => {
+                          'AlignWith' => 'keyword',
+                          'Enabled' => true
+                        },
                         'Metrics/LineLength' => {
                           'Max' => 80,
                           'Enabled' => true
@@ -482,11 +486,12 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                     'end']
           new_source = autocorrect_source(cop, source)
 
+          indent = ' ' * "#{name} #{assignment} ".length
           expect(new_source).to eq ["#{name} #{assignment} if foo",
                                     '  1',
                                     'else',
                                     '  2',
-                                    'end'].join("\n")
+                                    "#{indent}end"].join("\n")
         end
       end
     end
@@ -937,16 +942,17 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
         new_source = autocorrect_source(cop, source)
 
+        indent = ' ' * "a #{method} ".length
         expect(new_source).to eq(["a #{method} if foo",
                                   '  b',
                                   'elsif bar',
                                   '  c',
                                   'else',
                                   '  d',
-                                  'end'].join("\n"))
+                                  "#{indent}end"].join("\n"))
       end
 
-      it 'registers an offense for comparison methods in unless else' do
+      it 'corrects comparison methods in unless else' do
         source = ['unless foo',
                   "  a #{method} b",
                   'else',
@@ -955,14 +961,15 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
         new_source = autocorrect_source(cop, source)
 
+        indent = ' ' * "a #{method} ".length
         expect(new_source).to eq(["a #{method} unless foo",
                                   '  b',
                                   'else',
                                   '  d',
-                                  'end'].join("\n"))
+                                  "#{indent}end"].join("\n"))
       end
 
-      it 'registers an offense for comparison methods in case when' do
+      it 'corrects comparison methods in case when' do
         source = ['case foo',
                   'when bar',
                   "  a #{method} b",
@@ -972,12 +979,13 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
         new_source = autocorrect_source(cop, source)
 
+        indent = ' ' * "a #{method} ".length
         expect(new_source).to eq(["a #{method} case foo",
                                   'when bar',
                                   '  b',
                                   'else',
                                   '  d',
-                                  'end'].join("\n"))
+                                  "#{indent}end"].join("\n"))
       end
     end
 
@@ -1027,7 +1035,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                 '  1',
                                 'else',
                                 '  2',
-                                'end'].join("\n"))
+                                '      end'].join("\n"))
     end
 
     it 'corrects assignment in if elsif else' do
@@ -1047,7 +1055,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                 '  2',
                                 'else',
                                 '  3',
-                                'end'].join("\n"))
+                                '      end'].join("\n"))
     end
 
     shared_examples '2 character assignment types' do |asgn|
@@ -1068,7 +1076,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                   '  2',
                                   'else',
                                   '  3',
-                                  'end'].join("\n"))
+                                  '       end'].join("\n"))
       end
 
       it "corrects assignment using #{asgn} in case when else" do
@@ -1086,7 +1094,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                   '  1',
                                   'else',
                                   '  2',
-                                  'end'].join("\n"))
+                                  '       end'].join("\n"))
       end
 
       it "corrects assignment using #{asgn} in unless else" do
@@ -1102,7 +1110,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                   '  1',
                                   'else',
                                   '  2',
-                                  'end'].join("\n"))
+                                  '       end'].join("\n"))
       end
     end
 
@@ -1128,7 +1136,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                   '  2',
                                   'else',
                                   '  3',
-                                  'end'].join("\n"))
+                                  '        end'].join("\n"))
       end
 
       it "corrects assignment using #{asgn} in case when else" do
@@ -1146,7 +1154,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                   '  1',
                                   'else',
                                   '  2',
-                                  'end'].join("\n"))
+                                  '        end'].join("\n"))
       end
 
       it "corrects assignment using #{asgn} in unless else" do
@@ -1162,7 +1170,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                   '  1',
                                   'else',
                                   '  2',
-                                  'end'].join("\n"))
+                                  '        end'].join("\n"))
       end
     end
 
@@ -1190,7 +1198,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                 '  3',
                                 'else',
                                 '  4',
-                                'end'].join("\n"))
+                                '      end'].join("\n"))
     end
 
     it 'corrects assignment in unless else' do
@@ -1206,7 +1214,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                 '  1',
                                 'else',
                                 '  2',
-                                'end'].join("\n"))
+                                '      end'].join("\n"))
     end
 
     it 'corrects assignment in case when else' do
@@ -1224,7 +1232,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                 '  1',
                                 'else',
                                 '  2',
-                                'end'].join("\n"))
+                                '      end'].join("\n"))
     end
 
     it 'corrects assignment in case when else with multiple whens' do
@@ -1246,7 +1254,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                 '  2',
                                 'else',
                                 '  3',
-                                'end'].join("\n"))
+                                '      end'].join("\n"))
     end
 
     context 'assignment from a method' do
@@ -1263,7 +1271,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                   '  foobar(var, all)',
                                   'else',
                                   '  baz(var, all)',
-                                  'end'].join("\n"))
+                                  '       end'].join("\n"))
       end
 
       it 'corrects unless else' do
@@ -1279,7 +1287,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                   '  foobar(var, all)',
                                   'else',
                                   '  baz(var, all)',
-                                  'end'].join("\n"))
+                                  '       end'].join("\n"))
       end
 
       it 'corrects case when' do
@@ -1297,7 +1305,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                   '  foobar(var, all)',
                                   'else',
                                   '  baz(var, all)',
-                                  'end'].join("\n"))
+                                  '       end'].join("\n"))
       end
     end
 
@@ -1313,7 +1321,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         expect(new_source).to eq(['bar = if cond then 1',
                                   'elsif cond then 2',
                                   'else 3',
-                                  'end'].join("\n"))
+                                  '      end'].join("\n"))
       end
 
       it 'corrects case when then else' do
@@ -1327,7 +1335,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
         expect(new_source).to eq(['bar = case foo',
                                   'when baz then 1',
                                   'else 2',
-                                  'end'].join("\n"))
+                                  '      end'].join("\n"))
       end
     end
 
@@ -1348,7 +1356,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                 'else',
                                 '  # comment in else',
                                 '  2',
-                                'end'].join("\n"))
+                                '      end'].join("\n"))
     end
 
     it 'preserves comments during correction in case when else' do
@@ -1370,7 +1378,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                 'else',
                                 '  # comment in else',
                                 '  2',
-                                'end'].join("\n"))
+                                '      end'].join("\n"))
     end
 
     context 'aref assignment' do
@@ -1384,7 +1392,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                   '  1',
                                   'else',
                                   '  2',
-                                  'end'].join("\n"))
+                                  '           end'].join("\n"))
       end
 
       context 'with different indices' do
@@ -1409,7 +1417,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                     '  1',
                                     'else',
                                     '  2',
-                                    'end'].join("\n"))
+                                    '                 end'].join("\n"))
         end
 
         context 'with different receivers' do
@@ -1453,6 +1461,10 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
       RuboCop::Config.new('Style/ConditionalAssignment' => {
                             'Enabled' => true,
                             'SingleLineConditionsOnly' => false
+                          },
+                          'Lint/EndAlignment' => {
+                            'AlignWith' => 'keyword',
+                            'Enabled' => true
                           },
                           'Metrics/LineLength' => {
                             'Max' => 80,
@@ -1744,7 +1756,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                   'else',
                                   '  baz = 3',
                                   '  3',
-                                  'end'].join("\n"))
+                                  '      end'].join("\n"))
       end
 
       it 'corrects multiple assignment in if elsif else' do
@@ -1769,7 +1781,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                   'else',
                                   '  baz = 3',
                                   '  3',
-                                  'end'].join("\n"))
+                                  '      end'].join("\n"))
       end
 
       it 'corrects multiple assignment in if elsif else with multiple elsifs' do
@@ -1800,7 +1812,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                   'else',
                                   '  baz = 4',
                                   '  4',
-                                  'end'].join("\n"))
+                                  '      end'].join("\n"))
       end
 
       it 'corrects multiple assignment in case when' do
@@ -1821,7 +1833,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                   'else',
                                   '  baz = 2',
                                   '  2',
-                                  'end'].join("\n"))
+                                  '      end'].join("\n"))
       end
 
       it 'corrects multiple assignment in case when with multiple whens' do
@@ -1848,7 +1860,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                   'else',
                                   '  baz = 3',
                                   '  3',
-                                  'end'].join("\n"))
+                                  '      end'].join("\n"))
       end
 
       it 'corrects multiple assignment in unless else' do
@@ -1867,7 +1879,85 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                                   'else',
                                   '  baz = 2',
                                   '  2',
-                                  'end'].join("\n"))
+                                  '      end'].join("\n"))
+      end
+    end
+  end
+
+  context 'EndAlignment configured to start_of_line' do
+    subject(:cop) { described_class.new(config) }
+    let(:config) do
+      RuboCop::Config.new('Style/ConditionalAssignment' => {
+                            'Enabled' => true,
+                            'SingleLineConditionsOnly' => false
+                          },
+                          'Lint/EndAlignment' => {
+                            'AlignWith' => 'start_of_line',
+                            'Enabled' => true
+                          },
+                          'Metrics/LineLength' => {
+                            'Max' => 80,
+                            'Enabled' => true
+                          })
+
+      context 'auto-correct' do
+        it 'uses proper end alignment in if' do
+          source = ['if foo',
+                    '  a =  b',
+                    'elsif bar',
+                    '  a = c',
+                    'else',
+                    '  a = d',
+                    'end']
+
+          new_source = autocorrect_source(cop, source)
+
+          expect(new_source).to eq(['a = if foo',
+                                    '  b',
+                                    'elsif bar',
+                                    '  c',
+                                    'else',
+                                    '  d',
+                                    'end'].join("\n"))
+        end
+
+        it 'uses proper end alignment in unless' do
+          source = ['unless foo',
+                    '  a = b',
+                    'else',
+                    '  a = d',
+                    'end']
+
+          new_source = autocorrect_source(cop, source)
+
+          expect(new_source).to eq(['a = unless foo',
+                                    '  b',
+                                    'else',
+                                    '  d',
+                                    'end'].join("\n"))
+        end
+
+        it 'uses proper end alignment in case' do
+          source = ['case foo',
+                    'when bar',
+                    '  a = b',
+                    'when baz',
+                    '  a = c',
+                    'else',
+                    '  a = d',
+                    'end']
+
+          new_source = autocorrect_source(cop, source)
+
+          expect(new_source).to eq(['a = case foo',
+                                    'when bar',
+                                    '  b',
+                                    'when baz',
+                                    '  c',
+                                    'else',
+                                    '  d',
+                                    'end'].join("\n"))
+        end
       end
     end
   end
