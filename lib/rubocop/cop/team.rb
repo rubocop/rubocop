@@ -5,6 +5,13 @@ module RuboCop
   module Cop
     # FIXME
     class Team
+      # If these cops try to autocorrect the same file at the same time,
+      # bad things are liable to happen
+      INCOMPATIBLE_COPS = {
+        Style::SymbolProc => [Style::SpaceBeforeBlockBraces],
+        Style::SpaceBeforeBlockBraces => [Style::SymbolProc]
+      }.freeze
+
       attr_reader :errors, :warnings, :updated_source_file
 
       alias updated_source_file? updated_source_file
@@ -90,7 +97,7 @@ module RuboCop
         @updated_source_file = false
         return unless autocorrect?
 
-        new_source = autocorrect_one_cop(buffer, cops)
+        new_source = autocorrect_all_cops(buffer, cops)
 
         return if new_source == buffer.source
 
@@ -104,15 +111,19 @@ module RuboCop
         @updated_source_file = true
       end
 
-      # Does an auto-correction run by correcting for just one cop. The
-      # re-running of auto-corrections will make sure that the full set of
-      # auto-corrections is tried again after this method has finished.
-      def autocorrect_one_cop(buffer, cops)
-        cop_with_corrections = cops.find { |cop| cop.corrections.any? }
+      def autocorrect_all_cops(buffer, cops)
+        corrector = Corrector.new(buffer)
+        skip = Set.new
 
-        if cop_with_corrections
-          corrections = cop_with_corrections.corrections
-          corrector = Corrector.new(buffer, corrections)
+        cops.each do |cop|
+          next if cop.corrections.empty?
+          next if skip.include?(cop.class)
+          corrector.corrections.concat(cop.corrections)
+          incompatible = INCOMPATIBLE_COPS[cop.class]
+          skip.merge(incompatible) if incompatible
+        end
+
+        if !corrector.corrections.empty?
           corrector.rewrite
         else
           buffer.source

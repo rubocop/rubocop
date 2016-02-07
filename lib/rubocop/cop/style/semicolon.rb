@@ -13,7 +13,7 @@ module RuboCop
           return unless processed_source.ast
           @processed_source = processed_source
 
-          check_for_line_terminator
+          check_for_line_terminator_or_opener
         end
 
         def on_begin(node)
@@ -33,26 +33,33 @@ module RuboCop
             # if the first semicolon on the line is a separator of
             # expressions. It's just a guess.
             column = @processed_source[line - 1].index(';')
-            convention_on(line, column, !:last_on_line)
+            convention_on(line, column, false)
           end
         end
 
         private
 
-        def check_for_line_terminator
+        def check_for_line_terminator_or_opener
           tokens_for_lines = @processed_source.tokens.group_by do |token|
             token.pos.line
           end
 
           tokens_for_lines.each do |line, tokens|
-            next unless tokens.last.type == :tSEMI
-            convention_on(line, tokens.last.pos.column, :last_on_line)
+            if tokens.last.type == :tSEMI
+              convention_on(line, tokens.last.pos.column, true)
+            end
+
+            if tokens.first.type == :tSEMI
+              convention_on(line, tokens.first.pos.column, true)
+            end
           end
         end
 
-        def convention_on(line, column, last_on_line)
+        def convention_on(line, column, autocorrect)
           range = source_range(@processed_source.buffer, line, column)
-          add_offense(last_on_line ? range : nil, range)
+          # Don't attempt to autocorrect if semicolon is separating statements
+          # on the same line
+          add_offense(autocorrect ? range : nil, range)
         end
 
         def autocorrect(range)

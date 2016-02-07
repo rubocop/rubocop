@@ -83,18 +83,25 @@ describe RuboCop::Cop::Style::Semicolon, :config do
     expect(cop.offenses).to be_empty
   end
 
+  it 'registers an offense for a semicolon at the beginning of a line' do
+    inspect_source(cop, '; puts 1')
+    expect(cop.offenses.size).to eq(1)
+  end
+
   it 'auto-corrects semicolons when syntactically possible' do
     corrected =
       autocorrect_source(cop,
                          ['module Foo; end;',
                           'puts "this is a test";',
                           'puts "this is a test"; puts "So is this"',
-                          'def foo(a) x(1); y(2); z(3); end'])
+                          'def foo(a) x(1); y(2); z(3); end',
+                          ';puts 1'])
     expect(corrected)
       .to eq(['module Foo; end',
               'puts "this is a test"',
               'puts "this is a test"; puts "So is this"',
-              'def foo(a) x(1); y(2); z(3); end'].join("\n"))
+              'def foo(a) x(1); y(2); z(3); end',
+              'puts 1'].join("\n"))
   end
 
   context 'when AllowAsExpressionSeparator is true' do

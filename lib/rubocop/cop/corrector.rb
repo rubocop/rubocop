@@ -31,21 +31,35 @@ module RuboCop
       #
       #   corrections = [AndOrCorrector.new(node)]
       #   corrector = Corrector.new(source_buffer, corrections)
-      def initialize(source_buffer, corrections)
+      def initialize(source_buffer, corrections = [])
         @source_buffer = source_buffer
         @corrections = corrections
         @source_rewriter = Parser::Source::Rewriter.new(source_buffer)
+
+        @diagnostics = []
+        # Don't print warnings to stderr if corrections conflict with each other
+        @source_rewriter.diagnostics.consumer = lambda do |diagnostic|
+          @diagnostics << diagnostic
+        end
       end
+
+      attr_reader :corrections, :diagnostics
 
       # Does the actual rewrite and returns string corresponding to
       # the rewritten source.
       #
       # @return [String]
-      # TODO: Handle conflict exceptions raised from the Source::Rewriter
       def rewrite
+        # rubocop:disable Lint/HandleExceptions
         @corrections.each do |correction|
-          correction.call(self)
+          begin
+            @source_rewriter.transaction do
+              correction.call(self)
+            end
+          rescue ::Parser::ClobberingError
+          end
         end
+        # rubocop:enable Lint/HandleExceptions
 
         @source_rewriter.process
       end

@@ -34,7 +34,6 @@ require 'rubocop/cop/cop'
 require 'rubocop/cop/commissioner'
 require 'rubocop/cop/corrector'
 require 'rubocop/cop/force'
-require 'rubocop/cop/team'
 require 'rubocop/cop/severity'
 
 require 'rubocop/cop/variable_force'
@@ -368,6 +367,8 @@ require 'rubocop/cop/rails/read_write_attribute'
 require 'rubocop/cop/rails/scope_args'
 require 'rubocop/cop/rails/time_zone'
 require 'rubocop/cop/rails/validation'
+
+require 'rubocop/cop/team'
 
 require 'rubocop/formatter/base_formatter'
 require 'rubocop/formatter/simple_text_formatter'
