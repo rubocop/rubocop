@@ -44,7 +44,7 @@ module RuboCop
           when :sym
             autocorrected_value_for_symbol(node)
           else
-            node.source
+            node.source.gsub('"', '\"')
           end
         end
 

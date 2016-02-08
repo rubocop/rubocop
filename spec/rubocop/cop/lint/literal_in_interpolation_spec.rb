@@ -77,13 +77,16 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
   it_behaves_like('literal interpolation', 0xaabb)
   it_behaves_like('literal interpolation', 0377)
   it_behaves_like('literal interpolation', 2.0)
-  it_behaves_like('literal interpolation', '[]')
-  it_behaves_like('literal interpolation', '[1]')
+  it_behaves_like('literal interpolation', '[]', '[]')
+  it_behaves_like('literal interpolation', '["a", "b"]', '[\"a\", \"b\"]')
+  it_behaves_like('literal interpolation', '{"a" => "b"}', '{\"a\" => \"b\"}')
   it_behaves_like('literal interpolation', true)
   it_behaves_like('literal interpolation', false)
   it_behaves_like('literal interpolation', 'nil')
   it_behaves_like('literal interpolation', ':symbol', 'symbol')
   it_behaves_like('literal interpolation', ':"symbol"', 'symbol')
+  it_behaves_like('literal interpolation', 1..2)
+  it_behaves_like('literal interpolation', 1...2)
 
   shared_examples 'special keywords' do |keyword|
     it "accepts strings like #{keyword}" do
