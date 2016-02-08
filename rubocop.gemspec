@@ -17,7 +17,7 @@ Gem::Specification.new do |s|
   EOF
 
   s.email = 'rubocop@googlegroups.com'
-  s.files = `git ls-files lib bin LICENSE.txt README.md`.split($RS)
+  s.files = `git ls-files lib bin LICENSE.txt README.md config`.split($RS)
   s.executables = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
   s.extra_rdoc_files = ['LICENSE.txt', 'README.md']
   s.homepage = 'http://github.com/bbatsov/rubocop'
