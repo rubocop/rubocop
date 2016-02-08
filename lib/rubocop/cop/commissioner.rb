@@ -35,6 +35,9 @@ module RuboCop
         next unless RuboCop::Node::Traversal.method_defined?(callback)
         class_eval <<-EOS, __FILE__, __LINE__
           def #{callback}(node)
+            @callbacks[:"#{callback}"] ||= @cops.select do |cop|
+              cop.respond_to?(:"#{callback}")
+            end
             @callbacks[:#{callback}].each do |cop|
               with_cop_error_handling(cop) do
                 cop.send(:#{callback}, node)
@@ -49,7 +52,7 @@ module RuboCop
       def investigate(processed_source)
         reset_errors
         remove_irrelevant_cops(processed_source.buffer.name)
-        setup_callbacks
+        reset_callbacks
         prepare(processed_source)
         invoke_custom_processing(@cops, processed_source)
         invoke_custom_processing(@forces, processed_source)
@@ -67,11 +70,8 @@ module RuboCop
         @cops.reject! { |cop| cop.excluded_file?(filename) }
       end
 
-      def setup_callbacks
+      def reset_callbacks
         @callbacks.clear
-        self.class.callback_methods.each do |method|
-          @callbacks[method] = @cops.select { |cop| cop.respond_to?(method) }
-        end
       end
 
       # TODO: Bad design.
