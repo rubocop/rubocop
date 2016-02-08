@@ -16,24 +16,13 @@ module RuboCop
         MSG = 'Missing frozen string literal comment.'.freeze
         SHEBANG = '#!'.freeze
 
-        def_node_matcher :frozen_strings, '{(send {dstr str} :<< ...)
-                                            (send {dstr str} :freeze)}'
-
         def investigate(processed_source)
-          return unless style == :always
+          return if style == :when_needed && target_ruby_version < 2.3
           return if processed_source.buffer.source.empty?
 
           return if frozen_string_literal_comment_exists?(processed_source)
 
           offense(processed_source)
-        end
-
-        def on_send(node)
-          return unless style == :when_needed
-          return if target_ruby_version < 2.3
-          return if frozen_string_literal_comment_exists?(processed_source)
-
-          frozen_strings(node) { offense(processed_source) }
         end
 
         def autocorrect(_node)

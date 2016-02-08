@@ -10,6 +10,10 @@
 
 * Fix auto-correction of `not` with parentheses in `Style/Not`. ([@lumeet][])
 
+### Changes
+
+* [#2739](https://github.com/bbatsov/rubocop/issues/2739): Change the configuration option `when_needed` in `Style/FrozenStringLiteralComment` to add a `frozen_string_literal` comment to all files when the `TargetRubyVersion` is set to 2.3+. ([@rrosenblum][])
+
 ## 0.37.0 (04/02/2016)
 
 ### New features
