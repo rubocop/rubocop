@@ -5,10 +5,25 @@
 ### New features
 
 * [#2798](https://github.com/bbatsov/rubocop/pull/2798): `Rails/FindEach` cop works with `where.not`. ([@pocke][])
+* `Style/MultilineBlockLayout` can correct offenses which involve argument destructuring. ([@alexdowad][])
+* `Style/SpaceAroundKeyword` checks `super` nodes with no args. ([@alexdowad][])
+* `Style/SpaceAroundKeyword` checks `defined?` nodes. ([@alexdowad][])
 
 ### Bug fixes
 
 * Fix auto-correction of `not` with parentheses in `Style/Not`. ([@lumeet][])
+* [#2784](https://github.com/bbatsov/rubocop/issues/2784): RuboCop can inspect `super { ... }` and `super(arg) { ... }`. ([@alexdowad][])
+* [#2781](https://github.com/bbatsov/rubocop/issues/2781): `Performance/RedundantMerge` doesn't flag calls to `#update`, since many classes have methods by this name (not only `Hash`). ([@alexdowad][])
+* [#2780](https://github.com/bbatsov/rubocop/issues/2780): `Lint/DuplicateMethods` does not flag method definitions inside dynamic `Class.new` blocks. ([@alexdowad][])
+* [#2775](https://github.com/bbatsov/rubocop/issues/2775): `Style/SpaceAroundKeyword` doesn't flag `yield.method`. ([@alexdowad][])
+* [#2774](https://github.com/bbatsov/rubocop/issues/2774): `Style/SpaceAroundOperators` doesn't flag calls to `#[]`. ([@alexdowad][])
+* [#2772](https://github.com/bbatsov/rubocop/issues/2772): RuboCop doesn't crash when `AllCops` section in configuration file is empty (rather, it displays a warning as intended). ([@alexdowad][])
+* [#2737](https://github.com/bbatsov/rubocop/issues/2737): `Style/GuardClause` handles `elsif` clauses correctly. ([@alexdowad][])
+* [#2735](https://github.com/bbatsov/rubocop/issues/2735): `Style/MultilineBlockLayout` doesn't cause an infinite loop by moving `end` onto the same line as the block args. ([@alexdowad][])
+* [#2715](https://github.com/bbatsov/rubocop/issues/2715): `Performance/RedundantMatch` doesn't flag calls to `#match` which take a block. ([@alexdowad][])
+* [#2704](https://github.com/bbatsov/rubocop/issues/2704): `Lint/NestedMethodDefinition` doesn't flag singleton defs which define a method on the value of a local variable. ([@alexdowad][])
+* [#2660](https://github.com/bbatsov/rubocop/issues/2660): `Style/TrailingUnderscoreVariable` shows recommended code in its offense message. ([@alexdowad][])
+* [#2671](https://github.com/bbatsov/rubocop/issues/2671): `Style/WordArray` doesn't attempt to inspect strings with invalid encoding, to avoid failing with an encoding error. ([@alexdowad][])
 
 ## 0.37.0 (04/02/2016)
 

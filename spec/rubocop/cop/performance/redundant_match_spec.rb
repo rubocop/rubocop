@@ -79,6 +79,13 @@ describe RuboCop::Cop::Performance::RedundantMatch do
     expect(cop.messages).to be_empty
   end
 
+  it 'does not register an offense when match has a block' do
+    inspect_source(cop, ['/regex/.match(str) do |m|',
+                         '  something(m)',
+                         'end'])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'does not register an error when there is no receiver to the match call' do
     inspect_source(cop, 'match("bar")')
     expect(cop.messages).to be_empty

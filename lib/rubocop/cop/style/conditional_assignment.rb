@@ -208,7 +208,7 @@ module RuboCop
           return true if ASSIGNMENT_TYPES.include?(branch.type)
 
           if branch.send_type?
-            _variable, method, = *branch
+            _receiver, method, = *branch
             return true if METHODS.include?(method)
             return true if method.to_s.end_with?(EQUAL)
           end

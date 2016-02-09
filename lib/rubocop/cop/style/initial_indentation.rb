@@ -17,7 +17,7 @@ module RuboCop
           return if first_token.pos.column == 0
 
           with_space = range_with_surrounding_space(first_token.pos, :left,
-                                                    nil, !:with_newline)
+                                                    !:with_newline)
           # If the file starts with a byte order mark (BOM), the column can be
           # non-zero, but then we find out here if there's no space to the left
           # of the first token.

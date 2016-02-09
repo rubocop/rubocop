@@ -255,7 +255,7 @@ module RuboCop
     end
 
     def check_obsolete_parameter(cop, parameter, alternative = nil)
-      if key?(cop) && self[cop].key?(parameter)
+      if self[cop] && self[cop].key?(parameter)
         raise ValidationError, "obsolete parameter #{parameter} (for #{cop}) " \
                               "found in #{loaded_path}" \
                               "#{"\n" if alternative}#{alternative}"

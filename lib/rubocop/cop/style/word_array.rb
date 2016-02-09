@@ -64,7 +64,7 @@ module RuboCop
         def complex_content?(strings)
           strings.any? do |s|
             string = s.str_content
-            string !~ word_regex || string =~ / /
+            !string.valid_encoding? || string !~ word_regex || string =~ / /
           end
         end
 

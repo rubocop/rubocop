@@ -53,8 +53,7 @@ module RuboCop
           _block_start, args, last_expression = node.children
 
           unless args.children.empty?
-            line = args.loc.end.nil? ? args.loc.line : args.loc.end.line
-            if do_loc.line != line
+            if do_loc.line != args.loc.last_line
               add_offense_for_expression(node, args, ARG_MSG)
             end
           end
@@ -77,9 +76,8 @@ module RuboCop
         def autocorrect(node)
           lambda do |corrector|
             _method, args, block_body = *node
-            unless args.children.empty? ||
-                   args.loc.end.line == node.loc.begin.line
-              autocorrect_arguments(corrector, node, args, block_body)
+            unless args.children.empty? || args.loc.last_line == node.loc.line
+              autocorrect_arguments(corrector, node, args)
               expr_before_body = args.source_range.end
             end
 
@@ -92,12 +90,10 @@ module RuboCop
           end
         end
 
-        def autocorrect_arguments(corrector, node, args, block_body)
-          end_pos = if block_body
-                      block_body.source_range.begin_pos
-                    else
-                      node.loc.end.begin.begin_pos - 1
-                    end
+        def autocorrect_arguments(corrector, node, args)
+          end_pos =
+            range_with_surrounding_space(args.source_range, :right, false)
+            .end_pos
           range = Parser::Source::Range.new(args.source_range.source_buffer,
                                             node.loc.begin.end.begin_pos,
                                             end_pos)
@@ -118,7 +114,13 @@ module RuboCop
         end
 
         def block_arg_string(args)
-          args.children.map(&:source).join(', ')
+          args.children.map do |arg|
+            if arg.mlhs_type?
+              "(#{block_arg_string(arg)})"
+            else
+              arg.source
+            end
+          end.join(', ')
         end
       end
     end

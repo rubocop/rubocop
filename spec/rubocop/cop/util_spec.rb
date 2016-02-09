@@ -4,6 +4,10 @@
 require 'spec_helper'
 
 describe RuboCop::Cop::Util do
+  class TestUtil
+    include RuboCop::Cop::Util
+  end
+
   describe '#line_range' do
     let(:source) do
       <<-END
@@ -18,10 +22,8 @@ describe RuboCop::Cop::Util do
       END
     end
 
-    let(:ast) do
-      processed_source = parse_source(source)
-      processed_source.ast
-    end
+    let(:processed_source) { parse_source(source) }
+    let(:ast) { processed_source.ast }
 
     let(:node) { ast.each_node.find(&:class_type?) }
 
@@ -41,13 +43,17 @@ describe RuboCop::Cop::Util do
   end
 
   describe 'source indicated by #range_with_surrounding_comma' do
-    let(:input_range) { OpenStruct.new(begin_pos: 7, end_pos: 12) }
-    let(:buffer) { OpenStruct.new(source: 'raise ,Error,') }
+    let(:source) { 'raise " ,Error, "' }
+    let(:processed_source) { parse_source(source) }
+    let(:input_range) do
+      Parser::Source::Range.new(processed_source.buffer, 9, 14)
+    end
 
     subject do
-      r = described_class.range_with_surrounding_comma(input_range,
-                                                       side, buffer)
-      buffer.source[r.begin_pos...r.end_pos]
+      obj = TestUtil.new
+      obj.instance_exec(processed_source) { |src| @processed_source = src }
+      r = obj.send(:range_with_surrounding_comma, input_range, side)
+      processed_source.buffer.source[r.begin_pos...r.end_pos]
     end
 
     context 'when side is :both' do
@@ -67,12 +73,17 @@ describe RuboCop::Cop::Util do
   end
 
   describe 'source indicated by #range_with_surrounding_space' do
-    let(:input_range) { OpenStruct.new(begin_pos: 5, end_pos: 9) }
-    let(:buffer) { OpenStruct.new(source: 'f {  a(2) }') }
+    let(:source) { 'f {  a(2) }' }
+    let(:processed_source) { parse_source(source) }
+    let(:input_range) do
+      Parser::Source::Range.new(processed_source.buffer, 5, 9)
+    end
+
     subject do
-      r = described_class.range_with_surrounding_space(input_range, side,
-                                                       buffer)
-      buffer.source[r.begin_pos...r.end_pos]
+      obj = TestUtil.new
+      obj.instance_exec(processed_source) { |src| @processed_source = src }
+      r = obj.send(:range_with_surrounding_space, input_range, side)
+      processed_source.buffer.source[r.begin_pos...r.end_pos]
     end
 
     context 'when side is :both' do

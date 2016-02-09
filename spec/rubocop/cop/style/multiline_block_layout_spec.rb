@@ -207,4 +207,27 @@ describe RuboCop::Cop::Style::MultilineBlockLayout do
                               '  play_with(x, y)',
                               'end'].join("\n"))
   end
+
+  it 'auto-corrects a line break within destructured arguments' do
+    new_source = autocorrect_source(cop,
+                                    ['test do |(x,',
+                                     '  y)| play_with(x, y)',
+                                     'end'])
+    expect(new_source).to eq(['test do |(x, y)|',
+                              '  play_with(x, y)',
+                              'end'].join("\n"))
+  end
+
+  it "doesn't move end keyword in a way which causes infinite loop " \
+     'in combination with Style/BlockEndNewLine' do
+    new_source = autocorrect_source(cop, ['def f',
+                                          '  X.map do |(a,',
+                                          '  b)|',
+                                          '  end',
+                                          'end'])
+    expect(new_source).to eq(['def f',
+                              '  X.map do |(a, b)|',
+                              '  end',
+                              'end'].join("\n"))
+  end
 end

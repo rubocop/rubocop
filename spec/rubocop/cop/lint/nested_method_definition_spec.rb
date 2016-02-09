@@ -59,6 +59,16 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
     expect(cop.offenses.size).to eq(0)
   end
 
+  it 'does not register offense for definition of method on local var' do
+    inspect_source(cop, ['class Foo',
+                         '  def x(obj)',
+                         '    def obj.y',
+                         '    end',
+                         '  end',
+                         'end'])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'does not register offense for nested definition inside class_eval' do
     inspect_source(cop, ['class Foo',
                          '  def x(klass)',

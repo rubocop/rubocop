@@ -21,41 +21,25 @@ module RuboCop
       class TrailingUnderscoreVariable < Cop
         include SurroundingSpace
 
-        MSG = 'Do not use trailing `_`s in parallel assignment.'.freeze
+        MSG = 'Do not use trailing `_`s in parallel assignment. ' \
+              'Prefer `%s`.'.freeze
         UNDERSCORE = '_'.freeze
 
         def on_masgn(node)
-          left, = *node
-          variables = *left
-          first_offense = find_first_offense(variables)
+          return unless (range = unneeded_range(node))
 
-          return if first_offense.nil?
+          good_code = node.source
+          offset = range.begin_pos - node.source_range.begin_pos
+          good_code[offset, range.size] = ''
 
-          range =
-            Parser::Source::Range.new(node.source_range.source_buffer,
-                                      first_offense.source_range.begin_pos,
-                                      variables.last.source_range.end_pos)
-          add_offense(node, range)
+          add_offense(node, range, format(MSG, good_code))
         end
 
         def autocorrect(node)
-          left, right = *node
-          variables = *left
-          first_offense = find_first_offense(variables)
-
-          end_position =
-            if first_offense.source_range == variables.first.source_range
-              right.source_range.begin_pos
-            else
-              node.loc.operator.begin_pos
-            end
-
-          range =
-            Parser::Source::Range.new(node.source_range.source_buffer,
-                                      first_offense.source_range.begin_pos,
-                                      end_position)
-
-          ->(corrector) { corrector.remove(range) unless range.nil? }
+          lambda do |corrector|
+            range = unneeded_range(node)
+            corrector.remove(range) if range
+          end
         end
 
         private
@@ -87,6 +71,27 @@ module RuboCop
         def allow_named_underscore_variables
           @allow_named_underscore_variables ||=
             cop_config['AllowNamedUnderscoreVariables']
+        end
+
+        def unneeded_range(node)
+          left, right = *node
+          variables = *left
+          first_offense = find_first_offense(variables)
+
+          return unless first_offense
+
+          end_position =
+            if first_offense.source_range == variables.first.source_range
+              right.source_range.begin_pos
+            else
+              node.loc.operator.begin_pos
+            end
+
+          range =
+            Parser::Source::Range.new(node.source_range.source_buffer,
+                                      first_offense.source_range.begin_pos,
+                                      end_position)
+          range_with_surrounding_space(range, :right)
         end
       end
     end

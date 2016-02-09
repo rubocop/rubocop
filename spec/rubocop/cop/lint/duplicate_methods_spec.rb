@@ -317,4 +317,16 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
                     'end'], 'test.rb')
     expect(cop.offenses).to be_empty
   end
+
+  it 'ignores Class.new blocks which are assigned to local variables' do
+    inspect_source(cop, ['a = Class.new do',
+                         '  def foo',
+                         '  end',
+                         'end',
+                         'b = Class.new do',
+                         '  def foo',
+                         '  end',
+                         'end'])
+    expect(cop.offenses).to be_empty
+  end
 end

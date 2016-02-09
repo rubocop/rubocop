@@ -130,6 +130,9 @@ describe RuboCop::Cop::Style::SpaceAroundKeyword do
   it_behaves_like 'accept after', '(', 'return(1)'
   it_behaves_like 'missing after', 'super', 'super""', 'super ""'
   it_behaves_like 'accept after', '(', 'super(1)'
+  it_behaves_like 'missing after', 'super', 'super{}', 'super {}'
+  it_behaves_like 'accept after', '(', 'defined?(1)'
+  it_behaves_like 'missing after', 'defined?', 'defined?1', 'defined? 1'
 
   it_behaves_like 'missing before', 'then', 'if ""then a end',
                   'if "" then a end'
@@ -155,6 +158,7 @@ describe RuboCop::Cop::Style::SpaceAroundKeyword do
   it_behaves_like 'accept after', '\n', "test do\nend"
   it_behaves_like 'accept around', '()', '(next)'
   it_behaves_like 'accept before', '!', '!yield'
+  it_behaves_like 'accept after', '.', 'yield.method'
 
   # Style/SpaceAroundBlockParameters
   it_behaves_like 'accept before', '|', 'loop { |x|break }'

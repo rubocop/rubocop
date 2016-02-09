@@ -33,8 +33,8 @@ module RuboCop
               corrector.replace(block.source_range, body.source)
             else
               range = node.source_range
-              range = range_with_surrounding_space(range, :left, nil, false)
-              range = range_with_surrounding_space(range, :right, nil, true)
+              range = range_with_surrounding_space(range, :left, false)
+              range = range_with_surrounding_space(range, :right, true)
               corrector.remove(range)
             end
           end

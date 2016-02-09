@@ -95,6 +95,18 @@ describe RuboCop::Cop::Style::GuardClause, :config do
     expect(cop.offenses).to be_empty
   end
 
+  it 'does not report an offense if body is if..elsif..end' do
+    inspect_source(cop,
+                   ['def func',
+                    '  if something',
+                    '    a',
+                    '  elsif something_else',
+                    '    b',
+                    '  end',
+                    'end'])
+    expect(cop.offenses).to be_empty
+  end
+
   it "doesn't report an offense if condition has multiple lines" do
     inspect_source(cop,
                    ['def func',
@@ -263,6 +275,28 @@ describe RuboCop::Cop::Style::GuardClause, :config do
                            'else',
                            '  puts "hello"',
                            'end'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it "does not report an offense if #{kw} is inside elsif" do
+      inspect_source(cop,
+                     ['if something',
+                      '  a',
+                      'elsif something_else',
+                      "  #{kw}",
+                      'end'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it "does not report an offense if #{kw} is inside if..elsif..else..end" do
+      inspect_source(cop,
+                     ['if something',
+                      '  a',
+                      'elsif something_else',
+                      '  b',
+                      'else',
+                      "  #{kw}",
+                      'end'])
       expect(cop.offenses).to be_empty
     end
 

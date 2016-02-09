@@ -30,7 +30,8 @@ module RuboCop
         MSG_AFTER = 'Space after keyword `%s` is missing.'.freeze
 
         DO = 'do'.freeze
-        ACCEPT_LEFT_PAREN = %w(break next not return super yield).freeze
+        ACCEPT_LEFT_PAREN =
+          %w(break next not return super yield defined?).freeze
 
         def on_and(node)
           check(node, [:operator].freeze) if node.keyword?
@@ -100,6 +101,10 @@ module RuboCop
           check(node, [:keyword].freeze)
         end
 
+        def on_zsuper(node)
+          check(node, [:keyword].freeze)
+        end
+
         def on_until(node)
           check(node, [:begin, :end, :keyword].freeze)
         end
@@ -113,6 +118,10 @@ module RuboCop
         end
 
         def on_yield(node)
+          check(node, [:keyword].freeze)
+        end
+
+        def on_defined?(node)
           check(node, [:keyword].freeze)
         end
 
@@ -167,10 +176,10 @@ module RuboCop
         def space_after_missing?(range)
           pos = range.end_pos
           char = range.source_buffer.source[pos]
-          return false unless range.source_buffer.source[pos]
+          return false unless char
           return false if accept_left_parenthesis?(range) && char == '('.freeze
 
-          char !~ /[\s;,#\\\)\}\]]/
+          char !~ /[\s;,#\\\)\}\]\.]/
         end
 
         def accept_left_parenthesis?(range)
@@ -182,7 +191,7 @@ module RuboCop
           return false unless ancestor
           return true if ancestor.and_type? || ancestor.or_type?
           return false unless ancestor.send_type?
-          operator?(ancestor.loc.selector.source.to_sym)
+          operator?(ancestor.method_name)
         end
 
         def autocorrect(range)

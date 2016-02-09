@@ -39,7 +39,7 @@ module RuboCop
         def autocorrect(operator_range)
           # Include any trailing whitespace so we don't create a syntax error.
           operator_range = range_with_surrounding_space(operator_range,
-                                                        :right, nil,
+                                                        :right,
                                                         !:with_newline)
           ->(corrector) { corrector.replace(operator_range, '\\') }
         end
