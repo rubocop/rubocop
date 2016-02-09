@@ -55,10 +55,7 @@ module RuboCop
                           preferred_method
                         end
 
-          first_range = Parser::Source::Range.new(
-            receiver.source,
-            receiver.loc.end.end_pos,
-            receiver.loc.end.end_pos).join(node.loc.selector)
+          first_range = receiver.source_range.end.join(node.loc.selector)
 
           receiver, _args, _body = *receiver if receiver.block_type?
 
