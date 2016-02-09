@@ -15,9 +15,9 @@ module RuboCop
 
         def on_send(node)
           _receiver, method_name, *args = *node
+          return if args.size > 1
           return if operator?(method_name) || node.asgn_method_call?
           return unless args.first && args.first.source.start_with?('(')
-          return if args.size > 1
 
           space_length = spaces_before_left_parenthesis(node)
           return unless space_length > 0

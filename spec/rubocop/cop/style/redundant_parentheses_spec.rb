@@ -98,6 +98,8 @@ describe RuboCop::Cop::Style::RedundantParentheses do
   it_behaves_like 'redundant', '(+x)', '+x', 'an unary operation'
   it_behaves_like 'plausible', '(!x).y'
 
+  it_behaves_like 'redundant', '[(1)]', '[1]', 'a literal', '(1)'
+
   it 'accepts parentheses around a method call with unparenthesized ' \
      'arguments' do
     inspect_source(cop, '(a 1, 2) && (1 + 1)')
@@ -153,6 +155,20 @@ describe RuboCop::Cop::Style::RedundantParentheses do
     it 'registers an offense if the argument list is parenthesized ' do
       inspect_source(cop, 'x(({ y: 1 }), z)')
       expect(cop.offenses.size).to eq 1
+    end
+  end
+
+  context 'when a hash literal is the second argument in a method call' do
+    it 'registers an offense' do
+      inspect_source(cop, 'x ({ y: 1 }), ({ y: 1 })')
+      expect(cop.offenses.size).to eq 1
+    end
+  end
+
+  context 'when a non-parenthesized call has an arg and a block' do
+    it 'accepts parens around the arg' do
+      inspect_source(cop, 'method (:arg) { blah }')
+      expect(cop.offenses).to be_empty
     end
   end
 

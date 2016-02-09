@@ -27,11 +27,21 @@ describe RuboCop::Cop::Performance::Detect do
         .to eq(["Use `detect` instead of `#{method}.first`."])
     end
 
+    it "doesn't register an offense when first(n) is called on #{method}" do
+      inspect_source(cop, "[1, 2, 3].#{method} { |i| i % 2 == 0 }.first(n)")
+      expect(cop.offenses).to be_empty
+    end
+
     it "registers an offense when last is called on #{method}" do
       inspect_source(cop, "[1, 2, 3].#{method} { |i| i % 2 == 0 }.last")
 
       expect(cop.messages)
         .to eq(["Use `reverse.detect` instead of `#{method}.last`."])
+    end
+
+    it "doesn't register an offense when last(n) is called on #{method}" do
+      inspect_source(cop, "[1, 2, 3].#{method} { |i| i % 2 == 0 }.last(n)")
+      expect(cop.offenses).to be_empty
     end
 
     it "registers an offense when first is called on multiline #{method}" do
