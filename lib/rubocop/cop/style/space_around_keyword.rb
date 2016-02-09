@@ -182,7 +182,7 @@ module RuboCop
           return false unless ancestor
           return true if ancestor.and_type? || ancestor.or_type?
           return false unless ancestor.send_type?
-          operator?(ancestor.loc.selector.source.to_sym)
+          operator?(ancestor.method_name)
         end
 
         def autocorrect(range)
