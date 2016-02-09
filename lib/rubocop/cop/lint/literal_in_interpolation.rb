@@ -25,6 +25,8 @@ module RuboCop
         end
 
         def autocorrect(node)
+          return if node.dstr_type? # nested, fixed in next iteration
+
           value = autocorrected_value(node)
           ->(corrector) { corrector.replace(node.parent.source_range, value) }
         end
@@ -44,7 +46,7 @@ module RuboCop
           when :sym
             autocorrected_value_for_symbol(node)
           else
-            node.source
+            node.source.gsub('"', '\"')
           end
         end
 
