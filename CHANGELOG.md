@@ -9,6 +9,7 @@
 * `Style/RedundantParentheses` catches offenses involving the 2nd argument to a method call without parentheses, if the 2nd argument is a hash. ([@alexdowad][])
 * `Style/RedundantParentheses` catches offenses inside an array literal. ([@alexdowad][])
 * `Style/RedundantParentheses` doesn't flag `method (:arg) {}`, since removing the parentheses would change the meaning of the expression. ([@alexdowad][])
+* `Performance/Detect` doesn't flag code where `first` or `last` takes an argument, as it cannot be transformed to equivalent code using `detect`. ([@alexdowad][])
 
 ### Changes
 

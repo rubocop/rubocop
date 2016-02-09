@@ -26,19 +26,15 @@ module RuboCop
         DANGEROUS_METHODS = [:first, :last].freeze
 
         def on_send(node)
-          receiver, second_method = *node
-          return if receiver.nil?
-          return unless DANGEROUS_METHODS.include?(second_method)
+          receiver, second_method, *args = *node
+          return unless check_second_call(receiver, second_method, args)
 
           receiver, _args, body = *receiver if receiver.block_type?
-
           caller, first_method, args = *receiver
 
           # check that we have usual block or block pass
           return if body.nil? && (args.nil? || !args.block_pass_type?)
-
           return unless SELECT_METHODS.include?(first_method)
-
           return if lazy?(caller)
 
           range = receiver.loc.selector.join(node.loc.selector)
@@ -73,6 +69,12 @@ module RuboCop
         end
 
         private
+
+        def check_second_call(receiver, method, args)
+          receiver &&
+            DANGEROUS_METHODS.include?(method) &&
+            args.empty?
+        end
 
         def preferred_method
           config.for_cop('Style/CollectionMethods') \
