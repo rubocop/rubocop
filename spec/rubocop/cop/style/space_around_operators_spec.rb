@@ -162,6 +162,11 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
     expect(cop.messages).to eq([])
   end
 
+  it 'accepts []= without space' do
+    inspect_source(cop, 'files[:key], files[:another] = method')
+    expect(cop.messages).to eq([])
+  end
+
   it 'accepts argument default values without space' do
     # These are handled by SpaceAroundEqualsInParameterDefault,
     # so SpaceAroundOperators leaves them alone.
