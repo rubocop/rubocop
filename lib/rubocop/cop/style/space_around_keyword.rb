@@ -30,7 +30,8 @@ module RuboCop
         MSG_AFTER = 'Space after keyword `%s` is missing.'.freeze
 
         DO = 'do'.freeze
-        ACCEPT_LEFT_PAREN = %w(break next not return super yield).freeze
+        ACCEPT_LEFT_PAREN =
+          %w(break next not return super yield defined?).freeze
 
         def on_and(node)
           check(node, [:operator].freeze) if node.keyword?
@@ -117,6 +118,10 @@ module RuboCop
         end
 
         def on_yield(node)
+          check(node, [:keyword].freeze)
+        end
+
+        def on_defined?(node)
           check(node, [:keyword].freeze)
         end
 
