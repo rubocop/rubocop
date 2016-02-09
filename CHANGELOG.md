@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.37.1 (09/02/2016)
+
 ### New features
 
 * [#2798](https://github.com/bbatsov/rubocop/pull/2798): `Rails/FindEach` cop works with `where.not`. ([@pocke][])
