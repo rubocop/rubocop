@@ -22,6 +22,7 @@ module RuboCop
         def_node_matcher :square_brackets?, '(send (send _recv _msg) :[] ...)'
         def_node_matcher :range_end?, '^^{irange erange}'
         def_node_matcher :method_node_and_args, '$(send _recv _msg $...)'
+        def_node_matcher :rescue?, '{^resbody ^^resbody}'
 
         def on_begin(node)
           return unless parentheses?(node)
@@ -30,8 +31,8 @@ module RuboCop
           return if keyword_ancestor?(node) && parens_required?(node)
           return if child_node.hash_type? && first_argument?(node) &&
                     !parentheses?(node.parent)
-
           return if rescue?(node)
+
           check(node, child_node)
         end
 
@@ -95,10 +96,6 @@ module RuboCop
 
           _receiver, _method_name, *args = *send_node
           node.equal?(args.first)
-        end
-
-        def rescue?(node)
-          node.parent && node.parent.array_type?
         end
       end
     end

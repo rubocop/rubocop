@@ -7,6 +7,7 @@
 * Fix auto-correction of array and hash literals in `Lint/LiteralInInterpolation`. ([@lumeet][])
 * [#2815](https://github.com/bbatsov/rubocop/pull/2815): Fix missing assets for html formatter. ([@prsimp][])
 * `Style/RedundantParentheses` catches offenses involving the 2nd argument to a method call without parentheses, if the 2nd argument is a hash. ([@alexdowad][])
+* `Style/RedundantParentheses` catches offenses inside an array literal. ([@alexdowad][])
 
 ### Changes
 
