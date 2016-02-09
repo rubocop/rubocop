@@ -6,9 +6,10 @@ module RuboCop
     # Common functionality for handling parentheses.
     module Parentheses
       def parens_required?(node)
-        source_buffer = node.source_range.source_buffer
-        source_buffer.source[node.source_range.begin_pos - 1] =~ /[a-z]/ ||
-          source_buffer.source[node.source_range.end_pos] =~ /[a-z]/
+        range  = node.source_range
+        source = range.source_buffer.source
+        source[range.begin_pos - 1] =~ /[a-z]/ ||
+          source[range.end_pos] =~ /[a-z]/
       end
 
       def autocorrect(node)
