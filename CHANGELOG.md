@@ -8,6 +8,7 @@
 * [#2815](https://github.com/bbatsov/rubocop/pull/2815): Fix missing assets for html formatter. ([@prsimp][])
 * `Style/RedundantParentheses` catches offenses involving the 2nd argument to a method call without parentheses, if the 2nd argument is a hash. ([@alexdowad][])
 * `Style/RedundantParentheses` catches offenses inside an array literal. ([@alexdowad][])
+* `Style/RedundantParentheses` doesn't flag `method (:arg) {}`, since removing the parentheses would change the meaning of the expression. ([@alexdowad][])
 
 ### Changes
 

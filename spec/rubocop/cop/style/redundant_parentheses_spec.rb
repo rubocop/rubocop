@@ -165,6 +165,13 @@ describe RuboCop::Cop::Style::RedundantParentheses do
     end
   end
 
+  context 'when a non-parenthesized call has an arg and a block' do
+    it 'accepts parens around the arg' do
+      inspect_source(cop, 'method (:arg) { blah }')
+      expect(cop.offenses).to be_empty
+    end
+  end
+
   it 'accepts parentheses around the error passed to rescue' do
     inspect_source(cop, ['begin',
                          '  some_method',
