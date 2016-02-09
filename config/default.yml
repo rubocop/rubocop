@@ -481,9 +481,8 @@ Style/FormatString:
 Style/FrozenStringLiteralComment:
   EnforcedStyle: when_needed
   SupportedStyles:
-    # `when_needed` will add the frozen string literal comment to files that call
-    # `freeze` or `<<` on a string literal. It will only add the comment to files
-    # when running Ruby 2.3.0+.
+    # `when_needed` will add the frozen string literal comment to files
+    # only when the `TargetRubyVersion` is set to 2.3.0+.
     - when_needed
     # `always` will always add the frozen string literal comment to a file
     # regardless of the Ruby version or if `freeze` or `<<` are called on a

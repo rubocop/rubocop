@@ -277,62 +277,60 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       end
     end
 
-    if RUBY_VERSION < '2.3.0'
-      context 'ruby < 2.3' do
-        context 'target_ruby_version < 2.3', :ruby19 do
-          it 'accepts freezing a string' do
-            inspect_source(cop, '"x".freeze')
+    context 'ruby < 2.3' do
+      context 'target_ruby_version < 2.3', :ruby19 do
+        it 'accepts freezing a string' do
+          inspect_source(cop, '"x".freeze')
 
-            expect(cop.offenses).to be_empty
-          end
-
-          it 'accepts calling << on a string' do
-            inspect_source(cop, '"x" << "y"')
-
-            expect(cop.offenses).to be_empty
-          end
-
-          it 'accepts freezing a string with interpolation' do
-            inspect_source(cop, '"#{foo}bar".freeze')
-
-            expect(cop.offenses).to be_empty
-          end
-
-          it 'accepts calling << on a string with interpolation' do
-            inspect_source(cop, '"#{foo}bar" << "baz"')
-
-            expect(cop.offenses).to be_empty
-          end
+          expect(cop.offenses).to be_empty
         end
 
-        context 'target_ruby_version 2.3+', :ruby23 do
-          it 'accepts freezing a string' do
-            inspect_source(cop, '"x".freeze')
+        it 'accepts calling << on a string' do
+          inspect_source(cop, '"x" << "y"')
 
-            expect(cop.messages)
-              .to eq(['Missing frozen string literal comment.'])
-          end
+          expect(cop.offenses).to be_empty
+        end
 
-          it 'accepts calling << on a string' do
-            inspect_source(cop, '"x" << "y"')
+        it 'accepts freezing a string with interpolation' do
+          inspect_source(cop, '"#{foo}bar".freeze')
 
-            expect(cop.messages)
-              .to eq(['Missing frozen string literal comment.'])
-          end
+          expect(cop.offenses).to be_empty
+        end
 
-          it 'accepts freezing a string with interpolation' do
-            inspect_source(cop, '"#{foo}bar".freeze')
+        it 'accepts calling << on a string with interpolation' do
+          inspect_source(cop, '"#{foo}bar" << "baz"')
 
-            expect(cop.messages)
-              .to eq(['Missing frozen string literal comment.'])
-          end
+          expect(cop.offenses).to be_empty
+        end
+      end
 
-          it 'accepts calling << on a string with interpolation' do
-            inspect_source(cop, '"#{foo}bar" << "baz"')
+      context 'target_ruby_version 2.3+', :ruby23 do
+        it 'accepts freezing a string' do
+          inspect_source(cop, '"x".freeze')
 
-            expect(cop.messages)
-              .to eq(['Missing frozen string literal comment.'])
-          end
+          expect(cop.messages)
+            .to eq(['Missing frozen string literal comment.'])
+        end
+
+        it 'accepts calling << on a string' do
+          inspect_source(cop, '"x" << "y"')
+
+          expect(cop.messages)
+            .to eq(['Missing frozen string literal comment.'])
+        end
+
+        it 'accepts freezing a string with interpolation' do
+          inspect_source(cop, '"#{foo}bar".freeze')
+
+          expect(cop.messages)
+            .to eq(['Missing frozen string literal comment.'])
+        end
+
+        it 'accepts calling << on a string with interpolation' do
+          inspect_source(cop, '"#{foo}bar" << "baz"')
+
+          expect(cop.messages)
+            .to eq(['Missing frozen string literal comment.'])
         end
       end
     end
