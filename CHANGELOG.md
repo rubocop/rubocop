@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * Fix auto-correction of array and hash literals in `Lint/LiteralInInterpolation`. ([@lumeet][])
+* [#2815](https://github.com/bbatsov/rubocop/pull/2815): Fix missing assets for html formatter. ([@prsimp][])
 
 ### Changes
 
@@ -1979,3 +1980,4 @@
 [@annih]: https://github.com/annih
 [@mmcguinn]: https://github.com/mmcguinn
 [@pocke]: https://github.com/pocke
+[@prsimp]: https://github.com/prsimp
