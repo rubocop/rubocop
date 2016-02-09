@@ -99,7 +99,7 @@ module RuboCop
       def on_send(node)
         node.children.each_with_index do |child, i|
           next if i == 1
-          send(:"on_#{child.type}", child) if child
+          send(:"on_#{child.type}", child) if child && child.methods.include? :type
         end
         nil
       end
