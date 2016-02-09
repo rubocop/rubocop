@@ -88,6 +88,12 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
   it_behaves_like('literal interpolation', 1..2)
   it_behaves_like('literal interpolation', 1...2)
 
+  it 'handles nested interpolations when auto-correction' do
+    corrected = autocorrect_source(cop, %("this is \#{"\#{1}"} silly"))
+    # next iteration fixes this
+    expect(corrected).to eq %("this is \#{"1"} silly")
+  end
+
   shared_examples 'special keywords' do |keyword|
     it "accepts strings like #{keyword}" do
       inspect_source(cop, %("this is \#{#{keyword}} silly"))

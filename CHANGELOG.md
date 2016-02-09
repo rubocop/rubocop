@@ -6,6 +6,10 @@
 
 * Fix auto-correction of array and hash literals in `Lint/LiteralInInterpolation`. ([@lumeet][])
 
+### Changes
+
+* Handle auto-correction of nested interpolations in `Lint/LiteralInInterpolation`. ([@lumeet][])
+
 ## 0.37.1 (09/02/2016)
 
 ### New features
