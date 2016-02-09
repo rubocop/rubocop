@@ -94,7 +94,7 @@ module RuboCop
           return false unless send_node && send_node.send_type?
 
           _receiver, _method_name, *args = *send_node
-          node == args.first
+          node.equal?(args.first)
         end
 
         def rescue?(node)

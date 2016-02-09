@@ -156,6 +156,13 @@ describe RuboCop::Cop::Style::RedundantParentheses do
     end
   end
 
+  context 'when a hash literal is the second argument in a method call' do
+    it 'registers an offense' do
+      inspect_source(cop, 'x ({ y: 1 }), ({ y: 1 })')
+      expect(cop.offenses.size).to eq 1
+    end
+  end
+
   it 'accepts parentheses around the error passed to rescue' do
     inspect_source(cop, ['begin',
                          '  some_method',
