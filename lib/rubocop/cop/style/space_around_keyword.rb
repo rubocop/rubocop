@@ -100,6 +100,10 @@ module RuboCop
           check(node, [:keyword].freeze)
         end
 
+        def on_zsuper(node)
+          check(node, [:keyword].freeze)
+        end
+
         def on_until(node)
           check(node, [:begin, :end, :keyword].freeze)
         end

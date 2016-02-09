@@ -130,6 +130,7 @@ describe RuboCop::Cop::Style::SpaceAroundKeyword do
   it_behaves_like 'accept after', '(', 'return(1)'
   it_behaves_like 'missing after', 'super', 'super""', 'super ""'
   it_behaves_like 'accept after', '(', 'super(1)'
+  it_behaves_like 'missing after', 'super', 'super{}', 'super {}'
 
   it_behaves_like 'missing before', 'then', 'if ""then a end',
                   'if "" then a end'
