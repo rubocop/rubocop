@@ -8,6 +8,7 @@
 * `Style/MultilineBlockLayout` can correct offenses which involve argument destructuring. ([@alexdowad][])
 * `Style/SpaceAroundKeyword` checks `super` nodes with no args. ([@alexdowad][])
 * `Style/SpaceAroundKeyword` checks `defined?` nodes. ([@alexdowad][])
+* [#2719](https://github.com/bbatsov/rubocop/issues/2719): `Style/ConditionalAssignment` handles correcting the alignment of `end`. ([@rrosenblum][])
 
 ### Bug fixes
 
