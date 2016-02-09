@@ -13,23 +13,15 @@ module RuboCop
         include ArraySyntax
 
         PERCENT_MSG = 'Use `%w` or `%W` for an array of words.'.freeze
+        PERCENT_MIXED_MSG = 'Commas or quotes in word array, use `[]`.'.freeze
         ARRAY_MSG = 'Use `[]` for an array of words.'.freeze
         QUESTION_MARK_SIZE = '?'.size
 
         def on_array(node)
-          array_elems = node.children
-
           if bracketed_array_of?(:str, node)
-            return if complex_content?(array_elems) ||
-                      comments_in_array?(node)
-            style_detected(:brackets, array_elems.size)
-
-            if style == :percent && array_elems.size >= min_size
-              add_offense(node, :expression, PERCENT_MSG)
-            end
+            on_bracketed(node)
           elsif node.loc.begin && node.loc.begin.source =~ /\A%[wW]/
-            style_detected(:percent, array_elems.size)
-            add_offense(node, :expression, ARRAY_MSG) if style == :brackets
+            on_percent(node)
           end
         end
 
@@ -52,6 +44,26 @@ module RuboCop
 
         private
 
+        def on_bracketed(node)
+          array_elems = node.children
+          return if complex_content?(array_elems) || comments_in_array?(node)
+          style_detected(:brackets, array_elems.size)
+
+          if style == :percent && array_elems.size >= min_size
+            add_offense(node, :expression, PERCENT_MSG)
+          end
+        end
+
+        def on_percent(node)
+          array_elems = node.children
+          style_detected(:percent, array_elems.size)
+          add_offense(node, :expression, ARRAY_MSG) if style == :brackets
+
+          if style == :percent && mixed_styles?(array_elems)
+            add_offense(node, :expression, PERCENT_MIXED_MSG)
+          end
+        end
+
         def comments_in_array?(node)
           comments = processed_source.comments
           array_range = node.source_range.to_a
@@ -65,6 +77,13 @@ module RuboCop
           strings.any? do |s|
             string = s.str_content
             !string.valid_encoding? || string !~ word_regex || string =~ / /
+          end
+        end
+
+        def mixed_styles?(strings)
+          strings.any? do |s|
+            string = s.str_content
+            string =~ /['",]/
           end
         end
 
