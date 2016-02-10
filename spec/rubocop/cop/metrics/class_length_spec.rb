@@ -21,6 +21,20 @@ describe RuboCop::Cop::Metrics::ClassLength, :config do
     expect(cop.config_to_allow_offenses).to eq('Max' => 6)
   end
 
+  it 'reports the correct beginning and end lines' do
+    inspect_source(cop, ['class Test',
+                         '  a = 1',
+                         '  a = 2',
+                         '  a = 3',
+                         '  a = 4',
+                         '  a = 5',
+                         '  a = 6',
+                         'end'])
+    offense = cop.offenses.first
+    expect(offense.location.first_line).to eq(1)
+    expect(offense.location.last_line).to eq(8)
+  end
+
   it 'accepts a class with 5 lines' do
     inspect_source(cop, ['class Test',
                          '  a = 1',
