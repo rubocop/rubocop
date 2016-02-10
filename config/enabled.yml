@@ -10,7 +10,7 @@ Style/AccessorMethodName:
   Enabled: true
 
 Style/Alias:
-  Description: 'Use alias_method instead of alias.'
+  Description: 'Use alias instead of alias_method.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#alias-method'
   Enabled: true
 
