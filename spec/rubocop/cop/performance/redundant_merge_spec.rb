@@ -50,6 +50,38 @@ describe RuboCop::Cop::Performance::RedundantMerge, :config do
                                   '  hash[:b] = 2',
                                   'end'].join("\n"))
       end
+
+      context 'when original code was indented' do
+        it 'maintains proper indentation' do
+          new_source = autocorrect_source(
+            cop,
+            ['hash = {}',
+             'begin',
+             "  hash.merge!(a: 1, b: 2) #{kw} condition1",
+             'end'])
+          expect(new_source).to eq(['hash = {}',
+                                    'begin',
+                                    "  #{kw} condition1",
+                                    '    hash[:a] = 1',
+                                    '    hash[:b] = 2',
+                                    '  end',
+                                    'end'].join("\n"))
+        end
+      end
+    end
+  end
+
+  context 'when code is indented, and there is more than 1 pair' do
+    it 'indents the autocorrected code properly' do
+      new_source = autocorrect_source(cop, ['hash = {}',
+                                            'begin',
+                                            '  hash.merge!(a: 1, b: 2)',
+                                            'end'])
+      expect(new_source).to eq(['hash = {}',
+                                'begin',
+                                '  hash[:a] = 1',
+                                '  hash[:b] = 2',
+                                'end'].join("\n"))
     end
   end
 

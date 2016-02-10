@@ -12,6 +12,7 @@
 * `Performance/Detect` doesn't flag code where `first` or `last` takes an argument, as it cannot be transformed to equivalent code using `detect`. ([@alexdowad][])
 * `Style/SpaceAroundOperators` ignores aref assignments. ([@alexdowad][])
 * `Style/RescueModifier` indents code correctly when auto-correcting. ([@alexdowad][])
+* `Style/RedundantMerge` indents code correctly when auto-correcting, even if the corrected hash had multiple keys, and even if the corrected code was indented to start with. ([@alexdowad][])
 
 ### Changes
 
