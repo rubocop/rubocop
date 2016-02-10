@@ -41,7 +41,6 @@ module RuboCop
         private
 
         def modifier?(node)
-          return false unless @modifier_locations.respond_to?(:include?)
           @modifier_locations.include?(node.loc.keyword)
         end
       end
