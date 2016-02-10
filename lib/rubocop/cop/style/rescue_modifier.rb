@@ -26,11 +26,12 @@ module RuboCop
           operation, rescue_modifier, = *node
           *_, rescue_args = *rescue_modifier
 
+          indent = indentation(node)
           correction =
             "begin\n" \
-            "#{indentation(node)}#{operation.source}" \
+            "#{operation.source.gsub(/^/, indent)}" \
             "\n#{offset(node)}rescue\n" \
-            "#{indentation(node)}#{rescue_args.source}" \
+            "#{rescue_args.source.gsub(/^/, indent)}" \
             "\n#{offset(node)}end"
 
           lambda do |corrector|
