@@ -15,6 +15,7 @@
 ### Changes
 
 * Handle auto-correction of nested interpolations in `Lint/LiteralInInterpolation`. ([@lumeet][])
+* RuboCop results cache uses different directory names when there are many (or long) CLI options, to avoid a very long path which could cause failures on some filesystems. ([@alexdowad][])
 
 ## 0.37.1 (09/02/2016)
 
