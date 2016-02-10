@@ -32,12 +32,9 @@ module RuboCop
             "\n#{offset(node)}rescue\n" \
             "#{indentation(node)}#{rescue_args.source}" \
             "\n#{offset(node)}end"
-          range = Parser::Source::Range.new(node.source_range.source_buffer,
-                                            node.source_range.begin_pos,
-                                            node.source_range.end_pos)
 
           lambda do |corrector|
-            corrector.replace(range, correction)
+            corrector.replace(node.source_range, correction)
           end
         end
 
