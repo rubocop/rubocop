@@ -45,6 +45,36 @@ describe RuboCop::Cop::Style::WordArray, :config do
       expect(cop.offenses.size).to eq(1)
     end
 
+    it 'registers an offense for word arrays with double quotes' do
+      inspect_source(cop, '%w("one", "two")')
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it 'registers an offense for word arrays with single quotes' do
+      inspect_source(cop, "%w('one', 'two')")
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it 'registers an offense for word arrays with commas' do
+      inspect_source(cop, '%w(one, two)')
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    it 'does not register an offense for array with commas' do
+      inspect_source(cop, '["one,", "two", "three"]')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'does not register an offense for array with quotes' do
+      inspect_source(cop, '["one\'", "two", "three"]')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'does not register an offense for array with double quotes' do
+      inspect_source(cop, '["one\"", "two", "three"]')
+      expect(cop.offenses).to be_empty
+    end
+
     it 'uses %W when autocorrecting strings with newlines and tabs' do
       new_source = autocorrect_source(cop, %(["one\\n", "hi\\tthere"]))
       expect(new_source).to eq('%W(one\\n hi\\tthere)')
