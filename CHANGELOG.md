@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.37.2 (11/02/2016)
+
 ### Bug fixes
 
 * Fix auto-correction of array and hash literals in `Lint/LiteralInInterpolation`. ([@lumeet][])
