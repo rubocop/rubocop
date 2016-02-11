@@ -13,6 +13,7 @@
 * `Style/SpaceAroundOperators` ignores aref assignments. ([@alexdowad][])
 * `Style/RescueModifier` indents code correctly when auto-correcting. ([@alexdowad][])
 * `Style/RedundantMerge` indents code correctly when auto-correcting, even if the corrected hash had multiple keys, and even if the corrected code was indented to start with. ([@alexdowad][])
+* [#2831](https://github.com/bbatsov/rubocop/issues/2831): `Performance/RedundantMerge` doesn't break code by autocorrecting a `#merge!` call which occurs at tail position in a block. ([@alexdowad][])
 
 ### Changes
 
