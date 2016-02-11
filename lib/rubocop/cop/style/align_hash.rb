@@ -7,8 +7,6 @@ module RuboCop
       # Here we check if the keys, separators, and values of a multi-line hash
       # literal are aligned.
       class AlignHash < Cop
-        include IgnoredNode
-
         # Handles calculation of deltas (deviations from correct alignment)
         # when the enforced style is 'key'.
         class KeyAlignment

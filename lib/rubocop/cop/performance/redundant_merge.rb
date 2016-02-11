@@ -38,14 +38,11 @@ module RuboCop
               parent = node.parent
               if parent && pairs.size > 1
                 if modifier_flow_control(parent)
-                  cond, = *parent
-                  padding = "\n#{' ' * indent_width}"
-                  new_source.gsub!(/\n/, padding)
-                  new_source = parent.loc.keyword.source << ' ' <<
-                               cond.source << padding << leading_spaces(node) <<
-                               new_source << "\n" << leading_spaces(node) <<
-                               'end'
+                  new_source = rewrite_with_modifier(node, parent, new_source)
                   node = parent
+                else
+                  padding = "\n#{leading_spaces(node)}"
+                  new_source.gsub!(/\n/, padding)
                 end
               end
 
@@ -67,6 +64,15 @@ module RuboCop
 
             format(AREF_ASGN, receiver.source, key_src, value.source)
           end
+        end
+
+        def rewrite_with_modifier(node, parent, new_source)
+          cond, = *parent
+          padding = "\n#{(' ' * indent_width) + leading_spaces(node)}"
+          new_source.gsub!(/\n/, padding)
+
+          parent.loc.keyword.source << ' ' << cond.source << padding <<
+            new_source << "\n" << leading_spaces(node) << 'end'
         end
 
         def leading_spaces(node)

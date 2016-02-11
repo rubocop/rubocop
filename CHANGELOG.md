@@ -11,10 +11,14 @@
 * `Style/RedundantParentheses` doesn't flag `method (:arg) {}`, since removing the parentheses would change the meaning of the expression. ([@alexdowad][])
 * `Performance/Detect` doesn't flag code where `first` or `last` takes an argument, as it cannot be transformed to equivalent code using `detect`. ([@alexdowad][])
 * `Style/SpaceAroundOperators` ignores aref assignments. ([@alexdowad][])
+* `Style/RescueModifier` indents code correctly when auto-correcting. ([@alexdowad][])
+* `Style/RedundantMerge` indents code correctly when auto-correcting, even if the corrected hash had multiple keys, and even if the corrected code was indented to start with. ([@alexdowad][])
+* [#2831](https://github.com/bbatsov/rubocop/issues/2831): `Performance/RedundantMerge` doesn't break code by autocorrecting a `#merge!` call which occurs at tail position in a block. ([@alexdowad][])
 
 ### Changes
 
 * Handle auto-correction of nested interpolations in `Lint/LiteralInInterpolation`. ([@lumeet][])
+* RuboCop results cache uses different directory names when there are many (or long) CLI options, to avoid a very long path which could cause failures on some filesystems. ([@alexdowad][])
 
 ## 0.37.1 (09/02/2016)
 

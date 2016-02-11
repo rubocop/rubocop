@@ -188,6 +188,23 @@ describe RuboCop::Cop::Style::RescueModifier do
                                 '  normal_handle',
                                 'end'].join("\n"))
     end
+
+    it 'corrects doubled rescue modifiers' do
+      source = 'blah rescue 1 rescue 2'
+      new_source = autocorrect_source(cop, source)
+      # Another round of autocorrection is needed
+      new_source = autocorrect_source(described_class.new(config), new_source)
+
+      expect(new_source).to eq(['begin',
+                                '  begin',
+                                '    blah',
+                                '  rescue',
+                                '    1',
+                                '  end',
+                                'rescue',
+                                '  2',
+                                'end'].join("\n"))
+    end
   end
 
   describe 'excluded file' do

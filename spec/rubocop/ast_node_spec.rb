@@ -66,6 +66,14 @@ describe RuboCop::Node do
       end
     end
 
+    context 'at the end of a block' do
+      let(:src) { 'obj.method { blah; expr }' }
+
+      it 'is always true' do
+        expect(node.children.last).to be_used
+      end
+    end
+
     context 'within a class definition node' do
       let(:src) { 'class C < Super; def a; 1; end; self; end' }
 

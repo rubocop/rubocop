@@ -500,7 +500,7 @@ module RuboCop
       index = parent.children.index { |child| child.equal?(self) }
 
       case parent.type
-      when :array, :block, :defined?, :dstr, :dsym, :eflipflop, :erange, :float,
+      when :array, :defined?, :dstr, :dsym, :eflipflop, :erange, :float,
            :hash, :iflipflop, :irange, :not, :pair, :regexp, :str, :sym, :when,
            :xstr
         parent.value_used?

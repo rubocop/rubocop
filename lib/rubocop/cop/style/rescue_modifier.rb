@@ -26,25 +26,22 @@ module RuboCop
           operation, rescue_modifier, = *node
           *_, rescue_args = *rescue_modifier
 
+          indent = indentation(node)
           correction =
             "begin\n" \
-            "#{indentation(node)}#{operation.source}" \
+            "#{operation.source.gsub(/^/, indent)}" \
             "\n#{offset(node)}rescue\n" \
-            "#{indentation(node)}#{rescue_args.source}" \
+            "#{rescue_args.source.gsub(/^/, indent)}" \
             "\n#{offset(node)}end"
-          range = Parser::Source::Range.new(node.source_range.source_buffer,
-                                            node.source_range.begin_pos,
-                                            node.source_range.end_pos)
 
           lambda do |corrector|
-            corrector.replace(range, correction)
+            corrector.replace(node.source_range, correction)
           end
         end
 
         private
 
         def modifier?(node)
-          return false unless @modifier_locations.respond_to?(:include?)
           @modifier_locations.include?(node.loc.keyword)
         end
       end

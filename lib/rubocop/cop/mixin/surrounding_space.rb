@@ -5,26 +5,23 @@ module RuboCop
   module Cop
     # Common functionality for checking surrounding space.
     module SurroundingSpace
-      def space_between?(t1, t2)
-        between = Parser::Source::Range.new(t1.pos.source_buffer,
-                                            t1.pos.end_pos,
-                                            t2.pos.begin_pos).source
-
+      def space_between?(t1, _t2)
         # Check if the range between the tokens starts with a space. It can
         # contain other characters, e.g. a unary plus, but it must start with
         # space.
-        between =~ /^\s/
+        t1.pos.source_buffer.source.match(/\G\s/, t1.pos.end_pos)
       end
 
       def index_of_first_token(node)
-        b = node.source_range.begin
-        token_table[b.line][b.column]
+        range = node.source_range
+        token_table[range.line][range.column]
       end
 
       def index_of_last_token(node)
-        e = node.source_range.end
-        (0...e.column).to_a.reverse_each do |c|
-          ix = token_table[e.line][c]
+        range = node.source_range
+        table_row = token_table[range.last_line]
+        (0...range.last_column).reverse_each do |c|
+          ix = table_row[c]
           return ix if ix
         end
       end

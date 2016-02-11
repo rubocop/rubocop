@@ -57,7 +57,7 @@ module RuboCop
     def initialize(file, options, config_store, cache_root = nil)
       cache_root ||= ResultCache.cache_root(config_store)
       @path = File.join(cache_root, rubocop_checksum,
-                        relevant_options(options),
+                        relevant_options_digest(options),
                         file_checksum(file, config_store))
       @cached_data = CachedData.new(file)
     end
@@ -129,12 +129,15 @@ module RuboCop
         end
     end
 
-    # Return the options given at invocation, minus the ones that have no
-    # effect on which offenses and disabled line ranges are found, and thus
+    # Return a hash of the options given at invocation, minus the ones that have
+    # no effect on which offenses and disabled line ranges are found, and thus
     # don't affect caching.
-    def relevant_options(options)
+    def relevant_options_digest(options)
       options = options.reject { |key, _| NON_CHANGING.include?(key) }
-      options.to_s.gsub(/[^a-z]+/i, '_')
+      options = options.to_s.gsub(/[^a-z]+/i, '_')
+      # We must avoid making file names too long for some filesystems to handle
+      # If they are short, we can leave them human-readable
+      options.length <= 32 ? options : Digest::MD5.hexdigest(options)
     end
   end
 end
