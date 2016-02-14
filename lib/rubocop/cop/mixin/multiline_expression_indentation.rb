@@ -109,7 +109,11 @@ module RuboCop
       end
 
       def argument_in_method_call(node)
-        node.each_ancestor(:send).find do |a|
+        node.each_ancestor(:send, :block).find do |a|
+          # If the node is inside a block, it makes no difference if that block
+          # is an argument in a method call. It doesn't count.
+          break false if a.block_type?
+
           _, method_name, *args = *a
           next if assignment_call?(method_name)
           args.any? { |arg| within_node?(node, arg) }

@@ -10,6 +10,7 @@
 
 * Fix false positive in `Style/TrailingCommaInArguments` & `Style/TrailingCommaInLiteral` cops with consistent_comma style. ([@meganemura][])
 * [#2861](https://github.com/bbatsov/rubocop/pull/2861): Fix false positive in `Style/SpaceAroundKeyword` for `rescue(...`. ([@rrosenblum][])
+* [#2832](https://github.com/bbatsov/rubocop/issues/2832): `Style/MultilineOperationIndentation` treats operations inside blocks inside other operations correctly. ([@jonas054][])
 
 ## 0.37.2 (11/02/2016)
 
