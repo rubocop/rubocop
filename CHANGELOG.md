@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* `Style/UnlessElse` cop can auto-correct. ([@lumeet][])
+
 ### Bug fixes
 
 * Fix false positive in `Style/TrailingCommaInArguments` & `Style/TrailingCommaInLiteral` cops with consistent_comma style. ([@meganemura][])

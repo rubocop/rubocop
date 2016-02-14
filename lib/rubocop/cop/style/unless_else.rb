@@ -18,6 +18,30 @@ module RuboCop
 
           add_offense(node, :expression)
         end
+
+        def autocorrect(node)
+          condition, = *node
+          body_range = range_between_condition_and_else(node, condition)
+          else_range = range_between_else_and_end(node)
+
+          lambda do |corrector|
+            corrector.replace(node.loc.keyword, 'if'.freeze)
+            corrector.replace(body_range, else_range.source)
+            corrector.replace(else_range, body_range.source)
+          end
+        end
+
+        def range_between_condition_and_else(node, condition)
+          Parser::Source::Range.new(node.source_range.source_buffer,
+                                    condition.source_range.end_pos,
+                                    node.loc.else.begin_pos)
+        end
+
+        def range_between_else_and_end(node)
+          Parser::Source::Range.new(node.source_range.source_buffer,
+                                    node.loc.else.end_pos,
+                                    node.loc.end.begin_pos)
+        end
       end
     end
   end
