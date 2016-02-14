@@ -123,7 +123,3 @@ Style/SymbolArray:
   Description: 'Use %i or %I for arrays of symbols.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-i'
   Enabled: false
-
-Lint/LiteralInInterpolation:
-  Description: 'Avoid interpolating literals in strings'
-  AutoCorrect: false
