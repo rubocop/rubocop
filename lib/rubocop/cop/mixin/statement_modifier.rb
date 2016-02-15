@@ -6,6 +6,7 @@ module RuboCop
     # Common functionality for modifier cops.
     module StatementModifier
       include IfNode
+      include MaxLineLength
 
       def fit_within_line_as_modifier_form?(node)
         cond, body, _else = if_node_parts(node)
@@ -28,11 +29,6 @@ module RuboCop
                 cond_length
 
         total <= max_line_length
-      end
-
-      def max_line_length
-        cop_config['MaxLineLength'] ||
-          config.for_cop('Metrics/LineLength')['Max']
       end
 
       def length(node)

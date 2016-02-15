@@ -62,6 +62,7 @@ require 'rubocop/cop/mixin/first_element_line_break'
 require 'rubocop/cop/mixin/frozen_string_literal'
 require 'rubocop/cop/mixin/hash_node'
 require 'rubocop/cop/mixin/if_node'
+require 'rubocop/cop/mixin/max_line_length'
 require 'rubocop/cop/mixin/on_method_def'
 require 'rubocop/cop/mixin/method_complexity' # relies on on_method_def
 require 'rubocop/cop/mixin/method_preference'

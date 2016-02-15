@@ -344,6 +344,9 @@ Style/CommentAnnotation:
     - HACK
     - REVIEW
 
+Style/ConditionalAssignment:
+  MaxLineLength: null
+
 # Checks that you have put a copyright in a comment before any code.
 #
 # You can override the default Notice in your .rubocop.yml file.
@@ -497,6 +500,7 @@ Style/GlobalVars:
 # `MinBodyLength` defines the number of lines of the a body of an if / unless
 # needs to have to trigger this cop
 Style/GuardClause:
+  MaxLineLength: null
   MinBodyLength: 1
 
 Style/HashSyntax:
@@ -509,7 +513,7 @@ Style/HashSyntax:
   UseHashRocketsWithSymbolValues: false
 
 Style/IfUnlessModifier:
-  MaxLineLength: 80
+  MaxLineLength: null
 
 Style/IndentationConsistency:
   # The difference between `rails` and `normal` is that the `rails` style
@@ -929,7 +933,7 @@ Style/VariableName:
     - camelCase
 
 Style/WhileUntilModifier:
-  MaxLineLength: 80
+  MaxLineLength: null
 
 Style/WordArray:
   EnforcedStyle: percent

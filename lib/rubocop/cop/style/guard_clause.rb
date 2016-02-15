@@ -39,6 +39,7 @@ module RuboCop
       class GuardClause < Cop
         include ConfigurableEnforcedStyle
         include IfNode
+        include MaxLineLength
         include MinBodyLength
 
         MSG = 'Use a guard clause instead of wrapping the code inside a ' \
@@ -112,11 +113,14 @@ module RuboCop
         end
 
         def line_too_long?(node, body, keyword, condition)
-          max    = config.for_cop('Metrics/LineLength')['Max'] || 80
+          return false unless max_line_length
+
           indent = node.loc.column
           source = body && body.source || ''
+          correction = (source + keyword + condition.source)
           # 2 is for spaces on left and right of keyword
-          indent + (source + keyword + condition.source).length + 2 > max
+          line_length = indent + correction.length + 2
+          line_length > max_line_length
         end
       end
     end
