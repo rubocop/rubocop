@@ -28,13 +28,6 @@ module RuboCop
           when_branches.map { |branch| branch.children[1] }
         end
 
-        def correct_branches(corrector, branches)
-          branches.each do |branch|
-            *_, assignment = *branch
-            corrector.replace(branch.source_range, assignment.source)
-          end
-        end
-
         def tail(branch)
           branch.begin_type? ? [*branch].last : branch
         end
@@ -102,6 +95,8 @@ module RuboCop
       # condition can be used instead.
       #
       # @example
+      #   EnforcedStyle: assign_to_condition
+      #
       #   # bad
       #   if foo
       #     bar = 1
@@ -145,12 +140,61 @@ module RuboCop
       #            some_other_method
       #            2
       #          end
+      #
+      #   EnforcedStyle: assign_inside_condition
+      #   # bad
+      #   bar = if foo
+      #           1
+      #         else
+      #           2
+      #         end
+      #
+      #   bar += case foo
+      #          when 'a'
+      #            1
+      #          else
+      #            2
+      #          end
+      #
+      #   bar << if foo
+      #            some_method
+      #            1
+      #          else
+      #            some_other_method
+      #            2
+      #          end
+      #
+      #   # good
+      #   if foo
+      #     bar = 1
+      #   else
+      #     bar = 2
+      #   end
+      #
+      #   case foo
+      #   when 'a'
+      #     bar += 1
+      #   else
+      #     bar += 2
+      #   end
+      #
+      #   if foo
+      #     some_method
+      #     bar = 1
+      #   else
+      #     some_other_method
+      #     bar = 2
+      #   end
       class ConditionalAssignment < Cop
         include IfNode
         include ConditionalAssignmentHelper
+        include ConfigurableEnforcedStyle
+        include IgnoredNode
 
         MSG = 'Use the return of the conditional for variable assignment ' \
               'and comparison.'.freeze
+        ASSIGN_TO_CONDITION_MSG =
+          'Assign variables inside of conditionals'.freeze
         VARIABLE_ASSIGNMENT_TYPES =
           [:casgn, :cvasgn, :gvasgn, :ivasgn, :lvasgn].freeze
         ASSIGNMENT_TYPES =
@@ -164,13 +208,40 @@ module RuboCop
         SINGLE_LINE_CONDITIONS_ONLY = 'SingleLineConditionsOnly'.freeze
         WIDTH = 'Width'.freeze
         METHODS = [:[]=, :<<, :=~, :!~, :<=>].freeze
+        CONDITION_TYPES = [:if, :case].freeze
 
-        def lhs_all_match?(branches)
-          first_lhs = lhs(branches.first)
-          branches.all? { |branch| lhs(branch) == first_lhs }
+        ASSIGNMENT_TYPES.each do |type|
+          define_method "on_#{type}" do |node|
+            return if part_of_ignored_node?(node)
+            check_assignment_to_condition(node)
+          end
+        end
+
+        def on_send(node)
+          return unless assignment_type?(node)
+          check_assignment_to_condition(node)
+        end
+
+        def check_assignment_to_condition(node)
+          return unless style == :assign_inside_condition
+          ignore_node(node)
+          *_variable, assignment = *node
+          if assignment.respond_to?(:type)
+            if assignment.begin_type? && assignment.children.size == 1
+              assignment, = *assignment
+            end
+
+            return unless CONDITION_TYPES.include?(assignment.type)
+          end
+          _condition, *branches, else_branch = *assignment
+          return unless else_branch # empty else
+          return if single_line_conditions_only? &&
+                    [*branches, else_branch].any?(&:begin_type?)
+          add_offense(node, :expression, ASSIGN_TO_CONDITION_MSG)
         end
 
         def on_if(node)
+          return unless style == :assign_to_condition
           return if elsif?(node)
 
           _condition, if_branch, else_branch = *node
@@ -183,6 +254,7 @@ module RuboCop
         end
 
         def on_case(node)
+          return unless style == :assign_to_condition
           _condition, *when_branches, else_branch = *node
           return unless else_branch # empty else
 
@@ -193,21 +265,42 @@ module RuboCop
         end
 
         def autocorrect(node)
-          if ternary_op?(node)
-            TernaryCorrector.correct(node)
+          if assignment_type?(node)
+            move_assignment_inside_condition(node)
           else
-            case node.loc.keyword.source
-            when IF
-              IfCorrector.correct(self, node)
-            when UNLESS
-              UnlessCorrector.correct(self, node)
-            else
-              CaseCorrector.correct(self, node)
-            end
+            move_assignment_outside_condition(node)
           end
         end
 
         private
+
+        def move_assignment_outside_condition(node)
+          if ternary_op?(node)
+            TernaryCorrector.correct(node)
+          elsif node.loc.keyword.is?(IF)
+            IfCorrector.correct(self, node)
+          elsif node.loc.keyword.is?(UNLESS)
+            UnlessCorrector.correct(self, node)
+          else
+            CaseCorrector.correct(self, node)
+          end
+        end
+
+        def move_assignment_inside_condition(node)
+          *_assignment, condition = *node
+          if ternary_op?(condition) || ternary_op?(condition.children[0])
+            TernaryCorrector.move_assignment_inside_condition(node)
+          elsif condition.case_type?
+            CaseCorrector.move_assignment_inside_condition(node)
+          elsif condition.if_type?
+            IfCorrector.move_assignment_inside_condition(node)
+          end
+        end
+
+        def lhs_all_match?(branches)
+          first_lhs = lhs(branches.first)
+          branches.all? { |branch| lhs(branch) == first_lhs }
+        end
 
         def assignment_types_match?(*nodes)
           return unless assignment_type?(nodes.first)
@@ -283,10 +376,47 @@ module RuboCop
         end
       end
 
+      # Helper module to provide common methods to ConditionalAssignment
+      # correctors
+      module ConditionalCorrectorHelper
+        def remove_whitespace_in_branches(corrector, branch, condition, column)
+          branch.each_node do |child|
+            child_expression = child.loc.expression
+            white_space =
+              Parser::Source::Range.new(child_expression.source_buffer,
+                                        child_expression.begin_pos -
+                                         (child.loc.expression.column -
+                                          column - 2),
+                                        child_expression.begin_pos)
+
+            corrector.remove(white_space) if white_space.source.strip.empty?
+          end
+
+          [condition.loc.else, condition.loc.end].each do |loc|
+            corrector.remove_preceding(loc, loc.column - column)
+          end
+        end
+
+        def assignment(node)
+          *_, condition = *node
+          Parser::Source::Range.new(node.loc.expression.source_buffer,
+                                    node.loc.expression.begin_pos,
+                                    condition.loc.expression.begin_pos)
+        end
+
+        def correct_branches(corrector, branches)
+          branches.each do |branch|
+            *_, assignment = *branch
+            corrector.replace(branch.source_range, assignment.source)
+          end
+        end
+      end
+
       # Corrector to correct conditional assignment in ternary conditions.
       class TernaryCorrector
         class << self
           include ConditionalAssignmentHelper
+          include ConditionalCorrectorHelper
 
           def correct(node)
             condition, if_branch, else_branch = *node
@@ -306,6 +436,25 @@ module RuboCop
               corrector.replace(node.source_range, correction)
             end
           end
+
+          def move_assignment_inside_condition(node)
+            *_var, rhs = *node
+            condition, = *rhs if rhs.begin_type? && rhs.children.size == 1
+            assignment = assignment(node)
+            _condition, if_branch, else_branch = *(condition || rhs)
+
+            lambda do |corrector|
+              corrector.remove(assignment)
+              if rhs.begin_type?
+                corrector.remove(rhs.loc.begin)
+                corrector.remove(rhs.loc.end)
+              end
+              corrector.insert_before(if_branch.loc.expression,
+                                      assignment.source)
+              corrector.insert_before(else_branch.loc.expression,
+                                      assignment.source)
+            end
+          end
         end
       end
 
@@ -313,6 +462,7 @@ module RuboCop
       class IfCorrector
         class << self
           include ConditionalAssignmentHelper
+          include ConditionalCorrectorHelper
 
           def correct(cop, node)
             _condition, if_branch, else_branch = *node
@@ -332,6 +482,31 @@ module RuboCop
               corrector.insert_before(node.loc.end, indent(cop, lhs(if_branch)))
             end
           end
+
+          def move_assignment_inside_condition(node)
+            column = node.loc.expression.column
+            *_var, condition = *node
+            _condition, if_branch, else_branch = *condition
+            elsif_branches, else_branch = expand_elses(else_branch)
+            assignment = assignment(node)
+
+            lambda do |corrector|
+              corrector.remove(assignment)
+
+              [if_branch, *elsif_branches, else_branch].each do |branch|
+                branch_assignment = tail(branch)
+                corrector.insert_before(branch_assignment.loc.expression,
+                                        assignment.source)
+
+                remove_whitespace_in_branches(corrector, branch,
+                                              condition, column)
+
+                corrector
+                  .remove_preceding(branch.parent.loc.else,
+                                    branch.parent.loc.else.column - column)
+              end
+            end
+          end
         end
       end
 
@@ -339,6 +514,7 @@ module RuboCop
       class CaseCorrector
         class << self
           include ConditionalAssignmentHelper
+          include ConditionalCorrectorHelper
 
           def correct(cop, node)
             _condition, *when_branches, else_branch = *node
@@ -355,6 +531,31 @@ module RuboCop
 
               corrector.insert_before(node.loc.end,
                                       indent(cop, lhs(else_branch)))
+            end
+          end
+
+          def move_assignment_inside_condition(node)
+            column = node.loc.expression.column
+            *_var, condition = *node
+            _condition, *when_branches, else_branch = *condition
+            when_branches = expand_when_branches(when_branches)
+            assignment = assignment(node)
+
+            lambda do |corrector|
+              corrector.remove(assignment)
+
+              [*when_branches, else_branch].each do |branch|
+                branch_assignment = tail(branch)
+                corrector.insert_before(branch_assignment.loc.expression,
+                                        assignment.source)
+
+                remove_whitespace_in_branches(corrector, branch,
+                                              condition, column)
+
+                corrector
+                  .remove_preceding(branch.parent.loc.keyword,
+                                    branch.parent.loc.keyword.column - column)
+              end
             end
           end
         end

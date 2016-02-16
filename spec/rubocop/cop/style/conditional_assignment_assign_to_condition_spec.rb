@@ -8,7 +8,10 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
   let(:config) do
     RuboCop::Config.new('Style/ConditionalAssignment' => {
                           'Enabled' => true,
-                          'SingleLineConditionsOnly' => true
+                          'SingleLineConditionsOnly' => true,
+                          'EnforcedStyle' => 'assign_to_condition',
+                          'SupportedStyles' => %w(assign_to_condition
+                                                  assign_inside_condition)
                         },
                         'Lint/EndAlignment' => {
                           'AlignWith' => 'keyword',
@@ -39,17 +42,6 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
               '  expect(actual[ix]).to eq(line)',
               'else',
               '  expect(actual[ix]).to match(line)',
-              'end']
-    inspect_source(cop, source)
-
-    expect(cop.offenses).to be_empty
-  end
-
-  it 'allows assignment to a constant as the return' do
-    source = ['test = if foo',
-              '  CONST1',
-              'else',
-              '  CONST2',
               'end']
     inspect_source(cop, source)
 
@@ -444,6 +436,35 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
       expect(cop.messages).to eq([described_class::MSG])
     end
+
+    it 'allows assignment to the return of if else' do
+      source = ["#{variable} = if foo",
+                '                1',
+                '              else',
+                '                2',
+                '              end']
+      inspect_source(cop, source)
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'allows assignment to the return of case when' do
+      source = ["#{variable} = case foo",
+                '              when bar',
+                '                1',
+                '              else',
+                '                2',
+                '              end']
+      inspect_source(cop, source)
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'allows assignment to the return of a ternary' do
+      inspect_source(cop, "#{variable} = foo? ? 1 : 2")
+
+      expect(cop.offenses).to be_empty
+    end
   end
 
   it_behaves_like('all variable types', 'bar')
@@ -467,8 +488,15 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           expect(cop.messages).to eq([described_class::MSG])
         end
 
+        it "allows assignment using #{assignment} to ternary" do
+          source = "#{name} #{assignment} foo? ? 1 : 2"
+          inspect_source(cop, source)
+
+          expect(cop.offenses).to be_empty
+        end
+
         it "registers an offense for assignment using #{assignment} in " \
-        'if else' do
+           'if else' do
           source = ['if foo',
                     "  #{name} #{assignment} 1",
                     'else',
@@ -1474,7 +1502,10 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     let(:config) do
       RuboCop::Config.new('Style/ConditionalAssignment' => {
                             'Enabled' => true,
-                            'SingleLineConditionsOnly' => false
+                            'SingleLineConditionsOnly' => false,
+                            'EnforcedStyle' => 'assign_to_condition',
+                            'SupportedStyles' => %w(assign_to_condition
+                                                    assign_inside_condition)
                           },
                           'Lint/EndAlignment' => {
                             'AlignWith' => 'keyword',
