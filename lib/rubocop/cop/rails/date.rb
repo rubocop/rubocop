@@ -11,7 +11,7 @@ module RuboCop
       # Rails time zone. You must use Time.zone.today instead.
       #
       # The cop also reports warnings when you are using 'to_time' method,
-      # because it doesn't know about Rails time zone too.
+      # because it doesn't know about Rails time zone either.
       #
       # Two styles are supported for this cop. When EnforcedStyle is 'strict'
       # then the Date methods (today, current, yesterday, tomorrow)

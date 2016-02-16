@@ -25,7 +25,7 @@ module RuboCop
                                       month: :months,
                                       year: :years }.freeze
 
-        PLURAL_DURATION_METHODS = SINGULAR_DURATION_METHODS.invert
+        PLURAL_DURATION_METHODS = SINGULAR_DURATION_METHODS.invert.freeze
 
         MSG = 'Prefer `%s.%s`.'.freeze
 
