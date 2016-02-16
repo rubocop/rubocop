@@ -447,6 +447,22 @@ describe RuboCop::Cop::Style::TrailingCommaInLiteral, :config do
                              '}'])
         expect(cop.offenses).to be_empty
       end
+
+      it 'accepts a multiline array with items on a single line and' \
+         'trailing comma' do
+        inspect_source(cop, ['foo = [',
+                             '  1, 2,',
+                             ']'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'accepts a multiline hash with pairs on a single line and' \
+         'trailing comma' do
+        inspect_source(cop, ['bar = {',
+                             '  a: 1001, b: 2020,',
+                             '}'])
+        expect(cop.offenses).to be_empty
+      end
     end
   end
 end

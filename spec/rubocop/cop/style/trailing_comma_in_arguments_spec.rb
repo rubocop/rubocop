@@ -233,10 +233,13 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         expect(cop.highlights).to eq(['d: 1'])
       end
 
-      it 'accepts a method call with two parameters on the same line' do
+      it 'registers an offense for no trailing comma in a method call with' \
+          'two parameters on the same line' do
         inspect_source(cop, ['some_method(a, b',
                              '           )'])
-        expect(cop.offenses).to be_empty
+        expect(cop.messages)
+          .to eq(['Put a comma after the last parameter of a multiline ' \
+                  'method call.'])
       end
 
       it 'accepts trailing comma in a method call with hash' \
@@ -311,6 +314,14 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       it 'accepts a multiline call with a single argument and trailing comma' do
         inspect_source(cop, ['method(',
                              '  1,',
+                             ')'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'accepts a multiline call with arguments on a single line and' \
+         'trailing comma' do
+        inspect_source(cop, ['method(',
+                             '  1, 2,',
                              ')'])
         expect(cop.offenses).to be_empty
       end

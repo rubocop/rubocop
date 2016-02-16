@@ -87,13 +87,13 @@ module RuboCop
         # expression can not be multiline.
         return if !node.multiline? || elements.empty?
 
+        # If brackets are on different lines and there is one item at least,
+        # then comma is needed anytime for consistent_comma.
+        return true if style == :consistent_comma
+
         items = elements.map(&:source_range)
-        if style == :consistent_comma
-          items.one? || items.each_cons(2).any? { |a, b| !on_same_line?(a, b) }
-        else
-          items << node.loc.end
-          items.each_cons(2).all? { |a, b| !on_same_line?(a, b) }
-        end
+        items << node.loc.end
+        items.each_cons(2).all? { |a, b| !on_same_line?(a, b) }
       end
 
       def on_same_line?(a, b)
