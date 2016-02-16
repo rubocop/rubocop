@@ -27,8 +27,6 @@ module RuboCop
         MSG_UNALIGNED_ASGN = '`=` is not aligned with the %s assignment.'.freeze
 
         def investigate(processed_source)
-          ast = processed_source.ast
-
           if force_equal_sign_alignment?
             @asgn_tokens = processed_source.tokens.select { |t| equal_sign?(t) }
             # Only attempt to align the first = on each line
@@ -39,16 +37,7 @@ module RuboCop
           end
 
           processed_source.tokens.each_cons(2) do |t1, t2|
-            next if t2.type == :tNL
-
-            if force_equal_sign_alignment? &&
-               @asgn_tokens.include?(t2) &&
-               (@asgn_lines.include?(t2.pos.line - 1) ||
-                @asgn_lines.include?(t2.pos.line + 1))
-              check_assignment(t2)
-            else
-              check_other(t1, t2, ast)
-            end
+            check_tokens(processed_source.ast, t1, t2)
           end
         end
 
@@ -63,6 +52,19 @@ module RuboCop
         end
 
         private
+
+        def check_tokens(ast, t1, t2)
+          return if t2.type == :tNL
+
+          if force_equal_sign_alignment? &&
+             @asgn_tokens.include?(t2) &&
+             (@asgn_lines.include?(t2.pos.line - 1) ||
+              @asgn_lines.include?(t2.pos.line + 1))
+            check_assignment(t2)
+          else
+            check_other(t1, t2, ast)
+          end
+        end
 
         def check_assignment(token)
           # minus 2 is because pos.line is zero-based
