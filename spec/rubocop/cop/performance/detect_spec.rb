@@ -10,12 +10,11 @@ describe RuboCop::Cop::Performance::Detect do
 
   let(:config) do
     RuboCop::Config.new(
-      'Style/CollectionMethods' =>
-        {
-          'PreferredMethods' => {
-            'detect' => collection_method
-          }
+      'Style/CollectionMethods' => {
+        'PreferredMethods' => {
+          'detect' => collection_method
         }
+      }
     )
   end
 
@@ -231,5 +230,31 @@ describe RuboCop::Cop::Performance::Detect do
 
     it_behaves_like 'detect_autocorrect', 'detect'
     it_behaves_like 'detect_autocorrect', 'find'
+  end
+
+  context 'SafeMode true' do
+    let(:config) do
+      RuboCop::Config.new(
+        'Rails' => {
+          'Enabled' => true
+        },
+        'Style/CollectionMethods' => {
+          'PreferredMethods' => {
+            'detect' => collection_method
+          }
+        },
+        'Performance/Detect' => {
+          'SafeMode' => true
+        }
+      )
+    end
+
+    described_class::SELECT_METHODS.each do |method|
+      it "doesn't register an offense when first is called on #{method}" do
+        inspect_source(cop, "[1, 2, 3].#{method} { |i| i % 2 == 0 }.first")
+
+        expect(cop.offenses).to be_empty
+      end
+    end
   end
 end
