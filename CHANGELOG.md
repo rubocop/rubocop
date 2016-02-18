@@ -25,6 +25,7 @@
 * [#2876](https://github.com/bbatsov/rubocop/issues/2876): `Style/ConditionalAssignment` behaves correctly when assignment statement uses a character which has a special meaning in a regex. ([@alexdowad][])
 * [#2877](https://github.com/bbatsov/rubocop/issues/2877): `Style/SpaceAroundKeyword` doesn't flag `!super.method`, `!yield.method`, and so on. ([@alexdowad][])
 * [#2631](https://github.com/bbatsov/rubocop/issues/2631): `Style/Encoding` can remove unneeded encoding comment when autocorrecting with `when_needed` style. ([@alexdowad][])
+* [#2860](https://github.com/bbatsov/rubocop/issues/2860): Fix false positive in `Rails/Date` when `to_time` is chained with safe method. ([@palkan][])
 
 ## 0.37.2 (11/02/2016)
 
