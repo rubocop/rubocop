@@ -9,6 +9,7 @@
 ### Bug fixes
 
 * Fix false positive in `Style/TrailingCommaInArguments` & `Style/TrailingCommaInLiteral` cops with consistent_comma style. ([@meganemura][])
+* [#2861](https://github.com/bbatsov/rubocop/pull/2861): Fix false positive in `Style/SpaceAroundKeyword` for `rescue(...`. ([@rrosenblum][])
 
 ## 0.37.2 (11/02/2016)
 
