@@ -35,7 +35,10 @@ module RuboCop
         resolve_inheritance_from_gems(hash, hash.delete('inherit_gem'))
         resolve_inheritance(path, hash)
 
-        Array(hash.delete('require')).each { |r| require(r) }
+        config_dir = File.dirname(path)
+        Array(hash.delete('require')).each do |r|
+          require(File.join(config_dir, r))
+        end
 
         hash.delete('inherit_from')
         config = Config.new(hash, path)

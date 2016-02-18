@@ -505,5 +505,13 @@ describe RuboCop::ConfigLoader do
       described_class.configuration_from_file(config_path)
       expect(defined?(MyClass)).to be_truthy
     end
+
+    it 'uses paths relative to the .rubocop.yml, not cwd' do
+      config_path = described_class.configuration_file_for('.')
+      Dir.chdir '..' do
+        described_class.configuration_from_file(config_path)
+        expect(defined?(MyClass)).to be_truthy
+      end
+    end
   end
 end
