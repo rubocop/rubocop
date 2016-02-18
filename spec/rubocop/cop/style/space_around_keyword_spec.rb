@@ -126,6 +126,8 @@ describe RuboCop::Cop::Style::SpaceAroundKeyword do
 
   it_behaves_like 'missing before', 'rescue', '""rescue a', '"" rescue a'
   it_behaves_like 'missing after', 'rescue', 'a rescue""', 'a rescue ""'
+  it_behaves_like 'accept after', 'rescue', 'begin; rescue(Error); end',
+                  'begin; rescue(Error); end'
   it_behaves_like 'missing after', 'return', 'return""', 'return ""'
   it_behaves_like 'accept after', '(', 'return(1)'
   it_behaves_like 'missing after', 'super', 'super""', 'super ""'

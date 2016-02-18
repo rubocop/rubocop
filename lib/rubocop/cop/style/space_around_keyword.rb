@@ -31,7 +31,7 @@ module RuboCop
 
         DO = 'do'.freeze
         ACCEPT_LEFT_PAREN =
-          %w(break next not return super yield defined?).freeze
+          %w(break defined? next not rescue return super yield).freeze
 
         def on_and(node)
           check(node, [:operator].freeze) if node.keyword?
