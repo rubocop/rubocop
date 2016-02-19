@@ -15,6 +15,7 @@
 * [#2845](https://github.com/bbatsov/rubocop/issues/2845): Handle heredocs in `Style/MultilineLiteralBraceLayout` auto-correct. ([@jonas054][])
 * [#2848](https://github.com/bbatsov/rubocop/issues/2848): Handle comments inside arrays in `Style/MultilineArrayBraceLayout` auto-correct. ([@jonas054][])
 * `Style/TrivialAccessors` allows predicate methods by default. ([@alexdowad][])
+* [#2869](https://github.com/bbatsov/rubocop/issues/2869): Offenses which occur in the body of a `when` clause with multiple arguments will not be missed. ([@alexdowad][])
 
 ## 0.37.2 (11/02/2016)
 
