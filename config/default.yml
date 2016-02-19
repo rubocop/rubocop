@@ -892,7 +892,7 @@ Style/TrivialAccessors:
   #
   # This way you can uncover "hidden" attributes in your code.
   ExactNameMatch: true
-  AllowPredicates: false
+  AllowPredicates: true
   # Allows trivial writers that don't end in an equal sign. e.g.
   #
   # def on_exception(action)

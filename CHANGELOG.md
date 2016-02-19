@@ -14,6 +14,7 @@
 * [#2865](https://github.com/bbatsov/rubocop/issues/2865): Change `require:` in config to be relative to the `.rubocop.yml` file itself. ([@ptarjan][])
 * [#2845](https://github.com/bbatsov/rubocop/issues/2845): Handle heredocs in `Style/MultilineLiteralBraceLayout` auto-correct. ([@jonas054][])
 * [#2848](https://github.com/bbatsov/rubocop/issues/2848): Handle comments inside arrays in `Style/MultilineArrayBraceLayout` auto-correct. ([@jonas054][])
+* `Style/TrivialAccessors` allows predicate methods by default. ([@alexdowad][])
 
 ## 0.37.2 (11/02/2016)
 
