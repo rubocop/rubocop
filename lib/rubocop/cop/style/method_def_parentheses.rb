@@ -71,10 +71,6 @@ module RuboCop
         def arguments?(args)
           !args.children.empty?
         end
-
-        def parentheses?(args)
-          args.loc.begin
-        end
       end
     end
   end
