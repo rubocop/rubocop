@@ -357,7 +357,7 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     expect(cop.offenses).to be_empty
   end
 
-  context 'correction would exceed max line length' do
+  shared_examples 'correction would exceed max line length' do
     it 'allows assignment to the same variable in if else if the correction ' \
        'would create a line longer than the configured LineLength' do
       source = ['if foo',
@@ -399,6 +399,20 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
 
       expect(cop.offenses).to be_empty
     end
+  end
+
+  it_behaves_like('correction would exceed max line length')
+
+  context 'when the maximum line length is specified by the cop itself' do
+    let(:config) do
+      hash = {
+        'Metrics/LineLength' => { 'Max' => 100 },
+        'Style/ConditionalAssignment' => { 'MaxLineLength' => 80 }
+      }
+      RuboCop::Config.new(hash)
+    end
+
+    it_behaves_like('correction would exceed max line length')
   end
 
   shared_examples 'all variable types' do |variable|

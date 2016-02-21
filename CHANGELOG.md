@@ -5,6 +5,7 @@
 ### New features
 
 * `Style/UnlessElse` cop can auto-correct. ([@lumeet][])
+* [#2679](https://github.com/bbatsov/rubocop/issues/2679): Extend the `MaxLineLength` parameter to `Style/GuardClase` and `Style/ConditionalAssignment`. ([@TimMoore][])
 
 ### Bug fixes
 
@@ -2002,3 +2003,4 @@
 [@mmcguinn]: https://github.com/mmcguinn
 [@pocke]: https://github.com/pocke
 [@prsimp]: https://github.com/prsimp
+[@TimMoore]: https://github.com/TimMoore

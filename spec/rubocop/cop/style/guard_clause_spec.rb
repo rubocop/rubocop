@@ -77,22 +77,47 @@ describe RuboCop::Cop::Style::GuardClause, :config do
   it_behaves_like('reports offense', 'work')
   it_behaves_like('reports offense', '# TODO')
 
-  it 'does not report an offense if corrected code would exceed line length' do
-    inspect_source(cop,
-                   ['def func',
-                    '  test',
-                    '  if something_quite_long_right_here_is_that_ok?',
-                    '    do_this_and_that_and_the_other_thing!',
-                    '  end',
-                    'end',
-                    '',
-                    'def func',
-                    '  test',
-                    '  unless something_quite_long_right_here_is_that_ok?',
-                    '    do_this_and_that_and_the_other_thing!',
-                    '  end',
-                    'end'])
-    expect(cop.offenses).to be_empty
+  shared_examples 'correction would exceed max line length' do
+    it 'does not report an offense' do
+      inspect_source(cop,
+                     ['def func',
+                      '  test',
+                      '  if something_quite_long_right_here_is_that_ok?',
+                      '    do_this_and_that_and_the_other_thing!',
+                      '  end',
+                      'end',
+                      '',
+                      'def func',
+                      '  test',
+                      '  unless something_quite_long_right_here_is_that_ok?',
+                      '    do_this_and_that_and_the_other_thing!',
+                      '  end',
+                      'end'])
+      expect(cop.offenses).to be_empty
+    end
+  end
+
+  context 'when the Metrics/LineLength cop has a max' do
+    let(:config) do
+      hash = {
+        'Metrics/LineLength' => { 'Max' => 80 }
+      }
+      RuboCop::Config.new(hash)
+    end
+
+    it_behaves_like('correction would exceed max line length')
+  end
+
+  context 'when the maximum line length is specified by the cop itself' do
+    let(:config) do
+      hash = {
+        'Metrics/LineLength' => { 'Max' => 100 },
+        'Style/GuardClause' => { 'MaxLineLength' => 80 }
+      }
+      RuboCop::Config.new(hash)
+    end
+
+    it_behaves_like('correction would exceed max line length')
   end
 
   it 'does not report an offense if body is if..elsif..end' do

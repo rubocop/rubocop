@@ -148,6 +148,7 @@ module RuboCop
       class ConditionalAssignment < Cop
         include IfNode
         include ConditionalAssignmentHelper
+        include MaxLineLength
 
         MSG = 'Use the return of the conditional for variable assignment ' \
               'and comparison.'.freeze
@@ -157,10 +158,7 @@ module RuboCop
           VARIABLE_ASSIGNMENT_TYPES + [:and_asgn, :or_asgn, :op_asgn].freeze
         IF = 'if'.freeze
         UNLESS = 'unless'.freeze
-        LINE_LENGTH = 'Metrics/LineLength'.freeze
         INDENTATION_WIDTH = 'Style/IndentationWidth'.freeze
-        ENABLED = 'Enabled'.freeze
-        MAX = 'Max'.freeze
         SINGLE_LINE_CONDITIONS_ONLY = 'SingleLineConditionsOnly'.freeze
         WIDTH = 'Width'.freeze
         METHODS = [:[]=, :<<, :=~, :!~, :<=>].freeze
@@ -242,7 +240,8 @@ module RuboCop
           add_offense(node, :expression)
         end
 
-        # If `Metrics/LineLength` is enabled, we do not want to introduce an
+        # If the `MaxLineLength` configuration is specified, or
+        # `Metrics/LineLength` is enabled, we do not want to introduce an
         # offense by auto-correcting this cop. Find the max configured line
         # length. Find the longest line of condition. Remove the assignment
         # from lines that contain the offending assignment because after
@@ -250,10 +249,8 @@ module RuboCop
         # of the longest line + the length of the corrected assignment is
         # greater than the max configured line length
         def correction_exceeds_line_limit?(node, branches)
-          return false unless config.for_cop(LINE_LENGTH)[ENABLED]
           assignment = lhs(tail(branches[0]))
           assignment_regex = /#{assignment.gsub(' ', '\s*')}/
-          max_line_length = config.for_cop(LINE_LENGTH)[MAX]
           indentation_width = config.for_cop(INDENTATION_WIDTH)[WIDTH] || 2
           return true if longest_rhs(branches) + indentation_width +
                          assignment.length > max_line_length
