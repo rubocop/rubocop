@@ -71,13 +71,13 @@ module RuboCop
             elsif method_definition?(child)
               unused = nil
             elsif child.kwbegin_type?
-              cur_vis = check_scope(child, cur_vis)
+              cur_vis, unused = check_scope(child, cur_vis)
             end
           end
 
           add_offense(unused, :expression, format(MSG, cur_vis)) if unused
 
-          cur_vis
+          [cur_vis, unused]
         end
       end
     end

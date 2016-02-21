@@ -318,6 +318,20 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
       inspect_source(cop, src)
       expect(cop.offenses.size).to eq(1)
     end
+
+    unless modifier == 'public'
+      it "doesn't flag an access modifier from surrounding scope" do
+        src = ["#{keyword} A",
+               "  #{modifier}",
+               '  begin',
+               '    def method1',
+               '    end',
+               '  end',
+               'end']
+        inspect_source(cop, src)
+        expect(cop.offenses).to be_empty
+      end
+    end
   end
 
   shared_examples 'unused visibility modifiers' do |keyword|
