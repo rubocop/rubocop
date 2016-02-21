@@ -20,6 +20,7 @@
 * [#2870](https://github.com/bbatsov/rubocop/issues/2870): `Lint/UselessAccessModifier` recognizes method definitions which are passed as an argument to a method call. ([@alexdowad][])
 * [#2859](https://github.com/bbatsov/rubocop/issues/2859): `Style/RedundantParentheses` doesn't consider the parentheses in `(!receiver.method arg)` to be redundant, since they might change the meaning of an expression, depending on precedence. ([@alexdowad][])
 * [#2852](https://github.com/bbatsov/rubocop/issues/2852): `Performance/Casecmp` doesn't flag uses of `downcase`/`upcase` which are not redundant. ([@alexdowad][])
+* [#2850](https://github.com/bbatsov/rubocop/issues/2850): `Style/FileName` doesn't choke on empty files with spaces in their names. ([@alexdowad][])
 
 ## 0.37.2 (11/02/2016)
 

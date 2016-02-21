@@ -49,7 +49,7 @@ module RuboCop
         end
 
         def shebang?(line)
-          line.start_with?('#!')
+          line && line.start_with?('#!')
         end
 
         def expect_matching_definition?
