@@ -18,6 +18,7 @@
 * [#2869](https://github.com/bbatsov/rubocop/issues/2869): Offenses which occur in the body of a `when` clause with multiple arguments will not be missed. ([@alexdowad][])
 * `Lint/UselessAccessModifier` recognizes method defs inside a `begin` block. ([@alexdowad][])
 * [#2870](https://github.com/bbatsov/rubocop/issues/2870): `Lint/UselessAccessModifier` recognizes method definitions which are passed as an argument to a method call. ([@alexdowad][])
+* [#2859](https://github.com/bbatsov/rubocop/issues/2859): `Style/RedundantParentheses` doesn't consider the parentheses in `(!receiver.method arg)` to be redundant, since they might change the meaning of an expression, depending on precedence. ([@alexdowad][])
 
 ## 0.37.2 (11/02/2016)
 
