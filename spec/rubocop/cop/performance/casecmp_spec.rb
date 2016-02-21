@@ -42,37 +42,6 @@ describe RuboCop::Cop::Performance::Casecmp do
       expect(new_source).to eq "str.casecmp( 'string' ).zero?"
     end
 
-    it "autocorrects str.#{selector} == a variable" do
-      new_source = autocorrect_source(cop, ['other = "a"',
-                                            "str.#{selector} == other"])
-      expect(new_source).to eq(['other = "a"',
-                                'str.casecmp(other).zero?'].join("\n"))
-    end
-
-    it "autocorrects str.#{selector} == a method" do
-      new_source = autocorrect_source(cop, "str.#{selector} == method(foo)")
-      expect(new_source).to eq('str.casecmp(method(foo)).zero?')
-    end
-
-    it "autocorrects str.#{selector} == a method call on a variable" do
-      new_source = autocorrect_source(cop, "str.#{selector} == other.join")
-      expect(new_source).to eq('str.casecmp(other.join).zero?')
-    end
-
-    it "autocorrects str.#{selector} == a method call on a variable " \
-       'with params' do
-      new_source = autocorrect_source(cop,
-                                      "str.#{selector} == other.join(', ')")
-      expect(new_source).to eq("str.casecmp(other.join(', ')).zero?")
-    end
-
-    it "autocorrects str.#{selector} == a method call on a variable " \
-       'with a block' do
-      source = "str.#{selector} == other.method { |o| o.to_s }"
-      new_source = autocorrect_source(cop, source)
-      expect(new_source).to eq('str.casecmp(other.method { |o| o.to_s }).zero?')
-    end
-
     it "autocorrects == str.#{selector}" do
       new_source = autocorrect_source(cop, "'string' == str.#{selector}")
       expect(new_source).to eq "str.casecmp('string').zero?"
@@ -94,23 +63,6 @@ describe RuboCop::Cop::Performance::Casecmp do
       expect(new_source).to eq "str.casecmp( 'string' ).zero?"
     end
 
-    it "autocorrects a method call == str.#{selector}" do
-      new_source = autocorrect_source(cop, "other.join == str.#{selector}")
-      expect(new_source).to eq('str.casecmp(other.join).zero?')
-    end
-
-    it "autocorrects a method call with params == str.#{selector}" do
-      new_source = autocorrect_source(cop,
-                                      "other.join(', ') == str.#{selector}")
-      expect(new_source).to eq("str.casecmp(other.join(', ')).zero?")
-    end
-
-    it "autocorrects a method call with a block == str.#{selector}" do
-      source = "other.method { |o| o.to_s } == str.#{selector}"
-      new_source = autocorrect_source(cop, source)
-      expect(new_source).to eq('str.casecmp(other.method { |o| o.to_s }).zero?')
-    end
-
     it "autocorrects string.eql? str.#{selector} without parens " do
       new_source = autocorrect_source(cop, "'string'.eql? str.#{selector}")
       expect(new_source).to eq "str.casecmp('string').zero?"
@@ -119,13 +71,6 @@ describe RuboCop::Cop::Performance::Casecmp do
     it "autocorrects string.eql? str.#{selector} with parens " do
       new_source = autocorrect_source(cop, "'string'.eql?(str.#{selector})")
       expect(new_source).to eq "str.casecmp('string').zero?"
-    end
-
-    it "autocorrects variable == str.#{selector}" do
-      new_source = autocorrect_source(cop, ['other = "a"',
-                                            "other == str.#{selector}"])
-      expect(new_source).to eq(['other = "a"',
-                                'str.casecmp(other).zero?'].join("\n"))
     end
 
     it "autocorrects obj.#{selector} == str.#{selector}" do
@@ -156,6 +101,28 @@ describe RuboCop::Cop::Performance::Casecmp do
       inspect_source(cop, "obj.#{selector} == str.#{selector}")
       expect(cop.highlights).to eq(["obj.#{selector} == str.#{selector}"])
       expect(cop.messages).to eq(["Use `casecmp` instead of `#{selector} ==`."])
+    end
+
+    it "doesn't report an offense for variable == str.#{selector}" do
+      inspect_source(cop, ['var = "a"',
+                           "var == str.#{selector}"])
+      expect(cop.offenses).to be_empty
+    end
+
+    it "doesn't report an offense for str.#{selector} == variable" do
+      inspect_source(cop, ['var = "a"',
+                           "str.#{selector} == var"])
+      expect(cop.offenses).to be_empty
+    end
+
+    it "doesn't report an offense for obj.method == str.#{selector}" do
+      inspect_source(cop, "obj.method == str.#{selector}")
+      expect(cop.offenses).to be_empty
+    end
+
+    it "doesn't report an offense for str.#{selector} == obj.method" do
+      inspect_source(cop, "str.#{selector} == obj.method")
+      expect(cop.offenses).to be_empty
     end
   end
 
