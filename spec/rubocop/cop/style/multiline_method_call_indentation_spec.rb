@@ -25,6 +25,19 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts indented methods inside and outside a block' do
+      inspect_source(cop,
+                     ['a = b.map do |c|',
+                      '  c',
+                      '    .b',
+                      '    .d do',
+                      '      x',
+                      '        .y',
+                      '    end',
+                      'end'])
+      expect(cop.messages).to be_empty
+    end
+
     it 'accepts indentation relative to first receiver' do
       inspect_source(cop,
                      ['node',

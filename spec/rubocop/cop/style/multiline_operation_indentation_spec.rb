@@ -25,6 +25,19 @@ describe RuboCop::Cop::Style::MultilineOperationIndentation do
       expect(cop.messages).to be_empty
     end
 
+    it 'accepts indented operands inside and outside a block' do
+      inspect_source(cop,
+                     ['a = b.map do |c|',
+                      '  c +',
+                      '    b +',
+                      '    d do',
+                      '      x +',
+                      '        y',
+                      '    end',
+                      'end'])
+      expect(cop.messages).to be_empty
+    end
+
     it 'registers an offense for no indentation of second line' do
       inspect_source(cop,
                      ['a +',
