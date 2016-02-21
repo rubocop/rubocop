@@ -55,7 +55,7 @@ module RuboCop
         def check_scope(node, cur_vis = :public)
           unused = nil
 
-          node.children.each do |child|
+          node.child_nodes.each do |child|
             if (new_vis = access_modifier(child))
               # does this modifier just repeat the existing visibility?
               if new_vis == cur_vis
@@ -70,7 +70,7 @@ module RuboCop
               cur_vis = new_vis
             elsif method_definition?(child)
               unused = nil
-            elsif child.kwbegin_type?
+            elsif child.kwbegin_type? || child.send_type?
               cur_vis, unused = check_scope(child, cur_vis)
             end
           end
