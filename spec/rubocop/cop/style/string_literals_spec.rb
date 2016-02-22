@@ -289,6 +289,14 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
                              '"def"'])
         expect(cop.offenses).to be_empty
       end
+
+      it "doesn't choke on heredocs with inconsistent indentation" do
+        inspect_source(cop, ['<<-QUERY_STRING',
+                             '  DEFINE',
+                             '    BLAH',
+                             'QUERY_STRING'])
+        expect(cop.offenses).to be_empty
+      end
     end
 
     context 'and EnforcedStyle is double_quotes' do

@@ -17,6 +17,7 @@ module RuboCop
           # If one part of that continued string contains interpolations,
           # then it will be parsed as a nested `dstr` node
           return unless consistent_multiline?
+          return if node.loc.is_a?(Parser::Source::Map::Heredoc)
 
           children = node.children
           return unless children.all? { |c| c.str_type? || c.dstr_type? }
