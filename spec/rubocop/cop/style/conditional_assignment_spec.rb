@@ -99,6 +99,20 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     expect(cop.offenses).to be_empty
   end
 
+  it "doesn't crash when assignment statement uses chars which have " \
+     'special meaning in a regex' do
+    # regression test; see GH issue 2876
+    source = ['if condition',
+              "  default['key-with-dash'] << a",
+              'else',
+              "  default['key-with-dash'] << b",
+              'end']
+
+    inspect_source(cop, source)
+
+    expect(cop.offenses.size).to eq(1)
+  end
+
   shared_examples 'comparison methods' do |method|
     it 'registers an offense for comparison methods in if else' do
       source = ['if foo',

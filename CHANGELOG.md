@@ -22,6 +22,7 @@
 * [#2852](https://github.com/bbatsov/rubocop/issues/2852): `Performance/Casecmp` doesn't flag uses of `downcase`/`upcase` which are not redundant. ([@alexdowad][])
 * [#2850](https://github.com/bbatsov/rubocop/issues/2850): `Style/FileName` doesn't choke on empty files with spaces in their names. ([@alexdowad][])
 * [#2834](https://github.com/bbatsov/rubocop/issues/2834): When configured as `ConsistentQuotesInMultiline: true`, `Style/StringLiterals` doesn't error out when inspecting a heredoc with differing indentation across multiple lines. ([@alexdowad][])
+* [#2876](https://github.com/bbatsov/rubocop/issues/2876): `Style/ConditionalAssignment` behaves correctly when assignment statement uses a character which has a special meaning in a regex. ([@alexdowad][])
 
 ## 0.37.2 (11/02/2016)
 
