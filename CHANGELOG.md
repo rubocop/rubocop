@@ -12,6 +12,8 @@
 * [#2861](https://github.com/bbatsov/rubocop/pull/2861): Fix false positive in `Style/SpaceAroundKeyword` for `rescue(...`. ([@rrosenblum][])
 * [#2832](https://github.com/bbatsov/rubocop/issues/2832): `Style/MultilineOperationIndentation` treats operations inside blocks inside other operations correctly. ([@jonas054][])
 * [#2865](https://github.com/bbatsov/rubocop/issues/2865): Change `require:` in config to be relative to the `.rubocop.yml` file itself. ([@ptarjan][])
+* [#2845](https://github.com/bbatsov/rubocop/issues/2845): Handle heredocs in `Style/MultilineLiteralBraceLayout` auto-correct. ([@jonas054][])
+* [#2848](https://github.com/bbatsov/rubocop/issues/2848): Handle comments inside arrays in `Style/MultilineArrayBraceLayout` auto-correct. ([@jonas054][])
 
 ## 0.37.2 (11/02/2016)
 

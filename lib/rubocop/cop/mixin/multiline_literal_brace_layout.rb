@@ -27,12 +27,12 @@ module RuboCop
             corrector.insert_before(node.loc.end, "\n".freeze)
           end
         else
-          range = Parser::Source::Range.new(
-            node.source_range.source_buffer,
-            children(node).last.source_range.end_pos,
-            node.loc.end.begin_pos)
-
-          ->(corrector) { corrector.remove(range) }
+          lambda do |corrector|
+            corrector.remove(range_with_surrounding_space(node.loc.end,
+                                                          :left))
+            corrector.insert_after(children(node).last.source_range,
+                                   node.loc.end.source)
+          end
         end
       end
 
