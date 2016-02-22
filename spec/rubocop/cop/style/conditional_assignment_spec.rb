@@ -1405,52 +1405,52 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
           expect(cop.offenses).to be_empty
         end
       end
+    end
 
-      context 'self.attribute= assignment' do
-        it 'corrects if..else' do
-          new_source = autocorrect_source(cop, ['if something',
-                                                '  self.attribute = 1',
-                                                'else',
-                                                '  self.attribute = 2',
-                                                'end'])
-          expect(new_source).to eq(['self.attribute = if something',
-                                    '  1',
-                                    'else',
-                                    '  2',
-                                    '                 end'].join("\n"))
-        end
-
-        context 'with different receivers' do
-          it "doesn't register an offense" do
-            inspect_source(cop, ['if something',
-                                 '  obj1.attribute = 1',
-                                 'else',
-                                 '  obj2.attribute = 2',
-                                 'end'])
-            expect(cop.offenses).to be_empty
-          end
-        end
+    context 'self.attribute= assignment' do
+      it 'corrects if..else' do
+        new_source = autocorrect_source(cop, ['if something',
+                                              '  self.attribute = 1',
+                                              'else',
+                                              '  self.attribute = 2',
+                                              'end'])
+        expect(new_source).to eq(['self.attribute = if something',
+                                  '  1',
+                                  'else',
+                                  '  2',
+                                  '                 end'].join("\n"))
       end
 
-      context 'multiple assignment' do
-        it 'does not register an offense in if else' do
+      context 'with different receivers' do
+        it "doesn't register an offense" do
           inspect_source(cop, ['if something',
-                               '  a, b = 1, 2',
+                               '  obj1.attribute = 1',
                                'else',
-                               '  a, b = 2, 1',
+                               '  obj2.attribute = 2',
                                'end'])
           expect(cop.offenses).to be_empty
         end
+      end
+    end
 
-        it 'does not register an offense in case when' do
-          inspect_source(cop, ['case foo',
-                               'when bar',
-                               '  a, b = 1, 2',
-                               'else',
-                               '  a, b = 2, 1',
-                               'end'])
-          expect(cop.offenses).to be_empty
-        end
+    context 'multiple assignment' do
+      it 'does not register an offense in if else' do
+        inspect_source(cop, ['if something',
+                             '  a, b = 1, 2',
+                             'else',
+                             '  a, b = 2, 1',
+                             'end'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'does not register an offense in case when' do
+        inspect_source(cop, ['case foo',
+                             'when bar',
+                             '  a, b = 1, 2',
+                             'else',
+                             '  a, b = 2, 1',
+                             'end'])
+        expect(cop.offenses).to be_empty
       end
     end
   end
