@@ -161,6 +161,8 @@ describe RuboCop::Cop::Style::SpaceAroundKeyword do
   it_behaves_like 'accept around', '()', '(next)'
   it_behaves_like 'accept before', '!', '!yield'
   it_behaves_like 'accept after', '.', 'yield.method'
+  it_behaves_like 'accept before', '!', '!yield.method'
+  it_behaves_like 'accept before', '!', '!super.method'
 
   # Style/SpaceAroundBlockParameters
   it_behaves_like 'accept before', '|', 'loop { |x|break }'
@@ -169,6 +171,7 @@ describe RuboCop::Cop::Style::SpaceAroundKeyword do
   it_behaves_like 'accept before', '=', 'a=begin end'
   it_behaves_like 'accept before', '==', 'a==begin end'
   it_behaves_like 'accept before', '+', 'a+begin end'
+  it_behaves_like 'accept before', '+', 'a+begin; end.method'
   it_behaves_like 'accept before', '-', 'a-begin end'
   it_behaves_like 'accept before', '*', 'a*begin end'
   it_behaves_like 'accept before', '**', 'a**begin end'

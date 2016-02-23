@@ -187,11 +187,15 @@ module RuboCop
         end
 
         def preceded_by_operator?(node, _range)
-          ancestor = node.ancestors.first
-          return false unless ancestor
-          return true if ancestor.and_type? || ancestor.or_type?
-          return false unless ancestor.send_type?
-          operator?(ancestor.method_name)
+          # regular dotted method calls bind more tightly than operators
+          # so we need to climb up the AST past them
+          while (ancestor = node.parent)
+            return true if ancestor.and_type? || ancestor.or_type?
+            return false unless ancestor.send_type?
+            return true if operator?(ancestor.method_name)
+            node = ancestor
+          end
+          false
         end
 
         def autocorrect(range)
