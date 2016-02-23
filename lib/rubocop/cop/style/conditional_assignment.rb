@@ -252,7 +252,7 @@ module RuboCop
         def correction_exceeds_line_limit?(node, branches)
           return false unless config.for_cop(LINE_LENGTH)[ENABLED]
           assignment = lhs(tail(branches[0]))
-          assignment_regex = /#{assignment.gsub(' ', '\s*')}/
+          assignment_regex = /#{Regexp.escape(assignment).gsub(' ', '\s*')}/
           max_line_length = config.for_cop(LINE_LENGTH)[MAX]
           indentation_width = config.for_cop(INDENTATION_WIDTH)[WIDTH] || 2
           return true if longest_rhs(branches) + indentation_width +

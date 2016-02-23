@@ -14,6 +14,16 @@
 * [#2865](https://github.com/bbatsov/rubocop/issues/2865): Change `require:` in config to be relative to the `.rubocop.yml` file itself. ([@ptarjan][])
 * [#2845](https://github.com/bbatsov/rubocop/issues/2845): Handle heredocs in `Style/MultilineLiteralBraceLayout` auto-correct. ([@jonas054][])
 * [#2848](https://github.com/bbatsov/rubocop/issues/2848): Handle comments inside arrays in `Style/MultilineArrayBraceLayout` auto-correct. ([@jonas054][])
+* `Style/TrivialAccessors` allows predicate methods by default. ([@alexdowad][])
+* [#2869](https://github.com/bbatsov/rubocop/issues/2869): Offenses which occur in the body of a `when` clause with multiple arguments will not be missed. ([@alexdowad][])
+* `Lint/UselessAccessModifier` recognizes method defs inside a `begin` block. ([@alexdowad][])
+* [#2870](https://github.com/bbatsov/rubocop/issues/2870): `Lint/UselessAccessModifier` recognizes method definitions which are passed as an argument to a method call. ([@alexdowad][])
+* [#2859](https://github.com/bbatsov/rubocop/issues/2859): `Style/RedundantParentheses` doesn't consider the parentheses in `(!receiver.method arg)` to be redundant, since they might change the meaning of an expression, depending on precedence. ([@alexdowad][])
+* [#2852](https://github.com/bbatsov/rubocop/issues/2852): `Performance/Casecmp` doesn't flag uses of `downcase`/`upcase` which are not redundant. ([@alexdowad][])
+* [#2850](https://github.com/bbatsov/rubocop/issues/2850): `Style/FileName` doesn't choke on empty files with spaces in their names. ([@alexdowad][])
+* [#2834](https://github.com/bbatsov/rubocop/issues/2834): When configured as `ConsistentQuotesInMultiline: true`, `Style/StringLiterals` doesn't error out when inspecting a heredoc with differing indentation across multiple lines. ([@alexdowad][])
+* [#2876](https://github.com/bbatsov/rubocop/issues/2876): `Style/ConditionalAssignment` behaves correctly when assignment statement uses a character which has a special meaning in a regex. ([@alexdowad][])
+* [#2877](https://github.com/bbatsov/rubocop/issues/2877): `Style/SpaceAroundKeyword` doesn't flag `!super.method`, `!yield.method`, and so on. ([@alexdowad][])
 
 ## 0.37.2 (11/02/2016)
 

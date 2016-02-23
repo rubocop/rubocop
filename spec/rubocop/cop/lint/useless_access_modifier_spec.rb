@@ -200,6 +200,24 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
     end
   end
 
+  context 'when a def is an argument to a method call' do
+    let(:source) do
+      [
+        'class SomeClass',
+        '  private',
+        '  helper_method def some_method',
+        '    puts 10',
+        '  end',
+        'end'
+      ]
+    end
+
+    it 'does not register an offense' do
+      inspect_source(cop, source)
+      expect(cop.offenses).to be_empty
+    end
+  end
+
   shared_examples 'at the top of the body' do |keyword|
     it 'registers an offense for `public`' do
       src = ["#{keyword} A",
@@ -317,6 +335,20 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
              'end']
       inspect_source(cop, src)
       expect(cop.offenses.size).to eq(1)
+    end
+
+    unless modifier == 'public'
+      it "doesn't flag an access modifier from surrounding scope" do
+        src = ["#{keyword} A",
+               "  #{modifier}",
+               '  begin',
+               '    def method1',
+               '    end',
+               '  end',
+               'end']
+        inspect_source(cop, src)
+        expect(cop.offenses).to be_empty
+      end
     end
   end
 

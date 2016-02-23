@@ -9,26 +9,31 @@ module RuboCop
       #
       # @example
       #   @bad
-      #   'aBc'.downcase == 'abc'
-      #   'abc'.upcase.eql? 'ABC'
-      #   'abc' == 'ABC'.downcase
-      #   'ABC'.eql? 'abc'.upcase
-      #   'abc'.downcase == 'abc'.downcase
+      #   str.downcase == 'abc'
+      #   str.upcase.eql? 'ABC'
+      #   'abc' == str.downcase
+      #   'ABC'.eql? str.upcase
+      #   str.downcase == str.downcase
       #
       #   @good
-      #   'aBc'.casecmp('ABC').zero?
-      #   'abc'.casecmp('abc').zero?
-      #   'abc'.casecmp('ABC'.downcase).zero?
+      #   str.casecmp('ABC').zero?
+      #   'abc'.casecmp(str).zero?
       class Casecmp < Cop
         MSG = 'Use `casecmp` instead of `%s %s`.'.freeze
         CASE_METHODS = [:downcase, :upcase].freeze
 
         def_node_matcher :downcase_eq, <<-END
-          (send $(send _ ${:downcase :upcase}) ${:== :eql? :!=} $_)
+          (send
+            $(send _ ${:downcase :upcase})
+            ${:== :eql? :!=}
+            ${str (send _ {:downcase :upcase} ...) (begin str)})
         END
 
         def_node_matcher :eq_downcase, <<-END
-          (send _ ${:== :eql? :!=} $(send _ ${:downcase :upcase}))
+          (send
+            {str (send _ {:downcase :upcase} ...) (begin str)}
+            ${:== :eql? :!=}
+            $(send _ ${:downcase :upcase}))
         END
 
         def on_send(node)

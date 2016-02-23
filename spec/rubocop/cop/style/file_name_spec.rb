@@ -148,6 +148,16 @@ describe RuboCop::Cop::Style::FileName do
       end
     end
 
+    context 'on an empty file with a space in its filename' do
+      let(:source) { '' }
+      let(:filename) { 'a file.rb' }
+
+      it 'registers an offense' do
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.messages).to eq(['Use snake_case for source file names.'])
+      end
+    end
+
     shared_examples 'matching module or class' do
       %w(lib src test spec).each do |dir|
         context "in a matching directory under #{dir}" do

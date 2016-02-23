@@ -143,7 +143,6 @@ module RuboCop
       end
 
       alias on_until  on_while
-      alias on_when   on_while
       alias on_module on_while
       alias on_sclass on_while
 
@@ -167,6 +166,7 @@ module RuboCop
       alias on_resbody on_case
       alias on_ensure  on_case
       alias on_for     on_case
+      alias on_when    on_case
     end
   end
 end

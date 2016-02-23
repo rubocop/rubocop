@@ -13,11 +13,17 @@ module RuboCop
                         cyan(smart_path(file)), o.line, o.real_column,
                         colored_severity_code(o), message(o))
 
-          source_line = o.location.source_line
-          next if source_line.blank?
+          # rubocop:disable Lint/HandleExceptions
+          begin
+            source_line = o.location.source_line
+            next if source_line.blank?
 
-          output.puts(source_line)
-          output.puts(highlight_line(o.location))
+            output.puts(source_line)
+            output.puts(highlight_line(o.location))
+          rescue IndexError
+            # range is not on a valid line; perhaps the source file is empty
+          end
+          # rubocop:enable Lint/HandleExceptions
         end
       end
 
