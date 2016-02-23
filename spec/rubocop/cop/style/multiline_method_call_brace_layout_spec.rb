@@ -101,5 +101,15 @@ describe RuboCop::Cop::Style::MultilineMethodCallBraceLayout do
 
       expect(new_source).to eq("foo(\n1,\n2\n)")
     end
+
+    it 'autocorrects method call with heredoc' do
+      new_source = autocorrect_source(cop, ['def foo',
+                                            '  bar(<<EOM',
+                                            '  baz',
+                                            'EOM',
+                                            '     )',
+                                            'end'])
+      expect(new_source).to eq("def foo\n  bar(<<EOM)\n  baz\nEOM\nend")
+    end
   end
 end

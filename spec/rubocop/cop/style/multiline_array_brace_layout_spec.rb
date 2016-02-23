@@ -54,11 +54,11 @@ describe RuboCop::Cop::Style::MultilineArrayBraceLayout do
     end
 
     it 'autocorrects closing brace on different line from last element' do
-      new_source = autocorrect_source(cop, ['[a,',
-                                            'b',
+      new_source = autocorrect_source(cop, ['[a, # a',
+                                            'b # b',
                                             ']'])
 
-      expect(new_source).to eq("[a,\nb]")
+      expect(new_source).to eq("[a, # a\nb] # b")
     end
   end
 
