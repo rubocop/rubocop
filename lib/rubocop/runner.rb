@@ -151,12 +151,21 @@ module RuboCop
       # infinite loop.
       @processed_sources = []
 
+      # It is also possible for a cop to keep adding indefinitely to a file,
+      # making it bigger and bigger. If the inspection loop runs for an
+      # excessively high number of iterations, this is likely happening.
+      @iterations = 0
+
       # When running with --auto-correct, we need to inspect the file (which
       # includes writing a corrected version of it) until no more corrections
       # are made. This is because automatic corrections can introduce new
       # offenses. In the normal case the loop is only executed once.
       loop do
         check_for_infinite_loop(processed_source, offenses)
+
+        if (@iterations += 1) > 200
+          raise InfiniteCorrectionLoop.new(processed_source.path, offenses)
+        end
 
         # The offenses that couldn't be corrected will be found again so we
         # only keep the corrected ones in order to avoid duplicate reporting.
