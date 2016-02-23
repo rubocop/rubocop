@@ -13,7 +13,8 @@ module RuboCop
                      :print,
                      :p,
                      :pp,
-                     :pretty_print].freeze
+                     :pretty_print,
+                     :ap].freeze
 
         def on_send(node)
           receiver, method_name, *args = *node
