@@ -1,6 +1,10 @@
 # encoding: utf-8
 # frozen_string_literal: true
 
+# Disable colors in specs
+require 'rainbow'
+Rainbow.enabled = false
+
 # Coverage support needs to be required *before* the RuboCop code is required!
 require 'support/coverage'
 
@@ -38,9 +42,6 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 end
-
-# Disable colors in specs
-Rainbow.enabled = false
 
 # Disable network connections
 WebMock.disable_net_connect!(allow: 'codeclimate.com')

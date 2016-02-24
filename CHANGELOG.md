@@ -5,6 +5,7 @@
 ### New features
 
 * `Style/UnlessElse` cop can auto-correct. ([@lumeet][])
+* [#2629](https://github.com/bbatsov/rubocop/pull/2629): Add a new public API method, `highlighted_area` to offense. This method returns the range of the highlighted portion of an offense. ([@rrosenblum][])
 
 ### Bug fixes
 
@@ -26,6 +27,10 @@
 * [#2877](https://github.com/bbatsov/rubocop/issues/2877): `Style/SpaceAroundKeyword` doesn't flag `!super.method`, `!yield.method`, and so on. ([@alexdowad][])
 * [#2631](https://github.com/bbatsov/rubocop/issues/2631): `Style/Encoding` can remove unneeded encoding comment when autocorrecting with `when_needed` style. ([@alexdowad][])
 * [#2860](https://github.com/bbatsov/rubocop/issues/2860): Fix false positive in `Rails/Date` when `to_time` is chained with safe method. ([@palkan][])
+
+### Changes
+
+* [#2629](https://github.com/bbatsov/rubocop/pull/2629): Change the offense range for metrics cops to default to `expression` instead of `keyword` (the offense now spans the entire method, class, or module). ([@rrosenblum][])
 
 ## 0.37.2 (11/02/2016)
 

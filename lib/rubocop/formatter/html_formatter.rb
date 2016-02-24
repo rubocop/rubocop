@@ -11,6 +11,7 @@ module RuboCop
   module Formatter
     # This formatter saves the output as a html file.
     class HTMLFormatter < BaseFormatter
+      ELLIPSES = '<span class="extra-code">...</span>'.freeze
       TEMPLATE_PATH =
         File.expand_path('../../../../assets/output.html.erb', __FILE__)
 
@@ -95,19 +96,17 @@ module RuboCop
         def highlighted_source_line(offense)
           location = offense.location
 
-          column_range = if location.begin.line == location.end.line
-                           location.column_range
-                         else
-                           location.column...location.source_line.length
-                         end
+          source_line = if location.first_line == location.last_line
+                          location.source_line
+                        else
+                          "#{location.source_line} #{ELLIPSES}"
+                        end
 
-          source_line = location.source_line
-
-          escape(source_line[0...column_range.begin]) +
+          escape(source_line[0...offense.highlighted_area.begin_pos]) +
             "<span class=\"highlight #{offense.severity}\">" +
-            escape(source_line[column_range]) +
+            escape(offense.highlighted_area.source) +
             '</span>' +
-            escape(source_line[column_range.end..-1])
+            escape(source_line[offense.highlighted_area.end_pos..-1])
         end
 
         def escape(s)

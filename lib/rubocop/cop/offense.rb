@@ -87,6 +87,22 @@ module RuboCop
         @status == :disabled
       end
 
+      # @api public
+      #
+      # @return [Parser::Source::Range]
+      #   the range of the code that is highlighted
+      def highlighted_area
+        column_length = if location.first_line == location.last_line
+                          location.column_range.count
+                        else
+                          location.source_line.length - location.column
+                        end
+
+        Parser::Source::Range.new(location.source_line,
+                                  location.column,
+                                  location.column + column_length)
+      end
+
       # @api private
       # This is just for debugging purpose.
       def to_s

@@ -53,7 +53,7 @@ module RuboCop
         end
 
         context 'when the offending source spans multiple lines' do
-          it 'displays the first line' do
+          it 'displays the first line with ellipses' do
             source = ['do_something([this,',
                       '              is,',
                       '              target])'].join($RS)
@@ -69,10 +69,11 @@ module RuboCop
             cop.add_offense(nil, location, 'message 1')
 
             formatter.report_file('test', cop.offenses)
-            expect(output.string).to eq ['test:1:14: C: message 1',
-                                         'do_something([this,',
-                                         '             ^^^^^^',
-                                         ''].join("\n")
+            expect(output.string)
+              .to eq ['test:1:14: C: message 1',
+                      "do_something([this, #{described_class::ELLIPSES}",
+                      '             ^^^^^^',
+                      ''].join("\n")
           end
         end
 

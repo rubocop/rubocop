@@ -9,6 +9,7 @@ describe RuboCop::Cop::Offense do
     source_buffer.source = "a\n"
     Parser::Source::Range.new(source_buffer, 0, 1)
   end
+
   subject(:offense) do
     described_class.new(:convention, location, 'message', 'CopName', :corrected)
   end
@@ -19,6 +20,7 @@ describe RuboCop::Cop::Offense do
     expect(offense.message).to eq('message')
     expect(offense.cop_name).to eq('CopName')
     expect(offense.corrected?).to be_truthy
+    expect(offense.highlighted_area.source).to eq('a')
   end
 
   it 'overrides #to_s' do
@@ -130,6 +132,47 @@ describe RuboCop::Cop::Offense do
           expect(an_offense <=> other_offense).to eq(expectation)
         end
       end
+    end
+  end
+
+  context 'offenses that span multiple lines' do
+    let(:location) do
+      source_buffer = Parser::Source::Buffer.new('test', 1)
+      source_buffer.source = ['def foo',
+                              '  something',
+                              '  something_else',
+                              'end'].join("\n")
+      Parser::Source::Range.new(source_buffer, 0, source_buffer.source.length)
+    end
+
+    subject(:offense) do
+      described_class
+        .new(:convention, location, 'message', 'CopName', :corrected)
+    end
+
+    it 'highlights the first line' do
+      expect(offense.location.source).to eq(location.source_buffer.source)
+      expect(offense.highlighted_area.source).to eq('def foo')
+    end
+  end
+
+  context 'offenses that span part of a line' do
+    let(:location) do
+      source_buffer = Parser::Source::Buffer.new('test', 1)
+      source_buffer.source = ['def Foo',
+                              '  something',
+                              '  something_else',
+                              'end'].join("\n")
+      Parser::Source::Range.new(source_buffer, 4, 7)
+    end
+
+    subject(:offense) do
+      described_class
+        .new(:convention, location, 'message', 'CopName', :corrected)
+    end
+
+    it 'highlights the first line' do
+      expect(offense.highlighted_area.source).to eq('Foo')
     end
   end
 end
