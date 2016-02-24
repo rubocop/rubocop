@@ -82,12 +82,18 @@ describe RuboCop::Cop::Style::Encoding, :config do
 
     context 'auto-correct' do
       it 'inserts an encoding comment on the first line when there are ' \
-        'non ASCII characters in the file' do
-          new_source = autocorrect_source(cop, 'def foo() \'ä\' end')
+         'non ASCII characters in the file' do
+        new_source = autocorrect_source(cop, 'def foo() \'ä\' end')
 
-          expect(new_source).to eq(['# encoding: utf-8',
-                                    'def foo() \'ä\' end'].join("\n"))
-        end
+        expect(new_source).to eq(['# encoding: utf-8',
+                                  'def foo() \'ä\' end'].join("\n"))
+      end
+
+      it "removes encoding comment on first line when it's not needed" do
+        new_source = autocorrect_source(cop, "# encoding: utf-8\nblah")
+
+        expect(new_source).to eq('blah')
+      end
     end
   end
 

@@ -25,22 +25,27 @@ module RuboCop
           return if processed_source.buffer.source.empty?
 
           line_number = encoding_line_number(processed_source)
-          message = offense(processed_source, line_number)
+          return unless (@message = offense(processed_source, line_number))
 
-          return unless message
-
-          range = source_range(processed_source.buffer, line_number + 1, 0)
-          add_offense(range, range, message)
+          range = processed_source.buffer.line_range(line_number + 1)
+          add_offense(range, range, @message)
         end
 
         def autocorrect(range)
-          encoding = cop_config[AUTO_CORRECT_ENCODING_COMMENT]
-          if encoding && encoding =~ ENCODING_PATTERN
-            lambda do |corrector|
-              corrector.insert_before(range, "#{encoding}\n")
+          if @message == MSG_MISSING
+            encoding = cop_config[AUTO_CORRECT_ENCODING_COMMENT]
+            if encoding && encoding =~ ENCODING_PATTERN
+              lambda do |corrector|
+                corrector.insert_before(range, "#{encoding}\n")
+              end
+            else
+              raise "#{encoding} does not match #{ENCODING_PATTERN}"
             end
           else
-            raise "#{encoding} does not match #{ENCODING_PATTERN}"
+            # Need to remove unnecessary encoding comment
+            lambda do |corrector|
+              corrector.remove(range_with_surrounding_space(range, :right))
+            end
           end
         end
 

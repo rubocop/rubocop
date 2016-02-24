@@ -104,12 +104,11 @@ module RuboCop
           column_index = column
         end
 
-        preceding_line_numbers = (1...line_number)
-
-        line_begin_pos = preceding_line_numbers.reduce(0) do |pos, line|
-          pos + source_buffer.source_line(line).length + 1
-        end
-
+        line_begin_pos = if line_number == 0
+                           0
+                         else
+                           source_buffer.line_range(line_number).begin_pos
+                         end
         begin_pos = line_begin_pos + column_index
         end_pos = begin_pos + length
 
