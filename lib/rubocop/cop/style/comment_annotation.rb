@@ -23,17 +23,9 @@ module RuboCop
             next unless annotation?(comment) &&
                         !correct_annotation?(first_word, colon, space, note)
 
-            start = comment.loc.expression.begin_pos + margin.length
             length = first_word.length + colon.to_s.length + space.to_s.length
-            source_buffer = comment.loc.expression.source_buffer
-            range = Parser::Source::Range.new(source_buffer,
-                                              start,
-                                              start + length)
-            if note
-              add_offense(comment, range, format(MSG, first_word))
-            else
-              add_offense(comment, range, format(MISSING_NOTE, first_word))
-            end
+            add_offense(comment, annotation_range(comment, margin, length),
+                        format(note ? MSG : MISSING_NOTE, first_word))
           end
         end
 
@@ -41,6 +33,12 @@ module RuboCop
 
         def first_comment_line?(comments, ix)
           ix == 0 || comments[ix - 1].loc.line < comments[ix].loc.line - 1
+        end
+
+        def annotation_range(comment, margin, length)
+          start = comment.loc.expression.begin_pos + margin.length
+          source_buffer = comment.loc.expression.source_buffer
+          Parser::Source::Range.new(source_buffer, start, start + length)
         end
 
         def autocorrect(comment)

@@ -65,35 +65,37 @@ module RuboCop
       # on different lines, and each item within is on its own line, and the
       # closing bracket is on its own line.
       def multiline?(node)
-        elements = if node.type == :send
-                     _receiver, _method_name, *args = *node
-                     args.flat_map do |a|
-                       # For each argument, if it is a multi-line hash,
-                       # then promote the hash elements to method arguments
-                       # for the purpose of determining multi-line-ness.
-                       if a.hash_type? && a.loc.first_line != a.loc.last_line
-                         a.children
-                       else
-                         a
-                       end
-                     end
-                   else
-                     node.children
-                   end
-
         # No need to process anything if the whole node is not multiline
         # Without the 2nd check, Foo.new({}) is considered multiline, which
         # it should not be. Essentially, if there are no elements, the
         # expression can not be multiline.
-        return if !node.multiline? || elements.empty?
+        return false unless node.multiline?
+
+        items = elements(node).map(&:source_range)
+        return false if items.empty?
 
         # If brackets are on different lines and there is one item at least,
         # then comma is needed anytime for consistent_comma.
         return true if style == :consistent_comma
 
-        items = elements.map(&:source_range)
         items << node.loc.end
         items.each_cons(2).all? { |a, b| !on_same_line?(a, b) }
+      end
+
+      def elements(node)
+        return node.children unless node.send_type?
+
+        _receiver, _method_name, *args = *node
+        args.flat_map do |a|
+          # For each argument, if it is a multi-line hash,
+          # then promote the hash elements to method arguments
+          # for the purpose of determining multi-line-ness.
+          if a.hash_type? && a.loc.first_line != a.loc.last_line
+            a.children
+          else
+            a
+          end
+        end
       end
 
       def on_same_line?(a, b)

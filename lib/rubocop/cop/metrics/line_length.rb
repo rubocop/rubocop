@@ -16,30 +16,37 @@ module RuboCop
         def investigate(processed_source)
           heredocs = extract_heredocs(processed_source.ast) if allow_heredoc?
           processed_source.lines.each_with_index do |line, index|
-            next unless line.length > max
-
-            if allow_heredoc?
-              next if line_in_whitelisted_heredoc?(heredocs, index.succ)
-            end
-
-            if allow_uri?
-              uri_range = find_excessive_uri_range(line)
-              next if uri_range && allowed_uri_position?(line, uri_range)
-            end
-
-            message = format(MSG, line.length, max)
-
-            excessive_position = if uri_range && uri_range.begin < max
-                                   uri_range.end
-                                 else
-                                   max
-                                 end
-
-            range = source_range(processed_source.buffer, index + 1,
-                                 excessive_position...(line.length))
-
-            add_offense(nil, range, message) { self.max = line.length }
+            check_line(line, index, heredocs)
           end
+        end
+
+        def check_line(line, index, heredocs)
+          return unless line.length > max
+          return if heredocs &&
+                    line_in_whitelisted_heredoc?(heredocs, index.succ)
+
+          if allow_uri?
+            uri_range = find_excessive_uri_range(line)
+            return if uri_range && allowed_uri_position?(line, uri_range)
+          end
+
+          offense(excess_range(uri_range, line, index), line)
+        end
+
+        def offense(loc, line)
+          message = format(MSG, line.length, max)
+          add_offense(nil, loc, message) { self.max = line.length }
+        end
+
+        def excess_range(uri_range, line, index)
+          excessive_position = if uri_range && uri_range.begin < max
+                                 uri_range.end
+                               else
+                                 max
+                               end
+
+          source_range(processed_source.buffer, index + 1,
+                       excessive_position...(line.length))
         end
 
         def max
