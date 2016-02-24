@@ -35,6 +35,7 @@
 
 * [#2629](https://github.com/bbatsov/rubocop/pull/2629): Change the offense range for metrics cops to default to `expression` instead of `keyword` (the offense now spans the entire method, class, or module). ([@rrosenblum][])
 * [#2891](https://github.com/bbatsov/rubocop/pull/2891): Change the caching of remote configs to live alongside the parent file. ([@Fryguy][])
+* [#2662](https://github.com/bbatsov/rubocop/issues/2662): When setting options for Rake task, nested arrays can be used in the `options`, `formatters`, and `requires` arrays. ([@alexdowad][])
 
 ## 0.37.2 (11/02/2016)
 

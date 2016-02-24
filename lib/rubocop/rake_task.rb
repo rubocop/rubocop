@@ -52,9 +52,9 @@ module RuboCop
 
     def full_options
       [].tap do |result|
-        result.concat(formatters.flat_map { |f| ['--format', f] })
-        result.concat(requires.flat_map { |r| ['--require', r] })
-        result.concat(options)
+        result.concat(formatters.map { |f| ['--format', f] }.flatten)
+        result.concat(requires.map { |r| ['--require', r] }.flatten)
+        result.concat(options.flatten)
         result.concat(patterns)
       end
     end
