@@ -57,6 +57,10 @@ module RuboCop
         def on_send(node)
           receiver, method_name, *args = *node
           return unless receiver && bad_methods.include?(method_name)
+
+          chain = extract_method_chain(node)
+          return if safe_chain?(chain)
+
           return if method_name == :to_time && args.length == 1
 
           add_offense(node, :selector,
@@ -105,6 +109,10 @@ module RuboCop
           receiver == node
         end
 
+        def safe_chain?(chain)
+          (chain & bad_methods).empty? || !(chain & good_methods).empty?
+        end
+
         def good_days
           style == :strict ? [] : [:current, :yesterday, :tomorrow]
         end
@@ -115,6 +123,10 @@ module RuboCop
 
         def bad_methods
           style == :strict ? [:to_time, :to_time_in_current_zone] : [:to_time]
+        end
+
+        def good_methods
+          style == :strict ? [] : TimeZone::ACCEPTED_METHODS
         end
       end
     end

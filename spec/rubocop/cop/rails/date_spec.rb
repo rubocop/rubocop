@@ -54,6 +54,13 @@ describe RuboCop::Cop::Rails::Date, :config do
       inspect_source(cop, 'A')
       expect(cop.offenses).to be_empty
     end
+
+    RuboCop::Cop::Rails::TimeZone::ACCEPTED_METHODS.each do |a_method|
+      it "registers an offense for val.to_time.#{a_method}" do
+        inspect_source(cop, "val.to_time.#{a_method}")
+        expect(cop.offenses.size).to eq(1)
+      end
+    end
   end
 
   context 'when EnforcedStyle is "flexible"' do
@@ -69,6 +76,13 @@ describe RuboCop::Cop::Rails::Date, :config do
     it 'registers an offense for Date.today' do
       inspect_source(cop, 'Date.today')
       expect(cop.offenses.size).to eq(1)
+    end
+
+    RuboCop::Cop::Rails::TimeZone::ACCEPTED_METHODS.each do |a_method|
+      it "accepts val.to_time.#{a_method}" do
+        inspect_source(cop, "val.to_time.#{a_method}")
+        expect(cop.offenses).to be_empty
+      end
     end
 
     it 'accepts #to_time_in_current_zone' do
