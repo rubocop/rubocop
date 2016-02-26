@@ -8,8 +8,9 @@ module RuboCop
   class RemoteConfig
     CACHE_LIFETIME = 24 * 60 * 60
 
-    def initialize(url)
+    def initialize(url, base_dir)
       @uri = URI.parse(url)
+      @base_dir = base_dir
     end
 
     def file
@@ -36,7 +37,7 @@ module RuboCop
     private
 
     def cache_path
-      ".rubocop-#{cache_name_from_uri}"
+      File.expand_path(".rubocop-#{cache_name_from_uri}", @base_dir)
     end
 
     def cache_path_exists?

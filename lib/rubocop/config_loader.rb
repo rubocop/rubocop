@@ -69,7 +69,7 @@ module RuboCop
       def base_configs(path, inherit_from)
         configs = Array(inherit_from).compact.map do |f|
           if f =~ /\A#{URI.regexp(%w(http https))}\z/
-            f = RemoteConfig.new(f).file
+            f = RemoteConfig.new(f, File.dirname(path)).file
           else
             f = File.expand_path(f, File.dirname(path))
 

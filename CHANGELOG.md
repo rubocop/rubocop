@@ -34,6 +34,7 @@
 ### Changes
 
 * [#2629](https://github.com/bbatsov/rubocop/pull/2629): Change the offense range for metrics cops to default to `expression` instead of `keyword` (the offense now spans the entire method, class, or module). ([@rrosenblum][])
+* [#2891](https://github.com/bbatsov/rubocop/pull/2891): Change the caching of remote configs to live alongside the parent file. ([@Fryguy][])
 
 ## 0.37.2 (11/02/2016)
 
@@ -2027,3 +2028,4 @@
 [@prsimp]: https://github.com/prsimp
 [@ptarjan]: https://github.com/ptarjan
 [@jweir]: https://github.com/jweir
+[@Fryguy]: https://github.com/Fryguy
