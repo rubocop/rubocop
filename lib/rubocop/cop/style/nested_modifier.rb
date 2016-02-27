@@ -89,11 +89,17 @@ module RuboCop
           outer_expr = "(#{outer_expr})" if outer_cond.or_type? &&
                                             operator == '&&'.freeze
           inner_expr = inner_cond.source
-          inner_expr = "(#{inner_expr})" if inner_cond.or_type?
+
+          inner_expr = "(#{inner_expr})" if requires_parens?(inner_cond)
           inner_expr = "!#{inner_expr}" unless outer_keyword == inner_keyword
 
           "#{outer_node.loc.keyword.source} " \
           "#{outer_expr} #{operator} #{inner_expr}"
+        end
+
+        def requires_parens?(node)
+          node.or_type? ||
+            !(RuboCop::Node::COMPARISON_OPERATORS & node.children).empty?
         end
       end
     end
