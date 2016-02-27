@@ -1,0 +1,25 @@
+Be clear, concise and precise in your description of the problem.
+Open an issue with a descriptive title and a summary in grammatically correct,
+complete sentences.
+
+Use the template below when reporting bugs. Please, make sure that
+you're running the latest stable RuboCop and that the problem you're reporting
+hasn't been reported (and potentially fixed) already.
+
+## Expected behavior
+
+## Actual behavior
+
+## Steps to reproduce the problem
+
+This is extremely important! Providing us with a reliable way to reproduce
+a problem will expedite its solution.
+
+## RuboCop version
+
+Include the output of `rubocop -V`:
+
+```
+$ rubocop -V
+0.16.0 (using Parser 2.1.2, running on ruby 2.0.0 x86_64-darwin12.4.0)
+```
