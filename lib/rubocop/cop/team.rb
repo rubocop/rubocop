@@ -12,6 +12,11 @@ module RuboCop
         Style::SpaceBeforeBlockBraces => [Style::SymbolProc]
       }.freeze
 
+      DEFAULT_OPTIONS = {
+        auto_correct: false,
+        debug: false
+      }.freeze
+
       attr_reader :errors, :warnings, :updated_source_file
 
       alias updated_source_file? updated_source_file
@@ -19,7 +24,7 @@ module RuboCop
       def initialize(cop_classes, config, options = nil)
         @cop_classes = cop_classes
         @config = config
-        @options = options || { auto_correct: false, debug: false }
+        @options = options || DEFAULT_OPTIONS
         @errors = []
         @warnings = []
 
