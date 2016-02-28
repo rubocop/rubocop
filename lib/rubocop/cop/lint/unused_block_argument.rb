@@ -13,7 +13,6 @@ module RuboCop
       #   end
       class UnusedBlockArgument < Cop
         include UnusedArgument
-        include Util
 
         def check_argument(variable)
           return unless variable.block_argument?
