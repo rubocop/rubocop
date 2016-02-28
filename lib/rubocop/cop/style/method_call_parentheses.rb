@@ -9,7 +9,7 @@ module RuboCop
         MSG = 'Do not use parentheses for method calls with ' \
               'no arguments.'.freeze
 
-        ASGN_NODES = [:lvasgn, :masgn] + Util::SHORTHAND_ASGN_NODES
+        ASGN_NODES = [:lvasgn, :masgn] + SHORTHAND_ASGN_NODES
 
         def on_send(node)
           _receiver, method_name, *args = *node
