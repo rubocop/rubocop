@@ -989,6 +989,19 @@ Metrics/PerceivedComplexity:
 Lint/AssignmentInCondition:
   AllowSafeAssignment: true
 
+# checks whether the end keywords are aligned properly for `do` `end` blocks.
+Lint/BlockAlignment:
+  # The value `start_of_block` means that the `end` should be aligned with line
+  # where the `do` keyword appears.
+  # The value `start_of_line` means it should be aligned with the whole 
+  # expression's starting line.
+  # The value `either` means both are allowed.
+  AlignWith: either
+  SupportedStyles:
+    - either
+    - start_of_block
+    - start_of_line
+
 # Align ends correctly.
 Lint/EndAlignment:
   # The value `keyword` means that `end` should be aligned with the matching

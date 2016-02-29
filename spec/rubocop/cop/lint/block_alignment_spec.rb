@@ -3,8 +3,11 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Lint::BlockAlignment do
-  subject(:cop) { described_class.new }
+describe RuboCop::Cop::Lint::BlockAlignment, :config do
+  subject(:cop) { described_class.new(config) }
+  let(:cop_config) do
+    { 'AlignWith' => 'either' }
+  end
 
   context 'when the block has no arguments' do
     it 'registers an offense for mismatched block end' do
@@ -667,6 +670,102 @@ describe RuboCop::Cop::Lint::BlockAlignment do
                      ])
       expect(cop.messages)
         .to eq(['`}` at 2, 2 is not aligned with `test {` at 1, 0.'])
+    end
+  end
+
+  context 'when configured to align with start_of_line' do
+    let(:cop_config) do
+      { 'AlignWith' => 'start_of_line' }
+    end
+
+    it 'allows when start_of_line aligned' do
+      src = [
+        'foo.bar',
+        '  .each do',
+        '    baz',
+        'end'
+      ]
+      inspect_source(cop, src)
+      expect(cop.messages).to be_empty
+    end
+
+    it 'errors when do aligned' do
+      src = [
+        'foo.bar',
+        '  .each do',
+        '    baz',
+        '  end'
+      ]
+      inspect_source(cop, src)
+      expect(cop.messages)
+        .to eq(['`end` at 4, 2 is not aligned with ' \
+                '`foo.bar` at 1, 0.'])
+    end
+
+    it 'autocorrects' do
+      src = [
+        'foo.bar',
+        '  .each do',
+        '    baz',
+        '  end'
+      ]
+      corrected = [
+        'foo.bar',
+        '  .each do',
+        '    baz',
+        'end'
+      ]
+
+      new_source = autocorrect_source(cop, src)
+      expect(new_source).to eq(corrected.join("\n"))
+    end
+  end
+
+  context 'when configured to align with do' do
+    let(:cop_config) do
+      { 'AlignWith' => 'start_of_block' }
+    end
+
+    it 'allows when do aligned' do
+      src = [
+        'foo.bar',
+        '  .each do',
+        '    baz',
+        '  end'
+      ]
+      inspect_source(cop, src)
+      expect(cop.messages).to be_empty
+    end
+
+    it 'errors when start_of_line aligned' do
+      src = [
+        'foo.bar',
+        '  .each do',
+        '    baz',
+        'end'
+      ]
+      inspect_source(cop, src)
+      expect(cop.messages)
+        .to eq(['`end` at 4, 0 is not aligned with ' \
+                '`.each do` at 2, 2.'])
+    end
+
+    it 'autocorrects' do
+      src = [
+        'foo.bar',
+        '  .each do',
+        '    baz',
+        'end'
+      ]
+      corrected = [
+        'foo.bar',
+        '  .each do',
+        '    baz',
+        '  end'
+      ]
+
+      new_source = autocorrect_source(cop, src)
+      expect(new_source).to eq(corrected.join("\n"))
     end
   end
 end
