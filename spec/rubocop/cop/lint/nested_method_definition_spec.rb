@@ -105,6 +105,18 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
     expect(cop.offenses.size).to eq(0)
   end
 
+  it 'does not register offense for nested definition inside Class.new(S)' do
+    inspect_source(cop, ['class Foo',
+                         '  def self.define',
+                         '    Class.new(S) do',
+                         '      def y',
+                         '      end',
+                         '    end',
+                         '  end',
+                         'end'])
+    expect(cop.offenses.size).to eq(0)
+  end
+
   it 'does not register offense for nested definition inside Module.new' do
     inspect_source(cop, ['class Foo',
                          '  def self.define',
