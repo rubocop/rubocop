@@ -28,6 +28,7 @@
 * [#2877](https://github.com/bbatsov/rubocop/issues/2877): `Style/SpaceAroundKeyword` doesn't flag `!super.method`, `!yield.method`, and so on. ([@alexdowad][])
 * [#2631](https://github.com/bbatsov/rubocop/issues/2631): `Style/Encoding` can remove unneeded encoding comment when autocorrecting with `when_needed` style. ([@alexdowad][])
 * [#2860](https://github.com/bbatsov/rubocop/issues/2860): Fix false positive in `Rails/Date` when `to_time` is chained with safe method. ([@palkan][])
+* [#2898](https://github.com/bbatsov/rubocop/issues/2898): `Lint/NestedMethodDefinition` allows methods defined inside `Class.new(S)` blocks. ([@segiddins][])
 
 ### Changes
 

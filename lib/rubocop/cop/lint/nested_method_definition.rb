@@ -27,7 +27,7 @@ module RuboCop
         PATTERN
 
         def_node_matcher :class_or_module_new_call?, <<-PATTERN
-          (block (send (const nil {:Class :Module}) :new) ...)
+          (block (send (const nil {:Class :Module}) :new ...) ...)
         PATTERN
 
         def on_method_def(node, _method_name, _args, _body)
