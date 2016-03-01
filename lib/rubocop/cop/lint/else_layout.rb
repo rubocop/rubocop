@@ -29,24 +29,34 @@ module RuboCop
 
         def check(node)
           return unless node
+          return check_else(node) if else?(node)
 
-          if node.loc.respond_to?(:else) &&
-             node.loc.else &&
-             node.loc.else.is?('else')
-            _cond, _if_branch, else_branch = *node
+          check_if(node) if if?(node)
+        end
 
-            return unless else_branch && else_branch.type == :begin
+        def check_else(node)
+          _cond, _if_branch, else_branch = *node
+          return unless else_branch && else_branch.type == :begin
 
-            first_else_expr = else_branch.children.first
+          first_else_expr = else_branch.children.first
+          return unless first_else_expr.source_range.line == node.loc.else.line
 
-            if first_else_expr.source_range.line == node.loc.else.line
-              add_offense(first_else_expr, :expression, message)
-            end
-          elsif node.loc.respond_to?(:keyword) &&
-                %w(if elsif).include?(node.loc.keyword.source)
-            _cond, _if_branch, else_branch = *node
-            check(else_branch)
-          end
+          add_offense(first_else_expr, :expression, message)
+        end
+
+        def check_if(node)
+          _cond, _if_branch, else_branch = *node
+          check(else_branch)
+        end
+
+        def if?(node)
+          node.loc.respond_to?(:keyword) &&
+            %w(if elsif).include?(node.loc.keyword.source)
+        end
+
+        def else?(node)
+          node.loc.respond_to?(:else) && node.loc.else &&
+            node.loc.else.is?('else')
         end
 
         def message
