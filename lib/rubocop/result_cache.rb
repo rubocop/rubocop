@@ -33,14 +33,20 @@ module RuboCop
           puts "Removing the #{remove_count} oldest files from #{cache_root}"
         end
         sorted = files.sort_by { |path| File.mtime(path) }
-        begin
-          File.delete(*sorted[0, remove_count])
-          dirs.each { |dir| Dir.rmdir(dir) if Dir["#{dir}/*"].empty? }
-        rescue Errno::ENOENT
-          # This can happen if parallel RuboCop invocations try to remove the
-          # same files. No problem.
-          puts $ERROR_INFO if verbose
-        end
+        remove_files(sorted, dirs, remove_count, verbose)
+      end
+    end
+
+    class << self
+      private
+
+      def remove_files(files, dirs, remove_count, verbose)
+        File.delete(*files[0, remove_count])
+        dirs.each { |dir| Dir.rmdir(dir) if Dir["#{dir}/*"].empty? }
+      rescue Errno::ENOENT
+        # This can happen if parallel RuboCop invocations try to remove the
+        # same files. No problem.
+        puts $ERROR_INFO if verbose
       end
     end
 
