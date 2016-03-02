@@ -53,6 +53,11 @@ describe RuboCop::Cop::Style::NestedModifier do
     expect(corrected).to eq 'something unless b || !a'
   end
 
+  it 'auto-corrects unless with a comparison operator + if' do
+    corrected = autocorrect_source(cop, 'something unless b > 1 if true')
+    expect(corrected).to eq 'something if true && !(b > 1)'
+  end
+
   it 'auto-corrects unless + if' do
     corrected = autocorrect_source(cop, 'something unless a if b')
     expect(corrected).to eq 'something if b && !a'

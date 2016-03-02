@@ -29,6 +29,7 @@
 * [#2631](https://github.com/bbatsov/rubocop/issues/2631): `Style/Encoding` can remove unneeded encoding comment when autocorrecting with `when_needed` style. ([@alexdowad][])
 * [#2860](https://github.com/bbatsov/rubocop/issues/2860): Fix false positive in `Rails/Date` when `to_time` is chained with safe method. ([@palkan][])
 * [#2898](https://github.com/bbatsov/rubocop/issues/2898): `Lint/NestedMethodDefinition` allows methods defined inside `Class.new(S)` blocks. ([@segiddins][])
+* [#2894](https://github.com/bbatsov/rubocop/issues/2894): Fix auto-correct an unless with a comparison operator. ([@jweir][])
 
 ### Changes
 
@@ -2025,3 +2026,4 @@
 [@pocke]: https://github.com/pocke
 [@prsimp]: https://github.com/prsimp
 [@ptarjan]: https://github.com/ptarjan
+[@jweir]: https://github.com/jweir
