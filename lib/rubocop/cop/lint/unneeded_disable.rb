@@ -20,30 +20,10 @@ module RuboCop
 
         def check(offenses, cop_disabled_line_ranges, comments)
           unneeded_cops = Hash.new { |h, k| h[k] = Set.new }
-          disabled_ranges = cop_disabled_line_ranges[COP_NAME] || [0..0]
 
-          cop_disabled_line_ranges.each do |cop, line_ranges|
-            line_ranges.each_cons(2) do |previous_range, range|
-              next if previous_range.end != range.begin
-
-              # If a cop is disabled in a range that begins on the same line as
-              # the end of the previous range, it means that the cop was
-              # already disabled by an earlier comment. So it's unneeded
-              # whether there are offenses or not.
-              comment = comments.find { |c| c.loc.line == range.begin }
-              unneeded_cops[comment].add(cop)
-            end
-
-            line_ranges.each do |line_range|
-              comment = comments.find { |c| c.loc.line == line_range.begin }
-
-              unless all_disabled?(comment)
-                next if ignore_offense?(disabled_ranges, line_range)
-              end
-
-              unneeded_cop = find_unneeded(comment, offenses, cop, line_range)
-              unneeded_cops[comment].add(unneeded_cop) if unneeded_cop
-            end
+          each_unneeded_disable(cop_disabled_line_ranges,
+                                offenses, comments) do |comment, unneeded_cop|
+            unneeded_cops[comment].add(unneeded_cop)
           end
 
           add_offenses(unneeded_cops)
@@ -76,6 +56,39 @@ module RuboCop
         end
 
         private
+
+        def each_unneeded_disable(cop_disabled_line_ranges, offenses, comments)
+          disabled_ranges = cop_disabled_line_ranges[COP_NAME] || [0..0]
+
+          cop_disabled_line_ranges.each do |cop, line_ranges|
+            each_already_disabled(line_ranges, comments) do |comment|
+              yield comment, cop
+            end
+
+            line_ranges.each do |line_range|
+              comment = comments.find { |c| c.loc.line == line_range.begin }
+
+              unless all_disabled?(comment)
+                next if ignore_offense?(disabled_ranges, line_range)
+              end
+
+              unneeded_cop = find_unneeded(comment, offenses, cop, line_range)
+              yield comment, unneeded_cop if unneeded_cop
+            end
+          end
+        end
+
+        def each_already_disabled(line_ranges, comments)
+          line_ranges.each_cons(2) do |previous_range, range|
+            next if previous_range.end != range.begin
+
+            # If a cop is disabled in a range that begins on the same line as
+            # the end of the previous range, it means that the cop was
+            # already disabled by an earlier comment. So it's unneeded
+            # whether there are offenses or not.
+            yield comments.find { |c| c.loc.line == range.begin }
+          end
+        end
 
         def find_unneeded(comment, offenses, cop, line_range)
           if all_disabled?(comment)
