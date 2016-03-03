@@ -7,6 +7,7 @@
 * `Style/UnlessElse` cop can auto-correct. ([@lumeet][])
 * [#2629](https://github.com/bbatsov/rubocop/pull/2629): Add a new public API method, `highlighted_area` to offense. This method returns the range of the highlighted portion of an offense. ([@rrosenblum][])
 * `Style/OneLineConditional` cop can auto-correct. ([@lumeet][])
+* [#2777](https://github.com/bbatsov/rubocop/pull/2777): New confiruable styles `flexible`, `at_least_do` and `strictly_do` for `Lint/BlockAlignment` cop. ([@panthomakos][])
 
 ### Bug fixes
 

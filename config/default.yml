@@ -67,6 +67,21 @@ AllCops:
   # run on? (If there is more than one, set this to the lowest version.)
   TargetRubyVersion: 2.0
 
+Lint/BlockAlignment:
+  EnforcedStyle: flexible
+  # `flexible` is the most permissive alignment style. Generally the `end` can
+  #   be aligned with an operator, the beginning of the expression, or the
+  #   beginning of the `do` line.
+  # `at_least_do` is a permissive alignment style, but it requires that the
+  #   `end` statement is indented at least as far as the beginning of the
+  #   `do` line.
+  # `strictly_do` requires that the `end` is aligned exactly with the
+  #   beginning of the `do` line.
+  SupportedStyles:
+    - flexible
+    - at_least_do
+    - strictly_do
+
 # Indent private/protected/public as deep as method definitions
 Style/AccessModifierIndentation:
   EnforcedStyle: indent

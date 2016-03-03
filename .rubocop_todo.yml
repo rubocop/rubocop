@@ -31,4 +31,4 @@ Metrics/ModuleLength:
 
 # Offense count: 59
 Metrics/PerceivedComplexity:
-  Max: 11
+  Max: 13
