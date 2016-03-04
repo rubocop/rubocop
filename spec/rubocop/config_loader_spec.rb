@@ -332,17 +332,22 @@ describe RuboCop::ConfigLoader do
 
     context 'when a file inherits from a url' do
       let(:file_path) { '.rubocop.yml' }
+      let(:cache_file) { '.rubocop-http---example-com-rubocop-yml' }
 
       before do
         stub_request(:get, /example.com/)
           .to_return(status: 200, body: "Style/Encoding:\n    Enabled: true")
 
-        create_file('~/.rubocop.yml', [''])
         create_file(file_path, ['inherit_from: http://example.com/rubocop.yml'])
       end
 
-      it 'does not fail to load the resulting path' do
-        expect { configuration_from_file }.not_to raise_error
+      after do
+        File.unlink cache_file if File.exist? cache_file
+      end
+
+      it 'creates the cached file alongside the owning file' do
+        configuration_from_file
+        expect(File.exist?(cache_file)).to be true
       end
     end
 
