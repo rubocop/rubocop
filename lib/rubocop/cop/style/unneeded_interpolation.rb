@@ -61,24 +61,37 @@ module RuboCop
         end
 
         def autocorrect(node)
-          loc = node.loc
           embedded_node = node.children.first
-          embedded_loc = embedded_node.loc
 
           if variable_interpolation?(embedded_node)
-            replacement = "#{embedded_loc.expression.source}.to_s"
-            ->(corrector) { corrector.replace(loc.expression, replacement) }
+            autocorrect_variable_interpolation(embedded_node, node)
           elsif single_variable_interpolation?(embedded_node)
-            variable_loc = embedded_node.children.first.loc
-            replacement = "#{variable_loc.expression.source}.to_s"
-            ->(corrector) { corrector.replace(loc.expression, replacement) }
+            autocorrect_single_variable_interpolation(embedded_node, node)
           else
-            lambda do |corrector|
-              corrector.replace(loc.begin, '')
-              corrector.replace(loc.end, '')
-              corrector.replace(embedded_loc.begin, '(')
-              corrector.replace(embedded_loc.end, ').to_s')
-            end
+            autocorrect_other(embedded_node, node)
+          end
+        end
+
+        def autocorrect_variable_interpolation(embedded_node, node)
+          replacement = "#{embedded_node.loc.expression.source}.to_s"
+          ->(corrector) { corrector.replace(node.loc.expression, replacement) }
+        end
+
+        def autocorrect_single_variable_interpolation(embedded_node, node)
+          variable_loc = embedded_node.children.first.loc
+          replacement = "#{variable_loc.expression.source}.to_s"
+          ->(corrector) { corrector.replace(node.loc.expression, replacement) }
+        end
+
+        def autocorrect_other(embedded_node, node)
+          loc = node.loc
+          embedded_loc = embedded_node.loc
+
+          lambda do |corrector|
+            corrector.replace(loc.begin, '')
+            corrector.replace(loc.end, '')
+            corrector.replace(embedded_loc.begin, '(')
+            corrector.replace(embedded_loc.end, ').to_s')
           end
         end
       end

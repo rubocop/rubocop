@@ -27,16 +27,7 @@ module RuboCop
                      'arguments, separate them with a comma.'.freeze
 
         def on_dstr(node)
-          node.children.each_cons(2) do |child1, child2|
-            # `'abc' 'def'` -> (dstr (str "abc") (str "def"))
-            next unless string_literal?(child1) && string_literal?(child2)
-            next unless child1.loc.last_line == child2.loc.line
-
-            # Make sure we don't flag a string literal which simply has
-            # embedded newlines
-            # `"abc\ndef"` also -> (dstr (str "abc") (str "def"))
-            next unless child1.source[-1] == ending_delimiter(child1)
-
+          each_bad_cons(node) do |child1, child2|
             range   = child1.source_range.join(child2.source_range)
             message = format(MSG, display_str(child1), display_str(child2))
             if node.parent && node.parent.array_type?
@@ -49,6 +40,21 @@ module RuboCop
         end
 
         private
+
+        def each_bad_cons(node)
+          node.children.each_cons(2) do |child1, child2|
+            # `'abc' 'def'` -> (dstr (str "abc") (str "def"))
+            next unless string_literal?(child1) && string_literal?(child2)
+            next unless child1.loc.last_line == child2.loc.line
+
+            # Make sure we don't flag a string literal which simply has
+            # embedded newlines
+            # `"abc\ndef"` also -> (dstr (str "abc") (str "def"))
+            next unless child1.source[-1] == ending_delimiter(child1)
+
+            yield child1, child2
+          end
+        end
 
         def ending_delimiter(str)
           # implicit string concatenation does not work with %{}, etc.
