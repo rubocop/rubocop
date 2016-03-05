@@ -130,5 +130,15 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
                      ])
       expect(cop.offenses).to be_empty
     end
+
+    it 'accepts nesting for classes with an explicit superclass' do
+      inspect_source(cop,
+                     ['class FooClass < Super',
+                      '  class BarClass',
+                      '  end',
+                      'end'
+                     ])
+      expect(cop.offenses).to be_empty
+    end
   end
 end
