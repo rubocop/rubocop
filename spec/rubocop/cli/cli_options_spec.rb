@@ -680,6 +680,57 @@ describe RuboCop::CLI, :isolated_environment do
         end
       end
 
+      %w(html json).each do |format|
+        context "when #{format} format is specified" do
+          context 'and offenses come from the cache' do
+            context 'and a message has binary encoding' do
+              let(:message_from_cache) do
+                'Cyclomatic complexity for 文 is too high. [8/6]'
+                  .dup
+                  .force_encoding('ASCII-8BIT')
+              end
+              let(:data_from_cache) do
+                [
+                  {
+                    'severity' => 'convention',
+                    'location' => { 'begin_pos' => 18, 'end_pos' => 21 },
+                    'message' => message_from_cache,
+                    'cop_name' => 'Metrics/CyclomaticComplexity',
+                    'status' => 'unsupported'
+                  }
+                ]
+              end
+
+              it "outputs #{format.upcase} code without crashing" do
+                create_file('example.rb', ['# encoding: utf-8',
+                                           'def 文',
+                                           '  b if a',
+                                           '  b if a',
+                                           '  b if a',
+                                           '  b if a',
+                                           '  b if a',
+                                           '  b if a',
+                                           '  b if a',
+                                           'end'])
+                # Stub out the JSON.load call used by the cache mechanism, so
+                # we can test what happens when an offense message has
+                # ASCII-8BIT encoding and contains a non-7bit-ascii character.
+                allow(JSON).to receive(:load).and_return(data_from_cache)
+
+                2.times do
+                  # The second run (and possibly the first) should hit the
+                  # cache.
+                  expect(cli.run(['--format', format,
+                                  '--only', 'Metrics/CyclomaticComplexity']))
+                    .to eq(1)
+                end
+                expect($stderr.string).to eq('')
+              end
+            end
+          end
+        end
+      end
+
       context 'when clang format is specified' do
         it 'outputs with clang format' do
           create_file('example1.rb', ['# encoding: utf-8',

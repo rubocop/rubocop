@@ -53,8 +53,12 @@ module RuboCop
         location = Parser::Source::Range.new(source_buffer,
                                              o['location']['begin_pos'],
                                              o['location']['end_pos'])
-        Cop::Offense.new(o['severity'], location, o['message'], o['cop_name'],
-                         o['status'].to_sym)
+        Cop::Offense.new(o['severity'], location,
+                         # We know that we wrote a UTF-8 encoded string to the
+                         # cache file, so it's safe to force-encode it back to
+                         # UTF-8 if it happens to be ASCII-8BIT.
+                         o['message'].force_encoding('UTF-8'),
+                         o['cop_name'], o['status'].to_sym)
       end
     end
   end
