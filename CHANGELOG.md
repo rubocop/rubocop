@@ -35,6 +35,7 @@
 * [#2911](https://github.com/bbatsov/rubocop/issues/2911): `Style/ClassAndModuleChildren` doesn't flag nested class definitions, where the outer class has an explicit superclass (because such definitions can't be converted to `compact` style). ([@alexdowad][])
 * [#2871](https://github.com/bbatsov/rubocop/issues/2871): Don't crash when offense messages are read back from cache with `ASCII-8BIT` encoding and output as HTML or JSON. ([@jonas054][])
 * [#2901](https://github.com/bbatsov/rubocop/issues/2901): Don't crash when `ENV['HOME']` is undefined. ([@mikegee][])
+* [#2627](https://github.com/bbatsov/rubocop/issues/2627): `Style/BlockDelimiters` does not flag blocks delimited by `{}` when a block call is the final value in a hash with implicit braces (one which is the last argument to an outer method call). ([@alexdowad][])
 
 ### Changes
 

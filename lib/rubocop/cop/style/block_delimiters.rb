@@ -10,6 +10,8 @@ module RuboCop
         include ConfigurableEnforcedStyle
         include AutocorrectUnlessChangingAST
 
+        def_node_matcher :block_method_name, '(block (send _ $_ ...) ...)'
+
         def on_send(node)
           _receiver, method_name, *args = *node
           return unless args.any?
@@ -105,6 +107,13 @@ module RuboCop
           when :send
             receiver, _method_name, *_args = *node
             get_block(receiver) if receiver
+          when :hash
+            # A hash which is passed as method argument may have no braces
+            # In that case, the last K/V pair could end with a block node
+            # which could change in meaning if do...end replaced {...}
+            get_block(node.children.last) unless node.loc.begin
+          when :pair
+            get_block(node.children.last)
           end
         end
 
@@ -123,15 +132,11 @@ module RuboCop
           block_length = block_length(node)
           block_begin = node.loc.begin.source
 
-          if block_length > 0
-            block_begin != '{'
-          else
-            block_begin == '{'
-          end
+          (block_length > 0) ^ (block_begin == '{')
         end
 
         def semantic_block_style?(node)
-          method_name = extract_method_name_from_block(node)
+          method_name = block_method_name(node)
           return true if ignored_method?(method_name)
 
           block_begin = node.loc.begin.source
@@ -156,13 +161,6 @@ module RuboCop
 
         def return_value_chaining?(node)
           node.parent && node.parent.send_type? && node.parent.loc.dot
-        end
-
-        def extract_method_name_from_block(block)
-          node, _args, _body = *block
-          _receiver, method_name, *_args = *node
-
-          method_name
         end
 
         def ignored_method?(method_name)
