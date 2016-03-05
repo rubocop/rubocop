@@ -24,7 +24,7 @@ module RuboCop
 
       def display_column(range)
         line = processed_source.lines[range.line - 1]
-        line[0, range.column].display_width
+        Unicode::DisplayWidth.of(line[0, range.column])
       end
 
       def check_alignment(items, base_column = nil)
