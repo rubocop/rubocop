@@ -3,21 +3,29 @@
 
 module RuboCop
   module Cop
-    # Common functionality for checking that the closing brace of a literal is
-    # symmetrical with respect to the opening brace and contained elements.
+    # Common functionality for checking the closing brace of a literal is
+    # either on the same line as the last contained elements, or a new line.
     module MultilineLiteralBraceLayout
+      include ConfigurableEnforcedStyle
+
       def check_brace_layout(node)
         return unless node.loc.begin # Ignore implicit literals.
         return if children(node).empty? # Ignore empty literals.
 
-        if opening_brace_on_same_line?(node)
-          return if closing_brace_on_same_line?(node)
-
-          add_offense(node, :expression, self.class::SAME_LINE_MESSAGE)
-        else
+        if style == :new_line
           return unless closing_brace_on_same_line?(node)
 
-          add_offense(node, :expression, self.class::NEW_LINE_MESSAGE)
+          add_offense(node, :expression, self.class::ALWAYS_NEW_LINE_MESSAGE)
+        elsif style == :symmetrical
+          if opening_brace_on_same_line?(node)
+            return if closing_brace_on_same_line?(node)
+
+            add_offense(node, :expression, self.class::SAME_LINE_MESSAGE)
+          else
+            return unless closing_brace_on_same_line?(node)
+
+            add_offense(node, :expression, self.class::NEW_LINE_MESSAGE)
+          end
         end
       end
 

@@ -9,6 +9,10 @@
 * `Style/RaiseArgs` cop can auto-correct. ([@drenmi][])
 * [#2993](https://github.com/bbatsov/rubocop/pull/2993): `Style/SpaceAfterColon` now checks optional keyword arguments. ([@owst][])
 * [#3003](https://github.com/bbatsov/rubocop/pull/3003): Read command line options from `.rubocop` file and `RUBOCOP_OPTS` environment variable. ([@bolshakov][])
+* [#2857](https://github.com/bbatsov/rubocop/issues/2857): `Style/MultilineArrayBraceLayout` enforced style is configurable and supports `symmetrical` and `new_line` options. ([@panthomakos][])
+* [#2857](https://github.com/bbatsov/rubocop/issues/2857): `Style/MultilineHashBraceLayout` enforced style is configurable and supports `symmetrical` and `new_line` options. ([@panthomakos][])
+* [#2857](https://github.com/bbatsov/rubocop/issues/2857): `Style/MultilineMethodCallBraceLayout` enforced style is configurable and supports `symmetrical` and `new_line` options. ([@panthomakos][])
+* [#2857](https://github.com/bbatsov/rubocop/issues/2857): `Style/MultilineMethodDefinitionBraceLayout` enforced style is configurable and supports `symmetrical` and `new_line` options. ([@panthomakos][])
 
 ### Bug fixes
 
