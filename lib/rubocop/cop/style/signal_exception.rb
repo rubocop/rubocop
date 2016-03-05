@@ -18,10 +18,10 @@ module RuboCop
           return unless style == :semantic
 
           begin_node, *rescue_nodes, _else_node = *node
-          check_for(:raise, begin_node)
+          check_scope(:raise, begin_node)
 
           rescue_nodes.each do |rescue_node|
-            check_for(:fail, rescue_node)
+            check_scope(:fail, rescue_node)
             allow(:raise, rescue_node)
           end
         end
@@ -29,11 +29,11 @@ module RuboCop
         def on_send(node)
           case style
           when :semantic
-            check_for(:raise, node) unless ignored_node?(node)
+            check_send(:raise, node) unless ignored_node?(node)
           when :only_raise
-            check_for(:fail, node)
+            check_send(:fail, node)
           when :only_fail
-            check_for(:raise, node)
+            check_send(:raise, node)
           end
         end
 
@@ -64,17 +64,21 @@ module RuboCop
           end
         end
 
-        def check_for(method_name, node)
+        def check_scope(method_name, node)
           return unless node
 
-          if style == :semantic
-            each_command_or_kernel_call(method_name, node) do |send_node|
-              next if ignored_node?(send_node)
+          each_command_or_kernel_call(method_name, node) do |send_node|
+            next if ignored_node?(send_node)
 
-              add_offense(send_node, :selector, message(method_name))
-              ignore_node(send_node)
-            end
-          elsif command_or_kernel_call?(method_name, node)
+            add_offense(send_node, :selector, message(method_name))
+            ignore_node(send_node)
+          end
+        end
+
+        def check_send(method_name, node)
+          return unless node
+
+          if command_or_kernel_call?(method_name, node)
             add_offense(node, :selector, message(method_name))
           end
         end
