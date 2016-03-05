@@ -17,7 +17,7 @@ module RuboCop
       #   class Foo::Bar
       #   end
       #
-      # The compact style is only forced, for classes / modules with one child.
+      # The compact style is only forced for classes/modules with one child.
       class ClassAndModuleChildren < Cop
         include ConfigurableEnforcedStyle
 
