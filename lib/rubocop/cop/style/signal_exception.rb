@@ -13,6 +13,13 @@ module RuboCop
                     'rethrow exceptions.'.freeze
 
         def_node_matcher :kernel_call?, '(send (const nil :Kernel) %1 ...)'
+        def_node_search :custom_fail_methods,
+                        '{(def :fail ...) (defs _ :fail ...)}'
+
+        def investigate(processed_source)
+          ast = processed_source.ast
+          @custom_fail_defined = ast && custom_fail_methods(ast).any?
+        end
 
         def on_rescue(node)
           return unless style == :semantic
@@ -31,6 +38,7 @@ module RuboCop
           when :semantic
             check_send(:raise, node) unless ignored_node?(node)
           when :only_raise
+            return if @custom_fail_defined
             check_send(:fail, node)
           when :only_fail
             check_send(:raise, node)

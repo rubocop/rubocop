@@ -243,6 +243,30 @@ describe RuboCop::Cop::Style::SignalException, :config do
         .to eq(['Always use `raise` to signal exceptions.'])
     end
 
+    it 'accepts `fail` if a custom `fail` instance method is defined' do
+      inspect_source(cop,
+                     ['class A',
+                      '  def fail(arg)',
+                      '  end',
+                      '  def other_method',
+                      '    fail "message"',
+                      '  end',
+                      'end'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts `fail` if a custom `fail` singleton method is defined' do
+      inspect_source(cop,
+                     ['class A',
+                      '  def self.fail(arg)',
+                      '  end',
+                      '  def self.other_method',
+                      '    fail "message"',
+                      '  end',
+                      'end'])
+      expect(cop.offenses).to be_empty
+    end
+
     it 'accepts `fail` with explicit receiver' do
       inspect_source(cop, 'test.fail')
       expect(cop.offenses).to be_empty
