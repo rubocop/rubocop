@@ -31,9 +31,9 @@ module RuboCop
           when :semantic
             check_for(:raise, node) unless ignored_node?(node)
           when :only_raise
-            check_for(:raise, node)
-          when :only_fail
             check_for(:fail, node)
+          when :only_fail
+            check_for(:raise, node)
           end
         end
 
@@ -74,8 +74,7 @@ module RuboCop
               add_offense(send_node, :selector, message(method_name))
               ignore_node(send_node)
             end
-          elsif command_or_kernel_call?(method_name == :raise ? :fail : :raise,
-                                        node)
+          elsif command_or_kernel_call?(method_name, node)
             add_offense(node, :selector, message(method_name))
           end
         end
