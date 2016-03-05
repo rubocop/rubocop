@@ -31,6 +31,15 @@ describe RuboCop::Cop::Style::ZeroLengthPredicate do
   it_behaves_like 'registers offense', '0 == [1, 2, 3].size',
                   'Use `empty?` instead of `0 == size`.'
 
+  it_behaves_like 'registers offense', '[1, 2, 3].length < 1',
+                  'Use `empty?` instead of `length < 1`.'
+  it_behaves_like 'registers offense', '[1, 2, 3].size < 1',
+                  'Use `empty?` instead of `size < 1`.'
+  it_behaves_like 'registers offense', '1 > [1, 2, 3].length',
+                  'Use `empty?` instead of `1 > length`.'
+  it_behaves_like 'registers offense', '1 > [1, 2, 3].size',
+                  'Use `empty?` instead of `1 > size`.'
+
   it_behaves_like 'registers offense', '[1, 2, 3].length > 0',
                   'Use `!empty?` instead of `length > 0`.'
   it_behaves_like 'registers offense', '[1, 2, 3].size > 0',

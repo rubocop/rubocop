@@ -7,6 +7,7 @@
 * `Style/UnlessElse` cop can auto-correct. ([@lumeet][])
 * [#2629](https://github.com/bbatsov/rubocop/pull/2629): Add a new public API method, `highlighted_area` to offense. This method returns the range of the highlighted portion of an offense. ([@rrosenblum][])
 * `Style/OneLineConditional` cop can auto-correct. ([@lumeet][])
+* [#2905](https://github.com/bbatsov/rubocop/issues/2905): `Style/ZeroLengthConditional` flags code like `array.length < 1`, `1 > array.length`, and so on. ([@alexdowad][])
 
 ### Bug fixes
 
