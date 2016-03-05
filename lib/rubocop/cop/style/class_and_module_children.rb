@@ -17,18 +17,18 @@ module RuboCop
       #   class Foo::Bar
       #   end
       #
-      # The compact style is only forced, for classes / modules with one child.
+      # The compact style is only forced for classes/modules with one child.
       class ClassAndModuleChildren < Cop
         include ConfigurableEnforcedStyle
 
         NESTED_MSG = 'Use nested module/class definitions instead of ' \
                      'compact style.'.freeze
-
         COMPACT_MSG = 'Use compact module/class definition instead of ' \
                       'nested style.'.freeze
 
         def on_class(node)
-          _name, _superclass, body = *node
+          _name, superclass, body = *node
+          return if superclass
           check_style(node, body)
         end
 

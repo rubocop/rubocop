@@ -73,6 +73,22 @@ describe RuboCop::RakeTask do
       Rake::Task['rubocop'].execute
     end
 
+    it 'allows nested arrays inside formatters, options, and requires' do
+      RuboCop::RakeTask.new do |task|
+        task.formatters = [['files']]
+        task.requires = [['library']]
+        task.options = [['--display-cop-names']]
+      end
+
+      cli = double('cli', run: 0)
+      allow(RuboCop::CLI).to receive(:new) { cli }
+      options = ['--format', 'files', '--require', 'library',
+                 '--display-cop-names']
+      expect(cli).to receive(:run).with(options)
+
+      Rake::Task['rubocop'].execute
+    end
+
     it 'will not error when result is not 0 and fail_on_error is false' do
       RuboCop::RakeTask.new do |task|
         task.fail_on_error = false

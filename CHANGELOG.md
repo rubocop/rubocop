@@ -7,6 +7,7 @@
 * `Style/UnlessElse` cop can auto-correct. ([@lumeet][])
 * [#2629](https://github.com/bbatsov/rubocop/pull/2629): Add a new public API method, `highlighted_area` to offense. This method returns the range of the highlighted portion of an offense. ([@rrosenblum][])
 * `Style/OneLineConditional` cop can auto-correct. ([@lumeet][])
+* [#2905](https://github.com/bbatsov/rubocop/issues/2905): `Style/ZeroLengthConditional` flags code like `array.length < 1`, `1 > array.length`, and so on. ([@alexdowad][])
 
 ### Bug fixes
 
@@ -30,11 +31,13 @@
 * [#2860](https://github.com/bbatsov/rubocop/issues/2860): Fix false positive in `Rails/Date` when `to_time` is chained with safe method. ([@palkan][])
 * [#2898](https://github.com/bbatsov/rubocop/issues/2898): `Lint/NestedMethodDefinition` allows methods defined inside `Class.new(S)` blocks. ([@segiddins][])
 * [#2894](https://github.com/bbatsov/rubocop/issues/2894): Fix auto-correct an unless with a comparison operator. ([@jweir][])
+* [#2911](https://github.com/bbatsov/rubocop/issues/2911): `Style/ClassAndModuleChildren` doesn't flag nested class definitions, where the outer class has an explicit superclass (because such definitions can't be converted to `compact` style). ([@alexdowad][])
 
 ### Changes
 
 * [#2629](https://github.com/bbatsov/rubocop/pull/2629): Change the offense range for metrics cops to default to `expression` instead of `keyword` (the offense now spans the entire method, class, or module). ([@rrosenblum][])
 * [#2891](https://github.com/bbatsov/rubocop/pull/2891): Change the caching of remote configs to live alongside the parent file. ([@Fryguy][])
+* [#2662](https://github.com/bbatsov/rubocop/issues/2662): When setting options for Rake task, nested arrays can be used in the `options`, `formatters`, and `requires` arrays. ([@alexdowad][])
 
 ## 0.37.2 (11/02/2016)
 

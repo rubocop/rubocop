@@ -91,7 +91,7 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       expect(cop.highlights).to eq ['FooModule']
     end
 
-    it 'accepts compact style for classes / modules' do
+    it 'accepts compact style for classes/modules' do
       inspect_source(cop,
                      ['class FooClass::BarClass',
                       'end',
@@ -102,7 +102,7 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       expect(cop.offenses).to be_empty
     end
 
-    it 'accepts nesting for classes / modules with more than one child' do
+    it 'accepts nesting for classes/modules with more than one child' do
       inspect_source(cop,
                      ['class FooClass',
                       '  class BarClass',
@@ -121,10 +121,20 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       expect(cop.offenses).to be_empty
     end
 
-    it 'accepts class / module with single method' do
+    it 'accepts class/module with single method' do
       inspect_source(cop,
                      ['class FooClass',
                       '  def bar_method',
+                      '  end',
+                      'end'
+                     ])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts nesting for classes with an explicit superclass' do
+      inspect_source(cop,
+                     ['class FooClass < Super',
+                      '  class BarClass',
                       '  end',
                       'end'
                      ])
