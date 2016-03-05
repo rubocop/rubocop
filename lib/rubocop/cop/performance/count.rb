@@ -4,8 +4,9 @@
 module RuboCop
   module Cop
     module Performance
-      # This cop is used to identify usages of `count` on an
-      # `Enumerable` and change them to `size`.
+      # This cop is used to identify usages of `count` on an `Enumerable` that
+      # follow calls to `select` or `reject`. Querying logic can instead be
+      # passed to the `count` call.
       #
       # @example
       #   # bad
