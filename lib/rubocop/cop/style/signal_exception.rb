@@ -12,6 +12,8 @@ module RuboCop
         RAISE_MSG = 'Use `raise` instead of `fail` to ' \
                     'rethrow exceptions.'.freeze
 
+        def_node_matcher :kernel_call?, '(send (const nil :Kernel) %1 ...)'
+
         def on_rescue(node)
           return unless style == :semantic
 
@@ -79,18 +81,7 @@ module RuboCop
         end
 
         def command_or_kernel_call?(name, node)
-          node.command?(name) || kernel_call?(name, node)
-        end
-
-        def kernel_call?(name, node)
-          return false unless node.type == :send
-          receiver, selector, _args = *node
-
-          return false unless name == selector
-          return false unless receiver.const_type?
-
-          _, constant = *receiver
-          constant == :Kernel
+          node.command?(name) || kernel_call?(node, name)
         end
 
         def allow(method_name, node)
