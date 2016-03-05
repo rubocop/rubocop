@@ -21,7 +21,7 @@ module RuboCop
       #   "foobar".empty?
       #   !hash.empty?
       class ZeroLengthPredicate < Cop
-        ZERO_MSG = 'Use `empty?` instead of `%s == 0`.'.freeze
+        ZERO_MSG = 'Use `empty?` instead of `%s == %s`.'.freeze
         NONZERO_MSG = 'Use `!empty?` instead of `%s %s %s`.'.freeze
 
         def on_send(node)
@@ -41,8 +41,8 @@ module RuboCop
         end
 
         def_node_matcher :zero_length_predicate, <<-END
-          {(send (send _ ${:length :size}) :== (int 0))
-           (send (int 0) :== (send _ ${:length :size}))}
+          {(send (send _ ${:length :size}) :== (int $0))
+           (send (int $0) :== (send _ ${:length :size}))}
         END
 
         def_node_matcher :nonzero_length_predicate, <<-END

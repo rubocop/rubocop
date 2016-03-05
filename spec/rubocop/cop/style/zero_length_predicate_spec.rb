@@ -44,7 +44,7 @@ describe RuboCop::Cop::Style::ZeroLengthPredicate do
         it 'registers an offense' do
           expect(cop.offenses.size).to eq(1)
           expect(cop.offenses.first.message).to eq(
-            'Use `empty?` instead of `length == 0`.'
+            'Use `empty?` instead of `0 == length`.'
           )
           expect(cop.highlights).to eq(['0 == [1, 2, 3].length'])
         end
@@ -56,7 +56,7 @@ describe RuboCop::Cop::Style::ZeroLengthPredicate do
         it 'registers an offense' do
           expect(cop.offenses.size).to eq(1)
           expect(cop.offenses.first.message).to eq(
-            'Use `empty?` instead of `size == 0`.'
+            'Use `empty?` instead of `0 == size`.'
           )
           expect(cop.highlights).to eq(['0 == [1, 2, 3].size'])
         end
