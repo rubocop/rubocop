@@ -113,10 +113,6 @@ module RuboCop
           index = parent.children.index { |c| c.equal?(node) }
           index >= 2
         end
-
-        def parenthesized_call?(send)
-          send.loc.begin && send.loc.begin.is?('(')
-        end
       end
     end
   end

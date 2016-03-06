@@ -34,10 +34,6 @@ module RuboCop
 
         private
 
-        def parenthesized_call?(send)
-          send.loc.begin && send.loc.begin.is?('(')
-        end
-
         def rspec_matcher?(parent, send)
           parent.method_args.one? && # .to, .not_to, etc
             RSPEC_MATCHERS.include?(send.method_name) &&
