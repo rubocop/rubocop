@@ -6,7 +6,6 @@ module RuboCop
     module Style
       # This cop checks for uses of *and* and *or*.
       class AndOr < Cop
-        include AutocorrectUnlessChangingAST
         include ConfigurableEnforcedStyle
 
         MSG = 'Use `%s` instead of `%s`.'.freeze
@@ -59,7 +58,7 @@ module RuboCop
           add_offense(node, :operator, format(MSG, OPS[op], op))
         end
 
-        def correction(node)
+        def autocorrect(node)
           expr1, expr2 = *node
           replacement = (node.type == :and ? '&&' : '||')
           lambda do |corrector|
