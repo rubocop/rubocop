@@ -8,7 +8,6 @@ module RuboCop
       # if the last parameter is a hash.
       class BracesAroundHashParameters < Cop
         include ConfigurableEnforcedStyle
-        include AutocorrectUnlessChangingAST
 
         MSG = '%s curly braces around a hash parameter.'.freeze
 
@@ -55,7 +54,7 @@ module RuboCop
         # node, because that context is needed. When parsing the code to see if
         # the AST has changed, a braceless hash would not be parsed as a hash
         # otherwise.
-        def correction(send_node)
+        def autocorrect(send_node)
           _receiver, _method_name, *args = *send_node
           node = args.last
           lambda do |corrector|
@@ -71,6 +70,9 @@ module RuboCop
           comments = processed_source.comments
           right_brace_and_space = range_with_surrounding_space(node.loc.end,
                                                                :left)
+          right_brace_and_space =
+            range_with_surrounding_comma(right_brace_and_space, :left)
+
           if comments.any? { |c| c.loc.line == right_brace_and_space.line }
             # Removing a line break between a comment and the closing
             # parenthesis would cause a syntax error, so we only remove the

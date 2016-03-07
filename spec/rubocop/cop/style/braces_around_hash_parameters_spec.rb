@@ -131,13 +131,13 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
 
     it 'corrects one hash parameter with braces and a trailing comma' do
       corrected = autocorrect_source(cop, ['where({ x: 1, y: 2, })'])
-      expect(corrected).to eq('where(x: 1, y: 2,)')
+      expect(corrected).to eq('where(x: 1, y: 2)')
     end
 
     it 'corrects one hash parameter with braces and trailing comma and ' \
        'whitespace' do
       corrected = autocorrect_source(cop, ['where({ x: 1, y: 2,   })'])
-      expect(corrected).to eq('where(x: 1, y: 2,)')
+      expect(corrected).to eq('where(x: 1, y: 2)')
     end
 
     it 'corrects one hash parameter with braces without adding extra space' do
@@ -160,11 +160,10 @@ describe RuboCop::Cop::Style::BracesAroundHashParameters, :config do
     end
 
     context 'in a method call without parentheses' do
-      it 'does not correct a hash parameter with trailing comma' do
-        # Because `get :i, x: 1,` is invalid syntax.
+      it 'corrects a hash parameter with trailing comma' do
         src = 'get :i, { x: 1, }'
         corrected = autocorrect_source(cop, src)
-        expect(corrected).to eq(src)
+        expect(corrected).to eq('get :i, x: 1')
       end
     end
   end
