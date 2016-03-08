@@ -30,6 +30,14 @@ describe RuboCop::ConfigLoader do
           expect(configuration_file_for).to end_with('config/default.yml')
         end
       end
+
+      context 'and ENV has no `HOME` defined' do
+        before { ENV.delete 'HOME' }
+
+        it 'falls back to the provided default file' do
+          expect(configuration_file_for).to end_with('config/default.yml')
+        end
+      end
     end
 
     context 'when a config file exists in the parent directory' do

@@ -33,6 +33,7 @@
 * [#2894](https://github.com/bbatsov/rubocop/issues/2894): Fix auto-correct an unless with a comparison operator. ([@jweir][])
 * [#2911](https://github.com/bbatsov/rubocop/issues/2911): `Style/ClassAndModuleChildren` doesn't flag nested class definitions, where the outer class has an explicit superclass (because such definitions can't be converted to `compact` style). ([@alexdowad][])
 * [#2871](https://github.com/bbatsov/rubocop/issues/2871): Don't crash when offense messages are read back from cache with `ASCII-8BIT` encoding and output as HTML or JSON. ([@jonas054][])
+* [#2901](https://github.com/bbatsov/rubocop/issues/2901): Don't crash when `ENV['HOME']` is undefined. ([@mikegee][])
 
 ### Changes
 
@@ -2034,3 +2035,4 @@
 [@ptarjan]: https://github.com/ptarjan
 [@jweir]: https://github.com/jweir
 [@Fryguy]: https://github.com/Fryguy
+[@mikegee]: https://github.com/mikegee
