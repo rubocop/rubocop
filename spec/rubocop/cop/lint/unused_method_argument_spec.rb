@@ -330,6 +330,24 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
         expect(corrected_source).to eq(source)
       end
     end
+
+    context 'when a trailing block argument is unused' do
+      let(:source) { <<-END }
+        def some_method(foo, bar, &block)
+          foo + bar
+        end
+      END
+
+      let(:expected_source) { <<-END }
+        def some_method(foo, bar)
+          foo + bar
+        end
+      END
+
+      it 'removes the unused block arg' do
+        expect(corrected_source).to eq(expected_source)
+      end
+    end
   end
 
   context 'when IgnoreEmptyMethods config parameter is set' do

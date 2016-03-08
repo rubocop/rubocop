@@ -27,7 +27,15 @@ module RuboCop
         def autocorrect(node)
           return if [:kwarg, :kwoptarg].include?(node.type)
 
-          ->(corrector) { corrector.insert_before(node.loc.name, '_') }
+          if node.blockarg_type?
+            lambda do |corrector|
+              range = range_with_surrounding_space(node.source_range, :left)
+              range = range_with_surrounding_comma(range, :left)
+              corrector.remove(range)
+            end
+          else
+            ->(corrector) { corrector.insert_before(node.loc.name, '_') }
+          end
         end
       end
     end

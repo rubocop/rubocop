@@ -45,6 +45,7 @@
 * [#2925](https://github.com/bbatsov/rubocop/pull/2925): Bump unicode-display_width dependency to >= 1.0.1. ([@jspanjers][])
 * [#2875](https://github.com/bbatsov/rubocop/issues/2875): `Style/SignalException` does not flag calls to `fail` if a custom method named `fail` is defined in the same file. ([@alexdowad][])
 * [#2923](https://github.com/bbatsov/rubocop/issues/2923): `Style/FileName` considers file names which contain a ? or ! character to still be "snake case". ([@alexdowad][])
+* [#2879](https://github.com/bbatsov/rubocop/issues/2879): When autocorrecting, `Lint/UnusedMethodArgument` removes unused block arguments rather than simply prefixing them with an underscore. ([@alexdowad][])
 
 ## 0.37.2 (11/02/2016)
 
