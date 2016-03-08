@@ -263,7 +263,7 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
       end
     end
 
-    context 'when there are some whitespaces around the argument' do
+    context 'when there is some whitespace around the argument' do
       let(:source) { <<-END }
         def some_method(foo,
             bar)
