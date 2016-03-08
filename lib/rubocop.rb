@@ -49,7 +49,6 @@ require 'rubocop/cop/mixin/annotation_comment'
 require 'rubocop/cop/mixin/array_hash_indentation'
 require 'rubocop/cop/mixin/array_syntax'
 require 'rubocop/cop/mixin/autocorrect_alignment'
-require 'rubocop/cop/mixin/autocorrect_unless_changing_ast'
 require 'rubocop/cop/mixin/check_assignment'
 require 'rubocop/cop/mixin/configurable_max'
 require 'rubocop/cop/mixin/code_length' # relies on configurable_max
