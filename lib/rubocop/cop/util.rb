@@ -46,6 +46,10 @@ module RuboCop
         OPERATOR_METHODS.include?(symbol)
       end
 
+      def ternary_op?(node)
+        node.loc.respond_to?(:question)
+      end
+
       def strip_quotes(str)
         if str[0] == '"' || str[0] == "'"
           str[0] = ''

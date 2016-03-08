@@ -9,6 +9,8 @@
 * `Style/OneLineConditional` cop can auto-correct. ([@lumeet][])
 * [#2905](https://github.com/bbatsov/rubocop/issues/2905): `Style/ZeroLengthConditional` flags code like `array.length < 1`, `1 > array.length`, and so on. ([@alexdowad][])
 * [#2892](https://github.com/bbatsov/rubocop/issues/2892): `Lint/BlockAlignment` cop can be configured to be stricter. ([@ptarjan][])
+* `Style/Not` is able to autocorrect in cases where parentheses must be added to preserve the meaning of an expression. ([@alexdowad][])
+* `Style/Not` auto-corrects comparison expressions by removing `not` and using the opposite comparison. ([@alexdowad][])
 
 ### Bug fixes
 
