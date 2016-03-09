@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require 'net/http'
+require 'time'
 
 module RuboCop
   # Common methods and behaviors for dealing with remote config files.
