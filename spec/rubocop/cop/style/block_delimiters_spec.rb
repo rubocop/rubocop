@@ -285,7 +285,12 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
                '',
                'expect { x }.to change {',
                '  Counter.count',
-               '}.from(0).to(1)']
+               '}.from(0).to(1)',
+               '',
+               'cr.stubs client: mock {',
+               '  expects(:email_disabled=).with(true)',
+               '  expects :save',
+               '}']
         inspect_source(cop, src)
         expect(cop.offenses).to be_empty
       end

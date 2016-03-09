@@ -11,10 +11,6 @@ module RuboCop
           node.loc.respond_to?(:end) && node.loc.end.nil?
       end
 
-      def ternary_op?(node)
-        node.loc.respond_to?(:question)
-      end
-
       def elsif?(node)
         node.loc.respond_to?(:keyword) && node.loc.keyword &&
           node.loc.keyword.is?('elsif')

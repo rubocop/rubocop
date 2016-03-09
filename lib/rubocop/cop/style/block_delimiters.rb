@@ -8,24 +8,24 @@ module RuboCop
       # multi-line blocks.
       class BlockDelimiters < Cop
         include ConfigurableEnforcedStyle
-        include AutocorrectUnlessChangingAST
+
+        def_node_matcher :block_method_name, '(block (send _ $_ ...) ...)'
 
         def on_send(node)
           _receiver, method_name, *args = *node
-          return unless args.any?
+          return if args.empty?
+          return if parentheses?(node) || operator?(method_name)
 
-          block = get_block(args.last)
-          return unless block && !parentheses?(node) && !operator?(method_name)
-
-          # If there are no parentheses around the arguments, then braces and
-          # do-end have different meaning due to how they bind, so we allow
-          # either.
-          ignore_node(block)
+          get_blocks(args.last) do |block|
+            # If there are no parentheses around the arguments, then braces and
+            # do-end have different meaning due to how they bind, so we allow
+            # either.
+            ignore_node(block)
+          end
         end
 
         def on_block(node)
           return if ignored_node?(node)
-
           return if proper_block_style?(node)
 
           add_offense(node, :begin)
@@ -34,9 +34,7 @@ module RuboCop
         private
 
         def line_count_based_message(node)
-          block_length = block_length(node)
-
-          if block_length > 0
+          if block_length(node) > 0
             'Avoid using `{...}` for multi-line blocks.'
           else
             'Prefer `{...}` over `do...end` for single-line blocks.'
@@ -54,9 +52,7 @@ module RuboCop
         end
 
         def braces_for_chaining_message(node)
-          block_length = block_length(node)
-
-          if block_length > 0
+          if block_length(node) > 0
             if return_value_chaining?(node)
               'Prefer `{...}` over `do...end` for multi-line chained blocks.'
             else
@@ -78,7 +74,9 @@ module RuboCop
           end
         end
 
-        def correction(node)
+        def autocorrect(node)
+          return if correction_would_break_code?(node)
+
           lambda do |corrector|
             b = node.loc.begin
             e = node.loc.end
@@ -98,14 +96,23 @@ module RuboCop
           node.source_buffer.source[node.begin_pos - 1, 1] =~ /\s/
         end
 
-        def get_block(node)
+        def get_blocks(node, &block)
           case node.type
           when :block
-            node
+            yield node
           when :send
             receiver, _method_name, *_args = *node
-            get_block(receiver) if receiver
+            get_blocks(receiver, &block) if receiver
+          when :hash
+            # A hash which is passed as method argument may have no braces
+            # In that case, one of the K/V pairs could contain a block node
+            # which could change in meaning if do...end replaced {...}
+            return if node.loc.begin
+            node.children.each { |child| get_blocks(child, &block) }
+          when :pair
+            node.children.each { |child| get_blocks(child, &block) }
           end
+          nil
         end
 
         def proper_block_style?(node)
@@ -120,18 +127,13 @@ module RuboCop
         end
 
         def line_count_based_block_style?(node)
-          block_length = block_length(node)
           block_begin = node.loc.begin.source
 
-          if block_length > 0
-            block_begin != '{'
-          else
-            block_begin == '{'
-          end
+          (block_length(node) > 0) ^ (block_begin == '{')
         end
 
         def semantic_block_style?(node)
-          method_name = extract_method_name_from_block(node)
+          method_name = block_method_name(node)
           return true if ignored_method?(method_name)
 
           block_begin = node.loc.begin.source
@@ -158,19 +160,22 @@ module RuboCop
           node.parent && node.parent.send_type? && node.parent.loc.dot
         end
 
-        def extract_method_name_from_block(block)
-          node, _args, _body = *block
-          _receiver, method_name, *_args = *node
-
-          method_name
+        def correction_would_break_code?(node)
+          if node.loc.begin.is?('do')
+            # Converting `obj.method arg do |x| end` to use `{}` would cause
+            # a syntax error.
+            send = node.children.first
+            _receiver, _method_name, *args = *send
+            !args.empty? && !parentheses?(send)
+          end
         end
 
         def ignored_method?(method_name)
-          ignored_methods.include?(method_name)
+          cop_config['IgnoredMethods'].map(&:to_sym).include?(method_name)
         end
 
         def functional_method?(method_name)
-          functional_methods.include?(method_name)
+          cop_config['FunctionalMethods'].map(&:to_sym).include?(method_name)
         end
 
         def functional_block?(node)
@@ -178,7 +183,7 @@ module RuboCop
         end
 
         def procedural_method?(method_name)
-          procedural_methods.include?(method_name)
+          cop_config['ProceduralMethods'].map(&:to_sym).include?(method_name)
         end
 
         def return_value_used?(node)
@@ -198,18 +203,6 @@ module RuboCop
 
           conditional?(node.parent) || array_or_range?(node.parent) ||
             node.parent.children.last == node
-        end
-
-        def procedural_methods
-          cop_config['ProceduralMethods'].map(&:to_sym)
-        end
-
-        def functional_methods
-          cop_config['FunctionalMethods'].map(&:to_sym)
-        end
-
-        def ignored_methods
-          cop_config['IgnoredMethods'].map(&:to_sym)
         end
 
         def conditional?(node)

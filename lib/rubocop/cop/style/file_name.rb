@@ -15,7 +15,7 @@ module RuboCop
                             'called `%s`.'.freeze
         MSG_REGEX = '`%s` should match `%s`.'.freeze
 
-        SNAKE_CASE = /^[\da-z_]+$/
+        SNAKE_CASE = /^[\da-z_.?!]+$/
 
         def investigate(processed_source)
           file_path = processed_source.buffer.name
@@ -44,10 +44,6 @@ module RuboCop
 
         private
 
-        def snake_case?(basename)
-          basename.split('.').all? { |fragment| fragment =~ SNAKE_CASE }
-        end
-
         def shebang?(line)
           line && line.start_with?('#!')
         end
@@ -62,7 +58,7 @@ module RuboCop
 
         def filename_good?(basename)
           basename = basename.sub(/\.[^\.]+$/, '')
-          regex ? basename =~ regex : snake_case?(basename)
+          basename =~ (regex || SNAKE_CASE)
         end
 
         def find_class_or_module(node, namespace)

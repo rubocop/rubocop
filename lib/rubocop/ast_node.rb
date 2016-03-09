@@ -462,6 +462,12 @@ module RuboCop
         source_range.begin_pos == loc.selector.begin_pos
     end
 
+    def binary_operation?
+      return false unless loc.respond_to?(:selector) && loc.selector
+      Cop::Util.operator?(method_name) &&
+        source_range.begin_pos != loc.selector.begin_pos
+    end
+
     def chained?
       return false if parent.nil? || !parent.send_type?
       receiver, _method_name, *_args = *parent

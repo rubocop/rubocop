@@ -9,6 +9,8 @@
 * `Style/OneLineConditional` cop can auto-correct. ([@lumeet][])
 * [#2905](https://github.com/bbatsov/rubocop/issues/2905): `Style/ZeroLengthConditional` flags code like `array.length < 1`, `1 > array.length`, and so on. ([@alexdowad][])
 * [#2892](https://github.com/bbatsov/rubocop/issues/2892): `Lint/BlockAlignment` cop can be configured to be stricter. ([@ptarjan][])
+* `Style/Not` is able to autocorrect in cases where parentheses must be added to preserve the meaning of an expression. ([@alexdowad][])
+* `Style/Not` auto-corrects comparison expressions by removing `not` and using the opposite comparison. ([@alexdowad][])
 
 ### Bug fixes
 
@@ -35,6 +37,7 @@
 * [#2911](https://github.com/bbatsov/rubocop/issues/2911): `Style/ClassAndModuleChildren` doesn't flag nested class definitions, where the outer class has an explicit superclass (because such definitions can't be converted to `compact` style). ([@alexdowad][])
 * [#2871](https://github.com/bbatsov/rubocop/issues/2871): Don't crash when offense messages are read back from cache with `ASCII-8BIT` encoding and output as HTML or JSON. ([@jonas054][])
 * [#2901](https://github.com/bbatsov/rubocop/issues/2901): Don't crash when `ENV['HOME']` is undefined. ([@mikegee][])
+* [#2627](https://github.com/bbatsov/rubocop/issues/2627): `Style/BlockDelimiters` does not flag blocks delimited by `{}` when a block call is the final value in a hash with implicit braces (one which is the last argument to an outer method call). ([@alexdowad][])
 
 ### Changes
 
@@ -42,6 +45,9 @@
 * [#2891](https://github.com/bbatsov/rubocop/pull/2891): Change the caching of remote configs to live alongside the parent file. ([@Fryguy][])
 * [#2662](https://github.com/bbatsov/rubocop/issues/2662): When setting options for Rake task, nested arrays can be used in the `options`, `formatters`, and `requires` arrays. ([@alexdowad][])
 * [#2925](https://github.com/bbatsov/rubocop/pull/2925): Bump unicode-display_width dependency to >= 1.0.1. ([@jspanjers][])
+* [#2875](https://github.com/bbatsov/rubocop/issues/2875): `Style/SignalException` does not flag calls to `fail` if a custom method named `fail` is defined in the same file. ([@alexdowad][])
+* [#2923](https://github.com/bbatsov/rubocop/issues/2923): `Style/FileName` considers file names which contain a ? or ! character to still be "snake case". ([@alexdowad][])
+* [#2879](https://github.com/bbatsov/rubocop/issues/2879): When autocorrecting, `Lint/UnusedMethodArgument` removes unused block arguments rather than simply prefixing them with an underscore. ([@alexdowad][])
 
 ## 0.37.2 (11/02/2016)
 

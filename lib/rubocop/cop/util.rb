@@ -46,6 +46,10 @@ module RuboCop
         OPERATOR_METHODS.include?(symbol)
       end
 
+      def ternary_op?(node)
+        node.loc.respond_to?(:question)
+      end
+
       def strip_quotes(str)
         if str[0] == '"' || str[0] == "'"
           str[0] = ''
@@ -82,6 +86,10 @@ module RuboCop
       def parentheses?(node)
         node.loc.respond_to?(:end) && node.loc.end &&
           node.loc.end.is?(')'.freeze)
+      end
+
+      def parenthesized_call?(send)
+        send.loc.begin && send.loc.begin.is?('(')
       end
 
       def on_node(syms, sexp, excludes = [], &block)

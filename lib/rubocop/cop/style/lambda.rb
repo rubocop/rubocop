@@ -8,8 +8,6 @@ module RuboCop
       # anonymous functions and uses of the 1.9 lambda syntax for multi-line
       # anonymous functions.
       class Lambda < Cop
-        include AutocorrectUnlessChangingAST
-
         SINGLE_MSG = 'Use the new lambda literal syntax ' \
                      '`->(params) {...}`.'.freeze
         SINGLE_NO_ARG_MSG = 'Use the new lambda literal syntax ' \
@@ -26,7 +24,7 @@ module RuboCop
           block_method, args, = *node
 
           return unless block_method == TARGET
-          selector = block_method.loc.selector.source
+          selector = block_method.source
           length = lambda_length(node)
 
           if selector != '->' && length == 1
@@ -53,10 +51,14 @@ module RuboCop
           end_line - start_line + 1
         end
 
-        def correction(node)
-          lambda do |corrector|
-            block_method, _args = *node
+        def autocorrect(node)
+          block_method, _args = *node
+          selector = block_method.source
 
+          # Don't autocorrect if this would change the meaning of the code
+          return if selector == '->' && arg_to_unparenthesized_call?(node)
+
+          lambda do |corrector|
             if block_method.source == 'lambda'
               autocorrect_old_to_new(corrector, node)
             else
@@ -101,6 +103,15 @@ module RuboCop
 
         def lambda_arg_string(args)
           args.children.map(&:source).join(', ')
+        end
+
+        def arg_to_unparenthesized_call?(node)
+          parent = node.parent
+          return false unless parent && parent.send_type?
+          return false if parenthesized_call?(parent)
+
+          index = parent.children.index { |c| c.equal?(node) }
+          index >= 2
         end
       end
     end
