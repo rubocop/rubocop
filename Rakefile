@@ -28,8 +28,8 @@ RuboCop::RakeTask.new(:internal_investigation)
 
 task default: [:spec, :internal_investigation]
 
-require 'yard'
-YARD::Rake::YardocTask.new
+# require 'yard'
+# YARD::Rake::YardocTask.new
 
 desc 'Open a REPL for experimentation'
 task :repl do
