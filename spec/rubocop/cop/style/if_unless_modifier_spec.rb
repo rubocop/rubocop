@@ -310,4 +310,30 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
       expect(corrected).to eq 'puts "string", (1 if a)'
     end
   end
+
+  context 'if-end with conditional as body' do
+    let(:source) do
+      ['if condition',
+       '  foo ? "bar" : "baz"',
+       'end']
+    end
+
+    it 'accepts' do
+      inspect_source(cop, source)
+      expect(cop.offenses).to be_empty
+    end
+  end
+
+  context 'unless-end with conditional as body' do
+    let(:source) do
+      ['unless condition',
+       '  foo ? "bar" : "baz"',
+       'end']
+    end
+
+    it 'accepts' do
+      inspect_source(cop, source)
+      expect(cop.offenses).to be_empty
+    end
+  end
 end

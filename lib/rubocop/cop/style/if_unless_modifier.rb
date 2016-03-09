@@ -26,6 +26,7 @@ module RuboCop
           return if if_else?(node)
           return if node.chained?
           return unless fit_within_line_as_modifier_form?(node)
+          return if nested_conditional?(node)
           add_offense(node, :keyword, message(node.loc.keyword.source))
         end
 
@@ -63,6 +64,13 @@ module RuboCop
           oneline = "(#{oneline})" if parenthesize?(node)
 
           ->(corrector) { corrector.replace(node.source_range, oneline) }
+        end
+
+        private
+
+        # returns false if the then or else children are conditionals
+        def nested_conditional?(node)
+          node.children[1, 2].any? { |child| child && child.type == :if }
         end
       end
     end
