@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### New features
+
+* `Performance/TimesMap` cop can auto-correct. ([@lumeet][])
+
 ## 0.38.0 (09/03/2016)
 
 ### New features
