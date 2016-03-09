@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.38.0 (09/03/2016)
+
 ### New features
 
 * `Style/UnlessElse` cop can auto-correct. ([@lumeet][])

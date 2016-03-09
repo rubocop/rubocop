@@ -115,7 +115,7 @@ haven't reached version 1.0 yet). To prevent an unwanted RuboCop update you
 might want to use a conservative version locking in your `Gemfile`:
 
 ```rb
-gem 'rubocop', '~> 0.37.2', require: false
+gem 'rubocop', '~> 0.38.0', require: false
 ```
 
 ## Basic Usage
