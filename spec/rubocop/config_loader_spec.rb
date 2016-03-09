@@ -527,4 +527,22 @@ describe RuboCop::ConfigLoader do
       end
     end
   end
+
+  describe 'when a unqualified requirement is defined', :isolated_environment do
+    let(:required_file_path) { 'required_file' }
+
+    before do
+      create_file('.rubocop.yml', ['require:', "  - #{required_file_path}"])
+      create_file(required_file_path + '.rb', ['class MyClass', 'end'])
+    end
+
+    it 'works without a starting .' do
+      config_path = described_class.configuration_file_for('.')
+      $LOAD_PATH.unshift(File.dirname(config_path))
+      Dir.chdir '..' do
+        described_class.configuration_from_file(config_path)
+        expect(defined?(MyClass)).to be_truthy
+      end
+    end
+  end
 end

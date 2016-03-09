@@ -12,6 +12,10 @@
 * [#2950](https://github.com/bbatsov/rubocop/issues/2950): Fix auto-correcting cases in which precedence has changed in `Style/OneLineConditional`. ([@lumeet][])
 * [#2947](https://github.com/bbatsov/rubocop/issues/2947): Fix auto-correcting `if-then` in `Style/Next`. ([@lumeet][])
 
+### Changes
+
+* `require:` only does relative includes when it starts with a `.`. ([@ptarjan][])
+
 ## 0.38.0 (09/03/2016)
 
 ### New features

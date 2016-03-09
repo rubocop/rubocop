@@ -17,6 +17,8 @@ module RuboCop
     AUTO_GENERATED_FILE = '.rubocop_todo.yml'.freeze
 
     class << self
+      include ConfigLoaderResolver
+
       attr_accessor :debug, :auto_gen_config
       attr_writer :root_level # The upwards search is stopped at this level.
       attr_writer :default_configuration
@@ -34,11 +36,7 @@ module RuboCop
 
         resolve_inheritance_from_gems(hash, hash.delete('inherit_gem'))
         resolve_inheritance(path, hash)
-
-        config_dir = File.dirname(path)
-        Array(hash.delete('require')).each do |r|
-          require(File.join(config_dir, r))
-        end
+        resolve_requires(path, hash)
 
         hash.delete('inherit_from')
         config = Config.new(hash, path)
@@ -168,27 +166,6 @@ module RuboCop
           end
         else
           YAML.load(yaml_code)
-        end
-      end
-
-      def resolve_inheritance(path, hash)
-        base_configs(path, hash['inherit_from']).reverse_each do |base_config|
-          base_config.each do |k, v|
-            hash[k] = hash.key?(k) ? merge(v, hash[k]) : v if v.is_a?(Hash)
-          end
-        end
-      end
-
-      def resolve_inheritance_from_gems(hash, gems)
-        (gems || {}).each_pair do |gem_name, config_path|
-          if gem_name == 'rubocop'
-            raise ArgumentError,
-                  "can't inherit configuration from the rubocop gem"
-          end
-
-          hash['inherit_from'] = Array(hash['inherit_from'])
-          # Put gem configuration first so local configuration overrides it.
-          hash['inherit_from'].unshift gem_config_path(gem_name, config_path)
         end
       end
 
