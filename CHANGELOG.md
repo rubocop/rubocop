@@ -14,6 +14,7 @@
 
 ### Bug fixes
 
+* Replace `Rake::TaskManager#last_comment` with `Rake::TaskManager#last_description` for Rake 11 compatibility. ([@tbrisker][])
 * Fix false positive in `Style/TrailingCommaInArguments` & `Style/TrailingCommaInLiteral` cops with consistent_comma style. ([@meganemura][])
 * [#2861](https://github.com/bbatsov/rubocop/pull/2861): Fix false positive in `Style/SpaceAroundKeyword` for `rescue(...`. ([@rrosenblum][])
 * [#2832](https://github.com/bbatsov/rubocop/issues/2832): `Style/MultilineOperationIndentation` treats operations inside blocks inside other operations correctly. ([@jonas054][])
@@ -41,6 +42,7 @@
 
 ### Changes
 
+* Update Rake to version 11. ([@tbrisker][])
 * [#2629](https://github.com/bbatsov/rubocop/pull/2629): Change the offense range for metrics cops to default to `expression` instead of `keyword` (the offense now spans the entire method, class, or module). ([@rrosenblum][])
 * [#2891](https://github.com/bbatsov/rubocop/pull/2891): Change the caching of remote configs to live alongside the parent file. ([@Fryguy][])
 * [#2662](https://github.com/bbatsov/rubocop/issues/2662): When setting options for Rake task, nested arrays can be used in the `options`, `formatters`, and `requires` arrays. ([@alexdowad][])
@@ -2043,3 +2045,4 @@
 [@jweir]: https://github.com/jweir
 [@Fryguy]: https://github.com/Fryguy
 [@mikegee]: https://github.com/mikegee
+[@tbrisker]: https://github.com/tbrisker
