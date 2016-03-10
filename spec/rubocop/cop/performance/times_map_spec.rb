@@ -22,6 +22,11 @@ describe RuboCop::Cop::Performance::TimesMap do
           )
           expect(cop.highlights).to eq(["4.times.#{method} { |i| i.to_s }"])
         end
+
+        it 'auto-corrects' do
+          corrected = autocorrect_source(cop, source)
+          expect(corrected).to eq('Array.new(4) { |i| i.to_s }')
+        end
       end
 
       context 'with an explicitly passed block' do
@@ -33,6 +38,11 @@ describe RuboCop::Cop::Performance::TimesMap do
             "Use `Array.new` with a block instead of `.times.#{method}`."
           )
           expect(cop.highlights).to eq(["4.times.#{method}(&method(:foo))"])
+        end
+
+        it 'auto-corrects' do
+          corrected = autocorrect_source(cop, source)
+          expect(corrected).to eq('Array.new(4, &method(:foo))')
         end
       end
 
