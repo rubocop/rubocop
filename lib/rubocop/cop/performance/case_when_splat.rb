@@ -101,7 +101,7 @@ module RuboCop
         def splat_offenses(when_conditions)
           found_non_splat = false
           when_conditions.reverse.each_with_object([]) do |condition, result|
-            found_non_splat ||= true if error_condition?(condition)
+            found_non_splat ||= error_condition?(condition)
 
             next unless condition.splat_type?
             result << condition if found_non_splat
