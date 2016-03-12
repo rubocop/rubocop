@@ -6,6 +6,10 @@
 
 * `Performance/TimesMap` cop can auto-correct. ([@lumeet][])
 
+### Bug fixes
+
+* [#2948](https://github.com/bbatsov/rubocop/issues/2948): `Style/SpaceAroundKeyword` should allow yield[n] and super[n]. ([@laurelfan][])
+
 ## 0.38.0 (09/03/2016)
 
 ### New features
@@ -2054,3 +2058,4 @@
 [@mikegee]: https://github.com/mikegee
 [@tbrisker]: https://github.com/tbrisker
 [@necojackarc]: https://github.com/necojackarc
+[@laurelfan]: https://github.com/laurelfan
