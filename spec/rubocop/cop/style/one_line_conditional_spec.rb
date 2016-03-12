@@ -54,4 +54,35 @@ describe RuboCop::Cop::Style::OneLineConditional do
       expect(corrected).to eq("a #{operator} (cond ? run : dont)")
     end
   end
+
+  shared_examples 'changed precedence' do |expr|
+    it "adds parentheses around `#{expr}`" do
+      corrected = autocorrect_source(cop,
+                                     "if #{expr} then #{expr} else #{expr} end")
+      expect(corrected).to eq("(#{expr}) ? (#{expr}) : (#{expr})")
+    end
+  end
+
+  it_behaves_like 'changed precedence', 'puts 1'
+  it_behaves_like 'changed precedence', 'defined? :A'
+  it_behaves_like 'changed precedence', 'yield a'
+  it_behaves_like 'changed precedence', 'super b'
+  it_behaves_like 'changed precedence', 'not a'
+  it_behaves_like 'changed precedence', 'a and b'
+  it_behaves_like 'changed precedence', 'a or b'
+  it_behaves_like 'changed precedence', 'a = b'
+  it_behaves_like 'changed precedence', 'a ? b : c'
+
+  it 'does not parenthesize expressions when they do not contain method ' \
+     'calls with unparenthesized arguments' do
+    corrected =
+      autocorrect_source(cop, 'if a(0) then puts(1) else yield(2) end')
+    expect(corrected).to eq('a(0) ? puts(1) : yield(2)')
+  end
+
+  it 'does not parenthesize expressions when they contain unparenthesized ' \
+     'operator method calls' do
+    corrected = autocorrect_source(cop, 'if 0 + 0 then 1 + 1 else 2 + 2 end')
+    expect(corrected).to eq('0 + 0 ? 1 + 1 : 2 + 2')
+  end
 end
