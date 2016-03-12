@@ -164,6 +164,9 @@ describe RuboCop::Cop::Style::SpaceAroundKeyword do
   it_behaves_like 'accept before', '!', '!yield.method'
   it_behaves_like 'accept before', '!', '!super.method'
 
+  it_behaves_like 'accept after', '[', 'super[1]'
+  it_behaves_like 'accept after', '[', 'yield[1]'
+
   # Style/SpaceAroundBlockParameters
   it_behaves_like 'accept before', '|', 'loop { |x|break }'
 

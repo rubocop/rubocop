@@ -32,6 +32,8 @@ module RuboCop
         DO = 'do'.freeze
         ACCEPT_LEFT_PAREN =
           %w(break defined? next not rescue return super yield).freeze
+        ACCEPT_LEFT_SQUARE_BRACKET =
+          %w(super yield).freeze
 
         def on_and(node)
           check(node, [:operator].freeze) if node.keyword?
@@ -177,13 +179,20 @@ module RuboCop
           pos = range.end_pos
           char = range.source_buffer.source[pos]
           return false unless char
-          return false if accept_left_parenthesis?(range) && char == '('.freeze
+          return false if accept_left_parenthesis?(range) &&
+                          char == '('.freeze
+          return false if accept_left_square_bracket?(range) &&
+                          char == '['.freeze
 
           char !~ /[\s;,#\\\)\}\]\.]/
         end
 
         def accept_left_parenthesis?(range)
           ACCEPT_LEFT_PAREN.include?(range.source)
+        end
+
+        def accept_left_square_bracket?(range)
+          ACCEPT_LEFT_SQUARE_BRACKET.include?(range.source)
         end
 
         def preceded_by_operator?(node, _range)
