@@ -69,6 +69,8 @@ module RuboCop
             offense(begin_node, 'an unary operation')
           else
             return unless method_call_with_redundant_parentheses?(node)
+            return if call_chain_starts_with_int?(begin_node, node)
+
             offense(begin_node, 'a method call')
           end
         end
@@ -114,6 +116,13 @@ module RuboCop
 
           _receiver, _method_name, *args = *send_node
           node.equal?(args.first)
+        end
+
+        def call_chain_starts_with_int?(begin_node, send_node)
+          recv = first_part_of_call_chain(send_node)
+          recv && recv.int_type? && (parent = begin_node.parent) &&
+            parent.send_type? &&
+            (parent.method_name == :-@ || parent.method_name == :+@)
         end
       end
     end

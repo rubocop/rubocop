@@ -98,6 +98,10 @@ describe RuboCop::Cop::Style::RedundantParentheses do
   it_behaves_like 'redundant', '(+x)', '+x', 'an unary operation'
   it_behaves_like 'plausible', '(!x.m arg)'
   it_behaves_like 'plausible', '(!x).y'
+  it_behaves_like 'plausible', '-(1.foo)'
+  it_behaves_like 'plausible', '+(1.foo)'
+  it_behaves_like 'plausible', '-(1.foo.bar)'
+  it_behaves_like 'plausible', '+(1.foo.bar)'
 
   it_behaves_like 'redundant', '[(1)]', '[1]', 'a literal', '(1)'
 
