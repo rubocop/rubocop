@@ -146,9 +146,14 @@ module RuboCop
         end
 
         def cond_range(node, cond)
+          end_pos = if node.loc.begin
+                      node.loc.begin.end_pos # after "then"
+                    else
+                      cond.source_range.end_pos
+                    end
           Parser::Source::Range.new(node.source_range.source_buffer,
                                     node.source_range.begin_pos,
-                                    cond.source_range.end_pos)
+                                    end_pos)
         end
 
         def end_range(node)

@@ -338,6 +338,18 @@ describe RuboCop::Cop::Style::Next, :config do
                               'end'].join("\n"))
   end
 
+  it 'handles `then` when autocorrecting' do
+    new_source = autocorrect_source(cop, ['loop do',
+                                          '  if test then',
+                                          '    something',
+                                          '  end',
+                                          'end'])
+    expect(new_source).to eq(['loop do',
+                              '  next unless test',
+                              '  something',
+                              'end'].join("\n"))
+  end
+
   it "doesn't reindent heredoc bodies when autocorrecting" do
     new_source = autocorrect_source(cop, ['loop do',
                                           '  if test',
