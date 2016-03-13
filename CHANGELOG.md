@@ -10,6 +10,7 @@
 
 * [#2948](https://github.com/bbatsov/rubocop/issues/2948): `Style/SpaceAroundKeyword` should allow yield[n] and super[n]. ([@laurelfan][])
 * [#2950](https://github.com/bbatsov/rubocop/issues/2950): Fix auto-correcting cases in which precedence has changed in `Style/OneLineConditional`. ([@lumeet][])
+* [#2947](https://github.com/bbatsov/rubocop/issues/2947): Fix auto-correcting `if-then` in `Style/Next`. ([@lumeet][])
 
 ## 0.38.0 (09/03/2016)
 
