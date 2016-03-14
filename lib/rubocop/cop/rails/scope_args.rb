@@ -26,7 +26,17 @@ module RuboCop
 
           second_arg = args[1]
 
-          add_offense(second_arg, :expression) if second_arg.type == :send
+          if second_arg.type == :send && !lambda_send?(second_arg)
+            add_offense(second_arg, :expression)
+          end
+        end
+
+        private
+
+        def lambda_send?(node)
+          receiver, selector = *node
+
+          receiver.nil? && selector == :lambda
         end
       end
     end

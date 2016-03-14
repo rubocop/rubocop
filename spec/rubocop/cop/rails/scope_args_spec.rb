@@ -15,6 +15,8 @@ describe RuboCop::Cop::Rails::ScopeArgs do
   it 'accepts a lambda arg' do
     inspect_source(cop,
                    'scope :active, -> { where(active: true) }')
+    inspect_source(cop,
+                   'scope :active, lambda do where(active: true) end')
     expect(cop.offenses).to be_empty
   end
 
