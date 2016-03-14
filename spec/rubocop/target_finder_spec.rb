@@ -135,7 +135,7 @@ describe RuboCop::TargetFinder, :isolated_environment do
     it 'does not search excluded top level directories' do
       config = double('config')
       exclude_property = { 'Exclude' => [File.expand_path('dir1/**/*')] }
-      allow(config).to receive(:[]).with('AllCops').and_return(exclude_property)
+      allow(config).to receive(:for_all_cops).and_return(exclude_property)
       allow(config_store).to receive(:for).and_return(config)
 
       expect(found_basenames).not_to include('ruby1.rb')
@@ -147,7 +147,7 @@ describe RuboCop::TargetFinder, :isolated_environment do
 
       config = double('config')
       exclude_property = { 'Exclude' => [File.expand_path('dir1/**/*')] }
-      allow(config).to receive(:[]).with('AllCops').and_return(exclude_property)
+      allow(config).to receive(:for_all_cops).and_return(exclude_property)
       allow(config_store).to receive(:for).and_return(config)
 
       expect(found_basenames).not_to include('ruby1.rb')
@@ -189,7 +189,7 @@ describe RuboCop::TargetFinder, :isolated_environment do
         File.basename(file) == 'file'
       end
       allow(config)
-        .to receive(:[]).with('AllCops').and_return('Exclude' => [])
+        .to receive(:for_all_cops).and_return('Exclude' => [])
       allow(config).to receive(:file_to_exclude?).and_return(false)
       allow(config_store).to receive(:for).and_return(config)
 
@@ -199,7 +199,7 @@ describe RuboCop::TargetFinder, :isolated_environment do
     it 'does not pick files specified to be excluded in config' do
       config = double('config').as_null_object
       allow(config)
-        .to receive(:[]).with('AllCops').and_return('Exclude' => [])
+        .to receive(:for_all_cops).and_return('Exclude' => [])
       allow(config).to receive(:file_to_include?).and_return(false)
       allow(config).to receive(:file_to_exclude?) do |file|
         File.basename(file) == 'ruby2.rb'

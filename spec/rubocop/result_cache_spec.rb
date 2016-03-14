@@ -30,7 +30,8 @@ describe RuboCop::ResultCache, :isolated_environment do
   before do
     create_file('example.rb', ['# Hello',
                                'x = 1'])
-    allow(config_store).to receive(:for).with('example.rb').and_return({})
+    allow(config_store).to receive(:for).with('example.rb')
+      .and_return(RuboCop::Config.new)
   end
 
   describe 'cached result that was saved with no command line option' do
@@ -128,7 +129,7 @@ describe RuboCop::ResultCache, :isolated_environment do
 
   describe '.cleanup' do
     before do
-      cfg = { 'AllCops' => { 'MaxFilesInCache' => 1 } }
+      cfg = RuboCop::Config[{ 'AllCops' => { 'MaxFilesInCache' => 1 } }]
       allow(config_store).to receive(:for).with('.').and_return(cfg)
       allow(config_store).to receive(:for).with('other.rb').and_return(cfg)
       create_file('other.rb', ['x = 1'])
@@ -166,7 +167,7 @@ describe RuboCop::ResultCache, :isolated_environment do
   describe 'the cache path when using a temp directory' do
     before do
       allow(config_store).to receive(:for).with('.').and_return(
-        'AllCops' => { 'CacheRootDirectory' => '/tmp' }
+        RuboCop::Config['AllCops' => { 'CacheRootDirectory' => '/tmp' }]
       )
     end
     it 'contains the process uid' do

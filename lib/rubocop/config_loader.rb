@@ -117,7 +117,7 @@ module RuboCop
       # that only cops from user configuration are enabled.
       def merge_with_default(config, config_file)
         configs =
-          if config.key?('AllCops') && config['AllCops']['DisabledByDefault']
+          if config.for_all_cops['DisabledByDefault']
             disabled_default = transform(default_configuration) do |params|
               params.merge('Enabled' => false) # Overwrite with false.
             end

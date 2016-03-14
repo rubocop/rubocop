@@ -122,7 +122,7 @@ module RuboCop
       @cached_run ||=
         (@options[:cache] == 'true' ||
          @options[:cache] != 'false' &&
-         @config_store.for(Dir.pwd)['AllCops']['UseCache']) &&
+         @config_store.for(Dir.pwd).for_all_cops['UseCache']) &&
         # When running --auto-gen-config, there's some processing done in the
         # cops related to calculating the Max parameters for Metrics cops. We
         # need to do that processing and can not use caching.
@@ -240,7 +240,7 @@ module RuboCop
     end
 
     def style_guide_cops_only?(config)
-      @options[:only_guide_cops] || config['AllCops']['StyleGuideCopsOnly']
+      @options[:only_guide_cops] || config.for_all_cops['StyleGuideCopsOnly']
     end
 
     def formatter_set
@@ -271,7 +271,7 @@ module RuboCop
     end
 
     def get_processed_source(file)
-      ruby_version = @config_store.for(file)['AllCops']['TargetRubyVersion']
+      ruby_version = @config_store.for(file).for_all_cops['TargetRubyVersion']
 
       if @options[:stdin]
         ProcessedSource.new(@options[:stdin], ruby_version, file)

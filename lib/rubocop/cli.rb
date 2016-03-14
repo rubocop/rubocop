@@ -85,8 +85,8 @@ module RuboCop
       # This must be done after the options have already been processed,
       # because they can affect how ConfigStore behaves
       @options[:formatters] ||= begin
-        cfg = @config_store.for(Dir.pwd)['AllCops']
-        formatter = (cfg && cfg['DefaultFormatter']) || 'progress'
+        cfg = @config_store.for(Dir.pwd).for_all_cops
+        formatter = cfg['DefaultFormatter'] || 'progress'
         [[formatter, @options[:output_path]]]
       end
 

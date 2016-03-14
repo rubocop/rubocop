@@ -110,7 +110,7 @@ module RuboCop
     end
 
     def excluded_dirs(base_dir)
-      all_cops_config = @config_store.for(base_dir)['AllCops']
+      all_cops_config = @config_store.for(base_dir).for_all_cops
       dir_tree_excludes = all_cops_config['Exclude'].select do |pattern|
         pattern.is_a?(String) && pattern.end_with?('/**/*')
       end

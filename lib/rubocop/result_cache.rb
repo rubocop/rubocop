@@ -24,7 +24,7 @@ module RuboCop
       return unless File.exist?(cache_root)
 
       files, dirs = Find.find(cache_root).partition { |path| File.file?(path) }
-      if files.length > config_store.for('.')['AllCops']['MaxFilesInCache'] &&
+      if files.length > config_store.for('.').for_all_cops['MaxFilesInCache'] &&
          files.length > 1
         # Add 1 to half the number of files, so that we remove the file if
         # there's only 1 left.
@@ -51,7 +51,7 @@ module RuboCop
     end
 
     def self.cache_root(config_store)
-      root = config_store.for('.')['AllCops']['CacheRootDirectory']
+      root = config_store.for('.').for_all_cops['CacheRootDirectory']
       if root == '/tmp'
         tmpdir = File.realpath(Dir.tmpdir)
         # Include user ID in the path to make sure the user has write access.
