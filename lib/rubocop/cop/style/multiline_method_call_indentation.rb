@@ -126,7 +126,7 @@ module RuboCop
 
         def operation_rhs(node)
           receiver, = *node
-          receiver.each_ancestor.select(&:send_type?).each do |a|
+          receiver.each_ancestor(:send) do |a|
             _, method, args = *a
             return args if operator?(method) && within_node?(receiver, args)
           end
