@@ -12,6 +12,7 @@
 * [#2950](https://github.com/bbatsov/rubocop/issues/2950): Fix auto-correcting cases in which precedence has changed in `Style/OneLineConditional`. ([@lumeet][])
 * [#2947](https://github.com/bbatsov/rubocop/issues/2947): Fix auto-correcting `if-then` in `Style/Next`. ([@lumeet][])
 * [#2904](https://github.com/bbatsov/rubocop/issues/2904): `Style/RedundantParentheses` doesn't flag `-(1.method)` or `+(1.method)`, since removing the parentheses would change the meaning of these expressions. ([@alexdowad][])
+* [#2958](https://github.com/bbatsov/rubocop/issues/2958): `Style/MultilineMethodCallIndentation` doesn't fail when inspecting unary ops which span multiple lines. ([@alexdowad][])
 
 ### Changes
 

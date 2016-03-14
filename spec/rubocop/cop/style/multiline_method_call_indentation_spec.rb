@@ -171,6 +171,15 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
                                   'expression spanning multiple lines.'])
       expect(cop.highlights).to eq(['from'])
     end
+
+    it "doesn't fail on unary operators" do
+      inspect_source(cop,
+                     ['def foo',
+                      '  !0',
+                      '  .nil?',
+                      'end'])
+      expect(cop.offenses.size).to eq(1)
+    end
   end
 
   context 'when EnforcedStyle is aligned' do

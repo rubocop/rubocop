@@ -128,7 +128,8 @@ module RuboCop
           receiver, = *node
           receiver.each_ancestor(:send) do |a|
             _, method, args = *a
-            return args if operator?(method) && within_node?(receiver, args)
+            return args if operator?(method) && args &&
+                           within_node?(receiver, args)
           end
           nil
         end
