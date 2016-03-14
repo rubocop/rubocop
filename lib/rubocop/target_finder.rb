@@ -127,11 +127,7 @@ module RuboCop
     end
 
     def process_explicit_path(path)
-      files = if path.include?('*')
-                Dir[path]
-              else
-                [path]
-              end
+      files = path.include?('*') ? Dir[path] : [path]
 
       return files unless force_exclusion?
 
