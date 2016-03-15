@@ -16,6 +16,16 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts interpolation of irange where endpoints are not literals' do
+    inspect_source(cop, '"this is an irange: #{var1..var2}"')
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'accepts interpolation of erange where endpoints are not literals' do
+    inspect_source(cop, '"this is an erange: #{var1...var2}"')
+    expect(cop.offenses).to be_empty
+  end
+
   shared_examples 'literal interpolation' do |literal, expected = literal|
     it "registers an offense for #{literal} in interpolation" do
       inspect_source(cop, %("this is the \#{#{literal}}"))

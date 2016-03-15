@@ -11,14 +11,14 @@ module RuboCop
       #   "result is #{10}"
       class LiteralInInterpolation < Cop
         MSG = 'Literal interpolation detected.'.freeze
+        COMPOSITE = [:array, :hash, :pair, :irange, :erange].freeze
 
         def on_dstr(node)
           node.children.select { |n| n.type == :begin }.each do |begin_node|
             final_node = begin_node.children.last
             next unless final_node
             next if special_keyword?(final_node)
-            next if final_node.xstr_type?
-            next unless final_node.literal?
+            next unless prints_as_self?(final_node)
 
             add_offense(final_node, :expression)
           end
@@ -57,6 +57,13 @@ module RuboCop
           Parser::Source::Range.new(node.source_range.source_buffer,
                                     node.loc.begin.end_pos,
                                     end_pos).source
+        end
+
+        # Does node print its own source when converted to a string?
+        def prints_as_self?(node)
+          node.basic_literal? ||
+            (COMPOSITE.include?(node.type) &&
+              node.children.all? { |child| prints_as_self?(child) })
         end
       end
     end
