@@ -14,6 +14,7 @@
 * [#2904](https://github.com/bbatsov/rubocop/issues/2904): `Style/RedundantParentheses` doesn't flag `-(1.method)` or `+(1.method)`, since removing the parentheses would change the meaning of these expressions. ([@alexdowad][])
 * [#2958](https://github.com/bbatsov/rubocop/issues/2958): `Style/MultilineMethodCallIndentation` doesn't fail when inspecting unary ops which span multiple lines. ([@alexdowad][])
 * [#2959](https://github.com/bbatsov/rubocop/issues/2959): `Lint/LiteralInInterpolation` doesn't report offenses for iranges and eranges with non-literal endpoints. ([@alexdowad][])
+* [#2960](https://github.com/bbatsov/rubocop/issues/2960): `Lint/AssignmentInCondition` catches method assignments (like `obj.attr = val`) in a condition. ([@alexdowad][])
 
 ### Changes
 
