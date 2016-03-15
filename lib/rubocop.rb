@@ -387,6 +387,7 @@ require 'rubocop/formatter/formatter_set'
 
 require 'rubocop/cached_data'
 require 'rubocop/config'
+require 'rubocop/config_loader_resolver'
 require 'rubocop/config_loader'
 require 'rubocop/config_store'
 require 'rubocop/target_finder'
