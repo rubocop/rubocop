@@ -58,7 +58,7 @@ describe RuboCop::Cop::Style::RedundantSelf do
            'self.break',
            'self.case',
            'self.def',
-           'self.defined',
+           'self.defined?',
            'self.do',
            'self.else',
            'self.elsif',
