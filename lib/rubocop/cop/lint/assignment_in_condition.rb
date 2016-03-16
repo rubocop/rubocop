@@ -34,7 +34,7 @@ module RuboCop
           traverse_node(condition, ASGN_TYPES) do |asgn_node|
             if asgn_node.type == :send
               _receiver, method_name, *_args = *asgn_node
-              next :skip_children if method_name != :[]=
+              next :skip_children if method_name !~ /=\z/
             end
 
             # skip safe assignment nodes if safe assignment is allowed

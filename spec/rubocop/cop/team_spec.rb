@@ -132,7 +132,7 @@ describe RuboCop::Cop::Team do
         %w(
           Lint/Void
           Metrics/LineLength
-        ).each_with_object({}) do |cop_name, accum|
+        ).each_with_object(RuboCop::Config.new) do |cop_name, accum|
           accum[cop_name] = { 'Enabled' => false }
         end
       end

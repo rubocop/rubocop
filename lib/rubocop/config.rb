@@ -66,12 +66,10 @@ module RuboCop
     end
 
     def add_excludes_from_higher_level(highest_config)
-      return unless highest_config['AllCops'] &&
-                    highest_config['AllCops']['Exclude']
+      return unless highest_config.for_all_cops['Exclude']
 
-      self['AllCops'] ||= {}
-      excludes = self['AllCops']['Exclude'] ||= []
-      highest_config['AllCops']['Exclude'].each do |path|
+      excludes = for_all_cops['Exclude'] ||= []
+      highest_config.for_all_cops['Exclude'].each do |path|
         unless path.is_a?(Regexp) || absolute?(path)
           path = File.join(File.dirname(highest_config.loaded_path), path)
         end
@@ -80,20 +78,22 @@ module RuboCop
     end
 
     def deprecation_check
-      return unless (all_cops = self['AllCops'])
-
       %w(Exclude Include).each do |key|
         plural = "#{key}s"
-        next unless all_cops[plural]
+        next unless for_all_cops[plural]
 
-        all_cops[key] = all_cops[plural] # Stay backwards compatible.
-        all_cops.delete(plural)
+        for_all_cops[key] = for_all_cops[plural] # Stay backwards compatible.
+        for_all_cops.delete(plural)
         yield "AllCops/#{plural} was renamed to AllCops/#{key}"
       end
     end
 
     def for_cop(cop)
       @for_cop[cop.respond_to?(:cop_name) ? cop.cop_name : cop]
+    end
+
+    def for_all_cops
+      @for_all_cops ||= self['AllCops'] || {}
     end
 
     def cop_enabled?(cop)
@@ -167,11 +167,11 @@ module RuboCop
     end
 
     def patterns_to_include
-      @patterns_to_include ||= self['AllCops']['Include']
+      @patterns_to_include ||= for_all_cops['Include']
     end
 
     def patterns_to_exclude
-      @patterns_to_exclude ||= self['AllCops']['Exclude']
+      @patterns_to_exclude ||= for_all_cops['Exclude']
     end
 
     def path_relative_to_config(path)
@@ -272,7 +272,7 @@ module RuboCop
     end
 
     def check_target_ruby
-      target = self['AllCops'] && self['AllCops']['TargetRubyVersion']
+      target = for_all_cops['TargetRubyVersion']
       return unless target
 
       unless KNOWN_RUBIES.include?(target)

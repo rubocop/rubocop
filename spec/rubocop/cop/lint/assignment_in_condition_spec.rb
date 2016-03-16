@@ -105,6 +105,14 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
     expect(cop.offenses.size).to eq(1)
   end
 
+  it 'registers an offense for assignment methods' do
+    inspect_source(cop,
+                   ['if test.method = 10',
+                    'end'
+                   ])
+    expect(cop.offenses.size).to eq(1)
+  end
+
   context 'safe assignment is allowed' do
     it 'accepts = in condition surrounded with braces' do
       inspect_source(cop,

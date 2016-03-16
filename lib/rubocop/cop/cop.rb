@@ -138,18 +138,17 @@ module RuboCop
 
       def display_cop_names?
         debug? || @options[:display_cop_names] ||
-          config['AllCops'] && config['AllCops']['DisplayCopNames']
+          @config.for_all_cops['DisplayCopNames']
       end
 
       def display_style_guide?
         (style_guide_url || reference_url) &&
           (@options[:display_style_guide] ||
-            config['AllCops'] && config['AllCops']['DisplayStyleGuide'])
+            config.for_all_cops['DisplayStyleGuide'])
       end
 
       def extra_details?
-        @options[:extra_details] ||
-          config['AllCops'] && config['AllCops']['ExtraDetails']
+        @options[:extra_details] || config.for_all_cops['ExtraDetails']
       end
 
       def message(_node = nil)
@@ -194,7 +193,7 @@ module RuboCop
       end
 
       def target_ruby_version
-        @config['AllCops'] && @config['AllCops']['TargetRubyVersion']
+        @config.for_all_cops['TargetRubyVersion']
       end
 
       def parse(source, path = nil)
