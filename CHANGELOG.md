@@ -23,6 +23,7 @@
 
 * `require:` only does relative includes when it starts with a `.`. ([@ptarjan][])
 * `Style/IfUnlessModifier` does not trigger if the body is another conditional. ([@amuino][])
+* [#2963](https://github.com/bbatsov/rubocop/pull/2963): `Performance/RedundantMerge` will now register an offense inside of `each_with_object`. ([@rrosenblum][])
 
 ## 0.38.0 (09/03/2016)
 
