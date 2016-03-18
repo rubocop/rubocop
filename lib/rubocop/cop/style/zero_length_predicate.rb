@@ -51,6 +51,31 @@ module RuboCop
           {(send (send _ ${:length :size}) ${:> :!=} (int $0))
            (send (int $0) ${:< :!=} (send _ ${:length :size}))}
         END
+
+        def autocorrect(node)
+          lambda do |corrector|
+            corrector.replace(node.loc.expression, replacement(node))
+          end
+        end
+
+        def replacement(node)
+          receiver = zero_length_receiver(node)
+          return "#{receiver.source}.empty?" if receiver
+
+          "!#{other_receiver(node).source}.empty?"
+        end
+
+        def_node_matcher :zero_length_receiver, <<-END
+          {(send (send $_ _) :== (int 0))
+           (send (int 0) :== (send $_ _))
+           (send (send $_ _) :<  (int 1))
+           (send (int 1) :> (send $_ _))}
+        END
+
+        def_node_matcher :other_receiver, <<-END
+          {(send (send $_ _) _ _)
+           (send _ _ (send $_ _))}
+        END
       end
     end
   end
