@@ -5,6 +5,7 @@
 ### New features
 
 * `Performance/TimesMap` cop can auto-correct. ([@lumeet][])
+* `Style/ZeroLengthPredicate` cop can auto-correct. ([@lumeet][])
 
 ### Bug fixes
 
