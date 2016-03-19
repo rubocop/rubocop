@@ -9,11 +9,11 @@ require 'rubocop/formatter/text_util'
 
 module RuboCop
   module Formatter
-    # This formatter saves the output as a html file.
+    # This formatter saves the output as an html file.
     class HTMLFormatter < BaseFormatter
       ELLIPSES = '<span class="extra-code">...</span>'.freeze
-      TEMPLATE_PATH =
-        File.expand_path('../../../../assets/output.html.erb', __FILE__)
+      TEMPLATE_PATH = File.expand_path('../../../../assets/output.html.erb',
+                                       __FILE__).encode('utf-8')
 
       Color = Struct.new(:red, :green, :blue, :alpha) do
         def to_s
