@@ -344,6 +344,19 @@ Style/CommentAnnotation:
     - HACK
     - REVIEW
 
+Style/ConditionalAssignment:
+  EnforcedStyle: assign_to_condition
+  SupportedStyles:
+    - assign_to_condition
+    - assign_inside_condition
+  # When configured to `assign_to_condition`, `SingleLineConditionsOnly`
+  # will only register an offense when all branches of a condition are
+  # a single line.
+  # When configured to `assign_inside_condition`, `SingleLineConditionsOnly`
+  # will only register an offense for assignment to a condition that has
+  # at least one multiline branch.
+  SingleLineConditionsOnly: true
+
 # Checks that you have put a copyright in a comment before any code.
 #
 # You can override the default Notice in your .rubocop.yml file.
