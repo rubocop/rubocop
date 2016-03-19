@@ -16,6 +16,7 @@
 * [#2958](https://github.com/bbatsov/rubocop/issues/2958): `Style/MultilineMethodCallIndentation` doesn't fail when inspecting unary ops which span multiple lines. ([@alexdowad][])
 * [#2959](https://github.com/bbatsov/rubocop/issues/2959): `Lint/LiteralInInterpolation` doesn't report offenses for iranges and eranges with non-literal endpoints. ([@alexdowad][])
 * [#2960](https://github.com/bbatsov/rubocop/issues/2960): `Lint/AssignmentInCondition` catches method assignments (like `obj.attr = val`) in a condition. ([@alexdowad][])
+* [#2871](https://github.com/bbatsov/rubocop/issues/2871): Second solution for possible encoding incompatibility when outputting an HTML report. ([@jonas054][])
 
 ### Changes
 
