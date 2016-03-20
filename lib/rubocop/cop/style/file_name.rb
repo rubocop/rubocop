@@ -21,28 +21,42 @@ module RuboCop
           file_path = processed_source.buffer.name
           return if config.file_to_include?(file_path)
 
-          basename = File.basename(file_path)
-          if filename_good?(basename)
-            return unless expect_matching_definition?
-            return if find_class_or_module(processed_source.ast,
-                                           to_namespace(file_path))
-            range = source_range(processed_source.buffer, 1, 0)
-            msg   = format(MSG_NO_DEFINITION,
-                           basename,
-                           to_namespace(file_path).join('::'))
-          else
-            first_line = processed_source.lines.first
-            return if cop_config['IgnoreExecutableScripts'] &&
-                      shebang?(first_line)
-
-            range = source_range(processed_source.buffer, 1, 0)
-            msg = regex ? format(MSG_REGEX, basename, regex) : MSG_SNAKE_CASE
+          for_bad_filename(file_path) do |range, msg|
+            add_offense(nil, range, msg)
           end
-
-          add_offense(nil, range, msg)
         end
 
         private
+
+        def for_bad_filename(file_path)
+          basename = File.basename(file_path)
+          msg = if filename_good?(basename)
+                  return unless expect_matching_definition?
+                  return if find_class_or_module(processed_source.ast,
+                                                 to_namespace(file_path))
+                  no_definition_message(basename, file_path)
+                else
+                  return if cop_config['IgnoreExecutableScripts'] &&
+                            shebang?(first_line)
+                  other_message(basename)
+                end
+
+          yield source_range(processed_source.buffer, 1, 0), msg
+        end
+
+        def first_line
+          processed_source.lines.first
+        end
+
+        def no_definition_message(basename, file_path)
+          format(MSG_NO_DEFINITION,
+                 basename,
+                 to_namespace(file_path).join('::'))
+        end
+
+        def other_message(basename)
+          regex ? format(MSG_REGEX, basename, regex) : MSG_SNAKE_CASE
+        end
 
         def shebang?(line)
           line && line.start_with?('#!')
