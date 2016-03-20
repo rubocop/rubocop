@@ -18,6 +18,7 @@
 * [#2959](https://github.com/bbatsov/rubocop/issues/2959): `Lint/LiteralInInterpolation` doesn't report offenses for iranges and eranges with non-literal endpoints. ([@alexdowad][])
 * [#2960](https://github.com/bbatsov/rubocop/issues/2960): `Lint/AssignmentInCondition` catches method assignments (like `obj.attr = val`) in a condition. ([@alexdowad][])
 * [#2871](https://github.com/bbatsov/rubocop/issues/2871): Second solution for possible encoding incompatibility when outputting an HTML report. ([@jonas054][])
+* [#2967](https://github.com/bbatsov/rubocop/pull/2967): Fix auto-correcting of `===`, `<=`, and `>=` in `Style/ConditionalAssignment`. ([@rrosenblum][])
 
 ### Changes
 
