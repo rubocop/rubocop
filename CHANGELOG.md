@@ -21,6 +21,7 @@
 ### Changes
 
 * `require:` only does relative includes when it starts with a `.`. ([@ptarjan][])
+* `Style/IfUnlessModifier` does not trigger if the body is another conditional. ([@amuino][])
 
 ## 0.38.0 (09/03/2016)
 
@@ -2072,3 +2073,4 @@
 [@tbrisker]: https://github.com/tbrisker
 [@necojackarc]: https://github.com/necojackarc
 [@laurelfan]: https://github.com/laurelfan
+[@amuino]: https://github.com/amuino
