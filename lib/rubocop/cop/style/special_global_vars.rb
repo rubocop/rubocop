@@ -104,24 +104,24 @@ module RuboCop
                   node.parent.children.one?
               node = node.parent
             end
-            parent_type = node.parent && node.parent.type
 
-            if [:dstr, :xstr, :regexp].include?(parent_type)
-              if style == :use_english_names
-                corrector.replace(node.source_range,
-                                  "{#{preferred_names(global_var).first}}")
-              else
-                corrector.replace(node.source_range,
-                                  "##{preferred_names(global_var).first}")
-              end
-            else
-              corrector.replace(node.source_range,
-                                preferred_names(global_var).first.to_s)
-            end
+            corrector.replace(node.source_range, replacement(node, global_var))
           end
         end
 
         private
+
+        def replacement(node, global_var)
+          parent_type = node.parent && node.parent.type
+          preferred_name = preferred_names(global_var).first
+
+          unless [:dstr, :xstr, :regexp].include?(parent_type)
+            return preferred_name.to_s
+          end
+          return "{#{preferred_name}}" if style == :use_english_names
+
+          "##{preferred_name}"
+        end
 
         def preferred_names(global)
           if style == :use_english_names

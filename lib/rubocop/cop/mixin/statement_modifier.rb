@@ -20,14 +20,15 @@ module RuboCop
         return false if body_has_comment?(body)
         return false if end_keyword_has_comment?(node)
 
+        length_in_modifier_form(node, cond, body_length) <= max_line_length
+      end
+
+      def length_in_modifier_form(node, cond, body_length)
         indentation = node.loc.keyword.column
         kw_length = node.loc.keyword.size
         cond_length = cond.source_range.size
         space = 1
-        total = indentation + body_length + space + kw_length + space +
-                cond_length
-
-        total <= max_line_length
+        indentation + body_length + space + kw_length + space + cond_length
       end
 
       def max_line_length
