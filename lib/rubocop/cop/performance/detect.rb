@@ -18,6 +18,11 @@ module RuboCop
       #   # good
       #   [].detect { |item| true }
       #   [].reverse.detect { |item| true }
+      #
+      # `ActiveRecord` compatibility:
+      # `ActiveRecord` does not implement a `detect` method and `find` has its
+      # own meaning. Correcting ActiveRecord methods with this cop should be
+      # considered unsafe.
       class Detect < Cop
         MSG = 'Use `%s` instead of `%s.%s`.'.freeze
         REVERSE_MSG = 'Use `reverse.%s` instead of `%s.%s`.'.freeze
@@ -26,6 +31,7 @@ module RuboCop
         DANGEROUS_METHODS = [:first, :last].freeze
 
         def on_send(node)
+          return unless should_run?
           receiver, second_method, *args = *node
           return unless check_second_call(receiver, second_method, args)
 
@@ -66,6 +72,12 @@ module RuboCop
         end
 
         private
+
+        def should_run?
+          !(cop_config['SafeMode'.freeze] ||
+            config['Rails'.freeze] &&
+            config['Rails'.freeze]['Enabled'.freeze])
+        end
 
         def check_second_call(receiver, method, args)
           receiver &&

@@ -7,6 +7,7 @@
 * `Performance/TimesMap` cop can auto-correct. ([@lumeet][])
 * `Style/ZeroLengthPredicate` cop can auto-correct. ([@lumeet][])
 * [#2828](https://github.com/bbatsov/rubocop/issues/2828): `Style/ConditionalAssignment` is now configurable to enforce assignment inside of conditions or to enforce assignment to conditions. ([@rrosenblum][])
+* [#2862](https://github.com/bbatsov/rubocop/pull/2862): `Performance/Detect` and `Performance/Count` have a new configuration `SafeMode` that is defaulted to `true`. These cops have known issues with `Rails` and other ORM frameworks. With this default configuration, these cops will not run if the `Rails` cops are enabled. ([@rrosenblum][])
 
 ### Bug fixes
 

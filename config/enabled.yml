@@ -1170,6 +1170,11 @@ Performance/Count:
                   Use `count` instead of `select...size`, `reject...size`,
                   `select...count`, `reject...count`, `select...length`,
                   and `reject...length`.
+  # This cop has known compatibility issues with `ActiveRecord` and other
+  # frameworks. ActiveRecord's `count` ignores the block that is passed to it.
+  # For more information, see the documentation in the cop itself.
+  # If you understand the known risk, you can disable `SafeMode`.
+  SafeMode: true
   Enabled: true
 
 Performance/Detect:
@@ -1177,6 +1182,11 @@ Performance/Detect:
                   Use `detect` instead of `select.first`, `find_all.first`,
                   `select.last`, and `find_all.last`.
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#enumerabledetect-vs-enumerableselectfirst-code'
+  # This cop has known compatibility issues with `ActiveRecord` and other
+  # frameworks. `ActiveRecord` does not implement a `detect` method and `find`
+  # has its own meaning. Correcting `ActiveRecord` methods with this cop
+  # should be considered unsafe.
+  SafeMode: true
   Enabled: true
 
 Performance/DoubleStartEndWith:
