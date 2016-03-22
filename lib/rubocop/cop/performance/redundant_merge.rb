@@ -17,10 +17,19 @@ module RuboCop
 
         def_node_matcher :redundant_merge, '(send $_ :merge! (hash $...))'
         def_node_matcher :modifier_flow_control, '[{if while until} #modifier?]'
+        def_node_matcher :each_with_object_node, <<-END
+          (block (send _ :each_with_object _) (args _ $_) ...)
+        END
 
         def on_send(node)
           redundant_merge(node) do |receiver, pairs|
-            next if node.value_used?
+            if node.value_used?
+              parent = node.parent
+              grandparent = parent.parent if parent.begin_type?
+              second_arg = each_with_object_node(grandparent || parent)
+              next if second_arg.nil?
+              next unless receiver.loc.name.source == second_arg.loc.name.source
+            end
             next if pairs.size > 1 && !receiver.pure?
             next if pairs.size > max_key_value_pairs
 
