@@ -82,7 +82,7 @@ module RuboCop
             indices = node.children[2...-1].map(&:source).join(', ')
             "#{receiver}[#{indices}] = "
           elsif node.method_name.to_s.end_with?(EQUAL) &&
-                ![:!=, :==].include?(node.method_name)
+                ![:!=, :==, :===, :>=, :<=].include?(node.method_name)
             "#{receiver}.#{node.method_name[0...-1]} = "
           else
             "#{receiver} #{node.method_name} "

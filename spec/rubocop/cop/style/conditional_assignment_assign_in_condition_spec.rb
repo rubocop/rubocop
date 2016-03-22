@@ -548,6 +548,21 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     it_behaves_like('multiline all variable types', '$BAR', [])
 
     it_behaves_like('all assignment types', '=')
+    it_behaves_like('all assignment types', '==')
+    it_behaves_like('all assignment types', '===')
+    it_behaves_like('all assignment types', '+=')
+    it_behaves_like('all assignment types', '-=')
+    it_behaves_like('all assignment types', '*=')
+    it_behaves_like('all assignment types', '**=')
+    it_behaves_like('all assignment types', '/=')
+    it_behaves_like('all assignment types', '%=')
+    it_behaves_like('all assignment types', '^=')
+    it_behaves_like('all assignment types', '&=')
+    it_behaves_like('all assignment types', '|=')
+    it_behaves_like('all assignment types', '<=')
+    it_behaves_like('all assignment types', '>=')
+    it_behaves_like('all assignment types', '<<=')
+    it_behaves_like('all assignment types', '>>=')
     it_behaves_like('all assignment types', '||=')
     it_behaves_like('all assignment types', '&&=')
     it_behaves_like('all assignment types', '+=')
@@ -555,6 +570,21 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     it_behaves_like('all assignment types', '<<')
 
     it_behaves_like('multiline all assignment types', '=', [])
+    it_behaves_like('multiline all assignment types', '==', [])
+    it_behaves_like('multiline all assignment types', '===', [])
+    it_behaves_like('multiline all assignment types', '+=', [])
+    it_behaves_like('multiline all assignment types', '-=', [])
+    it_behaves_like('multiline all assignment types', '*=', [])
+    it_behaves_like('multiline all assignment types', '**=', [])
+    it_behaves_like('multiline all assignment types', '/=', [])
+    it_behaves_like('multiline all assignment types', '%=', [])
+    it_behaves_like('multiline all assignment types', '^=', [])
+    it_behaves_like('multiline all assignment types', '&=', [])
+    it_behaves_like('multiline all assignment types', '|=', [])
+    it_behaves_like('multiline all assignment types', '<=', [])
+    it_behaves_like('multiline all assignment types', '>=', [])
+    it_behaves_like('multiline all assignment types', '<<=', [])
+    it_behaves_like('multiline all assignment types', '>>=', [])
     it_behaves_like('multiline all assignment types', '||=', [])
     it_behaves_like('multiline all assignment types', '&&=', [])
     it_behaves_like('multiline all assignment types', '+=', [])
@@ -712,6 +742,21 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
                     [described_class::ASSIGN_TO_CONDITION_MSG])
 
     it_behaves_like('all assignment types', '=')
+    it_behaves_like('all assignment types', '==')
+    it_behaves_like('all assignment types', '===')
+    it_behaves_like('all assignment types', '+=')
+    it_behaves_like('all assignment types', '-=')
+    it_behaves_like('all assignment types', '*=')
+    it_behaves_like('all assignment types', '**=')
+    it_behaves_like('all assignment types', '/=')
+    it_behaves_like('all assignment types', '%=')
+    it_behaves_like('all assignment types', '^=')
+    it_behaves_like('all assignment types', '&=')
+    it_behaves_like('all assignment types', '|=')
+    it_behaves_like('all assignment types', '<=')
+    it_behaves_like('all assignment types', '>=')
+    it_behaves_like('all assignment types', '<<=')
+    it_behaves_like('all assignment types', '>>=')
     it_behaves_like('all assignment types', '||=')
     it_behaves_like('all assignment types', '&&=')
     it_behaves_like('all assignment types', '+=')
@@ -719,6 +764,36 @@ describe RuboCop::Cop::Style::ConditionalAssignment do
     it_behaves_like('all assignment types', '<<')
 
     it_behaves_like('multiline all assignment types', '=',
+                    [described_class::ASSIGN_TO_CONDITION_MSG])
+    it_behaves_like('multiline all assignment types', '==',
+                    [described_class::ASSIGN_TO_CONDITION_MSG])
+    it_behaves_like('multiline all assignment types', '===',
+                    [described_class::ASSIGN_TO_CONDITION_MSG])
+    it_behaves_like('multiline all assignment types', '+=',
+                    [described_class::ASSIGN_TO_CONDITION_MSG])
+    it_behaves_like('multiline all assignment types', '-=',
+                    [described_class::ASSIGN_TO_CONDITION_MSG])
+    it_behaves_like('multiline all assignment types', '*=',
+                    [described_class::ASSIGN_TO_CONDITION_MSG])
+    it_behaves_like('multiline all assignment types', '**=',
+                    [described_class::ASSIGN_TO_CONDITION_MSG])
+    it_behaves_like('multiline all assignment types', '/=',
+                    [described_class::ASSIGN_TO_CONDITION_MSG])
+    it_behaves_like('multiline all assignment types', '%=',
+                    [described_class::ASSIGN_TO_CONDITION_MSG])
+    it_behaves_like('multiline all assignment types', '^=',
+                    [described_class::ASSIGN_TO_CONDITION_MSG])
+    it_behaves_like('multiline all assignment types', '&=',
+                    [described_class::ASSIGN_TO_CONDITION_MSG])
+    it_behaves_like('multiline all assignment types', '|=',
+                    [described_class::ASSIGN_TO_CONDITION_MSG])
+    it_behaves_like('multiline all assignment types', '<=',
+                    [described_class::ASSIGN_TO_CONDITION_MSG])
+    it_behaves_like('multiline all assignment types', '>=',
+                    [described_class::ASSIGN_TO_CONDITION_MSG])
+    it_behaves_like('multiline all assignment types', '<<=',
+                    [described_class::ASSIGN_TO_CONDITION_MSG])
+    it_behaves_like('multiline all assignment types', '>>=',
                     [described_class::ASSIGN_TO_CONDITION_MSG])
     it_behaves_like('multiline all assignment types', '||=',
                     [described_class::ASSIGN_TO_CONDITION_MSG])
