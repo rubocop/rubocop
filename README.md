@@ -289,7 +289,14 @@ Metrics/LineLength:
 ### Inheritance
 
 RuboCop supports inheriting configuration from one or more supplemental
-configuration files at runtime.
+configuration files at runtime. Settings in the file that inherits
+override settings in the file that's inherited from. Configuration
+parameter that are hashes, for example `PreferredMethods` in
+`Style/CollectionMethods` are merged with the same parameter in the base
+configuration, while other parameter, such as `AllCops` / `Include`, are
+simply replaced by the local setting. If arrays were merged, there would
+be no way to remove elements through overriding them in local
+configuration.
 
 #### Inheriting from another configuration file in the project
 
