@@ -20,6 +20,7 @@
 * [#2960](https://github.com/bbatsov/rubocop/issues/2960): `Lint/AssignmentInCondition` catches method assignments (like `obj.attr = val`) in a condition. ([@alexdowad][])
 * [#2871](https://github.com/bbatsov/rubocop/issues/2871): Second solution for possible encoding incompatibility when outputting an HTML report. ([@jonas054][])
 * [#2967](https://github.com/bbatsov/rubocop/pull/2967): Fix auto-correcting of `===`, `<=`, and `>=` in `Style/ConditionalAssignment`. ([@rrosenblum][])
+* [#2977](https://github.com/bbatsov/rubocop/issues/2977): Fix auto-correcting of `"#{$!}"` in `Style/SpecialGlobalVars`. ([@lumeet][])
 
 ### Changes
 
