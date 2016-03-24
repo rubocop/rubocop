@@ -65,6 +65,11 @@ describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
       expect(new_source).to eq('"#{$LOAD_PATH}"')
     end
 
+    it 'auto-corrects #{$!} to #{$ERROR_INFO}' do
+      new_source = autocorrect_source(cop, '"#{$!}"')
+      expect(new_source).to eq('"#{$ERROR_INFO}"')
+    end
+
     it 'generates correct auto-config when Perl variable names are used' do
       inspect_source(cop, '$0')
       expect(cop.config_to_allow_offenses).to eq(

@@ -118,7 +118,10 @@ module RuboCop
           unless [:dstr, :xstr, :regexp].include?(parent_type)
             return preferred_name.to_s
           end
-          return "{#{preferred_name}}" if style == :use_english_names
+
+          if style == :use_english_names
+            return english_name_replacement(preferred_name, node)
+          end
 
           "##{preferred_name}"
         end
@@ -129,6 +132,12 @@ module RuboCop
           else
             PERL_VARS[global]
           end
+        end
+
+        def english_name_replacement(preferred_name, node)
+          return "\#{#{preferred_name}}" if node.begin_type?
+
+          "{#{preferred_name}}"
         end
       end
     end
