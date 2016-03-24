@@ -10,6 +10,12 @@ module RuboCop
         include AutocorrectAlignment
         include OnMethodDef
 
+        ALIGN_PARAMS_MSG = 'Align the parameters of a method %s if they span ' \
+          'more than one line.'.freeze
+
+        FIXED_INDENT_MSG = 'Use one level of indentation for parameters ' \
+          'following the first line of a multi-line method %s.'.freeze
+
         def on_send(node)
           _receiver, method, *args = *node
 
@@ -27,8 +33,8 @@ module RuboCop
 
         def message(node)
           type = node && node.parent.send_type? ? 'call' : 'definition'
-          "Align the parameters of a method #{type} if they span " \
-          'more than one line.'
+          msg = fixed_indentation? ? FIXED_INDENT_MSG : ALIGN_PARAMS_MSG
+          format(msg, type)
         end
 
         private
