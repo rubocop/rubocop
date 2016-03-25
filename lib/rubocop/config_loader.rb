@@ -159,7 +159,7 @@ module RuboCop
 
       def yaml_safe_load(yaml_code)
         if YAML.respond_to?(:safe_load) # Ruby 2.1+
-          if defined?(SafeYAML)
+          if defined?(SafeYAML) && SafeYAML.respond_to?(:load)
             SafeYAML.load(yaml_code, nil, whitelisted_tags: %w(!ruby/regexp))
           else
             YAML.safe_load(yaml_code, [Regexp])
