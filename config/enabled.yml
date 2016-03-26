@@ -321,6 +321,11 @@ Style/IfUnlessModifier:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#if-as-a-modifier'
   Enabled: true
 
+Style/IfUnlessModifierOfIfUnless:
+  Description: >-
+                 Avoid modifier if/unless usage on conditionals.
+  Enabled: true
+
 Style/IfWithSemicolon:
   Description: 'Do not use if x; .... Use the ternary operator instead.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-semicolon-ifs'
