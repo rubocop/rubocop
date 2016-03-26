@@ -195,6 +195,19 @@ describe RuboCop::ProcessedSource do
       end
     end
 
+    # https://github.com/whitequark/parser/issues/283
+    context 'when the source itself is valid encoding but includes strange ' \
+            'encoding literals that are accepted by MRI' do
+      let(:source) do
+        'p "\xff"'
+      end
+
+      it 'returns true' do
+        expect(processed_source.diagnostics).to be_empty
+        expect(processed_source).to be_valid_syntax
+      end
+    end
+
     context 'when a line starts with an integer literal' do
       let(:source) { '1 + 1' }
 
