@@ -20,6 +20,12 @@ module RuboCop
       def n(type, children, source_map)
         Node.new(type, children, location: source_map)
       end
+
+      # TODO: Figure out what to do about literal encoding handling...
+      # More details here https://github.com/whitequark/parser/issues/283
+      def string_value(token)
+        value(token)
+      end
     end
   end
 end
