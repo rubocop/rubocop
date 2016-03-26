@@ -431,6 +431,20 @@ describe RuboCop::ConfigLoader do
             expect(word_regexp).to be_a(::Regexp)
           end
         end
+
+        context 'and SafeYAML.load is private' do
+          # According to issue #2935, SafeYAML.load can be private in some
+          # circumstances.
+          it 'does not raise private method load called for SafeYAML:Module' do
+            in_its_own_process_with('safe_yaml/load') do
+              SafeYAML.send :private_class_method, :load
+              configuration = described_class.load_file('.rubocop.yml')
+
+              word_regexp = configuration['Style/WordArray']['WordRegex']
+              expect(word_regexp).to be_a(::Regexp)
+            end
+          end
+        end
       end
     end
   end
