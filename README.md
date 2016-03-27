@@ -115,7 +115,7 @@ haven't reached version 1.0 yet). To prevent an unwanted RuboCop update you
 might want to use a conservative version locking in your `Gemfile`:
 
 ```rb
-gem 'rubocop', '~> 0.38.0', require: false
+gem 'rubocop', '~> 0.39.0', require: false
 ```
 
 ## Basic Usage
@@ -1024,7 +1024,7 @@ require:
 
 Note: The paths are directly passed to `Kernel.require`.  If your
 extension file is not in `$LOAD_PATH`, you need to specify the path as
-relative path prefixed with `./` explicitly, or absolute path. Paths 
+relative path prefixed with `./` explicitly, or absolute path. Paths
 starting with a `.` are resolved relative to `.rubocop.yml`.
 
 ### Custom Cops
