@@ -10,29 +10,45 @@ module RuboCop
       ELLIPSES = Rainbow('...').yellow.freeze
 
       def report_file(file, offenses)
-        offenses.each do |o|
-          output.printf("%s:%d:%d: %s: %s\n",
-                        cyan(smart_path(file)), o.line, o.real_column,
-                        colored_severity_code(o), message(o))
+        offenses.each { |offense| report_offense(file, offense) }
+      end
 
-          # rubocop:disable Lint/HandleExceptions
-          begin
-            location = o.location
-            source_line = location.source_line
-            next if source_line.blank?
+      private
 
-            if location.first_line == location.last_line
-              output.puts(source_line)
-            else
-              output.puts("#{source_line} #{ELLIPSES}")
-            end
-            output.puts("#{' ' * o.highlighted_area.begin_pos}" \
-                        "#{'^' * o.highlighted_area.size}")
-          rescue IndexError
-            # range is not on a valid line; perhaps the source file is empty
-          end
-          # rubocop:enable Lint/HandleExceptions
+      def report_offense(file, offense)
+        output.printf("%s:%d:%d: %s: %s\n",
+                      cyan(smart_path(file)), offense.line, offense.real_column,
+                      colored_severity_code(offense), message(offense))
+
+        # rubocop:disable Lint/HandleExceptions
+        begin
+          return unless valid_line?(offense)
+
+          report_line(offense.location)
+          report_highlighted_area(offense.highlighted_area)
+        rescue IndexError
+          # range is not on a valid line; perhaps the source file is empty
         end
+        # rubocop:enable Lint/HandleExceptions
+      end
+
+      def valid_line?(offense)
+        !offense.location.source_line.blank?
+      end
+
+      def report_line(location)
+        source_line = location.source_line
+
+        if location.first_line == location.last_line
+          output.puts(source_line)
+        else
+          output.puts("#{source_line} #{ELLIPSES}")
+        end
+      end
+
+      def report_highlighted_area(highlighted_area)
+        output.puts("#{' ' * highlighted_area.begin_pos}" \
+                    "#{'^' * highlighted_area.size}")
       end
     end
   end
