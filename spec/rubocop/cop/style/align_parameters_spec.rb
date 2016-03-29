@@ -504,7 +504,10 @@ describe RuboCop::Cop::Style::AlignParameters do
                              '           b)',
                              'end'])
         expect(cop.offenses.size).to eq 1
-        expect(cop.offenses.first.to_s).to match(/method definition/)
+        expect(cop.messages)
+          .to eq(['Use one level of indentation for parameters ' \
+                  'following the first line of a multi-line method ' \
+                  'definition.'])
       end
 
       it 'registers an offense for parameters with double indent' do
