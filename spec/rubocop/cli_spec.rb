@@ -147,6 +147,8 @@ describe RuboCop::CLI, :isolated_environment do
                                    '    super(arg1, arg2) { |response| }',
                                    '  end',
                                    'end'])
+        create_file('.rubocop.yml', ['Lint/UnusedBlockArgument:',
+                                     '  IgnoreEmptyBlocks: true'])
         expect(cli.run(['--format', 'simple', 'example.rb'])).to eq(0)
         expect($stdout.string)
           .to eq(['',

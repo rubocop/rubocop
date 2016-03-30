@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#2983](https://github.com/bbatsov/rubocop/pull/2983): `Style/AlignParameters` message was clarified for `with_fixed_indentation` style. ([@dylanahsmith][])
+* [#2314](https://github.com/bbatsov/rubocop/pull/2314): Ignore `UnusedBlockArgument` for keyword arguments. ([@volkert][])
 
 ## 0.39.0 (27/03/2016)
 

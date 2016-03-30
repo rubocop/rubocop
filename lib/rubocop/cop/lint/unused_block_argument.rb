@@ -16,6 +16,8 @@ module RuboCop
 
         def check_argument(variable)
           return unless variable.block_argument?
+          return if variable.keyword_argument? &&
+                    cop_config && cop_config['AllowUnusedKeywordArguments']
 
           if cop_config['IgnoreEmptyBlocks']
             _send, _args, body = *variable.scope.node
