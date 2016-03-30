@@ -42,6 +42,7 @@ specific RuboCop release.**
         - [Style](#style)
         - [Lint](#lint)
         - [Metrics](#metrics)
+        - [Performance](#performance)
         - [Rails](#rails)
 - [Configuration](#configuration)
     - [Inheritance](#inheritance)
@@ -60,6 +61,7 @@ specific RuboCop release.**
     - [File List Formatter](#file-list-formatter)
     - [JSON Formatter](#json-formatter)
     - [Offense Count Formatter](#offense-count-formatter)
+    - [Worst Offenders Formatter](#worst-offenders-formatter)
     - [HTML Formatter](#html-formatter)
 - [Compatibility](#compatibility)
 - [Editor integration](#editor-integration)
@@ -92,6 +94,7 @@ specific RuboCop release.**
 - [Logo](#logo)
 - [Contributors](#contributors)
 - [Mailing List](#mailing-list)
+- [Freenode](#freenode)
 - [Changelog](#changelog)
 - [Copyright](#copyright)
 
