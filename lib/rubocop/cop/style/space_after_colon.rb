@@ -13,14 +13,25 @@ module RuboCop
         MSG = 'Space missing after colon.'.freeze
 
         def on_pair(node)
-          oper = node.loc.operator
-          return unless oper.is?(':') && followed_by_space?(oper)
+          colon = node.loc.operator
 
-          add_offense(oper, oper)
+          return unless colon.is?(':')
+
+          add_offense(colon, colon) unless followed_by_space?(colon)
         end
 
+        def on_kwoptarg(node)
+          # We have no direct reference to the colon source range following an
+          # optional keyword argument's name, so must construct one.
+          colon = node.loc.name.end.resize(1)
+
+          add_offense(colon, colon) unless followed_by_space?(colon)
+        end
+
+        private
+
         def followed_by_space?(colon)
-          colon.source_buffer.source[colon.end_pos] =~ /\S/
+          colon.source_buffer.source[colon.end_pos] =~ /\s/
         end
 
         def autocorrect(range)
