@@ -7,7 +7,7 @@
 * [#2983](https://github.com/bbatsov/rubocop/pull/2983): `Style/AlignParameters` message was clarified for `with_fixed_indentation` style. ([@dylanahsmith][])
 * [#2314](https://github.com/bbatsov/rubocop/pull/2314): Ignore `UnusedBlockArgument` for keyword arguments. ([@volkert][])
 
-## 0.39.0 (27/03/2016)
+## 0.39.0 (2016-03-27)
 
 ### New features
 
@@ -37,7 +37,7 @@
 * `Style/IfUnlessModifier` does not trigger if the body is another conditional. ([@amuino][])
 * [#2963](https://github.com/bbatsov/rubocop/pull/2963): `Performance/RedundantMerge` will now register an offense inside of `each_with_object`. ([@rrosenblum][])
 
-## 0.38.0 (09/03/2016)
+## 0.38.0 (2016-03-09)
 
 ### New features
 
@@ -89,7 +89,7 @@
 * [#2923](https://github.com/bbatsov/rubocop/issues/2923): `Style/FileName` considers file names which contain a ? or ! character to still be "snake case". ([@alexdowad][])
 * [#2879](https://github.com/bbatsov/rubocop/issues/2879): When autocorrecting, `Lint/UnusedMethodArgument` removes unused block arguments rather than simply prefixing them with an underscore. ([@alexdowad][])
 
-## 0.37.2 (11/02/2016)
+## 0.37.2 (2016-02-11)
 
 ### Bug fixes
 
@@ -109,7 +109,7 @@
 * Handle auto-correction of nested interpolations in `Lint/LiteralInInterpolation`. ([@lumeet][])
 * RuboCop results cache uses different directory names when there are many (or long) CLI options, to avoid a very long path which could cause failures on some filesystems. ([@alexdowad][])
 
-## 0.37.1 (09/02/2016)
+## 0.37.1 (2016-02-09)
 
 ### New features
 
@@ -139,7 +139,7 @@
 
 * [#2739](https://github.com/bbatsov/rubocop/issues/2739): Change the configuration option `when_needed` in `Style/FrozenStringLiteralComment` to add a `frozen_string_literal` comment to all files when the `TargetRubyVersion` is set to 2.3+. ([@rrosenblum][])
 
-## 0.37.0 (04/02/2016)
+## 0.37.0 (2016-02-04)
 
 ### New features
 
@@ -192,7 +192,7 @@
 * [#2684](https://github.com/bbatsov/rubocop/pull/2684): Do not base `Style/FrozenStringLiteralComment` on the version of Ruby that is running. ([@rrosenblum][])
 * [#2732](https://github.com/bbatsov/rubocop/issues/2732): Change the default style of `Style/SignalException` to `only_raise`. ([@bbatsov][])
 
-## 0.36.0 (14/01/2016)
+## 0.36.0 (2016-01-14)
 
 ### New features
 
@@ -345,13 +345,13 @@
 * `Style/TrailingComma` has been split into `Style/TrailingCommaInArguments` and `Style/TrailingCommaInLiteral`. ([@alexdowad][])
 * RuboCop returns process exit code 2 if it fails due to bad configuration, bad CLI options, or an internal error. If it runs successfully but finds one or more offenses, it still exits with code 1, as was previously the case. This is helpful when invoking RuboCop programmatically, perhaps from a script. ([@alexdowad][])
 
-## 0.35.1 (10/11/2015)
+## 0.35.1 (2015-11-10)
 
 ### Bug Fixes
 
 * [#2407](https://github.com/bbatsov/rubocop/issues/2407): Use `Process.uid` rather than `Etc.getlogin` for simplicity and compatibility. ([@jujugrrr][])
 
-## 0.35.0 (07/11/2015)
+## 0.35.0 (2015-11-07)
 
 ### New features
 
@@ -426,7 +426,7 @@
 
 * [#2194](https://github.com/bbatsov/rubocop/issues/2194): Allow any options with `--auto-gen-config`. ([@agrimm][])
 
-## 0.34.2 (21/09/2015)
+## 0.34.2 (2015-09-21)
 
 ### Bug Fixes
 
@@ -448,7 +448,7 @@
 * [#2258](https://github.com/bbatsov/rubocop/pull/2258): `Style/Documentation` will exclude test directories by default. ([@rrosenblum][])
 * [#2260](https://github.com/bbatsov/rubocop/issues/2260): Disable `Style/StringMethods` by default. ([@bbatsov][])
 
-## 0.34.1 (09/09/2015)
+## 0.34.1 (2015-09-09)
 
 ### Bug Fixes
 
@@ -459,7 +459,7 @@
 * [#2218](https://github.com/bbatsov/rubocop/issues/2218): Fix loading config error when safe yaml is only partially loaded. ([@maxjacobson][])
 * [#2161](https://github.com/bbatsov/rubocop/issues/2161): Allow an explicit receiver (except `Kernel`) in `Style/SignalException`. ([@lumeet][])
 
-## 0.34.0 (05/09/2015)
+## 0.34.0 (2015-09-05)
 
 ### New features
 
@@ -516,7 +516,7 @@
 * [#2199](https://github.com/bbatsov/rubocop/issues/2199): Make `rubocop` exit with error when there are only `Lint/UnneededDisable` offenses. ([@jonas054][])
 * Fix handling of empty parentheses when auto-correcting in `Style/SymbolProc`. ([@lumeet][])
 
-## 0.33.0 (05/08/2015)
+## 0.33.0 (2015-08-05)
 
 ### New features
 
@@ -563,7 +563,7 @@
 * [#2080](https://github.com/bbatsov/rubocop/issues/2080): Properly parse code in `Performance/Count` when calling `select..count` in a class that extends an enumerable. ([@rrosenblum][])
 * [#2093](https://github.com/bbatsov/rubocop/issues/2093): Fix bug in `Style/OneLineConditional` which should not raise an offense with an 'if/then/end' statement. ([@sliuu][])
 
-## 0.32.1 (24/06/2015)
+## 0.32.1 (2015-06-24)
 
 ### New features
 
@@ -586,7 +586,7 @@
 * [#1708](https://github.com/bbatsov/rubocop/issues/1708): Improve message for `FirstParameterIndentation`. ([@tejasbubane][])
 * [#1959](https://github.com/bbatsov/rubocop/issues/1959): Allow `Lint/UnneededDisable` to be inline disabled. ([@rrosenblum][])
 
-## 0.32.0 (06/06/2015)
+## 0.32.0 (2015-06-06)
 
 ### New features
 
@@ -627,7 +627,7 @@
 * [#1926](https://github.com/bbatsov/rubocop/issues/1926): Fix crash in `Style/AlignHash` when correcting a hash with a splat in it. ([@rrosenblum][])
 * [#1935](https://github.com/bbatsov/rubocop/issues/1935): Allow `Symbol#to_proc` blocks in Performance/Size. ([@m1foley][])
 
-## 0.31.0 (05/05/2015)
+## 0.31.0 (2015-05-05)
 
 ### New features
 
@@ -658,7 +658,7 @@
 * [#1859](https://github.com/bbatsov/rubocop/pull/1859): Fix bugs in `IfUnlessModifier` concerning comments and empty lines. ([@jonas054][])
 * Fix handling of trailing comma in `SpaceAroundBlockParameters` and `SpaceAfterComma`. ([@lumeet][])
 
-## 0.30.1 (21/04/2015)
+## 0.30.1 (2015-04-21)
 
 ### Bugs fixed
 
@@ -677,7 +677,7 @@
 * [#1767](https://github.com/bbatsov/rubocop/pull/1767): Do not register offenses on non-enumerable select/find_all by `Performance/Detect`. ([@palkan][])
 * [#1795](https://github.com/bbatsov/rubocop/pull/1795): Fix bug in `TrailingBlankLines` that caused a crash for files containing only newlines. ([@renuo][])
 
-## 0.30.0 (06/04/2015)
+## 0.30.0 (2015-04-06)
 
 ### New features
 
@@ -738,7 +738,7 @@
 * [#1734](https://github.com/bbatsov/rubocop/issues/1734): The default exclusion of hidden directories has been optimized for speed. ([@jonas054][])
 * [#1673](https://github.com/bbatsov/rubocop/issues/1673): `Style/TrivialAccessors` now requires matching names by default. ([@bbatsov][])
 
-## 0.29.1 (13/02/2015)
+## 0.29.1 (2015-02-13)
 
 ### Bugs fixed
 
@@ -748,7 +748,7 @@
 * [#1649](https://github.com/bbatsov/rubocop/issues/1649): Handle exception assignments in `UselessSetterCall`. ([@bbatsov][])
 * [#1644](https://github.com/bbatsov/rubocop/issues/1644): Don't search the entire file system when a folder is named `,`. ([@bquorning][])
 
-## 0.29.0 (05/02/2015)
+## 0.29.0 (2015-02-05)
 
 ### New features
 
@@ -798,7 +798,7 @@
 * [#1612](https://github.com/bbatsov/rubocop/issues/1612): Allow `expand_path` on `inherit_from` in `.rubocop.yml`. ([@mattjmcnaughton][])
 * [#1610](https://github.com/bbatsov/rubocop/issues/1610): Check that class method names actually match the name of the containing class/module in `Style/ClassMethods`. ([@bbatsov][])
 
-## 0.28.0 (10/12/2014)
+## 0.28.0 (2014-12-10)
 
 ### New features
 
@@ -831,7 +831,7 @@
 * [#1485](https://github.com/bbatsov/rubocop/issues/1485): Ignore procs in `SymbolProc`. ([@bbatsov][])
 * [#1473](https://github.com/bbatsov/rubocop/issues/1473): `Style/MultilineOperationIndentation` doesn't recognize assignment to array/hash element. ([@jonas054][])
 
-## 0.27.1 (08/11/2014)
+## 0.27.1 (2014-11-08)
 
 ### Changes
 
@@ -847,7 +847,7 @@
 * [#1413](https://github.com/bbatsov/rubocop/issues/1413): Support empty elsif branches in `MultilineIfThen`. ([@janraasch][], [@jonas054][])
 * [#1406](https://github.com/bbatsov/rubocop/issues/1406): Allow a newline in `SpaceInsideRangeLiteral`. ([@bbatsov][])
 
-## 0.27.0 (30/10/2014)
+## 0.27.0 (2014-10-30)
 
 ### New features
 
@@ -875,7 +875,7 @@
 * Refine HTML formatter. ([@yujinakayama][])
 * [#1410](https://github.com/bbatsov/rubocop/issues/1410): Handle specially Java primitive type references in `ColonMethodCall`. ([@bbatsov][])
 
-## 0.26.1 (18/09/2014)
+## 0.26.1 (2014-09-18)
 
 ### Bugs fixed
 
@@ -884,7 +884,7 @@
 * [#1339](https://github.com/bbatsov/rubocop/issues/1339): Handle `eql?` and `equal?` in `OpMethod`. ([@bbatsov][])
 * [#1340](https://github.com/bbatsov/rubocop/issues/1340): Fix crash in `Style/SymbolProc` cop when the block calls a method with no explicit receiver. ([@smangelsdorf][])
 
-## 0.26.0 (03/09/2014)
+## 0.26.0 (2014-09-03)
 
 ### New features
 
@@ -918,7 +918,7 @@
 * [#1319](https://github.com/bbatsov/rubocop/issues/1319): Fix a false positive in `FormatString`. ([@bbatsov][])
 * [#1287](https://github.com/bbatsov/rubocop/issues/1287): Allow missing blank line for EmptyLinesAroundAccessModifier if next line closes a block. ([@sch1zo][])
 
-## 0.25.0 (15/08/2014)
+## 0.25.0 (2014-08-15)
 
 ### New features
 
@@ -938,7 +938,7 @@
 ### Changes
 
 * [#1220](https://github.com/bbatsov/rubocop/issues/1220): New namespace `Metrics` created and some `Style` cops moved there. ([@jonas054][])
-* Drop support for Ruby 1.9.2 in accordance with [the end of the security maintenance extension](https://www.ruby-lang.org/en/news/2014/07/01/eol-for-1-8-7-and-1-9-2/). ([@yujinakayama][])
+* Drop support for Ruby 1.9.2 in accordance with [the end of the security maintenance extension](https://www.ruby-lang.org/en/news/01-07-2014/eol-for-1-8-7-and-1-9-2/). ([@yujinakayama][])
 
 ### Bugs fixed
 
@@ -957,7 +957,7 @@
 * [#1255](https://github.com/bbatsov/rubocop/issues/1255): Compare without context in `AutocorrectUnlessChangingAST`. ([@jonas054][])
 * [#1262](https://github.com/bbatsov/rubocop/issues/1262): Handle regexp and backtick literals in `VariableInterpolation`. ([@bbatsov][])
 
-## 0.24.1 (03/07/2014)
+## 0.24.1 (2014-07-03)
 
 ### Bugs fixed
 
@@ -968,7 +968,7 @@
 * [#1188](https://github.com/bbatsov/rubocop/issues/1188), [#1190](https://github.com/bbatsov/rubocop/issues/1190): Fix crash in `LineLength` cop when `AllowURI` option is enabled. ([@yujinakayama][])
 * [#1191](https://github.com/bbatsov/rubocop/issues/1191): Fix crash on empty body branches in a loop in `Next` cop. ([@yujinakayama][])
 
-## 0.24.0 (25/06/2014)
+## 0.24.0 (2014-06-25)
 
 ### New features
 
@@ -1001,7 +1001,7 @@
 * [#1165](https://github.com/bbatsov/rubocop/issues/1165): Support `rescue`/`else`/`ensure` bodies in `IndentationWidth`. ([@jonas054][])
 * Fix false positive for aligned list of values after `when` in `IndentationWidth`. ([@jonas054][])
 
-## 0.23.0 (02/06/2014)
+## 0.23.0 (2014-06-02)
 
 ### New features
 
@@ -1031,7 +1031,7 @@
 * [#1120](https://github.com/bbatsov/rubocop/issues/1120): Don't change indentation of heredoc strings in auto-correct. ([@jonas054][])
 * [#1109](https://github.com/bbatsov/rubocop/issues/1109): Handle conditions with modifier ops in them in `ParenthesesAroundCondition`. ([@bbatsov][])
 
-## 0.22.0 (20/05/2014)
+## 0.22.0 (2014-05-20)
 
 ### New features
 
@@ -1068,7 +1068,7 @@
 * Fix paths in `Exclude` config section not being recognized on Windows. ([@wndhydrnt][])
 * [#1094](https://github.com/bbatsov/rubocop/issues/1094): Fix ClassAndModuleChildren for classes with a single method. ([@geniou][])
 
-## 0.21.0 (24/04/2014)
+## 0.21.0 (2014-04-24)
 
 ### New features
 
@@ -1110,7 +1110,7 @@
 * [#1016](https://github.com/bbatsov/rubocop/issues/1016): Fix a false positive in `ConditionPosition` regarding statement modifiers. ([@bbatsov][])
 * [#1014](https://github.com/bbatsov/rubocop/issues/1014): Fix handling of strings nested in `dstr` nodes. ([@bbatsov][])
 
-## 0.20.1 (05/04/2014)
+## 0.20.1 (2014-04-05)
 
 ### Bugs fixed
 
@@ -1128,7 +1128,7 @@
 * [#946](https://github.com/bbatsov/rubocop/issues/946): Allow non-nil checks that are the final expressions of predicate method definitions in `NonNilCheck`. ([@bbatsov][])
 * [#957](https://github.com/bbatsov/rubocop/issues/957): Allow space + comment inside parentheses, braces, and square brackets. ([@jonas054][])
 
-## 0.20.0 (02/04/2014)
+## 0.20.0 (2014-04-02)
 
 ### New features
 
@@ -1182,7 +1182,7 @@
 * [#927](https://github.com/bbatsov/rubocop/issues/927): Let `--auto-gen-config` overwrite an existing `rubocop-todo.yml` file instead of asking the user to remove it. ([@jonas054][])
 * [#936](https://github.com/bbatsov/rubocop/issues/936): Allow `_other` as well as `other` in `OpMethod`. ([@bbatsov][])
 
-## 0.19.1 (17/03/2014)
+## 0.19.1 (2014-03-17)
 
 ### Bugs fixed
 
@@ -1194,7 +1194,7 @@
 * Fix a bug where multiple cli options that result in exit can be specified at once (e.g. `-vV`, `-v --show-cops`). ([@jkogara][])
 * [#889](https://github.com/bbatsov/rubocop/issues/889): Fix a false positive for `LiteralInCondition` when the condition is non-primitive array. ([@bbatsov][])
 
-## 0.19.0 (13/03/2014)
+## 0.19.0 (2014-03-13)
 
 ### New features
 
@@ -1257,7 +1257,7 @@
 * Fix a bug where string and regexp literals including `# rubocop:disable` were confused with real comments. ([@yujinakayama][])
 * [#877](https://github.com/bbatsov/rubocop/issues/877): Fix bug in `PercentLiteralDelimiters` concerning auto-correct of regular expressions with interpolation. ([@hannestyden][])
 
-## 0.18.1 (02/02/2014)
+## 0.18.1 (2014-02-02)
 
 ### Bugs fixed
 
@@ -1269,7 +1269,7 @@
 * [#785](https://github.com/bbatsov/rubocop/issues/785): Fix false positive on `%w` arrays in `TrailingComma`. ([@jonas054][])
 * [#782](https://github.com/bbatsov/rubocop/issues/782): Fix false positive in `AlignHash` for single line hashes. ([@jonas054][])
 
-## 0.18.0 (30/01/2014)
+## 0.18.0 (2014-01-30)
 
 ### New features
 
@@ -1291,7 +1291,7 @@
 * [#764](https://github.com/bbatsov/rubocop/issues/764): Handle heredocs in `TrailingComma`. ([@jonas054][])
 * Guide for contributors now points to correct issues page. ([@scottmatthewman][])
 
-## 0.17.0 (25/01/2014)
+## 0.17.0 (2014-01-25)
 
 ### New features
 
@@ -1332,7 +1332,7 @@
 * `ParenthesesAroundCondition` no longer crashes on parentheses around the condition in a ternary if. ([@jonas054][])
 * [#738](https://github.com/bbatsov/rubocop/issues/738): Fix a false positive in `StringLiterals`. ([@bbatsov][])
 
-## 0.16.0 (25/12/2013)
+## 0.16.0 (2013-12-25)
 
 ### New features
 
@@ -1379,7 +1379,7 @@
 * [#664](https://github.com/bbatsov/rubocop/issues/664): Accept oneline while when condition has local variable assignment. ([@emou][])
 * Fix auto-correct for `MethodDefParentheses` when parentheses are required. ([@skanev][])
 
-## 0.15.0 (06/11/2013)
+## 0.15.0 (2013-11-06)
 
 ### New features
 
@@ -1433,7 +1433,7 @@
 * [#173](https://github.com/bbatsov/rubocop/issues/173): Allow the use of `alias` in the body of an `instance_exec`. ([@bbatsov][])
 * [#554](https://github.com/bbatsov/rubocop/issues/554): Handle properly multi-line arrays with comments in them in `WordArray`. ([@bbatsov][])
 
-## 0.14.1 (10/10/2013)
+## 0.14.1 (2013-10-10)
 
 ### New features
 
@@ -1448,7 +1448,7 @@
 * [#556](https://github.com/bbatsov/rubocop/pull/556): Fix "Parser::Source::Range spans more than one line" bug in clang formatter. ([@yujinakayama][])
 * [#552](https://github.com/bbatsov/rubocop/pull/552): `RaiseArgs` allows exception constructor calls with more than one 1 argument. ([@bbatsov][])
 
-## 0.14.0 (07/10/2013)
+## 0.14.0 (2013-10-07)
 
 ### New features
 
@@ -1490,7 +1490,7 @@
 * `SignalException` cop now finds `raise` calls anywhere, not only in `begin` sections.
 * [#538](https://github.com/bbatsov/rubocop/issues/538): Fix bug causing `Blocks` auto-correction to produce invalid code.
 
-## 0.13.1 (19/09/2013)
+## 0.13.1 (2013-09-19)
 
 ### New features
 
@@ -1506,7 +1506,7 @@
 * [#485](https://github.com/bbatsov/rubocop/issues/485): Fix crash on multiple-assignment and op-assignment in `UselessSetterCall`.
 * [#497](https://github.com/bbatsov/rubocop/issues/497): Fix crash in `UselessComparison` and `NilComparison`.
 
-## 0.13.0 (13/09/2013)
+## 0.13.0 (2013-09-13)
 
 ### New features
 
@@ -1548,7 +1548,7 @@
 * Fix crashes while inspecting class definition subclassing another class stored in a local variable in `UselessAssignment` (formerly of `UnusedLocalVariable`) and `ShadowingOuterLocalVariable` (like `clazz = Array; class SomeClass < clazz; end`).
 * [#463](https://github.com/bbatsov/rubocop/issues/463): Do not warn if using destructuring in second `reduce` argument (`ReduceArguments`).
 
-## 0.12.0 (23/08/2013)
+## 0.12.0 (2013-08-23)
 
 ### New features
 
@@ -1582,7 +1582,7 @@
 * Fix which ranges are highlighted in reports from IfUnlessModifier, WhileUntilModifier, and MethodAndVariableSnakeCase cop.
 * [#438](https://github.com/bbatsov/rubocop/issues/438): Accept setting attribute on method argument in `UselessAssignment`.
 
-## 0.11.1 (12/08/2013)
+## 0.11.1 (2013-08-12)
 
 ### Changes
 
@@ -1595,7 +1595,7 @@
 * Fixed `AsciiComments` offence reporting.
 * Fixed `BlockComments` offence reporting.
 
-## 0.11.0 (09/08/2013)
+## 0.11.0 (2013-08-09)
 
 ### New features
 
@@ -1626,7 +1626,7 @@
 * [#398](https://github.com/bbatsov/rubocop/issues/398): Don't display blank lines in the output of the clang formatter.
 * [#283](https://github.com/bbatsov/rubocop/issues/283): Refine `StringLiterals` string content check.
 
-## 0.10.0 (17/07/2013)
+## 0.10.0 (2013-07-17)
 
 ### New features
 
@@ -1662,7 +1662,7 @@
 * Improved performance on Ruby 1.9 by about 20%.
 * Improved overall performance by about 35%.
 
-## 0.9.1 (05/07/2013)
+## 0.9.1 (2013-07-05)
 
 ### New features
 
@@ -1685,7 +1685,7 @@
 * [#332](https://github.com/bbatsov/rubocop/issues/332): Fix exception of `UnusedLocalVariable` and `ShadowingOuterLocalVariable` when inspecting named captures.
 * [#333](https://github.com/bbatsov/rubocop/issues/333): Fix a case that `EnsureReturn` throws an exception when ensure has no body.
 
-## 0.9.0 (01/07/2013)
+## 0.9.0 (2013-07-01)
 
 ### New features
 
@@ -1745,13 +1745,13 @@
 * Fix crashes in WordArray on arrays of character literals such as `[?\r, ?\n]`.
 * Fix crashes in Documentation on empty modules.
 
-## 0.8.3 (18/06/2013)
+## 0.8.3 (2013-06-18)
 
 ### Bug fixes
 
 * Lock Parser dependency to version 2.0.0.beta5.
 
-## 0.8.2 (06/05/2013)
+## 0.8.2 (2013-06-05)
 
 ### New features
 
@@ -1763,7 +1763,7 @@
 * Fix an error in `MultilineIfThen` cop that occurred in some special cases.
 * [#231](https://github.com/bbatsov/rubocop/issues/231): Fix a false positive for modifier if.
 
-## 0.8.1 (05/30/2013)
+## 0.8.1 (2013-05-30)
 
 ### New features
 
@@ -1782,7 +1782,7 @@
 * [#213](https://github.com/bbatsov/rubocop/issues/213): Make sure even disabled cops get their configuration set.
 * [#214](https://github.com/bbatsov/rubocop/issues/214): Fix SpaceInsideHashLiteralBraces to handle string interpolation right.
 
-## 0.8.0 (05/28/2013)
+## 0.8.0 (2013-05-28)
 
 ### Changes
 
@@ -1797,7 +1797,7 @@
 * New cop `AccessControl` checks private/protected indentation and surrounding blank lines.
 * New cop `Loop` checks for `begin/end/while(until)` and suggests the use of `Kernel#loop`.
 
-## 0.7.2 (05/13/2013)
+## 0.7.2 (2013-05-13)
 
 ### Bugs fixed
 
@@ -1807,13 +1807,13 @@
 * `RescueException` now handles the splat operator `*` in a `rescue` clause without crashing.
 * [#159](https://github.com/bbatsov/rubocop/issues/159): AvoidFor cop misses many violations.
 
-## 0.7.1 (05/11/2013)
+## 0.7.1 (2013-05-11)
 
 ### Bugs fixed
 
 * Added missing files to the gemspec.
 
-## 0.7.0 (05/11/2013)
+## 0.7.0 (2013-05-11)
 
 ### New features
 
@@ -1855,7 +1855,7 @@
 * Renamed `Indentation` cop to `CaseIndentation` to avoid confusion.
 * Renamed `EmptyLines` cop to `EmptyLineBetweenDefs` to avoid confusion.
 
-## 0.6.1 (04/28/2013)
+## 0.6.1 (2013-04-28)
 
 ### New features
 
@@ -1877,7 +1877,7 @@
 * Add an option to disable colors in the output.
 * Cop names are now displayed alongside messages when `-d/--debug` is passed.
 
-## 0.6.0 (04/23/2013)
+## 0.6.0 (2013-04-23)
 
 ### New features
 
@@ -1912,7 +1912,7 @@
 * Dropped Jeweler for gem release management since it's no longer actively maintained.
 * Handle pluralization properly in the final summary.
 
-## 0.5.0 (04/17/2013)
+## 0.5.0 (2013-04-17)
 
 ### New features
 
