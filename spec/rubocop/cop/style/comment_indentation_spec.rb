@@ -119,9 +119,9 @@ describe RuboCop::Cop::Style::CommentIndentation do
                            '  ],',
                            '  #',
                            '  y: func(',
-                           '          1',
-                           '          #',
-                           '          )',
+                           '    1',
+                           '    #',
+                           '  )',
                            '  #',
                            '}',
                            '#'])

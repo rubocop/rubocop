@@ -52,7 +52,7 @@ module RuboCop
         end
 
         def less_indented?(line)
-          line =~ /^\s*(end\b|[\}\]])/
+          line =~ /^\s*(end\b|[)}\]])/
         end
 
         def two_alternatives?(line)
