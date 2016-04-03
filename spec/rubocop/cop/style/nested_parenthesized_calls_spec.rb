@@ -35,13 +35,36 @@ describe RuboCop::Cop::Style::NestedParenthesizedCalls do
   end
 
   context 'on a non-parenthesized call nested in a parenthesized one' do
-    let(:source) { 'puts(compute something)' }
+    context 'with a single argument to the nested call' do
+      let(:source) { 'puts(compute something)' }
 
-    it 'registers an offense' do
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages).to eq(
-        ['Add parentheses to nested method call `compute something`.'])
-      expect(cop.highlights).to eq(['compute something'])
+      it 'registers an offense' do
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.messages).to eq(
+          ['Add parentheses to nested method call `compute something`.'])
+        expect(cop.highlights).to eq(['compute something'])
+      end
+
+      it 'auto-corrects by adding parentheses' do
+        new_source = autocorrect_source(cop, source)
+        expect(new_source).to eq('puts(compute(something))')
+      end
+    end
+
+    context 'with multiple arguments to the nested call' do
+      let(:source) { 'puts(compute first, second)' }
+
+      it 'registers an offense' do
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.messages).to eq(
+          ['Add parentheses to nested method call `compute first, second`.'])
+        expect(cop.highlights).to eq(['compute first, second'])
+      end
+
+      it 'auto-corrects by adding parentheses' do
+        new_source = autocorrect_source(cop, 'puts(compute first, second)')
+        expect(new_source).to eq('puts(compute(first, second))')
+      end
     end
   end
 
