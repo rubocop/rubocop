@@ -47,8 +47,7 @@ module RuboCop
 
     # Restore an offense object loaded from a JSON file.
     def deserialize_offenses(offenses)
-      source_buffer = Parser::Source::Buffer.new(@filename)
-      source_buffer.read
+      source_buffer = utf8_source_buffer
       offenses.map! do |o|
         location = Parser::Source::Range.new(source_buffer,
                                              o['location']['begin_pos'],
@@ -60,6 +59,20 @@ module RuboCop
                          o['message'].force_encoding('UTF-8'),
                          o['cop_name'], o['status'].to_sym)
       end
+    end
+
+    # Return a source buffer that has a UTF-8 encoded source.
+    def utf8_source_buffer
+      # We are given a source with an encoding of ASCII-8BIT
+      ascii_source = Parser::Source::Buffer.new(@filename).read.source
+
+      # Correct the encoding of the source as we expect UTF-8
+      source = ascii_source.dup.force_encoding('UTF-8')
+
+      # The existing source is immutable so we need a new object
+      source_buffer = Parser::Source::Buffer.new(@filename)
+      source_buffer.source = source
+      source_buffer
     end
   end
 end
