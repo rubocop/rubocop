@@ -262,4 +262,48 @@ Usage: rubocop [options] [file1, file2, ...]
       end
     end
   end
+
+  describe 'options precedence' do
+    def with_env_options(options)
+      ENV['RUBOCOP_OPTS'] = options
+      yield
+    ensure
+      ENV.delete('RUBOCOP_OPTS')
+    end
+    let(:command_line_options) { %w(--no-color) }
+
+    subject { options.parse(command_line_options).first }
+
+    context '.rubocop file' do
+      before do
+        create_file('.rubocop', %w(--color --fail-level C))
+      end
+
+      it 'has lower precedence then command line options' do
+        is_expected.to eq(color: false, fail_level: :convention)
+      end
+
+      it 'has lower precedence then options from RUBOCOP_OPTS env variable' do
+        with_env_options '--fail-level W' do
+          is_expected.to eq(color: false, fail_level: :warning)
+        end
+      end
+    end
+
+    context 'RUBOCOP_OPTS environment variable' do
+      it 'has lower precedence then command line options' do
+        with_env_options '--color' do
+          is_expected.to eq(color: false)
+        end
+      end
+
+      it 'has higher precedence then options from .rubocop file' do
+        create_file('.rubocop', %w(--color --fail-level C))
+
+        with_env_options '--fail-level W' do
+          is_expected.to eq(color: false, fail_level: :warning)
+        end
+      end
+    end
+  end
 end
