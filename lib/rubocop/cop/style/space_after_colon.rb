@@ -5,6 +5,8 @@ module RuboCop
   module Cop
     module Style
       # Checks for colon (:) not followed by some kind of space.
+      # N.B. this cop does not handle spaces after a ternary operator, which are
+      # instead handled by Style/SpaceAroundOperators.
       class SpaceAfterColon < Cop
         include IfNode
 
@@ -15,15 +17,6 @@ module RuboCop
           return unless oper.is?(':') && followed_by_space?(oper)
 
           add_offense(oper, oper)
-        end
-
-        def on_if(node)
-          return unless ternary?(node)
-
-          colon = node.loc.colon
-          return unless followed_by_space?(colon)
-
-          add_offense(colon, colon)
         end
 
         def followed_by_space?(colon)

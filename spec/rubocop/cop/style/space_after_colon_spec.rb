@@ -7,11 +7,9 @@ describe RuboCop::Cop::Style::SpaceAfterColon do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for colon without space after it' do
-    # TODO: There is double reporting of the last colon (also from
-    # SpaceAroundOperators).
-    inspect_source(cop, 'x = w ? {a:3}:4')
-    expect(cop.messages).to eq(['Space missing after colon.'] * 2)
-    expect(cop.highlights).to eq([':'] * 2)
+    inspect_source(cop, '{a:3}')
+    expect(cop.messages).to eq(['Space missing after colon.'])
+    expect(cop.highlights).to eq([':'])
   end
 
   it 'accepts colons in symbols' do
@@ -21,6 +19,11 @@ describe RuboCop::Cop::Style::SpaceAfterColon do
 
   it 'accepts colon in ternary followed by space' do
     inspect_source(cop, 'x = w ? a : b')
+    expect(cop.messages).to be_empty
+  end
+
+  it 'accepts hashes with a space after colons' do
+    inspect_source(cop, '{a: 3}')
     expect(cop.messages).to be_empty
   end
 
@@ -36,6 +39,16 @@ describe RuboCop::Cop::Style::SpaceAfterColon do
     expect(cop.messages).to be_empty
   end
 
+  it 'accepts colons in strings' do
+    inspect_source(cop, "str << ':'")
+    expect(cop.messages).to be_empty
+  end
+
+  it 'accepts ternary operators without a trailing space' do
+    inspect_source(cop, 'x == b ? 1 :2')
+    expect(cop.messages).to be_empty
+  end
+
   if RUBY_VERSION >= '2.1'
     it 'accepts colons denoting required keyword argument' do
       inspect_source(cop, ['def initialize(table:, nodes:)',
@@ -44,13 +57,8 @@ describe RuboCop::Cop::Style::SpaceAfterColon do
     end
   end
 
-  it 'accepts colons in strings' do
-    inspect_source(cop, "str << ':'")
-    expect(cop.messages).to be_empty
-  end
-
   it 'auto-corrects missing space' do
-    new_source = autocorrect_source(cop, 'x = w ? {a:3}:4')
-    expect(new_source).to eq('x = w ? {a: 3}: 4')
+    new_source = autocorrect_source(cop, '{a:3}')
+    expect(new_source).to eq('{a: 3}')
   end
 end

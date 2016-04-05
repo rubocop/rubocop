@@ -196,16 +196,35 @@ describe RuboCop::Cop::Style::SpaceAroundOperators do
       expect(new_source).to eq(['x = 0', 'y = 0', 'z = 0'].join("\n"))
     end
 
-    it 'registers an offense for ternary operator without space' do
-      inspect_source(cop, 'x == 0?1:2')
-      expect(cop.messages).to eq(
-        ['Surrounding space missing for operator `?`.',
-         'Surrounding space missing for operator `:`.'])
-    end
+    context 'ternary operators' do
+      it 'registers an offense for operators with no spaces' do
+        inspect_source(cop, 'x == 0?1:2')
 
-    it 'auto-corrects a ternary operator without space' do
-      new_source = autocorrect_source(cop, 'x == 0?1:2')
-      expect(new_source).to eq('x == 0 ? 1 : 2')
+        expect(cop.messages).to eq(
+          ['Surrounding space missing for operator `?`.',
+           'Surrounding space missing for operator `:`.'])
+      end
+
+      it 'registers an offense for operators with just a trailing space' do
+        inspect_source(cop, 'x == 0? 1: 2')
+
+        expect(cop.messages).to eq(
+          ['Surrounding space missing for operator `?`.',
+           'Surrounding space missing for operator `:`.'])
+      end
+
+      it 'registers an offense for operators with just a leading space' do
+        inspect_source(cop, 'x == 0 ?1 :2')
+
+        expect(cop.messages).to eq(
+          ['Surrounding space missing for operator `?`.',
+           'Surrounding space missing for operator `:`.'])
+      end
+
+      it 'auto-corrects a ternary operator without space' do
+        new_source = autocorrect_source(cop, 'x == 0?1:2')
+        expect(new_source).to eq('x == 0 ? 1 : 2')
+      end
     end
 
     it 'registers an offense in presence of modifier if statement' do
