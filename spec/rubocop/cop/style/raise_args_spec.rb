@@ -9,27 +9,58 @@ describe RuboCop::Cop::Style::RaiseArgs, :config do
   context 'when enforced style is compact' do
     let(:cop_config) { { 'EnforcedStyle' => 'compact' } }
 
-    it 'reports an offense for a raise with 2 args' do
-      inspect_source(cop, 'raise RuntimeError, msg')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'exploded')
+    context 'with a raise with 2 args' do
+      it 'reports an offense' do
+        inspect_source(cop, 'raise RuntimeError, msg')
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.config_to_allow_offenses)
+          .to eq('EnforcedStyle' => 'exploded')
+      end
+
+      it 'auto-corrects to compact style' do
+        new_source = autocorrect_source(cop, 'raise RuntimeError, msg')
+        expect(new_source).to eq('raise RuntimeError.new(msg)')
+      end
     end
 
-    it 'reports an offense for correct + opposite' do
-      inspect_source(cop, ['if a',
-                           '  raise RuntimeError, msg',
-                           'else',
-                           '  raise Ex.new(msg)',
-                           'end'])
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Provide an exception object as an argument to `raise`.'])
-      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+    context 'with correct + opposite' do
+      it 'reports an offense' do
+        inspect_source(cop, ['if a',
+                             '  raise RuntimeError, msg',
+                             'else',
+                             '  raise Ex.new(msg)',
+                             'end'])
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.messages)
+          .to eq(['Provide an exception object as an argument to `raise`.'])
+        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+      end
+
+      it 'auto-corrects to compact style' do
+        new_source = autocorrect_source(cop, ['if a',
+                                              '  raise RuntimeError, msg',
+                                              'else',
+                                              '  raise Ex.new(msg)',
+                                              'end'])
+        expect(new_source).to eq(['if a',
+                                  '  raise RuntimeError.new(msg)',
+                                  'else',
+                                  '  raise Ex.new(msg)',
+                                  'end'].join("\n"))
+      end
     end
 
-    it 'reports an offense for a raise with 3 args' do
-      inspect_source(cop, 'raise RuntimeError, msg, caller')
-      expect(cop.offenses.size).to eq(1)
+    context 'with a raise with 3 args' do
+      it 'reports an offense' do
+        inspect_source(cop, 'raise RuntimeError, msg, caller')
+        expect(cop.offenses.size).to eq(1)
+      end
+
+      it 'auto-corrects to compact style' do
+        new_source = autocorrect_source(cop,
+                                        ['raise RuntimeError, msg, caller'])
+        expect(new_source).to eq('raise RuntimeError.new(msg, caller)')
+      end
     end
 
     it 'accepts a raise with msg argument' do
@@ -46,23 +77,46 @@ describe RuboCop::Cop::Style::RaiseArgs, :config do
   context 'when enforced style is exploded' do
     let(:cop_config) { { 'EnforcedStyle' => 'exploded' } }
 
-    it 'reports an offense for a raise with exception object' do
-      inspect_source(cop, 'raise Ex.new(msg)')
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.messages)
-        .to eq(['Provide an exception class and message ' \
-                'as arguments to `raise`.'])
-      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'compact')
+    context 'with a raise with exception object' do
+      it 'reports an offense' do
+        inspect_source(cop, 'raise Ex.new(msg)')
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.messages)
+          .to eq(['Provide an exception class and message ' \
+                  'as arguments to `raise`.'])
+        expect(cop.config_to_allow_offenses)
+          .to eq('EnforcedStyle' => 'compact')
+      end
+
+      it 'auto-corrects to exploded style' do
+        new_source = autocorrect_source(cop, ['raise Ex.new(msg)'])
+        expect(new_source).to eq('raise Ex, msg')
+      end
     end
 
-    it 'reports an offense for opposite + correct' do
-      inspect_source(cop, ['if a',
-                           '  raise RuntimeError, msg',
-                           'else',
-                           '  raise Ex.new(msg)',
-                           'end'])
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+    context 'with opposite + correct' do
+      it 'reports an offense for opposite + correct' do
+        inspect_source(cop, ['if a',
+                             '  raise RuntimeError, msg',
+                             'else',
+                             '  raise Ex.new(msg)',
+                             'end'])
+        expect(cop.offenses.size).to eq(1)
+        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+      end
+
+      it 'auto-corrects to exploded style' do
+        new_source = autocorrect_source(cop, ['if a',
+                                              '  raise RuntimeError, msg',
+                                              'else',
+                                              '  raise Ex.new(msg)',
+                                              'end'])
+        expect(new_source).to eq(['if a',
+                                  '  raise RuntimeError, msg',
+                                  'else',
+                                  '  raise Ex, msg',
+                                  'end'].join("\n"))
+      end
     end
 
     it 'accepts exception constructor with more than 1 argument' do
