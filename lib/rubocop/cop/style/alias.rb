@@ -27,8 +27,11 @@ module RuboCop
         def on_alias(node)
           # alias_method can't be used with global variables
           return if node.children.any?(&:gvar_type?)
+          # alias_method can't be used in instance_eval blocks
+          scope_type = scope_type(node)
+          return if scope_type == :instance_eval
 
-          if scope_type(node) == :dynamic || style == :prefer_alias_method
+          if scope_type == :dynamic || style == :prefer_alias_method
             add_offense(node, :keyword, MSG_ALIAS)
           elsif node.children.none? { |arg| bareword?(arg) }
             existing_args  = node.children.map(&:source).join(' ')
@@ -54,13 +57,17 @@ module RuboCop
 
         # In this expression, will `self` be the same as the innermost enclosing
         # class or module block (:lexical)? Or will it be something else
-        # (:dynamic)?
+        # (:dynamic)? If we're in an instance_eval block, return that.
         def scope_type(node)
           while (parent = node.parent)
             case parent.type
             when :class, :module
               return :lexical
-            when :def, :defs, :block
+            when :def, :defs
+              return :dynamic
+            when :block
+              return :instance_eval if parent.method_name == :instance_eval
+
               return :dynamic
             end
             node = parent

@@ -36,6 +36,7 @@
 * [#3048](https://github.com/bbatsov/rubocop/issues/3048): `Lint/NestedMethodDefinition` shouldn't flag methods defined on Structs. ([@owst][])
 * [#2912](https://github.com/bbatsov/rubocop/issues/2912): Check whether a line is aligned with the following line if the preceding line is not an assignment. ([@akihiro17][])
 * [#3036](https://github.com/bbatsov/rubocop/issues/3036): Don't let `Lint/UnneededDisable` inspect files that are excluded for the cop. ([@jonas054][])
+* [#3004](https://github.com/bbatsov/rubocop/pull/3004): Don't add `Style/Alias` offenses for use of `alias` in `instance_eval` blocks, since object instances don't respond to `alias_method`. ([@magni-][])
 
 ### Changes
 
@@ -2130,3 +2131,4 @@
 [@jastkand]: https://github.com/jastkand
 [@graemeboy]: https://github.com/graemeboy
 [@akihiro17]: https://github.com/akihiro17
+[@magni-]: https://github.com/magni-
