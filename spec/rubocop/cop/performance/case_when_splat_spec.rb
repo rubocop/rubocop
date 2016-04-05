@@ -174,6 +174,18 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
     expect(cop.highlights).to eq(['when *cond', 'when *[1, 2]'])
   end
 
+  it 'registers an offense when splat is part of the condition' do
+    inspect_source(cop, ['case foo',
+                         'when cond1, *cond2',
+                         '  bar',
+                         'when cond3',
+                         '  baz',
+                         'end'])
+
+    expect(cop.messages).to eq([described_class::MSG])
+    expect(cop.highlights).to eq(['when cond1, *cond2'])
+  end
+
   context 'autocorrect' do
     it 'corrects *array to a list of the elements in the array' do
       new_source = autocorrect_source(cop, ['case foo',
@@ -331,6 +343,70 @@ describe RuboCop::Cop::Performance::CaseWhenSplat do
       expect(new_source).to eq(['case foo',
                                 'when "#{first}", "#{second}"',
                                 '  baz',
+                                'end'].join("\n"))
+    end
+
+    it 'corrects a array and something else' do
+      new_source = autocorrect_source(cop, ['case foo',
+                                            'when *[cond1, cond2], cond3',
+                                            '  bar',
+                                            'when cond4',
+                                            '  baz',
+                                            'end'])
+
+      expect(new_source).to eq(['case foo',
+                                'when cond1, cond2, cond3',
+                                '  bar',
+                                'when cond4',
+                                '  baz',
+                                'end'].join("\n"))
+    end
+
+    it 'corrects a splat as part of the condition' do
+      new_source = autocorrect_source(cop, ['case foo',
+                                            'when cond1, *cond2',
+                                            '  bar',
+                                            'when cond3',
+                                            '  baz',
+                                            'end'])
+
+      expect(new_source).to eq(['case foo',
+                                'when cond3',
+                                '  baz',
+                                'when cond1, *cond2',
+                                '  bar',
+                                'end'].join("\n"))
+    end
+
+    it 'corrects an array followed by splat in the same condition' do
+      new_source = autocorrect_source(cop, ['case foo',
+                                            'when *[cond1, cond2], *cond3',
+                                            '  bar',
+                                            'when cond4',
+                                            '  baz',
+                                            'end'])
+
+      expect(new_source).to eq(['case foo',
+                                'when cond4',
+                                '  baz',
+                                'when cond1, cond2, *cond3',
+                                '  bar',
+                                'end'].join("\n"))
+    end
+
+    it 'corrects a splat followed by array in the same condition' do
+      new_source = autocorrect_source(cop, ['case foo',
+                                            'when *cond1, *[cond2, cond3]',
+                                            '  bar',
+                                            'when cond4',
+                                            '  baz',
+                                            'end'])
+
+      expect(new_source).to eq(['case foo',
+                                'when cond4',
+                                '  baz',
+                                'when *cond1, cond2, cond3',
+                                '  bar',
                                 'end'].join("\n"))
     end
 
