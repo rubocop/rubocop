@@ -90,6 +90,14 @@ describe RuboCop::Cop::Performance::RedundantMerge, :config do
 
       expect(cop.offenses).to be_empty
     end
+
+    it 'does not crash when the receiver inside each_object is not a local' \
+       'variable' do
+      inspect_source(cop, ['foo.each_with_object(bar) do |f, hash|',
+                           '  hash[:a].merge!(b: "")',
+                           'end'])
+      expect(cop.offenses).to be_empty
+    end
   end
 
   %w(if unless while until).each do |kw|
