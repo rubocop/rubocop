@@ -51,9 +51,12 @@ describe RuboCop::Cop::Style::EndOfLine do
   end
 
   context 'when the default external encoding is US_ASCII' do
-    let(:orig_encoding) { Encoding.default_external }
-    before(:each) { Encoding.default_external = Encoding::US_ASCII }
-    after(:each) { Encoding.default_external = orig_encoding }
+    around(:each) do |example|
+      orig_encoding = Encoding.default_external
+      Encoding.default_external = Encoding::US_ASCII
+      example.run
+      Encoding.default_external = orig_encoding
+    end
 
     it 'does not crash on UTF-8 encoded non-ascii characters' do
       inspect_source_file(cop,
