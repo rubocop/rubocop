@@ -40,6 +40,7 @@
 * [#3036](https://github.com/bbatsov/rubocop/issues/3036): Don't let `Lint/UnneededDisable` inspect files that are excluded for the cop. ([@jonas054][])
 * [#2874](https://github.com/bbatsov/rubocop/issues/2874): Fix bug when the closing parenthesis is preceded by a newline in array and hash literals in `Style/RedundantParentheses`. ([@lumeet][])
 * [#3049](https://github.com/bbatsov/rubocop/issues/3049): Make `Lint/UselessAccessModifier` detect conditionally defined methods and correctly handle dynamically defined methods and singleton class methods. ([@owst][])
+* [#3004](https://github.com/bbatsov/rubocop/pull/3004): Don't add `Style/Alias` offenses for use of `alias` in `instance_eval` blocks, since object instances don't respond to `alias_method`. ([@magni-][])
 
 ### Changes
 
@@ -2134,3 +2135,4 @@
 [@jastkand]: https://github.com/jastkand
 [@graemeboy]: https://github.com/graemeboy
 [@akihiro17]: https://github.com/akihiro17
+[@magni-]: https://github.com/magni-
