@@ -195,9 +195,8 @@ module RuboCop
       end
 
       def old_auto_config_file_warning
-        raise RuboCop::Error,
-              'rubocop-todo.yml is obsolete; it must be called' \
-              " #{AUTO_GENERATED_FILE} instead"
+        warn('rubocop-todo.yml is obsolete; it must be called' \
+          " #{AUTO_GENERATED_FILE} instead")
       end
     end
   end
