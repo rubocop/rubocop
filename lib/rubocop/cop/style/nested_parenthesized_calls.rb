@@ -39,6 +39,21 @@ module RuboCop
             RSPEC_MATCHERS.include?(send.method_name) &&
             send.method_args.one?
         end
+
+        def autocorrect(nested)
+          _scope, _method_name, *args = *nested
+
+          first_arg = args.first.source_range
+          last_arg = args.last.source_range
+
+          first_arg_with_space = range_with_surrounding_space(first_arg, :left)
+          leading_space = first_arg_with_space.begin.resize(1)
+
+          lambda do |corrector|
+            corrector.replace(leading_space, '(')
+            corrector.insert_after(last_arg, ')')
+          end
+        end
       end
     end
   end
