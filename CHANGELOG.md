@@ -47,6 +47,7 @@
 * [#3083](https://github.com/bbatsov/rubocop/issues/3083): Do not register an offense for splat block args in `Style/SymbolProc`. ([@rrosenblum][])
 * [#3063](https://github.com/bbatsov/rubocop/issues/3063): Don't auto-correct `a + \` into `a + \\` in `Style/LineEndConcatenation`. ([@jonas054][])
 * [#3034](https://github.com/bbatsov/rubocop/issues/3034): Report offenses for `RuntimeError.new(msg)` in `Style/RedundantException`. ([@jonas054][])
+* [#3016](https://github.com/bbatsov/rubocop/issues/3016): `Style/SpaceAfterComma` now uses `Style/SpaceInsideHashLiteralBraces`'s setting. ([@ptarjan][])
 
 ### Changes
 

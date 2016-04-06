@@ -993,4 +993,25 @@ describe RuboCop::CLI, :isolated_environment do
                                          'puts "Hello", 123_456',
                                          ''].join("\n"))
   end
+
+  it 'handles different SpaceInsideBlockBraces and ' \
+     'SpaceInsideHashLiteralBraces' do
+    create_file('example.rb', ['{foo: bar,',
+                               ' bar: baz,}',
+                               'foo.each {bar;}'])
+    create_file('.rubocop.yml', [
+                  'Style/SpaceInsideBlockBraces:',
+                  '  EnforcedStyle: space',
+                  'Style/SpaceInsideHashLiteralBraces:',
+                  '  EnforcedStyle: no_space',
+                  'Style/TrailingCommaInLiteral:',
+                  '  EnforcedStyleForMultiline: consistent_comma'
+                ])
+    expect(cli.run(%w(--auto-correct))).to eq(1)
+    expect($stderr.string).to eq('')
+    expect(IO.read('example.rb')).to eq(['{foo: bar,',
+                                         ' bar: baz,}',
+                                         'foo.each { bar; }',
+                                         ''].join("\n"))
+  end
 end

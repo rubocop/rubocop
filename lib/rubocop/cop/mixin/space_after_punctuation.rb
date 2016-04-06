@@ -20,8 +20,7 @@ module RuboCop
       end
 
       def space_forbidden_before_rcurly?
-        cfg = config.for_cop('Style/SpaceInsideBlockBraces')
-        style = cfg['EnforcedStyle'] || 'space'
+        style = space_style_before_rcurly
         style == 'no_space'
       end
 
