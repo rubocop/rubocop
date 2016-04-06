@@ -162,6 +162,16 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
         expect(cop.offenses).to be_empty
       end
 
+      it 'accepts no trailing comma in a method call with a multiline' \
+         ' braceless hash at the end with more than one parameter on a line' do
+        inspect_source(cop, ['some_method(',
+                             '              a,',
+                             '              b: 0,',
+                             '              c: 0, d: 1',
+                             '           )'])
+        expect(cop.offenses).to be_empty
+      end
+
       it 'accepts a trailing comma in a method call with single ' \
          'line hashes' do
         inspect_source(cop, ['some_method(',
@@ -319,7 +329,7 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       end
 
       it 'accepts a multiline call with arguments on a single line and' \
-         'trailing comma' do
+         ' trailing comma' do
         inspect_source(cop, ['method(',
                              '  1, 2,',
                              ')'])
