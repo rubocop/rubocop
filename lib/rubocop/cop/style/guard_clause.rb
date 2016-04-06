@@ -65,7 +65,7 @@ module RuboCop
 
           return unless body && else_body
           # discard modifier ifs and ternary_ops
-          return if modifier_if?(node) || ternary_op?(node) || elsif?(node)
+          return if modifier_if?(node) || ternary?(node) || elsif?(node)
 
           return unless single_line_control_flow_exit?(body) ||
                         single_line_control_flow_exit?(else_body)
@@ -92,7 +92,7 @@ module RuboCop
 
           return if body && else_body
           # discard modifier ifs and ternary_ops
-          return if modifier_if?(node) || ternary_op?(node)
+          return if modifier_if?(node) || ternary?(node)
           return if cond.multiline?
           # discard short ifs
           return unless min_body_length?(node)

@@ -82,7 +82,7 @@ module RuboCop
 
         def simple_if_without_break?(node)
           return false unless node.if_type?
-          return false if ternary_op?(node)
+          return false if ternary?(node)
           return false if if_else?(node)
           return false if style == :skip_modifier_ifs && modifier_if?(node)
           return false if !modifier_if?(node) && !min_body_length?(node)

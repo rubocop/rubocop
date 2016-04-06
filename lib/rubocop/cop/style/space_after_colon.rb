@@ -18,7 +18,7 @@ module RuboCop
         end
 
         def on_if(node)
-          return unless ternary_op?(node)
+          return unless ternary?(node)
 
           colon = node.loc.colon
           return unless followed_by_space?(colon)

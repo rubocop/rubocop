@@ -275,7 +275,7 @@ module RuboCop
         private
 
         def move_assignment_outside_condition(node)
-          if ternary_op?(node)
+          if ternary?(node)
             TernaryCorrector.correct(node)
           elsif node.loc.keyword.is?(IF)
             IfCorrector.correct(self, node)
@@ -288,7 +288,7 @@ module RuboCop
 
         def move_assignment_inside_condition(node)
           *_assignment, condition = *node
-          if ternary_op?(condition) || ternary_op?(condition.children[0])
+          if ternary?(condition) || ternary?(condition.children[0])
             TernaryCorrector.move_assignment_inside_condition(node)
           elsif condition.case_type?
             CaseCorrector.move_assignment_inside_condition(node)

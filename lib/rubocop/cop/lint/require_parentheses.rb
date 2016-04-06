@@ -30,7 +30,7 @@ module RuboCop
           return if parentheses?(node)
           return if args.empty?
 
-          if ternary_op?(args.first)
+          if ternary?(args.first)
             check_ternary(args.first, node)
           elsif predicate?(method_name)
             # We're only checking predicate methods. There would be false

@@ -152,7 +152,7 @@ module RuboCop
 
         def on_if(node, base = node)
           return if ignored_node?(node)
-          return if ternary_op?(node)
+          return if ternary?(node)
           return if modifier_if?(node)
 
           _condition, body, else_clause = if_node_parts(node)
@@ -183,7 +183,7 @@ module RuboCop
         end
 
         def check_if(node, body, else_clause, base_loc)
-          return if ternary_op?(node)
+          return if ternary?(node)
 
           check_indentation(base_loc, body)
           return unless else_clause

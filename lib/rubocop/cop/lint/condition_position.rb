@@ -14,8 +14,10 @@ module RuboCop
       #     do_something
       #   end
       class ConditionPosition < Cop
+        include IfNode
+
         def on_if(node)
-          return if node.loc.respond_to?(:question)
+          return if ternary?(node)
 
           check(node)
         end

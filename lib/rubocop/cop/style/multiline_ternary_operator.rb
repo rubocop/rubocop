@@ -6,17 +6,19 @@ module RuboCop
     module Style
       # This cop checks for multi-line ternary op expressions.
       class MultilineTernaryOperator < Cop
-        MSG = 'Avoid multi-line ?: (the ternary operator);' \
-              ' use `if`/`unless` instead.'.freeze
+        include IfNode
+
+        MSG = 'Avoid multi-line ternary operators, ' \
+              'use `if` or `unless` instead.'.freeze
 
         def on_if(node)
           _condition, _if_branch, else_branch = *node
-          loc = node.loc
 
-          # discard non-ternary ops
-          return unless loc.respond_to?(:question)
+          return unless ternary?(node)
 
-          add_offense(node, :expression) if loc.line != else_branch.loc.line
+          unless node.loc.line == else_branch.loc.line
+            add_offense(node, :expression)
+          end
         end
       end
     end

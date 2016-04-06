@@ -12,7 +12,7 @@ module RuboCop
         include Parentheses
 
         def on_if(node)
-          return if ternary_op?(node)
+          return if ternary?(node)
           process_control_op(node)
         end
 
@@ -41,7 +41,7 @@ module RuboCop
         end
 
         def modifier_op?(node)
-          return false if ternary_op?(node)
+          return false if ternary?(node)
           return true if node.type == :rescue
 
           [:if, :while, :until].include?(node.type) &&
