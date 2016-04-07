@@ -82,6 +82,129 @@ describe RuboCop::CLI, :isolated_environment do
                                          '}'].join("\n") + "\n")
   end
 
+  shared_examples 'trailing comma adder' do |comma_style, brace_configs, corr|
+    Array(brace_configs).each do |brace_config|
+      context "with #{comma_style} and #{brace_config} configuration" do
+        it 'corrects TrailingCommaInLiteral and TrailingCommaInArguments ' \
+           'without producing a double comma' do
+          create_file('.rubocop.yml',
+                      ['Style/TrailingCommaInArguments:',
+                       "  EnforcedStyleForMultiline: #{comma_style}",
+                       '',
+                       'Style/TrailingCommaInLiteral:',
+                       "  EnforcedStyleForMultiline: #{comma_style}",
+                       '',
+                       'Style/BracesAroundHashParameters:',
+                       "  #{brace_config}"])
+          source = ['func({',
+                    '  @abc => 0,',
+                    '  @xyz => 1',
+                    '})',
+                    'func(',
+                    '  {',
+                    '    abc: 0',
+                    '  }',
+                    ')',
+                    'func(',
+                    '  {},',
+                    '  {',
+                    '    xyz: 1',
+                    '  }',
+                    ')']
+          create_file('example.rb', source)
+          cli.run(['--auto-correct'])
+          expect(IO.read('example.rb')).to eq(corr.join("\n") + "\n")
+          expect($stderr.string).to eq('')
+        end
+      end
+    end
+  end
+
+  it_behaves_like 'trailing comma adder', :comma, ['Enabled: false',
+                                                   'AutoCorrect: false',
+                                                   'EnforcedStyle: braces'],
+                  ['func({',
+                   '       @abc => 0,',
+                   '       @xyz => 1,', # comma added
+                   '     })',
+                   'func(',
+                   '  {',
+                   '    abc: 0,', # comma added
+                   '  },', # comma added
+                   ')',
+                   'func(',
+                   '  {},',
+                   '  {',
+                   '    xyz: 1,', # comma added
+                   '  },', # comma added
+                   ')']
+  it_behaves_like 'trailing comma adder', :comma, 'EnforcedStyle: no_braces',
+                  ['func(@abc => 0,',
+                   '     @xyz => 1)',
+                   'func(',
+                   '  abc: 0,', # comma added
+                   ')',
+                   'func(',
+                   '  {},',
+                   '  xyz: 1,', # comma added
+                   ')']
+  it_behaves_like 'trailing comma adder', :comma,
+                  'EnforcedStyle: context_dependent',
+                  ['func(@abc => 0,',
+                   '     @xyz => 1)',
+                   'func(',
+                   '  abc: 0,', # comma added
+                   ')',
+                   'func(',
+                   '  {},',
+                   '  {',
+                   '    xyz: 1,', # comma added
+                   '  },', # comma added
+                   ')']
+  it_behaves_like 'trailing comma adder', :consistent_comma,
+                  ['Enabled: false',
+                   'AutoCorrect: false',
+                   'EnforcedStyle: braces'],
+                  ['func({',
+                   '       @abc => 0,',
+                   '       @xyz => 1,', # comma added
+                   '     },)', # comma added
+                   'func(',
+                   '  {',
+                   '    abc: 0,', # comma added
+                   '  },', # comma added
+                   ')',
+                   'func(',
+                   '  {},',
+                   '  {',
+                   '    xyz: 1,', # comma added
+                   '  },', # comma added
+                   ')']
+  it_behaves_like 'trailing comma adder', :consistent_comma,
+                  'EnforcedStyle: no_braces',
+                  ['func(@abc => 0,',
+                   '     @xyz => 1,)', # comma added
+                   'func(',
+                   '  abc: 0,', # comma added
+                   ')',
+                   'func(',
+                   '  {},',
+                   '  xyz: 1,', # comma added
+                   ')']
+  it_behaves_like 'trailing comma adder', :consistent_comma,
+                  'EnforcedStyle: context_dependent',
+                  ['func(@abc => 0,',
+                   '     @xyz => 1,)', # comma added
+                   'func(',
+                   '  abc: 0,', # comma added
+                   ')',
+                   'func(',
+                   '  {},',
+                   '  {',
+                   '    xyz: 1,', # comma added
+                   '  },', # comma added
+                   ')']
+
   it 'corrects IndentationWidth, RedundantBegin, and ' \
      'RescueEnsureAlignment offenses' do
     source = ['def verify_section',

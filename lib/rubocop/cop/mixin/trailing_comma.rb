@@ -36,7 +36,7 @@ module RuboCop
                         extra_info)
           end
         elsif should_have_comma?(style, node)
-          put_comma(items, kind, sb)
+          put_comma(node, items, kind, sb)
         end
       end
 
@@ -87,10 +87,11 @@ module RuboCop
 
         _receiver, _method_name, *args = *node
         args.flat_map do |a|
-          # For each argument, if it is a multi-line hash,
+          # For each argument, if it is a multi-line hash without braces,
           # then promote the hash elements to method arguments
           # for the purpose of determining multi-line-ness.
-          if a.hash_type? && a.loc.first_line != a.loc.last_line
+          if a.hash_type? && a.loc.first_line != a.loc.last_line &&
+             !brackets?(a)
             a.children
           else
             a
@@ -111,7 +112,7 @@ module RuboCop
                     "#{extra_info}.")
       end
 
-      def put_comma(items, kind, sb)
+      def put_comma(node, items, kind, sb)
         last_item = items.last
         return if last_item.type == :block_pass
 
@@ -120,11 +121,20 @@ module RuboCop
         ix += last_expr.source[ix..-1] =~ /\S/
         range = Parser::Source::Range.new(sb, last_expr.begin_pos + ix,
                                           last_expr.end_pos)
-        add_offense(range, range,
+        autocorrect_range = avoid_autocorrect?(elements(node)) ? nil : range
+
+        add_offense(autocorrect_range, range,
                     format(MSG, 'Put a', format(kind, 'a multiline') + '.'))
       end
 
+      # By default, there's no reason to avoid auto-correct.
+      def avoid_autocorrect?(_)
+        false
+      end
+
       def autocorrect(range)
+        return unless range
+
         lambda do |corrector|
           case range.source
           when ',' then corrector.remove(range)
