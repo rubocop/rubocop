@@ -6,6 +6,8 @@ module RuboCop
     module Style
       # This cop checks for uses if the keyword *not* instead of !.
       class Not < Cop
+        include IfNode
+
         MSG = 'Use `!` instead of `not`.'.freeze
 
         OPPOSITE_METHODS = {
@@ -35,7 +37,7 @@ module RuboCop
                                 OPPOSITE_METHODS[child.method_name].to_s)
             end
           elsif child.and_type? || child.or_type? || child.binary_operation? ||
-                ternary_op?(child)
+                ternary?(child)
             lambda do |corrector|
               corrector.replace(range, '!(')
               corrector.insert_after(node.source_range, ')')

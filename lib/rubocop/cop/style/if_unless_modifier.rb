@@ -8,6 +8,7 @@ module RuboCop
       # if written as a modifier if/unless.
       # The maximum line length is configurable.
       class IfUnlessModifier < Cop
+        include IfNode
         include StatementModifier
 
         ASSIGNMENT_TYPES = [:lvasgn, :casgn, :cvasgn,
@@ -20,7 +21,7 @@ module RuboCop
 
         def on_if(node)
           # discard ternary ops, if/else and modifier if/unless nodes
-          return if ternary_op?(node)
+          return if ternary?(node)
           return if modifier_if?(node)
           return if elsif?(node)
           return if if_else?(node)

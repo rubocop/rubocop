@@ -5,6 +5,10 @@ module RuboCop
   module Cop
     # Common functionality for checking if nodes.
     module IfNode
+      def ternary?(node)
+        node.loc.respond_to?(:question)
+      end
+
       def modifier_if?(node)
         node.loc.respond_to?(:keyword) &&
           %w(if unless).include?(node.loc.keyword.source) &&

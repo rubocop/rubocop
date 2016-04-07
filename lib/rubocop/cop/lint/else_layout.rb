@@ -16,9 +16,10 @@ module RuboCop
       #     do_that
       #   end
       class ElseLayout < Cop
+        include IfNode
+
         def on_if(node)
-          # ignore ternary ops
-          return if node.loc.respond_to?(:question)
+          return if ternary?(node)
           # ignore modifier ops & elsif nodes
           return unless node.loc.end
 
