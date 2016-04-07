@@ -944,11 +944,17 @@ Style/VariableName:
 Style/WhileUntilModifier:
   MaxLineLength: 80
 
+# WordArray enforces how array literals of word-like strings should be expressed.
 Style/WordArray:
   EnforcedStyle: percent
   SupportedStyles:
+    # percent style: %w(word1 word2)
     - percent
+    # bracket style: ['word1', 'word2']
     - brackets
+  # The MinSize option causes the WordArray rule to be ignored for arrays
+  # smaller than a certain size.  The rule is only applied to arrays
+  # whose element count is greater than or equal to MinSize.
   MinSize: 0
   # The regular expression WordRegex decides what is considered a word.
   WordRegex: !ruby/regexp '/\A[\p{Word}\n\t]+\z/'
