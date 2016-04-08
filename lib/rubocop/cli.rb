@@ -108,23 +108,37 @@ module RuboCop
     end
 
     def print_cops_of_type(cops, type, show_all)
-      cops_of_this_type = cops.with_type(type).sort_by!(&:cop_name)
+      selected_cops = if show_all
+                        cops_of_type(cops, type)
+                      else
+                        selected_cops_of_type(cops, type)
+                      end
 
       if show_all
-        puts "# Type '#{type.to_s.capitalize}' (#{cops_of_this_type.size}):"
-      end
-
-      selected_cops = cops_of_this_type.select do |cop|
-        show_all || @options[:show_cops].include?(cop.cop_name)
+        puts "# Type '#{type.to_s.capitalize}' (#{selected_cops.size}):"
       end
 
       selected_cops.each do |cop|
         puts '# Supports --auto-correct' if cop.new.support_autocorrect?
         puts "#{cop.cop_name}:"
-        cnf = @config_store.for(Dir.pwd).for_cop(cop)
-        puts cnf.to_yaml.lines.to_a.butfirst.map { |line| '  ' + line }
+        puts config_lines(cop)
         puts
       end
+    end
+
+    def selected_cops_of_type(cops, type)
+      cops_of_type(cops, type).select do |cop|
+        @options[:show_cops].include?(cop.cop_name)
+      end
+    end
+
+    def cops_of_type(cops, type)
+      cops.with_type(type).sort_by!(&:cop_name)
+    end
+
+    def config_lines(cop)
+      cnf = @config_store.for(Dir.pwd).for_cop(cop)
+      cnf.to_yaml.lines.to_a.butfirst.map { |line| '  ' + line }
     end
 
     def display_warning_summary(warnings)

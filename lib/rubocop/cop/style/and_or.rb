@@ -77,29 +77,27 @@ module RuboCop
 
         def correct_send(node, corrector)
           receiver, method_name, *args = *node
-          if method_name == :!
-            # ! is a special case:
-            # 'x and !obj.method arg' can be auto-corrected if we
-            # recurse down a level and add parens to 'obj.method arg'
-            # however, 'not x' also parses as (send x :!)
-
-            if node.loc.selector.source == '!'
-              node = receiver
-              return unless node.send_type?
-              _receiver, _method_name, *args = *node
-            elsif node.loc.selector.source == 'not'
-              return correct_other(node, corrector)
-            else
-              raise 'unrecognized unary negation operator'
-            end
-          end
+          return correct_not(node, receiver, corrector) if method_name == :!
           return unless correctable_send?(node)
 
-          sb = node.source_range.source_buffer
-          begin_paren = node.loc.selector.end_pos
-          range = Parser::Source::Range.new(sb, begin_paren, begin_paren + 1)
-          corrector.replace(range, '(')
-          corrector.insert_after(args.last.source_range, ')')
+          corrector.replace(whitespace_before_arg(node), '('.freeze)
+          corrector.insert_after(args.last.source_range, ')'.freeze)
+        end
+
+        # ! is a special case:
+        # 'x and !obj.method arg' can be auto-corrected if we
+        # recurse down a level and add parens to 'obj.method arg'
+        # however, 'not x' also parses as (send x :!)
+        def correct_not(node, receiver, corrector)
+          if node.loc.selector.source == '!'
+            return unless receiver.send_type?
+
+            correct_send(receiver, corrector)
+          elsif node.keyword_not?
+            correct_other(node, corrector)
+          else
+            raise 'unrecognized unary negation operator'
+          end
         end
 
         def correct_other(node, corrector)
@@ -116,6 +114,12 @@ module RuboCop
           return false unless args.last && method_name.to_s =~ /[a-z]/
 
           true
+        end
+
+        def whitespace_before_arg(node)
+          sb = node.source_range.source_buffer
+          begin_paren = node.loc.selector.end_pos
+          Parser::Source::Range.new(sb, begin_paren, begin_paren + 1)
         end
       end
     end

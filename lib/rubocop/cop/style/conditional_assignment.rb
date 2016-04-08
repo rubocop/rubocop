@@ -465,12 +465,8 @@ module RuboCop
           include ConditionalCorrectorHelper
 
           def correct(cop, node)
-            _condition, if_branch, else_branch = *node
-            if_branch = tail(if_branch)
+            if_branch, elsif_branches, else_branch = extract_branches(node)
             _variable, *_operator, if_assignment = *if_branch
-            elsif_branches, else_branch = expand_elses(else_branch)
-            elsif_branches.map! { |branch| tail(branch) }
-            else_branch = tail(else_branch)
             _else_variable, *_operator, else_assignment = *else_branch
 
             lambda do |corrector|
@@ -506,6 +502,16 @@ module RuboCop
                                     branch.parent.loc.else.column - column)
               end
             end
+          end
+
+          private
+
+          def extract_branches(node)
+            _condition, if_branch, else_branch = *node
+            elsif_branches, else_branch = expand_elses(else_branch)
+            elsif_branches.map! { |branch| tail(branch) }
+
+            [tail(if_branch), elsif_branches, tail(else_branch)]
           end
         end
       end

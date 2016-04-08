@@ -22,17 +22,7 @@ module RuboCop
         END
 
         def on_send(node)
-          redundant_merge(node) do |receiver, pairs|
-            if node.value_used?
-              parent = node.parent
-              grandparent = parent.parent if parent.begin_type?
-              second_arg = each_with_object_node(grandparent || parent)
-              next if second_arg.nil?
-              next unless receiver.loc.name.source == second_arg.loc.name.source
-            end
-            next if pairs.size > 1 && !receiver.pure?
-            next if pairs.size > max_key_value_pairs
-
+          each_redundant_merge(node) do |receiver, pairs|
             assignments = to_assignments(receiver, pairs).join('; ')
             message = format(MSG, assignments, node.source)
             add_offense(node, :expression, message)
@@ -61,6 +51,27 @@ module RuboCop
         end
 
         private
+
+        def each_redundant_merge(node)
+          redundant_merge(node) do |receiver, pairs|
+            next if value_used?(node, receiver)
+            next if pairs.size > 1 && !receiver.pure?
+            next if pairs.size > max_key_value_pairs
+
+            yield receiver, pairs
+          end
+        end
+
+        def value_used?(node, receiver)
+          return false unless node.value_used?
+
+          parent = node.parent
+          grandparent = parent.parent if parent.begin_type?
+          second_arg = each_with_object_node(grandparent || parent)
+          return true if second_arg.nil?
+
+          receiver.loc.name.source != second_arg.loc.name.source
+        end
 
         def to_assignments(receiver, pairs)
           pairs.map do |pair|
