@@ -13,6 +13,7 @@
 * [#2983](https://github.com/bbatsov/rubocop/pull/2983): `Style/AlignParameters` message was clarified for `with_fixed_indentation` style. ([@dylanahsmith][])
 * [#2314](https://github.com/bbatsov/rubocop/pull/2314): Ignore `UnusedBlockArgument` for keyword arguments. ([@volkert][])
 * [#2975](https://github.com/bbatsov/rubocop/issues/2975): Make comment indentation before `)` consistent with comment indentation before `}` or `]`. ([@jonas054][])
+* [#3010](https://github.com/bbatsov/rubocop/issues/3010): Fix double reporting/correction of spaces after ternary operator colons (now only reported by `Style/SpaceAroundOperators`, and not `Style/SpaceAfterColon` too). ([@owst][])
 
 ## 0.39.0 (2016-03-27)
 
