@@ -1436,10 +1436,10 @@ describe RuboCop::CLI, :isolated_environment do
 
       it 'prints a warning when --auto-gen-config is set' do
         expect(cli.run(%w(-c .rubocop.yml --auto-gen-config))).to eq(2)
-        expect($stderr.string)
-          .to eq(['Error: rubocop-todo.yml is obsolete; it must be called ' \
-                  '.rubocop_todo.yml instead',
-                  ''].join("\n"))
+        expect($stderr.string).to match(
+          '\Arubocop-todo.yml is obsolete; it must be called ' \
+          '.rubocop_todo.yml instead'
+        )
       end
     end
 
