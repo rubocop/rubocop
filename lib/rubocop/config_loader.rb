@@ -73,7 +73,6 @@ module RuboCop
 
             if auto_gen_config?
               next if f.include?(AUTO_GENERATED_FILE)
-              old_auto_config_file_warning if f.include?('rubocop-todo.yml')
             end
 
             print 'Inheriting ' if debug?
@@ -192,12 +191,6 @@ module RuboCop
         end
         dirs_to_search << Dir.home if ENV.key? 'HOME'
         dirs_to_search
-      end
-
-      def old_auto_config_file_warning
-        raise RuboCop::Error,
-              'rubocop-todo.yml is obsolete; it must be called' \
-              " #{AUTO_GENERATED_FILE} instead"
       end
     end
   end

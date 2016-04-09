@@ -18,6 +18,9 @@
 * [#3010](https://github.com/bbatsov/rubocop/issues/3010): Fix double reporting/correction of spaces after ternary operator colons (now only reported by `Style/SpaceAroundOperators`, and not `Style/SpaceAfterColon` too). ([@owst][])
 * [#3006](https://github.com/bbatsov/rubocop/issues/3006): Handle non-local variables as receivers inside `each_with_object` in `Performance/RedundantMerge`. ([@lumeet][])
 
+### Changes
+* [#3025](https://github.com/bbatsov/rubocop/pull/3025): Removed deprecation warnings for `rubocop-todo.yml`. ([@ptarjan][])
+
 ## 0.39.0 (2016-03-27)
 
 ### New features

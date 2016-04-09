@@ -1424,25 +1424,6 @@ describe RuboCop::CLI, :isolated_environment do
                   \ numeric\ character/x)
     end
 
-    context 'when a file inherits from the old auto generated file' do
-      before do
-        create_file('rubocop-todo.yml', '')
-        create_file('.rubocop.yml', ['inherit_from: rubocop-todo.yml'])
-      end
-
-      it 'prints no warning when --auto-gen-config is not set' do
-        expect { cli.run(%w(-c .rubocop.yml)) }.not_to exit_with_code(1)
-      end
-
-      it 'prints a warning when --auto-gen-config is set' do
-        expect(cli.run(%w(-c .rubocop.yml --auto-gen-config))).to eq(2)
-        expect($stderr.string)
-          .to eq(['Error: rubocop-todo.yml is obsolete; it must be called ' \
-                  '.rubocop_todo.yml instead',
-                  ''].join("\n"))
-      end
-    end
-
     context 'when a file inherits from a higher level' do
       before do
         create_file('.rubocop.yml', ['Metrics/LineLength:',
