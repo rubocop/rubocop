@@ -19,7 +19,9 @@ describe RuboCop::ResultCache, :isolated_environment do
   end
   let(:location) do
     source_buffer = Parser::Source::Buffer.new(file)
-    source_buffer.read
+    # Calling read() on the buffer results in a source that has an encoding of
+    # ANSII-8BIT instead of UTF-8 encoded source we were expecting
+    source_buffer.source = File.read(file)
     Parser::Source::Range.new(source_buffer, 0, 2)
   end
 
@@ -108,6 +110,16 @@ describe RuboCop::ResultCache, :isolated_environment do
         cache2 = described_class.new(file, { display_cop_names: true },
                                      config_store, cache_root)
         expect(cache2.valid?).to eq(false)
+      end
+    end
+
+    context 'when a cache source is read' do
+      it 'has utf8 encoding' do
+        cache.save(offenses)
+        result = cache.load
+        loaded_encoding = result[0].location.source.encoding
+
+        expect(loaded_encoding).to eql(Encoding::UTF_8)
       end
     end
   end

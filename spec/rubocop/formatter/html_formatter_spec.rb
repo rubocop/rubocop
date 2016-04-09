@@ -23,8 +23,18 @@ module RuboCop
         path
       end
 
+      let(:actual_html_path_cached) do
+        path = File.expand_path('result_cached.html')
+        2.times { CLI.new.run(['--format', 'html', '--out', path]) }
+        path
+      end
+
       let(:actual_html) do
         File.read(actual_html_path, encoding: 'UTF-8')
+      end
+
+      let(:actual_html_cached) do
+        File.read(actual_html_path_cached, encoding: 'UTF-8')
       end
 
       let(:expected_html_path) do
@@ -42,6 +52,11 @@ module RuboCop
       it 'outputs the result in HTML' do
         # FileUtils.copy(actual_html_path, expected_html_path)
         expect(actual_html).to eq(expected_html)
+      end
+
+      it 'outputs the cached result in HTML' do
+        # FileUtils.copy(actual_html_path, expected_html_path)
+        expect(actual_html_cached).to eq(expected_html)
       end
     end
   end
