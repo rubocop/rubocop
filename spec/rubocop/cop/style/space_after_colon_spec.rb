@@ -44,8 +44,9 @@ describe RuboCop::Cop::Style::SpaceAfterColon do
     expect(cop.messages).to be_empty
   end
 
-  it 'accepts ternary operators without a trailing space' do
-    inspect_source(cop, 'x == b ? 1 :2')
+  it 'accepts required keyword arguments' do
+    inspect_source(cop, ['def f(x:, y:)',
+                         'end'])
     expect(cop.messages).to be_empty
   end
 
@@ -55,10 +56,16 @@ describe RuboCop::Cop::Style::SpaceAfterColon do
                            'end'])
       expect(cop.messages).to be_empty
     end
+
+    it 'registers an offence if an keyword optional argument has no space' do
+      inspect_source(cop, ['def m(var:1, other_var: 2)',
+                           'end'])
+      expect(cop.messages).to eq(['Space missing after colon.'])
+    end
   end
 
   it 'auto-corrects missing space' do
-    new_source = autocorrect_source(cop, '{a:3}')
-    expect(new_source).to eq('{a: 3}')
+    new_source = autocorrect_source(cop, 'def f(a:, b:2); {a:3}; end')
+    expect(new_source).to eq('def f(a:, b: 2); {a: 3}; end')
   end
 end
