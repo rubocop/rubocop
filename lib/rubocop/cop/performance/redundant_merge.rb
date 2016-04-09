@@ -54,7 +54,8 @@ module RuboCop
 
         def each_redundant_merge(node)
           redundant_merge(node) do |receiver, pairs|
-            next if value_used?(node, receiver)
+            next if node.value_used? &&
+                    !value_used_inside_each_with_object?(node, receiver)
             next if pairs.size > 1 && !receiver.pure?
             next if pairs.size > max_key_value_pairs
 
@@ -62,15 +63,15 @@ module RuboCop
           end
         end
 
-        def value_used?(node, receiver)
-          return false unless node.value_used?
+        def value_used_inside_each_with_object?(node, receiver)
+          return false unless receiver.lvar_type?
 
           parent = node.parent
           grandparent = parent.parent if parent.begin_type?
           second_arg = each_with_object_node(grandparent || parent)
-          return true if second_arg.nil?
+          return false if second_arg.nil?
 
-          receiver.loc.name.source != second_arg.loc.name.source
+          receiver.loc.name.source == second_arg.loc.name.source
         end
 
         def to_assignments(receiver, pairs)
