@@ -248,11 +248,11 @@ module RuboCop
         path = nil
         patterns.any? do |pattern|
           # Try to match the absolute path, as Exclude properties are absolute.
-          next true if match_path?(pattern, file, config.loaded_path)
+          next true if match_path?(pattern, file)
 
           # Try with relative path.
           path ||= config.path_relative_to_config(file)
-          match_path?(pattern, path, config.loaded_path)
+          match_path?(pattern, path)
         end
       end
 
