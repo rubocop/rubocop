@@ -61,21 +61,29 @@ module RuboCop
         end
 
         def on_if(node)
-          cond, body, else_body = *node
-
-          return unless body && else_body
-          # discard modifier ifs and ternary_ops
-          return if modifier_if?(node) || ternary?(node) || elsif?(node)
-
-          return unless single_line_control_flow_exit?(body) ||
-                        single_line_control_flow_exit?(else_body)
-          return if cond.multiline?
+          return if accept_form?(node)
+          return unless any_single_line_control_flow_exit?(node)
           return if line_too_long_when_corrected?(node)
 
           add_offense(node, :keyword, MSG)
         end
 
         private
+
+        def accept_form?(node)
+          cond, body, else_body = *node
+          return true unless body && else_body
+          return true if modifier_if?(node) || ternary?(node) || elsif?(node)
+
+          cond.multiline?
+        end
+
+        def any_single_line_control_flow_exit?(node)
+          _cond, body, else_body = *node
+
+          single_line_control_flow_exit?(body) ||
+            single_line_control_flow_exit?(else_body)
+        end
 
         def if?(node)
           node && node.if_type?
