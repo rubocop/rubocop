@@ -64,7 +64,13 @@ module RuboCop
         end
 
         def value_used_inside_each_with_object?(node, receiver)
-          return false unless receiver.lvar_type?
+          while receiver.respond_to?(:send_type?) && receiver.send_type?
+            receiver, = *receiver
+          end
+
+          unless receiver.respond_to?(:lvar_type?) && receiver.lvar_type?
+            return false
+          end
 
           parent = node.parent
           grandparent = parent.parent if parent.begin_type?

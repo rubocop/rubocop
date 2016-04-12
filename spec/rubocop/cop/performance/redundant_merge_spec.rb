@@ -91,12 +91,40 @@ describe RuboCop::Cop::Performance::RedundantMerge, :config do
       expect(cop.offenses).to be_empty
     end
 
-    it 'does not crash when the receiver inside each_object is not a local' \
-       'variable' do
-      inspect_source(cop, ['foo.each_with_object(bar) do |f, hash|',
-                           '  hash[:a].merge!(b: "")',
-                           'end'])
-      expect(cop.offenses).to be_empty
+    it 'autocorrects when receiver uses element reference to the object ' \
+       'built by each_with_object' do
+      source = ['foo.each_with_object(bar) do |f, hash|',
+                '  hash[:a].merge!(b: "")',
+                'end']
+      new_source = autocorrect_source(cop, source)
+
+      expect(new_source).to eq(['foo.each_with_object(bar) do |f, hash|',
+                                '  hash[:a][:b] = ""',
+                                'end'].join("\n"))
+    end
+
+    it 'autocorrects when receiver uses multiple element references to the ' \
+       'object built by each_with_object' do
+      source = ['foo.each_with_object(bar) do |f, hash|',
+                '  hash[:a][:b].merge!(c: "")',
+                'end']
+      new_source = autocorrect_source(cop, source)
+
+      expect(new_source).to eq(['foo.each_with_object(bar) do |f, hash|',
+                                '  hash[:a][:b][:c] = ""',
+                                'end'].join("\n"))
+    end
+
+    it 'autocorrects merge! called on any method on the object built ' \
+       'by each_with_object' do
+      source = ['foo.each_with_object(bar) do |f, hash|',
+                '  hash.bar.merge!(c: "")',
+                'end']
+      new_source = autocorrect_source(cop, source)
+
+      expect(new_source).to eq(['foo.each_with_object(bar) do |f, hash|',
+                                '  hash.bar[:c] = ""',
+                                'end'].join("\n"))
     end
   end
 
