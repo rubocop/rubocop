@@ -590,6 +590,13 @@ Style/IndentHash:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
+Style/Lambda:
+  EnforcedStyle: line_count_dependent
+  SupportedStyles:
+    - line_count_dependent
+    - lambda
+    - literal
+
 Style/LambdaCall:
   EnforcedStyle: call
   SupportedStyles:
@@ -1013,7 +1020,7 @@ Lint/AssignmentInCondition:
 Lint/BlockAlignment:
   # The value `start_of_block` means that the `end` should be aligned with line
   # where the `do` keyword appears.
-  # The value `start_of_line` means it should be aligned with the whole 
+  # The value `start_of_line` means it should be aligned with the whole
   # expression's starting line.
   # The value `either` means both are allowed.
   AlignWith: either
