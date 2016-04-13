@@ -864,6 +864,7 @@ Style/SymbolProc:
   # The names should be fairly unique, otherwise you'll end up ignoring lots of code.
   IgnoredMethods:
     - respond_to
+    - define_method
 
 Style/TrailingBlankLines:
   EnforcedStyle: final_newline

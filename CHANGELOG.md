@@ -23,6 +23,7 @@
 
 * [#2995](https://github.com/bbatsov/rubocop/issues/2995): Removed deprecated path matching syntax. ([@gerrywastaken][])
 * [#3025](https://github.com/bbatsov/rubocop/pull/3025): Removed deprecation warnings for `rubocop-todo.yml`. ([@ptarjan][])
+* [#3028](https://github.com/bbatsov/rubocop/pull/3028): Add `define_method` to the default list of `IgnoredMethods` of `Style/SymbolProc`. ([@jastkand][])
 
 ## 0.39.0 (2016-03-27)
 
@@ -2107,3 +2108,4 @@
 [@dylanahsmith]: https://github.com/dylanahsmith
 [@gerrywastaken]: https://github.com/gerrywastaken
 [@bolshakov]: https://github.com/bolshakov
+[@jastkand]: https://github.com/jastkand
