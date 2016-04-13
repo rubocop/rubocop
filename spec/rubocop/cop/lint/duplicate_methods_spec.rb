@@ -143,9 +143,9 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
                       '  end',
                       'end'], 'dups.rb')
       expect(cop.offenses.size).to eq(2)
-      expect(cop.messages).to match_array(
-        ['Method `A#any_method` is defined at both dups.rb:8 and dups.rb:11.',
-         'Method `A#some_method` is defined at both dups.rb:2 and dups.rb:5.'])
+      expect(cop.messages).to contain_exactly(
+        'Method `A#any_method` is defined at both dups.rb:8 and dups.rb:11.',
+        'Method `A#some_method` is defined at both dups.rb:2 and dups.rb:5.')
     end
 
     it 'registers an offense for a duplicate instance method in separate ' \

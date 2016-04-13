@@ -239,7 +239,7 @@ describe RuboCop::Cop::VariableForce::VariableTable do
       end
 
       it 'returns all the variables' do
-        expect(accessible_variable_names).to match_array([:foo, :bar])
+        expect(accessible_variable_names).to contain_exactly(:foo, :bar)
       end
     end
 
@@ -257,7 +257,7 @@ describe RuboCop::Cop::VariableForce::VariableTable do
 
         it 'returns the current and direct outer scope variables' do
           expect(accessible_variable_names)
-            .to match_array([:foo, :bar, :baz])
+            .to contain_exactly(:foo, :bar, :baz)
         end
       end
 
@@ -269,7 +269,7 @@ describe RuboCop::Cop::VariableForce::VariableTable do
         end
 
         it 'returns only the current scope variables' do
-          expect(accessible_variable_names).to match_array([:bar, :baz])
+          expect(accessible_variable_names).to contain_exactly(:bar, :baz)
         end
       end
     end
