@@ -32,28 +32,12 @@ module RuboCop
 
         def on_send(node)
           _string, method, first_param, second_param = *node
+
           return unless GSUB_METHODS.include?(method)
-          return unless string?(second_param)
-          return unless DETERMINISTIC_TYPES.include?(first_param.type)
+          return if accept_second_param?(second_param)
+          return if accept_first_param?(first_param)
 
-          first_source, options = first_source(first_param)
-          second_source, = *second_param
-
-          return if first_source.nil?
-
-          if regex?(first_param)
-            return unless first_source =~ DETERMINISTIC_REGEX
-            return if options
-            # This must be done after checking DETERMINISTIC_REGEX
-            # Otherwise things like \s will trip us up
-            first_source = interpret_string_escapes(first_source)
-          end
-
-          return if first_source.length != 1
-          return unless second_source.length <= 1
-
-          message = message(method, first_source, second_source)
-          add_offense(node, range(node), message)
+          offense(node, method, first_param, second_param)
         end
 
         def autocorrect(node)
@@ -83,6 +67,41 @@ module RuboCop
         end
 
         private
+
+        def accept_second_param?(second_param)
+          return true unless string?(second_param)
+          second_source, = *second_param
+
+          second_source.length > 1
+        end
+
+        def accept_first_param?(first_param)
+          return true unless DETERMINISTIC_TYPES.include?(first_param.type)
+
+          first_source, options = first_source(first_param)
+          return true if first_source.nil?
+
+          if regex?(first_param)
+            return true if options
+            return true unless first_source =~ DETERMINISTIC_REGEX
+            # This must be done after checking DETERMINISTIC_REGEX
+            # Otherwise things like \s will trip us up
+            first_source = interpret_string_escapes(first_source)
+          end
+
+          first_source.length != 1
+        end
+
+        def offense(node, method, first_param, second_param)
+          first_source, = first_source(first_param)
+          if regex?(first_param)
+            first_source = interpret_string_escapes(first_source)
+          end
+          second_source, = *second_param
+          message = message(method, first_source, second_source)
+
+          add_offense(node, range(node), message)
+        end
 
         def string?(node)
           node && node.str_type?

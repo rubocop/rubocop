@@ -179,23 +179,44 @@ module RuboCop
     end
 
     def validate_compatibility
-      if @options.key?(:only) &&
-         (@options[:only] & %w(Lint/UnneededDisable UnneededDisable)).any?
+      if only_includes_unneeded_disable?
         raise ArgumentError, 'Lint/UnneededDisable can not be used with --only.'
       end
-      if @options.key?(:except) &&
-         (@options[:except] & %w(Lint/Syntax Syntax)).any?
+      if except_syntax?
         raise ArgumentError, 'Syntax checking can not be turned off.'
       end
-      if @options.key?(:cache) && !%w(true false).include?(@options[:cache])
+      unless boolean_or_empty_cache?
         raise ArgumentError, '-C/--cache argument must be true or false'
       end
-      if @options.key?(:no_offense_counts) && !@options.key?(:auto_gen_config)
+      if no_offense_counts_without_auto_gen_config?
         raise ArgumentError, '--no-offense-counts can only be used together ' \
-                            'with --auto-gen-config.'
+                             'with --auto-gen-config.'
       end
-      return if (incompat = @options.keys & Options::EXITING_OPTIONS).size <= 1
-      raise ArgumentError, "Incompatible cli options: #{incompat.inspect}"
+      return if incompatible_options.size <= 1
+      raise ArgumentError, 'Incompatible cli options: ' \
+                           "#{incompatible_options.inspect}"
+    end
+
+    def only_includes_unneeded_disable?
+      @options.key?(:only) &&
+        (@options[:only] & %w(Lint/UnneededDisable UnneededDisable)).any?
+    end
+
+    def except_syntax?
+      @options.key?(:except) &&
+        (@options[:except] & %w(Lint/Syntax Syntax)).any?
+    end
+
+    def boolean_or_empty_cache?
+      !@options.key?(:cache) || %w(true false).include?(@options[:cache])
+    end
+
+    def no_offense_counts_without_auto_gen_config?
+      @options.key?(:no_offense_counts) && !@options.key?(:auto_gen_config)
+    end
+
+    def incompatible_options
+      @incompatible_options ||= @options.keys & Options::EXITING_OPTIONS
     end
 
     def validate_exclude_limit_option(args)

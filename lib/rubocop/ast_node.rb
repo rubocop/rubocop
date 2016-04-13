@@ -503,7 +503,6 @@ module RuboCop
     def value_used?
       # Be conservative and return true if we're not sure
       return false if parent.nil?
-      index = parent.children.index { |child| child.equal?(self) }
 
       case parent.type
       when :array, :defined?, :dstr, :dsym, :eflipflop, :erange, :float,
@@ -511,19 +510,13 @@ module RuboCop
            :xstr
         parent.value_used?
       when :begin, :kwbegin
-        # the last child node determines the value of the parent
-        index == parent.children.size - 1 ? parent.value_used? : false
+        begin_value_used?
       when :for
-        # `for var in enum; body; end`
-        # (for <var> <enum> <body>)
-        index == 2 ? parent.value_used? : true
+        for_value_used?
       when :case, :if
-        # (case <condition> <when...>)
-        # (if <condition> <truebranch> <falsebranch>)
-        index == 0 ? true : parent.value_used?
+        case_if_value_used?
       when :while, :until, :while_post, :until_post
-        # (while <condition> <body>) -> always evaluates to `nil`
-        index == 0
+        while_until_value_used?
       else
         true
       end
@@ -588,6 +581,28 @@ module RuboCop
         yield current_node if types.include?(current_node.type)
         last_node = current_node
       end
+    end
+
+    def begin_value_used?
+      # the last child node determines the value of the parent
+      sibling_index == parent.children.size - 1 ? parent.value_used? : false
+    end
+
+    def for_value_used?
+      # `for var in enum; body; end`
+      # (for <var> <enum> <body>)
+      sibling_index == 2 ? parent.value_used? : true
+    end
+
+    def case_if_value_used?
+      # (case <condition> <when...>)
+      # (if <condition> <truebranch> <falsebranch>)
+      sibling_index == 0 ? true : parent.value_used?
+    end
+
+    def while_until_value_used?
+      # (while <condition> <body>) -> always evaluates to `nil`
+      sibling_index == 0
     end
   end
 end

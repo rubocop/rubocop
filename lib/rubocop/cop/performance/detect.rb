@@ -33,23 +33,12 @@ module RuboCop
         def on_send(node)
           return unless should_run?
           receiver, second_method, *args = *node
-          return unless check_second_call(receiver, second_method, args)
+          return if accept_second_call?(receiver, second_method, args)
 
           receiver, _args, body = *receiver if receiver.block_type?
-          caller, first_method, args = *receiver
+          return if accept_first_call?(receiver, body)
 
-          # check that we have usual block or block pass
-          return if body.nil? && (args.nil? || !args.block_pass_type?)
-          return unless SELECT_METHODS.include?(first_method)
-          return if lazy?(caller)
-
-          range = receiver.loc.selector.join(node.loc.selector)
-
-          message = second_method == :last ? REVERSE_MSG : MSG
-          add_offense(node, range, format(message,
-                                          preferred_method,
-                                          first_method,
-                                          second_method))
+          offense(node, receiver, second_method)
         end
 
         def autocorrect(node)
@@ -79,10 +68,31 @@ module RuboCop
             config['Rails'.freeze]['Enabled'.freeze])
         end
 
-        def check_second_call(receiver, method, args)
-          receiver &&
-            DANGEROUS_METHODS.include?(method) &&
-            args.empty?
+        def accept_second_call?(receiver, method, args)
+          !receiver ||
+            !DANGEROUS_METHODS.include?(method) ||
+            !args.empty?
+        end
+
+        def accept_first_call?(receiver, body)
+          caller, first_method, args = *receiver
+
+          # check that we have usual block or block pass
+          return true if body.nil? && (args.nil? || !args.block_pass_type?)
+          return true unless SELECT_METHODS.include?(first_method)
+
+          lazy?(caller)
+        end
+
+        def offense(node, receiver, second_method)
+          _caller, first_method, _args = *receiver
+          range = receiver.loc.selector.join(node.loc.selector)
+
+          message = second_method == :last ? REVERSE_MSG : MSG
+          add_offense(node, range, format(message,
+                                          preferred_method,
+                                          first_method,
+                                          second_method))
         end
 
         def preferred_method
