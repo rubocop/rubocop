@@ -146,8 +146,8 @@ module RuboCop
       absolute_file_path = File.expand_path(file)
 
       patterns_to_include.any? do |pattern|
-        match_path?(pattern, relative_file_path, loaded_path) ||
-          match_path?(pattern, absolute_file_path, loaded_path)
+        match_path?(pattern, relative_file_path) ||
+          match_path?(pattern, absolute_file_path)
       end
     end
 
@@ -162,7 +162,7 @@ module RuboCop
     def file_to_exclude?(file)
       file = File.expand_path(file)
       patterns_to_exclude.any? do |pattern|
-        match_path?(pattern, file, loaded_path)
+        match_path?(pattern, file)
       end
     end
 

@@ -21,6 +21,7 @@
 
 ### Changes
 
+* [#2995](https://github.com/bbatsov/rubocop/issues/2995): Removed deprecated path matching syntax. ([@gerrywastaken][])
 * [#3025](https://github.com/bbatsov/rubocop/pull/3025): Removed deprecation warnings for `rubocop-todo.yml`. ([@ptarjan][])
 
 ## 0.39.0 (2016-03-27)
