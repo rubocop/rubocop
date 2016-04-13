@@ -203,6 +203,13 @@ Command flag              | Description
 `-s/--stdin`              | Pipe source from STDIN. This is useful for editor integration.
 `--[no-]color`            | Force color output on or off.
 
+Default command-line options are loaded from `.rubocop` and `RUBOCOP_OPTS` and are combined with command-line options that are explicitly passed to `rubocop`.
+Thus, the options have the following order of precedence (from highest to lowest):
+
+1. Explicit command-line options
+2. Options from `RUBOCOP_OPTS` environment variable
+3. Options from `.rubocop` file.
+
 ### Cops
 
 In RuboCop lingo the various checks performed on the code are called cops. There are several cop departments.

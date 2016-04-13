@@ -8,6 +8,7 @@
 * [#2928](https://github.com/bbatsov/rubocop/issues/2928): `Style/NestedParenthesizedCalls` cop can auto-correct. ([@drenmi][])
 * `Style/RaiseArgs` cop can auto-correct. ([@drenmi][])
 * [#2993](https://github.com/bbatsov/rubocop/pull/2993): `Style/SpaceAfterColon` now checks optional keyword arguments. ([@owst][])
+* [#3003](https://github.com/bbatsov/rubocop/pull/3003): Read command line options from `.rubocop` file and `RUBOCOP_OPTS` environment variable. ([@bolshakov][])
 
 ### Bug fixes
 
@@ -2104,3 +2105,4 @@
 [@amuino]: https://github.com/amuino
 [@dylanahsmith]: https://github.com/dylanahsmith
 [@gerrywastaken]: https://github.com/gerrywastaken
+[@bolshakov]: https://github.com/bolshakov

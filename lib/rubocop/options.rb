@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 
 require 'optparse'
+require 'shellwords'
 
 module RuboCop
   # This class handles command line options.
@@ -14,7 +15,8 @@ module RuboCop
       @validator = OptionsValidator.new(@options)
     end
 
-    def parse(args)
+    def parse(command_line_args)
+      args = args_from_file.concat(args_from_env).concat(command_line_args)
       define_options(args).parse!(args)
       # The --no-color CLI option sets `color: false` so we don't want the
       # `no_color` key, which is created automatically.
@@ -30,6 +32,18 @@ module RuboCop
     end
 
     private
+
+    def args_from_file
+      if File.exist?('.rubocop')
+        IO.readlines('.rubocop').map(&:strip)
+      else
+        []
+      end
+    end
+
+    def args_from_env
+      Shellwords.split(ENV.fetch('RUBOCOP_OPTS', ''))
+    end
 
     def define_options(args)
       OptionParser.new do |opts|
