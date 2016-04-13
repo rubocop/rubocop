@@ -53,9 +53,8 @@ describe RuboCop::CLI, :isolated_environment do
       context 'when there are no includes or excludes' do
         it 'prints known ruby files' do
           cli.run ['-L']
-          expect($stdout.string.split("\n")).to match_array ['app.rb',
-                                                             'Gemfile',
-                                                             'lib/helper.rb']
+          expect($stdout.string.split("\n")).to contain_exactly(
+            'app.rb', 'Gemfile', 'lib/helper.rb')
         end
       end
 
@@ -70,9 +69,8 @@ describe RuboCop::CLI, :isolated_environment do
 
         it 'prints the included files and not the excluded ones' do
           cli.run ['--list-target-files']
-          expect($stdout.string.split("\n")).to match_array ['app.rb',
-                                                             'lib/helper.rb',
-                                                             'show.rabl']
+          expect($stdout.string.split("\n")).to contain_exactly(
+            'app.rb', 'lib/helper.rb', 'show.rabl')
         end
       end
     end
