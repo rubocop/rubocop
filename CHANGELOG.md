@@ -17,7 +17,7 @@
 * [#2314](https://github.com/bbatsov/rubocop/pull/2314): Ignore `UnusedBlockArgument` for keyword arguments. ([@volkert][])
 * [#2975](https://github.com/bbatsov/rubocop/issues/2975): Make comment indentation before `)` consistent with comment indentation before `}` or `]`. ([@jonas054][])
 * [#3010](https://github.com/bbatsov/rubocop/issues/3010): Fix double reporting/correction of spaces after ternary operator colons (now only reported by `Style/SpaceAroundOperators`, and not `Style/SpaceAfterColon` too). ([@owst][])
-* [#3006](https://github.com/bbatsov/rubocop/issues/3006): Handle non-local variables as receivers inside `each_with_object` in `Performance/RedundantMerge`. ([@lumeet][])
+* [#3006](https://github.com/bbatsov/rubocop/issues/3006): Register an offense for calling `merge!` on a method on a variable inside `each_with_object` in `Performance/RedundantMerge`. ([@lumeet][], [@rrosenblum][])
 
 ### Changes
 
