@@ -11,7 +11,7 @@
 * [#3003](https://github.com/bbatsov/rubocop/pull/3003): Read command line options from `.rubocop` file and `RUBOCOP_OPTS` environment variable. ([@bolshakov][])
 
 ### Bug fixes
-
+* [#3032](https://github.com/bbatsov/rubocop/issues/3032): Fix autocorrecting parentheses for predicate methods without space before args. ([@graemeboy][])
 * [#3000](https://github.com/bbatsov/rubocop/pull/3000): Fix encoding crash on HTML output. ([@gerrywastaken][])
 * [#2983](https://github.com/bbatsov/rubocop/pull/2983): `Style/AlignParameters` message was clarified for `with_fixed_indentation` style. ([@dylanahsmith][])
 * [#2314](https://github.com/bbatsov/rubocop/pull/2314): Ignore `UnusedBlockArgument` for keyword arguments. ([@volkert][])
@@ -2109,3 +2109,4 @@
 [@gerrywastaken]: https://github.com/gerrywastaken
 [@bolshakov]: https://github.com/bolshakov
 [@jastkand]: https://github.com/jastkand
+[@graemeboy]: https://github.com/graemeboy

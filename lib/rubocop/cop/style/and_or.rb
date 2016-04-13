@@ -119,7 +119,11 @@ module RuboCop
         def whitespace_before_arg(node)
           sb = node.source_range.source_buffer
           begin_paren = node.loc.selector.end_pos
-          Parser::Source::Range.new(sb, begin_paren, begin_paren + 1)
+          end_paren = begin_paren
+          # Increment position of parenthesis, unless message is a predicate
+          # method followed by a non-whitespace char (e.g. is_a?String).
+          end_paren += 1 unless node.source =~ /\?[!\S]/
+          Parser::Source::Range.new(sb, begin_paren, end_paren)
         end
       end
     end

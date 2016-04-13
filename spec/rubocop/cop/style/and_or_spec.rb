@@ -253,6 +253,47 @@ describe RuboCop::Cop::Style::AndOr, :config do
       end
     end
 
+    context 'with predicate method with arg without space on right' do
+      it 'autocorrects "or" with || and adds parens' do
+        new_source = autocorrect_source(cop, 'false or 3.is_a?Integer')
+        expect(new_source).to eq('false || 3.is_a?(Integer)')
+      end
+
+      it 'autocorrects "and" with && and adds parens' do
+        new_source = autocorrect_source(cop, 'false and 3.is_a?Integer')
+        expect(new_source).to eq('false && 3.is_a?(Integer)')
+      end
+    end
+
+    context 'with two predicate methods with args without spaces on right' do
+      it 'autocorrects "or" with || and adds parens' do
+        new_source = autocorrect_source(cop, "'1'.is_a?Integer " \
+                                             'or 1.is_a?Integer')
+        expect(new_source).to eq('\'1\'.is_a?(Integer) || 1.is_a?(Integer)')
+      end
+
+      it 'autocorrects "and" with && and adds parens' do
+        new_source = autocorrect_source(cop, "'1'.is_a?Integer and" \
+                                             ' 1.is_a?Integer')
+        expect(new_source).to eq('\'1\'.is_a?(Integer) && 1.is_a?(Integer)')
+      end
+    end
+
+    context 'with one predicate method without space on right and another ' \
+            'method' do
+      it 'autocorrects "or" with || and adds parens' do
+        new_source = autocorrect_source(cop, "'1'.is_a?Integer or" \
+                                             ' 1.is_a? Integer')
+        expect(new_source).to eq("'1'.is_a?(Integer) || 1.is_a?(Integer)")
+      end
+
+      it 'autocorrects "and" with && and adds parens' do
+        new_source = autocorrect_source(cop, "'1'.is_a?Integer " \
+                                              'and 1.is_a? Integer')
+        expect(new_source).to eq('\'1\'.is_a?(Integer) && 1.is_a?(Integer)')
+      end
+    end
+
     context 'with `not` expression on right' do
       it 'autocorrects "and" with && and adds parens' do
         new_source = autocorrect_source(cop, 'x and not arg')
