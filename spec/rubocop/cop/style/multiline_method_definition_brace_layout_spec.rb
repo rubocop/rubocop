@@ -3,8 +3,9 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::MultilineMethodDefinitionBraceLayout do
-  subject(:cop) { described_class.new }
+describe RuboCop::Cop::Style::MultilineMethodDefinitionBraceLayout, :config do
+  subject(:cop) { described_class.new(config) }
+  let(:cop_config) { { 'EnforcedStyle' => 'symmetrical' } }
 
   it 'ignores implicit defs' do
     inspect_source(cop, ['def foo a: 1,',
@@ -28,89 +29,11 @@ describe RuboCop::Cop::Style::MultilineMethodDefinitionBraceLayout do
     expect(cop.offenses).to be_empty
   end
 
-  context 'opening brace on same line as first parameter' do
-    it 'allows closing brace on same line as last parameter' do
-      inspect_source(cop, ['def foo(a,',
-                           'b)',
-                           'end'])
-
-      expect(cop.offenses).to be_empty
-    end
-
-    it 'allows closing brace on same line as last multiline parameter' do
-      inspect_source(cop, ['def foo(a,',
-                           'b: {',
-                           'foo: bar',
-                           '})',
-                           'end'])
-
-      expect(cop.offenses).to be_empty
-    end
-
-    it 'detects closing brace on different line from last parameter' do
-      inspect_source(cop, ['def foo(a,',
-                           'b',
-                           ')',
-                           'end'])
-
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.offenses.first.line).to eq(1)
-      expect(cop.highlights).to eq(["(a,\nb\n)"])
-      expect(cop.messages).to eq([described_class::SAME_LINE_MESSAGE])
-    end
-
-    it 'autocorrects closing brace on different line from last parameter' do
-      new_source = autocorrect_source(cop, ['def foo(a,',
-                                            'b',
-                                            ')',
-                                            'end'])
-
-      expect(new_source).to eq("def foo(a,\nb)\nend")
-    end
-  end
-
-  context 'opening brace on separate line from first parameter' do
-    it 'allows closing brace on separate line from last parameter' do
-      inspect_source(cop, ['def foo(',
-                           'a,',
-                           'b',
-                           ')',
-                           'end'])
-
-      expect(cop.offenses).to be_empty
-    end
-
-    it 'allows closing brace on separate line from last multiline parameter' do
-      inspect_source(cop, ['def foo(',
-                           'a,',
-                           'b: {',
-                           'foo: bar',
-                           '}',
-                           ')',
-                           'end'])
-
-      expect(cop.offenses).to be_empty
-    end
-
-    it 'detects closing brace on same line as last parameter' do
-      inspect_source(cop, ['def foo(',
-                           'a,',
-                           'b)',
-                           'end'])
-
-      expect(cop.offenses.size).to eq(1)
-      expect(cop.offenses.first.line).to eq(1)
-      expect(cop.highlights).to eq(["(\na,\nb)"])
-      expect(cop.messages).to eq([described_class::NEW_LINE_MESSAGE])
-    end
-
-    it 'autocorrects closing brace on different line from last parameter' do
-      new_source = autocorrect_source(cop, ['def foo(',
-                                            'a,',
-                                            'b)',
-                                            'end'])
-
-      expect(new_source).to eq("def foo(\na,\nb\n)\nend")
-    end
+  include_examples 'multiline literal brace layout' do
+    let(:prefix) { 'def foo' }
+    let(:suffix) { 'end' }
+    let(:open) { '(' }
+    let(:close) { ')' }
+    let(:multi) { ['b: {', 'foo: bar', '}'] }
   end
 end

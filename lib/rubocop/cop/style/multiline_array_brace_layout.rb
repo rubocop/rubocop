@@ -4,35 +4,41 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks that the closing brace in an array literal is
-      # symmetrical with respect to the opening brace and the array
-      # elements.
+      # This cop checks that the closing brace in an array literal is either
+      # on the same line as the last array element, or a new line.
+      #
+      # When using the `symmetrical` (default) style:
       #
       # If an array's opening brace is on the same line as the first element
       # of the array, then the closing brace should be on the same line as
       # the last element of the array.
       #
-      # If an array's opening brace is on a separate line from the first
-      # element of the array, then the closing brace should be on the line
+      # If an array's opening brace is on the line above the first element
+      # of the array, then the closing brace should be on the line below
+      # the last element of the array.
+      #
+      # When using the `new_line` style:
+      #
+      # The closing brace of a multi-line array literal must be on the line
       # after the last element of the array.
       #
       # @example
       #
-      #     # bad
+      #     # bad with symmetrical, good with new_line
       #     [ :a,
       #       :b
       #     ]
       #
-      #     # bad
+      #     # always bad
       #     [
       #       :a,
       #       :b ]
       #
-      #     # good
+      #     # good with symmetrical, bad with new_line
       #     [ :a,
       #       :b ]
       #
-      #     #good
+      #     # always good
       #     [
       #       :a,
       #       :b
@@ -47,6 +53,9 @@ module RuboCop
         NEW_LINE_MESSAGE = 'Closing array brace must be on the line after ' \
           'the last array element when opening brace is on a separate line ' \
           'from the first array element.'.freeze
+
+        ALWAYS_NEW_LINE_MESSAGE = 'Closing array brace must be on the line ' \
+          'after the last array element.'.freeze
 
         def on_array(node)
           check_brace_layout(node)
