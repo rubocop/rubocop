@@ -13,6 +13,10 @@
 * [#2857](https://github.com/bbatsov/rubocop/issues/2857): `Style/MultilineHashBraceLayout` enforced style is configurable and supports `symmetrical` and `new_line` options. ([@panthomakos][])
 * [#2857](https://github.com/bbatsov/rubocop/issues/2857): `Style/MultilineMethodCallBraceLayout` enforced style is configurable and supports `symmetrical` and `new_line` options. ([@panthomakos][])
 * [#2857](https://github.com/bbatsov/rubocop/issues/2857): `Style/MultilineMethodDefinitionBraceLayout` enforced style is configurable and supports `symmetrical` and `new_line` options. ([@panthomakos][])
+* [#3052](https://github.com/bbatsov/rubocop/pull/3052): `Style/MultilineArrayBraceLayout` enforced style supports `same_line` option. ([@panthomakos][])
+* [#3052](https://github.com/bbatsov/rubocop/pull/3052): `Style/MultilineHashBraceLayout` enforced style supports `same_line` option. ([@panthomakos][])
+* [#3052](https://github.com/bbatsov/rubocop/pull/3052): `Style/MultilineMethodCallBraceLayout` enforced style supports `same_line` option. ([@panthomakos][])
+* [#3052](https://github.com/bbatsov/rubocop/pull/3052): `Style/MultilineMethodDefinitionBraceLayout` enforced style supports `same_line` option. ([@panthomakos][])
 
 ### Bug fixes
 * [#3032](https://github.com/bbatsov/rubocop/issues/3032): Fix autocorrecting parentheses for predicate methods without space before args. ([@graemeboy][])

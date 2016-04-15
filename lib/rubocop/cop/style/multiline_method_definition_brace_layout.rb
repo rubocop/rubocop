@@ -22,23 +22,36 @@ module RuboCop
       # The closing brace of a multi-line method definition must be on the line
       # after the last parameter of the definition.
       #
+      # When using the `same_line` style:
+      #
+      # The closing brace of a multi-line method definition must be on the same
+      # line as the last parameter of the definition.
+      #
       # @example
       #
-      #     # bad with symmetrical, good with new_line
+      #     # symmetrical: bad
+      #     # new_line: good
+      #     # same_line: bad
       #     def foo(a,
       #       b
       #     )
       #
-      #     # always bad
+      #     # symmetrical: bad
+      #     # new_line: bad
+      #     # same_line: good
       #     def foo(
       #       a,
       #       b)
       #
-      #     # good with symmetrical, bad with new_line
+      #     # symmetrical: good
+      #     # new_line: bad
+      #     # same_line: good
       #     def foo(a,
       #       b)
       #
-      #     # always good
+      #     # symmetrical: good
+      #     # new_line: good
+      #     # same_line: bad
       #     def foo(
       #       a,
       #       b
@@ -57,6 +70,9 @@ module RuboCop
 
         ALWAYS_NEW_LINE_MESSAGE = 'Closing method definition brace must be ' \
           'on the line after the last parameter.'.freeze
+
+        ALWAYS_SAME_LINE_MESSAGE = 'Closing method definition brace must be ' \
+          'on the same line as the last parameter.'.freeze
 
         def on_method_def(_node, _method_name, args, _body)
           check_brace_layout(args)

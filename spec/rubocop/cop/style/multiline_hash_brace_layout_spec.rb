@@ -31,6 +31,6 @@ describe RuboCop::Cop::Style::MultilineHashBraceLayout, :config do
     let(:close) { '}' }
     let(:a) { 'a: 1' }
     let(:b) { 'b: 2' }
-    let(:multi) { ['b: {', 'foo: bar', '}'] }
+    let(:multi) { ['b: [', '1', ']'] }
   end
 end

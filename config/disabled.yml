@@ -83,8 +83,10 @@ Style/MultilineArrayBraceLayout:
   SupportedStyles:
     # symmetrical: closing brace is positioned in same way as opening brace
     # new_line: closing brace is always on a new line
+    # same_line: closing brace is always on the same line as last element
     - symmetrical
     - new_line
+    - same_line
 
 Style/MultilineAssignmentLayout:
   Description: 'Check for a newline after the assignment operator in multi-line assignments.'
@@ -101,8 +103,10 @@ Style/MultilineHashBraceLayout:
   SupportedStyles:
     # symmetrical: closing brace is positioned in same way as opening brace
     # new_line: closing brace is always on a new line
+    # same_line: closing brace is always on same line as last element
     - symmetrical
     - new_line
+    - same_line
 
 Style/MultilineMethodCallBraceLayout:
   Description: >-
@@ -114,8 +118,10 @@ Style/MultilineMethodCallBraceLayout:
   SupportedStyles:
     # symmetrical: closing brace is positioned in same way as opening brace
     # new_line: closing brace is always on a new line
+    # same_line: closing brace is always on the same line as last argument
     - symmetrical
     - new_line
+    - same_line
 
 Style/MultilineMethodDefinitionBraceLayout:
   Description: >-
@@ -127,8 +133,10 @@ Style/MultilineMethodDefinitionBraceLayout:
   SupportedStyles:
     # symmetrical: closing brace is positioned in same way as opening brace
     # new_line: closing brace is always on a new line
+    # same_line: closing brace is always on the same line as last parameter
     - symmetrical
     - new_line
+    - same_line
 
 Style/OptionHash:
   Description: "Don't use option hashes when you can use keyword arguments."
