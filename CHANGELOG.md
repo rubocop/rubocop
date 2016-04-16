@@ -30,6 +30,7 @@
 * [#3043](https://github.com/bbatsov/rubocop/issues/3043): `Style/SpaceAfterNot` will now register an offense for a receiver that is wrapped in parentheses. ([@rrosenblum][])
 * [#3039](https://github.com/bbatsov/rubocop/issues/3039): Accept `match` without a receiver in `Performance/EndWith`. ([@lumeet][])
 * [#3039](https://github.com/bbatsov/rubocop/issues/3039): Accept `match` without a receiver in `Performance/StartWith`. ([@lumeet][])
+* [#3048](https://github.com/bbatsov/rubocop/issues/3048): `Lint/NestedMethodDefinition` shouldn't flag methods defined on Structs. ([@owst][])
 
 ### Changes
 

@@ -128,4 +128,18 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
                          'end'])
     expect(cop.offenses.size).to eq(0)
   end
+
+  it 'does not register offense for nested definition inside Struct.new' do
+    ['(:name)', ''].each do |constructor_args|
+      inspect_source(cop, ['class Foo',
+                           '  def self.define',
+                           "    Struct.new#{constructor_args} do",
+                           '      def y',
+                           '      end',
+                           '    end',
+                           '  end',
+                           'end'])
+      expect(cop.offenses.size).to eq(0)
+    end
+  end
 end

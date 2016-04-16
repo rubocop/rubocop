@@ -26,8 +26,8 @@ module RuboCop
           (block (send _ {:instance_eval :class_eval :module_eval} ...) ...)
         PATTERN
 
-        def_node_matcher :class_or_module_new_call?, <<-PATTERN
-          (block (send (const nil {:Class :Module}) :new ...) ...)
+        def_node_matcher :class_or_module_or_struct_new_call?, <<-PATTERN
+          (block (send (const nil {:Class :Module :Struct}) :new ...) ...)
         PATTERN
 
         def on_method_def(node, _method_name, _args, _body)
@@ -44,7 +44,7 @@ module RuboCop
               subject, = *child
               next if subject.lvar_type?
               yield child
-            elsif !(eval_call?(child) || class_or_module_new_call?(child))
+            elsif !(eval_call?(child) || class_or_module_or_struct_new_call?(child))
               find_nested_defs(child, &block)
             end
           end
