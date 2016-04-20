@@ -16,6 +16,12 @@ describe RuboCop::Cop::Style::SpaceAfterNot do
     expect(cop.offenses).to be_empty
   end
 
+  it 'reports an offense for space after ! with the negated receiver ' \
+     'wrapped in parentheses' do
+    inspect_source(cop, '! (model)')
+    expect(cop.offenses.size).to eq(1)
+  end
+
   it 'auto-corrects by removing redundant space' do
     new_source = autocorrect_source(cop, '!  something')
     expect(new_source).to eq('!something')
