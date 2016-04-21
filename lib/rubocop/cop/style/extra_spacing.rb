@@ -67,14 +67,29 @@ module RuboCop
         end
 
         def check_assignment(token)
-          # minus 2 is because pos.line is zero-based
-          line = processed_source.lines[token.pos.line - 2]
-          return if aligned_assignment?(token.pos, line)
-
-          preceding  = @asgn_lines.include?(token.pos.line - 1)
-          align_with = preceding ? 'preceding' : 'following'
-          message    = format(MSG_UNALIGNED_ASGN, align_with)
+          assignment_line = ''
+          message = ''
+          if should_aligned_with_preceding_line?(token)
+            assignment_line = preceding_line(token)
+            message = format(MSG_UNALIGNED_ASGN, 'preceding')
+          else
+            assignment_line = following_line(token)
+            message = format(MSG_UNALIGNED_ASGN, 'following')
+          end
+          return if aligned_assignment?(token.pos, assignment_line)
           add_offense(token.pos, token.pos, message)
+        end
+
+        def should_aligned_with_preceding_line?(token)
+          @asgn_lines.include?(token.pos.line - 1)
+        end
+
+        def preceding_line(token)
+          processed_source.lines[token.pos.line - 2]
+        end
+
+        def following_line(token)
+          processed_source.lines[token.pos.line]
         end
 
         def check_other(t1, t2, ast)

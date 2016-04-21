@@ -253,6 +253,13 @@ describe RuboCop::Cop::Style::ExtraSpacing, :config do
       expect(cop.offenses.size).to eq(0)
     end
 
+    it 'aligns the first assignment with the following assingment' do
+      inspect_source(cop, ['# comment',
+                           'a   = 1',
+                           'bb  = 2'])
+      expect(cop.offenses.size).to eq(0)
+    end
+
     it 'autocorrects consecutive assignments which are not aligned' do
       new_source = autocorrect_source(cop, ['a = 1',
                                             'bb = 2',
