@@ -24,6 +24,7 @@
 * [#3006](https://github.com/bbatsov/rubocop/issues/3006): Register an offense for calling `merge!` on a method on a variable inside `each_with_object` in `Performance/RedundantMerge`. ([@lumeet][], [@rrosenblum][])
 * [#2886](https://github.com/bbatsov/rubocop/issues/2886): Custom cop changes now bust the cache. ([@ptarjan][])
 * [#3043](https://github.com/bbatsov/rubocop/issues/3043): `Style/SpaceAfterNot` will now register an offense for a receiver that is wrapped in parentheses. ([@rrosenblum][])
+* [#3039](https://github.com/bbatsov/rubocop/issues/3039): Accept `match` without a receiver in `Performance/EndWith`. ([@lumeet][])
 
 ### Changes
 
