@@ -16,13 +16,12 @@ module RuboCop
         MSG = 'Do not leave space between `!` and its argument.'.freeze
 
         def on_send(node)
-          _receiver, method_name, *_args = *node
+          receiver, method_name, *_args = *node
 
           return unless method_name == :!
-          return unless node.source =~ /^!\s+\w+/
+          return unless receiver.loc.column - node.loc.column > 1
 
-          # TODO: Improve source range to highlight the redundant whitespace.
-          add_offense(node, :selector)
+          add_offense(node, :expression)
         end
 
         def autocorrect(node)
