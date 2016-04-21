@@ -21,8 +21,7 @@ module RuboCop
           return unless method_name == :!
           return unless receiver.loc.column - node.loc.column > 1
 
-          # TODO: Improve source range to highlight the redundant whitespace.
-          add_offense(node, :selector)
+          add_offense(node, :expression)
         end
 
         def autocorrect(node)

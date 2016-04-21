@@ -8,22 +8,38 @@ describe RuboCop::Cop::Style::SpaceAfterNot do
 
   it 'reports an offense for space after !' do
     inspect_source(cop, '! something')
-    expect(cop.offenses.size).to eq(1)
+
+    expect(cop.messages)
+      .to eq(['Do not leave space between `!` and its argument.'])
+    expect(cop.highlights).to eq(['! something'])
   end
 
   it 'accepts no space after !' do
     inspect_source(cop, '!something')
+
     expect(cop.offenses).to be_empty
   end
 
   it 'reports an offense for space after ! with the negated receiver ' \
      'wrapped in parentheses' do
     inspect_source(cop, '! (model)')
-    expect(cop.offenses.size).to eq(1)
+
+    expect(cop.messages)
+      .to eq(['Do not leave space between `!` and its argument.'])
+    expect(cop.highlights).to eq(['! (model)'])
   end
 
-  it 'auto-corrects by removing redundant space' do
-    new_source = autocorrect_source(cop, '!  something')
-    expect(new_source).to eq('!something')
+  context 'auto-correct' do
+    it 'removes redundant space' do
+      new_source = autocorrect_source(cop, '!  something')
+
+      expect(new_source).to eq('!something')
+    end
+
+    it 'removes redundant space when there is a parentheses' do
+      new_source = autocorrect_source(cop, '!  (model)')
+
+      expect(new_source).to eq('!(model)')
+    end
   end
 end
