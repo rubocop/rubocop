@@ -17,8 +17,10 @@
 * [#3052](https://github.com/bbatsov/rubocop/pull/3052): `Style/MultilineHashBraceLayout` enforced style supports `same_line` option. ([@panthomakos][])
 * [#3052](https://github.com/bbatsov/rubocop/pull/3052): `Style/MultilineMethodCallBraceLayout` enforced style supports `same_line` option. ([@panthomakos][])
 * [#3052](https://github.com/bbatsov/rubocop/pull/3052): `Style/MultilineMethodDefinitionBraceLayout` enforced style supports `same_line` option. ([@panthomakos][])
+* [#3019](https://github.com/bbatsov/rubocop/issues/3019): Add new `Style/EmptyCaseCondition` cop. ([@owst][])
 
 ### Bug fixes
+
 * [#3032](https://github.com/bbatsov/rubocop/issues/3032): Fix autocorrecting parentheses for predicate methods without space before args. ([@graemeboy][])
 * [#3000](https://github.com/bbatsov/rubocop/pull/3000): Fix encoding crash on HTML output. ([@gerrywastaken][])
 * [#2983](https://github.com/bbatsov/rubocop/pull/2983): `Style/AlignParameters` message was clarified for `with_fixed_indentation` style. ([@dylanahsmith][])

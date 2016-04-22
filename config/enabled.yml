@@ -204,6 +204,10 @@ Style/EmptyElse:
   Description: 'Avoid empty else-clauses.'
   Enabled: true
 
+Style/EmptyCaseCondition:
+  Description: 'Avoid empty condition in case statements.'
+  Enabled: true
+
 Style/EmptyLineBetweenDefs:
   Description: 'Use empty lines between defs.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#empty-lines-between-methods'
