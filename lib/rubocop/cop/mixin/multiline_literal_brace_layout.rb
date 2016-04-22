@@ -12,20 +12,10 @@ module RuboCop
         return unless node.loc.begin # Ignore implicit literals.
         return if children(node).empty? # Ignore empty literals.
 
-        if style == :new_line
-          return unless closing_brace_on_same_line?(node)
-
-          add_offense(node, :expression, self.class::ALWAYS_NEW_LINE_MESSAGE)
-        elsif style == :symmetrical
-          if opening_brace_on_same_line?(node)
-            return if closing_brace_on_same_line?(node)
-
-            add_offense(node, :expression, self.class::SAME_LINE_MESSAGE)
-          else
-            return unless closing_brace_on_same_line?(node)
-
-            add_offense(node, :expression, self.class::NEW_LINE_MESSAGE)
-          end
+        case style
+        when :symmetrical then handle_symmetrical(node)
+        when :new_line then handle_new_line(node)
+        when :same_line then handle_same_line(node)
         end
       end
 
@@ -45,6 +35,30 @@ module RuboCop
       end
 
       private
+
+      def handle_new_line(node)
+        return unless closing_brace_on_same_line?(node)
+
+        add_offense(node, :expression, self.class::ALWAYS_NEW_LINE_MESSAGE)
+      end
+
+      def handle_same_line(node)
+        return if closing_brace_on_same_line?(node)
+
+        add_offense(node, :expression, self.class::ALWAYS_SAME_LINE_MESSAGE)
+      end
+
+      def handle_symmetrical(node)
+        if opening_brace_on_same_line?(node)
+          return if closing_brace_on_same_line?(node)
+
+          add_offense(node, :expression, self.class::SAME_LINE_MESSAGE)
+        else
+          return unless closing_brace_on_same_line?(node)
+
+          add_offense(node, :expression, self.class::NEW_LINE_MESSAGE)
+        end
+      end
 
       def children(node)
         node.children

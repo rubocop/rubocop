@@ -22,23 +22,36 @@ module RuboCop
       # The closing brace of a multi-line hash literal must be on the line
       # after the last element of the hash.
       #
+      # When using the `same_line` style:
+      #
+      # The closing brace of a multi-line hash literal must be on the same
+      # line as the last element of the hash.
+      #
       # @example
       #
-      #     # bad with symmetrical, good with new_line
+      #     # symmetrical: bad
+      #     # new_line: good
+      #     # same_line: bad
       #     { a: 1,
       #       b: 2
       #     }
       #
-      #     # always bad
+      #     # symmetrical: bad
+      #     # new_line: bad
+      #     # same_line: good
       #     {
       #       a: 1,
       #       b: 2 }
       #
-      #     # good with symmetrical, bad with new_line
+      #     # symmetrical: good
+      #     # new_line: bad
+      #     # same_line: good
       #     { a: 1,
       #       b: 2 }
       #
-      #     # always good
+      #     # symmetrical: good
+      #     # new_line: good
+      #     # same_line: bad
       #     {
       #       a: 1,
       #       b: 2
@@ -56,6 +69,9 @@ module RuboCop
 
         ALWAYS_NEW_LINE_MESSAGE = 'Closing hash brace must be on the line ' \
           'after the last hash element.'.freeze
+
+        ALWAYS_SAME_LINE_MESSAGE = 'Closing hash brace must be on the same ' \
+          'line as the last hash element.'.freeze
 
         def on_hash(node)
           check_brace_layout(node)

@@ -22,23 +22,36 @@ module RuboCop
       # The closing brace of a multi-line method call must be on the line
       # after the last argument of the call.
       #
+      # When using the `same_line` style:
+      #
+      # The closing brace of a multi-line method call must be on the same
+      # line as the last argument of the call.
+      #
       # @example
       #
-      #     # bad with symmetrical, good with new_line
+      #     # symmetrical: bad
+      #     # new_line: good
+      #     # same_line: bad
       #     foo(a,
       #       b
       #     )
       #
-      #     # always bad
+      #     # symmetrical: bad
+      #     # new_line: bad
+      #     # same_line: good
       #     foo(
       #       a,
       #       b)
       #
-      #     # good with symmetrical, bad with new_line
+      #     # symmetrical: good
+      #     # new_line: bad
+      #     # same_line: good
       #     foo(a,
       #       b)
       #
-      #     # always good
+      #     # symmetrical: good
+      #     # new_line: good
+      #     # same_line: bad
       #     foo(
       #       a,
       #       b
@@ -56,6 +69,9 @@ module RuboCop
 
         ALWAYS_NEW_LINE_MESSAGE = 'Closing method call brace must be on ' \
           'the line after the last argument.'.freeze
+
+        ALWAYS_SAME_LINE_MESSAGE = 'Closing method call brace must be on ' \
+          'the same line as the last argument.'.freeze
 
         def on_send(node)
           check_brace_layout(node)
