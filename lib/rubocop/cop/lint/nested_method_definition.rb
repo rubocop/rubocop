@@ -22,14 +22,6 @@ module RuboCop
         MSG = 'Method definitions must not be nested. ' \
               'Use `lambda` instead.'.freeze
 
-        def_node_matcher :eval_call?, <<-PATTERN
-          (block (send _ {:instance_eval :class_eval :module_eval} ...) ...)
-        PATTERN
-
-        def_node_matcher :class_or_module_new_call?, <<-PATTERN
-          (block (send (const nil {:Class :Module}) :new ...) ...)
-        PATTERN
-
         def on_method_def(node, _method_name, _args, _body)
           find_nested_defs(node) do |nested_def_node|
             add_offense(nested_def_node, :expression)
@@ -44,11 +36,25 @@ module RuboCop
               subject, = *child
               next if subject.lvar_type?
               yield child
-            elsif !(eval_call?(child) || class_or_module_new_call?(child))
+            elsif !ignored_child?(child)
               find_nested_defs(child, &block)
             end
           end
         end
+
+        private
+
+        def ignored_child?(child)
+          eval_call?(child) || class_or_module_or_struct_new_call?(child)
+        end
+
+        def_node_matcher :eval_call?, <<-PATTERN
+          (block (send _ {:instance_eval :class_eval :module_eval} ...) ...)
+        PATTERN
+
+        def_node_matcher :class_or_module_or_struct_new_call?, <<-PATTERN
+          (block (send (const nil {:Class :Module :Struct}) :new ...) ...)
+        PATTERN
       end
     end
   end

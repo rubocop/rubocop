@@ -29,14 +29,6 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
     expect(cop.offenses.size).to eq(1)
   end
 
-  it 'does not register an offense for a lambda definition inside method' do
-    inspect_source(cop, ['def foo',
-                         '  bar = -> { puts  }',
-                         '  bar.call',
-                         'end'])
-    expect(cop.offenses.size).to eq(0)
-  end
-
   it 'registers an offense for a nested class method definition' do
     inspect_source(cop, ['class Foo',
                          '  def self.x',
@@ -45,6 +37,14 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
                          '  end',
                          'end'])
     expect(cop.offenses.size).to eq(1)
+  end
+
+  it 'does not register an offense for a lambda definition inside method' do
+    inspect_source(cop, ['def foo',
+                         '  bar = -> { puts  }',
+                         '  bar.call',
+                         'end'])
+    expect(cop.offenses).to be_empty
   end
 
   it 'does not register offense for nested definition inside instance_eval' do
@@ -56,7 +56,7 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
                          '    end',
                          '  end',
                          'end'])
-    expect(cop.offenses.size).to eq(0)
+    expect(cop.offenses).to be_empty
   end
 
   it 'does not register offense for definition of method on local var' do
@@ -78,7 +78,7 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
                          '    end',
                          '  end',
                          'end'])
-    expect(cop.offenses.size).to eq(0)
+    expect(cop.offenses).to be_empty
   end
 
   it 'does not register offense for nested definition inside module_eval' do
@@ -90,31 +90,21 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
                          '    end',
                          '  end',
                          'end'])
-    expect(cop.offenses.size).to eq(0)
+    expect(cop.offenses).to be_empty
   end
 
   it 'does not register offense for nested definition inside Class.new' do
-    inspect_source(cop, ['class Foo',
-                         '  def self.define',
-                         '    Class.new do',
-                         '      def y',
-                         '      end',
-                         '    end',
-                         '  end',
-                         'end'])
-    expect(cop.offenses.size).to eq(0)
-  end
-
-  it 'does not register offense for nested definition inside Class.new(S)' do
-    inspect_source(cop, ['class Foo',
-                         '  def self.define',
-                         '    Class.new(S) do',
-                         '      def y',
-                         '      end',
-                         '    end',
-                         '  end',
-                         'end'])
-    expect(cop.offenses.size).to eq(0)
+    ['(S)', ''].each do |constructor_args|
+      inspect_source(cop, ['class Foo',
+                           '  def self.define',
+                           "    Class.new#{constructor_args} do",
+                           '      def y',
+                           '      end',
+                           '    end',
+                           '  end',
+                           'end'])
+      expect(cop.offenses).to be_empty
+    end
   end
 
   it 'does not register offense for nested definition inside Module.new' do
@@ -126,6 +116,20 @@ describe RuboCop::Cop::Lint::NestedMethodDefinition do
                          '    end',
                          '  end',
                          'end'])
-    expect(cop.offenses.size).to eq(0)
+    expect(cop.offenses).to be_empty
+  end
+
+  it 'does not register offense for nested definition inside Struct.new' do
+    ['(:name)', ''].each do |constructor_args|
+      inspect_source(cop, ['class Foo',
+                           '  def self.define',
+                           "    Struct.new#{constructor_args} do",
+                           '      def y',
+                           '      end',
+                           '    end',
+                           '  end',
+                           'end'])
+      expect(cop.offenses).to be_empty
+    end
   end
 end
