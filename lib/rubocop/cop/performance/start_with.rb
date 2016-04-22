@@ -21,7 +21,7 @@ module RuboCop
         SINGLE_QUOTE = "'".freeze
 
         def_node_matcher :redundant_regex?, <<-END
-          {(send $_ {:match :=~} (regexp (str $#literal_at_start?) (regopt)))
+          {(send $!nil {:match :=~} (regexp (str $#literal_at_start?) (regopt)))
            (send (regexp (str $#literal_at_start?) (regopt)) {:match :=~} $_)}
         END
 

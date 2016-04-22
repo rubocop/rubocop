@@ -75,4 +75,9 @@ describe RuboCop::Cop::Performance::EndWith do
 
   include_examples('different match methods', ' =~')
   include_examples('different match methods', '.match')
+
+  it 'allows match without a receiver' do
+    inspect_source(cop, 'expect(subject.spin).to match(/\n\z/)')
+    expect(cop.offenses).to be_empty
+  end
 end
