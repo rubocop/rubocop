@@ -33,6 +33,7 @@
 * [#3039](https://github.com/bbatsov/rubocop/issues/3039): Accept `match` without a receiver in `Performance/EndWith`. ([@lumeet][])
 * [#3039](https://github.com/bbatsov/rubocop/issues/3039): Accept `match` without a receiver in `Performance/StartWith`. ([@lumeet][])
 * [#3048](https://github.com/bbatsov/rubocop/issues/3048): `Lint/NestedMethodDefinition` shouldn't flag methods defined on Structs. ([@owst][])
+* [#2912](https://github.com/bbatsov/rubocop/issues/2912): Check whether a line is aligned with the following line if the preceding line is not an assignment. ([@akihiro17][])
 
 ### Changes
 
@@ -2126,3 +2127,4 @@
 [@bolshakov]: https://github.com/bolshakov
 [@jastkand]: https://github.com/jastkand
 [@graemeboy]: https://github.com/graemeboy
+[@akihiro17]: https://github.com/akihiro17
