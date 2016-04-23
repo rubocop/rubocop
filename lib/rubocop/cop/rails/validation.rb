@@ -8,29 +8,22 @@ module RuboCop
       class Validation < Cop
         MSG = 'Prefer the new style validations `%s` over `%s`.'.freeze
 
-        BLACKLIST = [:validates_acceptance_of,
-                     :validates_confirmation_of,
-                     :validates_exclusion_of,
-                     :validates_format_of,
-                     :validates_inclusion_of,
-                     :validates_length_of,
-                     :validates_numericality_of,
-                     :validates_presence_of,
-                     :validates_size_of,
-                     :validates_uniqueness_of].freeze
+        TYPES = %w(
+          acceptance
+          confirmation
+          exclusion
+          format
+          inclusion
+          length
+          numericality
+          presence
+          size
+          uniqueness
+        ).freeze
 
-        WHITELIST = [
-          'validates :column, acceptance: value',
-          'validates :column, confirmation: value',
-          'validates :column, exclusion: value',
-          'validates :column, format: value',
-          'validates :column, inclusion: value',
-          'validates :column, length: value',
-          'validates :column, numericality: value',
-          'validates :column, presence: value',
-          'validates :column, size: value',
-          'validates :column, uniqueness: value'
-        ].freeze
+        BLACKLIST = TYPES.map { |p| "validates_#{p}_of".to_sym }.freeze
+
+        WHITELIST = TYPES.map { |p| "validates :column, #{p}: value" }.freeze
 
         def on_send(node)
           receiver, method_name, *_args = *node
@@ -47,6 +40,27 @@ module RuboCop
 
         def preferred_method(method)
           WHITELIST[BLACKLIST.index(method.to_sym)]
+        end
+
+        def autocorrect(node)
+          _receiver, method_name, *args = *node
+          options = args.find { |arg| arg.type != :sym }
+          lambda do |corrector|
+            validate_type = method_name.to_s.split('_')[1]
+            corrector.replace(node.loc.selector, 'validates')
+            cop_config['AllowUnusedKeywordArguments']
+            if options
+              corrector.replace(
+                options.loc.expression,
+                "#{validate_type}: { #{options.source} }"
+              )
+            else
+              corrector.insert_after(
+                node.loc.expression,
+                ", #{validate_type}: true"
+              )
+            end
+          end
         end
       end
     end
