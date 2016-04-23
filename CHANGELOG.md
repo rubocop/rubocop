@@ -18,6 +18,7 @@
 * [#3052](https://github.com/bbatsov/rubocop/pull/3052): `Style/MultilineMethodCallBraceLayout` enforced style supports `same_line` option. ([@panthomakos][])
 * [#3052](https://github.com/bbatsov/rubocop/pull/3052): `Style/MultilineMethodDefinitionBraceLayout` enforced style supports `same_line` option. ([@panthomakos][])
 * [#3019](https://github.com/bbatsov/rubocop/issues/3019): Add new `Style/EmptyCaseCondition` cop. ([@owst][])
+* [#3072](https://github.com/bbatsov/rubocop/pull/3072): Add new `Lint/UselessArraySplat` cop. ([@owst][])
 
 ### Bug fixes
 
