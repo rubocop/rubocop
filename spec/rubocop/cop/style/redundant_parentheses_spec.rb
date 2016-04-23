@@ -104,6 +104,11 @@ describe RuboCop::Cop::Style::RedundantParentheses do
   it_behaves_like 'plausible', '+(1.foo.bar)'
 
   it_behaves_like 'redundant', '[(1)]', '[1]', 'a literal', '(1)'
+  it_behaves_like 'redundant', "[(1\n)]", "[1\n]", 'a literal', "(1\n)"
+  it_behaves_like 'plausible', "[(1\n),]"
+  it_behaves_like 'redundant', '{a: (1)}', '{a: 1}', 'a literal', '(1)'
+  it_behaves_like 'redundant', "{a: (1\n)}", "{a: 1\n}", 'a literal', "(1\n)"
+  it_behaves_like 'plausible', "{a: (1\n),}"
 
   it 'accepts parentheses around a method call with unparenthesized ' \
      'arguments' do

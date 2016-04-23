@@ -42,7 +42,13 @@ module RuboCop
             # don't flag `rescue(ExceptionClass)`
             rescue?(node) ||
             # don't flag `method (arg) { }`
-            (arg_in_call_with_block?(node) && !parentheses?(parent))
+            (arg_in_call_with_block?(node) && !parentheses?(parent)) ||
+            # don't flag
+            # ```
+            # { a: (1
+            #      ), }
+            # ```
+            allowed_array_or_hash_element?(node)
         end
 
         def check(begin_node)
@@ -81,6 +87,26 @@ module RuboCop
 
         def keyword_ancestor?(node)
           node.parent && node.parent.keyword?
+        end
+
+        def allowed_array_or_hash_element?(node)
+          (hash_element?(node) || array_element?(node)) &&
+            only_closing_paren_before_comma?(node)
+        end
+
+        def hash_element?(node)
+          node.parent && node.parent.pair_type?
+        end
+
+        def array_element?(node)
+          node.parent && node.parent.array_type?
+        end
+
+        def only_closing_paren_before_comma?(node)
+          source_buffer = node.source_range.source_buffer
+          line_range = source_buffer.line_range(node.loc.end.line)
+
+          line_range.source =~ /^\s*\)\s*,/
         end
 
         def disallowed_literal?(node)
