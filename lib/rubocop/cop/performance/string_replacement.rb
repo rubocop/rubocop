@@ -21,7 +21,7 @@ module RuboCop
       #   'a b c'.delete(' ')
       class StringReplacement < Cop
         MSG = 'Use `%s` instead of `%s`.'.freeze
-        DETERMINISTIC_REGEX = /\A(?:#{LITERAL_REGEX})+\Z/
+        DETERMINISTIC_REGEX = /\A(?:#{LITERAL_REGEX})+\Z/.freeze
         REGEXP_CONSTRUCTOR_METHODS = [:new, :compile].freeze
         GSUB_METHODS = [:gsub, :gsub!].freeze
         DETERMINISTIC_TYPES = [:regexp, :str, :send].freeze

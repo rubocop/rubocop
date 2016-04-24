@@ -11,7 +11,7 @@ module RuboCop
       # for certain the type of value that would be assigned to a constant.
       class ConstantName < Cop
         MSG = 'Use SCREAMING_SNAKE_CASE for constants.'.freeze
-        SNAKE_CASE = /^[\dA-Z_]+$/
+        SNAKE_CASE = /^[\dA-Z_]+$/.freeze
 
         def on_casgn(node)
           _scope, const_name, value = *node

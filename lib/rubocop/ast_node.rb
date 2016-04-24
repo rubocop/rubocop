@@ -31,8 +31,9 @@ module RuboCop
     COMPOSITE_LITERALS = [:dstr, :xstr, :dsym, :array, :hash, :irange,
                           :erange, :regexp].freeze
     BASIC_LITERALS = (LITERALS - COMPOSITE_LITERALS).freeze
-    MUTABLE_LITERALS = [:str, :dstr, :xstr, :array, :hash].freeze
-    IMMUTABLE_LITERALS = (LITERALS - MUTABLE_LITERALS).freeze
+
+    IMMUTABLE_LITERALS = [:int, :float, :sym, :dsym, :nil, :true, :false].freeze
+    MUTABLE_LITERALS = (LITERALS - IMMUTABLE_LITERALS).freeze
 
     VARIABLES = [:ivar, :gvar, :cvar, :lvar].freeze
     REFERENCES = [:nth_ref, :back_ref].freeze
