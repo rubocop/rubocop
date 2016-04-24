@@ -34,11 +34,11 @@ module RuboCop
                               u[0-9a-fA-F]{4}  |   # unicode char escape
                               u\{[^}]*\}       |   # extended unicode escape
                               .                    # any other escaped char
-                            )/x
+                            )/x.freeze
 
       # Match literal regex characters, not including anchors, character
       # classes, alternatives, groups, repetitions, references, etc
-      LITERAL_REGEX = /[\w\s\-,"'!#%&<>=;:`~]|\\[^AbBdDgGkwWszZS0-9]/
+      LITERAL_REGEX = /[\w\s\-,"'!#%&<>=;:`~]|\\[^AbBdDgGkwWszZS0-9]/.freeze
 
       module_function
 

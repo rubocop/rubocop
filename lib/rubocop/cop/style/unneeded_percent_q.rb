@@ -15,7 +15,7 @@ module RuboCop
         EMPTY = ''.freeze
         PERCENT_Q = '%q'.freeze
         PERCENT_CAPITAL_Q = '%Q'.freeze
-        STRING_INTERPOLATION_REGEXP = /#\{.+}/
+        STRING_INTERPOLATION_REGEXP = /#\{.+}/.freeze
 
         def on_dstr(node)
           check(node)

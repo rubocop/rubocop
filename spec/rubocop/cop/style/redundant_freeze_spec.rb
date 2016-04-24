@@ -25,8 +25,9 @@ describe RuboCop::Cop::Style::RedundantFreeze do
   it_behaves_like :immutable_objects, '1.5'
   it_behaves_like :immutable_objects, ':sym'
   it_behaves_like :immutable_objects, ':""'
-  it_behaves_like :immutable_objects, '/./'
-  it_behaves_like :immutable_objects, '1..5'
+  it_behaves_like :immutable_objects, 'nil'
+  it_behaves_like :immutable_objects, 'true'
+  it_behaves_like :immutable_objects, 'false'
 
   shared_examples :mutable_objects do |o|
     it "allows #{o} with freeze" do
@@ -40,6 +41,8 @@ describe RuboCop::Cop::Style::RedundantFreeze do
   it_behaves_like :mutable_objects, '{ a: 1, b: 2 }'
   it_behaves_like :mutable_objects, "'str'"
   it_behaves_like :mutable_objects, '"top#{1 + 2}"'
+  it_behaves_like :mutable_objects, '/./'
+  it_behaves_like :mutable_objects, '(1..5)'
 
   it 'allows .freeze on  method call' do
     inspect_source(cop, 'TOP_TEST = Something.new.freeze')
