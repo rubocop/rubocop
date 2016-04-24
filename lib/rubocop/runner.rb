@@ -102,10 +102,12 @@ module RuboCop
          # given, because these options override configuration.
          (@options[:except] || []).empty? && (@options[:only] || []).empty?
         config = @config_store.for(file)
-        if config['Lint/UnneededDisable']['Enabled']
+        if config.cop_enabled?(Cop::Lint::UnneededDisable)
           cop = Cop::Lint::UnneededDisable.new(config, @options)
-          cop.check(offenses, source.disabled_line_ranges, source.comments)
-          offenses += cop.offenses
+          if cop.relevant_file?(file)
+            cop.check(offenses, source.disabled_line_ranges, source.comments)
+            offenses += cop.offenses
+          end
         end
       end
 
