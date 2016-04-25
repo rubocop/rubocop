@@ -16,7 +16,7 @@ module RuboCop
       #   # require_no_parentheses - bad
       #   ->(a,b,c) { a + b + c }
       #
-      #   # require_parentheses - good
+      #   # require_no_parentheses - good
       #   ->a,b,c { a + b + c}
       class StabbyLambdaParentheses < Cop
         include ConfigurableEnforcedStyle
