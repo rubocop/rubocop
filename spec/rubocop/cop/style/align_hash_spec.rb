@@ -195,8 +195,7 @@ describe RuboCop::Cop::Style::AlignHash, :config do
                                             '           ccc: 2 }',
                                             'hash2 = { :a   => 0,',
                                             '     :bb  => 1,',
-                                            '          :ccc  =>2 }'
-                                           ])
+                                            '          :ccc  =>2 }'])
       expect(new_source).to eq(['hash1 = { a: 0,',
                                 '          bb: 1,',
                                 '          ccc: 2 }',
@@ -258,8 +257,7 @@ describe RuboCop::Cop::Style::AlignHash, :config do
                            'hash2 = {',
                            '  a:   0,',
                            '  bbb: 1',
-                           '}'
-                          ])
+                           '}'])
       expect(cop.offenses).to be_empty
     end
 
@@ -307,8 +305,7 @@ describe RuboCop::Cop::Style::AlignHash, :config do
                            'hash2 = {',
                            '  a:   0,',
                            '  bbb:1',
-                           '}'
-                          ])
+                           '}'])
       expect(cop.highlights).to eq(["'a'   =>  0",
                                     'bbb:1'])
     end
@@ -321,8 +318,7 @@ describe RuboCop::Cop::Style::AlignHash, :config do
                            'hash2 = {',
                            '   a:  0,',
                            '  bbb: 1',
-                           '}'
-                          ])
+                           '}'])
       expect(cop.highlights).to eq(["'a'   =>  0",
                                     "'bbb'  =>  1",
                                     'a:  0',

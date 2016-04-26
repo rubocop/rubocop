@@ -23,8 +23,7 @@ describe RuboCop::Cop::Style::BlockEndNewline do
   it 'registers an offense when multiline block end is not on its own line' do
     inspect_source(cop,
                    ['test do',
-                    '  foo end'
-                   ])
+                    '  foo end'])
     expect(cop.messages)
       .to eq(['Expression at 2, 7 should be on its own line.'])
   end
@@ -32,8 +31,7 @@ describe RuboCop::Cop::Style::BlockEndNewline do
   it 'registers an offense when multiline block } is not on its own line' do
     inspect_source(cop,
                    ['test {',
-                    '  foo }'
-                   ])
+                    '  foo }'])
     expect(cop.messages)
       .to eq(['Expression at 2, 7 should be on its own line.'])
   end

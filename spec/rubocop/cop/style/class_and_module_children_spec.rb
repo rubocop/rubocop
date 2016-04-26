@@ -41,8 +41,7 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
                       'module FooModule',
                       '  module BarModule',
                       '  end',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses).to be_empty
     end
 
@@ -54,8 +53,7 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
                       'end',
                       '',
                       'class BazClass < FooClass::BarClass',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses).to be_empty
     end
   end
@@ -68,8 +66,7 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
                      ['class FooClass',
                       '  class BarClass',
                       '  end',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses.size).to eq 1
       expect(cop.messages).to eq [
         'Use compact module/class definition instead of nested style.'
@@ -82,8 +79,7 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
                      ['module FooModule',
                       '  module BarModule',
                       '  end',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses.size).to eq 1
       expect(cop.messages).to eq [
         'Use compact module/class definition instead of nested style.'
@@ -97,8 +93,7 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
                       'end',
                       '',
                       'module FooClass::BarModule',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses).to be_empty
     end
 
@@ -116,8 +111,7 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
                       '  end',
                       '  class BazModule',
                       '  end',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses).to be_empty
     end
 
@@ -126,8 +120,7 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
                      ['class FooClass',
                       '  def bar_method',
                       '  end',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses).to be_empty
     end
 
@@ -136,8 +129,7 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
                      ['class FooClass < Super',
                       '  class BarClass',
                       '  end',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses).to be_empty
     end
   end

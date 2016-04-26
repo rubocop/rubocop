@@ -164,8 +164,7 @@ describe RuboCop::Cop::Style::CaseIndentation do
                                    '        case b',
                                    '        when 1 then return',
                                    '        end',
-                                   'end'
-                                  ].join("\n"))
+                                   'end'].join("\n"))
         end
       end
 

@@ -11,8 +11,7 @@ describe RuboCop::Cop::Style::NegatedIf do
                    ['if !a_condition',
                     '  some_method',
                     'end',
-                    'some_method if !a_condition'
-                   ])
+                    'some_method if !a_condition'])
     expect(cop.messages).to eq(
       ['Favor `unless` over `if` for negative ' \
        'conditions.'] * 2)
@@ -23,8 +22,7 @@ describe RuboCop::Cop::Style::NegatedIf do
                    ['unless !a_condition',
                     '  some_method',
                     'end',
-                    'some_method unless !a_condition'
-                   ])
+                    'some_method unless !a_condition'])
     expect(cop.messages).to eq(['Favor `if` over `unless` for negative ' \
                                 'conditions.'] * 2)
   end

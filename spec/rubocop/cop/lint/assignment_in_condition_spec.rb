@@ -10,80 +10,70 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   it 'registers an offense for lvar assignment in condition' do
     inspect_source(cop,
                    ['if test = 10',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'registers an offense for lvar assignment in while condition' do
     inspect_source(cop,
                    ['while test = 10',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'registers an offense for lvar assignment in until condition' do
     inspect_source(cop,
                    ['until test = 10',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'registers an offense for ivar assignment in condition' do
     inspect_source(cop,
                    ['if @test = 10',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'registers an offense for clvar assignment in condition' do
     inspect_source(cop,
                    ['if @@test = 10',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'registers an offense for gvar assignment in condition' do
     inspect_source(cop,
                    ['if $test = 10',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'registers an offense for constant assignment in condition' do
     inspect_source(cop,
                    ['if TEST = 10',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'registers an offense for collection element assignment in condition' do
     inspect_source(cop,
                    ['if a[3] = 10',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'accepts == in condition' do
     inspect_source(cop,
                    ['if test == 10',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses).to be_empty
   end
 
   it 'registers an offense for assignment after == in condition' do
     inspect_source(cop,
                    ['if test == 10 || foobar = 1',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses.size).to eq(1)
   end
 
@@ -108,8 +98,7 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
   it 'registers an offense for assignment methods' do
     inspect_source(cop,
                    ['if test.method = 10',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses.size).to eq(1)
   end
 
@@ -117,16 +106,14 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
     it 'accepts = in condition surrounded with braces' do
       inspect_source(cop,
                      ['if (test = 10)',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts []= in condition surrounded with braces' do
       inspect_source(cop,
                      ['if (test[0] = 10)',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses).to be_empty
     end
   end
@@ -137,16 +124,14 @@ describe RuboCop::Cop::Lint::AssignmentInCondition, :config do
     it 'does not accept = in condition surrounded with braces' do
       inspect_source(cop,
                      ['if (test = 10)',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses.size).to eq(1)
     end
 
     it 'does not accept []= in condition surrounded with braces' do
       inspect_source(cop,
                      ['if (test[0] = 10)',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses.size).to eq(1)
     end
   end

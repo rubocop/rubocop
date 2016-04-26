@@ -20,8 +20,7 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
                          'x += 1 if (x < 10)',
                          'x += 1 unless (x < 10)',
                          'x += 1 until (x < 10)',
-                         'x += 1 while (x < 10)'
-                        ])
+                         'x += 1 while (x < 10)'])
     expect(cop.offenses.size).to eq(9)
     expect(cop.messages.first)
       .to eq("Don't use parentheses around the condition of an `if`.")
@@ -48,8 +47,7 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
                                          'x += 1 if (x < 10)',
                                          'x += 1 unless (x < 10)',
                                          'x += 1 while (x < 10)',
-                                         'x += 1 until (x < 10)'
-                                        ])
+                                         'x += 1 until (x < 10)'])
     expect(corrected).to eq ['if x > 10',
                              'elsif x < 3',
                              'end',
@@ -62,8 +60,7 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
                              'x += 1 if x < 10',
                              'x += 1 unless x < 10',
                              'x += 1 while x < 10',
-                             'x += 1 until x < 10'
-                            ].join("\n")
+                             'x += 1 until x < 10'].join("\n")
   end
 
   it 'accepts condition without parentheses' do
@@ -78,8 +75,7 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
                          'x += 1 if x < 10',
                          'x += 1 unless x < 10',
                          'x += 1 while x < 10',
-                         'x += 1 until x < 10'
-                        ])
+                         'x += 1 until x < 10'])
     expect(cop.offenses).to be_empty
   end
 
@@ -116,24 +112,21 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
     it 'accepts variable assignment in condition surrounded with parentheses' do
       inspect_source(cop,
                      ['if (test = 10)',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts element assignment in condition surrounded with parentheses' do
       inspect_source(cop,
                      ['if (test[0] = 10)',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses).to be_empty
     end
 
     it 'accepts setter in condition surrounded with parentheses' do
       inspect_source(cop,
                      ['if (self.test = 10)',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses).to be_empty
     end
   end
@@ -145,8 +138,7 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
        'parentheses' do
       inspect_source(cop,
                      ['if (test = 10)',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -154,8 +146,7 @@ describe RuboCop::Cop::Style::ParenthesesAroundCondition, :config do
        'parentheses' do
       inspect_source(cop,
                      ['if (test[0] = 10)',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses.size).to eq(1)
     end
   end

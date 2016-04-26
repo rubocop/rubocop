@@ -11,8 +11,7 @@ describe RuboCop::Cop::Lint::ConditionPosition do
       inspect_source(cop,
                      [keyword,
                       'x == 10',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -20,8 +19,7 @@ describe RuboCop::Cop::Lint::ConditionPosition do
       inspect_source(cop,
                      ["#{keyword} x == 10",
                       ' bala',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses).to be_empty
     end
 
@@ -40,8 +38,7 @@ describe RuboCop::Cop::Lint::ConditionPosition do
                     'elsif',
                     '  something',
                     '  test',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses.size).to eq(1)
   end
 

@@ -196,8 +196,7 @@ describe RuboCop::Cop::Style::EmptyLineBetweenDefs, :config do
               '  # calculates size',
               '  def n',
               '  end',
-              'end'
-             ]
+              'end']
     inspect_source(cop, source)
     expect(cop.offenses).to be_empty
   end
@@ -208,8 +207,7 @@ describe RuboCop::Cop::Style::EmptyLineBetweenDefs, :config do
               '  #',
               '  def html_escape(s)',
               '  end',
-              'end'
-             ]
+              'end']
     inspect_source(cop, source)
     expect(cop.messages).to be_empty
   end
@@ -220,8 +218,7 @@ describe RuboCop::Cop::Style::EmptyLineBetweenDefs, :config do
               '    def initialize(attrs)',
               '    end',
               '  end',
-              'end'
-             ]
+              'end']
     inspect_source(cop, source)
     expect(cop.messages).to be_empty
   end
@@ -269,8 +266,7 @@ describe RuboCop::Cop::Style::EmptyLineBetweenDefs, :config do
                 'def c', # Not a one-liner, so this is an offense.
                 'end',
                 # Also an offense since previous was multi-line:
-                'def d; end'
-               ]
+                'def d; end']
       inspect_source(cop, source)
       expect(cop.offenses.map(&:line)).to eq([3, 5])
     end

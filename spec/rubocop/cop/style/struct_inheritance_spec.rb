@@ -9,32 +9,28 @@ describe RuboCop::Cop::Style::StructInheritance do
   it 'registers an offense when extending instance of Struct' do
     inspect_source(cop,
                    ['class Person < Struct.new(:first_name, :last_name)',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'registers an offense when extending instance of Struct' do
     inspect_source(cop,
                    ['class Person < Struct.new(:first_name, :last_name) do end',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'accepts plain class' do
     inspect_source(cop,
                    ['class Person',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts extending DelegateClass' do
     inspect_source(cop,
                    ['class Person < DelegateClass(Animal)',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses).to be_empty
   end
 

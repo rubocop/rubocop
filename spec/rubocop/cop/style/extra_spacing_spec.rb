@@ -44,7 +44,8 @@ describe RuboCop::Cop::Style::ExtraSpacing, :config do
         "    'port-channel100' => {",
         "      area: '3.2.2.29', cost: 25, hello: 50, pass: false }",
         '  }',
-        '}']
+        '}'
+      ]
       inspect_source(cop, source)
       expect(cop.offenses).to be_empty
     end

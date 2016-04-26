@@ -95,13 +95,11 @@ describe RuboCop::ConfigLoader do
         create_file('.rubocop.yml',
                     ['AllCops:',
                      '  Exclude:',
-                     '    - vendor/**'
-                    ])
+                     '    - vendor/**'])
 
         create_file(file_path,
                     ['AllCops:',
-                     '  Exclude: []'
-                    ])
+                     '  Exclude: []'])
       end
 
       it 'gets AllCops/Exclude from the highest directory level' do
@@ -118,8 +116,7 @@ describe RuboCop::ConfigLoader do
                     ['AllCops:',
                      '  Exclude:',
                      '    - vendor/**',
-                     '    - !ruby/regexp /[A-Z]/'
-                    ])
+                     '    - !ruby/regexp /[A-Z]/'])
 
         create_file(file_path, ['inherit_from: ../.rubocop.yml'])
       end
@@ -151,8 +148,7 @@ describe RuboCop::ConfigLoader do
         create_file('src/.rubocop.yml',
                     ['AllCops:',
                      '  Exclude:',
-                     '    - vendor/**'
-                    ])
+                     '    - vendor/**'])
 
         create_file(file_path, ['inherit_from: ../src/.rubocop.yml'])
       end
@@ -180,8 +176,7 @@ describe RuboCop::ConfigLoader do
                      'Metrics/MethodLength:',
                      '  Enabled: true',
                      '  CountComments: false',
-                     '  Max: 10'
-                    ])
+                     '  Max: 10'])
 
         create_file(file_path,
                     ['inherit_from: ../.rubocop.yml',
@@ -190,8 +185,7 @@ describe RuboCop::ConfigLoader do
                      '  Enabled: true',
                      '',
                      'Metrics/MethodLength:',
-                     '  Max: 5'
-                    ])
+                     '  Max: 5'])
       end
 
       it 'returns the ancestor configuration plus local overrides' do
@@ -244,8 +238,7 @@ describe RuboCop::ConfigLoader do
                      '  - special.yml',
                      '',
                      'Metrics/MethodLength:',
-                     '  Enabled: true'
-                    ])
+                     '  Enabled: true'])
       end
 
       it 'returns values from the last one when possible' do
@@ -276,8 +269,7 @@ describe RuboCop::ConfigLoader do
       before do
         create_file(file_path,
                     ['inherit_gem:',
-                     '  not_a_real_gem: config/rubocop.yml'
-                    ])
+                     '  not_a_real_gem: config/rubocop.yml'])
       end
 
       it 'fails to load' do
@@ -291,8 +283,7 @@ describe RuboCop::ConfigLoader do
       before do
         create_file(file_path,
                     ['inherit_gem:',
-                     '  rubocop: config/default.yml'
-                    ])
+                     '  rubocop: config/default.yml'])
       end
 
       it 'fails to load' do
@@ -308,12 +299,10 @@ describe RuboCop::ConfigLoader do
                     ['Metrics/MethodLength:',
                      '  Enabled: false',
                      '  Max: 200',
-                     '  CountComments: false'
-                    ])
+                     '  CountComments: false'])
         create_file('local.yml',
                     ['Metrics/MethodLength:',
-                     '  CountComments: true'
-                    ])
+                     '  CountComments: true'])
         create_file(file_path,
                     ['inherit_gem:',
                      '  somegemname: config/rubocop.yml',
@@ -321,8 +310,7 @@ describe RuboCop::ConfigLoader do
                      'inherit_from: local.yml',
                      '',
                      'Metrics/MethodLength:',
-                     '  Enabled: true'
-                    ])
+                     '  Enabled: true'])
       end
 
       it 'returns values from the gem config with local overrides' do

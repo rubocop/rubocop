@@ -10,16 +10,14 @@ describe RuboCop::Cop::Lint::UselessComparison do
     it "registers an offense for a simple comparison with #{op}" do
       inspect_source(cop,
                      ["5 #{op} 5",
-                      "a #{op} a"
-                     ])
+                      "a #{op} a"])
       expect(cop.offenses.size).to eq(2)
     end
 
     it "registers an offense for a complex comparison with #{op}" do
       inspect_source(cop,
                      ["5 + 10 * 30 #{op} 5 + 10 * 30",
-                      "a.top(x) #{op} a.top(x)"
-                     ])
+                      "a.top(x) #{op} a.top(x)"])
       expect(cop.offenses.size).to eq(2)
     end
   end

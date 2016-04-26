@@ -415,6 +415,13 @@ Style/ModuleFunction:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#module-function'
   Enabled: true
 
+Style/MultilineArrayBraceLayout:
+  Description: >-
+                 Checks that the closing brace in an array literal is
+                 either on the same line as the last array element, or
+                 a new line.
+  Enabled: true
+
 Style/MultilineBlockChain:
   Description: 'Avoid multi-line chains of blocks.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#single-line-blocks'
@@ -422,6 +429,13 @@ Style/MultilineBlockChain:
 
 Style/MultilineBlockLayout:
   Description: 'Ensures newlines after multiline block do statements.'
+  Enabled: true
+
+Style/MultilineHashBraceLayout:
+  Description: >-
+                 Checks that the closing brace in a hash literal is
+                 either on the same line as the last hash element, or
+                 a new line.
   Enabled: true
 
 Style/MultilineIfThen:

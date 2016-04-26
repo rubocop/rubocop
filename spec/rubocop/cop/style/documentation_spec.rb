@@ -16,8 +16,7 @@ describe RuboCop::Cop::Style::Documentation do
                    ['class My_Class',
                     '  def method',
                     '  end',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses.size).to eq(1)
   end
 
@@ -30,8 +29,7 @@ describe RuboCop::Cop::Style::Documentation do
                     'class My_Class',
                     '  def method',
                     '  end',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses.size).to eq(1)
   end
 
@@ -40,8 +38,7 @@ describe RuboCop::Cop::Style::Documentation do
                    ['module My_Class',
                     '  def method',
                     '  end',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses.size).to eq(1)
   end
 
@@ -50,8 +47,7 @@ describe RuboCop::Cop::Style::Documentation do
     # explanation.
     inspect_source(cop,
                    ['module Test',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses.size).to eq(1)
   end
 
@@ -61,8 +57,7 @@ describe RuboCop::Cop::Style::Documentation do
                     'class My_Class',
                     '  def method',
                     '  end',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses).to be_empty
   end
 
@@ -72,8 +67,7 @@ describe RuboCop::Cop::Style::Documentation do
                     'class My_Class',
                     '  def method',
                     '  end',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses.size).to eq(1)
   end
 
@@ -85,8 +79,7 @@ describe RuboCop::Cop::Style::Documentation do
                     'class My_Class',
                     '  def method',
                     '  end',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses).to be_empty
   end
 
@@ -97,8 +90,7 @@ describe RuboCop::Cop::Style::Documentation do
                     'class Foo',
                     '  def initialize',
                     '  end',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses).to be_empty
   end
 
@@ -108,16 +100,14 @@ describe RuboCop::Cop::Style::Documentation do
                     'module My_Class',
                     '  def method',
                     '  end',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts empty class without documentation' do
     inspect_source(cop,
                    ['class My_Class',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses).to be_empty
   end
 
@@ -126,8 +116,7 @@ describe RuboCop::Cop::Style::Documentation do
                    ['module Test',
                     '  class A; end',
                     '  class B; end',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses).to be_empty
   end
 
@@ -136,8 +125,7 @@ describe RuboCop::Cop::Style::Documentation do
                    ['class Test',
                     '  class A; end',
                     '  class B; end',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses).to be_empty
   end
 
@@ -169,8 +157,7 @@ describe RuboCop::Cop::Style::Documentation do
                      ['class Test',
                       '  if //',
                       '  end',
-                      'end'
-                     ])
+                      'end'])
     end.to_not raise_error
   end
 
@@ -182,8 +169,7 @@ describe RuboCop::Cop::Style::Documentation do
                     '    def method',
                     '    end',
                     '  end',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses.size).to eq 1
   end
 
@@ -197,8 +183,7 @@ describe RuboCop::Cop::Style::Documentation do
                         '    def method',
                         '    end',
                         '  end # decorating comment',
-                        'end'
-                       ])
+                        'end'])
         expect(cop.offenses).to be_empty
       end
 
@@ -210,8 +195,7 @@ describe RuboCop::Cop::Style::Documentation do
                         '    end',
                         '    # sparse comment',
                         '  end',
-                        'end'
-                       ])
+                        'end'])
         expect(cop.offenses.size).to eq(1)
       end
     end
@@ -224,8 +208,7 @@ describe RuboCop::Cop::Style::Documentation do
                        ["#{keyword} Test #:nodoc:",
                         '  def method',
                         '  end',
-                        'end'
-                       ])
+                        'end'])
         expect(cop.offenses).to be_empty
       end
 
@@ -237,8 +220,7 @@ describe RuboCop::Cop::Style::Documentation do
                         '    def method',
                         '    end',
                         '  end',
-                        'end'
-                       ])
+                        'end'])
         expect(cop.offenses.size).to eq(1)
       end
 
@@ -252,8 +234,7 @@ describe RuboCop::Cop::Style::Documentation do
                           '      TEST = 20',
                           '    end',
                           '  end',
-                          'end'
-                         ])
+                          'end'])
           expect(cop.offenses).to be_empty
         end
       end
@@ -265,8 +246,7 @@ describe RuboCop::Cop::Style::Documentation do
                        ['class Test < Parent #:nodoc:',
                         '  def method',
                         '  end',
-                        'end'
-                       ])
+                        'end'])
         expect(cop.offenses).to be_empty
       end
 
@@ -278,8 +258,7 @@ describe RuboCop::Cop::Style::Documentation do
                         '    def method',
                         '    end',
                         '  end',
-                        'end'
-                       ])
+                        'end'])
         expect(cop.offenses.size).to eq(1)
       end
 
@@ -293,8 +272,7 @@ describe RuboCop::Cop::Style::Documentation do
                           '      TEST = 20',
                           '    end',
                           '  end',
-                          'end'
-                         ])
+                          'end'])
           expect(cop.offenses).to be_empty
         end
       end

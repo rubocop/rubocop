@@ -637,6 +637,16 @@ Style/MethodName:
     - snake_case
     - camelCase
 
+Style/MultilineArrayBraceLayout:
+  EnforcedStyle: symmetrical
+  SupportedStyles:
+    # symmetrical: closing brace is positioned in same way as opening brace
+    # new_line: closing brace is always on a new line
+    # same_line: closing brace is always on the same line as last element
+    - symmetrical
+    - new_line
+    - same_line
+
 Style/MultilineAssignmentLayout:
   # The types of assignments which are subject to this rule.
   SupportedTypes:
@@ -654,6 +664,17 @@ Style/MultilineAssignmentLayout:
     # Ensures that the assignment operator and the rhs are on separate lines
     # for the set of supported types.
     - new_line
+
+Style/MultilineHashBraceLayout:
+  EnforcedStyle: symmetrical
+  SupportedStyles:
+    # symmetrical: closing brace is positioned in same way as opening brace
+    # new_line: closing brace is always on a new line
+    # same_line: closing brace is always on same line as last element
+    - symmetrical
+    - new_line
+    - same_line
+
 
 Style/MultilineMethodCallIndentation:
   EnforcedStyle: aligned

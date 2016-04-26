@@ -12,8 +12,7 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
                      ['def test',
                       '  top = Top.new',
                       '  top.attr = 5',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Useless setter call to local variable `top`.'])
@@ -26,8 +25,7 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
                      ['def Top.test',
                       '  top = Top.new',
                       '  top.attr = 5',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses.size).to eq(1)
     end
   end
@@ -38,8 +36,7 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
                      ['def test',
                       '  top = Top.new',
                       '  top[:attr] = 5',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages)
         .to eq(['Useless setter call to local variable `top`.'])
@@ -52,8 +49,7 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
                      ['def test',
                       '  something',
                       '  @top = 5',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses).to be_empty
     end
   end
@@ -64,8 +60,7 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
                      ['def test',
                       '  something',
                       '  @top.attr = 5',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses).to be_empty
     end
   end
@@ -76,8 +71,7 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
                      ['def test(some_arg)',
                       '  unrelated_local_variable = Top.new',
                       '  some_arg.attr = 5',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses).to be_empty
     end
   end
@@ -92,8 +86,7 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
                       '  some_lvar = @some_ivar',
                       '  some_lvar.do_something',
                       '  some_lvar.attr = 5',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses).to be_empty
     end
   end
@@ -105,8 +98,7 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
                      ['def test(some_arg)',
                       '  _first, some_lvar, _third  = 1, some_arg, 3',
                       '  some_lvar.attr = 5',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses).to be_empty
     end
   end
@@ -118,8 +110,7 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
                      ['def test(some_arg)',
                       '  _first, some_lvar, _third  = do_something',
                       '  some_lvar.attr = 5',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses.size).to eq(1)
     end
   end
@@ -132,8 +123,7 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
                       '  some_lvar = nil',
                       '  some_lvar ||= some_arg',
                       '  some_lvar.attr = 5',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses).to be_empty
     end
   end
@@ -146,8 +136,7 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
                       '  some_lvar = some_arg',
                       '  some_lvar += some_arg',
                       '  some_lvar.attr = 5',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses.size).to eq(1)
     end
   end
@@ -159,8 +148,7 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
                      ['def test(some_arg)',
                       '  some_arg = Top.new',
                       '  some_arg.attr = 5',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses.size).to eq(1)
     end
   end
@@ -171,8 +159,7 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
                      ['def test',
                       '  some_arg = {}',
                       '  some_arg[:attr] = 1',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses.size).to eq(1)
     end
   end
@@ -183,8 +170,7 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
                      ['def test',
                       '  some_lvar = Foo.shared_object',
                       '  some_lvar[:attr] = 1',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses).to be_empty
     end
   end
@@ -193,8 +179,7 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
     inspect_source(cop,
                    ['def test',
                     '  top.attr == 5',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses).to be_empty
   end
 
@@ -205,8 +190,7 @@ describe RuboCop::Cop::Lint::UselessSetterCall do
                     '  rescue StandardError => _',
                     '  end',
                     '  bar[:baz] = true',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses).to be_empty
   end
 end

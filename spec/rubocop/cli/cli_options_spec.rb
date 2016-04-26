@@ -429,8 +429,7 @@ describe RuboCop::CLI, :isolated_environment do
         .to eq(["For #{abs('')}:" \
                 " configuration from #{home}/config/default.yml",
                 "Inheriting configuration from #{home}/config/enabled.yml",
-                "Inheriting configuration from #{home}/config/disabled.yml"
-               ])
+                "Inheriting configuration from #{home}/config/disabled.yml"])
     end
 
     it 'shows cop names' do
@@ -1052,7 +1051,8 @@ describe RuboCop::CLI, :isolated_environment do
           "stdlib 'English' module over $/.",
           '',
           '1 file inspected, 1 offense detected',
-          ''].join("\n"))
+          ''
+        ].join("\n"))
       ensure
         $stdin = STDIN
       end
@@ -1104,7 +1104,8 @@ describe RuboCop::CLI, :isolated_environment do
           '',
           '1 file inspected, 1 offense detected, 1 offense corrected',
           '====================',
-          'p $INPUT_RECORD_SEPARATOR'].join("\n"))
+          'p $INPUT_RECORD_SEPARATOR'
+        ].join("\n"))
       ensure
         $stdin = STDIN
       end

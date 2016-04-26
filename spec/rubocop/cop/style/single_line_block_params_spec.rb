@@ -8,8 +8,7 @@ describe RuboCop::Cop::Style::SingleLineBlockParams, :config do
   let(:cop_config) do
     { 'Methods' =>
       [{ 'reduce' => %w(a e) },
-       { 'test' => %w(x y) }]
-    }
+       { 'test' => %w(x y) }] }
   end
 
   it 'finds wrong argument names in calls with different syntax' do
