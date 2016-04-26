@@ -42,6 +42,17 @@ describe RuboCop::Cop::Style::Alias, :config do
       inspect_source(cop, 'alias $ala $bala')
       expect(cop.offenses).to be_empty
     end
+
+    it 'does not register an offense for alias in an instance_eval block' do
+      inspect_source(cop, ['module M',
+                           '  def foo',
+                           '    instance_eval {',
+                           '      alias bar baz',
+                           '    }',
+                           '  end',
+                           'end'])
+      expect(cop.offenses).to be_empty
+    end
   end
 
   context 'when EnforcedStyle is prefer_alias' do
@@ -136,6 +147,17 @@ describe RuboCop::Cop::Style::Alias, :config do
     it 'does not register an offense for alias_method in a block' do
       inspect_source(cop, ['dsl_method do',
                            '  alias_method :ala, :bala',
+                           'end'])
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'does not register an offense for alias in an instance_eval block' do
+      inspect_source(cop, ['module M',
+                           '  def foo',
+                           '    instance_eval {',
+                           '      alias bar baz',
+                           '    }',
+                           '  end',
                            'end'])
       expect(cop.offenses).to be_empty
     end
