@@ -14,6 +14,7 @@ module RuboCop
     def initialize
       @options = {}
       @config_store = ConfigStore.new
+      @cfg = {}
     end
 
     # Entry point for the application logic. Here we
@@ -77,6 +78,7 @@ module RuboCop
 
       puts RuboCop::Version.version(false) if @options[:version]
       puts RuboCop::Version.version(true) if @options[:verbose_version]
+      @cfg = @config_store.for(Dir.pwd).for_all_cops
       print_available_cops if @options[:show_cops]
       raise Finished
     end
@@ -85,8 +87,7 @@ module RuboCop
       # This must be done after the options have already been processed,
       # because they can affect how ConfigStore behaves
       @options[:formatters] ||= begin
-        cfg = @config_store.for(Dir.pwd).for_all_cops
-        formatter = cfg['DefaultFormatter'] || 'progress'
+        formatter = @cfg['DefaultFormatter'] || 'progress'
         [[formatter, @options[:output_path]]]
       end
 
