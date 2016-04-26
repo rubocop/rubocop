@@ -10,7 +10,7 @@ module RuboCop
       # names. Ruby scripts (i.e. source files with a shebang in the
       # first line) are ignored.
       class FileName < Cop
-        MSG_SNAKE_CASE = 'The file name for this source (%s) ' \
+        MSG_SNAKE_CASE = 'The name of this source file (`%s`) ' \
                          'should use snake_case.'.freeze
         MSG_NO_DEFINITION = '%s should define a class or module ' \
                             'called `%s`.'.freeze
