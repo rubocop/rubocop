@@ -200,6 +200,25 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
     end
   end
 
+  context 'when only a constant or local variable is defined after the ' \
+    'modifier' do
+    %w(CONSTANT some_var).each do |binding_name|
+      let(:source) do
+        [
+          'class SomeClass',
+          '  private',
+          "  #{binding_name} = 1",
+          'end'
+        ]
+      end
+
+      it 'registers an offense' do
+        inspect_source(cop, source)
+        expect(cop.offenses.size).to eq(1)
+      end
+    end
+  end
+
   context 'when a def is an argument to a method call' do
     let(:source) do
       [
@@ -384,29 +403,329 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
     end
   end
 
-  it_behaves_like('at the top of the body', 'class')
-  it_behaves_like('repeated visibility modifiers', 'class', 'public')
-  it_behaves_like('repeated visibility modifiers', 'class', 'protected')
-  it_behaves_like('repeated visibility modifiers', 'class', 'private')
-  it_behaves_like('non-repeated visibility modifiers', 'class')
-  it_behaves_like('at the end of the body', 'class', 'public')
-  it_behaves_like('at the end of the body', 'class', 'protected')
-  it_behaves_like('at the end of the body', 'class', 'private')
-  it_behaves_like('nested in a begin..end block', 'class', 'public')
-  it_behaves_like('nested in a begin..end block', 'class', 'protected')
-  it_behaves_like('nested in a begin..end block', 'class', 'private')
-  it_behaves_like('unused visibility modifiers', 'class')
+  shared_examples 'conditionally defined method' do |keyword, modifier|
+    %w(if unless).each do |conditional_type|
+      it "doesn't register an offense for #{conditional_type}" do
+        src = ["#{keyword} A",
+               "  #{modifier}",
+               "  #{conditional_type} x",
+               '    def method1',
+               '    end',
+               '  end',
+               'end']
+        inspect_source(cop, src)
+        expect(cop.offenses).to be_empty
+      end
+    end
+  end
 
-  it_behaves_like('at the top of the body', 'module')
-  it_behaves_like('repeated visibility modifiers', 'module', 'public')
-  it_behaves_like('repeated visibility modifiers', 'module', 'protected')
-  it_behaves_like('repeated visibility modifiers', 'module', 'private')
-  it_behaves_like('non-repeated visibility modifiers', 'module')
-  it_behaves_like('at the end of the body', 'module', 'public')
-  it_behaves_like('at the end of the body', 'module', 'protected')
-  it_behaves_like('at the end of the body', 'module', 'private')
-  it_behaves_like('nested in a begin..end block', 'module', 'public')
-  it_behaves_like('nested in a begin..end block', 'module', 'protected')
-  it_behaves_like('nested in a begin..end block', 'module', 'private')
-  it_behaves_like('unused visibility modifiers', 'module')
+  shared_examples 'methods defined in an iteration' do |keyword, modifier|
+    %w(each map).each do |iteration_method|
+      it "doesn't register an offense for #{iteration_method}" do
+        src = ["#{keyword} A",
+               "  #{modifier}",
+               "  [1, 2].#{iteration_method} do |i|",
+               '    define_method("method#{i}") do',
+               '      i',
+               '    end',
+               '  end',
+               'end']
+        inspect_source(cop, src)
+        expect(cop.offenses).to be_empty
+      end
+    end
+  end
+
+  shared_examples 'method defined with define_method' do |keyword, modifier|
+    it "doesn't register an offense if a block is passed" do
+      src = ["#{keyword} A",
+             "  #{modifier}",
+             '  define_method(:method1) do',
+             '  end',
+             'end']
+      inspect_source(cop, src)
+      expect(cop.offenses).to be_empty
+    end
+
+    %w(lambda proc ->).each do |proc_type|
+      it "doesn't register an offense if a #{proc_type} is passed" do
+        src = ["#{keyword} A",
+               "  #{modifier}",
+               "  define_method(:method1, #{proc_type} { })",
+               'end']
+        inspect_source(cop, src)
+        expect(cop.offenses).to be_empty
+      end
+    end
+  end
+
+  shared_examples 'method defined on a singleton class' do |keyword, modifier|
+    context 'inside a class' do
+      it "doesn't register an offense if a method is defined" do
+        src = ["#{keyword} A",
+               '  class << self',
+               "    #{modifier}",
+               '    define_method(:method1) do',
+               '    end',
+               '  end',
+               'end']
+        inspect_source(cop, src)
+        expect(cop.offenses).to be_empty
+      end
+
+      it "doesn't register an offense if the modifier is the same as " \
+        'outside the meta-class' do
+        src = ["#{keyword} A",
+               "  #{modifier}",
+               '  def method1',
+               '  end',
+               '  class << self',
+               "    #{modifier}",
+               '    def method2',
+               '    end',
+               '  end',
+               'end']
+        inspect_source(cop, src)
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'registers an offense if no method is defined' do
+        src = ["#{keyword} A",
+               '  class << self',
+               "    #{modifier}",
+               '  end',
+               'end']
+        inspect_source(cop, src)
+        expect(cop.offenses.size).to eq(1)
+      end
+
+      it 'registers an offense if no method is defined after the modifier' do
+        src = ["#{keyword} A",
+               '  class << self',
+               '    def method1',
+               '    end',
+               "    #{modifier}",
+               '  end',
+               'end']
+        inspect_source(cop, src)
+        expect(cop.offenses.size).to eq(1)
+      end
+
+      it 'registers an offense even if a non-singleton-class method is ' \
+        'defined' do
+        src = ["#{keyword} A",
+               '  def method1',
+               '  end',
+               '  class << self',
+               "    #{modifier}",
+               '  end',
+               'end']
+        inspect_source(cop, src)
+        expect(cop.offenses.size).to eq(1)
+      end
+    end
+
+    context 'outside a class' do
+      it "doesn't register an offense if a method is defined" do
+        src = ['class << A',
+               "  #{modifier}",
+               '  define_method(:method1) do',
+               '  end',
+               'end']
+        inspect_source(cop, src)
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'registers an offense if no method is defined' do
+        src = ['class << A',
+               "  #{modifier}",
+               'end']
+        inspect_source(cop, src)
+        expect(cop.offenses.size).to eq(1)
+      end
+
+      it 'registers an offense if no method is defined after the modifier' do
+        src = ['class << A',
+               '  def method1',
+               '  end',
+               "  #{modifier}",
+               'end']
+        inspect_source(cop, src)
+        expect(cop.offenses.size).to eq(1)
+      end
+    end
+  end
+
+  shared_examples 'method defined using class_eval' do |modifier|
+    it "doesn't register an offense if a method is defined" do
+      src = ['A.class_eval do',
+             "  #{modifier}",
+             '  define_method(:method1) do',
+             '  end',
+             'end']
+      inspect_source(cop, src)
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense if no method is defined' do
+      src = ['A.class_eval do',
+             "  #{modifier}",
+             'end']
+      inspect_source(cop, src)
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    context 'inside a class' do
+      it 'registers an offense when a modifier is ouside the block and a ' \
+        'method is defined only inside the block' do
+        src = ['class A',
+               "  #{modifier}",
+               '  A.class_eval do',
+               '    def method1',
+               '    end',
+               '  end',
+               'end']
+        inspect_source(cop, src)
+        expect(cop.offenses.size).to eq(1)
+      end
+
+      it 'registers two offenses when a modifier is inside and outside the ' \
+        ' and no method is defined' do
+        src = ['class A',
+               "  #{modifier}",
+               '  A.class_eval do',
+               "    #{modifier}",
+               '  end',
+               'end']
+        inspect_source(cop, src)
+        expect(cop.offenses.size).to eq(2)
+      end
+    end
+  end
+
+  shared_examples 'method defined using instance_eval' do |modifier|
+    it "doesn't register an offense if a method is defined" do
+      src = ['A.instance_eval do',
+             "  #{modifier}",
+             '  define_method(:method1) do',
+             '  end',
+             'end']
+      inspect_source(cop, src)
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense if no method is defined' do
+      src = ['A.instance_eval do',
+             "  #{modifier}",
+             'end']
+      inspect_source(cop, src)
+      expect(cop.offenses.size).to eq(1)
+    end
+
+    context 'inside a class' do
+      it 'registers an offense when a modifier is ouside the block and a ' \
+        'method is defined only inside the block' do
+        src = ['class A',
+               "  #{modifier}",
+               '  self.instance_eval do',
+               '    def method1',
+               '    end',
+               '  end',
+               'end']
+        inspect_source(cop, src)
+        expect(cop.offenses.size).to eq(1)
+      end
+
+      it 'registers two offenses when a modifier is inside and outside the ' \
+        ' and no method is defined' do
+        src = ['class A',
+               "  #{modifier}",
+               '  self.instance_eval do',
+               "    #{modifier}",
+               '  end',
+               'end']
+        inspect_source(cop, src)
+        expect(cop.offenses.size).to eq(2)
+      end
+    end
+  end
+
+  shared_examples 'nested modules' do |keyword, modifier|
+    it "doesn't register an offense for nested #{keyword}s" do
+      src = ["#{keyword} A",
+             "  #{modifier}",
+             '  def method1',
+             '  end',
+             "  #{keyword} B",
+             '    def method2',
+             '    end',
+             "    #{modifier}",
+             '    def method3',
+             '    end',
+             '  end',
+             'end']
+      inspect_source(cop, src)
+      expect(cop.offenses).to be_empty
+    end
+
+    context 'unused modifiers' do
+      it "registers an offense with a nested #{keyword}" do
+        src = ["#{keyword} A",
+               "  #{modifier}",
+               "  #{keyword} B",
+               "    #{modifier}",
+               '  end',
+               'end']
+        inspect_source(cop, src)
+        expect(cop.offenses.size).to eq(2)
+      end
+
+      it "registers an offense when outside a nested #{keyword}" do
+        src = ["#{keyword} A",
+               "  #{modifier}",
+               "  #{keyword} B",
+               '    def method1',
+               '    end',
+               '  end',
+               'end']
+        inspect_source(cop, src)
+        expect(cop.offenses.size).to eq(1)
+      end
+
+      it "registers an offense when inside a nested #{keyword}" do
+        src = ["#{keyword} A",
+               "  #{keyword} B",
+               "    #{modifier}",
+               '  end',
+               'end']
+        inspect_source(cop, src)
+        expect(cop.offenses.size).to eq(1)
+      end
+    end
+  end
+
+  %w(protected private).each do |modifier|
+    it_behaves_like('method defined using class_eval', modifier)
+    it_behaves_like('method defined using instance_eval', modifier)
+  end
+
+  %w(module class).each do |keyword|
+    it_behaves_like('at the top of the body', keyword)
+    it_behaves_like('non-repeated visibility modifiers', keyword)
+    it_behaves_like('unused visibility modifiers', keyword)
+
+    %w(public protected private).each do |modifier|
+      it_behaves_like('repeated visibility modifiers', keyword, modifier)
+      it_behaves_like('at the end of the body', keyword, modifier)
+      it_behaves_like('nested in a begin..end block', keyword, modifier)
+
+      next if modifier == 'public'
+
+      it_behaves_like('conditionally defined method', keyword, modifier)
+      it_behaves_like('methods defined in an iteration', keyword, modifier)
+      it_behaves_like('method defined with define_method', keyword, modifier)
+      it_behaves_like('method defined on a singleton class', keyword, modifier)
+      it_behaves_like('nested modules', keyword, modifier)
+    end
+  end
 end
