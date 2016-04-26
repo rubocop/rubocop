@@ -162,7 +162,8 @@ describe RuboCop::Cop::Style::FileName do
 
       it 'registers an offense' do
         expect(cop.offenses.size).to eq(1)
-        expect(cop.messages).to eq(['Use snake_case for source file names.'])
+        expect(cop.messages).to eq(
+          ['The file name for this source (a file.rb) should use snake_case.'])
       end
     end
 

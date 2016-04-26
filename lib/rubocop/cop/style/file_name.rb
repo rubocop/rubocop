@@ -10,7 +10,8 @@ module RuboCop
       # names. Ruby scripts (i.e. source files with a shebang in the
       # first line) are ignored.
       class FileName < Cop
-        MSG_SNAKE_CASE = 'Use snake_case for source file names.'.freeze
+        MSG_SNAKE_CASE = 'The file name for this source (%s) ' \
+                         'should use snake_case.'.freeze
         MSG_NO_DEFINITION = '%s should define a class or module ' \
                             'called `%s`.'.freeze
         MSG_REGEX = '`%s` should match `%s`.'.freeze
@@ -55,7 +56,11 @@ module RuboCop
         end
 
         def other_message(basename)
-          regex ? format(MSG_REGEX, basename, regex) : MSG_SNAKE_CASE
+          if regex
+            format(MSG_REGEX, basename, regex)
+          else
+            format(MSG_SNAKE_CASE, basename)
+          end
         end
 
         def shebang?(line)
