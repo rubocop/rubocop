@@ -4,15 +4,72 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for uses of the pre 1.9 lambda syntax for one-line
-      # anonymous functions and uses of the 1.9 lambda syntax for multi-line
-      # anonymous functions.
+      # This cop (by default) checks for uses of the lambda literal syntax for
+      # single line lambdas, and the method call syntax for multiline lambdas.
+      # It is configurable to enforce one of the styles for both single line
+      # and multiline lambdas as well.
+      #
+      # @example
+      #
+      #   # EnforcedStyle: line_count_dependent (default)
+      #
+      #   # bad
+      #   f = lambda { |x| x }
+      #   f = ->(x) do
+      #         x
+      #       end
+      #
+      #   # good
+      #   f = ->(x) { x }
+      #   f = lambda do |x|
+      #         x
+      #       end
+      #
+      # @example
+      #
+      #   # EnforcedStyle: lambda
+      #
+      #   # bad
+      #   f = ->(x) { x }
+      #   f = ->(x) do
+      #         x
+      #       end
+      #
+      #   # good
+      #   f = lambda { |x| x }
+      #   f = lambda do |x|
+      #         x
+      #       end
+      #
+      # @example
+      #
+      #   # EnforcedStyle: literal
+      #
+      #   # bad
+      #   f = lambda { |x| x }
+      #   f = lambda do |x|
+      #         x
+      #       end
+      #
+      #   # good
+      #   f = ->(x) { x }
+      #   f = ->(x) do
+      #         x
+      #       end
       class Lambda < Cop
-        SINGLE_MSG = 'Use the new lambda literal syntax ' \
-                     '`->(params) {...}`.'.freeze
-        SINGLE_NO_ARG_MSG = 'Use the new lambda literal syntax ' \
-                            '`-> {...}`.'.freeze
-        MULTI_MSG = 'Use the `lambda` method for multi-line lambdas.'.freeze
+        include ConfigurableEnforcedStyle
+
+        LITERAL_MESSAGE = 'Use the `-> { ... }` lambda literal syntax for ' \
+                          '%s lambdas.'.freeze
+        METHOD_MESSAGE = 'Use the `lambda` method for %s lambdas.'.freeze
+
+        OFFENDING_SELECTORS = {
+          style: {
+            lambda: { single_line: '->', multiline: '->' },
+            literal: { single_line: 'lambda', multiline: 'lambda' },
+            line_count_dependent: { single_line: 'lambda', multiline: '->' }
+          }
+        }.freeze
 
         TARGET = s(:send, nil, :lambda)
 
@@ -21,34 +78,45 @@ module RuboCop
           # (block
           #   (send nil :lambda)
           #   ...)
-          block_method, args, = *node
+          block_method, _args, = *node
 
           return unless block_method == TARGET
-          selector = block_method.source
-          length = lambda_length(node)
 
-          if selector != '->' && length == 1
-            add_offense_for_single_line(node, block_method.source_range, args)
-          elsif selector == '->' && length > 1
-            add_offense(node, block_method.source_range, MULTI_MSG)
-          end
+          check(node)
         end
 
         private
 
-        def add_offense_for_single_line(block_node, location, args)
-          if args.children.empty?
-            add_offense(block_node, location, SINGLE_NO_ARG_MSG)
-          else
-            add_offense(block_node, location, SINGLE_MSG)
+        def check(node)
+          block_method, _args, = *node
+
+          selector = block_method.source
+
+          if offending_selector?(node, selector)
+            add_offense(node, block_method.source_range,
+                        message(node, selector))
           end
         end
 
-        def lambda_length(block_node)
-          start_line = block_node.loc.begin.line
-          end_line = block_node.loc.end.line
+        def offending_selector?(node, selector)
+          lines = node.multiline? ? :multiline : :single_line
 
-          end_line - start_line + 1
+          selector == OFFENDING_SELECTORS[:style][style][lines]
+        end
+
+        def message(node, selector)
+          message = (selector == '->') ? METHOD_MESSAGE : LITERAL_MESSAGE
+
+          format(message, message_line_modifier(node))
+        end
+
+        def message_line_modifier(node)
+          case style
+          when :line_count_dependent
+            node.multiline? ? 'multiline' : 'single line'
+          else
+            'all'
+          end
         end
 
         def autocorrect(node)
@@ -59,15 +127,15 @@ module RuboCop
           return if selector == '->' && arg_to_unparenthesized_call?(node)
 
           lambda do |corrector|
-            if block_method.source == 'lambda'
-              autocorrect_old_to_new(corrector, node)
+            if selector == 'lambda'
+              autocorrect_method_to_literal(corrector, node)
             else
-              autocorrect_new_to_old(corrector, node)
+              autocorrect_literal_to_method(corrector, node)
             end
           end
         end
 
-        def autocorrect_new_to_old(corrector, node)
+        def autocorrect_literal_to_method(corrector, node)
           block_method, args = *node
           # Avoid correcting to `lambdado` by inserting whitespace
           # if none exists before or after the lambda arguments.
@@ -81,7 +149,7 @@ module RuboCop
           corrector.insert_after(node.loc.begin, arg_str)
         end
 
-        def autocorrect_old_to_new(corrector, node)
+        def autocorrect_method_to_literal(corrector, node)
           block_method, args = *node
           corrector.replace(block_method.source_range, '->')
           return if args.children.empty?
