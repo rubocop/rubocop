@@ -128,5 +128,23 @@ describe RuboCop::Cop::Style::EmptyCaseCondition do
 
       it_behaves_like 'detect/correct empty case, accept non-empty case'
     end
+
+    context 'with when branches using then' do
+      let(:source) do
+        ['case',
+         'when false then foo',
+         'when nil, false, 1 then bar',
+         'when false, 1 then baz',
+         'end']
+      end
+      let(:corrected_source) do
+        ['if false then foo',
+         'elsif [nil, false, 1].any? then bar',
+         'elsif [false, 1].any? then baz',
+         'end']
+      end
+
+      it_behaves_like 'detect/correct empty case, accept non-empty case'
+    end
   end
 end
