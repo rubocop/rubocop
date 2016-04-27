@@ -1,6 +1,7 @@
 # Change log
 
 ## master (unreleased)
+* [#3023](https://github.com/bbatsov/rubocop/issues/3023): Add `Ignore` directive to `MethodLength` to ignore lines containing matching strings e.g. for logging debug. ([@footok][])
 
 ### New features
 
@@ -2137,3 +2138,4 @@
 [@graemeboy]: https://github.com/graemeboy
 [@akihiro17]: https://github.com/akihiro17
 [@magni-]: https://github.com/magni-
+[@footok]: https://github.com/footok

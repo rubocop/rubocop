@@ -24,9 +24,19 @@ module RuboCop
         end
       end
 
+      def ignore_list
+        cop_config['Ignore'] || []
+      end
+
+      def ignore_line?(source_line)
+        ignore_list.find { |o| source_line.include?(o) }
+      end
+
       # Returns true for lines that shall not be included in the count.
       def irrelevant_line(source_line)
-        source_line.blank? || !count_comments? && comment_line?(source_line)
+        source_line.blank? ||
+          (!count_comments? && comment_line?(source_line)) ||
+          ignore_line?(source_line)
       end
     end
   end
