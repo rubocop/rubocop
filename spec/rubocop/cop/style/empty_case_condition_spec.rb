@@ -119,9 +119,9 @@ describe RuboCop::Cop::Style::EmptyCaseCondition do
       let(:corrected_source) do
         ['if false',
          '  foo',
-         'elsif [nil, false, 1].any?',
+         'elsif nil || false || 1',
          '  bar',
-         'elsif [false, 1].any?',
+         'elsif false || 1',
          '  baz',
          'end']
       end
@@ -139,8 +139,8 @@ describe RuboCop::Cop::Style::EmptyCaseCondition do
       end
       let(:corrected_source) do
         ['if false then foo',
-         'elsif [nil, false, 1].any? then bar',
-         'elsif [false, 1].any? then baz',
+         'elsif nil || false || 1 then bar',
+         'elsif false || 1 then baz',
          'end']
       end
 
