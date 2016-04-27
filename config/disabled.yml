@@ -73,40 +73,10 @@ Style/MissingElse:
     - case
     - both
 
-Style/MultilineArrayBraceLayout:
-  Description: >-
-                 Checks that the closing brace in an array literal is
-                 either on the same line as the last array element, or
-                 a new line.
-  Enabled: false
-  EnforcedStyle: symmetrical
-  SupportedStyles:
-    # symmetrical: closing brace is positioned in same way as opening brace
-    # new_line: closing brace is always on a new line
-    # same_line: closing brace is always on the same line as last element
-    - symmetrical
-    - new_line
-    - same_line
-
 Style/MultilineAssignmentLayout:
   Description: 'Check for a newline after the assignment operator in multi-line assignments.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#indent-conditional-assignment'
   Enabled: false
-
-Style/MultilineHashBraceLayout:
-  Description: >-
-                 Checks that the closing brace in a hash literal is
-                 either on the same line as the last hash element, or
-                 a new line.
-  Enabled: false
-  EnforcedStyle: symmetrical
-  SupportedStyles:
-    # symmetrical: closing brace is positioned in same way as opening brace
-    # new_line: closing brace is always on a new line
-    # same_line: closing brace is always on same line as last element
-    - symmetrical
-    - new_line
-    - same_line
 
 Style/MultilineMethodCallBraceLayout:
   Description: >-

@@ -11,8 +11,7 @@ describe RuboCop::Cop::Style::InfiniteLoop do
       inspect_source(cop,
                      ["while #{lit}",
                       '  top',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses.size).to eq(1)
     end
   end
@@ -22,8 +21,7 @@ describe RuboCop::Cop::Style::InfiniteLoop do
       inspect_source(cop,
                      ["until #{lit}",
                       '  top',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses.size).to eq(1)
     end
   end

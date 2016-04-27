@@ -11,8 +11,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
       inspect_source(cop,
                      ["if #{lit}",
                       '  top',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -20,8 +19,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
       inspect_source(cop,
                      ["while #{lit}",
                       '  top',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -29,8 +27,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
       inspect_source(cop,
                      ['begin',
                       '  top',
-                      "end while(#{lit})"
-                     ])
+                      "end while(#{lit})"])
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -38,8 +35,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
       inspect_source(cop,
                      ["until #{lit}",
                       '  top',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -47,8 +43,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
       inspect_source(cop,
                      ['begin',
                       '  top',
-                      "end until #{lit}"
-                     ])
+                      "end until #{lit}"])
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -56,8 +51,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
       inspect_source(cop,
                      ["case #{lit}",
                       'when x then top',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -75,8 +69,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
       inspect_source(cop,
                      ['case x',
                       "when #{lit} then top",
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses).to be_empty
     end
 
@@ -84,8 +77,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
       inspect_source(cop,
                      ["if x && #{lit}",
                       '  top',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -93,8 +85,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
       inspect_source(cop,
                      ["if x && !(a && #{lit}) && y && z",
                       '  top',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -102,8 +93,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
       inspect_source(cop,
                      ["if !#{lit}",
                       '  top',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -111,8 +101,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
       inspect_source(cop,
                      ["if !(x && (y && #{lit}))",
                       '  top',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -120,8 +109,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
       inspect_source(cop,
                      ["if test(#{lit})",
                       '  top',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses).to be_empty
     end
 
@@ -129,8 +117,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
       inspect_source(cop,
                      ["if (a || #{lit}).something",
                       '  top',
-                      'end'
-                     ])
+                      'end'])
       expect(cop.offenses).to be_empty
     end
   end
@@ -139,8 +126,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
     inspect_source(cop,
                    ['case [1, 2, x]',
                     'when [1, 2, 5] then top',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses).to be_empty
   end
 
@@ -148,8 +134,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
     inspect_source(cop,
                    ['case [1, 2, [x, 1]]',
                     'when [1, 2, 5] then top',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses).to be_empty
   end
 
@@ -157,8 +142,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
     inspect_source(cop,
                    ['case [1, 2, [3, 4]]',
                     'when [1, 2, 5] then top',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses.size).to eq(1)
   end
 
@@ -166,8 +150,7 @@ describe RuboCop::Cop::Lint::LiteralInCondition do
     inspect_source(cop,
                    ['case "#{x}"',
                     'when [1, 2, 5] then top',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses).to be_empty
   end
 end

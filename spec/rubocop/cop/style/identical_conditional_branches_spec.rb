@@ -23,7 +23,8 @@ describe RuboCop::Cop::Style::IdenticalConditionalBranches do
       expect(cop.offenses.size).to eq(2)
       expect(cop.messages).to eq([
                                    'Move `do_x` out of the conditional.',
-                                   'Move `do_x` out of the conditional.'])
+                                   'Move `do_x` out of the conditional.'
+                                 ])
     end
   end
 
@@ -42,7 +43,8 @@ describe RuboCop::Cop::Style::IdenticalConditionalBranches do
       expect(cop.offenses.size).to eq(2)
       expect(cop.messages).to eq([
                                    'Move `do_x` out of the conditional.',
-                                   'Move `do_x` out of the conditional.'])
+                                   'Move `do_x` out of the conditional.'
+                                 ])
     end
   end
 
@@ -91,7 +93,8 @@ describe RuboCop::Cop::Style::IdenticalConditionalBranches do
       expect(cop.messages).to eq([
                                    'Move `do_x` out of the conditional.',
                                    'Move `do_x` out of the conditional.',
-                                   'Move `do_x` out of the conditional.'])
+                                   'Move `do_x` out of the conditional.'
+                                 ])
     end
   end
 

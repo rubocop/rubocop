@@ -12,8 +12,7 @@ describe RuboCop::Cop::Style::ClassAndModuleCamelCase do
                     'end',
                     '',
                     'module My_Module',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses.size).to eq(2)
   end
 
@@ -23,8 +22,7 @@ describe RuboCop::Cop::Style::ClassAndModuleCamelCase do
                     'end',
                     '',
                     'module My_Module::Ala',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses.size).to eq(2)
   end
 
@@ -34,8 +32,7 @@ describe RuboCop::Cop::Style::ClassAndModuleCamelCase do
                     'end',
                     '',
                     'module Mine',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses).to be_empty
   end
 end

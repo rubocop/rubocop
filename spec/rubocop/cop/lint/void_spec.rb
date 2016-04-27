@@ -11,8 +11,7 @@ describe RuboCop::Cop::Lint::Void do
       inspect_source(cop,
                      ["a #{op} b",
                       "a #{op} b",
-                      "a #{op} b"
-                     ])
+                      "a #{op} b"])
       expect(cop.offenses.size).to eq(2)
     end
   end
@@ -21,8 +20,7 @@ describe RuboCop::Cop::Lint::Void do
     it "accepts void op #{op} if on last line" do
       inspect_source(cop,
                      ['something',
-                      "a #{op} b"
-                     ])
+                      "a #{op} b"])
       expect(cop.offenses).to be_empty
     end
   end
@@ -39,8 +37,7 @@ describe RuboCop::Cop::Lint::Void do
       inspect_source(cop,
                      ["#{var} = 5",
                       var,
-                      'top'
-                     ])
+                      'top'])
       expect(cop.offenses.size).to eq(1)
     end
   end
@@ -49,8 +46,7 @@ describe RuboCop::Cop::Lint::Void do
     it "registers an offense for void lit #{lit} if not on last line" do
       inspect_source(cop,
                      [lit,
-                      'top'
-                     ])
+                      'top'])
       expect(cop.offenses.size).to eq(1)
     end
   end
@@ -60,32 +56,28 @@ describe RuboCop::Cop::Lint::Void do
                    ['begin',
                     ' 1',
                     ' 2',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses.size).to eq(1)
   end
 
   it 'accepts short call syntax' do
     inspect_source(cop,
                    ['lambda.(a)',
-                    'top'
-                   ])
+                    'top'])
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts backtick commands' do
     inspect_source(cop,
                    ['`touch x`',
-                    'nil'
-                   ])
+                    'nil'])
     expect(cop.offenses).to be_empty
   end
 
   it 'accepts percent-x commands' do
     inspect_source(cop,
                    ['%x(touch x)',
-                    'nil'
-                   ])
+                    'nil'])
     expect(cop.offenses).to be_empty
   end
 end

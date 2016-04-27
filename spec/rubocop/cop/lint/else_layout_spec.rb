@@ -13,8 +13,7 @@ describe RuboCop::Cop::Lint::ElseLayout do
                     'else ala',
                     '  something',
                     '  test',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses.size).to eq(1)
   end
 
@@ -25,8 +24,7 @@ describe RuboCop::Cop::Lint::ElseLayout do
                     'else',
                     '  something',
                     '  test',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses).to be_empty
   end
 
@@ -35,8 +33,7 @@ describe RuboCop::Cop::Lint::ElseLayout do
                    ['if something',
                     '  test',
                     'else bala',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses).to be_empty
   end
 
@@ -49,8 +46,7 @@ describe RuboCop::Cop::Lint::ElseLayout do
                     'else ala',
                     '  something',
                     '  test',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses.size).to eq(1)
   end
 

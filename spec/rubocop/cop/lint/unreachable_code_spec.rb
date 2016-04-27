@@ -11,8 +11,7 @@ describe RuboCop::Cop::Lint::UnreachableCode do
       inspect_source(cop,
                      ['foo = 5',
                       t.to_s,
-                      'bar'
-                     ])
+                      'bar'])
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -20,16 +19,14 @@ describe RuboCop::Cop::Lint::UnreachableCode do
       inspect_source(cop,
                      ['foo = 5',
                       "#{t} if test",
-                      'bar'
-                     ])
+                      'bar'])
       expect(cop.offenses).to be_empty
     end
 
     it "accepts #{t} as the final expression" do
       inspect_source(cop,
                      ['foo = 5',
-                      "#{t} if test"
-                     ])
+                      "#{t} if test"])
       expect(cop.offenses).to be_empty
     end
   end
@@ -39,8 +36,7 @@ describe RuboCop::Cop::Lint::UnreachableCode do
       inspect_source(cop,
                      ['foo = 5',
                       "#{t} something",
-                      'bar'
-                     ])
+                      'bar'])
       expect(cop.offenses.size).to eq(1)
     end
 
@@ -48,16 +44,14 @@ describe RuboCop::Cop::Lint::UnreachableCode do
       inspect_source(cop,
                      ['foo = 5',
                       "#{t} something if test",
-                      'bar'
-                     ])
+                      'bar'])
       expect(cop.offenses).to be_empty
     end
 
     it "accepts #{t} as the final expression" do
       inspect_source(cop,
                      ['foo = 5',
-                      "#{t} something if test"
-                     ])
+                      "#{t} something if test"])
       expect(cop.offenses).to be_empty
     end
   end

@@ -9,8 +9,7 @@ describe RuboCop::Cop::Style::MultilineBlockLayout do
   it 'registers an offense for missing newline in do/end block w/o params' do
     inspect_source(cop,
                    ['test do foo',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.messages)
       .to eq(['Block body expression is on the same line as the block start.'])
   end
@@ -18,8 +17,7 @@ describe RuboCop::Cop::Style::MultilineBlockLayout do
   it 'registers an offense for missing newline in {} block w/o params' do
     inspect_source(cop,
                    ['test { foo',
-                    '}'
-                   ])
+                    '}'])
     expect(cop.messages)
       .to eq(['Block body expression is on the same line as the block start.'])
   end
@@ -27,8 +25,7 @@ describe RuboCop::Cop::Style::MultilineBlockLayout do
   it 'registers an offense for missing newline in do/end block with params' do
     inspect_source(cop,
                    ['test do |x| foo',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.messages)
       .to eq(['Block body expression is on the same line as the block start.'])
   end
@@ -36,8 +33,7 @@ describe RuboCop::Cop::Style::MultilineBlockLayout do
   it 'registers an offense for missing newline in {} block with params' do
     inspect_source(cop,
                    ['test { |x| foo',
-                    '}'
-                   ])
+                    '}'])
     expect(cop.messages)
       .to eq(['Block body expression is on the same line as the block start.'])
   end
@@ -56,16 +52,14 @@ describe RuboCop::Cop::Style::MultilineBlockLayout do
     inspect_source(cop,
                    ['test do',
                     '  foo',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses).to be_empty
   end
 
   it 'does not error out when the block is empty' do
     inspect_source(cop,
                    ['test do |x|',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.offenses).to be_empty
   end
 
@@ -73,8 +67,7 @@ describe RuboCop::Cop::Style::MultilineBlockLayout do
     inspect_source(cop,
                    ['test {',
                     '  foo',
-                    '}'
-                   ])
+                    '}'])
     expect(cop.offenses).to be_empty
   end
 
@@ -82,8 +75,7 @@ describe RuboCop::Cop::Style::MultilineBlockLayout do
     inspect_source(cop,
                    ['-> (x) do foo',
                     '  bar',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.messages)
       .to eq(['Block body expression is on the same line as the block start.'])
   end
@@ -92,8 +84,7 @@ describe RuboCop::Cop::Style::MultilineBlockLayout do
     inspect_source(cop,
                    ['-> x do foo',
                     '  bar',
-                    'end'
-                   ])
+                    'end'])
     expect(cop.messages)
       .to eq(['Block body expression is on the same line as the block start.'])
   end

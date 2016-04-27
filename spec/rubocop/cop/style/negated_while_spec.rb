@@ -11,8 +11,7 @@ describe RuboCop::Cop::Style::NegatedWhile do
                    ['while !a_condition',
                     '  some_method',
                     'end',
-                    'some_method while !a_condition'
-                   ])
+                    'some_method while !a_condition'])
     expect(cop.messages).to eq(
       ['Favor `until` over `while` for negative conditions.'] * 2)
   end
@@ -22,8 +21,7 @@ describe RuboCop::Cop::Style::NegatedWhile do
                    ['until !a_condition',
                     '  some_method',
                     'end',
-                    'some_method until !a_condition'
-                   ])
+                    'some_method until !a_condition'])
     expect(cop.messages)
       .to eq(['Favor `while` over `until` for negative conditions.'] * 2)
   end

@@ -111,8 +111,7 @@ describe RuboCop::Cop::Style::MultilineIfThen do
     inspect_source(cop,
                    ['if two',
                     '  puts 1',
-                    'end unless two'
-                   ])
+                    'end unless two'])
     expect(cop.offenses).to be_empty
   end
 

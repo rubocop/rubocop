@@ -482,8 +482,7 @@ describe RuboCop::CLI, :isolated_environment do
                                '            },',
                                '          ]',
                                'end',
-                               'end'
-                              ])
+                               'end'])
     expect(cli.run(['--auto-correct'])).to eq(1)
     expect(IO.read('example.rb'))
       .to eq(['# encoding: utf-8',
