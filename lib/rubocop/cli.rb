@@ -97,6 +97,8 @@ module RuboCop
     end
 
     def print_available_cops
+      # Load the configs so the require()s are done for custom cops
+      @config_store.for(Dir.pwd)
       cops = Cop::Cop.all
       show_all = @options[:show_cops].empty?
 
