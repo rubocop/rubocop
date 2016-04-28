@@ -77,10 +77,14 @@ module RuboCop
 
             # In `when a; r` we have two children: [a, r].
             # In `when a, b, c; r` we have 4.
-            next unless children.count > 2
+            next unless children.size > 2
 
-            corrector.insert_before(children.first.loc.expression, '[')
-            corrector.insert_after(children[-2].loc.expression, '].any?')
+            range =
+              Parser::Source::Range.new(when_node.loc.expression.source_buffer,
+                                        children[0].loc.expression.begin_pos,
+                                        children[-2].loc.expression.end_pos)
+
+            corrector.replace(range, children[0..-2].map(&:source).join(' || '))
           end
         end
       end
