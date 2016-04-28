@@ -70,21 +70,24 @@ module RuboCop
         end
 
         # Since an if condition containing commas is not syntactically valid, we
-        # correct `when x,y` to `if [x,y].any?`.
+        # correct `when x, y` to `if x || y`.
         def correct_multiple_alternative_whens(corrector, when_nodes)
           when_nodes.each do |when_node|
-            children = when_node.children
-
             # In `when a; r` we have two children: [a, r].
             # In `when a, b, c; r` we have 4.
-            next unless children.size > 2
+            # In `when a, b then r` we have 3.
+            *children, _ = when_node.children
 
+            next unless children.size > 1
+
+            first = children.first
+            last = children.last
             range =
               Parser::Source::Range.new(when_node.loc.expression.source_buffer,
-                                        children[0].loc.expression.begin_pos,
-                                        children[-2].loc.expression.end_pos)
+                                        first.loc.expression.begin_pos,
+                                        last.loc.expression.end_pos)
 
-            corrector.replace(range, children[0..-2].map(&:source).join(' || '))
+            corrector.replace(range, children.map(&:source).join(' || '))
           end
         end
       end
