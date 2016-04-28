@@ -13,7 +13,8 @@ module StatementModifierHelper
                          '  b',
                          'end'])
     expect(cop.messages).to eq(
-      ["Favor modifier `#{keyword}` usage when having a single-line body."])
+      ["Favor modifier `#{keyword}` usage when having a single-line body."]
+    )
     expect(cop.offenses.map { |o| o.location.source }).to eq([keyword])
   end
 

@@ -37,7 +37,8 @@ module RuboCop
             pos_condition, _method, = *condition
             corrector.replace(
               node.loc.keyword,
-              node.type == :while ? 'until' : 'while')
+              node.type == :while ? 'until' : 'while'
+            )
             corrector.replace(condition.source_range, pos_condition.source)
           end
         end

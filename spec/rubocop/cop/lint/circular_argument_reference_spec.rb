@@ -69,7 +69,8 @@ describe RuboCop::Cop::Lint::CircularArgumentReference do
 
       it 'fails with a syntax error before the cop even comes into play' do
         expect { inspect_source(cop, source) }.to raise_error(
-          RuntimeError, /Error parsing/)
+          RuntimeError, /Error parsing/
+        )
         expect(cop.offenses).to be_empty
       end
     end

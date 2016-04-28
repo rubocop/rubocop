@@ -34,7 +34,8 @@ describe RuboCop::Cop::Rails::PluralizationGrammar do
           expect(cop.offenses.size).to eq(1)
           expect(cop.highlights).to eq(["#{singular_literal}.#{method_name}s"])
           expect(cop.messages).to eq(
-            ["Prefer `#{singular_literal}.#{method_name}`."])
+            ["Prefer `#{singular_literal}.#{method_name}`."]
+          )
         end
 
         it 'autocorrects to be grammatically correct' do
@@ -71,7 +72,8 @@ describe RuboCop::Cop::Rails::PluralizationGrammar do
             expect(cop.offenses.size).to eq(1)
             expect(cop.highlights).to eq(["#{plural_number}.#{method_name}"])
             expect(cop.messages).to eq(
-              ["Prefer `#{plural_number}.#{method_name}s`."])
+              ["Prefer `#{plural_number}.#{method_name}s`."]
+            )
           end
 
           it 'autocorrects to be grammatically correct' do

@@ -26,7 +26,8 @@ describe RuboCop::Cop::Style::FirstMethodArgumentLineBreak do
       expect(new_source).to eq(
         "foo(\n" \
         "bar,\n" \
-        '  baz)')
+        '  baz)'
+      )
     end
   end
 
@@ -50,7 +51,8 @@ describe RuboCop::Cop::Style::FirstMethodArgumentLineBreak do
       expect(new_source).to eq(
         "something(\n" \
         "3, bar: 1,\n" \
-        'baz: 2)')
+        'baz: 2)'
+      )
     end
   end
 
@@ -74,7 +76,8 @@ describe RuboCop::Cop::Style::FirstMethodArgumentLineBreak do
       expect(new_source).to eq(
         "something(\n" \
         "bar: 1,\n" \
-        'baz: 2)')
+        'baz: 2)'
+      )
     end
   end
 
@@ -88,7 +91,8 @@ describe RuboCop::Cop::Style::FirstMethodArgumentLineBreak do
     inspect_source(
       cop,
       ['foo bar,',
-       '  baz'])
+       '  baz']
+    )
 
     expect(cop.offenses).to be_empty
   end

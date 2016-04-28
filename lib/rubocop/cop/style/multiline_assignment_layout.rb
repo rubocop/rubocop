@@ -74,7 +74,8 @@ module RuboCop
             range = Parser::Source::Range.new(
               node.source_range.source_buffer,
               node.loc.operator.end_pos,
-              extract_rhs(node).source_range.begin_pos)
+              extract_rhs(node).source_range.begin_pos
+            )
 
             ->(corrector) { corrector.replace(range, ' ') }
           end

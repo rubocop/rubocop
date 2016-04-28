@@ -768,7 +768,8 @@ describe RuboCop::CLI, :isolated_environment do
         expect($stderr.string.strip).to eq(
           'Error: The `Style/MultilineMethodCallIndentation` cop only accepts' \
           ' an `IndentationWidth` configuration parameter when ' \
-          '`EnforcedStyle` is `indented`.')
+          '`EnforcedStyle` is `indented`.'
+        )
       end
     end
 
@@ -783,7 +784,8 @@ describe RuboCop::CLI, :isolated_environment do
         expect($stderr.string.strip).to eq(
           'Error: The `Style/MultilineOperationIndentation` cop only accepts' \
           ' an `IndentationWidth` configuration parameter when ' \
-          '`EnforcedStyle` is `indented`.')
+          '`EnforcedStyle` is `indented`.'
+        )
       end
     end
 
@@ -1045,7 +1047,8 @@ describe RuboCop::CLI, :isolated_environment do
                                    '  Enabled: false'])
       expect(cli.run(['--format', 'emacs', 'example.rb'])).to eq(2)
       expect($stderr.string).to include(
-        'Error: configuration for Syntax cop found')
+        'Error: configuration for Syntax cop found'
+      )
       expect($stderr.string).to include('This cop cannot be configured.')
     end
 
@@ -1457,9 +1460,11 @@ describe RuboCop::CLI, :isolated_environment do
                                      '  TargetRubyVersion: 2.4'])
         expect(cli.run([])).to eq(2)
         expect($stderr.string.strip).to match(
-          /\AError: Unknown Ruby version 2.4 found in `TargetRubyVersion`/)
+          /\AError: Unknown Ruby version 2.4 found in `TargetRubyVersion`/
+        )
         expect($stderr.string.strip).to match(
-          /Known versions: 1.9, 2.0, 2.1, 2.2, 2.3/)
+          /Known versions: 1.9, 2.0, 2.1, 2.2, 2.3/
+        )
       end
     end
 
@@ -1475,7 +1480,8 @@ describe RuboCop::CLI, :isolated_environment do
           ['Error: The `Style/OptionHash` cop is only compatible with Ruby ' \
            '2.0 and up, but the target Ruby version for your project is 1.9.',
            'Please disable this cop or adjust the `TargetRubyVersion` ' \
-           'parameter in your configuration.'].join("\n"))
+           'parameter in your configuration.'].join("\n")
+        )
       end
     end
 
@@ -1494,7 +1500,8 @@ describe RuboCop::CLI, :isolated_environment do
            ' version for your project is 1.9.',
            'Please either disable this cop, configure it to use `array` ' \
            'style, or adjust the `TargetRubyVersion` parameter in your ' \
-           'configuration.'].join("\n"))
+           'configuration.'].join("\n")
+        )
       end
     end
   end
@@ -1511,7 +1518,8 @@ describe RuboCop::CLI, :isolated_environment do
            'use `Style/TrailingCommaInLiteral` and/or ' \
            '`Style/TrailingCommaInArguments` instead.',
            "(obsolete configuration found in #{abs('.rubocop.yml')}, " \
-           'please update it)'].join("\n"))
+           'please update it)'].join("\n")
+        )
       end
     end
   end

@@ -26,7 +26,8 @@ module RuboCop
           let(:cop_disabled_line_ranges) { {} }
           it 'does not add to cop_disabled_line_ranges' do
             expect { file_started }.to_not(
-              change { formatter.cop_disabled_line_ranges })
+              change { formatter.cop_disabled_line_ranges }
+            )
           end
         end
 
@@ -36,7 +37,8 @@ module RuboCop
           end
           it 'merges the changes into cop_disabled_line_ranges' do
             expect { file_started }.to(
-              change { formatter.cop_disabled_line_ranges })
+              change { formatter.cop_disabled_line_ranges }
+            )
           end
         end
       end

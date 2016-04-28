@@ -41,7 +41,8 @@ module RuboCop
           it 'shows the cop and the offense count' do
             formatter.report_summary(cop_counts)
             expect(output.string).to include(
-              "\n1  OffendedCop\n--\n1  Total")
+              "\n1  OffendedCop\n--\n1  Total"
+            )
           end
         end
       end

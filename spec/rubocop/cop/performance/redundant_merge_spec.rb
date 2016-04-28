@@ -134,7 +134,8 @@ describe RuboCop::Cop::Performance::RedundantMerge, :config do
         new_source = autocorrect_source(
           cop,
           ['hash = {}',
-           "hash.merge!(a: 1, b: 2) #{kw} condition1 && condition2"])
+           "hash.merge!(a: 1, b: 2) #{kw} condition1 && condition2"]
+        )
         expect(new_source).to eq(['hash = {}',
                                   "#{kw} condition1 && condition2",
                                   '  hash[:a] = 1',
@@ -149,7 +150,8 @@ describe RuboCop::Cop::Performance::RedundantMerge, :config do
             ['hash = {}',
              'begin',
              "  hash.merge!(a: 1, b: 2) #{kw} condition1",
-             'end'])
+             'end']
+          )
           expect(new_source).to eq(['hash = {}',
                                     'begin',
                                     "  #{kw} condition1",
@@ -185,7 +187,8 @@ describe RuboCop::Cop::Performance::RedundantMerge, :config do
   it 'formats the error message correctly for hash.merge!(a: 1)' do
     inspect_source(cop, 'hash.merge!(a: 1)')
     expect(cop.messages).to eq(
-      ['Use `hash[:a] = 1` instead of `hash.merge!(a: 1)`.'])
+      ['Use `hash[:a] = 1` instead of `hash.merge!(a: 1)`.']
+    )
   end
 
   context 'with MaxKeyValuePairs of 1' do

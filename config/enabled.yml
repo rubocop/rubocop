@@ -443,10 +443,24 @@ Style/MultilineIfThen:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-then'
   Enabled: true
 
+Style/MultilineMethodCallBraceLayout:
+  Description: >-
+                 Checks that the closing brace in a method call is
+                 either on the same line as the last method argument, or
+                 a new line.
+  Enabled: true
+
 Style/MultilineMethodCallIndentation:
   Description: >-
                  Checks indentation of method calls with the dot operator
                  that span more than one line.
+  Enabled: true
+
+Style/MultilineMethodDefinitionBraceLayout:
+  Description: >-
+                 Checks that the closing brace in a method definition is
+                 either on the same line as the last method parameter, or
+                 a new line.
   Enabled: true
 
 Style/MultilineOperationIndentation:

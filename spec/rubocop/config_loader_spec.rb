@@ -210,7 +210,8 @@ describe RuboCop::ConfigLoader do
               'Enabled' => true,
               'CountComments' => false,
               'Max' => 5
-            })
+            }
+          )
         expect(configuration_from_file).to eq(config)
       end
     end
@@ -469,7 +470,8 @@ describe RuboCop::ConfigLoader do
     context 'when no config file exists for the target file' do
       it 'is disabled' do
         expect(
-          config.cop_enabled?(RuboCop::Cop::Style::SymbolArray)).to be_falsey
+          config.cop_enabled?(RuboCop::Cop::Style::SymbolArray)
+        ).to be_falsey
       end
     end
 
@@ -480,7 +482,8 @@ describe RuboCop::ConfigLoader do
                       '  Max: 80'
                     ])
         expect(
-          config.cop_enabled?(RuboCop::Cop::Style::SymbolArray)).to be_falsey
+          config.cop_enabled?(RuboCop::Cop::Style::SymbolArray)
+        ).to be_falsey
       end
     end
 
@@ -491,7 +494,8 @@ describe RuboCop::ConfigLoader do
                       '  Enabled: true'
                     ])
         expect(
-          config.cop_enabled?(RuboCop::Cop::Style::SymbolArray)).to be_truthy
+          config.cop_enabled?(RuboCop::Cop::Style::SymbolArray)
+        ).to be_truthy
       end
     end
   end

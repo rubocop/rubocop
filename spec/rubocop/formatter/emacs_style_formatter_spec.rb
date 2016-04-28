@@ -71,7 +71,8 @@ module RuboCop
             formatter.file_finished(file, [offense])
             expect(output.string).to eq(
               '/path/to/file:1:1: E: unmatched close parenthesis: /    ' \
-              "world # Some comment containing a ) /\n")
+              "world # Some comment containing a ) /\n"
+            )
           end
         end
       end

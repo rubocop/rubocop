@@ -54,7 +54,8 @@ describe RuboCop::CLI, :isolated_environment do
         it 'prints known ruby files' do
           cli.run ['-L']
           expect($stdout.string.split("\n")).to contain_exactly(
-            'app.rb', 'Gemfile', 'lib/helper.rb')
+            'app.rb', 'Gemfile', 'lib/helper.rb'
+          )
         end
       end
 
@@ -70,7 +71,8 @@ describe RuboCop::CLI, :isolated_environment do
         it 'prints the included files and not the excluded ones' do
           cli.run ['--list-target-files']
           expect($stdout.string.split("\n")).to contain_exactly(
-            'app.rb', 'lib/helper.rb', 'show.rabl')
+            'app.rb', 'lib/helper.rb', 'show.rabl'
+          )
         end
       end
     end
@@ -631,7 +633,8 @@ describe RuboCop::CLI, :isolated_environment do
            'https://github.com/bbatsov/ruby-style-guide#spaces-indentation',
            '  Enabled: true',
            '',
-           ''].join("\n"))
+           ''].join("\n")
+        )
       end
 
       include_examples :prints_config
@@ -654,7 +657,8 @@ describe RuboCop::CLI, :isolated_environment do
            'https://github.com/bbatsov/ruby-style-guide#spaces-indentation',
            '  Enabled: true',
            '',
-           ''].join("\n"))
+           ''].join("\n")
+        )
       end
     end
   end
@@ -1066,7 +1070,8 @@ describe RuboCop::CLI, :isolated_environment do
                   '--stdin']
         expect(cli.run(argv)).to eq(2)
         expect($stderr.string).to include(
-          '-s/--stdin requires exactly one path.')
+          '-s/--stdin requires exactly one path.'
+        )
       ensure
         $stdin = STDIN
       end
@@ -1082,7 +1087,8 @@ describe RuboCop::CLI, :isolated_environment do
                   'fake2.rb']
         expect(cli.run(argv)).to eq(2)
         expect($stderr.string).to include(
-          '-s/--stdin requires exactly one path.')
+          '-s/--stdin requires exactly one path.'
+        )
       ensure
         $stdin = STDIN
       end

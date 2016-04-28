@@ -274,7 +274,8 @@ describe RuboCop::Cop::Style::FileName do
       it 'registers an offense' do
         expect(cop.offenses.size).to eq(1)
         expect(cop.messages).to eq(
-          ['`z.rb` should match `(?i-mx:\\A[aeiou]\\z)`.'])
+          ['`z.rb` should match `(?i-mx:\\A[aeiou]\\z)`.']
+        )
       end
     end
   end

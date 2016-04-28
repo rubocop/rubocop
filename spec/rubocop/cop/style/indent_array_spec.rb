@@ -12,7 +12,8 @@ describe RuboCop::Cop::Style::IndentArray do
     }
     RuboCop::Config.new('Style/IndentArray' =>
                         cop_config.merge(supported_styles).merge(
-                          'IndentationWidth' => cop_indent),
+                          'IndentationWidth' => cop_indent
+                        ),
                         'Style/IndentationWidth' => { 'Width' => 2 })
   end
   let(:cop_config) { { 'EnforcedStyle' => 'special_inside_parentheses' } }

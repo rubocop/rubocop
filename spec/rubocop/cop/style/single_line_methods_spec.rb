@@ -17,7 +17,8 @@ describe RuboCop::Cop::Style::SingleLineMethods do
                     'def link_to(name, url); {:name => name}; end',
                     'def @table.columns; super; end'])
     expect(cop.messages).to eq(
-      ['Avoid single-line method definitions.'] * 3)
+      ['Avoid single-line method definitions.'] * 3
+    )
   end
 
   context 'when AllowIfMethodIsEmpty is disabled' do

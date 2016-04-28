@@ -30,7 +30,8 @@ describe RuboCop::Cop::Style::FirstMethodParameterLineBreak do
         "bar,\n" \
         "  baz)\n" \
         "  do_something\n" \
-        'end')
+        'end'
+      )
     end
   end
 
@@ -58,7 +59,8 @@ describe RuboCop::Cop::Style::FirstMethodParameterLineBreak do
         "bar,\n" \
         "  baz)\n" \
         "  do_something\n" \
-        'end')
+        'end'
+      )
     end
   end
 
@@ -67,7 +69,8 @@ describe RuboCop::Cop::Style::FirstMethodParameterLineBreak do
       cop,
       ['def foo(bar, baz, bing)',
        '  do_something',
-       'end'])
+       'end']
+    )
 
     expect(cop.offenses).to be_empty
   end
@@ -78,7 +81,8 @@ describe RuboCop::Cop::Style::FirstMethodParameterLineBreak do
       ['def foo bar,',
        '  baz',
        '  do_something',
-       'end'])
+       'end']
+    )
 
     expect(cop.offenses).to be_empty
   end
@@ -86,7 +90,8 @@ describe RuboCop::Cop::Style::FirstMethodParameterLineBreak do
   it 'ignores single-line methods' do
     inspect_source(
       cop,
-      'def foo(bar, baz) ; bing ; end')
+      'def foo(bar, baz) ; bing ; end'
+    )
 
     expect(cop.offenses).to be_empty
   end
@@ -96,7 +101,8 @@ describe RuboCop::Cop::Style::FirstMethodParameterLineBreak do
       cop,
       ['def foo',
        '  bing',
-       'end'])
+       'end']
+    )
 
     expect(cop.offenses).to be_empty
   end
@@ -125,7 +131,8 @@ describe RuboCop::Cop::Style::FirstMethodParameterLineBreak do
         "bar = [],\n" \
         "  baz = 2)\n" \
         "  do_something\n" \
-        'end')
+        'end'
+      )
     end
   end
 end

@@ -13,7 +13,8 @@ describe RuboCop::Cop::Style::IndentHash do
     RuboCop::Config.new('Style/AlignHash' => align_hash_config,
                         'Style/IndentHash' =>
                         cop_config.merge(supported_styles).merge(
-                          'IndentationWidth' => cop_indent),
+                          'IndentationWidth' => cop_indent
+                        ),
                         'Style/IndentationWidth' => { 'Width' => 2 })
   end
   let(:align_hash_config) do

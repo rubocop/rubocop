@@ -13,7 +13,8 @@ describe RuboCop::Cop::Style::SpaceAfterSemicolon do
   it 'registers an offense for semicolon without space after it' do
     inspect_source(cop, 'x = 1;y = 2')
     expect(cop.messages).to eq(
-      ['Space missing after semicolon.'])
+      ['Space missing after semicolon.']
+    )
   end
 
   it 'does not crash if semicolon is the last character of the file' do

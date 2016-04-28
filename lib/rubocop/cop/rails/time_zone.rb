@@ -80,18 +80,15 @@ module RuboCop
           if acceptable?
             format(MSG_ACCEPTABLE,
                    "#{klass}.#{method_name}",
-                   acceptable_methods(klass, method_name, node).join(', ')
-                  )
+                   acceptable_methods(klass, method_name, node).join(', '))
           elsif method_name == 'current'
             format(MSG_CURRENT,
-                   "#{klass}.#{method_name}"
-                  )
+                   "#{klass}.#{method_name}")
           else
             safe_method_name = safe_method(method_name, node)
             format(MSG,
                    "#{klass}.#{method_name}",
-                   "Time.zone.#{safe_method_name}"
-                  )
+                   "Time.zone.#{safe_method_name}")
           end
         end
 

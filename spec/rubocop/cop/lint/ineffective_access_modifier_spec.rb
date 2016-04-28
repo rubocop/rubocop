@@ -26,7 +26,8 @@ describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
       expect(cop.messages).to eq(
         ['`private` (on line 2) does not make singleton methods private. ' \
          'Use `private_class_method` or `private` inside a `class << self` ' \
-         'block instead.'])
+         'block instead.']
+      )
       expect(cop.highlights).to eq(['def'])
     end
   end
@@ -46,7 +47,8 @@ describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(
         ['`protected` (on line 2) does not make singleton methods protected. ' \
-         'Use `protected` inside a `class << self` block instead.'])
+         'Use `protected` inside a `class << self` block instead.']
+      )
       expect(cop.highlights).to eq(['def'])
     end
   end
@@ -107,7 +109,8 @@ describe RuboCop::Cop::Lint::IneffectiveAccessModifier do
       expect(cop.messages).to eq(
         ['`private` (on line 3) does not make singleton methods private. ' \
          'Use `private_class_method` or `private` inside a `class << self` ' \
-         'block instead.'])
+         'block instead.']
+      )
       expect(cop.highlights).to eq(['def'])
     end
   end

@@ -48,7 +48,8 @@ describe RuboCop::Cop::Lint::UnusedMethodArgument, :config do
             "If it's necessary, use `_` or `_foo` " \
             "as an argument name to indicate that it won't be used. " \
             'You can also write as `some_method(*)` if you want the method ' \
-            "to accept any arguments but don't care about them.")
+            "to accept any arguments but don't care about them."
+          )
         end
       end
     end

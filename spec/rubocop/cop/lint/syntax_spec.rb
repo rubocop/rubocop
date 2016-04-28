@@ -26,7 +26,8 @@ describe RuboCop::Cop::Lint::Syntax do
       expect(offense.message).to eq(
         ['odd number of entries for a hash',
          '(Using Ruby 2.0 parser; configure using `TargetRubyVersion` ' \
-         'parameter, under `AllCops`)'].join("\n"))
+         'parameter, under `AllCops`)'].join("\n")
+      )
     end
 
     it "sets diagnostic's location to offense's location" do

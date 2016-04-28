@@ -45,7 +45,8 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
                       'end'], 'src.rb')
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(
-        ['Method `A.some_method` is defined at both src.rb:2 and src.rb:5.'])
+        ['Method `A.some_method` is defined at both src.rb:2 and src.rb:5.']
+      )
     end
 
     it "doesn't register offense for non-duplicate class methods in #{type}" do
@@ -145,7 +146,8 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
       expect(cop.offenses.size).to eq(2)
       expect(cop.messages).to contain_exactly(
         'Method `A#any_method` is defined at both dups.rb:8 and dups.rb:11.',
-        'Method `A#some_method` is defined at both dups.rb:2 and dups.rb:5.')
+        'Method `A#some_method` is defined at both dups.rb:2 and dups.rb:5.'
+      )
     end
 
     it 'registers an offense for a duplicate instance method in separate ' \
@@ -212,7 +214,8 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
                       'end'], 'test.rb')
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(
-        ['Method `A.some_method` is defined at both test.rb:3 and test.rb:6.'])
+        ['Method `A.some_method` is defined at both test.rb:3 and test.rb:6.']
+      )
     end
 
     it 'understands nested modules' do
@@ -235,7 +238,8 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
       expect(cop.messages).to eq(
         ['Method `B::A#some_method` is defined at both test.rb:3 and ' \
          'test.rb:6.',
-         'Method `B::A.another` is defined at both test.rb:9 and test.rb:11.'])
+         'Method `B::A.another` is defined at both test.rb:9 and test.rb:11.']
+      )
     end
 
     it "doesn't register an offense when class << exp is used" do
@@ -271,7 +275,8 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages).to eq(
       ['Method `Object#some_method` is defined at both toplevel.rb:1 and ' \
-       'toplevel.rb:4.'])
+       'toplevel.rb:4.']
+    )
   end
 
   it 'understands class << A' do
@@ -286,7 +291,8 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
                     'end'], 'test.rb')
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages).to eq(
-      ['Method `A.some_method` is defined at both test.rb:2 and test.rb:5.'])
+      ['Method `A.some_method` is defined at both test.rb:2 and test.rb:5.']
+    )
   end
 
   it 'handles class_eval with implicit receiver' do
@@ -302,7 +308,8 @@ describe RuboCop::Cop::Lint::DuplicateMethods do
                          'end'], 'test.rb')
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages).to eq(
-      ['Method `A#some_method` is defined at both test.rb:3 and test.rb:6.'])
+      ['Method `A#some_method` is defined at both test.rb:3 and test.rb:6.']
+    )
   end
 
   it 'ignores method definitions in RSpec `describe` blocks' do

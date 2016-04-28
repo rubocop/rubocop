@@ -675,6 +675,15 @@ Style/MultilineHashBraceLayout:
     - new_line
     - same_line
 
+Style/MultilineMethodCallBraceLayout:
+  EnforcedStyle: symmetrical
+  SupportedStyles:
+    # symmetrical: closing brace is positioned in same way as opening brace
+    # new_line: closing brace is always on a new line
+    # same_line: closing brace is always on the same line as last argument
+    - symmetrical
+    - new_line
+    - same_line
 
 Style/MultilineMethodCallIndentation:
   EnforcedStyle: aligned
@@ -684,6 +693,16 @@ Style/MultilineMethodCallIndentation:
   # By default, the indentation width from Style/IndentationWidth is used
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
+
+Style/MultilineMethodDefinitionBraceLayout:
+  EnforcedStyle: symmetrical
+  SupportedStyles:
+    # symmetrical: closing brace is positioned in same way as opening brace
+    # new_line: closing brace is always on a new line
+    # same_line: closing brace is always on the same line as last parameter
+    - symmetrical
+    - new_line
+    - same_line
 
 Style/MultilineOperationIndentation:
   EnforcedStyle: aligned

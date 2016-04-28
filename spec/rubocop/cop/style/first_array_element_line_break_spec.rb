@@ -67,7 +67,8 @@ describe RuboCop::Cop::Style::FirstArrayElementLineBreak do
       expect(new_source).to eq(
         "method([\n" \
         ":foo,\n" \
-        '        :bar])')
+        '        :bar])'
+      )
     end
   end
 
@@ -135,7 +136,8 @@ describe RuboCop::Cop::Style::FirstArrayElementLineBreak do
       ['a, b,',
        'c =',
        '1, 2,',
-       '3'])
+       '3']
+    )
 
     expect(cop.offenses).to be_empty
   end
@@ -153,7 +155,8 @@ describe RuboCop::Cop::Style::FirstArrayElementLineBreak do
       cop,
       ['b = [',
        '  :a,',
-       '  :b]'])
+       '  :b]']
+    )
 
     expect(cop.offenses).to be_empty
   end

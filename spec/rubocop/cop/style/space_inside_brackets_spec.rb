@@ -11,7 +11,8 @@ describe RuboCop::Cop::Style::SpaceInsideBrackets do
                          'b = [ 1, 2]'])
     expect(cop.messages).to eq(
       ['Space inside square brackets detected.',
-       'Space inside square brackets detected.'])
+       'Space inside square brackets detected.']
+    )
   end
 
   it 'registers an offense for Hash#[] with symbol key and spaces inside' do
@@ -19,7 +20,8 @@ describe RuboCop::Cop::Style::SpaceInsideBrackets do
                          'b[:key ]'])
     expect(cop.messages).to eq(
       ['Space inside square brackets detected.',
-       'Space inside square brackets detected.'])
+       'Space inside square brackets detected.']
+    )
   end
 
   it 'registers an offense for Hash#[] with string key and spaces inside' do
@@ -27,7 +29,8 @@ describe RuboCop::Cop::Style::SpaceInsideBrackets do
                          'b[ \'key\']'])
     expect(cop.messages).to eq(
       ['Space inside square brackets detected.',
-       'Space inside square brackets detected.'])
+       'Space inside square brackets detected.']
+    )
   end
 
   it 'accepts space inside strings within square brackets' do
@@ -64,7 +67,8 @@ describe RuboCop::Cop::Style::SpaceInsideBrackets do
   it 'only reports a single space once' do
     inspect_source(cop, '[ ]')
     expect(cop.messages).to eq(
-      ['Space inside square brackets detected.'])
+      ['Space inside square brackets detected.']
+    )
   end
 
   it 'auto-corrects unwanted space' do

@@ -43,9 +43,11 @@ module RuboCop
           Hash[ENGLISH_VARS.flat_map { |k, vs| vs.map { |v| [v, [k]] } }]
 
         ENGLISH_VARS.merge!(
-          Hash[ENGLISH_VARS.flat_map { |_, vs| vs.map { |v| [v, [v]] } }])
+          Hash[ENGLISH_VARS.flat_map { |_, vs| vs.map { |v| [v, [v]] } }]
+        )
         PERL_VARS.merge!(
-          Hash[PERL_VARS.flat_map { |_, vs| vs.map { |v| [v, [v]] } }])
+          Hash[PERL_VARS.flat_map { |_, vs| vs.map { |v| [v, [v]] } }]
+        )
         ENGLISH_VARS.each { |_, v| v.freeze }.freeze
         PERL_VARS.each { |_, v| v.freeze }.freeze
 
