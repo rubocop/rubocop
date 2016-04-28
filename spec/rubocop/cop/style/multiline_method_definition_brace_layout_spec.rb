@@ -34,6 +34,6 @@ describe RuboCop::Cop::Style::MultilineMethodDefinitionBraceLayout, :config do
     let(:suffix) { 'end' }
     let(:open) { '(' }
     let(:close) { ')' }
-    let(:multi) { ['b: {', 'foo: bar', '}'] }
+    let(:multi_prefix) { 'b: ' }
   end
 end

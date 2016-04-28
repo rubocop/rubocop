@@ -12,6 +12,10 @@ module RuboCop
         return unless node.loc.begin # Ignore implicit literals.
         return if children(node).empty? # Ignore empty literals.
 
+        # If the last node is or contains a conflicting HEREDOC, we don't want
+        # to adjust the brace layout because this will result in invalid code.
+        return if last_line_heredoc?(children(node).last)
+
         case style
         when :symmetrical then handle_symmetrical(node)
         when :new_line then handle_new_line(node)
@@ -74,6 +78,46 @@ module RuboCop
       # against implicit and empty literals.
       def closing_brace_on_same_line?(node)
         node.loc.end.line == children(node).last.loc.last_line
+      end
+
+      # Starting with the parent node and recursively for the parent node's
+      # children, check if the node is a HEREDOC and if the HEREDOC ends below
+      # or on the last line of the parent node.
+      #
+      # Example:
+      #
+      #   # node is `b: ...` parameter
+      #   # last_line_heredoc?(node) => false
+      #   foo(a,
+      #     b: {
+      #       a: 1,
+      #       c: <<-EOM
+      #         baz
+      #       EOM
+      #     }
+      #   )
+      #
+      #   # node is `b: ...` parameter
+      #   # last_line_heredoc?(node) => true
+      #   foo(a,
+      #     b: <<-EOM
+      #       baz
+      #     EOM
+      #   )
+      def last_line_heredoc?(node, parent = nil)
+        parent ||= node
+
+        return false unless node.respond_to?(:loc)
+
+        if node.loc.respond_to?(:heredoc_end) &&
+           node.loc.heredoc_end.last_line >= parent.loc.last_line
+          return true
+        end
+
+        return false unless node.respond_to?(:children)
+        return false if node.children.empty?
+
+        node.children.any? { |child| last_line_heredoc?(child, parent) }
       end
     end
   end
