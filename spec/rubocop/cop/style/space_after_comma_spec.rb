@@ -10,7 +10,8 @@ describe RuboCop::Cop::Style::SpaceAfterComma do
     it 'registers an offense' do
       inspect_source(cop, source.call(items))
       expect(cop.messages).to eq(
-        ['Space missing after comma.'])
+        ['Space missing after comma.']
+      )
     end
 
     it 'does auto-correction' do

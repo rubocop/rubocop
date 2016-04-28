@@ -26,7 +26,8 @@ describe RuboCop::Cop::Style::FirstHashElementLineBreak do
       expect(new_source).to eq(
         "a = { \n" \
         "a: 1,\n" \
-        '      b: 2}')
+        '      b: 2}'
+      )
     end
   end
 
@@ -50,7 +51,8 @@ describe RuboCop::Cop::Style::FirstHashElementLineBreak do
       expect(new_source).to eq(
         "method({ \n" \
         "foo: 1,\n" \
-        '         bar: 2 })')
+        '         bar: 2 })'
+      )
     end
   end
 
@@ -59,7 +61,8 @@ describe RuboCop::Cop::Style::FirstHashElementLineBreak do
       cop,
       ['method(',
        '  foo: 1,',
-       '  bar: 2)'])
+       '  bar: 2)']
+    )
 
     expect(cop.offenses).to be_empty
   end
@@ -68,7 +71,8 @@ describe RuboCop::Cop::Style::FirstHashElementLineBreak do
     inspect_source(
       cop,
       ['method foo: 1,',
-       ' bar:2'])
+       ' bar:2']
+    )
 
     expect(cop.offenses).to be_empty
   end
@@ -78,7 +82,8 @@ describe RuboCop::Cop::Style::FirstHashElementLineBreak do
     inspect_source(
       cop,
       ['method(foo: 1,',
-       '  bar: 2)'])
+       '  bar: 2)']
+    )
 
     expect(cop.offenses).to be_empty
   end
@@ -88,7 +93,8 @@ describe RuboCop::Cop::Style::FirstHashElementLineBreak do
       cop,
       ['b = {',
        '  a: 1,',
-       '  b: 2}'])
+       '  b: 2}']
+    )
 
     expect(cop.offenses).to be_empty
   end

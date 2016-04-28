@@ -132,7 +132,8 @@ describe RuboCop::Cop::Performance::Detect do
           it "corrects #{method}.first to #{preferred_method} (with block)" do
             new_source = autocorrect_source(
               cop,
-              "[1, 2, 3].#{method} { |i| i % 2 == 0 }.first")
+              "[1, 2, 3].#{method} { |i| i % 2 == 0 }.first"
+            )
 
             expect(new_source).to eq(
               "[1, 2, 3].#{preferred_method} { |i| i % 2 == 0 }"
@@ -143,7 +144,8 @@ describe RuboCop::Cop::Performance::Detect do
              '(with block)' do
             new_source = autocorrect_source(
               cop,
-              "[1, 2, 3].#{method} { |i| i % 2 == 0 }.last")
+              "[1, 2, 3].#{method} { |i| i % 2 == 0 }.last"
+            )
 
             expect(new_source).to eq(
               "[1, 2, 3].reverse.#{preferred_method} { |i| i % 2 == 0 }"
@@ -153,7 +155,8 @@ describe RuboCop::Cop::Performance::Detect do
           it "corrects #{method}.first to #{preferred_method} (short syntax)" do
             new_source = autocorrect_source(
               cop,
-              "[1, 2, 3].#{method}(&:even?).first")
+              "[1, 2, 3].#{method}(&:even?).first"
+            )
 
             expect(new_source).to eq("[1, 2, 3].#{preferred_method}(&:even?)")
           end
@@ -162,7 +165,8 @@ describe RuboCop::Cop::Performance::Detect do
              '(short syntax)' do
             new_source = autocorrect_source(
               cop,
-              "[1, 2, 3].#{method}(&:even?).last")
+              "[1, 2, 3].#{method}(&:even?).last"
+            )
 
             expect(new_source)
               .to eq("[1, 2, 3].reverse.#{preferred_method}(&:even?)")

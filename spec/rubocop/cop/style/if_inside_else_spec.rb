@@ -16,7 +16,8 @@ describe RuboCop::Cop::Style::IfInsideElse do
                          'end'])
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages).to eq(
-      ['Convert `if` nested inside `else` to `elsif`.'])
+      ['Convert `if` nested inside `else` to `elsif`.']
+    )
     expect(cop.highlights).to eq(['if'])
   end
 
@@ -32,7 +33,8 @@ describe RuboCop::Cop::Style::IfInsideElse do
                          'end'])
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages).to eq(
-      ['Convert `if` nested inside `else` to `elsif`.'])
+      ['Convert `if` nested inside `else` to `elsif`.']
+    )
     expect(cop.highlights).to eq(['if'])
   end
 
@@ -44,7 +46,8 @@ describe RuboCop::Cop::Style::IfInsideElse do
                          'end'])
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages).to eq(
-      ['Convert `if` nested inside `else` to `elsif`.'])
+      ['Convert `if` nested inside `else` to `elsif`.']
+    )
     expect(cop.highlights).to eq(['if'])
   end
 

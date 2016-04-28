@@ -64,7 +64,8 @@ describe RuboCop::Cop::Style::IndentAssignment, :config do
   it 'auto-corrects indentation' do
     new_source = autocorrect_source(
       cop, ['a =',
-            'if b ; end'])
+            'if b ; end']
+    )
 
     expect(new_source)
       .to eq(['a =',
@@ -84,7 +85,8 @@ describe RuboCop::Cop::Style::IndentAssignment, :config do
     it 'auto-corrects indentation' do
       new_source = autocorrect_source(
         cop, ['a =',
-              '  if b ; end'])
+              '  if b ; end']
+      )
 
       expect(new_source)
         .to eq(['a =',

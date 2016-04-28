@@ -374,7 +374,8 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
       inspect_source(cop, ['each do |x|',
                            'end.map(&:to_s)'])
       expect(cop.messages).to eq(
-        ['Prefer `{...}` over `do...end` for multi-line chained blocks.'])
+        ['Prefer `{...}` over `do...end` for multi-line chained blocks.']
+      )
     end
 
     it 'auto-corrects do-end for chained blocks' do

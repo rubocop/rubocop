@@ -144,7 +144,8 @@ describe RuboCop::Cop::Lint::BlockAlignment, :config do
         ['variable =',
          '  a_long_method_that_dont_fit_on_the_line do |v|',
          '    v.foo',
-         'end'])
+         'end']
+      )
 
       expect(new_source)
         .to eq(['variable =',

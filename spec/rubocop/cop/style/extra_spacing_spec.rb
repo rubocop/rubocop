@@ -235,7 +235,8 @@ describe RuboCop::Cop::Style::ExtraSpacing, :config do
       expect(cop.messages).to eq(
         ['`=` is not aligned with the following assignment.',
          '`=` is not aligned with the preceding assignment.',
-         '`=` is not aligned with the preceding assignment.'])
+         '`=` is not aligned with the preceding assignment.']
+      )
     end
 
     it 'does not register an offense if assignments are separated by blanks' do

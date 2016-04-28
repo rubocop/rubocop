@@ -75,7 +75,8 @@ shared_examples_for 'multiline literal brace layout' do
 
     it 'auto-corrects safe heredoc offenses' do
       new_source = autocorrect_source(
-        cop, construct(false, a, make_multi(safe_heredoc), true))
+        cop, construct(false, a, make_multi(safe_heredoc), true)
+      )
 
       expect(new_source)
         .to eq(construct(false, a, make_multi(safe_heredoc), false).join("\n"))

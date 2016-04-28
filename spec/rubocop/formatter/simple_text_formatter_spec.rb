@@ -80,7 +80,8 @@ module RuboCop
             expect(output.string).to eq(
               ['',
                '0 files inspected, no offenses detected',
-               ''].join("\n"))
+               ''].join("\n")
+            )
           end
         end
 
@@ -90,7 +91,8 @@ module RuboCop
             expect(output.string).to eq(
               ['',
                '1 file inspected, no offenses detected',
-               ''].join("\n"))
+               ''].join("\n")
+            )
           end
         end
 
@@ -100,7 +102,8 @@ module RuboCop
             expect(output.string).to eq(
               ['',
                '1 file inspected, 1 offense detected',
-               ''].join("\n"))
+               ''].join("\n")
+            )
           end
         end
 
@@ -110,7 +113,8 @@ module RuboCop
             expect(output.string).to eq(
               ['',
                '2 files inspected, 2 offenses detected',
-               ''].join("\n"))
+               ''].join("\n")
+            )
           end
         end
 
@@ -120,7 +124,8 @@ module RuboCop
             expect(output.string).to eq(
               ['',
                '1 file inspected, 1 offense detected, 1 offense corrected',
-               ''].join("\n"))
+               ''].join("\n")
+            )
           end
         end
 
@@ -130,7 +135,8 @@ module RuboCop
             expect(output.string).to eq(
               ['',
                '1 file inspected, 1 offense detected, 2 offenses corrected',
-               ''].join("\n"))
+               ''].join("\n")
+            )
           end
         end
       end

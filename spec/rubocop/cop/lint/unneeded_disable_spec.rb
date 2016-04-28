@@ -152,7 +152,8 @@ describe RuboCop::Cop::Lint::UnneededDisable do
 
             it 'autocorrects' do
               expect(corrected_source).to eq(
-                '# rubocop:disable Metrics/ClassLength')
+                '# rubocop:disable Metrics/ClassLength'
+              )
             end
           end
 
@@ -181,7 +182,8 @@ describe RuboCop::Cop::Lint::UnneededDisable do
 
             it 'autocorrects' do
               expect(corrected_source).to eq(
-                '# rubocop:disable Metrics/MethodLength')
+                '# rubocop:disable Metrics/MethodLength'
+              )
             end
           end
 
@@ -234,7 +236,8 @@ describe RuboCop::Cop::Lint::UnneededDisable do
 
               it 'registers an offense' do
                 expect(cop.messages).to eq(
-                  ['Unnecessary disabling of `Metrics/ClassLength`.'])
+                  ['Unnecessary disabling of `Metrics/ClassLength`.']
+                )
                 expect(cop.highlights).to eq(['ClassLength'])
               end
             end

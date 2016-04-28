@@ -24,7 +24,8 @@ describe RuboCop::Cop::Style::Encoding, :config do
 
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(
-        ['Missing utf-8 encoding comment.'])
+        ['Missing utf-8 encoding comment.']
+      )
     end
 
     it 'registers an offense when encoding present but only ASCII ' \
@@ -34,7 +35,8 @@ describe RuboCop::Cop::Style::Encoding, :config do
 
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(
-        ['Unnecessary utf-8 encoding comment.'])
+        ['Unnecessary utf-8 encoding comment.']
+      )
     end
 
     it 'accepts an empty file' do
@@ -64,7 +66,8 @@ describe RuboCop::Cop::Style::Encoding, :config do
 
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(
-        ['Missing utf-8 encoding comment.'])
+        ['Missing utf-8 encoding comment.']
+      )
     end
 
     it 'accepts encoding inserted by magic_encoding gem' do
@@ -107,7 +110,8 @@ describe RuboCop::Cop::Style::Encoding, :config do
 
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(
-        ['Missing utf-8 encoding comment.'])
+        ['Missing utf-8 encoding comment.']
+      )
     end
 
     it 'accepts an empty file' do
@@ -137,7 +141,8 @@ describe RuboCop::Cop::Style::Encoding, :config do
 
       expect(cop.offenses.size).to eq(1)
       expect(cop.messages).to eq(
-        ['Missing utf-8 encoding comment.'])
+        ['Missing utf-8 encoding comment.']
+      )
     end
 
     it 'accepts encoding inserted by magic_encoding gem' do

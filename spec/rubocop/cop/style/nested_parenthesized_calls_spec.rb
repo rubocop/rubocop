@@ -41,7 +41,8 @@ describe RuboCop::Cop::Style::NestedParenthesizedCalls do
       it 'registers an offense' do
         expect(cop.offenses.size).to eq(1)
         expect(cop.messages).to eq(
-          ['Add parentheses to nested method call `compute something`.'])
+          ['Add parentheses to nested method call `compute something`.']
+        )
         expect(cop.highlights).to eq(['compute something'])
       end
 
@@ -57,7 +58,8 @@ describe RuboCop::Cop::Style::NestedParenthesizedCalls do
       it 'registers an offense' do
         expect(cop.offenses.size).to eq(1)
         expect(cop.messages).to eq(
-          ['Add parentheses to nested method call `compute first, second`.'])
+          ['Add parentheses to nested method call `compute first, second`.']
+        )
         expect(cop.highlights).to eq(['compute first, second'])
       end
 

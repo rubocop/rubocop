@@ -357,7 +357,8 @@ describe RuboCop::Cop::Style::AndOr, :config do
         new_source = autocorrect_source(cop, source)
         expect(new_source).to eq(
           ["APP_ROOT = Pathname.new File.expand_path('../../', __FILE__)",
-           "system('bundle check') || system!('bundle install')"].join("\n"))
+           "system('bundle check') || system!('bundle install')"].join("\n")
+        )
       end
     end
   end

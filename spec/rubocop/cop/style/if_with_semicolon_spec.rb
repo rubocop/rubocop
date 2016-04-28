@@ -9,7 +9,8 @@ describe RuboCop::Cop::Style::IfWithSemicolon do
   it 'registers an offense for one line if/;/end' do
     inspect_source(cop, 'if cond; run else dont end')
     expect(cop.messages).to eq(
-      ['Do not use if x; Use the ternary operator instead.'])
+      ['Do not use if x; Use the ternary operator instead.']
+    )
   end
 
   it 'accepts one line if/then/end' do

@@ -32,7 +32,8 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
       expect(cop.messages).to eq(
         ['Favor modifier `if` usage when having a single-line' \
          ' body. Another good alternative is the usage of control flow' \
-         ' `&&`/`||`.'])
+         ' `&&`/`||`.']
+      )
     end
 
     it 'does auto-correction' do
@@ -66,7 +67,8 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
       expect(cop.messages).to eq(
         ['Favor modifier `if` usage when having a single-line' \
          ' body. Another good alternative is the usage of control flow' \
-         ' `&&`/`||`.'])
+         ' `&&`/`||`.']
+      )
     end
 
     it 'does auto-correction and preserves comment' do
@@ -150,7 +152,8 @@ describe RuboCop::Cop::Style::IfUnlessModifier do
       expect(cop.messages).to eq(
         ['Favor modifier `unless` usage when having a single-line' \
          ' body. Another good alternative is the usage of control flow' \
-         ' `&&`/`||`.'])
+         ' `&&`/`||`.']
+      )
     end
 
     it 'does auto-correction' do

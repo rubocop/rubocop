@@ -65,9 +65,7 @@ module RuboCop
 
           add_offense(node, :selector,
                       format(MSG_SEND,
-                             method_name
-                            )
-                     )
+                             method_name))
         end
 
         private
@@ -81,8 +79,7 @@ module RuboCop
           add_offense(node, :selector,
                       format(MSG,
                              "Date.#{method_name}",
-                             "Time.zone.#{method_name}")
-                     )
+                             "Time.zone.#{method_name}"))
         end
 
         def extract_method_chain(node)

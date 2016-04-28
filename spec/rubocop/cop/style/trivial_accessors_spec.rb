@@ -247,7 +247,8 @@ describe RuboCop::Cop::Style::TrivialAccessors, :config do
 
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages).to eq(
-      ['Use `attr_reader` to define trivial reader methods.'])
+      ['Use `attr_reader` to define trivial reader methods.']
+    )
   end
   context 'exact name match disabled' do
     let(:cop_config) { { 'ExactNameMatch' => false } }

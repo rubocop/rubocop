@@ -116,7 +116,8 @@ module RuboCop
                 'foo',
                 'Cop'
               )
-            ])
+            ]
+          )
 
           formatter.file_started(files[1], {})
           formatter.file_finished(files[1], [])
@@ -141,7 +142,8 @@ module RuboCop
                 'foo',
                 'Cop'
               )
-            ])
+            ]
+          )
         end
 
         it 'reports all detected offenses for all failed files' do

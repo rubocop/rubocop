@@ -41,7 +41,8 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages).to eq(
       ["Number of arguments (1) to `format` doesn't match the number of " \
-       'fields (2).'])
+       'fields (2).']
+    )
   end
 
   it 'registers an offense when calling Kernel.sprintf ' \
@@ -50,7 +51,8 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages).to eq(
       ["Number of arguments (1) to `sprintf` doesn't match the number of " \
-       'fields (2).'])
+       'fields (2).']
+    )
   end
 
   it 'registers an offense when there are less arguments than expected' do
@@ -58,7 +60,8 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages).to eq(
       ["Number of arguments (1) to `format` doesn't match the number of " \
-       'fields (2).'])
+       'fields (2).']
+    )
   end
 
   it 'registers an offense when there are more arguments than expected' do
@@ -66,7 +69,8 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages).to eq(
       ["Number of arguments (3) to `format` doesn't match the number of " \
-       'fields (2).'])
+       'fields (2).']
+    )
   end
 
   it 'does not register an offense when arguments and fields match' do
@@ -89,7 +93,8 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages).to eq(
       ["Number of arguments (3) to `sprintf` doesn't match the number of " \
-       'fields (2).'])
+       'fields (2).']
+    )
   end
 
   it 'correctly parses different sprintf formats' do
@@ -103,7 +108,8 @@ describe RuboCop::Cop::Lint::FormatParameterMismatch do
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages).to eq(
       ["Number of arguments (3) to `String#%` doesn't match the number of " \
-       'fields (2).'])
+       'fields (2).']
+    )
   end
 
   it 'does not register offense for `String#%` when arguments, fields match' do

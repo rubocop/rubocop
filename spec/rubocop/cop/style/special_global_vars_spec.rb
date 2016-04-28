@@ -73,7 +73,8 @@ describe RuboCop::Cop::Style::SpecialGlobalVars, :config do
     it 'generates correct auto-config when Perl variable names are used' do
       inspect_source(cop, '$0')
       expect(cop.config_to_allow_offenses).to eq(
-        'EnforcedStyle' => 'use_perl_names')
+        'EnforcedStyle' => 'use_perl_names'
+      )
     end
 
     it 'generates correct auto-config when mixed styles are used' do

@@ -73,8 +73,7 @@ module RuboCop
           add_offense(node, :selector,
                       format(MSG,
                              preferred_method(method_name),
-                             method_name)
-                     )
+                             method_name))
         end
 
         def offending_method?(method_name)

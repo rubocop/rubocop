@@ -14,7 +14,8 @@ describe RuboCop::Cop::Style::NegatedIf do
                     'some_method if !a_condition'])
     expect(cop.messages).to eq(
       ['Favor `unless` over `if` for negative ' \
-       'conditions.'] * 2)
+       'conditions.'] * 2
+    )
   end
 
   it 'registers an offense for unless with exclamation point condition' do
@@ -35,7 +36,8 @@ describe RuboCop::Cop::Style::NegatedIf do
                     'some_method if not a_condition'])
     expect(cop.messages).to eq(
       ['Favor `unless` over `if` for negative ' \
-       'conditions.'] * 2)
+       'conditions.'] * 2
+    )
     expect(cop.offenses.map(&:line)).to eq([1, 4])
   end
 

@@ -31,7 +31,8 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     it 'registers an offense for other delimiters' do
       inspect_source(cop, '%(string)')
       expect(cop.messages).to eq(
-        ['`%`-literals should be delimited by `[` and `]`.'])
+        ['`%`-literals should be delimited by `[` and `]`.']
+      )
     end
 
     it 'does not register an offense for other delimiters ' \
@@ -56,7 +57,8 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     it 'registers an offense for other delimiters' do
       inspect_source(cop, '%q(string)')
       expect(cop.messages).to eq(
-        ['`%q`-literals should be delimited by `[` and `]`.'])
+        ['`%q`-literals should be delimited by `[` and `]`.']
+      )
     end
 
     it 'does not register an offense for other delimiters ' \
@@ -75,7 +77,8 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     it 'registers an offense for other delimiters' do
       inspect_source(cop, '%Q(string)')
       expect(cop.messages).to eq(
-        ['`%Q`-literals should be delimited by `[` and `]`.'])
+        ['`%Q`-literals should be delimited by `[` and `]`.']
+      )
     end
 
     it 'does not register an offense for other delimiters ' \
@@ -100,7 +103,8 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     it 'registers an offense for other delimiters' do
       inspect_source(cop, '%w(some words)')
       expect(cop.messages).to eq(
-        ['`%w`-literals should be delimited by `[` and `]`.'])
+        ['`%w`-literals should be delimited by `[` and `]`.']
+      )
     end
 
     it 'does not register an offense for other delimiters ' \
@@ -119,7 +123,8 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     it 'registers an offense for other delimiters' do
       inspect_source(cop, '%W(some words)')
       expect(cop.messages).to eq(
-        ['`%W`-literals should be delimited by `[` and `]`.'])
+        ['`%W`-literals should be delimited by `[` and `]`.']
+      )
     end
 
     it 'does not register an offense for other delimiters ' \
@@ -144,7 +149,8 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     it 'registers an offense for other delimiters' do
       inspect_source(cop, '%r(regexp)')
       expect(cop.messages).to eq(
-        ['`%r`-literals should be delimited by `[` and `]`.'])
+        ['`%r`-literals should be delimited by `[` and `]`.']
+      )
     end
 
     it 'does not register an offense for other delimiters ' \
@@ -169,7 +175,8 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     it 'registers an offense for other delimiters' do
       inspect_source(cop, '%i(some symbols)')
       expect(cop.messages).to eq(
-        ['`%i`-literals should be delimited by `[` and `]`.'])
+        ['`%i`-literals should be delimited by `[` and `]`.']
+      )
     end
   end
 
@@ -182,7 +189,8 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     it 'registers an offense for other delimiters' do
       inspect_source(cop, '%s(symbol)')
       expect(cop.messages).to eq(
-        ['`%s`-literals should be delimited by `[` and `]`.'])
+        ['`%s`-literals should be delimited by `[` and `]`.']
+      )
     end
   end
 
@@ -195,7 +203,8 @@ describe RuboCop::Cop::Style::PercentLiteralDelimiters, :config do
     it 'registers an offense for other delimiters' do
       inspect_source(cop, '%x(command)')
       expect(cop.messages).to eq(
-        ['`%x`-literals should be delimited by `[` and `]`.'])
+        ['`%x`-literals should be delimited by `[` and `]`.']
+      )
     end
 
     it 'does not register an offense for other delimiters ' \
