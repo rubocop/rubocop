@@ -5,13 +5,15 @@ module RuboCop
   module Cop
     module Style
       # This cop checks whether the source file has a utf-8 encoding
-      # comment or not. This check makes sense only for code that
-      # should support Ruby 1.9, since in 2.0+ utf-8 is the default
-      # source file encoding. There are two styles:
+      # comment or not.
+      # Setting this check to "always" and "when_needed" makes sense only
+      # for code that should support Ruby 1.9, since in 2.0+ utf-8 is the
+      # default source file encoding. There are three styles:
       #
       # when_needed - only enforce an encoding comment if there are non ASCII
       #               characters, otherwise report an offense
       # always - enforce encoding comment in all files
+      # never - enforce no encoding comment in all files
       class Encoding < Cop
         include ConfigurableEnforcedStyle
 
@@ -56,10 +58,12 @@ module RuboCop
           encoding_present = line =~ ENCODING_PATTERN
           ascii_only = processed_source.buffer.source.ascii_only?
           always_encode = style == :always
+          never_encode = style == :never
+          encoding_omitable = never_encode || (!always_encode && ascii_only)
 
-          if !encoding_present && (always_encode || !ascii_only)
+          if !encoding_present && !encoding_omitable
             MSG_MISSING
-          elsif !always_encode && ascii_only && encoding_present
+          elsif encoding_present && encoding_omitable
             MSG_UNNECESSARY
           end
         end

@@ -212,4 +212,50 @@ describe RuboCop::Cop::Style::Encoding, :config do
       end
     end
   end
+
+  context 'never' do
+    let(:cop_config) do
+      { 'EnforcedStyle' => 'never' }
+    end
+
+    it 'registers no offense when no encoding present but only ASCII ' \
+       'characters' do
+      inspect_source(cop, 'def foo() end')
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers no offense when there is no encoding present but non ' \
+       'ASCII characters' do
+      inspect_source(cop, 'def foo() \'ä\' end')
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense when encoding present but only ASCII ' \
+       'characters' do
+      inspect_source(cop, ['# encoding: utf-8',
+                           'def foo() end'])
+
+      expect(cop.offenses.size).to eq(1)
+      expect(cop.messages).to eq(
+        ['Unnecessary utf-8 encoding comment.']
+      )
+    end
+
+    context 'auto-correct' do
+      it 'removes encoding comment on first line when there are ' \
+         'non ASCII characters in the file' do
+        new_source = autocorrect_source(cop, 'def foo() \'ä\' end')
+
+        expect(new_source).to eq('def foo() \'ä\' end')
+      end
+
+      it "removes encoding comment on first line when it's not needed" do
+        new_source = autocorrect_source(cop, "# encoding: utf-8\nblah")
+
+        expect(new_source).to eq('blah')
+      end
+    end
+  end
 end
