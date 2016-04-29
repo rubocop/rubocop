@@ -113,7 +113,7 @@ module RuboCop
         def can_shorten?(block_args, block_body)
           # something { |x, y| ... }
           return false unless block_args.children.size == 1
-          return false if block_args.children.first.blockarg_type?
+          return false if non_shortenable_args?(block_args)
           return false unless block_body && block_body.type == :send
 
           receiver, _method_name, args = *block_body
@@ -130,6 +130,12 @@ module RuboCop
 
         def super?(node)
           [:super, :zsuper].include?(node.type)
+        end
+
+        def non_shortenable_args?(block_args)
+          # something { |&x| ... }
+          # something { |*x| ... }
+          [:blockarg, :restarg].include?(block_args.children.first.type)
         end
       end
     end
