@@ -143,6 +143,23 @@ describe RuboCop::Cop::Metrics::MethodLength, :config do
     expect(cop.offenses).to be_empty
   end
 
+  context 'when Ignore is configurd' do
+    before { cop_config['Ignore'] = ['.debug'] }
+
+    it 'does not count lines with strings in the ignore list' do
+      inspect_source(cop, ['def m()',
+                           'logger.debug{"abc"}',
+                           'logger.debug{"abc"}',
+                           'logger.debug{"abc"}',
+                           'logger.debug{"abc"}',
+                           'logger.debug{"abc"}',
+                           'logger.debug{"abc"}',
+                           'logger.debug{"abc"}',
+                           'end'])
+      expect(cop.offenses).to be_empty
+    end
+  end
+
   context 'when CountComments is enabled' do
     before { cop_config['CountComments'] = true }
 
