@@ -43,6 +43,7 @@
 * [#3004](https://github.com/bbatsov/rubocop/pull/3004): Don't add `Style/Alias` offenses for use of `alias` in `instance_eval` blocks, since object instances don't respond to `alias_method`. ([@magni-][])
 * [#3061](https://github.com/bbatsov/rubocop/pull/3061): Custom cops now show up in --show-cops. ([@ptarjan][])
 * [#3088](https://github.com/bbatsov/rubocop/pull/3088): Ignore offenses that involve conflicting HEREDOCs in the `Style/Multiline*BraceLayout` cops. ([@panthomakos][])
+* [#3083](https://github.com/bbatsov/rubocop/issues/3083): Do not register an offense for splat block args in `Style/SymbolProc`. ([@rrosenblum][])
 
 ### Changes
 
