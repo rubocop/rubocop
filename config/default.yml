@@ -425,10 +425,11 @@ Style/EmptyLinesAroundModuleBody:
 # AutoCorrectEncodingComment must match the regex
 # /#.*coding\s?[:=]\s?(?:UTF|utf)-8/
 Style/Encoding:
-  EnforcedStyle: always
+  EnforcedStyle: never
   SupportedStyles:
     - when_needed
     - always
+    - never
   AutoCorrectEncodingComment: '# encoding: utf-8'
 
 Style/ExtraSpacing:

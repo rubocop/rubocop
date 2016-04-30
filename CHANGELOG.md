@@ -21,6 +21,7 @@
 * [#3072](https://github.com/bbatsov/rubocop/pull/3072): Add new `Lint/UselessArraySplat` cop. ([@owst][])
 * [#3022](https://github.com/bbatsov/rubocop/issues/3022): `Style/Lambda` enforced style supports `literal` option. ([@drenmi][])
 * [#2909](https://github.com/bbatsov/rubocop/issues/2909): `Style/Lambda` enforced style supports `lambda` option. ([@drenmi][])
+* [#3092](https://github.com/bbatsov/rubocop/pull/3092): Allow `Style/Encoding` to enforce using no encoding comments. ([@NobodysNightmare][])
 
 ### Bug fixes
 
@@ -2141,3 +2142,4 @@
 [@graemeboy]: https://github.com/graemeboy
 [@akihiro17]: https://github.com/akihiro17
 [@magni-]: https://github.com/magni-
+[@NobodysNightmare]: https://github.com/NobodysNightmare
