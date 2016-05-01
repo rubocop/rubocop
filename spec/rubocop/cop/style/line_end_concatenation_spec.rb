@@ -163,6 +163,13 @@ describe RuboCop::Cop::Style::LineEndConcatenation do
     expect(corrected).to eq ['top = "test" \\', '"top"'].join("\n")
   end
 
+  it 'autocorrects a + with \\ to just \\' do
+    corrected = autocorrect_source(cop,
+                                   ['top = "test" + \\',
+                                    '"top"'])
+    expect(corrected).to eq ['top = "test" \\', '"top"'].join("\n")
+  end
+
   it 'autocorrects for chained concatenations and << calls' do
     corrected = autocorrect_source(cop,
                                    ['top = "test#{x}" <<',

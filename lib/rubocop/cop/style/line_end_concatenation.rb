@@ -41,6 +41,11 @@ module RuboCop
           operator_range = range_with_surrounding_space(operator_range,
                                                         :right,
                                                         !:with_newline)
+          one_more_char = operator_range.resize(operator_range.size + 1)
+          # Don't create a double backslash at the end of the line, in case
+          # there already was a backslash after the concatenation operator.
+          operator_range = one_more_char if one_more_char.source.end_with?('\\')
+
           ->(corrector) { corrector.replace(operator_range, '\\') }
         end
 
