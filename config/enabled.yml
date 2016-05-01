@@ -1391,6 +1391,13 @@ Rails/Delegate:
   Description: 'Prefer delegate method for delegations.'
   Enabled: true
 
+Rails/Exit:
+  Description: >-
+                  Favor `fail`, `break`, `return`, etc. over `exit` in
+                  application or library code outside of Rake files to avoid
+                  exits during unit testing or running in production.
+  Enabled: true
+
 Rails/FindBy:
   Description: 'Prefer find_by over where.first.'
   Enabled: true

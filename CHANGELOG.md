@@ -26,6 +26,7 @@
 * New cop `Lint/ShadowedException` checks for the order which exceptions are rescued to avoid rescueing a less specific exception before a more specific exception. ([@rrosenblum][])
 * [#3127](https://github.com/bbatsov/rubocop/pull/3127): New cop `Lint/InheritException` checks for error classes inheriting from `Exception`, and instead suggests `RuntimeError` or `StandardError`. ([@drenmi][])
 * Add new `Performance/PushSplat` cop. ([@segiddins][])
+* [#3089](https://github.com/bbatsov/rubocop/issues/3089): Add new `Rails/Exit` cop. ([@sgringwe][])
 
 ### Bug fixes
 
@@ -2227,3 +2228,4 @@
 [@deivid-rodriguez]: https://github.com/deivid-rodriguez
 [@pclalv]: https://github.com/pclalv
 [@flexoid]: https://github.com/flexoid
+[@sgringwe]: https://github.com/sgringwe
