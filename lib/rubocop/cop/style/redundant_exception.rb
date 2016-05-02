@@ -6,36 +6,50 @@ module RuboCop
     module Style
       # This cop checks for RuntimeError as the argument of raise/fail.
       #
-      # Currently it checks for code like this:
+      # It checks for code like this:
       #
       # @example
-      #
+      #   # Bad
       #   raise RuntimeError, 'message'
+      #
+      #   # Bad
+      #   raise RuntimeError.new('message')
+      #
+      #   # Good
+      #   raise 'message'
       class RedundantException < Cop
-        MSG = 'Redundant `RuntimeError` argument can be removed.'.freeze
-
-        TARGET_NODE = s(:const, nil, :RuntimeError)
+        MSG_1 = 'Redundant `RuntimeError` argument can be removed.'.freeze
+        MSG_2 = 'Redundant `RuntimeError.new` call can be replaced with ' \
+                'just the message.'.freeze
 
         def on_send(node)
-          return unless node.command?(:raise) || node.command?(:fail)
-
-          _receiver, _selector, *args = *node
-
-          return unless args.size == 2
-
-          first_arg, = *args
-
-          add_offense(first_arg, :expression) if first_arg == TARGET_NODE
+          exploded?(node) { return add_offense(node, :expression, MSG_1) }
+          compact?(node) { add_offense(node, :expression, MSG_2) }
         end
 
-        # switch `raise RuntimeError, 'message'` to `raise 'message'`
+        # Switch `raise RuntimeError, 'message'` to `raise 'message'`, and
+        # `raise RuntimeError.new('message')` to `raise 'message'`.
         def autocorrect(node)
-          start_range = node.source_range.begin
-          no_comma = range_with_surrounding_comma(node.source_range.end, :right)
-          comma_range = start_range.join(no_comma)
-          final_range = range_with_surrounding_space(comma_range, :right)
-          ->(corrector) { corrector.replace(final_range, '') }
+          exploded?(node) do |command, message|
+            return lambda do |corrector|
+              corrector.replace(node.source_range,
+                                "#{command} #{message.source}")
+            end
+          end
+          compact?(node) do |new_call, message|
+            lambda do |corrector|
+              corrector.replace(new_call.source_range, message.source)
+            end
+          end
         end
+
+        def_node_matcher :exploded?, <<-PATTERN
+          (send nil ${:raise :fail} (const nil :RuntimeError) $_)
+        PATTERN
+
+        def_node_matcher :compact?, <<-PATTERN
+          (send nil {:raise :fail} $(send (const nil :RuntimeError) :new $_))
+        PATTERN
       end
     end
   end
