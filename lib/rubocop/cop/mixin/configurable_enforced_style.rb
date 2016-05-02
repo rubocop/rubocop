@@ -22,25 +22,18 @@ module RuboCop
       end
 
       def style_detected(detected)
-        # `detected` can be a single style, or an Array of possible styles
-        # (if there is more than one which matches the observed code)
-
         return if no_acceptable_style?
 
-        if detected.is_a?(Array)
-          detected.map!(&:to_s)
-        else
-          detected = detected.to_s
-        end
+        # `detected` can be a single style, or an Array of possible styles
+        # (if there is more than one which matches the observed code)
+        detected_as_strings = Array(detected).map(&:to_s)
 
         if !detected_style # we haven't observed any specific style yet
-          self.detected_style = detected
+          self.detected_style = detected_as_strings
         elsif detected_style.is_a?(Array)
-          self.detected_style &= [*detected]
-        elsif detected.is_a?(Array)
-          no_acceptable_style! unless detected.include?(detected_style)
-        else
-          no_acceptable_style! unless detected_style == detected
+          self.detected_style &= detected_as_strings
+        elsif !detected.include?(detected_style)
+          no_acceptable_style!
         end
       end
 
@@ -60,17 +53,10 @@ module RuboCop
       def detected_style=(style)
         Formatter::DisabledConfigFormatter.detected_styles[cop_name] = style
 
-        if style.nil?
-          no_acceptable_style!
-        elsif style.is_a?(Array)
-          if style.empty?
-            no_acceptable_style!
-          else
-            config_to_allow_offenses[parameter_name] = style[0]
-          end
-        else
-          config_to_allow_offenses[parameter_name] = style
-        end
+        return no_acceptable_style! if style.nil?
+        return no_acceptable_style! if style.empty?
+
+        config_to_allow_offenses[parameter_name] = style.first
       end
 
       alias conflicting_styles_detected no_acceptable_style!
