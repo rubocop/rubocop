@@ -187,6 +187,14 @@ describe RuboCop::Cop::Style::FileName do
                                         'or module called `C::B`.'])
           end
         end
+
+        context "in a directory with multiple instances of #{dir}" do
+          let(:filename) { "/some/dir/#{dir}/project/#{dir}/a/b.rb" }
+
+          it 'does not register an offense' do
+            expect(cop.offenses).to be_empty
+          end
+        end
       end
 
       context 'in a directory elsewhere which only matches the module name' do

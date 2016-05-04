@@ -125,11 +125,23 @@ module RuboCop
           # We can't assume that the working directory, or any other, is the
           # "starting point" to build a namespace
           start = %w(lib spec test src)
-          if components.find { |c| start.include?(c) }
-            components = components.drop_while { |c| !start.include?(c) }
-            components.drop(1).map { |fn| to_module_name(fn) }
-          else
+          start_index = nil
+
+          # To find the closest namespace root take the path components, and
+          # then work through them backwards until we find a candidate. This
+          # makes sure we work from the actual root in the case of a path like
+          # /home/user/src/project_name/lib.
+          components.reverse.each_with_index do |c, i|
+            if start.include?(c)
+              start_index = components.size - i
+              break
+            end
+          end
+
+          if start_index.nil?
             [to_module_name(components.last)]
+          else
+            components[start_index..-1].map { |c| to_module_name(c) }
           end
         end
 
