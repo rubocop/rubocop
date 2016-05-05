@@ -56,6 +56,7 @@
 * [#3064](https://github.com/bbatsov/rubocop/pull/3064): `Style/SpaceAfterNot` highlights the entire expression instead of just the exlamation mark. ([@rrosenblum][])
 * [#3085](https://github.com/bbatsov/rubocop/pull/3085): Enable `Style/MultilineArrayBraceLayout` and `Style/MultilineHashBraceLayout` with the `symmetrical` style by default. ([@panthomakos][])
 * [#3091](https://github.com/bbatsov/rubocop/pull/3091): Enable `Style/MultilineMethodCallBraceLayout` and `Style/MultilineMethodDefinitionBraceLayout` with the `symmetrical` style by default. ([@panthomakos][])
+* [#1830](https://github.com/bbatsov/rubocop/pull/1830): `Style/PredicateName` now ignores the `spec/` directory, since there is a strong convention for using `have_*` and `be_*` helper methods in RSpec. ([@gylaz][])
 
 ## 0.39.0 (2016-03-27)
 
@@ -2145,3 +2146,4 @@
 [@akihiro17]: https://github.com/akihiro17
 [@magni-]: https://github.com/magni-
 [@NobodysNightmare]: https://github.com/NobodysNightmare
+[@gylaz]: https://github.com/gylaz
