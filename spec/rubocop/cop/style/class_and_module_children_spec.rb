@@ -20,6 +20,17 @@ describe RuboCop::Cop::Style::ClassAndModuleChildren, :config do
       expect(cop.highlights).to eq ['FooClass::BarClass']
     end
 
+    it 'registers an offense for not nested classes with explicit superclass' do
+      inspect_source(cop, ['class FooClass::BarClass < Super',
+                           'end'])
+
+      expect(cop.offenses.size).to eq 1
+      expect(cop.messages).to eq [
+        'Use nested module/class definitions instead of compact style.'
+      ]
+      expect(cop.highlights).to eq ['FooClass::BarClass']
+    end
+
     it 'registers an offense for not nested modules' do
       inspect_source(cop, ['module FooModule::BarModule',
                            'end'])

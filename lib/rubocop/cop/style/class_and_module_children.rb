@@ -28,7 +28,7 @@ module RuboCop
 
         def on_class(node)
           _name, superclass, body = *node
-          return if superclass
+          return if superclass && style != :nested
           check_style(node, body)
         end
 
