@@ -202,10 +202,13 @@ module RuboCop
           @column_delta = configured_indentation_width - indentation
           return if @column_delta == 0
 
+          offense(body_node, indentation, style)
+        end
+
+        def offense(body_node, indentation, style)
           # This cop only auto-corrects the first statement in a def body, for
           # example.
-          if body_node.type == :begin && !(body_node.loc.begin &&
-                                           body_node.loc.begin.is?('('))
+          if body_node.type == :begin && !parentheses?(body_node)
             body_node = body_node.children.first
           end
 

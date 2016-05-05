@@ -17,19 +17,10 @@ module RuboCop
         QUESTION_MARK_SIZE = '?'.size
 
         def on_array(node)
-          array_elems = node.children
-
           if bracketed_array_of?(:str, node)
-            return if complex_content?(array_elems) ||
-                      comments_in_array?(node)
-            style_detected(:brackets, array_elems.size)
-
-            if style == :percent && array_elems.size >= min_size
-              add_offense(node, :expression, PERCENT_MSG)
-            end
-          elsif node.loc.begin && node.loc.begin.source =~ /\A%[wW]/
-            style_detected(:percent, array_elems.size)
-            add_offense(node, :expression, ARRAY_MSG) if style == :brackets
+            check_bracketed(node)
+          elsif percent_syntax?(node)
+            check_percent(node)
           end
         end
 
@@ -51,6 +42,29 @@ module RuboCop
         end
 
         private
+
+        def check_bracketed(node)
+          array_elems = node.children
+
+          return if complex_content?(array_elems) ||
+                    comments_in_array?(node)
+          style_detected(:brackets, array_elems.size)
+
+          if style == :percent && array_elems.size >= min_size
+            add_offense(node, :expression, PERCENT_MSG)
+          end
+        end
+
+        def check_percent(node)
+          array_elems = node.children
+
+          style_detected(:percent, array_elems.size)
+          add_offense(node, :expression, ARRAY_MSG) if style == :brackets
+        end
+
+        def percent_syntax?(node)
+          node.loc.begin && node.loc.begin.source =~ /\A%[wW]/
+        end
 
         def comments_in_array?(node)
           comments = processed_source.comments
@@ -101,25 +115,39 @@ module RuboCop
           cfg = config_to_allow_offenses
           return if cfg['Enabled'] == false
 
-          @largest_brackets ||= -Float::INFINITY
-          @smallest_percent ||= Float::INFINITY
-
-          if style == :percent
-            @smallest_percent = ary_size if ary_size < @smallest_percent
-          elsif ary_size > @largest_brackets
-            @largest_brackets = ary_size
-          end
+          largest_brackets = largest_brackets_size(style, ary_size)
+          smallest_percent = smallest_percent_size(style, ary_size)
 
           if cfg['EnforcedStyle'] == style.to_s
             # do nothing
           elsif cfg['EnforcedStyle'].nil?
             cfg['EnforcedStyle'] = style.to_s
-          elsif @smallest_percent <= @largest_brackets
+          elsif smallest_percent <= largest_brackets
             self.config_to_allow_offenses = { 'Enabled' => false }
           else
             cfg['EnforcedStyle'] = 'percent'
-            cfg['MinSize'] = @largest_brackets + 1
+            cfg['MinSize'] = largest_brackets + 1
           end
+        end
+
+        def largest_brackets_size(style, ary_size)
+          @largest_brackets ||= -Float::INFINITY
+
+          if style == :brackets && ary_size > @largest_brackets
+            @largest_brackets = ary_size
+          end
+
+          @largest_brackets
+        end
+
+        def smallest_percent_size(style, ary_size)
+          @smallest_percent ||= Float::INFINITY
+
+          if style == :percent && ary_size < @smallest_percent
+            @smallest_percent = ary_size
+          end
+
+          @smallest_percent
         end
       end
     end

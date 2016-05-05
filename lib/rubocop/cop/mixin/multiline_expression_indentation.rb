@@ -34,16 +34,20 @@ module RuboCop
         if operator?(method_name) && args.any?
           args.first.source_range # not used for method calls
         else
-          dot = send_node.loc.dot
-          selector = send_node.loc.selector
-          if dot && selector && dot.line == selector.line
-            dot.join(selector)
-          elsif selector
-            selector
-          elsif dot.line == send_node.loc.begin.line
-            # lambda.(args)
-            dot.join(send_node.loc.begin)
-          end
+          regular_method_right_hand_side(send_node)
+        end
+      end
+
+      def regular_method_right_hand_side(send_node)
+        dot = send_node.loc.dot
+        selector = send_node.loc.selector
+        if dot && selector && dot.line == selector.line
+          dot.join(selector)
+        elsif selector
+          selector
+        elsif dot.line == send_node.loc.begin.line
+          # lambda.(args)
+          dot.join(send_node.loc.begin)
         end
       end
 
