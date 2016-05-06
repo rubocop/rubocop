@@ -8,6 +8,11 @@ module RuboCop
       class SpaceAfterComma < Cop
         include SpaceAfterPunctuation
 
+        def space_style_before_rcurly
+          cfg = config.for_cop('Style/SpaceInsideHashLiteralBraces')
+          cfg['EnforcedStyle'] || 'space'
+        end
+
         def kind(token)
           'comma' if token.type == :tCOMMA
         end

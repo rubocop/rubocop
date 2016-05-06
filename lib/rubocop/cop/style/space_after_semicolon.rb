@@ -8,6 +8,11 @@ module RuboCop
       class SpaceAfterSemicolon < Cop
         include SpaceAfterPunctuation
 
+        def space_style_before_rcurly
+          cfg = config.for_cop('Style/SpaceInsideBlockBraces')
+          cfg['EnforcedStyle'] || 'space'
+        end
+
         def kind(token)
           'semicolon' if token.type == :tSEMI
         end

@@ -4,7 +4,11 @@
 require 'spec_helper'
 
 describe RuboCop::Cop::Style::SpaceAfterComma do
-  subject(:cop) { described_class.new }
+  subject(:cop) { described_class.new(config) }
+  let(:config) do
+    RuboCop::Config.new('Style/SpaceInsideHashLiteralBraces' => brace_config)
+  end
+  let(:brace_config) { {} }
 
   shared_examples 'ends with an item' do |items, correct_items|
     it 'registers an offense' do
@@ -45,5 +49,41 @@ describe RuboCop::Cop::Style::SpaceAfterComma do
     let(:source) { ->(args) { "a(#{args})" } }
 
     it_behaves_like 'ends with an item', '1,2', '1, 2'
+  end
+
+  context 'inside hash braces' do
+    shared_examples 'common behavior' do
+      it 'accepts a space between a comma and a closing brace' do
+        inspect_source(cop, '{ foo:bar, }')
+        expect(cop.messages).to be_empty
+      end
+    end
+
+    context 'when EnforcedStyle for SpaceInsideBlockBraces is space' do
+      let(:brace_config) do
+        { 'Enabled' => true, 'EnforcedStyle' => 'space' }
+      end
+
+      it_behaves_like 'common behavior'
+
+      it 'registers an offense for no space between a comma and a ' \
+         'closing brace' do
+        inspect_source(cop, '{ foo:bar,}')
+        expect(cop.messages).to eq(['Space missing after comma.'])
+      end
+    end
+
+    context 'when EnforcedStyle for SpaceInsideBlockBraces is no_space' do
+      let(:brace_config) do
+        { 'Enabled' => true, 'EnforcedStyle' => 'no_space' }
+      end
+
+      it_behaves_like 'common behavior'
+
+      it 'accepts no space between a comma and a closing brace' do
+        inspect_source(cop, '{foo:bar,}')
+        expect(cop.messages).to be_empty
+      end
+    end
   end
 end
