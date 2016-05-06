@@ -25,6 +25,7 @@ module RuboCop
           receiver, method_name, *_args = *node
 
           unless method_name == :uniq &&
+                 !receiver.nil? &&
                  receiver.send_type? &&
                  receiver.children[1] == :pluck
             return
