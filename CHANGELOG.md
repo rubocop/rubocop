@@ -26,6 +26,7 @@
 
 ### Bug fixes
 
+* [#3112](https://github.com/bbatsov/rubocop/issues/3112): Fix `Style/ClassAndModuleChildren` for nested classes with explicit superclass. ([@jspanjers][])
 * [#3032](https://github.com/bbatsov/rubocop/issues/3032): Fix autocorrecting parentheses for predicate methods without space before args. ([@graemeboy][])
 * [#3000](https://github.com/bbatsov/rubocop/pull/3000): Fix encoding crash on HTML output. ([@gerrywastaken][])
 * [#2983](https://github.com/bbatsov/rubocop/pull/2983): `Style/AlignParameters` message was clarified for `with_fixed_indentation` style. ([@dylanahsmith][])
