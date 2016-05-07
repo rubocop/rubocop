@@ -22,6 +22,7 @@
 * [#3022](https://github.com/bbatsov/rubocop/issues/3022): `Style/Lambda` enforced style supports `literal` option. ([@drenmi][])
 * [#2909](https://github.com/bbatsov/rubocop/issues/2909): `Style/Lambda` enforced style supports `lambda` option. ([@drenmi][])
 * [#3092](https://github.com/bbatsov/rubocop/pull/3092): Allow `Style/Encoding` to enforce using no encoding comments. ([@NobodysNightmare][])
+* New cop `Rails/UniqBeforePluck` checks that `uniq` is used before `pluck`. ([@tjwp][])
 
 ### Bug fixes
 
@@ -2148,3 +2149,4 @@
 [@magni-]: https://github.com/magni-
 [@NobodysNightmare]: https://github.com/NobodysNightmare
 [@gylaz]: https://github.com/gylaz
+[@tjwp]: https://github.com/tjwp

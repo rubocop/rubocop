@@ -368,6 +368,7 @@ require 'rubocop/cop/rails/pluralization_grammar'
 require 'rubocop/cop/rails/read_write_attribute'
 require 'rubocop/cop/rails/scope_args'
 require 'rubocop/cop/rails/time_zone'
+require 'rubocop/cop/rails/uniq_before_pluck'
 require 'rubocop/cop/rails/validation'
 
 require 'rubocop/cop/team'
