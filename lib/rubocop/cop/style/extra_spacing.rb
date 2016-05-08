@@ -94,13 +94,13 @@ module RuboCop
 
         def check_other(t1, t2, ast)
           return if t1.pos.line != t2.pos.line
-          return if t2.pos.begin_pos - 1 <= t1.pos.end_pos
           return if allow_for_alignment? && aligned_tok?(t2)
 
           start_pos = t1.pos.end_pos
-          return if ignored_ranges(ast).find { |r| r.include?(start_pos) }
-
           end_pos = t2.pos.begin_pos - 1
+          return if end_pos <= start_pos
+          return if ignored_range?(ast, start_pos)
+
           range = Parser::Source::Range.new(processed_source.buffer,
                                             start_pos, end_pos)
           # Unary + doesn't appear as a token and needs special handling.
@@ -115,6 +115,10 @@ module RuboCop
           else
             aligned_with_something?(token.pos)
           end
+        end
+
+        def ignored_range?(ast, start_pos)
+          ignored_ranges(ast).any? { |r| r.include?(start_pos) }
         end
 
         def unary_plus_non_offense?(range)
