@@ -30,6 +30,7 @@ module RuboCop
         MSG_AFTER = 'Space after keyword `%s` is missing.'.freeze
 
         DO = 'do'.freeze
+        SAFE_NAVIGATION = '&.'.freeze
         ACCEPT_LEFT_PAREN =
           %w(break defined? next not rescue return super yield).freeze
         ACCEPT_LEFT_SQUARE_BRACKET =
@@ -183,6 +184,7 @@ module RuboCop
                           char == '('.freeze
           return false if accept_left_square_bracket?(range) &&
                           char == '['.freeze
+          return false if safe_navigation_call?(range, pos)
 
           char !~ /[\s;,#\\\)\}\]\.]/
         end
@@ -193,6 +195,10 @@ module RuboCop
 
         def accept_left_square_bracket?(range)
           ACCEPT_LEFT_SQUARE_BRACKET.include?(range.source)
+        end
+
+        def safe_navigation_call?(range, pos)
+          range.source_buffer.source[pos, 2].start_with?(SAFE_NAVIGATION)
         end
 
         def preceded_by_operator?(node, _range)
