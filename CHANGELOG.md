@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.40.0 (2016-05-09)
+
 ### New features
 
 * [#2997](https://github.com/bbatsov/rubocop/pull/2997): `Performance/CaseWhenSplat` can now identify multiple offenses in the same branch and offenses that do not occur as the first argument. ([@rrosenblum][])
