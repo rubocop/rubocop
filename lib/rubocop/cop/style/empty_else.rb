@@ -98,18 +98,13 @@ module RuboCop
         end
 
         def nil_check(node, else_clause)
-          return unless else_clause && else_clause.type == :nil
+          return unless else_clause && else_clause.nil_type?
           add_offense(node, node.location, MSG)
         end
 
         def both_check(node, else_clause)
-          return if node.loc.else.nil?
-
-          if else_clause.nil?
-            add_offense(node, :else, MSG)
-          elsif else_clause.type == :nil
-            add_offense(node, :else, MSG)
-          end
+          empty_check(node, else_clause)
+          nil_check(node, else_clause)
         end
 
         def autocorrect(node)
