@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+* `Rails/UniqBeforePluck` now recognizes `distinct` before `pluck` as well.
+
 ## 0.40.0 (2016-05-09)
 
 ### New features

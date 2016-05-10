@@ -4,7 +4,7 @@
 module RuboCop
   module Cop
     module Rails
-      # Prefer the use of uniq before pluck instead of after.
+      # Prefer the use of uniq/distinct before pluck instead of after.
       #
       # The use of uniq before pluck is preferred because it executes
       # within the database.
@@ -17,38 +17,44 @@ module RuboCop
       #   Model.where(...).uniq.pluck(:id)
       #
       class UniqBeforePluck < RuboCop::Cop::Cop
-        MSG = 'Use uniq before pluck'.freeze
-        DOT_UNIQ = '.uniq'.freeze
+        MSG = 'Use %s before pluck'.freeze
         NEWLINE = "\n".freeze
 
         def on_send(node)
           receiver, method_name, *_args = *node
 
-          unless method_name == :uniq &&
+          unless [:distinct, :uniq].include?(method_name) &&
                  !receiver.nil? &&
                  receiver.send_type? &&
                  receiver.children[1] == :pluck
             return
           end
-          add_offense(node, :selector, MSG)
+          add_offense(node, :selector, MSG % method_name)
         end
 
         def autocorrect(node)
-          lines = node.source.split(NEWLINE)
-          begin_remove_pos = if lines.last.strip == DOT_UNIQ
-                               node.source.rindex(NEWLINE)
-                             else
-                               node.loc.dot.begin_pos
-                             end
+          method_name = '.' + node.loc.selector.source
           receiver = node.children.first
 
           lambda do |corrector|
             corrector.remove(
               Parser::Source::Range.new(node.loc.expression.source_buffer,
-                                        begin_remove_pos,
+                                        begin_remove_pos(node, method_name),
                                         node.loc.selector.end_pos)
             )
-            corrector.insert_before(receiver.loc.dot.begin, DOT_UNIQ)
+            corrector.insert_before(receiver.loc.dot.begin, method_name)
+          end
+        end
+
+        private
+
+        def begin_remove_pos(node, method_name)
+          lines = node.source.split(NEWLINE)
+
+          if lines.last.strip == method_name
+            node.source.rindex(NEWLINE)
+          else
+            node.loc.dot.begin_pos
           end
         end
       end
