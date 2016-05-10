@@ -46,15 +46,38 @@ describe RuboCop::Cop::Style::EmptyElse do
 
     context 'given an if-statement' do
       context 'with a completely empty else-clause' do
-        let(:source) { 'if a; foo else end' }
-        let(:corrected_source) { 'if a; foo end' }
+        context 'using semicolons' do
+          let(:source) { 'if a; foo else end' }
+          let(:corrected_source) { 'if a; foo end' }
 
-        it 'registers an offense' do
-          inspect_source(cop, source)
-          expect(cop.messages).to eq(['Redundant `else`-clause.'])
+          it 'registers an offense' do
+            inspect_source(cop, source)
+            expect(cop.messages).to eq(['Redundant `else`-clause.'])
+          end
+
+          it_behaves_like 'auto-correct', 'if'
         end
 
-        it_behaves_like 'auto-correct', 'if'
+        context 'when the result is assigned to a variable' do
+          let(:source) do
+            ['if a',
+             '  foo',
+             'else',
+             'end'].join("\n")
+          end
+          let(:corrected_source) do
+            ['if a',
+             '  foo',
+             'end'].join("\n")
+          end
+
+          it 'registers an offense' do
+            inspect_source(cop, source)
+            expect(cop.messages).to eq(['Redundant `else`-clause.'])
+          end
+
+          it_behaves_like 'auto-correct', 'if'
+        end
       end
 
       context 'with an else-clause containing only the literal nil' do
@@ -168,6 +191,63 @@ describe RuboCop::Cop::Style::EmptyElse do
       end
 
       context 'with an else-clause containing only the literal nil' do
+        context 'when standalone' do
+          let(:source) do
+            ['if a',
+             '  foo',
+             'elsif b',
+             '  bar',
+             'else',
+             '  nil',
+             'end'].join("\n")
+          end
+
+          let(:corrected_source) do
+            ['if a',
+             '  foo',
+             'elsif b',
+             '  bar',
+             'end'].join("\n")
+          end
+
+          it 'registers an offense' do
+            inspect_source(cop, source)
+            expect(cop.messages).to eq(['Redundant `else`-clause.'])
+          end
+
+          it_behaves_like 'auto-correct', 'if'
+        end
+
+        context 'when the result is assigned to a variable' do
+          let(:source) do
+            ['foobar = if a',
+             '           foo',
+             '         elsif b',
+             '           bar',
+             '         else',
+             '           nil',
+             '         end'].join("\n")
+          end
+
+          let(:corrected_source) do
+            ['foobar = if a',
+             '           foo',
+             '         elsif b',
+             '           bar',
+             '         end'].join("\n")
+          end
+
+          it 'registers an offense' do
+            inspect_source(cop, source)
+            expect(cop.messages).to eq(['Redundant `else`-clause.'])
+          end
+
+          it_behaves_like 'auto-correct', 'if'
+        end
+      end
+
+      context 'with an else-clause containing only the literal nil ' \
+              'using semicolons' do
         let(:source) { 'if a; foo elsif b; bar else nil end' }
         let(:corrected_source) { 'if a; foo elsif b; bar end' }
 
@@ -238,15 +318,46 @@ describe RuboCop::Cop::Style::EmptyElse do
       end
 
       context 'with an else-clause containing only the literal nil' do
-        let(:source) { 'case v; when a; foo; when b; bar; else nil end' }
-        let(:corrected_source) { 'case v; when a; foo; when b; bar; end' }
+        context 'using semicolons' do
+          let(:source) { 'case v; when a; foo; when b; bar; else nil end' }
+          let(:corrected_source) { 'case v; when a; foo; when b; bar; end' }
 
-        it 'registers an offense' do
-          inspect_source(cop, source)
-          expect(cop.messages).to eq(['Redundant `else`-clause.'])
+          it 'registers an offense' do
+            inspect_source(cop, source)
+            expect(cop.messages).to eq(['Redundant `else`-clause.'])
+          end
+
+          it_behaves_like 'auto-correct', 'case'
         end
 
-        it_behaves_like 'auto-correct', 'case'
+        context 'when the result is assigned to a variable' do
+          let(:source) do
+            ['foobar = case v',
+             '         when a',
+             '           foo',
+             '         when b',
+             '           bar',
+             '         else',
+             '           nil',
+             '         end'].join("\n")
+          end
+
+          let(:corrected_source) do
+            ['foobar = case v',
+             '         when a',
+             '           foo',
+             '         when b',
+             '           bar',
+             '         end'].join("\n")
+          end
+
+          it 'registers an offense' do
+            inspect_source(cop, source)
+            expect(cop.messages).to eq(['Redundant `else`-clause.'])
+          end
+
+          it_behaves_like 'auto-correct', 'case'
+        end
       end
 
       context 'with an else-clause with side-effects' do

@@ -98,18 +98,13 @@ module RuboCop
         end
 
         def nil_check(node, else_clause)
-          return unless else_clause && else_clause.type == :nil
+          return unless else_clause && else_clause.nil_type?
           add_offense(node, node.location, MSG)
         end
 
         def both_check(node, else_clause)
-          return if node.loc.else.nil?
-
-          if else_clause.nil?
-            add_offense(node, :else, MSG)
-          elsif else_clause.type == :nil
-            add_offense(node, :else, MSG)
-          end
+          empty_check(node, else_clause)
+          nil_check(node, else_clause)
         end
 
         def autocorrect(node)
@@ -119,8 +114,9 @@ module RuboCop
             end_pos = if node.loc.end
                         node.loc.end.begin_pos
                       else
-                        node.source_range.end_pos + 1
+                        node.parent.loc.end.begin_pos
                       end
+
             range = Parser::Source::Range.new(node.source_range.source_buffer,
                                               node.loc.else.begin_pos,
                                               end_pos)

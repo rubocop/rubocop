@@ -2,6 +2,10 @@
 
 ## master (unreleased)
 
+### Bug fixes
+
+* [#3114](https://github.com/bbatsov/rubocop/issues/3114): Fix alignment `end` when auto-correcting `Style/EmptyElse`. ([@rrosenblum][])
+
 ## 0.40.0 (2016-05-09)
 
 ### New features
