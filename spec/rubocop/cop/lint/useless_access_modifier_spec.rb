@@ -603,6 +603,26 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
     end
   end
 
+  shared_examples 'def in new block' do |klass, modifier|
+    it "doesn't register an offense if a method is defined in #{klass}.new" do
+      src = ["#{klass}.new do",
+             "  #{modifier}",
+             '  def foo',
+             '  end',
+             'end']
+      inspect_source(cop, src)
+      expect(cop.offenses).to be_empty
+    end
+
+    it "registers an offense if no method is defined in #{klass}.new" do
+      src = ["#{klass}.new do",
+             "  #{modifier}",
+             'end']
+      inspect_source(cop, src)
+      expect(cop.offenses.size).to eq(1)
+    end
+  end
+
   shared_examples 'method defined using instance_eval' do |modifier|
     it "doesn't register an offense if a method is defined" do
       src = ['A.instance_eval do',
@@ -707,6 +727,12 @@ describe RuboCop::Cop::Lint::UselessAccessModifier do
   %w(protected private).each do |modifier|
     it_behaves_like('method defined using class_eval', modifier)
     it_behaves_like('method defined using instance_eval', modifier)
+  end
+
+  %w(Class Module Struct).each do |klass|
+    %w(protected private).each do |modifier|
+      it_behaves_like('def in new block', klass, modifier)
+    end
   end
 
   %w(module class).each do |keyword|

@@ -68,7 +68,7 @@ module RuboCop
         end
 
         def on_block(node)
-          return unless class_or_instance_eval?(node)
+          return unless instance_eval_or_new_call?(node)
 
           check_node(node.children[2]) # block body
         end
@@ -93,6 +93,10 @@ module RuboCop
 
         def_node_matcher :class_or_instance_eval?, <<-PATTERN
           (block (send _ {:class_eval :instance_eval}) ...)
+        PATTERN
+
+        def_node_matcher :class_or_module_or_struct_new_call?, <<-PATTERN
+          (block (send (const nil {:Class :Module :Struct}) :new ...) ...)
         PATTERN
 
         def check_node(node)
@@ -143,7 +147,12 @@ module RuboCop
 
         def start_of_new_scope?(child)
           child.module_type? || child.class_type? ||
-            child.sclass_type? || class_or_instance_eval?(child)
+            child.sclass_type? || instance_eval_or_new_call?(child)
+        end
+
+        def instance_eval_or_new_call?(child)
+          class_or_instance_eval?(child) ||
+            class_or_module_or_struct_new_call?(child)
         end
       end
     end

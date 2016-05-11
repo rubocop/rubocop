@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#3114](https://github.com/bbatsov/rubocop/issues/3114): Fix alignment `end` when auto-correcting `Style/EmptyElse`. ([@rrosenblum][])
+* [#3120](https://github.com/bbatsov/rubocop/issues/3120): Fix `Lint/UselessAccessModifier` reporting useless access modifiers inside {Class,Module,Struct}.new blocks. ([@owst][])
 
 ## 0.40.0 (2016-05-09)
 
