@@ -23,13 +23,14 @@ module RuboCop
 
         def on_send(node)
           receiver, method_name, *_args = *node
-
           unless method_name == :uniq &&
                  !receiver.nil? &&
                  receiver.send_type? &&
-                 receiver.children[1] == :pluck
+                 receiver.children[1] == :pluck &&
+                 !with_block?(node)
             return
           end
+
           add_offense(node, :selector, MSG)
         end
 
@@ -50,6 +51,12 @@ module RuboCop
             )
             corrector.insert_before(receiver.loc.dot.begin, DOT_UNIQ)
           end
+        end
+
+        private
+
+        def with_block?(node)
+          node.parent && node.parent.block_type?
         end
       end
     end
