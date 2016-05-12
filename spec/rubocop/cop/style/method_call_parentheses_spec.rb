@@ -90,4 +90,21 @@ describe RuboCop::Cop::Style::MethodCallParentheses do
                               'Array.new',
                               'String.new'].join("\n"))
   end
+
+  context 'method call as argument' do
+    it 'accepts without parens' do
+      inspect_source(cop, '_a = c(d.e)')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense with empty parens' do
+      inspect_source(cop, '_a = c(d())')
+      expect(cop.offenses.size).to eq 1
+    end
+
+    it 'registers an empty parens offense for multiple assignment' do
+      inspect_source(cop, '_a, _b, _c = d(e())')
+      expect(cop.offenses.size).to eq 1
+    end
+  end
 end
