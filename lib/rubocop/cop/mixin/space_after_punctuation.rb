@@ -9,14 +9,32 @@ module RuboCop
       MSG = 'Space missing after %s.'.freeze
 
       def investigate(processed_source)
-        processed_source.tokens.each_cons(2) do |t1, t2|
-          next unless kind(t1) && t1.pos.line == t2.pos.line &&
-                      t2.pos.column == t1.pos.column + offset &&
-                      ![:tRPAREN, :tRBRACK, :tPIPE].include?(t2.type) &&
-                      !(t2.type == :tRCURLY && space_forbidden_before_rcurly?)
-
-          add_offense(t1, t1.pos, format(MSG, kind(t1)))
+        each_missing_space(processed_source.tokens) do |token|
+          add_offense(token, token.pos, format(MSG, kind(token)))
         end
+      end
+
+      def each_missing_space(tokens)
+        tokens.each_cons(2) do |t1, t2|
+          next unless kind(t1)
+          next unless space_missing?(t1, t2)
+          next unless space_required_before?(t2)
+
+          yield t1
+        end
+      end
+
+      def space_missing?(t1, t2)
+        t1.pos.line == t2.pos.line && t2.pos.column == t1.pos.column + offset
+      end
+
+      def space_required_before?(token)
+        !(allowed_type?(token) ||
+          (token.type == :tRCURLY && space_forbidden_before_rcurly?))
+      end
+
+      def allowed_type?(token)
+        [:tRPAREN, :tRBRACK, :tPIPE].include?(token.type)
       end
 
       def space_forbidden_before_rcurly?
