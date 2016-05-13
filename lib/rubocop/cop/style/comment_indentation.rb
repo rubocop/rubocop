@@ -17,11 +17,9 @@ module RuboCop
         private
 
         def check(comment)
-          lines = processed_source.lines
-          own_line = lines[comment.loc.line - 1]
-          return unless own_line =~ /\A\s*#/
+          return unless own_line_comment?(comment)
 
-          next_line = lines[comment.loc.line..-1].find { |line| !line.blank? }
+          next_line = line_after_comment(comment)
           correct_comment_indentation = correct_indentation(next_line)
           column = comment.loc.column
 
@@ -33,11 +31,21 @@ module RuboCop
             correct_comment_indentation += configured_indentation_width
             # We keep @column_delta unchanged so that autocorrect changes to
             # the preferred style of aligning the comment with the keyword.
+            return if column == correct_comment_indentation
           end
 
-          return if column == correct_comment_indentation
           add_offense(comment, comment.loc.expression,
                       format(MSG, column, correct_comment_indentation))
+        end
+
+        def own_line_comment?(comment)
+          own_line = processed_source.lines[comment.loc.line - 1]
+          own_line =~ /\A\s*#/
+        end
+
+        def line_after_comment(comment)
+          lines = processed_source.lines
+          lines[comment.loc.line..-1].find { |line| !line.blank? }
         end
 
         def correct_indentation(next_line)
