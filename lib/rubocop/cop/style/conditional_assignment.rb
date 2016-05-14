@@ -465,7 +465,7 @@ module RuboCop
           include ConditionalCorrectorHelper
 
           def correct(cop, node)
-            if_branch, elsif_branches, else_branch = extract_branches(node)
+            if_branch, elsif_branches, else_branch = extract_tail_branches(node)
             _variable, *_operator, if_assignment = *if_branch
             _else_variable, *_operator, else_assignment = *else_branch
 
@@ -482,36 +482,44 @@ module RuboCop
           def move_assignment_inside_condition(node)
             column = node.loc.expression.column
             *_var, condition = *node
-            _condition, if_branch, else_branch = *condition
-            elsif_branches, else_branch = expand_elses(else_branch)
             assignment = assignment(node)
 
             lambda do |corrector|
               corrector.remove(assignment)
 
-              [if_branch, *elsif_branches, else_branch].each do |branch|
-                branch_assignment = tail(branch)
-                corrector.insert_before(branch_assignment.loc.expression,
-                                        assignment.source)
-
-                remove_whitespace_in_branches(corrector, branch,
-                                              condition, column)
-
-                corrector
-                  .remove_preceding(branch.parent.loc.else,
-                                    branch.parent.loc.else.column - column)
+              extract_branches(condition).flatten.each do |branch|
+                move_branch_inside_condition(corrector, branch, condition,
+                                             assignment, column)
               end
             end
           end
 
           private
 
-          def extract_branches(node)
-            _condition, if_branch, else_branch = *node
-            elsif_branches, else_branch = expand_elses(else_branch)
+          def extract_tail_branches(node)
+            if_branch, elsif_branches, else_branch = extract_branches(node)
             elsif_branches.map! { |branch| tail(branch) }
 
             [tail(if_branch), elsif_branches, tail(else_branch)]
+          end
+
+          def extract_branches(node)
+            _condition, if_branch, else_branch = *node
+            elsif_branches, else_branch = expand_elses(else_branch)
+
+            [if_branch, elsif_branches, else_branch]
+          end
+
+          def move_branch_inside_condition(corrector, branch, condition,
+                                           assignment, column)
+            branch_assignment = tail(branch)
+            corrector.insert_before(branch_assignment.loc.expression,
+                                    assignment.source)
+
+            remove_whitespace_in_branches(corrector, branch, condition, column)
+
+            branch_else = branch.parent.loc.else
+            corrector.remove_preceding(branch_else, branch_else.column - column)
           end
         end
       end
