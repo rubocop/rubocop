@@ -1363,6 +1363,10 @@ Rails/Output:
   Description: 'Checks for calls to puts, print, etc.'
   Enabled: true
 
+Rails/OutputSafety:
+  Description: 'The use of `html_safe` or `raw` may be a security risk.'
+  Enabled: true
+
 Rails/PluralizationGrammar:
   Description: 'Checks for incorrect grammar when using methods like `3.day.ago`.'
   Enabled: true
