@@ -1,10 +1,15 @@
-Be clear, concise and precise in your description of the problem.
+*Be clear, concise and precise in your description of the problem.
 Open an issue with a descriptive title and a summary in grammatically correct,
-complete sentences.
+complete sentences.*
 
-Use the template below when reporting bugs. Please, make sure that
+*Use the template below when reporting bugs. Please, make sure that
 you're running the latest stable RuboCop and that the problem you're reporting
-hasn't been reported (and potentially fixed) already.
+hasn't been reported (and potentially fixed) already.*
+
+*Before filing the ticket you should replace all text above the horizontal
+rule with your own words.*
+
+--------
 
 ## Expected behavior
 
