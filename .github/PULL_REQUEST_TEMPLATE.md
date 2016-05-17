@@ -1,4 +1,9 @@
-Before submitting a PR make sure the following are checked:
+**Replace this text with a summary of the changes in your PR.
+The more detailed you are, the better.**
+
+-----------------
+
+Before submitting the PR make sure the following are checked:
 
 * [ ] Wrote [good commit messages][1].
 * [ ] Used the same coding conventions as the rest of the project.
