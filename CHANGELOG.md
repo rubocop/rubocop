@@ -14,6 +14,7 @@
 * [#3125](https://github.com/bbatsov/rubocop/issues/3125): Fix `Rails/UniqBeforePluck` to ignore `uniq` with block. ([@tejasbubane][])
 * [#3116](https://github.com/bbatsov/rubocop/issues/3116): `Style/SpaceAroundKeyword` allows `&.` method calls after `super` and `yield`. ([@segiddins][])
 * [#3131](https://github.com/bbatsov/rubocop/issues/3131): Fix `Style/ZeroLengthPredicate` to ignore `size` and `length` variables. ([@tejasbubane][])
+* [#3146](https://github.com/bbatsov/rubocop/pull/3146): Fix `NegatedIf` and `NegatedWhile` to ignore double negations. ([@natalzia-paperless][])
 
 ## 0.40.0 (2016-05-09)
 
@@ -2168,3 +2169,4 @@
 [@tjwp]: https://github.com/tjwp
 [@neodelf]: https://github.com/neodelf
 [@josh]: https://github.com/josh
+[@natalzia-paperless]: https://github.com/natalzia-paperless

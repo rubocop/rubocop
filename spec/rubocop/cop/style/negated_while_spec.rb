@@ -39,7 +39,7 @@ describe RuboCop::Cop::Style::NegatedWhile do
     expect(cop.offenses.map(&:line)).to eq([1, 4])
   end
 
-  it 'accepts an while where only part of the condition is negated' do
+  it 'accepts a while where only part of the condition is negated' do
     inspect_source(cop,
                    ['while !a_condition && another_condition',
                     '  some_method',
@@ -48,6 +48,15 @@ describe RuboCop::Cop::Style::NegatedWhile do
                     '  some_method',
                     'end',
                     'some_method while not a_condition or other_cond'])
+    expect(cop.messages).to be_empty
+  end
+
+  it 'accepts a while where the condition is doubly negated' do
+    inspect_source(cop,
+                   ['while !!a_condition',
+                    '  some_method',
+                    'end',
+                    'some_method while !!a_condition'])
     expect(cop.messages).to be_empty
   end
 
