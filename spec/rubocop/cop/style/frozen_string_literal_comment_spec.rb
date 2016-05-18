@@ -19,6 +19,12 @@ describe RuboCop::Cop::Style::FrozenStringLiteralComment, :config do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts a source with no tokens' do
+      inspect_source(cop, ' ')
+
+      expect(cop.offenses).to be_empty
+    end
+
     it 'accepts a frozen string literal on the top line' do
       inspect_source(cop, ['# frozen_string_literal: true',
                            'puts 1'])

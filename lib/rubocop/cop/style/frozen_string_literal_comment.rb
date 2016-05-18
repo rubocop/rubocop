@@ -18,7 +18,7 @@ module RuboCop
 
         def investigate(processed_source)
           return if style == :when_needed && target_ruby_version < 2.3
-          return if processed_source.buffer.source.empty?
+          return if processed_source.tokens.empty?
 
           return if frozen_string_literal_comment_exists?(processed_source)
 
