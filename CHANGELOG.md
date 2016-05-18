@@ -7,7 +7,7 @@
 * [#3114](https://github.com/bbatsov/rubocop/issues/3114): Fix alignment `end` when auto-correcting `Style/EmptyElse`. ([@rrosenblum][])
 * [#3120](https://github.com/bbatsov/rubocop/issues/3120): Fix `Lint/UselessAccessModifier` reporting useless access modifiers inside {Class,Module,Struct}.new blocks. ([@owst][])
 * [#3125](https://github.com/bbatsov/rubocop/issues/3125): Fix `Rails/UniqBeforePluck` to ignore `uniq` with block. ([@tejasbubane][])
-* [#3166](https://github.com/bbatsov/rubocop/issues/3166): `Style/SpaceAroundKeyword` allows `&.` method calls after `super` and `yield`. ([@segiddins][])
+* [#3116](https://github.com/bbatsov/rubocop/issues/3116): `Style/SpaceAroundKeyword` allows `&.` method calls after `super` and `yield`. ([@segiddins][])
 
 ## 0.40.0 (2016-05-09)
 
