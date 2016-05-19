@@ -25,14 +25,7 @@ module RuboCop
       act_on_options
       apply_default_formatter
 
-      runner = Runner.new(@options, @config_store)
-      trap_interrupt(runner)
-      all_passed = runner.run(paths)
-      display_warning_summary(runner.warnings)
-      display_error_summary(runner.errors)
-      maybe_print_corrected_source
-
-      all_passed && !runner.aborting? && runner.errors.empty? ? 0 : 1
+      execute_runner(paths)
     rescue RuboCop::Error => e
       $stderr.puts Rainbow("Error: #{e.message}").red
       return 2
@@ -70,6 +63,18 @@ module RuboCop
         # color output explicitly forced off
         Rainbow.enabled = false
       end
+    end
+
+    def execute_runner(paths)
+      runner = Runner.new(@options, @config_store)
+
+      trap_interrupt(runner)
+      all_passed = runner.run(paths)
+      display_warning_summary(runner.warnings)
+      display_error_summary(runner.errors)
+      maybe_print_corrected_source
+
+      all_passed && !runner.aborting? && runner.errors.empty? ? 0 : 1
     end
 
     def handle_exiting_options
