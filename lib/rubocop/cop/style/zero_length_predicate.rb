@@ -41,15 +41,15 @@ module RuboCop
         end
 
         def_node_matcher :zero_length_predicate, <<-END
-          {(send (send _ ${:length :size}) $:== (int $0))
-           (send (int $0) $:== (send _ ${:length :size}))
-           (send (send _ ${:length :size}) $:<  (int $1))
-           (send (int $1) $:> (send _ ${:length :size}))}
+          {(send (send (...) ${:length :size}) $:== (int $0))
+           (send (int $0) $:== (send (...) ${:length :size}))
+           (send (send (...) ${:length :size}) $:<  (int $1))
+           (send (int $1) $:> (send (...) ${:length :size}))}
         END
 
         def_node_matcher :nonzero_length_predicate, <<-END
-          {(send (send _ ${:length :size}) ${:> :!=} (int $0))
-           (send (int $0) ${:< :!=} (send _ ${:length :size}))}
+          {(send (send (...) ${:length :size}) ${:> :!=} (int $0))
+           (send (int $0) ${:< :!=} (send (...) ${:length :size}))}
         END
 
         def autocorrect(node)

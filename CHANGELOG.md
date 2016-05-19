@@ -8,6 +8,7 @@
 * [#3120](https://github.com/bbatsov/rubocop/issues/3120): Fix `Lint/UselessAccessModifier` reporting useless access modifiers inside {Class,Module,Struct}.new blocks. ([@owst][])
 * [#3125](https://github.com/bbatsov/rubocop/issues/3125): Fix `Rails/UniqBeforePluck` to ignore `uniq` with block. ([@tejasbubane][])
 * [#3116](https://github.com/bbatsov/rubocop/issues/3116): `Style/SpaceAroundKeyword` allows `&.` method calls after `super` and `yield`. ([@segiddins][])
+* [#3131](https://github.com/bbatsov/rubocop/issues/3131): Fix `Style/ZeroLengthPredicate` to ignore `size` and `length` variables. ([@tejasbubane][])
 
 ## 0.40.0 (2016-05-09)
 
