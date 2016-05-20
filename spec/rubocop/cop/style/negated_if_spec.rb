@@ -68,6 +68,15 @@ describe RuboCop::Cop::Style::NegatedIf do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts an if where the condition is doubly negated' do
+    inspect_source(cop,
+                   ['if !!condition',
+                    '  some_method',
+                    'end',
+                    'some_method if !!condition'])
+    expect(cop.offenses).to be_empty
+  end
+
   it 'is not confused by negated elsif' do
     inspect_source(cop,
                    ['if test.is_a?(String)',
