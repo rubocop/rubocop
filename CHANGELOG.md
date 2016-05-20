@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+### New features
+
 * [#2927](https://github.com/bbatsov/rubocop/issues/2927): Add autocorrect for `Rails/Validation` cop. ([@neodelf][])
 
 ### Bug fixes
@@ -35,7 +37,6 @@
 * [#2909](https://github.com/bbatsov/rubocop/issues/2909): `Style/Lambda` enforced style supports `lambda` option. ([@drenmi][])
 * [#3092](https://github.com/bbatsov/rubocop/pull/3092): Allow `Style/Encoding` to enforce using no encoding comments. ([@NobodysNightmare][])
 * New cop `Rails/UniqBeforePluck` checks that `uniq` is used before `pluck`. ([@tjwp][])
-* [#2927](https://github.com/bbatsov/rubocop/issues/2927): Add autocorrect for `Rails/Validation` cop. ([@neodelf][])
 
 ### Bug fixes
 
