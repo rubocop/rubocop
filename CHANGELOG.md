@@ -5,6 +5,7 @@
 ### New features
 
 * [#2927](https://github.com/bbatsov/rubocop/issues/2927): Add autocorrect for `Rails/Validation` cop. ([@neodelf][])
+* [#3135](https://github.com/bbatsov/rubocop/pull/3135): Add new `Rails/OutputSafety` cop. ([@josh][])
 
 ### Bug fixes
 
@@ -2166,3 +2167,4 @@
 [@gylaz]: https://github.com/gylaz
 [@tjwp]: https://github.com/tjwp
 [@neodelf]: https://github.com/neodelf
+[@josh]: https://github.com/josh
