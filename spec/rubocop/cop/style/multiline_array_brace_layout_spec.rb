@@ -30,4 +30,9 @@ describe RuboCop::Cop::Style::MultilineArrayBraceLayout, :config do
     let(:open) { '[' }
     let(:close) { ']' }
   end
+
+  include_examples 'multiline literal brace layout trailing comma' do
+    let(:open) { '[' }
+    let(:close) { ']' }
+  end
 end
