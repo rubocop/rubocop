@@ -44,25 +44,39 @@ module RuboCop
       end
 
       def finished(_inspected_files)
-        command = 'rubocop --auto-gen-config'
-        if @exclude_limit_option
-          command += format(' --exclude-limit %d', @exclude_limit_option.to_i)
-        end
         output.puts HEADING % command
 
         # Syntax isn't a real cop and it can't be disabled.
         @cops_with_offenses.delete('Syntax')
 
-        @cops_with_offenses.sort.each do |cop_name, offense_count|
-          output.puts
-          cfg = self.class.config_to_allow_offenses[cop_name] || {}
+        output_offenses
 
-          output_cop_comments(output, cfg, cop_name, offense_count)
-          output_cop_config(output, cfg, cop_name)
-        end
         puts "Created #{output.path}."
         puts "Run `rubocop --config #{output.path}`, or add `inherit_from: " \
              "#{output.path}` in a .rubocop.yml file."
+      end
+
+      def command
+        command = 'rubocop --auto-gen-config'
+        if @exclude_limit_option
+          command += format(' --exclude-limit %d', @exclude_limit_option.to_i)
+        end
+
+        command
+      end
+
+      def output_offenses
+        @cops_with_offenses.sort.each do |cop_name, offense_count|
+          output_cop(cop_name, offense_count)
+        end
+      end
+
+      def output_cop(cop_name, offense_count)
+        output.puts
+        cfg = self.class.config_to_allow_offenses[cop_name] || {}
+
+        output_cop_comments(output, cfg, cop_name, offense_count)
+        output_cop_config(output, cfg, cop_name)
       end
 
       def output_cop_comments(output, cfg, cop_name, offense_count)

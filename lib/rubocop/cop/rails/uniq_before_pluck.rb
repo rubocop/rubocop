@@ -35,20 +35,10 @@ module RuboCop
         end
 
         def autocorrect(node)
-          lines = node.source.split(NEWLINE)
-          begin_remove_pos = if lines.last.strip == DOT_UNIQ
-                               node.source.rindex(NEWLINE)
-                             else
-                               node.loc.dot.begin_pos
-                             end
           receiver = node.children.first
 
           lambda do |corrector|
-            corrector.remove(
-              Parser::Source::Range.new(node.loc.expression.source_buffer,
-                                        begin_remove_pos,
-                                        node.loc.selector.end_pos)
-            )
+            corrector.remove(dot_uniq_with_whitespace(node))
             corrector.insert_before(receiver.loc.dot.begin, DOT_UNIQ)
           end
         end
@@ -57,6 +47,22 @@ module RuboCop
 
         def with_block?(node)
           node.parent && node.parent.block_type?
+        end
+
+        def dot_uniq_with_whitespace(node)
+          Parser::Source::Range.new(node.loc.expression.source_buffer,
+                                    dot_uniq_begin_pos(node),
+                                    node.loc.selector.end_pos)
+        end
+
+        def dot_uniq_begin_pos(node)
+          lines = node.source.split(NEWLINE)
+
+          if lines.last.strip == DOT_UNIQ
+            node.source.rindex(NEWLINE)
+          else
+            node.loc.dot.begin_pos
+          end
         end
       end
     end

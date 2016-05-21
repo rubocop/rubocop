@@ -57,27 +57,44 @@ module RuboCop
     end
 
     def each_mentioned_cop
-      return if processed_source.comments.nil?
-
-      processed_source.comments.each do |comment|
-        match = comment.text.match(COMMENT_DIRECTIVE_REGEXP)
-        next unless match
-
-        switch, cops_string = match.captures
-
-        cop_names =
-          cops_string == 'all' ? all_cop_names : cops_string.split(/,\s*/)
-
-        disabled = (switch == 'disable')
+      each_directive do |comment, cop_names, disabled|
         comment_line_number = comment.loc.expression.line
         single_line = !comment_only_line?(comment_line_number)
 
         cop_names.each do |cop_name|
-          cop_name = Cop::Cop.qualified_cop_name(cop_name.strip,
-                                                 processed_source.buffer.name)
-          yield cop_name, disabled, comment_line_number, single_line
+          yield qualified_cop_name(cop_name), disabled, comment_line_number,
+                single_line
         end
       end
+    end
+
+    def each_directive
+      return if processed_source.comments.nil?
+
+      processed_source.comments.each do |comment|
+        directive = directive_parts(comment)
+        next unless directive
+
+        yield comment, *directive
+      end
+    end
+
+    def directive_parts(comment)
+      match = comment.text.match(COMMENT_DIRECTIVE_REGEXP)
+      return unless match
+
+      switch, cops_string = match.captures
+
+      cop_names =
+        cops_string == 'all' ? all_cop_names : cops_string.split(/,\s*/)
+
+      disabled = (switch == 'disable')
+
+      [cop_names, disabled]
+    end
+
+    def qualified_cop_name(cop_name)
+      Cop::Cop.qualified_cop_name(cop_name.strip, processed_source.buffer.name)
     end
 
     def all_cop_names

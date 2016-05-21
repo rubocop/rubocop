@@ -34,13 +34,17 @@ module RuboCop
           if scope_type == :dynamic || style == :prefer_alias_method
             add_offense(node, :keyword, MSG_ALIAS)
           elsif node.children.none? { |arg| bareword?(arg) }
-            existing_args  = node.children.map(&:source).join(' ')
-            preferred_args = node.children.map { |a| a.source[1..-1] }.join(' ')
-            arg_ranges     = node.children.map(&:source_range)
-            msg            = format(MSG_SYMBOL_ARGS, preferred_args,
-                                    existing_args)
-            add_offense(node, arg_ranges.reduce(&:join), msg)
+            add_offense_for_args(node)
           end
+        end
+
+        def add_offense_for_args(node)
+          existing_args  = node.children.map(&:source).join(' ')
+          preferred_args = node.children.map { |a| a.source[1..-1] }.join(' ')
+          arg_ranges     = node.children.map(&:source_range)
+          msg            = format(MSG_SYMBOL_ARGS, preferred_args,
+                                  existing_args)
+          add_offense(node, arg_ranges.reduce(&:join), msg)
         end
 
         def autocorrect(node)

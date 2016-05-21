@@ -52,19 +52,7 @@ module RuboCop
         end
 
         def autocorrect(node)
-          cond, body, _else = if_node_parts(node)
-
-          oneline =
-            "#{body.source} #{node.loc.keyword.source} " + cond.source
-          first_line_comment = processed_source.comments.find do |c|
-            c.loc.line == node.loc.line
-          end
-          if first_line_comment
-            oneline << ' ' << first_line_comment.loc.expression.source
-          end
-          oneline = "(#{oneline})" if parenthesize?(node)
-
-          ->(corrector) { corrector.replace(node.source_range, oneline) }
+          ->(corrector) { corrector.replace(node.source_range, oneline(node)) }
         end
 
         private
@@ -72,6 +60,25 @@ module RuboCop
         # returns false if the then or else children are conditionals
         def nested_conditional?(node)
           node.children[1, 2].any? { |child| child && child.type == :if }
+        end
+
+        def oneline(node)
+          cond, body, _else = if_node_parts(node)
+
+          expr = "#{body.source} #{node.loc.keyword.source} " + cond.source
+          if (comment_after = first_line_comment(node))
+            expr << ' ' << comment_after
+          end
+          expr = "(#{expr})" if parenthesize?(node)
+
+          expr
+        end
+
+        def first_line_comment(node)
+          comment =
+            processed_source.comments.find { |c| c.loc.line == node.loc.line }
+
+          comment ? comment.loc.expression.source : nil
         end
       end
     end

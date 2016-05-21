@@ -381,20 +381,22 @@ module RuboCop
       module ConditionalCorrectorHelper
         def remove_whitespace_in_branches(corrector, branch, condition, column)
           branch.each_node do |child|
-            child_expression = child.loc.expression
-            white_space =
-              Parser::Source::Range.new(child_expression.source_buffer,
-                                        child_expression.begin_pos -
-                                         (child.loc.expression.column -
-                                          column - 2),
-                                        child_expression.begin_pos)
-
+            white_space = white_space_range(child, column)
             corrector.remove(white_space) if white_space.source.strip.empty?
           end
 
           [condition.loc.else, condition.loc.end].each do |loc|
             corrector.remove_preceding(loc, loc.column - column)
           end
+        end
+
+        def white_space_range(node, column)
+          expression = node.loc.expression
+          begin_pos = expression.begin_pos - (expression.column - column - 2)
+
+          Parser::Source::Range.new(expression.source_buffer,
+                                    begin_pos,
+                                    expression.begin_pos)
         end
 
         def assignment(node)
@@ -531,10 +533,7 @@ module RuboCop
           include ConditionalCorrectorHelper
 
           def correct(cop, node)
-            _condition, *when_branches, else_branch = *node
-            else_branch = tail(else_branch)
-            when_branches = expand_when_branches(when_branches)
-            when_branches.map! { |when_branch| tail(when_branch) }
+            when_branches, else_branch = extract_tail_branches(node)
             _variable, *_operator, else_assignment = *else_branch
 
             lambda do |corrector|
@@ -551,26 +550,43 @@ module RuboCop
           def move_assignment_inside_condition(node)
             column = node.loc.expression.column
             *_var, condition = *node
-            _condition, *when_branches, else_branch = *condition
-            when_branches = expand_when_branches(when_branches)
             assignment = assignment(node)
 
             lambda do |corrector|
               corrector.remove(assignment)
 
-              [*when_branches, else_branch].each do |branch|
-                branch_assignment = tail(branch)
-                corrector.insert_before(branch_assignment.loc.expression,
-                                        assignment.source)
-
-                remove_whitespace_in_branches(corrector, branch,
-                                              condition, column)
-
-                corrector
-                  .remove_preceding(branch.parent.loc.keyword,
-                                    branch.parent.loc.keyword.column - column)
+              extract_branches(condition).flatten.each do |branch|
+                move_branch_inside_condition(corrector, branch, condition,
+                                             assignment, column)
               end
             end
+          end
+
+          private
+
+          def extract_tail_branches(node)
+            when_branches, else_branch = extract_branches(node)
+            when_branches.map! { |branch| tail(branch) }
+            [when_branches, tail(else_branch)]
+          end
+
+          def extract_branches(node)
+            _condition, *when_branches, else_branch = *node
+            when_branches = expand_when_branches(when_branches)
+            [when_branches, else_branch]
+          end
+
+          def move_branch_inside_condition(corrector, branch, condition,
+                                           assignment, column)
+            branch_assignment = tail(branch)
+            corrector.insert_before(branch_assignment.loc.expression,
+                                    assignment.source)
+
+            remove_whitespace_in_branches(corrector, branch, condition, column)
+
+            parent_keyword = branch.parent.loc.keyword
+            corrector.remove_preceding(parent_keyword,
+                                       parent_keyword.column - column)
           end
         end
       end
