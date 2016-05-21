@@ -15,6 +15,7 @@
 * [#3116](https://github.com/bbatsov/rubocop/issues/3116): `Style/SpaceAroundKeyword` allows `&.` method calls after `super` and `yield`. ([@segiddins][])
 * [#3131](https://github.com/bbatsov/rubocop/issues/3131): Fix `Style/ZeroLengthPredicate` to ignore `size` and `length` variables. ([@tejasbubane][])
 * [#3146](https://github.com/bbatsov/rubocop/pull/3146): Fix `NegatedIf` and `NegatedWhile` to ignore double negations. ([@natalzia-paperless][])
+* [#3140](https://github.com/bbatsov/rubocop/pull/3140): `Style/FrozenStringLiteralComment` works with file doesn't have any tokens. ([@pocke][])
 
 ## 0.40.0 (2016-05-09)
 
