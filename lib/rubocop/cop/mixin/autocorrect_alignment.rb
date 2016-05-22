@@ -31,26 +31,19 @@ module RuboCop
         unless items.empty?
           base_column ||= display_column(items.first.source_range)
         end
-        prev_line = -1
-        items.each do |current|
-          if current.loc.line > prev_line &&
-             begins_its_line?(current.source_range)
-            @column_delta = base_column - display_column(current.source_range)
-            if @column_delta != 0
-              expr = current.source_range
-              if offenses.any? { |o| within?(expr, o.location) }
-                # If this offense is within a line range that is already being
-                # realigned by autocorrect, we report the offense without
-                # autocorrecting it. Two rewrites in the same area by the same
-                # cop can not be handled. The next iteration will find the
-                # offense again and correct it.
-                add_offense(nil, expr)
-              else
-                add_offense(current, :expression)
-              end
-            end
+
+        each_bad_alignment(items, base_column) do |current|
+          expr = current.source_range
+          if offenses.any? { |o| within?(expr, o.location) }
+            # If this offense is within a line range that is already being
+            # realigned by autocorrect, we report the offense without
+            # autocorrecting it. Two rewrites in the same area by the same
+            # cop can not be handled. The next iteration will find the
+            # offense again and correct it.
+            add_offense(nil, expr)
+          else
+            add_offense(current, :expression)
           end
-          prev_line = current.loc.line
         end
       end
 
@@ -76,6 +69,19 @@ module RuboCop
       end
 
       private
+
+      def each_bad_alignment(items, base_column)
+        prev_line = -1
+        items.each do |current|
+          if current.loc.line > prev_line &&
+             begins_its_line?(current.source_range)
+            @column_delta = base_column - display_column(current.source_range)
+
+            yield current if @column_delta != 0
+          end
+          prev_line = current.loc.line
+        end
+      end
 
       def autocorrect_line(corrector, line_begin_pos, expr, column_delta,
                            heredoc_ranges)
