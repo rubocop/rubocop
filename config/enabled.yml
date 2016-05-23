@@ -1310,6 +1310,10 @@ Performance/LstripRstrip:
   Description: 'Use `strip` instead of `lstrip.rstrip`.'
   Enabled: true
 
+Performance/PushSplat:
+  Description: 'Use `concat` instead of `push(*)`.'
+  Enabled: true
+
 Performance/RangeInclude:
   Description: 'Use `Range#cover?` instead of `Range#include?`.'
   Reference: 'https://github.com/JuanitoFatas/fast-ruby#cover-vs-include-code'
