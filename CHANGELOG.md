@@ -18,6 +18,7 @@
 * [#3146](https://github.com/bbatsov/rubocop/pull/3146): Fix `NegatedIf` and `NegatedWhile` to ignore double negations. ([@natalzia-paperless][])
 * [#3140](https://github.com/bbatsov/rubocop/pull/3140): `Style/FrozenStringLiteralComment` works with file doesn't have any tokens. ([@pocke][])
 * [#3154](https://github.com/bbatsov/rubocop/issues/3154): Fix handling of `()` in `Style/RedundantParentheses`. ([@lumeet][])
+* [#3155](https://github.com/bbatsov/rubocop/issues/3155): Fix `Style/SpaceAfterNot` reporting on the `not` keyword. ([@NobodysNightmare][])
 * [#3160](https://github.com/bbatsov/rubocop/pull/3160): `Style/Lambda` fix whitespacing when auto-correcting unparenthesized arguments. ([@palkan][])
 
 ### Changes

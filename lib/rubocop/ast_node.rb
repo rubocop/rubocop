@@ -456,6 +456,11 @@ module RuboCop
       args.empty? && method_name == :! && loc.selector.is?('not'.freeze)
     end
 
+    def keyword_bang?
+      _receiver, method_name, *args = *self
+      args.empty? && method_name == :! && loc.selector.is?('!'.freeze)
+    end
+
     def unary_operation?
       return false unless loc.respond_to?(:selector) && loc.selector
       Cop::Util.operator?(loc.selector.source.to_sym) &&

@@ -20,6 +20,12 @@ describe RuboCop::Cop::Style::SpaceAfterNot do
     expect(cop.offenses).to be_empty
   end
 
+  it 'accepts space after not keyword' do
+    inspect_source(cop, 'not something')
+
+    expect(cop.offenses).to be_empty
+  end
+
   it 'reports an offense for space after ! with the negated receiver ' \
      'wrapped in parentheses' do
     inspect_source(cop, '! (model)')
@@ -34,6 +40,12 @@ describe RuboCop::Cop::Style::SpaceAfterNot do
       new_source = autocorrect_source(cop, '!  something')
 
       expect(new_source).to eq('!something')
+    end
+
+    it 'keeps space after not keyword' do
+      new_source = autocorrect_source(cop, 'not something')
+
+      expect(new_source).to eq('not something')
     end
 
     it 'removes redundant space when there is a parentheses' do
