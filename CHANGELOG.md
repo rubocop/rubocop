@@ -22,6 +22,7 @@
 * [#3165](https://github.com/bbatsov/rubocop/pull/3165): Add new `Lint/PercentSymbolArray` cop. ([@owst][])
 * [#3177](https://github.com/bbatsov/rubocop/pull/3177): Add new `Style/NumericLiteralPrefix` cop. ([@tejasbubane][])
 * [#1646](https://github.com/bbatsov/rubocop/issues/1646): Add configuration style `indented_relative_to_receiver` for `Style/MultilineMethodCallIndentation`. ([@jonas054][])
+* New cop `Lint/ShadowedException` checks for the order which exceptions are rescued to avoid rescueing a less specific exception before a more specific exception. ([@rrosenblum][])
 
 ### Bug fixes
 
