@@ -279,6 +279,48 @@ describe RuboCop::Cop::Style::Lambda, :config do
                                            '  x',
                                            'end'].join("\n")
         end
+
+        context 'without parentheses' do
+          let(:source) do
+            ['-> hello do',
+             '  puts hello',
+             'end']
+          end
+
+          it_behaves_like 'registers an offense',
+                          'Use the `lambda` method for multiline lambdas.'
+          it_behaves_like 'auto-correct', ['lambda do |hello|',
+                                           '  puts hello',
+                                           'end'].join("\n")
+        end
+
+        context 'with no parentheses and bad spacing' do
+          let(:source) do
+            ['->   hello  do',
+             '  puts hello',
+             'end']
+          end
+
+          it_behaves_like 'registers an offense',
+                          'Use the `lambda` method for multiline lambdas.'
+          it_behaves_like 'auto-correct', ['lambda do |hello|',
+                                           '  puts hello',
+                                           'end'].join("\n")
+        end
+
+        context 'with no parentheses and many args' do
+          let(:source) do
+            ['->   hello, user  do',
+             '  puts hello',
+             'end']
+          end
+
+          it_behaves_like 'registers an offense',
+                          'Use the `lambda` method for multiline lambdas.'
+          it_behaves_like 'auto-correct', ['lambda do |hello, user|',
+                                           '  puts hello',
+                                           'end'].join("\n")
+        end
       end
     end
 
