@@ -8,6 +8,7 @@
 * [#3135](https://github.com/bbatsov/rubocop/pull/3135): Add new `Rails/OutputSafety` cop. ([@josh][])
 * [#3164](https://github.com/bbatsov/rubocop/pull/3164): Add [Fastlane](https://fastlane.tools/)'s Fastfile to the default Includes. ([@jules2689][])
 * [#3173](https://github.com/bbatsov/rubocop/pull/3173): Make `Style/ModuleFunction` configurable with `module_function` and `extend_self` styles. ([@tjwp][])
+* [#3105](https://github.com/bbatsov/rubocop/issues/3105): Add new `Style/RequestReferer` cop. ([@giannileggio][])
 
 ### Bug fixes
 
@@ -2183,3 +2184,4 @@
 [@josh]: https://github.com/josh
 [@natalzia-paperless]: https://github.com/natalzia-paperless
 [@jules2689]: https://github.com/jules2689
+[@giannileggio]: https://github.com/giannileggio

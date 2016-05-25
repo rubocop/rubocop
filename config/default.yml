@@ -1022,6 +1022,13 @@ Style/WordArray:
   # The regular expression WordRegex decides what is considered a word.
   WordRegex: !ruby/regexp '/\A[\p{Word}\n\t]+\z/'
 
+# RequestReferer enforces consistent request.referer usage.
+Style/RequestReferer:
+  EnforcedStyle: referer
+  SupportedStyles:
+    - referer
+    - referrer
+
 ##################### Metrics ##################################
 
 Metrics/AbcSize:
