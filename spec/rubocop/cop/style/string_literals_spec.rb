@@ -254,6 +254,17 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
         }
       end
 
+      it 'does not crash on strings with line breaks in them' do
+        inspect_source(cop,
+                       ['"--',
+                        'SELECT *',
+                        'LEFT JOIN X on Y',
+                        'FROM Models"'])
+        # TODO: We should actually get an offense report here telling us to use
+        # single quotes. For now, we only check that we don't crash.
+        expect(cop.offenses).to be_empty
+      end
+
       it 'accepts continued strings using all single quotes' do
         inspect_source(cop, ["'abc' \\",
                              "'def'"])
