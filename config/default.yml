@@ -25,6 +25,8 @@ AllCops:
     - '**/Berksfile'
     - '**/Cheffile'
     - '**/Vagabondfile'
+    - '**/Fastfile'
+    - '**/*Fastfile'
   Exclude:
     - 'vendor/**/*'
   # Default formatter will be used if no -f/--format option is given.
