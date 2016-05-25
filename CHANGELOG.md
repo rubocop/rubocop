@@ -6,6 +6,7 @@
 
 * [#2927](https://github.com/bbatsov/rubocop/issues/2927): Add autocorrect for `Rails/Validation` cop. ([@neodelf][])
 * [#3135](https://github.com/bbatsov/rubocop/pull/3135): Add new `Rails/OutputSafety` cop. ([@josh][])
+* [#3164](https://github.com/bbatsov/rubocop/pull/3164): Add [Fastlane](https://fastlane.tools/)'s Fastfile to the default Includes. ([@jules2689][])
 
 ### Bug fixes
 
@@ -2171,3 +2172,4 @@
 [@neodelf]: https://github.com/neodelf
 [@josh]: https://github.com/josh
 [@natalzia-paperless]: https://github.com/natalzia-paperless
+[@jules2689]: https://github.com/jules2689
