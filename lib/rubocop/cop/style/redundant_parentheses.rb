@@ -32,7 +32,9 @@ module RuboCop
         end
 
         def parens_allowed?(node)
-          child  = node.children.first
+          child = node.children.first
+          return true unless child
+
           parent = node.parent
 
           # don't flag `break(1)`, etc

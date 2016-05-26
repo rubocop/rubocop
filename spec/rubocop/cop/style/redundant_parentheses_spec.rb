@@ -102,6 +102,7 @@ describe RuboCop::Cop::Style::RedundantParentheses do
   it_behaves_like 'plausible', '+(1.foo)'
   it_behaves_like 'plausible', '-(1.foo.bar)'
   it_behaves_like 'plausible', '+(1.foo.bar)'
+  it_behaves_like 'plausible', '()'
 
   it_behaves_like 'redundant', '[(1)]', '[1]', 'a literal', '(1)'
   it_behaves_like 'redundant', "[(1\n)]", "[1\n]", 'a literal', "(1\n)"
