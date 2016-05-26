@@ -32,25 +32,31 @@ module RuboCop
         end
 
         def parens_allowed?(node)
-          child = node.children.first
-          return true unless child
-
-          parent = node.parent
-
-          # don't flag `break(1)`, etc
-          (keyword_ancestor?(node) && parens_required?(node)) ||
+          # don't flag `()`
+          empty_parentheses?(node) ||
+            # don't flag `break(1)`, etc
+            (keyword_ancestor?(node) && parens_required?(node)) ||
             # don't flag `method ({key: value})`
-            (child.hash_type? && first_arg?(node) && !parentheses?(parent)) ||
+            hash_literal_as_first_arg?(node) ||
             # don't flag `rescue(ExceptionClass)`
             rescue?(node) ||
             # don't flag `method (arg) { }`
-            (arg_in_call_with_block?(node) && !parentheses?(parent)) ||
+            (arg_in_call_with_block?(node) && !parentheses?(node.parent)) ||
             # don't flag
             # ```
             # { a: (1
             #      ), }
             # ```
             allowed_array_or_hash_element?(node)
+        end
+
+        def empty_parentheses?(node)
+          node.children.empty?
+        end
+
+        def hash_literal_as_first_arg?(node)
+          child = node.children.first
+          child.hash_type? && first_arg?(node) && !parentheses?(node.parent)
         end
 
         def check(begin_node)
