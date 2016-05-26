@@ -521,8 +521,10 @@ Style/HashSyntax:
     - ruby19
     - ruby19_no_mixed_keys
     - hash_rockets
-# Force hashes that have a symbol value to use hash rockets
+  # Force hashes that have a symbol value to use hash rockets
   UseHashRocketsWithSymbolValues: false
+  # Do not suggest { a?: 1 } over { :a? => 1 } in ruby19 style
+  PreferHashRocketsForNonAlnumEndingSymbols: false
 
 Style/IfUnlessModifier:
   MaxLineLength: 80

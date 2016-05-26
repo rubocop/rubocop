@@ -12,15 +12,22 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
         RuboCop::Config.new('AllCops' => {
                               'TargetRubyVersion' => ruby_version
                             },
-                            'Style/HashSyntax' => {
-                              'EnforcedStyle'   => 'ruby19',
-                              'SupportedStyles' => %w(ruby19 hash_rockets),
-                              'UseHashRocketsWithSymbolValues' => false
-                            },
+                            'Style/HashSyntax' => cop_config,
                             'Style/SpaceAroundOperators' => {
                               'Enabled' => true
                             })
       end
+
+      let(:cop_config) do
+        {
+          'EnforcedStyle'   => 'ruby19',
+          'SupportedStyles' => %w(ruby19 hash_rockets),
+          'UseHashRocketsWithSymbolValues' => false,
+          'PreferHashRocketsForNonAlnumEndingSymbols' => false
+        }.merge(cop_config_overrides)
+      end
+
+      let(:cop_config_overrides) { {} }
 
       it 'registers offense for hash rocket syntax when new is possible' do
         inspect_source(cop, 'x = { :a => 0 }')
@@ -56,6 +63,36 @@ describe RuboCop::Cop::Style::HashSyntax, :config do
         it 'registers an offense when symbol keys have strings in them' do
           inspect_source(cop, 'x = { :"string" => 0 }')
           expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+        end
+      end
+
+      context 'if PreferHashRocketsForNonAlnumEndingSymbols is false' do
+        it 'registers an offense for hash rockets when symbols end with ?' do
+          inspect_source(cop, 'x = { :a? => 0 }')
+          expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+        end
+
+        it 'registers an offense for hash rockets when symbols end with !' do
+          inspect_source(cop, 'x = { :a! => 0 }')
+          expect(cop.messages).to eq(['Use the new Ruby 1.9 hash syntax.'])
+        end
+      end
+
+      context 'if PreferHashRocketsForNonAlnumEndingSymbols is true' do
+        let(:cop_config_overrides) do
+          {
+            'PreferHashRocketsForNonAlnumEndingSymbols' => true
+          }
+        end
+
+        it 'accepts hash rockets when symbols end with ?' do
+          inspect_source(cop, 'x = { :a? => 0 }')
+          expect(cop.messages).to be_empty
+        end
+
+        it 'accepts hash rockets when symbols end with !' do
+          inspect_source(cop, 'x = { :a! => 0 }')
+          expect(cop.messages).to be_empty
         end
       end
 

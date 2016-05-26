@@ -96,11 +96,18 @@ module RuboCop
 
           return false unless key.sym_type?
 
-          valid_19_syntax_symbol?(key.source)
+          acceptable_19_syntax_symbol?(key.source)
         end
 
-        def valid_19_syntax_symbol?(sym_name)
+        def acceptable_19_syntax_symbol?(sym_name)
           sym_name.sub!(/\A:/, '')
+
+          if cop_config['PreferHashRocketsForNonAlnumEndingSymbols']
+            # Prefer { :production? => false } over { production?: false } and
+            # similarly for other non-alnum final characters (except quotes,
+            # to prefer { "x y": 1 } over { :"x y" => 1 }).
+            return false unless sym_name =~ /[\p{Alnum}"']\z/
+          end
 
           # Most hash keys can be matched against a simple regex.
           return true if sym_name =~ /\A[_a-z]\w*[?!]?\z/i

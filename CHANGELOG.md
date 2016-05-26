@@ -19,6 +19,10 @@
 * [#3140](https://github.com/bbatsov/rubocop/pull/3140): `Style/FrozenStringLiteralComment` works with file doesn't have any tokens. ([@pocke][])
 * [#3154](https://github.com/bbatsov/rubocop/issues/3154): Fix handling of `()` in `Style/RedundantParentheses`. ([@lumeet][])
 
+### Changes
+
+* [#3149](https://github.com/bbatsov/rubocop/pull/3149): Make `Style/HashSyntax` configurable to not report hash rocket syntax for symbols ending with ? or ! when using ruby19 style. ([@owst][])
+
 ## 0.40.0 (2016-05-09)
 
 ### New features
