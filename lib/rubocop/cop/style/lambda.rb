@@ -137,6 +137,10 @@ module RuboCop
 
         def autocorrect_literal_to_method(corrector, node)
           block_method, args = *node
+
+          # Check for unparenthesized args' preceding and trailing whitespaces.
+          remove_unparenthesized_whitespaces(corrector, node)
+
           # Avoid correcting to `lambdado` by inserting whitespace
           # if none exists before or after the lambda arguments.
           if needs_whitespace?(block_method, args, node)
@@ -180,6 +184,24 @@ module RuboCop
 
           index = parent.children.index { |c| c.equal?(node) }
           index >= 2
+        end
+
+        def remove_unparenthesized_whitespaces(corrector, node)
+          block_method, args = *node
+          return unless unparenthesized_literal_args?(args)
+          # First, remove leading whitespaces (beetween arrow and args)
+          corrector.remove_preceding(
+            args.source_range,
+            args.source_range.begin_pos - block_method.source_range.end_pos
+          )
+
+          # Then, remove trailing whitespaces (beetween args and 'do')
+          delta = node.loc.begin.begin_pos - args.source_range.end_pos - 1
+          corrector.remove_preceding(node.loc.begin, delta)
+        end
+
+        def unparenthesized_literal_args?(args)
+          args.source_range && args.source_range.begin && !parentheses?(args)
         end
       end
     end
