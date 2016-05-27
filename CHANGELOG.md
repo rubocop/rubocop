@@ -19,6 +19,7 @@
 * [#3140](https://github.com/bbatsov/rubocop/pull/3140): `Style/FrozenStringLiteralComment` works with file doesn't have any tokens. ([@pocke][])
 * [#3154](https://github.com/bbatsov/rubocop/issues/3154): Fix handling of `()` in `Style/RedundantParentheses`. ([@lumeet][])
 * [#3160](https://github.com/bbatsov/rubocop/pull/3160): `Style/Lambda` fix whitespacing when auto-correcting unparenthesized arguments. ([@palkan][])
+* [#31174](https://github.com/bbatsov/rubocop/pull/31174): `Style/SpaceAfterNot` don't register offences on `not` keywords. ([@gsamokovarov][])
 
 ### Changes
 
@@ -2179,3 +2180,4 @@
 [@josh]: https://github.com/josh
 [@natalzia-paperless]: https://github.com/natalzia-paperless
 [@jules2689]: https://github.com/jules2689
+[@gsamokovarov]: https://github.com/gsamokovarov
