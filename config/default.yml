@@ -642,6 +642,12 @@ Style/MethodName:
     - snake_case
     - camelCase
 
+Style/ModuleFunction:
+  EnforcedStyle: module_function
+  SupportedStyles:
+    - module_function
+    - extend_self
+
 Style/MultilineArrayBraceLayout:
   EnforcedStyle: symmetrical
   SupportedStyles:
