@@ -109,12 +109,17 @@ module RuboCop
       end
 
       def output_cop_config(output, cfg, cop_name)
+        # 'Enabled' option will be put into file only if exclude
+        # limit is exceeded.
+        cfg_without_enabled = cfg.reject { |key| key == 'Enabled' }
+
         output.puts "#{cop_name}:"
-        cfg.each do |key, value|
+        cfg_without_enabled.each do |key, value|
           value = value[0] if value.is_a?(Array)
           output.puts "  #{key}: #{value}"
         end
-        output_offending_files(output, cfg, cop_name)
+
+        output_offending_files(output, cfg_without_enabled, cop_name)
       end
 
       def output_offending_files(output, cfg, cop_name)

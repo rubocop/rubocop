@@ -477,18 +477,40 @@ describe RuboCop::CLI, :isolated_environment do
       end
     end
 
-    it 'disables cop if different styles appear in different files' do
-      create_file('example1.rb', ['$!'])
-      create_file('example2.rb', ['$ERROR_INFO'])
-      expect(cli.run(['--auto-gen-config'])).to eq(1)
-      expect(IO.readlines('.rubocop_todo.yml')[8..-1].join)
-        .to eq(['# Offense count: 1',
-                '# Cop supports --auto-correct.',
-                '# Configuration parameters: EnforcedStyle, SupportedStyles.',
-                '# SupportedStyles: use_perl_names, use_english_names',
-                'Style/SpecialGlobalVars:',
-                '  Enabled: false',
-                ''].join("\n"))
+    describe 'when different styles appear in different files' do
+      before do
+        create_file('example1.rb', ['$!'])
+        create_file('example2.rb', ['$!'])
+        create_file('example3.rb', ['$ERROR_INFO'])
+      end
+
+      it 'disables cop if --exclude-limit is exceeded' do
+        expect(cli.run(['--auto-gen-config', '--exclude-limit', '1'])).to eq(1)
+        expect(IO.readlines('.rubocop_todo.yml')[8..-1].join)
+          .to eq(['# Offense count: 2',
+                  '# Cop supports --auto-correct.',
+                  '# Configuration parameters: EnforcedStyle, SupportedStyles.',
+                  '# SupportedStyles: use_perl_names, use_english_names',
+                  'Style/SpecialGlobalVars:',
+                  '  Enabled: false',
+                  ''].join("\n"))
+      end
+
+      it 'generates Exclude list if --exclude-limit is not exceeded' do
+        create_file('example4.rb', ['$!'])
+        expect(cli.run(['--auto-gen-config', '--exclude-limit', '10'])).to eq(1)
+        expect(IO.readlines('.rubocop_todo.yml')[8..-1].join)
+          .to eq(['# Offense count: 3',
+                  '# Cop supports --auto-correct.',
+                  '# Configuration parameters: EnforcedStyle, SupportedStyles.',
+                  '# SupportedStyles: use_perl_names, use_english_names',
+                  'Style/SpecialGlobalVars:',
+                  '  Exclude:',
+                  "    - 'example1.rb'",
+                  "    - 'example2.rb'",
+                  "    - 'example4.rb'",
+                  ''].join("\n"))
+      end
     end
 
     it 'can be called when there are no files to inspection' do
