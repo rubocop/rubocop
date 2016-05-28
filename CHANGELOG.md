@@ -21,6 +21,7 @@
 * [#3154](https://github.com/bbatsov/rubocop/issues/3154): Fix handling of `()` in `Style/RedundantParentheses`. ([@lumeet][])
 * [#3155](https://github.com/bbatsov/rubocop/issues/3155): Fix `Style/SpaceAfterNot` reporting on the `not` keyword. ([@NobodysNightmare][])
 * [#3160](https://github.com/bbatsov/rubocop/pull/3160): `Style/Lambda` fix whitespacing when auto-correcting unparenthesized arguments. ([@palkan][])
+* [#2944](https://github.com/bbatsov/rubocop/issues/2944): Don't crash on strings that span multiple lines but only have one pair of delimiters in `Style/StringLiterals`. ([@jonas054][])
 
 ### Changes
 
