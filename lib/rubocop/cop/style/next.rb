@@ -135,10 +135,10 @@ module RuboCop
           corrector.remove(cond_range(node, cond))
           corrector.remove(end_range(node))
 
-          # end_range starts with the final newline of the if body
-          reindent_lines = (node.source_range.line + 1)...node.loc.end.line
-          reindent_lines = reindent_lines.to_a - heredoc_lines(node)
-          reindent(reindent_lines, cond, corrector)
+          lines = reindentable_lines(node)
+          return if lines.empty?
+
+          reindent(lines, cond, corrector)
         end
 
         def opposite_kw(if_body)
@@ -170,34 +170,30 @@ module RuboCop
           source_buffer.source[end_pos..-1] =~ /\A\s*$/
         end
 
+        def reindentable_lines(node)
+          buffer = node.source_range.source_buffer
+
+          # end_range starts with the final newline of the if body
+          lines = (node.source_range.line + 1)...node.loc.end.line
+          lines = lines.to_a - heredoc_lines(node)
+          # Skip blank lines
+          lines.reject { |lineno| buffer.source_line(lineno) =~ /\A\s*\z/ }
+        end
+
         # Adjust indentation of `lines` to match `node`
         def reindent(lines, node, corrector)
           range  = node.source_range
           buffer = range.source_buffer
 
           target_indent = range.source_line =~ /\S/
-
-          # Skip blank lines
-          lines.reject! { |lineno| buffer.source_line(lineno) =~ /\A\s*\z/ }
-          return if lines.empty?
-
-          actual_indent = lines.map do |lineno|
-            buffer.source_line(lineno) =~ /\S/
-          end.min
-
-          delta = actual_indent - target_indent
+          delta = actual_indent(lines, buffer) - target_indent
           lines.each do |lineno|
-            adjustment = delta
-            adjustment += @reindented_lines[lineno]
-            @reindented_lines[lineno] = adjustment
-
-            if adjustment > 0
-              corrector.remove_leading(buffer.line_range(lineno), adjustment)
-            elsif adjustment < 0
-              corrector.insert_before(buffer.line_range(lineno),
-                                      ' ' * -adjustment)
-            end
+            reindent_line(corrector, lineno, delta, buffer)
           end
+        end
+
+        def actual_indent(lines, buffer)
+          lines.map { |lineno| buffer.source_line(lineno) =~ /\S/ }.min
         end
 
         def heredoc_lines(node)
@@ -205,6 +201,18 @@ module RuboCop
               .select { |n| n.loc.respond_to?(:heredoc_body) }
               .map { |n| n.loc.heredoc_body }
               .flat_map { |b| (b.line...b.last_line).to_a }
+        end
+
+        def reindent_line(corrector, lineno, delta, buffer)
+          adjustment = delta + @reindented_lines[lineno]
+          @reindented_lines[lineno] = adjustment
+
+          if adjustment > 0
+            corrector.remove_leading(buffer.line_range(lineno), adjustment)
+          elsif adjustment < 0
+            corrector.insert_before(buffer.line_range(lineno),
+                                    ' ' * -adjustment)
+          end
         end
       end
     end
