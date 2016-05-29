@@ -32,13 +32,29 @@ module RuboCop
           lambda do |corrector|
             corrector.remove(range_with_surrounding_space(node.loc.end,
                                                           :left))
-            corrector.insert_after(children(node).last.source_range,
+
+            corrector.insert_after(last_element_range_with_trailing_comma(node),
                                    node.loc.end.source)
           end
         end
       end
 
       private
+
+      def last_element_range_with_trailing_comma(node)
+        trailing_comma_range = last_element_trailing_comma_range(node)
+        if trailing_comma_range
+          children(node).last.source_range.join(trailing_comma_range)
+        else
+          children(node).last.source_range
+        end
+      end
+
+      def last_element_trailing_comma_range(node)
+        range = range_with_surrounding_space(children(node).last.source_range,
+                                             :right).end.resize(1)
+        range.source == ',' ? range : nil
+      end
 
       def handle_new_line(node)
         return unless closing_brace_on_same_line?(node)

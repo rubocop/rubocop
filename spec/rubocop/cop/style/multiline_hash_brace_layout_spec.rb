@@ -34,4 +34,11 @@ describe RuboCop::Cop::Style::MultilineHashBraceLayout, :config do
     let(:multi_prefix) { 'b: ' }
     let(:multi) { ['[', '1', ']'] }
   end
+
+  include_examples 'multiline literal brace layout trailing comma' do
+    let(:open) { '{' }
+    let(:close) { '}' }
+    let(:a) { 'a: 1' }
+    let(:b) { 'b: 2' }
+  end
 end

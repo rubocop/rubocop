@@ -30,4 +30,9 @@ describe RuboCop::Cop::Style::MultilineMethodCallBraceLayout, :config do
     let(:open) { 'foo(' }
     let(:close) { ')' }
   end
+
+  include_examples 'multiline literal brace layout trailing comma' do
+    let(:open) { 'foo(' }
+    let(:close) { ')' }
+  end
 end
