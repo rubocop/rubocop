@@ -118,6 +118,19 @@ module RuboCop
                                               range.begin_pos + size)
         @source_rewriter.remove(to_remove)
       end
+
+      # Removes `size` characters from the end of the given range.
+      # If `size` is greater than the size of `range`, the removed region can
+      # overrun the beginning of `range`.
+      #
+      # @param [Parser::Source::Range] range
+      # @param [Integer] size
+      def remove_trailing(range, size)
+        to_remove = Parser::Source::Range.new(range.source_buffer,
+                                              range.end_pos - size,
+                                              range.end_pos)
+        @source_rewriter.remove(to_remove)
+      end
     end
   end
 end
