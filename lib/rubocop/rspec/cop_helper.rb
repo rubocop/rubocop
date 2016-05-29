@@ -3,6 +3,7 @@
 
 require 'tempfile'
 
+# This module provides methods that make it easier to test Cops.
 module CopHelper
   extend RSpec::SharedContext
 
@@ -64,6 +65,8 @@ end
 
 module RuboCop
   module Cop
+    # Monkey-patch Cop for tests to provide easy access to messages and
+    # highlights.
     class Cop
       def messages
         offenses.sort.map(&:message)
