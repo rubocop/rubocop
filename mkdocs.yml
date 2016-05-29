@@ -1,0 +1,17 @@
+site_name: "RuboCop: The Ruby Linter that Serves and Protects"
+repo_url: https://github.com/bbatsov/rubocop
+site_favicon: favicon.ico
+copyright: "Copyright (C) 2016 Bozhidar Batsov and RuboCop contributors"
+docs_dir: manual
+pages:
+- Home: index.md
+- Installation: installation.md
+- Basic Usage: basic_usage.md
+- Exit codes: exit_codes.md
+- Formatters: formatters.md
+- Configuration: configuration.md
+- Caching: caching.md
+- Extensions: extensions.md
+- Integration with other tools: integration_with_other_tools.md
+- Support: support.md
+theme: readthedocs
