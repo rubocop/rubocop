@@ -30,7 +30,14 @@ module RuboCop
 
         def autocorrect(node)
           expr = node.source_range
-          ->(corrector) { corrector.insert_after(expr, '.freeze') }
+          lambda do |corrector|
+            if node.array_type? && node.loc.begin.nil? && node.loc.end.nil?
+              corrector.insert_before(expr, '[')
+              corrector.insert_after(expr, '].freeze')
+            else
+              corrector.insert_after(expr, '.freeze')
+            end
+          end
         end
 
         private
