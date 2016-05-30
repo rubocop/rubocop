@@ -9,7 +9,9 @@ module RuboCop
       # bad things are liable to happen
       INCOMPATIBLE_COPS = {
         Style::SymbolProc => [Style::SpaceBeforeBlockBraces],
-        Style::SpaceBeforeBlockBraces => [Style::SymbolProc]
+        Style::SpaceBeforeBlockBraces => [Style::SymbolProc],
+        Style::LineEndConcatenation => [Style::UnneededInterpolation],
+        Style::UnneededInterpolation => [Style::LineEndConcatenation]
       }.freeze
 
       DEFAULT_OPTIONS = {

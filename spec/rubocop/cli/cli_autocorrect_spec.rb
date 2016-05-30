@@ -225,6 +225,28 @@ describe RuboCop::CLI, :isolated_environment do
     expect(IO.read('example.rb')).to eq(corrected.join("\n"))
   end
 
+  it 'corrects LineEndConcatenation offenses leaving the ' \
+     'UnneededInterpolation offense unchanged' do
+    # If we change string concatenation from plus to backslash, the string
+    # literal that follows must remain a string literal.
+    source = ["puts 'foo' +",
+              '     "#{bar}"',
+              "puts 'a' +",
+              "  'b'",
+              '"#{c}"']
+    create_file('example.rb', source)
+    expect(cli.run(['--auto-correct'])).to eq(0)
+    corrected = ["puts 'foo' \\",
+                 '     "#{bar}"',
+                 # Expressions that need correction from only one of these cops
+                 # are corrected as expected.
+                 "puts 'a' \\",
+                 "     'b'",
+                 'c.to_s',
+                 '']
+    expect(IO.read('example.rb')).to eq(corrected.join("\n"))
+  end
+
   it 'corrects InitialIndentation offenses' do
     source = ['  # comment 1',
               '',
