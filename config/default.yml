@@ -908,6 +908,9 @@ Style/SpaceInsideHashLiteralBraces:
   SupportedStyles:
     - space
     - no_space
+    # 'compact' normally requires a space inside hash braces, with the exception
+    # that successive left braces or right braces are collapsed together
+    - compact
 
 Style/SpaceInsideStringInterpolation:
   EnforcedStyle: no_space

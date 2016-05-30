@@ -34,15 +34,25 @@ module RuboCop
           return if t2.type == :tCOMMENT # Also indicates there's a line break.
 
           is_empty_braces = t1.text == '{' && t2.text == '}'
-          expect_space = if is_empty_braces
-                           cop_config['EnforcedStyleForEmptyBraces'] == 'space'
-                         else
-                           style == :space
-                         end
+          expect_space    = expect_space?(t1, t2)
+
           if offense?(t1, t2, expect_space)
             incorrect_style_detected(t1, t2, expect_space, is_empty_braces)
           else
             correct_style_detected
+          end
+        end
+
+        def expect_space?(t1, t2)
+          is_same_braces  = t1.text == t2.text
+          is_empty_braces = t1.text == '{' && t2.text == '}'
+
+          if is_same_braces && style == :compact
+            false
+          elsif is_empty_braces
+            cop_config['EnforcedStyleForEmptyBraces'] != 'no_space'
+          else
+            style != :no_space
           end
         end
 
@@ -51,7 +61,17 @@ module RuboCop
           range = expect_space ? brace : space_range(brace)
           add_offense(range, range,
                       message(brace, is_empty_braces, expect_space)) do
-            opposite_style_detected
+            if expect_space
+              if t1.text == t2.text
+                ambiguous_style_detected(:no_space, :compact)
+              else
+                unexpected_style_detected(:no_space)
+              end
+            elsif t1.text == t2.text
+              unexpected_style_detected(:space)
+            else
+              ambiguous_style_detected(:space, :compact)
+            end
           end
         end
 
