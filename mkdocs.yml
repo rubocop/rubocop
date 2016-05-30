@@ -7,7 +7,6 @@ pages:
 - Home: index.md
 - Installation: installation.md
 - Basic Usage: basic_usage.md
-- Exit codes: exit_codes.md
 - Formatters: formatters.md
 - Configuration: configuration.md
 - Caching: caching.md

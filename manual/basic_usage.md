@@ -87,13 +87,26 @@ Thus, the options have the following order of precedence (from highest to lowest
 2. Options from `RUBOCOP_OPTS` environment variable
 3. Options from `.rubocop` file.
 
-### Cops
+## Exit codes
+
+RuboCop exits with the following status codes:
+
+- 0 if no offenses are found, or if the severity of all offenses are less than
+  `--fail-level`. (By default, if you use `--auto-correct`, offenses which are
+  auto-corrected do not cause RuboCop to fail.)
+- 1 if one or more offenses equal or greater to `--fail-level` are found. (By
+  default, this is any offense which is not auto-corrected.)
+- 2 if RuboCop terminates abnormally due to invalid configuration, invalid CLI
+  options, or an internal error.
+
+
+## Cops
 
 In RuboCop lingo the various checks performed on the code are called cops. There are several cop departments.
 
 You can also load [custom cops](#custom-cops).
 
-#### Style
+### Style
 
 Most of the cops in RuboCop are so called style cops that check for
 stylistic problems in your code. Almost all of the them are based on
@@ -101,7 +114,7 @@ the Ruby Style Guide. Many of the style cops have configurations
 options allowing them to support different popular coding
 conventions.
 
-#### Lint
+### Lint
 
 Lint cops check for possible errors and very bad practices in your
 code. RuboCop implements in a portable way all built-in MRI lint
@@ -117,7 +130,7 @@ enabled lint cops plus a selection of other cops.
 
 Disabling any of the lint cops is generally a bad idea.
 
-#### Metrics
+### Metrics
 
 Metrics cops deal with properties of the source code that can be measured,
 such as class length, method length, etc. Generally speaking, they have a
@@ -125,12 +138,12 @@ configuration parameter called `Max` and when running
 `rubocop --auto-gen-config`, this parameter will be set to the highest value
 found for the inspected code.
 
-#### Performance
+### Performance
 
 Performance cops catch Ruby idioms which are known to be slower than another
 equivalent (and equally readable) idiom.
 
-#### Rails
+### Rails
 
 Rails cops are specific to the Ruby on Rails framework. Unlike style
 and lint cops they are not used by default and you have to request them
