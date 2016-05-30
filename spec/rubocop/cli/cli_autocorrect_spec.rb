@@ -658,14 +658,6 @@ describe RuboCop::CLI, :isolated_environment do
               'of an array.',
               "#{e}:5:7: C: [Corrected] Use `%w` or `%W` " \
               'for an array of words.',
-              "#{e}:5:8: C: [Corrected] Prefer single-quoted strings " \
-              "when you don't need string interpolation or special " \
-              'symbols.',
-              "#{e}:5:15: C: [Corrected] Prefer single-quoted strings " \
-              "when you don't need string interpolation or special " \
-              'symbols.',
-              "#{e}:5:21: C: [Corrected] Avoid comma after the last item " \
-              'of an array.',
               ''].join("\n"))
   end
 

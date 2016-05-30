@@ -30,7 +30,7 @@ module RuboCop
 
         def autocorrect(node)
           expr = node.source_range
-          ->(corrector) { corrector.replace(expr, "#{expr.source}.freeze") }
+          ->(corrector) { corrector.insert_after(expr, '.freeze') }
         end
 
         private
