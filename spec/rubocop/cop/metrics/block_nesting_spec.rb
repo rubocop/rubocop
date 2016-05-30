@@ -7,16 +7,31 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
   subject(:cop) { described_class.new(config) }
   let(:cop_config) { { 'Max' => 2 } }
 
-  it 'accepts `Max` levels of nesting' do
-    source = ['if a',
-              '  if b',
-              '    puts b',
-              '  end',
-              'end']
-    expect_nesting_offenses(source, [])
+  shared_examples 'too deep' do |source, lines, max_to_allow = 3|
+    it "registers #{lines.length} offense(s)" do
+      inspect_source(cop, source)
+      expect(cop.offenses.map(&:line)).to eq(lines)
+      expect(cop.messages).to eq(
+        ['Avoid more than 2 levels of block nesting.'] * lines.length
+      )
+    end
+
+    it 'sets `Max` value correctly' do
+      inspect_source(cop, source)
+      expect(cop.config_to_allow_offenses['Max']).to eq(max_to_allow)
+    end
   end
 
-  it 'registers an offense for `Max + 1` levels of `if` nesting' do
+  it 'accepts `Max` levels of nesting' do
+    inspect_source(cop, ['if a',
+                         '  if b',
+                         '    puts b',
+                         '  end',
+                         'end'])
+    expect(cop.offenses).to be_empty
+  end
+
+  context '`Max + 1` levels of `if` nesting' do
     source = ['if a',
               '  if b',
               '    if c',
@@ -24,10 +39,10 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
               '    end',
               '  end',
               'end']
-    expect_nesting_offenses(source, [3])
+    it_behaves_like 'too deep', source, [3]
   end
 
-  it 'registers one offense for `Max + 2` levels of `if` nesting' do
+  context '`Max + 2` levels of `if` nesting' do
     source = ['if a',
               '  if b',
               '    if c',
@@ -37,10 +52,10 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
               '    end',
               '  end',
               'end']
-    expect_nesting_offenses(source, [3], 4)
+    it_behaves_like 'too deep', source, [3], 4
   end
 
-  it 'registers 2 offenses' do
+  context 'Multiple nested `ifs` at same level' do
     source = ['if a',
               '  if b',
               '    if c',
@@ -53,10 +68,10 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
               '    end',
               '  end',
               'end']
-    expect_nesting_offenses(source, [3, 8])
+    it_behaves_like 'too deep', source, [3, 8]
   end
 
-  it 'registers an offense for nested `case`' do
+  context 'nested `case`' do
     source = ['if a',
               '  if b',
               '    case c',
@@ -65,10 +80,10 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
               '    end',
               '  end',
               'end']
-    expect_nesting_offenses(source, [3])
+    it_behaves_like 'too deep', source, [3]
   end
 
-  it 'registers an offense for nested `while`' do
+  context 'nested `while`' do
     source = ['if a',
               '  if b',
               '    while c',
@@ -76,10 +91,10 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
               '    end',
               '  end',
               'end']
-    expect_nesting_offenses(source, [3])
+    it_behaves_like 'too deep', source, [3]
   end
 
-  it 'registers an offense for nested modifier `while`' do
+  context 'nested modifier `while`' do
     source = ['if a',
               '  if b',
               '    begin',
@@ -87,10 +102,10 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
               '    end while c',
               '  end',
               'end']
-    expect_nesting_offenses(source, [3])
+    it_behaves_like 'too deep', source, [3]
   end
 
-  it 'registers an offense for nested `until`' do
+  context 'nested `until`' do
     source = ['if a',
               '  if b',
               '    until c',
@@ -98,10 +113,10 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
               '    end',
               '  end',
               'end']
-    expect_nesting_offenses(source, [3])
+    it_behaves_like 'too deep', source, [3]
   end
 
-  it 'registers an offense for nested modifier `until`' do
+  context 'nested modifier `until`' do
     source = ['if a',
               '  if b',
               '    begin',
@@ -109,10 +124,10 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
               '    end until c',
               '  end',
               'end']
-    expect_nesting_offenses(source, [3])
+    it_behaves_like 'too deep', source, [3]
   end
 
-  it 'registers an offense for nested `for`' do
+  context 'nested `for`' do
     source = ['if a',
               '  if b',
               '    for c in [1,2] do',
@@ -120,10 +135,10 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
               '    end',
               '  end',
               'end']
-    expect_nesting_offenses(source, [3])
+    it_behaves_like 'too deep', source, [3]
   end
 
-  it 'registers an offense for nested `rescue`' do
+  context 'nested `rescue`' do
     source = ['if a',
               '  if b',
               '    begin',
@@ -133,26 +148,15 @@ describe RuboCop::Cop::Metrics::BlockNesting, :config do
               '    end',
               '  end',
               'end']
-    expect_nesting_offenses(source, [5])
+    it_behaves_like 'too deep', source, [5]
   end
 
   it 'accepts if/elsif' do
-    source = ['if a',
-              'elsif b',
-              'elsif c',
-              'elsif d',
-              'end']
-    expect_nesting_offenses(source, [])
-  end
-
-  def expect_nesting_offenses(source, lines, max_to_allow = 3)
-    inspect_source(cop, source)
-    expect(cop.offenses.map(&:line)).to eq(lines)
-    expect(cop.messages).to eq(
-      ['Avoid more than 2 levels of block nesting.'] * lines.length
-    )
-    return if cop.offenses.empty?
-
-    expect(cop.config_to_allow_offenses['Max']).to eq(max_to_allow)
+    inspect_source(cop, ['if a',
+                         'elsif b',
+                         'elsif c',
+                         'elsif d',
+                         'end'])
+    expect(cop.offenses).to be_empty
   end
 end
