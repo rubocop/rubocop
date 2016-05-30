@@ -898,6 +898,10 @@ Style/WordArray:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#percent-w'
   Enabled: true
 
+Style/RequestReferer:
+  Description: 'Use consistent syntax for request.referer.'
+  Enabled: true
+
 Style/ZeroLengthPredicate:
   Description: 'Use #empty? when testing for objects of length 0.'
   Enabled: true
