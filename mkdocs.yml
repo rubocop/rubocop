@@ -14,4 +14,6 @@ pages:
 - Extensions: extensions.md
 - Integration with other tools: integration_with_other_tools.md
 - Support: support.md
+extra_css:
+  - css/extra.css
 theme: readthedocs
