@@ -212,6 +212,11 @@ describe RuboCop::Cop::Style::StringLiterals, :config do
       expect(cop.offenses).to be_empty
     end
 
+    it 'flags single quotes with plain # (not #@var or #{interpolation}' do
+      inspect_source(cop, "a = 'blah #'")
+      expect(cop.offenses.size).to be 1
+    end
+
     it 'accepts single quotes at the start of regexp literals' do
       inspect_source(cop, "s = /'((?:[^\\']|\\.)*)'/")
       expect(cop.offenses).to be_empty

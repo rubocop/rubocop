@@ -13,7 +13,7 @@ module RuboCop
         if style == :single_quotes
           src !~ /'/ && !double_quotes_acceptable?(node.str_content)
         else
-          src !~ /" | \\ | \#/x
+          src !~ /" | \\ | \#(@|\{)/x
         end
       end
 
