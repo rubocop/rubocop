@@ -255,7 +255,7 @@ describe RuboCop::Cop::Style::ExtraSpacing, :config do
       expect(cop.offenses.size).to eq(0)
     end
 
-    it 'aligns the first assignment with the following assingment' do
+    it 'aligns the first assignment with the following assignment' do
       inspect_source(cop, ['# comment',
                            'a   = 1',
                            'bb  = 2'])
