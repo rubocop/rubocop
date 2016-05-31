@@ -43,9 +43,9 @@ equivalent (and equally readable) idiom.
 
 ### Rails
 
-Rails cops are specific to the Ruby on Rails framework. Unlike style
-and lint cops they are not used by default and you have to request them
-specifically:
+Rails cops are specific to the Ruby on Rails framework. Unlike all
+other cop types they are not used by default and you have to request
+them specifically:
 
 ```sh
 $ rubocop -R
