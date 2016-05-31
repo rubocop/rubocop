@@ -13,6 +13,7 @@
 
 ### Bug fixes
 
+* [#2722](https://github.com/bbatsov/rubocop/issues/2722): `Style/ExtraSpacing` does not attempt to align an equals sign in an argument list with one in an assignment statement. ([@alexdowad][])
 * [#3133](https://github.com/bbatsov/rubocop/issues/3133): `Style/MultilineMethodCallBraceLayout` does not register offenses for single-line calls. ([@alexdowad][])
 * [#3170](https://github.com/bbatsov/rubocop/issues/3170): `Style/MutableConstant` does not infinite-loop when correcting an array with no brackets. ([@alexdowad][])
 * [#3150](https://github.com/bbatsov/rubocop/issues/3150): Fix auto-correct for Style/MultilineArrayBraceLayout. ([@jspanjers][])

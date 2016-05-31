@@ -329,5 +329,13 @@ describe RuboCop::Cop::Style::ExtraSpacing, :config do
                                 'a.attribute_name = 2',
                                 'abc[1]           = 3'].join("\n"))
     end
+
+    it 'does not register an offense when optarg equals is not aligned with ' \
+       'assignment equals sign' do
+      inspect_source(cop, ['def method(arg = 1)',
+                           '  var = arg',
+                           'end'])
+      expect(cop.offenses).to be_empty
+    end
   end
 end

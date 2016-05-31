@@ -27,8 +27,15 @@ module RuboCop
         MSG_UNALIGNED_ASGN = '`=` is not aligned with the %s assignment.'.freeze
 
         def investigate(processed_source)
+          return if processed_source.ast.nil?
+
           if force_equal_sign_alignment?
             @asgn_tokens = processed_source.tokens.select { |t| equal_sign?(t) }
+            # we don't want to operate on equals signs which are part of an
+            #   optarg in a method definition
+            # e.g.: def method(optarg = default_val); end
+            @asgn_tokens = remove_optarg_equals(@asgn_tokens, processed_source)
+
             # Only attempt to align the first = on each line
             @asgn_tokens = Set.new(@asgn_tokens.uniq { |t| t.pos.line })
             @asgn_lines  = @asgn_tokens.map { |t| t.pos.line }
@@ -204,6 +211,12 @@ module RuboCop
           leading = line[0...asgn_token.pos.column]
           spaces  = leading.size - (leading =~ / *\Z/)
           asgn_token.pos.last_column - spaces + 1
+        end
+
+        def remove_optarg_equals(asgn_tokens, processed_source)
+          optargs    = processed_source.ast.each_node(:optarg)
+          optarg_eql = optargs.map { |o| o.loc.operator.begin_pos }.to_set
+          asgn_tokens.reject { |t| optarg_eql.include?(t.pos.begin_pos) }
         end
       end
     end
