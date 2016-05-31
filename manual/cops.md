@@ -2,7 +2,7 @@
 
 In RuboCop lingo the various checks performed on the code are called cops. There are several cop departments.
 
-You can also load [custom cops](#custom-cops).
+You can also load [custom cops](extensions.md#custom-cops).
 
 ### Style
 
