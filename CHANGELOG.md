@@ -124,7 +124,7 @@
 
 ### Bug fixes
 
-* [#2948](https://github.com/bbatsov/rubocop/issues/2948): `Style/SpaceAroundKeyword` should allow yield[n] and super[n]. ([@laurelfan][])
+* [#2948](https://github.com/bbatsov/rubocop/issues/2948): `Style/SpaceAroundKeyword` should allow `yield[n]` and `super[n]`. ([@laurelfan][])
 * [#2950](https://github.com/bbatsov/rubocop/issues/2950): Fix auto-correcting cases in which precedence has changed in `Style/OneLineConditional`. ([@lumeet][])
 * [#2947](https://github.com/bbatsov/rubocop/issues/2947): Fix auto-correcting `if-then` in `Style/Next`. ([@lumeet][])
 * [#2904](https://github.com/bbatsov/rubocop/issues/2904): `Style/RedundantParentheses` doesn't flag `-(1.method)` or `+(1.method)`, since removing the parentheses would change the meaning of these expressions. ([@alexdowad][])
@@ -156,7 +156,7 @@
 
 ### Bug fixes
 
-* Add `require 'time'` to `remote_config.rb` to avoid "undefined method `rfc2822'". ([@necojackarc][])
+* Add `require 'time'` to `remote_config.rb` to avoid "undefined method \`rfc2822'". ([@necojackarc][])
 * Replace `Rake::TaskManager#last_comment` with `Rake::TaskManager#last_description` for Rake 11 compatibility. ([@tbrisker][])
 * Fix false positive in `Style/TrailingCommaInArguments` & `Style/TrailingCommaInLiteral` cops with consistent_comma style. ([@meganemura][])
 * [#2861](https://github.com/bbatsov/rubocop/pull/2861): Fix false positive in `Style/SpaceAroundKeyword` for `rescue(...`. ([@rrosenblum][])
@@ -388,7 +388,7 @@
 * [#2436](https://github.com/bbatsov/rubocop/issues/2436): `Style/SpaceInsideHashLiteralBraces` doesn't mangle a hash literal which is not surrounded by curly braces, but has another hash literal which does as its first key. ([@alexdowad][])
 * [#2483](https://github.com/bbatsov/rubocop/issues/2483): `Style/Attr` differentiate between attr_accessor and attr_reader. ([@weh][])
 * `Style/ConditionalAssignment` doesn't crash if it finds a `case` with an empty branch. ([@lumeet][])
-* [#2506](https://github.com/bbatsov/rubocop/issues/2506): `Lint/FormatParameterMismatch` understands %{} and %<> interpolations. ([@alexdowad][])
+* [#2506](https://github.com/bbatsov/rubocop/issues/2506): `Lint/FormatParameterMismatch` understands `%{}` and `%<>` interpolations. ([@alexdowad][])
 * [#2145](https://github.com/bbatsov/rubocop/issues/2145): `Lint/ParenthesesAsGroupedExpression` ignores calls with multiple arguments, since they are not ambiguous. ([@alexdowad][])
 * [#2484](https://github.com/bbatsov/rubocop/issues/2484): Remove two vulnerabilities in cache handling. ([@jonas054][])
 * [#2517](https://github.com/bbatsov/rubocop/issues/2517): `Lint/UselessAccessModifier` doesn't think that an access modifier applied to `attr_writer` is useless. ([@alexdowad][])
