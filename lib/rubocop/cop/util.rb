@@ -212,7 +212,7 @@ module RuboCop
 
         # Regex matches IF there is a ' or there is a \\ in the string that is
         # not preceded/followed by another \\ (e.g. "\\x34") but not "\\\\".
-        string.inspect =~ /'|(?<! \\) \\{2}* \\ (?![\\"])/x
+        string =~ /'|(?<! \\) \\{2}* \\ (?![\\"])/x
       end
 
       # If double quoted string literals are found in Ruby code, and they are
@@ -220,12 +220,16 @@ module RuboCop
       def double_quotes_acceptable?(string)
         # If a string literal contains hard-to-type characters which would
         # not appear on a "normal" keyboard, then double-quotes are acceptable
-        double_quotes_required?(string) ||
+        needs_escaping?(string) ||
           string.codepoints.any? { |cp| cp < 32 || cp > 126 }
       end
 
+      def needs_escaping?(string)
+        double_quotes_required?(string.inspect)
+      end
+
       def to_string_literal(string)
-        if double_quotes_required?(string)
+        if needs_escaping?(string)
           string.inspect
         else
           "'#{string.gsub('\\') { '\\\\' }}'"
@@ -233,7 +237,7 @@ module RuboCop
       end
 
       def to_symbol_literal(string)
-        if string =~ /\s/ || double_quotes_required?(string)
+        if string =~ /\s/ || needs_escaping?(string)
           ":#{to_string_literal(string)}"
         else
           ":#{string}"

@@ -63,7 +63,7 @@ module RuboCop
         def autocorrect(node)
           syms = node.children.map { |c| c.children[0].to_s }
           corrected = if style == :percent
-                        escape = syms.any? { |s| double_quotes_required?(s) }
+                        escape = syms.any? { |s| needs_escaping?(s) }
                         syms = syms.map { |s| escape_string(s) } if escape
                         syms = syms.map { |s| s.gsub(/\)/, '\\)') }
                         if escape

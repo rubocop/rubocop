@@ -27,7 +27,7 @@ module RuboCop
         def autocorrect(node)
           words = node.children
           if style == :percent
-            escape = words.any? { |w| double_quotes_required?(w.children[0]) }
+            escape = words.any? { |w| needs_escaping?(w.children[0]) }
             char = escape ? 'W' : 'w'
             contents = autocorrect_words(words, escape, node.loc.line)
             lambda do |corrector|
