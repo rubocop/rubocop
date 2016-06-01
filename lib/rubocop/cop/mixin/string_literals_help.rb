@@ -11,7 +11,7 @@ module RuboCop
         src = node.source
         return false if src.start_with?('%', '?')
         if style == :single_quotes
-          src !~ /'/ && !double_quotes_acceptable?(node.str_content)
+          src !~ /'/ && !double_quotes_required?(src)
         else
           src !~ /" | \\ | \#(@|\{)/x
         end
