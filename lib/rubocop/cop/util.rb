@@ -237,11 +237,7 @@ module RuboCop
       end
 
       def to_symbol_literal(string)
-        if string =~ /\s/ || needs_escaping?(string)
-          ":#{to_string_literal(string)}"
-        else
-          ":#{string}"
-        end
+        ":#{string.to_sym}"
       end
 
       def interpret_string_escapes(string)
