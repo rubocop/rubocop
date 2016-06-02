@@ -45,6 +45,7 @@
 * [#3202](https://github.com/bbatsov/rubocop/issues/3202): Fix `Style/EmptyElse` registering wrong offenses and thus making RuboCop crash. ([@deivid-rodriguez][])
 * [#3017](https://github.com/bbatsov/rubocop/issues/3017): Fix `Style/StringLiterals` to register offenses on non-ascii strings. ([@deivid-rodriguez][])
 * [#3056](https://github.com/bbatsov/rubocop/issues/3056): Fix `Style/StringLiterals` to register offenses on non-ascii strings. ([@deivid-rodriguez][])
+* [#2986](https://github.com/bbatsov/rubocop/issues/2986): Fix `RedundantBlockCall` to not report calls that pass block arguments, or where the block has been overridden. ([@owst][])
 
 ### Changes
 
