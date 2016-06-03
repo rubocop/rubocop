@@ -1121,15 +1121,12 @@ Lint/DefEndAlignment:
 # Checks for unused block arguments
 Lint/UnusedBlockArgument:
   IgnoreEmptyBlocks: true
+  AllowUnusedKeywordArguments: false
 
 # Checks for unused method arguments.
 Lint/UnusedMethodArgument:
   AllowUnusedKeywordArguments: false
   IgnoreEmptyMethods: true
-
-# Checks for unused block arguments.
-Lint/UnusedBlockArgument:
-  AllowUnusedKeywordArguments: false
 
 ##################### Performance ############################
 
