@@ -13,6 +13,7 @@
 ### Bug fixes
 
 * [#3150](https://github.com/bbatsov/rubocop/issues/3150): Fix auto-correct for Style/MultilineArrayBraceLayout. ([@jspanjers][])
+* [#3192](https://github.com/bbatsov/rubocop/pull/3192): Fix `Lint/UnusedBlockArgument`'s `IgnoreEmptyBlocks` parameter from being removed from configuration. ([@jfelchner][])
 * [#3114](https://github.com/bbatsov/rubocop/issues/3114): Fix alignment `end` when auto-correcting `Style/EmptyElse`. ([@rrosenblum][])
 * [#3120](https://github.com/bbatsov/rubocop/issues/3120): Fix `Lint/UselessAccessModifier` reporting useless access modifiers inside {Class,Module,Struct}.new blocks. ([@owst][])
 * [#3125](https://github.com/bbatsov/rubocop/issues/3125): Fix `Rails/UniqBeforePluck` to ignore `uniq` with block. ([@tejasbubane][])
