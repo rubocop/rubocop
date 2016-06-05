@@ -6,6 +6,25 @@ require 'spec_helper'
 describe RuboCop::Cop::Style::BlockDelimiters, :config do
   subject(:cop) { described_class.new(config) }
 
+  shared_examples 'syntactic styles' do
+    it 'registers an offense for a single line block with do-end' do
+      inspect_source(cop, 'each do |x| end')
+      expect(cop.messages)
+        .to eq(['Prefer `{...}` over `do...end` for single-line blocks.'])
+    end
+
+    it 'accepts a single line block with braces' do
+      inspect_source(cop, 'each { |x| }')
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'accepts a multi-line block with do-end' do
+      inspect_source(cop, ['each do |x|',
+                           'end'])
+      expect(cop.offenses).to be_empty
+    end
+  end
+
   context 'Semantic style' do
     cop_config = {
       'EnforcedStyle' => 'semantic',
@@ -230,22 +249,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
   context 'line count-based style' do
     let(:cop_config) { { 'EnforcedStyle' => 'line_count_based' } }
 
-    it 'accepts a multi-line block with do-end' do
-      inspect_source(cop, ['each do |x|',
-                           'end'])
-      expect(cop.offenses).to be_empty
-    end
-
-    it 'registers an offense for a single line block with do-end' do
-      inspect_source(cop, 'each do |x| end')
-      expect(cop.messages)
-        .to eq(['Prefer `{...}` over `do...end` for single-line blocks.'])
-    end
-
-    it 'accepts a single line block with braces' do
-      inspect_source(cop, 'each { |x| }')
-      expect(cop.offenses).to be_empty
-    end
+    include_examples 'syntactic styles'
 
     it 'auto-corrects do and end for single line blocks to { and }' do
       new_source = autocorrect_source(cop, 'block do |x| end')
@@ -364,11 +368,7 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
   context 'braces for chaining style' do
     let(:cop_config) { { 'EnforcedStyle' => 'braces_for_chaining' } }
 
-    it 'accepts a multi-line block with do-end' do
-      inspect_source(cop, ['each do |x|',
-                           'end'])
-      expect(cop.offenses).to be_empty
-    end
+    include_examples 'syntactic styles'
 
     it 'registers an offense for multi-line chained do-end blocks' do
       inspect_source(cop, ['each do |x|',
@@ -383,17 +383,6 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
              'end.map(&:to_s)']
       new_source = autocorrect_source(cop, src)
       expect(new_source).to eq("each { |x|\n}.map(&:to_s)")
-    end
-
-    it 'registers an offense for a single line block with do-end' do
-      inspect_source(cop, 'each do |x| end')
-      expect(cop.messages)
-        .to eq(['Prefer `{...}` over `do...end` for single-line blocks.'])
-    end
-
-    it 'accepts a single line block with braces' do
-      inspect_source(cop, 'each { |x| }')
-      expect(cop.offenses).to be_empty
     end
 
     context 'when there are braces around a multi-line block' do
