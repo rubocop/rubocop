@@ -441,21 +441,35 @@ module RuboCop
 
           def move_assignment_inside_condition(node)
             *_var, rhs = *node
-            condition, = *rhs if rhs.begin_type? && rhs.children.size == 1
+            if_branch, else_branch = extract_branches(node)
             assignment = assignment(node)
-            _condition, if_branch, else_branch = *(condition || rhs)
 
             lambda do |corrector|
+              remove_parentheses(corrector, rhs) if Util.parentheses?(rhs)
               corrector.remove(assignment)
-              if rhs.begin_type?
-                corrector.remove(rhs.loc.begin)
-                corrector.remove(rhs.loc.end)
-              end
-              corrector.insert_before(if_branch.loc.expression,
-                                      assignment.source)
-              corrector.insert_before(else_branch.loc.expression,
-                                      assignment.source)
+
+              move_branch_inside_condition(corrector, if_branch, assignment)
+              move_branch_inside_condition(corrector, else_branch, assignment)
             end
+          end
+
+          private
+
+          def extract_branches(node)
+            *_var, rhs = *node
+            condition, = *rhs if rhs.begin_type? && rhs.children.size == 1
+            _condition, if_branch, else_branch = *(condition || rhs)
+
+            [if_branch, else_branch]
+          end
+
+          def remove_parentheses(corrector, node)
+            corrector.remove(node.loc.begin)
+            corrector.remove(node.loc.end)
+          end
+
+          def move_branch_inside_condition(corrector, branch, assignment)
+            corrector.insert_before(branch.loc.expression, assignment.source)
           end
         end
       end

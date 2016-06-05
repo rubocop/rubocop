@@ -21,20 +21,28 @@ module RuboCop
         end_loc = node.loc.end
         return unless end_loc # Discard modifier forms of if/while/until.
 
-        matching = align_ranges.select do |_, range|
-          range.line == end_loc.line ||
-            effective_column(range) == end_loc.column
-        end
+        matching = matching_ranges(end_loc, align_ranges)
 
         if matching.key?(style)
           correct_style_detected
         else
-          align_with = align_ranges[style]
-          msg = format(MSG, end_loc.line, end_loc.column, align_with.source,
-                       align_with.line, align_with.column)
-          add_offense(node, end_loc, msg)
+          add_offense_for_misalignment(node, align_ranges[style])
           style_detected(matching.keys)
         end
+      end
+
+      def matching_ranges(end_loc, align_ranges)
+        align_ranges.select do |_, range|
+          range.line == end_loc.line ||
+            effective_column(range) == end_loc.column
+        end
+      end
+
+      def add_offense_for_misalignment(node, align_with)
+        end_loc = node.loc.end
+        msg = format(MSG, end_loc.line, end_loc.column, align_with.source,
+                     align_with.line, align_with.column)
+        add_offense(node, end_loc, msg)
       end
 
       def parameter_name

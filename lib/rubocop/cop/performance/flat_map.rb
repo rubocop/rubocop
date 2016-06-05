@@ -25,23 +25,17 @@ module RuboCop
         def on_send(node)
           left, second_method, flatten_param = *node
           return unless FLATTEN.include?(second_method)
+
           flatten_level, = *flatten_param
           expression, = *left
           _array, first_method = *expression
           return unless first_method == :map || first_method == :collect
 
-          message = MSG
           if cop_config['EnabledForFlattenWithoutParams'] && flatten_level.nil?
-            message = MSG + FLATTEN_MULTIPLE_LEVELS
-          elsif flatten_level != 1
-            return
+            offense_for_levels(node, expression, first_method, second_method)
+          elsif flatten_level == 1
+            offense_for_method(node, expression, first_method, second_method)
           end
-
-          range = Parser::Source::Range.new(node.source_range.source_buffer,
-                                            expression.loc.selector.begin_pos,
-                                            node.loc.selector.end_pos)
-
-          add_offense(node, range, format(message, first_method, second_method))
         end
 
         def autocorrect(node)
@@ -59,6 +53,25 @@ module RuboCop
             corrector.remove(range)
             corrector.replace(array.loc.selector, 'flat_map')
           end
+        end
+
+        private
+
+        def offense_for_levels(node, expression, first_method, second_method)
+          message = MSG + FLATTEN_MULTIPLE_LEVELS
+          offense(node, expression, first_method, second_method, message)
+        end
+
+        def offense_for_method(node, expression, first_method, second_method)
+          offense(node, expression, first_method, second_method, MSG)
+        end
+
+        def offense(node, expression, first_method, second_method, message)
+          range = Parser::Source::Range.new(node.source_range.source_buffer,
+                                            expression.loc.selector.begin_pos,
+                                            node.loc.selector.end_pos)
+
+          add_offense(node, range, format(message, first_method, second_method))
         end
       end
     end

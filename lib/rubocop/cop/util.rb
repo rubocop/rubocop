@@ -23,19 +23,6 @@ module RuboCop
         + - * / % ** ~ +@ -@ [] []= ! != !~
       ).map(&:to_sym).push(:'`').freeze
 
-      STRING_ESCAPES = {
-        '\a' => "\a", '\b' => "\b", '\e' => "\e", '\f' => "\f", '\n' => "\n",
-        '\r' => "\r", '\s' => ' ',  '\t' => "\t", '\v' => "\v", "\\\n" => ''
-      }.freeze
-      STRING_ESCAPE_REGEX = /\\(?:
-                              [abefnrstv\n]    |   # simple escapes (above)
-                              \d{1,3}          |   # octal byte escape
-                              x\d{1,2}         |   # hex byte escape
-                              u[0-9a-fA-F]{4}  |   # unicode char escape
-                              u\{[^}]*\}       |   # extended unicode escape
-                              .                    # any other escaped char
-                            )/x
-
       # Match literal regex characters, not including anchors, character
       # classes, alternatives, groups, repetitions, references, etc
       LITERAL_REGEX = /[\w\s\-,"'!#%&<>=;:`~]|\\[^AbBdDgGkwWszZS0-9]/
@@ -253,28 +240,8 @@ module RuboCop
         end
       end
 
-      # Take a string with embedded escapes, and convert the escapes as the Ruby
-      # interpreter would when reading a double-quoted string literal.
-      # For example, "\\n" will be converted to "\n".
       def interpret_string_escapes(string)
-        # We currently don't handle \cx, \C-x, and \M-x
-        string.gsub(STRING_ESCAPE_REGEX) do |escape|
-          STRING_ESCAPES[escape] || begin
-            if escape[1] == 'x'
-              [escape[2..-1].hex].pack('C')
-            elsif escape[1] == 'u'
-              if escape[2] == '{'
-                escape[3..-1].split(/\s+/).map(&:hex).pack('U')
-              else
-                [escape[2..-1].hex].pack('U')
-              end
-            elsif escape[1] =~ /\d/ # octal escape
-              [escape[1..-1].to_i(8)].pack('C')
-            else
-              escape[1] # literal escaped char, like \\
-            end
-          end
-        end
+        StringInterpreter.interpret(string)
       end
     end
   end
