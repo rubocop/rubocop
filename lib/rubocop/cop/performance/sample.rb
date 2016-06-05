@@ -111,18 +111,22 @@ module RuboCop
           def sample_size
             _, _, *args = *method_node
             case args.size
-            when 1
-              arg = args.first
-              case arg.type
-              when :erange, :irange then range_size(arg)
-              when :int             then arg.to_a.first.zero? ? nil : :unknown
-              else :unknown
-              end
-            when 2
-              first, second = *args
-              return :unknown unless first.int_type? && first.to_a.first.zero?
-              second.int_type? ? second.to_a.first : :unknown
+            when 1 then sample_size_for_one_arg(args.first)
+            when 2 then sample_size_for_two_args(*args)
             end
+          end
+
+          def sample_size_for_one_arg(arg)
+            case arg.type
+            when :erange, :irange then range_size(arg)
+            when :int             then arg.to_a.first.zero? ? nil : :unknown
+            else :unknown
+            end
+          end
+
+          def sample_size_for_two_args(first, second)
+            return :unknown unless first.int_type? && first.to_a.first.zero?
+            second.int_type? ? second.to_a.first : :unknown
           end
 
           def shuffle_arg
