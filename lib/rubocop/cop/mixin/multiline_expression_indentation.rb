@@ -130,15 +130,23 @@ module RuboCop
           when :block
             break if part_of_block_body?(candidate, a)
           when :send
-            _receiver, method_name, *args = *a
-
-            # The []= operator and setters (a.b = c) are parsed as :send nodes.
-            assignment_call?(method_name) &&
-              (!candidate || within_node?(candidate, args.last))
+            valid_method_rhs_candidate?(candidate, a)
           when *Util::ASGN_NODES
-            !candidate || within_node?(candidate, assignment_rhs(a))
+            valid_rhs_candidate?(candidate, assignment_rhs(a))
           end
         end
+      end
+
+      # The []= operator and setters (a.b = c) are parsed as :send nodes.
+      def valid_method_rhs_candidate?(candidate, node)
+        _receiver, method_name, *args = *node
+
+        assignment_call?(method_name) &&
+          valid_rhs_candidate?(candidate, args.last)
+      end
+
+      def valid_rhs_candidate?(candidate, node)
+        !candidate || within_node?(candidate, node)
       end
 
       def assignment_call?(method_name)
