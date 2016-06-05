@@ -23,6 +23,13 @@ describe RuboCop::Cop::Style::BlockDelimiters, :config do
                            'end'])
       expect(cop.offenses).to be_empty
     end
+
+    it 'accepts a multi-line block that needs braces to be valid ruby' do
+      inspect_source(cop, ['puts [1, 2, 3].map { |n|',
+                           '  n * n',
+                           '}, 1'])
+      expect(cop.messages).to be_empty
+    end
   end
 
   context 'Semantic style' do

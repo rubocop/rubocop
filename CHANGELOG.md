@@ -26,6 +26,7 @@
 * [#3160](https://github.com/bbatsov/rubocop/pull/3160): `Style/Lambda` fix whitespacing when auto-correcting unparenthesized arguments. ([@palkan][])
 * [#2944](https://github.com/bbatsov/rubocop/issues/2944): Don't crash on strings that span multiple lines but only have one pair of delimiters in `Style/StringLiterals`. ([@jonas054][])
 * [#3157](https://github.com/bbatsov/rubocop/issues/3157): Don't let `LineEndConcatenation` and `UnneededInterpolation` make changes to the same string during auto-correct. ([@jonas054][])
+* [#3187](https://github.com/bbatsov/rubocop/issues/3187): Let `Style/BlockDelimiters` ignore blocks in *all* method arguments. ([@jonas054][])
 
 ### Changes
 

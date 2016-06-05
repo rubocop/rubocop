@@ -6,7 +6,7 @@ module RuboCop
     module Style
       # Check for uses of braces or do/end around single line or
       # multi-line blocks.
-      class BlockDelimiters < Cop
+      class BlockDelimiters < Cop # rubocop:disable Metrics/ClassLength
         include ConfigurableEnforcedStyle
 
         def_node_matcher :block_method_name, '(block (send _ $_ ...) ...)'
@@ -16,11 +16,13 @@ module RuboCop
           return if args.empty?
           return if parentheses?(node) || operator?(method_name)
 
-          get_blocks(args.last) do |block|
-            # If there are no parentheses around the arguments, then braces and
-            # do-end have different meaning due to how they bind, so we allow
-            # either.
-            ignore_node(block)
+          args.each do |arg|
+            get_blocks(arg) do |block|
+              # If there are no parentheses around the arguments, then braces
+              # and do-end have different meaning due to how they bind, so we
+              # allow either.
+              ignore_node(block)
+            end
           end
         end
 
