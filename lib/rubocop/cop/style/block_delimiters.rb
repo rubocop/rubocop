@@ -6,10 +6,8 @@ module RuboCop
     module Style
       # Check for uses of braces or do/end around single line or
       # multi-line blocks.
-      class BlockDelimiters < Cop # rubocop:disable Metrics/ClassLength
+      class BlockDelimiters < Cop
         include ConfigurableEnforcedStyle
-
-        def_node_matcher :block_method_name, '(block (send _ $_ ...) ...)'
 
         def on_send(node)
           _receiver, method_name, *args = *node
@@ -28,9 +26,8 @@ module RuboCop
 
         def on_block(node)
           return if ignored_node?(node)
-          return if proper_block_style?(node)
 
-          add_offense(node, :begin)
+          add_offense(node, :begin) unless proper_block_style?(node)
         end
 
         private
@@ -67,12 +64,9 @@ module RuboCop
 
         def message(node)
           case style
-          when :line_count_based
-            line_count_based_message(node)
-          when :semantic
-            semantic_message(node)
-          when :braces_for_chaining
-            braces_for_chaining_message(node)
+          when :line_count_based    then line_count_based_message(node)
+          when :semantic            then semantic_message(node)
+          when :braces_for_chaining then braces_for_chaining_message(node)
           end
         end
 
@@ -119,12 +113,9 @@ module RuboCop
 
         def proper_block_style?(node)
           case style
-          when :line_count_based
-            line_count_based_block_style?(node)
-          when :semantic
-            semantic_block_style?(node)
-          when :braces_for_chaining
-            braces_for_chaining_style?(node)
+          when :line_count_based    then line_count_based_block_style?(node)
+          when :semantic            then semantic_block_style?(node)
+          when :braces_for_chaining then braces_for_chaining_style?(node)
           end
         end
 
@@ -135,7 +126,7 @@ module RuboCop
         end
 
         def semantic_block_style?(node)
-          method_name = block_method_name(node)
+          method_name = node.method_name
           return true if ignored_method?(method_name)
 
           block_begin = node.loc.begin.source
