@@ -23,34 +23,45 @@ module RuboCop
 
         def on_block(node)
           method, args, body = *node
-
-          # filter out super and zsuper nodes
-          return unless method.type == :send
+          return unless reduce_method?(method)
 
           _, method_name, method_arg = *method
-
-          return unless METHODS.include? method_name
-          return if method_arg && method_arg.basic_literal?
+          return if simple_method_arg?(method_arg)
 
           return_value = return_value(body)
           return unless return_value
-
           return unless first_argument_returned?(args, return_value)
-
-          # if the accumulator parameter is assigned to in the block,
-          # then we can't convert to each_with_object
-          first_arg, = *args
-          accumulator_var, = *first_arg
-          return if body.each_descendant.any? do |n|
-            next unless n.assignment?
-            lhs, _rhs = *n
-            lhs.equal?(accumulator_var)
-          end
+          return if accumulator_param_assigned_to?(body, args)
 
           add_offense(method, :selector, format(MSG, method_name))
         end
 
         private
+
+        def reduce_method?(method)
+          return false unless method.send_type?
+
+          _, method_name, _method_arg = *method
+          METHODS.include? method_name
+        end
+
+        def simple_method_arg?(method_arg)
+          method_arg && method_arg.basic_literal?
+        end
+
+        # if the accumulator parameter is assigned to in the block,
+        # then we can't convert to each_with_object
+        def accumulator_param_assigned_to?(body, args)
+          first_arg, = *args
+          accumulator_var, = *first_arg
+
+          body.each_descendant.any? do |n|
+            next unless n.assignment?
+
+            lhs, _rhs = *n
+            lhs.equal?(accumulator_var)
+          end
+        end
 
         def return_value(body)
           return unless body
