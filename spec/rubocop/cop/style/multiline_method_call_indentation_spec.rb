@@ -204,6 +204,25 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
         expect(cop.offenses).to be_empty
       end
 
+      it 'accepts aligned method even when an aref is in the chain' do
+        inspect_source(cop, ["foo = '123'.a",
+                             '           .b[1]',
+                             '           .c'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it 'accepts aligned method even when an aref is first in the chain' do
+        inspect_source(cop, ["foo = '123'[1].a",
+                             '              .b',
+                             '              .c'])
+        expect(cop.offenses).to be_empty
+      end
+
+      it "doesn't fail on a chain of aref calls" do
+        inspect_source(cop, 'a[1][2][3]')
+        expect(cop.offenses).to be_empty
+      end
+
       it 'accepts aligned method with blocks in operation assignment' do
         inspect_source(cop,
                        ['@comment_lines ||=',
