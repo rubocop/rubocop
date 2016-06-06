@@ -34,13 +34,12 @@ module RuboCop
 
         def offending_node?(node)
           return false unless called_on_string?(node)
-          return false unless sprintf?(node) || format?(node) || percent?(node)
+          return false unless method_with_format_args?(node)
           return false if named_mode?(node) || node_with_splat_args?(node)
 
           num_of_format_args, num_of_expected_fields = count_matches(node)
 
           num_of_format_args != :unknown &&
-            num_of_expected_fields != :unknown &&
             num_of_expected_fields != num_of_format_args
         end
 
@@ -51,6 +50,10 @@ module RuboCop
           else
             receiver_node.str_type?
           end
+        end
+
+        def method_with_format_args?(node)
+          sprintf?(node) || format?(node) || percent?(node)
         end
 
         def named_mode?(node)
