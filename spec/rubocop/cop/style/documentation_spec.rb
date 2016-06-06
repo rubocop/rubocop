@@ -71,6 +71,26 @@ describe RuboCop::Cop::Style::Documentation do
     expect(cop.offenses.size).to eq(1)
   end
 
+  it 'registers offense for non-empty class with frozen string comment' do
+    inspect_source(cop,
+                   ['# frozen_string_literal: true',
+                    'class My_Class',
+                    '  def method',
+                    '  end',
+                    'end'])
+    expect(cop.offenses.size).to eq(1)
+  end
+
+  it 'registers an offense for non-empty class with encoding comment' do
+    inspect_source(cop,
+                   ['# encoding: ascii-8bit',
+                    'class My_Class',
+                    '  def method',
+                    '  end',
+                    'end'])
+    expect(cop.offenses.size).to eq(1)
+  end
+
   it 'accepts non-empty class with annotation comment followed by other ' \
      'comment' do
     inspect_source(cop,

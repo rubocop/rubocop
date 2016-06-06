@@ -65,7 +65,9 @@ module RuboCop
 
           # As long as there's at least one comment line that isn't an
           # annotation, it's OK.
-          preceding_comments.any? { |comment| !annotation?(comment) }
+          preceding_comments.any? do |comment|
+            !annotation?(comment) && !interpreter_directive_comment?(comment)
+          end
         end
 
         def preceding_comments(node, ast_with_comments)
@@ -95,6 +97,10 @@ module RuboCop
           end
 
           nodoc_comment?(node.ancestors.first, ast_with_comments, true)
+        end
+
+        def interpreter_directive_comment?(comment)
+          comment.text =~ /^#\s*(frozen_string_literal|encoding):/
         end
       end
     end
