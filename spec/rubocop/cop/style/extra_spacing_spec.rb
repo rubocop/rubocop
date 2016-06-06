@@ -255,7 +255,7 @@ describe RuboCop::Cop::Style::ExtraSpacing, :config do
       expect(cop.offenses.size).to eq(0)
     end
 
-    it 'aligns the first assignment with the following assingment' do
+    it 'aligns the first assignment with the following assignment' do
       inspect_source(cop, ['# comment',
                            'a   = 1',
                            'bb  = 2'])
@@ -328,6 +328,14 @@ describe RuboCop::Cop::Style::ExtraSpacing, :config do
                                 'abcde.blah       = 1',
                                 'a.attribute_name = 2',
                                 'abc[1]           = 3'].join("\n"))
+    end
+
+    it 'does not register an offense when optarg equals is not aligned with ' \
+       'assignment equals sign' do
+      inspect_source(cop, ['def method(arg = 1)',
+                           '  var = arg',
+                           'end'])
+      expect(cop.offenses).to be_empty
     end
   end
 end

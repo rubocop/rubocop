@@ -11,6 +11,7 @@ module RuboCop
       def check_brace_layout(node)
         return unless node.loc.begin # Ignore implicit literals.
         return if children(node).empty? # Ignore empty literals.
+        return if node.single_line? # Ignore single-line literals.
 
         # If the last node is or contains a conflicting HEREDOC, we don't want
         # to adjust the brace layout because this will result in invalid code.

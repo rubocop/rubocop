@@ -35,4 +35,13 @@ describe RuboCop::Cop::Style::MultilineMethodCallBraceLayout, :config do
     let(:open) { 'foo(' }
     let(:close) { ')' }
   end
+
+  context 'when EnforcedStyle is new_line' do
+    let(:cop_config) { { 'EnforcedStyle' => 'symmetrical' } }
+
+    it 'still ignores single-line calls' do
+      inspect_source(cop, 'puts("Hello world!")')
+      expect(cop.offenses).to be_empty
+    end
+  end
 end

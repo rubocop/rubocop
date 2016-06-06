@@ -4,6 +4,10 @@
 
 ### New features
 
+* [#3095](https://github.com/bbatsov/rubocop/issues/3095): Add `IndentationWidth` configuration parameter for `Style/AlignParameters` cop. ([@alexdowad][])
+* [#3066](https://github.com/bbatsov/rubocop/issues/3066): Add new `Style/ImplicitRuntimeError` cop which advises the use of an explicit exception class when raising an error. ([@alexdowad][])
+* [#3018](https://github.com/bbatsov/rubocop/issues/3018): Add new `Style/EachForSimpleLoop` cop which advises the use of `Integer#times` for simple loops which iterate a fixed number of times. ([@alexdowad][])
+* [#2595](https://github.com/bbatsov/rubocop/issues/2595): New `compact` style for `Style/SpaceInsideLiteralHashBraces`. ([@alexdowad][])
 * [#2927](https://github.com/bbatsov/rubocop/issues/2927): Add autocorrect for `Rails/Validation` cop. ([@neodelf][])
 * [#3135](https://github.com/bbatsov/rubocop/pull/3135): Add new `Rails/OutputSafety` cop. ([@josh][])
 * [#3164](https://github.com/bbatsov/rubocop/pull/3164): Add [Fastlane](https://fastlane.tools/)'s Fastfile to the default Includes. ([@jules2689][])
@@ -12,6 +16,10 @@
 
 ### Bug fixes
 
+* [#3037](https://github.com/bbatsov/rubocop/issues/3037): `Style/StringLiterals` understands that a bare '#', not '#@variable' or '#{interpolation}', does not require double quotes. ([@alexdowad][])
+* [#2722](https://github.com/bbatsov/rubocop/issues/2722): `Style/ExtraSpacing` does not attempt to align an equals sign in an argument list with one in an assignment statement. ([@alexdowad][])
+* [#3133](https://github.com/bbatsov/rubocop/issues/3133): `Style/MultilineMethodCallBraceLayout` does not register offenses for single-line calls. ([@alexdowad][])
+* [#3170](https://github.com/bbatsov/rubocop/issues/3170): `Style/MutableConstant` does not infinite-loop when correcting an array with no brackets. ([@alexdowad][])
 * [#3150](https://github.com/bbatsov/rubocop/issues/3150): Fix auto-correct for Style/MultilineArrayBraceLayout. ([@jspanjers][])
 * [#3192](https://github.com/bbatsov/rubocop/pull/3192): Fix `Lint/UnusedBlockArgument`'s `IgnoreEmptyBlocks` parameter from being removed from configuration. ([@jfelchner][])
 * [#3114](https://github.com/bbatsov/rubocop/issues/3114): Fix alignment `end` when auto-correcting `Style/EmptyElse`. ([@rrosenblum][])

@@ -167,6 +167,9 @@ Style/AlignParameters:
   SupportedStyles:
     - with_first_parameter
     - with_fixed_indentation
+  # By default, the indentation width from Style/IndentationWidth is used
+  # But it can be overridden by setting this parameter
+  IndentationWidth: ~
 
 Style/AndOr:
   # Whether `and` and `or` are banned only in conditionals (conditionals)
@@ -908,6 +911,9 @@ Style/SpaceInsideHashLiteralBraces:
   SupportedStyles:
     - space
     - no_space
+    # 'compact' normally requires a space inside hash braces, with the exception
+    # that successive left braces or right braces are collapsed together
+    - compact
 
 Style/SpaceInsideStringInterpolation:
   EnforcedStyle: no_space

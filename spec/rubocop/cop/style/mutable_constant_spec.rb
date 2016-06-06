@@ -66,6 +66,13 @@ describe RuboCop::Cop::Style::MutableConstant do
     expect(cop.offenses).to be_empty
   end
 
+  context 'when assigning an array without brackets' do
+    it 'adds brackets when auto-correcting' do
+      new_source = autocorrect_source(cop, 'XXX = YYY, ZZZ')
+      expect(new_source).to eq 'XXX = [YYY, ZZZ].freeze'
+    end
+  end
+
   context 'when the constant is a frozen string literal' do
     context 'when the target ruby version >= 3.0' do
       let(:ruby_version) { 3.0 }

@@ -47,6 +47,12 @@ Style/FirstMethodParameterLineBreak:
                  multi-line method parameter definition.
   Enabled: false
 
+Style/ImplicitRuntimeError:
+  Description: >-
+                 Use `raise` with an explicit exception class and message,
+                 rather than just a message.
+  Enabled: false
+
 Style/InlineComment:
   Description: 'Avoid inline comments.'
   Enabled: false

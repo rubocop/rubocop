@@ -626,6 +626,30 @@ describe RuboCop::Cop::Style::AlignParameters do
             .to eq(correct_source.join("\n"))
         end
       end
+
+      context 'with AlignParameters:IndentationWidth set to 4' do
+        let(:config) do
+          RuboCop::Config.new('Style/AlignParameters' =>
+                              cop_config.merge('IndentationWidth' => 4))
+        end
+
+        it 'accepts the first parameter being on a new row' do
+          inspect_source(cop, [' assigned_value = match(',
+                               '     a,',
+                               '     b,',
+                               '     c',
+                               ' )'])
+          expect(cop.offenses).to be_empty
+        end
+
+        it 'accepts the first parameter being on method row' do
+          inspect_source(cop, [' assigned_value = match(a,',
+                               '     b,',
+                               '     c',
+                               ' )'])
+          expect(cop.offenses).to be_empty
+        end
+      end
     end
   end
 end
