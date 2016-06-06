@@ -64,8 +64,14 @@ module RuboCop
       File.join(root, 'rubocop_cache')
     end
 
+    def self.allow_symlinks_in_cache_location?(config_store)
+      config_store.for('.').for_all_cops['AllowSymlinksInCacheRootDirectory']
+    end
+
     def initialize(file, options, config_store, cache_root = nil)
       cache_root ||= ResultCache.cache_root(config_store)
+      @allow_symlinks_in_cache_location =
+        ResultCache.allow_symlinks_in_cache_location?(config_store)
       @path = File.join(cache_root, rubocop_checksum,
                         relevant_options_digest(options),
                         file_checksum(file, config_store))
@@ -85,9 +91,9 @@ module RuboCop
       FileUtils.mkdir_p(dir)
       preliminary_path = "#{@path}_#{rand(1_000_000_000)}"
       # RuboCop must be in control of where its cached data is stored. A
-      # symbolic link anywhere in the cache directory tree is an indication
-      # that a symlink attack is being waged.
-      return if any_symlink?(dir)
+      # symbolic link anywhere in the cache directory tree can be an
+      # indication that a symlink attack is being waged.
+      return if symlink_protection_triggered?(dir)
 
       File.open(preliminary_path, 'wb') do |f|
         f.write(@cached_data.to_json(offenses))
@@ -101,6 +107,10 @@ module RuboCop
     end
 
     private
+
+    def symlink_protection_triggered?(path)
+      !@allow_symlinks_in_cache_location && any_symlink?(path)
+    end
 
     def any_symlink?(path)
       while path != File.dirname(path)
