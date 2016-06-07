@@ -15,6 +15,7 @@
 * [#3105](https://github.com/bbatsov/rubocop/issues/3105): Add new `Style/RequestReferer` cop. ([@giannileggio][])
 * [#3200](https://github.com/bbatsov/rubocop/pull/3200): Add autocorrect for `Style/EachForSimpleLoop` cop. ([@tejasbubane][])
 * [#3179](https://github.com/bbatsov/rubocop/pull/3179): Expose files to support testings Cops using RSpec. ([@tjwp][])
+* [#3191](https://github.com/bbatsov/rubocop/issues/3191): Allow arbitrary comments after cop names in CommentConfig lines (e.g. rubocop:enable). ([@owst][])
 
 ### Bug fixes
 

@@ -6,8 +6,13 @@ module RuboCop
   # and provides a way to check if each cop is enabled at arbitrary line.
   class CommentConfig
     UNNEEDED_DISABLE = 'Lint/UnneededDisable'.freeze
+
+    COP_NAME_PATTERN = '([A-Z][a-z]+/)?(?:[A-Z][a-z]+)+'.freeze
+    COP_NAMES_PATTERN = "(?:#{COP_NAME_PATTERN} , )*#{COP_NAME_PATTERN}".freeze
+    COPS_PATTERN = "(all|#{COP_NAMES_PATTERN})".freeze
+
     COMMENT_DIRECTIVE_REGEXP = Regexp.new(
-      '\A# rubocop : ((?:dis|en)able)\b ((?:[\w/]+,? )+)'.gsub(' ', '\s*')
+      ('\A# rubocop : ((?:dis|en)able)\b ' + COPS_PATTERN).gsub(' ', '\s*')
     )
 
     attr_reader :processed_source
