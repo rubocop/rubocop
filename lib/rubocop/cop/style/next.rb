@@ -81,18 +81,22 @@ module RuboCop
         end
 
         def simple_if_without_break?(node)
-          return false unless node.if_type?
-          return false if ternary?(node)
-          return false if if_else?(node)
+          return false unless if_without_else?(node)
           return false if style == :skip_modifier_ifs && modifier_if?(node)
           return false if !modifier_if?(node) && !min_body_length?(node)
 
-          # The `if` node must have only `if` body since we excluded `if` with
-          # `else` above.
-          _conditional, if_body, _else_body = *node
-          return true unless if_body
+          !exit_body_type?(node)
+        end
 
-          !EXIT_TYPES.include?(if_body.type)
+        def if_without_else?(node)
+          node.if_type? && !ternary?(node) && !if_else?(node)
+        end
+
+        def exit_body_type?(node)
+          _conditional, if_body, _else_body = *node
+          return false unless if_body
+
+          EXIT_TYPES.include?(if_body.type)
         end
 
         def offense_node(body)
