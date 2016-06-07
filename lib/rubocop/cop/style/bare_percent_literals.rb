@@ -1,4 +1,4 @@
-# encoding: utf-8
+# /ncoding: utf-8
 # frozen_string_literal: true
 
 module RuboCop
@@ -25,13 +25,24 @@ module RuboCop
           return unless node.loc.respond_to?(:begin)
           return unless node.loc.begin
 
-          msg = case node.loc.begin.source
-                when /^%[^\w]/
-                  format(MSG, 'Q', '') if style == :percent_q
-                when /^%Q/
-                  format(MSG, '', 'Q') if style == :bare_percent
-                end
-          add_offense(node, :begin, msg) if msg
+          source = node.loc.begin.source
+          if requires_percent_q?(source)
+            add_offense_for_wrong_style(node, 'Q', '')
+          elsif requires_bare_percent?(source)
+            add_offense_for_wrong_style(node, '', 'Q')
+          end
+        end
+
+        def requires_percent_q?(source)
+          style == :percent_q && source =~ /^%[^\w]/
+        end
+
+        def requires_bare_percent?(source)
+          style == :bare_percent && source =~ /^%Q/
+        end
+
+        def add_offense_for_wrong_style(node, good, bad)
+          add_offense(node, :begin, format(MSG, good, bad))
         end
 
         def autocorrect(node)
