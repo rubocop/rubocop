@@ -23,17 +23,11 @@ module RuboCop
               'the first argument.'.freeze
 
         def on_send(node)
-          return if parentheses?(node)
+          return unless regular_method_call_with_params?(node)
+          return unless expect_params_after_method_name?(node)
 
-          _receiver, method_name, *args = *node
-          return if args.empty?
-          return if operator?(method_name)
-          return if node.asgn_method_call?
-
+          _receiver, _method_name, *args = *node
           arg1 = args.first.source_range
-          return if arg1.line > node.loc.line
-          return if allow_for_alignment? && aligned_with_something?(arg1)
-
           arg1_with_space = range_with_surrounding_space(arg1, :left)
           space = Parser::Source::Range.new(arg1.source_buffer,
                                             arg1_with_space.begin_pos,
@@ -43,6 +37,24 @@ module RuboCop
 
         def autocorrect(range)
           ->(corrector) { corrector.replace(range, ' ') }
+        end
+
+        private
+
+        def regular_method_call_with_params?(node)
+          _receiver, method_name, *args = *node
+
+          !(args.empty? || operator?(method_name) || node.asgn_method_call?)
+        end
+
+        def expect_params_after_method_name?(node)
+          return false if parentheses?(node)
+
+          _receiver, _method_name, *args = *node
+          arg1 = args.first.source_range
+
+          arg1.line == node.loc.line &&
+            !(allow_for_alignment? && aligned_with_something?(arg1))
         end
       end
     end
