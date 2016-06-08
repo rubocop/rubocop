@@ -9,6 +9,7 @@ module RuboCop
       include ConfigurableEnforcedStyle
 
       def check_brace_layout(node)
+        return unless node.multiline?
         return unless node.loc.begin # Ignore implicit literals.
         return if children(node).empty? # Ignore empty literals.
         return if node.single_line? # Ignore single-line literals.
