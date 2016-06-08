@@ -826,7 +826,7 @@ Style/TrailingBlankLines:
 
 Style/TrailingCommaInArguments:
   Description: 'Checks for trailing comma in argument lists.'
-  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-trailing-array-commas'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-trailing-params-comma'
   Enabled: true
 
 Style/TrailingCommaInLiteral:
