@@ -12,6 +12,9 @@ require 'rubocop'
 
 require 'webmock/rspec'
 
+# Require supporting files exposed for testing.
+require 'rubocop/rspec/support'
+
 # Requires supporting files with custom matchers and macros, etc,
 # in ./support/ and its subdirectories.
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }

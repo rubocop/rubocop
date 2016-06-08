@@ -14,6 +14,7 @@
 * [#3173](https://github.com/bbatsov/rubocop/pull/3173): Make `Style/ModuleFunction` configurable with `module_function` and `extend_self` styles. ([@tjwp][])
 * [#3105](https://github.com/bbatsov/rubocop/issues/3105): Add new `Style/RequestReferer` cop. ([@giannileggio][])
 * [#3200](https://github.com/bbatsov/rubocop/pull/3200): Add autocorrect for `Style/EachForSimpleLoop` cop. ([@tejasbubane][])
+* [#3179](https://github.com/bbatsov/rubocop/pull/3179): Expose files to support testings Cops using RSpec. ([@tjwp][])
 
 ### Bug fixes
 
