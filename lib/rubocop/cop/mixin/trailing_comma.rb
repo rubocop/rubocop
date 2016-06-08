@@ -41,8 +41,14 @@ module RuboCop
       end
 
       def should_have_comma?(style, node)
-        [:comma, :consistent_comma].include?(style) &&
+        case style
+        when :comma
+          multiline?(node) && no_elements_on_same_line?(node)
+        when :consistent_comma
           multiline?(node)
+        else
+          false
+        end
       end
 
       def inside_comment?(range, comma_offset)
@@ -73,13 +79,8 @@ module RuboCop
 
         items = elements(node).map(&:source_range)
         return false if items.empty?
-
-        # If brackets are on different lines and there is one item at least,
-        # then comma is needed anytime for consistent_comma.
-        return true if style == :consistent_comma
-
-        items << node.loc.end
-        items.each_cons(2).all? { |a, b| !on_same_line?(a, b) }
+        items << node.loc.begin << node.loc.end
+        (items.map(&:first_line) + items.map(&:last_line)).uniq.count > 1
       end
 
       def elements(node)
@@ -97,6 +98,12 @@ module RuboCop
             a
           end
         end
+      end
+
+      def no_elements_on_same_line?(node)
+        items = elements(node).map(&:source_range)
+        items << node.loc.end
+        items.each_cons(2).none? { |a, b| on_same_line?(a, b) }
       end
 
       def on_same_line?(a, b)
