@@ -213,30 +213,30 @@ module RuboCop
         ASSIGNMENT_TYPES.each do |type|
           define_method "on_#{type}" do |node|
             return if part_of_ignored_node?(node)
+            return unless style == :assign_inside_condition
+
             check_assignment_to_condition(node)
           end
         end
 
         def on_send(node)
           return unless assignment_type?(node)
+          return unless style == :assign_inside_condition
+
           check_assignment_to_condition(node)
         end
 
         def check_assignment_to_condition(node)
-          return unless style == :assign_inside_condition
           ignore_node(node)
-          *_variable, assignment = *node
-          if assignment.respond_to?(:type)
-            if assignment.begin_type? && assignment.children.size == 1
-              assignment, = *assignment
-            end
 
-            return unless CONDITION_TYPES.include?(assignment.type)
-          end
+          assignment = assignment_node(node)
+          return unless condition?(assignment)
+
           _condition, *branches, else_branch = *assignment
           return unless else_branch # empty else
           return if single_line_conditions_only? &&
                     [*branches, else_branch].any?(&:begin_type?)
+
           add_offense(node, :expression, ASSIGN_TO_CONDITION_MSG)
         end
 
@@ -273,6 +273,20 @@ module RuboCop
         end
 
         private
+
+        def assignment_node(node)
+          *_variable, assignment = *node
+
+          if assignment.begin_type? && assignment.children.size == 1
+            assignment, = *assignment
+          end
+
+          assignment
+        end
+
+        def condition?(node)
+          CONDITION_TYPES.include?(node.type)
+        end
 
         def move_assignment_outside_condition(node)
           if ternary?(node)
