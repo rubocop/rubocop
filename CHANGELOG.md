@@ -42,6 +42,7 @@
 * Modify `Style/ParallelAssignment` to use implicit begins when parallel assignment uses a `rescue` modifier and is the only thing in the method. ([@rrosenblum][])
 * [#3217](https://github.com/bbatsov/rubocop/pull/3217): Fix output of ellipses for multi-line offense ranges in HTML formatter. ([@jonas054][])
 * [#3207](https://github.com/bbatsov/rubocop/issues/3207): Accept modifier forms of `while`/`until` in `Style/InfiniteLoop`. ([@jonas054][])
+* [#3202](https://github.com/bbatsov/rubocop/issues/3202): Fix `Style/EmptyElse` registering wrong offenses and thus making RuboCop crash. ([@deivid-rodriguez][])
 
 ### Changes
 
@@ -2204,3 +2205,4 @@
 [@natalzia-paperless]: https://github.com/natalzia-paperless
 [@jules2689]: https://github.com/jules2689
 [@giannileggio]: https://github.com/giannileggio
+[@deivid-rodriguez]: https://github.com/deivid-rodriguez
