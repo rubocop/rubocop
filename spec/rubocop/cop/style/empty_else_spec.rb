@@ -58,7 +58,7 @@ describe RuboCop::Cop::Style::EmptyElse do
           it_behaves_like 'auto-correct', 'if'
         end
 
-        context 'when the result is assigned to a variable' do
+        context 'not using semicolons' do
           let(:source) do
             ['if a',
              '  foo',
