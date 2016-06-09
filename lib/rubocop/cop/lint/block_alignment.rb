@@ -63,20 +63,23 @@ module RuboCop
 
         def start_for_block_node(block_node)
           # Which node should we align the 'end' with?
-          result = block_node
-
-          while (parent = result.parent)
-            break if !parent || !parent.loc
-            break if parent.loc.line != block_node.loc.line &&
-                     !parent.masgn_type?
-            break unless block_end_align_target?(parent, result)
-            result = parent
-          end
+          result = block_end_align_target(block_node)
 
           # In offense message, we want to show the assignment LHS rather than
           # the entire assignment
           result, = *result while result.op_asgn_type? || result.masgn_type?
           result
+        end
+
+        def block_end_align_target(node)
+          while (parent = node.parent)
+            break if !parent || !parent.loc
+            break if parent.loc.line != node.loc.line && !parent.masgn_type?
+            break unless block_end_align_target?(parent, node)
+            node = parent
+          end
+
+          node
         end
 
         def check_block_alignment(start_node, block_node)
