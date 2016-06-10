@@ -290,6 +290,21 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
       end
 
       it 'parallel assignment in rescue statements' do
+        new_source = autocorrect_source(cop, ['def bar',
+                                              '  a, b = 1, 2',
+                                              'rescue',
+                                              "  'foo'",
+                                              'end'].join("\n"))
+
+        expect(new_source).to eq(['def bar',
+                                  '  a = 1',
+                                  '  b = 2',
+                                  'rescue',
+                                  "  'foo'",
+                                  'end'].join("\n"))
+      end
+
+      it 'parallel assignment in rescue statements' do
         new_source = autocorrect_source(cop, ['begin',
                                               '  a, b = 1, 2',
                                               'rescue',
@@ -305,9 +320,24 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
       end
 
       it 'when the expression uses a modifier rescue statement ' \
-         'inside a method' do
+         'as the only thing inside of a method' do
         new_source = autocorrect_source(cop, ['def foo',
                                               '  a, b = 1, 2 rescue foo',
+                                              'end'])
+
+        expect(new_source).to eq(['def foo',
+                                  '  a = 1',
+                                  '  b = 2',
+                                  'rescue',
+                                  '  foo',
+                                  'end'].join("\n"))
+      end
+
+      it 'when the expression uses a modifier rescue statement ' \
+         'inside of a method' do
+        new_source = autocorrect_source(cop, ['def foo',
+                                              '  a, b = 1, 2 rescue foo',
+                                              '  something_else',
                                               'end'])
 
         expect(new_source).to eq(['def foo',
@@ -317,6 +347,7 @@ describe RuboCop::Cop::Style::ParallelAssignment, :config do
                                   '  rescue',
                                   '    foo',
                                   '  end',
+                                  '  something_else',
                                   'end'].join("\n"))
       end
 

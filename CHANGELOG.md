@@ -37,6 +37,7 @@
 * [#2944](https://github.com/bbatsov/rubocop/issues/2944): Don't crash on strings that span multiple lines but only have one pair of delimiters in `Style/StringLiterals`. ([@jonas054][])
 * [#3157](https://github.com/bbatsov/rubocop/issues/3157): Don't let `LineEndConcatenation` and `UnneededInterpolation` make changes to the same string during auto-correct. ([@jonas054][])
 * [#3187](https://github.com/bbatsov/rubocop/issues/3187): Let `Style/BlockDelimiters` ignore blocks in *all* method arguments. ([@jonas054][])
+* Modify `Style/ParallelAssignment` to use implicit begins when parallel assignment uses a `rescue` modifier and is the only thing in the method. ([@rrosenblum][])
 
 ### Changes
 

@@ -151,9 +151,9 @@ module RuboCop
         end
 
         def rescue_modifier?(node)
-          node &&
-            node.rescue_type? &&
-            (node.parent.nil? || !node.parent.kwbegin_type?)
+          node && node.rescue_type? &&
+            (node.parent.nil? || !(node.parent.kwbegin_type? ||
+            node.parent.ensure_type?))
         end
 
         # An internal class for correcting parallel assignment
@@ -202,16 +202,34 @@ module RuboCop
             _node, rescue_clause = *node.parent
             _, _, rescue_result = *rescue_clause
 
+            # If the parallel assignment uses a rescue modifier and it is the
+            # only contents of a method, then we want to make use of the
+            # implicit begin
+            if node.parent.parent && node.parent.parent.def_type?
+              super + def_correction(rescue_result)
+            else
+              begin_correction(rescue_result)
+            end
+          end
+
+          def correction_range
+            node.parent.source_range
+          end
+
+          private
+
+          def def_correction(rescue_result)
+            "\nrescue" \
+              "\n#{offset(node)}#{rescue_result.source}"
+          end
+
+          def begin_correction(rescue_result)
             "begin\n" \
               "#{indentation(node)}" \
               "#{assignment.join("\n#{indentation(node)}")}" \
               "\n#{offset(node)}rescue\n" \
               "#{indentation(node)}#{rescue_result.source}" \
               "\n#{offset(node)}end"
-          end
-
-          def correction_range
-            node.parent.source_range
           end
         end
 
