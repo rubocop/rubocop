@@ -111,17 +111,18 @@ module RuboCop
         # a.b
         #  .c
         def semantic_alignment_base(node, rhs)
-          return nil unless rhs.source.start_with?('.')
-          return nil if argument_in_method_call(node)
+          return unless rhs.source.start_with?('.')
+          return if argument_in_method_call(node)
 
-          node, = *node while node.send_type? && node.loc.dot ||
-                              node.block_type?
-          return nil unless node.parent.send_type?
+          # descend to root of method chain
+          node = node.receiver while node.receiver
+          # ascend to first call which has a dot
+          node = node.parent
+          node = node.parent until node.loc.dot
 
-          first_send = node.parent
-          return nil if first_send.loc.dot.line != first_send.loc.line
+          return if node.loc.dot.line != node.loc.line
 
-          first_send.loc.dot.join(first_send.loc.selector)
+          node.loc.dot.join(node.loc.selector)
         end
 
         def operation_rhs(node)
