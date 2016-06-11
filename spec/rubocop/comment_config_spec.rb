@@ -11,7 +11,7 @@ describe RuboCop::CommentConfig do
       [
         '# encoding: utf-8',
         '',
-        '# rubocop:disable Metrics/MethodLength',
+        '# rubocop:disable Metrics/MethodLength with a comment why',
         'def some_method',
         "  puts 'foo'",                                      # 5
         'end',
@@ -38,7 +38,7 @@ describe RuboCop::CommentConfig do
         '',
         '# rubocop:enable Lint/Void',
         '',
-        '# rubocop:disable Style/For',
+        '# rubocop:disable Style/For, Style/Not,Style/Tab',
         'foo',                                               # 30
         '',
         'class One',
@@ -49,7 +49,15 @@ describe RuboCop::CommentConfig do
         'class Two',
         '  # rubocop:disable Style/ClassVars',
         '  @@class_var = 2',
-        'end'                                                # 40
+        'end',                                               # 40
+        '# rubocop:enable Style/Not,Style/Tab',
+        '# rubocop:disable Style/Send, Lint/RandOne some comment why',
+        '# rubocop:disable Lint/BlockAlignment some comment why',
+        '# rubocop:enable Style/Send, Lint/BlockAlignment but why?',
+        '# rubocop:enable Lint/RandOne foo bar!',            # 45
+        '# rubocop:disable FlatMap',
+        '[1, 2, 3, 4].map { |e| [e, e] }.flatten(1)',
+        '# rubocop:enable FlatMap'
       ]
     end
 
@@ -64,15 +72,41 @@ describe RuboCop::CommentConfig do
       method_length_disabled_lines =
         disabled_lines_of_cop('Metrics/MethodLength')
       expected_part = (3..6).to_a
-      expect(method_length_disabled_lines & expected_part)
-        .to eq(expected_part)
+      expect(method_length_disabled_lines & expected_part).to eq(expected_part)
+    end
+
+    it 'supports enabling/disabling multiple cops in a single directive' do
+      not_disabled_lines = disabled_lines_of_cop('Style/Not')
+      tab_disabled_lines = disabled_lines_of_cop('Style/Tab')
+
+      expect(not_disabled_lines).to eq(tab_disabled_lines)
+      expected_part = (29..41).to_a
+      expect(not_disabled_lines & expected_part).to eq(expected_part)
+    end
+
+    it 'supports enabling/disabling multiple cops along with a comment' do
+      {
+        'Style/Send' => 42..44,
+        'Lint/RandOne' => 42..45,
+        'Lint/BlockAlignment' => 43..44
+      }.each do |cop_name, expected|
+        actual = disabled_lines_of_cop(cop_name)
+        expect(actual & expected.to_a).to eq(expected.to_a)
+      end
+    end
+
+    it 'supports enabling/disabling cops without a prefix' do
+      flat_map_disabled_lines = disabled_lines_of_cop('Performance/FlatMap')
+
+      expected = (46..48).to_a
+
+      expect(flat_map_disabled_lines & expected).to eq(expected)
     end
 
     it 'supports disabling all lines after a directive' do
       for_disabled_lines = disabled_lines_of_cop('Style/For')
       expected_part = (29..source.size).to_a
-      expect(for_disabled_lines & expected_part)
-        .to eq(expected_part)
+      expect(for_disabled_lines & expected_part).to eq(expected_part)
     end
 
     it 'just ignores unpaired enabling directives' do
@@ -120,7 +154,7 @@ describe RuboCop::CommentConfig do
 
     it 'can handle double disable of one cop' do
       expect(disabled_lines_of_cop('Style/ClassVars'))
-        .to eq([9, 10, 11] + (33..40).to_a)
+        .to eq([9, 10, 11] + (33..source.size).to_a)
     end
   end
 end
