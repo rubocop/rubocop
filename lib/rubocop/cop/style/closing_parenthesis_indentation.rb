@@ -56,7 +56,8 @@ module RuboCop
 
           left_paren = node.loc.begin
 
-          correct_column = if line_break_after_left_paren?(left_paren, elements)
+          correct_column = if node.send_type? && fixed_parameter_indentation? ||
+                              line_break_after_left_paren?(left_paren, elements)
                              left_paren.source_line =~ /\S/
                            else
                              left_paren.column
@@ -66,6 +67,11 @@ module RuboCop
 
           msg = correct_column == left_paren.column ? MSG_ALIGN : MSG_INDENT
           add_offense(node.loc.end, node.loc.end, msg)
+        end
+
+        def fixed_parameter_indentation?
+          config.for_cop('Style/AlignParameters')['EnforcedStyle'] ==
+            'with_fixed_indentation'
         end
 
         def line_break_after_left_paren?(left_paren, elements)
