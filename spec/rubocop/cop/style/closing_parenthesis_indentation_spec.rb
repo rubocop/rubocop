@@ -4,7 +4,13 @@
 require 'spec_helper'
 
 describe RuboCop::Cop::Style::ClosingParenthesisIndentation do
-  subject(:cop) { described_class.new }
+  subject(:cop) { described_class.new(config) }
+  let(:config) do
+    RuboCop::Config.new('Style/AlignParameters' => {
+                          'EnforcedStyle' => align_parameters_config
+                        })
+  end
+  let(:align_parameters_config) { 'with_first_parameter' }
 
   context 'for method calls' do
     context 'with line break before 1st parameter' do
@@ -58,6 +64,38 @@ describe RuboCop::Cop::Style::ClosingParenthesisIndentation do
       it 'accepts empty ()' do
         inspect_source(cop, 'some_method()')
         expect(cop.offenses).to be_empty
+      end
+
+      context 'with fixed indentation of parameters' do
+        let(:align_parameters_config) { 'with_fixed_indentation' }
+
+        it 'accepts a correctly indented )' do
+          inspect_source(cop, ['some_method(a,',
+                               '  x: 1,',
+                               '  y: 2',
+                               ')',
+                               'b =',
+                               '  some_method(a,',
+                               '  )'])
+          expect(cop.offenses).to be_empty
+        end
+
+        it 'autocorrects misindented )' do
+          corrected = autocorrect_source(cop, ['some_method(a,',
+                                               '  x: 1,',
+                                               '  y: 2',
+                                               '           )',
+                                               'b =',
+                                               '  some_method(a,',
+                                               '             )'])
+          expect(corrected).to eq ['some_method(a,',
+                                   '  x: 1,',
+                                   '  y: 2',
+                                   ')',
+                                   'b =',
+                                   '  some_method(a,',
+                                   '  )'].join("\n")
+        end
       end
     end
   end

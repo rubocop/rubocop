@@ -43,6 +43,7 @@
 ### Changes
 
 * [#3149](https://github.com/bbatsov/rubocop/pull/3149): Make `Style/HashSyntax` configurable to not report hash rocket syntax for symbols ending with ? or ! when using ruby19 style. ([@owst][])
+* [#1758](https://github.com/bbatsov/rubocop/issues/1758): Let `Style/ClosingParenthesisIndentation` follow `Style/AlignParameters` configuration for method calls. ([@jonas054][])
 
 ## 0.40.0 (2016-05-09)
 
