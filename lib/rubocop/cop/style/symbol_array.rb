@@ -80,10 +80,6 @@ module RuboCop
             corrector.replace(node.source_range, corrected)
           end
         end
-
-        def escape_string(string)
-          string.inspect[1..-2].tap { |s| s.gsub!(/\\"/, '"') }
-        end
       end
     end
   end

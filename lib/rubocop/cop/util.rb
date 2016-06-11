@@ -225,7 +225,11 @@ module RuboCop
       end
 
       def needs_escaping?(string)
-        double_quotes_required?(string.inspect)
+        double_quotes_required?(escape_string(string))
+      end
+
+      def escape_string(string)
+        string.inspect[1..-2].tap { |s| s.gsub!(/\\"/, '"') }
       end
 
       def to_string_literal(string)

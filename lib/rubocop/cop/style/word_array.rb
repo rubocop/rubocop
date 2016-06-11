@@ -107,10 +107,6 @@ module RuboCop
           end.join(' ')
         end
 
-        def escape_string(string)
-          string.inspect[1..-2].tap { |s| s.gsub!(/\\"/, '"') }
-        end
-
         def style_detected(style, ary_size)
           cfg = config_to_allow_offenses
           return if cfg['Enabled'] == false
