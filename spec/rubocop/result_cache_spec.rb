@@ -11,7 +11,7 @@ describe RuboCop::ResultCache, :isolated_environment do
   end
   let(:file) { 'example.rb' }
   let(:options) { {} }
-  let(:config_store) { double('config_store') }
+  let(:config_store) { double('config_store', for: RuboCop::Config.new) }
   let(:cache_root) { "#{Dir.pwd}/rubocop_cache" }
   let(:offenses) do
     [RuboCop::Cop::Offense.new(:warning, location, 'unused var',
@@ -60,7 +60,11 @@ describe RuboCop::ResultCache, :isolated_environment do
         end
       end
 
-      context 'when a symlink attack is made' do
+      context 'when a symlink is present in the cache location' do
+        let(:cache2) do
+          described_class.new(file, options, config_store, cache_root)
+        end
+
         before(:each) do
           # Avoid getting "symlink() function is unimplemented on this
           # machine" on Windows.
@@ -68,24 +72,50 @@ describe RuboCop::ResultCache, :isolated_environment do
             skip 'Symlinks not implemented on Windows'
           end
 
+          @attack_target_dir = Dir.mktmpdir
+
           cache.save(offenses)
           Find.find(cache_root) do |path|
             next unless File.basename(path) == '_'
             FileUtils.rm_rf(path)
-            FileUtils.ln_s('/bin', path)
+            FileUtils.ln_s(@attack_target_dir, path)
           end
           $stderr = StringIO.new
         end
-        after(:each) { $stderr = STDERR }
+        after(:each) do
+          FileUtils.rmdir(@attack_target_dir)
+          $stderr = STDERR
+        end
 
-        it 'is stopped' do
-          cache2 = described_class.new(file, options, config_store, cache_root)
-          cache2.save(offenses)
-          # The cache file has not been created because there was a symlink in
-          # its path.
-          expect(cache2.valid?).to eq(false)
-          expect($stderr.string)
-            .to match(/Warning: .* is a symlink, which is not allowed.\n/)
+        context 'and symlink attack protection is enabled' do
+          it 'prevents caching and prints a warning' do
+            cache2.save(offenses)
+            # The cache file has not been created because there was a symlink in
+            # its path.
+            expect(cache2.valid?).to eq(false)
+            expect($stderr.string)
+              .to match(/Warning: .* is a symlink, which is not allowed.\n/)
+          end
+        end
+
+        context 'and symlink attack protection is disabled' do
+          before do
+            allow(config_store).to receive(:for).with('.').and_return(
+              RuboCop::Config[
+                'AllCops' => {
+                  'AllowSymlinksInCacheRootDirectory' => true
+                }
+              ]
+            )
+          end
+
+          it 'permits caching and prints no warning' do
+            cache2.save(offenses)
+
+            expect(cache2.valid?).to eq(true)
+            expect($stderr.string)
+              .not_to match(/Warning: .* is a symlink, which is not allowed.\n/)
+          end
         end
       end
     end

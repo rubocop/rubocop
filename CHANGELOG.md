@@ -18,6 +18,7 @@
 
 ### Bug fixes
 
+* [#3005](https://github.com/bbatsov/rubocop/issues/3005): Symlink protection prevents use of caching in CI context. ([@urbanautomaton][])
 * [#3037](https://github.com/bbatsov/rubocop/issues/3037): `Style/StringLiterals` understands that a bare '#', not '#@variable' or '#{interpolation}', does not require double quotes. ([@alexdowad][])
 * [#2722](https://github.com/bbatsov/rubocop/issues/2722): `Style/ExtraSpacing` does not attempt to align an equals sign in an argument list with one in an assignment statement. ([@alexdowad][])
 * [#3133](https://github.com/bbatsov/rubocop/issues/3133): `Style/MultilineMethodCallBraceLayout` does not register offenses for single-line calls. ([@alexdowad][])
