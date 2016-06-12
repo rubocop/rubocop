@@ -1,0 +1,26 @@
+# encoding: utf-8
+# frozen_string_literal: true
+
+module RuboCop
+  module Cop
+    # Common functionality for obtaining source ranges from regexp matches
+    module MatchRange
+      # Return a new `Range` covering the first matching group number for each
+      # match of `regex` inside `range`
+      def each_match_range(range, regex)
+        range.source.scan(regex) do
+          yield match_range(range, Regexp.last_match)
+        end
+      end
+
+      # For a `match` inside `range`, return a new `Range` covering the match
+      def match_range(range, match)
+        Parser::Source::Range.new(
+          range.source_buffer,
+          range.begin_pos + match.begin(1),
+          range.begin_pos + match.end(1)
+        )
+      end
+    end
+  end
+end
