@@ -20,7 +20,7 @@ module RuboCop
         MSG = 'Use `Kernel#loop` for infinite loops.'.freeze
 
         def on_while(node)
-          return if modifier?(node)
+          return if node.modifier_form?
 
           condition, = *node
           return unless condition.truthy_literal?
@@ -29,7 +29,7 @@ module RuboCop
         end
 
         def on_until(node)
-          return if modifier?(node)
+          return if node.modifier_form?
 
           condition, = *node
           return unless condition.falsey_literal?
@@ -48,12 +48,6 @@ module RuboCop
           lambda do |corrector|
             corrector.replace(start_range.join(end_range), 'loop do')
           end
-        end
-
-        private
-
-        def modifier?(node)
-          node.loc.respond_to?(:end) && node.loc.end.nil?
         end
       end
     end

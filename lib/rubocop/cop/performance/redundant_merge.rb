@@ -16,7 +16,9 @@ module RuboCop
         MSG = 'Use `%s` instead of `%s`.'.freeze
 
         def_node_matcher :redundant_merge, '(send $_ :merge! (hash $...))'
-        def_node_matcher :modifier_flow_control, '[{if while until} #modifier?]'
+        def_node_matcher :modifier_flow_control, <<-END
+          [{if while until} modifier_form?]
+        END
         def_node_matcher :each_with_object_node, <<-END
           (block (send _ :each_with_object _) (args _ $_) ...)
         END
@@ -108,10 +110,6 @@ module RuboCop
 
         def indent_width
           @config.for_cop('IndentationWidth')['Width'] || 2
-        end
-
-        def modifier?(node)
-          node.loc.respond_to?(:end) && node.loc.end.nil?
         end
 
         def max_key_value_pairs

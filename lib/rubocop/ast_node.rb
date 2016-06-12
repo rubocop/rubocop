@@ -372,6 +372,10 @@ module RuboCop
 
     ## Predicates
 
+    def modifier_form?
+      loc.respond_to?(:end) && loc.end.nil?
+    end
+
     def multiline?
       expr = loc.expression
       expr && (expr.first_line != expr.last_line)
