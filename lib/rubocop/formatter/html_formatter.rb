@@ -95,18 +95,14 @@ module RuboCop
 
         def highlighted_source_line(offense)
           location = offense.location
-
-          source_line = if location.first_line == location.last_line
-                          location.source_line
-                        else
-                          "#{location.source_line} #{ELLIPSES}"
-                        end
+          source_line = location.source_line
 
           escape(source_line[0...offense.highlighted_area.begin_pos]) +
             "<span class=\"highlight #{offense.severity}\">" +
             escape(offense.highlighted_area.source) +
             '</span>' +
-            escape(source_line[offense.highlighted_area.end_pos..-1])
+            escape(source_line[offense.highlighted_area.end_pos..-1]) +
+            (location.first_line == location.last_line ? '' : " #{ELLIPSES}")
         end
 
         def escape(s)

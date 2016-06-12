@@ -40,6 +40,7 @@
 * [#3157](https://github.com/bbatsov/rubocop/issues/3157): Don't let `LineEndConcatenation` and `UnneededInterpolation` make changes to the same string during auto-correct. ([@jonas054][])
 * [#3187](https://github.com/bbatsov/rubocop/issues/3187): Let `Style/BlockDelimiters` ignore blocks in *all* method arguments. ([@jonas054][])
 * Modify `Style/ParallelAssignment` to use implicit begins when parallel assignment uses a `rescue` modifier and is the only thing in the method. ([@rrosenblum][])
+* [#3217](https://github.com/bbatsov/rubocop/pull/3217): Fix output of ellipses for multi-line offense ranges in HTML formatter. ([@jonas054][])
 
 ### Changes
 
