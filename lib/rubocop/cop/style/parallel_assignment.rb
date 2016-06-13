@@ -147,7 +147,7 @@ module RuboCop
         def modifier_while?(node)
           node.loc.respond_to?(:keyword) &&
             %w(while until).include?(node.loc.keyword.source) &&
-            node.loc.respond_to?(:end) && node.loc.end.nil?
+            node.modifier_form?
         end
 
         def rescue_modifier?(node)

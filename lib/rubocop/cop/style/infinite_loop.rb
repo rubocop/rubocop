@@ -20,16 +20,18 @@ module RuboCop
         MSG = 'Use `Kernel#loop` for infinite loops.'.freeze
 
         def on_while(node)
-          condition, = *node
+          return if node.modifier_form?
 
+          condition, = *node
           return unless condition.truthy_literal?
 
           add_offense(node, :keyword)
         end
 
         def on_until(node)
-          condition, = *node
+          return if node.modifier_form?
 
+          condition, = *node
           return unless condition.falsey_literal?
 
           add_offense(node, :keyword)
