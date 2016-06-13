@@ -18,7 +18,7 @@ module RuboCop
       #   10.times { }
       class EachForSimpleLoop < Cop
         def on_block(node)
-          if bad_each_count(node)
+          if bad_each_range(node)
             send_node, = *node
             range = send_node.receiver.source_range.join(send_node.loc.selector)
             add_offense(node, range, 'Use `Integer#times` for a simple loop ' \
@@ -28,13 +28,14 @@ module RuboCop
 
         def autocorrect(node)
           lambda do |corrector|
+            min, max = bad_each_range(node)
             corrector.replace(node.children.first.source_range,
-                              "#{bad_each_count(node)}.times")
+                              "#{max - min}.times")
           end
         end
 
-        def_node_matcher :bad_each_count, <<-PATTERN
-          (block (send (begin ({irange erange} int (int $_))) :each) (args) ...)
+        def_node_matcher :bad_each_range, <<-PATTERN
+          (block (send (begin ({irange erange} (int $_) (int $_))) :each) (args) ...)
         PATTERN
       end
     end
