@@ -16,6 +16,7 @@
 * [#3200](https://github.com/bbatsov/rubocop/pull/3200): Add autocorrect for `Style/EachForSimpleLoop` cop. ([@tejasbubane][])
 * [#3179](https://github.com/bbatsov/rubocop/pull/3179): Expose files to support testings Cops using RSpec. ([@tjwp][])
 * [#3191](https://github.com/bbatsov/rubocop/issues/3191): Allow arbitrary comments after cop names in CommentConfig lines (e.g. rubocop:enable). ([@owst][])
+* [#3177](https://github.com/bbatsov/rubocop/pull/3177): Add new `Style/NumericLiteralPrefix` cop. ([@tejasbubane][])
 
 ### Bug fixes
 

@@ -11,6 +11,7 @@ module RuboCop
         # digits for which an offense can be registered), but essentially it's
         # a Max parameter (the maximum number of something that's allowed).
         include ConfigurableMax
+        include IntegerNode
 
         MSG = 'Separate every 3 digits in the integer portion of a number ' \
               'with underscores(_).'.freeze
@@ -68,10 +69,6 @@ module RuboCop
           else
             formatted_int
           end
-        end
-
-        def integer_part(node)
-          node.source.sub(/^[+-]/, '').split('.').first
         end
 
         def min_digits
