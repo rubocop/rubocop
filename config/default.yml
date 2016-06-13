@@ -738,6 +738,12 @@ Style/MultilineOperationIndentation:
 Style/NumericLiterals:
   MinDigits: 5
 
+Style/NumericLiteralPrefix:
+  EnforcedOctalStyle: zero_with_o
+  SupportedOctalStyles:
+    - zero_with_o
+    - zero_only
+
 Style/OptionHash:
   # A list of parameter names that will be flagged by this cop.
   SuspiciousParamNames:

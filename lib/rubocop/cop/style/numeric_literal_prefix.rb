@@ -6,18 +6,23 @@ require 'pry'
 module RuboCop
   module Cop
     module Style
-      # This cop checks for octal, hex and binary literals using
+      # This cop checks for octal, hex, binary and decimal literals using
       # uppercase prefixes and corrects them to lowercase prefix
       # or no prefix (in case of decimals).
       # eg. for octal use `0o` instead of `0` or `0O`.
+      #
+      # Can be configured to use `0` only for octal literals using
+      # `EnforcedOctalStyle` => `zero_only`
       class NumericLiteralPrefix < Cop
         include IntegerNode
 
+        OCTAL_ZERO_ONLY_REGEX = /^0[Oo][0-7]+$/
         OCTAL_REGEX = /^0O?[0-7]+$/
         HEX_REGEX = /^0X[0-9A-F]+$/
         BINARY_REGEX = /^0B[01]+$/
         DECIMAL_REGEX = /^0[dD][0-9]+$/
 
+        OCTAL_ZERO_ONLY_MSG = 'Use 0 for octal literals.'.freeze
         OCTAL_MSG = 'Use 0o for octal literals.'.freeze
         HEX_MSG = 'Use 0x for hexadecimal literals.'.freeze
         BINARY_MSG = 'Use 0b for binary literals.'.freeze
@@ -36,37 +41,52 @@ module RuboCop
         def autocorrect(node)
           lambda do |corrector|
             type = literal_type(node)
-            corrector.replace(node.source_range, send(:"format_#{type}", node))
+            corrector.replace(node.source_range,
+                              send(:"format_#{type}", node.source))
           end
         end
 
         def literal_type(node)
-          case integer_part(node)
-          when OCTAL_REGEX
-            'octal'.freeze
+          literal = integer_part(node)
+
+          if literal =~ OCTAL_ZERO_ONLY_REGEX && octal_zero_only?
+            return :octal_zero_only
+          elsif literal =~ OCTAL_REGEX && !octal_zero_only?
+            return :octal
+          end
+
+          case literal
           when HEX_REGEX
-            'hex'.freeze
+            :hex
           when BINARY_REGEX
-            'binary'.freeze
+            :binary
           when DECIMAL_REGEX
-            'decimal'.freeze
+            :decimal
           end
         end
 
-        def format_octal(node)
-          node.source.sub(/^0O?/, '0o')
+        def octal_zero_only?
+          cop_config['EnforcedOctalStyle'] == 'zero_only'
         end
 
-        def format_hex(node)
-          node.source.sub(/^0X/, '0x')
+        def format_octal(source)
+          source.sub(/^0O?/, '0o')
         end
 
-        def format_binary(node)
-          node.source.sub(/^0B/, '0b')
+        def format_octal_zero_only(source)
+          source.sub(/^0[Oo]?/, '0')
         end
 
-        def format_decimal(node)
-          node.source.sub(/^0[dD]/, '')
+        def format_hex(source)
+          source.sub(/^0X/, '0x')
+        end
+
+        def format_binary(source)
+          source.sub(/^0B/, '0b')
+        end
+
+        def format_decimal(source)
+          source.sub(/^0[dD]/, '')
         end
       end
     end
