@@ -42,7 +42,7 @@ module RuboCop
             on_special_asgn(node)
           elsif !node.unary_operation? && !called_with_dot?(node)
             op = node.method_name
-            if op != :[] && op != :! && op != :[]= && operator?(op)
+            if operator_with_regular_syntax?(op)
               _, _, right, = *node
               check_operator(node.loc.selector, right.source_range)
             end
@@ -78,6 +78,10 @@ module RuboCop
 
         def called_with_dot?(node)
           node.loc.dot
+        end
+
+        def operator_with_regular_syntax?(op)
+          ![:[], :!, :[]=].include?(op) && operator?(op)
         end
 
         def check_operator(op, right_operand)
