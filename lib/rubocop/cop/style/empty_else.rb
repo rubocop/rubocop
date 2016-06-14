@@ -99,7 +99,7 @@ module RuboCop
 
         def nil_check(node, else_clause)
           return unless else_clause && else_clause.nil_type?
-          add_offense(node, node.location, MSG)
+          add_offense(node, :else, MSG)
         end
 
         def both_check(node, else_clause)

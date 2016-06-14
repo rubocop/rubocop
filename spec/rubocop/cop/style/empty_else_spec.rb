@@ -35,6 +35,18 @@ describe RuboCop::Cop::Style::EmptyElse do
     end
   end
 
+  shared_examples_for 'offense registration' do
+    it 'registers an offense with correct message' do
+      inspect_source(cop, source)
+      expect(cop.messages).to eq(['Redundant `else`-clause.'])
+    end
+
+    it 'registers an offense with correct location' do
+      inspect_source(cop, source)
+      expect(cop.highlights).to eq(['else'])
+    end
+  end
+
   context 'configured to warn on empty else' do
     let(:config) do
       RuboCop::Config.new('Style/EmptyElse' => {
@@ -50,15 +62,11 @@ describe RuboCop::Cop::Style::EmptyElse do
           let(:source) { 'if a; foo else end' }
           let(:corrected_source) { 'if a; foo end' }
 
-          it 'registers an offense' do
-            inspect_source(cop, source)
-            expect(cop.messages).to eq(['Redundant `else`-clause.'])
-          end
-
+          it_behaves_like 'offense registration'
           it_behaves_like 'auto-correct', 'if'
         end
 
-        context 'when the result is assigned to a variable' do
+        context 'not using semicolons' do
           let(:source) do
             ['if a',
              '  foo',
@@ -71,11 +79,7 @@ describe RuboCop::Cop::Style::EmptyElse do
              'end'].join("\n")
           end
 
-          it 'registers an offense' do
-            inspect_source(cop, source)
-            expect(cop.messages).to eq(['Redundant `else`-clause.'])
-          end
-
+          it_behaves_like 'offense registration'
           it_behaves_like 'auto-correct', 'if'
         end
       end
@@ -107,11 +111,7 @@ describe RuboCop::Cop::Style::EmptyElse do
         let(:source) { 'unless cond; foo else end' }
         let(:corrected_source) { 'unless cond; foo end' }
 
-        it 'registers an offense' do
-          inspect_source(cop, source)
-          expect(cop.messages).to eq(['Redundant `else`-clause.'])
-        end
-
+        it_behaves_like 'offense registration'
         it_behaves_like 'auto-correct', 'if'
       end
 
@@ -142,11 +142,7 @@ describe RuboCop::Cop::Style::EmptyElse do
         let(:source) { 'case v; when a; foo else end' }
         let(:corrected_source) { 'case v; when a; foo end' }
 
-        it 'registers an offense' do
-          inspect_source(cop, source)
-          expect(cop.messages).to eq(['Redundant `else`-clause.'])
-        end
-
+        it_behaves_like 'offense registration'
         it_behaves_like 'auto-correct', 'case'
       end
 
@@ -210,11 +206,7 @@ describe RuboCop::Cop::Style::EmptyElse do
              'end'].join("\n")
           end
 
-          it 'registers an offense' do
-            inspect_source(cop, source)
-            expect(cop.messages).to eq(['Redundant `else`-clause.'])
-          end
-
+          it_behaves_like 'offense registration'
           it_behaves_like 'auto-correct', 'if'
         end
 
@@ -237,11 +229,7 @@ describe RuboCop::Cop::Style::EmptyElse do
              '         end'].join("\n")
           end
 
-          it 'registers an offense' do
-            inspect_source(cop, source)
-            expect(cop.messages).to eq(['Redundant `else`-clause.'])
-          end
-
+          it_behaves_like 'offense registration'
           it_behaves_like 'auto-correct', 'if'
         end
       end
@@ -251,11 +239,7 @@ describe RuboCop::Cop::Style::EmptyElse do
         let(:source) { 'if a; foo elsif b; bar else nil end' }
         let(:corrected_source) { 'if a; foo elsif b; bar end' }
 
-        it 'registers an offense' do
-          inspect_source(cop, source)
-          expect(cop.messages).to eq(['Redundant `else`-clause.'])
-        end
-
+        it_behaves_like 'offense registration'
         it_behaves_like 'auto-correct', 'if'
       end
 
@@ -286,11 +270,7 @@ describe RuboCop::Cop::Style::EmptyElse do
         let(:source) { 'unless cond; foo else nil end' }
         let(:corrected_source) { 'unless cond; foo end' }
 
-        it 'registers an offense' do
-          inspect_source(cop, source)
-          expect(cop.messages).to eq(['Redundant `else`-clause.'])
-        end
-
+        it_behaves_like 'offense registration'
         it_behaves_like 'auto-correct', 'if'
       end
 
@@ -322,11 +302,7 @@ describe RuboCop::Cop::Style::EmptyElse do
           let(:source) { 'case v; when a; foo; when b; bar; else nil end' }
           let(:corrected_source) { 'case v; when a; foo; when b; bar; end' }
 
-          it 'registers an offense' do
-            inspect_source(cop, source)
-            expect(cop.messages).to eq(['Redundant `else`-clause.'])
-          end
-
+          it_behaves_like 'offense registration'
           it_behaves_like 'auto-correct', 'case'
         end
 
@@ -351,11 +327,7 @@ describe RuboCop::Cop::Style::EmptyElse do
              '         end'].join("\n")
           end
 
-          it 'registers an offense' do
-            inspect_source(cop, source)
-            expect(cop.messages).to eq(['Redundant `else`-clause.'])
-          end
-
+          it_behaves_like 'offense registration'
           it_behaves_like 'auto-correct', 'case'
         end
       end
@@ -390,11 +362,7 @@ describe RuboCop::Cop::Style::EmptyElse do
         let(:source) { 'if a; foo else end' }
         let(:corrected_source) { 'if a; foo end' }
 
-        it 'registers an offense' do
-          inspect_source(cop, source)
-          expect(cop.messages).to eq(['Redundant `else`-clause.'])
-        end
-
+        it_behaves_like 'offense registration'
         it_behaves_like 'auto-correct', 'if'
       end
 
@@ -402,11 +370,7 @@ describe RuboCop::Cop::Style::EmptyElse do
         let(:source) { 'if a; foo elsif b; bar else nil end' }
         let(:corrected_source) { 'if a; foo elsif b; bar end' }
 
-        it 'registers an offense' do
-          inspect_source(cop, source)
-          expect(cop.messages).to eq(['Redundant `else`-clause.'])
-        end
-
+        it_behaves_like 'offense registration'
         it_behaves_like 'auto-correct', 'if'
       end
 
@@ -430,11 +394,7 @@ describe RuboCop::Cop::Style::EmptyElse do
         let(:source) { 'unless cond; foo else end' }
         let(:corrected_source) { 'unless cond; foo end' }
 
-        it 'registers an offense' do
-          inspect_source(cop, source)
-          expect(cop.messages).to eq(['Redundant `else`-clause.'])
-        end
-
+        it_behaves_like 'offense registration'
         it_behaves_like 'auto-correct', 'if'
       end
 
@@ -442,11 +402,7 @@ describe RuboCop::Cop::Style::EmptyElse do
         let(:source) { 'unless cond; foo else nil end' }
         let(:corrected_source) { 'unless cond; foo end' }
 
-        it 'registers an offense' do
-          inspect_source(cop, source)
-          expect(cop.messages).to eq(['Redundant `else`-clause.'])
-        end
-
+        it_behaves_like 'offense registration'
         it_behaves_like 'auto-correct', 'if'
       end
 
@@ -470,11 +426,7 @@ describe RuboCop::Cop::Style::EmptyElse do
         let(:source) { 'case v; when a; foo else end' }
         let(:corrected_source) { 'case v; when a; foo end' }
 
-        it 'registers an offense' do
-          inspect_source(cop, source)
-          expect(cop.messages).to eq(['Redundant `else`-clause.'])
-        end
-
+        it_behaves_like 'offense registration'
         it_behaves_like 'auto-correct', 'case'
       end
 
@@ -482,11 +434,7 @@ describe RuboCop::Cop::Style::EmptyElse do
         let(:source) { 'case v; when a; foo; when b; bar; else nil end' }
         let(:corrected_source) { 'case v; when a; foo; when b; bar; end' }
 
-        it 'registers an offense' do
-          inspect_source(cop, source)
-          expect(cop.messages).to eq(['Redundant `else`-clause.'])
-        end
-
+        it_behaves_like 'offense registration'
         it_behaves_like 'auto-correct', 'case'
       end
 
