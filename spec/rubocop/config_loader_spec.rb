@@ -80,6 +80,7 @@ describe RuboCop::ConfigLoader do
         create_file(file_path, ['Style/Encoding:',
                                 '  Enabled: false'])
       end
+
       it 'returns a configuration inheriting from default.yml' do
         config = default_config['Style/Encoding'].dup
         config['Enabled'] = false
