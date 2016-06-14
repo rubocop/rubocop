@@ -15,7 +15,13 @@ require 'rake'
 require 'rspec/core'
 require 'rspec/core/rake_task'
 require 'rubocop/rake_task'
+
 RSpec::Core::RakeTask.new(:spec)
+
+RSpec::Core::RakeTask.new(:ascii_spec) do |t|
+  t.ruby_opts = '-E ASCII'
+  t.pattern = 'spec/rubocop/config_loader_spec.rb'
+end
 
 desc 'Run RSpec with code coverage'
 task :coverage do
@@ -26,7 +32,7 @@ end
 desc 'Run RuboCop over itself'
 RuboCop::RakeTask.new(:internal_investigation)
 
-task default: [:spec, :internal_investigation]
+task default: [:spec, :ascii_spec, :internal_investigation]
 
 # require 'yard'
 # YARD::Rake::YardocTask.new

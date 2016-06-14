@@ -57,6 +57,7 @@
 * [#2986](https://github.com/bbatsov/rubocop/issues/2986): Fix `RedundantBlockCall` to not report calls that pass block arguments, or where the block has been overridden. ([@owst][])
 * [#3223](https://github.com/bbatsov/rubocop/issues/3223): Return can take many arguments. ([@ptarjan][])
 * [#3239](https://github.com/bbatsov/rubocop/pull/3239): Fix bug with --auto-gen-config and a file that does not exist. ([@meganemura][])
+* [#3138](https://github.com/bbatsov/rubocop/issues/3138): Fix RuboCop crashing when config file contains utf-8 characters and external encoding is not utf-8. ([@deivid-rodriguez][])
 
 ### Changes
 

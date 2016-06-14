@@ -387,6 +387,14 @@ describe RuboCop::ConfigLoader do
       )
     end
 
+    it 'loads configuration properly when it includes non-ascii characters ' do
+      create_file(configuration_path, ['# All these cops of mine are ❤',
+                                       'Style/Encoding:',
+                                       '  Enabled: false'])
+
+      expect(load_file).to eq('Style/Encoding' => { 'Enabled' => false })
+    end
+
     it 'returns an empty configuration loaded from an empty file' do
       create_file(configuration_path, '')
       configuration = load_file
