@@ -374,4 +374,43 @@ describe RuboCop::Config do
       end
     end
   end
+
+  describe '#target_ruby_version' do
+    context 'when .ruby-version is present' do
+      let(:ruby_version) { '2.2.4' }
+      let(:ruby_version_to_f) { 2.2 }
+
+      before do
+        allow(File).to receive(:file?).with('.ruby-version').and_return true
+        allow(File)
+          .to receive(:read)
+          .with('.ruby-version')
+          .and_return ruby_version
+      end
+
+      it 'reads it to determine the target ruby version' do
+        expect(configuration.target_ruby_version).to eq 2.2
+      end
+    end
+
+    context 'when .ruby-version is not present' do
+      let(:ruby_version) { 2.0 }
+
+      let(:hash) do
+        {
+          'AllCops' => {
+            'TargetRubyVersion' => ruby_version
+          }
+        }
+      end
+
+      before do
+        allow(File).to receive(:file?).with('.ruby-version').and_return false
+      end
+
+      it 'falls back to TargetRubyVersion' do
+        expect(configuration.target_ruby_version).to eq ruby_version
+      end
+    end
+  end
 end

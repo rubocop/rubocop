@@ -193,7 +193,7 @@ module RuboCop
       end
 
       def target_ruby_version
-        @config.for_all_cops['TargetRubyVersion']
+        @config.target_ruby_version
       end
 
       def parse(source, path = nil)

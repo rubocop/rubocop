@@ -265,7 +265,9 @@ inspected code must run on. For example, using Ruby 2.0+ keyword arguments
 rather than an options hash can help make your code shorter and more
 expressive... _unless_ it must run on Ruby 1.9.
 
-Let RuboCop know the oldest version of Ruby which your project supports with:
+If `.ruby-version` exists in the directory RuboCop is invoked in, RuboCop
+will use the version specified by it. Otherwise, users may let RuboCop
+know the oldest version of Ruby which your project supports with:
 
 ```yaml
 AllCops:

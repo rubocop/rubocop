@@ -4,6 +4,7 @@
 
 ### New features
 
+* [#2956](https://github.com/bbatsov/rubocop/issues/2956): Prefer `.ruby-version` to `TargetRubyVersion`. ([@pclalv][])
 * [#3095](https://github.com/bbatsov/rubocop/issues/3095): Add `IndentationWidth` configuration parameter for `Style/AlignParameters` cop. ([@alexdowad][])
 * [#3066](https://github.com/bbatsov/rubocop/issues/3066): Add new `Style/ImplicitRuntimeError` cop which advises the use of an explicit exception class when raising an error. ([@alexdowad][])
 * [#3018](https://github.com/bbatsov/rubocop/issues/3018): Add new `Style/EachForSimpleLoop` cop which advises the use of `Integer#times` for simple loops which iterate a fixed number of times. ([@alexdowad][])
@@ -2208,3 +2209,4 @@
 [@jules2689]: https://github.com/jules2689
 [@giannileggio]: https://github.com/giannileggio
 [@deivid-rodriguez]: https://github.com/deivid-rodriguez
+[@pclalv]: https://github.com/pclalv
