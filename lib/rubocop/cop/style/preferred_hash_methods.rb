@@ -4,22 +4,22 @@
 module RuboCop
   module Cop
     module Style
-      # This cop checks for uses of the deprecated methods Hash#has_key?
-      # and Hash#has_value?
-      class DeprecatedHashMethods < Cop
-        MSG = '`Hash#%s` is deprecated in favor of `Hash#%s`.'.freeze
+      # This cop checks for uses of methods Hash#has_key? and Hash#has_value?
+      # Prefer to use Hash#key? and Hash#value? instead
+      class PreferredHashMethods < Cop
+        MSG = 'Use `Hash#%s` instead of `Hash#%s`.'.freeze
 
-        DEPRECATED_METHODS = [:has_key?, :has_value?].freeze
+        PREFERRED_METHODS = [:has_key?, :has_value?].freeze
 
         def on_send(node)
           _receiver, method_name, *args = *node
           return unless args.size == 1 &&
-                        DEPRECATED_METHODS.include?(method_name)
+                        PREFERRED_METHODS.include?(method_name)
 
           add_offense(node, :selector,
                       format(MSG,
-                             method_name,
-                             proper_method_name(method_name)))
+                             proper_method_name(method_name),
+                             method_name))
         end
 
         def autocorrect(node)
