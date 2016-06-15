@@ -20,19 +20,10 @@ module RuboCop
           return if node.loc.is_a?(Parser::Source::Map::Heredoc)
 
           children = node.children
-          return unless children.all? { |c| c.str_type? || c.dstr_type? }
+          return unless all_string_literals?(children)
 
-          quote_styles = children.map { |c| c.loc.begin }
+          quote_styles = detect_quote_styles(node)
 
-          quote_styles = if quote_styles.all?(&:nil?)
-                           # For multi-line strings that only have quote marks
-                           # at the beginning of the first line and the end of
-                           # the last, the begin and end region of each child
-                           # is nil. The quote marks are in the parent node.
-                           [node.loc.begin.source]
-                         else
-                           quote_styles.map(&:source).uniq
-                         end
           if quote_styles.size > 1
             add_offense(node, :expression, MSG_INCONSISTENT)
           else
@@ -43,6 +34,22 @@ module RuboCop
         end
 
         private
+
+        def all_string_literals?(nodes)
+          nodes.all? { |n| n.str_type? || n.dstr_type? }
+        end
+
+        def detect_quote_styles(node)
+          styles = node.children.map { |c| c.loc.begin }
+
+          # For multi-line strings that only have quote marks
+          # at the beginning of the first line and the end of
+          # the last, the begin and end region of each child
+          # is nil. The quote marks are in the parent node.
+          return [node.loc.begin.source] if styles.all?(&:nil?)
+
+          styles.map(&:source).uniq
+        end
 
         def message(*)
           if style == :single_quotes
