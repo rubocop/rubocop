@@ -76,13 +76,25 @@ module RuboCop
         def check_multiline_quote_style(node, quote)
           range = node.source_range
           children = node.children
-          if quote == "'" && style == :double_quotes
+          if unexpected_single_quotes?(quote)
             add_offense(node, range) if children.all? { |c| wrong_quotes?(c) }
-          elsif quote == '"' && style == :single_quotes
-            if children.none?(&:dstr_type?) &&
-               children.none? { |c| double_quotes_acceptable?(c.str_content) }
-              add_offense(node, range)
-            end
+          elsif unexpected_double_quotes?(quote) &&
+                !accept_child_double_quotes?(children)
+            add_offense(node, range)
+          end
+        end
+
+        def unexpected_single_quotes?(quote)
+          quote == "'" && style == :double_quotes
+        end
+
+        def unexpected_double_quotes?(quote)
+          quote == '"' && style == :single_quotes
+        end
+
+        def accept_child_double_quotes?(nodes)
+          nodes.any? do |n|
+            n.dstr_type? || double_quotes_acceptable?(n.str_content)
           end
         end
       end
