@@ -1217,6 +1217,13 @@ Rails/TimeZone:
     - strict
     - flexible
 
+Rails/UniqBeforePluck:
+  EnforcementMode: conservative
+  SupportedModes:
+    - conservative
+    - aggressive
+  AutoCorrect: false
+
 Rails/Validation:
   Include:
     - app/models/**/*.rb

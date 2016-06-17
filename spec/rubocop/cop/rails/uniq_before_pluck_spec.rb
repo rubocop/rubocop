@@ -3,55 +3,92 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Rails::UniqBeforePluck do
-  let(:corrected) { 'Model.uniq.pluck(:id)' }
-  subject(:cop) { described_class.new }
+describe RuboCop::Cop::Rails::UniqBeforePluck, :config do
+  subject(:cop) { described_class.new(config) }
 
-  shared_examples_for 'UniqBeforePluck cop' do |source, action|
-    if action == :correct
-      it 'finds and corrects use of uniq after pluck' do
-        inspect_source(cop, source)
-        expect(cop.messages).to eq([described_class::MSG])
-        expect(cop.highlights).to eq(['uniq'])
-        expect(autocorrect_source(cop, source)).to eq(corrected)
+  shared_examples_for 'UniqBeforePluck cop' \
+    do |method, source, action, corrected = nil|
+      if action == :correct
+        it "finds the use of #{method} after pluck in #{source}" do
+          inspect_source(cop, source)
+          expect(cop.messages).to eq(["Use `#{method}` before `pluck`"])
+          expect(cop.highlights).to eq([method])
+          corrected_source = corrected || "Model.#{method}.pluck(:id)"
+          expect(autocorrect_source(cop, source)).to eq(corrected_source)
+        end
+      else
+        it "ignores pluck without errors in #{source}" do
+          inspect_source(cop, source)
+          expect(cop.messages).to be_empty
+          expect(cop.highlights).to be_empty
+          expect(cop.offenses).to be_empty
+        end
       end
-    else
-      it 'ignores the source without any errors' do
-        inspect_source(cop, source)
-        expect(cop.messages).to be_empty
-        expect(cop.highlights).to be_empty
-        expect(cop.offenses).to be_empty
-        expect(autocorrect_source(cop, source)).to eq(source)
-      end
+    end
+
+  shared_examples_for 'mode independent behavior' do |method|
+    it_behaves_like 'UniqBeforePluck cop', method,
+                    "Model.pluck(:id).#{method}", :correct
+
+    it_behaves_like 'UniqBeforePluck cop', method,
+                    ['Model.pluck(:id)',
+                     "  .#{method}"], :correct
+
+    it_behaves_like 'UniqBeforePluck cop', method,
+                    ['Model.pluck(:id).',
+                     "  #{method}"], :correct
+
+    context "#{method} before pluck" do
+      it_behaves_like 'UniqBeforePluck cop', method,
+                      "Model.where(foo: 1).#{method}.pluck(:something)", :ignore
+    end
+
+    context "#{method} without a receiver" do
+      it_behaves_like 'UniqBeforePluck cop', method,
+                      "#{method}.something", :ignore
+    end
+
+    context "#{method} without pluck" do
+      it_behaves_like 'UniqBeforePluck cop', method,
+                      "Model.#{method}", :ignore
+    end
+
+    context "#{method} with a block" do
+      it_behaves_like 'UniqBeforePluck cop', method,
+                      "Model.where(foo: 1).pluck(:id).#{method} { |k| k[0] }",
+                      :ignore
     end
   end
 
-  it_behaves_like 'UniqBeforePluck cop',
-                  'Model.pluck(:id).uniq', :correct
+  shared_examples_for 'mode dependent offenses' do |method, action|
+    it_behaves_like 'UniqBeforePluck cop', method,
+                    "Model.scope.pluck(:id).#{method}", action,
+                    "Model.scope.#{method}.pluck(:id)"
 
-  it_behaves_like 'UniqBeforePluck cop',
-                  ['Model.pluck(:id)', '  .uniq'], :correct
-
-  it_behaves_like 'UniqBeforePluck cop',
-                  ['Model.pluck(:id).', '  uniq'], :correct
-
-  context 'uniq before pluck' do
-    it_behaves_like 'UniqBeforePluck cop',
-                    'Model.where(foo: 1).uniq.pluck(:something)', :ignore
+    it_behaves_like 'UniqBeforePluck cop', method,
+                    "instance.assoc.pluck(:id).#{method}", action,
+                    "instance.assoc.#{method}.pluck(:id)"
   end
 
-  context 'uniq without a receiver' do
-    it_behaves_like 'UniqBeforePluck cop',
-                    'uniq.something', :ignore
-  end
+  %w(uniq distinct).each do |method|
+    context 'when the enforced mode is conservative' do
+      let(:cop_config) do
+        { 'EnforcedMode' => 'conservative', 'AutoCorrect' => true }
+      end
 
-  context 'uniq without pluck' do
-    it_behaves_like 'UniqBeforePluck cop',
-                    'Model.uniq', :ignore
-  end
+      it_behaves_like 'mode independent behavior', method
 
-  context 'uniq with a block' do
-    it_behaves_like 'UniqBeforePluck cop',
-                    'Model.where(foo: 1).pluck(:id).uniq { |k| k[0] }', :ignore
+      it_behaves_like 'mode dependent offenses', method, :ignore
+    end
+
+    context 'when the enforced mode is aggressive' do
+      let(:cop_config) do
+        { 'EnforcedMode' => 'aggressive', 'AutoCorrect' => true }
+      end
+
+      it_behaves_like 'mode independent behavior', method
+
+      it_behaves_like 'mode dependent offenses', method, :correct
+    end
   end
 end

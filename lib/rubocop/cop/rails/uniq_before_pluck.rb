@@ -4,61 +4,83 @@
 module RuboCop
   module Cop
     module Rails
-      # Prefer the use of uniq before pluck instead of after.
+      # Prefer the use of uniq (or distinct), before pluck instead of after.
       #
-      # The use of uniq before pluck is preferred because it executes
-      # within the database.
+      # The use of uniq before pluck is preferred because it executes within
+      # the database.
       #
       # @example
       #   # bad
-      #   Model.where(...).pluck(:id).uniq
+      #   Model.pluck(:id).uniq
       #
       #   # good
-      #   Model.where(...).uniq.pluck(:id)
+      #   Model.uniq.pluck(:id)
+      #
+      # This cop has two different enforcement modes. When the EnforcementMode
+      # is conservative (the default) then only calls to pluck on a constant
+      # (i.e. a model class) before uniq are added as offenses.
+      #
+      # When the EnforcementMode is aggressive then all calls to pluck before
+      # uniq are added as offenses. This may lead to false positives as the cop
+      # cannot distinguish between calls to pluck on an ActiveRecord::Relation
+      # vs a call to pluck on an ActiveRecord::Associations::CollectionProxy.
+      #
+      # @example
+      #   # this will return a Relation that pluck is called on
+      #   Model.where(...).pluck(:id).uniq
+      #
+      #   # an association on an instance will return a CollectionProxy
+      #   instance.assoc.pluck(:id).uniq
+      #
+      # Autocorrect is disabled by default for this cop since it may generate
+      # false positives.
       #
       class UniqBeforePluck < RuboCop::Cop::Cop
-        MSG = 'Use uniq before pluck'.freeze
-        DOT_UNIQ = '.uniq'.freeze
+        MSG = 'Use `%s` before `pluck`'.freeze
         NEWLINE = "\n".freeze
+        PATTERN = '[!^block (send (send %s :pluck ...) ${:uniq :distinct} ...)]'
+                  .freeze
+
+        def_node_matcher :conservative_node_match,
+                         format(PATTERN, 'const')
+
+        def_node_matcher :aggressive_node_match,
+                         format(PATTERN, '_')
 
         def on_send(node)
-          receiver, method_name, *_args = *node
-          unless method_name == :uniq &&
-                 !receiver.nil? &&
-                 receiver.send_type? &&
-                 receiver.children[1] == :pluck &&
-                 !with_block?(node)
-            return
-          end
+          method = if mode == :conservative
+                     conservative_node_match(node)
+                   else
+                     aggressive_node_match(node)
+                   end
 
-          add_offense(node, :selector, MSG)
+          add_offense(node, :selector, format(MSG, method)) if method
         end
 
         def autocorrect(node)
-          receiver = node.children.first
-
+          send_pluck, method, *_args = *node
           lambda do |corrector|
-            corrector.remove(dot_uniq_with_whitespace(node))
-            corrector.insert_before(receiver.loc.dot.begin, DOT_UNIQ)
+            corrector.remove(dot_method_with_whitespace(method, node))
+            corrector.insert_before(send_pluck.loc.dot.begin, ".#{method}")
           end
         end
 
         private
 
-        def with_block?(node)
-          node.parent && node.parent.block_type?
+        def mode
+          @mode ||= cop_config['EnforcedMode'].to_sym
         end
 
-        def dot_uniq_with_whitespace(node)
+        def dot_method_with_whitespace(method, node)
           Parser::Source::Range.new(node.loc.expression.source_buffer,
-                                    dot_uniq_begin_pos(node),
+                                    dot_method_begin_pos(method, node),
                                     node.loc.selector.end_pos)
         end
 
-        def dot_uniq_begin_pos(node)
+        def dot_method_begin_pos(method, node)
           lines = node.source.split(NEWLINE)
 
-          if lines.last.strip == DOT_UNIQ
+          if lines.last.strip == ".#{method}"
             node.source.rindex(NEWLINE)
           else
             node.loc.dot.begin_pos
