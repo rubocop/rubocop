@@ -49,8 +49,8 @@ Style/FirstMethodParameterLineBreak:
 
 Style/ImplicitRuntimeError:
   Description: >-
-                 Use `raise` with an explicit exception class and message,
-                 rather than just a message.
+                 Use `raise` or `fail` with an explicit exception class and
+                 message, rather than just a message.
   Enabled: false
 
 Style/InlineComment:
