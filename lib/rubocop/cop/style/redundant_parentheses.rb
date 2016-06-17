@@ -71,22 +71,24 @@ module RuboCop
         end
 
         def check_send(begin_node, node)
-          if node.unary_operation?
-            return if begin_node.chained?
+          return check_unary(begin_node, node) if node.unary_operation?
 
-            # parens are not redundant in `(!recv.method arg)`
-            node = node.children.first while node.unary_operation?
-            if node.send_type?
-              return unless method_call_with_redundant_parentheses?(node)
-            end
+          return unless method_call_with_redundant_parentheses?(node)
+          return if call_chain_starts_with_int?(begin_node, node)
 
-            offense(begin_node, 'an unary operation')
-          else
+          offense(begin_node, 'a method call')
+        end
+
+        def check_unary(begin_node, node)
+          return if begin_node.chained?
+
+          # parens are not redundant in `(!recv.method arg)`
+          node = node.children.first while node.unary_operation?
+          if node.send_type?
             return unless method_call_with_redundant_parentheses?(node)
-            return if call_chain_starts_with_int?(begin_node, node)
-
-            offense(begin_node, 'a method call')
           end
+
+          offense(begin_node, 'an unary operation')
         end
 
         def offense(node, msg)

@@ -31,15 +31,15 @@ module RuboCop
 
         def on_send(node)
           receiver, method_name, *_args = *node
-          return if receiver.nil?
           return unless duration_method?(method_name)
           return unless literal_number?(receiver)
+
           number, = *receiver
-          if singular_receiver?(number) && plural_method?(method_name)
+          if expect_singular_method?(number, method_name)
             add_offense(node,
                         :expression,
                         format(MSG, number, singularize(method_name)))
-          elsif plural_receiver?(number) && singular_method?(method_name)
+          elsif expect_plural_method?(number, method_name)
             add_offense(node,
                         :expression,
                         format(MSG, number, pluralize(method_name)))
@@ -60,6 +60,14 @@ module RuboCop
           end
         end
 
+        def expect_singular_method?(number, method_name)
+          singular_receiver?(number) && plural_method?(method_name)
+        end
+
+        def expect_plural_method?(number, method_name)
+          plural_receiver?(number) && singular_method?(method_name)
+        end
+
         def plural_method?(method_name)
           method_name.to_s.end_with?('s')
         end
@@ -77,7 +85,7 @@ module RuboCop
         end
 
         def literal_number?(node)
-          node.int_type? || node.float_type?
+          node && (node.int_type? || node.float_type?)
         end
 
         def pluralize(method_name)

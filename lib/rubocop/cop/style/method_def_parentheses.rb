@@ -11,10 +11,8 @@ module RuboCop
         include ConfigurableEnforcedStyle
 
         def on_method_def(node, _method_name, args, _body)
-          if style == :require_parentheses ||
-             (style == :require_no_parentheses_except_multiline &&
-              args.multiline?)
-            if arguments?(args) && !parentheses?(args)
+          if require_parentheses?(args)
+            if arguments_without_parentheses?(args)
               missing_parentheses(node, args)
             else
               correct_style_detected
@@ -45,6 +43,16 @@ module RuboCop
         end
 
         private
+
+        def require_parentheses?(args)
+          style == :require_parentheses ||
+            (style == :require_no_parentheses_except_multiline &&
+             args.multiline?)
+        end
+
+        def arguments_without_parentheses?(args)
+          arguments?(args) && !parentheses?(args)
+        end
 
         def missing_parentheses(node, args)
           add_offense(node, args.source_range,

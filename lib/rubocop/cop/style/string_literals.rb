@@ -20,19 +20,10 @@ module RuboCop
           return if node.loc.is_a?(Parser::Source::Map::Heredoc)
 
           children = node.children
-          return unless children.all? { |c| c.str_type? || c.dstr_type? }
+          return unless all_string_literals?(children)
 
-          quote_styles = children.map { |c| c.loc.begin }
+          quote_styles = detect_quote_styles(node)
 
-          quote_styles = if quote_styles.all?(&:nil?)
-                           # For multi-line strings that only have quote marks
-                           # at the beginning of the first line and the end of
-                           # the last, the begin and end region of each child
-                           # is nil. The quote marks are in the parent node.
-                           [node.loc.begin.source]
-                         else
-                           quote_styles.map(&:source).uniq
-                         end
           if quote_styles.size > 1
             add_offense(node, :expression, MSG_INCONSISTENT)
           else
@@ -43,6 +34,22 @@ module RuboCop
         end
 
         private
+
+        def all_string_literals?(nodes)
+          nodes.all? { |n| n.str_type? || n.dstr_type? }
+        end
+
+        def detect_quote_styles(node)
+          styles = node.children.map { |c| c.loc.begin }
+
+          # For multi-line strings that only have quote marks
+          # at the beginning of the first line and the end of
+          # the last, the begin and end region of each child
+          # is nil. The quote marks are in the parent node.
+          return [node.loc.begin.source] if styles.all?(&:nil?)
+
+          styles.map(&:source).uniq
+        end
 
         def message(*)
           if style == :single_quotes
@@ -69,13 +76,25 @@ module RuboCop
         def check_multiline_quote_style(node, quote)
           range = node.source_range
           children = node.children
-          if quote == "'" && style == :double_quotes
+          if unexpected_single_quotes?(quote)
             add_offense(node, range) if children.all? { |c| wrong_quotes?(c) }
-          elsif quote == '"' && style == :single_quotes
-            if children.none?(&:dstr_type?) &&
-               children.none? { |c| double_quotes_acceptable?(c.str_content) }
-              add_offense(node, range)
-            end
+          elsif unexpected_double_quotes?(quote) &&
+                !accept_child_double_quotes?(children)
+            add_offense(node, range)
+          end
+        end
+
+        def unexpected_single_quotes?(quote)
+          quote == "'" && style == :double_quotes
+        end
+
+        def unexpected_double_quotes?(quote)
+          quote == '"' && style == :single_quotes
+        end
+
+        def accept_child_double_quotes?(nodes)
+          nodes.any? do |n|
+            n.dstr_type? || double_quotes_acceptable?(n.str_content)
           end
         end
       end

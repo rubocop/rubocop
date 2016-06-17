@@ -118,17 +118,8 @@ module RuboCop
         def check_child_nodes(node, unused, cur_vis)
           node.child_nodes.each do |child|
             if (new_vis = access_modifier(child))
-              # does this modifier just repeat the existing visibility?
-              if new_vis == cur_vis
-                add_offense(child, :expression, format(MSG, cur_vis))
-              else
-                # was the previous modifier never applied to any defs?
-                add_offense(unused, :expression, format(MSG, cur_vis)) if unused
-                # once we have already warned about a certain modifier, don't
-                # warn again even if it is never applied to any method defs
-                unused = child
-              end
-              cur_vis = new_vis
+              cur_vis, unused =
+                check_new_visibility(child, unused, new_vis, cur_vis)
             elsif method_definition?(child)
               unused = nil
             elsif start_of_new_scope?(child)
@@ -139,6 +130,21 @@ module RuboCop
           end
 
           [cur_vis, unused]
+        end
+
+        def check_new_visibility(node, unused, new_vis, cur_vis)
+          # does this modifier just repeat the existing visibility?
+          if new_vis == cur_vis
+            add_offense(node, :expression, format(MSG, cur_vis))
+          else
+            # was the previous modifier never applied to any defs?
+            add_offense(unused, :expression, format(MSG, cur_vis)) if unused
+            # once we have already warned about a certain modifier, don't
+            # warn again even if it is never applied to any method defs
+            unused = node
+          end
+
+          [new_vis, unused]
         end
 
         def method_definition?(child)

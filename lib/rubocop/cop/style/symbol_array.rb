@@ -19,13 +19,9 @@ module RuboCop
 
         def on_array(node)
           if bracketed_array_of?(:sym, node)
-            return if comments_in_array?(node)
-            return if symbols_contain_spaces?(node)
-            style_detected(:brackets)
-            add_offense(node, :expression, PERCENT_MSG) if style == :percent
-          elsif node.loc.begin && node.loc.begin.source =~ /\A%[iI]/
-            style_detected(:percent)
-            add_offense(node, :expression, ARRAY_MSG) if style == :brackets
+            check_bracketed_array(node)
+          elsif percent_array?(node)
+            check_percent_array(node)
           end
         end
 
@@ -43,6 +39,23 @@ module RuboCop
         end
 
         private
+
+        def percent_array?(node)
+          node.loc.begin && node.loc.begin.source =~ /\A%[iI]/
+        end
+
+        def check_bracketed_array(node)
+          return if comments_in_array?(node)
+          return if symbols_contain_spaces?(node)
+
+          style_detected(:brackets)
+          add_offense(node, :expression, PERCENT_MSG) if style == :percent
+        end
+
+        def check_percent_array(node)
+          style_detected(:percent)
+          add_offense(node, :expression, ARRAY_MSG) if style == :brackets
+        end
 
         def comments_in_array?(node)
           comments = processed_source.comments
