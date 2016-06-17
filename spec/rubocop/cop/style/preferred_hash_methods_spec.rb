@@ -3,7 +3,7 @@
 
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::DeprecatedHashMethods do
+describe RuboCop::Cop::Style::PreferredHashMethods do
   subject(:cop) { described_class.new }
 
   it 'registers an offense for has_key? with one arg' do
@@ -11,7 +11,7 @@ describe RuboCop::Cop::Style::DeprecatedHashMethods do
                    'o.has_key?(o)')
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
-      .to eq(['`Hash#has_key?` is deprecated in favor of `Hash#key?`.'])
+      .to eq(['Use `Hash#key?` instead of `Hash#has_key?`.'])
   end
 
   it 'accepts has_key? with no args' do
@@ -25,7 +25,7 @@ describe RuboCop::Cop::Style::DeprecatedHashMethods do
                    'o.has_value?(o)')
     expect(cop.offenses.size).to eq(1)
     expect(cop.messages)
-      .to eq(['`Hash#has_value?` is deprecated in favor of `Hash#value?`.'])
+      .to eq(['Use `Hash#value?` instead of `Hash#has_value?`.'])
   end
 
   it 'accepts has_value? with no args' do
