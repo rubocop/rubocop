@@ -20,13 +20,13 @@ module RuboCop
                            :arg, :restarg, :blockarg, :shadowarg,
                            :kwrestarg, :zsuper, :lambda, :redo, :retry].freeze
       ONE_CHILD_NODE    = [:splat, :kwsplat, :block_pass, :not, :break, :next,
-                           :return, :preexe, :postexe, :match_current_line,
-                           :defined?, :arg_expr].freeze
+                           :preexe, :postexe, :match_current_line, :defined?,
+                           :arg_expr].freeze
       MANY_CHILD_NODES  = [:dstr, :dsym, :xstr, :regexp, :array, :hash, :pair,
                            :irange, :erange, :mlhs, :masgn, :or_asgn, :and_asgn,
                            :undef, :alias, :args, :super, :yield, :or, :and,
                            :while_post, :until_post, :iflipflop, :eflipflop,
-                           :match_with_lvasgn, :begin, :kwbegin].freeze
+                           :match_with_lvasgn, :begin, :kwbegin, :return].freeze
       SECOND_CHILD_ONLY = [:lvasgn, :ivasgn, :cvasgn, :gvasgn, :optarg, :kwarg,
                            :kwoptarg].freeze
 

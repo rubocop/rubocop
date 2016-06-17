@@ -111,6 +111,11 @@ describe RuboCop::Cop::Rails::TimeZone, :config do
       expect(cop.offenses.size).to eq(1)
     end
 
+    it 'registers an offense for Time.parse in return' do
+      inspect_source(cop, 'return Foo, Time.parse("2012-03-02 16:05:37")')
+      expect(cop.offenses.size).to eq(1)
+    end
+
     it 'accepts Time.zone.now' do
       inspect_source(cop, 'Time.zone.now')
       expect(cop.offenses).to be_empty
