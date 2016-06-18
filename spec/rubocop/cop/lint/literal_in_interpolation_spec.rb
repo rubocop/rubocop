@@ -85,7 +85,7 @@ describe RuboCop::Cop::Lint::LiteralInInterpolation do
   it_behaves_like('literal interpolation', 123_456_789_123_456_789)
   it_behaves_like('literal interpolation', 1.2e-3)
   it_behaves_like('literal interpolation', 0xaabb)
-  it_behaves_like('literal interpolation', 0377)
+  it_behaves_like('literal interpolation', 0o377)
   it_behaves_like('literal interpolation', 2.0)
   it_behaves_like('literal interpolation', '[]', '[]')
   it_behaves_like('literal interpolation', '["a", "b"]', '[\"a\", \"b\"]')

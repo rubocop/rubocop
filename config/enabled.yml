@@ -542,6 +542,11 @@ Style/NumericLiterals:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#underscores-in-numerics'
   Enabled: true
 
+Style/NumericLiteralPrefix:
+  Description: 'Use smallcase prefixes for numeric literals.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#numeric-literal-prefixes'
+  Enabled: true
+
 Style/OneLineConditional:
   Description: >-
                  Favor the ternary operator(?:) over
