@@ -30,6 +30,7 @@ $ rubocop -V
 * Write [good commit messages][3].
 * Use the same coding conventions as the rest of the project.
 * Commit and push until you are happy with your contribution.
+* If your change has a corresponding open Github issue, prefix the commit message with `[Fix #github-issue-number]`.
 * Make sure to add tests for it. This is important so I don't break it
   in a future version unintentionally.
 * Add an entry to the [Changelog](CHANGELOG.md) accordingly. See [changelog entry format](#changelog-entry-format).
