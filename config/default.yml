@@ -1139,6 +1139,13 @@ Lint/DefEndAlignment:
     - def
   AutoCorrect: false
 
+Lint/InheritException:
+  # The default base class in favour of `Exception`.
+  EnforcedStyle: runtime_error
+  SupportedStyles:
+    - runtime_error
+    - standard_error
+
 # Checks for unused block arguments
 Lint/UnusedBlockArgument:
   IgnoreEmptyBlocks: true
