@@ -71,7 +71,8 @@ module RuboCop
 
       def incorrect_style_detected(range, node, lhs, rhs)
         add_offense(range, range, message(node, lhs, rhs)) do
-          if offending_range(node, lhs, rhs, alternative_style)
+          if supported_styles.size > 2 ||
+             offending_range(node, lhs, rhs, alternative_style)
             unrecognized_style_detected
           else
             opposite_style_detected

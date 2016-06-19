@@ -712,6 +712,7 @@ Style/MultilineMethodCallIndentation:
   SupportedStyles:
     - aligned
     - indented
+    - indented_relative_to_receiver
   # By default, the indentation width from Style/IndentationWidth is used
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
