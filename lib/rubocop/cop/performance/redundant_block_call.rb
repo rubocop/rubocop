@@ -39,13 +39,36 @@ module RuboCop
           (send (lvar %1) :call ...)
         END
 
+        def_node_search :blockarg_assigned?, <<-END
+          (lvasgn %1 ...)
+        END
+
         def on_def(node)
           blockarg_def(node) do |argname, body|
             next unless body
-            blockarg_calls(body, argname) do |blockcall|
+
+            calls_to_report(argname, body).each do |blockcall|
               add_offense(blockcall, :expression, format(MSG, argname))
             end
           end
+        end
+
+        private
+
+        def calls_to_report(argname, body)
+          return [] if blockarg_assigned?(body, argname)
+
+          calls = to_enum(:blockarg_calls, body, argname)
+
+          return [] if calls.any? { |call| args_include_block_pass?(call) }
+
+          calls
+        end
+
+        def args_include_block_pass?(blockcall)
+          _receiver, _call, *args = *blockcall
+
+          args.any?(&:block_pass_type?)
         end
 
         # offenses are registered on the `block.call` nodes
