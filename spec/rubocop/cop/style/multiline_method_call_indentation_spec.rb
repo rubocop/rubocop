@@ -53,15 +53,6 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
       expect(cop.messages).to be_empty
     end
 
-    it 'registers an offense for no indentation of second line' do
-      inspect_source(cop,
-                     ['a.',
-                      'b'])
-      expect(cop.messages).to eq(['Use 2 (not 0) spaces for indenting an ' \
-                                  'expression spanning multiple lines.'])
-      expect(cop.highlights).to eq(['b'])
-    end
-
     it 'registers an offense for one space indentation of second line' do
       inspect_source(cop,
                      ['a',
@@ -80,45 +71,12 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
       expect(cop.highlights).to eq(['.('])
     end
 
-    it 'registers an offense for 3 spaces indentation of second line' do
-      inspect_source(cop,
-                     ['a.',
-                      '   b',
-                      'c.',
-                      '   d'])
-      expect(cop.messages).to eq(['Use 2 (not 3) spaces for indenting an ' \
-                                  'expression spanning multiple lines.'] * 2)
-      expect(cop.highlights).to eq(%w(b d))
-    end
-
     it 'accepts no extra indentation of third line' do
       inspect_source(cop,
                      ['   a.',
                       '     b.',
                       '     c'])
       expect(cop.offenses).to be_empty
-    end
-
-    it 'registers an offense for extra indentation of third line' do
-      inspect_source(cop,
-                     ['   a.',
-                      '     b.',
-                      '       c'])
-      expect(cop.messages).to eq(['Use 2 (not 4) spaces for indenting an ' \
-                                  'expression spanning multiple lines.'])
-      expect(cop.highlights).to eq(['c'])
-    end
-
-    it 'registers an offense for the emacs ruby-mode 1.1 indentation of an ' \
-       'expression in an array' do
-      inspect_source(cop,
-                     ['  [',
-                      '   a.',
-                      '   b',
-                      '  ]'])
-      expect(cop.messages).to eq(['Use 2 (not 0) spaces for indenting an ' \
-                                  'expression spanning multiple lines.'])
-      expect(cop.highlights).to eq(['b'])
     end
 
     it 'accepts indented methods in for body' do
@@ -182,10 +140,59 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
     end
   end
 
+  shared_examples 'common for aligned and indented' do
+    it 'registers an offense for no indentation of second line' do
+      inspect_source(cop,
+                     ['a.',
+                      'b'])
+      expect(cop.messages)
+        .to eq(['Use 2 (not 0) spaces for indenting an expression spanning ' \
+                'multiple lines.'])
+      expect(cop.highlights).to eq(['b'])
+    end
+
+    it 'registers an offense for 3 spaces indentation of second line' do
+      inspect_source(cop,
+                     ['a.',
+                      '   b',
+                      'c.',
+                      '   d'])
+      expect(cop.messages)
+        .to eq(['Use 2 (not 3) spaces for indenting an expression spanning ' \
+                'multiple lines.'] * 2)
+      expect(cop.highlights).to eq(%w(b d))
+    end
+
+    it 'registers an offense for extra indentation of third line' do
+      inspect_source(cop,
+                     ['   a.',
+                      '     b.',
+                      '       c'])
+      expect(cop.messages)
+        .to eq(['Use 2 (not 4) spaces for indenting an expression spanning ' \
+                'multiple lines.'])
+      expect(cop.highlights).to eq(['c'])
+    end
+
+    it 'registers an offense for the emacs ruby-mode 1.1 indentation of an ' \
+       'expression in an array' do
+      inspect_source(cop,
+                     ['  [',
+                      '   a.',
+                      '   b',
+                      '  ]'])
+      expect(cop.messages)
+        .to eq(['Use 2 (not 0) spaces for indenting an expression spanning ' \
+                'multiple lines.'])
+      expect(cop.highlights).to eq(['b'])
+    end
+  end
+
   context 'when EnforcedStyle is aligned' do
     let(:cop_config) { { 'EnforcedStyle' => 'aligned' } }
 
     include_examples 'common'
+    include_examples 'common for aligned and indented'
 
     # We call it semantic alignment when a dot is aligned with the first dot in
     # a chain of calls, and that first dot does not begin its line.
@@ -344,7 +351,7 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
                       'end'])
       expect(cop.messages).to eq(['Align `b` with `a.` on line 1.'])
       expect(cop.highlights).to eq(['b'])
-      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'indented')
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
     it 'falls back to indentation in complicated cases' do
@@ -486,11 +493,7 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
     end
   end
 
-  context 'when EnforcedStyle is indented' do
-    let(:cop_config) { { 'EnforcedStyle' => 'indented' } }
-
-    include_examples 'common'
-
+  shared_examples 'both indented* styles' do
     # We call it semantic alignment when a dot is aligned with the first dot in
     # a chain of calls, and that first dot does not begin its line. But for the
     # indented style, it doesn't come into play.
@@ -500,9 +503,88 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
                        ['User.a',
                         '  .c',
                         '  .b'])
+        expect(cop.messages).to be_empty
+        expect(cop.highlights).to be_empty
         expect(cop.offenses).to be_empty
       end
     end
+  end
+
+  context 'when EnforcedStyle is indented_relative_to_receiver' do
+    let(:cop_config) { { 'EnforcedStyle' => 'indented_relative_to_receiver' } }
+
+    include_examples 'common'
+    include_examples 'both indented* styles'
+
+    it 'accepts correctly indented methods in operation' do
+      inspect_source(cop, ['        1 + a',
+                           '              .b',
+                           '              .c'])
+      expect(cop.highlights).to be_empty
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers an offense for no indentation of second line' do
+      inspect_source(cop,
+                     ['a.',
+                      'b'])
+      expect(cop.messages)
+        .to eq(['Indent `b` 2 spaces more than `a` on line 1.'])
+      expect(cop.highlights).to eq(['b'])
+    end
+
+    it 'registers an offense for 3 spaces indentation of second line' do
+      inspect_source(cop,
+                     ['a.',
+                      '   b',
+                      'c.',
+                      '   d'])
+      expect(cop.messages)
+        .to eq(['Indent `b` 2 spaces more than `a` on line 1.',
+                'Indent `d` 2 spaces more than `c` on line 3.'])
+      expect(cop.highlights).to eq(%w(b d))
+    end
+
+    it 'registers an offense for extra indentation of third line' do
+      inspect_source(cop,
+                     ['   a.',
+                      '     b.',
+                      '       c'])
+      expect(cop.messages)
+        .to eq(['Indent `c` 2 spaces more than `a` on line 1.'])
+      expect(cop.highlights).to eq(['c'])
+    end
+
+    it 'registers an offense for the emacs ruby-mode 1.1 indentation of an ' \
+       'expression in an array' do
+      inspect_source(cop,
+                     ['  [',
+                      '   a.',
+                      '   b',
+                      '  ]'])
+      expect(cop.messages)
+        .to eq(['Indent `b` 2 spaces more than `a` on line 2.'])
+      expect(cop.highlights).to eq(['b'])
+    end
+
+    it 'auto-corrects' do
+      new_source = autocorrect_source(cop, ['until a.',
+                                            '      b',
+                                            '  something',
+                                            'end'])
+      expect(new_source).to eq(['until a.',
+                                '        b',
+                                '  something',
+                                'end'].join("\n"))
+    end
+  end
+
+  context 'when EnforcedStyle is indented' do
+    let(:cop_config) { { 'EnforcedStyle' => 'indented' } }
+
+    include_examples 'common'
+    include_examples 'common for aligned and indented'
+    include_examples 'both indented* styles'
 
     it 'accepts correctly indented methods in operation' do
       inspect_source(cop, ['        1 + a',
@@ -541,7 +623,7 @@ describe RuboCop::Cop::Style::MultilineMethodCallIndentation do
                                   'condition in an `if` statement spanning ' \
                                   'multiple lines.'])
       expect(cop.highlights).to eq(['b'])
-      expect(cop.config_to_allow_offenses).to eq('EnforcedStyle' => 'aligned')
+      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
     end
 
     it 'accepts normal indentation of method parameters' do

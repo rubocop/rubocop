@@ -57,7 +57,7 @@ module RuboCop
 
           @base = alignment_base(node, rhs, given_style)
           correct_column = if @base
-                             @base.column
+                             @base.column + extra_indentation(given_style)
                            else
                              indentation(lhs) + correct_indentation(node)
                            end
@@ -65,20 +65,39 @@ module RuboCop
           rhs if @column_delta != 0
         end
 
+        def extra_indentation(given_style)
+          if given_style == :indented_relative_to_receiver
+            configured_indentation_width
+          else
+            0
+          end
+        end
+
         def message(node, lhs, rhs)
-          what = operation_description(node, rhs)
           if @base
-            "Align `#{rhs.source}` with `#{@base.source[/[^\n]*/]}` on " \
+            base_source = @base.source[/[^\n]*/]
+            if style == :indented_relative_to_receiver
+              "Indent `#{rhs.source}` #{configured_indentation_width} spaces " \
+              "more than `#{base_source}` on line #{@base.line}."
+            else
+              "Align `#{rhs.source}` with `#{base_source}` on " \
               "line #{@base.line}."
+            end
           else
             used_indentation = rhs.column - indentation(lhs)
+            what = operation_description(node, rhs)
             "Use #{correct_indentation(node)} (not #{used_indentation}) " \
               "spaces for indenting #{what} spanning multiple lines."
           end
         end
 
         def alignment_base(node, rhs, given_style)
-          return nil unless given_style == :aligned
+          return nil if given_style == :indented
+
+          if given_style == :indented_relative_to_receiver
+            receiver_base = receiver_alignment_base(node)
+            return receiver_base if receiver_base
+          end
 
           semantic_alignment_base(node, rhs) ||
             syntactic_alignment_base(node, rhs)
@@ -112,6 +131,24 @@ module RuboCop
         #  .c
         def semantic_alignment_base(node, rhs)
           return unless rhs.source.start_with?('.')
+
+          node = semantic_alignment_node(node)
+          return unless node
+
+          node.loc.dot.join(node.loc.selector)
+        end
+
+        # a
+        #   .b
+        #   .c
+        def receiver_alignment_base(node)
+          node = semantic_alignment_node(node)
+          return unless node
+
+          node.receiver.source_range
+        end
+
+        def semantic_alignment_node(node)
           return if argument_in_method_call(node)
 
           # descend to root of method chain
@@ -121,8 +158,7 @@ module RuboCop
           node = node.parent until node.loc.dot
 
           return if node.loc.dot.line != node.loc.line
-
-          node.loc.dot.join(node.loc.selector)
+          node
         end
 
         def operation_rhs(node)
