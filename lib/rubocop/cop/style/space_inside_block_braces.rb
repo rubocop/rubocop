@@ -37,7 +37,7 @@ module RuboCop
 
           if left_brace.end_pos == right_brace.begin_pos
             adjacent_braces(sb, left_brace, right_brace)
-          elsif left_brace.line == right_brace.line
+          else
             range = Parser::Source::Range.new(sb, left_brace.end_pos,
                                               right_brace.begin_pos)
             inner = range.source
@@ -70,7 +70,7 @@ module RuboCop
             space_inside_left_brace(left_brace, args_delimiter, sb)
           end
 
-          if inner =~ /\S$/
+          if inner =~ /\S$/ && block_length(node) == 0
             no_space(sb, right_brace.begin_pos, right_brace.end_pos,
                      'Space missing inside }.')
           else

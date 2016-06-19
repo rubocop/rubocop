@@ -30,16 +30,17 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
       expect(cop.messages).to be_empty
     end
 
-    it 'accepts empty braces with line break inside' do
-      inspect_source(cop, ['  each {',
-                           '  }'])
-      expect(cop.messages).to be_empty
-    end
-
     it 'accepts empty braces with comment and line break inside' do
       inspect_source(cop, ['  each { # Comment',
                            '  }'])
       expect(cop.messages).to be_empty
+    end
+
+    it 'registers an offense for empty braces with line break inside' do
+      inspect_source(cop, ['  each {',
+                           '  }'])
+      expect(cop.messages).to eq(['Space inside empty braces detected.'])
+      expect(cop.highlights).to eq(["\n  "])
     end
 
     it 'registers an offense for empty braces with space inside' do
@@ -140,17 +141,52 @@ describe RuboCop::Cop::Style::SpaceInsideBlockBraces do
   end
 
   context 'with passed in parameters' do
-    it 'accepts left brace with inner space' do
-      inspect_source(cop, 'each { |x| puts }')
-      expect(cop.messages).to be_empty
-      expect(cop.highlights).to be_empty
+    context 'for single-line blocks' do
+      it 'accepts left brace with inner space' do
+        inspect_source(cop, 'each { |x| puts }')
+        expect(cop.messages).to be_empty
+        expect(cop.highlights).to be_empty
+      end
+
+      it 'registers an offense for left brace without inner space' do
+        inspect_source(cop, 'each {|x| puts }')
+        expect(cop.messages).to eq(['Space between { and | missing.'])
+        expect(cop.highlights).to eq(['{|'])
+        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+      end
     end
 
-    it 'registers an offense for left brace without inner space' do
-      inspect_source(cop, 'each {|x| puts }')
-      expect(cop.messages).to eq(['Space between { and | missing.'])
-      expect(cop.highlights).to eq(['{|'])
-      expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+    context 'for multi-line blocks' do
+      it 'accepts left brace with inner space' do
+        inspect_source(cop, ['each { |x|',
+                             'puts',
+                             '}'])
+        expect(cop.messages).to be_empty
+        expect(cop.highlights).to be_empty
+      end
+
+      it 'registers an offense for left brace without inner space' do
+        inspect_source(cop, ['each {|x|',
+                             'puts',
+                             '}'])
+        expect(cop.messages).to eq(['Space between { and | missing.'])
+        expect(cop.highlights).to eq(['{|'])
+        expect(cop.config_to_allow_offenses).to eq('Enabled' => false)
+      end
+
+      it 'auto-corrects missing space' do
+        new_source = autocorrect_source(cop, <<-SOURCE)
+          each {|x|
+            puts
+          }
+        SOURCE
+
+        expect(new_source).to eq(<<-NEW_SOURCE)
+          each { |x|
+            puts
+          }
+        NEW_SOURCE
+      end
     end
 
     it 'accepts new lambda syntax' do
