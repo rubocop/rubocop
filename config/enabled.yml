@@ -1134,6 +1134,16 @@ Lint/ParenthesesAsGroupedExpression:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#parens-no-spaces'
   Enabled: true
 
+Lint/PercentStringArray:
+  Description: >-
+                 Checks for unwanted commas and quotes in %w/%W literals.
+  Enabled: true
+
+Lint/PercentSymbolArray:
+  Description: >-
+                 Checks for unwanted commas and colons in %i/%I literals.
+  Enabled: true
+
 Lint/RandOne:
   Description: >-
                  Checks for `rand(1)` calls. Such calls always return `0`
