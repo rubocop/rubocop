@@ -3,7 +3,7 @@
 
 module RuboCop
   module Cop
-    module Style
+    module Rails
       # This cop checks for consistent uses of request.referrer or
       # request.referrer, depending on configuration.
       class RequestReferer < Cop
