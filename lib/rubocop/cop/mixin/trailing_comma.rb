@@ -23,20 +23,27 @@ module RuboCop
         comma_offset = after_last_item.source =~ /,/
 
         if comma_offset && !inside_comment?(after_last_item, comma_offset)
-          unless should_have_comma?(style, node)
-            extra_info = case style
-                         when :comma
-                           ', unless each item is on its own line'
-                         when :consistent_comma
-                           ', unless items are split onto multiple lines'
-                         else
-                           ''
-                         end
-            avoid_comma(kind, after_last_item.begin_pos + comma_offset, sb,
-                        extra_info)
-          end
+          check_comma(node, kind, after_last_item.begin_pos + comma_offset)
         elsif should_have_comma?(style, node)
           put_comma(node, items, kind, sb)
+        end
+      end
+
+      def check_comma(node, kind, comma_pos)
+        return if should_have_comma?(style, node)
+
+        avoid_comma(kind, comma_pos, node.source_range.source_buffer,
+                    extra_avoid_comma_info)
+      end
+
+      def extra_avoid_comma_info
+        case style
+        when :comma
+          ', unless each item is on its own line'
+        when :consistent_comma
+          ', unless items are split onto multiple lines'
+        else
+          ''
         end
       end
 
