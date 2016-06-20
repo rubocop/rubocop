@@ -25,6 +25,12 @@ module RuboCop
         attr_accessor :config_to_allow_offenses, :detected_styles
       end
 
+      def initialize(output, options = {})
+        super
+        @cops_with_offenses ||= Hash.new(0)
+        @files_with_offenses ||= {}
+      end
+
       def file_started(_file, _file_info)
         @exclude_limit_option = @options[:exclude_limit]
         @exclude_limit = (
@@ -34,8 +40,6 @@ module RuboCop
       end
 
       def file_finished(file, offenses)
-        @cops_with_offenses ||= Hash.new(0)
-        @files_with_offenses ||= {}
         offenses.each do |o|
           @cops_with_offenses[o.cop_name] += 1
           @files_with_offenses[o.cop_name] ||= []

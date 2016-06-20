@@ -125,6 +125,14 @@ module RuboCop
                                        ''].flatten.join("\n"))
         end
 
+        it 'creates a .rubocop_todo.yml even if RuboCop does not inspect ' \
+           'any files' do
+          formatter.finished([])
+          expect(output.string).to eq(format(described_class::HEADING,
+                                             'rubocop --auto-gen-config') +
+                                      "\n")
+        end
+
         context 'when exclude_limit option is passed into constructor' do
           let(:formatter) { described_class.new(output, exclude_limit: 5) }
 

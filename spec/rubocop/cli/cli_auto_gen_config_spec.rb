@@ -490,5 +490,9 @@ describe RuboCop::CLI, :isolated_environment do
                 '  Enabled: false',
                 ''].join("\n"))
     end
+
+    it 'can be called when there are no files to inspection' do
+      expect(cli.run(['--auto-gen-config'])).to eq(0)
+    end
   end
 end
