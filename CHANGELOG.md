@@ -12,7 +12,7 @@
 * [#3135](https://github.com/bbatsov/rubocop/pull/3135): Add new `Rails/OutputSafety` cop. ([@josh][])
 * [#3164](https://github.com/bbatsov/rubocop/pull/3164): Add [Fastlane](https://fastlane.tools/)'s Fastfile to the default Includes. ([@jules2689][])
 * [#3173](https://github.com/bbatsov/rubocop/pull/3173): Make `Style/ModuleFunction` configurable with `module_function` and `extend_self` styles. ([@tjwp][])
-* [#3105](https://github.com/bbatsov/rubocop/issues/3105): Add new `Style/RequestReferer` cop. ([@giannileggio][])
+* [#3105](https://github.com/bbatsov/rubocop/issues/3105): Add new `Rails/RequestReferer` cop. ([@giannileggio][])
 * [#3200](https://github.com/bbatsov/rubocop/pull/3200): Add autocorrect for `Style/EachForSimpleLoop` cop. ([@tejasbubane][])
 * [#3058](https://github.com/bbatsov/rubocop/issues/3058): Add new `Style/SpaceInsideArrayPercentLiteral` cop. ([@owst][])
 * [#3058](https://github.com/bbatsov/rubocop/issues/3058): Add new `Style/SpaceInsidePercentLiteralDelimiters` cop. ([@owst][])

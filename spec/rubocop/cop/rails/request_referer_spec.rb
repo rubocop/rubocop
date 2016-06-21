@@ -2,7 +2,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-describe RuboCop::Cop::Style::RequestReferer, :config do
+describe RuboCop::Cop::Rails::RequestReferer, :config do
   subject(:cop) { described_class.new(config) }
 
   context 'when EnforcedStyle is referer' do
