@@ -163,7 +163,7 @@ describe RuboCop::CLI, :isolated_environment do
         # Since we define a new cop class, we have to do this in a separate
         # process. Otherwise, the extra cop will affect other specs.
         output =
-          `ruby -I . #{rubocop} --require redirect.rb --only Style/SomeCop`
+          `ruby -I . "#{rubocop}" --require redirect.rb --only Style/SomeCop`
         expect($CHILD_STATUS.success?).to be_truthy
         expect(output)
           .to eq(['Inspecting 2 files',
