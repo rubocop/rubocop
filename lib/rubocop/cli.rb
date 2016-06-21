@@ -7,7 +7,7 @@ module RuboCop
   class CLI
     include Formatter::TextUtil
 
-    class Finished < Exception; end
+    class Finished < RuntimeError; end
 
     attr_reader :options, :config_store
 

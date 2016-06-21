@@ -7,7 +7,7 @@ module RuboCop
   class Runner # rubocop:disable Metrics/ClassLength
     # An exception indicating that the inspection loop got stuck correcting
     # offenses back and forth.
-    class InfiniteCorrectionLoop < Exception
+    class InfiniteCorrectionLoop < RuntimeError
       attr_reader :offenses
 
       def initialize(path, offenses)
