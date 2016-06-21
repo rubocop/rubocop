@@ -1161,6 +1161,12 @@ Lint/RescueException:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-blind-rescues'
   Enabled: true
 
+Lint/ShadowedException:
+  Description: >-
+                  Avoid rescuing a higher level exception
+                  before a lower level exception.
+  Enabled: true
+
 Lint/ShadowingOuterLocalVariable:
   Description: >-
                  Do not use the same name as outer local variable
