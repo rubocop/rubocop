@@ -323,51 +323,9 @@ module RuboCop
       # returns nil if answer cannot be determined
       ancestors = each_ancestor(:class, :module, :sclass, :casgn, :block)
       result    = ancestors.map do |ancestor|
-        case ancestor.type
-        when :class, :module, :casgn
-          # TODO: if constant name has cbase (leading ::), then we don't need
-          # to keep traversing up through nested classes/modules
-          ancestor.defined_module_name
-        when :sclass
-          return parent_module_name_for_sclass(ancestor)
-        else # block
-          if ancestor.method_name == :class_eval
-            # `class_eval` with no receiver applies to whatever module or class
-            # we are currently in
-            next unless (receiver = ancestor.receiver)
-            return nil unless receiver.const_type?
-            receiver.const_name
-          elsif new_class_or_module_block?(ancestor)
-            # we will catch this in the `casgn` branch above
-            next
-          else
-            return nil
-          end
-        end
+        parent_module_name_part(ancestor) { |full_name| return full_name }
       end.compact.reverse.join('::')
       result.empty? ? 'Object' : result
-    end
-
-    def parent_module_name_for_sclass(sclass_node)
-      # TODO: look for constant definition and see if it is nested
-      # inside a class or module
-      subject = sclass_node.children[0]
-
-      if subject.const_type?
-        "#<Class:#{subject.const_name}>"
-      elsif subject.self_type?
-        "#<Class:#{sclass_node.parent_module_name}>"
-      end
-    end
-
-    def new_class_or_module_block?(block_node)
-      receiver = block_node.receiver
-
-      block_node.method_name == :new &&
-        receiver && receiver.const_type? &&
-        (receiver.const_name == 'Class' || receiver.const_name == 'Module') &&
-        block_node.parent &&
-        block_node.parent.casgn_type?
     end
 
     ## Predicates
@@ -612,6 +570,53 @@ module RuboCop
     def while_until_value_used?
       # (while <condition> <body>) -> always evaluates to `nil`
       sibling_index == 0
+    end
+
+    def parent_module_name_part(node)
+      case node.type
+      when :class, :module, :casgn
+        # TODO: if constant name has cbase (leading ::), then we don't need
+        # to keep traversing up through nested classes/modules
+        node.defined_module_name
+      when :sclass
+        yield parent_module_name_for_sclass(node)
+      else # block
+        parent_module_name_for_block(node) { yield nil }
+      end
+    end
+
+    def parent_module_name_for_sclass(sclass_node)
+      # TODO: look for constant definition and see if it is nested
+      # inside a class or module
+      subject = sclass_node.children[0]
+
+      if subject.const_type?
+        "#<Class:#{subject.const_name}>"
+      elsif subject.self_type?
+        "#<Class:#{sclass_node.parent_module_name}>"
+      end
+    end
+
+    def parent_module_name_for_block(ancestor)
+      if ancestor.method_name == :class_eval
+        # `class_eval` with no receiver applies to whatever module or class
+        # we are currently in
+        return unless (receiver = ancestor.receiver)
+        yield unless receiver.const_type?
+        receiver.const_name
+      elsif !new_class_or_module_block?(ancestor)
+        yield
+      end
+    end
+
+    def new_class_or_module_block?(block_node)
+      receiver = block_node.receiver
+
+      block_node.method_name == :new &&
+        receiver && receiver.const_type? &&
+        (receiver.const_name == 'Class' || receiver.const_name == 'Module') &&
+        block_node.parent &&
+        block_node.parent.casgn_type?
     end
   end
 end
