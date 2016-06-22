@@ -80,6 +80,7 @@ describe RuboCop::ConfigLoader do
         create_file(file_path, ['Style/Encoding:',
                                 '  Enabled: false'])
       end
+
       it 'returns a configuration inheriting from default.yml' do
         config = default_config['Style/Encoding'].dup
         config['Enabled'] = false
@@ -384,6 +385,14 @@ describe RuboCop::ConfigLoader do
       expect { load_file }.to raise_error(
         TypeError, /^Malformed configuration in .*\.rubocop\.yml$/
       )
+    end
+
+    it 'loads configuration properly when it includes non-ascii characters ' do
+      create_file(configuration_path, ['# All these cops of mine are ❤',
+                                       'Style/Encoding:',
+                                       '  Enabled: false'])
+
+      expect(load_file).to eq('Style/Encoding' => { 'Enabled' => false })
     end
 
     it 'returns an empty configuration loaded from an empty file' do
