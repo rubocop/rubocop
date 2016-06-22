@@ -194,6 +194,19 @@ module RuboCop
         end
     end
 
+    def target_ruby_version
+      @target_ruby_version ||=
+        if File.file?('.ruby-version')
+          @target_ruby_version_source = :dot_ruby_version
+
+          File.read('.ruby-version').to_f
+        else
+          @target_ruby_version_source = :rubocop_yml
+
+          for_all_cops['TargetRubyVersion']
+        end
+    end
+
     private
 
     def warn_about_unrecognized_cops(invalid_cop_names)
@@ -272,14 +285,22 @@ module RuboCop
     end
 
     def check_target_ruby
-      target = for_all_cops['TargetRubyVersion']
-      return unless target
+      return unless target_ruby_version
 
-      unless KNOWN_RUBIES.include?(target)
-        raise ValidationError, "Unknown Ruby version #{target.inspect} found " \
-                              'in `TargetRubyVersion` parameter (in ' \
-                              "#{loaded_path}).\nKnown versions: " \
-                              "#{KNOWN_RUBIES.join(', ')}"
+      unless KNOWN_RUBIES.include?(target_ruby_version)
+        msg = "Unknown Ruby version #{target_ruby_version.inspect} found "
+
+        msg +=
+          case @target_ruby_version_source
+          when :dot_ruby_version
+            'in `.ruby-version`.'
+          when :rubocop_yml
+            "in `TargetRubyVersion` parameter (in #{loaded_path})." \
+          end
+
+        msg += "\nKnown versions: #{KNOWN_RUBIES.join(', ')}"
+
+        raise ValidationError, msg
       end
     end
   end
