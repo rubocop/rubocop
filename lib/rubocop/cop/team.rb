@@ -19,6 +19,8 @@ module RuboCop
         debug: false
       }.freeze
 
+      Investigation = Struct.new(:offenses, :errors)
+
       attr_reader :errors, :warnings, :updated_source_file
 
       alias updated_source_file? updated_source_file
@@ -47,32 +49,7 @@ module RuboCop
           return Lint::Syntax.offenses_from_processed_source(processed_source)
         end
 
-        # The autocorrection process may have to be repeated multiple times
-        # until there are no corrections left to perform
-        # To speed things up, run auto-correcting cops by themselves, and only
-        # run the other cops when no corrections are left
-        autocorrect_cops, other_cops = cops.partition(&:autocorrect?)
-        offenses = []
-        errors = {}
-
-        if autocorrect_cops.any?
-          commissioner = Commissioner.new(autocorrect_cops,
-                                          forces_for(autocorrect_cops))
-          offenses = commissioner.investigate(processed_source)
-          if autocorrect(processed_source.buffer, autocorrect_cops)
-            # We corrected some errors. Another round of inspection will be
-            # done, and any other offenses will be caught then, so we don't
-            # need to continue.
-            return offenses
-          end
-          errors = commissioner.errors
-        end
-
-        commissioner = Commissioner.new(other_cops, forces_for(other_cops))
-        offenses.concat(commissioner.investigate(processed_source))
-        errors.merge!(commissioner.errors)
-        process_commissioner_errors(processed_source.path, errors)
-        offenses
+        offenses(processed_source)
       end
 
       def cops
@@ -94,6 +71,40 @@ module RuboCop
       end
 
       private
+
+      def offenses(processed_source)
+        # The autocorrection process may have to be repeated multiple times
+        # until there are no corrections left to perform
+        # To speed things up, run auto-correcting cops by themselves, and only
+        # run the other cops when no corrections are left
+        autocorrect_cops, other_cops = cops.partition(&:autocorrect?)
+
+        autocorrect =
+          investigate(autocorrect_cops, processed_source) do |offenses|
+            # We corrected some errors. Another round of inspection will be
+            # done, and any other offenses will be caught then, so we don't
+            # need to continue.
+            return offenses if autocorrect(processed_source.buffer,
+                                           autocorrect_cops)
+          end
+
+        other = investigate(other_cops, processed_source)
+
+        errors = autocorrect.errors.merge(other.errors)
+        process_commissioner_errors(processed_source.path, errors)
+
+        autocorrect.offenses.concat(other.offenses)
+      end
+
+      def investigate(cops, processed_source)
+        return Investigation.new([], {}) if cops.empty?
+
+        commissioner = Commissioner.new(cops, forces_for(cops))
+        offenses = commissioner.investigate(processed_source)
+        yield offenses if block_given?
+
+        Investigation.new(offenses, commissioner.errors)
+      end
 
       def cop_enabled?(cop_class)
         @config.cop_enabled?(cop_class) ||

@@ -94,19 +94,30 @@ module RuboCop
             compute_do_source_line_column(block_node, end_loc)
           return unless do_source_line_column
 
+          offense(block_node, start_loc, end_loc, do_source_line_column)
+        end
+
+        def offense(block_node, start_loc, end_loc, do_source_line_column)
           error_source_line_column = if style == :start_of_block
                                        do_source_line_column
                                      else
                                        loc_to_source_line_column(start_loc)
                                      end
 
-          fmt = format(
+          message = format_message(start_loc, end_loc, do_source_line_column,
+                                   error_source_line_column)
+
+          add_offense(block_node, end_loc, message)
+        end
+
+        def format_message(start_loc, end_loc, do_source_line_column,
+                           error_source_line_column)
+          format(
             MSG,
             format_source_line_column(loc_to_source_line_column(end_loc)),
             format_source_line_column(error_source_line_column),
             alt_start_msg(start_loc, do_source_line_column)
           )
-          add_offense(block_node, end_loc, fmt)
         end
 
         def compute_do_source_line_column(node, end_loc)

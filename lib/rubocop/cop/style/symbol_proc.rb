@@ -19,33 +19,18 @@ module RuboCop
 
         def on_block(node)
           block_send_or_super, block_args, block_body = *node
-
-          if super?(block_send_or_super)
-            bmethod_name = :super
-          else
-            _breceiver, bmethod_name, _bargs = *block_send_or_super
-          end
+          block_method_name = resolve_block_method_name(block_send_or_super)
 
           # TODO: Rails-specific handling that we should probably make
           # configurable - https://github.com/bbatsov/rubocop/issues/1485
           # we should ignore lambdas & procs
           return if block_send_or_super == PROC_NODE
-          return if [:lambda, :proc].include?(bmethod_name)
-          return if ignored_method?(bmethod_name)
+          return if [:lambda, :proc].include?(block_method_name)
+          return if ignored_method?(block_method_name)
           return unless can_shorten?(block_args, block_body)
 
           _receiver, method_name, _args = *block_body
-
-          sb = node.source_range.source_buffer
-          block_start = node.loc.begin.begin_pos
-          block_end = node.loc.end.end_pos
-          range = Parser::Source::Range.new(sb, block_start, block_end)
-
-          add_offense(node,
-                      range,
-                      format(MSG,
-                             method_name,
-                             bmethod_name))
+          offense(node, method_name, block_method_name)
         end
 
         def autocorrect(node)
@@ -60,6 +45,28 @@ module RuboCop
             end
             autocorrect_method(corrector, node, args, method_name)
           end
+        end
+
+        private
+
+        def resolve_block_method_name(block_send_or_super)
+          return :super if super?(block_send_or_super)
+
+          _receiver, method_name, _args = *block_send_or_super
+          method_name
+        end
+
+        def offense(node, method_name, block_method_name)
+          sb = node.source_range.source_buffer
+          block_start = node.loc.begin.begin_pos
+          block_end = node.loc.end.end_pos
+          range = Parser::Source::Range.new(sb, block_start, block_end)
+
+          add_offense(node,
+                      range,
+                      format(MSG,
+                             method_name,
+                             block_method_name))
         end
 
         def autocorrect_method(corrector, node, args, method_name)
