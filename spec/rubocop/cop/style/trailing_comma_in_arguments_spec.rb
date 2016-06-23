@@ -40,6 +40,12 @@ describe RuboCop::Cop::Style::TrailingCommaInArguments, :config do
       expect(cop.offenses).to be_empty
     end
 
+    it 'accepts chained single-line method calls' do
+      inspect_source(cop, ['target',
+                           '  .some_method(a)'])
+      expect(cop.offenses).to be_empty
+    end
+
     it 'auto-corrects unwanted comma in a method call' do
       new_source = autocorrect_source(cop, 'some_method(a, b, c, )')
       expect(new_source).to eq('some_method(a, b, c )')
