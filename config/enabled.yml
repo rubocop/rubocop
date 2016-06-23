@@ -1436,7 +1436,7 @@ Rails/TimeZone:
   Enabled: true
 
 Rails/UniqBeforePluck:
-  Description: 'Prefer the use of uniq before pluck.'
+  Description: 'Prefer the use of uniq or distinct before pluck.'
   Enabled: true
 
 Rails/Validation:

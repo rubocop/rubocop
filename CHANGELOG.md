@@ -61,6 +61,7 @@
 * [#3239](https://github.com/bbatsov/rubocop/pull/3239): Fix bug with --auto-gen-config and a file that does not exist. ([@meganemura][])
 * [#3138](https://github.com/bbatsov/rubocop/issues/3138): Fix RuboCop crashing when config file contains utf-8 characters and external encoding is not utf-8. ([@deivid-rodriguez][])
 * [#3175](https://github.com/bbatsov/rubocop/pull/3175): Generate 'Exclude' list for the cops with configurable enforced style to `.rubocop_todo.yml` if different styles are used. ([@flexoid][])
+* [#3231](https://github.com/bbatsov/rubocop/pull/3231): Make `Rails/UniqBeforePluck` more conservative. ([@tjwp][])
 
 ### Changes
 
