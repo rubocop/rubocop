@@ -1176,6 +1176,14 @@ Rails/Date:
     - strict
     - flexible
 
+Rails/Exit:
+  Include:
+    - app/**/*.rb
+    - config/**/*.rb
+    - lib/**/*.rb
+  Exclude:
+    - lib/**/*.rake
+
 Rails/FindBy:
   Include:
     - app/models/**/*.rb
