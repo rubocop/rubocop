@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.41.0 (2016-06-25)
+
 ### New features
 
 * [#2956](https://github.com/bbatsov/rubocop/issues/2956): Prefer `.ruby-version` to `TargetRubyVersion`. ([@pclalv][])
