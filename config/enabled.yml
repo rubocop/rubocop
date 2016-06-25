@@ -417,6 +417,11 @@ Style/MethodName:
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#snake-case-symbols-methods-vars'
   Enabled: true
 
+Style/MethodMissing:
+  Description: 'Avoid using `method_missing`.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-method-missing'
+  Enabled: true
+
 Style/ModuleFunction:
   Description: 'Checks for usage of `extend self` in modules.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#module-function'
