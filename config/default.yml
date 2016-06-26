@@ -1226,7 +1226,7 @@ Rails/TimeZone:
     - flexible
 
 Rails/UniqBeforePluck:
-  EnforcementMode: conservative
+  EnforcedMode: conservative
   SupportedModes:
     - conservative
     - aggressive
