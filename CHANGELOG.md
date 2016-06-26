@@ -2,6 +2,8 @@
 
 ## master (unreleased)
 
+## 0.41.1 (2016-06-26)
+
 ### Bug fixes
 
 * [#3245](https://github.com/bbatsov/rubocop/pull/3245): Fix `UniqBeforePluck` cop by solving difference of config name. ([@pocke][])
