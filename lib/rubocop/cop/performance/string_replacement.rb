@@ -49,18 +49,22 @@ module RuboCop
             first_source = interpret_string_escapes(first_source)
           end
 
-          replacement_method = replacement_method(method,
-                                                  first_source,
-                                                  second_source)
+          replacement_method =
+            replacement_method(method, first_source, second_source)
 
+          replace_method(node, first_source, second_source, first_param,
+                         replacement_method)
+        end
+
+        def replace_method(node, first, second, first_param, replacement)
           lambda do |corrector|
-            corrector.replace(node.loc.selector, replacement_method)
+            corrector.replace(node.loc.selector, replacement)
             unless first_param.str_type?
               corrector.replace(first_param.source_range,
-                                to_string_literal(first_source))
+                                to_string_literal(first))
             end
 
-            if second_source.empty? && first_source.length == 1
+            if second.empty? && first.length == 1
               remove_second_param(corrector, node, first_param)
             end
           end
