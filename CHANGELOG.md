@@ -5,6 +5,7 @@
 ### Bug fixes
 
 * [#3248](https://github.com/bbatsov/rubocop/issues/3248): Support 'ruby-' prefix in `.ruby-version`. ([@tjwp][])
+* [#3250](https://github.com/bbatsov/rubocop/pull/3250): Make regexp for cop names less restrictive in CommentConfig lines. ([@tjwp][])
 
 ## 0.41.1 (2016-06-26)
 
