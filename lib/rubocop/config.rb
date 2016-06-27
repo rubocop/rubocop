@@ -199,7 +199,9 @@ module RuboCop
         if File.file?('.ruby-version')
           @target_ruby_version_source = :dot_ruby_version
 
-          File.read('.ruby-version').to_f
+          /(ruby-)?(?<ruby_version>\d.\d)/ =~ File.read('.ruby-version')
+
+          ruby_version.to_f if ruby_version
         else
           @target_ruby_version_source = :rubocop_yml
 
