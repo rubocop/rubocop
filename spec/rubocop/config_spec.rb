@@ -389,7 +389,16 @@ describe RuboCop::Config do
       end
 
       it 'reads it to determine the target ruby version' do
-        expect(configuration.target_ruby_version).to eq 2.2
+        expect(configuration.target_ruby_version).to eq ruby_version_to_f
+      end
+
+      context 'when ruby version is prefixed by "ruby-"' do
+        let(:ruby_version) { 'ruby-2.3.0' }
+        let(:ruby_version_to_f) { 2.3 }
+
+        it 'correctly determines the target ruby version' do
+          expect(configuration.target_ruby_version).to eq ruby_version_to_f
+        end
       end
     end
 
