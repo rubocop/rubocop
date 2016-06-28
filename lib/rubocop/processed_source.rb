@@ -103,7 +103,7 @@ module RuboCop
       @tokens = tokens.map { |t| Token.from_parser_token(t) } if tokens
     end
 
-    def parser_class(ruby_version)
+    def parser_class(ruby_version) # rubocop:disable Metrics/MethodLength
       case ruby_version
       when 1.9
         require 'parser/ruby19'
